@@ -109,24 +109,6 @@
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "SDK-MR-A-VALIDATION-CUSTODY-001 / StegVerse-Labs/.github#3099",
       "reason": "Manifest-directed materialization of this organization's governance endpoint: a committed decision request under .stegverse/governance-decision-requests/ declares the emitting organization's mesh locator and its push starts the run (a dispatch is still accepted, not required); reads the emitting organization's mesh ref anonymously, runs org-kernel consume_and_respond with run-scoped ledgers (organization_ledger propagate_target null by declaration), and writes only this repository's own refs/stegverse/federation-mesh, fast-forward only. Needs contents: write and its own concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
-    },
-    {
-      "path": ".github/workflows/intr-destination-capability-validation.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-Labs/.github#3200",
-      "reason": "validation-only check (pull_request and push to main, path-filtered, plus workflow_dispatch; permissions contents: read; persist-credentials false) of the advertised intr-destination diagnostic capability: runtime_boundary.py validate and tests.test_intr_destination_capability with both ledger roots redirected to runner.temp; it proves emit and close against this repository's own kernel receipt, not a live peer, appends to no operator ledger, and this registration grants no runtime, transition, or credential authority"
-    },
-    {
-      "path": ".github/workflows/organization-ledger-transition.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001 / StegVerse-Labs/.github#3202",
-      "reason": "organization ledger writer: on pull_request (path-filtered) the validate job only compiles and unit-tests the writer and the intr-destination self-closure against temporary ledgers with contents: read; on workflow_dispatch (communication_id, supplied hb_epoch, packet_id) the transition job appends the diagnostic self-closure onto the existing refs/stegverse/organization-ledger, pushes that ref fast-forward only, and reads it back from a fresh fetch, refusing FAIL_CLOSED if the ref is absent. Needs job-scoped contents: write and the shared organization-ledger concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
-    },
-    {
-      "path": ".github/workflows/reverse-intr-inter-org-route-validation.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "ORG_RESIDENT_RUNTIME_INTR_BOUNDARY / StegVerse-Labs/.github#3198",
-      "reason": "validation-only check (pull_request and push to main, path-filtered, plus workflow_dispatch; permissions contents: read; persist-credentials false) of the declared reverse InTr governance-to-org leg, Labs to StegVerse-org: tests.test_reverse_intr_inter_org_route with both ledger roots and the mesh redirected by the tests; no remediation-to-org leg, no operator-runtime append, not a production crossing or authentic receipt, and this registration grants no runtime, transition, or credential authority"
     }
   ],
   "removed_in_hygiene_batch_1": [
