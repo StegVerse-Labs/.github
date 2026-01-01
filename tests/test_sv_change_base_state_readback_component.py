@@ -233,6 +233,9 @@ class BaseStateReadbackTests(unittest.TestCase):
         entirely -> no cross-check, ALLOW (deliberate: an optional cross-check, not the admission's supplied epoch)."""
         absent = component.evaluate(self.bare, self.c["second"], repository_name=LABS)  # flag omitted entirely
         self.assertEqual((absent["disposition"], absent["hb_epoch"]), ("ALLOW", "44"))
+        # P1 #3264 @ae8b105d placement: top-level cross_checked false, plus the HB_EPOCH_NOT_CROSS_CHECKED marker
+        self.assertEqual((absent["cross_checked"], absent["hb_epoch_cross_check"]), (False, "HB_EPOCH_NOT_CROSS_CHECKED"))
+        self.assertTrue(component.seal_verifies(absent))
         for label, supplied in (("null-api", None), ("null", "null"), ("empty", ""), ("sentinel", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")):
             with self.subTest(label):
                 r = ev(self.bare, self.c["second"], hb_epoch=supplied)
@@ -250,6 +253,8 @@ class BaseStateReadbackTests(unittest.TestCase):
             with self.subTest(label):
                 r = ev(self.bare, self.c["second"], hb_epoch=supplied)
                 self.assertEqual((r["disposition"], r["hb_epoch"]), ("ALLOW", "44"))
+                self.assertNotIn("cross_checked", r)  # cross-checked: no marker (P1 omits the field)
+                self.assertNotIn("hb_epoch_cross_check", r)
         # CLI: omitted -> ALLOW; "null", "" or the sentinel -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED
         import contextlib, io
         for argv_extra, want in (([], 0), (["--hb-epoch", "null"], 1), (["--hb-epoch", ""], 1), (["--hb-epoch", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"], 1)):
