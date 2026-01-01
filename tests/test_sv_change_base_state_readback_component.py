@@ -8,6 +8,7 @@ repositories only; no network; the real registry is never read or written.
 from __future__ import annotations
 
 import copy
+import hashlib
 import importlib.util
 import json
 import os
@@ -139,17 +140,21 @@ class BaseStateReadbackTests(unittest.TestCase):
         self.assertTrue(component.seal_verifies(r))
 
     def test_allow_receipt_shape_and_seal(self):
-        r = ev(self.bare, self.c["second"], hb_epoch="1024")
+        r = ev(self.bare, self.c["second"], hb_epoch="44")
         self.assertEqual(r["disposition"], "ALLOW", r)
         self.assertEqual(r["schema"], "stegverse.sv-change-base-state-readback/v1")
         self.assertEqual(r["base_ref"], {"registry_generation": 319, "ledger_head": self.ledger_head})
         self.assertEqual(r["bound_main_commit"], self.c["second"])
-        self.assertEqual(r["hb_epoch"], "1024")
+        self.assertEqual(r["hb_epoch"], "44")  # observed on the head receipt the real writer appended (self_close hb_epoch=44)
         self.assertNotIn("open_questions", r)
         reg_blob = _git(self.bare, "rev-parse", self.c["second"] + ":data/canonical-task-registry.json")
         head_blob = _git(self.bare, "rev-parse", self.ledger_head + ":HEAD.json")
+        key = "receipts/" + r["ledger_head_receipt_sha256"].split(":", 1)[1] + ".json"
+        rec_blob = _git(self.bare, "rev-parse", self.ledger_head + ":" + key)
         self.assertEqual(r["sources"], [{"file": "data/canonical-task-registry.json", "blob_sha": reg_blob},
-                                        {"file": REF + ":HEAD.json", "blob_sha": head_blob}])
+                                        {"file": REF + ":HEAD.json", "blob_sha": head_blob},
+                                        {"file": REF + ":" + key, "blob_sha": rec_blob}])
+        self.assertEqual(r["hb_epoch_source"]["field"], "$.hb_reference.epoch")
         self.assertTrue(r["ledger_chain_verifies"])
         self.assertEqual(r["authority_effect"], "NONE_READBACK_ONLY")
         self.assertTrue(component.seal_verifies(r))
@@ -159,28 +164,70 @@ class BaseStateReadbackTests(unittest.TestCase):
         self.assertFalse(component.seal_verifies(tampered))
 
     def test_generation_is_read_at_the_bound_commit_exactly(self):
-        self.assertEqual(ev(self.bare, self.c["first"], hb_epoch="1024")["base_ref"]["registry_generation"], 318)
-        self.assertEqual(ev(self.bare, self.c["second"], hb_epoch="1024")["base_ref"]["registry_generation"], 319)
+        self.assertEqual(ev(self.bare, self.c["first"], hb_epoch="44")["base_ref"]["registry_generation"], 318)
+        self.assertEqual(ev(self.bare, self.c["second"], hb_epoch="44")["base_ref"]["registry_generation"], 319)
 
-    def test_hb_epoch_slot_open_when_not_supplied(self):
+    def test_hb_epoch_is_observed_on_the_head_receipt(self):
+        """ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH: no caller epoch is needed; a differing expectation fails closed."""
         r = ev(self.bare, self.c["second"])
-        self.assertEqual((r["disposition"], r["hb_epoch"]), ("ALLOW", None))
-        self.assertEqual([q["id"] for q in r["open_questions"]], ["JD-P4-3"])
+        self.assertEqual((r["disposition"], r["hb_epoch"]), ("ALLOW", "44"))
+        self.assertNotIn("open_questions", r)
+        r = ev(self.bare, self.c["second"], hb_epoch="1024")
+        self.assert_six(r, "HB_EPOCH_NOT_BASE_LEDGER_EPOCH")
+        self.assertEqual((r["failed_predicate"], r["hb_epoch"], r["expected_hb_epoch"]),
+                         ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", "44", "1024"))
         for bad in ("31", "abc", "", True, 12.5):
             with self.subTest(bad=bad):
                 self.assert_six(ev(self.bare, self.c["second"], hb_epoch=bad), "BASE_STATE_NOT_OBSERVED")
 
+    def test_head_receipt_without_valid_epoch_is_unobserved(self):
+        head = self.ledger_head
+        rec_digest = json.loads(_git(self.bare, "show", head + ":HEAD.json"))["receipt_sha256"]
+        good = json.loads(_git(self.bare, "show", head + ":receipts/" + rec_digest.split(":", 1)[1] + ".json"))
+        self.assertEqual(component.ledger_head_epoch(self.bare, head)[0], "44")
+
+        def reseal(doc):
+            body = {k: v for k, v in doc.items() if k != "receipt_sha256"}
+            return {**body, "receipt_sha256": "sha256:" + hashlib.sha256(component.canon(body)).hexdigest()}
+        ref = dict(good["hb_reference"])
+        cases = {"clock": reseal(dict(good, hb_reference=dict(ref, derived_from_clock=True))),
+                 "below-32": reseal(dict(good, hb_reference=dict(ref, epoch=31))),
+                 "string": reseal(dict(good, hb_reference=dict(ref, epoch="44"))),
+                 "bool": reseal(dict(good, hb_reference=dict(ref, epoch=True))),
+                 "no-clock-flag": reseal(dict(good, hb_reference={k: v for k, v in ref.items() if k != "derived_from_clock"})),
+                 "no-reference": reseal({k: v for k, v in good.items() if k != "hb_reference"}),
+                 "schema": reseal(dict(good, schema="stegverse.repo-transition-receipt/v1")),
+                 "broken-seal": dict(good, hb_reference=dict(ref, epoch=45))}
+        for label, doc in cases.items():
+            with self.subTest(label):
+                digest = doc["receipt_sha256"]
+                files = {"HEAD.json": json.dumps({"receipt_sha256": digest}).encode(),
+                         "receipts/" + digest.split(":", 1)[1] + ".json": json.dumps(doc).encode()}
+                commit = _commit(self.bare, self.work, files)
+                epoch, why, sources = component.ledger_head_epoch(self.bare, commit)
+                self.assertIsNone(epoch, label)
+                self.assertTrue(why)
+        empty = _commit(self.bare, self.work, {"HEAD.json": b"{}"})
+        self.assertIsNone(component.ledger_head_epoch(self.bare, empty)[0])
+
+    def test_supplied_epoch_rule_is_the_pinned_kernel_function(self):
+        rule = component.supplied_epoch_rule()
+        self.assertEqual(rule.__module__, "rtc014_org_kernel")
+        self.assertIsNone(rule("32", {"derived_from_clock": False}))
+        self.assertEqual(rule("31")[0], "HB_EPOCH_INVALID")
+        self.assertEqual(component.SUPPLIED_EPOCH_RULE_SHA256[:8], "726248a5")
+
     def test_registry_generation_unreadable(self):
         for key in ("broken", "no_gen", "absent"):
             with self.subTest(key):
-                r = ev(self.bare, self.c[key], hb_epoch="1024")
+                r = ev(self.bare, self.c[key], hb_epoch="44")
                 self.assert_six(r, "REGISTRY_GENERATION_UNREADABLE")
                 self.assertIsNone(r["base_ref"]["registry_generation"])
 
     def test_registry_path_is_the_repositorys_own(self):
         self.assertEqual(component.REGISTRY_PATHS, {LABS: "data/canonical-task-registry.json", ORG: ORG_REGISTRY})
         # org shape: its own registry declares no generation -> REGISTRY_GENERATION_NOT_DECLARED (Q-ORG-REGISTRY-GENERATION)
-        r = ev(self.bare, self.c["org_shape"], repository_name=ORG, hb_epoch="1024")
+        r = ev(self.bare, self.c["org_shape"], repository_name=ORG, hb_epoch="44")
         self.assert_six(r, "REGISTRY_GENERATION_NOT_DECLARED")
         self.assertEqual(r["failed_predicate"], "REGISTRY_DECLARES_GENERATION")
         self.assertIn("Q-ORG-REGISTRY-GENERATION", r["next_attempt"])
@@ -188,18 +235,18 @@ class BaseStateReadbackTests(unittest.TestCase):
         self.assertEqual(r["sources"], [{"file": ORG_REGISTRY, "blob_sha": _git(self.bare, "rev-parse", self.c["org_shape"] + ":" + ORG_REGISTRY)}])
         self.assertIsNone(r["base_ref"]["registry_generation"])
         # the same commit read as Labs uses Labs' path, which is not readable there
-        self.assert_six(ev(self.bare, self.c["absent"], repository_name=LABS, hb_epoch="1024"), "REGISTRY_GENERATION_UNREADABLE")
+        self.assert_six(ev(self.bare, self.c["absent"], repository_name=LABS, hb_epoch="44"), "REGISTRY_GENERATION_UNREADABLE")
         # an org-shaped registry that did declare a generation would be read from the org path
-        r = ev(self.bare, self.c["org_gen"], repository_name=ORG, hb_epoch="1024")
+        r = ev(self.bare, self.c["org_gen"], repository_name=ORG, hb_epoch="44")
         self.assertEqual((r["disposition"], r["base_ref"]["registry_generation"]), ("ALLOW", 7), r)
         self.assertEqual(r["sources"][0]["file"], ORG_REGISTRY)
         # Labs' registry is still read at Labs' path
-        self.assertEqual(ev(self.bare, self.c["second"], repository_name=LABS, hb_epoch="1024")["base_ref"]["registry_generation"], 319)
+        self.assertEqual(ev(self.bare, self.c["second"], repository_name=LABS, hb_epoch="44")["base_ref"]["registry_generation"], 319)
 
     def test_unmapped_repository_has_no_default_path(self):
         for name in (None, "StegVerse-Labs/TVC", "", 3):
             with self.subTest(name=name):
-                r = ev(self.bare, self.c["second"], repository_name=name, hb_epoch="1024")
+                r = ev(self.bare, self.c["second"], repository_name=name, hb_epoch="44")
                 self.assert_six(r, "REGISTRY_PATH_NOT_DECLARED")
                 self.assertEqual(r["failed_predicate"], "REGISTRY_PATH_DECLARED_FOR_REPOSITORY")
 
@@ -208,7 +255,7 @@ class BaseStateReadbackTests(unittest.TestCase):
                                          ("absent", "1" * 40, "BOUND_MAIN_COMMIT_PRESENT"),
                                          ("off-main", self.c["side"], "BOUND_COMMIT_IS_ON_MAIN")):
             with self.subTest(label):
-                r = ev(self.bare, commit, hb_epoch="1024")
+                r = ev(self.bare, commit, hb_epoch="44")
                 self.assert_six(r, "BASE_STATE_NOT_OBSERVED")
                 self.assertEqual(r["failed_predicate"], predicate)
                 self.assertIsNone(r["base_ref"]["ledger_head"])
@@ -220,13 +267,13 @@ class BaseStateReadbackTests(unittest.TestCase):
             subprocess.run(["git", "init", "--bare", "-q", str(bare)], check=True)
             main = _commit(bare, Path(tmp), {"data/canonical-task-registry.json": registry_bytes(319)})
             _git(bare, "update-ref", "refs/heads/main", main)
-            r = ev(bare, main, hb_epoch="1024")
+            r = ev(bare, main, hb_epoch="44")
             self.assert_six(r, "BASE_STATE_NOT_OBSERVED")
             self.assertEqual(r["failed_predicate"], "ORGANIZATION_LEDGER_REF_PRESENT")
             self.assertEqual(r["base_ref"], {"registry_generation": 319, "ledger_head": None})
             seed = _commit(bare, Path(tmp), {"MARKER": b"x\n"})  # a ref with no HEAD: the existing readback refuses
             _git(bare, "update-ref", REF, seed)
-            r = ev(bare, main, hb_epoch="1024")
+            r = ev(bare, main, hb_epoch="44")
             self.assert_six(r, "BASE_STATE_NOT_OBSERVED")
             self.assertEqual(r["failed_predicate"], "ORGANIZATION_LEDGER_HEAD_PRESENT")
 
@@ -254,7 +301,10 @@ class BaseStateReadbackTests(unittest.TestCase):
         self.assertIn("REGISTRY_GENERATION_NOT_DECLARED", entry["failure_classes"])
         self.assertIn("REGISTRY_PATH_NOT_DECLARED", entry["failure_classes"])
         self.assertIn(component.RESULT_SCHEMA, entry["version_or_schema_binding"])
-        self.assertEqual(entry["implementation"]["reuses"], ["resident-runtime/organization_ledger_readback.py::readback"])
+        self.assertEqual(entry["implementation"]["reuses"], ["resident-runtime/organization_ledger_readback.py::readback",
+                                                             "resident-runtime/ledger_store.py::HEAD_KEY,receipt_key",
+                                                             "org-kernel/kernel.py::supplied_epoch_failure"])
+        self.assertIn("HB_EPOCH_SOURCE_UNOBSERVED", entry["failure_classes"])
         self.assertFalse(any(entry["invariants"][k] for k in ("writes_ledger_or_ref", "writes_registry", "bumps_registry_generation",
                                                                "reads_clock", "uses_network", "uses_credential", "derives_hb_epoch")))
 

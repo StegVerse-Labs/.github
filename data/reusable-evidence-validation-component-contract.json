@@ -72,14 +72,15 @@
         "repository": "local git repository (clone) holding the bound main commit and refs/stegverse/organization-ledger, fetched by the caller's existing transport",
         "bound_main_commit": "40-hex main commit the caller binds; the repository's own registry file (REGISTRY_PATHS) is read at exactly this commit",
         "main_ref": "ref whose history must contain bound_main_commit (default refs/heads/main)",
-        "hb_epoch": "optional, supplied by the caller (ASCII digits >= 32); absent -> null, open as JD-P4-3, never derived",
+        "hb_epoch": "optional expectation only (ASCII digits >= 32, checked by kernel.supplied_epoch_failure); the epoch itself is read from the bound ledger head receipt; a differing expectation -> FAIL_CLOSED HB_EPOCH_NOT_BASE_LEDGER_EPOCH",
         "repository_name": "the repository the clone is of (e.g. StegVerse-org/.github); selects its registry path from the pinned REGISTRY_PATHS map; unmapped -> REGISTRY_PATH_NOT_DECLARED (no default path)"
       },
       "outputs": {
         "base_ref": "{registry_generation, ledger_head}: the registry generation at bound_main_commit and the organization-ledger ref commit",
-        "sources": "[{file, blob_sha}] for the repository's registry file at bound_main_commit and refs/stegverse/organization-ledger:HEAD.json",
+        "sources": "[{file, blob_sha}] for the repository's registry file at bound_main_commit, refs/stegverse/organization-ledger:HEAD.json and the head receipt receipts/<hex>.json",
         "disposition": "ALLOW, or FAIL_CLOSED carrying failure_code, failed_predicate, required_evidence_or_repair, retry_entrypoint, owning_existing_goal (StegVerse-org/.github#164) and next_attempt",
-        "result_sha256": "sha256 seal over the canonical receipt"
+        "result_sha256": "sha256 seal over the canonical receipt",
+        "hb_epoch": "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH: $.hb_reference.epoch of the stegverse.organization-transition-receipt/v1 at the bound ledger head (real Labs#3255 layout), validated by org-kernel/kernel.py::supplied_epoch_failure (sha256 726248a5..b7ef), sealed with the receipt; never minted"
       },
       "preconditions": [
         "bound_main_commit_well_formed_and_present",
@@ -90,14 +91,16 @@
         "organization_ledger_ref_present",
         "organization_ledger_reads_back_via_organization_ledger_readback",
         "ledger_head_stable_during_readback",
-        "hb_epoch_supplied_well_formed_or_absent"
+        "ledger_head_receipt_carries_valid_hb_reference_epoch",
+        "expected_hb_epoch_absent_or_equal_to_observed"
       ],
       "expected_evidence": [
         "base_ref.registry_generation",
         "base_ref.ledger_head",
         "sources[].blob_sha",
         "ledger_head_receipt_sha256",
-        "result_sha256"
+        "result_sha256",
+        "hb_epoch"
       ],
       "authority_owner": "The Task Registry (generation, via the main branch) and the organization ledger writer (ref) own the state; this component only reads it.",
       "authority_effect": "NONE_READBACK_ONLY",
@@ -105,9 +108,11 @@
         "BASE_STATE_NOT_OBSERVED",
         "REGISTRY_PATH_NOT_DECLARED",
         "REGISTRY_GENERATION_NOT_DECLARED",
-        "REGISTRY_GENERATION_UNREADABLE"
+        "REGISTRY_GENERATION_UNREADABLE",
+        "HB_EPOCH_SOURCE_UNOBSERVED",
+        "HB_EPOCH_NOT_BASE_LEDGER_EPOCH"
       ],
-      "retry_or_reentry_semantics": "Deterministic for an identical repository state, bound commit and supplied hb_epoch. No schedule, loop, clock or retry: the admission caller invokes it when it needs a base binding and re-invokes after the refusal's next_attempt is satisfied.",
+      "retry_or_reentry_semantics": "Deterministic for an identical repository state, bound commit and expected hb_epoch. No schedule, loop, clock or retry: the admission caller invokes it when it needs a base binding and re-invokes after the refusal's next_attempt is satisfied.",
       "version_or_schema_binding": [
         "stegverse.sv-change-base-state-readback/v1",
         "stegverse.organization-ledger-readback/v1"
@@ -115,7 +120,9 @@
       "implementation": {
         "component": "resident-runtime/sv_change_base_state_readback.py::evaluate",
         "reuses": [
-          "resident-runtime/organization_ledger_readback.py::readback"
+          "resident-runtime/organization_ledger_readback.py::readback",
+          "resident-runtime/ledger_store.py::HEAD_KEY,receipt_key",
+          "org-kernel/kernel.py::supplied_epoch_failure"
         ],
         "consumers": [
           "StegVerse-Labs/TVC sv_change_admission (base_ref input, PR 519)",
