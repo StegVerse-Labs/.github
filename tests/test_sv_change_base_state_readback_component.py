@@ -179,9 +179,23 @@ class BaseStateReadbackTests(unittest.TestCase):
                          ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", "44", "1024", "HB_EPOCH_FLAG_MISMATCH"))
         self.assertEqual(r["hb_epoch_source"]["ledger_head"], self.ledger_head)  # DENY: the epoch was observed, so its source is sealed
         self.assertEqual(ev(self.bare, self.c["second"], hb_epoch="44")["disposition"], "ALLOW")
-        for bad in ("31", "abc", "", True, 12.5):
+        # A malformed supplied epoch is an observed contradiction too (P1, Lane B #46, P4 #192, Lane D #3270): DENY
+        # HB_EPOCH_MISMATCH, with the observed hb_epoch and hb_epoch_source still sealed.
+        for bad in ("31", "abc", "", "+44", " 44", "44.0", True, 12.5, [44]):
             with self.subTest(bad=bad):
-                self.assert_six(ev(self.bare, self.c["second"], hb_epoch=bad), "BASE_STATE_NOT_OBSERVED")
+                r = ev(self.bare, self.c["second"], hb_epoch=bad)
+                self.assert_six(r, "HB_EPOCH_MISMATCH", "DENY")
+                self.assertEqual((r["failed_predicate"], r["hb_epoch"], r["supplied_hb_epoch_well_formed"],
+                                  r["supplied_epoch_failure_code"], r["flag_failure_code"]),
+                                 ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", "44", False, "HB_EPOCH_INVALID", "HB_EPOCH_FLAG_MISMATCH"))
+                self.assertEqual(r["expected_hb_epoch"], bad if not isinstance(bad, list) else repr(bad))
+                self.assertEqual(r["hb_epoch_source"]["ledger_head"], self.ledger_head)
+                self.assertTrue(component.seal_verifies(r))
+        r = ev(self.bare, self.c["second"], hb_epoch="1024")
+        self.assertEqual((r["supplied_hb_epoch_well_formed"], "supplied_epoch_failure_code" in r), (True, False))
+        # An earlier refusal keeps its own code, whatever was supplied.
+        self.assert_six(ev(self.bare, "0" * 40, hb_epoch="abc"), "BASE_STATE_NOT_OBSERVED")
+        self.assert_six(ev(self.bare, self.c["second"], repository_name="Nope/nope", hb_epoch="abc"), "REGISTRY_PATH_NOT_DECLARED")
 
     def test_head_receipt_without_valid_epoch_is_unobserved(self):
         head = self.ledger_head
@@ -213,6 +227,19 @@ class BaseStateReadbackTests(unittest.TestCase):
         empty = _commit(self.bare, self.work, {"HEAD.json": b"{}"})
         self.assertIsNone(component.ledger_head_epoch(self.bare, empty)[0])
 
+    def test_unobservable_ledger_epoch_is_fail_closed_whatever_is_supplied(self):
+        """FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED stays only for an unobservable ledger-head epoch; hb_epoch and
+        hb_epoch_source are then sealed null, with or without a (malformed or well-formed) --hb-epoch."""
+        from unittest import mock
+        with mock.patch.object(component, "ledger_head_epoch", return_value=(None, "fixture: no valid epoch", [])):
+            for supplied in (None, "44", "1024", "abc", True):
+                with self.subTest(supplied=supplied):
+                    r = ev(self.bare, self.c["second"], hb_epoch=supplied)
+                    self.assert_six(r, "HB_EPOCH_SOURCE_UNOBSERVED")
+                    self.assertEqual((r["hb_epoch"], r["hb_epoch_source"]), (None, None))
+                    self.assertNotIn("expected_hb_epoch", r)
+                    self.assertTrue(component.seal_verifies(r))
+
     def test_epoch_rule_source_is_kernel_hb_reference(self):
         self.assertEqual(component.EPOCH_RULE_SOURCE["lines"], "68-74")
         kernel = (ROOT / "org-kernel" / "kernel.py").read_bytes()
@@ -228,7 +255,7 @@ class BaseStateReadbackTests(unittest.TestCase):
 
     def test_fail_closed_seals_null_epoch_and_null_source(self):
         """Every FAIL_CLOSED seals hb_epoch null and hb_epoch_source present and null (never omitted)."""
-        cases = [ev(self.bare, self.c["second"], hb_epoch="31"), ev(self.bare, "0" * 40, hb_epoch="44"),
+        cases = [ev(self.bare, "0" * 40, hb_epoch="31"), ev(self.bare, "0" * 40, hb_epoch="44"),
                  ev(self.bare, self.c["second"], repository_name="Nope/nope")]
         for r in cases:
             self.assertEqual(r["disposition"], "FAIL_CLOSED", r)

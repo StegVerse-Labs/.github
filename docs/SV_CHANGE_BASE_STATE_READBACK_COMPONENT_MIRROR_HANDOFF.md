@@ -73,8 +73,8 @@ Known answer (live, `RTC014_LIVE_LABS_REPO`): Labs ledger head `a5bb54d81893b392
 | `ALLOW` | the registry generation was read at the bound commit, the ledger chain verified, and the head was stable |
 | `FAIL_CLOSED REGISTRY_GENERATION_UNREADABLE` | the registry file is absent, unparseable, or lacks an integer `generation` at the bound commit |
 | `FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED` | the head receipt is absent, unsealed, not an organization-transition receipt, or its `hb_reference` epoch is missing, not an int, below 32, or derived from a clock (failed_predicate `ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH`) |
-| `DENY HB_EPOCH_MISMATCH` | `--hb-epoch` was given and contradicts the verified observed epoch (detail `flag_failure_code: HB_EPOCH_FLAG_MISMATCH`) |
-| `FAIL_CLOSED BASE_STATE_NOT_OBSERVED` | the bound commit is malformed, absent or not on main; the repository is unreadable; the ledger ref is absent; the existing readback refused (its `failed_predicate` is carried); the head moved during the read; or a supplied hb_epoch is malformed |
+| `DENY HB_EPOCH_MISMATCH` | `--hb-epoch` was given and is malformed (not ASCII digits >= 32) or differs from the verified observed epoch. `hb_epoch` and `hb_epoch_source` stay sealed, because the ledger epoch was observed. Detail: `expected_hb_epoch` (the supplied value), `supplied_hb_epoch_well_formed`, `flag_failure_code: HB_EPOCH_FLAG_MISMATCH`, and `supplied_epoch_failure_code: HB_EPOCH_INVALID` when malformed |
+| `FAIL_CLOSED BASE_STATE_NOT_OBSERVED` | the bound commit is malformed, absent or not on main; the repository is unreadable; the ledger ref is absent; the existing readback refused (its `failed_predicate` is carried); or the head moved during the read. A supplied hb_epoch never causes this code: it is judged only against the observed epoch |
 
 Every non-ALLOW carries `failure_code`, `failed_predicate`, `required_evidence_or_repair`, `retry_entrypoint`, `owning_existing_goal` (`StegVerse-org/.github#164`) and `next_attempt`. `authority_effect` is `NONE_READBACK_ONLY`.
 
@@ -132,3 +132,15 @@ These are read-only box runs; the refs were unchanged.
 - Diagnostic only: `ledger_head_epoch` on the org ledger head 2acec0e1 reads epoch 446655631 from receipt `sha256:51a48225…5a64`.
 - The known-answer test (`RTC014_LIVE_LABS_REPO`) runs against the live head a5bb54d8. It reads receipt 35810b65, verifies its seal, and gets `"469411750"`.
 - `--hb-epoch 469411751` against the same head gives DENY `HB_EPOCH_MISMATCH` (detail `HB_EPOCH_FLAG_MISMATCH`), seal `sha256:7791f0567770553eed10a9d203ed3dfffa471f2badc84aecc2cf2049cf0c7e57`. `--hb-epoch 469411750` gives the same ALLOW receipt as no flag (seal `sha256:318c47a6…`).
+
+## 15:41Z ruling: a malformed --hb-epoch is DENY HB_EPOCH_MISMATCH
+
+A malformed or differing supplied epoch is DENY `HB_EPOCH_MISMATCH` with the six fields. This matches P1 `verify_admission_hb_epoch`, Lane B #46, P4 #192 and Lane D #3270.
+Before this change, a malformed value was FAIL_CLOSED `BASE_STATE_NOT_OBSERVED` (`HB_EPOCH_SUPPLIED_WELL_FORMED`), which is now removed.
+
+**Sealing decision.** The supplied value is judged only after the ledger-head epoch is observed.
+- When the epoch was observed, `hb_epoch` and `hb_epoch_source` are sealed exactly as on ALLOW, and the supplied value is carried as `expected_hb_epoch`.
+  - It is copied verbatim if it is a JSON scalar, and as its `repr` otherwise.
+  - Two further fields go with it: `supplied_hb_epoch_well_formed` and, when malformed, `supplied_epoch_failure_code: HB_EPOCH_INVALID`, the kernel's name.
+- An earlier refusal keeps its own code, for example a bound commit that is not on main, or a registry failure.
+- An unobservable ledger-head epoch is FAIL_CLOSED `HB_EPOCH_SOURCE_UNOBSERVED` whatever was supplied, with `hb_epoch` and `hb_epoch_source` sealed null.

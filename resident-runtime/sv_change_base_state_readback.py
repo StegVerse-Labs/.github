@@ -27,8 +27,12 @@ bool) >= 32 and ``$.hb_reference.derived_from_clock`` is exactly false (rule sou
 ``hb_reference``, blob ffec5d64; the same rule as P1 #3264 @fc19b532 ``base_ledger_head_epoch``). Otherwise FAIL_CLOSED
 HB_EPOCH_SOURCE_UNOBSERVED. The epoch is sealed with the rest of the receipt, together with
 ``hb_epoch_source {ledger_head, receipt, field}`` naming where it was read; on every FAIL_CLOSED both are sealed as null.
-``--hb-epoch`` is never a source, only a cross-check. A verified sealed epoch that contradicts it is an observed
-contradiction: DENY HB_EPOCH_MISMATCH (six fields; detail flag_failure_code HB_EPOCH_FLAG_MISMATCH, P4's name).
+``--hb-epoch`` is never a source, only a cross-check. A supplied value that is malformed (not ASCII digits >= 32) or
+differs from the verified sealed epoch is an observed contradiction: DENY HB_EPOCH_MISMATCH (six fields; hb_epoch and
+hb_epoch_source stay sealed because the ledger epoch was observed; detail expected_hb_epoch, supplied_hb_epoch_well_formed,
+flag_failure_code HB_EPOCH_FLAG_MISMATCH, and supplied_epoch_failure_code HB_EPOCH_INVALID when malformed). A refusal in an
+earlier step keeps its own code; an unobservable ledger-head epoch is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED whatever was
+supplied.
 FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED is kept only for an epoch that is absent, unsealed, clock-derived, not an int,
 a bool, or under 32.
 No epoch is ever minted here. Every non-ALLOW carries the six fields. Read-only: nothing is written to any ref, file
@@ -194,12 +198,12 @@ def evaluate(repository: Any, bound_main_commit: Any, *, repository_name: Any = 
                             "base_ref": {"registry_generation": None, "ledger_head": None},
                             "bound_main_commit": bound_main_commit if isinstance(bound_main_commit, str) else None,
                             "main_ref": main_ref, "sources": [], "hb_epoch": None, "hb_epoch_source": None}
+    # A supplied --hb-epoch is judged only against the observed ledger-head epoch (step 3): malformed or differing is
+    # DENY HB_EPOCH_MISMATCH there (P1 verify_admission_hb_epoch, Lane B #46, P4 #192, Lane D #3270), never a refusal here.
     try:
-        expected = _epoch(hb_epoch)
+        expected, malformed = _epoch(hb_epoch), False
     except ValueError:
-        return _refuse(base, "BASE_STATE_NOT_OBSERVED", "HB_EPOCH_SUPPLIED_WELL_FORMED",
-                       "hb_epoch, when supplied, is ASCII digits >= 32 from the caller (never a clock)",
-                       "re-run with a well-formed expected hb_epoch, or none (the epoch is read from the ledger head)")
+        expected, malformed = None, True
     if not isinstance(bound_main_commit, str) or not _OID.match(bound_main_commit):
         return _refuse(base, "BASE_STATE_NOT_OBSERVED", "BOUND_MAIN_COMMIT_WELL_FORMED",
                        "the caller supplies the bound main commit as a 40-hex sha", "re-run with the bound main commit sha")
@@ -278,12 +282,19 @@ def evaluate(repository: Any, bound_main_commit: Any, *, repository_name: Any = 
     base["hb_epoch"] = epoch
     base["hb_epoch_source"] = {"ledger_head": before, "receipt": epoch_sources[-1]["file"].split(":", 1)[1],
                                "field": HB_EPOCH_SOURCE_FIELD}
-    if expected is not None and expected != epoch:
-        # Observed contradiction (P1 alignment): DENY HB_EPOCH_MISMATCH; P4's HB_EPOCH_FLAG_MISMATCH is carried in the detail.
+    if malformed or (expected is not None and expected != epoch):
+        # Observed contradiction (P1 alignment): a malformed or differing supplied epoch is DENY HB_EPOCH_MISMATCH. The ledger
+        # epoch was observed, so hb_epoch and hb_epoch_source stay sealed; the supplied value is carried as expected_hb_epoch
+        # (verbatim if JSON-scalar, else its repr), with supplied_hb_epoch_well_formed. P4's HB_EPOCH_FLAG_MISMATCH and, for a
+        # malformed value, the kernel's HB_EPOCH_INVALID are trace-only detail.
+        supplied = hb_epoch if isinstance(hb_epoch, (str, int, float, bool)) else repr(hb_epoch)
+        extra = {"supplied_epoch_failure_code": "HB_EPOCH_INVALID"} if malformed else {}
         return _refuse(base, "HB_EPOCH_MISMATCH", HB_EPOCH_INVARIANT,
-                       "--hb-epoch equals the bound ledger head receipt's epoch " + epoch + ", or omit it (it is a cross-check only)",
+                       "--hb-epoch, when supplied, is ASCII digits equal to the bound ledger head receipt's epoch " + epoch
+                       + ", or omit it (it is a cross-check only)",
                        "rerun with --hb-epoch omitted or equal to the observed epoch; nothing is written", disposition="DENY",
-                       expected_hb_epoch=expected, flag_failure_code="HB_EPOCH_FLAG_MISMATCH")
+                       expected_hb_epoch=expected if not malformed else supplied, supplied_hb_epoch_well_formed=not malformed,
+                       flag_failure_code="HB_EPOCH_FLAG_MISMATCH", **extra)
     return _receipt(base, "ALLOW", sources=sources,
                     base_ref={"registry_generation": generation, "ledger_head": before},
                     ledger_head_receipt_sha256=ledger["head_receipt_sha256"], ledger_chain_length=ledger["chain_length"],
@@ -297,7 +308,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--bound-main-commit", required=True)
     parser.add_argument("--repository-name", default=None, help="e.g. StegVerse-org/.github; selects the registry path (REGISTRY_PATHS)")
     parser.add_argument("--main-ref", default="refs/heads/main")
-    parser.add_argument("--hb-epoch", default=None, help="cross-check only; the epoch is read from the ledger head receipt (differs -> DENY HB_EPOCH_MISMATCH)")
+    parser.add_argument("--hb-epoch", default=None, help="cross-check only; the epoch is read from the ledger head receipt (malformed or differs -> DENY HB_EPOCH_MISMATCH)")
     args = parser.parse_args(argv)
     result = evaluate(args.repository, args.bound_main_commit, repository_name=args.repository_name,
                       hb_epoch=args.hb_epoch, main_ref=args.main_ref)
