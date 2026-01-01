@@ -173,7 +173,7 @@ class BaseStateReadbackTests(unittest.TestCase):
         self.assertEqual((r["disposition"], r["hb_epoch"]), ("ALLOW", "44"))
         self.assertNotIn("open_questions", r)
         r = ev(self.bare, self.c["second"], hb_epoch="1024")
-        self.assert_six(r, "HB_EPOCH_NOT_BASE_LEDGER_EPOCH")
+        self.assert_six(r, "HB_EPOCH_FLAG_MISMATCH")
         self.assertEqual((r["failed_predicate"], r["hb_epoch"], r["expected_hb_epoch"]),
                          ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", "44", "1024"))
         for bad in ("31", "abc", "", True, 12.5):
@@ -210,12 +210,20 @@ class BaseStateReadbackTests(unittest.TestCase):
         empty = _commit(self.bare, self.work, {"HEAD.json": b"{}"})
         self.assertIsNone(component.ledger_head_epoch(self.bare, empty)[0])
 
-    def test_supplied_epoch_rule_is_the_pinned_kernel_function(self):
-        rule = component.supplied_epoch_rule()
-        self.assertEqual(rule.__module__, "rtc014_org_kernel")
-        self.assertIsNone(rule("32", {"derived_from_clock": False}))
-        self.assertEqual(rule("31")[0], "HB_EPOCH_INVALID")
-        self.assertEqual(component.SUPPLIED_EPOCH_RULE_SHA256[:8], "726248a5")
+    def test_epoch_rule_source_is_kernel_hb_reference(self):
+        self.assertEqual(component.EPOCH_RULE_SOURCE["lines"], "68-74")
+        kernel = (ROOT / "org-kernel" / "kernel.py").read_bytes()
+        blob = hashlib.sha1(b"blob %d\0" % len(kernel) + kernel).hexdigest()
+        self.assertEqual(blob, component.EPOCH_RULE_SOURCE["git_blob_sha"])
+
+    def test_known_answer_live_labs_head(self):
+        """KAT: the real Labs ledger head a5bb54d8 (receipt 35810b65) reads "469411750", when a clone holding it is supplied."""
+        repo = os.environ.get("RTC014_LIVE_LABS_REPO")
+        if not repo:
+            self.skipTest("set RTC014_LIVE_LABS_REPO to a clone holding refs/stegverse/organization-ledger a5bb54d8")
+        epoch, why, sources = component.ledger_head_epoch(Path(repo), "a5bb54d81893b392a3ce28182986fc39857807e1")
+        self.assertEqual(epoch, "469411750", why)
+        self.assertIn("35810b6598e99cef32d9a0f1f97d07394d9f21c540ed7d3a395d9d78b753db3d", sources[1]["file"])
 
     def test_registry_generation_unreadable(self):
         for key in ("broken", "no_gen", "absent"):
@@ -302,8 +310,7 @@ class BaseStateReadbackTests(unittest.TestCase):
         self.assertIn("REGISTRY_PATH_NOT_DECLARED", entry["failure_classes"])
         self.assertIn(component.RESULT_SCHEMA, entry["version_or_schema_binding"])
         self.assertEqual(entry["implementation"]["reuses"], ["resident-runtime/organization_ledger_readback.py::readback",
-                                                             "resident-runtime/ledger_store.py::HEAD_KEY,receipt_key",
-                                                             "org-kernel/kernel.py::supplied_epoch_failure"])
+                                                             "resident-runtime/ledger_store.py::HEAD_KEY,receipt_key"])
         self.assertIn("HB_EPOCH_SOURCE_UNOBSERVED", entry["failure_classes"])
         self.assertFalse(any(entry["invariants"][k] for k in ("writes_ledger_or_ref", "writes_registry", "bumps_registry_generation",
                                                                "reads_clock", "uses_network", "uses_credential", "derives_hb_epoch")))

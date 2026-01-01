@@ -72,7 +72,7 @@
         "repository": "local git repository (clone) holding the bound main commit and refs/stegverse/organization-ledger, fetched by the caller's existing transport",
         "bound_main_commit": "40-hex main commit the caller binds; the repository's own registry file (REGISTRY_PATHS) is read at exactly this commit",
         "main_ref": "ref whose history must contain bound_main_commit (default refs/heads/main)",
-        "hb_epoch": "optional expectation only (ASCII digits >= 32, checked by kernel.supplied_epoch_failure); the epoch itself is read from the bound ledger head receipt; a differing expectation -> FAIL_CLOSED HB_EPOCH_NOT_BASE_LEDGER_EPOCH",
+        "hb_epoch": "optional --hb-epoch cross-check only (ASCII digits >= 32); the epoch is read from the bound ledger head receipt; differs -> FAIL_CLOSED HB_EPOCH_FLAG_MISMATCH (as P4)",
         "repository_name": "the repository the clone is of (e.g. StegVerse-org/.github); selects its registry path from the pinned REGISTRY_PATHS map; unmapped -> REGISTRY_PATH_NOT_DECLARED (no default path)"
       },
       "outputs": {
@@ -80,7 +80,7 @@
         "sources": "[{file, blob_sha}] for the repository's registry file at bound_main_commit, refs/stegverse/organization-ledger:HEAD.json and the head receipt receipts/<hex>.json",
         "disposition": "ALLOW, or FAIL_CLOSED carrying failure_code, failed_predicate, required_evidence_or_repair, retry_entrypoint, owning_existing_goal (StegVerse-org/.github#164) and next_attempt",
         "result_sha256": "sha256 seal over the canonical receipt",
-        "hb_epoch": "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH: $.hb_reference.epoch of the stegverse.organization-transition-receipt/v1 at the bound ledger head (real Labs#3255 layout), validated by org-kernel/kernel.py::supplied_epoch_failure (sha256 726248a5..b7ef), sealed with the receipt; never minted"
+        "hb_epoch": "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH: str($.hb_reference.epoch) of the sealed stegverse.organization-transition-receipt/v1 at the bound ledger head (HEAD.json -> receipts/<hex>.json), only if the epoch is an int (not bool) >= 32 and derived_from_clock is exactly false (org-kernel/kernel.py:68-74, blob ffec5d64; = P1 #3264 fc19b532 base_ledger_head_epoch); else FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; sealed with the receipt; never minted"
       },
       "preconditions": [
         "bound_main_commit_well_formed_and_present",
@@ -110,7 +110,7 @@
         "REGISTRY_GENERATION_NOT_DECLARED",
         "REGISTRY_GENERATION_UNREADABLE",
         "HB_EPOCH_SOURCE_UNOBSERVED",
-        "HB_EPOCH_NOT_BASE_LEDGER_EPOCH"
+        "HB_EPOCH_FLAG_MISMATCH"
       ],
       "retry_or_reentry_semantics": "Deterministic for an identical repository state, bound commit and expected hb_epoch. No schedule, loop, clock or retry: the admission caller invokes it when it needs a base binding and re-invokes after the refusal's next_attempt is satisfied.",
       "version_or_schema_binding": [
@@ -121,8 +121,7 @@
         "component": "resident-runtime/sv_change_base_state_readback.py::evaluate",
         "reuses": [
           "resident-runtime/organization_ledger_readback.py::readback",
-          "resident-runtime/ledger_store.py::HEAD_KEY,receipt_key",
-          "org-kernel/kernel.py::supplied_epoch_failure"
+          "resident-runtime/ledger_store.py::HEAD_KEY,receipt_key"
         ],
         "consumers": [
           "StegVerse-Labs/TVC sv_change_admission (base_ref input, PR 519)",

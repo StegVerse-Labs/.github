@@ -19,16 +19,16 @@ Given a local repository and the bound main commit the caller supplies, this:
    sources [{file, blob_sha}], disposition, result_sha256, hb_epoch}``.
 
 ``hb_epoch`` is OBSERVED STATE (JD-P4-3 part-decided by ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH; precedent
-Labs#3236): the epoch recorded on the org-ledger head receipt the base is bound to, read in the real Labs#3255 layout
-(``HEAD.json`` at the bound ledger head -> ``ledger_store.receipt_key(receipt_sha256)`` -> the sealed
-``stegverse.organization-transition-receipt/v1`` -> ``$.hb_reference.epoch``, aggregate_repo_transition.py:1073-1092,
-kernel.hb_reference) and validated by the shared supplied-epoch rule ``org-kernel/kernel.py::supplied_epoch_failure``
-(function sha256 726248a5..b7ef, loaded, not reimplemented; ASCII digits, >= 32, ``derived_from_clock`` false). It is
-sealed with the rest of the receipt. A head receipt without a valid epoch is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED. A
-caller-supplied ``hb_epoch`` is only an expectation: one that differs from the observed epoch is FAIL_CLOSED
-HB_EPOCH_NOT_BASE_LEDGER_EPOCH (alias HB_EPOCH_MISMATCH). No epoch is ever minted here (minting for new ledger appends
-is undecided). Every non-ALLOW carries the six fields. Read-only: nothing is written to any ref, file or ledger; no
-clock; no network (the repository is local, as for the existing readback). Stdlib and ``git`` only.
+Labs#3236): the epoch recorded on the org-ledger head receipt the base is bound to, read in the real Labs#3255/#3270
+layout: ``<ledger_head>:HEAD.json`` (ledger_store.HEAD_KEY) -> ``receipts/<hex>.json`` (ledger_store.receipt_key) ->
+schema ``stegverse.organization-transition-receipt/v1`` with a verified seal (receipt_sha256 = sha256 of the canonical
+body without it, aggregate_repo_transition.canon/sha) -> ``str($.hb_reference.epoch)`` only if the epoch is an int (not a
+bool) >= 32 and ``$.hb_reference.derived_from_clock`` is exactly false (rule source: org-kernel/kernel.py:68-74
+``hb_reference``, blob ffec5d64; the same rule as P1 #3264 @fc19b532 ``base_ledger_head_epoch``). Otherwise FAIL_CLOSED
+HB_EPOCH_SOURCE_UNOBSERVED. The epoch is sealed with the rest of the receipt; the receipt format is unchanged.
+``--hb-epoch`` is never a source, only a cross-check: one that differs is FAIL_CLOSED HB_EPOCH_FLAG_MISMATCH (as P4).
+No epoch is ever minted here. Every non-ALLOW carries the six fields. Read-only: nothing is written to any ref, file
+or ledger; no clock; no network (the repository is local, as for the existing readback). Stdlib and ``git`` only.
 """
 from __future__ import annotations
 
@@ -60,9 +60,9 @@ RETRY = "resident-runtime/sv_change_base_state_readback.py::evaluate"
 HB_EPOCH_OPEN_QUESTION = "JD-P4-3"
 HB_EPOCH_INVARIANT = "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"
 ORG_RECEIPT_SCHEMA = "stegverse.organization-transition-receipt/v1"  # aggregate_repo_transition.py:1074
-# sha256 of the source of org-kernel/kernel.py::supplied_epoch_failure (ast source segment), the shared rule vendored
-# byte-identically elsewhere (SDK#537 63b2515d pins the same digest). Loaded from this checkout only if it matches.
-SUPPLIED_EPOCH_RULE_SHA256 = "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"
+HB_ANCHOR_EPOCH = 32  # org-kernel/kernel.py:22
+# Rule source: org-kernel/kernel.py:68-74 (hb_reference(epoch=...): int, not bool, >= 32, derived_from_clock False).
+EPOCH_RULE_SOURCE = {"file": "org-kernel/kernel.py", "lines": "68-74", "git_blob_sha": "ffec5d648d7fa4aead1f44f76df936a2da21bb96"}
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
               "owning_existing_goal", "next_attempt")
 HERE = Path(__file__).resolve().parent
@@ -100,18 +100,6 @@ def _load_module(name: str, path: Path):
     return module
 
 
-def supplied_epoch_rule():
-    """kernel.supplied_epoch_failure from this checkout, refused unless its source hashes to SUPPLIED_EPOCH_RULE_SHA256."""
-    import ast
-    path = HERE.parent / "org-kernel" / "kernel.py"
-    src = path.read_text(encoding="utf-8")
-    node = next((n for n in ast.parse(src).body if isinstance(n, ast.FunctionDef) and n.name == "supplied_epoch_failure"), None)
-    seg = ast.get_source_segment(src, node) if node is not None else None
-    if seg is None or hashlib.sha256(seg.encode("utf-8")).hexdigest() != SUPPLIED_EPOCH_RULE_SHA256:
-        raise RuntimeError("supplied_epoch_failure does not match the pinned rule " + SUPPLIED_EPOCH_RULE_SHA256[:8])
-    return _load_module("rtc014_org_kernel", path).supplied_epoch_failure
-
-
 def _git(repo: Path, *args: str) -> subprocess.CompletedProcess:
     env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
     env.update({"GIT_TERMINAL_PROMPT": "0", "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull})
@@ -123,12 +111,14 @@ def _out(proc: subprocess.CompletedProcess) -> str | None:
 
 
 def _epoch(value: Any) -> str | None:
-    """A caller's expected epoch, checked by the shared rule (never a source of the epoch)."""
+    """A caller's --hb-epoch: a cross-check only, never a source of the epoch."""
     if value is None:
         return None
-    if supplied_epoch_rule()(value) is not None:
-        raise ValueError("hb_epoch")
-    return str(int(str(value)))
+    if isinstance(value, int) and not isinstance(value, bool):
+        value = str(value)
+    if isinstance(value, str) and value.isascii() and value.isdigit() and int(value) >= HB_ANCHOR_EPOCH:
+        return str(int(value))
+    raise ValueError("hb_epoch")
 
 
 def _json_at(repo: Path, commit: str, path: str) -> tuple[Any, str | None]:
@@ -159,14 +149,11 @@ def ledger_head_epoch(repo: Path, ledger_head: str) -> tuple[str | None, str, li
     if rec.get("schema") != ORG_RECEIPT_SCHEMA:
         return None, "the head receipt is not " + ORG_RECEIPT_SCHEMA, sources
     ref = rec.get("hb_reference")
-    if not isinstance(ref, dict) or "epoch" not in ref or "derived_from_clock" not in ref:
-        return None, "the head receipt carries no hb_reference {epoch, derived_from_clock}", sources
-    ep = ref["epoch"]
-    if type(ep) is not int:  # the writer records an int (kernel.hb_reference); no coercion from any other type
-        return None, "hb_reference.epoch is not an int", sources
-    bad = supplied_epoch_rule()(ep, ref)
-    if bad is not None:
-        return None, bad[0] + ": " + bad[1], sources
+    ep = ref.get("epoch") if isinstance(ref, dict) else None
+    if type(ep) is not int or ep < HB_ANCHOR_EPOCH:  # int, not bool, no coercion (kernel.py:68-74)
+        return None, "$.hb_reference.epoch is not an int >= 32", sources
+    if ref.get("derived_from_clock") is not False:
+        return None, "$.hb_reference.derived_from_clock is not exactly false", sources
     return str(ep), "", sources
 
 
@@ -273,11 +260,12 @@ def evaluate(repository: Any, bound_main_commit: Any, *, repository_name: Any = 
                        "after the org writer appends a head receipt carrying a supplied epoch; no epoch is minted here")
     base["hb_epoch"] = epoch
     base["hb_epoch_source"] = {"ledger_head": before, "receipt_sha256": ledger["head_receipt_sha256"], "field": "$.hb_reference.epoch",
-                               "validated_by": "org-kernel/kernel.py::supplied_epoch_failure sha256:" + SUPPLIED_EPOCH_RULE_SHA256}
+                               "rule": "int (not bool) >= 32 and derived_from_clock exactly false (org-kernel/kernel.py:68-74 blob "
+                                       + EPOCH_RULE_SOURCE["git_blob_sha"][:8] + ")"}
     if expected is not None and expected != epoch:
-        return _refuse(base, "HB_EPOCH_NOT_BASE_LEDGER_EPOCH", HB_EPOCH_INVARIANT,
-                       "the expected hb_epoch equals the bound ledger head's epoch " + epoch + " (alias HB_EPOCH_MISMATCH)",
-                       "re-derive at the observed epoch; nothing is written", expected_hb_epoch=expected)
+        return _refuse(base, "HB_EPOCH_FLAG_MISMATCH", HB_EPOCH_INVARIANT,
+                       "--hb-epoch equals the bound ledger head receipt's epoch " + epoch + ", or omit it (it is a cross-check only)",
+                       "rerun with --hb-epoch omitted or equal to the observed epoch; nothing is written", expected_hb_epoch=expected)
     return _receipt(base, "ALLOW", sources=sources,
                     base_ref={"registry_generation": generation, "ledger_head": before},
                     ledger_head_receipt_sha256=ledger["head_receipt_sha256"], ledger_chain_length=ledger["chain_length"],
@@ -291,7 +279,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--bound-main-commit", required=True)
     parser.add_argument("--repository-name", default=None, help="e.g. StegVerse-org/.github; selects the registry path (REGISTRY_PATHS)")
     parser.add_argument("--main-ref", default="refs/heads/main")
-    parser.add_argument("--hb-epoch", default=None, help="optional expectation; the epoch itself is read from the ledger head receipt")
+    parser.add_argument("--hb-epoch", default=None, help="cross-check only; the epoch is read from the ledger head receipt (differs -> HB_EPOCH_FLAG_MISMATCH)")
     args = parser.parse_args(argv)
     result = evaluate(args.repository, args.bound_main_commit, repository_name=args.repository_name,
                       hb_epoch=args.hb_epoch, main_ref=args.main_ref)
