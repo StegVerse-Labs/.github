@@ -16,7 +16,7 @@ Given a local repository and the bound main commit the caller supplies, this:
    existing ``organization_ledger_readback.readback`` (no second verifier) and reports the ref's commit as
    ``ledger_head``; the ref must not move during the read;
 3. returns one sealed receipt ``{schema, base_ref {registry_generation, ledger_head}, bound_main_commit,
-   sources [{file, blob_sha}], disposition, result_sha256, hb_epoch}``.
+   sources [{file, blob_sha}], disposition, result_sha256, hb_epoch, hb_epoch_source}``.
 
 ``hb_epoch`` is OBSERVED STATE (JD-P4-3 part-decided by ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH; precedent
 Labs#3236): the epoch recorded on the org-ledger head receipt the base is bound to, read in the real Labs#3255/#3270
@@ -25,7 +25,8 @@ schema ``stegverse.organization-transition-receipt/v1`` with a verified seal (re
 body without it, aggregate_repo_transition.canon/sha) -> ``str($.hb_reference.epoch)`` only if the epoch is an int (not a
 bool) >= 32 and ``$.hb_reference.derived_from_clock`` is exactly false (rule source: org-kernel/kernel.py:68-74
 ``hb_reference``, blob ffec5d64; the same rule as P1 #3264 @fc19b532 ``base_ledger_head_epoch``). Otherwise FAIL_CLOSED
-HB_EPOCH_SOURCE_UNOBSERVED. The epoch is sealed with the rest of the receipt; the receipt format is unchanged.
+HB_EPOCH_SOURCE_UNOBSERVED. The epoch is sealed with the rest of the receipt, together with
+``hb_epoch_source {ledger_head, receipt, field}`` naming where it was read; on every FAIL_CLOSED both are sealed as null.
 ``--hb-epoch`` is never a source, only a cross-check. A verified sealed epoch that contradicts it is an observed
 contradiction: DENY HB_EPOCH_MISMATCH (six fields; detail flag_failure_code HB_EPOCH_FLAG_MISMATCH, P4's name).
 FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED is kept only for an epoch that is absent, unsealed, clock-derived, not an int,
@@ -140,6 +141,13 @@ def _json_at(repo: Path, commit: str, path: str) -> tuple[Any, str | None]:
         return None, blob
 
 
+HB_EPOCH_SOURCE_FIELD = "$.hb_reference.epoch"
+# hb_epoch_source (Lane B #46 @64b90721 consumes these exact names): {ledger_head: <commit40>, receipt: "receipts/<hex>.json"
+# (ledger_store.receipt_key of the head receipt, relative to the ledger ref), field: "$.hb_reference.epoch"}. Set with the
+# epoch on ALLOW and on DENY HB_EPOCH_MISMATCH (the epoch was observed); on every FAIL_CLOSED, hb_epoch is null and
+# hb_epoch_source is present and null (always present, never omitted).
+
+
 def ledger_head_epoch(repo: Path, ledger_head: str) -> tuple[str | None, str, list[dict[str, Any]]]:
     """(epoch digits | None, why, sources) for the org receipt at ``ledger_head`` in the real #3255 layout."""
     store = _load_module("rtc014_ledger_store", HERE / "ledger_store.py")
@@ -185,7 +193,7 @@ def evaluate(repository: Any, bound_main_commit: Any, *, repository_name: Any = 
                             "repository": repository_name if isinstance(repository_name, str) else None,
                             "base_ref": {"registry_generation": None, "ledger_head": None},
                             "bound_main_commit": bound_main_commit if isinstance(bound_main_commit, str) else None,
-                            "main_ref": main_ref, "sources": [], "hb_epoch": None}
+                            "main_ref": main_ref, "sources": [], "hb_epoch": None, "hb_epoch_source": None}
     try:
         expected = _epoch(hb_epoch)
     except ValueError:
@@ -268,9 +276,8 @@ def evaluate(repository: Any, bound_main_commit: Any, *, repository_name: Any = 
                        "the org-ledger head receipt at " + before + " carries a valid $.hb_reference.epoch (" + why + ")",
                        "after the org writer appends a head receipt carrying a supplied epoch; no epoch is minted here")
     base["hb_epoch"] = epoch
-    base["hb_epoch_source"] = {"ledger_head": before, "receipt_sha256": ledger["head_receipt_sha256"], "field": "$.hb_reference.epoch",
-                               "rule": "int (not bool) >= 32 and derived_from_clock exactly false (org-kernel/kernel.py:68-74 blob "
-                                       + EPOCH_RULE_SOURCE["git_blob_sha"][:8] + ")"}
+    base["hb_epoch_source"] = {"ledger_head": before, "receipt": epoch_sources[-1]["file"].split(":", 1)[1],
+                               "field": HB_EPOCH_SOURCE_FIELD}
     if expected is not None and expected != epoch:
         # Observed contradiction (P1 alignment): DENY HB_EPOCH_MISMATCH; P4's HB_EPOCH_FLAG_MISMATCH is carried in the detail.
         return _refuse(base, "HB_EPOCH_MISMATCH", HB_EPOCH_INVARIANT,

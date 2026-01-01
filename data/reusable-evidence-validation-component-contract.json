@@ -80,7 +80,8 @@
         "sources": "[{file, blob_sha}] for the repository's registry file at bound_main_commit, refs/stegverse/organization-ledger:HEAD.json and the head receipt receipts/<hex>.json",
         "disposition": "ALLOW, or FAIL_CLOSED carrying failure_code, failed_predicate, required_evidence_or_repair, retry_entrypoint, owning_existing_goal (StegVerse-org/.github#164) and next_attempt",
         "result_sha256": "sha256 seal over the canonical receipt",
-        "hb_epoch": "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH: str($.hb_reference.epoch) of the sealed stegverse.organization-transition-receipt/v1 at the bound ledger head (HEAD.json -> receipts/<hex>.json), only if the epoch is an int (not bool) >= 32 and derived_from_clock is exactly false (org-kernel/kernel.py:68-74, blob ffec5d64; = P1 #3264 fc19b532 base_ledger_head_epoch); else FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; sealed with the receipt; never minted"
+        "hb_epoch": "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH: str($.hb_reference.epoch) of the sealed stegverse.organization-transition-receipt/v1 at the bound ledger head (HEAD.json -> receipts/<hex>.json), only if the epoch is an int (not bool) >= 32 and derived_from_clock is exactly false (org-kernel/kernel.py:68-74, blob ffec5d64; = P1 #3264 fc19b532 base_ledger_head_epoch); else FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; sealed with the receipt; never minted",
+        "hb_epoch_source": "{ledger_head: <commit40>, receipt: receipts/<hex>.json (the head receipt's ledger_store key), field: $.hb_reference.epoch}, sealed with hb_epoch on ALLOW and on DENY HB_EPOCH_MISMATCH; on every FAIL_CLOSED hb_epoch is null and hb_epoch_source is present and null (never omitted). Field names are fixed (Lane B #46 consumes them)"
       },
       "preconditions": [
         "bound_main_commit_well_formed_and_present",
@@ -100,7 +101,8 @@
         "sources[].blob_sha",
         "ledger_head_receipt_sha256",
         "result_sha256",
-        "hb_epoch"
+        "hb_epoch",
+        "hb_epoch_source"
       ],
       "authority_owner": "The Task Registry (generation, via the main branch) and the organization ledger writer (ref) own the state; this component only reads it.",
       "authority_effect": "NONE_READBACK_ONLY",

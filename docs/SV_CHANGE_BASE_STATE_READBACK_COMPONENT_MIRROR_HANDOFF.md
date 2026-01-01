@@ -35,10 +35,21 @@ Sealed receipt `stegverse.sv-change-base-state-readback/v1`:
              {"file": "refs/stegverse/organization-ledger:receipts/<hex>.json", "blob_sha": "<git blob>"}],
  "disposition": "ALLOW",
  "hb_epoch": "469411750",
- "hb_epoch_source": {"ledger_head": "<40-hex>", "receipt_sha256": "sha256:<hex>", "field": "$.hb_reference.epoch",
-                     "rule": "int (not bool) >= 32 and derived_from_clock exactly false (org-kernel/kernel.py:68-74 blob ffec5d64)"},
+ "hb_epoch_source": {"ledger_head": "<40-hex>", "receipt": "receipts/<hex>.json", "field": "$.hb_reference.epoch"},
+ "ledger_head_receipt_sha256": "sha256:<hex>",
  "result_sha256": "sha256:<seal over the canonical receipt>"}
 ```
+
+`hb_epoch_source` has exactly three fields, and Lane B #46 (@64b90721) consumes these names: `ledger_head` (the ledger ref commit
+the epoch was read at), `receipt` (the head receipt's ledger_store key `receipts/<hex>.json`, relative to
+`refs/stegverse/organization-ledger`; the same path appears in `sources`), and `field` (`$.hb_reference.epoch`). It is sealed
+with `hb_epoch` on ALLOW and on DENY HB_EPOCH_MISMATCH, where the epoch was observed. **On every FAIL_CLOSED, `hb_epoch` is
+null and `hb_epoch_source` is present and null.** It is never omitted, so a consumer can tell an unobserved epoch from an older
+receipt format. The rule citation is not in this slot: it is in `EPOCH_RULE_SOURCE` / `EPOCH_RULE_FUNCTION`
+(kernel.py:68-74; supplied_epoch_failure 726248a5).
+
+Known answer (live, `RTC014_LIVE_LABS_REPO`): Labs ledger head `a5bb54d81893b392a3ce28182986fc39857807e1`, receipt
+`receipts/35810b6598e99cef32d9a0f1f97d07394d9f21c540ed7d3a395d9d78b753db3d.json`, hb_epoch `"469411750"`.
 
 `hb_epoch` is **observed state**. JD-P4-3 is part-decided by invariant ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH, with Labs#3236 as precedent.
 

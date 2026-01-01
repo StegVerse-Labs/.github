@@ -154,7 +154,8 @@ class BaseStateReadbackTests(unittest.TestCase):
         self.assertEqual(r["sources"], [{"file": "data/canonical-task-registry.json", "blob_sha": reg_blob},
                                         {"file": REF + ":HEAD.json", "blob_sha": head_blob},
                                         {"file": REF + ":" + key, "blob_sha": rec_blob}])
-        self.assertEqual(r["hb_epoch_source"]["field"], "$.hb_reference.epoch")
+        # exact names (Lane B #46 consumes them): {ledger_head, receipt, field}
+        self.assertEqual(r["hb_epoch_source"], {"ledger_head": self.ledger_head, "receipt": key, "field": "$.hb_reference.epoch"})
         self.assertTrue(r["ledger_chain_verifies"])
         self.assertEqual(r["authority_effect"], "NONE_READBACK_ONLY")
         self.assertTrue(component.seal_verifies(r))
@@ -176,6 +177,7 @@ class BaseStateReadbackTests(unittest.TestCase):
         self.assert_six(r, "HB_EPOCH_MISMATCH", "DENY")  # observed contradiction: DENY; P4's name traces in the detail
         self.assertEqual((r["failed_predicate"], r["hb_epoch"], r["expected_hb_epoch"], r["flag_failure_code"]),
                          ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", "44", "1024", "HB_EPOCH_FLAG_MISMATCH"))
+        self.assertEqual(r["hb_epoch_source"]["ledger_head"], self.ledger_head)  # DENY: the epoch was observed, so its source is sealed
         self.assertEqual(ev(self.bare, self.c["second"], hb_epoch="44")["disposition"], "ALLOW")
         for bad in ("31", "abc", "", True, 12.5):
             with self.subTest(bad=bad):
@@ -224,6 +226,17 @@ class BaseStateReadbackTests(unittest.TestCase):
         self.assertEqual(hashlib.sha256(ast.get_source_segment(src, fn).encode("utf-8")).hexdigest(),
                          component.EPOCH_RULE_FUNCTION["source_segment_sha256"])
 
+    def test_fail_closed_seals_null_epoch_and_null_source(self):
+        """Every FAIL_CLOSED seals hb_epoch null and hb_epoch_source present and null (never omitted)."""
+        cases = [ev(self.bare, self.c["second"], hb_epoch="31"), ev(self.bare, "0" * 40, hb_epoch="44"),
+                 ev(self.bare, self.c["second"], repository_name="Nope/nope")]
+        for r in cases:
+            self.assertEqual(r["disposition"], "FAIL_CLOSED", r)
+            self.assertIn("hb_epoch_source", r)
+            self.assertIsNone(r["hb_epoch_source"])
+            self.assertIsNone(r["hb_epoch"])
+            self.assertTrue(component.seal_verifies(r))
+
     def test_known_answer_live_labs_head(self):
         """KAT: the real Labs ledger head a5bb54d8 (receipt 35810b65) reads "469411750", when a clone holding it is supplied."""
         repo = os.environ.get("RTC014_LIVE_LABS_REPO")
@@ -232,6 +245,16 @@ class BaseStateReadbackTests(unittest.TestCase):
         epoch, why, sources = component.ledger_head_epoch(Path(repo), "a5bb54d81893b392a3ce28182986fc39857807e1")
         self.assertEqual(epoch, "469411750", why)
         self.assertIn("35810b6598e99cef32d9a0f1f97d07394d9f21c540ed7d3a395d9d78b753db3d", sources[1]["file"])
+        kat_source = {"ledger_head": "a5bb54d81893b392a3ce28182986fc39857807e1",
+                      "receipt": "receipts/35810b6598e99cef32d9a0f1f97d07394d9f21c540ed7d3a395d9d78b753db3d.json",
+                      "field": "$.hb_reference.epoch"}
+        self.assertEqual(sources[1]["file"].split(":", 1)[1], kat_source["receipt"])
+        def rev(ref):
+            return subprocess.run(["git", "-C", repo, "rev-parse", "--verify", "--quiet", ref], capture_output=True, text=True).stdout.strip()
+        main_ref = "refs/remotes/origin/main" if rev("refs/remotes/origin/main") else "refs/heads/main"
+        if rev(REF) == kat_source["ledger_head"]:
+            r = ev(Path(repo), rev(main_ref), repository_name=LABS, main_ref=main_ref)
+            self.assertEqual((r["disposition"], r["hb_epoch"], r["hb_epoch_source"]), ("ALLOW", "469411750", kat_source), r)
 
     def test_registry_generation_unreadable(self):
         for key in ("broken", "no_gen", "absent"):
