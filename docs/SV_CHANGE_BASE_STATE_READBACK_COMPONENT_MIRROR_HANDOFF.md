@@ -144,3 +144,19 @@ Before this change, a malformed value was FAIL_CLOSED `BASE_STATE_NOT_OBSERVED` 
   - Two further fields go with it: `supplied_hb_epoch_well_formed` and, when malformed, `supplied_epoch_failure_code: HB_EPOCH_INVALID`, the kernel's name.
 - An earlier refusal keeps its own code, for example a bound commit that is not on main, or a registry failure.
 - An unobservable ledger-head epoch is FAIL_CLOSED `HB_EPOCH_SOURCE_UNOBSERVED` whatever was supplied, with `hb_epoch` and `hb_epoch_source` sealed null.
+
+## 16:00Z refinement: supplied-epoch classes (contract invariant = P1's next verify_admission_hb_epoch)
+
+| `--hb-epoch` | result |
+|---|---|
+| omitted entirely | no cross-check runs; the ledger-derived ALLOW stands (**deliberate**, see below) |
+| given as null (CLI: the literal `null`) or `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` | FAIL_CLOSED `HB_EPOCH_SOURCE_UNOBSERVED`. `hb_epoch` and `hb_epoch_source` are sealed null, as on every FAIL_CLOSED, and the detail carries `supplied_hb_epoch` |
+| any other malformed value (bool, negative, non-numeric, < 32, ...) | DENY `HB_EPOCH_MISMATCH`, slots sealed, `supplied_hb_epoch_well_formed: false` |
+| well-formed and differing | DENY `HB_EPOCH_MISMATCH`, slots sealed, `supplied_hb_epoch_well_formed: true` |
+| equal | ALLOW |
+
+These classes apply only once the ledger-head epoch is observed. An earlier refusal keeps its own code, and an unobservable ledger-head epoch is FAIL_CLOSED `HB_EPOCH_SOURCE_UNOBSERVED` whatever was supplied.
+
+**Deliberate choice for the omitted flag.** `--hb-epoch` is this readback's optional cross-check, not the admission's supplied epoch. With no flag there is nothing to cross-check, so the readback returns the observed ledger epoch.
+An admission whose supplied epoch is absent, null or the sentinel fails closed in the admission (TVC#519 `admit()`, P1 `verify_admission_hb_epoch`), not here.
+The Python API marks the omitted case with the `OMITTED` default; an explicit `hb_epoch=None` is null.

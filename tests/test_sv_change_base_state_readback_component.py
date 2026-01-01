@@ -227,6 +227,39 @@ class BaseStateReadbackTests(unittest.TestCase):
         empty = _commit(self.bare, self.work, {"HEAD.json": b"{}"})
         self.assertIsNone(component.ledger_head_epoch(self.bare, empty)[0])
 
+    def test_supplied_epoch_classes(self):
+        """Contract invariant (= P1's next verify_admission_hb_epoch): null / sentinel -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED
+        (both slots null); other malformed or differing -> DENY HB_EPOCH_MISMATCH (slots sealed); equal -> ALLOW. Omitted
+        entirely -> no cross-check, ALLOW (deliberate: an optional cross-check, not the admission's supplied epoch)."""
+        absent = component.evaluate(self.bare, self.c["second"], repository_name=LABS)  # flag omitted entirely
+        self.assertEqual((absent["disposition"], absent["hb_epoch"]), ("ALLOW", "44"))
+        for label, supplied in (("null", None), ("sentinel", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")):
+            with self.subTest(label):
+                r = ev(self.bare, self.c["second"], hb_epoch=supplied)
+                self.assert_six(r, "HB_EPOCH_SOURCE_UNOBSERVED")
+                self.assertEqual((r["failed_predicate"], r["hb_epoch"], r["hb_epoch_source"], r["supplied_hb_epoch"]),
+                                 ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", None, None, supplied))
+        for label, supplied in (("bool", True), ("bool-false", False), ("negative", "-44"), ("negative-int", -44),
+                                ("non-numeric", "forty-four"), ("below-32", "31"), ("differing", "45"), ("differing-int", 45)):
+            with self.subTest(label):
+                r = ev(self.bare, self.c["second"], hb_epoch=supplied)
+                self.assert_six(r, "HB_EPOCH_MISMATCH", "DENY")
+                self.assertEqual((r["hb_epoch"], r["hb_epoch_source"]["ledger_head"], r["expected_hb_epoch"]), ("44", self.ledger_head, str(supplied) if label.startswith("differing") else supplied))
+                self.assertEqual(r["supplied_hb_epoch_well_formed"], label.startswith("differing"))
+        for label, supplied in (("equal", "44"), ("equal-int", 44)):
+            with self.subTest(label):
+                r = ev(self.bare, self.c["second"], hb_epoch=supplied)
+                self.assertEqual((r["disposition"], r["hb_epoch"]), ("ALLOW", "44"))
+        # CLI: omitted -> ALLOW; the literal null -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED
+        import contextlib, io
+        for argv_extra, want in (([], 0), (["--hb-epoch", "null"], 1), (["--hb-epoch", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"], 1)):
+            out = io.StringIO()
+            with contextlib.redirect_stdout(out):
+                rc = component.main(["--repository", str(self.bare), "--bound-main-commit", self.c["second"],
+                                     "--repository-name", LABS, *argv_extra])
+            doc = json.loads(out.getvalue())
+            self.assertEqual((rc != 0, doc["disposition"]), (bool(want), "ALLOW" if not want else "FAIL_CLOSED"), argv_extra)
+
     def test_unobservable_ledger_epoch_is_fail_closed_whatever_is_supplied(self):
         """FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED stays only for an unobservable ledger-head epoch; hb_epoch and
         hb_epoch_source are then sealed null, with or without a (malformed or well-formed) --hb-epoch."""

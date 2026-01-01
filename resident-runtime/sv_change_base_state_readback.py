@@ -33,8 +33,15 @@ hb_epoch_source stay sealed because the ledger epoch was observed; detail expect
 flag_failure_code HB_EPOCH_FLAG_MISMATCH, and supplied_epoch_failure_code HB_EPOCH_INVALID when malformed). A refusal in an
 earlier step keeps its own code; an unobservable ledger-head epoch is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED whatever was
 supplied.
-FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED is kept only for an epoch that is absent, unsealed, clock-derived, not an int,
-a bool, or under 32.
+
+Supplied-epoch classes (contract invariant, = P1's next verify_admission_hb_epoch): --hb-epoch given as null (CLI: the
+literal ``null``) or as UNKNOWN_NOT_AUTHENTICALLY_OBSERVED is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (both slots null);
+any other malformed value (bool, negative, non-numeric, < 32, ...) or a differing one is DENY HB_EPOCH_MISMATCH; an equal
+one is ALLOW. Deliberate choice: when --hb-epoch is OMITTED entirely there is no cross-check to run, so the ledger-derived
+ALLOW stands. This readback's flag is an optional cross-check, not the admission's supplied epoch; an admission whose
+supplied epoch is absent fails closed in the admission (TVC#519 admit(), P1), not here.
+FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED is kept only for a ledger-head epoch that is absent, unsealed, clock-derived, not
+an int, a bool, or under 32, and for a supplied --hb-epoch that is null or the sentinel.
 No epoch is ever minted here. Every non-ALLOW carries the six fields. Read-only: nothing is written to any ref, file
 or ledger; no clock; no network (the repository is local, as for the existing readback). Stdlib and ``git`` only.
 """
@@ -123,6 +130,15 @@ def _out(proc: subprocess.CompletedProcess) -> str | None:
     return proc.stdout.decode().strip() if proc.returncode == 0 else None
 
 
+OMITTED = object()  # --hb-epoch not given at all: no cross-check runs (deliberate; see the module docstring)
+UNOBSERVED_SENTINEL = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+
+
+def _supplied_unobserved(value: Any) -> bool:
+    """A cross-check epoch that was given but carries no value: null or the UNKNOWN sentinel (contract invariant)."""
+    return value is None or value == UNOBSERVED_SENTINEL
+
+
 def _epoch(value: Any) -> str | None:
     """A caller's --hb-epoch: a cross-check only, never a source of the epoch."""
     if value is None:
@@ -189,7 +205,7 @@ def _refuse(base: dict[str, Any], code: str, predicate: str, repair: str, next_a
                     owning_existing_goal=OWNING_EXISTING_GOAL, next_attempt=next_attempt)
 
 
-def evaluate(repository: Any, bound_main_commit: Any, *, repository_name: Any = None, hb_epoch: Any = None,
+def evaluate(repository: Any, bound_main_commit: Any, *, repository_name: Any = None, hb_epoch: Any = OMITTED,
              main_ref: str = "refs/heads/main") -> dict[str, Any]:
     """Read the base state at ``bound_main_commit`` in the local ``repository`` (whose name, e.g.
     ``StegVerse-org/.github``, selects its registry path from REGISTRY_PATHS). Never raises."""
@@ -200,8 +216,9 @@ def evaluate(repository: Any, bound_main_commit: Any, *, repository_name: Any = 
                             "main_ref": main_ref, "sources": [], "hb_epoch": None, "hb_epoch_source": None}
     # A supplied --hb-epoch is judged only against the observed ledger-head epoch (step 3): malformed or differing is
     # DENY HB_EPOCH_MISMATCH there (P1 verify_admission_hb_epoch, Lane B #46, P4 #192, Lane D #3270), never a refusal here.
+    unobserved_supplied = hb_epoch is not OMITTED and _supplied_unobserved(hb_epoch)
     try:
-        expected, malformed = _epoch(hb_epoch), False
+        expected, malformed = (None, False) if hb_epoch is OMITTED or unobserved_supplied else (_epoch(hb_epoch), False)
     except ValueError:
         expected, malformed = None, True
     if not isinstance(bound_main_commit, str) or not _OID.match(bound_main_commit):
@@ -279,6 +296,13 @@ def evaluate(repository: Any, bound_main_commit: Any, *, repository_name: Any = 
         return _refuse(base, "HB_EPOCH_SOURCE_UNOBSERVED", HB_EPOCH_INVARIANT,
                        "the org-ledger head receipt at " + before + " carries a valid $.hb_reference.epoch (" + why + ")",
                        "after the org writer appends a head receipt carrying a supplied epoch; no epoch is minted here")
+    if unobserved_supplied:
+        # --hb-epoch given as null or the sentinel: the supplied epoch is unobserved -> FAIL_CLOSED (both slots null, as on
+        # every FAIL_CLOSED); the ledger epoch was observed and is not sealed here.
+        return _refuse(base, "HB_EPOCH_SOURCE_UNOBSERVED", HB_EPOCH_INVARIANT,
+                       "--hb-epoch, when given, carries the epoch (ASCII digits); null or " + UNOBSERVED_SENTINEL + " is unobserved",
+                       "rerun with --hb-epoch omitted or equal to the bound ledger head receipt's epoch; nothing is written",
+                       supplied_hb_epoch=hb_epoch)
     base["hb_epoch"] = epoch
     base["hb_epoch_source"] = {"ledger_head": before, "receipt": epoch_sources[-1]["file"].split(":", 1)[1],
                                "field": HB_EPOCH_SOURCE_FIELD}
@@ -308,10 +332,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--bound-main-commit", required=True)
     parser.add_argument("--repository-name", default=None, help="e.g. StegVerse-org/.github; selects the registry path (REGISTRY_PATHS)")
     parser.add_argument("--main-ref", default="refs/heads/main")
-    parser.add_argument("--hb-epoch", default=None, help="cross-check only; the epoch is read from the ledger head receipt (malformed or differs -> DENY HB_EPOCH_MISMATCH)")
+    parser.add_argument("--hb-epoch", default=OMITTED, help="optional cross-check only; the epoch is read from the ledger head receipt (omitted: no cross-check; null or UNKNOWN_NOT_AUTHENTICALLY_OBSERVED -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; malformed or differs -> DENY HB_EPOCH_MISMATCH)")
     args = parser.parse_args(argv)
     result = evaluate(args.repository, args.bound_main_commit, repository_name=args.repository_name,
-                      hb_epoch=args.hb_epoch, main_ref=args.main_ref)
+                      hb_epoch=None if args.hb_epoch == "null" else args.hb_epoch, main_ref=args.main_ref)
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result["disposition"] == "ALLOW" else 1
 
