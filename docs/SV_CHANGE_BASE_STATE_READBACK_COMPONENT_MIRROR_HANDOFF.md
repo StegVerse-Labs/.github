@@ -149,7 +149,7 @@ Before this change, a malformed value was FAIL_CLOSED `BASE_STATE_NOT_OBSERVED` 
 
 | `--hb-epoch` | result |
 |---|---|
-| omitted entirely | no cross-check runs; the ledger-derived ALLOW stands (**deliberate**, see below) and carries the canonical not-cross-checked marker (New Bot ruling 16:30Z: P1's): top-level `cross_checked: false` (P1 #3264 @76407068 verify_admission_hb_epoch placement, sv_work_items.py blob 625b12f7) and `hb_epoch_cross_check: {"cross_checked": false, "detail": "HB_EPOCH_NOT_CROSS_CHECKED"}`; both absent when the cross-check ran |
+| omitted entirely | no cross-check runs; the ledger-derived ALLOW stands (**deliberate**, see below) and carries the canonical not-cross-checked marker (New Bot ruling 16:30Z, P1 invariants.json `NOT_CROSS_CHECKED_MARKER`): top-level `cross_checked: false` plus top-level `detail: "HB_EPOCH_NOT_CROSS_CHECKED"`, exactly P1 #3264 @7898cedb `verify_admission_hb_epoch` (sv_work_items.py blob 4c2aa6ef); both absent when the cross-check ran; nothing under `hb_epoch_cross_check` |
 | given explicitly as `""`, the string `"null"` or `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` (or `None` through the Python API) (16:03Z narrowing) | FAIL_CLOSED `HB_EPOCH_SOURCE_UNOBSERVED`. `hb_epoch` and `hb_epoch_source` are sealed null, as on every FAIL_CLOSED, and the detail carries `supplied_hb_epoch` |
 | any other malformed value (bool, negative, non-numeric, < 32, ...) | DENY `HB_EPOCH_MISMATCH`, slots sealed, `supplied_hb_epoch_well_formed: false` |
 | well-formed and differing | DENY `HB_EPOCH_MISMATCH`, slots sealed, `supplied_hb_epoch_well_formed: true` |

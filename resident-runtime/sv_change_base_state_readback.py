@@ -39,9 +39,10 @@ Supplied-epoch classes (contract invariant 16:03Z, = P1's next verify_admission_
 HB_EPOCH_SOURCE_UNOBSERVED (both slots null);
 any other malformed value (bool, negative, non-numeric, < 32, ...) or a differing one is DENY HB_EPOCH_MISMATCH; an equal
 one is ALLOW. Deliberate choice: when --hb-epoch is OMITTED entirely there is no cross-check to run, so the ledger-derived
-ALLOW stands, carrying the canonical not-cross-checked marker (New Bot ruling 16:30Z: P1's) -- top-level
-``cross_checked: false`` (P1 #3264 @76407068 verify_admission_hb_epoch placement, sv_work_items.py blob 625b12f7) and
-``hb_epoch_cross_check: {cross_checked: false, detail: HB_EPOCH_NOT_CROSS_CHECKED}``; both absent when the cross-check ran. This readback's flag is an optional cross-check, not the admission's supplied epoch; an admission whose
+ALLOW stands, carrying the canonical not-cross-checked marker (New Bot ruling 16:30Z, P1 invariants.json
+NOT_CROSS_CHECKED_MARKER): top-level ``cross_checked: false`` plus top-level ``detail: HB_EPOCH_NOT_CROSS_CHECKED``, exactly
+P1 #3264 @7898cedb verify_admission_hb_epoch(HB_EPOCH_NOT_CROSS_CHECKED, ...) (sv_work_items.py blob 4c2aa6ef); both absent
+when the cross-check ran. The marker is not carried under hb_epoch_cross_check. This readback's flag is an optional cross-check, not the admission's supplied epoch; an admission whose
 supplied epoch is absent fails closed in the admission (TVC#519 admit(), P1), not here.
 FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED is kept only for a ledger-head epoch that is absent, unsealed, clock-derived, not
 an int, a bool, or under 32, and for a supplied --hb-epoch that is "", "null" or the sentinel.
@@ -134,10 +135,10 @@ def _out(proc: subprocess.CompletedProcess) -> str | None:
 
 
 OMITTED = object()  # --hb-epoch not given at all: no cross-check runs (deliberate; see the module docstring)
-# Canonical not-cross-checked marker (New Bot ruling 16:30Z: P1's): ``cross_checked: false`` plus detail
-# HB_EPOCH_NOT_CROSS_CHECKED. P1 #3264 @76407068 sv_work_items.HB_EPOCH_NOT_CROSS_CHECKED (blob 625b12f7): an ALLOW whose
-# optional cross-check was left out carries top-level ``cross_checked: false`` (verify_admission_hb_epoch placement).
-HB_EPOCH_NOT_CROSS_CHECKED = "HB_EPOCH_NOT_CROSS_CHECKED"
+# Canonical not-cross-checked marker (New Bot ruling 16:30Z; P1 invariants.json NOT_CROSS_CHECKED_MARKER, canonical
+# {cross_checked: false, detail: HB_EPOCH_NOT_CROSS_CHECKED}): P1 #3264 @7898cedb sv_work_items.verify_admission_hb_epoch
+# (blob 4c2aa6ef) returns both at top level on an ALLOW whose optional cross-check was left out; so does this receipt.
+HB_EPOCH_NOT_CROSS_CHECKED = "HB_EPOCH_NOT_CROSS_CHECKED"  # = P1 NOT_CROSS_CHECKED_DETAIL
 NOT_CROSS_CHECKED_MARKER = {"cross_checked": False, "detail": HB_EPOCH_NOT_CROSS_CHECKED}
 UNOBSERVED_SENTINEL = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
 
@@ -328,7 +329,7 @@ def evaluate(repository: Any, bound_main_commit: Any, *, repository_name: Any = 
                        "rerun with --hb-epoch omitted or equal to the observed epoch; nothing is written", disposition="DENY",
                        expected_hb_epoch=expected if not malformed else supplied, supplied_hb_epoch_well_formed=not malformed,
                        flag_failure_code="HB_EPOCH_FLAG_MISMATCH", **extra)
-    not_checked = {"cross_checked": False, "hb_epoch_cross_check": dict(NOT_CROSS_CHECKED_MARKER)} if hb_epoch is OMITTED else {}
+    not_checked = dict(NOT_CROSS_CHECKED_MARKER) if hb_epoch is OMITTED else {}
     return _receipt(base, "ALLOW", **not_checked, sources=sources,
                     base_ref={"registry_generation": generation, "ledger_head": before},
                     ledger_head_receipt_sha256=ledger["head_receipt_sha256"], ledger_chain_length=ledger["chain_length"],

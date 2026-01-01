@@ -233,11 +233,11 @@ class BaseStateReadbackTests(unittest.TestCase):
         entirely -> no cross-check, ALLOW (deliberate: an optional cross-check, not the admission's supplied epoch)."""
         absent = component.evaluate(self.bare, self.c["second"], repository_name=LABS)  # flag omitted entirely
         self.assertEqual((absent["disposition"], absent["hb_epoch"]), ("ALLOW", "44"))
-        # Canonical marker (ruling 16:30Z, P1 #3264 @76407068 placement): top-level cross_checked false, and
-        # hb_epoch_cross_check carrying exactly {cross_checked: false, detail: HB_EPOCH_NOT_CROSS_CHECKED}
+        # Canonical marker (ruling 16:30Z, P1 invariants.json NOT_CROSS_CHECKED_MARKER; = P1 #3264 @7898cedb
+        # verify_admission_hb_epoch): top-level cross_checked false plus top-level detail HB_EPOCH_NOT_CROSS_CHECKED
         self.assertIs(absent["cross_checked"], False)
-        self.assertEqual(absent["hb_epoch_cross_check"], {"cross_checked": False, "detail": "HB_EPOCH_NOT_CROSS_CHECKED"})
-        self.assertIs(absent["hb_epoch_cross_check"]["cross_checked"], False)
+        self.assertEqual(absent["detail"], "HB_EPOCH_NOT_CROSS_CHECKED")
+        self.assertNotIn("hb_epoch_cross_check", absent)  # not moved under hb_epoch_cross_check
         self.assertTrue(component.seal_verifies(absent))
         for label, supplied in (("null-api", None), ("null", "null"), ("empty", ""), ("sentinel", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")):
             with self.subTest(label):
@@ -258,6 +258,7 @@ class BaseStateReadbackTests(unittest.TestCase):
                 self.assertEqual((r["disposition"], r["hb_epoch"]), ("ALLOW", "44"))
                 self.assertNotIn("cross_checked", r)  # cross-checked: no marker (P1 omits the field)
                 self.assertNotIn("hb_epoch_cross_check", r)
+                self.assertNotIn("detail", r)
         # CLI: omitted -> ALLOW; "null", "" or the sentinel -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED
         import contextlib, io
         for argv_extra, want in (([], 0), (["--hb-epoch", "null"], 1), (["--hb-epoch", ""], 1), (["--hb-epoch", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"], 1)):
