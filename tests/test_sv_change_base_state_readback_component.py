@@ -181,7 +181,7 @@ class BaseStateReadbackTests(unittest.TestCase):
         self.assertEqual(ev(self.bare, self.c["second"], hb_epoch="44")["disposition"], "ALLOW")
         # A malformed supplied epoch is an observed contradiction too (P1, Lane B #46, P4 #192, Lane D #3270): DENY
         # HB_EPOCH_MISMATCH, with the observed hb_epoch and hb_epoch_source still sealed.
-        for bad in ("31", "abc", "", "+44", " 44", "44.0", True, 12.5, [44]):
+        for bad in ("31", "abc", "+44", " 44", "44.0", "NULL", True, 12.5, [44]):
             with self.subTest(bad=bad):
                 r = ev(self.bare, self.c["second"], hb_epoch=bad)
                 self.assert_six(r, "HB_EPOCH_MISMATCH", "DENY")
@@ -233,7 +233,7 @@ class BaseStateReadbackTests(unittest.TestCase):
         entirely -> no cross-check, ALLOW (deliberate: an optional cross-check, not the admission's supplied epoch)."""
         absent = component.evaluate(self.bare, self.c["second"], repository_name=LABS)  # flag omitted entirely
         self.assertEqual((absent["disposition"], absent["hb_epoch"]), ("ALLOW", "44"))
-        for label, supplied in (("null", None), ("sentinel", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")):
+        for label, supplied in (("null-api", None), ("null", "null"), ("empty", ""), ("sentinel", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")):
             with self.subTest(label):
                 r = ev(self.bare, self.c["second"], hb_epoch=supplied)
                 self.assert_six(r, "HB_EPOCH_SOURCE_UNOBSERVED")
@@ -250,9 +250,9 @@ class BaseStateReadbackTests(unittest.TestCase):
             with self.subTest(label):
                 r = ev(self.bare, self.c["second"], hb_epoch=supplied)
                 self.assertEqual((r["disposition"], r["hb_epoch"]), ("ALLOW", "44"))
-        # CLI: omitted -> ALLOW; the literal null -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED
+        # CLI: omitted -> ALLOW; "null", "" or the sentinel -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED
         import contextlib, io
-        for argv_extra, want in (([], 0), (["--hb-epoch", "null"], 1), (["--hb-epoch", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"], 1)):
+        for argv_extra, want in (([], 0), (["--hb-epoch", "null"], 1), (["--hb-epoch", ""], 1), (["--hb-epoch", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"], 1)):
             out = io.StringIO()
             with contextlib.redirect_stdout(out):
                 rc = component.main(["--repository", str(self.bare), "--bound-main-commit", self.c["second"],

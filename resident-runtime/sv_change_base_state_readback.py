@@ -34,14 +34,15 @@ flag_failure_code HB_EPOCH_FLAG_MISMATCH, and supplied_epoch_failure_code HB_EPO
 earlier step keeps its own code; an unobservable ledger-head epoch is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED whatever was
 supplied.
 
-Supplied-epoch classes (contract invariant, = P1's next verify_admission_hb_epoch): --hb-epoch given as null (CLI: the
-literal ``null``) or as UNKNOWN_NOT_AUTHENTICALLY_OBSERVED is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (both slots null);
+Supplied-epoch classes (contract invariant 16:03Z, = P1's next verify_admission_hb_epoch): --hb-epoch given explicitly as
+"" , the string "null" or UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (or None through the Python API) is FAIL_CLOSED
+HB_EPOCH_SOURCE_UNOBSERVED (both slots null);
 any other malformed value (bool, negative, non-numeric, < 32, ...) or a differing one is DENY HB_EPOCH_MISMATCH; an equal
 one is ALLOW. Deliberate choice: when --hb-epoch is OMITTED entirely there is no cross-check to run, so the ledger-derived
 ALLOW stands. This readback's flag is an optional cross-check, not the admission's supplied epoch; an admission whose
 supplied epoch is absent fails closed in the admission (TVC#519 admit(), P1), not here.
 FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED is kept only for a ledger-head epoch that is absent, unsealed, clock-derived, not
-an int, a bool, or under 32, and for a supplied --hb-epoch that is null or the sentinel.
+an int, a bool, or under 32, and for a supplied --hb-epoch that is "", "null" or the sentinel.
 No epoch is ever minted here. Every non-ALLOW carries the six fields. Read-only: nothing is written to any ref, file
 or ledger; no clock; no network (the repository is local, as for the existing readback). Stdlib and ``git`` only.
 """
@@ -135,8 +136,9 @@ UNOBSERVED_SENTINEL = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
 
 
 def _supplied_unobserved(value: Any) -> bool:
-    """A cross-check epoch that was given but carries no value: null or the UNKNOWN sentinel (contract invariant)."""
-    return value is None or value == UNOBSERVED_SENTINEL
+    """A cross-check epoch that was given but carries no value (contract invariant, 16:03Z): "" , the string "null",
+    UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, or (Python API) None."""
+    return value is None or (isinstance(value, str) and value in ("", "null", UNOBSERVED_SENTINEL))
 
 
 def _epoch(value: Any) -> str | None:
@@ -297,10 +299,10 @@ def evaluate(repository: Any, bound_main_commit: Any, *, repository_name: Any = 
                        "the org-ledger head receipt at " + before + " carries a valid $.hb_reference.epoch (" + why + ")",
                        "after the org writer appends a head receipt carrying a supplied epoch; no epoch is minted here")
     if unobserved_supplied:
-        # --hb-epoch given as null or the sentinel: the supplied epoch is unobserved -> FAIL_CLOSED (both slots null, as on
+        # --hb-epoch given as "", "null" or the sentinel: the supplied epoch is unobserved -> FAIL_CLOSED (both slots null, as on
         # every FAIL_CLOSED); the ledger epoch was observed and is not sealed here.
         return _refuse(base, "HB_EPOCH_SOURCE_UNOBSERVED", HB_EPOCH_INVARIANT,
-                       "--hb-epoch, when given, carries the epoch (ASCII digits); null or " + UNOBSERVED_SENTINEL + " is unobserved",
+                       "--hb-epoch, when given, carries the epoch (ASCII digits); \"\", \"null\" or " + UNOBSERVED_SENTINEL + " is unobserved",
                        "rerun with --hb-epoch omitted or equal to the bound ledger head receipt's epoch; nothing is written",
                        supplied_hb_epoch=hb_epoch)
     base["hb_epoch"] = epoch
@@ -332,10 +334,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--bound-main-commit", required=True)
     parser.add_argument("--repository-name", default=None, help="e.g. StegVerse-org/.github; selects the registry path (REGISTRY_PATHS)")
     parser.add_argument("--main-ref", default="refs/heads/main")
-    parser.add_argument("--hb-epoch", default=OMITTED, help="optional cross-check only; the epoch is read from the ledger head receipt (omitted: no cross-check; null or UNKNOWN_NOT_AUTHENTICALLY_OBSERVED -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; malformed or differs -> DENY HB_EPOCH_MISMATCH)")
+    parser.add_argument("--hb-epoch", default=OMITTED, help="optional cross-check only; the epoch is read from the ledger head receipt (omitted: no cross-check; '', 'null' or UNKNOWN_NOT_AUTHENTICALLY_OBSERVED -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; malformed or differs -> DENY HB_EPOCH_MISMATCH)")
     args = parser.parse_args(argv)
     result = evaluate(args.repository, args.bound_main_commit, repository_name=args.repository_name,
-                      hb_epoch=None if args.hb_epoch == "null" else args.hb_epoch, main_ref=args.main_ref)
+                      hb_epoch=args.hb_epoch, main_ref=args.main_ref)
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result["disposition"] == "ALLOW" else 1
 
