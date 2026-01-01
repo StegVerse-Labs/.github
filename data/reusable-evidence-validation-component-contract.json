@@ -72,7 +72,7 @@
         "repository": "local git repository (clone) holding the bound main commit and refs/stegverse/organization-ledger, fetched by the caller's existing transport",
         "bound_main_commit": "40-hex main commit the caller binds; the repository's own registry file (REGISTRY_PATHS) is read at exactly this commit",
         "main_ref": "ref whose history must contain bound_main_commit (default refs/heads/main)",
-        "hb_epoch": "optional --hb-epoch cross-check only (ASCII digits >= 32); the epoch is read from the bound ledger head receipt; differs -> FAIL_CLOSED HB_EPOCH_FLAG_MISMATCH (as P4)",
+        "hb_epoch": "optional --hb-epoch cross-check only (ASCII digits >= 32); the epoch is read from the bound ledger head receipt; a verified sealed epoch that differs -> DENY HB_EPOCH_MISMATCH (detail flag_failure_code HB_EPOCH_FLAG_MISMATCH, P4's name)",
         "repository_name": "the repository the clone is of (e.g. StegVerse-org/.github); selects its registry path from the pinned REGISTRY_PATHS map; unmapped -> REGISTRY_PATH_NOT_DECLARED (no default path)"
       },
       "outputs": {
@@ -110,7 +110,7 @@
         "REGISTRY_GENERATION_NOT_DECLARED",
         "REGISTRY_GENERATION_UNREADABLE",
         "HB_EPOCH_SOURCE_UNOBSERVED",
-        "HB_EPOCH_FLAG_MISMATCH"
+        "HB_EPOCH_MISMATCH"
       ],
       "retry_or_reentry_semantics": "Deterministic for an identical repository state, bound commit and expected hb_epoch. No schedule, loop, clock or retry: the admission caller invokes it when it needs a base binding and re-invokes after the refusal's next_attempt is satisfied.",
       "version_or_schema_binding": [

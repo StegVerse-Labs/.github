@@ -26,7 +26,10 @@ body without it, aggregate_repo_transition.canon/sha) -> ``str($.hb_reference.ep
 bool) >= 32 and ``$.hb_reference.derived_from_clock`` is exactly false (rule source: org-kernel/kernel.py:68-74
 ``hb_reference``, blob ffec5d64; the same rule as P1 #3264 @fc19b532 ``base_ledger_head_epoch``). Otherwise FAIL_CLOSED
 HB_EPOCH_SOURCE_UNOBSERVED. The epoch is sealed with the rest of the receipt; the receipt format is unchanged.
-``--hb-epoch`` is never a source, only a cross-check: one that differs is FAIL_CLOSED HB_EPOCH_FLAG_MISMATCH (as P4).
+``--hb-epoch`` is never a source, only a cross-check. A verified sealed epoch that contradicts it is an observed
+contradiction: DENY HB_EPOCH_MISMATCH (six fields; detail flag_failure_code HB_EPOCH_FLAG_MISMATCH, P4's name).
+FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED is kept only for an epoch that is absent, unsealed, clock-derived, not an int,
+a bool, or under 32.
 No epoch is ever minted here. Every non-ALLOW carries the six fields. Read-only: nothing is written to any ref, file
 or ledger; no clock; no network (the repository is local, as for the existing readback). Stdlib and ``git`` only.
 """
@@ -63,6 +66,11 @@ ORG_RECEIPT_SCHEMA = "stegverse.organization-transition-receipt/v1"  # aggregate
 HB_ANCHOR_EPOCH = 32  # org-kernel/kernel.py:22
 # Rule source: org-kernel/kernel.py:68-74 (hb_reference(epoch=...): int, not bool, >= 32, derived_from_clock False).
 EPOCH_RULE_SOURCE = {"file": "org-kernel/kernel.py", "lines": "68-74", "git_blob_sha": "ffec5d648d7fa4aead1f44f76df936a2da21bb96"}
+# P1 cites the supplied-epoch rule as the sha256 of the source segment of kernel.py::supplied_epoch_failure (lines 236-269 of the
+# same blob); verified: sha256(ast.get_source_segment(...).encode("utf-8")).
+EPOCH_RULE_FUNCTION = {"file": "org-kernel/kernel.py", "function": "supplied_epoch_failure", "lines": "236-269",
+                       "git_blob_sha": "ffec5d648d7fa4aead1f44f76df936a2da21bb96",
+                       "source_segment_sha256": "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"}
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
               "owning_existing_goal", "next_attempt")
 HERE = Path(__file__).resolve().parent
@@ -162,8 +170,9 @@ def _receipt(base: dict[str, Any], disposition: str, **fields: Any) -> dict[str,
     return seal(body)
 
 
-def _refuse(base: dict[str, Any], code: str, predicate: str, repair: str, next_attempt: str, **extra: Any) -> dict[str, Any]:
-    return _receipt(base, "FAIL_CLOSED", **extra, failure_code=code, failed_predicate=predicate,
+def _refuse(base: dict[str, Any], code: str, predicate: str, repair: str, next_attempt: str, *, disposition: str = "FAIL_CLOSED",
+            **extra: Any) -> dict[str, Any]:
+    return _receipt(base, disposition, **extra, failure_code=code, failed_predicate=predicate,
                     required_evidence_or_repair=repair, retry_entrypoint=RETRY,
                     owning_existing_goal=OWNING_EXISTING_GOAL, next_attempt=next_attempt)
 
@@ -263,9 +272,11 @@ def evaluate(repository: Any, bound_main_commit: Any, *, repository_name: Any = 
                                "rule": "int (not bool) >= 32 and derived_from_clock exactly false (org-kernel/kernel.py:68-74 blob "
                                        + EPOCH_RULE_SOURCE["git_blob_sha"][:8] + ")"}
     if expected is not None and expected != epoch:
-        return _refuse(base, "HB_EPOCH_FLAG_MISMATCH", HB_EPOCH_INVARIANT,
+        # Observed contradiction (P1 alignment): DENY HB_EPOCH_MISMATCH; P4's HB_EPOCH_FLAG_MISMATCH is carried in the detail.
+        return _refuse(base, "HB_EPOCH_MISMATCH", HB_EPOCH_INVARIANT,
                        "--hb-epoch equals the bound ledger head receipt's epoch " + epoch + ", or omit it (it is a cross-check only)",
-                       "rerun with --hb-epoch omitted or equal to the observed epoch; nothing is written", expected_hb_epoch=expected)
+                       "rerun with --hb-epoch omitted or equal to the observed epoch; nothing is written", disposition="DENY",
+                       expected_hb_epoch=expected, flag_failure_code="HB_EPOCH_FLAG_MISMATCH")
     return _receipt(base, "ALLOW", sources=sources,
                     base_ref={"registry_generation": generation, "ledger_head": before},
                     ledger_head_receipt_sha256=ledger["head_receipt_sha256"], ledger_chain_length=ledger["chain_length"],
@@ -279,7 +290,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--bound-main-commit", required=True)
     parser.add_argument("--repository-name", default=None, help="e.g. StegVerse-org/.github; selects the registry path (REGISTRY_PATHS)")
     parser.add_argument("--main-ref", default="refs/heads/main")
-    parser.add_argument("--hb-epoch", default=None, help="cross-check only; the epoch is read from the ledger head receipt (differs -> HB_EPOCH_FLAG_MISMATCH)")
+    parser.add_argument("--hb-epoch", default=None, help="cross-check only; the epoch is read from the ledger head receipt (differs -> DENY HB_EPOCH_MISMATCH)")
     args = parser.parse_args(argv)
     result = evaluate(args.repository, args.bound_main_commit, repository_name=args.repository_name,
                       hb_epoch=args.hb_epoch, main_ref=args.main_ref)

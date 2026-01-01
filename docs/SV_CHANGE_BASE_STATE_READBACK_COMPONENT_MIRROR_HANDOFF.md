@@ -53,7 +53,8 @@ Sealed receipt `stegverse.sv-change-base-state-readback/v1`:
 - **Sealing.** The epoch is sealed with the rest of the receipt.
 - **Refusals.**
   - A head receipt without a valid epoch gives FAIL_CLOSED `HB_EPOCH_SOURCE_UNOBSERVED`.
-  - `--hb-epoch` is never a source, only a cross-check. If it differs from the observed epoch, the result is FAIL_CLOSED `HB_EPOCH_FLAG_MISMATCH`, as in P4.
+  - `--hb-epoch` is never a source, only a cross-check. If a verified sealed epoch contradicts it, that is an observed contradiction: DENY `HB_EPOCH_MISMATCH` with six fields. P4's name `HB_EPOCH_FLAG_MISMATCH` is kept in the detail (`flag_failure_code`). FAIL_CLOSED `HB_EPOCH_SOURCE_UNOBSERVED` is only for an epoch that is absent, unsealed, clock-derived (derived_from_clock not exactly false), not an int, a bool, or under 32.
+  - Rule sources, both cited: `org-kernel/kernel.py` lines 68-74 (`hb_reference`) and P1's citation, sha256 `726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef` of the source segment of `kernel.py::supplied_epoch_failure` (lines 236-269), both in blob `ffec5d648d7fa4aead1f44f76df936a2da21bb96`. The sha256 was verified against those bytes (the test checks it).
 - **No minting.** No epoch is ever minted here. Minting an epoch for new ledger appends is still undecided.
 
 | disposition | when |
@@ -61,7 +62,7 @@ Sealed receipt `stegverse.sv-change-base-state-readback/v1`:
 | `ALLOW` | the registry generation was read at the bound commit, the ledger chain verified, and the head was stable |
 | `FAIL_CLOSED REGISTRY_GENERATION_UNREADABLE` | the registry file is absent, unparseable, or lacks an integer `generation` at the bound commit |
 | `FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED` | the head receipt is absent, unsealed, not an organization-transition receipt, or its `hb_reference` epoch is missing, not an int, below 32, or derived from a clock (failed_predicate `ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH`) |
-| `FAIL_CLOSED HB_EPOCH_FLAG_MISMATCH` | `--hb-epoch` was given and differs from the observed epoch |
+| `DENY HB_EPOCH_MISMATCH` | `--hb-epoch` was given and contradicts the verified observed epoch (detail `flag_failure_code: HB_EPOCH_FLAG_MISMATCH`) |
 | `FAIL_CLOSED BASE_STATE_NOT_OBSERVED` | the bound commit is malformed, absent or not on main; the repository is unreadable; the ledger ref is absent; the existing readback refused (its `failed_predicate` is carried); the head moved during the read; or a supplied hb_epoch is malformed |
 
 Every non-ALLOW carries `failure_code`, `failed_predicate`, `required_evidence_or_repair`, `retry_entrypoint`, `owning_existing_goal` (`StegVerse-org/.github#164`) and `next_attempt`. `authority_effect` is `NONE_READBACK_ONLY`.
@@ -119,4 +120,4 @@ These are read-only box runs; the refs were unchanged.
 - Seal: `sha256:5b9eda6c4f036318a1577dc6cb3f092377c2c5b465d48667cfdd03ded14106e3`.
 - Diagnostic only: `ledger_head_epoch` on the org ledger head 2acec0e1 reads epoch 446655631 from receipt `sha256:51a48225…5a64`.
 - The known-answer test (`RTC014_LIVE_LABS_REPO`) runs against the live head a5bb54d8. It reads receipt 35810b65, verifies its seal, and gets `"469411750"`.
-- `--hb-epoch 469411751` against the same head gives FAIL_CLOSED `HB_EPOCH_FLAG_MISMATCH`.
+- `--hb-epoch 469411751` against the same head gives DENY `HB_EPOCH_MISMATCH` (detail `HB_EPOCH_FLAG_MISMATCH`), seal `sha256:7791f0567770553eed10a9d203ed3dfffa471f2badc84aecc2cf2049cf0c7e57`. `--hb-epoch 469411750` gives the same ALLOW receipt as no flag (seal `sha256:318c47a6…`).

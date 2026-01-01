@@ -131,8 +131,8 @@ class BaseStateReadbackTests(unittest.TestCase):
     def tearDown(self):
         self.assertEqual(_git(self.bare, "for-each-ref"), self.refs_before, "the readback wrote nothing")
 
-    def assert_six(self, r, code):
-        self.assertEqual(r["disposition"], "FAIL_CLOSED")
+    def assert_six(self, r, code, disposition="FAIL_CLOSED"):
+        self.assertEqual(r["disposition"], disposition)
         self.assertEqual(r["failure_code"], code)
         for f in SIX:
             self.assertTrue(isinstance(r[f], str) and r[f].strip(), f)
@@ -173,9 +173,10 @@ class BaseStateReadbackTests(unittest.TestCase):
         self.assertEqual((r["disposition"], r["hb_epoch"]), ("ALLOW", "44"))
         self.assertNotIn("open_questions", r)
         r = ev(self.bare, self.c["second"], hb_epoch="1024")
-        self.assert_six(r, "HB_EPOCH_FLAG_MISMATCH")
-        self.assertEqual((r["failed_predicate"], r["hb_epoch"], r["expected_hb_epoch"]),
-                         ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", "44", "1024"))
+        self.assert_six(r, "HB_EPOCH_MISMATCH", "DENY")  # observed contradiction: DENY; P4's name traces in the detail
+        self.assertEqual((r["failed_predicate"], r["hb_epoch"], r["expected_hb_epoch"], r["flag_failure_code"]),
+                         ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", "44", "1024", "HB_EPOCH_FLAG_MISMATCH"))
+        self.assertEqual(ev(self.bare, self.c["second"], hb_epoch="44")["disposition"], "ALLOW")
         for bad in ("31", "abc", "", True, 12.5):
             with self.subTest(bad=bad):
                 self.assert_six(ev(self.bare, self.c["second"], hb_epoch=bad), "BASE_STATE_NOT_OBSERVED")
@@ -215,6 +216,13 @@ class BaseStateReadbackTests(unittest.TestCase):
         kernel = (ROOT / "org-kernel" / "kernel.py").read_bytes()
         blob = hashlib.sha1(b"blob %d\0" % len(kernel) + kernel).hexdigest()
         self.assertEqual(blob, component.EPOCH_RULE_SOURCE["git_blob_sha"])
+        # P1's citation: sha256 of the source segment of kernel.py::supplied_epoch_failure (lines 236-269).
+        import ast
+        src = kernel.decode("utf-8")
+        fn = [n for n in ast.parse(src).body if isinstance(n, ast.FunctionDef) and n.name == component.EPOCH_RULE_FUNCTION["function"]][0]
+        self.assertEqual(f"{fn.lineno}-{fn.end_lineno}", component.EPOCH_RULE_FUNCTION["lines"])
+        self.assertEqual(hashlib.sha256(ast.get_source_segment(src, fn).encode("utf-8")).hexdigest(),
+                         component.EPOCH_RULE_FUNCTION["source_segment_sha256"])
 
     def test_known_answer_live_labs_head(self):
         """KAT: the real Labs ledger head a5bb54d8 (receipt 35810b65) reads "469411750", when a clone holding it is supplied."""
