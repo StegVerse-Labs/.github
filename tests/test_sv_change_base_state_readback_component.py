@@ -233,8 +233,11 @@ class BaseStateReadbackTests(unittest.TestCase):
         entirely -> no cross-check, ALLOW (deliberate: an optional cross-check, not the admission's supplied epoch)."""
         absent = component.evaluate(self.bare, self.c["second"], repository_name=LABS)  # flag omitted entirely
         self.assertEqual((absent["disposition"], absent["hb_epoch"]), ("ALLOW", "44"))
-        # P1 #3264 @ae8b105d placement: top-level cross_checked false, plus the HB_EPOCH_NOT_CROSS_CHECKED marker
-        self.assertEqual((absent["cross_checked"], absent["hb_epoch_cross_check"]), (False, "HB_EPOCH_NOT_CROSS_CHECKED"))
+        # Canonical marker (ruling 16:30Z, P1 #3264 @76407068 placement): top-level cross_checked false, and
+        # hb_epoch_cross_check carrying exactly {cross_checked: false, detail: HB_EPOCH_NOT_CROSS_CHECKED}
+        self.assertIs(absent["cross_checked"], False)
+        self.assertEqual(absent["hb_epoch_cross_check"], {"cross_checked": False, "detail": "HB_EPOCH_NOT_CROSS_CHECKED"})
+        self.assertIs(absent["hb_epoch_cross_check"]["cross_checked"], False)
         self.assertTrue(component.seal_verifies(absent))
         for label, supplied in (("null-api", None), ("null", "null"), ("empty", ""), ("sentinel", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")):
             with self.subTest(label):
