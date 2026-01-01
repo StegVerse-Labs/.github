@@ -149,11 +149,25 @@ Before this change, a malformed value was FAIL_CLOSED `BASE_STATE_NOT_OBSERVED` 
 
 | `--hb-epoch` | result |
 |---|---|
-| omitted entirely | no cross-check runs; the ledger-derived ALLOW stands (**deliberate**, see below) and carries the canonical not-cross-checked marker (New Bot ruling 16:30Z, P1 invariants.json `NOT_CROSS_CHECKED_MARKER`): top-level `cross_checked: false` plus top-level `detail: "HB_EPOCH_NOT_CROSS_CHECKED"`, exactly P1 #3264 @7898cedb `verify_admission_hb_epoch` (sv_work_items.py blob 4c2aa6ef); both absent when the cross-check ran; nothing under `hb_epoch_cross_check` |
+| omitted entirely | no cross-check runs; the ledger-derived ALLOW stands (**deliberate**, see below) and carries the canonical not-cross-checked marker (New Bot ruling 16:30Z, P1 invariants.json `NOT_CROSS_CHECKED_MARKER`): top-level `cross_checked: false` plus top-level `detail: "HB_EPOCH_NOT_CROSS_CHECKED"` (= P1 #3264 @7898cedb `verify_admission_hb_epoch`, sv_work_items.py blob 4c2aa6ef); see the table below for the other dispositions |
 | given explicitly as `""`, the string `"null"` or `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` (or `None` through the Python API) (16:03Z narrowing) | FAIL_CLOSED `HB_EPOCH_SOURCE_UNOBSERVED`. `hb_epoch` and `hb_epoch_source` are sealed null, as on every FAIL_CLOSED, and the detail carries `supplied_hb_epoch` |
 | any other malformed value (bool, negative, non-numeric, < 32, ...) | DENY `HB_EPOCH_MISMATCH`, slots sealed, `supplied_hb_epoch_well_formed: false` |
 | well-formed and differing | DENY `HB_EPOCH_MISMATCH`, slots sealed, `supplied_hb_epoch_well_formed: true` |
 | equal | ALLOW |
+
+**`cross_checked` is always emitted** (P1 `NOT_CROSS_CHECKED_MARKER`, amended 17:15Z). All fields are top level, and no `hb_epoch_cross_check` key is ever emitted.
+
+| Receipt | `cross_checked` | `supplied_hb_epoch` | `detail` |
+|---|---|---|---|
+| ALLOW, `--hb-epoch` omitted | `false` | absent | `"HB_EPOCH_NOT_CROSS_CHECKED"` |
+| ALLOW, cross-check held | `true` | the value given | absent |
+| DENY `HB_EPOCH_MISMATCH` | `true`: the cross-check ran against the observed sealed epoch and disagreed | the value given | absent |
+| FAIL_CLOSED, any code | `false`: no comparison with a sealed epoch was made | the value given, when the flag was given (including `""`, `"null"` and the sentinel) | absent |
+
+- **The `supplied_hb_epoch` name** is P1 @7898cedb's own name for the supplied epoch, used in `sv_work_items.admission_inputs` and `evaluate_admission`. P1 has no producer-side field of its own, so this name was used instead of `hb_epoch_supplied`.
+- **Its value** is the supplied value verbatim when it is a JSON scalar, and its `repr` otherwise.
+- **The DENY receipt still carries its earlier detail fields:** `expected_hb_epoch`, `supplied_hb_epoch_well_formed`, `flag_failure_code` and `supplied_epoch_failure_code`.
+
 
 These classes apply only once the ledger-head epoch is observed. An earlier refusal keeps its own code, and an unobservable ledger-head epoch is FAIL_CLOSED `HB_EPOCH_SOURCE_UNOBSERVED` whatever was supplied.
 

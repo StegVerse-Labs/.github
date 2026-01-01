@@ -40,9 +40,16 @@ HB_EPOCH_SOURCE_UNOBSERVED (both slots null);
 any other malformed value (bool, negative, non-numeric, < 32, ...) or a differing one is DENY HB_EPOCH_MISMATCH; an equal
 one is ALLOW. Deliberate choice: when --hb-epoch is OMITTED entirely there is no cross-check to run, so the ledger-derived
 ALLOW stands, carrying the canonical not-cross-checked marker (New Bot ruling 16:30Z, P1 invariants.json
-NOT_CROSS_CHECKED_MARKER): top-level ``cross_checked: false`` plus top-level ``detail: HB_EPOCH_NOT_CROSS_CHECKED``, exactly
-P1 #3264 @7898cedb verify_admission_hb_epoch(HB_EPOCH_NOT_CROSS_CHECKED, ...) (sv_work_items.py blob 4c2aa6ef); both absent
-when the cross-check ran. The marker is not carried under hb_epoch_cross_check. This readback's flag is an optional cross-check, not the admission's supplied epoch; an admission whose
+NOT_CROSS_CHECKED_MARKER, amended 17:15Z: the producer always emits cross_checked): top-level ``cross_checked: false`` plus
+top-level ``detail: HB_EPOCH_NOT_CROSS_CHECKED`` (= P1 #3264 @7898cedb verify_admission_hb_epoch(HB_EPOCH_NOT_CROSS_CHECKED,
+...), sv_work_items.py blob 4c2aa6ef). Every receipt carries top-level ``cross_checked`` (never an hb_epoch_cross_check key):
+  ALLOW, flag omitted            cross_checked false, detail HB_EPOCH_NOT_CROSS_CHECKED; no supplied_hb_epoch
+  ALLOW, cross-check held        cross_checked true, supplied_hb_epoch (the value given); no detail
+  DENY HB_EPOCH_MISMATCH         cross_checked true (the cross-check ran and disagreed), supplied_hb_epoch; no detail
+  FAIL_CLOSED (any code)         cross_checked false (no comparison with a sealed epoch was made), supplied_hb_epoch when
+                                 the flag was given (incl. '', 'null', the sentinel); no detail
+``supplied_hb_epoch`` is P1 @7898cedb's own name for the supplied epoch (sv_work_items.admission_inputs), verbatim if
+JSON-scalar, else its repr. This readback's flag is an optional cross-check, not the admission's supplied epoch; an admission whose
 supplied epoch is absent fails closed in the admission (TVC#519 admit(), P1), not here.
 FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED is kept only for a ledger-head epoch that is absent, unsealed, clock-derived, not
 an int, a bool, or under 32, and for a supplied --hb-epoch that is "", "null" or the sentinel.
@@ -223,7 +230,13 @@ def evaluate(repository: Any, bound_main_commit: Any, *, repository_name: Any = 
                             "repository": repository_name if isinstance(repository_name, str) else None,
                             "base_ref": {"registry_generation": None, "ledger_head": None},
                             "bound_main_commit": bound_main_commit if isinstance(bound_main_commit, str) else None,
-                            "main_ref": main_ref, "sources": [], "hb_epoch": None, "hb_epoch_source": None}
+                            "main_ref": main_ref, "sources": [], "hb_epoch": None, "hb_epoch_source": None,
+                            # cross_checked is always emitted (P1 NOT_CROSS_CHECKED_MARKER, amended 17:15Z): true only where the
+                            # supplied --hb-epoch was compared with the observed sealed epoch (ALLOW equal, DENY HB_EPOCH_MISMATCH)
+                            "cross_checked": False}
+    if hb_epoch is not OMITTED:
+        # the supplied value, verbatim if JSON-scalar (else its repr), under P1 @7898cedb's name (admission_inputs.supplied_hb_epoch)
+        base["supplied_hb_epoch"] = hb_epoch if hb_epoch is None or isinstance(hb_epoch, (str, int, float, bool)) else repr(hb_epoch)
     # A supplied --hb-epoch is judged only against the observed ledger-head epoch (step 3): malformed or differing is
     # DENY HB_EPOCH_MISMATCH there (P1 verify_admission_hb_epoch, Lane B #46, P4 #192, Lane D #3270), never a refusal here.
     unobserved_supplied = hb_epoch is not OMITTED and _supplied_unobserved(hb_epoch)
@@ -323,13 +336,15 @@ def evaluate(repository: Any, bound_main_commit: Any, *, repository_name: Any = 
         # malformed value, the kernel's HB_EPOCH_INVALID are trace-only detail.
         supplied = hb_epoch if isinstance(hb_epoch, (str, int, float, bool)) else repr(hb_epoch)
         extra = {"supplied_epoch_failure_code": "HB_EPOCH_INVALID"} if malformed else {}
+        base["cross_checked"] = True  # the cross-check ran and disagreed
         return _refuse(base, "HB_EPOCH_MISMATCH", HB_EPOCH_INVARIANT,
                        "--hb-epoch, when supplied, is ASCII digits equal to the bound ledger head receipt's epoch " + epoch
                        + ", or omit it (it is a cross-check only)",
                        "rerun with --hb-epoch omitted or equal to the observed epoch; nothing is written", disposition="DENY",
                        expected_hb_epoch=expected if not malformed else supplied, supplied_hb_epoch_well_formed=not malformed,
                        flag_failure_code="HB_EPOCH_FLAG_MISMATCH", **extra)
-    not_checked = dict(NOT_CROSS_CHECKED_MARKER) if hb_epoch is OMITTED else {}
+    # omitted flag: P1's NOT_CROSS_CHECKED_MARKER; otherwise the cross-check ran and held: cross_checked true + supplied_hb_epoch
+    not_checked = dict(NOT_CROSS_CHECKED_MARKER) if hb_epoch is OMITTED else {"cross_checked": True}
     return _receipt(base, "ALLOW", **not_checked, sources=sources,
                     base_ref={"registry_generation": generation, "ledger_head": before},
                     ledger_head_receipt_sha256=ledger["head_receipt_sha256"], ledger_chain_length=ledger["chain_length"],

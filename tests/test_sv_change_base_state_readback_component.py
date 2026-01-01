@@ -227,6 +227,22 @@ class BaseStateReadbackTests(unittest.TestCase):
         empty = _commit(self.bare, self.work, {"HEAD.json": b"{}"})
         self.assertIsNone(component.ledger_head_epoch(self.bare, empty)[0])
 
+    def test_cross_checked_always_emitted(self):
+        """P1 NOT_CROSS_CHECKED_MARKER (amended 17:15Z): every receipt carries top-level cross_checked; never hb_epoch_cross_check."""
+        cases = [(dict(), "ALLOW", False), (dict(hb_epoch="44"), "ALLOW", True), (dict(hb_epoch="45"), "DENY", True),
+                 (dict(hb_epoch="null"), "FAIL_CLOSED", False)]
+        for kw, disp, want in cases:
+            with self.subTest(kw=kw):
+                r = component.evaluate(self.bare, self.c["second"], repository_name=LABS, **kw)
+                self.assertEqual((r["disposition"], r["cross_checked"]), (disp, want))
+                self.assertNotIn("hb_epoch_cross_check", r)
+                self.assertEqual("supplied_hb_epoch" in r, "hb_epoch" in kw)
+                self.assertEqual("detail" in r, not kw)
+        for kw in (dict(), dict(hb_epoch="44")):  # an earlier FAIL_CLOSED step (bad commit) also carries it
+            r = component.evaluate(self.bare, "not-a-sha", repository_name=LABS, **kw)
+            self.assertEqual((r["disposition"], r["cross_checked"]), ("FAIL_CLOSED", False))
+            self.assertNotIn("hb_epoch_cross_check", r); self.assertNotIn("detail", r)
+
     def test_supplied_epoch_classes(self):
         """Contract invariant (= P1's next verify_admission_hb_epoch): null / sentinel -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED
         (both slots null); other malformed or differing -> DENY HB_EPOCH_MISMATCH (slots sealed); equal -> ALLOW. Omitted
@@ -238,6 +254,7 @@ class BaseStateReadbackTests(unittest.TestCase):
         self.assertIs(absent["cross_checked"], False)
         self.assertEqual(absent["detail"], "HB_EPOCH_NOT_CROSS_CHECKED")
         self.assertNotIn("hb_epoch_cross_check", absent)  # not moved under hb_epoch_cross_check
+        self.assertNotIn("supplied_hb_epoch", absent)  # nothing was supplied
         self.assertTrue(component.seal_verifies(absent))
         for label, supplied in (("null-api", None), ("null", "null"), ("empty", ""), ("sentinel", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")):
             with self.subTest(label):
@@ -245,6 +262,9 @@ class BaseStateReadbackTests(unittest.TestCase):
                 self.assert_six(r, "HB_EPOCH_SOURCE_UNOBSERVED")
                 self.assertEqual((r["failed_predicate"], r["hb_epoch"], r["hb_epoch_source"], r["supplied_hb_epoch"]),
                                  ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", None, None, supplied))
+                # FAIL_CLOSED: cross_checked always emitted, false (no comparison with a sealed epoch); no detail marker
+                self.assertIs(r["cross_checked"], False)
+                self.assertNotIn("detail", r); self.assertNotIn("hb_epoch_cross_check", r)
         for label, supplied in (("bool", True), ("bool-false", False), ("negative", "-44"), ("negative-int", -44),
                                 ("non-numeric", "forty-four"), ("below-32", "31"), ("differing", "45"), ("differing-int", 45)):
             with self.subTest(label):
@@ -252,13 +272,21 @@ class BaseStateReadbackTests(unittest.TestCase):
                 self.assert_six(r, "HB_EPOCH_MISMATCH", "DENY")
                 self.assertEqual((r["hb_epoch"], r["hb_epoch_source"]["ledger_head"], r["expected_hb_epoch"]), ("44", self.ledger_head, str(supplied) if label.startswith("differing") else supplied))
                 self.assertEqual(r["supplied_hb_epoch_well_formed"], label.startswith("differing"))
+                # DENY: the cross-check ran (and disagreed): cross_checked true plus the supplied value, verbatim
+                self.assertIs(r["cross_checked"], True)
+                self.assertEqual(r["supplied_hb_epoch"], supplied)
+                self.assertIs(type(r["supplied_hb_epoch"]), type(supplied))
+                self.assertNotIn("detail", r); self.assertNotIn("hb_epoch_cross_check", r)
         for label, supplied in (("equal", "44"), ("equal-int", 44)):
             with self.subTest(label):
                 r = ev(self.bare, self.c["second"], hb_epoch=supplied)
                 self.assertEqual((r["disposition"], r["hb_epoch"]), ("ALLOW", "44"))
-                self.assertNotIn("cross_checked", r)  # cross-checked: no marker (P1 omits the field)
+                # cross-checked ALLOW (P1 NOT_CROSS_CHECKED_MARKER amended 17:15Z): cross_checked true plus the supplied value
+                self.assertIs(r["cross_checked"], True)
+                self.assertEqual(r["supplied_hb_epoch"], supplied)
                 self.assertNotIn("hb_epoch_cross_check", r)
                 self.assertNotIn("detail", r)
+                self.assertTrue(component.seal_verifies(r))
         # CLI: omitted -> ALLOW; "null", "" or the sentinel -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED
         import contextlib, io
         for argv_extra, want in (([], 0), (["--hb-epoch", "null"], 1), (["--hb-epoch", ""], 1), (["--hb-epoch", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"], 1)):
