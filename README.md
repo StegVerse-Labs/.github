@@ -67,6 +67,20 @@ Many are conceptual, documentary, or exploratory by design.
 
 ---
 
+## Operational Observer Standard
+
+Repositories that generate operational proof artifacts should not be promoted from installed proof infrastructure to observed operational completion until a fresh workflow run, expected artifacts, expected proof files, and receipt validation are confirmed.
+
+The organization-level observer handoff is maintained at:
+
+```text
+docs/ORG_OPERATIONAL_OBSERVER_HANDOFF.md
+```
+
+This standard keeps operational completion distinct from installed workflow capacity.
+
+---
+
 ## About Permanence
 
 StegVerse is intentionally **not designed to last forever**.
