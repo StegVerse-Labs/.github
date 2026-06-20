@@ -1,0 +1,41 @@
+name: Org Aggregation Check
+
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - "docs/**"
+      - "scripts/**"
+      - "checks/**"
+      - ".github/workflows/org-aggregation-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  org-aggregation-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate observer standard
+        run: python scripts/check_org_operational_observer.py
+
+      - name: Validate repository inventory
+        run: python scripts/check_org_repository_inventory.py
+
+      - name: Validate dashboard
+        run: python scripts/check_org_completion_dashboard.py
+
+      - name: Validate org mirror terms
+        run: python scripts/check_required_terms.py docs/ORG_MIRROR_HANDOFF.md checks/org_mirror_handoff_terms.txt
+
+      - name: Validate aggregation manifest
+        run: python scripts/check_org_aggregation_manifest.py
