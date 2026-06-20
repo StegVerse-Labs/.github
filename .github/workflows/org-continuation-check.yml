@@ -1,0 +1,47 @@
+name: Org Continuation Check
+
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - "README.md"
+      - "docs/**"
+      - "scripts/**"
+      - "checks/**"
+      - ".github/workflows/org-continuation-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  org-continuation-check:
+    name: Validate org continuation surfaces
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate observer standard
+        run: python scripts/check_org_operational_observer.py
+
+      - name: Validate repository inventory
+        run: python scripts/check_org_repository_inventory.py
+
+      - name: Validate dashboard
+        run: python scripts/check_org_completion_dashboard.py
+
+      - name: Validate org mirror terms
+        run: python scripts/check_required_terms.py docs/ORG_MIRROR_HANDOFF.md checks/org_mirror_handoff_terms.txt
+
+      - name: Write summary
+        if: always()
+        run: |
+          echo "## Org Continuation Check" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Validated org observer standard, repository inventory, dashboard, and mirror handoff terms." >> "$GITHUB_STEP_SUMMARY"
