@@ -15,7 +15,7 @@ Continue building without manual actions needed through completion OR until task
 ## Inventory Status
 
 ```text
-inventory_state: initial_repository_inventory_installed
+inventory_state: repo_validator_refresh_installed
 source_repository: StegVerse-Labs/.github
 completion_class: self_managed_inventory_completion
 manual_action_requirement: none_for_inventory_continuation
@@ -29,9 +29,9 @@ manual_action_requirement: none_for_inventory_continuation
 | StegVerse-Labs/StegCore | present | docs/STEGCORE_MIRROR_HANDOFF.md | partial | not yet aggregated |
 | StegVerse-Labs/TV | present | docs/TV_MIRROR_HANDOFF.md | present | observer pending |
 | StegVerse-Labs/Continuity | present | docs/CONTINUITY_MIRROR_HANDOFF.md | present | not yet aggregated |
-| StegVerse-Labs/stegfin-governance | present | docs/STEGFIN_GOVERNANCE_MIRROR_HANDOFF.md | missing | not yet aggregated |
-| StegVerse-Labs/crypto-bot | present | docs/CRYPTO_BOT_MIRROR_HANDOFF.md | missing | not yet aggregated |
-| StegVerse-Labs/.github | present | docs/ORG_MIRROR_HANDOFF.md | partial | organization standard present |
+| StegVerse-Labs/stegfin-governance | present | docs/STEGFIN_GOVERNANCE_MIRROR_HANDOFF.md | present | not yet aggregated |
+| StegVerse-Labs/crypto-bot | present | docs/CRYPTO_BOT_MIRROR_HANDOFF.md | present | not yet aggregated |
+| StegVerse-Labs/.github | present | docs/ORG_MIRROR_HANDOFF.md | present | organization standard present |
 
 ## Known Access Or Search Notes
 
@@ -45,26 +45,11 @@ StegVerse-Healer: not found through accessible GitHub repository search in this 
 
 ```text
 Target: StegVerse-Labs/.github
-- docs/ORG_COMPLETION_DASHBOARD.md
-- docs/ORG_MISSING_HANDOFFS.md
-- docs/ORG_VALIDATOR_REGISTRY.md
-- scripts/check_org_mirror_handoff.py
-- scripts/check_org_repository_inventory.py
-
-Target: StegVerse-Labs/stegfin-governance
-- README.md or docs/STEGFIN_GOVERNANCE_OVERVIEW.md
-- docs/STEGFIN_SCOPE.md
-- docs/STEGFIN_BOUNDARIES.md
-- docs/RELATED_REPOSITORY_EXPECTATIONS.md
-- docs/REVIEW_AND_ACTIVATION_GATES.md
-- scripts/check_stegfin_governance_handoff.py
+- optional cross-repository aggregation workflow beyond current org continuation check
 
 Target: StegVerse-Labs/crypto-bot
-- docs/CRYPTO_BOT_ACTIVATION_GATES.md
-- docs/CRYPTO_BOT_OPERATIONAL_STATUS.md
-- docs/STEGFIN_LINKAGE.md
-- scripts/check_crypto_bot_handoff.py
 - optional workflow for README-listed verification
+- fresh verification evidence before repository completion promotion
 
 Target: StegVerse-Labs/TV
 - fresh workflow run observation
