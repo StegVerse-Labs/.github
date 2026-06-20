@@ -15,7 +15,7 @@ Continue building without manual actions needed through completion OR until task
 ## Dashboard Status
 
 ```text
-dashboard_state: initial_completion_dashboard_installed
+dashboard_state: aggregation_manifest_refresh_installed
 source_repository: StegVerse-Labs/.github
 completion_class: self_managed_dashboard_completion
 manual_action_requirement: none_for_dashboard_continuation
@@ -29,8 +29,12 @@ docs/ORG_OPERATIONAL_OBSERVER_HANDOFF.md
 docs/ORG_REPOSITORY_INVENTORY.md
 docs/ORG_VALIDATOR_REGISTRY.md
 docs/ORG_COMPLETION_DASHBOARD.md
+docs/ORG_AGGREGATION_MANIFEST.md
+checks/org_mirror_handoff_terms.txt
+scripts/check_required_terms.py
 scripts/check_org_operational_observer.py
 scripts/check_org_repository_inventory.py
+scripts/check_org_completion_dashboard.py
 ```
 
 ## Source Of Truth Map
@@ -41,14 +45,21 @@ Observer standard: docs/ORG_OPERATIONAL_OBSERVER_HANDOFF.md
 Repository inventory: docs/ORG_REPOSITORY_INVENTORY.md
 Validator registry: docs/ORG_VALIDATOR_REGISTRY.md
 Dashboard summary: docs/ORG_COMPLETION_DASHBOARD.md
+Aggregation target map: docs/ORG_AGGREGATION_MANIFEST.md
+Org mirror handoff terms: checks/org_mirror_handoff_terms.txt
 ```
 
 ## Missing Organization Modules
 
 ```text
-scripts/check_org_mirror_handoff.py
-scripts/check_org_completion_dashboard.py
-optional cross-repository aggregation workflow
+No required organization modules remain for the current org-continuation goal.
+Optional future work: cross-repository aggregation workflow that executes docs/ORG_AGGREGATION_MANIFEST.md targets.
+```
+
+## Known Remaining Ecosystem Observation
+
+```text
+StegVerse-Labs/TV: fresh workflow and artifact observation remains pending before operational status promotion.
 ```
 
 ## Promotion Rule
@@ -56,11 +67,12 @@ optional cross-repository aggregation workflow
 ```text
 Dashboard presence is not repository completion.
 Repository completion must be determined from repository-local evidence.
+Aggregation manifest presence is not aggregation execution.
 ```
 
 ## Archive Readiness
 
 ```text
 thread_archive_ready: true
-archive_reason: the organization now has a dashboard entry point that links mirror, observer, inventory, and validator sources of truth. Future sessions can continue from repository-local files without reconstructing state from chat.
+archive_reason: the organization dashboard now links mirror, observer, inventory, validator, dashboard, required-terms, and aggregation-manifest sources of truth. Future sessions can continue from repository-local files without reconstructing state from chat.
 ```
