@@ -4,139 +4,98 @@
 
 This file is the primary entry point and sole organizational exit point for organization-scoped work in `StegVerse-Labs`.
 
-Repository-local `*_MIRROR_HANDOFF.md` files remain authoritative for repository-specific implementation evidence. Machine-readable control state under `control/`, `tasks/`, `events/`, and `schemas/` is authoritative for scheduling and transition validation. This Markdown file is the human-readable organization projection and continuation record.
+Repository-local `*_MIRROR_HANDOFF.md` files remain authoritative for repository-specific implementation evidence. Machine-readable state under `control/`, `tasks/`, `events/`, `heartbeats/`, `warrants/`, and `schemas/` is authoritative for scheduling and transition validation.
 
-## Current governing objective
+## Governing objective
 
 ```text
-Install and activate the minimum safe organization control plane needed for
-parallel, collision-aware, purpose-bound ecosystem construction.
+Activate parallel, collision-aware, purpose-bound ecosystem construction with
+scoped claims, deterministic queueing, check-in closure, heartbeat reconciliation,
+and repository-local enforcement adapters.
 ```
 
-## Current implementation task
+## Installed on main
+
+- PR #1 merged at `fd020c055ade5ec33a670b2c4b4ede59e394e629`;
+- PR #2 merged at `ff72d911f0587115e3bb621e6258a595da70eab2`;
+- non-claimable organization control repository;
+- task, claim, check-in, heartbeat, scan-warrant, and deficiency schemas;
+- active-claim, queue, fencing-counter, heartbeat-state, and append-only event records;
+- deterministic allocator with bounded fast-forward CAS retries;
+- dependency-cycle, fencing, control-plane, and check-in validators;
+- generated machine-state projection and drift workflow;
+- `TASK-2026-0001` completed with accepted merged check-in.
+
+## Current task
 
 ```yaml
-task_id: TASK-2026-0001
+task_id: TASK-2026-0002
+issue: 3
 status: checkin_pending
-branch: feat/org-handoff-control-plane-v0.2
-pull_request: 1
-head_commit: 1654691c025bf6e5a482663cc98440cbb33146ba
+branch: feat/org-heartbeat-transport-v0.2
 result: partial
 ```
 
-## Installed on the implementation branch
+## Current branch implementation
 
-- consolidated v0.2 architecture and review corrections;
-- non-claimable `StegVerse-Labs/.github` invariant;
-- machine-readable organization state;
-- task, claim, heartbeat, check-in, scan-warrant, and deficiency-report schemas;
-- active-claims registry, queue state, fencing counters, and append-only event log;
-- dependency-cycle and control-plane validators;
-- deterministic task-centered claim allocator;
-- serialized allocator workflow using fast-forward rejection as the CAS abort primitive;
-- bounded three-attempt CAS retry;
-- per-resource fencing-token validator for merge-time enforcement;
-- check-in reconciliation validator with merge-before-completion enforcement;
-- task-centered construction record and task-specific check-in proposal;
-- expanded CI validation for state, allocator behavior, reconciliation, JSON, and JSONL.
-
-## Enforceable architecture represented
-
-```text
-Task proposal
-    ↓
-validation and dependency-cycle rejection
-    ↓
-deterministic queue order
-    ↓
-serialized allocator
-    ↓
-atomic mandatory claim calculation
-    ↓
-fast-forward-only compare-and-swap push
-    ↓
-active claims + per-resource fencing generation + event receipt
-    ↓
-repository implementation
-    ↓
-merge-time fencing validation
-    ↓
-per-task check-in proposal
-    ↓
-check-in reconciliation and claim-release calculation
-    ↓
-organization incorporation and closure
-```
+- deterministic center heartbeat assertion issuer;
+- canonical payload digest and nonce generation;
+- return validator with typed epoch, claim, fencing, scope, policy, evidence, and nonce deltas;
+- separately scheduled expected-return watchdog;
+- watchdog evidence records;
+- scan-warrant opening for missing returns;
+- no authority effect from heartbeat observations.
 
 ## Current non-claims
 
-The following are not yet claimed active:
+- heartbeat workflows are not merged or running on `main`;
+- no repository claimant adapter has returned a nonce-bound beat;
+- branch protection and required status checks are not confirmed;
+- authoritative automated check-in mutation and atomic release are not active;
+- repository-local fencing checks are not required across the ecosystem;
+- statistical heartbeat baselines are not active.
 
-- PR #1 merged to `main`;
-- required status checks or branch protection configured;
-- repository-local merge workflows consuming fencing validation;
-- reconciler performing authoritative state mutation and atomic release;
-- generated HANDOFF renderer installed;
-- heartbeat transport running;
-- independent expected-return watchdog running;
-- scan-warrant or deficiency-report intake workflows activated;
-- ecosystem-wide repository adapters installed.
+## Next authorized actions
 
-## Required next actions
+1. Review and merge the heartbeat transport branch.
+2. Register the first scoped repository claimant without overlapping its active claim surfaces.
+3. Install a repository-local return producer and fencing check.
+4. Observe one complete nonce-bound heartbeat round trip.
+5. Activate deficiency intake and warrant coalescing.
+6. Add authoritative check-in mutation and claim release.
+7. Propagate adapters to additional repositories through their local handoffs.
 
-1. Observe and correct PR #1 validation results if GitHub exposes them.
-2. Merge PR #1 only when the branch is mergeable and validation evidence is adequate.
-3. Configure control-plane validation as a required check on `main` where repository settings permit.
-4. Install authoritative check-in reconciliation and atomic claim-release workflow.
-5. Install the generated HANDOFF renderer and drift check.
-6. Implement deterministic heartbeat round trips before statistical baselines.
-7. Add independent watchdog and scan-warrant/deficiency intake workflows.
-8. Propagate repository-local adapters beginning with active construction repositories.
-9. When release-ready, verify propagation requirements for `StegVerse-Labs/Sit`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
+## Collision boundary
 
-## Remaining files or modules to install
+Do not modify StegCore's active external-evidence claim surfaces:
 
 ```text
-Target: StegVerse-Labs/.github
-- scripts/render_org_handoff.py
-- control/heartbeat-state.json
-- .github/workflows/org-checkin-reconcile.yml
-- .github/workflows/org-handoff-render.yml
-- .github/workflows/org-heartbeat-watchdog.yml
-- warrant and deficiency intake workflows
-
-Target: ecosystem repositories
-- repository-local task claimant adapter
-- repository-local heartbeat return producer
-- required merge-time fencing status check
-- repository-local check-in proposal producer
-- current handoff linkage to this organization handoff
+src/stegcore/external_evidence.py
+tests/test_external_evidence.py
+scripts/verify_governance_external_evidence_contract.py
+contracts/governance_external_evidence_snapshot/
+.github/workflows/external-evidence-interop.yml
 ```
 
 ## Closure rule
 
-No work round is organizationally closed merely because files were committed or a pull request was opened. Closure requires an accepted check-in, incorporated organization state, released claims where applicable, and this HANDOFF reflecting the result.
+No task is organizationally closed until its merged result is represented in machine state, its check-in is accepted, applicable claims are released, and this handoff reflects the resulting organization state.
 
 ## Archive readiness
 
 ```text
-thread_archive_ready: true
-archive_reason: all unique architecture decisions, installed branch state,
-remaining modules, PR identity, task identity, and next actions are durable in
-StegVerse-Labs/.github. No additional part of this chat thread is required to
-continue implementation.
+thread_archive_ready: false
+reason: heartbeat transport and the first repository claimant round trip are not yet merged and evidenced.
 ```
 
 ## Progress snapshot
 
 ```text
-StegVerse-Labs - 96% complete
-StegVerse-Labs/.github - 94% complete
-StegVerse-Labs/.github - 84% complete TO CONTROL-PLANE ACTIVATION
-Fully developed files vs scaffolding and stubs: scheduler state, CAS allocation,
-fencing validation, reconciliation validation, observability schemas, and CI
-coverage are developed on PR #1; authoritative release mutation, renderer,
-heartbeat transport, watchdog, and repository adapters remain.
-Delta: PR #1 contains the control-plane enforcement foundation but remains
-unmerged and inactive on main.
+StegVerse-Labs - 97% complete
+StegVerse-Labs/.github - 98% complete
+StegVerse-Labs/.github - 95% complete TO CONTROL-PLANE ACTIVATION
+Fully developed files vs scaffolding and stubs: scheduler, allocator, fencing foundation,
+check-in validation, machine projection, and heartbeat center/watchdog implementation are developed;
+repository claimant adapters, live round-trip evidence, required checks, and authoritative release mutation remain.
+Delta: organization control is merged; purposeful communications are implemented on the active branch but not yet operating end to end.
 ```
