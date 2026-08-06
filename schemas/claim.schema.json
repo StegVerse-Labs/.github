@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/claim.schema.json",
+  "title": "StegVerse Repository Claim Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["repository", "mode", "scope"],
+  "properties": {
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["host", "owner", "name", "full_name"],
+      "properties": {
+        "host": {"const": "github.com"},
+        "owner": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "full_name": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
+        "repository_id": {"type": "integer", "minimum": 1},
+        "default_branch": {"type": "string"}
+      }
+    },
+    "mode": {"enum": ["shared_read", "shared_write", "scoped_exclusive", "repository_exclusive"]},
+    "preemptible": {"type": "boolean"},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contracts", "release_surfaces"],
+      "properties": {
+        "paths": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "contracts": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "release_surfaces": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "workflows": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "lease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expires_at", "heartbeat_due_at", "fencing_token"],
+      "properties": {
+        "expires_at": {"type": "string", "format": "date-time"},
+        "heartbeat_due_at": {"type": "string", "format": "date-time"},
+        "fencing_token": {"type": "integer", "minimum": 1},
+        "service_class": {"enum": ["low_contention", "active_parallel", "release_or_security"]}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"repository": {"properties": {"full_name": {"const": "StegVerse-Labs/.github"}}}}},
+      "then": false
+    }
+  ]
+}
