@@ -1,0 +1,14 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "TASK-2026-0002",
+  "organization": "StegVerse-Labs",
+  "goal": "Activate deterministic organization heartbeat transport and independent expected-return monitoring",
+  "status": "checkin_pending",
+  "flags": [],
+  "requested_at": "2026-08-06T19:58:22Z",
+  "priority_class": "critical",
+  "rank_reason": ["enables purpose-bound system communication", "detects stale claims and missing claimants"],
+  "requirements": {"mandatory": [], "optional": []},
+  "dependencies": ["TASK-2026-0001"],
+  "workspace": {"branch": "feat/org-heartbeat-transport-v0.2", "base_commit": "ff72d911f0587115e3bb621e6258a595da70eab2", "merge_target": "main", "direct_push_allowed": false, "pull_request_required": true}
+}
