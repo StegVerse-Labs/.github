@@ -1,0 +1,1 @@
+{"event_id":"ORG-EVENT-000001","event_type":"control_plane_initialized","generation":0,"occurred_at":"2026-08-06T19:40:00Z","actor":"StegVerse-Labs/.github","evidence":{"pull_request":1,"branch":"feat/org-handoff-control-plane-v0.2"}}
