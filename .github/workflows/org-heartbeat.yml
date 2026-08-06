@@ -1,6 +1,14 @@
 name: Organization heartbeat
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - control/claims-active.json
+      - control/org-state.json
+      - heartbeats/returns/**
+      - scripts/issue_heartbeats.py
+      - scripts/validate_heartbeat_returns.py
   schedule:
     - cron: '17 */8 * * *'
 permissions:
