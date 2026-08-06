@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.org-heartbeat-state/v1",
+  "generation": 0,
+  "expected_returns": {},
+  "last_completed_round": null,
+  "open_warrants": [],
+  "deterministic_tolerances": {
+    "fencing_token": 0,
+    "claims": 0,
+    "scope": 0,
+    "policy_version": 0,
+    "nonce": 0
+  },
+  "ordered_tolerances": {
+    "epoch_beats": 2
+  },
+  "statistical_detection_active": false
+}

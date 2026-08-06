@@ -1,0 +1,34 @@
+name: Render organization handoff state
+
+on:
+  pull_request:
+    paths:
+      - 'control/**'
+      - 'tasks/**'
+      - 'scripts/render_org_handoff.py'
+      - 'docs/ORG_CONTROL_PLANE_STATE.md'
+      - '.github/workflows/org-handoff-render.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'control/**'
+      - 'tasks/**'
+      - 'scripts/render_org_handoff.py'
+      - '.github/workflows/org-handoff-render.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render-and-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Render organization state
+        run: python scripts/render_org_handoff.py
+      - name: Require committed projection to match
+        run: git diff --exit-code -- docs/ORG_CONTROL_PLANE_STATE.md

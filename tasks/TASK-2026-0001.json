@@ -3,7 +3,7 @@
   "task_id": "TASK-2026-0001",
   "organization": "StegVerse-Labs",
   "goal": "Install the organization handoff v0.2 minimum control plane and CAS allocator core",
-  "status": "checkin_pending",
+  "status": "completed",
   "flags": [],
   "requested_at": "2026-08-06T19:38:05Z",
   "priority_class": "critical",
@@ -22,5 +22,10 @@
     "merge_target": "main",
     "direct_push_allowed": false,
     "pull_request_required": true
+  },
+  "completion": {
+    "pull_request": 1,
+    "merge_commit": "fd020c055ade5ec33a670b2c4b4ede59e394e629",
+    "completed_at": "2026-08-06T19:51:00Z"
   }
 }
