@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/org-checkin/v1",
+  "title": "Organization task check-in proposal",
+  "type": "object",
+  "required": ["schema", "task_id", "result", "repository_results", "remaining_work", "submitted_at"],
+  "properties": {
+    "schema": {"const": "stegverse.org-checkin/v1"},
+    "task_id": {"type": "string", "pattern": "^TASK-[0-9]{4}-[0-9]{4,}$"},
+    "result": {"enum": ["completed", "partial", "blocked", "suspended", "transferred", "abandoned", "rejected"]},
+    "repository_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["repository", "delivery_state", "handoff_path"],
+        "properties": {
+          "repository": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
+          "delivery_state": {"enum": ["committed", "pushed", "pull_request_open", "merged", "released", "deployed", "preserved_unmerged"]},
+          "commit": {"type": ["string", "null"]},
+          "pull_request": {"type": ["integer", "null"]},
+          "handoff_path": {"type": "string", "minLength": 1},
+          "validation_receipts": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "remaining_work": {"type": "array", "items": {"type": "string"}},
+    "cross_repository_impacts": {"type": "array", "items": {"type": "string"}},
+    "submitted_at": {"type": "string", "format": "date-time"},
+    "fencing_tokens": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 1}}
+  },
+  "additionalProperties": false
+}
