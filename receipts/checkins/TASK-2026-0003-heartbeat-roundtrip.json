@@ -1,0 +1,14 @@
+{
+  "schema": "stegverse.org-checkin-receipt/v1",
+  "task_id": "TASK-2026-0003",
+  "result": "accepted",
+  "completed_at": "2026-08-06T20:29:00Z",
+  "source_repository": "StegVerse-Labs/StegCore",
+  "source_commit": "cd165320b957c84ede3d45c3c42ee9a82c22842e",
+  "assertion": "heartbeats/outbound/TASK-2026-0003-1.json",
+  "return": "heartbeats/returns/TASK-2026-0003-1.json",
+  "observation": "heartbeats/observations/TASK-2026-0003-1.json",
+  "deterministic_ok": true,
+  "claim_released": true,
+  "authority_effect": "none"
+}
