@@ -1,0 +1,29 @@
+name: Organization heartbeat
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */8 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: org-heartbeat
+  cancel-in-progress: false
+jobs:
+  issue-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Issue outbound assertions
+        run: python scripts/issue_heartbeats.py
+      - name: Validate available returns
+        run: python scripts/validate_heartbeat_returns.py
+      - name: Commit heartbeat state
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add control/heartbeat-state.json heartbeats
+          git diff --cached --quiet || git commit -m "Record organization heartbeat epoch"
+          git push
