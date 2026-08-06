@@ -1,0 +1,58 @@
+name: Organization claim allocator
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'tasks/TASK-*.json'
+      - 'control/claims-active.json'
+      - 'control/queue.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: org-allocator
+  cancel-in-progress: false
+
+jobs:
+  allocate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate input state
+        run: python scripts/validate_org_control_plane.py
+      - name: Allocate and compare-and-swap
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name 'stegverse-org-allocator[bot]'
+          git config user.email 'stegverse-org-allocator[bot]@users.noreply.github.com'
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            python scripts/validate_org_control_plane.py
+            python scripts/allocate_claims.py
+            if git diff --quiet; then
+              echo 'No allocatable transition.'
+              exit 0
+            fi
+            git add control/ tasks/ events/
+            git commit -m 'Allocate next eligible organization task'
+            if git push --porcelain origin HEAD:main; then
+              echo 'CAS transition committed.'
+              exit 0
+            fi
+            echo "CAS conflict on attempt ${attempt}; re-reading state."
+            sleep $((attempt * 2))
+          done
+          echo 'Allocator exhausted bounded CAS retries.' >&2
+          exit 1
