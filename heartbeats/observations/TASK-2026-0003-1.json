@@ -1,0 +1,20 @@
+{
+  "assertion": "TASK-2026-0003-1.json",
+  "assertion_payload_sha256": "ce6798225b2316e98ac2aee31b4814e8abd108df56a9cadd41abbafad2cc813a",
+  "authority_effect": "none",
+  "delta": {
+    "claims": [],
+    "epoch": 0,
+    "evidence_pointer_changed": true,
+    "fencing_token": 0,
+    "nonce": 0,
+    "policy_version": false,
+    "scope": false
+  },
+  "deterministic_ok": true,
+  "return": "TASK-2026-0003-1.json",
+  "return_repository_commit": "cd165320b957c84ede3d45c3c42ee9a82c22842e",
+  "schema": "stegverse.org-heartbeat-observation/v1",
+  "validated_at": "2026-08-06T20:29:00Z",
+  "validation_method": "canonical_digest_and_typed_delta_comparison"
+}

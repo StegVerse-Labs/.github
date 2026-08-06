@@ -3,9 +3,10 @@
   "task_id": "TASK-2026-0003",
   "organization": "StegVerse-Labs",
   "goal": "Complete the first automated nonce-bound organization heartbeat round trip with StegVerse-Labs/StegCore",
-  "status": "active",
+  "status": "completed",
   "flags": [],
   "requested_at": "2026-08-06T20:07:00Z",
+  "completed_at": "2026-08-06T20:29:00Z",
   "priority_class": "critical",
   "rank_reason": [
     "activates the first two-sided system communication path",
@@ -23,6 +24,12 @@
     "direct_push_allowed": false,
     "pull_request_required": true
   },
-  "machine_owner": "org-heartbeat workflow plus StegCore org-heartbeat-return workflow",
-  "release_condition": "matching nonce-bound return is validated with deterministic_ok=true and recorded in the organization handoff"
+  "machine_owner": "StegVerse-Labs/.github heartbeat control plane",
+  "release_condition": "satisfied",
+  "completion_evidence": [
+    "heartbeats/outbound/TASK-2026-0003-1.json",
+    "StegVerse-Labs/StegCore@cd165320b957c84ede3d45c3c42ee9a82c22842e:data/org-heartbeat/TASK-2026-0003-1.json",
+    "heartbeats/returns/TASK-2026-0003-1.json",
+    "heartbeats/observations/TASK-2026-0003-1.json"
+  ]
 }

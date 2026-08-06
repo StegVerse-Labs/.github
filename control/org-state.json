@@ -10,27 +10,11 @@
       "default_branch": "main"
     }
   },
-  "generation": 1,
+  "generation": 2,
   "generated_handoff": "docs/ORG_MIRROR_HANDOFF.md",
-  "durable_task_states": [
-    "proposed",
-    "queued",
-    "active",
-    "checkin_pending",
-    "completed"
-  ],
-  "task_flags": [
-    "blocked",
-    "suspended",
-    "superseded",
-    "reconciliation_required"
-  ],
-  "authoritative_writers": [
-    "allocator_workflow",
-    "reconciler_workflow",
-    "checkin_validation_workflow",
-    "handoff_renderer_workflow"
-  ],
+  "durable_task_states": ["proposed", "queued", "active", "checkin_pending", "completed"],
+  "task_flags": ["blocked", "suspended", "superseded", "reconciliation_required"],
+  "authoritative_writers": ["allocator_workflow", "reconciler_workflow", "checkin_validation_workflow", "handoff_renderer_workflow"],
   "allocation": {
     "mandatory_claims_atomic": true,
     "optional_claims_preemptible": true,
@@ -52,16 +36,22 @@
       "release_or_security": {"lease_hours": 1, "heartbeat_minutes": 15}
     }
   },
-  "tasks": [],
+  "tasks": ["TASK-2026-0001", "TASK-2026-0002", "TASK-2026-0003"],
   "active_claims": [],
   "open_scan_warrants": [],
   "last_event_sequence": 0,
   "implementation_status": {
-    "minimum_core": "installed_on_feature_branch",
-    "allocator": "not_active",
-    "merge_fencing": "not_active",
-    "heartbeat_transport": "not_active",
-    "watchdog": "not_active",
-    "reconciler": "not_active"
+    "minimum_core": "merged_on_main",
+    "allocator": "installed_not_protected_required",
+    "merge_fencing": "validator_installed_not_required",
+    "heartbeat_transport": "active_first_round_completed",
+    "watchdog": "installed_scheduled_no_hosted_run_observed",
+    "reconciler": "validation_installed_authoritative_mutation_partial"
+  },
+  "last_activated_capability": {
+    "name": "purpose_bound_heartbeat_roundtrip",
+    "repository": "StegVerse-Labs/StegCore",
+    "observation": "heartbeats/observations/TASK-2026-0003-1.json",
+    "activated_at": "2026-08-06T20:29:00Z"
   }
 }
