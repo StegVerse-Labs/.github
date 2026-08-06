@@ -1,0 +1,65 @@
+name: Validate organization control plane
+
+on:
+  pull_request:
+    paths:
+      - 'control/**'
+      - 'events/**'
+      - 'schemas/**'
+      - 'tasks/**'
+      - 'scripts/**'
+      - 'docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md'
+      - 'docs/ORG_MIRROR_HANDOFF.md'
+      - '.github/workflows/org-control-plane-validate.yml'
+      - '.github/workflows/org-allocator.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'control/**'
+      - 'events/**'
+      - 'schemas/**'
+      - 'tasks/**'
+      - 'scripts/**'
+      - 'docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md'
+      - 'docs/ORG_MIRROR_HANDOFF.md'
+      - '.github/workflows/org-control-plane-validate.yml'
+      - '.github/workflows/org-allocator.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: org-control-plane-validation-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate control-plane invariants
+        run: python scripts/validate_org_control_plane.py
+      - name: Exercise allocator deterministically
+        run: |
+          python scripts/allocate_claims.py
+          python scripts/validate_org_control_plane.py
+      - name: Validate check-in reconciliation
+        run: python scripts/reconcile_checkins.py
+      - name: Validate JSON and JSONL syntax
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          paths = sorted(Path('.').glob('control/**/*.json')) + sorted(Path('.').glob('schemas/**/*.json')) + sorted(Path('.').glob('tasks/**/*.json'))
+          for path in paths:
+              json.loads(path.read_text(encoding='utf-8'))
+              print(f'valid JSON: {path}')
+          for path in sorted(Path('.').glob('events/**/*.jsonl')):
+              for line_no, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
+                  json.loads(line)
+                  print(f'valid JSONL: {path}:{line_no}')
+          PY

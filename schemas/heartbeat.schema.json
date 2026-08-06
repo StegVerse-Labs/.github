@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/heartbeat.schema.json",
+  "title": "StegVerse Purpose-Bound Heartbeat",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "protocol", "outbound", "return"],
+  "properties": {
+    "schema": {"const": "stegverse.org-heartbeat/v0.2"},
+    "protocol": {
+      "type": "object",
+      "required": ["canonicalization", "digest_algorithm", "signature_context"],
+      "properties": {
+        "canonicalization": {"const": "RFC8785-JCS"},
+        "digest_algorithm": {"const": "SHA-256"},
+        "signature_context": {"const": "stegverse.org-heartbeat.return.v0.2"}
+      }
+    },
+    "outbound": {"$ref": "#/$defs/assertion"},
+    "return": {
+      "allOf": [
+        {"$ref": "#/$defs/assertion"},
+        {
+          "type": "object",
+          "required": ["outbound_digest", "authenticator", "evidence_pointer", "touched_scope"],
+          "properties": {
+            "outbound_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "authenticator": {"type": "string", "minLength": 1},
+            "evidence_pointer": {"type": "string", "minLength": 1},
+            "touched_scope": {"$ref": "#/$defs/scope"}
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "scope": {
+      "type": "object",
+      "required": ["paths", "contracts", "release_surfaces", "capabilities", "workflows"],
+      "properties": {
+        "paths": {"type": "array", "items": {"type": "string"}},
+        "contracts": {"type": "array", "items": {"type": "string"}},
+        "release_surfaces": {"type": "array", "items": {"type": "string"}},
+        "capabilities": {"type": "array", "items": {"type": "string"}},
+        "workflows": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "assertion": {
+      "type": "object",
+      "required": ["organization", "task_id", "claimant_id", "epoch", "claims", "fencing_tokens", "scope", "base_commit", "policy_version", "nonce", "sequence", "emitted_at"],
+      "properties": {
+        "organization": {"const": "StegVerse-Labs"},
+        "task_id": {"type": "string", "pattern": "^TASK-[0-9]{4}-[0-9]{4,}$"},
+        "claimant_id": {"type": "string", "minLength": 1},
+        "epoch": {"type": "integer", "minimum": 0},
+        "claims": {"type": "array", "items": {"type": "string"}},
+        "fencing_tokens": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 1}},
+        "scope": {"$ref": "#/$defs/scope"},
+        "base_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "policy_version": {"type": "string", "minLength": 1},
+        "nonce": {"type": "string", "minLength": 16},
+        "sequence": {"type": "integer", "minimum": 1},
+        "emitted_at": {"type": "string", "format": "date-time"}
+      }
+    }
+  }
+}

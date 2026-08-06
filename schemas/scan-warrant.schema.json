@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/scan-warrant.schema.json",
+  "title": "StegVerse Scan Warrant",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "warrant_id", "opened_at", "opened_by", "triggering_observation", "scope", "correlation_class", "occurrence_count", "status"],
+  "properties": {
+    "schema": {"const": "stegverse.scan-warrant/v0.2"},
+    "warrant_id": {"type": "string", "pattern": "^SCAN-[0-9]{4}-[0-9]{4,}$"},
+    "opened_at": {"type": "string", "format": "date-time"},
+    "opened_by": {"enum": ["delta_observation", "deficiency_report", "watchdog"]},
+    "triggering_observation": {
+      "type": "object",
+      "required": ["field", "delta", "claimants"],
+      "properties": {
+        "field": {"type": "string", "minLength": 1},
+        "delta": {},
+        "claimants": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "scope": {
+      "type": "object",
+      "required": ["subsystems", "streams"],
+      "properties": {
+        "subsystems": {"type": "array", "items": {"type": "string"}},
+        "streams": {"type": "array", "items": {"type": "string"}},
+        "time_range": {"type": "object"}
+      }
+    },
+    "correlation_class": {"enum": ["shared_path", "isolated", "unknown"]},
+    "occurrence_count": {"type": "integer", "minimum": 1},
+    "status": {"enum": ["open", "investigating", "closed"]},
+    "finding": {},
+    "closed_at": {"type": "string", "format": "date-time"},
+    "closure_evidence": {"type": "array", "items": {"type": "string"}},
+    "recurrence_of": {"type": "string", "pattern": "^SCAN-[0-9]{4}-[0-9]{4,}$"},
+    "derived_task_id": {"type": "string", "pattern": "^TASK-[0-9]{4}-[0-9]{4,}$"}
+  }
+}
