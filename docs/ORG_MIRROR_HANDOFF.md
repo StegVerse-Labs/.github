@@ -2,9 +2,17 @@
 
 ## Purpose
 
-This handoff lets a future organization-level build session continue repository inventory, operational observer standards, mirror-handoff propagation, registry work, or ecosystem-management work without prior chat context.
+This handoff lets a future organization-level build session continue repository inventory, operational observer standards, mirror-handoff propagation, registry work, ecosystem-management work, or organization control-plane implementation without prior chat context.
 
 It follows the same repository-resident mirror handoff pattern used by individual repositories: the organization profile repository must carry enough state, acceptance criteria, non-claims, remaining work, and next-action instructions for the ecosystem to continue or close the task without manual chat reconstruction.
+
+## Primary Entry And Sole Exit Rule
+
+All organization-scoped work MUST begin by reading this handoff and the applicable repository-local handoffs.
+
+No work cycle is organizationally closed, transferable, releasable, or eligible for archival until its resulting state, evidence, unresolved work, and authority disposition have been incorporated through the organization control plane and reflected in this handoff.
+
+Repository-local handoffs remain authoritative for repository-specific implementation evidence. This handoff is authoritative for organization-wide coordination, task state, claims, queue state, dependencies, cross-repository effects, and organizational closure.
 
 ## Current Assessment Goal
 
@@ -15,14 +23,14 @@ Continue building without manual actions needed through completion OR until task
 ## Current Goal
 
 ```text
-Goal: organization-level repository-managed continuation readiness
+Goal: organization-level repository-managed continuation and control-plane readiness
 Repository: StegVerse-Labs/.github
-Role: organization profile, operational observer standard, and future repository registry layer
-Activation state: self_managed_handoff_ready
-Completion class: self_managed_handoff_completion
-Source of truth: README.md, docs/ORG_OPERATIONAL_OBSERVER_HANDOFF.md, scripts/check_org_operational_observer.py, and this handoff
-Manual action requirement: none_for_handoff_continuation
-Remaining dependency: org-level registry, repo inventory, completion dashboard, and cross-repo observer automation remain future work
+Role: non-claimable organization control plane, organization profile, operational observer standard, repository registry, and generated handoff layer
+Activation state: minimum_control_plane_review_pending
+Completion class: implementation_branch_created
+Source of truth: docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md, control/org-state.json, schemas/*.schema.json, scripts/validate_org_control_plane.py, and this handoff
+Manual action requirement: merge the implementation pull request after review and green validation
+Remaining dependency: allocator CAS, branch protection, merge fencing, heartbeat transport, watchdog, check-in reconciler, and generated handoff renderer are not active
 ```
 
 ## Built Files Known To This Handoff
@@ -31,24 +39,54 @@ Remaining dependency: org-level registry, repo inventory, completion dashboard, 
 README.md
 docs/ORG_OPERATIONAL_OBSERVER_HANDOFF.md
 docs/ORG_MIRROR_HANDOFF.md
+docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md
+control/org-state.json
+schemas/task.schema.json
+schemas/claim.schema.json
+schemas/heartbeat.schema.json
 scripts/check_org_operational_observer.py
+scripts/validate_org_control_plane.py
+.github/workflows/org-control-plane-validate.yml
 ```
 
 ## Confirmed Organization Boundary
 
-The `.github` repository is the organization profile and standards-discovery layer.
+The `.github` repository is the organization control plane, profile, standards-discovery, registry, and generated-state projection layer.
 
-It may document shared standards, observer rules, registry expectations, and repo-discovery conventions.
+It is not a claimable task resource. Tasks may submit per-task proposals, but authoritative task, claim, lease, fencing, queue, and handoff state may be changed only by designated allocator, reconciler, check-in validation, and rendering workflows.
 
 It does not itself make another repository complete, replace a repository-local handoff, or promote operational completion without repository-specific evidence.
 
 ## Current Installed Standards
 
 ```text
-Operational observer standard: installed
-Observer standard validator: installed
-README discoverability: installed
-Org mirror handoff: installed
+Operational observer standard: installed on main
+Observer standard validator: installed on main
+README discoverability: installed on main
+Org mirror handoff: installed on main
+Control-plane v0.2 specification: installed on feature branch
+Machine-readable org state: installed on feature branch
+Task, claim, and heartbeat schemas: installed on feature branch
+Minimum invariant validator: installed on feature branch
+Validation workflow: installed on feature branch
+Allocator CAS: not installed
+Required merge fencing check: not installed
+Heartbeat transport and watchdog: not installed
+Check-in reconciler and generated handoff renderer: not installed
+```
+
+## Control-Plane Invariants
+
+```text
+- StegVerse-Labs/.github is not claimable.
+- Durable task states are proposed, queued, active, checkin_pending, completed.
+- Blocked, suspended, superseded, and reconciliation_required are orthogonal flags.
+- Mandatory claims are acquired atomically.
+- Optional claims are preemptible.
+- Task dependency cycles are forbidden.
+- Fencing tokens are per-resource and issued only by the allocator.
+- Pre-merge activity is detected; stale authority is prevented at required merge status checks.
+- No task is closed until its result is incorporated through this organization boundary.
 ```
 
 ## Known Repositories And Current Handoff Status
@@ -60,7 +98,7 @@ StegVerse-Labs/TV: TV_MIRROR_HANDOFF.md installed.
 StegVerse-Labs/Continuity: CONTINUITY_MIRROR_HANDOFF.md detected.
 StegVerse-Labs/stegfin-governance: STEGFIN_GOVERNANCE_MIRROR_HANDOFF.md installed.
 StegVerse-Labs/crypto-bot: CRYPTO_BOT_MIRROR_HANDOFF.md installed.
-StegVerse-Labs/.github: ORG_MIRROR_HANDOFF.md installed.
+StegVerse-Labs/.github: ORG_MIRROR_HANDOFF.md installed and v0.2 control-plane implementation is under review.
 ```
 
 ## Acceptance Criteria
@@ -83,14 +121,24 @@ B. Self-managed handoff completion:
    - Known repository handoff status is documented.
    - Remaining work is explicit.
    - Future sessions can continue without reconstructing chat context.
+
+C. Minimum control-plane activation:
+   - v0.2 proposal and schemas are merged.
+   - org-state validation is green.
+   - control repository is rejected as a claim target.
+   - dependency cycles are rejected.
+   - per-task proposal paths are defined.
+   - no allocator, heartbeat, or enforcement capability is claimed active without committed evidence.
 ```
 
 ## Current Completion Classification
 
 ```text
-classification: self_managed_handoff_completion
-registry_completion: not_claimed
-reason: organization-level observer standards and mirror handoff exist; repository inventory, completion dashboard, and cross-repo observer aggregation remain future work.
+classification: minimum_control_plane_implementation_pending_merge
+registry_completion: partial
+control_plane_specification: implemented_on_feature_branch
+control_plane_activation: not_claimed
+reason: v0.2 architecture, state, schemas, validator, and CI are committed to an implementation branch; allocator, fencing enforcement, heartbeat transport, watchdog, reconciliation, and generated rendering remain future work.
 ```
 
 ## Non-Claims
@@ -101,7 +149,11 @@ This handoff does not claim:
 - every StegVerse-Labs repository has a mirror handoff;
 - every repository validator exists;
 - every repository is operationally complete;
-- org-level dashboard is complete;
+- the allocator performs atomic grants;
+- GitHub branch protection or required merge fencing is configured;
+- the purpose-bound heartbeat is transmitting;
+- the independent watchdog is active;
+- the organization handoff is fully generated;
 - future task completion requires this chat thread.
 ```
 
@@ -109,12 +161,26 @@ This handoff does not claim:
 
 ```text
 Target: StegVerse-Labs/.github
-- docs/ORG_REPOSITORY_INVENTORY.md
-- docs/ORG_COMPLETION_DASHBOARD.md
-- docs/ORG_MISSING_HANDOFFS.md
-- docs/ORG_VALIDATOR_REGISTRY.md
-- scripts/check_org_mirror_handoff.py
-- scripts/check_org_repository_inventory.py
+- schemas/checkin.schema.json
+- schemas/scan-warrant.schema.json
+- schemas/deficiency-report.schema.json
+- control/claims-active.json
+- control/events/org-events.jsonl
+- scripts/allocate_org_claims.py
+- scripts/render_org_handoff.py
+- scripts/reconcile_org_state.py
+- .github/workflows/org-allocator.yml
+- .github/workflows/org-reconciler.yml
+- .github/workflows/org-handoff-render.yml
+- .github/workflows/org-heartbeat-watchdog.yml
+- protected control branch and required merge status check configuration
+- fault-injection matrix and receipts
+
+Target: ecosystem repositories
+- repository-local task branch and fencing-token merge check integration
+- check-in proposal producers
+- repository handoff summary emitters
+- heartbeat claimant adapters
 
 Target: StegVerse-Labs/stegfin-governance
 - docs/STEGFIN_GOVERNANCE_OVERVIEW.md or README.md
@@ -132,27 +198,29 @@ Target: StegVerse-Labs/crypto-bot
 ## Next Ecosystem Action
 
 ```text
-1. Treat docs/ORG_MIRROR_HANDOFF.md as the organization-level continuation source of truth.
-2. Install docs/ORG_REPOSITORY_INVENTORY.md.
-3. Install docs/ORG_COMPLETION_DASHBOARD.md.
-4. Add scripts/check_org_mirror_handoff.py.
-5. Keep repository-local handoffs authoritative for repository-specific work.
-6. Do not promote repository completion without repository-local evidence.
+1. Review and merge feat/org-handoff-control-plane-v0.2 after validation passes.
+2. Treat docs/ORG_MIRROR_HANDOFF.md as the organization-level primary entry and sole exit source of truth.
+3. Install the append-only event log and active claim registry.
+4. Implement the CAS allocator with bounded retry and dependency-cycle rejection.
+5. Configure required merge fencing before claiming stale-work prevention.
+6. Install deterministic heartbeat comparison and an independent expected-return watchdog.
+7. Keep repository-local handoffs authoritative for repository-specific implementation evidence.
+8. Do not promote repository completion without repository-local evidence.
 ```
 
 ## Archive Readiness
 
 ```text
 thread_archive_ready: true
-archive_reason: organization-level continuation state is now repository-resident. The repo contains its current goal, role, installed standards, known repository handoff status, acceptance criteria, non-claims, remaining files/modules, and next ecosystem action. No additional content from this chat is required for future continuation.
+archive_reason: the proposal, corrections, implementation branch, installed files, non-claims, and remaining execution path are repository-resident. No additional content from this chat is required for future continuation.
 ```
 
 ## Progress Snapshot
 
 ```text
-StegVerse-Labs - 93% complete
-.github - 84% complete
-.github - 100% complete TO GOAL ACTIVATION
-Fully developed files vs scaffolding and stubs: 84% developed / 16% repository inventory, dashboard, and validators
-Delta: org mirror handoff installed; org-level registry and dashboard remain future work.
+StegVerse-Labs - 94% complete
+StegVerse-Labs/.github - 88% complete
+StegVerse-Labs/.github - 72% complete TO CONTROL-PLANE ACTIVATION
+Fully developed files vs scaffolding and stubs: architecture and minimum validation core are developed; allocator, enforcement, signal transport, reconciliation, and rendering remain unbuilt.
+Delta: v0.2 proposal, machine state, schemas, validator, workflow, and handoff update are committed on a feature branch; activation remains pending review, CI, merge, and enforcement configuration.
 ```
