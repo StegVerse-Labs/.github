@@ -7,8 +7,7 @@ on:
       - 'events/**'
       - 'schemas/**'
       - 'tasks/**'
-      - 'scripts/validate_org_control_plane.py'
-      - 'scripts/allocate_claims.py'
+      - 'scripts/**'
       - 'docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md'
       - 'docs/ORG_MIRROR_HANDOFF.md'
       - '.github/workflows/org-control-plane-validate.yml'
@@ -20,8 +19,7 @@ on:
       - 'events/**'
       - 'schemas/**'
       - 'tasks/**'
-      - 'scripts/validate_org_control_plane.py'
-      - 'scripts/allocate_claims.py'
+      - 'scripts/**'
       - 'docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md'
       - 'docs/ORG_MIRROR_HANDOFF.md'
       - '.github/workflows/org-control-plane-validate.yml'
@@ -45,10 +43,12 @@ jobs:
           python-version: '3.12'
       - name: Validate control-plane invariants
         run: python scripts/validate_org_control_plane.py
-      - name: Exercise allocator without an eligible task
+      - name: Exercise allocator deterministically
         run: |
           python scripts/allocate_claims.py
           python scripts/validate_org_control_plane.py
+      - name: Validate check-in reconciliation
+        run: python scripts/reconcile_checkins.py
       - name: Validate JSON and JSONL syntax
         run: |
           python - <<'PY'
