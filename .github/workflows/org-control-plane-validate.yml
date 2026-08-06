@@ -1,0 +1,50 @@
+name: Validate organization control plane
+
+on:
+  pull_request:
+    paths:
+      - 'control/**'
+      - 'schemas/**'
+      - 'tasks/**'
+      - 'scripts/validate_org_control_plane.py'
+      - 'docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md'
+      - 'docs/ORG_MIRROR_HANDOFF.md'
+      - '.github/workflows/org-control-plane-validate.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'control/**'
+      - 'schemas/**'
+      - 'tasks/**'
+      - 'scripts/validate_org_control_plane.py'
+      - 'docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md'
+      - 'docs/ORG_MIRROR_HANDOFF.md'
+      - '.github/workflows/org-control-plane-validate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: org-control-plane-validation-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate minimum control-plane invariants
+        run: python scripts/validate_org_control_plane.py
+      - name: Validate JSON syntax
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for path in sorted(Path('.').glob('control/**/*.json')) + sorted(Path('.').glob('schemas/**/*.json')) + sorted(Path('.').glob('tasks/**/*.json')):
+              json.loads(path.read_text(encoding='utf-8'))
+              print(f'valid JSON: {path}')
+          PY
