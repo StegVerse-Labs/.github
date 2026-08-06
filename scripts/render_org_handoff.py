@@ -18,6 +18,7 @@ def load(path: Path) -> dict:
 
 def main() -> None:
     state, claims, queue = load(STATE), load(CLAIMS), load(QUEUE)
+    ordered_task_ids = queue.get("ordered_task_ids", [])
     lines = [
         "# Organization Control Plane State",
         "",
@@ -28,7 +29,7 @@ def main() -> None:
         f"- Claim generation: `{claims.get('generation')}`",
         f"- Queue generation: `{queue.get('generation')}`",
         f"- Active claims: `{len(claims.get('claims', []))}`",
-        f"- Queued tasks: `{len(queue.get('tasks', []))}`",
+        f"- Queued tasks: `{len(ordered_task_ids)}`",
         "",
         "## Active Claims",
         "",
@@ -40,12 +41,12 @@ def main() -> None:
         for claim in sorted(claims["claims"], key=lambda value: (value["repository"]["full_name"], value["task_id"])):
             lines.append(f"| {claim['task_id']} | {claim['repository']['full_name']} | {claim['mode']} | {claim['fencing_token']} |")
     lines.extend(["", "## Queue", ""])
-    if not queue.get("tasks"):
+    if not ordered_task_ids:
         lines.append("No queued tasks.")
     else:
-        lines.extend(["| Rank | Task | Status |", "|---:|---|---|"])
-        for index, task in enumerate(queue["tasks"], 1):
-            lines.append(f"| {index} | {task['task_id']} | {task.get('status', 'queued')} |")
+        lines.extend(["| Rank | Task |", "|---:|---|"])
+        for index, task_id in enumerate(ordered_task_ids, 1):
+            lines.append(f"| {index} | {task_id} |")
     rendered = "\n".join(lines).rstrip() + "\n"
     OUTPUT.write_text(rendered, encoding="utf-8")
     print(OUTPUT.relative_to(ROOT))
