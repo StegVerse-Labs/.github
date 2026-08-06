@@ -1,40 +1,6 @@
 {
   "schema": "stegverse.org-claims/v1",
-  "generation": 1,
-  "updated_at": "2026-08-06T20:07:00Z",
-  "claims": [
-    {
-      "task_id": "TASK-2026-0003",
-      "repository": {
-        "host": "github.com",
-        "owner": "StegVerse-Labs",
-        "name": "StegCore",
-        "full_name": "StegVerse-Labs/StegCore",
-        "default_branch": "main"
-      },
-      "mode": "scoped_exclusive",
-      "preemptible": false,
-      "scope": {
-        "paths": [
-          "scripts/produce_org_heartbeat_return.py",
-          ".github/workflows/org-heartbeat-return.yml",
-          "data/org-heartbeat/**",
-          "docs/STEGCORE_ORG_HEARTBEAT_MIRROR_HANDOFF.md"
-        ],
-        "contracts": ["stegverse.org-heartbeat/v1"],
-        "release_surfaces": [],
-        "capabilities": ["organization-heartbeat-claimant"],
-        "workflows": ["org-heartbeat-return"]
-      },
-      "fencing_token": 1,
-      "claim_generation": 1,
-      "lease": {
-        "expires_at": "2026-08-07T20:07:00Z",
-        "heartbeat_due_at": "2026-08-07T04:07:00Z",
-        "fencing_token": 1,
-        "service_class": "low_contention"
-      },
-      "last_evidence_pointer": "StegVerse-Labs/StegCore@df5ff834fad2785bbb0a63fae91b2d51b7a91786"
-    }
-  ]
+  "generation": 2,
+  "updated_at": "2026-08-06T20:29:00Z",
+  "claims": []
 }
