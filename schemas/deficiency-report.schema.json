@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/deficiency-report.schema.json",
+  "title": "StegVerse Deficiency Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "report_id", "subsystem", "class", "asserted_at", "hb_epoch_at_report", "locator", "assertion"],
+  "properties": {
+    "schema": {"const": "stegverse.deficiency-report/v0.2"},
+    "report_id": {"type": "string", "pattern": "^DEF-[0-9]{4}-[0-9]{4,}$"},
+    "subsystem": {"type": "string", "minLength": 1},
+    "class": {"enum": ["observation", "degradation", "impairment", "trauma"]},
+    "asserted_at": {"type": "string", "format": "date-time"},
+    "hb_epoch_at_report": {"type": "integer", "minimum": 0},
+    "locator": {
+      "type": "object",
+      "required": ["stream_id", "time_range", "offsets"],
+      "properties": {
+        "stream_id": {"type": "string", "minLength": 1},
+        "time_range": {"type": "object"},
+        "offsets": {"type": "array", "items": {"type": ["integer", "string"]}}
+      }
+    },
+    "assertion": {
+      "type": "object",
+      "required": ["claims_held"],
+      "properties": {
+        "claims_held": {"type": "array", "items": {"type": "string"}},
+        "summary": {"type": "string"}
+      }
+    },
+    "local_quarantine": {"type": "boolean"},
+    "scan_warrant_id": {"type": "string", "pattern": "^SCAN-[0-9]{4}-[0-9]{4,}$"}
+  }
+}
