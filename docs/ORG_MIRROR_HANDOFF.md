@@ -20,28 +20,27 @@ task_id: TASK-2026-0001
 status: checkin_pending
 branch: feat/org-handoff-control-plane-v0.2
 pull_request: 1
-head_commit: dc053f0149af2c2fb93a17cf7554bef3c97e98e2
+head_commit: 1654691c025bf6e5a482663cc98440cbb33146ba
 result: partial
 ```
 
 ## Installed on the implementation branch
 
 - consolidated v0.2 architecture and review corrections;
-- non-claimable `StegVerse-Labs/.github` control-plane invariant;
+- non-claimable `StegVerse-Labs/.github` invariant;
 - machine-readable organization state;
-- task, claim, heartbeat, and check-in schemas;
-- active-claims registry;
-- deterministic queue state;
-- append-only organization event log;
+- task, claim, heartbeat, check-in, scan-warrant, and deficiency-report schemas;
+- active-claims registry, queue state, fencing counters, and append-only event log;
 - dependency-cycle and control-plane validators;
-- deterministic claim allocator;
-- serialized allocator workflow using fast-forward push rejection as the CAS abort primitive;
+- deterministic task-centered claim allocator;
+- serialized allocator workflow using fast-forward rejection as the CAS abort primitive;
 - bounded three-attempt CAS retry;
-- task-centered construction record;
-- task-specific check-in proposal;
-- expanded CI validation for JSON, JSONL, state invariants, and allocator execution.
+- per-resource fencing-token validator for merge-time enforcement;
+- check-in reconciliation validator with merge-before-completion enforcement;
+- task-centered construction record and task-specific check-in proposal;
+- expanded CI validation for state, allocator behavior, reconciliation, JSON, and JSONL.
 
-## Enforceable architecture now represented
+## Enforceable architecture represented
 
 ```text
 Task proposal
@@ -56,13 +55,17 @@ atomic mandatory claim calculation
     ↓
 fast-forward-only compare-and-swap push
     ↓
-active claims + fencing generation + event receipt
+active claims + per-resource fencing generation + event receipt
     ↓
 repository implementation
     ↓
+merge-time fencing validation
+    ↓
 per-task check-in proposal
     ↓
-organization reconciliation and closure
+check-in reconciliation and claim-release calculation
+    ↓
+organization incorporation and closure
 ```
 
 ## Current non-claims
@@ -71,23 +74,23 @@ The following are not yet claimed active:
 
 - PR #1 merged to `main`;
 - required status checks or branch protection configured;
-- merge-time fencing enforced in repository-local workflows;
-- check-in reconciler installed;
+- repository-local merge workflows consuming fencing validation;
+- reconciler performing authoritative state mutation and atomic release;
 - generated HANDOFF renderer installed;
 - heartbeat transport running;
 - independent expected-return watchdog running;
-- scan warrants and deficiency intake activated;
+- scan-warrant or deficiency-report intake workflows activated;
 - ecosystem-wide repository adapters installed.
 
 ## Required next actions
 
-1. Observe and correct PR #1 validation results.
-2. Merge PR #1 only after validation succeeds.
-3. Configure the control-plane validation check as required on `main`.
-4. Install merge-time fencing validation and check-in reconciliation.
-5. Install the generated HANDOFF renderer.
-6. Implement deterministic heartbeat trips before statistical baselines.
-7. Add independent watchdog, scan-warrant, and deficiency-report layers.
+1. Observe and correct PR #1 validation results if GitHub exposes them.
+2. Merge PR #1 only when the branch is mergeable and validation evidence is adequate.
+3. Configure control-plane validation as a required check on `main` where repository settings permit.
+4. Install authoritative check-in reconciliation and atomic claim-release workflow.
+5. Install the generated HANDOFF renderer and drift check.
+6. Implement deterministic heartbeat round trips before statistical baselines.
+7. Add independent watchdog and scan-warrant/deficiency intake workflows.
 8. Propagate repository-local adapters beginning with active construction repositories.
 9. When release-ready, verify propagation requirements for `StegVerse-Labs/Sit`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
 
@@ -95,21 +98,17 @@ The following are not yet claimed active:
 
 ```text
 Target: StegVerse-Labs/.github
-- scripts/reconcile_checkins.py
 - scripts/render_org_handoff.py
-- scripts/validate_fencing.py
-- schemas/scan-warrant.schema.json
-- schemas/deficiency-report.schema.json
-- control/fencing-counters.json
 - control/heartbeat-state.json
 - .github/workflows/org-checkin-reconcile.yml
 - .github/workflows/org-handoff-render.yml
 - .github/workflows/org-heartbeat-watchdog.yml
+- warrant and deficiency intake workflows
 
 Target: ecosystem repositories
 - repository-local task claimant adapter
 - repository-local heartbeat return producer
-- merge-time fencing status check
+- required merge-time fencing status check
 - repository-local check-in proposal producer
 - current handoff linkage to this organization handoff
 ```
@@ -132,11 +131,12 @@ continue implementation.
 
 ```text
 StegVerse-Labs - 96% complete
-StegVerse-Labs/.github - 92% complete
-StegVerse-Labs/.github - 78% complete TO CONTROL-PLANE ACTIVATION
-Fully developed files vs scaffolding and stubs: minimum control-plane and CAS
-allocator core are developed on PR #1; enforcement, reconciliation, heartbeat
-transport, watchdog, renderer, and ecosystem adapters remain.
-Delta: PR #1 now includes the scheduler state foundation and CAS allocator,
-but is not yet merged or activated.
+StegVerse-Labs/.github - 94% complete
+StegVerse-Labs/.github - 84% complete TO CONTROL-PLANE ACTIVATION
+Fully developed files vs scaffolding and stubs: scheduler state, CAS allocation,
+fencing validation, reconciliation validation, observability schemas, and CI
+coverage are developed on PR #1; authoritative release mutation, renderer,
+heartbeat transport, watchdog, and repository adapters remain.
+Delta: PR #1 contains the control-plane enforcement foundation but remains
+unmerged and inactive on main.
 ```
