@@ -3,7 +3,7 @@
 
 The organization heartbeat epoch is the canonical relative timing frame for
 worker lifecycle state. Wall-clock lease fields are retained only as legacy /
-evidence metadata while HB-relative transition timing is introduced.
+evidence metadata while HB-relative transition timing is canonical.
 """
 from __future__ import annotations
 
@@ -16,9 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "control" / "worker-registry.json"
 STATUS = ROOT / "control" / "worker-status.json"
 HB_STATE = ROOT / "control" / "heartbeat-state.json"
-HANDOFFS = ROOT / "handoffs"
 
-ACTIVE_STATES = {"CLAIMED", "ACTIVE", "BLOCKED", "EXPIRING", "HANDOFF_WRITING"}
+WORKER_OWNED_STATES = {"CLAIMED", "ACTIVE", "EXPIRING", "HANDOFF_WRITING"}
 UNFINISHED_STATES = {
     "HANDOFF_READY", "ACTIVATION_PENDING", "CLAIMED", "ACTIVE", "BLOCKED",
     "HUMAN_AUTHORITY_REQUIRED", "EXPIRING", "HANDOFF_WRITING",
@@ -30,14 +29,12 @@ def load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def iso_now() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-
-
 def capabilities_match(required: set[str], workers: list[dict]) -> list[str]:
     matches = []
     for worker in workers:
         if worker.get("status") != "AVAILABLE":
+            continue
+        if not worker.get("adapter_ref"):
             continue
         if required.issubset(set(worker.get("capabilities", []))):
             matches.append(worker["worker_id"])
@@ -67,6 +64,7 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
     hb_expired = False
     delta_hb_since_response = None
     delta_hb_since_transition = None
+    fence = 0
     if timing:
         last_response = int(timing["last_response_epoch"])
         last_transition = int(timing["last_transition_epoch"])
@@ -75,31 +73,35 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
         expiry_epoch = timing.get("expiry_epoch")
         hb_expired = expiry_epoch is not None and hb_epoch >= int(expiry_epoch)
         hb_timing_valid = not hb_expired
+        fence = int(timing.get("fencing_token", 0))
         if last_response > hb_epoch or last_transition > hb_epoch:
             errors.append(f"{task_id}: heartbeat timing references future epoch")
+    elif task_state.get("lease"):
+        fence = int(task_state["lease"].get("fencing_token", 0))
 
-    legacy_lease = task_state.get("lease")
-    fence = int((legacy_lease or {}).get("fencing_token", 0))
-    if state in ACTIVE_STATES:
+    worker_owned = state in WORKER_OWNED_STATES or (state == "BLOCKED" and bool(task_state.get("worker_id")))
+    if worker_owned:
         for field in ("worker_id", "worker_instance_id", "claim_id"):
             if not task_state.get(field):
-                errors.append(f"{task_id}: {state} requires {field}")
+                errors.append(f"{task_id}: worker-owned {state} requires {field}")
         if fence < 1:
-            errors.append(f"{task_id}: active worker requires fencing token")
+            errors.append(f"{task_id}: worker-owned state requires fencing token")
         if not timing:
-            errors.append(f"{task_id}: active worker requires heartbeat_timing")
+            errors.append(f"{task_id}: worker-owned state requires heartbeat_timing")
 
     required = set(handoff.get("execution", {}).get("required_capabilities", []))
     eligible_workers = capabilities_match(required, workers)
     activation_required = state == "HANDOFF_READY"
-    executor_resolved = binding in {"AUTHORIZED", "BOUND"} and bool(eligible_workers or task_state.get("worker_id"))
+    executor_resolved = binding in {"AUTHORIZED", "BOUND"} and bool(task_state.get("worker_id") or eligible_workers)
 
-    reasons: list[str] = []
+    reasons: list[str] = list(task_state.get("archive_reason_codes", []))
     if state == "COMPLETED":
         archive_eligible = True
+        reasons = []
     elif state in UNFINISHED_STATES:
         archive_eligible = bool(
-            binding == "BOUND"
+            worker_owned
+            and binding == "BOUND"
             and executor_resolved
             and hb_timing_valid
             and handoff.get("continuity", {}).get("status_projection")
@@ -107,15 +109,16 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
         )
         if binding != "BOUND": reasons.append("EXECUTOR_NOT_BOUND")
         if not executor_resolved: reasons.append("EXECUTOR_NOT_RESOLVED")
-        if not timing: reasons.append("HB_RELATIVE_TIMING_NOT_ESTABLISHED")
+        if worker_owned and not timing: reasons.append("HB_RELATIVE_TIMING_NOT_ESTABLISHED")
         if hb_expired: reasons.append("HB_RELATIVE_EXPIRY_REACHED")
         if activation_required: reasons.append("HEARTBEAT_ACTIVATION_REQUIRED")
+        if state == "BLOCKED" and not worker_owned: reasons.append("BLOCKED_UNCLAIMED")
     else:
         archive_eligible = False
         reasons.append("UNSUPPORTED_LIFECYCLE_STATE")
 
     if state != "COMPLETED" and handoff.get("continuity", {}).get("master_records_required"):
-        custody_proven = any("master-records:" in ref.lower() for ref in task_state.get("evidence_refs", []))
+        custody_proven = any("master-records:" in str(ref).lower() for ref in task_state.get("evidence_refs", []))
         if not custody_proven:
             archive_eligible = False
             reasons.append("MASTER_RECORDS_CUSTODY_NOT_PROVEN")
@@ -132,6 +135,7 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
         "worker_id": task_state.get("worker_id"),
         "worker_instance_id": task_state.get("worker_instance_id"),
         "claim_id": task_state.get("claim_id"),
+        "fencing_token": fence or None,
         "heartbeat_epoch": hb_epoch,
         "heartbeat_timing_established": timing is not None,
         "delta_hb_since_response": delta_hb_since_response,
