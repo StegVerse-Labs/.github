@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.session-execution-inventory/v0.1",
   "inventory_id": "SHWP-SESSION-2026-08-08-SINGLE-HB",
-  "updated_at": "2026-08-08T03:10:00Z",
+  "updated_at": "2026-08-08T03:12:00Z",
   "primary_goal": {
     "goal_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
     "originating_session_goal": "Build the StegVerse worker and heartbeat infrastructure as one provider-agnostic continuity layer in which the single heartbeat evaluates registry state, times worker transitions, coordinates cross-system evidence, derives delta-HB, and turns lifecycle failures into registry work without conversational scheduling.",
@@ -64,7 +64,7 @@
       "validation_state": "HOSTED_GREEN",
       "integration_state": "INTEGRATED_WITH_WORKER_REGISTRY",
       "archival_dependency": false,
-      "evidence": ["4fef7cf2154d26f817d70648072db18864d3e730", "129d4077ba5bd40776f32f42ad280569656a541f", "31236519287/93049882049"],
+      "evidence": ["4fef7cf2154d26f817d70648072db18864d3e730", "129d4077ba5bd40776f32f42ad280569656a541f", "31236519287/93049882049", ".github#15 completion evidence"],
       "next_executable_action": "Accumulate live cross-system signal evidence after production runtime activation."
     },
     {
@@ -142,6 +142,12 @@
       "evidence": ["StegVerse-Labs/StegCore#54"],
       "next_executable_action": "None for this session; do not duplicate StegCore runtime ownership."
     }
+  ],
+  "completed_foundation_issues": [
+    ".github#15 status projection",
+    ".github#17 executable HANDOFF/discovery",
+    ".github#25 hosted validation first slice",
+    ".github#26 organization handoff/archive invariant"
   ],
   "convergence": {
     "merged_into": [
