@@ -1,46 +1,44 @@
 {
   "activation_driver": ".github/workflows/heartbeat-worker-project.yml",
-  "activation_required_count": 1,
+  "activation_required_count": 0,
   "archive_eligible_count": 0,
   "execution_authority_from_heartbeat": false,
-  "generated_at": "2026-08-08T00:54:00Z",
+  "generated_at": "2026-08-08T01:05:52Z",
   "schema": "stegverse.heartbeat-worker-status/v0.1",
-  "source_registry_generation": 0,
+  "source_registry_generation": 1,
   "task_count": 1,
   "tasks": [
     {
       "activation_carrier": "heartbeat",
-      "activation_required": true,
+      "activation_required": false,
       "archive_eligible": false,
       "archive_reason_codes": [
-        "EXECUTOR_NOT_BOUND",
-        "EXECUTOR_NOT_RESOLVED",
-        "HEARTBEAT_ACTIVATION_REQUIRED",
         "MASTER_RECORDS_CUSTODY_NOT_PROVEN",
         "MASTER_RECORDS_CUSTODY_REQUIRED"
       ],
-      "claim_id": null,
+      "claim_id": "SHWP-STEGGATE-AUDITKIT-001-G1",
       "eligible_workers": [],
       "evidence_refs": [
         "StegVerse-Labs/ara-admissibility-interop#1",
-        "StegVerse-Labs/ara-admissibility-interop#2",
-        "StegVerse-Labs/ara-admissibility-interop#23",
-        "StegVerse-Labs/ara-admissibility-interop#66",
+        "StegVerse-Labs/ara-admissibility-interop#61",
         "StegVerse-Labs/.github#12",
-        "StegVerse-Labs/.github#13"
+        "StegVerse-Labs/.github#13",
+        "StegVerse-Labs/.github#24",
+        "StegVerse-Labs/.github:Heartbeat Worker Project run 31231346416",
+        "automation:StegVerse Worker Cycle:enabled"
       ],
-      "executor_binding": "UNBOUND",
-      "executor_resolved": false,
+      "executor_binding": "BOUND",
+      "executor_resolved": true,
       "goal_id": "STEGGATE-AUDITKIT-001",
       "handoff_ref": "handoffs/STEGGATE-AUDITKIT-001.json",
       "last_checkpoint_ref": "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
       "next_authorized_action": "Discover and bind an eligible executor through SHWP-EXECUTOR-001, then atomically checkout the next nonconflicting StegGate issue-owned slice under the current repository handoff.",
       "stale_lease": false,
-      "state": "HANDOFF_READY",
+      "state": "ACTIVE",
       "task_id": "STEGGATE-AUDITKIT-001",
-      "valid_lease": false,
-      "worker_id": null,
-      "worker_instance_id": null
+      "valid_lease": true,
+      "worker_id": "stegverse-worker-cycle",
+      "worker_instance_id": "bootstrap-20260808T0103Z"
     }
   ],
   "validation": {
