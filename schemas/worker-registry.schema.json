@@ -9,14 +9,8 @@
     "schema": {"const": "stegverse.heartbeat-worker-registry/v0.1"},
     "generation": {"type": "integer", "minimum": 0},
     "updated_at": {"type": "string", "format": "date-time"},
-    "workers": {
-      "type": "array",
-      "items": {"$ref": "#/$defs/worker"}
-    },
-    "tasks": {
-      "type": "array",
-      "items": {"$ref": "#/$defs/task_state"}
-    }
+    "workers": {"type": "array", "items": {"$ref": "#/$defs/worker"}},
+    "tasks": {"type": "array", "items": {"$ref": "#/$defs/task_state"}}
   },
   "$defs": {
     "worker": {
@@ -33,6 +27,7 @@
       }
     },
     "lease": {
+      "description": "Legacy/evidence wall-clock lease fields. HB-relative timing is canonical for worker transition timing once heartbeat_timing is populated.",
       "type": "object",
       "additionalProperties": false,
       "required": ["issued_at", "expires_at", "heartbeat_due_at", "fencing_token", "renewal_allowed", "max_renewals"],
@@ -45,6 +40,24 @@
         "renewal_allowed": {"type": "boolean"},
         "max_renewals": {"type": "integer", "minimum": 0},
         "renewal_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "heartbeat_timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start_epoch", "last_response_epoch", "last_transition_epoch", "current_transition", "transition_sequence", "max_missing_response_beats"],
+      "properties": {
+        "start_epoch": {"type": "integer", "minimum": 0},
+        "last_response_epoch": {"type": "integer", "minimum": 0},
+        "last_transition_epoch": {"type": "integer", "minimum": 0},
+        "current_transition": {"type": "string", "minLength": 1},
+        "transition_sequence": {"type": "integer", "minimum": 0},
+        "expected_next_transition": {"type": ["string", "null"]},
+        "expected_next_earliest_epoch": {"type": ["integer", "null"], "minimum": 0},
+        "expected_next_latest_epoch": {"type": ["integer", "null"], "minimum": 0},
+        "max_missing_response_beats": {"type": "integer", "minimum": 0},
+        "expiry_epoch": {"type": ["integer", "null"], "minimum": 0},
+        "expiry_basis": {"enum": ["STATIC_BOOTSTRAP", "TASK_CLASS_COST_BASIS", "OBSERVED_TRANSITION_COST_BASIS", "HUMAN_AUTHORITY", "NONE"]}
       }
     },
     "task_state": {
@@ -61,6 +74,9 @@
         "worker_instance_id": {"type": ["string", "null"]},
         "claim_id": {"type": ["string", "null"]},
         "lease": {"anyOf": [{"$ref": "#/$defs/lease"}, {"type": "null"}]},
+        "heartbeat_timing": {"anyOf": [{"$ref": "#/$defs/heartbeat_timing"}, {"type": "null"}]},
+        "cost_basis_ref": {"type": ["string", "null"]},
+        "external_entity_job_ref": {"type": ["string", "null"]},
         "last_checkpoint_ref": {"type": ["string", "null"]},
         "block_ref": {"type": ["string", "null"]},
         "archive_eligible": {"type": "boolean"},
