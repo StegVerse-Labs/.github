@@ -8,99 +8,22 @@
       "block_ref": null,
       "claim_id": null,
       "cost_basis_ref": null,
-      "evidence_refs": [
-        "StegVerse-Labs/ara-admissibility-interop#1@c2df13fbbf51144f20ee8c46ff27653e7336c17d",
-        "StegVerse-Labs/ara-admissibility-interop#2:COMPLETE",
-        "StegVerse-Labs/ara-admissibility-interop#23:COMPLETE",
-        "StegVerse-Labs/ara-admissibility-interop#66:COMPLETE",
-        "StegVerse-Labs/StegCore#54:COMPLETE",
-        "StegVerse-Labs/ara-admissibility-interop:StegGate Schema Foundation run 31233087559 job 93040589154:SUCCESS",
-        "StegVerse-Labs/ara-admissibility-interop:Repo Check run 31233087564 job 93040589130:SUCCESS",
-        "master-records:orchestration:custody/worker-lifecycle/SHWP-CUSTODY-STEGGATE-AUDITKIT-001-G1-001.json:ac2cbba5b3f3c2e91893eabc63c9ba2221c226cbe1c7e3c70459d9ce75dc0cb2"
-      ],
-      "executor_binding": "UNBOUND",
-      "external_entity_job_ref": null,
-      "goal_id": "STEGGATE-AUDITKIT-001",
-      "handoff_ref": "handoffs/STEGGATE-AUDITKIT-001.json",
-      "heartbeat_timing": null,
-      "last_checkpoint_ref": "master-records/orchestration@484696c2d6d7b69fa324e5b1f169c51d740ad925:custody/worker-lifecycle/SHWP-CUSTODY-STEGGATE-AUDITKIT-001-G1-001.json",
-      "lease": null,
-      "state": "COMPLETED",
-      "task_id": "STEGGATE-AUDITKIT-001",
-      "worker_id": null,
-      "worker_instance_id": null
+      "evidence_refs": ["StegVerse-Labs/ara-admissibility-interop#1@c2df13fbbf51144f20ee8c46ff27653e7336c17d","StegVerse-Labs/ara-admissibility-interop#2:COMPLETE","StegVerse-Labs/ara-admissibility-interop#23:COMPLETE","StegVerse-Labs/ara-admissibility-interop#66:COMPLETE","StegVerse-Labs/StegCore#54:COMPLETE","StegVerse-Labs/ara-admissibility-interop:StegGate Schema Foundation run 31233087559 job 93040589154:SUCCESS","StegVerse-Labs/ara-admissibility-interop:Repo Check run 31233087564 job 93040589130:SUCCESS","master-records:orchestration:custody/worker-lifecycle/SHWP-CUSTODY-STEGGATE-AUDITKIT-001-G1-001.json:ac2cbba5b3f3c2e91893eabc63c9ba2221c226cbe1c7e3c70459d9ce75dc0cb2"],
+      "executor_binding": "UNBOUND", "external_entity_job_ref": null, "goal_id": "STEGGATE-AUDITKIT-001", "handoff_ref": "handoffs/STEGGATE-AUDITKIT-001.json", "heartbeat_timing": null, "last_checkpoint_ref": "master-records/orchestration@484696c2d6d7b69fa324e5b1f169c51d740ad925:custody/worker-lifecycle/SHWP-CUSTODY-STEGGATE-AUDITKIT-001-G1-001.json", "lease": null, "state": "COMPLETED", "task_id": "STEGGATE-AUDITKIT-001", "worker_id": null, "worker_instance_id": null
     },
     {
       "archive_eligible": false,
-      "archive_reason_codes": [
-        "BLOCKED_ON_REAL_BOUNDARY_TARGET",
-        "BLOCKED_ON_AUTHORITY_MODEL",
-        "EXECUTOR_NOT_BOUND",
-        "HB_RELATIVE_TIMING_NOT_ESTABLISHED"
-      ],
-      "block_ref": "handoffs/STEGGATE-FIRST-BOUNDARY-001.json#block",
-      "claim_id": null,
-      "cost_basis_ref": null,
-      "evidence_refs": [
-        "StegVerse-Labs/ara-admissibility-interop#13:BLOCKED_UNCLAIMED",
-        "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:management/first-boundary-activation.json:BLOCKED",
-        "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:tools/validate_first_boundary_activation.py"
-      ],
-      "executor_binding": "UNBOUND",
-      "external_entity_job_ref": null,
-      "goal_id": "STEGGATE-FIRST-BOUNDARY-001",
-      "handoff_ref": "handoffs/STEGGATE-FIRST-BOUNDARY-001.json",
-      "heartbeat_timing": null,
-      "last_checkpoint_ref": "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:management/first-boundary-activation.json",
-      "lease": null,
-      "state": "BLOCKED",
-      "task_id": "STEGGATE-FIRST-BOUNDARY-001",
-      "worker_id": null,
-      "worker_instance_id": null
+      "archive_reason_codes": ["BLOCKED_ON_REAL_BOUNDARY_TARGET","BLOCKED_ON_AUTHORITY_MODEL","EXECUTOR_NOT_BOUND","HB_RELATIVE_TIMING_NOT_ESTABLISHED"],
+      "block_ref": "handoffs/STEGGATE-FIRST-BOUNDARY-001.json#block", "claim_id": null, "cost_basis_ref": null,
+      "evidence_refs": ["StegVerse-Labs/ara-admissibility-interop#13:BLOCKED_UNCLAIMED","StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:management/first-boundary-activation.json:BLOCKED","StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:tools/validate_first_boundary_activation.py"],
+      "executor_binding": "UNBOUND", "external_entity_job_ref": null, "goal_id": "STEGGATE-FIRST-BOUNDARY-001", "handoff_ref": "handoffs/STEGGATE-FIRST-BOUNDARY-001.json", "heartbeat_timing": null, "last_checkpoint_ref": "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:management/first-boundary-activation.json", "lease": null, "state": "BLOCKED", "task_id": "STEGGATE-FIRST-BOUNDARY-001", "worker_id": null, "worker_instance_id": null
     },
     {
-      "archive_eligible": true,
-      "archive_reason_codes": [],
-      "block_ref": null,
-      "claim_id": null,
-      "cost_basis_ref": "cost-basis/worker-runtime/native-process-canary.json",
-      "evidence_refs": [
-        "StegVerse-Labs/.github#13:COMPLETE",
-        "StegVerse-Labs/.github#14:COMPLETE",
-        "heartbeat_runtime/process_adapter.py",
-        "workers/heartbeat_receipt_canary.py",
-        "receipts/native-worker-canary/SHWP-NATIVE-PROCESS-CANARY-001.json",
-        "StegVerse-Labs/.github:Native Process Worker Canary run 31237212782 job 93051843063:SUCCESS",
-        "master-records/orchestration@01ae3ab22476c9ca0d5aa79265f56cb3ee18df3a:custody/worker-lifecycle/SHWP-CUSTODY-NATIVE-PROCESS-CANARY-001-G6-001.json",
-        "master-records/orchestration:Validate Worker Lifecycle Custody run 31237511378 job 93052660913:SUCCESS",
-        "master-records:worker-lifecycle-record-hash:313ae32e1fabeb6879f7c84e7dcb9a1e3af69f819176c49fb9f8039e99e42efd",
-        "master-records/orchestration@01ae3ab22476c9ca0d5aa79265f56cb3ee18df3a:custody/worker-lifecycle-lineage/SHWP-LINEAGE-NATIVE-PROCESS-CANARY-001-G6.json",
-        "master-records:worker-lifecycle-lineage-hash:e00111e611b5f8f6af49c7ba3036430bdba2d3d62228b258266a908400ba711c"
-      ],
-      "executor_binding": "UNBOUND",
-      "external_entity_job_ref": null,
-      "goal_id": "SHWP-NATIVE-PROCESS-CANARY-001",
-      "handoff_ref": "handoffs/SHWP-NATIVE-PROCESS-CANARY-001.json",
-      "heartbeat_timing": {
-        "current_transition": "CANARY_COMPLETE",
-        "expected_next_earliest_epoch": null,
-        "expected_next_latest_epoch": null,
-        "expected_next_transition": null,
-        "expiry_basis": "TASK_CLASS_COST_BASIS",
-        "expiry_epoch": 6,
-        "fencing_token": 6,
-        "last_response_epoch": 3,
-        "last_transition_epoch": 3,
-        "max_missing_response_beats": 4,
-        "start_epoch": 2,
-        "transition_sequence": 2
-      },
-      "last_checkpoint_ref": "master-records/orchestration@01ae3ab22476c9ca0d5aa79265f56cb3ee18df3a:custody/worker-lifecycle/SHWP-CUSTODY-NATIVE-PROCESS-CANARY-001-G6-001.json",
-      "lease": null,
-      "state": "COMPLETED",
-      "task_id": "SHWP-NATIVE-PROCESS-CANARY-001",
-      "worker_id": null,
-      "worker_instance_id": null
+      "archive_eligible": true, "archive_reason_codes": [], "block_ref": null, "claim_id": null, "cost_basis_ref": "cost-basis/worker-runtime/native-process-canary.json",
+      "evidence_refs": ["StegVerse-Labs/.github#13:COMPLETE","StegVerse-Labs/.github#14:COMPLETE","heartbeat_runtime/process_adapter.py","workers/heartbeat_receipt_canary.py","receipts/native-worker-canary/SHWP-NATIVE-PROCESS-CANARY-001.json","StegVerse-Labs/.github:Native Process Worker Canary run 31237212782 job 93051843063:SUCCESS","master-records/orchestration@01ae3ab22476c9ca0d5aa79265f56cb3ee18df3a:custody/worker-lifecycle/SHWP-CUSTODY-NATIVE-PROCESS-CANARY-001-G6-001.json","master-records/orchestration:Validate Worker Lifecycle Custody run 31237511378 job 93052660913:SUCCESS","master-records:worker-lifecycle-record-hash:313ae32e1fabeb6879f7c84e7dcb9a1e3af69f819176c49fb9f8039e99e42efd","master-records/orchestration@01ae3ab22476c9ca0d5aa79265f56cb3ee18df3a:custody/worker-lifecycle-lineage/SHWP-LINEAGE-NATIVE-PROCESS-CANARY-001-G6.json","master-records:worker-lifecycle-lineage-hash:e00111e611b5f8f6af49c7ba3036430bdba2d3d62228b258266a908400ba711c"],
+      "executor_binding": "UNBOUND", "external_entity_job_ref": null, "goal_id": "SHWP-NATIVE-PROCESS-CANARY-001", "handoff_ref": "handoffs/SHWP-NATIVE-PROCESS-CANARY-001.json",
+      "heartbeat_timing": {"current_transition":"CANARY_COMPLETE","expected_next_earliest_epoch":null,"expected_next_latest_epoch":null,"expected_next_transition":null,"expiry_basis":"TASK_CLASS_COST_BASIS","expiry_epoch":6,"fencing_token":6,"last_response_epoch":3,"last_transition_epoch":3,"max_missing_response_beats":4,"start_epoch":2,"transition_sequence":2},
+      "last_checkpoint_ref": "master-records/orchestration@01ae3ab22476c9ca0d5aa79265f56cb3ee18df3a:custody/worker-lifecycle/SHWP-CUSTODY-NATIVE-PROCESS-CANARY-001-G6-001.json", "lease": null, "state": "COMPLETED", "task_id": "SHWP-NATIVE-PROCESS-CANARY-001", "worker_id": null, "worker_instance_id": null
     }
   ],
   "updated_at": "2026-08-08T03:40:00Z",
@@ -108,26 +31,16 @@
     {
       "adapter_ref": null,
       "authority_source": "temporary external bootstrap executor disabled; not a normative SHWP scheduler or current execution authority",
-      "capabilities": [
-        "github_repository_read",
-        "github_repository_write",
-        "issue_and_pr_coordination",
-        "code_and_schema_implementation",
-        "hosted_validation_observation"
-      ],
-      "executor_type": "agent_runtime",
-      "last_seen_at": "2026-08-08T01:10:00Z",
-      "status": "DISABLED",
-      "worker_id": "stegverse-worker-cycle"
+      "capabilities": ["github_repository_read","github_repository_write","issue_and_pr_coordination","code_and_schema_implementation","hosted_validation_observation"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#code-change-agent-v1",
+      "executor_type": "agent_runtime", "last_seen_at": "2026-08-08T01:10:00Z", "status": "DISABLED", "worker_id": "stegverse-worker-cycle"
     },
     {
       "adapter_ref": "process:native-receipt-canary-v1",
       "authority_source": "handoffs/SHWP-NATIVE-PROCESS-CANARY-001.json#authority",
       "capabilities": ["native_receipt_canary"],
-      "executor_type": "repository_worker",
-      "last_seen_at": "2026-08-08T03:27:04Z",
-      "status": "AVAILABLE",
-      "worker_id": "native-process-canary-worker"
+      "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
+      "executor_type": "repository_worker", "last_seen_at": "2026-08-08T03:27:04Z", "status": "AVAILABLE", "worker_id": "native-process-canary-worker"
     }
   ]
 }
