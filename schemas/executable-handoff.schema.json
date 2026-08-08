@@ -67,9 +67,21 @@
       "properties": {
         "carrier": {"const": "heartbeat"},
         "executor_binding": {"enum": ["UNBOUND", "DISCOVERED", "AUTHORIZED", "BOUND"]},
+        "authorization_ref": {"type": "string", "minLength": 1},
         "recheck_trigger": {"type": "string", "minLength": 1},
         "checkout_policy": {"const": "fenced_atomic_checkout"}
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "executor_binding": {"enum": ["AUTHORIZED", "BOUND"]}
+            },
+            "required": ["executor_binding"]
+          },
+          "then": {"required": ["authorization_ref"]}
+        }
+      ]
     },
     "continuity": {
       "type": "object",
