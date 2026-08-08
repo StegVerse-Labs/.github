@@ -22,6 +22,7 @@
         "executor_type": {"enum": ["deterministic_workflow", "repository_worker", "agent_runtime", "deployment_worker", "observer"]},
         "capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
         "status": {"enum": ["AVAILABLE", "BUSY", "DEGRADED", "DISABLED"]},
+        "adapter_ref": {"type": ["string", "null"]},
         "authority_source": {"type": ["string", "null"]},
         "last_seen_at": {"type": ["string", "null"], "format": "date-time"}
       }
@@ -45,7 +46,7 @@
     "heartbeat_timing": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["start_epoch", "last_response_epoch", "last_transition_epoch", "current_transition", "transition_sequence", "max_missing_response_beats"],
+      "required": ["start_epoch", "last_response_epoch", "last_transition_epoch", "current_transition", "transition_sequence", "max_missing_response_beats", "fencing_token", "expiry_basis"],
       "properties": {
         "start_epoch": {"type": "integer", "minimum": 0},
         "last_response_epoch": {"type": "integer", "minimum": 0},
@@ -57,7 +58,8 @@
         "expected_next_latest_epoch": {"type": ["integer", "null"], "minimum": 0},
         "max_missing_response_beats": {"type": "integer", "minimum": 0},
         "expiry_epoch": {"type": ["integer", "null"], "minimum": 0},
-        "expiry_basis": {"enum": ["STATIC_BOOTSTRAP", "TASK_CLASS_COST_BASIS", "OBSERVED_TRANSITION_COST_BASIS", "HUMAN_AUTHORITY", "NONE"]}
+        "expiry_basis": {"enum": ["STATIC_BOOTSTRAP", "TASK_CLASS_COST_BASIS", "OBSERVED_TRANSITION_COST_BASIS", "HUMAN_AUTHORITY", "NONE"]},
+        "fencing_token": {"type": "integer", "minimum": 1}
       }
     },
     "task_state": {
