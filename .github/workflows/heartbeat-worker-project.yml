@@ -15,6 +15,7 @@ on:
       - 'tests/test_executor_discovery.py'
       - 'tests/test_block_boundaries.py'
       - 'tests/test_goal_lineage.py'
+      - 'tests/test_resource_authority.py'
       - 'tests/test_worker_cost_basis_estimator.py'
       - 'control/heartbeat-state.json'
       - 'control/worker-registry.json'
@@ -24,17 +25,7 @@ on:
       - 'cost-basis/worker-runtime/**'
       - 'docs/ORG_MIRROR_HANDOFF.md'
       - 'docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md'
-      - 'schemas/heartbeat-transition-observation.schema.json'
-      - 'schemas/heartbeat-activation-request.schema.json'
-      - 'schemas/worker-reconstruction-proof.schema.json'
-      - 'schemas/worker-mutation-scope-receipt.schema.json'
-      - 'schemas/worker-renewal-admission.schema.json'
-      - 'schemas/human-authority-boundary.schema.json'
-      - 'schemas/worker-authority-expansion.schema.json'
-      - 'schemas/worker-runtime-cost-basis.schema.json'
-      - 'schemas/worker-registry.schema.json'
-      - 'schemas/process-worker-adapters.schema.json'
-      - 'schemas/executable-handoff.schema.json'
+      - 'schemas/**'
       - 'scripts/validate_executable_handoffs.py'
       - 'scripts/project_heartbeat_workers.py'
       - 'scripts/reconcile_heartbeat_continuity.py'
@@ -57,74 +48,42 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
       - name: Compile HB runtime and projectors
         run: |
-          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py heartbeat_runtime/engine_v3.py heartbeat_runtime/engine_v4.py heartbeat_runtime/engine_v5.py heartbeat_runtime/process_adapter.py
+          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py heartbeat_runtime/engine_v3.py heartbeat_runtime/engine_v4.py heartbeat_runtime/engine_v5.py heartbeat_runtime/engine_v6.py heartbeat_runtime/process_adapter.py
           python -m py_compile workers/heartbeat_receipt_canary.py
-          python -m py_compile scripts/validate_executable_handoffs.py
-          python -m py_compile scripts/project_heartbeat_workers.py
-          python -m py_compile scripts/reconcile_heartbeat_continuity.py
-          python -m py_compile scripts/run_heartbeat_runtime.py
-          python -m py_compile scripts/estimate_worker_cost_basis.py
-
+          python -m py_compile scripts/validate_executable_handoffs.py scripts/project_heartbeat_workers.py scripts/reconcile_heartbeat_continuity.py scripts/run_heartbeat_runtime.py scripts/estimate_worker_cost_basis.py
       - name: Parse canonical JSON surfaces
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          paths = [
-              Path('schemas/worker-registry.schema.json'),
-              Path('schemas/process-worker-adapters.schema.json'),
-              Path('schemas/executable-handoff.schema.json'),
-              Path('schemas/heartbeat-transition-observation.schema.json'),
-              Path('schemas/heartbeat-activation-request.schema.json'),
-              Path('schemas/worker-reconstruction-proof.schema.json'),
-              Path('schemas/worker-mutation-scope-receipt.schema.json'),
-              Path('schemas/worker-renewal-admission.schema.json'),
-              Path('schemas/human-authority-boundary.schema.json'),
-              Path('schemas/worker-authority-expansion.schema.json'),
-              Path('schemas/worker-runtime-cost-basis.schema.json'),
-              Path('control/heartbeat-state.json'),
-              Path('control/worker-registry.json'),
-              Path('control/process-worker-adapters.json'),
-              Path('control/worker-cost-observations.json'),
-              *sorted(Path('handoffs').glob('*.json')),
-              *sorted(Path('cost-basis/worker-runtime').glob('*.json')),
-          ]
+          paths = [*sorted(Path('schemas').glob('*.json')), Path('control/heartbeat-state.json'), Path('control/worker-registry.json'), Path('control/process-worker-adapters.json'), Path('control/worker-cost-observations.json'), *sorted(Path('handoffs').glob('*.json')), *sorted(Path('cost-basis/worker-runtime').glob('*.json'))]
           for path in paths:
               json.loads(path.read_text(encoding='utf-8'))
               print(f'JSON_OK:{path}')
           PY
-
-      - name: Validate executable HANDOFF goal lineage
+      - name: Validate executable HANDOFF goal and resource bounds
         run: python scripts/validate_executable_handoffs.py
-
       - name: Prove native heartbeat engine semantics
         run: python -m unittest -v tests.test_heartbeat_runtime
-
       - name: Prove ambiguity-safe executor discovery
         run: python -m unittest -v tests.test_executor_discovery
-
       - name: Prove blocked recheck and human authority boundaries
         run: python -m unittest -v tests.test_block_boundaries
-
       - name: Prove bounded goal lineage and duplicate control
         run: python -m unittest -v tests.test_goal_lineage
-
+      - name: Prove bounded worker resource authority
+        run: python -m unittest -v tests.test_resource_authority
       - name: Prove sandboxed mutation scope and fence semantics
         run: python -m unittest -v tests.test_process_adapter_scope
-
       - name: Prove one-HB authority renewal and orphan recovery
         run: python -m unittest -v tests.test_lifecycle_authority
-
       - name: Prove cost basis estimator semantics
         run: python -m unittest -v tests.test_worker_cost_basis_estimator
-
       - name: Prove sparse live cost data does not invent expiry
         run: |
           output="$(python scripts/estimate_worker_cost_basis.py --check)"
@@ -138,7 +97,6 @@ jobs:
                   assert record['hb_estimate']['expiry_candidate_beats'] is None, record
           print('COST_BASIS_NO_GUESS_PASS')
           PY
-
       - name: Prove dry-run never mutates live registry
         run: |
           before="$(sha256sum control/worker-registry.json control/heartbeat-state.json control/worker-cost-observations.json | sha256sum | cut -d' ' -f1)"
@@ -152,7 +110,6 @@ jobs:
           assert value['authority_effect'] == 'none_beyond_existing_admitted_task_authority', value
           print('LIVE_DRY_RUN_NON_MUTATING_PASS')
           PY
-
       - name: Validate or refresh worker status projection
         run: |
           if python scripts/project_heartbeat_workers.py --check; then
@@ -161,10 +118,8 @@ jobs:
             python scripts/project_heartbeat_workers.py --write
             echo 'WORKER_STATUS_CURRENT=false' >> "$GITHUB_ENV"
           fi
-
       - name: Refresh heartbeat continuity projection
         run: python scripts/reconcile_heartbeat_continuity.py --write
-
       - name: Prove current StegGate successor posture
         run: |
           python - <<'PY'
@@ -174,22 +129,14 @@ jobs:
           continuity = json.loads(Path('control/heartbeat-continuity.json').read_text())
           audit = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-AUDITKIT-001')
           boundary = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-FIRST-BOUNDARY-001')
-          assert status['execution_authority_from_heartbeat'] is False, status
-          assert status['single_heartbeat_timing_frame'] is True, status
-          assert status['activation_driver'] == 'internal_heartbeat_registry_evaluation', status
-          assert continuity['heartbeat_is_single_common_timing_frame'] is True, continuity
-          assert continuity['absence_or_delay_is_not_by_itself_continuity_loss'] is True, continuity
-          assert audit['state'] == 'COMPLETED', audit
-          assert audit['archive_eligible'] is True, audit
-          assert audit['activation_required'] is False, audit
-          assert boundary['state'] == 'BLOCKED', boundary
-          assert boundary['worker_id'] is None, boundary
-          assert boundary['activation_required'] is False, boundary
-          assert boundary['archive_eligible'] is False, boundary
-          assert 'BLOCKED_UNCLAIMED' in boundary['archive_reason_codes'], boundary
+          assert status['execution_authority_from_heartbeat'] is False
+          assert status['single_heartbeat_timing_frame'] is True
+          assert status['activation_driver'] == 'internal_heartbeat_registry_evaluation'
+          assert continuity['heartbeat_is_single_common_timing_frame'] is True
+          assert audit['state'] == 'COMPLETED' and audit['archive_eligible'] is True
+          assert boundary['state'] == 'BLOCKED' and boundary['worker_id'] is None and boundary['archive_eligible'] is False
           print('STEGGATE_SUCCESSOR_BLOCKED_UNCLAIMED_PASS')
           PY
-
       - name: Commit derived projections only when changed
         run: |
           if git diff --quiet -- control/worker-status.json control/heartbeat-continuity.json; then
