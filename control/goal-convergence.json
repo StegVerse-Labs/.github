@@ -1,0 +1,21 @@
+{
+  "goals": [
+    {
+      "converged": false,
+      "custody_reconstruction_complete": false,
+      "goal_id": "STEGGATE-AUDITKIT-001",
+      "no_active_claims": true,
+      "no_authorized_remaining_action": true,
+      "no_unresolved_descendants": false,
+      "reason_codes": [
+        "UNRESOLVED_DESCENDANTS",
+        "CUSTODY_OR_RECONSTRUCTION_INCOMPLETE"
+      ],
+      "root_task_id": "STEGGATE-AUDITKIT-001",
+      "state": "COMPLETED",
+      "success_predicates_satisfied": true
+    }
+  ],
+  "schema": "stegverse.goal-convergence/v0.1",
+  "source_registry_generation": 8
+}
