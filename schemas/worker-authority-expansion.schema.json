@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/worker-authority-expansion.schema.json",
+  "title": "StegVerse Worker Successor Authority Expansion Admission",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "expansion_id", "status", "parent_task_id", "child_task_id", "parent_scope_sha256", "child_scope_sha256", "authority_source", "policy_version", "heartbeat_grants_expansion", "evidence_refs"],
+  "properties": {
+    "schema": {"const": "stegverse.worker-authority-expansion/v0.1"},
+    "expansion_id": {"type": "string", "minLength": 1},
+    "status": {"const": "ADMITTED"},
+    "parent_task_id": {"type": "string", "minLength": 1},
+    "child_task_id": {"type": "string", "minLength": 1},
+    "parent_scope_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "child_scope_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "authority_source": {"type": "string", "minLength": 1},
+    "policy_version": {"type": "string", "minLength": 1},
+    "heartbeat_grants_expansion": {"const": false},
+    "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  }
+}
