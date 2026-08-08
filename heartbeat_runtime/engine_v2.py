@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
+import hashlib
 import json
 import math
 import os
@@ -83,6 +84,39 @@ class HeartbeatRuntime:
 
     def _handoff(self, task: dict[str, Any]) -> dict[str, Any]:
         return self._load(self.root / task["handoff_ref"])
+
+    def _handoff_hash(self, handoff: dict[str, Any]) -> str:
+        payload = json.dumps(handoff, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+        return hashlib.sha256(payload).hexdigest()
+
+    def _activation_request(self, registry: dict[str, Any], task: dict[str, Any], handoff: dict[str, Any], epoch: int, events: list[dict[str, Any]]) -> None:
+        activation = handoff.get("activation", {})
+        authority = handoff.get("authority", {})
+        execution = handoff.get("execution", {})
+        events.append({
+            "schema": "stegverse.heartbeat-activation-request/v0.1",
+            "event_type": "activation_requested",
+            "epoch": epoch,
+            "task_id": task["task_id"],
+            "goal_id": task.get("goal_id") or handoff.get("goal", {}).get("goal_id"),
+            "handoff_ref": task["handoff_ref"],
+            "handoff_sha256": self._handoff_hash(handoff),
+            "required_capabilities": list(execution.get("required_capabilities", [])),
+            "current_fence_generation": int(registry.get("generation", 0)),
+            "authority_source": authority.get("authority_source"),
+            "authorization_ref": activation.get("authorization_ref"),
+            "execution_authority": False,
+        })
+
+    def _execution_authorized(self, handoff: dict[str, Any]) -> bool:
+        authority = handoff.get("authority", {})
+        activation = handoff.get("activation", {})
+        return (
+            authority.get("heartbeat_grants_execution_authority") is False
+            and activation.get("executor_binding") == "AUTHORIZED"
+            and isinstance(activation.get("authorization_ref"), str)
+            and bool(activation.get("authorization_ref"))
+        )
 
     def _dependencies_complete(self, task: dict[str, Any], tasks: dict[str, dict[str, Any]]) -> bool:
         deps = self._handoff(task).get("task", {}).get("dependencies", [])
@@ -312,6 +346,13 @@ class HeartbeatRuntime:
         ready.sort(key=lambda task: (self.PRIORITY.get(self._handoff(task).get("task", {}).get("priority", "normal"), 4), task["task_id"]))
 
         for task in ready:
+            handoff = self._handoff(task)
+            self._activation_request(registry, task, handoff, epoch, events)
+            if not self._execution_authorized(handoff):
+                task["archive_reason_codes"] = sorted(set(task.get("archive_reason_codes", []) + ["EXECUTION_AUTHORIZATION_REQUIRED"]))
+                self._event(events, epoch, "activation_deferred", task_id=task["task_id"], reason="EXECUTION_AUTHORIZATION_REQUIRED")
+                continue
+
             budget, expiry_basis = self._expiry_budget(task)
             if budget is None:
                 task["archive_reason_codes"] = sorted(set(task.get("archive_reason_codes", []) + ["EXPIRY_BASIS_UNAVAILABLE"]))
@@ -352,7 +393,7 @@ class HeartbeatRuntime:
             })
             worker["status"] = "BUSY"
             worker["last_seen_at"] = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-            self._event(events, epoch, "worker_activated", task_id=task["task_id"], worker_id=worker["worker_id"], claim_id=claim_id, fencing_token=generation, expiry_epoch=epoch + budget, expiry_basis=expiry_basis)
+            self._event(events, epoch, "worker_activated", task_id=task["task_id"], worker_id=worker["worker_id"], claim_id=claim_id, fencing_token=generation, authorization_ref=handoff["activation"]["authorization_ref"], expiry_epoch=epoch + budget, expiry_basis=expiry_basis)
             self._invoke(registry, task, epoch, cost_log, events)
             return True
         return False
