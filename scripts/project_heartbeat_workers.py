@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Validate executable HANDOFF state and project worker status from one heartbeat.
+"""Validate executable HANDOFF state and project canonical worker status.
 
-The organization heartbeat epoch is the canonical relative timing frame for
-worker lifecycle state. Wall-clock lease fields are retained only as legacy /
-evidence metadata while HB-relative transition timing is canonical.
+This is observational. The one heartbeat is the canonical relative timing frame;
+projection and query surfaces never grant execution authority or trigger work.
 """
 from __future__ import annotations
 
@@ -89,10 +88,18 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
         if not timing:
             errors.append(f"{task_id}: worker-owned state requires heartbeat_timing")
 
-    required = set(handoff.get("execution", {}).get("required_capabilities", []))
+    execution = handoff.get("execution", {})
+    activation = handoff.get("activation", {})
+    continuity = handoff.get("continuity", {})
+    required = set(execution.get("required_capabilities", []))
     eligible_workers = capabilities_match(required, workers)
     activation_required = state == "HANDOFF_READY"
-    executor_resolved = binding in {"AUTHORIZED", "BOUND"} and bool(task_state.get("worker_id") or eligible_workers)
+    unique_executor = len(eligible_workers) == 1
+    executor_resolved = binding == "BOUND" or (binding == "AUTHORIZED" and unique_executor)
+    authority_resolved = (
+        handoff.get("authority", {}).get("heartbeat_grants_execution_authority") is False
+        and (binding == "BOUND" or (activation.get("executor_binding") == "AUTHORIZED" and bool(activation.get("authorization_ref"))))
+    )
 
     reasons: list[str] = list(task_state.get("archive_reason_codes", []))
     if state == "COMPLETED":
@@ -103,13 +110,19 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
             worker_owned
             and binding == "BOUND"
             and executor_resolved
+            and authority_resolved
             and hb_timing_valid
-            and handoff.get("continuity", {}).get("status_projection")
-            and handoff.get("activation", {}).get("carrier") == "heartbeat"
+            and continuity.get("status_projection")
+            and activation.get("carrier") == "heartbeat"
         )
         if binding != "BOUND": reasons.append("EXECUTOR_NOT_BOUND")
-        if not executor_resolved: reasons.append("EXECUTOR_NOT_RESOLVED")
+        if not eligible_workers and binding != "BOUND": reasons.append("EXECUTOR_NOT_RESOLVED")
+        if len(eligible_workers) > 1 and binding != "BOUND": reasons.append("EXECUTOR_AMBIGUOUS")
+        if not authority_resolved: reasons.append("EXECUTION_AUTHORITY_UNRESOLVED")
         if worker_owned and not timing: reasons.append("HB_RELATIVE_TIMING_NOT_ESTABLISHED")
+        if worker_owned and not task_state.get("last_checkpoint_ref"):
+            archive_eligible = False
+            reasons.append("CHECKPOINT_MISSING")
         if hb_expired: reasons.append("HB_RELATIVE_EXPIRY_REACHED")
         if activation_required: reasons.append("HEARTBEAT_ACTIVATION_REQUIRED")
         if state == "BLOCKED" and not worker_owned: reasons.append("BLOCKED_UNCLAIMED")
@@ -117,11 +130,23 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
         archive_eligible = False
         reasons.append("UNSUPPORTED_LIFECYCLE_STATE")
 
-    if state != "COMPLETED" and handoff.get("continuity", {}).get("master_records_required"):
+    parent_task_id = handoff.get("task", {}).get("parent_task_id")
+    reconstruction_ref = continuity.get("reconstruction_ref")
+    if parent_task_id and state not in {"COMPLETED", "BLOCKED", "HUMAN_AUTHORITY_REQUIRED"} and not reconstruction_ref:
+        archive_eligible = False
+        reasons.append("SUCCESSOR_RECONSTRUCTION_REQUIRED")
+
+    if state != "COMPLETED" and continuity.get("master_records_required"):
         custody_proven = any("master-records:" in str(ref).lower() for ref in task_state.get("evidence_refs", []))
         if not custody_proven:
             archive_eligible = False
             reasons.append("MASTER_RECORDS_CUSTODY_NOT_PROVEN")
+
+    # Any structural/authority validation error fails closed for archival and
+    # autonomous mutation. Reporting an error can never coexist with eligibility.
+    if errors:
+        archive_eligible = False
+        reasons.append("VALIDATION_ERROR_FAIL_CLOSED")
 
     projection = {
         "task_id": task_id,
@@ -131,6 +156,7 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
         "activation_carrier": "heartbeat",
         "activation_required": activation_required,
         "executor_resolved": executor_resolved,
+        "authority_resolved": authority_resolved,
         "eligible_workers": eligible_workers,
         "worker_id": task_state.get("worker_id"),
         "worker_instance_id": task_state.get("worker_instance_id"),
@@ -151,6 +177,7 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
         "archive_reason_codes": sorted(set(reasons)),
         "handoff_ref": task_state.get("handoff_ref"),
         "evidence_refs": task_state.get("evidence_refs", []),
+        "validation_errors": list(errors),
     }
     return projection, errors
 
@@ -175,23 +202,30 @@ def project(now: datetime) -> tuple[dict, list[str]]:
         handoff_path = ROOT / task_state["handoff_ref"]
         if not handoff_path.exists():
             errors.append(f"{task_id}: missing handoff {task_state['handoff_ref']}")
+            results.append({
+                "task_id": task_id, "goal_id": task_state.get("goal_id"), "state": task_state.get("state"),
+                "archive_eligible": False, "archive_reason_codes": ["HANDOFF_MISSING", "VALIDATION_ERROR_FAIL_CLOSED"],
+                "last_checkpoint_ref": task_state.get("last_checkpoint_ref"), "evidence_refs": task_state.get("evidence_refs", []),
+                "validation_errors": [f"missing handoff {task_state['handoff_ref']}"]
+            })
             continue
         projection, task_errors = evaluate(task_state, load(handoff_path), workers, hb_epoch)
         results.append(projection)
         errors.extend(task_errors)
 
     status = {
-        "schema": "stegverse.heartbeat-worker-status/v0.2",
+        "schema": "stegverse.heartbeat-worker-status/v0.3",
         "generated_at": now.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "source_registry_generation": registry.get("generation", 0),
         "heartbeat_epoch": hb_epoch,
         "activation_driver": "internal_heartbeat_registry_evaluation",
         "single_heartbeat_timing_frame": True,
         "execution_authority_from_heartbeat": False,
+        "query_is_observational": True,
         "task_count": len(results),
-        "activation_required_count": sum(1 for r in results if r["activation_required"]),
-        "archive_eligible_count": sum(1 for r in results if r["archive_eligible"]),
-        "tasks": sorted(results, key=lambda r: (r["goal_id"], r["task_id"])),
+        "activation_required_count": sum(1 for r in results if r.get("activation_required")),
+        "archive_eligible_count": sum(1 for r in results if r.get("archive_eligible")),
+        "tasks": sorted(results, key=lambda r: (str(r.get("goal_id")), str(r.get("task_id")))),
         "validation": {"ok": not errors, "errors": errors},
     }
     return status, errors
