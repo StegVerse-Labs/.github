@@ -2,7 +2,7 @@
 
 ## Authority
 
-This file is the primary organizational continuation and exit record for `StegVerse-Labs` organization-scoped work. Repository-local `*_MIRROR_HANDOFF.md` files remain authoritative for repository-specific implementation. Machine-readable state under `control/`, `tasks/`, `events/`, `heartbeats/`, `handoffs/`, `warrants/`, `receipts/`, and `schemas/` is authoritative for worker scheduling and transition validation.
+This is the primary organization continuation/exit record for `StegVerse-Labs` control-plane work. Repository-local `*_MIRROR_HANDOFF.md` files remain authoritative for repository-local implementation. Machine-readable state under `control/`, `handoffs/`, `management/`, `events/`, `heartbeats/`, `receipts/`, and `schemas/` is authoritative over chat history.
 
 ## Active goal
 
@@ -14,195 +14,206 @@ parent_owner: issue #12
 executor_lifecycle_owner: issue #13
 custody_owner: issue #14
 status_owner: issue #15
-StegGate_admission_owner: issue #24
+StegGate_bridge_owner: issue #24
 scoped_handoff: docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md
+session_inventory: management/SHWP_SESSION_EXECUTION_INVENTORY.json
 ```
 
 ## Canonical architecture
 
-StegVerse has **one heartbeat**.
+StegVerse has one heartbeat. That heartbeat is the common relative timing, worker scheduling, and continuity coordination frame. It evaluates HANDOFF/worker-registry state each epoch; no eligible job means no worker. Eligible work is checked out only under bounded authority, capability/adapter resolution, dependency satisfaction, fencing, and an evidenced expiry basis. An active worker responds to that same heartbeat with relative transition state.
 
-The heartbeat function itself is the worker scheduling and continuity coordination frame. On each heartbeat epoch it evaluates HANDOFF / worker-registry state. No eligible work means no worker is initiated. Eligible work may be atomically checked out under the existing bounded authority / collision / fencing rules. Active workers return relative transition information on that same heartbeat. The heartbeat epoch is therefore the common timing frame for worker progress, expected/observed transitions, system signals, and delta-HB continuity evidence.
+Expected/observed transitions and correlated system signals produce delta-HB evidence. Missing, late, unchanged, or non-following transitions are observations and do not by themselves prove continuity loss.
 
-There is no normative second worker heartbeat and no normative third-party scheduler layer.
+There is no normative second worker heartbeat and no normative ChatGPT/GitHub Actions/cron/Render/cloud scheduler dependency.
 
-A missing, late, unchanged, or non-following transition is an observation. It is **not by itself evidence that continuity is lost**. Continuity interpretation depends on the broader expected/observed transition and signal evidence and the ability to reconcile or reconstruct the path.
+## Current implementation truth
 
-## Current worker truth
-
-The former ChatGPT `StegVerse Worker Cycle` bootstrap automation is disabled and is not current execution authority or the SHWP scheduler.
-
-Canonical registry state is now:
+The native provider-agnostic runtime core is now installed and hosted-green:
 
 ```text
-task_id: STEGGATE-AUDITKIT-001
-repository: StegVerse-Labs/ara-admissibility-interop
-state: HANDOFF_READY
-executor_binding: UNBOUND
-worker_id: null
-claim_id: null
-heartbeat_timing: null
-archive_eligible: false
-```
-
-The existing Master Records checkpoint remains valid historical/custody evidence, but it does not imply an active worker.
-
-Canonical files:
-
-```text
-control/heartbeat-state.json
-control/worker-registry.json
-control/worker-status.json
-control/heartbeat-continuity.json
-handoffs/STEGGATE-AUDITKIT-001.json
-schemas/heartbeat.schema.json
-schemas/heartbeat-transition-observation.schema.json
+heartbeat_runtime/__init__.py
+heartbeat_runtime/engine_v2.py
+scripts/run_heartbeat_runtime.py
 schemas/worker-registry.schema.json
-schemas/worker-runtime-cost-basis.schema.json
-scripts/issue_heartbeats.py
 scripts/project_heartbeat_workers.py
 scripts/reconcile_heartbeat_continuity.py
-scripts/watch_heartbeat_returns.py
+control/worker-cost-observations.json
+scripts/estimate_worker_cost_basis.py
+tests/test_heartbeat_runtime.py
+tests/test_worker_cost_basis_estimator.py
+```
+
+Strongest hosted proof:
+
+```text
+head: 262c829e052d5da6f9aba4542c7dcd543fe2db80
+workflow: Heartbeat Worker Project
+run: 31236519287
+job: 93049882049
+result: SUCCESS
+```
+
+The logs directly prove:
+
+- 6/6 native heartbeat lifecycle tests PASS;
+- 3/3 worker cost-basis estimator tests PASS;
+- no completed live cost samples -> confidence NONE and no invented expiry;
+- live registry dry-run -> `activated=false` and `no_worker_initiated`;
+- worker status projection valid;
+- continuity projection valid;
+- `STEGGATE-AUDITKIT-001` COMPLETE;
+- `STEGGATE-FIRST-BOUNDARY-001` BLOCKED / UNCLAIMED / not activated.
+
+The previous first engine cut exposed a hosted expiry/reactivation defect and was superseded/deleted. Hardened `engine_v2.py` blocks an expired parent on the generated recovery task when the required Master Records final worker report is missing.
+
+## Worker and StegGate registry truth
+
+`control/worker-registry.json` generation 4:
+
+```text
+STEGGATE-AUDITKIT-001
+  state: COMPLETED
+  claim: NONE
+  worker: NONE
+  archive_eligible: true
+
+STEGGATE-FIRST-BOUNDARY-001
+  state: BLOCKED
+  executor_binding: UNBOUND
+  claim: NONE
+  worker: NONE
+  archive_eligible: false
+  release: named real consequential target + authority model + ara activation READY + validator PASS
+```
+
+The former ChatGPT `StegVerse Worker Cycle` bootstrap executor is DISABLED. It is not current authority and not the scheduler. No ChatGPT automation or monitoring has been created or enabled for the current implementation session.
+
+## Named StegGate / StegCore obligations verified
+
+`StegVerse-Labs/ara-admissibility-interop`:
+
+```text
+PR #1: open draft, mergeable, head c2df13fbbf51144f20ee8c46ff27653e7336c17d
+issues #2/#23/#66: COMPLETE / closed
+Audit Kit + Track 1B + fixture package/report: COMPLETE
+first real boundary issue #13: BLOCKED / UNCLAIMED
+StegGate Schema Foundation: 31233087559 / 93040589154 SUCCESS
+Repo Check: 31233087564 / 93040589130 SUCCESS
+```
+
+`StegVerse-Labs/StegCore#54`: COMPLETE / RELEASED. Do not duplicate StegCore canonical runtime ownership.
+
+No PR #1 merge, tag, release, deployment, or publication is authorized by this session.
+
+## Master Records lifecycle rule
+
+Known HB-relative expiry does not imply completion. If required Master Records final worker evidence is absent at known expiry:
+
+1. expired worker authority ends;
+2. parent is BLOCKED;
+3. a distinct recovery HANDOFF/task is generated and admitted;
+4. investigation/reconciliation proceeds under its own bounded authority;
+5. candidate remediation may be sandbox-tested;
+6. only validated remediation becomes executable registry work.
+
+Historical checkpoint custody remains:
+
+```text
+master-records/orchestration@484696c2d6d7b69fa324e5b1f169c51d740ad925
+custody/worker-lifecycle/SHWP-CUSTODY-STEGGATE-AUDITKIT-001-G1-001.json
+sha256 ac2cbba5b3f3c2e91893eabc63c9ba2221c226cbe1c7e3c70459d9ce75dc0cb2
+Validate Worker Lifecycle Custody run 31231978969 / job 93037458942 SUCCESS
+```
+
+This is historical checkpoint custody, not proof of a live native-worker lifecycle.
+
+## Ecosystem worker/job cost basis
+
+The native engine refuses to guess a worker expiry when an evidenced cost-basis estimate is unavailable. The observation ledger retains HB transition and cost evidence, including external-entity job references/cost fields. `scripts/estimate_worker_cost_basis.py` derives conservative task-class estimates only from completed HB-relative samples and raises confidence with evidence volume.
+
+Current live observation state contains no completed task-class samples, so no production expiry estimate exists yet. This is correct fail-closed behavior.
+
+## Collision / convergence state
+
+All SHWP child issues are implementation details of #12, not independent architectures. Parent #12 controls conflicts.
+
+```text
+STEGGATE-AUDITKIT-001: COMPLETE — do not reactivate
+STEGGATE-FIRST-BOUNDARY-001: BLOCKED / UNCLAIMED — do not claim before READY
+StegCore#54: COMPLETE / RELEASED — do not duplicate
+native HB runtime/cost estimator file slice: IMPLEMENTED + HOSTED_GREEN
+production worker-adapter binding: REMAINS under .github#13
+native live lifecycle custody: REMAINS under .github#14
+```
+
+## Exact remaining work
+
+### `.github#13` — production adapter / live execution proof
+
+The runtime interface exists, but no legitimate production mutation-capable worker adapter is registered. Completion requires:
+
+- install/bind a provider-agnostic worker adapter with independently admitted repository mutation authority;
+- register exact `adapter_ref` + capabilities;
+- assign only eligible registry work with an evidenced expiry basis;
+- observe worker transition response on the same heartbeat across multiple live cycles;
+- prove collision/fencing under real execution;
+- retain checkpoint/final report and claim release evidence.
+
+Synthetic fixture adapters do not satisfy this requirement.
+
+### `.github#14` — native lifecycle Master Records custody
+
+Exercise an actual native worker lifecycle through checkpoint, completion or expiry/recovery, final worker report, claim release, and reconstruction.
+
+### Empirical cost history
+
+Collect completed native-worker samples; until they exist the estimator must remain confidence NONE / no expiry candidate. External-entity costs become strategically useful only when actual evidence exists and must not be invented.
+
+## Cross-repository propagation
+
+- ara first-boundary successor remains dependency-blocked; no implementation claim now.
+- master-records/orchestration remains custody destination for native worker lifecycle evidence.
+- StegCore #54 requires no propagation/change.
+- Site, Publisher, admissibility-wiki, and stegguardian-wiki have no authorized release/publication propagation from this runtime implementation slice.
+
+## Session consolidation
+
+All unique design decisions and work from the current session are durably represented in:
+
+```text
+management/SHWP_SESSION_EXECUTION_INVENTORY.json
 docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md
+docs/ORG_MIRROR_HANDOFF.md
+control/worker-registry.json
+heartbeat_runtime/engine_v2.py
+scripts/estimate_worker_cost_basis.py
+issues #12/#13/#14/#24
 ```
 
-## Installed single-HB continuity / worker slice
+The conversation is **not archive-ready** because the remaining production adapter/live native worker lifecycle is not yet complete and no active non-conversational native execution path currently owns that remaining implementation.
 
-Implemented on 2026-08-08:
+## Completion assessment
+
+Current SHWP goal denominator used for this session:
 
 ```text
-4fef7cf  heartbeat transition observation schema
-1419f4f  worker runtime cost-basis schema
-129d407  heartbeat continuity reconciler
-770084f  worker registry HB-relative timing + cost/external-job refs
-160918e  worker status projector uses organization HB epoch as canonical timing frame
-b6a4761  disabled bootstrap worker reconciled to HANDOFF_READY / UNBOUND
-1eeb9db  GitHub workflow changed to validation-only; scheduled cron removed
-4317e98  heartbeat continuity projection seeded
-2ea6a40  scoped heartbeat continuity worker handoff
+session goals/inventory items: 8
+canonical developed-file set: 17
+validation classes: 9
+integration classes: 9
 ```
 
-Hosted validation:
+Current state:
 
 ```text
-Heartbeat Worker Project run 31234619218: SUCCESS
-Heartbeat Worker Project run 31234633127: SUCCESS
-```
-
-The GitHub workflow is a validator/projector only. It is not a scheduler or production activation dependency.
-
-## Master Records reconciliation rule
-
-Known HB-relative worker expiry does not equal completion.
-
-If the heartbeat reaches a worker's known expiry and the required final worker report is absent from Master Records, the continuity reconciler must surface a lifecycle inconsistency and produce recovery/reconciliation work for normal registry admission. The expired worker does not silently regain authority.
-
-Investigation may require sandbox testing. Candidate solutions remain non-executable until an appropriate remediation is validated and admitted through the normal registry/authority path.
-
-## Ecosystem transaction cost basis
-
-Worker expiry and deployment estimates must increasingly use evidence rather than guessed fixed intervals.
-
-The ecosystem transaction cost basis applies to internal and external-entity jobs and may accumulate evidenced:
-
-- heartbeat transitions to completion and idle-transition behavior;
-- compute and token consumption;
-- storage and network consumption;
-- latency;
-- operator burden;
-- external provider / external entity cost;
-- failure, retry, investigation, sandbox, recovery, custody, and reconstruction costs;
-- worker class / capability;
-- task / external-entity job class;
-- authority, admissibility, evidence, and reconstruction constraints.
-
-As evidence grows, it should improve expected completion envelopes, worker expiry estimates, worker/capability selection, handoff/recovery decisions, capacity planning, external-job costing, pricing strategy, and provider-independence decisions.
-
-Cost never overrides admissibility, authority, evidence fidelity, or reconstructability.
-
-## Historical executor proof retained
-
-The disabled bootstrap executor previously performed real ara implementation and hosted validation:
-
-```text
-StegVerse-Labs/ara-admissibility-interop
-branch: feat/steggate-v46-schema-foundation
-implemented: fixtures/verifier/cases.json
-implemented: tools/verify_audit_kit.py
-integrated: .github/workflows/steggate-schema-foundation.yml
-validated head: ba68c6e93f2d97c9355832d9bfb226900f27c7a1
-StegGate Schema Foundation run: 31231723418
-job: 93036736627
-result: SUCCESS
-```
-
-Master Records checkpoint evidence retained:
-
-```text
-repository: master-records/orchestration
-commit: 484696c2d6d7b69fa324e5b1f169c51d740ad925
-custody_record: custody/worker-lifecycle/SHWP-CUSTODY-STEGGATE-AUDITKIT-001-G1-001.json
-custody_sha256: ac2cbba5b3f3c2e91893eabc63c9ba2221c226cbe1c7e3c70459d9ce75dc0cb2
-validation run: 31231978969
-job: 93037458942
-result: SUCCESS
-```
-
-These are historical implementation/custody proofs, not evidence that a worker is currently active.
-
-## Collision / coordination invariant
-
-All SHWP child issues are implementation details of issue #12, not independent architecture workstreams. Parent #12 controls if a child description conflicts with the single-heartbeat model.
-
-No session or worker may introduce a separate scheduler, worker heartbeat, conversational activation dependency, or third-party wake dependency as the normative SHWP architecture.
-
-Status reads are observational and must not trigger duplicate work.
-
-## Current build boundary
-
-Built:
-
-- heartbeat issuance/return primitives;
-- deterministic return comparison and fault/warrant primitive;
-- HANDOFF and worker registry contracts;
-- claim/fencing identities;
-- Master Records checkpoint custody first slice;
-- HB-relative worker timing contract;
-- expected/observed transition + signal / delta-HB contract;
-- continuity reconciler with `continuity_lost=false` for observation-only discrepancies;
-- known-expiry + missing-Master-Records-finalization recovery-task candidate;
-- worker runtime / external-job cost-basis contract;
-- validation-only hosted checks.
-
-Not yet proven:
-
-- one native high-frequency heartbeat function that composes HANDOFF discovery, atomic worker checkout, worker initiation, and worker transition returns;
-- exactly-one worker activation under competing heartbeat cycles;
-- worker transition responses on every heartbeat in a live runtime;
-- cost-basis-derived expiry estimation from a growing empirical transaction dataset;
-- automatic admission/execution of validated recovery/remediation tasks;
-- full lifecycle custody through expiry, recovery, completion, and claim release.
-
-## Next implementation seam
-
-Under issue #12, compose the existing organization heartbeat path with HANDOFF / worker-registry evaluation in one internal heartbeat cycle and prove:
-
-```text
-no eligible work -> no worker initiated
-eligible HANDOFF -> exactly one fenced worker initiated
-active worker -> relative transition state returned every HB
-expected/observed transitions + signals -> delta-HB evidence
-known expiry + missing required MR final report -> recovery task
-investigation -> sandbox candidate -> validated remediation -> registry
-transaction cost observations -> improved worker expiry/deployment estimate
-no third-party scheduler required
-```
-
-## Session posture
-
-This conversation is an implementation session only. It has no scheduled monitoring task and no automation has been created or enabled for it.
-
-```text
+task_completion: 6/8 = 75%
+developed_files: 17/17 = 100%
+scaffolding_or_stubs: 0 counted as completed deliverables
+validation: 9/9 = 100%
+integration: 7/9 = 78%
+propagation: not release-applicable to this implementation slice
+goal_activation: 78%
+session_consolidation: 8/8 = 100% durable transfer, but archive blocked by active unique production-integration work
 thread_archive_ready: false
-reason: active implementation goal remains incomplete and native single-HB worker initiation is not yet proven
 ```
