@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-NATIVE-PROCESS-CANARY-001",
   "created_at": "2026-08-08T03:23:00Z",
-  "state": "HANDOFF_READY",
+  "state": "COMPLETED",
   "goal": {
     "goal_id": "SHWP-NATIVE-PROCESS-CANARY-001",
     "objective": "Prove the provider-agnostic process adapter can execute a real bounded repository mutation over two transitions on the single StegVerse heartbeat without granting general mutation authority.",
@@ -32,7 +32,9 @@
     "source_refs": [
       "StegVerse-Labs/.github#13",
       "heartbeat_runtime/process_adapter.py",
-      "workers/heartbeat_receipt_canary.py"
+      "workers/heartbeat_receipt_canary.py",
+      "StegVerse-Labs/.github@365581b79665e211fcc8f1b935ef464476ed2075:receipts/native-worker-canary/SHWP-NATIVE-PROCESS-CANARY-001.json",
+      "master-records/orchestration@caa055d541a4e6bd8d4cd212d74442eec7cbe859:custody/worker-lifecycle/SHWP-CUSTODY-NATIVE-PROCESS-CANARY-001-G6-001.json"
     ],
     "dependencies": [],
     "parent_task_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
@@ -54,22 +56,23 @@
   },
   "activation": {
     "carrier": "heartbeat",
-    "executor_binding": "DISCOVERED",
-    "recheck_trigger": "each heartbeat while HANDOFF_READY or ACTIVE until terminal",
+    "executor_binding": "UNBOUND",
+    "recheck_trigger": "terminal; no reactivation",
     "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {
-    "checkpoint_ref": null,
+    "checkpoint_ref": "master-records/orchestration@caa055d541a4e6bd8d4cd212d74442eec7cbe859:custody/worker-lifecycle/SHWP-CUSTODY-NATIVE-PROCESS-CANARY-001-G6-001.json",
     "handoff_destination": "control/worker-registry.json",
-    "master_records_required": false,
+    "master_records_required": true,
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Run two native heartbeat cycles using the registered process worker adapter and retain the completed canary receipt/registry evidence.",
+    "next_authorized_action": "None for this canary. Use its executor and custody evidence to close SHWP executor proof and advance broader lifecycle-custody coverage without granting general mutation authority.",
     "terminal_when": [
       "Canary task state is COMPLETED",
       "Worker is released to AVAILABLE",
-      "Two-transition receipt is retained with stable claim and fence"
+      "Two-transition receipt is retained with stable claim and fence",
+      "Master Records v2 lifecycle reconstruction is PASS"
     ]
   },
   "block": null
