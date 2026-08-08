@@ -24,7 +24,9 @@
       "native_receipt_canary",
       "receipts/native-worker-canary/**",
       "no_general_repository_mutation"
-    ]
+    ],
+    "successor_policy": "NONE",
+    "max_successor_depth": 0
   },
   "task": {
     "task_id": "SHWP-NATIVE-PROCESS-CANARY-001",
@@ -39,6 +41,9 @@
     "dependencies": [],
     "parent_task_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
     "derivation_reason": "Real bounded executor proof required before any broader mutation-capable worker binding.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#12",
+    "canonical_lineage_key": "shwp:native-process-canary",
+    "derivation_depth": 1,
     "priority": "critical"
   },
   "authority": {
