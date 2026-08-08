@@ -10,204 +10,172 @@ This is the primary organization continuation/exit record for `StegVerse-Labs` c
 goal_id: STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001
 repository: StegVerse-Labs/.github
 branch: main
-parent_owner: issue #12
-executor_lifecycle_owner: issue #13
-custody_owner: issue #14
-StegGate_bridge_owner: issue #24
+canonical_owner: issue #12
 scoped_handoff: docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md
 session_inventory: management/SHWP_SESSION_EXECUTION_INVENTORY.json
-```
-
-Foundation child tasks with completion evidence:
-
-```text
-issue #15 status projection: COMPLETE — eligible for closure
-issue #17 executable HANDOFF + deterministic discovery: COMPLETE — eligible for closure
-issue #25 hosted first-slice validation: COMPLETE — eligible for closure
-issue #26 organization handoff/archive invariant documentation: COMPLETE — eligible for closure
+state: BLOCKED_RUNTIME_ACTIVATION_AFTER_VALIDATED_IMPLEMENTATION
 ```
 
 ## Canonical architecture
 
-StegVerse has one heartbeat. That heartbeat is the common relative timing, worker scheduling, and continuity coordination frame. It evaluates HANDOFF/worker-registry state each epoch; no eligible job means no worker. Eligible work is checked out only under bounded authority, capability/adapter resolution, dependency satisfaction, fencing, and an evidenced expiry basis. An active worker responds to that same heartbeat with relative transition state.
+StegVerse has one heartbeat. `heartbeat_runtime/engine_v3.py` is the sole heartbeat epoch owner. Each cycle performs organization claim-assertion issuance and HANDOFF/worker-registry evaluation in the same epoch, invokes currently owned workers on that same heartbeat, and atomically/fenced checks out at most one eligible new task. Execution authority remains bounded by separately admitted task/worker authority; heartbeat testimony does not grant authority.
 
-Expected/observed transitions and correlated system signals produce delta-HB evidence. Missing, late, unchanged, or non-following transitions are observations and do not by themselves prove continuity loss.
+There is no normative second worker heartbeat and no normative external scheduler. `scripts/issue_heartbeats.py` cannot advance the epoch. The historical 8-hour GitHub heartbeat cron has been removed. `scripts/run_heartbeat_runtime.py --continuous` owns internal process cadence; any host is replaceable liveness infrastructure only.
 
-There is no normative second worker heartbeat and no normative ChatGPT/GitHub Actions/cron/Render/cloud scheduler dependency.
-
-## Current implementation truth
-
-The native provider-agnostic runtime core is installed and hosted-green:
+## Completed and activated implementation slices
 
 ```text
-heartbeat_runtime/__init__.py
-heartbeat_runtime/engine_v2.py
-scripts/run_heartbeat_runtime.py
-schemas/worker-registry.schema.json
-scripts/project_heartbeat_workers.py
-scripts/reconcile_heartbeat_continuity.py
-control/worker-cost-observations.json
-scripts/estimate_worker_cost_basis.py
-tests/test_heartbeat_runtime.py
-tests/test_worker_cost_basis_estimator.py
+.github#13 executor binding: CLOSED COMPLETE
+.github#14 worker lifecycle custody: CLOSED COMPLETE
+.github#15 status projection: CLOSED COMPLETE
+.github#17 executable HANDOFF/discovery: CLOSED COMPLETE
+.github#24 stale StegGate bridge: CLOSED SUPERSEDED / NOT_PLANNED
+.github#25 hosted validation first slice: CLOSED COMPLETE
+.github#26 handoff/archive invariant: CLOSED COMPLETE
+.github#30 purpose-bound heartbeat carrier: CLOSED COMPLETE
+.github#37 Master Records worker profile: CLOSED COMPLETE
+.github#52 lifecycle receipts: CLOSED COMPLETE
 ```
 
-Strongest semantic hosted proof:
+## Real native worker evidence
+
+The bounded provider-neutral process-worker canary is a real executable proof, not a synthetic adapter claim.
 
 ```text
-head: 262c829e052d5da6f9aba4542c7dcd543fe2db80
-workflow: Heartbeat Worker Project
-run: 31236519287
-job: 93049882049
+task: SHWP-NATIVE-PROCESS-CANARY-001
+worker: native-process-canary-worker
+adapter: process:native-receipt-canary-v1
+claim: SHWP-SHWP-NATIVE-PROCESS-CANARY-001-G6
+fence: 6
+HB2: CANARY_CHECKPOINT / seq 1
+HB3: CANARY_COMPLETE / seq 2
+worker + claim released: true
+source workflow: Native Process Worker Canary
+run/job: 31237212782 / 93051843063 SUCCESS
+source evidence commit: 365581b79665e211fcc8f1b935ef464476ed2075
+```
+
+The canary mutated only `receipts/native-worker-canary/**`; it does not imply general autonomous coding authority.
+
+## Master Records custody/reconstruction evidence
+
+Canonical repository: `master-records/orchestration`.
+
+```text
+scoped handoff: WORKER_LIFECYCLE_CUSTODY_MIRROR_HANDOFF.md = COMPLETE_VALIDATED
+native v2 custody record hash: 313ae32e1fabeb6879f7c84e7dcb9a1e3af69f819176c49fb9f8039e99e42efd
+append-only lifecycle lineage hash: e00111e611b5f8f6af49c7ba3036430bdba2d3d62228b258266a908400ba711c
+terminal event hash: 80f6f5f74e0cfbaad493a9254cd3daa815d8e878eb4ec75205b2f152758cb3db
+hosted validation: 31237511378 / 93052660913 SUCCESS
+reconstruction: PASS
+authority_effect: NONE
+```
+
+Historical Audit Kit checkpoint custody remains valid independently; no wall-clock lease was fabricated for the native HB-relative lifecycle.
+
+## Unified single-heartbeat proof
+
+```text
+workflow: Organization heartbeat validation
+run: 31237675041
+job: 93053122793
 result: SUCCESS
 ```
 
-The logs directly prove 6/6 native heartbeat lifecycle tests, 3/3 worker cost-basis estimator tests, sparse-cost no-guess behavior, live-registry no-false-activation, valid worker/continuity projections, and correct StegGate completed/blocked successor posture.
+Hosted logs directly prove:
+- legacy issuer does not advance epoch;
+- unified v0.3 cycle contains organization assertions + worker registry evaluation;
+- dry-run does not mutate live state;
+- three process-owned internal cycles advanced one heartbeat 4 -> 5 -> 6;
+- each no-work cycle initiated no worker.
 
-Subsequent durable consolidation commits:
-
-```text
-97d96dc  session execution inventory created
-f454baa  scoped handoff advanced to native-engine proof
-5b502f5  execution inventory refreshed
-51ccd30  scoped handoff records foundation issue closure readiness
-5a09d0b  execution inventory closure/convergence refresh
-3221007  organization handoff bound to current evidence
-```
-
-The previous first engine cut exposed a hosted expiry/reactivation defect and was superseded/deleted. Hardened `engine_v2.py` blocks an expired parent on the generated recovery task when the required Master Records final worker report is missing.
-
-## Worker and StegGate registry truth
-
-`control/worker-registry.json` generation 4:
-
-```text
-STEGGATE-AUDITKIT-001
-  state: COMPLETED
-  claim: NONE
-  worker: NONE
-  archive_eligible: true
-
-STEGGATE-FIRST-BOUNDARY-001
-  state: BLOCKED
-  executor_binding: UNBOUND
-  claim: NONE
-  worker: NONE
-  archive_eligible: false
-  release: named real consequential target + authority model + ara activation READY + validator PASS
-```
-
-The former ChatGPT `StegVerse Worker Cycle` bootstrap executor is DISABLED. It is not current authority and not the scheduler. No ChatGPT automation or monitoring has been created or enabled for the current implementation session.
-
-## Named StegGate / StegCore obligations verified
+## Named StegGate / StegCore obligations
 
 `StegVerse-Labs/ara-admissibility-interop`:
 
 ```text
-PR #1: open draft, mergeable, head c2df13fbbf51144f20ee8c46ff27653e7336c17d
-issues #2/#23/#66: COMPLETE / closed
-Audit Kit + Track 1B + fixture package/report: COMPLETE
-first real boundary issue #13: BLOCKED / UNCLAIMED
+PR #1: open draft; verified head c2df13fbbf51144f20ee8c46ff27653e7336c17d
+issues #2/#23/#66: COMPLETE
+Audit Kit / Track 1B / package-report chain: COMPLETE
 StegGate Schema Foundation: 31233087559 / 93040589154 SUCCESS
 Repo Check: 31233087564 / 93040589130 SUCCESS
+first real boundary: BLOCKED / UNCLAIMED
 ```
 
-`StegVerse-Labs/StegCore#54`: COMPLETE / RELEASED. Do not duplicate StegCore canonical runtime ownership.
+`StegVerse-Labs/StegCore#54`: COMPLETE / RELEASED. No duplicate StegCore runtime work is authorized.
 
-No PR #1 merge, tag, release, deployment, or publication is authorized by this session.
+`STEGGATE-AUDITKIT-001` is COMPLETED and must never be reactivated. `STEGGATE-FIRST-BOUNDARY-001` is the only canonical StegGate successor in this lane. Its release condition is durable consequential target + authority model + ara activation READY + validator PASS.
 
-## Master Records lifecycle rule
+## Current blocker: durable runtime activation
 
-Known HB-relative expiry does not imply completion. If required Master Records final worker evidence is absent at known expiry, expired worker authority ends, the parent is BLOCKED, a distinct recovery task is admitted, and only separately validated remediation may become executable work.
+The single-heartbeat runtime is implemented and validated but is not yet running continuously on a durable state host.
 
-Historical checkpoint custody remains:
+Connected Render inspection found no existing service with correct `.github` control-plane ownership. The existing SCW background worker belongs to `StegVerse-SCW` and must not become the control-plane owner. Other services are unrelated. The currently available Render service-creation control does not provide the required background-worker plus persistent-disk configuration; creating a stateless web service would risk losing heartbeat/registry/event/cost state across deploy or restart.
 
 ```text
-master-records/orchestration@484696c2d6d7b69fa324e5b1f169c51d740ad925
-custody/worker-lifecycle/SHWP-CUSTODY-STEGGATE-AUDITKIT-001-G1-001.json
-sha256 ac2cbba5b3f3c2e91893eabc63c9ba2221c226cbe1c7e3c70459d9ce75dc0cb2
-Validate Worker Lifecycle Custody run 31231978969 / job 93037458942 SUCCESS
+owner: StegVerse-Labs/.github#12
+state: BLOCKED_RUNTIME_ACTIVATION
+observer: durable deployment/control-plane inspection
+release_condition:
+  - replaceable long-lived process host available to .github control plane
+  - durable writable heartbeat/registry/event/cost state survives restart/deploy
+  - host starts scripts/run_heartbeat_runtime.py --continuous
+  - runtime, not host scheduler, owns machine-scale cadence
+  - restart test preserves one epoch lineage and no duplicate claim/fence
+  - no ChatGPT automation, GitHub schedule, Render cron, or equivalent external scheduler required
+next_action: activate only when all release predicates can be satisfied without changing canonical ownership or state durability
 ```
 
-This is historical checkpoint custody, not proof of a live native-worker lifecycle.
+This is the precise archive blocker. No ChatGPT automation/monitoring has been created or enabled for this session.
 
-## Ecosystem worker/job cost basis
+## Still-open protocol work under parent #12
 
-The native engine refuses to guess a worker expiry when an evidenced cost-basis estimate is unavailable. The observation ledger retains HB transition and cost evidence, including external-entity job references/cost fields. `scripts/estimate_worker_cost_basis.py` derives conservative task-class estimates only from completed HB-relative samples and raises confidence with evidence volume.
+The following remain genuinely incomplete rather than stale decomposition:
 
-Current live observation state contains no completed task-class samples, so no production expiry estimate exists yet. This is correct fail-closed behavior.
+- #18/#35/#36: expiry, separately admitted renewal, and orphan recovery reconciled to the one-HB timing model;
+- #38/#46: typed activation-request versus execution-authorization negative proof;
+- #42: successor acquisition after reconstructing checkpoint + Master Records evidence;
+- #51: centralized general mutation scope/fence enforcement beyond the bounded canary;
+- general empirical task-class cost history beyond the first two native canary observations.
 
-## Collision / convergence state
+Do not introduce a second heartbeat deadline while resolving #18/#35/#36.
 
-All SHWP child issues are implementation details of #12, not independent architectures. Parent #12 controls conflicts.
+## Adjacent repository integrity observation
 
-```text
-STEGGATE-AUDITKIT-001: COMPLETE — do not reactivate
-STEGGATE-FIRST-BOUNDARY-001: BLOCKED / UNCLAIMED — do not claim before READY
-StegCore#54: COMPLETE / RELEASED — do not duplicate
-native HB runtime/cost estimator file slice: IMPLEMENTED + HOSTED_GREEN
-production worker-adapter binding: REMAINS under .github#13
-native live lifecycle custody: REMAINS under .github#14
-```
+`Validate organization control plane` run `31237186673`, job `93051771613` failed after its invariant/allocator steps because historical `TASK-2026-0001` is marked completed without `merged=true`. This is a pre-existing organization check-in integrity defect, not a failure of the native worker canary or unified heartbeat. It must be reconciled through its existing task/check-in owner before claiming the entire organization control plane green.
 
-## Exact remaining work
+## Propagation / release
 
-### `.github#13` — production adapter / live execution proof
-
-The runtime interface exists, but no legitimate production mutation-capable worker adapter is registered. Completion requires installing/binding a provider-agnostic worker adapter with independently admitted mutation authority, registering exact adapter/capabilities, proving same-HB responses and real fencing across multiple live cycles, and retaining checkpoint/final-report/claim-release evidence. Synthetic adapters do not satisfy this requirement.
-
-### `.github#14` — native lifecycle Master Records custody
-
-Exercise an actual native worker lifecycle through checkpoint, completion or expiry/recovery, final worker report, claim release, and reconstruction.
-
-### Empirical cost history
-
-Collect completed native-worker samples; until they exist the estimator remains confidence NONE / no expiry candidate. External-entity costs must be observed, never invented.
-
-## Cross-repository propagation
-
-- ara first-boundary successor remains dependency-blocked; no implementation claim now.
-- master-records/orchestration remains custody destination for native worker lifecycle evidence.
-- StegCore #54 requires no propagation/change.
-- Site, Publisher, admissibility-wiki, and stegguardian-wiki have no authorized release/publication propagation from this runtime implementation slice.
+No PR #1 merge, tag, release, deployment, Site publication, Publisher propagation, admissibility-wiki propagation, or stegguardian-wiki propagation was performed or implied by this infrastructure work. Master Records custody evidence was directly integrated because that repository is the canonical lifecycle-custody owner.
 
 ## Session consolidation
 
-All unique design decisions and work from the current session are durably represented in:
+All unique session requirements are durably represented in:
 
 ```text
 management/SHWP_SESSION_EXECUTION_INVENTORY.json
 docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md
 docs/ORG_MIRROR_HANDOFF.md
 control/worker-registry.json
-heartbeat_runtime/engine_v2.py
-scripts/estimate_worker_cost_basis.py
-issues #12/#13/#14/#24
+heartbeat_runtime/engine_v3.py
+master-records/orchestration/WORKER_LIFECYCLE_CUSTODY_MIRROR_HANDOFF.md
+issues #12 and remaining explicit children
 ```
 
-The conversation is not archive-ready because the remaining production adapter/live native worker lifecycle is not yet complete and no active non-conversational native execution path currently owns that remaining implementation.
+No unique design decision needs chat history for reconstruction. The conversation nevertheless remains required until the active-goal automation boundary becomes archive-safe, because parent #12 continuous runtime activation is not yet machine-active.
 
 ## Completion assessment
 
-Current SHWP goal denominator used for this session:
-
 ```text
-session goals/inventory items: 8
-canonical developed-file set: 17
-validation classes: 9
-integration classes: 9
-```
-
-Current state:
-
-```text
-task_completion: 6/8 = 75%
-developed_files: 17/17 = 100%
-scaffolding_or_stubs: 0 counted as completed deliverables
-validation: 9/9 = 100%
-integration: 7/9 = 78%
-propagation: not release-applicable to this implementation slice
-goal_activation: 78%
-session_consolidation: 8/8 = 100% durable transfer, but archive blocked by active unique production-integration work
+canonical capability tasks: 12
+complete: 10
+partial/blocked: 2
+task completion: 83%
+canonical developed files: 28/28 = 100%
+scaffolding/stubs counted as required deliverables: 0
+validation classes: 12/12 = 100%
+integration classes: 10/11 = 91%
+goal activation: 91%
+session consolidation: 10/10 durable goal records = 100%
 thread_archive_ready: false
 ```
