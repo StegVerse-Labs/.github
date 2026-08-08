@@ -7,16 +7,21 @@ on:
     branches: [main]
     paths:
       - 'handoffs/**'
+      - 'heartbeat_runtime/**'
+      - 'tests/test_heartbeat_runtime.py'
       - 'control/heartbeat-state.json'
       - 'control/worker-registry.json'
       - 'control/heartbeat-continuity.json'
+      - 'control/worker-cost-observations.json'
       - 'docs/ORG_MIRROR_HANDOFF.md'
+      - 'docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md'
       - 'schemas/heartbeat-transition-observation.schema.json'
       - 'schemas/worker-runtime-cost-basis.schema.json'
       - 'schemas/worker-registry.schema.json'
       - 'schemas/executable-handoff.schema.json'
       - 'scripts/project_heartbeat_workers.py'
       - 'scripts/reconcile_heartbeat_continuity.py'
+      - 'scripts/run_heartbeat_runtime.py'
       - '.github/workflows/heartbeat-worker-project.yml'
   workflow_dispatch:
 
@@ -39,10 +44,12 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Compile HB worker projectors
+      - name: Compile HB runtime and projectors
         run: |
+          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine.py
           python -m py_compile scripts/project_heartbeat_workers.py
           python -m py_compile scripts/reconcile_heartbeat_continuity.py
+          python -m py_compile scripts/run_heartbeat_runtime.py
 
       - name: Parse canonical JSON surfaces
         run: |
@@ -56,11 +63,27 @@ jobs:
               Path('schemas/worker-runtime-cost-basis.schema.json'),
               Path('control/heartbeat-state.json'),
               Path('control/worker-registry.json'),
+              Path('control/worker-cost-observations.json'),
               *sorted(Path('handoffs').glob('*.json')),
           ]
           for path in paths:
               json.loads(path.read_text(encoding='utf-8'))
               print(f'JSON_OK:{path}')
+          PY
+
+      - name: Prove native heartbeat engine semantics
+        run: python -m unittest -v tests.test_heartbeat_runtime
+
+      - name: Prove live registry has no false activation
+        run: |
+          output="$(python scripts/run_heartbeat_runtime.py --dry-run --cycles 1)"
+          echo "$output"
+          python - <<'PY' "$output"
+          import json, sys
+          value = json.loads(sys.argv[1])
+          assert value['activated'] is False, value
+          assert value['events'][-1]['event_type'] == 'no_worker_initiated', value
+          print('LIVE_NO_FALSE_ACTIVATION_PASS')
           PY
 
       - name: Validate or refresh worker status projection
@@ -75,7 +98,7 @@ jobs:
       - name: Refresh heartbeat continuity projection
         run: python scripts/reconcile_heartbeat_continuity.py --write
 
-      - name: Prove single-HB worker scheduling posture
+      - name: Prove current StegGate successor posture
         run: |
           python - <<'PY'
           import json
@@ -83,8 +106,8 @@ jobs:
           registry = json.loads(Path('control/worker-registry.json').read_text())
           status = json.loads(Path('control/worker-status.json').read_text())
           continuity = json.loads(Path('control/heartbeat-continuity.json').read_text())
-          task = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-AUDITKIT-001')
-          source = next(x for x in registry['tasks'] if x['task_id'] == 'STEGGATE-AUDITKIT-001')
+          audit = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-AUDITKIT-001')
+          boundary = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-FIRST-BOUNDARY-001')
 
           assert status['execution_authority_from_heartbeat'] is False, status
           assert status['single_heartbeat_timing_frame'] is True, status
@@ -92,27 +115,17 @@ jobs:
           assert continuity['heartbeat_is_single_common_timing_frame'] is True, continuity
           assert continuity['absence_or_delay_is_not_by_itself_continuity_loss'] is True, continuity
 
-          if task['state'] == 'HANDOFF_READY':
-              assert task['activation_required'] is True, task
-              assert task['executor_binding'] in {'UNBOUND', 'DISCOVERED'}, task
-              assert task['archive_eligible'] is False, task
-              print('SHWP_STEGGATE_HANDOFF_READY_PASS')
-          elif task['state'] in {'CLAIMED', 'ACTIVE', 'BLOCKED', 'EXPIRING', 'HANDOFF_WRITING'}:
-              assert task['executor_binding'] in {'AUTHORIZED', 'BOUND'}, task
-              assert task['worker_id'], task
-              assert task['claim_id'], task
-              assert task['heartbeat_timing_established'] is True, task
-              if task['executor_binding'] == 'BOUND':
-                  assert task['archive_eligible'] is True, task
-              print('SHWP_STEGGATE_HB_RELATIVE_ACTIVE_PASS')
-          elif task['state'] == 'COMPLETED':
-              assert task['archive_eligible'] is True, task
-              print('SHWP_STEGGATE_COMPLETED_PASS')
-          else:
-              raise AssertionError(f"unexpected StegGate lifecycle state: {task['state']}")
+          assert audit['state'] == 'COMPLETED', audit
+          assert audit['archive_eligible'] is True, audit
+          assert audit['activation_required'] is False, audit
 
-          # Known HB-relative expiry without a final Master Records worker report
-          # must become a registry recovery candidate, never silent completion.
+          assert boundary['state'] == 'BLOCKED', boundary
+          assert boundary['worker_id'] is None, boundary
+          assert boundary['activation_required'] is False, boundary
+          assert boundary['archive_eligible'] is False, boundary
+          assert 'BLOCKED_UNCLAIMED' in boundary['archive_reason_codes'], boundary
+          print('STEGGATE_SUCCESSOR_BLOCKED_UNCLAIMED_PASS')
+
           for obs in continuity['observations']:
               if 'MASTER_RECORDS_FINAL_WORKER_REPORT_MISSING' in obs['reason_codes']:
                   assert continuity['candidate_count'] > 0, continuity
