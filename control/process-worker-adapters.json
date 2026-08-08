@@ -1,5 +1,22 @@
 {
   "schema": "stegverse.process-worker-adapters/v0.1",
-  "generation": 0,
-  "adapters": []
+  "generation": 1,
+  "adapters": [
+    {
+      "adapter_ref": "process:native-receipt-canary-v1",
+      "enabled": true,
+      "type": "process_json_v0.1",
+      "command": ["python", "workers/heartbeat_receipt_canary.py"],
+      "cwd": ".",
+      "timeout_seconds": 10,
+      "env_allowlist": [],
+      "authority_ref": "handoffs/SHWP-NATIVE-PROCESS-CANARY-001.json#authority",
+      "capabilities": ["native_receipt_canary"],
+      "notes": [
+        "Host/provider agnostic process adapter; command is configured by control plane, never by task input.",
+        "Mutation is constrained by worker code and handoff to receipts/native-worker-canary/** only.",
+        "This adapter is an executor integration canary, not general repository mutation authority."
+      ]
+    }
+  ]
 }
