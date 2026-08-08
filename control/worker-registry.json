@@ -1,0 +1,36 @@
+{
+  "schema": "stegverse.heartbeat-worker-registry/v0.1",
+  "generation": 0,
+  "updated_at": "2026-08-08T00:50:00Z",
+  "workers": [],
+  "tasks": [
+    {
+      "task_id": "STEGGATE-AUDITKIT-001",
+      "goal_id": "STEGGATE-AUDITKIT-001",
+      "state": "HANDOFF_READY",
+      "handoff_ref": "handoffs/STEGGATE-AUDITKIT-001.json",
+      "executor_binding": "UNBOUND",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "claim_id": null,
+      "lease": null,
+      "last_checkpoint_ref": "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
+      "block_ref": null,
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "UNFINISHED_WORK",
+        "EXECUTOR_UNBOUND",
+        "NO_ACTIVE_WORKER_LEASE",
+        "MASTER_RECORDS_WORKER_CUSTODY_NOT_PROVEN"
+      ],
+      "evidence_refs": [
+        "StegVerse-Labs/ara-admissibility-interop#1",
+        "StegVerse-Labs/ara-admissibility-interop#2",
+        "StegVerse-Labs/ara-admissibility-interop#23",
+        "StegVerse-Labs/ara-admissibility-interop#66",
+        "StegVerse-Labs/.github#12",
+        "StegVerse-Labs/.github#13"
+      ]
+    }
+  ]
+}
