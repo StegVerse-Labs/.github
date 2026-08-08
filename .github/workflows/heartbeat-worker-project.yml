@@ -1,3 +1,4 @@
+# SHWP v0.1 foundation: heartbeat carries activation requests; it does not grant execution authority.
 name: Heartbeat Worker Project
 
 on:
