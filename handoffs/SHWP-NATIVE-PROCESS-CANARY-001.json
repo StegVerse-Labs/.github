@@ -1,0 +1,76 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-NATIVE-PROCESS-CANARY-001",
+  "created_at": "2026-08-08T03:23:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "SHWP-NATIVE-PROCESS-CANARY-001",
+    "objective": "Prove the provider-agnostic process adapter can execute a real bounded repository mutation over two transitions on the single StegVerse heartbeat without granting general mutation authority.",
+    "success_predicates": [
+      "Heartbeat atomically checks out exactly one canary worker",
+      "Worker writes only receipts/native-worker-canary/SHWP-NATIVE-PROCESS-CANARY-001.json",
+      "Worker returns ACTIVE on first heartbeat and COMPLETED on the next heartbeat",
+      "Claim and fencing token remain stable across both transitions",
+      "Completion releases the worker and retains inspectable evidence"
+    ],
+    "failure_predicates": [
+      "Worker mutates outside the admitted receipt namespace",
+      "Worker runs without a fenced claim",
+      "Duplicate worker checkout occurs",
+      "A third-party scheduler is treated as execution authority"
+    ],
+    "expires_at": null,
+    "authority_ceiling": [
+      "native_receipt_canary",
+      "receipts/native-worker-canary/**",
+      "no_general_repository_mutation"
+    ]
+  },
+  "task": {
+    "task_id": "SHWP-NATIVE-PROCESS-CANARY-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-Labs/.github#13",
+      "heartbeat_runtime/process_adapter.py",
+      "workers/heartbeat_receipt_canary.py"
+    ],
+    "dependencies": [],
+    "parent_task_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
+    "derivation_reason": "Real bounded executor proof required before any broader mutation-capable worker binding.",
+    "priority": "critical"
+  },
+  "authority": {
+    "authority_source": "StegVerse-Labs/.github#13 bounded native executor canary",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "shwp-single-hb-v0.2"
+  },
+  "execution": {
+    "required_capabilities": ["native_receipt_canary"],
+    "allowed_paths": ["receipts/native-worker-canary/**"],
+    "allowed_services": [],
+    "max_actions": 2,
+    "max_retries": 0,
+    "external_cost_ceiling_usd": 0
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "DISCOVERED",
+    "recheck_trigger": "each heartbeat while HANDOFF_READY or ACTIVE until terminal",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": null,
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "Run two native heartbeat cycles using the registered process worker adapter and retain the completed canary receipt/registry evidence.",
+    "terminal_when": [
+      "Canary task state is COMPLETED",
+      "Worker is released to AVAILABLE",
+      "Two-transition receipt is retained with stable claim and fence"
+    ]
+  },
+  "block": null
+}
