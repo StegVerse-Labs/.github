@@ -1,0 +1,31 @@
+{
+  "absence_or_delay_is_not_by_itself_continuity_loss": true,
+  "authority_effect": "none",
+  "candidate_count": 0,
+  "heartbeat_epoch": 1,
+  "heartbeat_is_single_common_timing_frame": true,
+  "observations": [
+    {
+      "continuity_lost": false,
+      "continuity_status": "OBSERVATION_ONLY",
+      "cost_basis_ref": null,
+      "current_transition": null,
+      "delta_hb_since_response": null,
+      "delta_hb_since_transition": null,
+      "expected_next_transition": null,
+      "expiry_epoch": null,
+      "goal_id": "STEGGATE-AUDITKIT-001",
+      "heartbeat_epoch": 1,
+      "last_response_epoch": null,
+      "last_transition_epoch": null,
+      "reason_codes": [
+        "HB_RELATIVE_TIMING_NOT_YET_RECORDED"
+      ],
+      "state": "HANDOFF_READY",
+      "task_id": "STEGGATE-AUDITKIT-001",
+      "transition_sequence": null
+    }
+  ],
+  "registry_task_candidates": [],
+  "schema": "stegverse.heartbeat-continuity-projection/v0.1"
+}
