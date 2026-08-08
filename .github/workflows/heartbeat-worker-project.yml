@@ -8,18 +8,21 @@ on:
     paths:
       - 'handoffs/**'
       - 'heartbeat_runtime/**'
+      - 'workers/**'
       - 'tests/test_heartbeat_runtime.py'
       - 'tests/test_worker_cost_basis_estimator.py'
       - 'control/heartbeat-state.json'
       - 'control/worker-registry.json'
       - 'control/heartbeat-continuity.json'
       - 'control/worker-cost-observations.json'
+      - 'control/process-worker-adapters.json'
       - 'cost-basis/worker-runtime/**'
       - 'docs/ORG_MIRROR_HANDOFF.md'
       - 'docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md'
       - 'schemas/heartbeat-transition-observation.schema.json'
       - 'schemas/worker-runtime-cost-basis.schema.json'
       - 'schemas/worker-registry.schema.json'
+      - 'schemas/process-worker-adapters.schema.json'
       - 'schemas/executable-handoff.schema.json'
       - 'scripts/project_heartbeat_workers.py'
       - 'scripts/reconcile_heartbeat_continuity.py'
@@ -49,7 +52,8 @@ jobs:
 
       - name: Compile HB runtime and projectors
         run: |
-          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py
+          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py heartbeat_runtime/process_adapter.py
+          python -m py_compile workers/heartbeat_receipt_canary.py
           python -m py_compile scripts/project_heartbeat_workers.py
           python -m py_compile scripts/reconcile_heartbeat_continuity.py
           python -m py_compile scripts/run_heartbeat_runtime.py
@@ -62,13 +66,16 @@ jobs:
           from pathlib import Path
           paths = [
               Path('schemas/worker-registry.schema.json'),
+              Path('schemas/process-worker-adapters.schema.json'),
               Path('schemas/executable-handoff.schema.json'),
               Path('schemas/heartbeat-transition-observation.schema.json'),
               Path('schemas/worker-runtime-cost-basis.schema.json'),
               Path('control/heartbeat-state.json'),
               Path('control/worker-registry.json'),
+              Path('control/process-worker-adapters.json'),
               Path('control/worker-cost-observations.json'),
               *sorted(Path('handoffs').glob('*.json')),
+              *sorted(Path('cost-basis/worker-runtime').glob('*.json')),
           ]
           for path in paths:
               json.loads(path.read_text(encoding='utf-8'))
@@ -95,16 +102,18 @@ jobs:
           print('COST_BASIS_NO_GUESS_PASS')
           PY
 
-      - name: Prove live registry has no false activation
+      - name: Prove dry-run never mutates live registry
         run: |
+          before="$(sha256sum control/worker-registry.json control/heartbeat-state.json control/worker-cost-observations.json | sha256sum | cut -d' ' -f1)"
           output="$(python scripts/run_heartbeat_runtime.py --dry-run --cycles 1)"
           echo "$output"
+          after="$(sha256sum control/worker-registry.json control/heartbeat-state.json control/worker-cost-observations.json | sha256sum | cut -d' ' -f1)"
+          test "$before" = "$after"
           python - <<'PY' "$output"
           import json, sys
           value = json.loads(sys.argv[1])
-          assert value['activated'] is False, value
-          assert value['events'][-1]['event_type'] == 'no_worker_initiated', value
-          print('LIVE_NO_FALSE_ACTIVATION_PASS')
+          assert value['authority_effect'] == 'none_beyond_existing_admitted_task_authority', value
+          print('LIVE_DRY_RUN_NON_MUTATING_PASS')
           PY
 
       - name: Validate or refresh worker status projection
