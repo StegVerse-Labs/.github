@@ -1,5 +1,5 @@
 """StegVerse single-heartbeat runtime primitives."""
 
-from .engine import HeartbeatRuntime, WorkerResponse
+from .engine_v2 import HeartbeatRuntime, WorkerResponse
 
 __all__ = ["HeartbeatRuntime", "WorkerResponse"]
