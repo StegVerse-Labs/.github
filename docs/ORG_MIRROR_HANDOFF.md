@@ -18,13 +18,13 @@ scoped_handoff: docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md
 session_inventory: management/SHWP_SESSION_EXECUTION_INVENTORY.json
 ```
 
-Completed foundation owners:
+Foundation child tasks with completion evidence:
 
 ```text
-issue #15 status projection: COMPLETE
-issue #17 executable HANDOFF + deterministic discovery: COMPLETE
-issue #25 hosted first-slice validation: COMPLETE
-issue #26 organization handoff/archive invariant documentation: COMPLETE
+issue #15 status projection: COMPLETE — eligible for closure
+issue #17 executable HANDOFF + deterministic discovery: COMPLETE — eligible for closure
+issue #25 hosted first-slice validation: COMPLETE — eligible for closure
+issue #26 organization handoff/archive invariant documentation: COMPLETE — eligible for closure
 ```
 
 ## Canonical architecture
@@ -72,6 +72,7 @@ f454baa  scoped handoff advanced to native-engine proof
 5b502f5  execution inventory refreshed
 51ccd30  scoped handoff records foundation issue closure readiness
 5a09d0b  execution inventory closure/convergence refresh
+3221007  organization handoff bound to current evidence
 ```
 
 The previous first engine cut exposed a hosted expiry/reactivation defect and was superseded/deleted. Hardened `engine_v2.py` blocks an expired parent on the generated recovery task when the required Master Records final worker report is missing.
