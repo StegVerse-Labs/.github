@@ -3,7 +3,7 @@
   "activation_required_count": 0,
   "archive_eligible_count": 2,
   "execution_authority_from_heartbeat": false,
-  "generated_at": "2026-08-08T03:36:12Z",
+  "generated_at": "2026-08-08T03:42:49Z",
   "heartbeat_epoch": 3,
   "schema": "stegverse.heartbeat-worker-status/v0.2",
   "single_heartbeat_timing_frame": true,
@@ -25,7 +25,7 @@
       ],
       "evidence_refs": [
         "StegVerse-Labs/.github#13:COMPLETE",
-        "StegVerse-Labs/.github#14:COMPLETE_PENDING_ISSUE_CLOSURE",
+        "StegVerse-Labs/.github#14:COMPLETE",
         "heartbeat_runtime/process_adapter.py",
         "workers/heartbeat_receipt_canary.py",
         "receipts/native-worker-canary/SHWP-NATIVE-PROCESS-CANARY-001.json",
