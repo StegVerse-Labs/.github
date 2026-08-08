@@ -1,5 +1,5 @@
 {
-  "generation": 6,
+  "generation": 7,
   "schema": "stegverse.heartbeat-worker-registry/v0.1",
   "tasks": [
     {
@@ -68,7 +68,11 @@
         "StegVerse-Labs/.github#13",
         "heartbeat_runtime/process_adapter.py",
         "workers/heartbeat_receipt_canary.py",
-        "receipts/native-worker-canary/SHWP-NATIVE-PROCESS-CANARY-001.json"
+        "receipts/native-worker-canary/SHWP-NATIVE-PROCESS-CANARY-001.json",
+        "StegVerse-Labs/.github:Native Process Worker Canary run 31237212782 job 93051843063:SUCCESS",
+        "master-records/orchestration@caa055d541a4e6bd8d4cd212d74442eec7cbe859:custody/worker-lifecycle/SHWP-CUSTODY-NATIVE-PROCESS-CANARY-001-G6-001.json",
+        "master-records/orchestration:Validate Worker Lifecycle Custody run 31237373888 job 93052280495:SUCCESS",
+        "master-records:worker-lifecycle-record-hash:313ae32e1fabeb6879f7c84e7dcb9a1e3af69f819176c49fb9f8039e99e42efd"
       ],
       "executor_binding": "UNBOUND",
       "external_entity_job_ref": null,
@@ -88,7 +92,7 @@
         "start_epoch": 2,
         "transition_sequence": 2
       },
-      "last_checkpoint_ref": "receipts/native-worker-canary/SHWP-NATIVE-PROCESS-CANARY-001.json",
+      "last_checkpoint_ref": "master-records/orchestration@caa055d541a4e6bd8d4cd212d74442eec7cbe859:custody/worker-lifecycle/SHWP-CUSTODY-NATIVE-PROCESS-CANARY-001-G6-001.json",
       "lease": null,
       "state": "COMPLETED",
       "task_id": "SHWP-NATIVE-PROCESS-CANARY-001",
@@ -96,7 +100,7 @@
       "worker_instance_id": null
     }
   ],
-  "updated_at": "2026-08-08T03:27:04Z",
+  "updated_at": "2026-08-08T03:32:00Z",
   "workers": [
     {
       "adapter_ref": null,
