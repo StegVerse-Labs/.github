@@ -24,7 +24,9 @@
       "no_release_without_separate_authority",
       "no_publication_without_separate_authority",
       "no_deployment_without_separate_authority"
-    ]
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 2
   },
   "task": {
     "task_id": "STEGGATE-FIRST-BOUNDARY-001",
@@ -38,6 +40,9 @@
     "dependencies": ["STEGGATE-AUDITKIT-001"],
     "parent_task_id": "STEGGATE-AUDITKIT-001",
     "derivation_reason": "Audit Kit and independent verifier prerequisites are complete; first real consequence-boundary work is the canonical dependency-gated successor.",
+    "canonical_owner_ref": "StegVerse-Labs/ara-admissibility-interop:ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "steggate:first-boundary",
+    "derivation_depth": 1,
     "priority": "elevated"
   },
   "authority": {
