@@ -1,21 +1,30 @@
 {
-  "activation_driver": ".github/workflows/heartbeat-worker-project.yml",
-  "activation_required_count": 0,
-  "archive_eligible_count": 1,
+  "activation_driver": "internal_heartbeat_registry_evaluation",
+  "activation_required_count": 1,
+  "archive_eligible_count": 0,
   "execution_authority_from_heartbeat": false,
-  "generated_at": "2026-08-08T01:10:46Z",
-  "schema": "stegverse.heartbeat-worker-status/v0.1",
-  "source_registry_generation": 2,
+  "generated_at": "2026-08-08T02:17:05Z",
+  "heartbeat_epoch": 1,
+  "schema": "stegverse.heartbeat-worker-status/v0.2",
+  "single_heartbeat_timing_frame": true,
+  "source_registry_generation": 3,
   "task_count": 1,
   "tasks": [
     {
       "activation_carrier": "heartbeat",
-      "activation_required": false,
-      "archive_eligible": true,
+      "activation_required": true,
+      "archive_eligible": false,
       "archive_reason_codes": [
-        "MASTER_RECORDS_CUSTODY_REQUIRED"
+        "EXECUTOR_NOT_BOUND",
+        "EXECUTOR_NOT_RESOLVED",
+        "HB_RELATIVE_TIMING_NOT_ESTABLISHED",
+        "HEARTBEAT_ACTIVATION_REQUIRED"
       ],
-      "claim_id": "SHWP-STEGGATE-AUDITKIT-001-G1",
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "current_transition": null,
+      "delta_hb_since_response": null,
+      "delta_hb_since_transition": null,
       "eligible_workers": [],
       "evidence_refs": [
         "StegVerse-Labs/ara-admissibility-interop#1",
@@ -25,22 +34,25 @@
         "StegVerse-Labs/.github#24",
         "StegVerse-Labs/.github:Heartbeat Worker Project run 31231845019",
         "StegVerse-Labs/ara-admissibility-interop:StegGate Schema Foundation run 31231723418 job 93036736627",
-        "automation:StegVerse Worker Cycle:enabled",
         "master-records:orchestration:custody/worker-lifecycle/SHWP-CUSTODY-STEGGATE-AUDITKIT-001-G1-001.json:ac2cbba5b3f3c2e91893eabc63c9ba2221c226cbe1c7e3c70459d9ce75dc0cb2",
-        "master-records:orchestration:Validate Worker Lifecycle Custody run 31231978969 job 93037458942:SUCCESS"
+        "master-records:orchestration:Validate Worker Lifecycle Custody run 31231978969 job 93037458942:SUCCESS",
+        "bootstrap-executor:StegVerse Worker Cycle:DISABLED:2026-08-08T01:46:27Z"
       ],
-      "executor_binding": "BOUND",
-      "executor_resolved": true,
+      "executor_binding": "UNBOUND",
+      "executor_resolved": false,
+      "expected_next_transition": null,
+      "expiry_epoch": null,
       "goal_id": "STEGGATE-AUDITKIT-001",
       "handoff_ref": "handoffs/STEGGATE-AUDITKIT-001.json",
+      "heartbeat_epoch": 1,
+      "heartbeat_timing_established": false,
       "last_checkpoint_ref": "master-records/orchestration@484696c2d6d7b69fa324e5b1f169c51d740ad925:custody/worker-lifecycle/SHWP-CUSTODY-STEGGATE-AUDITKIT-001-G1-001.json",
+      "legacy_wall_clock_lease_is_timing_authority": false,
       "next_authorized_action": "Continue the current nonconflicting StegGate critical path from the stable first-language verifier checkpoint: release/advance Track 1B when its dependencies are machine-observably satisfied, then progress the Audit Kit/report and first-boundary sequence according to the repository handoff and issue dependencies.",
-      "stale_lease": false,
-      "state": "ACTIVE",
+      "state": "HANDOFF_READY",
       "task_id": "STEGGATE-AUDITKIT-001",
-      "valid_lease": true,
-      "worker_id": "stegverse-worker-cycle",
-      "worker_instance_id": "bootstrap-20260808T0103Z"
+      "worker_id": null,
+      "worker_instance_id": null
     }
   ],
   "validation": {
