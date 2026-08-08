@@ -12,6 +12,7 @@ on:
       - 'tests/test_heartbeat_runtime.py'
       - 'tests/test_process_adapter_scope.py'
       - 'tests/test_lifecycle_authority.py'
+      - 'tests/test_executor_discovery.py'
       - 'tests/test_worker_cost_basis_estimator.py'
       - 'control/heartbeat-state.json'
       - 'control/worker-registry.json'
@@ -94,6 +95,9 @@ jobs:
 
       - name: Prove native heartbeat engine semantics
         run: python -m unittest -v tests.test_heartbeat_runtime
+
+      - name: Prove ambiguity-safe executor discovery
+        run: python -m unittest -v tests.test_executor_discovery
 
       - name: Prove sandboxed mutation scope and fence semantics
         run: python -m unittest -v tests.test_process_adapter_scope
