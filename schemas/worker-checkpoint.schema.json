@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/worker-checkpoint.schema.json",
+  "title": "StegVerse Canonical Worker Checkpoint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "checkpoint_id", "heartbeat_epoch", "task_id", "goal_id", "worker_id", "worker_instance_id", "claim_id", "fencing_token", "current_state", "completed_transitions", "unresolved_work", "evidence_refs", "next_authorized_action", "policy_version", "authority_source", "handoff_ref", "handoff_sha256", "worker_checkpoint_ref", "resource_budget", "execution_authority", "checkpoint_sha256"],
+  "properties": {
+    "schema": {"const": "stegverse.worker-checkpoint/v0.1"},
+    "checkpoint_id": {"type": "string", "minLength": 1},
+    "heartbeat_epoch": {"type": "integer", "minimum": 0},
+    "task_id": {"type": "string", "minLength": 1},
+    "goal_id": {"type": "string", "minLength": 1},
+    "worker_id": {"type": "string", "minLength": 1},
+    "worker_instance_id": {"type": "string", "minLength": 1},
+    "claim_id": {"type": "string", "minLength": 1},
+    "fencing_token": {"type": "integer", "minimum": 1},
+    "current_state": {"type": "string", "minLength": 1},
+    "completed_transitions": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["heartbeat_epoch", "transition_id", "transition_sequence", "response_state"], "properties": {"heartbeat_epoch": {"type": "integer", "minimum": 0}, "transition_id": {"type": "string", "minLength": 1}, "transition_sequence": {"type": "integer", "minimum": 0}, "response_state": {"type": "string", "minLength": 1}}}},
+    "unresolved_work": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "next_authorized_action": {"type": "string", "minLength": 1},
+    "policy_version": {"type": "string", "minLength": 1},
+    "authority_source": {"type": "string", "minLength": 1},
+    "handoff_ref": {"type": "string", "minLength": 1},
+    "handoff_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "worker_checkpoint_ref": {"type": ["string", "null"]},
+    "resource_budget": {"type": ["object", "null"]},
+    "execution_authority": {"const": false},
+    "checkpoint_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}
