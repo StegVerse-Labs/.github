@@ -118,6 +118,54 @@ class HeartbeatRuntime:
             and bool(activation.get("authorization_ref"))
         )
 
+    def _successor_reconstruction(self, registry: dict[str, Any], handoff: dict[str, Any]) -> tuple[bool, str | None, dict[str, Any] | None]:
+        parent_task_id = handoff.get("task", {}).get("parent_task_id")
+        if not parent_task_id:
+            return True, None, None
+
+        continuity = handoff.get("continuity", {})
+        ref = continuity.get("reconstruction_ref")
+        if not ref:
+            return False, "SUCCESSOR_RECONSTRUCTION_REQUIRED", None
+        proof_path = self.root / ref
+        if not proof_path.exists():
+            return False, "SUCCESSOR_RECONSTRUCTION_PROOF_MISSING", None
+        try:
+            proof = self._load(proof_path)
+        except Exception:
+            return False, "SUCCESSOR_RECONSTRUCTION_PROOF_INVALID", None
+
+        authority = handoff.get("authority", {})
+        goal_id = handoff.get("goal", {}).get("goal_id")
+        checkpoint_ref = continuity.get("checkpoint_ref")
+        master_refs = proof.get("master_records_refs", [])
+        lineage_refs = proof.get("evidence_lineage_refs", [])
+        next_generation = int(registry.get("generation", 0)) + 1
+
+        checks = [
+            proof.get("schema") == "stegverse.worker-reconstruction-proof/v0.1",
+            proof.get("task_id") == handoff.get("task", {}).get("task_id"),
+            proof.get("goal_id") == goal_id,
+            proof.get("parent_task_id") == parent_task_id,
+            proof.get("authority_source") == authority.get("authority_source"),
+            proof.get("policy_version") == authority.get("policy_version"),
+            proof.get("reconstruction_status") == "PASS",
+            proof.get("execution_authority") is False,
+            isinstance(proof.get("last_valid_fencing_token"), int),
+            next_generation > int(proof.get("last_valid_fencing_token", next_generation)),
+            isinstance(checkpoint_ref, str) and bool(checkpoint_ref),
+            proof.get("checkpoint_ref") == checkpoint_ref,
+            isinstance(proof.get("checkpoint_sha256"), str) and len(proof.get("checkpoint_sha256", "")) == 64,
+            isinstance(master_refs, list) and bool(master_refs) and all(str(item).startswith("master-records/") for item in master_refs),
+            isinstance(lineage_refs, list) and bool(lineage_refs),
+            isinstance(proof.get("unresolved_work"), list) and bool(proof.get("unresolved_work")),
+        ]
+        if str(checkpoint_ref).startswith("master-records/"):
+            checks.append(checkpoint_ref in master_refs or checkpoint_ref in lineage_refs)
+        if not all(checks):
+            return False, "SUCCESSOR_RECONSTRUCTION_PROOF_INVALID", proof
+        return True, None, proof
+
     def _dependencies_complete(self, task: dict[str, Any], tasks: dict[str, dict[str, Any]]) -> bool:
         deps = self._handoff(task).get("task", {}).get("dependencies", [])
         return all(tasks.get(dep, {}).get("state") == "COMPLETED" for dep in deps)
@@ -244,7 +292,7 @@ class HeartbeatRuntime:
                 "status_projection": "StegVerse-Labs/.github/control/worker-status.json"
             },
             "completion": {
-                "next_authorized_action": "Investigate missing finalization, sandbox-test candidate remediation if needed, and admit only validated remediation work.",
+                "next_authorized_action": "Investigate missing finalization, reconstruct the parent from checkpoint plus Master Records evidence, and admit only validated remediation work.",
                 "terminal_when": ["Reconciliation is durable", "Parent lifecycle is reconstructable", "Any remediation is separately admitted or complete"]
             },
             "block": None
@@ -266,7 +314,7 @@ class HeartbeatRuntime:
             "last_checkpoint_ref": parent.get("last_checkpoint_ref"),
             "block_ref": None,
             "archive_eligible": False,
-            "archive_reason_codes": ["RECOVERY_RECONCILIATION_REQUIRED", "EXECUTOR_NOT_BOUND"],
+            "archive_reason_codes": ["RECOVERY_RECONCILIATION_REQUIRED", "EXECUTOR_NOT_BOUND", "SUCCESSOR_RECONSTRUCTION_REQUIRED"],
             "evidence_refs": [parent["task_id"], f"heartbeat-epoch:{epoch}", "MASTER_RECORDS_FINAL_WORKER_REPORT_MISSING"]
         })
         self._event(events, epoch, "recovery_task_admitted", task_id=task_id, parent_task_id=parent["task_id"])
@@ -352,6 +400,23 @@ class HeartbeatRuntime:
                 task["archive_reason_codes"] = sorted(set(task.get("archive_reason_codes", []) + ["EXECUTION_AUTHORIZATION_REQUIRED"]))
                 self._event(events, epoch, "activation_deferred", task_id=task["task_id"], reason="EXECUTION_AUTHORIZATION_REQUIRED")
                 continue
+
+            reconstructed, reconstruction_reason, proof = self._successor_reconstruction(registry, handoff)
+            if not reconstructed:
+                task["archive_reason_codes"] = sorted(set(task.get("archive_reason_codes", []) + [str(reconstruction_reason)]))
+                self._event(events, epoch, "activation_deferred", task_id=task["task_id"], reason=reconstruction_reason)
+                continue
+            if proof is not None:
+                self._event(
+                    events,
+                    epoch,
+                    "successor_reconstruction_accepted",
+                    task_id=task["task_id"],
+                    parent_task_id=handoff["task"]["parent_task_id"],
+                    reconstruction_ref=handoff["continuity"]["reconstruction_ref"],
+                    last_valid_fencing_token=proof["last_valid_fencing_token"],
+                    checkpoint_ref=proof["checkpoint_ref"],
+                )
 
             budget, expiry_basis = self._expiry_budget(task)
             if budget is None:
