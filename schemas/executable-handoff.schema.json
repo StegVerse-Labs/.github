@@ -89,6 +89,7 @@
       "required": ["checkpoint_ref", "handoff_destination", "master_records_required", "status_projection"],
       "properties": {
         "checkpoint_ref": {"type": ["string", "null"]},
+        "reconstruction_ref": {"type": "string", "minLength": 1},
         "handoff_destination": {"type": "string", "minLength": 1},
         "master_records_required": {"type": "boolean"},
         "status_projection": {"type": "string", "minLength": 1}
