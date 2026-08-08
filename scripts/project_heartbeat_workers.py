@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Validate executable HANDOFF state and project heartbeat-worker status.
+"""Validate executable HANDOFF state and project worker status from one heartbeat.
 
-This is deliberately a control-plane projector, not an executor. Heartbeat may
-surface activation candidates; only a separately bound/authorized executor may
-perform task mutations.
+The organization heartbeat epoch is the canonical relative timing frame for
+worker lifecycle state. Wall-clock lease fields are retained only as legacy /
+evidence metadata while HB-relative transition timing is introduced.
 """
 from __future__ import annotations
 
@@ -15,6 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "control" / "worker-registry.json"
 STATUS = ROOT / "control" / "worker-status.json"
+HB_STATE = ROOT / "control" / "heartbeat-state.json"
 HANDOFFS = ROOT / "handoffs"
 
 ACTIVE_STATES = {"CLAIMED", "ACTIVE", "BLOCKED", "EXPIRING", "HANDOFF_WRITING"}
@@ -27,12 +28,6 @@ UNFINISHED_STATES = {
 
 def load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
-
-
-def parse_time(value: str | None) -> datetime | None:
-    if not value:
-        return None
-    return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
 def iso_now() -> str:
@@ -49,7 +44,7 @@ def capabilities_match(required: set[str], workers: list[dict]) -> list[str]:
     return sorted(matches)
 
 
-def evaluate(task_state: dict, handoff: dict, workers: list[dict], now: datetime) -> tuple[dict, list[str]]:
+def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int) -> tuple[dict, list[str]]:
     errors: list[str] = []
     task_id = task_state["task_id"]
     if handoff.get("schema") != "stegverse.executable-handoff/v0.1":
@@ -59,7 +54,7 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], now: datetime
     if handoff.get("goal", {}).get("goal_id") != task_state.get("goal_id"):
         errors.append(f"{task_id}: goal_id mismatch")
     if handoff.get("authority", {}).get("heartbeat_grants_execution_authority") is not False:
-        errors.append(f"{task_id}: heartbeat must not grant execution authority")
+        errors.append(f"{task_id}: heartbeat must not expand execution authority")
     if handoff.get("activation", {}).get("carrier") != "heartbeat":
         errors.append(f"{task_id}: activation carrier must be heartbeat")
     if handoff.get("activation", {}).get("checkout_policy") != "fenced_atomic_checkout":
@@ -67,29 +62,36 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], now: datetime
 
     state = task_state.get("state")
     binding = task_state.get("executor_binding")
-    lease = task_state.get("lease")
-    valid_lease = False
-    stale_lease = False
-    if lease:
-        expires = parse_time(lease.get("expires_at"))
-        heartbeat_due = parse_time(lease.get("heartbeat_due_at"))
-        valid_lease = bool(expires and expires > now)
-        stale_lease = bool(expires and expires <= now)
-        if not heartbeat_due:
-            errors.append(f"{task_id}: lease missing heartbeat_due_at")
-        if int(lease.get("fencing_token", 0)) < 1:
-            errors.append(f"{task_id}: invalid fencing token")
+    timing = task_state.get("heartbeat_timing") or None
+    hb_timing_valid = False
+    hb_expired = False
+    delta_hb_since_response = None
+    delta_hb_since_transition = None
+    if timing:
+        last_response = int(timing["last_response_epoch"])
+        last_transition = int(timing["last_transition_epoch"])
+        delta_hb_since_response = max(0, hb_epoch - last_response)
+        delta_hb_since_transition = max(0, hb_epoch - last_transition)
+        expiry_epoch = timing.get("expiry_epoch")
+        hb_expired = expiry_epoch is not None and hb_epoch >= int(expiry_epoch)
+        hb_timing_valid = not hb_expired
+        if last_response > hb_epoch or last_transition > hb_epoch:
+            errors.append(f"{task_id}: heartbeat timing references future epoch")
 
+    legacy_lease = task_state.get("lease")
+    fence = int((legacy_lease or {}).get("fencing_token", 0))
     if state in ACTIVE_STATES:
         for field in ("worker_id", "worker_instance_id", "claim_id"):
             if not task_state.get(field):
                 errors.append(f"{task_id}: {state} requires {field}")
-        if not lease:
-            errors.append(f"{task_id}: {state} requires lease")
+        if fence < 1:
+            errors.append(f"{task_id}: active worker requires fencing token")
+        if not timing:
+            errors.append(f"{task_id}: active worker requires heartbeat_timing")
 
     required = set(handoff.get("execution", {}).get("required_capabilities", []))
     eligible_workers = capabilities_match(required, workers)
-    activation_required = state == "HANDOFF_READY" and not valid_lease
+    activation_required = state == "HANDOFF_READY"
     executor_resolved = binding in {"AUTHORIZED", "BOUND"} and bool(eligible_workers or task_state.get("worker_id"))
 
     reasons: list[str] = []
@@ -99,32 +101,24 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], now: datetime
         archive_eligible = bool(
             binding == "BOUND"
             and executor_resolved
-            and not stale_lease
+            and hb_timing_valid
             and handoff.get("continuity", {}).get("status_projection")
             and handoff.get("activation", {}).get("carrier") == "heartbeat"
         )
-        if binding != "BOUND":
-            reasons.append("EXECUTOR_NOT_BOUND")
-        if not executor_resolved:
-            reasons.append("EXECUTOR_NOT_RESOLVED")
-        if stale_lease:
-            reasons.append("LEASE_EXPIRED")
-        if handoff.get("continuity", {}).get("master_records_required"):
-            reasons.append("MASTER_RECORDS_CUSTODY_REQUIRED")
-        if activation_required:
-            reasons.append("HEARTBEAT_ACTIVATION_REQUIRED")
+        if binding != "BOUND": reasons.append("EXECUTOR_NOT_BOUND")
+        if not executor_resolved: reasons.append("EXECUTOR_NOT_RESOLVED")
+        if not timing: reasons.append("HB_RELATIVE_TIMING_NOT_ESTABLISHED")
+        if hb_expired: reasons.append("HB_RELATIVE_EXPIRY_REACHED")
+        if activation_required: reasons.append("HEARTBEAT_ACTIVATION_REQUIRED")
     else:
         archive_eligible = False
         reasons.append("UNSUPPORTED_LIFECYCLE_STATE")
 
-    # Custody is a separate gate. Until a durable return is represented in evidence,
-    # worker-managed unfinished work remains non-archivable.
     if state != "COMPLETED" and handoff.get("continuity", {}).get("master_records_required"):
         custody_proven = any("master-records:" in ref.lower() for ref in task_state.get("evidence_refs", []))
         if not custody_proven:
             archive_eligible = False
-            if "MASTER_RECORDS_CUSTODY_NOT_PROVEN" not in reasons:
-                reasons.append("MASTER_RECORDS_CUSTODY_NOT_PROVEN")
+            reasons.append("MASTER_RECORDS_CUSTODY_NOT_PROVEN")
 
     projection = {
         "task_id": task_id,
@@ -138,8 +132,15 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], now: datetime
         "worker_id": task_state.get("worker_id"),
         "worker_instance_id": task_state.get("worker_instance_id"),
         "claim_id": task_state.get("claim_id"),
-        "valid_lease": valid_lease,
-        "stale_lease": stale_lease,
+        "heartbeat_epoch": hb_epoch,
+        "heartbeat_timing_established": timing is not None,
+        "delta_hb_since_response": delta_hb_since_response,
+        "delta_hb_since_transition": delta_hb_since_transition,
+        "current_transition": timing.get("current_transition") if timing else None,
+        "expected_next_transition": timing.get("expected_next_transition") if timing else None,
+        "expiry_epoch": timing.get("expiry_epoch") if timing else None,
+        "cost_basis_ref": task_state.get("cost_basis_ref"),
+        "legacy_wall_clock_lease_is_timing_authority": False,
         "last_checkpoint_ref": task_state.get("last_checkpoint_ref"),
         "next_authorized_action": handoff.get("completion", {}).get("next_authorized_action"),
         "archive_eligible": archive_eligible,
@@ -152,6 +153,8 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], now: datetime
 
 def project(now: datetime) -> tuple[dict, list[str]]:
     registry = load(REGISTRY)
+    hb = load(HB_STATE)
+    hb_epoch = int(hb.get("epoch", 0))
     errors: list[str] = []
     if registry.get("schema") != "stegverse.heartbeat-worker-registry/v0.1":
         errors.append("unsupported worker registry schema")
@@ -169,16 +172,17 @@ def project(now: datetime) -> tuple[dict, list[str]]:
         if not handoff_path.exists():
             errors.append(f"{task_id}: missing handoff {task_state['handoff_ref']}")
             continue
-        handoff = load(handoff_path)
-        projection, task_errors = evaluate(task_state, handoff, workers, now)
+        projection, task_errors = evaluate(task_state, load(handoff_path), workers, hb_epoch)
         results.append(projection)
         errors.extend(task_errors)
 
     status = {
-        "schema": "stegverse.heartbeat-worker-status/v0.1",
+        "schema": "stegverse.heartbeat-worker-status/v0.2",
         "generated_at": now.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "source_registry_generation": registry.get("generation", 0),
-        "activation_driver": ".github/workflows/heartbeat-worker-project.yml",
+        "heartbeat_epoch": hb_epoch,
+        "activation_driver": "internal_heartbeat_registry_evaluation",
+        "single_heartbeat_timing_frame": True,
         "execution_authority_from_heartbeat": False,
         "task_count": len(results),
         "activation_required_count": sum(1 for r in results if r["activation_required"]),
@@ -191,12 +195,11 @@ def project(now: datetime) -> tuple[dict, list[str]]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--check", action="store_true", help="fail if committed projection differs semantically")
-    parser.add_argument("--write", action="store_true", help="write control/worker-status.json")
-    parser.add_argument("--now", help="override current UTC time for deterministic testing")
+    parser.add_argument("--check", action="store_true")
+    parser.add_argument("--write", action="store_true")
+    parser.add_argument("--now", help="override current UTC time for deterministic projection metadata")
     args = parser.parse_args()
-    now = parse_time(args.now) if args.now else datetime.now(timezone.utc)
-    assert now is not None
+    now = datetime.fromisoformat(args.now.replace("Z", "+00:00")) if args.now else datetime.now(timezone.utc)
     status, errors = project(now)
     if args.write:
         STATUS.write_text(json.dumps(status, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -208,8 +211,7 @@ def main() -> int:
             errors.append("committed worker-status projection differs from current state")
     print(json.dumps(status, indent=2, sort_keys=True))
     if errors:
-        for error in errors:
-            print(f"ERROR: {error}")
+        for error in errors: print(f"ERROR: {error}")
         return 1
     return 0
 
