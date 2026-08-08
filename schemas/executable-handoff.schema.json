@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/executable-handoff.schema.json",
+  "title": "StegVerse Executable HANDOFF",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "handoff_id", "goal", "task", "state", "authority", "execution", "activation", "continuity", "completion", "created_at"],
+  "properties": {
+    "schema": {"const": "stegverse.executable-handoff/v0.1"},
+    "handoff_id": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "state": {"enum": ["HANDOFF_READY", "BLOCKED", "HUMAN_AUTHORITY_REQUIRED", "COMPLETED"]},
+    "goal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goal_id", "objective", "success_predicates", "failure_predicates", "expires_at"],
+      "properties": {
+        "goal_id": {"type": "string", "minLength": 1},
+        "objective": {"type": "string", "minLength": 1},
+        "success_predicates": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "failure_predicates": {"type": "array", "items": {"type": "string"}},
+        "expires_at": {"type": ["string", "null"], "format": "date-time"},
+        "authority_ceiling": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "repository", "source_refs", "dependencies", "priority"],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 1},
+        "repository": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
+        "source_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "dependencies": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "parent_task_id": {"type": ["string", "null"]},
+        "derivation_reason": {"type": ["string", "null"]},
+        "priority": {"enum": ["normal", "elevated", "critical", "security", "release"]}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority_source", "heartbeat_grants_execution_authority", "policy_version"],
+      "properties": {
+        "authority_source": {"type": "string", "minLength": 1},
+        "heartbeat_grants_execution_authority": {"const": false},
+        "policy_version": {"type": "string", "minLength": 1}
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_capabilities", "allowed_paths", "allowed_services", "max_actions", "max_retries", "external_cost_ceiling_usd"],
+      "properties": {
+        "required_capabilities": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "allowed_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "allowed_services": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "max_actions": {"type": "integer", "minimum": 1},
+        "max_retries": {"type": "integer", "minimum": 0},
+        "external_cost_ceiling_usd": {"type": "number", "minimum": 0}
+      }
+    },
+    "activation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["carrier", "executor_binding", "recheck_trigger", "checkout_policy"],
+      "properties": {
+        "carrier": {"const": "heartbeat"},
+        "executor_binding": {"enum": ["UNBOUND", "DISCOVERED", "AUTHORIZED", "BOUND"]},
+        "recheck_trigger": {"type": "string", "minLength": 1},
+        "checkout_policy": {"const": "fenced_atomic_checkout"}
+      }
+    },
+    "continuity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checkpoint_ref", "handoff_destination", "master_records_required", "status_projection"],
+      "properties": {
+        "checkpoint_ref": {"type": ["string", "null"]},
+        "handoff_destination": {"type": "string", "minLength": 1},
+        "master_records_required": {"type": "boolean"},
+        "status_projection": {"type": "string", "minLength": 1}
+      }
+    },
+    "completion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["next_authorized_action", "terminal_when"],
+      "properties": {
+        "next_authorized_action": {"type": "string", "minLength": 1},
+        "terminal_when": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+      }
+    },
+    "block": {
+      "type": ["object", "null"],
+      "properties": {
+        "block_reason": {"type": "string"},
+        "dependency": {"type": ["string", "null"]},
+        "observer": {"type": "string"},
+        "recheck_trigger": {"type": "string"},
+        "next_check": {"type": ["string", "null"], "format": "date-time"},
+        "escalation_condition": {"type": ["string", "null"]},
+        "block_expires_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    }
+  }
+}
