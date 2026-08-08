@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.heartbeat-worker-registry/v0.1",
-  "generation": 4,
-  "updated_at": "2026-08-08T02:31:00Z",
+  "generation": 5,
+  "updated_at": "2026-08-08T03:24:00Z",
   "workers": [
     {
       "worker_id": "stegverse-worker-cycle",
@@ -14,8 +14,18 @@
         "hosted_validation_observation"
       ],
       "status": "DISABLED",
+      "adapter_ref": null,
       "authority_source": "temporary external bootstrap executor disabled; not a normative SHWP scheduler or current execution authority",
       "last_seen_at": "2026-08-08T01:10:00Z"
+    },
+    {
+      "worker_id": "native-process-canary-worker",
+      "executor_type": "repository_worker",
+      "capabilities": ["native_receipt_canary"],
+      "status": "AVAILABLE",
+      "adapter_ref": "process:native-receipt-canary-v1",
+      "authority_source": "handoffs/SHWP-NATIVE-PROCESS-CANARY-001.json#authority",
+      "last_seen_at": null
     }
   ],
   "tasks": [
@@ -73,6 +83,29 @@
         "StegVerse-Labs/ara-admissibility-interop#13:BLOCKED_UNCLAIMED",
         "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:management/first-boundary-activation.json:BLOCKED",
         "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:tools/validate_first_boundary_activation.py"
+      ]
+    },
+    {
+      "task_id": "SHWP-NATIVE-PROCESS-CANARY-001",
+      "goal_id": "SHWP-NATIVE-PROCESS-CANARY-001",
+      "state": "HANDOFF_READY",
+      "handoff_ref": "handoffs/SHWP-NATIVE-PROCESS-CANARY-001.json",
+      "executor_binding": "DISCOVERED",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "claim_id": null,
+      "lease": null,
+      "heartbeat_timing": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/native-process-canary.json",
+      "external_entity_job_ref": null,
+      "last_checkpoint_ref": null,
+      "block_ref": null,
+      "archive_eligible": false,
+      "archive_reason_codes": ["EXECUTOR_CANARY_NOT_YET_RUN"],
+      "evidence_refs": [
+        "StegVerse-Labs/.github#13",
+        "heartbeat_runtime/process_adapter.py",
+        "workers/heartbeat_receipt_canary.py"
       ]
     }
   ]
