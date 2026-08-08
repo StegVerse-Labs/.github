@@ -24,6 +24,7 @@ def bind_strict(
     path = fx.root / task["handoff_ref"]
     value = json.loads(path.read_text())
     value["goal"]["goal_id"] = goal_id or task["task_id"]
+    value["goal"]["failure_predicates"] = ["authority or lineage validation fails"]
     value["goal"]["successor_policy"] = successor_policy
     value["goal"]["max_successor_depth"] = max_depth
     value["task"]["repository"] = "StegVerse-Labs/strict-fixture"
