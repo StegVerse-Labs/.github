@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/worker-runtime-cost-basis.schema.json",
+  "title": "StegVerse Worker Runtime Cost Basis",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "task_class", "sample_count", "hb_estimate", "cost_estimate", "evidence_refs"],
+  "properties": {
+    "schema": {"const": "stegverse.worker-runtime-cost-basis/v0.1"},
+    "task_class": {"type": "string", "minLength": 1},
+    "external_entity_class": {"type": ["string", "null"]},
+    "sample_count": {"type": "integer", "minimum": 0},
+    "hb_estimate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expected_completion_beats", "expected_idle_beats", "expiry_candidate_beats", "confidence"],
+      "properties": {
+        "expected_completion_beats": {"type": ["number", "null"], "minimum": 0},
+        "expected_idle_beats": {"type": ["number", "null"], "minimum": 0},
+        "expiry_candidate_beats": {"type": ["number", "null"], "minimum": 0},
+        "confidence": {"enum": ["NONE", "LOW", "MEDIUM", "HIGH"]}
+      }
+    },
+    "cost_estimate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "compute_units": {"type": ["number", "null"], "minimum": 0},
+        "token_units": {"type": ["number", "null"], "minimum": 0},
+        "storage_bytes": {"type": ["number", "null"], "minimum": 0},
+        "network_bytes": {"type": ["number", "null"], "minimum": 0},
+        "operator_seconds": {"type": ["number", "null"], "minimum": 0},
+        "external_cost_usd": {"type": ["number", "null"], "minimum": 0},
+        "latency_ms": {"type": ["number", "null"], "minimum": 0},
+        "failure_probability": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "expected_recovery_cost_usd": {"type": ["number", "null"], "minimum": 0}
+      }
+    },
+    "selection_guidance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "preferred_worker_classes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "observed_efficiency_notes": {"type": "array", "items": {"type": "string"}},
+        "cost_never_overrides_admissibility": {"const": true}
+      }
+    },
+    "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+  }
+}
