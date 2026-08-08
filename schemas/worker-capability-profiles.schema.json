@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/worker-capability-profiles.schema.json",
+  "title": "StegVerse Worker Capability Profiles",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "generation", "profiles"],
+  "properties": {
+    "schema": {"const": "stegverse.worker-capability-profiles/v0.1"},
+    "generation": {"type": "integer", "minimum": 1},
+    "profiles": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["profile_id", "executor_type", "effect_class", "allowed_capabilities", "mutation_allowed", "deployment_allowed", "availability_grants_authority", "capability_match_grants_authority"],
+        "properties": {
+          "profile_id": {"type": "string", "minLength": 1},
+          "executor_type": {"enum": ["deterministic_workflow", "repository_worker", "agent_runtime", "deployment_worker", "observer"]},
+          "effect_class": {"enum": ["deterministic_workflow", "repository_maintenance", "code_change_agent", "deployment", "read_only_observer"]},
+          "allowed_capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "mutation_allowed": {"type": "boolean"},
+          "deployment_allowed": {"type": "boolean"},
+          "availability_grants_authority": {"const": false},
+          "capability_match_grants_authority": {"const": false},
+          "notes": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}
