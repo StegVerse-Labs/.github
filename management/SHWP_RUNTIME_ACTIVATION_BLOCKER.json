@@ -1,0 +1,82 @@
+{
+  "schema": "stegverse.runtime-activation-blocker/v0.1",
+  "blocker_id": "SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-08",
+  "goal_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
+  "owner": "StegVerse-Labs/.github#12",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "state": "BLOCKED_RUNTIME_ACTIVATION",
+  "observed_at": "2026-08-08T05:56:00Z",
+  "canonical_runtime": {
+    "implementation": "heartbeat_runtime/engine_v8.py",
+    "entrypoint": "scripts/run_heartbeat_runtime.py --continuous",
+    "promotion_commit": "11c1b801af35c94d3d67c398a7c93b2fed776448",
+    "hosted_validation": "Heartbeat Worker Project 31242636078/93066031288 SUCCESS"
+  },
+  "deployment_inspection": {
+    "provider": "Render",
+    "workspace_inspected": true,
+    "correctly_owned_existing_service_found": false,
+    "existing_persistent_disk_services": [
+      {
+        "service": "stegverse-hil-receiver",
+        "repository_owner": "StegVerse-org/LLM-adapter",
+        "service_type": "web_service",
+        "persistent_disk": true,
+        "admissible_for_shwp_control_plane": false,
+        "reason": "Wrong canonical repository/subsystem ownership; appropriating it would violate .github#12 ownership boundary."
+      }
+    ],
+    "existing_background_workers": [
+      {
+        "service": "scw-worker",
+        "repository_owner": "StegVerse-Labs/StegVerse-SCW",
+        "service_type": "background_worker",
+        "admissible_for_shwp_control_plane": false,
+        "reason": "Owned by StegVerse-SCW; not the .github organization control plane."
+      }
+    ],
+    "existing_persistent_key_value_instances": [
+      {
+        "name": "scw-redis",
+        "subsystem_indication": "StegVerse-SCW",
+        "persistence": "journal_snapshot",
+        "admissible_for_shwp_control_plane": false,
+        "reason": "Existing named subsystem state store; no durable authority transfers it to .github."
+      },
+      {
+        "name": "stegtvc-redis",
+        "subsystem_indication": "TVC",
+        "persistence": "journal_snapshot",
+        "admissible_for_shwp_control_plane": false,
+        "reason": "Existing named subsystem state store; no durable authority transfers it to .github."
+      }
+    ],
+    "postgres_instances": 0,
+    "available_direct_creation_controls": {
+      "web_service": "available but direct action has no persistent-disk parameter",
+      "background_worker": "no direct creation action exposed",
+      "key_value": "creation available but would create a provider datastore dependency and does not by itself supply the required long-lived .github-owned process host",
+      "postgres": "creation available but no existing instance and database creation alone does not satisfy process-host/repository-mutation persistence requirements"
+    }
+  },
+  "why_no_activation_was_performed": [
+    "No existing service is both correctly owned by StegVerse-Labs/.github and suitable as the long-lived SHWP process host.",
+    "The direct connected Render controls cannot create the required background-worker plus persistent-disk combination.",
+    "Reusing the LLM-adapter persistent disk or StegVerse-SCW worker would move canonical control-plane ownership into another subsystem.",
+    "Creating a stateless web service would not preserve heartbeat/registry/event/cost/receipt/checkpoint state across restart/deploy.",
+    "Creating or reusing a datastore alone would not make current file/repository mutation semantics durably restart-safe and would introduce an unproven provider-specific state adapter.",
+    "No paid resource was created without a separately established cost/authority basis."
+  ],
+  "release_condition": [
+    "A correctly owned replaceable long-lived process host becomes available to StegVerse-Labs/.github.",
+    "Durable writable heartbeat, registry, event, cost, receipt and canonical-checkpoint state survives restart/deploy.",
+    "The host runs scripts/run_heartbeat_runtime.py --continuous.",
+    "Runtime v8 owns internal heartbeat cadence; the host supplies process liveness only.",
+    "A restart proof preserves/increments the one heartbeat epoch and creates no duplicate claim/fence.",
+    "No ChatGPT automation, GitHub cron, Render cron or other external scheduler owns worker activation."
+  ],
+  "next_executable_action": "Reinspect connected deployment controls when a correctly owned durable process-host capability or an already-admitted provider-neutral durable-state host becomes machine-observably available; then deploy v8 and run restart-continuity proof.",
+  "heartbeat_or_execution_authority_effect": "NONE",
+  "chat_monitoring_required": false
+}
