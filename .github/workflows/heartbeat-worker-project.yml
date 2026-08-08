@@ -63,19 +63,22 @@ jobs:
             echo 'WORKER_STATUS_CURRENT=false' >> "$GITHUB_ENV"
           fi
 
-      - name: Prove StegGate lifecycle and fail-closed archive posture
+      - name: Prove StegGate lifecycle and archive invariant
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
+          registry = json.loads(Path('control/worker-registry.json').read_text())
           status = json.loads(Path('control/worker-status.json').read_text())
           task = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-AUDITKIT-001')
+          source = next(x for x in registry['tasks'] if x['task_id'] == 'STEGGATE-AUDITKIT-001')
           assert status['execution_authority_from_heartbeat'] is False, status
-          assert task['archive_eligible'] is False, task
 
+          custody_proven = any('master-records:' in ref.lower() for ref in source.get('evidence_refs', []))
           if task['state'] == 'HANDOFF_READY':
               assert task['activation_required'] is True, task
               assert task['executor_binding'] in {'UNBOUND', 'DISCOVERED'}, task
+              assert task['archive_eligible'] is False, task
               print('SHWP_STEGGATE_HANDOFF_READY_PASS')
           elif task['state'] in {'CLAIMED', 'ACTIVE', 'BLOCKED', 'EXPIRING', 'HANDOFF_WRITING'}:
               assert task['executor_binding'] in {'AUTHORIZED', 'BOUND'}, task
@@ -83,8 +86,16 @@ jobs:
               assert task['claim_id'], task
               assert task['valid_lease'] is True, task
               assert task['activation_required'] is False, task
-              assert 'MASTER_RECORDS_CUSTODY_NOT_PROVEN' in task['archive_reason_codes'], task
-              print('SHWP_STEGGATE_ACTIVE_LIFECYCLE_PASS')
+              if custody_proven and task['executor_binding'] == 'BOUND':
+                  assert task['archive_eligible'] is True, task
+                  assert 'MASTER_RECORDS_CUSTODY_NOT_PROVEN' not in task['archive_reason_codes'], task
+                  print('SHWP_STEGGATE_AUTOMATED_ARCHIVE_GATE_PASS')
+              else:
+                  assert task['archive_eligible'] is False, task
+                  print('SHWP_STEGGATE_ACTIVE_FAIL_CLOSED_PASS')
+          elif task['state'] == 'COMPLETED':
+              assert task['archive_eligible'] is True, task
+              print('SHWP_STEGGATE_COMPLETED_PASS')
           else:
               raise AssertionError(f"unexpected StegGate lifecycle state: {task['state']}")
           PY
