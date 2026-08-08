@@ -20,6 +20,8 @@ on:
       - 'docs/ORG_MIRROR_HANDOFF.md'
       - 'docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md'
       - 'schemas/heartbeat-transition-observation.schema.json'
+      - 'schemas/heartbeat-activation-request.schema.json'
+      - 'schemas/worker-reconstruction-proof.schema.json'
       - 'schemas/worker-runtime-cost-basis.schema.json'
       - 'schemas/worker-registry.schema.json'
       - 'schemas/process-worker-adapters.schema.json'
@@ -69,6 +71,8 @@ jobs:
               Path('schemas/process-worker-adapters.schema.json'),
               Path('schemas/executable-handoff.schema.json'),
               Path('schemas/heartbeat-transition-observation.schema.json'),
+              Path('schemas/heartbeat-activation-request.schema.json'),
+              Path('schemas/worker-reconstruction-proof.schema.json'),
               Path('schemas/worker-runtime-cost-basis.schema.json'),
               Path('control/heartbeat-state.json'),
               Path('control/worker-registry.json'),
