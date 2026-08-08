@@ -66,7 +66,7 @@
       "cost_basis_ref": "cost-basis/worker-runtime/native-process-canary.json",
       "evidence_refs": [
         "StegVerse-Labs/.github#13:COMPLETE",
-        "StegVerse-Labs/.github#14:COMPLETE_PENDING_ISSUE_CLOSURE",
+        "StegVerse-Labs/.github#14:COMPLETE",
         "heartbeat_runtime/process_adapter.py",
         "workers/heartbeat_receipt_canary.py",
         "receipts/native-worker-canary/SHWP-NATIVE-PROCESS-CANARY-001.json",
@@ -103,7 +103,7 @@
       "worker_instance_id": null
     }
   ],
-  "updated_at": "2026-08-08T03:36:00Z",
+  "updated_at": "2026-08-08T03:40:00Z",
   "workers": [
     {
       "adapter_ref": null,
