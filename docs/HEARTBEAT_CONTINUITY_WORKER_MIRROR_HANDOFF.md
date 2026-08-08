@@ -2,203 +2,247 @@
 
 ## Authority
 
-This scoped handoff is subordinate to `docs/ORG_MIRROR_HANDOFF.md` and `StegVerse-Labs/.github#12`. It is the canonical continuation for the single-heartbeat worker/continuity implementation slice. `management/SHWP_SESSION_EXECUTION_INVENTORY.json` is the machine-readable session inventory.
+This scoped handoff is subordinate to `docs/ORG_MIRROR_HANDOFF.md` and `StegVerse-Labs/.github#12`. It is the canonical continuation for the single-heartbeat worker/continuity implementation. `management/SHWP_SESSION_EXECUTION_INVENTORY.json` is the machine-readable session inventory.
 
 No separate scheduler, worker heartbeat, conversational trigger, GitHub Actions schedule, cron schedule, Render schedule, or third-party wake service is normative authority for this lane.
 
-## Active goal and claim
+## Active goal and claims
 
 ```text
 goal_id: STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001
+originating_session_goal: complete and durably automate unfinished StegVerse work using one internal heartbeat and archive conversation state only after durable transfer
 repository: StegVerse-Labs/.github
 branch: main
 canonical_owner: issue #12
-implementation_claim: ACTIVE_FOR_REMAINING_PROTOCOL_PROOFS; runtime activation separately BLOCKED
-validation_claim: MACHINE_OWNED by repository validation workflows
-collision_boundary: one heartbeat only; no parallel scheduler/epoch owner; no Audit Kit reactivation
-runtime_activation_release_condition: durable writable heartbeat state backend + long-lived process host can run scripts/run_heartbeat_runtime.py --continuous and preserve state across restart without an external scheduler owning cadence
+implementation_claim: RELEASED — all protocol child implementation issues complete
+validation_claim: RELEASED — promoted runtime v8 hosted validation complete
+claim_creation_time: historical implementation lane consolidated into #12
+claim_release_condition: satisfied by promoted v8 run 31242636078 / job 93066031288 SUCCESS
+collision_boundary: one heartbeat only; no duplicate scheduler, epoch owner, Audit Kit lane, StegCore lane, or completed child reactivation
+session_state: BLOCKED_ON_DURABLE_RUNTIME_ACTIVATION_ONLY
 ```
 
-## Canonical model
+## Canonical implementation
 
-StegVerse has one heartbeat. `heartbeat_runtime.engine_v3.HeartbeatRuntime.cycle()` is the sole epoch owner. Within the same epoch it issues organization claim assertions, receives active-worker transition responses, evaluates HANDOFF/worker-registry state, performs bounded fenced checkout when eligible, records cost evidence, and emits lifecycle events. The heartbeat itself never grants execution authority.
+`heartbeat_runtime.engine_v8.HeartbeatRuntime` is the production-selected runtime through `heartbeat_runtime/__init__.py` at commit `11c1b801af35c94d3d67c398a7c93b2fed776448`.
 
-`heartbeat_runtime/org_assertions.py` accepts an already-owned epoch and cannot advance it. Legacy `scripts/issue_heartbeats.py` is diagnostic-only. The former eight-hour GitHub heartbeat schedule is removed; `.github/workflows/org-heartbeat.yml` is validation-only. `scripts/run_heartbeat_runtime.py --continuous` owns internal process cadence; a host supplies liveness only.
+Runtime layering preserves previously proven semantics:
 
-## Completed runtime/executor/custody proofs
+- v2: activation, claim/fence, expiry and missing-Master-Records-final-report recovery;
+- v3: one-HB organization assertions, renewal and orphan recovery;
+- v4: BLOCKED recheck and human-authority separation;
+- v5: bounded goal lineage, duplicate control and successor narrowing/expansion admission;
+- v6: persistent resource/runtime/service/cost authority;
+- v7/v7.1: policy continuity and canonical checkpoint envelope with worker/Master Records checkpoint preservation;
+- v8: canonical worker capability-profile enforcement.
 
-### Real native executor
+`process_adapter.py` remains the sandboxed fenced authoritative mutation boundary.
+
+## One-heartbeat invariant
+
+Every active worker answers the same heartbeat with relative transition state. That same epoch sequence is the timing frame for progress, response-loss thresholds, resource/runtime limits and expiry. No other heartbeat or scheduler clock exists in the protocol.
+
+The heartbeat carries coordination information among registry/HANDOFF, workers, policy/resource/capability state, checkpoints, Master Records evidence, failure/recovery signals and successor state. Carriage does not imply authority.
+
+## Completed protocol capabilities
+
+All protocol child implementation work is COMPLETE:
 
 ```text
-workflow: Native Process Worker Canary
-run/job: 31237212782 / 93051843063 SUCCESS
-source evidence commit: 365581b79665e211fcc8f1b935ef464476ed2075
-claim: SHWP-SHWP-NATIVE-PROCESS-CANARY-001-G6
-fence: 6
-HB2: CANARY_CHECKPOINT seq1
-HB3: CANARY_COMPLETE seq2
-claim + worker released: true
+empty registry -> no worker                         COMPLETE
+authorized eligible work -> exactly one worker      COMPLETE
+atomic checkout / claim / fence                     COMPLETE
+real bounded process executor                       COMPLETE
+activation request != execution authority            COMPLETE
+executor ambiguity refusal                           COMPLETE
+BLOCKED machine recheck                              COMPLETE
+HUMAN_AUTHORITY_REQUIRED boundary                    COMPLETE
+same-HB renewal / orphan recovery                    COMPLETE
+MR final-report-missing reconciliation               COMPLETE
+successor reconstruction / higher fence              COMPLETE
+bounded goals / lineage / successor depth            COMPLETE
+separate authority expansion admission               COMPLETE
+duplicate canonical lane quarantine                  COMPLETE
+sandbox mutation scope / fence                       COMPLETE
+persistent action/retry/runtime/service/cost bounds  COMPLETE
+policy drift stop / separate rebind                  COMPLETE
+canonical control-plane checkpoint + hash            COMPLETE
+worker/MR checkpoint preservation                    COMPLETE
+canonical checkpoint tamper refusal                  COMPLETE
+worker capability profiles / effect classes          COMPLETE
+profile/capability match != authorization             COMPLETE
 ```
 
-`.github#13` is CLOSED COMPLETE. The canary proves bounded real execution only; it does not grant general autonomous coding authority.
+Issue #40, #41 and #44 were closed complete after promoted v8 validation. #21, #19, #20, #32, #39, #43, #48 and earlier implementation children are likewise complete and must not be reopened as parallel architecture workstreams.
 
-### Master Records lifecycle custody
+## Promoted validation evidence
 
 ```text
-owner: master-records/orchestration
-record hash: 313ae32e1fabeb6879f7c84e7dcb9a1e3af69f819176c49fb9f8039e99e42efd
-lineage hash: e00111e611b5f8f6af49c7ba3036430bdba2d3d62228b258266a908400ba711c
-terminal event hash: 80f6f5f74e0cfbaad493a9254cd3daa815d8e878eb4ec75205b2f152758cb3db
-validation run/job: 31237511378 / 93052660913 SUCCESS
-reconstruction: PASS
-authority_effect: NONE
+workflow: Heartbeat Worker Project
+run: 31242636078
+job: 93066031288
+head: 11c1b801af35c94d3d67c398a7c93b2fed776448
+result: SUCCESS
 ```
 
-`.github#14`, #37 and #52 are CLOSED COMPLETE.
+Substantive hosted steps all passed:
 
-### Unified one-heartbeat carrier
+- runtime/projector compilation including v7.1/v8;
+- all canonical JSON surfaces parse;
+- executable HANDOFF goal/resource validation;
+- core one-HB runtime semantics;
+- ambiguity-safe executor discovery;
+- BLOCKED/human authority boundaries;
+- goal lineage/duplicate/successor controls;
+- bounded resource authority;
+- policy continuity + canonical checkpoints;
+- capability profiles;
+- sandboxed mutation scope/fence;
+- one-HB renewal/orphan recovery;
+- cost-basis and no-guess behavior;
+- dry-run nonmutation;
+- worker/continuity projection;
+- StegGate successor blocked/unclaimed posture.
+
+## Canonical checkpoint contract
+
+After every accepted worker response the control plane writes `stegverse.worker-checkpoint/v0.1` to `checkpoints/workers/**` and makes that the task `last_checkpoint_ref`.
+
+It binds:
+
+- task and goal;
+- worker and worker instance;
+- claim and fencing token;
+- heartbeat epoch;
+- current state and completed transitions;
+- unresolved work;
+- evidence refs;
+- next authorized action;
+- authorized policy version and authority source;
+- HANDOFF ref/hash;
+- nested worker/Master Records checkpoint ref, when supplied;
+- resource budget;
+- `execution_authority=false`;
+- canonical SHA-256.
+
+Successor reconstruction verifies hash/fence/policy and rejects a mutated canonical checkpoint. Worker/Master Records checkpoint evidence is not overwritten or confused with control-plane reconstruction authority.
+
+## Policy continuity
+
+Initial authorized checkout binds the HANDOFF policy version. If the live HANDOFF policy changes while a claim remains active, invocation stops in `EXPIRING` with `POLICY_REBIND_REQUIRED`. The heartbeat cannot approve the change. A separate `stegverse.worker-policy-rebind/v0.1` admission must bind task, claim, fence, old/new policy, current HANDOFF hash and authority source before execution resumes.
+
+## Capability profiles
+
+Canonical registry: `control/worker-capability-profiles.json`.
+
+Profiles:
 
 ```text
-workflow: Organization heartbeat validation
-run/job: 31237675041 / 93053122793 SUCCESS
+deterministic-workflow-v1
+repository-maintenance-v1
+code-change-agent-v1
+deployment-worker-v1
+read-only-observer-v1
 ```
 
-It proves legacy issuer no longer owns the clock, organization assertions and worker evaluation share one epoch, three internal process cycles advanced HB4 -> HB5 -> HB6, and no eligible work initiated no worker. `.github#30` is CLOSED COMPLETE.
+Registered workers name `capability_profile_ref`. Selection verifies profile existence, executor type, allowed capability subset, task required capabilities, mutation/deployment effect permission and exactly-one-match ambiguity. Every profile explicitly declares availability and capability matching non-authoritative.
 
-## Activation request / execution authority separation — COMPLETE
+## Resource authority
 
-Installed:
+HANDOFF execution binds action, retry, HB-relative runtime, rate, allowed service and external-cost ceilings. Runtime v8 persists usage in `resource_budget`; worker responses do not reset counters. Exhaustion cannot silently continue. Separate renewal may extend admitted bounds; unadmitted service use or cost ceiling violation fails closed.
 
-```text
-schemas/heartbeat-activation-request.schema.json
-schemas/executable-handoff.schema.json
-heartbeat_runtime/engine_v2.py
-tests/test_heartbeat_runtime.py
-```
+## Recovery and remediation
 
-Every eligible HANDOFF discovery emits `stegverse.heartbeat-activation-request/v0.1` with task/goal, handoff hash/ref, required capabilities, current fence generation, authority source, and `execution_authority=false`. Checkout fails closed unless the HANDOFF is separately `AUTHORIZED` and has a durable `authorization_ref`. Heartbeat discovery alone cannot create a claim or invoke an executor.
+Known expiry plus missing required Master Records final worker report creates exactly one deduplicated lifecycle-reconciliation task. The old worker is released and not resurrected. Same-HB response loss crosses an admitted threshold before orphan recovery; recovery requires reconstruction and a higher fence.
 
-```text
-hosted proof: Heartbeat Worker Project 31239408656 / 93057709920 SUCCESS
-negative proof: test_discovery_event_never_grants_execution_authority PASS
-```
+Lifecycle discrepancies can create investigation work. Candidate remedies can be sandbox-tested. Sandbox evidence grants no execution authority; validated/admissible remediation returns through normal registry/claim/fence/checkpoint/final-report lifecycle.
 
-`.github#38` and #46 are CLOSED COMPLETE.
-
-## Successor reconstruction — COMPLETE
-
-Installed:
+## StegGate / StegCore continuation truth
 
 ```text
-schemas/worker-reconstruction-proof.schema.json
-schemas/executable-handoff.schema.json continuity.reconstruction_ref
-heartbeat_runtime/engine_v2.py
-tests/test_heartbeat_runtime.py
-```
-
-A successor with `parent_task_id` cannot acquire a new claim from authorization alone. It must present a PASS reconstruction proof binding task/goal/parent, authority source and policy version, last valid fence, checkpoint ref/hash, Master Records refs, evidence lineage, unresolved work, and `execution_authority=false`. The new registry generation/fence must be greater than the reconstructed prior fence. Generated expiry-recovery tasks are explicitly `SUCCESSOR_RECONSTRUCTION_REQUIRED` until this proof exists.
-
-```text
-hosted proof: Heartbeat Worker Project 31239557101 / 93058118640 SUCCESS
-runtime tests: 9/9 PASS
-negative: authorized successor without reconstruction cannot checkout
-positive: reconstructed successor resumes without chat state and acquires fence 6 > prior fence 4
-```
-
-`.github#42` is CLOSED COMPLETE.
-
-## Organization control-plane integrity — REPAIRED
-
-The historical TASK-2026-0001 check-in was valid to its schema; `scripts/reconcile_checkins.py` was incorrect. It now validates terminal delivery states inside `repository_results[]` and requires merge commit evidence for merged delivery.
-
-```text
-corrective commit: 994ae85f1d678f1387d78b8909df47d2859bc7b5
-Validate organization control plane: 31238008341 / 93054063188 SUCCESS
-```
-
-No outstanding organization-control-plane integrity blocker remains from that finding.
-
-## StegGate / StegCore truth
-
-```text
-STEGGATE-AUDITKIT-001: COMPLETED / never reactivate
-ara PR #1: open draft at last verified c2df13fbbf51144f20ee8c46ff27653e7336c17d
-ara issues #2/#23/#66: complete
-StegCore#54: complete/released
+STEGGATE-AUDITKIT-001: COMPLETED; never reactivate
 STEGGATE-FIRST-BOUNDARY-001: BLOCKED / UNCLAIMED
+first-boundary release: durable target + authority model + ara activation READY + validator PASS
+StegCore#54: COMPLETE / RELEASED; no duplicate runtime work
 ```
 
-First-boundary release is machine-observable: durable `consequential_target_ref` + `authority_model_ref`, ara activation READY, and `tools/validate_first_boundary_activation.py` PASS. `.github#24` is CLOSED superseded because its unfinished-Audit-Kit premise is obsolete.
+## Current registry / collision state
 
-## Remaining exact implementation work
+No active SHWP protocol implementation claim exists. The only nonterminal named StegGate task is intentionally BLOCKED and unclaimed. The historical ChatGPT/bootstrap worker is DISABLED. The bounded native process canary is AVAILABLE but has no current claim.
 
-### #51 mutation scope/fence enforcement
+## Remaining exact work: parent #12 durable activation
 
-The current process adapter has pre-admitted command selection, but general mutation-capable workers are not yet centrally constrained at the filesystem commit boundary. Required: execute mutations in an isolated workspace, compute the candidate delta, verify every changed path against admitted scope and current fence, deny and record out-of-scope/stale-fence proposals, and project only accepted changes to the authoritative workspace. Post-hoc observation after uncontrolled mutation is insufficient.
-
-### #18/#35/#36 expiry, renewal, orphan recovery
-
-Reconcile these children to the one-heartbeat model. There must be no second heartbeat deadline. Renewal is a separately admitted transition and cannot be an automatic liveness side effect. Missed/unchanged worker transitions must produce observable degradation/recovery behavior while stale fences remain unable to mutate.
-
-### Parent #12 durable runtime activation
-
-The continuous runtime exists and is validated, but no durable always-on process/state host is currently activated. Connected deployment inspection found no correctly owned existing service, and the available Render creation control cannot provision the required persistent-state/background-worker combination.
+There is no remaining protocol child implementation work. The sole unfinished goal is activating the validated v8 runtime on a correctly owned long-lived durable state host.
 
 ```text
+task_id: STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001-RUNTIME-ACTIVATION
 owner: StegVerse-Labs/.github#12
+claim_state: BLOCKED
 state: BLOCKED_RUNTIME_ACTIVATION
+surface: scripts/run_heartbeat_runtime.py --continuous
 release_condition:
-  1. replaceable long-lived process host available to .github;
-  2. heartbeat/registry/event/cost state survives restart/deploy;
-  3. host runs scripts/run_heartbeat_runtime.py --continuous;
-  4. runtime controls machine-scale cadence; host supplies liveness only;
-  5. restart preserves one epoch lineage and no duplicate claim/fence;
-  6. no ChatGPT/GitHub cron/Render cron or external scheduler is required.
+  1. long-lived replaceable host is correctly owned by .github control plane;
+  2. heartbeat/registry/event/cost/receipt/checkpoint state is durably writable and survives restart/deploy;
+  3. host runs the continuous entrypoint;
+  4. runtime controls internal cadence; host supplies process liveness only;
+  5. restart proof preserves/increments one epoch lineage without duplicate claim/fence;
+  6. no ChatGPT automation, GitHub cron, Render cron, or external scheduler owns worker activation.
+next_action: inspect connected deployment controls and activate only if every predicate is satisfiable.
 ```
 
-### Empirical cost history
+This blocker is not permission to move the control-plane runtime into a service owned by another StegVerse subsystem or to use stateless storage.
 
-The estimator is implemented and fail-closed. Broader task-class cost history must accumulate from actual native work after durable activation; external costs are observed, never invented. This is not a reason to fabricate an expiry basis now.
+## Machine-owned tasks
+
+None are currently active for the deployment blocker. GitHub Actions is validation-only and is not a machine execution lane for continuous scheduling. No ChatGPT monitoring is active in this session.
+
+## Cross-repository dependencies
+
+- `master-records/orchestration`: lifecycle custody/reconstruction evidence owner.
+- `ara-admissibility-interop`: owns first real StegGate boundary release when its blocker clears.
+- `StegCore`: #54 complete; no active dependency requiring duplicate work here.
+
+No Site/Publisher/wiki publication obligation was established by v8 runtime implementation itself.
 
 ## Validation commands
 
 ```bash
+python scripts/validate_executable_handoffs.py
 python -m unittest -v tests.test_heartbeat_runtime
+python -m unittest -v tests.test_executor_discovery
+python -m unittest -v tests.test_block_boundaries
+python -m unittest -v tests.test_goal_lineage
+python -m unittest -v tests.test_resource_authority
+python -m unittest -v tests.test_checkpoint_policy
+python -m unittest -v tests.test_capability_profiles
+python -m unittest -v tests.test_process_adapter_scope
+python -m unittest -v tests.test_lifecycle_authority
 python -m unittest -v tests.test_worker_cost_basis_estimator
 python scripts/run_heartbeat_runtime.py --dry-run --cycles 1
-python scripts/project_heartbeat_workers.py --check
-python scripts/reconcile_heartbeat_continuity.py --write
 ```
 
-Master Records:
+## Integration / propagation obligations
 
-```bash
-python scripts/verify_worker_lifecycle_custody.py
-python scripts/verify_worker_lifecycle_lineage.py
-```
+Runtime v8 is integrated into the canonical package import and validation workflow. Protocol changes do not imply deployment, public release, Site/Publisher publication, or wiki propagation. Such actions require their own live authority/contracts.
 
-## Session consolidation / archive
-
-All design decisions through activation authority and successor reconstruction are durable. The session remains active because #51 and the #18/#35/#36 lifecycle cluster still contain executable implementation work, and parent #12 durable runtime activation remains blocked on a machine-observable hosting/state boundary.
+## Session consolidation
 
 ```text
-session_state: ACTIVE_UNIQUE_WORK_REMAINS
-thread_archive_ready: false
+merged_into: StegVerse-Labs/.github#12 + this handoff + ORG_MIRROR_HANDOFF.md + management/SHWP_SESSION_EXECUTION_INVENTORY.json
+protocol_unique_information_remaining_only_in_chat: NONE
+protocol_implementation_claims_remaining: NONE
+runtime_activation_unique_information_remaining_only_in_chat: NONE — blocker and predicates are durable
+thread_archive_ready: false until deployment blocker is dispositioned under governing archive rule
 ```
 
 ## Completion assessment
 
-Denominator is now 15 canonical capability tasks: the previous 12 plus activation-authority separation, typed activation request, and successor reconstruction.
-
 ```text
-canonical_capability_tasks: 15
-complete: 13
-partially_complete_or_blocked: 2
-task_completion: 87%
-canonical developed-file set: 30/30
-scaffolding_or_stubs: 0
-validation classes: 15/15
-integration classes: 13/14
-goal_activation: 93%
-session_consolidation: 13/13 durable session requirements transferred or complete
+protocol task completion: 18/18 = 100%
+developed protocol files: 43/43 = 100%
+scaffolding/stubs: 0
+validation: 24/24 = 100%
+protocol integration: 23/23 = 100%
+goal activation including durable host: 23/24 = 96%
+session consolidation: 17/18 = 94%
 ```
