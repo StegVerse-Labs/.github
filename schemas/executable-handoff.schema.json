@@ -13,27 +13,32 @@
     "goal": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["goal_id", "objective", "success_predicates", "failure_predicates", "expires_at"],
+      "required": ["goal_id", "objective", "success_predicates", "failure_predicates", "expires_at", "authority_ceiling", "successor_policy", "max_successor_depth"],
       "properties": {
         "goal_id": {"type": "string", "minLength": 1},
         "objective": {"type": "string", "minLength": 1},
-        "success_predicates": {"type": "array", "minItems": 1, "items": {"type": "string"}},
-        "failure_predicates": {"type": "array", "items": {"type": "string"}},
+        "success_predicates": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "failure_predicates": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
         "expires_at": {"type": ["string", "null"], "format": "date-time"},
-        "authority_ceiling": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+        "authority_ceiling": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "successor_policy": {"enum": ["NONE", "INHERIT_OR_NARROW", "SEPARATE_AUTHORIZATION_REQUIRED_FOR_EXPANSION"]},
+        "max_successor_depth": {"type": "integer", "minimum": 0}
       }
     },
     "task": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["task_id", "repository", "source_refs", "dependencies", "priority"],
+      "required": ["task_id", "repository", "source_refs", "dependencies", "priority", "canonical_owner_ref", "canonical_lineage_key", "derivation_depth"],
       "properties": {
         "task_id": {"type": "string", "minLength": 1},
         "repository": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
-        "source_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "source_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
         "dependencies": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
         "parent_task_id": {"type": ["string", "null"]},
         "derivation_reason": {"type": ["string", "null"]},
+        "canonical_owner_ref": {"type": "string", "minLength": 1},
+        "canonical_lineage_key": {"type": "string", "minLength": 1},
+        "derivation_depth": {"type": "integer", "minimum": 0},
         "priority": {"enum": ["normal", "elevated", "critical", "security", "release"]}
       }
     },
@@ -44,7 +49,8 @@
       "properties": {
         "authority_source": {"type": "string", "minLength": 1},
         "heartbeat_grants_execution_authority": {"const": false},
-        "policy_version": {"type": "string", "minLength": 1}
+        "policy_version": {"type": "string", "minLength": 1},
+        "expansion_authorization_ref": {"type": "string", "minLength": 1}
       }
     },
     "execution": {
@@ -73,12 +79,7 @@
       },
       "allOf": [
         {
-          "if": {
-            "properties": {
-              "executor_binding": {"enum": ["AUTHORIZED", "BOUND"]}
-            },
-            "required": ["executor_binding"]
-          },
+          "if": {"properties": {"executor_binding": {"enum": ["AUTHORIZED", "BOUND"]}}, "required": ["executor_binding"]},
           "then": {"required": ["authorization_ref"]}
         }
       ]
@@ -101,7 +102,7 @@
       "required": ["next_authorized_action", "terminal_when"],
       "properties": {
         "next_authorized_action": {"type": "string", "minLength": 1},
-        "terminal_when": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+        "terminal_when": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
       }
     },
     "block": {
