@@ -93,25 +93,20 @@ job: 93049882049
 result: SUCCESS
 ```
 
-Validated steps include:
+Validated steps include compile/runtime parsing, 6/6 native HB lifecycle tests, 3/3 cost-estimator tests, sparse-data no-guess proof, live-registry no-false-activation proof, worker/continuity projection, and completed-AuditKit/blocked-first-boundary posture.
 
-- compile runtime/projectors/estimator;
-- parse canonical JSON;
-- 6/6 native HB runtime lifecycle tests PASS;
-- 3/3 worker cost-basis estimator tests PASS;
-- sparse live cost data -> no invented expiry PASS;
-- live registry dry-run -> no false worker activation PASS;
-- worker status projection PASS;
-- heartbeat continuity projection PASS;
-- completed Audit Kit + blocked/unclaimed first-boundary successor posture PASS.
+## Completed foundation issues
 
-Previous exact native-runtime proof before estimator integration:
+The following child tasks satisfy their stated completion criteria and are closed/completable from this evidence:
 
 ```text
-head: 4696a4cea187f96fcc36e8472dc433dce51c7c9d
-run: 31236459790
-result: SUCCESS
+.github#15 — canonical status projection
+.github#17 — executable HANDOFF + heartbeat discovery
+.github#25 — hosted first-slice validation
+.github#26 — organization handoff/archive invariant documentation
 ```
+
+These closures do not complete parent #12 or executor/custody owners #13/#14.
 
 ## Current worker truth
 
@@ -123,35 +118,27 @@ The native runtime core exists and is validated, but no legitimate production mu
 
 ### `.github#13` — production worker adapter/runtime binding
 
-Required:
-
-- choose/install a provider-agnostic mutation-capable worker adapter whose authority is independently admitted;
-- register it using `worker.adapter_ref` and exact capabilities;
-- bind only eligible registry work;
-- prove a real worker responds on the same heartbeat across multiple cycles;
-- prove fenced duplicate checkout rejection under real execution;
-- retain checkpoint/final report evidence and release the claim correctly.
-
-No synthetic adapter may satisfy the production completion condition.
+Required: choose/install a provider-agnostic mutation-capable worker adapter whose authority is independently admitted; register exact `adapter_ref` and capabilities; prove a real worker responds on the same heartbeat across multiple cycles; prove fenced collision rejection under real execution; retain checkpoint/final report evidence; release claim correctly. Synthetic adapters do not satisfy production completion.
 
 ### `.github#14` — native lifecycle custody
 
-Exercise a real native worker lifecycle through Master Records, including checkpoint, expiry/finalization or completion, recovery when applicable, and reconstruction. The fixture-proven recovery semantics are not a substitute for live custody evidence.
+Exercise a real native worker lifecycle through Master Records, including checkpoint, expiry/finalization or completion, recovery when applicable, claim release, and reconstruction. Fixture-proven recovery semantics are not live custody evidence.
 
 ### Empirical cost basis
 
-Accumulate completed live HB-relative samples, including actual external-entity costs when external jobs exist. The estimator must remain fail-closed at confidence NONE when evidence is absent.
+Accumulate completed live HB-relative samples, including actual external-entity costs when external jobs exist. Estimator remains fail-closed at confidence NONE when evidence is absent.
 
 ## Claim and collision state
 
 ```text
-STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001: CLAIMED_FOR_IMPLEMENTATION by this session for native runtime/cost-basis slice until hosted proof + handoff transfer
+STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001: active parent #12
+native runtime/cost-basis file slice: implemented + hosted-green + durably transferred
 STEGGATE-AUDITKIT-001: COMPLETE
 STEGGATE-FIRST-BOUNDARY-001: BLOCKED / UNCLAIMED
 StegCore#54: COMPLETE / RELEASED
+production adapter work: remains under .github#13
+live custody work: remains under .github#14
 ```
-
-After this handoff update, the native runtime/cost-basis implementation claim is released from this specific file slice; remaining production adapter and live custody work remain canonical under `.github#13/#14`, but this conversation still contains active execution responsibility until a genuine non-conversational native execution path is active or the remaining implementation is completed here.
 
 ## Validation commands
 
@@ -169,7 +156,7 @@ python scripts/reconcile_heartbeat_continuity.py --write
 - `StegVerse-Labs/ara-admissibility-interop`: first-real-boundary successor; blocked/unclaimed.
 - `master-records/orchestration`: native lifecycle custody/reconstruction owner.
 - `StegVerse-Labs/StegCore`: no work from StegCore #54; completed canonical semantics must not be duplicated.
-- Site/Publisher/wikis: no propagation from this implementation slice is currently authorized or release-ready.
+- Site/Publisher/wikis: no propagation from this implementation slice is authorized or release-ready.
 
 ## Session consolidation
 
@@ -183,13 +170,11 @@ Archive is denied because the provider-agnostic native engine is validated but n
 
 ## Completion assessment
 
-For the current single-HB native-runtime/cost-basis implementation slice:
-
 ```text
 developed_files: 17/17 canonical files installed
 scaffolding_or_stubs: 0 counted as completed deliverables
 validation: 9/9 current hosted validation classes pass
-integration: 7/9 (native engine + registry + HB timing + recovery + status + continuity + estimator integrated; production adapter and live MR lifecycle remain)
-goal_activation: 78% (runtime/control semantics operational and validated; production autonomous mutation not active)
+integration: 7/9 (production adapter + live MR lifecycle remain)
+goal_activation: 78%
 session_consolidation: 8/8 identified session goals durably inventoried/transferred, but session remains active because remaining production execution is not yet archive-safe
 ```
