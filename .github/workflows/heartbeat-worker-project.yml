@@ -46,7 +46,7 @@ jobs:
 
       - name: Compile HB runtime and projectors
         run: |
-          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine.py
+          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py
           python -m py_compile scripts/project_heartbeat_workers.py
           python -m py_compile scripts/reconcile_heartbeat_continuity.py
           python -m py_compile scripts/run_heartbeat_runtime.py
@@ -103,7 +103,6 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-          registry = json.loads(Path('control/worker-registry.json').read_text())
           status = json.loads(Path('control/worker-status.json').read_text())
           continuity = json.loads(Path('control/heartbeat-continuity.json').read_text())
           audit = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-AUDITKIT-001')
