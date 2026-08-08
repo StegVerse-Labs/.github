@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/goal-convergence.schema.json",
+  "title": "StegVerse Goal Convergence Projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "source_registry_generation", "goals"],
+  "properties": {
+    "schema": {"const": "stegverse.goal-convergence/v0.1"},
+    "source_registry_generation": {"type": "integer", "minimum": 0},
+    "goals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["goal_id", "root_task_id", "state", "success_predicates_satisfied", "no_unresolved_descendants", "no_active_claims", "custody_reconstruction_complete", "no_authorized_remaining_action", "converged", "reason_codes"],
+        "properties": {
+          "goal_id": {"type": "string", "minLength": 1},
+          "root_task_id": {"type": "string", "minLength": 1},
+          "state": {"type": "string", "minLength": 1},
+          "success_predicates_satisfied": {"type": "boolean"},
+          "no_unresolved_descendants": {"type": "boolean"},
+          "no_active_claims": {"type": "boolean"},
+          "custody_reconstruction_complete": {"type": "boolean"},
+          "no_authorized_remaining_action": {"type": "boolean"},
+          "converged": {"type": "boolean"},
+          "reason_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}
