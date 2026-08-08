@@ -1,0 +1,61 @@
+{
+  "schema": "stegverse.worker-capability-profiles/v0.1",
+  "generation": 1,
+  "profiles": [
+    {
+      "profile_id": "deterministic-workflow-v1",
+      "executor_type": "deterministic_workflow",
+      "effect_class": "deterministic_workflow",
+      "allowed_capabilities": ["repository_validation", "deterministic_projection", "schema_validation", "receipt_projection"],
+      "mutation_allowed": false,
+      "deployment_allowed": false,
+      "availability_grants_authority": false,
+      "capability_match_grants_authority": false,
+      "notes": ["Deterministic execution does not imply task authorization."]
+    },
+    {
+      "profile_id": "repository-maintenance-v1",
+      "executor_type": "repository_worker",
+      "effect_class": "repository_maintenance",
+      "allowed_capabilities": ["native_receipt_canary", "repository_validation", "deterministic_projection", "bounded_repository_mutation"],
+      "mutation_allowed": true,
+      "deployment_allowed": false,
+      "availability_grants_authority": false,
+      "capability_match_grants_authority": false,
+      "notes": ["Any mutation still requires task authorization, scope admission and a current fence."]
+    },
+    {
+      "profile_id": "code-change-agent-v1",
+      "executor_type": "agent_runtime",
+      "effect_class": "code_change_agent",
+      "allowed_capabilities": ["github_repository_read", "github_repository_write", "issue_and_pr_coordination", "code_and_schema_implementation", "hosted_validation_observation"],
+      "mutation_allowed": true,
+      "deployment_allowed": false,
+      "availability_grants_authority": false,
+      "capability_match_grants_authority": false,
+      "notes": ["Agent capability describes what the executor can do, not what it is authorized to do for a task."]
+    },
+    {
+      "profile_id": "deployment-worker-v1",
+      "executor_type": "deployment_worker",
+      "effect_class": "deployment",
+      "allowed_capabilities": ["deployment_inspection", "deployment_update", "deployment_release", "runtime_observation"],
+      "mutation_allowed": true,
+      "deployment_allowed": true,
+      "availability_grants_authority": false,
+      "capability_match_grants_authority": false,
+      "notes": ["Deployment authority must be separately admitted by the HANDOFF and deployment control plane."]
+    },
+    {
+      "profile_id": "read-only-observer-v1",
+      "executor_type": "observer",
+      "effect_class": "read_only_observer",
+      "allowed_capabilities": ["github_repository_read", "hosted_validation_observation", "runtime_observation", "evidence_observation"],
+      "mutation_allowed": false,
+      "deployment_allowed": false,
+      "availability_grants_authority": false,
+      "capability_match_grants_authority": false,
+      "notes": ["Observer profiles cannot be selected for mutation or deployment capabilities."]
+    }
+  ]
+}
