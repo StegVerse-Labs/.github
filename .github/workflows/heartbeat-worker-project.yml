@@ -1,4 +1,5 @@
-# SHWP v0.1 foundation: heartbeat carries activation requests; it does not grant execution authority.
+# Validation-only workflow for SHWP control-plane artifacts.
+# This workflow is not the worker scheduler and has no scheduled activation role.
 name: Heartbeat Worker Project
 
 on:
@@ -6,14 +7,17 @@ on:
     branches: [main]
     paths:
       - 'handoffs/**'
+      - 'control/heartbeat-state.json'
       - 'control/worker-registry.json'
+      - 'control/heartbeat-continuity.json'
       - 'docs/ORG_MIRROR_HANDOFF.md'
+      - 'schemas/heartbeat-transition-observation.schema.json'
+      - 'schemas/worker-runtime-cost-basis.schema.json'
       - 'schemas/worker-registry.schema.json'
       - 'schemas/executable-handoff.schema.json'
       - 'scripts/project_heartbeat_workers.py'
+      - 'scripts/reconcile_heartbeat_continuity.py'
       - '.github/workflows/heartbeat-worker-project.yml'
-  schedule:
-    - cron: '17 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -35,8 +39,10 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Compile projector
-        run: python -m py_compile scripts/project_heartbeat_workers.py
+      - name: Compile HB worker projectors
+        run: |
+          python -m py_compile scripts/project_heartbeat_workers.py
+          python -m py_compile scripts/reconcile_heartbeat_continuity.py
 
       - name: Parse canonical JSON surfaces
         run: |
@@ -46,6 +52,9 @@ jobs:
           paths = [
               Path('schemas/worker-registry.schema.json'),
               Path('schemas/executable-handoff.schema.json'),
+              Path('schemas/heartbeat-transition-observation.schema.json'),
+              Path('schemas/worker-runtime-cost-basis.schema.json'),
+              Path('control/heartbeat-state.json'),
               Path('control/worker-registry.json'),
               *sorted(Path('handoffs').glob('*.json')),
           ]
@@ -63,18 +72,26 @@ jobs:
             echo 'WORKER_STATUS_CURRENT=false' >> "$GITHUB_ENV"
           fi
 
-      - name: Prove StegGate lifecycle and archive invariant
+      - name: Refresh heartbeat continuity projection
+        run: python scripts/reconcile_heartbeat_continuity.py --write
+
+      - name: Prove single-HB worker scheduling posture
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
           registry = json.loads(Path('control/worker-registry.json').read_text())
           status = json.loads(Path('control/worker-status.json').read_text())
+          continuity = json.loads(Path('control/heartbeat-continuity.json').read_text())
           task = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-AUDITKIT-001')
           source = next(x for x in registry['tasks'] if x['task_id'] == 'STEGGATE-AUDITKIT-001')
-          assert status['execution_authority_from_heartbeat'] is False, status
 
-          custody_proven = any('master-records:' in ref.lower() for ref in source.get('evidence_refs', []))
+          assert status['execution_authority_from_heartbeat'] is False, status
+          assert status['single_heartbeat_timing_frame'] is True, status
+          assert status['activation_driver'] == 'internal_heartbeat_registry_evaluation', status
+          assert continuity['heartbeat_is_single_common_timing_frame'] is True, continuity
+          assert continuity['absence_or_delay_is_not_by_itself_continuity_loss'] is True, continuity
+
           if task['state'] == 'HANDOFF_READY':
               assert task['activation_required'] is True, task
               assert task['executor_binding'] in {'UNBOUND', 'DISCOVERED'}, task
@@ -84,31 +101,32 @@ jobs:
               assert task['executor_binding'] in {'AUTHORIZED', 'BOUND'}, task
               assert task['worker_id'], task
               assert task['claim_id'], task
-              assert task['valid_lease'] is True, task
-              assert task['activation_required'] is False, task
-              if custody_proven and task['executor_binding'] == 'BOUND':
+              assert task['heartbeat_timing_established'] is True, task
+              if task['executor_binding'] == 'BOUND':
                   assert task['archive_eligible'] is True, task
-                  assert 'MASTER_RECORDS_CUSTODY_NOT_PROVEN' not in task['archive_reason_codes'], task
-                  print('SHWP_STEGGATE_AUTOMATED_ARCHIVE_GATE_PASS')
-              else:
-                  assert task['archive_eligible'] is False, task
-                  print('SHWP_STEGGATE_ACTIVE_FAIL_CLOSED_PASS')
+              print('SHWP_STEGGATE_HB_RELATIVE_ACTIVE_PASS')
           elif task['state'] == 'COMPLETED':
               assert task['archive_eligible'] is True, task
               print('SHWP_STEGGATE_COMPLETED_PASS')
           else:
               raise AssertionError(f"unexpected StegGate lifecycle state: {task['state']}")
+
+          # Known HB-relative expiry without a final Master Records worker report
+          # must become a registry recovery candidate, never silent completion.
+          for obs in continuity['observations']:
+              if 'MASTER_RECORDS_FINAL_WORKER_REPORT_MISSING' in obs['reason_codes']:
+                  assert continuity['candidate_count'] > 0, continuity
           PY
 
-      - name: Commit derived status only when semantic state changed
+      - name: Commit derived projections only when changed
         run: |
-          if git diff --quiet -- control/worker-status.json; then
-            echo 'No worker status change.'
+          if git diff --quiet -- control/worker-status.json control/heartbeat-continuity.json; then
+            echo 'No derived HB state change.'
             exit 0
           fi
           git config user.name 'stegverse-heartbeat-worker'
           git config user.email 'actions@users.noreply.github.com'
-          git add control/worker-status.json
-          git commit -m 'chore: project heartbeat worker status'
+          git add control/worker-status.json control/heartbeat-continuity.json
+          git commit -m 'chore: project single-heartbeat worker continuity'
           git pull --rebase origin main
           git push origin HEAD:main
