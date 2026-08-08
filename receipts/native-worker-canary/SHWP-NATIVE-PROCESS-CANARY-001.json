@@ -1,0 +1,13 @@
+{
+  "authority_effect": "none_beyond_admitted_canary_receipt_namespace",
+  "claim_id": "SHWP-SHWP-NATIVE-PROCESS-CANARY-001-G6",
+  "completed": true,
+  "fencing_token": 6,
+  "heartbeat_epoch": 3,
+  "schema": "stegverse.native-process-worker-canary/v0.1",
+  "task_id": "SHWP-NATIVE-PROCESS-CANARY-001",
+  "transition_id": "CANARY_COMPLETE",
+  "transition_sequence": 2,
+  "worker_id": "native-process-canary-worker",
+  "worker_instance_id": "native-process-canary-worker-HB2-G6"
+}

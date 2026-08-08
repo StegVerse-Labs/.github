@@ -1,28 +1,33 @@
 {
-  "schema": "stegverse.org-heartbeat-state/v1",
-  "generation": 1,
-  "epoch": 1,
-  "expected_returns": 0,
-  "issued": ["heartbeats/outbound/TASK-2026-0003-1.json"],
-  "received": ["heartbeats/returns/TASK-2026-0003-1.json"],
-  "last_completed_round": {
-    "epoch": 1,
-    "claimant_id": "TASK-2026-0003",
-    "repository": "StegVerse-Labs/StegCore",
-    "completed_at": "2026-08-06T20:29:00Z",
-    "observation": "heartbeats/observations/TASK-2026-0003-1.json",
-    "deterministic_ok": true
-  },
-  "open_warrants": [],
   "deterministic_tolerances": {
-    "fencing_token": 0,
     "claims": 0,
-    "scope": 0,
+    "fencing_token": 0,
+    "nonce": 0,
     "policy_version": 0,
-    "nonce": 0
+    "scope": 0
   },
+  "epoch": 3,
+  "expected_returns": 0,
+  "generation": 3,
+  "issued": [
+    "heartbeats/outbound/TASK-2026-0003-1.json"
+  ],
+  "last_completed_round": {
+    "claimant_id": "TASK-2026-0003",
+    "completed_at": "2026-08-06T20:29:00Z",
+    "deterministic_ok": true,
+    "epoch": 1,
+    "observation": "heartbeats/observations/TASK-2026-0003-1.json",
+    "repository": "StegVerse-Labs/StegCore"
+  },
+  "last_cycle_at": "2026-08-08T03:27:04Z",
+  "open_warrants": [],
   "ordered_tolerances": {
     "epoch_beats": 2
   },
+  "received": [
+    "heartbeats/returns/TASK-2026-0003-1.json"
+  ],
+  "schema": "stegverse.org-heartbeat-state/v1",
   "statistical_detection_active": false
 }
