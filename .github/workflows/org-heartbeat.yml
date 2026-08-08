@@ -66,3 +66,28 @@ jobs:
           assert value['authority_effect'] == 'none_beyond_existing_admitted_task_authority', value
           print('UNIFIED_SINGLE_HEARTBEAT_DRY_RUN_PASS')
           PY
+
+      - name: Prove repeated internal machine-cycle ownership
+        run: |
+          tmp="$(mktemp -d)"
+          mkdir -p "$tmp/control" "$tmp/handoffs" "$tmp/cost-basis/worker-runtime"
+          cp control/heartbeat-state.json control/worker-registry.json control/worker-cost-observations.json control/process-worker-adapters.json control/claims-active.json control/org-state.json "$tmp/control/"
+          cp handoffs/*.json "$tmp/handoffs/"
+          cp cost-basis/worker-runtime/*.json "$tmp/cost-basis/worker-runtime/"
+          start="$(python - <<'PY' "$tmp/control/heartbeat-state.json"
+          import json,sys
+          print(json.load(open(sys.argv[1]))['epoch'])
+          PY
+          )"
+          python scripts/run_heartbeat_runtime.py --root "$tmp" --cycles 3 --interval-ms 1 | tee /tmp/heartbeat-three-cycles.jsonl
+          python - <<'PY' "$start" "$tmp/control/heartbeat-state.json" /tmp/heartbeat-three-cycles.jsonl
+          import json,sys
+          start=int(sys.argv[1])
+          final=json.load(open(sys.argv[2]))['epoch']
+          rows=[json.loads(x) for x in open(sys.argv[3]) if x.strip()]
+          assert [r['epoch'] for r in rows] == [start+1,start+2,start+3], rows
+          assert final == start+3, (start,final)
+          assert all(r['schema']=='stegverse.heartbeat-cycle-result/v0.3' for r in rows), rows
+          assert all('organization_assertions' in r for r in rows), rows
+          print('REPEATED_INTERNAL_SINGLE_HEARTBEAT_PASS')
+          PY
