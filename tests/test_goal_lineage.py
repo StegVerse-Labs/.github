@@ -66,7 +66,7 @@ class GoalLineageTests(unittest.TestCase):
         finally:
             fx.close()
 
-    def test_authority_expanding_successor_without_expansion_admission_is_quarantined(self):
+    def test_authority_expanding_successor_waits_for_separate_admission(self):
         fx = RuntimeFixture()
         try:
             parent = fx.task("PARENT", state="COMPLETED")
@@ -79,8 +79,48 @@ class GoalLineageTests(unittest.TestCase):
             events = []
             runtime._preflight_ready_tasks(registry, 1, events)
             current = next(item for item in registry["tasks"] if item["task_id"] == "CHILD")
-            self.assertEqual(current["state"], "QUARANTINED")
+            self.assertEqual(current["state"], "ACTIVATION_PENDING")
             self.assertIn("SUCCESSOR_AUTHORITY_EXPANSION_NOT_ADMITTED", current["archive_reason_codes"])
+            pending = next(e for e in events if e.get("event_type") == "successor_authority_expansion_pending")
+            self.assertFalse(pending["heartbeat_grants_expansion"])
+        finally:
+            fx.close()
+
+    def test_separately_admitted_expansion_returns_successor_to_ready(self):
+        fx = RuntimeFixture()
+        try:
+            parent = fx.task("PARENT", state="COMPLETED")
+            child = fx.task("CHILD", state="ACTIVATION_PENDING")
+            parent_handoff = bind_strict(fx, parent, lineage="lane:parent", successor_policy="INHERIT_OR_NARROW", max_depth=2, allowed_paths=["StegVerse-Labs/strict-fixture/**"], max_actions=5)
+            child_handoff = bind_strict(fx, child, lineage="lane:child", depth=1, parent_task_id="PARENT", allowed_paths=["StegVerse-Labs/strict-fixture/**", "StegVerse-Labs/other/**"], max_actions=6)
+            fx.registry([parent, child])
+            runtime = HeartbeatRuntime(fx.root)
+            ref = "authorizations/CHILD-expansion.json"
+            child_handoff["authority"]["expansion_authorization_ref"] = ref
+            write(fx.root / child["handoff_ref"], child_handoff)
+            write(fx.root / ref, {
+                "schema": "stegverse.worker-authority-expansion/v0.1",
+                "expansion_id": "EXP-CHILD",
+                "status": "ADMITTED",
+                "parent_task_id": "PARENT",
+                "child_task_id": "CHILD",
+                "parent_scope_sha256": runtime._scope_digest(parent_handoff),
+                "child_scope_sha256": runtime._scope_digest(child_handoff),
+                "authority_source": child_handoff["authority"]["authority_source"],
+                "policy_version": child_handoff["authority"]["policy_version"],
+                "heartbeat_grants_expansion": False,
+                "evidence_refs": ["fixture:separate-expansion-admission"]
+            })
+            registry = json.loads((fx.root / "control/worker-registry.json").read_text())
+            registry["tasks"][1]["state"] = "ACTIVATION_PENDING"
+            registry["tasks"][1]["archive_reason_codes"] = ["SUCCESSOR_AUTHORITY_EXPANSION_NOT_ADMITTED"]
+            events = []
+            runtime._preflight_ready_tasks(registry, 2, events)
+            current = next(item for item in registry["tasks"] if item["task_id"] == "CHILD")
+            self.assertEqual(current["state"], "HANDOFF_READY")
+            self.assertNotIn("SUCCESSOR_AUTHORITY_EXPANSION_NOT_ADMITTED", current["archive_reason_codes"])
+            admitted = next(e for e in events if e.get("event_type") == "successor_authority_expansion_admitted")
+            self.assertFalse(admitted["heartbeat_granted_expansion"])
         finally:
             fx.close()
 
