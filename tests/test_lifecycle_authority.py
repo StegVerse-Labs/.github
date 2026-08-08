@@ -101,7 +101,14 @@ class LifecycleAuthorityTests(unittest.TestCase):
                 )
 
             runtime = HeartbeatRuntime(fx.root, adapters={'fixture': adapter})
-            runtime.cycle()  # HB1: valid response; response-loss threshold 2, expiry HB5
+            runtime.cycle()  # HB1: accepted response writes canonical checkpoint; threshold 2, expiry HB5
+            state1 = json.loads((fx.root / 'control/worker-registry.json').read_text())
+            parent1 = next(item for item in state1['tasks'] if item['task_id'] == 'TASK-A')
+            canonical_ref = parent1['last_checkpoint_ref']
+            self.assertTrue(canonical_ref.startswith('checkpoints/workers/TASK-A/'))
+            canonical = json.loads((fx.root / canonical_ref).read_text())
+            self.assertEqual(canonical['worker_checkpoint_ref'], 'master-records/orchestration:checkpoint-task-a')
+            self.assertEqual(canonical['checkpoint_sha256'], runtime._checkpoint_hash(canonical))
             runtime.adapters = {}
 
             hb2 = runtime.cycle()
@@ -123,14 +130,14 @@ class LifecycleAuthorityTests(unittest.TestCase):
             self.assertEqual(parent['state'], 'BLOCKED')
             self.assertIsNone(parent['claim_id'])
             self.assertIsNone(parent['worker_id'])
-            self.assertEqual(parent['last_checkpoint_ref'], 'master-records/orchestration:checkpoint-task-a')
+            self.assertEqual(parent['last_checkpoint_ref'], canonical_ref)
             self.assertEqual(parent['heartbeat_timing']['expiry_epoch'], 5)
             self.assertEqual(parent['heartbeat_timing']['fencing_token'], 1)
             self.assertEqual(recovery['state'], 'HANDOFF_READY')
             self.assertIn('SUCCESSOR_RECONSTRUCTION_REQUIRED', recovery['archive_reason_codes'])
             generated = json.loads((fx.root / recovery['handoff_ref']).read_text())
             self.assertEqual(generated['task']['parent_task_id'], 'TASK-A')
-            self.assertEqual(generated['continuity']['checkpoint_ref'], 'master-records/orchestration:checkpoint-task-a')
+            self.assertEqual(generated['continuity']['checkpoint_ref'], canonical_ref)
             self.assertNotIn('reconstruction_ref', generated['continuity'])
             self.assertLess(3, parent['heartbeat_timing']['expiry_epoch'])
         finally:
