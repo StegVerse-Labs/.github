@@ -52,7 +52,7 @@ tests/test_heartbeat_runtime.py
 tests/test_worker_cost_basis_estimator.py
 ```
 
-Strongest hosted proof:
+Strongest semantic hosted proof:
 
 ```text
 head: 262c829e052d5da6f9aba4542c7dcd543fe2db80
@@ -63,6 +63,16 @@ result: SUCCESS
 ```
 
 The logs directly prove 6/6 native heartbeat lifecycle tests, 3/3 worker cost-basis estimator tests, sparse-cost no-guess behavior, live-registry no-false-activation, valid worker/continuity projections, and correct StegGate completed/blocked successor posture.
+
+Subsequent durable consolidation commits:
+
+```text
+97d96dc  session execution inventory created
+f454baa  scoped handoff advanced to native-engine proof
+5b502f5  execution inventory refreshed
+51ccd30  scoped handoff records foundation issue closure readiness
+5a09d0b  execution inventory closure/convergence refresh
+```
 
 The previous first engine cut exposed a hosted expiry/reactivation defect and was superseded/deleted. Hardened `engine_v2.py` blocks an expired parent on the generated recovery task when the required Master Records final worker report is missing.
 
