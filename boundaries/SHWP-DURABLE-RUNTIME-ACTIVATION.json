@@ -1,0 +1,16 @@
+{
+  "schema": "stegverse.human-authority-boundary/v0.1",
+  "boundary_id": "BOUNDARY-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-08",
+  "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "requested_decision": "Approve and provide a dedicated correctly owned always-on process host plus durable writable state for the StegVerse-Labs/.github SHWP runtime, including any recurring infrastructure cost, or explicitly reject/defer that provisioning. Existing LLM-adapter and StegVerse-SCW resources are not authorized substitutes.",
+  "authority_source": "StegVerse infrastructure/procurement authority",
+  "evidence_refs": [
+    "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+    "StegVerse-Labs/.github#12",
+    "Render workspace inspection 2026-08-08: no correctly owned existing SHWP host; direct connected controls expose no background-worker creation with persistent disk"
+  ],
+  "resume_trigger": "A durable resolution_ref records approval/provisioning of a compliant host and any required cost authority, or identifies an already-owned compliant host; only then may a separately admitted deployment authorization bind the task and restart-continuity proof begin.",
+  "status": "PENDING",
+  "resolution_ref": null,
+  "automation_terminal": true
+}
