@@ -56,14 +56,16 @@
     "execution": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["required_capabilities", "allowed_paths", "allowed_services", "max_actions", "max_retries", "external_cost_ceiling_usd"],
+      "required": ["required_capabilities", "allowed_paths", "allowed_services", "max_actions", "max_retries", "external_cost_ceiling_usd", "runtime_window_beats", "rate_class"],
       "properties": {
         "required_capabilities": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
         "allowed_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
         "allowed_services": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
         "max_actions": {"type": "integer", "minimum": 1},
         "max_retries": {"type": "integer", "minimum": 0},
-        "external_cost_ceiling_usd": {"type": "number", "minimum": 0}
+        "external_cost_ceiling_usd": {"type": "number", "minimum": 0},
+        "runtime_window_beats": {"type": "integer", "minimum": 1},
+        "rate_class": {"type": "string", "minLength": 1}
       }
     },
     "activation": {
@@ -77,12 +79,7 @@
         "recheck_trigger": {"type": "string", "minLength": 1},
         "checkout_policy": {"const": "fenced_atomic_checkout"}
       },
-      "allOf": [
-        {
-          "if": {"properties": {"executor_binding": {"enum": ["AUTHORIZED", "BOUND"]}}, "required": ["executor_binding"]},
-          "then": {"required": ["authorization_ref"]}
-        }
-      ]
+      "allOf": [{"if": {"properties": {"executor_binding": {"enum": ["AUTHORIZED", "BOUND"]}}, "required": ["executor_binding"]}, "then": {"required": ["authorization_ref"]}}]
     },
     "continuity": {
       "type": "object",
