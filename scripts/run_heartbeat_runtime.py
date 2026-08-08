@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Run one or more StegVerse heartbeat cycles from the native runtime engine."""
+"""Run the provider-agnostic StegVerse single-heartbeat runtime."""
 from __future__ import annotations
 
 import argparse
 import json
+import signal
 import sys
 import time
 from pathlib import Path
@@ -44,19 +45,33 @@ def load_adapters(root: Path) -> dict[str, ProcessWorkerAdapter]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=str(REPO_ROOT))
-    parser.add_argument("--cycles", type=int, default=1)
-    parser.add_argument("--interval-ms", type=float, default=10.0)
+    parser.add_argument("--cycles", type=int, default=1, help="Finite cycle count when --continuous is not set.")
+    parser.add_argument("--continuous", action="store_true", help="Run the internal heartbeat loop until terminated by the host/process manager.")
+    parser.add_argument("--interval-ms", type=float, default=10.0, help="Internal delay between heartbeat cycles; not a third-party scheduler cadence.")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     if args.cycles < 1 or args.interval_ms < 0:
         raise SystemExit("cycles must be >= 1 and interval-ms must be >= 0")
+    if args.continuous and args.dry_run:
+        raise SystemExit("continuous dry-run is prohibited because non-persistent state cannot prove advancing heartbeat epochs")
 
     root = Path(args.root).resolve()
     runtime = HeartbeatRuntime(root, adapters=load_adapters(root))
-    for index in range(args.cycles):
+    running = True
+
+    def stop(_signum, _frame):
+        nonlocal running
+        running = False
+
+    signal.signal(signal.SIGTERM, stop)
+    signal.signal(signal.SIGINT, stop)
+
+    index = 0
+    while running and (args.continuous or index < args.cycles):
         result = runtime.cycle(write=not args.dry_run)
-        print(json.dumps(result, sort_keys=True))
-        if index + 1 < args.cycles and args.interval_ms:
+        print(json.dumps(result, sort_keys=True), flush=True)
+        index += 1
+        if running and (args.continuous or index < args.cycles) and args.interval_ms:
             time.sleep(args.interval_ms / 1000.0)
     return 0
 
