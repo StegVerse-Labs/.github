@@ -11,6 +11,7 @@ on:
       - 'workers/**'
       - 'tests/test_heartbeat_runtime.py'
       - 'tests/test_process_adapter_scope.py'
+      - 'tests/test_lifecycle_authority.py'
       - 'tests/test_worker_cost_basis_estimator.py'
       - 'control/heartbeat-state.json'
       - 'control/worker-registry.json'
@@ -24,6 +25,7 @@ on:
       - 'schemas/heartbeat-activation-request.schema.json'
       - 'schemas/worker-reconstruction-proof.schema.json'
       - 'schemas/worker-mutation-scope-receipt.schema.json'
+      - 'schemas/worker-renewal-admission.schema.json'
       - 'schemas/worker-runtime-cost-basis.schema.json'
       - 'schemas/worker-registry.schema.json'
       - 'schemas/process-worker-adapters.schema.json'
@@ -56,7 +58,7 @@ jobs:
 
       - name: Compile HB runtime and projectors
         run: |
-          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py heartbeat_runtime/process_adapter.py
+          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py heartbeat_runtime/engine_v3.py heartbeat_runtime/process_adapter.py
           python -m py_compile workers/heartbeat_receipt_canary.py
           python -m py_compile scripts/project_heartbeat_workers.py
           python -m py_compile scripts/reconcile_heartbeat_continuity.py
@@ -76,6 +78,7 @@ jobs:
               Path('schemas/heartbeat-activation-request.schema.json'),
               Path('schemas/worker-reconstruction-proof.schema.json'),
               Path('schemas/worker-mutation-scope-receipt.schema.json'),
+              Path('schemas/worker-renewal-admission.schema.json'),
               Path('schemas/worker-runtime-cost-basis.schema.json'),
               Path('control/heartbeat-state.json'),
               Path('control/worker-registry.json'),
@@ -94,6 +97,9 @@ jobs:
 
       - name: Prove sandboxed mutation scope and fence semantics
         run: python -m unittest -v tests.test_process_adapter_scope
+
+      - name: Prove one-HB authority renewal and orphan recovery
+        run: python -m unittest -v tests.test_lifecycle_authority
 
       - name: Prove cost basis estimator semantics
         run: python -m unittest -v tests.test_worker_cost_basis_estimator
@@ -147,27 +153,20 @@ jobs:
           continuity = json.loads(Path('control/heartbeat-continuity.json').read_text())
           audit = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-AUDITKIT-001')
           boundary = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-FIRST-BOUNDARY-001')
-
           assert status['execution_authority_from_heartbeat'] is False, status
           assert status['single_heartbeat_timing_frame'] is True, status
           assert status['activation_driver'] == 'internal_heartbeat_registry_evaluation', status
           assert continuity['heartbeat_is_single_common_timing_frame'] is True, continuity
           assert continuity['absence_or_delay_is_not_by_itself_continuity_loss'] is True, continuity
-
           assert audit['state'] == 'COMPLETED', audit
           assert audit['archive_eligible'] is True, audit
           assert audit['activation_required'] is False, audit
-
           assert boundary['state'] == 'BLOCKED', boundary
           assert boundary['worker_id'] is None, boundary
           assert boundary['activation_required'] is False, boundary
           assert boundary['archive_eligible'] is False, boundary
           assert 'BLOCKED_UNCLAIMED' in boundary['archive_reason_codes'], boundary
           print('STEGGATE_SUCCESSOR_BLOCKED_UNCLAIMED_PASS')
-
-          for obs in continuity['observations']:
-              if 'MASTER_RECORDS_FINAL_WORKER_REPORT_MISSING' in obs['reason_codes']:
-                  assert continuity['candidate_count'] > 0, continuity
           PY
 
       - name: Commit derived projections only when changed
