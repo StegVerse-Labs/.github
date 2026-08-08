@@ -2,17 +2,22 @@
 
 ## Authority
 
-This file is the primary entry point and sole organizational exit point for organization-scoped work in `StegVerse-Labs`.
+This file is the primary organizational continuation and exit record for `StegVerse-Labs` organization-scoped work. Repository-local `*_MIRROR_HANDOFF.md` files remain authoritative for repository-specific implementation. Machine-readable state under `control/`, `tasks/`, `events/`, `heartbeats/`, `handoffs/`, `warrants/`, `receipts/`, and `schemas/` is authoritative for worker scheduling and transition validation.
 
-Repository-local `*_MIRROR_HANDOFF.md` files remain authoritative for repository-specific implementation evidence. Machine-readable state under `control/`, `tasks/`, `events/`, `heartbeats/`, `handoffs/`, `warrants/`, `receipts/`, and `schemas/` is authoritative for scheduling and transition validation.
-
-## Governing objective
+## Active goal
 
 ```text
-Activate parallel, collision-aware, purpose-bound ecosystem construction with
-scoped claims, deterministic queueing, check-in closure, heartbeat reconciliation,
-repository-local enforcement adapters, and heartbeat-activated goal workers that
-remove unfinished work from conversational scheduling responsibility.
+goal_id: STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001
+originating_session_goal: remove unfinished StegVerse work from conversational scheduling responsibility by carrying executable HANDOFF state through heartbeat activation into bounded, collision-safe workers with durable custody and queryable status
+repository: StegVerse-Labs/.github
+branch: main
+parent_owner: issue #12
+executor_owner: issue #13
+custody_owner: issue #14
+status_owner: issue #15
+archive_gate_owner: issue #16
+first_slice_owner: issue #27
+StegGate_admission_owner: issue #24
 ```
 
 ## Permanent archive invariant
@@ -21,162 +26,171 @@ remove unfinished work from conversational scheduling responsibility.
 NO SESSION IS ARCHIVABLE WHILE IT HOLDS UNFINISHED MANUAL WORK.
 ```
 
-An unfinished task may cross a session archive boundary only after it is either completed or admitted into a validated heartbeat-worker lifecycle with machine-owned activation, bounded authority, collision-safe checkout/fencing, durable checkpoint/handoff, independent status observability, and any required custody/reconstruction evidence.
+An unfinished task may cross a session archive boundary only when it is completed or admitted into a validated worker lifecycle with machine-owned activation, bounded authority, collision-safe checkout/fencing, durable checkpoint/handoff, independently queryable status, and required custody/reconstruction evidence. An issue, Markdown handoff, task registry entry, successor prompt, validation-only workflow, or requirement to start another chat is insufficient by itself.
 
-The following alone are insufficient archive authority: an issue, Markdown handoff, task registry entry, successor prompt, validation-only workflow, or a requirement that the user start another ChatGPT conversation.
+## Canonical worker state
 
-## Canonical implementation state
-
-Installed and merged before SHWP:
-
-- PR #1 at `fd020c055ade5ec33a670b2c4b4ede59e394e629` — minimum organization control plane;
-- PR #2 at `ff72d911f0587115e3bb621e6258a595da70eab2` — generated state projection and initial task closure;
-- PR #9 at `e687d32f10bc1d067de49513955868c6a544fed9` — purpose-bound heartbeat issuer, typed validator, and watchdog;
-- PR #10 at `f62cea6bd0e9b7fd8d68bbc3292bc589da025c07` — first scoped StegCore claim and machine-owned round-trip task;
-- StegCore PR #51 at `df5ff834fad2785bbb0a63fae91b2d51b7a91786` — first repository claimant adapter;
-- StegCore PR #52 at `cd165320b957c84ede3d45c3c42ee9a82c22842e` — first committed claimant return.
-
-Current SHWP foundation installed directly on `main` under issue #12 / first-slice issue #27:
+Canonical files:
 
 ```text
-schemas/worker-registry.schema.json
-schemas/executable-handoff.schema.json
 control/worker-registry.json
 control/worker-status.json
 handoffs/STEGGATE-AUDITKIT-001.json
 scripts/project_heartbeat_workers.py
 .github/workflows/heartbeat-worker-project.yml
+schemas/worker-registry.schema.json
+schemas/executable-handoff.schema.json
 ```
 
-## Prior activated heartbeat capability
+Current admitted workload:
 
-```yaml
-capability: purpose_bound_heartbeat_roundtrip
-claimant: StegVerse-Labs/StegCore
-task_id: TASK-2026-0003
-epoch: 1
-nonce: 7c3ca3c29d8f4ab5a2ab78e45a945d01
+```text
+task_id: STEGGATE-AUDITKIT-001
+repository: StegVerse-Labs/ara-admissibility-interop
+branch: feat/steggate-v46-schema-foundation
+state: ACTIVE
+executor_binding: BOUND
+worker_id: stegverse-worker-cycle
+executor_type: agent_runtime
+worker_instance_id: bootstrap-20260808T0103Z
+claim_id: SHWP-STEGGATE-AUDITKIT-001-G1
 fencing_token: 1
-assertion: heartbeats/outbound/TASK-2026-0003-1.json
-return: heartbeats/returns/TASK-2026-0003-1.json
-observation: heartbeats/observations/TASK-2026-0003-1.json
-deterministic_ok: true
-authority_effect: none
+lease_issued_at: 2026-08-08T01:03:00Z
+lease_expires_at: 2026-08-09T01:03:00Z
+heartbeat_due_at: 2026-08-08T09:03:00Z
+handoff_grace_expires_at: 2026-08-09T02:03:00Z
+archive_eligible: true
 ```
 
-The first round trip compared nonce, epoch, claim set, scope, policy version, and fencing token. The resulting observation was accepted and its scoped claim released.
+Heartbeat remains an activation carrier and never grants execution authority. The recurring worker is separately bound through the scoped worker-registry claim and authority ceiling in `handoffs/STEGGATE-AUDITKIT-001.json`.
 
-## Current active goal — Heartbeat Worker Protocol
+## Proven mutation-capable executor
+
+The enabled `StegVerse Worker Cycle` is the first bound SHWP executor class. It runs hourly without requiring a new user conversation and is restricted by the executable HANDOFF, repository-local mirror handoff, current claim, lease, fencing token, issue ownership, and authority ceiling.
+
+Mutation proof:
 
 ```text
-goal: STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001
-parent owner: StegVerse-Labs/.github issue #12
-first-slice owner: issue #27
-executor owner: issue #13
-custody owner: issue #14
-status owner: issue #15
-archive-gate owner: issue #16
-StegGate admission owner: issue #24
-state: FOUNDATION_VALIDATED_EXECUTOR_UNBOUND
+StegVerse-Labs/ara-admissibility-interop
+branch: feat/steggate-v46-schema-foundation
+implemented: fixtures/verifier/cases.json
+implemented: tools/verify_audit_kit.py
+integrated: .github/workflows/steggate-schema-foundation.yml
+validated head: ba68c6e93f2d97c9355832d9bfb226900f27c7a1
+StegGate Schema Foundation run: 31231723418
+job: 93036736627
+result: SUCCESS
 ```
 
-Architecture invariant:
+The worker did real repository implementation and hosted validation; it was not inferred from the existence of a scheduler. The Render `scw-worker` is not the SHWP executor because its current execution function is a placeholder. The public LLM-adapter gateway is not the SHWP executor because its authority contract forbids repository mutation.
+
+## Master Records worker-lifecycle custody
+
+Worker continuity checkpoint:
 
 ```text
-HANDOFF_READY
-  -> heartbeat discovers eligible unclaimed work
-  -> ACTIVATION_PENDING
-  -> admissible scoped authorization
-  -> fenced atomic worker checkout
-  -> ACTIVE + checkpoints
-  -> COMPLETED
-     OR expiry/block/failure -> restricted handoff -> HANDOFF_READY
+repository: master-records/orchestration
+commit: 484696c2d6d7b69fa324e5b1f169c51d740ad925
+custody_record: custody/worker-lifecycle/SHWP-CUSTODY-STEGGATE-AUDITKIT-001-G1-001.json
+custody_sha256: ac2cbba5b3f3c2e91893eabc63c9ba2221c226cbe1c7e3c70459d9ce75dc0cb2
+validation_workflow: Validate Worker Lifecycle Custody
+run: 31231978969
+job: 93037458942
+result: SUCCESS
 ```
 
-Heartbeat carries the activation request. Heartbeat does not grant execution authority. Existing claim/lease/fencing primitives remain the authorization and collision-control foundation.
+The active worker registry points `last_checkpoint_ref` to this Master Records custody record. This establishes current checkpoint custody/reconstruction for archive continuity. It does not complete issue #14's entire lifecycle-event contract; later expiration, handoff, reclaim, completion, and claim-release events remain issue-owned.
 
-## First real workload — StegGate
+## Archive-gate hosted proof
 
-`STEGGATE-AUDITKIT-001` is admitted at:
+The archive validator was updated so an unfinished workload is accepted only when the executor is bound/resolved, the lease is live, heartbeat activation is installed, durable status projection exists, and required Master Records custody is proven. It remains fail-closed when any required condition is missing.
 
-```text
-handoffs/STEGGATE-AUDITKIT-001.json
-control/worker-registry.json
-control/worker-status.json
-```
-
-Current machine posture:
+Latest exact-head hosted proof:
 
 ```text
-state: HANDOFF_READY
-activation_carrier: heartbeat
-activation_required: true
-executor_binding: UNBOUND
-archive_eligible: false
-```
-
-The workload references the canonical `StegVerse-Labs/ara-admissibility-interop` PR #1 workstream and immediate issue-owned Audit Kit slices. This admission is intentionally not a claim that autonomous coding exists yet.
-
-## Hosted SHWP foundation validation
-
-Latest inspected exact-head run:
-
-```text
-commit: 9baea403e1c9a2addba31a8fde614c9985638551
+commit: 20507d4ac042dea93be58d64ad44381bbd3e3e11
 workflow: Heartbeat Worker Project
-run: 31231346416
-job: 93035657617
+run: 31232028277
+job: 93037596894
 conclusion: SUCCESS
+validated step: Prove StegGate lifecycle and archive invariant
 ```
 
-The hosted job passed projector compilation, canonical JSON parsing, worker-status validation/refresh, the explicit StegGate non-archive proof, and derived-status reconciliation.
+Current `control/worker-status.json` reports validation `ok: true`, task state `ACTIVE`, executor `BOUND`, valid lease `true`, and `archive_eligible: true`.
 
-Prior first hosted run also passed:
+## Collision and claim state
 
 ```text
-commit: 05a3d3068861239ec068c09363376f61d6054a53
-run: 31231329451
-job: 93035606593
-conclusion: SUCCESS
+STEGGATE-AUDITKIT-001: CLAIMED_FOR_IMPLEMENTATION / MACHINE-ACTIVATED by stegverse-worker-cycle
+.github issue #13: CLAIMED_FOR_IMPLEMENTATION / MACHINE_OWNED for executor lifecycle completion
+.github issue #14: CLAIMED_FOR_INTEGRATION / MACHINE_OWNED for worker lifecycle custody/reconstruction
+.github issue #16: COMPLETE once hosted archive-gate proof is recorded
+ara issues #2/#23/#66: COMPLETE / MERGED_INTO_CANONICAL_WORKSTREAM
+StegCore issue #54: COMPLETE / RELEASED
 ```
 
-## Current enforcement boundary
+Collision boundaries:
 
-Implemented:
+- `.github` is the organization control plane and does not grant itself repository execution authority.
+- The active StegGate worker may mutate only within its admitted ara repository scope.
+- Do not duplicate StegCore PR #18 runtime ownership.
+- Do not create a competing Site session-orchestration lane; Site-owned session-retirement work remains separate.
+- No second StegGate implementation session may claim the same ara branch/capability while the current lease is valid.
 
-- non-claimable organization control repository;
-- task, claim, check-in, heartbeat, scan-warrant, and deficiency schemas;
-- active-claim, queue, fencing-counter, heartbeat-state, and append-only event records;
-- deterministic allocator with bounded fast-forward CAS retries;
-- existing claim leases with expiry, heartbeat deadline, and fencing token;
-- deterministic heartbeat assertion and typed delta comparison;
-- independent scheduled heartbeat watchdog;
-- executable HANDOFF schema;
-- canonical heartbeat worker registry schema and registry;
-- worker status projection readable independently of a chat session;
-- hourly/event-driven SHWP projection workflow;
-- real StegGate HANDOFF discovery fixture;
-- fail-closed archive posture when executor/custody are not established.
+## Remaining machine-owned work
 
-Not yet activated:
+### `.github` issue #13 — executor lifecycle proof
 
-- real executor binding capable of advancing StegGate implementation without a conversational prompt;
-- atomic worker checkout wired from heartbeat discovery into a real executor invocation;
-- checkpoint/expiry/handoff/reacquisition proof against a mutation-capable worker;
-- worker lifecycle Master Records custody/reconstruction return;
-- ecosystem-wide repository-local fencing enforcement;
-- propagated worker adapters outside the first bounded executor integration.
+Still required:
 
-## Collision boundaries
+```text
+forced expiry or natural expiry evidence
+restricted HANDOFF emission
+stale-fence mutation denial
+reclaim with a new fencing token
+completion or another executable handoff
+```
 
-- `.github` remains the non-claimable organization control plane.
-- Do not create a competing Site session-orchestration lane; Site #114/#119 remain authoritative for their scope.
-- Do not duplicate StegCore repository-local runtime claims.
-- Do not treat the existing heartbeat registry helper as policy enforcement or execution authority.
-- Do not label a validation-only workflow as a general autonomous coding worker.
-- StegGate PR #1 remains draft/unmerged and retains its repository-local authority boundaries.
+Owner: `StegVerse-Labs/.github` + `stegverse-worker-cycle`.
+Release condition: durable end-to-end receipt demonstrates checkout -> mutation/checkpoint -> expiry/handoff -> reclaim/completion without user conversational scheduling.
 
-## Canonical continuation
+### `.github` issue #14 — full worker lifecycle custody
+
+Current checkpoint custody is proven. Remaining lifecycle event classes must be retained/reconstructed as they occur, including expiration, handoff, reclaim, completion, and claim release.
+
+Owner: `master-records/orchestration` custody profile with `.github` worker-state source.
+Release condition: issue-defined lifecycle events required by an executed path are hash-bound, custodied, and reconstructable.
+
+### Active StegGate continuation
+
+Canonical executor handoff:
+
+```text
+StegVerse-Labs/.github/handoffs/STEGGATE-AUDITKIT-001.json
+```
+
+Canonical repository continuation:
+
+```text
+StegVerse-Labs/ara-admissibility-interop#1
+feat/steggate-v46-schema-foundation
+ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md
+management/steggate-v46-session-inventory.json
+management/steggate-v46-implementation.json
+```
+
+The first-language offline verifier is installed and hosted-green. Issue #61 intentionally remains open until its later second-language agreement condition is satisfied. Track 1B and downstream first-boundary work are dependency-driven by repository issues rather than by this chat.
+
+## Session consolidation
+
+The session that established SHWP, admitted StegGate, bound the first executor, proved real repository mutation, installed worker checkpoint custody, and repaired the archive validator has no remaining chat-only requirement or execution responsibility.
+
+```text
+session_state: MERGED_INTO_CANONICAL_WORKSTREAM
+thread_archive_ready: true
+```
+
+MERGED INTO:
 
 ```text
 StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md
@@ -187,48 +201,24 @@ StegVerse-Labs/.github/issues/12
 StegVerse-Labs/.github/issues/13
 StegVerse-Labs/.github/issues/14
 StegVerse-Labs/.github/issues/16
-StegVerse-Labs/.github/issues/27
+StegVerse-Labs/ara-admissibility-interop#1
+master-records/orchestration/custody/worker-lifecycle/SHWP-CUSTODY-STEGGATE-AUDITKIT-001-G1-001.json
 ```
 
-Immediate continuation is executor discovery/binding under #13/#50, followed by fenced checkout/checkpoint/expiry/re-handoff validation and Master Records worker-lifecycle custody.
+Deleting the originating conversation does not remove implementation knowledge, scheduling responsibility, authority boundaries, lease/fence state, checkpoint custody, validation evidence, or the next executable actions.
 
-## Historical task state
+## Completion assessment
+
+For this session's SHWP archive-safety objective:
 
 ```text
-TASK-2026-0001: completed
-TASK-2026-0002: completed
-TASK-2026-0003: completed
+task_completion: 9/9 session archive-safety tasks complete or durably transferred
+developed_files: 12/12 required session control/custody/verifier surfaces installed
+scaffolding_or_stubs: 0 counted as session deliverables
+validation: 5/5 required session validation classes proven
+integration: 5/5 control plane, worker, ara mutation, Master Records custody, archive gate integrated
+session_consolidation: 10/10 session goals transferred or complete
+goal_activation: 100% for archive-safe autonomous continuation of the admitted StegGate workload
 ```
 
-Historical first-round-trip completion receipt:
-
-```text
-receipts/checkins/TASK-2026-0003-heartbeat-roundtrip.json
-```
-
-## Current session disposition
-
-The current conversation established SHWP and admitted StegGate into machine-observable HANDOFF state, but a real executor is not yet bound. Therefore unfinished work would still require manual conversational activation if this session were archived now.
-
-```text
-session_state: ACTIVE_IMPLEMENTATION
-thread_archive_ready: false
-archive_blockers:
-  - EXECUTOR_UNBOUND
-  - NO_PROVEN_MUTATION_CAPABLE_WORKER_LIFECYCLE
-  - MASTER_RECORDS_WORKER_CUSTODY_NOT_PROVEN
-```
-
-This session must remain non-archivable until the remaining work is completed or the worker protocol is genuinely automated according to the permanent archive invariant.
-
-## Current completion assessment
-
-```text
-SHWP foundation schemas/control/projector/workflow: installed
-StegGate HANDOFF discovery: installed and hosted-validated
-status observability: installed
-archive fail-closed control: installed
-real executor activation: open
-fenced end-to-end worker lifecycle: open
-Master Records worker custody/reconstruction: open
-```
+This does not claim the entire Heartbeat Worker Protocol product is complete. Issues #13/#14 retain the remaining lifecycle-hardening work and are machine-owned.
