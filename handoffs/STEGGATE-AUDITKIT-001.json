@@ -1,0 +1,93 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-STEGGATE-AUDITKIT-001-2026-08-08",
+  "created_at": "2026-08-08T00:52:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "STEGGATE-AUDITKIT-001",
+    "objective": "Continue the canonical StegGate Audit Kit and dependent runtime-boundary work without relying on an originating ChatGPT conversation as the scheduler.",
+    "success_predicates": [
+      "Immediate Audit Kit issue-owned slices #10, #31, #61, #62, #67, and #30 reach their repository-defined completion conditions",
+      "Track 1B and first real boundary successors remain dependency-driven rather than chat-triggered",
+      "StegGate status remains independently queryable from durable worker state"
+    ],
+    "failure_predicates": [
+      "Work requires the user to remember and manually restart StegGate in another conversation",
+      "A duplicate worker or session acquires conflicting authority",
+      "Heartbeat is treated as execution authority without an admitted scoped authorization"
+    ],
+    "expires_at": null,
+    "authority_ceiling": [
+      "repository_scoped_implementation",
+      "repository_scoped_validation",
+      "handoff_and_checkpoint",
+      "no_release_without_separate_authority",
+      "no_publication_without_separate_authority",
+      "no_deployment_without_separate_authority"
+    ]
+  },
+  "task": {
+    "task_id": "STEGGATE-AUDITKIT-001",
+    "repository": "StegVerse-Labs/ara-admissibility-interop",
+    "source_refs": [
+      "StegVerse-Labs/ara-admissibility-interop#1",
+      "StegVerse-Labs/ara-admissibility-interop#10",
+      "StegVerse-Labs/ara-admissibility-interop#30",
+      "StegVerse-Labs/ara-admissibility-interop#31",
+      "StegVerse-Labs/ara-admissibility-interop#61",
+      "StegVerse-Labs/ara-admissibility-interop#62",
+      "StegVerse-Labs/ara-admissibility-interop#67",
+      "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation",
+      "StegVerse-Labs/ara-admissibility-interop@fb5d84a80f35bd64252bb4c5de0b10dcc4902870:ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "Transferred from the StegGate v4.0-v4.6 session after its schema foundation and session-specific reconciliation completed; remaining product work is durable but not yet autonomously executed.",
+    "priority": "elevated"
+  },
+  "authority": {
+    "authority_source": "StegVerse-Labs/ara-admissibility-interop:ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "shwp-v0.1-foundation"
+  },
+  "execution": {
+    "required_capabilities": [
+      "github_repository_read",
+      "github_repository_write",
+      "issue_and_pr_coordination",
+      "code_and_schema_implementation",
+      "hosted_validation_observation"
+    ],
+    "allowed_paths": [
+      "StegVerse-Labs/ara-admissibility-interop"
+    ],
+    "allowed_services": [
+      "github"
+    ],
+    "max_actions": 200,
+    "max_retries": 8,
+    "external_cost_ceiling_usd": 0
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "UNBOUND",
+    "recheck_trigger": "each admitted organization heartbeat transition and hourly watchdog observation",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
+    "handoff_destination": "StegVerse-Labs/.github/control/worker-registry.json",
+    "master_records_required": true,
+    "status_projection": "StegVerse-Labs/.github/control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "Discover and bind an eligible executor through SHWP-EXECUTOR-001, then atomically checkout the next nonconflicting StegGate issue-owned slice under the current repository handoff.",
+    "terminal_when": [
+      "All success predicates are established by durable repository evidence",
+      "No unresolved admitted StegGate worker descendants remain",
+      "No active StegGate worker claims remain",
+      "Required worker lifecycle custody/reconstruction is complete"
+    ]
+  },
+  "block": null
+}
