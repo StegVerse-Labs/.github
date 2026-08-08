@@ -9,16 +9,7 @@ on:
       - 'handoffs/**'
       - 'heartbeat_runtime/**'
       - 'workers/**'
-      - 'tests/test_heartbeat_runtime.py'
-      - 'tests/test_process_adapter_scope.py'
-      - 'tests/test_lifecycle_authority.py'
-      - 'tests/test_executor_discovery.py'
-      - 'tests/test_block_boundaries.py'
-      - 'tests/test_goal_lineage.py'
-      - 'tests/test_resource_authority.py'
-      - 'tests/test_checkpoint_policy.py'
-      - 'tests/test_capability_profiles.py'
-      - 'tests/test_worker_cost_basis_estimator.py'
+      - 'tests/**'
       - 'control/**'
       - 'cost-basis/worker-runtime/**'
       - 'docs/ORG_MIRROR_HANDOFF.md'
@@ -26,6 +17,8 @@ on:
       - 'schemas/**'
       - 'scripts/validate_executable_handoffs.py'
       - 'scripts/project_heartbeat_workers.py'
+      - 'scripts/query_worker_status.py'
+      - 'scripts/evaluate_goal_convergence.py'
       - 'scripts/reconcile_heartbeat_continuity.py'
       - 'scripts/run_heartbeat_runtime.py'
       - 'scripts/estimate_worker_cost_basis.py'
@@ -53,7 +46,7 @@ jobs:
         run: |
           python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py heartbeat_runtime/engine_v3.py heartbeat_runtime/engine_v4.py heartbeat_runtime/engine_v5.py heartbeat_runtime/engine_v6.py heartbeat_runtime/engine_v7.py heartbeat_runtime/engine_v7_1.py heartbeat_runtime/engine_v8.py heartbeat_runtime/process_adapter.py
           python -m py_compile workers/heartbeat_receipt_canary.py
-          python -m py_compile scripts/validate_executable_handoffs.py scripts/project_heartbeat_workers.py scripts/reconcile_heartbeat_continuity.py scripts/run_heartbeat_runtime.py scripts/estimate_worker_cost_basis.py
+          python -m py_compile scripts/validate_executable_handoffs.py scripts/project_heartbeat_workers.py scripts/query_worker_status.py scripts/evaluate_goal_convergence.py scripts/reconcile_heartbeat_continuity.py scripts/run_heartbeat_runtime.py scripts/estimate_worker_cost_basis.py
       - name: Parse canonical JSON surfaces
         run: |
           python - <<'PY'
@@ -80,6 +73,8 @@ jobs:
         run: python -m unittest -v tests.test_checkpoint_policy
       - name: Prove worker capability profiles
         run: python -m unittest -v tests.test_capability_profiles
+      - name: Prove fail-closed status query and goal convergence
+        run: python -m unittest -v tests.test_status_failclosed_convergence
       - name: Prove sandboxed mutation scope and fence semantics
         run: python -m unittest -v tests.test_process_adapter_scope
       - name: Prove one-HB authority renewal and orphan recovery
@@ -112,14 +107,18 @@ jobs:
           assert value['authority_effect'] == 'none_beyond_existing_admitted_task_authority', value
           print('LIVE_DRY_RUN_NON_MUTATING_PASS')
           PY
-      - name: Validate or refresh worker status projection
+      - name: Refresh canonical read and convergence projections
         run: |
-          if python scripts/project_heartbeat_workers.py --check; then
-            echo 'WORKER_STATUS_CURRENT=true' >> "$GITHUB_ENV"
-          else
-            python scripts/project_heartbeat_workers.py --write
-            echo 'WORKER_STATUS_CURRENT=false' >> "$GITHUB_ENV"
-          fi
+          python scripts/project_heartbeat_workers.py --write
+          python scripts/evaluate_goal_convergence.py --write
+          python scripts/query_worker_status.py --state BLOCKED > /tmp/blocked-query.json
+          python - <<'PY'
+          import json
+          q=json.load(open('/tmp/blocked-query.json'))
+          assert q['observational_only'] is True
+          assert q['execution_authority'] is False
+          print('OBSERVATIONAL_STATUS_QUERY_PASS', q['count'])
+          PY
       - name: Refresh heartbeat continuity projection
         run: python scripts/reconcile_heartbeat_continuity.py --write
       - name: Prove current StegGate successor posture
@@ -129,25 +128,30 @@ jobs:
           from pathlib import Path
           status = json.loads(Path('control/worker-status.json').read_text())
           continuity = json.loads(Path('control/heartbeat-continuity.json').read_text())
+          convergence = json.loads(Path('control/goal-convergence.json').read_text())
           audit = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-AUDITKIT-001')
           boundary = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-FIRST-BOUNDARY-001')
+          audit_convergence = next(x for x in convergence['goals'] if x['root_task_id'] == 'STEGGATE-AUDITKIT-001')
           assert status['execution_authority_from_heartbeat'] is False
+          assert status['query_is_observational'] is True
           assert status['single_heartbeat_timing_frame'] is True
           assert status['activation_driver'] == 'internal_heartbeat_registry_evaluation'
           assert continuity['heartbeat_is_single_common_timing_frame'] is True
           assert audit['state'] == 'COMPLETED' and audit['archive_eligible'] is True
           assert boundary['state'] == 'BLOCKED' and boundary['worker_id'] is None and boundary['archive_eligible'] is False
-          print('STEGGATE_SUCCESSOR_BLOCKED_UNCLAIMED_PASS')
+          assert audit_convergence['converged'] is False
+          assert 'UNRESOLVED_DESCENDANTS' in audit_convergence['reason_codes']
+          print('STEGGATE_SUCCESSOR_BLOCKED_UNCLAIMED_AND_NONCONVERGED_PASS')
           PY
       - name: Commit derived projections only when changed
         run: |
-          if git diff --quiet -- control/worker-status.json control/heartbeat-continuity.json; then
+          if git diff --quiet -- control/worker-status.json control/heartbeat-continuity.json control/goal-convergence.json; then
             echo 'No derived HB state change.'
             exit 0
           fi
           git config user.name 'stegverse-heartbeat-worker'
           git config user.email 'actions@users.noreply.github.com'
-          git add control/worker-status.json control/heartbeat-continuity.json
-          git commit -m 'chore: project single-heartbeat worker continuity'
+          git add control/worker-status.json control/heartbeat-continuity.json control/goal-convergence.json
+          git commit -m 'chore: project fail-closed worker status and convergence'
           git pull --rebase origin main
           git push origin HEAD:main
