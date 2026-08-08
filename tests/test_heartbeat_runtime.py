@@ -13,7 +13,15 @@ def write(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
 
 
-def handoff(task_id: str, state: str = "HANDOFF_READY", dependencies: list[str] | None = None) -> dict:
+def handoff(task_id: str, state: str = "HANDOFF_READY", dependencies: list[str] | None = None, authorized: bool = True) -> dict:
+    activation = {
+        "carrier": "heartbeat",
+        "executor_binding": "AUTHORIZED" if authorized else "DISCOVERED",
+        "recheck_trigger": "heartbeat",
+        "checkout_policy": "fenced_atomic_checkout"
+    }
+    if authorized:
+        activation["authorization_ref"] = f"authorizations/{task_id}.json"
     return {
         "schema": "stegverse.executable-handoff/v0.1",
         "handoff_id": f"H-{task_id}",
@@ -49,12 +57,7 @@ def handoff(task_id: str, state: str = "HANDOFF_READY", dependencies: list[str] 
             "max_retries": 1,
             "external_cost_ceiling_usd": 0
         },
-        "activation": {
-            "carrier": "heartbeat",
-            "executor_binding": "UNBOUND",
-            "recheck_trigger": "heartbeat",
-            "checkout_policy": "fenced_atomic_checkout"
-        },
+        "activation": activation,
         "continuity": {
             "checkpoint_ref": None,
             "handoff_destination": "control/worker-registry.json",
@@ -128,8 +131,8 @@ class RuntimeFixture:
             "tasks": tasks
         })
 
-    def task(self, task_id: str, state: str = "HANDOFF_READY", cost_basis_ref: str | None = None, deps: list[str] | None = None):
-        write(self.root / "handoffs" / f"{task_id}.json", handoff(task_id, dependencies=deps))
+    def task(self, task_id: str, state: str = "HANDOFF_READY", cost_basis_ref: str | None = None, deps: list[str] | None = None, authorized: bool = True):
+        write(self.root / "handoffs" / f"{task_id}.json", handoff(task_id, dependencies=deps, authorized=authorized))
         return {
             "task_id": task_id,
             "goal_id": task_id,
@@ -177,6 +180,43 @@ class HeartbeatRuntimeTests(unittest.TestCase):
         finally:
             fx.close()
 
+    def test_discovery_event_never_grants_execution_authority(self):
+        fx = RuntimeFixture()
+        calls = []
+        try:
+            basis = fx.cost_basis("fixture")
+            task = fx.task("TASK-A", cost_basis_ref=basis, authorized=False)
+            fx.registry([task])
+
+            def adapter(*args):
+                calls.append(args)
+                return WorkerResponse(state="COMPLETED", transition_id="COMPLETE", transition_sequence=1)
+
+            result = HeartbeatRuntime(fx.root, adapters={"fixture": adapter}).cycle()
+            self.assertFalse(result["activated"])
+            self.assertEqual(calls, [])
+            requests = [event for event in result["events"] if event.get("event_type") == "activation_requested"]
+            self.assertEqual(len(requests), 1)
+            request = requests[0]
+            self.assertEqual(request["schema"], "stegverse.heartbeat-activation-request/v0.1")
+            self.assertEqual(request["task_id"], "TASK-A")
+            self.assertEqual(request["goal_id"], "TASK-A")
+            self.assertEqual(request["handoff_ref"], "handoffs/TASK-A.json")
+            self.assertEqual(len(request["handoff_sha256"]), 64)
+            self.assertEqual(request["required_capabilities"], ["fixture_execute"])
+            self.assertEqual(request["current_fence_generation"], 0)
+            self.assertEqual(request["authority_source"], "fixture authority")
+            self.assertIsNone(request["authorization_ref"])
+            self.assertFalse(request["execution_authority"])
+            deferred = [event for event in result["events"] if event.get("event_type") == "activation_deferred"]
+            self.assertEqual(deferred[-1]["reason"], "EXECUTION_AUTHORIZATION_REQUIRED")
+            state = json.loads((fx.root / "control/worker-registry.json").read_text())
+            self.assertEqual(state["tasks"][0]["state"], "HANDOFF_READY")
+            self.assertIsNone(state["tasks"][0]["claim_id"])
+            self.assertIn("EXECUTION_AUTHORIZATION_REQUIRED", state["tasks"][0]["archive_reason_codes"])
+        finally:
+            fx.close()
+
     def test_job_without_cost_basis_does_not_guess_expiry(self):
         fx = RuntimeFixture()
         try:
@@ -215,6 +255,9 @@ class HeartbeatRuntimeTests(unittest.TestCase):
             first = runtime.cycle()
             self.assertTrue(first["activated"])
             self.assertEqual(calls, [("TASK-A", 1)])
+            request = next(event for event in first["events"] if event.get("event_type") == "activation_requested")
+            self.assertFalse(request["execution_authority"])
+            self.assertEqual(request["authorization_ref"], "authorizations/TASK-A.json")
             state = json.loads((fx.root / "control/worker-registry.json").read_text())
             active = state["tasks"][0]
             self.assertEqual(active["state"], "ACTIVE")
