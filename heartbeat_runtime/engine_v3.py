@@ -20,6 +20,21 @@ class HeartbeatRuntime(HeartbeatRuntimeV2):
     sequence. No second worker heartbeat or scheduler clock exists here.
     """
 
+    def _worker_for(self, task: dict[str, Any], registry: dict[str, Any]) -> dict[str, Any] | None:
+        required = set(self._handoff(task).get("execution", {}).get("required_capabilities", []))
+        matches = []
+        for worker in sorted(registry.get("workers", []), key=lambda item: item["worker_id"]):
+            adapter_ref = worker.get("adapter_ref")
+            if worker.get("status") != "AVAILABLE" or not adapter_ref or adapter_ref not in self.adapters:
+                continue
+            if required.issubset(set(worker.get("capabilities", []))):
+                matches.append(worker)
+        # Availability/capability match is not authorization to arbitrarily choose
+        # among equivalent executors. Zero or multiple matches fail closed.
+        if len(matches) != 1:
+            return None
+        return matches[0]
+
     def _scope_sha256(self, handoff: dict[str, Any]) -> str:
         execution = handoff.get("execution") or {}
         value = {
@@ -247,8 +262,6 @@ class HeartbeatRuntime(HeartbeatRuntimeV2):
         timing = task.get("heartbeat_timing") or {}
         expiry_epoch = timing.get("expiry_epoch")
         if expiry_epoch is not None and epoch >= int(expiry_epoch):
-            # Authority expiry has priority at its admitted epoch. This is still
-            # measured on the same heartbeat sequence as response timing.
             super()._invoke(registry, task, epoch, cost_log, events)
             return
 
@@ -264,8 +277,6 @@ class HeartbeatRuntime(HeartbeatRuntimeV2):
             self._observe_missing_response(registry, task, epoch, events, f"EXECUTOR_RESPONSE_ERROR:{type(exc).__name__}")
             return
 
-        # A valid response on this same heartbeat clears degraded observation;
-        # it never changes authority expiry unless an admitted renewal above did.
         current_timing = task.get("heartbeat_timing") or {}
         if current_timing.get("last_response_epoch") == epoch:
             task["archive_reason_codes"] = [
@@ -280,9 +291,6 @@ class HeartbeatRuntime(HeartbeatRuntimeV2):
         activated = super()._activate_one(registry, epoch, cost_log, events)
         if not activated:
             return False
-        # Response-loss tolerance and authority expiry are distinct HB-relative
-        # thresholds on the same epoch sequence. Response loss is intentionally
-        # earlier so orphan recovery can occur before authority expiry.
         for task in registry.get("tasks", []):
             timing = task.get("heartbeat_timing") or {}
             if timing.get("start_epoch") != epoch:
