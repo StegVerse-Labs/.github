@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/heartbeat-activation-request.schema.json",
+  "title": "StegVerse heartbeat activation request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "event_type",
+    "epoch",
+    "task_id",
+    "goal_id",
+    "handoff_ref",
+    "handoff_sha256",
+    "required_capabilities",
+    "current_fence_generation",
+    "authority_source",
+    "execution_authority"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.heartbeat-activation-request/v0.1"},
+    "event_type": {"const": "activation_requested"},
+    "epoch": {"type": "integer", "minimum": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "goal_id": {"type": "string", "minLength": 1},
+    "handoff_ref": {"type": "string", "minLength": 1},
+    "handoff_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "required_capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "current_fence_generation": {"type": "integer", "minimum": 0},
+    "authority_source": {"type": "string", "minLength": 1},
+    "authorization_ref": {"type": ["string", "null"]},
+    "execution_authority": {"const": false}
+  }
+}
