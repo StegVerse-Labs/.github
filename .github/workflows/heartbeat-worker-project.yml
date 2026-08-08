@@ -1,0 +1,91 @@
+name: Heartbeat Worker Project
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'handoffs/**'
+      - 'control/worker-registry.json'
+      - 'schemas/worker-registry.schema.json'
+      - 'schemas/executable-handoff.schema.json'
+      - 'scripts/project_heartbeat_workers.py'
+      - '.github/workflows/heartbeat-worker-project.yml'
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: heartbeat-worker-project-main
+  cancel-in-progress: false
+
+jobs:
+  project:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile projector
+        run: python -m py_compile scripts/project_heartbeat_workers.py
+
+      - name: Parse canonical JSON surfaces
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          paths = [
+              Path('schemas/worker-registry.schema.json'),
+              Path('schemas/executable-handoff.schema.json'),
+              Path('control/worker-registry.json'),
+              *sorted(Path('handoffs').glob('*.json')),
+          ]
+          for path in paths:
+              json.loads(path.read_text(encoding='utf-8'))
+              print(f'JSON_OK:{path}')
+          PY
+
+      - name: Validate or refresh worker status projection
+        run: |
+          if python scripts/project_heartbeat_workers.py --check; then
+            echo 'WORKER_STATUS_CURRENT=true' >> "$GITHUB_ENV"
+          else
+            python scripts/project_heartbeat_workers.py --write
+            echo 'WORKER_STATUS_CURRENT=false' >> "$GITHUB_ENV"
+          fi
+
+      - name: Prove StegGate remains non-archivable until executor binding
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          status = json.loads(Path('control/worker-status.json').read_text())
+          task = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-AUDITKIT-001')
+          assert task['state'] == 'HANDOFF_READY', task
+          assert task['activation_required'] is True, task
+          assert task['executor_binding'] == 'UNBOUND', task
+          assert task['archive_eligible'] is False, task
+          assert 'EXECUTOR_NOT_BOUND' in task['archive_reason_codes'], task
+          assert status['execution_authority_from_heartbeat'] is False, status
+          print('SHWP_STEGGATE_FOUNDATION_PASS')
+          PY
+
+      - name: Commit derived status only when semantic state changed
+        run: |
+          if git diff --quiet -- control/worker-status.json; then
+            echo 'No worker status change.'
+            exit 0
+          fi
+          git config user.name 'stegverse-heartbeat-worker'
+          git config user.email 'actions@users.noreply.github.com'
+          git add control/worker-status.json
+          git commit -m 'chore: project heartbeat worker status'
+          git pull --rebase origin main
+          git push origin HEAD:main
