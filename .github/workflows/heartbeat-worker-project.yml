@@ -7,6 +7,7 @@ on:
     paths:
       - 'handoffs/**'
       - 'control/worker-registry.json'
+      - 'docs/ORG_MIRROR_HANDOFF.md'
       - 'schemas/worker-registry.schema.json'
       - 'schemas/executable-handoff.schema.json'
       - 'scripts/project_heartbeat_workers.py'
@@ -62,20 +63,30 @@ jobs:
             echo 'WORKER_STATUS_CURRENT=false' >> "$GITHUB_ENV"
           fi
 
-      - name: Prove StegGate remains non-archivable until executor binding
+      - name: Prove StegGate lifecycle and fail-closed archive posture
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
           status = json.loads(Path('control/worker-status.json').read_text())
           task = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-AUDITKIT-001')
-          assert task['state'] == 'HANDOFF_READY', task
-          assert task['activation_required'] is True, task
-          assert task['executor_binding'] == 'UNBOUND', task
-          assert task['archive_eligible'] is False, task
-          assert 'EXECUTOR_NOT_BOUND' in task['archive_reason_codes'], task
           assert status['execution_authority_from_heartbeat'] is False, status
-          print('SHWP_STEGGATE_FOUNDATION_PASS')
+          assert task['archive_eligible'] is False, task
+
+          if task['state'] == 'HANDOFF_READY':
+              assert task['activation_required'] is True, task
+              assert task['executor_binding'] in {'UNBOUND', 'DISCOVERED'}, task
+              print('SHWP_STEGGATE_HANDOFF_READY_PASS')
+          elif task['state'] in {'CLAIMED', 'ACTIVE', 'BLOCKED', 'EXPIRING', 'HANDOFF_WRITING'}:
+              assert task['executor_binding'] in {'AUTHORIZED', 'BOUND'}, task
+              assert task['worker_id'], task
+              assert task['claim_id'], task
+              assert task['valid_lease'] is True, task
+              assert task['activation_required'] is False, task
+              assert 'MASTER_RECORDS_CUSTODY_NOT_PROVEN' in task['archive_reason_codes'], task
+              print('SHWP_STEGGATE_ACTIVE_LIFECYCLE_PASS')
+          else:
+              raise AssertionError(f"unexpected StegGate lifecycle state: {task['state']}")
           PY
 
       - name: Commit derived status only when semantic state changed
