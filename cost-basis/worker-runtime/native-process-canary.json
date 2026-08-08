@@ -1,0 +1,26 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "native_process_canary",
+  "sample_count": 1,
+  "hb_estimate": {
+    "expected_completion_beats": 2,
+    "expected_idle_beats": 0,
+    "expiry_candidate_beats": 4,
+    "confidence": "HIGH"
+  },
+  "cost_estimate": {
+    "compute_units": 2,
+    "token_units": 0,
+    "storage_bytes": 4096,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 0
+  },
+  "evidence_refs": [
+    "workers/heartbeat_receipt_canary.py:deterministic-two-transition-state-machine",
+    "handoffs/SHWP-NATIVE-PROCESS-CANARY-001.json:max_actions=2",
+    "StegVerse-Labs/.github#13:bounded-executor-proof"
+  ]
+}
