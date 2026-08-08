@@ -16,8 +16,6 @@ Known HB-relative expiry plus absence of the required Master Records final worke
 
 ## Native runtime installed
 
-Canonical runtime files:
-
 ```text
 heartbeat_runtime/__init__.py
 heartbeat_runtime/engine_v2.py
@@ -30,28 +28,11 @@ control/worker-status.json
 control/heartbeat-continuity.json
 ```
 
-Implemented semantics:
+Implemented: one HB epoch; provider-agnostic runtime; atomic cycle lock; capability/adapter matching; dependency gating; exactly-one activation per cycle; claim/fence generation; HB-relative timing; cost-basis-required expiry; per-HB cost observations; completion release; expiry/MR-missing recovery task; non-mutating dry-run; valid blocked/unclaimed state.
 
-- one internal HB epoch for scheduling and worker transition responses;
-- host/provider-agnostic runtime engine;
-- atomic cycle lock;
-- capability + adapter matching;
-- dependency gating;
-- exactly-one activation per cycle;
-- claim ID + fencing generation;
-- HB-relative worker timing;
-- no arbitrary expiry: activation is deferred when no evidenced cost basis exists;
-- worker cost observations retained per HB transition;
-- completion releases worker and claim;
-- expiry without required Master Records finalization blocks parent and creates recovery work;
-- dry-run is non-mutating;
-- blocked/unclaimed tasks remain valid blocked state and are not misclassified as active workers.
-
-The superseded first engine was removed after hosted testing exposed a real same-cycle reactivation defect in its expiry path. The hardened engine blocks the expired parent on the recovery task instead.
+The superseded first engine was removed after hosted testing exposed a same-cycle reactivation defect. Hardened `engine_v2.py` blocks the expired parent on recovery instead.
 
 ## Cost-basis integration
-
-Canonical files:
 
 ```text
 schemas/worker-runtime-cost-basis.schema.json
@@ -60,103 +41,60 @@ scripts/estimate_worker_cost_basis.py
 tests/test_worker_cost_basis_estimator.py
 ```
 
-The estimator uses only completed HB-relative samples. With no completed live samples it emits no expiry estimate and confidence NONE. With samples it derives a conservative completed-sample median/p90 envelope and expiry candidate; confidence grows with sample count. Internal/external entity job classes and evidenced external costs are retained. Cost never overrides admissibility, authority, evidence fidelity, or reconstructability.
+Only completed HB-relative samples contribute to expiry estimates. Zero completed live samples produces confidence NONE and no expiry candidate. With samples, the estimator uses conservative completed-sample median/p90 evidence. External-entity job classes/costs are supported only when evidenced. Cost never overrides admissibility, authority, evidence fidelity, or reconstructability.
 
-Current live observation ledger has zero task-class samples; therefore no production expiry estimate exists yet. This is intentional fail-closed behavior.
+## StegGate state
 
-## StegGate canonical workload state
+`STEGGATE-AUDITKIT-001` is COMPLETE and must not be reactivated.
 
-The old `STEGGATE-AUDITKIT-001` registry task was stale relative to live ara state and has been corrected to `COMPLETED`. Do not reactivate it.
-
-Canonical successor:
-
-```text
-task_id: STEGGATE-FIRST-BOUNDARY-001
-state: BLOCKED
-executor_binding: UNBOUND
-claim: NONE
-source: StegVerse-Labs/ara-admissibility-interop#13
-release condition: management/first-boundary-activation.json contains a durable consequential_target_ref and authority_model_ref, state READY, and tools/validate_first_boundary_activation.py PASS
-```
-
-The heartbeat must not activate this task while the blocker remains.
+`STEGGATE-FIRST-BOUNDARY-001` is BLOCKED / UNCLAIMED. Release requires durable `consequential_target_ref` + `authority_model_ref`, ara activation state READY, and `tools/validate_first_boundary_activation.py` PASS.
 
 ## Hosted proof
 
-Strongest current validation:
-
 ```text
-head: 262c829e052d5da6f9aba4542c7dcd543fe2db80
+semantic head: 262c829e052d5da6f9aba4542c7dcd543fe2db80
 workflow: Heartbeat Worker Project
 run: 31236519287
 job: 93049882049
 result: SUCCESS
 ```
 
-Validated steps include compile/runtime parsing, 6/6 native HB lifecycle tests, 3/3 cost-estimator tests, sparse-data no-guess proof, live-registry no-false-activation proof, worker/continuity projection, and completed-AuditKit/blocked-first-boundary posture.
+Proof includes 6/6 native runtime tests, 3/3 estimator tests, sparse-data no-guess, live-registry no-false-activation, status/continuity projections, and completed-AuditKit/blocked-successor posture.
 
-## Completed foundation issues
+Durable consolidation continues on main through org/scoped handoff and inventory commits, with no runtime semantic changes after the green proof.
 
-The following child tasks satisfy their stated completion criteria and are closed/completable from this evidence:
+## Foundation child issues complete
 
 ```text
-.github#15 — canonical status projection
-.github#17 — executable HANDOFF + heartbeat discovery
-.github#25 — hosted first-slice validation
-.github#26 — organization handoff/archive invariant documentation
+.github#15 — status projection — COMPLETE
+.github#17 — executable HANDOFF/discovery — COMPLETE
+.github#25 — hosted first-slice validation — COMPLETE
+.github#26 — org handoff/archive invariant — COMPLETE
 ```
 
-These closures do not complete parent #12 or executor/custody owners #13/#14.
-
-## Current worker truth
-
-The former ChatGPT `StegVerse Worker Cycle` bootstrap automation is disabled and is not execution authority or the scheduler. No ChatGPT automation or monitoring was created for this session.
-
-The native runtime core exists and is validated, but no legitimate production mutation-capable worker adapter is currently registered/bound. Therefore there is no claim that production autonomous repository mutation is active.
+Parent #12 and real executor/custody owners #13/#14 remain open.
 
 ## Remaining exact work
 
-### `.github#13` — production worker adapter/runtime binding
+### `.github#13`
+Install/bind a legitimate provider-agnostic mutation-capable worker adapter with independently admitted authority; register exact `adapter_ref`/capabilities; prove live same-HB responses and fencing over multiple cycles; retain checkpoint/final report/claim-release evidence. Synthetic adapters do not satisfy production proof.
 
-Required: choose/install a provider-agnostic mutation-capable worker adapter whose authority is independently admitted; register exact `adapter_ref` and capabilities; prove a real worker responds on the same heartbeat across multiple cycles; prove fenced collision rejection under real execution; retain checkpoint/final report evidence; release claim correctly. Synthetic adapters do not satisfy production completion.
+### `.github#14`
+Exercise a real native worker lifecycle through Master Records checkpoint, completion or expiry/recovery, final report, claim release, and reconstruction.
 
-### `.github#14` — native lifecycle custody
+### Empirical cost history
+Collect completed native-worker samples. Until then the estimator remains confidence NONE/no expiry. Actual external-entity costs must be observed, not invented.
 
-Exercise a real native worker lifecycle through Master Records, including checkpoint, expiry/finalization or completion, recovery when applicable, claim release, and reconstruction. Fixture-proven recovery semantics are not live custody evidence.
+## Current worker truth
 
-### Empirical cost basis
-
-Accumulate completed live HB-relative samples, including actual external-entity costs when external jobs exist. Estimator remains fail-closed at confidence NONE when evidence is absent.
-
-## Claim and collision state
-
-```text
-STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001: active parent #12
-native runtime/cost-basis file slice: implemented + hosted-green + durably transferred
-STEGGATE-AUDITKIT-001: COMPLETE
-STEGGATE-FIRST-BOUNDARY-001: BLOCKED / UNCLAIMED
-StegCore#54: COMPLETE / RELEASED
-production adapter work: remains under .github#13
-live custody work: remains under .github#14
-```
-
-## Validation commands
-
-```text
-python -m unittest -v tests.test_heartbeat_runtime
-python -m unittest -v tests.test_worker_cost_basis_estimator
-python scripts/estimate_worker_cost_basis.py --check
-python scripts/run_heartbeat_runtime.py --dry-run --cycles 1
-python scripts/project_heartbeat_workers.py --check
-python scripts/reconcile_heartbeat_continuity.py --write
-```
+Former ChatGPT `StegVerse Worker Cycle` automation is DISABLED. It is neither scheduler nor execution authority. No ChatGPT monitoring/automation was created for this session.
 
 ## Cross-repository dependencies
 
-- `StegVerse-Labs/ara-admissibility-interop`: first-real-boundary successor; blocked/unclaimed.
-- `master-records/orchestration`: native lifecycle custody/reconstruction owner.
-- `StegVerse-Labs/StegCore`: no work from StegCore #54; completed canonical semantics must not be duplicated.
-- Site/Publisher/wikis: no propagation from this implementation slice is authorized or release-ready.
+- ara first-real-boundary successor: blocked/unclaimed.
+- master-records/orchestration: native lifecycle custody/reconstruction owner.
+- StegCore #54: complete/released; do not duplicate.
+- Site/Publisher/wikis: no authorized release propagation from this slice.
 
 ## Session consolidation
 
@@ -166,15 +104,15 @@ session_state: ACTIVE_UNIQUE_WORK_REMAINS
 thread_archive_ready: false
 ```
 
-Archive is denied because the provider-agnostic native engine is validated but no production mutation-capable adapter/live worker is bound and the live Master Records lifecycle has not been exercised by the native runtime.
+Archive is denied because the native engine is validated but no production mutation-capable adapter/live worker is bound and the native Master Records lifecycle has not been exercised.
 
 ## Completion assessment
 
 ```text
-developed_files: 17/17 canonical files installed
+developed_files: 17/17
 scaffolding_or_stubs: 0 counted as completed deliverables
-validation: 9/9 current hosted validation classes pass
-integration: 7/9 (production adapter + live MR lifecycle remain)
+validation: 9/9
+integration: 7/9
 goal_activation: 78%
-session_consolidation: 8/8 identified session goals durably inventoried/transferred, but session remains active because remaining production execution is not yet archive-safe
+session_consolidation: 8/8 durable transfer, with active production-integration responsibility remaining
 ```
