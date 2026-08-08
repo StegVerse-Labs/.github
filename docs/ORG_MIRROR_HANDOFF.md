@@ -89,6 +89,21 @@ Hosted logs directly prove:
 - three process-owned internal cycles advanced one heartbeat 4 -> 5 -> 6;
 - each no-work cycle initiated no worker.
 
+## Organization control-plane validation
+
+A pre-existing check-in reconciliation bug discovered during this work was corrected rather than hidden. `schemas/checkin.schema.json` defines delivery state per `repository_results[]`; the old validator incorrectly looked for a nonexistent top-level `delivery_state.merged`. `scripts/reconcile_checkins.py` now validates each completed repository result against terminal states `merged`, `released`, or `deployed` and requires commit evidence for merged delivery.
+
+```text
+corrective commit: 994ae85f1d678f1387d78b8909df47d2859bc7b5
+workflow: Validate organization control plane
+run: 31238008341
+job: 93054063188
+result: SUCCESS
+steps: invariants PASS; deterministic allocator PASS; check-in reconciliation PASS; JSON/JSONL PASS
+```
+
+The historical `TASK-2026-0001` record was not rewritten to fit the defective validator; its existing PR/merge evidence remains intact.
+
 ## Named StegGate / StegCore obligations
 
 `StegVerse-Labs/ara-admissibility-interop`:
@@ -140,10 +155,6 @@ The following remain genuinely incomplete rather than stale decomposition:
 
 Do not introduce a second heartbeat deadline while resolving #18/#35/#36.
 
-## Adjacent repository integrity observation
-
-`Validate organization control plane` run `31237186673`, job `93051771613` failed after its invariant/allocator steps because historical `TASK-2026-0001` is marked completed without `merged=true`. This is a pre-existing organization check-in integrity defect, not a failure of the native worker canary or unified heartbeat. It must be reconciled through its existing task/check-in owner before claiming the entire organization control plane green.
-
 ## Propagation / release
 
 No PR #1 merge, tag, release, deployment, Site publication, Publisher propagation, admissibility-wiki propagation, or stegguardian-wiki propagation was performed or implied by this infrastructure work. Master Records custody evidence was directly integrated because that repository is the canonical lifecycle-custody owner.
@@ -173,7 +184,7 @@ partial/blocked: 2
 task completion: 83%
 canonical developed files: 28/28 = 100%
 scaffolding/stubs counted as required deliverables: 0
-validation classes: 12/12 = 100%
+validation classes: 13/13 = 100%
 integration classes: 10/11 = 91%
 goal activation: 91%
 session consolidation: 10/10 durable goal records = 100%
