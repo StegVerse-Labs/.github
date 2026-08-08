@@ -59,7 +59,8 @@
         "max_missing_response_beats": {"type": "integer", "minimum": 0},
         "expiry_epoch": {"type": ["integer", "null"], "minimum": 0},
         "expiry_basis": {"enum": ["STATIC_BOOTSTRAP", "TASK_CLASS_COST_BASIS", "OBSERVED_TRANSITION_COST_BASIS", "HUMAN_AUTHORITY", "NONE"]},
-        "fencing_token": {"type": "integer", "minimum": 1}
+        "fencing_token": {"type": "integer", "minimum": 1},
+        "renewal_count": {"type": "integer", "minimum": 0}
       }
     },
     "task_state": {
@@ -77,6 +78,7 @@
         "claim_id": {"type": ["string", "null"]},
         "lease": {"anyOf": [{"$ref": "#/$defs/lease"}, {"type": "null"}]},
         "heartbeat_timing": {"anyOf": [{"$ref": "#/$defs/heartbeat_timing"}, {"type": "null"}]},
+        "renewal_ref": {"type": ["string", "null"]},
         "cost_basis_ref": {"type": ["string", "null"]},
         "external_entity_job_ref": {"type": ["string", "null"]},
         "last_checkpoint_ref": {"type": ["string", "null"]},
