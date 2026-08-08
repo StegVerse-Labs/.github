@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/heartbeat-transition-observation.schema.json",
+  "title": "StegVerse Heartbeat Transition Observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "epoch",
+    "subject",
+    "observed",
+    "expected",
+    "delta_hb",
+    "continuity_interpretation",
+    "authority_effect"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.heartbeat-transition-observation/v0.1"},
+    "epoch": {"type": "integer", "minimum": 0},
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": {"enum": ["worker", "task", "service", "repository", "custody", "external_entity_job", "other"]},
+        "id": {"type": "string", "minLength": 1},
+        "goal_id": {"type": ["string", "null"]},
+        "claim_id": {"type": ["string", "null"]},
+        "fencing_token": {"type": ["integer", "null"], "minimum": 1}
+      }
+    },
+    "observed": {"$ref": "#/$defs/transition_state"},
+    "expected": {"$ref": "#/$defs/transition_expectation"},
+    "delta_hb": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["beats_since_last_observed_transition", "transition_match", "signal_match"],
+      "properties": {
+        "beats_since_last_observed_transition": {"type": ["integer", "null"], "minimum": 0},
+        "transition_match": {"enum": ["MATCH", "NO_EXPECTATION", "EARLY", "LATE", "DIFFERENT", "NOT_OBSERVED"]},
+        "signal_match": {"enum": ["MATCH", "PARTIAL", "MISSING", "UNEXPECTED", "NO_EXPECTATION"]},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "continuity_interpretation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "continuity_lost"],
+      "properties": {
+        "status": {"enum": ["COHERENT", "OBSERVATION_ONLY", "RECONCILIATION_REQUIRED", "INVESTIGATION_REQUIRED", "UNRESOLVED"]},
+        "continuity_lost": {"const": false},
+        "reason_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "cost_observation": {"$ref": "#/$defs/cost_observation"},
+    "authority_effect": {"const": "none"}
+  },
+  "$defs": {
+    "signal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "state"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "state": {"type": ["string", "number", "integer", "boolean", "null"]},
+        "evidence_ref": {"type": ["string", "null"]}
+      }
+    },
+    "transition_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transition_id", "signals"],
+      "properties": {
+        "transition_id": {"type": ["string", "null"]},
+        "transition_sequence": {"type": ["integer", "null"], "minimum": 0},
+        "signals": {"type": "array", "items": {"$ref": "#/$defs/signal"}},
+        "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "transition_expectation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transition_id", "earliest_epoch", "latest_epoch", "signals"],
+      "properties": {
+        "transition_id": {"type": ["string", "null"]},
+        "earliest_epoch": {"type": ["integer", "null"], "minimum": 0},
+        "latest_epoch": {"type": ["integer", "null"], "minimum": 0},
+        "signals": {"type": "array", "items": {"$ref": "#/$defs/signal"}},
+        "basis_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "cost_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_class": {"type": ["string", "null"]},
+        "external_entity_id": {"type": ["string", "null"]},
+        "compute_units": {"type": ["number", "null"], "minimum": 0},
+        "token_units": {"type": ["number", "null"], "minimum": 0},
+        "storage_bytes": {"type": ["integer", "null"], "minimum": 0},
+        "network_bytes": {"type": ["integer", "null"], "minimum": 0},
+        "operator_seconds": {"type": ["number", "null"], "minimum": 0},
+        "external_cost_usd": {"type": ["number", "null"], "minimum": 0},
+        "latency_ms": {"type": ["number", "null"], "minimum": 0},
+        "recovery_actions": {"type": ["integer", "null"], "minimum": 0},
+        "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    }
+  }
+}
