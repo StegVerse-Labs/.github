@@ -3,7 +3,7 @@
   "activation_required_count": 0,
   "archive_eligible_count": 2,
   "execution_authority_from_heartbeat": false,
-  "generated_at": "2026-08-08T13:41:25Z",
+  "generated_at": "2026-08-08T13:44:20Z",
   "heartbeat_epoch": 3,
   "query_is_observational": true,
   "schema": "stegverse.heartbeat-worker-status/v0.3",
