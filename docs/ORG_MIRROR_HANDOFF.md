@@ -13,10 +13,18 @@ branch: main
 parent_owner: issue #12
 executor_lifecycle_owner: issue #13
 custody_owner: issue #14
-status_owner: issue #15
 StegGate_bridge_owner: issue #24
 scoped_handoff: docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md
 session_inventory: management/SHWP_SESSION_EXECUTION_INVENTORY.json
+```
+
+Completed foundation owners:
+
+```text
+issue #15 status projection: COMPLETE
+issue #17 executable HANDOFF + deterministic discovery: COMPLETE
+issue #25 hosted first-slice validation: COMPLETE
+issue #26 organization handoff/archive invariant documentation: COMPLETE
 ```
 
 ## Canonical architecture
@@ -29,7 +37,7 @@ There is no normative second worker heartbeat and no normative ChatGPT/GitHub Ac
 
 ## Current implementation truth
 
-The native provider-agnostic runtime core is now installed and hosted-green:
+The native provider-agnostic runtime core is installed and hosted-green:
 
 ```text
 heartbeat_runtime/__init__.py
@@ -54,16 +62,7 @@ job: 93049882049
 result: SUCCESS
 ```
 
-The logs directly prove:
-
-- 6/6 native heartbeat lifecycle tests PASS;
-- 3/3 worker cost-basis estimator tests PASS;
-- no completed live cost samples -> confidence NONE and no invented expiry;
-- live registry dry-run -> `activated=false` and `no_worker_initiated`;
-- worker status projection valid;
-- continuity projection valid;
-- `STEGGATE-AUDITKIT-001` COMPLETE;
-- `STEGGATE-FIRST-BOUNDARY-001` BLOCKED / UNCLAIMED / not activated.
+The logs directly prove 6/6 native heartbeat lifecycle tests, 3/3 worker cost-basis estimator tests, sparse-cost no-guess behavior, live-registry no-false-activation, valid worker/continuity projections, and correct StegGate completed/blocked successor posture.
 
 The previous first engine cut exposed a hosted expiry/reactivation defect and was superseded/deleted. Hardened `engine_v2.py` blocks an expired parent on the generated recovery task when the required Master Records final worker report is missing.
 
@@ -108,14 +107,7 @@ No PR #1 merge, tag, release, deployment, or publication is authorized by this s
 
 ## Master Records lifecycle rule
 
-Known HB-relative expiry does not imply completion. If required Master Records final worker evidence is absent at known expiry:
-
-1. expired worker authority ends;
-2. parent is BLOCKED;
-3. a distinct recovery HANDOFF/task is generated and admitted;
-4. investigation/reconciliation proceeds under its own bounded authority;
-5. candidate remediation may be sandbox-tested;
-6. only validated remediation becomes executable registry work.
+Known HB-relative expiry does not imply completion. If required Master Records final worker evidence is absent at known expiry, expired worker authority ends, the parent is BLOCKED, a distinct recovery task is admitted, and only separately validated remediation may become executable work.
 
 Historical checkpoint custody remains:
 
@@ -151,16 +143,7 @@ native live lifecycle custody: REMAINS under .github#14
 
 ### `.github#13` — production adapter / live execution proof
 
-The runtime interface exists, but no legitimate production mutation-capable worker adapter is registered. Completion requires:
-
-- install/bind a provider-agnostic worker adapter with independently admitted repository mutation authority;
-- register exact `adapter_ref` + capabilities;
-- assign only eligible registry work with an evidenced expiry basis;
-- observe worker transition response on the same heartbeat across multiple live cycles;
-- prove collision/fencing under real execution;
-- retain checkpoint/final report and claim release evidence.
-
-Synthetic fixture adapters do not satisfy this requirement.
+The runtime interface exists, but no legitimate production mutation-capable worker adapter is registered. Completion requires installing/binding a provider-agnostic worker adapter with independently admitted mutation authority, registering exact adapter/capabilities, proving same-HB responses and real fencing across multiple live cycles, and retaining checkpoint/final-report/claim-release evidence. Synthetic adapters do not satisfy this requirement.
 
 ### `.github#14` — native lifecycle Master Records custody
 
@@ -168,7 +151,7 @@ Exercise an actual native worker lifecycle through checkpoint, completion or exp
 
 ### Empirical cost history
 
-Collect completed native-worker samples; until they exist the estimator must remain confidence NONE / no expiry candidate. External-entity costs become strategically useful only when actual evidence exists and must not be invented.
+Collect completed native-worker samples; until they exist the estimator remains confidence NONE / no expiry candidate. External-entity costs must be observed, never invented.
 
 ## Cross-repository propagation
 
@@ -191,7 +174,7 @@ scripts/estimate_worker_cost_basis.py
 issues #12/#13/#14/#24
 ```
 
-The conversation is **not archive-ready** because the remaining production adapter/live native worker lifecycle is not yet complete and no active non-conversational native execution path currently owns that remaining implementation.
+The conversation is not archive-ready because the remaining production adapter/live native worker lifecycle is not yet complete and no active non-conversational native execution path currently owns that remaining implementation.
 
 ## Completion assessment
 
