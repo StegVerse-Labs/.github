@@ -85,7 +85,6 @@ class HeartbeatRuntime(HeartbeatRuntimeV4):
         child_task = child_handoff.get("task") or {}
         parent_exec = parent_handoff.get("execution") or {}
         child_exec = child_handoff.get("execution") or {}
-
         if child_task.get("repository") != parent_task.get("repository"):
             return True
         if child_task.get("canonical_owner_ref") != parent_task.get("canonical_owner_ref"):
@@ -196,7 +195,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV4):
 
     def _preflight_ready_tasks(self, registry: dict[str, Any], epoch: int, events: list[dict[str, Any]]) -> None:
         for task in list(registry.get("tasks", [])):
-            if task.get("state") != "HANDOFF_READY":
+            if task.get("state") not in {"HANDOFF_READY", "ACTIVATION_PENDING"}:
                 continue
             try:
                 handoff = self._handoff(task)
@@ -213,8 +212,37 @@ class HeartbeatRuntime(HeartbeatRuntimeV4):
                 continue
             valid_successor, successor_reason, parent_handoff = self._validate_successor(registry, task, handoff)
             if not valid_successor:
+                if successor_reason == "SUCCESSOR_AUTHORITY_EXPANSION_NOT_ADMITTED" and parent_handoff is not None:
+                    task["state"] = "ACTIVATION_PENDING"
+                    task["archive_eligible"] = False
+                    task["archive_reason_codes"] = sorted(set(task.get("archive_reason_codes", []) + [successor_reason]))
+                    self._event(
+                        events,
+                        epoch,
+                        "successor_authority_expansion_pending",
+                        task_id=task.get("task_id"),
+                        parent_task_id=(handoff.get("task") or {}).get("parent_task_id"),
+                        reason=successor_reason,
+                        heartbeat_grants_expansion=False,
+                    )
+                    continue
                 self._quarantine(task, epoch, events, str(successor_reason), parent_task_id=(handoff.get("task") or {}).get("parent_task_id"))
                 continue
+            if task.get("state") == "ACTIVATION_PENDING":
+                task["state"] = "HANDOFF_READY"
+                task["archive_reason_codes"] = [
+                    code for code in task.get("archive_reason_codes", [])
+                    if code != "SUCCESSOR_AUTHORITY_EXPANSION_NOT_ADMITTED"
+                ]
+                self._event(
+                    events,
+                    epoch,
+                    "successor_authority_expansion_admitted",
+                    task_id=task.get("task_id"),
+                    parent_task_id=(handoff.get("task") or {}).get("parent_task_id"),
+                    expansion_authorization_ref=(handoff.get("authority") or {}).get("expansion_authorization_ref"),
+                    heartbeat_granted_expansion=False,
+                )
             if parent_handoff is not None:
                 self._event(
                     events,
