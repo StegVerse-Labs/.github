@@ -63,6 +63,23 @@
         "renewal_count": {"type": "integer", "minimum": 0}
       }
     },
+    "resource_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_actions", "max_retries", "external_cost_ceiling_usd", "runtime_window_beats", "rate_class", "allowed_services", "actions_used", "retries_used", "external_cost_usd", "renewal_count"],
+      "properties": {
+        "max_actions": {"type": "integer", "minimum": 1},
+        "max_retries": {"type": "integer", "minimum": 0},
+        "external_cost_ceiling_usd": {"type": "number", "minimum": 0},
+        "runtime_window_beats": {"type": "integer", "minimum": 1},
+        "rate_class": {"type": "string", "minLength": 1},
+        "allowed_services": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "actions_used": {"type": "integer", "minimum": 0},
+        "retries_used": {"type": "integer", "minimum": 0},
+        "external_cost_usd": {"type": "number", "minimum": 0},
+        "renewal_count": {"type": "integer", "minimum": 0}
+      }
+    },
     "task_state": {
       "type": "object",
       "additionalProperties": false,
@@ -78,6 +95,7 @@
         "claim_id": {"type": ["string", "null"]},
         "lease": {"anyOf": [{"$ref": "#/$defs/lease"}, {"type": "null"}]},
         "heartbeat_timing": {"anyOf": [{"$ref": "#/$defs/heartbeat_timing"}, {"type": "null"}]},
+        "resource_budget": {"anyOf": [{"$ref": "#/$defs/resource_budget"}, {"type": "null"}]},
         "renewal_ref": {"type": ["string", "null"]},
         "cost_basis_ref": {"type": ["string", "null"]},
         "external_entity_job_ref": {"type": ["string", "null"]},
