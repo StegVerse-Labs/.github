@@ -32,6 +32,7 @@
     "task_id": "STEGGATE-FIRST-BOUNDARY-001",
     "repository": "StegVerse-Labs/ara-admissibility-interop",
     "source_refs": [
+      "handoffs/STEGGATE-AUDITKIT-001.json",
       "StegVerse-Labs/ara-admissibility-interop#13",
       "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:management/first-boundary-activation.json",
       "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:tools/validate_first_boundary_activation.py",
