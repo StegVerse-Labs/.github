@@ -1,15 +1,55 @@
 {
   "activation_driver": "internal_heartbeat_registry_evaluation",
-  "activation_required_count": 0,
+  "activation_required_count": 1,
   "archive_eligible_count": 1,
   "execution_authority_from_heartbeat": false,
-  "generated_at": "2026-08-08T03:01:34Z",
+  "generated_at": "2026-08-08T03:26:14Z",
   "heartbeat_epoch": 1,
   "schema": "stegverse.heartbeat-worker-status/v0.2",
   "single_heartbeat_timing_frame": true,
-  "source_registry_generation": 4,
-  "task_count": 2,
+  "source_registry_generation": 5,
+  "task_count": 3,
   "tasks": [
+    {
+      "activation_carrier": "heartbeat",
+      "activation_required": true,
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "EXECUTOR_CANARY_NOT_YET_RUN",
+        "EXECUTOR_NOT_BOUND",
+        "EXECUTOR_NOT_RESOLVED",
+        "HEARTBEAT_ACTIVATION_REQUIRED"
+      ],
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/native-process-canary.json",
+      "current_transition": null,
+      "delta_hb_since_response": null,
+      "delta_hb_since_transition": null,
+      "eligible_workers": [
+        "native-process-canary-worker"
+      ],
+      "evidence_refs": [
+        "StegVerse-Labs/.github#13",
+        "heartbeat_runtime/process_adapter.py",
+        "workers/heartbeat_receipt_canary.py"
+      ],
+      "executor_binding": "DISCOVERED",
+      "executor_resolved": false,
+      "expected_next_transition": null,
+      "expiry_epoch": null,
+      "fencing_token": null,
+      "goal_id": "SHWP-NATIVE-PROCESS-CANARY-001",
+      "handoff_ref": "handoffs/SHWP-NATIVE-PROCESS-CANARY-001.json",
+      "heartbeat_epoch": 1,
+      "heartbeat_timing_established": false,
+      "last_checkpoint_ref": null,
+      "legacy_wall_clock_lease_is_timing_authority": false,
+      "next_authorized_action": "Run two native heartbeat cycles using the registered process worker adapter and retain the completed canary receipt/registry evidence.",
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-NATIVE-PROCESS-CANARY-001",
+      "worker_id": null,
+      "worker_instance_id": null
+    },
     {
       "activation_carrier": "heartbeat",
       "activation_required": false,

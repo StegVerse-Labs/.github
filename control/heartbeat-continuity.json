@@ -44,6 +44,26 @@
       "state": "BLOCKED",
       "task_id": "STEGGATE-FIRST-BOUNDARY-001",
       "transition_sequence": null
+    },
+    {
+      "continuity_lost": false,
+      "continuity_status": "OBSERVATION_ONLY",
+      "cost_basis_ref": "cost-basis/worker-runtime/native-process-canary.json",
+      "current_transition": null,
+      "delta_hb_since_response": null,
+      "delta_hb_since_transition": null,
+      "expected_next_transition": null,
+      "expiry_epoch": null,
+      "goal_id": "SHWP-NATIVE-PROCESS-CANARY-001",
+      "heartbeat_epoch": 1,
+      "last_response_epoch": null,
+      "last_transition_epoch": null,
+      "reason_codes": [
+        "HB_RELATIVE_TIMING_NOT_YET_RECORDED"
+      ],
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-NATIVE-PROCESS-CANARY-001",
+      "transition_sequence": null
     }
   ],
   "registry_task_candidates": [],
