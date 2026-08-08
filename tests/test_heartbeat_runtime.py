@@ -13,7 +13,15 @@ def write(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
 
 
-def handoff(task_id: str, state: str = "HANDOFF_READY", dependencies: list[str] | None = None, authorized: bool = True) -> dict:
+def handoff(
+    task_id: str,
+    state: str = "HANDOFF_READY",
+    dependencies: list[str] | None = None,
+    authorized: bool = True,
+    parent_task_id: str | None = None,
+    reconstruction_ref: str | None = None,
+    checkpoint_ref: str | None = None,
+) -> dict:
     activation = {
         "carrier": "heartbeat",
         "executor_binding": "AUTHORIZED" if authorized else "DISCOVERED",
@@ -22,6 +30,14 @@ def handoff(task_id: str, state: str = "HANDOFF_READY", dependencies: list[str] 
     }
     if authorized:
         activation["authorization_ref"] = f"authorizations/{task_id}.json"
+    continuity = {
+        "checkpoint_ref": checkpoint_ref,
+        "handoff_destination": "control/worker-registry.json",
+        "master_records_required": True,
+        "status_projection": "control/worker-status.json"
+    }
+    if reconstruction_ref:
+        continuity["reconstruction_ref"] = reconstruction_ref
     return {
         "schema": "stegverse.executable-handoff/v0.1",
         "handoff_id": f"H-{task_id}",
@@ -40,7 +56,7 @@ def handoff(task_id: str, state: str = "HANDOFF_READY", dependencies: list[str] 
             "repository": "StegVerse-Labs/fixture",
             "source_refs": ["fixture"],
             "dependencies": dependencies or [],
-            "parent_task_id": None,
+            "parent_task_id": parent_task_id,
             "derivation_reason": "test",
             "priority": "normal"
         },
@@ -58,12 +74,7 @@ def handoff(task_id: str, state: str = "HANDOFF_READY", dependencies: list[str] 
             "external_cost_ceiling_usd": 0
         },
         "activation": activation,
-        "continuity": {
-            "checkpoint_ref": None,
-            "handoff_destination": "control/worker-registry.json",
-            "master_records_required": True,
-            "status_projection": "control/worker-status.json"
-        },
+        "continuity": continuity,
         "completion": {
             "next_authorized_action": "execute fixture",
             "terminal_when": ["done"]
@@ -114,10 +125,31 @@ class RuntimeFixture:
         })
         return str(path.relative_to(self.root))
 
-    def registry(self, tasks: list[dict], worker_status: str = "AVAILABLE"):
+    def reconstruction_proof(self, task_id: str, parent_task_id: str, checkpoint_ref: str, last_fence: int = 4):
+        ref = f"reconstruction/{task_id}.json"
+        write(self.root / ref, {
+            "schema": "stegverse.worker-reconstruction-proof/v0.1",
+            "reconstruction_id": f"R-{task_id}",
+            "task_id": task_id,
+            "goal_id": task_id,
+            "parent_task_id": parent_task_id,
+            "authority_source": "fixture authority",
+            "policy_version": "test",
+            "last_valid_fencing_token": last_fence,
+            "checkpoint_ref": checkpoint_ref,
+            "checkpoint_sha256": "a" * 64,
+            "master_records_refs": [checkpoint_ref],
+            "evidence_lineage_refs": ["master-records/orchestration:fixture-lineage"],
+            "unresolved_work": ["continue bounded fixture work"],
+            "reconstruction_status": "PASS",
+            "execution_authority": False
+        })
+        return ref
+
+    def registry(self, tasks: list[dict], worker_status: str = "AVAILABLE", generation: int = 0):
         write(self.root / "control/worker-registry.json", {
             "schema": "stegverse.heartbeat-worker-registry/v0.1",
-            "generation": 0,
+            "generation": generation,
             "updated_at": "2026-08-08T00:00:00Z",
             "workers": [{
                 "worker_id": "fixture-worker",
@@ -131,8 +163,28 @@ class RuntimeFixture:
             "tasks": tasks
         })
 
-    def task(self, task_id: str, state: str = "HANDOFF_READY", cost_basis_ref: str | None = None, deps: list[str] | None = None, authorized: bool = True):
-        write(self.root / "handoffs" / f"{task_id}.json", handoff(task_id, dependencies=deps, authorized=authorized))
+    def task(
+        self,
+        task_id: str,
+        state: str = "HANDOFF_READY",
+        cost_basis_ref: str | None = None,
+        deps: list[str] | None = None,
+        authorized: bool = True,
+        parent_task_id: str | None = None,
+        reconstruction_ref: str | None = None,
+        checkpoint_ref: str | None = None,
+    ):
+        write(
+            self.root / "handoffs" / f"{task_id}.json",
+            handoff(
+                task_id,
+                dependencies=deps,
+                authorized=authorized,
+                parent_task_id=parent_task_id,
+                reconstruction_ref=reconstruction_ref,
+                checkpoint_ref=checkpoint_ref,
+            ),
+        )
         return {
             "task_id": task_id,
             "goal_id": task_id,
@@ -146,7 +198,7 @@ class RuntimeFixture:
             "heartbeat_timing": None,
             "cost_basis_ref": cost_basis_ref,
             "external_entity_job_ref": None,
-            "last_checkpoint_ref": None,
+            "last_checkpoint_ref": checkpoint_ref,
             "block_ref": None,
             "archive_eligible": False,
             "archive_reason_codes": [],
@@ -214,6 +266,71 @@ class HeartbeatRuntimeTests(unittest.TestCase):
             self.assertEqual(state["tasks"][0]["state"], "HANDOFF_READY")
             self.assertIsNone(state["tasks"][0]["claim_id"])
             self.assertIn("EXECUTION_AUTHORIZATION_REQUIRED", state["tasks"][0]["archive_reason_codes"])
+        finally:
+            fx.close()
+
+    def test_authorized_successor_without_reconstruction_cannot_checkout(self):
+        fx = RuntimeFixture()
+        calls = []
+        try:
+            basis = fx.cost_basis("fixture")
+            checkpoint = "master-records/orchestration:checkpoint-parent"
+            task = fx.task(
+                "TASK-SUCCESSOR",
+                cost_basis_ref=basis,
+                parent_task_id="TASK-PARENT",
+                checkpoint_ref=checkpoint,
+            )
+            fx.registry([task], generation=5)
+
+            def adapter(*args):
+                calls.append(args)
+                return WorkerResponse(state="COMPLETED", transition_id="COMPLETE", transition_sequence=1)
+
+            result = HeartbeatRuntime(fx.root, adapters={"fixture": adapter}).cycle()
+            self.assertFalse(result["activated"])
+            self.assertEqual(calls, [])
+            deferred = [event for event in result["events"] if event.get("event_type") == "activation_deferred"]
+            self.assertEqual(deferred[-1]["reason"], "SUCCESSOR_RECONSTRUCTION_REQUIRED")
+            state = json.loads((fx.root / "control/worker-registry.json").read_text())
+            successor = state["tasks"][0]
+            self.assertIsNone(successor["claim_id"])
+            self.assertIn("SUCCESSOR_RECONSTRUCTION_REQUIRED", successor["archive_reason_codes"])
+        finally:
+            fx.close()
+
+    def test_reconstructed_successor_acquires_higher_fence_without_chat_state(self):
+        fx = RuntimeFixture()
+        calls = []
+        try:
+            basis = fx.cost_basis("fixture")
+            checkpoint = "master-records/orchestration:checkpoint-parent"
+            proof_ref = fx.reconstruction_proof("TASK-SUCCESSOR", "TASK-PARENT", checkpoint, last_fence=4)
+            task = fx.task(
+                "TASK-SUCCESSOR",
+                cost_basis_ref=basis,
+                parent_task_id="TASK-PARENT",
+                reconstruction_ref=proof_ref,
+                checkpoint_ref=checkpoint,
+            )
+            fx.registry([task], generation=5)
+
+            def adapter(task, handoff, epoch):
+                calls.append((task["task_id"], epoch))
+                return WorkerResponse(state="ACTIVE", transition_id="RESUMED", transition_sequence=1)
+
+            result = HeartbeatRuntime(fx.root, adapters={"fixture": adapter}).cycle()
+            self.assertTrue(result["activated"])
+            self.assertEqual(calls, [("TASK-SUCCESSOR", 1)])
+            accepted = next(event for event in result["events"] if event.get("event_type") == "successor_reconstruction_accepted")
+            self.assertEqual(accepted["parent_task_id"], "TASK-PARENT")
+            self.assertEqual(accepted["reconstruction_ref"], proof_ref)
+            self.assertEqual(accepted["last_valid_fencing_token"], 4)
+            state = json.loads((fx.root / "control/worker-registry.json").read_text())
+            successor = state["tasks"][0]
+            self.assertEqual(successor["heartbeat_timing"]["fencing_token"], 6)
+            self.assertGreater(successor["heartbeat_timing"]["fencing_token"], accepted["last_valid_fencing_token"])
+            self.assertIsNotNone(successor["claim_id"])
         finally:
             fx.close()
 
@@ -321,6 +438,10 @@ class HeartbeatRuntimeTests(unittest.TestCase):
             self.assertEqual(recovery[0]["state"], "HANDOFF_READY")
             self.assertEqual(parent["block_ref"], recovery[0]["handoff_ref"])
             self.assertTrue((fx.root / recovery[0]["handoff_ref"]).exists())
+            generated = json.loads((fx.root / recovery[0]["handoff_ref"]).read_text())
+            self.assertEqual(generated["task"]["parent_task_id"], "TASK-A")
+            self.assertNotIn("reconstruction_ref", generated["continuity"])
+            self.assertIn("SUCCESSOR_RECONSTRUCTION_REQUIRED", recovery[0]["archive_reason_codes"])
         finally:
             fx.close()
 
