@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/worker-registry.schema.json",
+  "title": "StegVerse Heartbeat Worker Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "generation", "updated_at", "workers", "tasks"],
+  "properties": {
+    "schema": {"const": "stegverse.heartbeat-worker-registry/v0.1"},
+    "generation": {"type": "integer", "minimum": 0},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "workers": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/worker"}
+    },
+    "tasks": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/task_state"}
+    }
+  },
+  "$defs": {
+    "worker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["worker_id", "executor_type", "capabilities", "status"],
+      "properties": {
+        "worker_id": {"type": "string", "minLength": 1},
+        "executor_type": {"enum": ["deterministic_workflow", "repository_worker", "agent_runtime", "deployment_worker", "observer"]},
+        "capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "status": {"enum": ["AVAILABLE", "BUSY", "DEGRADED", "DISABLED"]},
+        "authority_source": {"type": ["string", "null"]},
+        "last_seen_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "lease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issued_at", "expires_at", "heartbeat_due_at", "fencing_token", "renewal_allowed", "max_renewals"],
+      "properties": {
+        "issued_at": {"type": "string", "format": "date-time"},
+        "expires_at": {"type": "string", "format": "date-time"},
+        "heartbeat_due_at": {"type": "string", "format": "date-time"},
+        "handoff_grace_expires_at": {"type": ["string", "null"], "format": "date-time"},
+        "fencing_token": {"type": "integer", "minimum": 1},
+        "renewal_allowed": {"type": "boolean"},
+        "max_renewals": {"type": "integer", "minimum": 0},
+        "renewal_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "task_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "goal_id", "state", "handoff_ref", "executor_binding", "archive_eligible"],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 1},
+        "goal_id": {"type": "string", "minLength": 1},
+        "state": {"enum": ["HANDOFF_READY", "ACTIVATION_PENDING", "CLAIMED", "ACTIVE", "BLOCKED", "HUMAN_AUTHORITY_REQUIRED", "EXPIRING", "HANDOFF_WRITING", "COMPLETED", "FAILED_RETRYABLE", "FAILED_TERMINAL", "QUARANTINED"]},
+        "handoff_ref": {"type": "string", "minLength": 1},
+        "executor_binding": {"enum": ["UNBOUND", "DISCOVERED", "AUTHORIZED", "BOUND"]},
+        "worker_id": {"type": ["string", "null"]},
+        "worker_instance_id": {"type": ["string", "null"]},
+        "claim_id": {"type": ["string", "null"]},
+        "lease": {"anyOf": [{"$ref": "#/$defs/lease"}, {"type": "null"}]},
+        "last_checkpoint_ref": {"type": ["string", "null"]},
+        "block_ref": {"type": ["string", "null"]},
+        "archive_eligible": {"type": "boolean"},
+        "archive_reason_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    }
+  }
+}
