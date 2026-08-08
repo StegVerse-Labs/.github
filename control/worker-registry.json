@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.heartbeat-worker-registry/v0.1",
-  "generation": 3,
-  "updated_at": "2026-08-08T02:13:00Z",
+  "generation": 4,
+  "updated_at": "2026-08-08T02:31:00Z",
   "workers": [
     {
       "worker_id": "stegverse-worker-cycle",
@@ -22,7 +22,7 @@
     {
       "task_id": "STEGGATE-AUDITKIT-001",
       "goal_id": "STEGGATE-AUDITKIT-001",
-      "state": "HANDOFF_READY",
+      "state": "COMPLETED",
       "handoff_ref": "handoffs/STEGGATE-AUDITKIT-001.json",
       "executor_binding": "UNBOUND",
       "worker_id": null,
@@ -34,24 +34,45 @@
       "external_entity_job_ref": null,
       "last_checkpoint_ref": "master-records/orchestration@484696c2d6d7b69fa324e5b1f169c51d740ad925:custody/worker-lifecycle/SHWP-CUSTODY-STEGGATE-AUDITKIT-001-G1-001.json",
       "block_ref": null,
+      "archive_eligible": true,
+      "archive_reason_codes": [],
+      "evidence_refs": [
+        "StegVerse-Labs/ara-admissibility-interop#1@c2df13fbbf51144f20ee8c46ff27653e7336c17d",
+        "StegVerse-Labs/ara-admissibility-interop#2:COMPLETE",
+        "StegVerse-Labs/ara-admissibility-interop#23:COMPLETE",
+        "StegVerse-Labs/ara-admissibility-interop#66:COMPLETE",
+        "StegVerse-Labs/StegCore#54:COMPLETE",
+        "StegVerse-Labs/ara-admissibility-interop:StegGate Schema Foundation run 31233087559 job 93040589154:SUCCESS",
+        "StegVerse-Labs/ara-admissibility-interop:Repo Check run 31233087564 job 93040589130:SUCCESS",
+        "master-records:orchestration:custody/worker-lifecycle/SHWP-CUSTODY-STEGGATE-AUDITKIT-001-G1-001.json:ac2cbba5b3f3c2e91893eabc63c9ba2221c226cbe1c7e3c70459d9ce75dc0cb2"
+      ]
+    },
+    {
+      "task_id": "STEGGATE-FIRST-BOUNDARY-001",
+      "goal_id": "STEGGATE-FIRST-BOUNDARY-001",
+      "state": "BLOCKED",
+      "handoff_ref": "handoffs/STEGGATE-FIRST-BOUNDARY-001.json",
+      "executor_binding": "UNBOUND",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "claim_id": null,
+      "lease": null,
+      "heartbeat_timing": null,
+      "cost_basis_ref": null,
+      "external_entity_job_ref": null,
+      "last_checkpoint_ref": "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:management/first-boundary-activation.json",
+      "block_ref": "handoffs/STEGGATE-FIRST-BOUNDARY-001.json#block",
       "archive_eligible": false,
       "archive_reason_codes": [
+        "BLOCKED_ON_REAL_BOUNDARY_TARGET",
+        "BLOCKED_ON_AUTHORITY_MODEL",
         "EXECUTOR_NOT_BOUND",
-        "EXECUTOR_NOT_RESOLVED",
-        "HB_RELATIVE_TIMING_NOT_ESTABLISHED",
-        "HEARTBEAT_ACTIVATION_REQUIRED"
+        "HB_RELATIVE_TIMING_NOT_ESTABLISHED"
       ],
       "evidence_refs": [
-        "StegVerse-Labs/ara-admissibility-interop#1",
-        "StegVerse-Labs/ara-admissibility-interop#61",
-        "StegVerse-Labs/.github#12",
-        "StegVerse-Labs/.github#13",
-        "StegVerse-Labs/.github#24",
-        "StegVerse-Labs/.github:Heartbeat Worker Project run 31231845019",
-        "StegVerse-Labs/ara-admissibility-interop:StegGate Schema Foundation run 31231723418 job 93036736627",
-        "master-records:orchestration:custody/worker-lifecycle/SHWP-CUSTODY-STEGGATE-AUDITKIT-001-G1-001.json:ac2cbba5b3f3c2e91893eabc63c9ba2221c226cbe1c7e3c70459d9ce75dc0cb2",
-        "master-records:orchestration:Validate Worker Lifecycle Custody run 31231978969 job 93037458942:SUCCESS",
-        "bootstrap-executor:StegVerse Worker Cycle:DISABLED:2026-08-08T01:46:27Z"
+        "StegVerse-Labs/ara-admissibility-interop#13:BLOCKED_UNCLAIMED",
+        "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:management/first-boundary-activation.json:BLOCKED",
+        "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:tools/validate_first_boundary_activation.py"
       ]
     }
   ]
