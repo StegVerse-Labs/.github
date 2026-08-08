@@ -2,18 +2,13 @@
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 HANDOFF_ROOT = ROOT / "handoffs"
 TERMINAL = {"COMPLETED"}
-VALID_SUCCESSOR_POLICIES = {
-    "NONE",
-    "INHERIT_OR_NARROW",
-    "SEPARATE_AUTHORIZATION_REQUIRED_FOR_EXPANSION",
-}
+VALID_SUCCESSOR_POLICIES = {"NONE", "INHERIT_OR_NARROW", "SEPARATE_AUTHORIZATION_REQUIRED_FOR_EXPANSION"}
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -42,13 +37,13 @@ def validate_one(path: Path, handoff: dict[str, Any]) -> list[str]:
         require(isinstance(goal.get(key), str) and bool(goal.get(key)), f"{prefix}: goal.{key} required", errors)
     for key in ("success_predicates", "failure_predicates", "authority_ceiling"):
         value = goal.get(key)
-        require(isinstance(value, list) and len(value) > 0 and all(isinstance(item, str) and item for item in value), f"{prefix}: goal.{key} must be non-empty string list", errors)
+        require(isinstance(value, list) and value and all(isinstance(item, str) and item for item in value), f"{prefix}: goal.{key} must be non-empty string list", errors)
     require(goal.get("successor_policy") in VALID_SUCCESSOR_POLICIES, f"{prefix}: goal.successor_policy invalid", errors)
     require(isinstance(goal.get("max_successor_depth"), int) and goal.get("max_successor_depth", -1) >= 0, f"{prefix}: goal.max_successor_depth invalid", errors)
 
     for key in ("task_id", "repository", "canonical_owner_ref", "canonical_lineage_key"):
         require(isinstance(task.get(key), str) and bool(task.get(key)), f"{prefix}: task.{key} required", errors)
-    require(isinstance(task.get("source_refs"), list) and len(task.get("source_refs") or []) > 0, f"{prefix}: task.source_refs required", errors)
+    require(isinstance(task.get("source_refs"), list) and bool(task.get("source_refs")), f"{prefix}: task.source_refs required", errors)
     require(isinstance(task.get("derivation_depth"), int) and task.get("derivation_depth", -1) >= 0, f"{prefix}: task.derivation_depth invalid", errors)
     parent = task.get("parent_task_id")
     require(parent is None or (isinstance(parent, str) and bool(parent)), f"{prefix}: task.parent_task_id invalid", errors)
@@ -58,15 +53,17 @@ def validate_one(path: Path, handoff: dict[str, Any]) -> list[str]:
     for key in ("authority_source", "policy_version"):
         require(isinstance(authority.get(key), str) and bool(authority.get(key)), f"{prefix}: authority.{key} required", errors)
 
-    require(isinstance(execution.get("required_capabilities"), list) and len(execution.get("required_capabilities") or []) > 0, f"{prefix}: execution.required_capabilities required", errors)
+    require(isinstance(execution.get("required_capabilities"), list) and bool(execution.get("required_capabilities")), f"{prefix}: execution.required_capabilities required", errors)
     require(isinstance(execution.get("allowed_paths"), list), f"{prefix}: execution.allowed_paths required", errors)
     require(isinstance(execution.get("allowed_services"), list), f"{prefix}: execution.allowed_services required", errors)
     require(isinstance(execution.get("max_actions"), int) and execution.get("max_actions", 0) >= 1, f"{prefix}: execution.max_actions invalid", errors)
     require(isinstance(execution.get("max_retries"), int) and execution.get("max_retries", -1) >= 0, f"{prefix}: execution.max_retries invalid", errors)
     require(isinstance(execution.get("external_cost_ceiling_usd"), (int, float)) and execution.get("external_cost_ceiling_usd", -1) >= 0, f"{prefix}: execution.external_cost_ceiling_usd invalid", errors)
+    require(isinstance(execution.get("runtime_window_beats"), int) and execution.get("runtime_window_beats", 0) >= 1, f"{prefix}: execution.runtime_window_beats invalid", errors)
+    require(isinstance(execution.get("rate_class"), str) and bool(execution.get("rate_class")), f"{prefix}: execution.rate_class required", errors)
 
     terminal = completion.get("terminal_when")
-    require(isinstance(terminal, list) and len(terminal or []) > 0 and all(isinstance(item, str) and item for item in terminal or []), f"{prefix}: completion.terminal_when required", errors)
+    require(isinstance(terminal, list) and terminal and all(isinstance(item, str) and item for item in terminal), f"{prefix}: completion.terminal_when required", errors)
     require(isinstance(completion.get("next_authorized_action"), str) and bool(completion.get("next_authorized_action")), f"{prefix}: completion.next_authorized_action required", errors)
     return errors
 
@@ -96,12 +93,8 @@ def main() -> int:
             continue
         task = value.get("task") or {}
         goal = value.get("goal") or {}
-        owner = task.get("canonical_owner_ref")
-        lineage = task.get("canonical_lineage_key")
-        repository = task.get("repository")
-        goal_id = goal.get("goal_id")
-        lane_key = (str(owner), str(lineage))
-        goal_key = (str(owner), str(repository), str(goal_id))
+        lane_key = (str(task.get("canonical_owner_ref")), str(task.get("canonical_lineage_key")))
+        goal_key = (str(task.get("canonical_owner_ref")), str(task.get("repository")), str(goal.get("goal_id")))
         if lane_key in active_lanes:
             errors.append(f"{path.relative_to(ROOT)}: duplicate live canonical lineage with {active_lanes[lane_key]}")
         else:
@@ -117,7 +110,6 @@ def main() -> int:
             continue
         parent_entry = handoffs.get(parent_id)
         if parent_entry is None:
-            # Parent may be the protocol/root control-plane task rather than another executable HANDOFF.
             source_refs = set(task.get("source_refs") or [])
             require(any(parent_id in ref for ref in source_refs), f"{path.relative_to(ROOT)}: external parent {parent_id} must be evidenced in source_refs", errors)
             continue
