@@ -1,35 +1,59 @@
 {
   "schema": "stegverse.heartbeat-worker-registry/v0.1",
-  "generation": 0,
-  "updated_at": "2026-08-08T00:50:00Z",
-  "workers": [],
+  "generation": 1,
+  "updated_at": "2026-08-08T01:03:00Z",
+  "workers": [
+    {
+      "worker_id": "stegverse-worker-cycle",
+      "executor_type": "agent_runtime",
+      "capabilities": [
+        "github_repository_read",
+        "github_repository_write",
+        "issue_and_pr_coordination",
+        "code_and_schema_implementation",
+        "hosted_validation_observation"
+      ],
+      "status": "BUSY",
+      "authority_source": "StegVerse-Labs/.github#12 + enabled StegVerse Worker Cycle",
+      "last_seen_at": "2026-08-08T01:03:00Z"
+    }
+  ],
   "tasks": [
     {
       "task_id": "STEGGATE-AUDITKIT-001",
       "goal_id": "STEGGATE-AUDITKIT-001",
-      "state": "HANDOFF_READY",
+      "state": "ACTIVE",
       "handoff_ref": "handoffs/STEGGATE-AUDITKIT-001.json",
-      "executor_binding": "UNBOUND",
-      "worker_id": null,
-      "worker_instance_id": null,
-      "claim_id": null,
-      "lease": null,
+      "executor_binding": "BOUND",
+      "worker_id": "stegverse-worker-cycle",
+      "worker_instance_id": "bootstrap-20260808T0103Z",
+      "claim_id": "SHWP-STEGGATE-AUDITKIT-001-G1",
+      "lease": {
+        "issued_at": "2026-08-08T01:03:00Z",
+        "expires_at": "2026-08-09T01:03:00Z",
+        "heartbeat_due_at": "2026-08-08T09:03:00Z",
+        "handoff_grace_expires_at": "2026-08-09T02:03:00Z",
+        "fencing_token": 1,
+        "renewal_allowed": true,
+        "max_renewals": 7,
+        "renewal_count": 0
+      },
       "last_checkpoint_ref": "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:ARA_ADMISSIBILITY_INTEROP_MIRROR_HANDOFF.md",
       "block_ref": null,
       "archive_eligible": false,
       "archive_reason_codes": [
         "UNFINISHED_WORK",
-        "EXECUTOR_UNBOUND",
-        "NO_ACTIVE_WORKER_LEASE",
+        "WORKER_LIFECYCLE_FIRST_EXECUTION_IN_PROGRESS",
         "MASTER_RECORDS_WORKER_CUSTODY_NOT_PROVEN"
       ],
       "evidence_refs": [
         "StegVerse-Labs/ara-admissibility-interop#1",
-        "StegVerse-Labs/ara-admissibility-interop#2",
-        "StegVerse-Labs/ara-admissibility-interop#23",
-        "StegVerse-Labs/ara-admissibility-interop#66",
+        "StegVerse-Labs/ara-admissibility-interop#61",
         "StegVerse-Labs/.github#12",
-        "StegVerse-Labs/.github#13"
+        "StegVerse-Labs/.github#13",
+        "StegVerse-Labs/.github#24",
+        "StegVerse-Labs/.github:Heartbeat Worker Project run 31231346416",
+        "automation:StegVerse Worker Cycle:enabled"
       ]
     }
   ]
