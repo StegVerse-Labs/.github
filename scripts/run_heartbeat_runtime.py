@@ -4,15 +4,20 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 import time
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from heartbeat_runtime import HeartbeatRuntime
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--root", default=".")
+    parser.add_argument("--root", default=str(REPO_ROOT))
     parser.add_argument("--cycles", type=int, default=1)
     parser.add_argument("--interval-ms", type=float, default=10.0)
     parser.add_argument("--dry-run", action="store_true")
