@@ -1,4 +1,7 @@
-name: Organization heartbeat
+# Validation-only carrier for the unified StegVerse heartbeat.
+# The heartbeat runtime itself owns epoch advancement and worker scheduling.
+name: Organization heartbeat validation
+
 on:
   workflow_dispatch:
   push:
@@ -6,32 +9,60 @@ on:
     paths:
       - control/claims-active.json
       - control/org-state.json
-      - heartbeats/returns/**
+      - heartbeat_runtime/**
       - scripts/issue_heartbeats.py
+      - scripts/run_heartbeat_runtime.py
       - scripts/validate_heartbeat_returns.py
-  schedule:
-    - cron: '17 */8 * * *'
+      - .github/workflows/org-heartbeat.yml
+
 permissions:
-  contents: write
+  contents: read
+
 concurrency:
-  group: org-heartbeat
+  group: org-heartbeat-validation
   cancel-in-progress: false
+
 jobs:
-  issue-and-validate:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Issue outbound assertions
-        run: python scripts/issue_heartbeats.py
-      - name: Validate available returns
-        run: python scripts/validate_heartbeat_returns.py
-      - name: Commit heartbeat state
+
+      - name: Compile unified heartbeat surfaces
         run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add control/heartbeat-state.json heartbeats
-          git diff --cached --quiet || git commit -m "Record organization heartbeat epoch"
-          git push
+          python -m py_compile heartbeat_runtime/org_assertions.py heartbeat_runtime/engine_v3.py
+          python -m py_compile scripts/issue_heartbeats.py scripts/run_heartbeat_runtime.py scripts/validate_heartbeat_returns.py
+
+      - name: Prove legacy issuer cannot advance epoch
+        run: |
+          before="$(sha256sum control/heartbeat-state.json | cut -d' ' -f1)"
+          output="$(python scripts/issue_heartbeats.py --dry-run)"
+          echo "$output"
+          after="$(sha256sum control/heartbeat-state.json | cut -d' ' -f1)"
+          test "$before" = "$after"
+          python - <<'PY' "$output"
+          import json, sys
+          value = json.loads(sys.argv[1])
+          assert value['epoch_advanced'] is False, value
+          assert value['authority_effect'] == 'none', value
+          print('LEGACY_ISSUER_NO_EPOCH_OWNERSHIP_PASS')
+          PY
+
+      - name: Prove unified runtime owns one dry-run epoch
+        run: |
+          before="$(sha256sum control/heartbeat-state.json control/worker-registry.json | sha256sum | cut -d' ' -f1)"
+          output="$(python scripts/run_heartbeat_runtime.py --dry-run --cycles 1)"
+          echo "$output"
+          after="$(sha256sum control/heartbeat-state.json control/worker-registry.json | sha256sum | cut -d' ' -f1)"
+          test "$before" = "$after"
+          python - <<'PY' "$output"
+          import json, sys
+          value = json.loads(sys.argv[1])
+          assert value['schema'] == 'stegverse.heartbeat-cycle-result/v0.3', value
+          assert 'organization_assertions' in value, value
+          assert value['authority_effect'] == 'none_beyond_existing_admitted_task_authority', value
+          print('UNIFIED_SINGLE_HEARTBEAT_DRY_RUN_PASS')
+          PY
