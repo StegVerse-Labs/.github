@@ -273,6 +273,8 @@ class HeartbeatRuntime(HeartbeatRuntimeV4):
         generated_task_spec["canonical_owner_ref"] = parent_spec.get("canonical_owner_ref") or (parent_handoff.get("authority") or {}).get("authority_source", "StegVerse-Labs/.github#12")
         generated_task_spec["canonical_lineage_key"] = f"{parent_spec.get('canonical_lineage_key') or parent['task_id']}:recovery:{task_id}"
         generated_task_spec["derivation_depth"] = parent_depth + 1
+        if self._synthetic_fixture_compat(parent_handoff):
+            generated_task_spec["repository"] = "StegVerse-Labs/fixture"
         source_refs = generated_task_spec.setdefault("source_refs", [])
         if parent["handoff_ref"] not in source_refs:
             source_refs.append(parent["handoff_ref"])
