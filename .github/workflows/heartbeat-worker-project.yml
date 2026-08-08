@@ -9,10 +9,12 @@ on:
       - 'handoffs/**'
       - 'heartbeat_runtime/**'
       - 'tests/test_heartbeat_runtime.py'
+      - 'tests/test_worker_cost_basis_estimator.py'
       - 'control/heartbeat-state.json'
       - 'control/worker-registry.json'
       - 'control/heartbeat-continuity.json'
       - 'control/worker-cost-observations.json'
+      - 'cost-basis/worker-runtime/**'
       - 'docs/ORG_MIRROR_HANDOFF.md'
       - 'docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md'
       - 'schemas/heartbeat-transition-observation.schema.json'
@@ -22,6 +24,7 @@ on:
       - 'scripts/project_heartbeat_workers.py'
       - 'scripts/reconcile_heartbeat_continuity.py'
       - 'scripts/run_heartbeat_runtime.py'
+      - 'scripts/estimate_worker_cost_basis.py'
       - '.github/workflows/heartbeat-worker-project.yml'
   workflow_dispatch:
 
@@ -50,6 +53,7 @@ jobs:
           python -m py_compile scripts/project_heartbeat_workers.py
           python -m py_compile scripts/reconcile_heartbeat_continuity.py
           python -m py_compile scripts/run_heartbeat_runtime.py
+          python -m py_compile scripts/estimate_worker_cost_basis.py
 
       - name: Parse canonical JSON surfaces
         run: |
@@ -73,6 +77,23 @@ jobs:
 
       - name: Prove native heartbeat engine semantics
         run: python -m unittest -v tests.test_heartbeat_runtime
+
+      - name: Prove cost basis estimator semantics
+        run: python -m unittest -v tests.test_worker_cost_basis_estimator
+
+      - name: Prove sparse live cost data does not invent expiry
+        run: |
+          output="$(python scripts/estimate_worker_cost_basis.py --check)"
+          echo "$output"
+          python - <<'PY' "$output"
+          import json, sys
+          value = json.loads(sys.argv[1])
+          for record in value['records'].values():
+              if record['sample_count'] == 0:
+                  assert record['hb_estimate']['confidence'] == 'NONE', record
+                  assert record['hb_estimate']['expiry_candidate_beats'] is None, record
+          print('COST_BASIS_NO_GUESS_PASS')
+          PY
 
       - name: Prove live registry has no false activation
         run: |
