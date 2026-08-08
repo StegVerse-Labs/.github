@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import unittest
 
-from heartbeat_runtime.engine_v7 import HeartbeatRuntime, WorkerResponse
+from heartbeat_runtime.engine_v7_1 import HeartbeatRuntime, WorkerResponse
 from tests.test_heartbeat_runtime import RuntimeFixture, write
 
 
@@ -36,7 +36,7 @@ class CheckpointPolicyTests(unittest.TestCase):
             self.assertEqual(checkpoint["claim_id"], current["claim_id"])
             self.assertEqual(checkpoint["fencing_token"], current["heartbeat_timing"]["fencing_token"])
             self.assertEqual(checkpoint["policy_version"], "test")
-            self.assertEqual(checkpoint["worker_checkpoint_ref"], None)
+            self.assertEqual(checkpoint["worker_checkpoint_ref"], "worker-local/checkpoint-1")
             self.assertFalse(checkpoint["execution_authority"])
             self.assertEqual(checkpoint["checkpoint_sha256"], runtime._checkpoint_hash(checkpoint))
             self.assertEqual(checkpoint["completed_transitions"][-1]["transition_id"], "IMPLEMENTING")
