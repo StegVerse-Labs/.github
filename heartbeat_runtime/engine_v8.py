@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .engine_v7 import HeartbeatRuntime as HeartbeatRuntimeV7, WorkerResponse
+from .engine_v7_1 import HeartbeatRuntime as HeartbeatRuntimeV7, WorkerResponse
 
 
 class HeartbeatRuntime(HeartbeatRuntimeV7):
