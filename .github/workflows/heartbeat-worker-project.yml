@@ -14,6 +14,7 @@ on:
       - 'tests/test_lifecycle_authority.py'
       - 'tests/test_executor_discovery.py'
       - 'tests/test_block_boundaries.py'
+      - 'tests/test_goal_lineage.py'
       - 'tests/test_worker_cost_basis_estimator.py'
       - 'control/heartbeat-state.json'
       - 'control/worker-registry.json'
@@ -29,10 +30,12 @@ on:
       - 'schemas/worker-mutation-scope-receipt.schema.json'
       - 'schemas/worker-renewal-admission.schema.json'
       - 'schemas/human-authority-boundary.schema.json'
+      - 'schemas/worker-authority-expansion.schema.json'
       - 'schemas/worker-runtime-cost-basis.schema.json'
       - 'schemas/worker-registry.schema.json'
       - 'schemas/process-worker-adapters.schema.json'
       - 'schemas/executable-handoff.schema.json'
+      - 'scripts/validate_executable_handoffs.py'
       - 'scripts/project_heartbeat_workers.py'
       - 'scripts/reconcile_heartbeat_continuity.py'
       - 'scripts/run_heartbeat_runtime.py'
@@ -61,8 +64,9 @@ jobs:
 
       - name: Compile HB runtime and projectors
         run: |
-          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py heartbeat_runtime/engine_v3.py heartbeat_runtime/engine_v4.py heartbeat_runtime/process_adapter.py
+          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py heartbeat_runtime/engine_v3.py heartbeat_runtime/engine_v4.py heartbeat_runtime/engine_v5.py heartbeat_runtime/process_adapter.py
           python -m py_compile workers/heartbeat_receipt_canary.py
+          python -m py_compile scripts/validate_executable_handoffs.py
           python -m py_compile scripts/project_heartbeat_workers.py
           python -m py_compile scripts/reconcile_heartbeat_continuity.py
           python -m py_compile scripts/run_heartbeat_runtime.py
@@ -83,6 +87,7 @@ jobs:
               Path('schemas/worker-mutation-scope-receipt.schema.json'),
               Path('schemas/worker-renewal-admission.schema.json'),
               Path('schemas/human-authority-boundary.schema.json'),
+              Path('schemas/worker-authority-expansion.schema.json'),
               Path('schemas/worker-runtime-cost-basis.schema.json'),
               Path('control/heartbeat-state.json'),
               Path('control/worker-registry.json'),
@@ -96,6 +101,9 @@ jobs:
               print(f'JSON_OK:{path}')
           PY
 
+      - name: Validate executable HANDOFF goal lineage
+        run: python scripts/validate_executable_handoffs.py
+
       - name: Prove native heartbeat engine semantics
         run: python -m unittest -v tests.test_heartbeat_runtime
 
@@ -104,6 +112,9 @@ jobs:
 
       - name: Prove blocked recheck and human authority boundaries
         run: python -m unittest -v tests.test_block_boundaries
+
+      - name: Prove bounded goal lineage and duplicate control
+        run: python -m unittest -v tests.test_goal_lineage
 
       - name: Prove sandboxed mutation scope and fence semantics
         run: python -m unittest -v tests.test_process_adapter_scope
