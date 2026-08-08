@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/worker-renewal-admission.schema.json",
+  "title": "StegVerse worker renewal admission",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "renewal_id",
+    "task_id",
+    "claim_id",
+    "fencing_token",
+    "prior_expiry_epoch",
+    "additional_beats",
+    "scope_sha256",
+    "authority_source",
+    "policy_version",
+    "status",
+    "heartbeat_grants_renewal"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.worker-renewal-admission/v0.1"},
+    "renewal_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "claim_id": {"type": "string", "minLength": 1},
+    "fencing_token": {"type": "integer", "minimum": 1},
+    "prior_expiry_epoch": {"type": "integer", "minimum": 1},
+    "additional_beats": {"type": "integer", "minimum": 1},
+    "scope_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "authority_source": {"type": "string", "minLength": 1},
+    "policy_version": {"type": "string", "minLength": 1},
+    "status": {"const": "ADMITTED"},
+    "heartbeat_grants_renewal": {"const": false}
+  }
+}
