@@ -32,6 +32,7 @@
     "task_id": "SHWP-NATIVE-PROCESS-CANARY-001",
     "repository": "StegVerse-Labs/.github",
     "source_refs": [
+      "StegVerse-Labs/.github#12:STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
       "StegVerse-Labs/.github#13",
       "heartbeat_runtime/process_adapter.py",
       "workers/heartbeat_receipt_canary.py",
