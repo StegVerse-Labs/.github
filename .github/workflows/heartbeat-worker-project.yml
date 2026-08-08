@@ -17,12 +17,9 @@ on:
       - 'tests/test_goal_lineage.py'
       - 'tests/test_resource_authority.py'
       - 'tests/test_checkpoint_policy.py'
+      - 'tests/test_capability_profiles.py'
       - 'tests/test_worker_cost_basis_estimator.py'
-      - 'control/heartbeat-state.json'
-      - 'control/worker-registry.json'
-      - 'control/heartbeat-continuity.json'
-      - 'control/worker-cost-observations.json'
-      - 'control/process-worker-adapters.json'
+      - 'control/**'
       - 'cost-basis/worker-runtime/**'
       - 'docs/ORG_MIRROR_HANDOFF.md'
       - 'docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md'
@@ -54,7 +51,7 @@ jobs:
           python-version: '3.12'
       - name: Compile HB runtime and projectors
         run: |
-          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py heartbeat_runtime/engine_v3.py heartbeat_runtime/engine_v4.py heartbeat_runtime/engine_v5.py heartbeat_runtime/engine_v6.py heartbeat_runtime/engine_v7.py heartbeat_runtime/process_adapter.py
+          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py heartbeat_runtime/engine_v3.py heartbeat_runtime/engine_v4.py heartbeat_runtime/engine_v5.py heartbeat_runtime/engine_v6.py heartbeat_runtime/engine_v7.py heartbeat_runtime/engine_v8.py heartbeat_runtime/process_adapter.py
           python -m py_compile workers/heartbeat_receipt_canary.py
           python -m py_compile scripts/validate_executable_handoffs.py scripts/project_heartbeat_workers.py scripts/reconcile_heartbeat_continuity.py scripts/run_heartbeat_runtime.py scripts/estimate_worker_cost_basis.py
       - name: Parse canonical JSON surfaces
@@ -62,7 +59,7 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-          paths = [*sorted(Path('schemas').glob('*.json')), Path('control/heartbeat-state.json'), Path('control/worker-registry.json'), Path('control/process-worker-adapters.json'), Path('control/worker-cost-observations.json'), *sorted(Path('handoffs').glob('*.json')), *sorted(Path('cost-basis/worker-runtime').glob('*.json'))]
+          paths = [*sorted(Path('schemas').glob('*.json')), *sorted(Path('control').glob('*.json')), *sorted(Path('handoffs').glob('*.json')), *sorted(Path('cost-basis/worker-runtime').glob('*.json'))]
           for path in paths:
               json.loads(path.read_text(encoding='utf-8'))
               print(f'JSON_OK:{path}')
@@ -81,6 +78,8 @@ jobs:
         run: python -m unittest -v tests.test_resource_authority
       - name: Prove policy continuity and canonical checkpoints
         run: python -m unittest -v tests.test_checkpoint_policy
+      - name: Prove worker capability profiles
+        run: python -m unittest -v tests.test_capability_profiles
       - name: Prove sandboxed mutation scope and fence semantics
         run: python -m unittest -v tests.test_process_adapter_scope
       - name: Prove one-HB authority renewal and orphan recovery
