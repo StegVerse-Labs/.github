@@ -10,6 +10,7 @@ on:
       - 'heartbeat_runtime/**'
       - 'workers/**'
       - 'tests/test_heartbeat_runtime.py'
+      - 'tests/test_process_adapter_scope.py'
       - 'tests/test_worker_cost_basis_estimator.py'
       - 'control/heartbeat-state.json'
       - 'control/worker-registry.json'
@@ -22,6 +23,7 @@ on:
       - 'schemas/heartbeat-transition-observation.schema.json'
       - 'schemas/heartbeat-activation-request.schema.json'
       - 'schemas/worker-reconstruction-proof.schema.json'
+      - 'schemas/worker-mutation-scope-receipt.schema.json'
       - 'schemas/worker-runtime-cost-basis.schema.json'
       - 'schemas/worker-registry.schema.json'
       - 'schemas/process-worker-adapters.schema.json'
@@ -73,6 +75,7 @@ jobs:
               Path('schemas/heartbeat-transition-observation.schema.json'),
               Path('schemas/heartbeat-activation-request.schema.json'),
               Path('schemas/worker-reconstruction-proof.schema.json'),
+              Path('schemas/worker-mutation-scope-receipt.schema.json'),
               Path('schemas/worker-runtime-cost-basis.schema.json'),
               Path('control/heartbeat-state.json'),
               Path('control/worker-registry.json'),
@@ -88,6 +91,9 @@ jobs:
 
       - name: Prove native heartbeat engine semantics
         run: python -m unittest -v tests.test_heartbeat_runtime
+
+      - name: Prove sandboxed mutation scope and fence semantics
+        run: python -m unittest -v tests.test_process_adapter_scope
 
       - name: Prove cost basis estimator semantics
         run: python -m unittest -v tests.test_worker_cost_basis_estimator
