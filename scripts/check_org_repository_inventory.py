@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate org repository inventory structure."""
+"""Validate org repository inventory structure without freezing lifecycle state."""
 
 from pathlib import Path
 import sys
@@ -9,7 +9,6 @@ INVENTORY = ROOT / "docs" / "ORG_REPOSITORY_INVENTORY.md"
 
 REQUIRED_TERMS = [
     "StegVerse-Labs Repository Inventory",
-    "inventory_state: initial_repository_inventory_installed",
     "Known Handoff Inventory",
     "Known Access Or Search Notes",
     "Known Remaining Files Or Modules To Install",
@@ -43,6 +42,11 @@ def main() -> int:
     for term in REQUIRED_TERMS:
         if term not in text:
             errors.append(f"inventory missing required term: {term}")
+
+    # Lifecycle values legitimately evolve. Require a durable state declaration
+    # without coupling the validator to one historical state literal.
+    if not any(line.strip().startswith("inventory_state:") for line in text.splitlines()):
+        errors.append("inventory missing inventory_state declaration")
 
     for marker in MINIMUM_REPO_MARKERS:
         if marker not in text:
