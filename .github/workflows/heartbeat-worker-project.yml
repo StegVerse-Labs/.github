@@ -51,7 +51,7 @@ jobs:
           python-version: '3.12'
       - name: Compile HB runtime and projectors
         run: |
-          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py heartbeat_runtime/engine_v3.py heartbeat_runtime/engine_v4.py heartbeat_runtime/engine_v5.py heartbeat_runtime/engine_v6.py heartbeat_runtime/engine_v7.py heartbeat_runtime/engine_v8.py heartbeat_runtime/process_adapter.py
+          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py heartbeat_runtime/engine_v3.py heartbeat_runtime/engine_v4.py heartbeat_runtime/engine_v5.py heartbeat_runtime/engine_v6.py heartbeat_runtime/engine_v7.py heartbeat_runtime/engine_v7_1.py heartbeat_runtime/engine_v8.py heartbeat_runtime/process_adapter.py
           python -m py_compile workers/heartbeat_receipt_canary.py
           python -m py_compile scripts/validate_executable_handoffs.py scripts/project_heartbeat_workers.py scripts/reconcile_heartbeat_continuity.py scripts/run_heartbeat_runtime.py scripts/estimate_worker_cost_basis.py
       - name: Parse canonical JSON surfaces
