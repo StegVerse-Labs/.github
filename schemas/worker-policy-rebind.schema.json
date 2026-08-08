@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/worker-policy-rebind.schema.json",
+  "title": "StegVerse Worker Policy Rebind Admission",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "rebind_id", "status", "task_id", "claim_id", "fencing_token", "old_policy_version", "new_policy_version", "handoff_sha256", "authority_source", "heartbeat_grants_rebind", "evidence_refs"],
+  "properties": {
+    "schema": {"const": "stegverse.worker-policy-rebind/v0.1"},
+    "rebind_id": {"type": "string", "minLength": 1},
+    "status": {"const": "ADMITTED"},
+    "task_id": {"type": "string", "minLength": 1},
+    "claim_id": {"type": "string", "minLength": 1},
+    "fencing_token": {"type": "integer", "minimum": 1},
+    "old_policy_version": {"type": "string", "minLength": 1},
+    "new_policy_version": {"type": "string", "minLength": 1},
+    "handoff_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "authority_source": {"type": "string", "minLength": 1},
+    "heartbeat_grants_rebind": {"const": false},
+    "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  }
+}
