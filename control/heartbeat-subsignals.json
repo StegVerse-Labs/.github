@@ -1,7 +1,22 @@
 {
   "schema": "stegverse.heartbeat-subsignals/v1",
-  "generation": 3,
+  "generation": 4,
   "subsignals": {
+    "organization_federation": {
+      "kind": "organization_readiness_federation",
+      "state": "ACTIVE_PARTIAL_COVERAGE",
+      "registry_ref": "control/organization-federation.json",
+      "task_registry_ref": "control/organization-task-registry.json",
+      "organization_count": 14,
+      "ready_count": 10,
+      "blocked_count": 4,
+      "unassigned_count": 0,
+      "detail_classes": ["MEMORY", "ACTION", "AWARENESS", "AUTHORITY", "EVIDENCE", "BLOCKER", "CAPABILITY", "CONTEXT"],
+      "recheck_policy": "ON_EACH_ADMITTED_HEARTBEAT_WHILE_ANY_ORGANIZATION_IS_BLOCKED_OR_CHANGED",
+      "progress_rule": "ONLY_ADMITTED_STATE_TRANSITIONS_ADVANCE_PROGRESS",
+      "authority_effect": false,
+      "transport_grants_authority": false
+    },
     "steggate_transport_lease": {
       "kind": "transport_lease",
       "state": "OPEN",
