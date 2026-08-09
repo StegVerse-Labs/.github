@@ -30,7 +30,18 @@
         "contracts": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
         "release_surfaces": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
         "capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-        "workflows": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+        "workflows": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "dependency_surfaces": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1},
+          "description": "Repository-independent external/runtime/deployment/work surfaces. Mutable overlap conflicts globally across repositories."
+        },
+        "dependency_surface_exempt": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Explicit reason a mutable claim has no repository-independent dependency surface. Absence of both this field and dependency_surfaces fails allocation closed."
+        }
       }
     },
     "lease": {
