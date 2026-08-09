@@ -4,7 +4,7 @@
 
 This is the canonical StegVerse-Labs organization continuation/exit record. Repository-local `*_MIRROR_HANDOFF.md` files remain authoritative for repository-local implementation evidence. Machine-readable state under `control/`, `handoffs/`, `management/`, `receipts/`, `checkpoints/`, `authorizations/`, `schemas/`, and `events/` supersedes chat history.
 
-## Active goal
+## Active goal and ownership
 
 ```text
 goal_id: CROSS-REPO-DEPENDENCY-CLAIMS-001
@@ -12,94 +12,45 @@ originating_goal: prevent adjacent sessions/workers in different repositories fr
 repository: StegVerse-Labs/.github
 canonical_branch: main
 canonical_owner: StegVerse-Labs/.github#12
-completion_issue: StegVerse-Labs/.github#57
-completion_pr: StegVerse-Labs/.github#58
+completion_issue: StegVerse-Labs/.github#57 CLOSED_COMPLETED
+completion_pr: StegVerse-Labs/.github#58 MERGED
 merge: 5173d22513c0e3a767703d38d6eebb844ea96a9f
 render_dependency: false
 current_state: COMPLETE_MERGED_MAIN_VALIDATED
-thread_archive_ready_under_documented_worker_rule: true
+thread_archive_ready: true
 ```
 
-The previous `WORKER-COORDINATION-SUBSIGNAL-CYCLE-LEASE` goal remains complete and is preserved below as the activated worker substrate. This new goal corrected the execution-entry allocator defect discovered after several adjacent sessions independently converged on Render-related work.
+The previous `WORKER-COORDINATION-SUBSIGNAL-CYCLE-LEASE` goal remains complete and is the activated worker substrate. This goal corrected the execution-entry allocator defect discovered after adjacent sessions independently converged on Render-related work.
 
-## Cross-repository claim admission correction
+## Canonical architecture
 
-Before merge `5173d22513c0e3a767703d38d6eebb844ea96a9f`, `scripts/allocate_claims.py::conflicts()` returned no conflict whenever two claims named different repositories. That repository-first decision allowed adjacent tasks in different repositories to acquire mutable claims against the same underlying external/runtime/deployment surface.
-
-Canonical corrected surfaces:
+There is one canonical StegVerse heartbeat and one canonical worker registry.
 
 ```text
-scripts/allocate_claims.py
-schemas/claim.schema.json
-tests/test_cross_repository_dependency_claims.py
-.github/workflows/org-control-plane-validate.yml
-docs/CROSS_REPO_DEPENDENCY_CLAIMS_MIRROR_HANDOFF.md
+heartbeat runtime: heartbeat_runtime.engine_v9.HeartbeatRuntime
+heartbeat runner: scripts/run_heartbeat_runtime.py
+worker coordination subsignal: control/heartbeat-subsignals.json#worker_coordination
+worker registry: control/worker-registry.json
+active claims: control/claims-active.json
+claim allocator: scripts/allocate_claims.py
+claim contract: schemas/claim.schema.json
+Master Records projection: control/heartbeat-master-records-projection.json
+organization federation handoff: handoffs/SHWP-ALL-ORG-FEDERATION-001.json
 ```
 
-Current invariant:
+Heartbeat cycles carry worker coordination. Heartbeat carriage does not grant execution authority; admitted task authority, capability matching, claim/fence state, policy continuity, bounded resource windows, and dependency-surface admission remain separate controls.
 
-```text
-repository identity does not bypass dependency-surface ownership
-```
+Cross-repository collision authority is centralized in the allocator. Repository-local entry gates may add defense in depth but may not become second global registries or second heartbeat authorities.
 
-The allocator now evaluates normalized `scope.dependency_surfaces` before repository identity. If two claims share a dependency surface and either is mutable, the requests conflict across repository boundaries. A mutable claim with neither `dependency_surfaces` nor an explicit non-empty `dependency_surface_exempt` reason is retained but not allocated; the queue records it under `blocked_missing_dependency_declaration`.
+## Completed protocol capabilities
 
-The regression suite explicitly proves that `StegVerse-Labs/Site` and `StegVerse-Labs/StegCore` cannot simultaneously acquire mutable `hosting:render` claims. Render is only the observed regression fixture; it is not heartbeat authority, worker authority, deployment authority, or an activation dependency.
+### Worker coordination substrate
 
-Hosted evidence:
-
-```text
-implementation-head control-plane run: 31331101395 SUCCESS
-implementation-head Heartbeat Worker Project: 31331101399 SUCCESS
-main control-plane run: 31331122402 SUCCESS
-main Heartbeat Worker Project: 31331122385 SUCCESS
-```
-
-The main Heartbeat Worker Project also re-proved heartbeat runtime semantics, worker-coordination subsignal/cycle leases, duplicate-control goal lineage, resource authority, checkpoints/fencing, fail-closed convergence, and sovereign-host implementation semantics.
-
-## Site entry-gate defense in depth
-
-The repository-local entry hole was independently closed and then transferred to a machine-owned Site lane:
-
-```text
-StegVerse-Labs/Site issue: #259
-PR: #260
-merge: c2fa9d436381f13c109125367ce803518d4ff2e4
-claim registry: StegVerse-Labs/Site/data/session-work-claims.json
-machine claim: SITE-PREWORK-CLAIM-GATE-MACHINE-001
-machine owner: github-actions:ecosystem-heartbeat-orchestration
-machine-claim transfer commit: 3afba810ded42fd32cba659c6de51612bcfad504
-machine-claim validation run: 31330976764 SUCCESS
-completion handoff: StegVerse-Labs/Site/docs/SESSION_PREWORK_CLAIMS_MIRROR_HANDOFF.md
-```
-
-The Site gate is defense in depth. It is not a second global worker registry and it cannot mint product execution authority. The organization allocator is the stronger cross-repository dependency-claim authority.
-
-## Correct semantic model
-
-There is one canonical high-frequency StegVerse heartbeat. `scripts/run_heartbeat_runtime.py --continuous` owns its internal cycle cadence. Hosted workflow schedules are validation or evidence carriers only.
-
-Worker coordination is a subsignal carried by heartbeat cycles. Worker task lifetime is expressed in canonical heartbeat cycles, not minutes/hours and not GitHub Actions cadence.
-
-```text
-lease_start_cycle = heartbeat_timing.start_epoch
-lease_end_cycle_exclusive = heartbeat_timing.expiry_epoch
-assigned_cycles = lease_end_cycle_exclusive - lease_start_cycle
-remaining_cycles = max(0, lease_end_cycle_exclusive - current_heartbeat_cycle)
-lease_clock = canonical_heartbeat_cycle
-wall_clock_expiry_authority = false
-```
-
-Heartbeat carriage does not grant execution authority. Admitted task authority, capability matching, claim/fence state, policy continuity, and bounded resource windows remain distinct controls.
-
-## Activated worker substrate
-
-The earlier worker coordination correction remains merged and actually observed through the canonical registry:
+The heartbeat-cycle worker correction remains merged and activation-observed:
 
 ```text
 PR: StegVerse-Labs/.github#56
 merge: a58b370480982ddc69333cde41370fa671eca060
-runtime: heartbeat_runtime.engine_v9.HeartbeatRuntime
 worker_coordination.state: ACTIVE
 ```
 
@@ -118,76 +69,150 @@ assigned_cycles: 256
 current_transition: FEDERATION_READY_WITH_MACHINE_BLOCKERS
 ```
 
-Canonical federation continuation:
+### Cross-repository dependency-surface claims
+
+Before merge `5173d22513c0e3a767703d38d6eebb844ea96a9f`, `scripts/allocate_claims.py::conflicts()` returned no conflict whenever two claims named different repositories. That repository-first rule allowed adjacent tasks to compete for the same external/runtime/deployment surface.
+
+Corrected surfaces:
 
 ```text
-handoffs/SHWP-ALL-ORG-FEDERATION-001.json
-control/worker-registry.json
-receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json
+scripts/allocate_claims.py
+schemas/claim.schema.json
+tests/test_cross_repository_dependency_claims.py
+.github/workflows/org-control-plane-validate.yml
+docs/CROSS_REPO_DEPENDENCY_CLAIMS_MIRROR_HANDOFF.md
 ```
 
-The federation receipt represents all 14 canonical organizations, with blocked organizations retaining explicit machine-observable release conditions and zero unassigned organizations. This worker remains the organization-wide readiness observer; no duplicate federation worker was introduced by the claim-admission correction.
-
-## Existing blocked organization release conditions
+Current invariant:
 
 ```text
-AaCT-E
-  block: CONNECTOR_WRITE_AUTHORITY
-  release: GitHub integration gains push authority to an AaCT-E repository or an AaCT-E-owned relay appears
-
-ECAT-ICAT-Formal
-  block: NO_REPOSITORY
-  release: organization exposes a repository capable of owning a canonical mirror handoff and adapter
-
-Infrastructure-Continuity-Ventures
-  block: NO_REPOSITORY
-  release: organization exposes a repository capable of owning a canonical mirror handoff and adapter
-
-Triad-Test
-  block: NO_REPOSITORY
-  release: organization exposes a repository capable of owning a canonical mirror handoff and adapter
+repository identity does not bypass dependency-surface ownership
 ```
 
-Those blockers remain machine-owned by the heartbeat federation worker and are not work retained by this conversation.
+The allocator evaluates normalized `scope.dependency_surfaces` before repository identity. Shared mutable dependency surfaces conflict globally. A mutable claim with neither `dependency_surfaces` nor a non-empty `dependency_surface_exempt` reason remains queued and is reported under `blocked_missing_dependency_declaration`; it is not silently allocated.
 
-## Distinct production activation goal
+The regression suite proves `StegVerse-Labs/Site` and `StegVerse-Labs/StegCore` cannot simultaneously acquire mutable `hosting:render` claims. Render is a regression fixture, not heartbeat authority, worker authority, deployment authority, or an activation prerequisite.
 
-Sovereign continuous carrier activation remains separate:
+### Site defense in depth
 
 ```text
-handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-StegVerse-Labs/.github#12
+StegVerse-Labs/Site issue: #259 CLOSED_COMPLETED
+PR: #260 MERGED
+merge: c2fa9d436381f13c109125367ce803518d4ff2e4
+claim registry: StegVerse-Labs/Site/data/session-work-claims.json
+machine claim: SITE-PREWORK-CLAIM-GATE-MACHINE-001
+machine owner: github-actions:ecosystem-heartbeat-orchestration
+machine-claim transfer commit: 3afba810ded42fd32cba659c6de51612bcfad504
+completion handoff: StegVerse-Labs/Site/docs/SESSION_PREWORK_CLAIMS_MIRROR_HANDOFF.md
+```
+
+Site's gate owns local admission/orchestration only. It cannot mint product execution authority or replace the organization allocator.
+
+## Validation evidence
+
+Cross-repository allocator implementation head:
+
+```text
+Validate organization control plane: run 31331101395 SUCCESS
+Heartbeat Worker Project: run 31331101399 SUCCESS
+```
+
+Main after PR #58 merge:
+
+```text
+Validate organization control plane: run 31331122402 SUCCESS
+Heartbeat Worker Project: run 31331122385 SUCCESS
+```
+
+The main Heartbeat Worker Project re-proved native heartbeat semantics, worker coordination subsignal/cycle leases, ambiguity-safe executor discovery, blocked recheck/human authority boundaries, bounded goal lineage/duplicate control, bounded resource authority, checkpoints/fencing, capability profiles, fail-closed convergence, sovereign heartbeat host semantics, and current successor posture.
+
+Site local/main validation:
+
+```text
+branch heartbeat orchestration: 31330859460 SUCCESS
+branch Site Handoff Orchestrator: 31330859465 SUCCESS
+branch Site Bootstrap Validate: 31330859473 SUCCESS
+branch Session Retirement Validate: 31330859476 SUCCESS
+post-merge main heartbeat: 31330951273 SUCCESS
+machine-claim transfer heartbeat: 31330976764 SUCCESS
+```
+
+The final handoff contract is itself validated by Org Aggregation Check and Org Continuation Check; no archive claim is valid while either is failing.
+
+## Human authority boundary — durable runtime activation
+
+Sovereign continuous-carrier activation remains a separate production goal:
+
+```text
+owner: StegVerse-Labs/.github#12
+handoff: handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
 state: BLOCKED_RUNTIME_ACTIVATION
-release: all sovereign-node runtime/restart/reconstruction predicates in issue #12 pass on one StegVerse-owned or federated node
+block: SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED
 ```
 
-That distinct goal is not a prerequisite to the documented-worker archive alternative: heartbeat-owned worker claim/fence/lease execution through the canonical registry is already observed.
+Production activation requires one StegVerse-owned or federated node to prove native service registration, continuous runtime from durable local storage, heartbeat epoch advancement under runtime-v9 timing authority, heartbeat-owned worker checkpoint response, controlled restart, no epoch/registry regression, no duplicate heartbeat/claim/fence split brain, and durable registry/event/cost/receipt/checkpoint reconstruction after restart.
+
+This separate block does not invalidate the documented-worker archival alternative because heartbeat-owned workers have already been observed as claimed, fenced, and cycle-leased through the canonical registry.
+
+## Cross-repository dependencies / propagation
+
+Canonical organization-wide readiness continuation:
+
+```text
+task: SHWP-ALL-ORG-FEDERATION-001
+handoff: handoffs/SHWP-ALL-ORG-FEDERATION-001.json
+registry: control/worker-registry.json
+receipt: receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json
+worker: organization-federation-readiness-worker
+carrier: worker_coordination heartbeat subsignal
+```
+
+The federation receipt represents all 14 canonical organizations with zero unassigned organizations. Blocked organizations retain machine-observable release conditions:
+
+```text
+AaCT-E: CONNECTOR_WRITE_AUTHORITY -> integration gains push authority or an AaCT-E-owned relay appears
+ECAT-ICAT-Formal: NO_REPOSITORY -> organization exposes a repository capable of canonical handoff/adapter ownership
+Infrastructure-Continuity-Ventures: NO_REPOSITORY -> organization exposes a repository capable of canonical handoff/adapter ownership
+Triad-Test: NO_REPOSITORY -> organization exposes a repository capable of canonical handoff/adapter ownership
+```
+
+Master Records custody/reconstruction continuation remains distinct from execution authority:
+
+```text
+source: control/heartbeat-master-records-projection.json
+destination: master-records/orchestration
+consumer handoff: master-records/orchestration/WORKER_LIFECYCLE_CUSTODY_MIRROR_HANDOFF.md
+hosted destination validation: machine-owned runner release condition retained by destination
+```
+
+Downstream heartbeat-cycle lease migration remains owned by `StegVerse-Labs/admissibility-wiki` issue #50 and its canonical mirror handoff. No second heartbeat or duplicate worker registry is authorized downstream.
 
 ## Collision and authority boundaries
 
 - One canonical heartbeat only.
 - One canonical worker registry only.
 - Repository identity never bypasses a declared global dependency-surface collision.
-- GitHub Actions cron is not heartbeat cadence.
+- GitHub Actions cron is validation/evidence carriage, not heartbeat cadence.
 - Render is not a heartbeat, worker, or activation dependency.
 - Cloudflare is not heartbeat or worker activation authority.
 - Heartbeat carriage does not grant task authority.
 - Worker capability matching does not grant authorization.
 - Master Records custody is reconstructive evidence, not execution authority.
-- A blocked worker remains blocked even while its lease is actively carried.
+- A blocked worker remains blocked while its lease is carried.
 - Do not duplicate all-organization federation work outside `SHWP-ALL-ORG-FEDERATION-001`.
 
-## Session execution inventory
+## Session consolidation
 
 ```text
 SITE-259-PREWORK-CLAIM-ENFORCEMENT
   owner: StegVerse-Labs/Site/data/session-work-claims.json#SITE-PREWORK-CLAIM-GATE-MACHINE-001
   state: COMPLETE_MERGED_MACHINE_OWNED
-  evidence: Site PR #260; main run 31330976764 SUCCESS
+  evidence: Site PR #260; run 31330976764 SUCCESS
   unique chat work: none
 
 CROSS-REPO-DEPENDENCY-CLAIMS-001
-  owner: StegVerse-Labs/.github#57 + docs/CROSS_REPO_DEPENDENCY_CLAIMS_MIRROR_HANDOFF.md
+  owner: docs/CROSS_REPO_DEPENDENCY_CLAIMS_MIRROR_HANDOFF.md
+  issue: #57 CLOSED_COMPLETED
   state: COMPLETE_MERGED_MAIN_VALIDATED
   evidence: PR #58 merge 5173d225; runs 31331122402 and 31331122385 SUCCESS
   unique chat work: none
@@ -203,9 +228,7 @@ SHWP-DURABLE-RUNTIME-ACTIVATION
   next: sovereign continuous-carrier and restart/reconstruction proof
 ```
 
-## Completion assessment
-
-Denominator for this session's orchestration-collision correction:
+Session goal denominator for the orchestration-collision correction:
 
 ```text
 required Site developed/integration surfaces: 6
@@ -215,7 +238,7 @@ required machine-owned continuation transfers: 2
 required unique session goals transferred/completed: 5
 ```
 
-Current result:
+Current completion:
 
 ```text
 Site developed/integration surfaces: 6/6
@@ -227,18 +250,13 @@ scaffolding/stubs in required correction set: 0
 missing required correction files: 0
 session unique active claims: 0
 current correction goal activation: 100%
-archive under documented-worker activation rule: YES
+thread_archive_ready: true
 ```
 
-## Archive state
+MERGED INTO: `StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md`
 
-The recurring Render/session-collision defect is no longer only documented. Site pre-work admission is merged, main-validated, and machine-owned. The central allocator defect is merged and main-validated. The canonical heartbeat/worker registry has an actually claimed/fenced worker lease for organization-wide readiness observation, and all remaining unrelated organization/runtime blockers have durable machine-observable release conditions.
+MERGED INTO: `StegVerse-Labs/.github/docs/CROSS_REPO_DEPENDENCY_CLAIMS_MIRROR_HANDOFF.md`
 
-No unique implementation, validation, integration, propagation, reconciliation, or observation role from this conversation remains.
+MERGED INTO: `StegVerse-Labs/.github/handoffs/SHWP-ALL-ORG-FEDERATION-001.json`
 
-```text
-MERGED INTO: StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md
-MERGED INTO: StegVerse-Labs/.github/docs/CROSS_REPO_DEPENDENCY_CLAIMS_MIRROR_HANDOFF.md
-MERGED INTO: StegVerse-Labs/.github/handoffs/SHWP-ALL-ORG-FEDERATION-001.json
-MERGED INTO: StegVerse-Labs/Site/data/session-work-claims.json#SITE-PREWORK-CLAIM-GATE-MACHINE-001
-```
+MERGED INTO: `StegVerse-Labs/Site/data/session-work-claims.json#SITE-PREWORK-CLAIM-GATE-MACHINE-001`
