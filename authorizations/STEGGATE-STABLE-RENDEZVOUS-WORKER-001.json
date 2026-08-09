@@ -1,0 +1,36 @@
+{
+  "schema": "stegverse.worker-authorization/v0.1",
+  "authorization_id": "AUTH-STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+  "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+  "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
+  "state": "AUTHORIZED",
+  "authority_source": [
+    "StegVerse-Labs/Site#24",
+    "StegVerse-Labs/Site/SITE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site/data/tvc-infrastructure-credential-consumer-authority.v1.json",
+    "StegVerse-Labs/Site/data/cloudflare-steggate-credential-profile.json"
+  ],
+  "authorized_executor_profile": "deployment-worker-v1",
+  "authorized_capabilities": [
+    "deployment_update",
+    "runtime_observation"
+  ],
+  "authorized_effects": [
+    "deploy only the non-authorizing StegGate rendezvous Worker to the stegverse.org/api/steggate route",
+    "verify readiness, canonical health, and exact ALLOW/DENY/REVIEW/FAIL_CLOSED self-test",
+    "write heartbeat-owned no-secret execution receipts under receipts/steggate-rendezvous-worker/**"
+  ],
+  "credential_boundary": {
+    "required_environment_refs": [
+      "CLOUDFLARE_API_TOKEN",
+      "CLOUDFLARE_ACCOUNT_ID"
+    ],
+    "values_may_be_persisted": false,
+    "missing_values_state": "BLOCKED",
+    "missing_values_release_condition": "Both credential references are populated in the authorized heartbeat execution environment."
+  },
+  "provider_authority_effect": false,
+  "heartbeat_grants_execution_authority": false,
+  "external_cost_ceiling_usd": 0,
+  "revocation_condition": "Site#24 is closed/superseded, TVC reference authority is revoked, the credential profile is superseded, or this authorization is explicitly revoked."
+}
