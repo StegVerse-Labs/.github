@@ -256,6 +256,17 @@ All unique requirements from this session are now durable in the repository and 
 
 Therefore this session satisfies the archive rule through the second permitted path: a documented StegVerse worker is activated using the canonical heartbeat and worker task registry, and all unresolved work is machine-owned under that worker.
 
+## Final durable transfer record
+
+```text
+canonical session handoff commit: 791b60e617e729e6228122837c3c56cbde92293f
+management-state commit: 4dbea8aa2aec748dd63ea42429c2e9b9ea23d8d7
+v9 validation workflow commit: 20306f02236eec678d9b69289917e38144158389
+v9 heartbeat persistence commit: 7335c13
+latest verified federation receipt: heartbeat epoch 13 / transition sequence 3
+conversation-dependent state remaining: none
+```
+
 ## Completion assessment
 
 ```text
