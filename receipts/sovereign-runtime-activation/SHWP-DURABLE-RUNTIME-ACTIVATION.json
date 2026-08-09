@@ -1,10 +1,23 @@
 {
   "authority_effect": "none_beyond_admitted_receipt_namespace",
+  "blocker": {
+    "dependency_class": "PHYSICAL_RESOURCE",
+    "may_remain_blocked": true,
+    "next_solution_action": "Select an eligible StegVerse-owned/federated node and execute the native service installation/activation path; do not wait for a hosted provider.",
+    "problem_statement": "No StegVerse-owned/federated node has yet emitted evidence satisfying the sovereign runtime activation predicates.",
+    "solution_required": true,
+    "workaround_candidates": [
+      "Install and start the canonical heartbeat service on any eligible StegVerse-owned/federated Linux node using scripts/install_sovereign_heartbeat_service.py.",
+      "Materialize the sovereign runtime capsule on an alternate eligible StegVerse node and migrate the canonical durable state before service start.",
+      "Use an existing StegVerse-002 micro-node as the carrier if it satisfies the same local-storage, restart, reconstruction, and no-split-brain predicates."
+    ]
+  },
+  "blocker_policy_ref": "control/blocker-resolution-policy.json",
   "claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
   "completed": false,
   "evidence_path": null,
   "fencing_token": 18,
-  "heartbeat_epoch": 16,
+  "heartbeat_epoch": 18,
   "missing_predicates": [
     "runtime_materialized",
     "native_service_active",
@@ -27,10 +40,11 @@
     "no_duplicate_claim_or_fence",
     "state_reconstruction_pass"
   ],
-  "schema": "stegverse.sovereign-runtime-worker-receipt/v0.1",
+  "schema": "stegverse.sovereign-runtime-worker-receipt/v0.2",
   "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "third_party_dependency_is_blocker": false,
   "third_party_runtime_required": false,
-  "transition_id": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
+  "transition_id": "SOVEREIGN_RUNTIME_SOLUTION_REQUIRED",
   "worker_id": "sovereign-runtime-activation-worker",
   "worker_instance_id": "sovereign-runtime-activation-worker-HB15-G18"
 }

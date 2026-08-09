@@ -89,7 +89,7 @@
         "AUTHORIZED_REMAINING_ACTION"
       ],
       "root_task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
-      "state": "BLOCKED",
+      "state": "ACTIVE",
       "success_predicates_satisfied": false
     }
   ],

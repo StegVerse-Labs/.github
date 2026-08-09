@@ -181,41 +181,44 @@
         "StegVerse-Labs/.github#59",
         "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json:RESOLVED",
         "checkpoints/workers/SHWP-DURABLE-RUNTIME-ACTIVATION/HB15-G18.json",
+        "checkpoints/workers/SHWP-DURABLE-RUNTIME-ACTIVATION/HB16-G18.json",
+        "checkpoints/workers/SHWP-DURABLE-RUNTIME-ACTIVATION/HB17-G18.json",
         "cost-basis/worker-runtime/sovereign-runtime-activation.json",
         "master-records/monitoring/MONITORING_MIRROR_HANDOFF.md",
         "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_AUTH.json",
         "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_RECEIPT.json",
         "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
         "receipts/worker-mutation-scope/SHWP-DURABLE-RUNTIME-ACTIVATION-HB15-G18-4f6ab23d1cd860ec.json",
-        "workers/sovereign_runtime_activation_worker.py",
         "receipts/worker-mutation-scope/SHWP-DURABLE-RUNTIME-ACTIVATION-HB16-G18-f0d706c2aa4d9cdf.json",
-        "checkpoints/workers/SHWP-DURABLE-RUNTIME-ACTIVATION/HB16-G18.json",
         "receipts/worker-mutation-scope/SHWP-DURABLE-RUNTIME-ACTIVATION-HB17-G18-b480023776772176.json",
-        "checkpoints/workers/SHWP-DURABLE-RUNTIME-ACTIVATION/HB17-G18.json"
+        "workers/sovereign_runtime_activation_worker.py",
+        "control/blocker-resolution-policy.json",
+        "receipts/worker-mutation-scope/SHWP-DURABLE-RUNTIME-ACTIVATION-HB18-G18-79f1f5b585886e98.json",
+        "checkpoints/workers/SHWP-DURABLE-RUNTIME-ACTIVATION/HB18-G18.json"
       ],
       "executor_binding": "BOUND",
       "external_entity_job_ref": null,
       "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
       "handoff_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
       "heartbeat_timing": {
-        "current_transition": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
-        "expected_next_earliest_epoch": 18,
-        "expected_next_latest_epoch": 18,
-        "expected_next_transition": "SOVEREIGN_RUNTIME_RECHECK",
+        "current_transition": "SOVEREIGN_RUNTIME_SOLUTION_REQUIRED",
+        "expected_next_earliest_epoch": 19,
+        "expected_next_latest_epoch": 19,
+        "expected_next_transition": "SOVEREIGN_RUNTIME_SOLUTION_EXECUTION",
         "expiry_basis": "TASK_CLASS_COST_BASIS",
         "expiry_epoch": 4111,
         "fencing_token": 18,
-        "last_response_epoch": 17,
-        "last_transition_epoch": 15,
+        "last_response_epoch": 18,
+        "last_transition_epoch": 18,
         "max_missing_response_beats": 3,
         "renewal_count": 0,
         "start_epoch": 15,
         "transition_sequence": 1
       },
-      "last_checkpoint_ref": "checkpoints/workers/SHWP-DURABLE-RUNTIME-ACTIVATION/HB17-G18.json",
+      "last_checkpoint_ref": "checkpoints/workers/SHWP-DURABLE-RUNTIME-ACTIVATION/HB18-G18.json",
       "lease": null,
       "resource_budget": {
-        "actions_used": 3,
+        "actions_used": 4,
         "allowed_services": [],
         "external_cost_ceiling_usd": 0.0,
         "external_cost_usd": 0.0,
@@ -245,6 +248,12 @@
           "heartbeat_epoch": 17,
           "response_state": "BLOCKED",
           "transition_id": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
+          "transition_sequence": 1
+        },
+        {
+          "heartbeat_epoch": 18,
+          "response_state": "BLOCKED",
+          "transition_id": "SOVEREIGN_RUNTIME_SOLUTION_REQUIRED",
           "transition_sequence": 1
         }
       ],
@@ -286,31 +295,34 @@
         "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB16-G13-7bc6c939e2e33a31.json",
         "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB16-G13.json",
         "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB17-G13-7c6831cf17f98e2a.json",
-        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB17-G13.json"
+        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB17-G13.json",
+        "control/blocker-resolution-policy.json",
+        "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB18-G13-f5f66255e9f2442f.json",
+        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB18-G13.json"
       ],
       "executor_binding": "BOUND",
       "external_entity_job_ref": "cloudflare:stegverse-steggate-rendezvous",
       "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
       "handoff_ref": "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
       "heartbeat_timing": {
-        "current_transition": "CREDENTIAL_VALUES_ABSENT",
-        "expected_next_earliest_epoch": 18,
-        "expected_next_latest_epoch": 49,
-        "expected_next_transition": "CREDENTIAL_RECHECK",
+        "current_transition": "THIRD_PARTY_WORKAROUND_REQUIRED",
+        "expected_next_earliest_epoch": 19,
+        "expected_next_latest_epoch": 19,
+        "expected_next_transition": "ALTERNATE_RENDEZVOUS_PATH",
         "expiry_basis": "TASK_CLASS_COST_BASIS",
         "expiry_epoch": 71,
         "fencing_token": 13,
-        "last_response_epoch": 17,
-        "last_transition_epoch": 7,
+        "last_response_epoch": 18,
+        "last_transition_epoch": 18,
         "max_missing_response_beats": 3,
         "renewal_count": 0,
         "start_epoch": 7,
         "transition_sequence": 1
       },
-      "last_checkpoint_ref": "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB17-G13.json",
+      "last_checkpoint_ref": "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB18-G13.json",
       "lease": null,
       "resource_budget": {
-        "actions_used": 11,
+        "actions_used": 12,
         "allowed_services": [
           "api.cloudflare.com",
           "stegverse.org",
@@ -325,7 +337,7 @@
         "retries_used": 0,
         "runtime_window_beats": 64
       },
-      "state": "BLOCKED",
+      "state": "ACTIVE",
       "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
       "transition_history": [
         {
@@ -393,6 +405,12 @@
           "response_state": "BLOCKED",
           "transition_id": "CREDENTIAL_VALUES_ABSENT",
           "transition_sequence": 1
+        },
+        {
+          "heartbeat_epoch": 18,
+          "response_state": "ACTIVE",
+          "transition_id": "THIRD_PARTY_WORKAROUND_REQUIRED",
+          "transition_sequence": 1
         }
       ],
       "worker_id": "steggate-rendezvous-deployment-worker",
@@ -426,7 +444,9 @@
         "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB16-G17-6108e5fff6fa8ab2.json",
         "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB16-G17.json",
         "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB17-G17-c175a3a63a7ae6cd.json",
-        "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB17-G17.json"
+        "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB17-G17.json",
+        "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB18-G17-8197066c6d9d5641.json",
+        "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB18-G17.json"
       ],
       "executor_binding": "BOUND",
       "external_entity_job_ref": null,
@@ -434,23 +454,23 @@
       "handoff_ref": "handoffs/SHWP-ALL-ORG-FEDERATION-001.json",
       "heartbeat_timing": {
         "current_transition": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
-        "expected_next_earliest_epoch": 18,
-        "expected_next_latest_epoch": 18,
+        "expected_next_earliest_epoch": 19,
+        "expected_next_latest_epoch": 19,
         "expected_next_transition": "FEDERATION_RECHECK",
         "expiry_basis": "TASK_CLASS_COST_BASIS",
         "expiry_epoch": 267,
         "fencing_token": 17,
-        "last_response_epoch": 17,
+        "last_response_epoch": 18,
         "last_transition_epoch": 11,
         "max_missing_response_beats": 3,
         "renewal_count": 0,
         "start_epoch": 11,
         "transition_sequence": 5
       },
-      "last_checkpoint_ref": "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB17-G17.json",
+      "last_checkpoint_ref": "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB18-G17.json",
       "lease": null,
       "resource_budget": {
-        "actions_used": 7,
+        "actions_used": 8,
         "allowed_services": [],
         "external_cost_ceiling_usd": 0.0,
         "external_cost_usd": 0.0,
@@ -505,6 +525,12 @@
           "response_state": "BLOCKED",
           "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
           "transition_sequence": 5
+        },
+        {
+          "heartbeat_epoch": 18,
+          "response_state": "BLOCKED",
+          "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+          "transition_sequence": 5
         }
       ],
       "worker_id": "organization-federation-readiness-worker",
@@ -523,7 +549,9 @@
         "workers/ecosystem_chat_sovereign_inference_worker.py",
         "receipts/ecosystem-chat-sovereign-inference/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
         "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB17-G20-d6651cb918f3fdb2.json",
-        "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB17-G20.json"
+        "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB17-G20.json",
+        "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB18-G20-bbd537715494e83c.json",
+        "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB18-G20.json"
       ],
       "executor_binding": "BOUND",
       "external_entity_job_ref": null,
@@ -531,23 +559,23 @@
       "handoff_ref": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
       "heartbeat_timing": {
         "current_transition": "SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED",
-        "expected_next_earliest_epoch": 18,
-        "expected_next_latest_epoch": 18,
+        "expected_next_earliest_epoch": 19,
+        "expected_next_latest_epoch": 19,
         "expected_next_transition": "SOVEREIGN_INFERENCE_RECHECK",
         "expiry_basis": "TASK_CLASS_COST_BASIS",
         "expiry_epoch": 4113,
         "fencing_token": 20,
-        "last_response_epoch": 17,
+        "last_response_epoch": 18,
         "last_transition_epoch": 17,
         "max_missing_response_beats": 3,
         "renewal_count": 0,
         "start_epoch": 17,
         "transition_sequence": 1
       },
-      "last_checkpoint_ref": "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB17-G20.json",
+      "last_checkpoint_ref": "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB18-G20.json",
       "lease": null,
       "resource_budget": {
-        "actions_used": 1,
+        "actions_used": 2,
         "allowed_services": [],
         "external_cost_ceiling_usd": 0.0,
         "external_cost_usd": 0.0,
@@ -566,13 +594,19 @@
           "response_state": "BLOCKED",
           "transition_id": "SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED",
           "transition_sequence": 1
+        },
+        {
+          "heartbeat_epoch": 18,
+          "response_state": "BLOCKED",
+          "transition_id": "SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED",
+          "transition_sequence": 1
         }
       ],
       "worker_id": "ecosystem-chat-sovereign-inference-worker",
       "worker_instance_id": "ecosystem-chat-sovereign-inference-worker-HB17-G20"
     }
   ],
-  "updated_at": "2026-08-09T20:03:40Z",
+  "updated_at": "2026-08-09T20:49:25Z",
   "workers": [
     {
       "adapter_ref": null,
