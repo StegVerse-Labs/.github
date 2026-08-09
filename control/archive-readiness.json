@@ -1,0 +1,65 @@
+{
+  "schema": "stegverse.archive-readiness/v1",
+  "goal_id": "ARCHIVE-GATE-PROGRESS-ENFORCEMENT-001",
+  "canonical_owner": "StegVerse-Labs/.github#64",
+  "thread_archive_ready": false,
+  "archive_gate": "BLOCKED",
+  "reason_codes": [
+    "UNMET_ECOSYSTEM_GOALS",
+    "ZERO_PROGRESSING_PRODUCTION_WORKERS",
+    "BLOCKED_WORKERS_RECHECKING_UNCHANGED_CONDITIONS"
+  ],
+  "rules": {
+    "context_transfer_is_completion": false,
+    "busy_implies_progress": false,
+    "claimed_implies_progress": false,
+    "leased_implies_progress": false,
+    "heartbeat_response_implies_progress": false,
+    "unchanged_blocker_checkpoint_implies_progress": false,
+    "archive_requires_all_goals_terminal_or_demonstrably_progressing": true
+  },
+  "progress_classes": [
+    "PROGRESSING",
+    "MONITORING_BLOCKED",
+    "STALLED",
+    "COMPLETED"
+  ],
+  "unfinished_production_tasks": [
+    {
+      "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "worker_id": "sovereign-runtime-activation-worker",
+      "registry_state": "BLOCKED",
+      "current_transition": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
+      "progress_class": "MONITORING_BLOCKED"
+    },
+    {
+      "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+      "worker_id": "ecosystem-chat-sovereign-inference-worker",
+      "registry_state": "BLOCKED",
+      "current_transition": "SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED",
+      "progress_class": "MONITORING_BLOCKED"
+    },
+    {
+      "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+      "worker_id": "steggate-rendezvous-deployment-worker",
+      "registry_state": "BLOCKED",
+      "current_transition": "CREDENTIAL_VALUES_ABSENT",
+      "progress_class": "MONITORING_BLOCKED"
+    },
+    {
+      "task_id": "SHWP-ALL-ORG-FEDERATION-001",
+      "worker_id": "organization-federation-readiness-worker",
+      "registry_state": "BLOCKED",
+      "current_transition": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+      "progress_class": "MONITORING_BLOCKED"
+    }
+  ],
+  "summary": {
+    "unfinished_production_tasks": 4,
+    "progressing": 0,
+    "monitoring_blocked": 4,
+    "stalled": 0,
+    "completed_in_unfinished_set": 0
+  },
+  "release_condition": "All inherited ecosystem goals reach terminal success predicates, or every still-unfinished goal is owned by a machine worker with durable measurable forward progress under an admitted task-specific transition. Repeated unchanged blocker observations never satisfy this condition."
+}
