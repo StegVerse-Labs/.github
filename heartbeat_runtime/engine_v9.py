@@ -10,14 +10,7 @@ from .org_assertions import issue_claim_assertions
 
 
 class HeartbeatRuntime(HeartbeatRuntimeV8):
-    """Single-heartbeat runtime with cycle-bound worker coordination subsignals.
-
-    The heartbeat is the high-frequency carrier. Worker authority is still
-    established by admitted task/claim/fence state. The worker-coordination
-    subsignal carries the already-admitted worker lease on every heartbeat
-    cycle; the lease lifetime is measured in heartbeat cycles, never in wall
-    clock time and never by a low-frequency scheduler.
-    """
+    """Single-heartbeat runtime with cycle-bound worker coordination subsignals."""
 
     WORKER_COORDINATION_SUBSIGNAL = "worker_coordination"
 
@@ -36,7 +29,6 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
         fence = timing.get("fencing_token")
         if not all(isinstance(value, int) for value in (start, end, fence)) or end <= start:
             return None
-        assigned = end - start
         return {
             "task_id": task.get("task_id"),
             "goal_id": task.get("goal_id"),
@@ -46,7 +38,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
             "fencing_token": fence,
             "lease_start_cycle": start,
             "lease_end_cycle_exclusive": end,
-            "assigned_cycles": assigned,
+            "assigned_cycles": end - start,
             "remaining_cycles": max(0, end - epoch),
             "expiry_basis": timing.get("expiry_basis"),
             "current_transition": timing.get("current_transition"),
@@ -92,13 +84,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
         payload = json.dumps(subsignal, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
         return hashlib.sha256(payload).hexdigest()
 
-    def _carry_subsignals(
-        self,
-        heartbeat: dict[str, Any],
-        registry: dict[str, Any],
-        epoch: int,
-        events: list[dict[str, Any]],
-    ) -> dict[str, Any]:
+    def _carry_subsignals(self, heartbeat: dict[str, Any], registry: dict[str, Any], epoch: int, events: list[dict[str, Any]]) -> dict[str, Any]:
         data = self._load(self.subsignal_path) if self.subsignal_path.exists() else {
             "schema": "stegverse.heartbeat-subsignals/v1",
             "generation": 0,
@@ -108,7 +94,6 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
         digest = self._coordination_digest(coordination)
         data.setdefault("subsignals", {})[self.WORKER_COORDINATION_SUBSIGNAL] = coordination
         data["generation"] = int(data.get("generation", 0)) + 1
-
         heartbeat["subsignals"] = {
             self.WORKER_COORDINATION_SUBSIGNAL: coordination,
             "registry_generation": data["generation"],
@@ -156,32 +141,26 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
                 "generation": 0,
                 "records": [],
             }
-
             epoch = int(heartbeat.get("epoch", 0)) + 1
             now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
             heartbeat["epoch"] = epoch
             heartbeat["generation"] = int(heartbeat.get("generation", 0)) + 1
             heartbeat["last_cycle_at"] = now
-
             issued = issue_claim_assertions(self.root, epoch, now, write=write)
             heartbeat["last_issued_at"] = now
             heartbeat["expected_returns"] = len(issued)
             heartbeat["issued"] = issued
-
             events: list[dict[str, Any]] = []
             self._event(events, epoch, "organization_assertions_issued", issued_count=len(issued), issued_refs=issued)
-
             for task in list(registry.get("tasks", [])):
                 if task.get("state") in self.WORKER_OWNED and task.get("worker_id"):
                     self._invoke(registry, task, epoch, cost_log, events)
                 elif task.get("state") == "BLOCKED" and task.get("worker_id"):
                     self._invoke(registry, task, epoch, cost_log, events)
-
             activated = self._activate_one(registry, epoch, cost_log, events)
+            coordination = self._carry_subsignals(heartbeat, registry, epoch, events)
             if not activated:
                 self._event(events, epoch, "no_worker_initiated", reason="NO_ELIGIBLE_ADMISSIBLE_RESOLVED_WORK")
-
-            coordination = self._carry_subsignals(heartbeat, registry, epoch, events)
             registry["updated_at"] = now
             result = {
                 "schema": "stegverse.heartbeat-cycle-result/v0.9",
