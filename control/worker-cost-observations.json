@@ -1,5 +1,5 @@
 {
-  "generation": 18,
+  "generation": 21,
   "records": [
     {
       "cost": {
@@ -288,6 +288,54 @@
       "transition_id": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
       "transition_sequence": 1,
       "worker_id": "sovereign-runtime-activation-worker"
+    },
+    {
+      "cost": {
+        "compute_units": 1,
+        "external_cost_usd": 0,
+        "hb_transition_count": 1,
+        "task_class": "sovereign_runtime_activation"
+      },
+      "external_entity_job_ref": null,
+      "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "heartbeat_epoch": 16,
+      "schema": "stegverse.worker-cost-observation/v0.1",
+      "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "transition_id": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
+      "transition_sequence": 1,
+      "worker_id": "sovereign-runtime-activation-worker"
+    },
+    {
+      "cost": {
+        "compute_units": 1,
+        "external_cost_usd": 0,
+        "hb_transition_count": 1,
+        "task_class": "steggate_stable_rendezvous"
+      },
+      "external_entity_job_ref": "cloudflare:stegverse-steggate-rendezvous",
+      "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
+      "heartbeat_epoch": 16,
+      "schema": "stegverse.worker-cost-observation/v0.1",
+      "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+      "transition_id": "CREDENTIAL_VALUES_ABSENT",
+      "transition_sequence": 1,
+      "worker_id": "steggate-rendezvous-deployment-worker"
+    },
+    {
+      "cost": {
+        "compute_units": 1,
+        "external_cost_usd": 0,
+        "hb_transition_count": 1,
+        "task_class": "organization_federation_readiness"
+      },
+      "external_entity_job_ref": null,
+      "goal_id": "ALL-ORG-HEARTBEAT-FEDERATION-001",
+      "heartbeat_epoch": 16,
+      "schema": "stegverse.worker-cost-observation/v0.1",
+      "task_id": "SHWP-ALL-ORG-FEDERATION-001",
+      "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+      "transition_sequence": 5,
+      "worker_id": "organization-federation-readiness-worker"
     }
   ],
   "schema": "stegverse.worker-cost-observation-log/v0.1"

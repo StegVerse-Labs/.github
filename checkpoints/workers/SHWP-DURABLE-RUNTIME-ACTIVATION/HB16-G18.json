@@ -1,0 +1,66 @@
+{
+  "authority_source": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json#resolution",
+  "checkpoint_id": "CP-SHWP-DURABLE-RUNTIME-ACTIVATION-HB16-G18",
+  "checkpoint_sha256": "7da173c03df622cd56767938a801b9fed43e649dbfff002a48a376083cfb8003",
+  "claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+  "completed_transitions": [
+    {
+      "heartbeat_epoch": 15,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 16,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
+      "transition_sequence": 1
+    }
+  ],
+  "current_state": "BLOCKED",
+  "evidence_refs": [
+    "Render Key Value red-d9s17pnavr4c73a8p2ng:available",
+    "Render deploy dep-d9s1987avr4c73a8rkeg:BUILD_FAILED_PROVIDER_QUOTA",
+    "Render service srv-d9s197vavr4c73a8rjjg:created",
+    "StegVerse-Labs/.github#12",
+    "StegVerse-Labs/.github#59",
+    "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json:RESOLVED",
+    "checkpoints/workers/SHWP-DURABLE-RUNTIME-ACTIVATION/HB15-G18.json",
+    "cost-basis/worker-runtime/sovereign-runtime-activation.json",
+    "master-records/monitoring/MONITORING_MIRROR_HANDOFF.md",
+    "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_AUTH.json",
+    "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_RECEIPT.json",
+    "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "receipts/worker-mutation-scope/SHWP-DURABLE-RUNTIME-ACTIVATION-HB15-G18-4f6ab23d1cd860ec.json",
+    "workers/sovereign_runtime_activation_worker.py",
+    "receipts/worker-mutation-scope/SHWP-DURABLE-RUNTIME-ACTIVATION-HB16-G18-f0d706c2aa4d9cdf.json"
+  ],
+  "execution_authority": false,
+  "fencing_token": 18,
+  "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "handoff_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+  "handoff_sha256": "2eaf47a06824015692678502493dff5b5b9283acf4763b4f51dca4c25bb7aede",
+  "heartbeat_epoch": 16,
+  "next_authorized_action": "Heartbeat worker rechecks node-local sovereign activation evidence every admitted cycle; when a StegVerse sovereign node emits all nine predicates true, the worker completes and Master Records reconstruction finalizes the task.",
+  "policy_version": "shwp-single-hb-v0.3-sovereign",
+  "resource_budget": {
+    "actions_used": 2,
+    "allowed_services": [],
+    "external_cost_ceiling_usd": 0.0,
+    "external_cost_usd": 0.0,
+    "max_actions": 100,
+    "max_retries": 4096,
+    "rate_class": "sovereign_runtime_activation",
+    "renewal_count": 0,
+    "retries_used": 0,
+    "runtime_window_beats": 4096
+  },
+  "schema": "stegverse.worker-checkpoint/v0.1",
+  "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "unresolved_work": [
+    "Heartbeat worker rechecks node-local sovereign activation evidence every admitted cycle; when a StegVerse sovereign node emits all nine predicates true, the worker completes and Master Records reconstruction finalizes the task."
+  ],
+  "worker_checkpoint_ref": "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+  "worker_id": "sovereign-runtime-activation-worker",
+  "worker_instance_id": "sovereign-runtime-activation-worker-HB15-G18"
+}

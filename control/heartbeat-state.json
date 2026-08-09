@@ -6,9 +6,9 @@
     "policy_version": 0,
     "scope": 0
   },
-  "epoch": 15,
+  "epoch": 16,
   "expected_returns": 0,
-  "generation": 15,
+  "generation": 16,
   "issued": [],
   "last_completed_round": {
     "claimant_id": "TASK-2026-0003",
@@ -18,8 +18,8 @@
     "observation": "heartbeats/observations/TASK-2026-0003-1.json",
     "repository": "StegVerse-Labs/StegCore"
   },
-  "last_cycle_at": "2026-08-09T19:58:15Z",
-  "last_issued_at": "2026-08-09T19:58:15Z",
+  "last_cycle_at": "2026-08-09T20:00:04Z",
+  "last_issued_at": "2026-08-09T20:00:04Z",
   "open_warrants": [],
   "ordered_tolerances": {
     "epoch_beats": 2
@@ -30,7 +30,7 @@
   "schema": "stegverse.org-heartbeat-state/v1",
   "statistical_detection_active": false,
   "subsignals": {
-    "registry_generation": 9,
+    "registry_generation": 10,
     "worker_coordination": {
       "active_leases": [
         {
@@ -44,7 +44,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 267,
           "lease_start_cycle": 11,
-          "remaining_cycles": 252,
+          "remaining_cycles": 251,
           "task_id": "SHWP-ALL-ORG-FEDERATION-001",
           "task_state": "BLOCKED",
           "wall_clock_expiry_authority": false,
@@ -62,7 +62,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 4111,
           "lease_start_cycle": 15,
-          "remaining_cycles": 4096,
+          "remaining_cycles": 4095,
           "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
           "task_state": "BLOCKED",
           "wall_clock_expiry_authority": false,
@@ -80,7 +80,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 71,
           "lease_start_cycle": 7,
-          "remaining_cycles": 56,
+          "remaining_cycles": 55,
           "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
           "task_state": "BLOCKED",
           "wall_clock_expiry_authority": false,
@@ -91,7 +91,7 @@
       "authority_effect": false,
       "carrier": "single_stegverse_heartbeat",
       "carrier_cycle_unit": "heartbeat_cycle",
-      "carrier_epoch": 15,
+      "carrier_epoch": 16,
       "kind": "worker_coordination",
       "master_records_projection": {
         "authority_effect": false,
@@ -107,6 +107,6 @@
       "worker_lease_unit": "heartbeat_cycle",
       "worker_registry_ref": "control/worker-registry.json"
     },
-    "worker_coordination_sha256": "47408a03ff0da9ed0069fdeb7da27fc9c31a38107ab51993641318bb2ea5c042"
+    "worker_coordination_sha256": "e05b5b5ed268848887c9eca6890ae524634b6b30f47adeac69f377d19f382134"
   }
 }

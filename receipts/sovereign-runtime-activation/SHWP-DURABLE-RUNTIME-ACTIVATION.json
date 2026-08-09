@@ -4,7 +4,7 @@
   "completed": false,
   "evidence_path": null,
   "fencing_token": 18,
-  "heartbeat_epoch": 15,
+  "heartbeat_epoch": 16,
   "missing_predicates": [
     "runtime_materialized",
     "native_service_active",
