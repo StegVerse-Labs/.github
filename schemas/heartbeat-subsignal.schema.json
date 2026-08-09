@@ -15,11 +15,18 @@
   },
   "$defs": {
     "subsignal": {
+      "oneOf": [
+        {"$ref": "#/$defs/transportLease"},
+        {"$ref": "#/$defs/organizationFederation"},
+        {"$ref": "#/$defs/workerCoordination"}
+      ]
+    },
+    "transportLease": {
       "type": "object",
       "additionalProperties": false,
       "required": ["kind", "state", "lease_id", "lease_action", "opened_epoch", "dependent_tasks", "release_policy"],
       "properties": {
-        "kind": {"type": "string", "minLength": 1},
+        "kind": {"const": "transport_lease"},
         "state": {"enum": ["IDLE", "OPEN_REQUESTED", "OPEN", "EXTENDING", "HANDOFF_READY", "CLOSE_REQUESTED", "CLOSED"]},
         "lease_id": {"type": "string", "minLength": 1},
         "lease_action": {"enum": ["NONE", "OPEN", "EXTEND", "CLOSE"]},
@@ -37,6 +44,71 @@
           }
         },
         "successor_lease_id": {"type": ["string", "null"]},
+        "authority_effect": {"const": false}
+      }
+    },
+    "organizationFederation": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["kind", "state", "authority_effect"],
+      "properties": {
+        "kind": {"const": "organization_readiness_federation"},
+        "state": {"type": "string", "minLength": 1},
+        "authority_effect": {"const": false},
+        "transport_grants_authority": {"const": false}
+      }
+    },
+    "workerLease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "worker_id", "claim_id", "fencing_token", "lease_start_cycle", "lease_end_cycle_exclusive", "assigned_cycles", "remaining_cycles", "lease_clock", "wall_clock_expiry_authority"],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 1},
+        "goal_id": {"type": ["string", "null"]},
+        "worker_id": {"type": "string", "minLength": 1},
+        "worker_instance_id": {"type": ["string", "null"]},
+        "claim_id": {"type": "string", "minLength": 1},
+        "fencing_token": {"type": "integer", "minimum": 1},
+        "lease_start_cycle": {"type": "integer", "minimum": 0},
+        "lease_end_cycle_exclusive": {"type": "integer", "minimum": 1},
+        "assigned_cycles": {"type": "integer", "minimum": 1},
+        "remaining_cycles": {"type": "integer", "minimum": 0},
+        "expiry_basis": {"type": ["string", "null"]},
+        "current_transition": {"type": ["string", "null"]},
+        "task_state": {"type": ["string", "null"]},
+        "handoff_ref": {"type": ["string", "null"]},
+        "lease_clock": {"const": "canonical_heartbeat_cycle"},
+        "wall_clock_expiry_authority": {"const": false}
+      }
+    },
+    "workerCoordination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "state", "carrier", "carrier_epoch", "carrier_cycle_unit", "worker_lease_unit", "worker_lease_source", "worker_lease_is_heartbeat_lifetime", "wall_clock_expiry_authority", "active_leases", "worker_registry_ref", "master_records_projection", "authority_effect"],
+      "properties": {
+        "kind": {"const": "worker_coordination"},
+        "state": {"enum": ["IDLE", "ACTIVE"]},
+        "carrier": {"const": "single_stegverse_heartbeat"},
+        "carrier_epoch": {"type": "integer", "minimum": 0},
+        "carrier_cycle_unit": {"const": "heartbeat_cycle"},
+        "worker_lease_unit": {"const": "heartbeat_cycle"},
+        "worker_lease_source": {"const": "admitted_task_cost_basis_and_runtime_window"},
+        "worker_lease_is_heartbeat_lifetime": {"const": false},
+        "wall_clock_expiry_authority": {"const": false},
+        "active_leases": {"type": "array", "items": {"$ref": "#/$defs/workerLease"}},
+        "worker_registry_ref": {"const": "control/worker-registry.json"},
+        "master_records_projection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["required", "latest_projection_ref", "event_log_ref", "destination", "authority_effect"],
+          "properties": {
+            "required": {"const": true},
+            "latest_projection_ref": {"const": "control/heartbeat-master-records-projection.json"},
+            "event_log_ref": {"const": "events/heartbeat-runtime.jsonl"},
+            "destination": {"const": "master-records/orchestration"},
+            "authority_effect": {"const": false}
+          }
+        },
         "authority_effect": {"const": false}
       }
     }
