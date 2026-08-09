@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/heartbeat-master-records-projection.schema.json",
+  "title": "Heartbeat Worker Coordination Master Records Projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "heartbeat_epoch",
+    "heartbeat_generation",
+    "worker_coordination_sha256",
+    "worker_coordination",
+    "source_refs",
+    "destination",
+    "recording_effect",
+    "execution_authority"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.heartbeat-master-records-projection/v1"},
+    "heartbeat_epoch": {"type": "integer", "minimum": 0},
+    "heartbeat_generation": {"type": "integer", "minimum": 0},
+    "worker_coordination_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "worker_coordination": {
+      "type": "object",
+      "required": ["kind", "carrier_epoch", "active_leases", "master_records_projection"],
+      "properties": {
+        "kind": {"const": "worker_coordination"},
+        "carrier_epoch": {"type": "integer", "minimum": 0},
+        "active_leases": {"type": "array"},
+        "master_records_projection": {
+          "type": "object",
+          "required": ["required", "destination"],
+          "properties": {
+            "required": {"const": true},
+            "destination": {"const": "master-records/orchestration"}
+          }
+        }
+      }
+    },
+    "source_refs": {
+      "type": "array",
+      "minItems": 4,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "destination": {"const": "master-records/orchestration"},
+    "recording_effect": {"const": "custody_and_reconstruction_only"},
+    "execution_authority": {"const": false}
+  }
+}
