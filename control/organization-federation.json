@@ -1,0 +1,181 @@
+{
+  "schema": "stegverse.organization-federation/v0.1",
+  "generation": 1,
+  "canonical_heartbeat_owner": "StegVerse-Labs/.github#12",
+  "canonical_response_network_owner": "StegVerse-Labs/Site#234",
+  "heartbeat_model": "SINGLE_STEGVERSE_HEARTBEAT",
+  "authority_effect": false,
+  "organization_count": 14,
+  "detail_classes": ["MEMORY", "ACTION", "AWARENESS", "AUTHORITY", "EVIDENCE", "BLOCKER", "CAPABILITY", "CONTEXT"],
+  "readiness_dimensions": ["heartbeat_response", "subsignal", "worker", "task_registry", "evidence", "release_condition"],
+  "organizations": [
+    {
+      "organization": "AaCT-E",
+      "evidence_repository": "AaCT-E/telemetry",
+      "connector_state": "WRITE_AUTHORITY_UNAVAILABLE",
+      "heartbeat_response": "BLOCKED_CONNECTOR_WRITE_AUTHORITY",
+      "subsignal": "REGISTERED_FAIL_CLOSED",
+      "worker": "NOT_INSTALLABLE_UNTIL_WRITE_AUTHORITY",
+      "task_registry": "MACHINE_BLOCKED",
+      "release_condition": "GitHub integration gains push authority to an AaCT-E repository or an AaCT-E-owned machine relay is installed",
+      "next_action": "Re-evaluate connector write authority on federation heartbeat; install worker-readiness projection only after authority exists"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "evidence_repository": "Admissible-Existence/.github",
+      "connector_state": "CONNECTED_WRITE",
+      "heartbeat_response": "VERIFIED",
+      "subsignal": "FEDERATED",
+      "worker": "CENTRAL_HEARTBEAT_ELIGIBLE",
+      "task_registry": "REGISTERED",
+      "release_condition": null,
+      "next_action": "Observe admitted organization transitions and project only changed state"
+    },
+    {
+      "organization": "AdmittedCode",
+      "evidence_repository": "AdmittedCode/.github",
+      "connector_state": "CONNECTED_WRITE",
+      "heartbeat_response": "VERIFIED",
+      "subsignal": "FEDERATED",
+      "worker": "CENTRAL_HEARTBEAT_ELIGIBLE",
+      "task_registry": "REGISTERED",
+      "release_condition": null,
+      "next_action": "Observe admitted organization transitions and project only changed state"
+    },
+    {
+      "organization": "Data-Continuation",
+      "evidence_repository": "Data-Continuation/core-lite",
+      "connector_state": "CONNECTED_WRITE",
+      "heartbeat_response": "VERIFIED",
+      "subsignal": "FEDERATED",
+      "worker": "CENTRAL_HEARTBEAT_ELIGIBLE",
+      "task_registry": "REGISTERED",
+      "release_condition": null,
+      "next_action": "Observe admitted organization transitions and project only changed state"
+    },
+    {
+      "organization": "ECAT-ICAT-Formal",
+      "evidence_repository": null,
+      "connector_state": "NO_REPOSITORY",
+      "heartbeat_response": "BLOCKED_NO_REPOSITORY",
+      "subsignal": "REGISTERED_FAIL_CLOSED",
+      "worker": "NO_REPOSITORY",
+      "task_registry": "MACHINE_BLOCKED",
+      "release_condition": "Organization exposes at least one repository that can own a canonical *_MIRROR_HANDOFF.md and heartbeat node adapter",
+      "next_action": "Re-evaluate repository existence on federation heartbeat"
+    },
+    {
+      "organization": "formalism-tests",
+      "evidence_repository": "formalism-tests/core-lite",
+      "connector_state": "CONNECTED_WRITE_HISTORICAL_REPO_DIRECT",
+      "heartbeat_response": "VERIFIED",
+      "subsignal": "FEDERATED",
+      "worker": "CENTRAL_HEARTBEAT_ELIGIBLE",
+      "task_registry": "REGISTERED",
+      "release_condition": null,
+      "next_action": "Observe admitted organization transitions and project only changed state"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "evidence_repository": "GCAT-BCAT-Engine/Publisher",
+      "connector_state": "CONNECTED_WRITE",
+      "heartbeat_response": "VERIFIED",
+      "subsignal": "FEDERATED",
+      "worker": "CENTRAL_HEARTBEAT_ELIGIBLE",
+      "task_registry": "REGISTERED",
+      "release_condition": null,
+      "next_action": "Observe admitted organization transitions and project only changed state"
+    },
+    {
+      "organization": "Infrastructure-Continuity-Ventures",
+      "evidence_repository": null,
+      "connector_state": "NO_REPOSITORY",
+      "heartbeat_response": "BLOCKED_NO_REPOSITORY",
+      "subsignal": "REGISTERED_FAIL_CLOSED",
+      "worker": "NO_REPOSITORY",
+      "task_registry": "MACHINE_BLOCKED",
+      "release_condition": "Organization exposes at least one repository that can own a canonical *_MIRROR_HANDOFF.md and heartbeat node adapter",
+      "next_action": "Re-evaluate repository existence on federation heartbeat"
+    },
+    {
+      "organization": "master-records",
+      "evidence_repository": "master-records/orchestration",
+      "connector_state": "CONNECTED_WRITE",
+      "heartbeat_response": "VERIFIED",
+      "subsignal": "FEDERATED",
+      "worker": "CENTRAL_HEARTBEAT_ELIGIBLE",
+      "task_registry": "REGISTERED",
+      "release_condition": null,
+      "next_action": "Observe admitted organization transitions and preserve custody references without moving authority"
+    },
+    {
+      "organization": "StegGhost",
+      "evidence_repository": "StegGhost/telemetry",
+      "connector_state": "CONNECTED_WRITE",
+      "heartbeat_response": "VERIFIED",
+      "subsignal": "FEDERATED",
+      "worker": "CENTRAL_HEARTBEAT_ELIGIBLE",
+      "task_registry": "REGISTERED",
+      "release_condition": null,
+      "next_action": "Observe admitted organization transitions and preserve private-repository boundaries"
+    },
+    {
+      "organization": "StegVerse-002",
+      "evidence_repository": "StegVerse-002/stegguardian-wiki",
+      "connector_state": "CONNECTED_WRITE",
+      "heartbeat_response": "VERIFIED",
+      "subsignal": "FEDERATED",
+      "worker": "CENTRAL_HEARTBEAT_ELIGIBLE",
+      "task_registry": "REGISTERED",
+      "release_condition": null,
+      "next_action": "Observe admitted organization transitions and preserve Guardian authority separation"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "evidence_repository": "StegVerse-Labs/.github",
+      "connector_state": "CONNECTED_WRITE",
+      "heartbeat_response": "VERIFIED",
+      "subsignal": "CANONICAL_OWNER",
+      "worker": "ACTIVE_HEARTBEAT_RUNTIME",
+      "task_registry": "CANONICAL",
+      "release_condition": null,
+      "next_action": "Run federation worker under the canonical heartbeat and project all organization readiness"
+    },
+    {
+      "organization": "StegVerse-org",
+      "evidence_repository": "StegVerse-org/LLM-adapter",
+      "connector_state": "CONNECTED_WRITE_HISTORICAL_REPO_DIRECT",
+      "heartbeat_response": "VERIFIED",
+      "subsignal": "FEDERATED",
+      "worker": "CENTRAL_HEARTBEAT_ELIGIBLE",
+      "task_registry": "REGISTERED",
+      "release_condition": null,
+      "next_action": "Observe admitted organization transitions and preserve adapter execution authority boundaries"
+    },
+    {
+      "organization": "Triad-Test",
+      "evidence_repository": null,
+      "connector_state": "NO_REPOSITORY",
+      "heartbeat_response": "BLOCKED_NO_REPOSITORY",
+      "subsignal": "REGISTERED_FAIL_CLOSED",
+      "worker": "NO_REPOSITORY",
+      "task_registry": "MACHINE_BLOCKED",
+      "release_condition": "Organization exposes at least one repository that can own a canonical *_MIRROR_HANDOFF.md and heartbeat node adapter",
+      "next_action": "Re-evaluate repository existence on federation heartbeat"
+    }
+  ],
+  "coverage": {
+    "registered": 14,
+    "heartbeat_response_verified": 10,
+    "federated_subsignal_ready": 10,
+    "machine_blocked": 4,
+    "unassigned": 0
+  },
+  "completion_rule": "Every organization is represented with heartbeat response state, subsignal state, worker readiness, task-registry state, evidence owner, and an explicit next action or machine-observable release condition",
+  "source_refs": [
+    "StegVerse-Labs/Site#234",
+    "StegVerse-Labs/Site/data/ecosystem-heartbeat-response-network.json",
+    "StegVerse-Labs/.github/control/worker-registry.json",
+    "StegVerse-Labs/.github/control/heartbeat-subsignals.json"
+  ]
+}
