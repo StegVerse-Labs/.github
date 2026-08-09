@@ -1,0 +1,41 @@
+{
+  "schema": "stegverse.worker-progress-classification/v1",
+  "goal_id": "ARCHIVE-GATE-PROGRESS-ENFORCEMENT-001",
+  "classes": {
+    "PROGRESSING": {
+      "description": "At least one admitted durable state change reduced remaining work since the previous checkpoint.",
+      "qualifying_examples": [
+        "blocker_count_decreased",
+        "success_predicate_became_true",
+        "implementation_commit_installed",
+        "deployment_state_advanced",
+        "live_acceptance_advanced",
+        "reconstruction_proof_advanced",
+        "authority_or_dependency_resolved"
+      ]
+    },
+    "MONITORING_BLOCKED": {
+      "description": "Worker is alive and rechecking a known blocker, but remaining work has not decreased."
+    },
+    "STALLED": {
+      "description": "Worker should be able to act but has produced no qualifying progress transition within its task-specific permitted progress window."
+    },
+    "COMPLETED": {
+      "description": "Task terminal success predicates are satisfied with durable evidence."
+    }
+  },
+  "non_progress_signals": [
+    "BUSY",
+    "CLAIMED",
+    "LEASED",
+    "heartbeat_response",
+    "checkpoint_written",
+    "unchanged_blocker_recheck"
+  ],
+  "archive_effect": {
+    "PROGRESSING": "may support non-terminal handoff only when every unfinished inherited goal is PROGRESSING",
+    "MONITORING_BLOCKED": "blocks archive readiness",
+    "STALLED": "blocks archive readiness",
+    "COMPLETED": "satisfies terminal task requirement"
+  }
+}
