@@ -6,49 +6,58 @@
   "owner": "StegVerse-Labs/.github#12",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
-  "state": "HUMAN_AUTHORITY_REQUIRED",
-  "observed_at": "2026-08-08T13:42:00Z",
+  "state": "BLOCKED_EXTERNAL_PROVIDER_QUOTA",
+  "observed_at": "2026-08-09T05:48:17Z",
   "boundary_ref": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
   "handoff_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
   "registry_ref": "control/worker-registry.json#SHWP-DURABLE-RUNTIME-ACTIVATION",
-  "automation_terminal": true,
+  "automation_terminal": false,
   "canonical_runtime": {
     "implementation": "heartbeat_runtime/engine_v8.py",
     "entrypoint": "scripts/run_heartbeat_runtime.py --continuous",
     "promotion_commit": "11c1b801af35c94d3d67c398a7c93b2fed776448",
     "latest_boundary_validation": "Heartbeat Worker Project 31260127709 SUCCESS"
   },
-  "deployment_inspection": {
+  "authority_resolution": {
+    "human_boundary_status": "RESOLVED",
+    "resolution_ref": "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_AUTH.json#AUTH-SHWP-MASTER-RECORDS-HOST-2026-08-09",
+    "bounded_deployment_authorization": "ADMITTED",
+    "recurring_infrastructure_authorized": true
+  },
+  "provisioned_resources": {
+    "persistent_state": "Render Key Value red-d9s17pnavr4c73a8p2ng / master-records-heartbeat-state / starter / oregon / available / journal_snapshot",
+    "host": "Render service srv-d9s197vavr4c73a8rjjg / master-records-heartbeat-host / starter / oregon / created",
+    "host_source": "master-records/monitoring@de1e619a7df8d6753490d895afa6e3e87571a949",
+    "control_records": "master-records/orchestration/config/heartbeat-host.json"
+  },
+  "provider_blocker": {
     "provider": "Render",
-    "workspace_inspected": true,
-    "correctly_owned_existing_service_found": false,
-    "existing_persistent_disk_service": "stegverse-hil-receiver — persistent but owned by StegVerse-org/LLM-adapter; not admissible without authority transfer",
-    "existing_background_worker": "scw-worker — owned by StegVerse-Labs/StegVerse-SCW; not admissible without authority transfer",
-    "existing_persistent_key_value_instances": ["scw-redis", "stegtvc-redis"],
-    "postgres_instances": 0,
-    "direct_creation_gap": "Connected controls expose web-service creation without persistent-disk configuration and expose no background-worker creation action. A datastore alone does not supply the required always-on process host or current file-state durability semantics."
+    "deploy_id": "dep-d9s1987avr4c73a8rkeg",
+    "result": "BUILD_FAILED_PROVIDER_QUOTA",
+    "evidence": "Build canceled: workspace has run out of build pipeline minutes for the current billing period.",
+    "machine_observable_release_condition": "Render accepts and completes a deploy for existing service srv-d9s197vavr4c73a8rjjg",
+    "human_authority_required": false
   },
   "completed_machine_actions": [
     "Protocol/runtime implementation completed and promoted to v8.",
     "Full control-plane validation passed.",
-    "Scheduled GitHub heartbeat watchdog was removed as a competing timing plane; only manual diagnostic remains.",
-    "Org continuation validator was repaired and passed run 31260010793.",
-    "Human-authority boundary and executable HANDOFF were installed.",
-    "Registry generation 9 records the task as HUMAN_AUTHORITY_REQUIRED with no claim or worker.",
-    "Heartbeat Worker Project run 31260127709 passed with the boundary registered and no activation."
+    "Scheduled GitHub heartbeat watchdog removed as competing timing plane.",
+    "Dedicated master-records persistent state resource created and available.",
+    "Dedicated master-records always-on starter host service created.",
+    "Host implementation installed in master-records/monitoring.",
+    "Bounded deployment authorization installed in master-records/orchestration.",
+    "Prior HUMAN_AUTHORITY_REQUIRED boundary resolved with durable resolution_ref.",
+    "Initial host deploy attempted and failed closed on provider build-pipeline quota before runtime execution."
   ],
-  "requested_human_decision": "Approve/provide a dedicated correctly owned always-on SHWP process host with durable writable state and any required recurring infrastructure budget, or explicitly reject/defer provisioning. No paid resource, cross-subsystem appropriation, or deployment is authorized before that resolution.",
   "release_condition": [
-    "The human-authority boundary status becomes RESOLVED with a durable resolution_ref.",
-    "A compliant host and any required cost authority are durably identified.",
-    "A separate bounded deployment authorization is admitted.",
-    "The host runs scripts/run_heartbeat_runtime.py --continuous.",
-    "Heartbeat, registry, event, cost, receipt and canonical-checkpoint state survives restart/deploy.",
-    "Restart proof preserves/increments the one heartbeat epoch and creates no duplicate claim/fence.",
+    "Existing Render service srv-d9s197vavr4c73a8rjjg completes deployment.",
+    "Host /health reports RUNNING with persistent_state PASS.",
+    "Heartbeat epoch advances above pre-activation epoch 3.",
+    "Controlled redeploy/restart preserves or increments epoch and creates no duplicate claim/fence.",
     "No ChatGPT automation, GitHub schedule, Render cron or other external scheduler owns worker activation."
   ],
-  "next_executable_action": "None for automation while boundary status is PENDING. After a durable human resolution, the canonical continuation is the registered SHWP-DURABLE-RUNTIME-ACTIVATION HANDOFF/registry task; admit a bounded deployment authorization and execute the restart-continuity proof.",
+  "next_executable_action": "Retry deployment of existing Render service srv-d9s197vavr4c73a8rjjg immediately when provider build pipeline capacity becomes available; then execute health and restart-continuity proof.",
   "heartbeat_or_execution_authority_effect": "NONE",
   "chat_monitoring_required": false,
-  "session_retention_required": false
+  "session_retention_required": true
 }
