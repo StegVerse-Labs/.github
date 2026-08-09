@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any, Callable
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
 COPY_DIRS=("heartbeat_runtime","control","handoffs","authorizations","workers","schemas","checkpoints","events","receipts","heartbeats","cost-basis")
-COPY_FILES=("scripts/run_heartbeat_runtime.py",)
+COPY_FILES=("scripts/run_heartbeat_runtime.py","scripts/verify_sovereign_runtime_activation.py")
 CANONICAL_RUNTIME="heartbeat_runtime.engine_v9.HeartbeatRuntime"
 DEFAULT_INTERVAL_MS=10.0
 
@@ -40,6 +40,7 @@ def materialize(source_root:Path,target_root:Path,*,interval_ms:float=DEFAULT_IN
         target_root/"control"/"heartbeat-subsignals.json",
         target_root/"control"/"worker-registry.json",
         target_root/"scripts"/"run_heartbeat_runtime.py",
+        target_root/"scripts"/"verify_sovereign_runtime_activation.py",
     )
     if not all(p.is_file() for p in required): raise RuntimeError("materialized runtime is incomplete")
     init_text=(target_root/"heartbeat_runtime"/"__init__.py").read_text(encoding="utf-8")
