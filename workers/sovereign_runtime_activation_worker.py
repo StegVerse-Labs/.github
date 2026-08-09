@@ -69,9 +69,21 @@ def main() -> int:
 
     passed = bool(evidence) and all(evidence.get(name) is True for name in REQUIRED_PREDICATES)
     missing = REQUIRED_PREDICATES if evidence is None else [name for name in REQUIRED_PREDICATES if evidence.get(name) is not True]
-    transition = "SOVEREIGN_RUNTIME_VERIFIED" if passed else "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED"
+    transition = "SOVEREIGN_RUNTIME_VERIFIED" if passed else "SOVEREIGN_RUNTIME_SOLUTION_REQUIRED"
+    blocker = None if passed else {
+        "dependency_class": "PHYSICAL_RESOURCE",
+        "problem_statement": "No StegVerse-owned/federated node has yet emitted evidence satisfying the sovereign runtime activation predicates.",
+        "solution_required": True,
+        "may_remain_blocked": True,
+        "workaround_candidates": [
+            "Install and start the canonical heartbeat service on any eligible StegVerse-owned/federated Linux node using scripts/install_sovereign_heartbeat_service.py.",
+            "Materialize the sovereign runtime capsule on an alternate eligible StegVerse node and migrate the canonical durable state before service start.",
+            "Use an existing StegVerse-002 micro-node as the carrier if it satisfies the same local-storage, restart, reconstruction, and no-split-brain predicates."
+        ],
+        "next_solution_action": "Select an eligible StegVerse-owned/federated node and execute the native service installation/activation path; do not wait for a hosted provider."
+    }
     receipt = {
-        "schema": "stegverse.sovereign-runtime-worker-receipt/v0.1",
+        "schema": "stegverse.sovereign-runtime-worker-receipt/v0.2",
         "task_id": EXPECTED_TASK,
         "claim_id": claim_id,
         "worker_id": task.get("worker_id"),
@@ -83,6 +95,9 @@ def main() -> int:
         "required_predicates": REQUIRED_PREDICATES,
         "missing_predicates": missing,
         "third_party_runtime_required": False,
+        "third_party_dependency_is_blocker": False,
+        "blocker_policy_ref": "control/blocker-resolution-policy.json",
+        "blocker": blocker,
         "authority_effect": "none_beyond_admitted_receipt_namespace",
         "completed": passed,
     }
@@ -94,11 +109,12 @@ def main() -> int:
         "state": "COMPLETED" if passed else "BLOCKED",
         "transition_id": transition,
         "transition_sequence": 1,
-        "expected_next_transition": None if passed else "SOVEREIGN_RUNTIME_RECHECK",
+        "expected_next_transition": None if passed else "SOVEREIGN_RUNTIME_SOLUTION_EXECUTION",
         "expected_next_earliest_epoch": None if passed else epoch + 1,
         "expected_next_latest_epoch": None if passed else epoch + 1,
         "checkpoint_ref": f"receipts/sovereign-runtime-activation/{EXPECTED_TASK}.json",
-        "evidence_refs": [f"receipts/sovereign-runtime-activation/{EXPECTED_TASK}.json", "StegVerse-Labs/.github#12", "StegVerse-Labs/.github#59"],
+        "evidence_refs": [f"receipts/sovereign-runtime-activation/{EXPECTED_TASK}.json", "StegVerse-Labs/.github#12", "StegVerse-Labs/.github#59", "control/blocker-resolution-policy.json"],
+        "blocker": blocker,
         "cost_observation": {
             "hb_transition_count": 1,
             "compute_units": 1,
