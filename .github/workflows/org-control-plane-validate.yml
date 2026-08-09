@@ -8,8 +8,10 @@ on:
       - 'schemas/**'
       - 'tasks/**'
       - 'scripts/**'
+      - 'tests/**'
       - 'docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md'
       - 'docs/ORG_MIRROR_HANDOFF.md'
+      - 'docs/CROSS_REPO_DEPENDENCY_CLAIMS_MIRROR_HANDOFF.md'
       - '.github/workflows/org-control-plane-validate.yml'
       - '.github/workflows/org-allocator.yml'
   push:
@@ -20,8 +22,10 @@ on:
       - 'schemas/**'
       - 'tasks/**'
       - 'scripts/**'
+      - 'tests/**'
       - 'docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md'
       - 'docs/ORG_MIRROR_HANDOFF.md'
+      - 'docs/CROSS_REPO_DEPENDENCY_CLAIMS_MIRROR_HANDOFF.md'
       - '.github/workflows/org-control-plane-validate.yml'
       - '.github/workflows/org-allocator.yml'
   workflow_dispatch:
@@ -43,6 +47,8 @@ jobs:
           python-version: '3.12'
       - name: Validate control-plane invariants
         run: python scripts/validate_org_control_plane.py
+      - name: Prove cross-repository dependency collision enforcement
+        run: python -m unittest tests.test_cross_repository_dependency_claims -v
       - name: Exercise allocator deterministically
         run: |
           python scripts/allocate_claims.py
