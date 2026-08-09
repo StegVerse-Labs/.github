@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "ecosystem_chat_sovereign_inference",
+  "sample_count": 1,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 4096,
+    "confidence": "MEDIUM"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 65536,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "StegVerse-Labs/.github#60",
+    "StegVerse-org/LLM-adapter#18",
+    "workers/ecosystem_chat_sovereign_inference_worker.py"
+  ],
+  "notes": [
+    "The worker is heartbeat-timed and remains blocked until real StegVerse-local model execution plus same-execution reconstruction is observed.",
+    "Hosted inference and third-party deployment platforms have no authority and are not timing dependencies."
+  ]
+}
