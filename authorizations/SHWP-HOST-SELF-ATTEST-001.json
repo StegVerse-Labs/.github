@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.bounded-worker-authorization/v0.1",
+  "authorization_id": "AUTH-SHWP-HOST-SELF-ATTEST-001",
+  "goal_id": "SHWP-HOST-SELF-ATTEST-001",
+  "task_id": "SHWP-HOST-SELF-ATTEST-001",
+  "authority_source": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001 + bounded master-records heartbeat-host activation authorization",
+  "state": "ADMITTED",
+  "allowed_capabilities": ["host_runtime_self_attest"],
+  "allowed_paths": ["receipts/host-self-attest/**"],
+  "allowed_services": [],
+  "max_actions": 1,
+  "max_retries": 0,
+  "external_cost_ceiling_usd": 0,
+  "heartbeat_grants_execution_authority": false,
+  "availability_grants_execution_authority": false,
+  "expires_when": "SHWP-HOST-SELF-ATTEST-001 reaches COMPLETED"
+}
