@@ -1,0 +1,116 @@
+{
+  "authority_source": "StegVerse-org/LLM-adapter#18 + StegVerse-002/micro-node-runtime#16/#22",
+  "checkpoint_id": "CP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB25-G20",
+  "checkpoint_sha256": "56ac0cce7e0f575fe8500ff0dd6321c76e26f5fd1d8ea9ac32220d6fa9aa15e6",
+  "claim_id": "SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G20",
+  "completed_transitions": [
+    {
+      "heartbeat_epoch": 17,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 18,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 19,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_INFERENCE_SOLUTION_REQUIRED",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 20,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_INFERENCE_SOLUTION_REQUIRED",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 21,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_INFERENCE_SOLUTION_REQUIRED",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 22,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_INFERENCE_SOLUTION_REQUIRED",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 23,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_LOCAL_MODEL_RUNTIME_NOT_YET_VERIFIED",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 24,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_LOCAL_MODEL_RUNTIME_NOT_YET_VERIFIED",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 25,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_LOCAL_MODEL_RUNTIME_NOT_YET_VERIFIED",
+      "transition_sequence": 1
+    }
+  ],
+  "current_state": "BLOCKED",
+  "evidence_refs": [
+    "StegVerse-Labs/.github#60",
+    "StegVerse-org/LLM-adapter#18",
+    "workers/ecosystem_chat_sovereign_inference_worker.py",
+    "receipts/ecosystem-chat-sovereign-inference/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB17-G20-d6651cb918f3fdb2.json",
+    "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB17-G20.json",
+    "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB18-G20-bbd537715494e83c.json",
+    "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB18-G20.json",
+    "control/blocker-resolution-policy.json",
+    "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB19-G20-1d14c8d888f68810.json",
+    "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB19-G20.json",
+    "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB20-G20-f9c0a2eec5c3a54a.json",
+    "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB20-G20.json",
+    "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB21-G20-b77f4edafcc16a3a.json",
+    "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB21-G20.json",
+    "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB22-G20-f0e292adaefa3525.json",
+    "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB22-G20.json",
+    "StegVerse-002/micro-node-runtime#22",
+    "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB23-G20-92e20a015133d93a.json",
+    "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB23-G20.json",
+    "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB24-G20-e1b5b2f927b4414a.json",
+    "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB24-G20.json",
+    "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB25-G20-db705f6646291595.json"
+  ],
+  "execution_authority": false,
+  "fencing_token": 20,
+  "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
+  "handoff_ref": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+  "handoff_sha256": "5efadc7a456dddf78e4b8dc91e0c99b1ff96c0743c7725c43ea466fb57c3b8b8",
+  "heartbeat_epoch": 25,
+  "next_authorized_action": "Execute or consume the verified StegVerse-002/micro-node-runtime#22 local-model proof on the sovereign carrier. Once SOVEREIGN_REFERENCE_MODEL_RUNTIME_VERIFIED is observed, bind that private runtime (or a stronger qualifying locally developed/installed model) to StegVerseLocalHTTPProviderClient, execute E1-to-worker-to-E2, persist measured usage, and obtain same-execution provider-usage plus transition reconstruction PASS in Master Records.",
+  "policy_version": "shwp-single-hb-v0.3-sovereign",
+  "resource_budget": {
+    "actions_used": 9,
+    "allowed_services": [],
+    "external_cost_ceiling_usd": 0.0,
+    "external_cost_usd": 0.0,
+    "max_actions": 64,
+    "max_retries": 4096,
+    "rate_class": "ecosystem_chat_sovereign_inference",
+    "renewal_count": 0,
+    "retries_used": 0,
+    "runtime_window_beats": 4096
+  },
+  "schema": "stegverse.worker-checkpoint/v0.1",
+  "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "unresolved_work": [
+    "Execute or consume the verified StegVerse-002/micro-node-runtime#22 local-model proof on the sovereign carrier. Once SOVEREIGN_REFERENCE_MODEL_RUNTIME_VERIFIED is observed, bind that private runtime (or a stronger qualifying locally developed/installed model) to StegVerseLocalHTTPProviderClient, execute E1-to-worker-to-E2, persist measured usage, and obtain same-execution provider-usage plus transition reconstruction PASS in Master Records."
+  ],
+  "worker_checkpoint_ref": "receipts/ecosystem-chat-sovereign-inference/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+  "worker_id": "ecosystem-chat-sovereign-inference-worker",
+  "worker_instance_id": "ecosystem-chat-sovereign-inference-worker-HB17-G20"
+}

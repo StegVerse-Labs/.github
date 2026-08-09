@@ -29,7 +29,7 @@
         "AUTHORIZED_REMAINING_ACTION"
       ],
       "root_task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-      "state": "EXPIRING",
+      "state": "BLOCKED",
       "success_predicates_satisfied": false
     },
     {

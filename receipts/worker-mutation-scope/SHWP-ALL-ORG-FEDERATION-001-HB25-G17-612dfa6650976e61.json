@@ -1,0 +1,16 @@
+{
+  "allowed_paths": [
+    "receipts/organization-federation/**"
+  ],
+  "authority_effect": "none_adapter_scope_enforcement_only",
+  "changed_paths": [
+    "receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json"
+  ],
+  "claim_id": "SHWP-SHWP-ALL-ORG-FEDERATION-001-G17",
+  "decision": "ALLOW",
+  "fencing_token": 17,
+  "heartbeat_epoch": 25,
+  "reason": "ALL_MUTATIONS_WITHIN_CURRENT_FENCED_SCOPE",
+  "schema": "stegverse.worker-mutation-scope-receipt/v0.1",
+  "task_id": "SHWP-ALL-ORG-FEDERATION-001"
+}
