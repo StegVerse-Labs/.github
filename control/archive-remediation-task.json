@@ -1,0 +1,24 @@
+{
+  "schema": "stegverse.remediation-task/v1",
+  "task_id": "ARCHIVE-GATE-PROGRESS-ENFORCEMENT-001",
+  "issue": "StegVerse-Labs/.github#64",
+  "state": "ACTIVE",
+  "priority": "critical",
+  "owner": "StegVerse-Labs/.github",
+  "goal": "Prevent premature archival while inherited ecosystem goals remain unmet or workers only monitor unchanged blockers.",
+  "installed": [
+    "control/archive-readiness.json",
+    "scripts/validate_archive_readiness.py",
+    "tests/test_archive_readiness.py",
+    ".github/workflows/archive-readiness-validate.yml",
+    "docs/ARCHIVE_GATE_PROGRESS_MIRROR_HANDOFF.md",
+    "docs/ORG_MIRROR_HANDOFF.md"
+  ],
+  "completion_predicates": [
+    "Hosted Archive Readiness Validate workflow succeeds on main",
+    "Premature thread_archive_ready=true fails validation while current production tasks are monitoring-blocked",
+    "Canonical ORG_MIRROR_HANDOFF remains thread_archive_ready=false while current unmet goals have zero progressing workers",
+    "Issue #64 remains open until hosted enforcement evidence is recorded"
+  ],
+  "thread_archive_ready": false
+}
