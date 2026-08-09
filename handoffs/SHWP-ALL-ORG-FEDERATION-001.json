@@ -1,0 +1,94 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-ALL-ORG-FEDERATION-001",
+  "created_at": "2026-08-09T17:44:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "ALL-ORG-HEARTBEAT-FEDERATION-001",
+    "objective": "Expand canonical heartbeat, subsignal, worker readiness, and task-registry state across every StegVerse organization while preserving fail-closed blockers and authority separation.",
+    "success_predicates": [
+      "All 14 canonical organizations are represented in the federation registry.",
+      "Every organization has heartbeat response, subsignal, worker-readiness, task-registry, evidence-owner, and next-action state.",
+      "Every unresolved organization has a machine-observable release condition.",
+      "The organization_federation subsignal is carried by the single StegVerse heartbeat.",
+      "A heartbeat-owned worker is claimed, fenced, executed, and produces an inspectable federation receipt.",
+      "No organization remains unassigned."
+    ],
+    "failure_predicates": [
+      "An organization disappears from the denominator without an admitted inventory transition.",
+      "A blocked organization is treated as complete without its release condition becoming true.",
+      "Transport or subsignal presence grants execution or policy authority.",
+      "A second heartbeat or wall-clock scheduler becomes federation authority.",
+      "Worker capability matching is treated as authorization."
+    ],
+    "expires_at": null,
+    "authority_ceiling": [
+      "bounded_repository_mutation",
+      "receipts/organization-federation/**",
+      "no_cross_org_mutation",
+      "no_policy_authority",
+      "no_deployment_authority"
+    ],
+    "successor_policy": "NONE",
+    "max_successor_depth": 0
+  },
+  "task": {
+    "task_id": "SHWP-ALL-ORG-FEDERATION-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-Labs/Site#234",
+      "StegVerse-Labs/Site/data/ecosystem-heartbeat-response-network.json",
+      "control/organization-federation.json",
+      "control/organization-task-registry.json",
+      "control/heartbeat-subsignals.json",
+      "authorizations/SHWP-ALL-ORG-FEDERATION-001.json",
+      "workers/organization_federation_readiness_worker.py"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "User directed expansion of the proven heartbeat/subsignal/worker/task-registry readiness model from StegVerse-Labs to all organizations.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#12",
+    "canonical_lineage_key": "ecosystem:all-org-heartbeat-federation",
+    "derivation_depth": 0,
+    "priority": "critical"
+  },
+  "authority": {
+    "authority_source": "authorizations/SHWP-ALL-ORG-FEDERATION-001.json",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "shwp-single-hb-v0.2"
+  },
+  "execution": {
+    "required_capabilities": ["bounded_repository_mutation"],
+    "allowed_paths": ["receipts/organization-federation/**"],
+    "allowed_services": [],
+    "max_actions": 128,
+    "max_retries": 128,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 256,
+    "rate_class": "heartbeat_federation_reconciliation"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "authorizations/SHWP-ALL-ORG-FEDERATION-001.json",
+    "recheck_trigger": "each admitted heartbeat while any organization readiness state is blocked or changed",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json",
+    "reconstruction_ref": "control/organization-federation.json"
+  },
+  "completion": {
+    "next_authorized_action": "On the next admitted heartbeat, reconcile all 14 organization readiness rows and persist a federation receipt; blocked rows remain machine-owned until their explicit release conditions become true.",
+    "terminal_when": [
+      "All 14 organizations remain represented",
+      "Unassigned organization count is zero",
+      "Heartbeat worker activation evidence exists",
+      "Every blocked organization has an explicit release condition and next action"
+    ]
+  },
+  "block": null
+}
