@@ -5,13 +5,13 @@
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SHWP-HOST-SELF-ATTEST-001",
-    "objective": "On the first live canonical heartbeat, execute exactly one bounded repository worker that writes an inspectable host-runtime self-attestation receipt under the canonical heartbeat claim/fence lifecycle.",
+    "objective": "Execute exactly one bounded documented repository worker through the canonical heartbeat and worker task registry, proving heartbeat-native claim, fence, invocation, completion, release, and durable receipt without making any host provider a dependency or authority.",
     "success_predicates": [
       "Exactly one eligible authorized worker is atomically claimed by the canonical heartbeat",
       "The worker writes only receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json",
-      "The receipt records the live heartbeat epoch, claim, fence, worker identity and provider non-authority invariants",
+      "The receipt records the heartbeat epoch, claim, fence, worker identity and provider non-authority invariants",
       "The worker returns COMPLETED in the same heartbeat response",
-      "The canonical runtime releases the claim and retains the receipt in durable Master Records state"
+      "The canonical runtime releases the claim and retains the receipt as durable evidence"
     ],
     "failure_predicates": [
       "Worker runs without a current fenced claim",
@@ -35,16 +35,16 @@
     "source_refs": [
       "StegVerse-Labs/.github#12",
       "authorizations/SHWP-HOST-SELF-ATTEST-001.json",
-      "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_AUTH.json",
-      "master-records/monitoring/services/heartbeat_host_impl.py",
+      "workers/host_runtime_self_attest.py",
+      "control/worker-registry.json",
       "master-records/monitoring#2"
     ],
     "dependencies": [],
-    "parent_task_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
-    "derivation_reason": "A live always-on heartbeat should prove worker activation through the heartbeat mechanism itself rather than through CI or an external scheduler.",
+    "parent_task_id": null,
+    "derivation_reason": "Prove a real documented StegVerse worker is activated by the canonical heartbeat and worker registry. Provider hosting is explicitly outside the dependency model.",
     "canonical_owner_ref": "StegVerse-Labs/.github#12",
     "canonical_lineage_key": "shwp:host-self-attest",
-    "derivation_depth": 1,
+    "derivation_depth": 0,
     "priority": "release"
   },
   "authority": {
@@ -66,7 +66,7 @@
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "authorizations/SHWP-HOST-SELF-ATTEST-001.json#AUTH-SHWP-HOST-SELF-ATTEST-001",
-    "recheck_trigger": "canonical heartbeat host becomes live",
+    "recheck_trigger": "matching documented repository worker is AVAILABLE in control/worker-registry.json",
     "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {
@@ -76,12 +76,12 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Canonical heartbeat claims the task when the dedicated host is live and the matching repository worker is AVAILABLE.",
+    "next_authorized_action": "Canonical heartbeat claims the task when the matching repository worker is AVAILABLE; no provider-specific condition is required.",
     "terminal_when": [
       "Task state is COMPLETED",
       "Self-attestation receipt exists",
       "Worker claim is released",
-      "Receipt remains reconstructable from Master Records durable heartbeat state"
+      "Receipt is durably recorded and reconstructable"
     ]
   },
   "block": null
