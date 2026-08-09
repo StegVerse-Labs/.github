@@ -1,0 +1,25 @@
+{
+  "authority_effect": "none_beyond_admitted_receipt_namespace",
+  "claim_id": "SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G20",
+  "cloudflare_required": false,
+  "completed": false,
+  "evidence_path": null,
+  "fencing_token": 20,
+  "github_models_required": false,
+  "heartbeat_epoch": 17,
+  "missing_predicates": [
+    "real_model_process_observed",
+    "private_endpoint_only",
+    "ephemeral_e1_e2_execution_observed",
+    "measured_usage_persisted",
+    "provider_usage_reconstruction_pass",
+    "transition_reconstruction_pass"
+  ],
+  "render_required": false,
+  "schema": "stegverse.ecosystem-chat-sovereign-inference-worker-receipt/v0.1",
+  "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "third_party_inference_required": false,
+  "transition_id": "SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED",
+  "worker_id": "ecosystem-chat-sovereign-inference-worker",
+  "worker_instance_id": "ecosystem-chat-sovereign-inference-worker-HB17-G20"
+}

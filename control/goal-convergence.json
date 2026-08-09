@@ -33,6 +33,23 @@
       "success_predicates_satisfied": false
     },
     {
+      "converged": false,
+      "custody_reconstruction_complete": false,
+      "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
+      "no_active_claims": false,
+      "no_authorized_remaining_action": false,
+      "no_unresolved_descendants": true,
+      "reason_codes": [
+        "ROOT_SUCCESS_PREDICATES_NOT_SATISFIED",
+        "ACTIVE_CLAIMS_REMAIN",
+        "CUSTODY_OR_RECONSTRUCTION_INCOMPLETE",
+        "AUTHORIZED_REMAINING_ACTION"
+      ],
+      "root_task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+      "state": "BLOCKED",
+      "success_predicates_satisfied": false
+    },
+    {
       "converged": true,
       "custody_reconstruction_complete": true,
       "goal_id": "SHWP-HOST-SELF-ATTEST-001",
@@ -77,5 +94,5 @@
     }
   ],
   "schema": "stegverse.goal-convergence/v0.1",
-  "source_registry_generation": 18
+  "source_registry_generation": 20
 }
