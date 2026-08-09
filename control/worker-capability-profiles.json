@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.worker-capability-profiles/v0.1",
-  "generation": 1,
+  "generation": 2,
   "profiles": [
     {
       "profile_id": "deterministic-workflow-v1",
@@ -17,7 +17,7 @@
       "profile_id": "repository-maintenance-v1",
       "executor_type": "repository_worker",
       "effect_class": "repository_maintenance",
-      "allowed_capabilities": ["native_receipt_canary", "repository_validation", "deterministic_projection", "bounded_repository_mutation"],
+      "allowed_capabilities": ["native_receipt_canary", "host_runtime_self_attest", "repository_validation", "deterministic_projection", "bounded_repository_mutation"],
       "mutation_allowed": true,
       "deployment_allowed": false,
       "availability_grants_authority": false,
