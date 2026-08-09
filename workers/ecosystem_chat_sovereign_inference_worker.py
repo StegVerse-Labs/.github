@@ -67,9 +67,21 @@ def main() -> int:
     missing = REQUIRED_TRUE if evidence is None else [k for k in REQUIRED_TRUE if evidence.get(k) is not True]
     if evidence is not None and evidence.get("third_party_inference_required") is not False:
         missing.append("third_party_inference_required=false")
-    transition = "ECOSYSTEM_CHAT_SOVEREIGN_INFERENCE_VERIFIED" if passed else "SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED"
+    transition = "ECOSYSTEM_CHAT_SOVEREIGN_INFERENCE_VERIFIED" if passed else "SOVEREIGN_INFERENCE_SOLUTION_REQUIRED"
+    blocker = None if passed else {
+        "dependency_class": "INTERNAL_CAPABILITY",
+        "problem_statement": "No admitted StegVerse-local inference execution has yet satisfied the real-model, private-endpoint, E1-to-E2, measured-usage, and reconstruction predicates.",
+        "solution_required": True,
+        "may_remain_blocked": True,
+        "workaround_candidates": [
+            "Start an eligible local model runtime on the sovereign carrier and bind the LLM adapter to loopback/private transport.",
+            "Use another StegVerse-owned/federated node with a compatible local model process and preserve the same E1-to-E2 and Master Records reconstruction contract.",
+            "If the selected local model cannot run on available hardware, select a smaller compatible local model rather than falling back to a hosted inference dependency."
+        ],
+        "next_solution_action": "Select an executable StegVerse-local model/runtime combination and activate it; model/provider unavailability requires an alternate local solution, not waiting on a third party."
+    }
     receipt = {
-        "schema": "stegverse.ecosystem-chat-sovereign-inference-worker-receipt/v0.1",
+        "schema": "stegverse.ecosystem-chat-sovereign-inference-worker-receipt/v0.2",
         "task_id": EXPECTED_TASK,
         "claim_id": claim_id,
         "worker_id": task.get("worker_id"),
@@ -83,6 +95,9 @@ def main() -> int:
         "github_models_required": False,
         "render_required": False,
         "cloudflare_required": False,
+        "third_party_dependency_is_blocker": False,
+        "blocker_policy_ref": "control/blocker-resolution-policy.json",
+        "blocker": blocker,
         "authority_effect": "none_beyond_admitted_receipt_namespace",
         "completed": passed
     }
@@ -92,11 +107,12 @@ def main() -> int:
         "state": "COMPLETED" if passed else "BLOCKED",
         "transition_id": transition,
         "transition_sequence": 1,
-        "expected_next_transition": None if passed else "SOVEREIGN_INFERENCE_RECHECK",
+        "expected_next_transition": None if passed else "SOVEREIGN_INFERENCE_SOLUTION_EXECUTION",
         "expected_next_earliest_epoch": None if passed else epoch + 1,
         "expected_next_latest_epoch": None if passed else epoch + 1,
         "checkpoint_ref": f"receipts/ecosystem-chat-sovereign-inference/{EXPECTED_TASK}.json",
-        "evidence_refs": ["StegVerse-org/LLM-adapter#18", "StegVerse-Labs/.github#60", f"receipts/ecosystem-chat-sovereign-inference/{EXPECTED_TASK}.json"],
+        "evidence_refs": ["StegVerse-org/LLM-adapter#18", "StegVerse-Labs/.github#60", f"receipts/ecosystem-chat-sovereign-inference/{EXPECTED_TASK}.json", "control/blocker-resolution-policy.json"],
+        "blocker": blocker,
         "cost_observation": {"hb_transition_count": 1, "compute_units": 1, "external_cost_usd": 0, "task_class": "ecosystem_chat_sovereign_inference"}
     }
     json.dump(response, sys.stdout, sort_keys=True)
