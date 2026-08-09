@@ -2,33 +2,28 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "state": "ACTIVATION_PENDING",
+  "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
     "objective": "Activate the canonical StegVerse single-heartbeat runtime continuously on a StegVerse-owned or StegVerse-federated node using only node-local durable storage and native process supervision; third-party platforms may mirror source or validation evidence but cannot be required for deployment, scheduling, liveness, recovery, or worker leasing.",
     "success_predicates": [
       "A StegVerse-owned or StegVerse-federated continuous carrier runs the canonical runtime",
-      "The carrier starts from an already-present local runtime source or StegVerse-distributed capsule without GitHub or provider fetch dependency",
+      "The carrier starts from already-present local runtime source or a StegVerse-distributed capsule without provider fetch dependency",
       "Heartbeat, registry, event, cost, receipt, worker-coordination and canonical-checkpoint state survive carrier restart/replacement",
       "Runtime v9 owns internal heartbeat cadence and carries worker-coordination subsignals every cycle",
-      "Worker lease lifetime is measured in canonical heartbeat cycles derived from admitted task cost/runtime bounds",
-      "Restart/replacement continuity preserves or increments the one heartbeat epoch and creates no duplicate claim or fence",
-      "No ChatGPT automation, GitHub schedule, Render cron, Cloudflare process, Vercel process, or equivalent external scheduler/host owns worker activation"
+      "Worker lease lifetime is measured in canonical heartbeat cycles",
+      "Restart/replacement continuity preserves or increments the heartbeat epoch and creates no duplicate claim or fence",
+      "No external scheduler or process host owns worker activation"
     ],
     "failure_predicates": [
-      "Any third-party hosting, source-control, routing, CI, or scheduler provider is treated as a required production dependency",
+      "Any third-party platform is treated as a required production dependency",
       "A provider outage or quota is treated as a production activation blocker",
-      "A stateless or sleeping carrier is presented as durable always-on activation without reconstructable state",
-      "A third-party scheduler becomes the normative heartbeat cadence or worker activation authority",
-      "Carrier restart/replacement loses or forks canonical heartbeat, registry, event, cost, receipt, checkpoint, or worker-coordination state"
+      "A stateless or sleeping carrier is presented as durable activation without reconstructable state",
+      "A third-party scheduler becomes heartbeat cadence or worker activation authority",
+      "Carrier restart loses or forks canonical state"
     ],
     "expires_at": null,
-    "authority_ceiling": [
-      "bounded sovereign carrier activation only",
-      "no_cross_subsystem_resource_appropriation",
-      "no_external_scheduler_as_heartbeat_authority",
-      "no_third_party_deployment_dependency"
-    ],
+    "authority_ceiling": ["bounded sovereign carrier activation only", "no_cross_subsystem_resource_appropriation", "no_external_scheduler_as_heartbeat_authority", "no_third_party_deployment_dependency"],
     "successor_policy": "NONE",
     "max_successor_depth": 0
   },
@@ -37,17 +32,20 @@
     "repository": "StegVerse-Labs/.github",
     "source_refs": [
       "StegVerse-Labs/.github#12",
+      "StegVerse-Labs/.github#59",
       "docs/ORG_MIRROR_HANDOFF.md",
       "docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md",
       "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
       "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+      "workers/sovereign_runtime_activation_worker.py",
+      "cost-basis/worker-runtime/sovereign-runtime-activation.json",
       "master-records/orchestration/WORKER_LIFECYCLE_CUSTODY_MIRROR_HANDOFF.md",
       "StegVerse-002/micro-node-runtime#16",
       "control/worker-registry.json"
     ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "Production activation must be StegVerse-native. Third-party provider availability is neither authority nor a blocker.",
+    "derivation_reason": "Production activation must be StegVerse-native; unfinished work must be heartbeat-worker managed rather than chat-owned.",
     "canonical_owner_ref": "StegVerse-Labs/.github#12",
     "canonical_lineage_key": "shwp:durable-runtime-activation",
     "derivation_depth": 0,
@@ -59,34 +57,34 @@
     "policy_version": "shwp-single-hb-v0.3-sovereign"
   },
   "execution": {
-    "required_capabilities": ["runtime_observation", "continuous_process_execution", "durable_state_reconstruction"],
-    "allowed_paths": ["StegVerse-Labs/.github", "master-records/orchestration", "StegVerse-002/micro-node-runtime"],
+    "required_capabilities": ["runtime_observation", "continuous_process_execution", "durable_state_reconstruction", "bounded_repository_mutation"],
+    "allowed_paths": ["receipts/sovereign-runtime-activation/**", "StegVerse-Labs/.github", "master-records/orchestration", "StegVerse-002/micro-node-runtime"],
     "allowed_services": [],
     "max_actions": 100,
-    "max_retries": 6,
+    "max_retries": 4096,
     "external_cost_ceiling_usd": 0,
-    "runtime_window_beats": 256,
+    "runtime_window_beats": 4096,
     "rate_class": "sovereign_runtime_activation"
   },
   "activation": {
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json#resolution",
-    "recheck_trigger": "a StegVerse-owned or StegVerse-federated node can execute scripts/install_sovereign_heartbeat_service.py from already-present local runtime material and directly expose activation/restart evidence",
+    "recheck_trigger": "each admitted heartbeat until node-local activation.latest.json proves all nine sovereign runtime predicates",
     "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {
-    "checkpoint_ref": "master-records/orchestration/WORKER_LIFECYCLE_CUSTODY_MIRROR_HANDOFF.md",
+    "checkpoint_ref": "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "handoff_destination": "StegVerse-Labs/.github/control/worker-registry.json",
     "master_records_required": true,
     "status_projection": "StegVerse-Labs/.github/control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "A StegVerse sovereign node execution lane materializes and starts runtime v9 at the admitted high-frequency cadence, proves advancing heartbeat and worker-coordination state, performs controlled restart/reconstruction, and returns directly inspectable receipts.",
+    "next_authorized_action": "Heartbeat worker rechecks node-local sovereign activation evidence every admitted cycle; when a StegVerse sovereign node emits all nine predicates true, the worker completes and Master Records reconstruction finalizes the task.",
     "terminal_when": [
       "A continuously executing canonical heartbeat carrier is active on a StegVerse-owned/federated node",
-      "Heartbeat cycle cadence is runtime-v9-owned and independent of third-party schedulers",
-      "Worker-coordination subsignal carries cycle-bound leases during execution",
+      "Heartbeat cadence is runtime-v9-owned",
+      "Worker-coordination subsignal carries cycle-bound leases",
       "Master Records reconstruction restores canonical state after restart/replacement",
       "Restart/replacement continuity proof passes",
       "No duplicate claim/fence is created",
@@ -96,8 +94,8 @@
   "block": {
     "state": "BLOCKED_RUNTIME_ACTIVATION",
     "class": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
-    "owner": "StegVerse-002/micro-node-runtime#16",
-    "machine_observable_release_condition": "one StegVerse-owned/federated node emits activation.latest.json plus heartbeat/worker checkpoint evidence before and after controlled native-service restart",
+    "owner": "heartbeat worker SHWP-DURABLE-RUNTIME-ACTIVATION via StegVerse-Labs/.github#59",
+    "machine_observable_release_condition": "node-local activation.latest.json reports all nine sovereign runtime predicates true",
     "third_party_blocker": false,
     "human_action_required": false
   }
