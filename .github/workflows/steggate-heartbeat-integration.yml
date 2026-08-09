@@ -70,7 +70,9 @@ jobs:
           set -euo pipefail
           git config user.name 'stegverse-heartbeat-worker'
           git config user.email 'actions@users.noreply.github.com'
-          git add control/ events/ checkpoints/ receipts/steggate-rendezvous-worker/ 2>/dev/null || true
+          git add control/ events/
+          if [ -d checkpoints ]; then git add checkpoints/; fi
+          if [ -d receipts/steggate-rendezvous-worker ]; then git add receipts/steggate-rendezvous-worker/; fi
           if git diff --cached --quiet; then
             echo 'Heartbeat runtime produced no persistent state delta.' >&2
             git status --short
