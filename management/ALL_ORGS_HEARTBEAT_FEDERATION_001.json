@@ -2,33 +2,91 @@
   "schema": "stegverse.integration_task.v1",
   "task_id": "ALL-ORGS-HEARTBEAT-FEDERATION-001",
   "originating_goal": "Expand heartbeat, subsignal, worker, and task-registry readiness/state to every StegVerse organization.",
-  "canonical_owners": ["StegVerse-Labs/.github#12", "StegVerse-Labs/Site#234"],
-  "state": "ACTIVE_HEARTBEAT_FEDERATION",
+  "canonical_owners": [
+    "StegVerse-Labs/.github#12",
+    "StegVerse-Labs/Site#234"
+  ],
+  "state": "ACTIVE_V9_WORKER_COORDINATION_WITH_MACHINE_BLOCKERS",
   "scheduler_authority": "single_stegverse_heartbeat",
+  "runtime": "heartbeat_runtime.engine_v9.HeartbeatRuntime",
+  "worker_coordination_subsignal": "control/heartbeat-subsignals.json#worker_coordination",
+  "organization_federation_subsignal": "control/heartbeat-subsignals.json#organization_federation",
   "wall_clock_scheduler_authority": false,
+  "wall_clock_worker_lease_authority": false,
   "authority_effect": false,
   "organization_denominator": 14,
   "registered": 14,
   "response_verified": 10,
   "machine_blocked": 4,
   "unassigned": 0,
+  "worker_task_id": "SHWP-ALL-ORG-FEDERATION-001",
+  "worker_id": "organization-federation-readiness-worker",
+  "claim_id": "SHWP-SHWP-ALL-ORG-FEDERATION-001-G17",
+  "fencing_token": 17,
+  "worker_instance_id": "organization-federation-readiness-worker-HB11-G17",
+  "worker_state": "BLOCKED",
+  "worker_transition": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+  "expected_next_transition": "FEDERATION_RECHECK",
+  "worker_lease_clock": "canonical_heartbeat_cycle",
+  "worker_lease_start_cycle": 11,
+  "worker_lease_end_cycle_exclusive": 267,
+  "worker_assigned_cycles": 256,
+  "first_v9_recheck_epoch": 12,
+  "first_v9_validation_workflow_run": 31330340149,
+  "first_v9_validation_workflow_job": 93287473658,
+  "first_v9_validation_result": "SUCCESS",
+  "first_v9_artifact_id": 9042731378,
+  "first_v9_artifact_sha256": "f006518da598b336397e0518780bca7b72e1edff14ac2ada8a8431111380c7b6",
   "canonical_surfaces": [
     "control/organization-federation.json",
     "control/organization-task-registry.json",
     "control/heartbeat-subsignals.json#organization_federation",
+    "control/heartbeat-subsignals.json#worker_coordination",
+    "control/worker-registry.json",
+    "control/worker-status.json",
+    "control/heartbeat-master-records-projection.json",
     "handoffs/SHWP-ALL-ORG-FEDERATION-001.json",
     "authorizations/SHWP-ALL-ORG-FEDERATION-001.json",
     "workers/organization_federation_readiness_worker.py",
-    "receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json"
+    "receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/"
   ],
   "acceptance": [
     "all 14 organizations are represented",
     "every organization has readiness dimensions for heartbeat response, subsignal, worker and task registry",
     "all blockers have machine-observable release conditions",
     "organization_federation is a canonical heartbeat subsignal",
-    "SHWP-ALL-ORG-FEDERATION-001 is claimed and executed through the canonical heartbeat",
-    "federation worker produces a durable receipt and heartbeat checkpoint",
+    "SHWP-ALL-ORG-FEDERATION-001 is claimed, fenced, and executed through the canonical heartbeat worker registry",
+    "the active federation lease is carried by the v9 worker_coordination subsignal in canonical heartbeat cycles",
+    "federation worker produces durable receipts, mutation-scope receipts, and heartbeat checkpoints",
     "unassigned organization count remains zero"
   ],
-  "next_action": "Run exactly one canonical heartbeat federation cycle, persist worker claim/fence/timing/receipt evidence, then leave blocked organizations under heartbeat recheck ownership without requiring a chat session."
+  "blocked_organizations": [
+    {
+      "organization": "AaCT-E",
+      "block_class": "CONNECTOR_WRITE_AUTHORITY",
+      "next_action": "RECHECK_AUTHORITY",
+      "release_condition": "GitHub integration gains push authority to an AaCT-E repository or an AaCT-E-owned relay appears"
+    },
+    {
+      "organization": "ECAT-ICAT-Formal",
+      "block_class": "NO_REPOSITORY",
+      "next_action": "RECHECK_REPOSITORY",
+      "release_condition": "Organization exposes a repository capable of owning a canonical mirror handoff and adapter"
+    },
+    {
+      "organization": "Infrastructure-Continuity-Ventures",
+      "block_class": "NO_REPOSITORY",
+      "next_action": "RECHECK_REPOSITORY",
+      "release_condition": "Organization exposes a repository capable of owning a canonical mirror handoff and adapter"
+    },
+    {
+      "organization": "Triad-Test",
+      "block_class": "NO_REPOSITORY",
+      "next_action": "RECHECK_REPOSITORY",
+      "release_condition": "Organization exposes a repository capable of owning a canonical mirror handoff and adapter"
+    }
+  ],
+  "next_action": "On each admitted canonical heartbeat while any organization remains blocked or changes state, invoke SHWP-ALL-ORG-FEDERATION-001, carry its cycle-bound lease on worker_coordination, persist a FEDERATION_RECHECK receipt/checkpoint, and keep unresolved rows fail-closed under their explicit release conditions.",
+  "chat_session_required_for_continuation": false
 }
