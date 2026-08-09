@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "steggate_stable_rendezvous",
+  "sample_count": 1,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 32,
+    "expiry_candidate_beats": 4096,
+    "confidence": "MEDIUM"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 16384,
+    "network_bytes": 1048576,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "StegVerse-Labs/Site#24",
+    "StegVerse-Labs/Site:StegGate Rendezvous Deploy run 31316924782",
+    "workers/steggate_rendezvous_deployment_worker.py",
+    "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json"
+  ],
+  "notes": [
+    "The large HB-relative expiry window permits a claimed worker to remain fail-closed across many heartbeat observations while waiting for an external credential issuance/provisioning boundary.",
+    "Wall-clock time is not used as task timing authority.",
+    "External cost ceiling remains zero."
+  ]
+}
