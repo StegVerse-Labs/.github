@@ -1,0 +1,36 @@
+name: Archive Readiness Validate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'control/archive-readiness.json'
+      - 'control/worker-registry.json'
+      - 'scripts/validate_archive_readiness.py'
+      - 'tests/test_archive_readiness.py'
+      - 'docs/ORG_MIRROR_HANDOFF.md'
+      - 'docs/ARCHIVE_GATE_PROGRESS_MIRROR_HANDOFF.md'
+      - '.github/workflows/archive-readiness-validate.yml'
+  pull_request:
+    paths:
+      - 'control/archive-readiness.json'
+      - 'control/worker-registry.json'
+      - 'scripts/validate_archive_readiness.py'
+      - 'tests/test_archive_readiness.py'
+      - 'docs/ORG_MIRROR_HANDOFF.md'
+      - 'docs/ARCHIVE_GATE_PROGRESS_MIRROR_HANDOFF.md'
+      - '.github/workflows/archive-readiness-validate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate machine archive gate
+        run: python3 scripts/validate_archive_readiness.py
+      - name: Test archive semantics
+        run: python3 -m unittest tests.test_archive_readiness
