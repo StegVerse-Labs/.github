@@ -31,7 +31,7 @@
   "completed": false,
   "federation_ref": "control/organization-federation.json",
   "fencing_token": 17,
-  "heartbeat_epoch": 12,
+  "heartbeat_epoch": 13,
   "organization_count": 14,
   "organization_task_registry_ref": "control/organization-task-registry.json",
   "ready_count": 10,
@@ -51,7 +51,7 @@
   "subsignal_ref": "control/heartbeat-subsignals.json#organization_federation",
   "task_id": "SHWP-ALL-ORG-FEDERATION-001",
   "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
-  "transition_sequence": 2,
+  "transition_sequence": 3,
   "unassigned_count": 0,
   "worker_id": "organization-federation-readiness-worker",
   "worker_instance_id": "organization-federation-readiness-worker-HB11-G17"

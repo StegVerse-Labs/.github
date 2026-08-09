@@ -1,8 +1,8 @@
 {
   "destination": "master-records/orchestration",
   "execution_authority": false,
-  "heartbeat_epoch": 12,
-  "heartbeat_generation": 12,
+  "heartbeat_epoch": 13,
+  "heartbeat_generation": 13,
   "recording_effect": "custody_and_reconstruction_only",
   "schema": "stegverse.heartbeat-master-records-projection/v1",
   "source_refs": [
@@ -24,7 +24,7 @@
         "lease_clock": "canonical_heartbeat_cycle",
         "lease_end_cycle_exclusive": 267,
         "lease_start_cycle": 11,
-        "remaining_cycles": 255,
+        "remaining_cycles": 254,
         "task_id": "SHWP-ALL-ORG-FEDERATION-001",
         "task_state": "BLOCKED",
         "wall_clock_expiry_authority": false,
@@ -42,7 +42,7 @@
         "lease_clock": "canonical_heartbeat_cycle",
         "lease_end_cycle_exclusive": 71,
         "lease_start_cycle": 7,
-        "remaining_cycles": 59,
+        "remaining_cycles": 58,
         "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
         "task_state": "BLOCKED",
         "wall_clock_expiry_authority": false,
@@ -53,7 +53,7 @@
     "authority_effect": false,
     "carrier": "single_stegverse_heartbeat",
     "carrier_cycle_unit": "heartbeat_cycle",
-    "carrier_epoch": 12,
+    "carrier_epoch": 13,
     "kind": "worker_coordination",
     "master_records_projection": {
       "authority_effect": false,
@@ -69,5 +69,5 @@
     "worker_lease_unit": "heartbeat_cycle",
     "worker_registry_ref": "control/worker-registry.json"
   },
-  "worker_coordination_sha256": "a7d9d96793ad3a199d6042874f1e5fee1befbeab401d0ea513143b832bf1521f"
+  "worker_coordination_sha256": "04ff23869e757074758846f6533f91c6bb217dc8c495d31dfe031a31bb9bec68"
 }
