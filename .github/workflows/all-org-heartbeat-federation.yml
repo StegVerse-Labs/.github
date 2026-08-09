@@ -142,18 +142,34 @@ jobs:
           from pathlib import Path
           rows=[json.loads(x) for x in Path('integration-evidence/heartbeat-cycle.jsonl').read_text().splitlines() if x.strip()]
           assert len(rows)==1
+          row=rows[0]
+          assert row['schema']=='stegverse.heartbeat-cycle-result/v0.9', row['schema']
+          coordination=row['subsignals']['worker_coordination']
+          assert coordination['carrier']=='single_stegverse_heartbeat'
+          assert coordination['carrier_cycle_unit']=='heartbeat_cycle'
+          assert coordination['worker_lease_unit']=='heartbeat_cycle'
+          assert coordination['wall_clock_expiry_authority'] is False
+          assert coordination['authority_effect'] is False
+          lease=next(x for x in coordination['active_leases'] if x['task_id']=='SHWP-ALL-ORG-FEDERATION-001')
+          assert lease['worker_id']=='organization-federation-readiness-worker'
+          assert lease['lease_clock']=='canonical_heartbeat_cycle'
+          assert lease['wall_clock_expiry_authority'] is False
+          assert lease['assigned_cycles'] > 0
+          assert lease['remaining_cycles'] >= 0
           receipt=json.loads(Path('receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json').read_text())
           status=json.loads(Path('control/worker-status.json').read_text())
           task=next(x for x in status['tasks'] if x['task_id']=='SHWP-ALL-ORG-FEDERATION-001')
           assert receipt['organization_count']==14
           assert receipt['unassigned_count']==0
+          assert receipt['heartbeat_epoch']==row['epoch']
           assert task['executor_binding']=='BOUND'
           assert task['executor_resolved'] is True
           assert task['heartbeat_timing_established'] is True
           assert task['worker_id']=='organization-federation-readiness-worker'
           Path('integration-evidence/federation-receipt.json').write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')
           Path('integration-evidence/federation-status.json').write_text(json.dumps(task,indent=2,sort_keys=True)+'\n')
-          print(f"ALL_ORG_FEDERATION_WORKER_PASS:epoch={receipt['heartbeat_epoch']}:ready={receipt['ready_count']}:blocked={receipt['blocked_count']}:unassigned=0")
+          Path('integration-evidence/worker-coordination.json').write_text(json.dumps(coordination,indent=2,sort_keys=True)+'\n')
+          print(f"ALL_ORG_FEDERATION_V9_PASS:epoch={receipt['heartbeat_epoch']}:ready={receipt['ready_count']}:blocked={receipt['blocked_count']}:unassigned=0:lease_cycles={lease['assigned_cycles']}:remaining={lease['remaining_cycles']}")
           PY
 
       - name: Persist canonical heartbeat federation state
@@ -166,7 +182,7 @@ jobs:
             echo 'Federation heartbeat produced no persistent state delta.' >&2
             exit 1
           fi
-          git commit -m 'heartbeat: activate all-organization federation worker'
+          git commit -m 'heartbeat: carry all-organization federation on v9 worker coordination'
           STASHED=false
           if [ -n "$(git status --porcelain)" ]; then
             git stash push --include-untracked -m all-org-federation-noncanonical
