@@ -18,6 +18,7 @@
     "failure_predicates": [
       "Any third-party platform is treated as a required production dependency",
       "A provider outage or quota is treated as a production activation blocker",
+      "The worker repeats SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED without selecting or executing an alternate native activation path",
       "A stateless or sleeping carrier is presented as durable activation without reconstructable state",
       "A third-party scheduler becomes heartbeat cadence or worker activation authority",
       "Carrier restart loses or forks canonical state"
@@ -36,6 +37,8 @@
       "docs/ORG_MIRROR_HANDOFF.md",
       "docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md",
       "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
+      "docs/BLOCKER_RESOLUTION_MIRROR_HANDOFF.md",
+      "control/blocker-resolution-policy.json",
       "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
       "workers/sovereign_runtime_activation_worker.py",
       "cost-basis/worker-runtime/sovereign-runtime-activation.json",
@@ -45,7 +48,7 @@
     ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "Production activation must be StegVerse-native; unfinished work must be heartbeat-worker managed rather than chat-owned.",
+    "derivation_reason": "Production activation must be StegVerse-native; unfinished work must be heartbeat-worker managed and solution-seeking rather than chat-owned or passive-blocker monitored.",
     "canonical_owner_ref": "StegVerse-Labs/.github#12",
     "canonical_lineage_key": "shwp:durable-runtime-activation",
     "derivation_depth": 0,
@@ -70,7 +73,7 @@
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json#resolution",
-    "recheck_trigger": "each admitted heartbeat until node-local activation.latest.json proves all nine sovereign runtime predicates",
+    "recheck_trigger": "each admitted heartbeat while unfinished; if activation evidence is absent, select and advance a native solution path instead of repeating observation-only rechecks",
     "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {
@@ -80,7 +83,7 @@
     "status_projection": "StegVerse-Labs/.github/control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Heartbeat worker rechecks node-local sovereign activation evidence every admitted cycle; when a StegVerse sovereign node emits all nine predicates true, the worker completes and Master Records reconstruction finalizes the task.",
+    "next_authorized_action": "Select an eligible StegVerse-owned/federated node and execute the native service installation/activation path; if that path cannot satisfy the predicates, choose another eligible node or StegVerse-002 micro-node path rather than waiting on any third party.",
     "terminal_when": [
       "A continuously executing canonical heartbeat carrier is active on a StegVerse-owned/federated node",
       "Heartbeat cadence is runtime-v9-owned",
@@ -93,8 +96,16 @@
   },
   "block": {
     "state": "BLOCKED_RUNTIME_ACTIVATION",
-    "class": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
+    "class": "PHYSICAL_RESOURCE_OR_INTERNAL_CAPABILITY",
     "owner": "heartbeat worker SHWP-DURABLE-RUNTIME-ACTIVATION via StegVerse-Labs/.github#59",
+    "problem_statement": "No eligible StegVerse-owned/federated node has yet emitted all sovereign runtime activation predicates.",
+    "solution_required": true,
+    "workaround_candidates": [
+      "Install/start the canonical service on an eligible StegVerse-owned/federated Linux node",
+      "Materialize and start the sovereign runtime capsule on another eligible node",
+      "Use an eligible StegVerse-002 micro-node while preserving the same durability/restart/reconstruction predicates"
+    ],
+    "next_solution_action": "SELECT_AND_ACTIVATE_ELIGIBLE_SOVEREIGN_NODE",
     "machine_observable_release_condition": "node-local activation.latest.json reports all nine sovereign runtime predicates true",
     "third_party_blocker": false,
     "human_action_required": false
