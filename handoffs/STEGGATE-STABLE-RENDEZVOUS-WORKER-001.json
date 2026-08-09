@@ -1,0 +1,104 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+  "created_at": "2026-08-09T16:52:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
+    "objective": "Activate and continuously advance the stable non-authorizing StegGate rendezvous through the single StegVerse heartbeat until live acceptance passes or an explicit authority/provider boundary remains blocked.",
+    "success_predicates": [
+      "The worker is atomically claimed and heartbeat-timed in the canonical worker registry.",
+      "Missing credential values remain BLOCKED with an inspectable heartbeat checkpoint.",
+      "When credential values become available, the worker validates Cloudflare Workers capability before deployment.",
+      "Only the canonical Site rendezvous source blob is deployed.",
+      "The stable route passes readiness, canonical health, and exact ALLOW/DENY/REVIEW/FAIL_CLOSED self-test.",
+      "No credential value is persisted in repository state or receipts."
+    ],
+    "failure_predicates": [
+      "Credential absence is treated as completion.",
+      "Heartbeat availability is treated as deployment authority.",
+      "Mutable/unverified Site worker source is deployed.",
+      "Deployment success is treated as live acceptance without probes.",
+      "Credential values are written to repository state or logs by this worker."
+    ],
+    "expires_at": null,
+    "authority_ceiling": [
+      "deployment_update",
+      "runtime_observation",
+      "stegverse.org/api/steggate/*",
+      "receipts/steggate-rendezvous-worker/**",
+      "no_policy_authority",
+      "no_credential_value_persistence"
+    ],
+    "successor_policy": "NONE",
+    "max_successor_depth": 0
+  },
+  "task": {
+    "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-Labs/Site#24",
+      "StegVerse-Labs/Site/SITE_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/Site/src/steggate-rendezvous-worker.js@blob:4acf5dc498297f1b2972195df74af8b60796f608",
+      "StegVerse-Labs/Site/data/steggate-rendezvous-activation.json",
+      "StegVerse-Labs/Site/data/tvc-infrastructure-credential-consumer-authority.v1.json",
+      "StegVerse-Labs/Site/data/cloudflare-steggate-credential-profile.json",
+      "authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+      "workers/steggate_rendezvous_deployment_worker.py"
+    ],
+    "dependencies": [
+      "StegVerse-Labs/StegCore#68:COMPLETE",
+      "StegVerse-Labs/StegCore#75:COMPLETE"
+    ],
+    "parent_task_id": null,
+    "derivation_reason": "User requires unresolved session work to be activated under the single heartbeat and worker task registry rather than merely durably documented.",
+    "canonical_owner_ref": "StegVerse-Labs/Site#24",
+    "canonical_lineage_key": "site:steggate-stable-rendezvous-hardening",
+    "derivation_depth": 0,
+    "priority": "critical"
+  },
+  "authority": {
+    "authority_source": "authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json + Site#24 + pinned TVC credential-reference authority",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "shwp-single-hb-v0.2"
+  },
+  "execution": {
+    "required_capabilities": ["deployment_update", "runtime_observation"],
+    "allowed_paths": ["receipts/steggate-rendezvous-worker/**"],
+    "allowed_services": ["api.cloudflare.com", "stegverse.org", "raw.githubusercontent.com"],
+    "max_actions": 8,
+    "max_retries": 32,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 64,
+    "rate_class": "heartbeat_bounded_deployment"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+    "recheck_trigger": "each admitted heartbeat while task remains unfinished",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/steggate-rendezvous-worker/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json",
+    "reconstruction_ref": "StegVerse-Labs/Site/data/steggate-rendezvous-activation.json"
+  },
+  "completion": {
+    "next_authorized_action": "On each admitted heartbeat, re-evaluate the Cloudflare credential boundary; when values are present, validate capability, deploy the canonical rendezvous, and prove stable live acceptance.",
+    "terminal_when": [
+      "Worker returns COMPLETED with transition LIVE_ACCEPTANCE_PASS",
+      "Stable readiness and health are externally observable",
+      "Self-test proves ALLOW, DENY, REVIEW, and FAIL_CLOSED",
+      "Completion evidence contains no credential values"
+    ]
+  },
+  "block": {
+    "state": "CREDENTIAL_VALUES_ABSENT",
+    "owner": "Cloudflare credential issuance/provisioning authority",
+    "machine_observable_release_condition": "CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID are both present in the authorized heartbeat execution environment.",
+    "worker_behavior": "Remain claimed/heartbeat-visible and emit BLOCKED checkpoints until the release condition becomes true."
+  }
+}
