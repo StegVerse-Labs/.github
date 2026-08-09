@@ -165,8 +165,9 @@
     {
       "archive_eligible": false,
       "archive_reason_codes": [
-        "HEARTBEAT_ACTIVATION_REQUIRED",
-        "CREDENTIAL_VALUES_ABSENT"
+        "CREDENTIAL_VALUES_ABSENT",
+        "EXPIRY_BASIS_UNAVAILABLE",
+        "HEARTBEAT_ACTIVATION_REQUIRED"
       ],
       "block_ref": "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json#block",
       "claim_id": null,
@@ -191,7 +192,7 @@
       "worker_instance_id": null
     }
   ],
-  "updated_at": "2026-08-09T16:58:00Z",
+  "updated_at": "2026-08-09T17:00:45Z",
   "workers": [
     {
       "adapter_ref": null,
