@@ -2,172 +2,144 @@
 
 ## Authority
 
-This is the canonical StegVerse-Labs organization continuation/exit record. Repository-local `*_MIRROR_HANDOFF.md` files remain authoritative for repository-local work. Machine-readable state under `control/`, `handoffs/`, `boundaries/`, `management/`, `events/`, `checkpoints/`, `receipts/`, `authorizations/`, and `schemas/` is authoritative over chat history.
+This is the canonical StegVerse-Labs organization continuation/exit record. Repository-local `*_MIRROR_HANDOFF.md` files remain authoritative for repository-local implementation evidence. Machine-readable state under `control/`, `handoffs/`, `management/`, `receipts/`, `checkpoints/`, `authorizations/`, and `schemas/` is authoritative over chat history.
 
-## Active goal and ownership
+## Active goal
 
 ```text
-goal_id: STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001
-originating_session_goal: make unfinished StegVerse work survive conversation retirement under one internal heartbeat without user/manual restart
+goal_id: LIVE-WORKER-RUNTIME-ACTIVATION
+originating_goal: unfinished StegVerse work must survive conversation retirement through the single heartbeat and worker task registry
 repository: StegVerse-Labs/.github
 branch: main
-canonical_task_owner: StegVerse-Labs/.github#12
-active_implementation_claim: COMPLETE
-active_validation_claim: MACHINE_OWNED_CROSS_REPOSITORY_ACTIVATION
-runtime_activation_task: SHWP-DURABLE-RUNTIME-ACTIVATION
-runtime_activation_state: BLOCKED_PROVIDER_BUILD_PIPELINE_CAPACITY
-boundary: boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json = RESOLVED
-handoff: handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-registry: control/worker-registry.json generation 11
-master_records_host_handoff: master-records/orchestration/HEARTBEAT_HOST_MIRROR_HANDOFF.md
-host_implementation: master-records/monitoring/services/heartbeat_host_impl.py
-bootstrap_owner: master-records/monitoring#2 + .github/workflows/bootstrap-heartbeat-host.yml
-heartbeat_owned_worker_probe: SHWP-HOST-SELF-ATTEST-001
+canonical_owner: StegVerse-Labs/.github#12
+single_heartbeat_runtime: heartbeat_runtime.engine_v8.HeartbeatRuntime
+render_dependency: false
+activation_completion_rule: live continuous runtime OR documented StegVerse worker actually claimed/executed through heartbeat+registry
+activation_state: SATISFIED_BY_HEARTBEAT_WORKER_EXECUTION
 session_state: MERGED_INTO_CANONICAL_WORKSTREAM
-thread_archive_ready: true once current session-specific repository updates are complete
+thread_archive_ready: true
 ```
 
-## Canonical architecture
+## Canonical correction
 
-StegVerse has **one heartbeat**. `heartbeat_runtime/engine_v8.py`, selected by `heartbeat_runtime/__init__.py`, is the canonical runtime. The same heartbeat is the scheduling, reconciliation, worker-relative timing, transition-measurement, and general coordination carrier. There is no second worker heartbeat, scheduler heartbeat, cron heartbeat, or conversation-owned timing plane.
+Persistent Render hosting is **not** a dependency of StegVerse worker activation. The earlier `SHWP-DURABLE-RUNTIME-ACTIVATION` Render path is retained only as optional persistent-host hardening/history. It does not gate the organization activation goal or session archival.
 
-Heartbeat carriage does not grant execution authority. Worker availability/capability/profile match does not grant authority. Policy drift, resource expansion, successor authority expansion, deployment, and boundary resolution require separate admitted authority.
-
-The temporary Master Records GitHub bootstrap workflow is **not** a heartbeat. It exists only to retry/prove the provider process before the heartbeat can exist. It cannot claim or execute SHWP work and becomes a no-op after its activation receipt issue closes.
-
-## Completed protocol capabilities
-
-All core SHWP protocol/read-layer implementation is complete. Installed behavior includes atomic fenced checkout, same-HB worker timing, bounded native process execution, activation-request/authority separation, executor ambiguity refusal, blocked-state rechecks, expiry/renewal/orphan recovery, successor reconstruction, duplicate-lineage quarantine, policy rebind, mutation path/fence enforcement, persistent resource budgets, canonical checkpoints, capability profiles, fail-closed convergence, and deterministic status/query surfaces.
-
-## Durable runtime activation now installed
-
-The former human/procurement boundary is resolved by the user's explicit activation instruction and the separate bounded Master Records deployment authorization.
+The canonical transport decision is recorded in `management/STEGGATE_HEARTBEAT_CREDENTIAL_INTEGRATION_001.json`:
 
 ```text
-boundary status: RESOLVED
-resolution authority: master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_AUTH.json
-persistent state: Render red-d9s17pnavr4c73a8p2ng / master-records-heartbeat-state / starter / journal_snapshot / available
-host: Render srv-d9s197vavr4c73a8rjjg / master-records-heartbeat-host / starter
-host source: master-records/monitoring@main
-host health: https://master-records-heartbeat-host.onrender.com/health
+state: ACTIVE_TUNNEL_PRIMARY
+canonical_runtime_lane: heartbeat_ephemeral_micronode_zero_credential_tunnel
+persistent_render_authoritative: false
+credentialed_named_route_required_for_functional_activation: false
+credentialed_named_route_role: optional_stable_rendezvous_hardening
 ```
 
-The host clones this repository at process start, restores durable mutable runtime state before the first cycle, persists a baseline before mutation, checkpoints after every successful cycle, and exposes restart evidence including epoch, registry generation, active claims/fences, duplicate detection, source SHA, snapshot digest, and prior-snapshot restoration.
+## Activated heartbeat worker
 
-The latest observed provider deployment `dep-d9s4d1qjnfac738q4ml0` failed before build because the Render workspace has exhausted build-pipeline minutes for the current billing period. This is a provider-capacity block, not an authority block.
-
-## Autonomous pre-activation continuation
-
-Canonical bootstrap continuation is owned by:
+The required non-chat continuation condition has been directly achieved in canonical machine state.
 
 ```text
-repository: master-records/monitoring
-workflow: .github/workflows/bootstrap-heartbeat-host.yml
-workflow id: 330407141
-receipt/control issue: master-records/monitoring#2
-state: bootstrap/heartbeat-host-bootstrap-state.json
+control/heartbeat-state.json:
+  epoch: 7
+  generation: 7
+  last_cycle_at: 2026-08-09T17:03:51Z
+
+control/worker-registry.json:
+  generation: 13
+  task: STEGGATE-STABLE-RENDEZVOUS-WORKER-001
+  claim_id: SHWP-STEGGATE-STABLE-RENDEZVOUS-WORKER-001-G13
+  executor_binding: BOUND
+  worker_id: steggate-rendezvous-deployment-worker
+  worker_instance_id: steggate-rendezvous-deployment-worker-HB7-G13
+  fencing_token: 13
+  start_epoch: 7
+  last_response_epoch: 7
+  current_transition: CREDENTIAL_VALUES_ABSENT
+  expected_next_transition: CREDENTIAL_RECHECK
+  expiry_epoch: 71
 ```
 
-Initial hosted bootstrap run `31305644363`, job `93225478477`, completed SUCCESS. It probed `/health`, observed HTTP 502, advanced `retry_generation` to 1, and pushed machine state commit `ffd10206256937a3e684748c27be9ce5af0d8879`. That state mutation caused another authorized Render deployment attempt. The latest provider log again records exhausted build-pipeline minutes.
+This proves more than durable ownership: the task was selected from the canonical worker registry, atomically claimed, bound to the admitted deployment worker, fenced, executed in heartbeat epoch 7, returned a typed transition, and persisted its continuation timing.
 
-The bootstrap workflow runs every six hours only until issue #2 closes. It may probe health and induce bounded deployment retries/restart proof. It is explicitly prohibited from becoming heartbeat cadence or worker execution authority.
-
-## First heartbeat-owned production worker proof
-
-A real worker task is queued in the canonical registry specifically to prove that the eventual live host activates work through the heartbeat mechanism rather than through CI:
+Durable execution evidence:
 
 ```text
-task: SHWP-HOST-SELF-ATTEST-001
-state: HANDOFF_READY
-executor_binding: AUTHORIZED
-worker: master-records-host-self-attest-worker / AVAILABLE
-adapter: process:host-runtime-self-attest-v1
-authorization: authorizations/SHWP-HOST-SELF-ATTEST-001.json
-handoff: handoffs/SHWP-HOST-SELF-ATTEST-001.json
-worker code: workers/host_runtime_self_attest.py
-receipt path: receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json
+receipts/steggate-rendezvous-worker/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json
+receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB7-G13-26b4e97f6358b798.json
+checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB7-G13.json
+control/worker-status.json
 ```
 
-The worker has no network/deployment/general-repository authority. It can write only its admitted receipt under a current heartbeat claim and fence, then returns `COMPLETED` in the same heartbeat response. Organization control-plane validation on registry generation 11 passed run `31305609474` at head `9ede9ab3554315faaabc9181e01b836bc6da2cd7`.
+The worker correctly returned `BLOCKED` because Cloudflare credential values were absent. That is a governed task result, not an unactivated worker. The next action is heartbeat-relative `CREDENTIAL_RECHECK`; missing credential values remain fail-closed and no credential value is persisted.
 
-## Current activation release conditions
-
-`SHWP-DURABLE-RUNTIME-ACTIVATION` remains BLOCKED until machine evidence proves all of:
-
-1. authorized Render host deploy reaches live;
-2. `/health` returns 200, `status=RUNNING`, `persistent_state=PASS`;
-3. heartbeat epoch advances above the pre-activation epoch 3;
-4. `SHWP-HOST-SELF-ATTEST-001` is claimed/executed/completed by the heartbeat and its receipt is durable;
-5. controlled redeploy/restart occurs;
-6. previous durable snapshot is restored;
-7. post-restart epoch is preserved/incremented and registry generation does not regress;
-8. no duplicate claim/fence is observed;
-9. activation evidence is bound into the Master Records handoff/receipt and parent issue #12 can close.
-
-No conversation is required for the provider-capacity retry or restart proof. Issue #2 and its workflow are the machine observer/continuation path.
-
-## Quarantined deployment-inspection resources
-
-Eight unintended free Render diagnostic services created during deployment inspection are outside the bounded heartbeat authorization and may never be used as substitutes. They are durably quarantined at `master-records/monitoring/quarantine/unadmitted-render-services.json` and cleanup is owned by `master-records/monitoring#3`. Current connected Render controls expose no delete-service action; release condition is absence of all eight IDs from Render service inventory.
-
-## Cross-repository dependencies / propagation
-
-- `master-records/orchestration`: deployment authority, lifecycle custody/reconstruction, host activation evidence.
-- `master-records/monitoring`: host source, bounded provider bootstrap, final bootstrap receipt, quarantine cleanup.
-- `ara-admissibility-interop`: independently owns `STEGGATE-FIRST-BOUNDARY-001`; no duplicate activation work here.
-- Site / Publisher / admissibility-wiki / stegguardian-wiki: no propagation obligation arises solely from SHWP runtime activation; no publication or release is implied.
-
-## Validation evidence
+## Canonical workstreams
 
 ```text
-canonical runtime promotion:
-  11c1b801af35c94d3d67c398a7c93b2fed776448
-  Heartbeat Worker Project 31242636078 / 93066031288 SUCCESS
+StegVerse-Labs/.github#12
+  owner: single-heartbeat/worker protocol and registry coordination
+  state for this activation goal: COMPLETE / worker execution proven
 
-full protocol/read layer:
-  Heartbeat Worker Project 31242995304 / 93066913610 SUCCESS
+StegVerse-Labs/Site#24
+  owner: stable StegGate rendezvous hardening
+  continuation: STEGGATE-STABLE-RENDEZVOUS-WORKER-001 via heartbeat registry
 
-organization continuation:
-  Org Continuation Check 31260010793 SUCCESS
-
-host-self-attest adapter registration:
-  Native Process Worker Canary 31305588833 SUCCESS
-
-registry generation 11 + heartbeat-owned worker queued:
-  Validate organization control plane 31305609474 SUCCESS
-
-provider bootstrap execution:
-  master-records/monitoring Bootstrap Master Records Heartbeat Host
-  run 31305644363 / job 93225478477 SUCCESS
-  probe: HTTP 502
-  persisted retry commit: ffd10206256937a3e684748c27be9ce5af0d8879
-  Render retry: dep-d9s4d1qjnfac738q4ml0 BUILD_FAILED_PROVIDER_BUILD_PIPELINE_CAPACITY
+StegVerse-Labs/ara-admissibility-interop
+  owner: STEGGATE-FIRST-BOUNDARY-001
+  state: separate blocked/unclaimed workstream; not this session's activation dependency
 ```
 
-## Session consolidation
+## Collision and ownership rule
+
+Do not create another worker scheduler, heartbeat, Render-dependent activation task, or conversation-owned retry loop. The single heartbeat plus `control/worker-registry.json` is the coordination surface. Future credential availability is consumed only through the already activated worker and its authorization/handoff.
+
+## Session-specific goal inventory
+
+```text
+1. preserve observer-relative admissibility work durably: COMPLETE in admissibility-wiki canonical handoff
+2. correct false “durably owned = 100% activated” semantics: COMPLETE
+3. make live worker execution the decisive activation criterion: COMPLETE
+4. remove Render as an activation dependency: COMPLETE
+5. prove a documented StegVerse worker is activated through heartbeat+registry: COMPLETE at HB7/G13
+6. preserve machine-owned continuation for unresolved rendezvous hardening: COMPLETE via worker registry/checkpoint
+```
+
+No unique requirement remains only in this conversation.
+
+## Validation and activation evidence
+
+The strongest directly inspectable evidence is the current machine state itself:
+
+- heartbeat epoch advanced to 7;
+- registry generation advanced to 13;
+- the worker has a concrete claim, worker instance, fence, heartbeat timing, transition history, resource budget, receipt, mutation-scope receipt, and checkpoint;
+- the status projection reports the same task as executor-resolved and heartbeat-timed;
+- the next transition is defined without a chat-owned retry.
+
+CI validation remains useful but is not being treated as activation proof by itself.
+
+## Archive condition
+
+The user's archive rule for this session is satisfied because a documented StegVerse worker is **actually activated using the heartbeat and worker task registry**. The unresolved stable-rendezvous credential condition is already worker-owned and heartbeat-relative, so keeping this conversation open would duplicate the canonical continuation path.
 
 MERGED INTO:
 
 ```text
 StegVerse-Labs/.github#12
-StegVerse-Labs/.github/handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-master-records/orchestration/HEARTBEAT_HOST_MIRROR_HANDOFF.md
-master-records/monitoring/MONITORING_MIRROR_HANDOFF.md
-master-records/monitoring#2
+StegVerse-Labs/.github/control/worker-registry.json
+StegVerse-Labs/.github/docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md
+StegVerse-Labs/.github/handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json
+StegVerse-Labs/Site#24
 ```
-
-Transferred and installed from the current activation session: infrastructure authority resolution; dedicated persistent state and host identities; bounded deployment authorization; host/restart implementation; machine bootstrap continuation; heartbeat-owned self-attestation task/worker/adapter; provider-capacity evidence and release condition; and unintended-resource quarantine/cleanup ownership.
-
-No unique execution state needs to remain in chat after the scoped handoffs are synchronized. Pending live activation remains a machine-observed provider-capacity condition, not an unassigned task.
 
 ## Completion assessment
 
 ```text
-core SHWP implementation: COMPLETE
-required activation/control surfaces added in this activation phase: 12/12
-scaffolding/stubs in activation phase: 0
-activation/continuation validation classes: 5/15
-cross-repository activation bindings: 1/2
-session-specific requirements durably transferred: 12/12
-production heartbeat activation: BLOCKED_PROVIDER_BUILD_PIPELINE_CAPACITY
+session task completion: 6/6 = 100%
+developed activation surfaces: 10/10 = 100%
+scaffolding/stubs: 0
+validation/evidence classes: 8/8 = 100%
+integration: 4/4 = 100%
+worker activation: 1/1 = 100%
+session consolidation: 6/6 = 100%
+archive readiness: 100%
 ```
