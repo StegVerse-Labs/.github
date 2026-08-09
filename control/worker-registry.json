@@ -1,5 +1,5 @@
 {
-  "generation": 11,
+  "generation": 12,
   "schema": "stegverse.heartbeat-worker-registry/v0.1",
   "tasks": [
     {
@@ -161,9 +161,37 @@
       "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
       "worker_id": null,
       "worker_instance_id": null
+    },
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "HEARTBEAT_ACTIVATION_REQUIRED",
+        "CREDENTIAL_VALUES_ABSENT"
+      ],
+      "block_ref": "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json#block",
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "StegVerse-Labs/Site#24",
+        "StegVerse-Labs/Site:StegGate Rendezvous Deploy run 31316924782 job 93253575487:FAIL_CLOSED_CREDENTIAL_ABSENT",
+        "StegVerse-Labs/Site:artifact 9039012210 sha256:3976a14ec571e01ad745da66d9579f7adae0ba1d0c3527bdef42e0295b012055",
+        "authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+        "workers/steggate_rendezvous_deployment_worker.py"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": "cloudflare:stegverse-steggate-rendezvous",
+      "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
+      "handoff_ref": "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "StegVerse-Labs/Site/data/steggate-rendezvous-activation.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+      "worker_id": null,
+      "worker_instance_id": null
     }
   ],
-  "updated_at": "2026-08-09T16:56:47Z",
+  "updated_at": "2026-08-09T16:58:00Z",
   "workers": [
     {
       "adapter_ref": null,
@@ -204,6 +232,19 @@
       "last_seen_at": null,
       "status": "AVAILABLE",
       "worker_id": "master-records-host-self-attest-worker"
+    },
+    {
+      "adapter_ref": "process:steggate-rendezvous-deployment-v1",
+      "authority_source": "authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+      "capabilities": [
+        "deployment_update",
+        "runtime_observation"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#deployment-worker-v1",
+      "executor_type": "deployment_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "steggate-rendezvous-deployment-worker"
     }
   ]
 }
