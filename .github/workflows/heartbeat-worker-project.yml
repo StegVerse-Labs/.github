@@ -96,7 +96,7 @@ jobs:
       - name: Prove cost basis estimator semantics
         run: python -m unittest -v tests.test_worker_cost_basis_estimator
       - name: Prove StegVerse-native sovereign heartbeat host
-        run: python -m pytest -q tests/test_sovereign_heartbeat_service.py
+        run: python -m unittest -v tests.test_sovereign_heartbeat_service
       - name: Prove sparse live cost data does not invent expiry
         run: |
           output="$(python scripts/estimate_worker_cost_basis.py --check)"
