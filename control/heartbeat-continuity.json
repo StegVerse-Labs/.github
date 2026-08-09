@@ -79,7 +79,7 @@
       "reason_codes": [
         "HB_RELATIVE_TIMING_NOT_YET_RECORDED"
       ],
-      "state": "HUMAN_AUTHORITY_REQUIRED",
+      "state": "BLOCKED",
       "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
       "transition_sequence": null
     }

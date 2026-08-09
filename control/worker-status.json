@@ -3,12 +3,12 @@
   "activation_required_count": 0,
   "archive_eligible_count": 2,
   "execution_authority_from_heartbeat": false,
-  "generated_at": "2026-08-09T05:50:51Z",
+  "generated_at": "2026-08-09T05:51:10Z",
   "heartbeat_epoch": 3,
   "query_is_observational": true,
   "schema": "stegverse.heartbeat-worker-status/v0.3",
   "single_heartbeat_timing_frame": true,
-  "source_registry_generation": 9,
+  "source_registry_generation": 10,
   "task_count": 4,
   "tasks": [
     {
@@ -16,11 +16,13 @@
       "activation_required": false,
       "archive_eligible": false,
       "archive_reason_codes": [
-        "AUTOMATION_TERMINAL_UNTIL_HUMAN_DECISION",
+        "BLOCKED_UNCLAIMED",
         "EXECUTOR_NOT_BOUND",
         "EXECUTOR_NOT_RESOLVED",
+        "HOST_DEPLOYMENT_PENDING",
         "MASTER_RECORDS_CUSTODY_NOT_PROVEN",
-        "PAID_DURABLE_HOST_AUTHORITY_REQUIRED"
+        "PROVIDER_BUILD_PIPELINE_CAPACITY",
+        "RESTART_CONTINUITY_PROOF_PENDING"
       ],
       "authority_resolved": true,
       "claim_id": null,
@@ -31,11 +33,15 @@
       "eligible_workers": [],
       "evidence_refs": [
         "StegVerse-Labs/.github#12",
-        "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
-        "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
-        "Org Continuation Check run 31260010793:SUCCESS"
+        "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json:RESOLVED",
+        "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_AUTH.json",
+        "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_RECEIPT.json",
+        "master-records/monitoring/MONITORING_MIRROR_HANDOFF.md",
+        "Render Key Value red-d9s17pnavr4c73a8p2ng:available",
+        "Render service srv-d9s197vavr4c73a8rjjg:created",
+        "Render deploy dep-d9s1987avr4c73a8rkeg:BUILD_FAILED_PROVIDER_QUOTA"
       ],
-      "executor_binding": "UNBOUND",
+      "executor_binding": "AUTHORIZED",
       "executor_resolved": false,
       "expected_next_transition": null,
       "expiry_epoch": null,
@@ -44,10 +50,10 @@
       "handoff_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
       "heartbeat_epoch": 3,
       "heartbeat_timing_established": false,
-      "last_checkpoint_ref": "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+      "last_checkpoint_ref": "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_RECEIPT.json",
       "legacy_wall_clock_lease_is_timing_authority": false,
       "next_authorized_action": "Retry deployment of existing Render service srv-d9s197vavr4c73a8rjjg when provider build capacity is available, then verify /health, heartbeat epoch advancement, controlled redeploy continuity, and duplicate-claim/fence absence.",
-      "state": "HUMAN_AUTHORITY_REQUIRED",
+      "state": "BLOCKED",
       "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
       "validation_errors": [],
       "worker_id": null,
