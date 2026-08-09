@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.heartbeat-subsignals/v1",
+  "generation": 1,
+  "subsignals": {
+    "steggate_transport_lease": {
+      "kind": "transport_lease",
+      "state": "OPEN_REQUESTED",
+      "lease_id": "STEGGATE-TUNNEL-LEASE-001",
+      "lease_action": "OPEN",
+      "opened_epoch": 7,
+      "dependent_tasks": [],
+      "release_policy": {
+        "handoff_on_successor_acceptance": true,
+        "release_on_all_dependents_terminal": true,
+        "terminal_task_states": ["COMPLETE", "CLOSED", "CANCELLED", "SUPERSEDED"],
+        "wall_clock_expiry_authority": false
+      },
+      "successor_lease_id": null,
+      "authority_effect": false
+    }
+  }
+}
