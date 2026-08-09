@@ -2,148 +2,113 @@
 
 ## Authority
 
-This scoped handoff is subordinate to `docs/ORG_MIRROR_HANDOFF.md` and `StegVerse-Labs/.github#12`. It is the canonical continuation for the single-heartbeat worker/continuity implementation. `management/SHWP_SESSION_EXECUTION_INVENTORY.json` is the machine-readable session inventory.
+This scoped handoff is subordinate to `docs/ORG_MIRROR_HANDOFF.md` and `StegVerse-Labs/.github#12`. It is the canonical continuation for the single-heartbeat worker/continuity implementation. `management/SHWP_SESSION_EXECUTION_INVENTORY.json` remains the machine-readable session inventory.
 
-No separate scheduler, worker heartbeat, conversational trigger, GitHub Actions schedule, cron schedule, Render schedule, or third-party wake service is normative authority for this lane.
+No conversation, GitHub Actions schedule, GitHub-hosted process, Render service, cloud queue, cron service, or other third-party deployment/scheduler is normative heartbeat authority.
 
 ## Goal and claim state
 
 ```text
 goal_id: STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001
 repository: StegVerse-Labs/.github
-branch: main
+branch: feat/sovereign-heartbeat-host -> main
 canonical_owner: issue #12
-implementation_claim: RELEASED
-validation_claim: RELEASED
+protocol_implementation: COMPLETE
+protocol_validation: COMPLETE
 runtime_activation_task: SHWP-DURABLE-RUNTIME-ACTIVATION
-runtime_activation_state: BLOCKED
-runtime_activation_claim: AUTHORIZED_BUT_NOT_EXECUTING
-runtime_activation_worker: NONE_ACTIVE
-runtime_activation_executor_binding: AUTHORIZED
-block_class: PROVIDER_BUILD_PIPELINE_CAPACITY
-block_owner: Render workspace tea-d30avmndiees73bg2rjg
-block_release_condition: existing service srv-d9s197vavr4c73a8rjjg completes a deploy
+runtime_activation_state: IMPLEMENTED_PENDING_LIVE_SOVEREIGN_NODE_OBSERVATION
+runtime_activation_claim: CLAIMED_FOR_INTEGRATION
+runtime_activation_worker: NONE_LIVE_YET
+third_party_deployment_dependency: REMOVED_FROM_CANONICAL_PATH
+third_party_scheduler_dependency: NONE
 human_authority_required: false
-session_state: MERGED_INTO_CANONICAL_WORKSTREAM
-thread_archive_ready_for_protocol_implementation_only: true
+session_state: ACTIVE_DISTINCT_INTEGRATION_ROLE
 production_activation_complete: false
 ```
 
-## Canonical model
+## Canonical runtime
 
-`heartbeat_runtime.engine_v8.HeartbeatRuntime` is the production-selected runtime. One heartbeat owns epoch progression, worker-relative timing, registry/HANDOFF evaluation, transition/coherence observations, recovery, canonical checkpoints and successor state. Heartbeat never grants execution, renewal, policy-change, authority-expansion, deployment, procurement or human-decision authority.
+`heartbeat_runtime.engine_v8.HeartbeatRuntime` remains the single production runtime. One heartbeat owns epoch progression, worker-relative timing, HANDOFF/registry evaluation, transition/coherence observations, recovery, canonical checkpoints and successor state. Heartbeat never grants execution, renewal, policy-change, authority-expansion, deployment, procurement or human-decision authority.
 
-## Completed implementation
+The runtime cadence is internal to `scripts/run_heartbeat_runtime.py --continuous`. The process host supplies liveness only.
 
-All protocol child implementation work is complete and hosted-green. Canonical surfaces include:
+## StegVerse-native host path
 
-```text
-heartbeat_runtime/engine_v8.py
-heartbeat_runtime/engine_v7_1.py
-heartbeat_runtime/process_adapter.py
-scripts/run_heartbeat_runtime.py
-scripts/project_heartbeat_workers.py
-scripts/query_worker_status.py
-scripts/evaluate_goal_convergence.py
-control/worker-registry.json
-control/worker-status.json
-control/goal-convergence.json
-control/worker-capability-profiles.json
-schemas/worker-checkpoint.schema.json
-schemas/worker-policy-rebind.schema.json
-schemas/worker-capability-profiles.schema.json
-schemas/human-authority-boundary.schema.json
-```
+The former Render-host activation path is superseded as the canonical production path because third-party deployment infrastructure may not be a StegVerse activation dependency.
 
-Completed semantics include one-HB activation/timing, no-work/no-worker, atomic fencing, real bounded process execution, ambiguity refusal, bounded goals/lineage, duplicate quarantine, resource authority, policy rebind, canonical checkpointing, Master Records recovery, sandbox mutation controls, capability profiles, fail-closed status, observational query, and deterministic convergence.
-
-## Validation evidence
+Installed source:
 
 ```text
-Heartbeat Worker Project 31242636078 / 93066031288 SUCCESS — promoted v8 runtime
-Heartbeat Worker Project 31242995304 / 93066913610 SUCCESS — complete protocol/read layer
-Org Continuation Check 31260010793 SUCCESS — canonical continuation surfaces repaired
-Heartbeat Worker Project 31260127709 SUCCESS — runtime activation task registered without false activation
+scripts/install_sovereign_heartbeat_service.py
+tests/test_sovereign_heartbeat_service.py
 ```
 
-## Watchdog/scheduler convergence
+The installer:
 
-The historical scheduled `Organization heartbeat watchdog` was not canonical. Commit `4508352ea1a279009ceca8145b68b91a44fdc787` removed the 8-hour schedule and content-write authority. The workflow is manual diagnostic only and cannot own heartbeat cadence or monitoring continuation.
+1. materializes the already-present canonical heartbeat implementation onto durable local StegVerse node storage;
+2. performs no GitHub/network fetch at runtime materialization;
+3. copies runtime, control, HANDOFF, authorization, worker, schema, checkpoint, event, receipt, heartbeat and cost-basis state locally;
+4. registers `run_heartbeat_runtime.py --continuous` directly with the node host OS using a systemd user service, macOS LaunchAgent, or Windows logon task;
+5. uses native restart supervision only for process liveness;
+6. leaves cadence and worker-control decisions exclusively with runtime v8;
+7. records materialization/activation receipts under the local runtime root;
+8. grants no execution authority and requires no third-party deployment/scheduler after materialization.
 
-## Runtime activation — current blocker
+This is compatible with StegVerse portable-node deployment: the physical execution environment may be any StegVerse-owned or StegVerse-federated node. GitHub may remain a source/evidence mirror, but its availability is not required for the installed runtime to continue executing.
 
-The prior human-provisioning boundary is resolved. A dedicated Render Key Value resource exists and the dedicated service `srv-d9s197vavr4c73a8rjjg` has been created. Deployment authorization is durably recorded in `master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_AUTH.json`.
+## Superseded provider path
 
-The current blocker is provider execution capacity, not missing implementation and not missing human authority. The first deployment `dep-d9s1987avr4c73a8rkeg` failed because the Render workspace could not accept/complete the build. The task remains in `control/worker-registry.json` as `SHWP-DURABLE-RUNTIME-ACTIVATION`, `state=BLOCKED`, `executor_binding=AUTHORIZED`, with no active worker instance because the durable heartbeat runtime is not yet running.
-
-Canonical blocker record:
-
-```text
-task: SHWP-DURABLE-RUNTIME-ACTIVATION
-registry state: BLOCKED
-handoff: handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-block class: PROVIDER_BUILD_PIPELINE_CAPACITY
-provider workspace: tea-d30avmndiees73bg2rjg
-service: srv-d9s197vavr4c73a8rjjg
-release condition: service completes a deploy
-human authority required: false
-next authorized action: retry deployment when provider build capacity is available, then verify /health, heartbeat epoch advancement, controlled redeploy continuity, and absence of duplicate claim/fence
-```
-
-Until that release condition occurs, the StegVerse heartbeat/worker architecture exists and is validated but is **not production-activated**. Registry presence is not worker activation; `executor_binding=AUTHORIZED` is not an executing worker; CI validation is not heartbeat continuation.
+The prior `master-records-heartbeat-host` Render service, Render Key Value state, and bootstrap retry workflow are retained only as historical/diagnostic evidence. `PROVIDER_BUILD_PIPELINE_CAPACITY` is no longer an admissible canonical activation blocker. `master-records/monitoring#2` must be reconciled as SUPERSEDED_BY_SOVEREIGN_HOST for heartbeat process hosting; Master Records remains evidence/custody/reconstruction authority, not process hosting authority.
 
 ## Activation completion criteria
 
-Production activation is complete only when all of the following are directly observed:
+Production activation reaches 100% only after direct evidence from a StegVerse-owned/federated node proves all of:
 
-1. Render service `srv-d9s197vavr4c73a8rjjg` successfully deploys;
-2. `scripts/run_heartbeat_runtime.py --continuous` is live on that service;
-3. `/health` verifies the running runtime;
-4. the canonical heartbeat epoch advances under runtime v8 ownership;
-5. worker-registry tasks can be claimed/executed through the heartbeat lane;
-6. controlled restart/redeploy preserves or increments the canonical epoch;
-7. no duplicate claim, heartbeat, fence, or split-brain state appears;
-8. durable registry/event/cost/receipt/checkpoint state survives restart/deploy.
+1. the sovereign materialization receipt exists with `third_party_deployment_required=false` and `third_party_scheduler_required=false`;
+2. the native service registration is active;
+3. `scripts/run_heartbeat_runtime.py --continuous` is a live process from the materialized local runtime root;
+4. heartbeat epoch advances above the preactivation epoch under runtime-v8 ownership;
+5. `SHWP-HOST-SELF-ATTEST-001` is claimed/executed/completed by the heartbeat and its receipt is durable;
+6. the native service is deliberately restarted;
+7. heartbeat epoch and worker-registry generation are preserved or incremented after restart;
+8. no duplicate heartbeat, claim, fence or split-brain state is observed;
+9. registry/event/cost/receipt/checkpoint state survives restart from local durable StegVerse storage.
 
-## StegGate / StegCore continuation
-
-```text
-STEGGATE-AUDITKIT-001: COMPLETED; never reactivate
-STEGGATE-FIRST-BOUNDARY-001: BLOCKED / UNCLAIMED in ara-admissibility-interop
-StegCore#54: COMPLETE / RELEASED
-SHWP-HOST-SELF-ATTEST-001: QUARANTINED pending live host runtime evidence
-SHWP-DURABLE-RUNTIME-ACTIVATION: BLOCKED on provider build capacity
-```
-
-## Session consolidation
-
-MERGED INTO: `StegVerse-Labs/.github#12`.
-
-Exact continuation surfaces:
+## Machine-observable blocker
 
 ```text
-docs/ORG_MIRROR_HANDOFF.md
-docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md
-management/SHWP_SESSION_EXECUTION_INVENTORY.json
-management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json
-handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-control/worker-registry.json
-control/worker-status.json
+block_class: SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED
+owner: StegVerse-Labs/.github#12
+release_condition: a StegVerse-owned/federated node executes the installed sovereign service and satisfies all nine activation criteria
+next_executable_action: bind the materialized runtime to the next available StegVerse portable/micro-node execution environment and run the restart/self-attestation proof
+GitHub availability required: false
+Render availability required: false
+third-party hosting required: false
 ```
 
-No chat-specific knowledge is required to identify or resume the blocker. However, production activation must not be reported as 100% until the live heartbeat runtime and worker execution path satisfy the activation completion criteria above.
+## Validation
+
+Protocol implementation remains 100%/hosted-green from the prior canonical runtime validation. The sovereign-host implementation adds deterministic validation that materialization is network-independent, native service registration invokes the continuous runtime directly, third-party deployment/scheduler flags are false, and host activation grants no execution authority.
+
+## Cross-repository integration
+
+- `StegVerse-002/micro-node-runtime#16` already owns sovereign platform migration and is the canonical StegVerse-only migration workstream for external operational dependencies.
+- `StegVerse-org/LLM-adapter` already proves zero-touch portable-node autostart across Linux/macOS/Windows; the heartbeat installer intentionally follows the same native-host pattern without making LLM-adapter heartbeat authority.
+- `master-records/orchestration` remains custody/reconstruction authority.
+- `master-records/monitoring#2` legacy Render-host bootstrap must be marked superseded for production activation.
 
 ## Completion assessment
 
 ```text
-protocol implementation: 100%
-developed files/surfaces: 50/50 = 100%
+heartbeat protocol implementation: 100%
+developed protocol files/surfaces: 50/50 = 100%
 scaffolding/stubs: 0
 protocol validation: 27/27 = 100%
-integration/transfer: 29/29 = 100%
-production goal activation: 27/28 = 96%
-worker-runtime activation: 0% live production execution
-session consolidation: 19/19 = 100%
-production activation blocker: PROVIDER_BUILD_PIPELINE_CAPACITY
+production activation before sovereign-host integration: 27/28 = 96%
+sovereign-host implementation: IMPLEMENTED_PENDING_MERGE_AND_LIVE_NODE_PROOF
+live worker-runtime execution: NOT_ACTIVE_YET
+third-party deployment blocker: REMOVED
+remaining blocker: SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED
 ```
+
+Do not report production activation as 100% until a StegVerse-owned/federated node proves live continuous execution and restart continuity. Do not reactivate Render/GitHub hosting as a substitute.
