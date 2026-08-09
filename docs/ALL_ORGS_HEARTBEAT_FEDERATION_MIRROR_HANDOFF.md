@@ -2,138 +2,96 @@
 
 ## Authority
 
-This handoff is subordinate to `docs/ORG_MIRROR_HANDOFF.md`, `StegVerse-Labs/.github#12`, and the existing all-organization response-network owner `StegVerse-Labs/Site#234`.
+This is the canonical session continuation for the originating goal to expand heartbeat/subsignal/worker/task-registry readiness and state across every StegVerse organization.
 
-It is the canonical continuation for expanding the proven single-heartbeat/subsignal/worker/task-registry readiness model across every organization in the current StegVerse organization inventory.
+It is subordinate to `docs/ORG_MIRROR_HANDOFF.md` and `StegVerse-Labs/.github#12` for the single-heartbeat runtime, and converges with `StegVerse-Labs/Site#234` for the already-existing all-organization heartbeat-response network. It does not create another heartbeat, scheduler, response mesh, or authority plane.
 
-## Goal
+## Active goal
 
 ```text
 goal_id: ALL-ORG-HEARTBEAT-FEDERATION-001
+originating_session_goal: Expand readiness and state of the heartbeat/subsignal/worker/task registry to all organizations.
 repository: StegVerse-Labs/.github
 branch: main
 canonical heartbeat owner: StegVerse-Labs/.github#12
 canonical response-network owner: StegVerse-Labs/Site#234
 organization denominator: 14
+runtime: heartbeat_runtime.engine_v9.HeartbeatRuntime
 scheduler authority: single StegVerse heartbeat
+worker lease clock: canonical heartbeat cycle
 wall-clock scheduler authority: false
 transport/subsignal authority effect: false
-session_activation_state: ACTIVATED_WITH_MACHINE_OWNED_BLOCKERS
+session_state: MERGED_INTO_CANONICAL_WORKSTREAM
+session_activation_state: ACTIVATED_VIA_V9_HEARTBEAT_WORKER_WITH_MACHINE_OWNED_BLOCKERS
 ```
 
-## Canonical state
+## Complete session goal inventory
 
-Machine-readable state is owned by:
+### Primary goal
+
+`ALL-ORG-HEARTBEAT-FEDERATION-001` — represent every StegVerse organization in canonical heartbeat readiness, subsignal state, worker state, task-registry ownership, blocker state, evidence, release condition, and next action.
+
+Destination: `StegVerse-Labs/.github@main`.
+
+### Adjacent goals introduced or inherited
+
+1. Reuse, rather than duplicate, Site issue #234's SENT -> RECEIVED -> RESPONDED -> RECOVERED -> REPEAT response network.
+2. Carry organization readiness as a subsignal of the single heartbeat rather than creating a second scheduler.
+3. Install a real heartbeat-owned worker and task-registry entry that can recheck all 14 organizations.
+4. Preserve explicit machine-observable release conditions for organizations that cannot yet host an adapter.
+5. Reconcile the federation worker with the corrected v9 worker-coordination model after PR #56 superseded low-frequency workflow/TTL interpretations.
+6. Preserve all session-specific activation and continuation evidence in repository state so no chat history is required.
+
+No unique publication, deployment, release, Site mirror, Publisher, admissibility-wiki, or StegGuardian mutation was introduced by this session. Those repositories remain consumers or adjacent owners only where their existing handoffs/contracts require it.
+
+## Authoritative surfaces
 
 ```text
 control/organization-federation.json
 control/organization-task-registry.json
 control/heartbeat-subsignals.json#organization_federation
+control/heartbeat-subsignals.json#worker_coordination
 control/worker-registry.json
 control/worker-status.json
+control/heartbeat-master-records-projection.json
+management/ALL_ORGS_HEARTBEAT_FEDERATION_001.json
+handoffs/SHWP-ALL-ORG-FEDERATION-001.json
+authorizations/SHWP-ALL-ORG-FEDERATION-001.json
+cost-basis/worker-runtime/organization-federation-readiness.json
+workers/organization_federation_readiness_worker.py
+.github/workflows/all-org-heartbeat-federation.yml
 receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json
-checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB11-G17.json
+receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-*.json
+checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/
 ```
 
-The federation denominator is the 14-organization inventory already established and hosted-validated by Site issue #234. The personal `StegVerse` account is excluded from the organization denominator.
+## Organization coverage
 
-Current federation state:
+Current authoritative denominator and task projection:
 
 ```text
 registered organizations: 14/14
-heartbeat-response verified nodes: 10/14
-federated subsignal-ready organizations: 10/14
+ready / response-verified organizations: 10/14
 machine-blocked organizations: 4/14
 unassigned organizations: 0/14
 ```
 
-The four machine-blocked organizations are `AaCT-E`, `ECAT-ICAT-Formal`, `Infrastructure-Continuity-Ventures`, and `Triad-Test`. Each has an explicit release condition and next heartbeat recheck action in both federation registries.
-
-## Readiness dimensions
-
-Every organization is represented across these dimensions:
+Ready organizations:
 
 ```text
-heartbeat_response
-subsignal
-worker
-task_registry
-evidence
-release_condition
-next_action
+Admissible-Existence
+AdmittedCode
+Data-Continuation
+formalism-tests
+GCAT-BCAT-Engine
+master-records
+StegGhost
+StegVerse-002
+StegVerse-Labs
+StegVerse-org
 ```
 
-`READY` means represented and machine-owned for observation/reconciliation under the canonical heartbeat. It does not grant destination-specific execution authority.
-
-`BLOCKED` means the task remains visible and machine-owned with an explicit release condition. Missing repository/write authority is not converted into success.
-
-## Subsignal integration
-
-`control/heartbeat-subsignals.json` carries `organization_federation` as a first-class heartbeat subsignal with:
-
-```text
-state: ACTIVE_PARTIAL_COVERAGE
-organization_count: 14
-ready_count: 10
-blocked_count: 4
-unassigned_count: 0
-recheck_policy: ON_EACH_ADMITTED_HEARTBEAT_WHILE_ANY_ORGANIZATION_IS_BLOCKED_OR_CHANGED
-progress_rule: ONLY_ADMITTED_STATE_TRANSITIONS_ADVANCE_PROGRESS
-authority_effect: false
-```
-
-This is a subsignal of the existing heartbeat, not another scheduler or heartbeat plane.
-
-## Heartbeat-owned worker activation
-
-The federation worker has now been actually activated through the canonical heartbeat and worker registry.
-
-```text
-workflow: All-Organization Heartbeat Federation
-workflow_run: 31327581621
-workflow_job: 93280291916
-workflow_result: SUCCESS
-heartbeat_epoch: 11
-worker_registry_generation: 17
-task: SHWP-ALL-ORG-FEDERATION-001
-claim: SHWP-SHWP-ALL-ORG-FEDERATION-001-G17
-executor_binding: BOUND
-executor_resolved: true
-worker: organization-federation-readiness-worker
-worker_instance: organization-federation-readiness-worker-HB11-G17
-fencing_token: 17
-heartbeat_timing_established: true
-expiry_epoch: 267
-transition: FEDERATION_READY_WITH_MACHINE_BLOCKERS
-expected_next_transition: FEDERATION_RECHECK
-```
-
-Hosted execution emitted:
-
-```text
-FEDERATION_INPUT_PASS:orgs=14:ready=10:blocked=4:unassigned=0
-ALL_ORG_FEDERATION_WORKER_PASS:epoch=11:ready=10:blocked=4:unassigned=0
-```
-
-Durable execution evidence:
-
-```text
-receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json
-receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB11-G17-610ed9983c4b0466.json
-checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB11-G17.json
-workflow artifact 9041961925
-artifact sha256:9210eec9f4574619c20dd4d7a06ea8cc40a0e573fa1858338a1ddf60b79626f0
-```
-
-The worker returned `BLOCKED`, not because federation activation failed, but because four organization rows have real unresolved release conditions. The worker itself was claimed, bound, fenced, executed, checkpointed, and assigned the next heartbeat-relative transition. Therefore unresolved organization readiness remains machine-owned rather than chat-owned.
-
-## Existing response-network convergence
-
-The response network is not duplicated. `StegVerse-Labs/Site#234` remains authoritative for SENT -> RECEIVED -> RESPONDED -> RECOVERED -> REPEAT transport and the MEMORY/ACTION/AWARENESS/AUTHORITY/EVIDENCE/BLOCKER/CAPABILITY/CONTEXT information classes.
-
-This federation layer adds canonical readiness projections for subsignals, workers, and task ownership around that already-validated response mesh.
-
-## Machine-owned blockers
+Machine-blocked organizations:
 
 ```text
 AaCT-E
@@ -157,38 +115,157 @@ Triad-Test
   release: organization exposes a repository capable of owning a canonical mirror handoff and adapter
 ```
 
-These blockers are not archive blockers for the originating session because `SHWP-ALL-ORG-FEDERATION-001` is an activated heartbeat worker with `FEDERATION_RECHECK` as the next machine-owned transition.
+Every row is assigned. Missing write authority or repository presence is not converted into completion.
 
-## Session consolidation and archive condition
+## Worker / task-registry activation
 
-All activation conditions for this session-scoped federation expansion are satisfied:
-
-1. the federation worker was claimed and executed through the canonical heartbeat;
-2. a durable receipt records all 14 organizations, zero unassigned rows, and the current blocker set;
-3. registry/status records claim, fence, worker instance, heartbeat timing, checkpoint, and next transition;
-4. every unresolved organization is machine-owned with an explicit release condition and next action;
-5. no additional chat context is required to perform subsequent federation rechecks.
+Canonical worker task:
 
 ```text
-session_state: MERGED_INTO_CANONICAL_WORKSTREAM
-canonical_continuation: StegVerse-Labs/.github#12 + control/organization-task-registry.json + control/worker-registry.json
-worker_activation_proved: true
-all_organizations_represented: true
-unassigned_organizations: 0
-archive_condition: SATISFIED_BY_ACTIVATED_FEDERATION_WORKER
+task_id: SHWP-ALL-ORG-FEDERATION-001
+goal_id: ALL-ORG-HEARTBEAT-FEDERATION-001
+worker_id: organization-federation-readiness-worker
+claim_id: SHWP-SHWP-ALL-ORG-FEDERATION-001-G17
+worker_instance_id: organization-federation-readiness-worker-HB11-G17
+fencing_token: 17
+executor_binding: BOUND
+executor_resolved: true
+state: BLOCKED
+current_transition: FEDERATION_READY_WITH_MACHINE_BLOCKERS
+expected_next_transition: FEDERATION_RECHECK
+lease_clock: canonical_heartbeat_cycle
+lease_start_cycle: 11
+lease_end_cycle_exclusive: 267
+assigned_cycles: 256
+wall_clock_expiry_authority: false
 ```
+
+`BLOCKED` is the truthful worker response because four organization rows have unresolved release conditions. It does not mean the worker is unactivated. The worker remains claimed, fenced, bound, heartbeat-timed, checkpointed, and eligible for the next `FEDERATION_RECHECK` on an admitted heartbeat.
+
+## Superseded activation claim and correction
+
+The earlier run `31327581621` proved a real registry claim/fence/worker response under the pre-v9 runtime, but it is no longer sufficient by itself after PR #56 corrected worker coordination semantics.
+
+PR #56 (`Carry cycle-bound worker leases as heartbeat subsignal`) merged to `main` at `a58b370480982ddc69333cde41370fa671eca060`. The first post-merge federation run `31328046850` executed the worker but failed during persistence, so it is not acceptance evidence.
+
+The federation workflow was then corrected to require:
+
+```text
+heartbeat result schema: stegverse.heartbeat-cycle-result/v0.9
+worker_coordination carrier: single_stegverse_heartbeat
+worker lease unit: heartbeat_cycle
+lease clock: canonical_heartbeat_cycle
+wall_clock_expiry_authority: false
+federation task present in active_leases
+receipt heartbeat epoch == heartbeat cycle epoch
+bound/resolved worker status
+```
+
+## Strongest hosted validation
+
+### First corrected v9 proof
+
+```text
+workflow: All-Organization Heartbeat Federation
+run: 31330340149
+job: 93287473658
+result: SUCCESS
+heartbeat epoch: 12
+runtime result: stegverse.heartbeat-cycle-result/v0.9
+worker_coordination state: ACTIVE
+active lease count: 2
+federation lease: 256 assigned cycles, 255 remaining
+federation transition sequence: 2
+artifact: 9042731378
+artifact sha256: f006518da598b336397e0518780bca7b72e1edff14ac2ada8a8431111380c7b6
+persistence commit: 7335c13
+```
+
+Hosted log emitted:
+
+```text
+ALL_ORG_FEDERATION_V9_PASS:epoch=12:ready=10:blocked=4:unassigned=0:lease_cycles=256:remaining=255
+```
+
+### Continuation recheck after management-state reconciliation
+
+```text
+workflow run: 31330383844
+workflow job: 93287583075
+result: SUCCESS
+artifact: 9042743617
+artifact sha256: 5cd11b0866c2abd6ff268fc0545f64a85eabcfe0007ab7881d01f7e3c4ba7b19
+latest federation receipt heartbeat epoch: 13
+latest federation transition sequence: 3
+latest receipt state: FEDERATION_READY_WITH_MACHINE_BLOCKERS
+```
+
+This second v9 cycle proves the federation task is not a one-shot workflow artifact: the same admitted claim/fence/worker instance continued through another canonical heartbeat cycle and produced the next durable receipt/checkpoint while preserving the blocker set.
+
+## Convergence and duplicate prevention
+
+`StegVerse-Labs/Site#234` remains canonical for the response transport and MEMORY/ACTION/AWARENESS/AUTHORITY/EVIDENCE/BLOCKER/CAPABILITY/CONTEXT classification network. This goal does not duplicate that implementation.
+
+`StegVerse-Labs/.github#12` remains canonical for the single heartbeat runtime, worker registry, claim/fence rules, cycle-bound worker coordination, and broader runtime activation. This goal does not claim the parent heartbeat implementation.
+
+The session role is therefore `CLAIMED_FOR_INTEGRATION` -> `MERGED_INTO_CANONICAL_WORKSTREAM`: install and activate the all-organization federation worker inside those existing canonical systems.
+
+No separate active chat claim remains.
+
+## Machine-owned continuation
+
+`SHWP-ALL-ORG-FEDERATION-001` owns the remaining organization blockers. Its next authorized action is:
+
+```text
+On each admitted canonical heartbeat while any organization remains blocked or changes state, reconcile all 14 readiness rows, carry the cycle-bound federation lease on worker_coordination, persist the federation receipt/checkpoint, and keep unresolved rows fail-closed until their explicit release conditions become true.
+```
+
+The worker has a heartbeat-relative expiry at cycle 267. Any later renewal/reacquisition must use the canonical worker lifecycle rules; elapsed wall-clock time grants no renewal or execution authority.
+
+## Parent work not owned by this session
+
+The broader `docs/ORG_MIRROR_HANDOFF.md` still owns separate work for persistent high-frequency runtime observation, Master Records projection intake/custody, and downstream migration away from low-frequency TTL semantics. Those are not untransferred requirements from this session and are not prerequisites to preserve this session because this session's federation worker is already activated and machine-owned under the corrected v9 heartbeat/task-registry model.
+
+The parent handoff text that still describes PR #56 as branch-pending is stale relative to live repository state: PR #56 is merged and `engine_v9.py` is on `main`. That parent-document reconciliation belongs to the parent #12 workstream; this handoff records the exact live evidence rather than overriding its broader ownership.
+
+## Validation commands / paths
+
+```text
+python -m py_compile workers/organization_federation_readiness_worker.py
+python scripts/run_heartbeat_runtime.py --cycles 1
+python scripts/project_heartbeat_workers.py --write
+python scripts/evaluate_goal_convergence.py --write
+python scripts/reconcile_heartbeat_continuity.py --write
+```
+
+The hosted federation workflow additionally asserts the v9 worker-coordination lease semantics and retains `heartbeat-cycle.jsonl`, `federation-receipt.json`, `federation-status.json`, and `worker-coordination.json` as workflow artifacts.
+
+## Session consolidation / archive condition
+
+All unique requirements from this session are now durable in the repository and shared control planes:
+
+1. all 14 organizations are represented;
+2. zero organization rows are unassigned;
+3. all four unresolved rows have explicit machine-observable release conditions and next actions;
+4. federation readiness is integrated with the canonical heartbeat subsignal state;
+5. a real federation worker/task is claimed, fenced, bound, heartbeat-timed, and checkpointed;
+6. the worker lease is carried by the corrected v9 `worker_coordination` subsignal in canonical heartbeat cycles;
+7. two consecutive post-correction v9 hosted cycles succeeded, with the latest receipt at heartbeat epoch 13 / transition sequence 3;
+8. Site #234 and .github #12 remain the canonical adjacent owners without duplicate implementation;
+9. no continuation requirement exists only in chat.
+
+Therefore this session satisfies the archive rule through the second permitted path: a documented StegVerse worker is activated using the canonical heartbeat and worker task registry, and all unresolved work is machine-owned under that worker.
 
 ## Completion assessment
 
 ```text
-federation registry: 14/14
-organization task-registry projection: 14/14
-subsignal integration: 1/1
-worker implementation: 1/1
-worker heartbeat activation: 1/1
-claim/fence/timing proof: 4/4
-receipt/checkpoint/artifact proof: 3/3
-machine-owned blockers: 4/4 assigned with release conditions
-unassigned organizations: 0
-session-specific activation: 100%
+task completion: 10/10 session deliverables
+required developed files/surfaces: 10/10
+scaffolding or stubs: 0
+validation: 8/8 session validation predicates
+integration: 7/7 session integration predicates
+propagation: 2/2 canonical-owner convergence records (.github #12 and Site #234)
+goal activation: 100% for this session via active v9 federation worker
+session consolidation: 6/6 session goals transferred or complete
+archive readiness: YES
 ```
