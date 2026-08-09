@@ -5,7 +5,7 @@
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
-    "objective": "Activate and continuously advance the stable non-authorizing StegGate rendezvous through the single StegVerse heartbeat until live acceptance passes or an explicit authority/provider boundary remains blocked.",
+    "objective": "Activate and continuously advance the stable non-authorizing StegGate rendezvous through the single StegVerse heartbeat until live acceptance passes or an explicit provider credential boundary remains blocked.",
     "success_predicates": [
       "The worker is atomically claimed and heartbeat-timed in the canonical worker registry.",
       "Missing credential values remain BLOCKED with an inspectable heartbeat checkpoint.",
@@ -19,7 +19,7 @@
       "Heartbeat availability is treated as deployment authority.",
       "Mutable/unverified Site worker source is deployed.",
       "Deployment success is treated as live acceptance without probes.",
-      "Credential values are written to repository state or logs by this worker."
+      "Credential values are written to repository state or receipts."
     ],
     "expires_at": null,
     "authority_ceiling": [
@@ -39,6 +39,8 @@
     "source_refs": [
       "StegVerse-Labs/Site#24",
       "StegVerse-Labs/Site/SITE_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/StegCore#68:COMPLETE",
+      "StegVerse-Labs/StegCore#75:COMPLETE",
       "StegVerse-Labs/Site/src/steggate-rendezvous-worker.js@blob:4acf5dc498297f1b2972195df74af8b60796f608",
       "StegVerse-Labs/Site/data/steggate-rendezvous-activation.json",
       "StegVerse-Labs/Site/data/tvc-infrastructure-credential-consumer-authority.v1.json",
@@ -46,12 +48,9 @@
       "authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
       "workers/steggate_rendezvous_deployment_worker.py"
     ],
-    "dependencies": [
-      "StegVerse-Labs/StegCore#68:COMPLETE",
-      "StegVerse-Labs/StegCore#75:COMPLETE"
-    ],
+    "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "User requires unresolved session work to be activated under the single heartbeat and worker task registry rather than merely durably documented.",
+    "derivation_reason": "User requires unresolved session work to be activated under the single heartbeat and worker task registry rather than merely durably documented. External StegCore dependencies are already complete and are retained as source evidence rather than unresolved local registry dependencies.",
     "canonical_owner_ref": "StegVerse-Labs/Site#24",
     "canonical_lineage_key": "site:steggate-stable-rendezvous-hardening",
     "derivation_depth": 0,
@@ -66,7 +65,7 @@
     "required_capabilities": ["deployment_update", "runtime_observation"],
     "allowed_paths": ["receipts/steggate-rendezvous-worker/**"],
     "allowed_services": ["api.cloudflare.com", "stegverse.org", "raw.githubusercontent.com"],
-    "max_actions": 8,
+    "max_actions": 64,
     "max_retries": 32,
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 64,
@@ -87,7 +86,7 @@
     "reconstruction_ref": "StegVerse-Labs/Site/data/steggate-rendezvous-activation.json"
   },
   "completion": {
-    "next_authorized_action": "On each admitted heartbeat, re-evaluate the Cloudflare credential boundary; when values are present, validate capability, deploy the canonical rendezvous, and prove stable live acceptance.",
+    "next_authorized_action": "On each admitted heartbeat, re-evaluate Cloudflare credential presence; when values are present, validate capability, deploy the canonical rendezvous, and prove stable live acceptance.",
     "terminal_when": [
       "Worker returns COMPLETED with transition LIVE_ACCEPTANCE_PASS",
       "Stable readiness and health are externally observable",
@@ -95,10 +94,5 @@
       "Completion evidence contains no credential values"
     ]
   },
-  "block": {
-    "state": "CREDENTIAL_VALUES_ABSENT",
-    "owner": "Cloudflare credential issuance/provisioning authority",
-    "machine_observable_release_condition": "CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID are both present in the authorized heartbeat execution environment.",
-    "worker_behavior": "Remain claimed/heartbeat-visible and emit BLOCKED checkpoints until the release condition becomes true."
-  }
+  "block": null
 }
