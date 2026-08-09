@@ -101,8 +101,16 @@ jobs:
             exit 1
           fi
           git commit -m "heartbeat: advance claimed stable rendezvous worker"
-          git pull --rebase origin main
-          git push origin HEAD:main
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Concurrent main update observed during heartbeat persistence; retrying attempt ${attempt}/5." >&2
+            sleep $((attempt * 2))
+          done
+          echo 'Unable to persist heartbeat state after bounded collision retries.' >&2
+          exit 1
 
       - name: Preserve heartbeat evidence
         uses: actions/upload-artifact@v4
