@@ -37,6 +37,15 @@
   "first_v9_validation_result": "SUCCESS",
   "first_v9_artifact_id": 9042731378,
   "first_v9_artifact_sha256": "f006518da598b336397e0518780bca7b72e1edff14ac2ada8a8431111380c7b6",
+  "second_v9_validation_workflow_run": 31330383844,
+  "second_v9_validation_workflow_job": 93287583075,
+  "second_v9_validation_result": "SUCCESS",
+  "second_v9_artifact_id": 9042743617,
+  "second_v9_artifact_sha256": "5cd11b0866c2abd6ff268fc0545f64a85eabcfe0007ab7881d01f7e3c4ba7b19",
+  "latest_verified_heartbeat_epoch": 13,
+  "latest_verified_transition_sequence": 3,
+  "canonical_session_handoff": "docs/ALL_ORGS_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md",
+  "canonical_session_handoff_commit": "ba15a5791efec0ab38776d4777a5c17a546e472b",
   "canonical_surfaces": [
     "control/organization-federation.json",
     "control/organization-task-registry.json",
@@ -45,6 +54,8 @@
     "control/worker-registry.json",
     "control/worker-status.json",
     "control/heartbeat-master-records-projection.json",
+    "management/ALL_ORGS_HEARTBEAT_FEDERATION_001.json",
+    "docs/ALL_ORGS_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md",
     "handoffs/SHWP-ALL-ORG-FEDERATION-001.json",
     "authorizations/SHWP-ALL-ORG-FEDERATION-001.json",
     "workers/organization_federation_readiness_worker.py",
@@ -58,8 +69,9 @@
     "organization_federation is a canonical heartbeat subsignal",
     "SHWP-ALL-ORG-FEDERATION-001 is claimed, fenced, and executed through the canonical heartbeat worker registry",
     "the active federation lease is carried by the v9 worker_coordination subsignal in canonical heartbeat cycles",
-    "federation worker produces durable receipts, mutation-scope receipts, and heartbeat checkpoints",
-    "unassigned organization count remains zero"
+    "two consecutive post-correction v9 cycles produced durable federation receipts and heartbeat checkpoints",
+    "unassigned organization count remains zero",
+    "all session-specific continuation is represented in durable repository state"
   ],
   "blocked_organizations": [
     {
@@ -88,5 +100,7 @@
     }
   ],
   "next_action": "On each admitted canonical heartbeat while any organization remains blocked or changes state, invoke SHWP-ALL-ORG-FEDERATION-001, carry its cycle-bound lease on worker_coordination, persist a FEDERATION_RECHECK receipt/checkpoint, and keep unresolved rows fail-closed under their explicit release conditions.",
-  "chat_session_required_for_continuation": false
+  "session_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+  "chat_session_required_for_continuation": false,
+  "archive_condition": "SATISFIED_BY_ACTIVATED_V9_FEDERATION_WORKER"
 }
