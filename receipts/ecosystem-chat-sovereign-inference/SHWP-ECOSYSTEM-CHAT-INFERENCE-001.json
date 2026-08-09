@@ -19,7 +19,7 @@
   "evidence_path": null,
   "fencing_token": 20,
   "github_models_required": false,
-  "heartbeat_epoch": 23,
+  "heartbeat_epoch": 24,
   "local_model_proof_path": null,
   "missing_predicates": [
     "real_model_process_observed",

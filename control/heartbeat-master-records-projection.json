@@ -1,8 +1,8 @@
 {
   "destination": "master-records/orchestration",
   "execution_authority": false,
-  "heartbeat_epoch": 23,
-  "heartbeat_generation": 23,
+  "heartbeat_epoch": 24,
+  "heartbeat_generation": 24,
   "recording_effect": "custody_and_reconstruction_only",
   "schema": "stegverse.heartbeat-master-records-projection/v1",
   "source_refs": [
@@ -24,7 +24,7 @@
         "lease_clock": "canonical_heartbeat_cycle",
         "lease_end_cycle_exclusive": 267,
         "lease_start_cycle": 11,
-        "remaining_cycles": 244,
+        "remaining_cycles": 243,
         "task_id": "SHWP-ALL-ORG-FEDERATION-001",
         "task_state": "BLOCKED",
         "wall_clock_expiry_authority": false,
@@ -42,7 +42,7 @@
         "lease_clock": "canonical_heartbeat_cycle",
         "lease_end_cycle_exclusive": 4111,
         "lease_start_cycle": 15,
-        "remaining_cycles": 4088,
+        "remaining_cycles": 4087,
         "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
         "task_state": "EXPIRING",
         "wall_clock_expiry_authority": false,
@@ -60,7 +60,7 @@
         "lease_clock": "canonical_heartbeat_cycle",
         "lease_end_cycle_exclusive": 4113,
         "lease_start_cycle": 17,
-        "remaining_cycles": 4090,
+        "remaining_cycles": 4089,
         "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
         "task_state": "BLOCKED",
         "wall_clock_expiry_authority": false,
@@ -78,7 +78,7 @@
         "lease_clock": "canonical_heartbeat_cycle",
         "lease_end_cycle_exclusive": 71,
         "lease_start_cycle": 7,
-        "remaining_cycles": 48,
+        "remaining_cycles": 47,
         "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
         "task_state": "ACTIVE",
         "wall_clock_expiry_authority": false,
@@ -89,7 +89,7 @@
     "authority_effect": false,
     "carrier": "single_stegverse_heartbeat",
     "carrier_cycle_unit": "heartbeat_cycle",
-    "carrier_epoch": 23,
+    "carrier_epoch": 24,
     "kind": "worker_coordination",
     "master_records_projection": {
       "authority_effect": false,
@@ -105,5 +105,5 @@
     "worker_lease_unit": "heartbeat_cycle",
     "worker_registry_ref": "control/worker-registry.json"
   },
-  "worker_coordination_sha256": "a8139db11371380ba44c5a66666c939b1d7eb034802fbc3732a58a657557d0f5"
+  "worker_coordination_sha256": "125eb1fe65d18e89953c547afb603f71c315263def351f62074107be919011cf"
 }
