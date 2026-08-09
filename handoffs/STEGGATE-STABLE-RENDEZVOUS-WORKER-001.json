@@ -5,17 +5,18 @@
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
-    "objective": "Activate and continuously advance the stable non-authorizing StegGate rendezvous through the single StegVerse heartbeat until live acceptance passes or an explicit provider credential boundary remains blocked.",
+    "objective": "Activate and continuously advance the stable non-authorizing StegGate rendezvous through the single StegVerse heartbeat until live acceptance passes; any unavailable third-party deployment path triggers an alternate solution/workaround and may never become a StegVerse blocker.",
     "success_predicates": [
       "The worker is atomically claimed and heartbeat-timed in the canonical worker registry.",
-      "Missing credential values remain BLOCKED with an inspectable heartbeat checkpoint.",
-      "When credential values become available, the worker validates Cloudflare Workers capability before deployment.",
+      "Any unavailable third-party credential, provider capability, quota, outage, or deployment path returns ACTIVE/THIRD_PARTY_WORKAROUND_REQUIRED rather than BLOCKED.",
+      "At least one admitted deployment path is selected and advanced without waiting for a third-party condition to change.",
       "Only the canonical Site rendezvous source blob is deployed.",
       "The stable route passes readiness, canonical health, and exact ALLOW/DENY/REVIEW/FAIL_CLOSED self-test.",
       "No credential value is persisted in repository state or receipts."
     ],
     "failure_predicates": [
-      "Credential absence is treated as completion.",
+      "A third-party dependency is represented as BLOCKED.",
+      "The worker repeatedly rechecks a provider condition without selecting a workaround.",
       "Heartbeat availability is treated as deployment authority.",
       "Mutable/unverified Site worker source is deployed.",
       "Deployment success is treated as live acceptance without probes.",
@@ -45,12 +46,13 @@
       "StegVerse-Labs/Site/data/steggate-rendezvous-activation.json",
       "StegVerse-Labs/Site/data/tvc-infrastructure-credential-consumer-authority.v1.json",
       "StegVerse-Labs/Site/data/cloudflare-steggate-credential-profile.json",
+      "control/blocker-resolution-policy.json",
       "authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
       "workers/steggate_rendezvous_deployment_worker.py"
     ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "User requires unresolved session work to be activated under the single heartbeat and worker task registry rather than merely durably documented. External StegCore dependencies are already complete and are retained as source evidence rather than unresolved local registry dependencies.",
+    "derivation_reason": "Unresolved rendezvous work is heartbeat-worker managed. Cloudflare is an optional deployment path only; external provider state is never an unresolved task dependency.",
     "canonical_owner_ref": "StegVerse-Labs/Site#24",
     "canonical_lineage_key": "site:steggate-stable-rendezvous-hardening",
     "derivation_depth": 0,
@@ -75,7 +77,7 @@
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
-    "recheck_trigger": "each admitted heartbeat while task remains unfinished",
+    "recheck_trigger": "each admitted heartbeat while task remains unfinished; third-party condition repeats must advance workaround selection rather than repeat blocker observation",
     "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {
@@ -86,12 +88,13 @@
     "reconstruction_ref": "StegVerse-Labs/Site/data/steggate-rendezvous-activation.json"
   },
   "completion": {
-    "next_authorized_action": "On each admitted heartbeat, re-evaluate Cloudflare credential presence; when values are present, validate capability, deploy the canonical rendezvous, and prove stable live acceptance.",
+    "next_authorized_action": "Attempt the admitted Cloudflare path only when immediately usable; otherwise select and advance an admitted StegVerse-owned/federated or other non-provider-dependent rendezvous path and prove stable live acceptance.",
     "terminal_when": [
       "Worker returns COMPLETED with transition LIVE_ACCEPTANCE_PASS",
       "Stable readiness and health are externally observable",
       "Self-test proves ALLOW, DENY, REVIEW, and FAIL_CLOSED",
-      "Completion evidence contains no credential values"
+      "Completion evidence contains no credential values",
+      "No third-party service is required for continued StegVerse progress"
     ]
   },
   "block": null
