@@ -7,6 +7,8 @@ on:
     paths:
       - 'management/STEGGATE_HEARTBEAT_CREDENTIAL_INTEGRATION_001.json'
       - 'control/process-worker-adapters.json'
+      - 'control/heartbeat-subsignals.json'
+      - 'schemas/heartbeat-subsignal.schema.json'
       - 'cost-basis/worker-runtime/steggate-rendezvous-deployment.json'
       - 'handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json'
       - 'authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json'
@@ -29,6 +31,9 @@ jobs:
     outputs:
       heartbeat_id: ${{ steps.cycle.outputs.heartbeat_id }}
       heartbeat_epoch: ${{ steps.cycle.outputs.heartbeat_epoch }}
+      lease_id: ${{ steps.cycle.outputs.lease_id }}
+      lease_action: ${{ steps.cycle.outputs.lease_action }}
+      lease_dependents_json: ${{ steps.cycle.outputs.lease_dependents_json }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -72,13 +77,19 @@ jobs:
           row=rows[0]
           epoch=str(row['epoch'])
           heartbeat_id=f"HB-{os.environ['GITHUB_RUN_ID']}-{epoch}"
+          signal=json.loads(Path('control/heartbeat-subsignals.json').read_text())
+          lease=signal['subsignals']['steggate_transport_lease']
           print('heartbeat_epoch='+epoch)
           print('heartbeat_id='+heartbeat_id)
+          print('lease_id='+lease['lease_id'])
+          print('lease_action='+lease['lease_action'])
+          print('lease_dependents_json='+json.dumps(lease.get('dependent_tasks',[]),separators=(',',':')))
           Path('integration-evidence/heartbeat-binding.json').write_text(json.dumps({
-            'schema':'stegverse.heartbeat_steggate_integration.v3',
+            'schema':'stegverse.heartbeat_steggate_integration.v4',
             'heartbeat_id':heartbeat_id,
             'heartbeat_epoch':epoch,
             'cycle':row,
+            'subsignals':{'steggate_transport_lease':lease},
             'scheduler_authority':'single_stegverse_heartbeat',
             'worker_registry':'control/worker-registry.json',
             'worker_status_projection':'control/worker-status.json',
@@ -122,7 +133,11 @@ jobs:
 
   steggate-micro-node:
     needs: heartbeat
+    if: needs.heartbeat.outputs.lease_action == 'OPEN' || needs.heartbeat.outputs.lease_action == 'EXTEND'
     uses: StegVerse-Labs/StegCore/.github/workflows/steggate-heartbeat-worker-reusable.yml@main
     with:
       heartbeat_id: ${{ needs.heartbeat.outputs.heartbeat_id }}
       heartbeat_epoch: ${{ needs.heartbeat.outputs.heartbeat_epoch }}
+      lease_id: ${{ needs.heartbeat.outputs.lease_id }}
+      lease_action: ${{ needs.heartbeat.outputs.lease_action }}
+      lease_dependents_json: ${{ needs.heartbeat.outputs.lease_dependents_json }}
