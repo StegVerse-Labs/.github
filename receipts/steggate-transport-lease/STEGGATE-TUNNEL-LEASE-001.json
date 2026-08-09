@@ -1,0 +1,26 @@
+{
+  "schema": "stegverse.steggate-transport-lease-receipt/v1",
+  "lease_id": "STEGGATE-TUNNEL-LEASE-001",
+  "subsignal_ref": "control/heartbeat-subsignals.json#subsignals/steggate_transport_lease",
+  "heartbeat_epoch": 10,
+  "workflow_run_id": 31325697942,
+  "heartbeat_job_id": 93275589574,
+  "micro_node_job_id": 93275629397,
+  "state": "OPEN",
+  "acceptance": {
+    "health": "PASS",
+    "self_test": "PASS",
+    "evaluate": "PASS",
+    "complete_public_acceptance": "PASS"
+  },
+  "runtime_state": "LEASE_HOLD_SELF_HEAL_IN_PROGRESS",
+  "lease_is_per_heartbeat": false,
+  "wall_clock_expiry_authority": false,
+  "release_conditions": [
+    "EXPLICIT_CLOSE_SUBSIGNAL",
+    "ACCEPTED_SUCCESSOR_LEASE",
+    "ALL_DECLARED_DEPENDENT_TASKS_TERMINAL"
+  ],
+  "authority_effect": false,
+  "render_dependency": false
+}
