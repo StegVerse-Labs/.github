@@ -1,0 +1,85 @@
+name: StegGate Canonical Heartbeat Integration
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'management/STEGGATE_HEARTBEAT_CREDENTIAL_INTEGRATION_001.json'
+      - '.github/workflows/steggate-heartbeat-integration.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: steggate-canonical-heartbeat-integration
+  cancel-in-progress: false
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    outputs:
+      heartbeat_id: ${{ steps.cycle.outputs.heartbeat_id }}
+      heartbeat_epoch: ${{ steps.cycle.outputs.heartbeat_epoch }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Advance exactly one canonical heartbeat epoch
+        id: cycle
+        run: |
+          set -euo pipefail
+          mkdir -p integration-evidence
+          python scripts/run_heartbeat_runtime.py --cycles 1 | tee integration-evidence/heartbeat-cycle.jsonl
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          from pathlib import Path
+          rows=[json.loads(x) for x in Path('integration-evidence/heartbeat-cycle.jsonl').read_text().splitlines() if x.strip()]
+          if len(rows) != 1: raise SystemExit('expected exactly one heartbeat cycle')
+          row=rows[0]
+          epoch=str(row['epoch'])
+          heartbeat_id=f"HB-{os.environ['GITHUB_RUN_ID']}-{epoch}"
+          print('heartbeat_epoch='+epoch)
+          print('heartbeat_id='+heartbeat_id)
+          Path('integration-evidence/heartbeat-binding.json').write_text(json.dumps({
+            'schema':'stegverse.heartbeat_steggate_integration.v1',
+            'heartbeat_id':heartbeat_id,
+            'heartbeat_epoch':epoch,
+            'cycle':row,
+            'scheduler_authority':'single_stegverse_heartbeat',
+            'wall_clock_scheduler_authority':False
+          },indent=2,sort_keys=True)+'\n')
+          PY
+
+      - name: Persist heartbeat state
+        run: |
+          set -euo pipefail
+          git config user.name 'stegverse-heartbeat-worker'
+          git config user.email 'actions@users.noreply.github.com'
+          git add control/ heartbeat_runtime/ handoffs/ checkpoints/ events/ receipts/ 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo 'Heartbeat runtime produced no persistent state delta.' >&2
+            exit 1
+          fi
+          git commit -m "heartbeat: advance canonical epoch for StegGate integration"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Preserve heartbeat evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: steggate-canonical-heartbeat-${{ github.run_id }}
+          path: integration-evidence/
+          if-no-files-found: error
+          retention-days: 90
+
+  steggate-micro-node:
+    needs: heartbeat
+    uses: StegVerse-Labs/StegCore/.github/workflows/steggate-heartbeat-worker-reusable.yml@main
+    with:
+      heartbeat_id: ${{ needs.heartbeat.outputs.heartbeat_id }}
+      heartbeat_epoch: ${{ needs.heartbeat.outputs.heartbeat_epoch }}
