@@ -16,13 +16,17 @@ canonical_owner: issue #12
 implementation_claim: RELEASED
 validation_claim: RELEASED
 runtime_activation_task: SHWP-DURABLE-RUNTIME-ACTIVATION
-runtime_activation_state: HUMAN_AUTHORITY_REQUIRED
-runtime_activation_claim: NONE
-runtime_activation_worker: NONE
-human_boundary: boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-automation_terminal: true
+runtime_activation_state: BLOCKED
+runtime_activation_claim: AUTHORIZED_BUT_NOT_EXECUTING
+runtime_activation_worker: NONE_ACTIVE
+runtime_activation_executor_binding: AUTHORIZED
+block_class: PROVIDER_BUILD_PIPELINE_CAPACITY
+block_owner: Render workspace tea-d30avmndiees73bg2rjg
+block_release_condition: existing service srv-d9s197vavr4c73a8rjjg completes a deploy
+human_authority_required: false
 session_state: MERGED_INTO_CANONICAL_WORKSTREAM
-thread_archive_ready: true
+thread_archive_ready_for_protocol_implementation_only: true
+production_activation_complete: false
 ```
 
 ## Canonical model
@@ -59,41 +63,47 @@ Completed semantics include one-HB activation/timing, no-work/no-worker, atomic 
 Heartbeat Worker Project 31242636078 / 93066031288 SUCCESS — promoted v8 runtime
 Heartbeat Worker Project 31242995304 / 93066913610 SUCCESS — complete protocol/read layer
 Org Continuation Check 31260010793 SUCCESS — canonical continuation surfaces repaired
-Heartbeat Worker Project 31260127709 SUCCESS — HUMAN_AUTHORITY_REQUIRED runtime activation task registered without claim/activation
+Heartbeat Worker Project 31260127709 SUCCESS — runtime activation task registered without false activation
 ```
 
 ## Watchdog/scheduler convergence
 
-The historical scheduled `Organization heartbeat watchdog` was not canonical. Its scheduled run `31250409906` proved the measurement step but failed during evidence push. Commit `4508352ea1a279009ceca8145b68b91a44fdc787` removed the 8-hour schedule and content-write authority. The workflow is now manual diagnostic only and cannot own heartbeat cadence or monitoring continuation.
+The historical scheduled `Organization heartbeat watchdog` was not canonical. Commit `4508352ea1a279009ceca8145b68b91a44fdc787` removed the 8-hour schedule and content-write authority. The workflow is manual diagnostic only and cannot own heartbeat cadence or monitoring continuation.
 
-## Runtime activation — explicit human authority boundary
+## Runtime activation — current blocker
 
-Machine-executable implementation is complete. Render inspection found no existing service that is both correctly owned and suitable for persistent always-on SHWP execution. Existing persistent resources belong to other StegVerse subsystems, and the directly exposed creation controls cannot create the required background-worker + persistent-disk configuration.
+The prior human-provisioning boundary is resolved. A dedicated Render Key Value resource exists and the dedicated service `srv-d9s197vavr4c73a8rjjg` has been created. Deployment authorization is durably recorded in `master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_AUTH.json`.
 
-The unresolved production step is therefore represented durably as:
+The current blocker is provider execution capacity, not missing implementation and not missing human authority. The first deployment `dep-d9s1987avr4c73a8rkeg` failed because the Render workspace could not accept/complete the build. The task remains in `control/worker-registry.json` as `SHWP-DURABLE-RUNTIME-ACTIVATION`, `state=BLOCKED`, `executor_binding=AUTHORIZED`, with no active worker instance because the durable heartbeat runtime is not yet running.
+
+Canonical blocker record:
 
 ```text
 task: SHWP-DURABLE-RUNTIME-ACTIVATION
-registry state: HUMAN_AUTHORITY_REQUIRED
-boundary: boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json
+registry state: BLOCKED
 handoff: handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-blocker evidence: management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json
-external_cost_ceiling_usd: 0
-automation_terminal: true
+block class: PROVIDER_BUILD_PIPELINE_CAPACITY
+provider workspace: tea-d30avmndiees73bg2rjg
+service: srv-d9s197vavr4c73a8rjjg
+release condition: service completes a deploy
+human authority required: false
+next authorized action: retry deployment when provider build capacity is available, then verify /health, heartbeat epoch advancement, controlled redeploy continuity, and absence of duplicate claim/fence
 ```
 
-The pending decision is to approve/provide a dedicated correctly owned always-on process host and persistent state, including any required recurring infrastructure budget, or explicitly reject/defer provisioning. Existing LLM-adapter/SCW resources may not be appropriated without a separate authority transfer.
+Until that release condition occurs, the StegVerse heartbeat/worker architecture exists and is validated but is **not production-activated**. Registry presence is not worker activation; `executor_binding=AUTHORIZED` is not an executing worker; CI validation is not heartbeat continuation.
 
-Resume requires:
+## Activation completion criteria
 
-1. boundary `status=RESOLVED`;
-2. durable `resolution_ref` identifying the compliant host and cost/ownership authority;
-3. separate bounded deployment authorization;
-4. deployment of `scripts/run_heartbeat_runtime.py --continuous`;
-5. restart/deploy continuity proof showing preserved/incremented heartbeat epoch and no duplicate claim/fence;
-6. proof that the provider host supplies liveness only and does not become heartbeat scheduling authority.
+Production activation is complete only when all of the following are directly observed:
 
-No automated path may proceed while the boundary remains pending.
+1. Render service `srv-d9s197vavr4c73a8rjjg` successfully deploys;
+2. `scripts/run_heartbeat_runtime.py --continuous` is live on that service;
+3. `/health` verifies the running runtime;
+4. the canonical heartbeat epoch advances under runtime v8 ownership;
+5. worker-registry tasks can be claimed/executed through the heartbeat lane;
+6. controlled restart/redeploy preserves or increments the canonical epoch;
+7. no duplicate claim, heartbeat, fence, or split-brain state appears;
+8. durable registry/event/cost/receipt/checkpoint state survives restart/deploy.
 
 ## StegGate / StegCore continuation
 
@@ -101,9 +111,9 @@ No automated path may proceed while the boundary remains pending.
 STEGGATE-AUDITKIT-001: COMPLETED; never reactivate
 STEGGATE-FIRST-BOUNDARY-001: BLOCKED / UNCLAIMED in ara-admissibility-interop
 StegCore#54: COMPLETE / RELEASED
+SHWP-HOST-SELF-ATTEST-001: QUARANTINED pending live host runtime evidence
+SHWP-DURABLE-RUNTIME-ACTIVATION: BLOCKED on provider build capacity
 ```
-
-Those lanes are distinct from SHWP runtime-host procurement and require no duplicate implementation here.
 
 ## Session consolidation
 
@@ -113,24 +123,27 @@ Exact continuation surfaces:
 
 ```text
 docs/ORG_MIRROR_HANDOFF.md
+docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md
 management/SHWP_SESSION_EXECUTION_INVENTORY.json
 management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json
 handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
 boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json
 control/worker-registry.json
+control/worker-status.json
 ```
 
-All unique session requirements are either implemented/validated or assigned to the explicit automation-terminal human boundary. No chat-specific state is required to resume after that boundary resolves.
+No chat-specific knowledge is required to identify or resume the blocker. However, production activation must not be reported as 100% until the live heartbeat runtime and worker execution path satisfy the activation completion criteria above.
 
 ## Completion assessment
 
 ```text
-session tasks complete or durably transferred: 10/10 = 100%
+protocol implementation: 100%
 developed files/surfaces: 50/50 = 100%
 scaffolding/stubs: 0
-validation: 27/27 = 100%
+protocol validation: 27/27 = 100%
 integration/transfer: 29/29 = 100%
 production goal activation: 27/28 = 96%
+worker-runtime activation: 0% live production execution
 session consolidation: 19/19 = 100%
-thread_archive_ready: true
+production activation blocker: PROVIDER_BUILD_PIPELINE_CAPACITY
 ```
