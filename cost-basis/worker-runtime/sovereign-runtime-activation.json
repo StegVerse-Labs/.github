@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "sovereign_runtime_activation",
+  "sample_count": 1,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 4096,
+    "confidence": "MEDIUM"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 65536,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "StegVerse-Labs/.github#12",
+    "StegVerse-Labs/.github#59",
+    "workers/sovereign_runtime_activation_worker.py",
+    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+  ],
+  "notes": [
+    "The worker is heartbeat-timed and may remain BLOCKED until a StegVerse-owned/federated node emits direct activation evidence.",
+    "No third-party platform availability is a timing or activation authority.",
+    "External cost is zero and wall-clock time is not worker lease authority."
+  ]
+}
