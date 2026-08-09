@@ -171,15 +171,23 @@ jobs:
       - name: Commit derived projections only when changed
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          if git diff --quiet -- control/worker-status.json control/heartbeat-continuity.json control/goal-convergence.json; then
-            echo 'No derived HB state change.'
-            exit 0
-          fi
           git config user.name 'stegverse-heartbeat-worker'
           git config user.email 'actions@users.noreply.github.com'
+
+          # Derived state is observational and may race with another heartbeat
+          # projection commit. Always regenerate from the newest canonical main
+          # immediately before committing rather than rebasing a stale projection.
+          git fetch origin main
+          git reset --hard origin/main
+          git clean -fd
+          python scripts/project_heartbeat_workers.py --write >/tmp/final-worker-status.json
+          python scripts/evaluate_goal_convergence.py --write >/tmp/final-goal-convergence.json
+          python scripts/reconcile_heartbeat_continuity.py --write >/tmp/final-heartbeat-continuity.json
+
+          if git diff --quiet -- control/worker-status.json control/heartbeat-continuity.json control/goal-convergence.json; then
+            echo 'No derived HB state change after latest-main regeneration.'
+            exit 0
+          fi
           git add control/worker-status.json control/heartbeat-continuity.json control/goal-convergence.json
           git commit -m 'chore: project fail-closed worker status and convergence'
-          git reset --hard HEAD
-          git clean -fd
-          git pull --rebase origin main
           git push origin HEAD:main
