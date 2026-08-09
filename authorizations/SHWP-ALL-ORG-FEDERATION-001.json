@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.worker-authorization/v0.1",
+  "authorization_id": "AUTH-SHWP-ALL-ORG-FEDERATION-001",
+  "task_id": "SHWP-ALL-ORG-FEDERATION-001",
+  "goal_id": "ALL-ORG-HEARTBEAT-FEDERATION-001",
+  "state": "AUTHORIZED",
+  "authority_source": "user-directed expansion of heartbeat/subsignal/worker/task-registry readiness to all StegVerse organizations",
+  "heartbeat_grants_execution_authority": false,
+  "allowed_capabilities": ["bounded_repository_mutation"],
+  "allowed_paths": ["receipts/organization-federation/**"],
+  "allowed_services": [],
+  "external_cost_ceiling_usd": 0,
+  "policy_version": "shwp-single-hb-v0.2",
+  "authority_effect": "receipt_projection_only",
+  "prohibitions": [
+    "no cross-organization repository mutation by worker",
+    "no publication authority",
+    "no deployment authority",
+    "no custody authority",
+    "no policy authority",
+    "no authority inheritance from heartbeat transport"
+  ]
+}
