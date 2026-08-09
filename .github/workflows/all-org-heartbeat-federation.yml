@@ -13,7 +13,6 @@ on:
       - 'authorizations/SHWP-ALL-ORG-FEDERATION-001.json'
       - 'cost-basis/worker-runtime/organization-federation-readiness.json'
       - 'management/ALL_ORGS_HEARTBEAT_FEDERATION_001.json'
-      - 'docs/ALL_ORGS_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md'
       - '.github/workflows/all-org-heartbeat-federation.yml'
 
 permissions:
@@ -162,17 +161,30 @@ jobs:
           set -euo pipefail
           git config user.name 'stegverse-heartbeat-worker'
           git config user.email 'actions@users.noreply.github.com'
-          git add control/ events/ checkpoints/ receipts/organization-federation/ 2>/dev/null || true
+          git add control/ events/ checkpoints/ receipts/organization-federation/ receipts/worker-mutation-scope/ 2>/dev/null || true
           if git diff --cached --quiet; then
             echo 'Federation heartbeat produced no persistent state delta.' >&2
             exit 1
           fi
           git commit -m 'heartbeat: activate all-organization federation worker'
+          STASHED=false
+          if [ -n "$(git status --porcelain)" ]; then
+            git stash push --include-untracked -m all-org-federation-noncanonical
+            STASHED=true
+          fi
           for attempt in 1 2 3 4 5; do
-            git pull --rebase origin main
-            if git push origin HEAD:main; then exit 0; fi
+            if ! git pull --rebase origin main; then
+              git rebase --abort >/dev/null 2>&1 || true
+              sleep $((attempt * 2))
+              continue
+            fi
+            if git push origin HEAD:main; then
+              if [ "$STASHED" = true ]; then git stash pop || true; fi
+              exit 0
+            fi
             sleep $((attempt * 2))
           done
+          if [ "$STASHED" = true ]; then git stash pop || true; fi
           echo 'Unable to persist federation heartbeat state after bounded retries.' >&2
           exit 1
 
