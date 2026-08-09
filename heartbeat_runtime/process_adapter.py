@@ -11,6 +11,7 @@ import subprocess
 import tempfile
 
 from .engine_v2 import WorkerResponse
+from .blocker_policy import validate_worker_response_blocker
 
 
 class ProcessWorkerAdapter:
@@ -21,6 +22,10 @@ class ProcessWorkerAdapter:
     delta, validates every changed path against the admitted HANDOFF path scope
     and the current claim/fence, and only then projects accepted mutations back.
     The adapter itself grants no execution authority.
+
+    Runtime invariant: BLOCKED is not a passive waiting state. Every blocked
+    response must include a resolution contract. Third-party dependencies may
+    never be returned as BLOCKED; they require ACTIVE workaround execution.
     """
 
     RECEIPT_ROOT = "receipts/worker-mutation-scope"
@@ -182,6 +187,7 @@ class ProcessWorkerAdapter:
                     "claim_id": claim_id,
                     "fencing_token": fence,
                 },
+                "blocker_policy_ref": "control/blocker-resolution-policy.json",
                 "authority_effect": "none_adapter_only",
             }
             completed = subprocess.run(
@@ -203,6 +209,11 @@ class ProcessWorkerAdapter:
                 raise RuntimeError("worker process did not emit one valid JSON response") from exc
             if response.get("schema") != "stegverse.worker-response/v0.1":
                 raise RuntimeError("unsupported worker response schema")
+
+            # This is a runtime gate, not documentation guidance. A worker cannot
+            # commit a passive BLOCKED result without naming the solution path,
+            # and a third-party dependency cannot become a BLOCKED task state.
+            validate_worker_response_blocker(response)
 
             after = self._snapshot(sandbox)
             changed_paths = sorted(path for path in set(before) | set(after) if before.get(path) != after.get(path))
@@ -271,4 +282,7 @@ class ProcessWorkerAdapter:
             "worker_mutates_authoritative_workspace_directly": False,
             "sandbox_delta_scope_enforcement": True,
             "claim_fence_required_before_commit": True,
+            "blocked_requires_resolution_contract": True,
+            "third_party_dependency_may_block": False,
+            "blocker_policy_ref": "control/blocker-resolution-policy.json",
         }
