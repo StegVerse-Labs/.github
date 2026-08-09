@@ -33,16 +33,17 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
         timing = task.get("heartbeat_timing") or {}
         start = timing.get("start_epoch")
         end = timing.get("expiry_epoch")
-        if not all(isinstance(value, int) for value in (start, end)):
+        fence = timing.get("fencing_token")
+        if not all(isinstance(value, int) for value in (start, end, fence)) or end <= start:
             return None
-        assigned = max(0, end - start)
+        assigned = end - start
         return {
             "task_id": task.get("task_id"),
             "goal_id": task.get("goal_id"),
             "worker_id": task.get("worker_id"),
             "worker_instance_id": task.get("worker_instance_id"),
             "claim_id": task.get("claim_id"),
-            "fencing_token": timing.get("fencing_token"),
+            "fencing_token": fence,
             "lease_start_cycle": start,
             "lease_end_cycle_exclusive": end,
             "assigned_cycles": assigned,
@@ -187,6 +188,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
                 "epoch": epoch,
                 "organization_assertions": issued,
                 "activated": activated,
+                "events": events,
                 "subsignals": {self.WORKER_COORDINATION_SUBSIGNAL: coordination},
                 "registry_generation": registry.get("generation", 0),
                 "authority_effect": "none_beyond_existing_admitted_task_authority",
