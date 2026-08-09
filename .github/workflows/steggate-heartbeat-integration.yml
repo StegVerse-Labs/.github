@@ -112,14 +112,21 @@ jobs:
             exit 1
           fi
           git commit -m "heartbeat: advance claimed stable rendezvous worker"
+          STASHED=false
+          if [ -n "$(git status --porcelain)" ]; then
+            git stash push --include-untracked -m heartbeat-runtime-noncanonical
+            STASHED=true
+          fi
           for attempt in 1 2 3 4 5; do
             git pull --rebase origin main
             if git push origin HEAD:main; then
+              if [ "$STASHED" = true ]; then git stash pop || true; fi
               exit 0
             fi
             echo "Concurrent main update observed during heartbeat persistence; retrying attempt ${attempt}/5." >&2
             sleep $((attempt * 2))
           done
+          if [ "$STASHED" = true ]; then git stash pop || true; fi
           echo 'Unable to persist heartbeat state after bounded collision retries.' >&2
           exit 1
 
