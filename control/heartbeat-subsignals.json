@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.heartbeat-subsignals/v1",
-  "generation": 4,
+  "generation": 5,
   "subsignals": {
     "organization_federation": {
       "kind": "organization_readiness_federation",
@@ -31,6 +31,27 @@
         "wall_clock_expiry_authority": false
       },
       "successor_lease_id": null,
+      "authority_effect": false
+    },
+    "worker_coordination": {
+      "kind": "worker_coordination",
+      "state": "IDLE",
+      "carrier": "single_stegverse_heartbeat",
+      "carrier_epoch": 11,
+      "carrier_cycle_unit": "heartbeat_cycle",
+      "worker_lease_unit": "heartbeat_cycle",
+      "worker_lease_source": "admitted_task_cost_basis_and_runtime_window",
+      "worker_lease_is_heartbeat_lifetime": false,
+      "wall_clock_expiry_authority": false,
+      "active_leases": [],
+      "worker_registry_ref": "control/worker-registry.json",
+      "master_records_projection": {
+        "required": true,
+        "latest_projection_ref": "control/heartbeat-master-records-projection.json",
+        "event_log_ref": "events/heartbeat-runtime.jsonl",
+        "destination": "master-records/orchestration",
+        "authority_effect": false
+      },
       "authority_effect": false
     }
   }
