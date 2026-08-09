@@ -1,0 +1,26 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "host_runtime_self_attest",
+  "sample_count": 1,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 0,
+    "expiry_candidate_beats": 4,
+    "confidence": "HIGH"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 4096,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 0
+  },
+  "evidence_refs": [
+    "workers/host_runtime_self_attest.py:single-completion-transition",
+    "handoffs/SHWP-HOST-SELF-ATTEST-001.json:max_actions=1",
+    "authorizations/SHWP-HOST-SELF-ATTEST-001.json"
+  ]
+}
