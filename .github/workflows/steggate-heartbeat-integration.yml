@@ -8,6 +8,7 @@ on:
       - 'management/STEGGATE_HEARTBEAT_CREDENTIAL_INTEGRATION_001.json'
       - 'control/worker-registry.json'
       - 'control/process-worker-adapters.json'
+      - 'cost-basis/worker-runtime/steggate-rendezvous-deployment.json'
       - 'handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json'
       - 'authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json'
       - 'workers/steggate_rendezvous_deployment_worker.py'
@@ -37,12 +38,33 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Reconcile stable rendezvous worker activation inputs
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path('control/worker-registry.json')
+          registry=json.loads(path.read_text())
+          task=next((x for x in registry.get('tasks',[]) if x.get('task_id')=='STEGGATE-STABLE-RENDEZVOUS-WORKER-001'),None)
+          if task is None:
+              raise SystemExit('stable rendezvous worker task missing from canonical registry')
+          if task.get('state') not in {'HANDOFF_READY','ACTIVE','BLOCKED','CLAIMED','EXPIRING','HANDOFF_WRITING'}:
+              raise SystemExit(f"unexpected stable rendezvous worker state: {task.get('state')}")
+          task['cost_basis_ref']='cost-basis/worker-runtime/steggate-rendezvous-deployment.json'
+          if task.get('state') == 'HANDOFF_READY':
+              task['block_ref']=None
+              task['archive_reason_codes']=[c for c in task.get('archive_reason_codes',[]) if c not in {'EXPIRY_BASIS_UNAVAILABLE','CREDENTIAL_VALUES_ABSENT'}]
+          path.write_text(json.dumps(registry,indent=2,sort_keys=True)+'\n')
+          PY
+
       - name: Advance exactly one canonical heartbeat epoch and execute admitted workers
         id: cycle
         run: |
           set -euo pipefail
           mkdir -p integration-evidence
           python scripts/run_heartbeat_runtime.py --cycles 1 | tee integration-evidence/heartbeat-cycle.jsonl
+          python scripts/project_heartbeat_workers.py --write
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json, os
           from pathlib import Path
@@ -54,12 +76,13 @@ jobs:
           print('heartbeat_epoch='+epoch)
           print('heartbeat_id='+heartbeat_id)
           Path('integration-evidence/heartbeat-binding.json').write_text(json.dumps({
-            'schema':'stegverse.heartbeat_steggate_integration.v2',
+            'schema':'stegverse.heartbeat_steggate_integration.v3',
             'heartbeat_id':heartbeat_id,
             'heartbeat_epoch':epoch,
             'cycle':row,
             'scheduler_authority':'single_stegverse_heartbeat',
             'worker_registry':'control/worker-registry.json',
+            'worker_status_projection':'control/worker-status.json',
             'wall_clock_scheduler_authority':False,
             'credential_values_recorded':False
           },indent=2,sort_keys=True)+'\n')
@@ -78,7 +101,7 @@ jobs:
             git status --short
             exit 1
           fi
-          git commit -m "heartbeat: advance canonical epoch and worker registry"
+          git commit -m "heartbeat: activate and checkpoint stable rendezvous worker"
           git pull --rebase origin main
           git push origin HEAD:main
 
