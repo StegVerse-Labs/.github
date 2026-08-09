@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Heartbeat-owned organization federation readiness worker.
 
-This worker does not grant authority to any organization. It consumes the
-canonical federation/readiness projections, proves every organization has a
-machine owner or a fail-closed release condition, and writes only its bounded
-receipt namespace.
+Third-party conditions are never blockers. Internal blockers must carry an
+explicit solution/workaround contract. The worker distinguishes READY,
+WORKAROUND_REQUIRED, and BLOCKED so external dependencies cannot freeze
+federation progress.
 """
 from __future__ import annotations
 
@@ -37,6 +37,17 @@ def atomic_write(path: Path, value: dict) -> None:
 def fail(message: str, code: int) -> int:
     print(message, file=sys.stderr)
     return code
+
+
+def resolution_contract(row: dict) -> dict:
+    return {
+        "dependency_class": row.get("dependency_class"),
+        "problem_statement": row.get("condition"),
+        "solution_required": row.get("solution_required"),
+        "may_remain_blocked": row.get("dependency_class") != "THIRD_PARTY",
+        "workaround_candidates": row.get("workaround_candidates") or [],
+        "next_solution_action": row.get("next_action")
+    }
 
 
 def main() -> int:
@@ -73,7 +84,7 @@ def main() -> int:
     task_rows = org_tasks.get("tasks") or []
     if federation.get("schema") != "stegverse.organization-federation/v0.1":
         return fail("unsupported federation schema", 8)
-    if org_tasks.get("schema") != "stegverse.organization-task-registry/v0.1":
+    if org_tasks.get("schema") != "stegverse.organization-task-registry/v0.2":
         return fail("unsupported organization task registry schema", 9)
     if len(organizations) != 14 or len(task_rows) != 14:
         return fail("all-organization denominator must remain 14", 10)
@@ -84,25 +95,31 @@ def main() -> int:
         return fail("federation/task organization sets differ", 11)
 
     blocked = []
+    workaround_required = []
     ready = []
     invalid = []
     for row in task_rows:
         state = row.get("state")
         if state == "READY":
             ready.append(row["organization"])
-        elif state == "BLOCKED":
-            if not row.get("release_condition") or not row.get("next_action"):
-                invalid.append(row["organization"])
-            blocked.append({
-                "organization": row["organization"],
-                "block_class": row.get("block_class"),
-                "release_condition": row.get("release_condition"),
-                "next_action": row.get("next_action")
-            })
-        else:
+            continue
+        if state not in {"BLOCKED", "WORKAROUND_REQUIRED"}:
             invalid.append(row.get("organization"))
+            continue
+        contract = resolution_contract(row)
+        if contract["solution_required"] is not True or not contract["problem_statement"] or not contract["next_solution_action"] or not contract["workaround_candidates"]:
+            invalid.append(row.get("organization"))
+            continue
+        if state == "BLOCKED" and contract["dependency_class"] == "THIRD_PARTY":
+            invalid.append(row.get("organization"))
+            continue
+        entry = {"organization": row["organization"], "blocker": contract}
+        if state == "WORKAROUND_REQUIRED":
+            workaround_required.append(entry)
+        else:
+            blocked.append(entry)
     if invalid:
-        return fail(f"unowned or invalid organization task states: {invalid}", 12)
+        return fail(f"invalid blocker/workaround contracts: {invalid}", 12)
 
     receipt_path = (RECEIPT_ROOT / f"{EXPECTED_TASK}.json").resolve()
     if RECEIPT_ROOT not in receipt_path.parents:
@@ -112,10 +129,25 @@ def main() -> int:
         return fail("existing receipt belongs to different claim/fence", 14)
 
     sequence = 1 if prior is None else int(prior.get("transition_sequence", 0)) + 1
-    complete = len(blocked) == 0
-    transition = "ALL_ORGS_READY" if complete else "FEDERATION_READY_WITH_MACHINE_BLOCKERS"
+    complete = len(blocked) == 0 and len(workaround_required) == 0
+    if complete:
+        transition = "ALL_ORGS_READY"
+        response_state = "COMPLETED"
+        next_transition = None
+        blocker = None
+    elif workaround_required and not blocked:
+        transition = "FEDERATION_WORKAROUND_EXECUTION_REQUIRED"
+        response_state = "ACTIVE"
+        next_transition = "FEDERATION_ALTERNATE_PATH_EXECUTION"
+        blocker = workaround_required[0]["blocker"]
+    else:
+        transition = "FEDERATION_INTERNAL_SOLUTIONS_REQUIRED"
+        response_state = "BLOCKED"
+        next_transition = "FEDERATION_SOLUTION_EXECUTION"
+        blocker = blocked[0]["blocker"]
+
     receipt = {
-        "schema": "stegverse.organization-federation-receipt/v0.1",
+        "schema": "stegverse.organization-federation-receipt/v0.2",
         "task_id": EXPECTED_TASK,
         "claim_id": claim_id,
         "worker_id": task.get("worker_id"),
@@ -127,9 +159,13 @@ def main() -> int:
         "organization_count": 14,
         "ready_count": len(ready),
         "blocked_count": len(blocked),
+        "workaround_required_count": len(workaround_required),
         "unassigned_count": 0,
         "ready_organizations": sorted(ready),
         "blocked_organizations": sorted(blocked, key=lambda x: x["organization"]),
+        "workaround_required_organizations": sorted(workaround_required, key=lambda x: x["organization"]),
+        "third_party_dependency_is_blocker": False,
+        "blocker_policy_ref": "control/blocker-resolution-policy.json",
         "subsignal_ref": "control/heartbeat-subsignals.json#organization_federation",
         "federation_ref": "control/organization-federation.json",
         "organization_task_registry_ref": "control/organization-task-registry.json",
@@ -140,10 +176,10 @@ def main() -> int:
 
     response = {
         "schema": "stegverse.worker-response/v0.1",
-        "state": "COMPLETED" if complete else "BLOCKED",
+        "state": response_state,
         "transition_id": transition,
         "transition_sequence": sequence,
-        "expected_next_transition": None if complete else "FEDERATION_RECHECK",
+        "expected_next_transition": next_transition,
         "expected_next_earliest_epoch": None if complete else epoch + 1,
         "expected_next_latest_epoch": None if complete else epoch + 1,
         "checkpoint_ref": f"receipts/organization-federation/{EXPECTED_TASK}.json",
@@ -151,8 +187,10 @@ def main() -> int:
             "control/organization-federation.json",
             "control/organization-task-registry.json",
             "control/heartbeat-subsignals.json",
+            "control/blocker-resolution-policy.json",
             f"receipts/organization-federation/{EXPECTED_TASK}.json"
         ],
+        "blocker": blocker,
         "cost_observation": {
             "hb_transition_count": 1,
             "compute_units": 1,
