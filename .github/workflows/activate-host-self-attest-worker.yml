@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/activate-host-self-attest-worker.yml'
+      - 'handoffs/SHWP-HOST-SELF-ATTEST-001.json'
   workflow_dispatch:
 
 permissions:
