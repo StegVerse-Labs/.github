@@ -1,15 +1,15 @@
 {
-  "authority_effect": "none_beyond_admitted_receipt_namespace",
+  "authority_effect": "bounded_native_runtime_activation_under_existing_handoff",
   "blocker": {
     "dependency_class": "PHYSICAL_RESOURCE",
     "may_remain_blocked": true,
-    "next_solution_action": "Select an eligible StegVerse-owned/federated node and execute the native service installation/activation path; do not wait for a hosted provider.",
-    "problem_statement": "No StegVerse-owned/federated node has yet emitted evidence satisfying the sovereign runtime activation predicates.",
+    "next_solution_action": "Acquire or identify an eligible sovereign node, declare it with STEGVERSE_SOVEREIGN_NODE=1 or a StegVerse node marker, then let this worker execute installation and verification automatically.",
+    "problem_statement": "No currently executing environment is declared as a StegVerse-owned/federated sovereign node eligible for native service activation.",
     "solution_required": true,
     "workaround_candidates": [
-      "Install and start the canonical heartbeat service on any eligible StegVerse-owned/federated Linux node using scripts/install_sovereign_heartbeat_service.py.",
-      "Materialize the sovereign runtime capsule on an alternate eligible StegVerse node and migrate the canonical durable state before service start.",
-      "Use an existing StegVerse-002 micro-node as the carrier if it satisfies the same local-storage, restart, reconstruction, and no-split-brain predicates."
+      "Bind this worker to any existing StegVerse-owned/federated Linux, macOS, or Windows node by installing the node declaration and running the canonical native installer.",
+      "Promote an existing StegVerse-002 micro-node to the carrier if it satisfies durable-state and native-supervision requirements.",
+      "Construct a new StegVerse-owned/federated node from the repository-local runtime capsule; no hosted provider is required."
     ]
   },
   "blocker_policy_ref": "control/blocker-resolution-policy.json",
@@ -17,7 +17,7 @@
   "completed": false,
   "evidence_path": null,
   "fencing_token": 18,
-  "heartbeat_epoch": 20,
+  "heartbeat_epoch": 22,
   "missing_predicates": [
     "runtime_materialized",
     "native_service_active",
@@ -40,7 +40,17 @@
     "no_duplicate_claim_or_fence",
     "state_reconstruction_pass"
   ],
-  "schema": "stegverse.sovereign-runtime-worker-receipt/v0.2",
+  "schema": "stegverse.sovereign-runtime-worker-receipt/v0.3",
+  "solution_attempt": {
+    "attempted": false,
+    "eligible_node": false,
+    "hosted_environment_rejected": false,
+    "installer_returncode": null,
+    "reason": "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT",
+    "runtime_root": "/home/runner/.local/state/stegverse/heartbeat-runtime",
+    "verifier_returncode": null
+  },
+  "state": "BLOCKED",
   "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
   "third_party_dependency_is_blocker": false,
   "third_party_runtime_required": false,
