@@ -1,63 +1,70 @@
 {
-  "schema": "stegverse.runtime-activation-blocker/v0.1",
-  "blocker_id": "SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-08",
+  "schema": "stegverse.runtime-activation-blocker/v0.2",
+  "blocker_id": "SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09-SOVEREIGN",
   "goal_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
   "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
   "owner": "StegVerse-Labs/.github#12",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
-  "state": "BLOCKED_EXTERNAL_PROVIDER_QUOTA",
-  "observed_at": "2026-08-09T05:48:17Z",
+  "state": "BLOCKED_RUNTIME_ACTIVATION",
+  "block_class": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
+  "observed_at": "2026-08-09T19:27:00Z",
   "boundary_ref": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
   "handoff_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+  "deployment_handoff_ref": "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
   "registry_ref": "control/worker-registry.json#SHWP-DURABLE-RUNTIME-ACTIVATION",
   "automation_terminal": false,
   "canonical_runtime": {
-    "implementation": "heartbeat_runtime/engine_v8.py",
-    "entrypoint": "scripts/run_heartbeat_runtime.py --continuous",
-    "promotion_commit": "11c1b801af35c94d3d67c398a7c93b2fed776448",
-    "latest_boundary_validation": "Heartbeat Worker Project 31260127709 SUCCESS"
+    "implementation": "heartbeat_runtime/engine_v9.py",
+    "entrypoint": "scripts/run_heartbeat_runtime.py --continuous --interval-ms 10.0",
+    "worker_coordination_subsignal": "control/heartbeat-subsignals.json#worker_coordination",
+    "worker_lease_clock": "canonical_heartbeat_cycle",
+    "nominal_cycles_per_second": 100,
+    "wall_clock_worker_expiry_authority": false
   },
-  "authority_resolution": {
-    "human_boundary_status": "RESOLVED",
-    "resolution_ref": "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_AUTH.json#AUTH-SHWP-MASTER-RECORDS-HOST-2026-08-09",
-    "bounded_deployment_authorization": "ADMITTED",
-    "recurring_infrastructure_authorized": true
+  "production_dependency_policy": {
+    "github_required": false,
+    "github_actions_required": false,
+    "render_required": false,
+    "cloudflare_required": false,
+    "vercel_required": false,
+    "third_party_process_host_required": false,
+    "third_party_scheduler_required": false,
+    "third_party_deployment_required": false,
+    "third_party_platform_availability_may_block_activation": false
   },
-  "provisioned_resources": {
-    "persistent_state": "Render Key Value red-d9s17pnavr4c73a8p2ng / master-records-heartbeat-state / starter / oregon / available / journal_snapshot",
-    "host": "Render service srv-d9s197vavr4c73a8rjjg / master-records-heartbeat-host / starter / oregon / created",
-    "host_source": "master-records/monitoring@de1e619a7df8d6753490d895afa6e3e87571a949",
-    "control_records": "master-records/orchestration/config/heartbeat-host.json"
-  },
-  "provider_blocker": {
-    "provider": "Render",
-    "deploy_id": "dep-d9s1987avr4c73a8rkeg",
-    "result": "BUILD_FAILED_PROVIDER_QUOTA",
-    "evidence": "Build canceled: workspace has run out of build pipeline minutes for the current billing period.",
-    "machine_observable_release_condition": "Render accepts and completes a deploy for existing service srv-d9s197vavr4c73a8rjjg",
-    "human_authority_required": false
+  "sovereign_activation_path": {
+    "installer": "scripts/install_sovereign_heartbeat_service.py",
+    "source_requirement": "already_present_local_runtime_source_or_stegverse_capsule",
+    "runtime_storage": "durable_node_local_storage",
+    "process_supervision": "native_os_service_manager_liveness_only",
+    "network_fetch_after_materialization": false,
+    "heartbeat_timing_authority": "heartbeat_runtime.engine_v9.HeartbeatRuntime",
+    "master_records_role": "custody_and_reconstruction_only"
   },
   "completed_machine_actions": [
-    "Protocol/runtime implementation completed and promoted to v8.",
-    "Full control-plane validation passed.",
+    "Protocol/runtime implementation completed and promoted to v9.",
+    "Worker coordination subsignal carries cycle-bound worker leases on the canonical heartbeat.",
     "Scheduled GitHub heartbeat watchdog removed as competing timing plane.",
-    "Dedicated master-records persistent state resource created and available.",
-    "Dedicated master-records always-on starter host service created.",
-    "Host implementation installed in master-records/monitoring.",
-    "Bounded deployment authorization installed in master-records/orchestration.",
-    "Prior HUMAN_AUTHORITY_REQUIRED boundary resolved with durable resolution_ref.",
-    "Initial host deploy attempted and failed closed on provider build-pipeline quota before runtime execution."
+    "Legacy Render heartbeat host superseded and removed as production authority.",
+    "Sovereign installer materializes an already-present runtime to durable local node storage.",
+    "Native service registration path installed for Linux, macOS, and Windows.",
+    "Installer reconciled to runtime v9 and 10 ms default cadence.",
+    "No third-party provider is accepted as a production activation blocker."
   ],
   "release_condition": [
-    "Existing Render service srv-d9s197vavr4c73a8rjjg completes deployment.",
-    "Host /health reports RUNNING with persistent_state PASS.",
-    "Heartbeat epoch advances above pre-activation epoch 3.",
-    "Controlled redeploy/restart preserves or increments epoch and creates no duplicate claim/fence.",
-    "No ChatGPT automation, GitHub schedule, Render cron or other external scheduler owns worker activation."
+    "One StegVerse-owned or StegVerse-federated node materializes the sovereign runtime from already-present local source/capsule.",
+    "Native service registration reports active.",
+    "Continuous runtime advances canonical heartbeat epochs from durable local storage.",
+    "A heartbeat-owned worker returns a response/checkpoint from that carrier.",
+    "A controlled native-service restart preserves or advances heartbeat epoch and registry generation.",
+    "No duplicate heartbeat, claim, fence, or split-brain state appears after restart.",
+    "Registry, event, cost, receipt, checkpoint, and worker-coordination state survive restart/reconstruction."
   ],
-  "next_executable_action": "Retry deployment of existing Render service srv-d9s197vavr4c73a8rjjg immediately when provider build pipeline capacity becomes available; then execute health and restart-continuity proof.",
+  "machine_observable_release_condition": "all sovereign-node activation predicates pass on one StegVerse-owned or StegVerse-federated node",
+  "next_executable_action": "A StegVerse sovereign node execution lane materializes and starts the local runtime, emits activation.latest.json plus advancing heartbeat/worker checkpoint evidence, performs one controlled restart, and publishes the resulting custody projection for reconstruction validation.",
+  "blocked_owner": "StegVerse-002/micro-node-runtime#16",
   "heartbeat_or_execution_authority_effect": "NONE",
   "chat_monitoring_required": false,
-  "session_retention_required": true
+  "session_retention_required": false
 }
