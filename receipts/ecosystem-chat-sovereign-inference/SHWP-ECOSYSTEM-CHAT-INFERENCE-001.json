@@ -3,13 +3,13 @@
   "blocker": {
     "dependency_class": "INTERNAL_CAPABILITY",
     "may_remain_blocked": true,
-    "next_solution_action": "Select an executable StegVerse-local model/runtime combination and activate it; model/provider unavailability requires an alternate local solution, not waiting on a third party.",
-    "problem_statement": "No admitted StegVerse-local inference execution has yet satisfied the real-model, private-endpoint, E1-to-E2, measured-usage, and reconstruction predicates.",
+    "next_solution_action": "Execute StegVerse-002/micro-node-runtime#22 tools/verify_sovereign_model_runtime.py on the sovereign carrier. The in-repository stegverse-reference-lm-v1 is the guaranteed zero-external-dependency path; optional llama.cpp/Ollama models may improve capability but their absence is not a blocker.",
+    "problem_statement": "The sovereign carrier has not yet emitted an admitted local-model runtime proof from the implemented StegVerse reference model path.",
     "solution_required": true,
     "workaround_candidates": [
-      "Start an eligible local model runtime on the sovereign carrier and bind the LLM adapter to loopback/private transport.",
-      "Use another StegVerse-owned/federated node with a compatible local model process and preserve the same E1-to-E2 and Master Records reconstruction contract.",
-      "If the selected local model cannot run on available hardware, select a smaller compatible local model rather than falling back to a hosted inference dependency."
+      "Execute the in-repository stegverse-reference-lm-v1 verifier on the sovereign node.",
+      "If a qualifying local llama.cpp/GGUF runtime is already installed, execute it privately and preserve the same proof contract.",
+      "If a qualifying Ollama model is already installed, execute it privately and preserve the same proof contract."
     ]
   },
   "blocker_policy_ref": "control/blocker-resolution-policy.json",
@@ -19,7 +19,8 @@
   "evidence_path": null,
   "fencing_token": 20,
   "github_models_required": false,
-  "heartbeat_epoch": 21,
+  "heartbeat_epoch": 23,
+  "local_model_proof_path": null,
   "missing_predicates": [
     "real_model_process_observed",
     "private_endpoint_only",
@@ -28,12 +29,15 @@
     "provider_usage_reconstruction_pass",
     "transition_reconstruction_pass"
   ],
+  "next_authorized_action": "Execute StegVerse-002/micro-node-runtime#22 tools/verify_sovereign_model_runtime.py on the sovereign carrier. The in-repository stegverse-reference-lm-v1 is the guaranteed zero-external-dependency path; optional llama.cpp/Ollama models may improve capability but their absence is not a blocker.",
+  "reference_model_is_production_scale_llm": false,
+  "reference_model_runtime_verified": false,
   "render_required": false,
-  "schema": "stegverse.ecosystem-chat-sovereign-inference-worker-receipt/v0.2",
+  "schema": "stegverse.ecosystem-chat-sovereign-inference-worker-receipt/v0.3",
   "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
   "third_party_dependency_is_blocker": false,
   "third_party_inference_required": false,
-  "transition_id": "SOVEREIGN_INFERENCE_SOLUTION_REQUIRED",
+  "transition_id": "SOVEREIGN_LOCAL_MODEL_RUNTIME_NOT_YET_VERIFIED",
   "worker_id": "ecosystem-chat-sovereign-inference-worker",
   "worker_instance_id": "ecosystem-chat-sovereign-inference-worker-HB17-G20"
 }

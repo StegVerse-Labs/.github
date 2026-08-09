@@ -6,9 +6,9 @@
     "policy_version": 0,
     "scope": 0
   },
-  "epoch": 22,
+  "epoch": 23,
   "expected_returns": 0,
-  "generation": 22,
+  "generation": 23,
   "issued": [],
   "last_completed_round": {
     "claimant_id": "TASK-2026-0003",
@@ -18,8 +18,8 @@
     "observation": "heartbeats/observations/TASK-2026-0003-1.json",
     "repository": "StegVerse-Labs/StegCore"
   },
-  "last_cycle_at": "2026-08-09T22:12:08Z",
-  "last_issued_at": "2026-08-09T22:12:08Z",
+  "last_cycle_at": "2026-08-09T22:31:04Z",
+  "last_issued_at": "2026-08-09T22:31:04Z",
   "open_warrants": [],
   "ordered_tolerances": {
     "epoch_beats": 2
@@ -30,7 +30,7 @@
   "schema": "stegverse.org-heartbeat-state/v1",
   "statistical_detection_active": false,
   "subsignals": {
-    "registry_generation": 16,
+    "registry_generation": 17,
     "worker_coordination": {
       "active_leases": [
         {
@@ -44,7 +44,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 267,
           "lease_start_cycle": 11,
-          "remaining_cycles": 245,
+          "remaining_cycles": 244,
           "task_id": "SHWP-ALL-ORG-FEDERATION-001",
           "task_state": "BLOCKED",
           "wall_clock_expiry_authority": false,
@@ -62,9 +62,9 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 4111,
           "lease_start_cycle": 15,
-          "remaining_cycles": 4089,
+          "remaining_cycles": 4088,
           "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-          "task_state": "BLOCKED",
+          "task_state": "EXPIRING",
           "wall_clock_expiry_authority": false,
           "worker_id": "sovereign-runtime-activation-worker",
           "worker_instance_id": "sovereign-runtime-activation-worker-HB15-G18"
@@ -72,7 +72,7 @@
         {
           "assigned_cycles": 4096,
           "claim_id": "SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G20",
-          "current_transition": "SOVEREIGN_INFERENCE_SOLUTION_REQUIRED",
+          "current_transition": "SOVEREIGN_LOCAL_MODEL_RUNTIME_NOT_YET_VERIFIED",
           "expiry_basis": "TASK_CLASS_COST_BASIS",
           "fencing_token": 20,
           "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
@@ -80,7 +80,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 4113,
           "lease_start_cycle": 17,
-          "remaining_cycles": 4091,
+          "remaining_cycles": 4090,
           "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
           "task_state": "BLOCKED",
           "wall_clock_expiry_authority": false,
@@ -98,7 +98,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 71,
           "lease_start_cycle": 7,
-          "remaining_cycles": 49,
+          "remaining_cycles": 48,
           "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
           "task_state": "ACTIVE",
           "wall_clock_expiry_authority": false,
@@ -109,7 +109,7 @@
       "authority_effect": false,
       "carrier": "single_stegverse_heartbeat",
       "carrier_cycle_unit": "heartbeat_cycle",
-      "carrier_epoch": 22,
+      "carrier_epoch": 23,
       "kind": "worker_coordination",
       "master_records_projection": {
         "authority_effect": false,
@@ -125,6 +125,6 @@
       "worker_lease_unit": "heartbeat_cycle",
       "worker_registry_ref": "control/worker-registry.json"
     },
-    "worker_coordination_sha256": "9fefa607552691a1f5be39244a2a1dbc1cbaaadbf2958d8142663badb5097c36"
+    "worker_coordination_sha256": "a8139db11371380ba44c5a66666c939b1d7eb034802fbc3732a58a657557d0f5"
   }
 }
