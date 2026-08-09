@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-HOST-SELF-ATTEST-001",
   "created_at": "2026-08-09T09:18:00Z",
-  "state": "HANDOFF_READY",
+  "state": "COMPLETE",
   "goal": {
     "goal_id": "SHWP-HOST-SELF-ATTEST-001",
     "objective": "Execute exactly one bounded documented repository worker through the canonical heartbeat and worker task registry, proving heartbeat-native claim, fence, invocation, completion, release, and durable receipt without making any host provider a dependency or authority.",
@@ -37,7 +37,10 @@
       "authorizations/SHWP-HOST-SELF-ATTEST-001.json",
       "workers/host_runtime_self_attest.py",
       "control/worker-registry.json",
-      "master-records/monitoring#2"
+      "cost-basis/worker-runtime/host-self-attest.json",
+      "receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json",
+      "checkpoints/workers/SHWP-HOST-SELF-ATTEST-001/HB9-G15.json",
+      "StegVerse-Labs/.github:Activate Host Self-Attest Worker Through Heartbeat run 31325634537 job 93275422469:SUCCESS"
     ],
     "dependencies": [],
     "parent_task_id": null,
@@ -64,24 +67,40 @@
   },
   "activation": {
     "carrier": "heartbeat",
-    "executor_binding": "AUTHORIZED",
+    "executor_binding": "RELEASED_AFTER_COMPLETION",
     "authorization_ref": "authorizations/SHWP-HOST-SELF-ATTEST-001.json#AUTH-SHWP-HOST-SELF-ATTEST-001",
-    "recheck_trigger": "matching documented repository worker is AVAILABLE in control/worker-registry.json",
+    "activation_evidence": {
+      "workflow_run": 31325634537,
+      "workflow_job": 93275422469,
+      "heartbeat_epoch": 9,
+      "claim_id": "SHWP-SHWP-HOST-SELF-ATTEST-001-G15",
+      "fencing_token": 15,
+      "worker_id": "master-records-host-self-attest-worker",
+      "worker_instance_id": "master-records-host-self-attest-worker-HB9-G15",
+      "transition_id": "HOST_RUNTIME_SELF_ATTESTED",
+      "result": "COMPLETED"
+    },
     "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {
-    "checkpoint_ref": "master-records/monitoring#2",
+    "checkpoint_ref": "checkpoints/workers/SHWP-HOST-SELF-ATTEST-001/HB9-G15.json",
     "handoff_destination": "control/worker-registry.json",
     "master_records_required": true,
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Canonical heartbeat claims the task when the matching repository worker is AVAILABLE; no provider-specific condition is required.",
+    "next_authorized_action": "NONE_FOR_THIS_TASK",
     "terminal_when": [
       "Task state is COMPLETED",
       "Self-attestation receipt exists",
       "Worker claim is released",
       "Receipt is durably recorded and reconstructable"
+    ],
+    "terminal_evidence": [
+      "control/worker-registry.json:SHWP-HOST-SELF-ATTEST-001=COMPLETED",
+      "receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json",
+      "checkpoints/workers/SHWP-HOST-SELF-ATTEST-001/HB9-G15.json",
+      "workflow run 31325634537 job 93275422469 SUCCESS"
     ]
   },
   "block": null
