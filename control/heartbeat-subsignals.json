@@ -1,58 +1,109 @@
 {
+  "generation": 6,
   "schema": "stegverse.heartbeat-subsignals/v1",
-  "generation": 5,
   "subsignals": {
     "organization_federation": {
-      "kind": "organization_readiness_federation",
-      "state": "ACTIVE_PARTIAL_COVERAGE",
-      "registry_ref": "control/organization-federation.json",
-      "task_registry_ref": "control/organization-task-registry.json",
-      "organization_count": 14,
-      "ready_count": 10,
-      "blocked_count": 4,
-      "unassigned_count": 0,
-      "detail_classes": ["MEMORY", "ACTION", "AWARENESS", "AUTHORITY", "EVIDENCE", "BLOCKER", "CAPABILITY", "CONTEXT"],
-      "recheck_policy": "ON_EACH_ADMITTED_HEARTBEAT_WHILE_ANY_ORGANIZATION_IS_BLOCKED_OR_CHANGED",
-      "progress_rule": "ONLY_ADMITTED_STATE_TRANSITIONS_ADVANCE_PROGRESS",
       "authority_effect": false,
-      "transport_grants_authority": false
+      "blocked_count": 4,
+      "detail_classes": [
+        "MEMORY",
+        "ACTION",
+        "AWARENESS",
+        "AUTHORITY",
+        "EVIDENCE",
+        "BLOCKER",
+        "CAPABILITY",
+        "CONTEXT"
+      ],
+      "kind": "organization_readiness_federation",
+      "organization_count": 14,
+      "progress_rule": "ONLY_ADMITTED_STATE_TRANSITIONS_ADVANCE_PROGRESS",
+      "ready_count": 10,
+      "recheck_policy": "ON_EACH_ADMITTED_HEARTBEAT_WHILE_ANY_ORGANIZATION_IS_BLOCKED_OR_CHANGED",
+      "registry_ref": "control/organization-federation.json",
+      "state": "ACTIVE_PARTIAL_COVERAGE",
+      "task_registry_ref": "control/organization-task-registry.json",
+      "transport_grants_authority": false,
+      "unassigned_count": 0
     },
     "steggate_transport_lease": {
-      "kind": "transport_lease",
-      "state": "OPEN",
-      "lease_id": "STEGGATE-TUNNEL-LEASE-001",
-      "lease_action": "EXTEND",
-      "opened_epoch": 10,
+      "authority_effect": false,
       "dependent_tasks": [],
+      "kind": "transport_lease",
+      "lease_action": "EXTEND",
+      "lease_id": "STEGGATE-TUNNEL-LEASE-001",
+      "opened_epoch": 10,
       "release_policy": {
         "handoff_on_successor_acceptance": true,
         "release_on_all_dependents_terminal": true,
-        "terminal_task_states": ["COMPLETE", "CLOSED", "CANCELLED", "SUPERSEDED"],
+        "terminal_task_states": [
+          "COMPLETE",
+          "CLOSED",
+          "CANCELLED",
+          "SUPERSEDED"
+        ],
         "wall_clock_expiry_authority": false
       },
-      "successor_lease_id": null,
-      "authority_effect": false
+      "state": "OPEN",
+      "successor_lease_id": null
     },
     "worker_coordination": {
-      "kind": "worker_coordination",
-      "state": "IDLE",
+      "active_leases": [
+        {
+          "assigned_cycles": 256,
+          "claim_id": "SHWP-SHWP-ALL-ORG-FEDERATION-001-G17",
+          "current_transition": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+          "expiry_basis": "TASK_CLASS_COST_BASIS",
+          "fencing_token": 17,
+          "goal_id": "ALL-ORG-HEARTBEAT-FEDERATION-001",
+          "handoff_ref": "handoffs/SHWP-ALL-ORG-FEDERATION-001.json",
+          "lease_clock": "canonical_heartbeat_cycle",
+          "lease_end_cycle_exclusive": 267,
+          "lease_start_cycle": 11,
+          "remaining_cycles": 255,
+          "task_id": "SHWP-ALL-ORG-FEDERATION-001",
+          "task_state": "BLOCKED",
+          "wall_clock_expiry_authority": false,
+          "worker_id": "organization-federation-readiness-worker",
+          "worker_instance_id": "organization-federation-readiness-worker-HB11-G17"
+        },
+        {
+          "assigned_cycles": 64,
+          "claim_id": "SHWP-STEGGATE-STABLE-RENDEZVOUS-WORKER-001-G13",
+          "current_transition": "CREDENTIAL_VALUES_ABSENT",
+          "expiry_basis": "TASK_CLASS_COST_BASIS",
+          "fencing_token": 13,
+          "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
+          "handoff_ref": "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+          "lease_clock": "canonical_heartbeat_cycle",
+          "lease_end_cycle_exclusive": 71,
+          "lease_start_cycle": 7,
+          "remaining_cycles": 59,
+          "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+          "task_state": "BLOCKED",
+          "wall_clock_expiry_authority": false,
+          "worker_id": "steggate-rendezvous-deployment-worker",
+          "worker_instance_id": "steggate-rendezvous-deployment-worker-HB7-G13"
+        }
+      ],
+      "authority_effect": false,
       "carrier": "single_stegverse_heartbeat",
-      "carrier_epoch": 11,
       "carrier_cycle_unit": "heartbeat_cycle",
-      "worker_lease_unit": "heartbeat_cycle",
-      "worker_lease_source": "admitted_task_cost_basis_and_runtime_window",
-      "worker_lease_is_heartbeat_lifetime": false,
-      "wall_clock_expiry_authority": false,
-      "active_leases": [],
-      "worker_registry_ref": "control/worker-registry.json",
+      "carrier_epoch": 12,
+      "kind": "worker_coordination",
       "master_records_projection": {
-        "required": true,
-        "latest_projection_ref": "control/heartbeat-master-records-projection.json",
-        "event_log_ref": "events/heartbeat-runtime.jsonl",
+        "authority_effect": false,
         "destination": "master-records/orchestration",
-        "authority_effect": false
+        "event_log_ref": "events/heartbeat-runtime.jsonl",
+        "latest_projection_ref": "control/heartbeat-master-records-projection.json",
+        "required": true
       },
-      "authority_effect": false
+      "state": "ACTIVE",
+      "wall_clock_expiry_authority": false,
+      "worker_lease_is_heartbeat_lifetime": false,
+      "worker_lease_source": "admitted_task_cost_basis_and_runtime_window",
+      "worker_lease_unit": "heartbeat_cycle",
+      "worker_registry_ref": "control/worker-registry.json"
     }
   }
 }
