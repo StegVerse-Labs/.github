@@ -1,13 +1,13 @@
 {
   "schema": "stegverse.heartbeat-subsignals/v1",
-  "generation": 2,
+  "generation": 3,
   "subsignals": {
     "steggate_transport_lease": {
       "kind": "transport_lease",
-      "state": "OPEN_REQUESTED",
+      "state": "OPEN",
       "lease_id": "STEGGATE-TUNNEL-LEASE-001",
-      "lease_action": "OPEN",
-      "opened_epoch": 7,
+      "lease_action": "EXTEND",
+      "opened_epoch": 10,
       "dependent_tasks": [],
       "release_policy": {
         "handoff_on_successor_acceptance": true,
