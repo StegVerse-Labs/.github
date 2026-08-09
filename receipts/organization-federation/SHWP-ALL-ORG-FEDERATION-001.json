@@ -1,0 +1,58 @@
+{
+  "authority_effect": "none_beyond_admitted_federation_receipt_namespace",
+  "blocked_count": 4,
+  "blocked_organizations": [
+    {
+      "block_class": "CONNECTOR_WRITE_AUTHORITY",
+      "next_action": "RECHECK_AUTHORITY",
+      "organization": "AaCT-E",
+      "release_condition": "GitHub integration gains push authority to an AaCT-E repository or an AaCT-E-owned relay appears"
+    },
+    {
+      "block_class": "NO_REPOSITORY",
+      "next_action": "RECHECK_REPOSITORY",
+      "organization": "ECAT-ICAT-Formal",
+      "release_condition": "Organization exposes a repository capable of owning a canonical mirror handoff and adapter"
+    },
+    {
+      "block_class": "NO_REPOSITORY",
+      "next_action": "RECHECK_REPOSITORY",
+      "organization": "Infrastructure-Continuity-Ventures",
+      "release_condition": "Organization exposes a repository capable of owning a canonical mirror handoff and adapter"
+    },
+    {
+      "block_class": "NO_REPOSITORY",
+      "next_action": "RECHECK_REPOSITORY",
+      "organization": "Triad-Test",
+      "release_condition": "Organization exposes a repository capable of owning a canonical mirror handoff and adapter"
+    }
+  ],
+  "claim_id": "SHWP-SHWP-ALL-ORG-FEDERATION-001-G17",
+  "completed": false,
+  "federation_ref": "control/organization-federation.json",
+  "fencing_token": 17,
+  "heartbeat_epoch": 11,
+  "organization_count": 14,
+  "organization_task_registry_ref": "control/organization-task-registry.json",
+  "ready_count": 10,
+  "ready_organizations": [
+    "Admissible-Existence",
+    "AdmittedCode",
+    "Data-Continuation",
+    "GCAT-BCAT-Engine",
+    "StegGhost",
+    "StegVerse-002",
+    "StegVerse-Labs",
+    "StegVerse-org",
+    "formalism-tests",
+    "master-records"
+  ],
+  "schema": "stegverse.organization-federation-receipt/v0.1",
+  "subsignal_ref": "control/heartbeat-subsignals.json#organization_federation",
+  "task_id": "SHWP-ALL-ORG-FEDERATION-001",
+  "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+  "transition_sequence": 1,
+  "unassigned_count": 0,
+  "worker_id": "organization-federation-readiness-worker",
+  "worker_instance_id": "organization-federation-readiness-worker-HB11-G17"
+}

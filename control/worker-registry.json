@@ -1,5 +1,5 @@
 {
-  "generation": 15,
+  "generation": 17,
   "schema": "stegverse.heartbeat-worker-registry/v0.1",
   "tasks": [
     {
@@ -218,7 +218,9 @@
         "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB9-G13-9cb579d52485c68b.json",
         "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB9-G13.json",
         "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB10-G13-d2fa0582777834c4.json",
-        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB10-G13.json"
+        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB10-G13.json",
+        "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB11-G13-e03542055d4b6b3f.json",
+        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB11-G13.json"
       ],
       "executor_binding": "BOUND",
       "external_entity_job_ref": "cloudflare:stegverse-steggate-rendezvous",
@@ -226,23 +228,23 @@
       "handoff_ref": "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
       "heartbeat_timing": {
         "current_transition": "CREDENTIAL_VALUES_ABSENT",
-        "expected_next_earliest_epoch": 11,
-        "expected_next_latest_epoch": 42,
+        "expected_next_earliest_epoch": 12,
+        "expected_next_latest_epoch": 43,
         "expected_next_transition": "CREDENTIAL_RECHECK",
         "expiry_basis": "TASK_CLASS_COST_BASIS",
         "expiry_epoch": 71,
         "fencing_token": 13,
-        "last_response_epoch": 10,
+        "last_response_epoch": 11,
         "last_transition_epoch": 7,
         "max_missing_response_beats": 3,
         "renewal_count": 0,
         "start_epoch": 7,
         "transition_sequence": 1
       },
-      "last_checkpoint_ref": "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB10-G13.json",
+      "last_checkpoint_ref": "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB11-G13.json",
       "lease": null,
       "resource_budget": {
-        "actions_used": 4,
+        "actions_used": 5,
         "allowed_services": [
           "api.cloudflare.com",
           "stegverse.org",
@@ -283,13 +285,83 @@
           "response_state": "BLOCKED",
           "transition_id": "CREDENTIAL_VALUES_ABSENT",
           "transition_sequence": 1
+        },
+        {
+          "heartbeat_epoch": 11,
+          "response_state": "BLOCKED",
+          "transition_id": "CREDENTIAL_VALUES_ABSENT",
+          "transition_sequence": 1
         }
       ],
       "worker_id": "steggate-rendezvous-deployment-worker",
       "worker_instance_id": "steggate-rendezvous-deployment-worker-HB7-G13"
+    },
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [],
+      "authorized_policy_version": "shwp-single-hb-v0.2",
+      "block_ref": null,
+      "claim_id": "SHWP-SHWP-ALL-ORG-FEDERATION-001-G17",
+      "cost_basis_ref": "cost-basis/worker-runtime/organization-federation-readiness.json",
+      "evidence_refs": [
+        "StegVerse-Labs/Site#234",
+        "control/organization-federation.json",
+        "control/organization-task-registry.json",
+        "control/heartbeat-subsignals.json",
+        "authorizations/SHWP-ALL-ORG-FEDERATION-001.json",
+        "workers/organization_federation_readiness_worker.py",
+        "receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json",
+        "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB11-G17-610ed9983c4b0466.json",
+        "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB11-G17.json"
+      ],
+      "executor_binding": "BOUND",
+      "external_entity_job_ref": null,
+      "goal_id": "ALL-ORG-HEARTBEAT-FEDERATION-001",
+      "handoff_ref": "handoffs/SHWP-ALL-ORG-FEDERATION-001.json",
+      "heartbeat_timing": {
+        "current_transition": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+        "expected_next_earliest_epoch": 12,
+        "expected_next_latest_epoch": 12,
+        "expected_next_transition": "FEDERATION_RECHECK",
+        "expiry_basis": "TASK_CLASS_COST_BASIS",
+        "expiry_epoch": 267,
+        "fencing_token": 17,
+        "last_response_epoch": 11,
+        "last_transition_epoch": 11,
+        "max_missing_response_beats": 3,
+        "renewal_count": 0,
+        "start_epoch": 11,
+        "transition_sequence": 1
+      },
+      "last_checkpoint_ref": "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB11-G17.json",
+      "lease": null,
+      "resource_budget": {
+        "actions_used": 1,
+        "allowed_services": [],
+        "external_cost_ceiling_usd": 0.0,
+        "external_cost_usd": 0.0,
+        "max_actions": 128,
+        "max_retries": 128,
+        "rate_class": "heartbeat_federation_reconciliation",
+        "renewal_count": 0,
+        "retries_used": 0,
+        "runtime_window_beats": 256
+      },
+      "state": "BLOCKED",
+      "task_id": "SHWP-ALL-ORG-FEDERATION-001",
+      "transition_history": [
+        {
+          "heartbeat_epoch": 11,
+          "response_state": "BLOCKED",
+          "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+          "transition_sequence": 1
+        }
+      ],
+      "worker_id": "organization-federation-readiness-worker",
+      "worker_instance_id": "organization-federation-readiness-worker-HB11-G17"
     }
   ],
-  "updated_at": "2026-08-09T17:10:32Z",
+  "updated_at": "2026-08-09T17:53:12Z",
   "workers": [
     {
       "adapter_ref": null,
@@ -343,6 +415,18 @@
       "last_seen_at": "2026-08-09T17:03:51Z",
       "status": "BUSY",
       "worker_id": "steggate-rendezvous-deployment-worker"
+    },
+    {
+      "adapter_ref": "process:organization-federation-readiness-v1",
+      "authority_source": "authorizations/SHWP-ALL-ORG-FEDERATION-001.json",
+      "capabilities": [
+        "bounded_repository_mutation"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": "2026-08-09T17:53:12Z",
+      "status": "BUSY",
+      "worker_id": "organization-federation-readiness-worker"
     }
   ]
 }
