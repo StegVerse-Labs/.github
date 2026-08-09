@@ -1,5 +1,5 @@
 {
-  "generation": 9,
+  "generation": 10,
   "schema": "stegverse.heartbeat-worker-registry/v0.1",
   "tasks": [
     {
@@ -61,30 +61,34 @@
     },
     {
       "archive_eligible": false,
-      "archive_reason_codes": ["AUTOMATION_TERMINAL_UNTIL_HUMAN_DECISION","PAID_DURABLE_HOST_AUTHORITY_REQUIRED"],
-      "block_ref": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+      "archive_reason_codes": ["PROVIDER_BUILD_PIPELINE_CAPACITY","HOST_DEPLOYMENT_PENDING","RESTART_CONTINUITY_PROOF_PENDING"],
+      "block_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#block",
       "claim_id": null,
       "cost_basis_ref": null,
       "evidence_refs": [
         "StegVerse-Labs/.github#12",
-        "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
-        "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
-        "Org Continuation Check run 31260010793:SUCCESS"
+        "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json:RESOLVED",
+        "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_AUTH.json",
+        "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_RECEIPT.json",
+        "master-records/monitoring/MONITORING_MIRROR_HANDOFF.md",
+        "Render Key Value red-d9s17pnavr4c73a8p2ng:available",
+        "Render service srv-d9s197vavr4c73a8rjjg:created",
+        "Render deploy dep-d9s1987avr4c73a8rkeg:BUILD_FAILED_PROVIDER_QUOTA"
       ],
-      "executor_binding": "UNBOUND",
-      "external_entity_job_ref": null,
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": "render:srv-d9s197vavr4c73a8rjjg",
       "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
       "handoff_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
       "heartbeat_timing": null,
-      "last_checkpoint_ref": "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+      "last_checkpoint_ref": "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_RECEIPT.json",
       "lease": null,
-      "state": "HUMAN_AUTHORITY_REQUIRED",
+      "state": "BLOCKED",
       "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
       "worker_id": null,
       "worker_instance_id": null
     }
   ],
-  "updated_at": "2026-08-08T13:41:00Z",
+  "updated_at": "2026-08-09T05:49:30Z",
   "workers": [
     {
       "adapter_ref": null,
