@@ -65,6 +65,8 @@ receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-*.json
 checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/
 ```
 
+The live receipt and worker-registry surfaces are authoritative for advancing heartbeat epoch/transition state; fixed epoch numbers below are retained as proof checkpoints, not as a requirement that the worker stop advancing.
+
 ## Organization coverage
 
 Current authoritative denominator and task projection:
@@ -187,7 +189,7 @@ Hosted log emitted:
 ALL_ORG_FEDERATION_V9_PASS:epoch=12:ready=10:blocked=4:unassigned=0:lease_cycles=256:remaining=255
 ```
 
-### Continuation recheck after management-state reconciliation
+### Continued post-correction proof
 
 ```text
 workflow run: 31330383844
@@ -195,12 +197,15 @@ workflow job: 93287583075
 result: SUCCESS
 artifact: 9042743617
 artifact sha256: 5cd11b0866c2abd6ff268fc0545f64a85eabcfe0007ab7881d01f7e3c4ba7b19
-latest federation receipt heartbeat epoch: 13
-latest federation transition sequence: 3
+receipt checkpoint: heartbeat epoch 13 / transition sequence 3
+
+workflow run: 31330521680
+result: SUCCESS
+latest inspected live receipt: heartbeat epoch 14 / transition sequence 4
 latest receipt state: FEDERATION_READY_WITH_MACHINE_BLOCKERS
 ```
 
-This second v9 cycle proves the federation task is not a one-shot workflow artifact: the same admitted claim/fence/worker instance continued through another canonical heartbeat cycle and produced the next durable receipt/checkpoint while preserving the blocker set.
+The post-correction cycles prove the federation task is not a one-shot workflow artifact: the same admitted claim/fence/worker instance continued through multiple canonical heartbeat cycles and produced successive durable receipts/checkpoints while preserving the blocker set.
 
 ## Convergence and duplicate prevention
 
@@ -250,7 +255,7 @@ All unique requirements from this session are now durable in the repository and 
 4. federation readiness is integrated with the canonical heartbeat subsignal state;
 5. a real federation worker/task is claimed, fenced, bound, heartbeat-timed, and checkpointed;
 6. the worker lease is carried by the corrected v9 `worker_coordination` subsignal in canonical heartbeat cycles;
-7. two consecutive post-correction v9 hosted cycles succeeded, with the latest receipt at heartbeat epoch 13 / transition sequence 3;
+7. multiple consecutive post-correction v9 hosted cycles succeeded, with the latest inspected receipt at heartbeat epoch 14 / transition sequence 4;
 8. Site #234 and .github #12 remain the canonical adjacent owners without duplicate implementation;
 9. no continuation requirement exists only in chat.
 
@@ -259,11 +264,11 @@ Therefore this session satisfies the archive rule through the second permitted p
 ## Final durable transfer record
 
 ```text
-canonical session handoff commit: 791b60e617e729e6228122837c3c56cbde92293f
-management-state commit: 4dbea8aa2aec748dd63ea42429c2e9b9ea23d8d7
+canonical session handoff prior transfer commit: ba15a5791efec0ab38776d4777a5c17a546e472b
+management-state transfer commit: 46883a3a225063759b2fc9da24c93310a69891d2
 v9 validation workflow commit: 20306f02236eec678d9b69289917e38144158389
-v9 heartbeat persistence commit: 7335c13
-latest verified federation receipt: heartbeat epoch 13 / transition sequence 3
+v9 heartbeat persistence checkpoint: 7335c13
+latest inspected federation receipt: heartbeat epoch 14 / transition sequence 4
 conversation-dependent state remaining: none
 ```
 
