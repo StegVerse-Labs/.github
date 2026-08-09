@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/heartbeat-subsignal.schema.json",
+  "title": "StegVerse Heartbeat Subsignal Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "generation", "subsignals"],
+  "properties": {
+    "schema": {"const": "stegverse.heartbeat-subsignals/v1"},
+    "generation": {"type": "integer", "minimum": 1},
+    "subsignals": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/subsignal"}
+    }
+  },
+  "$defs": {
+    "subsignal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "state", "lease_id", "lease_action", "opened_epoch", "dependent_tasks", "release_policy"],
+      "properties": {
+        "kind": {"type": "string", "minLength": 1},
+        "state": {"enum": ["IDLE", "OPEN_REQUESTED", "OPEN", "EXTENDING", "HANDOFF_READY", "CLOSE_REQUESTED", "CLOSED"]},
+        "lease_id": {"type": "string", "minLength": 1},
+        "lease_action": {"enum": ["NONE", "OPEN", "EXTEND", "CLOSE"]},
+        "opened_epoch": {"type": "integer", "minimum": 0},
+        "dependent_tasks": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "release_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["handoff_on_successor_acceptance", "release_on_all_dependents_terminal", "terminal_task_states", "wall_clock_expiry_authority"],
+          "properties": {
+            "handoff_on_successor_acceptance": {"type": "boolean"},
+            "release_on_all_dependents_terminal": {"type": "boolean"},
+            "terminal_task_states": {"type": "array", "items": {"type": "string"}},
+            "wall_clock_expiry_authority": {"const": false}
+          }
+        },
+        "successor_lease_id": {"type": ["string", "null"]},
+        "authority_effect": {"const": false}
+      }
+    }
+  }
+}
