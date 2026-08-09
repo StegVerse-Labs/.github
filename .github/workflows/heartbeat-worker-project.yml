@@ -76,6 +76,8 @@ jobs:
         run: python scripts/validate_executable_handoffs.py
       - name: Prove blocker resolution and no-third-party-blocker invariant
         run: python -m unittest -v tests.test_blocker_resolution_policy
+      - name: Prove sovereign local model proof advances inference worker
+        run: python -m unittest -v tests.test_sovereign_inference_local_model_proof
       - name: Prove native heartbeat engine semantics
         run: python -m unittest -v tests.test_heartbeat_runtime
       - name: Prove worker coordination subsignal and cycle leases
