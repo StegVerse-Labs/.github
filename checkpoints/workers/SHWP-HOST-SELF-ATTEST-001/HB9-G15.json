@@ -1,0 +1,51 @@
+{
+  "authority_source": "authorizations/SHWP-HOST-SELF-ATTEST-001.json#AUTH-SHWP-HOST-SELF-ATTEST-001",
+  "checkpoint_id": "CP-SHWP-HOST-SELF-ATTEST-001-HB9-G15",
+  "checkpoint_sha256": "6548be2d9fda47e0348ea7abb713cfd7b3c2398a84713cbd0bf6d104f2829ad3",
+  "claim_id": "SHWP-SHWP-HOST-SELF-ATTEST-001-G15",
+  "completed_transitions": [
+    {
+      "heartbeat_epoch": 9,
+      "response_state": "COMPLETED",
+      "transition_id": "HOST_RUNTIME_SELF_ATTESTED",
+      "transition_sequence": 1
+    }
+  ],
+  "current_state": "COMPLETED",
+  "evidence_refs": [
+    "StegVerse-Labs/.github#12",
+    "authorizations/SHWP-HOST-SELF-ATTEST-001.json",
+    "handoffs/SHWP-HOST-SELF-ATTEST-001.json",
+    "workers/host_runtime_self_attest.py",
+    "master-records/monitoring#2",
+    "master-records:monitoring#2:SHWP-HOST-SELF-ATTEST-001",
+    "receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json",
+    "receipts/worker-mutation-scope/SHWP-HOST-SELF-ATTEST-001-HB9-G15-7ee35e01dc067a0a.json"
+  ],
+  "execution_authority": false,
+  "fencing_token": 15,
+  "goal_id": "SHWP-HOST-SELF-ATTEST-001",
+  "handoff_ref": "handoffs/SHWP-HOST-SELF-ATTEST-001.json",
+  "handoff_sha256": "a1b9d21526ac42403b96b4da649a0d3b2e2d9e6064359e75293acbcb2a32358a",
+  "heartbeat_epoch": 9,
+  "next_authorized_action": "Canonical heartbeat claims the task when the matching repository worker is AVAILABLE; no provider-specific condition is required.",
+  "policy_version": "shwp-single-hb-v0.2",
+  "resource_budget": {
+    "actions_used": 1,
+    "allowed_services": [],
+    "external_cost_ceiling_usd": 0.0,
+    "external_cost_usd": 0.0,
+    "max_actions": 1,
+    "max_retries": 0,
+    "rate_class": "bounded_local",
+    "renewal_count": 0,
+    "retries_used": 0,
+    "runtime_window_beats": 8
+  },
+  "schema": "stegverse.worker-checkpoint/v0.1",
+  "task_id": "SHWP-HOST-SELF-ATTEST-001",
+  "unresolved_work": [],
+  "worker_checkpoint_ref": "receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json",
+  "worker_id": "master-records-host-self-attest-worker",
+  "worker_instance_id": "master-records-host-self-attest-worker-HB9-G15"
+}

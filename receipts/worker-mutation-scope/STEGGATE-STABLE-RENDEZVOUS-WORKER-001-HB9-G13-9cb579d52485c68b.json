@@ -1,0 +1,16 @@
+{
+  "allowed_paths": [
+    "receipts/steggate-rendezvous-worker/**"
+  ],
+  "authority_effect": "none_adapter_scope_enforcement_only",
+  "changed_paths": [
+    "receipts/steggate-rendezvous-worker/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json"
+  ],
+  "claim_id": "SHWP-STEGGATE-STABLE-RENDEZVOUS-WORKER-001-G13",
+  "decision": "ALLOW",
+  "fencing_token": 13,
+  "heartbeat_epoch": 9,
+  "reason": "ALL_MUTATIONS_WITHIN_CURRENT_FENCED_SCOPE",
+  "schema": "stegverse.worker-mutation-scope-receipt/v0.1",
+  "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001"
+}

@@ -1,0 +1,16 @@
+{
+  "claim_id": "SHWP-SHWP-HOST-SELF-ATTEST-001-G15",
+  "completed": true,
+  "execution_authority_source": "authorizations/SHWP-HOST-SELF-ATTEST-001.json#AUTH-SHWP-HOST-SELF-ATTEST-001",
+  "fencing_token": 15,
+  "goal_id": "SHWP-HOST-SELF-ATTEST-001",
+  "heartbeat_epoch": 9,
+  "provider_is_heartbeat_timing_authority": false,
+  "provider_or_host_liveness_grants_execution_authority": false,
+  "schema": "stegverse.host-runtime-self-attestation/v0.1",
+  "task_id": "SHWP-HOST-SELF-ATTEST-001",
+  "transition_id": "HOST_RUNTIME_SELF_ATTESTED",
+  "transition_sequence": 1,
+  "worker_id": "master-records-host-self-attest-worker",
+  "worker_instance_id": "master-records-host-self-attest-worker-HB9-G15"
+}

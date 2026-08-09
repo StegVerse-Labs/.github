@@ -1,5 +1,5 @@
 {
-  "generation": 13,
+  "generation": 15,
   "schema": "stegverse.heartbeat-worker-registry/v0.1",
   "tasks": [
     {
@@ -103,41 +103,76 @@
       "worker_instance_id": null
     },
     {
-      "archive_eligible": false,
-      "archive_reason_codes": [
-        "HOST_RUNTIME_SELF_ATTESTATION_PENDING",
-        "SUCCESSOR_PARENT_EVIDENCE_MISSING"
-      ],
+      "archive_eligible": true,
+      "archive_reason_codes": [],
+      "authorized_policy_version": "shwp-single-hb-v0.2",
       "block_ref": null,
       "claim_id": null,
-      "cost_basis_ref": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/host-self-attest.json",
       "evidence_refs": [
         "StegVerse-Labs/.github#12",
         "authorizations/SHWP-HOST-SELF-ATTEST-001.json",
         "handoffs/SHWP-HOST-SELF-ATTEST-001.json",
         "workers/host_runtime_self_attest.py",
-        "master-records/monitoring#2"
+        "master-records/monitoring#2",
+        "master-records:monitoring#2:SHWP-HOST-SELF-ATTEST-001",
+        "receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json",
+        "receipts/worker-mutation-scope/SHWP-HOST-SELF-ATTEST-001-HB9-G15-7ee35e01dc067a0a.json",
+        "checkpoints/workers/SHWP-HOST-SELF-ATTEST-001/HB9-G15.json"
       ],
-      "executor_binding": "AUTHORIZED",
+      "executor_binding": "UNBOUND",
       "external_entity_job_ref": null,
       "goal_id": "SHWP-HOST-SELF-ATTEST-001",
       "handoff_ref": "handoffs/SHWP-HOST-SELF-ATTEST-001.json",
-      "heartbeat_timing": null,
-      "last_checkpoint_ref": "authorizations/SHWP-HOST-SELF-ATTEST-001.json",
+      "heartbeat_timing": {
+        "current_transition": "HOST_RUNTIME_SELF_ATTESTED",
+        "expected_next_earliest_epoch": null,
+        "expected_next_latest_epoch": null,
+        "expected_next_transition": null,
+        "expiry_basis": "TASK_CLASS_COST_BASIS",
+        "expiry_epoch": 13,
+        "fencing_token": 15,
+        "last_response_epoch": 9,
+        "last_transition_epoch": 9,
+        "max_missing_response_beats": 2,
+        "renewal_count": 0,
+        "start_epoch": 9,
+        "transition_sequence": 1
+      },
+      "last_checkpoint_ref": "checkpoints/workers/SHWP-HOST-SELF-ATTEST-001/HB9-G15.json",
       "lease": null,
-      "state": "QUARANTINED",
+      "resource_budget": {
+        "actions_used": 1,
+        "allowed_services": [],
+        "external_cost_ceiling_usd": 0.0,
+        "external_cost_usd": 0.0,
+        "max_actions": 1,
+        "max_retries": 0,
+        "rate_class": "bounded_local",
+        "renewal_count": 0,
+        "retries_used": 0,
+        "runtime_window_beats": 8
+      },
+      "state": "COMPLETED",
       "task_id": "SHWP-HOST-SELF-ATTEST-001",
+      "transition_history": [
+        {
+          "heartbeat_epoch": 9,
+          "response_state": "COMPLETED",
+          "transition_id": "HOST_RUNTIME_SELF_ATTESTED",
+          "transition_sequence": 1
+        }
+      ],
       "worker_id": null,
       "worker_instance_id": null
     },
     {
       "archive_eligible": false,
       "archive_reason_codes": [
-        "PROVIDER_BUILD_PIPELINE_CAPACITY",
-        "HOST_DEPLOYMENT_PENDING",
-        "RESTART_CONTINUITY_PROOF_PENDING"
+        "CONTINUOUS_CARRIER_NOT_ACTIVE",
+        "EXPIRY_BASIS_UNAVAILABLE"
       ],
-      "block_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#block",
+      "block_ref": null,
       "claim_id": null,
       "cost_basis_ref": null,
       "evidence_refs": [
@@ -151,13 +186,13 @@
         "Render deploy dep-d9s1987avr4c73a8rkeg:BUILD_FAILED_PROVIDER_QUOTA"
       ],
       "executor_binding": "AUTHORIZED",
-      "external_entity_job_ref": "render:srv-d9s197vavr4c73a8rjjg",
+      "external_entity_job_ref": null,
       "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
       "handoff_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
       "heartbeat_timing": null,
       "last_checkpoint_ref": "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_RECEIPT.json",
       "lease": null,
-      "state": "BLOCKED",
+      "state": "HANDOFF_READY",
       "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
       "worker_id": null,
       "worker_instance_id": null
@@ -179,7 +214,9 @@
         "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB7-G13-26b4e97f6358b798.json",
         "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB7-G13.json",
         "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB8-G13-f437123e3cecf5dd.json",
-        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB8-G13.json"
+        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB8-G13.json",
+        "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB9-G13-9cb579d52485c68b.json",
+        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB9-G13.json"
       ],
       "executor_binding": "BOUND",
       "external_entity_job_ref": "cloudflare:stegverse-steggate-rendezvous",
@@ -187,23 +224,23 @@
       "handoff_ref": "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
       "heartbeat_timing": {
         "current_transition": "CREDENTIAL_VALUES_ABSENT",
-        "expected_next_earliest_epoch": 9,
-        "expected_next_latest_epoch": 40,
+        "expected_next_earliest_epoch": 10,
+        "expected_next_latest_epoch": 41,
         "expected_next_transition": "CREDENTIAL_RECHECK",
         "expiry_basis": "TASK_CLASS_COST_BASIS",
         "expiry_epoch": 71,
         "fencing_token": 13,
-        "last_response_epoch": 8,
+        "last_response_epoch": 9,
         "last_transition_epoch": 7,
         "max_missing_response_beats": 3,
         "renewal_count": 0,
         "start_epoch": 7,
         "transition_sequence": 1
       },
-      "last_checkpoint_ref": "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB8-G13.json",
+      "last_checkpoint_ref": "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB9-G13.json",
       "lease": null,
       "resource_budget": {
-        "actions_used": 2,
+        "actions_used": 3,
         "allowed_services": [
           "api.cloudflare.com",
           "stegverse.org",
@@ -232,13 +269,19 @@
           "response_state": "BLOCKED",
           "transition_id": "CREDENTIAL_VALUES_ABSENT",
           "transition_sequence": 1
+        },
+        {
+          "heartbeat_epoch": 9,
+          "response_state": "BLOCKED",
+          "transition_id": "CREDENTIAL_VALUES_ABSENT",
+          "transition_sequence": 1
         }
       ],
       "worker_id": "steggate-rendezvous-deployment-worker",
       "worker_instance_id": "steggate-rendezvous-deployment-worker-HB7-G13"
     }
   ],
-  "updated_at": "2026-08-09T17:08:14Z",
+  "updated_at": "2026-08-09T17:08:56Z",
   "workers": [
     {
       "adapter_ref": null,
@@ -276,7 +319,7 @@
       ],
       "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
       "executor_type": "repository_worker",
-      "last_seen_at": null,
+      "last_seen_at": "2026-08-09T17:08:56Z",
       "status": "AVAILABLE",
       "worker_id": "master-records-host-self-attest-worker"
     },

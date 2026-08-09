@@ -1,8 +1,8 @@
 {
   "absence_or_delay_is_not_by_itself_continuity_loss": true,
   "authority_effect": "none",
-  "candidate_count": 0,
-  "heartbeat_epoch": 3,
+  "candidate_count": 1,
+  "heartbeat_epoch": 9,
   "heartbeat_is_single_common_timing_frame": true,
   "observations": [
     {
@@ -15,7 +15,7 @@
       "expected_next_transition": null,
       "expiry_epoch": null,
       "goal_id": "STEGGATE-AUDITKIT-001",
-      "heartbeat_epoch": 3,
+      "heartbeat_epoch": 9,
       "last_response_epoch": null,
       "last_transition_epoch": null,
       "reason_codes": [
@@ -35,7 +35,7 @@
       "expected_next_transition": null,
       "expiry_epoch": null,
       "goal_id": "STEGGATE-FIRST-BOUNDARY-001",
-      "heartbeat_epoch": 3,
+      "heartbeat_epoch": 9,
       "last_response_epoch": null,
       "last_transition_epoch": null,
       "reason_codes": [
@@ -47,21 +47,43 @@
     },
     {
       "continuity_lost": false,
-      "continuity_status": "OBSERVATION_ONLY",
+      "continuity_status": "RECONCILIATION_REQUIRED",
       "cost_basis_ref": "cost-basis/worker-runtime/native-process-canary.json",
       "current_transition": "CANARY_COMPLETE",
-      "delta_hb_since_response": 0,
-      "delta_hb_since_transition": 0,
+      "delta_hb_since_response": 6,
+      "delta_hb_since_transition": 6,
       "expected_next_transition": null,
       "expiry_epoch": 6,
       "goal_id": "SHWP-NATIVE-PROCESS-CANARY-001",
-      "heartbeat_epoch": 3,
+      "heartbeat_epoch": 9,
       "last_response_epoch": 3,
       "last_transition_epoch": 3,
-      "reason_codes": [],
+      "reason_codes": [
+        "WORKER_RESPONSE_BEYOND_EXPECTED_HB_WINDOW",
+        "KNOWN_WORKER_EXPIRY_REACHED",
+        "MASTER_RECORDS_FINAL_WORKER_REPORT_MISSING"
+      ],
       "state": "COMPLETED",
       "task_id": "SHWP-NATIVE-PROCESS-CANARY-001",
       "transition_sequence": 2
+    },
+    {
+      "continuity_lost": false,
+      "continuity_status": "OBSERVATION_ONLY",
+      "cost_basis_ref": "cost-basis/worker-runtime/host-self-attest.json",
+      "current_transition": "HOST_RUNTIME_SELF_ATTESTED",
+      "delta_hb_since_response": 0,
+      "delta_hb_since_transition": 0,
+      "expected_next_transition": null,
+      "expiry_epoch": 13,
+      "goal_id": "SHWP-HOST-SELF-ATTEST-001",
+      "heartbeat_epoch": 9,
+      "last_response_epoch": 9,
+      "last_transition_epoch": 9,
+      "reason_codes": [],
+      "state": "COMPLETED",
+      "task_id": "SHWP-HOST-SELF-ATTEST-001",
+      "transition_sequence": 1
     },
     {
       "continuity_lost": false,
@@ -73,17 +95,52 @@
       "expected_next_transition": null,
       "expiry_epoch": null,
       "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-      "heartbeat_epoch": 3,
+      "heartbeat_epoch": 9,
       "last_response_epoch": null,
       "last_transition_epoch": null,
       "reason_codes": [
         "HB_RELATIVE_TIMING_NOT_YET_RECORDED"
       ],
-      "state": "BLOCKED",
+      "state": "HANDOFF_READY",
       "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
       "transition_sequence": null
+    },
+    {
+      "continuity_lost": false,
+      "continuity_status": "OBSERVATION_ONLY",
+      "cost_basis_ref": "cost-basis/worker-runtime/steggate-rendezvous-deployment.json",
+      "current_transition": "CREDENTIAL_VALUES_ABSENT",
+      "delta_hb_since_response": 0,
+      "delta_hb_since_transition": 2,
+      "expected_next_transition": "CREDENTIAL_RECHECK",
+      "expiry_epoch": 71,
+      "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
+      "heartbeat_epoch": 9,
+      "last_response_epoch": 9,
+      "last_transition_epoch": 7,
+      "reason_codes": [],
+      "state": "BLOCKED",
+      "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+      "transition_sequence": 1
     }
   ],
-  "registry_task_candidates": [],
+  "registry_task_candidates": [
+    {
+      "candidate_id": "RECOVER-SHWP-NATIVE-PROCESS-CANARY-001-HB9",
+      "created_from_heartbeat_epoch": 9,
+      "execution_authority": false,
+      "goal_id": "SHWP-NATIVE-PROCESS-CANARY-001",
+      "last_checkpoint_ref": "master-records/orchestration@01ae3ab22476c9ca0d5aa79265f56cb3ee18df3a:custody/worker-lifecycle/SHWP-CUSTODY-NATIVE-PROCESS-CANARY-001-G6-001.json",
+      "last_known_claim_id": null,
+      "last_known_fencing_token": null,
+      "last_known_worker_id": null,
+      "last_known_worker_instance_id": null,
+      "parent_task_id": "SHWP-NATIVE-PROCESS-CANARY-001",
+      "reason": "KNOWN_EXPIRY_WITHOUT_MASTER_RECORDS_FINAL_WORKER_REPORT",
+      "required_action": "reconcile lifecycle evidence, investigate failure, sandbox-test candidate remediation when needed, and admit only a validated remediation task",
+      "requires_registry_admission": true,
+      "schema": "stegverse.registry-task-candidate/v0.1"
+    }
+  ],
   "schema": "stegverse.heartbeat-continuity-projection/v0.1"
 }
