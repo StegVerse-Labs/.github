@@ -1,5 +1,5 @@
 {
-  "generation": 10,
+  "generation": 11,
   "schema": "stegverse.heartbeat-worker-registry/v0.1",
   "tasks": [
     {
@@ -61,6 +61,31 @@
     },
     {
       "archive_eligible": false,
+      "archive_reason_codes": ["HOST_RUNTIME_SELF_ATTESTATION_PENDING"],
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "StegVerse-Labs/.github#12",
+        "authorizations/SHWP-HOST-SELF-ATTEST-001.json",
+        "handoffs/SHWP-HOST-SELF-ATTEST-001.json",
+        "workers/host_runtime_self_attest.py",
+        "master-records/monitoring#2"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "SHWP-HOST-SELF-ATTEST-001",
+      "handoff_ref": "handoffs/SHWP-HOST-SELF-ATTEST-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "authorizations/SHWP-HOST-SELF-ATTEST-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-HOST-SELF-ATTEST-001",
+      "worker_id": null,
+      "worker_instance_id": null
+    },
+    {
+      "archive_eligible": false,
       "archive_reason_codes": ["PROVIDER_BUILD_PIPELINE_CAPACITY","HOST_DEPLOYMENT_PENDING","RESTART_CONTINUITY_PROOF_PENDING"],
       "block_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#block",
       "claim_id": null,
@@ -88,7 +113,7 @@
       "worker_instance_id": null
     }
   ],
-  "updated_at": "2026-08-09T05:49:30Z",
+  "updated_at": "2026-08-09T09:19:00Z",
   "workers": [
     {
       "adapter_ref": null,
@@ -109,6 +134,16 @@
       "last_seen_at": "2026-08-08T03:27:04Z",
       "status": "AVAILABLE",
       "worker_id": "native-process-canary-worker"
+    },
+    {
+      "adapter_ref": "process:host-runtime-self-attest-v1",
+      "authority_source": "handoffs/SHWP-HOST-SELF-ATTEST-001.json#authority",
+      "capabilities": ["host_runtime_self_attest"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "master-records-host-self-attest-worker"
     }
   ]
 }
