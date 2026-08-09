@@ -6,9 +6,9 @@
     "policy_version": 0,
     "scope": 0
   },
-  "epoch": 9,
+  "epoch": 10,
   "expected_returns": 0,
-  "generation": 9,
+  "generation": 10,
   "issued": [],
   "last_completed_round": {
     "claimant_id": "TASK-2026-0003",
@@ -18,8 +18,8 @@
     "observation": "heartbeats/observations/TASK-2026-0003-1.json",
     "repository": "StegVerse-Labs/StegCore"
   },
-  "last_cycle_at": "2026-08-09T17:08:56Z",
-  "last_issued_at": "2026-08-09T17:08:56Z",
+  "last_cycle_at": "2026-08-09T17:10:32Z",
+  "last_issued_at": "2026-08-09T17:10:32Z",
   "open_warrants": [],
   "ordered_tolerances": {
     "epoch_beats": 2

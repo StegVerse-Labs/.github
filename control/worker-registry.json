@@ -216,7 +216,9 @@
         "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB8-G13-f437123e3cecf5dd.json",
         "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB8-G13.json",
         "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB9-G13-9cb579d52485c68b.json",
-        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB9-G13.json"
+        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB9-G13.json",
+        "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB10-G13-d2fa0582777834c4.json",
+        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB10-G13.json"
       ],
       "executor_binding": "BOUND",
       "external_entity_job_ref": "cloudflare:stegverse-steggate-rendezvous",
@@ -224,23 +226,23 @@
       "handoff_ref": "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
       "heartbeat_timing": {
         "current_transition": "CREDENTIAL_VALUES_ABSENT",
-        "expected_next_earliest_epoch": 10,
-        "expected_next_latest_epoch": 41,
+        "expected_next_earliest_epoch": 11,
+        "expected_next_latest_epoch": 42,
         "expected_next_transition": "CREDENTIAL_RECHECK",
         "expiry_basis": "TASK_CLASS_COST_BASIS",
         "expiry_epoch": 71,
         "fencing_token": 13,
-        "last_response_epoch": 9,
+        "last_response_epoch": 10,
         "last_transition_epoch": 7,
         "max_missing_response_beats": 3,
         "renewal_count": 0,
         "start_epoch": 7,
         "transition_sequence": 1
       },
-      "last_checkpoint_ref": "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB9-G13.json",
+      "last_checkpoint_ref": "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB10-G13.json",
       "lease": null,
       "resource_budget": {
-        "actions_used": 3,
+        "actions_used": 4,
         "allowed_services": [
           "api.cloudflare.com",
           "stegverse.org",
@@ -275,13 +277,19 @@
           "response_state": "BLOCKED",
           "transition_id": "CREDENTIAL_VALUES_ABSENT",
           "transition_sequence": 1
+        },
+        {
+          "heartbeat_epoch": 10,
+          "response_state": "BLOCKED",
+          "transition_id": "CREDENTIAL_VALUES_ABSENT",
+          "transition_sequence": 1
         }
       ],
       "worker_id": "steggate-rendezvous-deployment-worker",
       "worker_instance_id": "steggate-rendezvous-deployment-worker-HB7-G13"
     }
   ],
-  "updated_at": "2026-08-09T17:08:56Z",
+  "updated_at": "2026-08-09T17:10:32Z",
   "workers": [
     {
       "adapter_ref": null,
