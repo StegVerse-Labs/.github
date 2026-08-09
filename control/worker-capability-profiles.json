@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.worker-capability-profiles/v0.1",
-  "generation": 2,
+  "generation": 3,
   "profiles": [
     {
       "profile_id": "deterministic-workflow-v1",
@@ -56,6 +56,21 @@
       "availability_grants_authority": false,
       "capability_match_grants_authority": false,
       "notes": ["Observer profiles cannot be selected for mutation or deployment capabilities."]
+    },
+    {
+      "profile_id": "sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "effect_class": "sovereign_runtime_activation",
+      "allowed_capabilities": ["runtime_observation", "continuous_process_execution", "durable_state_reconstruction", "bounded_repository_mutation"],
+      "mutation_allowed": true,
+      "deployment_allowed": true,
+      "availability_grants_authority": false,
+      "capability_match_grants_authority": false,
+      "notes": [
+        "This profile may only execute under an admitted sovereign-runtime HANDOFF and current heartbeat fence.",
+        "Third-party provider availability never grants authority or satisfies sovereign activation.",
+        "Mutation is limited to the admitted sovereign-runtime receipt namespace unless a separate deployment authority is present."
+      ]
     }
   ]
 }
