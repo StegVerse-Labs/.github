@@ -1,0 +1,83 @@
+{
+  "authority_source": "StegVerse-org/LLM-adapter#18 + StegVerse-002/micro-node-runtime#16",
+  "checkpoint_id": "CP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB21-G20",
+  "checkpoint_sha256": "2fafafec1e84b9bbf706f8252d8680b4d5c4090b98893f2f2da8f963722b893a",
+  "claim_id": "SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G20",
+  "completed_transitions": [
+    {
+      "heartbeat_epoch": 17,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 18,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 19,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_INFERENCE_SOLUTION_REQUIRED",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 20,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_INFERENCE_SOLUTION_REQUIRED",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 21,
+      "response_state": "BLOCKED",
+      "transition_id": "SOVEREIGN_INFERENCE_SOLUTION_REQUIRED",
+      "transition_sequence": 1
+    }
+  ],
+  "current_state": "BLOCKED",
+  "evidence_refs": [
+    "StegVerse-Labs/.github#60",
+    "StegVerse-org/LLM-adapter#18",
+    "workers/ecosystem_chat_sovereign_inference_worker.py",
+    "receipts/ecosystem-chat-sovereign-inference/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB17-G20-d6651cb918f3fdb2.json",
+    "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB17-G20.json",
+    "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB18-G20-bbd537715494e83c.json",
+    "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB18-G20.json",
+    "control/blocker-resolution-policy.json",
+    "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB19-G20-1d14c8d888f68810.json",
+    "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB19-G20.json",
+    "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB20-G20-f9c0a2eec5c3a54a.json",
+    "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB20-G20.json",
+    "receipts/worker-mutation-scope/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-HB21-G20-b77f4edafcc16a3a.json"
+  ],
+  "execution_authority": false,
+  "fencing_token": 20,
+  "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
+  "handoff_ref": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+  "handoff_sha256": "8c1a2351bc670676ab92f50b2e55635c8876d9b16f3563df16129457ef0848c7",
+  "heartbeat_epoch": 21,
+  "next_authorized_action": "Select an executable StegVerse-local model/runtime combination and activate it. If the preferred model cannot run on available sovereign hardware, choose a smaller compatible local model or another StegVerse-owned/federated node rather than using hosted inference as a blocker or required dependency.",
+  "policy_version": "shwp-single-hb-v0.3-sovereign",
+  "resource_budget": {
+    "actions_used": 5,
+    "allowed_services": [],
+    "external_cost_ceiling_usd": 0.0,
+    "external_cost_usd": 0.0,
+    "max_actions": 64,
+    "max_retries": 4096,
+    "rate_class": "ecosystem_chat_sovereign_inference",
+    "renewal_count": 0,
+    "retries_used": 0,
+    "runtime_window_beats": 4096
+  },
+  "schema": "stegverse.worker-checkpoint/v0.1",
+  "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "unresolved_work": [
+    "Select an executable StegVerse-local model/runtime combination and activate it. If the preferred model cannot run on available sovereign hardware, choose a smaller compatible local model or another StegVerse-owned/federated node rather than using hosted inference as a blocker or required dependency."
+  ],
+  "worker_checkpoint_ref": "receipts/ecosystem-chat-sovereign-inference/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+  "worker_id": "ecosystem-chat-sovereign-inference-worker",
+  "worker_instance_id": "ecosystem-chat-sovereign-inference-worker-HB17-G20"
+}

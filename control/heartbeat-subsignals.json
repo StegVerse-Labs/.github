@@ -1,5 +1,5 @@
 {
-  "generation": 14,
+  "generation": 15,
   "schema": "stegverse.heartbeat-subsignals/v1",
   "subsignals": {
     "organization_federation": {
@@ -60,7 +60,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 267,
           "lease_start_cycle": 11,
-          "remaining_cycles": 247,
+          "remaining_cycles": 246,
           "task_id": "SHWP-ALL-ORG-FEDERATION-001",
           "task_state": "BLOCKED",
           "wall_clock_expiry_authority": false,
@@ -78,7 +78,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 4111,
           "lease_start_cycle": 15,
-          "remaining_cycles": 4091,
+          "remaining_cycles": 4090,
           "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
           "task_state": "BLOCKED",
           "wall_clock_expiry_authority": false,
@@ -96,7 +96,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 4113,
           "lease_start_cycle": 17,
-          "remaining_cycles": 4093,
+          "remaining_cycles": 4092,
           "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
           "task_state": "BLOCKED",
           "wall_clock_expiry_authority": false,
@@ -114,7 +114,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 71,
           "lease_start_cycle": 7,
-          "remaining_cycles": 51,
+          "remaining_cycles": 50,
           "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
           "task_state": "ACTIVE",
           "wall_clock_expiry_authority": false,
@@ -125,7 +125,7 @@
       "authority_effect": false,
       "carrier": "single_stegverse_heartbeat",
       "carrier_cycle_unit": "heartbeat_cycle",
-      "carrier_epoch": 20,
+      "carrier_epoch": 21,
       "kind": "worker_coordination",
       "master_records_projection": {
         "authority_effect": false,
