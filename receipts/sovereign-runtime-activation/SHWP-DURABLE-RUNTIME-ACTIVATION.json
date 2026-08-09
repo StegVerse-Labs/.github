@@ -1,0 +1,36 @@
+{
+  "authority_effect": "none_beyond_admitted_receipt_namespace",
+  "claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+  "completed": false,
+  "evidence_path": null,
+  "fencing_token": 18,
+  "heartbeat_epoch": 15,
+  "missing_predicates": [
+    "runtime_materialized",
+    "native_service_active",
+    "continuous_runtime_live",
+    "heartbeat_epoch_advanced",
+    "worker_coordination_checkpoint_observed",
+    "controlled_restart_observed",
+    "epoch_and_generation_non_regressing",
+    "no_duplicate_claim_or_fence",
+    "state_reconstruction_pass"
+  ],
+  "required_predicates": [
+    "runtime_materialized",
+    "native_service_active",
+    "continuous_runtime_live",
+    "heartbeat_epoch_advanced",
+    "worker_coordination_checkpoint_observed",
+    "controlled_restart_observed",
+    "epoch_and_generation_non_regressing",
+    "no_duplicate_claim_or_fence",
+    "state_reconstruction_pass"
+  ],
+  "schema": "stegverse.sovereign-runtime-worker-receipt/v0.1",
+  "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "third_party_runtime_required": false,
+  "transition_id": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
+  "worker_id": "sovereign-runtime-activation-worker",
+  "worker_instance_id": "sovereign-runtime-activation-worker-HB15-G18"
+}

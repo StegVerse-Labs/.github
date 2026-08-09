@@ -1,5 +1,5 @@
 {
-  "generation": 17,
+  "generation": 18,
   "schema": "stegverse.heartbeat-worker-registry/v0.1",
   "tasks": [
     {
@@ -168,34 +168,72 @@
     },
     {
       "archive_eligible": false,
-      "archive_reason_codes": [
-        "CONTINUOUS_CARRIER_NOT_ACTIVE",
-        "EXPIRY_BASIS_UNAVAILABLE"
-      ],
+      "archive_reason_codes": [],
+      "authorized_policy_version": "shwp-single-hb-v0.3-sovereign",
       "block_ref": null,
-      "claim_id": null,
-      "cost_basis_ref": null,
+      "claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+      "cost_basis_ref": "cost-basis/worker-runtime/sovereign-runtime-activation.json",
       "evidence_refs": [
+        "Render Key Value red-d9s17pnavr4c73a8p2ng:available",
+        "Render deploy dep-d9s1987avr4c73a8rkeg:BUILD_FAILED_PROVIDER_QUOTA",
+        "Render service srv-d9s197vavr4c73a8rjjg:created",
         "StegVerse-Labs/.github#12",
+        "StegVerse-Labs/.github#59",
         "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json:RESOLVED",
+        "cost-basis/worker-runtime/sovereign-runtime-activation.json",
+        "master-records/monitoring/MONITORING_MIRROR_HANDOFF.md",
         "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_AUTH.json",
         "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_RECEIPT.json",
-        "master-records/monitoring/MONITORING_MIRROR_HANDOFF.md",
-        "Render Key Value red-d9s17pnavr4c73a8p2ng:available",
-        "Render service srv-d9s197vavr4c73a8rjjg:created",
-        "Render deploy dep-d9s1987avr4c73a8rkeg:BUILD_FAILED_PROVIDER_QUOTA"
+        "workers/sovereign_runtime_activation_worker.py",
+        "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+        "receipts/worker-mutation-scope/SHWP-DURABLE-RUNTIME-ACTIVATION-HB15-G18-4f6ab23d1cd860ec.json",
+        "checkpoints/workers/SHWP-DURABLE-RUNTIME-ACTIVATION/HB15-G18.json"
       ],
-      "executor_binding": "AUTHORIZED",
+      "executor_binding": "BOUND",
       "external_entity_job_ref": null,
       "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
       "handoff_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
-      "heartbeat_timing": null,
-      "last_checkpoint_ref": "master-records/orchestration/deployments/SHWP_HEARTBEAT_HOST_DEPLOYMENT_RECEIPT.json",
+      "heartbeat_timing": {
+        "current_transition": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
+        "expected_next_earliest_epoch": 16,
+        "expected_next_latest_epoch": 16,
+        "expected_next_transition": "SOVEREIGN_RUNTIME_RECHECK",
+        "expiry_basis": "TASK_CLASS_COST_BASIS",
+        "expiry_epoch": 4111,
+        "fencing_token": 18,
+        "last_response_epoch": 15,
+        "last_transition_epoch": 15,
+        "max_missing_response_beats": 3,
+        "renewal_count": 0,
+        "start_epoch": 15,
+        "transition_sequence": 1
+      },
+      "last_checkpoint_ref": "checkpoints/workers/SHWP-DURABLE-RUNTIME-ACTIVATION/HB15-G18.json",
       "lease": null,
-      "state": "HANDOFF_READY",
+      "resource_budget": {
+        "actions_used": 1,
+        "allowed_services": [],
+        "external_cost_ceiling_usd": 0.0,
+        "external_cost_usd": 0.0,
+        "max_actions": 100,
+        "max_retries": 4096,
+        "rate_class": "sovereign_runtime_activation",
+        "renewal_count": 0,
+        "retries_used": 0,
+        "runtime_window_beats": 4096
+      },
+      "state": "BLOCKED",
       "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-      "worker_id": null,
-      "worker_instance_id": null
+      "transition_history": [
+        {
+          "heartbeat_epoch": 15,
+          "response_state": "BLOCKED",
+          "transition_id": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
+          "transition_sequence": 1
+        }
+      ],
+      "worker_id": "sovereign-runtime-activation-worker",
+      "worker_instance_id": "sovereign-runtime-activation-worker-HB15-G18"
     },
     {
       "archive_eligible": false,
@@ -226,7 +264,9 @@
         "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB13-G13-daf76e9cf4b1913a.json",
         "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB13-G13.json",
         "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB14-G13-69f4170dead51aef.json",
-        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB14-G13.json"
+        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB14-G13.json",
+        "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB15-G13-42c2c7503be2d48b.json",
+        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB15-G13.json"
       ],
       "executor_binding": "BOUND",
       "external_entity_job_ref": "cloudflare:stegverse-steggate-rendezvous",
@@ -234,23 +274,23 @@
       "handoff_ref": "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
       "heartbeat_timing": {
         "current_transition": "CREDENTIAL_VALUES_ABSENT",
-        "expected_next_earliest_epoch": 15,
-        "expected_next_latest_epoch": 46,
+        "expected_next_earliest_epoch": 16,
+        "expected_next_latest_epoch": 47,
         "expected_next_transition": "CREDENTIAL_RECHECK",
         "expiry_basis": "TASK_CLASS_COST_BASIS",
         "expiry_epoch": 71,
         "fencing_token": 13,
-        "last_response_epoch": 14,
+        "last_response_epoch": 15,
         "last_transition_epoch": 7,
         "max_missing_response_beats": 3,
         "renewal_count": 0,
         "start_epoch": 7,
         "transition_sequence": 1
       },
-      "last_checkpoint_ref": "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB14-G13.json",
+      "last_checkpoint_ref": "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB15-G13.json",
       "lease": null,
       "resource_budget": {
-        "actions_used": 8,
+        "actions_used": 9,
         "allowed_services": [
           "api.cloudflare.com",
           "stegverse.org",
@@ -315,6 +355,12 @@
           "response_state": "BLOCKED",
           "transition_id": "CREDENTIAL_VALUES_ABSENT",
           "transition_sequence": 1
+        },
+        {
+          "heartbeat_epoch": 15,
+          "response_state": "BLOCKED",
+          "transition_id": "CREDENTIAL_VALUES_ABSENT",
+          "transition_sequence": 1
         }
       ],
       "worker_id": "steggate-rendezvous-deployment-worker",
@@ -342,7 +388,9 @@
         "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB13-G17-06e7603206093d0c.json",
         "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB13-G17.json",
         "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB14-G17-74122594f9d4e33d.json",
-        "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB14-G17.json"
+        "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB14-G17.json",
+        "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB15-G17-23081f45d54f1c5e.json",
+        "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB15-G17.json"
       ],
       "executor_binding": "BOUND",
       "external_entity_job_ref": null,
@@ -350,23 +398,23 @@
       "handoff_ref": "handoffs/SHWP-ALL-ORG-FEDERATION-001.json",
       "heartbeat_timing": {
         "current_transition": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
-        "expected_next_earliest_epoch": 15,
-        "expected_next_latest_epoch": 15,
+        "expected_next_earliest_epoch": 16,
+        "expected_next_latest_epoch": 16,
         "expected_next_transition": "FEDERATION_RECHECK",
         "expiry_basis": "TASK_CLASS_COST_BASIS",
         "expiry_epoch": 267,
         "fencing_token": 17,
-        "last_response_epoch": 14,
+        "last_response_epoch": 15,
         "last_transition_epoch": 11,
         "max_missing_response_beats": 3,
         "renewal_count": 0,
         "start_epoch": 11,
-        "transition_sequence": 4
+        "transition_sequence": 5
       },
-      "last_checkpoint_ref": "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB14-G17.json",
+      "last_checkpoint_ref": "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB15-G17.json",
       "lease": null,
       "resource_budget": {
-        "actions_used": 4,
+        "actions_used": 5,
         "allowed_services": [],
         "external_cost_ceiling_usd": 0.0,
         "external_cost_usd": 0.0,
@@ -403,13 +451,19 @@
           "response_state": "BLOCKED",
           "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
           "transition_sequence": 4
+        },
+        {
+          "heartbeat_epoch": 15,
+          "response_state": "BLOCKED",
+          "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+          "transition_sequence": 5
         }
       ],
       "worker_id": "organization-federation-readiness-worker",
       "worker_instance_id": "organization-federation-readiness-worker-HB11-G17"
     }
   ],
-  "updated_at": "2026-08-09T19:00:55Z",
+  "updated_at": "2026-08-09T19:58:15Z",
   "workers": [
     {
       "adapter_ref": null,
@@ -475,6 +529,21 @@
       "last_seen_at": "2026-08-09T17:53:12Z",
       "status": "BUSY",
       "worker_id": "organization-federation-readiness-worker"
+    },
+    {
+      "adapter_ref": "process:sovereign-runtime-activation-v1",
+      "authority_source": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "continuous_process_execution",
+        "durable_state_reconstruction",
+        "bounded_repository_mutation"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": "2026-08-09T19:58:16Z",
+      "status": "BUSY",
+      "worker_id": "sovereign-runtime-activation-worker"
     }
   ]
 }

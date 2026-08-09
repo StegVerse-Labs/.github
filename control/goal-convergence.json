@@ -20,15 +20,16 @@
       "converged": false,
       "custody_reconstruction_complete": true,
       "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-      "no_active_claims": true,
+      "no_active_claims": false,
       "no_authorized_remaining_action": false,
       "no_unresolved_descendants": true,
       "reason_codes": [
         "ROOT_SUCCESS_PREDICATES_NOT_SATISFIED",
+        "ACTIVE_CLAIMS_REMAIN",
         "AUTHORIZED_REMAINING_ACTION"
       ],
       "root_task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-      "state": "HANDOFF_READY",
+      "state": "BLOCKED",
       "success_predicates_satisfied": false
     },
     {
@@ -76,5 +77,5 @@
     }
   ],
   "schema": "stegverse.goal-convergence/v0.1",
-  "source_registry_generation": 17
+  "source_registry_generation": 18
 }
