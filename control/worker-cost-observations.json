@@ -1,5 +1,5 @@
 {
-  "generation": 2,
+  "generation": 3,
   "records": [
     {
       "cost": {
@@ -32,6 +32,22 @@
       "transition_id": "CANARY_COMPLETE",
       "transition_sequence": 2,
       "worker_id": "native-process-canary-worker"
+    },
+    {
+      "cost": {
+        "compute_units": 1,
+        "external_cost_usd": 0,
+        "hb_transition_count": 1,
+        "task_class": "steggate_stable_rendezvous"
+      },
+      "external_entity_job_ref": "cloudflare:stegverse-steggate-rendezvous",
+      "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
+      "heartbeat_epoch": 7,
+      "schema": "stegverse.worker-cost-observation/v0.1",
+      "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+      "transition_id": "CREDENTIAL_VALUES_ABSENT",
+      "transition_sequence": 1,
+      "worker_id": "steggate-rendezvous-deployment-worker"
     }
   ],
   "schema": "stegverse.worker-cost-observation-log/v0.1"

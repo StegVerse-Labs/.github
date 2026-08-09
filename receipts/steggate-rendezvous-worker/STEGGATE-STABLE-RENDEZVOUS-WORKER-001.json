@@ -1,0 +1,17 @@
+{
+  "authority_effect": "bounded_rendezvous_deployment_only",
+  "claim_id": "SHWP-STEGGATE-STABLE-RENDEZVOUS-WORKER-001-G13",
+  "credentials_recorded": false,
+  "fencing_token": 13,
+  "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
+  "heartbeat_epoch": 7,
+  "next_action": "Re-evaluate credential presence on the next admitted heartbeat.",
+  "release_condition": "CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID are both present in the authorized heartbeat execution environment.",
+  "schema": "stegverse.steggate-rendezvous-worker-receipt/v0.1",
+  "stable_origin": "https://stegverse.org/api/steggate",
+  "state": "BLOCKED",
+  "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+  "transition": "CREDENTIAL_VALUES_ABSENT",
+  "worker_id": "steggate-rendezvous-deployment-worker",
+  "worker_instance_id": "steggate-rendezvous-deployment-worker-HB7-G13"
+}

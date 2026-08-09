@@ -1,5 +1,5 @@
 {
-  "generation": 12,
+  "generation": 13,
   "schema": "stegverse.heartbeat-worker-registry/v0.1",
   "tasks": [
     {
@@ -164,35 +164,73 @@
     },
     {
       "archive_eligible": false,
-      "archive_reason_codes": [
-        "CREDENTIAL_VALUES_ABSENT",
-        "EXPIRY_BASIS_UNAVAILABLE",
-        "HEARTBEAT_ACTIVATION_REQUIRED"
-      ],
-      "block_ref": "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json#block",
-      "claim_id": null,
-      "cost_basis_ref": null,
+      "archive_reason_codes": [],
+      "authorized_policy_version": "shwp-single-hb-v0.2",
+      "block_ref": null,
+      "claim_id": "SHWP-STEGGATE-STABLE-RENDEZVOUS-WORKER-001-G13",
+      "cost_basis_ref": "cost-basis/worker-runtime/steggate-rendezvous-deployment.json",
       "evidence_refs": [
         "StegVerse-Labs/Site#24",
         "StegVerse-Labs/Site:StegGate Rendezvous Deploy run 31316924782 job 93253575487:FAIL_CLOSED_CREDENTIAL_ABSENT",
         "StegVerse-Labs/Site:artifact 9039012210 sha256:3976a14ec571e01ad745da66d9579f7adae0ba1d0c3527bdef42e0295b012055",
         "authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
-        "workers/steggate_rendezvous_deployment_worker.py"
+        "workers/steggate_rendezvous_deployment_worker.py",
+        "receipts/steggate-rendezvous-worker/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+        "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB7-G13-26b4e97f6358b798.json",
+        "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB7-G13.json"
       ],
-      "executor_binding": "AUTHORIZED",
+      "executor_binding": "BOUND",
       "external_entity_job_ref": "cloudflare:stegverse-steggate-rendezvous",
       "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
       "handoff_ref": "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
-      "heartbeat_timing": null,
-      "last_checkpoint_ref": "StegVerse-Labs/Site/data/steggate-rendezvous-activation.json",
+      "heartbeat_timing": {
+        "current_transition": "CREDENTIAL_VALUES_ABSENT",
+        "expected_next_earliest_epoch": 8,
+        "expected_next_latest_epoch": 39,
+        "expected_next_transition": "CREDENTIAL_RECHECK",
+        "expiry_basis": "TASK_CLASS_COST_BASIS",
+        "expiry_epoch": 71,
+        "fencing_token": 13,
+        "last_response_epoch": 7,
+        "last_transition_epoch": 7,
+        "max_missing_response_beats": 3,
+        "renewal_count": 0,
+        "start_epoch": 7,
+        "transition_sequence": 1
+      },
+      "last_checkpoint_ref": "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB7-G13.json",
       "lease": null,
-      "state": "HANDOFF_READY",
+      "resource_budget": {
+        "actions_used": 1,
+        "allowed_services": [
+          "api.cloudflare.com",
+          "stegverse.org",
+          "raw.githubusercontent.com"
+        ],
+        "external_cost_ceiling_usd": 0.0,
+        "external_cost_usd": 0.0,
+        "max_actions": 64,
+        "max_retries": 32,
+        "rate_class": "heartbeat_bounded_deployment",
+        "renewal_count": 0,
+        "retries_used": 0,
+        "runtime_window_beats": 64
+      },
+      "state": "BLOCKED",
       "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
-      "worker_id": null,
-      "worker_instance_id": null
+      "transition_history": [
+        {
+          "heartbeat_epoch": 7,
+          "response_state": "BLOCKED",
+          "transition_id": "CREDENTIAL_VALUES_ABSENT",
+          "transition_sequence": 1
+        }
+      ],
+      "worker_id": "steggate-rendezvous-deployment-worker",
+      "worker_instance_id": "steggate-rendezvous-deployment-worker-HB7-G13"
     }
   ],
-  "updated_at": "2026-08-09T17:00:45Z",
+  "updated_at": "2026-08-09T17:03:51Z",
   "workers": [
     {
       "adapter_ref": null,
@@ -243,8 +281,8 @@
       ],
       "capability_profile_ref": "control/worker-capability-profiles.json#deployment-worker-v1",
       "executor_type": "deployment_worker",
-      "last_seen_at": null,
-      "status": "AVAILABLE",
+      "last_seen_at": "2026-08-09T17:03:51Z",
+      "status": "BUSY",
       "worker_id": "steggate-rendezvous-deployment-worker"
     }
   ]
