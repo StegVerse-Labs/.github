@@ -3,93 +3,64 @@
     {
       "adapter_ref": "process:native-receipt-canary-v1",
       "authority_ref": "handoffs/SHWP-NATIVE-PROCESS-CANARY-001.json#authority",
-      "capabilities": [
-        "native_receipt_canary"
-      ],
-      "command": [
-        "python",
-        "workers/heartbeat_receipt_canary.py"
-      ],
+      "capabilities": ["native_receipt_canary"],
+      "command": ["python", "workers/heartbeat_receipt_canary.py"],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [],
-      "notes": [
-        "Host/provider agnostic process adapter; command is configured by control plane, never by task input.",
-        "Mutation is constrained by worker code and handoff to receipts/native-worker-canary/** only.",
-        "This adapter is an executor integration canary, not general repository mutation authority."
-      ],
+      "notes": ["Host/provider agnostic process adapter; command is configured by control plane, never by task input.", "Mutation is constrained by worker code and handoff to receipts/native-worker-canary/** only.", "This adapter is an executor integration canary, not general repository mutation authority."],
       "timeout_seconds": 10,
       "type": "process_json_v0.1"
     },
     {
       "adapter_ref": "process:host-runtime-self-attest-v1",
       "authority_ref": "handoffs/SHWP-HOST-SELF-ATTEST-001.json#authority",
-      "capabilities": [
-        "host_runtime_self_attest"
-      ],
-      "command": [
-        "python",
-        "workers/host_runtime_self_attest.py"
-      ],
+      "capabilities": ["host_runtime_self_attest"],
+      "command": ["python", "workers/host_runtime_self_attest.py"],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [],
-      "notes": [
-        "Executes only after canonical heartbeat checkout under an admitted claim and fence.",
-        "Mutation is constrained to receipts/host-self-attest/**.",
-        "This adapter proves heartbeat-owned worker activation and grants no deployment, network, or general repository authority."
-      ],
+      "notes": ["Executes only after canonical heartbeat checkout under an admitted claim and fence.", "Mutation is constrained to receipts/host-self-attest/**.", "This adapter proves heartbeat-owned worker activation and grants no deployment, network, or general repository authority."],
       "timeout_seconds": 10,
       "type": "process_json_v0.1"
     },
     {
       "adapter_ref": "process:steggate-rendezvous-deployment-v1",
       "authority_ref": "authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
-      "capabilities": [
-        "deployment_update",
-        "runtime_observation"
-      ],
-      "command": [
-        "python",
-        "workers/steggate_rendezvous_deployment_worker.py"
-      ],
+      "capabilities": ["deployment_update", "runtime_observation"],
+      "command": ["python", "workers/steggate_rendezvous_deployment_worker.py"],
       "cwd": ".",
       "enabled": true,
-      "env_allowlist": [
-        "CLOUDFLARE_API_TOKEN",
-        "CLOUDFLARE_ACCOUNT_ID"
-      ],
-      "notes": [
-        "Heartbeat-owned worker for Site#24 stable StegGate rendezvous hardening.",
-        "Missing Cloudflare credential values return BLOCKED and remain heartbeat-visible rather than becoming success.",
-        "Credential values are passed only through the process environment and are never persisted in worker receipts.",
-        "Deployment is restricted to the non-authorizing stegverse-steggate-rendezvous Worker and stegverse.org/api/steggate/* route."
-      ],
+      "env_allowlist": ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"],
+      "notes": ["Heartbeat-owned worker for Site#24 stable StegGate rendezvous hardening.", "Missing Cloudflare credential values return BLOCKED and remain heartbeat-visible rather than becoming success.", "Credential values are passed only through the process environment and are never persisted in worker receipts.", "Deployment is restricted to the non-authorizing stegverse-steggate-rendezvous Worker and stegverse.org/api/steggate/* route."],
       "timeout_seconds": 300,
       "type": "process_json_v0.1"
     },
     {
       "adapter_ref": "process:organization-federation-readiness-v1",
       "authority_ref": "authorizations/SHWP-ALL-ORG-FEDERATION-001.json",
-      "capabilities": [
-        "bounded_repository_mutation"
-      ],
-      "command": [
-        "python",
-        "workers/organization_federation_readiness_worker.py"
-      ],
+      "capabilities": ["bounded_repository_mutation"],
+      "command": ["python", "workers/organization_federation_readiness_worker.py"],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [],
-      "notes": [
-        "Heartbeat-owned deterministic federation readiness worker.",
-        "Writes only receipts/organization-federation/**.",
-        "No cross-organization mutation, deployment, publication, custody or policy authority."
-      ],
+      "notes": ["Heartbeat-owned deterministic federation readiness worker.", "Writes only receipts/organization-federation/**.", "No cross-organization mutation, deployment, publication, custody or policy authority."],
+      "timeout_seconds": 30,
+      "type": "process_json_v0.1"
+    },
+    {
+      "adapter_ref": "process:sovereign-runtime-activation-v1",
+      "authority_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#authority",
+      "capabilities": ["runtime_observation", "continuous_process_execution", "durable_state_reconstruction", "bounded_repository_mutation"],
+      "command": ["python", "workers/sovereign_runtime_activation_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [],
+      "notes": ["Heartbeat-owned sovereign runtime activation worker.", "On non-sovereign hosts it returns BLOCKED with a machine-observable release condition rather than pretending activation.", "On a StegVerse-owned/federated node it verifies the nine direct activation/restart predicates from node-local evidence.", "Writes only receipts/sovereign-runtime-activation/** and requires no third-party deployment, scheduler, process-host, or inference provider."],
       "timeout_seconds": 30,
       "type": "process_json_v0.1"
     }
   ],
-  "generation": 4,
+  "generation": 5,
   "schema": "stegverse.process-worker-adapters/v0.1"
 }
