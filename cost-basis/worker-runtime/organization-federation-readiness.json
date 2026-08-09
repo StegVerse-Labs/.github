@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "organization_federation_readiness",
+  "sample_count": 1,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 4096,
+    "confidence": "MEDIUM"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 65536,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "StegVerse-Labs/Site#234",
+    "control/organization-federation.json",
+    "control/organization-task-registry.json",
+    "workers/organization_federation_readiness_worker.py"
+  ],
+  "notes": [
+    "Federation reconciliation is local deterministic state validation with no external service dependency.",
+    "Blocked organization rows remain heartbeat-visible across a bounded HB-relative window.",
+    "Wall-clock time is not task timing authority and external cost remains zero."
+  ]
+}
