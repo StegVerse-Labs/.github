@@ -2,144 +2,135 @@
 
 ## Authority
 
-This is the canonical StegVerse-Labs organization continuation/exit record. Repository-local `*_MIRROR_HANDOFF.md` files remain authoritative for repository-local implementation evidence. Machine-readable state under `control/`, `handoffs/`, `management/`, `receipts/`, `checkpoints/`, `authorizations/`, and `schemas/` is authoritative over chat history.
+This is the canonical StegVerse-Labs organization continuation/exit record. Repository-local `*_MIRROR_HANDOFF.md` files remain authoritative for repository-local implementation evidence. Machine-readable state under `control/`, `handoffs/`, `management/`, `receipts/`, `checkpoints/`, `authorizations/`, and `schemas/` supersedes chat history.
 
-## Active goal
+## Current goal
 
 ```text
-goal_id: LIVE-WORKER-RUNTIME-ACTIVATION
-originating_goal: unfinished StegVerse work must survive conversation retirement through the single heartbeat and worker task registry
+goal_id: STEGGATE-TUNNEL-LEASE-CONTINUITY
 repository: StegVerse-Labs/.github
 branch: main
 canonical_owner: StegVerse-Labs/.github#12
 single_heartbeat_runtime: heartbeat_runtime.engine_v8.HeartbeatRuntime
+transport_signal: control/heartbeat-subsignals.json#steggate_transport_lease
 render_dependency: false
-activation_completion_rule: live continuous runtime OR documented StegVerse worker actually claimed/executed through heartbeat+registry
-activation_state: SATISFIED_BY_HEARTBEAT_WORKER_EXECUTION
-session_state: MERGED_INTO_CANONICAL_WORKSTREAM
-thread_archive_ready: true
+current_state: LIVE_LEASE_OPEN
+thread_archive_ready: false
 ```
 
-## Canonical correction
+The older `LIVE-WORKER-RUNTIME-ACTIVATION` goal remains complete: documented workers were actually claimed/executed through the heartbeat and worker registry. The current goal is narrower and newer: correct StegGate transport continuity so a heartbeat is the **carrier of lease subsignals**, not the lease lifetime itself.
 
-Persistent Render hosting is **not** a dependency of StegVerse worker activation. The earlier `SHWP-DURABLE-RUNTIME-ACTIVATION` Render path is retained only as optional persistent-host hardening/history. It does not gate the organization activation goal or session archival.
+## Canonical lease correction
 
-The canonical transport decision is recorded in `management/STEGGATE_HEARTBEAT_CREDENTIAL_INTEGRATION_001.json`:
+A StegGate tunnel lease is not per heartbeat. Heartbeat epochs provide ordered signaling and observation. The lease persists across heartbeats and is regulated by a dedicated subsignal.
+
+Canonical surfaces:
 
 ```text
-state: ACTIVE_TUNNEL_PRIMARY
-canonical_runtime_lane: heartbeat_ephemeral_micronode_zero_credential_tunnel
-persistent_render_authoritative: false
-credentialed_named_route_required_for_functional_activation: false
-credentialed_named_route_role: optional_stable_rendezvous_hardening
+schemas/heartbeat-subsignal.schema.json
+control/heartbeat-subsignals.json
+.github/workflows/steggate-heartbeat-integration.yml
+StegVerse-Labs/StegCore/.github/workflows/steggate-heartbeat-worker-reusable.yml
 ```
 
-## Activated heartbeat worker
-
-The required non-chat continuation condition has been directly achieved in canonical machine state.
+Current subsignal:
 
 ```text
-control/heartbeat-state.json:
-  epoch: 7
-  generation: 7
-  last_cycle_at: 2026-08-09T17:03:51Z
-
-control/worker-registry.json:
-  generation: 13
-  task: STEGGATE-STABLE-RENDEZVOUS-WORKER-001
-  claim_id: SHWP-STEGGATE-STABLE-RENDEZVOUS-WORKER-001-G13
-  executor_binding: BOUND
-  worker_id: steggate-rendezvous-deployment-worker
-  worker_instance_id: steggate-rendezvous-deployment-worker-HB7-G13
-  fencing_token: 13
-  start_epoch: 7
-  last_response_epoch: 7
-  current_transition: CREDENTIAL_VALUES_ABSENT
-  expected_next_transition: CREDENTIAL_RECHECK
-  expiry_epoch: 71
+kind: transport_lease
+lease_id: STEGGATE-TUNNEL-LEASE-001
+state: OPEN
+lease_action: EXTEND
+opened_epoch: 10
+wall_clock_expiry_authority: false
 ```
 
-This proves more than durable ownership: the task was selected from the canonical worker registry, atomically claimed, bound to the admitted deployment worker, fenced, executed in heartbeat epoch 7, returned a typed transition, and persisted its continuation timing.
-
-Durable execution evidence:
+A lease releases only when one of these governed conditions is observed:
 
 ```text
-receipts/steggate-rendezvous-worker/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json
-receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB7-G13-26b4e97f6358b798.json
-checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB7-G13.json
-control/worker-status.json
+1. explicit CLOSE for the current lease;
+2. an accepted successor lease is available for handoff;
+3. all declared tunnel-dependent tasks are terminal.
 ```
 
-The worker correctly returned `BLOCKED` because Cloudflare credential values were absent. That is a governed task result, not an unactivated worker. The next action is heartbeat-relative `CREDENTIAL_RECHECK`; missing credential values remain fail-closed and no credential value is persisted.
+Host/runtime time limits may require carrier reconstruction, but do not terminate or redefine the governed lease.
 
-## Canonical workstreams
+## Live activation proof
+
+The lease-bearing integration path is now executing successfully.
 
 ```text
-StegVerse-Labs/.github#12
-  owner: single-heartbeat/worker protocol and registry coordination
-  state for this activation goal: COMPLETE / worker execution proven
-
-StegVerse-Labs/Site#24
-  owner: stable StegGate rendezvous hardening
-  continuation: STEGGATE-STABLE-RENDEZVOUS-WORKER-001 via heartbeat registry
-
-StegVerse-Labs/ara-admissibility-interop
-  owner: STEGGATE-FIRST-BOUNDARY-001
-  state: separate blocked/unclaimed workstream; not this session's activation dependency
+workflow run: 31325697942
+heartbeat job: 93275589574 SUCCESS
+heartbeat epoch persisted: 10
+micro-node job: 93275629397 IN_PROGRESS
+transport opening: SUCCESS
+complete public StegGate acceptance: SUCCESS
+current micro-node step: Hold and self-heal tunnel under heartbeat lease subsignal
 ```
 
-## Collision and ownership rule
-
-Do not create another worker scheduler, heartbeat, Render-dependent activation task, or conversation-owned retry loop. The single heartbeat plus `control/worker-registry.json` is the coordination surface. Future credential availability is consumed only through the already activated worker and its authorization/handoff.
-
-## Session-specific goal inventory
+Durable lease receipt:
 
 ```text
-1. preserve observer-relative admissibility work durably: COMPLETE in admissibility-wiki canonical handoff
-2. correct false “durably owned = 100% activated” semantics: COMPLETE
-3. make live worker execution the decisive activation criterion: COMPLETE
-4. remove Render as an activation dependency: COMPLETE
-5. prove a documented StegVerse worker is activated through heartbeat+registry: COMPLETE at HB7/G13
-6. preserve machine-owned continuation for unresolved rendezvous hardening: COMPLETE via worker registry/checkpoint
+receipts/steggate-transport-lease/STEGGATE-TUNNEL-LEASE-001.json
+state: OPEN
+runtime_state: LEASE_HOLD_SELF_HEAL_IN_PROGRESS
+lease_is_per_heartbeat: false
+render_dependency: false
 ```
 
-No unique requirement remains only in this conversation.
+This is the decisive semantic proof: the micro-node did not terminate when heartbeat epoch 10 completed. The heartbeat job completed and persisted its epoch while the transport carrier remained active under the lease subsignal.
 
-## Validation and activation evidence
-
-The strongest directly inspectable evidence is the current machine state itself:
-
-- heartbeat epoch advanced to 7;
-- registry generation advanced to 13;
-- the worker has a concrete claim, worker instance, fence, heartbeat timing, transition history, resource budget, receipt, mutation-scope receipt, and checkpoint;
-- the status projection reports the same task as executor-resolved and heartbeat-timed;
-- the next transition is defined without a chat-owned retry.
-
-CI validation remains useful but is not being treated as activation proof by itself.
-
-## Archive condition
-
-The user's archive rule for this session is satisfied because a documented StegVerse worker is **actually activated using the heartbeat and worker task registry**. The unresolved stable-rendezvous credential condition is already worker-owned and heartbeat-relative, so keeping this conversation open would duplicate the canonical continuation path.
-
-MERGED INTO:
+## Implementation commits
 
 ```text
-StegVerse-Labs/.github#12
-StegVerse-Labs/.github/control/worker-registry.json
-StegVerse-Labs/.github/docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md
-StegVerse-Labs/.github/handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json
-StegVerse-Labs/Site#24
+00adef98237b692e65387cffc089cd0602bc8495  define heartbeat subsignal schema
+09100d98efe0b043c4382c98727180cf79f76fc0  emit lease subsignal after reusable contract update
+2f13e7472377185250c4365460468111a95ea356  bind heartbeat integration to lease + safe persistence rebase
+429fb3eac002b4176194abe48931b13964f638c6  persist observed lease-opening receipt
+7d073bf302c2c905cb366a59deffa57edb375b76  advance subsignal to OPEN / EXTEND
+
+StegVerse-Labs/StegCore:
+229e8c99b77f8965fb3f07eea62d320d2d6d1ec6  lease-bound self-healing reusable micro-node
+246e531c1fe26516ee70ef420c67706105f27fe3  reconcile StegCore handoff
 ```
+
+## Prior worker activation retained
+
+The existing heartbeat worker evidence remains valid and independent of the transport lease correction. The stable-rendezvous worker is claimed/bound and continues to fail closed on missing credential values for the optional named route. That provider-specific route is not an activation dependency for the zero-credential StegGate tunnel.
+
+## Collision and authority boundaries
+
+- There is one canonical StegVerse heartbeat; do not create another scheduler.
+- Heartbeat cadence does not grant execution authority.
+- Lease state does not grant StegGate policy/execution authority.
+- Render is non-authoritative and must not gate StegGate runtime activation.
+- A host envelope ending requires lease reconstruction/extension; it does not imply lease expiry.
+- Tunnel-dependent task membership must be durable and machine-readable before task completion can authorize lease release.
+
+## Remaining work
+
+```text
+StegVerse-Labs/.github
+  1. install canonical register/unregister operations for tunnel-dependent tasks;
+  2. make successor-lease acceptance/handoff machine-observable;
+  3. preserve a reconstruction signal when a carrier host envelope ends before the lease releases;
+  4. validate the active lease across at least one successor/reconstruction opening.
+
+StegVerse-Labs/StegCore
+  1. retain current fail-closed endpoint health semantics;
+  2. preserve lease runtime evidence when the current carrier eventually releases/reconstructs.
+```
+
+No user/manual action is assigned.
 
 ## Completion assessment
 
 ```text
-session task completion: 6/6 = 100%
-developed activation surfaces: 10/10 = 100%
-scaffolding/stubs: 0
-validation/evidence classes: 8/8 = 100%
-integration: 4/4 = 100%
-worker activation: 1/1 = 100%
-session consolidation: 6/6 = 100%
-archive readiness: 100%
+prior worker activation goal: 100%
+lease semantics contract/install: 100%
+first live lease opening: 100%
+dependent-task lifecycle integration: pending
+successor/reconstruction proof: pending
+scaffolding/stubs in completed runtime path: 0
+archive readiness for current lease-correction goal: NO
 ```
