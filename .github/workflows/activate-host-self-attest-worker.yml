@@ -32,7 +32,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Admit documented task to heartbeat-ready registry state
+      - name: Admit documented task and correct provider-independent activation state
         run: |
           python - <<'PY'
           import json
@@ -56,9 +56,16 @@ jobs:
               if custody not in refs:
                   refs.append(custody)
               t['evidence_refs'] = refs
-              r['generation'] = int(r.get('generation', 0)) + 1
-              p.write_text(json.dumps(r, indent=2, sort_keys=True) + '\n')
-          print(json.dumps(t, indent=2, sort_keys=True))
+          durable = next(x for x in r['tasks'] if x['task_id'] == 'SHWP-DURABLE-RUNTIME-ACTIVATION')
+          if durable['state'] != 'COMPLETED':
+              durable['state'] = 'ACTIVATION_PENDING'
+              durable['block_ref'] = None
+              durable['external_entity_job_ref'] = None
+              durable['archive_eligible'] = False
+              durable['archive_reason_codes'] = ['CONTINUOUS_CARRIER_NOT_ACTIVE']
+          r['generation'] = int(r.get('generation', 0)) + 1
+          p.write_text(json.dumps(r, indent=2, sort_keys=True) + '\n')
+          print(json.dumps({'self_attest': t, 'durable_activation': durable}, indent=2, sort_keys=True))
           PY
 
       - name: Project pre-activation state
@@ -100,19 +107,16 @@ jobs:
           python scripts/project_heartbeat_workers.py --write
           python scripts/reconcile_heartbeat_continuity.py --write
 
-      - name: Persist heartbeat worker activation evidence
+      - name: Persist all heartbeat worker activation evidence
         run: |
           git config user.name 'stegverse-heartbeat-worker'
           git config user.email 'actions@users.noreply.github.com'
-          git add \
-            control/heartbeat-state.json \
-            control/worker-registry.json \
-            control/worker-cost-observations.json \
-            control/worker-status.json \
-            control/heartbeat-continuity.json \
-            events/heartbeat-runtime.jsonl \
-            checkpoints/workers \
-            receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No runtime evidence changes to persist.'
+            exit 0
+          fi
           git commit -m 'activate: execute documented worker through heartbeat'
-          git pull --rebase origin main
+          git fetch origin main
+          git rebase origin/main
           git push origin HEAD:main
