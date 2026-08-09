@@ -1,5 +1,5 @@
 {
-  "generation": 7,
+  "generation": 8,
   "schema": "stegverse.heartbeat-subsignals/v1",
   "subsignals": {
     "organization_federation": {
@@ -60,7 +60,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 267,
           "lease_start_cycle": 11,
-          "remaining_cycles": 254,
+          "remaining_cycles": 253,
           "task_id": "SHWP-ALL-ORG-FEDERATION-001",
           "task_state": "BLOCKED",
           "wall_clock_expiry_authority": false,
@@ -78,7 +78,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 71,
           "lease_start_cycle": 7,
-          "remaining_cycles": 58,
+          "remaining_cycles": 57,
           "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
           "task_state": "BLOCKED",
           "wall_clock_expiry_authority": false,
@@ -89,7 +89,7 @@
       "authority_effect": false,
       "carrier": "single_stegverse_heartbeat",
       "carrier_cycle_unit": "heartbeat_cycle",
-      "carrier_epoch": 13,
+      "carrier_epoch": 14,
       "kind": "worker_coordination",
       "master_records_projection": {
         "authority_effect": false,
