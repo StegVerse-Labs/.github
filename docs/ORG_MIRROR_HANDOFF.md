@@ -29,6 +29,7 @@ Canonical surfaces:
 ```text
 schemas/heartbeat-subsignal.schema.json
 control/heartbeat-subsignals.json
+scripts/manage_heartbeat_subsignal.py
 .github/workflows/steggate-heartbeat-integration.yml
 StegVerse-Labs/StegCore/.github/workflows/steggate-heartbeat-worker-reusable.yml
 ```
@@ -54,9 +55,26 @@ A lease releases only when one of these governed conditions is observed:
 
 Host/runtime time limits may require carrier reconstruction, but do not terminate or redefine the governed lease.
 
+## Dependent-task lifecycle
+
+`scripts/manage_heartbeat_subsignal.py` is the canonical mutation surface for lease participation and lifecycle intent. It supports:
+
+```text
+register     add a tunnel-dependent task idempotently
+unregister   remove a task from the lease
+open         request a named lease opening at a heartbeat epoch
+extend       preserve/reconstruct an admitted open lease
+close        request governed closure
+handoff      declare a distinct successor lease and HANDOFF_READY state
+```
+
+The manager rejects duplicate task membership, invalid transitions, wall-clock lease authority, and authority-bearing subsignals. Task completion only participates in automatic release when at least one dependent task is declared; an empty dependent set does not collapse an open lease.
+
+Implementation commit: `26540ef445a90e80b5adfefcf211b735226e33ea`.
+
 ## Live activation proof
 
-The lease-bearing integration path is now executing successfully.
+The lease-bearing integration path is executing successfully.
 
 ```text
 workflow run: 31325697942
@@ -88,6 +106,7 @@ This is the decisive semantic proof: the micro-node did not terminate when heart
 2f13e7472377185250c4365460468111a95ea356  bind heartbeat integration to lease + safe persistence rebase
 429fb3eac002b4176194abe48931b13964f638c6  persist observed lease-opening receipt
 7d073bf302c2c905cb366a59deffa57edb375b76  advance subsignal to OPEN / EXTEND
+26540ef445a90e80b5adfefcf211b735226e33ea  install dependent-task/lease lifecycle manager
 
 StegVerse-Labs/StegCore:
 229e8c99b77f8965fb3f07eea62d320d2d6d1ec6  lease-bound self-healing reusable micro-node
@@ -105,16 +124,15 @@ The existing heartbeat worker evidence remains valid and independent of the tran
 - Lease state does not grant StegGate policy/execution authority.
 - Render is non-authoritative and must not gate StegGate runtime activation.
 - A host envelope ending requires lease reconstruction/extension; it does not imply lease expiry.
-- Tunnel-dependent task membership must be durable and machine-readable before task completion can authorize lease release.
+- Tunnel-dependent task membership is durable and machine-readable before task completion may authorize lease release.
 
 ## Remaining work
 
 ```text
 StegVerse-Labs/.github
-  1. install canonical register/unregister operations for tunnel-dependent tasks;
-  2. make successor-lease acceptance/handoff machine-observable;
-  3. preserve a reconstruction signal when a carrier host envelope ends before the lease releases;
-  4. validate the active lease across at least one successor/reconstruction opening.
+  1. make successor-lease acceptance/handoff machine-observable across carriers;
+  2. preserve a reconstruction signal when a carrier host envelope ends before the lease releases;
+  3. validate the active lease across at least one successor/reconstruction opening.
 
 StegVerse-Labs/StegCore
   1. retain current fail-closed endpoint health semantics;
@@ -129,7 +147,7 @@ No user/manual action is assigned.
 prior worker activation goal: 100%
 lease semantics contract/install: 100%
 first live lease opening: 100%
-dependent-task lifecycle integration: pending
+dependent-task lifecycle control: 100% installed
 successor/reconstruction proof: pending
 scaffolding/stubs in completed runtime path: 0
 archive readiness for current lease-correction goal: NO
