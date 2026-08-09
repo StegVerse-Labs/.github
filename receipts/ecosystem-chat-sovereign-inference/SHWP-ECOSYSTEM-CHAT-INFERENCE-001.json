@@ -1,12 +1,25 @@
 {
   "authority_effect": "none_beyond_admitted_receipt_namespace",
+  "blocker": {
+    "dependency_class": "INTERNAL_CAPABILITY",
+    "may_remain_blocked": true,
+    "next_solution_action": "Select an executable StegVerse-local model/runtime combination and activate it; model/provider unavailability requires an alternate local solution, not waiting on a third party.",
+    "problem_statement": "No admitted StegVerse-local inference execution has yet satisfied the real-model, private-endpoint, E1-to-E2, measured-usage, and reconstruction predicates.",
+    "solution_required": true,
+    "workaround_candidates": [
+      "Start an eligible local model runtime on the sovereign carrier and bind the LLM adapter to loopback/private transport.",
+      "Use another StegVerse-owned/federated node with a compatible local model process and preserve the same E1-to-E2 and Master Records reconstruction contract.",
+      "If the selected local model cannot run on available hardware, select a smaller compatible local model rather than falling back to a hosted inference dependency."
+    ]
+  },
+  "blocker_policy_ref": "control/blocker-resolution-policy.json",
   "claim_id": "SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G20",
   "cloudflare_required": false,
   "completed": false,
   "evidence_path": null,
   "fencing_token": 20,
   "github_models_required": false,
-  "heartbeat_epoch": 17,
+  "heartbeat_epoch": 19,
   "missing_predicates": [
     "real_model_process_observed",
     "private_endpoint_only",
@@ -16,10 +29,11 @@
     "transition_reconstruction_pass"
   ],
   "render_required": false,
-  "schema": "stegverse.ecosystem-chat-sovereign-inference-worker-receipt/v0.1",
+  "schema": "stegverse.ecosystem-chat-sovereign-inference-worker-receipt/v0.2",
   "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "third_party_dependency_is_blocker": false,
   "third_party_inference_required": false,
-  "transition_id": "SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED",
+  "transition_id": "SOVEREIGN_INFERENCE_SOLUTION_REQUIRED",
   "worker_id": "ecosystem-chat-sovereign-inference-worker",
   "worker_instance_id": "ecosystem-chat-sovereign-inference-worker-HB17-G20"
 }

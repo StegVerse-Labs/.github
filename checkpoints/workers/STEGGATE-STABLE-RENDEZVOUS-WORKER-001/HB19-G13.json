@@ -1,0 +1,153 @@
+{
+  "authority_source": "authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json + Site#24 + pinned TVC credential-reference authority",
+  "checkpoint_id": "CP-STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB19-G13",
+  "checkpoint_sha256": "d7a1863caa370d810df93b9388b966949614c57f4d6ebaeb438c39b6fc32aa5e",
+  "claim_id": "SHWP-STEGGATE-STABLE-RENDEZVOUS-WORKER-001-G13",
+  "completed_transitions": [
+    {
+      "heartbeat_epoch": 7,
+      "response_state": "BLOCKED",
+      "transition_id": "CREDENTIAL_VALUES_ABSENT",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 8,
+      "response_state": "BLOCKED",
+      "transition_id": "CREDENTIAL_VALUES_ABSENT",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 9,
+      "response_state": "BLOCKED",
+      "transition_id": "CREDENTIAL_VALUES_ABSENT",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 10,
+      "response_state": "BLOCKED",
+      "transition_id": "CREDENTIAL_VALUES_ABSENT",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 11,
+      "response_state": "BLOCKED",
+      "transition_id": "CREDENTIAL_VALUES_ABSENT",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 12,
+      "response_state": "BLOCKED",
+      "transition_id": "CREDENTIAL_VALUES_ABSENT",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 13,
+      "response_state": "BLOCKED",
+      "transition_id": "CREDENTIAL_VALUES_ABSENT",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 14,
+      "response_state": "BLOCKED",
+      "transition_id": "CREDENTIAL_VALUES_ABSENT",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 15,
+      "response_state": "BLOCKED",
+      "transition_id": "CREDENTIAL_VALUES_ABSENT",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 16,
+      "response_state": "BLOCKED",
+      "transition_id": "CREDENTIAL_VALUES_ABSENT",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 17,
+      "response_state": "BLOCKED",
+      "transition_id": "CREDENTIAL_VALUES_ABSENT",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 18,
+      "response_state": "ACTIVE",
+      "transition_id": "THIRD_PARTY_WORKAROUND_REQUIRED",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 19,
+      "response_state": "ACTIVE",
+      "transition_id": "THIRD_PARTY_WORKAROUND_REQUIRED",
+      "transition_sequence": 1
+    }
+  ],
+  "current_state": "ACTIVE",
+  "evidence_refs": [
+    "StegVerse-Labs/Site#24",
+    "StegVerse-Labs/Site:StegGate Rendezvous Deploy run 31316924782 job 93253575487:FAIL_CLOSED_CREDENTIAL_ABSENT",
+    "StegVerse-Labs/Site:artifact 9039012210 sha256:3976a14ec571e01ad745da66d9579f7adae0ba1d0c3527bdef42e0295b012055",
+    "authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+    "workers/steggate_rendezvous_deployment_worker.py",
+    "receipts/steggate-rendezvous-worker/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+    "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB7-G13-26b4e97f6358b798.json",
+    "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB7-G13.json",
+    "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB8-G13-f437123e3cecf5dd.json",
+    "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB8-G13.json",
+    "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB9-G13-9cb579d52485c68b.json",
+    "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB9-G13.json",
+    "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB10-G13-d2fa0582777834c4.json",
+    "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB10-G13.json",
+    "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB11-G13-e03542055d4b6b3f.json",
+    "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB11-G13.json",
+    "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB12-G13-6422f50e0e222817.json",
+    "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB12-G13.json",
+    "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB13-G13-daf76e9cf4b1913a.json",
+    "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB13-G13.json",
+    "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB14-G13-69f4170dead51aef.json",
+    "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB14-G13.json",
+    "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB15-G13-42c2c7503be2d48b.json",
+    "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB15-G13.json",
+    "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB16-G13-7bc6c939e2e33a31.json",
+    "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB16-G13.json",
+    "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB17-G13-7c6831cf17f98e2a.json",
+    "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB17-G13.json",
+    "control/blocker-resolution-policy.json",
+    "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB18-G13-f5f66255e9f2442f.json",
+    "checkpoints/workers/STEGGATE-STABLE-RENDEZVOUS-WORKER-001/HB18-G13.json",
+    "receipts/worker-mutation-scope/STEGGATE-STABLE-RENDEZVOUS-WORKER-001-HB19-G13-0b468f43c1c2c263.json"
+  ],
+  "execution_authority": false,
+  "fencing_token": 13,
+  "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
+  "handoff_ref": "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+  "handoff_sha256": "0214440fceb7d8c79273af1ad30d2922fcedfb3b15091f489efc5b5c9d30ca42",
+  "heartbeat_epoch": 19,
+  "next_authorized_action": "On each admitted heartbeat, re-evaluate Cloudflare credential presence; when values are present, validate capability, deploy the canonical rendezvous, and prove stable live acceptance.",
+  "policy_version": "shwp-single-hb-v0.2",
+  "resource_budget": {
+    "actions_used": 13,
+    "allowed_services": [
+      "api.cloudflare.com",
+      "stegverse.org",
+      "raw.githubusercontent.com"
+    ],
+    "external_cost_ceiling_usd": 0.0,
+    "external_cost_usd": 0.0,
+    "max_actions": 64,
+    "max_retries": 32,
+    "rate_class": "heartbeat_bounded_deployment",
+    "renewal_count": 0,
+    "retries_used": 0,
+    "runtime_window_beats": 64
+  },
+  "schema": "stegverse.worker-checkpoint/v0.1",
+  "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+  "unresolved_work": [
+    "On each admitted heartbeat, re-evaluate Cloudflare credential presence; when values are present, validate capability, deploy the canonical rendezvous, and prove stable live acceptance."
+  ],
+  "worker_checkpoint_ref": "receipts/steggate-rendezvous-worker/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+  "worker_id": "steggate-rendezvous-deployment-worker",
+  "worker_instance_id": "steggate-rendezvous-deployment-worker-HB7-G13"
+}

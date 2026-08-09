@@ -1,5 +1,5 @@
 {
-  "generation": 12,
+  "generation": 13,
   "schema": "stegverse.heartbeat-subsignals/v1",
   "subsignals": {
     "organization_federation": {
@@ -60,7 +60,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 267,
           "lease_start_cycle": 11,
-          "remaining_cycles": 249,
+          "remaining_cycles": 248,
           "task_id": "SHWP-ALL-ORG-FEDERATION-001",
           "task_state": "BLOCKED",
           "wall_clock_expiry_authority": false,
@@ -78,7 +78,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 4111,
           "lease_start_cycle": 15,
-          "remaining_cycles": 4093,
+          "remaining_cycles": 4092,
           "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
           "task_state": "BLOCKED",
           "wall_clock_expiry_authority": false,
@@ -88,7 +88,7 @@
         {
           "assigned_cycles": 4096,
           "claim_id": "SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G20",
-          "current_transition": "SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED",
+          "current_transition": "SOVEREIGN_INFERENCE_SOLUTION_REQUIRED",
           "expiry_basis": "TASK_CLASS_COST_BASIS",
           "fencing_token": 20,
           "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
@@ -96,7 +96,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 4113,
           "lease_start_cycle": 17,
-          "remaining_cycles": 4095,
+          "remaining_cycles": 4094,
           "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
           "task_state": "BLOCKED",
           "wall_clock_expiry_authority": false,
@@ -114,7 +114,7 @@
           "lease_clock": "canonical_heartbeat_cycle",
           "lease_end_cycle_exclusive": 71,
           "lease_start_cycle": 7,
-          "remaining_cycles": 53,
+          "remaining_cycles": 52,
           "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
           "task_state": "ACTIVE",
           "wall_clock_expiry_authority": false,
@@ -125,7 +125,7 @@
       "authority_effect": false,
       "carrier": "single_stegverse_heartbeat",
       "carrier_cycle_unit": "heartbeat_cycle",
-      "carrier_epoch": 18,
+      "carrier_epoch": 19,
       "kind": "worker_coordination",
       "master_records_projection": {
         "authority_effect": false,
