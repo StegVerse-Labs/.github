@@ -1,0 +1,24 @@
+{
+  "schema": "stegverse.organization-task-registry/v0.1",
+  "generation": 1,
+  "canonical_heartbeat_owner": "StegVerse-Labs/.github#12",
+  "authority_effect": false,
+  "tasks": [
+    {"task_id":"ORG-FED-AACT-E-001","organization":"AaCT-E","state":"BLOCKED","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","block_class":"CONNECTOR_WRITE_AUTHORITY","release_condition":"GitHub integration gains push authority to an AaCT-E repository or an AaCT-E-owned relay appears","next_action":"RECHECK_AUTHORITY"},
+    {"task_id":"ORG-FED-ADMISSIBLE-EXISTENCE-001","organization":"Admissible-Existence","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","block_class":null,"release_condition":null,"next_action":"OBSERVE_TRANSITION"},
+    {"task_id":"ORG-FED-ADMITTEDCODE-001","organization":"AdmittedCode","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","block_class":null,"release_condition":null,"next_action":"OBSERVE_TRANSITION"},
+    {"task_id":"ORG-FED-DATA-CONTINUATION-001","organization":"Data-Continuation","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","block_class":null,"release_condition":null,"next_action":"OBSERVE_TRANSITION"},
+    {"task_id":"ORG-FED-ECAT-ICAT-FORMAL-001","organization":"ECAT-ICAT-Formal","state":"BLOCKED","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","block_class":"NO_REPOSITORY","release_condition":"Organization exposes a repository capable of owning a canonical mirror handoff and adapter","next_action":"RECHECK_REPOSITORY"},
+    {"task_id":"ORG-FED-FORMALISM-TESTS-001","organization":"formalism-tests","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","block_class":null,"release_condition":null,"next_action":"OBSERVE_TRANSITION"},
+    {"task_id":"ORG-FED-GCAT-BCAT-ENGINE-001","organization":"GCAT-BCAT-Engine","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","block_class":null,"release_condition":null,"next_action":"OBSERVE_TRANSITION"},
+    {"task_id":"ORG-FED-INFRASTRUCTURE-CONTINUITY-VENTURES-001","organization":"Infrastructure-Continuity-Ventures","state":"BLOCKED","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","block_class":"NO_REPOSITORY","release_condition":"Organization exposes a repository capable of owning a canonical mirror handoff and adapter","next_action":"RECHECK_REPOSITORY"},
+    {"task_id":"ORG-FED-MASTER-RECORDS-001","organization":"master-records","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","block_class":null,"release_condition":null,"next_action":"OBSERVE_TRANSITION"},
+    {"task_id":"ORG-FED-STEGGHOST-001","organization":"StegGhost","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","block_class":null,"release_condition":null,"next_action":"OBSERVE_TRANSITION"},
+    {"task_id":"ORG-FED-STEGVERSE-002-001","organization":"StegVerse-002","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","block_class":null,"release_condition":null,"next_action":"OBSERVE_TRANSITION"},
+    {"task_id":"ORG-FED-STEGVERSE-LABS-001","organization":"StegVerse-Labs","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github#12","block_class":null,"release_condition":null,"next_action":"EXECUTE_FEDERATION_CYCLE"},
+    {"task_id":"ORG-FED-STEGVERSE-ORG-001","organization":"StegVerse-org","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","block_class":null,"release_condition":null,"next_action":"OBSERVE_TRANSITION"},
+    {"task_id":"ORG-FED-TRIAD-TEST-001","organization":"Triad-Test","state":"BLOCKED","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","block_class":"NO_REPOSITORY","release_condition":"Organization exposes a repository capable of owning a canonical mirror handoff and adapter","next_action":"RECHECK_REPOSITORY"}
+  ],
+  "coverage": {"total":14,"ready":10,"blocked":4,"unassigned":0},
+  "rule":"READY means represented and machine-owned under the canonical heartbeat; it does not grant organization-specific execution authority. BLOCKED tasks remain heartbeat-visible with explicit release conditions."
+}
