@@ -7,6 +7,8 @@ from typing import Any, Callable
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
 COPY_DIRS=("heartbeat_runtime","control","handoffs","authorizations","workers","schemas","checkpoints","events","receipts","heartbeats","cost-basis")
 COPY_FILES=("scripts/run_heartbeat_runtime.py",)
+CANONICAL_RUNTIME="heartbeat_runtime.engine_v9.HeartbeatRuntime"
+DEFAULT_INTERVAL_MS=10.0
 
 def default_runtime_root(env=None):
     values=dict(os.environ if env is None else env); override=values.get("STEGVERSE_HEARTBEAT_ROOT")
@@ -17,7 +19,12 @@ def default_runtime_root(env=None):
     else: base=Path(values.get("XDG_STATE_HOME",Path.home()/".local"/"state"))
     return (base/"stegverse"/"heartbeat-runtime").resolve()
 
-def materialize(source_root:Path,target_root:Path):
+def _nominal_cycles_per_second(interval_ms: float) -> float | None:
+    if interval_ms <= 0:
+        return None
+    return 1000.0 / interval_ms
+
+def materialize(source_root:Path,target_root:Path,*,interval_ms:float=DEFAULT_INTERVAL_MS):
     source_root=source_root.resolve(); target_root=target_root.resolve(); target_root.mkdir(parents=True,exist_ok=True)
     for rel in COPY_DIRS:
         src=source_root/rel
@@ -26,19 +33,49 @@ def materialize(source_root:Path,target_root:Path):
         src=source_root/rel
         if not src.is_file(): raise RuntimeError(f"missing canonical runtime file: {rel}")
         dst=target_root/rel; dst.parent.mkdir(parents=True,exist_ok=True); shutil.copy2(src,dst)
-    required=(target_root/"heartbeat_runtime"/"engine_v8.py",target_root/"control"/"heartbeat-state.json",target_root/"control"/"worker-registry.json",target_root/"scripts"/"run_heartbeat_runtime.py")
+    required=(
+        target_root/"heartbeat_runtime"/"__init__.py",
+        target_root/"heartbeat_runtime"/"engine_v9.py",
+        target_root/"control"/"heartbeat-state.json",
+        target_root/"control"/"heartbeat-subsignals.json",
+        target_root/"control"/"worker-registry.json",
+        target_root/"scripts"/"run_heartbeat_runtime.py",
+    )
     if not all(p.is_file() for p in required): raise RuntimeError("materialized runtime is incomplete")
-    receipt={"schema":"stegverse.sovereign-heartbeat-materialization/v1","source_root":str(source_root),"runtime_root":str(target_root),"network_fetch_required":False,"third_party_scheduler_required":False,"third_party_deployment_required":False,"heartbeat_timing_authority":"HeartbeatRuntime.engine_v8","execution_authority_effect":"NONE","manual_action_required":False}
+    init_text=(target_root/"heartbeat_runtime"/"__init__.py").read_text(encoding="utf-8")
+    if "from .engine_v9 import HeartbeatRuntime" not in init_text:
+        raise RuntimeError("materialized runtime does not bind canonical engine_v9")
+    receipt={
+        "schema":"stegverse.sovereign-heartbeat-materialization/v2",
+        "source_root":str(source_root),
+        "runtime_root":str(target_root),
+        "canonical_runtime":CANONICAL_RUNTIME,
+        "heartbeat_default_interval_ms":float(interval_ms),
+        "nominal_cycles_per_second":_nominal_cycles_per_second(float(interval_ms)),
+        "worker_coordination_subsignal":"control/heartbeat-subsignals.json#worker_coordination",
+        "worker_lease_clock":"canonical_heartbeat_cycle",
+        "wall_clock_worker_expiry_authority":False,
+        "network_fetch_required":False,
+        "third_party_process_host_required":False,
+        "third_party_scheduler_required":False,
+        "third_party_deployment_required":False,
+        "github_runtime_dependency":False,
+        "render_runtime_dependency":False,
+        "cloudflare_runtime_dependency":False,
+        "heartbeat_timing_authority":CANONICAL_RUNTIME,
+        "execution_authority_effect":"NONE",
+        "manual_action_required":False,
+    }
     path=target_root/"receipts"/"sovereign-host"/"materialization.latest.json"; path.parent.mkdir(parents=True,exist_ok=True); path.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n")
     return receipt
 
 def _command(root,interval_ms): return [sys.executable,str(root/"scripts"/"run_heartbeat_runtime.py"),"--root",str(root),"--continuous","--interval-ms",str(interval_ms)]
 
-def materialize_service(root:Path,*,interval_ms=250.0,system=None,env=None):
+def materialize_service(root:Path,*,interval_ms=DEFAULT_INTERVAL_MS,system=None,env=None):
     name=(system or platform.system()).lower(); values=dict(os.environ if env is None else env); command=_command(root,interval_ms)
     if name=="linux":
         path=Path(values.get("XDG_CONFIG_HOME",Path.home()/".config"))/"systemd"/"user"/"stegverse-heartbeat.service"
-        content="\n".join(["[Unit]","Description=StegVerse Single Heartbeat Runtime","After=network-online.target","","[Service]","Type=simple","ExecStart="+" ".join(f'\"{p}\"' for p in command),"Restart=always","RestartSec=2",f'Environment=STEGVERSE_HEARTBEAT_ROOT={root}',"","[Install]","WantedBy=default.target",""])
+        content="\n".join(["[Unit]","Description=StegVerse Single Heartbeat Runtime","After=local-fs.target","","[Service]","Type=simple","ExecStart="+" ".join(f'\"{p}\"' for p in command),"Restart=always","RestartSec=2",f'Environment=STEGVERSE_HEARTBEAT_ROOT={root}',"","[Install]","WantedBy=default.target",""])
         activate=[["systemctl","--user","daemon-reload"],["systemctl","--user","enable","--now",path.name]]; kind="systemd-user"
     elif name=="darwin":
         path=Path.home()/"Library"/"LaunchAgents"/"org.stegverse.heartbeat.plist"; uid=getattr(os,"getuid",lambda:int(values.get("UID","0")))(); domain=f"gui/{uid}"
@@ -48,18 +85,34 @@ def materialize_service(root:Path,*,interval_ms=250.0,system=None,env=None):
         path=Path(values.get("APPDATA",Path.home()/"AppData"/"Roaming"))/"StegVerse"/"heartbeat-start.cmd"; content="@echo off\r\n"+subprocess.list2cmdline(command)+"\r\n"; activate=[["schtasks","/Create","/F","/SC","ONLOGON","/TN","StegVerse Heartbeat","/TR",str(path)]]; kind="scheduled-task"
     else: raise RuntimeError(f"unsupported sovereign host platform: {name}")
     path.parent.mkdir(parents=True,exist_ok=True); path.write_text(content)
-    return {"schema":"stegverse.sovereign-heartbeat-service/v1","platform":name,"registration_kind":kind,"registration_path":str(path),"activation_commands":activate,"runtime_root":str(root),"third_party_deployment_required":False,"third_party_scheduler_required":False,"manual_action_required":False}
+    return {
+        "schema":"stegverse.sovereign-heartbeat-service/v2",
+        "platform":name,
+        "registration_kind":kind,
+        "registration_path":str(path),
+        "activation_commands":activate,
+        "runtime_root":str(root),
+        "canonical_runtime":CANONICAL_RUNTIME,
+        "heartbeat_interval_ms":float(interval_ms),
+        "nominal_cycles_per_second":_nominal_cycles_per_second(float(interval_ms)),
+        "native_process_supervision_only":True,
+        "third_party_process_host_required":False,
+        "third_party_deployment_required":False,
+        "third_party_scheduler_required":False,
+        "manual_action_required":False,
+    }
 
-def install(source_root,target_root,runner=subprocess.run,*,interval_ms=250.0,system=None,env=None):
-    materialization=materialize(source_root,target_root); service=materialize_service(target_root,interval_ms=interval_ms,system=system,env=env); results=[]
+def install(source_root,target_root,runner=subprocess.run,*,interval_ms=DEFAULT_INTERVAL_MS,system=None,env=None):
+    materialization=materialize(source_root,target_root,interval_ms=interval_ms); service=materialize_service(target_root,interval_ms=interval_ms,system=system,env=env); results=[]
     for command in service["activation_commands"]:
         completed=runner(command,check=False,capture_output=True,text=True); results.append({"command":command,"returncode":completed.returncode})
     receipt={**materialization,**service,"activation_results":results,"active":bool(results) and results[-1]["returncode"]==0}; path=target_root/"receipts"/"sovereign-host"/"activation.latest.json"; path.parent.mkdir(parents=True,exist_ok=True); path.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n"); return receipt
 
 def main():
-    p=argparse.ArgumentParser(); p.add_argument("--source-root",type=Path,default=Path(__file__).resolve().parents[1]); p.add_argument("--runtime-root",type=Path); p.add_argument("--interval-ms",type=float,default=250.0); p.add_argument("--materialize-only",action="store_true"); a=p.parse_args(); root=(a.runtime_root or default_runtime_root()).resolve()
+    p=argparse.ArgumentParser(); p.add_argument("--source-root",type=Path,default=Path(__file__).resolve().parents[1]); p.add_argument("--runtime-root",type=Path); p.add_argument("--interval-ms",type=float,default=DEFAULT_INTERVAL_MS); p.add_argument("--materialize-only",action="store_true"); a=p.parse_args(); root=(a.runtime_root or default_runtime_root()).resolve()
+    if a.interval_ms < 0: raise SystemExit("interval-ms must be >= 0")
     if a.materialize_only:
-        result=materialize(a.source_root,root); result["service"]=materialize_service(root,interval_ms=a.interval_ms)
+        result=materialize(a.source_root,root,interval_ms=a.interval_ms); result["service"]=materialize_service(root,interval_ms=a.interval_ms)
     else: result=install(a.source_root,root,interval_ms=a.interval_ms)
     print(json.dumps(result,indent=2,sort_keys=True)); return 0 if result.get("active",True) else 1
 if __name__=="__main__": raise SystemExit(main())
