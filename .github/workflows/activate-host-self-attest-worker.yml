@@ -9,6 +9,7 @@ on:
     paths:
       - '.github/workflows/activate-host-self-attest-worker.yml'
       - 'handoffs/SHWP-HOST-SELF-ATTEST-001.json'
+      - 'cost-basis/worker-runtime/host-self-attest.json'
   workflow_dispatch:
 
 permissions:
@@ -47,6 +48,7 @@ jobs:
               t['claim_id'] = None
               t['lease'] = None
               t['heartbeat_timing'] = None
+              t['cost_basis_ref'] = 'cost-basis/worker-runtime/host-self-attest.json'
               t['archive_eligible'] = False
               t['archive_reason_codes'] = ['HEARTBEAT_ACTIVATION_REQUIRED']
               refs = list(t.get('evidence_refs') or [])
