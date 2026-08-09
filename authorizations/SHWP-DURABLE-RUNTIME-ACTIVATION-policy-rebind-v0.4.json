@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.worker-policy-rebind/v0.1",
+  "rebind_id": "REBIND-SHWP-DURABLE-RUNTIME-ACTIVATION-G18-V04",
+  "status": "ADMITTED",
+  "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+  "fencing_token": 18,
+  "old_policy_version": "shwp-single-hb-v0.3-sovereign",
+  "new_policy_version": "shwp-single-hb-v0.4-sovereign-solution-execution",
+  "handoff_sha256": "893dec8219fd742403622a6308d45ec014cdd911380fff13722eee02abb1a184",
+  "authority_source": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json#resolution",
+  "heartbeat_grants_rebind": false,
+  "evidence_refs": [
+    "StegVerse-Labs/.github#65",
+    "control/blocker-resolution-policy.json",
+    "scripts/install_sovereign_heartbeat_service.py",
+    "scripts/verify_sovereign_runtime_activation.py",
+    "Heartbeat Worker Project run 31338817754:SUCCESS"
+  ],
+  "scope": "same task, same claim, same fence; policy change only permits the already-admitted worker to execute the sovereign native solution path and does not expand authority ceiling, allowed paths, services, cost ceiling, or external-provider authority",
+  "third_party_dependency_authority": false,
+  "execution_authority_effect": "none_beyond_existing_admitted_task_authority"
+}
