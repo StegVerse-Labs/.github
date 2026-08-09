@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.heartbeat-subsignals/v1",
-  "generation": 1,
+  "generation": 2,
   "subsignals": {
     "steggate_transport_lease": {
       "kind": "transport_lease",
