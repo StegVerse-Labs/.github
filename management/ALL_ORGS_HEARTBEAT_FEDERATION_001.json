@@ -1,0 +1,34 @@
+{
+  "schema": "stegverse.integration_task.v1",
+  "task_id": "ALL-ORGS-HEARTBEAT-FEDERATION-001",
+  "originating_goal": "Expand heartbeat, subsignal, worker, and task-registry readiness/state to every StegVerse organization.",
+  "canonical_owners": ["StegVerse-Labs/.github#12", "StegVerse-Labs/Site#234"],
+  "state": "ACTIVE_HEARTBEAT_FEDERATION",
+  "scheduler_authority": "single_stegverse_heartbeat",
+  "wall_clock_scheduler_authority": false,
+  "authority_effect": false,
+  "organization_denominator": 14,
+  "registered": 14,
+  "response_verified": 10,
+  "machine_blocked": 4,
+  "unassigned": 0,
+  "canonical_surfaces": [
+    "control/organization-federation.json",
+    "control/organization-task-registry.json",
+    "control/heartbeat-subsignals.json#organization_federation",
+    "handoffs/SHWP-ALL-ORG-FEDERATION-001.json",
+    "authorizations/SHWP-ALL-ORG-FEDERATION-001.json",
+    "workers/organization_federation_readiness_worker.py",
+    "receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json"
+  ],
+  "acceptance": [
+    "all 14 organizations are represented",
+    "every organization has readiness dimensions for heartbeat response, subsignal, worker and task registry",
+    "all blockers have machine-observable release conditions",
+    "organization_federation is a canonical heartbeat subsignal",
+    "SHWP-ALL-ORG-FEDERATION-001 is claimed and executed through the canonical heartbeat",
+    "federation worker produces a durable receipt and heartbeat checkpoint",
+    "unassigned organization count remains zero"
+  ],
+  "next_action": "Run exactly one canonical heartbeat federation cycle, persist worker claim/fence/timing/receipt evidence, then leave blocked organizations under heartbeat recheck ownership without requiring a chat session."
+}
