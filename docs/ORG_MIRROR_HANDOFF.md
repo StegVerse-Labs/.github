@@ -21,6 +21,7 @@ third_party_deployment_dependency: NONE
 third_party_scheduler_dependency: NONE
 legacy_render_host_path: SUPERSEDED_FOR_PRODUCTION
 live_worker_runtime: NOT_ACTIVE_YET
+thread_archive_ready: false
 ```
 
 ## Canonical architecture
@@ -33,7 +34,7 @@ Heartbeat carriage does not grant execution authority. Worker availability/capab
 
 The core SHWP implementation is complete: atomic fenced checkout, same-HB worker timing, bounded native process execution, activation-request/authority separation, executor ambiguity refusal, blocked-state rechecks, expiry/renewal/orphan recovery, successor reconstruction, duplicate-lineage quarantine, policy rebind, mutation path/fence enforcement, persistent resource budgets, canonical checkpoints, capability profiles, fail-closed convergence, deterministic status/query surfaces and heartbeat-owned worker self-attestation support.
 
-Canonical promoted-runtime validation remains:
+## Validation evidence
 
 ```text
 Heartbeat Worker Project 31242636078 / 93066031288 SUCCESS
@@ -41,11 +42,13 @@ Heartbeat Worker Project 31242995304 SUCCESS
 Org Continuation Check 31260010793 SUCCESS
 ```
 
+PR #54 adds deterministic sovereign-host materialization/service tests. Hosted validation is required before merge; GitHub validation is evidence only and is not runtime/deployment authority.
+
 ## Sovereign production-host correction
 
 Third-party infrastructure is no longer an allowed production activation dependency for SHWP. The previous Render service/KV/bootstrap path is historical evidence only and is superseded for production execution.
 
-PR #54 installs the StegVerse-native host path:
+PR #54 installs:
 
 ```text
 scripts/install_sovereign_heartbeat_service.py
@@ -53,21 +56,13 @@ tests/test_sovereign_heartbeat_service.py
 docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md
 ```
 
-The installer materializes all runtime/control/HANDOFF/authorization/worker/state surfaces from an already-present canonical source tree onto durable local StegVerse node storage. It performs no GitHub/network source fetch. It registers the materialized `scripts/run_heartbeat_runtime.py --continuous` directly with the host OS service manager:
-
-```text
-Linux: systemd user service
-macOS: LaunchAgent
-Windows: logon scheduled task
-```
+The installer materializes runtime/control/HANDOFF/authorization/worker/state surfaces from an already-present canonical source tree onto durable local StegVerse node storage. It performs no GitHub/network source fetch. It registers the materialized `scripts/run_heartbeat_runtime.py --continuous` directly with the host OS service manager: Linux systemd user service, macOS LaunchAgent, or Windows logon task.
 
 The service manager supplies process liveness only. HeartbeatRuntime owns cadence and worker-control decisions. After materialization, GitHub, Render, cloud queues and cloud schedulers are not required for the heartbeat to run.
 
-This is the same sovereign deployment principle already adopted by `StegVerse-002/micro-node-runtime#16` and the portable-node autostart pattern proven by `StegVerse-org/LLM-adapter#17`; neither repository becomes heartbeat authority.
-
 ## Legacy provider path
 
-The following resources are retained as historical/diagnostic evidence but are not production prerequisites:
+Historical/diagnostic only:
 
 ```text
 Render service srv-d9s197vavr4c73a8rjjg
@@ -75,11 +70,9 @@ Render KV red-d9s17pnavr4c73a8p2ng
 master-records/monitoring#2 bootstrap workflow
 ```
 
-`PROVIDER_BUILD_PIPELINE_CAPACITY` is therefore no longer the canonical SHWP production blocker. `master-records/monitoring#2` should be marked `SUPERSEDED_BY_SOVEREIGN_HOST` for process hosting. Master Records remains custody/reconstruction authority.
+`PROVIDER_BUILD_PIPELINE_CAPACITY` is no longer the canonical SHWP production blocker. `master-records/monitoring#2` is to be superseded for process hosting. Master Records remains custody/reconstruction authority.
 
 ## First heartbeat-owned production worker proof
-
-The existing worker proof remains canonical:
 
 ```text
 task: SHWP-HOST-SELF-ATTEST-001
@@ -92,7 +85,11 @@ worker code: workers/host_runtime_self_attest.py
 receipt path: receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json
 ```
 
-Its name reflects its historical creation location only. It executes through canonical SHWP heartbeat authority and may not gain network/deployment/general-repository authority.
+Its historical name does not make Master Records or Render process-host authority. It executes only through canonical SHWP heartbeat authority.
+
+## Human authority boundary — durable runtime activation
+
+No new human procurement/provider authorization is required. The remaining boundary is observational: a StegVerse-owned or StegVerse-federated node must actually run the installed local service so liveness, worker execution, persistence and restart continuity can be observed. No conversation, GitHub, Render or external scheduler may substitute for that evidence.
 
 ## Current activation release conditions
 
@@ -108,8 +105,6 @@ Its name reflects its historical creation location only. It executes through can
 8. no duplicate heartbeat/claim/fence/split-brain appears;
 9. registry/event/cost/receipt/checkpoint state survives restart.
 
-Current blocker:
-
 ```text
 class: SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED
 owner: StegVerse-Labs/.github#12
@@ -119,15 +114,15 @@ Render required: false
 human authority required: false
 ```
 
-## Cross-repository dependencies
+## Cross-repository dependencies / propagation
 
-- `StegVerse-002/micro-node-runtime#16`: canonical sovereign platform migration owner; candidate StegVerse execution environment, not heartbeat authority.
-- `StegVerse-org/LLM-adapter#17`: existing zero-touch native autostart implementation pattern; not heartbeat authority.
+- `StegVerse-002/micro-node-runtime#16`: sovereign platform migration owner; candidate StegVerse execution environment, not heartbeat authority.
+- `StegVerse-org/LLM-adapter#17`: validated zero-touch native autostart pattern; not heartbeat authority.
 - `master-records/orchestration`: evidence/custody/reconstruction authority.
 - `master-records/monitoring#2`: legacy provider-host bootstrap to be superseded for production hosting.
 - Site / Publisher / admissibility-wiki / stegguardian-wiki: no publication obligation arises solely from heartbeat runtime activation.
 
-## Validation and claims
+## Completion assessment
 
 ```text
 protocol implementation: 100%
