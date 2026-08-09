@@ -12,8 +12,20 @@
         "AUTHORIZED_REMAINING_ACTION"
       ],
       "root_task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-      "state": "BLOCKED",
+      "state": "HANDOFF_READY",
       "success_predicates_satisfied": false
+    },
+    {
+      "converged": true,
+      "custody_reconstruction_complete": true,
+      "goal_id": "SHWP-HOST-SELF-ATTEST-001",
+      "no_active_claims": true,
+      "no_authorized_remaining_action": true,
+      "no_unresolved_descendants": true,
+      "reason_codes": [],
+      "root_task_id": "SHWP-HOST-SELF-ATTEST-001",
+      "state": "COMPLETED",
+      "success_predicates_satisfied": true
     },
     {
       "converged": false,
@@ -29,8 +41,24 @@
       "root_task_id": "STEGGATE-AUDITKIT-001",
       "state": "COMPLETED",
       "success_predicates_satisfied": true
+    },
+    {
+      "converged": false,
+      "custody_reconstruction_complete": true,
+      "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
+      "no_active_claims": false,
+      "no_authorized_remaining_action": false,
+      "no_unresolved_descendants": true,
+      "reason_codes": [
+        "ROOT_SUCCESS_PREDICATES_NOT_SATISFIED",
+        "ACTIVE_CLAIMS_REMAIN",
+        "AUTHORIZED_REMAINING_ACTION"
+      ],
+      "root_task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+      "state": "BLOCKED",
+      "success_predicates_satisfied": false
     }
   ],
   "schema": "stegverse.goal-convergence/v0.1",
-  "source_registry_generation": 10
+  "source_registry_generation": 15
 }
