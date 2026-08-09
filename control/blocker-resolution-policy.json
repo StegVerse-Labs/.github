@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.blocker-resolution-policy/v1",
+  "policy_id": "NO-THIRD-PARTY-BLOCKERS-001",
+  "effective": true,
+  "rules": {
+    "all_blocked_responses_require_resolution_contract": true,
+    "blocked_response_required_fields": [
+      "blocker.dependency_class",
+      "blocker.problem_statement",
+      "blocker.solution_required",
+      "blocker.workaround_candidates",
+      "blocker.next_solution_action"
+    ],
+    "solution_required_must_be_true": true,
+    "workaround_candidates_min_items": 1,
+    "third_party_dependency_may_be_blocker": false,
+    "third_party_dependency_required_state": "ACTIVE",
+    "third_party_dependency_required_transition": "THIRD_PARTY_WORKAROUND_REQUIRED",
+    "unchanged_third_party_recheck_counts_as_progress": false,
+    "unchanged_internal_blocker_recheck_counts_as_progress": false
+  },
+  "dependency_classes": {
+    "THIRD_PARTY": "External provider, hosted platform, vendor credential, SaaS quota, external scheduler, or other non-StegVerse service. Never a terminal blocker; worker must pursue another solution or workaround.",
+    "INTERNAL_CAPABILITY": "Missing StegVerse-owned capability or implementation. May be BLOCKED only with an executable solution/workaround plan.",
+    "AUTHORITY": "Missing admitted authority. May be BLOCKED only with a machine-observable authority-resolution path and workaround candidates that preserve authority boundaries.",
+    "PHYSICAL_RESOURCE": "Required StegVerse-owned/federated hardware or runtime resource does not yet exist. May be BLOCKED only while actively pursuing an alternate eligible resource or construction path.",
+    "SAFETY_POLICY": "Fail-closed safety or governance boundary. May remain blocked; bypass is forbidden, but a compliant alternate solution must still be named when one exists."
+  },
+  "invariant": "A blocker is a demand for a different solution. A third-party dependency is never the reason StegVerse stops progressing."
+}
