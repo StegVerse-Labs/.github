@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.process-worker-adapters/v0.1",
-  "generation": 1,
+  "generation": 2,
   "adapters": [
     {
       "adapter_ref": "process:native-receipt-canary-v1",
@@ -16,6 +16,22 @@
         "Host/provider agnostic process adapter; command is configured by control plane, never by task input.",
         "Mutation is constrained by worker code and handoff to receipts/native-worker-canary/** only.",
         "This adapter is an executor integration canary, not general repository mutation authority."
+      ]
+    },
+    {
+      "adapter_ref": "process:host-runtime-self-attest-v1",
+      "enabled": true,
+      "type": "process_json_v0.1",
+      "command": ["python", "workers/host_runtime_self_attest.py"],
+      "cwd": ".",
+      "timeout_seconds": 10,
+      "env_allowlist": [],
+      "authority_ref": "handoffs/SHWP-HOST-SELF-ATTEST-001.json#authority",
+      "capabilities": ["host_runtime_self_attest"],
+      "notes": [
+        "Executes only after canonical heartbeat checkout under an admitted claim and fence.",
+        "Mutation is constrained to receipts/host-self-attest/**.",
+        "This adapter proves heartbeat-owned worker activation and grants no deployment, network, or general repository authority."
       ]
     }
   ]
