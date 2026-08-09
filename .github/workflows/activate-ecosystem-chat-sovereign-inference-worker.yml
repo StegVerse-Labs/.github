@@ -1,0 +1,149 @@
+name: Ecosystem Chat Sovereign Inference Worker Activation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'workers/ecosystem_chat_sovereign_inference_worker.py'
+      - 'handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json'
+      - 'cost-basis/worker-runtime/ecosystem-chat-sovereign-inference.json'
+      - 'control/process-worker-adapters.json'
+      - '.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ecosystem-chat-sovereign-inference-worker
+  cancel-in-progress: false
+
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Admit task and worker into canonical registry
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('control/worker-registry.json')
+          r=json.loads(p.read_text())
+          task_id='SHWP-ECOSYSTEM-CHAT-INFERENCE-001'
+          if not any(x.get('task_id')==task_id for x in r.get('tasks',[])):
+              r['generation']=int(r.get('generation',0))+1
+              r.setdefault('tasks',[]).append({
+                  'archive_eligible':False,
+                  'archive_reason_codes':[],
+                  'authorized_policy_version':'shwp-single-hb-v0.3-sovereign',
+                  'block_ref':'handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json#block',
+                  'claim_id':None,
+                  'cost_basis_ref':'cost-basis/worker-runtime/ecosystem-chat-sovereign-inference.json',
+                  'evidence_refs':['StegVerse-Labs/.github#60','StegVerse-org/LLM-adapter#18','workers/ecosystem_chat_sovereign_inference_worker.py'],
+                  'executor_binding':'AUTHORIZED',
+                  'external_entity_job_ref':None,
+                  'goal_id':'ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION',
+                  'handoff_ref':'handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json',
+                  'heartbeat_timing':None,
+                  'last_checkpoint_ref':'handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json',
+                  'lease':None,
+                  'state':'HANDOFF_READY',
+                  'task_id':task_id,
+                  'worker_id':None,
+                  'worker_instance_id':None
+              })
+          worker_id='ecosystem-chat-sovereign-inference-worker'
+          if not any(x.get('worker_id')==worker_id for x in r.get('workers',[])):
+              r.setdefault('workers',[]).append({
+                  'adapter_ref':'process:ecosystem-chat-sovereign-inference-v1',
+                  'authority_source':'handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json#authority',
+                  'capabilities':['runtime_observation','durable_state_reconstruction','bounded_repository_mutation'],
+                  'capability_profile_ref':'control/worker-capability-profiles.json#sovereign-runtime-worker-v1',
+                  'executor_type':'repository_worker',
+                  'last_seen_at':None,
+                  'status':'AVAILABLE',
+                  'worker_id':worker_id
+              })
+          p.write_text(json.dumps(r,indent=2,sort_keys=True)+'\n')
+          PY
+
+      - name: Validate worker surfaces
+        run: |
+          python -m py_compile workers/ecosystem_chat_sovereign_inference_worker.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          h=json.loads(Path('handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json').read_text())
+          assert h['activation']['carrier']=='heartbeat'
+          assert h['activation']['checkout_policy']=='fenced_atomic_checkout'
+          assert h['block']['third_party_blocker'] is False
+          assert h['block']['human_action_required'] is False
+          assert h['continuity']['master_records_required'] is True
+          print('ECOSYSTEM_CHAT_WORKER_SURFACES_PASS')
+          PY
+
+      - name: Advance one canonical heartbeat and activate worker
+        run: |
+          set -euo pipefail
+          mkdir -p integration-evidence
+          python scripts/run_heartbeat_runtime.py --cycles 1 | tee integration-evidence/heartbeat-cycle.jsonl
+          python scripts/project_heartbeat_workers.py --write
+          python scripts/evaluate_goal_convergence.py --write
+          python scripts/reconcile_heartbeat_continuity.py --write
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rows=[json.loads(x) for x in Path('integration-evidence/heartbeat-cycle.jsonl').read_text().splitlines() if x.strip()]
+          assert len(rows)==1
+          status=json.loads(Path('control/worker-status.json').read_text())
+          task=next(x for x in status['tasks'] if x['task_id']=='SHWP-ECOSYSTEM-CHAT-INFERENCE-001')
+          assert task['executor_binding']=='BOUND', task
+          assert task['executor_resolved'] is True, task
+          assert task['heartbeat_timing_established'] is True, task
+          assert task['worker_id']=='ecosystem-chat-sovereign-inference-worker', task
+          assert task['claim_id'], task
+          assert isinstance(task['fencing_token'],int), task
+          assert task['state'] in {'BLOCKED','COMPLETED'}, task
+          receipt=Path('receipts/ecosystem-chat-sovereign-inference/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json')
+          assert receipt.exists()
+          value=json.loads(receipt.read_text())
+          assert value['third_party_inference_required'] is False
+          assert value['github_models_required'] is False
+          Path('integration-evidence/ecosystem-chat-worker-status.json').write_text(json.dumps(task,indent=2,sort_keys=True)+'\n')
+          Path('integration-evidence/ecosystem-chat-worker-receipt.json').write_text(json.dumps(value,indent=2,sort_keys=True)+'\n')
+          print(f"ECOSYSTEM_CHAT_WORKER_ACTIVE:epoch={rows[0]['epoch']}:state={task['state']}:fence={task['fencing_token']}")
+          PY
+
+      - name: Persist heartbeat-owned worker state
+        run: |
+          set -euo pipefail
+          git config user.name 'stegverse-heartbeat-worker'
+          git config user.email 'actions@users.noreply.github.com'
+          git add control/ events/ checkpoints/ receipts/ecosystem-chat-sovereign-inference/ receipts/worker-mutation-scope/ 2>/dev/null || true
+          if git diff --cached --quiet; then exit 1; fi
+          git commit -m 'heartbeat: activate Ecosystem Chat sovereign inference worker'
+          STASHED=false
+          if [ -n "$(git status --porcelain)" ]; then git stash push --include-untracked -m ecosystem-chat-worker-noncanonical; STASHED=true; fi
+          for attempt in 1 2 3 4 5; do
+            if ! git pull --rebase origin main; then git rebase --abort >/dev/null 2>&1 || true; sleep $((attempt * 2)); continue; fi
+            if git push origin HEAD:main; then if [ "$STASHED" = true ]; then git stash pop || true; fi; exit 0; fi
+            sleep $((attempt * 2))
+          done
+          if [ "$STASHED" = true ]; then git stash pop || true; fi
+          exit 1
+
+      - name: Preserve worker activation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecosystem-chat-sovereign-inference-worker-${{ github.run_id }}
+          path: integration-evidence/
+          if-no-files-found: error
+          retention-days: 90
