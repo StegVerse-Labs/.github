@@ -35,13 +35,14 @@
       "StegVerse-org/LLM-adapter/docs/ECOSYSTEM_CHAT_MIRROR_HANDOFF.md",
       "StegVerse-002/micro-node-runtime#16",
       "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_EPHEMERAL_EXECUTION_CARRIER.md",
+      "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
       "workers/ecosystem_chat_sovereign_inference_worker.py",
       "cost-basis/worker-runtime/ecosystem-chat-sovereign-inference.json",
       "control/worker-registry.json"
     ],
-    "dependencies": ["SHWP-DURABLE-RUNTIME-ACTIVATION"],
+    "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "The remaining Ecosystem Chat activation work must be heartbeat-worker managed rather than chat-owned.",
+    "derivation_reason": "The remaining Ecosystem Chat activation work must be heartbeat-worker managed rather than chat-owned. Sovereign runtime readiness is a machine-observed completion predicate, not a prerequisite for starting the observer worker.",
     "canonical_owner_ref": "StegVerse-org/LLM-adapter#18",
     "canonical_lineage_key": "ecosystem-chat:sovereign-inference-activation",
     "derivation_depth": 0,
@@ -78,6 +79,7 @@
   "completion": {
     "next_authorized_action": "Heartbeat worker rechecks node-local Ecosystem Chat activation evidence and completes only after real private model execution, E1-to-E2 response transport, measured usage, and same-execution Master Records reconstruction all pass.",
     "terminal_when": [
+      "SHWP-DURABLE-RUNTIME-ACTIVATION is verified or equivalent sovereign node runtime evidence is present",
       "real_model_process_observed=true",
       "private_endpoint_only=true",
       "ephemeral_e1_e2_execution_observed=true",
