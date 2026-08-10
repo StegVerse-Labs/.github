@@ -64,15 +64,15 @@
       "adapter_ref": "process:ecosystem-chat-sovereign-inference-v1",
       "authority_ref": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json#authority",
       "capabilities": ["runtime_observation", "durable_state_reconstruction", "bounded_repository_mutation"],
-      "command": ["python", "workers/ecosystem_chat_sovereign_inference_worker.py"],
+      "command": ["python", "workers/ecosystem_chat_sovereign_route_worker.py"],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [],
-      "notes": ["Heartbeat-owned Ecosystem Chat sovereign inference activation worker.", "It requires real StegVerse-local model execution plus same-execution reconstruction evidence and never treats fixtures as activation.", "Writes only receipts/ecosystem-chat-sovereign-inference/**.", "GitHub Models, Render, Cloudflare and hosted inference are not production dependencies or blockers."],
-      "timeout_seconds": 30,
+      "notes": ["Heartbeat-owned Ecosystem Chat sovereign inference activation worker chained through canonical local TVC route authority.", "It starts and proves only a StegVerse-local model endpoint, then requires TVC ROUTE_ADMITTED with credential_requirement NONE before LLM-adapter execution may advance.", "Writes only receipts/ecosystem-chat-sovereign-inference/**.", "No GitHub token, hosted model credential, hosted provider, or source-repository checkout is a production dependency."],
+      "timeout_seconds": 90,
       "type": "process_json_v0.1"
     }
   ],
-  "generation": 6,
+  "generation": 7,
   "schema": "stegverse.process-worker-adapters/v0.1"
 }
