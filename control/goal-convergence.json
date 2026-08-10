@@ -64,6 +64,22 @@
     {
       "converged": false,
       "custody_reconstruction_complete": false,
+      "goal_id": "STEGFIN-BASE-ROUNDTRIP-001",
+      "no_active_claims": true,
+      "no_authorized_remaining_action": false,
+      "no_unresolved_descendants": true,
+      "reason_codes": [
+        "ROOT_SUCCESS_PREDICATES_NOT_SATISFIED",
+        "CUSTODY_OR_RECONSTRUCTION_INCOMPLETE",
+        "AUTHORIZED_REMAINING_ACTION"
+      ],
+      "root_task_id": "STEGFIN-LIVE-ENTRY-003",
+      "state": "HANDOFF_READY",
+      "success_predicates_satisfied": false
+    },
+    {
+      "converged": false,
+      "custody_reconstruction_complete": false,
       "goal_id": "STEGGATE-AUDITKIT-001",
       "no_active_claims": true,
       "no_authorized_remaining_action": true,
@@ -94,5 +110,5 @@
     }
   ],
   "schema": "stegverse.goal-convergence/v0.1",
-  "source_registry_generation": 20
+  "source_registry_generation": 21
 }
