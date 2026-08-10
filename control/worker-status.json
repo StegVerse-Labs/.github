@@ -3,7 +3,7 @@
   "activation_required_count": 1,
   "archive_eligible_count": 5,
   "execution_authority_from_heartbeat": false,
-  "generated_at": "2026-08-10T20:51:16Z",
+  "generated_at": "2026-08-10T23:04:47Z",
   "heartbeat_epoch": 29,
   "query_is_observational": true,
   "schema": "stegverse.heartbeat-worker-status/v0.3",
@@ -370,7 +370,6 @@
       "activation_required": true,
       "archive_eligible": false,
       "archive_reason_codes": [
-        "EXECUTOR_AMBIGUOUS",
         "EXECUTOR_NOT_BOUND",
         "EXECUTOR_NOT_RESOLVED",
         "HEARTBEAT_ACTIVATION_REQUIRED",
@@ -382,10 +381,7 @@
       "current_transition": null,
       "delta_hb_since_response": null,
       "delta_hb_since_transition": null,
-      "eligible_workers": [
-        "ecosystem-chat-sovereign-inference-worker",
-        "stegfin-live-entry-inventory-worker"
-      ],
+      "eligible_workers": [],
       "evidence_refs": [
         "StegVerse-Labs/stegfin-governance#55",
         "handoffs/STEGFIN-LIVE-ENTRY-003.json",
