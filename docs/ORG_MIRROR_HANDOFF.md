@@ -127,6 +127,23 @@ Current invariant:
 repository identity does not bypass dependency-surface ownership
 ```
 
+## Validation evidence
+
+Latest sovereign local-model activation implementation is merged as PR #68 / commit `d4e22a3aa39b7f567e3a66d73d00abec1dcee494`.
+
+Validation is explicitly separated from production activation:
+
+```text
+PR validation: Heartbeat Worker Project 31381743245 SUCCESS
+PR validation: Validate organization control plane 31381743221 SUCCESS
+main push: Validate organization control plane 31381823247 SUCCESS
+production local-model launch authority: StegVerse heartbeat on sovereign carrier only
+GitHub token runtime dependency: prohibited
+GitHub Actions production role: false
+```
+
+The initial main `Org Continuation Check` run `31381823246` failed only because this canonical handoff no longer contained the exact required `Validation evidence` marker. This section repairs that handoff-contract regression; a fresh continuation-check success is required before treating the repair as validated.
+
 ## Human authority boundary — durable runtime activation
 
 Sovereign continuous-carrier activation remains an unfinished production goal:
@@ -186,7 +203,7 @@ Triad-Test: NO_REPOSITORY
 ```text
 issue: StegVerse-Labs/.github#64
 remediation_goal: ARCHIVE-GATE-PROGRESS-ENFORCEMENT-001
-state: ACTIVE
+state: IMPLEMENTED / ISSUE_CLOSED; CURRENT TASK GRAPH STILL NOT ARCHIVE READY
 required_outcomes:
   - machine-readable archive gate
   - worker progress classification distinct from BUSY
@@ -197,13 +214,13 @@ required_outcomes:
 
 ## Session consolidation posture
 
-Previously completed goals remain durably transferred, but the current session/thread is NOT archive-ready because ecosystem activation goals remain unfinished and current production workers are monitoring unchanged blockers rather than demonstrating forward progress.
+Previously completed goals remain durably transferred, but the current session/thread is NOT archive-ready because ecosystem activation goals remain unfinished. The native local-model worker implementation is now forward progress, but it does not itself prove sovereign-carrier execution.
 
 ```text
 thread_archive_ready: false
 archive_gate: BLOCKED
-archive_gate_reason: UNMET_GOALS_WITH_NO_MEASURABLE_FORWARD_PROGRESS
-active_remediation_owner: StegVerse-Labs/.github#64
+archive_gate_reason: UNMET_PRODUCT_ACTIVATION_GOALS
+active_execution_owner: StegVerse-Labs/.github#60 plus TV/TVC/LLM-adapter/Master Records continuation
 ```
 
-No archive claim may supersede this state until issue #64's enforcement is merged/validated and the task graph satisfies the archive invariant above.
+No archive claim may supersede this state until the task graph satisfies the archive invariant above.
