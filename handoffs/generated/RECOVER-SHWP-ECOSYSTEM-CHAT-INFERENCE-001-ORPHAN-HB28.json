@@ -1,0 +1,80 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+  "created_at": "2026-08-10T15:38:34Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+    "objective": "Reconstruct and recover work after the prior worker stopped returning expected transition information to the single StegVerse heartbeat.",
+    "success_predicates": [
+      "Prior lifecycle is reconstructed from durable checkpoint and evidence",
+      "Old worker instance authority remains ended",
+      "Any successor acquisition uses a higher fencing generation"
+    ],
+    "failure_predicates": [
+      "Missing response is treated as a second heartbeat clock",
+      "Old claim or fence is reused",
+      "Successor acquires authority without reconstruction"
+    ],
+    "expires_at": null,
+    "authority_ceiling": [
+      "bounded sovereign inference observation",
+      "no_external_model_provider_authority",
+      "no_public_endpoint_requirement",
+      "no_third_party_deployment_dependency"
+    ]
+  },
+  "task": {
+    "task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+      "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json"
+    ],
+    "dependencies": [],
+    "parent_task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+    "derivation_reason": "Expected worker response threshold exceeded on the common heartbeat sequence.",
+    "priority": "critical"
+  },
+  "authority": {
+    "authority_source": "StegVerse-org/LLM-adapter#18 + StegVerse-002/micro-node-runtime#16/#22",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "shwp-single-hb-v0.3-sovereign"
+  },
+  "execution": {
+    "required_capabilities": [
+      "runtime_observation",
+      "durable_state_reconstruction",
+      "bounded_repository_mutation"
+    ],
+    "allowed_paths": [
+      "receipts/ecosystem-chat-sovereign-inference/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 64,
+    "max_retries": 4096,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 4096,
+    "rate_class": "ecosystem_chat_sovereign_inference"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "UNBOUND",
+    "recheck_trigger": "each heartbeat after reconstruction and separate authorization are durable",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": true,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "Create a PASS reconstruction proof from the last valid checkpoint plus Master Records evidence, then separately authorize successor acquisition.",
+    "terminal_when": [
+      "Reconstruction proof is durable",
+      "Successor claim uses a higher fence or work is safely terminated"
+    ]
+  },
+  "block": null
+}

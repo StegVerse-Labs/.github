@@ -60,7 +60,7 @@ jobs:
       - name: Compile HB runtime and projectors
         run: |
           python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py heartbeat_runtime/engine_v3.py heartbeat_runtime/engine_v4.py heartbeat_runtime/engine_v5.py heartbeat_runtime/engine_v6.py heartbeat_runtime/engine_v7.py heartbeat_runtime/engine_v7_1.py heartbeat_runtime/engine_v8.py heartbeat_runtime/engine_v9.py heartbeat_runtime/process_adapter.py heartbeat_runtime/blocker_policy.py
-          python -m py_compile workers/heartbeat_receipt_canary.py workers/steggate_rendezvous_deployment_worker.py workers/organization_federation_readiness_worker.py workers/sovereign_runtime_activation_worker.py workers/ecosystem_chat_sovereign_inference_worker.py workers/tvc_sovereign_route_bridge.py workers/ecosystem_chat_sovereign_route_worker.py
+          python -m py_compile workers/heartbeat_receipt_canary.py workers/steggate_rendezvous_deployment_worker.py workers/organization_federation_readiness_worker.py workers/sovereign_runtime_activation_worker.py workers/ecosystem_chat_sovereign_inference_worker.py workers/tvc_sovereign_route_bridge.py workers/llm_adapter_sovereign_execution_bridge.py workers/ecosystem_chat_sovereign_route_worker.py
           python -m py_compile scripts/validate_executable_handoffs.py scripts/project_heartbeat_workers.py scripts/query_worker_status.py scripts/evaluate_goal_convergence.py scripts/reconcile_heartbeat_continuity.py scripts/run_heartbeat_runtime.py scripts/install_sovereign_heartbeat_service.py scripts/verify_sovereign_runtime_activation.py scripts/estimate_worker_cost_basis.py
       - name: Parse canonical JSON surfaces
         run: |
@@ -80,6 +80,8 @@ jobs:
         run: python -m unittest -v tests.test_sovereign_inference_local_model_proof
       - name: Prove credential-free local TVC route bridge
         run: python -m unittest -v tests.test_tvc_sovereign_route_bridge
+      - name: Prove credential-free local LLM-adapter same-route execution bridge
+        run: python -m unittest -v tests.test_llm_adapter_sovereign_execution_bridge
       - name: Prove native heartbeat engine semantics
         run: python -m unittest -v tests.test_heartbeat_runtime
       - name: Prove worker coordination subsignal and cycle leases

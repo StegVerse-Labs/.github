@@ -13,12 +13,18 @@ WORKERS = ROOT / "workers"
 if str(WORKERS) not in sys.path:
     sys.path.insert(0, str(WORKERS))
 
+from llm_adapter_sovereign_execution_bridge import (
+    execute_admitted_route,
+    execution_receipt_verified,
+    find_llm_adapter_root,
+)
 from tvc_sovereign_route_bridge import evaluate_route, find_tvc_root, route_receipt_verified
 
 EXPECTED_TASK = "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
 RECEIPT_ROOT = (ROOT / "receipts" / "ecosystem-chat-sovereign-inference").resolve()
 BASE_RECEIPT = RECEIPT_ROOT / f"{EXPECTED_TASK}.json"
 ROUTE_RECEIPT = RECEIPT_ROOT / "tvc_local_model_route.json"
+LLM_EXECUTION_RECEIPT = RECEIPT_ROOT / "llm_adapter_sovereign_execution.json"
 
 
 def atomic_write(path: Path, value: dict) -> None:
@@ -84,6 +90,10 @@ def main() -> int:
     task = invocation.get("task") or {}
     if task.get("task_id") != EXPECTED_TASK:
         return 2
+    epoch = invocation.get("heartbeat_epoch")
+    timing = task.get("heartbeat_timing") or {}
+    fence = timing.get("fencing_token")
+    claim_id = str(task.get("claim_id") or "")
 
     returncode, response, stderr_tail = run_base_worker(invocation)
     if returncode != 0 or not isinstance(response, dict):
@@ -111,7 +121,7 @@ def main() -> int:
         sys.stdout.write("\n")
         return 0
 
-    if response.get("transition_id") != "SOVEREIGN_LIVE_MODEL_ENDPOINT_VERIFIED":
+    if response.get("transition_id") not in {"SOVEREIGN_LIVE_MODEL_ENDPOINT_VERIFIED", "TVC_LOCAL_MODEL_ROUTE_ADMITTED"}:
         json.dump(response, sys.stdout, sort_keys=True)
         sys.stdout.write("\n")
         return 0
@@ -198,17 +208,86 @@ def main() -> int:
 
     receipt.update(
         {
-            "schema": "stegverse.ecosystem-chat-sovereign-inference-worker-receipt/v0.6",
+            "schema": "stegverse.ecosystem-chat-sovereign-inference-worker-receipt/v0.7",
             "transition_id": "TVC_LOCAL_MODEL_ROUTE_ADMITTED",
             "tvc_route_result": route_result,
             "tvc_route_receipt_path": str(ROUTE_RECEIPT),
             "tvc_route_receipt_hash": route.get("receipt_hash"),
             "credential_requirement": "NONE",
+            "credential_authority": "StegVerse-Labs/TV+TVC",
             "github_token_required": False,
-            "next_authorized_action": (
-                f"Consume exactly {endpoint} through StegVerseLocalHTTPProviderClient under TVC receipt {ROUTE_RECEIPT}; "
-                "execute governed E1-to-model-to-E2, persist measured usage, obtain same-execution Master Records reconstruction, then retire the heartbeat-owned model process."
-            ),
+            "next_authorized_action": "Execute the exact admitted endpoint through the canonical local LLM-adapter carrier executor.",
+            "blocker": None,
+        }
+    )
+    atomic_write(BASE_RECEIPT, receipt)
+
+    existing_execution = _load_json(LLM_EXECUTION_RECEIPT)
+    if execution_receipt_verified(existing_execution, proof=proof, route=route):
+        execution_result = {
+            "attempted": False,
+            "state": "COMPLETE",
+            "reason": "REUSED_SAME_ROUTE_LLM_ADAPTER_EXECUTION",
+            "execution_receipt_path": str(LLM_EXECUTION_RECEIPT),
+            "execution_receipt": existing_execution,
+            "credential_requirement": "NONE",
+            "credential_authority": "StegVerse-Labs/TV+TVC",
+            "github_token_required": False,
+            "github_auth_env_forwarded": False,
+        }
+    else:
+        adapter_root = find_llm_adapter_root(ROOT)
+        if adapter_root is None:
+            failed = _blocked_response(
+                response,
+                transition="LLM_ADAPTER_LOCAL_CAPSULE_NOT_MATERIALIZED",
+                next_transition="LLM_ADAPTER_SAME_ENDPOINT_EXECUTION",
+                problem="The canonical LLM-adapter sovereign carrier executor is not materialized on the StegVerse carrier.",
+                release="find_llm_adapter_root resolves task 020, its carrier executor, transport binding, and canonical handoff locally",
+            )
+            receipt.update({"transition_id": failed["transition_id"], "blocker": failed["blocker"]})
+            atomic_write(BASE_RECEIPT, receipt)
+            json.dump(failed, sys.stdout, sort_keys=True); sys.stdout.write("\n"); return 0
+        session_id = f"ecosystem-chat-hb-{epoch}-{claim_id[:12]}"
+        transition_id = f"ecosystem-chat-sovereign-{epoch}-{fence}"
+        measurement_id = f"ecosystem-chat-usage-{epoch}-{fence}"
+        execution_result = execute_admitted_route(
+            adapter_root,
+            proof_path=proof_path,
+            route_path=ROUTE_RECEIPT,
+            proof=proof,
+            route=route,
+            session_id=session_id,
+            transition_id=transition_id,
+            measurement_id=measurement_id,
+            output_path=LLM_EXECUTION_RECEIPT,
+        )
+
+    execution = execution_result.get("execution_receipt") if isinstance(execution_result, dict) else None
+    if not execution_receipt_verified(execution, proof=proof, route=route):
+        failed = _blocked_response(
+            response,
+            transition="LLM_ADAPTER_SAME_ENDPOINT_EXECUTION_FAILED",
+            next_transition="LLM_ADAPTER_SAME_ENDPOINT_EXECUTION",
+            problem="The canonical LLM-adapter did not execute the exact TVC-admitted sovereign endpoint under the credential-free route.",
+            release="task 020 emits EXECUTED for the same proof and route with measured usage, credential_requirement NONE, and no GitHub auth forwarded",
+        )
+        receipt.update({"transition_id": failed["transition_id"], "blocker": failed["blocker"], "llm_adapter_execution_result": execution_result})
+        atomic_write(BASE_RECEIPT, receipt)
+        json.dump(failed, sys.stdout, sort_keys=True); sys.stdout.write("\n"); return 0
+
+    receipt.update(
+        {
+            "transition_id": "LLM_ADAPTER_SAME_ENDPOINT_EXECUTED",
+            "llm_adapter_execution_result": execution_result,
+            "llm_adapter_execution_receipt_path": str(LLM_EXECUTION_RECEIPT),
+            "provider_usage_custody_recorded": execution.get("provider_usage_custody_recorded") is True,
+            "provider_usage_reconstruction_pass": execution.get("provider_usage_reconstruction_pass") is True,
+            "credential_requirement": "NONE",
+            "credential_authority": "StegVerse-Labs/TV+TVC",
+            "github_token_required": False,
+            "github_auth_env_forwarded": False,
+            "next_authorized_action": "Obtain same-execution provider-usage and transition reconstruction PASS through canonical master-records/orchestration; then satisfy the terminal activation receipt and retire the heartbeat-owned model process.",
             "blocker": None,
         }
     )
@@ -216,16 +295,17 @@ def main() -> int:
     response.update(
         {
             "state": "ACTIVE",
-            "transition_id": "TVC_LOCAL_MODEL_ROUTE_ADMITTED",
-            "expected_next_transition": "LLM_ADAPTER_SAME_ENDPOINT_EXECUTION",
+            "transition_id": "LLM_ADAPTER_SAME_ENDPOINT_EXECUTED",
+            "expected_next_transition": "MASTER_RECORDS_SAME_EXECUTION_RECONSTRUCTION",
             "checkpoint_ref": str(BASE_RECEIPT.relative_to(ROOT)),
             "blocker": None,
         }
     )
     refs = list(response.get("evidence_refs") or [])
-    route_ref = str(ROUTE_RECEIPT.relative_to(ROOT))
-    if route_ref not in refs:
-        refs.append(route_ref)
+    for candidate in (ROUTE_RECEIPT, LLM_EXECUTION_RECEIPT):
+        ref = str(candidate.relative_to(ROOT))
+        if ref not in refs:
+            refs.append(ref)
     response["evidence_refs"] = refs
     json.dump(response, sys.stdout, sort_keys=True)
     sys.stdout.write("\n")
