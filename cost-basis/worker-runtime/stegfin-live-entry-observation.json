@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "stegfin_live_entry_observation",
+  "sample_count": 1,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 4096,
+    "confidence": "MEDIUM"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 131072,
+    "network_bytes": null,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "StegVerse-Labs/stegfin-governance#55",
+    "handoffs/STEGFIN-LIVE-ENTRY-003.json",
+    "workers/stegfin_live_entry_inventory_worker.py"
+  ],
+  "notes": [
+    "Heartbeat timing covers credential-free Base Inventory N observation only; provider capability remains outside heartbeat authority.",
+    "TC/TVC plus the existing vault boundary owns provider capability release after Inventory N.",
+    "No GitHub token, GitHub runtime, wallet credential, provider credential or hosted scheduler is a production timing dependency."
+  ]
+}
