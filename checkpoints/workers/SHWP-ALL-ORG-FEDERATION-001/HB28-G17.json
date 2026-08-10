@@ -1,0 +1,190 @@
+{
+  "authority_source": "authorizations/SHWP-ALL-ORG-FEDERATION-001.json",
+  "checkpoint_id": "CP-SHWP-ALL-ORG-FEDERATION-001-HB28-G17",
+  "checkpoint_sha256": "3803c3c1cc3916c0adefdac55900c140b5e073c294c2a57f91526d3607ba2c33",
+  "claim_id": "SHWP-SHWP-ALL-ORG-FEDERATION-001-G17",
+  "completed_transitions": [
+    {
+      "heartbeat_epoch": 11,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+      "transition_sequence": 1
+    },
+    {
+      "heartbeat_epoch": 12,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+      "transition_sequence": 2
+    },
+    {
+      "heartbeat_epoch": 13,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+      "transition_sequence": 3
+    },
+    {
+      "heartbeat_epoch": 14,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+      "transition_sequence": 4
+    },
+    {
+      "heartbeat_epoch": 15,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+      "transition_sequence": 5
+    },
+    {
+      "heartbeat_epoch": 16,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+      "transition_sequence": 5
+    },
+    {
+      "heartbeat_epoch": 17,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+      "transition_sequence": 5
+    },
+    {
+      "heartbeat_epoch": 18,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+      "transition_sequence": 5
+    },
+    {
+      "heartbeat_epoch": 19,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_READY_WITH_MACHINE_BLOCKERS",
+      "transition_sequence": 5
+    },
+    {
+      "heartbeat_epoch": 20,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_INTERNAL_SOLUTIONS_REQUIRED",
+      "transition_sequence": 5
+    },
+    {
+      "heartbeat_epoch": 21,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_INTERNAL_SOLUTIONS_REQUIRED",
+      "transition_sequence": 5
+    },
+    {
+      "heartbeat_epoch": 22,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_INTERNAL_SOLUTIONS_REQUIRED",
+      "transition_sequence": 5
+    },
+    {
+      "heartbeat_epoch": 23,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_INTERNAL_SOLUTIONS_REQUIRED",
+      "transition_sequence": 5
+    },
+    {
+      "heartbeat_epoch": 24,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_INTERNAL_SOLUTIONS_REQUIRED",
+      "transition_sequence": 5
+    },
+    {
+      "heartbeat_epoch": 25,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_INTERNAL_SOLUTIONS_REQUIRED",
+      "transition_sequence": 5
+    },
+    {
+      "heartbeat_epoch": 26,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_INTERNAL_SOLUTIONS_REQUIRED",
+      "transition_sequence": 5
+    },
+    {
+      "heartbeat_epoch": 27,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_INTERNAL_SOLUTIONS_REQUIRED",
+      "transition_sequence": 5
+    },
+    {
+      "heartbeat_epoch": 28,
+      "response_state": "BLOCKED",
+      "transition_id": "FEDERATION_INTERNAL_SOLUTIONS_REQUIRED",
+      "transition_sequence": 5
+    }
+  ],
+  "current_state": "BLOCKED",
+  "evidence_refs": [
+    "StegVerse-Labs/Site#234",
+    "control/organization-federation.json",
+    "control/organization-task-registry.json",
+    "control/heartbeat-subsignals.json",
+    "authorizations/SHWP-ALL-ORG-FEDERATION-001.json",
+    "workers/organization_federation_readiness_worker.py",
+    "receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB11-G17-610ed9983c4b0466.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB11-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB12-G17-11ff1e14ff41f646.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB12-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB13-G17-06e7603206093d0c.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB13-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB14-G17-74122594f9d4e33d.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB14-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB15-G17-23081f45d54f1c5e.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB15-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB16-G17-6108e5fff6fa8ab2.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB16-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB17-G17-c175a3a63a7ae6cd.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB17-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB18-G17-8197066c6d9d5641.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB18-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB19-G17-032d64ccbf03b60c.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB19-G17.json",
+    "control/blocker-resolution-policy.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB20-G17-ae6a9dc977765f2a.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB20-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB21-G17-0b07f212f8b9eb47.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB21-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB22-G17-75038cf317050391.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB22-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB23-G17-efc60c213b431e1b.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB23-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB24-G17-f988478202d4e557.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB24-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB25-G17-612dfa6650976e61.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB25-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB26-G17-8e174265a9845888.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB26-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB27-G17-dfffa8055f7bb06a.json",
+    "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001/HB27-G17.json",
+    "receipts/worker-mutation-scope/SHWP-ALL-ORG-FEDERATION-001-HB28-G17-71ad326f5011dcbd.json"
+  ],
+  "execution_authority": false,
+  "fencing_token": 17,
+  "goal_id": "ALL-ORG-HEARTBEAT-FEDERATION-001",
+  "handoff_ref": "handoffs/SHWP-ALL-ORG-FEDERATION-001.json",
+  "handoff_sha256": "6674dcf3aadf35337f21ef5c88e3c165eb72cf2277d546f850a615f33585addb",
+  "heartbeat_epoch": 28,
+  "next_authorized_action": "On the next admitted heartbeat, reconcile all 14 organization readiness rows and persist a federation receipt; blocked rows remain machine-owned until their explicit release conditions become true.",
+  "policy_version": "shwp-single-hb-v0.2",
+  "resource_budget": {
+    "actions_used": 18,
+    "allowed_services": [],
+    "external_cost_ceiling_usd": 0.0,
+    "external_cost_usd": 0.0,
+    "max_actions": 128,
+    "max_retries": 128,
+    "rate_class": "heartbeat_federation_reconciliation",
+    "renewal_count": 0,
+    "retries_used": 0,
+    "runtime_window_beats": 256
+  },
+  "schema": "stegverse.worker-checkpoint/v0.1",
+  "task_id": "SHWP-ALL-ORG-FEDERATION-001",
+  "unresolved_work": [
+    "On the next admitted heartbeat, reconcile all 14 organization readiness rows and persist a federation receipt; blocked rows remain machine-owned until their explicit release conditions become true."
+  ],
+  "worker_checkpoint_ref": "receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json",
+  "worker_id": "organization-federation-readiness-worker",
+  "worker_instance_id": "organization-federation-readiness-worker-HB11-G17"
+}

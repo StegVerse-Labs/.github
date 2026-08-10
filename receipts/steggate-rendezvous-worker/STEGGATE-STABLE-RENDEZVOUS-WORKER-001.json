@@ -1,17 +1,32 @@
 {
   "authority_effect": "bounded_rendezvous_deployment_only",
+  "blocker": {
+    "dependency_class": "THIRD_PARTY",
+    "may_remain_blocked": false,
+    "next_solution_action": "Select and activate the highest-ranked admitted non-provider-dependent rendezvous path; do not wait on provider credentials.",
+    "problem_statement": "Cloudflare credential values are absent from this execution environment.",
+    "solution_required": true,
+    "workaround_candidates": [
+      "Deploy the same pinned rendezvous source on a StegVerse-owned/federated sovereign carrier.",
+      "Expose the rendezvous through an already-authorized StegVerse gateway without Cloudflare deployment authority.",
+      "Use another admitted deployment surface while preserving the same route contract and live acceptance tests."
+    ]
+  },
+  "blocker_policy_ref": "control/blocker-resolution-policy.json",
   "claim_id": "SHWP-STEGGATE-STABLE-RENDEZVOUS-WORKER-001-G13",
   "credentials_recorded": false,
   "fencing_token": 13,
   "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
-  "heartbeat_epoch": 10,
-  "next_action": "Re-evaluate credential presence on the next admitted heartbeat.",
-  "release_condition": "CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID are both present in the authorized heartbeat execution environment.",
-  "schema": "stegverse.steggate-rendezvous-worker-receipt/v0.1",
+  "heartbeat_epoch": 28,
+  "next_action": "Select and activate the highest-ranked admitted non-provider-dependent rendezvous path; do not wait on provider credentials.",
+  "provider_condition": "CREDENTIAL_VALUES_ABSENT",
+  "provider_path": "cloudflare",
+  "schema": "stegverse.steggate-rendezvous-worker-receipt/v0.2",
   "stable_origin": "https://stegverse.org/api/steggate",
-  "state": "BLOCKED",
+  "state": "ACTIVE",
   "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
-  "transition": "CREDENTIAL_VALUES_ABSENT",
+  "third_party_dependency_is_blocker": false,
+  "transition": "THIRD_PARTY_WORKAROUND_REQUIRED",
   "worker_id": "steggate-rendezvous-deployment-worker",
   "worker_instance_id": "steggate-rendezvous-deployment-worker-HB7-G13"
 }
