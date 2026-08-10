@@ -57,7 +57,7 @@
     "policy_version": "shwp-single-hb-stegfin-live-entry-v0.2"
   },
   "execution": {
-    "required_capabilities": ["runtime_observation", "bounded_repository_mutation"],
+    "required_capabilities": ["runtime_observation", "bounded_repository_mutation", "stegfin_live_entry_inventory_observation"],
     "allowed_paths": ["receipts/stegfin-live-entry/**"],
     "allowed_services": ["base-mainnet-readonly-observation"],
     "max_actions": 64,

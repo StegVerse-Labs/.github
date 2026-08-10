@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.worker-capability-profiles/v0.1",
-  "generation": 3,
+  "generation": 4,
   "profiles": [
     {
       "profile_id": "deterministic-workflow-v1",
@@ -61,7 +61,7 @@
       "profile_id": "sovereign-runtime-worker-v1",
       "executor_type": "repository_worker",
       "effect_class": "sovereign_runtime_activation",
-      "allowed_capabilities": ["runtime_observation", "continuous_process_execution", "durable_state_reconstruction", "bounded_repository_mutation"],
+      "allowed_capabilities": ["runtime_observation", "continuous_process_execution", "durable_state_reconstruction", "bounded_repository_mutation", "stegfin_live_entry_inventory_observation"],
       "mutation_allowed": true,
       "deployment_allowed": true,
       "availability_grants_authority": false,
