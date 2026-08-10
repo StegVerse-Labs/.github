@@ -36,12 +36,12 @@
       "converged": false,
       "custody_reconstruction_complete": false,
       "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
-      "no_active_claims": false,
+      "no_active_claims": true,
       "no_authorized_remaining_action": false,
-      "no_unresolved_descendants": true,
+      "no_unresolved_descendants": false,
       "reason_codes": [
         "ROOT_SUCCESS_PREDICATES_NOT_SATISFIED",
-        "ACTIVE_CLAIMS_REMAIN",
+        "UNRESOLVED_DESCENDANTS",
         "CUSTODY_OR_RECONSTRUCTION_INCOMPLETE",
         "AUTHORIZED_REMAINING_ACTION"
       ],
