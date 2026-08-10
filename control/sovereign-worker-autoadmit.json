@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.sovereign-worker-autoadmit/v0.1",
+  "generation": 1,
+  "workers": [
+    {
+      "task_id": "SHWP-STEGFIN-SOVEREIGN-TRADING-001",
+      "goal_id": "STEGFIN-SOVEREIGN-TRADING-ACTIVATION",
+      "handoff_ref": "handoffs/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json",
+      "worker_id": "stegfin-sovereign-trading-worker",
+      "adapter_ref": "process:stegfin-sovereign-trading-v1",
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "durable_state_reconstruction"
+      ],
+      "authority_source": "handoffs/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json#authority",
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "StegVerse-Labs/.github#66",
+        "StegVerse-Labs/stegfin-governance#51",
+        "StegVerse-Labs/stegfin-governance#52",
+        "StegVerse-002/micro-node-runtime#27",
+        "master-records/orchestration#23"
+      ],
+      "enabled": true,
+      "third_party_activation_required": false,
+      "github_activation_required": false
+    }
+  ]
+}
