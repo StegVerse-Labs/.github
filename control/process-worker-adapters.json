@@ -75,16 +75,16 @@
     {
       "adapter_ref": "process:stegfin-live-entry-inventory-v1",
       "authority_ref": "handoffs/STEGFIN-LIVE-ENTRY-003.json#authority",
-      "capabilities": ["runtime_observation", "bounded_repository_mutation"],
+      "capabilities": ["runtime_observation", "bounded_repository_mutation", "stegfin_live_entry_inventory_observation"],
       "command": ["python", "workers/stegfin_live_entry_inventory_worker.py"],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [],
-      "notes": ["Heartbeat-owned credential-free StegFin Inventory N observer.", "Discovers only a locally materialized StegFin workload and rebuilds the child environment from a minimal non-secret set.", "Writes only receipts/stegfin-live-entry/** and grants no provider capability, wallet contact, signing, broadcast, trade or custody authority.", "After Inventory N it stops at the canonical TC/TVC/vault inherited-FD capability boundary; heartbeat never acquires or transports the provider secret.", "No GitHub token, GitHub runtime, source checkout or hosted scheduler is a production dependency."],
+      "notes": ["Heartbeat-owned credential-free StegFin Inventory N observer.", "The task-specific stegfin_live_entry_inventory_observation capability makes this executor uniquely resolvable when other sovereign workers share generic runtime capabilities.", "Discovers only a locally materialized StegFin workload and rebuilds the child environment from a minimal non-secret set.", "Writes only receipts/stegfin-live-entry/** and grants no provider capability, wallet contact, signing, broadcast, trade or custody authority.", "After Inventory N it stops at the canonical TC/TVC/vault inherited-FD capability boundary; heartbeat never acquires or transports the provider secret.", "No GitHub token, GitHub runtime, source checkout or hosted scheduler is a production dependency."],
       "timeout_seconds": 150,
       "type": "process_json_v0.1"
     }
   ],
-  "generation": 10,
+  "generation": 11,
   "schema": "stegverse.process-worker-adapters/v0.1"
 }
