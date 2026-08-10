@@ -1,0 +1,108 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-STEGFIN-SOVEREIGN-TRADING-001",
+  "created_at": "2026-08-10T10:04:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "STEGFIN-SOVEREIGN-TRADING-ACTIVATION",
+    "objective": "Execute the StegFin sovereign trading activation chain under a heartbeat-owned StegVerse worker with no GitHub runner or third-party production worker dependency.",
+    "success_predicates": [
+      "StegFin capsule is materialized on a StegVerse-owned/federated carrier",
+      "internal market match executes",
+      "atomic internal settlement executes with conservation",
+      "reconstruction packet is emitted",
+      "Master Records returns exact-packet RECONSTRUCTED_PASS",
+      "reconstruction proof is returned through the sovereign E2 result path",
+      "GitHub Actions is not production worker authority"
+    ],
+    "failure_predicates": [
+      "GitHub Actions or another hosted runner is required for production execution",
+      "wallet signing or transaction broadcast authority is inherited by the worker",
+      "custody or scale-up authority is inferred from worker execution",
+      "a synthetic receipt is presented as an executed sovereign trade"
+    ],
+    "authority_ceiling": [
+      "bounded sovereign trading activation execution",
+      "no_wallet_signing_authority",
+      "no_transaction_broadcast_authority",
+      "no_custody_authority",
+      "no_scale_up_authority",
+      "no_third_party_worker_dependency"
+    ],
+    "successor_policy": "NONE",
+    "max_successor_depth": 0
+  },
+  "task": {
+    "task_id": "SHWP-STEGFIN-SOVEREIGN-TRADING-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-Labs/.github#66",
+      "StegVerse-Labs/stegfin-governance#51",
+      "StegVerse-Labs/stegfin-governance#52",
+      "StegVerse-002/micro-node-runtime#27",
+      "master-records/orchestration#23",
+      "workers/stegfin_sovereign_trading_worker.py",
+      "docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "StegFin production continuation must be owned by the canonical StegVerse heartbeat worker fabric rather than GitHub-hosted runners.",
+    "canonical_owner_ref": "StegVerse-Labs/stegfin-governance",
+    "canonical_lineage_key": "stegfin:sovereign-trading-activation",
+    "derivation_depth": 0,
+    "priority": "release"
+  },
+  "authority": {
+    "authority_source": "StegVerse-Labs/stegfin-governance + StegVerse-Labs/.github#66",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "shwp-single-hb-v0.4-sovereign-trading"
+  },
+  "execution": {
+    "required_capabilities": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "durable_state_reconstruction"
+    ],
+    "allowed_paths": ["receipts/stegfin-sovereign-trading/**"],
+    "allowed_services": [],
+    "max_actions": 64,
+    "max_retries": 4096,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 4096,
+    "rate_class": "stegfin_sovereign_trading_activation"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "StegVerse-Labs/.github#66",
+    "recheck_trigger": "each admitted heartbeat while unfinished",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/stegfin-sovereign-trading/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": true,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "Materialize the StegFin capsule on the sovereign carrier and execute scripts/run_sovereign_trading_activation_round.py under this heartbeat-owned worker.",
+    "terminal_when": [
+      "internal_settlement_pass=true",
+      "master_records_reconstruction_pass=true",
+      "e2_reconstruction_proof_observed=true",
+      "github_worker_required=false",
+      "third_party_worker_required=false"
+    ]
+  },
+  "block": {
+    "state": "SOLUTION_EXECUTION_REQUIRED",
+    "class": "INTERNAL_CAPABILITY",
+    "owner": "heartbeat worker SHWP-STEGFIN-SOVEREIGN-TRADING-001 via StegVerse-Labs/.github#66",
+    "problem_statement": "The remaining activation path must execute as a StegVerse-native worker workload, not a hosted GitHub worker.",
+    "solution_required": true,
+    "next_solution_action": "EXECUTE_STEGFIN_SOVEREIGN_ACTIVATION_ROUND",
+    "machine_observable_release_condition": "the worker emits STEGFIN_SOVEREIGN_TRADING_ACTIVATED with exact Master Records reconstruction bound through E2",
+    "third_party_blocker": false,
+    "human_action_required": false
+  }
+}
