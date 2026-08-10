@@ -64,12 +64,12 @@
       "adapter_ref": "process:ecosystem-chat-sovereign-inference-v1",
       "authority_ref": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json#authority",
       "capabilities": ["runtime_observation", "durable_state_reconstruction", "bounded_repository_mutation"],
-      "command": ["python", "workers/ecosystem_chat_tc_tvc_route_worker.py"],
+      "command": ["python", "workers/ecosystem_chat_master_records_reconstruction_worker.py"],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [],
-      "notes": ["Heartbeat-owned Ecosystem Chat sovereign inference activation worker chained through canonical local TVC route authority and canonical local LLM-adapter carrier execution.", "The TC/TVC wrapper invokes the established route worker with only PATH/PYTHONPATH/locale environment and normalizes legacy TV+TVC credential labels without changing historical repository references.", "It starts and proves only a StegVerse-local model endpoint, requires TVC ROUTE_ADMITTED with credential_requirement NONE, then executes exactly that admitted endpoint through task LLMA-SOVEREIGN-CARRIER-EXECUTION-020.", "TC/TVC owns the local-model credential decision and that decision is NONE.", "Writes only receipts/ecosystem-chat-sovereign-inference/**.", "No GitHub token, hosted model credential, hosted provider, or source-repository checkout is a production runtime dependency."],
-      "timeout_seconds": 180,
+      "notes": ["Heartbeat-owned Ecosystem Chat sovereign inference chain through canonical TC/TVC route authority, canonical local LLM-adapter execution, and canonical local Master Records same-execution reconstruction.", "The wrapper chain rebuilds child environments from minimal non-secret variables and strips GitHub plus legacy Master Records bearer-token variables before reconstruction.", "It starts and proves only a StegVerse-local model endpoint, requires TVC ROUTE_ADMITTED with credential_requirement NONE, executes exactly that route through LLMA-SOVEREIGN-CARRIER-EXECUTION-020, then invokes MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024 against the exact proof/route/execution packet.", "TC/TVC owns the local-model credential decision and that decision is NONE.", "Writes only receipts/ecosystem-chat-sovereign-inference/**.", "No GitHub token, bearer token, hosted model credential, hosted provider, source-repository checkout, or hosted custody endpoint is a production runtime dependency."],
+      "timeout_seconds": 240,
       "type": "process_json_v0.1"
     },
     {
@@ -85,6 +85,6 @@
       "type": "process_json_v0.1"
     }
   ],
-  "generation": 10,
+  "generation": 11,
   "schema": "stegverse.process-worker-adapters/v0.1"
 }
