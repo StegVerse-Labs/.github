@@ -58,7 +58,7 @@ def credential_free_child_env(adapter_root: Path) -> dict[str, str]:
     env = {k: v for k, v in os.environ.items() if k not in GITHUB_AUTH_ENV}
     env["PYTHONPATH"] = str(adapter_root)
     env["STEGVERSE_LOCAL_MODEL_CREDENTIAL_REQUIREMENT"] = "NONE"
-    env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "StegVerse-Labs/TV+TVC"
+    env["STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY"] = "TC/TVC"
     return env
 
 
@@ -140,7 +140,7 @@ def execute_admitted_route(
         "stdout_tail": None if verified else process.stdout[-1200:],
         "stderr_tail": None if verified else process.stderr[-1200:],
         "credential_requirement": "NONE",
-        "credential_authority": "StegVerse-Labs/TV+TVC",
+        "credential_authority": "TC/TVC",
         "github_token_required": False,
         "github_auth_env_forwarded": False,
         "third_party_execution_platform_required": False,
