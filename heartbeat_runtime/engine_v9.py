@@ -7,6 +7,7 @@ import json
 
 from .engine_v8 import HeartbeatRuntime as HeartbeatRuntimeV8, WorkerResponse
 from .org_assertions import issue_claim_assertions
+from .orphan_recovery import reconcile_quarantined_orphan_recoveries
 
 
 class HeartbeatRuntime(HeartbeatRuntimeV8):
@@ -130,6 +131,17 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
         )
         return coordination
 
+    def _reconcile_orphan_recovery_quarantines(self, registry: dict[str, Any], epoch: int, events: list[dict[str, Any]]) -> list[str]:
+        def emit(event_epoch: int, event_type: str, **payload: Any) -> None:
+            self._event(events, event_epoch, event_type, **payload)
+
+        return reconcile_quarantined_orphan_recoveries(
+            self.root,
+            registry,
+            epoch=epoch,
+            event=emit,
+        )
+
     def cycle(self, write: bool = True) -> dict[str, Any]:
         self._persist = write
         self._acquire()
@@ -152,6 +164,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
             heartbeat["issued"] = issued
             events: list[dict[str, Any]] = []
             self._event(events, epoch, "organization_assertions_issued", issued_count=len(issued), issued_refs=issued)
+            reconciled_recoveries = self._reconcile_orphan_recovery_quarantines(registry, epoch, events)
             for task in list(registry.get("tasks", [])):
                 if task.get("state") in self.WORKER_OWNED and task.get("worker_id"):
                     self._invoke(registry, task, epoch, cost_log, events)
@@ -170,6 +183,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
                 "events": events,
                 "subsignals": {self.WORKER_COORDINATION_SUBSIGNAL: coordination},
                 "registry_generation": registry.get("generation", 0),
+                "orphan_recoveries_reconciled": reconciled_recoveries,
                 "authority_effect": "none_beyond_existing_admitted_task_authority",
             }
             if write:
