@@ -5,19 +5,19 @@
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "STEGFIN-BASE-ROUNDTRIP-001",
-    "objective": "Advance the first real governed Base validation entry through credential-free Inventory N observation and then the existing TV/TVC/vault provider-capability boundary, stopping before any wallet signature or broadcast.",
+    "objective": "Advance the first real governed Base validation entry through credential-free Inventory N observation and then the existing TC/TVC/vault provider-capability boundary, stopping before any wallet signature or broadcast.",
     "success_predicates": [
       "A fresh complete Base Asset Lounge Inventory N is observed for the canonical wallet from locally materialized StegFin code",
       "The observation uses the hash-bound StegFin registry endpoint and requires no provider capability",
       "No GitHub token, GitHub runtime, hosted scheduler, wallet credential, provider credential, signing authority or broadcast authority is required",
-      "The task advances to the canonical TV/TVC/vault provider-capability release boundary without implementing a competing resolver"
+      "The task advances to the canonical TC/TVC/vault provider-capability release boundary without implementing a competing resolver"
     ],
     "failure_predicates": [
       "A partial declared-token observation is treated as complete Inventory N",
       "A GitHub token or GitHub Actions runtime becomes a production prerequisite",
       "Provider capability material enters worker JSON, environment, log, hash, receipt or repository state",
-      "The heartbeat grants TV/TVC, wallet-signing or transaction-broadcast authority",
-      "The worker duplicates the actively claimed TVC provider-capability resolver"
+      "The heartbeat grants TC/TVC, wallet-signing or transaction-broadcast authority",
+      "The worker duplicates the canonical TVC provider-capability resolver"
     ],
     "expires_at": null,
     "authority_ceiling": [
@@ -28,7 +28,7 @@
       "no_signing",
       "no_broadcast"
     ],
-    "successor_policy": "CANONICAL_TVC_VAULT_CAPABILITY_ONLY",
+    "successor_policy": "CANONICAL_TC_TVC_VAULT_CAPABILITY_ONLY",
     "max_successor_depth": 1
   },
   "task": {
@@ -39,26 +39,26 @@
       "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md",
       "StegVerse-Labs/stegfin-governance:scripts/observe_live_base_inventory.py",
       "StegVerse-Labs/stegfin-governance:stegwallet/sovereign_carrier_binding.py",
-      "StegVerse-Labs/TV:policies/stegwallet_base_0x_quote_capability_policy.json",
       "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-CAPABILITY-RESOLUTION-001.json",
       "StegVerse-Labs/TVC:docs/PROVIDER_CAPABILITY_RESOLUTION_MIRROR_HANDOFF.md",
       "StegVerse-002/micro-node-runtime:profiles/stegfin_sovereign_capsule.v1.json"
     ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "The StegFin carrier-to-native-capsule binding is released. The next safe machine-executable slice is credential-free authoritative Inventory N observation under the single existing heartbeat. TV/TVC/vault capability resolution remains a separate canonical active claim.",
+    "derivation_reason": "The StegFin carrier-to-native-capsule binding is released. The next safe machine-executable slice is credential-free authoritative Inventory N observation under the single existing heartbeat. TC/TVC/vault capability resolution remains a separate canonical authority boundary.",
     "canonical_owner_ref": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-LIVE-ENTRY-003.json",
     "canonical_lineage_key": "stegfin:base-validation-entry-003",
     "derivation_depth": 0,
     "priority": "release"
   },
   "authority": {
-    "authority_source": "StegVerse-Labs/stegfin-governance canonical mandate + TV/TVC/vault boundaries",
+    "authority_source": "StegVerse-Labs/stegfin-governance canonical mandate + TC/TVC/vault boundaries",
     "heartbeat_grants_execution_authority": false,
-    "provider_capability_authority": "TV_TVC_VAULT_ONLY",
+    "provider_capability_authority": "TC_TVC_VAULT_ONLY",
     "wallet_signing_authority": "USER_ONLY",
     "broadcast_authority": "USER_ONLY",
-    "policy_version": "shwp-single-hb-stegfin-live-entry-v0.1"
+    "legacy_repository_note": "Pre-correction evidence may retain TV-labeled paths or strings. Those remain historical evidence only and do not define current capability authority.",
+    "policy_version": "shwp-single-hb-stegfin-live-entry-v0.2"
   },
   "execution": {
     "required_capabilities": ["runtime_observation", "bounded_repository_mutation"],
@@ -74,7 +74,7 @@
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-LIVE-ENTRY-003.json",
-    "recheck_trigger": "each admitted heartbeat while unfinished; reuse fresh Inventory N if still valid, otherwise observe through locally materialized StegFin; never seek provider capability outside TV/TVC/vault",
+    "recheck_trigger": "each admitted heartbeat while unfinished; reuse fresh Inventory N if still valid, otherwise observe through locally materialized StegFin; never seek provider capability outside TC/TVC/vault",
     "checkout_policy": "fenced_atomic_checkout",
     "production_source_checkout_required": false,
     "github_token_required": false,
@@ -87,7 +87,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Observe fresh complete Inventory N. Then consume only the canonical TV/TVC/vault provider-capability release contract and inherited-FD path; once available, the separate StegFin native carrier path may advance to exact TVC quote lease, live 0x quote, allowance, simulation and USER_ONLY wallet handoff.",
+    "next_authorized_action": "Observe fresh complete Inventory N. Then consume only the canonical TC/TVC/vault provider-capability release contract and inherited-FD path; once available, the separate StegFin native carrier path may advance to exact TVC quote lease, live 0x quote, allowance, simulation and USER_ONLY wallet handoff.",
     "terminal_when": [
       "fresh_inventory_n_observed=true",
       "provider_capability_release_boundary_identified=true",
@@ -100,11 +100,11 @@
   "block": {
     "state": "ACTIVE_CANONICAL_DEPENDENCY_EXECUTION",
     "class": "CANONICAL_CROSS_REPOSITORY_CAPABILITY",
-    "owner": "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-CAPABILITY-RESOLUTION-001.json plus TV credential-packaging policy and existing StegFin vault boundary",
-    "problem_statement": "After Inventory N, the provider capability must be delivered to the released StegFin carrier only through the canonical TV/TVC/vault inherited-FD boundary. The heartbeat process adapter must not acquire or transport the secret itself.",
+    "owner": "TC/TVC provider-capability authority plus existing StegFin vault boundary; TVC task state remains the current durable resolver record",
+    "problem_statement": "After Inventory N, the provider capability must be delivered to the released StegFin carrier only through the canonical TC/TVC/vault inherited-FD boundary. The heartbeat process adapter must not acquire or transport the secret itself.",
     "solution_required": true,
     "workaround_candidates": [],
-    "next_solution_action": "CONSUME_CANONICAL_TVC_VAULT_CAPABILITY_RELEASE_WHEN_MACHINE_OBSERVABLE",
+    "next_solution_action": "CONSUME_CANONICAL_TC_TVC_VAULT_CAPABILITY_RELEASE_WHEN_MACHINE_OBSERVABLE",
     "machine_observable_release_condition": "TVC provider-capability task reaches a released state exposing a local non-exporting capability contract compatible with the StegFin inherited provider-secret FD boundary; no GitHub credential is required",
     "third_party_blocker": false,
     "human_action_required": false
