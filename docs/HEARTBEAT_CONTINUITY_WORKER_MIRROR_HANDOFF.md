@@ -44,9 +44,9 @@ custody_reconstruction_owner: master-records/orchestration
 state: ACTIVE / PRODUCT_INCOMPLETE
 ```
 
-### Native local-model execution delta — 2026-08-10
+### Native local-model execution delta — merged and validated 2026-08-10
 
-The former descriptive step “execute/select a local model runtime” is superseded by executable heartbeat-worker behavior on branch `feat/ecosystem-chat-native-local-model-activation-20260810` / PR #68.
+The former descriptive step “execute/select a local model runtime” is superseded by executable heartbeat-worker behavior merged in PR #68 at `d4e22a3aa39b7f567e3a66d73d00abec1dcee494`.
 
 `workers/ecosystem_chat_sovereign_inference_worker.py` now:
 
@@ -129,20 +129,21 @@ execution_authority_effect: NONE
 
 GitHub repositories/Actions may be mirrors, review and validation surfaces. They may not own production deployment, liveness, scheduling, worker leasing, runtime model retrieval, model execution or execution authority.
 
-## Validation boundary
+## Validation evidence
 
-PR #68 validation may prove source compatibility and deterministic behavior only. It cannot satisfy the sovereign-carrier predicates.
-
-Required deterministic validation for the native local-model delta:
+PR #68 validation proved source compatibility and deterministic behavior only; it does not satisfy sovereign-carrier predicates.
 
 ```text
-reference proof acceptance/rejection
-materialized local runtime discovery
-real local verifier process invocation contract
-proof persistence in admitted worker receipt namespace
-hosted validation environment rejected as production launch authority
-no GitHub-token requirement
+PR #68: MERGED
+merge: d4e22a3aa39b7f567e3a66d73d00abec1dcee494
+PR Heartbeat Worker Project: 31381743245 / job 93433229575 / SUCCESS
+PR organization control-plane validation: 31381743221 / SUCCESS
+main organization control-plane validation: 31381823247 / SUCCESS
+org continuation repair: 19ac7e753c93e646e2b4fc1d608e524d0c74d768
+Org Continuation Check: 31381974073 / SUCCESS
 ```
+
+The heartbeat-worker validation explicitly passed the sovereign local-model proof step together with heartbeat semantics, worker coordination, blocker invariants, capability bounds and mutation-scope checks.
 
 ## Remaining direct activation predicates
 
@@ -193,7 +194,7 @@ worker coordination implementation: 100%
 sovereign host implementation: 100%
 ephemeral E1/E2 carrier implementation: 100%
 canonical local-model development: COMPLETE_RELEASED in micro-node-runtime#22
-heartbeat-worker automatic local runtime discovery/launch/proof: IMPLEMENTED_IN_PR_68 / VALIDATION_PENDING
+heartbeat-worker automatic local runtime discovery/launch/proof: COMPLETE_MERGED_VALIDATED
 third-party production blocker: REMOVED
 GitHub-token runtime dependency: PROHIBITED
 sovereign runtime direct observation: pending
@@ -205,6 +206,6 @@ Ecosystem Chat product activation: NOT COMPLETE
 
 ## Session consolidation / archive condition
 
-The local-model selection and formal-model-development requirements are durable in `StegVerse-002/micro-node-runtime#22`. The no-GitHub-token correction is durable in TV/TVC and LLM-adapter task reconciliation. This session additionally owns PR #68 until deterministic validation, merge and main-branch reconciliation are complete.
+The local-model selection and formal-model-development requirements are durable in `StegVerse-002/micro-node-runtime#22`. The no-GitHub-token correction is durable in TV/TVC and LLM-adapter task reconciliation. PR #68 is merged and deterministic validation is complete.
 
-After PR #68 is merged and validated, unfinished production predicates remain machine-owned by #59/#60, TVC route task, LLM-adapter #18 and Master Records. Product activation must still not be reported as complete until direct runtime evidence exists.
+Unfinished production predicates remain machine-owned by #59/#60, TVC route task, LLM-adapter #18 and Master Records. Product activation must not be reported as complete until direct runtime evidence exists. Under the organization archive invariant, this conversation remains non-archive-ready while those inherited activation goals remain non-terminal.
