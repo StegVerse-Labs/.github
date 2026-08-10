@@ -20,6 +20,7 @@ AUTH_ENV = {
     "MASTER_RECORDS_RECEIPT_KEY",
     "STEGVERSE_MASTER_RECORDS_TOKEN",
 }
+CURRENT_CREDENTIAL_AUTHORITY = "TC/TVC"
 
 
 def stable_hash(value: Any) -> str:
@@ -68,7 +69,7 @@ def credential_free_child_env(master_records_root: Path) -> dict[str, str]:
     env = {key: value for key, value in os.environ.items() if key not in AUTH_ENV}
     env["PYTHONPATH"] = str(master_records_root)
     env["STEGVERSE_LOCAL_MODEL_CREDENTIAL_REQUIREMENT"] = "NONE"
-    env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "StegVerse-Labs/TV+TVC"
+    env["STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY"] = CURRENT_CREDENTIAL_AUTHORITY
     env["STEGVERSE_MASTER_RECORDS_RECONSTRUCTION_MODE"] = "CREDENTIAL_FREE_LOCAL"
     return env
 
@@ -101,7 +102,7 @@ def reconstruction_receipt_verified(
         and receipt.get("model_id") == execution.get("model_id")
         and receipt.get("model_hash") == execution.get("model_hash")
         and receipt.get("route_authority") == "StegVerse-Labs/TVC"
-        and receipt.get("credential_authority") == "StegVerse-Labs/TV+TVC"
+        and receipt.get("credential_authority") == CURRENT_CREDENTIAL_AUTHORITY
         and receipt.get("credential_requirement") == "NONE"
         and receipt.get("github_token_required") is False
         and receipt.get("third_party_execution_platform_required") is False
@@ -173,7 +174,7 @@ def execute_reconstruction(
         "stdout_tail": None if verified else process.stdout[-1200:],
         "stderr_tail": None if verified else process.stderr[-1200:],
         "credential_requirement": "NONE",
-        "credential_authority": "StegVerse-Labs/TV+TVC",
+        "credential_authority": CURRENT_CREDENTIAL_AUTHORITY,
         "github_token_required": False,
         "github_auth_env_forwarded": False,
         "master_records_bearer_auth_forwarded": False,
@@ -185,6 +186,7 @@ def execute_reconstruction(
 
 __all__ = [
     "AUTH_ENV",
+    "CURRENT_CREDENTIAL_AUTHORITY",
     "credential_free_child_env",
     "execute_reconstruction",
     "find_master_records_root",
