@@ -26,35 +26,29 @@ product_activation: INCOMPLETE
 
 ## Sovereign local-model lifecycle
 
-The descriptive local-model selection step is eliminated. PR #68 already merged deterministic local capsule discovery and verifier invocation. `StegVerse-002/micro-node-runtime#28` subsequently merged persistent endpoint verification so the same model process can remain alive after proof.
+The descriptive local-model selection step is eliminated. PR #68 merged local capsule discovery/verifier invocation. `StegVerse-002/micro-node-runtime#28` merged persistent endpoint verification. `.github#69` merged heartbeat-owned persistent model process lifecycle at `4479fbb5399ccd1509ec1fdcc95dacfcc173b9b8` and passed PR plus main validation.
 
-Active integration branch `feat/persistent-sovereign-model-lifecycle-20260810` upgrades `workers/ecosystem_chat_sovereign_inference_worker.py` from temporary proof generation to heartbeat-owned model process lifecycle:
+Canonical live sequence is now executable through the TVC boundary:
 
 ```text
-find canonical materialized micro-node capsule
--> start tools/run_sovereign_model.py on free 127.0.0.1 port
--> verify exact running endpoint through canonical verifier --endpoint
--> persist live_model_process.json with pid/endpoint/model/proof/claim/fence
--> keep process alive across heartbeat cycles
--> require TVC ROUTE_ADMITTED / credential_requirement NONE
--> LLM-adapter consumes exactly admitted endpoint
+heartbeat discovers materialized micro-node capsule
+-> starts tools/run_sovereign_model.py on a loopback port
+-> verifies that exact running endpoint through canonical verifier --endpoint
+-> persists live_model_process.json with pid/endpoint/model/proof/claim/fence
+-> keeps process alive across heartbeat cycles
+-> discovers a locally materialized canonical TVC capsule
+-> invokes TVC scripts/evaluate_sovereign_local_model_route.py
+-> verifies the TVC receipt binds exact proof hash + endpoint
+-> requires ROUTE_ADMITTED / credential_requirement NONE / github_token_required false
+-> advances to LLM_ADAPTER_SAME_ENDPOINT_EXECUTION
 -> governed E1 -> model -> E2
 -> measured usage + same-execution Master Records reconstruction
 -> heartbeat retires its model process after terminal success or stale/failed lease
 ```
 
-The worker distinguishes a historical temporary-probe proof from a persistent endpoint proof. Route admission may advance only when the proof has `process_owned_by_verifier=false`, `live_endpoint_remains_available=true`, private endpoint evidence, matching canonical model identity, no third-party inference, no model authority, and no GitHub-token requirement.
+`workers/tvc_sovereign_route_bridge.py` does not reimplement TVC policy. It locates the canonical TVC task/module/CLI on StegVerse-local workload paths and invokes that code. `workers/ecosystem_chat_sovereign_route_worker.py` chains the canonical inference worker into TVC route authority and fails closed if TVC is absent or denies the exact proof/endpoint.
 
-Persistent lifecycle receipt:
-
-```text
-receipts/ecosystem-chat-sovereign-inference/live_model_process.json
-schema: stegverse.sovereign-live-model-process/v0.1
-heartbeat_owned: true
-credential_requirement: NONE
-github_token_required: false
-third_party_execution_platform_required: false
-```
+`control/process-worker-adapters.json` generation 7 points `process:ecosystem-chat-sovereign-inference-v1` to this chained worker. Production environment allowlist remains empty: no GitHub token or hosted-provider credential is admitted to the worker process.
 
 ## Authority split
 
@@ -68,53 +62,48 @@ custody/reconstruction: master-records/orchestration
 execution/admissibility: CGE/StegGate
 ```
 
-No layer above grants authority merely because the model is co-resident or responsive.
+No model, route, transport, or heartbeat liveness observation grants execution authority.
 
 ## Validation evidence
 
-Released predecessor:
-
 ```text
 PR #68 merge: d4e22a3aa39b7f567e3a66d73d00abec1dcee494
-Heartbeat Worker Project: 31381743245 / SUCCESS
-organization control-plane validation: 31381743221 / SUCCESS
+PR #68 Heartbeat Worker Project: 31381743245 / SUCCESS
+micro-node-runtime PR #28 merge: e64e1f36a85c0eb23937219118b649b9b18ae390
+micro-node Validate Runtime: 31384116055 / job 93440650414 / SUCCESS
+micro-node Handoff Authority: 31384116146 / SUCCESS
+micro-node Continuity Provenance: 31384116566 / SUCCESS
+micro-node PWC-003 Orchestrator: 31384116123 / SUCCESS
+.github PR #69 merge: 4479fbb5399ccd1509ec1fdcc95dacfcc173b9b8
+.github PR #69 control-plane validation: 31384247674 / SUCCESS
+.github PR #69 Heartbeat Worker Project: 31384247619 / job 93441007434 / SUCCESS
+.github main control-plane validation after #69: 31384310412 / SUCCESS
 ```
 
-Canonical persistent-endpoint dependency:
-
-```text
-StegVerse-002/micro-node-runtime PR #28
-merge: e64e1f36a85c0eb23937219118b649b9b18ae390
-Validate Micro-Node Runtime: 31384116055 / job 93440650414 / SUCCESS
-Handoff Authority: 31384116146 / SUCCESS
-Continuity Provenance: 31384116566 / SUCCESS
-PWC-003 Runtime Orchestrator: 31384116123 / SUCCESS
-```
-
-Current heartbeat lifecycle branch adds tests proving that a temporary verifier-owned proof cannot be mistaken for a live endpoint and that the heartbeat writes a bounded `LIVE_VERIFIED` lifecycle with credential `NONE` and no GitHub token. Hosted CI can validate these semantics but cannot satisfy production activation.
+Current branch `feat/tvc-local-route-auto-admission-20260810` adds deterministic tests for local TVC discovery, exact proof-hash/endpoint binding, credential class `NONE`, and route authority ceiling. Hosted CI remains validation only and cannot satisfy sovereign-carrier activation.
 
 ## Remaining direct activation predicates
 
-Ecosystem Chat activation reaches terminal success only after one StegVerse-owned/federated carrier directly proves:
+Ecosystem Chat terminal activation still requires direct observation on one StegVerse-owned/federated carrier of:
 
-1. canonical model process remains live under the heartbeat-owned lifecycle;
-2. TVC admits that exact private endpoint with credential class `NONE`;
-3. `StegVerseLocalHTTPProviderClient` consumes that exact endpoint;
-4. sovereign E1 -> model worker -> E2 completes;
-5. measured provider/model usage persists;
+1. persistent heartbeat-owned model process;
+2. canonical TVC route receipt for that exact proof/endpoint;
+3. `StegVerseLocalHTTPProviderClient` consuming that exact route;
+4. sovereign E1 -> model worker -> E2;
+5. measured provider/model usage persisted;
 6. Master Records provider-usage reconstruction PASS;
 7. Master Records transition reconstruction PASS for the same execution;
-8. model process is retired by the heartbeat after terminal/release condition;
+8. heartbeat-owned model process retired under its release condition;
 9. `third_party_inference_required=false` and `github_token_required=false` throughout.
 
-Separately, heartbeat production activation still requires direct durable service/restart continuity evidence under #59. Repository/CI success is not that evidence.
+Separately, heartbeat production activation still requires durable native-service/restart continuity evidence under #59.
 
 ## Collision boundaries
 
 - one heartbeat and one canonical worker registry only;
 - no duplicate local-model authority;
 - no GitHub token/source checkout in runtime discovery, launch, proof, route or inference;
-- GitHub Actions is validation only;
+- GitHub Actions is validation only, never production route/runtime authority;
 - no hosted provider fallback;
 - TV/TVC remains credential/route authority, not execution authority;
 - no duplicate LLM-adapter transport or Master Records custody.
@@ -128,8 +117,9 @@ sovereign host implementation: 100%
 ephemeral E1/E2 carrier implementation: 100%
 formal local-model development: COMPLETE_RELEASED
 persistent local endpoint verifier: COMPLETE_MERGED_VALIDATED
-heartbeat persistent model lifecycle: IMPLEMENTED_BRANCH_VALIDATION_PENDING
+heartbeat persistent model lifecycle: COMPLETE_MERGED_VALIDATED
 TVC credential-free route evaluator: COMPLETE_MERGED / carrier observation pending
+heartbeat -> local TVC automatic route invocation: IMPLEMENTED_BRANCH_VALIDATION_PENDING
 GitHub-token runtime dependency: PROHIBITED
 same-carrier LLM-adapter execution: pending
 Master Records same-execution reconstruction: pending
@@ -139,4 +129,4 @@ Ecosystem Chat product activation: NOT COMPLETE
 
 ## Session consolidation / archive condition
 
-The model development, no-GitHub-token requirement, persistent endpoint proof contract, authority split, and remaining exact activation sequence are durable in canonical repositories. This session still owns the heartbeat persistent lifecycle branch until validation/merge. After merge, continuation moves to the TVC/LLM-adapter/Master Records same-carrier integration unless another active claim already owns it. Do not declare archive-ready while inherited activation goals remain non-terminal without a measurably progressing canonical successor.
+The model development, no-GitHub-token rule, persistent endpoint proof/lifecycle, TVC route contract, authority split, and remaining exact activation sequence are durable. This session owns the automatic heartbeat-to-TVC integration branch until validation/merge. After that, the next unique integration is LLM-adapter same-endpoint execution unless a live claim already owns it. Do not declare archive-ready while inherited activation goals remain non-terminal without a measurably progressing canonical successor.
