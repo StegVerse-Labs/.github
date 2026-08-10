@@ -71,8 +71,20 @@
       "notes": ["Heartbeat-owned Ecosystem Chat sovereign inference activation worker.", "It requires real StegVerse-local model execution plus same-execution reconstruction evidence and never treats fixtures as activation.", "Writes only receipts/ecosystem-chat-sovereign-inference/**.", "GitHub Models, Render, Cloudflare and hosted inference are not production dependencies or blockers."],
       "timeout_seconds": 30,
       "type": "process_json_v0.1"
+    },
+    {
+      "adapter_ref": "process:stegfin-sovereign-trading-v1",
+      "authority_ref": "handoffs/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json#authority",
+      "capabilities": ["runtime_observation", "bounded_process_execution", "durable_state_reconstruction"],
+      "command": ["python", "workers/stegfin_sovereign_trading_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGFIN_ROOT"],
+      "notes": ["Heartbeat-owned StegFin sovereign trading activation worker.", "GitHub Actions and other hosted runners are validation-only and cannot become production execution authority.", "The worker may execute only the bounded sovereign activation round and writes only receipts/stegfin-sovereign-trading/**.", "No wallet signing, broadcast, custody, scale-up, or external settlement authority is granted."],
+      "timeout_seconds": 210,
+      "type": "process_json_v0.1"
     }
   ],
-  "generation": 6,
+  "generation": 7,
   "schema": "stegverse.process-worker-adapters/v0.1"
 }
