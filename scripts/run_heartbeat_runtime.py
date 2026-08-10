@@ -14,6 +14,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from heartbeat_runtime import HeartbeatRuntime, ProcessWorkerAdapter
+from heartbeat_runtime.sovereign_autoadmit import auto_admit_declared_workers
 
 
 def load_adapters(root: Path) -> dict[str, ProcessWorkerAdapter]:
@@ -56,6 +57,8 @@ def main() -> int:
         raise SystemExit("continuous dry-run is prohibited because non-persistent state cannot prove advancing heartbeat epochs")
 
     root = Path(args.root).resolve()
+    if not args.dry_run:
+        auto_admit_declared_workers(root)
     runtime = HeartbeatRuntime(root, adapters=load_adapters(root))
     running = True
 
