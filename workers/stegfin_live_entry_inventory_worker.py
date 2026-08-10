@@ -206,7 +206,7 @@ def main() -> int:
                 "blocker": blocker,
             }
             atomic_write(RECEIPT, durable)
-            json.dump(response(state="RETRY", transition_id="STEGFIN_INVENTORY_N_RETRY", sequence=1, next_transition="STEGFIN_INVENTORY_N_OBSERVED", evidence_refs=[str(RECEIPT.relative_to(ROOT))], blocker=blocker), sys.stdout, sort_keys=True)
+            json.dump(response(state="FAILED_RETRYABLE", transition_id="STEGFIN_INVENTORY_N_RETRY", sequence=1, next_transition="STEGFIN_INVENTORY_N_OBSERVED", evidence_refs=[str(RECEIPT.relative_to(ROOT))], blocker=blocker), sys.stdout, sort_keys=True)
             sys.stdout.write("\n")
             return 0
         try:
@@ -241,7 +241,7 @@ def main() -> int:
             "blocker": blocker,
         }
         atomic_write(RECEIPT, durable)
-        json.dump(response(state="FAILED", transition_id="STEGFIN_INVENTORY_N_CONTRACT_FAILED", sequence=1, next_transition="STEGFIN_INVENTORY_N_OBSERVED", evidence_refs=[str(RECEIPT.relative_to(ROOT))], blocker=blocker), sys.stdout, sort_keys=True)
+        json.dump(response(state="FAILED_TERMINAL", transition_id="STEGFIN_INVENTORY_N_CONTRACT_FAILED", sequence=1, next_transition=None, evidence_refs=[str(RECEIPT.relative_to(ROOT))], blocker=blocker), sys.stdout, sort_keys=True)
         sys.stdout.write("\n")
         return 0
 
