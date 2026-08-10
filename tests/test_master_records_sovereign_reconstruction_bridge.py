@@ -68,7 +68,7 @@ def valid_receipt(proof: dict, route: dict, execution: dict) -> dict:
         "model_id": execution["model_id"],
         "model_hash": execution["model_hash"],
         "route_authority": "StegVerse-Labs/TVC",
-        "credential_authority": "StegVerse-Labs/TV+TVC",
+        "credential_authority": "TC/TVC",
         "credential_requirement": "NONE",
         "github_token_required": False,
         "third_party_execution_platform_required": False,
@@ -115,7 +115,7 @@ class MasterRecordsSovereignReconstructionBridgeTests(unittest.TestCase):
             for name in mod.AUTH_ENV:
                 self.assertNotIn(name, env)
             self.assertEqual(env["STEGVERSE_LOCAL_MODEL_CREDENTIAL_REQUIREMENT"], "NONE")
-            self.assertEqual(env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"], "StegVerse-Labs/TV+TVC")
+            self.assertEqual(env["STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY"], "TC/TVC")
             self.assertEqual(env["STEGVERSE_MASTER_RECORDS_RECONSTRUCTION_MODE"], "CREDENTIAL_FREE_LOCAL")
         finally:
             for name, value in old.items():
@@ -149,9 +149,10 @@ class MasterRecordsSovereignReconstructionBridgeTests(unittest.TestCase):
                 "import argparse,hashlib,json,os\n"
                 "p=argparse.ArgumentParser(); p.add_argument('--packet',required=True); p.add_argument('--output',required=True); a=p.parse_args()\n"
                 "for k in ('GITHUB_TOKEN','GH_TOKEN','GITHUB_PAT','GITHUB_PERSONAL_ACCESS_TOKEN','ACTIONS_RUNTIME_TOKEN','ACTIONS_ID_TOKEN_REQUEST_TOKEN','MASTER_RECORDS_AUTH_TOKEN','MASTER_RECORDS_RECEIPT_KEY','STEGVERSE_MASTER_RECORDS_TOKEN'): assert not os.getenv(k)\n"
+                "assert os.getenv('STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY') == 'TC/TVC'\n"
                 "packet=json.load(open(a.packet)); proof=packet['runtime_proof']; route=packet['tvc_route_receipt']; execution=packet['llm_adapter_execution_receipt']\n"
                 "h=lambda v: hashlib.sha256(json.dumps(v,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()\n"
-                "r={'schema':'stegverse.master_records.ecosystem_chat_sovereign_reconstruction/v1','task_id':'MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024','state':'PASS','session_id':execution['session_id'],'transition_id':execution['transition_id'],'measurement_id':execution['measurement_id'],'runtime_proof_hash':h(proof),'tvc_route_receipt_hash':route['receipt_hash'],'provider_usage_event_sha256':execution['provider_usage_event']['event_sha256'],'request_hash':execution['request_hash'],'response_hash':execution['response_hash'],'model_id':execution['model_id'],'model_hash':execution['model_hash'],'route_authority':'StegVerse-Labs/TVC','credential_authority':'StegVerse-Labs/TV+TVC','credential_requirement':'NONE','github_token_required':False,'third_party_execution_platform_required':False,'provider_usage_reconstruction_pass':True,'transition_reconstruction_pass':True,'same_execution':True,'execution_authority':False,'admissibility_determined':False,'authority_effect':'NONE','next_transition':'ECOSYSTEM_CHAT_ZERO_BLOCKER_ACTIVATION_VERIFICATION'}\n"
+                "r={'schema':'stegverse.master_records.ecosystem_chat_sovereign_reconstruction/v1','task_id':'MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024','state':'PASS','session_id':execution['session_id'],'transition_id':execution['transition_id'],'measurement_id':execution['measurement_id'],'runtime_proof_hash':h(proof),'tvc_route_receipt_hash':route['receipt_hash'],'provider_usage_event_sha256':execution['provider_usage_event']['event_sha256'],'request_hash':execution['request_hash'],'response_hash':execution['response_hash'],'model_id':execution['model_id'],'model_hash':execution['model_hash'],'route_authority':'StegVerse-Labs/TVC','credential_authority':'TC/TVC','credential_requirement':'NONE','github_token_required':False,'third_party_execution_platform_required':False,'provider_usage_reconstruction_pass':True,'transition_reconstruction_pass':True,'same_execution':True,'execution_authority':False,'admissibility_determined':False,'authority_effect':'NONE','next_transition':'ECOSYSTEM_CHAT_ZERO_BLOCKER_ACTIVATION_VERIFICATION'}\n"
                 "r['reconstruction_receipt_hash']=h(r); open(a.output,'w').write(json.dumps(r)); print(json.dumps(r))\n",
                 encoding="utf-8",
             )
@@ -179,6 +180,7 @@ class MasterRecordsSovereignReconstructionBridgeTests(unittest.TestCase):
             self.assertFalse(result["github_auth_env_forwarded"])
             self.assertFalse(result["master_records_bearer_auth_forwarded"])
             self.assertEqual(result["credential_requirement"], "NONE")
+            self.assertEqual(result["credential_authority"], "TC/TVC")
 
 
 if __name__ == "__main__":
