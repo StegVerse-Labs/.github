@@ -7,189 +7,152 @@ This scoped handoff is subordinate to `docs/ORG_MIRROR_HANDOFF.md` and `StegVers
 ```text
 goal_id: SOVEREIGN-HEARTBEAT-PRODUCTION-ACTIVATION
 repository: StegVerse-Labs/.github
-branch: main
 canonical_owner: StegVerse-Labs/.github#12
 inference_task: SHWP-ECOSYSTEM-CHAT-INFERENCE-001
 inference_issue: StegVerse-Labs/.github#60
 runtime: heartbeat_runtime.engine_v9.HeartbeatRuntime
 carrier: single_stegverse_heartbeat
-credential_policy_owner: StegVerse-Labs/TV
+credential_authority: TC/TVC
 route_authority_owner: StegVerse-Labs/TVC
 local_model_credential_requirement: NONE
 github_token_runtime_dependency: PROHIBITED
 hosted_model_provider_dependency: NONE
 product_activation: INCOMPLETE
-session_specific_implementation_claim: RELEASED
 ```
 
-## Originating session goal and preserved adjacent goals
+Historical committed evidence may retain `StegVerse-Labs/TV`, `TV/TVC`, or `StegVerse-Labs/TV+TVC`. Those are historical references only; new runtime receipts and current semantic contracts use `TC/TVC`.
 
-The originating session required the descriptive “select a local model/runtime” step to be replaced by an actual local discovery/launch/proof path, the model to be formally developed locally, GitHub-token runtime dependency to be removed in favor of TV/TVC authority, finished implementation to be activated where authority permits, and all remaining direct-runtime/custody/propagation work to be durably transferred so the chat can be eliminated without losing state.
+## Originating and adjacent goals
 
-Adjacent preserved goals are persistent heartbeat-owned model lifecycle, exact TVC route admission, exact same-carrier LLM-adapter execution, measured provider/model usage, same-execution Master Records reconstruction, immutable activation evidence, Site activation, downstream Publisher/wiki propagation, and fail-closed orphan recovery after the prior inference worker stopped responding.
+The originating session required replacement of descriptive “select a local model/runtime” behavior with actual local discovery/launch/proof, formal local model development, removal of GitHub-token production dependence, activation of finished work where authority permits, same-carrier inference/reconstruction, and durable transfer of all remaining work.
+
+Adjacent goals include persistent heartbeat-owned model lifecycle, exact TVC route admission, exact LLM-adapter execution, measured usage, same-execution Master Records reconstruction, immutable activation evidence, downstream Site/Publisher/wiki propagation, and fail-closed orphan recovery.
 
 ## Canonical executable path
 
-The descriptive local-model boundary is eliminated. The installed path is:
-
 ```text
-heartbeat discovers already-materialized StegVerse-002/micro-node-runtime capsule
--> starts canonical local model on loopback
--> verifies the exact still-running endpoint
--> persists PID/endpoint/model/proof/claim/fence lifecycle
--> discovers already-materialized StegVerse-Labs/TVC capsule
--> TVC evaluates exact proof + endpoint
--> require ROUTE_ADMITTED / credential_requirement NONE
--> discover already-materialized StegVerse-org/LLM-adapter capsule
--> strip GitHub authentication variables from the child runtime environment
--> invoke LLMA-SOVEREIGN-CARRIER-EXECUTION-020
--> StegVerseLocalHTTPProviderClient consumes exactly the admitted endpoint
--> persist measured prompt/completion/total-token + latency evidence
--> canonical Master Records provider-usage reconstruction
--> canonical Master Records transition reconstruction for the same execution
--> immutable zero-blocker activation receipt
--> Site activation and Publisher/wiki propagation
--> retire heartbeat-owned model process after terminal release condition
+heartbeat discovers already-materialized StegVerse-002/micro-node-runtime
+-> starts/proves private local model endpoint
+-> persists model lifecycle under claim/fence
+-> discovers locally materialized StegVerse-Labs/TVC
+-> requires ROUTE_ADMITTED / credential_requirement NONE
+-> discovers locally materialized StegVerse-org/LLM-adapter
+-> executes LLMA-SOVEREIGN-CARRIER-EXECUTION-020 against the exact admitted endpoint
+-> persists measured usage
+-> discovers locally materialized master-records/orchestration
+-> invokes MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024 on the exact proof/route/execution packet
+-> requires provider_usage_reconstruction_pass + transition_reconstruction_pass + same_execution
+-> advances only to immutable zero-blocker activation verification
 ```
 
-No source checkout, GitHub token, hosted-provider key, Render, Vercel, Cloudflare, or other hosted inference/deployment credential belongs to the production model discovery/launch/proof/route/inference path. GitHub Actions is validation only; its internal repository checkout authentication is not a TV/TVC model credential and is never forwarded into the sovereign model/TVC/LLM-adapter child process path.
+No source checkout, GitHub token, hosted-provider key, Render, Vercel, Cloudflare, or remote custody endpoint belongs to this production execution path. GitHub Actions remains validation-only.
 
-## Credential and authority boundary
-
-Canonical TV policy is `StegVerse-Labs/TV/policies/sovereign_local_model_credential_policy.v1.json`:
+## Installed implementation
 
 ```text
-credential_class: NONE
-github_token_allowed: false
-hosted_provider_credential_allowed: false
-source_repository_credential_allowed_at_runtime: false
-route_authority: StegVerse-Labs/TVC
-transport_consumer: StegVerse-org/LLM-adapter
-execution_authority: false
-authority_effect: NONE
+formal local model/runtime: StegVerse-002/micro-node-runtime / COMPLETE_RELEASED
+persistent endpoint proof: micro-node PR #28
+heartbeat persistent model lifecycle: .github PR #69
+heartbeat -> TVC route: .github PR #70
+LLM-adapter exact carrier executor: LLM-adapter PR #135 / COMPLETE_RELEASED
+heartbeat -> LLM-adapter execution: .github PR #71
+orphan-recovery reconciliation: .github PR #72
+credential-free StegFin Inventory N heartbeat consumer: .github PR #73
+exact StegFin worker resolution: .github PR #74 / b5c208c98f8f0460ca30e97400b70ae952a8578b
+Master Records same-execution verifier: orchestration PR #24 / COMPLETE_RELEASED
+Master Records TC/TVC semantic correction: orchestration PR #25 / 6ac6ed75c7e9a96610d81afff8a431c981bb930c
+heartbeat -> Master Records local same-carrier bridge: integration/ecosystem-chat-master-records-reconstruction-20260810 / validation pending
 ```
 
-Authority remains split:
-
-```text
-model/runtime/server/proof: StegVerse-002/micro-node-runtime#22
-heartbeat lifecycle/claim/fence: StegVerse-Labs/.github#59/#60
-credential policy: StegVerse-Labs/TV
-route authority: StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json
-provider transport + measured usage: StegVerse-org/LLM-adapter/tasks/LLMA-SOVEREIGN-CARRIER-EXECUTION-020.json
-custody/reconstruction: master-records/orchestration
-admissibility/execution governance: CGE/StegGate
-```
-
-Provider output, route admission, workflow success, measured usage, custody, reconstruction, or heartbeat state grants no additional execution authority.
-
-## Installed and validated implementation
-
-```text
-formal local model/runtime: SOVEREIGN-LOCAL-MODEL-001 / COMPLETE_RELEASED
-micro-node persistent endpoint PR #28: e64e1f36a85c0eb23937219118b649b9b18ae390
-  Validate Micro-Node Runtime 31384116055 SUCCESS
-  Handoff Authority 31384116146 SUCCESS
-  Continuity Provenance 31384116566 SUCCESS
-  PWC-003 Runtime Orchestrator 31384116123 SUCCESS
-
-heartbeat persistent model lifecycle PR #69: 4479fbb5399ccd1509ec1fdcc95dacfcc173b9b8
-  control-plane 31384247674 SUCCESS
-  Heartbeat Worker Project 31384247619 SUCCESS
-
-heartbeat -> canonical TVC route PR #70: f25204874189a90bc2bc07f1ac65d060be41e397
-  Heartbeat Worker Project 31384657195 SUCCESS
-  control-plane 31384657111 SUCCESS
-
-LLM-adapter canonical carrier executor PR #135: 72934c7cf135ce2953591a81fe01e16c9719ec2f
-  validate 31385239611 SUCCESS
-  Architecture Guard 31385239593 SUCCESS
-  provider-owned usage 31385239563 SUCCESS
-
-heartbeat -> local LLM-adapter exact-route PR #71: fbe909d5180fdd8d5da56992766f7657318a17e0
-  merged-main Heartbeat Worker Project 31405120648 SUCCESS
-
-orphan-recovery reconciliation PR #72: 7fea54b9ddb1469ce26c5d81025f840cd1dc46f9
-  PR Heartbeat Worker Project 31405887582 SUCCESS
-  PR organization control-plane 31405887345 SUCCESS
-  merged-main Heartbeat Worker Project 31405954085 SUCCESS
-```
-
-PR #72 installs `heartbeat_runtime/orphan_recovery.py`, updates `engine_v9`, validates the generated HB28 recovery handoff, and proves that only a narrow recovery contract may move from erroneous `QUARANTINED` projection to fail-closed `BLOCKED`. Live old authority, scope expansion, malformed checkpoint binding, or missing Master Records requirement remains quarantined. The recovery path grants no successor, model, credential, or execution authority.
-
-## Canonical files and machine-owned automation
+Canonical heartbeat integration files now include:
 
 ```text
 workers/ecosystem_chat_sovereign_inference_worker.py
 workers/tvc_sovereign_route_bridge.py
 workers/llm_adapter_sovereign_execution_bridge.py
 workers/ecosystem_chat_sovereign_route_worker.py
-heartbeat_runtime/orphan_recovery.py
-heartbeat_runtime/engine_v9.py
-control/process-worker-adapters.json
-handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json
-handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json
-receipts/ecosystem-chat-sovereign-inference/**
+workers/ecosystem_chat_tc_tvc_route_worker.py
+workers/master_records_sovereign_reconstruction_bridge.py
 tests/test_sovereign_inference_local_model_proof.py
 tests/test_tvc_sovereign_route_bridge.py
 tests/test_llm_adapter_sovereign_execution_bridge.py
-tests/test_orphan_recovery_reconciliation.py
+tests/test_master_records_sovereign_reconstruction_bridge.py
+heartbeat_runtime/orphan_recovery.py
+heartbeat_runtime/engine_v9.py
+handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json
+handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json
 ```
 
-`control/process-worker-adapters.json` generation 8 keeps the Ecosystem Chat production process environment allowlist empty. The LLM-adapter bridge explicitly removes `GITHUB_TOKEN`, `GH_TOKEN`, `GITHUB_PAT`, `GITHUB_PERSONAL_ACCESS_TOKEN`, `ACTIONS_RUNTIME_TOKEN`, and `ACTIONS_ID_TOKEN_REQUEST_TOKEN` before launching the canonical local carrier executor. TV/TVC remains credential authority and the admitted credential requirement is `NONE`.
+The Master Records bridge accepts only locally materialized `master-records/orchestration`, builds the exact proof/route/execution packet inside the bounded receipt namespace, invokes the released verifier with a minimal non-secret environment, deletes the transient packet, and accepts only a PASS bound to the exact session/transition/measurement/request/response/model identities with `credential_authority=TC/TVC`, `credential_requirement=NONE`, and `github_token_required=false`.
+
+## StegFin live-entry worker state
+
+`STEGFIN-LIVE-ENTRY-003` is a separate real Base/0x validation-entry task from the internal sovereign-market task in open PR #67.
+
+At heartbeat epoch 29, the task remained `HANDOFF_READY` because two generic sovereign workers matched its prior capability set. PR #74 corrected this without fabricating a retroactive claim: the task now requires `stegfin_live_entry_inventory_observation`, advertised only by `stegfin-live-entry-inventory-worker`.
+
+```text
+epoch 29: HISTORICAL / no claim minted
+PR #74: MERGED_VALIDATED
+next valid action: resident heartbeat later than epoch 29 mints its own claim/fence and invokes exact StegFin worker
+retroactive epoch-29 claim: PROHIBITED
+```
+
+The worker remains credential-free and stops after fresh complete Inventory N at the separately authorized TC/TVC/vault provider-capability boundary. It has no wallet signing or broadcast authority.
 
 ## Orphan recovery state
 
-The prior registry state already contained `RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28`. Its canonical recovery source is:
+The inference lineage remains subject to the generated recovery task:
 
 ```text
 parent: SHWP-ECOSYSTEM-CHAT-INFERENCE-001
 last_valid_checkpoint: checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json
 old_fence: 20
 recovery_handoff: handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json
-observer: heartbeat_runtime.engine_v9.HeartbeatRuntime
-required_state_until_evidence: BLOCKED
+required_state_until_reconstruction: BLOCKED
 ```
 
-Machine-observable release condition: a canonical heartbeat cycle must reconcile the narrow recovery contract, a hash-bound reconstruction receipt must bind `HB25-G20` to canonical Master Records evidence, the ended claim/fence must remain unusable, and any successor acquisition must receive separate authorization with a fencing generation greater than 20. No chat session or manual credential copy owns that continuation.
+The old claim/fence must remain unusable. Any successor requires reconstruction plus separate authorization with a fencing generation greater than 20. Installing the Master Records bridge does not itself create that successor.
 
-## Remaining direct activation predicates
+## Remaining runtime predicates
 
-Repository implementation is not direct runtime activation. Product terminal activation still requires one StegVerse-owned/federated carrier to directly prove all of the following: persistent heartbeat-owned model process; TVC admission of that exact proof/endpoint; task 020 consumption of that exact endpoint; governed E1 -> model -> E2 execution; measured usage persistence; provider-usage Master Records reconstruction PASS; transition reconstruction PASS for the same execution; immutable zero-blocker activation receipt; model-process retirement under its release condition; and `third_party_inference_required=false` plus `github_token_required=false` throughout. Separately, #59 still owns durable native-service/restart continuity observation.
+Repository implementation does not prove live activation. Direct product activation still requires a sovereign carrier to observe the complete exact chain: model process, TVC admission, LLM-adapter exact execution, measured usage, Master Records same-execution PASS, immutable activation receipt, and governed retirement/release behavior. Missing locally materialized workloads remain fail-closed with machine-observable release conditions.
 
-## Cross-repository continuation and propagation
+For `STEGFIN-LIVE-ENTRY-003`, live completion separately requires a post-29 heartbeat claim/fence and either a fresh Inventory N receipt or an explicit fail-closed local-materialization receipt; subsequent TC/TVC/vault capability release and wallet actions remain separately authorized boundaries.
+
+## Cross-repository continuation
 
 ```text
-runtime/orphan recovery: StegVerse-Labs/.github#59/#60 + control/worker-registry.json
-model/runtime: StegVerse-002/micro-node-runtime#16/#22
-credential policy: StegVerse-Labs/TV
-route task: StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json
-provider execution: StegVerse-org/LLM-adapter/tasks/LLMA-SOVEREIGN-CARRIER-EXECUTION-020.json
-custody/reconstruction: master-records/orchestration
-activation projection: StegVerse-Labs/Site
-post-activation verification: GCAT-BCAT-Engine/Publisher, StegVerse-Labs/admissibility-wiki, StegVerse-002/stegguardian-wiki
+heartbeat/orphan recovery: StegVerse-Labs/.github#59/#60
+StegFin live entry: StegVerse-Labs/stegfin-governance + .github STEGFIN-LIVE-ENTRY-003
+model/runtime: StegVerse-002/micro-node-runtime#22
+credential semantics: TC/TVC
+route task: StegVerse-Labs/TVC
+provider execution: StegVerse-org/LLM-adapter
+same-execution reconstruction: master-records/orchestration
+activation projection after verified evidence: StegVerse-Labs/Site
+post-activation verification: GCAT-BCAT-Engine/Publisher, admissibility-wiki, stegguardian-wiki
 ```
 
-Propagation must occur only after immutable zero-blocker activation evidence exists; no repository/CI success is represented as downstream activation.
+Propagation occurs only after immutable activation evidence; repository/CI success is not downstream activation.
 
-## Claims, convergence, and session consolidation
+## Claims and consolidation
 
-The session-specific implementation claims for persistent model lifecycle, TVC invocation, LLM-adapter same-route execution, and orphan-recovery reconciliation are `COMPLETE_RELEASED`. No active branch or unique implementation claim remains from this chat. The remaining direct-runtime work is machine-owned under the canonical locations above.
+Completed implementation claims for model development, persistent endpoint lifecycle, TVC routing, LLM-adapter execution, and Master Records verifier are released. The current chat-owned source integration claim is limited to the `.github` Master Records bridge branch and releases when it merges with canonical validation.
 
-MERGED INTO: `StegVerse-Labs/.github/docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md` + `handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json` + `StegVerse-org/LLM-adapter/tasks/LLMA-SOVEREIGN-CARRIER-EXECUTION-020.json` + `StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json` + `master-records/orchestration`.
-
-Deleting or archiving the originating chat no longer removes any unique implementation requirement, collision boundary, recovery condition, evidence reference, or continuation authority. Session archival does **not** mean product activation is complete.
+The live runtime observation for StegFin and the inference orphan successor remains machine-owned after source integration. Session archival is not equivalent to product activation and is not yet justified while this source integration branch remains unmerged.
 
 ## Completion accounting
 
 ```text
-session task completion: 9/9 = 100%
-developed required session files/surfaces: 17/17 = 100%
-scaffolding or stubs in session-specific slice: 0
-session validation gates: 12/12 = 100%
-integration/transfer obligations: 9/9 = 100%
-session consolidation: 9/9 = 100%
-product direct-activation predicates observed: 0/10 = 0% direct observation
-current session goal activation (implementation + durable machine continuation): 100%
-archive readiness: 100%
+formal local model/runtime: COMPLETE
+TVC route implementation: COMPLETE
+LLM-adapter execution implementation: COMPLETE
+Master Records verifier implementation: COMPLETE
+Master Records TC/TVC correction: COMPLETE_MERGED
+heartbeat Master Records bridge: IMPLEMENTED / VALIDATION_PENDING
+StegFin exact worker selection: COMPLETE_MERGED_VALIDATED
+StegFin live post-29 claim/Inventory N: NOT YET OBSERVED
+inference post-orphan higher-fence reconstruction: NOT YET OBSERVED
+archive readiness for this session: NOT YET COMPLETE
 ```
