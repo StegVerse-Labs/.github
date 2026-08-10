@@ -36,7 +36,7 @@
     "dependencies": [],
     "parent_task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
     "derivation_reason": "Operational orphan recovery after the expected worker-response threshold was exceeded on the common heartbeat sequence; this is continuity recovery, not authority-bearing goal succession.",
-    "canonical_owner_ref": "StegVerse-Labs/.github#60",
+    "canonical_owner_ref": "StegVerse-org/LLM-adapter#18",
     "canonical_lineage_key": "ecosystem-chat:sovereign-inference-activation:orphan-recovery:HB28",
     "derivation_depth": 1,
     "priority": "critical"
