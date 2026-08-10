@@ -2,14 +2,14 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
   "created_at": "2026-08-10T15:38:34Z",
-  "state": "HANDOFF_READY",
+  "state": "BLOCKED",
   "goal": {
     "goal_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
-    "objective": "Reconstruct and recover work after the prior worker stopped returning expected transition information to the single StegVerse heartbeat.",
+    "objective": "Reconstruct and recover work after the prior worker stopped returning expected transition information to the single StegVerse heartbeat without reviving the ended claim or widening authority.",
     "success_predicates": [
-      "Prior lifecycle is reconstructed from durable checkpoint and evidence",
+      "Prior lifecycle is reconstructed from durable checkpoint and Master Records evidence",
       "Old worker instance authority remains ended",
-      "Any successor acquisition uses a higher fencing generation"
+      "Any successor acquisition uses a separately authorized higher fencing generation"
     ],
     "failure_predicates": [
       "Missing response is treated as a second heartbeat clock",
@@ -22,7 +22,9 @@
       "no_external_model_provider_authority",
       "no_public_endpoint_requirement",
       "no_third_party_deployment_dependency"
-    ]
+    ],
+    "successor_policy": "NONE",
+    "max_successor_depth": 0
   },
   "task": {
     "task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
@@ -33,7 +35,10 @@
     ],
     "dependencies": [],
     "parent_task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
-    "derivation_reason": "Expected worker response threshold exceeded on the common heartbeat sequence.",
+    "derivation_reason": "Operational orphan recovery after the expected worker-response threshold was exceeded on the common heartbeat sequence; this is continuity recovery, not authority-bearing goal succession.",
+    "canonical_owner_ref": "StegVerse-org/LLM-adapter#18",
+    "canonical_lineage_key": "ecosystem-chat:sovereign-inference-activation:orphan-recovery:HB28",
+    "derivation_depth": 1,
     "priority": "critical"
   },
   "authority": {
@@ -70,11 +75,20 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Create a PASS reconstruction proof from the last valid checkpoint plus Master Records evidence, then separately authorize successor acquisition.",
+    "next_authorized_action": "Produce a PASS reconstruction receipt bound to HB25-G20 and canonical Master Records evidence; only a separate authorization may then create a successor claim with fencing generation greater than 20.",
     "terminal_when": [
-      "Reconstruction proof is durable",
-      "Successor claim uses a higher fence or work is safely terminated"
+      "Reconstruction receipt is durable and Master Records evidence is bound",
+      "Old claim and fence remain unusable",
+      "A separately authorized successor uses a higher fence or the work is safely terminated"
     ]
   },
-  "block": null
+  "block": {
+    "block_reason": "ORPHAN_RECOVERY_RECONSTRUCTION_REQUIRED",
+    "dependency": "master-records/orchestration + checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json",
+    "observer": "heartbeat_runtime.engine_v9.HeartbeatRuntime",
+    "recheck_trigger": "each canonical heartbeat cycle; remain blocked until a hash-bound reconstruction receipt and separate higher-fence authorization are durable",
+    "next_check": null,
+    "escalation_condition": "reconstruction evidence is contradictory, the old claim/fence appears live, or a successor attempts acquisition without a higher fence",
+    "block_expires_at": null
+  }
 }
