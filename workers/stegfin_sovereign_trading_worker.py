@@ -72,6 +72,33 @@ def run_activation(root: Path) -> dict:
     }
 
 
+def blocker(reason: str, root: Path | None) -> dict:
+    if reason == "THIRD_PARTY_HOST_IS_VALIDATION_ONLY":
+        problem = "This invocation is running on a hosted validation surface, which is prohibited from becoming StegFin production worker authority."
+        next_action = "Re-run the same admitted claim on the StegVerse heartbeat's native/federated carrier; do not wait for or substitute the hosted runner."
+    elif reason == "STEGFIN_CAPSULE_NOT_MATERIALIZED_LOCALLY":
+        problem = "The sovereign carrier is present but the StegFin capsule is not yet available at a canonical local workload path."
+        next_action = "Materialize the already-built stegfin-governance capsule into the StegVerse workload root and immediately re-execute the same bounded activation task."
+    else:
+        problem = "The sovereign round runner is not yet complete on the local StegFin capsule."
+        next_action = "Install or execute scripts/run_sovereign_trading_activation_round.py and continue until internal settlement, Master Records reconstruction, and E2 proof all pass."
+    return {
+        "dependency_class": "INTERNAL_CAPABILITY",
+        "problem_statement": problem,
+        "solution_required": True,
+        "may_remain_blocked": False,
+        "workaround_candidates": [
+            "Use the canonical StegVerse heartbeat-owned process adapter on the existing sovereign carrier.",
+            "Use the released StegVerse-002 sovereign E1/E2 micro-node carrier for the same task without changing financial authority.",
+        ],
+        "next_solution_action": next_action,
+        "machine_observable_release_condition": "worker response reaches STEGFIN_SOVEREIGN_TRADING_ACTIVATED with exact reconstruction evidence bound through E2",
+        "third_party_blocker": False,
+        "human_action_required": False,
+        "stegfin_root": str(root) if root else None,
+    }
+
+
 def main() -> int:
     invocation = json.load(sys.stdin)
     if invocation.get("schema") != "stegverse.worker-invocation/v0.1":
@@ -96,22 +123,27 @@ def main() -> int:
 
     hosted = third_party_hosted_environment()
     root = find_stegfin_root()
+    blocked = None
     if hosted:
         attempt = {"attempted": False, "reason": "THIRD_PARTY_HOST_IS_VALIDATION_ONLY"}
         state = "BLOCKED"
         transition = "STEGFIN_SOVEREIGN_WORKER_WAITING_FOR_STEGVERSE_CARRIER"
         expected = "STEGFIN_SOVEREIGN_ACTIVATION_EXECUTION"
+        blocked = blocker(attempt["reason"], root)
     elif root is None:
         attempt = {"attempted": False, "reason": "STEGFIN_CAPSULE_NOT_MATERIALIZED_LOCALLY"}
         state = "BLOCKED"
         transition = "STEGFIN_CAPSULE_MATERIALIZATION_REQUIRED"
         expected = "STEGFIN_SOVEREIGN_ACTIVATION_EXECUTION"
+        blocked = blocker(attempt["reason"], root)
     else:
         attempt = run_activation(root)
         completed = bool(attempt.get("attempted")) and attempt.get("returncode") == 0
         state = "COMPLETED" if completed else "ACTIVE"
         transition = "STEGFIN_SOVEREIGN_TRADING_ACTIVATED" if completed else "STEGFIN_SOVEREIGN_ACTIVATION_EXECUTING"
         expected = None if completed else "STEGFIN_SOVEREIGN_ACTIVATION_EXECUTION"
+        if not completed and not attempt.get("attempted"):
+            blocked = blocker(str(attempt.get("reason")), root)
 
     completed = state == "COMPLETED"
     receipt = {
@@ -126,6 +158,7 @@ def main() -> int:
         "transition_id": transition,
         "stegfin_root": str(root) if root else None,
         "execution_attempt": attempt,
+        "blocker": blocked,
         "github_worker_required": False,
         "third_party_worker_required": False,
         "wallet_signing_authority": False,
@@ -154,6 +187,7 @@ def main() -> int:
             "StegVerse-Labs/stegfin-governance#52",
             "master-records/orchestration#23",
         ],
+        "blocker": blocked,
         "cost_observation": {
             "hb_transition_count": 1,
             "compute_units": 2 if attempt.get("attempted") else 1,
