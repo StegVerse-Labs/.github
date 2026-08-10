@@ -4,105 +4,103 @@
 
 This scoped handoff is subordinate to `docs/ORG_MIRROR_HANDOFF.md` and `StegVerse-Labs/.github#12`. It is the canonical continuation for the single-heartbeat worker/runtime activation goal.
 
+Live default-branch repository state, current worker registry/status, claims, fences, checkpoints, receipts, issues, merged pull requests, and direct sovereign-node observations are authoritative over historical chat or CI claims.
+
 ## Active goal
 
 ```text
 goal_id: SOVEREIGN-HEARTBEAT-PRODUCTION-ACTIVATION
 repository: StegVerse-Labs/.github
-branch: main
 canonical_owner: StegVerse-Labs/.github#12
 canonical_runtime: heartbeat_runtime.engine_v9.HeartbeatRuntime
 activation_carrier: single_stegverse_heartbeat
 heartbeat_default_interval_ms: 10.0
-nominal_cycles_per_second: 100
-worker_coordination_subsignal: control/heartbeat-subsignals.json#worker_coordination
 worker_lease_clock: canonical_heartbeat_cycle
 third_party_deployment_dependency: NONE
 third_party_scheduler_dependency: NONE
 third_party_process_host_dependency: NONE
 heartbeat_owned_worker_execution_observed: true
 durable_continuous_sovereign_runtime_observed: false
-production_activation_percent: 96
+heartbeat_production_activation_percent: 96
 session_continuation_workers_active: true
 ```
 
-Two facts must remain separate:
+Two states remain deliberately separate:
 
-1. **Heartbeat-owned worker execution has occurred and now owns the remaining session-specific activation work.** Real workers are claimed, bound, fenced, heartbeat-timed, cycle-leased, invoked, checkpointed and rechecked through the canonical registry.
-2. **Durable continuously running production heartbeat and real sovereign LLM execution on a StegVerse-owned/federated node are not yet directly observed.** Those are remaining product/runtime proofs. GitHub Actions, Render, Cloudflare, Vercel, hosted inference, or other third-party runtime state cannot satisfy or block these proofs.
+1. heartbeat/worker implementation and worker-owned continuation are active;
+2. durable continuous sovereign runtime plus end-to-end sovereign Ecosystem Chat inference remain direct-observation goals and are not made true by repository or hosted-workflow success.
 
-## Active worker continuation evidence
-
-The canonical registry/status projection at heartbeat epoch 17 records `activation_required_count=0` because all currently admitted session-specific continuation tasks have active executor bindings.
-
-### Sovereign heartbeat/runtime activation worker
-
-```text
-task_id: SHWP-DURABLE-RUNTIME-ACTIVATION
-worker_id: sovereign-runtime-activation-worker
-worker_instance_id: sovereign-runtime-activation-worker-HB15-G18
-claim_id: SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18
-fencing_token: 18
-state: BLOCKED
-current_transition: SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED
-expected_next_transition: SOVEREIGN_RUNTIME_RECHECK
-heartbeat_epoch: 17
-heartbeat_timing_established: true
-executor_binding: BOUND
-executor_resolved: true
-expiry_epoch: 4111
-checkpoint: checkpoints/workers/SHWP-DURABLE-RUNTIME-ACTIVATION/HB17-G18.json
-receipt: receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-issue: StegVerse-Labs/.github#59
-```
-
-This worker rechecks node-local sovereign activation evidence on admitted heartbeat cycles and completes only when the nine direct runtime/restart predicates are true. Its BLOCKED state is expected and fail-closed; it is not an inactive or merely documented task.
-
-### Ecosystem Chat sovereign inference activation worker
+## Ecosystem Chat sovereign inference worker
 
 ```text
 task_id: SHWP-ECOSYSTEM-CHAT-INFERENCE-001
 worker_id: ecosystem-chat-sovereign-inference-worker
-worker_instance_id: ecosystem-chat-sovereign-inference-worker-HB17-G20
-claim_id: SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G20
-fencing_token: 20
-state: BLOCKED
-current_transition: SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED
-expected_next_transition: SOVEREIGN_INFERENCE_RECHECK
-heartbeat_epoch: 17
-heartbeat_timing_established: true
-executor_binding: BOUND
-executor_resolved: true
-expiry_epoch: 4113
-checkpoint: checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB17-G20.json
-receipt: receipts/ecosystem-chat-sovereign-inference/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json
-issue: StegVerse-Labs/.github#60
+canonical_issue: StegVerse-Labs/.github#60
 consumer: StegVerse-org/LLM-adapter#18
+model_runtime_owner: StegVerse-002/micro-node-runtime#22
+credential_policy_owner: StegVerse-Labs/TV
+route_authority_owner: StegVerse-Labs/TVC
+custody_reconstruction_owner: master-records/orchestration
+state: ACTIVE / PRODUCT_INCOMPLETE
 ```
 
-This worker is active independently of the runtime worker so it can observe/recheck inference readiness while the sovereign node carrier remains blocked. It completes only after a real StegVerse-local/private model execution, sovereign E1→worker→E2 response transport, measured usage, and same-execution Master Records provider-usage plus transition reconstruction all pass.
+### Native local-model execution delta — 2026-08-10
 
-### Existing organization-federation worker
+The former descriptive step “execute/select a local model runtime” is superseded by executable heartbeat-worker behavior on branch `feat/ecosystem-chat-native-local-model-activation-20260810` / PR #68.
+
+`workers/ecosystem_chat_sovereign_inference_worker.py` now:
+
+1. searches only StegVerse-local workload locations for an already-materialized canonical `StegVerse-002/micro-node-runtime` capsule;
+2. recognizes the capsule only when the canonical verifier, server, runtime module, manifest and local corpus are present;
+3. on a non-hosted StegVerse carrier, directly executes `tools/verify_sovereign_model_runtime.py` instead of returning a descriptive instruction;
+4. the canonical verifier launches the real loopback model server, performs real local inference, measures token/latency usage and returns the hash-bound sovereign model proof;
+5. persists the accepted proof only under `receipts/ecosystem-chat-sovereign-inference/`;
+6. advances to `TVC_LOCAL_MODEL_ROUTE_ADMISSION` when the proof is valid;
+7. refuses to treat GitHub Actions, Render, Vercel or Cloudflare as production model-launch authority;
+8. requires no GitHub token, source-repository credential or hosted-provider credential.
+
+Canonical model implementation remains in `StegVerse-002/micro-node-runtime#22`; this heartbeat worker does not duplicate or train another model.
+
+Credential/route boundary:
 
 ```text
-task_id: SHWP-ALL-ORG-FEDERATION-001
-worker_id: organization-federation-readiness-worker
-worker_instance_id: organization-federation-readiness-worker-HB11-G17
-claim_id: SHWP-SHWP-ALL-ORG-FEDERATION-001-G17
-fencing_token: 17
-state: BLOCKED
-expected_next_transition: FEDERATION_RECHECK
-heartbeat_timing_established: true
-executor_binding: BOUND
+TV credential policy: credential class NONE
+GitHub token required: false
+GitHub Actions production role: false
+hosted provider credential required: false
+TVC route authority required: true
+model output grants authority: false
+execution authority effect from route/model: NONE
 ```
 
-This worker remains the all-organization readiness observer; blocked organization rows stay machine-owned rather than becoming silent success.
+After local proof the next required sequence is:
 
-Historical and current worker evidence is inspectable under `receipts/`, `checkpoints/`, `events/`, `control/worker-registry.json`, `control/worker-status.json`, `control/heartbeat-state.json`, and `control/heartbeat-subsignals.json`.
+```text
+canonical local model proof
+-> TVC evaluate sovereign local model route
+-> ROUTE_ADMITTED with credential_requirement=NONE
+-> StegVerseLocalHTTPProviderClient consumes exactly the admitted private endpoint
+-> governed E1 -> model worker -> E2
+-> measured provider/model usage persisted
+-> Master Records provider-usage reconstruction PASS
+-> Master Records transition reconstruction PASS for same execution
+-> Ecosystem Chat activation evidence
+```
 
-## StegVerse-only production host
+## Sovereign heartbeat/runtime activation worker
 
-Canonical production surfaces:
+```text
+task_id: SHWP-DURABLE-RUNTIME-ACTIVATION
+worker_id: sovereign-runtime-activation-worker
+canonical_issue: StegVerse-Labs/.github#59
+state: ACTIVE / BLOCKED / RECHECKING
+```
+
+It completes only after a StegVerse-owned/federated node directly proves durable materialization, native service registration, continuous runtime-v9 execution, advancing heartbeat epochs, worker subsignal carriage, worker execution, controlled restart, no epoch/registry regression, no split-brain state and durable reconstruction across restart.
+
+## Production host boundary
+
+Canonical production surfaces include:
 
 ```text
 heartbeat_runtime/engine_v9.py
@@ -110,131 +108,103 @@ scripts/run_heartbeat_runtime.py
 scripts/install_sovereign_heartbeat_service.py
 workers/sovereign_runtime_activation_worker.py
 workers/ecosystem_chat_sovereign_inference_worker.py
-tests/test_sovereign_heartbeat_service.py
-docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md
 handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
 handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json
-management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json
+control/worker-registry.json
+control/worker-status.json
 ```
 
-The installer materializes an already-present canonical source tree or locally delivered StegVerse runtime capsule onto durable node-local storage and registers `run_heartbeat_runtime.py --continuous --interval-ms 10.0` directly with the node OS service manager.
+The node OS service manager provides process liveness only. `HeartbeatRuntime` owns cadence, worker-control evaluation, claims, fences, cycle leases and worker coordination.
 
-Supported native liveness supervisors:
-
-```text
-Linux: systemd user service
-macOS: LaunchAgent
-Windows: logon scheduled task
-```
-
-After materialization:
+After local materialization:
 
 ```text
 network_fetch_required: false
+github_runtime_dependency: false
 third_party_process_host_required: false
 third_party_deployment_required: false
 third_party_scheduler_required: false
-github_runtime_dependency: false
-render_runtime_dependency: false
-cloudflare_runtime_dependency: false
-heartbeat_timing_authority: heartbeat_runtime.engine_v9.HeartbeatRuntime
-worker_lease_clock: canonical_heartbeat_cycle
-wall_clock_worker_expiry_authority: false
 execution_authority_effect: NONE
 ```
 
-The native OS provides process liveness only. Runtime v9 owns heartbeat cadence, worker-control evaluation, claims, fences, cycle leases, checkpoints and carriage of the worker-coordination subsignal.
+GitHub repositories/Actions may be mirrors, review and validation surfaces. They may not own production deployment, liveness, scheduling, worker leasing, runtime model retrieval, model execution or execution authority.
 
-## Third-party platform classification
+## Validation boundary
 
-GitHub repositories and GitHub Actions may remain source mirrors, review surfaces, validation surfaces, bootstrap evidence, or migration evidence. They are not permitted to own production deployment, scheduling, liveness, recovery, heartbeat timing, worker leasing, model execution, or worker execution authority.
+PR #68 validation may prove source compatibility and deterministic behavior only. It cannot satisfy the sovereign-carrier predicates.
 
-Render/Cloudflare/Vercel resources may remain historical/interoperability evidence. Their availability or credentials are not release conditions for sovereign heartbeat or Ecosystem Chat activation.
-
-The only current session-specific production block classes are:
+Required deterministic validation for the native local-model delta:
 
 ```text
-SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED
-SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED
+reference proof acceptance/rejection
+materialized local runtime discovery
+real local verifier process invocation contract
+proof persistence in admitted worker receipt namespace
+hosted validation environment rejected as production launch authority
+no GitHub-token requirement
 ```
 
-Both have active heartbeat workers, explicit machine-observable release conditions and next heartbeat transitions.
+## Remaining direct activation predicates
 
-## Remaining production activation proof
+Ecosystem Chat product activation reaches 100% only after the inference worker directly observes:
 
-Heartbeat production activation reaches 100% only after one StegVerse-owned or StegVerse-federated node directly proves:
+1. real model process on a StegVerse-owned/federated node;
+2. loopback/private/StegVerse-local inference endpoint;
+3. TVC `ROUTE_ADMITTED` for that canonical runtime proof with credential class `NONE`;
+4. the admitted endpoint consumed by `StegVerseLocalHTTPProviderClient`;
+5. sovereign E1 -> worker -> E2 execution;
+6. measured model/provider usage persisted;
+7. provider-usage reconstruction PASS in Master Records;
+8. transition reconstruction PASS for the same execution;
+9. `third_party_inference_required=false` and `github_token_required=false`.
 
-1. sovereign runtime materialization completed from already-present local source/capsule;
-2. native service registration is active;
-3. `run_heartbeat_runtime.py --continuous --interval-ms 10.0` is live from durable local storage;
-4. heartbeat epochs advance under runtime-v9 timing ownership;
-5. the worker-coordination subsignal is carried on consecutive cycles and a heartbeat-owned worker response/checkpoint is produced from that carrier;
-6. controlled native-service restart occurs;
-7. heartbeat epoch and registry generation do not regress after restart;
-8. no duplicate heartbeat, claim, fence, or split-brain state appears;
-9. registry/event/cost/receipt/checkpoint/worker-coordination state survives restart/reconstruction.
-
-Ecosystem Chat product activation reaches 100% only after the inference worker additionally observes:
-
-1. a real model process on a StegVerse-owned/federated node;
-2. a loopback/private/StegVerse-local inference endpoint only;
-3. the sovereign ephemeral E1→worker→E2 execution path;
-4. measured provider/model usage persisted;
-5. provider-usage reconstruction PASS in Master Records;
-6. transition reconstruction PASS for the same execution;
-7. `third_party_inference_required=false`.
-
-No manual receipt construction is an archive or release condition.
+No synthetic fixture, hosted CI success or manually constructed receipt satisfies these predicates.
 
 ## Cross-repository continuation
 
 ```text
-heartbeat/runtime worker owner: StegVerse-Labs/.github#59
-inference worker owner: StegVerse-Labs/.github#60
+heartbeat/runtime worker: StegVerse-Labs/.github#59
+inference worker: StegVerse-Labs/.github#60
 archive worker gate: StegVerse-Labs/.github#61
-sovereign migration owner: StegVerse-002/micro-node-runtime#16
-inference consumer owner: StegVerse-org/LLM-adapter#18
+sovereign migration: StegVerse-002/micro-node-runtime#16
+canonical local model/runtime: StegVerse-002/micro-node-runtime#22
+credential policy: StegVerse-Labs/TV/policies/sovereign_local_model_credential_policy.v1.json
+route activation: StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json
+inference transport: StegVerse-org/LLM-adapter#18
 custody/reconstruction: master-records/orchestration
-all-org readiness: SHWP-ALL-ORG-FEDERATION-001
 ```
 
-`StegVerse-002/micro-node-runtime#16` owns sovereign execution-environment migration and external-platform retirement. It does not become heartbeat timing or worker-execution authority.
+## Collision boundaries
 
-Master Records remains custody/reconstruction only through `master-records/orchestration/WORKER_LIFECYCLE_CUSTODY_MIRROR_HANDOFF.md` and must ingest real sovereign runtime/model evidence when produced.
-
-## Session consolidation and archive condition
-
-The originating session's unique requirements are now durable in implementation, worker code, process adapters, capability profiles, cost bases, executable handoffs, registry claims, fences, heartbeat-cycle leases, receipts, checkpoints and cross-repository issues.
-
-The session-specific archive rule is stricter than durable ownership alone:
-
-```text
-archive allowed when:
-  product activation is complete
-  OR
-  every unfinished session-specific goal is carried by an ACTIVE canonical heartbeat worker registry claim with executor binding, fence, heartbeat timing, checkpoint, machine-observable release condition and next transition
-```
-
-That worker-management condition is now satisfied for the unfinished sovereign runtime and Ecosystem Chat inference goals. Product activation remains below 100%; archival does not mean product activation is complete. It means execution responsibility no longer resides uniquely in the conversation.
+- no second heartbeat or scheduler;
+- no duplicate local-model authority outside micro-node-runtime;
+- no GitHub token or source-repository checkout in runtime discovery/launch/execution;
+- no hosted provider as a production fallback;
+- no duplicate TV/TVC route or credential authority;
+- no duplicate LLM-adapter transport;
+- no duplicate Master Records custody;
+- no CI evidence represented as sovereign runtime activation.
 
 ## Completion assessment
 
 ```text
 heartbeat protocol implementation: 100%
-worker-coordination cycle-lease implementation: 100%
+worker coordination implementation: 100%
 sovereign host implementation: 100%
-ephemeral E1→worker→E2 carrier implementation: 100%
+ephemeral E1/E2 carrier implementation: 100%
+canonical local-model development: COMPLETE_RELEASED in micro-node-runtime#22
+heartbeat-worker automatic local runtime discovery/launch/proof: IMPLEMENTED_IN_PR_68 / VALIDATION_PENDING
 third-party production blocker: REMOVED
-sovereign runtime continuation worker: ACTIVE / BLOCKED / RECHECKING
-Ecosystem Chat inference continuation worker: ACTIVE / BLOCKED / RECHECKING
-all-org federation readiness worker: ACTIVE / BLOCKED / RECHECKING
-heartbeat-owned worker execution proof: OBSERVED
-durable continuous sovereign runtime: NOT YET OBSERVED
-real sovereign LLM execution: NOT YET OBSERVED
-heartbeat production activation: 96%
+GitHub-token runtime dependency: PROHIBITED
+sovereign runtime direct observation: pending
+TVC-admitted local-model route direct observation: pending
+LLM-adapter same-carrier private execution: pending
+Master Records same-execution reconstruction: pending
 Ecosystem Chat product activation: NOT COMPLETE
-session-specific worker continuation activation: 100%
-scaffolding_or_stubs_in_required_worker_path: 0
 ```
 
-Do not report product/runtime activation as 100% until its direct predicates pass. Do not reactivate this conversation merely to poll those predicates; canonical heartbeat workers own the rechecks.
+## Session consolidation / archive condition
+
+The local-model selection and formal-model-development requirements are durable in `StegVerse-002/micro-node-runtime#22`. The no-GitHub-token correction is durable in TV/TVC and LLM-adapter task reconciliation. This session additionally owns PR #68 until deterministic validation, merge and main-branch reconciliation are complete.
+
+After PR #68 is merged and validated, unfinished production predicates remain machine-owned by #59/#60, TVC route task, LLM-adapter #18 and Master Records. Product activation must still not be reported as complete until direct runtime evidence exists.
