@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 import hashlib
 import json
@@ -22,6 +23,73 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
     @property
     def master_records_projection_path(self):
         return self.root / "control" / "heartbeat-master-records-projection.json"
+
+    @property
+    def registry_fragment_dir(self) -> Path:
+        return self.root / "control" / "worker-registry.d"
+
+    def _apply_registry_fragments(self, registry: dict[str, Any]) -> list[str]:
+        """Admit repository-owned registry fragments without replacing runtime state.
+
+        Fragments are append-only bootstrap declarations. Once a task/worker ID is
+        present in the canonical registry, the live registry remains authoritative
+        and the fragment cannot overwrite claim, fence, timing, status, or receipts.
+        This lets bounded integrations install durable machine work without a
+        GitHub-token-powered activation workflow or a giant whole-file registry edit.
+        """
+        if not self.registry_fragment_dir.is_dir():
+            return []
+
+        tasks = registry.setdefault("tasks", [])
+        workers = registry.setdefault("workers", [])
+        task_ids = {str(item.get("task_id")) for item in tasks if item.get("task_id")}
+        worker_ids = {str(item.get("worker_id")) for item in workers if item.get("worker_id")}
+        applied: list[str] = []
+
+        for path in sorted(self.registry_fragment_dir.glob("*.json")):
+            fragment = self._load(path)
+            if fragment.get("schema") != "stegverse.worker-registry-fragment/v0.1":
+                raise RuntimeError(f"unsupported worker registry fragment schema: {path.name}")
+            if fragment.get("authority_effect") != "NONE_REGISTRATION_ONLY":
+                raise RuntimeError(f"worker registry fragment may not grant authority: {path.name}")
+            if fragment.get("github_token_required") is not False:
+                raise RuntimeError(f"worker registry fragment may not require GitHub token authority: {path.name}")
+
+            changed = False
+            for task in fragment.get("tasks", []):
+                if not isinstance(task, dict):
+                    raise RuntimeError(f"invalid task in registry fragment: {path.name}")
+                task_id = task.get("task_id")
+                handoff_ref = task.get("handoff_ref")
+                if not isinstance(task_id, str) or not task_id:
+                    raise RuntimeError(f"registry fragment task_id missing: {path.name}")
+                if not isinstance(handoff_ref, str) or not handoff_ref or not (self.root / handoff_ref).is_file():
+                    raise RuntimeError(f"registry fragment handoff missing for {task_id}: {path.name}")
+                if task_id not in task_ids:
+                    tasks.append(dict(task))
+                    task_ids.add(task_id)
+                    changed = True
+
+            for worker in fragment.get("workers", []):
+                if not isinstance(worker, dict):
+                    raise RuntimeError(f"invalid worker in registry fragment: {path.name}")
+                worker_id = worker.get("worker_id")
+                adapter_ref = worker.get("adapter_ref")
+                if not isinstance(worker_id, str) or not worker_id:
+                    raise RuntimeError(f"registry fragment worker_id missing: {path.name}")
+                if not isinstance(adapter_ref, str) or not adapter_ref:
+                    raise RuntimeError(f"registry fragment adapter_ref missing for {worker_id}: {path.name}")
+                if worker_id not in worker_ids:
+                    workers.append(dict(worker))
+                    worker_ids.add(worker_id)
+                    changed = True
+
+            if changed:
+                applied.append(str(path.relative_to(self.root)))
+
+        if applied:
+            registry["generation"] = int(registry.get("generation", 0)) + 1
+        return applied
 
     def _coordination_lease(self, task: dict[str, Any], epoch: int) -> dict[str, Any] | None:
         timing = task.get("heartbeat_timing") or {}
@@ -148,6 +216,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
         try:
             heartbeat = self._load(self.hb_path)
             registry = self._load(self.registry_path)
+            registry_fragments_applied = self._apply_registry_fragments(registry)
             cost_log = self._load(self.cost_log_path) if self.cost_log_path.exists() else {
                 "schema": "stegverse.worker-cost-observation-log/v0.1",
                 "generation": 0,
@@ -163,6 +232,16 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
             heartbeat["expected_returns"] = len(issued)
             heartbeat["issued"] = issued
             events: list[dict[str, Any]] = []
+            if registry_fragments_applied:
+                self._event(
+                    events,
+                    epoch,
+                    "worker_registry_fragments_applied",
+                    fragment_refs=registry_fragments_applied,
+                    fragment_count=len(registry_fragments_applied),
+                    authority_effect=False,
+                    github_token_required=False,
+                )
             self._event(events, epoch, "organization_assertions_issued", issued_count=len(issued), issued_refs=issued)
             reconciled_recoveries = self._reconcile_orphan_recovery_quarantines(registry, epoch, events)
             for task in list(registry.get("tasks", [])):
@@ -183,6 +262,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
                 "events": events,
                 "subsignals": {self.WORKER_COORDINATION_SUBSIGNAL: coordination},
                 "registry_generation": registry.get("generation", 0),
+                "registry_fragments_applied": registry_fragments_applied,
                 "orphan_recoveries_reconciled": reconciled_recoveries,
                 "authority_effect": "none_beyond_existing_admitted_task_authority",
             }
