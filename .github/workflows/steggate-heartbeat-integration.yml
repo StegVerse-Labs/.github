@@ -1,4 +1,7 @@
-name: StegGate Canonical Heartbeat Integration
+# Validation-only StegGate integration lane. Production heartbeat cadence, claims,
+# fences, credential authority and persistence belong to the resident sovereign
+# heartbeat plus TC/TVC; GitHub Actions is not an activation carrier.
+name: StegGate Canonical Heartbeat Integration - Validation Only / No GitHub Token Authority
 
 on:
   workflow_dispatch:
@@ -14,137 +17,78 @@ on:
       - 'authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json'
       - 'workers/steggate_rendezvous_deployment_worker.py'
       - '.github/workflows/steggate-heartbeat-integration.yml'
+  pull_request:
+    paths:
+      - 'management/STEGGATE_HEARTBEAT_CREDENTIAL_INTEGRATION_001.json'
+      - 'control/process-worker-adapters.json'
+      - 'control/heartbeat-subsignals.json'
+      - 'schemas/heartbeat-subsignal.schema.json'
+      - 'cost-basis/worker-runtime/steggate-rendezvous-deployment.json'
+      - 'handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json'
+      - 'authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json'
+      - 'workers/steggate_rendezvous_deployment_worker.py'
+      - '.github/workflows/steggate-heartbeat-integration.yml'
 
-permissions:
-  contents: write
-
-concurrency:
-  group: steggate-canonical-heartbeat-integration
-  cancel-in-progress: false
+permissions: {}
 
 jobs:
-  heartbeat:
+  validate:
     runs-on: ubuntu-latest
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-    outputs:
-      heartbeat_id: ${{ steps.cycle.outputs.heartbeat_id }}
-      heartbeat_epoch: ${{ steps.cycle.outputs.heartbeat_epoch }}
-      lease_id: ${{ steps.cycle.outputs.lease_id }}
-      lease_action: ${{ steps.cycle.outputs.lease_action }}
-      lease_dependents_json: ${{ steps.cycle.outputs.lease_dependents_json }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Reconcile stable rendezvous worker activation inputs
+      - name: Anonymous public checkout without GitHub credential token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
-          python - <<'PY'
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
+
+      - name: Validate StegGate worker and authority surfaces
+        run: |
+          set -euo pipefail
+          python3 -m py_compile workers/steggate_rendezvous_deployment_worker.py
+          python3 - <<'PY'
           import json
           from pathlib import Path
-          path=Path('control/worker-registry.json')
-          registry=json.loads(path.read_text())
-          task=next((x for x in registry.get('tasks',[]) if x.get('task_id')=='STEGGATE-STABLE-RENDEZVOUS-WORKER-001'),None)
-          if task is None:
-              raise SystemExit('stable rendezvous worker task missing from canonical registry')
-          if task.get('state') not in {'HANDOFF_READY','ACTIVE','BLOCKED','CLAIMED','EXPIRING','HANDOFF_WRITING'}:
-              raise SystemExit(f"unexpected stable rendezvous worker state: {task.get('state')}")
-          task['cost_basis_ref']='cost-basis/worker-runtime/steggate-rendezvous-deployment.json'
-          if task.get('state') == 'HANDOFF_READY':
-              task['block_ref']=None
-              task['archive_reason_codes']=[c for c in task.get('archive_reason_codes',[]) if c not in {'EXPIRY_BASIS_UNAVAILABLE','CREDENTIAL_VALUES_ABSENT'}]
-          path.write_text(json.dumps(registry,indent=2,sort_keys=True)+'\n')
+          handoff=json.loads(Path('handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json').read_text())
+          auth=json.loads(Path('authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json').read_text())
+          assert handoff['activation']['carrier']=='heartbeat'
+          assert handoff['authority']['heartbeat_grants_execution_authority'] is False
+          assert auth['heartbeat_grants_execution_authority'] is False
+          print('STEGGATE_HEARTBEAT_SURFACES_PASS')
           PY
 
-      - name: Advance exactly one canonical heartbeat epoch and execute admitted workers
-        id: cycle
+      - name: Exercise canonical heartbeat integration without persistence
         run: |
           set -euo pipefail
-          mkdir -p integration-evidence
-          python scripts/run_heartbeat_runtime.py --cycles 1 | tee integration-evidence/heartbeat-cycle.jsonl
-          python scripts/project_heartbeat_workers.py --write
-          python - <<'PY' >> "$GITHUB_OUTPUT"
-          import json, os
+          before="$(sha256sum control/worker-registry.json control/heartbeat-state.json | sha256sum | cut -d' ' -f1)"
+          output="$(python3 scripts/run_heartbeat_runtime.py --dry-run --cycles 1)"
+          after="$(sha256sum control/worker-registry.json control/heartbeat-state.json | sha256sum | cut -d' ' -f1)"
+          test "$before" = "$after"
+          python3 - <<'PY' "$output"
+          import json,sys
+          row=json.loads(sys.argv[1])
+          assert row['authority_effect']=='none_beyond_existing_admitted_task_authority'
+          assert row['subsignals']['worker_coordination']['authority_effect'] is False
+          print('STEGGATE_DRY_RUN_NONPERSISTENT_PASS')
+          PY
+
+      - name: Prove hosted lane has no credential or activation authority
+        run: |
+          python3 - <<'PY'
           from pathlib import Path
-          rows=[json.loads(x) for x in Path('integration-evidence/heartbeat-cycle.jsonl').read_text().splitlines() if x.strip()]
-          if len(rows) != 1: raise SystemExit('expected exactly one heartbeat cycle')
-          row=rows[0]
-          epoch=str(row['epoch'])
-          heartbeat_id=f"HB-{os.environ['GITHUB_RUN_ID']}-{epoch}"
-          signal=json.loads(Path('control/heartbeat-subsignals.json').read_text())
-          lease=signal['subsignals']['steggate_transport_lease']
-          print('heartbeat_epoch='+epoch)
-          print('heartbeat_id='+heartbeat_id)
-          print('lease_id='+lease['lease_id'])
-          print('lease_action='+lease['lease_action'])
-          print('lease_dependents_json='+json.dumps(lease.get('dependent_tasks',[]),separators=(',',':')))
-          Path('integration-evidence/heartbeat-binding.json').write_text(json.dumps({
-            'schema':'stegverse.heartbeat_steggate_integration.v4',
-            'heartbeat_id':heartbeat_id,
-            'heartbeat_epoch':epoch,
-            'cycle':row,
-            'subsignals':{'steggate_transport_lease':lease},
-            'scheduler_authority':'single_stegverse_heartbeat',
-            'worker_registry':'control/worker-registry.json',
-            'worker_status_projection':'control/worker-status.json',
-            'wall_clock_scheduler_authority':False,
-            'credential_values_recorded':False
-          },indent=2,sort_keys=True)+'\n')
+          text=Path('.github/workflows/steggate-heartbeat-integration.yml').read_text()
+          forbidden=['contents'+': write','git'+' push','actions/'+'checkout@','actions/'+'setup-python@','${{ secrets.','CLOUDFLARE_API_TOKEN','CLOUDFLARE_ACCOUNT_ID','uses: StegVerse-Labs/StegCore/.github/workflows/']
+          found=[x for x in forbidden if x in text]
+          assert not found, found
+          assert 'permissions: {}' in text
+          print('STEGGATE_HOSTED_AUTHORITY_RETIRED_PASS')
           PY
-
-      - name: Persist heartbeat worker state
-        run: |
-          set -euo pipefail
-          git config user.name 'stegverse-heartbeat-worker'
-          git config user.email 'actions@users.noreply.github.com'
-          git add control/ events/
-          if [ -d checkpoints ]; then git add checkpoints/; fi
-          if [ -d receipts/steggate-rendezvous-worker ]; then git add receipts/steggate-rendezvous-worker/; fi
-          if git diff --cached --quiet; then
-            echo 'Heartbeat runtime produced no persistent state delta.' >&2
-            git status --short
-            exit 1
-          fi
-          git commit -m "heartbeat: advance claimed stable rendezvous worker"
-          STASHED=false
-          if [ -n "$(git status --porcelain)" ]; then
-            git stash push --include-untracked -m heartbeat-runtime-noncanonical
-            STASHED=true
-          fi
-          for attempt in 1 2 3 4 5; do
-            git pull --rebase origin main
-            if git push origin HEAD:main; then
-              if [ "$STASHED" = true ]; then git stash pop || true; fi
-              exit 0
-            fi
-            echo "Concurrent main update observed during heartbeat persistence; retrying attempt ${attempt}/5." >&2
-            sleep $((attempt * 2))
-          done
-          if [ "$STASHED" = true ]; then git stash pop || true; fi
-          echo 'Unable to persist heartbeat state after bounded collision retries.' >&2
-          exit 1
-
-      - name: Preserve heartbeat evidence
-        uses: actions/upload-artifact@v4
-        with:
-          name: steggate-canonical-heartbeat-${{ github.run_id }}
-          path: integration-evidence/
-          if-no-files-found: error
-          retention-days: 90
-
-  steggate-micro-node:
-    needs: heartbeat
-    if: needs.heartbeat.outputs.lease_action == 'OPEN' || needs.heartbeat.outputs.lease_action == 'EXTEND'
-    uses: StegVerse-Labs/StegCore/.github/workflows/steggate-heartbeat-worker-reusable.yml@main
-    with:
-      heartbeat_id: ${{ needs.heartbeat.outputs.heartbeat_id }}
-      heartbeat_epoch: ${{ needs.heartbeat.outputs.heartbeat_epoch }}
-      lease_id: ${{ needs.heartbeat.outputs.lease_id }}
-      lease_action: ${{ needs.heartbeat.outputs.lease_action }}
-      lease_dependents_json: ${{ needs.heartbeat.outputs.lease_dependents_json }}
