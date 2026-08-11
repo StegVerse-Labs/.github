@@ -25,7 +25,7 @@
     "priority":"release"
   },
   "authority":{
-    "authority_source":"StegVerse-Labs/stegfin-governance internal sovereign-market contracts; Master Records reconstruction evidence only; TC/TVC credential authority unaffected",
+    "authority_source":"StegVerse-Labs/stegfin-governance internal sovereign-market contracts; Master Records reconstruction evidence only; TV/TVC credential authority unaffected",
     "heartbeat_grants_execution_authority":false,
     "policy_version":"shwp-single-hb-stegfin-sovereign-trading-v0.2"
   },

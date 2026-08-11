@@ -39,6 +39,7 @@ class StegFinSovereignTradingWorkerTests(unittest.TestCase):
         self.assertEqual(worker["worker_id"], "stegfin-sovereign-trading-worker")
         self.assertIn(capability, worker["capabilities"])
         self.assertFalse(fragment["github_token_required"])
+        self.assertEqual(fragment["provider_capability_authority"], "TV_TVC_UNCHANGED")
         self.assertFalse(fragment["wallet_signing_authority"])
         self.assertFalse(fragment["transaction_broadcast_authority"])
 
@@ -47,6 +48,7 @@ class StegFinSovereignTradingWorkerTests(unittest.TestCase):
         caps = set(handoff["execution"]["required_capabilities"])
         self.assertIn("stegfin_sovereign_internal_trading_activation", caps)
         self.assertEqual(handoff["execution"]["external_cost_ceiling_usd"], 0)
+        self.assertIn("TV/TVC credential authority unaffected", handoff["authority"]["authority_source"])
         ceiling = set(handoff["goal"]["authority_ceiling"])
         self.assertIn("no_wallet_signing", ceiling)
         self.assertIn("no_transaction_broadcast", ceiling)
