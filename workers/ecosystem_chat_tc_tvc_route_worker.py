@@ -30,8 +30,8 @@ NORMALIZE_FILES = (
     LLM_EXECUTION_RECEIPT,
     MASTER_RECORDS_RECEIPT,
 )
-LEGACY = "StegVerse-Labs/TV+TVC"
-CURRENT = "TC/TVC"
+LEGACY_VALUES = {"StegVerse-Labs/TV+TVC", "TC/TVC"}
+CURRENT = "TV/TVC"
 
 
 def sovereign_child_env() -> dict[str, str]:
@@ -48,7 +48,7 @@ def normalize(value: Any) -> Any:
         return {key: normalize(item) for key, item in value.items()}
     if isinstance(value, list):
         return [normalize(item) for item in value]
-    if value == LEGACY:
+    if value in LEGACY_VALUES:
         return CURRENT
     return value
 
@@ -127,7 +127,7 @@ def apply_master_records_reconstruction(response: dict) -> dict:
         )
 
     existing = load_json(MASTER_RECORDS_RECEIPT)
-    if reconstruction_receipt_verified(existing, execution=execution):
+    if reconstruction_receipt_verified(existing, proof=proof, route=route, execution=execution):
         reconstruction = existing
         result = {
             "attempted": False,
@@ -148,7 +148,7 @@ def apply_master_records_reconstruction(response: dict) -> dict:
                 response,
                 "MASTER_RECORDS_LOCAL_CAPSULE_NOT_MATERIALIZED",
                 "The released Master Records sovereign reconstruction verifier is not materialized on the StegVerse carrier.",
-                "find_master_records_root resolves PR #24/#25 reconstruction script, task, and scoped handoff locally",
+                "find_master_records_root resolves task 024 reconstruction script, task record, and scoped handoff locally",
             )
         result = reconstruct_same_execution(
             master_records_root,
@@ -159,12 +159,12 @@ def apply_master_records_reconstruction(response: dict) -> dict:
         )
         reconstruction = result.get("reconstruction_receipt") if isinstance(result, dict) else None
 
-    if not reconstruction_receipt_verified(reconstruction, execution=execution):
+    if not reconstruction_receipt_verified(reconstruction, proof=proof, route=route, execution=execution):
         return blocked(
             response,
             "MASTER_RECORDS_SAME_EXECUTION_RECONSTRUCTION_FAILED",
-            "Canonical Master Records did not reconstruct the exact same sovereign execution with provider usage and transition continuity PASS.",
-            "the released verifier emits PASS with provider_usage_reconstruction_pass, transition_reconstruction_pass, and same_execution all true",
+            "Canonical Master Records did not independently reconstruct the exact same sovereign execution and exact hash bindings.",
+            "task 024 emits PASS for the exact proof/route/execution packet with all reconstruction and self-hash predicates true",
         )
 
     base.update(
