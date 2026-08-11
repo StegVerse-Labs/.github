@@ -126,7 +126,7 @@ jobs:
           assert q['execution_authority'] is False
           print('EPHEMERAL_PROJECTION_VALIDATION_PASS', q['count'])
           PY
-          # Changes remain runner-local. There is deliberately no git commit or push.
+          # Changes remain runner-local. There is deliberately no repository persistence.
           git status --short
 
       - name: Prove workflow itself is non-authorizing
@@ -134,8 +134,16 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           text=Path('.github/workflows/heartbeat-worker-project.yml').read_text(encoding='utf-8')
-          forbidden=('contents: write','git push','actions/checkout@','actions/setup-python@','GITHUB_TOKEN:','GH_TOKEN:')
-          found=[x for x in forbidden if x in text]
+          pieces=(
+              ('contents', ': write'),
+              ('git', ' push'),
+              ('actions/', 'checkout@'),
+              ('actions/', 'setup-python@'),
+              ('GITHUB', '_TOKEN:'),
+              ('GH', '_TOKEN:'),
+          )
+          forbidden=[left+right for left,right in pieces]
+          found=[needle for needle in forbidden if needle in text]
           assert not found, found
           assert 'permissions: {}' in text
           print('WORKFLOW_NON_AUTHORIZING_PASS')
