@@ -1,6 +1,6 @@
-# One-time integration carrier for the bounded native process-worker canary.
-# This workflow is not the StegVerse scheduler and has no scheduled trigger.
-name: Native Process Worker Canary
+# Historical canary validation only. The canary lifecycle is already COMPLETE;
+# GitHub Actions may verify retained evidence but may not advance or persist heartbeat state.
+name: Native Process Worker Canary - Validation Only / No GitHub Token Authority
 
 on:
   push:
@@ -12,111 +12,67 @@ on:
       - 'control/process-worker-adapters.json'
       - 'control/worker-registry.json'
       - 'heartbeat_runtime/process_adapter.py'
-      - 'scripts/run_heartbeat_runtime.py'
+      - '.github/workflows/native-process-worker-canary.yml'
+  pull_request:
+    paths:
+      - 'workers/heartbeat_receipt_canary.py'
+      - 'handoffs/SHWP-NATIVE-PROCESS-CANARY-001.json'
+      - 'cost-basis/worker-runtime/native-process-canary.json'
+      - 'control/process-worker-adapters.json'
+      - 'control/worker-registry.json'
+      - 'heartbeat_runtime/process_adapter.py'
       - '.github/workflows/native-process-worker-canary.yml'
   workflow_dispatch:
 
-permissions:
-  contents: write
-
-concurrency:
-  group: heartbeat-worker-project-main
-  cancel-in-progress: false
+permissions: {}
 
 jobs:
-  canary:
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: true
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Determine whether canary execution is required
+      - name: Anonymous public checkout without GitHub credential token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          python - <<'PY'
-          import json, os
-          from pathlib import Path
-          registry = json.loads(Path('control/worker-registry.json').read_text())
-          task = next(x for x in registry['tasks'] if x['task_id'] == 'SHWP-NATIVE-PROCESS-CANARY-001')
-          required = task['state'] != 'COMPLETED'
-          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as stream:
-              stream.write(f'CANARY_REQUIRED={str(required).lower()}\n')
-          print(f'CANARY_REQUIRED={str(required).lower()} state={task["state"]}')
-          PY
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
 
-      - name: Execute two real native heartbeat cycles
-        if: env.CANARY_REQUIRED == 'true'
+      - name: Validate retained canary completion evidence
         run: |
-          python scripts/run_heartbeat_runtime.py --cycles 2 --interval-ms 0 | tee /tmp/native-canary-cycles.jsonl
-
-      - name: Verify native mutation, same-HB transitions, fence, and release
-        if: env.CANARY_REQUIRED == 'true'
-        run: |
-          python - <<'PY'
+          set -euo pipefail
+          python3 -m py_compile workers/heartbeat_receipt_canary.py heartbeat_runtime/process_adapter.py
+          python3 - <<'PY'
           import json
           from pathlib import Path
-
-          lines = [json.loads(line) for line in Path('/tmp/native-canary-cycles.jsonl').read_text().splitlines() if line.strip()]
-          assert len(lines) == 2, lines
-          first, second = lines
-          assert first['activated'] is True, first
-          assert any(e['event_type'] == 'worker_activated' and e.get('task_id') == 'SHWP-NATIVE-PROCESS-CANARY-001' for e in first['events']), first
-          first_response = next(e for e in first['events'] if e['event_type'] == 'worker_response' and e.get('task_id') == 'SHWP-NATIVE-PROCESS-CANARY-001')
-          second_response = next(e for e in second['events'] if e['event_type'] == 'worker_response' and e.get('task_id') == 'SHWP-NATIVE-PROCESS-CANARY-001')
-          assert first_response['transition_id'] == 'CANARY_CHECKPOINT', first_response
-          assert first_response['transition_sequence'] == 1, first_response
-          assert second_response['transition_id'] == 'CANARY_COMPLETE', second_response
-          assert second_response['transition_sequence'] == 2, second_response
-
-          registry = json.loads(Path('control/worker-registry.json').read_text())
-          task = next(x for x in registry['tasks'] if x['task_id'] == 'SHWP-NATIVE-PROCESS-CANARY-001')
-          worker = next(x for x in registry['workers'] if x['worker_id'] == 'native-process-canary-worker')
-          receipt = json.loads(Path('receipts/native-worker-canary/SHWP-NATIVE-PROCESS-CANARY-001.json').read_text())
-          assert task['state'] == 'COMPLETED', task
-          assert task['archive_eligible'] is True, task
-          assert task['worker_id'] is None and task['claim_id'] is None, task
-          assert worker['status'] == 'AVAILABLE', worker
-          assert receipt['completed'] is True, receipt
-          assert receipt['transition_sequence'] == 2, receipt
-          assert receipt['transition_id'] == 'CANARY_COMPLETE', receipt
-          assert isinstance(receipt['fencing_token'], int) and receipt['fencing_token'] > 0, receipt
-          assert task['last_checkpoint_ref'] == 'receipts/native-worker-canary/SHWP-NATIVE-PROCESS-CANARY-001.json', task
-
-          costs = json.loads(Path('control/worker-cost-observations.json').read_text())
-          rows = [r for r in costs['records'] if r['task_id'] == 'SHWP-NATIVE-PROCESS-CANARY-001']
-          assert len(rows) == 2, rows
-          assert [r['transition_sequence'] for r in rows] == [1, 2], rows
-          print('NATIVE_PROCESS_WORKER_CANARY_PASS')
+          registry=json.loads(Path('control/worker-registry.json').read_text())
+          task=next(x for x in registry['tasks'] if x['task_id']=='SHWP-NATIVE-PROCESS-CANARY-001')
+          receipt=json.loads(Path('receipts/native-worker-canary/SHWP-NATIVE-PROCESS-CANARY-001.json').read_text())
+          assert task['state']=='COMPLETED'
+          assert task['archive_eligible'] is True
+          assert task['claim_id'] is None and task['worker_id'] is None
+          assert receipt['completed'] is True
+          assert receipt['transition_id']=='CANARY_COMPLETE'
+          assert isinstance(receipt['fencing_token'],int) and receipt['fencing_token']>0
+          print('RETAINED_NATIVE_CANARY_PASS')
           PY
 
-      - name: Project worker status and continuity
-        if: env.CANARY_REQUIRED == 'true'
+      - name: Prove no hosted activation or persistence authority
         run: |
-          python scripts/project_heartbeat_workers.py --write
-          python scripts/reconcile_heartbeat_continuity.py --write
-
-      - name: Retain canary runtime evidence
-        if: env.CANARY_REQUIRED == 'true'
-        run: |
-          git config user.name 'stegverse-heartbeat-worker'
-          git config user.email 'actions@users.noreply.github.com'
-          git add \
-            control/heartbeat-state.json \
-            control/worker-registry.json \
-            control/worker-cost-observations.json \
-            control/worker-status.json \
-            control/heartbeat-continuity.json \
-            events/heartbeat-runtime.jsonl \
-            receipts/native-worker-canary/SHWP-NATIVE-PROCESS-CANARY-001.json
-          git commit -m 'test: retain native process-worker canary lifecycle'
-          git pull --rebase origin main
-          git push origin HEAD:main
-
-      - name: Report already-complete canary
-        if: env.CANARY_REQUIRED != 'true'
-        run: echo 'Native process-worker canary already completed; no execution performed.'
+          python3 - <<'PY'
+          from pathlib import Path
+          text=Path('.github/workflows/native-process-worker-canary.yml').read_text()
+          forbidden=['contents'+': write','git'+' push','actions/'+'checkout@','actions/'+'setup-python@','scripts/run_heartbeat_runtime.py --cycles']
+          found=[x for x in forbidden if x in text]
+          assert not found, found
+          assert 'permissions: {}' in text
+          print('NATIVE_CANARY_NON_AUTHORIZING_PASS')
+          PY
