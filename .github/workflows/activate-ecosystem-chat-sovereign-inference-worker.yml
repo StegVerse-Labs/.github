@@ -1,7 +1,7 @@
 name: Ecosystem Chat Sovereign Inference Validation - No GitHub Token Authority
 
 # Validation only. This workflow MUST NOT activate, claim, fence, commit, push,
-# or persist heartbeat state. Production credential/route authority is TC/TVC;
+# or persist heartbeat state. Production credential semantics are TV/TVC;
 # execution is owned by the resident StegVerse heartbeat on a sovereign carrier.
 on:
   workflow_dispatch:
@@ -10,21 +10,27 @@ on:
     paths:
       - 'workers/ecosystem_chat_sovereign_inference_worker.py'
       - 'workers/ecosystem_chat_tc_tvc_route_worker.py'
-      - 'workers/ecosystem_chat_orphan_recovery_worker.py'
+      - 'workers/llm_adapter_sovereign_execution_bridge.py'
+      - 'workers/master_records_sovereign_reconstruction_bridge.py'
       - 'handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json'
       - 'handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json'
       - 'authorizations/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json'
       - 'control/process-worker-adapters.json'
+      - 'tests/test_llm_adapter_sovereign_execution_bridge.py'
+      - 'tests/test_master_records_sovereign_reconstruction_bridge.py'
       - '.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml'
   pull_request:
     paths:
       - 'workers/ecosystem_chat_sovereign_inference_worker.py'
       - 'workers/ecosystem_chat_tc_tvc_route_worker.py'
-      - 'workers/ecosystem_chat_orphan_recovery_worker.py'
+      - 'workers/llm_adapter_sovereign_execution_bridge.py'
+      - 'workers/master_records_sovereign_reconstruction_bridge.py'
       - 'handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json'
       - 'handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json'
       - 'authorizations/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json'
       - 'control/process-worker-adapters.json'
+      - 'tests/test_llm_adapter_sovereign_execution_bridge.py'
+      - 'tests/test_master_records_sovereign_reconstruction_bridge.py'
       - '.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml'
 
 permissions: {}
@@ -54,12 +60,14 @@ jobs:
           fi
           git checkout --detach FETCH_HEAD
 
-      - name: Validate TC/TVC and sovereign worker surfaces
+      - name: Validate TV/TVC and sovereign worker surfaces
         run: |
           set -euo pipefail
           python3 -m py_compile \
             workers/ecosystem_chat_sovereign_inference_worker.py \
             workers/ecosystem_chat_tc_tvc_route_worker.py \
+            workers/llm_adapter_sovereign_execution_bridge.py \
+            workers/master_records_sovereign_reconstruction_bridge.py \
             workers/ecosystem_chat_orphan_recovery_worker.py
           python3 - <<'PY'
           import json
@@ -69,15 +77,17 @@ jobs:
           auth=json.loads(Path('authorizations/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json').read_text())
           assert parent['activation']['carrier']=='heartbeat'
           assert parent['activation']['checkout_policy']=='fenced_atomic_checkout'
+          assert parent['activation']['credential_control']=='TV/TVC'
+          assert parent['authority']['credential_authority']=='TV/TVC'
           assert parent['continuity']['master_records_required'] is True
           assert recovery['activation']['carrier']=='heartbeat'
           assert recovery['activation']['executor_binding']=='AUTHORIZED'
           assert auth['heartbeat_grants_execution_authority'] is False
           assert auth['github_token_required'] is False
-          print('TC_TVC_SOVEREIGN_SURFACES_PASS')
+          print('TV_TVC_SOVEREIGN_SURFACES_PASS')
           PY
 
-      - name: Prove no GitHub auth reaches TVC or local model execution
+      - name: Prove no GitHub auth reaches TVC, model, LLM adapter, or reconstruction
         run: |
           set -euo pipefail
           test -z "${GITHUB_TOKEN:-}"
@@ -86,6 +96,7 @@ jobs:
             tests.test_tvc_sovereign_route_bridge \
             tests.test_llm_adapter_sovereign_execution_bridge \
             tests.test_sovereign_inference_local_model_proof \
+            tests.test_master_records_sovereign_reconstruction_bridge \
             tests.test_orphan_recovery_reconciliation \
             tests.test_ecosystem_chat_tc_tvc_route_worker
 
