@@ -1,7 +1,6 @@
-# One-time proof carrier for a documented StegVerse worker.
-# GitHub Actions starts the process only; the canonical heartbeat performs
-# checkout, fencing, invocation, transition handling, and claim release.
-name: Activate Host Self-Attest Worker Through Heartbeat
+# Historical host self-attest validation only. The canonical heartbeat owns
+# activation, fencing, transitions and persistence; GitHub Actions may only verify.
+name: Host Self-Attest Worker - Validation Only / No GitHub Token Authority
 
 on:
   push:
@@ -10,113 +9,63 @@ on:
       - '.github/workflows/activate-host-self-attest-worker.yml'
       - 'handoffs/SHWP-HOST-SELF-ATTEST-001.json'
       - 'cost-basis/worker-runtime/host-self-attest.json'
+      - 'receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json'
+  pull_request:
+    paths:
+      - '.github/workflows/activate-host-self-attest-worker.yml'
+      - 'handoffs/SHWP-HOST-SELF-ATTEST-001.json'
+      - 'cost-basis/worker-runtime/host-self-attest.json'
+      - 'receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json'
   workflow_dispatch:
 
-permissions:
-  contents: write
-
-concurrency:
-  group: heartbeat-worker-project-main
-  cancel-in-progress: false
+permissions: {}
 
 jobs:
-  activate:
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: true
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Admit documented task and correct provider-independent activation state
+      - name: Anonymous public checkout without GitHub credential token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          p = Path('control/worker-registry.json')
-          r = json.loads(p.read_text())
-          t = next(x for x in r['tasks'] if x['task_id'] == 'SHWP-HOST-SELF-ATTEST-001')
-          if t['state'] != 'COMPLETED':
-              t['state'] = 'HANDOFF_READY'
-              t['executor_binding'] = 'AUTHORIZED'
-              t['worker_id'] = None
-              t['worker_instance_id'] = None
-              t['claim_id'] = None
-              t['lease'] = None
-              t['heartbeat_timing'] = None
-              t['cost_basis_ref'] = 'cost-basis/worker-runtime/host-self-attest.json'
-              t['archive_eligible'] = False
-              t['archive_reason_codes'] = ['HEARTBEAT_ACTIVATION_REQUIRED']
-              refs = list(t.get('evidence_refs') or [])
-              custody = 'master-records:monitoring#2:SHWP-HOST-SELF-ATTEST-001'
-              if custody not in refs:
-                  refs.append(custody)
-              t['evidence_refs'] = refs
-          durable = next(x for x in r['tasks'] if x['task_id'] == 'SHWP-DURABLE-RUNTIME-ACTIVATION')
-          if durable['state'] != 'COMPLETED':
-              durable['state'] = 'ACTIVATION_PENDING'
-              durable['block_ref'] = None
-              durable['external_entity_job_ref'] = None
-              durable['archive_eligible'] = False
-              durable['archive_reason_codes'] = ['CONTINUOUS_CARRIER_NOT_ACTIVE']
-          r['generation'] = int(r.get('generation', 0)) + 1
-          p.write_text(json.dumps(r, indent=2, sort_keys=True) + '\n')
-          print(json.dumps({'self_attest': t, 'durable_activation': durable}, indent=2, sort_keys=True))
-          PY
-
-      - name: Project pre-activation state
-        run: python scripts/project_heartbeat_workers.py --write
-
-      - name: Execute canonical heartbeat worker cycle
-        run: |
-          python scripts/run_heartbeat_runtime.py --cycles 1 --interval-ms 0 | tee /tmp/heartbeat-self-attest.jsonl
-
-      - name: Verify heartbeat activation, fence, receipt, completion, and release
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          rows = [json.loads(x) for x in Path('/tmp/heartbeat-self-attest.jsonl').read_text().splitlines() if x.strip()]
-          assert len(rows) == 1, rows
-          cycle = rows[0]
-          assert cycle['activated'] is True, cycle
-          assert any(e['event_type'] == 'worker_activated' and e.get('task_id') == 'SHWP-HOST-SELF-ATTEST-001' for e in cycle['events']), cycle
-          response = next(e for e in cycle['events'] if e['event_type'] == 'worker_response' and e.get('task_id') == 'SHWP-HOST-SELF-ATTEST-001')
-          assert response['transition_id'] == 'HOST_RUNTIME_SELF_ATTESTED', response
-          registry = json.loads(Path('control/worker-registry.json').read_text())
-          task = next(x for x in registry['tasks'] if x['task_id'] == 'SHWP-HOST-SELF-ATTEST-001')
-          worker = next(x for x in registry['workers'] if x['worker_id'] == 'master-records-host-self-attest-worker')
-          receipt = json.loads(Path('receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json').read_text())
-          assert task['state'] == 'COMPLETED', task
-          assert task['worker_id'] is None and task['claim_id'] is None, task
-          assert task['archive_eligible'] is True, task
-          assert worker['status'] == 'AVAILABLE', worker
-          assert receipt['completed'] is True, receipt
-          assert isinstance(receipt['fencing_token'], int) and receipt['fencing_token'] > 0, receipt
-          assert receipt['provider_is_heartbeat_timing_authority'] is False, receipt
-          assert receipt['provider_or_host_liveness_grants_execution_authority'] is False, receipt
-          print('HEARTBEAT_DOCUMENTED_WORKER_ACTIVATION_PASS')
-          PY
-
-      - name: Project completed worker state
-        run: |
-          python scripts/project_heartbeat_workers.py --write
-          python scripts/reconcile_heartbeat_continuity.py --write
-
-      - name: Persist all heartbeat worker activation evidence
-        run: |
-          git config user.name 'stegverse-heartbeat-worker'
-          git config user.email 'actions@users.noreply.github.com'
-          git add -A
-          if git diff --cached --quiet; then
-            echo 'No runtime evidence changes to persist.'
-            exit 0
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
           fi
-          git commit -m 'activate: execute documented worker through heartbeat'
-          git fetch origin main
-          git rebase origin/main
-          git push origin HEAD:main
+          git checkout --detach FETCH_HEAD
+
+      - name: Validate retained self-attest completion evidence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          registry=json.loads(Path('control/worker-registry.json').read_text())
+          task=next(x for x in registry['tasks'] if x['task_id']=='SHWP-HOST-SELF-ATTEST-001')
+          receipt=json.loads(Path('receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json').read_text())
+          assert task['state']=='COMPLETED'
+          assert task['claim_id'] is None and task['worker_id'] is None
+          assert task['archive_eligible'] is True
+          assert receipt['completed'] is True
+          assert receipt['provider_is_heartbeat_timing_authority'] is False
+          assert receipt['provider_or_host_liveness_grants_execution_authority'] is False
+          print('HOST_SELF_ATTEST_RETAINED_EVIDENCE_PASS')
+          PY
+
+      - name: Prove hosted activation and persistence are retired
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          text=Path('.github/workflows/activate-host-self-attest-worker.yml').read_text()
+          forbidden=['contents'+': write','git'+' push','actions/'+'checkout@','actions/'+'setup-python@','scripts/run_heartbeat_runtime.py --cycles','${{ secrets.']
+          found=[x for x in forbidden if x in text]
+          assert not found, found
+          assert 'permissions: {}' in text
+          print('HOST_SELF_ATTEST_NON_AUTHORIZING_PASS')
+          PY
