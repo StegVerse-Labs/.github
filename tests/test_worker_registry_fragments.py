@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-
-import pytest
+import tempfile
+import unittest
 
 from heartbeat_runtime.engine_v9 import HeartbeatRuntime
 
@@ -38,37 +38,45 @@ def fragment() -> dict:
     }
 
 
-def test_registry_fragment_is_append_only_and_idempotent(tmp_path: Path) -> None:
-    write(tmp_path / "handoffs" / "TEST-001.json", {"schema": "stegverse.executable-handoff/v0.1"})
-    write(tmp_path / "control" / "worker-registry.d" / "test.json", fragment())
-    registry = {"schema": "stegverse.heartbeat-worker-registry/v0.1", "generation": 7, "tasks": [], "workers": []}
-    runtime = HeartbeatRuntime(tmp_path)
+class WorkerRegistryFragmentTests(unittest.TestCase):
+    def test_registry_fragment_is_append_only_and_idempotent(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            write(root / "handoffs" / "TEST-001.json", {"schema": "stegverse.executable-handoff/v0.1"})
+            write(root / "control" / "worker-registry.d" / "test.json", fragment())
+            registry = {"schema": "stegverse.heartbeat-worker-registry/v0.1", "generation": 7, "tasks": [], "workers": []}
+            runtime = HeartbeatRuntime(root)
 
-    applied = runtime._apply_registry_fragments(registry)
-    assert applied == ["control/worker-registry.d/test.json"]
-    assert registry["generation"] == 8
-    assert [item["task_id"] for item in registry["tasks"]] == ["TEST-001"]
-    assert [item["worker_id"] for item in registry["workers"]] == ["test-worker"]
+            applied = runtime._apply_registry_fragments(registry)
+            self.assertEqual(applied, ["control/worker-registry.d/test.json"])
+            self.assertEqual(registry["generation"], 8)
+            self.assertEqual([item["task_id"] for item in registry["tasks"]], ["TEST-001"])
+            self.assertEqual([item["worker_id"] for item in registry["workers"]], ["test-worker"])
 
-    registry["tasks"][0]["state"] = "ACTIVE"
-    registry["workers"][0]["status"] = "BUSY"
-    assert runtime._apply_registry_fragments(registry) == []
-    assert registry["generation"] == 8
-    assert registry["tasks"][0]["state"] == "ACTIVE"
-    assert registry["workers"][0]["status"] == "BUSY"
+            registry["tasks"][0]["state"] = "ACTIVE"
+            registry["workers"][0]["status"] = "BUSY"
+            self.assertEqual(runtime._apply_registry_fragments(registry), [])
+            self.assertEqual(registry["generation"], 8)
+            self.assertEqual(registry["tasks"][0]["state"], "ACTIVE")
+            self.assertEqual(registry["workers"][0]["status"], "BUSY")
+
+    def test_registry_fragment_fails_closed_on_authority_or_token_requirement(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            write(root / "handoffs" / "TEST-001.json", {"schema": "stegverse.executable-handoff/v0.1"})
+            value = fragment()
+            value["github_token_required"] = True
+            write(root / "control" / "worker-registry.d" / "test.json", value)
+            runtime = HeartbeatRuntime(root)
+            with self.assertRaisesRegex(RuntimeError, "GitHub token"):
+                runtime._apply_registry_fragments({"generation": 0, "tasks": [], "workers": []})
+
+            value = fragment()
+            value["authority_effect"] = "GRANT"
+            write(root / "control" / "worker-registry.d" / "test.json", value)
+            with self.assertRaisesRegex(RuntimeError, "may not grant authority"):
+                runtime._apply_registry_fragments({"generation": 0, "tasks": [], "workers": []})
 
 
-def test_registry_fragment_fails_closed_on_authority_or_token_requirement(tmp_path: Path) -> None:
-    write(tmp_path / "handoffs" / "TEST-001.json", {"schema": "stegverse.executable-handoff/v0.1"})
-    value = fragment()
-    value["github_token_required"] = True
-    write(tmp_path / "control" / "worker-registry.d" / "test.json", value)
-    runtime = HeartbeatRuntime(tmp_path)
-    with pytest.raises(RuntimeError, match="GitHub token"):
-        runtime._apply_registry_fragments({"generation": 0, "tasks": [], "workers": []})
-
-    value = fragment()
-    value["authority_effect"] = "GRANT"
-    write(tmp_path / "control" / "worker-registry.d" / "test.json", value)
-    with pytest.raises(RuntimeError, match="may not grant authority"):
-        runtime._apply_registry_fragments({"generation": 0, "tasks": [], "workers": []})
+if __name__ == "__main__":
+    unittest.main()
