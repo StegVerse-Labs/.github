@@ -139,8 +139,8 @@ jobs:
               ('git', ' push'),
               ('actions/', 'checkout@'),
               ('actions/', 'setup-python@'),
-              ('GITHUB', '_TOKEN:'),
-              ('GH', '_TOKEN:'),
+              ('secrets.', 'GITHUB_TOKEN'),
+              ('github.', 'token'),
           )
           forbidden=[left+right for left,right in pieces]
           found=[needle for needle in forbidden if needle in text]
