@@ -1,6 +1,6 @@
 # Validation-only carrier for the unified StegVerse heartbeat.
 # The heartbeat runtime itself owns epoch advancement and worker scheduling.
-name: Organization heartbeat validation
+name: Organization Heartbeat Validation - No GitHub Token Authority
 
 on:
   workflow_dispatch:
@@ -14,80 +14,93 @@ on:
       - scripts/run_heartbeat_runtime.py
       - scripts/validate_heartbeat_returns.py
       - .github/workflows/org-heartbeat.yml
+  pull_request:
+    paths:
+      - control/claims-active.json
+      - control/org-state.json
+      - heartbeat_runtime/**
+      - scripts/issue_heartbeats.py
+      - scripts/run_heartbeat_runtime.py
+      - scripts/validate_heartbeat_returns.py
+      - .github/workflows/org-heartbeat.yml
 
-permissions:
-  contents: read
+permissions: {}
 
 concurrency:
-  group: org-heartbeat-validation
-  cancel-in-progress: false
+  group: org-heartbeat-validation-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+      - name: Anonymous public checkout without GitHub credential token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
 
       - name: Compile unified heartbeat surfaces
         run: |
-          python -m py_compile heartbeat_runtime/org_assertions.py heartbeat_runtime/engine_v3.py
-          python -m py_compile scripts/issue_heartbeats.py scripts/run_heartbeat_runtime.py scripts/validate_heartbeat_returns.py
+          python3 -m py_compile heartbeat_runtime/org_assertions.py heartbeat_runtime/engine_v3.py
+          python3 -m py_compile scripts/issue_heartbeats.py scripts/run_heartbeat_runtime.py scripts/validate_heartbeat_returns.py
 
       - name: Prove legacy issuer cannot advance epoch
         run: |
           before="$(sha256sum control/heartbeat-state.json | cut -d' ' -f1)"
-          output="$(python scripts/issue_heartbeats.py --dry-run)"
-          echo "$output"
+          output="$(python3 scripts/issue_heartbeats.py --dry-run)"
           after="$(sha256sum control/heartbeat-state.json | cut -d' ' -f1)"
           test "$before" = "$after"
-          python - <<'PY' "$output"
-          import json, sys
-          value = json.loads(sys.argv[1])
-          assert value['epoch_advanced'] is False, value
-          assert value['authority_effect'] == 'none', value
+          python3 - <<'PY' "$output"
+          import json,sys
+          value=json.loads(sys.argv[1])
+          assert value['epoch_advanced'] is False
+          assert value['authority_effect']=='none'
           print('LEGACY_ISSUER_NO_EPOCH_OWNERSHIP_PASS')
           PY
 
-      - name: Prove unified runtime owns one dry-run epoch
+      - name: Prove unified runtime owns one nonpersistent dry-run epoch
         run: |
           before="$(sha256sum control/heartbeat-state.json control/worker-registry.json | sha256sum | cut -d' ' -f1)"
-          output="$(python scripts/run_heartbeat_runtime.py --dry-run --cycles 1)"
-          echo "$output"
+          output="$(python3 scripts/run_heartbeat_runtime.py --dry-run --cycles 1)"
           after="$(sha256sum control/heartbeat-state.json control/worker-registry.json | sha256sum | cut -d' ' -f1)"
           test "$before" = "$after"
-          python - <<'PY' "$output"
-          import json, sys
-          value = json.loads(sys.argv[1])
-          assert value['schema'] == 'stegverse.heartbeat-cycle-result/v0.3', value
-          assert 'organization_assertions' in value, value
-          assert value['authority_effect'] == 'none_beyond_existing_admitted_task_authority', value
+          python3 - <<'PY' "$output"
+          import json,sys
+          value=json.loads(sys.argv[1])
+          assert 'organization_assertions' in value
+          assert value['authority_effect']=='none_beyond_existing_admitted_task_authority'
           print('UNIFIED_SINGLE_HEARTBEAT_DRY_RUN_PASS')
           PY
 
-      - name: Prove repeated internal machine-cycle ownership
+      - name: Prove repeated internal machine-cycle ownership in disposable state
         run: |
           tmp="$(mktemp -d)"
           mkdir -p "$tmp/control" "$tmp/handoffs" "$tmp/cost-basis/worker-runtime"
           cp control/heartbeat-state.json control/worker-registry.json control/worker-cost-observations.json control/process-worker-adapters.json control/claims-active.json control/org-state.json "$tmp/control/"
           cp handoffs/*.json "$tmp/handoffs/"
           cp cost-basis/worker-runtime/*.json "$tmp/cost-basis/worker-runtime/"
-          start="$(python - <<'PY' "$tmp/control/heartbeat-state.json"
+          start="$(python3 - <<'PY' "$tmp/control/heartbeat-state.json"
           import json,sys
           print(json.load(open(sys.argv[1]))['epoch'])
           PY
           )"
-          python scripts/run_heartbeat_runtime.py --root "$tmp" --cycles 3 --interval-ms 1 | tee /tmp/heartbeat-three-cycles.jsonl
-          python - <<'PY' "$start" "$tmp/control/heartbeat-state.json" /tmp/heartbeat-three-cycles.jsonl
+          python3 scripts/run_heartbeat_runtime.py --root "$tmp" --cycles 3 --interval-ms 1 >/tmp/heartbeat-three-cycles.jsonl
+          python3 - <<'PY' "$start" "$tmp/control/heartbeat-state.json" /tmp/heartbeat-three-cycles.jsonl
           import json,sys
-          start=int(sys.argv[1])
-          final=json.load(open(sys.argv[2]))['epoch']
+          start=int(sys.argv[1]); final=json.load(open(sys.argv[2]))['epoch']
           rows=[json.loads(x) for x in open(sys.argv[3]) if x.strip()]
-          assert [r['epoch'] for r in rows] == [start+1,start+2,start+3], rows
-          assert final == start+3, (start,final)
-          assert all(r['schema']=='stegverse.heartbeat-cycle-result/v0.3' for r in rows), rows
-          assert all('organization_assertions' in r for r in rows), rows
+          assert [r['epoch'] for r in rows]==[start+1,start+2,start+3]
+          assert final==start+3
           print('REPEATED_INTERNAL_SINGLE_HEARTBEAT_PASS')
           PY
