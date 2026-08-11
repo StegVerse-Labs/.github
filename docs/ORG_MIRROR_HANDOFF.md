@@ -60,10 +60,10 @@ Canonical Ecosystem Chat recovery/activation handoff: `docs/ECOSYSTEM_CHAT_ORPHA
 
 Canonical session inventory: `control/session-goal-inventory-2026-08-11-ecosystem-chat-local-model.json`.
 
-### TC/TVC credential authority and no-GitHub-token production boundary
+### TV/TVC credential authority and no-GitHub-token production boundary
 
 ```text
-credential authority: TC/TVC
+credential authority: TV/TVC
 local-model credential requirement: NONE
 route authority: StegVerse-Labs/TVC
 model/runtime: StegVerse-002/micro-node-runtime
@@ -160,7 +160,7 @@ No GitHub-hosted runner, Render service, Vercel runtime, Cloudflare surface, or 
 ```text
 StegVerse-002/micro-node-runtime
 -> StegVerse-Labs/.github resident heartbeat
--> StegVerse-Labs/TVC / TC-TVC
+-> StegVerse-Labs/TVC / TV/TVC
 -> StegVerse-org/LLM-adapter
 -> master-records/orchestration
 -> StegVerse-Labs/Site
@@ -174,7 +174,7 @@ Propagation remains blocked until immutable same-execution activation evidence e
 - One canonical heartbeat only.
 - One canonical worker registry only.
 - GitHub Actions is validation/evidence carriage only, not heartbeat cadence, claim allocation, activation, credential, or persistence authority.
-- TC/TVC owns credential semantics.
+- TV/TVC owns credential semantics.
 - TVC route admission does not grant execution authority.
 - Model output does not grant authority.
 - Master Records reconstruction is evidence, not execution authority.
