@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -11,7 +12,19 @@ from typing import Any
 
 EXPECTED_SCHEMA = "stegverse.master_records.ecosystem_chat_sovereign_reconstruction/v1"
 EXPECTED_TASK = "MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024"
-CREDENTIAL_AUTHORITY = "TC/TVC"
+CREDENTIAL_AUTHORITY = "TV/TVC"
+
+
+def stable_hash(value: Any) -> str:
+    return hashlib.sha256(
+        json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    ).hexdigest()
+
+
+def hash_without(value: dict, key: str) -> str:
+    candidate = dict(value)
+    candidate.pop(key, None)
+    return stable_hash(candidate)
 
 
 def local_master_records_roots(root: Path) -> list[Path]:
@@ -46,17 +59,29 @@ def credential_free_child_env(master_records_root: Path) -> dict[str, str]:
     allowed = ("PATH", "LANG", "LC_ALL")
     env = {key: os.environ[key] for key in allowed if key in os.environ}
     env["PYTHONPATH"] = str(master_records_root)
-    env["STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY"] = CREDENTIAL_AUTHORITY
+    env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = CREDENTIAL_AUTHORITY
     return env
 
 
-def reconstruction_receipt_verified(receipt: dict | None, *, execution: dict) -> bool:
+def reconstruction_receipt_verified(
+    receipt: dict | None,
+    *,
+    proof: dict,
+    route: dict,
+    execution: dict,
+) -> bool:
     if not isinstance(receipt, dict):
+        return False
+    usage = execution.get("provider_usage_event")
+    if not isinstance(usage, dict):
         return False
     return (
         receipt.get("schema") == EXPECTED_SCHEMA
         and receipt.get("task_id") == EXPECTED_TASK
         and receipt.get("state") == "PASS"
+        and receipt.get("runtime_proof_hash") == stable_hash(proof)
+        and receipt.get("tvc_route_receipt_hash") == route.get("receipt_hash")
+        and receipt.get("provider_usage_event_sha256") == usage.get("event_sha256")
         and receipt.get("session_id") == execution.get("session_id")
         and receipt.get("transition_id") == execution.get("transition_id")
         and receipt.get("measurement_id") == execution.get("measurement_id")
@@ -76,6 +101,7 @@ def reconstruction_receipt_verified(receipt: dict | None, *, execution: dict) ->
         and receipt.get("admissibility_determined") is False
         and receipt.get("authority_effect") == "NONE"
         and receipt.get("next_transition") == "ECOSYSTEM_CHAT_ZERO_BLOCKER_ACTIVATION_VERIFICATION"
+        and receipt.get("reconstruction_receipt_hash") == hash_without(receipt, "reconstruction_receipt_hash")
     )
 
 
@@ -109,14 +135,7 @@ def reconstruct_same_execution(
 
         script = master_records_root / "scripts" / "reconstruct_ecosystem_chat_sovereign_execution.py"
         process = subprocess.run(
-            [
-                sys.executable,
-                str(script),
-                "--packet",
-                str(packet_path),
-                "--output",
-                str(output_path),
-            ],
+            [sys.executable, str(script), "--packet", str(packet_path), "--output", str(output_path)],
             cwd=master_records_root,
             capture_output=True,
             text=True,
@@ -134,7 +153,7 @@ def reconstruct_same_execution(
                 candidate = None
         if isinstance(candidate, dict):
             receipt = candidate
-        verified = reconstruction_receipt_verified(receipt, execution=execution)
+        verified = reconstruction_receipt_verified(receipt, proof=proof, route=route, execution=execution)
         return {
             "attempted": True,
             "state": "COMPLETE" if verified else "FAILED",
@@ -162,9 +181,12 @@ def reconstruct_same_execution(
 
 
 __all__ = [
+    "CREDENTIAL_AUTHORITY",
     "credential_free_child_env",
     "find_master_records_root",
+    "hash_without",
     "local_master_records_roots",
     "reconstruct_same_execution",
     "reconstruction_receipt_verified",
+    "stable_hash",
 ]

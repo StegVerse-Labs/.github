@@ -1,6 +1,6 @@
 # Validation-only workflow for SHWP control-plane artifacts.
 # It has no scheduler, activation, repository mutation, credential, claim, or fence role.
-# TC/TVC owns credential semantics; the resident sovereign heartbeat owns execution.
+# TV/TVC owns credential semantics; the resident sovereign heartbeat owns execution.
 name: Heartbeat Worker Project - Validation Only / No GitHub Token Authority
 
 on:
@@ -126,7 +126,6 @@ jobs:
           assert q['execution_authority'] is False
           print('EPHEMERAL_PROJECTION_VALIDATION_PASS', q['count'])
           PY
-          # Changes remain runner-local. There is deliberately no repository persistence.
           git status --short
 
       - name: Prove workflow itself is non-authorizing

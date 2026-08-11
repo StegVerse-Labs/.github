@@ -66,24 +66,30 @@ class LLMAdapterSovereignExecutionBridgeTests(unittest.TestCase):
                 else:
                     os.environ["STEGVERSE_LLM_ADAPTER_ROOT"] = old
 
-    def test_child_environment_strips_all_github_auth_and_binds_tc_tvc(self) -> None:
+    def test_child_environment_strips_all_github_auth_and_binds_tv_tvc(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             old = {name: os.environ.get(name) for name in mod.GITHUB_AUTH_ENV}
+            old_legacy = os.environ.get("STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY")
             try:
                 for name in mod.GITHUB_AUTH_ENV:
                     os.environ[name] = "must-not-cross-boundary"
+                os.environ["STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY"] = "TC/TVC"
                 env = mod.credential_free_child_env(Path(temp))
                 for name in mod.GITHUB_AUTH_ENV:
                     self.assertNotIn(name, env)
                 self.assertEqual(env["STEGVERSE_LOCAL_MODEL_CREDENTIAL_REQUIREMENT"], "NONE")
-                self.assertEqual(env["STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY"], "TC/TVC")
-                self.assertNotIn("STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY", env)
+                self.assertEqual(env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"], "TV/TVC")
+                self.assertNotIn("STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY", env)
             finally:
                 for name, value in old.items():
                     if value is None:
                         os.environ.pop(name, None)
                     else:
                         os.environ[name] = value
+                if old_legacy is None:
+                    os.environ.pop("STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY", None)
+                else:
+                    os.environ["STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY"] = old_legacy
 
     def test_execution_receipt_requires_exact_route_and_proof_with_no_credentials(self) -> None:
         runtime_proof = proof()
@@ -127,7 +133,8 @@ class LLMAdapterSovereignExecutionBridgeTests(unittest.TestCase):
                 "proof=json.load(open(a.proof)); route=json.load(open(a.route)); h=hashlib.sha256(json.dumps(proof,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()\n"
                 "assert not any(os.getenv(k) for k in ('GITHUB_TOKEN','GH_TOKEN','GITHUB_PAT','GITHUB_PERSONAL_ACCESS_TOKEN','ACTIONS_RUNTIME_TOKEN','ACTIONS_ID_TOKEN_REQUEST_TOKEN'))\n"
                 "assert os.getenv('STEGVERSE_LOCAL_MODEL_CREDENTIAL_REQUIREMENT') == 'NONE'\n"
-                "assert os.getenv('STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY') == 'TC/TVC'\n"
+                "assert os.getenv('STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY') == 'TV/TVC'\n"
+                "assert os.getenv('STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY') is None\n"
                 "r={'schema':'stegverse.llm_adapter.canonical_sovereign_route_execution/v1','state':'EXECUTED','route_authority':'StegVerse-Labs/TVC','route_receipt_hash':route['receipt_hash'],'runtime_proof_hash':h,'credential_requirement':'NONE','github_token_required':False,'third_party_execution_platform_required':False,'execution_authority':False,'authority_effect':'NONE','measured_usage':{'prompt_tokens':{'value':'3'}}}\n"
                 "open(a.output,'w').write(json.dumps(r)); print(json.dumps(r))\n",
                 encoding="utf-8",
@@ -159,7 +166,7 @@ class LLMAdapterSovereignExecutionBridgeTests(unittest.TestCase):
             self.assertEqual(result["state"], "COMPLETE")
             self.assertFalse(result["github_token_required"])
             self.assertFalse(result["github_auth_env_forwarded"])
-            self.assertEqual(result["credential_authority"], "TC/TVC")
+            self.assertEqual(result["credential_authority"], "TV/TVC")
 
 
 if __name__ == "__main__":
