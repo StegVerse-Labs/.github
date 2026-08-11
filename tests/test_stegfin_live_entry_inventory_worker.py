@@ -76,6 +76,31 @@ class StegFinLiveEntryInventoryWorkerTests(unittest.TestCase):
         self.assertFalse(fragment["historical_worker_mutated"])
         self.assertFalse(fragment["github_token_required"])
 
+    def test_v2_is_the_only_worker_eligible_for_live_entry_required_capabilities(self) -> None:
+        handoff = json.loads((ROOT / "handoffs/STEGFIN-LIVE-ENTRY-003.json").read_text())
+        required = set(handoff["execution"]["required_capabilities"])
+        registry = json.loads((ROOT / "control/worker-registry.json").read_text())
+        fragment = json.loads((ROOT / "control/worker-registry.d/stegfin-live-entry-003-executor-v2.json").read_text())
+        workers = list(registry["workers"]) + list(fragment["workers"])
+        profiles = json.loads((ROOT / "control/worker-capability-profiles.json").read_text())
+        profile_map = {row["profile_id"]: row for row in profiles["profiles"]}
+        eligible = []
+        for worker in workers:
+            if worker.get("status") != "AVAILABLE":
+                continue
+            worker_caps = set(worker.get("capabilities") or [])
+            profile_ref = worker.get("capability_profile_ref") or ""
+            profile_id = profile_ref.split("#", 1)[-1]
+            profile = profile_map.get(profile_id)
+            if not profile:
+                continue
+            if not required.issubset(worker_caps):
+                continue
+            if not required.issubset(set(profile.get("allowed_capabilities") or [])):
+                continue
+            eligible.append(worker["worker_id"])
+        self.assertEqual(eligible, ["stegfin-live-entry-inventory-worker-v2"])
+
 
 if __name__ == "__main__":
     unittest.main()
