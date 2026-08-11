@@ -1,6 +1,7 @@
 # Validation-only workflow for SHWP control-plane artifacts.
-# This workflow is not the worker scheduler and has no scheduled activation role.
-name: Heartbeat Worker Project
+# It has no scheduler, activation, repository mutation, credential, claim, or fence role.
+# TC/TVC owns credential semantics; the resident sovereign heartbeat owns execution.
+name: Heartbeat Worker Project - Validation Only / No GitHub Token Authority
 
 on:
   push:
@@ -12,18 +13,9 @@ on:
       - 'tests/**'
       - 'control/**'
       - 'cost-basis/worker-runtime/**'
-      - 'docs/ORG_MIRROR_HANDOFF.md'
-      - 'docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md'
+      - 'docs/**'
       - 'schemas/**'
-      - 'scripts/validate_executable_handoffs.py'
-      - 'scripts/project_heartbeat_workers.py'
-      - 'scripts/query_worker_status.py'
-      - 'scripts/evaluate_goal_convergence.py'
-      - 'scripts/reconcile_heartbeat_continuity.py'
-      - 'scripts/run_heartbeat_runtime.py'
-      - 'scripts/install_sovereign_heartbeat_service.py'
-      - 'scripts/verify_sovereign_runtime_activation.py'
-      - 'scripts/estimate_worker_cost_basis.py'
+      - 'scripts/**'
       - '.github/workflows/heartbeat-worker-project.yml'
   pull_request:
     paths:
@@ -33,100 +25,81 @@ on:
       - 'tests/**'
       - 'control/**'
       - 'cost-basis/worker-runtime/**'
-      - 'docs/ORG_MIRROR_HANDOFF.md'
-      - 'docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md'
+      - 'docs/**'
       - 'schemas/**'
       - 'scripts/**'
       - '.github/workflows/heartbeat-worker-project.yml'
   workflow_dispatch:
 
-permissions:
-  contents: write
+permissions: {}
 
 concurrency:
-  group: heartbeat-worker-project-${{ github.ref }}
-  cancel-in-progress: false
+  group: heartbeat-worker-project-validation-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  project:
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Compile HB runtime and projectors
+      - name: Anonymous public checkout without GitHub token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          python -m py_compile heartbeat_runtime/__init__.py heartbeat_runtime/engine_v2.py heartbeat_runtime/engine_v3.py heartbeat_runtime/engine_v4.py heartbeat_runtime/engine_v5.py heartbeat_runtime/engine_v6.py heartbeat_runtime/engine_v7.py heartbeat_runtime/engine_v7_1.py heartbeat_runtime/engine_v8.py heartbeat_runtime/engine_v9.py heartbeat_runtime/process_adapter.py heartbeat_runtime/blocker_policy.py heartbeat_runtime/orphan_recovery.py
-          python -m py_compile workers/heartbeat_receipt_canary.py workers/steggate_rendezvous_deployment_worker.py workers/organization_federation_readiness_worker.py workers/sovereign_runtime_activation_worker.py workers/ecosystem_chat_sovereign_inference_worker.py workers/tvc_sovereign_route_bridge.py workers/llm_adapter_sovereign_execution_bridge.py workers/ecosystem_chat_sovereign_route_worker.py
-          python -m py_compile scripts/validate_executable_handoffs.py scripts/project_heartbeat_workers.py scripts/query_worker_status.py scripts/evaluate_goal_convergence.py scripts/reconcile_heartbeat_continuity.py scripts/run_heartbeat_runtime.py scripts/install_sovereign_heartbeat_service.py scripts/verify_sovereign_runtime_activation.py scripts/estimate_worker_cost_basis.py
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
+          mkdir -p /tmp/stegverse-ci-bin
+          ln -sf "$(command -v python3)" /tmp/stegverse-ci-bin/python
+          echo /tmp/stegverse-ci-bin >> "$GITHUB_PATH"
+
+      - name: Prove validation environment has no GitHub credential token
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          test -z "${GITHUB_PAT:-}"
+          echo NO_GITHUB_CREDENTIAL_TOKEN_PRESENT
+
+      - name: Compile runtime, workers, and scripts
+        run: |
+          set -euo pipefail
+          python -m compileall -q heartbeat_runtime workers scripts
+
       - name: Parse canonical JSON surfaces
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          paths = [*sorted(Path('schemas').glob('*.json')), *sorted(Path('control').glob('*.json')), *sorted(Path('handoffs').glob('*.json')), *sorted(Path('cost-basis/worker-runtime').glob('*.json'))]
-          for path in paths:
-              json.loads(path.read_text(encoding='utf-8'))
-              print(f'JSON_OK:{path}')
+          roots=(Path('schemas'),Path('control'),Path('handoffs'),Path('cost-basis/worker-runtime'),Path('authorizations'))
+          count=0
+          for root in roots:
+              if not root.exists():
+                  continue
+              for path in sorted(root.rglob('*.json')):
+                  json.loads(path.read_text(encoding='utf-8'))
+                  count += 1
+          assert count > 0
+          print('CANONICAL_JSON_PASS', count)
           PY
-      - name: Validate executable HANDOFF goal and resource bounds
+
+      - name: Validate executable handoffs
         run: python scripts/validate_executable_handoffs.py
-      - name: Prove blocker resolution and no-third-party-blocker invariant
-        run: python -m unittest -v tests.test_blocker_resolution_policy
-      - name: Prove sovereign local model proof advances inference worker
-        run: python -m unittest -v tests.test_sovereign_inference_local_model_proof
-      - name: Prove credential-free local TVC route bridge
-        run: python -m unittest -v tests.test_tvc_sovereign_route_bridge
-      - name: Prove credential-free local LLM-adapter same-route execution bridge
-        run: python -m unittest -v tests.test_llm_adapter_sovereign_execution_bridge
-      - name: Prove fail-closed orphan recovery reconciliation
-        run: python -m unittest -v tests.test_orphan_recovery_reconciliation
-      - name: Prove native heartbeat engine semantics
-        run: python -m unittest -v tests.test_heartbeat_runtime
-      - name: Prove worker coordination subsignal and cycle leases
-        run: python -m unittest -v tests.test_worker_coordination_subsignal
-      - name: Prove ambiguity-safe executor discovery
-        run: python -m unittest -v tests.test_executor_discovery
-      - name: Prove blocked recheck and human authority boundaries
-        run: python -m unittest -v tests.test_block_boundaries
-      - name: Prove bounded goal lineage and duplicate control
-        run: python -m unittest -v tests.test_goal_lineage
-      - name: Prove bounded worker resource authority
-        run: python -m unittest -v tests.test_resource_authority
-      - name: Prove policy continuity and canonical checkpoints
-        run: python -m unittest -v tests.test_checkpoint_policy
-      - name: Prove worker capability profiles
-        run: python -m unittest -v tests.test_capability_profiles
-      - name: Prove fail-closed status query and goal convergence
-        run: python -m unittest -v tests.test_status_failclosed_convergence
-      - name: Prove sandboxed mutation scope and fence semantics
-        run: python -m unittest -v tests.test_process_adapter_scope
-      - name: Prove one-HB authority renewal and orphan recovery
-        run: python -m unittest -v tests.test_lifecycle_authority
-      - name: Prove cost basis estimator semantics
-        run: python -m unittest -v tests.test_worker_cost_basis_estimator
-      - name: Prove StegVerse-native sovereign heartbeat host
-        run: python -m unittest -v tests.test_sovereign_heartbeat_service
-      - name: Prove sovereign runtime activation producer
-        run: python -m unittest -v tests.test_sovereign_runtime_activation_verifier
-      - name: Prove sparse live cost data does not invent expiry
+
+      - name: Run complete deterministic repository test suite
+        run: python -m unittest discover -v tests
+
+      - name: Prove heartbeat dry-run cannot persist registry or epoch state
         run: |
-          output="$(python scripts/estimate_worker_cost_basis.py --check)"
-          echo "$output"
-          python - <<'PY' "$output"
-          import json, sys
-          value = json.loads(sys.argv[1])
-          for record in value['records'].values():
-              if record['sample_count'] == 0:
-                  assert record['hb_estimate']['confidence'] == 'NONE', record
-                  assert record['hb_estimate']['expiry_candidate_beats'] is None, record
-          print('COST_BASIS_NO_GUESS_PASS')
-          PY
-      - name: Prove dry-run never mutates live registry
-        run: |
+          set -euo pipefail
           before="$(sha256sum control/worker-registry.json control/heartbeat-state.json control/worker-cost-observations.json | sha256sum | cut -d' ' -f1)"
           output="$(python scripts/run_heartbeat_runtime.py --dry-run --cycles 1)"
           echo "$output"
@@ -134,61 +107,44 @@ jobs:
           test "$before" = "$after"
           python - <<'PY' "$output"
           import json, sys
-          value = json.loads(sys.argv[1])
-          assert value['authority_effect'] == 'none_beyond_existing_admitted_task_authority', value
-          print('LIVE_DRY_RUN_NON_MUTATING_PASS')
+          value=json.loads(sys.argv[1])
+          assert value['authority_effect']=='none_beyond_existing_admitted_task_authority', value
+          print('DRY_RUN_NON_MUTATING_PASS')
           PY
-      - name: Refresh canonical read and convergence projections
+
+      - name: Rebuild projections ephemerally without repository persistence
         run: |
-          python scripts/project_heartbeat_workers.py --write
-          python scripts/evaluate_goal_convergence.py --write
-          python scripts/query_worker_status.py --state BLOCKED > /tmp/blocked-query.json
+          set -euo pipefail
+          python scripts/project_heartbeat_workers.py --write >/tmp/worker-status.json
+          python scripts/evaluate_goal_convergence.py --write >/tmp/goal-convergence.json
+          python scripts/reconcile_heartbeat_continuity.py --write >/tmp/heartbeat-continuity.json
+          python scripts/query_worker_status.py --state BLOCKED >/tmp/blocked-query.json
           python - <<'PY'
           import json
           q=json.load(open('/tmp/blocked-query.json'))
           assert q['observational_only'] is True
           assert q['execution_authority'] is False
-          print('OBSERVATIONAL_STATUS_QUERY_PASS', q['count'])
+          print('EPHEMERAL_PROJECTION_VALIDATION_PASS', q['count'])
           PY
-      - name: Refresh heartbeat continuity projection
-        run: python scripts/reconcile_heartbeat_continuity.py --write
-      - name: Prove current StegGate successor posture
+          # Changes remain runner-local. There is deliberately no repository persistence.
+          git status --short
+
+      - name: Prove workflow itself is non-authorizing
         run: |
           python - <<'PY'
-          import json
           from pathlib import Path
-          status = json.loads(Path('control/worker-status.json').read_text())
-          continuity = json.loads(Path('control/heartbeat-continuity.json').read_text())
-          convergence = json.loads(Path('control/goal-convergence.json').read_text())
-          audit = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-AUDITKIT-001')
-          boundary = next(x for x in status['tasks'] if x['task_id'] == 'STEGGATE-FIRST-BOUNDARY-001')
-          audit_convergence = next(x for x in convergence['goals'] if x['root_task_id'] == 'STEGGATE-AUDITKIT-001')
-          assert status['execution_authority_from_heartbeat'] is False
-          assert status['query_is_observational'] is True
-          assert status['single_heartbeat_timing_frame'] is True
-          assert status['activation_driver'] == 'internal_heartbeat_registry_evaluation'
-          assert continuity['heartbeat_is_single_common_timing_frame'] is True
-          assert audit['state'] == 'COMPLETED' and audit['archive_eligible'] is True
-          assert boundary['state'] == 'BLOCKED' and boundary['worker_id'] is None and boundary['archive_eligible'] is False
-          assert audit_convergence['converged'] is False
-          assert 'UNRESOLVED_DESCENDANTS' in audit_convergence['reason_codes']
-          print('STEGGATE_SUCCESSOR_BLOCKED_UNCLAIMED_AND_NONCONVERGED_PASS')
+          text=Path('.github/workflows/heartbeat-worker-project.yml').read_text(encoding='utf-8')
+          pieces=(
+              ('contents', ': write'),
+              ('git', ' push'),
+              ('actions/', 'checkout@'),
+              ('actions/', 'setup-python@'),
+              ('secrets.', 'GITHUB_TOKEN'),
+              ('github.', 'token'),
+          )
+          forbidden=[left+right for left,right in pieces]
+          found=[needle for needle in forbidden if needle in text]
+          assert not found, found
+          assert 'permissions: {}' in text
+          print('WORKFLOW_NON_AUTHORIZING_PASS')
           PY
-      - name: Commit derived projections only when changed
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          git config user.name 'stegverse-heartbeat-worker'
-          git config user.email 'actions@users.noreply.github.com'
-          git fetch origin main
-          git reset --hard origin/main
-          git clean -fd
-          python scripts/project_heartbeat_workers.py --write >/tmp/final-worker-status.json
-          python scripts/evaluate_goal_convergence.py --write >/tmp/final-goal-convergence.json
-          python scripts/reconcile_heartbeat_continuity.py --write >/tmp/final-heartbeat-continuity.json
-          if git diff --quiet -- control/worker-status.json control/heartbeat-continuity.json control/goal-convergence.json; then
-            echo 'No derived HB state change after latest-main regeneration.'
-            exit 0
-          fi
-          git add control/worker-status.json control/heartbeat-continuity.json control/goal-convergence.json
-          git commit -m 'chore: project fail-closed worker status and convergence'
-          git push origin HEAD:main

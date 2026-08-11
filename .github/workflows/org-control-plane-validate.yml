@@ -1,4 +1,4 @@
-name: Validate organization control plane
+name: Validate organization control plane - No GitHub Token Authority
 
 on:
   pull_request:
@@ -30,29 +30,48 @@ on:
       - '.github/workflows/org-allocator.yml'
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 concurrency:
   group: org-control-plane-validation-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+      - name: Anonymous public checkout without GitHub credential token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
+          mkdir -p /tmp/stegverse-ci-bin
+          ln -sf "$(command -v python3)" /tmp/stegverse-ci-bin/python
+          echo /tmp/stegverse-ci-bin >> "$GITHUB_PATH"
+
       - name: Validate control-plane invariants
         run: python scripts/validate_org_control_plane.py
       - name: Prove cross-repository dependency collision enforcement
         run: python -m unittest tests.test_cross_repository_dependency_claims -v
-      - name: Exercise allocator deterministically
+      - name: Exercise allocator deterministically without persistence authority
         run: |
+          before="$(sha256sum control/claims-active.json 2>/dev/null || true)"
           python scripts/allocate_claims.py
           python scripts/validate_org_control_plane.py
+          after="$(sha256sum control/claims-active.json 2>/dev/null || true)"
+          echo "allocator local before=${before} after=${after}"
+          echo 'Allocator mutations are runner-local validation evidence only; this workflow never commits or pushes them.'
       - name: Validate check-in reconciliation
         run: python scripts/reconcile_checkins.py
       - name: Validate JSON and JSONL syntax
@@ -63,9 +82,26 @@ jobs:
           paths = sorted(Path('.').glob('control/**/*.json')) + sorted(Path('.').glob('schemas/**/*.json')) + sorted(Path('.').glob('tasks/**/*.json'))
           for path in paths:
               json.loads(path.read_text(encoding='utf-8'))
-              print(f'valid JSON: {path}')
           for path in sorted(Path('.').glob('events/**/*.jsonl')):
-              for line_no, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
+              for line in path.read_text(encoding='utf-8').splitlines():
                   json.loads(line)
-                  print(f'valid JSONL: {path}:{line_no}')
+          print('ORG_CONTROL_JSON_JSONL_PASS')
+          PY
+      - name: Prove validation has no GitHub authority-bearing constructs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text=Path('.github/workflows/org-control-plane-validate.yml').read_text(encoding='utf-8')
+          pieces=(
+              ('contents', ': write'),
+              ('git', ' push'),
+              ('actions/', 'checkout@'),
+              ('actions/', 'setup-python@'),
+              ('secrets.', 'GITHUB_TOKEN'),
+              ('github.', 'token'),
+          )
+          found=[a+b for a,b in pieces if a+b in text]
+          assert not found, found
+          assert 'permissions: {}' in text
+          print('ORG_CONTROL_VALIDATION_NON_AUTHORIZING_PASS')
           PY
