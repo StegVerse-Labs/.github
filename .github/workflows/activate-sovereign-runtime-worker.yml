@@ -1,4 +1,6 @@
-name: Sovereign Runtime Worker Activation
+# Validation-only surface for the sovereign runtime worker. A GitHub-hosted runner
+# is explicitly ineligible to activate the production sovereign carrier.
+name: Sovereign Runtime Worker - Validation Only / No GitHub Token Authority
 
 on:
   workflow_dispatch:
@@ -11,166 +13,85 @@ on:
       - 'cost-basis/worker-runtime/sovereign-runtime-activation.json'
       - 'control/process-worker-adapters.json'
       - 'control/worker-capability-profiles.json'
+      - 'scripts/verify_sovereign_runtime_activation.py'
+      - '.github/workflows/activate-sovereign-runtime-worker.yml'
+  pull_request:
+    paths:
+      - 'workers/sovereign_runtime_activation_worker.py'
+      - 'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json'
+      - 'authorizations/SHWP-DURABLE-RUNTIME-ACTIVATION-policy-rebind-v0.4.json'
+      - 'cost-basis/worker-runtime/sovereign-runtime-activation.json'
+      - 'control/process-worker-adapters.json'
+      - 'control/worker-capability-profiles.json'
+      - 'scripts/verify_sovereign_runtime_activation.py'
       - '.github/workflows/activate-sovereign-runtime-worker.yml'
 
-permissions:
-  contents: write
-
-concurrency:
-  group: sovereign-runtime-worker-activation
-  cancel-in-progress: false
+permissions: {}
 
 jobs:
-  activate:
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Admit worker and task into canonical registry
+      - name: Anonymous public checkout without GitHub credential token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          p=Path('control/worker-registry.json')
-          r=json.loads(p.read_text())
-          task_id='SHWP-DURABLE-RUNTIME-ACTIVATION'
-          policy='shwp-single-hb-v0.4-sovereign-solution-execution'
-          rebind_ref='authorizations/SHWP-DURABLE-RUNTIME-ACTIVATION-policy-rebind-v0.4.json'
-          task=next((x for x in r.get('tasks',[]) if x.get('task_id')==task_id),None)
-          if task is None:
-              r['generation']=int(r.get('generation',0))+1
-              task={
-                'archive_eligible':False,'archive_reason_codes':[],'authorized_policy_version':policy,
-                'block_ref':'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#block','claim_id':None,
-                'cost_basis_ref':'cost-basis/worker-runtime/sovereign-runtime-activation.json',
-                'evidence_refs':['StegVerse-Labs/.github#12','StegVerse-Labs/.github#59','workers/sovereign_runtime_activation_worker.py','handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json'],
-                'executor_binding':'AUTHORIZED','external_entity_job_ref':None,'goal_id':'SHWP-DURABLE-RUNTIME-ACTIVATION',
-                'handoff_ref':'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json','heartbeat_timing':None,
-                'last_checkpoint_ref':'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json','lease':None,'state':'HANDOFF_READY',
-                'task_id':task_id,'worker_id':None,'worker_instance_id':None
-              }
-              r.setdefault('tasks',[]).append(task)
-          else:
-              # Never overwrite policy authority on an active claim. If policy
-              # changed, bind the separately ADMITTED rebind record and let the
-              # heartbeat runtime validate task/claim/fence/handoff/authority.
-              if task.get('claim_id') and task.get('authorized_policy_version') != policy:
-                  task['policy_rebind_ref']=rebind_ref
-              elif not task.get('claim_id'):
-                  task['authorized_policy_version']=policy
-                  task['policy_rebind_ref']=None
-              task['cost_basis_ref']='cost-basis/worker-runtime/sovereign-runtime-activation.json'
-              task['handoff_ref']='handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json'
-              task['executor_binding']='AUTHORIZED' if not task.get('claim_id') else task.get('executor_binding','BOUND')
-              task['block_ref']='handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#block'
-              refs=set(task.get('evidence_refs') or [])
-              refs.update(['StegVerse-Labs/.github#59','workers/sovereign_runtime_activation_worker.py','cost-basis/worker-runtime/sovereign-runtime-activation.json',rebind_ref])
-              task['evidence_refs']=sorted(refs)
-          worker_id='sovereign-runtime-activation-worker'
-          if not any(x.get('worker_id')==worker_id for x in r.get('workers',[])):
-              r.setdefault('workers',[]).append({
-                'adapter_ref':'process:sovereign-runtime-activation-v1',
-                'authority_source':'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#authority',
-                'capabilities':['runtime_observation','continuous_process_execution','durable_state_reconstruction','bounded_repository_mutation'],
-                'capability_profile_ref':'control/worker-capability-profiles.json#sovereign-runtime-worker-v1',
-                'executor_type':'repository_worker','last_seen_at':None,'status':'AVAILABLE','worker_id':worker_id
-              })
-          p.write_text(json.dumps(r,indent=2,sort_keys=True)+'\n')
-          PY
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
 
-      - name: Validate worker surfaces and admitted rebind
+      - name: Validate sovereign runtime worker surfaces
         run: |
-          python -m py_compile workers/sovereign_runtime_activation_worker.py heartbeat_runtime/*.py scripts/run_heartbeat_runtime.py
-          python - <<'PY'
+          set -euo pipefail
+          python3 -m py_compile workers/sovereign_runtime_activation_worker.py heartbeat_runtime/*.py scripts/verify_sovereign_runtime_activation.py
+          python3 - <<'PY'
           import hashlib,json
           from pathlib import Path
           h=json.loads(Path('handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json').read_text())
           rb=json.loads(Path('authorizations/SHWP-DURABLE-RUNTIME-ACTIVATION-policy-rebind-v0.4.json').read_text())
           payload=json.dumps(h,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
-          handoff_hash=hashlib.sha256(payload).hexdigest()
           assert h['activation']['carrier']=='heartbeat'
           assert h['activation']['checkout_policy']=='fenced_atomic_checkout'
           assert h['block']['third_party_blocker'] is False
-          assert h['block']['human_action_required'] is False
           assert 'bounded_repository_mutation' in h['execution']['required_capabilities']
-          assert 'receipts/sovereign-runtime-activation/**' in h['execution']['allowed_paths']
           assert rb['status']=='ADMITTED'
           assert rb['heartbeat_grants_rebind'] is False
-          assert rb['handoff_sha256']==handoff_hash,(rb['handoff_sha256'],handoff_hash)
+          assert rb['handoff_sha256']==hashlib.sha256(payload).hexdigest()
           assert rb['new_policy_version']==h['authority']['policy_version']
-          print('SOVEREIGN_RUNTIME_WORKER_SURFACES_AND_REBIND_PASS')
+          print('SOVEREIGN_RUNTIME_WORKER_SURFACES_PASS')
           PY
 
-      - name: Advance one canonical heartbeat and apply policy continuity
+      - name: Prove hosted runner is not sovereign activation authority
         run: |
           set -euo pipefail
-          mkdir -p integration-evidence
-          python scripts/run_heartbeat_runtime.py --cycles 1 | tee integration-evidence/heartbeat-cycle.jsonl
-          python scripts/project_heartbeat_workers.py --write
-          python scripts/evaluate_goal_convergence.py --write
-          python scripts/reconcile_heartbeat_continuity.py --write
-          python - <<'PY'
-          import json
+          python3 -m unittest -v tests.test_sovereign_runtime_activation_verifier
+          before="$(sha256sum control/worker-registry.json control/heartbeat-state.json | sha256sum | cut -d' ' -f1)"
+          output="$(python3 scripts/run_heartbeat_runtime.py --dry-run --cycles 1)"
+          after="$(sha256sum control/worker-registry.json control/heartbeat-state.json | sha256sum | cut -d' ' -f1)"
+          test "$before" = "$after"
+          python3 - <<'PY' "$output"
+          import json,sys
+          row=json.loads(sys.argv[1])
+          assert row['authority_effect']=='none_beyond_existing_admitted_task_authority'
+          print('SOVEREIGN_RUNTIME_DRY_RUN_NONPERSISTENT_PASS')
+          PY
+
+      - name: Prove GitHub-hosted activation authority is retired
+        run: |
+          python3 - <<'PY'
           from pathlib import Path
-          rows=[json.loads(x) for x in Path('integration-evidence/heartbeat-cycle.jsonl').read_text().splitlines() if x.strip()]
-          assert len(rows)==1
-          row=rows[0]
-          status=json.loads(Path('control/worker-status.json').read_text())
-          registry=json.loads(Path('control/worker-registry.json').read_text())
-          task=next(x for x in status['tasks'] if x['task_id']=='SHWP-DURABLE-RUNTIME-ACTIVATION')
-          raw=next(x for x in registry['tasks'] if x['task_id']=='SHWP-DURABLE-RUNTIME-ACTIVATION')
-          assert task['executor_binding']=='BOUND', task
-          assert task['executor_resolved'] is True, task
-          assert task['heartbeat_timing_established'] is True, task
-          assert task['worker_id']=='sovereign-runtime-activation-worker', task
-          assert task['claim_id'], task
-          assert isinstance(task['fencing_token'],int), task
-          assert task['state'] in {'ACTIVE','BLOCKED','COMPLETED'}, task
-          assert raw['authorized_policy_version']=='shwp-single-hb-v0.4-sovereign-solution-execution',raw
-          assert raw.get('policy_rebind_ref') is None,raw
-          assert 'POLICY_REBIND_REQUIRED' not in raw.get('archive_reason_codes',[]),raw
-          assert any(e.get('event_type')=='policy_rebound' for e in row.get('events',[])),row
-          receipt=Path('receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json')
-          assert receipt.exists()
-          value=json.loads(receipt.read_text())
-          assert value['third_party_runtime_required'] is False
-          Path('integration-evidence/sovereign-runtime-worker-status.json').write_text(json.dumps(task,indent=2,sort_keys=True)+'\n')
-          Path('integration-evidence/sovereign-runtime-worker-receipt.json').write_text(json.dumps(value,indent=2,sort_keys=True)+'\n')
-          Path('integration-evidence/sovereign-runtime-policy-rebind.json').write_text(json.dumps(raw,indent=2,sort_keys=True)+'\n')
-          print(f"SOVEREIGN_RUNTIME_POLICY_REBOUND:epoch={row['epoch']}:state={task['state']}:fence={task['fencing_token']}")
+          text=Path('.github/workflows/activate-sovereign-runtime-worker.yml').read_text()
+          forbidden=['contents'+': write','git'+' push','actions/'+'checkout@','actions/'+'setup-python@','scripts/run_heartbeat_runtime.py --cycles 1 |','${{ secrets.']
+          found=[x for x in forbidden if x in text]
+          assert not found, found
+          assert 'permissions: {}' in text
+          print('SOVEREIGN_RUNTIME_HOSTED_AUTHORITY_RETIRED_PASS')
           PY
-
-      - name: Persist heartbeat-owned worker state
-        run: |
-          set -euo pipefail
-          git config user.name 'stegverse-heartbeat-worker'
-          git config user.email 'actions@users.noreply.github.com'
-          git add control/ events/ checkpoints/ receipts/sovereign-runtime-activation/ receipts/worker-mutation-scope/ 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo 'Worker activation produced no persistent state delta.' >&2
-            exit 1
-          fi
-          git commit -m 'heartbeat: apply sovereign runtime policy rebind'
-          STASHED=false
-          if [ -n "$(git status --porcelain)" ]; then git stash push --include-untracked -m sovereign-worker-noncanonical; STASHED=true; fi
-          for attempt in 1 2 3 4 5; do
-            if ! git pull --rebase origin main; then git rebase --abort >/dev/null 2>&1 || true; sleep $((attempt * 2)); continue; fi
-            if git push origin HEAD:main; then if [ "$STASHED" = true ]; then git stash pop || true; fi; exit 0; fi
-            sleep $((attempt * 2))
-          done
-          if [ "$STASHED" = true ]; then git stash pop || true; fi
-          exit 1
-
-      - name: Preserve worker activation evidence
-        uses: actions/upload-artifact@v4
-        with:
-          name: sovereign-runtime-worker-${{ github.run_id }}
-          path: integration-evidence/
-          if-no-files-found: error
-          retention-days: 90
