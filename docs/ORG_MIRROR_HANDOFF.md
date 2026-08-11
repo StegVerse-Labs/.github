@@ -4,223 +4,184 @@
 
 This is the canonical StegVerse-Labs organization continuation/exit record. Repository-local `*_MIRROR_HANDOFF.md` files remain authoritative for repository-local implementation evidence. Machine-readable state under `control/`, `handoffs/`, `management/`, `receipts/`, `checkpoints/`, `authorizations/`, `schemas/`, and `events/` supersedes chat history.
 
-## Active goal and ownership
+## Active archive gate
 
 ```text
 goal_id: ARCHIVE-GATE-PROGRESS-ENFORCEMENT-001
-originating_goal: prevent premature archival while ecosystem goals remain unmet or workers only recheck unchanged blockers
 repository: StegVerse-Labs/.github
 canonical_branch: main
 canonical_owner: StegVerse-Labs/.github#64
-current_state: ACTIVE_REMEDIATION
+state: ACTIVE_REMEDIATION / CURRENT TASK GRAPH NOT ARCHIVE READY
 thread_archive_ready: false
-archive_block_reason: UNMET_ECOSYSTEM_GOALS_AND_ZERO_MEASURABLE_FORWARD_PROGRESS_ON_BLOCKED_PRODUCTION_WORKERS
+archive_block_reason: UNMET_PRODUCTION_ACTIVATION_GOALS_WITH_DURABLE_CARRIER_STALLED_AT_HB29
+latest session inventory: control/session-goal-inventory-2026-08-11-ecosystem-chat-local-model.json
 ```
 
-The previous `CROSS-REPO-DEPENDENCY-CLAIMS-001` goal remains complete and merged. Its completion does not make this thread or the ecosystem archive-ready while inherited production, activation, federation, rendezvous, inference, release, or successor goals remain non-terminal.
+The previous cross-repository claim work remains complete. Context transfer alone does not satisfy this organization gate.
 
 ## Non-negotiable archive invariant
 
-A session/thread MUST NOT be declared archive-ready merely because its unique chat context was durably transferred.
+A session/thread must not be declared archive-ready merely because chat-only context was transferred.
 
-Archive readiness requires both:
+Archive readiness requires either:
 
-1. every originating goal and every inherited successor/integration/activation/release goal is terminal-success; OR
-2. unfinished goals are owned by machine workers that are demonstrably making measurable forward progress toward terminal predicates.
+1. every originating and inherited successor/integration/activation/release goal is terminal-success; or
+2. unfinished goals are owned by canonical machine workers that are measurably advancing terminal predicates.
 
-Repeated observation of an unchanged blocker is monitoring, not progress. `BUSY`, `CLAIMED`, `LEASED`, heartbeat responses, checkpoints, or repeated rechecks alone do not satisfy progress.
+`BUSY`, `CLAIMED`, `LEASED`, heartbeat carriage, checkpoint creation, or unchanged blocker rechecks are not progress by themselves. Measurable progress is an admitted durable change that reduces remaining work: a blocker reduction, predicate advance, implementation or integration merge, deployment-state advance, reconstruction proof, authority/dependency resolution, or another task-specific transition toward completion.
 
-Measurable forward progress includes at least one admitted durable change such as blocker-count reduction, success-predicate advancement, implementation commit, deployment-state advancement, live acceptance advancement, reconstruction proof advancement, authority/dependency resolution, or another task-specific state transition that reduces remaining work.
-
-If all unfinished production workers are only rechecking unchanged blockers, archive readiness MUST be false.
-
-## Current worker reality
-
-Canonical registry: `control/worker-registry.json` generation 20.
-Canonical status projection: `control/worker-status.json`.
-Canonical coordination: `control/heartbeat-subsignals.json`.
-
-Current claimed production workers:
-
-```text
-SHWP-DURABLE-RUNTIME-ACTIVATION
-  worker: sovereign-runtime-activation-worker
-  state: BLOCKED
-  transition: SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED
-  progress_class: MONITORING_BLOCKED
-
-SHWP-ECOSYSTEM-CHAT-INFERENCE-001
-  worker: ecosystem-chat-sovereign-inference-worker
-  state: BLOCKED
-  transition: SOVEREIGN_LLM_INFERENCE_RUNTIME_NOT_YET_OBSERVED
-  progress_class: MONITORING_BLOCKED
-
-STEGGATE-STABLE-RENDEZVOUS-WORKER-001
-  worker: steggate-rendezvous-deployment-worker
-  state: BLOCKED
-  transition: CREDENTIAL_VALUES_ABSENT
-  progress_class: MONITORING_BLOCKED
-
-SHWP-ALL-ORG-FEDERATION-001
-  worker: organization-federation-readiness-worker
-  state: BLOCKED
-  transition: FEDERATION_READY_WITH_MACHINE_BLOCKERS
-  progress_class: MONITORING_BLOCKED
-```
-
-Current production-worker summary:
-
-```text
-busy_workers: 4
-progressing_workers: 0
-monitoring_blocked_workers: 4
-terminal_success_workers: 0 of unfinished production set
-thread_archive_ready: false
-```
-
-## Canonical architecture
-
-There is one canonical StegVerse heartbeat and one canonical worker registry.
+## Canonical runtime state
 
 ```text
 heartbeat runtime: heartbeat_runtime.engine_v9.HeartbeatRuntime
 heartbeat runner: scripts/run_heartbeat_runtime.py
-worker coordination subsignal: control/heartbeat-subsignals.json#worker_coordination
 worker registry: control/worker-registry.json
-active claims: control/claims-active.json
-claim allocator: scripts/allocate_claims.py
+worker coordination: control/heartbeat-subsignals.json
 Master Records projection: control/heartbeat-master-records-projection.json
-organization federation handoff: handoffs/SHWP-ALL-ORG-FEDERATION-001.json
+last directly observed heartbeat epoch: 29
+last cycle: 2026-08-10T20:51:11Z
+resident carrier post-HB29 advance: NOT OBSERVED
 ```
 
-Heartbeat cycles carry worker coordination. Heartbeat carriage does not grant execution authority; admitted task authority, capability matching, claim/fence state, policy continuity, bounded resource windows, and dependency-surface admission remain separate controls.
+`SHWP-DURABLE-RUNTIME-ACTIVATION` remains installed and bound in the worker registry with claim `SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18`, executor binding `BOUND`, fencing token 18, and blocker reference `handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#block`. Its next expected transition is the sovereign runtime solution execution path, but no connected execution surface is declared as a StegVerse-owned/federated node.
 
-Cross-repository collision authority is centralized in the allocator. Repository-local entry gates may add defense in depth but may not become second global registries or second heartbeat authorities.
+## Ecosystem Chat sovereign local-model work — source complete
 
-## Completed protocol capabilities
-
-### Worker coordination substrate
-
-The heartbeat-cycle worker correction remains merged and activation-observed:
+The original session requirements are now durably implemented and consolidated:
 
 ```text
-PR: StegVerse-Labs/.github#56
-merge: a58b370480982ddc69333cde41370fa671eca060
-worker_coordination.state: ACTIVE
+formal local model: COMPLETE_RELEASED
+local runtime discovery/launch/inference/proof: COMPLETE_RELEASED
+persistent private endpoint proof: COMPLETE_RELEASED
+heartbeat local-model lifecycle integration: COMPLETE_MERGED
+heartbeat -> TVC invocation: COMPLETE_MERGED
+TVC route evaluator / credential NONE: SOURCE_COMPLETE
+LLM-adapter exact route executor task 020: COMPLETE_RELEASED
+Master Records historical G20 custody task 025: COMPLETE_RELEASED
+orphan recovery source implementation: COMPLETE_RELEASED
+GitHub-token activation/persistence retirement: COMPLETE_RELEASED
+live same-carrier activation: NOT COMPLETE
 ```
 
-### Cross-repository dependency-surface claims
+Canonical local-model handoff:
 
-Corrected surfaces remain complete:
+`StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md`
+
+Canonical Ecosystem Chat recovery/activation handoff:
+
+`docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md`
+
+Canonical session execution inventory:
+
+`control/session-goal-inventory-2026-08-11-ecosystem-chat-local-model.json`
+
+## TC/TVC credential authority and no-GitHub-token production boundary
+
+Current contract:
 
 ```text
-scripts/allocate_claims.py
-schemas/claim.schema.json
-tests/test_cross_repository_dependency_claims.py
-.github/workflows/org-control-plane-validate.yml
-docs/CROSS_REPO_DEPENDENCY_CLAIMS_MIRROR_HANDOFF.md
+credential authority: TC/TVC
+local-model credential requirement: NONE
+route authority: StegVerse-Labs/TVC
+model/runtime: StegVerse-002/micro-node-runtime
+transport/evidence: StegVerse-org/LLM-adapter
+custody/reconstruction: master-records/orchestration
+GitHub token production authority: NONE
+GitHub Actions production activation role: NONE
+GitHub Actions heartbeat persistence role: NONE
 ```
 
-Current invariant:
+PR `StegVerse-Labs/.github#79` merged at `f6265ff0f74a51adf79985da09691b871b7576dc` and retired the remaining hosted GitHub-token-bearing activation/persistence path. The relevant workflows are validation-only, use anonymous public git fetch, do not commit/push heartbeat state, and do not pass GitHub auth into TVC, the local model runtime, LLM-adapter, Master Records, or the resident heartbeat.
+
+Validation evidence:
 
 ```text
-repository identity does not bypass dependency-surface ownership
+Ecosystem Chat no-token validation: run 31453552033 SUCCESS
+Heartbeat Worker Project no-token validation: run 31453552032 SUCCESS
+Organization control-plane no-token validation: run 31453552110 SUCCESS
+complete deterministic heartbeat suite: 97 tests PASS
 ```
 
-## Validation evidence
+GitHub Actions may expose platform-internal metadata-read capability even under `permissions: {}`. That platform facility is not a StegVerse credential authority and is not consumed by the project execution chain.
 
-Latest sovereign local-model activation implementation is merged as PR #68 / commit `d4e22a3aa39b7f567e3a66d73d00abec1dcee494`.
+## Orphan recovery and higher-fence continuation
 
-Validation is explicitly separated from production activation:
+Historical parent claim/fence G20 ended after the HB26-HB28 blocker-policy response failure sequence. The released recovery path is canonical:
 
 ```text
-PR validation: Heartbeat Worker Project 31381743245 SUCCESS
-PR validation: Validate organization control plane 31381743221 SUCCESS
-main push: Validate organization control plane 31381823247 SUCCESS
-production local-model launch authority: StegVerse heartbeat on sovereign carrier only
-GitHub token runtime dependency: prohibited
-GitHub Actions production role: false
+StegVerse-Labs/.github PR #78
+merge: 477b0d5e3737662a4d51fe87538bbbc2d4acc99e
+Master Records custody PR #27
+merge: 4c6f4679c20c7fc70a65753cf4f87e6b929f09ef
 ```
 
-The initial main `Org Continuation Check` run `31381823246` failed only because this canonical handoff no longer contained the exact required `Validation evidence` marker. This section repairs that handoff-contract regression; a fresh continuation-check success is required before treating the repair as validated.
+Dry-run validation proves the allocator selects recovery fence 23, strictly greater than ended fence 20. That dry-run is nonpersistent and is not a live activation claim.
 
-## Human authority boundary — durable runtime activation
-
-Sovereign continuous-carrier activation remains an unfinished production goal:
+Live continuation remains:
 
 ```text
-owner: StegVerse-Labs/.github#12 and remediation tracking StegVerse-Labs/.github#64
+resident heartbeat advances beyond HB29
+-> recovery registry fragment is consumed
+-> recovery obtains a live fence >20
+-> Master Records G20 custody resolves
+-> recovery reaches COMPLETED
+-> parent SHWP-ECOSYSTEM-CHAT-INFERENCE-001 returns HANDOFF_READY
+-> parent receives a fresh live fence >20
+-> local model process is discovered/launched/proven
+-> TVC emits ROUTE_ADMITTED / credential_requirement NONE
+-> released LLM-adapter task 020 executes the exact endpoint
+-> Master Records provider-usage reconstruction PASS
+-> Master Records transition reconstruction PASS for the same execution
+-> immutable zero-blocker Ecosystem Chat activation evidence exists
+```
+
+## Human/physical authority boundary — durable sovereign carrier
+
+The native runtime implementation is complete, but activation requires a real StegVerse-owned/federated machine. Current authoritative surfaces:
+
+```text
 handoff: handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
+receipt: receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json
+worker: workers/sovereign_runtime_activation_worker.py
+installer: scripts/install_sovereign_heartbeat_service.py
+verifier: scripts/verify_sovereign_runtime_activation.py
 state: BLOCKED_RUNTIME_ACTIVATION
-block: SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED
-progress_class: MONITORING_BLOCKED
+reason: SOVEREIGN_NODE_DECLARATION_NOT_PRESENT
 ```
 
-Production activation requires one StegVerse-owned or federated node to prove native service registration, continuous runtime from durable local storage, heartbeat epoch advancement under runtime-v9 timing authority, heartbeat-owned worker checkpoint response, controlled restart, no epoch/registry regression, no duplicate heartbeat/claim/fence split brain, and durable registry/event/cost/receipt/checkpoint reconstruction after restart.
+No repository file, GitHub-hosted runner, Render service, Vercel runtime, or Cloudflare surface may be substituted for the required sovereign physical carrier. The release condition is node-local `~/.stegverse/heartbeat/activation.latest.json` with all nine activation predicates true, including runtime materialization, native service activation, continuous liveness, heartbeat advance, worker-coordination checkpoint, controlled restart, non-regression, no duplicate claim/fence, and state reconstruction PASS.
 
-## Cross-repository dependencies / propagation
+This is a physical execution-surface boundary. Repository automation is already installed; no additional source implementation is required to make the node eligible. A machine with actual OS/process-supervision authority must be connected or declared before native activation can occur.
 
-Canonical organization-wide readiness continuation:
+## Other organization production work
 
-```text
-task: SHWP-ALL-ORG-FEDERATION-001
-handoff: handoffs/SHWP-ALL-ORG-FEDERATION-001.json
-registry: control/worker-registry.json
-receipt: receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json
-worker: organization-federation-readiness-worker
-carrier: worker_coordination heartbeat subsignal
-progress_class: MONITORING_BLOCKED
-```
-
-Blocked organizations retain machine-observable release conditions:
-
-```text
-AaCT-E: CONNECTOR_WRITE_AUTHORITY
-ECAT-ICAT-Formal: NO_REPOSITORY
-Infrastructure-Continuity-Ventures: NO_REPOSITORY
-Triad-Test: NO_REPOSITORY
-```
+The organization archive gate also continues to account for other unfinished canonical production goals, including first StegGate boundary activation, all-organization federation, and stable rendezvous work. Those goals keep their own handoffs, claims, blockers, and collision boundaries and must not be duplicated by the Ecosystem Chat local-model lane.
 
 ## Collision and authority boundaries
 
 - One canonical heartbeat only.
 - One canonical worker registry only.
-- Repository identity never bypasses a declared global dependency-surface collision.
-- GitHub Actions cron is validation/evidence carriage, not heartbeat cadence.
-- Render is not a heartbeat, worker, or activation dependency.
-- Cloudflare is not heartbeat or worker activation authority.
+- Repository identity never bypasses declared dependency-surface ownership.
+- GitHub Actions is validation/evidence carriage only, not production heartbeat cadence or activation authority.
+- Render, Vercel, and Cloudflare are not heartbeat or worker activation authority.
 - Heartbeat carriage does not grant task authority.
 - Worker capability matching does not grant authorization.
-- Master Records custody is reconstructive evidence, not execution authority.
-- A blocked worker remains blocked while its lease is carried.
-- `BUSY` is not synonymous with `PROGRESSING`.
-- An unchanged blocker checkpoint is not progress.
-- Context transfer is not goal completion.
-- Thread archival is forbidden while inherited goals remain unmet and no machine worker is measurably advancing them.
-
-## Active remediation
-
-```text
-issue: StegVerse-Labs/.github#64
-remediation_goal: ARCHIVE-GATE-PROGRESS-ENFORCEMENT-001
-state: IMPLEMENTED / ISSUE_CLOSED; CURRENT TASK GRAPH STILL NOT ARCHIVE READY
-required_outcomes:
-  - machine-readable archive gate
-  - worker progress classification distinct from BUSY
-  - unchanged blocker rechecks cannot satisfy archive readiness
-  - validation tests for premature archival
-  - current ecosystem remains NOT_ARCHIVE_READY until goal predicates actually advance/complete
-```
+- TVC route admission does not grant execution authority.
+- Model output does not grant authority.
+- Master Records custody/reconstruction is evidence, not execution authority.
+- Context transfer is not product activation.
+- Session archival is not product activation.
 
 ## Session consolidation posture
 
-Previously completed goals remain durably transferred, but the current session/thread is NOT archive-ready because ecosystem activation goals remain unfinished. The native local-model worker implementation is now forward progress, but it does not itself prove sovereign-carrier execution.
+For the Ecosystem Chat local-model session, all unique requirements have been durably transferred; `unique_chat_only_requirements_remaining=0` is recorded in `control/session-goal-inventory-2026-08-11-ecosystem-chat-local-model.json`.
+
+However, the organization archive gate remains `thread_archive_ready=false` because the inherited production activation graph is not terminal and the sovereign durable carrier is stalled at HB29. Therefore this thread must remain non-archived under the current canonical archive policy even though no further chat-originated source implementation is missing.
 
 ```text
 thread_archive_ready: false
 archive_gate: BLOCKED
-archive_gate_reason: UNMET_PRODUCT_ACTIVATION_GOALS
-active_execution_owner: StegVerse-Labs/.github#60 plus TV/TVC/LLM-adapter/Master Records continuation
+archive_gate_reason: SOVEREIGN_DURABLE_CARRIER_NOT_ACTIVE_AND_INHERITED_PRODUCTION_GOALS_UNMET
+current session role: DISTINCT SUPPORT / CANONICAL STATE RECONCILIATION AND ACTIVATION OBSERVATION
+next executable transition: native sovereign carrier activation on a declared StegVerse-owned/federated node
 ```
-
-No archive claim may supersede this state until the task graph satisfies the archive invariant above.
