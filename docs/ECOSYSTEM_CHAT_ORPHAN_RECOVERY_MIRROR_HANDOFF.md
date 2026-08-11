@@ -14,7 +14,7 @@ ended fence: 20
 recovery task: RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28
 recovery worker: ecosystem-chat-orphan-recovery-worker
 recovery capability: orphan_lifecycle_reconstruction
-credential authority: TC/TVC
+credential authority: TV/TVC
 local model credential requirement: NONE
 github token authority: NONE
 github actions activation role: NONE
@@ -25,7 +25,7 @@ resident heartbeat epoch last directly observed: 29
 ## Originating session requirements transferred
 
 - no GitHub-token credential, activation, model, route, transport, reconstruction, or heartbeat-persistence dependency;
-- TC/TVC is credential authority and local-model credential class is `NONE`;
+- TV/TVC is credential authority and local-model credential class is `NONE`;
 - the already-developed local model/runtime is used through actual discovery, launch, proof, TVC route, exact LLM-adapter execution, and Master Records reconstruction;
 - no manual or descriptive `select a local model/runtime` step remains;
 - an orphaned worker may not reuse its old claim or fence;
@@ -45,7 +45,7 @@ HB28: response-loss threshold reached; recovery task admitted; G20 worker orphan
 HB29: generated recovery quarantine reconciled to BLOCKED; old authority not reused
 ```
 
-The root cause was a blocker-policy contract mismatch: `BLOCKED` responses require a nonempty workaround candidate plus a concrete next solution action. The TC/TVC wrapper now normalizes legacy child blocker responses without changing state or authority.
+The root cause was a blocker-policy contract mismatch: `BLOCKED` responses require a nonempty workaround candidate plus a concrete next solution action. The TV/TVC wrapper now normalizes legacy child blocker responses without changing state or authority.
 
 ## Released implementation
 
@@ -71,7 +71,7 @@ hosted Actions: BLOCKED_BY_ACCOUNT_BILLING / ZERO STEPS / not counted as PASS
 deterministic pinned checkpoint/event reconstruction: PASS
 ```
 
-TC/TVC no-GitHub-token authority cleanup:
+TV/TVC no-GitHub-token authority cleanup:
 
 ```text
 PR: StegVerse-Labs/.github#79
@@ -103,12 +103,12 @@ tests/test_orphan_recovery_reconciliation.py
 tests/test_ecosystem_chat_orphan_recovery_activation.py
 ```
 
-## TC/TVC and no-GitHub-token boundary
+## TV/TVC and no-GitHub-token boundary
 
 Current authority contract:
 
 ```text
-credential_authority: TC/TVC
+credential_authority: TV/TVC
 credential_requirement: NONE
 route_authority: StegVerse-Labs/TVC
 model/runtime: StegVerse-local
@@ -167,7 +167,7 @@ resident heartbeat advances beyond epoch 29
 ```text
 recovery implementation claim: RELEASED / PR #78
 Master Records task-025 claim: RELEASED
-TC/TVC no-token authority cleanup claim: RELEASED / PR #79
+TV/TVC no-token authority cleanup claim: RELEASED / PR #79
 current owner: MACHINE_OWNED_RUNTIME_OBSERVATION / resident heartbeat
 old fence reuse: prohibited
 parent execution by recovery worker: prohibited
@@ -187,7 +187,7 @@ missing required files: 0
 source implementation validation: PASS
 source integration merge: PASS
 Master Records G20 custody: COMPLETE_RELEASED
-TC/TVC no-GitHub-token authority cleanup: COMPLETE_RELEASED
+TV/TVC no-GitHub-token authority cleanup: COMPLETE_RELEASED
 resident heartbeat post-release observation: PENDING_MACHINE_OWNED
 higher-fence parent inference execution: PENDING_MACHINE_OWNED
 same-execution activation proof: PENDING_MACHINE_OWNED
