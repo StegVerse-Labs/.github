@@ -85,6 +85,18 @@
       "type": "process_json_v0.1"
     },
     {
+      "adapter_ref": "process:stegfin-sovereign-trading-v2",
+      "authority_ref": "handoffs/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json#authority",
+      "capabilities": ["runtime_observation", "bounded_process_execution", "durable_state_reconstruction", "stegfin_sovereign_internal_trading_activation"],
+      "command": ["python", "workers/stegfin_sovereign_trading_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [],
+      "notes": ["Heartbeat-owned StegFin internal sovereign activation worker using the released current registry-fragment mechanism.", "Executes only the zero-external-cost internal market match, atomic settlement, exact local Master Records reconstruction and E2 binding.", "Writes only receipts/stegfin-sovereign-trading/**.", "No provider secret, GitHub token/runtime, network source checkout, wallet signing, broadcast, external custody or scale-up authority is granted."],
+      "timeout_seconds": 210,
+      "type": "process_json_v0.1"
+    },
+    {
       "adapter_ref": "process:ecosystem-chat-orphan-recovery-v1",
       "authority_ref": "handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json#authority",
       "capabilities": ["orphan_lifecycle_reconstruction"],
@@ -97,6 +109,6 @@
       "type": "process_json_v0.1"
     }
   ],
-  "generation": 12,
+  "generation": 13,
   "schema": "stegverse.process-worker-adapters/v0.1"
 }
