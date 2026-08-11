@@ -17,6 +17,7 @@ GITHUB_AUTH_ENV = {
     "ACTIONS_RUNTIME_TOKEN",
     "ACTIONS_ID_TOKEN_REQUEST_TOKEN",
 }
+CREDENTIAL_AUTHORITY = "TV/TVC"
 
 
 def stable_hash(value: Any) -> str:
@@ -58,7 +59,8 @@ def credential_free_child_env(adapter_root: Path) -> dict[str, str]:
     env = {k: v for k, v in os.environ.items() if k not in GITHUB_AUTH_ENV}
     env["PYTHONPATH"] = str(adapter_root)
     env["STEGVERSE_LOCAL_MODEL_CREDENTIAL_REQUIREMENT"] = "NONE"
-    env["STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY"] = "TC/TVC"
+    env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = CREDENTIAL_AUTHORITY
+    env.pop("STEGVERSE_TC_TVC_CREDENTIAL_AUTHORITY", None)
     return env
 
 
@@ -140,7 +142,7 @@ def execute_admitted_route(
         "stdout_tail": None if verified else process.stdout[-1200:],
         "stderr_tail": None if verified else process.stderr[-1200:],
         "credential_requirement": "NONE",
-        "credential_authority": "TC/TVC",
+        "credential_authority": CREDENTIAL_AUTHORITY,
         "github_token_required": False,
         "github_auth_env_forwarded": False,
         "third_party_execution_platform_required": False,
@@ -149,6 +151,7 @@ def execute_admitted_route(
 
 
 __all__ = [
+    "CREDENTIAL_AUTHORITY",
     "credential_free_child_env",
     "execute_admitted_route",
     "execution_receipt_verified",
