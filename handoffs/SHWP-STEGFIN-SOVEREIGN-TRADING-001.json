@@ -1,0 +1,68 @@
+{
+  "schema":"stegverse.executable-handoff/v0.1",
+  "handoff_id":"HANDOFF-SHWP-STEGFIN-SOVEREIGN-TRADING-001",
+  "created_at":"2026-08-11T15:25:00Z",
+  "state":"HANDOFF_READY",
+  "goal":{
+    "goal_id":"STEGFIN-SOVEREIGN-TRADING-ACTIVATION",
+    "objective":"Execute one zero-external-cost StegVerse-internal market match, atomic settlement, exact Master Records reconstruction and E2 binding under the canonical resident heartbeat before external Base capital activation.",
+    "success_predicates":["StegFin activation capsule is locally materialized","internal market match executes","atomic internal settlement conserves every asset","exact reconstruction packet is emitted","Master Records returns RECONSTRUCTED_PASS for that packet","reconstruction is bound into E2","GitHub token/runtime is not production authority"],
+    "failure_predicates":["hosted runner becomes production executor","network source checkout is required","wallet signing or broadcast authority is inherited","custody or scale-up authority is granted","synthetic reconstruction is represented as same-execution proof"],
+    "authority_ceiling":["bounded_internal_activation_round","no_wallet_signing","no_transaction_broadcast","no_external_custody","no_scale_up","no_external_network_execution"],
+    "successor_policy":"NONE",
+    "max_successor_depth":0
+  },
+  "task":{
+    "task_id":"SHWP-STEGFIN-SOVEREIGN-TRADING-001",
+    "repository":"StegVerse-Labs/.github",
+    "source_refs":["StegVerse-Labs/stegfin-governance#50","StegVerse-Labs/stegfin-governance#51","StegVerse-Labs/stegfin-governance#52","StegVerse-Labs/stegfin-governance:scripts/run_sovereign_trading_activation_round.py","master-records/orchestration#23"],
+    "dependencies":[],
+    "parent_task_id":null,
+    "derivation_reason":"The internal sovereign market, settlement and reconstruction primitives are merged; this task executes their bounded same-carrier activation proof without external financial authority.",
+    "canonical_owner_ref":"StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md",
+    "canonical_lineage_key":"stegfin:sovereign-internal-trading-activation",
+    "derivation_depth":0,
+    "priority":"release"
+  },
+  "authority":{
+    "authority_source":"StegVerse-Labs/stegfin-governance internal sovereign-market contracts; Master Records reconstruction evidence only; TC/TVC credential authority unaffected",
+    "heartbeat_grants_execution_authority":false,
+    "policy_version":"shwp-single-hb-stegfin-sovereign-trading-v0.2"
+  },
+  "execution":{
+    "required_capabilities":["runtime_observation","bounded_process_execution","durable_state_reconstruction","stegfin_sovereign_internal_trading_activation"],
+    "allowed_paths":["receipts/stegfin-sovereign-trading/**"],
+    "allowed_services":[],
+    "max_actions":64,
+    "max_retries":4096,
+    "external_cost_ceiling_usd":0,
+    "runtime_window_beats":4096,
+    "rate_class":"stegfin_sovereign_trading_activation"
+  },
+  "activation":{
+    "carrier":"heartbeat",
+    "executor_binding":"AUTHORIZED",
+    "authorization_ref":"StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md",
+    "recheck_trigger":"each admitted heartbeat while unfinished using only locally materialized StegFin and Master Records workloads",
+    "checkout_policy":"fenced_atomic_checkout"
+  },
+  "continuity":{
+    "checkpoint_ref":"receipts/stegfin-sovereign-trading/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json",
+    "handoff_destination":"control/worker-registry.json",
+    "master_records_required":true,
+    "status_projection":"control/worker-status.json"
+  },
+  "completion":{
+    "next_authorized_action":"Execute the locally materialized StegFin sovereign activation runner and require exact Master Records RECONSTRUCTED_PASS bound through E2.",
+    "terminal_when":["internal_settlement_pass=true","master_records_reconstruction_pass=true","e2_reconstruction_proof_observed=true","github_token_required=false","wallet_signing_authority=false","transaction_broadcast_authority=false"]
+  },
+  "block":{
+    "block_reason":"Local StegFin and Master Records workloads must exist on the sovereign carrier for same-execution reconstruction.",
+    "dependency":"local sovereign workload materialization",
+    "observer":"single sovereign StegVerse heartbeat",
+    "recheck_trigger":"each admitted heartbeat",
+    "next_check":null,
+    "escalation_condition":"a hosted runner, GitHub credential, external network execution, wallet authority, custody authority or scale-up authority is requested",
+    "block_expires_at":null
+  }
+}
