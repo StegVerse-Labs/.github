@@ -26,7 +26,10 @@ ROUTE_RECEIPT = RECEIPT_ROOT / "tvc_local_model_route.json"
 LLM_EXECUTION_RECEIPT = RECEIPT_ROOT / "llm_adapter_sovereign_execution.json"
 MASTER_RECORDS_RECEIPT = RECEIPT_ROOT / "master_records_same_execution_reconstruction.json"
 NORMALIZE_FILES = (BASE_RECEIPT, LLM_EXECUTION_RECEIPT, MASTER_RECORDS_RECEIPT)
-LEGACY_VALUES = {"StegVerse-Labs/TV+TVC", "TC/TVC"}
+# Compatibility export retained for existing deterministic tests and callers.
+# It denotes the immediately superseded semantic label only; new runtime output uses CURRENT.
+LEGACY = "TC/TVC"
+LEGACY_VALUES = {"StegVerse-Labs/TV+TVC", LEGACY}
 CURRENT = "TV/TVC"
 
 
