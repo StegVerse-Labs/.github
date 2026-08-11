@@ -59,8 +59,7 @@ jobs:
           before="$(sha256sum control/claims-active.json control/queue.json 2>/dev/null | sha256sum | cut -d' ' -f1)"
           python3 scripts/allocate_claims.py
           python3 scripts/validate_org_control_plane.py
-          after_status="$(git status --short)"
-          echo "$after_status"
+          git status --short
           test -z "${GITHUB_TOKEN:-}"
           test -z "${GH_TOKEN:-}"
           echo "ALLOCATOR_EPHEMERAL_VALIDATION_PASS before=${before}"
@@ -70,8 +69,15 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          text=Path('.github/workflows/org-allocator.yml').read_text()
-          forbidden=['contents'+': write','git'+' push','${{ github.token }}','actions/'+'checkout@','actions/'+'setup-python@','${{ secrets.']
+          text=Path('.github/workflows/org-allocator.yml').read_text(encoding='utf-8')
+          forbidden=[
+              'contents'+': write',
+              'git'+' push',
+              '$'+'{{ '+'github.token'+' }}',
+              'actions/'+'checkout@',
+              'actions/'+'setup-python@',
+              '$'+'{{ '+'secrets.'
+          ]
           found=[x for x in forbidden if x in text]
           assert not found, found
           assert 'permissions: {}' in text
