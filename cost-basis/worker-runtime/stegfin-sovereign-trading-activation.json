@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "stegfin_sovereign_trading_activation",
+  "sample_count": 1,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 4096,
+    "confidence": "MEDIUM"
+  },
+  "cost_estimate": {
+    "compute_units": 2,
+    "token_units": 0,
+    "storage_bytes": 262144,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "StegVerse-Labs/stegfin-governance#50",
+    "StegVerse-Labs/stegfin-governance#51",
+    "StegVerse-Labs/stegfin-governance#52",
+    "master-records/orchestration#23",
+    "StegVerse-Labs/stegfin-governance:scripts/run_sovereign_trading_activation_round.py"
+  ],
+  "notes": [
+    "Covers only the zero-external-cost StegVerse-internal activation round and exact local Master Records reconstruction.",
+    "No Base transaction, wallet signing, broadcast, custody expansion or production scale-up is authorized.",
+    "No GitHub token, hosted runner, network source checkout or third-party provider is a production execution dependency."
+  ]
+}
