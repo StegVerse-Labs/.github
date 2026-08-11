@@ -2,7 +2,7 @@
   "schema": "stegverse.session-goal-inventory/v1",
   "inventory_id": "ECOSYSTEM-CHAT-LOCAL-MODEL-2026-08-11",
   "created_at": "2026-08-11T01:06:00-05:00",
-  "originating_session_goal": "Remove the descriptive local-model/runtime selection step, formally develop a StegVerse-local model, eliminate GitHub-token production authority in favor of TC/TVC, and activate the complete sovereign Ecosystem Chat path.",
+  "originating_session_goal": "Remove the descriptive local-model/runtime selection step, formally develop a StegVerse-local model, eliminate GitHub-token production authority in favor of TV/TVC, and activate the complete sovereign Ecosystem Chat path.",
   "canonical_continuation": "StegVerse-Labs/.github/docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md",
   "archive_gate": "StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md",
   "tasks": [
@@ -21,7 +21,7 @@
       "next_executable_action": "NONE_SOURCE_IMPLEMENTATION_COMPLETE"
     },
     {
-      "task_id": "TC-TVC-NO-GITHUB-TOKEN-AUTHORITY-001",
+      "task_id": "TV-TVC-NO-GITHUB-TOKEN-AUTHORITY-001",
       "destination": "StegVerse-Labs/.github",
       "branch": "main",
       "surface": ".github/workflows + handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
@@ -45,7 +45,7 @@
       "validation_state": "DETERMINISTIC_PINNED_RECONSTRUCTION_PASS; HOSTED_JOB_NOT_STARTED_ACCOUNT_BILLING",
       "integration_state": "MERGED",
       "archival_dependency": false,
-      "evidence": ["PR#27", "4c6f4679c20c7fc70a65753cf4f87e6b929f09ef"],
+      "evidence": ["PR#27", "4c6f4679c20c7fc70a65753cf4f87e6b929f09ef", "authority-semantic-reconciliation:73e6b7a2b599cf30bc8cd707eaa1ca429972567c", "handoff-reconciliation:1b601dd6d0298726c103cfa379049e5891307313"],
       "next_executable_action": "NONE_SOURCE_IMPLEMENTATION_COMPLETE"
     },
     {
@@ -73,7 +73,7 @@
       "validation_state": "LOCAL_DETERMINISTIC_PASS",
       "integration_state": "MERGED",
       "archival_dependency": true,
-      "evidence": ["3805ca964370a70b8ee6c7b1a989877e0e7c7ac1", "5fc63c5daa90b02ed2cd0f7eefd833873304ecb8"],
+      "evidence": ["3805ca964370a70b8ee6c7b1a989877e0e7c7ac1", "5fc63c5daa90b02ed2cd0f7eefd833873304ecb8", "TV/TVC-handoff-alignment:5069a7eb82f025ff93f540fea644fadf2f1701df", "TV/TVC-task-alignment:eb9cd0d4405803c20009325d282b7ac5db392ba4"],
       "next_executable_action": "Consume the heartbeat-produced canonical private model proof and emit ROUTE_ADMITTED with credential_requirement NONE."
     },
     {
@@ -117,7 +117,7 @@
       "validation_state": "SOURCE_CHAIN_VALIDATED; LIVE_SAME_EXECUTION_PROOF_MISSING",
       "integration_state": "INSTALLED",
       "archival_dependency": true,
-      "evidence": ["docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md", "control/heartbeat-state.json@HB29"],
+      "evidence": ["docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md", "control/heartbeat-state.json@HB29", "TV/TVC-handoff-alignment:5c4b653f8acbfd082500f1eba7b282fe11e335ee", "org-handoff-alignment:bd60ca323a36743acda85d42d814399ae8d73d15"],
       "next_executable_action": "After durable carrier activation, complete recovery -> higher-fence parent -> local model -> TVC -> LLM-adapter -> Master Records same-execution PASS."
     },
     {
@@ -135,7 +135,7 @@
     }
   ],
   "session_specific_requirements_transferred": [
-    "No GitHub-token production credential or runtime authority; TC/TVC owns credential semantics.",
+    "No GitHub-token production credential or runtime authority; TV/TVC owns credential semantics.",
     "The descriptive select-a-local-model/runtime step is replaced by deterministic local discovery, launch, inference and proof.",
     "The StegVerse reference model is formally developed and locally executable without remote weights or hosted inference.",
     "Reference-model proof must not be represented as production-scale foundation-model equivalence.",
