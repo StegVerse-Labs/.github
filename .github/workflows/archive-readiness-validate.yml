@@ -69,7 +69,7 @@ jobs:
               'git' + ' push',
               'actions/' + 'checkout@',
               'actions/' + 'setup-python@',
-              '${{ secrets.'
+              '$' + '{{ ' + 'secrets.'
           ]
           found=[needle for needle in forbidden if needle in text]
           assert not found, found
