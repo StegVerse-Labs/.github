@@ -107,8 +107,20 @@
       "notes": ["Dedicated continuity-only executor for the HB28 orphan recovery task.", "It cannot match or execute the parent Ecosystem Chat inference task because it advertises only orphan_lifecycle_reconstruction.", "It requires a new fenced recovery claim greater than the ended G20 fence and never revives the old claim.", "It remains BLOCKED until canonical Master Records G20 lifecycle custody is locally materialized and PASS.", "Writes only receipts/ecosystem-chat-sovereign-inference/**.", "No GitHub token, hosted provider credential, source checkout or third-party execution platform is required."],
       "timeout_seconds": 30,
       "type": "process_json_v0.1"
+    },
+    {
+      "adapter_ref": "process:stegnutrition-machine-continuation-v1",
+      "authority_ref": "handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json#authority",
+      "capabilities": ["runtime_observation", "bounded_process_execution", "bounded_repository_mutation", "stegnutrition_machine_continuation"],
+      "command": ["python", "workers/stegnutrition_continuation_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_STEGNUTRITION_ROOT"],
+      "notes": ["Heartbeat-owned StegNutrition continuation observer/executor.", "Consumes only an already locally materialized StegNutrition tree and runs a fixed no-network validation command.", "Writes only receipts/stegnutrition-continuation/** and projects explicit COMPLETE/BLOCKED/RETRY/FAILED conditions.", "No GitHub token, remote source checkout, hosted model provider, general code-writing authority, deployment or release publication authority is granted."],
+      "timeout_seconds": 210,
+      "type": "process_json_v0.1"
     }
   ],
-  "generation": 13,
+  "generation": 14,
   "schema": "stegverse.process-worker-adapters/v0.1"
 }
