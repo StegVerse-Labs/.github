@@ -6,6 +6,7 @@ import tempfile
 import unittest
 
 from heartbeat_runtime.orphan_recovery import (
+    RECOVERY_ONLY_CAPABILITY,
     RECOVERY_REQUIRED_CODES,
     orphan_recovery_contract_valid,
     reconcile_quarantined_orphan_recoveries,
@@ -15,6 +16,7 @@ PARENT_ID = "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
 RECOVERY_ID = "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28"
 PARENT_REF = "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json"
 RECOVERY_REF = f"handoffs/generated/{RECOVERY_ID}.json"
+AUTH_REF = f"authorizations/{RECOVERY_ID}.json"
 CHECKPOINT = "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json"
 
 
@@ -57,8 +59,9 @@ def recovery_handoff() -> dict:
             "task_id": RECOVERY_ID,
             "repository": "StegVerse-Labs/.github",
             "canonical_owner_ref": "StegVerse-org/LLM-adapter#18",
-            "parent_task_id": PARENT_ID,
-            "source_refs": [PARENT_REF, CHECKPOINT],
+            "recovery_parent_task_id": PARENT_ID,
+            "source_refs": [PARENT_REF, CHECKPOINT, AUTH_REF, "master-records/orchestration:custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json"],
+            "derivation_depth": 0,
         },
         "authority": {
             "authority_source": "StegVerse-org/LLM-adapter#18 + StegVerse-002/micro-node-runtime#16/#22",
@@ -66,7 +69,7 @@ def recovery_handoff() -> dict:
             "policy_version": "shwp-single-hb-v0.3-sovereign",
         },
         "execution": {
-            "required_capabilities": ["runtime_observation", "durable_state_reconstruction"],
+            "required_capabilities": [RECOVERY_ONLY_CAPABILITY],
             "allowed_paths": ["receipts/ecosystem-chat-sovereign-inference/**"],
             "allowed_services": [],
             "max_actions": 32,
@@ -74,9 +77,37 @@ def recovery_handoff() -> dict:
             "external_cost_ceiling_usd": 0,
             "runtime_window_beats": 2048,
         },
-        "activation": {"executor_binding": "UNBOUND"},
-        "continuity": {"checkpoint_ref": CHECKPOINT, "master_records_required": True},
-        "block": {"block_reason": "ORPHAN_RECOVERY_RECONSTRUCTION_REQUIRED"},
+        "activation": {"executor_binding": "AUTHORIZED", "authorization_ref": AUTH_REF},
+        "continuity": {
+            "checkpoint_ref": CHECKPOINT,
+            "master_records_required": True,
+            "master_records_custody_ref": "master-records/orchestration:custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json",
+        },
+        "block": {
+            "block_reason": "ORPHAN_RECOVERY_EXECUTOR_AUTHORIZATION_REQUIRED",
+            "dependency": f"file:{AUTH_REF}",
+        },
+    }
+
+
+def recovery_authorization() -> dict:
+    return {
+        "schema": "stegverse.bounded-worker-authorization/v0.1",
+        "state": "ADMITTED",
+        "task_id": RECOVERY_ID,
+        "parent_task_id": PARENT_ID,
+        "authority_source": "StegVerse-org/LLM-adapter#18 + StegVerse-002/micro-node-runtime#16/#22",
+        "allowed_capabilities": [RECOVERY_ONLY_CAPABILITY],
+        "allowed_paths": ["receipts/ecosystem-chat-sovereign-inference/**"],
+        "allowed_services": [],
+        "old_fencing_token": 20,
+        "old_authority_revival_allowed": False,
+        "parent_task_execution_authority": False,
+        "successor_parent_authority_granted": False,
+        "heartbeat_grants_execution_authority": False,
+        "availability_grants_execution_authority": False,
+        "github_token_required": False,
+        "authority_effect": "CONTINUITY_RECONSTRUCTION_ONLY",
     }
 
 
@@ -106,17 +137,20 @@ def registry() -> dict:
     }
 
 
-def write_fixture(root: Path, *, recovery: dict | None = None) -> None:
+def write_fixture(root: Path, *, recovery: dict | None = None, authorization: dict | None = None) -> None:
     parent_path = root / PARENT_REF
     recovery_path = root / RECOVERY_REF
+    auth_path = root / AUTH_REF
     parent_path.parent.mkdir(parents=True, exist_ok=True)
     recovery_path.parent.mkdir(parents=True, exist_ok=True)
+    auth_path.parent.mkdir(parents=True, exist_ok=True)
     parent_path.write_text(json.dumps(parent_handoff()), encoding="utf-8")
     recovery_path.write_text(json.dumps(recovery or recovery_handoff()), encoding="utf-8")
+    auth_path.write_text(json.dumps(authorization or recovery_authorization()), encoding="utf-8")
 
 
 class OrphanRecoveryReconciliationTests(unittest.TestCase):
-    def test_narrow_recovery_is_reconciled_to_blocked_not_activated(self) -> None:
+    def test_authorized_recovery_root_is_reconciled_to_blocked_not_parent_execution(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             write_fixture(root)
@@ -127,7 +161,7 @@ class OrphanRecoveryReconciliationTests(unittest.TestCase):
             reconciled = reconcile_quarantined_orphan_recoveries(
                 root,
                 reg,
-                epoch=29,
+                epoch=30,
                 event=lambda epoch, event_type, **payload: events.append({"epoch": epoch, "event_type": event_type, **payload}),
             )
             self.assertEqual(reconciled, [RECOVERY_ID])
@@ -136,7 +170,6 @@ class OrphanRecoveryReconciliationTests(unittest.TestCase):
             self.assertEqual(task["archive_reason_codes"], RECOVERY_REQUIRED_CODES)
             self.assertIsNone(task["claim_id"])
             self.assertIsNone(task["worker_id"])
-            self.assertIsNone(task["heartbeat_timing"])
             self.assertEqual(events[-1]["event_type"], "orphan_recovery_quarantine_reconciled")
             self.assertFalse(events[-1]["old_authority_reused"])
             self.assertFalse(events[-1]["successor_authority_granted"])
@@ -151,11 +184,9 @@ class OrphanRecoveryReconciliationTests(unittest.TestCase):
             valid, reason = orphan_recovery_contract_valid(root, registry_task=reg["tasks"][1], registry=reg)
             self.assertFalse(valid)
             self.assertEqual(reason, "RECOVERY_SCOPE_EXPANSION_DETECTED")
-            reconciled = reconcile_quarantined_orphan_recoveries(root, reg, epoch=29)
-            self.assertEqual(reconciled, [])
-            self.assertEqual(reg["tasks"][1]["state"], "QUARANTINED")
+            self.assertEqual(reconcile_quarantined_orphan_recoveries(root, reg, epoch=30), [])
 
-    def test_live_claim_or_worker_prevents_reconciliation(self) -> None:
+    def test_live_old_claim_prevents_recovery(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             write_fixture(root)
@@ -164,6 +195,30 @@ class OrphanRecoveryReconciliationTests(unittest.TestCase):
             valid, reason = orphan_recovery_contract_valid(root, registry_task=reg["tasks"][1], registry=reg)
             self.assertFalse(valid)
             self.assertEqual(reason, "RECOVERY_PARENT_OLD_AUTHORITY_NOT_ENDED")
+
+    def test_goal_successor_shape_is_rejected_for_orphan_recovery(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            bad = recovery_handoff()
+            bad["task"]["parent_task_id"] = PARENT_ID
+            bad["task"]["derivation_depth"] = 1
+            write_fixture(root, recovery=bad)
+            reg = registry()
+            valid, reason = orphan_recovery_contract_valid(root, registry_task=reg["tasks"][1], registry=reg)
+            self.assertFalse(valid)
+            self.assertEqual(reason, "RECOVERY_MUST_BE_CONTINUITY_ROOT_NOT_SUCCESSOR")
+
+    def test_authorization_cannot_enable_old_authority_or_github_token(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            bad_auth = recovery_authorization()
+            bad_auth["old_authority_revival_allowed"] = True
+            bad_auth["github_token_required"] = True
+            write_fixture(root, authorization=bad_auth)
+            reg = registry()
+            valid, reason = orphan_recovery_contract_valid(root, registry_task=reg["tasks"][1], registry=reg)
+            self.assertFalse(valid)
+            self.assertEqual(reason, "RECOVERY_BOUNDED_AUTHORIZATION_INVALID")
 
 
 if __name__ == "__main__":

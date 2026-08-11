@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+  "tasks": [],
+  "workers": [
+    {
+      "adapter_ref": "process:ecosystem-chat-orphan-recovery-v1",
+      "authority_source": "handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json#authority",
+      "capabilities": ["orphan_lifecycle_reconstruction"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "ecosystem-chat-orphan-recovery-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "old_authority_revival_allowed": false,
+  "parent_task_execution_authority": false
+}

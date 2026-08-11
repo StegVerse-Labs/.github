@@ -31,6 +31,40 @@ class HeartbeatRuntime(HeartbeatRuntimeV3):
         ])
         return valid, record
 
+    def _bounded_file_dependency_released(self, dependency: str, task: dict[str, Any]) -> bool:
+        if not dependency.startswith("file:"):
+            return False
+        ref = dependency[5:]
+        if not ref or ref.startswith("/") or ".." in ref.split("/") or "#" in ref:
+            return False
+        path = self.root / ref
+        if not path.exists():
+            return False
+        try:
+            record = self._load(path)
+        except Exception:
+            return False
+        if record.get("schema") != "stegverse.bounded-worker-authorization/v0.1":
+            return False
+        if record.get("state") != "ADMITTED" or record.get("task_id") != task.get("task_id"):
+            return False
+        if record.get("heartbeat_grants_execution_authority") is not False or record.get("availability_grants_execution_authority") is not False:
+            return False
+        if record.get("github_token_required") is True:
+            return False
+        handoff = self._handoff(task)
+        activation = handoff.get("activation") or {}
+        authority = handoff.get("authority") or {}
+        execution = handoff.get("execution") or {}
+        return all([
+            activation.get("authorization_ref") == ref,
+            activation.get("executor_binding") == "AUTHORIZED",
+            record.get("authority_source") == authority.get("authority_source"),
+            set(record.get("allowed_capabilities") or []) == set(execution.get("required_capabilities") or []),
+            set(record.get("allowed_paths") or []) == set(execution.get("allowed_paths") or []),
+            set(record.get("allowed_services") or []) == set(execution.get("allowed_services") or []),
+        ])
+
     def _recheck_blocked_tasks(self, registry: dict[str, Any], epoch: int, events: list[dict[str, Any]]) -> None:
         by_id = {task.get("task_id"): task for task in registry.get("tasks", [])}
         for task in list(registry.get("tasks", [])):
@@ -49,10 +83,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV3):
                     automation_terminal=True,
                 )
                 task["archive_eligible"] = False
-                task["archive_reason_codes"] = sorted(set(task.get("archive_reason_codes", []) + [
-                    "HUMAN_AUTHORITY_REQUIRED",
-                    "AUTOMATION_TERMINAL_UNTIL_HUMAN_DECISION",
-                ]))
+                task["archive_reason_codes"] = sorted(set(task.get("archive_reason_codes", []) + ["HUMAN_AUTHORITY_REQUIRED", "AUTOMATION_TERMINAL_UNTIL_HUMAN_DECISION"]))
                 continue
 
             if state != "BLOCKED" or task.get("worker_id"):
@@ -71,6 +102,8 @@ class HeartbeatRuntime(HeartbeatRuntimeV3):
 
             dependency_task = by_id.get(dependency) if isinstance(dependency, str) else None
             released = dependency_task is not None and dependency_task.get("state") == "COMPLETED"
+            if not released and isinstance(dependency, str):
+                released = self._bounded_file_dependency_released(dependency, task)
             self._event(
                 events,
                 epoch,
@@ -87,21 +120,11 @@ class HeartbeatRuntime(HeartbeatRuntimeV3):
             task["state"] = "HANDOFF_READY"
             task["block_ref"] = None
             task["archive_eligible"] = False
-            task["archive_reason_codes"] = [
-                code for code in task.get("archive_reason_codes", [])
-                if not code.startswith("BLOCKED_") and code != "BLOCKED"
-            ]
+            task["archive_reason_codes"] = [code for code in task.get("archive_reason_codes", []) if not code.startswith("BLOCKED_") and code not in {"BLOCKED", "EXECUTOR_NOT_BOUND"}]
             handoff["state"] = "HANDOFF_READY"
             handoff["block"] = None
             self._atomic_write(self.root / task["handoff_ref"], handoff)
-            self._event(
-                events,
-                epoch,
-                "block_released",
-                task_id=task.get("task_id"),
-                dependency=dependency,
-                new_state="HANDOFF_READY",
-            )
+            self._event(events, epoch, "block_released", task_id=task.get("task_id"), dependency=dependency, new_state="HANDOFF_READY")
 
     def _activate_one(self, registry: dict[str, Any], epoch: int, cost_log: dict[str, Any], events: list[dict[str, Any]]) -> bool:
         self._recheck_blocked_tasks(registry, epoch, events)

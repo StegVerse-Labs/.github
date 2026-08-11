@@ -10,6 +10,7 @@ RECOVERY_REQUIRED_CODES = [
     "EXECUTOR_NOT_BOUND",
     "MASTER_RECORDS_CUSTODY_NOT_PROVEN",
 ]
+RECOVERY_ONLY_CAPABILITY = "orphan_lifecycle_reconstruction"
 
 
 def _load_json(path: Path) -> dict[str, Any] | None:
@@ -33,7 +34,8 @@ def _scope_narrow_or_equal(parent_handoff: dict[str, Any], recovery_handoff: dic
         return False
     if not set(recovery_goal.get("authority_ceiling") or []).issubset(set(parent_goal.get("authority_ceiling") or [])):
         return False
-    if not set(recovery_exec.get("required_capabilities") or []).issubset(set(parent_exec.get("required_capabilities") or [])):
+    recovery_caps = set(recovery_exec.get("required_capabilities") or [])
+    if recovery_caps != {RECOVERY_ONLY_CAPABILITY}:
         return False
     if not set(recovery_exec.get("allowed_paths") or []).issubset(set(parent_exec.get("allowed_paths") or [])):
         return False
@@ -45,6 +47,35 @@ def _scope_narrow_or_equal(parent_handoff: dict[str, Any], recovery_handoff: dic
         if not isinstance(p, (int, float)) or not isinstance(c, (int, float)) or c > p:
             return False
     return True
+
+
+def _recovery_authorization_valid(root: Path, handoff: dict[str, Any], task_id: str, parent_id: str) -> bool:
+    activation = handoff.get("activation") or {}
+    ref = activation.get("authorization_ref")
+    if activation.get("executor_binding") != "AUTHORIZED" or not isinstance(ref, str) or not ref or "#" in ref:
+        return False
+    record = _load_json(root / ref)
+    execution = handoff.get("execution") or {}
+    if not isinstance(record, dict):
+        return False
+    return all([
+        record.get("schema") == "stegverse.bounded-worker-authorization/v0.1",
+        record.get("state") == "ADMITTED",
+        record.get("task_id") == task_id,
+        record.get("parent_task_id") == parent_id,
+        record.get("authority_source") == (handoff.get("authority") or {}).get("authority_source"),
+        set(record.get("allowed_capabilities") or []) == {RECOVERY_ONLY_CAPABILITY},
+        set(record.get("allowed_paths") or []) == set(execution.get("allowed_paths") or []),
+        set(record.get("allowed_services") or []) == set(execution.get("allowed_services") or []),
+        record.get("old_fencing_token") == 20,
+        record.get("old_authority_revival_allowed") is False,
+        record.get("parent_task_execution_authority") is False,
+        record.get("successor_parent_authority_granted") is False,
+        record.get("heartbeat_grants_execution_authority") is False,
+        record.get("availability_grants_execution_authority") is False,
+        record.get("github_token_required") is False,
+        record.get("authority_effect") == "CONTINUITY_RECONSTRUCTION_ONLY",
+    ])
 
 
 def orphan_recovery_contract_valid(
@@ -65,9 +96,11 @@ def orphan_recovery_contract_valid(
     if handoff.get("schema") != "stegverse.executable-handoff/v0.1" or handoff.get("state") != "BLOCKED":
         return False, "RECOVERY_HANDOFF_NOT_FAIL_CLOSED"
     task_spec = handoff.get("task") or {}
-    parent_id = task_spec.get("parent_task_id")
+    parent_id = task_spec.get("recovery_parent_task_id")
     if not isinstance(parent_id, str) or not parent_id:
         return False, "RECOVERY_PARENT_MISSING"
+    if task_spec.get("parent_task_id") is not None or task_spec.get("derivation_depth") != 0:
+        return False, "RECOVERY_MUST_BE_CONTINUITY_ROOT_NOT_SUCCESSOR"
     expected_prefix = f"RECOVER-{parent_id}-ORPHAN-HB"
     if not task_id.startswith(expected_prefix):
         return False, "RECOVERY_TASK_PARENT_ID_MISMATCH"
@@ -98,17 +131,18 @@ def orphan_recovery_contract_valid(
         return False, "RECOVERY_AUTHORITY_BINDING_MISMATCH"
     if not _scope_narrow_or_equal(parent_handoff, handoff):
         return False, "RECOVERY_SCOPE_EXPANSION_DETECTED"
-    activation = handoff.get("activation") or {}
+    if not _recovery_authorization_valid(root, handoff, task_id, parent_id):
+        return False, "RECOVERY_BOUNDED_AUTHORIZATION_INVALID"
     block = handoff.get("block") or {}
-    if activation.get("executor_binding") != "UNBOUND":
-        return False, "RECOVERY_EXECUTOR_MUST_REMAIN_UNBOUND"
-    if block.get("block_reason") != "ORPHAN_RECOVERY_RECONSTRUCTION_REQUIRED":
+    if block.get("block_reason") != "ORPHAN_RECOVERY_EXECUTOR_AUTHORIZATION_REQUIRED":
         return False, "RECOVERY_BLOCK_CONTRACT_MISSING"
-    if continuity.get("master_records_required") is not True:
+    if block.get("dependency") != f"file:{(handoff.get('activation') or {}).get('authorization_ref')}":
+        return False, "RECOVERY_AUTHORIZATION_DEPENDENCY_MISMATCH"
+    if continuity.get("master_records_required") is not True or not continuity.get("master_records_custody_ref"):
         return False, "RECOVERY_MASTER_RECORDS_REQUIRED"
     if (handoff.get("goal") or {}).get("successor_policy") != "NONE":
         return False, "RECOVERY_MAY_NOT_CREATE_NESTED_SUCCESSORS"
-    return True, "NARROW_ORPHAN_RECOVERY_CONTRACT_VALID"
+    return True, "AUTHORIZED_NARROW_ORPHAN_RECOVERY_CONTRACT_VALID"
 
 
 def reconcile_quarantined_orphan_recoveries(
@@ -125,16 +159,10 @@ def reconcile_quarantined_orphan_recoveries(
         valid, reason = orphan_recovery_contract_valid(root, registry_task=task, registry=registry)
         if not valid:
             if event is not None and str(task.get("task_id") or "").startswith("RECOVER-"):
-                event(
-                    epoch,
-                    "orphan_recovery_quarantine_retained",
-                    task_id=task.get("task_id"),
-                    reason=reason,
-                    authority_effect=False,
-                )
+                event(epoch, "orphan_recovery_quarantine_retained", task_id=task.get("task_id"), reason=reason, authority_effect=False)
             continue
         task["state"] = "BLOCKED"
-        task["block_ref"] = f"{task['handoff_ref']}#block"
+        task["block_ref"] = task["handoff_ref"]
         task["archive_eligible"] = False
         task["archive_reason_codes"] = list(RECOVERY_REQUIRED_CODES)
         task["claim_id"] = None
@@ -159,6 +187,7 @@ def reconcile_quarantined_orphan_recoveries(
 
 __all__ = [
     "RECOVERY_REQUIRED_CODES",
+    "RECOVERY_ONLY_CAPABILITY",
     "orphan_recovery_contract_valid",
     "reconcile_quarantined_orphan_recoveries",
 ]
