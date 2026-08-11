@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "stegnutrition_machine_continuation",
+  "sample_count": 1,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 4096,
+    "confidence": "MEDIUM"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 131072,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json",
+    "workers/stegnutrition_continuation_worker.py",
+    "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-SESSION-20260811.json"
+  ],
+  "notes": [
+    "The worker operates only on an already locally materialized StegNutrition root.",
+    "No network source fetch, GitHub token, hosted model provider, deployment or publication action is in scope.",
+    "Human-acquired real benchmark/training evidence and TVC live-route observation remain explicit blockers until actually present."
+  ]
+}
