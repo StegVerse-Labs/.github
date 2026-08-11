@@ -1,0 +1,51 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-STEGNUTRITION-CONTINUATION-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [],
+      "authorized_policy_version": "shwp-stegnutrition-machine-continuation-v0.1",
+      "block_ref": "handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json#block",
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/stegnutrition-machine-continuation.json",
+      "evidence_refs": [
+        "handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json",
+        "workers/stegnutrition_continuation_worker.py",
+        "StegVerse-Labs/StegNutrition:STEGNUTRITION_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-SESSION-20260811.json"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "STEGNUTRITION-PHOTO-DIET-001",
+      "handoff_ref": "handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-STEGNUTRITION-CONTINUATION-001",
+      "worker_id": null,
+      "worker_instance_id": null
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:stegnutrition-machine-continuation-v1",
+      "authority_source": "handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "bounded_repository_mutation",
+        "stegnutrition_machine_continuation"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "stegnutrition-machine-continuation-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC"
+}
