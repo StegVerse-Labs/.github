@@ -1,4 +1,4 @@
-name: Org Continuation Check
+name: Org Continuation Check - No GitHub Token Authority
 
 on:
   workflow_dispatch: {}
@@ -8,10 +8,10 @@ on:
       - "docs/**"
       - "scripts/**"
       - "checks/**"
+      - "control/session-goal-inventory-*.json"
       - ".github/workflows/org-continuation-check.yml"
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   org-continuation-check:
@@ -19,29 +19,58 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Anonymous public checkout without GitHub credential token
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      - name: Prove no GitHub credential token is present
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          test -z "${GITHUB_PAT:-}"
+          echo NO_GITHUB_CREDENTIAL_TOKEN_PRESENT
 
       - name: Validate observer standard
-        run: python scripts/check_org_operational_observer.py
+        run: python3 scripts/check_org_operational_observer.py
 
       - name: Validate repository inventory
-        run: python scripts/check_org_repository_inventory.py
+        run: python3 scripts/check_org_repository_inventory.py
 
       - name: Validate dashboard
-        run: python scripts/check_org_completion_dashboard.py
+        run: python3 scripts/check_org_completion_dashboard.py
 
       - name: Validate org mirror terms
-        run: python scripts/check_required_terms.py docs/ORG_MIRROR_HANDOFF.md checks/org_mirror_handoff_terms.txt
+        run: python3 scripts/check_required_terms.py docs/ORG_MIRROR_HANDOFF.md checks/org_mirror_handoff_terms.txt
+
+      - name: Prove workflow is validation-only and non-authorizing
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          text=Path('.github/workflows/org-continuation-check.yml').read_text(encoding='utf-8')
+          forbidden=[
+              'contents' + ': write',
+              'git' + ' push',
+              'actions/' + 'checkout@',
+              'actions/' + 'setup-python@',
+              '${{ secrets.'
+          ]
+          found=[needle for needle in forbidden if needle in text]
+          assert not found, found
+          assert 'permissions: {}' in text
+          print('ORG_CONTINUATION_NON_AUTHORIZING_PASS')
+          PY
 
       - name: Write summary
         if: always()
         run: |
           echo "## Org Continuation Check" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Validated org observer standard, repository inventory, dashboard, and mirror handoff terms." >> "$GITHUB_STEP_SUMMARY"
+          echo "Validated org observer standard, repository inventory, dashboard, mirror handoff terms, and no-GitHub-token authority boundary." >> "$GITHUB_STEP_SUMMARY"
