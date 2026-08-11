@@ -13,7 +13,7 @@
       "Measured provider/model usage is persisted",
       "Provider-usage reconstruction passes in Master Records",
       "Transition reconstruction passes for the same execution",
-      "Current credential authority is TC/TVC with credential requirement NONE",
+      "Current credential authority is TV/TVC with credential requirement NONE",
       "GitHub Models, Render, Cloudflare and hosted inference are not required"
     ],
     "failure_predicates": [
@@ -39,6 +39,7 @@
       "StegVerse-org/LLM-adapter:tasks/LLMA-SOVEREIGN-CARRIER-EXECUTION-020.json",
       "StegVerse-002/micro-node-runtime#22",
       "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/TV",
       "StegVerse-Labs/TVC:tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json",
       "master-records/orchestration:tasks/MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024.json",
       "master-records/orchestration:scripts/reconstruct_ecosystem_chat_sovereign_execution.py",
@@ -60,7 +61,7 @@
     "priority": "release"
   },
   "authority": {
-    "authority_source": "TC/TVC credential semantics + StegVerse-Labs/TVC route authority + StegVerse-org/LLM-adapter#18 transport + master-records/orchestration reconstruction",
+    "authority_source": "TV/TVC credential semantics + StegVerse-Labs/TV policy + StegVerse-Labs/TVC route authority + StegVerse-org/LLM-adapter#18 transport + master-records/orchestration reconstruction",
     "heartbeat_grants_execution_authority": false,
     "policy_version": "shwp-single-hb-v0.3-sovereign"
   },
@@ -77,7 +78,7 @@
   "activation": {
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
-    "authorization_ref": "StegVerse-org/LLM-adapter#18 + master-records/orchestration:MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024",
+    "authorization_ref": "TV/TVC + StegVerse-org/LLM-adapter#18 + master-records/orchestration:MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024",
     "recheck_trigger": "each separately authorized admitted heartbeat while unfinished; execute/consume local proof, exact TVC route, exact LLM-adapter execution, then locally materialized Master Records reconstruction",
     "checkout_policy": "fenced_atomic_checkout"
   },
@@ -97,7 +98,7 @@
       "provider_usage_reconstruction_pass=true",
       "transition_reconstruction_pass=true",
       "same_execution=true",
-      "credential_authority=TC/TVC",
+      "credential_authority=TV/TVC",
       "github_token_required=false",
       "third_party_inference_required=false"
     ]
@@ -114,7 +115,7 @@
       "Move model execution to another StegVerse-owned/federated node if current sovereign hardware cannot support the desired model"
     ],
     "next_solution_action": "RECOVER_ORPHAN_THEN_EXECUTE_LOCAL_MODEL_ROUTE_LLM_AND_MASTER_RECORDS",
-    "machine_observable_release_condition": "a separately authorized successor with fencing generation greater than 20 reaches MASTER_RECORDS_SAME_EXECUTION_RECONSTRUCTED and the exact reconstruction receipt has provider_usage_reconstruction_pass=true, transition_reconstruction_pass=true, same_execution=true, credential_authority=TC/TVC, github_token_required=false",
+    "machine_observable_release_condition": "a separately authorized successor with fencing generation greater than 20 reaches MASTER_RECORDS_SAME_EXECUTION_RECONSTRUCTED and the exact reconstruction receipt has provider_usage_reconstruction_pass=true, transition_reconstruction_pass=true, same_execution=true, credential_authority=TV/TVC, github_token_required=false",
     "third_party_blocker": false,
     "human_action_required": false
   }
