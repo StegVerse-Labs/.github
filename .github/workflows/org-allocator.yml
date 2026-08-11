@@ -1,4 +1,7 @@
-name: Organization claim allocator
+# Validation-only projection of the repository-native organization allocator.
+# Production claim allocation is performed by the resident sovereign control plane,
+# not by GitHub Actions and not with a GitHub credential.
+name: Organization Claim Allocator - Validation Only / No GitHub Token Authority
 
 on:
   workflow_dispatch:
@@ -8,51 +11,69 @@ on:
       - 'tasks/TASK-*.json'
       - 'control/claims-active.json'
       - 'control/queue.json'
+      - 'scripts/allocate_claims.py'
+      - 'scripts/validate_org_control_plane.py'
+      - '.github/workflows/org-allocator.yml'
+  pull_request:
+    paths:
+      - 'tasks/TASK-*.json'
+      - 'control/claims-active.json'
+      - 'control/queue.json'
+      - 'scripts/allocate_claims.py'
+      - 'scripts/validate_org_control_plane.py'
+      - '.github/workflows/org-allocator.yml'
 
-permissions:
-  contents: write
+permissions: {}
 
 concurrency:
-  group: org-allocator
-  cancel-in-progress: false
+  group: org-allocator-validation-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  allocate:
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Validate input state
-        run: python scripts/validate_org_control_plane.py
-      - name: Allocate and compare-and-swap
+      - name: Anonymous public checkout without GitHub credential token
         env:
-          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
-          git config user.name 'stegverse-org-allocator[bot]'
-          git config user.email 'stegverse-org-allocator[bot]@users.noreply.github.com'
-          for attempt in 1 2 3; do
-            git fetch origin main
-            git reset --hard origin/main
-            python scripts/validate_org_control_plane.py
-            python scripts/allocate_claims.py
-            if git diff --quiet; then
-              echo 'No allocatable transition.'
-              exit 0
-            fi
-            git add control/ tasks/ events/
-            git commit -m 'Allocate next eligible organization task'
-            if git push --porcelain origin HEAD:main; then
-              echo 'CAS transition committed.'
-              exit 0
-            fi
-            echo "CAS conflict on attempt ${attempt}; re-reading state."
-            sleep $((attempt * 2))
-          done
-          echo 'Allocator exhausted bounded CAS retries.' >&2
-          exit 1
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
+
+      - name: Validate allocator inputs
+        run: python3 scripts/validate_org_control_plane.py
+
+      - name: Exercise allocator ephemerally
+        run: |
+          set -euo pipefail
+          before="$(sha256sum control/claims-active.json control/queue.json 2>/dev/null | sha256sum | cut -d' ' -f1)"
+          python3 scripts/allocate_claims.py
+          python3 scripts/validate_org_control_plane.py
+          after_status="$(git status --short)"
+          echo "$after_status"
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          echo "ALLOCATOR_EPHEMERAL_VALIDATION_PASS before=${before}"
+          # No commit or push. Any mutation exists only on the disposable runner.
+
+      - name: Prove workflow is non-authorizing
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          text=Path('.github/workflows/org-allocator.yml').read_text()
+          forbidden=['contents'+': write','git'+' push','${{ github.token }}','actions/'+'checkout@','actions/'+'setup-python@','${{ secrets.']
+          found=[x for x in forbidden if x in text]
+          assert not found, found
+          assert 'permissions: {}' in text
+          print('ORG_ALLOCATOR_NON_AUTHORIZING_PASS')
+          PY
