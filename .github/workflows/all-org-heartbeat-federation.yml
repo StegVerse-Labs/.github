@@ -1,4 +1,6 @@
-name: All-Organization Heartbeat Federation
+# Validation-only federation lane. The resident sovereign heartbeat owns
+# production worker allocation, cycle advancement, claims, fences and persistence.
+name: All-Organization Heartbeat Federation - Validation Only / No GitHub Token Authority
 
 on:
   workflow_dispatch:
@@ -12,202 +14,87 @@ on:
       - 'handoffs/SHWP-ALL-ORG-FEDERATION-001.json'
       - 'authorizations/SHWP-ALL-ORG-FEDERATION-001.json'
       - 'cost-basis/worker-runtime/organization-federation-readiness.json'
-      - 'management/ALL_ORGS_HEARTBEAT_FEDERATION_001.json'
+      - '.github/workflows/all-org-heartbeat-federation.yml'
+  pull_request:
+    paths:
+      - 'control/organization-federation.json'
+      - 'control/organization-task-registry.json'
+      - 'control/heartbeat-subsignals.json'
+      - 'workers/organization_federation_readiness_worker.py'
+      - 'handoffs/SHWP-ALL-ORG-FEDERATION-001.json'
+      - 'authorizations/SHWP-ALL-ORG-FEDERATION-001.json'
+      - 'cost-basis/worker-runtime/organization-federation-readiness.json'
       - '.github/workflows/all-org-heartbeat-federation.yml'
 
-permissions:
-  contents: write
+permissions: {}
 
 concurrency:
-  group: all-org-heartbeat-federation
-  cancel-in-progress: false
+  group: all-org-heartbeat-federation-validation-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  federation:
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Reconcile federation worker into canonical adapter and worker registries
+      - name: Anonymous public checkout without GitHub credential token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
-          python - <<'PY'
-          import json
-          from pathlib import Path
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
 
-          adapter_path=Path('control/process-worker-adapters.json')
-          adapters=json.loads(adapter_path.read_text())
-          adapter_ref='process:organization-federation-readiness-v1'
-          if not any(x.get('adapter_ref')==adapter_ref for x in adapters.get('adapters',[])):
-              adapters['generation']=int(adapters.get('generation',0))+1
-              adapters.setdefault('adapters',[]).append({
-                  'adapter_ref':adapter_ref,
-                  'enabled':True,
-                  'type':'process_json_v0.1',
-                  'command':['python','workers/organization_federation_readiness_worker.py'],
-                  'cwd':'.',
-                  'timeout_seconds':30,
-                  'env_allowlist':[],
-                  'authority_ref':'authorizations/SHWP-ALL-ORG-FEDERATION-001.json',
-                  'capabilities':['bounded_repository_mutation'],
-                  'notes':[
-                      'Heartbeat-owned deterministic federation readiness worker.',
-                      'Writes only receipts/organization-federation/**.',
-                      'No cross-organization mutation, deployment, publication, custody or policy authority.'
-                  ]
-              })
-              adapter_path.write_text(json.dumps(adapters,indent=2,sort_keys=True)+'\n')
-
-          registry_path=Path('control/worker-registry.json')
-          registry=json.loads(registry_path.read_text())
-          task_id='SHWP-ALL-ORG-FEDERATION-001'
-          if not any(x.get('task_id')==task_id for x in registry.get('tasks',[])):
-              registry['generation']=int(registry.get('generation',0))+1
-              registry.setdefault('tasks',[]).append({
-                  'archive_eligible':False,
-                  'archive_reason_codes':[],
-                  'authorized_policy_version':'shwp-single-hb-v0.2',
-                  'block_ref':None,
-                  'claim_id':None,
-                  'cost_basis_ref':'cost-basis/worker-runtime/organization-federation-readiness.json',
-                  'evidence_refs':[
-                      'StegVerse-Labs/Site#234',
-                      'control/organization-federation.json',
-                      'control/organization-task-registry.json',
-                      'control/heartbeat-subsignals.json',
-                      'authorizations/SHWP-ALL-ORG-FEDERATION-001.json',
-                      'workers/organization_federation_readiness_worker.py'
-                  ],
-                  'executor_binding':'AUTHORIZED',
-                  'external_entity_job_ref':None,
-                  'goal_id':'ALL-ORG-HEARTBEAT-FEDERATION-001',
-                  'handoff_ref':'handoffs/SHWP-ALL-ORG-FEDERATION-001.json',
-                  'heartbeat_timing':None,
-                  'last_checkpoint_ref':'authorizations/SHWP-ALL-ORG-FEDERATION-001.json',
-                  'lease':None,
-                  'state':'HANDOFF_READY',
-                  'task_id':task_id,
-                  'worker_id':None,
-                  'worker_instance_id':None
-              })
-          worker_id='organization-federation-readiness-worker'
-          if not any(x.get('worker_id')==worker_id for x in registry.get('workers',[])):
-              registry.setdefault('workers',[]).append({
-                  'adapter_ref':adapter_ref,
-                  'authority_source':'authorizations/SHWP-ALL-ORG-FEDERATION-001.json',
-                  'capabilities':['bounded_repository_mutation'],
-                  'capability_profile_ref':'control/worker-capability-profiles.json#repository-maintenance-v1',
-                  'executor_type':'repository_worker',
-                  'last_seen_at':None,
-                  'status':'AVAILABLE',
-                  'worker_id':worker_id
-              })
-          registry_path.write_text(json.dumps(registry,indent=2,sort_keys=True)+'\n')
-          PY
-
-      - name: Validate federation inputs before heartbeat execution
+      - name: Validate federation source and inputs
         run: |
           set -euo pipefail
-          python -m py_compile workers/organization_federation_readiness_worker.py
-          python - <<'PY'
+          python3 -m py_compile workers/organization_federation_readiness_worker.py
+          python3 - <<'PY'
           import json
           from pathlib import Path
           federation=json.loads(Path('control/organization-federation.json').read_text())
           tasks=json.loads(Path('control/organization-task-registry.json').read_text())
-          assert federation['organization_count']==14
-          assert len(federation['organizations'])==14
-          assert len(tasks['tasks'])==14
+          assert federation['organization_count']==len(federation['organizations'])
+          assert len(tasks['tasks'])==federation['organization_count']
           assert federation['coverage']['unassigned']==0
           assert tasks['coverage']['unassigned']==0
           blocked=[x for x in tasks['tasks'] if x['state']=='BLOCKED']
           assert all(x.get('release_condition') and x.get('next_action') for x in blocked)
-          print(f"FEDERATION_INPUT_PASS:orgs=14:ready={tasks['coverage']['ready']}:blocked={tasks['coverage']['blocked']}:unassigned=0")
+          print('FEDERATION_INPUT_PASS')
           PY
 
-      - name: Advance exactly one canonical heartbeat and execute federation worker
+      - name: Exercise one heartbeat cycle without persistence
         run: |
           set -euo pipefail
-          mkdir -p integration-evidence
-          python scripts/run_heartbeat_runtime.py --cycles 1 | tee integration-evidence/heartbeat-cycle.jsonl
-          python scripts/project_heartbeat_workers.py --write
-          python scripts/evaluate_goal_convergence.py --write
-          python scripts/reconcile_heartbeat_continuity.py --write
-          python - <<'PY'
-          import json
+          before="$(sha256sum control/worker-registry.json control/heartbeat-state.json | sha256sum | cut -d' ' -f1)"
+          output="$(python3 scripts/run_heartbeat_runtime.py --dry-run --cycles 1)"
+          after="$(sha256sum control/worker-registry.json control/heartbeat-state.json | sha256sum | cut -d' ' -f1)"
+          test "$before" = "$after"
+          python3 - <<'PY' "$output"
+          import json,sys
+          row=json.loads(sys.argv[1])
+          assert row['authority_effect']=='none_beyond_existing_admitted_task_authority'
+          c=row['subsignals']['worker_coordination']
+          assert c['carrier']=='single_stegverse_heartbeat'
+          assert c['authority_effect'] is False
+          print('FEDERATION_DRY_RUN_PASS')
+          PY
+
+      - name: Prove hosted lane is non-authorizing
+        run: |
+          python3 - <<'PY'
           from pathlib import Path
-          rows=[json.loads(x) for x in Path('integration-evidence/heartbeat-cycle.jsonl').read_text().splitlines() if x.strip()]
-          assert len(rows)==1
-          row=rows[0]
-          assert row['schema']=='stegverse.heartbeat-cycle-result/v0.9', row['schema']
-          coordination=row['subsignals']['worker_coordination']
-          assert coordination['carrier']=='single_stegverse_heartbeat'
-          assert coordination['carrier_cycle_unit']=='heartbeat_cycle'
-          assert coordination['worker_lease_unit']=='heartbeat_cycle'
-          assert coordination['wall_clock_expiry_authority'] is False
-          assert coordination['authority_effect'] is False
-          lease=next(x for x in coordination['active_leases'] if x['task_id']=='SHWP-ALL-ORG-FEDERATION-001')
-          assert lease['worker_id']=='organization-federation-readiness-worker'
-          assert lease['lease_clock']=='canonical_heartbeat_cycle'
-          assert lease['wall_clock_expiry_authority'] is False
-          assert lease['assigned_cycles'] > 0
-          assert lease['remaining_cycles'] >= 0
-          receipt=json.loads(Path('receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json').read_text())
-          status=json.loads(Path('control/worker-status.json').read_text())
-          task=next(x for x in status['tasks'] if x['task_id']=='SHWP-ALL-ORG-FEDERATION-001')
-          assert receipt['organization_count']==14
-          assert receipt['unassigned_count']==0
-          assert receipt['heartbeat_epoch']==row['epoch']
-          assert task['executor_binding']=='BOUND'
-          assert task['executor_resolved'] is True
-          assert task['heartbeat_timing_established'] is True
-          assert task['worker_id']=='organization-federation-readiness-worker'
-          Path('integration-evidence/federation-receipt.json').write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')
-          Path('integration-evidence/federation-status.json').write_text(json.dumps(task,indent=2,sort_keys=True)+'\n')
-          Path('integration-evidence/worker-coordination.json').write_text(json.dumps(coordination,indent=2,sort_keys=True)+'\n')
-          print(f"ALL_ORG_FEDERATION_V9_PASS:epoch={receipt['heartbeat_epoch']}:ready={receipt['ready_count']}:blocked={receipt['blocked_count']}:unassigned=0:lease_cycles={lease['assigned_cycles']}:remaining={lease['remaining_cycles']}")
+          text=Path('.github/workflows/all-org-heartbeat-federation.yml').read_text()
+          forbidden=['contents'+': write','git'+' push','actions/'+'checkout@','actions/'+'setup-python@','${{ secrets.']
+          found=[x for x in forbidden if x in text]
+          assert not found, found
+          assert 'permissions: {}' in text
+          print('FEDERATION_NON_AUTHORIZING_PASS')
           PY
-
-      - name: Persist canonical heartbeat federation state
-        run: |
-          set -euo pipefail
-          git config user.name 'stegverse-heartbeat-worker'
-          git config user.email 'actions@users.noreply.github.com'
-          git add control/ events/ checkpoints/ receipts/organization-federation/ receipts/worker-mutation-scope/ 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo 'Federation heartbeat produced no persistent state delta.' >&2
-            exit 1
-          fi
-          git commit -m 'heartbeat: carry all-organization federation on v9 worker coordination'
-          STASHED=false
-          if [ -n "$(git status --porcelain)" ]; then
-            git stash push --include-untracked -m all-org-federation-noncanonical
-            STASHED=true
-          fi
-          for attempt in 1 2 3 4 5; do
-            if ! git pull --rebase origin main; then
-              git rebase --abort >/dev/null 2>&1 || true
-              sleep $((attempt * 2))
-              continue
-            fi
-            if git push origin HEAD:main; then
-              if [ "$STASHED" = true ]; then git stash pop || true; fi
-              exit 0
-            fi
-            sleep $((attempt * 2))
-          done
-          if [ "$STASHED" = true ]; then git stash pop || true; fi
-          echo 'Unable to persist federation heartbeat state after bounded retries.' >&2
-          exit 1
-
-      - name: Preserve federation activation evidence
-        uses: actions/upload-artifact@v4
-        with:
-          name: all-org-heartbeat-federation-${{ github.run_id }}
-          path: integration-evidence/
-          if-no-files-found: error
-          retention-days: 90
