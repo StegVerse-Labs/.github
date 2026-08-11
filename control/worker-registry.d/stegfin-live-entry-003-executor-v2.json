@@ -1,0 +1,26 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "STEGFIN-LIVE-ENTRY-003-EXECUTOR-V2",
+  "tasks": [],
+  "workers": [
+    {
+      "adapter_ref": "process:stegfin-live-entry-inventory-v1",
+      "authority_source": "handoffs/STEGFIN-LIVE-ENTRY-003.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_repository_mutation",
+        "stegfin_live_entry_inventory_observation"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "stegfin-live-entry-inventory-worker-v2"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "supersedes_executor_for_matching": "stegfin-live-entry-inventory-worker",
+  "historical_worker_mutated": false,
+  "github_token_required": false,
+  "provider_capability_authority": "TC_TVC_VAULT_ONLY"
+}
