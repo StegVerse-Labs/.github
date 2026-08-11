@@ -10,6 +10,7 @@ RECOVERY_REQUIRED_CODES = [
     "EXECUTOR_NOT_BOUND",
     "MASTER_RECORDS_CUSTODY_NOT_PROVEN",
 ]
+RECOVERY_ONLY_CAPABILITY = "orphan_lifecycle_reconstruction"
 
 
 def _load_json(path: Path) -> dict[str, Any] | None:
@@ -33,8 +34,16 @@ def _scope_narrow_or_equal(parent_handoff: dict[str, Any], recovery_handoff: dic
         return False
     if not set(recovery_goal.get("authority_ceiling") or []).issubset(set(parent_goal.get("authority_ceiling") or [])):
         return False
-    if not set(recovery_exec.get("required_capabilities") or []).issubset(set(parent_exec.get("required_capabilities") or [])):
-        return False
+    parent_caps = set(parent_exec.get("required_capabilities") or [])
+    recovery_caps = set(recovery_exec.get("required_capabilities") or [])
+    # A generated orphan-recovery task may require the dedicated continuity-only
+    # capability instead of the parent's execution capabilities. This narrows the
+    # executor purpose and prevents the recovery worker from matching the parent.
+    # It does not grant any recovered-task execution authority and is accepted only
+    # for generated RECOVER-* handoffs validated below.
+    if recovery_caps != {RECOVERY_ONLY_CAPABILITY}:
+        if not recovery_caps.issubset(parent_caps):
+            return False
     if not set(recovery_exec.get("allowed_paths") or []).issubset(set(parent_exec.get("allowed_paths") or [])):
         return False
     if not set(recovery_exec.get("allowed_services") or []).issubset(set(parent_exec.get("allowed_services") or [])):
@@ -98,6 +107,9 @@ def orphan_recovery_contract_valid(
         return False, "RECOVERY_AUTHORITY_BINDING_MISMATCH"
     if not _scope_narrow_or_equal(parent_handoff, handoff):
         return False, "RECOVERY_SCOPE_EXPANSION_DETECTED"
+    recovery_caps = set((handoff.get("execution") or {}).get("required_capabilities") or [])
+    if recovery_caps == {RECOVERY_ONLY_CAPABILITY} and not task_id.startswith("RECOVER-"):
+        return False, "RECOVERY_ONLY_CAPABILITY_OUTSIDE_RECOVERY_TASK"
     activation = handoff.get("activation") or {}
     block = handoff.get("block") or {}
     if activation.get("executor_binding") != "UNBOUND":
@@ -159,6 +171,7 @@ def reconcile_quarantined_orphan_recoveries(
 
 __all__ = [
     "RECOVERY_REQUIRED_CODES",
+    "RECOVERY_ONLY_CAPABILITY",
     "orphan_recovery_contract_valid",
     "reconcile_quarantined_orphan_recoveries",
 ]
