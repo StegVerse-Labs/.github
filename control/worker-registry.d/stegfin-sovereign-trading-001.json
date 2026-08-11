@@ -33,7 +33,7 @@
   }],
   "authority_effect":"NONE_REGISTRATION_ONLY",
   "github_token_required":false,
-  "provider_capability_authority":"TC_TVC_UNCHANGED",
+  "provider_capability_authority":"TV_TVC_UNCHANGED",
   "wallet_signing_authority":false,
   "transaction_broadcast_authority":false
 }
