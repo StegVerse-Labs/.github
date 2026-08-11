@@ -19,7 +19,7 @@ local model credential requirement: NONE
 github token authority: NONE
 github actions activation role: NONE
 github actions persistence role: NONE
-resident heartbeat epoch observed after PR #78 merge: 29
+resident heartbeat epoch last directly observed: 29
 ```
 
 ## Originating session requirements transferred
@@ -49,13 +49,13 @@ The root cause was a blocker-policy contract mismatch: `BLOCKED` responses requi
 
 ## Released implementation
 
-`.github` orphan recovery implementation:
+Orphan recovery implementation:
 
 ```text
 PR: StegVerse-Labs/.github#78
 merge: 477b0d5e3737662a4d51fe87538bbbc2d4acc99e
 validation: PASS
-hosted Heartbeat Worker Project run: 31450724027 / SUCCESS
+Heartbeat Worker Project run: 31450724027 / SUCCESS
 critical dry-run evidence: recovery claim fence 23 > ended fence 20
 ```
 
@@ -71,7 +71,20 @@ hosted Actions: BLOCKED_BY_ACCOUNT_BILLING / ZERO STEPS / not counted as PASS
 deterministic pinned checkpoint/event reconstruction: PASS
 ```
 
-The Master Records billing-blocked jobs never started; this is not represented as a test PASS. Historical custody PASS does not mean the inference task completed and grants no execution authority.
+TC/TVC no-GitHub-token authority cleanup:
+
+```text
+PR: StegVerse-Labs/.github#79
+merge: f6265ff0f74a51adf79985da09691b871b7576dc
+state: COMPLETE_RELEASED
+Ecosystem Chat no-token validation run: 31453552033 / SUCCESS
+Heartbeat Worker Project no-token validation run: 31453552032 / SUCCESS
+Organization control-plane no-token validation run: 31453552110 / SUCCESS
+complete deterministic heartbeat suite: 97 tests PASS
+authority result: GitHub Actions cannot activate, persist, claim, fence, or provide TV/TVC credentials
+```
+
+GitHub Actions itself reports its platform-internal metadata-read token even under `permissions: {}`. StegVerse workflow commands do not receive or use `GITHUB_TOKEN`, `GH_TOKEN`, or a PAT; checkout is anonymous public git fetch. That platform metadata facility is not a StegVerse credential surface and is not forwarded to TVC, the model runtime, LLM-adapter, Master Records, or the resident heartbeat.
 
 ## Installed recovery surfaces
 
@@ -90,14 +103,6 @@ tests/test_orphan_recovery_reconciliation.py
 tests/test_ecosystem_chat_orphan_recovery_activation.py
 ```
 
-## Recovery design
-
-The orphan task is a **continuity root**, not an authority-bearing goal successor. `recovery_parent_task_id` binds evidence to the ended parent while `derivation_depth=0` and absence of `parent_task_id` prevents successor-policy inheritance from recreating `SUCCESSOR_DEPTH_LIMIT_EXCEEDED`.
-
-The bounded authorization permits only `orphan_lifecycle_reconstruction`, only the existing Ecosystem Chat receipt namespace, zero external cost, no services, no GitHub token, no old-authority revival, no parent execution, and no successor-parent authority. The recovery worker cannot satisfy the parent execution capability set; the parent worker cannot satisfy the recovery-only capability. The worker rejects any recovery fence `<=20`.
-
-PR #78 validation exercised the normal allocator in dry-run and obtained recovery fence `23`, directly proving the higher-fence rule without mutating canonical heartbeat state.
-
 ## TC/TVC and no-GitHub-token boundary
 
 Current authority contract:
@@ -115,13 +120,15 @@ github_actions_persistence_role: false
 source_checkout_runtime_requirement: false
 ```
 
-The former `activate-ecosystem-chat-sovereign-inference-worker.yml` used authenticated checkout plus `contents: write` and pushed heartbeat state to `main`. That behavior is superseded. The workflow is being converted to validation-only with `permissions: {}`, anonymous public git fetch, no `actions/checkout`, no `actions/setup-python`, no commit/push, and dry-run-only heartbeat execution. `heartbeat-worker-project.yml` is likewise being converted to validation-only/nonpersistent operation.
+The former hosted activation workflow that used authenticated checkout, `contents: write`, heartbeat mutation, commit, and push is retired. Its filename remains for compatibility but it is now validation-only with `permissions: {}`, anonymous public git fetch, no action-based checkout/setup, no commit/push, and dry-run-only heartbeat evaluation. `heartbeat-worker-project.yml` and `org-control-plane-validate.yml` follow the same non-authorizing/no-project-token validation model.
 
-GitHub source-control API operations used to install repository changes are not execution credentials and are not passed into the StegVerse runtime. No project workflow may use GitHub credentials as TC/TVC authority.
+## Recovery design and automatic continuation
 
-## Automatic parent continuation
+The orphan task is a continuity root, not an authority-bearing goal successor. `recovery_parent_task_id` binds evidence to the ended parent while `derivation_depth=0` and absence of `parent_task_id` prevents successor-policy inheritance from recreating `SUCCESSOR_DEPTH_LIMIT_EXCEEDED`.
 
-Parent `SHWP-ECOSYSTEM-CHAT-INFERENCE-001` remains blocked on the recovery task. Once recovery reaches `COMPLETED`, the blocked-task engine returns the parent to `HANDOFF_READY`; the normal resident allocator must issue a fencing generation greater than 20. The resumed parent follows the installed chain:
+The bounded authorization permits only `orphan_lifecycle_reconstruction`, only the existing Ecosystem Chat receipt namespace, zero external cost, no services, no GitHub token, no old-authority revival, no parent execution, and no successor-parent authority. The recovery worker rejects any recovery fence `<=20`.
+
+Parent `SHWP-ECOSYSTEM-CHAT-INFERENCE-001` remains blocked on the recovery task. Once recovery reaches `COMPLETED`, the blocked-task engine returns the parent to `HANDOFF_READY`; the normal resident allocator must issue a fencing generation greater than 20. The resumed parent follows:
 
 ```text
 locally developed model/runtime
@@ -138,7 +145,9 @@ locally developed model/runtime
 
 ## Current machine state
 
-`control/heartbeat-state.json` on main remains at epoch 29 after PR #78 merge. Therefore source release is complete but **resident runtime activation has not yet been observed**. The dry-run fence 23 is validation evidence only and is not a live claim.
+The last directly observed canonical `control/heartbeat-state.json` remained at epoch 29. PR #79 deliberately cannot advance it. Source implementation and authority cleanup are complete, but resident runtime activation is not inferred from merge or hosted validation.
+
+Dry-run validation proves what the next resident heartbeat will do if the released source and Master Records workload are locally materialized: it releases the recovery authorization, selects the unique recovery worker, allocates fence 23 (>20), and fails closed at `MASTER_RECORDS_CUSTODY_NOT_PROVEN` when the custody workload is absent. That dry-run claim is not a live claim.
 
 Machine-observable next state:
 
@@ -158,7 +167,8 @@ resident heartbeat advances beyond epoch 29
 ```text
 recovery implementation claim: RELEASED / PR #78
 Master Records task-025 claim: RELEASED
-current role: MACHINE_OWNED_RUNTIME_OBSERVATION plus token-authority cleanup
+TC/TVC no-token authority cleanup claim: RELEASED / PR #79
+current owner: MACHINE_OWNED_RUNTIME_OBSERVATION / resident heartbeat
 old fence reuse: prohibited
 parent execution by recovery worker: prohibited
 recovery execution by parent worker: prohibited
@@ -167,33 +177,22 @@ second worker registry: prohibited
 GitHub token runtime/activation authority: prohibited
 ```
 
-## Validation commands
-
-```text
-python -m unittest tests.test_orphan_recovery_reconciliation -v
-python -m pytest -q tests/test_ecosystem_chat_orphan_recovery_activation.py
-python -m pytest -q tests/test_ecosystem_chat_tc_tvc_route_worker.py
-python -m pytest -q tests/test_master_records_sovereign_reconstruction_bridge.py
-python scripts/run_heartbeat_runtime.py --dry-run
-```
-
-Hosted workflows are validation only. Runtime activation requires the resident sovereign heartbeat and locally materialized workloads.
-
 ## Completion accounting
 
 ```text
-required developed recovery surfaces: 12
-currently developed: 12
+required developed recovery/authority surfaces: 16
+currently developed: 16
 scaffolding/stubs: 0
 missing required files: 0
-recovery implementation validation: PASS
-recovery integration merge: PASS
+source implementation validation: PASS
+source integration merge: PASS
 Master Records G20 custody: COMPLETE_RELEASED
-TC/TVC no-GitHub-token authority cleanup: IMPLEMENTED_PENDING_VALIDATION_AND_MERGE
-resident heartbeat post-merge observation: PENDING_MACHINE_OWNED
+TC/TVC no-GitHub-token authority cleanup: COMPLETE_RELEASED
+resident heartbeat post-release observation: PENDING_MACHINE_OWNED
 higher-fence parent inference execution: PENDING_MACHINE_OWNED
+same-execution activation proof: PENDING_MACHINE_OWNED
 ```
 
 ## Archive condition
 
-All unique design and implementation knowledge from this session is durable. The session is not archive-ready yet because this session still owns validation/merge of the token-authority cleanup and must then determine whether a resident heartbeat has consumed the released recovery lane. Product activation remains pending until live heartbeat state advances beyond HB29 and reaches same-execution reconstruction PASS.
+All unique design, implementation, recovery, and credential-authority knowledge from this session is durable. Product activation remains incomplete because the resident sovereign heartbeat has not been directly observed advancing past HB29 and completing the recovery -> higher-fence parent -> local model -> TVC -> LLM-adapter -> Master Records chain. The organization archive gate remains authoritative; source release alone does not permit an activation-complete archive claim.
