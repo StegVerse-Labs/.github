@@ -2,6 +2,22 @@
   "goals": [
     {
       "converged": false,
+      "custody_reconstruction_complete": false,
+      "goal_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+      "no_active_claims": true,
+      "no_authorized_remaining_action": false,
+      "no_unresolved_descendants": true,
+      "reason_codes": [
+        "ROOT_SUCCESS_PREDICATES_NOT_SATISFIED",
+        "CUSTODY_OR_RECONSTRUCTION_INCOMPLETE",
+        "AUTHORIZED_REMAINING_ACTION"
+      ],
+      "root_task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+      "state": "BLOCKED",
+      "success_predicates_satisfied": false
+    },
+    {
+      "converged": false,
       "custody_reconstruction_complete": true,
       "goal_id": "ALL-ORG-HEARTBEAT-FEDERATION-001",
       "no_active_claims": false,
@@ -38,10 +54,9 @@
       "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
       "no_active_claims": true,
       "no_authorized_remaining_action": false,
-      "no_unresolved_descendants": false,
+      "no_unresolved_descendants": true,
       "reason_codes": [
         "ROOT_SUCCESS_PREDICATES_NOT_SATISFIED",
-        "UNRESOLVED_DESCENDANTS",
         "CUSTODY_OR_RECONSTRUCTION_INCOMPLETE",
         "AUTHORIZED_REMAINING_ACTION"
       ],
