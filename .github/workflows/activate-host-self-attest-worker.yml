@@ -62,8 +62,8 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          text=Path('.github/workflows/activate-host-self-attest-worker.yml').read_text()
-          forbidden=['contents'+': write','git'+' push','actions/'+'checkout@','actions/'+'setup-python@','scripts/run_heartbeat_runtime.py --cycles','${{ secrets.']
+          text=Path('.github/workflows/activate-host-self-attest-worker.yml').read_text(encoding='utf-8')
+          forbidden=['contents'+': write','git'+' push','actions/'+'checkout@','actions/'+'setup-python@','scripts/run_heartbeat_runtime.py --cycles','$'+'{{ '+'secrets.']
           found=[x for x in forbidden if x in text]
           assert not found, found
           assert 'permissions: {}' in text
