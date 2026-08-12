@@ -34,7 +34,9 @@ archive_gate: BLOCKED
 thread_archive_ready: false
 ```
 
-The four current production tasks are:
+The historical labels above are retained as the archived state of this handoff. Current operational ownership is governed by `control/active-worker-state-policy.json` and `control/handoff-execution-ownership-policy.json`; unresolved work is not manually available merely because historical prose uses `BLOCKED`.
+
+The four production task identities are:
 
 - `SHWP-DURABLE-RUNTIME-ACTIVATION`
 - `SHWP-ECOSYSTEM-CHAT-INFERENCE-001`
@@ -43,6 +45,34 @@ The four current production tasks are:
 
 ## Remaining remediation
 
-Wire `scripts/validate_archive_readiness.py` and `tests/test_archive_readiness.py` into the canonical organization validation workflow so a future commit cannot silently reintroduce premature archive readiness. Keep issue #64 open until hosted validation proves the enforcement path.
+The archive-gate enforcement work is now subordinate to the current organization handoff and machine task-state policies. Any remaining validation/reconciliation must follow those current owners rather than reopening this historical scope manually.
 
-No session containing or inheriting this goal is ready for archival before that validation and before current production goals satisfy the invariant above.
+## Execution ownership and collision partition
+
+Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`.
+
+### MANUAL / SESSION-STARTABLE
+
+No implementation task in this historical handoff is implicitly manual-startable.
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: ARCHIVE-GATE-PROGRESS-ENFORCEMENT-001-ACTIVE-INCOMPLETE-SCOPE
+  execution_owner: current canonical owners named by docs/ORG_MIRROR_HANDOFF.md and control/worker-registry.json
+  claim_state: RECONCILIATION_REQUIRED
+  worker_registry_ref: control/worker-registry.json + control/archive-readiness.json + docs/ORG_MIRROR_HANDOFF.md
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: all incomplete implementation, validation, and progress-remediation work described by this handoff unless a newer task record explicitly grants a nonoverlapping manual role
+  release_condition: current canonical registry/handoff explicitly releases a task or records manual_execution_allowed true for an exact collision scope
+  next_executable_action: follow current machine owner or derive/escalate successor work under the active worker policy
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+Any unresolved constraint that cannot be solved by its current worker remains owned by the engine-v11 authority escalation chain; it does not revert to arbitrary manual execution.
+
+### COMPLETED / SUPERSEDED
+
+Historical archive-gate policy installation remains preserved as evidence; newer organization handoff and active-worker policies supersede stale operational labels in this file.

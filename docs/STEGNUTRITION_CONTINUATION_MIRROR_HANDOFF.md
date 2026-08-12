@@ -11,7 +11,6 @@ repository: StegVerse-Labs/.github
 branch: main
 canonical_target: StegVerse-Labs/StegNutrition/STEGNUTRITION_MIRROR_HANDOFF.md
 canonical_target_inventory: StegVerse-Labs/StegNutrition/tasks/STEGNUTRITION-SESSION-20260811.json
-canonical_inventory_schema: stegnutrition.session-execution-inventory.v4
 credential_authority: TV/TVC
 route_authority: StegVerse-Labs/TVC
 github_token_runtime_authority: NONE
@@ -41,32 +40,17 @@ tests/test_stegnutrition_machine_continuation.py
 tests/test_stegnutrition_continuation_receipt.py
 ```
 
-The worker uses only `STEGVERSE_STEGNUTRITION_ROOT` from the process environment. It never receives `GITHUB_TOKEN`, `GH_TOKEN`, provider credentials or a remote repository URL. It does not fetch source. It writes only `receipts/stegnutrition-continuation/**` under a current heartbeat claim/fence.
-
-The process adapter invokes `workers/stegnutrition_continuation_entrypoint.py`, not the raw worker directly. The entrypoint runs the worker, resolves the emitted checkpoint only inside `receipts/stegnutrition-continuation/**`, independently validates the receipt contract, and returns nonzero if the receipt is malformed or violates the no-token/authority invariants. A syntactically written JSON file is therefore not sufficient for successful continuation.
+The worker receives no GitHub token/provider credential/remote repository URL, performs no repository fetch, and writes only its admitted receipt namespace under a current heartbeat claim/fence. The registered entrypoint independently validates the emitted receipt contract before success can be returned.
 
 ## Current machine behavior
 
-Each admitted heartbeat while unfinished:
-
-1. requires an already locally materialized StegNutrition root containing the canonical handoff and inventory;
-2. normalizes either legacy inventory rows or the canonical v4 inventory sections;
-3. requires the canonical continuation tasks `012` through `019` that remain relevant to release;
-4. runs fixed local `python -m pytest -q` with `PIP_NO_INDEX=1` and no credential environment; StegNutrition now carries a repository-owned zero-network pytest compatibility runner for its audited test surface;
-5. separately projects whether semantic training/evaluation source exists and whether a qualified real-data semantic artifact exists;
-6. observes automatic scale/portion source, production photo-to-ledger pipeline source and benchmark-ingestion source;
-7. counts real photographed/weighed benchmark records without counting synthetic mechanics fixtures as real accuracy;
-8. observes the resident heartbeat epoch and requires an exact declared live visual-route activation receipt after HB29;
-9. constructs a fenced continuation receipt;
-10. independently validates receipt schema, task/claim/fence fields, local validation state, credential authority, explicit `github_token_required=false`, explicit `github_repository_fetch_performed=false`, and completed/blocker consistency;
-11. persists only the admitted continuation receipt;
-12. returns `COMPLETED` only when all release-candidate predicates are directly supported; otherwise returns `BLOCKED`, `RETRY` or `FAILED` with an exact next solution action.
+Each admitted heartbeat while unfinished validates the locally materialized StegNutrition tree, canonical v4 task inventory, offline deterministic tests, semantic model/evaluation source and qualified real-data artifact status, portion/pipeline/benchmark surfaces, real weighed benchmark cases, resident heartbeat epoch, and declared live visual-route evidence. It returns completion only when all release predicates are supported; otherwise it emits exact active solution/constraint evidence for continuation or escalation.
 
 No general code-writing, GitHub repository-write, release or publication authority is granted.
 
 ## Important v4 correction
 
-The original worker expected a historical `execution_inventory` list and old semantic source names (`src/stegnutrition/vision/semantic.py`, `tests/test_semantic_vision.py`). StegNutrition evolved to the v4 inventory and the actual local semantic implementation is now:
+The worker is aligned to the current semantic and production surfaces:
 
 ```text
 src/stegnutrition/semantic_food.py
@@ -74,13 +58,6 @@ src/stegnutrition/semantic_eval.py
 scripts/train_semantic_food_local.py
 tests/test_semantic_food.py
 tests/test_semantic_eval.py
-```
-
-The worker was corrected in commit `a9cdd727124591f7f54b7e76122e6b0fa5b5be9f`; its contract tests were updated in `850f2836d7a5cfdb27e0f8b46918d8467ac38190`.
-
-It now also observes:
-
-```text
 src/stegnutrition/vision/scale.py
 src/stegnutrition/vision/auto_portion.py
 src/stegnutrition/benchmark_ingest.py
@@ -89,11 +66,7 @@ src/stegnutrition/pipeline.py
 tasks/STEGNUTRITION-PRODUCTION-PIPELINE-019.json
 ```
 
-This correction prevents the first resident execution from failing simply because the machine continuation source lagged behind the repository it was meant to continue.
-
 ## Receipt validation gate
-
-The continuation receipt type is now independently specified and validated:
 
 ```text
 schema: schemas/stegnutrition-continuation-receipt.schema.json
@@ -103,74 +76,34 @@ adapter entrypoint: workers/stegnutrition_continuation_entrypoint.py
 adapter generation: 15
 ```
 
-The contract rejects a receipt if it asks for GitHub-token authority, claims a repository fetch, changes credential authority away from TV/TVC, escapes the admitted receipt namespace, uses an unexpected task/schema, or marks itself completed while retaining a blocker or non-COMPLETE local validation state.
+The contract rejects GitHub-token authority, repository fetches, non-TV/TVC credential authority, receipt path escape, unexpected task/schema identity, or false completion.
 
 ## Validation evidence
-
-Current validation head: `6de8e62bc08c7bb6752e86d5fc94fc745ca44570`.
 
 ```text
 heartbeat worker validation: run 31598640622 / SUCCESS
 organization no-token validation: run 31598640713 / SUCCESS
 heartbeat job: 94120233607 / SUCCESS
-validated heartbeat steps:
-  Anonymous public checkout without GitHub token — SUCCESS
-  Prove validation environment has no GitHub credential token — SUCCESS
-  Compile runtime, workers, and scripts — SUCCESS
-  Parse canonical JSON surfaces — SUCCESS
-  Validate executable handoffs — SUCCESS
-  Run complete deterministic repository test suite — SUCCESS
-  Prove heartbeat dry-run cannot persist registry or epoch state — SUCCESS
-  Rebuild projections ephemerally without repository persistence — SUCCESS
-  Prove workflow itself is non-authorizing — SUCCESS
 ```
 
-The deterministic repository suite includes the StegNutrition continuation adapter/receipt tests. These are source/control-plane validation proofs only. They do not prove a resident claim/fence or StegNutrition execution.
+These prove source/control-plane behavior only, not a resident claim/fence or completed StegNutrition execution.
 
-## Canonical StegNutrition predicates now observed by the worker
+## Machine-observable activation condition
 
-```text
-semantic_model_source_present
-semantic_model_qualified_artifact_present
-automatic_portion_surfaces_present
-production_pipeline_surfaces_present
-benchmark_ingestion_surfaces_present
-real_weighed_benchmark_case_count
-resident_heartbeat_epoch
-live_visual_route_receipt_declared
-local_validation.state
-```
+The last direct resident evidence is HB29 with no issued StegNutrition claim. Completion of the machine-continuation activation step requires heartbeat advance beyond HB29, registry fragment consumption, a current fenced claim, execution against a locally materialized StegNutrition tree, and an independently valid continuation receipt proving `github_token_required=false` and `github_repository_fetch_performed=false`.
 
-A qualified semantic artifact requires real-data model/evaluation artifacts under `models/semantic-food/`; source presence alone cannot satisfy it.
-
-## Machine-observable activation blocker
-
-```text
-blocker: STEGNUTRITION_CONTINUATION_RESIDENT_CLAIM_NOT_YET_OBSERVED
-owner: single resident StegVerse heartbeat
-current direct evidence: control/heartbeat-state.json epoch 29 / generation 29 / no StegNutrition issued claim
-release_condition:
-  resident heartbeat advances beyond HB29;
-  registry fragment SHWP-STEGNUTRITION-CONTINUATION-001 is consumed;
-  stegnutrition-machine-continuation adapter receives a current fenced claim;
-  worker executes against a locally materialized StegNutrition tree;
-  receipt receipts/stegnutrition-continuation/SHWP-STEGNUTRITION-CONTINUATION-001.json is produced and independently validates;
-  receipt proves github_token_required=false and github_repository_fetch_performed=false.
-```
-
-The resident heartbeat must use a locally materialized StegNutrition tree. If absent, the worker remains `BLOCKED` with a local-materialization action and may not substitute a GitHub fetch.
+If local materialization or another required predicate is absent, that condition must remain active solution work or derive/escalate a successor task; it is not a release to arbitrary manual implementation.
 
 ## Collision boundaries
 
-- do not create a second heartbeat or registry;
-- do not fabricate HB30 or a claim/fence through repository writes;
-- do not use GitHub tokens or GitHub Actions as production execution authority;
-- do not treat workflow success as resident activation;
-- do not bypass the receipt-validation entrypoint by invoking the raw worker as the registered adapter;
-- do not treat semantic source presence as a qualified real-data model artifact;
-- do not treat low-level visual evidence as semantic food recognition;
-- do not treat synthetic benchmark fixtures as real accuracy data;
-- do not grant release/publication authority to this worker.
+- one heartbeat and one worker registry only;
+- no fabricated heartbeat/claim/fence by repository writes;
+- no GitHub-token or hosted production execution authority;
+- workflow success is not resident activation;
+- no bypass of receipt validation;
+- semantic source is not a qualified real-data artifact;
+- synthetic fixtures are not real accuracy data;
+- no release/publication authority is granted to this worker.
 
 ## Cross-repository continuation
 
@@ -178,14 +111,67 @@ The resident heartbeat must use a locally materialized StegNutrition tree. If ab
 StegVerse-Labs/StegNutrition/tasks/STEGNUTRITION-MACHINE-CONTINUATION-018.json
 -> StegVerse-Labs/.github/handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json
 -> resident heartbeat claim/fence
--> workers/stegnutrition_continuation_entrypoint.py
--> workers/stegnutrition_continuation_worker.py
--> workers/stegnutrition_receipt_contract.py
+-> continuation entrypoint/worker/receipt contract
 -> receipts/stegnutrition-continuation/SHWP-STEGNUTRITION-CONTINUATION-001.json
 -> existing TV/TVC visual-route lane when applicable
 -> StegNutrition release lane only after release-candidate predicates pass
 ```
 
+## Execution ownership and collision partition
+
+Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`.
+
+### MANUAL / SESSION-STARTABLE
+
+Human-authority real-data acquisition may occur only when a current StegNutrition task/handoff explicitly assigns that human role; it is not implementation authority over the continuation worker. No worker implementation or resident activation task is manually startable by default.
+
+```yaml
+- task_id: STEGNUTRITION-HUMAN-EVIDENCE-ROLE
+  execution_owner: explicitly assigned human authority under the StegNutrition repository task state
+  claim_state: UNCLAIMED
+  worker_registry_ref: StegVerse-Labs/StegNutrition/STEGNUTRITION_MIRROR_HANDOFF.md
+  manual_execution_allowed: true
+  manual_allowed_role: validation
+  collision_scope: acquisition/review of explicitly requested real photographed/weighed evidence only; excludes worker code, heartbeat, registry, TV/TVC route, release, and publication scope
+  release_condition: evidence is durably ingested/validated or the StegNutrition task state withdraws the request
+  next_executable_action: act only when the current StegNutrition handoff/task explicitly requests the bounded human evidence action
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: SHWP-STEGNUTRITION-CONTINUATION-001
+  execution_owner: resident sovereign heartbeat + stegnutrition-machine-continuation worker
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: control/worker-registry.d/stegnutrition-continuation-001.json
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: continuation worker/entrypoint/receipt execution, resident claim/fence, local validation, visual-route observation, and machine continuation receipt mutation
+  release_condition: canonical worker completes/supersedes/releases the task under a live resident claim/fence
+  next_executable_action: resident heartbeat executes the registered continuation task and persists a valid receipt
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: STEGNUTRITION-CONTINUATION-CONSTRAINT-RESOLUTION
+  execution_owner: engine-v11 authority chain + applicable TV/TVC/StegNutrition authority
+  claim_state: ESCALATED
+  worker_registry_ref: control/worker-registry.json + docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md + StegVerse-Labs/StegNutrition/STEGNUTRITION_MIRROR_HANDOFF.md
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  collision_scope: local materialization, runtime capability, route/admission, model-quality, or evidence constraints not resolvable by the current worker
+  release_condition: next capable authority resolves the constraint or explicitly assigns a bounded human-authority action
+  next_executable_action: derive/register successor RESOLVE/ESCALATE work; never substitute GitHub fetch/token authority
+```
+
+### COMPLETED / SUPERSEDED
+
+- v4 source alignment: complete.
+- Receipt contract/validator: complete.
+- Hosted no-token/source validation: complete.
+- Chat-only continuation ownership: superseded by resident worker/task state.
+
 ## Archive condition
 
-This session remains distinct support until a resident continuation claim/receipt is directly observed or equivalent canonical sovereign activation evidence supersedes this task. Once that happens, this chat is not required merely to keep machine-executable StegNutrition work checking itself. Product completion and human-authority data acquisition remain separate predicates.
+Machine continuation is now durably owned by the resident worker/registry path. Product completion and human evidence remain distinct predicates governed by current task state; incomplete machine work does not become manual implementation work.

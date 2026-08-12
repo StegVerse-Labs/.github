@@ -24,58 +24,19 @@ custody_owner: master-records/orchestration#15
 
 ## Requirements transferred
 
-The following requirements are now durably transferred to `StegVerse-org/LLM-adapter#90` and remain preserved here as provenance:
-
-1. Longitudinal record sufficiency gate before care-quality/continuity conclusions.
-2. Potential deficiency / unresolved-care detection across substantial VA records.
-3. Concise provider-facing pre-encounter summary with traceable evidence and confidence.
-4. Adverse characterization context review for labels such as non-compliant, aggressive, hostile, disruptive, or similar terms.
-5. Preserve Veteran-originating concern separately from provider interpretation; detect semantic/interpretation mismatch.
-6. Characterization provenance, age, temporal validity, and contradictory evidence.
-7. Multi-signal care-disengagement trajectory detection without deterministic suicide/homelessness prediction.
-8. Alternative engagement pathway identification when the current care relationship may itself be contributing to disengagement; human review required.
-9. Prescription-state provenance: expiration/refill exhaustion != clinical ineligibility or contraindication.
-10. Request -> portal transaction -> routing -> prescriber authority -> pharmacy release -> replacement-Rx lineage reconstruction.
-11. Treat refill/renewal portal events as evidentiary transactions even when outside secure messaging or omitted from Blue Button narrative exports.
-12. Prior-evaluation sufficiency check using recent ED/inpatient/provider vitals, labs, medication reconciliation, treatment response, and record acknowledgement before describing a request as medication requested without evaluation.
-13. Preserve medication scope in disputed encounters; the recovered reference scenario concerns longstanding BP + GERD therapy, not new medication, narcotics, controlled substances, or dose escalation.
-14. Longitudinal quality metric may be initiated when the uploaded record reaches a governed sufficiency threshold and should be available as a care-continuity summary at encounters.
-15. When implemented/released, evaluate propagation obligations to Site, Publisher, admissibility-wiki, stegguardian-wiki and applicable master-records surfaces.
+The following requirements are durably transferred to `StegVerse-org/LLM-adapter#90` and remain preserved here as provenance: longitudinal sufficiency gating; potential care-gap/continuity detection; evidence-traceable provider summaries; adverse-characterization context/provenance review; Veteran concern vs provider interpretation separation; characterization freshness/contradiction; bounded disengagement-trajectory inference; alternative engagement pathways with human review; medication/prescription state provenance; request-to-release lineage reconstruction; portal refill transaction evidence; prior-evaluation sufficiency; medication-scope preservation; governed continuity summaries; and post-release propagation evaluation.
 
 ## Governance contract
 
-The system must preserve these distinct states:
-
-```text
-OBSERVATION
-INFERENCE
-POTENTIAL_DEFICIENCY
-CLINICIAN_DETERMINATION
-ACTION
-NOT_EVALUABLE
-INSUFFICIENT_EVIDENCE
-CONTRADICTORY_EVIDENCE
-```
-
-It must not silently collapse one state into another. Missing coverage must fail closed to `NOT_EVALUABLE` or bounded uncertainty. The system must not autonomously diagnose malpractice/negligence, remove safety flags, change treatment, transfer care, or make deterministic suicide/homelessness predictions. Legitimate safety concerns remain visible and attributable.
+The system must preserve distinct states including OBSERVATION, INFERENCE, POTENTIAL_DEFICIENCY, CLINICIAN_DETERMINATION, ACTION, NOT_EVALUABLE, INSUFFICIENT_EVIDENCE, and CONTRADICTORY_EVIDENCE. Missing coverage fails closed to bounded uncertainty. The system must not autonomously diagnose malpractice/negligence, remove safety flags, change treatment, transfer care, or make deterministic suicide/homelessness predictions.
 
 ## De-identified reference fixture transferred
 
-The canonical workstream received this first validation fixture requirement:
-
-1. longstanding chronic antihypertensive and GERD treatment predating the disputed PCP relationship;
-2. antihypertensive prescription authored in 2022, final 90-day fill in June 2023, no refills remaining, nominal expiration in September 2023;
-3. August 2023 provider instruction that PACT visit/labs are required for further medication refills;
-4. later 2023 VA encounters containing vitals, laboratory data, medication reconciliation, examinations, and provider assessments;
-5. January 2024 hypertensive-urgency episode after antihypertensive exhaustion and documented difficulty obtaining PCP refill; medication restarted with clinical improvement;
-6. February 2024 encounter where a medication-continuity concern and provider interpretation diverge;
-7. later 90-day pharmacy release under a distinct prescription lineage;
-8. portal refill-request provenance unavailable in the narrative export even though the normal patient workflow can occur outside secure messaging;
-9. every derived finding records proven / inferred / unavailable / contradictory status.
+The canonical workstream received the longitudinal medication-continuity validation fixture and the requirement that every derived finding record proven/inferred/unavailable/contradictory status. Exact fixture details and provenance remain preserved in repository history and the canonical LLM-adapter workstream.
 
 ## Collision reconciliation
 
-The initial connected search did not locate VACC by repository name. A later authoritative Site worker manifest identified the existing canonical VACC workstream:
+The existing canonical VACC path is:
 
 ```text
 StegVerse-Labs/Site#241
@@ -85,11 +46,11 @@ StegVerse-Labs/Site#241
 -> Site#113/#241
 ```
 
-Therefore no separate VACC implementation is authorized from `.github#87`; the provisional claim is released. The transfer was installed as a durable comment on `StegVerse-org/LLM-adapter#90`.
+No separate VACC implementation is authorized from `.github#87`; the provisional claim is released.
 
 ## Local-model/runtime convergence
 
-The originating session also inherited the local-model/runtime task. That work is not owned here and must not be duplicated:
+The local-model/runtime task is also not owned here:
 
 ```text
 formal local model: COMPLETE_RELEASED
@@ -114,12 +75,60 @@ chat-only VACC requirements remaining: 0
 
 ## Remaining canonical work — not owned by this provisional claim
 
-1. `StegVerse-org/LLM-adapter#90` installs executable longitudinal sufficiency, continuity, characterization, prescription-provenance, and summary logic in the admitted VACC architecture.
-2. Install de-identified fixtures/tests and bind them to the existing privacy/governance path.
-3. Validate through the strongest available local/CI/provider-execution path.
-4. `master-records/orchestration#15` preserves custody/reconstruction evidence where applicable.
-5. `StegVerse-Labs/Site#113/#241` projects only verified governed results.
-6. Propagation/release obligations are evaluated only after activation/release criteria are satisfied.
+The canonical LLM-adapter worker lane owns executable longitudinal sufficiency/continuity/characterization/prescription-provenance/summary logic and fixtures; Master Records owns custody/reconstruction; Site owns verified projection. Propagation follows only after the canonical release gates admit it.
+
+## Execution ownership and collision partition
+
+Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`.
+
+### MANUAL / SESSION-STARTABLE
+
+No VACC implementation task is manually startable from this provisional `.github` handoff. A human may provide evidence or clinical/user context only when the canonical VACC workstream explicitly requests that bounded role; such input does not grant implementation or adjudication authority.
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: VACC-LONGITUDINAL-CONTINUITY-001
+  execution_owner: StegVerse-org/LLM-adapter#90 canonical VACC implementation worker lane
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: StegVerse-org/LLM-adapter#90 + tasks/VACP-ADAPTER-AUTHORIZED-EXECUTION-005.json
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: VACC longitudinal sufficiency, continuity/characterization analysis, prescription provenance, de-identified fixtures, governed execution, and adapter evidence output
+  release_condition: canonical LLM-adapter task completes/supersedes/releases the specific implementation scope
+  next_executable_action: canonical VACC worker continues executable implementation/validation under its own handoff and task record
+
+- task_id: VACC-LONGITUDINAL-CUSTODY-PROJECTION
+  execution_owner: master-records/orchestration#15 + StegVerse-Labs/Site#113/#241
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: master-records/orchestration#15 + StegVerse-Labs/Site#241
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: custody/reconstruction and verified public projection of governed VACC results
+  release_condition: canonical custody/projection tasks complete or explicitly release a nonoverlapping scope
+  next_executable_action: canonical consumers ingest only validated VACC evidence under their own release gates
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: VACC-LONGITUDINAL-AUTHORITY-RESOLUTION
+  execution_owner: canonical VACC governance/TV/TVC/Master Records/human-clinical authority as applicable
+  claim_state: ESCALATED
+  worker_registry_ref: StegVerse-org/LLM-adapter/docs/VA_CLAIM_ASSISTANT_GOVERNED_RETRIEVAL_HANDOFF.md
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  collision_scope: evidence sufficiency, protected-record access, clinical determination, treatment/care-transfer authority, or other constraints beyond the adapter worker's authority ceiling
+  release_condition: the next capable authority resolves the exact constraint or explicitly assigns bounded human-authority work
+  next_executable_action: escalate through the governed owner instead of creating a competing `.github` VACC implementation
+```
+
+### COMPLETED / SUPERSEDED
+
+- `.github#87` provisional implementation claim: released/superseded.
+- Unique requirement transfer to LLM-adapter#90: complete.
+- Local model/runtime requirements: complete/transferred.
+- GitHub-token production authority: none.
 
 ## Evidence
 
@@ -129,7 +138,6 @@ canonical VACC issue: StegVerse-org/LLM-adapter#90
 canonical public issue: StegVerse-Labs/Site#241
 canonical worker manifest: StegVerse-Labs/Site/data/four-app-active-worker-assignments.json
 requirement transfer comment: StegVerse-org/LLM-adapter#90 comment 5269862113
-provisional handoff commits: 80fcb4bd0760bdccf2b754a8207c61bdb33245f2, 1666d9da6d171bf0c527899826222eaefa3c00e7
 ```
 
 ## Completeness of this transfer record

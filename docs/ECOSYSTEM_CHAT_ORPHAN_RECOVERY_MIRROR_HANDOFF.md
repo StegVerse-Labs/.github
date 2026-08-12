@@ -45,7 +45,7 @@ HB28: response-loss threshold reached; recovery task admitted; G20 worker orphan
 HB29: generated recovery quarantine reconciled to BLOCKED; old authority not reused
 ```
 
-The root cause was a blocker-policy contract mismatch: `BLOCKED` responses require a nonempty workaround candidate plus a concrete next solution action. The TV/TVC wrapper now normalizes legacy child blocker responses without changing state or authority.
+The root cause was a blocker-policy contract mismatch: historical `BLOCKED` responses required a nonempty workaround candidate plus a concrete next solution action. The TV/TVC wrapper now normalizes legacy child constraint responses without changing state or authority.
 
 ## Released implementation
 
@@ -128,7 +128,7 @@ The orphan task is a continuity root, not an authority-bearing goal successor. `
 
 The bounded authorization permits only `orphan_lifecycle_reconstruction`, only the existing Ecosystem Chat receipt namespace, zero external cost, no services, no GitHub token, no old-authority revival, no parent execution, and no successor-parent authority. The recovery worker rejects any recovery fence `<=20`.
 
-Parent `SHWP-ECOSYSTEM-CHAT-INFERENCE-001` remains blocked on the recovery task. Once recovery reaches `COMPLETED`, the blocked-task engine returns the parent to `HANDOFF_READY`; the normal resident allocator must issue a fencing generation greater than 20. The resumed parent follows:
+The parent task remains activation-pending on recovery continuity; that dependency does not make the parent or recovery scope manual work. Once recovery reaches `COMPLETED`, the normal resident allocator must issue a fresh fencing generation greater than 20. The resumed parent follows:
 
 ```text
 locally developed model/runtime
@@ -177,6 +177,61 @@ second worker registry: prohibited
 GitHub token runtime/activation authority: prohibited
 ```
 
+## Execution ownership and collision partition
+
+Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`.
+
+### MANUAL / SESSION-STARTABLE
+
+No recovery or parent-inference implementation is manually startable from this handoff. A separate evidence-only review may be claimed after a receipt exists, but it may not mutate worker registry, claim/fence, recovery, route, model, or reconstruction state.
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28
+  execution_owner: resident sovereign heartbeat + ecosystem-chat-orphan-recovery-worker
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: recovery claim/fence allocation, orphan lifecycle reconstruction, recovery receipts/checkpoints, and transition back to parent readiness
+  release_condition: recovery task reaches COMPLETED under a live fence greater than 20 and the registry explicitly releases recovery ownership
+  next_executable_action: resident heartbeat executes recovery when carrier and Master Records custody inputs are present
+
+- task_id: SHWP-ECOSYSTEM-CHAT-INFERENCE-001
+  execution_owner: resident sovereign heartbeat -> TVC -> LLM-adapter -> Master Records
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json + StegVerse-Labs/.github#60
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: fresh parent claim/fence, private model process, TVC route admission, exact LLM-adapter execution, measured usage, and same-execution reconstruction
+  release_condition: immutable same-execution activation evidence exists and the registry completes/releases the parent task
+  next_executable_action: parent reacquires fresh fence >20 only after recovery completion, then executes the canonical local-model chain
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: ECOSYSTEM-CHAT-RECOVERY-CONSTRAINT-RESOLUTION
+  execution_owner: engine-v11 resolution/escalation chain plus TV/TVC or Master Records authority where applicable
+  claim_state: ESCALATED
+  worker_registry_ref: control/worker-registry.json + docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  collision_scope: any custody, carrier, route, capability, or authority condition the current recovery/parent worker cannot resolve within its authority ceiling
+  release_condition: next capable authority resolves the condition or explicitly assigns a bounded human action
+  next_executable_action: derive/register successor RESOLVE/ESCALATE work instead of exposing the recovery or parent scope to manual implementation
+```
+
+### COMPLETED / SUPERSEDED
+
+- Orphan recovery source implementation: complete/released.
+- Historical G20 custody task: complete/released.
+- No-GitHub-token authority cleanup: complete/released.
+- Old G20 claim/fence reuse: superseded/prohibited.
+
+Historical `BLOCKED` wording in this file is provenance only and cannot be interpreted as manual-start permission.
+
 ## Completion accounting
 
 ```text
@@ -195,4 +250,4 @@ same-execution activation proof: PENDING_MACHINE_OWNED
 
 ## Archive condition
 
-All unique design, implementation, recovery, and credential-authority knowledge from this session is durable. Product activation remains incomplete because the resident sovereign heartbeat has not been directly observed advancing past HB29 and completing the recovery -> higher-fence parent -> local model -> TVC -> LLM-adapter -> Master Records chain. The organization archive gate remains authoritative; source release alone does not permit an activation-complete archive claim.
+All unique design, implementation, recovery, and credential-authority knowledge from this session is durable. Product activation remains incomplete because the resident sovereign heartbeat has not been directly observed advancing past HB29 and completing the recovery -> higher-fence parent -> local model -> TVC -> LLM-adapter -> Master Records chain. The organization handoff and worker registry remain authoritative; source release alone does not permit an activation-complete claim.

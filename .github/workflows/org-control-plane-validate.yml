@@ -11,9 +11,8 @@ on:
       - 'tools/validate_active_worker_states.py'
       - 'tests/**'
       - 'handoffs/**'
+      - 'docs/**/*_MIRROR_HANDOFF.md'
       - 'docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md'
-      - 'docs/ORG_MIRROR_HANDOFF.md'
-      - 'docs/CROSS_REPO_DEPENDENCY_CLAIMS_MIRROR_HANDOFF.md'
       - '.github/workflows/org-control-plane-validate.yml'
       - '.github/workflows/org-allocator.yml'
   push:
@@ -27,9 +26,8 @@ on:
       - 'tools/validate_active_worker_states.py'
       - 'tests/**'
       - 'handoffs/**'
+      - 'docs/**/*_MIRROR_HANDOFF.md'
       - 'docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md'
-      - 'docs/ORG_MIRROR_HANDOFF.md'
-      - 'docs/CROSS_REPO_DEPENDENCY_CLAIMS_MIRROR_HANDOFF.md'
       - '.github/workflows/org-control-plane-validate.yml'
       - '.github/workflows/org-allocator.yml'
   workflow_dispatch:
@@ -68,6 +66,8 @@ jobs:
         run: python scripts/validate_org_control_plane.py
       - name: Validate active-worker ownership invariant
         run: python tools/validate_active_worker_states.py
+      - name: Validate handoff execution ownership partitions
+        run: python scripts/validate_handoff_execution_ownership.py
       - name: Prove cross-repository dependency collision enforcement
         run: python -m unittest tests.test_cross_repository_dependency_claims -v
       - name: Exercise allocator deterministically without persistence authority
