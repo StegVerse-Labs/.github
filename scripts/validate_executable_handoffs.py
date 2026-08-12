@@ -7,6 +7,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 HANDOFF_ROOT = ROOT / "handoffs"
+EXECUTABLE_SCHEMA = "stegverse.executable-handoff/v0.1"
 TERMINAL = {"COMPLETED"}
 VALID_SUCCESSOR_POLICIES = {"NONE", "INHERIT_OR_NARROW", "SEPARATE_AUTHORIZATION_REQUIRED_FOR_EXPANSION"}
 
@@ -26,7 +27,7 @@ def require(condition: bool, message: str, errors: list[str]) -> None:
 def validate_one(path: Path, handoff: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     prefix = str(path.relative_to(ROOT))
-    require(handoff.get("schema") == "stegverse.executable-handoff/v0.1", f"{prefix}: unsupported schema", errors)
+    require(handoff.get("schema") == EXECUTABLE_SCHEMA, f"{prefix}: unsupported schema", errors)
     goal = handoff.get("goal") if isinstance(handoff.get("goal"), dict) else {}
     task = handoff.get("task") if isinstance(handoff.get("task"), dict) else {}
     authority = handoff.get("authority") if isinstance(handoff.get("authority"), dict) else {}
@@ -72,11 +73,18 @@ def main() -> int:
     paths = sorted(HANDOFF_ROOT.glob("*.json"))
     handoffs: dict[str, tuple[Path, dict[str, Any]]] = {}
     errors: list[str] = []
+    skipped_non_executable = 0
     for path in paths:
         try:
             value = load(path)
         except Exception as exc:
             errors.append(f"{path.relative_to(ROOT)}: unreadable: {exc}")
+            continue
+        # `handoffs/` also contains durable transfer/session records. They have
+        # their own schemas and owners and must not be coerced into executable
+        # worker authority. This validator owns executable-handoff/v0.1 only.
+        if value.get("schema") != EXECUTABLE_SCHEMA:
+            skipped_non_executable += 1
             continue
         errors.extend(validate_one(path, value))
         task = value.get("task") or {}
@@ -125,7 +133,7 @@ def main() -> int:
         for error in errors:
             print(f"HANDOFF_INVALID:{error}")
         return 1
-    print(f"EXECUTABLE_HANDOFF_VALIDATION_PASS count={len(paths)} live_lanes={len(active_lanes)}")
+    print(f"EXECUTABLE_HANDOFF_VALIDATION_PASS count={len(handoffs)} live_lanes={len(active_lanes)} skipped_non_executable={skipped_non_executable}")
     return 0
 
 
