@@ -12,13 +12,17 @@
       "An invalid explicit root or multiple distinct automatic roots fail closed",
       "The worker consumes only the discovered already locally materialized StegNutrition tree",
       "The canonical StegNutrition execution inventory is inspected on every admitted heartbeat while unfinished",
+      "Canonical v6 capability_inventory is accepted and task IDs may be supplied by id or task_id without losing task identity",
       "Fixed deterministic repository validation is executed locally when the target tree is available",
       "The entrypoint executes scripts/verify_runtime_custody_no_network.py before the continuation worker whenever the local tree is available",
       "Runtime custody verification proves ROUTE_ADMITTED, credential_requirement NONE, github_token_required false, replay binding retention, token-binding rejection and proof-tamper rejection",
       "The entrypoint executes scripts/verify_scenario_provider_no_network.py after runtime custody and before the continuation worker whenever the local tree is available",
       "Scenario-provider preflight proves local-only/non-authorizing qualification binding, USDA nutrition authority, photo-derived portion intervals, evidence custody, failed-quality rejection and missing-nutrition rejection",
       "Scenario-provider preflight explicitly does not claim real semantic accuracy qualification",
-      "FDA task STEGNUTRITION-FDA-REFERENCE-020 and current FDA/runtime-custody/scenario-provider surfaces are mandatory canonical inputs",
+      "FDA task STEGNUTRITION-FDA-REFERENCE-020 and real-data task STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021 are mandatory canonical inputs",
+      "Task 021 semantic builder, semantic qualification, portion qualification and their tests are present before resident continuation proceeds",
+      "Real semantic completion requires the canonical semantic-model.json, semantic-evaluation.json and semantic-qualification.json artifact triplet",
+      "Real portion completion requires actual photographed/weighed cases plus a governed portion-qualification receipt",
       "Semantic-model, automatic-portion, real benchmark, live TVC route, validation and release gates are projected independently",
       "Every unresolved condition remains active work with an explicit next executable action",
       "Continuation receipts are fenced, inspectable and persistent",
@@ -29,11 +33,12 @@
       "The worker requires a user to manually select a local root when exactly one canonical local candidate is discoverable",
       "An invalid explicit root or ambiguous set of local roots is silently accepted",
       "A missing locally materialized repository is treated as success",
-      "The current FDA task, runtime-custody verification surface, or scenario-provider verification surface is absent from a locally materialized canonical tree",
+      "The current FDA task, task 021, runtime-custody verification surface, scenario-provider verification surface, semantic builder or portion qualification surface is absent from a locally materialized canonical tree",
       "A token-requiring or proof-drifted runtime binding is accepted",
       "A failed semantic quality gate or incomplete qualified-label nutrition coverage is accepted by the production scenario-provider preflight",
       "Synthetic scenario-provider mechanics are represented as real semantic accuracy qualification",
       "Synthetic benchmark fixtures are represented as real-world accuracy evidence",
+      "Real weighed-photo cases are represented as portion-qualified without a governed qualification receipt",
       "The low-level visual-evidence model is represented as production semantic food recognition",
       "The worker creates a second heartbeat, route authority, credential authority or model authority",
       "An unresolved human-authority or TVC dependency is silently converted to COMPLETE"
@@ -62,6 +67,9 @@
       "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-FULL-VALIDATION-016.json",
       "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-PRODUCTION-PIPELINE-019.json",
       "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-FDA-REFERENCE-020.json",
+      "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021.json",
+      "StegVerse-Labs/StegNutrition:src/stegnutrition/semantic_build.py",
+      "StegVerse-Labs/StegNutrition:src/stegnutrition/portion_qualification.py",
       "StegVerse-Labs/StegNutrition:scripts/verify_runtime_custody_no_network.py",
       "StegVerse-Labs/StegNutrition:scripts/verify_scenario_provider_no_network.py",
       "StegVerse-Labs/StegNutrition:claims/STEGNUTRITION-PIXEL-OBSERVATION-003.claim.json",
@@ -70,7 +78,7 @@
     ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "Durable repository transfer alone does not cause implementation/validation state to advance after chat archival. This task binds the existing StegNutrition inventory to the single resident heartbeat for repeated local progression and explicit active-constraint observation.",
+    "derivation_reason": "Durable repository transfer alone does not cause implementation/validation state to advance after chat archival. This task binds the existing StegNutrition inventory and task 021 real-data qualification path to the single resident heartbeat for repeated local progression and explicit active-constraint observation.",
     "canonical_owner_ref": "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-SESSION-20260811.json",
     "canonical_lineage_key": "stegnutrition:photo-diet:machine-continuation",
     "derivation_depth": 0,
@@ -100,7 +108,7 @@
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json#authority",
-    "recheck_trigger": "each admitted heartbeat while unfinished; discover only already local canonical StegNutrition roots and inspect fixed local validation surfaces",
+    "recheck_trigger": "each admitted heartbeat while unfinished; discover only already local canonical StegNutrition roots and inspect fixed local validation/qualification surfaces",
     "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {
@@ -110,26 +118,27 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "When local discovery, runtime-custody preflight, scenario-provider preflight, semantic vision, automatic portion, real benchmark, live TVC visual route and fixed local validation predicates are satisfied, emit STEGNUTRITION_RELEASE_CANDIDATE_READY. Release/publication remains a separately authorized StegNutrition release task.",
+    "next_authorized_action": "When local discovery, runtime-custody preflight, scenario-provider preflight, qualified semantic artifact triplet, governed portion qualification receipt, real benchmark, live TVC visual route and fixed local validation predicates are satisfied, emit STEGNUTRITION_RELEASE_CANDIDATE_READY. Release/publication remains a separately authorized StegNutrition release task.",
     "terminal_when": [
       "local_root_discovery=UNAMBIGUOUS_OR_VALID_OVERRIDE",
       "runtime_custody_preflight=PASS",
       "scenario_provider_preflight=PASS",
-      "semantic_vision_surfaces_present=true",
+      "semantic_model_qualified_artifact_present=true",
       "automatic_portion_surfaces_present=true",
       "real_weighed_benchmark_case_count>0",
+      "portion_qualification_receipt_present=true",
       "live_visual_route_receipt_declared=true",
       "local_validation.state=COMPLETE",
       "github_token_required=false"
     ]
   },
   "block": {
-    "block_reason": "Unresolved local materialization, real semantic/benchmark evidence and resident TVC route observation remain active constraints; each is rechecked by the worker without chat intervention.",
+    "block_reason": "Unresolved local materialization, real semantic/benchmark evidence, governed portion qualification and resident TVC route observation remain active constraints; each is rechecked by the worker without chat intervention.",
     "dependency": "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-SESSION-20260811.json",
     "observer": "single sovereign StegVerse heartbeat",
     "recheck_trigger": "each admitted heartbeat while unfinished",
     "next_check": null,
-    "escalation_condition": "Any path attempts GitHub-token source retrieval, hosted model authority, second heartbeat/route authority, accepts invalid or ambiguous local roots, accepts invalid runtime custody, accepts invalid scenario-provider qualification binding, overstates synthetic mechanics as real semantic qualification, or marks unavailable evidence complete",
+    "escalation_condition": "Any path attempts GitHub-token source retrieval, hosted model authority, second heartbeat/route authority, accepts invalid or ambiguous local roots, accepts invalid runtime custody, accepts invalid scenario-provider qualification binding, overstates synthetic mechanics as real semantic qualification, treats weighed-photo cases as qualified without a governed receipt, or marks unavailable evidence complete",
     "block_expires_at": null
   }
 }
