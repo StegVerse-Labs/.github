@@ -1,0 +1,14 @@
+{
+  "schema": "stegverse.worker-cost-basis/v0.1",
+  "task_class": "healer_sovereign_scheduler",
+  "external_cost_usd": 0,
+  "expected_hb_transition_count": 1,
+  "compute_units": 1,
+  "network_provider_dependency": false,
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "notes": [
+    "Executes only already materialized local repositories through fixed handlers.",
+    "Remote source checkout and GitHub workflow dispatch are not production dependencies."
+  ]
+}
