@@ -1,7 +1,7 @@
 # StegNutrition Machine Continuation Mirror Handoff
 
 Status: **ACTIVE — SESSION EXECUTION UNTIL RESIDENT CLAIM OR COMPLETION**  
-Updated: 2026-08-12 14:28 -05:00
+Updated: 2026-08-12 14:34 -05:00
 
 ## Authority and scope
 
@@ -95,7 +95,9 @@ dry-run persistence: NONE
 workflow authorizing effect: NONE
 ```
 
-The validation log explicitly checks that `GITHUB_TOKEN`, `GH_TOKEN`, and `GITHUB_PAT` are absent from the executing validation environment before its anonymous public source fetch and tests. Hosted workflow validation remains non-authorizing and is not resident activation evidence.
+The subsequent ownership-reconciliation commit `365fc2f877d2ac483ec7e7f39dfd384970f0cd86` passed heartbeat validation run `31632924551` but exposed a documentation-contract failure in organization run `31632924675`: this handoff was missing the required execution-ownership partition. This file restores that required section; the failed run is retained as evidence and must not be represented as PASS.
+
+The validation workflow explicitly checks that `GITHUB_TOKEN`, `GH_TOKEN`, and `GITHUB_PAT` are absent from the executing validation environment before anonymous public source fetch/tests. Hosted workflow validation remains non-authorizing and is not resident activation evidence.
 
 ## Resident ownership state
 
@@ -156,6 +158,64 @@ StegVerse-Labs/StegNutrition/tasks/STEGNUTRITION-MACHINE-CONTINUATION-018.json
 - live exact-endpoint proof-bound photo-to-ledger execution: task `019`;
 - FDA integration full-suite validation: task `020`;
 - release/propagation after predicates: task `017`.
+
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+- task_id: STEGNUTRITION-FULL-VALIDATION-016
+  execution_owner: current active StegNutrition session until resident fenced claim/progress or completion
+  claim_state: CLAIMED_FOR_VALIDATION
+  worker_registry_ref: StegVerse-Labs/StegNutrition/claims/STEGNUTRITION-FULL-VALIDATION-016.claim.json
+  manual_execution_allowed: true
+  manual_allowed_role: validation_and_nonconflicting_repository_integration
+  collision_scope: StegNutrition validation/source-integration only; excludes resident heartbeat claim/fence, TV/TVC route authority, local-model authority, release publication, and competing worker creation
+  release_condition: complete private zero-network suite PASS is durably retained, or SHWP-STEGNUTRITION-CONTINUATION-001 is actually fenced/claimed and demonstrably progresses the same task
+  next_executable_action: continue nonduplicative validation/integration work and release this session claim immediately when resident worker ownership becomes real
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: SHWP-STEGNUTRITION-CONTINUATION-001
+  execution_owner: single resident StegVerse heartbeat + stegnutrition-machine-continuation worker once a current fenced claim exists
+  claim_state: HANDOFF_READY_AVAILABLE_NOT_CLAIMED
+  worker_registry_ref: control/worker-registry.d/stegnutrition-continuation-001.json
+  manual_execution_allowed: false
+  manual_allowed_role: observation_until_claim
+  collision_scope: resident claim/fence allocation, automatic local-root discovery during resident execution, continuation receipt mutation, and worker-owned heartbeat progression
+  release_condition: canonical resident worker completes/supersedes/releases the task under a live current claim/fence
+  next_executable_action: resident heartbeat consumes the registered fragment, allocates the current fenced claim, auto-discovers the local tree, runs custody/full validation, and persists the continuation receipt
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: STEGNUTRITION-CONTINUATION-AUTHORITY-BOUNDARIES
+  execution_owner: applicable TV/TVC, sovereign carrier, and StegNutrition evidence authorities
+  claim_state: ACTIVE_AUTHORITY_BOUNDARIES
+  worker_registry_ref: handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json + StegVerse-Labs/StegNutrition/STEGNUTRITION_MIRROR_HANDOFF.md
+  manual_execution_allowed: false
+  manual_allowed_role: NONE_UNLESS_EXPLICITLY_ASSIGNED_EVIDENCE_ACQUISITION
+  collision_scope: TV/TVC route/credential authority, sovereign node declaration, real semantic/portion/benchmark evidence acceptance, and release/publication authority
+  release_condition: each authority-owned predicate is supported by directly inspectable canonical evidence or explicitly superseded
+  next_executable_action: applicable existing authority resolves its predicate; do not substitute GitHub tokens, hosted inference, fabricated evidence, or a second scheduler
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: STEGNUTRITION-LOCAL-RUNTIME-SELECTION-DESCRIPTIVE-STEP
+  execution_owner: superseded by automatic local discovery + released sovereign model/runtime
+  claim_state: COMPLETE_SUPERSEDED
+  worker_registry_ref: workers/stegnutrition_continuation_entrypoint.py + StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  collision_scope: obsolete descriptive/manual local runtime/root selection step
+  release_condition: already satisfied by validated automatic local discovery and released local model/runtime path
+  next_executable_action: none; continue with resident claim/private validation/live proof predicates
+```
 
 ## Archive condition
 
