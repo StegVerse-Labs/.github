@@ -25,11 +25,30 @@ def atomic_write(path: Path, value: dict[str, Any]) -> None:
 
 
 def local_stegfin_roots() -> list[Path]:
-    return [
-        ROOT / "workloads" / "stegfin-governance",
-        Path.home() / ".stegverse" / "workloads" / "stegfin-governance",
-        Path("/var/lib/stegverse/workloads/stegfin-governance"),
-    ]
+    roots: list[Path] = []
+    explicit = os.environ.get("STEGVERSE_STEGFIN_SOURCE_ROOT")
+    if explicit:
+        roots.append(Path(explicit))
+    roots.extend(
+        [
+            ROOT / "workloads" / "stegfin-governance",
+            Path.home() / ".stegverse" / "workloads" / "stegfin-governance",
+            Path("/var/lib/stegverse/workloads/stegfin-governance"),
+            Path.home() / ".stegverse" / "source" / "stegfin-governance",
+            Path("/var/lib/stegverse/source/stegfin-governance"),
+        ]
+    )
+    unique: list[Path] = []
+    seen: set[str] = set()
+    for root in roots:
+        try:
+            key = str(root.expanduser().resolve())
+        except Exception:
+            key = str(root)
+        if key not in seen:
+            seen.add(key)
+            unique.append(root)
+    return unique
 
 
 def find_stegfin_root() -> Path | None:
@@ -137,11 +156,11 @@ def main() -> int:
     if stegfin_root is None:
         blocker = {
             "dependency_class": "INTERNAL_CAPABILITY",
-            "problem_statement": "The validated StegFin live-entry capsule is not materialized at a canonical StegVerse-local workload path.",
+            "problem_statement": "The validated StegFin live-entry source/capsule is not present at any canonical StegVerse-local source or workload path.",
             "solution_required": True,
             "may_remain_blocked": False,
-            "next_solution_action": "Materialize the released StegFin workload locally; the heartbeat will discover and execute Inventory N on the next admitted cycle.",
-            "machine_observable_release_condition": "find_stegfin_root resolves the StegFin observer, live-pretrade implementation, trust registry and canonical handoff locally",
+            "next_solution_action": "Resolve an already-present released StegFin source/capsule into STEGVERSE_STEGFIN_SOURCE_ROOT or a canonical StegVerse source/workload path; do not require GitHub credentials or hosted runtime authority.",
+            "machine_observable_release_condition": "find_stegfin_root resolves the StegFin observer, live-pretrade implementation, trust registry and canonical handoff from an already-present local source or workload tree",
             "github_token_required": False,
             "third_party_blocker": False,
         }
@@ -152,7 +171,7 @@ def main() -> int:
             "claim_id": claim_id,
             "fencing_token": fence,
             "state": "BLOCKED",
-            "transition_id": "STEGFIN_LOCAL_WORKLOAD_NOT_MATERIALIZED",
+            "transition_id": "STEGFIN_LOCAL_SOURCE_OR_WORKLOAD_NOT_PRESENT",
             "fresh_inventory_n_observed": False,
             "provider_capability_release_boundary_identified": True,
             "provider_capability_authority": "TV_TVC_VAULT_ONLY",
@@ -161,7 +180,7 @@ def main() -> int:
             "blocker": blocker,
         }
         atomic_write(RECEIPT, durable)
-        json.dump(response(state="BLOCKED", transition_id="STEGFIN_LOCAL_WORKLOAD_NOT_MATERIALIZED", sequence=1, next_transition="STEGFIN_INVENTORY_N_OBSERVED", evidence_refs=[str(RECEIPT.relative_to(ROOT))], blocker=blocker), sys.stdout, sort_keys=True)
+        json.dump(response(state="BLOCKED", transition_id="STEGFIN_LOCAL_SOURCE_OR_WORKLOAD_NOT_PRESENT", sequence=1, next_transition="STEGFIN_INVENTORY_N_OBSERVED", evidence_refs=[str(RECEIPT.relative_to(ROOT))], blocker=blocker), sys.stdout, sort_keys=True)
         sys.stdout.write("\n")
         return 0
 
