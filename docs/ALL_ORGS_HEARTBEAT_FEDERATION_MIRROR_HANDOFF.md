@@ -142,7 +142,7 @@ assigned_cycles: 256
 wall_clock_expiry_authority: false
 ```
 
-`BLOCKED` is the truthful worker response because four organization rows have unresolved release conditions. It does not mean the worker is unactivated. The worker remains claimed, fenced, bound, heartbeat-timed, checkpointed, and eligible for the next `FEDERATION_RECHECK` on an admitted heartbeat.
+The historical response label `BLOCKED` records the unresolved federation conditions; it is not an idle operational state and does not release worker ownership. The worker remains claimed, fenced, bound, heartbeat-timed, checkpointed, and eligible for `FEDERATION_RECHECK` or engine-v11-derived resolution/escalation work.
 
 ## Superseded activation claim and correction
 
@@ -205,7 +205,7 @@ latest inspected live receipt: heartbeat epoch 14 / transition sequence 4
 latest receipt state: FEDERATION_READY_WITH_MACHINE_BLOCKERS
 ```
 
-The post-correction cycles prove the federation task is not a one-shot workflow artifact: the same admitted claim/fence/worker instance continued through multiple canonical heartbeat cycles and produced successive durable receipts/checkpoints while preserving the blocker set.
+The post-correction cycles prove the federation task is not a one-shot workflow artifact: the same admitted claim/fence/worker instance continued through multiple canonical heartbeat cycles and produced successive durable receipts/checkpoints while preserving the constraint set.
 
 ## Convergence and duplicate prevention
 
@@ -219,19 +219,62 @@ No separate active chat claim remains.
 
 ## Machine-owned continuation
 
-`SHWP-ALL-ORG-FEDERATION-001` owns the remaining organization blockers. Its next authorized action is:
+`SHWP-ALL-ORG-FEDERATION-001` owns the remaining organization constraints. Its next authorized action is:
 
 ```text
-On each admitted canonical heartbeat while any organization remains blocked or changes state, reconcile all 14 readiness rows, carry the cycle-bound federation lease on worker_coordination, persist the federation receipt/checkpoint, and keep unresolved rows fail-closed until their explicit release conditions become true.
+On each admitted canonical heartbeat while any organization remains constrained or changes state, reconcile all 14 readiness rows, carry the cycle-bound federation lease on worker_coordination, persist the federation receipt/checkpoint, and keep unresolved rows fail-closed until their explicit release conditions become true or a successor escalation is derived.
 ```
 
 The worker has a heartbeat-relative expiry at cycle 267. Any later renewal/reacquisition must use the canonical worker lifecycle rules; elapsed wall-clock time grants no renewal or execution authority.
 
 ## Parent work not owned by this session
 
-The broader `docs/ORG_MIRROR_HANDOFF.md` still owns separate work for persistent high-frequency runtime observation, Master Records projection intake/custody, and downstream migration away from low-frequency TTL semantics. Those are not untransferred requirements from this session and are not prerequisites to preserve this session because this session's federation worker is already activated and machine-owned under the corrected v9 heartbeat/task-registry model.
+The broader `docs/ORG_MIRROR_HANDOFF.md` owns separate work for persistent high-frequency runtime observation, Master Records projection intake/custody, and downstream migration away from low-frequency TTL semantics. Those are not untransferred requirements from this session and are not prerequisites to preserve this session because this session's federation worker is already activated and machine-owned under the corrected heartbeat/task-registry model.
 
-The parent handoff text that still describes PR #56 as branch-pending is stale relative to live repository state: PR #56 is merged and `engine_v9.py` is on `main`. That parent-document reconciliation belongs to the parent #12 workstream; this handoff records the exact live evidence rather than overriding its broader ownership.
+## Execution ownership and collision partition
+
+Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`.
+
+### MANUAL / SESSION-STARTABLE
+
+No implementation inside this handoff's federation scope is implicitly manual-startable. Distinct evidence review may be manually claimed only outside the worker's mutation/claim/fence scope.
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: SHWP-ALL-ORG-FEDERATION-001
+  execution_owner: organization-federation-readiness-worker + resident sovereign heartbeat
+  claim_state: ACTIVE_WORKER
+  worker_registry_ref: control/worker-registry.json#SHWP-ALL-ORG-FEDERATION-001
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: organization-federation readiness rows, worker claim/fence/lease, heartbeat subsignal projection, federation receipts/checkpoints, and canonical recheck transitions
+  release_condition: worker completes/supersedes the task or canonical lifecycle releases the claim/fence and handoff explicitly marks a manual-startable successor
+  next_executable_action: worker performs FEDERATION_RECHECK or derives/escalates a successor resolution task when a constraint cannot be resolved at its current authority level
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: ALL-ORG-FEDERATION-CONSTRAINT-RESOLUTION
+  execution_owner: canonical authority owner for each constrained organization, via engine-v11 resolution/escalation policy
+  claim_state: ESCALATED
+  worker_registry_ref: control/organization-task-registry.json + control/worker-registry.json + docs/ORG_MIRROR_HANDOFF.md
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  collision_scope: repository/write-authority/resource conditions that the federation worker cannot lawfully resolve itself
+  release_condition: the relevant organization/resource/authority condition becomes machine-observably satisfied or an explicitly assigned higher authority resolves it
+  next_executable_action: derive/register the appropriate resolution or escalation task instead of reclassifying the work as manually available
+```
+
+### COMPLETED / SUPERSEDED
+
+- Federation worker installation and initial activation: complete.
+- Organization denominator registration: 14/14 complete.
+- Site #234 response-network ownership convergence: complete.
+- Duplicate heartbeat/scheduler creation: explicitly superseded/prohibited.
+
+Historical `BLOCKED` response labels in this handoff are evidence only; they do not make worker-owned scope available for manual implementation.
 
 ## Validation commands / paths
 
@@ -243,23 +286,11 @@ python scripts/evaluate_goal_convergence.py --write
 python scripts/reconcile_heartbeat_continuity.py --write
 ```
 
-The hosted federation workflow additionally asserts the v9 worker-coordination lease semantics and retains `heartbeat-cycle.jsonl`, `federation-receipt.json`, `federation-status.json`, and `worker-coordination.json` as workflow artifacts.
+The hosted federation workflow additionally asserts the worker-coordination lease semantics and retains `heartbeat-cycle.jsonl`, `federation-receipt.json`, `federation-status.json`, and `worker-coordination.json` as workflow artifacts.
 
 ## Session consolidation / archive condition
 
-All unique requirements from this session are now durable in the repository and shared control planes:
-
-1. all 14 organizations are represented;
-2. zero organization rows are unassigned;
-3. all four unresolved rows have explicit machine-observable release conditions and next actions;
-4. federation readiness is integrated with the canonical heartbeat subsignal state;
-5. a real federation worker/task is claimed, fenced, bound, heartbeat-timed, and checkpointed;
-6. the worker lease is carried by the corrected v9 `worker_coordination` subsignal in canonical heartbeat cycles;
-7. multiple consecutive post-correction v9 hosted cycles succeeded, with the latest inspected receipt at heartbeat epoch 14 / transition sequence 4;
-8. Site #234 and .github #12 remain the canonical adjacent owners without duplicate implementation;
-9. no continuation requirement exists only in chat.
-
-Therefore this session satisfies the archive rule through the second permitted path: a documented StegVerse worker is activated using the canonical heartbeat and worker task registry, and all unresolved work is machine-owned under that worker.
+All unique requirements from this session are now durable in the repository and shared control planes. No continuation requirement exists only in chat, and unresolved organization conditions remain machine-owned under the canonical worker/escalation system.
 
 ## Final durable transfer record
 
@@ -281,7 +312,7 @@ scaffolding or stubs: 0
 validation: 8/8 session validation predicates
 integration: 7/7 session integration predicates
 propagation: 2/2 canonical-owner convergence records (.github #12 and Site #234)
-goal activation: 100% for this session via active v9 federation worker
+goal activation: 100% for this session via active federation worker
 session consolidation: 6/6 session goals transferred or complete
 archive readiness: YES
 ```
