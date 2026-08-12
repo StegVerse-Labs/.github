@@ -3,7 +3,7 @@ Active goal and ownership
 Canonical architecture
 Completed protocol capabilities
 Validation evidence
-Human authority boundary — durable runtime activation
+Physical-resource execution boundary — durable runtime activation
 Cross-repository dependencies / propagation
 Session consolidation
 thread_archive_ready:
