@@ -1,0 +1,53 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "STEGFIN-CONTINUITY-CARRIER-007",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [],
+      "authorized_policy_version": "stegfin-continuity-carrier-v1",
+      "block_ref": "docs/STEGFIN_CONTINUITY_CARRIER_MIRROR_HANDOFF.md",
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/stegfin-continuity-carrier.json",
+      "evidence_refs": [
+        "docs/STEGFIN_CONTINUITY_CARRIER_MIRROR_HANDOFF.md",
+        "handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
+        "workers/stegfin_continuity_carrier_worker.py"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "STEGFIN-BASE-ROUNDTRIP-001",
+      "handoff_ref": "handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "STEGFIN-CONTINUITY-CARRIER-007",
+      "worker_id": null,
+      "worker_instance_id": null
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:stegfin-continuity-carrier-v1",
+      "authority_source": "handoffs/STEGFIN-CONTINUITY-CARRIER-007.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "stegfin_external_pretrade_preparation"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "stegfin-continuity-carrier-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "provider_capability_authority": "TV_TVC_VAULT_ONLY",
+  "dependencies": [],
+  "preferred_carrier_required": false,
+  "priority": "release"
+}
