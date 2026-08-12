@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "stegfin_continuity_pretrade",
+  "maximum_heartbeat_cycles": 32,
+  "maximum_wall_clock_seconds_per_attempt": 480,
+  "maximum_retries": 3,
+  "external_cost_ceiling_usd": 0,
+  "network_scope": [
+    "credential-free Base read observation",
+    "TV/TVC provider-operation broker"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "wallet_signing_authority": "USER_ONLY",
+  "broadcast_authority": "USER_ONLY"
+}
