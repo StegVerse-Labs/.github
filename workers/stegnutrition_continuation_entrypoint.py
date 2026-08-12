@@ -26,23 +26,72 @@ CURRENT_REQUIRED_SURFACES = (
     "schemas/meal-ledger.schema.json",
     "scripts/verify_runtime_custody_no_network.py",
 )
+LOCAL_ROOT_MARKERS = (
+    "STEGNUTRITION_MIRROR_HANDOFF.md",
+    EXPECTED_INVENTORY,
+)
 CUSTODY_VERIFIER = "scripts/verify_runtime_custody_no_network.py"
 
 
-def _preflight_current_stegnutrition_surface() -> Path | None:
-    """Require current canonical extensions when a local StegNutrition tree exists.
+def _is_canonical_local_root(root: Path) -> bool:
+    return root.is_dir() and all((root / relative).is_file() for relative in LOCAL_ROOT_MARKERS)
 
-    Absence of a local root is handled by the heartbeat worker as an active
-    materialization constraint. This preflight only prevents a stale local tree
-    from silently omitting current FDA or runtime-custody source/proof surfaces.
+
+def _candidate_local_roots() -> list[Path]:
+    """Return deterministic local-only StegNutrition candidates.
+
+    No candidate is downloaded, cloned, resolved through GitHub, or selected from a
+    hosted provider. The explicit environment override remains supported, but it is
+    optional: a standard sibling/canonical sovereign workspace is discovered
+    automatically.
     """
-    raw = os.environ.get("STEGVERSE_STEGNUTRITION_ROOT", "").strip()
-    if not raw:
+    home = Path.home()
+    return [
+        ROOT.parent / "StegNutrition",
+        ROOT.parent.parent / "StegVerse-Labs" / "StegNutrition",
+        home / "StegVerse-Labs" / "StegNutrition",
+        home / "stegverse" / "StegVerse-Labs" / "StegNutrition",
+        Path("/opt/stegverse/StegVerse-Labs/StegNutrition"),
+        Path("/srv/stegverse/StegVerse-Labs/StegNutrition"),
+        Path("/var/lib/stegverse/StegVerse-Labs/StegNutrition"),
+    ]
+
+
+def _discover_local_stegnutrition_root() -> Path | None:
+    explicit = os.environ.get("STEGVERSE_STEGNUTRITION_ROOT", "").strip()
+    if explicit:
+        root = Path(explicit).expanduser().resolve()
+        if not _is_canonical_local_root(root):
+            raise ReceiptContractError(
+                "explicit STEGVERSE_STEGNUTRITION_ROOT is not a canonical locally materialized StegNutrition tree"
+            )
+        return root
+
+    discovered: list[Path] = []
+    seen: set[Path] = set()
+    for candidate in _candidate_local_roots():
+        root = candidate.expanduser().resolve()
+        if root in seen:
+            continue
+        seen.add(root)
+        if _is_canonical_local_root(root):
+            discovered.append(root)
+
+    if not discovered:
         return None
-    root = Path(raw).expanduser().resolve()
+    if len(discovered) > 1:
+        raise ReceiptContractError(
+            "ambiguous locally materialized StegNutrition trees: "
+            + ", ".join(str(path) for path in discovered)
+        )
+    return discovered[0]
+
+
+def _preflight_current_stegnutrition_surface(root: Path | None) -> Path | None:
+    """Require current canonical extensions when a local StegNutrition tree exists."""
+    if root is None:
+        return None
     inventory_path = root / EXPECTED_INVENTORY
-    if not inventory_path.is_file():
-        return None
     try:
         inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
@@ -150,8 +199,11 @@ def _project_active_work(response: dict, receipt: dict) -> dict:
 def main() -> int:
     raw = sys.stdin.read()
     try:
-        local_root = _preflight_current_stegnutrition_surface()
+        local_root = _discover_local_stegnutrition_root()
+        local_root = _preflight_current_stegnutrition_surface(local_root)
         _run_runtime_custody_preflight(local_root)
+        if local_root is not None:
+            os.environ["STEGVERSE_STEGNUTRITION_ROOT"] = str(local_root)
     except ReceiptContractError as exc:
         print(f"StegNutrition continuation preflight failed: {exc}", file=sys.stderr)
         return 13
