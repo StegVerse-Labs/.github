@@ -1,7 +1,7 @@
 # StegNutrition Machine Continuation Mirror Handoff
 
 Status: **ACTIVE — SESSION EXECUTION UNTIL RESIDENT CLAIM OR COMPLETION**  
-Updated: 2026-08-12 14:34 -05:00
+Updated: 2026-08-12 14:52 -05:00
 
 ## Authority and scope
 
@@ -16,7 +16,7 @@ canonical_target: StegVerse-Labs/StegNutrition/STEGNUTRITION_MIRROR_HANDOFF.md
 credential_authority: TV/TVC
 route_authority: StegVerse-Labs/TVC
 github_token_runtime_authority: NONE
-source_state: INSTALLED_VALIDATED_AUTODISCOVERY_CUSTODY_GATED
+source_state: INSTALLED_VALIDATED_AUTODISCOVERY_CUSTODY_GATED_SCENARIO_PREFLIGHT_INSTALLED
 resident_activation_state: PENDING_DIRECT_OBSERVATION
 last_directly_observed_resident_epoch: 29
 resident_claim_observed: false
@@ -45,11 +45,14 @@ control/worker-capability-profiles.json#sovereign-runtime-worker-v1
 cost-basis/worker-runtime/stegnutrition-machine-continuation.json
 tests/test_stegnutrition_machine_continuation.py
 tests/test_stegnutrition_continuation_receipt.py
+tests/test_stegnutrition_scenario_preflight.py
+StegVerse-Labs/StegNutrition:scripts/verify_runtime_custody_no_network.py
+StegVerse-Labs/StegNutrition:scripts/verify_scenario_provider_no_network.py
 ```
 
 ## Local-root discovery — executable, no manual selection required
 
-`workers/stegnutrition_continuation_entrypoint.py` now performs deterministic filesystem-only discovery of an already locally materialized canonical StegNutrition tree.
+`workers/stegnutrition_continuation_entrypoint.py` performs deterministic filesystem-only discovery of an already locally materialized canonical StegNutrition tree.
 
 Discovery order/policy:
 - optional `STEGVERSE_STEGNUTRITION_ROOT` explicit override first;
@@ -80,24 +83,61 @@ Required custody predicates:
 
 No general code-writing, GitHub repository-write, release, deployment, model-authority, route-authority, or credential-authority expansion is granted.
 
-## Validation evidence
+## Qualified scenario-provider HANDOFF preflight — installed
 
-Current validated control-plane evidence:
+The resident handoff now has a second focused zero-network preflight after runtime custody and before worker execution:
 
 ```text
-heartbeat validation run: 31632721546 / SUCCESS
-heartbeat validation job: 94235297308 / SUCCESS
-organization no-token validation run: 31632721718 / SUCCESS
-deterministic .github suite: 127/127 PASS
+StegVerse-Labs/StegNutrition/scripts/verify_scenario_provider_no_network.py
+```
+
+The verifier uses generated in-memory image data only. It validates mechanics and custody, not real semantic accuracy. It requires:
+- local-only execution;
+- `github_token_required=false`;
+- `hosted_inference_required=false`;
+- `authority_effect=NONE`;
+- a positive probabilistic scenario set;
+- USDA FoodData Central nutrition binding;
+- photo-derived mass intervals with strict low < center < high;
+- evidence IDs retaining observed-food, automatic-scale, and semantic-prior provenance;
+- failed semantic quality gates rejected;
+- incomplete qualified-label nutrition coverage rejected;
+- `real_semantic_accuracy_qualified_by_this_verifier=false`.
+
+Installed commits:
+- `9d3e29875a4e94d4dbc115e2bdce62cd0c15bdbb` — focused StegNutrition scenario-provider verifier;
+- `0ebd040cdd6ae2c9ab206e7b12d1ad01fe10d78b` — existing continuation entrypoint executes the focused verifier;
+- `379e22d2163eb0dede17adce5a242213739f0a81` — control-plane tests for the new handoff preflight;
+- `595e2b87d492f2ecd1b24d326700cf93312859a9` — executable handoff requires the verifier.
+
+This is noncompeting validation/integration under `STEGNUTRITION-FULL-VALIDATION-016`; it does not alter resident claim/fence state, TV/TVC authority, local-model authority, release authority, or real-evidence acceptance.
+
+## Validation evidence
+
+Previously validated control-plane evidence remains:
+
+```text
+heartbeat validation run: 31633928861 / SUCCESS
+previous automatic-discovery heartbeat run: 31632721546 / SUCCESS
+previous automatic-discovery heartbeat job: 94235297308 / SUCCESS
+previous organization no-token validation run: 31632721718 / SUCCESS
+deterministic .github suite at previous validated head: 127/127 PASS
 executable handoffs: PASS
 canonical JSON parse: PASS
 dry-run persistence: NONE
 workflow authorizing effect: NONE
 ```
 
-The subsequent ownership-reconciliation commit `365fc2f877d2ac483ec7e7f39dfd384970f0cd86` passed heartbeat validation run `31632924551` but exposed a documentation-contract failure in organization run `31632924675`: this handoff was missing the required execution-ownership partition. This file restores that required section; the failed run is retained as evidence and must not be represented as PASS.
+The new scenario-provider HANDOFF test head `379e22d2163eb0dede17adce5a242213739f0a81` triggered:
 
-The validation workflow explicitly checks that `GITHUB_TOKEN`, `GH_TOKEN`, and `GITHUB_PAT` are absent from the executing validation environment before anonymous public source fetch/tests. Hosted workflow validation remains non-authorizing and is not resident activation evidence.
+```text
+heartbeat validation run: 31635180107 / QUEUED when last directly observed
+organization no-token run: 31635180123 / QUEUED when last directly observed
+```
+
+Queued is not PASS and is not counted as validation completion. The focused StegNutrition verifier is installed but has not yet been executed on the resident locally materialized private StegNutrition tree.
+
+The validation workflow checks that `GITHUB_TOKEN`, `GH_TOKEN`, and `GITHUB_PAT` are absent from the executing validation environment before anonymous public source fetch/tests. Hosted workflow validation remains non-authorizing and is not resident activation evidence.
 
 ## Resident ownership state
 
@@ -115,8 +155,9 @@ The next resident transition must:
 3. allocate a current fenced claim;
 4. automatically discover exactly one canonical local StegNutrition tree or accept a valid explicit override;
 5. execute runtime-custody preflight;
-6. execute the fixed zero-network StegNutrition validation path;
-7. persist an independently valid continuation receipt proving no GitHub-token/source-fetch runtime authority.
+6. execute qualified scenario-provider preflight;
+7. execute the fixed zero-network StegNutrition validation path;
+8. persist an independently valid continuation receipt proving no GitHub-token/source-fetch runtime authority.
 
 No repository write, hosted workflow, synthetic dry-run epoch, second heartbeat, or fabricated claim substitutes for this transition.
 
@@ -127,6 +168,7 @@ StegVerse-Labs/StegNutrition/tasks/STEGNUTRITION-MACHINE-CONTINUATION-018.json
 -> StegVerse-Labs/.github/handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json
 -> automatic local StegNutrition discovery
 -> runtime-custody preflight
+-> qualified scenario-provider preflight
 -> resident heartbeat claim/fence
 -> continuation worker + receipt validator
 -> existing TV/TVC visual-route lane
@@ -143,6 +185,7 @@ StegVerse-Labs/StegNutrition/tasks/STEGNUTRITION-MACHINE-CONTINUATION-018.json
 - no manual local-root selection requirement when exactly one canonical local candidate exists;
 - ambiguity/invalid local materialization fails closed;
 - workflow success is not resident activation;
+- focused synthetic/mechanics preflight is not real semantic qualification;
 - semantic source is not qualified real-data evidence;
 - synthetic fixtures are not real accuracy data;
 - release/publication remains separately governed.
@@ -151,6 +194,7 @@ StegVerse-Labs/StegNutrition/tasks/STEGNUTRITION-MACHINE-CONTINUATION-018.json
 
 - resident heartbeat advance/claim/receipt: existing single heartbeat + registered StegNutrition worker;
 - full private zero-network StegNutrition suite: task `STEGNUTRITION-FULL-VALIDATION-016`;
+- focused scenario-provider verifier execution on the resident local tree: task `016` / existing worker preflight;
 - real semantic qualification: task `012`;
 - real portion calibration: task `013`;
 - real photographed/weighed benchmark evidence: task `014`;
@@ -172,7 +216,7 @@ StegVerse-Labs/StegNutrition/tasks/STEGNUTRITION-MACHINE-CONTINUATION-018.json
   manual_allowed_role: validation_and_nonconflicting_repository_integration
   collision_scope: StegNutrition validation/source-integration only; excludes resident heartbeat claim/fence, TV/TVC route authority, local-model authority, release publication, and competing worker creation
   release_condition: complete private zero-network suite PASS is durably retained, or SHWP-STEGNUTRITION-CONTINUATION-001 is actually fenced/claimed and demonstrably progresses the same task
-  next_executable_action: continue nonduplicative validation/integration work and release this session claim immediately when resident worker ownership becomes real
+  next_executable_action: continue nonduplicative HANDOFF validation/integration work; focused scenario-provider preflight is installed and next executes on the resident local tree before full-suite validation
 ```
 
 ### WORKER-OWNED / DO NOT COMPETE
@@ -186,7 +230,7 @@ StegVerse-Labs/StegNutrition/tasks/STEGNUTRITION-MACHINE-CONTINUATION-018.json
   manual_allowed_role: observation_until_claim
   collision_scope: resident claim/fence allocation, automatic local-root discovery during resident execution, continuation receipt mutation, and worker-owned heartbeat progression
   release_condition: canonical resident worker completes/supersedes/releases the task under a live current claim/fence
-  next_executable_action: resident heartbeat consumes the registered fragment, allocates the current fenced claim, auto-discovers the local tree, runs custody/full validation, and persists the continuation receipt
+  next_executable_action: resident heartbeat consumes the registered fragment, allocates the current fenced claim, auto-discovers the local tree, runs custody/scenario-provider/full validation, and persists the continuation receipt
 ```
 
 ### ESCALATED / AUTHORITY-OWNED
