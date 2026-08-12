@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import subprocess
@@ -30,6 +31,15 @@ def invocation() -> dict:
     }
 
 
+def _worker_module():
+    path = ROOT / "workers/stegnutrition_continuation_worker.py"
+    spec = importlib.util.spec_from_file_location("stegnutrition_continuation_worker", path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def test_registry_fragment_has_unique_capability_and_no_token_requirement() -> None:
     fragment = load("control/worker-registry.d/stegnutrition-continuation-001.json")
     assert fragment["github_token_required"] is False
@@ -57,6 +67,71 @@ def test_capability_profile_does_not_grant_general_code_or_github_authority() ->
     assert "stegnutrition_machine_continuation" in row["allowed_capabilities"]
     assert "github_repository_write" not in row["allowed_capabilities"]
     assert "code_and_schema_implementation" not in row["allowed_capabilities"]
+
+
+def test_worker_normalizes_canonical_v4_inventory() -> None:
+    worker = _worker_module()
+    inventory = {
+        "schema": "stegnutrition.session-execution-inventory.v4",
+        "completed_or_released": ["STEGNUTRITION-PORTION-GEOMETRY-004"],
+        "implemented_pending_activation_or_real_evidence": [
+            {"task_id": "STEGNUTRITION-SEMANTIC-VISION-012", "state": "REAL_DATA_BLOCKED"},
+            {"task_id": "STEGNUTRITION-AUTO-PORTION-013", "state": "PARTIAL"},
+            {"task_id": "STEGNUTRITION-REAL-BENCHMARK-DATA-014", "state": "HUMAN_BOUNDARY"},
+            {"task_id": "STEGNUTRITION-PRODUCTION-PIPELINE-019", "state": "SOURCE_IMPLEMENTED"},
+        ],
+        "machine_owned_or_blocked": [
+            {"task_id": "STEGNUTRITION-LIVE-VISUAL-ROUTE-015", "state": "BLOCKED"},
+            {"task_id": "STEGNUTRITION-FULL-VALIDATION-016", "state": "BLOCKED"},
+            {"task_id": "STEGNUTRITION-RELEASE-PROPAGATION-017", "state": "NOT_APPLICABLE"},
+            {"task_id": "STEGNUTRITION-MACHINE-CONTINUATION-018", "state": "SOURCE_INSTALLED"},
+        ],
+    }
+    rows = worker._inventory_rows(inventory)
+    assert rows["STEGNUTRITION-PORTION-GEOMETRY-004"]["state"] == "COMPLETE_RELEASED"
+    for task_id in (
+        "STEGNUTRITION-SEMANTIC-VISION-012",
+        "STEGNUTRITION-AUTO-PORTION-013",
+        "STEGNUTRITION-REAL-BENCHMARK-DATA-014",
+        "STEGNUTRITION-LIVE-VISUAL-ROUTE-015",
+        "STEGNUTRITION-FULL-VALIDATION-016",
+        "STEGNUTRITION-RELEASE-PROPAGATION-017",
+        "STEGNUTRITION-MACHINE-CONTINUATION-018",
+        "STEGNUTRITION-PRODUCTION-PIPELINE-019",
+    ):
+        assert task_id in rows
+
+
+def test_filesystem_projection_tracks_current_stegnutrition_source_names(tmp_path: Path) -> None:
+    worker = _worker_module()
+    required = [
+        "src/stegnutrition/semantic_food.py",
+        "src/stegnutrition/semantic_eval.py",
+        "scripts/train_semantic_food_local.py",
+        "tests/test_semantic_food.py",
+        "tests/test_semantic_eval.py",
+        "src/stegnutrition/vision/scale.py",
+        "src/stegnutrition/vision/auto_portion.py",
+        "tests/test_auto_scale.py",
+        "tests/test_auto_portion.py",
+        "src/stegnutrition/pipeline.py",
+        "tests/test_pipeline.py",
+        "tasks/STEGNUTRITION-PRODUCTION-PIPELINE-019.json",
+        "src/stegnutrition/benchmark_ingest.py",
+        "scripts/ingest_weighed_photo_case.py",
+        "tests/test_benchmark_ingest.py",
+    ]
+    for relative in required:
+        path = tmp_path / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("x\n", encoding="utf-8")
+    projection = worker._filesystem_projection(tmp_path)
+    assert projection["semantic_model_source_present"] is True
+    assert projection["semantic_model_qualified_artifact_present"] is False
+    assert projection["automatic_portion_surfaces_present"] is True
+    assert projection["production_pipeline_surfaces_present"] is True
+    assert projection["benchmark_ingestion_surfaces_present"] is True
+    assert projection["real_weighed_benchmark_case_count"] == 0
 
 
 def test_worker_fails_closed_without_local_stegnutrition_materialization(tmp_path: Path) -> None:
