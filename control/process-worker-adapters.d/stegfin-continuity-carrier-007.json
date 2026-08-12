@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "STEGFIN-CONTINUITY-CARRIER-007",
+  "adapters": [
+    {
+      "adapter_ref": "process:stegfin-continuity-carrier-v1",
+      "authority_ref": "handoffs/STEGFIN-CONTINUITY-CARRIER-007.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "stegfin_external_pretrade_preparation"
+      ],
+      "command": ["python", "workers/stegfin_continuity_carrier_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_STEGFIN_SOURCE_ROOT",
+        "STEGVERSE_TV_SOURCE_ROOT",
+        "STEGVERSE_TVC_SOURCE_ROOT",
+        "STEGVERSE_TV_TVC_BROKER_ENDPOINT",
+        "HOME",
+        "XDG_STATE_HOME",
+        "LOCALAPPDATA"
+      ],
+      "notes": [
+        "Machine-owned continuity fallback for the exact first governed Base validation lineage.",
+        "No resident heartbeat completion dependency is required.",
+        "Broker endpoint is non-secret configuration; all provider secret/token authority remains TV/TVC/vault-only.",
+        "No GitHub token, provider API key, wallet credential, signing credential or cloud credential is allowlisted.",
+        "Worker acquires a collision-safe continuity claim and yields if resident StegFin execution already owns the lineage.",
+        "Stops at USER_ONLY wallet handoff with signed=false and broadcast=false."
+      ],
+      "timeout_seconds": 480,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
