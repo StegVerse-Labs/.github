@@ -6,7 +6,7 @@
 goal_id: REPO-HEARTBEAT-FEDERATION-001
 repository: StegVerse-Labs/.github
 branch: main
-state: ACTIVE_ENROLLMENT_AND_LIVE_COVERAGE
+state: DESCRIPTOR_ENROLLMENT_COMPLETE_LIVE_COVERAGE_PENDING
 canonical_issue: StegVerse-Labs/.github#81
 canonical_task_owner: SHWP-REPO-HEARTBEAT-FEDERATION-001 / single StegVerse heartbeat
 credential_authority: TV/TVC
@@ -15,7 +15,7 @@ github_token_required: false
 
 This layer extends the existing organization-level federation task with repository-level identity, commit/ref/runtime state, freshness, dependency-loss propagation, and fail-closed coverage. It does not create a second heartbeat or per-repository schedulers.
 
-## Authoritative files
+## Authoritative central files
 
 - `schemas/repo-heartbeat-manifest.schema.json`
 - `control/repo-heartbeat-federation.json`
@@ -31,27 +31,40 @@ This layer extends the existing organization-level federation task with reposito
 - `tests/test_emit_repo_heartbeat_manifest.py`
 - `control/session-goal-inventory-2026-08-12-ecosystem-chat-federation-delta.json`
 
-## Critical denominator
+## Critical denominator — descriptor enrollment complete
+
+All eleven required participants now carry `.stegverse/repo-heartbeat.json` under their own repository authority:
 
 ```text
 StegVerse-Labs/StegCore
+  b7cbd49f2cede01ec81fd5e397eaa4f9912b2257
 StegVerse-Labs/Continuity
+  656d773f3c4503e2ee9753811f30d6aaf549626f
 StegVerse-Labs/TV
+  ce8ea561742ae1b2a09352f9b6ac0e5fe8e0932b
 StegVerse-Labs/TVC
+  65009af6ab57ded6d091f1e33283499066fe9461
 StegVerse-Labs/StegID
+  440ffd575d036a63a9236539534706dcabac5224
 StegVerse-Labs/StegAgents
+  56be9ef2c0fe4a1fb2994264abf712431041ade1
 StegVerse-Labs/Site
+  e74cb5532f997a72710f1fa0e281d1c0175c7d19
 StegVerse-Labs/ara-admissibility-interop
+  c963a3016b015c63680f8cc23064575183f3b66d
 StegVerse-002/micro-node-runtime
+  7674486444c830995d8f664d19b7ef4ae23f83bd
 StegVerse-org/LLM-adapter
+  04146f97115e5d47eeb674454ccb1ebe40ce5d94
 master-records/orchestration
+  af99f09b6c6dd2d991d3d228f1ee637122099e1a
 ```
 
-`StegVerse-Labs/StegDB` remains an adjacent denominator candidate and must be classified only after its applicable `*_MIRROR_HANDOFF.md` is read.
+`StegVerse-Labs/StegDB` remains an adjacent denominator candidate. It must not be silently added before the critical live topology semantics are proven and its applicable handoff is read.
 
 ## Contract and authority
 
-Every participant manifest carries repository/org identity, participant class, sequence, emitted/fresh-until timestamps, status, capabilities, dependencies, evidence refs, and authority metadata. CONTROL/RUNTIME/SERVICE participants also require `commit_sha` and `runtime_id`; optional fields include `ref`, `release_tag`, `handoff_hash`, and `last_success`.
+Each participant exposes repository/org identity, participant class, runtime identity for active classes, capabilities, required dependencies, handoff location, freshness policy, and explicit non-authority metadata. The dynamic manifest emitted on a locally materialized repository adds commit/ref/tag, sequence, emitted/fresh-until timestamps, status, evidence references, optional handoff hash, and last-success evidence.
 
 ```text
 credential_authority: TV/TVC
@@ -59,129 +72,103 @@ heartbeat_grants_execution_authority: false
 github_token_required: false
 ```
 
-The reusable emitter derives commit/ref/tag from a locally materialized repository and can hash an explicitly selected handoff. It does not schedule itself, fetch source, contact GitHub, or grant authority.
+A descriptor or manifest is evidence. It never grants execution, credential, route, release, deployment, custody, or publication authority.
 
 ## Fail-closed topology
 
-The central worker builds an inspectable topology and SHA-256 topology hash. Required coverage fails when a manifest is missing, stale, invalid, FAILED, BLOCKED, RETIRED, or has lost a required dependency. Required dependency loss propagates to dependent topology state. The worker writes only `receipts/repo-heartbeat-federation/**` and grants no cross-repository mutation, execution, credential, deployment, or policy authority.
+The central worker constructs an inspectable topology and deterministic SHA-256 topology hash. Required coverage fails if a participant is missing, stale, identity-invalid, FAILED, BLOCKED, RETIRED, or loses a required dependency. Required dependency loss propagates to dependent topology state. The worker writes only `receipts/repo-heartbeat-federation/**`.
 
-## Central implementation evidence
+Descriptor enrollment does not count as live health. Live health begins only when the resident single heartbeat emits and evaluates fresh manifests from the locally materialized participants under an admitted claim/fence.
+
+## Central source validation
 
 ```text
-schema: 0a02c9a3dc32b83c8fce4887390258b0a0921e2f
-registry: 49d3bbfebd9f9629addc8220d83a75727b425747
-coverage worker: 4a14a416ffc0ed80d4bfa5ad861f35da42de367e
-authorization: cc16bcad63ef1b32c9206a6d99afac2118fd6661
-handoff: 9bc7d42c7c4ff8d64ba803f1ccbdec42725c0808
-cost basis: 410f41df3a97e6707b7e7fabe77c41c3127656cf
-capability profile: 66fbb858efd84c3655ef3a3b2cc2b3671a78a733
-registry fragment: 19163e09a94c11f5b81ffa5b231b2ee79f98079d
-coverage tests: d4c89eb660c6f90801dc9d6f9cb6d3558ad475a5
-process adapter: 84a423ec1eca178503fd1110dc63eaa5f62de817
-manifest emitter: c8f7c03fa3f47fd6d9cf164e29a3f232d4a920df
-emitter tests: fbea12d575c2745d9a2e4d1923ac5fa5a418fa77
-canonical issue: #81
-session delta inventory: 5f08556d527c1537dd619acb5c6ebefc4d6ce1f2
+Heartbeat Worker Project run 31610774741: SUCCESS
+  anonymous/no-GitHub-credential checkout
+  canonical JSON parse PASS
+  executable handoff validation PASS
+  runtime/workers/scripts compile PASS
+  112 deterministic tests PASS, including repository federation tests
+
+Heartbeat Worker Project run 31611065409: SUCCESS
+  reusable manifest emitter + emitter tests included
 ```
 
-Heartbeat Worker Project run `31610774741` completed SUCCESS with anonymous/no-GitHub-credential checkout, executable-handoff validation, canonical JSON parsing, compilation, and 112 deterministic tests PASS including repository-federation tests. Heartbeat Worker Project run `31611065409` also completed SUCCESS after the reusable emitter and emitter tests were added. These runs validate source only; their heartbeat cycles were nonpersistent and are not live coverage activation.
+Those hosted cycles were nonpersistent validation. They do not substitute for resident heartbeat activation or live coverage.
 
-## Participant enrollment state
-
-### 1. StegCore — descriptor installed
+## Participant validation observations
 
 ```text
-file: StegVerse-Labs/StegCore/.stegverse/repo-heartbeat.json
-commit: b7cbd49f2cede01ec81fd5e397eaa4f9912b2257
-handoff update: 31dcc7fe9ba9b1a7efe50103411bc4c4a95114df
-state: DESCRIPTOR_INSTALLED / LIVE_COVERAGE_PENDING
+Continuity descriptor commit 656d773f3c4503e2ee9753811f30d6aaf549626f
+  Test Readiness run 31619109440: SUCCESS
+  Guardian run 31619109410: FAILED at existing configuration gate (TV_AUDIENCE empty)
+  descriptor defect inferred: false
+
+TV descriptor commit ce8ea561742ae1b2a09352f9b6ac0e5fe8e0932b
+  Test Readiness run 31619283434: failure with zero executed job steps observed
+  Architecture Guard run 31619283435: failure with zero executed job steps observed
+  semantic descriptor validation: not established
+
+TVC descriptor commit 65009af6ab57ded6d091f1e33283499066fe9461
+  Architecture Guard run 31619373013: failure with zero executed job steps observed
+  Test Readiness run 31619373011: queued at direct observation
+  semantic descriptor validation: not established
 ```
 
-### 2. Continuity — descriptor installed
+Zero-step hosted runs are retained as infrastructure evidence and are neither semantic PASS nor semantic descriptor failure.
+
+## No-GitHub-token integration correction discovered during enrollment
+
+The sovereign local-model/runtime path already satisfies the no-GitHub-token rule. A separate legacy conflict remains in the Healer scheduler/control plane: `HEALER_GH_TOKEN` and GitHub Actions credential-bearing dispatch/write behavior are still represented in current Healer/Continuity runtime surfaces.
+
+Canonical task:
 
 ```text
-file: StegVerse-Labs/Continuity/.stegverse/repo-heartbeat.json
-commit: 656d773f3c4503e2ee9753811f30d6aaf549626f
-handoff update: 7282db4c636d5eea2df2dff175f8bb3e6d8705d6
-Test Readiness run: 31619109440 SUCCESS
-Guardian run: 31619109410 FAILED at pre-existing configuration gate because TV_AUDIENCE was empty
-state: DESCRIPTOR_INSTALLED / STATIC_REPO_READINESS_PASS / LIVE_COVERAGE_PENDING
-```
-
-The Guardian failure is not attributed to the descriptor. Its logs also expose a separate ecosystem no-token migration gap: the hosted workflow currently receives GitHub Actions credential authority for checkout/write behavior. That correction is owned separately by `HEALER-TV-TVC-NO-GITHUB-TOKEN-DISPATCH-001`.
-
-### 3. TV — descriptor installed
-
-```text
-file: StegVerse-Labs/TV/.stegverse/repo-heartbeat.json
-commit: ce8ea561742ae1b2a09352f9b6ac0e5fe8e0932b
-state: DESCRIPTOR_INSTALLED / HOSTED_SEMANTIC_VALIDATION_UNESTABLISHED / LIVE_COVERAGE_PENDING
-```
-
-TV Test Readiness run `31619283434` and Architecture Guard run `31619283435` concluded failure with zero executed job steps in the directly inspected job records. They are retained as hosted infrastructure evidence, not semantic descriptor failures and not validation PASS.
-
-### 4. TVC — descriptor installed
-
-```text
-file: StegVerse-Labs/TVC/.stegverse/repo-heartbeat.json
-commit: 65009af6ab57ded6d091f1e33283499066fe9461
-state: DESCRIPTOR_INSTALLED / HOSTED_VALIDATION_PENDING_OR_ZERO_STEP / LIVE_COVERAGE_PENDING
-```
-
-TVC Architecture Guard run `31619373013` concluded failure with zero executed job steps in the inspected job record. Test Readiness run `31619373011` was queued at the last direct observation. Neither condition is counted as semantic validation.
-
-## TV/TVC no-GitHub-token integration correction
-
-A distinct post-inventory integration gap was discovered in `StegVerse-Labs/StegVerse-Healer` and Continuity: legacy `HEALER_GH_TOKEN`/GitHub Actions token-bearing cross-repository behavior still exists outside the already-corrected sovereign local-model runtime path.
-
-Canonical durable owner:
-
-```text
+HEALER-TV-TVC-NO-GITHUB-TOKEN-DISPATCH-001
 StegVerse-Labs/StegVerse-Healer/data/session_consolidation/tv-tvc-no-github-token-dispatch-migration.json
 commit: eedbfac58fb2f02e326de024fede89ec83a04901
-task: HEALER-TV-TVC-NO-GITHUB-TOKEN-DISPATCH-001
+owner: StegVerse-Healer + TV + TVC
 state: CLAIMED_FOR_INTEGRATION
-owner: Healer + TV + TVC
 ```
 
-This migration must replace PAT/GITHUB_TOKEN/GH_TOKEN/HEALER_GH_TOKEN production dispatch authority with TV/TVC-governed admission and no-secret evidence. It is not permission to invent another credential system, and it does not reopen the already-released local-model implementation.
+Release requires the production scheduler, quiet-enforcer and publication-remediation paths to stop depending on `HEALER_GH_TOKEN`, `GITHUB_TOKEN`, `GH_TOKEN`, PAT, or equivalent GitHub credential authority, and to use a TV/TVC-governed admitted mechanism with inspectable no-secret receipts. This is a distinct integration task and must not reopen the completed local-model implementation.
 
 ## Claims
 
 ```text
 central implementation: COMPLETE / released
 central deterministic source validation: COMPLETE / released
-central source integration: COMPLETE / released
-participant enrollment: ACTIVE under #81
-live coverage execution: MACHINE_OWNED / PENDING RESIDENT HEARTBEAT
-Healer no-token migration: DISTINCT INTEGRATION CLAIM / ACTIVE
-collision boundary: do not replace SHWP-ALL-ORG-FEDERATION-001; do not create per-repo schedulers; do not reopen completed local-model source implementation
+critical descriptor enrollment: COMPLETE / released
+live topology coverage: MACHINE_OWNED / resident heartbeat pending
+Healer no-token migration: CLAIMED_FOR_INTEGRATION / separate durable owner
+collision boundary: one heartbeat; one worker registry; no per-repo schedulers; no GitHub-token production authority; no duplicate local-model implementation
 ```
 
 ## Exact next tasks
 
-1. Resident single heartbeat admits `SHWP-REPO-HEARTBEAT-FEDERATION-001` and emits the first real fail-closed coverage receipt.
-2. Read and enroll `StegVerse-Labs/StegID`, `StegVerse-Labs/StegAgents`, `StegVerse-Labs/Site`, `StegVerse-Labs/ara-admissibility-interop`, `StegVerse-002/micro-node-runtime`, `StegVerse-org/LLM-adapter`, and `master-records/orchestration` using their applicable handoffs.
-3. Connect locally materialized descriptors to fresh manifest emission on the resident carrier without arbitrary repo commands or per-repo scheduling authority.
-4. Inspect StegDB handoff and admit it only through an explicit denominator transition if classification requires participation.
-5. Complete `HEALER-TV-TVC-NO-GITHUB-TOKEN-DISPATCH-001` without GitHub-token production authority.
-6. Expand denominator and propagate coverage only after the critical live topology receipt proves the existing denominator.
+1. Resident single heartbeat admits `SHWP-REPO-HEARTBEAT-FEDERATION-001`, discovers locally materialized enrolled repositories, emits fresh normalized manifests, and writes the first fail-closed coverage receipt at `receipts/repo-heartbeat-federation/SHWP-REPO-HEARTBEAT-FEDERATION-001.json`.
+2. Coverage remains incomplete until every required participant is fresh, identity-valid, dependency-satisfied and nonfailed in that receipt.
+3. `HEALER-TV-TVC-NO-GITHUB-TOKEN-DISPATCH-001` replaces legacy GitHub-token dispatch authority with TV/TVC-governed admission/execution evidence.
+4. Only after critical live topology proof may an admitted denominator transition evaluate StegDB and additional active runtime/provider/control repositories.
+5. Coverage publication/propagation is evaluated only after a real resident receipt exists; source completion alone does not authorize Site, Publisher, admissibility-wiki, or stegguardian-wiki publication.
 
 ## Archive conditions
 
-This workstream is not archive-ready while required descriptors remain missing, the first resident coverage receipt does not exist, or this thread still owns unique enrollment/integration work. Repository source completion is not live coverage.
+This federation implementation no longer requires chat history to reconstruct source or participant enrollment: central source and all eleven descriptor installations are repository-resident. The broader session remains non-archivable while it still owns distinct no-token integration work and while the organization archive gate requires measurable resident sovereign-carrier progress.
 
 ## Completeness
 
 ```text
-developed_central_files: 12/12
-central_scaffolding_or_stubs: 0
-missing_required_central_files: 0
-central_validation: 2/3 (deterministic source suites PASS; resident live coverage pending)
-central_integration: 2/2
-repo_descriptors_installed: 4/11
-critical_repo_live_coverage: 0/11
-session_delta_requirements_transferred: 2/2
-current_goal_activation: 68%
-archive_ready: false
+central developed files: 12/12
+required participant descriptors: 11/11
+scaffolding_or_stubs: 0
+missing required descriptor files: 0
+central deterministic validation: 2/2 source suites PASS
+live resident coverage validation: 0/1
+central integration + participant enrollment: 13/13
+critical live coverage: 0/11 until first resident topology receipt
+session delta requirements transferred: 2/2
+federation source/descriptor task completion: 100%
+federation goal activation: 82%
+archive_ready_for_broader_session: false
 ```
