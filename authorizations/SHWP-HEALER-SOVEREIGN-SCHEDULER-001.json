@@ -1,0 +1,20 @@
+{
+  "schema": "stegverse.worker-authorization/v0.1",
+  "authorization_id": "AUTH-SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
+  "task_id": "SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
+  "state": "AUTHORIZED",
+  "policy_version": "shwp-healer-sovereign-scheduler-v0.1",
+  "authority_ceiling": [
+    "healer_sovereign_scheduling",
+    "receipts/healer-sovereign-scheduler/**",
+    "fixed_local_repository_handlers_only",
+    "no_arbitrary_command_authority",
+    "no_github_token_authority",
+    "no_remote_source_checkout",
+    "no_remote_mutation_authority",
+    "no_deployment_authority"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "carrier": "single_stegverse_heartbeat"
+}
