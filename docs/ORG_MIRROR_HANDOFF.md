@@ -205,7 +205,7 @@ scoped heartbeat handoff reconciliation: 6055bb2cd17564021da86119f2a6c8c5ec35bc0
 session consolidation/archive-authority correction: 9f43b3571ddd2471665d88e95d20c02709ef8f56
 organization reconciliation evidence: 5390c4e675ac1a95fdcddc4a401957e4edb1447a
 active-owner reconciliation: e37785f8bcf163039ad004ab2b79bccde12eb0c2
-physical-resource/self-bootstrap reconciliation: pending-this-commit
+physical-resource/self-bootstrap reconciliation: a6a6dff9948bca47210357822be10ef829af87e8
 archive-policy issue #64: CLOSED_COMPLETED / POLICY PROVENANCE ONLY
 active runtime issue #59: OPEN
 active progress-remediation issue #65: OPEN
