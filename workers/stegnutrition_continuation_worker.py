@@ -65,11 +65,32 @@ def _safe_local_root() -> Path | None:
 
 
 def _inventory_rows(inventory: dict) -> dict[str, dict]:
-    rows = inventory.get("execution_inventory") or []
-    if not isinstance(rows, list):
-        raise ValueError("execution_inventory must be a list")
-    result = {}
-    for row in rows:
+    """Normalize legacy and canonical StegNutrition inventories to task-id rows."""
+    legacy = inventory.get("execution_inventory")
+    if legacy is not None:
+        if not isinstance(legacy, list):
+            raise ValueError("execution_inventory must be a list")
+        sources = legacy
+    else:
+        sources = []
+        completed = inventory.get("completed_or_released") or []
+        if not isinstance(completed, list):
+            raise ValueError("completed_or_released must be a list")
+        for item in completed:
+            if isinstance(item, str):
+                sources.append({"task_id": item, "state": "COMPLETE_RELEASED"})
+            elif isinstance(item, dict):
+                sources.append(item)
+            else:
+                raise ValueError("invalid completed_or_released row")
+        for section in ("implemented_pending_activation_or_real_evidence", "machine_owned_or_blocked", "remaining_assigned_tasks", "partially_complete"):
+            rows = inventory.get(section) or []
+            if not isinstance(rows, list):
+                raise ValueError(f"{section} must be a list")
+            sources.extend(rows)
+
+    result: dict[str, dict] = {}
+    for row in sources:
         if not isinstance(row, dict) or not row.get("task_id"):
             raise ValueError("invalid execution inventory row")
         task_id = str(row["task_id"])
@@ -113,22 +134,55 @@ def _run_full_suite(stegnutrition_root: Path) -> dict:
 
 
 def _filesystem_projection(stegnutrition_root: Path) -> dict:
-    semantic_model = (
-        (stegnutrition_root / "src/stegnutrition/vision/semantic.py").is_file()
-        and (stegnutrition_root / "tests/test_semantic_vision.py").is_file()
-        and (stegnutrition_root / "models/semantic-food/manifest.json").is_file()
+    semantic_source = all(
+        path.is_file()
+        for path in (
+            stegnutrition_root / "src/stegnutrition/semantic_food.py",
+            stegnutrition_root / "src/stegnutrition/semantic_eval.py",
+            stegnutrition_root / "scripts/train_semantic_food_local.py",
+            stegnutrition_root / "tests/test_semantic_food.py",
+            stegnutrition_root / "tests/test_semantic_eval.py",
+        )
     )
-    automatic_portion = (
-        (stegnutrition_root / "src/stegnutrition/vision/auto_portion.py").is_file()
-        and (stegnutrition_root / "tests/test_auto_portion.py").is_file()
+    semantic_artifact = (
+        (stegnutrition_root / "models/semantic-food/model.json").is_file()
+        and (stegnutrition_root / "models/semantic-food/evaluation.json").is_file()
+    )
+    automatic_portion = all(
+        path.is_file()
+        for path in (
+            stegnutrition_root / "src/stegnutrition/vision/scale.py",
+            stegnutrition_root / "src/stegnutrition/vision/auto_portion.py",
+            stegnutrition_root / "tests/test_auto_scale.py",
+            stegnutrition_root / "tests/test_auto_portion.py",
+        )
+    )
+    production_pipeline = all(
+        path.is_file()
+        for path in (
+            stegnutrition_root / "src/stegnutrition/pipeline.py",
+            stegnutrition_root / "tests/test_pipeline.py",
+            stegnutrition_root / "tasks/STEGNUTRITION-PRODUCTION-PIPELINE-019.json",
+        )
+    )
+    benchmark_ingestion = all(
+        path.is_file()
+        for path in (
+            stegnutrition_root / "src/stegnutrition/benchmark_ingest.py",
+            stegnutrition_root / "scripts/ingest_weighed_photo_case.py",
+            stegnutrition_root / "tests/test_benchmark_ingest.py",
+        )
     )
     benchmark_root = stegnutrition_root / "benchmarks/weighed-photo-cases"
     benchmark_cases = 0
     if benchmark_root.is_dir():
         benchmark_cases = sum(1 for path in benchmark_root.rglob("*.json") if path.is_file())
     return {
-        "semantic_vision_surfaces_present": semantic_model,
+        "semantic_model_source_present": semantic_source,
+        "semantic_model_qualified_artifact_present": semantic_artifact,
         "automatic_portion_surfaces_present": automatic_portion,
+        "production_pipeline_surfaces_present": production_pipeline,
+        "benchmark_ingestion_surfaces_present": benchmark_ingestion,
         "real_weighed_benchmark_case_count": benchmark_cases,
     }
 
@@ -186,6 +240,8 @@ def main() -> int:
             "STEGNUTRITION-LIVE-VISUAL-ROUTE-015",
             "STEGNUTRITION-FULL-VALIDATION-016",
             "STEGNUTRITION-RELEASE-PROPAGATION-017",
+            "STEGNUTRITION-MACHINE-CONTINUATION-018",
+            "STEGNUTRITION-PRODUCTION-PIPELINE-019",
         }
         missing = sorted(required_task_ids - set(rows))
         if missing:
@@ -203,23 +259,37 @@ def main() -> int:
         projection["live_visual_route_receipt_declared"] = route_observed
 
         blockers = []
-        if not projection["semantic_vision_surfaces_present"]:
+        if not projection["semantic_model_source_present"]:
             blockers.append(blocker(
-                "Calibrated semantic food/composition model surfaces and real training-data manifest are not present.",
-                "Acquire/curate real labeled food imagery and install the semantic vision model under STEGNUTRITION-SEMANTIC-VISION-012.",
-                "Continue using the released low-level visual-evidence model only as evidence extraction; do not relabel it as semantic food recognition.",
+                "Local semantic-food model training/evaluation source is not present.",
+                "Install STEGNUTRITION-SEMANTIC-VISION-012 source and quality-gate surfaces before model qualification.",
+            ))
+        elif not projection["semantic_model_qualified_artifact_present"]:
+            blockers.append(blocker(
+                "Semantic-food source exists but no qualified real-data model/evaluation artifact is present.",
+                "Acquire provenance-bearing real labeled food imagery, run the local semantic training/evaluation CLI, and retain artifacts only when the committed quality gate passes.",
+                "Synthetic fixtures may validate mechanics but do not satisfy real semantic accuracy.",
                 dependency_class="HUMAN_AUTHORITY",
             ))
         if not projection["automatic_portion_surfaces_present"]:
             blockers.append(blocker(
-                "Automatic photo-derived scale/height/shape evidence provider is not installed.",
-                "Install STEGNUTRITION-AUTO-PORTION-013 against the existing provenance-bearing portion interval contract.",
-                "Retain current explicit geometry intervals for deterministic validation until automatic evidence exists.",
+                "Automatic photo-derived scale/portion evidence source is incomplete.",
+                "Install STEGNUTRITION-AUTO-PORTION-013 against the provenance-bearing portion interval contract.",
+            ))
+        if not projection["production_pipeline_surfaces_present"]:
+            blockers.append(blocker(
+                "Production photo-to-ledger orchestration source is not installed.",
+                "Install STEGNUTRITION-PRODUCTION-PIPELINE-019 so PhotoCaptureService composes the governed evidence/scenario/ledger path.",
+            ))
+        if not projection["benchmark_ingestion_surfaces_present"]:
+            blockers.append(blocker(
+                "Machine ingestion for photographed/weighed ground truth is incomplete.",
+                "Install the benchmark ingestion surfaces before accepting physical ground-truth cases.",
             ))
         if projection["real_weighed_benchmark_case_count"] <= 0:
             blockers.append(blocker(
                 "No real photographed/weighed benchmark cases are locally present.",
-                "Capture real food photographs with immediate mass measurements and preserve ground-truth records under benchmarks/weighed-photo-cases/.",
+                "Capture real food photographs with immediate mass measurements and ingest the provenance-bearing ground-truth records under benchmarks/weighed-photo-cases/.",
                 "Synthetic fixtures may continue validating metric machinery but do not count as real accuracy evidence.",
                 dependency_class="HUMAN_AUTHORITY",
             ))
@@ -238,8 +308,10 @@ def main() -> int:
 
         release_ready = (
             not blockers
-            and projection["semantic_vision_surfaces_present"]
+            and projection["semantic_model_qualified_artifact_present"]
             and projection["automatic_portion_surfaces_present"]
+            and projection["production_pipeline_surfaces_present"]
+            and projection["benchmark_ingestion_surfaces_present"]
             and projection["real_weighed_benchmark_case_count"] > 0
             and route_observed
             and suite["state"] == "COMPLETE"
@@ -263,7 +335,7 @@ def main() -> int:
     sequence = 1 if prior is None else int(prior.get("transition_sequence", 0)) + 1
 
     receipt = {
-        "schema": "stegverse.stegnutrition-continuation-receipt/v0.1",
+        "schema": "stegverse.stegnutrition-continuation-receipt/v0.2",
         "task_id": EXPECTED_TASK,
         "claim_id": claim_id,
         "worker_id": task.get("worker_id"),
