@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/repo-heartbeat-manifest.schema.json",
+  "title": "StegVerse Federated Repository Heartbeat Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "repo_id",
+    "org",
+    "repository",
+    "participant_class",
+    "sequence",
+    "emitted_at",
+    "fresh_until",
+    "status",
+    "capabilities",
+    "dependencies",
+    "authority"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.repo-heartbeat-manifest/v0.1"},
+    "repo_id": {"type": "string", "minLength": 1},
+    "org": {"type": "string", "minLength": 1},
+    "repository": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
+    "participant_class": {"enum": ["CONTROL", "RUNTIME", "SERVICE", "EVIDENCE", "REPO_LIVENESS"]},
+    "commit_sha": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"},
+    "ref": {"type": ["string", "null"]},
+    "release_tag": {"type": ["string", "null"]},
+    "runtime_id": {"type": ["string", "null"]},
+    "handoff_hash": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "sequence": {"type": "integer", "minimum": 0},
+    "emitted_at": {"type": "string", "format": "date-time"},
+    "fresh_until": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["READY", "DEGRADED", "BLOCKED", "FAILED", "RETIRED"]},
+    "capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["repo_id", "required"],
+        "properties": {
+          "repo_id": {"type": "string", "minLength": 1},
+          "required": {"type": "boolean"}
+        }
+      }
+    },
+    "last_success": {"type": ["string", "null"], "format": "date-time"},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["credential_authority", "heartbeat_grants_execution_authority", "github_token_required"],
+      "properties": {
+        "credential_authority": {"const": "TV/TVC"},
+        "heartbeat_grants_execution_authority": {"const": false},
+        "github_token_required": {"const": false}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"participant_class": {"enum": ["CONTROL", "RUNTIME", "SERVICE"]}}},
+      "then": {"required": ["commit_sha", "runtime_id"]}
+    }
+  ]
+}
