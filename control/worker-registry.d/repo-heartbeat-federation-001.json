@@ -1,0 +1,46 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-REPO-HEARTBEAT-FEDERATION-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": ["REQUIRED_REPO_HEARTBEAT_COVERAGE_NOT_YET_PROVEN"],
+      "authorized_policy_version": "shwp-single-hb-repo-federation-v0.1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/repo-heartbeat-federation.json",
+      "evidence_refs": [
+        "handoffs/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
+        "control/repo-heartbeat-federation.json",
+        "schemas/repo-heartbeat-manifest.schema.json",
+        "workers/repo_heartbeat_federation_worker.py"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "REPO-HEARTBEAT-FEDERATION-001",
+      "handoff_ref": "handoffs/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-REPO-HEARTBEAT-FEDERATION-001",
+      "worker_id": null,
+      "worker_instance_id": null
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:repo-heartbeat-federation-v1",
+      "authority_source": "authorizations/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
+      "capabilities": ["repo_heartbeat_federation_reconciliation"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#bounded-repository-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "repo-heartbeat-federation-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}
