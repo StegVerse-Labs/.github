@@ -1,42 +1,25 @@
 {
-  "schema": "stegverse.executable-handoff/v0.2",
+  "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-STEGGATE-FIRST-BOUNDARY-001-2026-08-08",
   "created_at": "2026-08-08T02:30:00Z",
-  "updated_at": "2026-08-12T17:06:00Z",
-  "state": "COMPLETE",
+  "state": "COMPLETED",
   "goal": {
     "goal_id": "STEGGATE-FIRST-BOUNDARY-001",
     "objective": "Instantiate the validated StegGate Audit Kit against the first named non-synthetic consequential boundary only after its authority model is durably established.",
-    "success_predicates": [
-      "A named non-synthetic consequential target is durably referenced",
-      "A reviewable authority model is durably referenced",
-      "ara management/first-boundary-activation.json is COMPLETE and validates",
-      "Real-boundary consequence evidence and independent reconstruction are retained"
-    ],
-    "failure_predicates": [
-      "A synthetic fixture is misrepresented as a real consequence boundary",
-      "Implementation begins without a durable target and authority model",
-      "Heartbeat or worker availability is treated as execution authority"
-    ],
+    "success_predicates": ["A named consequential target is durably referenced", "A reviewable authority model is durably referenced", "The first-boundary activation record is COMPLETE", "Real-boundary consequence and reconstruction evidence are retained"],
+    "failure_predicates": ["Synthetic evidence is misrepresented as a real boundary", "Execution occurs without a durable authority model", "Heartbeat availability is treated as execution authority"],
     "expires_at": null,
-    "authority_ceiling": ["repository_scoped_evidence_reconciliation_only", "no_release_without_separate_authority", "no_publication_without_separate_authority", "no_deployment_without_separate_authority"],
+    "authority_ceiling": ["repository_scoped_evidence_reconciliation_only", "no_release_without_separate_authority", "no_publication_without_separate_authority"],
     "successor_policy": "INHERIT_OR_NARROW",
     "max_successor_depth": 2
   },
   "task": {
     "task_id": "STEGGATE-FIRST-BOUNDARY-001",
     "repository": "StegVerse-Labs/ara-admissibility-interop",
-    "source_refs": [
-      "StegVerse-Labs/ara-admissibility-interop#13",
-      "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:management/first-boundary-activation.json",
-      "management/first-boundary-target.json#ara-taskstate-real-boundary",
-      "management/first-boundary-authority-model.json#ara-taskstate-bounded-authority",
-      "real-boundary/consequence-observation.json",
-      "real-boundary/admission-receipt.json",
-      "consequence_commit:48b7c7f68b8dc17dc3b398b682ff4342755ab0da"
-    ],
+    "source_refs": ["handoffs/STEGGATE-AUDITKIT-001.json", "StegVerse-Labs/ara-admissibility-interop#13", "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:management/first-boundary-activation.json", "management/first-boundary-target.json#ara-taskstate-real-boundary", "management/first-boundary-authority-model.json#ara-taskstate-bounded-authority", "real-boundary/consequence-observation.json", "real-boundary/admission-receipt.json", "consequence_commit:48b7c7f68b8dc17dc3b398b682ff4342755ab0da"],
     "dependencies": ["STEGGATE-AUDITKIT-001"],
     "parent_task_id": "STEGGATE-AUDITKIT-001",
+    "derivation_reason": "Authoritative ARA state proves the first consequential boundary completed; this handoff reconciles stale .github projection to that evidence.",
     "canonical_owner_ref": "StegVerse-Labs/ara-admissibility-interop#13",
     "canonical_lineage_key": "steggate:first-boundary",
     "derivation_depth": 1,
@@ -51,14 +34,14 @@
     "authority_effect": false
   },
   "execution": {
-    "required_capabilities": [],
+    "required_capabilities": ["historical_state_reconciliation"],
     "allowed_paths": [],
     "allowed_services": [],
-    "max_actions": 0,
+    "max_actions": 1,
     "max_retries": 0,
     "external_cost_ceiling_usd": 0,
-    "runtime_window_beats": 0,
-    "rate_class": "complete"
+    "runtime_window_beats": 1,
+    "rate_class": "completed_reconciliation"
   },
   "activation": {
     "carrier": "heartbeat",
@@ -72,16 +55,13 @@
     "status_projection": "StegVerse-Labs/.github/control/worker-status.json"
   },
   "completion": {
+    "terminal_when": ["The ARA first-boundary activation record remains COMPLETE and the stale .github handoff is reconciled to COMPLETED"],
+    "next_authorized_action": "Consume the completed real-boundary positive/mutation/retry evidence in the canonical issue #65 lineage and continue the next nonconflicting execution-profile task under ara issue #72.",
     "completed_at": "2026-08-07T22:41:00-05:00",
-    "completion_state": "COMPLETE",
     "candidate_id": "rb-ara-taskstate-001",
     "candidate_hash": "sha256:a74ef1ce97953e6661975f68f4a7ae53c1483b4006076279191637800b4326f3",
     "consequence_commit_sha": "48b7c7f68b8dc17dc3b398b682ff4342755ab0da",
-    "observed_target_path": "management/steggate-v46-implementation.json",
-    "observed_target_field": "first_real_boundary_pilot",
     "observed_target_value": "COMPLETE",
-    "released_claim_id": "STEGGATE-FIRST-BOUNDARY-001-RB-ARA-TASKSTATE",
-    "next_authorized_action": "Consume the completed real-boundary positive/mutation/retry evidence in the canonical issue #65 lineage and continue the next nonconflicting execution-profile task under ara issue #72.",
-    "evidence_source": "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:management/first-boundary-activation.json"
+    "released_claim_id": "STEGGATE-FIRST-BOUNDARY-001-RB-ARA-TASKSTATE"
   }
 }
