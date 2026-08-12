@@ -61,6 +61,18 @@
       "type": "process_json_v0.1"
     },
     {
+      "adapter_ref": "process:healer-sovereign-scheduler-v1",
+      "authority_ref": "authorizations/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+      "capabilities": ["healer_sovereign_scheduling"],
+      "command": ["python", "workers/healer_sovereign_scheduler_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_HEALER_ROOT", "STEGVERSE_REPO_ROOTS_JSON"],
+      "notes": ["Heartbeat-owned replacement for token-bearing Healer GitHub workflow dispatch.", "Executes only fixed local handlers in an already materialized StegVerse-Healer tree and already materialized target repositories.", "Forbidden GitHub credential variables cause fail-closed blocking and are not allowlisted.", "Writes only receipts/healer-sovereign-scheduler/** in the heartbeat repository.", "TV/TVC remains credential/admission authority; missing target adapters remain BLOCKED rather than falling back to GitHub workflow dispatch."],
+      "timeout_seconds": 260,
+      "type": "process_json_v0.1"
+    },
+    {
       "adapter_ref": "process:sovereign-runtime-activation-v1",
       "authority_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#authority",
       "capabilities": ["runtime_observation", "continuous_process_execution", "durable_state_reconstruction", "bounded_repository_mutation"],
@@ -133,6 +145,6 @@
       "type": "process_json_v0.1"
     }
   ],
-  "generation": 16,
+  "generation": 17,
   "schema": "stegverse.process-worker-adapters/v0.1"
 }
