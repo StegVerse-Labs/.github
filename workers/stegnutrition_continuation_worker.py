@@ -2,8 +2,8 @@
 """Heartbeat-owned StegNutrition machine-continuation worker.
 
 The worker never fetches source from GitHub and never accepts GitHub credentials.
-It operates only on an already locally materialized StegNutrition tree supplied by
-STEGVERSE_STEGNUTRITION_ROOT, executes fixed deterministic checks, and writes only
+It operates only on an already locally materialized StegNutrition tree admitted by
+the continuation entrypoint, executes fixed deterministic checks, and writes only
 its admitted receipt namespace in the heartbeat repository.
 """
 from __future__ import annotations
@@ -65,38 +65,54 @@ def _safe_local_root() -> Path | None:
 
 
 def _inventory_rows(inventory: dict) -> dict[str, dict]:
-    """Normalize legacy and canonical StegNutrition inventories to task-id rows."""
-    legacy = inventory.get("execution_inventory")
-    if legacy is not None:
-        if not isinstance(legacy, list):
-            raise ValueError("execution_inventory must be a list")
-        sources = legacy
+    """Normalize canonical v6 and legacy StegNutrition inventories to task-id rows."""
+    canonical = inventory.get("capability_inventory")
+    if canonical is not None:
+        if not isinstance(canonical, list):
+            raise ValueError("capability_inventory must be a list")
+        sources = canonical
     else:
-        sources = []
-        completed = inventory.get("completed_or_released") or []
-        if not isinstance(completed, list):
-            raise ValueError("completed_or_released must be a list")
-        for item in completed:
-            if isinstance(item, str):
-                sources.append({"task_id": item, "state": "COMPLETE_RELEASED"})
-            elif isinstance(item, dict):
-                sources.append(item)
-            else:
-                raise ValueError("invalid completed_or_released row")
-        for section in ("implemented_pending_activation_or_real_evidence", "machine_owned_or_blocked", "remaining_assigned_tasks", "partially_complete"):
-            rows = inventory.get(section) or []
-            if not isinstance(rows, list):
-                raise ValueError(f"{section} must be a list")
-            sources.extend(rows)
+        legacy = inventory.get("execution_inventory")
+        if legacy is not None:
+            if not isinstance(legacy, list):
+                raise ValueError("execution_inventory must be a list")
+            sources = legacy
+        else:
+            sources = []
+            completed = inventory.get("completed_or_released") or []
+            if not isinstance(completed, list):
+                raise ValueError("completed_or_released must be a list")
+            for item in completed:
+                if isinstance(item, str):
+                    sources.append({"task_id": item, "state": "COMPLETE_RELEASED"})
+                elif isinstance(item, dict):
+                    sources.append(item)
+                else:
+                    raise ValueError("invalid completed_or_released row")
+            for section in (
+                "implemented_pending_activation_or_real_evidence",
+                "machine_owned_or_blocked",
+                "remaining_assigned_tasks",
+                "partially_complete",
+            ):
+                rows = inventory.get(section) or []
+                if not isinstance(rows, list):
+                    raise ValueError(f"{section} must be a list")
+                sources.extend(rows)
 
     result: dict[str, dict] = {}
     for row in sources:
-        if not isinstance(row, dict) or not row.get("task_id"):
+        if not isinstance(row, dict):
             raise ValueError("invalid execution inventory row")
-        task_id = str(row["task_id"])
+        task_id = row.get("task_id") or row.get("id")
+        if not task_id:
+            raise ValueError("invalid execution inventory row")
+        task_id = str(task_id)
         if task_id in result:
             raise ValueError(f"duplicate task id: {task_id}")
-        result[task_id] = row
+        normalized = dict(row)
+        normalized.setdefault("task_id", task_id)
+        result[task_id] = normalized
     return result
 
 
@@ -139,22 +155,33 @@ def _filesystem_projection(stegnutrition_root: Path) -> dict:
         for path in (
             stegnutrition_root / "src/stegnutrition/semantic_food.py",
             stegnutrition_root / "src/stegnutrition/semantic_eval.py",
+            stegnutrition_root / "src/stegnutrition/semantic_build.py",
+            stegnutrition_root / "src/stegnutrition/semantic_qualification.py",
             stegnutrition_root / "scripts/train_semantic_food_local.py",
             stegnutrition_root / "tests/test_semantic_food.py",
             stegnutrition_root / "tests/test_semantic_eval.py",
+            stegnutrition_root / "tests/test_semantic_build.py",
+            stegnutrition_root / "tests/test_semantic_qualification.py",
         )
     )
-    semantic_artifact = (
-        (stegnutrition_root / "models/semantic-food/model.json").is_file()
-        and (stegnutrition_root / "models/semantic-food/evaluation.json").is_file()
+    semantic_artifact_root = stegnutrition_root / "models/semantic-food/qualified"
+    semantic_artifact = all(
+        (semantic_artifact_root / name).is_file()
+        for name in (
+            "semantic-model.json",
+            "semantic-evaluation.json",
+            "semantic-qualification.json",
+        )
     )
     automatic_portion = all(
         path.is_file()
         for path in (
             stegnutrition_root / "src/stegnutrition/vision/scale.py",
             stegnutrition_root / "src/stegnutrition/vision/auto_portion.py",
+            stegnutrition_root / "src/stegnutrition/portion_qualification.py",
             stegnutrition_root / "tests/test_auto_scale.py",
             stegnutrition_root / "tests/test_auto_portion.py",
+            stegnutrition_root / "tests/test_portion_qualification.py",
         )
     )
     production_pipeline = all(
@@ -171,12 +198,18 @@ def _filesystem_projection(stegnutrition_root: Path) -> dict:
             stegnutrition_root / "src/stegnutrition/benchmark_ingest.py",
             stegnutrition_root / "scripts/ingest_weighed_photo_case.py",
             stegnutrition_root / "tests/test_benchmark_ingest.py",
+            stegnutrition_root / "tasks/STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021.json",
         )
     )
     benchmark_root = stegnutrition_root / "benchmarks/weighed-photo-cases"
     benchmark_cases = 0
     if benchmark_root.is_dir():
-        benchmark_cases = sum(1 for path in benchmark_root.rglob("*.json") if path.is_file())
+        benchmark_cases = sum(
+            1
+            for path in benchmark_root.rglob("*.json")
+            if path.is_file() and path.name != "portion-qualification.json"
+        )
+    portion_qualification_receipt = benchmark_root / "portion-qualification.json"
     return {
         "semantic_model_source_present": semantic_source,
         "semantic_model_qualified_artifact_present": semantic_artifact,
@@ -184,6 +217,7 @@ def _filesystem_projection(stegnutrition_root: Path) -> dict:
         "production_pipeline_surfaces_present": production_pipeline,
         "benchmark_ingestion_surfaces_present": benchmark_ingestion,
         "real_weighed_benchmark_case_count": benchmark_cases,
+        "portion_qualification_receipt_present": portion_qualification_receipt.is_file(),
     }
 
 
@@ -218,8 +252,8 @@ def main() -> int:
     if stegnutrition_root is None:
         current_blocker = blocker(
             "Canonical StegNutrition is not locally materialized on the resident sovereign carrier.",
-            "Materialize StegVerse-Labs/StegNutrition locally and set STEGVERSE_STEGNUTRITION_ROOT for the resident heartbeat process.",
-            "Use the existing sovereign node materialization path; do not fetch with a GitHub token from this worker.",
+            "Materialize StegVerse-Labs/StegNutrition through the existing sovereign local-materialization path; the entrypoint discovers it automatically.",
+            "Do not fetch with a GitHub token or create a second source-retrieval authority.",
         )
         projection = {"local_root_available": False}
         suite = {"state": "BLOCKED", "reason": "local root unavailable", "returncode": None}
@@ -242,6 +276,8 @@ def main() -> int:
             "STEGNUTRITION-RELEASE-PROPAGATION-017",
             "STEGNUTRITION-MACHINE-CONTINUATION-018",
             "STEGNUTRITION-PRODUCTION-PIPELINE-019",
+            "STEGNUTRITION-FDA-REFERENCE-020",
+            "STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021",
         }
         missing = sorted(required_task_ids - set(rows))
         if missing:
@@ -261,20 +297,20 @@ def main() -> int:
         blockers = []
         if not projection["semantic_model_source_present"]:
             blockers.append(blocker(
-                "Local semantic-food model training/evaluation source is not present.",
-                "Install STEGNUTRITION-SEMANTIC-VISION-012 source and quality-gate surfaces before model qualification.",
+                "Local semantic-food model build/evaluation/qualification source is not present.",
+                "Install task 021 semantic build and qualification surfaces before real-data model qualification.",
             ))
         elif not projection["semantic_model_qualified_artifact_present"]:
             blockers.append(blocker(
-                "Semantic-food source exists but no qualified real-data model/evaluation artifact is present.",
-                "Acquire provenance-bearing real labeled food imagery, run the local semantic training/evaluation CLI, and retain artifacts only when the committed quality gate passes.",
+                "Semantic qualification source exists but the canonical real-data artifact triplet is absent.",
+                "Place real labeled food photographs in an already-local manifest, run build_real_semantic_artifacts into models/semantic-food/qualified, and retain artifacts only when the committed quality gate passes.",
                 "Synthetic fixtures may validate mechanics but do not satisfy real semantic accuracy.",
                 dependency_class="HUMAN_AUTHORITY",
             ))
         if not projection["automatic_portion_surfaces_present"]:
             blockers.append(blocker(
-                "Automatic photo-derived scale/portion evidence source is incomplete.",
-                "Install STEGNUTRITION-AUTO-PORTION-013 against the provenance-bearing portion interval contract.",
+                "Automatic photo-derived scale/portion or governed portion-qualification source is incomplete.",
+                "Install task 021 portion qualification surfaces against the provenance-bearing portion interval contract.",
             ))
         if not projection["production_pipeline_surfaces_present"]:
             blockers.append(blocker(
@@ -283,15 +319,20 @@ def main() -> int:
             ))
         if not projection["benchmark_ingestion_surfaces_present"]:
             blockers.append(blocker(
-                "Machine ingestion for photographed/weighed ground truth is incomplete.",
-                "Install the benchmark ingestion surfaces before accepting physical ground-truth cases.",
+                "Machine ingestion/qualification for photographed/weighed ground truth is incomplete.",
+                "Install benchmark ingestion and task 021 qualification surfaces before accepting physical ground-truth cases.",
             ))
         if projection["real_weighed_benchmark_case_count"] <= 0:
             blockers.append(blocker(
                 "No real photographed/weighed benchmark cases are locally present.",
-                "Capture real food photographs with immediate mass measurements and ingest the provenance-bearing ground-truth records under benchmarks/weighed-photo-cases/.",
-                "Synthetic fixtures may continue validating metric machinery but do not count as real accuracy evidence.",
+                "Capture real food photographs with immediate mass measurements and ingest provenance-bearing ground-truth records under benchmarks/weighed-photo-cases/.",
+                "Synthetic fixtures may validate metric machinery but do not count as real accuracy evidence.",
                 dependency_class="HUMAN_AUTHORITY",
+            ))
+        elif not projection["portion_qualification_receipt_present"]:
+            blockers.append(blocker(
+                "Real weighed-photo cases exist but no governed portion qualification receipt is present.",
+                "Apply the governed PortionQualityPolicy through task 021 and persist benchmarks/weighed-photo-cases/portion-qualification.json only on qualification PASS.",
             ))
         if not route_observed:
             blockers.append(blocker(
@@ -313,6 +354,7 @@ def main() -> int:
             and projection["production_pipeline_surfaces_present"]
             and projection["benchmark_ingestion_surfaces_present"]
             and projection["real_weighed_benchmark_case_count"] > 0
+            and projection["portion_qualification_receipt_present"]
             and route_observed
             and suite["state"] == "COMPLETE"
         )
@@ -371,6 +413,7 @@ def main() -> int:
             f"receipts/stegnutrition-continuation/{EXPECTED_TASK}.json",
             "StegVerse-Labs/StegNutrition:STEGNUTRITION_MIRROR_HANDOFF.md",
             f"StegVerse-Labs/StegNutrition:{EXPECTED_INVENTORY}",
+            "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021.json",
         ],
         "blocker": current_blocker,
         "cost_observation": {
