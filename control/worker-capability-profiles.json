@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.worker-capability-profiles/v0.1",
-  "generation": 9,
+  "generation": 10,
   "profiles": [
     {
       "profile_id": "deterministic-workflow-v1",
@@ -78,6 +78,21 @@
         "stegfin_sovereign_internal_trading_activation is limited to the zero-external-cost internal activation round and grants no external trade, wallet, custody or scale-up authority.",
         "orphan_lifecycle_reconstruction is continuity-only eligibility for a generated orphan-recovery handoff; it cannot execute the recovered parent task or revive an ended claim/fence.",
         "stegnutrition_machine_continuation is limited to locally materialized StegNutrition observation, fixed no-network validation, continuation projection and receipts; it grants no GitHub fetch/write, general code-generation, credential, deployment or release authority."
+      ]
+    },
+    {
+      "profile_id": "sovereign-resolution-worker-v1",
+      "executor_type": "repository_worker",
+      "effect_class": "goal_preserving_constraint_resolution",
+      "allowed_capabilities": ["repository_resolution", "sandbox_validation"],
+      "mutation_allowed": true,
+      "deployment_allowed": false,
+      "availability_grants_authority": false,
+      "capability_match_grants_authority": false,
+      "notes": [
+        "This profile exists only for engine-v11 generated repository-resolution work.",
+        "It may observe an already-authorized sovereign-node declaration and write bounded resolution receipts, but it may not manufacture node ownership, credentials, provider capability, wallet authority, deployment authority, or hosted fallback.",
+        "Failure to observe an eligible declaration must escalate through the existing resolution hierarchy rather than becoming passive BLOCKED state."
       ]
     }
   ]
