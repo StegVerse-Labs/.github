@@ -39,7 +39,7 @@
       "worker_id": "healer-sovereign-scheduler-worker"
     }
   ],
-  "authority_effect": "BOUNDED_LOCAL_SCHEDULER_REGISTRATION_ONLY",
+  "authority_effect": "NONE_REGISTRATION_ONLY",
   "credential_authority": "TV/TVC",
   "github_token_required": false
 }
