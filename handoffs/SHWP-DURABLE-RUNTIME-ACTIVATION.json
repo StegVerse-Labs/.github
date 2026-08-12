@@ -1,62 +1,25 @@
 {
-  "schema": "stegverse.executable-handoff/v0.2",
+  "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-08-12T16:58:00Z",
-  "state": "HANDOFF_READY_ACTIVE_EXECUTION",
+  "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-    "objective": "Activate the canonical StegVerse single-heartbeat runtime continuously on a StegVerse-owned or StegVerse-federated node using only node-local durable storage and native process supervision; third-party platforms may mirror source or validation evidence but cannot be required for deployment, scheduling, liveness, recovery, or worker leasing.",
-    "success_predicates": [
-      "A StegVerse-owned or StegVerse-federated continuous carrier runs the canonical runtime",
-      "The carrier starts from already-present local runtime source or a StegVerse-distributed capsule without provider fetch dependency",
-      "Heartbeat, registry, event, cost, receipt, worker-coordination and canonical-checkpoint state survive carrier restart/replacement",
-      "Runtime v9 owns internal heartbeat cadence and carries worker-coordination subsignals every cycle",
-      "Worker lease lifetime is measured in canonical heartbeat cycles",
-      "Restart/replacement continuity preserves or increments the heartbeat epoch and creates no duplicate claim or fence",
-      "No external scheduler or process host owns worker activation"
-    ],
-    "failure_predicates": [
-      "Any third-party platform is treated as a required production dependency",
-      "A provider outage or quota is treated as a production activation blocker",
-      "The worker repeats observation-only failure without selecting or executing an alternate native activation path",
-      "A stateless or sleeping carrier is presented as durable activation without reconstructable state",
-      "A third-party scheduler becomes heartbeat cadence or worker activation authority",
-      "Carrier restart loses or forks canonical state"
-    ],
+    "objective": "Activate the canonical StegVerse single-heartbeat runtime continuously on a StegVerse-owned or StegVerse-federated node using only node-local durable storage and native process supervision.",
+    "success_predicates": ["A sovereign continuous carrier runs the canonical runtime", "Restart/replacement preserves heartbeat and worker state", "No external scheduler or process host owns worker activation"],
+    "failure_predicates": ["A third-party platform becomes a required production dependency", "The worker repeats observation-only failure instead of deriving or escalating solution work", "Carrier restart forks canonical state"],
     "expires_at": null,
     "authority_ceiling": ["bounded sovereign carrier activation only", "no_cross_subsystem_resource_appropriation", "no_external_scheduler_as_heartbeat_authority", "no_third_party_deployment_dependency"],
-    "successor_policy": "DERIVE_OR_ESCALATE_IF_CURRENT_CONSTRAINT_UNRESOLVED",
+    "successor_policy": "INHERIT_OR_NARROW",
     "max_successor_depth": 4
   },
   "task": {
     "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
     "repository": "StegVerse-Labs/.github",
-    "source_refs": [
-      "StegVerse-Labs/.github#12",
-      "StegVerse-Labs/.github#59",
-      "StegVerse-Labs/.github#65",
-      "StegVerse-Labs/.github#83",
-      "control/active-worker-state-policy.json",
-      "docs/ORG_MIRROR_HANDOFF.md",
-      "docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md",
-      "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
-      "docs/BLOCKER_RESOLUTION_MIRROR_HANDOFF.md",
-      "control/blocker-resolution-policy.json",
-      "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
-      "workers/sovereign_runtime_activation_worker.py",
-      "scripts/install_sovereign_heartbeat_service.py",
-      "scripts/verify_sovereign_runtime_activation.py",
-      "tests/test_sovereign_runtime_activation_verifier.py",
-      "cost-basis/worker-runtime/sovereign-runtime-activation.json",
-      "master-records/orchestration/WORKER_LIFECYCLE_CUSTODY_MIRROR_HANDOFF.md",
-      "StegVerse-002/micro-node-runtime#16",
-      "control/worker-registry.json",
-      "Heartbeat Worker Project run 31338817754:SUCCESS"
-    ],
+    "source_refs": ["StegVerse-Labs/.github#59", "StegVerse-Labs/.github#65", "StegVerse-Labs/.github#83", "control/active-worker-state-policy.json", "docs/ORG_MIRROR_HANDOFF.md", "docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md", "workers/sovereign_runtime_activation_worker.py", "scripts/install_sovereign_heartbeat_service.py", "scripts/verify_sovereign_runtime_activation.py", "control/worker-registry.json"],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "Production activation must be StegVerse-native; unfinished work must remain actively worker-owned and solution-executing rather than entering an idle blocked state.",
+    "derivation_reason": "Production activation must remain actively worker-owned and solution-executing; constraints derive solution/escalation work rather than passive stopping states.",
     "canonical_owner_ref": "StegVerse-Labs/.github#59",
     "canonical_lineage_key": "shwp:durable-runtime-activation",
     "derivation_depth": 0,
@@ -89,7 +52,7 @@
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json#resolution",
-    "recheck_trigger": "each admitted heartbeat while unfinished; on a declared sovereign node the worker must execute native installation and proof production rather than merely observe missing evidence",
+    "recheck_trigger": "each admitted heartbeat while unfinished",
     "checkout_policy": "fenced_atomic_checkout",
     "eligible_node_declaration": ["STEGVERSE_SOVEREIGN_NODE=1", "/etc/stegverse/node.json", "~/.stegverse/node.json"],
     "hosted_environment_rejection": ["GitHub Actions", "Render", "Vercel", "Cloudflare hosted runtime"]
@@ -102,39 +65,20 @@
     "activation_proof_ref": "~/.stegverse/heartbeat/activation.latest.json"
   },
   "completion": {
-    "next_authorized_action": "On the next admitted heartbeat, select or materialize an eligible StegVerse-owned/federated carrier, run the canonical native installer, observe heartbeat advancement, perform a controlled service restart, verify non-regression/no-duplicate claims and reconstruction, and consume the generated nine-predicate activation proof. If a candidate cannot satisfy the proof within the worker authority ceiling, derive/select the next eligible StegVerse-002 micro-node candidate or escalate the constraint collision to the next authority level; do not enter an idle blocked state.",
-    "terminal_when": [
-      "A continuously executing canonical heartbeat carrier is active on a StegVerse-owned/federated node",
-      "Heartbeat cadence is runtime-v9-owned",
-      "Worker-coordination subsignal carries cycle-bound leases",
-      "Master Records reconstruction restores canonical state after restart/replacement",
-      "Restart/replacement continuity proof passes",
-      "No duplicate claim/fence is created",
-      "scripts/verify_sovereign_runtime_activation.py emits all nine predicates true",
-      "StegVerse-Labs/.github#12 sovereign activation predicates are all satisfied"
-    ],
-    "implementation_validation": {
-      "workflow": "Heartbeat Worker Project",
-      "run_id": 31338817754,
-      "conclusion": "SUCCESS",
-      "proof_producer_step": "SUCCESS"
-    }
+    "next_authorized_action": "G18 selects or materializes an eligible StegVerse-owned/federated carrier, runs native installation/proof, validates restart/reconstruction, and if the current constraint cannot be resolved within its authority, engine v11 derives or escalates the resolution task to the next authority level.",
+    "terminal_when": ["A continuously executing sovereign heartbeat carrier is active", "The nine-predicate activation proof passes", "Restart/reconstruction continuity passes", "No duplicate claim or fence exists"],
+    "implementation_validation": {"workflow": "Heartbeat Worker Project", "run_id": 31338817754, "conclusion": "SUCCESS"}
   },
   "constraint": {
     "operational_state": "ACTIVE_SOLUTION_EXECUTION",
     "class": "PHYSICAL_RESOURCE",
     "condition": "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT",
-    "owner": "heartbeat worker SHWP-DURABLE-RUNTIME-ACTIVATION via StegVerse-Labs/.github#59",
-    "problem_statement": "The executable native activation and proof path is complete and hosted-validated, while no currently connected execution surface is directly observed as a declared StegVerse-owned/federated node.",
+    "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18",
     "solution_required": true,
-    "solution_candidates": [
-      "Bind the worker to any existing eligible StegVerse-owned/federated Linux, macOS, or Windows node",
-      "Promote an eligible StegVerse-002 micro-node to the carrier while preserving identical durability/restart/reconstruction predicates",
-      "Construct a new StegVerse-owned/federated node from the repository-local runtime capsule; no hosted provider is required"
-    ],
+    "solution_candidates": ["existing eligible sovereign node", "eligible StegVerse-002 micro-node", "new node from repository-local runtime capsule"],
     "next_solution_action": "SOVEREIGN_RUNTIME_SOLUTION_EXECUTION",
-    "machine_observable_completion_condition": "node-local activation.latest.json reports all nine sovereign runtime predicates true",
-    "escalation_rule": "If all candidates collide with authority or physical constraints, derive an escalation task to the next authority level with the collision evidence and a concrete correction target.",
+    "machine_observable_completion_condition": "node-local activation.latest.json reports all nine predicates true",
+    "escalation_rule": "derive/escalate the constraint collision through engine v11 if current authority cannot resolve it",
     "third_party_dependency": false,
     "human_action_required": false,
     "missing_implementation": false
