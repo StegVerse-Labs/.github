@@ -1,6 +1,6 @@
 {
-  "schema": "stegverse.blocker-resolution-policy/v1",
-  "policy_id": "NO-THIRD-PARTY-BLOCKERS-001",
+  "schema": "stegverse.blocker-resolution-policy/v2",
+  "policy_id": "ACTIVE-RESOLUTION-ESCALATION-002",
   "effective": true,
   "rules": {
     "all_blocked_responses_require_resolution_contract": true,
@@ -13,18 +13,41 @@
     ],
     "solution_required_must_be_true": true,
     "workaround_candidates_min_items": 1,
+    "blocked_worker_task_may_remain_blocked": false,
+    "blocked_worker_task_required_transition": "DERIVE_AND_REGISTER_RESOLUTION_TASK",
+    "fail_closed_constraint_required_transition": "DERIVE_AND_REGISTER_RESOLUTION_TASK",
+    "conditional_constraint_required_transition": "DERIVE_AND_REGISTER_RESOLUTION_TASK",
+    "resolution_task_preserves_originating_goal": true,
+    "resolution_task_must_be_registered": true,
+    "resolution_task_must_name_completion_evidence": true,
+    "resolution_task_must_fail_closed_on_missing_authority": true,
+    "same_constraint_resolution_failure_required_transition": "ESCALATE_TO_NEXT_RESOLUTION_LEVEL",
+    "unresolved_constraint_collision_required_transition": "ESCALATE_TO_NEXT_RESOLUTION_LEVEL",
+    "unresolved_executor_required_transition": "ESCALATE_TO_NEXT_RESOLUTION_LEVEL",
     "third_party_dependency_may_be_blocker": false,
     "third_party_dependency_required_state": "ACTIVE",
     "third_party_dependency_required_transition": "THIRD_PARTY_WORKAROUND_REQUIRED",
     "unchanged_third_party_recheck_counts_as_progress": false,
-    "unchanged_internal_blocker_recheck_counts_as_progress": false
+    "unchanged_internal_blocker_recheck_counts_as_progress": false,
+    "observer_only_recheck_counts_as_progress": false,
+    "github_token_production_authority": "NONE",
+    "credential_and_route_authority": "TV/TVC"
   },
+  "resolution_levels": [
+    "WORKER",
+    "REPOSITORY_OWNER",
+    "COMPONENT_AUTHORITY",
+    "ECOSYSTEM_GOVERNANCE",
+    "HUMAN_AUTHORITY"
+  ],
+  "escalation_rule": "A worker that cannot produce an admitted solution must not hold the goal in a blocked state. The runtime creates a new goal-preserving resolution task at the next level capable of correcting the collision. If no machine level has sufficient authority, the task becomes HUMAN_AUTHORITY_REQUIRED with the exact decision/correction requested.",
   "dependency_classes": {
     "THIRD_PARTY": "External provider, hosted platform, vendor credential, SaaS quota, external scheduler, or other non-StegVerse service. Never a terminal blocker; worker must pursue another solution or workaround.",
-    "INTERNAL_CAPABILITY": "Missing StegVerse-owned capability or implementation. May be BLOCKED only with an executable solution/workaround plan.",
-    "AUTHORITY": "Missing admitted authority. May be BLOCKED only with a machine-observable authority-resolution path and workaround candidates that preserve authority boundaries.",
-    "PHYSICAL_RESOURCE": "Required StegVerse-owned/federated hardware or runtime resource does not yet exist. May be BLOCKED only while actively pursuing an alternate eligible resource or construction path.",
-    "SAFETY_POLICY": "Fail-closed safety or governance boundary. May remain blocked; bypass is forbidden, but a compliant alternate solution must still be named when one exists."
+    "INTERNAL_CAPABILITY": "Missing StegVerse-owned capability or implementation. Produces a registered resolution task rather than a passive blocked worker.",
+    "AUTHORITY": "Missing admitted authority. Produces an authority-resolution task; execution remains fail closed until admitted authority exists.",
+    "PHYSICAL_RESOURCE": "Required StegVerse-owned/federated hardware or runtime resource does not yet exist. Produces a sovereign-resource solution task and escalates if the assigned level cannot construct or obtain an eligible resource.",
+    "SAFETY_POLICY": "Fail-closed safety or governance boundary. Bypass is forbidden. A compliant alternate-solution task is required; irreconcilable constraint collisions escalate to the next governance level.",
+    "CONSTRAINT_COLLISION": "Two or more valid constraints cannot simultaneously be satisfied by the current worker. The worker must preserve both constraints, register the collision as evidence, and escalate to the next level authorized to change architecture, scope, policy, or authority."
   },
-  "invariant": "A blocker is a demand for a different solution. A third-party dependency is never the reason StegVerse stops progressing."
+  "invariant": "FAIL_CLOSED preserves safety of the attempted consequence; it does not terminate pursuit of the governing goal. Every unsatisfied worker constraint becomes active resolution work, and unresolved constraint collisions escalate until an authorized level can correct them or an explicit human-authority decision is required."
 }
