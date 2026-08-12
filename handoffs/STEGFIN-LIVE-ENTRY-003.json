@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-STEGFIN-LIVE-ENTRY-003",
   "created_at": "2026-08-10T16:00:00Z",
-  "updated_at": "2026-08-12T18:11:00Z",
+  "updated_at": "2026-08-12T18:18:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "STEGFIN-BASE-ROUNDTRIP-001",
@@ -50,7 +50,7 @@
     "canonical_owner_ref": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-LIVE-ENTRY-003.json",
     "canonical_lineage_key": "stegfin:base-validation-entry-003",
     "derivation_depth": 0,
-    "priority": "critical"
+    "priority": "release"
   },
   "authority": {
     "authority_source": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-LIVE-ENTRY-003.json; credential authority TV/TVC; route authority StegVerse-Labs/TVC; existing StegFin vault boundary; USER_ONLY signing and broadcast",
@@ -100,7 +100,7 @@
     "owner": "resident sovereign heartbeat",
     "solution_required": true,
     "machine_observable_release_condition": "SHWP-DURABLE-RUNTIME-ACTIVATION reaches terminal activation proof and canonical heartbeat advances beyond HB29",
-    "next_solution_action": "Complete sovereign carrier activation, then immediately admit STEGFIN-LIVE-ENTRY-003 at critical priority",
+    "next_solution_action": "Complete sovereign carrier activation, then immediately admit STEGFIN-LIVE-ENTRY-003 at release priority",
     "third_party_dependency": false,
     "human_action_required": false
   },
