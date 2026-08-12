@@ -8,6 +8,8 @@ import sys
 import tempfile
 import unittest
 
+from heartbeat_runtime.engine_v11 import HeartbeatRuntime
+
 ROOT = Path(__file__).resolve().parents[1]
 WORKER = ROOT / "workers" / "sovereign_runtime_activation_worker.py"
 
@@ -98,6 +100,9 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
             self.assertTrue(receipt["solution_attempt"]["hosted_environment_rejected"])
             self.assertEqual(receipt["solution_attempt"]["reason"], "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_RUNTIME_EVIDENCE")
             self.assertFalse(receipt["third_party_runtime_required"])
+
+    def test_release_priority_outranks_critical_in_engine_v11(self) -> None:
+        self.assertLess(HeartbeatRuntime.PRIORITY["release"], HeartbeatRuntime.PRIORITY["critical"])
 
     def test_carrier_is_release_priority_and_names_stegfin_as_downstream(self) -> None:
         handoff = json.loads((ROOT / "handoffs" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text())
