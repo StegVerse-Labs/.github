@@ -7,7 +7,7 @@ from typing import Any, Callable
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
 COPY_DIRS=("heartbeat_runtime","control","handoffs","authorizations","workers","schemas","checkpoints","events","receipts","heartbeats","cost-basis")
 COPY_FILES=("scripts/run_heartbeat_runtime.py","scripts/verify_sovereign_runtime_activation.py")
-CANONICAL_RUNTIME="heartbeat_runtime.engine_v9.HeartbeatRuntime"
+CANONICAL_RUNTIME="heartbeat_runtime.engine_v11.HeartbeatRuntime"
 DEFAULT_INTERVAL_MS=10.0
 
 def default_runtime_root(env=None):
@@ -35,7 +35,7 @@ def materialize(source_root:Path,target_root:Path,*,interval_ms:float=DEFAULT_IN
         dst=target_root/rel; dst.parent.mkdir(parents=True,exist_ok=True); shutil.copy2(src,dst)
     required=(
         target_root/"heartbeat_runtime"/"__init__.py",
-        target_root/"heartbeat_runtime"/"engine_v9.py",
+        target_root/"heartbeat_runtime"/"engine_v11.py",
         target_root/"control"/"heartbeat-state.json",
         target_root/"control"/"heartbeat-subsignals.json",
         target_root/"control"/"worker-registry.json",
@@ -44,8 +44,8 @@ def materialize(source_root:Path,target_root:Path,*,interval_ms:float=DEFAULT_IN
     )
     if not all(p.is_file() for p in required): raise RuntimeError("materialized runtime is incomplete")
     init_text=(target_root/"heartbeat_runtime"/"__init__.py").read_text(encoding="utf-8")
-    if "from .engine_v9 import HeartbeatRuntime" not in init_text:
-        raise RuntimeError("materialized runtime does not bind canonical engine_v9")
+    if "from .engine_v11 import HeartbeatRuntime" not in init_text:
+        raise RuntimeError("materialized runtime does not bind canonical engine_v11")
     receipt={
         "schema":"stegverse.sovereign-heartbeat-materialization/v2",
         "source_root":str(source_root),
