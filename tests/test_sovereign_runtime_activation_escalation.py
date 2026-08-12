@@ -99,6 +99,14 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
             self.assertEqual(receipt["solution_attempt"]["reason"], "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_RUNTIME_EVIDENCE")
             self.assertFalse(receipt["third_party_runtime_required"])
 
+    def test_carrier_is_critical_and_names_stegfin_as_downstream(self) -> None:
+        handoff = json.loads((ROOT / "handoffs" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text())
+        self.assertEqual(handoff["task"]["priority"], "critical")
+        self.assertEqual(handoff["authority"]["credential_authority"], "TV/TVC")
+        self.assertEqual(handoff["authority"]["github_token_production_authority"], "NONE")
+        self.assertIn("STEGFIN-LIVE-ENTRY-003", handoff["critical_downstream"])
+        self.assertEqual(handoff["constraint"]["operational_state"], "ACTIVE_SOLUTION_EXECUTION")
+
 
 if __name__ == "__main__":
     unittest.main()
