@@ -197,3 +197,24 @@ Tasks submit per-task check-in proposals; they do not directly edit authoritativ
 ## 13. Non-claims
 
 This document does not claim the allocator, branch protection, required merge check, heartbeat transport, watchdog, or reconciliation loop is active. Installed state is limited to files and workflows present in Git history and validated by current CI.
+
+## 14. Handoff execution-ownership partition
+
+The organization control plane adopts `stegverse.handoff-execution-ownership/v1`, whose canonical repository standard is `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` and whose organization policy projection is `control/handoff-execution-ownership-policy.json`.
+
+Every active `*_MIRROR_HANDOFF.md` must explicitly distinguish:
+
+```text
+MANUAL / SESSION-STARTABLE
+WORKER-OWNED / DO NOT COMPETE
+ESCALATED / AUTHORITY-OWNED
+COMPLETED / SUPERSEDED
+```
+
+A handoff item is not manually available merely because it says `pending`, `not started`, `not activated`, `awaiting evidence`, `blocked`, or `next`. Manual implementation requires an explicit `manual_execution_allowed: true` entry and a fresh registry/claim lookup showing no worker, machine owner, fence, lease, derived resolution task, or escalation occupying the same collision scope.
+
+For worker-owned or authority-owned work, handoffs must identify the exact registry/claim/handoff/issue reference, collision scope, release condition, and next executable action. Manual work inside that scope is prohibited until ownership is released or an escalation explicitly assigns a manual/human role.
+
+Legacy handoffs without the required section fail closed for manual implementation and are classified `RECONCILIATION_REQUIRED` until textually migrated. This protects old handoffs from being mistaken for permission to compete with current workers.
+
+Current worker/claim/fence/lease/escalation records have execution-ownership precedence over stale prose. Handoff rendering and validation must preserve that precedence rather than copying historical `BLOCKED` labels into a new manual-startable state.
