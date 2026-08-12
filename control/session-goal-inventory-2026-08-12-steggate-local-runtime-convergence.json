@@ -2,9 +2,11 @@
   "schema": "stegverse.session-goal-inventory/v1",
   "inventory_id": "STEGGATE-LOCAL-RUNTIME-CONVERGENCE-2026-08-12",
   "created_at": "2026-08-12T09:00:00-05:00",
+  "updated_at": "2026-08-12T10:04:00-05:00",
   "originating_session_goals": [
     "Preserve and complete the AdmittedCode/StegGate SDK demo boundary as a manifested, ingestion-routed, replayable and reconstructable ecosystem transaction path.",
     "Preserve Mansoor's frozen AdmittedCode/StegGate 0.2.0 evaluation reference while allowing forward development and replayable finding lineage.",
+    "Freeze the exact post-baseline multi-repository experiment reference and preserve evaluator notification sequencing/messages.",
     "Remove the descriptive local model/runtime selection step by using an executable local-runtime discovery/launch/inference/proof path.",
     "Formally develop the StegVerse-local model.",
     "Use TV/TVC for credential and route semantics; GitHub tokens have no production/runtime authority.",
@@ -13,9 +15,15 @@
   "canonical_continuations": [
     "StegVerse-Labs/StegCore/docs/TRANSACTION_CONTINUITY_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegCore/MANSOOR_EVALUATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegCore/docs/SDK_STEGGATE_EXPERIMENT_REFERENCE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegCore/evaluation/SDK_STEGGATE_EXPERIMENT_REFERENCE_2026-08-12.json",
+    "StegVerse-Labs/StegCore/docs/EVALUATOR_NOTIFICATION_MESSAGES_2026-08-12.md",
     "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/.github/docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/.github/docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#59",
+    "StegVerse-Labs/.github#60",
+    "StegVerse-Labs/.github#65"
   ],
   "tasks": [
     {
@@ -23,14 +31,7 @@
       "originating_goal": "Make SDK/demo inputs traverse the same manifested ingestion -> canonical StegGate -> return-ingestion path as ordinary ecosystem work.",
       "destination": "StegVerse-Labs/StegCore",
       "branch": "main",
-      "surfaces": [
-        "src/stegcore/transaction_lifecycle.py",
-        "tests/test_transaction_lifecycle.py",
-        "tools/run_manifested_transaction_demo.py",
-        "docs/TRANSACTION_CONTINUITY_MIRROR_HANDOFF.md",
-        "StegCore#79",
-        "StegCore PR#80"
-      ],
+      "surfaces": ["src/stegcore/transaction_lifecycle.py", "tests/test_transaction_lifecycle.py", "tools/run_manifested_transaction_demo.py", "docs/TRANSACTION_CONTINUITY_MIRROR_HANDOFF.md", "StegCore#79", "StegCore PR#80"],
       "owner": "StegVerse-Labs/StegCore",
       "claim_state": "COMPLETE_RELEASED",
       "completion_state": "COMPLETE",
@@ -45,12 +46,7 @@
       "originating_goal": "Remove the legacy adapter-local ALLOW escape and require canonical manifested execution for consequential evaluation.",
       "destination": "StegVerse-Labs/StegCore",
       "branch": "main",
-      "surfaces": [
-        "core/llm_adapter.py",
-        "tests/test_legacy_llm_adapter_canonicalization.py",
-        "StegCore#81",
-        "StegCore PR#82"
-      ],
+      "surfaces": ["core/llm_adapter.py", "tests/test_legacy_llm_adapter_canonicalization.py", "StegCore#81", "StegCore PR#82"],
       "owner": "StegVerse-Labs/StegCore",
       "claim_state": "COMPLETE_RELEASED",
       "completion_state": "COMPLETE",
@@ -65,32 +61,22 @@
       "originating_goal": "Make manifested transactions and reviewer findings discoverable, replayable and reconstructable without granting payload disclosure or policy authority.",
       "destination": "StegVerse-Labs/StegCore",
       "branch": "main",
-      "surfaces": [
-        "src/stegcore/transaction_discovery.py",
-        "tests/test_transaction_discovery.py",
-        "docs/TRANSACTION_CONTINUITY_MIRROR_HANDOFF.md",
-        "StegCore#83",
-        "StegCore PR#84"
-      ],
+      "surfaces": ["src/stegcore/transaction_discovery.py", "tests/test_transaction_discovery.py", "docs/TRANSACTION_CONTINUITY_MIRROR_HANDOFF.md", "StegCore#83", "StegCore PR#84"],
       "owner": "StegVerse-Labs/StegCore#83",
       "claim_state": "ACTIVE_INTEGRATION_NO_IMPLEMENTATION_COLLISION_OBSERVED",
       "completion_state": "CORE_PROVIDER_NEUTRAL_INDEX_COMPLETE_SHARED_BACKING_PENDING",
       "validation_state": "CORE_PASS",
-      "integration_state": "PARTIAL",
+      "integration_state": "PARTIAL_CANONICAL_CONTINUATION_ASSIGNED",
       "archival_dependency": false,
       "evidence": ["PR#84", "ee40743aba893d9e16293cb2521abe58e2abedae"],
-      "next_executable_action": "Bind the provider-neutral discovery contract to an authorized shared ecosystem backing and public consumer proof without making discovery an authority surface."
+      "next_executable_action": "StegCore#83 owns shared ecosystem backing/public consumer integration; this session must not duplicate it."
     },
     {
       "task_id": "MANSOOR-EVALUATION-BASELINE-PRESERVATION",
       "originating_goal": "Allow forward boundary augmentation without moving or rewriting Mansoor's frozen evaluation target, while preserving independently attributable findings.",
       "destination": "StegVerse-Labs/StegCore",
       "branch": "eval/mansoor-admittedcode-0.2.0-2026-08-11 + main",
-      "surfaces": [
-        "MANSOOR_EVALUATION_MIRROR_HANDOFF.md",
-        "docs/MANSOOR_EVALUATION_BASELINE_DELTA.md",
-        "eval/mansoor-admittedcode-0.2.0-2026-08-11"
-      ],
+      "surfaces": ["MANSOOR_EVALUATION_MIRROR_HANDOFF.md", "docs/MANSOOR_EVALUATION_BASELINE_DELTA.md", "eval/mansoor-admittedcode-0.2.0-2026-08-11"],
       "owner": "StegVerse-Labs/StegCore",
       "claim_state": "PRESERVED_REFERENCE",
       "completion_state": "COMPLETE",
@@ -99,6 +85,36 @@
       "archival_dependency": false,
       "evidence": ["baseline_commit:5d86d7999199b9403a05320710c4d1bb95527327"],
       "next_executable_action": "Mansoor may independently evaluate the frozen reference; later findings can bind to transaction discovery lineage without changing the baseline."
+    },
+    {
+      "task_id": "SDK-STEGGATE-EVALUATOR-REFERENCE-FREEZE-001",
+      "originating_goal": "Close the moving-reference gap before sending the SDK/StegGate experiment to external evaluators.",
+      "destination": "StegVerse-Labs/StegCore",
+      "branch": "main + eval/sdk-steggate-boundary-2026-08-12 across eight pinned repositories",
+      "surfaces": ["evaluation/SDK_STEGGATE_EXPERIMENT_REFERENCE_2026-08-12.json", "docs/SDK_STEGGATE_EXPERIMENT_REFERENCE_MIRROR_HANDOFF.md", "AdmittedCode/code-admit-gate/ADMITTEDCODE_MIRROR_HANDOFF.md"],
+      "owner": "StegVerse-Labs/StegCore",
+      "claim_state": "COMPLETE_REFERENCE_FROZEN",
+      "completion_state": "COMPLETE",
+      "validation_state": "8_OF_8_EXACT_SHA_PINS_AND_EVALUATION_REFS",
+      "integration_state": "COMPLETE",
+      "archival_dependency": false,
+      "evidence": ["StegCore commits 2d8179524f9542dfc99cfff356832035cd6240c8 and 61316c660e9840511a18a2849dba5755bf37553e", "AdmittedCode commit 576d40e0f7a178c0f52146a68cf5a491b28921d5"],
+      "next_executable_action": "NONE_REFERENCE_FREEZE_COMPLETE"
+    },
+    {
+      "task_id": "EVALUATOR-NOTIFICATION-PRESERVATION-001",
+      "originating_goal": "Compose and durably preserve evaluator messages and Mansoor blind-evaluation sequencing so the communication state is not chat-only.",
+      "destination": "StegVerse-Labs/StegCore",
+      "branch": "main",
+      "surfaces": ["docs/EVALUATOR_NOTIFICATION_MESSAGES_2026-08-12.md"],
+      "owner": "StegVerse-Labs/StegCore evaluation continuation",
+      "claim_state": "COMPLETE_TRANSFERRED",
+      "completion_state": "COMPLETE",
+      "validation_state": "DIRECT_FILE_INSPECTION",
+      "integration_state": "DURABLE_REFERENCE_INSTALLED",
+      "archival_dependency": false,
+      "evidence": ["commit:1f0af82c463b36f1779dc734e02afdec4cb89a6c"],
+      "next_executable_action": "Eduardo message may be sent against the frozen experiment reference; Mansoor detailed post-baseline disclosure remains gated by his blind newcomer observation if still pending."
     },
     {
       "task_id": "SOVEREIGN-LOCAL-MODEL-001",
@@ -135,22 +151,17 @@
       "originating_goal": "Activate the completed local model/runtime and canonical heartbeat path on an actual StegVerse sovereign carrier.",
       "destination": "StegVerse-Labs/.github",
       "branch": "main",
-      "surfaces": [
-        "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
-        "workers/sovereign_runtime_activation_worker.py",
-        "control/heartbeat-state.json",
-        ".github#59"
-      ],
+      "surfaces": ["handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json", "workers/sovereign_runtime_activation_worker.py", "control/heartbeat-state.json", ".github#59", ".github#65"],
       "owner": "resident sovereign heartbeat + sovereign-runtime-activation-worker",
       "claim_state": "MACHINE_OWNED_BOUND_G18",
-      "completion_state": "BLOCKED",
+      "completion_state": "BLOCKED_PHYSICAL_RESOURCE",
       "validation_state": "SOURCE_PASS_LIVE_NINE_PREDICATE_PROOF_MISSING",
       "integration_state": "INSTALLED_IN_CANONICAL_WORKER_REGISTRY",
-      "archival_dependency": true,
+      "archival_dependency": false,
       "blocker": "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT",
       "machine_observable_release_condition": "A declared StegVerse-owned/federated node writes node-local ~/.stegverse/heartbeat/activation.latest.json with all nine activation predicates true and the resident canonical heartbeat advances beyond HB29 without duplicate claim/fence.",
-      "evidence": ["control/heartbeat-state.json@HB29", ".github#59"],
-      "next_executable_action": "Run the already-installed native sovereign heartbeat service on a declared StegVerse-owned/federated node; GitHub Actions, Render, Vercel and Cloudflare are prohibited substitutes."
+      "evidence": ["control/heartbeat-state.json@HB29", ".github#59", ".github#65"],
+      "next_executable_action": "Machine-owned physical-resource lane executes the already-installed native sovereign heartbeat service on a declared StegVerse-owned/federated node; GitHub Actions, Render, Vercel and Cloudflare are prohibited substitutes."
     },
     {
       "task_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
@@ -163,16 +174,17 @@
       "completion_state": "NOT_ACTIVATED",
       "validation_state": "SOURCE_CHAIN_PASS_LIVE_SAME_EXECUTION_PROOF_MISSING",
       "integration_state": "INSTALLED",
-      "archival_dependency": true,
+      "archival_dependency": false,
       "machine_observable_release_condition": "Post-HB29 resident carrier completes orphan recovery with fence >20, reacquires the parent with a fresh fence >20, proves the local endpoint, receives TVC ROUTE_ADMITTED with credential_requirement NONE, executes the exact LLM-adapter route, and retains same-execution Master Records reconstruction PASS.",
-      "next_executable_action": "Wait only on the declared sovereign carrier release condition; do not create duplicate source implementation."
+      "next_executable_action": "Machine-owned canonical continuation only; do not create duplicate source implementation or retain a chat session merely to observe the blocker."
     }
   ],
   "convergence": {
     "local_model_runtime_source_work": "MERGED_INTO_CANONICAL_WORKSTREAM: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
-    "runtime_activation": "MACHINE_OWNED: StegVerse-Labs/.github#59/#60 and resident heartbeat",
-    "transaction_continuity": "MERGED_INTO_CANONICAL_WORKSTREAM: StegVerse-Labs/StegCore/docs/TRANSACTION_CONTINUITY_MIRROR_HANDOFF.md",
-    "mansoor_evaluation": "PRESERVED_REFERENCE: StegVerse-Labs/StegCore/MANSOOR_EVALUATION_MIRROR_HANDOFF.md"
+    "runtime_activation": "MACHINE_OWNED: StegVerse-Labs/.github#59/#60/#65 and resident heartbeat",
+    "transaction_continuity": "MERGED_INTO_CANONICAL_WORKSTREAM: StegVerse-Labs/StegCore/docs/TRANSACTION_CONTINUITY_MIRROR_HANDOFF.md and StegCore#83",
+    "mansoor_evaluation": "PRESERVED_REFERENCE: StegVerse-Labs/StegCore/MANSOOR_EVALUATION_MIRROR_HANDOFF.md",
+    "evaluator_reference_and_messages": "MERGED_INTO_CANONICAL_WORKSTREAM: StegVerse-Labs/StegCore/evaluation/SDK_STEGGATE_EXPERIMENT_REFERENCE_2026-08-12.json + docs/EVALUATOR_NOTIFICATION_MESSAGES_2026-08-12.md"
   },
   "session_specific_requirements_transferred": [
     "No GitHub token is production/runtime/credential authority; TV/TVC owns credential semantics.",
@@ -182,10 +194,13 @@
     "Transaction discovery is distinct from payload disclosure and grants no policy or execution authority.",
     "Mansoor's frozen 0.2.0 reference is immutable; forward changes do not erase independently attributable findings.",
     "Reviewer findings can bind to finding -> evidence transaction -> replay -> remediation -> verification lineage.",
-    "Hosted validation is not sovereign activation; activation requires direct same-carrier evidence on a declared StegVerse-owned/federated node."
+    "The post-baseline evaluator reference is frozen across eight exact repository SHAs without unauthorized product tags.",
+    "Eduardo and Mansoor notification text plus Mansoor blind-evaluation sequencing are durably preserved in StegCore.",
+    "Hosted validation is not sovereign activation; activation requires direct same-carrier evidence on a declared StegVerse-owned/federated node.",
+    "Machine-owned blocked activation is a durable continuation condition and does not require retention of this chat after all unique requirements are transferred."
   ],
   "unique_chat_only_requirements_remaining": 0,
-  "session_role_after_consolidation": "ACTIVE_DISTINCT_SUPPORT_CANONICAL_STATE_RECONCILIATION_AND_ACTIVATION_OBSERVATION",
-  "thread_archive_ready": false,
-  "archive_block_reason": "The organization handoff requires measurable production activation progress; canonical heartbeat remains HB29 and the sovereign node declaration/activation receipt is absent."
+  "session_role_after_consolidation": "MERGED_INTO_CANONICAL_WORKSTREAM",
+  "thread_archive_ready": true,
+  "archive_basis": "All unique session requirements are implemented, superseded, or durably transferred. Remaining unfinished work is assigned to StegCore#83 and machine-owned .github#59/#60/#65 with explicit machine-observable release conditions. No unresolved task requires chat-only state, duplicate implementation, or continued session observation."
 }
