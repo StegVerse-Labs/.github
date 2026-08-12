@@ -2,6 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
+  "updated_at": "2026-08-12T18:11:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
@@ -16,14 +17,14 @@
   "task": {
     "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
     "repository": "StegVerse-Labs/.github",
-    "source_refs": ["StegVerse-Labs/.github#59", "StegVerse-Labs/.github#65", "StegVerse-Labs/.github#83", "control/active-worker-state-policy.json", "docs/ORG_MIRROR_HANDOFF.md", "docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md", "workers/sovereign_runtime_activation_worker.py", "scripts/install_sovereign_heartbeat_service.py", "scripts/verify_sovereign_runtime_activation.py", "control/worker-registry.json"],
+    "source_refs": ["StegVerse-Labs/.github#59", "StegVerse-Labs/.github#65", "StegVerse-Labs/.github#83", "control/active-worker-state-policy.json", "docs/ORG_MIRROR_HANDOFF.md", "docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md", "workers/sovereign_runtime_activation_worker.py", "scripts/install_sovereign_heartbeat_service.py", "scripts/verify_sovereign_runtime_activation.py", "control/worker-registry.json", "handoffs/STEGFIN-LIVE-ENTRY-003.json"],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "Production activation must remain actively worker-owned and solution-executing; constraints derive solution/escalation work rather than passive stopping states.",
+    "derivation_reason": "Production activation must remain actively worker-owned and solution-executing; constraints derive solution/escalation work rather than passive stopping states. This carrier is also the immediate upstream dependency for STEGFIN-LIVE-ENTRY-003 and therefore gates the first real governed Base round trip.",
     "canonical_owner_ref": "StegVerse-Labs/.github#59",
     "canonical_lineage_key": "shwp:durable-runtime-activation",
     "derivation_depth": 0,
-    "priority": "release",
+    "priority": "critical",
     "operational_state": "ACTIVE_WORKER",
     "claim_state": "MACHINE_OWNED_BOUND_G18",
     "fencing_token": 18
@@ -65,7 +66,7 @@
     "activation_proof_ref": "~/.stegverse/heartbeat/activation.latest.json"
   },
   "completion": {
-    "next_authorized_action": "G18 selects or materializes an eligible StegVerse-owned/federated carrier, runs native installation/proof, validates restart/reconstruction, and if the current constraint cannot be resolved within its authority, engine v11 derives or escalates the resolution task to the next authority level.",
+    "next_authorized_action": "G18 selects or materializes an eligible StegVerse-owned/federated carrier, runs native installation/proof, validates restart/reconstruction, and if the current constraint cannot be resolved within its authority, engine v11 derives or escalates the resolution task to the next authority level. On terminal proof, STEGFIN-LIVE-ENTRY-003 is the critical downstream live-trading task.",
     "terminal_when": ["A continuously executing sovereign heartbeat carrier is active", "The nine-predicate activation proof passes", "Restart/reconstruction continuity passes", "No duplicate claim or fence exists"],
     "implementation_validation": {"workflow": "Heartbeat Worker Project", "run_id": 31338817754, "conclusion": "SUCCESS"}
   },
@@ -82,5 +83,9 @@
     "third_party_dependency": false,
     "human_action_required": false,
     "missing_implementation": false
-  }
+  },
+  "critical_downstream": [
+    "STEGFIN-LIVE-ENTRY-003",
+    "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+  ]
 }
