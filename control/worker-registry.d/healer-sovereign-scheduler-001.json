@@ -1,0 +1,45 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": ["HEALER_NO_TOKEN_SOVEREIGN_SCHEDULER_NOT_YET_LIVE_PROVEN"],
+      "authorized_policy_version": "shwp-healer-sovereign-scheduler-v0.1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/healer-sovereign-scheduler.json",
+      "evidence_refs": [
+        "handoffs/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+        "workers/healer_sovereign_scheduler_worker.py",
+        "StegVerse-Labs/StegVerse-Healer/app/sovereign_scheduler.py"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "HEALER-TV-TVC-NO-GITHUB-TOKEN-DISPATCH-001",
+      "handoff_ref": "handoffs/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
+      "worker_id": null,
+      "worker_instance_id": null
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:healer-sovereign-scheduler-v1",
+      "authority_source": "authorizations/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+      "capabilities": ["healer_sovereign_scheduling"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "healer-sovereign-scheduler-worker"
+    }
+  ],
+  "authority_effect": "BOUNDED_LOCAL_SCHEDULER_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}
