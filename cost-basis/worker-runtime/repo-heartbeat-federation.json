@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.worker-cost-basis/v0.1",
+  "task_class": "repo_heartbeat_federation",
+  "max_actions": 64,
+  "max_retries": 256,
+  "runtime_window_beats": 512,
+  "external_cost_ceiling_usd": 0,
+  "external_cost_usd": 0,
+  "expiry_basis": "TASK_CLASS_COST_BASIS",
+  "wall_clock_expiry_authority": false
+}
