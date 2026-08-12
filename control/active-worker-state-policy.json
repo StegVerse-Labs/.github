@@ -1,0 +1,28 @@
+{
+  "schema": "stegverse.active-worker-state-policy/v1",
+  "policy_id": "ACTIVE-WORKER-STATE-INVARIANT-001",
+  "effective_at": "2026-08-12T16:57:30Z",
+  "operational_states": [
+    "ACTIVE_SESSION",
+    "ACTIVE_WORKER",
+    "MACHINE_OWNED",
+    "COMPLETE",
+    "SUPERSEDED"
+  ],
+  "constraint_rule": "A constraint condition may not suspend unresolved work. If the current worker cannot resolve the condition within its authority ceiling, it must derive a successor task or escalate to the next authority level with a machine-observable release condition.",
+  "forbidden_unresolved_state": "BLOCKED",
+  "active_worker_requirements": {
+    "executor_binding_required": true,
+    "claim_or_machine_owner_required": true,
+    "next_executable_action_required": true,
+    "constraint_metadata_separate_from_operational_state": true,
+    "escalation_path_required_when_constraint_unsolved": true
+  },
+  "credential_authority": "TV/TVC",
+  "github_token_production_authority": "NONE",
+  "canonical_issues": [
+    "StegVerse-Labs/.github#83",
+    "StegVerse-Labs/.github#84",
+    "StegVerse-Labs/.github#85"
+  ]
+}
