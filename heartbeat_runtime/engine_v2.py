@@ -23,6 +23,7 @@ class WorkerResponse:
     checkpoint_ref: str | None = None
     evidence_refs: tuple[str, ...] = ()
     cost_observation: dict[str, Any] | None = None
+    resolution_contract: dict[str, Any] | None = None
 
 
 Adapter = Callable[[dict[str, Any], dict[str, Any], int], WorkerResponse]
@@ -429,36 +430,43 @@ class HeartbeatRuntime:
                 self._event(events, epoch, "activation_deferred", task_id=task["task_id"], reason="EXECUTOR_NOT_RESOLVED")
                 continue
 
-            generation = int(registry.get("generation", 0)) + 1
-            registry["generation"] = generation
-            claim_id = f"SHWP-{task['task_id']}-G{generation}"
-            task.update({
-                "state": "ACTIVE",
-                "executor_binding": "BOUND",
-                "worker_id": worker["worker_id"],
-                "worker_instance_id": f"{worker['worker_id']}-HB{epoch}-G{generation}",
-                "claim_id": claim_id,
-                "archive_eligible": False,
-                "archive_reason_codes": [],
-                "block_ref": None,
-                "heartbeat_timing": {
-                    "start_epoch": epoch,
-                    "last_response_epoch": epoch,
-                    "last_transition_epoch": epoch,
-                    "current_transition": "ACTIVATED",
-                    "transition_sequence": 0,
-                    "expected_next_transition": None,
-                    "expected_next_earliest_epoch": None,
-                    "expected_next_latest_epoch": None,
-                    "max_missing_response_beats": max(1, min(10, budget)),
-                    "expiry_epoch": epoch + budget,
-                    "expiry_basis": expiry_basis,
-                    "fencing_token": generation
-                }
-            })
+            next_generation = int(registry.get("generation", 0)) + 1
+            claim_id = f"CLAIM-{task['task_id']}-G{next_generation}"
+            registry["generation"] = next_generation
+            task["state"] = "CLAIMED"
+            task["executor_binding"] = "BOUND"
+            task["worker_id"] = worker["worker_id"]
+            task["worker_instance_id"] = f"{worker['worker_id']}-HB{epoch}-G{next_generation}"
+            task["claim_id"] = claim_id
+            task["heartbeat_timing"] = {
+                "start_epoch": epoch,
+                "last_response_epoch": epoch,
+                "last_transition_epoch": epoch,
+                "current_transition": "CLAIMED",
+                "transition_sequence": 0,
+                "expected_next_transition": None,
+                "expected_next_earliest_epoch": None,
+                "expected_next_latest_epoch": None,
+                "max_missing_response_beats": 2,
+                "expiry_epoch": epoch + budget,
+                "expiry_basis": expiry_basis,
+                "fencing_token": next_generation,
+                "renewal_count": 0,
+            }
+            task["resource_budget"] = {
+                "max_actions": int(handoff.get("execution", {}).get("max_actions", 50)),
+                "max_retries": int(handoff.get("execution", {}).get("max_retries", 0)),
+                "external_cost_ceiling_usd": float(handoff.get("execution", {}).get("external_cost_ceiling_usd", 0)),
+                "runtime_window_beats": int(handoff.get("execution", {}).get("runtime_window_beats", budget)),
+                "rate_class": str(handoff.get("execution", {}).get("rate_class", "default")),
+                "allowed_services": list(handoff.get("execution", {}).get("allowed_services", [])),
+                "actions_used": 0,
+                "retries_used": 0,
+                "external_cost_usd": 0,
+                "renewal_count": 0,
+            }
             worker["status"] = "BUSY"
-            worker["last_seen_at"] = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-            self._event(events, epoch, "worker_activated", task_id=task["task_id"], worker_id=worker["worker_id"], claim_id=claim_id, fencing_token=generation, authorization_ref=handoff["activation"]["authorization_ref"], expiry_epoch=epoch + budget, expiry_basis=expiry_basis)
+            self._event(events, epoch, "worker_claimed", task_id=task["task_id"], worker_id=worker["worker_id"], claim_id=claim_id, fencing_token=next_generation)
             self._invoke(registry, task, epoch, cost_log, events)
             return True
         return False
@@ -472,7 +480,7 @@ class HeartbeatRuntime:
             cost_log = self._load(self.cost_log_path) if self.cost_log_path.exists() else {
                 "schema": "stegverse.worker-cost-observation-log/v0.1",
                 "generation": 0,
-                "records": []
+                "records": [],
             }
             epoch = int(heartbeat.get("epoch", 0)) + 1
             now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -480,18 +488,12 @@ class HeartbeatRuntime:
             heartbeat["generation"] = int(heartbeat.get("generation", 0)) + 1
             heartbeat["last_cycle_at"] = now
             events: list[dict[str, Any]] = []
-
-            # All currently active workers answer this same heartbeat first.
             for task in list(registry.get("tasks", [])):
                 if task.get("state") in self.WORKER_OWNED and task.get("worker_id"):
                     self._invoke(registry, task, epoch, cost_log, events)
-                elif task.get("state") == "BLOCKED" and task.get("worker_id"):
-                    self._invoke(registry, task, epoch, cost_log, events)
-
             activated = self._activate_one(registry, epoch, cost_log, events)
             if not activated:
                 self._event(events, epoch, "no_worker_initiated", reason="NO_ELIGIBLE_ADMISSIBLE_RESOLVED_WORK")
-
             registry["updated_at"] = now
             result = {
                 "schema": "stegverse.heartbeat-cycle-result/v0.2",
@@ -499,7 +501,7 @@ class HeartbeatRuntime:
                 "activated": activated,
                 "events": events,
                 "registry_generation": registry.get("generation", 0),
-                "authority_effect": "none_beyond_existing_admitted_task_authority"
+                "authority_effect": "none_beyond_existing_admitted_task_authority",
             }
             if write:
                 self._atomic_write(self.hb_path, heartbeat)
