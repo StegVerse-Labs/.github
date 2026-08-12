@@ -7,8 +7,9 @@
   "branch": "main",
   "claimant": "current ChatGPT trade-activation validation session",
   "role": "CLAIMED_FOR_VALIDATION",
-  "claim_state": "ACTIVE",
+  "claim_state": "RELEASED_COMPLETE",
   "claim_created_at": "2026-08-12T16:38:00-05:00",
+  "claim_released_at": "2026-08-12T16:38:00-05:00",
   "claim_expires_at": "2026-08-12T17:38:00-05:00",
   "collision_scope": {
     "allowed": [
@@ -26,17 +27,13 @@
       "wallet signing or broadcast"
     ]
   },
-  "expected_evidence": [
-    "control/blocker-resolution-policy.json",
-    "heartbeat_runtime/engine_v10.py",
-    "heartbeat_runtime/engine_v11.py",
-    "workers/sovereign_node_repository_resolution_worker.py",
-    "docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md",
-    "control/worker-registry.json",
-    "control/heartbeat-state.json"
-  ],
-  "release_condition": "Release immediately after the escalation/executor interpretation is durably recorded; do not retain a validation claim while waiting for HB30.",
+  "validation_result": "PASS_NO_SESSION_IMPLEMENTATION_GAP",
+  "receipt_ref": "receipts/session-validation/STEGFIN-ACTIVATION-ESCALATION-2026-08-12.json",
+  "release_reason": "Canonical policy and handoffs prove that missing machine-level executor capability is an escalation boundary, not authorization for session-installed implementation; no nonconflicting implementation remains.",
+  "next_owner": "resident sovereign heartbeat + engine-v11 authority chain",
+  "next_release_condition": "G18 terminal nine-predicate carrier proof and heartbeat advance beyond HB29, or canonical resolution escalation reaches the exact authority level able to resolve the physical-resource condition.",
   "github_token_required": false,
   "credential_authority": "TV/TVC",
-  "authority_effect": "NONE_VALIDATION_ONLY"
+  "authority_effect": "NONE_VALIDATION_ONLY",
+  "archive_dependency": false
 }
