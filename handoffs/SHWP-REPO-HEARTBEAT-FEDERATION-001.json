@@ -30,17 +30,21 @@
     "task_id": "SHWP-REPO-HEARTBEAT-FEDERATION-001",
     "repository": "StegVerse-Labs/.github",
     "source_refs": [
+      "StegVerse-Labs/.github#81",
       "control/organization-federation.json",
       "handoffs/SHWP-ALL-ORG-FEDERATION-001.json",
       "control/process-worker-adapters.json",
       "control/repo-heartbeat-federation.json",
       "schemas/repo-heartbeat-manifest.schema.json",
-      "workers/repo_heartbeat_federation_worker.py"
+      "scripts/emit_repo_heartbeat_manifest.py",
+      "workers/repo_heartbeat_federation_worker.py",
+      "tests/test_repo_heartbeat_federation_worker.py",
+      "tests/test_emit_repo_heartbeat_manifest.py"
     ],
     "dependencies": [],
     "parent_task_id": null,
     "derivation_reason": "Organization-level federation exists, but repository/node enrollment, freshness, dependency-loss propagation, and ecosystem-wide coverage proof are not established.",
-    "canonical_owner_ref": "StegVerse-Labs/.github#65",
+    "canonical_owner_ref": "StegVerse-Labs/.github#81",
     "canonical_lineage_key": "ecosystem:repo-heartbeat-federation",
     "derivation_depth": 0,
     "priority": "critical"
@@ -77,7 +81,7 @@
     "topology_ref": "receipts/repo-heartbeat-federation/SHWP-REPO-HEARTBEAT-FEDERATION-001.json#topology"
   },
   "completion": {
-    "next_authorized_action": "Admit the worker on the single heartbeat, emit initial fail-closed coverage, then enroll missing required repositories using the normalized manifest adapter contract without installing independent schedulers.",
+    "next_authorized_action": "Admit the worker on the single resident heartbeat, emit initial fail-closed coverage, then enroll missing required repositories using the normalized manifest adapter contract without installing independent schedulers.",
     "terminal_when": [
       "All required repository manifests are present and valid",
       "All required repository manifests are fresh",
