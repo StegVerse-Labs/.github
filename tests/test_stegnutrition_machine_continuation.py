@@ -159,6 +159,45 @@ def test_entrypoint_preflight_requires_fda_task_when_local_inventory_exists(tmp_
     assert "STEGNUTRITION-FDA-REFERENCE-020" in proc.stderr
 
 
+def test_entrypoint_preflight_requires_runtime_custody_verifier(tmp_path: Path) -> None:
+    inventory = tmp_path / "tasks/STEGNUTRITION-SESSION-20260811.json"
+    inventory.parent.mkdir(parents=True, exist_ok=True)
+    inventory.write_text(
+        json.dumps({
+            "implemented_pending_activation_or_real_evidence": [
+                {"task_id": "STEGNUTRITION-FDA-REFERENCE-020"}
+            ]
+        }),
+        encoding="utf-8",
+    )
+    for relative in (
+        "src/stegnutrition/fda_reference.py",
+        "tests/test_fda_reference.py",
+        "tasks/STEGNUTRITION-FDA-REFERENCE-020.json",
+        "src/stegnutrition/ledger.py",
+        "schemas/meal-ledger.schema.json",
+    ):
+        path = tmp_path / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("x\n", encoding="utf-8")
+    env = os.environ.copy()
+    env["STEGVERSE_STEGNUTRITION_ROOT"] = str(tmp_path)
+    env.pop("GITHUB_TOKEN", None)
+    env.pop("GH_TOKEN", None)
+    proc = subprocess.run(
+        [sys.executable, "workers/stegnutrition_continuation_entrypoint.py"],
+        cwd=ROOT,
+        input=json.dumps(invocation()),
+        text=True,
+        capture_output=True,
+        env=env,
+        timeout=20,
+        check=False,
+    )
+    assert proc.returncode == 13
+    assert "verify_runtime_custody_no_network.py" in proc.stderr
+
+
 def test_worker_fail_closed_response_is_projected_as_active_constraint(tmp_path: Path) -> None:
     receipt = ROOT / "receipts/stegnutrition-continuation" / f"{TASK_ID}.json"
     if receipt.exists():
