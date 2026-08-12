@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "stegfin_external_pretrade",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 4096,
+    "confidence": "LOW_PRELIVE"
+  },
+  "cost_estimate": {
+    "compute_units": 8,
+    "token_units": 0,
+    "storage_bytes": 1048576,
+    "network_bytes": null,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 4
+  },
+  "evidence_refs": [
+    "docs/STEGFIN_EXTERNAL_PRETRADE_MIRROR_HANDOFF.md",
+    "handoffs/STEGFIN-LIVE-PRETRADE-005.json",
+    "workers/stegfin_external_pretrade_worker.py",
+    "StegVerse-Labs/stegfin-governance:scripts/run_tv_tvc_sovereign_pretrade.py"
+  ],
+  "notes": [
+    "The worker executes only after fresh Inventory N and stops at the first USER_ONLY wallet handoff.",
+    "Provider capability/credential authority remains TV/TVC and delivery remains inside the existing vault inherited-file-descriptor boundary.",
+    "No GitHub token, GitHub runtime, wallet credential or alternate provider secret path is a production timing dependency.",
+    "External cost ceiling covers worker/orchestration authority only; the validation transaction itself remains USER_ONLY and is not executed by this worker."
+  ]
+}
