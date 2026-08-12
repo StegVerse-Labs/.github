@@ -36,11 +36,7 @@ class StegFinExternalPretradeWorkerTests(unittest.TestCase):
     def test_adapter_allowlist_contains_no_credential_variables(self) -> None:
         adapter = json.loads(ADAPTER.read_text(encoding="utf-8"))["adapters"][0]
         allow = set(adapter.get("env_allowlist") or [])
-        forbidden = {
-            "GITHUB_TOKEN", "GH_TOKEN", "ZEROEX_API_KEY", "OPENAI_API_KEY",
-            "PRIVATE_KEY", "WALLET_PRIVATE_KEY", "SEED_PHRASE", "MNEMONIC",
-            "CLOUDFLARE_API_TOKEN", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY",
-        }
+        forbidden = {"GITHUB_TOKEN", "GH_TOKEN", "ZEROEX_API_KEY", "OPENAI_API_KEY", "PRIVATE_KEY", "WALLET_PRIVATE_KEY", "SEED_PHRASE", "MNEMONIC", "CLOUDFLARE_API_TOKEN", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"}
         self.assertTrue(allow.isdisjoint(forbidden))
         self.assertEqual(allow, {"STEGVERSE_STEGFIN_SOURCE_ROOT", "STEGVERSE_TV_SOURCE_ROOT", "STEGVERSE_TVC_SOURCE_ROOT", "HOME", "XDG_STATE_HOME", "LOCALAPPDATA"})
 
@@ -65,30 +61,21 @@ class StegFinExternalPretradeWorkerTests(unittest.TestCase):
 
     def test_inventory_freshness_window_fails_closed(self) -> None:
         now = datetime(2026, 8, 12, 20, 50, tzinfo=timezone.utc)
-        base = {
-            "task_id": "STEGFIN-LIVE-ENTRY-003",
-            "transition_id": "STEGFIN_INVENTORY_N_OBSERVED",
-            "fresh_inventory_n_observed": True,
-            "github_token_required": False,
-            "observed_at_utc": (now - timedelta(seconds=10)).isoformat().replace("+00:00", "Z"),
-            "evidence_expiry_utc": (now + timedelta(seconds=50)).isoformat().replace("+00:00", "Z"),
-        }
+        base = {"task_id": "STEGFIN-LIVE-ENTRY-003", "transition_id": "STEGFIN_INVENTORY_N_OBSERVED", "fresh_inventory_n_observed": True, "github_token_required": False, "observed_at_utc": (now - timedelta(seconds=10)).isoformat().replace("+00:00", "Z"), "evidence_expiry_utc": (now + timedelta(seconds=50)).isoformat().replace("+00:00", "Z")}
         self.assertTrue(worker.inventory_is_fresh(base, now=now))
-        expired = dict(base, evidence_expiry_utc=(now - timedelta(seconds=1)).isoformat().replace("+00:00", "Z"))
-        self.assertFalse(worker.inventory_is_fresh(expired, now=now))
-        future = dict(base, observed_at_utc=(now + timedelta(seconds=1)).isoformat().replace("+00:00", "Z"))
-        self.assertFalse(worker.inventory_is_fresh(future, now=now))
-        malformed = dict(base, evidence_expiry_utc="not-a-time")
-        self.assertFalse(worker.inventory_is_fresh(malformed, now=now))
+        self.assertFalse(worker.inventory_is_fresh(dict(base, evidence_expiry_utc=(now - timedelta(seconds=1)).isoformat().replace("+00:00", "Z")), now=now))
+        self.assertFalse(worker.inventory_is_fresh(dict(base, observed_at_utc=(now + timedelta(seconds=1)).isoformat().replace("+00:00", "Z")), now=now))
+        self.assertFalse(worker.inventory_is_fresh(dict(base, evidence_expiry_utc="not-a-time"), now=now))
 
-    def test_worker_source_uses_canonical_tvc_and_vault_surfaces(self) -> None:
+    def test_worker_source_uses_canonical_request_tvc_vault_and_readiness(self) -> None:
         source = WORKER_PATH.read_text(encoding="utf-8")
         for marker in (
-            "tvc_stegwallet_trading_gate_cli.py", "tvc_resolve_provider_capability.py", "tvc_issue_stegwallet_quote_lease.py",
-            "build_sovereign_validation_trade_request.py", "build_tv_tvc_registry_approval.py", "build_sovereign_live_pretrade_e1.py", "run_tv_tvc_sovereign_pretrade.py",
-            "USER_APPROVAL_REQUIRED", "USER_SWAP_SIGNATURE_REQUIRED", '"credential_authority": "TV/TVC"', '"github_token_required": False',
+            "configs/base_validation_entry_trade_request.json", "tvc_stegwallet_trading_gate_cli.py", "tvc_resolve_provider_capability.py", "tvc_issue_stegwallet_quote_lease.py",
+            "build_tv_tvc_registry_approval.py", "build_sovereign_live_pretrade_e1.py", "run_tv_tvc_sovereign_pretrade.py", "check_live_entry_trade_readiness.py",
+            "WALLET_HANDOFF_READY", "USER_APPROVAL_REQUIRED", "USER_SWAP_SIGNATURE_REQUIRED", '"credential_authority": "TV/TVC"', '"github_token_required": False',
         ):
             self.assertIn(marker, source)
+        self.assertNotIn("build_sovereign_validation_trade_request.py", source)
         for forbidden in ("GITHUB_TOKEN", "GH_TOKEN", "ZEROEX_API_KEY", "WALLET_PRIVATE_KEY", "SEED_PHRASE", "MNEMONIC", "OPENAI_API_KEY"):
             self.assertNotIn(forbidden, source)
 
