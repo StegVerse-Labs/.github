@@ -5,13 +5,14 @@
     {
       "archive_eligible": false,
       "archive_reason_codes": [],
-      "authorized_policy_version": "shwp-single-hb-stegfin-live-entry-v0.2",
-      "block_ref": "handoffs/STEGFIN-LIVE-ENTRY-003.json#block",
+      "authorized_policy_version": "shwp-single-hb-stegfin-live-entry-v0.3",
+      "block_ref": "handoffs/STEGFIN-LIVE-ENTRY-003.json#constraint",
       "claim_id": null,
       "cost_basis_ref": "cost-basis/worker-runtime/stegfin-live-entry-observation.json",
       "evidence_refs": [
         "StegVerse-Labs/stegfin-governance#55",
         "handoffs/STEGFIN-LIVE-ENTRY-003.json",
+        "control/worker-registry.d/stegfin-live-entry-003-executor-v2.json",
         "workers/stegfin_live_entry_inventory_worker.py"
       ],
       "executor_binding": "AUTHORIZED",
@@ -45,5 +46,7 @@
   ],
   "authority_effect": "NONE_REGISTRATION_ONLY",
   "github_token_required": false,
-  "provider_capability_authority": "TC_TVC_VAULT_ONLY"
+  "provider_capability_authority": "TV_TVC_VAULT_ONLY",
+  "upstream_dependency": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "post_dependency_priority": "critical"
 }
