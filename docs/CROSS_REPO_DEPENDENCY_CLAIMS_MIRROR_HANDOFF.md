@@ -101,7 +101,7 @@ handoff: handoffs/SHWP-ALL-ORG-FEDERATION-001.json
 registry: control/worker-registry.json
 worker: organization-federation-readiness-worker
 carrier: worker_coordination heartbeat subsignal
-release model: every organization represented; blocked rows retain explicit machine-observable release conditions
+release model: every organization represented; unresolved rows retain explicit machine-observable release conditions
 ```
 
 ## Collision boundaries
@@ -116,20 +116,60 @@ no change to issue #12 sovereign-carrier activation criteria
 no duplicate all-organization federation worker
 ```
 
+## Execution ownership and collision partition
+
+Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`.
+
+### MANUAL / SESSION-STARTABLE
+
+No implementation of the cross-repository allocator, shared dependency-surface admission rules, or current federation ownership is manually startable from this completed handoff.
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: CROSS-REPO-DEPENDENCY-CLAIMS-CONTINUATION
+  execution_owner: canonical organization allocator + current task/worker owners
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: control/claims-active.json + control/worker-registry.json + docs/ORG_MIRROR_HANDOFF.md
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: dependency-surface claims, allocator state, current fences/leases, and machine-owned continuation tasks using those claims
+  release_condition: exact claim/registry owner releases the collision scope or a newer handoff explicitly records a manual-startable successor
+  next_executable_action: use the allocator/registry to acquire a nonconflicting claim; do not infer manual availability from an adjacent repository's pending work
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: CROSS-REPO-COLLISION-RECONCILIATION
+  execution_owner: organization allocator/reconciler or higher authority named by the current claim record
+  claim_state: ESCALATED
+  worker_registry_ref: control/claims-active.json + events/ + docs/ORG_MIRROR_HANDOFF.md
+  manual_execution_allowed: false
+  manual_allowed_role: reconciliation
+  collision_scope: any overlapping mutable dependency surfaces, stale fences, or post-merge bypass reconciliation
+  release_condition: canonical reconciler resolves/supersedes the collision and publishes the resulting claim state
+  next_executable_action: reconcile through the control plane rather than create a competing manual implementation
+```
+
+### COMPLETED / SUPERSEDED
+
+- Cross-repository dependency-surface conflict detection: complete.
+- Site defense-in-depth integration: complete.
+- Duplicate chat ownership for this goal: superseded/released.
+
 ## Completion and archive state
 
 ```text
 developed_files: 4/4
 scaffolding_or_stubs: 0
 missing_required_files: 0
-validation: 4/4 hosted gates (head control-plane, head heartbeat-worker, main control-plane, main heartbeat-worker)
-integration: 3/3 (central allocator, Site defense-in-depth, heartbeat/worker validation path)
+validation: 4/4 hosted gates
+integration: 3/3
 goal_activation: 100%
 implementation_claim: RELEASED
 session_unique_active_claims: 0
 ```
-
-The originating Render-collision/orchestration requirement is no longer chat-only: the local entry gate and central allocator repair are merged and main-validated, and the existing canonical heartbeat worker registry remains actively claimed/fenced for organization-wide readiness observation. No unresolved implementation, validation, integration, propagation, reconciliation, or observation requirement from this goal requires this conversation to remain open.
 
 ```text
 MERGED INTO: StegVerse-Labs/.github/docs/CROSS_REPO_DEPENDENCY_CLAIMS_MIRROR_HANDOFF.md
