@@ -152,6 +152,7 @@ Canonical local commands:
 ```text
 python -m compileall -q heartbeat_runtime workers scripts
 python scripts/validate_executable_handoffs.py
+python scripts/validate_handoff_execution_ownership.py
 python -m unittest discover -v tests
 python scripts/run_heartbeat_runtime.py --dry-run --cycles 1
 python tools/validate_active_worker_states.py
@@ -171,6 +172,62 @@ post-activation publication/verification: GCAT-BCAT-Engine/Publisher, admissibil
 ```
 
 Propagation remains a machine-owned successor condition after immutable activation evidence; it is not current chat-session work.
+
+## Execution ownership and collision partition
+
+Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`.
+
+### MANUAL / SESSION-STARTABLE
+
+No heartbeat, carrier, Ecosystem Chat, or StegFin implementation task in this handoff is manually startable by default. A session may acquire a distinct validation/reconciliation claim only for a nonoverlapping evidence surface explicitly outside the runtime/claim/fence scope.
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: SOVEREIGN-HEARTBEAT-PRODUCTION-ACTIVATION
+  execution_owner: resident sovereign heartbeat + canonical worker registry
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: control/worker-registry.json + StegVerse-Labs/.github#59/#65/#60
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: heartbeat runtime state, claims/fences/leases, sovereign carrier activation, Ecosystem Chat recovery/inference, and worker-owned successor activation tasks
+  release_condition: current registry owners complete/supersede/release the specific task or explicitly assign a nonoverlapping manual role
+  next_executable_action: resident heartbeat executes active tasks and derives/escalates any unsolved constraint through engine v11
+
+- task_id: STEGFIN-LIVE-ENTRY-003
+  execution_owner: resident sovereign heartbeat + StegFin runtime + TV/TVC/vault + USER_ONLY wallet authority
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: StegVerse-Labs/stegfin-governance/task-state/STEGFIN-LIVE-ENTRY-003.json
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: live inventory, governed trade entry/exit orchestration, provider capability, settlement observation, replay/P&L; USER_ONLY signing remains a separate human authority boundary
+  release_condition: canonical StegFin task-state completes or explicitly releases a distinct scope
+  next_executable_action: canonical task continues after resident heartbeat and provider capability predicates are satisfied
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: SOVEREIGN-HEARTBEAT-CONSTRAINT-RESOLUTION
+  execution_owner: engine-v11 authority chain
+  claim_state: ESCALATED
+  worker_registry_ref: control/worker-registry.json + docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  collision_scope: physical-resource, capability, custody, route, or authority constraints that current workers cannot resolve
+  release_condition: next capable authority resolves the constraint or explicitly assigns bounded HUMAN_AUTHORITY_REQUIRED work
+  next_executable_action: derive/register RESOLVE or ESCALATE work rather than expose worker scope to manual implementation
+```
+
+### COMPLETED / SUPERSEDED
+
+- Formal local model/runtime: complete/released.
+- Local discovery/launch/inference/proof: complete/released.
+- GitHub-token production authority: retired.
+- Fail-closed resolution runtime: complete/merged.
+- Active-worker normalization: complete/released.
+
+Pending or incomplete product state does not imply manual availability. Current registry/claim/fence/lease records override stale prose.
 
 ## Session consolidation and archive state
 
