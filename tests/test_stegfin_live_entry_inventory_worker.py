@@ -75,6 +75,24 @@ class StegFinLiveEntryInventoryWorkerTests(unittest.TestCase):
         self.assertIn("stegfin_live_entry_inventory_observation", worker["capabilities"])
         self.assertFalse(fragment["historical_worker_mutated"])
         self.assertFalse(fragment["github_token_required"])
+        self.assertEqual(fragment["provider_capability_authority"], "TV_TVC_VAULT_ONLY")
+        self.assertEqual(fragment["upstream_dependency"], "SHWP-DURABLE-RUNTIME-ACTIVATION")
+        self.assertEqual(fragment["post_dependency_priority"], "critical")
+
+    def test_live_entry_handoff_is_critical_after_sovereign_carrier(self) -> None:
+        handoff = json.loads((ROOT / "handoffs/STEGFIN-LIVE-ENTRY-003.json").read_text())
+        self.assertEqual(handoff["task"]["dependencies"], ["SHWP-DURABLE-RUNTIME-ACTIVATION"])
+        self.assertEqual(handoff["task"]["priority"], "critical")
+        self.assertEqual(handoff["authority"]["credential_authority"], "TV/TVC")
+        self.assertEqual(handoff["authority"]["github_token_production_authority"], "NONE")
+        self.assertEqual(handoff["constraint"]["operational_state"], "ACTIVE_SOLUTION_EXECUTION")
+
+    def test_live_worker_emits_only_current_tv_tvc_authority_labels(self) -> None:
+        source = (ROOT / "workers/stegfin_live_entry_inventory_worker.py").read_text()
+        self.assertIn("TV_TVC_VAULT_ONLY", source)
+        self.assertIn("TV_TVC_PROVIDER_CAPABILITY_RELEASE", source)
+        self.assertNotIn("TC_TVC_VAULT_ONLY", source)
+        self.assertNotIn("TC_TVC_PROVIDER_CAPABILITY_RELEASE", source)
 
     def test_v2_is_the_only_worker_eligible_for_live_entry_required_capabilities(self) -> None:
         handoff = json.loads((ROOT / "handoffs/STEGFIN-LIVE-ENTRY-003.json").read_text())
