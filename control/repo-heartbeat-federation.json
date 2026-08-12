@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.repo-heartbeat-federation/v0.1",
+  "generation": 1,
+  "canonical_heartbeat_owner": "StegVerse-Labs/.github",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "manifest_schema_ref": "schemas/repo-heartbeat-manifest.schema.json",
+  "manifest_directory": "federation/repo-heartbeats",
+  "coverage_receipt_ref": "receipts/repo-heartbeat-federation/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
+  "required_participants": [
+    {"repo_id":"stegcore","organization":"StegVerse-Labs","repository":"StegVerse-Labs/StegCore","participant_class":"RUNTIME","required":true},
+    {"repo_id":"continuity","organization":"StegVerse-Labs","repository":"StegVerse-Labs/Continuity","participant_class":"EVIDENCE","required":true},
+    {"repo_id":"tv","organization":"StegVerse-Labs","repository":"StegVerse-Labs/TV","participant_class":"CONTROL","required":true},
+    {"repo_id":"tvc","organization":"StegVerse-Labs","repository":"StegVerse-Labs/TVC","participant_class":"CONTROL","required":true},
+    {"repo_id":"stegid","organization":"StegVerse-Labs","repository":"StegVerse-Labs/StegID","participant_class":"EVIDENCE","required":true},
+    {"repo_id":"stegagents","organization":"StegVerse-Labs","repository":"StegVerse-Labs/StegAgents","participant_class":"RUNTIME","required":true},
+    {"repo_id":"site","organization":"StegVerse-Labs","repository":"StegVerse-Labs/Site","participant_class":"SERVICE","required":true},
+    {"repo_id":"ara-admissibility-interop","organization":"StegVerse-Labs","repository":"StegVerse-Labs/ara-admissibility-interop","participant_class":"CONTROL","required":true},
+    {"repo_id":"micro-node-runtime","organization":"StegVerse-002","repository":"StegVerse-002/micro-node-runtime","participant_class":"RUNTIME","required":true},
+    {"repo_id":"llm-adapter","organization":"StegVerse-org","repository":"StegVerse-org/LLM-adapter","participant_class":"RUNTIME","required":true},
+    {"repo_id":"master-records-orchestration","organization":"master-records","repository":"master-records/orchestration","participant_class":"EVIDENCE","required":true}
+  ],
+  "status_policy": {
+    "required_missing": "FAIL_CLOSED",
+    "required_stale": "FAIL_CLOSED",
+    "required_failed": "FAIL_CLOSED",
+    "optional_missing": "DEGRADED",
+    "dependency_loss": "PROPAGATE_TO_DEPENDENTS"
+  },
+  "completion_rule": "Every required participant has a syntactically valid, fresh manifest whose repository identity matches the registry, whose current authority is TV/TVC with github_token_required=false, and whose required dependencies are simultaneously fresh and non-failed."
+}
