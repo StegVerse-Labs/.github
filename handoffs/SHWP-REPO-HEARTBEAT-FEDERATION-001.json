@@ -1,0 +1,89 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-REPO-HEARTBEAT-FEDERATION-001",
+  "created_at": "2026-08-12T15:02:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "REPO-HEARTBEAT-FEDERATION-001",
+    "objective": "Federate required StegVerse repositories into the single canonical heartbeat using normalized repository heartbeat manifests, freshness/dependency semantics, fail-closed coverage, and an inspectable ecosystem topology receipt without creating per-repository schedulers.",
+    "success_predicates": [
+      "Every required critical repository in control/repo-heartbeat-federation.json publishes a valid normalized manifest.",
+      "Every required manifest is fresh and identity-bound to the expected organization/repository.",
+      "Control/runtime/service manifests carry commit_sha and runtime_id.",
+      "Required dependency loss propagates to dependent repository status.",
+      "Missing, stale, invalid or failed required repositories fail closed.",
+      "A heartbeat-owned worker emits an inspectable topology hash and coverage receipt.",
+      "Credential authority remains TV/TVC and github_token_required remains false."
+    ],
+    "failure_predicates": [
+      "A missing or stale required repository is treated as healthy.",
+      "A repository manifest grants execution or credential authority.",
+      "A second heartbeat or per-repository scheduler becomes federation authority.",
+      "GitHub token availability becomes a production liveness requirement.",
+      "Dependency loss is hidden from dependent repository state."
+    ],
+    "authority_ceiling": ["repo_heartbeat_federation_reconciliation", "receipts/repo-heartbeat-federation/**", "no_cross_repo_mutation", "no_execution_authority", "no_credential_authority", "no_deployment_authority"],
+    "successor_policy": "NONE",
+    "max_successor_depth": 0
+  },
+  "task": {
+    "task_id": "SHWP-REPO-HEARTBEAT-FEDERATION-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "control/organization-federation.json",
+      "handoffs/SHWP-ALL-ORG-FEDERATION-001.json",
+      "control/process-worker-adapters.json",
+      "control/repo-heartbeat-federation.json",
+      "schemas/repo-heartbeat-manifest.schema.json",
+      "workers/repo_heartbeat_federation_worker.py"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "Organization-level federation exists, but repository/node enrollment, freshness, dependency-loss propagation, and ecosystem-wide coverage proof are not established.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#65",
+    "canonical_lineage_key": "ecosystem:repo-heartbeat-federation",
+    "derivation_depth": 0,
+    "priority": "critical"
+  },
+  "authority": {
+    "authority_source": "authorizations/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "policy_version": "shwp-single-hb-repo-federation-v0.1"
+  },
+  "execution": {
+    "required_capabilities": ["repo_heartbeat_federation_reconciliation"],
+    "allowed_paths": ["receipts/repo-heartbeat-federation/**"],
+    "allowed_services": [],
+    "max_actions": 64,
+    "max_retries": 256,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 512,
+    "rate_class": "repo_heartbeat_federation"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "authorizations/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
+    "recheck_trigger": "each admitted heartbeat while required repository coverage is incomplete or changed",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/repo-heartbeat-federation/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json",
+    "topology_ref": "receipts/repo-heartbeat-federation/SHWP-REPO-HEARTBEAT-FEDERATION-001.json#topology"
+  },
+  "completion": {
+    "next_authorized_action": "Admit the worker on the single heartbeat, emit initial fail-closed coverage, then enroll missing required repositories using the normalized manifest adapter contract without installing independent schedulers.",
+    "terminal_when": [
+      "All required repository manifests are present and valid",
+      "All required repository manifests are fresh",
+      "No required repository is FAILED, BLOCKED, RETIRED or dependency-blocked",
+      "Coverage receipt reports coverage_complete=true"
+    ]
+  },
+  "block": null
+}
