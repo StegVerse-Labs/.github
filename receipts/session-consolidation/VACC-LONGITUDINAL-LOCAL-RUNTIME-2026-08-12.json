@@ -1,0 +1,43 @@
+{
+  "schema": "stegverse.session-consolidation-receipt/v1",
+  "session_inventory": "control/session-goal-inventory-2026-08-12-vacc-longitudinal-local-runtime.json",
+  "session_id": "VACC-LONGITUDINAL-LOCAL-RUNTIME-2026-08-12",
+  "recorded_at": "2026-08-12T12:59:00-05:00",
+  "state": "COMPLETE_ARCHIVE_SAFE",
+  "product_activation_complete": false,
+  "session_unique_work_complete_or_transferred": true,
+  "unique_chat_only_requirements_remaining": 0,
+  "authoritative_archive_state": "docs/ORG_MIRROR_HANDOFF.md#Archive-state",
+  "archive_reason": "All session-unique implementation, validation, integration, reconciliation, publication obligations, and observations are completed or durably transferred to canonical machine/human authority owners. Remaining live activation is not owned by this chat session.",
+  "completed_or_transferred": {
+    "formal_local_model": "COMPLETE_RELEASED: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "local_runtime_discovery_launch_inference_proof": "COMPLETE_RELEASED: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "github_token_production_authority": "NONE",
+    "credential_route_authority": "TV/TVC",
+    "vacc_longitudinal_requirements": "MERGED_INTO_CANONICAL_WORKSTREAM: StegVerse-org/LLM-adapter#90 + Site#113/#241 + master-records/orchestration#15",
+    "public_adversarial_sdk_milestone": "MERGED_INTO_CANONICAL_WORKSTREAM: StegVerse-Labs/Site orchestration / transition-milestones.html",
+    "runtime_activation": "MACHINE_OWNED_ACTIVE_SOLUTION_EXECUTION: StegVerse-Labs/.github#59/#65 + resident sovereign heartbeat",
+    "ecosystem_chat_inference": "MACHINE_OWNED_ACTIVE_SOLUTION_EXECUTION: StegVerse-Labs/.github#60 + resident sovereign heartbeat"
+  },
+  "remaining_machine_observable_activation_conditions": [
+    "Declared StegVerse-owned/federated sovereign carrier executes the installed native heartbeat activation path.",
+    "~/.stegverse/heartbeat/activation.latest.json records all nine predicates true.",
+    "Canonical heartbeat advances beyond HB29 with controlled restart continuity and no duplicate claim/fence.",
+    "Ecosystem Chat obtains a fresh parent fence >20 and executes private local model -> TVC credential_requirement NONE -> exact LLM-adapter route -> measured usage -> Master Records same-execution reconstruction PASS.",
+    "Downstream Site/Publisher/wiki propagation occurs only after immutable activation/release evidence authorizes it."
+  ],
+  "canonical_continuation": [
+    "StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "StegVerse-Labs/.github#59",
+    "StegVerse-Labs/.github#60",
+    "StegVerse-Labs/.github#65",
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-org/LLM-adapter#90",
+    "StegVerse-Labs/Site#113/#241",
+    "master-records/orchestration#15"
+  ],
+  "collision_boundary": "Do not create another heartbeat, local-model runtime, VACC evaluator, credential authority, or hosted production substitute. GitHub tokens and GitHub Actions have no production/runtime activation authority.",
+  "archive_assertion": "Deleting or archiving the originating chat does not impair continuation because every unfinished goal has an active canonical owner, durable state, machine-observable release conditions, and authoritative handoff.",
+  "supersedes_inventory_archive_state_only": "The older session inventory field ACTIVE_DISTINCT_SUPPORT/archive dependency is superseded for archive-state determination by current docs/ORG_MIRROR_HANDOFF.md and this receipt; task/evidence inventory content remains valid provenance."
+}
