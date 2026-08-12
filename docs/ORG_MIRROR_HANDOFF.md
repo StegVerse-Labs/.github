@@ -181,6 +181,20 @@ Propagation remains blocked until immutable same-execution activation evidence e
 - Context transfer is not product activation.
 - Session archival is not product activation.
 
+## Archive-state reconciliation evidence
+
+A subordinate scoped heartbeat handoff and the earlier session archive receipt briefly retained an archive-complete conclusion that contradicted this organization gate. Those records are now explicitly superseded for archive authority:
+
+```text
+scoped heartbeat handoff reconciliation: 6055bb2cd17564021da86119f2a6c8c5ec35bc0d
+session consolidation/archive-authority correction: 9f43b3571ddd2471665d88e95d20c02709ef8f56
+scoped heartbeat thread_archive_ready: false
+scoped heartbeat archive_readiness: BLOCKED_BY_ORG_MIRROR_HANDOFF
+session receipt role: CONSOLIDATION ONLY / NOT ARCHIVE AUTHORIZATION
+```
+
+Historical wording that treated scoped consolidation alone as sufficient for archive readiness is superseded. No repository-local handoff or consolidation receipt may independently override this organization invariant.
+
 ## Session consolidation
 
 All unique Ecosystem Chat local-model/session requirements are durably transferred; `unique_chat_only_requirements_remaining=0` is recorded in the session inventory. The organization archive gate nevertheless remains `thread_archive_ready=false` because inherited production activation is not terminal and the sovereign durable carrier is stalled at HB29.
