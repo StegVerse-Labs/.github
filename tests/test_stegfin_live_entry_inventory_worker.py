@@ -77,12 +77,12 @@ class StegFinLiveEntryInventoryWorkerTests(unittest.TestCase):
         self.assertFalse(fragment["github_token_required"])
         self.assertEqual(fragment["provider_capability_authority"], "TV_TVC_VAULT_ONLY")
         self.assertEqual(fragment["upstream_dependency"], "SHWP-DURABLE-RUNTIME-ACTIVATION")
-        self.assertEqual(fragment["post_dependency_priority"], "critical")
+        self.assertEqual(fragment["post_dependency_priority"], "release")
 
-    def test_live_entry_handoff_is_critical_after_sovereign_carrier(self) -> None:
+    def test_live_entry_handoff_is_release_priority_after_sovereign_carrier(self) -> None:
         handoff = json.loads((ROOT / "handoffs/STEGFIN-LIVE-ENTRY-003.json").read_text())
         self.assertEqual(handoff["task"]["dependencies"], ["SHWP-DURABLE-RUNTIME-ACTIVATION"])
-        self.assertEqual(handoff["task"]["priority"], "critical")
+        self.assertEqual(handoff["task"]["priority"], "release")
         self.assertEqual(handoff["authority"]["credential_authority"], "TV/TVC")
         self.assertEqual(handoff["authority"]["github_token_production_authority"], "NONE")
         self.assertEqual(handoff["constraint"]["operational_state"], "ACTIVE_SOLUTION_EXECUTION")
