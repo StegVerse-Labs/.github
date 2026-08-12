@@ -12,6 +12,7 @@ from heartbeat_runtime.engine_v11 import HeartbeatRuntime as HeartbeatRuntimeV11
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKER = ROOT / "workers" / "sovereign_runtime_activation_worker.py"
+RESOLVER = ROOT / "workers" / "sovereign_node_repository_resolution_worker.py"
 
 
 class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
@@ -36,6 +37,29 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
                     ],
                     "allowed_paths": ["receipts/sovereign-runtime-activation/**"],
                 }
+            },
+        }
+
+    def resolver_invocation(self) -> dict:
+        return {
+            "schema": "stegverse.worker-invocation/v0.1",
+            "heartbeat_epoch": 31,
+            "task": {
+                "task_id": "ESCALATE-SHWP-DURABLE-RUNTIME-ACTIVATION-test",
+                "claim_id": "SHWP-ESCALATE-SHWP-DURABLE-RUNTIME-ACTIVATION-test-G21",
+                "worker_id": "sovereign-node-repository-resolution-worker-v1",
+                "worker_instance_id": "sovereign-node-repository-resolution-worker-v1-HB31-G21",
+                "heartbeat_timing": {"fencing_token": 21},
+            },
+            "handoff": {
+                "execution": {
+                    "required_capabilities": ["repository_resolution", "sandbox_validation"],
+                    "allowed_paths": ["receipts/sovereign-runtime-activation/**"],
+                }
+            },
+            "scope": {
+                "required_capabilities": ["repository_resolution", "sandbox_validation"],
+                "allowed_paths": ["receipts/sovereign-runtime-activation/**"],
             },
         }
 
@@ -115,6 +139,20 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
         self.assertIn("STEGFIN-LIVE-ENTRY-003", handoff["release_downstream"])
         self.assertEqual(handoff["constraint"]["operational_state"], "ACTIVE_SOLUTION_EXECUTION")
 
+    def test_g18_adapter_passes_only_sovereign_runtime_declaration_environment(self) -> None:
+        adapters = json.loads((ROOT / "control" / "process-worker-adapters.json").read_text())
+        adapter = next(
+            row for row in adapters["adapters"]
+            if row["adapter_ref"] == "process:sovereign-runtime-activation-v1"
+        )
+        allowlist = set(adapter["env_allowlist"])
+        self.assertIn("STEGVERSE_SOVEREIGN_NODE", allowlist)
+        self.assertIn("STEGVERSE_HEARTBEAT_ROOT", allowlist)
+        self.assertNotIn("GITHUB_TOKEN", allowlist)
+        self.assertNotIn("GH_TOKEN", allowlist)
+        self.assertNotIn("ZEROEX_API_KEY", allowlist)
+        self.assertNotIn("WALLET_PRIVATE_KEY", allowlist)
+
     def test_v11_resolution_successor_inherits_release_priority(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -170,6 +208,72 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
             self.assertTrue(
                 any(event.get("event_type") == "resolution_priority_inherited" for event in events)
             )
+
+    def test_repository_resolution_worker_is_uniquely_profile_eligible(self) -> None:
+        fragment = json.loads(
+            (ROOT / "control" / "worker-registry.d" / "sovereign-node-repository-resolution-v1.json").read_text()
+        )
+        worker = fragment["workers"][0]
+        self.assertEqual(worker["capabilities"], ["repository_resolution", "sandbox_validation"])
+        self.assertEqual(
+            worker["capability_profile_ref"],
+            "control/worker-capability-profiles.json#sovereign-resolution-worker-v1",
+        )
+        profiles = json.loads((ROOT / "control" / "worker-capability-profiles.json").read_text())
+        profile = next(
+            row for row in profiles["profiles"]
+            if row["profile_id"] == "sovereign-resolution-worker-v1"
+        )
+        self.assertEqual(
+            set(profile["allowed_capabilities"]),
+            {"repository_resolution", "sandbox_validation"},
+        )
+        adapters = json.loads((ROOT / "control" / "process-worker-adapters.json").read_text())
+        matching = [
+            row for row in adapters["adapters"]
+            if set(row.get("capabilities") or []) == {"repository_resolution", "sandbox_validation"}
+            and row.get("enabled") is True
+        ]
+        self.assertEqual([row["adapter_ref"] for row in matching], ["process:sovereign-node-repository-resolution-v1"])
+
+    def test_repository_resolver_escalates_without_node_and_completes_with_authorized_declaration(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            base_env = {
+                "PATH": os.environ.get("PATH", ""),
+                "HOME": str(root / "home"),
+                "XDG_STATE_HOME": str(root / "state"),
+            }
+            blocked = subprocess.run(
+                [sys.executable, str(RESOLVER)],
+                cwd=tmp,
+                input=json.dumps(self.resolver_invocation()) + "\n",
+                text=True,
+                capture_output=True,
+                env=base_env,
+                check=False,
+            )
+            self.assertEqual(blocked.returncode, 0, blocked.stderr)
+            blocked_response = json.loads(blocked.stdout)
+            self.assertEqual(blocked_response["state"], "BLOCKED")
+            self.assertEqual(blocked_response["blocker"]["escalation_target"], "COMPONENT_AUTHORITY")
+            self.assertNotIn("GITHUB_TOKEN", blocked.stdout)
+
+            declared_env = dict(base_env)
+            declared_env["STEGVERSE_SOVEREIGN_NODE"] = "1"
+            completed = subprocess.run(
+                [sys.executable, str(RESOLVER)],
+                cwd=tmp,
+                input=json.dumps(self.resolver_invocation()) + "\n",
+                text=True,
+                capture_output=True,
+                env=declared_env,
+                check=False,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            completed_response = json.loads(completed.stdout)
+            self.assertEqual(completed_response["state"], "COMPLETED")
+            self.assertEqual(completed_response["transition_id"], "SOVEREIGN_NODE_DECLARATION_RESOLVED")
 
 
 if __name__ == "__main__":
