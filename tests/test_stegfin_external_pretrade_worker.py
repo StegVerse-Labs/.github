@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime, timedelta, timezone
 import importlib.util
 import json
 import os
@@ -12,7 +13,6 @@ WORKER_PATH = ROOT / "workers" / "stegfin_external_pretrade_worker.py"
 HANDOFF = ROOT / "handoffs" / "STEGFIN-LIVE-PRETRADE-005.json"
 REGISTRY = ROOT / "control" / "worker-registry.d" / "stegfin-live-pretrade-005.json"
 ADAPTER = ROOT / "control" / "process-worker-adapters.d" / "stegfin-live-pretrade-005.json"
-
 
 spec = importlib.util.spec_from_file_location("stegfin_external_pretrade_worker", WORKER_PATH)
 assert spec and spec.loader
@@ -42,10 +42,7 @@ class StegFinExternalPretradeWorkerTests(unittest.TestCase):
             "CLOUDFLARE_API_TOKEN", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY",
         }
         self.assertTrue(allow.isdisjoint(forbidden))
-        self.assertEqual(
-            allow,
-            {"STEGVERSE_STEGFIN_SOURCE_ROOT", "STEGVERSE_TV_SOURCE_ROOT", "STEGVERSE_TVC_SOURCE_ROOT", "HOME", "XDG_STATE_HOME", "LOCALAPPDATA"},
-        )
+        self.assertEqual(allow, {"STEGVERSE_STEGFIN_SOURCE_ROOT", "STEGVERSE_TV_SOURCE_ROOT", "STEGVERSE_TVC_SOURCE_ROOT", "HOME", "XDG_STATE_HOME", "LOCALAPPDATA"})
 
     def test_handoff_stops_at_user_wallet_boundary(self) -> None:
         handoff = json.loads(HANDOFF.read_text(encoding="utf-8"))
@@ -66,26 +63,33 @@ class StegFinExternalPretradeWorkerTests(unittest.TestCase):
             os.chmod(path, 0o640)
             self.assertFalse(worker.protected_provider_capability(path))
 
+    def test_inventory_freshness_window_fails_closed(self) -> None:
+        now = datetime(2026, 8, 12, 20, 50, tzinfo=timezone.utc)
+        base = {
+            "task_id": "STEGFIN-LIVE-ENTRY-003",
+            "transition_id": "STEGFIN_INVENTORY_N_OBSERVED",
+            "fresh_inventory_n_observed": True,
+            "github_token_required": False,
+            "observed_at_utc": (now - timedelta(seconds=10)).isoformat().replace("+00:00", "Z"),
+            "evidence_expiry_utc": (now + timedelta(seconds=50)).isoformat().replace("+00:00", "Z"),
+        }
+        self.assertTrue(worker.inventory_is_fresh(base, now=now))
+        expired = dict(base, evidence_expiry_utc=(now - timedelta(seconds=1)).isoformat().replace("+00:00", "Z"))
+        self.assertFalse(worker.inventory_is_fresh(expired, now=now))
+        future = dict(base, observed_at_utc=(now + timedelta(seconds=1)).isoformat().replace("+00:00", "Z"))
+        self.assertFalse(worker.inventory_is_fresh(future, now=now))
+        malformed = dict(base, evidence_expiry_utc="not-a-time")
+        self.assertFalse(worker.inventory_is_fresh(malformed, now=now))
+
     def test_worker_source_uses_canonical_tvc_and_vault_surfaces(self) -> None:
         source = WORKER_PATH.read_text(encoding="utf-8")
         for marker in (
-            "tvc_stegwallet_trading_gate_cli.py",
-            "tvc_resolve_provider_capability.py",
-            "tvc_issue_stegwallet_quote_lease.py",
-            "build_sovereign_validation_trade_request.py",
-            "build_tv_tvc_registry_approval.py",
-            "build_sovereign_live_pretrade_e1.py",
-            "run_tv_tvc_sovereign_pretrade.py",
-            "USER_APPROVAL_REQUIRED",
-            "USER_SWAP_SIGNATURE_REQUIRED",
-            '"credential_authority": "TV/TVC"',
-            '"github_token_required": False',
+            "tvc_stegwallet_trading_gate_cli.py", "tvc_resolve_provider_capability.py", "tvc_issue_stegwallet_quote_lease.py",
+            "build_sovereign_validation_trade_request.py", "build_tv_tvc_registry_approval.py", "build_sovereign_live_pretrade_e1.py", "run_tv_tvc_sovereign_pretrade.py",
+            "USER_APPROVAL_REQUIRED", "USER_SWAP_SIGNATURE_REQUIRED", '"credential_authority": "TV/TVC"', '"github_token_required": False',
         ):
             self.assertIn(marker, source)
-        for forbidden in (
-            "GITHUB_TOKEN", "GH_TOKEN", "ZEROEX_API_KEY", "WALLET_PRIVATE_KEY",
-            "SEED_PHRASE", "MNEMONIC", "OPENAI_API_KEY",
-        ):
+        for forbidden in ("GITHUB_TOKEN", "GH_TOKEN", "ZEROEX_API_KEY", "WALLET_PRIVATE_KEY", "SEED_PHRASE", "MNEMONIC", "OPENAI_API_KEY"):
             self.assertNotIn(forbidden, source)
 
 
