@@ -15,7 +15,10 @@
       "Fixed deterministic repository validation is executed locally when the target tree is available",
       "The entrypoint executes scripts/verify_runtime_custody_no_network.py before the continuation worker whenever the local tree is available",
       "Runtime custody verification proves ROUTE_ADMITTED, credential_requirement NONE, github_token_required false, replay binding retention, token-binding rejection and proof-tamper rejection",
-      "FDA task STEGNUTRITION-FDA-REFERENCE-020 and current FDA/runtime-custody surfaces are mandatory canonical inputs",
+      "The entrypoint executes scripts/verify_scenario_provider_no_network.py after runtime custody and before the continuation worker whenever the local tree is available",
+      "Scenario-provider preflight proves local-only/non-authorizing qualification binding, USDA nutrition authority, photo-derived portion intervals, evidence custody, failed-quality rejection and missing-nutrition rejection",
+      "Scenario-provider preflight explicitly does not claim real semantic accuracy qualification",
+      "FDA task STEGNUTRITION-FDA-REFERENCE-020 and current FDA/runtime-custody/scenario-provider surfaces are mandatory canonical inputs",
       "Semantic-model, automatic-portion, real benchmark, live TVC route, validation and release gates are projected independently",
       "Every unresolved condition remains active work with an explicit next executable action",
       "Continuation receipts are fenced, inspectable and persistent",
@@ -26,8 +29,10 @@
       "The worker requires a user to manually select a local root when exactly one canonical local candidate is discoverable",
       "An invalid explicit root or ambiguous set of local roots is silently accepted",
       "A missing locally materialized repository is treated as success",
-      "The current FDA task or runtime-custody verification surface is absent from a locally materialized canonical tree",
+      "The current FDA task, runtime-custody verification surface, or scenario-provider verification surface is absent from a locally materialized canonical tree",
       "A token-requiring or proof-drifted runtime binding is accepted",
+      "A failed semantic quality gate or incomplete qualified-label nutrition coverage is accepted by the production scenario-provider preflight",
+      "Synthetic scenario-provider mechanics are represented as real semantic accuracy qualification",
       "Synthetic benchmark fixtures are represented as real-world accuracy evidence",
       "The low-level visual-evidence model is represented as production semantic food recognition",
       "The worker creates a second heartbeat, route authority, credential authority or model authority",
@@ -58,6 +63,7 @@
       "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-PRODUCTION-PIPELINE-019.json",
       "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-FDA-REFERENCE-020.json",
       "StegVerse-Labs/StegNutrition:scripts/verify_runtime_custody_no_network.py",
+      "StegVerse-Labs/StegNutrition:scripts/verify_scenario_provider_no_network.py",
       "StegVerse-Labs/StegNutrition:claims/STEGNUTRITION-PIXEL-OBSERVATION-003.claim.json",
       "StegVerse-002/micro-node-runtime:docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
       "StegVerse-Labs/TVC:tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json"
@@ -104,10 +110,11 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "When local discovery, runtime-custody preflight, semantic vision, automatic portion, real benchmark, live TVC visual route and fixed local validation predicates are satisfied, emit STEGNUTRITION_RELEASE_CANDIDATE_READY. Release/publication remains a separately authorized StegNutrition release task.",
+    "next_authorized_action": "When local discovery, runtime-custody preflight, scenario-provider preflight, semantic vision, automatic portion, real benchmark, live TVC visual route and fixed local validation predicates are satisfied, emit STEGNUTRITION_RELEASE_CANDIDATE_READY. Release/publication remains a separately authorized StegNutrition release task.",
     "terminal_when": [
       "local_root_discovery=UNAMBIGUOUS_OR_VALID_OVERRIDE",
       "runtime_custody_preflight=PASS",
+      "scenario_provider_preflight=PASS",
       "semantic_vision_surfaces_present=true",
       "automatic_portion_surfaces_present=true",
       "real_weighed_benchmark_case_count>0",
@@ -122,7 +129,7 @@
     "observer": "single sovereign StegVerse heartbeat",
     "recheck_trigger": "each admitted heartbeat while unfinished",
     "next_check": null,
-    "escalation_condition": "Any path attempts GitHub-token source retrieval, hosted model authority, second heartbeat/route authority, accepts invalid or ambiguous local roots, accepts invalid runtime custody, or marks unavailable evidence complete",
+    "escalation_condition": "Any path attempts GitHub-token source retrieval, hosted model authority, second heartbeat/route authority, accepts invalid or ambiguous local roots, accepts invalid runtime custody, accepts invalid scenario-provider qualification binding, overstates synthetic mechanics as real semantic qualification, or marks unavailable evidence complete",
     "block_expires_at": null
   }
 }
