@@ -30,6 +30,7 @@ Canonical policy:
 
 ```text
 control/active-worker-state-policy.json
+control/handoff-execution-ownership-policy.json
 forbidden_unresolved_state: BLOCKED
 credential_authority: TV/TVC
 github_token_production_authority: NONE
@@ -236,6 +237,107 @@ StegVerse-002/micro-node-runtime
 
 Site/Publisher/wiki propagation remains not yet authorized because immutable activation/release evidence is not yet present. That propagation is a machine-owned successor condition, not unique chat work.
 
+## Execution ownership and collision partition
+
+Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`. Organization enforcement: `control/handoff-execution-ownership-policy.json`.
+
+A task that is merely described as pending, not activated, awaiting evidence, or constrained is **not** manually available. A session must consult the worker/task registry and current claims before acting. Current fence/lease/claim/escalation state takes precedence over stale prose.
+
+### MANUAL / SESSION-STARTABLE
+
+No current organization-level implementation task is manual-startable by default.
+
+```yaml
+- task_id: ORG-HANDOFF-NONCOMPETING-VALIDATION
+  execution_owner: explicitly claimed validation or reconciliation session
+  claim_state: UNCLAIMED
+  worker_registry_ref: NONE
+  manual_execution_allowed: true
+  manual_allowed_role: validation
+  collision_scope: read-only or evidence-only validation outside worker-owned implementation/runtime paths; any mutation requires its own exact claim
+  release_condition: validation/reconciliation claim is durably released after evidence is recorded
+  next_executable_action: acquire a distinct nonoverlapping validation/reconciliation claim before mutation
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: SHWP-DURABLE-RUNTIME-ACTIVATION
+  execution_owner: resident sovereign heartbeat + sovereign-runtime-activation-worker
+  claim_state: ACTIVE_WORKER
+  worker_registry_ref: control/worker-registry.json#SHWP-DURABLE-RUNTIME-ACTIVATION
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: sovereign carrier selection/materialization, native service activation, heartbeat state, claim/fence, activation receipts, and restart/reconstruction proof
+  release_condition: node-local nine-predicate activation proof and heartbeat advance beyond HB29, or canonical engine-v11 successor/escalation releases this collision scope
+  next_executable_action: active worker executes native solution or derives/registers the next RESOLVE/ESCALATE task
+
+- task_id: RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28
+  execution_owner: resident sovereign heartbeat + ecosystem-chat-orphan-recovery-worker
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: orphan continuity reconstruction, recovery claim/fence, parent re-acquisition sequencing, and recovery receipts
+  release_condition: recovery receipt is COMPLETED and parent becomes eligible for a fresh authorized fence >20
+  next_executable_action: resident heartbeat executes recovery when carrier is live
+
+- task_id: ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION
+  execution_owner: resident sovereign heartbeat -> TVC -> LLM-adapter -> Master Records
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: StegVerse-Labs/.github#60
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: private model launch/use, TVC admission, exact LLM-adapter route, usage evidence, and same-execution Master Records reconstruction
+  release_condition: immutable same-execution activation evidence under fresh authorized fence >20
+  next_executable_action: canonical chain executes after carrier/recovery predicates are satisfied
+
+- task_id: ECOSYSTEM-CHAT-ACTIVATION-PROPAGATION
+  execution_owner: canonical downstream consumer workers
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: Site/Publisher/wiki propagation tasks named by current repository handoffs
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: activation evidence ingestion/publication to Site, Publisher, admissibility-wiki, and stegguardian-wiki
+  release_condition: immutable same-execution activation receipt is present and consumer release gates admit propagation
+  next_executable_action: downstream consumers ingest only after activation evidence exists
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: SHWP-DURABLE-RUNTIME-ACTIVATION-CONSTRAINT-RESOLUTION
+  execution_owner: engine-v11 authority chain
+  claim_state: ESCALATED
+  worker_registry_ref: docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md + control/worker-registry.json
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  collision_scope: any unresolved physical-resource/capability/authority collision emitted by the current runtime worker
+  release_condition: WORKER -> REPOSITORY_OWNER -> COMPONENT_AUTHORITY -> ECOSYSTEM_GOVERNANCE resolves the condition, or HUMAN_AUTHORITY is explicitly assigned an exact decision/correction
+  next_executable_action: derive/register the next-level resolution task when the current executor cannot resolve the constraint
+
+- task_id: TV-TVC-CREDENTIAL-AND-ROUTE-AUTHORITY
+  execution_owner: StegVerse-Labs/TV + StegVerse-Labs/TVC
+  claim_state: ESCALATED
+  worker_registry_ref: TV/TVC current authority handoffs and route task records
+  manual_execution_allowed: false
+  manual_allowed_role: integration
+  collision_scope: credential semantics, route admission, and any provider/runtime authority decision; GitHub tokens may not substitute
+  release_condition: TV/TVC emits the applicable admitted route/credential result
+  next_executable_action: route/credential owners execute the currently admitted authority path
+```
+
+### COMPLETED / SUPERSEDED
+
+- Formal local model implementation: complete/released.
+- Local discovery/launch/inference/proof: complete/released.
+- GitHub-token production authority retirement: complete/released.
+- Fail-closed RESOLVE/ESCALATE runtime: complete/merged.
+- Active-worker state normalization and validator: complete/released.
+- Historical passive/unowned task normalization: complete/released.
+
+The rule for all subordinate handoffs is fail-closed on manual implementation if their own ownership section is absent or stale. No continuation session may interpret an incomplete handoff item as manual work until the required ownership check is satisfied.
+
 ## Validation evidence
 
 Retained source/control-plane evidence includes:
@@ -259,6 +361,7 @@ Canonical local validation commands remain:
 ```text
 python -m compileall -q heartbeat_runtime workers scripts
 python scripts/validate_executable_handoffs.py
+python scripts/validate_handoff_execution_ownership.py
 python -m unittest discover -v tests
 python scripts/run_heartbeat_runtime.py --dry-run --cycles 1
 python tools/validate_active_worker_states.py
