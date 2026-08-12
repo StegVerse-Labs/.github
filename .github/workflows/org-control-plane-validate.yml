@@ -8,7 +8,9 @@ on:
       - 'schemas/**'
       - 'tasks/**'
       - 'scripts/**'
+      - 'tools/validate_active_worker_states.py'
       - 'tests/**'
+      - 'handoffs/**'
       - 'docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md'
       - 'docs/ORG_MIRROR_HANDOFF.md'
       - 'docs/CROSS_REPO_DEPENDENCY_CLAIMS_MIRROR_HANDOFF.md'
@@ -22,7 +24,9 @@ on:
       - 'schemas/**'
       - 'tasks/**'
       - 'scripts/**'
+      - 'tools/validate_active_worker_states.py'
       - 'tests/**'
+      - 'handoffs/**'
       - 'docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md'
       - 'docs/ORG_MIRROR_HANDOFF.md'
       - 'docs/CROSS_REPO_DEPENDENCY_CLAIMS_MIRROR_HANDOFF.md'
@@ -62,6 +66,8 @@ jobs:
 
       - name: Validate control-plane invariants
         run: python scripts/validate_org_control_plane.py
+      - name: Validate active-worker ownership invariant
+        run: python tools/validate_active_worker_states.py
       - name: Prove cross-repository dependency collision enforcement
         run: python -m unittest tests.test_cross_repository_dependency_claims -v
       - name: Exercise allocator deterministically without persistence authority
