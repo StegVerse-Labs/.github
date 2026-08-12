@@ -112,15 +112,15 @@
       "adapter_ref": "process:stegnutrition-machine-continuation-v1",
       "authority_ref": "handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json#authority",
       "capabilities": ["runtime_observation", "bounded_process_execution", "bounded_repository_mutation", "stegnutrition_machine_continuation"],
-      "command": ["python", "workers/stegnutrition_continuation_worker.py"],
+      "command": ["python", "workers/stegnutrition_continuation_entrypoint.py"],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": ["STEGVERSE_STEGNUTRITION_ROOT"],
-      "notes": ["Heartbeat-owned StegNutrition continuation observer/executor.", "Consumes only an already locally materialized StegNutrition tree and runs a fixed no-network validation command.", "Writes only receipts/stegnutrition-continuation/** and projects explicit COMPLETE/BLOCKED/RETRY/FAILED conditions.", "No GitHub token, remote source checkout, hosted model provider, general code-writing authority, deployment or release publication authority is granted."],
+      "notes": ["Heartbeat-owned StegNutrition continuation observer/executor.", "Consumes only an already locally materialized StegNutrition tree and runs a fixed no-network validation command.", "The adapter entrypoint independently validates the emitted StegNutrition continuation receipt before returning worker success.", "Writes only receipts/stegnutrition-continuation/** and projects explicit COMPLETE/BLOCKED/RETRY/FAILED conditions.", "No GitHub token, remote source checkout, hosted model provider, general code-writing authority, deployment or release publication authority is granted."],
       "timeout_seconds": 210,
       "type": "process_json_v0.1"
     }
   ],
-  "generation": 14,
+  "generation": 15,
   "schema": "stegverse.process-worker-adapters/v0.1"
 }
