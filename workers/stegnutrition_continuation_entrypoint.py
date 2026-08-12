@@ -18,6 +18,7 @@ from stegnutrition_receipt_contract import ReceiptContractError, validate_receip
 
 EXPECTED_INVENTORY = "tasks/STEGNUTRITION-SESSION-20260811.json"
 FDA_TASK = "STEGNUTRITION-FDA-REFERENCE-020"
+REAL_DATA_TASK = "STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021"
 CURRENT_REQUIRED_SURFACES = (
     "src/stegnutrition/fda_reference.py",
     "tests/test_fda_reference.py",
@@ -33,6 +34,11 @@ CURRENT_REQUIRED_SURFACES = (
     "schemas/semantic-qualification-receipt.schema.json",
     "tests/test_semantic_qualification.py",
     "tasks/STEGNUTRITION-SEMANTIC-VISION-012.json",
+    "src/stegnutrition/semantic_build.py",
+    "tests/test_semantic_build.py",
+    "src/stegnutrition/portion_qualification.py",
+    "tests/test_portion_qualification.py",
+    "tasks/STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021.json",
 )
 LOCAL_ROOT_MARKERS = (
     "STEGNUTRITION_MIRROR_HANDOFF.md",
@@ -96,6 +102,36 @@ def _discover_local_stegnutrition_root() -> Path | None:
     return discovered[0]
 
 
+def _inventory_task_ids(inventory: dict) -> set[str]:
+    canonical = inventory.get("capability_inventory")
+    if canonical is not None:
+        if not isinstance(canonical, list):
+            raise ReceiptContractError("canonical StegNutrition capability_inventory must be a list")
+        rows = canonical
+    else:
+        rows: list[object] = []
+        for section in (
+            "execution_inventory",
+            "completed_or_released",
+            "implemented_pending_activation_or_real_evidence",
+            "machine_owned_or_blocked",
+            "remaining_assigned_tasks",
+            "partially_complete",
+        ):
+            value = inventory.get(section)
+            if isinstance(value, list):
+                rows.extend(value)
+    task_ids: set[str] = set()
+    for row in rows:
+        if isinstance(row, str):
+            task_ids.add(row)
+        elif isinstance(row, dict):
+            task_id = row.get("task_id") or row.get("id")
+            if task_id:
+                task_ids.add(str(task_id))
+    return task_ids
+
+
 def _preflight_current_stegnutrition_surface(root: Path | None) -> Path | None:
     """Require current canonical extensions when a local StegNutrition tree exists."""
     if root is None:
@@ -106,25 +142,10 @@ def _preflight_current_stegnutrition_surface(root: Path | None) -> Path | None:
     except (OSError, json.JSONDecodeError) as exc:
         raise ReceiptContractError(f"canonical StegNutrition inventory unreadable: {exc}") from exc
 
-    rows: list[object] = []
-    for section in (
-        "execution_inventory",
-        "completed_or_released",
-        "implemented_pending_activation_or_real_evidence",
-        "machine_owned_or_blocked",
-        "remaining_assigned_tasks",
-        "partially_complete",
-    ):
-        value = inventory.get(section)
-        if isinstance(value, list):
-            rows.extend(value)
-    task_ids = {
-        row if isinstance(row, str) else row.get("task_id")
-        for row in rows
-        if isinstance(row, (str, dict))
-    }
-    if FDA_TASK not in task_ids:
-        raise ReceiptContractError(f"canonical StegNutrition inventory missing {FDA_TASK}")
+    task_ids = _inventory_task_ids(inventory)
+    for required_task in (FDA_TASK, REAL_DATA_TASK):
+        if required_task not in task_ids:
+            raise ReceiptContractError(f"canonical StegNutrition inventory missing {required_task}")
     missing = [relative for relative in CURRENT_REQUIRED_SURFACES if not (root / relative).is_file()]
     if missing:
         raise ReceiptContractError(f"canonical StegNutrition continuation surfaces missing: {missing}")
