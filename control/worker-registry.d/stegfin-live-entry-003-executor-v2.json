@@ -22,5 +22,7 @@
   "supersedes_executor_for_matching": "stegfin-live-entry-inventory-worker",
   "historical_worker_mutated": false,
   "github_token_required": false,
-  "provider_capability_authority": "TC_TVC_VAULT_ONLY"
+  "provider_capability_authority": "TV_TVC_VAULT_ONLY",
+  "upstream_dependency": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "post_dependency_priority": "critical"
 }
