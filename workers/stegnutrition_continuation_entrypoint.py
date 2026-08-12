@@ -18,27 +18,31 @@ from stegnutrition_receipt_contract import ReceiptContractError, validate_receip
 
 EXPECTED_INVENTORY = "tasks/STEGNUTRITION-SESSION-20260811.json"
 FDA_TASK = "STEGNUTRITION-FDA-REFERENCE-020"
-FDA_REQUIRED_SURFACES = (
+CURRENT_REQUIRED_SURFACES = (
     "src/stegnutrition/fda_reference.py",
     "tests/test_fda_reference.py",
     "tasks/STEGNUTRITION-FDA-REFERENCE-020.json",
+    "src/stegnutrition/ledger.py",
+    "schemas/meal-ledger.schema.json",
+    "scripts/verify_runtime_custody_no_network.py",
 )
+CUSTODY_VERIFIER = "scripts/verify_runtime_custody_no_network.py"
 
 
-def _preflight_current_stegnutrition_surface() -> None:
+def _preflight_current_stegnutrition_surface() -> Path | None:
     """Require current canonical extensions when a local StegNutrition tree exists.
 
     Absence of a local root is handled by the heartbeat worker as an active
     materialization constraint. This preflight only prevents a stale local tree
-    from silently omitting canonical task 020 or its FDA source/test surfaces.
+    from silently omitting current FDA or runtime-custody source/proof surfaces.
     """
     raw = os.environ.get("STEGVERSE_STEGNUTRITION_ROOT", "").strip()
     if not raw:
-        return
+        return None
     root = Path(raw).expanduser().resolve()
     inventory_path = root / EXPECTED_INVENTORY
     if not inventory_path.is_file():
-        return
+        return None
     try:
         inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
@@ -63,9 +67,54 @@ def _preflight_current_stegnutrition_surface() -> None:
     }
     if FDA_TASK not in task_ids:
         raise ReceiptContractError(f"canonical StegNutrition inventory missing {FDA_TASK}")
-    missing = [relative for relative in FDA_REQUIRED_SURFACES if not (root / relative).is_file()]
+    missing = [relative for relative in CURRENT_REQUIRED_SURFACES if not (root / relative).is_file()]
     if missing:
-        raise ReceiptContractError(f"canonical FDA reference surfaces missing: {missing}")
+        raise ReceiptContractError(f"canonical StegNutrition continuation surfaces missing: {missing}")
+    return root
+
+
+def _run_runtime_custody_preflight(root: Path | None) -> None:
+    if root is None:
+        return
+    env = {
+        "PATH": os.environ.get("PATH", ""),
+        "PYTHONPATH": str((root / "src").resolve()),
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PIP_NO_INDEX": "1",
+        "LANG": os.environ.get("LANG", "C.UTF-8"),
+        "LC_ALL": os.environ.get("LC_ALL", "C.UTF-8"),
+    }
+    try:
+        proc = subprocess.run(
+            [sys.executable, str((root / CUSTODY_VERIFIER).resolve())],
+            cwd=root,
+            env=env,
+            text=True,
+            capture_output=True,
+            timeout=30,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise ReceiptContractError("runtime custody verifier exceeded 30 seconds") from exc
+    if proc.returncode != 0:
+        tail = ((proc.stdout or "") + "\n" + (proc.stderr or ""))[-3000:]
+        raise ReceiptContractError(f"runtime custody verifier failed: {tail}")
+    try:
+        result = json.loads(proc.stdout)
+    except json.JSONDecodeError as exc:
+        raise ReceiptContractError("runtime custody verifier did not emit JSON") from exc
+    if result.get("state") != "PASS":
+        raise ReceiptContractError("runtime custody verifier did not report PASS")
+    if result.get("github_token_required") is not False:
+        raise ReceiptContractError("runtime custody verifier violated no-GitHub-token invariant")
+    if result.get("credential_requirement") != "NONE":
+        raise ReceiptContractError("runtime custody verifier violated credential NONE invariant")
+    if not result.get("replay_binding_retained"):
+        raise ReceiptContractError("runtime custody verifier did not retain replay binding")
+    if not result.get("token_requiring_binding_rejected"):
+        raise ReceiptContractError("runtime custody verifier did not reject token-requiring binding")
+    if not result.get("proof_tamper_rejected"):
+        raise ReceiptContractError("runtime custody verifier did not reject proof tampering")
 
 
 def _project_active_work(response: dict, receipt: dict) -> dict:
@@ -101,7 +150,8 @@ def _project_active_work(response: dict, receipt: dict) -> dict:
 def main() -> int:
     raw = sys.stdin.read()
     try:
-        _preflight_current_stegnutrition_surface()
+        local_root = _preflight_current_stegnutrition_surface()
+        _run_runtime_custody_preflight(local_root)
     except ReceiptContractError as exc:
         print(f"StegNutrition continuation preflight failed: {exc}", file=sys.stderr)
         return 13
