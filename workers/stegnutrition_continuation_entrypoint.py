@@ -27,6 +27,11 @@ CURRENT_REQUIRED_SURFACES = (
     "scripts/verify_runtime_custody_no_network.py",
     "src/stegnutrition/scenario_provider.py",
     "tests/test_scenario_provider.py",
+    "src/stegnutrition/semantic_qualification.py",
+    "scripts/verify_semantic_qualification.py",
+    "schemas/semantic-qualification-receipt.schema.json",
+    "tests/test_semantic_qualification.py",
+    "tasks/STEGNUTRITION-SEMANTIC-VISION-012.json",
 )
 LOCAL_ROOT_MARKERS = (
     "STEGNUTRITION_MIRROR_HANDOFF.md",
