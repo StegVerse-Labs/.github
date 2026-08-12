@@ -27,6 +27,7 @@ CURRENT_REQUIRED_SURFACES = (
     "scripts/verify_runtime_custody_no_network.py",
     "src/stegnutrition/scenario_provider.py",
     "tests/test_scenario_provider.py",
+    "scripts/verify_scenario_provider_no_network.py",
     "src/stegnutrition/semantic_qualification.py",
     "scripts/verify_semantic_qualification.py",
     "schemas/semantic-qualification-receipt.schema.json",
@@ -38,6 +39,7 @@ LOCAL_ROOT_MARKERS = (
     EXPECTED_INVENTORY,
 )
 CUSTODY_VERIFIER = "scripts/verify_runtime_custody_no_network.py"
+SCENARIO_VERIFIER = "scripts/verify_scenario_provider_no_network.py"
 
 
 def _is_canonical_local_root(root: Path) -> bool:
@@ -129,10 +131,8 @@ def _preflight_current_stegnutrition_surface(root: Path | None) -> Path | None:
     return root
 
 
-def _run_runtime_custody_preflight(root: Path | None) -> None:
-    if root is None:
-        return
-    env = {
+def _preflight_env(root: Path) -> dict[str, str]:
+    return {
         "PATH": os.environ.get("PATH", ""),
         "PYTHONPATH": str((root / "src").resolve()),
         "PYTHONDONTWRITEBYTECODE": "1",
@@ -140,29 +140,39 @@ def _run_runtime_custody_preflight(root: Path | None) -> None:
         "LANG": os.environ.get("LANG", "C.UTF-8"),
         "LC_ALL": os.environ.get("LC_ALL", "C.UTF-8"),
     }
+
+
+def _run_json_verifier(root: Path, relative: str, *, label: str) -> dict:
     try:
         proc = subprocess.run(
-            [sys.executable, str((root / CUSTODY_VERIFIER).resolve())],
+            [sys.executable, str((root / relative).resolve())],
             cwd=root,
-            env=env,
+            env=_preflight_env(root),
             text=True,
             capture_output=True,
             timeout=30,
             check=False,
         )
     except subprocess.TimeoutExpired as exc:
-        raise ReceiptContractError("runtime custody verifier exceeded 30 seconds") from exc
+        raise ReceiptContractError(f"{label} exceeded 30 seconds") from exc
     if proc.returncode != 0:
         tail = ((proc.stdout or "") + "\n" + (proc.stderr or ""))[-3000:]
-        raise ReceiptContractError(f"runtime custody verifier failed: {tail}")
+        raise ReceiptContractError(f"{label} failed: {tail}")
     try:
         result = json.loads(proc.stdout)
     except json.JSONDecodeError as exc:
-        raise ReceiptContractError("runtime custody verifier did not emit JSON") from exc
+        raise ReceiptContractError(f"{label} did not emit JSON") from exc
     if result.get("state") != "PASS":
-        raise ReceiptContractError("runtime custody verifier did not report PASS")
+        raise ReceiptContractError(f"{label} did not report PASS")
     if result.get("github_token_required") is not False:
-        raise ReceiptContractError("runtime custody verifier violated no-GitHub-token invariant")
+        raise ReceiptContractError(f"{label} violated no-GitHub-token invariant")
+    return result
+
+
+def _run_runtime_custody_preflight(root: Path | None) -> None:
+    if root is None:
+        return
+    result = _run_json_verifier(root, CUSTODY_VERIFIER, label="runtime custody verifier")
     if result.get("credential_requirement") != "NONE":
         raise ReceiptContractError("runtime custody verifier violated credential NONE invariant")
     if not result.get("replay_binding_retained"):
@@ -171,6 +181,30 @@ def _run_runtime_custody_preflight(root: Path | None) -> None:
         raise ReceiptContractError("runtime custody verifier did not reject token-requiring binding")
     if not result.get("proof_tamper_rejected"):
         raise ReceiptContractError("runtime custody verifier did not reject proof tampering")
+
+
+def _run_scenario_provider_preflight(root: Path | None) -> None:
+    if root is None:
+        return
+    result = _run_json_verifier(root, SCENARIO_VERIFIER, label="scenario provider verifier")
+    if result.get("execution") != "LOCAL_ONLY":
+        raise ReceiptContractError("scenario provider verifier was not local-only")
+    if result.get("hosted_inference_required") is not False:
+        raise ReceiptContractError("scenario provider verifier requires hosted inference")
+    if result.get("authority_effect") != "NONE":
+        raise ReceiptContractError("scenario provider verifier has unsupported authority effect")
+    for predicate in (
+        "scenario_count_positive",
+        "usda_bound",
+        "photo_portion_interval_bound",
+        "evidence_ids_bound",
+        "failed_quality_gate_rejected",
+        "missing_nutrition_rejected",
+    ):
+        if result.get(predicate) is not True:
+            raise ReceiptContractError(f"scenario provider verifier predicate failed: {predicate}")
+    if result.get("real_semantic_accuracy_qualified_by_this_verifier") is not False:
+        raise ReceiptContractError("scenario provider verifier overstated real semantic qualification")
 
 
 def _project_active_work(response: dict, receipt: dict) -> dict:
@@ -209,6 +243,7 @@ def main() -> int:
         local_root = _discover_local_stegnutrition_root()
         local_root = _preflight_current_stegnutrition_surface(local_root)
         _run_runtime_custody_preflight(local_root)
+        _run_scenario_provider_preflight(local_root)
         if local_root is not None:
             os.environ["STEGVERSE_STEGNUTRITION_ROOT"] = str(local_root)
     except ReceiptContractError as exc:
