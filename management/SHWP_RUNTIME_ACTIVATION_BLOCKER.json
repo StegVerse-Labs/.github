@@ -1,18 +1,19 @@
 {
-  "schema": "stegverse.runtime-activation-blocker/v0.2",
-  "blocker_id": "SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09-SOVEREIGN",
+  "schema": "stegverse.runtime-activation-constraint/v0.3",
+  "constraint_id": "SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09-SOVEREIGN",
   "goal_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
   "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-  "owner": "StegVerse-Labs/.github#12",
+  "owner": "StegVerse-Labs/.github#59 + resident sovereign heartbeat",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
-  "state": "BLOCKED_RUNTIME_ACTIVATION",
-  "block_class": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
+  "operational_state": "ACTIVE_SOLUTION_EXECUTION",
+  "constraint_class": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
   "observed_at": "2026-08-09T19:27:00Z",
   "boundary_ref": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
   "handoff_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
   "deployment_handoff_ref": "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
   "registry_ref": "control/worker-registry.json#SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "state_policy_ref": "control/active-worker-state-policy.json",
   "automation_terminal": false,
   "canonical_runtime": {
     "implementation": "heartbeat_runtime/engine_v9.py",
@@ -52,7 +53,7 @@
     "Installer reconciled to runtime v9 and 10 ms default cadence.",
     "No third-party provider is accepted as a production activation blocker."
   ],
-  "release_condition": [
+  "success_conditions": [
     "One StegVerse-owned or StegVerse-federated node materializes the sovereign runtime from already-present local source/capsule.",
     "Native service registration reports active.",
     "Continuous runtime advances canonical heartbeat epochs from durable local storage.",
@@ -61,9 +62,10 @@
     "No duplicate heartbeat, claim, fence, or split-brain state appears after restart.",
     "Registry, event, cost, receipt, checkpoint, and worker-coordination state survive restart/reconstruction."
   ],
-  "machine_observable_release_condition": "all sovereign-node activation predicates pass on one StegVerse-owned or StegVerse-federated node",
-  "next_executable_action": "A StegVerse sovereign node execution lane materializes and starts the local runtime, emits activation.latest.json plus advancing heartbeat/worker checkpoint evidence, performs one controlled restart, and publishes the resulting custody projection for reconstruction validation.",
-  "blocked_owner": "StegVerse-002/micro-node-runtime#16",
+  "machine_observable_completion_condition": "all sovereign-node activation predicates pass on one StegVerse-owned or StegVerse-federated node",
+  "next_executable_action": "The active StegVerse sovereign-node execution lane selects/materializes an eligible carrier and starts the local runtime, emits activation.latest.json plus advancing heartbeat/worker checkpoint evidence, performs one controlled restart, and publishes the resulting custody projection for reconstruction validation. If a candidate cannot satisfy the predicates within the worker authority ceiling, derive/select the next eligible StegVerse-002 micro-node candidate or escalate the constraint collision to the next authority level.",
+  "active_worker_owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / fencing token 18",
+  "escalation_required_if_unsolved": true,
   "heartbeat_or_execution_authority_effect": "NONE",
   "chat_monitoring_required": false,
   "session_retention_required": false
