@@ -7,25 +7,29 @@
     "goal_id": "STEGFIN-BASE-ROUNDTRIP-001",
     "objective": "After fresh Inventory N, execute the canonical TV/TVC -> vault -> governed Base pretrade preparation chain and stop at the first USER_ONLY wallet action without signing or broadcasting.",
     "success_predicates": [
-      "Fresh complete Inventory N predecessor receipt is consumed without reusing its fence as the successor claim",
+      "Fresh complete unexpired Inventory N predecessor receipt is consumed without reusing its fence as the successor claim",
+      "The already-canonical configs/base_validation_entry_trade_request.json is consumed unchanged",
       "Canonical TVC preparation gate returns ALLOW_PREPARATION",
       "Canonical TVC provider resolver admits base.quote.0x with TV/TVC credential authority and INHERITED_FILE_DESCRIPTOR delivery",
       "A fresh single-use TVC quote lease is issued for exactly 12.50 USDC and <=50 bps slippage",
-      "StegFin sealed E1/relationship standing binds predecessor Inventory N lineage and the new successor claim/fence",
+      "StegFin sealed E1/relationship standing binds predecessor Inventory N lineage, canonical request and the new successor claim/fence",
       "The existing TV/TVC/vault launcher reaches USER_APPROVAL_REQUIRED or USER_SWAP_SIGNATURE_REQUIRED",
+      "The canonical StegFin live-entry readiness checker emits WALLET_HANDOFF_READY",
       "A hash-bound wallet handoff is present with signed=false and broadcast=false",
       "No GitHub token, provider secret value, wallet credential, alternate provider credential or hosted runtime authority is used"
     ],
     "failure_predicates": [
-      "Inventory N is absent, stale or malformed",
+      "Inventory N is absent, stale, expired, future-dated or malformed",
       "A predecessor fence is reused as the successor execution claim",
+      "A competing validation trade request is generated instead of using the canonical request",
       "TVC preparation or route admission is denied",
       "The quote lease is refused or expired",
       "Provider capability material enters environment, argv, JSON, hash, log or receipt",
       "Any GitHub token, provider API key, wallet private key, seed phrase or password is accepted by the heartbeat worker",
-      "The governed pretrade chain fails to emit a USER_ONLY wallet handoff",
+      "The governed pretrade chain or canonical readiness checker fails to emit the USER_ONLY wallet handoff boundary",
       "The worker signs, broadcasts or claims settlement"
     ],
+    "expires_at": null,
     "authority_ceiling": [
       "bounded_local_source_discovery",
       "bounded_process_execution",
@@ -38,17 +42,19 @@
       "no_broadcast",
       "no_settlement_claim"
     ],
-    "successor_policy": "HUMAN_AUTHORITY_REQUIRED_AT_WALLET_BOUNDARY",
+    "successor_policy": "NONE",
     "max_successor_depth": 0
   },
   "task": {
     "task_id": "STEGFIN-LIVE-PRETRADE-005",
     "repository": "StegVerse-Labs/.github",
     "source_refs": [
-      "StegVerse-Labs/.github:docs/STEGFIN_EXTERNAL_PRETRADE_MIRROR_HANDOFF.md",
-      "StegVerse-Labs/.github:handoffs/STEGFIN-LIVE-ENTRY-003.json",
+      "handoffs/STEGFIN-LIVE-ENTRY-003.json",
+      "docs/STEGFIN_EXTERNAL_PRETRADE_MIRROR_HANDOFF.md",
       "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md",
-      "StegVerse-Labs/stegfin-governance:scripts/build_sovereign_validation_trade_request.py",
+      "StegVerse-Labs/stegfin-governance:configs/base_validation_entry_trade_request.json",
+      "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-LIVE-ENTRY-003-READINESS.json",
+      "StegVerse-Labs/stegfin-governance:scripts/check_live_entry_trade_readiness.py",
       "StegVerse-Labs/stegfin-governance:scripts/build_tv_tvc_registry_approval.py",
       "StegVerse-Labs/stegfin-governance:scripts/build_sovereign_live_pretrade_e1.py",
       "StegVerse-Labs/stegfin-governance:scripts/run_tv_tvc_sovereign_pretrade.py",
@@ -56,30 +62,19 @@
     ],
     "dependencies": ["STEGFIN-LIVE-ENTRY-003"],
     "parent_task_id": "STEGFIN-LIVE-ENTRY-003",
-    "derivation_reason": "Inventory N explicitly stops at the separately authorized TV/TVC/vault provider-capability boundary. This successor consumes that released authority path and advances only to the USER_ONLY wallet handoff.",
+    "derivation_reason": "Inventory N explicitly stops at the separately authorized TV/TVC/vault provider-capability boundary. This successor consumes the existing canonical validation request plus released TV/TVC/vault authority and advances only to the canonical USER_ONLY wallet handoff readiness state.",
     "canonical_owner_ref": "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md",
     "canonical_lineage_key": "stegfin:base-validation-pretrade-005",
     "derivation_depth": 1,
     "priority": "release"
   },
   "authority": {
-    "authority_source": "StegVerse-Labs/stegfin-governance validation mandate + StegVerse-Labs/TV policy + StegVerse-Labs/TVC route/lease authority + existing StegFin vault boundary",
+    "authority_source": "StegVerse-Labs/stegfin-governance validation mandate + StegVerse-Labs/TV policy + StegVerse-Labs/TVC route/lease authority + existing StegFin vault boundary; credential authority TV/TVC; wallet signing/broadcast USER_ONLY",
     "heartbeat_grants_execution_authority": false,
-    "policy_version": "shwp-single-hb-stegfin-live-pretrade-v0.1",
-    "credential_authority": "TV/TVC",
-    "route_authority": "StegVerse-Labs/TVC",
-    "provider_capability_authority": "TV_TVC_VAULT_ONLY",
-    "github_token_production_authority": "NONE",
-    "wallet_signing_authority": "USER_ONLY",
-    "broadcast_authority": "USER_ONLY"
+    "policy_version": "shwp-single-hb-stegfin-live-pretrade-v0.2"
   },
   "execution": {
-    "required_capabilities": [
-      "runtime_observation",
-      "bounded_process_execution",
-      "durable_state_reconstruction",
-      "stegfin_external_pretrade_preparation"
-    ],
+    "required_capabilities": ["runtime_observation", "bounded_process_execution", "durable_state_reconstruction", "stegfin_external_pretrade_preparation"],
     "allowed_paths": ["receipts/stegfin-live-pretrade/**"],
     "allowed_services": ["base-mainnet-readonly-observation", "tvc-local-route-resolution", "tvc-local-quote-lease", "stegfin-local-vault-capsule"],
     "max_actions": 96,
@@ -92,7 +87,7 @@
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "docs/STEGFIN_EXTERNAL_PRETRADE_MIRROR_HANDOFF.md",
-    "recheck_trigger": "each admitted heartbeat after STEGFIN-LIVE-ENTRY-003 reaches fresh Inventory N while the wallet handoff is not complete",
+    "recheck_trigger": "each admitted heartbeat after STEGFIN-LIVE-ENTRY-003 reaches fresh unexpired Inventory N while the canonical wallet handoff is not ready",
     "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {
@@ -102,9 +97,10 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Present the generated exact allowance or swap candidate to the user-controlled wallet. The heartbeat must stop before signature/broadcast. If approval is required, a fresh quote is required after approval settlement before a swap handoff.",
+    "next_authorized_action": "Present the canonical exact allowance or swap candidate to the user-controlled wallet. The heartbeat stops before signature/broadcast. If approval is required, a fresh quote is required after approval settlement before a swap handoff.",
     "terminal_when": [
       "transition_id=STEGFIN_PRETRADE_WALLET_HANDOFF_READY",
+      "canonical_readiness_state=WALLET_HANDOFF_READY",
       "wallet_handoff_bundle_sha256 is present",
       "credential_authority=TV/TVC",
       "github_token_required=false",
@@ -119,7 +115,7 @@
     "dependency": "SHWP-DURABLE-RUNTIME-ACTIVATION -> STEGFIN-LIVE-ENTRY-003",
     "owner": "resident sovereign heartbeat",
     "solution_required": true,
-    "machine_observable_release_condition": "canonical heartbeat advances beyond HB29 with sovereign carrier terminal proof and receipts/stegfin-live-entry/STEGFIN-LIVE-ENTRY-003.json is fresh complete Inventory N",
+    "machine_observable_release_condition": "canonical heartbeat advances beyond HB29 with sovereign carrier terminal proof and receipts/stegfin-live-entry/STEGFIN-LIVE-ENTRY-003.json contains unexpired fresh complete Inventory N",
     "next_solution_action": "Resident heartbeat admits this successor at release priority and uses only locally materialized StegFin/TV/TVC plus TV/TVC/vault capability authority.",
     "third_party_dependency": false,
     "human_action_required": false
