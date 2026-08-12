@@ -43,12 +43,14 @@ class StegFinExternalPretradeWorkerTests(unittest.TestCase):
     def test_handoff_stops_at_user_wallet_boundary(self) -> None:
         handoff = json.loads(HANDOFF.read_text(encoding="utf-8"))
         authority = handoff["authority"]
-        self.assertEqual(authority["credential_authority"], "TV/TVC")
-        self.assertEqual(authority["provider_capability_authority"], "TV_TVC_VAULT_ONLY")
-        self.assertEqual(authority["wallet_signing_authority"], "USER_ONLY")
-        self.assertEqual(authority["broadcast_authority"], "USER_ONLY")
-        self.assertEqual(authority["github_token_production_authority"], "NONE")
-        self.assertEqual(handoff["goal"]["successor_policy"], "HUMAN_AUTHORITY_REQUIRED_AT_WALLET_BOUNDARY")
+        self.assertFalse(authority["heartbeat_grants_execution_authority"])
+        self.assertIn("credential authority TV/TVC", authority["authority_source"])
+        self.assertIn("wallet signing/broadcast USER_ONLY", authority["authority_source"])
+        self.assertEqual(handoff["goal"]["successor_policy"], "NONE")
+        self.assertEqual(handoff["goal"]["max_successor_depth"], 0)
+        terminal = set(handoff["completion"]["terminal_when"])
+        for marker in ("credential_authority=TV/TVC", "github_token_required=false", "signed=false", "broadcast=false", "settled=false"):
+            self.assertIn(marker, terminal)
 
     def test_provider_capability_permission_gate(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
