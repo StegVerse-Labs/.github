@@ -1,0 +1,42 @@
+{
+  "schema": "stegverse.session-validation-claim/v1",
+  "claim_id": "ORG-HANDOFF-NONCOMPETING-VALIDATION-2026-08-12-STEGFIN-ACTIVATION",
+  "task_id": "ORG-HANDOFF-NONCOMPETING-VALIDATION",
+  "originating_goal": "Assist the canonical workers toward the first governed StegFin Base trade without introducing non-TV/TVC secrets/tokens or competing with resident runtime authority.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "claimant": "current ChatGPT trade-activation validation session",
+  "role": "CLAIMED_FOR_VALIDATION",
+  "claim_state": "ACTIVE",
+  "claim_created_at": "2026-08-12T16:38:00-05:00",
+  "claim_expires_at": "2026-08-12T17:38:00-05:00",
+  "collision_scope": {
+    "allowed": [
+      "read-only inspection of canonical heartbeat, resolver and escalation state",
+      "validation of whether missing component-resolution executor is an implementation gap or an intentional escalation boundary",
+      "durable evidence-only reconciliation"
+    ],
+    "prohibited": [
+      "sovereign carrier selection or materialization",
+      "node declaration creation",
+      "heartbeat claim/fence/lease mutation",
+      "resolution-task registration or executor installation inside worker-owned/escalated scope",
+      "TV/TVC credential or route authority changes",
+      "provider secret acquisition/export",
+      "wallet signing or broadcast"
+    ]
+  },
+  "expected_evidence": [
+    "control/blocker-resolution-policy.json",
+    "heartbeat_runtime/engine_v10.py",
+    "heartbeat_runtime/engine_v11.py",
+    "workers/sovereign_node_repository_resolution_worker.py",
+    "docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md",
+    "control/worker-registry.json",
+    "control/heartbeat-state.json"
+  ],
+  "release_condition": "Release immediately after the escalation/executor interpretation is durably recorded; do not retain a validation claim while waiting for HB30.",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "authority_effect": "NONE_VALIDATION_ONLY"
+}
