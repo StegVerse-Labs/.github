@@ -49,12 +49,7 @@ def parse_utc(value: Any) -> datetime | None:
 
 
 def inventory_is_fresh(inventory: dict[str, Any], *, now: datetime | None = None) -> bool:
-    if (
-        inventory.get("task_id") != UPSTREAM_TASK
-        or inventory.get("transition_id") != "STEGFIN_INVENTORY_N_OBSERVED"
-        or inventory.get("fresh_inventory_n_observed") is not True
-        or inventory.get("github_token_required") is not False
-    ):
+    if inventory.get("task_id") != UPSTREAM_TASK or inventory.get("transition_id") != "STEGFIN_INVENTORY_N_OBSERVED" or inventory.get("fresh_inventory_n_observed") is not True or inventory.get("github_token_required") is not False:
         return False
     observed = parse_utc(inventory.get("observed_at_utc"))
     expiry = parse_utc(inventory.get("evidence_expiry_utc"))
@@ -67,13 +62,7 @@ def candidate_roots(explicit_env: str, name: str) -> list[Path]:
     explicit = os.environ.get(explicit_env)
     if explicit:
         values.append(Path(explicit))
-    values.extend([
-        ROOT / "workloads" / name,
-        Path.home() / ".stegverse" / "workloads" / name,
-        Path("/var/lib/stegverse/workloads") / name,
-        Path.home() / ".stegverse" / "source" / name,
-        Path("/var/lib/stegverse/source") / name,
-    ])
+    values.extend([ROOT / "workloads" / name, Path.home() / ".stegverse" / "workloads" / name, Path("/var/lib/stegverse/workloads") / name, Path.home() / ".stegverse" / "source" / name, Path("/var/lib/stegverse/source") / name])
     unique: list[Path] = []
     seen: set[str] = set()
     for item in values:
@@ -99,12 +88,7 @@ def find_root(explicit_env: str, name: str, required: tuple[str, ...]) -> Path |
 
 
 def minimal_env(*roots: Path) -> dict[str, str]:
-    return {
-        "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
-        "PYTHONPATH": os.pathsep.join(str(root) for root in roots),
-        "LANG": "C.UTF-8",
-        "LC_ALL": "C.UTF-8",
-    }
+    return {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "PYTHONPATH": os.pathsep.join(str(root) for root in roots), "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8"}
 
 
 def run(command: list[str], *, cwd: Path, env: dict[str, str], timeout: int = 90) -> subprocess.CompletedProcess[str]:
@@ -112,59 +96,22 @@ def run(command: list[str], *, cwd: Path, env: dict[str, str], timeout: int = 90
 
 
 def response(*, state: str, transition_id: str, sequence: int, next_transition: str | None, evidence_refs: list[str], blocker: dict[str, Any] | None = None) -> dict[str, Any]:
-    value: dict[str, Any] = {
-        "schema": "stegverse.worker-response/v0.1",
-        "state": state,
-        "transition_id": transition_id,
-        "transition_sequence": sequence,
-        "expected_next_transition": next_transition,
-        "expected_next_earliest_epoch": None,
-        "expected_next_latest_epoch": None,
-        "checkpoint_ref": str(RECEIPT.relative_to(ROOT)),
-        "evidence_refs": evidence_refs,
-    }
+    value: dict[str, Any] = {"schema": "stegverse.worker-response/v0.1", "state": state, "transition_id": transition_id, "transition_sequence": sequence, "expected_next_transition": next_transition, "expected_next_earliest_epoch": None, "expected_next_latest_epoch": None, "checkpoint_ref": str(RECEIPT.relative_to(ROOT)), "evidence_refs": evidence_refs}
     if blocker is not None:
         value["blocker"] = blocker
     return value
 
 
 def emit_blocked(epoch: int, claim_id: str, fence: int, transition: str, dependency_class: str, problem: str, release: str, next_action: str) -> int:
-    blocker = {
-        "dependency_class": dependency_class,
-        "problem_statement": problem,
-        "solution_required": True,
-        "may_remain_blocked": False,
-        "next_solution_action": next_action,
-        "machine_observable_release_condition": release,
-        "github_token_required": False,
-        "third_party_blocker": False,
-    }
-    durable = {
-        "schema": "stegverse.stegfin-live-pretrade-heartbeat-receipt/v0.1",
-        "task_id": EXPECTED_TASK,
-        "heartbeat_epoch": epoch,
-        "claim_id": claim_id,
-        "fencing_token": fence,
-        "state": "BLOCKED",
-        "transition_id": transition,
-        "credential_authority": "TV/TVC",
-        "provider_capability_authority": "TV_TVC_VAULT_ONLY",
-        "github_token_required": False,
-        "github_runtime_required": False,
-        "wallet_signing_authority": "USER_ONLY",
-        "broadcast_authority": "USER_ONLY",
-        "blocker": blocker,
-    }
-    atomic_write(RECEIPT, durable)
+    blocker = {"dependency_class": dependency_class, "problem_statement": problem, "solution_required": True, "may_remain_blocked": False, "next_solution_action": next_action, "machine_observable_release_condition": release, "github_token_required": False, "third_party_blocker": False}
+    atomic_write(RECEIPT, {"schema": "stegverse.stegfin-live-pretrade-heartbeat-receipt/v0.1", "task_id": EXPECTED_TASK, "heartbeat_epoch": epoch, "claim_id": claim_id, "fencing_token": fence, "state": "BLOCKED", "transition_id": transition, "credential_authority": "TV/TVC", "provider_capability_authority": "TV_TVC_VAULT_ONLY", "github_token_required": False, "github_runtime_required": False, "wallet_signing_authority": "USER_ONLY", "broadcast_authority": "USER_ONLY", "blocker": blocker})
     json.dump(response(state="BLOCKED", transition_id=transition, sequence=1, next_transition="STEGFIN_PRETRADE_WALLET_HANDOFF_READY", evidence_refs=[str(RECEIPT.relative_to(ROOT))], blocker=blocker), sys.stdout, sort_keys=True)
     sys.stdout.write("\n")
     return 0
 
 
 def protected_provider_capability(path: Path) -> bool:
-    if path.is_symlink() or not path.is_file():
-        return False
-    return stat.S_IMODE(path.stat().st_mode) & 0o077 == 0
+    return not path.is_symlink() and path.is_file() and stat.S_IMODE(path.stat().st_mode) & 0o077 == 0
 
 
 def write_json(path: Path, value: dict[str, Any]) -> None:
@@ -175,8 +122,7 @@ def write_json(path: Path, value: dict[str, Any]) -> None:
 
 def checked(step: str, completed: subprocess.CompletedProcess[str]) -> None:
     if completed.returncode != 0:
-        tail = (completed.stderr or completed.stdout or "")[-1400:]
-        raise RuntimeError(f"{step} failed rc={completed.returncode}: {tail}")
+        raise RuntimeError(f"{step} failed rc={completed.returncode}: {(completed.stderr or completed.stdout or '')[-1400:]}")
 
 
 def main() -> int:
@@ -197,30 +143,23 @@ def main() -> int:
         return 5
 
     if not UPSTREAM_RECEIPT.is_file():
-        return emit_blocked(epoch, claim_id, fence, "STEGFIN_INVENTORY_N_NOT_PRESENT", "UPSTREAM_TASK", "Fresh Inventory N predecessor receipt is absent.", "receipts/stegfin-live-entry/STEGFIN-LIVE-ENTRY-003.json exists with transition_id STEGFIN_INVENTORY_N_OBSERVED and unexpired evidence", "Allow the existing STEGFIN-LIVE-ENTRY-003 machine worker to complete; do not recreate Inventory N here.")
+        return emit_blocked(epoch, claim_id, fence, "STEGFIN_INVENTORY_N_NOT_PRESENT", "UPSTREAM_TASK", "Fresh Inventory N predecessor receipt is absent.", "receipts/stegfin-live-entry/STEGFIN-LIVE-ENTRY-003.json exists with unexpired STEGFIN_INVENTORY_N_OBSERVED evidence", "Allow the canonical Inventory-N worker to complete; do not recreate Inventory N here.")
     try:
         inventory = load(UPSTREAM_RECEIPT)
     except Exception:
         inventory = {}
     if not inventory_is_fresh(inventory):
-        return emit_blocked(epoch, claim_id, fence, "STEGFIN_INVENTORY_N_NOT_FRESH", "UPSTREAM_TASK", "Inventory N predecessor receipt is absent, malformed, expired, future-dated, or not an authoritative no-token observation.", "upstream receipt validates as complete Inventory N and observed_at_utc <= now < evidence_expiry_utc", "Retry only the canonical Inventory-N worker under its existing claim/authority.")
+        return emit_blocked(epoch, claim_id, fence, "STEGFIN_INVENTORY_N_NOT_FRESH", "UPSTREAM_TASK", "Inventory N predecessor receipt is absent, malformed, expired, future-dated, or not an authoritative no-token observation.", "upstream receipt validates as complete Inventory N and observed_at_utc <= now < evidence_expiry_utc", "Retry only the canonical Inventory-N worker under its existing authority.")
 
-    stegfin = find_root("STEGVERSE_STEGFIN_SOURCE_ROOT", "stegfin-governance", (
-        "scripts/build_sovereign_validation_trade_request.py", "scripts/build_tv_tvc_registry_approval.py", "scripts/build_sovereign_live_pretrade_e1.py",
-        "scripts/run_tv_tvc_sovereign_pretrade.py", "scripts/run_governed_pretrade.py", "registries/base_0x_v2_candidate_2026_07.json", "docs/STEGFIN_MIRROR_HANDOFF.md",
-    ))
-    tv = find_root("STEGVERSE_TV_SOURCE_ROOT", "TV", (
-        "roles_templates/stegwallet_trading_runtime_policy.json", "policies/stegwallet_base_0x_quote_capability_policy.json", "docs/STEGWALLET_TRADING_POLICY_MIRROR_HANDOFF.md",
-    ))
-    tvc = find_root("STEGVERSE_TVC_SOURCE_ROOT", "TVC", (
-        "scripts/tvc_stegwallet_trading_gate_cli.py", "scripts/tvc_resolve_provider_capability.py", "scripts/tvc_issue_stegwallet_quote_lease.py", "docs/PROVIDER_CAPABILITY_RESOLUTION_MIRROR_HANDOFF.md",
-    ))
+    stegfin = find_root("STEGVERSE_STEGFIN_SOURCE_ROOT", "stegfin-governance", ("configs/base_validation_entry_trade_request.json", "scripts/build_tv_tvc_registry_approval.py", "scripts/build_sovereign_live_pretrade_e1.py", "scripts/run_tv_tvc_sovereign_pretrade.py", "scripts/run_governed_pretrade.py", "scripts/check_live_entry_trade_readiness.py", "registries/base_0x_v2_candidate_2026_07.json", "docs/STEGFIN_MIRROR_HANDOFF.md"))
+    tv = find_root("STEGVERSE_TV_SOURCE_ROOT", "TV", ("roles_templates/stegwallet_trading_runtime_policy.json", "policies/stegwallet_base_0x_quote_capability_policy.json", "docs/STEGWALLET_TRADING_POLICY_MIRROR_HANDOFF.md"))
+    tvc = find_root("STEGVERSE_TVC_SOURCE_ROOT", "TVC", ("scripts/tvc_stegwallet_trading_gate_cli.py", "scripts/tvc_resolve_provider_capability.py", "scripts/tvc_issue_stegwallet_quote_lease.py", "docs/PROVIDER_CAPABILITY_RESOLUTION_MIRROR_HANDOFF.md"))
     if stegfin is None or tv is None or tvc is None:
-        return emit_blocked(epoch, claim_id, fence, "STEGFIN_TV_TVC_LOCAL_SOURCE_NOT_PRESENT", "INTERNAL_CAPABILITY", "One or more released local StegFin/TV/TVC trees are not materialized on the sovereign carrier.", "find_root resolves all three released local trees with the required canonical surfaces", "Materialize the already-released StegFin/TV/TVC trees through the existing sovereign workload mechanism; no GitHub token or hosted checkout is authorized.")
+        return emit_blocked(epoch, claim_id, fence, "STEGFIN_TV_TVC_LOCAL_SOURCE_NOT_PRESENT", "INTERNAL_CAPABILITY", "One or more released local StegFin/TV/TVC trees are not materialized on the sovereign carrier.", "find_root resolves all three local released trees and canonical surfaces", "Materialize already-released StegFin/TV/TVC trees through the sovereign workload mechanism; no GitHub token or hosted checkout is authorized.")
 
     provider_file = stegfin / "runtime-secrets" / "provider_0x"
     if not protected_provider_capability(provider_file):
-        return emit_blocked(epoch, claim_id, fence, "TV_TVC_PROVIDER_CAPABILITY_NOT_READY", "TV_TVC_CAPABILITY", "The TV/TVC-managed non-exportable 0x provider capability is absent or its local file protection is invalid.", "runtime-secrets/provider_0x is a regular non-symlink file with no group/other permission bits", "TV/TVC and the existing vault boundary materialize/repair the protected provider capability; do not pass a credential value through heartbeat environment, argv, JSON, repository state or GitHub secrets.")
+        return emit_blocked(epoch, claim_id, fence, "TV_TVC_PROVIDER_CAPABILITY_NOT_READY", "TV_TVC_CAPABILITY", "The TV/TVC-managed non-exportable 0x provider capability is absent or its local protection is invalid.", "runtime-secrets/provider_0x is a regular non-symlink file with no group/other permission bits", "TV/TVC and the existing vault boundary materialize or repair the protected capability; never pass its value through heartbeat environment, argv, JSON, repository state or GitHub secrets.")
 
     env = minimal_env(stegfin, tv, tvc)
     runtime_parent = stegfin / "runtime" / "heartbeat-pretrade"
@@ -243,21 +182,17 @@ def main() -> int:
             e1 = runtime / "carrier-e1.json"
             carrier_receipt = runtime / "carrier-binding-receipt.json"
 
+            shutil.copyfile(stegfin / "configs" / "base_validation_entry_trade_request.json", trade_request)
             shutil.copyfile(tv / "policies" / "stegwallet_base_0x_quote_capability_policy.json", quote_policy)
+            os.chmod(trade_request, 0o600)
             os.chmod(quote_policy, 0o600)
 
-            completed = run([sys.executable, str(stegfin / "scripts" / "build_sovereign_validation_trade_request.py"), "--inventory-receipt", str(UPSTREAM_RECEIPT), "--claim-id", claim_id, "--fence", str(fence), "--output", str(trade_request)], cwd=stegfin, env=env)
-            checked("trade request", completed)
             completed = run([sys.executable, str(tvc / "scripts" / "tvc_stegwallet_trading_gate_cli.py"), "--tv-policy", str(tv / "roles_templates" / "stegwallet_trading_runtime_policy.json"), "--trade-request", str(trade_request), "--output", str(tvc_gate)], cwd=tvc, env=env)
             checked("TVC trading preparation gate", completed)
             completed = run([sys.executable, str(stegfin / "scripts" / "build_tv_tvc_registry_approval.py"), "--registry", str(stegfin / "registries" / "base_0x_v2_candidate_2026_07.json"), "--tv-policy", str(tv / "roles_templates" / "stegwallet_trading_runtime_policy.json"), "--tvc-gate", str(tvc_gate), "--inventory-receipt", str(UPSTREAM_RECEIPT), "--claim-id", claim_id, "--fence", str(fence), "--output", str(registry_approval)], cwd=stegfin, env=env)
             checked("TV/TVC registry approval", completed)
 
-            write_json(route_request, {
-                "schema_version": "stegverse.tvc.provider-capability-request.v1", "request_id": f"stegfin-base-quote:{claim_id}:G{fence}", "capability": "base.quote.0x", "consumer": "StegVerse-Labs/stegfin-governance",
-                "provider_inventory": [{"provider_id": "zeroex-base-primary", "provider_class": "zeroex_v2", "model_class": None, "capabilities": ["base.quote.0x"], "available": True, "priority": 10, "route_ref": "https://api.0x.org/swap/allowance-holder/quote"}],
-                "secret_material_present": False, "github_token_required": False,
-            })
+            write_json(route_request, {"schema_version": "stegverse.tvc.provider-capability-request.v1", "request_id": f"stegfin-base-quote:{claim_id}:G{fence}", "capability": "base.quote.0x", "consumer": "StegVerse-Labs/stegfin-governance", "provider_inventory": [{"provider_id": "zeroex-base-primary", "provider_class": "zeroex_v2", "model_class": None, "capabilities": ["base.quote.0x"], "available": True, "priority": 10, "route_ref": "https://api.0x.org/swap/allowance-holder/quote"}], "secret_material_present": False, "github_token_required": False})
             completed = run([sys.executable, str(tvc / "scripts" / "tvc_resolve_provider_capability.py"), "--request", str(route_request), "--output", str(route_receipt)], cwd=tvc, env=env)
             checked("TVC provider capability resolution", completed)
 
@@ -268,7 +203,6 @@ def main() -> int:
 
             completed = run([sys.executable, str(stegfin / "scripts" / "build_sovereign_live_pretrade_e1.py"), "--inventory-receipt", str(UPSTREAM_RECEIPT), "--tv-quote-policy", str(quote_policy), "--tvc-quote-lease", str(quote_lease), "--trade-request", str(trade_request), "--trust-registry", str(stegfin / "registries" / "base_0x_v2_candidate_2026_07.json"), "--registry-approval", str(registry_approval), "--provider-route-receipt", str(route_receipt), "--claim-id", claim_id, "--fence", str(fence), "--relationship-receipt", str(relationship), "--output", str(e1), "--pretrade-output", pretrade_output_rel], cwd=stegfin, env=env)
             checked("sovereign E1", completed)
-
             completed = run([sys.executable, str(stegfin / "scripts" / "run_tv_tvc_sovereign_pretrade.py"), "--route-receipt", str(route_receipt), "--e1", str(e1), "--receipt", str(carrier_receipt)], cwd=stegfin, env=env, timeout=180)
             checked("TV/TVC sovereign pretrade launch", completed)
 
@@ -281,10 +215,8 @@ def main() -> int:
             decision = status.get("decision")
             if decision not in {"USER_APPROVAL_REQUIRED", "USER_SWAP_SIGNATURE_REQUIRED"}:
                 raise RuntimeError(f"governed pretrade did not reach USER_ONLY boundary: {decision}")
-            if status.get("signed") is not False or status.get("broadcast") is not False:
-                raise RuntimeError("pretrade status authority drift")
-            if status.get("credential_authority") != "TV/TVC" or status.get("github_token_required") is not False or status.get("provider_secret_exported") is not False:
-                raise RuntimeError("pretrade credential boundary drift")
+            if status.get("signed") is not False or status.get("broadcast") is not False or status.get("credential_authority") != "TV/TVC" or status.get("github_token_required") is not False or status.get("provider_secret_exported") is not False:
+                raise RuntimeError("pretrade authority boundary drift")
             bundle_hash = wallet_handoff.get("bundle_sha256")
             if not isinstance(bundle_hash, str) or status.get("wallet_handoff_bundle_sha256") != bundle_hash:
                 raise RuntimeError("wallet handoff commitment mismatch")
@@ -295,19 +227,16 @@ def main() -> int:
             if launch_receipt.get("credential_authority") != "TV/TVC" or launch_receipt.get("github_token_required") is not False:
                 raise RuntimeError("launcher authority drift")
 
-            atomic_write(RECEIPT, {
-                "schema": "stegverse.stegfin-live-pretrade-heartbeat-receipt/v0.1", "task_id": EXPECTED_TASK, "heartbeat_epoch": epoch, "claim_id": claim_id, "fencing_token": fence,
-                "state": "COMPLETE", "transition_id": "STEGFIN_PRETRADE_WALLET_HANDOFF_READY", "source_inventory_claim_id": inventory.get("claim_id"), "source_inventory_fencing_token": inventory.get("fencing_token"),
-                "inventory_state_hash": inventory.get("inventory_state_hash"), "boundary_state_hash": inventory.get("boundary_state_hash"), "provider_route_receipt_hash": route.get("receipt_hash"), "tvc_quote_lease_receipt_sha256": lease.get("receipt_sha256"),
-                "pretrade_decision": decision, "wallet_handoff_bundle_sha256": bundle_hash, "wallet_handoff_local_ref": str(handoff_path.relative_to(stegfin)), "fresh_quote_required_after_approval_settlement": status.get("fresh_quote_required_after_approval_settlement") is True,
-                "credential_authority": "TV/TVC", "provider_capability_authority": "TV_TVC_VAULT_ONLY", "provider_capability_delivery": "INHERITED_FILE_DESCRIPTOR",
-                "provider_secret_value_recorded": False, "provider_secret_hash_recorded": False, "provider_secret_path_recorded": False, "github_token_required": False, "github_runtime_required": False,
-                "wallet_signing_authority": "USER_ONLY", "broadcast_authority": "USER_ONLY", "signed": False, "broadcast": False, "settled": False, "next_authorized_action": status.get("next_step"),
-            })
+            readiness = run([sys.executable, str(stegfin / "scripts" / "check_live_entry_trade_readiness.py"), "--inventory-receipt", str(UPSTREAM_RECEIPT), "--provider-route-receipt", str(route_receipt), "--pretrade-status", str(status_path)], cwd=stegfin, env=env)
+            checked("canonical wallet-handoff readiness convergence", readiness)
+            if "WALLET_HANDOFF_READY" not in readiness.stdout:
+                raise RuntimeError("canonical readiness checker did not admit WALLET_HANDOFF_READY")
+
+            atomic_write(RECEIPT, {"schema": "stegverse.stegfin-live-pretrade-heartbeat-receipt/v0.1", "task_id": EXPECTED_TASK, "heartbeat_epoch": epoch, "claim_id": claim_id, "fencing_token": fence, "state": "COMPLETE", "transition_id": "STEGFIN_PRETRADE_WALLET_HANDOFF_READY", "source_inventory_claim_id": inventory.get("claim_id"), "source_inventory_fencing_token": inventory.get("fencing_token"), "inventory_state_hash": inventory.get("inventory_state_hash"), "boundary_state_hash": inventory.get("boundary_state_hash"), "provider_route_receipt_hash": route.get("receipt_hash"), "tvc_quote_lease_receipt_sha256": lease.get("receipt_sha256"), "pretrade_decision": decision, "wallet_handoff_bundle_sha256": bundle_hash, "wallet_handoff_local_ref": str(handoff_path.relative_to(stegfin)), "canonical_readiness_state": "WALLET_HANDOFF_READY", "fresh_quote_required_after_approval_settlement": status.get("fresh_quote_required_after_approval_settlement") is True, "credential_authority": "TV/TVC", "provider_capability_authority": "TV_TVC_VAULT_ONLY", "provider_capability_delivery": "INHERITED_FILE_DESCRIPTOR", "provider_secret_value_recorded": False, "provider_secret_hash_recorded": False, "provider_secret_path_recorded": False, "github_token_required": False, "github_runtime_required": False, "wallet_signing_authority": "USER_ONLY", "broadcast_authority": "USER_ONLY", "signed": False, "broadcast": False, "settled": False, "next_authorized_action": status.get("next_step")})
     except subprocess.TimeoutExpired as exc:
         return emit_blocked(epoch, claim_id, fence, "STEGFIN_PRETRADE_RETRY", "RUNTIME_EXECUTION", f"Bounded pretrade process timed out: {exc}", "a subsequent bounded run reaches the USER_ONLY wallet handoff within the task runtime window", "Retry on the next admitted heartbeat without widening credential, network, wallet or execution authority.")
     except Exception as exc:
-        return emit_blocked(epoch, claim_id, fence, "STEGFIN_PRETRADE_RETRY", "RUNTIME_EXECUTION", f"Governed external pretrade failed closed: {str(exc)[-1400:]}", "the exact TV/TVC -> vault -> governed pretrade chain emits a hash-bound USER_ONLY wallet handoff", "Retry or repair only the named canonical StegFin/TV/TVC source surfaces; do not introduce alternate secrets, tokens, provider routes, signers or broadcasters.")
+        return emit_blocked(epoch, claim_id, fence, "STEGFIN_PRETRADE_RETRY", "RUNTIME_EXECUTION", f"Governed external pretrade failed closed: {str(exc)[-1400:]}", "the exact TV/TVC -> vault -> governed pretrade chain and canonical readiness checker emit WALLET_HANDOFF_READY", "Repair only the canonical StegFin/TV/TVC source surfaces; do not introduce alternate secrets, tokens, provider routes, signers or broadcasters.")
 
     json.dump(response(state="COMPLETE", transition_id="STEGFIN_PRETRADE_WALLET_HANDOFF_READY", sequence=2, next_transition="USER_ONLY_WALLET_ACTION", evidence_refs=[str(RECEIPT.relative_to(ROOT))]), sys.stdout, sort_keys=True)
     sys.stdout.write("\n")
