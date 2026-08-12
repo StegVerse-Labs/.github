@@ -28,9 +28,33 @@ class HeartbeatRuntime(HeartbeatRuntimeV10):
         contract: dict[str, Any],
     ) -> str:
         if self._persist:
-            return super()._admit_resolution_task(
+            parent_priority = str(
+                self._handoff(parent).get("task", {}).get("priority") or "critical"
+            )
+            task_id = super()._admit_resolution_task(
                 registry, parent, epoch, events, resolution_ref, contract
             )
+            # v10 historically emitted every resolution successor at `critical`.
+            # v11 preserves the originating scheduler class so a release-priority
+            # goal cannot be demoted merely because it entered RESOLVE/ESCALATE.
+            handoff_path = self.root / "handoffs" / "generated" / f"{task_id}.json"
+            if handoff_path.exists():
+                generated = self._load(handoff_path)
+                task = generated.get("task") or {}
+                if task.get("priority") != parent_priority:
+                    task["priority"] = parent_priority
+                    generated["task"] = task
+                    self._atomic_write(handoff_path, generated)
+                    self._event(
+                        events,
+                        epoch,
+                        "resolution_priority_inherited",
+                        task_id=task_id,
+                        parent_task_id=parent.get("task_id"),
+                        inherited_priority=parent_priority,
+                        authority_effect=False,
+                    )
+            return task_id
 
         # A dry-run must prove the transition without manufacturing generated
         # handoffs/cost bases that later phases of the same dry-run would try to
