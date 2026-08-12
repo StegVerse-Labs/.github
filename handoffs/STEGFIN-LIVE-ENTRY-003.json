@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-STEGFIN-LIVE-ENTRY-003",
   "created_at": "2026-08-10T16:00:00Z",
-  "updated_at": "2026-08-12T20:37:00Z",
+  "updated_at": "2026-08-12T20:48:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "STEGFIN-BASE-ROUNDTRIP-001",
@@ -10,6 +10,8 @@
     "success_predicates": [
       "A fresh complete Base Asset Lounge Inventory N is observed for the canonical wallet from locally materialized StegFin code",
       "The observation uses the hash-bound StegFin registry endpoint and requires no provider capability",
+      "The exact 12.50 USDC -> WETH request is repository-resident and fail-closed to its canonical wallet, amount, gas, slippage and reserve boundaries",
+      "Trust-registry approval for the real live path is TV/TVC fenced and bound to current Inventory N plus successor claim/fence",
       "The live pretrade source is hardened so operator-supplied provider secret references and credential-bearing RPC inputs are not accepted",
       "Provider credential use is limited to the pinned TV/TVC-governed non-exportable vault capability",
       "No GitHub token, GitHub runtime, hosted scheduler, wallet credential, provider credential, signing authority or broadcast authority is required",
@@ -18,6 +20,7 @@
     "failure_predicates": [
       "A partial declared-token observation is treated as complete Inventory N",
       "A GitHub token or GitHub Actions runtime becomes a production prerequisite",
+      "A GitHub-derived or otherwise non-TV/TVC trust-registry approval is used for the real live trade",
       "An operator-supplied API key, provider token, provider secret reference, or credential-bearing RPC becomes an execution prerequisite",
       "Provider capability material enters worker JSON, environment, log, hash, receipt or repository state",
       "The heartbeat grants credential, wallet-signing or transaction-broadcast authority",
@@ -43,9 +46,13 @@
       "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md",
       "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-LIVE-ENTRY-003.json",
       "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-LIVE-ENTRY-003-READINESS.json",
+      "StegVerse-Labs/stegfin-governance:configs/base_validation_entry_trade_request.json",
+      "StegVerse-Labs/stegfin-governance:registries/base_0x_v2_candidate_2026_07.json",
       "StegVerse-Labs/stegfin-governance:scripts/observe_live_base_inventory.py",
+      "StegVerse-Labs/stegfin-governance:scripts/build_tv_tvc_registry_approval.py",
       "StegVerse-Labs/stegfin-governance:scripts/run_governed_pretrade.py",
       "StegVerse-Labs/stegfin-governance:scripts/check_live_pretrade_runtime.py",
+      "StegVerse-Labs/stegfin-governance:scripts/check_live_entry_trade_readiness.py",
       "StegVerse-Labs/stegfin-governance:stegwallet/sovereign_carrier_binding.py",
       "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-CAPABILITY-RESOLUTION-001.json",
       "StegVerse-Labs/TVC:docs/PROVIDER_CAPABILITY_RESOLUTION_MIRROR_HANDOFF.md",
@@ -53,18 +60,20 @@
     ],
     "dependencies": ["SHWP-DURABLE-RUNTIME-ACTIVATION"],
     "parent_task_id": null,
-    "derivation_reason": "The StegFin carrier-to-native-capsule binding and TV/TVC-only pretrade source boundary are released. After the sovereign carrier is active, the next safe machine-executable slice is credential-free authoritative Inventory N observation under the single existing heartbeat. TV/TVC/vault capability resolution remains a separately authorized canonical authority boundary.",
+    "derivation_reason": "The StegFin carrier-to-native-capsule binding and TV/TVC-only pretrade source boundary are released. After the sovereign carrier is active, the next safe machine-executable slice is credential-free authoritative Inventory N observation under the single existing heartbeat, followed by a TV/TVC-fenced registry approval. TV/TVC/vault capability resolution remains a separately authorized canonical authority boundary.",
     "canonical_owner_ref": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-LIVE-ENTRY-003.json",
     "canonical_lineage_key": "stegfin:base-validation-entry-003",
     "derivation_depth": 0,
     "priority": "release"
   },
   "authority": {
-    "authority_source": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-LIVE-ENTRY-003.json + task-state/STEGFIN-LIVE-ENTRY-003-READINESS.json; credential authority TV/TVC; route authority StegVerse-Labs/TVC; existing StegFin vault boundary; USER_ONLY signing and broadcast",
+    "authority_source": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-LIVE-ENTRY-003.json + task-state/STEGFIN-LIVE-ENTRY-003-READINESS.json; credential and registry-approval authority TV/TVC; route authority StegVerse-Labs/TVC; existing StegFin vault boundary; USER_ONLY signing and broadcast",
     "heartbeat_grants_execution_authority": false,
-    "policy_version": "shwp-single-hb-stegfin-live-entry-v0.4",
+    "policy_version": "shwp-single-hb-stegfin-live-entry-v0.5",
     "credential_authority": "TV/TVC",
+    "registry_approval_authority": "TV/TVC_FENCED_LIVE_PRETRADE_ONLY",
     "github_token_production_authority": "NONE",
+    "github_derived_registry_approval_allowed": false,
     "operator_supplied_provider_secret_allowed": false,
     "direct_provider_token_allowed": false,
     "provider_secret_export_allowed": false
@@ -83,7 +92,7 @@
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-LIVE-ENTRY-003.json",
-    "recheck_trigger": "each admitted heartbeat after SHWP-DURABLE-RUNTIME-ACTIVATION completes while unfinished; reuse fresh Inventory N if still valid, otherwise observe through locally materialized StegFin; never seek provider capability outside TV/TVC/vault",
+    "recheck_trigger": "each admitted heartbeat after SHWP-DURABLE-RUNTIME-ACTIVATION completes while unfinished; reuse fresh Inventory N if still valid, otherwise observe through locally materialized StegFin; then build only the TV/TVC-fenced registry approval; never seek provider capability outside TV/TVC/vault",
     "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {
@@ -93,11 +102,13 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "After sovereign runtime activation, observe fresh complete Inventory N. Then, under separate canonical authorization, consume only the TV/TVC/vault provider-capability release contract and inherited-FD path; once available, run the hardened StegFin pretrade path using credential-free Base public read-only observation, exact TVC quote lease, live 0x quote, allowance, gas-risk binding and simulation until USER_ONLY wallet handoff.",
+    "next_authorized_action": "After sovereign runtime activation, observe fresh complete Inventory N, build the TV/TVC-fenced registry approval bound to current Inventory N and successor claim/fence, then consume only the TV/TVC/vault provider-capability release contract and inherited-FD path. Run the exact installed 12.50-USDC trade request through credential-free Base read-only observation, exact TVC quote lease, live 0x quote, allowance, gas-risk binding and simulation until USER_ONLY wallet handoff.",
     "terminal_when": [
       "fresh_inventory_n_observed=true",
+      "tv_tvc_fenced_registry_approval_ready=true",
       "provider_capability_release_boundary_identified=true",
       "github_token_required=false",
+      "github_derived_registry_approval=false",
       "operator_supplied_provider_secret=false",
       "provider_secret_exported=false",
       "wallet_contacted=false",
@@ -117,11 +128,12 @@
     "human_action_required": false
   },
   "successor_boundary": {
-    "after_inventory_n": "TV/TVC/vault inherited-FD provider capability",
+    "after_inventory_n": "TV/TVC fenced registry approval -> TV/TVC/vault inherited-FD provider capability",
+    "registry_approval_builder": "StegVerse-Labs/stegfin-governance:scripts/build_tv_tvc_registry_approval.py",
     "provider_capability_task": "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-CAPABILITY-RESOLUTION-001.json",
     "provider_capability_state": "COMPLETE_RELEASED",
     "trade_readiness_record": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-LIVE-ENTRY-003-READINESS.json",
     "wallet_authority": "USER_ONLY",
-    "escalation_condition": "provider capability is requested through GitHub credentials, environment, E1 payload, logs, hashes, receipts, operator-supplied provider secret inputs, credential-bearing RPC, or any path outside TV/TVC/vault"
+    "escalation_condition": "registry/provider capability is requested through GitHub-derived approvals, GitHub credentials, environment, E1 payload, logs, hashes, receipts, operator-supplied provider secret inputs, credential-bearing RPC, or any path outside TV/TVC/vault"
   }
 }
