@@ -1,5 +1,5 @@
 {
-  "schema": "stegverse.worker-policy-rebind/v0.1",
+  "schema": "stegverse.worker-policy-rebind/v0.2",
   "rebind_id": "REBIND-SHWP-DURABLE-RUNTIME-ACTIVATION-G18-V04",
   "status": "ADMITTED",
   "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
@@ -7,17 +7,24 @@
   "fencing_token": 18,
   "old_policy_version": "shwp-single-hb-v0.3-sovereign",
   "new_policy_version": "shwp-single-hb-v0.4-sovereign-solution-execution",
-  "handoff_sha256": "893dec8219fd742403622a6308d45ec014cdd911380fff13722eee02abb1a184",
+  "handoff_sha256_at_rebind": "893dec8219fd742403622a6308d45ec014cdd911380fff13722eee02abb1a184",
+  "current_handoff_validation": "AUTHORITY_FIELDS_AND_FENCE_INVARIANTS",
+  "state_normalization_ref": "control/active-worker-state-policy.json",
+  "state_normalization_issue": "StegVerse-Labs/.github#83",
   "authority_source": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json#resolution",
   "heartbeat_grants_rebind": false,
   "evidence_refs": [
     "StegVerse-Labs/.github#65",
+    "StegVerse-Labs/.github#83",
     "control/blocker-resolution-policy.json",
+    "control/active-worker-state-policy.json",
     "scripts/install_sovereign_heartbeat_service.py",
     "scripts/verify_sovereign_runtime_activation.py",
     "Heartbeat Worker Project run 31338817754:SUCCESS"
   ],
-  "scope": "same task, same claim, same fence; policy change only permits the already-admitted worker to execute the sovereign native solution path and does not expand authority ceiling, allowed paths, services, cost ceiling, or external-provider authority",
+  "scope": "same task, same claim, same fence; operational-state normalization does not expand authority ceiling, allowed paths, services, cost ceiling, credential authority, or external-provider authority",
+  "credential_authority": "TV/TVC",
+  "github_token_production_authority": "NONE",
   "third_party_dependency_authority": false,
   "execution_authority_effect": "none_beyond_existing_admitted_task_authority"
 }
