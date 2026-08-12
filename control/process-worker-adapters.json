@@ -44,7 +44,19 @@
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [],
-      "notes": ["Heartbeat-owned deterministic federation readiness worker.", "Writes only receipts/organization-federation/**.", "No cross-organization mutation, deployment, publication, custody or policy authority."],
+      "notes": ["Heartbeat-owned deterministic organization federation readiness worker.", "Writes only receipts/organization-federation/**.", "No cross-organization mutation, deployment, publication, custody or policy authority."],
+      "timeout_seconds": 30,
+      "type": "process_json_v0.1"
+    },
+    {
+      "adapter_ref": "process:repo-heartbeat-federation-v1",
+      "authority_ref": "authorizations/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
+      "capabilities": ["repo_heartbeat_federation_reconciliation"],
+      "command": ["python", "workers/repo_heartbeat_federation_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [],
+      "notes": ["Heartbeat-owned repository-level federation coverage worker under the existing single heartbeat.", "Consumes normalized manifests from federation/repo-heartbeats and writes only receipts/repo-heartbeat-federation/**.", "Missing, stale, invalid, failed or dependency-blocked required repositories fail closed.", "The worker grants no cross-repository mutation, execution, credential, deployment or policy authority.", "Credential authority remains TV/TVC and GitHub tokens are not required."],
       "timeout_seconds": 30,
       "type": "process_json_v0.1"
     },
@@ -68,7 +80,7 @@
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [],
-      "notes": ["Heartbeat-owned Ecosystem Chat sovereign inference activation worker chained through canonical local TVC route authority and canonical local LLM-adapter carrier execution.", "The TC/TVC wrapper invokes the established route worker with only PATH/PYTHONPATH/locale environment and normalizes legacy TV+TVC credential labels without changing historical repository references.", "It starts and proves only a StegVerse-local model endpoint, requires TVC ROUTE_ADMITTED with credential_requirement NONE, then executes exactly that admitted endpoint through task LLMA-SOVEREIGN-CARRIER-EXECUTION-020.", "TC/TVC owns the local-model credential decision and that decision is NONE.", "Writes only receipts/ecosystem-chat-sovereign-inference/**.", "No GitHub token, hosted model credential, hosted provider, or source-repository checkout is a production runtime dependency."],
+      "notes": ["Heartbeat-owned Ecosystem Chat sovereign inference activation worker chained through canonical local TVC route authority and canonical local LLM-adapter carrier execution.", "The legacy-named wrapper invokes the established route worker with only PATH/PYTHONPATH/locale environment and normalizes legacy authority labels to current TV/TVC without rewriting historical repository references.", "It starts and proves only a StegVerse-local model endpoint, requires TVC ROUTE_ADMITTED with credential_requirement NONE, then executes exactly that admitted endpoint through task LLMA-SOVEREIGN-CARRIER-EXECUTION-020.", "TV/TVC owns the local-model credential decision and that decision is NONE.", "Writes only receipts/ecosystem-chat-sovereign-inference/**.", "No GitHub token, hosted model credential, hosted provider, or source-repository checkout is a production runtime dependency."],
       "timeout_seconds": 180,
       "type": "process_json_v0.1"
     },
@@ -80,7 +92,7 @@
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [],
-      "notes": ["Heartbeat-owned credential-free StegFin Inventory N observer.", "The task-specific stegfin_live_entry_inventory_observation capability makes this executor uniquely resolvable when other sovereign workers share generic runtime capabilities.", "Discovers only a locally materialized StegFin workload and rebuilds the child environment from a minimal non-secret set.", "Writes only receipts/stegfin-live-entry/** and grants no provider capability, wallet contact, signing, broadcast, trade or custody authority.", "After Inventory N it stops at the canonical TC/TVC/vault inherited-FD capability boundary; heartbeat never acquires or transports the provider secret.", "No GitHub token, GitHub runtime, source checkout or hosted scheduler is a production dependency."],
+      "notes": ["Heartbeat-owned credential-free StegFin Inventory N observer.", "The task-specific stegfin_live_entry_inventory_observation capability makes this executor uniquely resolvable when other sovereign workers share generic runtime capabilities.", "Discovers only a locally materialized StegFin workload and rebuilds the child environment from a minimal non-secret set.", "Writes only receipts/stegfin-live-entry/** and grants no provider capability, wallet contact, signing, broadcast, trade or custody authority.", "After Inventory N it stops at the canonical TV/TVC/vault inherited-FD capability boundary; heartbeat never acquires or transports the provider secret.", "No GitHub token, GitHub runtime, source checkout or hosted scheduler is a production dependency."],
       "timeout_seconds": 150,
       "type": "process_json_v0.1"
     },
@@ -121,6 +133,6 @@
       "type": "process_json_v0.1"
     }
   ],
-  "generation": 15,
+  "generation": 16,
   "schema": "stegverse.process-worker-adapters/v0.1"
 }
