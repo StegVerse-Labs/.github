@@ -1,0 +1,68 @@
+{
+  "schema": "stegverse.handoff-execution-ownership/v1",
+  "policy_id": "HANDOFF-EXECUTION-OWNERSHIP-001",
+  "effective_at": "2026-08-12T18:15:00Z",
+  "standard_ref": "StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md",
+  "required_section": "## Execution ownership and collision partition",
+  "required_buckets": [
+    "MANUAL / SESSION-STARTABLE",
+    "WORKER-OWNED / DO NOT COMPETE",
+    "ESCALATED / AUTHORITY-OWNED",
+    "COMPLETED / SUPERSEDED"
+  ],
+  "required_task_fields": [
+    "task_id",
+    "execution_owner",
+    "claim_state",
+    "worker_registry_ref",
+    "manual_execution_allowed",
+    "manual_allowed_role",
+    "collision_scope",
+    "release_condition",
+    "next_executable_action"
+  ],
+  "manual_start_rule": {
+    "allowed_only_when": [
+      "task is explicitly UNCLAIMED or an equivalent manual-start state",
+      "manual_execution_allowed is true",
+      "canonical registry lookup shows no active worker, machine owner, claim, fence, lease, successor-resolution task, or escalation task on the collision scope",
+      "a manual/session claim is acquired before mutation"
+    ],
+    "pending_is_unclaimed": false,
+    "not_started_is_unclaimed": false,
+    "not_activated_is_unclaimed": false,
+    "constraint_present_is_unclaimed": false
+  },
+  "worker_owned_rule": {
+    "manual_execution_allowed": false,
+    "states": [
+      "CLAIMED_FOR_IMPLEMENTATION",
+      "CLAIMED_FOR_VALIDATION",
+      "CLAIMED_FOR_INTEGRATION",
+      "ACTIVE_WORKER",
+      "MACHINE_OWNED",
+      "ESCALATED"
+    ],
+    "manual_roles_require_explicit_nonoverlapping_scope": true
+  },
+  "legacy_handoff_default": {
+    "when_required_section_absent": "RECONCILIATION_REQUIRED",
+    "manual_execution_allowed": false,
+    "reason": "absence of ownership metadata cannot authorize duplicate manual work"
+  },
+  "registry_precedence": [
+    "current fence/lease/claim/escalation record",
+    "current worker/task registry",
+    "newest applicable handoff",
+    "historical prose"
+  ],
+  "constraint_escalation_path": [
+    "WORKER",
+    "REPOSITORY_OWNER",
+    "COMPONENT_AUTHORITY",
+    "ECOSYSTEM_GOVERNANCE",
+    "HUMAN_AUTHORITY"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_production_authority": "NONE"
+}
