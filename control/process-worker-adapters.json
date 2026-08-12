@@ -80,8 +80,8 @@
       "cwd": ".",
       "enabled": true,
       "env_allowlist": ["STEGVERSE_SOVEREIGN_NODE", "STEGVERSE_HEARTBEAT_ROOT", "HOME", "XDG_STATE_HOME", "LOCALAPPDATA"],
-      "notes": ["Heartbeat-owned sovereign runtime activation worker.", "On non-sovereign hosts it returns BLOCKED with a machine-observable release condition rather than pretending activation.", "On a StegVerse-owned/federated node it verifies the nine direct activation/restart predicates from node-local evidence.", "The process environment exposes only node-declaration/runtime-location variables required by the sovereign activation contract; GitHub/provider/wallet/cloud credentials remain excluded.", "Writes only receipts/sovereign-runtime-activation/** and requires no third-party deployment, scheduler, process-host, or inference provider."],
-      "timeout_seconds": 30,
+      "notes": ["Heartbeat-owned sovereign runtime activation worker.", "On non-sovereign hosts it returns BLOCKED with a machine-observable release condition rather than pretending activation.", "On a StegVerse-owned/federated node it verifies the nine direct activation/restart predicates from node-local evidence.", "The process environment exposes only node-declaration/runtime-location variables required by the sovereign activation contract; GitHub/provider/wallet/cloud credentials remain excluded.", "Timeout covers the worker's bounded native installer plus verifier envelope without changing authority or retry policy.", "Writes only receipts/sovereign-runtime-activation/** and requires no third-party deployment, scheduler, process-host, or inference provider."],
+      "timeout_seconds": 420,
       "type": "process_json_v0.1"
     },
     {
@@ -157,6 +157,6 @@
       "type": "process_json_v0.1"
     }
   ],
-  "generation": 19,
+  "generation": 20,
   "schema": "stegverse.process-worker-adapters/v0.1"
 }
