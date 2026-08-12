@@ -5,9 +5,12 @@
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "STEGNUTRITION-PHOTO-DIET-001",
-    "objective": "Continuously advance the canonical StegNutrition continuation inventory on the resident sovereign heartbeat without requiring another chat session and without any GitHub-token production dependency.",
+    "objective": "Continuously advance the canonical StegNutrition continuation inventory on the resident sovereign heartbeat without requiring another chat session, manual local-root selection, or any GitHub-token production dependency.",
     "success_predicates": [
-      "The worker consumes only an already locally materialized StegNutrition tree",
+      "The entrypoint discovers exactly one already locally materialized canonical StegNutrition tree from deterministic filesystem candidates, or accepts one valid explicit local override",
+      "Automatic local-root discovery performs no network lookup, GitHub fetch, clone, hosted-provider selection or credential acquisition",
+      "An invalid explicit root or multiple distinct automatic roots fail closed",
+      "The worker consumes only the discovered already locally materialized StegNutrition tree",
       "The canonical StegNutrition execution inventory is inspected on every admitted heartbeat while unfinished",
       "Fixed deterministic repository validation is executed locally when the target tree is available",
       "The entrypoint executes scripts/verify_runtime_custody_no_network.py before the continuation worker whenever the local tree is available",
@@ -20,6 +23,8 @@
     ],
     "failure_predicates": [
       "The worker fetches StegNutrition from GitHub or requests a GitHub token",
+      "The worker requires a user to manually select a local root when exactly one canonical local candidate is discoverable",
+      "An invalid explicit root or ambiguous set of local roots is silently accepted",
       "A missing locally materialized repository is treated as success",
       "The current FDA task or runtime-custody verification surface is absent from a locally materialized canonical tree",
       "A token-requiring or proof-drifted runtime binding is accepted",
@@ -30,6 +35,7 @@
     ],
     "expires_at": null,
     "authority_ceiling": [
+      "local_filesystem_discovery",
       "local_repository_observation",
       "fixed_no_network_validation",
       "bounded_receipt_persistence",
@@ -88,7 +94,7 @@
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json#authority",
-    "recheck_trigger": "each admitted heartbeat while unfinished; inspect only locally materialized canonical state and fixed local validation surfaces",
+    "recheck_trigger": "each admitted heartbeat while unfinished; discover only already local canonical StegNutrition roots and inspect fixed local validation surfaces",
     "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {
@@ -98,8 +104,9 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "When runtime-custody preflight, semantic vision, automatic portion, real benchmark, live TVC visual route and fixed local validation predicates are satisfied, emit STEGNUTRITION_RELEASE_CANDIDATE_READY. Release/publication remains a separately authorized StegNutrition release task.",
+    "next_authorized_action": "When local discovery, runtime-custody preflight, semantic vision, automatic portion, real benchmark, live TVC visual route and fixed local validation predicates are satisfied, emit STEGNUTRITION_RELEASE_CANDIDATE_READY. Release/publication remains a separately authorized StegNutrition release task.",
     "terminal_when": [
+      "local_root_discovery=UNAMBIGUOUS_OR_VALID_OVERRIDE",
       "runtime_custody_preflight=PASS",
       "semantic_vision_surfaces_present=true",
       "automatic_portion_surfaces_present=true",
@@ -110,12 +117,12 @@
     ]
   },
   "block": {
-    "block_reason": "Unresolved locally materialized target state, real semantic/benchmark evidence and resident TVC route observation remain active constraints; each is rechecked by the worker without chat intervention.",
+    "block_reason": "Unresolved local materialization, real semantic/benchmark evidence and resident TVC route observation remain active constraints; each is rechecked by the worker without chat intervention.",
     "dependency": "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-SESSION-20260811.json",
     "observer": "single sovereign StegVerse heartbeat",
     "recheck_trigger": "each admitted heartbeat while unfinished",
     "next_check": null,
-    "escalation_condition": "Any path attempts GitHub-token source retrieval, hosted model authority, second heartbeat/route authority, accepts invalid runtime custody, or marks unavailable evidence complete",
+    "escalation_condition": "Any path attempts GitHub-token source retrieval, hosted model authority, second heartbeat/route authority, accepts invalid or ambiguous local roots, accepts invalid runtime custody, or marks unavailable evidence complete",
     "block_expires_at": null
   }
 }
