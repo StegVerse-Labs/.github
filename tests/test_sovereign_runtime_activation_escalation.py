@@ -8,7 +8,7 @@ import sys
 import tempfile
 import unittest
 
-from heartbeat_runtime.engine_v11 import HeartbeatRuntime
+from heartbeat_runtime.engine_v11 import HeartbeatRuntime as HeartbeatRuntimeV11
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKER = ROOT / "workers" / "sovereign_runtime_activation_worker.py"
@@ -101,16 +101,75 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
             self.assertEqual(receipt["solution_attempt"]["reason"], "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_RUNTIME_EVIDENCE")
             self.assertFalse(receipt["third_party_runtime_required"])
 
-    def test_release_priority_outranks_critical_in_engine_v11(self) -> None:
-        self.assertLess(HeartbeatRuntime.PRIORITY["release"], HeartbeatRuntime.PRIORITY["critical"])
-
     def test_carrier_is_release_priority_and_names_stegfin_as_downstream(self) -> None:
+        from heartbeat_runtime.engine_v2 import HeartbeatRuntime as HeartbeatRuntimeV2
+
         handoff = json.loads((ROOT / "handoffs" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text())
         self.assertEqual(handoff["task"]["priority"], "release")
+        self.assertLess(
+            HeartbeatRuntimeV2.PRIORITY["release"],
+            HeartbeatRuntimeV2.PRIORITY["critical"],
+        )
         self.assertEqual(handoff["authority"]["credential_authority"], "TV/TVC")
         self.assertEqual(handoff["authority"]["github_token_production_authority"], "NONE")
         self.assertIn("STEGFIN-LIVE-ENTRY-003", handoff["release_downstream"])
         self.assertEqual(handoff["constraint"]["operational_state"], "ACTIVE_SOLUTION_EXECUTION")
+
+    def test_v11_resolution_successor_inherits_release_priority(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "handoffs").mkdir(parents=True)
+            parent_handoff = json.loads(
+                (ROOT / "handoffs" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text()
+            )
+            (root / "handoffs" / "parent.json").write_text(
+                json.dumps(parent_handoff), encoding="utf-8"
+            )
+            parent = {
+                "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+                "goal_id": parent_handoff["goal"]["goal_id"],
+                "state": "BLOCKED",
+                "handoff_ref": "handoffs/parent.json",
+                "executor_binding": "BOUND",
+                "worker_id": None,
+                "worker_instance_id": None,
+                "claim_id": None,
+                "heartbeat_timing": None,
+                "last_checkpoint_ref": parent_handoff["continuity"]["checkpoint_ref"],
+                "archive_eligible": False,
+                "archive_reason_codes": [],
+                "evidence_refs": [],
+            }
+            registry = {"generation": 18, "workers": [], "tasks": [parent]}
+            contract = {
+                "trigger_type": "CONDITIONAL_CONSTRAINT",
+                "dependency_class": "PHYSICAL_RESOURCE",
+                "problem_statement": "No declared sovereign carrier is observable.",
+                "solution_required": True,
+                "workaround_candidates": ["promote an eligible sovereign micro-node"],
+                "next_solution_action": "select or materialize a sovereign carrier",
+                "resolvable_by_current_worker": False,
+                "escalation_target": "REPOSITORY_OWNER",
+                "required_capabilities": ["repository_resolution", "sandbox_validation"],
+                "completion_evidence": ["nine-predicate activation proof passes"],
+            }
+            runtime = HeartbeatRuntimeV11(root)
+            events: list[dict] = []
+            task_id = runtime._admit_resolution_task(
+                registry,
+                parent,
+                30,
+                events,
+                "resolution-contract:test",
+                contract,
+            )
+            generated = json.loads(
+                (root / "handoffs" / "generated" / f"{task_id}.json").read_text()
+            )
+            self.assertEqual(generated["task"]["priority"], "release")
+            self.assertTrue(
+                any(event.get("event_type") == "resolution_priority_inherited" for event in events)
+            )
 
 
 if __name__ == "__main__":
