@@ -16,10 +16,52 @@ wallet_signing_authority: USER_ONLY
 broadcast_authority: USER_ONLY
 implementation_claim: RELEASE_PENDING_VALIDATION
 claim_created_at: 2026-08-12T20:32:00Z
-claim_release_condition: heartbeat validation passes for the installed successor; then continuation is MACHINE_OWNED
+claim_release_condition: heartbeat and organization-control validation pass for the installed successor; then continuation is MACHINE_OWNED
 ```
 
 This is the canonical `.github` continuation record for the external Base/0x pretrade executor. It is distinct from `handoffs/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json`, which is an internal zero-external-cost market/reconstruction proof and has no external Base/0x authority.
+
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-live-pretrade-005.json
+collision_scope: STEGFIN-LIVE-PRETRADE-005 and process:stegfin-live-pretrade-v1; sessions may validate/reconcile but may not manually invoke provider capability, vault, wallet signing, broadcast, or duplicate the worker
+release_condition: none; this bucket intentionally contains no production execution authority
+next_executable_action: observe or repair only if the canonical machine worker emits a fail-closed receipt that names a repository-owned defect
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-live-pretrade-005.json
+collision_scope: fresh Inventory N -> canonical validation request -> TVC preparation -> TV/TVC registry approval -> TVC base.quote.0x route -> quote lease -> E1 -> inherited-FD vault capsule -> canonical WALLET_HANDOFF_READY
+release_condition: heartbeat advances beyond HB29, STEGFIN-LIVE-ENTRY-003 emits unexpired fresh Inventory N, and this successor receives a new fenced heartbeat claim
+next_executable_action: resident sovereign heartbeat admits STEGFIN-LIVE-PRETRADE-005 at release priority and runs workers/stegfin_external_pretrade_worker.py
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-live-pretrade-005.json
+collision_scope: provider capability and credential material remain exclusively TV/TVC plus the existing vault inherited-file-descriptor boundary; wallet signature and broadcast remain USER_ONLY
+release_condition: TV/TVC route/lease/capability evidence is valid and the governed preparation reaches the user-controlled wallet boundary
+next_executable_action: if TV/TVC capability is missing or invalid, TV/TVC/vault owns repair; if wallet action is required, automation stops and waits for USER_ONLY authority
+```
+
+### COMPLETED / SUPERSEDED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-live-pretrade-005.json
+collision_scope: duplicate dynamic validation-request generation and descriptive local-runtime/model selection are excluded from this workstream
+release_condition: duplicate request builder was removed at a579b86a768da42c1757cf71b4c41b2db35b16b1; local-model implementation is COMPLETE_RELEASED in StegVerse-002/micro-node-runtime
+next_executable_action: consume configs/base_validation_entry_trade_request.json unchanged and reuse the released local-model/runtime path; do not recreate either capability
+```
 
 ## Convergence record
 
@@ -93,7 +135,7 @@ The session requirement to replace descriptive local-runtime selection and forma
 
 ## Validation
 
-Repository workflow `Heartbeat Worker Project - Validation Only / No GitHub Token Authority` performs anonymous checkout, proves GitHub credential variables are absent, compiles runtime/workers/scripts, parses canonical JSON, validates executable handoffs, and runs the deterministic suite. An initial executor run `31639844814` reached compilation/JSON validation but failed handoff validation because this successor used a non-schema successor policy and did not include the exact parent HANDOFF path. Both were corrected in commit `e9ccecdb0a235bcd02056b447d2fe158df956541`; validation run `31640041333` is the release gate for that repair.
+The heartbeat validation uses anonymous checkout and explicitly proves GitHub credential variables absent. Run `31640242668` on commit `643ec573adc834f383e16fa0ce21858f94be230f` passed after predecessor/successor linkage. The same commit's organization-control run reached org invariants and active-worker ownership successfully but identified this mirror handoff's missing execution-ownership partition; this section is the direct repair. No validator was weakened.
 
 ## Current blocker
 
@@ -117,7 +159,7 @@ local-model implementation: MERGED INTO StegVerse-002/micro-node-runtime/docs/SO
 Inventory-N implementation: MACHINE_OWNED / DO NOT COMPETE
 canonical exact trade request/readiness checker: MERGED INTO concurrent StegFin readiness lane
 provider resolver/quote lease: COMPLETE_RELEASED / DO NOT DUPLICATE
-external Base pretrade executor: UNIQUE INTEGRATION installed here; claim releases after validation passes
+external Base pretrade executor: UNIQUE INTEGRATION installed here; claim releases after both validation lanes pass
 internal sovereign trading proof: DISTINCT MACHINE_OWNED task
 ```
 
@@ -127,8 +169,8 @@ internal sovereign trading proof: DISTINCT MACHINE_OWNED task
 developed_files: 12/12
 scaffolding_or_stubs: 0
 missing_required_files: 0
-validation: 10/12 pending repaired heartbeat workflow result
-integration: 11/12 pending validated handoff projection
+validation: 11/12 pending organization-control ownership-partition repair result
+integration: 12/12
 live_goal_activation: 0/1 wallet handoff because heartbeat remains HB29
-archive_condition: repaired executor validates, predecessor/successor durable records name each other, and all remaining live work is machine-owned
+archive_condition: both validation lanes pass, final executor status is transferred to StegFin canonical task-state/handoff, and all remaining live work is machine-owned
 ```
