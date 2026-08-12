@@ -52,6 +52,35 @@ def sovereign_node_declared() -> bool:
     return truthy(os.environ.get("STEGVERSE_SOVEREIGN_NODE")) or any(path.is_file() for path in NODE_MARKERS)
 
 
+def persist_authorized_node_declaration() -> Path | None:
+    """Persist only a declaration that is already authorized/observable.
+
+    Existing node markers remain authoritative. An explicit STEGVERSE_SOVEREIGN_NODE
+    declaration may be persisted into the current user's StegVerse state so the
+    native heartbeat service retains node eligibility after environment loss or a
+    controlled restart. This function never invents a declaration when none exists.
+    """
+    for marker in NODE_MARKERS:
+        if marker.is_file():
+            return marker
+    if not truthy(os.environ.get("STEGVERSE_SOVEREIGN_NODE")):
+        return None
+    marker = Path.home() / ".stegverse" / "node.json"
+    atomic_write(
+        marker,
+        {
+            "schema": "stegverse.sovereign-node-declaration/v0.1",
+            "declared": True,
+            "declaration_source": "STEGVERSE_SOVEREIGN_NODE",
+            "credential_authority": "TV/TVC",
+            "github_token_required": False,
+            "third_party_runtime_required": False,
+            "authority_effect": "PERSIST_EXISTING_NODE_DECLARATION_ONLY",
+        },
+    )
+    return marker
+
+
 def default_runtime_root() -> Path:
     override = os.environ.get("STEGVERSE_HEARTBEAT_ROOT")
     if override:
@@ -84,6 +113,7 @@ def execute_native_solution() -> dict:
         "installer_returncode": None,
         "verifier_returncode": None,
         "runtime_root": str(default_runtime_root()),
+        "node_declaration_marker": None,
     }
     if third_party_hosted_environment():
         result["hosted_environment_rejected"] = True
@@ -93,6 +123,8 @@ def execute_native_solution() -> dict:
         result["reason"] = "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT"
         return result
 
+    marker = persist_authorized_node_declaration()
+    result["node_declaration_marker"] = str(marker) if marker is not None else None
     result["eligible_node"] = True
     result["attempted"] = True
     runtime_root = default_runtime_root()
