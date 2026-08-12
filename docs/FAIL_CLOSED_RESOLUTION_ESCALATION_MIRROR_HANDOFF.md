@@ -74,6 +74,49 @@ Pre-merge and convergence validation established the resolution/escalation mecha
 
 Post-merge organization handoff rendering on the merge commit passed (`31620715890`). A stale organization aggregation term check was then corrected to the current physical-resource execution heading; final post-normalization aggregation/control-plane validation is tracked by the organization handoff and issues #83/#84.
 
+## Execution ownership and collision partition
+
+Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`.
+
+### MANUAL / SESSION-STARTABLE
+
+No resolution-task implementation is manually startable merely because a fail-closed condition exists. A distinct validation or code-review lane may be claimed only outside the currently claimed resolution task's collision scope.
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: FAIL-CLOSED-RESOLUTION-RUNTIME-CONTINUATION
+  execution_owner: heartbeat_runtime.engine_v11 + current worker/task registry owner
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: control/worker-registry.json + control/blocker-resolution-policy.json
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: current RESOLVE/ESCALATE task registration, parent claim release/reactivation, fences/leases, generated handoffs, and bounded solution execution already assigned by engine v11
+  release_condition: canonical task lifecycle completes/supersedes/releases the affected resolution scope
+  next_executable_action: execute the admitted resolution task or automatically derive the next escalation level when the current level cannot resolve the constraint
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: FAIL-CLOSED-RESOLUTION-AUTHORITY-CHAIN
+  execution_owner: WORKER -> REPOSITORY_OWNER -> COMPONENT_AUTHORITY -> ECOSYSTEM_GOVERNANCE -> HUMAN_AUTHORITY
+  claim_state: ESCALATED
+  worker_registry_ref: control/worker-registry.json + generated resolution handoff/claim records
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  collision_scope: the exact unresolved constraint and authority boundary carried by the derived resolution task
+  release_condition: a capable authority resolves the constraint or explicitly assigns a bounded HUMAN_AUTHORITY_REQUIRED action
+  next_executable_action: escalate rather than weaken constraints, bypass governance, or expose the task to arbitrary manual execution
+```
+
+### COMPLETED / SUPERSEDED
+
+- Resolution-contract encoding: complete.
+- Engine v10 derivation core: complete.
+- Engine v11 canonical compatibility runtime: complete.
+- Passive terminal fail-closed work: superseded/prohibited.
+
 ## Completion / release condition
 
 Source construction and merge are complete. The canonical runtime rule is now:
@@ -85,4 +128,4 @@ worker cannot resolve constraint collision -> next capable resolution level
 automation cannot legally resolve collision -> HUMAN_AUTHORITY_REQUIRED with exact decision/correction request
 ```
 
-No unresolved worker-declared fail-closed/conditional condition may terminate as passive work. Historical stale registry projections are reconciled separately under the broad state-normalization lane #83/#84 and do not change this released runtime behavior.
+No unresolved worker-declared fail-closed/conditional condition may terminate as passive work, and none becomes manually claimable unless a current authority record explicitly releases or assigns that scope.
