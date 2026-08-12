@@ -83,20 +83,24 @@ manifest emitter: c8f7c03fa3f47fd6d9cf164e29a3f232d4a920df
 emitter tests: fbea12d575c2745d9a2e4d1923ac5fa5a418fa77
 canonical issue: #81
 handoff owner reconciliation: 0a47987306d436a20e19d6104d03c9ea22cc22bf
+StegCore descriptor: StegVerse-Labs/StegCore@b7cbd49f2cede01ec81fd5e397eaa4f9912b2257
+StegCore handoff update: StegVerse-Labs/StegCore@31dcc7fe9ba9b1a7efe50103411bc4c4a95114df
 ```
 
 ## Validation
 
 Heartbeat Worker Project run `31610774741` on head `84a423ec1eca178503fd1110dc63eaa5f62de817` completed SUCCESS. It used anonymous checkout with GitHub credential variables absent, compiled runtime/workers/scripts, parsed canonical JSON, validated executable handoffs, and ran 112 deterministic tests PASS, including all five repository-federation worker tests. Its epoch-30 heartbeat execution was explicitly dry-run/nonpersistent, so it validates source integration but is not a live coverage receipt.
 
-The reusable emitter and its two tests were added after that run, so the next deterministic validation cycle must execute them before source validation is fully released.
+Heartbeat Worker Project run `31611065409` on head `fbea12d575c2745d9a2e4d1923ac5fa5a418fa77` completed SUCCESS after the reusable manifest emitter and emitter tests were installed. Central source validation is therefore complete. Hosted validation remains non-authorizing and does not substitute for the resident heartbeat.
+
+StegCore is the first descriptor-enrolled repository. `.stegverse/repo-heartbeat.json` is committed and its heartbeat-specific handoff records the enrollment. A fresh resident runtime manifest/coverage receipt has not yet been emitted, so descriptor enrollment must not be counted as healthy live coverage.
 
 ## Claims
 
 ```text
-central implementation: SOURCE COMPLETE
-source integration: COMPLETE
-post-emitter validation: ACTIVE
+central implementation: COMPLETE / claim released
+central source validation: COMPLETE / claim released
+source integration: COMPLETE / claim released
 live coverage execution: MACHINE OWNED / PENDING RESIDENT HEARTBEAT
 repo enrollment: ACTIVE under issue #81
 collision boundary: do not replace SHWP-ALL-ORG-FEDERATION-001; do not create per-repo schedulers
@@ -104,9 +108,9 @@ collision boundary: do not replace SHWP-ALL-ORG-FEDERATION-001; do not create pe
 
 ## Exact next tasks
 
-1. Execute post-emitter deterministic validation and inspect the real job/logs.
-2. Resident heartbeat admits `SHWP-REPO-HEARTBEAT-FEDERATION-001` and emits the first real fail-closed coverage receipt.
-3. Read each participant repository's applicable `*_MIRROR_HANDOFF.md` before mutation and install the smallest manifest/adapter enrollment contract.
+1. Resident heartbeat admits `SHWP-REPO-HEARTBEAT-FEDERATION-001` and emits the first real fail-closed coverage receipt.
+2. Read each remaining participant repository's applicable `*_MIRROR_HANDOFF.md` before mutation and install the smallest manifest/adapter enrollment contract.
+3. Connect locally materialized repository descriptors to fresh manifest emission on the resident carrier without granting arbitrary repo commands or per-repo scheduling authority.
 4. Read StegDB's applicable handoff and classify/add it through an admitted denominator transition.
 5. Expand denominator only after critical coverage semantics are proven.
 6. Publish/propagate coverage only after a real receipt exists.
@@ -117,9 +121,10 @@ collision boundary: do not replace SHWP-ALL-ORG-FEDERATION-001; do not create pe
 developed_files: 12/12 central source/control/test deliverables
 scaffolding_or_stubs: 0
 missing_required_central_files: 0
-validation: 1/3
+validation: 2/3 (central deterministic source validation complete; live resident coverage execution pending)
 integration: 2/2
-critical_repo_enrollment: 0/11 proven by live coverage receipt
-goal_activation: 55%
+repo_descriptors_installed: 1/11
+critical_repo_live_coverage: 0/11 proven by resident receipt
+goal_activation: 60%
 archive_ready: false
 ```
