@@ -126,6 +126,34 @@ def execute_native_solution() -> dict:
     return result
 
 
+def unresolved_node_resolution_contract() -> dict:
+    """Describe a physical-resource collision for engine-v11 task derivation.
+
+    The current G18 worker cannot manufacture a new sovereign node or expand its
+    own authority. Returning BLOCKED is therefore only a trigger for the
+    canonical RESOLVE/ESCALATE path; it is never permission for passive waiting.
+    """
+    return {
+        "dependency_class": "PHYSICAL_RESOURCE",
+        "trigger_type": "CONDITIONAL_CONSTRAINT",
+        "problem_statement": "No currently executing environment is declared as a StegVerse-owned/federated sovereign node eligible for native service activation.",
+        "solution_required": True,
+        "resolvable_by_current_worker": False,
+        "escalation_target": "REPOSITORY_OWNER",
+        "required_capabilities": ["repository_resolution", "sandbox_validation"],
+        "workaround_candidates": [
+            "Bind this worker to any existing StegVerse-owned/federated Linux, macOS, or Windows node by installing the node declaration and running the canonical native installer.",
+            "Promote an existing StegVerse-002 micro-node to the carrier if it satisfies durable-state and native-supervision requirements.",
+            "Construct a new StegVerse-owned/federated node from the repository-local runtime capsule; no hosted provider is required."
+        ],
+        "next_solution_action": "Derive and register the next-level sovereign-node resolution task; that resolver must select, promote, or construct an eligible node without weakening the no-hosted-provider or TV/TVC authority boundary.",
+        "completion_evidence": [
+            "An eligible StegVerse-owned/federated node declaration is machine-observable.",
+            "The canonical native installer and verifier can execute on that node without GitHub-token or hosted-provider production authority."
+        ],
+    }
+
+
 def main() -> int:
     invocation = json.load(sys.stdin)
     if invocation.get("schema") != "stegverse.worker-invocation/v0.1":
@@ -177,24 +205,13 @@ def main() -> int:
             "next_solution_action": "Continue node-local installer/verifier execution until the proof producer emits all nine predicates true or select another eligible sovereign node."
         }
     else:
-        transition = "SOVEREIGN_RUNTIME_SOLUTION_REQUIRED"
+        transition = "SOVEREIGN_RUNTIME_RESOLUTION_ESCALATION_REQUIRED"
         state = "BLOCKED"
-        expected = "SOVEREIGN_RUNTIME_SOLUTION_EXECUTION"
-        blocker = {
-            "dependency_class": "PHYSICAL_RESOURCE",
-            "problem_statement": "No currently executing environment is declared as a StegVerse-owned/federated sovereign node eligible for native service activation.",
-            "solution_required": True,
-            "may_remain_blocked": True,
-            "workaround_candidates": [
-                "Bind this worker to any existing StegVerse-owned/federated Linux, macOS, or Windows node by installing the node declaration and running the canonical native installer.",
-                "Promote an existing StegVerse-002 micro-node to the carrier if it satisfies durable-state and native-supervision requirements.",
-                "Construct a new StegVerse-owned/federated node from the repository-local runtime capsule; no hosted provider is required."
-            ],
-            "next_solution_action": "Acquire or identify an eligible sovereign node, declare it with STEGVERSE_SOVEREIGN_NODE=1 or a StegVerse node marker, then let this worker execute installation and verification automatically."
-        }
+        expected = "DERIVE_AND_REGISTER_RESOLUTION_TASK"
+        blocker = unresolved_node_resolution_contract()
 
     receipt = {
-        "schema": "stegverse.sovereign-runtime-worker-receipt/v0.3",
+        "schema": "stegverse.sovereign-runtime-worker-receipt/v0.4",
         "task_id": EXPECTED_TASK,
         "claim_id": claim_id,
         "worker_id": task.get("worker_id"),
@@ -221,7 +238,7 @@ def main() -> int:
         "schema": "stegverse.worker-response/v0.1",
         "state": state,
         "transition_id": transition,
-        "transition_sequence": 2,
+        "transition_sequence": 3,
         "expected_next_transition": expected,
         "expected_next_earliest_epoch": None if passed else epoch + 1,
         "expected_next_latest_epoch": None if passed else epoch + 1,
@@ -232,6 +249,7 @@ def main() -> int:
             "scripts/verify_sovereign_runtime_activation.py",
             "StegVerse-Labs/.github#12",
             "StegVerse-Labs/.github#59",
+            "StegVerse-Labs/.github#65",
             "control/blocker-resolution-policy.json"
         ],
         "blocker": blocker,
