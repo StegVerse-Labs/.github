@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/stegnutrition-continuation-receipt.schema.json",
+  "title": "StegNutrition Continuation Receipt",
+  "type": "object",
+  "required": [
+    "schema",
+    "task_id",
+    "claim_id",
+    "heartbeat_epoch",
+    "fencing_token",
+    "transition_id",
+    "transition_sequence",
+    "stegnutrition_inventory_ref",
+    "projection",
+    "local_validation",
+    "github_token_required",
+    "github_repository_fetch_performed",
+    "credential_authority",
+    "authority_effect",
+    "completed"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.stegnutrition-continuation-receipt/v0.2"},
+    "task_id": {"const": "SHWP-STEGNUTRITION-CONTINUATION-001"},
+    "claim_id": {"type": "string", "minLength": 1},
+    "worker_id": {"type": ["string", "null"]},
+    "worker_instance_id": {"type": ["string", "null"]},
+    "heartbeat_epoch": {"type": "integer", "minimum": 0},
+    "fencing_token": {"type": "integer", "minimum": 0},
+    "transition_id": {"type": "string", "minLength": 1},
+    "transition_sequence": {"type": "integer", "minimum": 1},
+    "stegnutrition_inventory_ref": {"const": "tasks/STEGNUTRITION-SESSION-20260811.json"},
+    "projection": {"type": "object"},
+    "local_validation": {
+      "type": "object",
+      "required": ["state", "reason", "returncode"],
+      "properties": {
+        "state": {"enum": ["COMPLETE", "BLOCKED", "RETRY", "FAILED"]},
+        "reason": {"type": "string"},
+        "returncode": {"type": ["integer", "null"]},
+        "output_tail": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "blocker": {"type": ["object", "null"]},
+    "github_token_required": {"const": false},
+    "github_repository_fetch_performed": {"const": false},
+    "credential_authority": {"const": "TV/TVC"},
+    "authority_effect": {"const": "none_beyond_admitted_continuation_receipt_namespace"},
+    "completed": {"type": "boolean"}
+  },
+  "additionalProperties": true
+}
