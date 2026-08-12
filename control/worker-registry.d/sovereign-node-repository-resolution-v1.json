@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SOVEREIGN-NODE-REPOSITORY-RESOLUTION-V1",
+  "tasks": [],
+  "workers": [
+    {
+      "worker_id": "sovereign-node-repository-resolution-worker-v1",
+      "status": "AVAILABLE",
+      "adapter_ref": "process:sovereign-node-repository-resolution-v1",
+      "capabilities": ["repository_resolution", "sandbox_validation"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-resolution-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "authority_source": "control/blocker-resolution-policy.json"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "third_party_runtime_required": false,
+  "credential_authority": "TV/TVC"
+}
