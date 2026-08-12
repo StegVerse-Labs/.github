@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.worker-capability-profiles/v0.1",
-  "generation": 8,
+  "generation": 9,
   "profiles": [
     {
       "profile_id": "deterministic-workflow-v1",
@@ -17,12 +17,16 @@
       "profile_id": "repository-maintenance-v1",
       "executor_type": "repository_worker",
       "effect_class": "repository_maintenance",
-      "allowed_capabilities": ["native_receipt_canary", "host_runtime_self_attest", "repository_validation", "deterministic_projection", "bounded_repository_mutation", "repo_heartbeat_federation_reconciliation"],
+      "allowed_capabilities": ["native_receipt_canary", "host_runtime_self_attest", "repository_validation", "deterministic_projection", "bounded_repository_mutation", "repo_heartbeat_federation_reconciliation", "healer_sovereign_scheduling"],
       "mutation_allowed": true,
       "deployment_allowed": false,
       "availability_grants_authority": false,
       "capability_match_grants_authority": false,
-      "notes": ["Any mutation still requires task authorization, scope admission and a current fence.", "repo_heartbeat_federation_reconciliation may write only the admitted central coverage receipt namespace and grants no cross-repository mutation authority."]
+      "notes": [
+        "Any mutation still requires task authorization, scope admission and a current fence.",
+        "repo_heartbeat_federation_reconciliation may write only the admitted central coverage receipt namespace and grants no cross-repository mutation authority.",
+        "healer_sovereign_scheduling executes only fixed repository-local handlers declared in StegVerse-Healer source against already materialized repositories; arbitrary commands and GitHub credential transport are not admitted."
+      ]
     },
     {
       "profile_id": "code-change-agent-v1",
