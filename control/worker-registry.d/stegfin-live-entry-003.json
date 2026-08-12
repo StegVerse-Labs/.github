@@ -48,5 +48,5 @@
   "github_token_required": false,
   "provider_capability_authority": "TV_TVC_VAULT_ONLY",
   "upstream_dependency": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-  "post_dependency_priority": "critical"
+  "post_dependency_priority": "release"
 }
