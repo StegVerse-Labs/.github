@@ -9,6 +9,7 @@
   "operational_state": "ACTIVE_SOLUTION_EXECUTION",
   "constraint_class": "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
   "observed_at": "2026-08-09T19:27:00Z",
+  "last_reconciled_at": "2026-08-12T19:20:00Z",
   "boundary_ref": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
   "handoff_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
   "deployment_handoff_ref": "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
@@ -22,6 +23,29 @@
     "sovereign_runtime_worker_validation_run": 31624274806,
     "heartbeat_worker_project_run": 31624274755,
     "organization_control_plane_run": 31624274826
+  },
+  "activation_assist_2026_08_12": {
+    "node_declaration_environment_bridge": "COMPLETE_RELEASED",
+    "resolution_successor_priority_inheritance": "COMPLETE_RELEASED",
+    "repository_resolution_executor": "COMPLETE_RELEASED",
+    "repository_resolution_profile": "COMPLETE_RELEASED",
+    "repository_resolution_registry_fragment": "COMPLETE_RELEASED",
+    "native_activation_timeout_alignment": "COMPLETE_RELEASED",
+    "github_token_added": false,
+    "credential_authority": "TV/TVC",
+    "authority_expansion": false,
+    "commits": [
+      "6b2601d8be04409fe1150fb37c87bf6493544bb2",
+      "25f57403999630fda9c30a2bd1714dec6eac58e3",
+      "7390eedd112f5833cad874261b5eca8f4226a297",
+      "0b9920b571ff1e3e105773341bd072e5c572ac0e",
+      "c12676f9c21b7613ffc01e952eaac00fd19f544f",
+      "e52a2908d0578c4e10a4cf3cf1e4fb4e1c23f66d",
+      "0a775136ebe042f1a368ac1631cf6c044cb6cbdb",
+      "6747fb2bff50ad7a698337bf007feed8bc007b9f",
+      "b4bbf8c1860be9120ea9823db23ad52daef3917b",
+      "0a652e8dfbbbcf3b70a1a92bc809fca176fc72b6"
+    ]
   },
   "automation_terminal": false,
   "canonical_runtime": {
@@ -52,7 +76,9 @@
     "process_supervision": "native_os_service_manager_liveness_only",
     "network_fetch_after_materialization": false,
     "heartbeat_timing_authority": "heartbeat_runtime.engine_v11.HeartbeatRuntime",
-    "master_records_role": "custody_and_reconstruction_only"
+    "master_records_role": "custody_and_reconstruction_only",
+    "node_declaration_environment_bridge": "control/process-worker-adapters.json#process:sovereign-runtime-activation-v1",
+    "repository_resolution_worker": "workers/sovereign_node_repository_resolution_worker.py"
   },
   "completed_machine_actions": [
     "Protocol/runtime implementation promoted through engine v11.",
@@ -63,7 +89,11 @@
     "Native service registration path installed for Linux, macOS, and Windows.",
     "No third-party provider is accepted as a production activation blocker.",
     "PR #93 removed the legacy may_remain_blocked worker condition and now emits a machine-readable PHYSICAL_RESOURCE resolution contract when G18 cannot identify or create an eligible sovereign node.",
-    "Engine v11 must derive/register RESOLVE/ESCALATE successor work instead of passively rediscovering the same missing-node condition."
+    "Engine v11 derives/registers RESOLVE/ESCALATE successor work instead of passively rediscovering the same missing-node condition.",
+    "Engine v11 now preserves a parent release-priority scheduler class on generated resolution successors.",
+    "G18 process isolation now passes the authorized STEGVERSE_SOVEREIGN_NODE declaration and runtime-location variables while continuing to exclude GitHub/provider/wallet/cloud credentials.",
+    "A uniquely profile-eligible repository-resolution worker is registered for the G18 PHYSICAL_RESOURCE successor; no-node results escalate to COMPONENT_AUTHORITY rather than EXECUTOR_NOT_RESOLVED.",
+    "The G18 process timeout now covers its bounded native installer plus verifier execution envelope."
   ],
   "success_conditions": [
     "One StegVerse-owned or StegVerse-federated node materializes the sovereign runtime from already-present local source/capsule.",
@@ -75,11 +105,11 @@
     "Registry, event, cost, receipt, checkpoint, and worker-coordination state survive restart/reconstruction."
   ],
   "machine_observable_completion_condition": "all sovereign-node activation predicates pass on one StegVerse-owned or StegVerse-federated node",
-  "next_executable_action": "On the next resident heartbeat, G18 either executes native activation on an eligible declared node or emits SOVEREIGN_RUNTIME_RESOLUTION_ESCALATION_REQUIRED; engine v11 then derives and registers the REPOSITORY_OWNER resolution task using the worker's machine-readable completion evidence. The resolver must select, promote, or construct an eligible StegVerse-owned/federated carrier without using GitHub tokens or hosted-provider production authority.",
+  "next_executable_action": "On the next resident heartbeat, G18 can consume an authorized sovereign-node declaration and execute the native installer/verifier within its aligned adapter timeout. If no declaration is observable, engine v11 derives a release-priority REPOSITORY_OWNER task that now has a uniquely eligible bounded resolver; the resolver either recognizes an authorized declaration and returns control to G18 or escalates the unchanged physical-resource constraint to COMPONENT_AUTHORITY. On terminal carrier proof the release-priority STEGFIN-LIVE-ENTRY-003 path is dependency-complete.",
   "active_worker_owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / fencing token 18",
   "escalation_required_if_unsolved": true,
   "escalation_target_if_current_worker_unsolved": "REPOSITORY_OWNER",
-  "machine_observable_release_condition": "resident heartbeat advances beyond HB29 and either activation.latest.json passes all nine predicates or a canonical RESOLVE/ESCALATE task is registered from the G18 resolution contract",
+  "machine_observable_release_condition": "resident heartbeat advances beyond HB29 and either activation.latest.json passes all nine predicates or the canonical engine-v11 resolution hierarchy progresses the PHYSICAL_RESOURCE constraint without an executor gap",
   "heartbeat_or_execution_authority_effect": "NONE",
   "chat_monitoring_required": false,
   "session_retention_required": false
