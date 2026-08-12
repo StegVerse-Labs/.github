@@ -21,7 +21,9 @@ local_model_credential_requirement: NONE
 github_token_runtime_dependency: PROHIBITED
 hosted_model_provider_dependency: NONE
 product_activation: INCOMPLETE
-session_role: COMPLETE_ARCHIVE
+session_role: DISTINCT_SUPPORT_CANONICAL_STATE_RECONCILIATION_AND_ACTIVATION_OBSERVATION
+thread_archive_ready: false
+archive_gate: docs/ORG_MIRROR_HANDOFF.md
 ```
 
 Historical immutable records may contain `StegVerse-Labs/TV+TVC` or `TC/TVC`. Those values are historical only. New runtime contracts and receipts use `TV/TVC`.
@@ -124,18 +126,18 @@ canonical StegFin internal sovereign-market worker: commit d62285645460b204dc173
 StegFin TV/TVC semantic reconciliation: .github PR #80 / merged 18f99d801f405cea6c6c8c6d2bef9f9bea7a1be7
 stale StegFin PR #67: CLOSED_SUPERSEDED
 session execution inventory: docs/SESSION_EXECUTION_INVENTORY_2026-08-10.md / 21 goals
-session archive receipt: docs/SESSION_ARCHIVE_RECEIPT_2026-08-11.md
+session archive receipt: docs/SESSION_ARCHIVE_RECEIPT_2026-08-11.md / SUPERSEDED_FOR_ARCHIVE_AUTHORITY_BY_ORG_GATE
 ```
 
 PR #77's exact head passed Heartbeat Worker Project, organization control-plane validation, and Ecosystem Chat sovereign inference validation. PR #80's exact head passed Heartbeat Worker Project, organization control-plane validation, and handoff rendering. Hosted validation never grants production authority.
 
-## Released session claims
+## Released source claims
 
 S08 — TV/TVC semantic reconciliation and cache hardening: `COMPLETE_MERGED_VALIDATED`; released by PR #77.
 
 S13 — StegFin internal sovereign marketplace source reconciliation: `COMPLETE_SOURCE_INTEGRATION`; canonical v2 worker is registered through `engine_v9 + control/worker-registry.d`; PR #80 completed TV/TVC semantics; stale PR #67 is closed superseded.
 
-No implementation, validation, integration, propagation, reconciliation, or observation claim remains owned by this chat session.
+No implementation claim remains owned by this chat session. The organization handoff nevertheless assigns this session a distinct support role for canonical-state reconciliation and activation observation until its archive gate advances.
 
 ## Machine-owned continuation and release conditions
 
@@ -192,13 +194,13 @@ Hosted workflow evidence counts only when GitHub allocates a runner and the rele
 
 ## Session consolidation
 
-MERGED INTO: this handoff, `docs/SESSION_EXECUTION_INVENTORY_2026-08-10.md`, `docs/SESSION_ARCHIVE_RECEIPT_2026-08-11.md`, `handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json`, `handoffs/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json`, `control/worker-registry.d/stegfin-sovereign-trading-001.json`, `.github#59/#60`, TV/TVC task records, Master Records tasks 024/025, and `STEGFIN-LIVE-ENTRY-003`.
+MERGED INTO: this handoff, `docs/SESSION_EXECUTION_INVENTORY_2026-08-10.md`, `handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json`, `handoffs/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json`, `control/worker-registry.d/stegfin-sovereign-trading-001.json`, `.github#59/#60`, TV/TVC task records, Master Records tasks 024/025, and `STEGFIN-LIVE-ENTRY-003`.
 
 Transferred requirements include local model development, actual local-runtime discovery/launch/proof, zero GitHub-token runtime authority, TV/TVC credential semantics, exact Master Records cache binding, orphan recovery, StegFin live entry, internal-market separation, real-trade continuation, and downstream propagation gates.
 
 ## Archive state
 
-All 21 session goals are completed, superseded, or durably transferred. No stale competing source PR from this session remains open. Remaining product activation is explicitly machine/human-authority owned with machine-observable release conditions. Archiving this conversation will not remove unique implementation state, authority, blocker definitions, or continuation instructions.
+All source implementation requirements originating in this scoped handoff are completed, superseded, or durably transferred, and no duplicate implementation claim should be created. However, this scoped handoff is subordinate to `docs/ORG_MIRROR_HANDOFF.md`, whose current archive invariant requires terminal production activation or measurable machine-owned progress toward terminal predicates. The resident sovereign carrier remains directly observed at HB29, so this scoped handoff may not independently declare this conversation archive-ready.
 
 ```text
 developed_files: 21/21
@@ -208,5 +210,6 @@ source_validation: 17/17
 source_integration: 11/11
 session_consolidation: 21/21
 product_activation: incomplete; direct runtime/trading evidence required
-archive_readiness: COMPLETE
+archive_readiness: BLOCKED_BY_ORG_MIRROR_HANDOFF
+archive_release_condition: resident sovereign carrier produces measurable post-HB29 progress satisfying the organization archive invariant, or the organization handoff is superseded by a newer authoritative gate
 ```
