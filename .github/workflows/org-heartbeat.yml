@@ -86,10 +86,10 @@ jobs:
       - name: Prove repeated internal machine-cycle ownership in disposable state
         run: |
           tmp="$(mktemp -d)"
-          mkdir -p "$tmp/control" "$tmp/handoffs" "$tmp/cost-basis/worker-runtime"
+          mkdir -p "$tmp/control" "$tmp/handoffs" "$tmp/cost-basis"
           cp control/heartbeat-state.json control/worker-registry.json control/worker-cost-observations.json control/process-worker-adapters.json control/claims-active.json control/org-state.json "$tmp/control/"
-          cp handoffs/*.json "$tmp/handoffs/"
-          cp cost-basis/worker-runtime/*.json "$tmp/cost-basis/worker-runtime/"
+          cp -R handoffs/. "$tmp/handoffs/"
+          cp -R cost-basis/. "$tmp/cost-basis/"
           start="$(python3 - <<'PY' "$tmp/control/heartbeat-state.json"
           import json,sys
           print(json.load(open(sys.argv[1]))['epoch'])
