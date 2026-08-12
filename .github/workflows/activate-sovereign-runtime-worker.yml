@@ -13,7 +13,9 @@ on:
       - 'cost-basis/worker-runtime/sovereign-runtime-activation.json'
       - 'control/process-worker-adapters.json'
       - 'control/worker-capability-profiles.json'
+      - 'control/active-worker-state-policy.json'
       - 'scripts/verify_sovereign_runtime_activation.py'
+      - 'tools/validate_active_worker_states.py'
       - '.github/workflows/activate-sovereign-runtime-worker.yml'
   pull_request:
     paths:
@@ -23,7 +25,9 @@ on:
       - 'cost-basis/worker-runtime/sovereign-runtime-activation.json'
       - 'control/process-worker-adapters.json'
       - 'control/worker-capability-profiles.json'
+      - 'control/active-worker-state-policy.json'
       - 'scripts/verify_sovereign_runtime_activation.py'
+      - 'tools/validate_active_worker_states.py'
       - '.github/workflows/activate-sovereign-runtime-worker.yml'
 
 permissions: {}
@@ -51,28 +55,41 @@ jobs:
       - name: Validate sovereign runtime worker surfaces
         run: |
           set -euo pipefail
-          python3 -m py_compile workers/sovereign_runtime_activation_worker.py heartbeat_runtime/*.py scripts/verify_sovereign_runtime_activation.py
+          python3 -m py_compile workers/sovereign_runtime_activation_worker.py heartbeat_runtime/*.py scripts/verify_sovereign_runtime_activation.py tools/validate_active_worker_states.py
           python3 - <<'PY'
-          import hashlib,json
+          import json
           from pathlib import Path
           h=json.loads(Path('handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json').read_text())
           rb=json.loads(Path('authorizations/SHWP-DURABLE-RUNTIME-ACTIVATION-policy-rebind-v0.4.json').read_text())
-          payload=json.dumps(h,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
+          p=json.loads(Path('control/active-worker-state-policy.json').read_text())
           assert h['activation']['carrier']=='heartbeat'
           assert h['activation']['checkout_policy']=='fenced_atomic_checkout'
-          assert h['block']['third_party_blocker'] is False
+          assert h['task']['operational_state']=='ACTIVE_WORKER'
+          assert h['task']['claim_state']=='MACHINE_OWNED_BOUND_G18'
+          assert h['task']['fencing_token']==18
+          assert h['constraint']['operational_state']=='ACTIVE_SOLUTION_EXECUTION'
+          assert h['constraint']['third_party_dependency'] is False
+          assert h['constraint']['next_solution_action']=='SOVEREIGN_RUNTIME_SOLUTION_EXECUTION'
           assert 'bounded_repository_mutation' in h['execution']['required_capabilities']
+          assert h['authority']['credential_authority']=='TV/TVC'
+          assert h['authority']['github_token_production_authority']=='NONE'
+          assert p['github_token_production_authority']=='NONE'
           assert rb['status']=='ADMITTED'
           assert rb['heartbeat_grants_rebind'] is False
-          assert rb['handoff_sha256']==hashlib.sha256(payload).hexdigest()
+          assert rb['task_id']==h['task']['task_id']
+          assert rb['claim_id']=='SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18'
+          assert rb['fencing_token']==h['task']['fencing_token']
           assert rb['new_policy_version']==h['authority']['policy_version']
+          assert rb['authority_source']==h['authority']['authority_source']
+          assert rb['credential_authority']=='TV/TVC'
+          assert rb['github_token_production_authority']=='NONE'
           print('SOVEREIGN_RUNTIME_WORKER_SURFACES_PASS')
           PY
 
       - name: Prove hosted runner is not sovereign activation authority
         run: |
           set -euo pipefail
-          python3 -m unittest -v tests.test_sovereign_runtime_activation_verifier
+          python3 -m unittest -v tests.test_sovereign_runtime_activation_verifier tests.test_active_worker_state_policy
           before="$(sha256sum control/worker-registry.json control/heartbeat-state.json | sha256sum | cut -d' ' -f1)"
           output="$(python3 scripts/run_heartbeat_runtime.py --dry-run --cycles 1)"
           after="$(sha256sum control/worker-registry.json control/heartbeat-state.json | sha256sum | cut -d' ' -f1)"
