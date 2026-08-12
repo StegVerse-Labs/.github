@@ -21,17 +21,17 @@ Third-party dependencies are never StegVerse blockers. Provider credentials, Saa
 - `control/blocker-resolution-policy.json` is the machine-readable policy.
 - `heartbeat_runtime/blocker_policy.py` validates worker blocker contracts.
 - `heartbeat_runtime/process_adapter.py` rejects passive `BLOCKED` responses and rejects any `BLOCKED` response whose dependency class is `THIRD_PARTY`.
-- Every legitimate `BLOCKED` response must state the problem, `solution_required=true`, one or more workaround candidates, and the next solution action.
-- A third-party condition must be represented as an active workaround-selection/execution transition, not a blocked transition.
+- Every legitimate constraint response must state the problem, `solution_required=true`, one or more workaround candidates, and the next solution action.
+- A third-party condition must be represented as an active workaround-selection/execution transition, not a passive stopping state.
 - Repeating an unchanged third-party or internal blocker observation does not count as progress.
 
 ## Active worker corrections
 
 - `workers/steggate_rendezvous_deployment_worker.py`: missing/rejected Cloudflare credentials and Cloudflare deployment failure now return `ACTIVE / THIRD_PARTY_WORKAROUND_REQUIRED` and name alternate sovereign/admitted rendezvous paths.
-- `workers/sovereign_runtime_activation_worker.py`: missing sovereign runtime evidence now reports `SOVEREIGN_RUNTIME_SOLUTION_REQUIRED` with concrete native-node activation alternatives rather than a bare observation-only blocker.
-- `workers/ecosystem_chat_sovereign_inference_worker.py`: missing local inference evidence now reports `SOVEREIGN_INFERENCE_SOLUTION_REQUIRED`, including smaller/alternate local model options rather than hosted-provider fallback.
-- `control/organization-task-registry.json`: AaCT-E connector write authority is now `WORKAROUND_REQUIRED`, not `BLOCKED`; internal no-repository conditions retain blockers only with explicit repository/relay construction alternatives.
-- `workers/organization_federation_readiness_worker.py`: validates the distinction between `WORKAROUND_REQUIRED` and internal `BLOCKED` conditions.
+- `workers/sovereign_runtime_activation_worker.py`: missing sovereign runtime evidence now reports active solution/escalation semantics with concrete native-node activation alternatives.
+- `workers/ecosystem_chat_sovereign_inference_worker.py`: missing local inference evidence reports an active sovereign inference solution requirement, including smaller/alternate local model options rather than hosted-provider fallback.
+- `control/organization-task-registry.json`: AaCT-E connector write authority is represented as `WORKAROUND_REQUIRED`; internal no-repository conditions retain explicit repository/relay construction alternatives.
+- `workers/organization_federation_readiness_worker.py`: validates the distinction between workaround-required and internal constraint conditions.
 
 ## Hosted validation
 
@@ -51,6 +51,49 @@ An earlier hosted run correctly failed because the first version of the new test
 
 ## Completion condition
 
-The runtime policy-remediation implementation and hosted validation are complete, but issue #65 remains open because the execution goal is larger than the policy change. At least the critical-path sovereign runtime worker must move from solution-required state into measurable solution execution, and remaining workers must use the new workaround semantics rather than merely record them.
+The runtime policy-remediation implementation and hosted validation are complete, but issue #65 remains an active execution owner because the execution goal is larger than the policy change. Critical-path workers must continue into measurable solution execution or derive/escalate successor work rather than merely record constraints.
 
-No chat history is required to reconstruct this rule, but the originating thread remains NOT ARCHIVE READY while ecosystem goals remain unmet.
+## Execution ownership and collision partition
+
+Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`.
+
+### MANUAL / SESSION-STARTABLE
+
+No implementation task in this handoff is implicitly manual-startable. A distinct validation/reconciliation lane may be manually claimed only outside the active worker implementation/runtime scopes.
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: WORKER-BLOCKER-REMEDIATION-001-ACTIVE-SCOPE
+  execution_owner: StegVerse-Labs/.github#65 + canonical heartbeat workers
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: control/worker-registry.json + control/blocker-resolution-policy.json + StegVerse-Labs/.github#65
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: blocker/constraint classification, worker workaround selection, successor task derivation, worker runtime transitions, and remediation receipts for tasks already bound to canonical workers
+  release_condition: canonical worker/registry explicitly completes, supersedes, or releases the affected task scope
+  next_executable_action: current worker executes a solution candidate or emits the resolution/escalation contract that creates the next active task
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: WORKER-CONSTRAINT-AUTHORITY-ESCALATION
+  execution_owner: engine-v11 authority chain
+  claim_state: ESCALATED
+  worker_registry_ref: docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md + control/worker-registry.json
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  collision_scope: constraints that the current worker cannot lawfully solve within its authority ceiling
+  release_condition: next capable authority resolves the constraint or explicitly assigns a bounded human-authority action
+  next_executable_action: derive/register RESOLVE or ESCALATE task rather than returning the original task to an arbitrary manual claimant
+```
+
+### COMPLETED / SUPERSEDED
+
+- Blocker-resolution policy implementation: complete.
+- Hosted policy validation: complete.
+- Passive third-party blocker semantics: superseded.
+- Constraint-to-solution/escalation invariant: canonical.
+
+No chat history is required to reconstruct this rule. Historical `BLOCKED` wording is evidence of past attempts only and does not release worker-owned work for manual implementation.
