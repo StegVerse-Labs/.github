@@ -54,11 +54,12 @@ def test_registry_fragment_has_unique_capability_and_no_token_requirement() -> N
 def test_process_adapter_allows_only_local_root_environment() -> None:
     adapters = load("control/process-worker-adapters.json")["adapters"]
     row = next(item for item in adapters if item["adapter_ref"] == "process:stegnutrition-machine-continuation-v1")
-    assert row["command"] == ["python", "workers/stegnutrition_continuation_worker.py"]
+    assert row["command"] == ["python", "workers/stegnutrition_continuation_entrypoint.py"]
     assert row["env_allowlist"] == ["STEGVERSE_STEGNUTRITION_ROOT"]
     notes = " ".join(row["notes"]).lower()
     assert "no github token" in notes
     assert "remote source checkout" in notes
+    assert "validates" in notes
 
 
 def test_capability_profile_does_not_grant_general_code_or_github_authority() -> None:
@@ -143,7 +144,7 @@ def test_worker_fails_closed_without_local_stegnutrition_materialization(tmp_pat
     env.pop("GITHUB_TOKEN", None)
     env.pop("GH_TOKEN", None)
     proc = subprocess.run(
-        [sys.executable, "workers/stegnutrition_continuation_worker.py"],
+        [sys.executable, "workers/stegnutrition_continuation_entrypoint.py"],
         cwd=ROOT,
         input=json.dumps(invocation()),
         text=True,
