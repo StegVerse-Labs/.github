@@ -76,16 +76,17 @@ def test_worker_normalizes_canonical_v4_inventory() -> None:
         "schema": "stegnutrition.session-execution-inventory.v4",
         "completed_or_released": ["STEGNUTRITION-PORTION-GEOMETRY-004"],
         "implemented_pending_activation_or_real_evidence": [
-            {"task_id": "STEGNUTRITION-SEMANTIC-VISION-012", "state": "REAL_DATA_BLOCKED"},
-            {"task_id": "STEGNUTRITION-AUTO-PORTION-013", "state": "PARTIAL"},
-            {"task_id": "STEGNUTRITION-REAL-BENCHMARK-DATA-014", "state": "HUMAN_BOUNDARY"},
+            {"task_id": "STEGNUTRITION-SEMANTIC-VISION-012", "state": "ACTIVE_REAL_DATA_QUALIFICATION"},
+            {"task_id": "STEGNUTRITION-AUTO-PORTION-013", "state": "ACTIVE_CALIBRATION"},
+            {"task_id": "STEGNUTRITION-REAL-BENCHMARK-DATA-014", "state": "ACTIVE_EVIDENCE_ACQUISITION"},
             {"task_id": "STEGNUTRITION-PRODUCTION-PIPELINE-019", "state": "SOURCE_IMPLEMENTED"},
+            {"task_id": "STEGNUTRITION-FDA-REFERENCE-020", "state": "SOURCE_COMPLETE_MACHINE_VALIDATION_ACTIVE"},
         ],
         "machine_owned_or_blocked": [
-            {"task_id": "STEGNUTRITION-LIVE-VISUAL-ROUTE-015", "state": "BLOCKED"},
-            {"task_id": "STEGNUTRITION-FULL-VALIDATION-016", "state": "BLOCKED"},
+            {"task_id": "STEGNUTRITION-LIVE-VISUAL-ROUTE-015", "state": "MACHINE_OWNED_ACTIVE"},
+            {"task_id": "STEGNUTRITION-FULL-VALIDATION-016", "state": "MACHINE_OWNED_ACTIVE"},
             {"task_id": "STEGNUTRITION-RELEASE-PROPAGATION-017", "state": "NOT_APPLICABLE"},
-            {"task_id": "STEGNUTRITION-MACHINE-CONTINUATION-018", "state": "SOURCE_INSTALLED"},
+            {"task_id": "STEGNUTRITION-MACHINE-CONTINUATION-018", "state": "MACHINE_OWNED_ACTIVE_CONTINUATION"},
         ],
     }
     rows = worker._inventory_rows(inventory)
@@ -99,6 +100,7 @@ def test_worker_normalizes_canonical_v4_inventory() -> None:
         "STEGNUTRITION-RELEASE-PROPAGATION-017",
         "STEGNUTRITION-MACHINE-CONTINUATION-018",
         "STEGNUTRITION-PRODUCTION-PIPELINE-019",
+        "STEGNUTRITION-FDA-REFERENCE-020",
     ):
         assert task_id in rows
 
@@ -135,7 +137,29 @@ def test_filesystem_projection_tracks_current_stegnutrition_source_names(tmp_pat
     assert projection["real_weighed_benchmark_case_count"] == 0
 
 
-def test_worker_fails_closed_without_local_stegnutrition_materialization(tmp_path: Path) -> None:
+def test_entrypoint_preflight_requires_fda_task_when_local_inventory_exists(tmp_path: Path) -> None:
+    inventory = tmp_path / "tasks/STEGNUTRITION-SESSION-20260811.json"
+    inventory.parent.mkdir(parents=True, exist_ok=True)
+    inventory.write_text(json.dumps({"completed_or_released": []}), encoding="utf-8")
+    env = os.environ.copy()
+    env["STEGVERSE_STEGNUTRITION_ROOT"] = str(tmp_path)
+    env.pop("GITHUB_TOKEN", None)
+    env.pop("GH_TOKEN", None)
+    proc = subprocess.run(
+        [sys.executable, "workers/stegnutrition_continuation_entrypoint.py"],
+        cwd=ROOT,
+        input=json.dumps(invocation()),
+        text=True,
+        capture_output=True,
+        env=env,
+        timeout=20,
+        check=False,
+    )
+    assert proc.returncode == 13
+    assert "STEGNUTRITION-FDA-REFERENCE-020" in proc.stderr
+
+
+def test_worker_fail_closed_response_is_projected_as_active_constraint(tmp_path: Path) -> None:
     receipt = ROOT / "receipts/stegnutrition-continuation" / f"{TASK_ID}.json"
     if receipt.exists():
         receipt.unlink()
@@ -155,10 +179,11 @@ def test_worker_fails_closed_without_local_stegnutrition_materialization(tmp_pat
     )
     assert proc.returncode == 0, proc.stderr
     response = json.loads(proc.stdout)
-    assert response["state"] == "BLOCKED"
-    assert response["transition_id"] == "STEGNUTRITION_LOCAL_MATERIALIZATION_REQUIRED"
-    assert response["blocker"]["solution_required"] is True
-    assert "GitHub token" in response["blocker"]["workaround_candidates"][0]
+    assert response["state"] == "ACTIVE"
+    assert response["operational_state"] == "ACTIVE_CONSTRAINT"
+    assert response["legacy_worker_state"] == "BLOCKED"
+    assert response["transition_id"] == "STEGNUTRITION_ACTIVE_CONSTRAINT"
+    assert response["active_constraint"]["stopping_state"] is False
     stored = json.loads(receipt.read_text(encoding="utf-8"))
     assert stored["github_token_required"] is False
     assert stored["github_repository_fetch_performed"] is False
