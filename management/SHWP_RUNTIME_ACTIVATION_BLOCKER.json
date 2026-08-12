@@ -1,9 +1,9 @@
 {
-  "schema": "stegverse.runtime-activation-constraint/v0.3",
+  "schema": "stegverse.runtime-activation-constraint/v0.4",
   "constraint_id": "SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09-SOVEREIGN",
   "goal_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
   "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-  "owner": "StegVerse-Labs/.github#59 + resident sovereign heartbeat",
+  "owner": "StegVerse-Labs/.github#59 + StegVerse-Labs/.github#65 + resident sovereign heartbeat",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
   "operational_state": "ACTIVE_SOLUTION_EXECUTION",
@@ -14,9 +14,18 @@
   "deployment_handoff_ref": "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
   "registry_ref": "control/worker-registry.json#SHWP-DURABLE-RUNTIME-ACTIVATION",
   "state_policy_ref": "control/active-worker-state-policy.json",
+  "resolution_policy_ref": "control/blocker-resolution-policy.json",
+  "resolution_runtime": "heartbeat_runtime.engine_v11.HeartbeatRuntime",
+  "resolution_implementation_receipt": {
+    "pull_request": "StegVerse-Labs/.github#93",
+    "merge_commit": "b5abe2c6fbaeafba5497e53275188d78d627e14b",
+    "sovereign_runtime_worker_validation_run": 31624274806,
+    "heartbeat_worker_project_run": 31624274755,
+    "organization_control_plane_run": 31624274826
+  },
   "automation_terminal": false,
   "canonical_runtime": {
-    "implementation": "heartbeat_runtime/engine_v9.py",
+    "implementation": "heartbeat_runtime/engine_v11.py",
     "entrypoint": "scripts/run_heartbeat_runtime.py --continuous --interval-ms 10.0",
     "worker_coordination_subsignal": "control/heartbeat-subsignals.json#worker_coordination",
     "worker_lease_clock": "canonical_heartbeat_cycle",
@@ -32,7 +41,9 @@
     "third_party_process_host_required": false,
     "third_party_scheduler_required": false,
     "third_party_deployment_required": false,
-    "third_party_platform_availability_may_block_activation": false
+    "third_party_platform_availability_may_block_activation": false,
+    "credential_authority": "TV/TVC",
+    "github_token_production_authority": "NONE"
   },
   "sovereign_activation_path": {
     "installer": "scripts/install_sovereign_heartbeat_service.py",
@@ -40,18 +51,19 @@
     "runtime_storage": "durable_node_local_storage",
     "process_supervision": "native_os_service_manager_liveness_only",
     "network_fetch_after_materialization": false,
-    "heartbeat_timing_authority": "heartbeat_runtime.engine_v9.HeartbeatRuntime",
+    "heartbeat_timing_authority": "heartbeat_runtime.engine_v11.HeartbeatRuntime",
     "master_records_role": "custody_and_reconstruction_only"
   },
   "completed_machine_actions": [
-    "Protocol/runtime implementation completed and promoted to v9.",
+    "Protocol/runtime implementation promoted through engine v11.",
     "Worker coordination subsignal carries cycle-bound worker leases on the canonical heartbeat.",
     "Scheduled GitHub heartbeat watchdog removed as competing timing plane.",
     "Legacy Render heartbeat host superseded and removed as production authority.",
     "Sovereign installer materializes an already-present runtime to durable local node storage.",
     "Native service registration path installed for Linux, macOS, and Windows.",
-    "Installer reconciled to runtime v9 and 10 ms default cadence.",
-    "No third-party provider is accepted as a production activation blocker."
+    "No third-party provider is accepted as a production activation blocker.",
+    "PR #93 removed the legacy may_remain_blocked worker condition and now emits a machine-readable PHYSICAL_RESOURCE resolution contract when G18 cannot identify or create an eligible sovereign node.",
+    "Engine v11 must derive/register RESOLVE/ESCALATE successor work instead of passively rediscovering the same missing-node condition."
   ],
   "success_conditions": [
     "One StegVerse-owned or StegVerse-federated node materializes the sovereign runtime from already-present local source/capsule.",
@@ -63,9 +75,11 @@
     "Registry, event, cost, receipt, checkpoint, and worker-coordination state survive restart/reconstruction."
   ],
   "machine_observable_completion_condition": "all sovereign-node activation predicates pass on one StegVerse-owned or StegVerse-federated node",
-  "next_executable_action": "The active StegVerse sovereign-node execution lane selects/materializes an eligible carrier and starts the local runtime, emits activation.latest.json plus advancing heartbeat/worker checkpoint evidence, performs one controlled restart, and publishes the resulting custody projection for reconstruction validation. If a candidate cannot satisfy the predicates within the worker authority ceiling, derive/select the next eligible StegVerse-002 micro-node candidate or escalate the constraint collision to the next authority level.",
+  "next_executable_action": "On the next resident heartbeat, G18 either executes native activation on an eligible declared node or emits SOVEREIGN_RUNTIME_RESOLUTION_ESCALATION_REQUIRED; engine v11 then derives and registers the REPOSITORY_OWNER resolution task using the worker's machine-readable completion evidence. The resolver must select, promote, or construct an eligible StegVerse-owned/federated carrier without using GitHub tokens or hosted-provider production authority.",
   "active_worker_owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / fencing token 18",
   "escalation_required_if_unsolved": true,
+  "escalation_target_if_current_worker_unsolved": "REPOSITORY_OWNER",
+  "machine_observable_release_condition": "resident heartbeat advances beyond HB29 and either activation.latest.json passes all nine predicates or a canonical RESOLVE/ESCALATE task is registered from the G18 resolution contract",
   "heartbeat_or_execution_authority_effect": "NONE",
   "chat_monitoring_required": false,
   "session_retention_required": false
