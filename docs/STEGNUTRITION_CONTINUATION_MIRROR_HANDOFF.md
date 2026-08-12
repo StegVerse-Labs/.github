@@ -2,7 +2,7 @@
 
 ## Authority and scope
 
-This scoped handoff is authoritative only for `SHWP-STEGNUTRITION-CONTINUATION-001` and is subordinate to `docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md` and `docs/ORG_MIRROR_HANDOFF.md`. It does not supersede or modify active heartbeat-hardening claims owned by other sessions.
+This scoped handoff is authoritative only for `SHWP-STEGNUTRITION-CONTINUATION-001` and is subordinate to `docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md` and `docs/ORG_MIRROR_HANDOFF.md`. It does not supersede another lane's heartbeat-hardening authority.
 
 ```text
 goal_id: STEGNUTRITION-PHOTO-DIET-001
@@ -11,17 +11,18 @@ repository: StegVerse-Labs/.github
 branch: main
 canonical_target: StegVerse-Labs/StegNutrition/STEGNUTRITION_MIRROR_HANDOFF.md
 canonical_target_inventory: StegVerse-Labs/StegNutrition/tasks/STEGNUTRITION-SESSION-20260811.json
+canonical_inventory_schema: stegnutrition.session-execution-inventory.v4
 credential_authority: TV/TVC
 route_authority: StegVerse-Labs/TVC
 github_token_runtime_authority: NONE
-source_state: INSTALLED_VALIDATED
+source_state: INSTALLED_VALIDATED_V4_ALIGNED
 resident_activation_state: PENDING_DIRECT_OBSERVATION
 last_directly_observed_resident_epoch: 29
 ```
 
 ## Originating requirement
 
-Archiving a chat must not reduce StegNutrition continuation to a dormant JSON reminder. Eligible machine work must be repeatedly rechecked and executed by the existing single sovereign heartbeat when repository-native execution is possible. Human-authority evidence acquisition and model-quality boundaries must remain explicit rather than being fabricated as autonomous success.
+Archiving a chat must not reduce StegNutrition continuation to a dormant JSON reminder. Eligible machine work must be repeatedly rechecked and executed by the existing single sovereign heartbeat when repository-native execution is possible. Human-authority evidence acquisition and model-quality boundaries remain explicit and may not be fabricated as autonomous success.
 
 ## Installed source
 
@@ -35,62 +36,113 @@ cost-basis/worker-runtime/stegnutrition-machine-continuation.json
 tests/test_stegnutrition_machine_continuation.py
 ```
 
-The worker uses only `STEGVERSE_STEGNUTRITION_ROOT` from the process environment. It never receives `GITHUB_TOKEN`, `GH_TOKEN`, provider credentials, or a remote repository URL. It does not fetch source. It writes only `receipts/stegnutrition-continuation/**` under a current heartbeat claim/fence.
+The worker uses only `STEGVERSE_STEGNUTRITION_ROOT` from the process environment. It never receives `GITHUB_TOKEN`, `GH_TOKEN`, provider credentials or a remote repository URL. It does not fetch source. It writes only `receipts/stegnutrition-continuation/**` under a current heartbeat claim/fence.
 
-## Machine behavior
+## Current machine behavior
 
-Each admitted heartbeat while unfinished performs the largest safe deterministic slice:
+Each admitted heartbeat while unfinished:
 
-1. require an already locally materialized StegNutrition root containing the canonical mirror handoff and execution inventory;
-2. inspect the canonical remaining task IDs;
-3. run fixed local `python -m pytest -q` with `PIP_NO_INDEX=1` and no credential environment;
-4. observe whether semantic-model surfaces, automatic portion surfaces, real photographed/weighed cases, and the governed live visual-route receipt actually exist;
-5. persist a fenced continuation receipt;
-6. return `COMPLETED` only when the release-candidate predicates are all directly supported; otherwise return `BLOCKED`, `RETRY`, or `FAILED` with a concrete next solution action.
+1. requires an already locally materialized StegNutrition root containing the canonical handoff and inventory;
+2. normalizes either legacy inventory rows or the canonical v4 inventory sections;
+3. requires the canonical continuation tasks `012` through `019` that remain relevant to release;
+4. runs fixed local `python -m pytest -q` with `PIP_NO_INDEX=1` and no credential environment;
+5. separately projects whether semantic training/evaluation source exists and whether a qualified real-data semantic artifact exists;
+6. observes automatic scale/portion source, production photo-to-ledger pipeline source and benchmark-ingestion source;
+7. counts real photographed/weighed benchmark records without counting synthetic mechanics fixtures as real accuracy;
+8. observes the resident heartbeat epoch and requires an exact declared live visual-route activation receipt after HB29;
+9. persists a fenced continuation receipt;
+10. returns `COMPLETED` only when all release-candidate predicates are directly supported; otherwise returns `BLOCKED`, `RETRY` or `FAILED` with an exact next solution action.
 
-No generic code-writing authority is granted. The semantic model and automatic portion tasks remain separately governed implementation work; physical photographed/weighed data remains human-authority acquisition. The heartbeat continuously detects when those predicates become executable/satisfied and advances deterministic validation without another chat.
+No general code-writing, GitHub repository-write, release or publication authority is granted.
+
+## Important v4 correction
+
+The original worker expected a historical `execution_inventory` list and old semantic source names (`src/stegnutrition/vision/semantic.py`, `tests/test_semantic_vision.py`). StegNutrition evolved to the v4 inventory and the actual local semantic implementation is now:
+
+```text
+src/stegnutrition/semantic_food.py
+src/stegnutrition/semantic_eval.py
+scripts/train_semantic_food_local.py
+tests/test_semantic_food.py
+tests/test_semantic_eval.py
+```
+
+The worker was corrected in commit `a9cdd727124591f7f54b7e76122e6b0fa5b5be9f`; its contract tests were updated in `850f2836d7a5cfdb27e0f8b46918d8467ac38190`.
+
+It now also observes:
+
+```text
+src/stegnutrition/vision/scale.py
+src/stegnutrition/vision/auto_portion.py
+src/stegnutrition/benchmark_ingest.py
+scripts/ingest_weighed_photo_case.py
+src/stegnutrition/pipeline.py
+tasks/STEGNUTRITION-PRODUCTION-PIPELINE-019.json
+```
+
+This correction prevents the first resident execution from failing simply because the machine continuation source lagged behind the repository it was meant to continue.
 
 ## Validation evidence
 
+Latest validation head: `850f2836d7a5cfdb27e0f8b46918d8467ac38190`.
+
 ```text
-source_head: 91bd362b8fb0a050ccec8bd560a9221cac6e0768
-organization no-token validation: run 31543334892 / SUCCESS
-heartbeat worker validation: run 31543334887 / SUCCESS
-heartbeat job: 93950406040 / SUCCESS
-validated steps:
-  anonymous public checkout without GitHub token
-  explicit validation-environment token absence
-  runtime/worker/script compilation
-  canonical JSON parse
-  executable handoff validation
-  complete deterministic repository suite
-  non-persistent heartbeat dry run
-  non-authorizing workflow proof
+heartbeat worker validation: run 31559189351 / SUCCESS
+organization no-token validation: run 31559189413 / SUCCESS
+heartbeat job: 93997825615 / SUCCESS
+validated heartbeat steps:
+  Anonymous public checkout without GitHub token — SUCCESS
+  Prove validation environment has no GitHub credential token — SUCCESS
+  Compile runtime, workers, and scripts — SUCCESS
+  Parse canonical JSON surfaces — SUCCESS
+  Validate executable handoffs — SUCCESS
+  Run complete deterministic repository test suite — SUCCESS
+  Prove heartbeat dry-run cannot persist registry or epoch state — SUCCESS
+  Rebuild projections ephemerally without repository persistence — SUCCESS
+  Prove workflow itself is non-authorizing — SUCCESS
 ```
 
-These are source/validation proofs only. They do not prove a resident claim/fence or receipt.
+These are source/control-plane validation proofs only. They do not prove a resident claim/fence or StegNutrition execution.
+
+## Canonical StegNutrition predicates now observed by the worker
+
+```text
+semantic_model_source_present
+semantic_model_qualified_artifact_present
+automatic_portion_surfaces_present
+production_pipeline_surfaces_present
+benchmark_ingestion_surfaces_present
+real_weighed_benchmark_case_count
+resident_heartbeat_epoch
+live_visual_route_receipt_declared
+local_validation.state
+```
+
+A qualified semantic artifact requires real-data model/evaluation artifacts under `models/semantic-food/`; source presence alone cannot satisfy it.
 
 ## Machine-observable activation blocker
 
 ```text
 blocker: STEGNUTRITION_CONTINUATION_RESIDENT_CLAIM_NOT_YET_OBSERVED
 owner: single resident StegVerse heartbeat
+current direct evidence: control/heartbeat-state.json epoch 29 / generation 29 / no StegNutrition issued claim
 release_condition:
-  resident heartbeat advances beyond the last directly observed HB29;
+  resident heartbeat advances beyond HB29;
   registry fragment SHWP-STEGNUTRITION-CONTINUATION-001 is consumed;
-  worker stegnutrition-machine-continuation-worker receives a current fenced claim;
+  stegnutrition-machine-continuation-worker receives a current fenced claim;
   receipt receipts/stegnutrition-continuation/SHWP-STEGNUTRITION-CONTINUATION-001.json is produced;
   receipt proves github_token_required=false and github_repository_fetch_performed=false.
 ```
 
-The resident heartbeat must use a locally materialized StegNutrition tree. If it is absent, the worker is required to remain BLOCKED with an explicit local-materialization action and may not substitute a GitHub fetch.
+The resident heartbeat must use a locally materialized StegNutrition tree. If absent, the worker remains `BLOCKED` with a local-materialization action and may not substitute a GitHub fetch.
 
 ## Collision boundaries
 
 - do not create a second heartbeat or registry;
-- do not modify another session's active heartbeat-hardening branch/files merely to activate this task;
+- do not fabricate HB30 or a claim/fence through repository writes;
 - do not use GitHub tokens or GitHub Actions as production execution authority;
 - do not treat workflow success as resident activation;
+- do not treat semantic source presence as a qualified real-data model artifact;
 - do not treat low-level visual evidence as semantic food recognition;
 - do not treat synthetic benchmark fixtures as real accuracy data;
 - do not grant release/publication authority to this worker.
@@ -101,6 +153,7 @@ The resident heartbeat must use a locally materialized StegNutrition tree. If it
 StegVerse-Labs/StegNutrition/tasks/STEGNUTRITION-MACHINE-CONTINUATION-018.json
 -> StegVerse-Labs/.github/handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json
 -> resident heartbeat claim/fence
+-> workers/stegnutrition_continuation_worker.py
 -> receipts/stegnutrition-continuation/SHWP-STEGNUTRITION-CONTINUATION-001.json
 -> existing TV/TVC visual-route lane when applicable
 -> StegNutrition release lane only after release-candidate predicates pass
@@ -108,4 +161,4 @@ StegVerse-Labs/StegNutrition/tasks/STEGNUTRITION-MACHINE-CONTINUATION-018.json
 
 ## Archive condition
 
-This session remains distinct support until the resident continuation claim/receipt is directly observed or an equivalent canonical resident activation proof supersedes this task. Once that occurs, this chat is no longer required merely to make the remaining machine-executable StegNutrition inventory recheck itself. Product completion and human-authority data acquisition remain separate predicates.
+This session remains distinct support until a resident continuation claim/receipt is directly observed or equivalent canonical sovereign activation evidence supersedes this task. Once that happens, this chat is not required merely to keep machine-executable StegNutrition work checking itself. Product completion and human-authority data acquisition remain separate predicates.
