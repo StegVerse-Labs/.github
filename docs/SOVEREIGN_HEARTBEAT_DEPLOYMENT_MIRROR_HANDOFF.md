@@ -25,7 +25,7 @@ GitHub, GitHub Actions, Render, Cloudflare, Vercel, hosted inference providers, 
 Canonical runtime authority:
 
 ```text
-heartbeat_runtime.engine_v9.HeartbeatRuntime
+heartbeat_runtime.engine_v11.HeartbeatRuntime
 scripts/run_heartbeat_runtime.py
 control/worker-registry.json
 control/heartbeat-subsignals.json#worker_coordination
@@ -45,7 +45,7 @@ third_party_process_host_required: false
 github_runtime_dependency: false
 render_runtime_dependency: false
 cloudflare_runtime_dependency: false
-canonical_runtime: heartbeat_runtime.engine_v9.HeartbeatRuntime
+canonical_runtime: heartbeat_runtime.engine_v11.HeartbeatRuntime
 heartbeat_default_interval_ms: 10.0
 nominal_cycles_per_second: 100
 worker_lease_clock: canonical_heartbeat_cycle
@@ -55,41 +55,7 @@ master_records_role: custody_and_reconstruction_only
 
 ## Completed implementation
 
-Installed/updated on `main`:
-
-```text
-scripts/install_sovereign_heartbeat_service.py
-  - requires canonical engine_v9 materialization
-  - requires heartbeat-subsignals state
-  - defaults to 10 ms local heartbeat interval
-  - records nominal 100 cycles/second
-  - records no third-party process-host/deployment/scheduler dependency
-  - Linux native service no longer waits on network-online.target
-
-tests/test_sovereign_heartbeat_service.py
-  - proves runtime-v9 materialization
-  - proves no GitHub/Render/Cloudflare runtime dependency
-  - proves 10 ms / 100 cycles-per-second default
-  - proves native service runs the continuous local runtime directly
-  - proves custom local cycle rates remain runtime-local configuration
-
-management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json
-  - removed BLOCKED_EXTERNAL_PROVIDER_QUOTA
-  - sole block is SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED
-  - third-party provider availability may not block activation
-
-handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-  - binds activation to runtime v9 and cycle-bound worker coordination
-  - binds completion to a StegVerse-owned/federated node
-  - no third-party deployment dependency is permitted
-
-docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md
-  - reconciled from runtime v8 to runtime v9
-  - records 10 ms default cadence and cycle-bound worker lease semantics
-
-StegVerse-Labs/.github#12
-  - updated source of truth and exact remaining sovereign-node observation block
-```
+The sovereign installer, service tests, runtime activation constraint record, activation handoff, continuity handoff, and issue #12 state are installed and validated. Historical v9 materialization was subsequently advanced to canonical engine v11 while preserving the no-third-party deployment boundary.
 
 ## Validation evidence
 
@@ -97,50 +63,81 @@ GitHub-hosted validation is evidence only; it is not production deployment autho
 
 ```text
 Heartbeat Worker Project run: 31331850686 SUCCESS
-job: 93291251993 SUCCESS
-compile/runtime/schema/handoff checks: PASS
-native heartbeat engine semantics: PASS
-worker coordination subsignal and cycle leases: PASS
-StegVerse-native sovereign heartbeat host: PASS
-fail-closed convergence and continuity projections: PASS
-
 Validate organization control plane run: 31331850693 SUCCESS
 Org Aggregation Check run: 31331919092 SUCCESS
 Org Continuation Check run: 31331919095 SUCCESS
+Sovereign Runtime Worker run 31624274806 SUCCESS
+Heartbeat Worker Project run 31624274755 SUCCESS
+Organization control-plane run 31624274826 SUCCESS
 ```
 
 ## Cross-repository reconciliation
 
 ```text
-MERGED INTO: StegVerse-Labs/.github#12
+MERGED INTO: StegVerse-Labs/.github#12/#59/#65
 MERGED INTO: StegVerse-002/micro-node-runtime#16
-Master Records custody: master-records/orchestration/WORKER_LIFECYCLE_CUSTODY_MIRROR_HANDOFF.md
-legacy provider host: master-records/monitoring/MONITORING_MIRROR_HANDOFF.md (SUPERSEDED)
+Master Records custody: master-records/orchestration
+legacy provider host: SUPERSEDED
 ```
-
-`master-records/orchestration/HEARTBEAT_HOST_MIRROR_HANDOFF.md` was corrected so Render/provider quota is no longer a production block; Master Records is custody/reconstruction only.
-
-The older `master-records/orchestration#22` branch was closed `SUPERSEDED` because equivalent worker-coordination custody intake already exists canonically on `main` under different paths with real nonzero heartbeat projection evidence.
-
-`StegVerse-002/micro-node-runtime#16` records the exact integration role and machine-observable sovereign-node release condition. No duplicate heartbeat or worker registry is authorized there.
 
 ## Remaining broader production activation
 
-This session-specific no-third-party deployment correction is complete. The broader production activation remains machine-owned and is not unique to this session:
+The session-specific no-third-party deployment correction is complete. Broader activation remains machine-owned:
 
 ```text
 task: SHWP-DURABLE-RUNTIME-ACTIVATION
-owner: StegVerse-Labs/.github#12
-execution-environment owner: StegVerse-002/micro-node-runtime#16
-state: BLOCKED_RUNTIME_ACTIVATION
-block_class: SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED
+owner: StegVerse-Labs/.github#59/#65 + resident sovereign heartbeat
+execution-environment integration: StegVerse-002/micro-node-runtime
+operational_state: ACTIVE_WORKER
+constraint: SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED
 human_action_required: false
 third_party_blocker: false
 ```
 
-Release requires one StegVerse-owned/federated node to emit `receipts/sovereign-host/activation.latest.json`, consecutive heartbeat/worker-coordination state, a heartbeat-owned worker checkpoint, controlled restart evidence, no epoch/registry regression, no duplicate claim/fence/split brain, and reconstruction evidence.
+Release requires a StegVerse-owned/federated node to emit node-local activation proof with all nine predicates true, advance the heartbeat beyond HB29, preserve controlled restart continuity, avoid duplicate claims/fences, and pass Master Records reconstruction. If the current worker cannot obtain/materialize the required physical resource within its authority ceiling, engine v11 derives/escalates the resolution task; the task does not become manually available.
 
-Documented workers have already been activated through the canonical heartbeat and worker registry, including observed fenced cycle leases. Therefore the repository-native continuation can proceed without retaining this originating chat session.
+## Execution ownership and collision partition
+
+Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`.
+
+### MANUAL / SESSION-STARTABLE
+
+No sovereign deployment or runtime activation implementation is manually startable from this completed handoff. A distinct evidence-validation role may be claimed only outside the active worker's deployment/runtime/claim/fence scope.
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: SHWP-DURABLE-RUNTIME-ACTIVATION
+  execution_owner: resident sovereign heartbeat + sovereign-runtime-activation-worker
+  claim_state: ACTIVE_WORKER
+  worker_registry_ref: control/worker-registry.json#SHWP-DURABLE-RUNTIME-ACTIVATION + handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: sovereign-node selection/materialization, native service install/verification, heartbeat advancement, claim/fence/lease state, activation receipts, restart proof, and reconstruction evidence
+  release_condition: nine-predicate activation succeeds or canonical engine-v11 lifecycle releases/supersedes the task scope
+  next_executable_action: active worker executes native activation on an eligible carrier or derives/registers the next resolution/escalation task
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: SHWP-DURABLE-RUNTIME-ACTIVATION-CONSTRAINT-RESOLUTION
+  execution_owner: WORKER -> REPOSITORY_OWNER -> COMPONENT_AUTHORITY -> ECOSYSTEM_GOVERNANCE -> HUMAN_AUTHORITY
+  claim_state: ESCALATED
+  worker_registry_ref: control/worker-registry.json + docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  collision_scope: physical-resource/capability/authority collision emitted by the runtime activation worker
+  release_condition: a capable authority resolves the collision or explicitly assigns bounded human-authority action
+  next_executable_action: escalate without substituting GitHub/Render/Vercel/Cloudflare or weakening sovereign-carrier requirements
+```
+
+### COMPLETED / SUPERSEDED
+
+- No-third-party deployment correction: complete/released.
+- Native service materialization/source implementation: complete.
+- Legacy provider-host dependency: superseded.
+- GitHub-token runtime/deployment authority: prohibited/retired.
 
 ## Validation commands
 
@@ -148,6 +145,7 @@ Documented workers have already been activated through the canonical heartbeat a
 python -m py_compile scripts/install_sovereign_heartbeat_service.py scripts/run_heartbeat_runtime.py
 python -m unittest -v tests.test_sovereign_heartbeat_service
 python -m unittest -v tests.test_worker_coordination_subsignal
+python scripts/validate_handoff_execution_ownership.py
 ```
 
 ## Session consolidation
@@ -155,7 +153,7 @@ python -m unittest -v tests.test_worker_coordination_subsignal
 ```text
 primary no-third-party deployment requirement: COMPLETE_TRANSFERRED
 heartbeat cycle/subsignal worker lease correction: COMPLETE_MERGED
-Master Records worker-coordination custody adjacency: COMPLETE_CANONICAL / old PR superseded
+Master Records worker-coordination custody adjacency: COMPLETE_CANONICAL
 legacy provider blocker removal: COMPLETE
 broader sovereign-node runtime observation: MACHINE_OWNED / NOT SESSION-UNIQUE
 unique session active claims: 0
@@ -166,8 +164,8 @@ unique session active claims: 0
 ```text
 required developed files/control surfaces: 6
 complete: 6
-validation groups: 4
-validated: 4
+validation groups: 4+
+validated: complete for source policy
 integration obligations: 4
 integrated/transferred: 4
 session goals transferred/completed: 5/5
