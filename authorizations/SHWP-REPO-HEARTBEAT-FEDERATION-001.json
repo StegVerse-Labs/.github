@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.worker-authorization/v0.1",
+  "authorization_id": "AUTH-SHWP-REPO-HEARTBEAT-FEDERATION-001",
+  "task_id": "SHWP-REPO-HEARTBEAT-FEDERATION-001",
+  "state": "AUTHORIZED",
+  "policy_version": "shwp-single-hb-repo-federation-v0.1",
+  "authority_ceiling": [
+    "repo_heartbeat_federation_reconciliation",
+    "receipts/repo-heartbeat-federation/**",
+    "no_cross_repo_mutation",
+    "no_execution_authority",
+    "no_credential_authority",
+    "no_deployment_authority"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "carrier": "single_stegverse_heartbeat"
+}
