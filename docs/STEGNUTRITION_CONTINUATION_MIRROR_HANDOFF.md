@@ -15,7 +15,7 @@ canonical_inventory_schema: stegnutrition.session-execution-inventory.v4
 credential_authority: TV/TVC
 route_authority: StegVerse-Labs/TVC
 github_token_runtime_authority: NONE
-source_state: INSTALLED_VALIDATED_V4_ALIGNED
+source_state: INSTALLED_VALIDATED_V4_ALIGNED_RECEIPT_GATED
 resident_activation_state: PENDING_DIRECT_OBSERVATION
 last_directly_observed_resident_epoch: 29
 ```
@@ -29,14 +29,21 @@ Archiving a chat must not reduce StegNutrition continuation to a dormant JSON re
 ```text
 handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json
 control/worker-registry.d/stegnutrition-continuation-001.json
+workers/stegnutrition_continuation_entrypoint.py
 workers/stegnutrition_continuation_worker.py
+workers/stegnutrition_receipt_contract.py
+schemas/stegnutrition-continuation-receipt.schema.json
+tools/validate_stegnutrition_continuation_receipt.py
 control/process-worker-adapters.json#process:stegnutrition-machine-continuation-v1
 control/worker-capability-profiles.json#sovereign-runtime-worker-v1
 cost-basis/worker-runtime/stegnutrition-machine-continuation.json
 tests/test_stegnutrition_machine_continuation.py
+tests/test_stegnutrition_continuation_receipt.py
 ```
 
 The worker uses only `STEGVERSE_STEGNUTRITION_ROOT` from the process environment. It never receives `GITHUB_TOKEN`, `GH_TOKEN`, provider credentials or a remote repository URL. It does not fetch source. It writes only `receipts/stegnutrition-continuation/**` under a current heartbeat claim/fence.
+
+The process adapter invokes `workers/stegnutrition_continuation_entrypoint.py`, not the raw worker directly. The entrypoint runs the worker, resolves the emitted checkpoint only inside `receipts/stegnutrition-continuation/**`, independently validates the receipt contract, and returns nonzero if the receipt is malformed or violates the no-token/authority invariants. A syntactically written JSON file is therefore not sufficient for successful continuation.
 
 ## Current machine behavior
 
@@ -45,13 +52,15 @@ Each admitted heartbeat while unfinished:
 1. requires an already locally materialized StegNutrition root containing the canonical handoff and inventory;
 2. normalizes either legacy inventory rows or the canonical v4 inventory sections;
 3. requires the canonical continuation tasks `012` through `019` that remain relevant to release;
-4. runs fixed local `python -m pytest -q` with `PIP_NO_INDEX=1` and no credential environment;
+4. runs fixed local `python -m pytest -q` with `PIP_NO_INDEX=1` and no credential environment; StegNutrition now carries a repository-owned zero-network pytest compatibility runner for its audited test surface;
 5. separately projects whether semantic training/evaluation source exists and whether a qualified real-data semantic artifact exists;
 6. observes automatic scale/portion source, production photo-to-ledger pipeline source and benchmark-ingestion source;
 7. counts real photographed/weighed benchmark records without counting synthetic mechanics fixtures as real accuracy;
 8. observes the resident heartbeat epoch and requires an exact declared live visual-route activation receipt after HB29;
-9. persists a fenced continuation receipt;
-10. returns `COMPLETED` only when all release-candidate predicates are directly supported; otherwise returns `BLOCKED`, `RETRY` or `FAILED` with an exact next solution action.
+9. constructs a fenced continuation receipt;
+10. independently validates receipt schema, task/claim/fence fields, local validation state, credential authority, explicit `github_token_required=false`, explicit `github_repository_fetch_performed=false`, and completed/blocker consistency;
+11. persists only the admitted continuation receipt;
+12. returns `COMPLETED` only when all release-candidate predicates are directly supported; otherwise returns `BLOCKED`, `RETRY` or `FAILED` with an exact next solution action.
 
 No general code-writing, GitHub repository-write, release or publication authority is granted.
 
@@ -82,14 +91,28 @@ tasks/STEGNUTRITION-PRODUCTION-PIPELINE-019.json
 
 This correction prevents the first resident execution from failing simply because the machine continuation source lagged behind the repository it was meant to continue.
 
-## Validation evidence
+## Receipt validation gate
 
-Latest validation head: `850f2836d7a5cfdb27e0f8b46918d8467ac38190`.
+The continuation receipt type is now independently specified and validated:
 
 ```text
-heartbeat worker validation: run 31559189351 / SUCCESS
-organization no-token validation: run 31559189413 / SUCCESS
-heartbeat job: 93997825615 / SUCCESS
+schema: schemas/stegnutrition-continuation-receipt.schema.json
+contract: workers/stegnutrition_receipt_contract.py
+validator CLI: tools/validate_stegnutrition_continuation_receipt.py
+adapter entrypoint: workers/stegnutrition_continuation_entrypoint.py
+adapter generation: 15
+```
+
+The contract rejects a receipt if it asks for GitHub-token authority, claims a repository fetch, changes credential authority away from TV/TVC, escapes the admitted receipt namespace, uses an unexpected task/schema, or marks itself completed while retaining a blocker or non-COMPLETE local validation state.
+
+## Validation evidence
+
+Current validation head: `6de8e62bc08c7bb6752e86d5fc94fc745ca44570`.
+
+```text
+heartbeat worker validation: run 31598640622 / SUCCESS
+organization no-token validation: run 31598640713 / SUCCESS
+heartbeat job: 94120233607 / SUCCESS
 validated heartbeat steps:
   Anonymous public checkout without GitHub token — SUCCESS
   Prove validation environment has no GitHub credential token — SUCCESS
@@ -102,7 +125,7 @@ validated heartbeat steps:
   Prove workflow itself is non-authorizing — SUCCESS
 ```
 
-These are source/control-plane validation proofs only. They do not prove a resident claim/fence or StegNutrition execution.
+The deterministic repository suite includes the StegNutrition continuation adapter/receipt tests. These are source/control-plane validation proofs only. They do not prove a resident claim/fence or StegNutrition execution.
 
 ## Canonical StegNutrition predicates now observed by the worker
 
@@ -129,8 +152,9 @@ current direct evidence: control/heartbeat-state.json epoch 29 / generation 29 /
 release_condition:
   resident heartbeat advances beyond HB29;
   registry fragment SHWP-STEGNUTRITION-CONTINUATION-001 is consumed;
-  stegnutrition-machine-continuation-worker receives a current fenced claim;
-  receipt receipts/stegnutrition-continuation/SHWP-STEGNUTRITION-CONTINUATION-001.json is produced;
+  stegnutrition-machine-continuation adapter receives a current fenced claim;
+  worker executes against a locally materialized StegNutrition tree;
+  receipt receipts/stegnutrition-continuation/SHWP-STEGNUTRITION-CONTINUATION-001.json is produced and independently validates;
   receipt proves github_token_required=false and github_repository_fetch_performed=false.
 ```
 
@@ -142,6 +166,7 @@ The resident heartbeat must use a locally materialized StegNutrition tree. If ab
 - do not fabricate HB30 or a claim/fence through repository writes;
 - do not use GitHub tokens or GitHub Actions as production execution authority;
 - do not treat workflow success as resident activation;
+- do not bypass the receipt-validation entrypoint by invoking the raw worker as the registered adapter;
 - do not treat semantic source presence as a qualified real-data model artifact;
 - do not treat low-level visual evidence as semantic food recognition;
 - do not treat synthetic benchmark fixtures as real accuracy data;
@@ -153,7 +178,9 @@ The resident heartbeat must use a locally materialized StegNutrition tree. If ab
 StegVerse-Labs/StegNutrition/tasks/STEGNUTRITION-MACHINE-CONTINUATION-018.json
 -> StegVerse-Labs/.github/handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json
 -> resident heartbeat claim/fence
+-> workers/stegnutrition_continuation_entrypoint.py
 -> workers/stegnutrition_continuation_worker.py
+-> workers/stegnutrition_receipt_contract.py
 -> receipts/stegnutrition-continuation/SHWP-STEGNUTRITION-CONTINUATION-001.json
 -> existing TV/TVC visual-route lane when applicable
 -> StegNutrition release lane only after release-candidate predicates pass
