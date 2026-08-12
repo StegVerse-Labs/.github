@@ -1,8 +1,8 @@
-# Session Archive Receipt — 2026-08-11
+# Session Consolidation Receipt — 2026-08-11
 
-Status: EFFECTIVE — SESSION CONSOLIDATED
+Status: EFFECTIVE FOR CONSOLIDATION — NOT AN ARCHIVE AUTHORIZATION
 
-This receipt binds the final consolidation of the sovereign local-model / StegFin session. It grants no execution, credential, wallet, custody, broadcast, provider, or activation authority.
+This receipt binds the consolidation of the sovereign local-model / StegFin session. It grants no execution, credential, wallet, custody, broadcast, provider, activation, or archive authority. `docs/ORG_MIRROR_HANDOFF.md` is the superior organization archive gate and currently records `thread_archive_ready: false`.
 
 Canonical completed source integrations:
 - local StegVerse reference model and local discovery/launch/proof: `StegVerse-002/micro-node-runtime` issue #22 and released handoff;
@@ -14,9 +14,9 @@ Canonical completed source integrations:
 - canonical StegFin internal sovereign-market worker: commit `d62285645460b204dc17305c41a00e823a816ddb` plus TV/TVC reconciliation PR #80 (`18f99d801f405cea6c6c8c6d2bef9f9bea7a1be7`);
 - stale `.github` PR #67: closed as superseded after its distinct task converged into canonical main.
 
-Remaining product activation is not chat-owned:
+Remaining product activation is not source-implementation work:
 - sovereign inference recovery/activation: `.github` issues #59/#60 + resident heartbeat; release condition is a separately authorized fencing generation >20 followed by exact local model -> TVC -> LLM-adapter -> Master Records PASS and immutable zero-blocker activation receipt;
-- G20 custody reconstruction: `master-records/orchestration` task `MR-ECOSYSTEM-CHAT-G20-ORPHAN-CUSTODY-025`;
+- G20 custody reconstruction source: `master-records/orchestration` task `MR-ECOSYSTEM-CHAT-G20-ORPHAN-CUSTODY-025`, COMPLETE_RELEASED;
 - StegFin internal-market activation: `SHWP-STEGFIN-SOVEREIGN-TRADING-001` through `control/worker-registry.d/stegfin-sovereign-trading-001.json` and resident heartbeat;
 - StegFin Base entry: `STEGFIN-LIVE-ENTRY-003` + resident heartbeat + TV/TVC/vault boundary; wallet signature/broadcast remains USER_ONLY;
 - first 12.50 USDC -> WETH and later exit/replay/P&L remain product goals, not evidence of completed activation;
@@ -28,11 +28,21 @@ Production credential policy:
 - GitHub token as production admission/model/route/provider/lease/trading/activation credential: PROHIBITED;
 - GitHub Actions: validation-only, non-authorizing.
 
-Canonical archive evidence:
-- `docs/SESSION_EXECUTION_INVENTORY_2026-08-10.md` releases all 21 session goals to completed, superseded, or durable machine/human authority lanes;
-- `docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md` records no remaining chat-owned claim and names the exact machine-observable release conditions for inference and StegFin;
+Canonical consolidation evidence:
+- `docs/SESSION_EXECUTION_INVENTORY_2026-08-10.md` transfers all 21 scoped source/session goals to completed, superseded, or durable machine/human authority lanes;
+- `docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md` records the exact machine-observable release conditions for inference and StegFin and is subordinate to the organization gate;
+- `control/session-goal-inventory-2026-08-11-ecosystem-chat-local-model.json` records `unique_chat_only_requirements_remaining=0`, `product_activation_complete=false`, and `thread_archive_ready=false`;
 - PR #77 and PR #80 are merged and validated;
-- stale PR #67 is closed as superseded;
-- no unique implementation, validation, integration, propagation, reconciliation, or observation responsibility remains in this conversation.
+- stale PR #67 is closed as superseded.
 
-Archiving this conversation does not assert that product activation is complete. It asserts that deleting or archiving the conversation will not remove project state, execution authority, blockers, next actions, or continuation ownership.
+Archive authority correction:
+- the earlier wording that this conversation could be archived based solely on scoped consolidation is superseded;
+- `docs/ORG_MIRROR_HANDOFF.md` currently requires terminal success or measurable machine-worker progress toward terminal production predicates;
+- the resident sovereign heartbeat is still directly observed at HB29, with durable carrier activation blocked on a declared StegVerse-owned/federated node;
+- therefore consolidation is complete, but archive readiness is not complete under the current organization invariant.
+
+Machine-observable archive release condition:
+- the organization handoff observes resident sovereign-carrier progress beyond HB29 that materially advances the terminal activation predicates, including recovery under a fresh fence >20 and continuation toward the exact local model -> TVC -> LLM-adapter -> Master Records same-execution chain; or
+- a newer authoritative organization handoff explicitly supersedes the current archive invariant.
+
+This receipt must not be used to infer product activation, live runtime success, propagation, or thread archival readiness.
