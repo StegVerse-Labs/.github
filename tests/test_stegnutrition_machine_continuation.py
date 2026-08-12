@@ -100,6 +100,7 @@ def test_worker_normalizes_canonical_v4_inventory() -> None:
             {"task_id": "STEGNUTRITION-REAL-BENCHMARK-DATA-014", "state": "ACTIVE_EVIDENCE_ACQUISITION"},
             {"task_id": "STEGNUTRITION-PRODUCTION-PIPELINE-019", "state": "SOURCE_IMPLEMENTED"},
             {"task_id": "STEGNUTRITION-FDA-REFERENCE-020", "state": "SOURCE_COMPLETE_MACHINE_VALIDATION_ACTIVE"},
+            {"task_id": "STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021", "state": "SOURCE_IMPLEMENTED"},
         ],
         "machine_owned_or_blocked": [
             {"task_id": "STEGNUTRITION-LIVE-VISUAL-ROUTE-015", "state": "MACHINE_OWNED_ACTIVE"},
@@ -120,8 +121,40 @@ def test_worker_normalizes_canonical_v4_inventory() -> None:
         "STEGNUTRITION-MACHINE-CONTINUATION-018",
         "STEGNUTRITION-PRODUCTION-PIPELINE-019",
         "STEGNUTRITION-FDA-REFERENCE-020",
+        "STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021",
     ):
         assert task_id in rows
+
+
+def test_worker_normalizes_canonical_v6_capability_inventory() -> None:
+    worker = _worker_module()
+    inventory = {
+        "schema": "stegnutrition.session-execution-inventory.v6",
+        "capability_inventory": [
+            {"id": "STEGNUTRITION-SEMANTIC-VISION-012", "state": "SOURCE_IMPLEMENTED_REAL_DATA_EXECUTION_REQUIRED"},
+            {"id": "STEGNUTRITION-FDA-REFERENCE-020", "state": "SOURCE_COMPLETE_ACTIVE_FULL_SUITE_VALIDATION"},
+            {"id": "STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021", "state": "SOURCE_IMPLEMENTED_RESIDENT_REAL_EVIDENCE_EXECUTION_ACTIVE"},
+        ],
+    }
+    rows = worker._inventory_rows(inventory)
+    assert set(rows) == {
+        "STEGNUTRITION-SEMANTIC-VISION-012",
+        "STEGNUTRITION-FDA-REFERENCE-020",
+        "STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021",
+    }
+    assert rows["STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021"]["task_id"] == "STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021"
+
+
+def test_entrypoint_reads_v6_capability_inventory_ids() -> None:
+    entrypoint = _entrypoint_module()
+    ids = entrypoint._inventory_task_ids({
+        "schema": "stegnutrition.session-execution-inventory.v6",
+        "capability_inventory": [
+            {"id": entrypoint.FDA_TASK},
+            {"id": entrypoint.REAL_DATA_TASK},
+        ],
+    })
+    assert ids == {entrypoint.FDA_TASK, entrypoint.REAL_DATA_TASK}
 
 
 def test_filesystem_projection_tracks_current_stegnutrition_source_names(tmp_path: Path) -> None:
@@ -129,19 +162,26 @@ def test_filesystem_projection_tracks_current_stegnutrition_source_names(tmp_pat
     required = [
         "src/stegnutrition/semantic_food.py",
         "src/stegnutrition/semantic_eval.py",
+        "src/stegnutrition/semantic_build.py",
+        "src/stegnutrition/semantic_qualification.py",
         "scripts/train_semantic_food_local.py",
         "tests/test_semantic_food.py",
         "tests/test_semantic_eval.py",
+        "tests/test_semantic_build.py",
+        "tests/test_semantic_qualification.py",
         "src/stegnutrition/vision/scale.py",
         "src/stegnutrition/vision/auto_portion.py",
+        "src/stegnutrition/portion_qualification.py",
         "tests/test_auto_scale.py",
         "tests/test_auto_portion.py",
+        "tests/test_portion_qualification.py",
         "src/stegnutrition/pipeline.py",
         "tests/test_pipeline.py",
         "tasks/STEGNUTRITION-PRODUCTION-PIPELINE-019.json",
         "src/stegnutrition/benchmark_ingest.py",
         "scripts/ingest_weighed_photo_case.py",
         "tests/test_benchmark_ingest.py",
+        "tasks/STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021.json",
     ]
     for relative in required:
         path = tmp_path / relative
@@ -154,6 +194,7 @@ def test_filesystem_projection_tracks_current_stegnutrition_source_names(tmp_pat
     assert projection["production_pipeline_surfaces_present"] is True
     assert projection["benchmark_ingestion_surfaces_present"] is True
     assert projection["real_weighed_benchmark_case_count"] == 0
+    assert projection["portion_qualification_receipt_present"] is False
 
 
 def test_entrypoint_discovers_canonical_sibling_without_manual_selection(tmp_path: Path) -> None:
@@ -221,13 +262,37 @@ def test_entrypoint_preflight_requires_fda_task_when_local_inventory_exists(tmp_
     assert "STEGNUTRITION-FDA-REFERENCE-020" in proc.stderr
 
 
+def test_entrypoint_preflight_requires_real_data_task_after_fda(tmp_path: Path) -> None:
+    inventory = tmp_path / "tasks/STEGNUTRITION-SESSION-20260811.json"
+    inventory.parent.mkdir(parents=True, exist_ok=True)
+    inventory.write_text(json.dumps({"capability_inventory": [{"id": "STEGNUTRITION-FDA-REFERENCE-020"}]}), encoding="utf-8")
+    (tmp_path / "STEGNUTRITION_MIRROR_HANDOFF.md").write_text("# canonical\n", encoding="utf-8")
+    env = os.environ.copy()
+    env["STEGVERSE_STEGNUTRITION_ROOT"] = str(tmp_path)
+    env.pop("GITHUB_TOKEN", None)
+    env.pop("GH_TOKEN", None)
+    proc = subprocess.run(
+        [sys.executable, "workers/stegnutrition_continuation_entrypoint.py"],
+        cwd=ROOT,
+        input=json.dumps(invocation()),
+        text=True,
+        capture_output=True,
+        env=env,
+        timeout=20,
+        check=False,
+    )
+    assert proc.returncode == 13
+    assert "STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021" in proc.stderr
+
+
 def test_entrypoint_preflight_requires_runtime_custody_verifier(tmp_path: Path) -> None:
     inventory = tmp_path / "tasks/STEGNUTRITION-SESSION-20260811.json"
     inventory.parent.mkdir(parents=True, exist_ok=True)
     inventory.write_text(
         json.dumps({
-            "implemented_pending_activation_or_real_evidence": [
-                {"task_id": "STEGNUTRITION-FDA-REFERENCE-020"}
+            "capability_inventory": [
+                {"id": "STEGNUTRITION-FDA-REFERENCE-020"},
+                {"id": "STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021"},
             ]
         }),
         encoding="utf-8",
