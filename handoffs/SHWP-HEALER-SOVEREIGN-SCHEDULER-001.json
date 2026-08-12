@@ -1,0 +1,95 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
+  "created_at": "2026-08-12T17:42:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "HEALER-TV-TVC-NO-GITHUB-TOKEN-DISPATCH-001",
+    "objective": "Move Healer cadence and cross-repository maintenance execution from token-bearing GitHub workflow dispatch to the single resident heartbeat using fixed local handlers and TV/TVC credential/admission authority.",
+    "success_predicates": [
+      "No production scheduler path requires HEALER_GH_TOKEN, GITHUB_TOKEN, GH_TOKEN, HEALER_PAT or GH_STEGVERSE_AI_TOKEN.",
+      "The resident heartbeat invokes the Healer scheduler only against already materialized repository roots.",
+      "Only fixed handlers compiled into StegVerse-Healer source may execute.",
+      "SCW org-scan and uptime can execute locally without GitHub credentials.",
+      "Missing local repositories or missing target adapters fail closed.",
+      "A no-secret scheduler receipt is persisted."
+    ],
+    "failure_predicates": [
+      "GitHub workflow dispatch remains a production scheduling dependency.",
+      "A GitHub credential is accepted by the sovereign worker.",
+      "A target record injects an arbitrary command.",
+      "Missing target capability is silently treated as success."
+    ],
+    "authority_ceiling": [
+      "healer_sovereign_scheduling",
+      "receipts/healer-sovereign-scheduler/**",
+      "fixed_local_repository_handlers_only",
+      "no_arbitrary_command_authority",
+      "no_github_token_authority",
+      "no_remote_source_checkout",
+      "no_remote_mutation_authority",
+      "no_deployment_authority"
+    ],
+    "successor_policy": "BOUNDED_ADAPTER_COMPLETION",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-Labs/StegVerse-Healer/data/session_consolidation/tv-tvc-no-github-token-dispatch-migration.json",
+      "StegVerse-Labs/StegVerse-Healer/app/sovereign_scheduler.py",
+      "StegVerse-Labs/StegVerse-Healer/app/dispatch_orchestrators.py",
+      "StegVerse-Labs/StegVerse-Healer/data/orchestrator_targets.json",
+      "StegVerse-Labs/SCW/docs/SCW_MIRROR_HANDOFF.md",
+      "workers/healer_sovereign_scheduler_worker.py"
+    ],
+    "dependencies": ["SHWP-DURABLE-RUNTIME-ACTIVATION"],
+    "parent_task_id": null,
+    "derivation_reason": "The prior Healer scheduler used HEALER_GH_TOKEN and GitHub workflow-dispatch as production transport, contrary to the TV/TVC authority boundary.",
+    "canonical_owner_ref": "StegVerse-Labs/StegVerse-Healer/data/session_consolidation/tv-tvc-no-github-token-dispatch-migration.json",
+    "canonical_lineage_key": "ecosystem:healer-sovereign-scheduler",
+    "derivation_depth": 0,
+    "priority": "critical"
+  },
+  "authority": {
+    "authority_source": "authorizations/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "policy_version": "shwp-healer-sovereign-scheduler-v0.1"
+  },
+  "execution": {
+    "required_capabilities": ["healer_sovereign_scheduling"],
+    "allowed_paths": ["receipts/healer-sovereign-scheduler/**"],
+    "allowed_services": [],
+    "max_actions": 16,
+    "max_retries": 256,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 512,
+    "rate_class": "healer_sovereign_scheduler"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "authorizations/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+    "recheck_trigger": "each admitted heartbeat according to Healer target cadence while any target is due or blocked",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "Run the heartbeat-owned scheduler against locally materialized Healer/SCW/Site/TV/Continuity trees; complete the remaining TV mutation and Continuity guardian no-token adapters without restoring GitHub credential transport.",
+    "terminal_when": [
+      "No forbidden GitHub credential is present",
+      "All due targets have COMPLETE or explicitly terminal superseded outcomes",
+      "Scheduler receipt is persisted",
+      "No target depends on GitHub workflow-dispatch as production transport"
+    ]
+  },
+  "block": null
+}
