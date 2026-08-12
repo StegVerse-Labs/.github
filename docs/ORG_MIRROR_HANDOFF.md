@@ -4,7 +4,7 @@
 
 This is the canonical StegVerse-Labs organization continuation/exit record. Repository-local `*_MIRROR_HANDOFF.md` files remain authoritative for repository-local implementation evidence. Machine-readable state under `control/`, `handoffs/`, `management/`, `receipts/`, `checkpoints/`, `authorizations/`, `schemas/`, and `events/` supersedes chat history.
 
-## Active product goal and ownership
+## Active goal and ownership
 
 ```text
 goal_id: ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION
@@ -126,7 +126,7 @@ active-worker invariant validation run: 31622026042 PASS
 
 Run `31622026042` is recorded by #83/#84 as proving that the current canonical task graph has no detected unresolved unowned work. Historical raw registry response labels may remain as provenance, but authoritative operational state is normalized by current handoffs/status projection and is not an idle stopping state.
 
-## Physical-resource execution boundary — active machine continuation
+## Physical-resource execution boundary — durable runtime activation
 
 Owner records:
 
@@ -222,7 +222,7 @@ post-HB29 live claim/fence
 
 No live transaction, settlement, or production sizing is claimed by this handoff.
 
-## Cross-repository ownership / propagation
+## Cross-repository dependencies / propagation
 
 ```text
 StegVerse-002/micro-node-runtime
