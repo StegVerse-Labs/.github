@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "STEGFIN-LIVE-PRETRADE-005",
+  "adapters": [
+    {
+      "adapter_ref": "process:stegfin-live-pretrade-v1",
+      "authority_ref": "handoffs/STEGFIN-LIVE-PRETRADE-005.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "durable_state_reconstruction",
+        "stegfin_external_pretrade_preparation"
+      ],
+      "command": ["python", "workers/stegfin_external_pretrade_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_STEGFIN_SOURCE_ROOT",
+        "STEGVERSE_TV_SOURCE_ROOT",
+        "STEGVERSE_TVC_SOURCE_ROOT",
+        "HOME",
+        "XDG_STATE_HOME",
+        "LOCALAPPDATA"
+      ],
+      "notes": [
+        "Heartbeat-owned external Base pretrade successor after fresh Inventory N.",
+        "Discovers only already-materialized StegFin/TV/TVC trees and never performs network source checkout.",
+        "No GitHub token, provider API key, wallet credential or hosted runtime credential is allowlisted.",
+        "The worker does not read provider capability values; it invokes the existing TV/TVC/vault inherited-FD StegFin launcher.",
+        "Stops at USER_ONLY wallet handoff with signed=false, broadcast=false and settled=false.",
+        "Writes only receipts/stegfin-live-pretrade/** in the heartbeat repository."
+      ],
+      "timeout_seconds": 210,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
