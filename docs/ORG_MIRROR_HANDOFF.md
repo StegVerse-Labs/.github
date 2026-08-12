@@ -150,7 +150,9 @@ next_solution_action: EXECUTE_NATIVE_ACTIVATION_ON_DECLARED_SOVEREIGN_NODE
 eligible declaration: STEGVERSE_SOVEREIGN_NODE=1 OR /etc/stegverse/node.json OR ~/.stegverse/node.json
 ```
 
-This is not a provider/credential blocker and is not a user-approval boundary. The native activation and proof implementation is complete. The unresolved requirement is execution on a qualifying physical/federated carrier. Workaround candidates are: bind an existing eligible StegVerse-owned/federated Linux/macOS/Windows node; promote an eligible StegVerse-002 micro-node while preserving identical durability/restart/reconstruction predicates; or construct a new StegVerse-owned/federated node from the repository-local runtime capsule. No GitHub-hosted runner, Render service, Vercel runtime, Cloudflare surface, or repository-only mutation may substitute for the sovereign physical carrier.
+This is not a provider/credential blocker and is not a user-approval boundary. The native activation and proof implementation is complete. `workers/sovereign_runtime_activation_worker.py` is self-bootstrapping once it is actually executing on an eligible declared node: it rejects hosted environments, detects the sovereign declaration, runs `scripts/install_sovereign_heartbeat_service.py`, runs `scripts/verify_sovereign_runtime_activation.py`, reloads the emitted activation proof, and advances to `ACTIVE` or `COMPLETED` without another chat or human approval step. No second launcher, scheduler, or manual model-selection step is authorized or required.
+
+A repository search on 2026-08-12 found declaration *detection* surfaces but no repository-hosted node declaration artifact; that is consistent with the design because the declaration is intentionally node-local. The unresolved requirement is therefore carrier discovery/attachment, not missing source implementation. Workaround candidates are: bind an existing eligible StegVerse-owned/federated Linux/macOS/Windows node; promote an eligible StegVerse-002 micro-node while preserving identical durability/restart/reconstruction predicates; or construct a new StegVerse-owned/federated node from the repository-local runtime capsule. No GitHub-hosted runner, Render service, Vercel runtime, Cloudflare surface, or repository-only mutation may substitute for the sovereign physical carrier.
 
 Release requires node-local `~/.stegverse/heartbeat/activation.latest.json` with all nine activation predicates true: runtime materialization, native service activation, continuous liveness, heartbeat advance, worker-coordination checkpoint, controlled restart, non-regression, no duplicate claim/fence, and reconstruction PASS.
 
@@ -203,6 +205,7 @@ scoped heartbeat handoff reconciliation: 6055bb2cd17564021da86119f2a6c8c5ec35bc0
 session consolidation/archive-authority correction: 9f43b3571ddd2471665d88e95d20c02709ef8f56
 organization reconciliation evidence: 5390c4e675ac1a95fdcddc4a401957e4edb1447a
 active-owner reconciliation: e37785f8bcf163039ad004ab2b79bccde12eb0c2
+physical-resource/self-bootstrap reconciliation: pending-this-commit
 archive-policy issue #64: CLOSED_COMPLETED / POLICY PROVENANCE ONLY
 active runtime issue #59: OPEN
 active progress-remediation issue #65: OPEN
