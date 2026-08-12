@@ -1,0 +1,38 @@
+{
+  "schema": "stegverse.repo-heartbeat-descriptor-enrollment-receipt/v0.1",
+  "goal_id": "REPO-HEARTBEAT-FEDERATION-001",
+  "task_id": "SHWP-REPO-HEARTBEAT-FEDERATION-001",
+  "recorded_at": "2026-08-12T11:50:00-05:00",
+  "state": "DESCRIPTOR_ENROLLMENT_COMPLETE_LIVE_COVERAGE_PENDING",
+  "required_participant_count": 11,
+  "descriptor_installed_count": 11,
+  "live_coverage_count": 0,
+  "coverage_complete": false,
+  "participants": [
+    {"repository":"StegVerse-Labs/StegCore","commit":"b7cbd49f2cede01ec81fd5e397eaa4f9912b2257"},
+    {"repository":"StegVerse-Labs/Continuity","commit":"656d773f3c4503e2ee9753811f30d6aaf549626f"},
+    {"repository":"StegVerse-Labs/TV","commit":"ce8ea561742ae1b2a09352f9b6ac0e5fe8e0932b"},
+    {"repository":"StegVerse-Labs/TVC","commit":"65009af6ab57ded6d091f1e33283499066fe9461"},
+    {"repository":"StegVerse-Labs/StegID","commit":"440ffd575d036a63a9236539534706dcabac5224"},
+    {"repository":"StegVerse-Labs/StegAgents","commit":"56be9ef2c0fe4a1fb2994264abf712431041ade1"},
+    {"repository":"StegVerse-Labs/Site","commit":"e74cb5532f997a72710f1fa0e281d1c0175c7d19"},
+    {"repository":"StegVerse-Labs/ara-admissibility-interop","commit":"c963a3016b015c63680f8cc23064575183f3b66d"},
+    {"repository":"StegVerse-002/micro-node-runtime","commit":"7674486444c830995d8f664d19b7ef4ae23f83bd"},
+    {"repository":"StegVerse-org/LLM-adapter","commit":"04146f97115e5d47eeb674454ccb1ebe40ce5d94"},
+    {"repository":"master-records/orchestration","commit":"af99f09b6c6dd2d991d3d228f1ee637122099e1a"}
+  ],
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_production_authority": "NONE",
+    "descriptor_grants_execution_authority": false,
+    "receipt_grants_execution_authority": false
+  },
+  "validation": {
+    "central_source_run_31610774741": "PASS",
+    "central_emitter_run_31611065409": "PASS",
+    "resident_live_topology_receipt": "PENDING"
+  },
+  "next_executable_action": "Resident single heartbeat emits and evaluates fresh manifests for all required participants and writes the canonical fail-closed topology receipt.",
+  "canonical_handoff": "docs/REPO_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md",
+  "canonical_issue": "StegVerse-Labs/.github#81"
+}
