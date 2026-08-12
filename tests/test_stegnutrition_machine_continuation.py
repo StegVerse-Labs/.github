@@ -6,6 +6,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 TASK_ID = "SHWP-STEGNUTRITION-CONTINUATION-001"
@@ -38,6 +39,24 @@ def _worker_module():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def _entrypoint_module():
+    path = ROOT / "workers/stegnutrition_continuation_entrypoint.py"
+    spec = importlib.util.spec_from_file_location("stegnutrition_continuation_entrypoint_test", path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _write_root_markers(root: Path) -> None:
+    handoff = root / "STEGNUTRITION_MIRROR_HANDOFF.md"
+    handoff.parent.mkdir(parents=True, exist_ok=True)
+    handoff.write_text("# canonical\n", encoding="utf-8")
+    inventory = root / "tasks/STEGNUTRITION-SESSION-20260811.json"
+    inventory.parent.mkdir(parents=True, exist_ok=True)
+    inventory.write_text("{}\n", encoding="utf-8")
 
 
 def test_registry_fragment_has_unique_capability_and_no_token_requirement() -> None:
@@ -137,10 +156,53 @@ def test_filesystem_projection_tracks_current_stegnutrition_source_names(tmp_pat
     assert projection["real_weighed_benchmark_case_count"] == 0
 
 
+def test_entrypoint_discovers_canonical_sibling_without_manual_selection(tmp_path: Path) -> None:
+    entrypoint = _entrypoint_module()
+    fake_control_root = tmp_path / "StegVerse-Labs" / ".github"
+    local_root = tmp_path / "StegVerse-Labs" / "StegNutrition"
+    fake_control_root.mkdir(parents=True)
+    _write_root_markers(local_root)
+    with mock.patch.object(entrypoint, "ROOT", fake_control_root), mock.patch.dict(
+        os.environ, {"STEGVERSE_STEGNUTRITION_ROOT": ""}, clear=False
+    ):
+        assert entrypoint._discover_local_stegnutrition_root() == local_root.resolve()
+
+
+def test_entrypoint_explicit_invalid_root_fails_closed(tmp_path: Path) -> None:
+    entrypoint = _entrypoint_module()
+    invalid = tmp_path / "not-stegnutrition"
+    invalid.mkdir()
+    with mock.patch.dict(os.environ, {"STEGVERSE_STEGNUTRITION_ROOT": str(invalid)}, clear=False):
+        try:
+            entrypoint._discover_local_stegnutrition_root()
+        except entrypoint.ReceiptContractError as exc:
+            assert "not a canonical" in str(exc)
+        else:
+            raise AssertionError("invalid explicit local root must fail closed")
+
+
+def test_entrypoint_ambiguous_automatic_roots_fail_closed(tmp_path: Path) -> None:
+    entrypoint = _entrypoint_module()
+    one = tmp_path / "one"
+    two = tmp_path / "two"
+    _write_root_markers(one)
+    _write_root_markers(two)
+    with mock.patch.object(entrypoint, "_candidate_local_roots", return_value=[one, two]), mock.patch.dict(
+        os.environ, {"STEGVERSE_STEGNUTRITION_ROOT": ""}, clear=False
+    ):
+        try:
+            entrypoint._discover_local_stegnutrition_root()
+        except entrypoint.ReceiptContractError as exc:
+            assert "ambiguous" in str(exc)
+        else:
+            raise AssertionError("ambiguous local roots must fail closed")
+
+
 def test_entrypoint_preflight_requires_fda_task_when_local_inventory_exists(tmp_path: Path) -> None:
     inventory = tmp_path / "tasks/STEGNUTRITION-SESSION-20260811.json"
     inventory.parent.mkdir(parents=True, exist_ok=True)
     inventory.write_text(json.dumps({"completed_or_released": []}), encoding="utf-8")
+    (tmp_path / "STEGNUTRITION_MIRROR_HANDOFF.md").write_text("# canonical\n", encoding="utf-8")
     env = os.environ.copy()
     env["STEGVERSE_STEGNUTRITION_ROOT"] = str(tmp_path)
     env.pop("GITHUB_TOKEN", None)
@@ -170,6 +232,7 @@ def test_entrypoint_preflight_requires_runtime_custody_verifier(tmp_path: Path) 
         }),
         encoding="utf-8",
     )
+    (tmp_path / "STEGNUTRITION_MIRROR_HANDOFF.md").write_text("# canonical\n", encoding="utf-8")
     for relative in (
         "src/stegnutrition/fda_reference.py",
         "tests/test_fda_reference.py",
