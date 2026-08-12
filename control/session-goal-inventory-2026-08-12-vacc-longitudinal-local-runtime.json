@@ -1,0 +1,147 @@
+{
+  "schema": "stegverse.session-goal-inventory/v1",
+  "inventory_id": "VACC-LONGITUDINAL-LOCAL-RUNTIME-2026-08-12",
+  "created_at": "2026-08-12T12:05:00-05:00",
+  "originating_session_goals": [
+    "Respond to the public AI-agent failure discussion with a directly testable AdmittedCode/StegGate SDK path rather than a trust claim.",
+    "Record public adversarial validation as a milestone once independent users can clone/install/run the SDK and attempt to falsify the governance boundary.",
+    "Extend VACC with governed longitudinal care-continuity analysis, adverse-characterization context review, care-disengagement signals, alternative engagement pathways, prescription provenance, and prior-evaluation sufficiency.",
+    "Use the BP/GERD medication-continuity episode as a de-identified reference fixture while preserving evidence/provenance distinctions.",
+    "Remove descriptive local-runtime selection by using actual local discovery/launch/inference/proof and formally develop the model locally.",
+    "Use TV/TVC as credential/route authority; GitHub tokens have no production/runtime authority.",
+    "Consolidate unique session requirements into canonical repositories/handoffs/tasks and avoid duplicate execution."
+  ],
+  "tasks": [
+    {
+      "task_id": "PUBLIC-ADVERSARIAL-SDK-MILESTONE-001",
+      "originating_goal": "Record the public independent-falsifiability milestone for AdmittedCode/StegGate SDK access and runnable governance proof.",
+      "destination": "StegVerse-Labs/Site",
+      "branch": "main",
+      "target_surface": "transition-milestones.html plus release/status projections if admitted",
+      "owner": "StegVerse-Labs/Site orchestration / Site#239",
+      "claim_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "completion_state": "REQUIREMENT_PRESERVED_NOT_MUTATED_BY_THIS_SESSION",
+      "validation_state": "SDK runnable-path evidence observed in prior session context; Site publication admission not executed",
+      "integration_state": "DEFERRED_TO_SITE_ORCHESTRATOR",
+      "archival_dependency": false,
+      "evidence": [
+        "StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Site/data/site-orchestration-state.json"
+      ],
+      "next_executable_action": "Site repository orchestrator admits the milestone publication as a noncolliding documentation/publication workload, then updates transition-milestones.html and related release/status surfaces with commit evidence.",
+      "collision_boundary": "Site machine admission currently disallows external session ownership; this session must not bypass the orchestrator."
+    },
+    {
+      "task_id": "VACC-LONGITUDINAL-CONTINUITY-001",
+      "originating_goal": "Implement governed longitudinal continuity-risk and care-relationship analysis inside VACC.",
+      "destination": "StegVerse-org/LLM-adapter",
+      "branch": "main",
+      "surfaces": [
+        "StegVerse-org/LLM-adapter#90",
+        "docs/VA_CLAIM_ASSISTANT_GOVERNED_RETRIEVAL_HANDOFF.md",
+        "tasks/VACP-ADAPTER-AUTHORIZED-EXECUTION-005.json",
+        "StegVerse-Labs/Site#113/#241",
+        "master-records/orchestration#15"
+      ],
+      "owner": "StegVerse-org/LLM-adapter#90 canonical VACC worker",
+      "claim_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "completion_state": "REQUIREMENTS_TRANSFER_COMPLETE_PRODUCT_IMPLEMENTATION_ACTIVE_CANONICAL_WORKSTREAM",
+      "validation_state": "CANONICAL_HANDOFF_AND_TASK_READ; REQUIREMENTS_TRANSFER COMMENT INSTALLED",
+      "integration_state": "TRANSFERRED",
+      "archival_dependency": false,
+      "evidence": [
+        "StegVerse-org/LLM-adapter#90 comment 5269862113",
+        "StegVerse-Labs/.github/docs/VACC_LONGITUDINAL_CONTINUITY_MIRROR_HANDOFF.md@04e1972c98c28b953e0c565e2a5e2d66583b377a",
+        "StegVerse-Labs/.github/handoffs/VACC-LONGITUDINAL-CONTINUITY-001.json@343334b277e9e238d08751ff6eb122c7039910fa",
+        "StegVerse-Labs/.github#87:CLOSED_COMPLETED"
+      ],
+      "next_executable_action": "Canonical VACC worker installs and validates transferred longitudinal-continuity capabilities without creating a duplicate evaluator/runtime."
+    },
+    {
+      "task_id": "SOVEREIGN-LOCAL-MODEL-001",
+      "originating_goal": "Formally develop the StegVerse-local model and replace descriptive runtime selection with executable local discovery/launch/inference/proof.",
+      "destination": "StegVerse-002/micro-node-runtime",
+      "branch": "main",
+      "surface": "docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+      "owner": "StegVerse-002/micro-node-runtime#22",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS",
+      "integration_state": "MERGED",
+      "archival_dependency": false,
+      "evidence": [
+        "canonical language runtime run 31339534741 SUCCESS",
+        "persistent endpoint run 31384116055 SUCCESS",
+        "visual runtime run 31524329793 SUCCESS"
+      ],
+      "next_executable_action": "NONE_SOURCE_IMPLEMENTATION_COMPLETE"
+    },
+    {
+      "task_id": "TV-TVC-NO-GITHUB-TOKEN-AUTHORITY-001",
+      "originating_goal": "Ensure GitHub tokens have no sovereign production/runtime authority and TV/TVC owns credential/route semantics.",
+      "destination": "StegVerse-Labs/.github + TV/TVC + micro-node-runtime",
+      "branch": "main",
+      "owner": "TV/TVC",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS",
+      "integration_state": "MERGED",
+      "archival_dependency": false,
+      "evidence": [
+        "StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md",
+        "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md"
+      ],
+      "next_executable_action": "NONE_POLICY_SOURCE_COMPLETE"
+    },
+    {
+      "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "originating_goal": "Activate the completed local model/runtime on a declared sovereign carrier and emit same-carrier nine-predicate evidence.",
+      "destination": "StegVerse-Labs/.github",
+      "branch": "main",
+      "surfaces": [
+        "StegVerse-Labs/.github#59",
+        "StegVerse-Labs/.github#65",
+        "workers/sovereign_runtime_activation_worker.py",
+        "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+      ],
+      "owner": "resident sovereign heartbeat + #59/#65",
+      "claim_state": "MACHINE_OWNED_ACTIVE_SOLUTION_EXECUTION",
+      "completion_state": "SOURCE_COMPLETE_PHYSICAL_CARRIER_EXECUTION_NOT_OBSERVED",
+      "validation_state": "HOSTED_SOURCE_PASS_LIVE_NINE_PREDICATE_PROOF_PENDING",
+      "integration_state": "INSTALLED",
+      "archival_dependency": true,
+      "dependency_condition": "No connected execution surface is directly observed as a declared StegVerse-owned/federated node; canonical heartbeat remains HB29.",
+      "next_executable_action": "Active worker obtains/constructs an eligible sovereign carrier, executes the already-installed native service/verification path, and emits node-local activation.latest.json with all nine predicates true. Hosted GitHub/Render/Vercel/Cloudflare substitutes are prohibited."
+    }
+  ],
+  "convergence": {
+    "vacc": "MERGED INTO: StegVerse-org/LLM-adapter#90 + governed retrieval handoff + Site#113/#241 + master-records/orchestration#15",
+    "local_model_runtime": "MERGED INTO: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "runtime_activation": "MACHINE_OWNED: StegVerse-Labs/.github#59/#65 + resident sovereign heartbeat",
+    "site_milestone_publication": "MERGED INTO: StegVerse-Labs/Site orchestrator / transition-milestones.html; external-session mutation not authorized by current Site orchestration state"
+  },
+  "session_specific_requirements_transferred": [
+    "VACC longitudinal sufficiency gate and evidence-state separation.",
+    "VACC adverse-characterization provenance/context review.",
+    "VACC care-disengagement and alternative-engagement pathway logic with human review.",
+    "VACC medication and portal-refill provenance plus prior-evaluation sufficiency.",
+    "De-identified BP/GERD continuity reference fixture.",
+    "No GitHub-token runtime authority; TV/TVC semantics.",
+    "Executable local discovery/launch/inference/proof and formal local model are source-complete.",
+    "Public adversarial SDK milestone publication obligation assigned to Site orchestration rather than bypassed."
+  ],
+  "session_state": "ACTIVE_DISTINCT_SUPPORT",
+  "archive_state_reason": "Organization mirror handoff still requires measurable resident sovereign-carrier progress beyond HB29 before this thread may be declared archive-ready.",
+  "unique_chat_only_requirements_remaining": 0,
+  "canonical_continuations": [
+    "StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#59",
+    "StegVerse-Labs/.github#65",
+    "StegVerse-Labs/.github#60",
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-org/LLM-adapter#90",
+    "StegVerse-org/LLM-adapter/docs/VA_CLAIM_ASSISTANT_GOVERNED_RETRIEVAL_HANDOFF.md",
+    "StegVerse-Labs/Site#241",
+    "StegVerse-Labs/Site/data/four-app-active-worker-assignments.json"
+  ]
+}
