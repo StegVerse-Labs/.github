@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.worker-capability-profiles/v0.1",
-  "generation": 7,
+  "generation": 8,
   "profiles": [
     {
       "profile_id": "deterministic-workflow-v1",
@@ -17,12 +17,12 @@
       "profile_id": "repository-maintenance-v1",
       "executor_type": "repository_worker",
       "effect_class": "repository_maintenance",
-      "allowed_capabilities": ["native_receipt_canary", "host_runtime_self_attest", "repository_validation", "deterministic_projection", "bounded_repository_mutation"],
+      "allowed_capabilities": ["native_receipt_canary", "host_runtime_self_attest", "repository_validation", "deterministic_projection", "bounded_repository_mutation", "repo_heartbeat_federation_reconciliation"],
       "mutation_allowed": true,
       "deployment_allowed": false,
       "availability_grants_authority": false,
       "capability_match_grants_authority": false,
-      "notes": ["Any mutation still requires task authorization, scope admission and a current fence."]
+      "notes": ["Any mutation still requires task authorization, scope admission and a current fence.", "repo_heartbeat_federation_reconciliation may write only the admitted central coverage receipt namespace and grants no cross-repository mutation authority."]
     },
     {
       "profile_id": "code-change-agent-v1",
