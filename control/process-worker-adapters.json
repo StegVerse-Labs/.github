@@ -85,6 +85,18 @@
       "type": "process_json_v0.1"
     },
     {
+      "adapter_ref": "process:sovereign-node-repository-resolution-v1",
+      "authority_ref": "control/blocker-resolution-policy.json",
+      "capabilities": ["repository_resolution", "sandbox_validation"],
+      "command": ["python", "workers/sovereign_node_repository_resolution_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_SOVEREIGN_NODE", "HOME", "XDG_STATE_HOME", "LOCALAPPDATA"],
+      "notes": ["Bounded engine-v11 repository-resolution executor for the sovereign-node physical-resource contract.", "It may recognize an already-authorized StegVerse-owned/federated node declaration and write only the inherited sovereign-runtime receipt namespace.", "It may not manufacture a node declaration, grant deployment authority, access GitHub/provider/wallet credentials, or substitute hosted infrastructure.", "If no eligible declaration is observable it emits the next machine-readable COMPONENT_AUTHORITY escalation rather than stalling."],
+      "timeout_seconds": 20,
+      "type": "process_json_v0.1"
+    },
+    {
       "adapter_ref": "process:ecosystem-chat-sovereign-inference-v1",
       "authority_ref": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json#authority",
       "capabilities": ["runtime_observation", "durable_state_reconstruction", "bounded_repository_mutation"],
@@ -145,6 +157,6 @@
       "type": "process_json_v0.1"
     }
   ],
-  "generation": 18,
+  "generation": 19,
   "schema": "stegverse.process-worker-adapters/v0.1"
 }
