@@ -33,7 +33,7 @@
       "adapter_ref": "process:repo-heartbeat-federation-v1",
       "authority_source": "authorizations/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
       "capabilities": ["repo_heartbeat_federation_reconciliation"],
-      "capability_profile_ref": "control/worker-capability-profiles.json#bounded-repository-worker-v1",
+      "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
       "executor_type": "repository_worker",
       "last_seen_at": null,
       "status": "AVAILABLE",
