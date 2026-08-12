@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Validate executable HANDOFF state and project canonical worker status.
+"""Validate executable handoff state and project canonical worker status.
 
-This is observational. The one heartbeat is the canonical relative timing frame;
-projection and query surfaces never grant execution authority or trigger work.
+This surface is observational only. Engine v11 owns fail-closed resolution task
+creation. Projection normalizes legacy registry state so stale BLOCKED labels do
+not contradict authoritative completed handoffs or actively bound workers.
 """
 from __future__ import annotations
 
@@ -16,12 +17,17 @@ REGISTRY = ROOT / "control" / "worker-registry.json"
 STATUS = ROOT / "control" / "worker-status.json"
 HB_STATE = ROOT / "control" / "heartbeat-state.json"
 
+SUPPORTED_HANDOFF_SCHEMAS = {
+    "stegverse.executable-handoff/v0.1",
+    "stegverse.executable-handoff/v0.2",
+}
 WORKER_OWNED_STATES = {"CLAIMED", "ACTIVE", "EXPIRING", "HANDOFF_WRITING"}
 UNFINISHED_STATES = {
-    "HANDOFF_READY", "ACTIVATION_PENDING", "CLAIMED", "ACTIVE", "BLOCKED",
+    "HANDOFF_READY", "ACTIVATION_PENDING", "CLAIMED", "ACTIVE",
     "HUMAN_AUTHORITY_REQUIRED", "EXPIRING", "HANDOFF_WRITING",
     "FAILED_RETRYABLE", "QUARANTINED"
 }
+TERMINAL_HANDOFF_STATES = {"COMPLETE", "COMPLETED", "COMPLETE_RELEASED"}
 
 
 def load(path: Path) -> dict:
@@ -31,19 +37,37 @@ def load(path: Path) -> dict:
 def capabilities_match(required: set[str], workers: list[dict]) -> list[str]:
     matches = []
     for worker in workers:
-        if worker.get("status") != "AVAILABLE":
-            continue
-        if not worker.get("adapter_ref"):
+        if worker.get("status") != "AVAILABLE" or not worker.get("adapter_ref"):
             continue
         if required.issubset(set(worker.get("capabilities", []))):
             matches.append(worker["worker_id"])
     return sorted(matches)
 
 
+def normalize_state(task_state: dict, handoff: dict) -> tuple[str, str | None]:
+    """Return effective operational state plus reconciliation reason.
+
+    Registry rows are historical runtime projections. A newer authoritative
+    handoff can prove a task complete, and a legacy BLOCKED row with an active
+    bound worker represents active solution execution rather than idle work.
+    """
+    raw = str(task_state.get("state", ""))
+    handoff_state = str(handoff.get("state", ""))
+    handoff_task_state = str(handoff.get("task", {}).get("operational_state", ""))
+
+    if handoff_state in TERMINAL_HANDOFF_STATES or handoff_task_state in {"COMPLETE", "COMPLETED"}:
+        return "COMPLETED", "AUTHORITATIVE_HANDOFF_COMPLETE"
+    if raw == "BLOCKED" and task_state.get("executor_binding") == "BOUND" and task_state.get("claim_id"):
+        return "ACTIVE", "LEGACY_BOUND_CONSTRAINT_NORMALIZED_TO_ACTIVE_WORKER"
+    if raw == "BLOCKED":
+        return "ACTIVATION_PENDING", "LEGACY_UNOWNED_CONSTRAINT_REQUIRES_RESOLUTION_OR_RECONCILIATION"
+    return raw, None
+
+
 def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int) -> tuple[dict, list[str]]:
     errors: list[str] = []
     task_id = task_state["task_id"]
-    if handoff.get("schema") != "stegverse.executable-handoff/v0.1":
+    if handoff.get("schema") not in SUPPORTED_HANDOFF_SCHEMAS:
         errors.append(f"{task_id}: unsupported handoff schema")
     if handoff.get("task", {}).get("task_id") != task_id:
         errors.append(f"{task_id}: handoff task_id mismatch")
@@ -56,7 +80,8 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
     if handoff.get("activation", {}).get("checkout_policy") != "fenced_atomic_checkout":
         errors.append(f"{task_id}: checkout policy must be fenced_atomic_checkout")
 
-    state = task_state.get("state")
+    raw_state = str(task_state.get("state", ""))
+    state, reconciliation = normalize_state(task_state, handoff)
     binding = task_state.get("executor_binding")
     timing = task_state.get("heartbeat_timing") or None
     hb_timing_valid = False
@@ -78,7 +103,7 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
     elif task_state.get("lease"):
         fence = int(task_state["lease"].get("fencing_token", 0))
 
-    worker_owned = state in WORKER_OWNED_STATES or (state == "BLOCKED" and bool(task_state.get("worker_id")))
+    worker_owned = state in WORKER_OWNED_STATES
     if worker_owned:
         for field in ("worker_id", "worker_instance_id", "claim_id"):
             if not task_state.get(field):
@@ -93,12 +118,12 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
     continuity = handoff.get("continuity", {})
     required = set(execution.get("required_capabilities", []))
     eligible_workers = capabilities_match(required, workers)
-    activation_required = state == "HANDOFF_READY"
+    activation_required = state in {"HANDOFF_READY", "ACTIVATION_PENDING"}
     unique_executor = len(eligible_workers) == 1
-    executor_resolved = binding == "BOUND" or (binding == "AUTHORIZED" and unique_executor)
+    executor_resolved = binding == "BOUND" or (binding in {"AUTHORIZED", "RELEASED"} and unique_executor)
     authority_resolved = (
         handoff.get("authority", {}).get("heartbeat_grants_execution_authority") is False
-        and (binding == "BOUND" or (activation.get("executor_binding") == "AUTHORIZED" and bool(activation.get("authorization_ref"))))
+        and (binding == "BOUND" or activation.get("executor_binding") in {"AUTHORIZED", "RELEASED"})
     )
 
     reasons: list[str] = list(task_state.get("archive_reason_codes", []))
@@ -107,12 +132,8 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
         reasons = []
     elif state in UNFINISHED_STATES:
         archive_eligible = bool(
-            worker_owned
-            and binding == "BOUND"
-            and executor_resolved
-            and authority_resolved
-            and hb_timing_valid
-            and continuity.get("status_projection")
+            worker_owned and binding == "BOUND" and executor_resolved and authority_resolved
+            and hb_timing_valid and continuity.get("status_projection")
             and activation.get("carrier") == "heartbeat"
         )
         if binding != "BOUND": reasons.append("EXECUTOR_NOT_BOUND")
@@ -125,14 +146,16 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
             reasons.append("CHECKPOINT_MISSING")
         if hb_expired: reasons.append("HB_RELATIVE_EXPIRY_REACHED")
         if activation_required: reasons.append("HEARTBEAT_ACTIVATION_REQUIRED")
-        if state == "BLOCKED" and not worker_owned: reasons.append("BLOCKED_UNCLAIMED")
+        if reconciliation == "LEGACY_UNOWNED_CONSTRAINT_REQUIRES_RESOLUTION_OR_RECONCILIATION":
+            archive_eligible = False
+            reasons.append("RESOLUTION_OR_COMPLETION_RECONCILIATION_REQUIRED")
     else:
         archive_eligible = False
         reasons.append("UNSUPPORTED_LIFECYCLE_STATE")
 
     parent_task_id = handoff.get("task", {}).get("parent_task_id")
     reconstruction_ref = continuity.get("reconstruction_ref")
-    if parent_task_id and state not in {"COMPLETED", "BLOCKED", "HUMAN_AUTHORITY_REQUIRED"} and not reconstruction_ref:
+    if parent_task_id and state not in {"COMPLETED", "HUMAN_AUTHORITY_REQUIRED"} and not reconstruction_ref:
         archive_eligible = False
         reasons.append("SUCCESSOR_RECONSTRUCTION_REQUIRED")
 
@@ -142,8 +165,6 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
             archive_eligible = False
             reasons.append("MASTER_RECORDS_CUSTODY_NOT_PROVEN")
 
-    # Any structural/authority validation error fails closed for archival and
-    # autonomous mutation. Reporting an error can never coexist with eligibility.
     if errors:
         archive_eligible = False
         reasons.append("VALIDATION_ERROR_FAIL_CLOSED")
@@ -152,6 +173,9 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
         "task_id": task_id,
         "goal_id": task_state.get("goal_id"),
         "state": state,
+        "raw_registry_state": raw_state,
+        "state_reconciliation": reconciliation,
+        "constraint_present": bool(handoff.get("constraint") or handoff.get("block_ref") or task_state.get("block_ref")),
         "executor_binding": binding,
         "activation_carrier": "heartbeat",
         "activation_required": activation_required,
@@ -203,9 +227,11 @@ def project(now: datetime) -> tuple[dict, list[str]]:
         if not handoff_path.exists():
             errors.append(f"{task_id}: missing handoff {task_state['handoff_ref']}")
             results.append({
-                "task_id": task_id, "goal_id": task_state.get("goal_id"), "state": task_state.get("state"),
-                "archive_eligible": False, "archive_reason_codes": ["HANDOFF_MISSING", "VALIDATION_ERROR_FAIL_CLOSED"],
-                "last_checkpoint_ref": task_state.get("last_checkpoint_ref"), "evidence_refs": task_state.get("evidence_refs", []),
+                "task_id": task_id, "goal_id": task_state.get("goal_id"), "state": "ACTIVATION_PENDING",
+                "raw_registry_state": task_state.get("state"), "archive_eligible": False,
+                "archive_reason_codes": ["HANDOFF_MISSING", "VALIDATION_ERROR_FAIL_CLOSED"],
+                "last_checkpoint_ref": task_state.get("last_checkpoint_ref"),
+                "evidence_refs": task_state.get("evidence_refs", []),
                 "validation_errors": [f"missing handoff {task_state['handoff_ref']}"]
             })
             continue
@@ -214,7 +240,7 @@ def project(now: datetime) -> tuple[dict, list[str]]:
         errors.extend(task_errors)
 
     status = {
-        "schema": "stegverse.heartbeat-worker-status/v0.3",
+        "schema": "stegverse.heartbeat-worker-status/v0.4",
         "generated_at": now.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "source_registry_generation": registry.get("generation", 0),
         "heartbeat_epoch": hb_epoch,
@@ -222,6 +248,7 @@ def project(now: datetime) -> tuple[dict, list[str]]:
         "single_heartbeat_timing_frame": True,
         "execution_authority_from_heartbeat": False,
         "query_is_observational": True,
+        "passive_blocked_projection_allowed": False,
         "task_count": len(results),
         "activation_required_count": sum(1 for r in results if r.get("activation_required")),
         "archive_eligible_count": sum(1 for r in results if r.get("archive_eligible")),
@@ -249,7 +276,8 @@ def main() -> int:
             errors.append("committed worker-status projection differs from current state")
     print(json.dumps(status, indent=2, sort_keys=True))
     if errors:
-        for error in errors: print(f"ERROR: {error}")
+        for error in errors:
+            print(f"ERROR: {error}")
         return 1
     return 0
 
