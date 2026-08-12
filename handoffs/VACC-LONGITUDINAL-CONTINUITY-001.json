@@ -3,27 +3,23 @@
   "task_id": "VACC-LONGITUDINAL-CONTINUITY-001",
   "goal_id": "VACC-LONGITUDINAL-CONTINUITY-001",
   "originating_goal": "Extend VACC into governed longitudinal care-continuity analysis with record-sufficiency gating, evidence-linked provider summaries, adverse-characterization context review, prescription provenance, and disengagement/alternative-engagement signals.",
-  "repository": "StegVerse-Labs/.github",
+  "provisional_repository": "StegVerse-Labs/.github",
   "branch": "main",
-  "canonical_issue": "StegVerse-Labs/.github#87",
-  "canonical_handoff": "docs/VACC_LONGITUDINAL_CONTINUITY_MIRROR_HANDOFF.md",
-  "owner": "StegVerse-Labs/.github#87",
-  "claim_state": "CLAIMED_FOR_INTEGRATION_AND_REQUIREMENTS_TRANSFER",
-  "implementation_state": "REQUIREMENTS_INSTALLED_CANONICAL_IMPLEMENTATION_REPO_PENDING",
-  "validation_state": "REQUIREMENTS_RECONCILED_REFERENCE_FIXTURE_DEFINED",
-  "integration_state": "PROVISIONAL_OWNER_INSTALLED",
-  "archive_eligible": false,
-  "created_at": "2026-08-12T11:57:00-05:00",
-  "claim_release_condition": "Dedicated VACC repository designated; its applicable mirror handoff read or created; all requirements transferred; implementation and validation claims bound there; executable implementation and tests evidenced.",
-  "collision_boundaries": [
-    "Do not create a competing VACC implementation if a canonical VACC repository or active claimant is later discovered.",
-    "Do not convert adverse labels into proof of patient fault.",
-    "Do not collapse observation, inference, potential deficiency, clinician determination, and action.",
-    "Do not infer that absence of a portal request from a narrative export proves no refill/renewal request occurred.",
-    "Do not conflate prescription expiration or refill exhaustion with clinical contraindication or ineligibility.",
-    "Do not autonomously diagnose malpractice/negligence, delete safety flags, change treatment, transfer care, or make deterministic suicide/homelessness predictions."
+  "provisional_issue": "StegVerse-Labs/.github#87",
+  "state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+  "claim_state": "RELEASED",
+  "merged_at": "2026-08-12T12:03:00-05:00",
+  "canonical_owner": "StegVerse-org/LLM-adapter#90",
+  "canonical_handoff": "StegVerse-org/LLM-adapter/docs/VA_CLAIM_ASSISTANT_GOVERNED_RETRIEVAL_HANDOFF.md",
+  "canonical_execution_task": "StegVerse-org/LLM-adapter/tasks/VACP-ADAPTER-AUTHORIZED-EXECUTION-005.json",
+  "canonical_public_projection": [
+    "StegVerse-Labs/Site#113",
+    "StegVerse-Labs/Site#241"
   ],
-  "required_capabilities": [
+  "canonical_worker_manifest": "StegVerse-Labs/Site/data/four-app-active-worker-assignments.json",
+  "custody_owner": "master-records/orchestration#15",
+  "requirements_transfer_evidence": "StegVerse-org/LLM-adapter#90 comment 5269862113",
+  "required_capabilities_transferred": [
     "longitudinal_record_sufficiency_gate",
     "care_continuity_signal_detection",
     "provider_pre_encounter_evidence_summary",
@@ -38,44 +34,9 @@
     "prior_evaluation_sufficiency_check",
     "medication_scope_preservation"
   ],
-  "reference_fixture": {
-    "identity": "deidentified_bp_gerd_medication_continuity_case",
-    "required_events": [
-      "longstanding chronic BP and GERD therapy predating disputed PCP relationship",
-      "2022 antihypertensive prescription with final 90-day fill June 2023 and no refills remaining",
-      "August 2023 PCP PACT-visit/labs prerequisite for medication refills",
-      "subsequent 2023 VA provider encounters with vitals/labs/medication reconciliation",
-      "January 2024 hypertensive urgency after medication exhaustion and difficulty obtaining PCP refill",
-      "February 2024 continuity-concern/provider-interpretation divergence",
-      "later 90-day release under distinct Rx lineage",
-      "patient portal renewal transaction absent from narrative export",
-      "proven/inferred/unavailable/contradictory provenance states"
-    ]
-  },
-  "machine_states": [
-    "UNCLAIMED",
-    "CLAIMED_FOR_IMPLEMENTATION",
-    "CLAIMED_FOR_VALIDATION",
-    "CLAIMED_FOR_INTEGRATION",
-    "MACHINE_OWNED",
-    "COMPLETE",
-    "SUPERSEDED",
-    "MERGED_INTO_CANONICAL_WORKSTREAM",
-    "REVIEW_REQUIRED",
-    "FAILED"
-  ],
-  "next_executable_action": "Resolve the canonical VACC implementation repository from connected StegVerse repositories; if discovered, read its mirror handoff and transfer this task. If none exists and repository-creation authority becomes available, create/designate the canonical VACC repo and install its mirror handoff before implementation.",
-  "cross_repository_propagation_after_release": [
-    "StegVerse-Labs/Site",
-    "GCAT-BCAT-Engine/Publisher",
-    "admissibility-wiki",
-    "stegguardian-wiki",
-    "master-records when required by live contracts"
-  ],
-  "evidence_refs": [
-    "StegVerse-Labs/.github#87",
-    "docs/VACC_LONGITUDINAL_CONTINUITY_MIRROR_HANDOFF.md",
-    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md"
-  ]
+  "reference_fixture": "deidentified_bp_gerd_medication_continuity_case",
+  "collision_boundary": "Do not create a separate VACC implementation from this provisional task; all continuation occurs in the canonical owner above.",
+  "next_executable_action": "Canonical VACC worker installs the transferred longitudinal-continuity capabilities and de-identified fixtures within the existing governed retrieval/privacy/StegGate architecture, then returns evidence through Master Records and Site projection.",
+  "archive_eligible": true,
+  "archive_reason": "All session-specific VACC requirements are durably transferred and the provisional claim has been released."
 }
