@@ -25,6 +25,8 @@ CURRENT_REQUIRED_SURFACES = (
     "src/stegnutrition/ledger.py",
     "schemas/meal-ledger.schema.json",
     "scripts/verify_runtime_custody_no_network.py",
+    "src/stegnutrition/scenario_provider.py",
+    "tests/test_scenario_provider.py",
 )
 LOCAL_ROOT_MARKERS = (
     "STEGNUTRITION_MIRROR_HANDOFF.md",
