@@ -1,7 +1,33 @@
 {
   "schema": "stegverse.worker-registry-fragment/v0.1",
   "fragment_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
-  "tasks": [],
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [],
+      "authorized_policy_version": "shwp-single-hb-v0.3-sovereign",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/ecosystem-chat-sovereign-inference.json",
+      "evidence_refs": [
+        "handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json",
+        "authorizations/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json",
+        "workers/ecosystem_chat_orphan_recovery_worker.py",
+        "master-records/orchestration:custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+      "handoff_ref": "handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+      "worker_id": null,
+      "worker_instance_id": null
+    }
+  ],
   "workers": [
     {
       "adapter_ref": "process:ecosystem-chat-orphan-recovery-v1",
@@ -16,6 +42,7 @@
   ],
   "authority_effect": "NONE_REGISTRATION_ONLY",
   "github_token_required": false,
+  "credential_authority": "TV/TVC",
   "old_authority_revival_allowed": false,
   "parent_task_execution_authority": false
 }
