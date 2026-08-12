@@ -12,6 +12,7 @@ repository: StegVerse-Labs/.github
 canonical_branch: main
 archive_policy_provenance: StegVerse-Labs/.github#64 / CLOSED_COMPLETED
 active_runtime_owner: StegVerse-Labs/.github#59 + resident sovereign heartbeat
+active_progress_remediation_owner: StegVerse-Labs/.github#65 + resident sovereign heartbeat
 active_inference_owner: StegVerse-Labs/.github#60 + resident sovereign heartbeat
 state: ACTIVE_DISTINCT_SUPPORT / CURRENT TASK GRAPH NOT ARCHIVE READY
 thread_archive_ready: false
@@ -19,7 +20,7 @@ archive_block_reason: UNMET_PRODUCTION_ACTIVATION_GOALS_WITH_DURABLE_CARRIER_STA
 latest_session_inventory: control/session-goal-inventory-2026-08-11-ecosystem-chat-local-model.json
 ```
 
-Issue #64 completed the archive-policy remediation and is no longer the active runtime owner. Issues #59 and #60 are the open canonical runtime/inference owners. Context transfer alone does not satisfy this organization gate.
+Issue #64 completed archive-policy enforcement and is provenance only. Issue #59 owns native sovereign-runtime activation, issue #65 owns conversion of the stalled physical-resource lane into measurable execution progress, and issue #60 owns Ecosystem Chat inference activation after the carrier advances. Context transfer alone does not satisfy this organization gate.
 
 ## Non-negotiable archive invariant
 
@@ -39,7 +40,12 @@ resident carrier post-HB29 advance: NOT OBSERVED
 SHWP-DURABLE-RUNTIME-ACTIVATION claim: SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18
 fencing token: 18
 runtime task state: BLOCKED
+runtime transition: SOVEREIGN_RUNTIME_SOLUTION_REQUIRED
+runtime block class: PHYSICAL_RESOURCE
 runtime blocker: SOVEREIGN_NODE_DECLARATION_NOT_PRESENT
+human_action_required: false
+missing_implementation: false
+next_solution_action: EXECUTE_NATIVE_ACTIVATION_ON_DECLARED_SOVEREIGN_NODE
 ```
 
 There is one canonical heartbeat and one canonical worker registry. No GitHub-hosted workflow may substitute for the resident sovereign carrier.
@@ -65,6 +71,8 @@ Canonical local-model handoff: `StegVerse-002/micro-node-runtime/docs/SOVEREIGN_
 Canonical Ecosystem Chat recovery/activation handoff: `docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md`.
 
 Canonical scoped heartbeat handoff: `docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md`.
+
+Canonical blocker-resolution handoff: `docs/BLOCKER_RESOLUTION_MIRROR_HANDOFF.md`.
 
 Canonical session inventory: `control/session-goal-inventory-2026-08-11-ecosystem-chat-local-model.json`.
 
@@ -95,6 +103,8 @@ Organization control-plane no-token validation: run 31453552110 SUCCESS
 complete deterministic heartbeat suite: 97 tests PASS
 Org Continuation no-token validation: run 31464416581 SUCCESS
 Sovereign Runtime hosted-authority retirement: run 31464631729 SUCCESS
+Blocker-remediation runtime policy: Heartbeat Worker Project run 31335403988 SUCCESS
+Native runtime activation/proof path: Heartbeat Worker Project run 31338817754 SUCCESS
 ```
 
 Later TVC post-alignment hosted checks that GitHub did not start because of account billing/spending-limit state are zero-step evidence and are neither PASS nor semantic test failure. Hosted validation never grants production authority.
@@ -102,7 +112,8 @@ Later TVC post-alignment hosted checks that GitHub did not start because of acco
 ## Live continuation
 
 ```text
-resident heartbeat advances beyond HB29
+execute native activation on a declared StegVerse-owned/federated node
+-> canonical resident heartbeat advances beyond HB29
 -> recovery obtains a live fence >20
 -> Master Records G20 custody resolves
 -> recovery COMPLETED
@@ -120,20 +131,28 @@ resident heartbeat advances beyond HB29
 
 Dry-run validation proves a recovery fence greater than ended fence 20, but that evidence is nonpersistent and is not a live activation claim.
 
-## Human authority boundary — durable runtime activation
+## Physical-resource execution boundary — durable runtime activation
 
 ```text
-owner issue: StegVerse-Labs/.github#59
+runtime owner issue: StegVerse-Labs/.github#59
+progress-remediation issue: StegVerse-Labs/.github#65
 handoff: handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
 receipt: receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json
 worker: workers/sovereign_runtime_activation_worker.py
 installer: scripts/install_sovereign_heartbeat_service.py
 verifier: scripts/verify_sovereign_runtime_activation.py
-state: BLOCKED_RUNTIME_ACTIVATION
-reason: SOVEREIGN_NODE_DECLARATION_NOT_PRESENT
+state: BLOCKED_RUNTIME_ACTIVATION / SOVEREIGN_RUNTIME_SOLUTION_REQUIRED
+block class: PHYSICAL_RESOURCE
+human_action_required: false
+missing_implementation: false
+reason: no currently connected execution surface is directly observed as a declared StegVerse-owned/federated node
+next_solution_action: EXECUTE_NATIVE_ACTIVATION_ON_DECLARED_SOVEREIGN_NODE
+eligible declaration: STEGVERSE_SOVEREIGN_NODE=1 OR /etc/stegverse/node.json OR ~/.stegverse/node.json
 ```
 
-Activation requires a real StegVerse-owned/federated machine. No GitHub-hosted runner, Render service, Vercel runtime, Cloudflare surface, or repository-only mutation may substitute for the sovereign physical carrier. Release requires node-local `~/.stegverse/heartbeat/activation.latest.json` with all nine activation predicates true: runtime materialization, native service activation, continuous liveness, heartbeat advance, worker-coordination checkpoint, controlled restart, non-regression, no duplicate claim/fence, and reconstruction PASS.
+This is not a provider/credential blocker and is not a user-approval boundary. The native activation and proof implementation is complete. The unresolved requirement is execution on a qualifying physical/federated carrier. Workaround candidates are: bind an existing eligible StegVerse-owned/federated Linux/macOS/Windows node; promote an eligible StegVerse-002 micro-node while preserving identical durability/restart/reconstruction predicates; or construct a new StegVerse-owned/federated node from the repository-local runtime capsule. No GitHub-hosted runner, Render service, Vercel runtime, Cloudflare surface, or repository-only mutation may substitute for the sovereign physical carrier.
+
+Release requires node-local `~/.stegverse/heartbeat/activation.latest.json` with all nine activation predicates true: runtime materialization, native service activation, continuous liveness, heartbeat advance, worker-coordination checkpoint, controlled restart, non-regression, no duplicate claim/fence, and reconstruction PASS.
 
 ## Ecosystem Chat inference activation boundary
 
@@ -173,6 +192,7 @@ Propagation remains blocked until immutable same-execution activation evidence e
 - Context transfer is not product activation.
 - Session archival is not product activation.
 - Do not create duplicate implementation for source-complete local model/runtime, TVC routing, LLM-adapter executor, or Master Records reconstruction.
+- Do not misclassify the physical-resource execution lane as a human/user-approval blocker.
 
 ## Archive-state reconciliation evidence
 
@@ -182,8 +202,10 @@ A subordinate scoped heartbeat handoff and the earlier session archive receipt b
 scoped heartbeat handoff reconciliation: 6055bb2cd17564021da86119f2a6c8c5ec35bc0d
 session consolidation/archive-authority correction: 9f43b3571ddd2471665d88e95d20c02709ef8f56
 organization reconciliation evidence: 5390c4e675ac1a95fdcddc4a401957e4edb1447a
+active-owner reconciliation: e37785f8bcf163039ad004ab2b79bccde12eb0c2
 archive-policy issue #64: CLOSED_COMPLETED / POLICY PROVENANCE ONLY
 active runtime issue #59: OPEN
+active progress-remediation issue #65: OPEN
 active inference issue #60: OPEN
 scoped heartbeat thread_archive_ready: false
 scoped heartbeat archive_readiness: BLOCKED_BY_ORG_MIRROR_HANDOFF
@@ -194,7 +216,7 @@ Historical wording that treated scoped consolidation alone as sufficient for arc
 
 ## Claims and session consolidation
 
-Source implementation claims for the local model/runtime, TV/TVC semantic hardening, LLM-adapter task 020, Master Records reconstruction/custody, and orphan-recovery implementation are released or source-complete. Machine-owned runtime/inference continuation remains at issues #59/#60 and the resident heartbeat. No duplicate implementation claim is authorized.
+Source implementation claims for the local model/runtime, TV/TVC semantic hardening, LLM-adapter task 020, Master Records reconstruction/custody, and orphan-recovery implementation are released or source-complete. Machine-owned runtime/progress-remediation/inference continuation remains at issues #59/#65/#60 and the resident heartbeat. No duplicate implementation claim is authorized.
 
 All unique Ecosystem Chat local-model/session requirements are durably transferred; `unique_chat_only_requirements_remaining=0` is recorded in the session inventory.
 
@@ -203,7 +225,7 @@ session_role: DISTINCT SUPPORT / CANONICAL STATE RECONCILIATION AND ACTIVATION O
 thread_archive_ready: false
 archive_gate: BLOCKED
 archive_gate_reason: SOVEREIGN_DURABLE_CARRIER_NOT_ACTIVE_AND_INHERITED_PRODUCTION_GOALS_UNMET
-next_executable_transition: native sovereign carrier activation on a declared StegVerse-owned/federated node
+next_executable_transition: EXECUTE_NATIVE_ACTIVATION_ON_DECLARED_SOVEREIGN_NODE via #59/#65 + resident heartbeat
 archive_release_condition: measurable resident sovereign-carrier progress beyond HB29 that materially advances terminal predicates, or a newer authoritative organization handoff supersedes this gate
 ```
 
