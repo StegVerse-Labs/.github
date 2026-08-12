@@ -11,7 +11,7 @@
       "The resident heartbeat invokes the Healer scheduler only against already materialized repository roots.",
       "Only fixed handlers compiled into StegVerse-Healer source may execute.",
       "SCW org-scan and uptime can execute locally without GitHub credentials.",
-      "Missing local repositories or missing target adapters fail closed.",
+      "Missing local repositories or missing target adapters fail closed and derive a next solution action.",
       "A no-secret scheduler receipt is persisted."
     ],
     "failure_predicates": [
@@ -20,6 +20,7 @@
       "A target record injects an arbitrary command.",
       "Missing target capability is silently treated as success."
     ],
+    "expires_at": null,
     "authority_ceiling": [
       "healer_sovereign_scheduling",
       "receipts/healer-sovereign-scheduler/**",
@@ -28,9 +29,10 @@
       "no_github_token_authority",
       "no_remote_source_checkout",
       "no_remote_mutation_authority",
-      "no_deployment_authority"
+      "no_deployment_authority",
+      "credential_and_admission_authority_tv_tvc"
     ],
-    "successor_policy": "BOUNDED_ADAPTER_COMPLETION",
+    "successor_policy": "INHERIT_OR_NARROW",
     "max_successor_depth": 1
   },
   "task": {
@@ -55,8 +57,6 @@
   "authority": {
     "authority_source": "authorizations/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
     "heartbeat_grants_execution_authority": false,
-    "credential_authority": "TV/TVC",
-    "github_token_required": false,
     "policy_version": "shwp-healer-sovereign-scheduler-v0.1"
   },
   "execution": {
@@ -73,7 +73,7 @@
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "authorizations/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
-    "recheck_trigger": "each admitted heartbeat according to Healer target cadence while any target is due or blocked",
+    "recheck_trigger": "each admitted heartbeat according to Healer target cadence while any target is due or requires a derived solution action",
     "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {
