@@ -155,7 +155,7 @@ def main() -> int:
             "transition_id": "STEGFIN_LOCAL_WORKLOAD_NOT_MATERIALIZED",
             "fresh_inventory_n_observed": False,
             "provider_capability_release_boundary_identified": True,
-            "provider_capability_authority": "TC_TVC_VAULT_ONLY",
+            "provider_capability_authority": "TV_TVC_VAULT_ONLY",
             "github_token_required": False,
             "github_runtime_required": False,
             "blocker": blocker,
@@ -200,7 +200,7 @@ def main() -> int:
                 "transition_id": "STEGFIN_INVENTORY_N_RETRY",
                 "fresh_inventory_n_observed": False,
                 "provider_capability_release_boundary_identified": True,
-                "provider_capability_authority": "TC_TVC_VAULT_ONLY",
+                "provider_capability_authority": "TV_TVC_VAULT_ONLY",
                 "github_token_required": False,
                 "github_runtime_required": False,
                 "blocker": blocker,
@@ -235,7 +235,7 @@ def main() -> int:
             "transition_id": "STEGFIN_INVENTORY_N_CONTRACT_FAILED",
             "fresh_inventory_n_observed": False,
             "provider_capability_release_boundary_identified": True,
-            "provider_capability_authority": "TC_TVC_VAULT_ONLY",
+            "provider_capability_authority": "TV_TVC_VAULT_ONLY",
             "github_token_required": False,
             "github_runtime_required": False,
             "blocker": blocker,
@@ -265,7 +265,7 @@ def main() -> int:
         "asset_count": observation.get("asset_count"),
         "provider_capability_required_for_inventory": False,
         "provider_capability_release_boundary_identified": True,
-        "provider_capability_authority": "TC_TVC_VAULT_ONLY",
+        "provider_capability_authority": "TV_TVC_VAULT_ONLY",
         "provider_capability_delivery_required_next": "INHERITED_FILE_DESCRIPTOR",
         "github_token_required": False,
         "github_runtime_required": False,
@@ -273,10 +273,10 @@ def main() -> int:
         "signed": False,
         "broadcast": False,
         "trade_authority_granted": False,
-        "next_authorized_action": "Consume only the canonical TC/TVC/vault non-exporting capability release, then enter the released StegFin carrier/native capsule path. Heartbeat must not acquire or transport the provider secret.",
+        "next_authorized_action": "Consume only the canonical TV/TVC/vault non-exporting capability release, then enter the released StegFin carrier/native capsule path. Heartbeat must not acquire or transport the provider secret.",
     }
     atomic_write(RECEIPT, durable)
-    json.dump(response(state="ACTIVE", transition_id="STEGFIN_INVENTORY_N_OBSERVED", sequence=2, next_transition="TC_TVC_PROVIDER_CAPABILITY_RELEASE", evidence_refs=[str(RECEIPT.relative_to(ROOT))]), sys.stdout, sort_keys=True)
+    json.dump(response(state="ACTIVE", transition_id="STEGFIN_INVENTORY_N_OBSERVED", sequence=2, next_transition="TV_TVC_PROVIDER_CAPABILITY_RELEASE", evidence_refs=[str(RECEIPT.relative_to(ROOT))]), sys.stdout, sort_keys=True)
     sys.stdout.write("\n")
     return 0
 
