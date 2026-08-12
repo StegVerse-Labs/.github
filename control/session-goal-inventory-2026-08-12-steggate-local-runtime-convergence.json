@@ -1,0 +1,191 @@
+{
+  "schema": "stegverse.session-goal-inventory/v1",
+  "inventory_id": "STEGGATE-LOCAL-RUNTIME-CONVERGENCE-2026-08-12",
+  "created_at": "2026-08-12T09:00:00-05:00",
+  "originating_session_goals": [
+    "Preserve and complete the AdmittedCode/StegGate SDK demo boundary as a manifested, ingestion-routed, replayable and reconstructable ecosystem transaction path.",
+    "Preserve Mansoor's frozen AdmittedCode/StegGate 0.2.0 evaluation reference while allowing forward development and replayable finding lineage.",
+    "Remove the descriptive local model/runtime selection step by using an executable local-runtime discovery/launch/inference/proof path.",
+    "Formally develop the StegVerse-local model.",
+    "Use TV/TVC for credential and route semantics; GitHub tokens have no production/runtime authority.",
+    "Activate completed source work only through the canonical sovereign heartbeat and same-execution evidence path."
+  ],
+  "canonical_continuations": [
+    "StegVerse-Labs/StegCore/docs/TRANSACTION_CONTINUITY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegCore/MANSOOR_EVALUATION_MIRROR_HANDOFF.md",
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md"
+  ],
+  "tasks": [
+    {
+      "task_id": "STEGGATE-MANIFESTED-TRANSACTION-CONTINUITY-079",
+      "originating_goal": "Make SDK/demo inputs traverse the same manifested ingestion -> canonical StegGate -> return-ingestion path as ordinary ecosystem work.",
+      "destination": "StegVerse-Labs/StegCore",
+      "branch": "main",
+      "surfaces": [
+        "src/stegcore/transaction_lifecycle.py",
+        "tests/test_transaction_lifecycle.py",
+        "tools/run_manifested_transaction_demo.py",
+        "docs/TRANSACTION_CONTINUITY_MIRROR_HANDOFF.md",
+        "StegCore#79",
+        "StegCore PR#80"
+      ],
+      "owner": "StegVerse-Labs/StegCore",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS",
+      "integration_state": "MERGED",
+      "archival_dependency": false,
+      "evidence": ["PR#80", "c227547b1d1e7ce4cce3b8b13c2212ed50a0f116"],
+      "next_executable_action": "NONE_SOURCE_IMPLEMENTATION_COMPLETE"
+    },
+    {
+      "task_id": "STEGGATE-LEGACY-LLM-ADAPTER-CANONICALIZATION-081",
+      "originating_goal": "Remove the legacy adapter-local ALLOW escape and require canonical manifested execution for consequential evaluation.",
+      "destination": "StegVerse-Labs/StegCore",
+      "branch": "main",
+      "surfaces": [
+        "core/llm_adapter.py",
+        "tests/test_legacy_llm_adapter_canonicalization.py",
+        "StegCore#81",
+        "StegCore PR#82"
+      ],
+      "owner": "StegVerse-Labs/StegCore",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS",
+      "integration_state": "MERGED",
+      "archival_dependency": false,
+      "evidence": ["PR#82", "04425f592ab2b7bfbd0181fac8511d14b8b08048"],
+      "next_executable_action": "NONE_SOURCE_IMPLEMENTATION_COMPLETE"
+    },
+    {
+      "task_id": "STEGGATE-TRANSACTION-DISCOVERY-083",
+      "originating_goal": "Make manifested transactions and reviewer findings discoverable, replayable and reconstructable without granting payload disclosure or policy authority.",
+      "destination": "StegVerse-Labs/StegCore",
+      "branch": "main",
+      "surfaces": [
+        "src/stegcore/transaction_discovery.py",
+        "tests/test_transaction_discovery.py",
+        "docs/TRANSACTION_CONTINUITY_MIRROR_HANDOFF.md",
+        "StegCore#83",
+        "StegCore PR#84"
+      ],
+      "owner": "StegVerse-Labs/StegCore#83",
+      "claim_state": "ACTIVE_INTEGRATION_NO_IMPLEMENTATION_COLLISION_OBSERVED",
+      "completion_state": "CORE_PROVIDER_NEUTRAL_INDEX_COMPLETE_SHARED_BACKING_PENDING",
+      "validation_state": "CORE_PASS",
+      "integration_state": "PARTIAL",
+      "archival_dependency": false,
+      "evidence": ["PR#84", "ee40743aba893d9e16293cb2521abe58e2abedae"],
+      "next_executable_action": "Bind the provider-neutral discovery contract to an authorized shared ecosystem backing and public consumer proof without making discovery an authority surface."
+    },
+    {
+      "task_id": "MANSOOR-EVALUATION-BASELINE-PRESERVATION",
+      "originating_goal": "Allow forward boundary augmentation without moving or rewriting Mansoor's frozen evaluation target, while preserving independently attributable findings.",
+      "destination": "StegVerse-Labs/StegCore",
+      "branch": "eval/mansoor-admittedcode-0.2.0-2026-08-11 + main",
+      "surfaces": [
+        "MANSOOR_EVALUATION_MIRROR_HANDOFF.md",
+        "docs/MANSOOR_EVALUATION_BASELINE_DELTA.md",
+        "eval/mansoor-admittedcode-0.2.0-2026-08-11"
+      ],
+      "owner": "StegVerse-Labs/StegCore",
+      "claim_state": "PRESERVED_REFERENCE",
+      "completion_state": "COMPLETE",
+      "validation_state": "IMMUTABLE_BASELINE_PRESERVED",
+      "integration_state": "MERGED_FORWARD_WITHOUT_BASELINE_REWRITE",
+      "archival_dependency": false,
+      "evidence": ["baseline_commit:5d86d7999199b9403a05320710c4d1bb95527327"],
+      "next_executable_action": "Mansoor may independently evaluate the frozen reference; later findings can bind to transaction discovery lineage without changing the baseline."
+    },
+    {
+      "task_id": "SOVEREIGN-LOCAL-MODEL-001",
+      "originating_goal": "Formally develop the StegVerse-local language model and replace descriptive runtime selection with actual local discovery, launch, inference and proof.",
+      "destination": "StegVerse-002/micro-node-runtime",
+      "branch": "main",
+      "surface": "docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+      "owner": "StegVerse-002/micro-node-runtime#22",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS",
+      "integration_state": "MERGED",
+      "archival_dependency": false,
+      "evidence": ["workflow:31339534741", "workflow:31384116055"],
+      "next_executable_action": "NONE_SOURCE_IMPLEMENTATION_COMPLETE"
+    },
+    {
+      "task_id": "TV-TVC-NO-GITHUB-TOKEN-AUTHORITY-001",
+      "originating_goal": "Ensure credential and route semantics are TV/TVC-owned and no GitHub token can authorize sovereign discovery, launch, route or inference.",
+      "destination": "StegVerse-Labs/.github + StegVerse-Labs/TVC + StegVerse-Labs/TV",
+      "branch": "main",
+      "surface": "docs/ORG_MIRROR_HANDOFF.md + TVC sovereign route task",
+      "owner": "TV/TVC",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS",
+      "integration_state": "MERGED",
+      "archival_dependency": false,
+      "evidence": ["StegVerse-Labs/.github PR#79", "f6265ff0f74a51adf79985da09691b871b7576dc", "workflow:31453552033", "workflow:31453552032", "workflow:31453552110"],
+      "next_executable_action": "NONE_SOURCE_IMPLEMENTATION_COMPLETE"
+    },
+    {
+      "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "originating_goal": "Activate the completed local model/runtime and canonical heartbeat path on an actual StegVerse sovereign carrier.",
+      "destination": "StegVerse-Labs/.github",
+      "branch": "main",
+      "surfaces": [
+        "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+        "workers/sovereign_runtime_activation_worker.py",
+        "control/heartbeat-state.json",
+        ".github#59"
+      ],
+      "owner": "resident sovereign heartbeat + sovereign-runtime-activation-worker",
+      "claim_state": "MACHINE_OWNED_BOUND_G18",
+      "completion_state": "BLOCKED",
+      "validation_state": "SOURCE_PASS_LIVE_NINE_PREDICATE_PROOF_MISSING",
+      "integration_state": "INSTALLED_IN_CANONICAL_WORKER_REGISTRY",
+      "archival_dependency": true,
+      "blocker": "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT",
+      "machine_observable_release_condition": "A declared StegVerse-owned/federated node writes node-local ~/.stegverse/heartbeat/activation.latest.json with all nine activation predicates true and the resident canonical heartbeat advances beyond HB29 without duplicate claim/fence.",
+      "evidence": ["control/heartbeat-state.json@HB29", ".github#59"],
+      "next_executable_action": "Run the already-installed native sovereign heartbeat service on a declared StegVerse-owned/federated node; GitHub Actions, Render, Vercel and Cloudflare are prohibited substitutes."
+    },
+    {
+      "task_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
+      "originating_goal": "Complete the same-carrier local model -> TVC -> LLM-adapter -> Master Records activation chain.",
+      "destination": "StegVerse-Labs/.github",
+      "branch": "main",
+      "surfaces": ["handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json", ".github#60"],
+      "owner": "resident sovereign heartbeat -> TVC -> LLM-adapter -> master-records/orchestration",
+      "claim_state": "MACHINE_OWNED_BLOCKED_ON_DURABLE_CARRIER",
+      "completion_state": "NOT_ACTIVATED",
+      "validation_state": "SOURCE_CHAIN_PASS_LIVE_SAME_EXECUTION_PROOF_MISSING",
+      "integration_state": "INSTALLED",
+      "archival_dependency": true,
+      "machine_observable_release_condition": "Post-HB29 resident carrier completes orphan recovery with fence >20, reacquires the parent with a fresh fence >20, proves the local endpoint, receives TVC ROUTE_ADMITTED with credential_requirement NONE, executes the exact LLM-adapter route, and retains same-execution Master Records reconstruction PASS.",
+      "next_executable_action": "Wait only on the declared sovereign carrier release condition; do not create duplicate source implementation."
+    }
+  ],
+  "convergence": {
+    "local_model_runtime_source_work": "MERGED_INTO_CANONICAL_WORKSTREAM: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "runtime_activation": "MACHINE_OWNED: StegVerse-Labs/.github#59/#60 and resident heartbeat",
+    "transaction_continuity": "MERGED_INTO_CANONICAL_WORKSTREAM: StegVerse-Labs/StegCore/docs/TRANSACTION_CONTINUITY_MIRROR_HANDOFF.md",
+    "mansoor_evaluation": "PRESERVED_REFERENCE: StegVerse-Labs/StegCore/MANSOOR_EVALUATION_MIRROR_HANDOFF.md"
+  },
+  "session_specific_requirements_transferred": [
+    "No GitHub token is production/runtime/credential authority; TV/TVC owns credential semantics.",
+    "The descriptive local-model/runtime selection step is obsolete and replaced by executable local discovery/launch/inference/proof.",
+    "The StegVerse reference model is formally developed and locally executable without hosted inference.",
+    "SDK/demo transactions use the same canonical manifested ingestion -> StegGate -> return-ingestion path as ecosystem runtime work.",
+    "Transaction discovery is distinct from payload disclosure and grants no policy or execution authority.",
+    "Mansoor's frozen 0.2.0 reference is immutable; forward changes do not erase independently attributable findings.",
+    "Reviewer findings can bind to finding -> evidence transaction -> replay -> remediation -> verification lineage.",
+    "Hosted validation is not sovereign activation; activation requires direct same-carrier evidence on a declared StegVerse-owned/federated node."
+  ],
+  "unique_chat_only_requirements_remaining": 0,
+  "session_role_after_consolidation": "ACTIVE_DISTINCT_SUPPORT_CANONICAL_STATE_RECONCILIATION_AND_ACTIVATION_OBSERVATION",
+  "thread_archive_ready": false,
+  "archive_block_reason": "The organization handoff requires measurable production activation progress; canonical heartbeat remains HB29 and the sovereign node declaration/activation receipt is absent."
+}
