@@ -4,15 +4,19 @@
   "tasks": [
     {
       "archive_eligible": false,
-      "archive_reason_codes": [],
+      "archive_reason_codes": [
+        "CLAIM_ISSUER_FAIL_CLOSED_VALIDATION_REQUIRED"
+      ],
       "authorized_policy_version": "stegfin-continuity-carrier-v1",
-      "block_ref": "docs/STEGFIN_CONTINUITY_CARRIER_MIRROR_HANDOFF.md",
+      "block_ref": "docs/STEGFIN_CONTINUITY_CARRIER_MIRROR_HANDOFF.md#validation-blocker",
       "claim_id": null,
       "cost_basis_ref": "cost-basis/worker-runtime/stegfin-continuity-carrier.json",
       "evidence_refs": [
         "docs/STEGFIN_CONTINUITY_CARRIER_MIRROR_HANDOFF.md",
         "handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
-        "workers/stegfin_continuity_carrier_worker.py"
+        "workers/stegfin_continuity_carrier_worker.py",
+        "scripts/acquire_stegfin_continuity_claim.py",
+        "tests/test_stegfin_continuity_claim.py"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
@@ -21,7 +25,7 @@
       "heartbeat_timing": null,
       "last_checkpoint_ref": "handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
       "lease": null,
-      "state": "HANDOFF_READY",
+      "state": "BLOCKED",
       "task_id": "STEGFIN-CONTINUITY-CARRIER-007",
       "worker_id": null,
       "worker_instance_id": null
