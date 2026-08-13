@@ -1,0 +1,184 @@
+{
+  "schema": "stegverse.session-goal-inventory/v1",
+  "inventory_id": "SOVEREIGN-EVALUATOR-LOCAL-RUNTIME-CONVERGENCE-2026-08-13",
+  "created_at": "2026-08-13T15:13:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "role": "NONCOMPETING_RECONCILIATION",
+  "archive_state": "READY_AFTER_DURABLE_TRANSFER",
+  "originating_session_goals": [
+    "Make the SDK/StegGate evaluator path review-ready with manifest-rooted receipt-gated routing and canonical Master Records custody.",
+    "Make production-validation versus enclosed demo/test lane provenance explicit in the manifest/receipt record.",
+    "Ensure third-party hosting is never a blocker by providing a sovereign/local execution and portable custody path.",
+    "Replace descriptive local-model/runtime selection with executable discovery, launch, inference and proof.",
+    "Formally develop the StegVerse-local model.",
+    "Keep production/runtime credential semantics under TV/TVC and give GitHub tokens no StegVerse runtime authority.",
+    "Durably transfer all remaining implementation, validation, activation and hardening work so this chat is not a required continuation surface."
+  ],
+  "tasks": [
+    {
+      "task_id": "SDK-SOVEREIGN-PRODUCTION-VALIDATION-008",
+      "destination": "StegVerse-org/StegVerse-SDK",
+      "branch": "main",
+      "surfaces": [
+        "SDK_MIRROR_HANDOFF.md",
+        "stegverse/sovereign_validation_runtime.py",
+        "validation/SOVEREIGN_FROZEN_EVALUATOR_VALIDATION_2026-08-13.md"
+      ],
+      "owner": "StegVerse-org/StegVerse-SDK",
+      "claim_state": "COMPLETE",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS",
+      "integration_state": "MERGED_AND_EVIDENCE_RETAINED",
+      "archival_dependency": false,
+      "evidence": [
+        "T0 MR-2F21EC98FB60A78DD0135E580DD80B1FE6CEC9C62B905A4F758E5567F1C666E2",
+        "T1-A MR-620DDEE41541E2F787BC2702FE56977F4BB298BC1CE34C4284203A429F5453C8",
+        "T1-B MR-804AF43FC68949F0BBC4B89E4729CA1880AB5BFA4655185C171CE5D2332487B4"
+      ],
+      "next_executable_action": "NONE_EVALUATOR_READINESS_COMPLETE"
+    },
+    {
+      "task_id": "ECOSYSTEM-MANIFESTED-TRANSITION-CARRIER",
+      "destination": "Data-Continuation/core-lite + master-records/orchestration + StegVerse-Labs/StegCore + StegVerse-org/StegVerse-SDK",
+      "branch": "main",
+      "surfaces": [
+        "Data-Continuation/core-lite/core_lite/transaction_route.py",
+        "master-records/orchestration/services/manifest_receipt_custody.py",
+        "StegVerse-Labs/StegCore/src/stegcore/transaction_lifecycle.py",
+        "StegVerse-org/StegVerse-SDK/SDK_MIRROR_HANDOFF.md"
+      ],
+      "owner": "canonical component owners",
+      "claim_state": "COMPLETE_FOR_FROZEN_VALIDATION",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS_FOR_FROZEN_SOVEREIGN_RUN",
+      "integration_state": "INTEGRATED",
+      "archival_dependency": false,
+      "next_executable_action": "Residual generic hardening is separately owned by master-records/orchestration#31."
+    },
+    {
+      "task_id": "EXECUTION-LANE-PROVENANCE",
+      "destination": "StegVerse-org/StegVerse-SDK",
+      "branch": "main",
+      "surfaces": ["inspection/request.schema.json", "SDK_MIRROR_HANDOFF.md"],
+      "owner": "StegVerse-org/StegVerse-SDK",
+      "claim_state": "COMPLETE",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS",
+      "integration_state": "RETAINED_IN_MANIFEST_AND_RECEIPT_HISTORY",
+      "archival_dependency": false,
+      "next_executable_action": "NONE"
+    },
+    {
+      "task_id": "SOVEREIGN-PORTABLE-CUSTODY",
+      "destination": "master-records/orchestration",
+      "branch": "main",
+      "surfaces": [
+        "services/portable_custody.py",
+        "validation/evaluator-frozen-sovereign-custody-2026-08-13.zlib.b64"
+      ],
+      "owner": "master-records/orchestration",
+      "claim_state": "COMPLETE_FOR_EVALUATOR_VALIDATION",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS_FOR_RETAINED_FROZEN_SNAPSHOT",
+      "integration_state": "PORTABLE_WITHOUT_HOSTED_PROVIDER_AUTHORITY",
+      "archival_dependency": false,
+      "next_executable_action": "master-records/orchestration#31 owns retry, FAILED-event, CI round-trip, backup and restore hardening."
+    },
+    {
+      "task_id": "SOVEREIGN-LOCAL-MODEL-001",
+      "destination": "StegVerse-002/micro-node-runtime",
+      "branch": "main",
+      "surfaces": ["docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md"],
+      "owner": "StegVerse-002/micro-node-runtime",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS",
+      "integration_state": "MERGED",
+      "archival_dependency": false,
+      "evidence": ["workflow 31339534741 SUCCESS", "workflow 31384116055 SUCCESS"],
+      "next_executable_action": "NONE_SOURCE_IMPLEMENTATION_COMPLETE"
+    },
+    {
+      "task_id": "TV-TVC-NO-NONAUTHORITY-SECRETS",
+      "destination": "StegVerse-Labs/TV + StegVerse-Labs/TVC + sovereign consumers",
+      "branch": "main",
+      "surfaces": [
+        "StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json",
+        "StegVerse-Labs/TVC/tasks/TVC-MASTER-RECORDS-CUSTODY-BROKER-004.json"
+      ],
+      "owner": "TV/TVC",
+      "claim_state": "COMPLETE_OR_SUPERSEDED",
+      "completion_state": "COMPLETE_FOR_CURRENT_SOVEREIGN_PATH",
+      "validation_state": "SOURCE_POLICY_PASS",
+      "integration_state": "CREDENTIAL_REQUIREMENT_NONE_FOR_LOCAL_MODEL_AND_SOVEREIGN_EVALUATOR_PATH",
+      "archival_dependency": false,
+      "next_executable_action": "No session-created credential or GitHub token may substitute for TV/TVC authority."
+    },
+    {
+      "task_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
+      "destination": "StegVerse-Labs/.github",
+      "branch": "main",
+      "surfaces": ["issues/60", "control/worker-registry.json"],
+      "owner": "resident sovereign heartbeat -> TVC -> LLM-adapter -> master-records/orchestration",
+      "claim_state": "MACHINE_OWNED",
+      "completion_state": "ACTIVE_MACHINE_WORK_NOT_YET_ACTIVATED",
+      "validation_state": "SOURCE_CHAIN_PASS_LIVE_SAME_EXECUTION_PROOF_PENDING",
+      "integration_state": "INSTALLED_IN_CANONICAL_MACHINE_CONTINUATION",
+      "archival_dependency": false,
+      "machine_observable_release_condition": "Resident heartbeat advances beyond HB29 under a fresh authorized fence greater than 20, private model proof is retained, TVC emits ROUTE_ADMITTED with credential_requirement NONE and github_token_required false, exact LLM-adapter execution persists measured usage, and Master Records same-execution reconstruction passes.",
+      "next_executable_action": "Canonical worker executes the already-installed chain; chat sessions must not duplicate it."
+    },
+    {
+      "task_id": "MASTER-RECORDS-POST-EVALUATOR-HARDENING",
+      "destination": "master-records/orchestration",
+      "branch": "main",
+      "surfaces": ["issue/31"],
+      "owner": "master-records/orchestration#31",
+      "claim_state": "UNCLAIMED_DURABLE_EXECUTABLE_TASK",
+      "completion_state": "OPEN_HARDENING",
+      "validation_state": "NOT_YET_COMPLETE",
+      "integration_state": "NOT_EVALUATOR_BLOCKING",
+      "archival_dependency": false,
+      "next_executable_action": "Repository owner/worker claims issue #31 and implements idempotent operation retries, operation identity binding, FAILED terminal custody, portable CI round-trip and backup/restore verification."
+    }
+  ],
+  "convergence": {
+    "local_model_runtime_source_work": "MERGED_INTO_CANONICAL_WORKSTREAM: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "live_activation": "MACHINE_OWNED: StegVerse-Labs/.github#60 and resident heartbeat",
+    "evaluator_validation": "COMPLETE: StegVerse-org/StegVerse-SDK/validation/SOVEREIGN_FROZEN_EVALUATOR_VALIDATION_2026-08-13.md",
+    "portable_custody": "COMPLETE_FOR_FROZEN_VALIDATION: master-records/orchestration/services/portable_custody.py",
+    "residual_master_records_hardening": "TRANSFERRED: master-records/orchestration#31"
+  },
+  "session_specific_requirements_transferred": [
+    "Every ecosystem state transition is Master Records history.",
+    "A manifest is present or applied at entry and its recorded checkpoint receipt clears the next declared route leg.",
+    "Heartbeat is the manifested transaction continuity/routing carrier rather than a mere health signal.",
+    "Production-validation and enclosed demo/test lanes are distinguishable as retained execution provenance.",
+    "Third-party services are optional transport and cannot be execution or validation blockers.",
+    "The frozen evaluator path uses canonical production-capable lanes with bounded consequence and no external side effect.",
+    "Replay and reconstruction do not mutate the original exact run or re-execute its original consequence, but their own operation transitions are new append-only Master Records history.",
+    "The descriptive local-runtime selection step is superseded by executable local discovery, launch, inference and proof.",
+    "The StegVerse reference model is formally developed locally from repository-owned data.",
+    "TV/TVC owns credential semantics; GitHub tokens have no StegVerse production/runtime authority.",
+    "Machine-owned unfinished live activation is not a reason to retain this chat when canonical ownership, release conditions and next actions are durable."
+  ],
+  "accounting": {
+    "total_session_goals": 8,
+    "completed_or_durably_transferred": 8,
+    "chat_only_requirements_remaining": 0,
+    "manual_session_owned_tasks_remaining": 0,
+    "machine_owned_unfinished_tasks": 1,
+    "repository_owned_hardening_tasks": 1,
+    "session_consolidation_percent": 100,
+    "archival_readiness_percent": 100
+  },
+  "canonical_continuation": [
+    "StegVerse-org/StegVerse-SDK/SDK_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK/validation/SOVEREIGN_FROZEN_EVALUATOR_VALIDATION_2026-08-13.md",
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#60",
+    "StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json",
+    "master-records/orchestration#31"
+  ]
+}
