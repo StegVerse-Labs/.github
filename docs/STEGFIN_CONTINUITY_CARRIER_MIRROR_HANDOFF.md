@@ -27,7 +27,47 @@ provider secret custody: TV/TVC vault only
 
 No GitHub token, provider API key, wallet key, bearer token, cloud credential, or other non-TV/TVC credential is accepted by the production/runtime adapter.
 
-## Execution ownership
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+collision_scope: stegfin:base-validation-entry:0xA503DCe5471492bbA2D06e9f78F4d9D6Bcc852aA:12.50-USDC-WETH
+release_condition: none; this bucket intentionally has no live-operation authority
+next_executable_action: no manual/session execution; observe machine receipts and repair only a separately identified repository-owned source defect
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+collision_scope: collision-safe claim acquisition through bounded continuity pretrade to WALLET_HANDOFF_READY or fail-closed terminal receipt
+release_condition: WALLET_HANDOFF_READY, fail-closed terminal receipt with same-worker claim release, or resident worker ownership of the same validation lineage
+next_executable_action: registered continuity scheduler admits process:stegfin-continuity-carrier-v1 on an authorized StegVerse carrier after local source and TV/TVC broker predicates are observable
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: StegVerse-Labs/TVC/tasks/TVC-PROVIDER-OPERATION-BROKER-003.json
+collision_scope: provider-operation:base.quote.0x credential resolution and broker service identity
+release_condition: TV/TVC-authorized runtime exposes the broker and emits bounded non-secret provider-operation evidence under a valid TVC lease
+next_executable_action: TV/TVC runtime authority validates/activates the canonical provider-operation broker without exporting provider credentials
+```
+
+### COMPLETED / SUPERSEDED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+collision_scope: stale self-owned continuity claims after terminal worker results
+release_condition: claim-release wrapper, adapter binding, deterministic ownership tests, and executable-handoff schema validation are committed and hosted-validated
+next_executable_action: none for completed source repair; machine continuation consumes the released implementation
+```
 
 `STEGFIN-CONTINUITY-CARRIER-007` remains worker-owned. No chat/session is authorized to run the live financial operation. A continuity worker may execute only after collision-safe claim acquisition and may stop only at its bounded terminal handoff or fail-closed result.
 
@@ -73,7 +113,7 @@ conclusion: SUCCESS
 
 Successful steps include anonymous checkout without a GitHub credential token, no-token environment proof, source compilation, canonical JSON parsing, executable-handoff validation, the complete deterministic repository test suite, non-persistent heartbeat dry-run, ephemeral projection rebuild, and non-authority workflow proof.
 
-Organization control-plane validation also passed:
+Organization control-plane validation also passed before the ownership-heading regression:
 
 ```text
 run: 31729688342
@@ -81,6 +121,8 @@ job: 94546707398
 head: 6a2cfb2093060d801bd7c94223f854b7401b4b50
 conclusion: SUCCESS
 ```
+
+A later organization-control run exposed that this mirror handoff had been rewritten with a shortened `## Execution ownership` heading and therefore no longer satisfied `stegverse.handoff-execution-ownership/v1`. This document restores the canonical section heading and all four required ownership buckets; hosted revalidation is required before the regression is closed.
 
 ## TVC provider-operation source state
 
@@ -129,11 +171,12 @@ claim acquisition/collision source: COMPLETE
 terminal claim release: COMPLETE
 process-adapter no-token boundary: COMPLETE
 executable handoff schema: COMPLETE
-hosted no-token control-plane validation: COMPLETE
+handoff execution-ownership partition: RESTORED_REVALIDATION_PENDING
+hosted no-token control-plane validation: PREVIOUSLY_COMPLETE_REVALIDATION_PENDING
 TVC broker source boundary: VALIDATED_SOURCE
 TVC broker live endpoint: PENDING_AUTHORITY_OWNED
 continuity worker live invocation: PENDING_MACHINE_OWNED
-session-unique implementation state: DURABLY_TRANSFERRED
+session-unique implementation state: DURABLY_TRANSFERRED_EXCEPT_CURRENT_REVALIDATION
 ```
 
 No live operation, signing, broadcast, settlement, or custody result may be claimed before the corresponding runtime evidence exists.
