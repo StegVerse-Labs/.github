@@ -1,167 +1,135 @@
 # StegNutrition Machine Continuation Mirror Handoff
 
-Status: **ACTIVE — SESSION EXECUTION UNTIL RESIDENT CLAIM OR COMPLETION**  
-Updated: 2026-08-12 18:57 -05:00
+Status: **ACTIVE — SESSION VALIDATION UNTIL RESIDENT CLAIM OR COMPLETION**  
+Updated: 2026-08-12 19:12 -05:00
 
 ## Authority and scope
 
-This scoped handoff is authoritative for `SHWP-STEGNUTRITION-CONTINUATION-001` and remains subordinate to organization heartbeat continuity/governance handoffs. Canonical product state remains `StegVerse-Labs/StegNutrition/STEGNUTRITION_MIRROR_HANDOFF.md` and `tasks/STEGNUTRITION-SESSION-20260811.json` schema v6.
+This is the canonical scoped handoff for `SHWP-STEGNUTRITION-CONTINUATION-001`, subordinate to the organization heartbeat handoffs and to `StegVerse-Labs/StegNutrition/STEGNUTRITION_MIRROR_HANDOFF.md`.
 
 ```text
 goal_id: STEGNUTRITION-PHOTO-DIET-001
-heartbeat_task: SHWP-STEGNUTRITION-CONTINUATION-001
 repository: StegVerse-Labs/.github
 branch: main
-canonical_target: StegVerse-Labs/StegNutrition/STEGNUTRITION_MIRROR_HANDOFF.md
+canonical_product: StegVerse-Labs/StegNutrition/STEGNUTRITION_MIRROR_HANDOFF.md
 credential_authority: TV/TVC
 route_authority: StegVerse-Labs/TVC
 github_token_runtime_authority: NONE
-source_state: INSTALLED_V6_TASK021_BOUND_AUTODISCOVERY_CUSTODY_GATED
 resident_activation_state: PENDING_DIRECT_OBSERVATION
 last_directly_observed_resident_epoch: 29
 resident_claim_observed: false
 continuation_receipt_observed: false
-current_execution_owner: active StegNutrition session until resident fenced claim/progress or completion
 ```
 
-## Originating requirement
+The originating requirement is to remove descriptive/manual local-runtime selection, formally develop and use the local model/runtime, prohibit non-TV/TVC secret/token authority, and keep unfinished StegNutrition work executable through the single sovereign heartbeat rather than chat-only instructions.
 
-Remove descriptive/manual local runtime selection, formally develop the local model/runtime, prohibit GitHub-token production authority, and ensure unfinished StegNutrition work continues through executable local discovery/validation/proof rather than dormant instructions. The sovereign model/runtime itself is complete in `StegVerse-002/micro-node-runtime`; this handoff owns only StegNutrition continuation into that governed TV/TVC runtime path.
+## Installed resident continuation
 
-## Current resident contract
+The sovereign model/runtime itself is already released in `StegVerse-002/micro-node-runtime`. This handoff owns only StegNutrition continuation into the governed TV/TVC route.
 
-The resident contract now consumes the canonical schema-v6 `capability_inventory`; task identity may be carried as `id` or legacy `task_id`. A lawful resident execution requires both `STEGNUTRITION-FDA-REFERENCE-020` and `STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021` and fails closed when their current source surfaces are absent.
+The registered StegNutrition task remains `SHWP-STEGNUTRITION-CONTINUATION-001`; no second scheduler or duplicate task was created. Current worker selection is `process:stegnutrition-machine-continuation-v2` from `control/process-worker-adapters.d/stegnutrition-continuation-v2.json`.
 
-Installed control surfaces:
+V2 preserves the existing deterministic local-root discovery and custody/scenario preflights, then executes the StegNutrition-owned unified validator `scripts/run_full_validation_no_network.py` through `workers/stegnutrition_continuation_worker_v2.py`. The unified proof is retained in `local_validation.validation_proof` in the admitted fenced continuation receipt.
 
-```text
-handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json
-control/worker-registry.d/stegnutrition-continuation-001.json
-workers/stegnutrition_continuation_entrypoint.py
-workers/stegnutrition_continuation_worker.py
-workers/stegnutrition_receipt_contract.py
-schemas/stegnutrition-continuation-receipt.schema.json
-tools/validate_stegnutrition_continuation_receipt.py
-control/process-worker-adapters.json#process:stegnutrition-machine-continuation-v1
-control/worker-capability-profiles.json#sovereign-runtime-worker-v1
-cost-basis/worker-runtime/stegnutrition-machine-continuation.json
-tests/test_stegnutrition_machine_continuation.py
-tests/test_stegnutrition_continuation_receipt.py
-tests/test_stegnutrition_scenario_preflight.py
-StegVerse-Labs/StegNutrition:scripts/verify_runtime_custody_no_network.py
-StegVerse-Labs/StegNutrition:scripts/verify_scenario_provider_no_network.py
-StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021.json
-StegVerse-Labs/StegNutrition:src/stegnutrition/semantic_build.py
-StegVerse-Labs/StegNutrition:src/stegnutrition/portion_qualification.py
-```
+Installed commits:
+- `d3062a3b87f6e0f0853d49cb4adfee7d52433917` — StegNutrition unified zero-network validation orchestrator;
+- `d8a67a036a36c62a341e3916b28a9b00c38c6805` — orchestrator contract tests;
+- `5d19c717f8e68be17cbc0e4c0419983710be9125` — task 016 bound to unified validation;
+- `1a42edd46719241bb94c7f4c38397cc9be4dabb7` — continuation worker v2;
+- `807c98726901a6678ed20ed784eb5570231df043` — continuation entrypoint v2;
+- `0e739a1aa7b676892e3dcf75185fcf258d68d191` — process-adapter v2 fragment;
+- `ea0e6e1b32b3e3b2a12d0d5db7a38e507e8f32c0` — worker registry switched to v2.
 
-Current worker integration commits:
-- `6a77bc8e96b1dc8167553e18ac5c17c847268c49` — resident worker accepts canonical v6 inventory, requires tasks 020/021, and projects qualified semantic/portion evidence;
-- `4cea2fc68ab3968452293092d97caa67e638307a` — entrypoint reads v6 inventory and requires task-021 surfaces;
-- `503d761e7d9339ed0be37efda67dda1e111836d0` — regression tests for v6/task021 behavior;
-- `514471515d3d650d348b38c7b327267bde0ddad1` — executable handoff binds task021 and current qualification predicates.
+No GitHub token, provider key, wallet secret, cloud secret, hosted model provider, source checkout, deployment authority, or publication authority is admitted. The adapter allowlist remains only `STEGVERSE_STEGNUTRITION_ROOT`, an optional non-secret local path override.
 
-## Automatic local discovery
+## Validation chain
 
-`workers/stegnutrition_continuation_entrypoint.py` discovers exactly one already locally materialized canonical StegNutrition tree from deterministic filesystem candidates. `STEGVERSE_STEGNUTRITION_ROOT` is optional override only. Invalid explicit roots or multiple canonical automatic candidates fail closed. Discovery performs no network lookup, GitHub clone/fetch, hosted-provider selection or credential acquisition.
+A lawful resident execution must:
 
-## Preflight and no-secret contract
+1. allocate a current fenced claim under the existing heartbeat;
+2. discover exactly one already-local canonical StegNutrition tree or accept one valid optional override;
+3. fail closed on invalid/ambiguous roots;
+4. execute runtime-custody preflight and require `ROUTE_ADMITTED`, `credential_requirement=NONE`, replay binding, token-binding rejection and proof-tamper rejection;
+5. execute scenario-provider preflight and require `LOCAL_ONLY`, no hosted inference, USDA/photo-portion/evidence binding, and no real-semantic overstatement;
+6. execute `StegVerse-Labs/StegNutrition/scripts/run_full_validation_no_network.py`;
+7. require its `stegnutrition.zero-network-validation.v1` result to prove custody PASS, scenario PASS and full-suite PASS;
+8. persist that exact proof inside the fenced continuation receipt;
+9. continue independent semantic, portion, real-benchmark and live-TVC predicates without converting absent evidence to success.
 
-For an available local tree the entrypoint requires current FDA, ledger/runtime-custody, scenario-provider, semantic-build/qualification and portion-qualification surfaces. It then executes, in order:
-
-```text
-PYTHONPATH=<StegNutrition>/src PIP_NO_INDEX=1 python scripts/verify_runtime_custody_no_network.py
-PYTHONPATH=<StegNutrition>/src PIP_NO_INDEX=1 python scripts/verify_scenario_provider_no_network.py
-resident continuation worker -> fixed zero-network StegNutrition suite
-```
-
-Runtime custody must prove `ROUTE_ADMITTED`, `credential_requirement=NONE`, `github_token_required=false`, exact replay binding retention, token-binding rejection and proof-tamper rejection. Scenario-provider preflight must remain `LOCAL_ONLY`, non-authorizing, USDA-bound, photo-portion-bound, and explicitly state that it does not qualify real semantic accuracy.
-
-No general code-writing, GitHub repository-write, release/publication, model-authority, route-authority or credential-authority expansion is granted. Credential and route authority remain TV/TVC.
-
-## Real-data qualification binding
-
-Task `021` is now a mandatory resident input rather than chat-only guidance.
-
-Canonical semantic completion evidence:
-
-```text
-models/semantic-food/qualified/semantic-model.json
-models/semantic-food/qualified/semantic-evaluation.json
-models/semantic-food/qualified/semantic-qualification.json
-```
-
-Canonical portion completion evidence:
-
-```text
-benchmarks/weighed-photo-cases/<real provenance-bearing cases>
-benchmarks/weighed-photo-cases/portion-qualification.json
-```
-
-Real weighed-photo cases alone do not qualify portion accuracy. A governed `PortionQualityPolicy` must pass and its canonical receipt must exist. Synthetic fixtures may validate mechanics but never satisfy real semantic/portion evidence predicates.
+The unified validator itself grants no persistence or execution authority. Receipt persistence remains limited to `receipts/stegnutrition-continuation/**` by the existing handoff.
 
 ## Validation evidence
 
-Exact-head organization control-plane validation for commit `503d761e7d9339ed0be37efda67dda1e111836d0`:
+Prior exact-head worker-contract control-plane validation at commit `503d761e7d9339ed0be37efda67dda1e111836d0` passed in run `31652457574`, job `94299575641`.
 
-```text
-run: 31652457574 SUCCESS
-job: 94299575641 SUCCESS
-control-plane invariants: PASS
-active-worker ownership invariant: PASS
-handoff execution ownership partitions: PASS
-cross-repository collision enforcement: PASS
-allocator dry-run: PASS
-check-in reconciliation: PASS
-JSON/JSONL syntax: PASS
-no authority-bearing GitHub constructs: PASS
-```
+For v2 head `ea0e6e1b32b3e3b2a12d0d5db7a38e507e8f32c0`, organization control-plane run `31653385320` reached and passed control-plane invariants and active-worker ownership, then failed because this mirror lacked the mandatory ownership partition heading/buckets. That document defect is corrected by this commit; it was not a worker-v2 runtime failure. Heartbeat Worker Project remains separately masked by the already-owned StegFin handoff schema issue and is not credited as StegNutrition validation.
 
-Heartbeat Worker Project run `31652457609` failed before repository unit tests because global executable-handoff validation stopped on unrelated `handoffs/STEGFIN-CONTINUITY-CARRIER-007.json` schema defects. Compile and canonical JSON parsing passed; the unit-test step was skipped. This failure is not attributed to StegNutrition and is not credited as a StegNutrition suite PASS.
-
-Older StegNutrition control-plane validation remains inspectable but predates the v6/task021 resident contract and therefore does not prove the new behavior.
-
-## Resident ownership state
-
-Direct persisted worker-status evidence remains HB29 with no directly observed StegNutrition fenced claim or continuation receipt. The registry/handoff state is `HANDOFF_READY`; readiness is not execution. The active StegNutrition session therefore retains its validation/HANDOFF role until a current fenced resident claim demonstrably progresses the task or completion occurs.
-
-Operational invariant: unfinished work is active session work, actively claimed worker work, or complete/superseded. Legacy raw `BLOCKED` fields may remain only as compatibility provenance and are projected to `ACTIVE_CONSTRAINT`; they are not a stopping state.
-
-## Next resident transition
-
-A lawful resident transition must advance the single existing heartbeat, allocate a current fenced claim, auto-discover exactly one local canonical StegNutrition tree, run custody and scenario preflights, require task021, run the complete fixed zero-network suite, project real semantic/portion evidence independently, persist a fenced continuation receipt, and retain `github_token_required=false`. No repository write, hosted workflow, synthetic dry-run epoch, second heartbeat, fabricated claim, GitHub token or hosted inference substitutes for resident execution.
-
-## Cross-repository continuation
-
-```text
-StegVerse-Labs/StegNutrition/tasks/STEGNUTRITION-MACHINE-CONTINUATION-018.json
--> StegVerse-Labs/.github/handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json
--> automatic local StegNutrition discovery
--> runtime-custody preflight
--> qualified scenario-provider preflight
--> canonical-v6/task021 preflight
--> resident heartbeat claim/fence
--> fixed zero-network suite
--> task021 real semantic/portion qualification when evidence exists
--> existing TV/TVC visual-route lane
--> proof-bound photo-to-ledger receipt
--> separately governed release lane after all predicates pass
-```
-
-## Execution ownership
-
-The current session owns only nonconflicting task `016` validation/HANDOFF integration. The resident heartbeat owns claim/fence allocation, resident execution and continuation-receipt mutation once claimed. TV/TVC owns route/credential authority. The StegNutrition evidence boundary supplies real labeled photographs, actual photographed/weighed cases and any governed portion threshold policy. Release/publication remains separately governed.
+Resident/private StegNutrition full-suite execution remains unproven. HB29 remains the last directly observed worker-status epoch; `HANDOFF_READY/AVAILABLE` is readiness, not activation.
 
 ## Current unresolved work
 
-- resident fenced StegNutrition claim/receipt under the single existing heartbeat;
-- complete resident/private zero-network suite including task021 tests;
-- real labeled-photo semantic artifact triplet qualification;
-- real photographed/weighed portion qualification receipt;
-- exact live TVC visual route after HB29;
-- live proof-bound photo-to-ledger execution;
-- release/tag and propagation after all deterministic predicates pass.
+- resident fenced StegNutrition claim/receipt under the existing single heartbeat;
+- exact resident execution of the unified zero-network validator;
+- real labeled-photo semantic artifact triplet qualification under task `021`;
+- real photographed/weighed portion qualification receipt under task `021`;
+- live post-HB29 TVC visual route;
+- exact proof-bound photo-to-ledger execution;
+- release/tag and propagation only after deterministic release predicates pass.
+
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+- task_id: STEGNUTRITION-FULL-VALIDATION-016
+  execution_owner: current active StegNutrition session until resident fenced claim/progress or completion
+  claim_state: CLAIMED_FOR_VALIDATION
+  worker_registry_ref: StegVerse-Labs/StegNutrition/claims/STEGNUTRITION-FULL-VALIDATION-016.claim.json
+  manual_execution_allowed: true
+  collision_scope: nonconflicting validation and resident-HANDOFF integration only; excludes heartbeat claim/fence, TV/TVC route/credential authority, real-evidence fabrication and release publication
+  release_condition: unified resident/local zero-network validation PASS is durably retained, or SHWP-STEGNUTRITION-CONTINUATION-001 is actually fenced/claimed and demonstrably progresses the task
+  next_executable_action: validate adapter-v2 control-plane integration, synchronize task/claim/handoffs, then observe or consume the first lawful resident v2 execution
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: SHWP-STEGNUTRITION-CONTINUATION-001
+  execution_owner: single resident StegVerse heartbeat plus stegnutrition-machine-continuation-worker
+  claim_state: HANDOFF_READY_AVAILABLE_NOT_CLAIMED
+  worker_registry_ref: control/worker-registry.d/stegnutrition-continuation-001.json
+  manual_execution_allowed: false
+  collision_scope: resident claim/fence allocation, automatic root discovery during resident execution, v2 adapter execution and continuation-receipt mutation
+  release_condition: canonical resident worker completes, supersedes or releases this task under a live current claim/fence
+  next_executable_action: resident heartbeat allocates a fenced claim and executes process:stegnutrition-machine-continuation-v2
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: STEGNUTRITION-CONTINUATION-AUTHORITY-BOUNDARIES
+  execution_owner: TV/TVC plus StegNutrition evidence authorities
+  claim_state: ACTIVE_AUTHORITY_BOUNDARIES
+  worker_registry_ref: handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json
+  manual_execution_allowed: false
+  collision_scope: TV/TVC route/credential authority, real semantic/portion/benchmark evidence acceptance, physical measurements and release/publication authority
+  release_condition: each authority-owned predicate is supported by canonical evidence or explicitly superseded
+  next_executable_action: existing authority resolves each predicate; never substitute GitHub tokens, hosted inference, fabricated evidence or a second scheduler
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: STEGNUTRITION-LOCAL-RUNTIME-SELECTION-DESCRIPTIVE-STEP
+  execution_owner: SUPERSEDED
+  claim_state: COMPLETE_SUPERSEDED
+  worker_registry_ref: workers/stegnutrition_continuation_entrypoint.py + StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
+  manual_execution_allowed: false
+  collision_scope: obsolete descriptive/manual local model/root selection
+  release_condition: satisfied by automatic local discovery plus released sovereign model/runtime
+  next_executable_action: none; continue resident validation/live evidence predicates
+```
 
 ## Archive condition
 
-This scoped lane is archive-safe only when a documented resident StegNutrition worker is actually claimed and demonstrably progressing under a current fence, or all remaining continuation work is complete/superseded. `HANDOFF_READY`/`AVAILABLE` alone is insufficient.
+This scoped lane is archive-safe only when a documented resident StegNutrition worker is actually claimed and demonstrably progressing under a current fence, or all remaining continuation work is complete/superseded. Registration or source completion alone is insufficient.
