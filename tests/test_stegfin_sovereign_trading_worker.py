@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from workers.stegfin_sovereign_trading_worker import env
+from workers.stegfin_sovereign_trading_worker import env, find_root
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -29,6 +29,27 @@ class StegFinSovereignTradingWorkerTests(unittest.TestCase):
         self.assertEqual(child["PYTHONPATH"], str(root))
         for name in forbidden:
             self.assertNotIn(name, child)
+
+    def test_local_source_tree_is_discovered_without_network_or_credentials(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            home = Path(td)
+            source = home / ".stegverse" / "source" / "stegfin-governance"
+            (source / "scripts").mkdir(parents=True)
+            (source / "docs").mkdir(parents=True)
+            (source / "scripts" / "run_sovereign_trading_activation_round.py").write_text("# local released runner\n", encoding="utf-8")
+            (source / "docs" / "STEGFIN_MIRROR_HANDOFF.md").write_text("# local canonical handoff\n", encoding="utf-8")
+            with patch.dict(os.environ, {"HOME": str(home)}, clear=False):
+                self.assertEqual(find_root(), source.resolve())
+
+    def test_explicit_source_locator_is_nonsecret_and_supported(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            source = Path(td)
+            (source / "scripts").mkdir(parents=True)
+            (source / "docs").mkdir(parents=True)
+            (source / "scripts" / "run_sovereign_trading_activation_round.py").write_text("# local released runner\n", encoding="utf-8")
+            (source / "docs" / "STEGFIN_MIRROR_HANDOFF.md").write_text("# local canonical handoff\n", encoding="utf-8")
+            with patch.dict(os.environ, {"STEGVERSE_STEGFIN_SOURCE_ROOT": str(source)}, clear=False):
+                self.assertEqual(find_root(), source.resolve())
 
     def test_registry_fragment_uniquely_binds_internal_activation_worker(self) -> None:
         fragment = json.loads((ROOT / "control/worker-registry.d/stegfin-sovereign-trading-001.json").read_text())
