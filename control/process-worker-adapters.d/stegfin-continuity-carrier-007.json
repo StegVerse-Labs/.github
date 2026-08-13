@@ -10,7 +10,7 @@
         "bounded_process_execution",
         "stegfin_external_pretrade_preparation"
       ],
-      "command": ["python", "workers/stegfin_continuity_carrier_worker.py"],
+      "command": ["python", "workers/stegfin_continuity_carrier_worker_v2.py"],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [
@@ -28,6 +28,7 @@
         "Broker endpoint is non-secret configuration; all provider secret/token authority remains TV/TVC/vault-only.",
         "No GitHub token, provider API key, wallet credential, signing credential or cloud credential is allowlisted.",
         "Worker acquires a collision-safe continuity claim and yields if resident StegFin execution already owns the lineage.",
+        "Wrapper releases only a claim owned by the same worker instance after BLOCKED/FAILED/REVIEW_REQUIRED/COMPLETE terminal outcomes, preventing stale self-owned continuity claims from suppressing retry.",
         "Stops at USER_ONLY wallet handoff with signed=false and broadcast=false."
       ],
       "timeout_seconds": 480,
