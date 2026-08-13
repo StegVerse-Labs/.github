@@ -6,7 +6,7 @@
 goal_id: STEGFIN-CONTINUITY-CARRIER-007
 parent_goal: STEGFIN-BASE-ROUNDTRIP-001
 repository: StegVerse-Labs/.github
-state: ACTIVE_VALIDATION
+state: BLOCKED_VALIDATION
 preferred_carrier: resident sovereign heartbeat
 preferred_carrier_required: false
 credential_authority: TV/TVC
@@ -18,6 +18,29 @@ This handoff supersedes the assumption that physical sovereign-node activation i
 ## Continuity invariant
 
 A carrier provides compute only. It never provides trade, credential, signing, broadcast, custody or route authority. If the resident heartbeat is unavailable, the control plane may admit the registered continuity worker on another authorized StegVerse carrier. The user is not required to start infrastructure.
+
+## Validation blocker
+
+The continuity worker is intentionally blocked before machine claim acquisition until the claim issuer proves the collision boundary fail closed.
+
+Current source inspection identified two gaps in `scripts/acquire_stegfin_continuity_claim.py`:
+
+1. missing `control/heartbeat-state.json` is currently loaded as an empty object, after which the claim can still record `resident_conflict_checked: true`;
+2. concurrent claim acquisition is not explicitly serialized around the read/check/write sequence for `~/.stegverse/continuity/claims/STEGFIN-CONTINUITY-CARRIER-007.json`.
+
+Those conditions are incompatible with claiming a collision-safe live trade lineage. The worker-registry fragment is therefore `BLOCKED` rather than `HANDOFF_READY` until deterministic validation proves both conditions fail closed.
+
+```text
+blocker_owner: StegVerse-Labs/.github worker-control
+blocker_state: VALIDATION_REQUIRED_FAIL_CLOSED
+release_condition:
+  missing or malformed authoritative heartbeat/worker-coordination evidence denies claim acquisition;
+  concurrent acquisition cannot mint two active claims for the same collision scope;
+  no GitHub token, provider token, wallet key, bearer token, cloud secret, or non-TV/TVC credential is introduced.
+next_solution_action:
+  harden and validate scripts/acquire_stegfin_continuity_claim.py and tests/test_stegfin_continuity_claim.py;
+  only then return the registry fragment to HANDOFF_READY.
+```
 
 ## Execution ownership and collision partition
 
@@ -40,13 +63,13 @@ next_executable_action: NONE
 ```text
 task_id: STEGFIN-CONTINUITY-CARRIER-007
 execution_owner: stegfin-continuity-carrier-worker on any authorized StegVerse continuity carrier
-claim_state: MACHINE_CLAIM_ON_EXECUTION
+claim_state: BLOCKED_BEFORE_MACHINE_CLAIM
 worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
 manual_execution_allowed: false
 manual_allowed_role: NONE
 collision_scope: stegfin:base-validation-entry:0xA503DCe5471492bbA2D06e9f78F4d9D6Bcc852aA:12.50-USDC-WETH
-release_condition: WALLET_HANDOFF_READY, fail-closed receipt, or resident worker ownership of the same lineage
-next_executable_action: scheduler admits process:stegfin-continuity-carrier-v1; worker acquires collision claim and runs bounded continuity pretrade
+release_condition: claim-issuer fail-closed validation passes; then WALLET_HANDOFF_READY, fail-closed receipt, or resident worker ownership of the same lineage
+next_executable_action: resolve claim-issuer validation blocker; after release, scheduler admits process:stegfin-continuity-carrier-v1
 ```
 
 `STEGFIN-LIVE-ENTRY-003` and `STEGFIN-LIVE-PRETRADE-005` remain exclusive whenever either has an active claim/fence on this transaction lineage. Continuity acquisition is denied in that state.
@@ -85,6 +108,7 @@ next_executable_action: continue G18 independently for continuous resident opera
 
 ```text
 registered continuity worker
+-> claim-issuer fail-closed validation release
 -> collision-safe continuity claim
 -> credential-free Inventory N
 -> canonical 12.50-USDC request
@@ -107,10 +131,11 @@ scripts/acquire_stegfin_continuity_claim.py
 control/worker-registry.d/stegfin-continuity-carrier-007.json
 control/process-worker-adapters.d/stegfin-continuity-carrier-007.json
 cost-basis/worker-runtime/stegfin-continuity-carrier.json
+tests/test_stegfin_continuity_claim.py
 StegVerse-Labs/stegfin-governance/task-state/STEGFIN-CONTINUITY-CARRIER-007.json
 StegVerse-Labs/TVC/tasks/TVC-PROVIDER-OPERATION-BROKER-003.json
 ```
 
 ## Completion
 
-Source integration is installed. Remaining release work is deterministic validation of the continuity worker/claim/broker contracts and live observation of an authorized TV/TVC broker endpoint. A live quote or wallet handoff must not be claimed before those runtime receipts exist.
+Source integration is installed, but live continuity execution is not ready. Remaining release work is: (1) harden and deterministically validate the claim issuer fail-closed/collision semantics; (2) validate the continuity worker and TV/TVC broker contracts; (3) observe a live authorized TV/TVC broker endpoint. A live quote or wallet handoff must not be claimed before those runtime receipts exist.
