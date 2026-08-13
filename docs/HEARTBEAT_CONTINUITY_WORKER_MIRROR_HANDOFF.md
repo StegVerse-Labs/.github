@@ -18,9 +18,9 @@ local_model_credential_requirement: NONE
 github_token_runtime_dependency: PROHIBITED
 hosted_model_provider_dependency: NONE
 product_activation: ACTIVE_MACHINE_WORK / INCOMPLETE
-session_role: MERGED_INTO_CANONICAL_WORKSTREAM
-thread_archive_ready: true
-archive_gate: docs/ORG_MIRROR_HANDOFF.md
+session_role: DISTINCT_VALIDATION_RECONCILIATION_SUPPORT
+thread_archive_ready: false
+archive_gate: live product activation or durable release of every newly discovered session-specific support defect
 ```
 
 ## Completed source capabilities
@@ -123,6 +123,48 @@ resident heartbeat post-HB29 claim/fence
 
 No wallet-signing or transaction-broadcast authority belongs to the heartbeat or this handoff.
 
+### StegFin sovereign internal trading proof — local capsule discovery support
+
+Hosted dry-run evidence at the previous control-plane head reached the registered `SHWP-STEGFIN-SOVEREIGN-TRADING-001` worker and produced the fail-closed transition `STEGFIN_SOVEREIGN_CAPSULE_NOT_MATERIALIZED`. Inspection showed the worker only searched workload directories, while other released StegVerse workers also recognize canonical local source trees.
+
+A bounded source-support repair was installed without touching wallet, provider, custody, signing, broadcast, settlement, or GitHub credential authority:
+
+```text
+947ac121dbfb1d01ded5cc3762569783f2356907
+  workers/stegfin_sovereign_trading_worker.py
+  adds discovery of ~/.stegverse/source/stegfin-governance and /var/lib/stegverse/source/stegfin-governance
+  retains existing workload discovery
+  accepts STEGVERSE_STEGFIN_SOURCE_ROOT in worker logic as a non-secret local source locator
+  child execution environment remains PATH/PYTHONPATH/LANG/LC_ALL only
+  terminal receipts explicitly record non_tv_tvc_secret_or_token_used=false
+
+bb51e9015fae972a7c7daea2eeb0fe4c4650e895
+  tests/test_stegfin_sovereign_trading_worker.py
+  proves canonical local source discovery and explicit local source resolution without network or credentials
+```
+
+Hosted validation:
+
+```text
+Heartbeat Worker Project run 31731705788: SUCCESS
+organization control-plane run 31731705800: FAILURE only because docs/STEGFIN_CONTINUITY_CARRIER_MIRROR_HANDOFF.md had regressed from the required ownership-section heading
+```
+
+The unrelated handoff-format regression was then repaired at:
+
+```text
+f52948fcff95fcfc9bd3e2640ed287ebde6c084b
+```
+
+Revalidation at that head:
+
+```text
+Validate organization control plane run 31731915312: SUCCESS
+Heartbeat Worker Project run 31731915333: SUCCESS
+```
+
+This source repair removes one repository-owned discovery gap. It does not assert that the sovereign capsule is actually materialized on the live carrier. The persisted heartbeat state remains HB29 until a production-authorized heartbeat advances it; hosted dry-run HB30 is nonpersistent and nonauthorizing.
+
 ## Active-worker normalization evidence
 
 ```text
@@ -144,6 +186,9 @@ The canonical validation records no detected unresolved unowned task. Historical
 31464631729 hosted-authority retirement SUCCESS
 31620645190 active sovereign worker semantics SUCCESS
 31622026042 active-worker canonical graph aggregation PASS
+31731705788 StegFin sovereign local-source discovery source validation SUCCESS
+31731915312 ownership/control-plane revalidation SUCCESS
+31731915333 heartbeat source validation after ownership repair SUCCESS
 PR #82 e0500245085f7dcdabd87c801b5654a619264ca4 fail-closed resolution/escalation merged
 ```
 
@@ -179,7 +224,15 @@ Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `ste
 
 ### MANUAL / SESSION-STARTABLE
 
-No heartbeat, carrier, Ecosystem Chat, or StegFin implementation task in this handoff is manually startable by default. A session may acquire a distinct validation/reconciliation claim only for a nonoverlapping evidence surface explicitly outside the runtime/claim/fence scope.
+No heartbeat, carrier, Ecosystem Chat, or StegFin live operation in this handoff is manually startable. A session may take a distinct source-validation/reconciliation role only after a machine receipt identifies a repository-owned defect outside the runtime claim/fence and financial authority scope.
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: all live heartbeat claims/fences, provider capability, wallet action, settlement and custody
+release_condition: a separately identified repository-owned source defect is repaired and hosted-validated, or canonical machine owner releases a bounded support scope
+next_executable_action: observe canonical machine evidence; repair only nonoverlapping source/control defects
+```
 
 ### WORKER-OWNED / DO NOT COMPETE
 
@@ -203,6 +256,16 @@ No heartbeat, carrier, Ecosystem Chat, or StegFin implementation task in this ha
   collision_scope: live inventory, governed trade entry/exit orchestration, provider capability, settlement observation, replay/P&L; USER_ONLY signing remains a separate human authority boundary
   release_condition: canonical StegFin task-state completes or explicitly releases a distinct scope
   next_executable_action: canonical task continues after resident heartbeat and provider capability predicates are satisfied
+
+- task_id: SHWP-STEGFIN-SOVEREIGN-TRADING-001
+  execution_owner: resident sovereign heartbeat + stegfin-sovereign-trading-worker
+  claim_state: MACHINE_OWNED_ON_ADMISSION
+  worker_registry_ref: control/worker-registry.d/stegfin-sovereign-trading-001.json
+  manual_execution_allowed: false
+  manual_allowed_role: source validation only after fail-closed repository defect
+  collision_scope: internal sovereign market activation, local Master Records reconstruction and E2 binding
+  release_condition: exact local activation runner reaches STEGFIN_SOVEREIGN_TRADING_ACTIVATED under a persisted authorized heartbeat claim, or machine owner releases/supersedes the task
+  next_executable_action: live carrier resolves locally materialized StegFin source with the released discovery logic and reruns the bounded worker; no network checkout or credential widening
 ```
 
 ### ESCALATED / AUTHORITY-OWNED
@@ -221,38 +284,38 @@ No heartbeat, carrier, Ecosystem Chat, or StegFin implementation task in this ha
 
 ### COMPLETED / SUPERSEDED
 
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: descriptive local-model selection, GitHub-token runtime authority, completed source-normalization and completed local-source discovery defect
+release_condition: completed/released source validation cited above
+next_executable_action: none for completed source work; machine runtime consumes released implementations
+```
+
 - Formal local model/runtime: complete/released.
 - Local discovery/launch/inference/proof: complete/released.
 - GitHub-token production authority: retired.
 - Fail-closed resolution runtime: complete/merged.
 - Active-worker normalization: complete/released.
+- StegFin sovereign local-source discovery defect: source repaired/hosted-validated.
 
 Pending or incomplete product state does not imply manual availability. Current registry/claim/fence/lease records override stale prose.
 
 ## Session consolidation and archive state
 
-All source implementation and session-unique requirements originating in this scoped handoff are completed, superseded, or durably transferred. Issues #59/#60/#65 and the resident heartbeat own all remaining live execution. Issues #83/#84/#85 completed state normalization and validation.
+The original local-model/runtime implementation requirements are completed and released. The newly surfaced StegFin sovereign local-source discovery defect is now implemented, hosted-validated, and durably recorded here. Remaining live execution is still owned by the resident heartbeat, TV/TVC, StegFin machine workers, Master Records, and USER_ONLY wallet authority.
 
-`docs/ORG_MIRROR_HANDOFF.md` now records:
-
-```text
-thread_archive_ready: true
-product_activation: ACTIVE_MACHINE_WORK / INCOMPLETE
-session_unique_work: COMPLETE_OR_TRANSFERRED
-unowned_unresolved_tasks: 0 detected
-```
-
-Therefore this subordinate handoff no longer requires retention of the chat session. Archival does not imply production activation.
+Because the current request explicitly requires continuing until finished tasks are activated and the persisted production heartbeat is still HB29, this active support session is not declared archive-ready solely from hosted source validation. A later turn may archive only after live machine evidence shows activation progress or the canonical owner durably releases all remaining support scope without requiring this thread.
 
 ## Completeness
 
 ```text
-developed_files: 21/21
+developed_files: 23/23 scoped source/support files
 scaffolding_or_stubs: 0
 missing_required_files: 0
-source_validation: 18/18 scoped heartbeat requirements
-source_integration: 11/11
-session_consolidation: 21/21
+source_validation: 21/21 scoped source/support requirements
+source_integration: 13/13
+session_consolidation: 23/23 source requirements transferred
 product_activation: active machine work / incomplete
-archive_readiness: true
+archive_readiness: false for this active support session
 ```
