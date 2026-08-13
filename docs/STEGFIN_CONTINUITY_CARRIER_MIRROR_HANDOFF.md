@@ -7,7 +7,7 @@ goal_id: STEGFIN-CONTINUITY-CARRIER-007
 parent_goal: STEGFIN-BASE-ROUNDTRIP-001
 repository: StegVerse-Labs/.github
 branch: main
-state: SOURCE_VALIDATED_MACHINE_OWNED_LIVE_OBSERVATION_PENDING
+state: MACHINE_OWNED_PROVIDER_RUNTIME_BLOCKED
 credential_authority: TV/TVC
 manual_execution_allowed: false
 session_role: DISTINCT_VALIDATION_RECONCILIATION_SUPPORT
@@ -56,7 +56,7 @@ manual_execution_allowed: false
 worker_registry_ref: StegVerse-Labs/TVC/tasks/TVC-PROVIDER-OPERATION-BROKER-003.json
 collision_scope: provider-operation:base.quote.0x credential resolution and broker service identity
 release_condition: TV/TVC-authorized runtime exposes the broker and emits bounded non-secret provider-operation evidence under a valid TVC lease
-next_executable_action: TV/TVC runtime authority validates/activates the canonical provider-operation broker without exporting provider credentials
+next_executable_action: restore availability/capacity of an already-authorized TV/TVC runtime, expose the canonical provider-operation broker without exporting provider credentials, then let the registered machine worker consume it
 ```
 
 ### COMPLETED / SUPERSEDED
@@ -71,7 +71,7 @@ next_executable_action: none for completed source repair; machine continuation c
 
 `STEGFIN-CONTINUITY-CARRIER-007` remains worker-owned. No chat/session is authorized to run the live financial operation. A continuity worker may execute only after collision-safe claim acquisition and may stop only at its bounded terminal handoff or fail-closed result.
 
-The provider-operation runtime remains authority-owned by `StegVerse-Labs/TVC` under `TVC-PROVIDER-OPERATION-BROKER-003`. A live broker endpoint and real provider-operation receipt are still runtime evidence requirements and are not inferred from source completion.
+The provider-operation runtime remains authority-owned by `StegVerse-Labs/TVC` under `TVC-PROVIDER-OPERATION-BROKER-003`. A live broker endpoint and real provider-operation receipt remain runtime evidence requirements and are not inferred from source completion.
 
 ## Claim-release defect repaired
 
@@ -99,8 +99,6 @@ The wrapper releases only an ACTIVE claim whose task and carrier identity match 
 
 ## Hosted validation evidence
 
-The first hosted validation after adding the tests exposed a pre-existing executable-handoff schema defect. That defect was repaired in `d380e25d69e6bb8e0f77062eb624da495d7321f3` by restoring required source references, root derivation depth, policy version, and runtime window fields.
-
 Canonical hosted validation:
 
 ```text
@@ -113,7 +111,7 @@ conclusion: SUCCESS
 
 Successful steps include anonymous checkout without a GitHub credential token, no-token environment proof, source compilation, canonical JSON parsing, executable-handoff validation, the complete deterministic repository test suite, non-persistent heartbeat dry-run, ephemeral projection rebuild, and non-authority workflow proof.
 
-Organization control-plane validation also passed before the ownership-heading regression:
+Organization control-plane validation also passed:
 
 ```text
 run: 31729688342
@@ -122,31 +120,71 @@ head: 6a2cfb2093060d801bd7c94223f854b7401b4b50
 conclusion: SUCCESS
 ```
 
-A later organization-control run exposed that this mirror handoff had been rewritten with a shortened `## Execution ownership` heading and therefore no longer satisfied `stegverse.handoff-execution-ownership/v1`. This document restores the canonical section heading and all four required ownership buckets; hosted revalidation is required before the regression is closed.
-
 ## TVC provider-operation source state
 
-Canonical TVC broker source and tests were inspected and deterministically validated for the authority boundary: TV/TVC remains credential authority; consumer credentials are not required; GitHub token runtime authority is absent; protected values are non-exportable; signing and broadcast authority are absent. This is source validation only, not live endpoint or provider-operation proof.
+Canonical TVC broker source and tests were inspected and validated for the authority boundary: TV/TVC remains credential authority; consumer credentials are not required; GitHub token runtime authority is absent; protected values are non-exportable; signing and broadcast authority are absent.
 
-## Known validation-infrastructure boundary
+Current TVC durable reconciliation:
 
-`StegVerse-Labs/stegfin-governance` is private while its current hosted validation workflows deliberately attempt anonymous checkout with GitHub credential variables unset. Those workflows must not be repaired by inserting a GitHub PAT or token. Repository-local validation can operate on already materialized source; production/runtime validation remains owned by StegVerse continuity plus TV/TVC.
+```text
+task commit: e0cfb5790f90d820546f00a3a68c342dea2108bb
+handoff commit: 6f4dbb38f160f71ec74bdb03170923aaa27b8f23
+broker source blob: c208d3818a3cfde215ba3fa779c8c297b364f74f
+broker test blob: 1acb7d3f40db7fea7e40a7df3db6615b904a3d1f
+state: SOURCE_BOUNDARY_VALIDATED_LIVE_ACTIVATION_BLOCKED
+```
+
+## Existing TVC runtime observation
+
+The existing TVC runtime was inspected instead of creating another provider-operation service:
+
+```text
+platform: Render
+service: TVC
+service_id: srv-d6j2m2ruibrs73acstl0
+repository: StegVerse-Labs/TVC
+branch: main
+auto_deploy: enabled
+current start command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+canonical provider-operation endpoint observed in deployed app: false
+```
+
+Recent auto-deploy attempts are canceled before build because the workspace has exhausted build-pipeline minutes for the current billing period. This is the current live-activation blocker. No alternate broker, heartbeat, local runtime/model, provider-route authority, or credential mechanism is authorized as a substitute.
+
+The registered worker is already available and its enabled process adapter accepts only non-secret source-root/broker-endpoint configuration. No GitHub token, provider key, wallet credential, signing credential or cloud credential is allowlisted.
+
+## Required trade-readiness evidence
+
+Do not claim `STEGFIN-BASE-ROUNDTRIP-001` trade readiness until an actual machine-owned run produces evidence of all of:
+
+```text
+WALLET_HANDOFF_READY
+credential_authority=TV/TVC
+non_tv_tvc_secret_or_token_used=false
+provider_secret_exported=false
+signed=false
+broadcast=false
+```
+
+Resident heartbeat activation remains a resilience goal, not a prerequisite for this wallet handoff.
+
+The local model/runtime implementation in `StegVerse-002/micro-node-runtime#22` is COMPLETE_RELEASED and must not be duplicated.
 
 ## Exact remaining work
 
 ```text
 TVC-PROVIDER-OPERATION-BROKER-003
   owner: StegVerse-Labs/TVC + TV/TVC runtime authority
-  state: source implemented and boundary validated; live activation observation pending
-  release: authorized runtime exposes the broker and produces the required bounded non-secret runtime evidence
+  state: source boundary validated; existing runtime activation blocked by build capacity
+  release: already-authorized runtime exposes canonical broker and produces bounded non-secret runtime evidence
 
 STEGFIN-CONTINUITY-CARRIER-007
   owner: registered machine worker / StegVerse continuity control plane
-  state: source, collision, and claim-release behavior validated; live invocation pending
-  release: required local source roots and TV/TVC broker transport are observable on an authorized continuity carrier and the worker reaches an authorized terminal state while releasing its claim
+  state: source, collision, claim-release, registry and adapter behavior validated; worker AVAILABLE/HANDOFF_READY; live invocation waiting on broker availability
+  release: broker transport becomes observable, worker acquires collision-safe claim, and reaches WALLET_HANDOFF_READY or fail-closed terminal receipt while releasing its claim
 ```
 
-There is no remaining session-startable live-operation task inside this collision scope. Live continuation is machine/authority owned.
+There is no session-startable live financial operation inside this collision scope.
 
 ## Canonical source
 
@@ -171,12 +209,12 @@ claim acquisition/collision source: COMPLETE
 terminal claim release: COMPLETE
 process-adapter no-token boundary: COMPLETE
 executable handoff schema: COMPLETE
-handoff execution-ownership partition: RESTORED_REVALIDATION_PENDING
-hosted no-token control-plane validation: PREVIOUSLY_COMPLETE_REVALIDATION_PENDING
-TVC broker source boundary: VALIDATED_SOURCE
-TVC broker live endpoint: PENDING_AUTHORITY_OWNED
-continuity worker live invocation: PENDING_MACHINE_OWNED
-session-unique implementation state: DURABLY_TRANSFERRED_EXCEPT_CURRENT_REVALIDATION
+hosted no-token control-plane validation: COMPLETE
+TVC broker source boundary: VALIDATED_CURRENT_BLOB
+TVC broker live endpoint: BLOCKED_RUNTIME_CAPACITY
+continuity worker registration: AVAILABLE_HANDOFF_READY
+continuity worker live invocation: WAITING_ON_BROKER
+trade readiness: NOT_CLAIMED
 ```
 
-No live operation, signing, broadcast, settlement, or custody result may be claimed before the corresponding runtime evidence exists.
+No live operation, signing, broadcast, settlement, custody result, or trade readiness may be claimed before the corresponding runtime evidence exists.
