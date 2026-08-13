@@ -11,9 +11,12 @@
       "cost_basis_ref": "cost-basis/worker-runtime/stegnutrition-machine-continuation.json",
       "evidence_refs": [
         "handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json",
-        "workers/stegnutrition_continuation_worker.py",
+        "workers/stegnutrition_continuation_worker_v2.py",
+        "workers/stegnutrition_continuation_entrypoint_v2.py",
+        "control/process-worker-adapters.d/stegnutrition-continuation-v2.json",
         "StegVerse-Labs/StegNutrition:STEGNUTRITION_MIRROR_HANDOFF.md",
-        "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-SESSION-20260811.json"
+        "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-SESSION-20260811.json",
+        "StegVerse-Labs/StegNutrition:scripts/run_full_validation_no_network.py"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
@@ -30,7 +33,7 @@
   ],
   "workers": [
     {
-      "adapter_ref": "process:stegnutrition-machine-continuation-v1",
+      "adapter_ref": "process:stegnutrition-machine-continuation-v2",
       "authority_source": "handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json#authority",
       "capabilities": [
         "runtime_observation",
