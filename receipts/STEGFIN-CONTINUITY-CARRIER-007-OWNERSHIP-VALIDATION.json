@@ -1,0 +1,13 @@
+{
+  "schema": "stegverse.validation-receipt/v1",
+  "task_id": "STEGFIN-CONTINUITY-CARRIER-007",
+  "validated_head": "1a020a73942d3b06bc45472b2b80e4c5e32b90f9",
+  "workflow_run_id": 31732039938,
+  "workflow_job_id": 94554589445,
+  "conclusion": "SUCCESS",
+  "handoff_execution_ownership": "PASS",
+  "active_worker_state": "PASS",
+  "cross_repository_collision_tests": "PASS",
+  "json_jsonl_validation": "PASS",
+  "validation_authority_effect": false
+}
