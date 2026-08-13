@@ -18,6 +18,9 @@
         "StegVerse-Labs/StegNutrition:docs/STEGNUTRITION_REAL_DATA_QUALIFICATION_MIRROR_HANDOFF.md",
         "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-SESSION-20260811.json",
         "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021.json",
+        "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-QUALIFICATION-PROMOTION-022.json",
+        "StegVerse-Labs/StegNutrition:src/stegnutrition/qualification_install.py",
+        "StegVerse-Labs/StegNutrition:tests/test_qualification_install.py",
         "StegVerse-Labs/StegNutrition:scripts/run_full_validation_no_network.py",
         "StegVerse-Labs/StegNutrition:scripts/run_real_data_qualification_no_network.py"
       ],
