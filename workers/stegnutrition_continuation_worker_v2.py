@@ -11,6 +11,23 @@ from pathlib import Path
 import stegnutrition_continuation_worker as base
 
 
+REQUIRED_PROMOTION_TASK = "STEGNUTRITION-QUALIFICATION-PROMOTION-022"
+REQUIRED_PROMOTION_SURFACES = (
+    "src/stegnutrition/qualification_install.py",
+    "scripts/install_real_data_qualification_candidate.py",
+    "tests/test_qualification_install.py",
+    "tasks/STEGNUTRITION-QUALIFICATION-PROMOTION-022.json",
+)
+_ORIGINAL_INVENTORY_ROWS = base._inventory_rows
+
+
+def _inventory_rows_v2(inventory: dict) -> dict[str, dict]:
+    rows = _ORIGINAL_INVENTORY_ROWS(inventory)
+    if REQUIRED_PROMOTION_TASK not in rows:
+        raise ValueError(f"canonical continuation task missing: {REQUIRED_PROMOTION_TASK}")
+    return rows
+
+
 def _local_env(stegnutrition_root: Path) -> dict[str, str]:
     return {
         "PATH": os.environ.get("PATH", ""),
@@ -20,6 +37,10 @@ def _local_env(stegnutrition_root: Path) -> dict[str, str]:
         "LANG": os.environ.get("LANG", "C.UTF-8"),
         "LC_ALL": os.environ.get("LC_ALL", "C.UTF-8"),
     }
+
+
+def _missing_promotion_surfaces(stegnutrition_root: Path) -> list[str]:
+    return [relative for relative in REQUIRED_PROMOTION_SURFACES if not (stegnutrition_root / relative).is_file()]
 
 
 def _run_real_data_candidate(stegnutrition_root: Path) -> dict:
@@ -80,6 +101,14 @@ def _run_real_data_candidate(stegnutrition_root: Path) -> dict:
 
 
 def _run_unified_validation(stegnutrition_root: Path) -> dict:
+    missing = _missing_promotion_surfaces(stegnutrition_root)
+    if missing:
+        return {
+            "state": "FAILED",
+            "reason": "qualification promotion surfaces are absent: " + ", ".join(missing),
+            "returncode": None,
+        }
+
     script = stegnutrition_root / "scripts/run_full_validation_no_network.py"
     if not script.is_file():
         return {
@@ -149,6 +178,7 @@ def _run_unified_validation(stegnutrition_root: Path) -> dict:
 
 
 def main() -> int:
+    base._inventory_rows = _inventory_rows_v2
     base._run_full_suite = _run_unified_validation
     return base.main()
 
