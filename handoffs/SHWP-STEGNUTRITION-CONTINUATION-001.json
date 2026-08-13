@@ -14,6 +14,8 @@
       "Runtime custody proves ROUTE_ADMITTED, credential_requirement NONE, github_token_required false, replay binding retention, token-binding rejection and proof-tamper rejection",
       "Scenario-provider preflight proves LOCAL_ONLY non-authorizing USDA/photo-portion/evidence binding and does not claim real semantic accuracy",
       "scripts/run_full_validation_no_network.py emits stegnutrition.zero-network-validation.v1 and requires custody PASS, scenario PASS and complete-suite PASS",
+      "The unified proof includes a non-authorizing release_projection derived from local canonical evidence and the local Git source commit",
+      "release_projection remains BLOCKED until all five task-017 predicates carry qualifying immutable evidence and becomes READY_FOR_PROPAGATION only when all five pass",
       "The resident v2 worker retains the exact unified proof under local_validation.validation_proof in the fenced continuation receipt",
       "Real semantic completion requires the canonical qualified artifact triplet",
       "Real portion completion requires real photographed/weighed cases plus a governed passing portion-qualification receipt",
@@ -24,9 +26,10 @@
       "Any worker fetches StegNutrition source or requests a GitHub credential",
       "Manual local-root selection is required when one canonical local tree is discoverable",
       "Invalid or ambiguous roots are silently accepted",
-      "A missing local repository, task 020, task 021, unified validator or qualification surface is treated as success",
+      "A missing local repository, task 020, task 021, unified validator, release projector or qualification surface is treated as success",
       "A token-requiring or proof-drifted runtime binding is accepted",
       "Unified validation is represented as PASS without custody PASS, scenario PASS and full-suite PASS",
+      "Release readiness is represented as READY_FOR_PROPAGATION without all five immutable task-017 predicate evidence objects",
       "Synthetic mechanics or benchmark fixtures are represented as real semantic/portion qualification",
       "A second heartbeat, route authority, credential authority or model authority is created",
       "Unavailable human/TV/TVC evidence is silently converted to COMPLETE"
@@ -38,6 +41,7 @@
       "fixed_no_network_validation",
       "bounded_receipt_persistence",
       "continuation_state_projection",
+      "release_readiness_projection_without_publication_authority",
       "no_general_source_mutation",
       "no_remote_repository_fetch",
       "no_credential_acquisition",
@@ -54,13 +58,17 @@
       "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-SESSION-20260811.json",
       "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-FULL-VALIDATION-016.json",
       "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-PRODUCTION-PIPELINE-019.json",
+      "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-RELEASE-PROPAGATION-017.json",
       "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-FDA-REFERENCE-020.json",
       "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021.json",
       "StegVerse-Labs/StegNutrition:scripts/run_full_validation_no_network.py",
       "StegVerse-Labs/StegNutrition:scripts/verify_runtime_custody_no_network.py",
       "StegVerse-Labs/StegNutrition:scripts/verify_scenario_provider_no_network.py",
+      "StegVerse-Labs/StegNutrition:src/stegnutrition/release.py",
+      "StegVerse-Labs/StegNutrition:src/stegnutrition/release_projection.py",
       "StegVerse-Labs/StegNutrition:src/stegnutrition/semantic_build.py",
       "StegVerse-Labs/StegNutrition:src/stegnutrition/portion_qualification.py",
+      "StegVerse-Labs/StegNutrition:tests/test_release_projection.py",
       "workers/stegnutrition_continuation_entrypoint_v2.py",
       "workers/stegnutrition_continuation_worker_v2.py",
       "control/process-worker-adapters.d/stegnutrition-continuation-v2.json",
@@ -70,7 +78,7 @@
     ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "Durable repository transfer alone does not advance unfinished validation. This task binds canonical StegNutrition to the existing single resident heartbeat and now retains one unified zero-network validation proof in the fenced continuation receipt.",
+    "derivation_reason": "Durable repository transfer alone does not advance unfinished validation. This task binds canonical StegNutrition to the existing single resident heartbeat, retains one unified zero-network validation proof, and now projects task-017 release readiness from immutable local evidence without acquiring publication authority.",
     "canonical_owner_ref": "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-SESSION-20260811.json",
     "canonical_lineage_key": "stegnutrition:photo-diet:machine-continuation",
     "derivation_depth": 0,
@@ -95,7 +103,7 @@
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json#authority",
-    "recheck_trigger": "each admitted heartbeat while unfinished; use only already-local canonical StegNutrition and fixed local validation/qualification surfaces",
+    "recheck_trigger": "each admitted heartbeat while unfinished; use only already-local canonical StegNutrition and fixed local validation/qualification/release-projection surfaces",
     "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {
@@ -105,7 +113,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "On the next lawful fenced resident claim, process:stegnutrition-machine-continuation-v2 auto-discovers the local tree, performs preflights, executes scripts/run_full_validation_no_network.py, retains its exact proof in the continuation receipt, and continues real semantic/portion/live-route predicates. Release/publication remains separately authorized.",
+    "next_authorized_action": "On the next lawful fenced resident claim, process:stegnutrition-machine-continuation-v2 auto-discovers the local tree, performs preflights, executes scripts/run_full_validation_no_network.py, retains its exact proof plus release_projection in the continuation receipt, and continues real semantic/portion/live-route/live-pipeline predicates. Publication remains separately authorized.",
     "terminal_when": [
       "local_root_discovery=UNAMBIGUOUS_OR_VALID_OVERRIDE",
       "unified_validation.schema=stegnutrition.zero-network-validation.v1",
@@ -118,16 +126,17 @@
       "real_weighed_benchmark_case_count>0",
       "portion_qualification_receipt_present=true",
       "live_visual_route_receipt_declared=true",
+      "release_projection.state=READY_FOR_PROPAGATION",
       "github_token_required=false"
     ]
   },
   "block": {
-    "block_reason": "Resident fenced execution, real semantic/portion evidence and live TVC route observation remain active constraints; each is rechecked without chat-dependent authority.",
+    "block_reason": "Resident fenced execution, real semantic/portion evidence and live TVC/live-pipeline evidence remain active constraints; each is rechecked without chat-dependent authority.",
     "dependency": "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-SESSION-20260811.json",
     "observer": "single sovereign StegVerse heartbeat",
     "recheck_trigger": "each admitted heartbeat while unfinished",
     "next_check": null,
-    "escalation_condition": "Any path attempts GitHub-token source retrieval, hosted model authority, second heartbeat/route authority, invalid/ambiguous root acceptance, invalid unified proof acceptance, synthetic-to-real evidence overstatement, or unavailable-evidence completion",
+    "escalation_condition": "Any path attempts GitHub-token source retrieval, hosted model authority, second heartbeat/route authority, invalid/ambiguous root acceptance, invalid unified proof acceptance, release-readiness overstatement, synthetic-to-real evidence overstatement, or unavailable-evidence completion",
     "block_expires_at": null
   }
 }
