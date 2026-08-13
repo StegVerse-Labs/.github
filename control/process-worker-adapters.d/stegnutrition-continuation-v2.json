@@ -1,0 +1,29 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "STEGNUTRITION-CONTINUATION-V2",
+  "adapters": [
+    {
+      "adapter_ref": "process:stegnutrition-machine-continuation-v2",
+      "authority_ref": "handoffs/SHWP-STEGNUTRITION-CONTINUATION-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "bounded_repository_mutation",
+        "stegnutrition_machine_continuation"
+      ],
+      "command": ["python", "workers/stegnutrition_continuation_entrypoint_v2.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_STEGNUTRITION_ROOT"],
+      "notes": [
+        "Heartbeat-owned StegNutrition continuation adapter v2.",
+        "Preserves canonical automatic local-root discovery and custody/scenario preflights from v1.",
+        "Runs the StegNutrition-owned unified zero-network validator and binds its complete proof object into local_validation.validation_proof in the fenced continuation receipt.",
+        "No GitHub token, GitHub source checkout, hosted model provider, provider secret, wallet secret, deployment authority or release authority is granted.",
+        "Credential and route authority remain TV/TVC."
+      ],
+      "timeout_seconds": 360,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
