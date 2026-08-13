@@ -15,8 +15,11 @@
         "workers/stegnutrition_continuation_entrypoint_v2.py",
         "control/process-worker-adapters.d/stegnutrition-continuation-v2.json",
         "StegVerse-Labs/StegNutrition:STEGNUTRITION_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegNutrition:docs/STEGNUTRITION_REAL_DATA_QUALIFICATION_MIRROR_HANDOFF.md",
         "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-SESSION-20260811.json",
-        "StegVerse-Labs/StegNutrition:scripts/run_full_validation_no_network.py"
+        "StegVerse-Labs/StegNutrition:tasks/STEGNUTRITION-REAL-DATA-QUALIFICATION-HANDOFF-021.json",
+        "StegVerse-Labs/StegNutrition:scripts/run_full_validation_no_network.py",
+        "StegVerse-Labs/StegNutrition:scripts/run_real_data_qualification_no_network.py"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
