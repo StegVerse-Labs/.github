@@ -2,8 +2,8 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-STEGFIN-CONTINUITY-CARRIER-007",
   "created_at": "2026-08-12T22:07:00Z",
-  "updated_at": "2026-08-13T18:09:00Z",
-  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "updated_at": "2026-08-13T18:16:00Z",
+  "state": "BLOCKED_VALIDATION",
   "goal": {
     "goal_id": "STEGFIN-BASE-ROUNDTRIP-001",
     "objective": "Permit bounded live StegFin Inventory-N and pretrade preparation on any authorized StegVerse continuity carrier without making resident sovereign-heartbeat activation a prerequisite, while preserving TV/TVC-only credential authority and USER_ONLY signing/broadcast.",
@@ -43,7 +43,7 @@
     "canonical_owner_ref": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-CONTINUITY-CARRIER-007.json",
     "canonical_lineage_key": "stegfin:base-validation-entry-continuity",
     "priority": "release",
-    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "claim_state": "BLOCKED_BEFORE_MACHINE_CLAIM",
     "worker_registry_ref": "control/worker-registry.d/stegfin-continuity-carrier-007.json",
     "worker_id": "stegfin-continuity-carrier-worker",
     "manual_execution_allowed": false,
@@ -82,11 +82,23 @@
     "carrier": "ANY_AUTHORIZED_STEGVERSE_CONTINUITY_EXECUTOR",
     "preferred_carrier": "resident sovereign heartbeat",
     "preferred_carrier_required": false,
-    "executor_binding": "MACHINE_SCHEDULER_ONLY",
+    "executor_binding": "MACHINE_SCHEDULER_ONLY_AFTER_VALIDATION_BLOCKER_RELEASE",
     "adapter_ref": "process:stegfin-continuity-carrier-v1",
     "claim_issuer": "scripts/acquire_stegfin_continuity_claim.py",
     "runner": "StegVerse-Labs/stegfin-governance:scripts/run_continuity_pretrade.py",
     "collision_scope": "stegfin:base-validation-entry:0xA503DCe5471492bbA2D06e9f78F4d9D6Bcc852aA:12.50-USDC-WETH"
+  },
+  "blocker": {
+    "state": "VALIDATION_REQUIRED_FAIL_CLOSED",
+    "owner": "StegVerse-Labs/.github worker-control",
+    "evidence": [
+      "scripts/acquire_stegfin_continuity_claim.py",
+      "tests/test_stegfin_continuity_claim.py"
+    ],
+    "problem_statement": "The current claim issuer treats missing heartbeat state as an empty state and does not explicitly serialize concurrent claim acquisition. That is insufficient evidence for a collision-safe live trade lineage.",
+    "machine_observable_release_condition": "Deterministic validation proves claim acquisition fails closed when authoritative heartbeat/worker-coordination evidence is absent and proves concurrent acquisition cannot mint two active claims for the same collision scope.",
+    "next_solution_action": "Harden and validate the claim issuer without adding GitHub-token, provider-token, wallet-key, bearer-token, cloud-secret or non-TV/TVC credential inputs.",
+    "human_action_required": false
   },
   "continuity": {
     "resident_heartbeat_required": false,
@@ -96,7 +108,7 @@
     "fallback_does_not_redefine_heartbeat": true
   },
   "completion": {
-    "next_authorized_action": "Machine scheduler admits process:stegfin-continuity-carrier-v1 on an authorized continuity carrier. The worker acquires the collision-safe claim, discovers a TV/TVC broker transport, runs the bounded continuity pretrade path, and stops at USER_ONLY wallet action.",
+    "next_authorized_action": "Resolve the claim-issuer fail-closed validation blocker. Only after that blocker is released may the machine scheduler admit process:stegfin-continuity-carrier-v1.",
     "terminal_when": [
       "WALLET_HANDOFF_READY",
       "credential_authority=TV/TVC",
@@ -104,6 +116,6 @@
       "signed=false",
       "broadcast=false"
     ],
-    "release_condition": "WALLET_HANDOFF_READY or fail-closed worker receipt; yield immediately if resident STEGFIN-LIVE-ENTRY-003 or STEGFIN-LIVE-PRETRADE-005 owns the validation lineage"
+    "release_condition": "Claim-issuer fail-closed validation passes, then WALLET_HANDOFF_READY or fail-closed worker receipt; yield immediately if resident STEGFIN-LIVE-ENTRY-003 or STEGFIN-LIVE-PRETRADE-005 owns the validation lineage"
   }
 }
