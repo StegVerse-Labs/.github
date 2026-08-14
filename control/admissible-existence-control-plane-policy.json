@@ -1,0 +1,59 @@
+{
+  "schema": "stegverse.admissible-existence-control-plane-policy/v1",
+  "policy_version": "1.0.0",
+  "effective_at": "2026-08-14T17:20:00Z",
+  "canonical_stegcore": {
+    "repository": "StegVerse-Labs/StegCore",
+    "capability_model_commit": "7d94908be562f9f9ace05877d4507dc68c984e06",
+    "capability_registry_commit": "c63b4cce408bc8b3a9c33c6417d96d959678ac19",
+    "handoff": "docs/ADMISSIBLE_EXISTENCE_CAPABILITY_MODEL_MIRROR_HANDOFF.md",
+    "lifecycle_module": "src/stegcore/admissible_existence.py",
+    "registry_module": "src/stegcore/capability_registry.py"
+  },
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "phases": ["DECLARED", "STANDING", "ADMISSIBLE", "ACTIVATED", "SUSPENDED", "SUPERSEDED", "TERMINATED"],
+  "allowed_transitions": {
+    "DECLARED": ["STANDING", "TERMINATED"],
+    "STANDING": ["ADMISSIBLE", "TERMINATED"],
+    "ADMISSIBLE": ["ACTIVATED", "TERMINATED"],
+    "ACTIVATED": ["SUSPENDED", "SUPERSEDED", "TERMINATED"],
+    "SUSPENDED": ["ACTIVATED", "SUPERSEDED", "TERMINATED"],
+    "SUPERSEDED": ["TERMINATED"],
+    "TERMINATED": []
+  },
+  "verification_scope": {
+    "executable_handoffs": "handoffs/*.json where schema=stegverse.executable-handoff/v0.1",
+    "worker_registry": ["control/worker-registry.json", "control/worker-registry.d/*.json"]
+  },
+  "rules": {
+    "completed_task_does_not_imply_activated_capability": true,
+    "activated_requires_integration_evidence": true,
+    "activated_requires_activation_proof": true,
+    "activated_may_not_have_open_blockers": true,
+    "blocked_admissible_requires_continuation_owner": true,
+    "canonical_steggate_allow_is_necessary_not_sufficient": true,
+    "external_execution_or_receipt_minting_not_granted_by_ae": true,
+    "future_explicit_binding_required": true
+  },
+  "future_binding_contract": {
+    "field": "admissible_existence",
+    "required_keys": [
+      "capability_id",
+      "capability_version",
+      "phase",
+      "standing_evidence_refs",
+      "admissibility_evidence_refs",
+      "integration_evidence_refs",
+      "activation_proof_ref",
+      "blockers",
+      "continuation_owner",
+      "credential_authority",
+      "github_token_runtime_authority"
+    ]
+  },
+  "legacy_projection": {
+    "enabled": true,
+    "meaning": "Pre-policy handoffs/tasks are verified by derived lifecycle semantics and are not rewritten solely for migration. Any post-policy handoff or registry task must carry the explicit binding contract."
+  }
+}
