@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:local-source-generation-executor-v1",
+      "authority_ref": "handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json#authority",
+      "capabilities": ["local_source_generation_executor"],
+      "command": ["python", "workers/local_source_generation_executor_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_MICRO_NODE_RUNTIME_ROOT",
+        "STEGVERSE_FORMALISM_ROOTS_JSON"
+      ],
+      "notes": [
+        "Only nonsecret local path locators are accepted from the parent environment.",
+        "The child model process receives a newly constructed minimal environment containing no credential variable names.",
+        "Source generation requires explicit ACTIVATED evidence for both the source-generation and sovereign-local-model capabilities.",
+        "The worker launches loopback-only least-stable local inference and always attempts teardown after a launched execution.",
+        "No repository mutation, credential transport, merge, release, or wallet authority is present."
+      ],
+      "timeout_seconds": 45,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
