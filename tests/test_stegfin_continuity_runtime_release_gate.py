@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import unittest
+
 from workers.stegfin_continuity_carrier_worker import (
     EXPECTED_PROVIDER_ROUTE,
     RUNTIME_READY_STATE,
@@ -42,57 +44,56 @@ def ready_receipt() -> dict:
     }
 
 
-def test_valid_runtime_release_receipt_passes() -> None:
-    assert validate_runtime_release_receipt(ready_receipt()) == []
+class StegFinContinuityRuntimeReleaseGateTests(unittest.TestCase):
+    def test_valid_runtime_release_receipt_passes(self) -> None:
+        self.assertEqual(validate_runtime_release_receipt(ready_receipt()), [])
+
+    def test_endpoint_presence_without_ready_state_cannot_release_worker(self) -> None:
+        receipt = ready_receipt()
+        receipt["state"] = "BLOCKED_PROVIDER_OPERATION_ROUTE_NOT_BOUND"
+        failures = validate_runtime_release_receipt(receipt)
+        self.assertTrue(any("observer state" in failure for failure in failures))
+
+    def test_wrong_provider_route_cannot_release_worker(self) -> None:
+        receipt = ready_receipt()
+        receipt["provider_operation_route"] = "https://example.invalid/v1/provider-operation"
+        failures = validate_runtime_release_receipt(receipt)
+        self.assertTrue(any("canonical TVC route" in failure for failure in failures))
+
+    def test_secret_or_consumer_credential_drift_cannot_release_worker(self) -> None:
+        receipt = ready_receipt()
+        receipt["consumer_credential_supplied"] = True
+        receipt["provider_secret_used"] = True
+        receipt["provider_secret_exported"] = True
+        receipt["non_tv_tvc_secret_or_token_used"] = True
+        failures = validate_runtime_release_receipt(receipt)
+        self.assertTrue(any("consumer_credential_supplied" in failure for failure in failures))
+        self.assertTrue(any("provider_secret_used" in failure for failure in failures))
+        self.assertTrue(any("provider_secret_exported" in failure for failure in failures))
+        self.assertTrue(any("non_tv_tvc_secret_or_token_used" in failure for failure in failures))
+
+    def test_invalid_provider_request_must_reach_canonical_schema_rejection(self) -> None:
+        receipt = ready_receipt()
+        receipt["probes"]["provider_invalid_post"] = evidence(503, "provider_operation_runtime_unavailable:FileNotFoundError")
+        failures = validate_runtime_release_receipt(receipt)
+        self.assertTrue(any("canonical schema rejection" in failure for failure in failures))
+
+    def test_ingress_fail_closed_proof_is_required(self) -> None:
+        receipt = ready_receipt()
+        receipt["probes"]["ingress_empty_post"] = evidence(200)
+        failures = validate_runtime_release_receipt(receipt)
+        self.assertTrue(any("ingress empty-POST" in failure for failure in failures))
+
+    def test_wallet_authority_drift_cannot_release_worker(self) -> None:
+        receipt = ready_receipt()
+        receipt["wallet_contacted"] = True
+        receipt["signed"] = True
+        receipt["broadcast"] = True
+        failures = validate_runtime_release_receipt(receipt)
+        self.assertTrue(any("wallet_contacted" in failure for failure in failures))
+        self.assertTrue(any("signed" in failure for failure in failures))
+        self.assertTrue(any("broadcast" in failure for failure in failures))
 
 
-def test_endpoint_presence_without_ready_state_cannot_release_worker() -> None:
-    receipt = ready_receipt()
-    receipt["state"] = "BLOCKED_PROVIDER_OPERATION_ROUTE_NOT_BOUND"
-    failures = validate_runtime_release_receipt(receipt)
-    assert any("observer state" in failure for failure in failures)
-
-
-def test_wrong_provider_route_cannot_release_worker() -> None:
-    receipt = ready_receipt()
-    receipt["provider_operation_route"] = "https://example.invalid/v1/provider-operation"
-    failures = validate_runtime_release_receipt(receipt)
-    assert any("canonical TVC route" in failure for failure in failures)
-
-
-def test_secret_or_consumer_credential_drift_cannot_release_worker() -> None:
-    receipt = ready_receipt()
-    receipt["consumer_credential_supplied"] = True
-    receipt["provider_secret_used"] = True
-    receipt["provider_secret_exported"] = True
-    receipt["non_tv_tvc_secret_or_token_used"] = True
-    failures = validate_runtime_release_receipt(receipt)
-    assert any("consumer_credential_supplied" in failure for failure in failures)
-    assert any("provider_secret_used" in failure for failure in failures)
-    assert any("provider_secret_exported" in failure for failure in failures)
-    assert any("non_tv_tvc_secret_or_token_used" in failure for failure in failures)
-
-
-def test_invalid_provider_request_must_reach_canonical_schema_rejection() -> None:
-    receipt = ready_receipt()
-    receipt["probes"]["provider_invalid_post"] = evidence(503, "provider_operation_runtime_unavailable:FileNotFoundError")
-    failures = validate_runtime_release_receipt(receipt)
-    assert any("canonical schema rejection" in failure for failure in failures)
-
-
-def test_ingress_fail_closed_proof_is_required() -> None:
-    receipt = ready_receipt()
-    receipt["probes"]["ingress_empty_post"] = evidence(200)
-    failures = validate_runtime_release_receipt(receipt)
-    assert any("ingress empty-POST" in failure for failure in failures)
-
-
-def test_wallet_authority_drift_cannot_release_worker() -> None:
-    receipt = ready_receipt()
-    receipt["wallet_contacted"] = True
-    receipt["signed"] = True
-    receipt["broadcast"] = True
-    failures = validate_runtime_release_receipt(receipt)
-    assert any("wallet_contacted" in failure for failure in failures)
-    assert any("signed" in failure for failure in failures)
-    assert any("broadcast" in failure for failure in failures)
+if __name__ == "__main__":
+    unittest.main()
