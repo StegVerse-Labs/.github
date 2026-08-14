@@ -8,6 +8,7 @@ repository: .github
 branch: feat/formalism-owner-mutation-executor-001
 goal_id: FORMALISM-OWNER-MUTATION-EXECUTOR-001
 issue: #112
+pull_request: #115
 parent_goal: FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001
 credential_authority: TV/TVC
 github_token_required: false
@@ -77,7 +78,7 @@ Every mutation packet must include at least one owner `*_MIRROR_HANDOFF.md` path
 
 ## TV/TVC credential boundary
 
-The worker has an empty credential environment allowlist. It emits only `stegverse.tvc-github-repository-operation-warrant/v0.1` requests with:
+The worker has no credential-bearing environment allowlist. It emits only `stegverse.tvc-github-repository-operation-warrant/v0.1` requests with:
 
 ```text
 operation_class: APPLY_BOUNDED_FILE_SET
@@ -87,7 +88,7 @@ secret_values_present: false
 single_use: true
 ```
 
-The worker never receives `GITHUB_TOKEN`, `GH_TOKEN`, PAT, provider credentials, wallet material, or `TVC_EPHEMERAL_GITHUB_TOKEN`. Credential-bearing transport remains exclusively TVC #19/#20.
+`STEGVERSE_BOUND_STATE_ROOT` is a fenced sandbox-state location, not a credential. The worker never receives `GITHUB_TOKEN`, `GH_TOKEN`, PAT, provider credentials, wallet material, or `TVC_EPHEMERAL_GITHUB_TOKEN`. Credential-bearing transport remains exclusively TVC #19/#20.
 
 ## Fail-closed conditions
 
@@ -112,8 +113,29 @@ first owner reference instance: StegVerse-Labs/StegCore#91/#92 COMPLETE
 credential-free .github source/materialization chain: SOURCE COMPLETE
 TVC repository broker: StegVerse-Labs/TVC#19/#20 LOCAL TV/TVC VALIDATION PENDING
 resident first-cohort reconciliation: PENDING OBSERVATION
-generalized owner mutation executor source: IN IMPLEMENTATION
+generalized owner mutation executor source: IMPLEMENTED_HOSTED_VALIDATED_CANONICAL_ADMISSION_PENDING
 ```
+
+## Hosted validation evidence
+
+Final implementation head prior to metadata-only evidence recording passed all three active `.github` PR gates:
+
+```text
+Heartbeat Worker Project - Validation Only / No GitHub Token Authority
+run: 31818251734
+result: SUCCESS
+verified: anonymous checkout; no GitHub credential token; compile; JSON parse; executable handoffs; complete deterministic tests; heartbeat dry-run non-persistence; ephemeral projections; non-authorizing workflow
+
+Validate organization control plane - No GitHub Token Authority
+run: 31818251743
+result: SUCCESS
+
+Render Organization Handoff State - No GitHub Token Authority
+run: 31818251726
+result: SUCCESS
+```
+
+The first heartbeat validation attempt correctly failed because the child handoff omitted its parent handoff from `source_refs`; the branch repaired that contract and the succeeding run above passed. No validator was weakened.
 
 ## Validation commands
 
@@ -136,16 +158,29 @@ After canonical merge, the heartbeat may claim this task when the implementation
 ```text
 required developed files: 8
 handoff: 1/1
-config: 0/1
-executable handoff: 0/1
-registry fragment: 0/1
-adapter fragment: 0/1
-worker: 0/1
-tests: 0/1
-task state: 0/1
-hosted validation: 0/5
+config: 1/1
+executable handoff: 1/1
+registry fragment: 1/1
+adapter fragment: 1/1
+worker: 1/1
+tests: 1/1
+task state: 1/1
+hosted validation surfaces: 3/3 PASS
+canonical integration: PENDING PR #115
+TVC governed broker validation/admission: PENDING
+resident source-generation executor binding: PENDING
 resident generalized mutation proof: 0/1
 full recursive re-observation proof: 0/1
+```
+
+## Exact next tasks
+
+```text
+1. Admit PR #115 after final-head validation remains green.
+2. Release/transfer this session implementation claim after canonical merge.
+3. TV/TVC-owned local carrier executes TVC #20 validator and, on PASS, repository integration authority admits #20.
+4. Bind an explicit resident source-generation executor/profile capable of emitting the required source packet without credential authority.
+5. Execute one resident owner-work -> source packet -> TVC mutation/PR -> owner validation/merge -> reconciliation re-observation cycle.
 ```
 
 ## Archive condition
