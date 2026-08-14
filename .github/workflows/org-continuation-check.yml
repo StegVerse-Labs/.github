@@ -7,8 +7,10 @@ on:
       - "README.md"
       - "docs/**"
       - "scripts/**"
+      - "tests/test_session_assistance_scope.py"
       - "checks/**"
       - "control/session-goal-inventory-*.json"
+      - "control/session-assistance-scope-policy.json"
       - ".github/workflows/org-continuation-check.yml"
 
 permissions: {}
@@ -47,6 +49,11 @@ jobs:
       - name: Validate dashboard
         run: python3 scripts/check_org_completion_dashboard.py
 
+      - name: Validate session-goal-scoped worker assistance
+        run: |
+          python3 scripts/validate_session_assistance_scope.py
+          python3 -m unittest tests.test_session_assistance_scope -v
+
       - name: Validate org mirror terms
         run: python3 scripts/check_required_terms.py docs/ORG_MIRROR_HANDOFF.md checks/org_mirror_handoff_terms.txt
 
@@ -73,4 +80,4 @@ jobs:
         run: |
           echo "## Org Continuation Check" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Validated org observer standard, repository inventory, dashboard, mirror handoff terms, and no-GitHub-token authority boundary." >> "$GITHUB_STEP_SUMMARY"
+          echo "Validated org observer standard, repository inventory, dashboard, session-goal-scoped worker assistance, mirror handoff terms, and no-GitHub-token authority boundary." >> "$GITHUB_STEP_SUMMARY"
