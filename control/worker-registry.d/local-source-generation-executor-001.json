@@ -1,0 +1,63 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "tasks": [{
+    "archive_eligible": false,
+    "archive_reason_codes": [],
+    "authorized_policy_version": "local-source-generation-executor-v0.1",
+    "block_ref": "handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json#block",
+    "claim_id": null,
+    "cost_basis_ref": null,
+    "evidence_refs": [
+      "LOCAL_SOURCE_GENERATION_EXECUTOR_MIRROR_HANDOFF.md",
+      "control/local-source-generation-executor.json",
+      "StegVerse-Labs/.github#144"
+    ],
+    "executor_binding": "AUTHORIZED_AFTER_AE_PREDICATES",
+    "external_entity_job_ref": null,
+    "goal_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+    "handoff_ref": "handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
+    "heartbeat_timing": null,
+    "last_checkpoint_ref": "handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
+    "lease": null,
+    "state": "HANDOFF_READY",
+    "task_id": "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+    "worker_id": null,
+    "worker_instance_id": null,
+    "admissible_existence": {
+      "capability_id": "stegverse:capability:formalism-source-generation:v1",
+      "capability_version": "1.0.0",
+      "phase": "DECLARED",
+      "standing_evidence_refs": [],
+      "admissibility_evidence_refs": [],
+      "integration_evidence_refs": [],
+      "activation_proof_ref": null,
+      "blockers": [
+        "SOURCE_GENERATION_CAPABILITY_NOT_YET_ACTIVATED",
+        "SOVEREIGN_LOCAL_MODEL_NOT_YET_ACTIVATED"
+      ],
+      "continuation_owner": "StegVerse-Labs/.github#144 + #137 + resident sovereign local-model activation owners",
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": false,
+      "temporal_class": "current",
+      "task_relationship": "integrates_capability",
+      "target_phase": "ACTIVATED"
+    }
+  }],
+  "workers": [{
+    "adapter_ref": "process:local-source-generation-executor-v1",
+    "authority_source": "handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json#authority",
+    "capabilities": ["local_source_generation_executor"],
+    "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+    "executor_type": "repository_worker",
+    "last_seen_at": null,
+    "status": "AVAILABLE",
+    "worker_id": "local-source-generation-executor-worker"
+  }],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "provider_capability_authority": "NONE",
+  "wallet_signing_authority": false,
+  "transaction_broadcast_authority": false
+}
