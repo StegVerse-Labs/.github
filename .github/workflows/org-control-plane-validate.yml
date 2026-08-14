@@ -8,6 +8,7 @@ on:
       - 'schemas/**'
       - 'tasks/**'
       - 'scripts/**'
+      - 'heartbeat_runtime/**'
       - 'tools/validate_active_worker_states.py'
       - 'tests/**'
       - 'handoffs/**'
@@ -23,6 +24,7 @@ on:
       - 'schemas/**'
       - 'tasks/**'
       - 'scripts/**'
+      - 'heartbeat_runtime/**'
       - 'tools/validate_active_worker_states.py'
       - 'tests/**'
       - 'handoffs/**'
@@ -72,6 +74,10 @@ jobs:
         run: python scripts/validate_admissible_existence_control_plane.py
       - name: Validate canonical heartbeat carrier contract
         run: python scripts/validate_heartbeat_carrier_contract.py
+      - name: Validate heartbeat runtime/control-plane semantic separation
+        run: python scripts/validate_heartbeat_runtime_separation.py
+      - name: Test heartbeat runtime/control-plane semantic separation
+        run: python -m unittest tests.test_heartbeat_runtime_separation -v
       - name: Prove cross-repository dependency collision enforcement
         run: python -m unittest tests.test_cross_repository_dependency_claims -v
       - name: Exercise allocator deterministically without persistence authority
