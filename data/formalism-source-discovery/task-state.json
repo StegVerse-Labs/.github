@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.1.0",
+  "goal_id": "FORMALISM-SOURCE-DISCOVERY-001",
+  "issue": 102,
+  "pull_request": 103,
+  "branch": "feat/formalism-source-discovery-001",
+  "state": "SOURCE_IMPLEMENTED_HOSTED_VALIDATED_CANONICAL_ADMISSION_PENDING",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "network_checkout_authority": false,
+  "canonical_handoff": "FORMALISM_SOURCE_DISCOVERY_MIRROR_HANDOFF.md",
+  "implementation": {
+    "source_discovery_worker": true,
+    "roots_manifest": true,
+    "heartbeat_registration": true,
+    "process_adapter": true,
+    "formalism_worker_manifest_consumption": true,
+    "unit_tests": true
+  },
+  "validation": {
+    "heartbeat_worker_run": 31770488684,
+    "heartbeat_worker_result": "SUCCESS",
+    "control_plane_run": 31770488687,
+    "control_plane_result": "SUCCESS",
+    "handoff_render_run": 31770488707,
+    "handoff_render_result": "SUCCESS",
+    "non_tv_tvc_secret_or_token_used": false
+  },
+  "activation": {
+    "resident_discovery_execution_observed": false,
+    "roots_manifest_observed": false,
+    "first_cohort_complete_on_resident": false
+  },
+  "remaining": [
+    {
+      "id": "RESIDENT_FIRST_COHORT_ROOTS_NOT_YET_OBSERVED",
+      "owner": "SHWP-FORMALISM-SOURCE-DISCOVERY-001 after canonical admission",
+      "release_condition": "resident receipt proves one unique handoff-bearing local root per first-cohort repository"
+    },
+    {
+      "id": "ABSENT_SOURCE_MATERIALIZATION_EXECUTOR",
+      "owner": "successor to be derived if resident discovery identifies missing repositories",
+      "release_condition": "every observed missing repository has an active TV/TVC-compatible materialization executor or an explicit authority boundary"
+    },
+    {
+      "id": "OWNER_SOURCE_MUTATION_EXECUTOR_NOT_GENERALIZED",
+      "owner": "current session until separately claimed/implemented",
+      "release_condition": "owner work manifest can enter a separately authorized owner-specific source mutation, validation, receipt, and PR/merge path"
+    }
+  ],
+  "archive_ready": false
+}
