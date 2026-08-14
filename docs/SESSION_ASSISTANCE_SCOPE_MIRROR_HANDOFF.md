@@ -1,6 +1,6 @@
 # Session Assistance Scope Mirror Handoff
 
-Updated: 2026-08-14T17:03:00-05:00
+Updated: 2026-08-14T17:04:00-05:00
 
 ## Authority and goal
 
@@ -103,6 +103,63 @@ StegCore AE lifecycle: UNCHANGED
 StegGate disposition: UNCHANGED
 TV/TVC credential authority: PRESERVED
 GitHub token runtime authority: NONE
+```
+
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+- task_id: SESSION-GOAL-SCOPED-WORKER-ASSISTANCE-001
+  execution_owner: StegVerse-Labs organization control plane
+  manual_execution_allowed: true
+  worker_registry_ref: control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v3.json
+  collision_scope: session-scope policy, validation, inventory reconciliation, and release evidence only
+  release_condition: exact no-token org continuation validation passes and release receipt is persisted
+  next_executable_action: NONE_AFTER_RELEASE; future sessions consume the gate
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: SHWP-ECOSYSTEM-CHAT-INFERENCE-001
+  execution_owner: resident sovereign heartbeat + canonical model/TVC/LLM-adapter/Master Records chain
+  manual_execution_allowed: false
+  worker_registry_ref: StegVerse-Labs/.github#60
+  collision_scope: live local-model activation and same-execution proof
+  release_condition: canonical activation proof completes under its own HANDOFF/Worker Registry state
+  next_executable_action: canonical machine continuation only
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: TV-TVC-CREDENTIAL-AUTHORITY
+  execution_owner: StegVerse-Labs/TV + StegVerse-Labs/TVC
+  manual_execution_allowed: false
+  worker_registry_ref: StegVerse-Labs/TVC canonical authority records
+  collision_scope: credential, route, runtime, and protected provider authority
+  release_condition: applicable TV/TVC admitted result under current policy authority
+  next_executable_action: canonical TV/TVC authority continues independently
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: SESSION-GOAL-SCOPED-WORKER-ASSISTANCE-001
+  execution_owner: NONE_AFTER_RELEASE
+  manual_execution_allowed: false
+  worker_registry_ref: control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v3.json
+  collision_scope: released session-scope control-plane rule
+  release_condition: satisfied by hosted validation and release receipt
+  next_executable_action: NONE
+- task_id: STEGFIN-AS-THIS-SESSION-ARCHIVE-DEPENDENCY
+  execution_owner: NONE
+  manual_execution_allowed: false
+  worker_registry_ref: control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v3.json
+  collision_scope: superseded cross-session trajectory capture
+  release_condition: satisfied by OUT_OF_SCOPE_SHARED_DIRECTIVE classification
+  next_executable_action: NONE; StegFin remains with its canonical owners
 ```
 
 ## Continuation and archive state
