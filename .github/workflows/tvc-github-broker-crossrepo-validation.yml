@@ -1,0 +1,125 @@
+name: TVC GitHub Broker Cross-Repo Validation - No Credential Authority
+
+on:
+  pull_request:
+    paths:
+      - "TVC_GITHUB_BROKER_VALIDATION_MIRROR_HANDOFF.md"
+      - ".github/workflows/tvc-github-broker-crossrepo-validation.yml"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  validate-tvc-broker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Prove validation environment has no credential token
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          test -z "${GITHUB_PAT:-}"
+          test -z "${TVC_EPHEMERAL_GITHUB_TOKEN:-}"
+          echo "NO_GITHUB_OR_TVC_CREDENTIAL_TOKEN_PRESENT"
+
+      - name: Anonymous fetch exact TVC PR 20 merge ref
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/tvc-broker-pr20
+          mkdir -p /tmp/tvc-broker-pr20
+          cd /tmp/tvc-broker-pr20
+          git init .
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          git remote add origin https://github.com/StegVerse-Labs/TVC.git
+          env -u GITHUB_TOKEN -u GH_TOKEN -u GITHUB_PAT -u TVC_EPHEMERAL_GITHUB_TOKEN \
+            git fetch --depth=2 origin refs/pull/20/merge
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$(git rev-parse FETCH_HEAD)"
+          git rev-parse HEAD > /tmp/tvc-broker-tested-merge-sha
+          git rev-parse HEAD^1 > /tmp/tvc-broker-tested-base-sha
+          git rev-parse HEAD^2 > /tmp/tvc-broker-tested-head-sha
+          echo "TESTED_MERGE_SHA=$(cat /tmp/tvc-broker-tested-merge-sha)"
+          echo "TESTED_BASE_SHA=$(cat /tmp/tvc-broker-tested-base-sha)"
+          echo "TESTED_HEAD_SHA=$(cat /tmp/tvc-broker-tested-head-sha)"
+
+      - name: Compile exact broker source and CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/tvc-broker-pr20
+          python -m py_compile github_repository_operation_broker.py scripts/github_repository_operation_broker.py
+          echo "BROKER_COMPILE_PASS"
+
+      - name: Parse broker schemas task and claim
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/tvc-broker-pr20
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          paths = [
+              Path('schemas/github-repository-operation-warrant.schema.json'),
+              Path('schemas/github-repository-operation-receipt.schema.json'),
+              Path('tasks/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.json'),
+              Path('claims/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.claim.json'),
+          ]
+          for path in paths:
+              json.loads(path.read_text(encoding='utf-8'))
+          print('BROKER_JSON_PASS', len(paths))
+          PY
+
+      - name: Prove TV TVC credential boundary is exact
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/tvc-broker-pr20
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+
+          source = Path('github_repository_operation_broker.py').read_text(encoding='utf-8')
+          tree = ast.parse(source)
+          constants = {}
+          for node in tree.body:
+              if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
+                  if isinstance(node.value, ast.Constant):
+                      constants[node.targets[0].id] = node.value.value
+          assert constants.get('TOKEN_ENV') == 'TVC_EPHEMERAL_GITHUB_TOKEN', constants.get('TOKEN_ENV')
+          assert constants.get('CREDENTIAL_AUTHORITY') == 'TV/TVC', constants.get('CREDENTIAL_AUTHORITY')
+
+          combined = '\n'.join([
+              source,
+              Path('scripts/github_repository_operation_broker.py').read_text(encoding='utf-8'),
+              Path('schemas/github-repository-operation-warrant.schema.json').read_text(encoding='utf-8'),
+              Path('schemas/github-repository-operation-receipt.schema.json').read_text(encoding='utf-8'),
+          ])
+          forbidden = ['secrets.', 'github.token', 'GH_TOKEN', 'GITHUB_PAT']
+          hits = [needle for needle in forbidden if needle in combined]
+          assert not hits, hits
+          assert 'TVC_EPHEMERAL_GITHUB_TOKEN' in combined
+          assert 'TV/TVC' in combined
+          print('TV_TVC_CREDENTIAL_BOUNDARY_PASS')
+          PY
+
+      - name: Run deterministic broker tests with no credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/tvc-broker-pr20
+          test -z "${TVC_EPHEMERAL_GITHUB_TOKEN:-}"
+          python -m unittest -v tests/test_github_repository_operation_broker.py
+          echo "BROKER_TEST_PASS"
+
+      - name: Prove validation is non-authorizing
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          test -z "${GITHUB_PAT:-}"
+          test -z "${TVC_EPHEMERAL_GITHUB_TOKEN:-}"
+          echo "VALIDATION_AUTHORITY_EFFECT=NONE"
