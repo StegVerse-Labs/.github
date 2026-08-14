@@ -76,3 +76,53 @@ provider_secret_exported=false
 signed=false
 broadcast=false
 ```
+
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+- task_id: STEGFIN-LOCAL-TVC-BROKER-FASTPATH-009-SOURCE
+  execution_owner: explicitly claimed nonconflicting repository implementation/validation lane
+  manual_execution_allowed: true
+  worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+  collision_scope: source-only adapter/worker/test/handoff changes while no continuity execution claim is active
+  release_condition: PR validation passes and source is merged, or the source claim is released/superseded
+  next_executable_action: validate and merge the source-only fast-path implementation without acquiring the trade collision scope
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: STEGFIN-CONTINUITY-CARRIER-007
+  execution_owner: stegfin-continuity-carrier-worker
+  manual_execution_allowed: false
+  worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+  collision_scope: collision-safe trade claim, Inventory N, TV/TVC provider operation, quote/allowance/simulation, and WALLET_HANDOFF_READY production receipt
+  release_condition: WALLET_HANDOFF_READY or fail-closed terminal worker receipt; yield if a resident equivalent trade lineage owns the scope first
+  next_executable_action: after source merge, machine scheduler selects the local Unix broker path when present or the existing HTTPS observer path otherwise
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: TV-TVC-PROVIDER-OPERATION-AUTHORITY
+  execution_owner: TV/TVC runtime/vault authority
+  manual_execution_allowed: false
+  worker_registry_ref: StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json
+  collision_scope: provider credential semantics, vault socket authority, provider operation execution, and HTTPS primary-runtime authority
+  release_condition: TV/TVC exposes an authorized local Unix broker or the canonical governed HTTPS runtime and retains provider secrets inside the vault boundary
+  next_executable_action: TV/TVC services the selected canonical transport; no consumer/session credential substitutes
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: STEGFIN-HTTPS-PRIMARY-RUNTIME-AS-UNIVERSAL-HARD-DEPENDENCY
+  execution_owner: NONE
+  manual_execution_allowed: false
+  worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+  collision_scope: historical orchestration assumption only
+  release_condition: superseded when the validated v3 fast path is merged
+  next_executable_action: NONE_AFTER_MERGE
+```
