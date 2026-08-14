@@ -2,16 +2,16 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-STEGFIN-CONTINUITY-CARRIER-007",
   "created_at": "2026-08-12T22:07:00Z",
-  "updated_at": "2026-08-14T01:36:00-05:00",
-  "state": "HANDOFF_READY_MACHINE_OWNED_WAITING_ON_TV_TVC_HOST_SERVICE_INSTALLATION_AND_OBSERVER",
+  "updated_at": "2026-08-14T16:36:00Z",
+  "state": "HANDOFF_READY_MACHINE_OWNED_TRANSPORT_SELECTION_AT_EXECUTION",
   "goal": {
     "goal_id": "STEGFIN-BASE-ROUNDTRIP-001",
-    "objective": "Permit bounded live StegFin Inventory-N and pretrade preparation on any authorized StegVerse continuity carrier without making resident sovereign-heartbeat activation a prerequisite, while preserving TV/TVC-only credential authority and USER_ONLY signing/broadcast.",
+    "objective": "Permit bounded live StegFin Inventory-N and pretrade preparation on any authorized StegVerse continuity carrier without making resident sovereign-heartbeat activation or one specific TV/TVC transport a prerequisite, while preserving TV/TVC-only credential authority and USER_ONLY signing/broadcast.",
     "success_predicates": [
       "A collision-safe continuity claim exists before execution",
       "No resident STEGFIN-LIVE-ENTRY-003 or STEGFIN-LIVE-PRETRADE-005 claim owns the same validation lineage",
       "Fresh complete Inventory N is observed credential-free",
-      "Provider operation is executed only by TV/TVC/vault through the canonical provider-operation broker",
+      "Provider operation is executed only by TV/TVC/vault through a canonical TV/TVC broker transport",
       "No non-TV/TVC secret or token is accepted by the carrier",
       "Provider secret material is not exported from TV/TVC/vault",
       "The exact repository-owned 12.50 USDC to WETH request is consumed unchanged",
@@ -55,14 +55,15 @@
       "StegVerse-Labs/TVC:reports/provider-operation-broker/primary-runtime-binder-validation-20260813.json",
       "StegVerse-Labs/TVC:reports/provider-operation-broker/primary-runtime-dispatch-activation-validation-20260813.json",
       "StegVerse-Labs/TVC:reports/provider-operation-broker/primary-runtime-service-delivery-validation-20260814.json",
-      "workers/stegfin_continuity_carrier_worker.py",
+      "workers/stegfin_continuity_carrier_worker_v3.py",
+      "docs/STEGFIN_LOCAL_TVC_BROKER_FASTPATH_MIRROR_HANDOFF.md",
       "scripts/acquire_stegfin_continuity_claim.py",
       "control/worker-registry.d/stegfin-continuity-carrier-007.json",
       "control/process-worker-adapters.d/stegfin-continuity-carrier-007.json"
     ],
-    "dependencies": ["TVC-PROVIDER-OPERATION-BROKER-003:PRIMARY_RUNTIME_OBSERVABLE"],
+    "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "Root StegFin continuity carrier handoff.",
+    "derivation_reason": "Root StegFin continuity carrier handoff. Transport readiness is selected inside the registered worker: canonical same-host TV/TVC Unix broker when present, otherwise the existing governed HTTPS primary-runtime observer path.",
     "derivation_depth": 0,
     "canonical_owner_ref": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-CONTINUITY-CARRIER-007.json",
     "canonical_lineage_key": "stegfin:base-validation-entry-continuity",
@@ -93,9 +94,12 @@
     "tvc_dispatch_activation_receipt": "StegVerse-Labs/TVC:reports/provider-operation-broker/primary-runtime-dispatch-activation-validation-20260813.json",
     "tvc_host_start_activation_delivery": "PASS_6_OF_6_EXACT_BLOB_REPLAY",
     "tvc_host_start_activation_delivery_receipt": "StegVerse-Labs/TVC:reports/provider-operation-broker/primary-runtime-service-delivery-validation-20260814.json",
+    "local_tvc_broker_fastpath": "COMPLETE_VALIDATED_MERGED_5e59431edbe64c225f32f2add1997298cb2895cc",
+    "local_tvc_broker_fastpath_validation": "HEARTBEAT_WORKER_AND_ORG_CONTROL_PASS",
     "non_tv_tvc_secret_or_token_used": false,
     "primary_runtime_service_installed_observed": false,
-    "primary_runtime_observed": false
+    "primary_runtime_observed": false,
+    "primary_runtime_observation_is_universal_admission_dependency": false
   },
   "execution": {
     "required_capabilities": [
@@ -126,13 +130,18 @@
     "claim_issuer": "scripts/acquire_stegfin_continuity_claim.py",
     "runner": "StegVerse-Labs/stegfin-governance:scripts/run_continuity_pretrade.py",
     "collision_scope": "stegfin:base-validation-entry:0xA503DCe5471492bbA2D06e9f78F4d9D6Bcc852aA:12.50-USDC-WETH",
-    "tvc_runtime_activation_owner": "TV/TVC runtime authority",
-    "tvc_runtime_activation_task": "StegVerse-Labs/TVC:tvc.primary_runtime_binder.activate",
-    "tvc_runtime_activation_delivery_task": "StegVerse-Labs/TVC:TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006",
-    "tvc_runtime_activation_installer": "StegVerse-Labs/TVC:scripts/install_tvc_primary_runtime_service.py --activate",
-    "tvc_runtime_service": "StegVerse-Labs/TVC:deploy/systemd/stegtvc-primary-runtime.service",
-    "tvc_runtime_observer": "StegVerse-Labs/TVC:TVC-CAPABILITY-RUNTIME-002",
-    "runtime_release_predicate": "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND with no consumer credential, no provider-secret export, no wallet contact/sign/broadcast"
+    "transport_selection": "WORKER_RUNTIME_SELECTION",
+    "same_host_transport": "absolute TV/TVC Unix broker socket",
+    "same_host_release_predicate": "live Unix socket selected by stegfin_continuity_carrier_worker_v3.py and exercised by run_continuity_pretrade.py",
+    "https_transport": "governed TVC HTTPS provider-operation runtime",
+    "https_runtime_activation_owner": "TV/TVC runtime authority",
+    "https_runtime_activation_task": "StegVerse-Labs/TVC:tvc.primary_runtime_binder.activate",
+    "https_runtime_activation_delivery_task": "StegVerse-Labs/TVC:TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006",
+    "https_runtime_system_installer": "StegVerse-Labs/TVC:scripts/install_tvc_primary_runtime_service.py --activate",
+    "https_runtime_rootless_installer": "StegVerse-Labs/TVC:scripts/install_tvc_primary_runtime_user_service.py --activate",
+    "https_runtime_observer": "StegVerse-Labs/TVC:TVC-CAPABILITY-RUNTIME-002",
+    "https_release_predicate": "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND with no consumer credential, no provider-secret export, no wallet contact/sign/broadcast",
+    "runtime_release_predicate": "SAME_HOST_UNIX_BROKER_PRESENT_AND_REAL_OPERATION_PATH_FAILS_CLOSED OR READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND"
   },
   "continuity": {
     "resident_heartbeat_required": false,
@@ -142,7 +151,7 @@
     "fallback_does_not_redefine_heartbeat": true
   },
   "completion": {
-    "next_authorized_action": "TV/TVC runtime authority installs/activates the validated boot-persistent service from the canonical TVC checkout with `python scripts/install_tvc_primary_runtime_service.py --activate`. The service invokes only the released tvc.primary_runtime_binder.activate task and fails closed on missing TV/TVC local prerequisites. The exclusive TVC-CAPABILITY-RUNTIME-002 observer then persists READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND. Only after that receipt may the machine scheduler admit process:stegfin-continuity-carrier-v1, acquire the collision-safe claim, run the bounded continuity pretrade path, and stop at USER_ONLY wallet action.",
+    "next_authorized_action": "The machine scheduler may now admit process:stegfin-continuity-carrier-v1 without waiting on the HTTPS observer. Worker v3 first selects a live same-host TV/TVC Unix broker when present; otherwise it delegates to the existing HTTPS primary-runtime observer path. It then acquires the collision-safe claim, runs the bounded continuity pretrade path, and stops at USER_ONLY wallet action. TV/TVC authority and exact-source checks remain mandatory on both paths.",
     "terminal_when": [
       "WALLET_HANDOFF_READY",
       "credential_authority=TV/TVC",
