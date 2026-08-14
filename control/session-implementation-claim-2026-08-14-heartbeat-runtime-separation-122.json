@@ -7,11 +7,31 @@
   "canonical_handoff": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
   "canonical_issue": "StegVerse-Labs/.github#122",
   "claimant": "current-session-bounded-source-schema-separation",
-  "role": "REOPENED_FOR_CONVERGENCE_INTEGRATION",
+  "role": "COMPLETE_RELEASED_AFTER_CONVERGENCE_INTEGRATION",
   "claimed_at": "2026-08-14T23:10:00Z",
   "reopened_at": "2026-08-14T23:14:00Z",
-  "reopen_reason": "Superseded PR #158 transferred a nonduplicative expired-worker-history packet schema that directly satisfies the session's worker-expiration/closure requirement and must be incorporated before final source release.",
-  "release_condition": "Expired-worker history packet schema is installed into canonical main, deterministic validation covers its zero-authority/next-admissible-reference invariants, and organization control-plane validation passes; live runtime state migration remains with canonical runtime owner.",
+  "released_at": "2026-08-14T23:15:19Z",
+  "reopen_reason": "Superseded PR #158 transferred a nonduplicative expired-worker-history packet schema that directly satisfies the session's worker-expiration/closure requirement and was selectively incorporated into canonical main.",
+  "release_condition": "Expired-worker history packet schema is installed into canonical main, deterministic validation covers its zero-authority/next-admissible-reference invariants, and repository validation passes; live runtime state migration remains with canonical runtime owner.",
+  "release_evidence": {
+    "expired_worker_schema_commit": "e6ff6f9a0135c4e815ac0df9f859eabc7e1e66f4",
+    "validator_contract_commit": "166806cf8ad0c0c121f746f1f0b7723852b5d795",
+    "unit_test_commit": "cb692de072eac0e5114a0d9a135d86e3fbff87b3",
+    "repository_validation_workflow": "Heartbeat Worker Project - Validation Only / No GitHub Token Authority",
+    "repository_validation_run": 31849685349,
+    "repository_validation_job": 94922986048,
+    "repository_validation_head": "cb692de072eac0e5114a0d9a135d86e3fbff87b3",
+    "repository_validation_conclusion": "SUCCESS",
+    "validation_scope": [
+      "compile runtime/workers/scripts",
+      "parse canonical JSON surfaces including expired-worker schema",
+      "validate executable handoffs",
+      "complete deterministic repository test suite including expired-worker contract test",
+      "heartbeat dry-run non-persistence",
+      "ephemeral projection rebuild",
+      "workflow non-authorizing proof"
+    ]
+  },
   "surfaces": [
     "schemas/heartbeat-carrier-observation.schema.json",
     "schemas/worker-control-plane-coordination.schema.json",
@@ -27,7 +47,7 @@
     "superseded_pr": "StegVerse-Labs/.github#158",
     "superseded_head": "e361714baa37954d094223e1334f10969e7d2dea",
     "reused_artifact": "schemas/expired-worker-history.schema.json",
-    "merge_strategy": "selective canonical integration; do not merge superseded PR wholesale"
+    "merge_strategy": "selective canonical integration; superseded PR remains closed without merge"
   },
   "collision_boundaries": [
     "Do not mutate control/heartbeat-state.json or active live heartbeat state",
@@ -37,15 +57,13 @@
     "Do not grant Master Records active remediation authority",
     "Do not duplicate StegBrain#860 contract-evaluator implementation"
   ],
-  "expected_evidence": [
-    "deterministic runtime-separation validator PASS",
-    "expired-worker packet contract validation PASS",
-    "unit tests PASS",
-    "organization control-plane workflow PASS"
-  ],
-  "next_task_after_release": "Canonical #122 runtime owner may switch live runtime production from legacy combined heartbeat-subsignal compatibility to the separated contracts under a fresh runtime claim.",
-  "credential_authority": "TV/TVC",
-  "github_token_runtime_authority": "NONE",
-  "non_tv_tvc_secret_or_token_required": false,
-  "state": "ACTIVE_CONVERGENCE_INTEGRATION"
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_required": false,
+    "heartbeat_grants_execution_authority": false,
+    "master_records_action_authority": false
+  },
+  "next_task_after_release": "Canonical #122 runtime owner may switch live runtime production from legacy combined heartbeat-subsignal compatibility to the separated contracts under a fresh runtime claim; this source/convergence lane must not compete.",
+  "state": "COMPLETE_RELEASED"
 }
