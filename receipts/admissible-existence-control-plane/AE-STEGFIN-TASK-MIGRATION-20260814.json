@@ -1,0 +1,18 @@
+{
+  "schema":"stegverse.ae-task-conformance-migration-receipt/v1",
+  "recorded_at":"2026-08-14T20:42:00Z",
+  "goal_id":"STEGFIN-AE-TASK-CONFORMANCE-MIGRATION-131",
+  "canonical_stegcore_task_conformance":"ca484e0786ee4539af06394bc036e6a7624256f8",
+  "canonical_stegcore_capability_handoff":"dc539b252f764662340acb9dce10597dfe0a66b2",
+  "organization_verifier_fix":"85f6dbe35d8cee6528d56d4fe25d3bf7e4ae7053",
+  "migrated_records":[
+    {"path":"handoffs/STEGFIN-CONTINUITY-CARRIER-007.json","commit":"e128dc45041788038fc6b611e701d87f504d8868","phase":"ADMISSIBLE","temporal_class":"current","task_relationship":"integrates_capability","target_phase":"ACTIVATED"},
+    {"path":"control/worker-registry.d/stegfin-continuity-carrier-007.json","commit":"a3a75fb70cc5ab652ac933f10e8622e07d09f266","phase":"ADMISSIBLE","temporal_class":"current","task_relationship":"integrates_capability","target_phase":"ACTIVATED"},
+    {"path":"handoffs/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json","commit":"de3e959610631db6027a1f8ee112d2e924474958","phase":"ADMISSIBLE","temporal_class":"current","task_relationship":"validates_capability","target_phase":"ACTIVATED"},
+    {"path":"control/worker-registry.d/stegfin-sovereign-trading-001.json","commit":"08ec4876d344d2af69c3db14469dec16fad9dd6d","phase":"ADMISSIBLE","temporal_class":"current","task_relationship":"validates_capability","target_phase":"ACTIVATED"}
+  ],
+  "validation":{"workflow":"Validate organization control plane - No GitHub Token Authority","run_id":31839020674,"job_id":94891647221,"conclusion":"SUCCESS","ae_output":"AE_CONTROL_PLANE_VALIDATION_PASS handoffs=24 registry_tasks=25 explicit_bindings=2 legacy_projections=22 migration_required=22 task_conformant=2 explicitly_migrated=2 stegcore_registry_binding=ca484e0786ee4539af06394bc036e6a7624256f8 stegcore_task_conformance=ca484e0786ee4539af06394bc036e6a7624256f8"},
+  "authority":{"credential_authority":"TV/TVC","github_token_runtime_authority":false,"non_tv_tvc_secret_or_token_used":false,"provider_secret_exported":false,"wallet_signing_authority_changed":false,"broadcast_authority_changed":false,"external_execution_performed":false},
+  "activation_claimed":false,
+  "wallet_handoff_ready_observed":false
+}
