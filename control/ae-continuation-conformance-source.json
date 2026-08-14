@@ -1,0 +1,15 @@
+{
+  "artifact_type": "stegverse.ae_continuation_conformance_source",
+  "schema_version": "1.0",
+  "policy_id": "AE-CONTINUATION-CONFORMANCE-001",
+  "source_repository": "StegVerse-Labs/StegCore",
+  "source_commit": "78d00ca0e977af3e666c2acec431b111aea0deef",
+  "policy_path": "management/ae-continuation-conformance-policy.json",
+  "verifier_path": "scripts/validate_ae_continuation_conformance.py",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "heartbeat_role": "CARRIER_SYNCHRONIZATION_ONLY",
+  "worker_control_plane_separate": true,
+  "master_records_custody_separate": true,
+  "mode": "READ_ONLY_ADOPTION"
+}
