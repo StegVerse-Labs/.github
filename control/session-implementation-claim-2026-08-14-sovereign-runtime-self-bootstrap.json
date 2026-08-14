@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "task_id": "SHWP-SOVEREIGN-RUNTIME-SELF-BOOTSTRAP-001",
+  "originating_goal": "remove the circular prerequisite that a resident sovereign heartbeat/source must already be executing before the sovereign runtime activation path can initiate",
+  "organization": "StegVerse-Labs",
+  "repository": ".github",
+  "branch": "feat/sovereign-runtime-self-bootstrap-001",
+  "canonical_issue": "StegVerse-Labs/.github#160",
+  "claimant": "current-session-bootstrap-dependency-lane",
+  "role": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION",
+  "claim_created_at": "2026-08-14T18:18:30-05:00",
+  "claim_expiration_or_release_condition": "release after PR merge and exact merged-main validation; if no evidence-bearing update occurs within 24 hours, mark BLOCKED or release",
+  "owned_surfaces": [
+    "scripts/bootstrap_sovereign_runtime.py",
+    "tests/test_bootstrap_sovereign_runtime.py",
+    ".github/workflows/sovereign-runtime-self-bootstrap.yml",
+    "control/session-implementation-claim-2026-08-14-sovereign-runtime-self-bootstrap.json",
+    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#self_bootstrap_dependency"
+  ],
+  "collision_boundaries": [
+    "do not modify workers/sovereign_runtime_activation_worker.py",
+    "do not modify workers/sovereign_node_repository_resolution_worker.py",
+    "do not alter G18 claim/fence/heartbeat ownership",
+    "do not create a second heartbeat, scheduler, route authority, credential authority, model runtime, provider transport, or Master Records custody path",
+    "do not modify TV/TVC credential or route semantics",
+    "do not use GitHub tokens or any NON-TV/TVC secret/token as runtime authority",
+    "do not sign or broadcast wallet transactions"
+  ],
+  "expected_evidence": [
+    "hosted environment rejection test PASS",
+    "incomplete source fail-closed test PASS",
+    "derived local node declaration test PASS",
+    "injected successful bootstrap orchestration test PASS",
+    "tokenless hosted validation PASS",
+    "exact merged-main validation PASS"
+  ],
+  "next_task_after_release": "existing G18/#59/#65 machine owner may invoke or consume the bootstrap path when establishing the sovereign carrier; live nine-predicate activation remains separately observable",
+  "state": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION"
+}
