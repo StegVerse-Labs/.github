@@ -5,10 +5,11 @@
 ```text
 organization: StegVerse-Labs
 repository: .github
-branch: feat/formalism-owner-mutation-executor-001
+branch: main
 goal_id: FORMALISM-OWNER-MUTATION-EXECUTOR-001
 issue: #112
-pull_request: #115
+pull_request: #115 MERGED
+merge_commit: d8a56d2905b478ab00578a16caead2d68ebca714
 parent_goal: FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001
 credential_authority: TV/TVC
 github_token_required: false
@@ -39,15 +40,15 @@ AE / RTG / GTG / TT / STCM formal standing
 
 The executor is not a model and is not a policy engine. Source generation is a separate capability and must be explicitly identified in each source packet. Derived coherence/gradient evidence never grants source-generation, mutation, merge, runtime, credential, or formalism authority.
 
-## Active implementation claim
+## Implementation claim
 
 ```text
 claim_ref: control/session-implementation-claim-2026-08-14-formalism-owner-mutation-executor.json
-claim_state: CLAIMED_FOR_IMPLEMENTATION
-renewed_at: 2026-08-14T11:06:00-05:00
-expires_at: 2026-08-14T14:06:00-05:00
-release_condition: canonical source + tests + hosted validation + resident continuation or transfer to proven active executor
+claim_state: RELEASED_IMPLEMENTATION_COMPLETE
+release_basis: PR #115 merged after final-head hosted validation
 ```
+
+No implementation claim remains on the completed source scope. The next unresolved capability is resident source-generation binding and end-to-end recursive execution; that work requires a separate non-overlapping claim.
 
 ## Authoritative files
 
@@ -74,68 +75,41 @@ A source-generation packet is admissible only when it declares a non-empty `gene
 
 ## Handoff-first invariant
 
-Every mutation packet must include at least one owner `*_MIRROR_HANDOFF.md` path, and that handoff path must be the first changed file in deterministic ordering. If the owner work manifest does not admit that handoff path, execution fails closed. This preserves continuation state before implementation files are projected.
+Every mutation packet must include at least one owner `*_MIRROR_HANDOFF.md` path, and that handoff path must be the first changed file in deterministic ordering. If the owner work manifest does not admit that handoff path, execution fails closed.
 
 ## TV/TVC credential boundary
 
-The worker has no credential-bearing environment allowlist. It emits only `stegverse.tvc-github-repository-operation-warrant/v0.1` requests with:
+The worker has no credential-bearing environment allowlist. `STEGVERSE_BOUND_STATE_ROOT` is a fenced sandbox-state location, not a credential. The worker never receives `GITHUB_TOKEN`, `GH_TOKEN`, PAT, provider credentials, wallet material, or `TVC_EPHEMERAL_GITHUB_TOKEN`. Credential-bearing transport remains exclusively TVC #19/#20.
+
+## Hosted validation evidence
+
+Final PR head `e36790ff9bf83cbe23fb51510e4fd54da6f9f32c` passed:
 
 ```text
-operation_class: APPLY_BOUNDED_FILE_SET
-credential_authority: TV/TVC
-consumer_credential_present: false
-secret_values_present: false
-single_use: true
+Heartbeat Worker Project - Validation Only / No GitHub Token Authority
+run: 31818346894 SUCCESS
+
+Validate organization control plane - No GitHub Token Authority
+run: 31818346840 SUCCESS
+
+Render Organization Handoff State - No GitHub Token Authority
+run: 31818346907 SUCCESS
 ```
 
-`STEGVERSE_BOUND_STATE_ROOT` is a fenced sandbox-state location, not a credential. The worker never receives `GITHUB_TOKEN`, `GH_TOKEN`, PAT, provider credentials, wallet material, or `TVC_EPHEMERAL_GITHUB_TOKEN`. Credential-bearing transport remains exclusively TVC #19/#20.
-
-## Fail-closed conditions
-
-```text
-owner manifest missing or not READY_FOR_SEPARATE_OWNER_ADMISSION
-source-generation packet missing, malformed, unauthorized, or owner/delta mismatch
-missing handoff-first mutation
-path outside owner manifest proposed_paths
-wildcard or traversal mutation path
-base ref/SHA mismatch with exact TVC inspection receipt
-expected source SHA mismatch or missing source hash for an existing file
-replacement SHA mismatch
-TVC broker standing not CANONICAL_VALIDATED for live warrant projection
-active heartbeat claim/fence absent
-credential authority differs from TV/TVC
-```
+The heartbeat run proved anonymous checkout, absence of GitHub credential tokens, compilation, JSON parsing, executable-handoff validation, complete deterministic tests, non-persistent heartbeat dry run, ephemeral projections, and workflow non-authority. An earlier validator failure exposed a missing parent handoff reference; the branch repaired the contract without weakening validation.
 
 ## Current dependency standing
 
 ```text
 first owner reference instance: StegVerse-Labs/StegCore#91/#92 COMPLETE
 credential-free .github source/materialization chain: SOURCE COMPLETE
-TVC repository broker: StegVerse-Labs/TVC#19/#20 LOCAL TV/TVC VALIDATION PENDING
+generalized owner mutation executor source: CANONICAL + HOSTED VALIDATED
+TVC repository broker: StegVerse-Labs/TVC#19/#20 TV/TVC LOCAL VALIDATION PENDING
+resident source-generation executor: NOT BOUND
 resident first-cohort reconciliation: PENDING OBSERVATION
-generalized owner mutation executor source: IMPLEMENTED_HOSTED_VALIDATED_CANONICAL_ADMISSION_PENDING
+resident generalized owner mutation proof: PENDING
+full recursive re-observation proof: PENDING
 ```
-
-## Hosted validation evidence
-
-Final implementation head prior to metadata-only evidence recording passed all three active `.github` PR gates:
-
-```text
-Heartbeat Worker Project - Validation Only / No GitHub Token Authority
-run: 31818251734
-result: SUCCESS
-verified: anonymous checkout; no GitHub credential token; compile; JSON parse; executable handoffs; complete deterministic tests; heartbeat dry-run non-persistence; ephemeral projections; non-authorizing workflow
-
-Validate organization control plane - No GitHub Token Authority
-run: 31818251743
-result: SUCCESS
-
-Render Organization Handoff State - No GitHub Token Authority
-run: 31818251726
-result: SUCCESS
-```
-
-The first heartbeat validation attempt correctly failed because the child handoff omitted its parent handoff from `source_refs`; the branch repaired that contract and the succeeding run above passed. No validator was weakened.
 
 ## Validation commands
 
@@ -151,22 +125,15 @@ Hosted validation proves source/control-plane compatibility only. It does not pr
 
 ## Integration and propagation
 
-After canonical merge, the heartbeat may claim this task when the implementation-admission owner work and explicit source packet are present. Actual repository mutation is transported only through TVC. Site, Publisher, admissibility-wiki and stegguardian-wiki propagation remains downstream of an owner repository's normal release criteria and is not authorized by this executor alone.
+The heartbeat may claim this task when implementation-admission owner work and an explicit source packet are present. Actual repository mutation is transported only through TVC. Site, Publisher, admissibility-wiki and stegguardian-wiki propagation remains downstream of an owner repository's normal release criteria and is not authorized by this executor alone.
 
 ## Completion inventory
 
 ```text
-required developed files: 8
-handoff: 1/1
-config: 1/1
-executable handoff: 1/1
-registry fragment: 1/1
-adapter fragment: 1/1
-worker: 1/1
-tests: 1/1
-task state: 1/1
+required developed files: 8/8
+scaffolding/stubs: 0
 hosted validation surfaces: 3/3 PASS
-canonical integration: PENDING PR #115
+canonical source integration: COMPLETE
 TVC governed broker validation/admission: PENDING
 resident source-generation executor binding: PENDING
 resident generalized mutation proof: 0/1
@@ -176,13 +143,12 @@ full recursive re-observation proof: 0/1
 ## Exact next tasks
 
 ```text
-1. Admit PR #115 after final-head validation remains green.
-2. Release/transfer this session implementation claim after canonical merge.
-3. TV/TVC-owned local carrier executes TVC #20 validator and, on PASS, repository integration authority admits #20.
-4. Bind an explicit resident source-generation executor/profile capable of emitting the required source packet without credential authority.
-5. Execute one resident owner-work -> source packet -> TVC mutation/PR -> owner validation/merge -> reconciliation re-observation cycle.
+1. TV/TVC-owned local carrier executes TVC #20 validator and, on PASS, repository integration authority admits #20.
+2. Bind an explicit resident source-generation executor/profile capable of emitting the required source packet without credential authority.
+3. Execute one resident owner-work -> source packet -> TVC mutation/PR -> owner validation/merge -> reconciliation re-observation cycle.
+4. Re-run first-cohort reconciliation under resident heartbeat and preserve resulting receipts.
 ```
 
 ## Archive condition
 
-Do not archive the originating session while this claim remains active or while generalized owner mutation still lacks a proven active executor. Archive can be reconsidered only after this source is canonical and validated and every remaining runtime dependency is either proven machine-owned and advancing, completed, or transferred to another live non-colliding claimant with a machine-observable release condition.
+This source implementation is complete, but the broader session is not archive-ready. Archive may be reconsidered only after the remaining recursive-build requirements are completed or transferred to proven active executors that can actually advance them without another chat session.
