@@ -15,6 +15,7 @@ TASK_ID = "STEGFIN-CONTINUITY-CARRIER-007"
 GOAL_ID = "STEGFIN-BASE-ROUNDTRIP-001"
 COLLISION_SCOPE = "stegfin:base-validation-entry:0xA503DCe5471492bbA2D06e9f78F4d9D6Bcc852aA:12.50-USDC-WETH"
 CONFLICT_TASKS = {"STEGFIN-LIVE-ENTRY-003", "STEGFIN-LIVE-PRETRADE-005"}
+DEFAULT_HEARTBEAT_STALE_AFTER_SECONDS = 60
 
 
 def canonical(value: Any) -> bytes:
@@ -32,6 +33,18 @@ def load(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise RuntimeError(f"expected JSON object: {path}")
     return value
+
+
+def parse_utc(value: Any) -> datetime | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return None
+    return parsed.astimezone(timezone.utc)
 
 
 def load_required_coordination(path: Path) -> dict[str, Any]:
@@ -86,28 +99,86 @@ def exclusive_claim_lock(state_root: Path) -> Iterator[None]:
             pass
 
 
-def parse_utc(value: Any) -> datetime | None:
-    if not isinstance(value, str):
-        return None
-    try:
-        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
-    except ValueError:
-        return None
-    if parsed.tzinfo is None:
-        return None
-    return parsed.astimezone(timezone.utc)
+def heartbeat_staleness(
+    state: dict[str, Any],
+    *,
+    now: datetime,
+    stale_after_seconds: int,
+) -> tuple[bool, int, datetime | None]:
+    if stale_after_seconds < 1:
+        raise RuntimeError("heartbeat stale threshold must be positive")
+    last_cycle = parse_utc(state.get("last_cycle_at"))
+    if last_cycle is None:
+        # Absence of a liveness timestamp never creates permission to ignore a
+        # resident collision. It simply disables the stale-lease override and
+        # preserves the pre-existing fail-closed collision semantics.
+        return False, 0, None
+    age_seconds = max(0, int((now - last_cycle).total_seconds()))
+    return age_seconds >= stale_after_seconds, age_seconds, last_cycle
 
 
-def heartbeat_conflict(state: dict[str, Any]) -> tuple[bool, int]:
+def heartbeat_conflict(
+    state: dict[str, Any],
+    *,
+    now: datetime,
+    stale_after_seconds: int,
+) -> tuple[bool, int, bool, int, bool]:
     leases = state["subsignals"]["worker_coordination"]["active_leases"]
+    stale, age_seconds, last_cycle = heartbeat_staleness(
+        state,
+        now=now,
+        stale_after_seconds=stale_after_seconds,
+    )
     max_fence = 0
+    resident_conflict = False
     for lease in leases:
         fence = lease.get("fencing_token")
         if isinstance(fence, int):
             max_fence = max(max_fence, fence)
         if lease.get("task_id") in CONFLICT_TASKS and lease.get("task_state") not in {"COMPLETE", "SUPERSEDED", "RELEASED"}:
-            return True, max_fence
-    return False, max_fence
+            resident_conflict = True
+    # A stale resident heartbeat may lose collision authority, but this
+    # observation never grants execution authority. The new continuity claim
+    # still fences strictly above every observed resident fence.
+    return resident_conflict and not stale, max_fence, stale, age_seconds, last_cycle is not None
+
+
+def record_stale_heartbeat_reclamation(
+    *,
+    heartbeat: dict[str, Any],
+    state_root: Path,
+    observed_at: datetime,
+    age_seconds: int,
+    stale_after_seconds: int,
+    max_observed_fence: int,
+) -> dict[str, Any]:
+    leases = heartbeat["subsignals"]["worker_coordination"]["active_leases"]
+    material = {
+        "schema": "stegverse.stale-heartbeat-reclamation.v1",
+        "task_id": TASK_ID,
+        "goal_id": GOAL_ID,
+        "collision_scope": COLLISION_SCOPE,
+        "observed_heartbeat_epoch": heartbeat["epoch"],
+        "observed_last_cycle_at": heartbeat.get("last_cycle_at"),
+        "observed_at_utc": observed_at.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "heartbeat_age_seconds": age_seconds,
+        "stale_after_seconds": stale_after_seconds,
+        "stale": True,
+        "observed_active_leases": leases,
+        "max_observed_fencing_token": max_observed_fence,
+        "resident_lease_collision_effect": "NONBLOCKING_WHILE_HEARTBEAT_STALE",
+        "authority_effect": "REVOKE_STALE_COLLISION_ONLY_NO_EXECUTION_AUTHORITY_GRANTED",
+        "new_execution_authority_granted": False,
+        "master_records_notification_required": True,
+        "master_records_destination": "master-records/orchestration",
+        "credential_authority": "TV/TVC",
+        "github_token_required": False,
+        "non_tv_tvc_secret_or_token_used": False,
+    }
+    material["receipt_sha256"] = digest(material)
+    output = state_root / "receipts" / "stale-heartbeat" / f"{TASK_ID}-HB{heartbeat['epoch']}.json"
+    atomic_write(output, material)
+    return material
 
 
 def acquire_claim(
@@ -116,21 +187,39 @@ def acquire_claim(
     heartbeat_state: Path,
     state_root: Path,
     ttl_seconds: int,
+    heartbeat_stale_after_seconds: int = DEFAULT_HEARTBEAT_STALE_AFTER_SECONDS,
 ) -> dict[str, Any]:
     if not carrier_id.strip():
         raise RuntimeError("carrier id required")
     if ttl_seconds < 60 or ttl_seconds > 1800:
         raise RuntimeError("continuity claim TTL must be 60..1800 seconds")
+    if heartbeat_stale_after_seconds < 1 or heartbeat_stale_after_seconds > 3600:
+        raise RuntimeError("heartbeat stale threshold must be 1..3600 seconds")
 
     with exclusive_claim_lock(state_root):
         heartbeat = load_required_coordination(heartbeat_state)
-        conflict, heartbeat_max_fence = heartbeat_conflict(heartbeat)
+        now = datetime.now(timezone.utc)
+        conflict, heartbeat_max_fence, heartbeat_stale, heartbeat_age_seconds, liveness_known = heartbeat_conflict(
+            heartbeat,
+            now=now,
+            stale_after_seconds=heartbeat_stale_after_seconds,
+        )
         if conflict:
-            raise RuntimeError("continuity claim denied: resident StegFin worker already owns the validation lineage")
+            raise RuntimeError("continuity claim denied: fresh resident StegFin worker already owns the validation lineage")
+
+        stale_receipt = None
+        if heartbeat_stale:
+            stale_receipt = record_stale_heartbeat_reclamation(
+                heartbeat=heartbeat,
+                state_root=state_root,
+                observed_at=now,
+                age_seconds=heartbeat_age_seconds,
+                stale_after_seconds=heartbeat_stale_after_seconds,
+                max_observed_fence=heartbeat_max_fence,
+            )
 
         state_file = state_root / "claims" / f"{TASK_ID}.json"
         current = load(state_file)
-        now = datetime.now(timezone.utc)
         current_expiry = parse_utc(current.get("expires_at_utc"))
         if current.get("state") == "ACTIVE" and current_expiry is not None and current_expiry > now:
             raise RuntimeError("continuity claim denied: active continuity claim already exists")
@@ -156,7 +245,13 @@ def acquire_claim(
             "wallet_signing_authority": "USER_ONLY",
             "broadcast_authority": "USER_ONLY",
             "resident_conflict_checked": True,
+            "resident_heartbeat_liveness_known": liveness_known,
+            "resident_heartbeat_stale": heartbeat_stale,
+            "resident_heartbeat_age_seconds": heartbeat_age_seconds if liveness_known else None,
+            "resident_heartbeat_stale_after_seconds": heartbeat_stale_after_seconds,
             "heartbeat_state_epoch_observed": heartbeat["epoch"],
+            "stale_heartbeat_reclamation_receipt_sha256": stale_receipt.get("receipt_sha256") if stale_receipt else None,
+            "master_records_notification_required": bool(stale_receipt),
         }
         material["receipt_sha256"] = digest(material)
         atomic_write(state_file, material)
@@ -169,6 +264,7 @@ def main() -> int:
     parser.add_argument("--heartbeat-state", type=Path, default=Path("control/heartbeat-state.json"))
     parser.add_argument("--state-root", type=Path, default=Path.home() / ".stegverse" / "continuity")
     parser.add_argument("--ttl-seconds", type=int, default=900)
+    parser.add_argument("--heartbeat-stale-after-seconds", type=int, default=DEFAULT_HEARTBEAT_STALE_AFTER_SECONDS)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 
@@ -178,6 +274,7 @@ def main() -> int:
             heartbeat_state=args.heartbeat_state,
             state_root=args.state_root,
             ttl_seconds=args.ttl_seconds,
+            heartbeat_stale_after_seconds=args.heartbeat_stale_after_seconds,
         )
     except RuntimeError as exc:
         raise SystemExit(str(exc)) from exc
