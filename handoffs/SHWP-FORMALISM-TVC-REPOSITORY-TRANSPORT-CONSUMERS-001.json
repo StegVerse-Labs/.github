@@ -27,7 +27,7 @@
       "no_owner_source_mutation",
       "no_merge_authority"
     ],
-    "successor_policy": "SEPARATE_TVC_AUTHORIZATION_REQUIRED",
+    "successor_policy": "SEPARATE_AUTHORIZATION_REQUIRED_FOR_EXPANSION",
     "max_successor_depth": 2
   },
   "task": {
@@ -48,7 +48,7 @@
     "derivation_reason": "Recursive formalism build still required chat/manual repository materialization and owner mutation transport.",
     "canonical_owner_ref": "StegVerse-Labs/.github",
     "canonical_lineage_key": "formalism-manifold:tvc-repository-transport-consumers",
-    "derivation_depth": 1,
+    "derivation_depth": 0,
     "priority": "critical"
   },
   "authority": {
