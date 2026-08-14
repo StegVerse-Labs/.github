@@ -39,6 +39,7 @@
     "source_refs": [
       "FORMALISM_OWNER_MUTATION_EXECUTOR_MIRROR_HANDOFF.md",
       "FORMALISM_MANIFOLD_IMPLEMENTATION_ADMISSION_MIRROR_HANDOFF.md",
+      "handoffs/SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001.json",
       "control/formalism-owner-mutation-executor.json"
     ],
     "dependencies": [
