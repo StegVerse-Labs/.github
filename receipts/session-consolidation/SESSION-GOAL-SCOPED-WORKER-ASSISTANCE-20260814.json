@@ -1,0 +1,48 @@
+{
+  "schema": "stegverse.session-assistance-scope-release/v1",
+  "policy_id": "SESSION-GOAL-SCOPED-WORKER-ASSISTANCE-001",
+  "issue": "StegVerse-Labs/.github#143",
+  "implementation_tracker": "StegVerse-Labs/.github#146",
+  "released_at": "2026-08-14T17:02:00-05:00",
+  "canonical_surfaces": [
+    "control/session-assistance-scope-policy.json",
+    "scripts/validate_session_assistance_scope.py",
+    "tests/test_session_assistance_scope.py",
+    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
+    "control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v3.json",
+    ".github/workflows/org-continuation-check.yml"
+  ],
+  "commits": {
+    "policy": "2fd788597852d2e07936a98a247ae7a802efe920",
+    "validator": "dee93b827f67ee92abbb1448b530b90e65230cf9",
+    "inventory_correction": "816fb122fbf45371054eb67bea8cf20ebaed7ad8",
+    "tests": "502058171582542c659dfcc6828a83c5b740634f",
+    "handoff": "ec47260f5929c1d051e32d8b32cac3f97f44b99b",
+    "workflow_gate": "670c4283f3d66e0927fd7a941d053878d6380f56"
+  },
+  "validation": {
+    "workflow": "Org Continuation Check - No GitHub Token Authority",
+    "run_id": 31844940374,
+    "job_id": 94909324222,
+    "conclusion": "SUCCESS",
+    "scope_validator": "SESSION_ASSISTANCE_SCOPE_PASS inventories=1 bindings=5",
+    "tests": "3/3 PASS",
+    "no_github_credential_token_present": true,
+    "workflow_non_authorizing": true
+  },
+  "scope_correction": {
+    "assist_workers": "SESSION_GOAL_LINEAGE_ONLY",
+    "make_this_trade_ready": "OUT_OF_SCOPE_SHARED_DIRECTIVE_FOR_THIS_SESSION",
+    "stegfin_archive_dependency": false,
+    "stegfin_execution_owner_unchanged": true
+  },
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "execution_authority_created": false,
+    "runtime_authority_created": false,
+    "provider_authority_created": false,
+    "wallet_authority_created": false
+  },
+  "result": "COMPLETE_VALIDATED_RELEASED"
+}
