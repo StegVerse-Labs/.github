@@ -17,6 +17,9 @@ TASK_ID = "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001"
 CAPABILITY = "formalism_tvc_repository_transport"
 CREDENTIAL_AUTHORITY = "TV/TVC"
 BOUND_STATE_ENV = "STEGVERSE_BOUND_STATE_ROOT"
+INSPECTION_SCHEMA = "stegverse.tvc-github-repository-inspection-request/v0.1"
+INSPECTION_RECEIPT_SCHEMA = "stegverse.tvc-github-repository-inspection-receipt/v0.1"
+WARRANT_SCHEMA = "stegverse.tvc-github-repository-operation-warrant/v0.1"
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -70,7 +73,7 @@ def source_requests(config: dict[str, Any], receipt: dict[str, Any], now: dateti
             "destination_identity": str(Path(config["materialization_root"]) / repository),
         }
         requests.append({
-            "schema": "stegverse.tvc-github-repository-inspection-request/v0.1",
+            "schema": INSPECTION_SCHEMA,
             "request_id": request_id("inspect-source", payload),
             "operation_class": "INSPECT_REPOSITORY_STATE",
             "repository": repository,
@@ -112,7 +115,7 @@ def owner_requests(config: dict[str, Any], owner_dir: Path, now: datetime) -> li
             "delta_id": manifest.get("delta_id"),
         }
         requests.append({
-            "schema": "stegverse.tvc-github-repository-inspection-request/v0.1",
+            "schema": INSPECTION_SCHEMA,
             "request_id": request_id("inspect-owner", payload),
             "operation_class": "INSPECT_REPOSITORY_STATE",
             "repository": repository,
@@ -153,6 +156,74 @@ def inbox_receipts(state_root: Path | None) -> list[dict[str, Any]]:
     return receipts
 
 
+def materialization_followups(
+    config: dict[str, Any],
+    receipts: list[dict[str, Any]],
+    now: datetime,
+    *,
+    request_dir: Path,
+) -> list[dict[str, Any]]:
+    followups: list[dict[str, Any]] = []
+    expires = now + timedelta(seconds=int(config["request_ttl_seconds"]))
+    for receipt in receipts:
+        if receipt.get("schema") != INSPECTION_RECEIPT_SCHEMA:
+            continue
+        request_id_value = receipt.get("request_id")
+        if not isinstance(request_id_value, str) or not request_id_value.startswith("inspect-source-"):
+            continue
+        original_path = request_dir / f"{request_id_value}.json"
+        if not original_path.is_file():
+            continue
+        original = load(original_path)
+        if original.get("schema") != INSPECTION_SCHEMA:
+            continue
+        if original.get("next_operation_on_receipt") != "MATERIALIZE_SOURCE_ARCHIVE":
+            continue
+        if receipt.get("request_sha256") != canonical_hash(original):
+            continue
+        if receipt.get("repository") != original.get("repository") or receipt.get("base_ref") != original.get("base_ref"):
+            continue
+        base_sha = receipt.get("base_sha")
+        if not isinstance(base_sha, str) or len(base_sha) != 40:
+            continue
+        payload = {
+            "repository": original["repository"],
+            "base_ref": original["base_ref"],
+            "expected_base_sha": base_sha,
+            "destination_identity": original["destination_identity"],
+            "maximum_total_bytes": original["maximum_total_bytes"],
+            "inspection_request_id": request_id_value,
+            "inspection_receipt_sha256": receipt.get("receipt_sha256"),
+        }
+        operation_id = request_id("materialize-source", payload)
+        followup_path = request_dir / f"{operation_id}.json"
+        if followup_path.exists():
+            continue
+        followups.append({
+            "schema": WARRANT_SCHEMA,
+            "operation_id": operation_id,
+            "operation_class": "MATERIALIZE_SOURCE_ARCHIVE",
+            "repository": original["repository"],
+            "base_ref": original["base_ref"],
+            "expected_base_sha": base_sha,
+            "destination_identity": original["destination_identity"],
+            "maximum_total_bytes": original["maximum_total_bytes"],
+            "credential_authority": CREDENTIAL_AUTHORITY,
+            "consumer_credential_present": False,
+            "secret_values_present": False,
+            "single_use": True,
+            "issued_at": now_iso(now),
+            "expires_at": now_iso(expires),
+            "nonce": canonical_hash(payload)[:24],
+            "authorization_ref": f"tvc://spool/{operation_id}",
+            "source_inspection_request_id": request_id_value,
+            "source_inspection_receipt_sha256": receipt.get("receipt_sha256"),
+            "source_receipt_ref": original.get("source_receipt_ref"),
+            "authority_effect": "NONE_REQUEST_ONLY_TVC_AUTHORIZATION_REQUIRED",
+        })
+    return followups
+
+
 def evaluate(config: dict[str, Any], now: datetime, *, state_root: Path | None = None) -> dict[str, Any]:
     broker = config.get("tvc_broker") if isinstance(config.get("tvc_broker"), dict) else {}
     observed_receipts = inbox_receipts(state_root)
@@ -170,10 +241,12 @@ def evaluate(config: dict[str, Any], now: datetime, *, state_root: Path | None =
             "authority_effect": "NONE_TRANSPORT_NOT_ADMITTED",
         }
 
+    request_dir = (ROOT / str(config["request_directory"])).resolve()
     source_path = ROOT / str(config["source_discovery_receipt"])
     source_receipt = load(source_path) if source_path.is_file() else {"result": {"missing": []}}
     owner_dir = ROOT / str(config["owner_work_directory"])
     requests = source_requests(config, source_receipt, now) + owner_requests(config, owner_dir, now)
+    requests += materialization_followups(config, observed_receipts, now, request_dir=request_dir)
     return {
         "state": "COMPLETED" if requests else "BLOCKED",
         "reason": "TRANSPORT_REQUESTS_READY" if requests else "NO_ACTIONABLE_TRANSPORT_INPUTS",
@@ -187,6 +260,21 @@ def evaluate(config: dict[str, Any], now: datetime, *, state_root: Path | None =
         "bound_state_available": state_root is not None,
         "authority_effect": "NONE_NONSECRET_REQUEST_EMISSION_ONLY",
     }
+
+
+def persist_request(request_dir: Path, state_root: Path | None, request: dict[str, Any]) -> None:
+    identity = request.get("request_id") or request.get("operation_id")
+    if not isinstance(identity, str) or not identity:
+        raise ValueError("transport request identity missing")
+    target = request_dir / f"{identity}.json"
+    if not target.exists():
+        atomic_write(target, request)
+    if state_root is not None:
+        outbox = state_root / "outbox" / f"{identity}.json"
+        inbox = state_root / "inbox" / f"{identity}.json"
+        processed = state_root / "processed" / f"{identity}.json"
+        if not outbox.exists() and not inbox.exists() and not processed.exists():
+            atomic_write(outbox, load(target))
 
 
 def main() -> int:
@@ -225,9 +313,7 @@ def main() -> int:
     request_dir = (ROOT / str(config["request_directory"])).resolve()
     if result["state"] == "COMPLETED":
         for request in result["requests"]:
-            atomic_write(request_dir / f"{request['request_id']}.json", request)
-            if state_root is not None:
-                atomic_write(state_root / "outbox" / f"{request['request_id']}.json", request)
+            persist_request(request_dir, state_root, request)
 
     receipt = {
         "schema": "stegverse.formalism-tvc-repository-transport-receipt/v0.1",
@@ -260,7 +346,7 @@ def main() -> int:
             "solution_required": True,
             "may_remain_blocked": True,
             "next_solution_action": "RECHECK_TVC_BROKER_STANDING_FORMALISM_INPUTS_AND_LOCAL_SPOOL",
-            "machine_observable_release_condition": "TVC broker standing is CANONICAL_VALIDATED, bounded local spool is available, and an actionable missing-source or owner-work input is present"
+            "machine_observable_release_condition": "TVC broker standing is CANONICAL_VALIDATED, bounded local spool is available, and an actionable missing-source, TVC inspection receipt, or owner-work input is present"
         }
     response = {
         "schema": "stegverse.worker-response/v0.1",
@@ -271,7 +357,12 @@ def main() -> int:
         "expected_next_earliest_epoch": None if result["state"] == "COMPLETED" else epoch + 1,
         "expected_next_latest_epoch": None if result["state"] == "COMPLETED" else epoch + 1,
         "checkpoint_ref": f"receipts/formalism-tvc-repository-transport/{TASK_ID}.json",
-        "evidence_refs": ["FORMALISM_TVC_REPOSITORY_TRANSPORT_CONSUMERS_MIRROR_HANDOFF.md", "FORMALISM_TVC_LOCAL_SPOOL_MIRROR_HANDOFF.md", "control/formalism-tvc-repository-transport.json"],
+        "evidence_refs": [
+            "FORMALISM_TVC_REPOSITORY_TRANSPORT_CONSUMERS_MIRROR_HANDOFF.md",
+            "FORMALISM_TVC_LOCAL_SPOOL_MIRROR_HANDOFF.md",
+            "FORMALISM_TVC_MATERIALIZATION_FOLLOWUP_MIRROR_HANDOFF.md",
+            "control/formalism-tvc-repository-transport.json"
+        ],
         "blocker": blocker,
         "cost_observation": {"hb_transition_count": 1, "compute_units": 1, "external_cost_usd": 0, "task_class": "formalism_tvc_repository_transport"}
     }
