@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-08-14T18:21:00-05:00",
+  "updated_at": "2026-08-14T18:27:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
@@ -39,9 +39,9 @@
       "control/worker-registry.json",
       "handoffs/STEGFIN-LIVE-ENTRY-003.json"
     ],
-    "dependencies": ["SHWP-SOVEREIGN-RUNTIME-SELF-BOOTSTRAP-001 source validation and release"],
+    "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "Production activation must remain actively worker-owned and solution-executing; constraints derive solution/escalation work rather than passive stopping states. PR #117 removed the hand-created declaration deadlock for an already-running local heartbeat source. Issue #160 separately closes the earlier initiation circularity by adding a pre-heartbeat entry point that can derive local eligibility, materialize/start the canonical native service, and invoke the nine-predicate verifier without requiring a resident heartbeat to exist first.",
+    "derivation_reason": "Production activation must remain actively worker-owned and solution-executing. PR #117 removed the hand-created declaration deadlock for an already-running local heartbeat source. PR #162 and issue #160 then removed the initiation circularity by installing a pre-heartbeat entry point that can prove local eligibility, derive the non-authorizing node declaration, materialize/start the native service, and invoke the nine-predicate verifier without requiring a resident heartbeat to pre-exist.",
     "canonical_owner_ref": "StegVerse-Labs/.github#59",
     "canonical_lineage_key": "shwp:durable-runtime-activation",
     "derivation_depth": 0,
@@ -94,14 +94,26 @@
     "issue": "StegVerse-Labs/.github#160",
     "claim_ref": "control/session-implementation-claim-2026-08-14-sovereign-runtime-self-bootstrap.json",
     "entrypoint": "scripts/bootstrap_sovereign_runtime.py",
-    "state": "IMPLEMENTED_PENDING_VALIDATION",
+    "state": "COMPLETE_RELEASED",
     "purpose": "Initiate sovereign carrier creation before a resident heartbeat exists by proving local canonical source plus writable durable state, deriving a non-authorizing node declaration, invoking the existing native installer, and immediately invoking the canonical nine-predicate verifier.",
     "does_not_own": ["G18 heartbeat claim/fence", "TV/TVC credential or route authority", "LLM-adapter execution", "Master Records custody", "wallet signing or broadcast"],
     "credential_requirement": "NONE",
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": "NONE",
     "authority_effect": "BOOTSTRAP_ORCHESTRATION_ONLY_NO_CREDENTIAL_ROUTE_OR_HEARTBEAT_AUTHORITY",
-    "source_release_condition": "PR #160 dependency implementation merges and exact merged-main validation passes",
+    "source_release_evidence": {
+      "superseded_pr": 161,
+      "canonical_pr": 162,
+      "canonical_pr_head": "efd2cb44970e384831e5b209f4376b1ec56c4346",
+      "merge_commit": "57518101d0fab81f83451582854c8803daf080b8",
+      "pr_head_validation_run": 31850258595,
+      "pr_head_validation_job": 94924581516,
+      "merged_main_validation_run": 31850285522,
+      "merged_main_validation_job": 94924652012,
+      "deterministic_tests": "5/5 PASS",
+      "hosted_runner_behavior": "FAIL_CLOSED_BEFORE_INSTALLER_OR_VERIFIER",
+      "workflow_authority_effect": "NONE_VALIDATION_ONLY"
+    },
     "live_completion_condition": "node-local activation.latest.json reports all nine predicates true"
   },
   "continuity": {
@@ -112,10 +124,10 @@
     "activation_proof_ref": "~/.stegverse/heartbeat/activation.latest.json"
   },
   "completion": {
-    "next_authorized_action": "Validate and merge issue #160's pre-heartbeat self-bootstrap dependency. After source release, any eligible local StegVerse-controlled machine containing the canonical source can initiate materialization/native service startup and nine-predicate verification without requiring a resident heartbeat to pre-exist. G18 remains the canonical live heartbeat owner once the carrier is running.",
+    "next_authorized_action": "The pre-heartbeat bootstrap source is released. On an eligible local StegVerse-controlled machine containing the canonical source, invoke scripts/bootstrap_sovereign_runtime.py; it must derive/reuse local eligibility, materialize/register/start the native service, invoke the canonical verifier, and return COMPLETE only when node-local activation.latest.json has all nine predicates true. G18 remains the canonical live heartbeat owner once the carrier is running.",
     "terminal_when": ["A continuously executing sovereign heartbeat carrier is active", "The nine-predicate activation proof passes", "Restart/reconstruction continuity passes", "No duplicate claim or fence exists"],
     "implementation_validation": {
-      "workflow": "Heartbeat Worker Project",
+      "workflow": "Heartbeat Worker Project plus Sovereign Runtime Self-Bootstrap Validation",
       "baseline_run_id": 31338817754,
       "baseline_conclusion": "SUCCESS",
       "derived_declaration_pr": 117,
@@ -129,9 +141,17 @@
         "test_incomplete_local_source_fails_closed PASS"
       ],
       "self_bootstrap_issue": 160,
-      "self_bootstrap_validation": "PENDING",
+      "self_bootstrap_pr": 162,
+      "self_bootstrap_merge_commit": "57518101d0fab81f83451582854c8803daf080b8",
+      "self_bootstrap_validation": "MERGED_MAIN_SUCCESS",
+      "self_bootstrap_pr_head_run": 31850258595,
+      "self_bootstrap_pr_head_job": 94924581516,
+      "self_bootstrap_merged_main_run": 31850285522,
+      "self_bootstrap_merged_main_job": 94924652012,
+      "self_bootstrap_tests": "5/5 PASS",
       "github_credential_token_present": false,
-      "workflow_authority_effect": "NONE_VALIDATION_ONLY"
+      "workflow_authority_effect": "NONE_VALIDATION_ONLY",
+      "live_activation_claimed": false
     },
     "activation_assist_commits": [
       "6b2601d8be04409fe1150fb37c87bf6493544bb2",
@@ -144,31 +164,32 @@
       "6747fb2bff50ad7a698337bf007feed8bc007b9f",
       "c83a65cee1da60b3ac3366044e0399292d778005",
       "f907c87d1e8669c96300cef0a572113cca6a4adc",
-      "41c2b62283260966747e8b390e0756ef977d1578"
+      "41c2b62283260966747e8b390e0756ef977d1578",
+      "57518101d0fab81f83451582854c8803daf080b8"
     ]
   },
   "constraint": {
     "operational_state": "ACTIVE_SOLUTION_EXECUTION",
-    "class": "PRE_HEARTBEAT_BOOTSTRAP_INTEGRATION",
-    "condition": "SELF_BOOTSTRAP_IMPLEMENTED_PENDING_VALIDATION",
-    "owner": "issue #160 owns only the pre-heartbeat bootstrap dependency; SHWP-DURABLE-RUNTIME-ACTIVATION / repository-owner resolver / G18 retains live runtime ownership",
+    "class": "LIVE_SOVEREIGN_ACTIVATION",
+    "condition": "SELF_BOOTSTRAP_SOURCE_COMPLETE_LIVE_NINE_PREDICATE_PROOF_PENDING",
+    "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18; source bootstrap dependency #160 is COMPLETE_RELEASED",
     "solution_required": true,
     "solution_candidates": [
-      "self-bootstrap canonical local source into native supervised carrier",
+      "invoke released self-bootstrap on canonical local StegVerse-controlled source",
       "reuse an existing eligible sovereign node",
       "eligible StegVerse-002 micro-node",
       "new node from repository-local runtime capsule"
     ],
-    "next_solution_action": "VALIDATE_AND_RELEASE_SELF_BOOTSTRAP_DEPENDENCY_THEN_EXECUTE_SOVEREIGN_RUNTIME_SOLUTION",
-    "next_solution_detail": "PR #117 solved node-declaration derivation after local heartbeat source is already executing; issue #160 closes the remaining initiation circularity by providing a pre-heartbeat bootstrap that derives eligibility, installs/starts native supervision, and invokes the same verifier.",
+    "next_solution_action": "EXECUTE_SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_AND_OBSERVE_NINE_PREDICATE_PROOF",
+    "next_solution_detail": "The initiation circularity is removed. No pre-existing heartbeat is required to begin activation; the bootstrap can derive eligibility, install/start native supervision, and invoke verification. Live activation is not claimed until the local proof itself reports all nine predicates true.",
     "machine_observable_completion_condition": "node-local activation.latest.json reports all nine predicates true",
-    "escalation_rule": "after bootstrap source release, escalate only if canonical local source is incomplete, durable state is not writable, native OS supervision cannot be installed, or the execution surface is hosted/non-sovereign",
+    "escalation_rule": "escalate only if canonical local source is incomplete, durable state is not writable, native OS supervision cannot be installed, or the execution surface is hosted/non-sovereign",
     "resolution_executor_state": "DERIVED_DECLARATION_COMPLETE_VALIDATED_RELEASED",
-    "node_declaration_transport_state": "DERIVED_OR_EXISTING_DECLARATION_SUPPORTED_VALIDATED",
+    "node_declaration_transport_state": "PRE_HEARTBEAT_AND_RESIDENT_DERIVATION_SUPPORTED_VALIDATED",
     "third_party_dependency": false,
     "human_action_required": false,
-    "missing_implementation": true,
-    "missing_implementation_ref": "StegVerse-Labs/.github#160"
+    "missing_implementation": false,
+    "missing_implementation_ref": null
   },
   "release_downstream": [
     "STEGFIN-LIVE-ENTRY-003",
