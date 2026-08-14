@@ -1,0 +1,193 @@
+{
+  "schema": "stegverse.session-goal-inventory/v2",
+  "inventory_id": "ADMISSIBLE-EXISTENCE-CORE-LOCAL-RUNTIME-2026-08-14-V2",
+  "supersedes": "control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime.json",
+  "issue": "StegVerse-Labs/.github#135",
+  "created_at": "2026-08-14T15:55:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "role": "SESSION_CONSOLIDATION_AND_AE_CONFORMANCE",
+  "archive_state": "NOT_READY_UNIQUE_OR_DISTINCT_SUPPORT_WORK_REMAINS",
+  "product_activation_state": "ACTIVE_MACHINE_AND_AUTHORITY_WORK_INCOMPLETE",
+  "canonical_ae_control_plane": {
+    "handoff": "docs/ADMISSIBLE_EXISTENCE_CONTROL_PLANE_MIRROR_HANDOFF.md",
+    "stegcore_binding_commit": "ca484e0786ee4539af06394bc036e6a7624256f8",
+    "retrospective_merge": "fcd280a3fe318aec30ea926d147e392eda6de688",
+    "worker_registry_generation": 21,
+    "effective_tasks": 25,
+    "classified": 25,
+    "pass": 21,
+    "review_required": 4,
+    "fail_closed": 0,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "heartbeat_role": "CARRIER_SYNCHRONIZATION_ONLY"
+  },
+  "goals": [
+    {
+      "goal_id": "G01-STEGFIN-TRADE-READY",
+      "status": "CURRENT_MACHINE_OWNED",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:stegfin-base-pretrade:v1",
+      "phase": "ADMISSIBLE",
+      "owner": "STEGFIN-CONTINUITY-CARRIER-007 + selected TV/TVC runtime authority/observer",
+      "release_condition": "WALLET_HANDOFF_READY observed; signing/broadcast remains USER_ONLY",
+      "archive_dependency": true
+    },
+    {
+      "goal_id": "G02-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF",
+      "status": "COMPLETE_RELEASED",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:sovereign-local-model:v1",
+      "phase": "ADMISSIBLE",
+      "owner": "StegVerse-002/micro-node-runtime",
+      "release_condition": "source implementation complete; live activation is separate",
+      "archive_dependency": false
+    },
+    {
+      "goal_id": "G03-FORMAL-LOCAL-MODEL-DEVELOPMENT",
+      "status": "COMPLETE_RELEASED",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:sovereign-local-model:v1",
+      "phase": "ADMISSIBLE",
+      "owner": "StegVerse-002/micro-node-runtime",
+      "release_condition": "repository-developed reference model complete",
+      "archive_dependency": false
+    },
+    {
+      "goal_id": "G04-TV-TVC-ONLY-CREDENTIAL-AUTHORITY",
+      "status": "CURRENT_AUTHORITY_INVARIANT",
+      "ae_impact": "NONE",
+      "owner": "StegVerse-Labs/TV + StegVerse-Labs/TVC",
+      "release_condition": "all affected paths retain TV/TVC-only credential authority and no GitHub-token runtime authority",
+      "archive_dependency": true
+    },
+    {
+      "goal_id": "G05-TVC-REPOSITORY-OPERATION-BROKER",
+      "status": "CURRENT_AUTHORITY_OWNED",
+      "ae_impact": "NONE",
+      "owner": "StegVerse-Labs/TVC#19/#20",
+      "release_condition": "TVC-owned local validation PASS and canonical admission",
+      "archive_dependency": true
+    },
+    {
+      "goal_id": "G06-AUTONOMOUS-SOURCE-DISCOVERY-MATERIALIZATION",
+      "status": "CURRENT_MACHINE_OWNED",
+      "ae_impact": "NONE",
+      "owner": "SHWP-FORMALISM-SOURCE-DISCOVERY-001 + SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001 + TVC",
+      "release_condition": "missing-root inspect -> materialize -> rediscover cycle observed without chat",
+      "archive_dependency": true
+    },
+    {
+      "goal_id": "G07-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION",
+      "status": "COMPLETE_RELEASED",
+      "ae_impact": "NONE",
+      "owner": "StegVerse-Labs/.github",
+      "release_condition": "implementation-admission bridge merged and validated",
+      "archive_dependency": false
+    },
+    {
+      "goal_id": "G08-FIRST-MANIFOLD-RUNTIME-KERNEL",
+      "status": "COMPLETE_RELEASED",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:steggate:canonical:v1",
+      "phase": "ACTIVATED",
+      "owner": "StegVerse-Labs/StegCore#91/#92",
+      "release_condition": "bounded planner merged and re-observed",
+      "archive_dependency": false
+    },
+    {
+      "goal_id": "G09-PRESERVE-CANONICAL-STEGGATE-SEMANTICS",
+      "status": "COMPLETE_AND_ONGOING_INVARIANT",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:steggate:canonical:v1",
+      "phase": "ACTIVATED",
+      "owner": "StegVerse-Labs/StegCore",
+      "release_condition": "all derived planners remain subordinate to canonical StegGate",
+      "archive_dependency": false
+    },
+    {
+      "goal_id": "G10-GENERALIZED-OWNER-MUTATION-EXECUTOR",
+      "status": "SOURCE_COMPLETE_RUNTIME_PROOF_PENDING",
+      "ae_impact": "NONE",
+      "owner": "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001 + TV/TVC repository-operation authority",
+      "release_condition": "one resident authorized owner-mutation cycle observed",
+      "archive_dependency": true
+    },
+    {
+      "goal_id": "G11-RECURSIVE-SELF-BUILD-PROOF",
+      "status": "CURRENT_UNPROVEN",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:sovereign-local-model:v1",
+      "phase": "ADMISSIBLE",
+      "owner": "formalism reconciliation -> source-generation capability -> owner mutation -> TVC -> canonical owner",
+      "release_condition": "discover gap -> admit owner -> generate bounded source -> validate/merge -> re-observe gap removed without chat",
+      "archive_dependency": true
+    },
+    {
+      "goal_id": "G12-WORKER-REGISTRY-AND-HANDOFF-AE-CONFORMANCE",
+      "status": "COMPLETE_VALIDATED_RELEASED_WITH_REVIEW_ITEMS",
+      "ae_impact": "NONE",
+      "owner": "StegVerse-Labs/StegCore + StegVerse-Labs/.github control plane",
+      "release_condition": "canonical verifier released; 25/25 effective tasks classified; 4 REVIEW_REQUIRED remain separately owned",
+      "archive_dependency": false
+    },
+    {
+      "goal_id": "G13-SESSION-DURABLE-CONSOLIDATION",
+      "status": "CURRENT_SESSION_SUPPORT_ROLE",
+      "ae_impact": "NONE",
+      "owner": "StegVerse-Labs/.github#135",
+      "release_condition": "expanded v2 inventory validated and no session-unique executor/support responsibility remains",
+      "archive_dependency": true
+    },
+    {
+      "goal_id": "G14-DUPLICATE-EXECUTION-AND-STALE-CLAIM-PREVENTION",
+      "status": "COMPLETE_AND_ONGOING_INVARIANT",
+      "ae_impact": "NONE",
+      "owner": "organization control plane",
+      "release_condition": "claims remain bounded/released and canonical owners are not competed with",
+      "archive_dependency": false
+    },
+    {
+      "goal_id": "G15-REOBSERVE-OWNER-IMPLEMENTATIONS",
+      "status": "PARTIAL",
+      "ae_impact": "NONE",
+      "owner": "formalism/manifold reconciliation workers",
+      "release_condition": "first kernel re-observed; generalized recursive re-observation still required by G11",
+      "archive_dependency": true
+    },
+    {
+      "goal_id": "G16-DOWNSTREAM-RELEASE-PROPAGATION",
+      "status": "FUTURE_GATED",
+      "ae_impact": "NONE",
+      "owner": "Site + Publisher + admissibility-wiki + stegguardian-wiki canonical release consumers",
+      "release_condition": "applicable activation/release authority admits propagation",
+      "archive_dependency": false
+    }
+  ],
+  "review_required_worker_tasks": [
+    "STEGGATE-FIRST-BOUNDARY-001",
+    "SHWP-DURABLE-RUNTIME-ACTIVATION",
+    "SHWP-ALL-ORG-FEDERATION-001",
+    "SHWP-REPO-HEARTBEAT-FEDERATION-001"
+  ],
+  "session_role": "DISTINCT_SUPPORT_AND_CONSOLIDATION",
+  "archive_rule": "Archive only when all session-unique implementation, validation, integration, propagation, reconciliation and observation roles are complete or transferred to proven active executors. Durable recording alone is insufficient.",
+  "archive_blockers": [
+    "G01 live WALLET_HANDOFF_READY not observed",
+    "G05 TVC repository-operation broker canonical local PASS/admission not yet proven in this inventory",
+    "G06 autonomous missing-source materialization cycle not observed",
+    "G10 resident generalized owner-mutation cycle not observed",
+    "G11 full recursive self-build/re-observation proof not observed",
+    "G13 expanded session-consolidation reconciliation not yet validated/released"
+  ],
+  "canonical_continuation": [
+    "docs/ADMISSIBLE_EXISTENCE_CONTROL_PLANE_MIRROR_HANDOFF.md",
+    "control/admissible-existence-retrospective-conformance.json",
+    "control/worker-registry.json",
+    "control/worker-registry.d/*.json",
+    "StegVerse-Labs/StegCore/docs/AE_HANDOFF_TASK_CONFORMANCE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC#19/#20",
+    "StegVerse-Labs/.github#59/#60/#122/#135",
+    "StegVerse-Labs/stegfin-governance canonical task-state and handoff"
+  ]
+}
