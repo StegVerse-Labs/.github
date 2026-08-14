@@ -24,7 +24,31 @@
       "state": "HANDOFF_READY",
       "task_id": "STEGFIN-CONTINUITY-CARRIER-007",
       "worker_id": null,
-      "worker_instance_id": null
+      "worker_instance_id": null,
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:stegfin-base-pretrade:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md",
+          "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-CONTINUITY-CARRIER-007.json"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
+          "docs/STEGFIN_LOCAL_TVC_BROKER_FASTPATH_MIRROR_HANDOFF.md"
+        ],
+        "integration_evidence_refs": [
+          "workers/stegfin_continuity_carrier_worker.py",
+          "control/process-worker-adapters.d/stegfin-continuity-carrier-007.json"
+        ],
+        "activation_proof_ref": null,
+        "blockers": [
+          "WALLET_HANDOFF_READY_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "stegfin-continuity-carrier-worker + TV/TVC runtime authority/observer as selected at execution",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false
+      }
     }
   ],
   "workers": [
