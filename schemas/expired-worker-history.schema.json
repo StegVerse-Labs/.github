@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/expired-worker-history.schema.json",
+  "title": "StegVerse Expired Worker History Packet",
+  "description": "Terminal worker-history subsystem packet. It may be carried on the heartbeat carrier but is not heartbeat payload semantics and grants no execution authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "manifest_packet", "expiration_wrapper", "data_packet", "integrity", "authority"],
+  "properties": {
+    "schema": {"const": "stegverse.expired-worker-history/v1"},
+    "manifest_packet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "goal_id", "worker_id", "worker_instance_id", "claim_id", "last_fencing_token", "authority_source", "policy_version", "expected_master_records_identity"],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 1},
+        "goal_id": {"type": ["string", "null"]},
+        "worker_id": {"type": "string", "minLength": 1},
+        "worker_instance_id": {"type": ["string", "null"]},
+        "claim_id": {"type": "string", "minLength": 1},
+        "last_fencing_token": {"type": "integer", "minimum": 1},
+        "authority_source": {"type": "string", "minLength": 1},
+        "policy_version": {"type": "string", "minLength": 1},
+        "expected_master_records_identity": {"type": "string", "minLength": 1}
+      }
+    },
+    "expiration_wrapper": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start_reference", "expiration_reference", "expiration_basis", "closure_deadline_rule"],
+      "properties": {
+        "start_reference": {"type": "integer", "minimum": 0},
+        "expiration_reference": {"type": "integer", "minimum": 0},
+        "expiration_basis": {"type": "string", "minLength": 1},
+        "closure_deadline_rule": {"const": "NEXT_ADMISSIBLE_CARRIER_OR_EQUIVALENT_RETURN_REFERENCE"}
+      }
+    },
+    "data_packet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_lineage_ref", "expiration_reason", "authority_effect", "execution_authority", "claim_active", "lease_active"],
+      "properties": {
+        "event_lineage_ref": {"type": "string", "minLength": 1},
+        "last_checkpoint_ref": {"type": ["string", "null"]},
+        "last_checkpoint_hash": {"type": ["string", "null"]},
+        "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "resource_observations": {"type": "object"},
+        "expiration_reason": {"type": "string", "minLength": 1},
+        "authority_effect": {"const": "NONE"},
+        "execution_authority": {"const": false},
+        "claim_active": {"const": false},
+        "lease_active": {"const": false}
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["packet_sha256"],
+      "properties": {
+        "packet_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["credential_authority", "github_token_runtime_authority", "heartbeat_grants_authority", "reactivates_expired_worker", "master_records_action_authority"],
+      "properties": {
+        "credential_authority": {"const": "TV/TVC"},
+        "github_token_runtime_authority": {"const": false},
+        "heartbeat_grants_authority": {"const": false},
+        "reactivates_expired_worker": {"const": false},
+        "master_records_action_authority": {"const": false}
+      }
+    }
+  }
+}
