@@ -1,11 +1,11 @@
 {
   "schema": "stegverse.session-consolidation/v1",
   "consolidation_id": "LOCAL-RUNTIME-TRADE-READINESS-2026-08-14-FINAL",
-  "updated_at": "2026-08-14T15:51:00-05:00",
+  "updated_at": "2026-08-14T17:27:00-05:00",
   "source_inventory": "control/session-goal-inventory-2026-08-14-local-runtime-trade-readiness.json",
   "canonical_ae_handoff": "docs/ADMISSIBLE_EXISTENCE_CONTROL_PLANE_MIRROR_HANDOFF.md",
-  "session_state": "COMPLETE_OR_TRANSFERRED",
-  "archive_state": "READY_PENDING_THIS_COMMIT_VALIDATION",
+  "session_state": "DISTINCT_SUPPORT_REMAINS",
+  "archive_state": "NOT_READY_EXECUTABLE_CONTINUATION_NOT_YET_PROVEN",
   "session_goal_count": 11,
   "session_goals_complete_or_transferred": 11,
   "session_unique_active_claims": 0,
@@ -30,12 +30,12 @@
     },
     {
       "goal": "Sovereign runtime/live local-model activation",
-      "state": "TRANSFERRED_MACHINE_OWNED_NOT_YET_ACTIVATED",
+      "state": "TRANSFERRED_BUT_EXECUTABLE_CONTINUATION_NOT_YET_PROVEN_ACTIVE",
       "continuation": "StegVerse-Labs/.github#59/#60 -> TVC -> StegVerse-org/LLM-adapter#18 -> master-records/orchestration"
     },
     {
       "goal": "Bounded StegFin trade readiness without chat-held credentials",
-      "state": "TRANSFERRED_MACHINE_OWNED_ADMISSIBLE",
+      "state": "TRANSFERRED_MACHINE_OWNED_ADMISSIBLE_RUNTIME_EXECUTION_NOT_YET_OBSERVED",
       "continuation": "control/worker-registry.d/stegfin-continuity-carrier-007.json + control/worker-registry.d/stegfin-sovereign-trading-001.json",
       "release_condition": "WALLET_HANDOFF_READY or same-execution sovereign settlement/reconstruction proof; external signing/broadcast remains USER_ONLY"
     },
@@ -62,14 +62,7 @@
     {
       "goal": "Explicit retrospective classification of current/recent Worker Registry tasks",
       "state": "COMPLETE_VALIDATED_RELEASED",
-      "continuation": "control/admissible-existence-retrospective-conformance.json",
-      "evidence": [
-        "PR #134",
-        "merge fcd280a3fe318aec30ea926d147e392eda6de688",
-        "PR run 31839527722 job 94893168566 SUCCESS",
-        "merged-main run 31839595434 job 94893368481 SUCCESS",
-        "25/25 classified: 21 PASS, 4 REVIEW_REQUIRED, 0 FAIL_CLOSED"
-      ]
+      "continuation": "control/admissible-existence-retrospective-conformance.json"
     },
     {
       "goal": "Distinct noncompeting validation support for already-claimed Master Records hardening",
@@ -81,29 +74,25 @@
     {
       "task": "Sovereign/local-model live activation",
       "owner": "StegVerse-Labs/.github#59/#60 + TVC + LLM-adapter + Master Records",
-      "session_required": false
+      "session_required_until": "A live claim/lease or same-execution activation receipt proves the continuation path can actually advance without this chat."
+    },
+    {
+      "task": "Admissible formalism source-generation activation and recursive owner mutation proof",
+      "owner": "StegVerse-Labs/.github#137 + StegVerse-Labs/StegCore lifecycle owner + TV/TVC owner-mutation path",
+      "session_required_until": "Both required capability activations are explicit and the registered local source-generation executor is observed advancing or a separate live session/worker claim owns the unresolved transition."
     },
     {
       "task": "StegFin WALLET_HANDOFF_READY and sovereign internal proof",
       "owner": "registered StegFin workers + TV/TVC/vault + USER_ONLY wallet authority where applicable",
-      "session_required": false
+      "session_required_until": "A collision-safe machine claim plus live worker advancement or terminal WALLET_HANDOFF_READY/fail-closed receipt is observed."
     },
     {
       "task": "Heartbeat carrier/control-plane correction",
       "owner": "StegVerse-Labs/.github#120/#122 + named downstream correction owners",
-      "session_required": false
-    },
-    {
-      "task": "Four retrospective REVIEW_REQUIRED records",
-      "owner": "owners recorded in control/admissible-existence-retrospective-conformance.json",
-      "session_required": false
-    },
-    {
-      "task": "Authorized downstream Site/Publisher/wiki propagation",
-      "owner": "applicable release/product consumer owners after independent release evidence",
-      "session_required": false
+      "session_required_until": "A live executable continuation claim/lease is observable or the correction is complete."
     }
   ],
-  "archive_invariant": "Archiving this chat does not imply product activation. Every unfinished product/runtime/trade/review task is durably owned outside the chat, and no unique chat-held implementation, validation, integration, propagation, reconciliation or observation authority remains.",
-  "next_executable_action": "Repository-native workers and authority owners continue from their canonical handoffs/registries/issues; no new chat session is required for continuity."
+  "archive_invariant": "Durable recording is necessary but not sufficient. Archive only if every unresolved requirement is either complete, actively owned by another live session with durable evidence, or machine-owned by an execution path proven capable of reaching and advancing it. If this chat disappeared now and any unresolved requirement would stop progressing, archive is prohibited.",
+  "supersedes_archive_semantics": "Previous READY/COMPLETE_OR_TRANSFERRED wording that treated durable ownership alone as archive-safe.",
+  "next_executable_action": "Continue distinct support: reconcile stale claims/handoffs, inspect live worker/lease/runtime evidence for #137, sovereign-local-model activation and StegFin continuity, and retain this session until executable continuation is proven or the unresolved work completes."
 }
