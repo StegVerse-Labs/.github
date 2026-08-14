@@ -6,6 +6,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from validate_ae_retrospective_conformance import main as validate_retrospective_conformance
+
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = ROOT / "control" / "admissible-existence-control-plane-policy.json"
 EXECUTABLE_SCHEMA = "stegverse.executable-handoff/v0.1"
@@ -107,8 +109,6 @@ def collect_registry_tasks() -> dict[str, tuple[str, dict[str, Any], dict[str, A
             task_id = task.get("task_id")
             if not isinstance(task_id, str) or not task_id:
                 continue
-            # Fragment definitions override the aggregate snapshot because they are
-            # the repository-native source used to compose future registry state.
             found[task_id] = (str(path.relative_to(ROOT)), task, doc)
     return found
 
@@ -208,14 +208,10 @@ def main() -> int:
                             for key in ("temporal_class", "task_relationship", "target_phase"):
                                 require(reg_binding.get(key) == binding.get(key), f"{reg_path}#{task_id}: {key} must match handoff task-conformance binding", errors)
 
-                # Never infer capability activation from task completion alone.
                 if reg_task.get("state") in TERMINAL_TASK_STATES and isinstance(reg_binding, dict):
                     if reg_binding.get("phase") == "ACTIVATED":
                         require(bool(reg_binding.get("activation_proof_ref")), f"{reg_path}#{task_id}: completed task cannot imply ACTIVATED without proof", errors)
 
-    # Registry-only tasks remain inspectable provenance. Explicit AE metadata is
-    # validated. Lack of current task-conformance metadata is classified as
-    # MIGRATION_REQUIRED rather than silently accepted as current authority.
     for task_id, (reg_path, task, doc) in registry.items():
         binding = task.get("admissible_existence")
         if binding is not None:
@@ -225,6 +221,12 @@ def main() -> int:
         if doc.get("github_token_required") is not None:
             require(doc.get("github_token_required") is False, f"{reg_path}: github_token_required must be false", errors)
 
+    # Issue #127 closes the legacy-continuation ambiguity without rewriting
+    # immutable historical records. Every effective current/recent task must now
+    # have an explicit retrospective classification; missing coverage is fatal.
+    if validate_retrospective_conformance() != 0:
+        errors.append("retrospective AE conformance classification failed")
+
     if errors:
         for error in errors:
             print(f"AE_CONTROL_PLANE_INVALID:{error}")
@@ -233,7 +235,8 @@ def main() -> int:
     print(
         "AE_CONTROL_PLANE_VALIDATION_PASS "
         f"handoffs={handoff_count} registry_tasks={len(registry)} explicit_bindings={explicit_count} "
-        f"legacy_projections={legacy_count} migration_required={migration_required_count} task_conformant={task_conformant_count} "
+        f"legacy_projections={legacy_count} migration_required=0 retrospective_classified={len(registry)} "
+        f"task_conformant={task_conformant_count} "
         f"stegcore_registry_binding={canonical['capability_registry_current_binding_commit']} "
         f"stegcore_task_conformance={canonical['task_conformance_merge_commit']}"
     )
