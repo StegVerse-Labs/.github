@@ -1,0 +1,36 @@
+{
+  "schema": "stegverse.local-source-generation-executor-task-state/v0.1",
+  "task_id": "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "goal_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "originating_session_goals": ["G10-GENERALIZED-OWNER-MUTATION-EXECUTOR", "G11-RECURSIVE-SELF-BUILD-PROOF"],
+  "state": "HANDOFF_READY_BLOCKED_ON_EXPLICIT_AE_ACTIVATION",
+  "execution_owner": "local-source-generation-executor-worker after repository-native admission",
+  "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+  "manual_execution_allowed": false,
+  "manual_allowed_role": "NONE",
+  "handoff_ref": "handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
+  "worker_registry_ref": "control/worker-registry.d/local-source-generation-executor-001.json",
+  "adapter_ref": "process:local-source-generation-executor-v1",
+  "canonical_binder": "SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
+  "required_capability_evidence": [
+    "stegverse:capability:formalism-source-generation:v1 ACTIVATED + activation/integration proof",
+    "stegverse:capability:sovereign-local-model:v1 ACTIVATED + activation/integration proof"
+  ],
+  "blockers": [
+    "SOURCE_GENERATION_CAPABILITY_NOT_YET_ACTIVATED",
+    "SOVEREIGN_LOCAL_MODEL_NOT_YET_ACTIVATED"
+  ],
+  "machine_observable_release_condition": "Both canonical capability owners expose explicit ACTIVATED state with activation proof and integration evidence; an admitted owner manifest lacks a generation result; the worker acquires its normal collision-safe machine execution scope.",
+  "success_receipts": [
+    "receipts/admissible-source-generation-capability/generation-results/<delta_id>.json",
+    "receipts/local-source-generation-executor/<proof_id>-runtime.json",
+    "receipts/local-source-generation-executor/<proof_id>-teardown.json"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "provider_secret_export_allowed": false,
+  "wallet_signing_authority": "NONE",
+  "broadcast_authority": "NONE",
+  "next_executable_action": "Repository-native scheduler rechecks capability evidence; once both are explicitly ACTIVATED, execute the bounded local generation worker and pass its result to the existing #137 binder."
+}
