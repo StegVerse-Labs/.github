@@ -1,0 +1,99 @@
+{
+  "schema": "stegverse.session-goal-inventory/v4",
+  "inventory_id": "ADMISSIBLE-EXISTENCE-CORE-LOCAL-RUNTIME-TRADE-2026-08-14-V4",
+  "supersedes": "control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v3.json",
+  "repository": "StegVerse-Labs/.github",
+  "updated_at": "2026-08-14T18:08:00-05:00",
+  "session_scope": "StegCore Admissible-Existence review/conformance, canonical HANDOFF/Worker Task Registry verification, sovereign local-runtime discovery/launch/proof and formal local-model development, TV/TVC-only credential authority, explicit StegFin trade readiness through WALLET_HANDOFF_READY, worker assistance, and durable session consolidation.",
+  "originating_goal_ids": [
+    "G01-AE-DESIGN-SCOPE-REVIEW",
+    "G02-AE-HANDOFF-WORKER-CONFORMANCE",
+    "G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF",
+    "G04-FORMAL-LOCAL-MODEL-DEVELOPMENT",
+    "G05-TV-TVC-ONLY-CREDENTIAL-AUTHORITY",
+    "G06-SESSION-DURABLE-CONSOLIDATION",
+    "G07-SESSION-SCOPED-WORKER-ASSISTANCE",
+    "G08-STEGFIN-TRADE-READY"
+  ],
+  "explicit_goal_declarations": [
+    {
+      "declared_at": "2026-08-14T18:08:00-05:00",
+      "declaration": "All of these are the new goals.",
+      "goal_id": "G08-STEGFIN-TRADE-READY",
+      "goal_text": "Assist the workers and make this trade ready.",
+      "effect": "PROMOTES_CURRENT_TURN_GOAL_WITHOUT_GRANTING_WORKER_PROVIDER_OR_WALLET_AUTHORITY"
+    }
+  ],
+  "shared_directives": [
+    {
+      "directive": "Assist the workers",
+      "creates_originating_goal": false,
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "lineage_evidence_ref": "control/session-assistance-scope-policy.json#rules.assist_workers_semantics",
+      "archive_dependency": false,
+      "interpretation": "Assist only workers whose durable task lineage intersects an originating goal of this session."
+    },
+    {
+      "directive": "make this trade ready",
+      "creates_originating_goal": false,
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "lineage_evidence_ref": "explicit_goal_declarations[0] -> G08-STEGFIN-TRADE-READY",
+      "archive_dependency": true,
+      "interpretation": "The current user message independently promotes trade readiness to an originating goal; the directive itself does not grant execution authority."
+    }
+  ],
+  "goals": [
+    {"goal_id":"G01-AE-DESIGN-SCOPE-REVIEW","origin":"SESSION_HISTORY","status":"COMPLETE_VALIDATED","owner":"StegVerse-Labs/StegCore","archive_dependency":false},
+    {"goal_id":"G02-AE-HANDOFF-WORKER-CONFORMANCE","origin":"SESSION_HISTORY","status":"COMPLETE_VALIDATED_RELEASED","owner":"StegVerse-Labs/StegCore + StegVerse-Labs/.github","archive_dependency":false},
+    {"goal_id":"G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF","origin":"SESSION_HISTORY","status":"COMPLETE_RELEASED","owner":"StegVerse-002/micro-node-runtime","archive_dependency":false},
+    {"goal_id":"G04-FORMAL-LOCAL-MODEL-DEVELOPMENT","origin":"SESSION_HISTORY","status":"COMPLETE_RELEASED","owner":"StegVerse-002/micro-node-runtime","archive_dependency":false},
+    {"goal_id":"G05-TV-TVC-ONLY-CREDENTIAL-AUTHORITY","origin":"SESSION_HISTORY","status":"COMPLETE_AND_ONGOING_INVARIANT","owner":"StegVerse-Labs/TV + StegVerse-Labs/TVC","archive_dependency":false},
+    {"goal_id":"G06-SESSION-DURABLE-CONSOLIDATION","origin":"SESSION_HISTORY","status":"COMPLETE_VALIDATED_RELEASED","owner":"StegVerse-Labs/.github","archive_dependency":false},
+    {"goal_id":"G07-SESSION-SCOPED-WORKER-ASSISTANCE","origin":"SESSION_HISTORY","status":"ACTIVE_RECONCILIATION","owner":"StegVerse-Labs/.github","archive_dependency":true},
+    {"goal_id":"G08-STEGFIN-TRADE-READY","origin":"CURRENT_USER_EXPLICIT_GOAL","status":"ACTIVE_MACHINE_OWNED_EXECUTION_PENDING","owner":"StegVerse-Labs/stegfin-governance + StegVerse-Labs/.github registered StegFin worker + StegVerse-Labs/TV + StegVerse-Labs/TVC","archive_dependency":true}
+  ],
+  "worker_assistance_bindings": [
+    {"worker_or_task_id":"AE-HANDOFF-TASK-CONFORMANCE-001","session_goal_id":"G02-AE-HANDOFF-WORKER-CONFORMANCE","lineage_type":"DIRECT_GOAL_OWNER","lineage_evidence_ref":"StegVerse-Labs/StegCore/docs/AE_HANDOFF_TASK_CONFORMANCE_MIRROR_HANDOFF.md","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
+    {"worker_or_task_id":"ADMISSIBLE-EXISTENCE-CONTROL-PLANE-CONFORMANCE-001","session_goal_id":"G02-AE-HANDOFF-WORKER-CONFORMANCE","lineage_type":"INTEGRATION_DESCENDANT","lineage_evidence_ref":"docs/ADMISSIBLE_EXISTENCE_CONTROL_PLANE_MIRROR_HANDOFF.md","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
+    {"worker_or_task_id":"SOVEREIGN-LOCAL-MODEL-001","session_goal_id":"G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF","lineage_type":"DIRECT_GOAL_OWNER","lineage_evidence_ref":"StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
+    {"worker_or_task_id":"SHWP-ECOSYSTEM-CHAT-INFERENCE-001","session_goal_id":"G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF","lineage_type":"INTEGRATION_DESCENDANT","lineage_evidence_ref":"StegVerse-Labs/.github#60","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
+    {"worker_or_task_id":"STEGFIN-CONTINUITY-CARRIER-007","session_goal_id":"G08-STEGFIN-TRADE-READY","lineage_type":"DIRECT_GOAL_OWNER","lineage_evidence_ref":"handoffs/STEGFIN-CONTINUITY-CARRIER-007.json","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":true},
+    {"worker_or_task_id":"TVC-PROVIDER-OPERATION-BROKER-003","session_goal_id":"G08-STEGFIN-TRADE-READY","lineage_type":"DIRECT_DEPENDENCY","lineage_evidence_ref":"StegVerse-Labs/TVC/docs/PROVIDER_OPERATION_BROKER_MIRROR_HANDOFF.md","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":true},
+    {"worker_or_task_id":"TVC-CAPABILITY-RUNTIME-002","session_goal_id":"G08-STEGFIN-TRADE-READY","lineage_type":"VALIDATION_DESCENDANT","lineage_evidence_ref":"StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false}
+  ],
+  "collision_boundaries": {
+    "stegfin_live_execution": "MACHINE_OWNED_DO_NOT_MANUALLY_START",
+    "tvc_runtime_observer": "EXCLUSIVE_VALIDATION_DO_NOT_DUPLICATE",
+    "heartbeat_runtime_separation_issue_122": "ACTIVE_SEPARATE_SOURCE_SCHEMA_CLAIM_DO_NOT_TOUCH",
+    "provider_credentials": "TV/TVC_ONLY",
+    "wallet_signing_broadcast": "USER_ONLY"
+  },
+  "trade_readiness": {
+    "goal_id": "STEGFIN-BASE-ROUNDTRIP-001",
+    "current_state": "HANDOFF_READY_MACHINE_OWNED_TRANSPORT_SELECTION_AT_EXECUTION",
+    "canonical_handoff": "handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
+    "canonical_owner_state": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-CONTINUITY-CARRIER-007.json",
+    "worker_state": "AVAILABLE_HANDOFF_READY_NO_ACTIVE_CLAIM",
+    "resident_heartbeat_required": false,
+    "transport_alternatives": ["SAME_HOST_TV_TVC_UNIX_BROKER_PRESENT", "TVC-CAPABILITY-RUNTIME-002_READY_HTTPS"],
+    "terminal_predicate": "WALLET_HANDOFF_READY",
+    "signed": false,
+    "broadcast": false,
+    "current_blocker": "NO_LIVE_AUTHORIZED_CONTINUITY_EXECUTOR_PLUS_USABLE_CANONICAL_TV_TVC_TRANSPORT_OBSERVED_FROM_AVAILABLE_CONTROL_SURFACES"
+  },
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "archive_state": "NOT_READY_EXPLICIT_TRADE_GOAL_ACTIVE",
+  "session_unique_claims_remaining": 1,
+  "unassigned_session_requirements": 0,
+  "canonical_continuation": [
+    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
+    "handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
+    "StegVerse-Labs/stegfin-governance:docs/STEGFIN_CONTINUITY_CARRIER_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-CONTINUITY-CARRIER-007.json",
+    "StegVerse-Labs/TVC:tasks/TVC-CAPABILITY-RUNTIME-002.json",
+    "StegVerse-Labs/TVC:docs/PROVIDER_OPERATION_BROKER_MIRROR_HANDOFF.md",
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md"
+  ]
+}
