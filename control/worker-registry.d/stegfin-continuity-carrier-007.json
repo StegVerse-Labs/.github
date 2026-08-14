@@ -38,7 +38,7 @@
           "docs/STEGFIN_LOCAL_TVC_BROKER_FASTPATH_MIRROR_HANDOFF.md"
         ],
         "integration_evidence_refs": [
-          "workers/stegfin_continuity_carrier_worker.py",
+          "workers/stegfin_continuity_carrier_worker_v3.py",
           "control/process-worker-adapters.d/stegfin-continuity-carrier-007.json"
         ],
         "activation_proof_ref": null,
@@ -47,7 +47,10 @@
         ],
         "continuation_owner": "stegfin-continuity-carrier-worker + TV/TVC runtime authority/observer as selected at execution",
         "credential_authority": "TV/TVC",
-        "github_token_runtime_authority": false
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
       }
     }
   ],
