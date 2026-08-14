@@ -1,0 +1,72 @@
+{
+  "schema": "stegverse.local-source-generation-executor/v0.1",
+  "goal_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "task_id": "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "consumer_secret_or_token_authority": false,
+  "source_generation_capability_id": "stegverse:capability:formalism-source-generation:v1",
+  "local_model_capability_id": "stegverse:capability:sovereign-local-model:v1",
+  "owner_work_directory": "receipts/formalism-manifold-implementation-admission/owner-work",
+  "activation_envelope": "receipts/local-source-generation-executor/activation-state.json",
+  "generation_result_directory": "receipts/admissible-source-generation-capability/generation-results",
+  "receipt_directory": "receipts/local-source-generation-executor",
+  "runtime_proof_candidates": [
+    "receipts/ecosystem-chat-sovereign-inference/sovereign_local_model_proof.generated.json",
+    "runtime/sovereign/sovereign_local_model_proof.generated.json"
+  ],
+  "runtime_root_candidates": [
+    "workloads/micro-node-runtime",
+    "~/.stegverse/workloads/micro-node-runtime",
+    "/var/lib/stegverse/workloads/micro-node-runtime"
+  ],
+  "structured_endpoint_path": "/v1/source-generation",
+  "fallback_chat_endpoint_path": "/v1/chat/completions",
+  "health_path": "/health",
+  "allowed_lifetime_classes": ["ONE_SHOT_OPERATION", "SHORT_LIVED_WORKER"],
+  "default_lifetime_class": "ONE_SHOT_OPERATION",
+  "maximum_file_count": 32,
+  "maximum_total_bytes": 1048576,
+  "maximum_prompt_bytes": 524288,
+  "maximum_model_response_bytes": 2097152,
+  "request_timeout_seconds": 20,
+  "startup_timeout_seconds": 10,
+  "teardown_timeout_seconds": 5,
+  "required_runtime_markers": [
+    "tools/run_sovereign_model.py",
+    "tools/verify_sovereign_model_runtime.py",
+    "micro_node/local_model_runtime.py",
+    "models/stegverse_reference_language_model.v1.json"
+  ],
+  "secret_name_fragments": [
+    "TOKEN",
+    "SECRET",
+    "PASSWORD",
+    "PASSWD",
+    "API_KEY",
+    "PRIVATE_KEY",
+    "SEED_PHRASE",
+    "MNEMONIC",
+    "GITHUB_",
+    "GH_",
+    "OPENAI_",
+    "ANTHROPIC_",
+    "STRIPE_",
+    "RENDER_",
+    "VERCEL_",
+    "CLOUDFLARE_",
+    "AWS_",
+    "AZURE_",
+    "GOOGLE_"
+  ],
+  "authority_boundaries": {
+    "model_output_grants_authority": false,
+    "heartbeat_grants_authority": false,
+    "repository_presence_grants_authority": false,
+    "repository_mutation_authority": false,
+    "credential_authority": "TV/TVC_ONLY",
+    "merge_authority": false,
+    "release_authority": false,
+    "wallet_authority": false
+  }
+}
