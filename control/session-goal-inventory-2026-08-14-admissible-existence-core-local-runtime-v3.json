@@ -4,7 +4,7 @@
   "supersedes": "control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v2.json",
   "issue": "StegVerse-Labs/.github#143",
   "repository": "StegVerse-Labs/.github",
-  "updated_at": "2026-08-14T17:03:00-05:00",
+  "updated_at": "2026-08-14T17:06:00-05:00",
   "session_scope": "StegCore Admissible-Existence review/conformance, canonical HANDOFF/Worker Task Registry verification, sovereign local-runtime discovery/launch/proof and formal local-model development, TV/TVC-only credential boundary, and durable session consolidation.",
   "originating_goal_ids": [
     "G01-AE-DESIGN-SCOPE-REVIEW",
@@ -36,6 +36,23 @@
     {"worker_or_task_id":"SHWP-ECOSYSTEM-CHAT-INFERENCE-001","session_goal_id":"G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF","lineage_type":"INTEGRATION_DESCENDANT","lineage_evidence_ref":"StegVerse-Labs/.github#60","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
     {"worker_or_task_id":"STEGFIN-CONTINUITY-CARRIER-007","session_goal_id":"G07-SESSION-SCOPED-WORKER-ASSISTANCE","lineage_type":"VALIDATION_DESCENDANT","lineage_evidence_ref":"control/session-assistance-scope-policy.json","scope_decision":"OUT_OF_SCOPE_SHARED_DIRECTIVE","archive_dependency":false}
   ],
+  "release_validation": {
+    "validated_head": "63f4bed4e99e9c61ca51032656bcad347769c716",
+    "scope_gate_run": 31845094576,
+    "scope_gate_job": 94909771854,
+    "scope_gate_conclusion": "SUCCESS",
+    "org_control_plane_run": 31845094628,
+    "org_control_plane_job": 94909771991,
+    "org_control_plane_conclusion": "SUCCESS",
+    "org_aggregation_run": 31845094582,
+    "org_aggregation_job": 94909771891,
+    "org_aggregation_conclusion": "SUCCESS",
+    "heartbeat_worker_run": 31845094597,
+    "heartbeat_worker_job": 94909772072,
+    "heartbeat_worker_conclusion": "SUCCESS",
+    "release_receipt_commit": "b00eb458b6b8be1d327cb58345f873312c1086fb",
+    "issues_closed_completed": [143,146]
+  },
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": false,
   "archive_state": "READY_AFTER_DURABLE_TRANSFER",
