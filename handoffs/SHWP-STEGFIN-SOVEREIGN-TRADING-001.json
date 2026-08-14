@@ -2,7 +2,24 @@
   "schema":"stegverse.executable-handoff/v0.1",
   "handoff_id":"HANDOFF-SHWP-STEGFIN-SOVEREIGN-TRADING-001",
   "created_at":"2026-08-11T15:25:00Z",
+  "updated_at":"2026-08-14T20:40:00Z",
   "state":"HANDOFF_READY",
+  "admissible_existence":{
+    "capability_id":"stegverse:capability:stegfin-sovereign-internal-trading:v1",
+    "capability_version":"1.0.0",
+    "phase":"ADMISSIBLE",
+    "standing_evidence_refs":["StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md","StegVerse-Labs/stegfin-governance:task-state/STEGFIN-SOVEREIGN-CAPSULE-MATERIALIZATION-008.json"],
+    "admissibility_evidence_refs":["handoffs/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json","StegVerse-Labs/stegfin-governance:reports/sovereign-capsule-materialization/exact-blob-validation-20260814.json"],
+    "integration_evidence_refs":["workers/stegfin_sovereign_trading_worker.py","StegVerse-Labs/stegfin-governance:scripts/run_sovereign_trading_activation_round.py"],
+    "activation_proof_ref":null,
+    "blockers":["SAME_EXECUTION_INTERNAL_SETTLEMENT_RECONSTRUCTION_E2_NOT_YET_OBSERVED"],
+    "continuation_owner":"resident sovereign heartbeat + stegfin-sovereign-trading-worker",
+    "credential_authority":"TV/TVC",
+    "github_token_runtime_authority":false,
+    "temporal_class":"current",
+    "task_relationship":"validates_capability",
+    "target_phase":"ACTIVATED"
+  },
   "goal":{
     "goal_id":"STEGFIN-SOVEREIGN-TRADING-ACTIVATION",
     "objective":"Execute one zero-external-cost StegVerse-internal market match, atomic settlement, exact Master Records reconstruction and E2 binding under the canonical resident heartbeat before external Base capital activation.",
@@ -27,7 +44,13 @@
   "authority":{
     "authority_source":"StegVerse-Labs/stegfin-governance internal sovereign-market contracts; Master Records reconstruction evidence only; TV/TVC credential authority unaffected",
     "heartbeat_grants_execution_authority":false,
-    "policy_version":"shwp-single-hb-stegfin-sovereign-trading-v0.2"
+    "policy_version":"shwp-single-hb-stegfin-sovereign-trading-v0.2",
+    "credential_authority":"TV/TVC",
+    "github_token_production_authority":"NONE",
+    "github_token_required":false,
+    "non_tv_tvc_secret_or_token_allowed":false,
+    "wallet_signing_authority":false,
+    "broadcast_authority":false
   },
   "execution":{
     "required_capabilities":["runtime_observation","bounded_process_execution","durable_state_reconstruction","stegfin_sovereign_internal_trading_activation"],
