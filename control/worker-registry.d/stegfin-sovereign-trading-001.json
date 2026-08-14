@@ -19,7 +19,23 @@
     "state":"HANDOFF_READY",
     "task_id":"SHWP-STEGFIN-SOVEREIGN-TRADING-001",
     "worker_id":null,
-    "worker_instance_id":null
+    "worker_instance_id":null,
+    "admissible_existence":{
+      "capability_id":"stegverse:capability:stegfin-sovereign-internal-trading:v1",
+      "capability_version":"1.0.0",
+      "phase":"ADMISSIBLE",
+      "standing_evidence_refs":["StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md","StegVerse-Labs/stegfin-governance:task-state/STEGFIN-SOVEREIGN-CAPSULE-MATERIALIZATION-008.json"],
+      "admissibility_evidence_refs":["handoffs/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json","StegVerse-Labs/stegfin-governance:reports/sovereign-capsule-materialization/exact-blob-validation-20260814.json"],
+      "integration_evidence_refs":["workers/stegfin_sovereign_trading_worker.py","StegVerse-Labs/stegfin-governance:scripts/run_sovereign_trading_activation_round.py"],
+      "activation_proof_ref":null,
+      "blockers":["SAME_EXECUTION_INTERNAL_SETTLEMENT_RECONSTRUCTION_E2_NOT_YET_OBSERVED"],
+      "continuation_owner":"resident sovereign heartbeat + stegfin-sovereign-trading-worker",
+      "credential_authority":"TV/TVC",
+      "github_token_runtime_authority":false,
+      "temporal_class":"current",
+      "task_relationship":"validates_capability",
+      "target_phase":"ACTIVATED"
+    }
   }],
   "workers":[{
     "adapter_ref":"process:stegfin-sovereign-trading-v2",
@@ -33,6 +49,7 @@
   }],
   "authority_effect":"NONE_REGISTRATION_ONLY",
   "github_token_required":false,
+  "credential_authority":"TV/TVC",
   "provider_capability_authority":"TV_TVC_UNCHANGED",
   "wallet_signing_authority":false,
   "transaction_broadcast_authority":false
