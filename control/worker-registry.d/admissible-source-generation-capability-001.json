@@ -1,0 +1,69 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "SOURCE_GENERATION_CAPABILITY_NOT_YET_ACTIVATED",
+        "RESIDENT_RECURSIVE_OWNER_MUTATION_NOT_YET_PROVEN"
+      ],
+      "authorized_policy_version": "admissible-source-generation-capability-v0.1",
+      "block_ref": "ADMISSIBLE_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md",
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "ADMISSIBLE_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md",
+        "handoffs/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
+        "control/admissible-source-generation-capability.json",
+        "StegVerse-Labs/.github#137"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-ACTIVATION-001",
+      "handoff_ref": "handoffs/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:formalism-source-generation:v1",
+        "capability_version": "1.0.0",
+        "phase": "DECLARED",
+        "standing_evidence_refs": [],
+        "admissibility_evidence_refs": [],
+        "integration_evidence_refs": [],
+        "activation_proof_ref": null,
+        "blockers": [
+          "CAPABILITY_STANDING_ADMISSIBILITY_AND_ACTIVATION_PROOF_NOT_YET_ESTABLISHED",
+          "SOVEREIGN_LOCAL_MODEL_LIVE_ACTIVATION_NOT_YET_OBSERVED",
+          "TVC_REPOSITORY_BROKER_CANONICAL_ADMISSION_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "StegVerse-Labs/.github#137 + StegVerse-Labs/StegCore capability-registry owner + TV/TVC runtime/repository-operation owners",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "develops_capability",
+        "target_phase": "ACTIVATED"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:admissible-source-generation-capability-v1",
+      "authority_source": "handoffs/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json#authority",
+      "capabilities": ["admissible_source_generation_capability"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "admissible-source-generation-capability-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}
