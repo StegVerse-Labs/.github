@@ -1,6 +1,6 @@
 # Heartbeat Control-Plane Separation Mirror Handoff
 
-Updated: 2026-08-14T17:03:00-05:00
+Updated: 2026-08-14T18:09:00-05:00
 
 ## Authority and claim
 
@@ -14,15 +14,15 @@ canonical_pr: StegVerse-Labs/.github#158
 parent_handoff: docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md
 canonical_owner: StegVerse-Labs/.github
 implementation_claim: current-session / bounded source-schema separation
-active_validation_claim: current-session after source implementation
+active_validation_claim: current-session
 claim_created_at: 2026-08-14T16:58:30-05:00
-claim_release_condition: schema/control separation installed, deterministic validation PASS, PR merged, issue #122 records release evidence
+claim_release_condition: schema/control separation installed, deterministic validation PASS, PR merged, issue #122 records source/schema release evidence
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 non_tv_tvc_secret_or_token_required: false
 ```
 
-This scoped handoff is subordinate to the merged heartbeat carrier contract and does not grant authority to mutate live worker claims, fences, leases, runtime state, provider/model operations, credentials, or Master Records custody.
+This scoped handoff is subordinate to the merged heartbeat carrier contract and grants no authority to mutate live worker claims, fences, leases, runtime state, provider/model operations, credentials, wallet state, or Master Records custody.
 
 ## Canonical separation
 
@@ -40,7 +40,7 @@ tests/test_heartbeat_control_plane_separation.py
 .github/workflows/org-control-plane-validate.yml integration
 ```
 
-The legacy `schemas/heartbeat-subsignal.schema.json` and `control/heartbeat-subsignals.json` remain immutable compatibility/live projection surfaces pending machine-owned migration. This source/schema lane does not rewrite historical receipts or mutate the live projection.
+The legacy `schemas/heartbeat-subsignal.schema.json` and `control/heartbeat-subsignals.json` remain compatibility/live projection surfaces pending machine-owned migration. This source/schema lane does not rewrite historical receipts or mutate the live projection.
 
 ## Execution ownership and collision partition
 
@@ -53,7 +53,7 @@ The legacy `schemas/heartbeat-subsignal.schema.json` and `control/heartbeat-subs
   worker_registry_ref: NONE
   collision_scope: carrier/control schemas, semantics audit, deterministic validator/tests, workflow validation integration and PR #158 only; no live worker/runtime mutation
   release_condition: execution-capable validation passes, PR #158 merges, and issue #122 records source/schema release evidence
-  next_executable_action: repair only this scoped handoff validation defect, re-run organization control-plane validation, inspect exact new separation step, then merge if all current-head gates pass
+  next_executable_action: execute current-head no-token validation, inspect the exact separation validator and focused tests, merge PR #158 if all required gates pass, then release this source/schema claim
 ```
 
 ### WORKER-OWNED / DO NOT COMPETE
@@ -77,7 +77,7 @@ The legacy `schemas/heartbeat-subsignal.schema.json` and `control/heartbeat-subs
   worker_registry_ref: applicable canonical owner record
   collision_scope: authority conflicts involving admissibility, credentials, live runtime control, or Master Records custody
   release_condition: canonical authority owner resolves the exact conflict
-  next_executable_action: fail closed and preserve the carrier/control-plane separation rather than widening authority
+  next_executable_action: fail closed and preserve carrier/control-plane separation rather than widening authority
 ```
 
 ### COMPLETED / SUPERSEDED
@@ -94,24 +94,25 @@ The legacy `schemas/heartbeat-subsignal.schema.json` and `control/heartbeat-subs
 
 ## Validation evidence
 
-PR #158 first hosted organization-control-plane run `31844972170`, job `94909417619`, executed checkout/control-plane/active-worker checks successfully, then failed at HANDOFF ownership before the new schema separation validator could run. The inspected log identified two missing ownership sections: this scoped handoff and concurrently introduced `docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md` owned by #143/#146. This handoff defect is repaired here. The #143/#146 defect is not mutated by this lane; its owner has been notified because it independently blocks the shared organization validator.
+PR #158 run `31844972170` first exposed two HANDOFF ownership defects before the new schema validator. This handoff defect was repaired. The separately owned `SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md` defect was then repaired and released by #146; issue #146 records successful post-fix organization-control-plane validation. This commit intentionally advances PR #158 so GitHub synthesizes and validates against the current `main` rather than the stale pre-#146 merge base.
 
-Required validation command for this lane:
+Required validation:
 
 ```text
 python scripts/validate_heartbeat_control_plane_separation.py
 python -m unittest tests.test_heartbeat_control_plane_separation -v
 ```
 
-The mandatory hosted gate is `.github/workflows/org-control-plane-validate.yml`. Hosted validation is evidence only and grants no StegVerse runtime authority.
+Mandatory hosted gate: `.github/workflows/org-control-plane-validate.yml`. Hosted validation is evidence only and grants no StegVerse runtime authority.
 
 ## Cross-repository dependencies
 
 ```text
 StegVerse-Labs/.github#120 COMPLETE_RELEASED
+StegVerse-Labs/.github#146 COMPLETE_RELEASED shared validation blocker cleared
 StegVerse-Labs/StegCore#105 COMPLETE_RELEASED
-StegVerse-Labs/repo-standards#39 / PR #40 standards integration pending
-master-records/orchestration#33 / PR #34 terminal custody validation/integration pending
+StegVerse-Labs/repo-standards#39 / PR #40 standards integration separately owned
+master-records/orchestration#33 / PR #34 terminal custody separately owned
 ```
 
 ## Completion accounting
@@ -120,9 +121,9 @@ master-records/orchestration#33 / PR #34 terminal custody validation/integration
 source/schema files: 7/7 implemented on branch
 scaffolding/stubs: 0
 missing required files: 0
-focused deterministic validation: pending execution
-organization control-plane integration validation: blocked by concurrent #143/#146 handoff ownership defect after this handoff repair
-live runtime migration: machine-owned, not part of source/schema completion denominator
+focused deterministic validation: current-head hosted execution pending
+organization control-plane integration validation: current-head hosted execution pending
+live runtime migration: machine-owned, excluded from source/schema completion denominator
 ```
 
 ## Archive condition
