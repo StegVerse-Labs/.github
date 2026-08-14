@@ -5,7 +5,7 @@
 ```text
 organization: StegVerse-Labs
 repository: .github
-branch: feat/formalism-manifold-implementation-admission-001
+branch: main
 goal_id: FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001
 parent_goal: FORMALISM-MANIFOLD-ORCHESTRATION-001
 issue: #100
@@ -18,21 +18,24 @@ github_token_required: false
 archive_ready: false
 ```
 
-This handoff supersedes any earlier archive-ready interpretation in `FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md`. Durable recording or worker registration alone does not prove executable continuation.
+This handoff is the canonical continuation record for reconciliation-to-owner implementation admission. Live repository state and resident receipts supersede historical chat claims.
 
 ## Originating session requirement
 
 A StegVerse session is archive-ready only when every unresolved deficiency is terminal, owned by a live durable session claim, owned by an active authorized machine executor that can actually advance it, or is an explicit human-authority boundary with a durable action record. A blocked task is not archive-safe merely because a worker repeatedly observes the same blocker.
 
-## Active goal
+## Canonical bridge state — COMPLETE / RELEASED
 
-Install and canonically admit the reconciliation-to-owner implementation-admission bridge. After formalism/manifold reconciliation reaches `COMPLETED`, the bridge partitions implementation deltas by canonical repository owner, checks local owner handoff standing and active mutation-scope collisions, and emits bounded owner work manifests. It does not mutate owner repositories or manufacture mathematical/runtime authority.
+The implementation-admission bridge is merged and hosted validated:
 
-## Authority boundary
+```text
+PR #101: MERGED
+merge: 9e6fd4285be3e51a19a8a632844e5d6811cc1d2f
+claim: control/session-implementation-claim-2026-08-13-formalism-manifold-admission.json
+claim_state: RELEASED_TRANSFERRED
+```
 
-The coordinator may classify and route implementation deltas. It may not redefine AE mathematics, alter canonical StegGate evaluator semantics, write into AE/StegCore source, mint or export credentials, bypass branch protection, sign/broadcast transactions, or infer authority from coherence/gradient/reconciliation evidence. Credential authority remains TV/TVC. Owner source mutation requires a separately admitted repository-specific worker.
-
-## Installed implementation
+Installed bridge surfaces:
 
 ```text
 control/formalism-manifold-implementation-admission.json
@@ -45,82 +48,131 @@ data/formalism-manifold-implementation-admission/task-state.json
 receipts/formalism-manifold-implementation-admission/**
 ```
 
-The first seed delta is `MANIFOLD-GOVERNANCE-RUNTIME-KERNEL-001`, canonically owned by `StegVerse-Labs/StegCore`, with proposed new scope limited to a dedicated manifold handoff, runtime module, and test module. The bridge blocks rather than silently colliding with existing owner mutation scopes.
+The coordinator classifies/routs implementation deltas only. It may not redefine AE mathematics, alter canonical StegGate semantics, mint/export credentials, sign/broadcast, or infer authority from coherence/gradient/reconciliation evidence.
 
-## Archive-readiness correction installed
+## First owner delta — CANONICALLY IMPLEMENTED
 
-```text
-scripts/validate_archive_readiness.py
-tests/test_archive_readiness.py
-control/archive-readiness.json
-```
-
-The archive gate now rejects `PROGRESSING` as sufficient by itself. Unfinished work must prove an active bound machine claim/fence/runtime window, a live durable session claim, an explicit human-authority boundary, or a blocked task with an active resolver plus machine-observable release condition.
-
-## Blocking control-plane repair
-
-PR #101 initially exposed a pre-existing validator defect in `docs/STEGFIN_CONTINUITY_CARRIER_MIRROR_HANDOFF.md`: the handoff described machine ownership but omitted three literal ownership fields required by `scripts/validate_handoff_execution_ownership.py`. No competing open PR was found. The branch added only equivalent explicit metadata (`manual_execution_allowed`, `worker_registry_ref`, `next_executable_action`) without changing StegFin authority or execution semantics.
-
-## Hosted validation evidence
+The seed delta in `control/formalism-manifold-implementation-admission.json` is:
 
 ```text
-Heartbeat Worker Project - Validation Only / No GitHub Token Authority
-run: 31770158987
-result: SUCCESS
-
-Validate organization control plane - No GitHub Token Authority
-run: 31770158971
-result: SUCCESS
-
-Archive Readiness Validate - No GitHub Token Authority
-run: 31770158979
-result: SUCCESS
-
-Render Organization Handoff State - No GitHub Token Authority
-run: 31770158982
-result: SUCCESS
+delta_id: MANIFOLD-GOVERNANCE-RUNTIME-KERNEL-001
+canonical_owner: StegVerse-Labs/StegCore
+required_scope:
+  - MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md
+  - src/stegcore/manifold_governance.py
+  - tests/test_manifold_governance.py
 ```
 
-Validation proved executable-handoff compatibility, registry/adapter compatibility, full deterministic unit-suite success, non-mutating heartbeat dry run, archive-gate semantics, control-plane ownership invariants, and absence of GitHub credential-token authority. No non-TV/TVC secret/token path was added.
-
-## Active claim
+That bounded owner implementation now exists canonically in StegCore:
 
 ```text
-claim_ref: control/session-implementation-claim-2026-08-13-formalism-manifold-admission.json
-claim_state: ACTIVE / CLAIMED_FOR_IMPLEMENTATION
-release_condition: PR #101 is admitted to main and this session's next unresolved recursive-build deficiencies are either implemented or transferred to proven active executors
+StegVerse-Labs/StegCore issue: #91 CLOSED_COMPLETED
+StegVerse-Labs/StegCore PR: #92 MERGED
+StegVerse-Labs/StegCore merge: 625a6f64b2d35ec81c43b8faac971edd754c2c75
+owner handoff: MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md
 ```
 
-## Exact remaining deficiencies
+The kernel evaluates every transition only through canonical `stegcore.steggate.evaluate_admissibility`, freezes one base-manifold identity, performs deterministic dependency/conflict/bundle planning, fails closed on malformed population structure, and marks derived coherence/gradient observations non-authoritative. It never commits, performs external execution, or mints continuity receipts.
+
+A first hosted run exposed a replay-stability bug because time-bound canonical evaluation provenance entered the population plan hash. The owner implementation was corrected without changing canonical StegGate semantics. On corrected head `4304399db74bb2402a291ed62cb5e829ed8b469f`, all five owner validation workflows passed before merge:
+
+```text
+StegCore Tests: 31791276803 SUCCESS
+Validate StegCore Runtime: 31791276709 SUCCESS
+BCAT Gate: 31791276712 SUCCESS
+Test Readiness: 31791276725 SUCCESS
+Validate StegVerse 001 002 Baseline: 31791276745 SUCCESS
+```
+
+This proves the first admitted owner delta can enter its canonical owner repository, be corrected from observed validation evidence, pass hosted validation, and merge without using a NON-TV/TVC secret/token.
+
+## Source materialization transport — IMPLEMENTED / RUNTIME PROOF PENDING
+
+The former chat-selected repository transport path has been replaced by bounded machine surfaces:
+
+```text
+FORMALISM-SOURCE-DISCOVERY-001
+FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001
+FORMALISM-TVC-LOCAL-SPOOL-001
+FORMALISM-TVC-MATERIALIZATION-FOLLOWUP-001
+```
+
+Canonical `.github` evidence includes:
+
+```text
+PR #106 merged: cf33b9967a384539439742411611660873342b5f
+PR #108 merged: 407a85539d425d1cff6bbeae85adb775d652389b
+PR #110 merged: 224a58164b70e8c32cd7cd486624a7aab75fd2cc
+```
+
+The heartbeat-side path is credential-free. Workers receive no GitHub/provider/wallet/TVC credential; the fenced local spool exposes only a sandbox mirror. A sanitized exact TVC inspection receipt can deterministically advance to a bounded `MATERIALIZE_SOURCE_ARCHIVE` request. Actual GitHub credential-bearing execution remains exclusively TV/TVC.
+
+TVC generic repository-operation transport remains under `StegVerse-Labs/TVC#19/#20` and is not yet canonical validated by its governed TV/TVC local carrier. Therefore autonomous source materialization is implemented end-to-end at the contract/source level but has **not** yet been proven by a resident missing-source -> TVC -> materialized-root receipt cycle.
+
+## Remaining deficiencies
 
 ```text
 FIRST_COHORT_RECONCILIATION_NOT_OBSERVED
-  owner: canonical resident heartbeat + five formalism/manifold workers
-  release: four evidence receipts + reconciliation receipt COMPLETED
+  owner: canonical resident heartbeat + formalism/manifold workers
+  release: prerequisite lane receipts + reconciliation receipt COMPLETED on resident execution
 
-OWNER_SOURCE_MATERIALIZATION_NOT_PROVEN_AUTONOMOUS
-  owner: this session until an autonomous source-discovery/materialization continuation is installed or another live owner claim exists
-  release: first-cohort owner roots can be resolved by resident workers without chat intervention and without non-TV/TVC secrets/tokens
+OWNER_SOURCE_MATERIALIZATION_RUNTIME_NOT_OBSERVED
+  owner: .github source discovery/transport workers + StegVerse-Labs/TVC#19/#20
+  release: a missing first-cohort owner root is inspected/materialized through TVC and source discovery re-observes the unique handoff-bearing local root without chat intervention
 
-OWNER_SOURCE_MUTATION_EXECUTOR_NOT_GENERALIZED
-  owner: this session until a bounded owner-specific mutation executor is installed or another live owner claim exists
-  release: an admitted owner worker consumes an owner work manifest, creates/updates the owner mirror handoff first, mutates only admitted paths, validates, receipts, and enters the repository PR/merge path
+GENERALIZED_OWNER_MUTATION_EXECUTOR_NOT_PROVEN
+  owner: formalism/manifold recursive-build continuation
+  current evidence: first bounded seed owner delta completed in StegCore #91/#92
+  release: resident owner-work evidence can drive bounded owner source generation/mutation/validation/PR transport without a chat session, with handoff-first mutation and collision fencing
+
+FULL_RECURSIVE_SELF_BUILD_NOT_OBSERVED
+  owner: canonical resident heartbeat + TVC repository transport + owner repositories
+  release: discover gap -> reconcile -> admit owner -> generate/mutate bounded owner source -> validate/merge -> reconciliation re-observes gap removed
 ```
 
-## Current state
+## Authority / collision boundary
 
 ```text
-handoff: INSTALLED
-implementation-admission source: IMPLEMENTED
-archive-gate correction: IMPLEMENTED
-StegFin validator repair: IMPLEMENTED
-hosted validation: PASS
-canonical merge/admission: PENDING
-resident implementation-admission execution: NOT YET OBSERVED
-owner work manifest: NOT YET OBSERVED
-full recursive self-build: NOT COMPLETE
+credential authority: TV/TVC only
+NON-TV/TVC secret/token: prohibited
+GitHub token production/runtime authority outside TV/TVC: NONE
+AE mathematics: upstream authority; coordinator cannot redefine
+canonical StegGate: StegVerse-Labs/StegCore; coordinator cannot redefine
+coherence/gradient evidence: non-authoritative
+merge/release/deploy/sign/broadcast authority: not created by this bridge
+```
+
+## Current continuation
+
+```text
+formalism source materialization transport:
+  StegVerse-Labs/.github#105/#107
+  -> StegVerse-Labs/TVC#19/#20
+
+first bounded owner runtime delta:
+  COMPLETE at StegVerse-Labs/StegCore#91/#92
+
+resident formalism reconciliation:
+  canonical heartbeat + existing formalism/manifold worker registry
+```
+
+## Completion inventory
+
+```text
+implementation-admission bridge developed: COMPLETE
+implementation-admission hosted validation: COMPLETE
+implementation-admission canonical admission: COMPLETE
+first bounded owner delta source: COMPLETE
+first bounded owner delta hosted validation: COMPLETE
+first bounded owner delta canonical merge: COMPLETE
+credential-free .github transport/source-materialization source: COMPLETE
+TVC governed repository transport validation/admission: PENDING
+resident first-cohort reconciliation receipt: PENDING
+resident autonomous materialization proof: PENDING
+resident generalized owner mutation proof: PENDING
+full recursive self-build proof: PENDING
 ```
 
 ## Archive condition
 
-Do not archive this session merely after merging PR #101. The session remains required while an unresolved deficiency is not actually being advanced by another live session/claim or by a proven executable machine path. In particular, source materialization and owner-source mutation execution must be resolved or transferred before archive readiness can be claimed.
+Do not retain a chat merely to duplicate machine-owned heartbeat, TVC runtime, or trade execution. This formalism/manifold session may archive only after its remaining unique recursive-build implementation requirements are either completed or durably transferred to proven active executors. The first StegCore owner delta is complete; generalized chat-free owner mutation and TVC repository-transport validation remain unresolved continuation dependencies.
