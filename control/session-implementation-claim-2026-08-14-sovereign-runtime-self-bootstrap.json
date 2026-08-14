@@ -4,12 +4,13 @@
   "originating_goal": "remove the circular prerequisite that a resident sovereign heartbeat/source must already be executing before the sovereign runtime activation path can initiate",
   "organization": "StegVerse-Labs",
   "repository": ".github",
-  "branch": "feat/sovereign-runtime-self-bootstrap-001",
+  "branch": "feat/sovereign-runtime-self-bootstrap-002",
   "canonical_issue": "StegVerse-Labs/.github#160",
   "claimant": "current-session-bootstrap-dependency-lane",
-  "role": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION",
+  "role": "COMPLETE_RELEASED",
   "claim_created_at": "2026-08-14T18:18:30-05:00",
-  "claim_expiration_or_release_condition": "release after PR merge and exact merged-main validation; if no evidence-bearing update occurs within 24 hours, mark BLOCKED or release",
+  "claim_released_at": "2026-08-14T18:26:00-05:00",
+  "claim_expiration_or_release_condition": "SATISFIED: source merged and exact merged-main validation succeeded",
   "owned_surfaces": [
     "scripts/bootstrap_sovereign_runtime.py",
     "tests/test_bootstrap_sovereign_runtime.py",
@@ -26,14 +27,23 @@
     "do not use GitHub tokens or any NON-TV/TVC secret/token as runtime authority",
     "do not sign or broadcast wallet transactions"
   ],
-  "expected_evidence": [
-    "hosted environment rejection test PASS",
-    "incomplete source fail-closed test PASS",
-    "derived local node declaration test PASS",
-    "injected successful bootstrap orchestration test PASS",
-    "tokenless hosted validation PASS",
-    "exact merged-main validation PASS"
-  ],
-  "next_task_after_release": "existing G18/#59/#65 machine owner may invoke or consume the bootstrap path when establishing the sovereign carrier; live nine-predicate activation remains separately observable",
-  "state": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION"
+  "release_evidence": {
+    "superseded_pr": "StegVerse-Labs/.github#161",
+    "canonical_pr": "StegVerse-Labs/.github#162",
+    "canonical_pr_head": "efd2cb44970e384831e5b209f4376b1ec56c4346",
+    "merge_commit": "57518101d0fab81f83451582854c8803daf080b8",
+    "pr_head_validation_run": 31850258595,
+    "pr_head_validation_job": 94924581516,
+    "merged_main_validation_run": 31850285522,
+    "merged_main_validation_job": 94924652012,
+    "deterministic_tests": "5/5 PASS",
+    "hosted_runner_behavior": "FAIL_CLOSED_BEFORE_INSTALLER_OR_VERIFIER",
+    "credential_requirement": "NONE",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "workflow_authority_effect": "NONE_VALIDATION_ONLY",
+    "live_activation_claimed": false
+  },
+  "next_task_after_release": "existing G18/#59/#65 machine owner or an eligible local StegVerse-controlled entry point may consume scripts/bootstrap_sovereign_runtime.py to establish the native carrier; live completion remains the observed node-local nine-predicate activation.latest.json proof",
+  "state": "COMPLETE_RELEASED"
 }
