@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.1.0",
+  "goal_id": "FORMALISM-MANIFOLD-ORCHESTRATION-001",
+  "issue": 97,
+  "branch": "feat/formalism-manifold-orchestration-001",
+  "status": "INITIALIZING",
+  "coordination_authority": "StegVerse-Labs/.github",
+  "canonical_handoff": "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
+  "authority_boundary": {
+    "formalism_authority": "Admissible-Existence ecosystem repositories",
+    "runtime_authority": "StegVerse-Labs/StegCore canonical StegGate",
+    "orchestration_grants_policy_authority": false,
+    "heartbeat_grants_execution_authority": false,
+    "worker_lease_grants_formalism_authority": false
+  },
+  "lanes": [],
+  "workers": [],
+  "reconciliation_state": "PENDING_EXISTING_ORCHESTRATION_INSPECTION",
+  "next_action": "Inspect existing organization handoffs, durable runtime activation, heartbeat, worker registry, leases, and task-state contracts before adding orchestration machinery."
+}
