@@ -29,6 +29,16 @@ No GitHub token, provider API key, wallet key, bearer token, cloud credential, o
 
 ## Execution ownership and collision partition
 
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+collision_scope: stegfin:base-validation-entry:0xA503DCe5471492bbA2D06e9f78F4d9D6Bcc852aA:12.50-USDC-WETH
+release_condition: WALLET_HANDOFF_READY or fail-closed terminal receipt with same-worker claim release
+next_executable_action: repository-native TVC-CAPABILITY-RUNTIME-002 proves PRIMARY_RUNTIME_OBSERVABLE; then the machine scheduler may admit stegfin-continuity-carrier-worker after collision-safe claim acquisition
+```
+
+These explicit fields are the machine-readable ownership summary required by `scripts/validate_handoff_execution_ownership.py`; they restate existing ownership and do not expand authority.
+
 ### MANUAL / SESSION-STARTABLE
 
 No live operation is manually startable. The session validation/reconciliation claim is released because its exact-source validation work is complete and the remaining observation surface has an exclusive repository-native claim.
