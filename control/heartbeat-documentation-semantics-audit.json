@@ -1,0 +1,169 @@
+{
+  "schema": "stegverse.heartbeat-documentation-semantics-audit/v1",
+  "goal_id": "HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120",
+  "canonical_issue": "StegVerse-Labs/.github#120",
+  "canonical_handoff": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
+  "reviewed_at": "2026-08-14T11:50:00-05:00",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_required": false,
+  "canonical_invariants": {
+    "heartbeat_role": "CARRIER_SYNCHRONIZATION_SIGNAL",
+    "heartbeat_application_payload": false,
+    "heartbeat_dispatches_tasks": false,
+    "heartbeat_issues_claims_or_fences": false,
+    "heartbeat_routes_communications": false,
+    "heartbeat_grants_authority": false,
+    "carrier_amplitude_rule": "MINIMUM_SUFFICIENT_FOR_MAXIMUM_ADMISSIBLE_SIMULTANEOUS_COMPOSITE_SIGNAL_PLUS_BOUNDED_MARGIN",
+    "carrier_frequency_rule": "GATE_DERIVED_FROM_ADMISSIBLE_SIGNAL_SPECTRUM_AND_PATH_PASSBANDS",
+    "fixed_universal_frequency": false,
+    "communication_object": [
+      "manifest_packet",
+      "expiration_wrapper",
+      "data_packet"
+    ],
+    "terminal_triggers": [
+      "ENDPOINT_OBJECTIVE_COMPLETE",
+      "EXPIRED"
+    ],
+    "terminal_object": "MASTER_RECORDS_PACKET",
+    "transition_table_end_of_life": "MASTER_RECORDS"
+  },
+  "reviewed_surfaces": [
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "docs/ORG_MIRROR_HANDOFF.md",
+      "state": "CONFLICTING_NORMATIVE_PROSE",
+      "conflicts": [
+        "resident heartbeat described as runtime/task owner",
+        "claim/fence execution attributed to heartbeat carrier",
+        "worker execution conflated with heartbeat"
+      ],
+      "owner": "StegVerse-Labs/.github#120",
+      "next_action": "reconcile normative prose while preserving historical evidence"
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md",
+      "state": "CONFLICTING_NORMATIVE_PROSE",
+      "conflicts": [
+        "heartbeat -> TVC route wording",
+        "heartbeat-owned worker execution wording",
+        "heartbeat claim/fence execution wording"
+      ],
+      "owner": "StegVerse-Labs/.github#120",
+      "next_action": "separate carrier observation from control-plane execution"
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "docs/ALL_ORGS_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md",
+      "state": "CONFLICTING_NORMATIVE_PROSE",
+      "conflicts": [
+        "worker/task registry treated as heartbeat subsystem",
+        "heartbeat response network treated as communication layer",
+        "lease clock presented as heartbeat ownership rather than control-plane timing reference"
+      ],
+      "owner": "StegVerse-Labs/.github#120",
+      "next_action": "rename/separate federation control plane from carrier semantics"
+    },
+    {
+      "repository": "StegVerse-Labs/Site",
+      "path": "docs/ECOSYSTEM_HEARTBEAT_ORCHESTRATION.md",
+      "state": "CONFLICTING_NORMATIVE_PROSE",
+      "conflicts": [
+        "heartbeat data receiver/transmitter language",
+        "task transitions described as heartbeat production",
+        "orchestration coordination attributed to heartbeat"
+      ],
+      "owner": "StegVerse-Labs/Site#264",
+      "next_action": "replace heartbeat communication/orchestration semantics with carrier observation semantics"
+    },
+    {
+      "repository": "StegVerse-Labs/Site",
+      "path": "docs/ECOSYSTEM_HEARTBEAT_RESPONSE_NETWORK.md",
+      "state": "CONFLICTING_NORMATIVE_PROSE",
+      "conflicts": [
+        "heartbeat exchange envelopes carry MEMORY/ACTION/AWARENESS/AUTHORITY/EVIDENCE/BLOCKER/CAPABILITY/CONTEXT",
+        "SENT/RECEIVED/RESPONDED lifecycle presented as heartbeat protocol"
+      ],
+      "owner": "StegVerse-Labs/Site#264",
+      "next_action": "reclassify as manifest-packet communication network synchronized by carrier"
+    },
+    {
+      "repository": "StegVerse-Labs/StegCore",
+      "path": "docs/STEGCORE_ORG_HEARTBEAT_MIRROR_HANDOFF.md",
+      "state": "CONFLICTING_NORMATIVE_PROSE",
+      "conflicts": [
+        "organization heartbeat returns modeled as exchanged communication artifacts",
+        "repository federation manifests described as heartbeat payload semantics"
+      ],
+      "owner": "StegVerse-Labs/StegCore#104",
+      "next_action": "separate carrier observation from manifest/control evidence transport"
+    },
+    {
+      "repository": "StegVerse-Labs/admissibility-wiki",
+      "path": "docs/research/heartbeat-guided-path-selection-and-iict.md",
+      "state": "RESEARCH_ASSUMPTIONS_SUPERSEDED",
+      "conflicts": [
+        "heartbeat coordinates token rotation and refresh",
+        "heartbeat participates directly in path selection",
+        "MHz range suggested as possible heartbeat cadence"
+      ],
+      "owner": "StegVerse-Labs/admissibility-wiki#99",
+      "next_action": "preserve research provenance and mark carrier-correction model"
+    },
+    {
+      "repository": "StegVerse-Labs/repo-standards",
+      "path": "standards/ST-004_TRANSITION_TABLE_ELEMENTS.standard.md",
+      "state": "MISSING_REQUIRED_EOF_SEMANTICS",
+      "conflicts": [],
+      "gaps": [
+        "no universal Master Records End-Of-Life rule",
+        "no manifest+expiration+data communication lifecycle",
+        "no heartbeat non-communication invariant"
+      ],
+      "owner": "StegVerse-Labs/repo-standards#39",
+      "next_action": "coordinate standards update with Continuity authority"
+    },
+    {
+      "repository": "master-records/orchestration",
+      "path": "MASTER_RECORDS_ORCHESTRATION_MIRROR_HANDOFF.md",
+      "state": "PARTIAL_FOUNDATION_NOT_UNIVERSAL_EOF_CONTRACT",
+      "conflicts": [],
+      "gaps": [
+        "manifested custody exists but completed/expired communication-object conversion is not universalized as Transition Table EOL"
+      ],
+      "owner": "master-records/orchestration#33",
+      "next_action": "define Master Records packet terminal intake without duplicating existing custody"
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "path": "issue/12",
+      "state": "CONFLICTING_ACTIVE_ISSUE_PROSE",
+      "conflicts": [
+        "default 10 ms / nominal 100 cycles per second treated as heartbeat cadence",
+        "runtime owns heartbeat cadence and worker-control decisions",
+        "heartbeat-owned worker response/checkpoint required as activation predicate"
+      ],
+      "owner": "StegVerse-Labs/.github#120",
+      "next_action": "annotate #12 as superseded in semantics by #120 while retaining historical implementation evidence"
+    }
+  ],
+  "downstream_tasks": [
+    "StegVerse-Labs/.github#120",
+    "StegVerse-Labs/Site#264",
+    "StegVerse-Labs/StegCore#104",
+    "StegVerse-Labs/admissibility-wiki#99",
+    "StegVerse-Labs/repo-standards#39",
+    "master-records/orchestration#33"
+  ],
+  "publication_targets_after_acceptance": [
+    "StegVerse-Labs/Site",
+    "GCAT-BCAT-Engine/Publisher",
+    "StegVerse-Labs/admissibility-wiki",
+    "StegVerse-002/stegguardian-wiki"
+  ],
+  "historical_evidence_rewrite_allowed": false,
+  "runtime_refactor_required": true,
+  "runtime_refactor_claim_state": "UNCLAIMED_PENDING_CANONICAL_CONTRACT_ACCEPTANCE",
+  "audit_state": "INITIAL_CROSS_REPOSITORY_REVIEW_DURABLE"
+}
