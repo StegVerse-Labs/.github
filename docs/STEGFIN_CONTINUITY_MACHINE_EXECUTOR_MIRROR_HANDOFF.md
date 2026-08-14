@@ -1,6 +1,6 @@
 # StegFin Continuity Machine Executor Mirror Handoff
 
-Updated: 2026-08-14T18:17:00-05:00
+Updated: 2026-08-14T18:26:00-05:00
 
 ```text
 goal_id: STEGFIN-CONTINUITY-MACHINE-EXECUTOR-008
@@ -13,27 +13,96 @@ credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 wallet_signing_authority: USER_ONLY
 broadcast_authority: USER_ONLY
-state: CLAIMED_FOR_IMPLEMENTATION
+state: SOURCE_COMPLETE_VALIDATED_RELEASED_HOST_INSTALLATION_PENDING
 ```
 
-## Gap proved before claim
+## Gap closed
 
 The canonical trade handoff permits `ANY_AUTHORIZED_STEGVERSE_CONTINUITY_EXECUTOR`, makes the resident heartbeat optional, binds execution to `MACHINE_SCHEDULER_ONLY`, and requires the existing worker itself to acquire the canonical collision-safe continuity claim through `scripts/acquire_stegfin_continuity_claim.py`.
 
-Repository inspection found the worker, process adapter fragment and resident-heartbeat adapter machinery, but no task-specific non-heartbeat machine executor or host-start delivery surface for this HANDOFF_READY continuity task. The generic `ProcessWorkerAdapter` requires a pre-existing task claim/fence before invoking a worker; manufacturing such a claim in a new carrier would violate the trade handoff's `A carrier invents its own claim or fence` failure predicate. Therefore this implementation must **not** mint a replacement claim/fence. It may invoke only the existing self-claiming StegFin continuity worker on an already-declared non-hosted StegVerse node; the worker remains the sole continuity-claim issuer.
+Before this task, the repository had the worker, process-adapter fragment and resident-heartbeat adapter machinery but no task-specific non-heartbeat machine executor or rootless host-start delivery surface for this HANDOFF_READY continuity task. The generic heartbeat `ProcessWorkerAdapter` requires a pre-existing claim/fence and therefore could not lawfully be repurposed as the non-heartbeat carrier because the trade handoff explicitly forbids a carrier from inventing its own claim/fence.
 
-## Claim
+That source gap is now closed without changing the canonical claim issuer, StegFin worker, TV/TVC broker/runtime authority, heartbeat state, or wallet authority.
+
+## Released implementation
+
+```text
+scripts/run_stegfin_continuity_machine_executor.py
+scripts/install_stegfin_continuity_machine_service.py
+control/stegfin-continuity-machine-executor.json
+data/stegfin-continuity-machine-executor/task-state.json
+tests/test_stegfin_continuity_machine_executor.py
+.github/workflows/stegfin-continuity-machine-executor.yml
+receipts/stegfin-continuity-machine-executor/source-validation-20260814.json
+```
+
+Key commits:
+
+```text
+handoff claim: 7681c23499f221d614cbfe519d68fbf4f70e83ed
+executor: cb9123f6632899f738f897e6c6d2ab9e1e2c3fdc
+rootless installer: 09e66212d8625b55d2f5800abe4edc398a06e4d4
+installer hardening: 95dc1d269268d292c3ddc370ecf82c2faafeaf88
+policy: a9f14edd749701a2542e1dffb1255fc4fa041c33
+task-state initial: 63735646c2f84dad35dcc3bf70f094cbc0c7b0e4
+tests: 2de66dee6473c71bed5783d7b7857af7f6bda179
+focused workflow: b0d03891817b5ca764f097f1ae70e604eb192146
+source validation receipt: cbaa3255fef7761d270029cde9b8aa8a7ea729a9
+released task-state: 659b12303e349928a435b5648db9deb2efcf96de
+```
+
+## Machine contract
+
+The executor is a one-shot local host adapter, not a heartbeat and not an authority source. It:
+
+- rejects GitHub Actions, CI, Render, Vercel and Cloudflare-hosted execution;
+- requires an existing `/etc/stegverse/node.json` or `~/.stegverse/node.json` sovereign-node declaration with `declared=true`, `credential_authority=TV/TVC`, and `github_token_required=false`;
+- requires the canonical handoff to remain machine-only and the canonical registry task to remain `HANDOFF_READY` with no existing claim and the worker `AVAILABLE`;
+- invokes only `workers/stegfin_continuity_carrier_worker_v3.py`;
+- passes `claim_id=null` and no heartbeat timing/fence to the child, so the executor does not invent a claim/fence; the existing worker remains the canonical continuity-claim issuer;
+- strips GitHub/provider/wallet/cloud credential-like environment variables and forwards only bounded non-secret source-location/transport values;
+- accepts COMPLETE only when the worker transition is exactly `STEGFIN_CONTINUITY_WALLET_HANDOFF_READY` and the durable receipt independently proves TV/TVC authority, no non-TV/TVC secret/token, no provider-secret export, `signed=false`, and `broadcast=false`;
+- writes a non-secret executor receipt under `receipts/stegfin-continuity-machine-executor/`.
+
+The native delivery installer produces a rootless systemd-user service on Linux or LaunchAgent on macOS. It is `oneshot`, retries only non-successful executions, embeds no credential material, does not replace the heartbeat, and creates no execution authority. Hosted activation is explicitly refused.
+
+## Validation evidence
+
+Focused validation is complete:
+
+```text
+workflow: StegFin Continuity Machine Executor - Validation Only / No GitHub Token Authority
+run: 31850156719
+job: 94924299352
+conclusion: SUCCESS
+focused tests: 8/8 PASS
+compile: PASS
+hosted execution fail-closed: PASS
+rootless service materialization: PASS_NON_AUTHORIZING
+workflow non-authorizing proof: PASS
+GITHUB_TOKEN/GH_TOKEN/GITHUB_PAT present in validation process: false
+```
+
+The broader Heartbeat Worker Project run `31850078913`, job `94924085568`, executed all eight new executor tests successfully but its overall repository suite had one unrelated failure in the concurrently changing Admissible-Existence source-generation retrospective binding. That surface is owned by a parallel workstream and is explicitly outside this claim; no competing mutation was made. The focused validation is therefore authoritative for this bounded source package while the unrelated repository-wide reconciliation remains separately owned.
+
+Receipt:
+
+```text
+receipts/stegfin-continuity-machine-executor/source-validation-20260814.json
+```
+
+## Claim disposition
 
 ```text
 claim_ref: control/session-implementation-claim-2026-08-14-stegfin-continuity-machine-executor.json
 claimant: current ChatGPT continuation session
-role: CLAIMED_FOR_IMPLEMENTATION
 claim_created_at: 2026-08-14T18:17:00-05:00
-claim_expires_at: 2026-08-14T19:17:00-05:00
-release_condition: executor + rootless host delivery + tests + deterministic/hosted validation receipt committed; source claim released to canonical machine/TV/TVC owners
+claim_expiration: 2026-08-14T19:17:00-05:00
+source_release_condition: SATISFIED
+source_claim_disposition: RELEASE_TO_AUTHORIZED_STEGVERSE_NODE_AND_CANONICAL_STEGFIN_WORKER after final inventory/claim reconciliation
 ```
 
-## Collision exclusions
+Collision exclusions remain absolute:
 
 - no heartbeat state, claim, fence or lease mutation;
 - no alternate StegFin continuity claim issuer;
@@ -41,36 +110,29 @@ release_condition: executor + rootless host delivery + tests + deterministic/hos
 - no provider secret input/export;
 - no GitHub token runtime authority;
 - no wallet contact/sign/broadcast;
-- no mutation inside issue #122 runtime-separation claim;
 - no live provider operation from hosted validation or chat.
 
-## Required machine contract
+## Activation boundary still open
 
-The executor is a **one-shot local host adapter**, not a heartbeat and not an authority source. It must fail closed unless:
+**Repository source completion is not host activation and is not trade completion.** No available connector in this chat is the declared sovereign/local StegVerse host, so the native service was not installed or started from chat. Render and GitHub Actions are not substitutes.
 
-1. execution is non-hosted;
-2. `/etc/stegverse/node.json` or `~/.stegverse/node.json` is a valid declared StegVerse node marker with TV/TVC credential authority and no GitHub-token requirement;
-3. canonical StegFin/TV/TVC source roots are already materialized locally without runtime checkout;
-4. the current handoff remains machine-only and the registry worker remains AVAILABLE/HANDOFF_READY without an existing execution claim;
-5. a usable canonical transport can be selected by the existing worker (real local TV/TVC Unix socket or existing HTTPS READY evidence);
-6. the child environment strips GitHub/provider/wallet/cloud credentials;
-7. the existing `stegfin_continuity_carrier_worker_v3.py` acquires the collision-safe continuity claim itself and returns one valid worker response.
-
-On COMPLETE, the executor accepts only `STEGFIN_CONTINUITY_WALLET_HANDOFF_READY` and re-verifies the durable worker receipt has TV/TVC authority, no non-TV/TVC secret/token, no provider-secret export, `signed=false`, and `broadcast=false`.
-
-## Planned source surfaces
+Exact next authority-owned action on an already-declared authorized non-hosted StegVerse node with locally materialized canonical source:
 
 ```text
-scripts/run_stegfin_continuity_machine_executor.py
-scripts/install_stegfin_continuity_machine_service.py
-tests/test_stegfin_continuity_machine_executor.py
-control/stegfin-continuity-machine-executor.json
-data/stegfin-continuity-machine-executor/task-state.json
-receipts/stegfin-continuity-machine-executor/source-validation-20260814.json
+python scripts/install_stegfin_continuity_machine_service.py --root <local-StegVerse-Labs-.github-root>
 ```
 
-The installer may create a rootless native user service only. It may not activate from a hosted environment and may not include credentials. Actual service installation/activation remains an already-authorized StegVerse-node operation; repository validation is not production activation.
+The resulting native service invokes the released executor. The executor invokes the existing worker. The worker self-acquires the canonical collision-safe continuity claim, selects a real same-host TV/TVC Unix broker when present or the existing HTTPS READY path otherwise, performs only bounded pretrade preparation, and stops at USER_ONLY wallet action.
 
-## Next executable action
+Machine-observable completion remains:
 
-Implement the bounded executor and rootless service delivery, validate all fail-closed boundaries and release this source claim. Actual trade preparation remains machine-owned and may execute only after this source is installed on an authorized node with canonical TV/TVC transport.
+```text
+WALLET_HANDOFF_READY
+credential_authority=TV/TVC
+non_tv_tvc_secret_or_token_used=false
+provider_secret_exported=false
+signed=false
+broadcast=false
+```
+
+Until a native service activation receipt and terminal/fail-closed worker receipt exist, `G08-STEGFIN-TRADE-READY` remains active and this handoff must not claim governed activation.
