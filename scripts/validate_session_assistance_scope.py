@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 import json
+import re
 from pathlib import Path
 
 POLICY_PATH = Path('control/session-assistance-scope-policy.json')
-INVENTORY_GLOB = 'control/session-goal-inventory-*-v3.json'
+INVENTORY_GLOB = 'control/session-goal-inventory-*.json'
+_VERSION_RE = re.compile(r'^(?P<base>.+)-v(?P<version>\d+)\.json$')
 
 
 def load(path: Path):
@@ -12,6 +14,20 @@ def load(path: Path):
 
 def fail(message: str):
     raise SystemExit(f'SESSION_ASSISTANCE_SCOPE_FAIL: {message}')
+
+
+def latest_inventory_paths(root: Path = Path('.')):
+    latest = {}
+    for path in root.glob(INVENTORY_GLOB):
+        match = _VERSION_RE.match(str(path))
+        if not match:
+            continue
+        base = match.group('base')
+        version = int(match.group('version'))
+        prior = latest.get(base)
+        if prior is None or version > prior[0]:
+            latest[base] = (version, path)
+    return [entry[1] for entry in sorted(latest.values(), key=lambda x: str(x[1]))]
 
 
 def validate_inventory(path: Path, policy: dict):
@@ -66,9 +82,9 @@ def validate_inventory(path: Path, policy: dict):
 
 def main():
     policy = load(POLICY_PATH)
-    paths = sorted(Path('.').glob(INVENTORY_GLOB))
+    paths = latest_inventory_paths()
     if not paths:
-        fail(f'no v3 inventories found for {INVENTORY_GLOB}')
+        fail(f'no versioned inventories found for {INVENTORY_GLOB}')
     bindings = 0
     for path in paths:
         bindings += validate_inventory(path, policy)
