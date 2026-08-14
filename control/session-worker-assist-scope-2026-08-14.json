@@ -2,67 +2,71 @@
   "schema": "stegverse.session-worker-assist-scope/v1",
   "scope_id": "LOCAL-RUNTIME-AE-WORKER-ASSIST-2026-08-14",
   "created_at": "2026-08-14T16:49:00-05:00",
+  "updated_at": "2026-08-14T16:55:00-05:00",
   "repository": "StegVerse-Labs/.github",
   "governing_inventory": "control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v2.json",
-  "clarification": "Assist workers means assist the canonical workers currently executing any goal of this session. It does not mean route every session or worker toward StegFin or WALLET_HANDOFF_READY.",
-  "anti_convergence_rule": "Do not select StegFin merely because it is an unresolved operational boundary. Before taking work, inspect the complete session goal inventory, current HANDOFFs, Worker Task Registry, Admissible-Existence conformance state, and active claims. If another session or machine lane already owns the same task/collision scope, select a distinct validation/integration/reconciliation role or assist a different unclaimed or under-supported session goal.",
+  "clarification": "Assist workers means assist only canonical workers currently executing goals that belong to this session. Workers, tasks, issues, repositories, capabilities, or adjacent workstreams outside the current session goal inventory are out of scope even when they are active, important, nearby, or technically related.",
+  "scope_rule": "Do not select any worker or work item outside the goals of the current session. Every assisted worker must be traceable to at least one goal in the governing session goal inventory before this session may implement, validate, integrate, reconcile, observe, propagate, or otherwise assist that worker.",
+  "anti_convergence_rule": "Within the current session goal set, do not converge repeatedly on one boundary merely because it is unresolved. First enumerate the session goals, then inspect the canonical HANDOFF, Worker Task Registry, Admissible-Existence state, and active claim for each eligible goal. Select only work that belongs to the current session and is unclaimed or admits a genuinely distinct noncolliding support role.",
   "goal_families": [
     {
       "family": "sovereign_local_model_runtime",
       "goals": ["G02-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF", "G03-FORMAL-LOCAL-MODEL-DEVELOPMENT", "G11-RECURSIVE-SELF-BUILD-PROOF"],
       "canonical_owners": ["StegVerse-002/micro-node-runtime", "formalism reconciliation/source-generation/owner-mutation chain"],
-      "priority_rule": "Source-complete work must not be confused with ACTIVATED capability state; assist live integration, proof, and recursive self-build gaps without duplicating released model source."
+      "priority_rule": "Assist only when the selected worker is executing one of these session goals; source-complete work must not be confused with ACTIVATED capability state, and released model source must not be duplicated."
     },
     {
       "family": "formalism_and_owner_mutation",
       "goals": ["G06-AUTONOMOUS-SOURCE-DISCOVERY-MATERIALIZATION", "G07-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION", "G08-FIRST-MANIFOLD-RUNTIME-KERNEL", "G10-GENERALIZED-OWNER-MUTATION-EXECUTOR", "G15-REOBSERVE-OWNER-IMPLEMENTATIONS"],
       "canonical_owners": ["StegVerse-Labs/.github formalism/manifold workers", "TV/TVC repository-operation authority", "StegVerse-Labs/StegCore"],
-      "priority_rule": "Assist missing-source materialization, generalized owner mutation, re-observation and recursive machine continuation where claims permit."
+      "priority_rule": "Assist only workers whose active task is traceable to these session goals, subject to claim and collision boundaries."
     },
     {
       "family": "admissible_existence_and_control_plane",
       "goals": ["G09-PRESERVE-CANONICAL-STEGGATE-SEMANTICS", "G12-WORKER-REGISTRY-AND-HANDOFF-AE-CONFORMANCE", "G14-DUPLICATE-EXECUTION-AND-STALE-CLAIM-PREVENTION"],
       "canonical_owners": ["StegVerse-Labs/StegCore", "StegVerse-Labs/.github organization control plane"],
-      "priority_rule": "Keep HANDOFF and Worker Task Registry conformance synchronized with newest StegCore Admissible-Existence semantics; fail closed on authority or lifecycle drift."
+      "priority_rule": "Assist only the AE/control-plane work expressly included in this session inventory; fail closed on authority or lifecycle drift."
     },
     {
       "family": "sovereign_heartbeat_and_federation",
       "goals": ["SHWP-DURABLE-RUNTIME-ACTIVATION", "SHWP-ALL-ORG-FEDERATION-001", "SHWP-REPO-HEARTBEAT-FEDERATION-001"],
       "canonical_owners": ["resident sovereign heartbeat", "repository federation workers"],
-      "priority_rule": "Assist review-required activation/federation work through distinct source, validation or reconciliation lanes; do not seize machine-owned activation claims."
+      "priority_rule": "Assist these workers only because these tasks are present in the current session goal inventory; do not generalize assistance to unrelated heartbeat or federation work."
     },
     {
       "family": "tvc_and_hil_runtime_evidence",
       "goals": ["G04-TV-TVC-ONLY-CREDENTIAL-AUTHORITY", "G05-TVC-REPOSITORY-OPERATION-BROKER", "HIL-CONTROLLED-CYCLE-RUNTIME-001"],
       "canonical_owners": ["StegVerse-Labs/TV", "StegVerse-Labs/TVC"],
-      "priority_rule": "Preserve TV/TVC-only credential authority while assisting source/evidence/runtime gaps; never fabricate authenticated review or publication evidence."
+      "priority_rule": "Assist only TV/TVC or HIL workers tied to these session goals; preserve TV/TVC-only credential authority and never fabricate authenticated review or publication evidence."
     },
     {
       "family": "transaction_discovery_and_master_records",
       "goals": ["TRANSACTION-DISCOVERY-SHARED-STORE-003", "MASTER-RECORDS-MANIFESTED-OPERATION-HARDENING-031-VALIDATION-SUPPORT"],
       "canonical_owners": ["StegVerse-Labs/StegCore#83", "master-records/orchestration existing owner"],
-      "priority_rule": "Assist current owner work with noncolliding consumer binding, deterministic validation, reconstruction, custody, persistence or replay evidence."
+      "priority_rule": "Assist only the specifically inventoried transaction-discovery and Master Records work; unrelated work in those repositories is outside this session."
     },
     {
       "family": "stegfin_trade_readiness",
       "goals": ["G01-STEGFIN-TRADE-READY", "STEGFIN-CONTINUITY-CARRIER-007"],
       "canonical_owners": ["stegfin-continuity-carrier-worker", "TV/TVC runtime authority/observer", "USER_ONLY wallet boundary"],
-      "priority_rule": "StegFin is one session goal family, not the default destination for worker assistance. Assist only when the selected task is unclaimed or this session has a genuinely distinct noncolliding support role."
+      "priority_rule": "Assist StegFin workers only because this trade-readiness goal is explicitly in the current session; do not let its unresolved state expand the session into unrelated financial work."
     },
     {
       "family": "downstream_release_propagation",
       "goals": ["G16-DOWNSTREAM-RELEASE-PROPAGATION"],
       "canonical_owners": ["StegVerse-Labs/Site", "GCAT-BCAT-Engine/Publisher", "admissibility-wiki", "stegguardian-wiki"],
-      "priority_rule": "Propagate only after applicable activation/release authority exists; do not create publication work merely to keep a session active."
+      "priority_rule": "Assist only propagation explicitly required by this session's goals and only after applicable activation/release authority exists."
     }
   ],
   "worker_selection_procedure": [
-    "Read the complete current session goal inventory before choosing work.",
-    "Read the applicable *_MIRROR_HANDOFF.md and Worker Task Registry/HANDOFF pair for the candidate goal.",
+    "Read the complete current session goal inventory before choosing any worker or task.",
+    "Reject any candidate worker or task that cannot be traced directly to at least one current session goal.",
+    "For an eligible session-goal worker, read the applicable *_MIRROR_HANDOFF.md and Worker Task Registry/HANDOFF pair.",
     "Apply current StegCore Admissible-Existence conformance and lifecycle state.",
-    "Inspect active claims/collision scope and current machine ownership.",
-    "Prefer an unclaimed executable gap within any session goal family over duplicating an already-claimed StegFin task.",
-    "If all implementation scopes are claimed, take a distinct validation/integration/reconciliation role only where it produces new evidence or removes a real blocker.",
+    "Inspect active claims, collision scope, and current machine ownership.",
+    "Among eligible session-goal workers, prefer an unclaimed executable gap over duplicating an already-claimed task.",
+    "If eligible implementation scopes are claimed, take a distinct validation/integration/reconciliation role only where it produces new evidence or removes a real blocker for a current session goal.",
+    "Do not use activity elsewhere in the ecosystem as justification to widen this session's scope.",
     "Record durable evidence and release the support claim when complete."
   ],
   "credential_authority": "TV/TVC",
@@ -70,5 +74,5 @@
   "non_tv_tvc_secret_or_token_allowed": false,
   "wallet_signing_authority": "USER_ONLY",
   "broadcast_authority": "USER_ONLY",
-  "archive_effect": "NONE_BY_ITSELF; this file corrects worker-assist routing semantics and does not declare any product or session goal complete."
+  "archive_effect": "NONE_BY_ITSELF; this file corrects worker-assist scope semantics and does not declare any product or session goal complete."
 }
