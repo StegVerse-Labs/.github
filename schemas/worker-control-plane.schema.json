@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/worker-control-plane.schema.json",
+  "title": "StegVerse Worker Control Plane",
+  "description": "Explicit non-heartbeat control-plane representation for admitted workers, claims, fences, leases, and federation/control state.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "generation", "carrier_observation_ref", "worker_registry_ref", "active_workers", "authority"],
+  "properties": {
+    "schema": {"const": "stegverse.worker-control-plane/v1"},
+    "generation": {"type": "integer", "minimum": 1},
+    "carrier_observation_ref": {"type": "string", "minLength": 1},
+    "worker_registry_ref": {"const": "control/worker-registry.json"},
+    "active_workers": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/worker"}
+    },
+    "transport_leases": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/transportLease"}
+    },
+    "federation_state_refs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["credential_authority", "github_token_runtime_authority", "carrier_grants_execution_authority"],
+      "properties": {
+        "credential_authority": {"const": "TV/TVC"},
+        "github_token_runtime_authority": {"const": false},
+        "carrier_grants_execution_authority": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "worker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "worker_id", "claim_id", "fencing_token", "lease", "state", "authority_effect"],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 1},
+        "goal_id": {"type": ["string", "null"]},
+        "worker_id": {"type": "string", "minLength": 1},
+        "worker_instance_id": {"type": ["string", "null"]},
+        "claim_id": {"type": "string", "minLength": 1},
+        "fencing_token": {"type": "integer", "minimum": 1},
+        "state": {"enum": ["CLAIMED", "ACTIVE", "BLOCKED", "RETRY", "REVIEW_REQUIRED", "COMPLETE", "FAILED", "SUPERSEDED", "EXPIRED"]},
+        "lease": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["basis", "start_reference", "end_reference_exclusive", "active"],
+          "properties": {
+            "basis": {"type": "string", "minLength": 1},
+            "start_reference": {"type": "integer", "minimum": 0},
+            "end_reference_exclusive": {"type": "integer", "minimum": 1},
+            "active": {"type": "boolean"}
+          }
+        },
+        "handoff_ref": {"type": ["string", "null"]},
+        "admissible_existence_ref": {"type": ["string", "null"]},
+        "authority_effect": {"const": false}
+      }
+    },
+    "transportLease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lease_id", "state", "dependent_tasks", "authority_effect"],
+      "properties": {
+        "lease_id": {"type": "string", "minLength": 1},
+        "state": {"enum": ["IDLE", "OPEN_REQUESTED", "OPEN", "EXTENDING", "HANDOFF_READY", "CLOSE_REQUESTED", "CLOSED"]},
+        "dependent_tasks": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "authority_effect": {"const": false}
+      }
+    }
+  }
+}
