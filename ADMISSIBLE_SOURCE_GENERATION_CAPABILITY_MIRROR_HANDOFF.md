@@ -1,13 +1,16 @@
 # Admissible Source-Generation Capability Mirror Handoff
 
+Updated: 2026-08-14T17:27:00-05:00
+
 ## Source of truth
 
 ```text
 organization: StegVerse-Labs
 repository: .github
-branch: feat/admissible-source-generation-capability-137
+branch: main
 goal_id: ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-ACTIVATION-001
 issue: #137
+source_merge: eb37e12d63850d820054e2c85c1ff35dc666a2c3
 parent_goal: FORMALISM-OWNER-MUTATION-EXECUTOR-001
 formalism_authority: Admissible-Existence/AE + RTG + GTG + TT + STCM
 canonical_runtime_authority: StegVerse-Labs/StegCore / stegcore.steggate.evaluate_admissibility
@@ -16,10 +19,12 @@ local_model_owner: StegVerse-002/micro-node-runtime
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 non_TV_TVC_secret_or_token_allowed: false
-archive_ready: false
+source_state: COMPLETE_VALIDATED_RELEASED
+runtime_state: BLOCKED_PENDING_CANONICAL_ACTIVATION_EVIDENCE
+archive_ready: false_for_wider_session
 ```
 
-This lane binds source generation to the newest StegCore Admissible-Existence capability lifecycle and the least-stable execution principle. It does not create a parallel evaluator, a second model/runtime, a credential path, repository transport authority, merge authority, publication authority, or continuity custody authority.
+This lane binds source generation to the canonical StegCore Admissible-Existence capability lifecycle and the least-stable execution principle. It does not create a parallel evaluator, a second model/runtime, credential path, repository transport authority, merge authority, publication authority, or continuity custody authority.
 
 ## Originating session goal
 
@@ -29,7 +34,8 @@ Complete the generalized recursive build path without requiring another chat ses
 discover gap
 -> reconcile
 -> admit canonical owner
--> activate explicitly admitted source-generation capability
+-> explicitly activate source-generation capability
+-> bounded sovereign local generation
 -> emit exact owner-source-generation packet
 -> validate owner mutation scope
 -> TVC bounded repository operation
@@ -37,107 +43,47 @@ discover gap
 -> reconciliation re-observes gap removed
 ```
 
-## Canonical architecture
+## Canonical architecture and authority
 
-Source generation is itself a governed capability. Model availability, heartbeat observation, worker availability, coherence, gradient state, repository presence, or reconciliation output cannot grant source-generation authority.
+Source generation is itself governed. Model availability, heartbeat observation, worker availability, coherence, gradient state, repository presence, or reconciliation output cannot grant source-generation authority.
 
-The intended lifecycle is:
+Lifecycle:
 
 ```text
-DECLARED
--> STANDING
--> ADMISSIBLE
--> ACTIVATED only with integration evidence + activation proof
--> bounded execution
--> source packet externalized
--> teardown/reconstruct unless stronger persistence is separately admitted
+DECLARED -> STANDING -> ADMISSIBLE -> ACTIVATED
 ```
 
-Every capability transition remains subordinate to canonical StegGate. Structural validation may only block and may not widen canonical disposition.
+`ACTIVATED` additionally requires explicit integration evidence plus an activation proof. Every transition remains subordinate to canonical StegGate. Structural validation may block but may not widen canonical disposition.
 
-## Least-stable execution requirement
-
-The capability MUST request the smallest execution shape sufficient to produce one admitted owner source packet. Preferred posture is a one-shot or short-lived local worker using the already-released sovereign local model/runtime. Persistent residency is not presumed. If persistent execution is ever required, the justification, TTL/lease, state externalization, reconnect policy, teardown condition, and authority ceiling must be machine-readable and separately admitted.
-
-## Inputs
+Authority remains:
 
 ```text
-owner implementation work manifest:
-  stegverse.owner-implementation-work-manifest/v0.1
-source-generation output contract:
-  stegverse.owner-source-generation-packet/v0.1
-canonical owner-mutation consumer:
-  SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001
-local model/runtime source:
-  StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
-StegCore AE capability registry/conformance:
-  StegVerse-Labs/StegCore/docs/ADMISSIBLE_EXISTENCE_CAPABILITY_MODEL_MIRROR_HANDOFF.md
-  StegVerse-Labs/StegCore/docs/AE_HANDOFF_TASK_CONFORMANCE_MIRROR_HANDOFF.md
-organization AE enforcement:
-  docs/ADMISSIBLE_EXISTENCE_CONTROL_PLANE_MIRROR_HANDOFF.md
-```
-
-## Required source packet bindings
-
-A valid packet must bind at minimum:
-
-```text
-source_generation_authorized=true
-generator_capability_id
-generator_existence_hash
-generator_phase=ACTIVATED
-generator_activation_proof_ref
-generator_integration_evidence_refs
-generator_authority_ref
-generator_profile_ref
-owner_repository
-owner_handoff_ref
-delta_id
-base_ref
-base_sha
-changed_paths
-expected_source_hashes
-replacement_contents_or_content_hashes
-model_runtime_proof_ref
-execution_identity
-teardown_or_reconstruction_evidence_ref
-credential_authority=TV/TVC
-github_token_runtime_authority=false
-```
-
-The downstream owner-mutation executor continues to enforce handoff-first ordering, admitted path scope, exact hashes, and exact TVC inspection binding.
-
-## Authority boundary
-
-```text
-source generation authority: only explicit AE capability activation
-admissibility authority: canonical StegGate only
-credential authority: TV/TVC only
-repository credential transport: TVC #19/#20 only
-heartbeat role: carrier/synchronization observation only
-worker control plane: separate from heartbeat semantics
-Master Records: custody/EOL/reconstruction only under its own contracts
+admissibility: canonical StegGate only
+capability lifecycle: StegVerse-Labs/StegCore
+source-generation orchestration: StegVerse-Labs/.github#137
+local model/runtime: StegVerse-002/micro-node-runtime
+credential/repository operation: TV/TVC only
+heartbeat: carrier/synchronization observation only
 wallet signing/broadcast: USER_ONLY where applicable
-coherence/gradient/manifold observations: evidence only
+model output: no authority
 ```
 
-## Active implementation claim
+## Released source implementation
+
+The `.github` binder/control-plane slice is merged and validated.
 
 ```text
-claim_ref: control/session-implementation-claim-2026-08-14-admissible-source-generation-capability.json
-claimant: current ChatGPT continuation session
-role: CLAIMED_FOR_IMPLEMENTATION
-claim_created_at: 2026-08-14T15:58:00-05:00
-claim_expires_at: 2026-08-14T18:58:00-05:00
-collision_exclusions:
-  - canonical StegCore AE/StegGate semantics
-  - TVC #19/#20 credential transport
-  - .github #122 heartbeat/control-plane refactor
-  - live worker claim/fence/lease/runtime state
-release_condition: implementation is merged/validated or durably transferred to a proven active executor with machine-observable release conditions
+source merge: eb37e12d63850d820054e2c85c1ff35dc666a2c3
+Heartbeat Worker Project: 31841119437 SUCCESS
+organization control plane: 31841119406 SUCCESS
+handoff render: 31841119420 SUCCESS
+implementation claim: COMPLETE_VALIDATED_RELEASED_SOURCE_SUPPORT
+release receipt: receipts/admissible-source-generation-capability/source-release-reconciliation-20260814.md
 ```
 
-## Required implementation surfaces
+The previously stale `CLAIMED_FOR_IMPLEMENTATION` durable records were reconciled on 2026-08-14 after direct inspection of merged source and validation evidence. No source implementation claim remains active for this lane.
+
+## Installed implementation surfaces
 
 ```text
 ADMISSIBLE_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md
@@ -149,38 +95,93 @@ control/process-worker-adapters.d/admissible-source-generation-capability-001.js
 workers/admissible_source_generation_capability_worker.py
 tests/test_admissible_source_generation_capability_worker.py
 data/admissible-source-generation-capability/task-state.json
+receipts/admissible-source-generation-capability/source-release-reconciliation-20260814.md
 ```
 
-## Validation contract
+The separate bounded local-generation support lane is also installed under `LOCAL_SOURCE_GENERATION_EXECUTOR_MIRROR_HANDOFF.md` and issue #144. Its source implementation claim is released. The sovereign structured-generation profile is now released in `StegVerse-002/micro-node-runtime` through issue #32, source PR #33 merge `31a9aaf30eb9185b4eb4ae4ce3dfa01720bf59ce`, and post-merge PR #34 merge `019921e24db988d6e398cdb8e9380994ee9b1cf5`.
+
+## Current lifecycle evidence
+
+Canonical StegCore registry owner records:
 
 ```text
-1. capability declaration/existence identity is deterministic;
-2. source generation cannot proceed below ACTIVATED;
-3. ACTIVATED requires integration evidence + activation proof;
-4. future/planned work cannot pre-claim ACTIVATED;
-5. model/worker/heartbeat availability cannot infer authority;
-6. one-shot/short-lived execution is default and teardown/reconstruction evidence is required after bounded generation;
-7. emitted packet exactly binds owner work/base/path/source hashes;
-8. credential-bearing environment is empty; no GitHub/provider/wallet/TVC secret reaches the worker;
-9. TVC transport is represented only as a downstream non-secret warrant boundary;
-10. canonical HANDOFF + Worker Task Registry AE verifier passes for this task.
+capability: stegverse:capability:formalism-source-generation:v1
+existence_hash: 5d6c4976e69fa958ddacc417195a9c8604a79931fbe0689a3e469e34064690ca
+current phase: DECLARED
+target phase: ACTIVATED
+StegCore registry issue: StegVerse-Labs/StegCore#120 CLOSED after declaration merge
 ```
 
-## Current dependencies
+The source-generation capability therefore remains below runtime admission. The sovereign-local-model capability also requires its own explicit live activation evidence. Neither phase may be inferred from source merge, workflow success, model availability, or a loopback endpoint.
+
+## Machine-owned continuation
+
+The registered execution path is installed and must remain fail closed until both canonical capability predicates are satisfied:
 
 ```text
-StegCore AE lifecycle/registry/conformance: COMPLETE_VALIDATED_RELEASED
-organization HANDOFF/Worker Registry AE conformance: COMPLETE_VALIDATED_RELEASED
-sovereign local model source/runtime: COMPLETE_RELEASED, phase ADMISSIBLE pending live activation
-owner mutation executor source: COMPLETE_VALIDATED_RELEASED
-TVC repository broker: validation/admission pending under TV/TVC-owned continuation
-resident first-cohort reconciliation: pending observation
+stegverse:capability:formalism-source-generation:v1
+  -> phase ACTIVATED
+  -> activation proof present
+  -> integration evidence present
+
+stegverse:capability:sovereign-local-model:v1
+  -> phase ACTIVATED
+  -> activation proof present
+  -> integration evidence present
 ```
 
-## Exact next executable action
+After those predicates exist:
 
-Implement the machine-readable capability policy, task/claim/registry/adaptor, fail-closed worker and deterministic tests without modifying any collision-owned surface. Hosted validation may prove source/control-plane conformance but cannot prove live source-generation activation. Resident activation proof must be produced by an authorized local execution using the canonical model/runtime path.
+```text
+SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001
+-> bounded loopback generation using canonical micro-node runtime/profile
+-> stegverse.local-source-generation-result/v0.1
+-> SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001 binder
+-> stegverse.owner-source-generation-packet/v0.1
+-> SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001
+-> TV/TVC bounded repository operation
+-> owner validation/merge
+-> reconciliation re-observation
+```
+
+## Current blockers and release conditions
+
+```text
+CAPABILITY_STANDING_ADMISSIBILITY_AND_ACTIVATION_PROOF_NOT_YET_ESTABLISHED
+SOVEREIGN_LOCAL_MODEL_LIVE_ACTIVATION_NOT_YET_OBSERVED
+TVC_REPOSITORY_BROKER_CANONICAL_ADMISSION_NOT_YET_OBSERVED
+RESIDENT_SOURCE_GENERATION_AND_RECURSIVE_REOBSERVATION_NOT_YET_PROVEN
+```
+
+Machine-observable release condition: canonical lifecycle records for both required capabilities become `ACTIVATED` with activation proof and integration evidence. The registered local source-generation worker may then execute exactly one admitted bounded generation and produce inspectable runtime/teardown/result receipts.
+
+## Session consolidation
+
+```text
+source implementation: COMPLETE + VALIDATED + MERGED
+source implementation claim: RELEASED
+local structured model profile: COMPLETE + VALIDATED + MERGED
+local executor source: COMPLETE + VALIDATED + RELEASED
+runtime activation: NOT YET PROVEN
+recursive owner mutation/re-observation: NOT YET PROVEN
+credential authority: TV/TVC ONLY
+```
+
+MERGED INTO: `StegVerse-Labs/.github#137`, `LOCAL_SOURCE_GENERATION_EXECUTOR_MIRROR_HANDOFF.md`, `StegVerse-Labs/StegCore/docs/FORMALISM_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md`, and the pre-existing sovereign-local-model activation chain.
+
+## Completion accounting
+
+```text
+developed source/control surfaces: 10/10
+source validation gates: 3/3 observed SUCCESS for #137 release evidence
+source merge: COMPLETE
+source integration to registered machine path: COMPLETE
+formalism-source-generation lifecycle activation: 0/1
+sovereign-local-model live activation: 0/1
+resident source-generation result: 0/1
+recursive owner mutation/re-observation proof: 0/1
+```
 
 ## Archive condition
 
-This session remains active while this claim exists and no other proven active executor owns completion. Archive is prohibited until the capability implementation is merged/validated and the remaining resident recursive-build proof is either completed or transferred to an active executor that can actually advance it without this chat.
+This source implementation lane no longer requires a chat-held implementation claim. The wider session is not archive-ready until every unresolved dependency either completes or has a proven active executable continuation path capable of advancing without this conversation. Durable recording alone is insufficient.
