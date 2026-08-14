@@ -4,9 +4,10 @@
   "goal_id": "G08-STEGFIN-TRADE-READY",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
-  "state": "CLAIMED_FOR_INTEGRATION",
+  "state": "COMPLETE_VALIDATED_RELEASED",
   "claimant": "current ChatGPT continuation session",
   "claimed_at": "2026-08-14T18:30:00-05:00",
+  "released_at": "2026-08-14T18:32:00-05:00",
   "expires_at": "2026-08-14T19:00:00-05:00",
   "scope": ["docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md"],
   "source_evidence": [
@@ -15,9 +16,18 @@
     "control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v4.json",
     "control/session-implementation-claim-2026-08-14-stegfin-continuity-machine-executor.json"
   ],
+  "evidence": {
+    "handoff_commit": "240394104e2e0560cd60b647fd501cc8ee3e5d4a",
+    "inventory_commit": "24659d2a330c9aea83f3d2121677b947ecfaaf45",
+    "inventory_validation_run": 31850487844,
+    "inventory_validation_conclusion": "SUCCESS",
+    "focused_executor_latest_run": 31850433501,
+    "focused_executor_latest_conclusion": "SUCCESS"
+  },
   "collision_exclusions": ["live trade execution", "heartbeat claims/fences/leases", "TV/TVC credentials/routes/runtime", "TVC-CAPABILITY-RUNTIME-002 observer", "wallet signing/broadcast"],
-  "release_condition": "Session assistance handoff reflects released continuity executor source, host-activation boundary, current G08 state, and canonical continuation; then release this claim.",
+  "release_condition": "SATISFIED: session assistance handoff reflects released continuity executor source, host-activation boundary, current G08 state, and canonical continuation.",
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": false,
-  "non_tv_tvc_secret_or_token_allowed": false
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "next_task_after_release": "Observe native executor activation and exact StegFin machine result when produced; do not substitute chat, GitHub Actions or Render for the authorized node, TV/TVC transport authority, or USER_ONLY wallet authority."
 }
