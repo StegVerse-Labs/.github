@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-08-14T16:27:00Z",
+  "updated_at": "2026-08-14T16:29:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
@@ -126,7 +126,8 @@
       "eligible StegVerse-002 micro-node",
       "new node from repository-local runtime capsule"
     ],
-    "next_solution_action": "VALIDATE_AND_MERGE_PR_117_THEN_RECHECK_DERIVED_DECLARATION_ON_RESIDENT_CARRIER",
+    "next_solution_action": "SOVEREIGN_RUNTIME_SOLUTION_EXECUTION",
+    "next_solution_detail": "Validate and merge PR #117, then let the repository-owner resolver derive/reuse the declaration on the resident non-hosted carrier and return control to G18.",
     "machine_observable_completion_condition": "node-local activation.latest.json reports all nine predicates true",
     "escalation_rule": "escalate only if canonical local runtime source is incomplete, durable state is not writable, or the execution surface is hosted/non-sovereign",
     "resolution_executor_state": "DERIVED_DECLARATION_IMPLEMENTED_ON_PR_117",
