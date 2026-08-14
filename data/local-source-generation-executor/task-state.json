@@ -3,7 +3,8 @@
   "task_id": "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
   "goal_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-001",
   "originating_session_goals": ["G10-GENERALIZED-OWNER-MUTATION-EXECUTOR", "G11-RECURSIVE-SELF-BUILD-PROOF"],
-  "state": "HANDOFF_READY_BLOCKED_ON_EXPLICIT_AE_ACTIVATION",
+  "state": "SOURCE_COMPLETE_VALIDATED_MACHINE_BLOCKED_ON_EXPLICIT_AE_ACTIVATION",
+  "source_completion_state": "COMPLETE_VALIDATED_RELEASED",
   "execution_owner": "local-source-generation-executor-worker after repository-native admission",
   "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
   "manual_execution_allowed": false,
@@ -12,6 +13,15 @@
   "worker_registry_ref": "control/worker-registry.d/local-source-generation-executor-001.json",
   "adapter_ref": "process:local-source-generation-executor-v1",
   "canonical_binder": "SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
+  "source_validation_receipt": "receipts/local-source-generation-executor/source-validation-20260814.json",
+  "source_validation_result": "PASS_220_REPOSITORY_TESTS_10_EXECUTOR_TESTS",
+  "hosted_validation": {
+    "heartbeat_run": 31845636235,
+    "heartbeat_job": 94911384002,
+    "heartbeat_conclusion": "success",
+    "organization_control_plane_run": 31845636226,
+    "organization_control_plane_conclusion": "success"
+  },
   "required_capability_evidence": [
     "stegverse:capability:formalism-source-generation:v1 ACTIVATED + activation/integration proof",
     "stegverse:capability:sovereign-local-model:v1 ACTIVATED + activation/integration proof"
@@ -32,5 +42,5 @@
   "provider_secret_export_allowed": false,
   "wallet_signing_authority": "NONE",
   "broadcast_authority": "NONE",
-  "next_executable_action": "Repository-native scheduler rechecks capability evidence; once both are explicitly ACTIVATED, execute the bounded local generation worker and pass its result to the existing #137 binder."
+  "next_executable_action": "Repository-native scheduler rechecks canonical capability evidence; once both are explicitly ACTIVATED, execute the bounded local generation worker and pass its result to the existing #137 binder; TV/TVC remains owner-repository mutation authority."
 }
