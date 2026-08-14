@@ -1,0 +1,41 @@
+{
+  "schema": "stegverse.admissible-existence-control-plane-reconciliation-receipt/v1",
+  "task_id": "ADMISSIBLE-EXISTENCE-CONTROL-PLANE-RECONCILIATION-129",
+  "issue": "StegVerse-Labs/.github#129",
+  "pull_request": "StegVerse-Labs/.github#130",
+  "merge_commit": "7a54a4261bf81321bf261e95223ed6c5c6ce6c41",
+  "observed_at": "2026-08-14T20:34:45Z",
+  "validation_scope": "exact_merged_main",
+  "workflow_run": 31838538505,
+  "workflow_job": 94890187342,
+  "workflow_conclusion": "SUCCESS",
+  "validator_output": {
+    "result": "AE_CONTROL_PLANE_VALIDATION_PASS",
+    "handoffs": 24,
+    "registry_tasks": 25,
+    "explicit_bindings": 1,
+    "legacy_projections": 23,
+    "migration_required": 24,
+    "task_conformant": 0,
+    "stegcore_registry_binding": "ca484e0786ee4539af06394bc036e6a7624256f8",
+    "stegcore_task_conformance": "ca484e0786ee4539af06394bc036e6a7624256f8"
+  },
+  "all_validation_substeps_passed": true,
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "hosted_workflow_authority": false,
+    "execution_authority_granted": false,
+    "activation_authority_granted": false,
+    "release_authority_granted": false
+  },
+  "claim_release": {
+    "validation_reconciliation_claim": "RELEASED_COMPLETE",
+    "collision_scope_released": true
+  },
+  "live_runtime_state_unchanged": true,
+  "sovereign_local_model_source_state": "COMPLETE_RELEASED",
+  "sovereign_local_model_capability_phase": "ADMISSIBLE",
+  "transaction_discovery_capability_phase": "ADMISSIBLE",
+  "next_runtime_owner": "StegVerse-Labs/.github#60 + resident sovereign heartbeat -> TVC -> LLM-adapter -> master-records/orchestration"
+}
