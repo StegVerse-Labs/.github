@@ -134,7 +134,7 @@ Current blobs:
 ```text
 tvc_provider_operation_broker.py: 1f56925fccb5e7e3121aa35b37f782cfe558034a
 app/main.py: 1f3cd71eea6a182ae0c492b748d9ba3e7bc83d4f
-tests/test_provider_operation_broker.py: 1acb7d3f40db7fea7e3121aa35b37f782cfe558034a
+tests/test_provider_operation_broker.py: 1acb7d3f40db7fea7e40a7df3db6615b904a3d1f
 tests/test_provider_operation_app.py: ed721ef4aee9051b223337933834a9dccf79a399
 ```
 
