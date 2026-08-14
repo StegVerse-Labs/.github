@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "FORMALISM-SOURCE-DISCOVERY-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:formalism-source-discovery-v1",
+      "authority_ref": "handoffs/SHWP-FORMALISM-SOURCE-DISCOVERY-001.json#authority",
+      "capabilities": ["formalism_source_discovery"],
+      "command": ["python", "workers/formalism_source_discovery_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_FORMALISM_ROOTS_JSON"],
+      "notes": [
+        "Discovers already materialized local first-cohort source roots without network checkout.",
+        "Explicit roots JSON is a non-secret override only, not a required chat-selected input.",
+        "Writes only receipts/formalism-source-discovery/**.",
+        "No GitHub/provider/wallet credential is accepted or forwarded; TV/TVC remains credential authority."
+      ],
+      "timeout_seconds": 30,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
