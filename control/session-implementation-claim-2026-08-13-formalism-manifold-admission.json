@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "claim_id": "FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-2026-08-13",
+  "task_id": "FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
+  "originating_goal": "Install the reconciliation-to-owner implementation-admission bridge and executable-continuation archive criterion for formalism/manifold expansion.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "feat/formalism-manifold-implementation-admission-001",
+  "claimant": "current ChatGPT formalism/manifold continuation session",
+  "role": "CLAIMED_FOR_IMPLEMENTATION",
+  "claim_state": "ACTIVE",
+  "claim_created_at": "2026-08-13T23:22:00-05:00",
+  "claim_expires_at": "2026-08-14T02:22:00-05:00",
+  "claim_release_condition": "Implementation-admission source is hosted-validated and admitted to main, its worker is registered for canonical heartbeat execution, and remaining discovered implementation deltas have active owner execution paths or explicit human-authority boundaries.",
+  "collision_scope": {
+    "allowed": [
+      "FORMALISM_MANIFOLD_IMPLEMENTATION_ADMISSION_MIRROR_HANDOFF.md",
+      "control/formalism-manifold-implementation-admission.json",
+      "control/worker-registry.d/formalism-manifold-implementation-admission-001.json",
+      "control/process-worker-adapters.d/formalism-manifold-implementation-admission-001.json",
+      "handoffs/SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001.json",
+      "workers/formalism_manifold_implementation_admission_worker.py",
+      "tests/test_formalism_manifold_implementation_admission_worker.py",
+      "receipts/formalism-manifold-implementation-admission/**",
+      "bounded reconciliation/archive-state updates in FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md and data/formalism-manifold-orchestration/task-state.json"
+    ],
+    "prohibited": [
+      "Admissible-Existence source mutation",
+      "StegCore evaluator mutation",
+      "TV/TVC credential/runtime mutation",
+      "existing heartbeat claims/fences/leases",
+      "wallet signing or broadcast",
+      "production deployment authority",
+      "parallel StegGate evaluator"
+    ]
+  },
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "authority_effect": "BOUNDED_BRANCH_IMPLEMENTATION_ONLY",
+  "archive_dependency": true
+}
