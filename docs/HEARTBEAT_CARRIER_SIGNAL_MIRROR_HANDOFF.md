@@ -177,6 +177,56 @@ credential_authority=TV/TVC
 github_token_runtime_authority=false
 ```
 
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+- task_id: HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120
+  execution_owner: current bounded reconciliation session
+  manual_execution_allowed: true
+  worker_registry_ref: NONE
+  collision_scope: documentation contract, audit, deterministic validator, validation workflow only; no live runtime/claim/fence/lease mutation
+  release_condition: PR #140 merged with deterministic and hosted validation PASS and issue #120 records release evidence
+  next_executable_action: validate and merge current-main contract, then release this session claim
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122
+  execution_owner: StegVerse-Labs/.github#122 and current runtime owners
+  manual_execution_allowed: false
+  worker_registry_ref: control/worker-registry.json + issue #122
+  collision_scope: heartbeat runtime/schema, worker coordination, claims, fences, leases, route state and live carrier operation
+  release_condition: #122 owner installs validated carrier/control-plane separation or explicitly releases a bounded scope
+  next_executable_action: owner performs runtime/schema refactor after canonical carrier contract acceptance
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: HEARTBEAT-CARRIER-AUTHORITY-BOUNDARY
+  execution_owner: StegCore/StegGate + TV/TVC + repository/component owners
+  manual_execution_allowed: false
+  worker_registry_ref: applicable owner records
+  collision_scope: admissibility, credential/route authority, Master Records custody and cross-repository standards conflicts
+  release_condition: canonical owner resolves the specific authority conflict
+  next_executable_action: fail closed and route the conflict to its exact owner
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: HEARTBEAT-CARRIER-STALE-PR-121
+  execution_owner: NONE
+  manual_execution_allowed: false
+  worker_registry_ref: NONE
+  collision_scope: stale branch only
+  release_condition: already superseded by PR #140
+  next_executable_action: NONE
+```
+
 ## Session consolidation and archive condition
 
 All local-model implementation requirements, AE verification requirements and StegCore carrier/AE structural requirements are already durable outside chat. This session remains active only for the current-main `.github#120` reconciliation until it is merged/released or durably transferred to another claimant. Machine-owned trade/runtime work does not by itself require this session to remain open once no unique validation/integration role remains.
@@ -186,9 +236,9 @@ Completion accounting for #120 current-main reconciliation:
 ```text
 required deliverables: 5
 1 current-main canonical handoff: COMPLETE_ON_BRANCH
-2 current-main audit: PENDING
-3 normative .github handoff subordination: PENDING
-4 deterministic validator/workflow gate: PENDING
+2 current-main audit: COMPLETE_ON_BRANCH
+3 normative .github handoff subordination: EXPLICITLY_SUPERSEDED_BY_THIS_CANONICAL_HANDOFF
+4 deterministic validator/workflow gate: COMPLETE_ON_BRANCH
 5 merge/release evidence: PENDING
 validation: 0/2 (deterministic + hosted)
 integration: 0/1
