@@ -6,7 +6,13 @@ import json
 import tempfile
 import unittest
 
-from workers.formalism_tvc_repository_transport_worker import evaluate, inbox_receipts, source_requests
+from workers.formalism_tvc_repository_transport_worker import (
+    canonical_hash,
+    evaluate,
+    inbox_receipts,
+    materialization_followups,
+    source_requests,
+)
 
 NOW = datetime(2026, 8, 14, 6, 0, tzinfo=timezone.utc)
 
@@ -85,6 +91,77 @@ class TransportWorkerTests(unittest.TestCase):
                 "non_tv_tvc_secret_or_token_used": False,
             }) + "\n", encoding="utf-8")
             self.assertEqual(inbox_receipts(state_root), [])
+
+    def test_matching_source_inspection_receipt_emits_exact_materialization_warrant(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            request_dir = Path(temporary)
+            original = source_requests(config(), {"result": {"missing": ["Admissible-Existence/AE"]}}, NOW)[0]
+            (request_dir / f"{original['request_id']}.json").write_text(json.dumps(original) + "\n")
+            receipt = {
+                "schema": "stegverse.tvc-github-repository-inspection-receipt/v0.1",
+                "request_id": original["request_id"],
+                "request_sha256": canonical_hash(original),
+                "repository": original["repository"],
+                "base_ref": original["base_ref"],
+                "base_sha": "a" * 40,
+                "receipt_sha256": "b" * 64,
+                "credential_authority": "TV/TVC",
+                "credential_value_exposed": False,
+                "non_tv_tvc_secret_or_token_used": False,
+            }
+            followups = materialization_followups(config(), [receipt], NOW, request_dir=request_dir)
+            self.assertEqual(len(followups), 1)
+            warrant = followups[0]
+            self.assertEqual(warrant["operation_class"], "MATERIALIZE_SOURCE_ARCHIVE")
+            self.assertEqual(warrant["expected_base_sha"], "a" * 40)
+            self.assertEqual(warrant["repository"], original["repository"])
+            self.assertEqual(warrant["destination_identity"], original["destination_identity"])
+            self.assertEqual(warrant["credential_authority"], "TV/TVC")
+            self.assertFalse(warrant["consumer_credential_present"])
+            self.assertFalse(warrant["secret_values_present"])
+            self.assertEqual(warrant["source_inspection_request_id"], original["request_id"])
+
+    def test_mismatched_inspection_receipt_cannot_create_materialization_warrant(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            request_dir = Path(temporary)
+            original = source_requests(config(), {"result": {"missing": ["Admissible-Existence/AE"]}}, NOW)[0]
+            (request_dir / f"{original['request_id']}.json").write_text(json.dumps(original) + "\n")
+            receipt = {
+                "schema": "stegverse.tvc-github-repository-inspection-receipt/v0.1",
+                "request_id": original["request_id"],
+                "request_sha256": "0" * 64,
+                "repository": original["repository"],
+                "base_ref": original["base_ref"],
+                "base_sha": "a" * 40,
+                "receipt_sha256": "b" * 64,
+                "credential_authority": "TV/TVC",
+                "credential_value_exposed": False,
+                "non_tv_tvc_secret_or_token_used": False,
+            }
+            self.assertEqual(materialization_followups(config(), [receipt], NOW, request_dir=request_dir), [])
+
+    def test_duplicate_materialization_request_is_not_reemitted(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            request_dir = Path(temporary)
+            original = source_requests(config(), {"result": {"missing": ["Admissible-Existence/AE"]}}, NOW)[0]
+            (request_dir / f"{original['request_id']}.json").write_text(json.dumps(original) + "\n")
+            receipt = {
+                "schema": "stegverse.tvc-github-repository-inspection-receipt/v0.1",
+                "request_id": original["request_id"],
+                "request_sha256": canonical_hash(original),
+                "repository": original["repository"],
+                "base_ref": original["base_ref"],
+                "base_sha": "a" * 40,
+                "receipt_sha256": "b" * 64,
+                "credential_authority": "TV/TVC",
+                "credential_value_exposed": False,
+                "non_tv_tvc_secret_or_token_used": False,
+            }
+            first = materialization_followups(config(), [receipt], NOW, request_dir=request_dir)
+            self.assertEqual(len(first), 1)
+            identity = first[0]["operation_id"]
+            (request_dir / f"{identity}.json").write_text(json.dumps(first[0]) + "\n")
+            self.assertEqual(materialization_followups(config(), [receipt], NOW, request_dir=request_dir), [])
 
     def test_no_actionable_inputs_remains_blocked_not_success(self):
         result = evaluate(config(), NOW)
