@@ -2,11 +2,15 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from heartbeat_runtime.runtime_separation import project_legacy_registry
 
-ROOT = Path(__file__).resolve().parents[1]
 LEGACY = ROOT / "control" / "heartbeat-subsignals.json"
 CONTRACT = ROOT / "control" / "runtime-separation-contract.json"
 CARRIER_SCHEMA = ROOT / "schemas" / "heartbeat-carrier-observation.schema.json"
