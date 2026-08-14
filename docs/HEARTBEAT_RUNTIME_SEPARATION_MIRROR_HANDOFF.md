@@ -1,6 +1,6 @@
 # Heartbeat Runtime Separation Mirror Handoff
 
-Updated: 2026-08-14T18:10:00-05:00
+Updated: 2026-08-14T18:12:00-05:00
 
 ## Authority and active goal
 
@@ -37,22 +37,22 @@ Observation does not grant action authority. Signal formation does not grant exe
 
 ## Parent integration state
 
-PR #140 is merged at `34a1744a4cf314ea4f3b80925d4cbd5a7910dd97`; therefore the #122 source/schema separation prerequisite is satisfied. The older carrier handoff still contains pre-merge integration accounting and is historical/stale for that one field only; it remains authoritative for the carrier contract itself.
+PR #140 is merged at `34a1744a4cf314ea4f3b80925d4cbd5a7910dd97`; therefore the #122 source/schema separation prerequisite is satisfied. The carrier handoff remains authoritative for the carrier contract; its older pre-merge completion accounting is superseded only by the verified PR #140 merge evidence.
 
-## Bounded source implementation scope
-
-This session may implement only non-live source/schema surfaces that make the separation executable and testable without mutating current live claims/fences/leases:
+## Installed bounded source implementation
 
 ```text
+docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md
 schemas/heartbeat-carrier-observation.schema.json
 schemas/worker-control-plane-coordination.schema.json
 control/runtime-separation-contract.json
+heartbeat_runtime/runtime_separation.py
 scripts/validate_heartbeat_runtime_separation.py
 tests/test_heartbeat_runtime_separation.py
-.github/workflows/org-control-plane-validate.yml integration if non-authorizing and compatible
+.github/workflows/org-control-plane-validate.yml
 ```
 
-Historical `schemas/heartbeat-subsignal.schema.json` and historical receipts remain immutable provenance unless a separately validated migration explicitly supersedes them. Existing live control/heartbeat state is not rewritten by this claim.
+The executable `heartbeat_runtime/runtime_separation.py` is a pure compatibility projection over the historical combined registry. It emits two distinct objects without mutating live state: a carrier-observation object containing only reference/presence observations and a worker-control-plane object retaining task/worker/claim/fence/lease coordination. Historical `schemas/heartbeat-subsignal.schema.json` and historical receipts remain immutable provenance until a separately claimed live runtime migration switches producers/consumers.
 
 ## Required semantics
 
@@ -63,11 +63,24 @@ Historical `schemas/heartbeat-subsignal.schema.json` and historical receipts rem
 - DEMO, TEST, StegVerse-org, StegGhost, and StegVerse-Labs transition domains remain structurally eligible for the same worker lifecycle opening/closure obligations;
 - TV/TVC remains sole credential authority; no non-TV/TVC secret/token is introduced; GitHub token runtime authority is NONE.
 
+## Validation state
+
+The first organization-control-plane workflow after the new handoff obtained a hosted runner, but failed before the new separation validator because `docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md` lacked the repository-mandated execution-ownership section. Evidence: run `31849433963`, job `94922274950`; the failure was `missing required ownership section`. This handoff update corrects that defect. No runtime authority was exercised by the workflow.
+
+The workflow now includes:
+
+```text
+python scripts/validate_heartbeat_runtime_separation.py
+python -m unittest tests.test_heartbeat_runtime_separation -v
+```
+
+A subsequent successful run is required before source validation is released.
+
 ## Cross-repository dependencies
 
 ```text
 StegVerse-Labs/StegBrain#860 / docs/STEGBRAIN_MIRROR_HANDOFF.md
-  source evaluator complete; repository-native validation pending/failed before runner steps at last observation
+  source evaluator complete; repository-native validation still pending/failing at last direct observation
 master-records/orchestration#33
   passive custody contract owner
 StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
@@ -76,19 +89,65 @@ StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md
   live trade path MACHINE_OWNED; do not mutate provider/wallet authority
 ```
 
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+- task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-SOURCE
+  execution_owner: current-session-bounded-source-schema-separation
+  manual_execution_allowed: true
+  worker_registry_ref: NONE
+  collision_scope: versioned carrier/control-plane schemas, pure compatibility projection, deterministic validator/tests, validation workflow integration, and this scoped handoff only
+  release_condition: deterministic validator/tests and organization control-plane workflow pass, then implementation claim is released
+  next_executable_action: observe current workflow; fix only source/validation defects inside this bounded scope; on PASS release source claim to #122 runtime owner
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION
+  execution_owner: StegVerse-Labs/.github#122 canonical runtime owner
+  manual_execution_allowed: false
+  worker_registry_ref: control/worker-registry.json + issue #122
+  collision_scope: live heartbeat producer/consumer switch, control/heartbeat-state.json, active claims/fences/leases, resident worker processes, production carrier operation
+  release_condition: live runtime migrates to separated contracts under a fresh authorized runtime claim and produces runtime evidence
+  next_executable_action: after bounded source claim release, canonical runtime owner may adopt separated projection/contracts without rewriting historical provenance
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: HEARTBEAT-RUNTIME-SEPARATION-AUTHORITY-COLLISION
+  execution_owner: StegCore/StegGate + TV/TVC + affected domain owner
+  manual_execution_allowed: false
+  worker_registry_ref: applicable canonical owner record
+  collision_scope: admissibility, credential/route authority, protected values, custody authority conflicts
+  release_condition: exact canonical authority resolves the conflict
+  next_executable_action: fail closed; do not infer authority from heartbeat continuity or StegBrain signals
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120
+  execution_owner: NONE
+  manual_execution_allowed: false
+  worker_registry_ref: NONE
+  collision_scope: parent carrier contract source/integration only
+  release_condition: COMPLETE_MERGED_PR_140
+  next_executable_action: NONE; #122 consumes the merged contract
+```
+
 ## Collision boundaries
 
 Do not mutate `control/heartbeat-state.json`, active worker claims/fences/leases, live worker processes, TV/TVC route/credential state, StegFin provider/wallet execution, or Master Records custody contents from this bounded source claim. Do not use GitHub-hosted validation as runtime authority.
-
-## Validation requirements
-
-Deterministic validation must prove the carrier schema rejects control-plane authority fields, the control-plane schema preserves claim/fence/lease semantics outside heartbeat, StegBrain signals carry no execution authority, passive Master Records references carry no action authority, and no non-TV/TVC credential/token semantics are introduced.
 
 ## Current state
 
 ```text
 parent carrier contract: COMPLETE_MERGED
-bounded source/schema separation: CLAIMED_FOR_IMPLEMENTATION
+bounded source/schema separation: IMPLEMENTED_VALIDATION_ACTIVE
 live runtime migration: MACHINE_OWNED / NOT CLAIMED HERE
 StegBrain source enforcement: COMPLETE_SOURCE / HOSTED VALIDATION PENDING
 Master Records passive-custody integration: CLAIMED_BY master-records/orchestration#33
@@ -98,16 +157,16 @@ local model/runtime source: COMPLETE_RELEASED
 
 ## Next executable action
 
-Inspect the current heartbeat subsignal schema and runtime references, then install the versioned carrier-observation and worker-control-plane contracts plus deterministic validation without rewriting live state. After validation, release this bounded source claim and transfer the runtime switch to the canonical #122 runtime owner.
+Observe the current organization control-plane workflow. If source validation fails, repair only the bounded separation source. If it passes, persist validation evidence, release `control/session-implementation-claim-2026-08-14-heartbeat-runtime-separation-122.json`, and transfer the live producer/consumer switch to the canonical #122 runtime owner.
 
 ## Completion accounting
 
 ```text
-developed_files: 1/6
+developed_files: 8/8
 scaffolding_or_stubs: 0
-missing_required_files: 5
-validation: 0/2
-integration: 1/3
+missing_required_files: 0
+validation: 0/2 pending validator+unit workflow execution after ownership repair
+integration: 2/3 parent contract + validation workflow integrated; live runtime migration pending canonical owner
 session_consolidation: 11/11 prior session goals durable; this new source-separation goal active
 archive_ready: false
 ```
