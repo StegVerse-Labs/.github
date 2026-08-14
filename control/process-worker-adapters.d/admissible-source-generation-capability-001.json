@@ -1,0 +1,24 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:admissible-source-generation-capability-v1",
+      "authority_ref": "handoffs/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json#authority",
+      "capabilities": ["admissible_source_generation_capability"],
+      "command": ["python", "workers/admissible_source_generation_capability_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [],
+      "notes": [
+        "Validates explicit AE activation evidence and bounded local generation results; does not infer source-generation authority.",
+        "Emits exact owner source packets for the existing owner-mutation executor only.",
+        "No GitHub/provider/wallet/TVC credential is accepted or forwarded.",
+        "Heartbeat is only a carrier/synchronization observation surface and never grants execution authority.",
+        "Persistent model residency is not assumed; least-stable one-shot/short-lived execution evidence is required."
+      ],
+      "timeout_seconds": 30,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
