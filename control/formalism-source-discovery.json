@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.formalism-source-discovery/v0.1",
+  "goal_id": "FORMALISM-SOURCE-DISCOVERY-001",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "network_checkout_authority": false,
+  "repositories": [
+    "Admissible-Existence/AE",
+    "Admissible-Existence/RTG",
+    "Admissible-Existence/GTG",
+    "Admissible-Existence/TT",
+    "Admissible-Existence/STCM",
+    "StegVerse-Labs/StegCore"
+  ],
+  "search_templates": [
+    "workloads/{owner}/{repo}",
+    "workloads/{repo}",
+    "source/{owner}/{repo}",
+    "source/{repo}",
+    "~/.stegverse/workloads/{owner}/{repo}",
+    "~/.stegverse/workloads/{repo}",
+    "~/.stegverse/source/{owner}/{repo}",
+    "~/.stegverse/source/{repo}",
+    "/var/lib/stegverse/workloads/{owner}/{repo}",
+    "/var/lib/stegverse/workloads/{repo}",
+    "/var/lib/stegverse/source/{owner}/{repo}",
+    "/var/lib/stegverse/source/{repo}"
+  ],
+  "required_markers": ["*_MIRROR_HANDOFF.md"],
+  "receipt": "receipts/formalism-source-discovery/SHWP-FORMALISM-SOURCE-DISCOVERY-001.json",
+  "roots_manifest": "receipts/formalism-source-discovery/formalism-roots.json"
+}

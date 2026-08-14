@@ -1,0 +1,49 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "claim_id": "FORMALISM-SOURCE-DISCOVERY-2026-08-13",
+  "task_id": "FORMALISM-SOURCE-DISCOVERY-001",
+  "originating_goal": "Remove the manual formalism root-selection dependency and establish executable source discovery/materialization continuity for the first-cohort manifold workers.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "feat/formalism-source-discovery-001",
+  "claimant": "current ChatGPT formalism/manifold continuation session",
+  "role": "CLAIMED_FOR_IMPLEMENTATION",
+  "claim_state": "ACTIVE",
+  "claim_created_at": "2026-08-13T23:35:00-05:00",
+  "claim_expires_at": "2026-08-14T02:35:00-05:00",
+  "claim_release_condition": "Source discovery is hosted-validated and admitted to main, existing formalism workers consume a durable discovered-roots manifest without chat selection, and any missing-source materialization step has an active executable owner.",
+  "collision_scope": {
+    "allowed": [
+      "FORMALISM_SOURCE_DISCOVERY_MIRROR_HANDOFF.md",
+      "control/formalism-source-discovery.json",
+      "handoffs/SHWP-FORMALISM-SOURCE-DISCOVERY-001.json",
+      "control/worker-registry.d/formalism-source-discovery-001.json",
+      "control/process-worker-adapters.d/formalism-source-discovery-001.json",
+      "workers/formalism_source_discovery_worker.py",
+      "scripts/run_formalism_manifold_with_discovered_roots.py",
+      "tests/test_formalism_source_discovery_worker.py",
+      "receipts/formalism-source-discovery/**",
+      "bounded update to control/process-worker-adapters.d/formalism-manifold-orchestration-001.json and formalism orchestration tests to consume discovered roots receipt",
+      "bounded update to FORMALISM_MANIFOLD_IMPLEMENTATION_ADMISSION_MIRROR_HANDOFF.md and data/formalism-manifold-implementation-admission/task-state.json to transfer source-discovery deficiency",
+      "control/session-implementation-claim-2026-08-13-formalism-manifold-admission.json: release predecessor implementation claim only after its PR #101 merge evidence is verified"
+    ],
+    "prohibited": [
+      "network checkout or GitHub authentication",
+      "Admissible-Existence source mutation",
+      "StegCore source mutation",
+      "TV/TVC credential/runtime mutation",
+      "wallet signing or broadcast",
+      "existing heartbeat claim/fence/lease mutation"
+    ]
+  },
+  "predecessor_transfer": {
+    "goal_id": "FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
+    "merged_pr": 101,
+    "merge_commit": "9e6fd4285be3e51a19a8a632844e5d6811cc1d2f",
+    "remaining_source_discovery_deficiency_transferred_here": true,
+    "owner_source_mutation_deficiency_transferred_here": false
+  },
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "authority_effect": "BOUNDED_SOURCE_DISCOVERY_IMPLEMENTATION_AND_PREDECESSOR_CLAIM_TRANSFER_ONLY",
+  "archive_dependency": true
+}
