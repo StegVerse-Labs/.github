@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/heartbeat-carrier-observation.schema.json",
+  "title": "StegVerse Heartbeat Carrier Observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "generation", "carrier", "observations", "authority"],
+  "properties": {
+    "schema": {"const": "stegverse.heartbeat-carrier-observation/v1"},
+    "generation": {"type": "integer", "minimum": 0},
+    "carrier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "reference_frame", "frequency_rule", "authority_effect"],
+      "properties": {
+        "role": {"const": "REGULATORY_CARRIER_REFERENCE_FRAME"},
+        "reference_frame": {"type": "string", "minLength": 1},
+        "frequency_rule": {"const": "GATE_PASSBAND_DERIVED"},
+        "authority_effect": {"const": "NONE"}
+      }
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["signal_id", "kind", "present", "source_ref", "authority_effect"],
+        "properties": {
+          "signal_id": {"type": "string", "minLength": 1},
+          "kind": {"enum": ["SUBSYSTEM_SIGNAL_PRESENCE", "CARRIER_CONTINUITY", "REFERENCE_DEADLINE"]},
+          "present": {"type": "boolean"},
+          "source_ref": {"type": "string", "minLength": 1},
+          "authority_effect": {"const": "NONE"}
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["heartbeat_grants_execution_authority", "credential_authority", "github_token_runtime_authority", "master_records_action_authority"],
+      "properties": {
+        "heartbeat_grants_execution_authority": {"const": false},
+        "credential_authority": {"const": "TV/TVC"},
+        "github_token_runtime_authority": {"const": false},
+        "master_records_action_authority": {"const": false}
+      }
+    }
+  }
+}
