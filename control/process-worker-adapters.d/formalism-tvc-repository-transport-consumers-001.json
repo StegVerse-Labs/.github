@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:formalism-tvc-repository-transport-v1",
+      "authority_ref": "handoffs/SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001.json#authority",
+      "capabilities": ["formalism_tvc_repository_transport"],
+      "command": ["python", "workers/formalism_tvc_repository_transport_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [],
+      "notes": [
+        "Consumes only durable non-secret formalism receipts and owner work manifests.",
+        "Emits only bounded request envelopes and transport receipts.",
+        "No GITHUB_TOKEN, GH_TOKEN, PAT, TVC_EPHEMERAL_GITHUB_TOKEN, provider secret, or wallet secret is accepted or forwarded.",
+        "TVC remains the sole credential authority and must independently authorize each operation."
+      ],
+      "timeout_seconds": 30,
+      "type": "process_json_v0.1"
+    }
+  ]
+}

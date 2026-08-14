@@ -181,6 +181,48 @@ THEN: StegVerse-Labs/stegfin-governance/task-state/STEGFIN-CONTINUITY-CARRIER-00
 
 All remaining work has a durable owner and machine-observable release condition. Archiving a chat does not imply trade activation.
 
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+collision_scope: stegfin:base-validation-entry:0xA503DCe5471492bbA2D06e9f78F4d9D6Bcc852aA:12.50-USDC-WETH
+release_condition: none; this lane is not manually executable
+next_executable_action: NONE_MANUAL_EXECUTION_PROHIBITED
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+collision_scope: stegfin:base-validation-entry:0xA503DCe5471492bbA2D06e9f78F4d9D6Bcc852aA:12.50-USDC-WETH
+release_condition: READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND then WALLET_HANDOFF_READY or fail-closed worker receipt
+next_executable_action: registered stegfin-continuity-carrier-worker acquires the collision-safe claim only after the TVC observer receipt exists
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+collision_scope: TV/TVC primary-runtime activation and provider-operation observation only
+release_condition: READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND
+next_executable_action: TV/TVC runtime authority executes tvc.primary_runtime_binder.activate; the exclusive TVC-CAPABILITY-RUNTIME-002 observer records the release predicate
+```
+
+### COMPLETED / SUPERSEDED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+collision_scope: obsolete descriptive runtime-selection path and duplicate chat/session provider-operation paths
+release_condition: completed/superseded by repository-native binder + dispatcher + observer chain
+next_executable_action: NONE; do not recreate a local-model selector, provider broker, alternate runtime, or credential path
+```
+
 ## Completion accounting
 
 Scoped trade-readiness path: 10 deliverables.

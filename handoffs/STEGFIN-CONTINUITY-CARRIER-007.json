@@ -58,6 +58,9 @@
       "control/process-worker-adapters.d/stegfin-continuity-carrier-007.json"
     ],
     "dependencies": ["TVC-PROVIDER-OPERATION-BROKER-003:PRIMARY_RUNTIME_OBSERVABLE"],
+    "parent_task_id": null,
+    "derivation_reason": "Root StegFin continuity carrier handoff.",
+    "derivation_depth": 0,
     "canonical_owner_ref": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-CONTINUITY-CARRIER-007.json",
     "canonical_lineage_key": "stegfin:base-validation-entry-continuity",
     "priority": "release",

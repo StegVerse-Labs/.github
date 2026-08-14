@@ -1,0 +1,24 @@
+{
+  "schema": "stegverse.formalism-tvc-repository-transport/v0.1",
+  "goal_id": "FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "consumer_secret_or_token_authority": false,
+  "tvc_broker": {
+    "repository": "StegVerse-Labs/TVC",
+    "goal_id": "TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001",
+    "canonical_required": true,
+    "standing": "PENDING_CANONICAL_VALIDATION",
+    "issue": 19,
+    "pull_request": 20
+  },
+  "source_discovery_receipt": "receipts/formalism-source-discovery/SHWP-FORMALISM-SOURCE-DISCOVERY-001.json",
+  "owner_work_directory": "receipts/formalism-manifold-implementation-admission/owner-work",
+  "tvc_receipt_directory": "receipts/tvc-repository-operations",
+  "request_directory": "requests/tvc-repository-operations",
+  "request_ttl_seconds": 900,
+  "materialization_root": "/var/lib/stegverse/source",
+  "max_materialization_bytes": 67108864,
+  "max_mutation_files": 32,
+  "max_mutation_bytes": 1048576
+}
