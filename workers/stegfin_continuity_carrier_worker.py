@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -14,6 +15,11 @@ TASK_ID = "STEGFIN-CONTINUITY-CARRIER-007"
 RECEIPT = ROOT / "receipts" / "stegfin-continuity" / f"{TASK_ID}.json"
 RUNTIME_READY_STATE = "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND"
 EXPECTED_PROVIDER_ROUTE = "https://tvc.stegverse.org/v1/provider-operation"
+EXPECTED_TVC_BLOBS = {
+    "tvc_provider_operation_broker.py": "1f56925fccb5e7e3121aa35b37f782cfe558034a",
+    "app/main.py": "1f3cd71eea6a182ae0c492b748d9ba3e7bc83d4f",
+    "scripts/tvc_provider_operation_broker.py": "daed1b66c7a831e557ab811010732d17203aae50",
+}
 
 
 def write(path: Path, value: dict[str, Any]) -> None:
@@ -45,6 +51,25 @@ def find_root(env_name: str, repo_name: str, required: tuple[str, ...]) -> Path 
         if all((root / item).is_file() for item in required):
             return root
     return None
+
+
+def git_blob_sha1(path: Path) -> str:
+    raw = path.read_bytes()
+    header = f"blob {len(raw)}\0".encode("ascii")
+    return hashlib.sha1(header + raw).hexdigest()
+
+
+def validate_exact_tvc_source(tvc_root: Path, expected: dict[str, str] | None = None) -> list[str]:
+    failures: list[str] = []
+    for relative, expected_sha in (expected or EXPECTED_TVC_BLOBS).items():
+        path = tvc_root / relative
+        if not path.is_file():
+            failures.append(f"missing validated TVC source: {relative}")
+            continue
+        actual = git_blob_sha1(path)
+        if actual != expected_sha:
+            failures.append(f"validated TVC source drift: {relative}")
+    return failures
 
 
 def runtime_receipt_candidates(tvc_root: Path) -> list[Path]:
@@ -98,8 +123,8 @@ def validate_runtime_release_receipt(value: dict[str, Any]) -> list[str]:
         failures.append("observer state is not READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND")
     if value.get("credential_authority") != "TV/TVC":
         failures.append("credential authority is not TV/TVC")
-    for key, expected in expected_false.items():
-        if value.get(key) is not expected:
+    for key, expected_value in expected_false.items():
+        if value.get(key) is not expected_value:
             failures.append(f"{key} must be false")
     if value.get("provider_operation_route") != EXPECTED_PROVIDER_ROUTE:
         failures.append("provider-operation route is not the canonical TVC route")
@@ -196,6 +221,14 @@ def main() -> int:
             "Released local StegFin/TV/TVC source is not materialized on this continuity carrier.",
             "all three source roots resolve required canonical surfaces",
             "Resolve already-released source through StegVerse continuity storage; do not use GitHub credentials or hosted checkout as production authority.",
+        )
+
+    source_failures = validate_exact_tvc_source(tvc)
+    if source_failures:
+        return blocked(
+            "Materialized TVC provider source is not the exact validated release: " + "; ".join(source_failures),
+            "the materialized TVC broker, app binding and broker transport script match the exact validated Git blob identities",
+            "Materialize the canonical validated TVC source through StegVerse continuity storage; do not bypass drift with a credential or alternate broker.",
         )
 
     runtime_receipt, runtime_receipt_ref = load_runtime_release_receipt(tvc)
@@ -295,6 +328,7 @@ def main() -> int:
         "non_tv_tvc_secret_or_token_used": False,
         "provider_secret_exported": False,
         "runtime_release_receipt": runtime_receipt_ref,
+        "validated_tvc_source_blobs": EXPECTED_TVC_BLOBS,
         "wallet_signing_authority": "USER_ONLY",
         "broadcast_authority": "USER_ONLY",
         "wallet_handoff_bundle_sha256": result.get("wallet_handoff_bundle_sha256"),
