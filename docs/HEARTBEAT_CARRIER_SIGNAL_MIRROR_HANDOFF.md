@@ -1,6 +1,6 @@
 # Heartbeat Carrier Signal Mirror Handoff
 
-Updated: 2026-08-14T16:10:00-05:00
+Updated: 2026-08-14T16:25:00-05:00
 
 ## Authority and current state
 
@@ -25,7 +25,7 @@ This handoff is authoritative for heartbeat semantics. Older organization/worker
 
 ## Canonical architecture
 
-Heartbeat is the StegVerse **carrier/synchronization signal** only. It provides an observable primary-signal continuity reference so subsystems can remain synchronized and continuity-aware. It does not carry application messages, dispatch tasks/workers, issue claims/fences/leases, choose/execute routes, grant credentials/execution authority, perform provider/model operations, or perform Master Records custody.
+Heartbeat is the StegVerse **carrier/synchronization signal** only. It provides an observable primary-signal continuity reference so subsystems can remain synchronized and continuity-aware. It does not dispatch tasks/workers, issue claims/fences/leases, choose/execute routes, grant credentials/execution authority, perform provider/model operations, or perform Master Records custody. Subsystem signals may be present on the carrier without making heartbeat itself the application protocol.
 
 Carrier amplitude is the minimum sufficient amplitude for the maximum admissible simultaneous composite signal load plus bounded engineering margin:
 
@@ -63,6 +63,42 @@ manifest + expiration wrapper + data
 ```
 
 Master Records is the End-Of-Life state/destination for every Transition Table element. End Of Life is terminal transition custody, not deletion.
+
+## Worker lifecycle record-pair contract
+
+Worker lifecycle custody begins when a live task observed in the Worker Task Registry causes an admitted worker process to be initiated. That initiation event creates the **opening worker record** in Master Records. The opening record binds at minimum the task/goal identity, worker/instance identity, claim and initial fencing token, authority source/policy version, start reference frame, admitted expiration basis/window, and the expected terminal closure identity.
+
+The worker lifecycle is not complete merely because the process stops or the expiration predicate is reached. Every opening worker record requires a corresponding **closure worker record**.
+
+For normal completion, the closure record is generated from the terminal worker result. For expiration, active worker authority ends first and an expired-worker history data packet becomes the closure object. That packet is emitted as an `expired_worker_history` subsystem signal carried on the heartbeat carrier, or on the explicitly admitted equivalent reference frame if the governing gate/passband requires a different carrier frame for the return path.
+
+The closure timing invariant is:
+
+```text
+worker_expiration_reference = R_expire
+closure_packet_required_by <= next_admissible_carrier_reference(R_expire)
+```
+
+In the ordinary heartbeat reference frame this means **within one heartbeat of the worker's established expiration**. If the applicable communication path uses another admitted reference frame, the equivalent requirement is the first admissible return frame that can carry the expired-worker packet to Master Records without violating the governing gate/passband.
+
+The expired worker itself does not survive this transition. Its execution authority, active claim, active lease, and collision ownership are terminal. Only its immutable history/closure packet remains.
+
+This creates the canonical completeness test in Master Records:
+
+```text
+opening worker record exists
++ terminal closure record exists and matches expected identity/lineage
+= COMPLETE LIFECYCLE RECORD
+
+opening worker record exists
++ closure deadline/reference passed
++ no matching terminal closure record
+= MISSING RECORD
+```
+
+The opening record therefore establishes what closure Master Records must later observe, and the carrier/reference-frame deadline establishes when absence becomes a determinable missing-record condition rather than merely an in-flight packet.
+
+Missing-record handling belongs to Master Records custody/reconstruction. It may reconstruct or install the missing terminal record from the expired-worker history packet plus immutable lineage, quarantine corrupt/mismatched records, or idempotently acknowledge an exact duplicate. It may not resurrect the expired worker, restore its claim/fence, or preserve its collision ownership.
 
 ## Admissible-Existence structural binding
 
