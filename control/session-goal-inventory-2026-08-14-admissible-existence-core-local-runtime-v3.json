@@ -4,7 +4,7 @@
   "supersedes": "control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v2.json",
   "issue": "StegVerse-Labs/.github#143",
   "repository": "StegVerse-Labs/.github",
-  "updated_at": "2026-08-14T16:58:00-05:00",
+  "updated_at": "2026-08-14T17:03:00-05:00",
   "session_scope": "StegCore Admissible-Existence review/conformance, canonical HANDOFF/Worker Task Registry verification, sovereign local-runtime discovery/launch/proof and formal local-model development, TV/TVC-only credential boundary, and durable session consolidation.",
   "originating_goal_ids": [
     "G01-AE-DESIGN-SCOPE-REVIEW",
@@ -16,23 +16,8 @@
     "G07-SESSION-SCOPED-WORKER-ASSISTANCE"
   ],
   "shared_directives": [
-    {
-      "directive": "Assist the workers",
-      "creates_originating_goal": false,
-      "scope_decision": "IN_SCOPE_ASSIST",
-      "lineage_evidence_ref": "control/session-assistance-scope-policy.json#rules.assist_workers_semantics",
-      "archive_dependency": false,
-      "interpretation": "Assist only workers whose durable task lineage intersects an originating goal of this session."
-    },
-    {
-      "directive": "make this trade ready",
-      "creates_originating_goal": false,
-      "scope_decision": "OUT_OF_SCOPE_SHARED_DIRECTIVE",
-      "lineage_evidence_ref": null,
-      "archive_dependency": false,
-      "canonical_external_owner": "StegVerse-Labs/stegfin-governance + StegVerse-Labs/.github STEGFIN-CONTINUITY-CARRIER-007",
-      "reason": "No independent originating-session lineage establishes StegFin trade readiness as a goal of this AE/Core/local-runtime session."
-    }
+    {"directive":"Assist the workers","creates_originating_goal":false,"scope_decision":"IN_SCOPE_ASSIST","lineage_evidence_ref":"control/session-assistance-scope-policy.json#rules.assist_workers_semantics","archive_dependency":false,"interpretation":"Assist only workers whose durable task lineage intersects an originating goal of this session."},
+    {"directive":"make this trade ready","creates_originating_goal":false,"scope_decision":"OUT_OF_SCOPE_SHARED_DIRECTIVE","lineage_evidence_ref":null,"archive_dependency":false,"canonical_external_owner":"StegVerse-Labs/stegfin-governance + StegVerse-Labs/.github STEGFIN-CONTINUITY-CARRIER-007","reason":"No independent originating-session lineage establishes StegFin trade readiness as a goal of this AE/Core/local-runtime session."}
   ],
   "goals": [
     {"goal_id":"G01-AE-DESIGN-SCOPE-REVIEW","origin":"SESSION_HISTORY","status":"COMPLETE_VALIDATED","owner":"StegVerse-Labs/StegCore","archive_dependency":false},
@@ -40,8 +25,8 @@
     {"goal_id":"G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF","origin":"SESSION_HISTORY","status":"COMPLETE_RELEASED","owner":"StegVerse-002/micro-node-runtime","archive_dependency":false},
     {"goal_id":"G04-FORMAL-LOCAL-MODEL-DEVELOPMENT","origin":"SESSION_HISTORY","status":"COMPLETE_RELEASED","owner":"StegVerse-002/micro-node-runtime","archive_dependency":false},
     {"goal_id":"G05-TV-TVC-ONLY-CREDENTIAL-AUTHORITY","origin":"SESSION_HISTORY","status":"COMPLETE_AND_ONGOING_INVARIANT","owner":"StegVerse-Labs/TV + StegVerse-Labs/TVC","archive_dependency":false},
-    {"goal_id":"G06-SESSION-DURABLE-CONSOLIDATION","origin":"SESSION_HISTORY","status":"CURRENT","owner":"StegVerse-Labs/.github#143","archive_dependency":true},
-    {"goal_id":"G07-SESSION-SCOPED-WORKER-ASSISTANCE","origin":"SESSION_HISTORY","status":"CURRENT_IMPLEMENTATION","owner":"StegVerse-Labs/.github#143/#146","archive_dependency":true},
+    {"goal_id":"G06-SESSION-DURABLE-CONSOLIDATION","origin":"SESSION_HISTORY","status":"COMPLETE_VALIDATED_RELEASED","owner":"StegVerse-Labs/.github","archive_dependency":false},
+    {"goal_id":"G07-SESSION-SCOPED-WORKER-ASSISTANCE","origin":"SESSION_HISTORY","status":"COMPLETE_VALIDATED_RELEASED","owner":"StegVerse-Labs/.github","archive_dependency":false},
     {"goal_id":"GXX-STEGFIN-TRADE-READY","origin":"SHARED_DIRECTIVE_ONLY","status":"OUT_OF_SCOPE_SHARED_DIRECTIVE","owner":"StegVerse-Labs/stegfin-governance + registered StegFin workers","archive_dependency":false}
   ],
   "worker_assistance_bindings": [
@@ -53,12 +38,14 @@
   ],
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": false,
-  "archive_state": "NOT_READY_SCOPE_GATE_IMPLEMENTATION_PENDING_VALIDATION",
+  "archive_state": "READY_AFTER_DURABLE_TRANSFER",
+  "session_unique_claims_remaining": 0,
+  "unassigned_session_requirements": 0,
   "canonical_continuation": [
-    "StegVerse-Labs/.github#143",
-    "StegVerse-Labs/.github#146",
-    "control/session-assistance-scope-policy.json",
-    "scripts/validate_session_assistance_scope.py",
-    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md"
+    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
+    "receipts/session-consolidation/SESSION-GOAL-SCOPED-WORKER-ASSISTANCE-20260814.json",
+    "docs/ADMISSIBLE_EXISTENCE_CONTROL_PLANE_MIRROR_HANDOFF.md",
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#60"
   ]
 }
