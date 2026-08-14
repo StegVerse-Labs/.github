@@ -1,0 +1,41 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "task_id": "HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-SOURCE",
+  "originating_goal": "Separate heartbeat regulatory carrier/reference semantics from worker/control-plane coordination under the AE-bound StegBrain nervous-system architecture",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "canonical_handoff": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+  "canonical_issue": "StegVerse-Labs/.github#122",
+  "claimant": "current-session-bounded-source-schema-separation",
+  "role": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION",
+  "claimed_at": "2026-08-14T23:10:00Z",
+  "release_condition": "Versioned carrier-observation/control-plane contracts, executable non-mutating projection, deterministic validator/tests, and workflow validation integration are committed and validated; live runtime state migration remains with canonical runtime owner.",
+  "surfaces": [
+    "schemas/heartbeat-carrier-observation.schema.json",
+    "schemas/worker-control-plane-coordination.schema.json",
+    "control/runtime-separation-contract.json",
+    "heartbeat_runtime/runtime_separation.py",
+    "scripts/validate_heartbeat_runtime_separation.py",
+    "tests/test_heartbeat_runtime_separation.py",
+    ".github/workflows/org-control-plane-validate.yml",
+    "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md"
+  ],
+  "collision_boundaries": [
+    "Do not mutate control/heartbeat-state.json or active live heartbeat state",
+    "Do not mutate active claims, fencing tokens, worker leases, worker processes, or route state",
+    "Do not alter TV/TVC credential/secret authority",
+    "Do not execute StegFin provider or wallet actions",
+    "Do not grant Master Records active remediation authority",
+    "Do not duplicate StegBrain#860 contract-evaluator implementation"
+  ],
+  "expected_evidence": [
+    "deterministic local/runtime-separation validator PASS",
+    "unit tests PASS",
+    "organization control-plane workflow PASS if a hosted runner executes"
+  ],
+  "next_task_after_release": "Canonical #122 runtime owner may switch live runtime production from legacy combined heartbeat-subsignal compatibility to the separated contracts under a fresh runtime claim.",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "non_tv_tvc_secret_or_token_required": false,
+  "state": "ACTIVE"
+}
