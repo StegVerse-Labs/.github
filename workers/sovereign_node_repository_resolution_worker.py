@@ -18,6 +18,11 @@ THIRD_PARTY_ENV_VARS = (
     "CF_PAGES",
     "CLOUDFLARE_WORKERS",
 )
+CANONICAL_RUNTIME_FILES = (
+    Path("heartbeat_runtime/engine_v11.py"),
+    Path("scripts/install_sovereign_heartbeat_service.py"),
+    Path("scripts/verify_sovereign_runtime_activation.py"),
+)
 
 
 def truthy(value: str | None) -> bool:
@@ -28,7 +33,16 @@ def hosted_environment() -> bool:
     return any(truthy(os.environ.get(name)) for name in THIRD_PARTY_ENV_VARS)
 
 
-def node_declaration() -> tuple[bool, str | None]:
+def atomic_write(path: Path, value: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as handle:
+        json.dump(value, handle, indent=2, sort_keys=True)
+        handle.write("\n")
+        temp_name = handle.name
+    os.replace(temp_name, path)
+
+
+def existing_node_declaration() -> tuple[bool, str | None]:
     if truthy(os.environ.get("STEGVERSE_SOVEREIGN_NODE")):
         return True, "env:STEGVERSE_SOVEREIGN_NODE"
     for path in NODE_MARKERS:
@@ -37,13 +51,80 @@ def node_declaration() -> tuple[bool, str | None]:
     return False, None
 
 
-def atomic_write(path: Path, value: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as handle:
-        json.dump(value, handle, indent=2, sort_keys=True)
-        handle.write("\n")
-        temp_name = handle.name
-    os.replace(temp_name, path)
+def canonical_runtime_root() -> Path:
+    override = os.environ.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT")
+    if override:
+        return Path(override).expanduser().resolve()
+    return Path.cwd().resolve()
+
+
+def durable_state_root() -> Path:
+    override = os.environ.get("STEGVERSE_HEARTBEAT_ROOT")
+    if override:
+        return Path(override).expanduser().resolve()
+    base = os.environ.get("XDG_STATE_HOME")
+    if base:
+        return (Path(base).expanduser().resolve() / "stegverse" / "heartbeat-runtime")
+    return (Path.home() / ".local" / "state" / "stegverse" / "heartbeat-runtime").resolve()
+
+
+def local_runtime_eligibility() -> dict:
+    source_root = canonical_runtime_root()
+    state_root = durable_state_root()
+    canonical_files = {str(path): (source_root / path).is_file() for path in CANONICAL_RUNTIME_FILES}
+    try:
+        state_root.mkdir(parents=True, exist_ok=True)
+        probe = state_root / ".eligibility-write-probe"
+        probe.write_text("stegverse\n", encoding="utf-8")
+        probe.unlink()
+        durable_state_writable = True
+    except Exception:
+        durable_state_writable = False
+    third_party = hosted_environment()
+    return {
+        "source_root": str(source_root),
+        "state_root": str(state_root),
+        "canonical_files": canonical_files,
+        "canonical_runtime_complete": all(canonical_files.values()),
+        "durable_state_writable": durable_state_writable,
+        "hosted_environment_rejected": third_party,
+        "eligible": all(canonical_files.values()) and durable_state_writable and not third_party,
+        "credential_authority": "TV/TVC",
+        "github_token_required": False,
+        "third_party_runtime_required": False,
+    }
+
+
+def derive_node_declaration() -> tuple[bool, str | None, dict]:
+    declared, ref = existing_node_declaration()
+    eligibility = local_runtime_eligibility()
+    if declared:
+        eligibility["declaration_mode"] = "EXISTING"
+        return True, ref, eligibility
+    if not eligibility["eligible"]:
+        eligibility["declaration_mode"] = "NOT_DERIVED"
+        return False, None, eligibility
+
+    marker = Path.home() / ".stegverse" / "node.json"
+    atomic_write(
+        marker,
+        {
+            "schema": "stegverse.sovereign-node-declaration/v0.2",
+            "declared": True,
+            "declaration_source": "DERIVED_LOCAL_RUNTIME_ELIGIBILITY",
+            "source_root": eligibility["source_root"],
+            "state_root": eligibility["state_root"],
+            "canonical_runtime_complete": True,
+            "durable_state_writable": True,
+            "hosted_environment_rejected": False,
+            "credential_authority": "TV/TVC",
+            "github_token_required": False,
+            "third_party_runtime_required": False,
+            "authority_effect": "RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY",
+        },
+    )
+    eligibility["declaration_mode"] = "DERIVED_LOCAL_RUNTIME_ELIGIBILITY"
+    return True, str(marker), eligibility
 
 
 def main() -> int:
@@ -67,8 +148,8 @@ def main() -> int:
     if not claim_id or not isinstance(fence, int) or fence < 1:
         return 6
 
-    declared, declaration_ref = node_declaration()
-    third_party = hosted_environment()
+    declared, declaration_ref, eligibility = derive_node_declaration()
+    third_party = eligibility["hosted_environment_rejected"]
     if declared and not third_party:
         state = "COMPLETED"
         transition = "SOVEREIGN_NODE_DECLARATION_RESOLVED"
@@ -82,26 +163,26 @@ def main() -> int:
             "trigger_type": "CONDITIONAL_CONSTRAINT",
             "dependency_class": "PHYSICAL_RESOURCE",
             "problem_statement": (
-                "Repository-owner resolution cannot observe an eligible declared StegVerse-owned/federated node on this execution surface."
+                "Repository-owner resolution cannot prove a non-hosted local runtime surface with canonical source and writable durable state."
             ),
             "solution_required": True,
             "workaround_candidates": [
-                "Component authority selects an existing declared StegVerse-owned/federated node and binds the resident heartbeat to it.",
-                "Component authority promotes an already materialized StegVerse-002 micro-node only after its ownership, durable-state, and native-supervision predicates are machine-observable.",
-                "Component authority constructs a new StegVerse-owned/federated carrier from the already released repository-local runtime capsule without hosted-provider production authority."
+                "Execute the resolver from an already locally materialized canonical StegVerse heartbeat source tree; it will derive the node declaration automatically when local eligibility passes.",
+                "Set STEGVERSE_HEARTBEAT_SOURCE_ROOT to an already materialized canonical source tree and STEGVERSE_HEARTBEAT_ROOT to writable durable node-local state.",
+                "Component authority may select another StegVerse-owned/federated node only if local runtime eligibility cannot be satisfied on the current surface."
             ],
-            "next_solution_action": "Escalate the unchanged physical-resource constraint to component authority; do not fabricate a node declaration or substitute a hosted platform.",
+            "next_solution_action": "Retry on a non-hosted local surface containing the canonical runtime files and writable durable state; do not require a hand-created declaration marker.",
             "resolvable_by_current_worker": False,
             "escalation_target": "COMPONENT_AUTHORITY",
             "required_capabilities": ["component_resolution", "governance_validation"],
             "completion_evidence": [
-                "A StegVerse-owned/federated node declaration is machine-observable.",
-                "The node can execute the canonical native installer and verifier without GitHub-token or hosted-provider production authority."
+                "A v0.2 derived sovereign-node declaration records canonical runtime source and writable durable state.",
+                "The canonical native installer and verifier can execute without GitHub-token or hosted-provider production authority."
             ],
         }
 
     receipt = {
-        "schema": "stegverse.sovereign-node-repository-resolution-receipt/v0.1",
+        "schema": "stegverse.sovereign-node-repository-resolution-receipt/v0.2",
         "task_id": task_id,
         "claim_id": claim_id,
         "fencing_token": fence,
@@ -110,10 +191,11 @@ def main() -> int:
         "transition_id": transition,
         "node_declared": declared,
         "node_declaration_ref": declaration_ref,
+        "node_eligibility": eligibility,
         "hosted_environment_rejected": third_party,
         "github_token_required": False,
         "third_party_runtime_required": False,
-        "authority_effect": "NONE_RESOLUTION_ONLY",
+        "authority_effect": "RUNTIME_ELIGIBILITY_RESOLUTION_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY",
     }
     receipt_path = RECEIPT_ROOT / f"{task_id}.repository-resolution.json"
     atomic_write(receipt_path, receipt)
@@ -122,12 +204,12 @@ def main() -> int:
         "schema": "stegverse.worker-response/v0.1",
         "state": state,
         "transition_id": transition,
-        "transition_sequence": 1,
+        "transition_sequence": 2,
         "expected_next_transition": expected,
         "expected_next_earliest_epoch": None if state == "COMPLETED" else epoch + 1,
         "expected_next_latest_epoch": None if state == "COMPLETED" else epoch + 1,
         "checkpoint_ref": receipt_path.as_posix(),
-        "evidence_refs": [receipt_path.as_posix()],
+        "evidence_refs": [receipt_path.as_posix(), declaration_ref] if declaration_ref else [receipt_path.as_posix()],
         "blocker": blocker,
         "cost_observation": {
             "hb_transition_count": 1,
