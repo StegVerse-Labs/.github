@@ -1,0 +1,61 @@
+{
+  "schema": "stegverse.admissible-existence-conformance-policy/v1",
+  "policy_id": "AE-HANDOFF-WORKER-CONFORMANCE-001",
+  "effective_date": "2026-08-14",
+  "canonical_semantics": {
+    "repository": "StegVerse-Labs/StegCore",
+    "lifecycle_commit": "7d94908be562f9f9ace05877d4507dc68c984e06",
+    "registry_commit": "c63b4cce408bc8b3a9c33c6417d96d959678ac19",
+    "lifecycle_source": "src/stegcore/admissible_existence.py",
+    "registry_source": "src/stegcore/capability_registry.py",
+    "handoff": "docs/ADMISSIBLE_EXISTENCE_CAPABILITY_MODEL_MIRROR_HANDOFF.md",
+    "canonical_evaluator": "stegcore.steggate.evaluate_admissibility"
+  },
+  "existence_phases": ["DECLARED", "STANDING", "ADMISSIBLE", "ACTIVATED", "SUSPENDED", "SUPERSEDED", "TERMINATED"],
+  "invariants": {
+    "canonical_allow_is_necessary_not_sufficient": true,
+    "source_completion_does_not_imply_activation": true,
+    "activation_requires_integration_evidence": true,
+    "activation_requires_activation_proof": true,
+    "activated_may_not_have_open_blockers": true,
+    "blocked_admissible_requires_continuation_owner": true,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "external_execution_is_separate_from_existence_evaluation": true,
+    "continuity_receipt_minting_is_separate_from_existence_evaluation": true
+  },
+  "verified_surfaces": {
+    "executable_handoffs": "handoffs/*.json where schema=stegverse.executable-handoff/v0.1",
+    "worker_registry": "control/worker-registry.json",
+    "worker_registry_fragments": "control/worker-registry.d/*.json"
+  },
+  "explicit_contract": {
+    "field": "admissible_existence",
+    "required_for_new_or_materially_updated_task_records": true,
+    "required_fields": ["capability_id", "phase", "continuation_owner"],
+    "activation_fields": ["integration_evidence_refs", "activation_proof_ref", "blockers"],
+    "authority_fields": ["credential_authority", "github_token_runtime_authority"]
+  },
+  "legacy_projection": {
+    "allowed_for_pre_policy_records": true,
+    "purpose": "Classify historical/recent records without falsely promoting COMPLETED source work to ACTIVATED.",
+    "completed_default_phase": "ADMISSIBLE",
+    "active_or_handoff_ready_default_phase": "ADMISSIBLE",
+    "unstarted_default_phase": "DECLARED",
+    "blocked_or_review_default_phase": "ADMISSIBLE",
+    "never_infer_activated": true
+  },
+  "failure_conditions": [
+    "explicit ACTIVATED without integration evidence",
+    "explicit ACTIVATED without activation proof",
+    "explicit ACTIVATED with unresolved blockers",
+    "blocked explicit ADMISSIBLE without continuation owner",
+    "non-TV/TVC credential authority",
+    "GitHub token runtime authority present or required",
+    "handoff/worker record claims activation solely from COMPLETED/source/file state",
+    "task and handoff explicit AE phases conflict for the same task_id"
+  ],
+  "validation_command": "python3 scripts/validate_admissible_existence_conformance.py",
+  "credential_authority": "TV/TVC",
+  "github_token_production_authority": "NONE"
+}
