@@ -1,0 +1,24 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:formalism-manifold-implementation-admission-v1",
+      "authority_ref": "handoffs/SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001.json#authority",
+      "capabilities": ["formalism_manifold_implementation_admission"],
+      "command": ["python", "workers/formalism_manifold_implementation_admission_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_FORMALISM_ROOTS_JSON"],
+      "notes": [
+        "Heartbeat-owned reconciliation-to-owner implementation admission worker.",
+        "Reads completed reconciliation plus locally materialized canonical owner handoffs.",
+        "Writes only receipts/formalism-manifold-implementation-admission/**.",
+        "It never mutates owner repositories and grants no mathematical, StegGate, credential, merge, wallet, or execution authority.",
+        "No GitHub/provider/wallet credential is accepted or forwarded; TV/TVC remains credential authority."
+      ],
+      "timeout_seconds": 30,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
