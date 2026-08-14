@@ -1,0 +1,87 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
+  "created_at": "2026-08-13T23:22:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
+    "objective": "Convert completed formalism/manifold reconciliation evidence into deterministic owner-scoped implementation work manifests without mutating owner repositories or creating authority.",
+    "success_predicates": [
+      "Reconciliation receipt is present and COMPLETED",
+      "Each admitted delta resolves to exactly one canonical repository owner",
+      "Each admitted delta has bounded proposed paths and no active scope collision",
+      "Owner work manifests are persisted",
+      "No owner repository mutation or credential authority is created"
+    ],
+    "failure_predicates": [
+      "Incomplete reconciliation is treated as sufficient",
+      "Ambiguous or missing owner is silently admitted",
+      "Overlapping active claim is ignored",
+      "Coordinator mutates AE or StegCore source",
+      "Non-TV/TVC credential/token path is introduced"
+    ],
+    "authority_ceiling": [
+      "implementation_delta_partitioning",
+      "owner_work_manifest_emission",
+      "receipts/formalism-manifold-implementation-admission/**",
+      "no_owner_source_mutation",
+      "no_execution_authority"
+    ],
+    "successor_policy": "SEPARATE_AUTHORIZATION_REQUIRED_FOR_EXPANSION",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "FORMALISM_MANIFOLD_IMPLEMENTATION_ADMISSION_MIRROR_HANDOFF.md",
+      "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
+      "control/formalism-manifold-implementation-admission.json"
+    ],
+    "dependencies": ["SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001"],
+    "parent_task_id": null,
+    "derivation_reason": "The evidence-only orchestration requires a separate authority-preserving bridge before any owner repository may receive source-mutation work.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#97",
+    "canonical_lineage_key": "formalism-manifold:implementation-admission",
+    "derivation_depth": 0,
+    "priority": "critical"
+  },
+  "authority": {
+    "authority_source": "FORMALISM_MANIFOLD_IMPLEMENTATION_ADMISSION_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "policy_version": "formalism-manifold-implementation-admission-v0.1"
+  },
+  "execution": {
+    "required_capabilities": ["formalism_manifold_implementation_admission"],
+    "allowed_paths": ["receipts/formalism-manifold-implementation-admission/**"],
+    "allowed_services": [],
+    "max_actions": 128,
+    "max_retries": 512,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 1024,
+    "rate_class": "formalism_manifold_implementation_admission"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "FORMALISM_MANIFOLD_IMPLEMENTATION_ADMISSION_MIRROR_HANDOFF.md",
+    "recheck_trigger": "each admitted heartbeat after reconciliation receipt changes and while owner manifests are unresolved",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/formalism-manifold-implementation-admission/SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "After reconciliation completes, partition deltas by canonical owner, block collisions/ambiguity, and emit owner work manifests for separately authorized repository mutation workers.",
+    "terminal_when": [
+      "All current deltas are either admitted to exactly one owner manifest, blocked by an active collision, or REVIEW_REQUIRED for owner ambiguity",
+      "Implementation-admission receipt is emitted"
+    ]
+  },
+  "block": null
+}
