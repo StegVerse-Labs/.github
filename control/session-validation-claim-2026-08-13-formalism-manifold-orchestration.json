@@ -7,9 +7,9 @@
   "branch": "feat/formalism-manifold-orchestration-001",
   "claimant": "current ChatGPT formalism/manifold orchestration session",
   "role": "CLAIMED_FOR_VALIDATION",
-  "claim_state": "ACTIVE",
+  "claim_state": "RELEASED_COMPLETE",
   "claim_created_at": "2026-08-13T22:10:00-05:00",
-  "claim_released_at": null,
+  "claim_released_at": "2026-08-13T22:36:00-05:00",
   "claim_expires_at": "2026-08-14T00:10:00-05:00",
   "collision_scope": {
     "allowed": [
@@ -39,9 +39,21 @@
     "existing_worker_owned_paths_touched": false,
     "authority_effect": "NONE_BOOTSTRAP_ONLY"
   },
+  "validation_result": "PASS_AND_MERGED",
+  "validation_evidence": {
+    "heartbeat_validation_run": 31767261892,
+    "heartbeat_validation_job": 94665580477,
+    "control_plane_validation_run": 31767261834,
+    "handoff_render_run": 31767261856,
+    "pull_request": 98,
+    "merge_commit": "7e6dc4c1447b46e1fcf12450884e72993563b45c"
+  },
   "receipt_ref": "receipts/formalism-manifold-orchestration/session-claim-reconciliation.json",
+  "release_reason": "The five-lane orchestration implementation is merged to main after no-token hosted validation, executable-handoff validation, full deterministic tests, non-mutating heartbeat dry-run, control-plane validation, and handoff render validation. Continuation is now canonical worker ownership.",
+  "next_owner": "StegVerse-Labs/.github canonical resident heartbeat + formalism/manifold registered workers",
+  "next_release_condition": "First-cohort source roots are locally materialized and the five worker lane receipts plus reconciliation receipt reach their governed terminal states.",
   "github_token_required": false,
   "credential_authority": "TV/TVC",
   "authority_effect": "NONE_VALIDATION_AND_NONCOMPETING_REGISTRATION_ONLY",
-  "archive_dependency": true
+  "archive_dependency": false
 }
