@@ -1,0 +1,41 @@
+{
+  "schema": "stegverse.session-validation-claim/v1",
+  "claim_id": "ORG-HANDOFF-NONCOMPETING-VALIDATION-2026-08-14-LOCAL-RUNTIME-TRADE-READINESS",
+  "task_id": "ORG-HANDOFF-NONCOMPETING-VALIDATION",
+  "originating_goal": "Assist canonical workers, preserve TV/TVC-only credential semantics, verify the executable local model/runtime path, and move the bounded StegFin trade-readiness goal forward without competing with machine-owned activation or USER_ONLY wallet authority.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "claimant": "current ChatGPT local-runtime trade-readiness validation session",
+  "role": "CLAIMED_FOR_VALIDATION",
+  "claim_state": "ACTIVE",
+  "claim_created_at": "2026-08-14T11:10:00-05:00",
+  "claim_expires_at": "2026-08-14T12:10:00-05:00",
+  "collision_scope": {
+    "allowed": [
+      "read-only inspection of canonical local-model, TVC, heartbeat and StegFin handoffs/tasks",
+      "verification that descriptive local-runtime selection has been replaced by executable discovery/launch/inference/proof",
+      "verification of TV/TVC-only credential and no-GitHub-token production semantics",
+      "durable evidence-only reconciliation of current trade-readiness blockers"
+    ],
+    "prohibited": [
+      "sovereign carrier selection or materialization",
+      "node declaration creation",
+      "heartbeat claim/fence/lease mutation",
+      "TVC primary-runtime host installation or activation",
+      "provider secret acquisition/export",
+      "wallet signing or broadcast",
+      "duplicate local model/runtime implementation",
+      "competing with repository-native TVC runtime observer or StegFin continuity worker"
+    ]
+  },
+  "expected_evidence": [
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/docs/SOVEREIGN_LOCAL_MODEL_ROUTE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json",
+    "StegVerse-Labs/.github/control/heartbeat-state.json",
+    "StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md"
+  ],
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "authority_effect": "NONE_VALIDATION_ONLY"
+}
