@@ -1,0 +1,189 @@
+{
+  "schema": "stegverse.session-goal-inventory/v1",
+  "inventory_id": "ADMISSIBLE-EXISTENCE-CORE-LOCAL-RUNTIME-2026-08-14",
+  "created_at": "2026-08-14T11:16:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "role": "SESSION_CONSOLIDATION",
+  "archive_state": "READY_AFTER_DURABLE_TRANSFER",
+  "product_activation_state": "ACTIVE_MACHINE_WORK_NOT_YET_COMPLETE",
+  "originating_session_goals": [
+    "Make Admissible-Existence the structural form by which StegVerse capabilities grow.",
+    "Promote that structure into canonical StegCore without creating a parallel evaluator.",
+    "Install a machine-readable capability-existence registry that distinguishes development/admissibility from live activation.",
+    "Replace descriptive local-model/runtime selection with executable discovery, private launch, inference and proof.",
+    "Formally develop the StegVerse reference model locally from repository-owned data.",
+    "Preserve TV/TVC as the only credential/route authority and prohibit GitHub-token production/runtime authority.",
+    "Durably transfer machine-owned live activation and downstream propagation so the chat is not required for continuation."
+  ],
+  "tasks": [
+    {
+      "task_id": "ADMISSIBLE-EXISTENCE-CAPABILITY-MODEL-001",
+      "destination": "StegVerse-Labs/StegCore",
+      "branch": "main",
+      "surfaces": [
+        "src/stegcore/admissible_existence.py",
+        "tests/test_admissible_existence.py",
+        "src/stegcore/__init__.py",
+        "docs/ADMISSIBLE_EXISTENCE_CAPABILITY_MODEL_MIRROR_HANDOFF.md",
+        "issue/94",
+        "pull/95"
+      ],
+      "owner": "StegVerse-Labs/StegCore",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS_5_OF_5_HOSTED_GATES",
+      "integration_state": "MERGED_TO_MAIN",
+      "archival_dependency": false,
+      "evidence": [
+        "merge:7d94908be562f9f9ace05877d4507dc68c984e06",
+        "workflow:31818067070:SUCCESS",
+        "workflow:31818067031:SUCCESS",
+        "workflow:31818067147:SUCCESS",
+        "workflow:31818067065:SUCCESS",
+        "workflow:31818067010:SUCCESS"
+      ],
+      "next_executable_action": "NONE_GOAL_COMPLETE"
+    },
+    {
+      "task_id": "ADMISSIBLE-EXISTENCE-CAPABILITY-REGISTRY-002",
+      "destination": "StegVerse-Labs/StegCore",
+      "branch": "main",
+      "surfaces": [
+        "src/stegcore/capability_registry.py",
+        "management/admissible-existence-capability-registry.json",
+        "scripts/validate_admissible_existence_registry.py",
+        "tests/test_capability_registry.py",
+        "src/stegcore/__init__.py",
+        "docs/ADMISSIBLE_EXISTENCE_CAPABILITY_MODEL_MIRROR_HANDOFF.md",
+        "issue/96",
+        "pull/97"
+      ],
+      "owner": "StegVerse-Labs/StegCore",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS_5_OF_5_HOSTED_GATES",
+      "integration_state": "MERGED_TO_MAIN",
+      "archival_dependency": false,
+      "evidence": [
+        "merge:c63b4cce408bc8b3a9c33c6417d96d959678ac19",
+        "workflow:31818392487:SUCCESS",
+        "workflow:31818392525:SUCCESS",
+        "workflow:31818392632:SUCCESS",
+        "workflow:31818392529:SUCCESS",
+        "workflow:31818392628:SUCCESS"
+      ],
+      "next_executable_action": "NONE_GOAL_COMPLETE"
+    },
+    {
+      "task_id": "SOVEREIGN-LOCAL-MODEL-001",
+      "destination": "StegVerse-002/micro-node-runtime",
+      "branch": "main",
+      "surfaces": [
+        "docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md"
+      ],
+      "owner": "StegVerse-002/micro-node-runtime",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS",
+      "integration_state": "SOURCE_MERGED",
+      "archival_dependency": false,
+      "evidence": [
+        "workflow:31339534741:SUCCESS",
+        "workflow:31384116055:SUCCESS"
+      ],
+      "next_executable_action": "NONE_SOURCE_IMPLEMENTATION_COMPLETE"
+    },
+    {
+      "task_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
+      "destination": "StegVerse-Labs/.github",
+      "branch": "main",
+      "surfaces": [
+        "issue/60",
+        "control/heartbeat-state.json",
+        "control/worker-registry.json",
+        "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+      ],
+      "owner": "resident sovereign heartbeat -> StegVerse-Labs/TVC -> StegVerse-org/LLM-adapter -> master-records/orchestration",
+      "claim_state": "MACHINE_OWNED",
+      "completion_state": "ACTIVE_MACHINE_WORK_NOT_YET_ACTIVATED",
+      "validation_state": "SOURCE_CHAIN_PASS_LIVE_SAME_EXECUTION_PROOF_PENDING",
+      "integration_state": "DURABLY_OWNED_BY_CANONICAL_MACHINE_CHAIN",
+      "archival_dependency": false,
+      "machine_observable_release_condition": "heartbeat advances beyond HB29 under a fresh authorized fence greater than 20; private local-model process is observed; TVC emits ROUTE_ADMITTED with credential_requirement NONE; exact LLM-adapter route executes; measured usage persists; Master Records provider-usage and transition reconstruction PASS; same_execution=true; github_token_required=false",
+      "current_observation": "control/heartbeat-state.json remains epoch 29",
+      "next_executable_action": "Canonical resident worker executes; chat/manual implementation must not compete."
+    },
+    {
+      "task_id": "TV-TVC-NO-NONAUTHORITY-SECRETS",
+      "destination": "StegVerse-Labs/TV + StegVerse-Labs/TVC + sovereign consumers",
+      "branch": "main",
+      "surfaces": [
+        "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegCore/docs/ADMISSIBLE_EXISTENCE_CAPABILITY_MODEL_MIRROR_HANDOFF.md"
+      ],
+      "owner": "TV/TVC",
+      "claim_state": "COMPLETE_OR_AUTHORITY_OWNED",
+      "completion_state": "COMPLETE_FOR_SESSION_SCOPE",
+      "validation_state": "BOUNDARY_RETAINED",
+      "integration_state": "NO_NON_TV_TVC_SECRET_OR_TOKEN_PATH_INTRODUCED",
+      "archival_dependency": false,
+      "next_executable_action": "TV/TVC continues canonical credential/route authority; GitHub token runtime authority remains NONE."
+    },
+    {
+      "task_id": "PREEXISTING-NONOVERLAP-WORKSTREAMS",
+      "destination": "StegVerse-Labs/StegCore + StegVerse-Labs/.github",
+      "branch": "various canonical claims",
+      "surfaces": [
+        "StegVerse-Labs/StegCore/MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegCore#70",
+        "StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md"
+      ],
+      "owner": "existing canonical workers/claims",
+      "claim_state": "MERGED_INTO_CANONICAL_WORKSTREAM_OR_NONOVERLAPPING",
+      "completion_state": "NOT_SESSION_OWNED",
+      "validation_state": "COLLISION_BOUNDARIES_PRESERVED",
+      "integration_state": "NO_DUPLICATE_IMPLEMENTATION",
+      "archival_dependency": false,
+      "next_executable_action": "Existing owners continue their work; this session has no claim on those surfaces."
+    }
+  ],
+  "requirements_transferred": [
+    "Admissible-Existence is now a first-class StegCore capability lifecycle structure rather than only an upstream dependency.",
+    "Canonical StegGate remains the sole admissibility evaluator for lifecycle transitions; the AE structural layer cannot widen canonical authority.",
+    "Capability activation requires explicit integration and activation proof; developed files or source-complete state alone are insufficient.",
+    "The machine-readable registry distinguishes canonical StegGate ACTIVATED from the sovereign local model ADMISSIBLE while live activation is still machine-owned.",
+    "The local language model is formally developed from repository-owned data and has executable discovery, private launch, inference, usage measurement, and proof.",
+    "TV/TVC is credential/route authority; GitHub-token production/runtime authority is NONE.",
+    "Live local-model same-execution activation remains active machine work, not chat-owned work.",
+    "Site, Publisher, admissibility-wiki, and stegguardian-wiki propagation remains gated by applicable activation/release evidence and is not falsely claimed complete.",
+    "Session archival means all session-specific work is complete or durably transferred; it does not mean every StegVerse product/runtime capability is activated."
+  ],
+  "convergence": {
+    "local_model_runtime_source": "MERGED_INTO_CANONICAL_WORKSTREAM: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "live_activation": "MACHINE_OWNED: StegVerse-Labs/.github#60 + resident heartbeat",
+    "admissible_existence_formalism": "UPSTREAM_AUTHORITY: Admissible-Existence/AE/AE_MIRROR_HANDOFF.md",
+    "stegcore_structural_adoption": "COMPLETE: StegVerse-Labs/StegCore/docs/ADMISSIBLE_EXISTENCE_CAPABILITY_MODEL_MIRROR_HANDOFF.md",
+    "manifold_work": "SEPARATE_ACTIVE_CLAIM: StegVerse-Labs/StegCore/MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md",
+    "four_app_binding": "SEPARATE_CANONICAL_OWNER: StegVerse-Labs/StegCore#70"
+  },
+  "accounting": {
+    "total_session_goal_classes": 7,
+    "completed_or_durably_transferred": 7,
+    "chat_only_requirements_remaining": 0,
+    "manual_session_owned_tasks_remaining": 0,
+    "machine_owned_unfinished_tasks": 1,
+    "session_consolidation_percent": 100,
+    "archival_readiness_percent": 100,
+    "broader_product_activation_percent": null
+  },
+  "canonical_continuation": [
+    "StegVerse-Labs/StegCore/docs/ADMISSIBLE_EXISTENCE_CAPABILITY_MODEL_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegCore/STEGCORE_MIRROR_HANDOFF.md",
+    "Admissible-Existence/AE/AE_MIRROR_HANDOFF.md",
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#60",
+    "StegVerse-Labs/.github/control/heartbeat-state.json"
+  ]
+}
