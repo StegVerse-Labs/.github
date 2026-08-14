@@ -1,0 +1,50 @@
+name: Validate AE Handoff and Worker Conformance - No GitHub Token Authority
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assert credential-clean validation environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in GITHUB_TOKEN GH_TOKEN GITHUB_PAT TVC_EPHEMERAL_GITHUB_TOKEN; do
+            if [ -n "${!name:-}" ]; then
+              echo "forbidden credential environment variable present: ${name}" >&2
+              exit 1
+            fi
+          done
+
+      - name: Anonymous public repository fetch
+        shell: bash
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then SOURCE_REF="refs/pull/${PR_NUMBER}/merge"; else SOURCE_REF="${GITHUB_SHA}"; fi
+          git -c credential.helper= -c http.extraheader= fetch --no-tags --depth=1 origin "${SOURCE_REF}"
+          git checkout --detach FETCH_HEAD
+          test -z "$(git config --local --get-regexp 'extraheader|credential' || true)"
+
+      - name: Verify Python
+        run: python3 --version
+
+      - name: Validate existing handoff ownership
+        run: python3 scripts/validate_handoff_execution_ownership.py
+
+      - name: Validate executable handoffs
+        run: python3 scripts/validate_executable_handoffs.py
+
+      - name: Validate Admissible-Existence conformance
+        run: python3 scripts/validate_admissible_existence_conformance.py
