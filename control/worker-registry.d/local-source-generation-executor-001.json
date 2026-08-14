@@ -1,0 +1,65 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": ["LOCAL_SOURCE_GENERATION_NOT_YET_PROVEN_RESIDENT"],
+      "authorized_policy_version": "local-source-generation-executor-v0.1",
+      "block_ref": "LOCAL_SOURCE_GENERATION_EXECUTOR_MIRROR_HANDOFF.md",
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "LOCAL_SOURCE_GENERATION_EXECUTOR_MIRROR_HANDOFF.md",
+        "handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
+        "workers/local_source_generation_executor_worker.py"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+      "handoff_ref": "handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:formalism-source-generation:v1",
+        "capability_version": "1.0.0",
+        "phase": "DECLARED",
+        "standing_evidence_refs": [],
+        "admissibility_evidence_refs": [],
+        "integration_evidence_refs": [],
+        "activation_proof_ref": null,
+        "blockers": [
+          "FORMALISM_SOURCE_GENERATION_CAPABILITY_NOT_ACTIVATED",
+          "SOVEREIGN_LOCAL_MODEL_CAPABILITY_NOT_ACTIVATED",
+          "STRUCTURED_SOURCE_GENERATION_PROFILE_NOT_YET_MERGED"
+        ],
+        "continuation_owner": "local-source-generation-executor-worker + StegVerse-Labs/StegCore lifecycle owner + StegVerse-002/micro-node-runtime#32",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:local-source-generation-executor-v1",
+      "authority_source": "handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json#authority",
+      "capabilities": ["local_source_generation_executor"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "local-source-generation-executor-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}
