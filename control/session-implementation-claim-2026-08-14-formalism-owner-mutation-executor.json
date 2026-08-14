@@ -1,0 +1,59 @@
+{
+  "schema_version": "stegverse.session-implementation-claim/v1",
+  "claim_id": "FORMALISM-OWNER-MUTATION-EXECUTOR-001-20260814",
+  "task_id": "FORMALISM-OWNER-MUTATION-EXECUTOR-001",
+  "goal_id": "FORMALISM-MANIFOLD-ORCHESTRATION-001",
+  "originating_goal": "Generalize the first bounded StegCore owner implementation into a chat-free, handoff-first, collision-fenced owner mutation/validation/PR continuation without exposing credentials outside TV/TVC.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "feat/formalism-owner-mutation-executor-001",
+  "issue": 112,
+  "state": "CLAIMED_FOR_IMPLEMENTATION",
+  "claimant": "current ChatGPT formalism/manifold continuation session",
+  "role": "IMPLEMENTATION",
+  "claimed_at": "2026-08-14T05:20:00-05:00",
+  "expires_at": "2026-08-14T08:20:00-05:00",
+  "release_condition": "A canonical executable handoff/worker path consumes owner-work evidence, fails closed on absent source-generation standing, constrains all owner mutations to admitted paths/base hashes, routes GitHub credential-bearing operations only through TVC, produces inspectable receipts, and enters owner validation/PR/re-observation without chat intervention; or the complete requirement is transferred to a proven active executor with equivalent authority bounds.",
+  "scope": [
+    "FORMALISM_OWNER_MUTATION_EXECUTOR_MIRROR_HANDOFF.md",
+    "control/formalism-owner-mutation-executor.json",
+    "handoffs/SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001.json",
+    "control/worker-registry.d/formalism-owner-mutation-executor-001.json",
+    "control/process-worker-adapters.d/formalism-owner-mutation-executor-001.json",
+    "workers/formalism_owner_mutation_executor_worker.py",
+    "tests/test_formalism_owner_mutation_executor_worker.py",
+    "receipts/formalism-owner-mutation-executor/**",
+    "requests/tvc-repository-operations/**"
+  ],
+  "collision_boundaries": [
+    "StegVerse-Labs/StegCore#70 four-app runtime binding",
+    "StegVerse-Labs/TVC#19/#20 credential-bearing repository transport",
+    "TVC-CAPABILITY-RUNTIME-002 trade-runtime observer",
+    "TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006 host installation",
+    "SOVEREIGN-LOCAL-MODEL-LIVE-ACTIVATION machine-owned runtime chain",
+    "Admissible-Existence formalism authority",
+    "canonical StegCore StegGate evaluator semantics"
+  ],
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "source_generation_authority_must_be_explicit": true,
+    "heartbeat_grants_authority": false,
+    "coherence_or_gradient_grants_authority": false,
+    "merge_authority": false,
+    "release_authority": false,
+    "deployment_authority": false,
+    "wallet_authority": false
+  },
+  "expected_evidence": [
+    "task-specific mirror handoff",
+    "executable handoff",
+    "registered bounded worker/adapter",
+    "deterministic positive/negative tests",
+    "hosted no-token validation",
+    "owner mutation request/receipt lineage",
+    "owner validation/PR evidence",
+    "reconciliation re-observation evidence"
+  ],
+  "next_executable_action": "Install the task-specific handoff and fail-closed owner mutation executor contract, then implement the worker/registry/adapter/test path without adding credential or source-generation authority by implication."
+}
