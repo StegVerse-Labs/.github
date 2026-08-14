@@ -219,9 +219,9 @@ def evaluate(config: dict[str, Any], roots: dict[str, Path]) -> dict[str, Any]:
             "source_reconciliation_ref": str(config["reconciliation_receipt"]),
             "source_reconciliation_sha256": canonical_hash(reconciliation),
             "claim_state": "READY_FOR_SEPARATE_OWNER_ADMISSION",
-            "coordinator_mutation_authority": false,
+            "coordinator_mutation_authority": False,
             "credential_authority": CURRENT_AUTHORITY,
-            "github_token_required": false,
+            "github_token_required": False,
         }
         manifests.append(manifest)
 
