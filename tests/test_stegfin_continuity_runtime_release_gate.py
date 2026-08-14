@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+import hashlib
+from pathlib import Path
+import tempfile
 import unittest
 
 from workers.stegfin_continuity_carrier_worker import (
     EXPECTED_PROVIDER_ROUTE,
     RUNTIME_READY_STATE,
+    validate_exact_tvc_source,
     validate_runtime_release_receipt,
 )
 
@@ -42,6 +46,10 @@ def ready_receipt() -> dict:
             "provider_invalid_post": evidence(403, "unexpected request schema"),
         },
     }
+
+
+def git_blob_sha1(raw: bytes) -> str:
+    return hashlib.sha1(f"blob {len(raw)}\0".encode("ascii") + raw).hexdigest()
 
 
 class StegFinContinuityRuntimeReleaseGateTests(unittest.TestCase):
@@ -93,6 +101,30 @@ class StegFinContinuityRuntimeReleaseGateTests(unittest.TestCase):
         self.assertTrue(any("wallet_contacted" in failure for failure in failures))
         self.assertTrue(any("signed" in failure for failure in failures))
         self.assertTrue(any("broadcast" in failure for failure in failures))
+
+    def test_exact_tvc_source_gate_accepts_only_expected_blob_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            raw = b"canonical\n"
+            path = root / "app" / "main.py"
+            path.parent.mkdir(parents=True)
+            path.write_bytes(raw)
+            expected = {"app/main.py": git_blob_sha1(raw)}
+            self.assertEqual(validate_exact_tvc_source(root, expected), [])
+
+    def test_exact_tvc_source_gate_rejects_drift_and_missing_files(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = root / "app" / "main.py"
+            path.parent.mkdir(parents=True)
+            path.write_bytes(b"drifted\n")
+            expected = {
+                "app/main.py": git_blob_sha1(b"canonical\n"),
+                "tvc_provider_operation_broker.py": git_blob_sha1(b"broker\n"),
+            }
+            failures = validate_exact_tvc_source(root, expected)
+            self.assertTrue(any("source drift" in failure for failure in failures))
+            self.assertTrue(any("missing validated TVC source" in failure for failure in failures))
 
 
 if __name__ == "__main__":
