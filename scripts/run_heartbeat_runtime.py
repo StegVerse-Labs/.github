@@ -18,6 +18,8 @@ from heartbeat_runtime import HeartbeatRuntime, ProcessWorkerAdapter
 
 SCHEMA = "stegverse.process-worker-adapters/v0.1"
 FRAGMENT_SCHEMA = "stegverse.process-worker-adapter-fragment/v0.1"
+PROCESS_TYPE = "process_json_v0.1"
+BOUND_STATE_TYPE = "process_json_bound_state_v0.1"
 
 
 def _read_registry(path: Path, *, fragment: bool) -> list[dict[str, Any]]:
@@ -51,14 +53,34 @@ def load_adapters(root: Path) -> dict[str, ProcessWorkerAdapter]:
         adapter_ref = entry["adapter_ref"]
         if adapter_ref in adapters:
             raise RuntimeError(f"duplicate enabled adapter_ref: {adapter_ref}")
+        adapter_type = entry.get("type", PROCESS_TYPE)
+        if adapter_type not in {PROCESS_TYPE, BOUND_STATE_TYPE}:
+            raise RuntimeError(f"unsupported process adapter type: {adapter_type}")
         cwd = Path(entry["cwd"])
         if not cwd.is_absolute():
             cwd = root / cwd
+
+        bound_state_root = None
+        bound_state_allowed_paths: tuple[str, ...] = ()
+        if adapter_type == BOUND_STATE_TYPE:
+            state_value = entry.get("bound_state_root")
+            patterns = entry.get("bound_state_allowed_paths")
+            if not isinstance(state_value, str) or not state_value:
+                raise RuntimeError(f"bound-state adapter missing bound_state_root: {adapter_ref}")
+            if not isinstance(patterns, list) or not patterns or any(not isinstance(item, str) or not item for item in patterns):
+                raise RuntimeError(f"bound-state adapter missing bound_state_allowed_paths: {adapter_ref}")
+            bound_state_root = Path(state_value).expanduser()
+            if not bound_state_root.is_absolute():
+                raise RuntimeError(f"bound_state_root must resolve to an absolute host path: {adapter_ref}")
+            bound_state_allowed_paths = tuple(patterns)
+
         adapters[adapter_ref] = ProcessWorkerAdapter(
             list(entry["command"]),
             cwd=cwd,
             timeout_seconds=float(entry["timeout_seconds"]),
             env_allowlist=tuple(entry.get("env_allowlist", [])),
+            bound_state_root=bound_state_root,
+            bound_state_allowed_paths=bound_state_allowed_paths,
         )
     return adapters
 

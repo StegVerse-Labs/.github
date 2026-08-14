@@ -16,6 +16,7 @@ RECEIPT_ROOT = (ROOT / "receipts" / "formalism-tvc-repository-transport").resolv
 TASK_ID = "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001"
 CAPABILITY = "formalism_tvc_repository_transport"
 CREDENTIAL_AUTHORITY = "TV/TVC"
+BOUND_STATE_ENV = "STEGVERSE_BOUND_STATE_ROOT"
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -46,13 +47,22 @@ def request_id(prefix: str, payload: dict[str, Any]) -> str:
     return f"{prefix}-{canonical_hash(payload)[:20]}"
 
 
+def bound_state_root() -> Path | None:
+    raw = os.environ.get(BOUND_STATE_ENV, "").strip()
+    if not raw:
+        return None
+    path = Path(raw)
+    if not path.is_absolute():
+        raise ValueError("bound state root must be an absolute sandbox path")
+    return path.resolve()
+
+
 def source_requests(config: dict[str, Any], receipt: dict[str, Any], now: datetime) -> list[dict[str, Any]]:
     result = receipt.get("result") if isinstance(receipt.get("result"), dict) else {}
     missing = result.get("missing") if isinstance(result.get("missing"), list) else []
     requests: list[dict[str, Any]] = []
     expires = now + timedelta(seconds=int(config["request_ttl_seconds"]))
     for repository in sorted(item for item in missing if isinstance(item, str) and "/" in item):
-        _, repo = repository.split("/", 1)
         payload = {
             "repository": repository,
             "base_ref": "main",
@@ -121,17 +131,42 @@ def owner_requests(config: dict[str, Any], owner_dir: Path, now: datetime) -> li
     return requests
 
 
-def evaluate(config: dict[str, Any], now: datetime) -> dict[str, Any]:
+def inbox_receipts(state_root: Path | None) -> list[dict[str, Any]]:
+    if state_root is None:
+        return []
+    inbox = state_root / "inbox"
+    if not inbox.is_dir():
+        return []
+    receipts: list[dict[str, Any]] = []
+    for path in sorted(inbox.glob("*.json")):
+        try:
+            value = load(path)
+        except Exception:
+            continue
+        if value.get("credential_authority") != CREDENTIAL_AUTHORITY:
+            continue
+        if value.get("credential_value_exposed") is not False:
+            continue
+        if value.get("non_tv_tvc_secret_or_token_used") is not False:
+            continue
+        receipts.append(value)
+    return receipts
+
+
+def evaluate(config: dict[str, Any], now: datetime, *, state_root: Path | None = None) -> dict[str, Any]:
     broker = config.get("tvc_broker") if isinstance(config.get("tvc_broker"), dict) else {}
+    observed_receipts = inbox_receipts(state_root)
     if broker.get("canonical_required") is True and broker.get("standing") != "CANONICAL_VALIDATED":
         return {
             "state": "BLOCKED",
             "reason": "TVC_BROKER_NOT_CANONICAL_VALIDATED",
             "requests": [],
+            "observed_tvc_receipts": observed_receipts,
             "broker": broker,
             "credential_authority": CREDENTIAL_AUTHORITY,
             "consumer_credential_present": False,
             "github_token_required": False,
+            "bound_state_available": state_root is not None,
             "authority_effect": "NONE_TRANSPORT_NOT_ADMITTED",
         }
 
@@ -144,9 +179,12 @@ def evaluate(config: dict[str, Any], now: datetime) -> dict[str, Any]:
         "reason": "TRANSPORT_REQUESTS_READY" if requests else "NO_ACTIONABLE_TRANSPORT_INPUTS",
         "requests": requests,
         "request_count": len(requests),
+        "observed_tvc_receipts": observed_receipts,
+        "observed_tvc_receipt_count": len(observed_receipts),
         "credential_authority": CREDENTIAL_AUTHORITY,
         "consumer_credential_present": False,
         "github_token_required": False,
+        "bound_state_available": state_root is not None,
         "authority_effect": "NONE_NONSECRET_REQUEST_EMISSION_ONLY",
     }
 
@@ -181,12 +219,15 @@ def main() -> int:
     if config.get("credential_authority") != CREDENTIAL_AUTHORITY or config.get("github_token_required") is not False or config.get("consumer_secret_or_token_authority") is not False:
         return 9
 
+    state_root = bound_state_root()
     now = datetime.now(timezone.utc)
-    result = evaluate(config, now)
+    result = evaluate(config, now, state_root=state_root)
     request_dir = (ROOT / str(config["request_directory"])).resolve()
     if result["state"] == "COMPLETED":
         for request in result["requests"]:
             atomic_write(request_dir / f"{request['request_id']}.json", request)
+            if state_root is not None:
+                atomic_write(state_root / "outbox" / f"{request['request_id']}.json", request)
 
     receipt = {
         "schema": "stegverse.formalism-tvc-repository-transport-receipt/v0.1",
@@ -204,6 +245,8 @@ def main() -> int:
         "credential_authority": CREDENTIAL_AUTHORITY,
         "consumer_credential_present": False,
         "github_token_required": False,
+        "bound_state_used": state_root is not None,
+        "bound_state_authoritative_path_observed": False,
         "heartbeat_grants_execution_authority": False,
         "authority_effect": "NONE_NONSECRET_REQUEST_EMISSION_ONLY",
     }
@@ -216,8 +259,8 @@ def main() -> int:
             "problem_statement": result["reason"],
             "solution_required": True,
             "may_remain_blocked": True,
-            "next_solution_action": "RECHECK_TVC_BROKER_STANDING_AND_FORMALISM_INPUTS",
-            "machine_observable_release_condition": "TVC broker standing is CANONICAL_VALIDATED and an actionable missing-source or owner-work input is present"
+            "next_solution_action": "RECHECK_TVC_BROKER_STANDING_FORMALISM_INPUTS_AND_LOCAL_SPOOL",
+            "machine_observable_release_condition": "TVC broker standing is CANONICAL_VALIDATED, bounded local spool is available, and an actionable missing-source or owner-work input is present"
         }
     response = {
         "schema": "stegverse.worker-response/v0.1",
@@ -228,7 +271,7 @@ def main() -> int:
         "expected_next_earliest_epoch": None if result["state"] == "COMPLETED" else epoch + 1,
         "expected_next_latest_epoch": None if result["state"] == "COMPLETED" else epoch + 1,
         "checkpoint_ref": f"receipts/formalism-tvc-repository-transport/{TASK_ID}.json",
-        "evidence_refs": ["FORMALISM_TVC_REPOSITORY_TRANSPORT_CONSUMERS_MIRROR_HANDOFF.md", "control/formalism-tvc-repository-transport.json"],
+        "evidence_refs": ["FORMALISM_TVC_REPOSITORY_TRANSPORT_CONSUMERS_MIRROR_HANDOFF.md", "FORMALISM_TVC_LOCAL_SPOOL_MIRROR_HANDOFF.md", "control/formalism-tvc-repository-transport.json"],
         "blocker": blocker,
         "cost_observation": {"hb_transition_count": 1, "compute_units": 1, "external_cost_usd": 0, "task_class": "formalism_tvc_repository_transport"}
     }

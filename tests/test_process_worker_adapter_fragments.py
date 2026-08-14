@@ -42,6 +42,58 @@ class ProcessWorkerAdapterFragmentTests(unittest.TestCase):
             self.assertEqual(refs, ["process:base-v1", "process:fragment-v1"])
             self.assertEqual(set(load_adapters(root)), {"process:base-v1", "process:fragment-v1"})
 
+    def test_bound_state_fragment_loads_without_exposing_credentials(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            fragments = root / "control" / "process-worker-adapters.d"
+            fragments.mkdir(parents=True)
+            state_root = root / "state"
+            entry = {
+                "adapter_ref": "process:bound-v1",
+                "command": ["python", "worker.py"],
+                "cwd": ".",
+                "enabled": True,
+                "env_allowlist": [],
+                "timeout_seconds": 1,
+                "type": "process_json_bound_state_v0.1",
+                "bound_state_root": str(state_root),
+                "bound_state_allowed_paths": ["outbox/**", "inbox/**"],
+            }
+            (fragments / "bound.json").write_text(json.dumps({
+                "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+                "fragment_id": "BOUND",
+                "adapters": [entry],
+            }), encoding="utf-8")
+            adapter = load_adapters(root)["process:bound-v1"]
+            description = adapter.describe()
+            self.assertEqual(description["adapter_type"], "process_json_bound_state_v0.1")
+            self.assertEqual(description["bound_state_allowed_paths"], ["outbox/**", "inbox/**"])
+            self.assertFalse(description["bound_state_authoritative_path_exposed_to_worker"])
+            self.assertEqual(description["env_allowlist"], [])
+
+    def test_relative_bound_state_root_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            fragments = root / "control" / "process-worker-adapters.d"
+            fragments.mkdir(parents=True)
+            (fragments / "bound.json").write_text(json.dumps({
+                "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+                "fragment_id": "BOUND",
+                "adapters": [{
+                    "adapter_ref": "process:bound-v1",
+                    "command": ["python", "worker.py"],
+                    "cwd": ".",
+                    "enabled": True,
+                    "env_allowlist": [],
+                    "timeout_seconds": 1,
+                    "type": "process_json_bound_state_v0.1",
+                    "bound_state_root": "relative/spool",
+                    "bound_state_allowed_paths": ["outbox/**"],
+                }],
+            }), encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "bound_state_root must resolve to an absolute host path"):
+                load_adapters(root)
+
     def test_duplicate_enabled_adapter_fails_closed(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

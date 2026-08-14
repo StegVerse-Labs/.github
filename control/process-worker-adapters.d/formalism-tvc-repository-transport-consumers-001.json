@@ -10,14 +10,17 @@
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [],
+      "bound_state_root": "~/.stegverse/transport/formalism-tvc-repository",
+      "bound_state_allowed_paths": ["outbox/**", "inbox/**", "processed/**"],
       "notes": [
         "Consumes only durable non-secret formalism receipts and owner work manifests.",
-        "Emits only bounded request envelopes and transport receipts.",
+        "The heartbeat adapter exposes only a sandbox-local mirror of the bounded state root; the authoritative host path is not passed to the worker.",
+        "External state projection requires the same current claim/fencing token and is restricted to outbox/inbox/processed relative paths.",
         "No GITHUB_TOKEN, GH_TOKEN, PAT, TVC_EPHEMERAL_GITHUB_TOKEN, provider secret, or wallet secret is accepted or forwarded.",
         "TVC remains the sole credential authority and must independently authorize each operation."
       ],
       "timeout_seconds": 30,
-      "type": "process_json_v0.1"
+      "type": "process_json_bound_state_v0.1"
     }
   ]
 }
