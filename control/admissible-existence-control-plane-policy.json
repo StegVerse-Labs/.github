@@ -1,14 +1,26 @@
 {
   "schema": "stegverse.admissible-existence-control-plane-policy/v1",
-  "policy_version": "1.0.0",
+  "policy_version": "1.1.0",
   "effective_at": "2026-08-14T17:20:00Z",
+  "task_conformance_effective_at": "2026-08-14T17:28:36Z",
   "canonical_stegcore": {
     "repository": "StegVerse-Labs/StegCore",
-    "capability_model_commit": "7d94908be562f9f9ace05877d4507dc68c984e06",
-    "capability_registry_commit": "c63b4cce408bc8b3a9c33c6417d96d959678ac19",
+    "capability_model_origin_commit": "7d94908be562f9f9ace05877d4507dc68c984e06",
+    "capability_registry_origin_commit": "c63b4cce408bc8b3a9c33c6417d96d959678ac19",
+    "capability_registry_current_binding_commit": "ca484e0786ee4539af06394bc036e6a7624256f8",
+    "task_conformance_merge_commit": "ca484e0786ee4539af06394bc036e6a7624256f8",
+    "capability_handoff_current_commit": "dc539b252f764662340acb9dce10597dfe0a66b2",
     "handoff": "docs/ADMISSIBLE_EXISTENCE_CAPABILITY_MODEL_MIRROR_HANDOFF.md",
+    "task_conformance_handoff": "docs/AE_HANDOFF_TASK_CONFORMANCE_MIRROR_HANDOFF.md",
+    "task_conformance_manifest": "ecosystem_management/ae_task_conformance.v1.json",
+    "task_conformance_verifier": "tools/verify_ae_handoff_task_conformance.py",
     "lifecycle_module": "src/stegcore/admissible_existence.py",
     "registry_module": "src/stegcore/capability_registry.py"
+  },
+  "authority_partition": {
+    "stegcore": "repository-local lifecycle, capability registry, and repository-local handoff/task conformance authority",
+    "organization_control_plane": "cross-repository executable-handoff and worker-registry conformance enforcement",
+    "parallel_canonical_verifiers_compete": false
   },
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": false,
@@ -22,6 +34,8 @@
     "SUPERSEDED": ["TERMINATED"],
     "TERMINATED": []
   },
+  "temporal_classes": ["recently_completed", "current", "future"],
+  "task_relationships": ["develops_capability", "integrates_capability", "validates_capability", "propagates_capability"],
   "verification_scope": {
     "executable_handoffs": "handoffs/*.json where schema=stegverse.executable-handoff/v0.1",
     "worker_registry": ["control/worker-registry.json", "control/worker-registry.d/*.json"]
@@ -34,7 +48,12 @@
     "blocked_admissible_requires_continuation_owner": true,
     "canonical_steggate_allow_is_necessary_not_sufficient": true,
     "external_execution_or_receipt_minting_not_granted_by_ae": true,
-    "future_explicit_binding_required": true
+    "future_explicit_binding_required": true,
+    "recently_completed_requires_retained_evidence": true,
+    "current_requires_owner_and_continuation": true,
+    "future_requires_relationship_and_target_phase": true,
+    "legacy_unbound_records_are_conformant": false,
+    "legacy_unbound_records_may_create_new_activation_authority": false
   },
   "future_binding_contract": {
     "field": "admissible_existence",
@@ -50,10 +69,21 @@
       "continuation_owner",
       "credential_authority",
       "github_token_runtime_authority"
+    ],
+    "post_task_conformance_required_keys": [
+      "temporal_class",
+      "task_relationship",
+      "target_phase"
     ]
   },
   "legacy_projection": {
     "enabled": true,
-    "meaning": "Pre-policy handoffs/tasks are verified by derived lifecycle semantics and are not rewritten solely for migration. Any post-policy handoff or registry task must carry the explicit binding contract."
+    "classification": "MIGRATION_REQUIRED",
+    "meaning": "Pre-task-conformance-cutover handoffs/tasks remain immutable provenance and are checked for authority/evidence invariants. They are not treated as fully conformant continuation authority until explicitly bound to the current task-conformance contract. Historical evidence remains evidence; legacy completion labels cannot create new activation authority."
+  },
+  "known_capability_phase_snapshot": {
+    "stegverse:capability:steggate:canonical:v1": "ACTIVATED",
+    "stegverse:capability:sovereign-local-model:v1": "ADMISSIBLE",
+    "stegverse:capability:transaction-discovery:v1": "ADMISSIBLE"
   }
 }
