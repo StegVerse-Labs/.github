@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/heartbeat-carrier-signal.schema.json",
+  "title": "StegVerse Heartbeat Carrier Signal",
+  "description": "Carrier/synchronization continuity observation only. This schema grants no application, task, route, claim, fence, lease, credential, execution, or Master Records authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "carrier_id", "reference_epoch", "continuity_observed", "frequency_derivation", "amplitude_derivation", "authority"],
+  "properties": {
+    "schema": {"const": "stegverse.heartbeat-carrier-signal/v1"},
+    "carrier_id": {"const": "stegverse-primary-heartbeat"},
+    "reference_epoch": {"type": "integer", "minimum": 0},
+    "continuity_observed": {"type": "boolean"},
+    "observed_at": {"type": ["string", "null"], "format": "date-time"},
+    "frequency_derivation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule", "fixed_universal_frequency"],
+      "properties": {
+        "rule": {"const": "GATE_PASSBAND_DERIVED"},
+        "fixed_universal_frequency": {"const": false},
+        "gate_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "path_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+      }
+    },
+    "amplitude_derivation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule", "encodes_priority_or_authority"],
+      "properties": {
+        "rule": {"const": "MINIMUM_SUFFICIENT_FOR_MAXIMUM_ADMISSIBLE_SIMULTANEOUS_COMPOSITE_SIGNAL_PLUS_BOUNDED_MARGIN"},
+        "encodes_priority_or_authority": {"const": false}
+      }
+    },
+    "carried_signal_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["signal_id", "signal_kind", "packet_ref", "authority_effect"],
+        "properties": {
+          "signal_id": {"type": "string", "minLength": 1},
+          "signal_kind": {"type": "string", "minLength": 1},
+          "packet_ref": {"type": "string", "minLength": 1},
+          "authority_effect": {"const": false}
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["credential_authority", "github_token_runtime_authority", "grants_execution_authority", "dispatches_tasks", "issues_claims_or_fences", "routes_communications", "is_master_records_transport"],
+      "properties": {
+        "credential_authority": {"const": "TV/TVC"},
+        "github_token_runtime_authority": {"const": false},
+        "grants_execution_authority": {"const": false},
+        "dispatches_tasks": {"const": false},
+        "issues_claims_or_fences": {"const": false},
+        "routes_communications": {"const": false},
+        "is_master_records_transport": {"const": false}
+      }
+    }
+  }
+}
