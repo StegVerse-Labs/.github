@@ -1,0 +1,74 @@
+{
+  "schema": "stegverse.session-worker-assist-scope/v1",
+  "scope_id": "LOCAL-RUNTIME-AE-WORKER-ASSIST-2026-08-14",
+  "created_at": "2026-08-14T16:49:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "governing_inventory": "control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v2.json",
+  "clarification": "Assist workers means assist the canonical workers currently executing any goal of this session. It does not mean route every session or worker toward StegFin or WALLET_HANDOFF_READY.",
+  "anti_convergence_rule": "Do not select StegFin merely because it is an unresolved operational boundary. Before taking work, inspect the complete session goal inventory, current HANDOFFs, Worker Task Registry, Admissible-Existence conformance state, and active claims. If another session or machine lane already owns the same task/collision scope, select a distinct validation/integration/reconciliation role or assist a different unclaimed or under-supported session goal.",
+  "goal_families": [
+    {
+      "family": "sovereign_local_model_runtime",
+      "goals": ["G02-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF", "G03-FORMAL-LOCAL-MODEL-DEVELOPMENT", "G11-RECURSIVE-SELF-BUILD-PROOF"],
+      "canonical_owners": ["StegVerse-002/micro-node-runtime", "formalism reconciliation/source-generation/owner-mutation chain"],
+      "priority_rule": "Source-complete work must not be confused with ACTIVATED capability state; assist live integration, proof, and recursive self-build gaps without duplicating released model source."
+    },
+    {
+      "family": "formalism_and_owner_mutation",
+      "goals": ["G06-AUTONOMOUS-SOURCE-DISCOVERY-MATERIALIZATION", "G07-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION", "G08-FIRST-MANIFOLD-RUNTIME-KERNEL", "G10-GENERALIZED-OWNER-MUTATION-EXECUTOR", "G15-REOBSERVE-OWNER-IMPLEMENTATIONS"],
+      "canonical_owners": ["StegVerse-Labs/.github formalism/manifold workers", "TV/TVC repository-operation authority", "StegVerse-Labs/StegCore"],
+      "priority_rule": "Assist missing-source materialization, generalized owner mutation, re-observation and recursive machine continuation where claims permit."
+    },
+    {
+      "family": "admissible_existence_and_control_plane",
+      "goals": ["G09-PRESERVE-CANONICAL-STEGGATE-SEMANTICS", "G12-WORKER-REGISTRY-AND-HANDOFF-AE-CONFORMANCE", "G14-DUPLICATE-EXECUTION-AND-STALE-CLAIM-PREVENTION"],
+      "canonical_owners": ["StegVerse-Labs/StegCore", "StegVerse-Labs/.github organization control plane"],
+      "priority_rule": "Keep HANDOFF and Worker Task Registry conformance synchronized with newest StegCore Admissible-Existence semantics; fail closed on authority or lifecycle drift."
+    },
+    {
+      "family": "sovereign_heartbeat_and_federation",
+      "goals": ["SHWP-DURABLE-RUNTIME-ACTIVATION", "SHWP-ALL-ORG-FEDERATION-001", "SHWP-REPO-HEARTBEAT-FEDERATION-001"],
+      "canonical_owners": ["resident sovereign heartbeat", "repository federation workers"],
+      "priority_rule": "Assist review-required activation/federation work through distinct source, validation or reconciliation lanes; do not seize machine-owned activation claims."
+    },
+    {
+      "family": "tvc_and_hil_runtime_evidence",
+      "goals": ["G04-TV-TVC-ONLY-CREDENTIAL-AUTHORITY", "G05-TVC-REPOSITORY-OPERATION-BROKER", "HIL-CONTROLLED-CYCLE-RUNTIME-001"],
+      "canonical_owners": ["StegVerse-Labs/TV", "StegVerse-Labs/TVC"],
+      "priority_rule": "Preserve TV/TVC-only credential authority while assisting source/evidence/runtime gaps; never fabricate authenticated review or publication evidence."
+    },
+    {
+      "family": "transaction_discovery_and_master_records",
+      "goals": ["TRANSACTION-DISCOVERY-SHARED-STORE-003", "MASTER-RECORDS-MANIFESTED-OPERATION-HARDENING-031-VALIDATION-SUPPORT"],
+      "canonical_owners": ["StegVerse-Labs/StegCore#83", "master-records/orchestration existing owner"],
+      "priority_rule": "Assist current owner work with noncolliding consumer binding, deterministic validation, reconstruction, custody, persistence or replay evidence."
+    },
+    {
+      "family": "stegfin_trade_readiness",
+      "goals": ["G01-STEGFIN-TRADE-READY", "STEGFIN-CONTINUITY-CARRIER-007"],
+      "canonical_owners": ["stegfin-continuity-carrier-worker", "TV/TVC runtime authority/observer", "USER_ONLY wallet boundary"],
+      "priority_rule": "StegFin is one session goal family, not the default destination for worker assistance. Assist only when the selected task is unclaimed or this session has a genuinely distinct noncolliding support role."
+    },
+    {
+      "family": "downstream_release_propagation",
+      "goals": ["G16-DOWNSTREAM-RELEASE-PROPAGATION"],
+      "canonical_owners": ["StegVerse-Labs/Site", "GCAT-BCAT-Engine/Publisher", "admissibility-wiki", "stegguardian-wiki"],
+      "priority_rule": "Propagate only after applicable activation/release authority exists; do not create publication work merely to keep a session active."
+    }
+  ],
+  "worker_selection_procedure": [
+    "Read the complete current session goal inventory before choosing work.",
+    "Read the applicable *_MIRROR_HANDOFF.md and Worker Task Registry/HANDOFF pair for the candidate goal.",
+    "Apply current StegCore Admissible-Existence conformance and lifecycle state.",
+    "Inspect active claims/collision scope and current machine ownership.",
+    "Prefer an unclaimed executable gap within any session goal family over duplicating an already-claimed StegFin task.",
+    "If all implementation scopes are claimed, take a distinct validation/integration/reconciliation role only where it produces new evidence or removes a real blocker.",
+    "Record durable evidence and release the support claim when complete."
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "wallet_signing_authority": "USER_ONLY",
+  "broadcast_authority": "USER_ONLY",
+  "archive_effect": "NONE_BY_ITSELF; this file corrects worker-assist routing semantics and does not declare any product or session goal complete."
+}
