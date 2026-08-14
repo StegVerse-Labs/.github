@@ -1,0 +1,123 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "created_at": "2026-08-14T17:03:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+    "objective": "Execute one bounded local source-generation request through the canonical sovereign local model/runtime only after explicit AE activation evidence exists for both source generation and the local model, then emit the exact generation-result contract consumed by the existing source-generation binder.",
+    "success_predicates": [
+      "Both required capabilities are explicitly ACTIVATED with activation and integration evidence",
+      "Canonical local runtime is reused or launched loopback-only",
+      "Request binds exact owner manifest/base/source hashes",
+      "Strict JSON output remains within admitted paths/count/bytes",
+      "Runtime/usage/teardown proof is persisted",
+      "No GitHub/provider/wallet/non-TV/TVC secret or token is forwarded",
+      "Existing #137 binder can consume the generated result"
+    ],
+    "failure_predicates": [
+      "Activation inferred from availability",
+      "Non-loopback runtime requested",
+      "Credential-bearing environment forwarded",
+      "Output path exceeds admitted owner scope",
+      "Persistent runtime authority inferred",
+      "Canonical AE/StegGate/model/TVC authority widened"
+    ],
+    "authority_ceiling": [
+      "bounded_local_generation_execution",
+      "generation_result_and_runtime_proof_persistence",
+      "no_admissibility_authority",
+      "no_repository_mutation_authority",
+      "no_credential_authority",
+      "no_provider_or_wallet_authority"
+    ],
+    "successor_policy": "NONE",
+    "max_successor_depth": 0
+  },
+  "task": {
+    "task_id": "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "LOCAL_SOURCE_GENERATION_EXECUTOR_MIRROR_HANDOFF.md",
+      "control/local-source-generation-executor.json",
+      "ADMISSIBLE_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md",
+      "StegVerse-002/micro-node-runtime:docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md"
+    ],
+    "dependencies": ["SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001"],
+    "parent_task_id": null,
+    "derivation_reason": "Issue #144 identifies the missing execution slice between explicit AE activation evidence and the generation result already consumed by the canonical #137 binder.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#144",
+    "canonical_lineage_key": "formalism-manifold:local-source-generation-executor",
+    "derivation_depth": 0,
+    "priority": "critical"
+  },
+  "authority": {
+    "authority_source": "LOCAL_SOURCE_GENERATION_EXECUTOR_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_production_authority": "NONE",
+    "policy_version": "local-source-generation-executor-v0.1"
+  },
+  "execution": {
+    "required_capabilities": ["local_source_generation_executor"],
+    "allowed_paths": [
+      "receipts/admissible-source-generation-capability/generation-results/**",
+      "receipts/local-source-generation-executor/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 16,
+    "max_retries": 8,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 64,
+    "rate_class": "local_source_generation_executor"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED_AFTER_AE_PREDICATES",
+    "authorization_ref": "LOCAL_SOURCE_GENERATION_EXECUTOR_MIRROR_HANDOFF.md",
+    "recheck_trigger": "each admitted observation while an owner manifest lacks a generation result and both capability activation proofs may have advanced",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/local-source-generation-executor/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "Fail closed until explicit ACTIVATED evidence exists for both source-generation and sovereign-local-model capabilities; then perform only the bounded loopback generation operation and persist its exact result/proofs.",
+    "terminal_when": [
+      "One admissible generation result is emitted for each admitted execution or a machine-observable blocker is recorded",
+      "No credential or authority boundary is widened"
+    ]
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:formalism-source-generation:v1",
+    "capability_version": "1.0.0",
+    "phase": "DECLARED",
+    "standing_evidence_refs": [],
+    "admissibility_evidence_refs": [],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": [
+      "SOURCE_GENERATION_CAPABILITY_NOT_YET_ACTIVATED",
+      "SOVEREIGN_LOCAL_MODEL_NOT_YET_ACTIVATED"
+    ],
+    "continuation_owner": "StegVerse-Labs/.github#144 + #137 + resident sovereign local-model activation owners",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  },
+  "block": {
+    "block_reason": "Both capability activation proofs are required before local generation execution.",
+    "dependency": "explicit AE activation evidence",
+    "observer": "organization control plane + canonical capability owners",
+    "recheck_trigger": "each admitted observation",
+    "next_check": null,
+    "escalation_condition": "any attempt to infer activation or request credentials/non-loopback execution",
+    "block_expires_at": null
+  }
+}
