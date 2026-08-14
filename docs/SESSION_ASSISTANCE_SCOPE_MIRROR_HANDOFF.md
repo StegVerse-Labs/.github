@@ -1,6 +1,6 @@
 # Session Assistance Scope Mirror Handoff
 
-Updated: 2026-08-14T16:58:00-05:00
+Updated: 2026-08-14T17:03:00-05:00
 
 ## Authority and goal
 
@@ -10,6 +10,7 @@ repository: StegVerse-Labs/.github
 branch: main
 canonical_issue: #143
 implementation_tracker: #146
+state: COMPLETE_VALIDATED_RELEASED
 canonical_owner: StegVerse-Labs organization control plane
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
@@ -51,16 +52,9 @@ Canonical inventory:
 control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v3.json
 ```
 
-The prior v2/v3 trajectory incorrectly promoted `make this trade ready` into the AE/Core/local-runtime session. Under the clarified session-scope rule, StegFin trade readiness is recorded as `OUT_OF_SCOPE_SHARED_DIRECTIVE`, is not an archive dependency, and remains owned by `StegVerse-Labs/stegfin-governance` plus its registered workers.
+The prior trajectory incorrectly promoted `make this trade ready` into the AE/Core/local-runtime session. Under the clarified session-scope rule, StegFin trade readiness is `OUT_OF_SCOPE_SHARED_DIRECTIVE`, is not an archive dependency, and remains owned by `StegVerse-Labs/stegfin-governance` plus its registered workers.
 
-The in-scope worker families for this session are limited to the durable goal lineage for:
-
-- StegCore Admissible-Existence design/conformance;
-- HANDOFF/Worker Task Registry AE verification;
-- sovereign local-runtime discovery/launch/inference/proof;
-- formal local-model development;
-- TV/TVC-only credential/runtime authority boundaries required by those goals;
-- session consolidation and session-scope enforcement.
+The in-scope worker families for this session are limited to the durable goal lineage for StegCore Admissible-Existence design/conformance, HANDOFF/Worker Task Registry AE verification, sovereign local-runtime discovery/launch/inference/proof, formal local-model development, TV/TVC-only credential/runtime boundaries required by those goals, and session consolidation/scope enforcement.
 
 ## Installed enforcement
 
@@ -70,16 +64,33 @@ scripts/validate_session_assistance_scope.py
 tests/test_session_assistance_scope.py
 control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v3.json
 .github/workflows/org-continuation-check.yml
+receipts/session-consolidation/SESSION-GOAL-SCOPED-WORKER-ASSISTANCE-20260814.json
 ```
 
-The validator fails when a v3 session inventory:
+The validator fails when a v3 session inventory omits required scope fields, permits a shared directive to create an originating goal, marks an out-of-scope directive/task as an archive dependency, claims `IN_SCOPE_ASSIST` for a worker whose goal does not intersect the session originating-goal set, lacks lineage evidence, or promotes a `SHARED_DIRECTIVE_ONLY` goal into active session scope.
 
-- omits the required session-scope fields;
-- permits a shared directive to create an originating goal;
-- marks an out-of-scope directive/task as an archive dependency;
-- claims `IN_SCOPE_ASSIST` for a worker whose `session_goal_id` is not in the session originating goal set;
-- lacks lineage evidence for an in-scope worker;
-- promotes a `SHARED_DIRECTIVE_ONLY` goal into active session scope.
+## Validation evidence
+
+Exact hosted validation:
+
+```text
+workflow: Org Continuation Check - No GitHub Token Authority
+head: 670c4283f3d66e0927fd7a941d053878d6380f56
+run: 31844940374
+job: 94909324222
+conclusion: SUCCESS
+scope validator: SESSION_ASSISTANCE_SCOPE_PASS inventories=1 bindings=5
+unit tests: 3/3 PASS
+no GitHub credential token present: PASS
+non-authorizing workflow proof: PASS
+```
+
+Release receipt:
+
+```text
+receipts/session-consolidation/SESSION-GOAL-SCOPED-WORKER-ASSISTANCE-20260814.json
+commit: 9c159686dff2086b66344e6d55f9c320b77febf9
+```
 
 ## Collision boundaries
 
@@ -94,17 +105,6 @@ TV/TVC credential authority: PRESERVED
 GitHub token runtime authority: NONE
 ```
 
-## Validation
+## Continuation and archive state
 
-Required commands:
-
-```text
-python3 scripts/validate_session_assistance_scope.py
-python3 -m unittest tests.test_session_assistance_scope -v
-```
-
-Hosted canonical invocation is `Org Continuation Check - No GitHub Token Authority` after the workflow update. The workflow remains `permissions: {}` and performs anonymous checkout without GitHub credential authority.
-
-## Completion/archival rule
-
-The scope-routing defect is complete only when the exact main-head validator and tests pass under the no-token organization workflow and issues #143/#146 are closed/released with evidence. Until then this session retains a unique implementation/validation role.
+The scope-routing defect is complete and released. No session-owned implementation/validation claim remains for this control-plane rule. Related runtime activation workers may continue independently under their own canonical HANDOFF/Worker Registry claims; their existence does not authorize this session to seize execution or remain open solely to observe them.
