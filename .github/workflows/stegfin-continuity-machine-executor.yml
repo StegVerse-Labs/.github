@@ -1,0 +1,107 @@
+name: StegFin Continuity Machine Executor - Validation Only / No GitHub Token Authority
+
+on:
+  push:
+    paths:
+      - 'scripts/run_stegfin_continuity_machine_executor.py'
+      - 'scripts/install_stegfin_continuity_machine_service.py'
+      - 'tests/test_stegfin_continuity_machine_executor.py'
+      - 'control/stegfin-continuity-machine-executor.json'
+      - 'data/stegfin-continuity-machine-executor/task-state.json'
+      - 'docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md'
+      - '.github/workflows/stegfin-continuity-machine-executor.yml'
+  pull_request:
+    paths:
+      - 'scripts/run_stegfin_continuity_machine_executor.py'
+      - 'scripts/install_stegfin_continuity_machine_service.py'
+      - 'tests/test_stegfin_continuity_machine_executor.py'
+      - 'control/stegfin-continuity-machine-executor.json'
+      - 'data/stegfin-continuity-machine-executor/task-state.json'
+      - 'docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md'
+      - '.github/workflows/stegfin-continuity-machine-executor.yml'
+
+permissions: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Anonymous public checkout without GitHub token
+        shell: bash
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
+          mkdir -p /tmp/stegverse-ci-bin
+          ln -sf "$(command -v python3)" /tmp/stegverse-ci-bin/python
+          echo /tmp/stegverse-ci-bin >> "$GITHUB_PATH"
+
+      - name: Prove validation process has no GitHub credential token
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          test -z "${GITHUB_PAT:-}"
+          echo NO_GITHUB_CREDENTIAL_TOKEN_PRESENT
+
+      - name: Compile bounded executor sources
+        run: python -m py_compile scripts/run_stegfin_continuity_machine_executor.py scripts/install_stegfin_continuity_machine_service.py
+
+      - name: Run focused deterministic executor tests
+        run: python -m unittest -v tests.test_stegfin_continuity_machine_executor
+
+      - name: Prove hosted runtime execution fails closed
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +e
+          output="$(GITHUB_ACTIONS=true python scripts/run_stegfin_continuity_machine_executor.py --root . 2>&1)"
+          rc=$?
+          set -e
+          test "$rc" -ne 0
+          echo "$output" | grep -q 'hosted'
+          echo HOSTED_EXECUTION_FAIL_CLOSED_PASS
+
+      - name: Materialize rootless service without activation
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$(python scripts/install_stegfin_continuity_machine_service.py --root . --materialize-only)"
+          echo "$output"
+          echo "$output" | grep -q '"github_token_runtime_authority": false'
+          echo "$output" | grep -q '"execution_authority_created": false'
+          echo "$output" | grep -q '"heartbeat_replacement": false'
+          echo SERVICE_MATERIALIZATION_NON_AUTHORIZING_PASS
+
+      - name: Prove workflow itself is non-authorizing
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text=Path('.github/workflows/stegfin-continuity-machine-executor.yml').read_text(encoding='utf-8')
+          pieces=(
+              ('contents', ': write'),
+              ('git', ' push'),
+              ('actions/', 'checkout@'),
+              ('actions/', 'setup-python@'),
+              ('secrets.', 'GITHUB_TOKEN'),
+              ('github.', 'token'),
+          )
+          forbidden=[left+right for left,right in pieces]
+          found=[needle for needle in forbidden if needle in text]
+          assert not found, found
+          assert 'permissions: {}' in text
+          print('WORKFLOW_NON_AUTHORIZING_PASS')
+          PY
