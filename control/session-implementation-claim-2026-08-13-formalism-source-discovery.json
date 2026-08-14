@@ -19,10 +19,12 @@
       "control/worker-registry.d/formalism-source-discovery-001.json",
       "control/process-worker-adapters.d/formalism-source-discovery-001.json",
       "workers/formalism_source_discovery_worker.py",
+      "scripts/run_formalism_manifold_with_discovered_roots.py",
       "tests/test_formalism_source_discovery_worker.py",
       "receipts/formalism-source-discovery/**",
-      "bounded update to workers/formalism_manifold_orchestration_worker.py and its formalism orchestration tests/adapters to consume discovered roots receipt",
-      "bounded update to FORMALISM_MANIFOLD_IMPLEMENTATION_ADMISSION_MIRROR_HANDOFF.md and data/formalism-manifold-implementation-admission/task-state.json to transfer source-discovery deficiency"
+      "bounded update to control/process-worker-adapters.d/formalism-manifold-orchestration-001.json and formalism orchestration tests to consume discovered roots receipt",
+      "bounded update to FORMALISM_MANIFOLD_IMPLEMENTATION_ADMISSION_MIRROR_HANDOFF.md and data/formalism-manifold-implementation-admission/task-state.json to transfer source-discovery deficiency",
+      "control/session-implementation-claim-2026-08-13-formalism-manifold-admission.json: release predecessor implementation claim only after its PR #101 merge evidence is verified"
     ],
     "prohibited": [
       "network checkout or GitHub authentication",
@@ -33,8 +35,15 @@
       "existing heartbeat claim/fence/lease mutation"
     ]
   },
+  "predecessor_transfer": {
+    "goal_id": "FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
+    "merged_pr": 101,
+    "merge_commit": "9e6fd4285be3e51a19a8a632844e5d6811cc1d2f",
+    "remaining_source_discovery_deficiency_transferred_here": true,
+    "owner_source_mutation_deficiency_transferred_here": false
+  },
   "credential_authority": "TV/TVC",
   "github_token_required": false,
-  "authority_effect": "BOUNDED_SOURCE_DISCOVERY_IMPLEMENTATION_ONLY",
+  "authority_effect": "BOUNDED_SOURCE_DISCOVERY_IMPLEMENTATION_AND_PREDECESSOR_CLAIM_TRANSFER_ONLY",
   "archive_dependency": true
 }
