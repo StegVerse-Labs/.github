@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "claim_id": "FORMALISM-TVC-LOCAL-SPOOL-2026-08-14",
+  "task_id": "FORMALISM-TVC-LOCAL-SPOOL-001",
+  "originating_goal": "Remove the remaining manual request/receipt movement between heartbeat formalism workers and TV/TVC repository transport without forwarding any credential.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "feat/formalism-tvc-local-spool-001",
+  "claimant": "current ChatGPT formalism/manifold continuation session",
+  "role": "CLAIMED_FOR_IMPLEMENTATION",
+  "claim_state": "ACTIVE",
+  "claim_created_at": "2026-08-14T01:30:00-05:00",
+  "claim_expires_at": "2026-08-14T04:30:00-05:00",
+  "claim_release_condition": "Bound-state adapter and formalism spool consumer are hosted-validated and admitted, and the complementary TVC local intake is installed or durably transferred to an active executor.",
+  "collision_scope": {
+    "allowed": [
+      "FORMALISM_TVC_LOCAL_SPOOL_MIRROR_HANDOFF.md",
+      "heartbeat_runtime/process_adapter.py",
+      "scripts/run_heartbeat_runtime.py",
+      "control/process-worker-adapters.d/formalism-tvc-repository-transport-consumers-001.json",
+      "workers/formalism_tvc_repository_transport_worker.py",
+      "tests/test_process_adapter_scope.py",
+      "tests/test_process_worker_adapter_fragments.py",
+      "tests/test_formalism_tvc_repository_transport_worker.py",
+      "control/session-implementation-claim-2026-08-14-formalism-tvc-local-spool.json"
+    ],
+    "prohibited": [
+      "TVC credential values",
+      "GitHub/provider/wallet secrets or tokens",
+      "AE or StegCore source mutation",
+      "TVC provider-operation runtime observer scope",
+      "wallet signing or broadcast"
+    ]
+  },
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "consumer_secret_or_token_authority": false,
+  "authority_effect": "BOUNDED_LOCAL_CONTINUITY_STATE_TRANSPORT_IMPLEMENTATION_ONLY",
+  "archive_dependency": true
+}
