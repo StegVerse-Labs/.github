@@ -72,6 +72,7 @@ def test_stale_resident_stegfin_lease_is_preserved_but_not_a_collision_block(tmp
     ], capture_output=True, text=True, check=False)
     assert completed.returncode == 0, completed.stderr
     claim = json.loads(output.read_text(encoding="utf-8"))
+    assert claim["resident_heartbeat_liveness_known"] is True
     assert claim["resident_heartbeat_stale"] is True
     assert claim["fencing_token"] == 32
     assert claim["master_records_notification_required"] is True
@@ -105,6 +106,7 @@ def test_claim_uses_fence_above_observed_resident_state(tmp_path: Path) -> None:
     assert completed.returncode == 0, completed.stderr
     claim = json.loads(output.read_text(encoding="utf-8"))
     assert claim["fencing_token"] == 45
+    assert claim["resident_heartbeat_liveness_known"] is True
     assert claim["resident_heartbeat_stale"] is False
     assert claim["credential_authority"] == "TV/TVC"
     assert claim["non_tv_tvc_secret_or_token_allowed"] is False
@@ -112,11 +114,15 @@ def test_claim_uses_fence_above_observed_resident_state(tmp_path: Path) -> None:
     assert claim["broadcast_authority"] == "USER_ONLY"
 
 
-def test_missing_heartbeat_liveness_timestamp_fails_closed(tmp_path: Path) -> None:
+def test_missing_liveness_timestamp_never_creates_stale_override(tmp_path: Path) -> None:
     heartbeat_path = tmp_path / "heartbeat.json"
     write(heartbeat_path, {
         "epoch": 29,
-        "subsignals": {"worker_coordination": {"active_leases": []}},
+        "subsignals": {"worker_coordination": {"active_leases": [{
+            "task_id": "STEGFIN-LIVE-ENTRY-003",
+            "task_state": "ACTIVE",
+            "fencing_token": 31,
+        }]}},
     })
     completed = subprocess.run([
         sys.executable, str(SCRIPT),
@@ -125,4 +131,4 @@ def test_missing_heartbeat_liveness_timestamp_fails_closed(tmp_path: Path) -> No
         "--state-root", str(tmp_path / "state"),
     ], capture_output=True, text=True, check=False)
     assert completed.returncode != 0
-    assert "missing valid last_cycle_at" in (completed.stderr + completed.stdout)
+    assert "fresh resident StegFin worker already owns" in (completed.stderr + completed.stdout)
