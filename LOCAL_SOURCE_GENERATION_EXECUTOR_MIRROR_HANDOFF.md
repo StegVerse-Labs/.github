@@ -1,6 +1,6 @@
 # Local Source-Generation Executor Mirror Handoff
 
-Updated: 2026-08-14T17:13:00-05:00
+Updated: 2026-08-14T18:56:00-05:00
 
 ## Source of truth
 
@@ -10,29 +10,31 @@ repository: .github
 branch: main
 goal_id: LOCAL-SOURCE-GENERATION-EXECUTOR-001
 originating_session_goal: G11-RECURSIVE-SELF-BUILD-PROOF + G10-GENERALIZED-OWNER-MUTATION-EXECUTOR
-issue: #144
+issue: #144 CLOSED_COMPLETED
 parent_goal: ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-ACTIVATION-001
 canonical_binder: SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001
 canonical_local_model_owner: StegVerse-002/micro-node-runtime
 canonical_ae_authority: StegVerse-Labs/StegCore
+canonical_source_generation_phase: ADMISSIBLE
+canonical_lifecycle_merge: StegVerse-Labs/StegCore@15d9524530bc45a9404d93c3e2d51953d8f4a156
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 non_TV_TVC_secret_or_token_allowed: false
 state: COMPLETE_VALIDATED_RELEASED_SOURCE_SUPPORT
 ```
 
-This task implements only the missing bounded **local generation execution** slice behind the already-existing AE source-generation binder. It does not replace or modify the canonical source-generation capability binder, StegCore Admissible-Existence/StegGate semantics, the sovereign local model/runtime, TV/TVC repository transport, heartbeat claim/fence state, or any provider/wallet authority.
+This task implements only the bounded **local generation execution** slice behind the existing AE source-generation binder. It does not replace or modify the canonical source-generation capability binder, StegCore Admissible-Existence/StegGate semantics, the sovereign local model/runtime, TV/TVC repository transport, heartbeat claim/fence state, or any provider/wallet authority.
 
 ## Session-goal membership
 
-This worker is eligible for assistance because it is directly traceable to the current session inventory:
+This worker is traceable to the durable recursive-build goals that caused this executor to be installed:
 
 ```text
 G10-GENERALIZED-OWNER-MUTATION-EXECUTOR
 G11-RECURSIVE-SELF-BUILD-PROOF
 ```
 
-No worker outside the current session goal inventory may be selected by this session.
+No worker outside an applicable durable session-goal/dependency lineage may be selected by an interactive session.
 
 ## Existing canonical inputs — READ ONLY
 
@@ -40,46 +42,45 @@ No worker outside the current session goal inventory may be selected by this ses
 ADMISSIBLE_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md
 control/admissible-source-generation-capability.json
 workers/admissible_source_generation_capability_worker.py
+StegVerse-Labs/StegCore/docs/FORMALISM_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md
 StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
 StegVerse-002/micro-node-runtime/tools/run_sovereign_model.py
 StegVerse-002/micro-node-runtime/micro_node/local_model_runtime.py
 ```
 
-The existing binder already validates the final `stegverse.local-source-generation-result/v0.1` and emits the downstream owner-source packet. This task generates that exact input contract rather than creating a competing binder.
+The existing binder validates the final `stegverse.local-source-generation-result/v0.1` and emits the downstream owner-source packet. This executor generates that exact input contract rather than creating a competing binder.
 
 ## Implementation claim — RELEASED
 
 ```text
 claim_ref: control/session-implementation-claim-2026-08-14-local-source-generation-executor.json
-claimant: current ChatGPT continuation session
 role: COMPLETE_VALIDATED_RELEASED
 claim_created_at: 2026-08-14T17:03:00-05:00
 claim_released_at: 2026-08-14T17:13:00-05:00
 release_condition: SATISFIED_SOURCE_IMPLEMENTATION_AND_VALIDATION
 ```
 
-Collision exclusions remained intact:
+Collision exclusions remain intact:
 
 ```text
-- all #137 binder/policy/worker semantics except read-only contract consumption
+- canonical #137 binder/policy/worker semantics except read-only contract consumption
 - canonical StegCore AE/StegGate semantics
 - StegVerse-002/micro-node-runtime model/runtime source
-- TVC #19/#20 credential-bearing repository transport
-- .github #122 heartbeat/control-plane refactor
-- live worker claim/fence/lease/runtime state
+- TV/TVC credential-bearing repository transport
+- heartbeat/control-plane claim/fence/lease state
 - provider/wallet/signing/broadcast authority
 ```
 
 ## Installed execution contract
 
-The executor fails closed unless **both** capability evidence inputs are explicit and activated:
+The executor fails closed unless **both** capability evidence inputs are explicitly ACTIVATED:
 
 ```text
 stegverse:capability:formalism-source-generation:v1 -> ACTIVATED + activation proof + integration evidence
 stegverse:capability:sovereign-local-model:v1 -> ACTIVATED + activation proof + integration evidence
 ```
 
-Availability of a model binary, repository source, worker, heartbeat, local endpoint, or model output cannot infer activation.
+Availability of a model binary, repository source, worker, heartbeat, local endpoint, model output, or an ADMISSIBLE lifecycle phase cannot infer activation.
 
 The installed bounded path is:
 
@@ -132,9 +133,7 @@ receipts/local-source-generation-executor/source-validation-20260814.json
 ```text
 validation receipt: receipts/local-source-generation-executor/source-validation-20260814.json
 receipt commit: 36a39dbc86b645aab843ea47a0ccf735c6ee44d2
-heartbeat validation run: 31845636235
-heartbeat validation job: 94911384002
-heartbeat validation conclusion: SUCCESS
+heartbeat validation run: 31845636235 SUCCESS
 complete repository tests: 220/220 PASS
 focused executor tests: 10/10 PASS
 organization control-plane run: 31845636226 SUCCESS
@@ -143,26 +142,37 @@ heartbeat dry-run non-mutating proof: PASS
 workflow non-authorizing proof: PASS
 ```
 
-The first hosted attempt after AE retrospective classification correctly exposed a stale hard-coded denominator (26 instead of 27). That control-plane test was corrected at `975eee615da3399ba98e56b536b16e57baee7ffb`; the subsequent complete suite passed. No failing source behavior was hidden.
-
 Synthetic ACTIVATED evidence appears only in unit-test fixtures. No durable production receipt invents source-generation or local-model activation.
 
-## Current machine state
+## Current canonical machine state
 
 ```text
 source implementation: COMPLETE_VALIDATED_RELEASED
 worker registration: INSTALLED
-AE retrospective classification: PASS / DECLARED / integrates_capability
-live local-generation execution: NOT ADMITTED YET
-source-generation capability: DECLARED
+formalism-source-generation capability: ADMISSIBLE
+formalism-source-generation standing/admissibility: COMPLETE_VALIDATED via StegCore PR #124 / merge 15d9524530bc45a9404d93c3e2d51953d8f4a156
+formalism-source-generation integration evidence: NONE
+formalism-source-generation activation proof: NONE
 sovereign-local-model capability: ADMISSIBLE
+sovereign-local-model activation proof: NOT_OBSERVED
+live local-generation execution: NOT_ADMITTED_YET
 ```
 
-The repository-native worker therefore remains correctly blocked. It may execute only after canonical owners independently produce explicit ACTIVATED state plus activation/integration evidence for both required capabilities.
+The previous `DECLARED` statement is superseded. Canonical StegCore has advanced `stegverse:capability:formalism-source-generation:v1` to `ADMISSIBLE`; this closes the standing/admissibility portion only. The repository-native executor remains correctly blocked because `ACTIVATED` still requires explicit integration evidence and activation proof, and the sovereign-local-model dependency must independently reach `ACTIVATED` with its own proof.
+
+## Remaining blockers
+
+```text
+SOVEREIGN_LOCAL_MODEL_LIVE_ACTIVATION_NOT_YET_OBSERVED
+FORMALISM_SOURCE_GENERATION_INTEGRATION_PROOF_NOT_YET_OBSERVED
+RESIDENT_SOURCE_GENERATION_AND_RECURSIVE_REOBSERVATION_NOT_YET_PROVEN
+```
+
+Machine-observable release condition: both canonical capability records independently become `ACTIVATED` with explicit integration evidence and activation proof. Only then may the registered machine worker execute one admitted bounded generation and pass its result to the existing #137 binder. Downstream repository mutation remains TV/TVC-owned.
 
 ## Next executable action
 
-The current session must not seize the #137 capability claim or the sovereign-local-model activation claim. Canonical owners advance those lifecycle states. Once both are actually ACTIVATED, the registered machine worker may execute this bounded local-generation path and pass its result to the existing #137 binder. Downstream repository mutation remains TV/TVC-owned.
+Do not duplicate source implementation and do not seize the sovereign-local-model or #137 lifecycle authority. Observe the canonical lifecycle owners. After both capability predicates are explicitly satisfied, the registered repository-native worker executes bounded local generation, the existing binder emits the exact owner packet, TV/TVC performs any authorized repository operation, and reconciliation must re-observe the owner gap as removed.
 
 ## Completion accounting
 
@@ -172,9 +182,12 @@ focused validation cases: 10/10 = 100%
 repository suite: 220/220 PASS
 source integration: 4/5 = 80% (registry + adapter + AE classification + canonical binder contract complete; live governed machine consumption pending)
 source-task implementation claim: RELEASED
-capability activation: NOT CLAIMED; blocked on independent AE activation evidence
+formalism-source-generation lifecycle: ADMISSIBLE / activation pending
+sovereign-local-model lifecycle: ADMISSIBLE / activation pending
+resident source-generation result: 0/1
+recursive owner mutation/re-observation proof: 0/1
 ```
 
 ## Archive condition
 
-This source implementation subtask is archive-safe and its chat implementation claim is released. The complete current session is **not** archive-ready: G10/G11 still require actual resident source generation -> existing binder -> TV/TVC owner mutation -> validation/merge -> re-observation, and other current-session goals remain separately active.
+This source implementation subtask is archive-safe and its implementation claim is released. The broader recursive-build goal remains incomplete until the registered machine chain produces actual resident source generation -> existing binder -> TV/TVC owner mutation -> validation/merge -> reconciliation re-observation, or another proven active continuation independently owns and executes that sequence.
