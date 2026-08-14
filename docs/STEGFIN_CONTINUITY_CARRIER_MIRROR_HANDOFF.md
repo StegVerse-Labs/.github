@@ -7,7 +7,7 @@ goal_id: STEGFIN-CONTINUITY-CARRIER-007
 parent_goal: STEGFIN-BASE-ROUNDTRIP-001
 repository: StegVerse-Labs/.github
 branch: main
-state: MACHINE_OWNED_TVC_SOURCE_INTEGRATED_VALIDATION_BLOCKED_RUNTIME_BINDING_PENDING
+state: MACHINE_OWNED_TVC_LOCAL_BOUNDARY_VALIDATED_EXACT_BLOB_AND_RUNTIME_BINDING_PENDING
 credential_authority: TV/TVC
 manual_execution_allowed: false
 session_role: DISTINCT_VALIDATION_RECONCILIATION_SUPPORT
@@ -57,7 +57,7 @@ primary_runtime: existing TV/TVC-authorized local/governed runtime
 application_binding: app.main:/v1/provider-operation
 governed_ingress_observer: TVC-CAPABILITY-RUNTIME-002
 fallback_runtime: Render only; not an activation prerequisite
-release_condition: fresh deterministic PASS + primary runtime binding + bounded non-secret provider-operation evidence
+release_condition: byte-identical deterministic PASS + primary runtime binding + bounded non-secret provider-operation evidence
 ```
 
 ### COMPLETED / SUPERSEDED
@@ -108,6 +108,10 @@ Current installed source integration:
 b6bfa33e33f27cb30e0924c938c4946b08a073a8  protected credential/request/result hardening
 b5053b74df5e853f57ddd3524ed2224553e518d3  app/broker integration tests
 2e924a900394628931c447bb3854b30578cb6167  provider-operation tests bound into StegTVC Core CI
+7ed728132d1f26dd4613602594f734ea03175d5f  local no-credential boundary validation receipt
+9f992b1266a0829ca98c063e62d69ab7f993aaf6  independent semantic replay receipt
+bd929a22aae2bc87cdc0097f6c16061337138aa0  canonical TVC task advanced to local-boundary-validated state
+c245f2a0cafddd3844fe5f12cce4a20a2a510cc1  TVC mirror handoff reconciled with current evidence
 ```
 
 Current blobs:
@@ -117,37 +121,49 @@ tvc_provider_operation_broker.py: 1f56925fccb5e7e3121aa35b37f782cfe558034a
 app/main.py: 1f3cd71eea6a182ae0c492b748d9ba3e7bc83d4f
 tests/test_provider_operation_broker.py: 1acb7d3f40db7fea7e40a7df3db6615b904a3d1f
 tests/test_provider_operation_app.py: ed721ef4aee9051b223337933834a9dccf79a399
-.github/workflows/stegtvc_ci.yml: 101c231736d85c939cb35e927dc493d7c9a2757e
 ```
 
-The current TVC application exposes `/v1/provider-operation`, rejects caller Authorization/API-key/Admin-token/GitHub-token inputs, forwards only to the canonical local TV/TVC vault broker, and advertises no consumer credential, secret-export, signing, or broadcast authority. The canonical broker also recursively rejects protected credential fields and credential-like values in requests/results.
+The current TVC application exposes `/v1/provider-operation`, rejects caller Authorization/API-key/Admin-token/GitHub-token inputs, forwards only to the canonical local TV/TVC vault broker, and advertises no consumer credential, secret-export, signing, or broadcast authority. The canonical broker recursively rejects protected credential fields and credential-like values in requests/results.
 
 ## Fresh validation state
 
-Predecessor broker source was hosted-validated, but the current app binding/hardening is newer and requires fresh deterministic execution.
+Predecessor broker source was hosted-validated. The current app binding/hardening has now received two non-secret local supporting validations, while byte-identical current-source execution remains pending.
 
-Installed command:
+```text
+StegVerse-Labs/TVC/reports/provider-operation-broker/local-boundary-validation-20260813.json
+result: PASS_14_OF_14
+elapsed_seconds: 0.29
+exact_private_checkout: false
+non_tv_tvc_secret_or_token_used: false
+
+StegVerse-Labs/TVC/receipts/TVC-PROVIDER-OPERATION-BROKER-003-independent-semantic-replay-2026-08-13.json
+result: PASS_16_OF_16
+role: independent semantic replay
+authority_effect: NONE_VALIDATION_ONLY
+```
+
+Installed byte-identical validation command remains:
 
 ```text
 python -m pytest -q tests/test_provider_operation_broker.py tests/test_provider_operation_app.py
 ```
 
-Hosted attempt:
+Hosted attempt was retried:
 
 ```text
 repository: StegVerse-Labs/TVC
 workflow: StegTVC Core CI
 run: 31740218560
-job: 94581517344
+attempt: 2
+job: 94664286596
 head: 2e924a900394628931c447bb3854b30578cb6167
 conclusion: FAILURE_BEFORE_STEPS
 steps_executed: 0
-blocker: GitHub Actions account payment/spending limit prevented job start
 ```
 
-This is validation-infrastructure capacity, not a test failure. No GitHub/provider credential is authorized to bypass it.
+This is validation-infrastructure non-execution, not a source-test failure. No GitHub/provider credential is authorized to bypass it.
 
-`TVC-CAPABILITY-RUNTIME-002` remains the non-secret primary-runtime observer. Run `31735970818`, attempt 2, produced no readiness artifact and does not establish primary runtime binding.
+`TVC-CAPABILITY-RUNTIME-002` remains the non-secret primary-runtime observer. Current hosted observer evidence does not establish primary runtime binding.
 
 ## Required trade-readiness evidence
 
@@ -167,8 +183,8 @@ broadcast=false
 ```text
 TVC-PROVIDER-OPERATION-BROKER-003
   owner: StegVerse-Labs/TVC + TV/TVC runtime authority
-  state: source integration installed; fresh validation blocked before execution; primary runtime binding pending
-  release: current integration receives deterministic PASS, existing TV/TVC primary runtime exposes it, bounded non-secret provider-operation evidence exists
+  state: local boundary validation PASS; byte-identical current-source execution and primary runtime binding pending
+  release: current untouched integration receives deterministic PASS, existing TV/TVC primary runtime exposes it, bounded non-secret provider-operation evidence exists
 
 STEGFIN-CONTINUITY-CARRIER-007
   owner: registered machine worker / StegVerse continuity control plane
@@ -198,7 +214,8 @@ claim/collision/release: COMPLETE
 worker registration: AVAILABLE_HANDOFF_READY
 local model/runtime: COMPLETE_RELEASED_ELSEWHERE
 TVC provider-operation source integration: INSTALLED
-TVC current deterministic validation: BLOCKED_BEFORE_STEPS
+TVC local boundary validation: PASS_SUPPORTING_EVIDENCE
+TVC exact current-source deterministic validation: PENDING
 primary TV/TVC runtime binding: PENDING
 Render dependency: FALLBACK_ONLY
 machine wallet handoff: NOT_YET_OBSERVED
