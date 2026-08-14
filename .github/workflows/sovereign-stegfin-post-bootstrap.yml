@@ -1,0 +1,102 @@
+name: Sovereign StegFin Post-Bootstrap Validation
+
+on:
+  pull_request:
+    paths:
+      - "scripts/activate_stegfin_after_sovereign_bootstrap.py"
+      - "tests/test_activate_stegfin_after_sovereign_bootstrap.py"
+      - "control/session-implementation-claim-2026-08-14-sovereign-stegfin-post-bootstrap.json"
+      - "docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md"
+      - ".github/workflows/sovereign-stegfin-post-bootstrap.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/activate_stegfin_after_sovereign_bootstrap.py"
+      - "tests/test_activate_stegfin_after_sovereign_bootstrap.py"
+      - "control/session-implementation-claim-2026-08-14-sovereign-stegfin-post-bootstrap.json"
+      - "docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md"
+      - ".github/workflows/sovereign-stegfin-post-bootstrap.yml"
+
+permissions: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ""
+      GH_TOKEN: ""
+      STEGVERSE_GITHUB_TOKEN: ""
+      TVC_TOKEN: ""
+      WALLET_KEY: ""
+      PROVIDER_SECRET: ""
+    steps:
+      - name: Anonymous source acquisition without credential authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          test -z "${STEGVERSE_GITHUB_TOKEN:-}"
+          test -z "${TVC_TOKEN:-}"
+          test -z "${WALLET_KEY:-}"
+          test -z "${PROVIDER_SECRET:-}"
+          git -c credential.helper= -c http.extraHeader= init .
+          git -c credential.helper= -c http.extraHeader= remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git -c credential.helper= -c http.extraHeader= fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+
+      - name: Compile post-bootstrap integration
+        run: python -m py_compile scripts/activate_stegfin_after_sovereign_bootstrap.py
+
+      - name: Run deterministic post-bootstrap tests
+        run: python -m unittest tests.test_activate_stegfin_after_sovereign_bootstrap -v
+
+      - name: Prove hosted runner cannot activate StegFin service
+        shell: bash
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+          python - "$tmp" <<'PY'
+          import json, pathlib, sys
+          root=pathlib.Path(sys.argv[1])
+          proof={name: True for name in (
+            'runtime_materialized','native_service_active','continuous_runtime_live',
+            'heartbeat_epoch_advanced','worker_coordination_checkpoint_observed',
+            'controlled_restart_observed','epoch_and_generation_non_regressing',
+            'no_duplicate_claim_or_fence','state_reconstruction_pass')}
+          proof['all_predicates_pass']=True
+          (root/'activation.latest.json').write_text(json.dumps(proof)+'\n')
+          node={'declared':True,'credential_authority':'TV/TVC','github_token_required':False,'third_party_runtime_required':False,'authority_effect':'RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY'}
+          (root/'node.json').write_text(json.dumps(node)+'\n')
+          PY
+          set +e
+          GITHUB_ACTIONS=true python scripts/activate_stegfin_after_sovereign_bootstrap.py \
+            --root . \
+            --proof-path "$tmp/activation.latest.json" \
+            --node-marker "$tmp/node.json" \
+            --executor-activation-receipt "$tmp/executor.json" \
+            --integration-receipt "$tmp/integration.json" >"$tmp/output.json"
+          rc=$?
+          set -e
+          test "$rc" -ne 0
+          python - "$tmp/integration.json" <<'PY'
+          import json, sys
+          data=json.load(open(sys.argv[1], encoding='utf-8'))
+          assert data['state']=='FAIL_CLOSED', data
+          assert data['reason']=='HOSTED_ENVIRONMENT_IS_NOT_AUTHORIZED_LOCAL_INTEGRATION_SURFACE', data
+          assert data['installer_returncode'] is None, data
+          assert data['wallet_handoff_ready_claimed'] is False, data
+          assert data['wallet_contacted'] is False, data
+          assert data['signed'] is False and data['broadcast'] is False, data
+          PY
+
+      - name: Prove validation-only authority boundary
+        shell: bash
+        run: |
+          echo "credential_authority=TV/TVC"
+          echo "credential_requirement=NONE"
+          echo "github_token_runtime_authority=NONE"
+          echo "wallet_signing_authority=USER_ONLY"
+          echo "broadcast_authority=USER_ONLY"
+          echo "wallet_handoff_ready_claimed=false"
+          echo "workflow_authority_effect=NONE_VALIDATION_ONLY"
