@@ -1,0 +1,46 @@
+{
+  "schema": "stegverse.task-state/v1",
+  "goal_id": "ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-ACTIVATION-001",
+  "task_id": "SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "feat/admissible-source-generation-capability-137",
+  "state": "HANDOFF_READY",
+  "claim_state": "CLAIMED_FOR_IMPLEMENTATION",
+  "claim_ref": "control/session-implementation-claim-2026-08-14-admissible-source-generation-capability.json",
+  "handoff_ref": "handoffs/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
+  "worker_registry_ref": "control/worker-registry.d/admissible-source-generation-capability-001.json",
+  "adapter_ref": "control/process-worker-adapters.d/admissible-source-generation-capability-001.json",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:formalism-source-generation:v1",
+    "capability_version": "1.0.0",
+    "phase": "DECLARED",
+    "target_phase": "ACTIVATED",
+    "temporal_class": "current",
+    "task_relationship": "develops_capability",
+    "blockers": [
+      "CAPABILITY_STANDING_ADMISSIBILITY_AND_ACTIVATION_PROOF_NOT_YET_ESTABLISHED",
+      "SOVEREIGN_LOCAL_MODEL_LIVE_ACTIVATION_NOT_YET_OBSERVED",
+      "TVC_REPOSITORY_BROKER_CANONICAL_ADMISSION_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "StegVerse-Labs/.github#137 + StegVerse-Labs/StegCore capability-registry owner + TV/TVC runtime/repository-operation owners"
+  },
+  "implemented_surfaces": [
+    "ADMISSIBLE_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md",
+    "control/admissible-source-generation-capability.json",
+    "control/session-implementation-claim-2026-08-14-admissible-source-generation-capability.json",
+    "handoffs/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
+    "control/worker-registry.d/admissible-source-generation-capability-001.json",
+    "control/process-worker-adapters.d/admissible-source-generation-capability-001.json",
+    "workers/admissible_source_generation_capability_worker.py",
+    "tests/test_admissible_source_generation_capability_worker.py",
+    "data/admissible-source-generation-capability/task-state.json"
+  ],
+  "validation_state": "SOURCE_VALIDATION_PENDING",
+  "integration_state": "BRANCH_SOURCE_COMPLETE_NOT_MERGED",
+  "resident_activation_proof": "NOT_OBSERVED",
+  "recursive_owner_mutation_proof": "NOT_OBSERVED",
+  "next_executable_action": "Run canonical organization AE/control-plane and worker validation on this branch; correct fail-closed findings; merge only after green source validation."
+}
