@@ -3,8 +3,9 @@
   "goal_id": "FORMALISM-OWNER-MUTATION-EXECUTOR-001",
   "issue": 112,
   "pull_request": 115,
-  "branch": "feat/formalism-owner-mutation-executor-001",
-  "state": "IMPLEMENTED_HOSTED_VALIDATED_CANONICAL_ADMISSION_PENDING",
+  "branch": "main",
+  "merge_commit": "d8a56d2905b478ab00578a16caead2d68ebca714",
+  "state": "SOURCE_CANONICAL_HOSTED_VALIDATED_RESIDENT_PROOF_PENDING",
   "credential_authority": "TV/TVC",
   "github_token_required": false,
   "non_tv_tvc_secret_or_token_allowed": false,
@@ -28,11 +29,11 @@
     "direct_owner_mutation": false
   },
   "validation": {
-    "heartbeat_worker_run": 31818251734,
+    "heartbeat_worker_run": 31818346894,
     "heartbeat_worker_result": "SUCCESS",
-    "control_plane_run": 31818251743,
+    "control_plane_run": 31818346840,
     "control_plane_result": "SUCCESS",
-    "handoff_render_run": 31818251726,
+    "handoff_render_run": 31818346907,
     "handoff_render_result": "SUCCESS",
     "focused_unit_tests": true,
     "executable_handoff_validation": true,
@@ -50,7 +51,6 @@
     "owner_pr_validation_reobservation": "NOT_PROVEN"
   },
   "remaining_deficiencies": [
-    "CANONICAL_MERGE_PENDING",
     "TVC_BROKER_LOCAL_PASS_NOT_OBSERVED",
     "RESIDENT_SOURCE_GENERATION_EXECUTOR_NOT_BOUND",
     "GENERALIZED_CHAT_FREE_OWNER_MUTATION_CYCLE_NOT_OBSERVED",
