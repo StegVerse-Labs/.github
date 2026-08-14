@@ -15,10 +15,10 @@
   "task":{
     "task_id":"SHWP-STEGFIN-SOVEREIGN-TRADING-001",
     "repository":"StegVerse-Labs/.github",
-    "source_refs":["StegVerse-Labs/stegfin-governance#50","StegVerse-Labs/stegfin-governance#51","StegVerse-Labs/stegfin-governance#52","StegVerse-Labs/stegfin-governance:scripts/run_sovereign_trading_activation_round.py","master-records/orchestration#23"],
+    "source_refs":["StegVerse-Labs/stegfin-governance#50","StegVerse-Labs/stegfin-governance#51","StegVerse-Labs/stegfin-governance#52","StegVerse-Labs/stegfin-governance:scripts/run_sovereign_trading_activation_round.py","StegVerse-Labs/stegfin-governance:task-state/STEGFIN-SOVEREIGN-CAPSULE-MATERIALIZATION-008.json","StegVerse-Labs/stegfin-governance:scripts/materialize_sovereign_trading_capsule.py","StegVerse-Labs/stegfin-governance:reports/sovereign-capsule-materialization/exact-blob-validation-20260814.json","master-records/orchestration#23"],
     "dependencies":[],
     "parent_task_id":null,
-    "derivation_reason":"The internal sovereign market, settlement and reconstruction primitives are merged; this task executes their bounded same-carrier activation proof without external financial authority.",
+    "derivation_reason":"The internal sovereign market, settlement and reconstruction primitives are merged; this task executes their bounded same-carrier activation proof without external financial authority. The local workload materialization blocker now has a bounded executable source solution in StegVerse-Labs/stegfin-governance.",
     "canonical_owner_ref":"StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md",
     "canonical_lineage_key":"stegfin:sovereign-internal-trading-activation",
     "derivation_depth":0,
@@ -53,12 +53,17 @@
     "status_projection":"control/worker-status.json"
   },
   "completion":{
-    "next_authorized_action":"Execute the locally materialized StegFin sovereign activation runner and require exact Master Records RECONSTRUCTED_PASS bound through E2.",
+    "next_authorized_action":"If canonical local workload roots are absent but canonical local StegFin and Master Records source roots exist, consume StegVerse-Labs/stegfin-governance:scripts/materialize_sovereign_trading_capsule.py to create the bounded workload capsule without network checkout or credentials; then execute the locally materialized StegFin sovereign activation runner and require exact Master Records RECONSTRUCTED_PASS bound through E2.",
     "terminal_when":["internal_settlement_pass=true","master_records_reconstruction_pass=true","e2_reconstruction_proof_observed=true","github_token_required=false","wallet_signing_authority=false","transaction_broadcast_authority=false"]
   },
   "block":{
     "block_reason":"Local StegFin and Master Records workloads must exist on the sovereign carrier for same-execution reconstruction.",
     "dependency":"local sovereign workload materialization",
+    "solution_task_ref":"StegVerse-Labs/stegfin-governance:task-state/STEGFIN-SOVEREIGN-CAPSULE-MATERIALIZATION-008.json",
+    "solution_source_ref":"StegVerse-Labs/stegfin-governance:scripts/materialize_sovereign_trading_capsule.py",
+    "solution_validation_ref":"StegVerse-Labs/stegfin-governance:reports/sovereign-capsule-materialization/exact-blob-validation-20260814.json",
+    "solution_command":"python scripts/materialize_sovereign_trading_capsule.py",
+    "solution_constraints":["local sources only","no network checkout","no GitHub credential runtime authority","no non-TV/TVC secret or token","no provider operation","no wallet contact/sign/broadcast"],
     "observer":"single sovereign StegVerse heartbeat",
     "recheck_trigger":"each admitted heartbeat",
     "next_check":null,
