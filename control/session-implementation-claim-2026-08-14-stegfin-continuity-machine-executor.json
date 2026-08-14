@@ -5,10 +5,10 @@
   "originating_session_goal": "Assist the workers and make this trade ready.",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
-  "state": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION",
+  "state": "CLAIMED_FOR_IMPLEMENTATION_VALIDATION_AND_INTEGRATION",
   "claimant": "current ChatGPT continuation session",
   "claimed_at": "2026-08-14T18:17:00-05:00",
-  "renewed_at": "2026-08-14T18:23:00-05:00",
+  "renewed_at": "2026-08-14T18:24:00-05:00",
   "expires_at": "2026-08-14T19:17:00-05:00",
   "scope": [
     "docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md",
@@ -18,6 +18,7 @@
     "control/stegfin-continuity-machine-executor.json",
     "data/stegfin-continuity-machine-executor/task-state.json",
     ".github/workflows/stegfin-continuity-machine-executor.yml",
+    "control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v4.json",
     "receipts/stegfin-continuity-machine-executor/source-validation-20260814.json"
   ],
   "collision_exclusions": [
@@ -38,12 +39,13 @@
     "invalid/missing sovereign node declaration fails closed",
     "complete terminal result is revalidated as WALLET_HANDOFF_READY with signed=false and broadcast=false",
     "focused source tests and no-token hosted validation pass",
+    "v4 session inventory records this executor as direct G08 integration descendant",
     "broader repository-suite result inspected and any unrelated concurrent failure identified without collision",
     "claim released to canonical machine/TV/TVC owners"
   ],
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": false,
   "non_tv_tvc_secret_or_token_allowed": false,
-  "release_condition": "Executor, rootless service delivery, focused workflow/tests, task state and source-validation receipt are committed and validated; broader-suite state is inspected; then release this source claim.",
+  "release_condition": "Executor, rootless service delivery, focused workflow/tests, v4 inventory propagation, task state and source-validation receipt are committed and validated; broader-suite state is inspected; then release this source claim.",
   "next_task_after_release": "Install/activate the released rootless executor service only on an already-declared authorized StegVerse node; machine worker selects canonical TV/TVC transport and stops at WALLET_HANDOFF_READY."
 }
