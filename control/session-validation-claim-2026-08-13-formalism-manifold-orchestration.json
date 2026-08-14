@@ -1,0 +1,47 @@
+{
+  "schema": "stegverse.session-validation-claim/v1",
+  "claim_id": "ORG-HANDOFF-NONCOMPETING-VALIDATION-2026-08-13-FORMALISM-MANIFOLD",
+  "task_id": "ORG-HANDOFF-NONCOMPETING-VALIDATION",
+  "originating_goal": "Establish a noncompeting orchestration workstream for Admissible-Existence formalism recovery and StegCore manifold-governance mapping using the existing single heartbeat, worker registry, leases, receipts, and fail-closed authority boundaries.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "feat/formalism-manifold-orchestration-001",
+  "claimant": "current ChatGPT formalism/manifold orchestration session",
+  "role": "CLAIMED_FOR_VALIDATION",
+  "claim_state": "ACTIVE",
+  "claim_created_at": "2026-08-13T22:10:00-05:00",
+  "claim_released_at": null,
+  "claim_expires_at": "2026-08-14T00:10:00-05:00",
+  "collision_scope": {
+    "allowed": [
+      "new FORMALISM-MANIFOLD-ORCHESTRATION handoff/task/receipt/worker-registration surfaces",
+      "new process-adapter fragments for the orchestration workers",
+      "new deterministic evidence-only worker implementation and tests",
+      "read-only inspection of existing heartbeat, worker registry, repository federation, formalism, and StegCore authority state",
+      "durable reconciliation evidence that does not mutate worker-owned runtime activation, claims, fences, or leases"
+    ],
+    "prohibited": [
+      "sovereign carrier selection or materialization",
+      "existing heartbeat claim/fence/lease mutation",
+      "modification of SHWP-DURABLE-RUNTIME-ACTIVATION execution scope",
+      "TV/TVC credential or route authority changes",
+      "redefinition of Admissible-Existence mathematical primitives",
+      "creation of a parallel StegGate evaluator",
+      "production deployment, wallet signing, external consequence, publication, tag, or release"
+    ]
+  },
+  "preclaim_bootstrap_reconciliation": {
+    "commits": [
+      "86ae1ac99dc62c6e812074667943bdf9b5c7b980",
+      "e347481ce80250c699bf2398dde4e1def169f903",
+      "d0d3d7be25c22652bfd5e08439e16ef6ec61346c"
+    ],
+    "scope": "branch-local new handoff/task-state/readme only",
+    "existing_worker_owned_paths_touched": false,
+    "authority_effect": "NONE_BOOTSTRAP_ONLY"
+  },
+  "receipt_ref": "receipts/formalism-manifold-orchestration/session-claim-reconciliation.json",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "authority_effect": "NONE_VALIDATION_AND_NONCOMPETING_REGISTRATION_ONLY",
+  "archive_dependency": true
+}

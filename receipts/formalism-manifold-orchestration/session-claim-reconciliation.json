@@ -1,0 +1,43 @@
+{
+  "schema": "stegverse.formalism-manifold-orchestration-bootstrap-receipt/v0.1",
+  "goal_id": "FORMALISM-MANIFOLD-ORCHESTRATION-001",
+  "issue": 97,
+  "draft_pr": 98,
+  "branch": "feat/formalism-manifold-orchestration-001",
+  "claim_ref": "control/session-validation-claim-2026-08-13-formalism-manifold-orchestration.json",
+  "state": "INSTALLED_VALIDATION_PENDING",
+  "installed": {
+    "mirror_handoff": true,
+    "orchestration_contract": true,
+    "executable_handoffs": 5,
+    "worker_registry_entries": 5,
+    "process_adapter_entries": 5,
+    "worker_implementation": true,
+    "unit_test_file": true
+  },
+  "observed_validation": {
+    "combined_status_count": 0,
+    "workflow_run_count": 0,
+    "resident_heartbeat_execution": false,
+    "lane_receipts": 0,
+    "reconciliation_receipt": false
+  },
+  "authority": {
+    "formalism_authority_changed": false,
+    "stegcore_runtime_authority_changed": false,
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "authority_effect": "NONE_BOOTSTRAP_AND_REGISTRATION_EVIDENCE_ONLY"
+  },
+  "preclaim_bootstrap": {
+    "reconciled": true,
+    "existing_worker_owned_paths_touched": false,
+    "commits": [
+      "86ae1ac99dc62c6e812074667943bdf9b5c7b980",
+      "e347481ce80250c699bf2398dde4e1def169f903",
+      "d0d3d7be25c22652bfd5e08439e16ef6ec61346c"
+    ]
+  },
+  "next_action": "Obtain branch validation evidence; repair only branch-local defects; keep PR draft until checks pass and canonical admission is justified."
+}

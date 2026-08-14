@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-FORMALISM-INVENTORY-001",
+  "created_at": "2026-08-13T22:10:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "FORMALISM-INVENTORY-001",
+    "objective": "Inventory the required Admissible-Existence and StegCore repositories from locally materialized roots and prove canonical mirror-handoff coverage without cross-repository mutation.",
+    "success_predicates": ["Every required repository is locally materialized", "Every required repository exposes at least one *_MIRROR_HANDOFF.md", "Receipt is emitted under the bounded orchestration namespace"],
+    "failure_predicates": ["Missing repository or handoff is treated as complete", "Worker mutates upstream formalism repositories", "GitHub token becomes a runtime requirement"],
+    "authority_ceiling": ["formalism_inventory_reconciliation", "receipts/formalism-manifold-orchestration/**", "no_cross_repo_mutation", "no_execution_authority"],
+    "successor_policy": "NONE",
+    "max_successor_depth": 0
+  },
+  "task": {
+    "task_id": "SHWP-FORMALISM-INVENTORY-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": ["control/formalism-manifold-orchestration.json", "workers/formalism_manifold_orchestration_worker.py", "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md"],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "The manifold-governance work must begin from recovered repository-local formal standing rather than chat assumptions.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#97",
+    "canonical_lineage_key": "formalism-manifold:inventory",
+    "derivation_depth": 0,
+    "priority": "critical"
+  },
+  "authority": {"authority_source": "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md", "heartbeat_grants_execution_authority": false, "credential_authority": "TV/TVC", "github_token_required": false, "policy_version": "formalism-manifold-orchestration-v0.1"},
+  "execution": {"required_capabilities": ["formalism_inventory_reconciliation"], "allowed_paths": ["receipts/formalism-manifold-orchestration/**"], "allowed_services": [], "max_actions": 64, "max_retries": 256, "external_cost_ceiling_usd": 0, "runtime_window_beats": 512, "rate_class": "formalism_inventory"},
+  "activation": {"carrier": "heartbeat", "executor_binding": "AUTHORIZED", "authorization_ref": "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md", "recheck_trigger": "each admitted heartbeat while coverage is incomplete or changes", "checkout_policy": "fenced_atomic_checkout"},
+  "continuity": {"checkpoint_ref": "receipts/formalism-manifold-orchestration/SHWP-FORMALISM-INVENTORY-001.json", "handoff_destination": "control/worker-registry.json", "master_records_required": false, "status_projection": "control/worker-status.json"},
+  "completion": {"next_authorized_action": "Run on the resident heartbeat when the required local repository roots are materialized; emit fail-closed coverage until complete.", "terminal_when": ["All required repositories are materialized", "All required mirror handoffs are present"]},
+  "block": null
+}
