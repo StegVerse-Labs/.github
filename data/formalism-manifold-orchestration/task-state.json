@@ -2,19 +2,42 @@
   "schema_version": "0.1.0",
   "goal_id": "FORMALISM-MANIFOLD-ORCHESTRATION-001",
   "issue": 97,
+  "draft_pr": 98,
   "branch": "feat/formalism-manifold-orchestration-001",
-  "status": "INITIALIZING",
+  "status": "IMPLEMENTED_VALIDATION_PENDING",
   "coordination_authority": "StegVerse-Labs/.github",
   "canonical_handoff": "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
+  "session_claim": "control/session-validation-claim-2026-08-13-formalism-manifold-orchestration.json",
   "authority_boundary": {
-    "formalism_authority": "Admissible-Existence ecosystem repositories",
+    "formalism_authority": "Admissible-Existence repository-local canonical handoffs and formal sources",
     "runtime_authority": "StegVerse-Labs/StegCore canonical StegGate",
     "orchestration_grants_policy_authority": false,
     "heartbeat_grants_execution_authority": false,
     "worker_lease_grants_formalism_authority": false
   },
-  "lanes": [],
-  "workers": [],
-  "reconciliation_state": "PENDING_EXISTING_ORCHESTRATION_INSPECTION",
-  "next_action": "Inspect existing organization handoffs, durable runtime activation, heartbeat, worker registry, leases, and task-state contracts before adding orchestration machinery."
+  "lanes": [
+    {"task_id": "SHWP-FORMALISM-INVENTORY-001", "state": "HANDOFF_READY", "worker_id": "formalism-inventory-worker", "receipt_observed": false},
+    {"task_id": "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001", "state": "HANDOFF_READY", "worker_id": "formalism-handoff-normalization-worker", "receipt_observed": false},
+    {"task_id": "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001", "state": "HANDOFF_READY", "worker_id": "formalism-mathematical-crosswalk-worker", "receipt_observed": false},
+    {"task_id": "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001", "state": "HANDOFF_READY", "worker_id": "manifold-governance-mapping-worker", "receipt_observed": false},
+    {"task_id": "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001", "state": "HANDOFF_READY", "worker_id": "formalism-manifold-reconciliation-worker", "receipt_observed": false}
+  ],
+  "workers": [
+    "formalism-inventory-worker",
+    "formalism-handoff-normalization-worker",
+    "formalism-mathematical-crosswalk-worker",
+    "manifold-governance-mapping-worker",
+    "formalism-manifold-reconciliation-worker"
+  ],
+  "implementation": {
+    "configuration_installed": true,
+    "worker_registry_fragment_installed": true,
+    "process_adapter_fragment_installed": true,
+    "worker_implementation_installed": true,
+    "unit_tests_installed": true,
+    "hosted_or_local_validation_observed": false,
+    "resident_heartbeat_execution_observed": false
+  },
+  "reconciliation_state": "WAITING_FOR_VALIDATION_AND_HEARTBEAT_RECEIPTS",
+  "next_action": "Run branch validation, repair only branch-local defects, then admit the worker registration to the canonical branch without competing with the existing sovereign runtime claim."
 }
