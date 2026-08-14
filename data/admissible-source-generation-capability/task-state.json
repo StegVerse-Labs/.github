@@ -4,7 +4,7 @@
   "task_id": "SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
-  "state": "SOURCE_COMPLETE_RUNTIME_BLOCKED",
+  "state": "SOURCE_COMPLETE_ADMISSIBLE_RUNTIME_BLOCKED",
   "claim_state": "COMPLETE_VALIDATED_RELEASED_SOURCE_SUPPORT",
   "claim_ref": "control/session-implementation-claim-2026-08-14-admissible-source-generation-capability.json",
   "handoff_ref": "handoffs/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
@@ -14,6 +14,7 @@
   "github_token_runtime_authority": false,
   "non_tv_tvc_secret_or_token_allowed": false,
   "source_merge": "eb37e12d63850d820054e2c85c1ff35dc666a2c3",
+  "canonical_lifecycle_merge": "StegVerse-Labs/StegCore@15d9524530bc45a9404d93c3e2d51953d8f4a156",
   "source_validation": {
     "heartbeat_worker_project_run": 31841119437,
     "organization_control_plane_run": 31841119406,
@@ -23,17 +24,26 @@
   "admissible_existence": {
     "capability_id": "stegverse:capability:formalism-source-generation:v1",
     "capability_version": "1.0.0",
-    "phase": "DECLARED",
+    "phase": "ADMISSIBLE",
     "target_phase": "ACTIVATED",
     "temporal_class": "current",
     "task_relationship": "integrates_capability",
+    "standing_evidence_refs": [
+      "StegVerse-Labs/StegCore:data/formalism-source-generation-admissibility-evaluation.json",
+      "StegVerse-Labs/StegCore#123"
+    ],
+    "admissibility_evidence_refs": [
+      "StegVerse-Labs/StegCore:tests/test_formalism_source_generation_admissibility.py",
+      "StegVerse-Labs/StegCore@15d9524530bc45a9404d93c3e2d51953d8f4a156"
+    ],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
     "blockers": [
-      "CAPABILITY_STANDING_ADMISSIBILITY_AND_ACTIVATION_PROOF_NOT_YET_ESTABLISHED",
       "SOVEREIGN_LOCAL_MODEL_LIVE_ACTIVATION_NOT_YET_OBSERVED",
-      "TVC_REPOSITORY_BROKER_CANONICAL_ADMISSION_NOT_YET_OBSERVED",
+      "FORMALISM_SOURCE_GENERATION_INTEGRATION_PROOF_NOT_YET_OBSERVED",
       "RESIDENT_SOURCE_GENERATION_AND_RECURSIVE_REOBSERVATION_NOT_YET_PROVEN"
     ],
-    "continuation_owner": "StegVerse-Labs/.github#137 + StegVerse-Labs/StegCore capability-registry owner + sovereign-local-model activation chain + TV/TVC runtime/repository-operation owners"
+    "continuation_owner": "StegVerse-Labs/.github#137 + sovereign-local-model activation chain + registered local source-generation executor + TV/TVC runtime/repository-operation owners"
   },
   "implemented_surfaces": [
     "ADMISSIBLE_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md",
@@ -47,10 +57,10 @@
     "data/admissible-source-generation-capability/task-state.json",
     "receipts/admissible-source-generation-capability/source-release-reconciliation-20260814.md"
   ],
-  "validation_state": "SOURCE_VALIDATION_PASS",
+  "validation_state": "SOURCE_VALIDATION_PASS_AND_CANONICAL_ADMISSIBILITY_PASS",
   "integration_state": "SOURCE_MERGED_MACHINE_CONTINUATION_INSTALLED",
   "resident_activation_proof": "NOT_OBSERVED",
   "recursive_owner_mutation_proof": "NOT_OBSERVED",
-  "release_condition": "Both required canonical capabilities provide explicit ACTIVATED state with activation proof and integration evidence; the registered local source-generation executor then emits one accepted governed result for the binder.",
-  "next_executable_action": "Do not duplicate source implementation. Observe lifecycle advancement and admit the registered worker only after the explicit dual-activation predicate is satisfied."
+  "release_condition": "Sovereign-local-model live activation plus formalism-source-generation integration evidence and activation proof are present; then the registered local source-generation executor emits one accepted governed result for the binder.",
+  "next_executable_action": "Do not duplicate source implementation. Observe the sovereign-local-model activation chain and source-generation integration proof; admit the registered worker only after explicit ACTIVATED evidence is present."
 }
