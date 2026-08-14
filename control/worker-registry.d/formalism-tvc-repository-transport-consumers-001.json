@@ -1,0 +1,46 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": ["TVC_REPOSITORY_TRANSPORT_NOT_YET_END_TO_END_PROVEN"],
+      "authorized_policy_version": "formalism-tvc-repository-transport-v0.1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "handoffs/SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001.json",
+        "control/formalism-tvc-repository-transport.json",
+        "workers/formalism_tvc_repository_transport_worker.py"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": "StegVerse-Labs/TVC:TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001",
+      "goal_id": "FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
+      "handoff_ref": "handoffs/SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
+      "worker_id": null,
+      "worker_instance_id": null
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:formalism-tvc-repository-transport-v1",
+      "authority_source": "handoffs/SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001.json#authority",
+      "capabilities": ["formalism_tvc_repository_transport"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "formalism-tvc-repository-transport-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "consumer_secret_or_token_authority": false
+}
