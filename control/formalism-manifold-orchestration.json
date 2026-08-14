@@ -1,0 +1,50 @@
+{
+  "schema": "stegverse.formalism-manifold-orchestration/v0.1",
+  "goal_id": "FORMALISM-MANIFOLD-ORCHESTRATION-001",
+  "coordination_authority": "StegVerse-Labs/.github",
+  "single_heartbeat_required": true,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "formalism_authority": "Admissible-Existence repository-local canonical handoffs and formal sources",
+  "runtime_authority": "StegVerse-Labs/StegCore canonical StegGate runtime",
+  "required_repositories": [
+    {"repo_id": "ae", "repository": "Admissible-Existence/AE", "required": true},
+    {"repo_id": "rtg", "repository": "Admissible-Existence/RTG", "required": true},
+    {"repo_id": "gtg", "repository": "Admissible-Existence/GTG", "required": true},
+    {"repo_id": "tt", "repository": "Admissible-Existence/TT", "required": true},
+    {"repo_id": "stcm", "repository": "Admissible-Existence/STCM", "required": true},
+    {"repo_id": "stegcore", "repository": "StegVerse-Labs/StegCore", "required": true}
+  ],
+  "relationship_contract": {
+    "required_handoff_fields": [
+      "formal_role",
+      "inputs",
+      "outputs",
+      "upstream_dependencies",
+      "downstream_consumers",
+      "authority_boundary",
+      "composition_relations",
+      "resolution_relationship",
+      "continuity_relationship",
+      "mathematical_maturity",
+      "functional_maturity",
+      "collision_rules"
+    ],
+    "derived_relationships_are_evidence_only": true,
+    "derived_relationships_grant_authority": false
+  },
+  "lanes": [
+    {"lane_id": "FORMALISM-INVENTORY", "task_id": "SHWP-FORMALISM-INVENTORY-001", "capability": "formalism_inventory_reconciliation"},
+    {"lane_id": "HANDOFF-NORMALIZATION", "task_id": "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001", "capability": "formalism_handoff_normalization_analysis"},
+    {"lane_id": "MATHEMATICAL-CROSSWALK", "task_id": "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001", "capability": "formalism_mathematical_crosswalk"},
+    {"lane_id": "GOVERNANCE-MAPPING", "task_id": "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001", "capability": "manifold_governance_mapping"},
+    {"lane_id": "RECONCILIATION", "task_id": "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001", "capability": "formalism_manifold_reconciliation"}
+  ],
+  "authority_invariants": [
+    "Workers may observe, classify, hash, and emit receipts only within their declared receipt namespace.",
+    "Workers may not redefine Admissible-Existence mathematical primitives.",
+    "Workers may not create a parallel StegGate evaluator.",
+    "Heartbeat, worker lease, topology, crosswalk, coherence, or gradient evidence grants no policy or execution authority.",
+    "Missing required local repository materialization fails closed as an observable coverage gap, never as success."
+  ]
+}
