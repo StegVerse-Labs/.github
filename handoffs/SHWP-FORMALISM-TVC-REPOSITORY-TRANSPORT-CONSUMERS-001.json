@@ -1,0 +1,97 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
+  "created_at": "2026-08-14T01:14:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
+    "objective": "Translate missing-source and owner-work evidence into bounded non-secret TVC repository-operation requests while keeping all credential values inside TV/TVC.",
+    "success_predicates": [
+      "No consumer secret or token is accepted or forwarded",
+      "TVC broker must be CANONICAL_VALIDATED before requests emit",
+      "Missing-source evidence produces bounded read-only inspection requests",
+      "Owner-work manifests produce bounded inspection requests for only admitted paths",
+      "Requests are persisted under requests/tvc-repository-operations/**"
+    ],
+    "failure_predicates": [
+      "A non-TV/TVC credential or credential value is accepted",
+      "A request emits before TVC broker canonical validation",
+      "Repository or path scope expands beyond source evidence",
+      "Transport evidence is treated as mathematical/runtime/release authority"
+    ],
+    "authority_ceiling": [
+      "non_secret_repository_transport_request_emission_only",
+      "requests/tvc-repository-operations/**",
+      "receipts/formalism-tvc-repository-transport/**",
+      "no_credential_authority",
+      "no_owner_source_mutation",
+      "no_merge_authority"
+    ],
+    "successor_policy": "SEPARATE_TVC_AUTHORIZATION_REQUIRED",
+    "max_successor_depth": 2
+  },
+  "task": {
+    "task_id": "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "FORMALISM_TVC_REPOSITORY_TRANSPORT_CONSUMERS_MIRROR_HANDOFF.md",
+      "FORMALISM_SOURCE_DISCOVERY_MIRROR_HANDOFF.md",
+      "FORMALISM_MANIFOLD_IMPLEMENTATION_ADMISSION_MIRROR_HANDOFF.md",
+      "control/formalism-tvc-repository-transport.json"
+    ],
+    "dependencies": [
+      "SHWP-FORMALISM-SOURCE-DISCOVERY-001",
+      "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
+      "StegVerse-Labs/TVC:TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001"
+    ],
+    "parent_task_id": null,
+    "derivation_reason": "Recursive formalism build still required chat/manual repository materialization and owner mutation transport.",
+    "canonical_owner_ref": "StegVerse-Labs/.github",
+    "canonical_lineage_key": "formalism-manifold:tvc-repository-transport-consumers",
+    "derivation_depth": 1,
+    "priority": "critical"
+  },
+  "authority": {
+    "authority_source": "FORMALISM_TVC_REPOSITORY_TRANSPORT_CONSUMERS_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "consumer_secret_or_token_authority": false,
+    "policy_version": "formalism-tvc-repository-transport-v0.1"
+  },
+  "execution": {
+    "required_capabilities": ["formalism_tvc_repository_transport"],
+    "allowed_paths": [
+      "requests/tvc-repository-operations/**",
+      "receipts/formalism-tvc-repository-transport/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 128,
+    "max_retries": 2048,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 4096,
+    "rate_class": "formalism_tvc_repository_transport"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "FORMALISM_TVC_REPOSITORY_TRANSPORT_CONSUMERS_MIRROR_HANDOFF.md",
+    "recheck_trigger": "each admitted heartbeat while TVC broker standing or repository transport successors remain unresolved",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/formalism-tvc-repository-transport/SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "When TVC broker standing becomes CANONICAL_VALIDATED, emit bounded non-secret requests from durable formalism evidence; TVC independently authorizes and executes the exact transport operation.",
+    "terminal_when": [
+      "Every applicable missing-source request is satisfied and source discovery re-observes the repository",
+      "Every applicable owner-work transport enters the owner repository validation/PR path",
+      "No unresolved chat/manual transport dependency remains"
+    ]
+  },
+  "block": null
+}
