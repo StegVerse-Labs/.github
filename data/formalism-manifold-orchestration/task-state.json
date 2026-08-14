@@ -1,33 +1,90 @@
 {
-  "schema_version": "0.1.0",
+  "schema_version": "0.2.0",
   "goal_id": "FORMALISM-MANIFOLD-ORCHESTRATION-001",
   "issue": 97,
-  "draft_pr": 98,
+  "pull_request": 98,
   "branch": "feat/formalism-manifold-orchestration-001",
-  "status": "IMPLEMENTED_VALIDATION_PENDING",
+  "status": "IMPLEMENTED_HOSTED_VALIDATED_CANONICAL_ADMISSION_PENDING",
   "coordination_authority": "StegVerse-Labs/.github",
   "canonical_handoff": "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
   "session_claim": "control/session-validation-claim-2026-08-13-formalism-manifold-orchestration.json",
   "authority_boundary": {
     "formalism_authority": "Admissible-Existence repository-local canonical handoffs and formal sources",
     "runtime_authority": "StegVerse-Labs/StegCore canonical StegGate",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
     "orchestration_grants_policy_authority": false,
     "heartbeat_grants_execution_authority": false,
     "worker_lease_grants_formalism_authority": false
   },
-  "lanes": [
-    {"task_id": "SHWP-FORMALISM-INVENTORY-001", "state": "HANDOFF_READY", "worker_id": "formalism-inventory-worker", "receipt_observed": false},
-    {"task_id": "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001", "state": "HANDOFF_READY", "worker_id": "formalism-handoff-normalization-worker", "receipt_observed": false},
-    {"task_id": "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001", "state": "HANDOFF_READY", "worker_id": "formalism-mathematical-crosswalk-worker", "receipt_observed": false},
-    {"task_id": "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001", "state": "HANDOFF_READY", "worker_id": "manifold-governance-mapping-worker", "receipt_observed": false},
-    {"task_id": "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001", "state": "HANDOFF_READY", "worker_id": "formalism-manifold-reconciliation-worker", "receipt_observed": false}
+  "session_execution_inventory": [
+    {
+      "task_id": "FORMALISM-MANIFOLD-ORCHESTRATION-001",
+      "originating_goal": "single-session coordinated formalism recovery and manifold-governance orchestration",
+      "destination": "StegVerse-Labs/.github",
+      "branch": "feat/formalism-manifold-orchestration-001",
+      "surface": "PR #98 + FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
+      "owner": "current branch-local validation session -> canonical resident heartbeat after merge",
+      "claim_state": "CLAIMED_FOR_VALIDATION",
+      "completion_state": "IMPLEMENTED",
+      "validation_state": "HOSTED_VALIDATED",
+      "integration_state": "REGISTRY_FRAGMENT_DRY_RUN_ADMITTED",
+      "archival_dependency": true,
+      "evidence": ["run:31767096183", "job:94665108039", "run:31767096280"],
+      "next_action": "canonical PR admission, then release session claim"
+    },
+    {
+      "task_id": "SOVEREIGN-LOCAL-MODEL-001",
+      "originating_goal": "remove descriptive select-local-model step and formally develop local model",
+      "destination": "StegVerse-002/micro-node-runtime",
+      "branch": "canonical released source",
+      "surface": "docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+      "owner": "StegVerse-002/micro-node-runtime + canonical Ecosystem Chat worker",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "COMPLETE",
+      "validation_state": "VALIDATED",
+      "integration_state": "INTEGRATED_WITH_TVC_LLM_ADAPTER_MASTER_RECORDS",
+      "archival_dependency": false,
+      "evidence": ["StegVerse-Labs/.github#60", "StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md"],
+      "next_action": "none in this session; do not duplicate"
+    },
+    {
+      "task_id": "STEGFIN-CONTINUITY-CARRIER-007",
+      "originating_goal": "assist canonical workers and make bounded Base validation trade wallet-handoff ready",
+      "destination": "StegVerse-Labs/stegfin-governance",
+      "branch": "main",
+      "surface": "task-state/STEGFIN-CONTINUITY-CARRIER-007.json",
+      "owner": "StegVerse continuity control plane + StegFin + TV/TVC",
+      "claim_state": "MACHINE_OWNED_CONTINUITY_EXECUTION_FALLBACK",
+      "completion_state": "SOURCE_7_OF_8_TRADE_HANDOFF_PREREQUISITES",
+      "validation_state": "TVC_LOCAL_VALIDATION_PASS_PRIMARY_RUNTIME_PENDING",
+      "integration_state": "WAITING_FOR_TVC_PROVIDER_OPERATION_PRIMARY_RUNTIME",
+      "archival_dependency": false,
+      "evidence": ["StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md", "StegVerse-Labs/TVC:docs/PROVIDER_OPERATION_BROKER_MIRROR_HANDOFF.md"],
+      "next_action": "TVC-CAPABILITY-RUNTIME-002 observes/binds primary TV/TVC provider-operation runtime; registered continuity worker then claims and advances to WALLET_HANDOFF_READY"
+    },
+    {
+      "task_id": "TVC-PROVIDER-OPERATION-BROKER-003",
+      "originating_goal": "keep provider secrets/tokens TV/TVC-owned while enabling trade preparation",
+      "destination": "StegVerse-Labs/TVC",
+      "branch": "main",
+      "surface": "docs/PROVIDER_OPERATION_BROKER_MIRROR_HANDOFF.md",
+      "owner": "StegVerse-Labs/TVC / TV/TVC runtime authority",
+      "claim_state": "AUTHORITY_OWNED",
+      "completion_state": "SOURCE_INTEGRATED_PRIMARY_RUNTIME_BINDING_PENDING",
+      "validation_state": "SUPPORTING_LOCAL_PASS_EXACT_CURRENT_SOURCE_RUNTIME_PENDING",
+      "integration_state": "PRIMARY_RUNTIME_NOT_YET_PROVEN",
+      "archival_dependency": false,
+      "evidence": ["local-boundary-validation-20260813.json", "independent semantic replay receipt"],
+      "next_action": "authorized primary runtime binds current app.main:/v1/provider-operation and exact-source tests pass without protected credentials"
+    }
   ],
-  "workers": [
-    "formalism-inventory-worker",
-    "formalism-handoff-normalization-worker",
-    "formalism-mathematical-crosswalk-worker",
-    "manifold-governance-mapping-worker",
-    "formalism-manifold-reconciliation-worker"
+  "lanes": [
+    {"task_id": "SHWP-FORMALISM-INVENTORY-001", "goal_id": "FORMALISM-INVENTORY-001", "state": "HANDOFF_READY", "worker_id": "formalism-inventory-worker", "receipt_observed": false},
+    {"task_id": "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001", "goal_id": "FORMALISM-HANDOFF-NORMALIZATION-001", "state": "HANDOFF_READY", "worker_id": "formalism-handoff-normalization-worker", "receipt_observed": false},
+    {"task_id": "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001", "goal_id": "FORMALISM-MATHEMATICAL-CROSSWALK-001", "state": "HANDOFF_READY", "worker_id": "formalism-mathematical-crosswalk-worker", "receipt_observed": false},
+    {"task_id": "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001", "goal_id": "MANIFOLD-GOVERNANCE-MAPPING-001", "state": "HANDOFF_READY", "worker_id": "manifold-governance-mapping-worker", "receipt_observed": false},
+    {"task_id": "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001", "goal_id": "FORMALISM-MANIFOLD-RECONCILIATION-001", "state": "HANDOFF_READY", "worker_id": "formalism-manifold-reconciliation-worker", "receipt_observed": false}
   ],
   "implementation": {
     "configuration_installed": true,
@@ -35,9 +92,27 @@
     "process_adapter_fragment_installed": true,
     "worker_implementation_installed": true,
     "unit_tests_installed": true,
-    "hosted_or_local_validation_observed": false,
+    "hosted_validation_observed": true,
     "resident_heartbeat_execution_observed": false
   },
-  "reconciliation_state": "WAITING_FOR_VALIDATION_AND_HEARTBEAT_RECEIPTS",
-  "next_action": "Run branch validation, repair only branch-local defects, then admit the worker registration to the canonical branch without competing with the existing sovereign runtime claim."
+  "validation": {
+    "first_failed_run": 31766352242,
+    "first_failure": "duplicate live canonical goal lanes across five executable handoffs",
+    "repair": "assigned unique lane goal IDs while retaining distinct canonical lineage keys; validator was not weakened",
+    "passing_run": 31767096183,
+    "passing_job": 94665108039,
+    "passing_assertions": [
+      "NO_GITHUB_CREDENTIAL_TOKEN_PRESENT",
+      "CANONICAL_JSON_PASS 114",
+      "EXECUTABLE_HANDOFF_VALIDATION_PASS count=20 live_lanes=16 skipped_non_executable=1",
+      "152 tests OK",
+      "DRY_RUN_NON_MUTATING_PASS",
+      "EPHEMERAL_PROJECTION_VALIDATION_PASS",
+      "WORKFLOW_NON_AUTHORIZING_PASS"
+    ],
+    "companion_render_run": 31767096280,
+    "companion_render_result": "SUCCESS"
+  },
+  "reconciliation_state": "WAITING_FOR_CANONICAL_ADMISSION_AND_RESIDENT_HEARTBEAT_RECEIPTS",
+  "next_action": "Mark PR #98 ready and admit the hosted-validated five-lane registration to main if repository protections allow; then release the branch-local session claim and observe machine-owned receipts."
 }
