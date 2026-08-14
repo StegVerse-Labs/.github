@@ -1,0 +1,46 @@
+{
+  "schema_version": "stegverse.session-implementation-claim/v1",
+  "task_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "goal_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "originating_session_goals": ["G10-GENERALIZED-OWNER-MUTATION-EXECUTOR", "G11-RECURSIVE-SELF-BUILD-PROOF"],
+  "issue": 144,
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "state": "CLAIMED_FOR_IMPLEMENTATION",
+  "claimant": "current ChatGPT continuation session",
+  "claimed_at": "2026-08-14T17:03:00-05:00",
+  "expires_at": "2026-08-14T20:03:00-05:00",
+  "scope": [
+    "LOCAL_SOURCE_GENERATION_EXECUTOR_MIRROR_HANDOFF.md",
+    "control/local-source-generation-executor.json",
+    "control/session-implementation-claim-2026-08-14-local-source-generation-executor.json",
+    "handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
+    "control/worker-registry.d/local-source-generation-executor-001.json",
+    "control/process-worker-adapters.d/local-source-generation-executor-001.json",
+    "workers/local_source_generation_executor.py",
+    "tests/test_local_source_generation_executor.py",
+    "data/local-source-generation-executor/task-state.json",
+    "receipts/local-source-generation-executor/*"
+  ],
+  "collision_exclusions": [
+    "#137 binder/policy/worker semantics except read-only contract consumption",
+    "canonical StegCore AE/StegGate semantics",
+    "StegVerse-002/micro-node-runtime model/runtime source",
+    "TVC #19/#20 credential-bearing repository transport",
+    ".github #122 heartbeat/control-plane refactor",
+    "live worker claim/fence/lease/runtime state",
+    "provider/wallet/signing/broadcast authority"
+  ],
+  "expected_evidence": [
+    "bounded executor source",
+    "worker registry and adapter binding",
+    "deterministic unit tests",
+    "non-secret validation receipt",
+    "released claim"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "release_condition": "Executor source, registry/adapter/task-state, tests and validation receipt are committed and validated, then claim is released to canonical machine ownership.",
+  "next_task_after_release": "Resident machine lane executes only after explicit AE activation evidence for source-generation and sovereign-local-model capabilities; existing #137 binder consumes the resulting generation record."
+}
