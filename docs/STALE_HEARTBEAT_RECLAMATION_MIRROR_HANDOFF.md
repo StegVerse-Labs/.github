@@ -204,3 +204,53 @@ release condition for this scoped implementation claim: SATISFIED; claim is rele
   release_condition: SATISFIED; canonical StegFin continuation and Master Records custody consumed the result
   next_executable_action: NONE; do not recreate stale resident authority or a second heartbeat
 ```
+
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+- task_id: STALE-HEARTBEAT-RECLAMATION-VALIDATION
+  execution_owner: explicitly claimed validation/reconciliation session only
+  manual_execution_allowed: true
+  worker_registry_ref: NONE
+  collision_scope: read-only/source validation of already-released reclamation semantics; no live continuity claim or wallet/provider operation
+  release_condition: validation evidence is recorded and claim released
+  next_executable_action: no implementation action; validate only when a consumer change requires it
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: STEGFIN-CONTINUITY-CARRIER-007
+  execution_owner: canonical StegFin continuity worker + TV/TVC runtime authority
+  manual_execution_allowed: false
+  worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+  collision_scope: live claim acquisition, TV/TVC transport selection, Inventory N, quote/pretrade preparation and WALLET_HANDOFF_READY emission
+  release_condition: machine-owned continuity run reaches terminal receipt or fail-closed owner state
+  next_executable_action: machine worker executes when an authorized carrier and canonical TV/TVC transport are observable
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: STALE-HEARTBEAT-AUTHORITY-COLLISION
+  execution_owner: TV/TVC + Master Records + canonical runtime owner
+  manual_execution_allowed: false
+  worker_registry_ref: applicable owner records
+  collision_scope: credential/route authority, stale-history custody and live collision disputes
+  release_condition: exact canonical owner resolves or supersedes the conflict
+  next_executable_action: fail closed and escalate to the exact owner
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: SHWP-STALE-HEARTBEAT-RECLAMATION-20260814
+  execution_owner: NONE
+  manual_execution_allowed: false
+  worker_registry_ref: NONE
+  collision_scope: released source correction only
+  release_condition: COMPLETE_VALIDATED source correction already recorded
+  next_executable_action: NONE
+```

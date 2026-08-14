@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.worker-lifecycle-record-pair-contract/v1",
+  "goal_id": "HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122",
+  "source_issue": "StegVerse-Labs/.github#122",
+  "source_pr": "StegVerse-Labs/.github#140",
+  "opening_record": {
+    "trigger": "LIVE_TASK_OBSERVED_IN_WORKER_TASK_REGISTRY_AND_ADMITTED_WORKER_PROCESS_INITIATED",
+    "destination": "master-records/orchestration",
+    "required": true,
+    "binds_expected_terminal_closure": true
+  },
+  "closure_record": {
+    "required_for_every_opening_record": true,
+    "completion_path": "terminal_worker_result",
+    "expiration_path": "expired_worker_history",
+    "ordinary_deadline": "WITHIN_ONE_HEARTBEAT_OF_ESTABLISHED_EXPIRATION",
+    "alternate_deadline": "FIRST_ADMISSIBLE_REFERENCE_FRAME_CAPABLE_OF_RETURN_TO_MASTER_RECORDS",
+    "carrier_role": "CARRIER_SYNCHRONIZATION_ONLY",
+    "subsystem_signal": "expired_worker_history"
+  },
+  "missing_record_rule": {
+    "condition": "OPENING_RECORD_PRESENT_AND_CLOSURE_DEADLINE_PASSED_AND_MATCHING_TERMINAL_RECORD_ABSENT",
+    "result": "MISSING_RECORD",
+    "owner": "master-records/orchestration custody/reconstruction",
+    "expired_worker_reactivation_allowed": false,
+    "old_claim_restore_allowed": false,
+    "old_fence_restore_allowed": false,
+    "old_collision_ownership_retained": false
+  },
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "heartbeat_grants_execution_authority": false,
+    "master_records_custody_grants_execution_authority": false
+  },
+  "state": "SPECIFIED_PENDING_RUNTIME_AND_MASTER_RECORDS_IMPLEMENTATION"
+}
