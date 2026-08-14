@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "claim_id": "FORMALISM-SOURCE-DISCOVERY-2026-08-13",
+  "task_id": "FORMALISM-SOURCE-DISCOVERY-001",
+  "originating_goal": "Remove the manual formalism root-selection dependency and establish executable source discovery/materialization continuity for the first-cohort manifold workers.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "feat/formalism-source-discovery-001",
+  "claimant": "current ChatGPT formalism/manifold continuation session",
+  "role": "CLAIMED_FOR_IMPLEMENTATION",
+  "claim_state": "ACTIVE",
+  "claim_created_at": "2026-08-13T23:35:00-05:00",
+  "claim_expires_at": "2026-08-14T02:35:00-05:00",
+  "claim_release_condition": "Source discovery is hosted-validated and admitted to main, existing formalism workers consume a durable discovered-roots manifest without chat selection, and any missing-source materialization step has an active executable owner.",
+  "collision_scope": {
+    "allowed": [
+      "FORMALISM_SOURCE_DISCOVERY_MIRROR_HANDOFF.md",
+      "control/formalism-source-discovery.json",
+      "handoffs/SHWP-FORMALISM-SOURCE-DISCOVERY-001.json",
+      "control/worker-registry.d/formalism-source-discovery-001.json",
+      "control/process-worker-adapters.d/formalism-source-discovery-001.json",
+      "workers/formalism_source_discovery_worker.py",
+      "tests/test_formalism_source_discovery_worker.py",
+      "receipts/formalism-source-discovery/**",
+      "bounded update to workers/formalism_manifold_orchestration_worker.py and its formalism orchestration tests/adapters to consume discovered roots receipt",
+      "bounded update to FORMALISM_MANIFOLD_IMPLEMENTATION_ADMISSION_MIRROR_HANDOFF.md and data/formalism-manifold-implementation-admission/task-state.json to transfer source-discovery deficiency"
+    ],
+    "prohibited": [
+      "network checkout or GitHub authentication",
+      "Admissible-Existence source mutation",
+      "StegCore source mutation",
+      "TV/TVC credential/runtime mutation",
+      "wallet signing or broadcast",
+      "existing heartbeat claim/fence/lease mutation"
+    ]
+  },
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "authority_effect": "BOUNDED_SOURCE_DISCOVERY_IMPLEMENTATION_ONLY",
+  "archive_dependency": true
+}
