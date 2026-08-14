@@ -1,0 +1,67 @@
+{
+  "schema": "stegverse.local-source-generation-executor-validation-receipt/v1",
+  "receipt_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-SOURCE-VALIDATION-20260814",
+  "created_at": "2026-08-14T17:12:00-05:00",
+  "task_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "worker_task_id": "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "originating_session_goals": ["G10-GENERALIZED-OWNER-MUTATION-EXECUTOR", "G11-RECURSIVE-SELF-BUILD-PROOF"],
+  "result": "PASS_SOURCE_IMPLEMENTATION_AND_HOSTED_VALIDATION",
+  "implementation_commits": {
+    "mirror_handoff": "df6b91aadaa882fde964cac712625eea2e12fb75",
+    "claim": "f3ae6cfec26b91cec4fef924a7c3d6d82d11213a",
+    "policy": "943ea05461dbc35c020cd1b5d174257821348bc6",
+    "worker": "7f3ac432f6ddd9a814657867ceb3264dd0fadab1",
+    "tests": "347a9498d252ebb664615666d617ab1a6a5f29a8",
+    "executable_handoff": "3f94626a497aa4b9aa3cb053ec7a8e5304cfbd19",
+    "worker_registry": "8c0e117b51aa797f72ba8b6b6d73452fc00dbc72",
+    "process_adapter": "b04002f05a92abab09df3cdf909c9df7fec44b9d",
+    "task_state": "ce313aa313ef1fa9246d9f5cede93a3121c2e03b",
+    "ae_retrospective_binding": "aaa4d3032720053f5362e04de4958205350322a0",
+    "ae_denominator_reconciliation": "975eee615da3399ba98e56b536b16e57baee7ffb"
+  },
+  "hosted_validation": {
+    "heartbeat_worker_project": {
+      "run_id": 31845636235,
+      "job_id": 94911384002,
+      "head_sha": "975eee615da3399ba98e56b536b16e57baee7ffb",
+      "conclusion": "success",
+      "repository_tests": "PASS_220_OF_220",
+      "executor_tests": "PASS_10_OF_10",
+      "executable_handoff_validation": "PASS",
+      "dry_run_non_mutating": "PASS",
+      "workflow_non_authorizing": "PASS"
+    },
+    "organization_control_plane": {
+      "run_id": 31845636226,
+      "head_sha": "975eee615da3399ba98e56b536b16e57baee7ffb",
+      "conclusion": "success"
+    }
+  },
+  "validation_cases": [
+    "source-generation capability below ACTIVATED fails closed",
+    "sovereign-local-model capability below ACTIVATED fails closed",
+    "missing activation proof fails closed",
+    "non-loopback runtime endpoint fails closed",
+    "secret-bearing environment values are not forwarded",
+    "deterministic request binds owner manifest, base and source hashes",
+    "malformed/non-JSON model output fails closed",
+    "out-of-scope generated path fails closed",
+    "file-count and byte ceilings are enforced",
+    "valid bounded fixture emits exact generation-result and non-secret runtime/teardown proofs"
+  ],
+  "canonical_ae_phase": "DECLARED",
+  "live_execution_performed": false,
+  "production_activation_evidence_used": false,
+  "synthetic_activated_evidence_scope": "UNIT_TEST_FIXTURES_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "github_credential_token_present_in_validation_execution": false,
+  "non_tv_tvc_secret_or_token_used": false,
+  "provider_secret_used": false,
+  "provider_secret_exported": false,
+  "wallet_contacted": false,
+  "signed": false,
+  "broadcast": false,
+  "authority_effect": "NONE_SOURCE_VALIDATION_ONLY",
+  "remaining_release_condition": "Canonical source-generation capability and sovereign-local-model capability must independently reach ACTIVATED with valid activation/integration evidence before repository-native execution is admitted; then the executor may emit a bounded generation result for the existing #137 binder."
+}
