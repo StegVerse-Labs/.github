@@ -16,7 +16,8 @@
         "ADMISSIBLE_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md",
         "handoffs/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
         "control/admissible-source-generation-capability.json",
-        "StegVerse-Labs/.github#137"
+        "StegVerse-Labs/.github#137",
+        "StegVerse-Labs/StegCore@15d9524530bc45a9404d93c3e2d51953d8f4a156"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
@@ -32,21 +33,27 @@
       "admissible_existence": {
         "capability_id": "stegverse:capability:formalism-source-generation:v1",
         "capability_version": "1.0.0",
-        "phase": "DECLARED",
-        "standing_evidence_refs": [],
-        "admissibility_evidence_refs": [],
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "StegVerse-Labs/StegCore:data/formalism-source-generation-admissibility-evaluation.json",
+          "StegVerse-Labs/StegCore#123"
+        ],
+        "admissibility_evidence_refs": [
+          "StegVerse-Labs/StegCore:tests/test_formalism_source_generation_admissibility.py",
+          "StegVerse-Labs/StegCore@15d9524530bc45a9404d93c3e2d51953d8f4a156"
+        ],
         "integration_evidence_refs": [],
         "activation_proof_ref": null,
         "blockers": [
-          "CAPABILITY_STANDING_ADMISSIBILITY_AND_ACTIVATION_PROOF_NOT_YET_ESTABLISHED",
           "SOVEREIGN_LOCAL_MODEL_LIVE_ACTIVATION_NOT_YET_OBSERVED",
-          "TVC_REPOSITORY_BROKER_CANONICAL_ADMISSION_NOT_YET_OBSERVED"
+          "FORMALISM_SOURCE_GENERATION_INTEGRATION_PROOF_NOT_YET_OBSERVED",
+          "RESIDENT_SOURCE_GENERATION_AND_RECURSIVE_REOBSERVATION_NOT_YET_PROVEN"
         ],
-        "continuation_owner": "StegVerse-Labs/.github#137 + StegVerse-Labs/StegCore capability-registry owner + TV/TVC runtime/repository-operation owners",
+        "continuation_owner": "StegVerse-Labs/.github#137 + sovereign-local-model activation chain + registered local source-generation executor + TV/TVC runtime/repository-operation owners",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
-        "task_relationship": "develops_capability",
+        "task_relationship": "integrates_capability",
         "target_phase": "ACTIVATED"
       }
     }
