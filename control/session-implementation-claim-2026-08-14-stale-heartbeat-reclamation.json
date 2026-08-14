@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "task_id": "SHWP-STALE-HEARTBEAT-RECLAMATION-20260814",
+  "originating_goal": "A worker or claim represented by a heartbeat that has stopped advancing must not remain an indefinite collision blocker; stale lifecycle history must be preserved to Master Records and bounded StegFin continuity must remain eligible when the resident heartbeat is only a preferred carrier.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "role": "CLAIMED_FOR_IMPLEMENTATION",
+  "claimant": "chat-session-2026-08-14-stale-heartbeat-reconciliation",
+  "claim_created_at": "2026-08-14T15:58:00-05:00",
+  "claim_release_condition": "Stale-heartbeat detection, collision-safe continuity reclamation, Master Records history projection, focused tests, and cross-repository StegFin task-state reconciliation are committed and validated; then this implementation claim is released.",
+  "collision_scope": [
+    "scripts/acquire_stegfin_continuity_claim.py",
+    "tests/test_stegfin_continuity_claim.py",
+    "docs/ORG_MIRROR_HANDOFF.md",
+    "control/session-implementation-claim-2026-08-14-stale-heartbeat-reclamation.json",
+    "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-LIVE-ENTRY-003.json",
+    "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md",
+    "master-records/orchestration:custody/heartbeat-stale-reclamation/**"
+  ],
+  "must_not_modify_or_claim": [
+    "TV/TVC credential or provider-secret authority",
+    "wallet signing or broadcast authority",
+    "resident heartbeat epoch/fence as if a live cycle occurred",
+    "Master Records execution authority",
+    "StegFin settlement state without live evidence"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "design_constraint": "Wall-clock staleness may revoke or ignore stale collision authority but may never grant execution authority. A new continuity claim must fence strictly above every observed resident fence and preserve stale lease history for Master Records custody.",
+  "expected_evidence": [
+    "fresh resident conflicting lease still blocks",
+    "stale resident conflicting lease no longer blocks continuity",
+    "new continuity fence is greater than every observed stale resident fence",
+    "stale-heartbeat reclamation receipt is persisted",
+    "Master Records custody copy is committed",
+    "StegFin continuity no longer depends on resident heartbeat completion notification"
+  ]
+}
