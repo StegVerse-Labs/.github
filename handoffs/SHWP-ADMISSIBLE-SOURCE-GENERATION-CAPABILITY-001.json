@@ -96,5 +96,25 @@
       "Capability binder receipt is emitted"
     ]
   },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:formalism-source-generation:v1",
+    "capability_version": "1.0.0",
+    "phase": "DECLARED",
+    "standing_evidence_refs": [],
+    "admissibility_evidence_refs": [],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": [
+      "CAPABILITY_STANDING_ADMISSIBILITY_AND_ACTIVATION_PROOF_NOT_YET_ESTABLISHED",
+      "SOVEREIGN_LOCAL_MODEL_LIVE_ACTIVATION_NOT_YET_OBSERVED",
+      "TVC_REPOSITORY_BROKER_CANONICAL_ADMISSION_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "StegVerse-Labs/.github#137 + StegVerse-Labs/StegCore capability-registry owner + TV/TVC runtime/repository-operation owners",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "develops_capability",
+    "target_phase": "ACTIVATED"
+  },
   "block": null
 }
