@@ -1,24 +1,25 @@
 # Admissible-Existence Control-Plane Mirror Handoff
 
-Updated: 2026-08-14T15:46:00-05:00
+Updated: 2026-08-14T15:50:00-05:00
 
 ## Authority and state
 
 ```text
 goal_id: ADMISSIBLE-EXISTENCE-CONTROL-PLANE-CONFORMANCE-001
-active_reconciliation: StegVerse-Labs/.github#127
-active_branch: reconcile/ae-retrospective-127-v2
 repository: StegVerse-Labs/.github
-state: ACTIVE_RETROSPECTIVE_RECONCILIATION_ON_RELEASED_GATE
+branch: main
+state: COMPLETE_VALIDATED_RELEASED
 canonical_owner: StegVerse-Labs organization control plane
 worker_registry_ref: control/worker-registry.json + control/worker-registry.d/*.json
 formalism_authority: Admissible-Existence/AE
 canonical_runtime_authority: StegVerse-Labs/StegCore / stegcore.steggate.evaluate_admissibility
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
+active_reconciliation: NONE
+archive_dependency_for_originating_session: NONE
 ```
 
-This is the canonical cross-repository verifier for executable HANDOFF records and the organization Worker Task Registry. It enforces the current StegCore Admissible-Existence lifecycle and task-conformance model without creating a parallel evaluator or execution authority. StegCore remains repository-local authority for lifecycle, capability registry and repository-local handoff/task conformance; this organization control plane is the noncompeting cross-repository enforcement surface.
+This is the canonical cross-repository verifier for executable HANDOFF records and the organization Worker Task Registry. It enforces the current StegCore Admissible-Existence lifecycle and task-conformance model without creating a parallel evaluator or execution authority. StegCore remains repository-local authority for lifecycle, capability registry and repository-local HANDOFF/task conformance; this organization control plane is the noncompeting cross-repository enforcement surface.
 
 ## Canonical StegCore binding
 
@@ -40,7 +41,72 @@ For current governed work, the executable HANDOFF and matching Worker Task Regis
 
 Allowed temporal classes are `recently_completed`, `current`, and `future`. Allowed relationships are `develops_capability`, `integrates_capability`, `validates_capability`, and `propagates_capability`.
 
-Pre-cutover records remain immutable provenance. Explicit in-record migration remains supported and validated. Issue #127 adds a non-destructive retrospective classification sidecar so **every effective task** is classified even when its immutable legacy HANDOFF/registry record has not been rewritten by its owner. The sidecar cannot grant execution or activation authority and cannot substitute for an owner-side explicit migration.
+Pre-cutover records remain immutable provenance. Explicit in-record migration remains supported and validated. The released retrospective classification sidecar makes every effective current/recent task explicit even when its immutable legacy HANDOFF/registry record has not been rewritten by its owner. The sidecar cannot grant execution or activation authority and cannot substitute for an owner-side explicit migration.
+
+## Retrospective denominator — COMPLETE_VALIDATED_RELEASED
+
+Issue `StegVerse-Labs/.github#127` is complete. PR #134 merged to `main` as `fcd280a3fe318aec30ea926d147e392eda6de688`.
+
+Installed surfaces:
+
+```text
+control/admissible-existence-retrospective-conformance.json
+scripts/validate_ae_retrospective_conformance.py
+tests/test_ae_retrospective_conformance.py
+receipts/admissible-existence-control-plane/AE-RETROSPECTIVE-CONFORMANCE-20260814.json
+scripts/validate_admissible_existence_control_plane.py
+docs/ADMISSIBLE_EXISTENCE_CONTROL_PLANE_MIRROR_HANDOFF.md
+```
+
+Exact released classification:
+
+```text
+effective tasks: 25
+classified: 25
+PASS: 21
+REVIEW_REQUIRED: 4
+FAIL_CLOSED: 0
+registry generation: 21
+```
+
+The four `REVIEW_REQUIRED` records remain deliberately non-PASS and have durable continuation owners:
+
+```text
+STEGGATE-FIRST-BOUNDARY-001 -> StegVerse-Labs/ara-admissibility-interop#13 + active-worker normalization owner
+SHWP-DURABLE-RUNTIME-ACTIVATION -> StegVerse-Labs/.github#59 + #122
+SHWP-ALL-ORG-FEDERATION-001 -> organization federation owner + #122
+SHWP-REPO-HEARTBEAT-FEDERATION-001 -> repo-heartbeat-federation-worker + #120/#122
+```
+
+They do not require the originating chat session to remain active. Their unresolved architecture/evidence conditions are durable, machine/authority-owned and fail closed.
+
+## Validation evidence
+
+Exact PR-head validation:
+
+```text
+PR: #134
+head: 1df4b997abbffc63508fd0fc24cc365f8cc7c509
+org-control-plane run: 31839527722
+job: 94893168566
+conclusion: SUCCESS
+AE_RETROSPECTIVE_CONFORMANCE_PASS effective_tasks=25 classified=25 pass=21 review_required=4 fail_closed=0 registry_generation=21
+AE_CONTROL_PLANE_VALIDATION_PASS ... retrospective_classified=25 ...
+heartbeat-worker-project run: 31839527725
+job: 94893168460
+conclusion: SUCCESS
+```
+
+Exact merged-main validation:
+
+```text
+merge: fcd280a3fe318aec30ea926d147e392eda6de688
+org-control-plane run: 31839595434
+job: 94893368481
+conclusion: SUCCESS
+```
+
+The canonical validation path uses anonymous public repository acquisition, `permissions: {}`, and explicitly proves validation has no GitHub authority-bearing constructs. TV/TVC remains the sole credential authority; GitHub-token runtime/production authority is NONE.
 
 ## Explicit StegFin migration — COMPLETE_VALIDATED_RELEASED
 
@@ -63,36 +129,10 @@ temporal_class: current
 task_relationship: validates_capability
 target_phase: ACTIVATED
 blocker: SAME_EXECUTION_INTERNAL_SETTLEMENT_RECONSTRUCTION_E2_NOT_YET_OBSERVED
-continuation: resident sovereign heartbeat + stegfin-sovereign-trading-worker
+continuation: resident sovereign runtime + stegfin-sovereign-trading-worker
 ```
 
 Neither lineage claims ACTIVATED. Wallet signing/broadcast remains USER_ONLY for the external path; the sovereign internal proof has no wallet signing/broadcast authority.
-
-## Retrospective denominator — issue #127
-
-Canonical surfaces introduced by this lane:
-
-```text
-control/admissible-existence-retrospective-conformance.json
-scripts/validate_ae_retrospective_conformance.py
-tests/test_ae_retrospective_conformance.py
-receipts/admissible-existence-control-plane/AE-RETROSPECTIVE-CONFORMANCE-20260814.json
-```
-
-The denominator is the effective Worker Task Registry after repository-native fragments override the aggregate snapshot. Current denominator: **25 effective tasks**. Every task is classified as `recently_completed` or `current` and receives `PASS`, `REVIEW_REQUIRED`, or `FAIL_CLOSED`, an AE impact classification, evidence lineage through its existing registry record, and a durable continuation owner where nonterminal.
-
-Current classification summary proposed by #127:
-
-```text
-classified: 25/25
-PASS: 21
-REVIEW_REQUIRED: 4
-FAIL_CLOSED: 0
-```
-
-`REVIEW_REQUIRED` is intentionally retained for `STEGGATE-FIRST-BOUNDARY-001`, `SHWP-DURABLE-RUNTIME-ACTIVATION`, `SHWP-ALL-ORG-FEDERATION-001`, and `SHWP-REPO-HEARTBEAT-FEDERATION-001`. These are not hidden as PASS because legacy blocked/unbound state or the active heartbeat carrier/control-plane architecture correction prevents stronger conformance. Each has a durable owner/release path.
-
-The canonical organization verifier now invokes the retrospective validator. Therefore an effective current/recent task that disappears from the classification sidecar or a stale classification that no longer matches an explicit registry capability binding fails the canonical gate. `migration_required` may remain nonzero for immutable owner-side legacy records; it no longer means those tasks are silently unclassified.
 
 ## Current capability snapshot
 
@@ -125,17 +165,15 @@ Master Records custody/EOL: separate from execution/transport authority
 ### MANUAL / SESSION-STARTABLE
 
 ```yaml
-- task_id: ADMISSIBLE-EXISTENCE-RETROSPECTIVE-CONFORMANCE-127
-  execution_owner: issue #127 reconciliation lane
-  claim_state: CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION
-  branch: reconcile/ae-retrospective-127-v2
+- task_id: ORG-HANDOFF-NONCOMPETING-VALIDATION
+  execution_owner: explicitly claimed validation/reconciliation lane
+  claim_state: UNCLAIMED
   manual_execution_allowed: true
-  manual_allowed_role: retrospective classification, validator/test/receipt, canonical handoff reconciliation
+  manual_allowed_role: validation/reconciliation only
   worker_registry_ref: control/worker-registry.json + control/worker-registry.d/*.json
-  collision_scope: read-only conformance classification and validation; no live claim/fence/lease/runtime/provider/wallet/custody mutation
-  claim_created_at: 2026-08-14T15:44:00-05:00
-  release_condition: exact 25-task denominator validates; canonical org gate passes on exact PR head and merged main; receipt/handoff record release evidence
-  next_executable_action: run hosted validation and merge only if every gate is green
+  collision_scope: structural conformance/evidence only; no live runtime/provider/wallet/custody authority
+  release_condition: task-specific validation evidence persisted and claim released
+  next_executable_action: admit another role only if repository drift or a new noncompeting defect is discovered
 ```
 
 ### WORKER-OWNED / DO NOT COMPETE
@@ -175,7 +213,7 @@ Master Records custody/EOL: separate from execution/transport authority
   manual_execution_allowed: false
   manual_allowed_role: observation
   release_condition: carrier/control-plane separation is merged and affected task owners reconcile current surfaces
-  next_executable_action: #127 preserves REVIEW_REQUIRED rather than inventing authority
+  next_executable_action: canonical owners continue; retrospective gate retains REVIEW_REQUIRED where appropriate
 - task_id: TV-TVC-CREDENTIAL-AND-ROUTE-AUTHORITY
   execution_owner: StegVerse-Labs/TV + StegVerse-Labs/TVC
   claim_state: AUTHORITY_OWNED
@@ -189,21 +227,12 @@ Master Records custody/EOL: separate from execution/transport authority
 
 ```text
 ADMISSIBLE-EXISTENCE-CONTROL-PLANE-RECONCILIATION-129: COMPLETE_VALIDATED_RELEASED
+ADMISSIBLE-EXISTENCE-RETROSPECTIVE-CONFORMANCE-127: COMPLETE_VALIDATED_RELEASED
 explicit legacy-migration verifier defect #132: COMPLETE_VALIDATED_RELEASED
 active StegFin task-conformance migration #131: COMPLETE_VALIDATED_RELEASED
 local-model source implementation/discovery/launch/inference/proof: COMPLETE_RELEASED
 source/task completion implies activation: SUPERSEDED
-stale #127 PR #133: CLOSED_UNMERGED_SUPERSEDED_BY_REBASED_LANE
-```
-
-## Validation commands
-
-```text
-python scripts/validate_ae_retrospective_conformance.py
-python -m unittest tests.test_ae_retrospective_conformance -v
-python scripts/validate_admissible_existence_control_plane.py
-python scripts/validate_handoff_execution_ownership.py
-python tools/validate_active_worker_states.py
+stale #127 PR #133: CLOSED_UNMERGED_SUPERSEDED_BY_PR_134
 ```
 
 ## Cross-repository continuation and propagation
@@ -219,8 +248,10 @@ trade continuation: StegVerse-Labs/stegfin-governance + registered .github worke
 publication consumers only after their own release authority admits propagation: StegVerse-Labs/Site, GCAT-BCAT-Engine/Publisher, admissibility-wiki, stegguardian-wiki
 ```
 
-Conformance validation alone authorizes no release/publication propagation.
+Conformance validation alone authorizes no Site/Publisher/wiki/release propagation.
 
-## Completion and archive dependency
+## Session consolidation and archive condition
 
-Issue #127 is the remaining unique session reconciliation task. Trade/live-runtime capability work is separately machine-owned and is not a reason to keep chat history once its continuation is durably represented by conformant HANDOFF/registry/task records. This session becomes archive-safe only after #127 is merged/validated on `main` and no unique chat-only requirement remains.
+All session-unique AE conformance work is complete, validated, released, or durably transferred. Remaining local-model activation, runtime activation, StegFin trade readiness, heartbeat/control-plane correction, HIL review/publication and downstream product propagation are already represented by canonical machine/authority owners with machine-observable release conditions. No originating-chat implementation, validation, integration, propagation, reconciliation or observation claim remains in this lane.
+
+The complete chat thread is not required for continued execution once the final session-consolidation receipt/inventory validation confirms the same state.
