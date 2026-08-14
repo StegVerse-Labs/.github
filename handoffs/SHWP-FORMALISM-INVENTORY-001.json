@@ -17,11 +17,11 @@
     "repository": "StegVerse-Labs/.github",
     "source_refs": ["control/formalism-manifold-orchestration.json", "workers/formalism_manifold_orchestration_worker.py", "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md"],
     "dependencies": [],
-    "parent_task_id": "FORMALISM-MANIFOLD-ORCHESTRATION-001",
+    "parent_task_id": null,
     "derivation_reason": "The manifold-governance work must begin from recovered repository-local formal standing rather than chat assumptions.",
     "canonical_owner_ref": "StegVerse-Labs/.github#97",
     "canonical_lineage_key": "formalism-manifold:inventory",
-    "derivation_depth": 1,
+    "derivation_depth": 0,
     "priority": "critical"
   },
   "authority": {"authority_source": "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md", "heartbeat_grants_execution_authority": false, "credential_authority": "TV/TVC", "github_token_required": false, "policy_version": "formalism-manifold-orchestration-v0.1"},
