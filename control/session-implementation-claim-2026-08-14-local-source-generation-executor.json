@@ -1,0 +1,46 @@
+{
+  "schema_version": "stegverse.session-implementation-claim/v1",
+  "task_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "goal_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "issue": 144,
+  "repository": "StegVerse-Labs/.github",
+  "branch": "feat/local-source-generation-executor-144",
+  "state": "CLAIMED_FOR_IMPLEMENTATION",
+  "claimant": "current ChatGPT continuation session",
+  "claimed_at": "2026-08-14T17:02:00-05:00",
+  "expires_at": "2026-08-14T20:02:00-05:00",
+  "scope": [
+    "LOCAL_SOURCE_GENERATION_EXECUTOR_MIRROR_HANDOFF.md",
+    "control/local-source-generation-executor.json",
+    "control/session-implementation-claim-2026-08-14-local-source-generation-executor.json",
+    "handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
+    "control/worker-registry.d/local-source-generation-executor-001.json",
+    "control/process-worker-adapters.d/local-source-generation-executor-001.json",
+    "workers/local_source_generation_executor_worker.py",
+    "tests/test_local_source_generation_executor_worker.py",
+    "data/local-source-generation-executor/task-state.json",
+    "control/admissible-existence-retrospective-conformance.json",
+    "tests/test_ae_retrospective_conformance.py"
+  ],
+  "collision_exclusions": [
+    "canonical StegCore AE/StegGate semantics",
+    "StegVerse-002/micro-node-runtime model/runtime source implementation except its separately owned #32",
+    "TVC credential-bearing repository transport",
+    ".github #122 heartbeat/control-plane refactor",
+    "existing SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001 binder semantics except dependency wiring",
+    "live worker claims/fences/leases"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "release_condition": "All claimed source surfaces are merged after complete deterministic and organization control-plane validation, the new worker is registry-bound, and live continuation is transferred to that registered worker with explicit machine-observable activation/profile blockers.",
+  "expected_evidence": [
+    "pull request merge commit",
+    "Heartbeat Worker Project success",
+    "organization control-plane success",
+    "handoff-render success",
+    "no-GitHub-token validation proof",
+    "task-state transition to MACHINE_OWNED after source release"
+  ],
+  "next_executable_action": "Complete registry/conformance integration, run hosted validation, correct failures without weakening validators, merge, release claim, then let the registered worker await canonical activation evidence and structured local-model output."
+}
