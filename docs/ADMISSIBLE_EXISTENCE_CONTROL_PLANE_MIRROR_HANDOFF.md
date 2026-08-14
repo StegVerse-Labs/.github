@@ -251,6 +251,21 @@ New live receipts must be evaluated against AE semantics before an ACTIVATED cla
   next_executable_action: fail closed rather than widen authority or infer activation
 ```
 
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: ADMISSIBLE-EXISTENCE-CONTROL-PLANE-CONFORMANCE-001-V1
+  execution_owner: organization control-plane validation lane
+  claim_state: COMPLETE_VALIDATED_RELEASED
+  completion_evidence: run 31823853581 / job 94843227958
+  superseded_by: ADMISSIBLE-EXISTENCE-CONTROL-PLANE-RECONCILIATION-129 for current StegCore task-conformance binding only
+  authority_effect: false
+- task_id: SOURCE-OR-TASK-COMPLETION-IMPLIES-ACTIVATION
+  claim_state: SUPERSEDED
+  superseded_by: canonical Admissible-Existence lifecycle and explicit activation-proof requirement
+  authority_effect: false
+```
+
 ## Completion and archive dependency
 
 The original AE control-plane gate is `COMPLETE_VALIDATED_RELEASED`. Reconciliation #129 is active until exact PR-head and merged-main validation prove v1.1 conforms to the latest StegCore task model. This reconciliation is a distinct support role; it does not make unfinished product capabilities ACTIVATED and does not satisfy the parent trade goal until the required live machine-owned receipts exist.
