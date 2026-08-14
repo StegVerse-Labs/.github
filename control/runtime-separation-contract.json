@@ -1,0 +1,24 @@
+{
+  "schema": "stegverse.heartbeat-runtime-separation-contract/v1",
+  "goal_id": "HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122",
+  "carrier_role": "REGULATORY_CARRIER_REFERENCE_FRAME",
+  "control_plane_role": "WORKER_AND_DOMAIN_COORDINATION",
+  "nervous_system_owner": "StegVerse-Labs/StegBrain#860",
+  "master_records_role": "PASSIVE_CUSTODY_AND_QUERYABLE_EVIDENCE",
+  "required_domains": ["StegVerse-Labs", "DEMO", "TEST", "StegVerse-org", "StegGhost"],
+  "forbidden_carrier_fields": ["claim_id", "fencing_token", "active_leases", "lease_action", "worker_registry_ref", "master_records_projection", "route", "credential", "execution_authority"],
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "signal_grants_execution_authority": false,
+    "master_records_action_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "non_tv_tvc_secret_or_token_required": false
+  },
+  "compatibility": {
+    "legacy_schema": "stegverse.heartbeat-subsignals/v1",
+    "legacy_schema_is_historical_provenance": true,
+    "live_state_mutation_by_projection": false,
+    "runtime_switch_requires_separate_claim": true
+  }
+}
