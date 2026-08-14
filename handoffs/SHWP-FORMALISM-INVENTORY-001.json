@@ -4,7 +4,7 @@
   "created_at": "2026-08-13T22:10:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
-    "goal_id": "FORMALISM-MANIFOLD-ORCHESTRATION-001",
+    "goal_id": "FORMALISM-INVENTORY-001",
     "objective": "Inventory the required Admissible-Existence and StegCore repositories from locally materialized roots and prove canonical mirror-handoff coverage without cross-repository mutation.",
     "success_predicates": ["Every required repository is locally materialized", "Every required repository exposes at least one *_MIRROR_HANDOFF.md", "Receipt is emitted under the bounded orchestration namespace"],
     "failure_predicates": ["Missing repository or handoff is treated as complete", "Worker mutates upstream formalism repositories", "GitHub token becomes a runtime requirement"],
@@ -17,11 +17,11 @@
     "repository": "StegVerse-Labs/.github",
     "source_refs": ["control/formalism-manifold-orchestration.json", "workers/formalism_manifold_orchestration_worker.py", "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md"],
     "dependencies": [],
-    "parent_task_id": null,
+    "parent_task_id": "FORMALISM-MANIFOLD-ORCHESTRATION-001",
     "derivation_reason": "The manifold-governance work must begin from recovered repository-local formal standing rather than chat assumptions.",
     "canonical_owner_ref": "StegVerse-Labs/.github#97",
     "canonical_lineage_key": "formalism-manifold:inventory",
-    "derivation_depth": 0,
+    "derivation_depth": 1,
     "priority": "critical"
   },
   "authority": {"authority_source": "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md", "heartbeat_grants_execution_authority": false, "credential_authority": "TV/TVC", "github_token_required": false, "policy_version": "formalism-manifold-orchestration-v0.1"},
