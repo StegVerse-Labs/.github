@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/worker-control-plane-coordination.schema.json",
+  "title": "StegVerse Worker Control-Plane Coordination",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "generation", "observed_reference", "worker_coordination", "transport_leases", "organization_federation", "enforcement_signal_refs", "authority"],
+  "properties": {
+    "schema": {"const": "stegverse.worker-control-plane-coordination/v1"},
+    "generation": {"type": "integer", "minimum": 0},
+    "observed_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["carrier_generation", "reference_frame", "heartbeat_is_authority"],
+      "properties": {
+        "carrier_generation": {"type": "integer", "minimum": 0},
+        "reference_frame": {"type": "string", "minLength": 1},
+        "heartbeat_is_authority": {"const": false}
+      }
+    },
+    "worker_coordination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "active_leases", "worker_registry_ref"],
+      "properties": {
+        "state": {"enum": ["IDLE", "ACTIVE"]},
+        "active_leases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": ["task_id", "worker_id", "claim_id", "fencing_token"],
+            "properties": {
+              "task_id": {"type": "string", "minLength": 1},
+              "worker_id": {"type": "string", "minLength": 1},
+              "claim_id": {"type": "string", "minLength": 1},
+              "fencing_token": {"type": "integer", "minimum": 1}
+            }
+          }
+        },
+        "worker_registry_ref": {"type": "string", "minLength": 1}
+      }
+    },
+    "transport_leases": {"type": "array", "items": {"type": "object"}},
+    "organization_federation": {"type": ["object", "null"]},
+    "enforcement_signal_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["heartbeat_grants_execution_authority", "signal_grants_execution_authority", "master_records_action_authority", "credential_authority", "github_token_runtime_authority"],
+      "properties": {
+        "heartbeat_grants_execution_authority": {"const": false},
+        "signal_grants_execution_authority": {"const": false},
+        "master_records_action_authority": {"const": false},
+        "credential_authority": {"const": "TV/TVC"},
+        "github_token_runtime_authority": {"const": false}
+      }
+    }
+  }
+}
