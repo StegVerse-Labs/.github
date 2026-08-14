@@ -1,0 +1,59 @@
+{
+  "schema": "stegverse.admissible-existence-control-plane-reconciliation-receipt/v1",
+  "task_id": "ADMISSIBLE-EXISTENCE-CONTROL-PLANE-RECONCILIATION-129",
+  "issue": "StegVerse-Labs/.github#129",
+  "pull_request": "StegVerse-Labs/.github#130",
+  "observed_at": "2026-08-14T20:33:55Z",
+  "validation_scope": "pull_request_merge_candidate",
+  "validated_head": "da2f1c52461b65eae15a58f570ab377084d3eff9",
+  "workflow_run": 31838473828,
+  "workflow_job": 94889991144,
+  "workflow_conclusion": "SUCCESS",
+  "canonical_stegcore": {
+    "capability_model_origin_commit": "7d94908be562f9f9ace05877d4507dc68c984e06",
+    "capability_registry_origin_commit": "c63b4cce408bc8b3a9c33c6417d96d959678ac19",
+    "capability_registry_current_binding_commit": "ca484e0786ee4539af06394bc036e6a7624256f8",
+    "task_conformance_merge_commit": "ca484e0786ee4539af06394bc036e6a7624256f8",
+    "capability_handoff_current_commit": "dc539b252f764662340acb9dce10597dfe0a66b2"
+  },
+  "validator_output": {
+    "result": "AE_CONTROL_PLANE_VALIDATION_PASS",
+    "handoffs": 24,
+    "registry_tasks": 25,
+    "explicit_bindings": 1,
+    "legacy_projections": 23,
+    "migration_required": 24,
+    "task_conformant": 0
+  },
+  "workflow_subchecks": {
+    "control_plane_invariants": "PASS",
+    "active_worker_ownership": "PASS",
+    "handoff_execution_ownership": "PASS",
+    "admissible_existence_handoff_worker_registry_conformance": "PASS",
+    "cross_repository_dependency_collision": "PASS",
+    "allocator_deterministic_nonpersisting_execution": "PASS",
+    "checkin_reconciliation": "PASS",
+    "json_jsonl_syntax": "PASS",
+    "non_authorizing_workflow": "PASS"
+  },
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "hosted_workflow_authority": false,
+    "execution_authority_granted": false,
+    "activation_authority_granted": false,
+    "release_authority_granted": false
+  },
+  "migration_semantics": {
+    "legacy_evidence_remains_evidence": true,
+    "legacy_unbound_records_are_currently_conformant": false,
+    "legacy_unbound_records_may_create_activation_authority": false,
+    "future_post_cutover_records_require_temporal_class_relationship_target_phase": true
+  },
+  "live_runtime_state_unchanged": true,
+  "local_model_source_complete": true,
+  "local_model_capability_phase": "ADMISSIBLE",
+  "transaction_discovery_capability_phase": "ADMISSIBLE",
+  "merge_authorized_by_receipt_alone": false,
+  "required_next_evidence": "exact merged-main organization control-plane validation PASS"
+}
