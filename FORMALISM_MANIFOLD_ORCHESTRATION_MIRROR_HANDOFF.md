@@ -8,7 +8,7 @@ repository: .github
 branch: feat/formalism-manifold-orchestration-001
 goal_id: FORMALISM-MANIFOLD-ORCHESTRATION-001
 issue: #97
-draft_pr: #98
+pull_request: #98
 coordination authority: StegVerse-Labs/.github
 formalism authority: Admissible-Existence repository-local canonical handoffs and formal sources
 runtime authority: StegVerse-Labs/StegCore canonical StegGate runtime
@@ -16,17 +16,33 @@ credential authority: TV/TVC
 github_token_required: false
 ```
 
-Live repository/workflow evidence supersedes chat summaries. This file is the canonical continuation record for the cross-repository formalism/manifold orchestration workstream.
+Live repository/workflow evidence supersedes chat summaries. This file is the canonical continuation record for the cross-repository formalism/manifold orchestration workstream and for the session requirements transferred into it.
 
 ## Governing objective
 
-Run the Admissible-Existence formalism recovery and manifold-governance mapping as bounded parallel evidence lanes under the existing single StegVerse heartbeat, worker registry, fenced claims/leases, receipts, and fail-closed reconciliation boundary.
+Run Admissible-Existence formalism recovery and manifold-governance mapping as bounded parallel evidence lanes under the existing single StegVerse heartbeat, worker registry, fenced claims/leases, receipts, and fail-closed reconciliation boundary.
 
-The workstream must reduce cross-session drift without creating a second heartbeat, a second formalism authority, or a parallel StegGate evaluator.
+The workstream reduces cross-session drift without creating a second heartbeat, second formalism authority, parallel StegGate evaluator, or non-TV/TVC secret/token path.
+
+## Session goal inventory and convergence
+
+| Goal | Canonical continuation | Classification | Current state |
+| --- | --- | --- | --- |
+| Recover AE/RTG/GTG/TT/STCM mathematical/function standing | this handoff + five orchestration worker lanes | CLAIMED_FOR_VALIDATION -> MACHINE_OWNED after merge | source implementation hosted-validated; resident receipts pending |
+| Normalize repository handoffs to state mathematical/function relationships | `SHWP-FORMALISM-HANDOFF-NORMALIZATION-001` | MACHINE_OWNED after merge | worker installed/validated; receipt pending |
+| Build cross-repository mathematical/function crosswalk | `SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001` | MACHINE_OWNED after merge | worker installed/validated; receipt pending |
+| Map established AE constructs into canonical StegCore governance without parallel evaluator | `SHWP-MANIFOLD-GOVERNANCE-MAPPING-001` | MACHINE_OWNED after merge | worker installed/validated; receipt pending |
+| Reconcile parallel lanes before canonical manifold implementation | `SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001` | MACHINE_OWNED after merge | worker installed/validated; prerequisite receipts pending |
+| Local model/runtime discovery, launch, inference, measurement, proof | `StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md` + `.github#60` | COMPLETE / MERGED_INTO_CANONICAL_WORKSTREAM | COMPLETE_RELEASED; do not duplicate |
+| Formal local model development | same micro-node-runtime handoff and work claim | COMPLETE / MERGED_INTO_CANONICAL_WORKSTREAM | COMPLETE_RELEASED for sovereign local model; manifold mathematics remains upstream AE-owned |
+| No non-TV/TVC secrets/tokens | TV/TVC authority + existing no-token validation paths | COMPLETE invariant / ongoing enforcement | hosted validation proves no GitHub credential token in this branch validation; workers require none |
+| Trade-ready bounded Base wallet handoff | `StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md` + `task-state/STEGFIN-CONTINUITY-CARRIER-007.json` | MACHINE_OWNED | source 7/8; primary TV/TVC provider runtime evidence pending; USER_ONLY signing/broadcast after wallet handoff |
+| TV/TVC carrier-neutral provider operation runtime | `StegVerse-Labs/TVC/docs/PROVIDER_OPERATION_BROKER_MIRROR_HANDOFF.md` | WORKER/AUTHORITY_OWNED | source integrated and supporting validation PASS; exact current-source + primary runtime binding pending |
+| Session consolidation and elimination | this handoff + canonical downstream handoffs above | ACTIVE DISTINCT SUPPORT | implementation evidence transferred; branch admission + worker receipts remain |
+
+No local-runtime implementation, TV/TVC credential path, StegFin broker, heartbeat carrier, or StegGate evaluator may be recreated by this goal.
 
 ## Existing architecture inherited, not replaced
-
-Canonical organization state already establishes:
 
 ```text
 heartbeat runtime: heartbeat_runtime.engine_v11.HeartbeatRuntime
@@ -38,78 +54,61 @@ repo heartbeat federation: SHWP-REPO-HEARTBEAT-FEDERATION-001
 sovereign carrier activation: SHWP-DURABLE-RUNTIME-ACTIVATION
 ```
 
-This goal does not mutate the active sovereign carrier claim/fence/lease. It registers additional bounded workers that become eligible for the canonical resident heartbeat once the branch is admitted and the carrier can execute them.
+This goal does not mutate the active sovereign carrier claim/fence/lease. It registers bounded workers eligible for the canonical resident heartbeat after branch admission and local source materialization.
 
 ## Authority boundary
 
-### Mathematical / formalism authority
+`Admissible-Existence/*` repository-local canonical handoffs and formal source artifacts retain authority for definitions, axioms, operators, invariants, theorem standing, and mathematical maturity. This orchestration may observe, compare, hash, and crosswalk but may not promote inferred relationships into canonical mathematical standing.
 
-`Admissible-Existence/*` repository-local canonical handoffs and formal source artifacts retain authority for definitions, axioms, operators, invariants, theorem standing, and mathematical maturity.
+`StegVerse-Labs/StegCore` retains canonical StegGate runtime authority. This workstream may map formal constructs into runtime-facing evidence contracts but may not create a parallel evaluator or bypass the canonical authority chain.
 
-This orchestration layer may observe, compare, hash, and crosswalk those sources. It may not promote an inferred relationship into canonical mathematical standing or silently normalize/rewrite an upstream formalism.
-
-### Runtime authority
-
-`StegVerse-Labs/StegCore` retains canonical StegGate runtime authority. This workstream may map formal constructs into runtime-facing evidence contracts, but it may not create a per-lane or parallel evaluator and may not bypass the canonical authority chain.
-
-### Derived evidence
-
-Inventory, crosswalk, coherence, grouping, gradient, topology, heartbeat, lease, and reconciliation outputs are evidence only. They do not independently grant policy, formalism, credential, release, or execution authority.
+Inventory, crosswalk, coherence, grouping, gradient, topology, heartbeat, lease, and reconciliation outputs are evidence only. They do not grant policy, formalism, credential, release, wallet, broadcast, or execution authority.
 
 ## Parallel worker lanes
 
 ```text
 SHWP-FORMALISM-INVENTORY-001
-  -> capability: formalism_inventory_reconciliation
-  -> prove locally materialized repository + mirror-handoff coverage
+  goal: FORMALISM-INVENTORY-001
+  capability: formalism_inventory_reconciliation
 
 SHWP-FORMALISM-HANDOFF-NORMALIZATION-001
-  -> capability: formalism_handoff_normalization_analysis
-  -> report whether each handoff explicitly carries mathematical/function relationship categories
+  goal: FORMALISM-HANDOFF-NORMALIZATION-001
+  capability: formalism_handoff_normalization_analysis
 
 SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001
-  -> capability: formalism_mathematical_crosswalk
-  -> emit an evidence-only graph of declared cross-repository references
+  goal: FORMALISM-MATHEMATICAL-CROSSWALK-001
+  capability: formalism_mathematical_crosswalk
 
 SHWP-MANIFOLD-GOVERNANCE-MAPPING-001
-  -> capability: manifold_governance_mapping
-  -> preserve AE mathematical authority / StegCore runtime authority split
+  goal: MANIFOLD-GOVERNANCE-MAPPING-001
+  capability: manifold_governance_mapping
 
 SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001
-  -> capability: formalism_manifold_reconciliation
-  -> bind the four prerequisite lane receipts and fail closed until each is COMPLETE
+  goal: FORMALISM-MANIFOLD-RECONCILIATION-001
+  capability: formalism_manifold_reconciliation
 ```
 
-All five workers use `workers/formalism_manifold_orchestration_worker.py` through separate fixed process adapters. The first four accept only `STEGVERSE_FORMALISM_ROOTS_JSON`, which must point to already locally materialized repository roots. No network source checkout is performed by these workers.
+The unique sub-goal IDs are required by the executable-handoff duplicate-lane validator; the first validation attempt exposed the collision and the branch was corrected rather than weakening the validator.
 
-## Canonical configuration and registration
+All five workers use `workers/formalism_manifold_orchestration_worker.py` through separate fixed process adapters. The first four accept only `STEGVERSE_FORMALISM_ROOTS_JSON`, pointing to already locally materialized repository roots. No worker performs network checkout.
+
+## Canonical implementation surfaces
 
 ```text
 control/formalism-manifold-orchestration.json
 control/worker-registry.d/formalism-manifold-orchestration-001.json
 control/process-worker-adapters.d/formalism-manifold-orchestration-001.json
 workers/formalism_manifold_orchestration_worker.py
-```
-
-Executable handoffs:
-
-```text
+tests/test_formalism_manifold_orchestration_worker.py
 handoffs/SHWP-FORMALISM-INVENTORY-001.json
 handoffs/SHWP-FORMALISM-HANDOFF-NORMALIZATION-001.json
 handoffs/SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001.json
 handoffs/SHWP-MANIFOLD-GOVERNANCE-MAPPING-001.json
 handoffs/SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001.json
-```
-
-Receipt namespace:
-
-```text
 receipts/formalism-manifold-orchestration/**
 ```
 
-## Initial required repository set
-
-The first bounded cohort is deliberately small enough to verify semantics before organization-wide expansion:
+Initial cohort:
 
 ```text
 Admissible-Existence/AE
@@ -120,28 +119,7 @@ Admissible-Existence/STCM
 StegVerse-Labs/StegCore
 ```
 
-Expansion to BC, CHF, DC, DaCo, IICT, GCAT-BCAT, ECAT-ICAT, Existence, FI, RE, Triad, learning-transition-governance, and other related repositories is a successor step after the first cohort is validated.
-
-## Handoff relationship contract
-
-The normalization lane checks for explicit coverage or a bounded equivalent of:
-
-```text
-formal role
-inputs
-outputs
-upstream dependencies
-downstream consumers
-authority boundary
-composition relations
-resolution relationship
-continuity relationship
-mathematical maturity
-functional maturity
-collision rules
-```
-
-The current worker only reports coverage gaps. It does not rewrite upstream handoffs.
+The normalization lane checks formal role, inputs, outputs, upstream dependencies, downstream consumers, authority boundary, composition relations, resolution relationship, continuity relationship, mathematical maturity, functional maturity, and collision rules. It reports gaps; it does not rewrite upstream repositories.
 
 ## Execution ownership and collision partition
 
@@ -153,129 +131,121 @@ The current worker only reports coverage gaps. It does not rewrite upstream hand
   claim_state: CLAIMED_FOR_VALIDATION
   worker_registry_ref: control/session-validation-claim-2026-08-13-formalism-manifold-orchestration.json
   manual_execution_allowed: true
-  manual_allowed_role: validation/reconciliation + new nonoverlapping registration surfaces
-  collision_scope: new goal-local handoff/config/worker/adapter/test/receipt files only; no active sovereign carrier or existing worker-owned mutation
-  release_condition: branch implementation validated and worker registration durably transferred to canonical heartbeat ownership
-  next_executable_action: validate branch, repair only branch-local defects, then release session claim
+  manual_allowed_role: branch-local validation/reconciliation and canonical admission only
+  collision_scope: new goal-local handoff/config/worker/adapter/test/receipt files; no active sovereign carrier, trade worker, TV/TVC runtime, or existing worker-owned mutation
+  release_condition: PR #98 admitted to main with required validation passing and worker continuation durably transferred
+  next_executable_action: update validation evidence, mark PR ready, admit if branch protections permit, then release session claim
 ```
 
 ### WORKER-OWNED / DO NOT COMPETE
 
-```yaml
-- task_id: SHWP-FORMALISM-INVENTORY-001
-  execution_owner: canonical resident heartbeat + formalism-inventory-worker
-  claim_state: HANDOFF_READY
-  worker_registry_ref: control/worker-registry.d/formalism-manifold-orchestration-001.json
-  manual_execution_allowed: false
-  manual_allowed_role: observation
-  collision_scope: inventory receipt production only
-  release_condition: inventory receipt COMPLETED or canonical successor/reconciliation releases scope
-  next_executable_action: heartbeat admits worker when local repository roots are materialized
+The five `SHWP-FORMALISM-*` / `SHWP-MANIFOLD-*` tasks are heartbeat-owned after merge and may write only `receipts/formalism-manifold-orchestration/**`.
 
-- task_id: SHWP-FORMALISM-HANDOFF-NORMALIZATION-001
-  execution_owner: canonical resident heartbeat + formalism-handoff-normalization-worker
-  claim_state: HANDOFF_READY
-  worker_registry_ref: control/worker-registry.d/formalism-manifold-orchestration-001.json
-  manual_execution_allowed: false
-  manual_allowed_role: observation
-  collision_scope: handoff relationship-coverage receipt production only
-  release_condition: normalization receipt COMPLETED
-  next_executable_action: heartbeat admits worker after/alongside inventory evidence
-
-- task_id: SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001
-  execution_owner: canonical resident heartbeat + formalism-mathematical-crosswalk-worker
-  claim_state: HANDOFF_READY
-  worker_registry_ref: control/worker-registry.d/formalism-manifold-orchestration-001.json
-  manual_execution_allowed: false
-  manual_allowed_role: observation
-  collision_scope: evidence-only relationship graph receipt production only
-  release_condition: crosswalk receipt COMPLETED
-  next_executable_action: heartbeat admits worker after/alongside inventory evidence
-
-- task_id: SHWP-MANIFOLD-GOVERNANCE-MAPPING-001
-  execution_owner: canonical resident heartbeat + manifold-governance-mapping-worker
-  claim_state: HANDOFF_READY
-  worker_registry_ref: control/worker-registry.d/formalism-manifold-orchestration-001.json
-  manual_execution_allowed: false
-  manual_allowed_role: observation
-  collision_scope: AE-to-StegCore authority mapping receipt only
-  release_condition: mapping receipt COMPLETED
-  next_executable_action: heartbeat admits worker when AE and StegCore handoffs are locally observable
-
-- task_id: SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001
-  execution_owner: canonical resident heartbeat + formalism-manifold-reconciliation-worker
-  claim_state: HANDOFF_READY
-  worker_registry_ref: control/worker-registry.d/formalism-manifold-orchestration-001.json
-  manual_execution_allowed: false
-  manual_allowed_role: observation
-  collision_scope: prerequisite-receipt hash reconciliation only
-  release_condition: reconciliation receipt COMPLETED
-  next_executable_action: heartbeat rechecks until all four prerequisite lane receipts are COMPLETE
-```
+`STEGFIN-CONTINUITY-CARRIER-007`, `TVC-PROVIDER-OPERATION-BROKER-003`, `SHWP-DURABLE-RUNTIME-ACTIVATION`, and the resident StegFin tasks are separate active machine/authority scopes. This session may inspect and transfer requirements but may not compete with their claims or credential/runtime authority.
 
 ### ESCALATED / AUTHORITY-OWNED
 
-Any request to redefine AE mathematics, change StegCore canonical evaluator semantics, mutate TV/TVC credential authority, activate a sovereign carrier, or resolve missing physical host resources remains owned by the pre-existing authority chain and is outside this goal.
+AE mathematical redefinition belongs upstream to the applicable Admissible-Existence repository owner. StegCore evaluator changes belong to StegCore. Provider credentials/runtime binding belong to TV/TVC. Wallet signing and broadcast remain USER_ONLY. Sovereign physical-carrier resolution belongs to the existing engine-v11 authority chain.
 
 ### COMPLETED / SUPERSEDED
 
-No orchestration lane is yet completed. Registration implementation is installed on the feature branch but has not yet been validated by hosted/local branch checks or executed by the resident heartbeat.
+The descriptive local-model selection step and formal sovereign local-model development are superseded by the released `StegVerse-002/micro-node-runtime` implementation; `.github#60` already consumes that path. Do not recreate it here.
 
-## Validation
+## Hosted validation evidence
 
-New unit coverage:
-
-```text
-tests/test_formalism_manifold_orchestration_worker.py
-```
-
-Existing adapter-fragment validation should also consume the new fragment through:
+PR #98 head `a69bb5950222c9a1b7d979ae728c05f0fb9f411c` received the strongest available non-authorizing branch validation:
 
 ```text
-tests/test_process_worker_adapter_fragments.py
+Heartbeat Worker Project - Validation Only / No GitHub Token Authority
+run: 31767096183
+job: 94665108039
+result: SUCCESS
+
+NO_GITHUB_CREDENTIAL_TOKEN_PRESENT
+CANONICAL_JSON_PASS 114
+EXECUTABLE_HANDOFF_VALIDATION_PASS count=20 live_lanes=16 skipped_non_executable=1
+unit suite: 152 tests / OK
+DRY_RUN_NON_MUTATING_PASS
+EPHEMERAL_PROJECTION_VALIDATION_PASS
+WORKFLOW_NON_AUTHORIZING_PASS
 ```
 
-Required branch validation before merge:
+The dry-run loaded `control/worker-registry.d/formalism-manifold-orchestration-001.json` successfully into the ephemeral registry, proving fragment compatibility without persisting heartbeat state or granting authority.
+
+Companion workflow:
 
 ```text
-python -m compileall -q heartbeat_runtime workers scripts
-python scripts/validate_executable_handoffs.py
-python scripts/validate_handoff_execution_ownership.py
-python -m unittest discover -v tests
-python scripts/run_heartbeat_runtime.py --dry-run --cycles 1
-python tools/validate_active_worker_states.py
+Render Organization Handoff State - No GitHub Token Authority
+run: 31767096280
+result: SUCCESS
 ```
 
-Hosted validation proves source/control-plane correctness only. It does not activate the resident sovereign carrier or grant production authority.
+The preceding validation run `31766352242` failed because all five new executable handoffs shared one live `goal_id`; logs identified four duplicate-lane errors. The repair assigned distinct lane goal IDs and preserved the fail-closed validator. No validator weakening or token bypass was used.
+
+Hosted validation proves source/control-plane correctness only. It does not prove resident heartbeat execution or production activation.
 
 ## Current state
 
 ```text
-branch implementation: INSTALLED / VALIDATION PENDING
+branch implementation: COMPLETE FOR INITIAL 5-LANE SLICE
 parallel worker definitions: 5/5 installed
 process adapter bindings: 5/5 installed
 executable handoffs: 5/5 installed
-worker heartbeat execution: NOT YET OBSERVED
+unit tests: PASS 152/152 repository suite
+executable handoff validation: PASS
+no-token validation: PASS
+registry-fragment dry-run admission: PASS
+resident heartbeat execution of new lanes: NOT OBSERVED
 lane receipts: 0/5 observed
-reconciliation: NOT YET COMPLETE
+reconciliation: NOT COMPLETE
 upstream formalism mutation: NONE
 StegCore runtime mutation: NONE
 ```
 
-## Known remaining work
+## Cross-repository trade-readiness convergence
 
-1. Validate the branch against existing heartbeat/registry/handoff invariants.
-2. Repair any branch-local schema/loader/test defects.
-3. Merge only if validation passes and collision review remains clean.
-4. Materialize/provide the six required repository roots to the sovereign heartbeat environment without introducing GitHub-token runtime authority.
-5. Observe the first four worker receipts and resolve only evidence gaps through the proper repository owners.
-6. Observe reconciliation receipt.
-7. Expand the repository cohort only after the first cohort is stable.
-8. Use the reconciled crosswalk to define the true manifold-governance implementation delta in StegCore rather than rediscovering existing AE mathematics.
+Current `StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md` records the bounded Base validation path as source-complete for seven of eight hard trade-handoff prerequisites. The remaining machine prerequisite is real continuity execution to `WALLET_HANDOFF_READY` after the TV/TVC primary provider-operation runtime becomes observable. `task-state/STEGFIN-CONTINUITY-CARRIER-007.json` is machine-owned and explicitly prohibits non-TV/TVC secrets/tokens, provider-secret export, and carrier-derived trade authority.
+
+Current `StegVerse-Labs/TVC/docs/PROVIDER_OPERATION_BROKER_MIRROR_HANDOFF.md` owns the primary runtime gap. Supporting no-credential validation exists, but exact-current-source authorized execution and primary TV/TVC runtime binding remain incomplete. A chat/session may not perform provider-secret operation, wallet signing, or broadcast.
+
+The heartbeat validation dry-run also proved that the StegFin sovereign internal worker is registered and uniquely executable, but it returned `STEGFIN_SOVEREIGN_CAPSULE_NOT_MATERIALIZED` in the ephemeral HB30 run. That dry-run is diagnostic only and does not mutate or replace the canonical continuity lane.
+
+## Exact incomplete tasks
+
+```text
+PR #98 canonical admission
+  owner: current validation session within branch-local claim
+  release: required checks PASS and merge/admission succeeds
+
+five formalism/manifold lane receipts
+  owner: canonical resident heartbeat + registered workers after merge
+  release: each receipt reaches COMPLETED against materialized first-cohort repositories
+
+formalism/manifold reconciliation receipt
+  owner: formalism-manifold-reconciliation-worker
+  release: all four prerequisite receipts COMPLETED and hash-bound
+
+StegFin wallet-handoff preparation
+  owner: StegVerse-Labs/stegfin-governance / STEGFIN-CONTINUITY-CARRIER-007
+  release: TVC primary provider runtime observable + collision-safe claim + execution to WALLET_HANDOFF_READY
+
+TVC primary provider-operation runtime binding
+  owner: StegVerse-Labs/TVC / TVC-PROVIDER-OPERATION-BROKER-003 + TVC-CAPABILITY-RUNTIME-002
+  release: current app.main provider-operation surface bound to authorized primary runtime and exact-source boundary validation PASS without protected credential export
+
+wallet signing/broadcast
+  owner: USER_ONLY
+  release: exact WALLET_HANDOFF_READY package presented
+```
+
+## Propagation obligations
+
+No Site, Publisher, admissibility-wiki, stegguardian-wiki, tag, or release propagation is authorized from this branch yet. After the first-cohort reconciliation identifies a canonical new manifold-governance delta and the owning source repository validates/releases it, downstream propagation must follow those source handoffs rather than this orchestration branch inventing publication authority.
 
 ## Archive state
 
 ```text
 thread_archive_ready: false
-reason: branch validation, canonical admission, first heartbeat execution, and reconciliation evidence remain incomplete
+session_role: ACTIVE_DISTINCT_SUPPORT
+reason: PR #98 canonical admission is still branch-local session work; resident lane receipts and trade-readiness machine continuations remain incomplete, although local-runtime/model requirements are already durably merged into their canonical workstreams
 ```
