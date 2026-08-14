@@ -1,0 +1,58 @@
+{
+  "schema": "stegverse.session-assistance-scope-policy/v1",
+  "policy_id": "SESSION-GOAL-SCOPED-WORKER-ASSISTANCE-001",
+  "effective_at": "2026-08-14T16:58:00-05:00",
+  "canonical_owner": "StegVerse-Labs organization control plane",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "purpose": "Prevent interactive sessions from adopting unrelated globally visible worker tasks and force worker assistance to remain within the originating session goal lineage.",
+  "rules": {
+    "assist_workers_semantics": "Assist workers already owning or supporting established goals of the current session, or direct durable dependency/validation/integration descendants of those goals.",
+    "shared_directive_creates_goal": false,
+    "shared_directive_requires_session_lineage_evidence": true,
+    "worker_assistance_requires_goal_intersection": true,
+    "validation_role_can_bypass_goal_intersection": false,
+    "integration_role_can_bypass_goal_intersection": false,
+    "unrelated_task_may_be_archive_dependency": false,
+    "allowed_out_of_scope_classifications": [
+      "OUT_OF_SCOPE_SHARED_DIRECTIVE",
+      "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "IGNORED_UNRELATED_WORK"
+    ]
+  },
+  "required_session_inventory_fields": [
+    "session_scope",
+    "originating_goal_ids",
+    "shared_directives",
+    "worker_assistance_bindings"
+  ],
+  "required_binding_fields": [
+    "worker_or_task_id",
+    "session_goal_id",
+    "lineage_type",
+    "lineage_evidence_ref",
+    "scope_decision"
+  ],
+  "allowed_lineage_types": [
+    "DIRECT_GOAL_OWNER",
+    "DIRECT_DEPENDENCY",
+    "VALIDATION_DESCENDANT",
+    "INTEGRATION_DESCENDANT",
+    "PROPAGATION_DESCENDANT"
+  ],
+  "allowed_scope_decisions": [
+    "IN_SCOPE_ASSIST",
+    "OUT_OF_SCOPE_SHARED_DIRECTIVE",
+    "MERGED_INTO_CANONICAL_WORKSTREAM",
+    "IGNORED_UNRELATED_WORK"
+  ],
+  "authority_boundary": {
+    "creates_execution_authority": false,
+    "creates_worker_claim": false,
+    "creates_runtime_authority": false,
+    "creates_provider_authority": false,
+    "creates_wallet_authority": false,
+    "modifies_stegcore_ae_semantics": false,
+    "modifies_steggate_disposition": false
+  }
+}
