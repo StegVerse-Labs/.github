@@ -22,6 +22,9 @@
       "tests/test_formalism_manifold_implementation_admission_worker.py",
       "receipts/formalism-manifold-implementation-admission/**",
       "bounded reconciliation/archive-state updates in FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md and data/formalism-manifold-orchestration/task-state.json",
+      "control/archive-readiness.json",
+      "scripts/validate_archive_readiness.py",
+      "tests/test_archive_readiness.py",
       "docs/STEGFIN_CONTINUITY_CARRIER_MIRROR_HANDOFF.md: validator-only addition of explicit ownership metadata required by scripts/validate_handoff_execution_ownership.py; no authority or execution semantic change"
     ],
     "prohibited": [
@@ -35,15 +38,21 @@
     ]
   },
   "scope_extension_evidence": {
-    "reason": "PR #101 control-plane validation is blocked by pre-existing explicit-field omissions in docs/STEGFIN_CONTINUITY_CARRIER_MIRROR_HANDOFF.md",
-    "failed_run": 31769908449,
-    "failed_job": 94673494013,
-    "missing_fields": ["manual_execution_allowed", "worker_registry_ref", "next_executable_action"],
-    "competing_open_pr_found": false,
-    "semantic_change_allowed": false
+    "validator_repair": {
+      "reason": "PR #101 control-plane validation was blocked by pre-existing explicit-field omissions in docs/STEGFIN_CONTINUITY_CARRIER_MIRROR_HANDOFF.md",
+      "failed_run": 31769908449,
+      "failed_job": 94673494013,
+      "missing_fields": ["manual_execution_allowed", "worker_registry_ref", "next_executable_action"],
+      "competing_open_pr_found": false,
+      "semantic_change_allowed": false
+    },
+    "archive_gate_correction": {
+      "reason": "The current archive test treats every unfinished task labelled PROGRESSING as archive-safe without proving a live authorized executor; this contradicts the session-governance rule that durable recording alone is insufficient.",
+      "required_behavior": "Every unfinished non-human-boundary task must prove an active machine lease/claim or an explicit active session claim capable of executing the remaining work."
+    }
   },
   "credential_authority": "TV/TVC",
   "github_token_required": false,
-  "authority_effect": "BOUNDED_BRANCH_IMPLEMENTATION_AND_VALIDATOR_REPAIR_ONLY",
+  "authority_effect": "BOUNDED_BRANCH_IMPLEMENTATION_VALIDATOR_AND_ARCHIVE_GATE_REPAIR_ONLY",
   "archive_dependency": true
 }
