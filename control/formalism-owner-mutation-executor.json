@@ -1,0 +1,47 @@
+{
+  "schema": "stegverse.formalism-owner-mutation-executor/v0.1",
+  "goal_id": "FORMALISM-OWNER-MUTATION-EXECUTOR-001",
+  "task_id": "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "consumer_secret_or_token_authority": false,
+  "owner_work_directory": "receipts/formalism-manifold-implementation-admission/owner-work",
+  "source_package_directory": "receipts/formalism-owner-mutation-executor/source-packages",
+  "receipt_directory": "receipts/formalism-owner-mutation-executor",
+  "request_directory": "requests/tvc-repository-operations",
+  "bound_state_environment": "STEGVERSE_BOUND_STATE_ROOT",
+  "request_ttl_seconds": 900,
+  "maximum_file_count": 32,
+  "maximum_total_bytes": 1048576,
+  "require_handoff_first": true,
+  "require_exact_inspection_receipt": true,
+  "tvc_broker": {
+    "repository": "StegVerse-Labs/TVC",
+    "issue": 19,
+    "pull_request": 20,
+    "required_operation": "APPLY_BOUNDED_FILE_SET",
+    "canonical_required_for_live_projection": true,
+    "standing": "PENDING_TV_TVC_LOCAL_VALIDATION"
+  },
+  "source_generation": {
+    "must_be_explicit": true,
+    "required_packet_schema": "stegverse.owner-source-generation-packet/v0.1",
+    "required_fields": [
+      "generator_authority_ref",
+      "generator_profile_ref",
+      "source_generation_authorized"
+    ],
+    "availability_grants_authority": false,
+    "heartbeat_grants_authority": false,
+    "coherence_or_gradient_grants_authority": false
+  },
+  "authority_boundaries": {
+    "ae_formalism_redefinition": false,
+    "steggate_semantic_redefinition": false,
+    "owner_merge_authority": false,
+    "release_authority": false,
+    "deployment_authority": false,
+    "wallet_authority": false,
+    "credential_authority": "TV/TVC"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "FORMALISM-OWNER-MUTATION-EXECUTOR-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:formalism-owner-mutation-executor-v1",
+      "authority_ref": "handoffs/SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001.json#authority",
+      "capabilities": ["formalism_owner_mutation_executor"],
+      "command": ["python", "workers/formalism_owner_mutation_executor_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_BOUND_STATE_ROOT"],
+      "notes": [
+        "Consumes admitted owner-work and explicit source-generation packets.",
+        "Reads a temporary fenced local-spool mirror only; never the authoritative host path.",
+        "Emits only bounded non-secret TVC APPLY_BOUNDED_FILE_SET warrants and receipts.",
+        "No GitHub/provider/wallet/TVC credential is accepted or forwarded; credential-bearing transport remains TV/TVC-owned.",
+        "Worker availability, heartbeat, coherence, gradients, or model output never grant source-generation or mutation authority."
+      ],
+      "timeout_seconds": 30,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
