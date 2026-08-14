@@ -1,6 +1,6 @@
 # Admissible-Existence Control-Plane Mirror Handoff
 
-Updated: 2026-08-14T15:36:00-05:00
+Updated: 2026-08-14T15:37:00-05:00
 
 ## Authority and state
 
@@ -12,6 +12,7 @@ repository: StegVerse-Labs/.github
 branch: main
 state: COMPLETE_VALIDATED_RELEASED
 canonical_owner: StegVerse-Labs organization control plane
+worker_registry_ref: control/worker-registry.json + control/worker-registry.d/*.json
 formalism_authority: Admissible-Existence/AE
 canonical_runtime_authority: StegVerse-Labs/StegCore / stegcore.steggate.evaluate_admissibility
 credential_authority: TV/TVC
@@ -217,6 +218,7 @@ wallet signing/broadcast -> USER_ONLY
   claim_state: UNCLAIMED
   manual_execution_allowed: true
   manual_allowed_role: validation/reconciliation only
+  worker_registry_ref: control/worker-registry.json + control/worker-registry.d/*.json
   collision_scope: no live runtime/provider/wallet/custody authority
   release_condition: task-specific validation receipt or handoff reconciliation
   next_executable_action: only admit a new validation role when live repository drift is observed
@@ -230,6 +232,7 @@ wallet signing/broadcast -> USER_ONLY
   claim_state: MACHINE_OWNED_OR_EXCLUSIVE_VALIDATION
   manual_execution_allowed: false
   manual_allowed_role: observation
+  worker_registry_ref: control/worker-registry.json + control/worker-registry.d/*.json
   collision_scope: live runtime activation, provider operation, trade preparation, wallet action, settlement, custody
   release_condition: task-specific machine-observable receipts
   next_executable_action: canonical workers continue; this verifier checks resulting lifecycle/evidence state
@@ -243,6 +246,7 @@ wallet signing/broadcast -> USER_ONLY
   claim_state: ESCALATED_WHEN_NEEDED
   manual_execution_allowed: false
   manual_allowed_role: NONE
+  worker_registry_ref: control/worker-registry.json + control/worker-registry.d/*.json
   collision_scope: lifecycle/evidence or credential-authority conflicts
   release_condition: canonical owner resolves or supersedes conflicting state
   next_executable_action: fail closed rather than widen authority or infer activation
@@ -254,6 +258,7 @@ wallet signing/broadcast -> USER_ONLY
 - task_id: ADMISSIBLE-EXISTENCE-CONTROL-PLANE-RECONCILIATION-129
   execution_owner: issue #129 validation/reconciliation lane
   claim_state: COMPLETE_VALIDATED_RELEASED
+  worker_registry_ref: control/worker-registry.json + control/worker-registry.d/*.json
   merge_evidence: 7a54a4261bf81321bf261e95223ed6c5c6ce6c41
   validation_evidence: run 31838538505 / job 94890187342
   receipt: receipts/admissible-existence-control-plane/AE-CONTROL-PLANE-RECONCILIATION-MERGED-20260814.json
@@ -261,6 +266,7 @@ wallet signing/broadcast -> USER_ONLY
   authority_effect: false
 - task_id: SOURCE-OR-TASK-COMPLETION-IMPLIES-ACTIVATION
   claim_state: SUPERSEDED
+  worker_registry_ref: control/worker-registry.json + control/worker-registry.d/*.json
   superseded_by: canonical Admissible-Existence lifecycle and explicit activation-proof requirement
   authority_effect: false
 ```
