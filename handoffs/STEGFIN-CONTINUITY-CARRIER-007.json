@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-STEGFIN-CONTINUITY-CARRIER-007",
   "created_at": "2026-08-12T22:07:00Z",
-  "updated_at": "2026-08-14T17:24:00Z",
+  "updated_at": "2026-08-14T20:39:00Z",
   "state": "HANDOFF_READY_MACHINE_OWNED_TRANSPORT_SELECTION_AT_EXECUTION",
   "admissible_existence": {
     "capability_id": "stegverse:capability:stegfin-base-pretrade:v1",
@@ -26,7 +26,10 @@
     ],
     "continuation_owner": "stegfin-continuity-carrier-worker + TV/TVC runtime authority/observer as selected at execution",
     "credential_authority": "TV/TVC",
-    "github_token_runtime_authority": false
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
   },
   "goal": {
     "goal_id": "STEGFIN-BASE-ROUNDTRIP-001",
