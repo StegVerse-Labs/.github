@@ -7,13 +7,13 @@ goal_id: STEGFIN-CONTINUITY-CARRIER-007
 parent_goal: STEGFIN-BASE-ROUNDTRIP-001
 repository: StegVerse-Labs/.github
 branch: main
-state: MACHINE_OWNED_TVC_LOCAL_BOUNDARY_VALIDATED_EXACT_BLOB_AND_RUNTIME_BINDING_PENDING
+state: MACHINE_OWNED_TVC_EXACT_VALIDATION_PASS_PRIMARY_RUNTIME_BINDING_PENDING
 credential_authority: TV/TVC
 manual_execution_allowed: false
 session_role: DISTINCT_VALIDATION_RECONCILIATION_SUPPORT
 ```
 
-This handoff is the scoped source of truth for continuity execution. The carrier provides compute only; credential, route, signing, broadcast, custody, and settlement authority are not created here.
+This handoff is the scoped source of truth for continuity execution. The carrier provides compute only; credential, route, signing, broadcast, custody, settlement, or trade authority is not created here.
 
 ## Authority boundary
 
@@ -31,22 +31,20 @@ No GitHub token, provider API key, wallet key, bearer token, cloud credential, o
 
 ### MANUAL / SESSION-STARTABLE
 
-```text
-manual_execution_allowed: false
-worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
-collision_scope: stegfin:base-validation-entry:0xA503DCe5471492bbA2D06e9f78F4d9D6Bcc852aA:12.50-USDC-WETH
-next_executable_action: validation/reconciliation only; no session performs the live provider or wallet operation
-```
+No live operation is manually startable. A session may perform only non-secret validation/reconciliation outside the machine collision scope.
 
 ### WORKER-OWNED / DO NOT COMPETE
 
 ```text
 worker: stegfin-continuity-carrier-worker
 adapter: process:stegfin-continuity-carrier-v1
+registry: control/worker-registry.d/stegfin-continuity-carrier-007.json
 state: AVAILABLE / HANDOFF_READY
-release_condition: WALLET_HANDOFF_READY or fail-closed terminal receipt with same-worker claim release
-next_executable_action: machine scheduler admits the worker after the canonical TV/TVC provider-operation predicate is observable
+claim: MACHINE_CLAIM_ON_EXECUTION
+release: WALLET_HANDOFF_READY or fail-closed terminal receipt with same-worker claim release
 ```
+
+The machine scheduler must not admit the worker until `TVC-PROVIDER-OPERATION-BROKER-003:PRIMARY_RUNTIME_OBSERVABLE` is durably satisfied.
 
 ### ESCALATED / AUTHORITY-OWNED
 
@@ -57,131 +55,69 @@ primary_runtime: existing TV/TVC-authorized local/governed runtime
 application_binding: app.main:/v1/provider-operation
 governed_ingress_observer: TVC-CAPABILITY-RUNTIME-002
 fallback_runtime: Render only; not an activation prerequisite
-release_condition: byte-identical deterministic PASS + primary runtime binding + bounded non-secret provider-operation evidence
+release_condition: primary runtime binding + bounded non-secret provider-operation evidence
 ```
 
 ### COMPLETED / SUPERSEDED
 
-- claim-release wrapper, process adapter binding, ownership tests, and executable-handoff schema repair are complete;
-- fail-closed continuity claim tests are stdlib-compatible and hosted-validated;
+- claim-release wrapper, process adapter binding, worker registry, ownership tests and executable handoff are complete;
+- fail-closed/atomic claim acquisition is complete and validated by `.github` issue #96 / commit `76706b8f0eb76b86b98117d95dc25091053aef76`;
+- exact current TVC provider-operation source validation is complete;
 - resident heartbeat as a hard prerequisite is superseded; heartbeat remains resilience work;
-- Render as the primary provider-operation dependency is superseded; it is fallback only;
-- `StegVerse-002/micro-node-runtime#22` is `COMPLETE_RELEASED`; do not duplicate local-model/runtime implementation.
+- Render/hosted CI as a trade-readiness prerequisite is superseded;
+- `StegVerse-002/micro-node-runtime#22` is `COMPLETE_RELEASED`; the descriptive local-runtime-selection step is gone and no duplicate local-model/runtime implementation is permitted.
 
-## Validated continuity implementation
+## Exact TVC validation consumed
 
-```text
-workers/stegfin_continuity_carrier_worker.py
-workers/stegfin_continuity_carrier_worker_v2.py
-scripts/acquire_stegfin_continuity_claim.py
-control/worker-registry.d/stegfin-continuity-carrier-007.json
-control/process-worker-adapters.d/stegfin-continuity-carrier-007.json
-tests/test_stegfin_continuity_claim_release.py
-tests/test_stegfin_continuity_claim_fail_closed.py
-handoffs/STEGFIN-CONTINUITY-CARRIER-007.json
-```
-
-Validation evidence:
-
-```text
-continuity predecessor run: 31729816087 / job 94547154231 / SUCCESS
-organization control run: 31729688342 / job 94546707398 / SUCCESS
-
-regression observed on head 8306e8912037a1b62b0ef3a1ce9488085b4e1ee1:
-  run: 31766904961
-  job: 94664574484
-  cause: tests/test_stegfin_continuity_claim_fail_closed.py imported pytest while canonical workflow executes python -m unittest discover
-  result: FAILED at deterministic test suite; no runtime authority effect
-
-repair:
-  commit: cff5ba47e2f5d6fad75d08f2be27623c816ed967
-  change: convert fail-closed claim tests to stdlib unittest + tempfile while preserving all six behavioral assertions
-  run: 31766992356
-  job: 94664816709
-  result: SUCCESS
-  anonymous checkout: SUCCESS
-  no-GitHub-credential proof: SUCCESS
-  compile: SUCCESS
-  canonical JSON: SUCCESS
-  executable handoffs: SUCCESS
-  complete deterministic test suite: SUCCESS
-  nonpersistent heartbeat dry-run: SUCCESS
-  ephemeral projections: SUCCESS
-  non-authorizing workflow proof: SUCCESS
-```
-
-No production/runtime secret or token was introduced by the repair.
-
-## Current TVC provider-operation integration
-
-Canonical owner: `StegVerse-Labs/TVC`.
-
-Current installed source integration:
-
-```text
-26bff0bd1468e4e37e11690afa2336df9b668779  app.main /v1/provider-operation binding
-b6bfa33e33f27cb30e0924c938c4946b08a073a8  protected credential/request/result hardening
-b5053b74df5e853f57ddd3524ed2224553e518d3  app/broker integration tests
-2e924a900394628931c447bb3854b30578cb6167  provider-operation tests bound into StegTVC Core CI
-7ed728132d1f26dd4613602594f734ea03175d5f  local no-credential boundary validation receipt
-9f992b1266a0829ca98c063e62d69ab7f993aaf6  independent semantic replay receipt
-bd929a22aae2bc87cdc0097f6c16061337138aa0  canonical TVC task advanced to local-boundary-validated state
-c245f2a0cafddd3844fe5f12cce4a20a2a510cc1  TVC mirror handoff reconciled with current evidence
-```
-
-Current blobs:
+Canonical TVC source blobs were independently materialized and git-blob-sha1 verified before execution:
 
 ```text
 tvc_provider_operation_broker.py: 1f56925fccb5e7e3121aa35b37f782cfe558034a
 app/main.py: 1f3cd71eea6a182ae0c492b748d9ba3e7bc83d4f
+scripts/tvc_provider_operation_broker.py: daed1b66c7a831e557ab811010732d17203aae50
 tests/test_provider_operation_broker.py: 1acb7d3f40db7fea7e40a7df3db6615b904a3d1f
 tests/test_provider_operation_app.py: ed721ef4aee9051b223337933834a9dccf79a399
 ```
 
-The current TVC application exposes `/v1/provider-operation`, rejects caller Authorization/API-key/Admin-token/GitHub-token inputs, forwards only to the canonical local TV/TVC vault broker, and advertises no consumer credential, secret-export, signing, or broadcast authority. The canonical broker recursively rejects protected credential fields and credential-like values in requests/results.
-
-## Fresh TVC validation state
-
-Predecessor broker source was hosted-validated. The current app binding/hardening has received two non-secret local supporting validations, while byte-identical current-source TVC execution remains pending.
+Validation:
 
 ```text
-StegVerse-Labs/TVC/reports/provider-operation-broker/local-boundary-validation-20260813.json
-result: PASS_14_OF_14
-exact_private_checkout: false
-non_tv_tvc_secret_or_token_used: false
-
-StegVerse-Labs/TVC/receipts/TVC-PROVIDER-OPERATION-BROKER-003-independent-semantic-replay-2026-08-13.json
+receipt: StegVerse-Labs/TVC/reports/provider-operation-broker/exact-blob-boundary-validation-20260813.json
+receipt commit: 4c86b461b3b33db4e0f898f55068bdc9f84c0060
+TVC task reconciliation: 35167b16f4a204d9197ec51788de4450f8f900f4
+TVC mirror reconciliation: e1c833541e36752e902ae51b0b67828999c8a114
+command: PYTHONPATH=. python -m pytest -q tests/test_provider_operation_broker.py tests/test_provider_operation_app.py
 result: PASS_16_OF_16
-role: independent semantic replay
+elapsed_seconds: 0.36
+provider secret used: false
+GitHub token used for test execution: false
+non-TV/TVC secret or token used for test execution: false
 authority_effect: NONE_VALIDATION_ONLY
 ```
 
-Installed byte-identical validation command remains:
+Credential-like strings in canonical tests were hostile-input rejection fixtures only; they were not accepted or used as credentials or authority.
+
+Hosted runner allocation remains unavailable and irrelevant to deterministic source completion. No token or credential bypass is authorized.
+
+## Runtime observation state
+
+`TVC-CAPABILITY-RUNTIME-002` remains the non-secret primary-runtime observer. A direct credential-free probe from the current validation carrier attempted `https://tvc.stegverse.org/api/hil/ingress` but the execution environment could not resolve the hostname. This is a validation-carrier network limitation; it proves neither runtime readiness nor runtime failure.
+
+Do not create another runtime, broker, credential path, heartbeat, edge deployment, or hosted substitute. TV/TVC runtime authority must bind/expose the exact validated canonical `app.main:/v1/provider-operation` surface; the observer then records the machine-visible release predicate.
+
+## Machine handoff synchronization
+
+`handoffs/STEGFIN-CONTINUITY-CARRIER-007.json` now includes the exact validation receipt and has only one hard dependency:
 
 ```text
-python -m pytest -q tests/test_provider_operation_broker.py tests/test_provider_operation_app.py
+TVC-PROVIDER-OPERATION-BROKER-003:PRIMARY_RUNTIME_OBSERVABLE
 ```
 
-Hosted TVC attempt was retried:
-
-```text
-repository: StegVerse-Labs/TVC
-workflow: StegTVC Core CI
-run: 31740218560
-attempt: 2
-job: 94664286596
-head: 2e924a900394628931c447bb3854b30578cb6167
-conclusion: FAILURE_BEFORE_STEPS
-steps_executed: 0
-```
-
-This is validation-infrastructure non-execution, not a source-test failure. No GitHub/provider credential is authorized to bypass it.
-
-`TVC-CAPABILITY-RUNTIME-002` remains the non-secret primary-runtime observer. Current hosted observer evidence does not establish primary runtime binding.
+The canonical StegFin task at `StegVerse-Labs/stegfin-governance/task-state/STEGFIN-CONTINUITY-CARRIER-007.json` also consumes the exact PASS evidence and no longer requires current-source deterministic validation.
 
 ## Required trade-readiness evidence
 
-Do not claim `STEGFIN-BASE-ROUNDTRIP-001` trade readiness until an actual machine-owned run produces all of:
+Trade readiness may be claimed only after the machine-owned continuity run produces all of:
 
 ```text
 WALLET_HANDOFF_READY
@@ -192,18 +128,20 @@ signed=false
 broadcast=false
 ```
 
+At that point execution must stop for USER_ONLY wallet review/sign/broadcast.
+
 ## Exact remaining work
 
 ```text
-TVC-PROVIDER-OPERATION-BROKER-003
-  owner: StegVerse-Labs/TVC + TV/TVC runtime authority
-  state: local boundary validation PASS; byte-identical current-source execution and primary runtime binding pending
-  release: current untouched integration receives deterministic PASS, existing TV/TVC primary runtime exposes it, bounded non-secret provider-operation evidence exists
+1. TVC primary-runtime observation
+   owner: TVC-CAPABILITY-RUNTIME-002 + TV/TVC runtime authority
+   location: StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json
+   release: exact canonical app.main:/v1/provider-operation is observable on the TV/TVC primary runtime with protected-value disclosure=false
 
-STEGFIN-CONTINUITY-CARRIER-007
-  owner: registered machine worker / StegVerse continuity control plane
-  state: source/collision/claim-release/registry/adapter and claim-test validation complete; AVAILABLE/HANDOFF_READY
-  release: broker predicate observable; worker acquires collision-safe claim and reaches WALLET_HANDOFF_READY or fail-closed terminal receipt while releasing its claim
+2. Machine wallet handoff
+   owner: STEGFIN-CONTINUITY-CARRIER-007 registered worker
+   location: handoffs/STEGFIN-CONTINUITY-CARRIER-007.json
+   release: actual terminal receipt satisfies all six required predicates and claim is released
 ```
 
 There is no session-startable live financial operation inside this collision scope.
@@ -213,29 +151,26 @@ There is no session-startable live financial operation inside this collision sco
 ```text
 StegVerse-Labs/TVC/docs/PROVIDER_OPERATION_BROKER_MIRROR_HANDOFF.md
 StegVerse-Labs/TVC/tasks/TVC-PROVIDER-OPERATION-BROKER-003.json
-StegVerse-Labs/TVC/tasks/TVC-PROVIDER-OPERATION-BROKER-RUNTIME-BLOCKER-004.md
+StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json
 StegVerse-Labs/.github/handoffs/STEGFIN-CONTINUITY-CARRIER-007.json
 StegVerse-Labs/.github/control/worker-registry.d/stegfin-continuity-carrier-007.json
-StegVerse-Labs/.github/control/process-worker-adapters.d/stegfin-continuity-carrier-007.json
+StegVerse-Labs/stegfin-governance/docs/STEGFIN_CONTINUITY_CARRIER_MIRROR_HANDOFF.md
 StegVerse-Labs/stegfin-governance/task-state/STEGFIN-CONTINUITY-CARRIER-007.json
 ```
 
 ## Completion accounting
 
+For this scoped continuity path there are eight release deliverables:
+
 ```text
-continuity control-plane source: COMPLETE
-claim/collision/release: COMPLETE
-claim regression tests: COMPLETE_HOSTED_VALIDATED
-worker registration: AVAILABLE_HANDOFF_READY
-local model/runtime: COMPLETE_RELEASED_ELSEWHERE
-TVC provider-operation source integration: INSTALLED
-TVC local boundary validation: PASS_SUPPORTING_EVIDENCE
-TVC exact current-source deterministic validation: PENDING
-primary TV/TVC runtime binding: PENDING
-Render dependency: FALLBACK_ONLY
-machine wallet handoff: NOT_YET_OBSERVED
-trade readiness: NOT_CLAIMED
-session requirements: DURABLY_TRANSFERRED_TO_CANONICAL_WORKSTREAM
+1 carrier-neutral broker client: COMPLETE
+2 same-Inventory-N runner binding: COMPLETE
+3 fail-closed collision-safe claim: COMPLETE_VALIDATED
+4 machine worker/registry/adapter: COMPLETE_VALIDATED
+5 canonical TVC provider-operation source: COMPLETE
+6 exact current TVC deterministic validation: COMPLETE_PASS
+7 primary TV/TVC runtime observation: PENDING
+8 machine WALLET_HANDOFF_READY receipt: PENDING
 ```
 
-No live operation, signing, broadcast, settlement, custody result, or trade readiness may be claimed before corresponding runtime evidence exists.
+Developed files are complete for the scoped source implementation; no scaffolding/stubs are counted. Current source/validation completion is 6/8. Goal activation is 0/1 until the terminal machine receipt exists. This session retains only the distinct non-secret runtime-observation/reconciliation support role; it does not own live provider or wallet execution.
