@@ -1,0 +1,150 @@
+{
+  "schema": "stegverse.session-goal-inventory/v1",
+  "inventory_id": "RUNTIME-TRADE-BLOCKER-REMOVAL-2026-08-14-FINAL",
+  "created_at": "2026-08-14T11:43:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "role": "IMPLEMENTATION_RECONCILIATION_COMPLETE",
+  "archive_state": "READY_AFTER_DURABLE_TRANSFER",
+  "originating_session_goals": [
+    "Eliminate SOVEREIGN_NODE_DECLARATION_NOT_PRESENT as a dead-end physical-resource condition.",
+    "Eliminate privileged/system-only TVC runtime installation as the sole runtime activation path.",
+    "Eliminate TVC HTTPS primary-runtime observation as a universal StegFin wallet-handoff prerequisite.",
+    "Preserve TV/TVC-only credential authority and prohibit non-TV/TVC secrets/tokens.",
+    "Move StegFin to actual machine execution rather than descriptive/runtime-selection blockers."
+  ],
+  "completed_mutations": [
+    {
+      "task_id": "SOVEREIGN-NODE-DERIVED-DECLARATION",
+      "destination": "StegVerse-Labs/.github",
+      "merge_commit": "41c2b62283260966747e8b390e0756ef977d1578",
+      "pr": 117,
+      "state": "COMPLETE_VALIDATED_MERGED",
+      "result": "repository-owner resolver derives a bounded v0.2 sovereign-node declaration from canonical local runtime source plus writable durable state on a non-hosted surface; existing markers remain accepted",
+      "credential_authority": "TV/TVC",
+      "github_token_required": false,
+      "validation": [
+        "Sovereign Runtime Worker run 31819528190 SUCCESS",
+        "Organization control-plane run 31819528192 SUCCESS",
+        "Heartbeat Worker Project run 31819528118 SUCCESS"
+      ]
+    },
+    {
+      "task_id": "TVC-ROOTLESS-PRIMARY-RUNTIME-DELIVERY",
+      "destination": "StegVerse-Labs/TVC",
+      "merge_commit": "056187d555ec9bdf6355c9a13576b1b92a6a6f81",
+      "pr": 21,
+      "state": "SOURCE_MERGED_ADDITIVE_FALLBACK",
+      "result": "rootless systemd user-service delivery exists in addition to the system service; both invoke the same TV/TVC dispatcher/binder and existing vault socket",
+      "credential_authority": "TV/TVC",
+      "github_token_required": false,
+      "hosted_validation_note": "TVC hosted jobs were not allocated to runners (runner_id=0, steps=[]); this is not treated as production authority or as a code-pass claim"
+    },
+    {
+      "task_id": "STEGFIN-LOCAL-TVC-BROKER-FASTPATH",
+      "destination": "StegVerse-Labs/.github",
+      "merge_commit": "5e59431edbe64c225f32f2add1997298cb2895cc",
+      "pr": 118,
+      "state": "COMPLETE_VALIDATED_MERGED",
+      "result": "registered continuity worker v3 selects a real same-host TV/TVC Unix broker socket when present and otherwise delegates to the existing HTTPS primary-runtime observer path",
+      "credential_authority": "TV/TVC",
+      "github_token_required": false,
+      "validation": [
+        "Heartbeat Worker Project run 31819998877 SUCCESS",
+        "Organization control-plane run 31819998874 SUCCESS",
+        "Render Organization Handoff run 31819998844 SUCCESS"
+      ]
+    },
+    {
+      "task_id": "STEGFIN-TRANSPORT-CHOICE-ADMISSION",
+      "destination": "StegVerse-Labs/.github",
+      "merge_commit": "eafe0a539f15c195dfeb90b52325a2cd46bfbf49",
+      "pr": 119,
+      "state": "COMPLETE_VALIDATED_MERGED",
+      "result": "executable continuity handoff has no universal PRIMARY_RUNTIME_OBSERVABLE pre-admission dependency; worker owns transport selection",
+      "credential_authority": "TV/TVC",
+      "github_token_required": false,
+      "validation": [
+        "Heartbeat Worker Project run 31820125183 SUCCESS",
+        "Organization control-plane run 31820125189 SUCCESS"
+      ]
+    },
+    {
+      "task_id": "STEGFIN-CONTINUITY-TASK-RECONCILIATION",
+      "destination": "StegVerse-Labs/stegfin-governance",
+      "merge_commit": "168ef491f026259b264756b13ae78f5a70d2125b",
+      "pr": 57,
+      "state": "COMPLETE_MERGED",
+      "result": "canonical task and continuity mirror handoff record same-host Unix OR governed HTTPS as transport alternatives and remove PRIMARY_RUNTIME_OBSERVABLE from hard_dependencies",
+      "hosted_validation_note": "StegFin hosted jobs were not allocated to runners (runner_id=0, steps=[]); executable control-plane dependencies were already validated in .github before this docs/task reconciliation merge"
+    },
+    {
+      "task_id": "TVC-CAPABILITY-RUNTIME-002-RECLASSIFICATION",
+      "destination": "StegVerse-Labs/TVC",
+      "commit": "81ec2ee8f8d07fd7d882af501efdd0943908e8bc",
+      "state": "COMPLETE_DURABLE_RECLASSIFICATION",
+      "result": "primary_runtime_bound=false and primary_runtime_service_installed_observed=false remain truthful observations for the HTTPS lane but are explicitly not universal StegFin blockers"
+    }
+  ],
+  "current_operational_state": {
+    "sovereign_node_declaration_missing_as_implementation_blocker": false,
+    "system_root_required_for_tvc_activation": false,
+    "https_primary_runtime_observer_required_for_all_stegfin_execution": false,
+    "local_tvc_unix_broker_supported": true,
+    "https_tvc_runtime_supported": true,
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "github_token_production_authority": "NONE",
+    "wallet_signing_authority": "USER_ONLY",
+    "broadcast_authority": "USER_ONLY",
+    "wallet_handoff_ready_observed": false
+  },
+  "remaining_machine_owned_execution": {
+    "task_id": "STEGFIN-CONTINUITY-CARRIER-007",
+    "owner": "stegfin-continuity-carrier-worker",
+    "worker_registry_ref": "control/worker-registry.d/stegfin-continuity-carrier-007.json",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "next_action": "machine scheduler admits the worker; v3 selects the local TV/TVC Unix broker if present or the governed HTTPS READY path otherwise; worker acquires collision-safe claim and runs exact bounded pretrade to WALLET_HANDOFF_READY or an exact fail-closed receipt",
+    "terminal_predicates": [
+      "WALLET_HANDOFF_READY",
+      "credential_authority=TV/TVC",
+      "non_tv_tvc_secret_or_token_used=false",
+      "provider_secret_exported=false",
+      "signed=false",
+      "broadcast=false"
+    ],
+    "session_execution_required": false
+  },
+  "remaining_parallel_https_observation": {
+    "task_id": "TVC-CAPABILITY-RUNTIME-002",
+    "owner": "StegVerse-Labs/TVC runtime observer + TV/TVC runtime authority",
+    "state": "CLAIMED_FOR_VALIDATION",
+    "role": "parallel HTTPS transport readiness, not universal StegFin blocker",
+    "session_execution_required": false
+  },
+  "session_specific_requirements_transferred": [
+    "No non-TV/TVC secret or token is permitted.",
+    "GitHub-hosted runners are validation/evidence only and never production execution authority.",
+    "A sovereign node declaration may be derived only inside an already-authorized resolver from canonical local runtime source, writable durable state, and non-hosted execution posture.",
+    "TVC activation supports system and rootless delivery without exporting provider secrets.",
+    "StegFin may use canonical same-host TV/TVC Unix broker transport without waiting for HTTPS primary-runtime observation.",
+    "Actual WALLET_HANDOFF_READY remains a machine-observed operational predicate and is not inferred from source completion.",
+    "Signing and broadcast remain USER_ONLY."
+  ],
+  "accounting": {
+    "session_goals": 5,
+    "completed_or_durably_transferred": 5,
+    "chat_only_requirements_remaining": 0,
+    "manual_session_owned_tasks_remaining": 0,
+    "source_orchestration_defects_remaining_from_user_cited_set": 0,
+    "actual_machine_wallet_handoff_pending": true,
+    "session_consolidation_percent": 100,
+    "archival_readiness_percent": 100
+  },
+  "canonical_continuation": [
+    "StegVerse-Labs/.github/handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
+    "StegVerse-Labs/.github/workers/stegfin_continuity_carrier_worker_v3.py",
+    "StegVerse-Labs/stegfin-governance/task-state/STEGFIN-CONTINUITY-CARRIER-007.json",
+    "StegVerse-Labs/stegfin-governance/docs/STEGFIN_CONTINUITY_CARRIER_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json",
+    "StegVerse-Labs/.github/handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+  ]
+}
