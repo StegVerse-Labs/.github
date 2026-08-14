@@ -7,7 +7,8 @@
   "reason_codes": [
     "UNMET_ECOSYSTEM_GOALS",
     "ZERO_PROGRESSING_PRODUCTION_WORKERS",
-    "BLOCKED_WORKERS_RECHECKING_UNCHANGED_CONDITIONS"
+    "BLOCKED_WORKERS_RECHECKING_UNCHANGED_CONDITIONS",
+    "UNFINISHED_WORK_REQUIRES_PROVEN_EXECUTABLE_CONTINUATION"
   ],
   "rules": {
     "context_transfer_is_completion": false,
@@ -16,7 +17,13 @@
     "leased_implies_progress": false,
     "heartbeat_response_implies_progress": false,
     "unchanged_blocker_checkpoint_implies_progress": false,
-    "archive_requires_all_goals_terminal_or_demonstrably_progressing": true
+    "progress_label_alone_implies_archive_safe": false,
+    "durable_record_alone_implies_archive_safe": false,
+    "archive_requires_all_goals_terminal_or_proven_executable_continuation": true,
+    "unfinished_machine_work_requires_active_bound_worker_claim_fence_and_runtime_window": true,
+    "unfinished_session_work_requires_live_durable_session_claim": true,
+    "blocked_work_requires_active_resolver_and_machine_observable_release_condition": true,
+    "human_authority_boundary_requires_explicit_owner_action_and_durable_ref": true
   },
   "progress_classes": [
     "PROGRESSING",
@@ -61,5 +68,5 @@
     "stalled": 0,
     "completed_in_unfinished_set": 0
   },
-  "release_condition": "All inherited ecosystem goals reach terminal success predicates, or every still-unfinished goal is owned by a machine worker with durable measurable forward progress under an admitted task-specific transition. Repeated unchanged blocker observations never satisfy this condition."
+  "release_condition": "All inherited ecosystem goals reach terminal success predicates, or every still-unfinished goal has a proven executable continuation: an active authorized machine executor, a live durable session claim, an explicit human-authority boundary, or a blocked task with an active resolver and machine-observable release condition. Durable recording, worker registration, claims without live execution evidence, and repeated unchanged blocker observations do not satisfy this condition."
 }

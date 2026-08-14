@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.formalism-manifold-implementation-admission/v0.1",
+  "goal_id": "FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "reconciliation_receipt": "receipts/formalism-manifold-orchestration/SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001.json",
+  "owner_roots_env": "STEGVERSE_FORMALISM_ROOTS_JSON",
+  "owners": {
+    "Admissible-Existence/AE": {"authority_class": "FORMALISM", "requires_mirror_handoff": true},
+    "Admissible-Existence/RTG": {"authority_class": "FORMALISM", "requires_mirror_handoff": true},
+    "Admissible-Existence/GTG": {"authority_class": "FORMALISM", "requires_mirror_handoff": true},
+    "Admissible-Existence/TT": {"authority_class": "FORMALISM", "requires_mirror_handoff": true},
+    "Admissible-Existence/STCM": {"authority_class": "FORMALISM", "requires_mirror_handoff": true},
+    "StegVerse-Labs/StegCore": {"authority_class": "RUNTIME", "requires_mirror_handoff": true}
+  },
+  "seed_deltas": [
+    {
+      "delta_id": "MANIFOLD-GOVERNANCE-RUNTIME-KERNEL-001",
+      "kind": "RUNTIME_IMPLEMENTATION",
+      "owner_repository": "StegVerse-Labs/StegCore",
+      "depends_on": ["SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001"],
+      "proposed_paths": [
+        "MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md",
+        "src/stegcore/manifold_governance.py",
+        "tests/test_manifold_governance.py"
+      ],
+      "authority_ceiling": [
+        "orchestration_only",
+        "canonical_steggate_unchanged",
+        "derived_coherence_or_gradient_never_grants_authority"
+      ],
+      "objective": "Install the first bounded manifold orchestration kernel only after the AE/RTG/GTG/TT/STCM-to-StegCore reconciliation is complete, preserving canonical StegGate authority."
+    }
+  ],
+  "terminal_states": ["COMPLETED", "BLOCKED", "REVIEW_REQUIRED"],
+  "receipt_root": "receipts/formalism-manifold-implementation-admission"
+}
