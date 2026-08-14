@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.heartbeat-carrier-release-receipt/v1",
+  "goal_id": "HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120",
+  "canonical_issue": "StegVerse-Labs/.github#120",
+  "canonical_pr": "StegVerse-Labs/.github#140",
+  "merge_commit": "34a1744a4cf314ea4f3b80925d4cbd5a7910dd97",
+  "merged": true,
+  "validated_head": "e53034b537c608b06509c25dbb04e6fb5b1013f4",
+  "validation_runs": {
+    "organization_control_plane": 31842514226,
+    "heartbeat_worker_project": 31842514267,
+    "handoff_render": 31842514236
+  },
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "non_tv_tvc_runtime_secret_or_token_required": false,
+  "carrier_contract": {
+    "heartbeat_application_payload": false,
+    "heartbeat_dispatches_tasks": false,
+    "heartbeat_issues_claims_or_fences": false,
+    "heartbeat_routes_communications": false,
+    "heartbeat_grants_authority": false,
+    "heartbeat_is_master_records_transport": false,
+    "communication_object": ["manifest_packet", "expiration_wrapper", "data_packet"],
+    "terminal_object": "MASTER_RECORDS_PACKET",
+    "transition_table_end_of_life": "MASTER_RECORDS"
+  },
+  "implementation_claim": "RELEASED",
+  "validation_claim": "RELEASED",
+  "integration_claim": "RELEASED",
+  "remaining_runtime_owner": "StegVerse-Labs/.github#122",
+  "release_state": "COMPLETE_RELEASED"
+}
