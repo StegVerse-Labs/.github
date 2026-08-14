@@ -144,5 +144,63 @@ source correction: COMPLETE_VALIDATED
 Master Records notification/custody: COMPLETE
 StegFin stale-HB collision dependency: REMOVED
 remaining trade execution: MACHINE_OWNED / LIVE TRANSPORT + EXECUTOR OBSERVATION REQUIRED
-release condition for this scoped implementation claim: update durable claim state to released after canonical StegFin continuation surfaces consume this handoff reference
+release condition for this scoped implementation claim: SATISFIED; claim is released and continuation transferred
+```
+
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+- task_id: STALE-HEARTBEAT-RECLAMATION-VALIDATION
+  execution_owner: explicitly claimed noncompeting validation/reconciliation lane
+  claim_state: UNCLAIMED
+  manual_execution_allowed: true
+  manual_allowed_role: validation/reconciliation only
+  worker_registry_ref: NONE
+  collision_scope: read-only verification of released stale-heartbeat semantics; no live worker/claim/fence/runtime mutation
+  release_condition: validation evidence is persisted and any temporary validation claim is released
+  next_executable_action: none unless drift is detected
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: STEGFIN-CONTINUITY-CARRIER-007
+  execution_owner: registered StegFin continuity carrier worker
+  claim_state: MACHINE_CLAIM_ON_EXECUTION
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+  collision_scope: continuity claim acquisition, fresh Inventory N, bounded pretrade preparation, TV/TVC transport selection, WALLET_HANDOFF_READY evidence
+  release_condition: WALLET_HANDOFF_READY or fail-closed machine receipt
+  next_executable_action: canonical machine worker selects an available admitted TV/TVC transport and proceeds within its authority ceiling
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: TV-TVC-CREDENTIAL-AND-ROUTE-AUTHORITY
+  execution_owner: StegVerse-Labs/TV + StegVerse-Labs/TVC
+  claim_state: AUTHORITY_OWNED
+  manual_execution_allowed: false
+  manual_allowed_role: integration/observation only when separately claimed
+  worker_registry_ref: TV/TVC canonical authority handoffs and task records
+  collision_scope: provider credential custody, route admission, local broker/HTTPS runtime authority
+  release_condition: canonical TV/TVC transport/runtime result is available to the continuity worker
+  next_executable_action: TV/TVC executes the applicable admitted authority path; consumers receive no credential substitute
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: SHWP-STALE-HEARTBEAT-RECLAMATION-20260814
+  execution_owner: released implementation lane
+  claim_state: COMPLETE_RELEASED_TO_CANONICAL_CONTINUITY
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  worker_registry_ref: NONE_RELEASED_IMPLEMENTATION
+  collision_scope: scripts/acquire_stegfin_continuity_claim.py, stale-heartbeat tests, this handoff, Master Records custody projection
+  release_condition: SATISFIED; canonical StegFin continuation and Master Records custody consumed the result
+  next_executable_action: NONE; do not recreate stale resident authority or a second heartbeat
 ```
