@@ -43,17 +43,18 @@
     "source_refs": [
       "ADMISSIBLE_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md",
       "FORMALISM_OWNER_MUTATION_EXECUTOR_MIRROR_HANDOFF.md",
+      "handoffs/SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001.json",
       "control/admissible-source-generation-capability.json"
     ],
     "dependencies": [
       "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
       "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001"
     ],
-    "parent_task_id": "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001",
-    "derivation_reason": "Owner-mutation execution requires a separate, explicitly admitted source-generation capability rather than inferred model/worker authority.",
+    "parent_task_id": null,
+    "derivation_reason": "A separately authorized source-generation capability is required by the completed owner-mutation lane; the parent lane's successor ceiling is not inherited or widened.",
     "canonical_owner_ref": "StegVerse-Labs/.github#137",
     "canonical_lineage_key": "formalism-manifold:admissible-source-generation",
-    "derivation_depth": 1,
+    "derivation_depth": 0,
     "priority": "critical"
   },
   "authority": {
