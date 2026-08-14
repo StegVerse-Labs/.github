@@ -11,8 +11,10 @@
   "claimant": "current ChatGPT formalism/manifold continuation session",
   "role": "IMPLEMENTATION",
   "claimed_at": "2026-08-14T05:20:00-05:00",
-  "expires_at": "2026-08-14T08:20:00-05:00",
-  "release_condition": "A canonical executable handoff/worker path consumes owner-work evidence, fails closed on absent source-generation standing, constrains all owner mutations to admitted paths/base hashes, routes GitHub credential-bearing operations only through TVC, produces inspectable receipts, and enters owner validation/PR/re-observation without chat intervention; or the complete requirement is transferred to a proven active executor with equivalent authority bounds.",
+  "renewed_at": "2026-08-14T11:06:00-05:00",
+  "expires_at": "2026-08-14T14:06:00-05:00",
+  "renewal_reason": "Original claim expired without completion; no competing claimant owns the bounded capability, so the same scope is renewed without widening authority.",
+  "release_condition": "Executable handoff/worker path is canonical and hosted-validated; source-generation standing is explicit; owner mutation warrants are bounded to admitted paths/base hashes and routed only to TVC; resident execution can enter owner validation/PR/re-observation without chat; or equivalent continuation is transferred to a proven active executor.",
   "scope": [
     "FORMALISM_OWNER_MUTATION_EXECUTOR_MIRROR_HANDOFF.md",
     "control/formalism-owner-mutation-executor.json",
@@ -21,6 +23,7 @@
     "control/process-worker-adapters.d/formalism-owner-mutation-executor-001.json",
     "workers/formalism_owner_mutation_executor_worker.py",
     "tests/test_formalism_owner_mutation_executor_worker.py",
+    "data/formalism-owner-mutation-executor/task-state.json",
     "receipts/formalism-owner-mutation-executor/**",
     "requests/tvc-repository-operations/**"
   ],
@@ -55,5 +58,5 @@
     "owner validation/PR evidence",
     "reconciliation re-observation evidence"
   ],
-  "next_executable_action": "Install the task-specific handoff and fail-closed owner mutation executor contract, then implement the worker/registry/adapter/test path without adding credential or source-generation authority by implication."
+  "next_executable_action": "Install and validate the handoff/config/worker/registry/adapter/test path, then bind a resident authorized source-generation packet to the TVC APPLY_BOUNDED_FILE_SET transport."
 }
