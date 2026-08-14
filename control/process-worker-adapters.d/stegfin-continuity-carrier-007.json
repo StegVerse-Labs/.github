@@ -10,7 +10,7 @@
         "bounded_process_execution",
         "stegfin_external_pretrade_preparation"
       ],
-      "command": ["python", "workers/stegfin_continuity_carrier_worker_v2.py"],
+      "command": ["python", "workers/stegfin_continuity_carrier_worker_v3.py"],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [
@@ -25,8 +25,12 @@
       "notes": [
         "Machine-owned continuity fallback for the exact first governed Base validation lineage.",
         "No resident heartbeat completion dependency is required.",
+        "When an authorized same-host TV/TVC Unix broker socket is present, v3 consumes that canonical transport directly and does not require the HTTPS primary-runtime observer receipt first.",
+        "When no same-host Unix broker is present, v3 delegates unchanged to the existing v2/primary-runtime-observer path.",
         "Broker endpoint is non-secret configuration; all provider secret/token authority remains TV/TVC/vault-only.",
         "No GitHub token, provider API key, wallet credential, signing credential or cloud credential is allowlisted.",
+        "Worker retains exact validated TVC source checks before pretrade execution.",
+        "The same-host socket is exercised by run_continuity_pretrade.py; an unavailable or invalid broker fails closed rather than becoming readiness evidence.",
         "Worker acquires a collision-safe continuity claim and yields if resident StegFin execution already owns the lineage.",
         "Wrapper releases only a claim owned by the same worker instance after BLOCKED/FAILED/REVIEW_REQUIRED/COMPLETE terminal outcomes, preventing stale self-owned continuity claims from suppressing retry.",
         "Stops at USER_ONLY wallet handoff with signed=false and broadcast=false."
