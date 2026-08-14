@@ -33,6 +33,13 @@ def require(condition: bool, message: str, errors: list[str]) -> None:
         errors.append(message)
 
 
+def has_task_conformance_contract(binding: Any, policy: dict[str, Any]) -> bool:
+    if not isinstance(binding, dict):
+        return False
+    keys = policy["future_binding_contract"]["post_task_conformance_required_keys"]
+    return all(key in binding for key in keys)
+
+
 def validate_binding(
     binding: Any,
     prefix: str,
@@ -65,11 +72,19 @@ def validate_binding(
         require(bool(binding.get("admissibility_evidence_refs")), f"{prefix}: admissibility evidence required for {phase}", errors)
     if phase in {"ACTIVATED", "SUSPENDED", "SUPERSEDED"}:
         require(bool(binding.get("integration_evidence_refs")), f"{prefix}: integration evidence required for activated lineage", errors)
-        require(isinstance(binding.get("activation_proof_ref"), str) and bool(binding.get("activation_proof_ref")), f"{prefix}: activation proof required for activated lineage", errors)
+        require(
+            isinstance(binding.get("activation_proof_ref"), str) and bool(binding.get("activation_proof_ref")),
+            f"{prefix}: activation proof required for activated lineage",
+            errors,
+        )
     if phase == "ACTIVATED":
         require(not binding.get("blockers"), f"{prefix}: ACTIVATED may not retain blockers", errors)
     if phase == "ADMISSIBLE" and binding.get("blockers"):
-        require(isinstance(binding.get("continuation_owner"), str) and bool(binding.get("continuation_owner")), f"{prefix}: blocked ADMISSIBLE requires continuation_owner", errors)
+        require(
+            isinstance(binding.get("continuation_owner"), str) and bool(binding.get("continuation_owner")),
+            f"{prefix}: blocked ADMISSIBLE requires continuation_owner",
+            errors,
+        )
 
     if require_task_conformance:
         temporal_class = binding.get("temporal_class")
@@ -80,18 +95,34 @@ def validate_binding(
         require(target_phase in policy["phases"], f"{prefix}: invalid target_phase {target_phase}", errors)
 
         if temporal_class == "recently_completed":
-            retained = list(binding.get("standing_evidence_refs") or []) + list(binding.get("admissibility_evidence_refs") or []) + list(binding.get("integration_evidence_refs") or [])
+            retained = (
+                list(binding.get("standing_evidence_refs") or [])
+                + list(binding.get("admissibility_evidence_refs") or [])
+                + list(binding.get("integration_evidence_refs") or [])
+            )
             require(bool(retained), f"{prefix}: recently_completed requires retained phase evidence", errors)
         elif temporal_class == "current":
-            require(isinstance(binding.get("continuation_owner"), str) and bool(binding.get("continuation_owner")), f"{prefix}: current task requires continuation_owner", errors)
+            require(
+                isinstance(binding.get("continuation_owner"), str) and bool(binding.get("continuation_owner")),
+                f"{prefix}: current task requires continuation_owner",
+                errors,
+            )
         elif temporal_class == "future":
             require(target_phase is not None, f"{prefix}: future task requires target_phase", errors)
             require(relationship is not None, f"{prefix}: future task requires task_relationship", errors)
-            require(binding.get("activation_proof_ref") in (None, ""), f"{prefix}: future task may not self-claim activation proof", errors)
+            require(
+                binding.get("activation_proof_ref") in (None, ""),
+                f"{prefix}: future task may not self-claim activation proof",
+                errors,
+            )
 
     known_phase = policy.get("known_capability_phase_snapshot", {}).get(binding.get("capability_id"))
     if known_phase is not None:
-        require(phase == known_phase, f"{prefix}: phase {phase} diverges from canonical known capability phase {known_phase}", errors)
+        require(
+            phase == known_phase,
+            f"{prefix}: phase {phase} diverges from canonical known capability phase {known_phase}",
+            errors,
+        )
 
 
 def collect_registry_tasks() -> dict[str, tuple[str, dict[str, Any], dict[str, Any]]]:
@@ -107,8 +138,7 @@ def collect_registry_tasks() -> dict[str, tuple[str, dict[str, Any], dict[str, A
             task_id = task.get("task_id")
             if not isinstance(task_id, str) or not task_id:
                 continue
-            # Fragment definitions override the aggregate snapshot because they are
-            # the repository-native source used to compose future registry state.
+            # Repository-native fragments override the aggregate projection.
             found[task_id] = (str(path.relative_to(ROOT)), task, doc)
     return found
 
@@ -139,10 +169,18 @@ def main() -> int:
     )
     for key in required_canonical:
         require(isinstance(canonical.get(key), str) and bool(canonical.get(key)), f"canonical_stegcore.{key} required", errors)
-    require(canonical.get("capability_registry_current_binding_commit") == canonical.get("task_conformance_merge_commit"), "current registry binding and task-conformance merge must share exact reconciled StegCore state", errors)
+    require(
+        canonical.get("capability_registry_current_binding_commit") == canonical.get("task_conformance_merge_commit"),
+        "current registry binding and task-conformance merge must share exact reconciled StegCore state",
+        errors,
+    )
 
     partition = policy.get("authority_partition") if isinstance(policy.get("authority_partition"), dict) else {}
-    require(partition.get("parallel_canonical_verifiers_compete") is False, "StegCore and organization conformance verifiers must be explicitly noncompeting", errors)
+    require(
+        partition.get("parallel_canonical_verifiers_compete") is False,
+        "StegCore and organization conformance verifiers must be explicitly noncompeting",
+        errors,
+    )
 
     registry = collect_registry_tasks()
     handoff_count = 0
@@ -150,6 +188,7 @@ def main() -> int:
     legacy_count = 0
     migration_required_count = 0
     task_conformant_count = 0
+    explicitly_migrated_count = 0
 
     for path in sorted((ROOT / "handoffs").glob("*.json")):
         handoff = load_json(path)
@@ -172,14 +211,18 @@ def main() -> int:
         binding = handoff.get("admissible_existence")
         post_ae_cutover = bool(cutoff and created and created >= cutoff)
         post_task_cutover = bool(task_cutoff and created and created >= task_cutoff)
+        explicit_task_migration = has_task_conformance_contract(binding, policy)
+        task_contract_required = post_task_cutover or explicit_task_migration
 
         if post_ae_cutover:
             require(binding is not None, f"{prefix}: post-policy handoff requires explicit admissible_existence binding", errors)
         if binding is not None:
             explicit_count += 1
-            validate_binding(binding, prefix, policy, errors, require_task_conformance=post_task_cutover)
-            if post_task_cutover:
+            validate_binding(binding, prefix, policy, errors, require_task_conformance=task_contract_required)
+            if task_contract_required:
                 task_conformant_count += 1
+                if not post_task_cutover:
+                    explicitly_migrated_count += 1
             else:
                 migration_required_count += 1
         else:
@@ -196,30 +239,48 @@ def main() -> int:
                     require(reg_doc.get("credential_authority") == "TV/TVC", f"{reg_path}: credential_authority must be TV/TVC", errors)
                 if reg_doc.get("github_token_required") is not None:
                     require(reg_doc.get("github_token_required") is False, f"{reg_path}: github_token_required must be false", errors)
+
                 reg_binding = reg_task.get("admissible_existence")
                 if post_ae_cutover:
                     require(reg_binding is not None, f"{reg_path}#{task_id}: post-policy registry task requires admissible_existence binding", errors)
+                if task_contract_required:
+                    require(reg_binding is not None, f"{reg_path}#{task_id}: current/migrated task requires admissible_existence binding", errors)
                 if reg_binding is not None:
-                    validate_binding(reg_binding, f"{reg_path}#{task_id}", policy, errors, require_task_conformance=post_task_cutover)
+                    validate_binding(
+                        reg_binding,
+                        f"{reg_path}#{task_id}",
+                        policy,
+                        errors,
+                        require_task_conformance=task_contract_required,
+                    )
                     if isinstance(binding, dict):
                         for key in ("capability_id", "capability_version", "phase"):
                             require(reg_binding.get(key) == binding.get(key), f"{reg_path}#{task_id}: {key} must match handoff AE binding", errors)
-                        if post_task_cutover:
+                        if task_contract_required:
                             for key in ("temporal_class", "task_relationship", "target_phase"):
                                 require(reg_binding.get(key) == binding.get(key), f"{reg_path}#{task_id}: {key} must match handoff task-conformance binding", errors)
 
-                # Never infer capability activation from task completion alone.
+                # A terminal task never creates capability activation by implication.
                 if reg_task.get("state") in TERMINAL_TASK_STATES and isinstance(reg_binding, dict):
                     if reg_binding.get("phase") == "ACTIVATED":
-                        require(bool(reg_binding.get("activation_proof_ref")), f"{reg_path}#{task_id}: completed task cannot imply ACTIVATED without proof", errors)
+                        require(
+                            bool(reg_binding.get("activation_proof_ref")),
+                            f"{reg_path}#{task_id}: completed task cannot imply ACTIVATED without proof",
+                            errors,
+                        )
 
-    # Registry-only tasks remain inspectable provenance. Explicit AE metadata is
-    # validated. Lack of current task-conformance metadata is classified as
-    # MIGRATION_REQUIRED rather than silently accepted as current authority.
+    # Registry-only records remain provenance. If they explicitly carry the new
+    # task-conformance contract, validate the full contract even when historical.
     for task_id, (reg_path, task, doc) in registry.items():
         binding = task.get("admissible_existence")
         if binding is not None:
-            validate_binding(binding, f"{reg_path}#{task_id}", policy, errors, require_task_conformance=False)
+            validate_binding(
+                binding,
+                f"{reg_path}#{task_id}",
+                policy,
+                errors,
+                require_task_conformance=has_task_conformance_contract(binding, policy),
+            )
         if doc.get("credential_authority") is not None:
             require(doc.get("credential_authority") == "TV/TVC", f"{reg_path}: credential_authority must be TV/TVC", errors)
         if doc.get("github_token_required") is not None:
@@ -233,7 +294,8 @@ def main() -> int:
     print(
         "AE_CONTROL_PLANE_VALIDATION_PASS "
         f"handoffs={handoff_count} registry_tasks={len(registry)} explicit_bindings={explicit_count} "
-        f"legacy_projections={legacy_count} migration_required={migration_required_count} task_conformant={task_conformant_count} "
+        f"legacy_projections={legacy_count} migration_required={migration_required_count} "
+        f"task_conformant={task_conformant_count} explicitly_migrated={explicitly_migrated_count} "
         f"stegcore_registry_binding={canonical['capability_registry_current_binding_commit']} "
         f"stegcore_task_conformance={canonical['task_conformance_merge_commit']}"
     )
