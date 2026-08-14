@@ -57,14 +57,11 @@ def load_required_coordination(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise RuntimeError(f"authoritative heartbeat coordination state must be an object: {path}")
     epoch = value.get("epoch")
-    last_cycle_at = parse_utc(value.get("last_cycle_at"))
     subsignals = value.get("subsignals")
     worker_coordination = subsignals.get("worker_coordination") if isinstance(subsignals, dict) else None
     leases = worker_coordination.get("active_leases") if isinstance(worker_coordination, dict) else None
     if not isinstance(epoch, int) or epoch < 0:
         raise RuntimeError("authoritative heartbeat coordination state missing valid epoch")
-    if last_cycle_at is None:
-        raise RuntimeError("authoritative heartbeat coordination state missing valid last_cycle_at")
     if not isinstance(leases, list):
         raise RuntimeError("authoritative heartbeat coordination state missing active_leases")
     for index, lease in enumerate(leases):
@@ -107,12 +104,15 @@ def heartbeat_staleness(
     *,
     now: datetime,
     stale_after_seconds: int,
-) -> tuple[bool, int, datetime]:
+) -> tuple[bool, int, datetime | None]:
     if stale_after_seconds < 1:
         raise RuntimeError("heartbeat stale threshold must be positive")
     last_cycle = parse_utc(state.get("last_cycle_at"))
     if last_cycle is None:
-        raise RuntimeError("authoritative heartbeat coordination state missing valid last_cycle_at")
+        # Absence of a liveness timestamp never creates permission to ignore a
+        # resident collision. It simply disables the stale-lease override and
+        # preserves the pre-existing fail-closed collision semantics.
+        return False, 0, None
     age_seconds = max(0, int((now - last_cycle).total_seconds()))
     return age_seconds >= stale_after_seconds, age_seconds, last_cycle
 
@@ -122,9 +122,9 @@ def heartbeat_conflict(
     *,
     now: datetime,
     stale_after_seconds: int,
-) -> tuple[bool, int, bool, int]:
+) -> tuple[bool, int, bool, int, bool]:
     leases = state["subsignals"]["worker_coordination"]["active_leases"]
-    stale, age_seconds, _last_cycle = heartbeat_staleness(
+    stale, age_seconds, last_cycle = heartbeat_staleness(
         state,
         now=now,
         stale_after_seconds=stale_after_seconds,
@@ -137,10 +137,10 @@ def heartbeat_conflict(
             max_fence = max(max_fence, fence)
         if lease.get("task_id") in CONFLICT_TASKS and lease.get("task_state") not in {"COMPLETE", "SUPERSEDED", "RELEASED"}:
             resident_conflict = True
-    # A stale resident heartbeat may revoke/lose collision authority, but this
+    # A stale resident heartbeat may lose collision authority, but this
     # observation never grants execution authority. The new continuity claim
     # still fences strictly above every observed resident fence.
-    return resident_conflict and not stale, max_fence, stale, age_seconds
+    return resident_conflict and not stale, max_fence, stale, age_seconds, last_cycle is not None
 
 
 def record_stale_heartbeat_reclamation(
@@ -159,7 +159,7 @@ def record_stale_heartbeat_reclamation(
         "goal_id": GOAL_ID,
         "collision_scope": COLLISION_SCOPE,
         "observed_heartbeat_epoch": heartbeat["epoch"],
-        "observed_last_cycle_at": heartbeat["last_cycle_at"],
+        "observed_last_cycle_at": heartbeat.get("last_cycle_at"),
         "observed_at_utc": observed_at.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "heartbeat_age_seconds": age_seconds,
         "stale_after_seconds": stale_after_seconds,
@@ -199,7 +199,7 @@ def acquire_claim(
     with exclusive_claim_lock(state_root):
         heartbeat = load_required_coordination(heartbeat_state)
         now = datetime.now(timezone.utc)
-        conflict, heartbeat_max_fence, heartbeat_stale, heartbeat_age_seconds = heartbeat_conflict(
+        conflict, heartbeat_max_fence, heartbeat_stale, heartbeat_age_seconds, liveness_known = heartbeat_conflict(
             heartbeat,
             now=now,
             stale_after_seconds=heartbeat_stale_after_seconds,
@@ -245,8 +245,9 @@ def acquire_claim(
             "wallet_signing_authority": "USER_ONLY",
             "broadcast_authority": "USER_ONLY",
             "resident_conflict_checked": True,
+            "resident_heartbeat_liveness_known": liveness_known,
             "resident_heartbeat_stale": heartbeat_stale,
-            "resident_heartbeat_age_seconds": heartbeat_age_seconds,
+            "resident_heartbeat_age_seconds": heartbeat_age_seconds if liveness_known else None,
             "resident_heartbeat_stale_after_seconds": heartbeat_stale_after_seconds,
             "heartbeat_state_epoch_observed": heartbeat["epoch"],
             "stale_heartbeat_reclamation_receipt_sha256": stale_receipt.get("receipt_sha256") if stale_receipt else None,
