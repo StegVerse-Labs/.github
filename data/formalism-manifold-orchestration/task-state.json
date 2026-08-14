@@ -1,13 +1,14 @@
 {
-  "schema_version": "0.2.0",
+  "schema_version": "0.3.0",
   "goal_id": "FORMALISM-MANIFOLD-ORCHESTRATION-001",
   "issue": 97,
   "pull_request": 98,
-  "branch": "feat/formalism-manifold-orchestration-001",
-  "status": "IMPLEMENTED_HOSTED_VALIDATED_CANONICAL_ADMISSION_PENDING",
+  "merge_commit": "7e6dc4c1447b46e1fcf12450884e72993563b45c",
+  "branch": "main",
+  "status": "MERGED_HOSTED_VALIDATED_MACHINE_OWNED_CONTINUATION",
   "coordination_authority": "StegVerse-Labs/.github",
   "canonical_handoff": "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
-  "session_claim": "control/session-validation-claim-2026-08-13-formalism-manifold-orchestration.json",
+  "session_claim": "control/session-validation-claim-2026-08-13-formalism-manifold-orchestration.json#RELEASED_COMPLETE",
   "authority_boundary": {
     "formalism_authority": "Admissible-Existence repository-local canonical handoffs and formal sources",
     "runtime_authority": "StegVerse-Labs/StegCore canonical StegGate",
@@ -22,16 +23,16 @@
       "task_id": "FORMALISM-MANIFOLD-ORCHESTRATION-001",
       "originating_goal": "single-session coordinated formalism recovery and manifold-governance orchestration",
       "destination": "StegVerse-Labs/.github",
-      "branch": "feat/formalism-manifold-orchestration-001",
-      "surface": "PR #98 + FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
-      "owner": "current branch-local validation session -> canonical resident heartbeat after merge",
-      "claim_state": "CLAIMED_FOR_VALIDATION",
-      "completion_state": "IMPLEMENTED",
+      "branch": "main",
+      "surface": "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md + issue #97 + merged PR #98",
+      "owner": "canonical resident heartbeat + registered formalism/manifold workers",
+      "claim_state": "MACHINE_OWNED_CONTINUATION",
+      "completion_state": "INITIAL_IMPLEMENTATION_COMPLETE",
       "validation_state": "HOSTED_VALIDATED",
-      "integration_state": "REGISTRY_FRAGMENT_DRY_RUN_ADMITTED",
-      "archival_dependency": true,
-      "evidence": ["run:31767096183", "job:94665108039", "run:31767096280"],
-      "next_action": "canonical PR admission, then release session claim"
+      "integration_state": "MERGED_REGISTRY_AND_ADAPTER_INTEGRATION",
+      "archival_dependency": false,
+      "evidence": ["merge:7e6dc4c1447b46e1fcf12450884e72993563b45c", "run:31767261892", "job:94665580477", "run:31767261834", "run:31767261856"],
+      "next_action": "resident heartbeat claims eligible lanes when first-cohort local roots are observable and emits bounded receipts"
     },
     {
       "task_id": "SOVEREIGN-LOCAL-MODEL-001",
@@ -68,15 +69,15 @@
       "originating_goal": "keep provider secrets/tokens TV/TVC-owned while enabling trade preparation",
       "destination": "StegVerse-Labs/TVC",
       "branch": "main",
-      "surface": "docs/PROVIDER_OPERATION_BROKER_MIRROR_HANDOFF.md",
-      "owner": "StegVerse-Labs/TVC / TV/TVC runtime authority",
-      "claim_state": "AUTHORITY_OWNED",
+      "surface": "docs/PROVIDER_OPERATION_BROKER_MIRROR_HANDOFF.md + tasks/TVC-CAPABILITY-RUNTIME-002.json",
+      "owner": "StegVerse-Labs/TVC runtime observer + TV/TVC runtime authority",
+      "claim_state": "CLAIMED_FOR_VALIDATION_BY_REPOSITORY_NATIVE_OBSERVER",
       "completion_state": "SOURCE_INTEGRATED_PRIMARY_RUNTIME_BINDING_PENDING",
       "validation_state": "SUPPORTING_LOCAL_PASS_EXACT_CURRENT_SOURCE_RUNTIME_PENDING",
       "integration_state": "PRIMARY_RUNTIME_NOT_YET_PROVEN",
       "archival_dependency": false,
-      "evidence": ["local-boundary-validation-20260813.json", "independent semantic replay receipt"],
-      "next_action": "authorized primary runtime binds current app.main:/v1/provider-operation and exact-source tests pass without protected credentials"
+      "evidence": ["local-boundary-validation-20260813.json", "independent semantic replay receipt", "tasks/TVC-CAPABILITY-RUNTIME-002.json"],
+      "next_action": "repository-native observer records the authorized primary runtime binding without consumer credentials; no session may compete"
     }
   ],
   "lanes": [
@@ -92,27 +93,20 @@
     "process_adapter_fragment_installed": true,
     "worker_implementation_installed": true,
     "unit_tests_installed": true,
+    "merged_to_main": true,
     "hosted_validation_observed": true,
     "resident_heartbeat_execution_observed": false
   },
   "validation": {
     "first_failed_run": 31766352242,
     "first_failure": "duplicate live canonical goal lanes across five executable handoffs",
-    "repair": "assigned unique lane goal IDs while retaining distinct canonical lineage keys; validator was not weakened",
-    "passing_run": 31767096183,
-    "passing_job": 94665108039,
-    "passing_assertions": [
-      "NO_GITHUB_CREDENTIAL_TOKEN_PRESENT",
-      "CANONICAL_JSON_PASS 114",
-      "EXECUTABLE_HANDOFF_VALIDATION_PASS count=20 live_lanes=16 skipped_non_executable=1",
-      "152 tests OK",
-      "DRY_RUN_NON_MUTATING_PASS",
-      "EPHEMERAL_PROJECTION_VALIDATION_PASS",
-      "WORKFLOW_NON_AUTHORIZING_PASS"
-    ],
-    "companion_render_run": 31767096280,
-    "companion_render_result": "SUCCESS"
+    "repair": "assigned unique lane goal IDs; fail-closed validator retained",
+    "passing_heartbeat_run": 31767261892,
+    "passing_heartbeat_job": 94665580477,
+    "passing_control_plane_run": 31767261834,
+    "passing_handoff_render_run": 31767261856,
+    "passing_assertions": ["no GitHub credential token", "executable handoffs valid", "full deterministic repository tests pass", "heartbeat dry-run non-mutating", "control-plane invariants pass", "workflow non-authorizing"]
   },
-  "reconciliation_state": "WAITING_FOR_CANONICAL_ADMISSION_AND_RESIDENT_HEARTBEAT_RECEIPTS",
-  "next_action": "Mark PR #98 ready and admit the hosted-validated five-lane registration to main if repository protections allow; then release the branch-local session claim and observe machine-owned receipts."
+  "reconciliation_state": "MACHINE_OWNED_WAITING_FOR_RESIDENT_HEARTBEAT_RECEIPTS",
+  "next_action": "Canonical resident heartbeat and registered workers own execution; this session may only observe or perform a separately claimed nonoverlapping validation role."
 }
