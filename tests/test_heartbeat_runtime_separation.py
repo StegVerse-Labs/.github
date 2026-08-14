@@ -52,6 +52,26 @@ class HeartbeatRuntimeSeparationTests(unittest.TestCase):
         self.assertEqual(contract["master_records_role"], "PASSIVE_CUSTODY_AND_QUERYABLE_EVIDENCE")
         self.assertFalse(contract["authority"]["non_tv_tvc_secret_or_token_required"])
 
+    def test_expired_worker_history_is_terminal_evidence_only(self):
+        schema = json.loads((ROOT / "schemas" / "expired-worker-history.schema.json").read_text(encoding="utf-8"))
+        props = schema["properties"]
+        self.assertEqual(props["schema"]["const"], "stegverse.expired-worker-history/v1")
+        self.assertEqual(
+            props["expiration_wrapper"]["properties"]["closure_deadline_rule"]["const"],
+            "NEXT_ADMISSIBLE_CARRIER_OR_EQUIVALENT_RETURN_REFERENCE",
+        )
+        data = props["data_packet"]["properties"]
+        self.assertEqual(data["authority_effect"]["const"], "NONE")
+        self.assertFalse(data["execution_authority"]["const"])
+        self.assertFalse(data["claim_active"]["const"])
+        self.assertFalse(data["lease_active"]["const"])
+        authority = props["authority"]["properties"]
+        self.assertEqual(authority["credential_authority"]["const"], "TV/TVC")
+        self.assertFalse(authority["github_token_runtime_authority"]["const"])
+        self.assertFalse(authority["heartbeat_grants_authority"]["const"])
+        self.assertFalse(authority["reactivates_expired_worker"]["const"])
+        self.assertFalse(authority["master_records_action_authority"]["const"])
+
 
 if __name__ == "__main__":
     unittest.main()
