@@ -2,248 +2,63 @@
   "schema": "stegverse.session-goal-inventory/v3",
   "inventory_id": "ADMISSIBLE-EXISTENCE-CORE-LOCAL-RUNTIME-2026-08-14-V3",
   "supersedes": "control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v2.json",
+  "issue": "StegVerse-Labs/.github#143",
   "repository": "StegVerse-Labs/.github",
-  "created_at": "2026-08-14T16:55:00-05:00",
-  "credential_authority": "TV/TVC",
-  "github_token_runtime_authority": false,
-  "product_activation_state": "INCOMPLETE_MACHINE_AND_AUTHORITY_OWNED",
-  "session_archive_state": "READY_AFTER_DURABLE_TRANSFER",
-  "session_role": "MERGED_INTO_CANONICAL_WORKSTREAMS",
-  "goals": [
+  "updated_at": "2026-08-14T16:58:00-05:00",
+  "session_scope": "StegCore Admissible-Existence review/conformance, canonical HANDOFF/Worker Task Registry verification, sovereign local-runtime discovery/launch/proof and formal local-model development, TV/TVC-only credential boundary, and durable session consolidation.",
+  "originating_goal_ids": [
+    "G01-AE-DESIGN-SCOPE-REVIEW",
+    "G02-AE-HANDOFF-WORKER-CONFORMANCE",
+    "G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF",
+    "G04-FORMAL-LOCAL-MODEL-DEVELOPMENT",
+    "G05-TV-TVC-ONLY-CREDENTIAL-AUTHORITY",
+    "G06-SESSION-DURABLE-CONSOLIDATION",
+    "G07-SESSION-SCOPED-WORKER-ASSISTANCE"
+  ],
+  "shared_directives": [
     {
-      "goal_id": "G01-STEGFIN-TRADE-READY",
-      "originating_goal": "Assist the workers and make this trade ready.",
-      "destination": "StegVerse-Labs/stegfin-governance@main:task-state/STEGFIN-CONTINUITY-CARRIER-007.json",
-      "owner": "stegfin-continuity-carrier-worker + TV/TVC runtime authority/observer",
-      "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
-      "completion_state": "SOURCE_READY_RUNTIME_TERMINAL_PENDING",
-      "validation_state": "SOURCE_AND_EXACT_CLIENT_GATES_PASS; LIVE_WALLET_HANDOFF_NOT_OBSERVED",
-      "integration_state": "MACHINE_OWNED",
+      "directive": "Assist the workers",
+      "creates_originating_goal": false,
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "lineage_evidence_ref": "control/session-assistance-scope-policy.json#rules.assist_workers_semantics",
       "archive_dependency": false,
-      "evidence": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-CONTINUITY-CARRIER-007.json",
-      "next_executable_action": "Machine worker selects actual same-host TV/TVC Unix transport when present or governed HTTPS after TVC observer READY, acquires collision-safe claim, executes governed 12.50 USDC->WETH pretrade and persists WALLET_HANDOFF_READY; USER_ONLY signing/broadcast remain outside machine authority."
+      "interpretation": "Assist only workers whose durable task lineage intersects an originating goal of this session."
     },
     {
-      "goal_id": "G02-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF",
-      "destination": "StegVerse-002/micro-node-runtime@main:docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
-      "owner": "StegVerse-002/micro-node-runtime",
-      "claim_state": "COMPLETE_RELEASED",
-      "completion_state": "COMPLETE_RELEASED",
-      "validation_state": "PASS",
-      "integration_state": "LIVE_ACTIVATION_SEPARATELY_MACHINE_OWNED",
+      "directive": "make this trade ready",
+      "creates_originating_goal": false,
+      "scope_decision": "OUT_OF_SCOPE_SHARED_DIRECTIVE",
+      "lineage_evidence_ref": null,
       "archive_dependency": false,
-      "next_executable_action": "None for source implementation."
-    },
-    {
-      "goal_id": "G03-FORMAL-LOCAL-MODEL-DEVELOPMENT",
-      "destination": "StegVerse-002/micro-node-runtime@main:micro_node/local_model_runtime.py",
-      "owner": "StegVerse-002/micro-node-runtime",
-      "claim_state": "COMPLETE_RELEASED",
-      "completion_state": "COMPLETE_RELEASED",
-      "validation_state": "PASS",
-      "integration_state": "ADMISSIBLE_PENDING_INDEPENDENT_ACTIVATION_PROOF",
-      "archive_dependency": false,
-      "next_executable_action": "None for model development."
-    },
-    {
-      "goal_id": "G04-TV-TVC-ONLY-CREDENTIAL-AUTHORITY",
-      "destination": "StegVerse-Labs/TV + StegVerse-Labs/TVC canonical authority handoffs",
-      "owner": "TV/TVC",
-      "claim_state": "ONGOING_INVARIANT",
-      "completion_state": "PRESERVED",
-      "validation_state": "NO_NON_TV_TVC_RUNTIME_AUTHORITY_INTRODUCED_BY_THIS_SESSION",
-      "integration_state": "ONGOING",
-      "archive_dependency": false,
-      "next_executable_action": "All owners continue fail-closed enforcement."
-    },
-    {
-      "goal_id": "G05-TVC-REPOSITORY-OPERATION-BROKER",
-      "destination": "StegVerse-Labs/TVC#19/#20",
-      "owner": "StegVerse-Labs/TVC",
-      "claim_state": "AUTHORITY_OWNED",
-      "completion_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
-      "validation_state": "OWNER_SPECIFIC",
-      "integration_state": "OWNER_SPECIFIC",
-      "archive_dependency": false,
-      "next_executable_action": "TVC canonical local validation/admission owner continues."
-    },
-    {
-      "goal_id": "G06-AUTONOMOUS-SOURCE-DISCOVERY-MATERIALIZATION",
-      "destination": "StegVerse-Labs/.github source-discovery/materialization workers + StegVerse-Labs/TVC",
-      "owner": "repository-native formalism workers + TVC",
-      "claim_state": "MACHINE_OWNED",
-      "completion_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
-      "validation_state": "OWNER_SPECIFIC",
-      "integration_state": "MACHINE_OWNED",
-      "archive_dependency": false,
-      "next_executable_action": "Registered workers continue inspect->materialize->rediscover cycle without chat."
-    },
-    {
-      "goal_id": "G07-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION",
-      "destination": "StegVerse-Labs/.github",
-      "owner": "StegVerse-Labs/.github",
-      "claim_state": "COMPLETE_RELEASED",
-      "completion_state": "COMPLETE_RELEASED",
-      "validation_state": "PASS",
-      "integration_state": "COMPLETE",
-      "archive_dependency": false,
-      "next_executable_action": "None."
-    },
-    {
-      "goal_id": "G08-FIRST-MANIFOLD-RUNTIME-KERNEL",
-      "destination": "StegVerse-Labs/StegCore#91/#92",
-      "owner": "StegVerse-Labs/StegCore",
-      "claim_state": "COMPLETE_RELEASED",
-      "completion_state": "COMPLETE_RELEASED",
-      "validation_state": "PASS",
-      "integration_state": "ACTIVATED",
-      "archive_dependency": false,
-      "next_executable_action": "None."
-    },
-    {
-      "goal_id": "G09-PRESERVE-CANONICAL-STEGGATE-SEMANTICS",
-      "destination": "StegVerse-Labs/StegCore",
-      "owner": "StegVerse-Labs/StegCore",
-      "claim_state": "ONGOING_INVARIANT",
-      "completion_state": "PRESERVED",
-      "validation_state": "CURRENT_AE_CONTROL_PLANE_PASS",
-      "integration_state": "ONGOING",
-      "archive_dependency": false,
-      "next_executable_action": "Derived capabilities remain subordinate to canonical StegGate."
-    },
-    {
-      "goal_id": "G10-GENERALIZED-OWNER-MUTATION-EXECUTOR",
-      "destination": "StegVerse-Labs/.github#112/#115/#116",
-      "owner": "repository-native owner-mutation worker + TV/TVC transport authority",
-      "claim_state": "MACHINE_OWNED_RUNTIME_PROOF",
-      "completion_state": "SOURCE_COMPLETE_RELEASED",
-      "validation_state": "SOURCE_PASS; RESIDENT_PROOF_SEPARATE",
-      "integration_state": "MACHINE_OWNED",
-      "archive_dependency": false,
-      "next_executable_action": "Resident authorized owner-mutation cycle continues through canonical worker."
-    },
-    {
-      "goal_id": "G11-RECURSIVE-SELF-BUILD-PROOF",
-      "destination": "StegVerse-Labs/.github#137/#138 plus formalism reconciliation/source-generation/owner-mutation/TVC owners",
-      "owner": "canonical recursive-build workers",
-      "claim_state": "CLAIMED_OR_MACHINE_OWNED_OUTSIDE_THIS_SESSION",
-      "completion_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
-      "validation_state": "PENDING_OWNER_PROOF",
-      "integration_state": "ACTIVE_CANONICAL_WORKSTREAM",
-      "archive_dependency": false,
-      "next_executable_action": "Current source-generation/owner-mutation workstream proves discover-gap->generate->apply->reobserve without chat."
-    },
-    {
-      "goal_id": "G12-WORKER-REGISTRY-AND-HANDOFF-AE-CONFORMANCE",
-      "destination": "StegVerse-Labs/.github:docs/ADMISSIBLE_EXISTENCE_CONTROL_PLANE_MIRROR_HANDOFF.md + StegVerse-Labs/StegCore",
-      "owner": "StegCore + organization control plane",
-      "claim_state": "COMPLETE_RELEASED",
-      "completion_state": "COMPLETE_VALIDATED_RELEASED_WITH_REVIEW_ITEMS",
-      "validation_state": "CURRENT_ORG_VALIDATION_26_OF_26_CLASSIFIED_22_PASS_4_REVIEW_REQUIRED_0_FAIL_CLOSED",
-      "integration_state": "COMPLETE",
-      "archive_dependency": false,
-      "next_executable_action": "Review items remain with their exact canonical owners."
-    },
-    {
-      "goal_id": "G13-SESSION-DURABLE-CONSOLIDATION",
-      "destination": "StegVerse-Labs/.github@main:control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v3.json",
-      "owner": "NONE_AFTER_THIS_RECEIPT",
-      "claim_state": "COMPLETE_RELEASED",
-      "completion_state": "COMPLETE",
-      "validation_state": "PENDING_REPOSITORY_CONTROL_PLANE_RUN_FOR_THIS_COMMIT",
-      "integration_state": "DURABLE_ON_MAIN",
-      "archive_dependency": false,
-      "next_executable_action": "Repository-native validation observes this inventory; chat is not required for continuation."
-    },
-    {
-      "goal_id": "G14-DUPLICATE-EXECUTION-AND-STALE-CLAIM-PREVENTION",
-      "destination": "StegVerse-Labs/.github organization control plane",
-      "owner": "organization control plane",
-      "claim_state": "ONGOING_INVARIANT",
-      "completion_state": "PRESERVED",
-      "validation_state": "CURRENT_CONTROL_PLANE_PASS",
-      "integration_state": "ONGOING",
-      "archive_dependency": false,
-      "next_executable_action": "Continue collision-safe claim enforcement."
-    },
-    {
-      "goal_id": "G15-REOBSERVE-OWNER-IMPLEMENTATIONS",
-      "destination": "formalism/manifold reconciliation workers",
-      "owner": "repository-native workers",
-      "claim_state": "MACHINE_OWNED",
-      "completion_state": "PARTIAL_MERGED_INTO_G11",
-      "validation_state": "FIRST_KERNEL_REOBSERVED; FULL_RECURSIVE_REOBSERVATION_PENDING",
-      "integration_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
-      "archive_dependency": false,
-      "next_executable_action": "G11 canonical worker performs recursive re-observation."
-    },
-    {
-      "goal_id": "G16-DOWNSTREAM-RELEASE-PROPAGATION",
-      "destination": "Site + Publisher + admissibility-wiki + stegguardian-wiki",
-      "owner": "canonical downstream release consumers",
-      "claim_state": "MACHINE_OR_OWNER_GATED",
-      "completion_state": "FUTURE_GATED",
-      "validation_state": "NOT_YET_APPLICABLE_FOR_UNRELEASED_CAPABILITIES",
-      "integration_state": "OWNER_GATED",
-      "archive_dependency": false,
-      "next_executable_action": "Consumers propagate only after their activation/release gates admit it."
-    },
-    {
-      "goal_id": "G17-HEARTBEAT-CARRIER-SIGNAL-SEMANTICS",
-      "destination": "StegVerse-Labs/.github@main:docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
-      "owner": "StegVerse-Labs/.github#120",
-      "claim_state": "COMPLETE_RELEASED",
-      "completion_state": "COMPLETE_RELEASED",
-      "validation_state": "PASS",
-      "integration_state": "MERGED_PR_140_COMMIT_34a1744a4cf314ea4f3b80925d4cbd5a7910dd97",
-      "archive_dependency": false,
-      "evidence": "receipts/heartbeat-carrier/HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120.release.json",
-      "next_executable_action": "Runtime/control-plane semantic implementation continues separately at .github#122."
-    },
-    {
-      "goal_id": "G18-TRANSITION-TABLE-MASTER-RECORDS-EOL-STANDARD",
-      "destination": "StegVerse-Labs/repo-standards#39 / PR #40",
-      "owner": ".github/workflows/declared-tasks.yml + repo-standards owner",
-      "claim_state": "MACHINE_OWNED_VALIDATION_AFTER_SESSION_RELEASE",
-      "completion_state": "SOURCE_COMPLETE_ON_BRANCH",
-      "validation_state": "FOCUSED_LOCAL_4_OF_4_PASS; FULL_REPOSITORY_ZERO_STEP_BLOCKED",
-      "integration_state": "PENDING_VALIDATED_MERGE",
-      "archive_dependency": false,
-      "evidence": "StegVerse-Labs/repo-standards:receipts/transition-table-eol/TRANSITION-TABLE-MASTER-RECORDS-EOL-039.local-validation.json",
-      "next_executable_action": "Repository-native execution-capable Declared Tasks run executes full validator and focused tests; only PASS permits PR #40 merge/release."
-    },
-    {
-      "goal_id": "G19-MASTER-RECORDS-TERMINAL-PACKET-EOL-CUSTODY",
-      "destination": "master-records/orchestration#33 / PR #34",
-      "owner": "master-records/orchestration repository-native validation workflows",
-      "claim_state": "MACHINE_OWNED_VALIDATION_AFTER_SESSION_RELEASE",
-      "completion_state": "SOURCE_COMPLETE_ON_BRANCH",
-      "validation_state": "FOCUSED_LOCAL_8_OF_8_PASS; FULL_REPOSITORY_ZERO_STEP_BLOCKED",
-      "integration_state": "PENDING_VALIDATED_MERGE",
-      "archive_dependency": false,
-      "evidence": "master-records/orchestration:receipts/terminal-packet-eol/MASTER-RECORDS-TERMINAL-PACKET-EOL-033.local-validation.json",
-      "next_executable_action": "Repository-native execution-capable validation executes exact branch tests/integration checks; only PASS permits PR #34 merge/release."
+      "canonical_external_owner": "StegVerse-Labs/stegfin-governance + StegVerse-Labs/.github STEGFIN-CONTINUITY-CARRIER-007",
+      "reason": "No independent originating-session lineage establishes StegFin trade readiness as a goal of this AE/Core/local-runtime session."
     }
   ],
-  "session_unique_claims_remaining": 0,
-  "manual_session_owned_tasks_remaining": 0,
-  "unassigned_session_requirements": 0,
-  "session_specific_chat_only_requirements": 0,
-  "canonical_continuation": [
-    "StegVerse-Labs/stegfin-governance@main:task-state/STEGFIN-CONTINUITY-CARRIER-007.json",
-    "StegVerse-Labs/.github#122",
-    "StegVerse-Labs/.github#137/#138",
-    "StegVerse-Labs/repo-standards#39 / PR #40",
-    "master-records/orchestration#33 / PR #34",
-    "StegVerse-Labs/TV + StegVerse-Labs/TVC canonical authority records"
+  "goals": [
+    {"goal_id":"G01-AE-DESIGN-SCOPE-REVIEW","origin":"SESSION_HISTORY","status":"COMPLETE_VALIDATED","owner":"StegVerse-Labs/StegCore","archive_dependency":false},
+    {"goal_id":"G02-AE-HANDOFF-WORKER-CONFORMANCE","origin":"SESSION_HISTORY","status":"COMPLETE_VALIDATED_RELEASED","owner":"StegVerse-Labs/StegCore + StegVerse-Labs/.github","archive_dependency":false},
+    {"goal_id":"G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF","origin":"SESSION_HISTORY","status":"COMPLETE_RELEASED","owner":"StegVerse-002/micro-node-runtime","archive_dependency":false},
+    {"goal_id":"G04-FORMAL-LOCAL-MODEL-DEVELOPMENT","origin":"SESSION_HISTORY","status":"COMPLETE_RELEASED","owner":"StegVerse-002/micro-node-runtime","archive_dependency":false},
+    {"goal_id":"G05-TV-TVC-ONLY-CREDENTIAL-AUTHORITY","origin":"SESSION_HISTORY","status":"COMPLETE_AND_ONGOING_INVARIANT","owner":"StegVerse-Labs/TV + StegVerse-Labs/TVC","archive_dependency":false},
+    {"goal_id":"G06-SESSION-DURABLE-CONSOLIDATION","origin":"SESSION_HISTORY","status":"CURRENT","owner":"StegVerse-Labs/.github#143","archive_dependency":true},
+    {"goal_id":"G07-SESSION-SCOPED-WORKER-ASSISTANCE","origin":"SESSION_HISTORY","status":"CURRENT_IMPLEMENTATION","owner":"StegVerse-Labs/.github#143/#146","archive_dependency":true},
+    {"goal_id":"GXX-STEGFIN-TRADE-READY","origin":"SHARED_DIRECTIVE_ONLY","status":"OUT_OF_SCOPE_SHARED_DIRECTIVE","owner":"StegVerse-Labs/stegfin-governance + registered StegFin workers","archive_dependency":false}
   ],
-  "archive_rule_result": {
-    "all_primary_and_adjacent_goals_complete_superseded_or_durably_transferred": true,
-    "unfinished_product_work_has_exact_owner_and_release_condition": true,
-    "machine_owned_continuation_installed": true,
-    "unique_session_role_remaining": false,
-    "deleting_chat_impairs_continuation": false,
-    "archive_ready": true,
-    "product_fully_activated": false
-  }
+  "worker_assistance_bindings": [
+    {"worker_or_task_id":"AE-HANDOFF-TASK-CONFORMANCE-001","session_goal_id":"G02-AE-HANDOFF-WORKER-CONFORMANCE","lineage_type":"DIRECT_GOAL_OWNER","lineage_evidence_ref":"StegVerse-Labs/StegCore/docs/AE_HANDOFF_TASK_CONFORMANCE_MIRROR_HANDOFF.md","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
+    {"worker_or_task_id":"ADMISSIBLE-EXISTENCE-CONTROL-PLANE-CONFORMANCE-001","session_goal_id":"G02-AE-HANDOFF-WORKER-CONFORMANCE","lineage_type":"INTEGRATION_DESCENDANT","lineage_evidence_ref":"docs/ADMISSIBLE_EXISTENCE_CONTROL_PLANE_MIRROR_HANDOFF.md","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
+    {"worker_or_task_id":"SOVEREIGN-LOCAL-MODEL-001","session_goal_id":"G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF","lineage_type":"DIRECT_GOAL_OWNER","lineage_evidence_ref":"StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
+    {"worker_or_task_id":"SHWP-ECOSYSTEM-CHAT-INFERENCE-001","session_goal_id":"G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF","lineage_type":"INTEGRATION_DESCENDANT","lineage_evidence_ref":"StegVerse-Labs/.github#60","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
+    {"worker_or_task_id":"STEGFIN-CONTINUITY-CARRIER-007","session_goal_id":"G07-SESSION-SCOPED-WORKER-ASSISTANCE","lineage_type":"VALIDATION_DESCENDANT","lineage_evidence_ref":"control/session-assistance-scope-policy.json","scope_decision":"OUT_OF_SCOPE_SHARED_DIRECTIVE","archive_dependency":false}
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "archive_state": "NOT_READY_SCOPE_GATE_IMPLEMENTATION_PENDING_VALIDATION",
+  "canonical_continuation": [
+    "StegVerse-Labs/.github#143",
+    "StegVerse-Labs/.github#146",
+    "control/session-assistance-scope-policy.json",
+    "scripts/validate_session_assistance_scope.py",
+    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md"
+  ]
 }
