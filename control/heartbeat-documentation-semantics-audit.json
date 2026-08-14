@@ -1,8 +1,9 @@
 {
-  "schema": "stegverse.heartbeat-documentation-semantics-audit/v2",
-  "goal_id": "HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120",
-  "canonical_issue": "StegVerse-Labs/.github#120",
-  "canonical_handoff": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
+  "schema": "stegverse.heartbeat-documentation-semantics-audit/v3",
+  "goal_id": "HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-SCHEMA",
+  "canonical_issue": "StegVerse-Labs/.github#122",
+  "canonical_handoff": "docs/HEARTBEAT_CONTROL_PLANE_SEPARATION_MIRROR_HANDOFF.md",
+  "parent_contract": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": false,
   "canonical_invariants": {
@@ -21,33 +22,35 @@
     "terminal_object": "MASTER_RECORDS_PACKET",
     "transition_table_end_of_life": "MASTER_RECORDS"
   },
-  "current_main_surfaces": [
-    {
-      "path": "docs/ORG_MIRROR_HANDOFF.md",
-      "state": "REQUIRES_CANONICAL_SUBORDINATION",
-      "owner": "StegVerse-Labs/.github#120"
-    },
-    {
-      "path": "docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md",
-      "state": "REQUIRES_CANONICAL_SUBORDINATION",
-      "owner": "StegVerse-Labs/.github#120"
-    },
-    {
-      "path": "docs/ALL_ORGS_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md",
-      "state": "REQUIRES_CANONICAL_SUBORDINATION",
-      "owner": "StegVerse-Labs/.github#120"
-    },
+  "canonical_runtime_contracts": {
+    "heartbeat_carrier_schema": "schemas/heartbeat-carrier-signal.schema.json",
+    "worker_control_plane_schema": "schemas/worker-control-plane.schema.json",
+    "expired_worker_history_schema": "schemas/expired-worker-history.schema.json"
+  },
+  "compatibility_surfaces": [
     {
       "path": "schemas/heartbeat-subsignal.schema.json",
-      "state": "RUNTIME_REFACTOR_OWNED_ELSEWHERE",
-      "owner": "StegVerse-Labs/.github#122"
+      "state": "LEGACY_COMPATIBILITY_ONLY",
+      "contains_historical_control_plane_shapes": true,
+      "new_control_plane_authority": false,
+      "rewrite_historical_receipts": false
     },
     {
       "path": "control/heartbeat-subsignals.json",
-      "state": "RUNTIME_REFACTOR_OWNED_ELSEWHERE",
-      "owner": "StegVerse-Labs/.github#122"
+      "state": "LEGACY_LIVE_PROJECTION_PENDING_MACHINE_MIGRATION",
+      "contains_historical_control_plane_projection": true,
+      "machine_owner": "StegVerse-Labs/.github#122 live runtime owner",
+      "manual_mutation_allowed_by_schema_lane": false
     }
   ],
+  "separation_rules": {
+    "worker_claims_fences_leases_belong_to": "WORKER_CONTROL_PLANE",
+    "federation_control_state_belongs_to": "WORKER_CONTROL_PLANE",
+    "heartbeat_observation_belongs_to": "HEARTBEAT_CARRIER",
+    "expired_worker_history_is": "SUBSYSTEM_SIGNAL_WITH_OWN_MANIFEST_EXPIRATION_DATA_PACKET",
+    "expired_worker_reactivation_allowed": false,
+    "carrier_continuity_is_capability_activation_proof": false
+  },
   "downstream_owners": [
     "StegVerse-Labs/Site#264",
     "StegVerse-Labs/StegCore#104",
@@ -60,5 +63,5 @@
   "historical_evidence_rewrite_allowed": false,
   "runtime_refactor_required": true,
   "runtime_refactor_owner": "StegVerse-Labs/.github#122",
-  "audit_state": "CURRENT_MAIN_RECONCILIATION_ACTIVE"
+  "audit_state": "SOURCE_SCHEMA_SEPARATION_IMPLEMENTED_LIVE_MIGRATION_PENDING"
 }
