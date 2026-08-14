@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-08-14T16:29:00Z",
+  "updated_at": "2026-08-14T21:00:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
@@ -92,14 +92,24 @@
     "activation_proof_ref": "~/.stegverse/heartbeat/activation.latest.json"
   },
   "completion": {
-    "next_authorized_action": "Repository-owner resolver first checks for an existing declaration. If none exists, it derives and persists a v0.2 node declaration from canonical local runtime source plus writable durable state on a non-hosted execution surface. G18 then performs the canonical native installer/verifier path. Only if local eligibility itself fails does engine v11 escalate to component authority.",
+    "next_authorized_action": "PR #117 is merged and exact merged-main validation passed. On the next resident non-hosted carrier cycle, the repository-owner resolver must reuse an existing declaration or derive and persist a v0.2 node declaration from canonical local runtime source plus writable durable state, then return control to G18 for the canonical native installer/verifier path. Only if local eligibility itself fails may engine v11 escalate to component authority.",
     "terminal_when": ["A continuously executing sovereign heartbeat carrier is active", "The nine-predicate activation proof passes", "Restart/reconstruction continuity passes", "No duplicate claim or fence exists"],
     "implementation_validation": {
       "workflow": "Heartbeat Worker Project",
       "baseline_run_id": 31338817754,
       "baseline_conclusion": "SUCCESS",
       "derived_declaration_pr": 117,
-      "derived_declaration_validation": "PENDING_PR_VALIDATION"
+      "derived_declaration_merge_commit": "41c2b62283260966747e8b390e0756ef977d1578",
+      "derived_declaration_validation": "MERGED_MAIN_SUCCESS",
+      "derived_declaration_validation_run": 31819559203,
+      "derived_declaration_validation_job": 94829287288,
+      "derived_declaration_tests": [
+        "test_nonhosted_canonical_local_runtime_derives_declaration PASS",
+        "test_hosted_environment_cannot_derive_declaration PASS",
+        "test_incomplete_local_source_fails_closed PASS"
+      ],
+      "github_credential_token_present": false,
+      "workflow_authority_effect": "NONE_VALIDATION_ONLY"
     },
     "activation_assist_commits": [
       "6b2601d8be04409fe1150fb37c87bf6493544bb2",
@@ -111,13 +121,14 @@
       "0a775136ebe042f1a368ac1631cf6c044cb6cbdb",
       "6747fb2bff50ad7a698337bf007feed8bc007b9f",
       "c83a65cee1da60b3ac3366044e0399292d778005",
-      "f907c87d1e8669c96300cef0a572113cca6a4adc"
+      "f907c87d1e8669c96300cef0a572113cca6a4adc",
+      "41c2b62283260966747e8b390e0756ef977d1578"
     ]
   },
   "constraint": {
     "operational_state": "ACTIVE_SOLUTION_EXECUTION",
     "class": "LOCAL_RUNTIME_ELIGIBILITY",
-    "condition": "DERIVED_DECLARATION_PATH_IMPLEMENTED_PENDING_VALIDATION",
+    "condition": "DERIVED_DECLARATION_PATH_VALIDATED_AWAITING_RESIDENT_EXECUTION",
     "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / repository-owner resolver / G18",
     "solution_required": true,
     "solution_candidates": [
@@ -127,11 +138,11 @@
       "new node from repository-local runtime capsule"
     ],
     "next_solution_action": "SOVEREIGN_RUNTIME_SOLUTION_EXECUTION",
-    "next_solution_detail": "Validate and merge PR #117, then let the repository-owner resolver derive/reuse the declaration on the resident non-hosted carrier and return control to G18.",
+    "next_solution_detail": "PR #117 is merged and validated; the remaining step is machine-owned execution on the resident non-hosted carrier, where the resolver derives/reuses the declaration and G18 performs install/verification.",
     "machine_observable_completion_condition": "node-local activation.latest.json reports all nine predicates true",
     "escalation_rule": "escalate only if canonical local runtime source is incomplete, durable state is not writable, or the execution surface is hosted/non-sovereign",
-    "resolution_executor_state": "DERIVED_DECLARATION_IMPLEMENTED_ON_PR_117",
-    "node_declaration_transport_state": "DERIVED_OR_EXISTING_DECLARATION_SUPPORTED",
+    "resolution_executor_state": "DERIVED_DECLARATION_COMPLETE_VALIDATED_RELEASED",
+    "node_declaration_transport_state": "DERIVED_OR_EXISTING_DECLARATION_SUPPORTED_VALIDATED",
     "third_party_dependency": false,
     "human_action_required": false,
     "missing_implementation": false
