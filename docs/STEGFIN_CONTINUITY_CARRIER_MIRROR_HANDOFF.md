@@ -63,6 +63,7 @@ release_condition: byte-identical deterministic PASS + primary runtime binding +
 ### COMPLETED / SUPERSEDED
 
 - claim-release wrapper, process adapter binding, ownership tests, and executable-handoff schema repair are complete;
+- fail-closed continuity claim tests are stdlib-compatible and hosted-validated;
 - resident heartbeat as a hard prerequisite is superseded; heartbeat remains resilience work;
 - Render as the primary provider-operation dependency is superseded; it is fallback only;
 - `StegVerse-002/micro-node-runtime#22` is `COMPLETE_RELEASED`; do not duplicate local-model/runtime implementation.
@@ -76,26 +77,40 @@ scripts/acquire_stegfin_continuity_claim.py
 control/worker-registry.d/stegfin-continuity-carrier-007.json
 control/process-worker-adapters.d/stegfin-continuity-carrier-007.json
 tests/test_stegfin_continuity_claim_release.py
+tests/test_stegfin_continuity_claim_fail_closed.py
 handoffs/STEGFIN-CONTINUITY-CARRIER-007.json
 ```
 
-Hosted continuity validation:
+Validation evidence:
 
 ```text
-run: 31729816087
-job: 94547154231
-head: d380e25d69e6bb8e0f77062eb624da495d7321f3
-conclusion: SUCCESS
+continuity predecessor run: 31729816087 / job 94547154231 / SUCCESS
+organization control run: 31729688342 / job 94546707398 / SUCCESS
+
+regression observed on head 8306e8912037a1b62b0ef3a1ce9488085b4e1ee1:
+  run: 31766904961
+  job: 94664574484
+  cause: tests/test_stegfin_continuity_claim_fail_closed.py imported pytest while canonical workflow executes python -m unittest discover
+  result: FAILED at deterministic test suite; no runtime authority effect
+
+repair:
+  commit: cff5ba47e2f5d6fad75d08f2be27623c816ed967
+  change: convert fail-closed claim tests to stdlib unittest + tempfile while preserving all six behavioral assertions
+  run: 31766992356
+  job: 94664816709
+  result: SUCCESS
+  anonymous checkout: SUCCESS
+  no-GitHub-credential proof: SUCCESS
+  compile: SUCCESS
+  canonical JSON: SUCCESS
+  executable handoffs: SUCCESS
+  complete deterministic test suite: SUCCESS
+  nonpersistent heartbeat dry-run: SUCCESS
+  ephemeral projections: SUCCESS
+  non-authorizing workflow proof: SUCCESS
 ```
 
-Organization control-plane validation:
-
-```text
-run: 31729688342
-job: 94546707398
-head: 6a2cfb2093060d801bd7c94223f854b7401b4b50
-conclusion: SUCCESS
-```
+No production/runtime secret or token was introduced by the repair.
 
 ## Current TVC provider-operation integration
 
@@ -119,20 +134,19 @@ Current blobs:
 ```text
 tvc_provider_operation_broker.py: 1f56925fccb5e7e3121aa35b37f782cfe558034a
 app/main.py: 1f3cd71eea6a182ae0c492b748d9ba3e7bc83d4f
-tests/test_provider_operation_broker.py: 1acb7d3f40db7fea7e40a7df3db6615b904a3d1f
+tests/test_provider_operation_broker.py: 1acb7d3f40db7fea7e3121aa35b37f782cfe558034a
 tests/test_provider_operation_app.py: ed721ef4aee9051b223337933834a9dccf79a399
 ```
 
 The current TVC application exposes `/v1/provider-operation`, rejects caller Authorization/API-key/Admin-token/GitHub-token inputs, forwards only to the canonical local TV/TVC vault broker, and advertises no consumer credential, secret-export, signing, or broadcast authority. The canonical broker recursively rejects protected credential fields and credential-like values in requests/results.
 
-## Fresh validation state
+## Fresh TVC validation state
 
-Predecessor broker source was hosted-validated. The current app binding/hardening has now received two non-secret local supporting validations, while byte-identical current-source execution remains pending.
+Predecessor broker source was hosted-validated. The current app binding/hardening has received two non-secret local supporting validations, while byte-identical current-source TVC execution remains pending.
 
 ```text
 StegVerse-Labs/TVC/reports/provider-operation-broker/local-boundary-validation-20260813.json
 result: PASS_14_OF_14
-elapsed_seconds: 0.29
 exact_private_checkout: false
 non_tv_tvc_secret_or_token_used: false
 
@@ -148,7 +162,7 @@ Installed byte-identical validation command remains:
 python -m pytest -q tests/test_provider_operation_broker.py tests/test_provider_operation_app.py
 ```
 
-Hosted attempt was retried:
+Hosted TVC attempt was retried:
 
 ```text
 repository: StegVerse-Labs/TVC
@@ -188,7 +202,7 @@ TVC-PROVIDER-OPERATION-BROKER-003
 
 STEGFIN-CONTINUITY-CARRIER-007
   owner: registered machine worker / StegVerse continuity control plane
-  state: source/collision/claim-release/registry/adapter validated; AVAILABLE/HANDOFF_READY
+  state: source/collision/claim-release/registry/adapter and claim-test validation complete; AVAILABLE/HANDOFF_READY
   release: broker predicate observable; worker acquires collision-safe claim and reaches WALLET_HANDOFF_READY or fail-closed terminal receipt while releasing its claim
 ```
 
@@ -211,6 +225,7 @@ StegVerse-Labs/stegfin-governance/task-state/STEGFIN-CONTINUITY-CARRIER-007.json
 ```text
 continuity control-plane source: COMPLETE
 claim/collision/release: COMPLETE
+claim regression tests: COMPLETE_HOSTED_VALIDATED
 worker registration: AVAILABLE_HANDOFF_READY
 local model/runtime: COMPLETE_RELEASED_ELSEWHERE
 TVC provider-operation source integration: INSTALLED
