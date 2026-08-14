@@ -13,7 +13,7 @@ class AERetrospectiveConformanceTests(unittest.TestCase):
     def test_exact_effective_denominator(self):
         p = subprocess.run([sys.executable, str(ROOT / "scripts" / "validate_ae_retrospective_conformance.py")], cwd=ROOT, text=True, capture_output=True)
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
-        self.assertIn("effective_tasks=26 classified=26", p.stdout)
+        self.assertIn("effective_tasks=27 classified=27", p.stdout)
 
     def test_no_non_tvtvc_runtime_authority(self):
         self.assertEqual(self.report["credential_authority"], "TV/TVC")
@@ -25,11 +25,13 @@ class AERetrospectiveConformanceTests(unittest.TestCase):
             self.assertEqual(self.entries[task_id]["phase"], "ADMISSIBLE")
 
     def test_source_generation_is_declared_not_activated(self):
-        entry = self.entries["SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001"]
-        self.assertEqual(entry["capability_id"], "stegverse:capability:formalism-source-generation:v1")
-        self.assertEqual(entry["phase"], "DECLARED")
-        self.assertEqual(entry["task_relationship"], "develops_capability")
-        self.assertEqual(entry["result"], "PASS")
+        for task_id in ("SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001", "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001"):
+            entry = self.entries[task_id]
+            self.assertEqual(entry["capability_id"], "stegverse:capability:formalism-source-generation:v1")
+            self.assertEqual(entry["phase"], "DECLARED")
+            self.assertEqual(entry["result"], "PASS")
+        self.assertEqual(self.entries["SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001"]["task_relationship"], "develops_capability")
+        self.assertEqual(self.entries["SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001"]["task_relationship"], "integrates_capability")
 
     def test_trade_paths_remain_admissible(self):
         self.assertEqual(self.entries["STEGFIN-CONTINUITY-CARRIER-007"]["phase"], "ADMISSIBLE")
