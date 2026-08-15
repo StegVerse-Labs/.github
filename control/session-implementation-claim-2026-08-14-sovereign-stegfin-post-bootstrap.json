@@ -1,0 +1,42 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "task_id": "SOVEREIGN-STEGFIN-POST-BOOTSTRAP-001",
+  "originating_goal": "assist canonical workers and make the bounded StegFin path trade ready by connecting the released sovereign self-bootstrap to the released StegFin continuity machine executor without widening authority",
+  "organization": "StegVerse-Labs",
+  "repository": ".github",
+  "branch": "feat/sovereign-stegfin-post-bootstrap-001-v2",
+  "canonical_issue": "StegVerse-Labs/.github#163",
+  "claimant": "current-session-post-bootstrap-integration-lane",
+  "role": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION",
+  "claim_created_at": "2026-08-14T18:33:30-05:00",
+  "claim_rebased_at": "2026-08-15T01:08:00-05:00",
+  "supersedes_branch": "feat/sovereign-stegfin-post-bootstrap-001",
+  "superseded_pr": "StegVerse-Labs/.github#169",
+  "claim_expiration_or_release_condition": "release after merge and exact merged-main validation; if no evidence-bearing update occurs within 24 hours, mark BLOCKED or release",
+  "owned_surfaces": [
+    "scripts/activate_stegfin_after_sovereign_bootstrap.py",
+    "tests/test_activate_stegfin_after_sovereign_bootstrap.py",
+    ".github/workflows/sovereign-stegfin-post-bootstrap.yml",
+    "control/session-implementation-claim-2026-08-14-sovereign-stegfin-post-bootstrap.json",
+    "docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md#sovereign-post-bootstrap-integration"
+  ],
+  "collision_boundaries": [
+    "do not modify heartbeat/G18 claim, fence, epoch, lease or worker implementation",
+    "do not modify canonical StegFin continuity claim issuer or worker semantics",
+    "do not modify TV/TVC provider broker, credential, route, vault or runtime authority",
+    "do not contact provider or wallet",
+    "do not sign, broadcast or claim settlement",
+    "do not use GitHub tokens or NON-TV/TVC secrets/tokens as runtime authority",
+    "do not claim WALLET_HANDOFF_READY from service activation"
+  ],
+  "expected_evidence": [
+    "reject hosted environment before installer invocation",
+    "reject absent/incomplete sovereign nine-predicate proof",
+    "reject invalid sovereign node authority metadata",
+    "successful injected post-bootstrap executor-service activation with credential-free child environment",
+    "tokenless hosted validation PASS",
+    "exact merged-main validation PASS"
+  ],
+  "next_task_after_release": "canonical StegFin continuity executor service runs on the proven sovereign local host; its existing worker self-acquires the claim, selects TV/TVC transport, and alone may produce WALLET_HANDOFF_READY or fail-closed receipt",
+  "state": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION"
+}
