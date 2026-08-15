@@ -4,38 +4,62 @@
   "originating_goal": "assist canonical workers and make the bounded StegFin path trade ready by connecting the released sovereign self-bootstrap to the released StegFin continuity machine executor without widening authority",
   "organization": "StegVerse-Labs",
   "repository": ".github",
-  "branch": "feat/sovereign-stegfin-post-bootstrap-001-v3",
+  "branch": "main",
   "canonical_issue": "StegVerse-Labs/.github#163",
   "claimant": "current-session-post-bootstrap-integration-lane",
-  "role": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION",
+  "role": "COMPLETE_VALIDATED_RELEASED_TO_CANONICAL_MACHINE_CONTINUATION",
   "claim_created_at": "2026-08-15T01:12:30-05:00",
-  "supersedes": ["feat/sovereign-stegfin-post-bootstrap-001", "feat/sovereign-stegfin-post-bootstrap-001-v2", "StegVerse-Labs/.github#169", "StegVerse-Labs/.github#170"],
-  "claim_expiration_or_release_condition": "release after merge and exact merged-main validation through stable heartbeat-worker-project workflow; if no evidence-bearing update occurs within 24 hours, mark BLOCKED or release",
-  "owned_surfaces": [
+  "claim_released_at": "2026-08-15T01:16:00-05:00",
+  "claim_release_condition": "SATISFIED",
+  "supersedes": [
+    "feat/sovereign-stegfin-post-bootstrap-001",
+    "feat/sovereign-stegfin-post-bootstrap-001-v2",
+    "StegVerse-Labs/.github#169",
+    "StegVerse-Labs/.github#170"
+  ],
+  "released_surfaces": [
     "scripts/activate_stegfin_after_sovereign_bootstrap.py",
     "tests/test_activate_stegfin_after_sovereign_bootstrap.py",
-    "control/session-implementation-claim-2026-08-15-sovereign-stegfin-post-bootstrap.json",
     "docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md#sovereign-post-bootstrap-integration"
   ],
   "validation_owner": ".github/workflows/heartbeat-worker-project.yml",
+  "release_evidence": {
+    "pull_request": 171,
+    "merge_commit": "069d5f3211d73d987a6cf22be1db2b4519963d71",
+    "pr_validation_run": 31868898830,
+    "pr_validation_job": 94974292287,
+    "merged_main_validation_run": 31868980702,
+    "merged_main_validation_job": 94974495941,
+    "focused_integration_tests": "5/5 PASS ON PR MERGE REF AND EXACT MERGED MAIN",
+    "compile": "PASS",
+    "canonical_json": "PASS_175",
+    "executable_handoff_validation": "PASS_COUNT_26_LIVE_LANES_22",
+    "github_credential_token_present": false,
+    "aggregate_repository_suite": "FAILURE_ONLY_FROM_PRE_EXISTING_BASELINE_DEBT",
+    "baseline_run": 31868785931,
+    "baseline_job": 94973992395,
+    "baseline_failure_classes": [
+      "AE retrospective binding mismatch for SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
+      "session-goal-inventory v5 missing shared_directives/origin/collision_boundaries while legacy test expects v4"
+    ]
+  },
+  "validated_semantics": [
+    "hosted environment is rejected before installer invocation",
+    "all nine sovereign activation predicates are required",
+    "node declaration must preserve TV/TVC credential authority and no credential/route authority widening",
+    "credential-like environment inputs are not forwarded to the installer",
+    "service installer activation alone never claims WALLET_HANDOFF_READY",
+    "provider contact, wallet contact, signing and broadcast remain false in the integration receipt",
+    "dedicated StegFin validation workflow is not recreated after G17 workflow-surface minimization"
+  ],
   "collision_boundaries": [
-    "do not recreate a dedicated StegFin validation workflow removed by G17-WORKFLOW-SURFACE-MINIMIZATION",
-    "do not modify heartbeat/G18 claim, fence, epoch, lease or worker implementation",
-    "do not modify canonical StegFin continuity claim issuer or worker semantics",
-    "do not modify TV/TVC provider broker, credential, route, vault or runtime authority",
-    "do not contact provider or wallet",
-    "do not sign, broadcast or claim settlement",
-    "do not use GitHub tokens or NON-TV/TVC secrets/tokens as runtime authority",
-    "do not claim WALLET_HANDOFF_READY from service activation"
+    "G18 heartbeat claim/fence/epoch/lease and worker remain canonical",
+    "canonical StegFin continuity worker remains claim issuer and pretrade executor",
+    "TV/TVC remains provider broker, credential, route, vault and runtime authority",
+    "wallet signing and broadcast remain USER_ONLY",
+    "GitHub tokens and NON-TV/TVC secrets/tokens have no runtime authority"
   ],
-  "expected_evidence": [
-    "reject hosted environment before installer invocation",
-    "reject absent/incomplete sovereign nine-predicate proof",
-    "reject invalid sovereign node authority metadata",
-    "successful injected post-bootstrap executor-service activation with credential-free child environment",
-    "stable heartbeat-worker-project hosted validation PASS",
-    "exact merged-main validation PASS"
-  ],
-  "next_task_after_release": "canonical StegFin continuity executor service runs on the proven sovereign local host; its existing worker self-acquires the claim, selects TV/TVC transport, and alone may produce WALLET_HANDOFF_READY or fail-closed receipt",
-  "state": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION"
+  "next_owner": "SHWP-DURABLE-RUNTIME-ACTIVATION G18 plus canonical StegFin continuity machine executor/worker and TV/TVC runtime authority",
+  "next_task_after_release": "A genuine local nine-predicate sovereign proof may activate the released rootless StegFin executor service through scripts/activate_stegfin_after_sovereign_bootstrap.py; the canonical StegFin worker then self-acquires its claim, selects TV/TVC transport, and alone may produce WALLET_HANDOFF_READY or an exact fail-closed receipt.",
+  "state": "COMPLETE_VALIDATED_RELEASED"
 }
