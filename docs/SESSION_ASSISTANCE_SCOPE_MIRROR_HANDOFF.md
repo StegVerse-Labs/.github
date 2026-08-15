@@ -1,6 +1,6 @@
 # Session Assistance Scope Mirror Handoff
 
-Updated: 2026-08-15T14:23:00-05:00
+Updated: 2026-08-15T14:28:00-05:00
 
 ## Authority and session state
 
@@ -60,7 +60,7 @@ non-TV/TVC secret/token: PROHIBITED
 GitHub token runtime authority: NONE
 ```
 
-The existing production sources already reject Render/hosted execution as sovereign evidence. The new policy and deterministic regression tests make that prohibition explicit and durable so future activation work cannot substitute Render or another third-party host for StegVerse sovereign execution.
+The existing production sources already reject Render/hosted execution as sovereign evidence. The policy and deterministic regression tests make that prohibition explicit and durable so future activation work cannot substitute Render or another third-party host for StegVerse sovereign execution.
 
 ## Complete work that must not be duplicated
 
@@ -122,18 +122,55 @@ G18 sovereign-runtime-activation-worker on eligible StegVerse-owned/federated lo
 
 No separate hand-created node declaration or separate post-bootstrap StegFin activation command is required on the normal path. Render or another third-party hosted runtime is not an alternative carrier.
 
-## Collision partitions
+## Execution ownership and collision partition
 
-```text
-G18 claim/fence owner: SHWP-DURABLE-RUNTIME-ACTIVATION / fencing token 18
-G18 live execution from chat: prohibited
-StegFin claim owner: stegfin-continuity-carrier-worker / MACHINE_CLAIM_ON_EXECUTION
-provider/route/vault credential authority: TV/TVC
-TVC primary-runtime observer: StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json / exclusive
-MCP exact-artifact worker: sdk-mcp-canonical-validation-worker / do not compete
-wallet signing/broadcast: USER_ONLY
-non-TV/TVC runtime secret/token use: PROHIBITED
-third-party hosted sovereign runtime substitution: PROHIBITED
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+task_id: STEGVERSE-ONLY-RUNTIME-POLICY-001
+manual_execution_allowed: true
+worker_registry_ref: NONE_SOURCE_INTEGRATION_ONLY
+collision_scope: control/sovereign-runtime-platform-policy.json, deterministic policy test, session handoff and activation blocker references only
+release_condition: PR #182 exact-head validation passes, change is merged, claim is released
+next_executable_action: validate and merge PR #182; do not perform live G18/provider/wallet execution from chat
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: SHWP-DURABLE-RUNTIME-ACTIVATION
+  manual_execution_allowed: false
+  worker_registry_ref: control/worker-registry.json
+  collision_scope: G18 claim/fence, sovereign local runtime process, activation.latest.json, native supervision
+  release_condition: StegVerse-owned/federated node-local activation.latest.json has all nine predicates true or exact fail-closed receipt
+  next_executable_action: G18 continues on eligible StegVerse sovereign local surface after source integration completes
+
+- task_id: STEGFIN-CONTINUITY-CARRIER-007
+  manual_execution_allowed: false
+  worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+  collision_scope: continuity claim, TV/TVC transport, provider operation preparation, Inventory N, WALLET_HANDOFF_READY
+  release_condition: WALLET_HANDOFF_READY or exact fail-closed terminal receipt
+  next_executable_action: canonical worker continues after executor service activation
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: credential/provider/route/vault authority, signing/broadcast authority, Master Records custody
+release_condition: canonical authority owner satisfies or rejects the exact bounded request
+next_executable_action: TV/TVC handles protected credential/route semantics; USER_ONLY handles signing/broadcast; Master Records handles custody
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+manual_execution_allowed: false
+worker_registry_ref: NONE_TERMINAL
+collision_scope: completed local-model, bootstrap-chain, and G18 self-bootstrap source claims
+release_condition: COMPLETE_VALIDATED_MERGED_RELEASED
+next_executable_action: NONE_DO_NOT_RECREATE
 ```
 
 ## Product activation truth
