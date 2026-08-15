@@ -1,44 +1,23 @@
 {
   "schema": "stegverse.session-goal-inventory-amendment/v1",
   "inventory_id": "ACTIVE-GOALS-AMENDMENT-2026-08-15-1434",
-  "updated_at": "2026-08-15T14:34:00-05:00",
-  "repository": "StegVerse-Labs/.github",
-  "archive_state": "BLOCKED_RETAIN_TEMPORARILY_PRODUCT_ACTIVATION_NOT_OBSERVED",
-  "session_role": "BLOCKED_DISTINCT_ACTIVATION_EVIDENCE_RECONCILIATION",
-  "completed_source_claims": [
-    "control/session-implementation-claim-2026-08-15-sovereign-bootstrap-stegfin-chain.json",
-    "control/session-implementation-claim-2026-08-15-g18-self-bootstrap-worker.json",
-    "control/session-implementation-claim-2026-08-15-stegverse-only-runtime-policy.json"
-  ],
-  "goals": [
-    {"task_id":"SOVEREIGN-LOCAL-MODEL-001","originating_goal":"Replace descriptive local-runtime selection with actual local discovery/launch/inference/proof and formally develop the model locally","destination":"StegVerse-002/micro-node-runtime","branch":"main","owner":"StegVerse-002/micro-node-runtime","claim_state":"COMPLETE_RELEASED","state":"COMPLETE_VALIDATED_RELEASED","validation":"canonical validation 31339534741 SUCCESS; persistent endpoint validation 31384116055 SUCCESS","integration":"SOURCE_COMPLETE_RELEASED","archival_dependency":false,"location":"StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md","evidence_location":"StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md","next":"NONE_DO_NOT_RECREATE"},
-    {"task_id":"SHWP-DURABLE-RUNTIME-ACTIVATION","originating_goal":"Activate finished sovereign runtime work using StegVerse execution","destination":"StegVerse-Labs/.github","branch":"main","owner":"sovereign-runtime-activation-worker / G18 fencing token 18","claim_state":"MACHINE_OWNED","state":"MACHINE_OWNED_BLOCKED_LIVE_ACTIVATION_NOT_OBSERVED","validation":"self-bootstrap, G18 integration, StegVerse-only platform policy source validated","integration":"SOURCE_COMPLETE_LIVE_RUNTIME_PENDING","archival_dependency":true,"location":"management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json","evidence_location":"management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json","release_condition":"StegVerse-owned/federated node-local activation.latest.json all nine predicates true and sovereign-post-bootstrap.latest.json executor_service_active=true, or exact fail-closed machine evidence","next":"Canonical G18 executes on an eligible StegVerse-owned/federated sovereign local surface; no Render or other third-party runtime substitution"},
-    {"task_id":"SOVEREIGN-BOOTSTRAP-STEGFIN-CHAIN-001","originating_goal":"Make trade activation continue automatically after sovereign proof","destination":"StegVerse-Labs/.github","branch":"main","owner":"NONE_TERMINAL_SOURCE_TASK","claim_state":"COMPLETE","state":"COMPLETE_VALIDATED_MERGED_RELEASED","validation":"Heartbeat Worker Project run 31902367481 job 95054972979 SUCCESS; 268/268 PASS","integration":"MERGED_MAIN","archival_dependency":false,"location":"scripts/bootstrap_sovereign_runtime.py","evidence_location":"StegVerse-Labs/.github#180","evidence":"PR #180 merge 3a438dba11ec6af82f1563fe5a382a268ee0dcae","next":"NONE_SOURCE"},
-    {"task_id":"G18-SELF-BOOTSTRAP-WORKER-001","originating_goal":"Remove stale predeclared-node/manual local-runtime prerequisite","destination":"StegVerse-Labs/.github","branch":"main","owner":"NONE_TERMINAL_SOURCE_TASK","claim_state":"COMPLETE","state":"COMPLETE_VALIDATED_MERGED_RELEASED","validation":"Sovereign Runtime Worker run 31902858623 SUCCESS; Heartbeat Worker Project run 31902858622 job 95056159205 SUCCESS","integration":"MERGED_MAIN","archival_dependency":false,"location":"workers/sovereign_runtime_activation_worker.py","evidence_location":"StegVerse-Labs/.github#181","evidence":"PR #181 merge ed40b46b5922dccce698e331c76bfe474b147736","next":"NONE_SOURCE; G18 machine execution owns live continuation"},
-    {"task_id":"STEGVERSE-ONLY-RUNTIME-POLICY-001","originating_goal":"Do not use Render; use StegVerse","destination":"StegVerse-Labs/.github","branch":"main","owner":"NONE_TERMINAL_INTEGRATION_TASK","claim_state":"COMPLETE_RELEASED","state":"COMPLETE_VALIDATED_MERGED_RELEASED","validation":"organization control plane run 31904226799 SUCCESS; Heartbeat Worker Project run 31904226786 SUCCESS; handoff render run 31904226789 SUCCESS","integration":"MERGED_MAIN","archival_dependency":false,"location":"control/sovereign-runtime-platform-policy.json","evidence_location":"StegVerse-Labs/.github#182","evidence":"PR #182 merge dc9f3bc68449f4ead967eaea4426194fcca5beec; exact validated head 65f12e2de681fdb4caaeba507d33290bce46703d","next":"NONE_POLICY; fail closed on Render or any third-party hosted sovereign runtime substitution"},
-    {"task_id":"STEGFIN-CONTINUITY-CARRIER-007","originating_goal":"Assist workers and make bounded Base validation trade ready","destination":"StegVerse-Labs/stegfin-governance + StegVerse-Labs/.github","branch":"main","owner":"stegfin-continuity-carrier-worker + TV/TVC transport authority","claim_state":"MACHINE_CLAIM_ON_EXECUTION","state":"7_OF_8_TRADE_READY_WALLET_HANDOFF_PENDING","validation":"source/control path validated; live terminal receipt pending","integration":"MACHINE_OWNED","archival_dependency":true,"location":"handoffs/STEGFIN-CONTINUITY-CARRIER-007.json","evidence_location":"StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md","release_condition":"WALLET_HANDOFF_READY; credential_authority=TV/TVC; non_tv_tvc_secret_or_token_used=false; provider_secret_exported=false; signed=false; broadcast=false","next":"After executor activation canonical worker self-acquires collision-safe claim and prepares bounded 12.50 USDC -> WETH wallet handoff"},
-    {"task_id":"TVC-CAPABILITY-RUNTIME-002","originating_goal":"Preserve TV/TVC-only protected credential/route authority","destination":"StegVerse-Labs/TVC","branch":"main","owner":"repository-native exclusive runtime observer","claim_state":"CLAIMED_FOR_VALIDATION","state":"SOURCE_COMPLETE_LIVE_PRIMARY_RUNTIME_OBSERVATION_PENDING","validation":"provider/binder/dispatcher/host-delivery source validations complete","integration":"EXCLUSIVE_VALIDATION_OWNER","archival_dependency":false,"location":"StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json","evidence_location":"StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json","next":"Continue exclusive observer; do not duplicate"},
-    {"task_id":"SDK-MCP-CANONICAL-VALIDATION-009","originating_goal":"Preserve MCP exact production-artifact canonical validation","destination":"StegVerse-org/StegVerse-SDK + StegVerse-Labs/.github","branch":"main","owner":"sdk-mcp-canonical-validation-worker","claim_state":"MACHINE_CLAIM_ON_EXECUTION","state":"MACHINE_OWNED_EXACT_SOVEREIGN_RUN_PENDING","validation":"source validation PASS; .github Admissible-Existence binding repaired and org control plane PASS in PR #182","integration":"MACHINE_OWNED","archival_dependency":false,"location":"handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json","evidence_location":"handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json","next":"Canonical scheduler executes exact-artifact validation on eligible StegVerse sovereign node; do not compete from chat"},
-    {"task_id":"NO-NON-TV-TVC-SECRETS-TOKENS","originating_goal":"No non-TV/TVC secrets or tokens","destination":"cross-repository invariant","branch":"canonical owners","owner":"TV/TVC credential authority","claim_state":"COMPLETE_ONGOING_INVARIANT","state":"DURABLY_ENCODED","validation":"PR #180/#181/#182 validation and policy tests preserve token/secret boundary","integration":"CROSS_REPOSITORY","archival_dependency":false,"location":"control/sovereign-runtime-platform-policy.json + canonical TV/TVC authority contracts","evidence_location":"control/sovereign-runtime-platform-policy.json","next":"Fail closed on any non-TV/TVC runtime credential proposal"}
-  ],
-  "workflow_observations": {
-    "pr_180_validation": "SUCCESS run 31902367481 job 95054972979; 268/268 tests PASS",
-    "pr_181_sovereign_worker_validation": "SUCCESS run 31902858623",
-    "pr_181_heartbeat_worker_project": "SUCCESS run 31902858622 job 95056159205",
-    "pr_182_org_control_plane": "SUCCESS run 31904226799; handoff ownership, Admissible-Existence, heartbeat carrier and remaining control-plane gates PASS",
-    "pr_182_heartbeat_worker_project": "SUCCESS run 31904226786",
-    "pr_182_handoff_render": "SUCCESS run 31904226789",
-    "hosted_validation_is_runtime_activation": false
-  },
+  "state": "SUPERSEDED_BY_V8_PHONE_ROUTE_CONSOLIDATION",
+  "superseded_at": "2026-08-15T16:42:00-05:00",
+  "superseded_by": "control/session-goal-inventory-2026-08-15-phone-route-v8.json",
+  "archive_transfer_receipt": "receipts/session-consolidation/SESSION-ARCHIVE-TRANSFER-PHONE-ROUTE-V8-20260815.json",
+  "reason": "The prior amendment retained this chat solely for live activation evidence reconciliation. Subsequent implementation merged a released StegVerse phone-sovereign direct route and durably transferred all remaining live activation and Site projection requirements to canonical non-chat owners. Product activation remains incomplete, but no unique chat execution or observation responsibility remains.",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",
-  "wallet_signing_authority": "USER_ONLY",
-  "broadcast_authority": "USER_ONLY",
-  "live_product_activation_observed": false,
-  "rootless_executor_service_active_observed": false,
-  "wallet_handoff_ready_observed": false,
-  "remaining_session_unique_source_implementation": 0,
-  "remaining_session_obligation": "Inspect and reconcile live G18/bootstrap/post-bootstrap/StegFin evidence because the current user explicitly requires the session to remain active until activation is resolved.",
-  "archive_ready": false
+  "historical_product_state_at_supersession": {
+    "wallet_handoff_ready_observed": false,
+    "native_g18_activation_observed": false,
+    "product_activation_complete": false
+  },
+  "current_session_state": "READY_MERGED_INTO_CANONICAL_WORKSTREAM_PRODUCT_ACTIVATION_PENDING",
+  "session_unique_claims_remaining": 0,
+  "unassigned_session_requirements": 0,
+  "session_execution_responsibility_remaining": 0,
+  "session_observation_responsibility_remaining": 0,
+  "next_action": "READ_V8_INVENTORY_DO_NOT_RECREATE_SUPERSEDED_RETENTION_ROLE"
 }
