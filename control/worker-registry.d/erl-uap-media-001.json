@@ -1,0 +1,71 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-ERL-UAP-MEDIA-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [],
+      "authorized_policy_version": "shwp-erl-uap-public-source-v0.1",
+      "block_ref": "handoffs/SHWP-ERL-UAP-MEDIA-001.json#block",
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "StegVerse-Labs/Executive_Rhetoric_Ledger#62",
+        "StegVerse-Labs/.github#175",
+        "workers/erl_uap_media_source_worker.py",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger:scripts/process_uap_source_queue.py"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "UAP-MEDIA-001",
+      "handoff_ref": "handoffs/SHWP-ERL-UAP-MEDIA-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/SHWP-ERL-UAP-MEDIA-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-ERL-UAP-MEDIA-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:erl-uap-public-source-acquisition:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/UAP_MEDIA_RESEARCH_MIRROR_HANDOFF.md",
+          "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/UAP-MEDIA-001.json"
+        ],
+        "admissibility_evidence_refs": ["handoffs/SHWP-ERL-UAP-MEDIA-001.json", "StegVerse-Labs/.github#175"],
+        "integration_evidence_refs": ["workers/erl_uap_media_source_worker.py", "StegVerse-Labs/Executive_Rhetoric_Ledger:scripts/process_uap_source_queue.py"],
+        "activation_proof_ref": null,
+        "blockers": ["LOCAL_ERL_SOURCE_AND_PUBLIC_ENDPOINT_OBSERVATION_PENDING"],
+        "continuation_owner": "resident sovereign heartbeat + erl-uap-media-source-worker",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "executes_research_source_acquisition",
+        "target_phase": "ACTIVATED"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:erl-uap-media-source-v1",
+      "authority_source": "handoffs/SHWP-ERL-UAP-MEDIA-001.json#authority",
+      "capabilities": ["runtime_observation", "bounded_process_execution", "public_source_acquisition", "evidence_class_preservation"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#public-research-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "erl-uap-media-source-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_required": false,
+  "research_promotion_authority": false,
+  "publication_authority": false,
+  "provider_capability_authority": false,
+  "wallet_signing_authority": false,
+  "transaction_broadcast_authority": false
+}
