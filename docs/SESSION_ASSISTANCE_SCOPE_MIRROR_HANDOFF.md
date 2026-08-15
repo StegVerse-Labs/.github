@@ -149,3 +149,45 @@ Those facts are owned by `SHWP-DURABLE-RUNTIME-ACTIVATION` G18/local sovereign e
 ## Archive condition
 
 The current session remains non-archive-ready while G08 is an explicit current-session goal and no native sovereign→StegFin terminal/fail-closed worker evidence has been observed. All source implementation and authority boundaries are durable. The remaining lawful session role is distinct validation/reconciliation of G08 machine evidence only; unrelated organization workstreams remain excluded.
+
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: current-session goal classification and assistance-scope policy only
+release_condition: none; this policy handoff creates no manual execution lane
+next_executable_action: NONE_MANUAL_EXECUTION_PROHIBITED
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: G08 sovereign bootstrap, StegFin continuity executor, canonical continuity worker, and current worker claims/fences
+release_condition: machine-owned terminal/fail-closed evidence or canonical supersession recorded by the owning workstream
+next_executable_action: observe and reconcile only the durable evidence produced by the already-registered workers
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: TV/TVC credential/provider/route/vault authority and USER_ONLY wallet signing/broadcast authority
+release_condition: authority-owned receipt satisfies the exact downstream predicate without widening this session's authority
+next_executable_action: TV/TVC or USER_ONLY owner acts only within its canonical authority boundary
+```
+
+### COMPLETED / SUPERSEDED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: G01-G07 completed session goals and superseded v5 cross-session scope imports
+release_condition: completed/superseded in the durable current-session inventory and validation receipt
+next_executable_action: NONE; do not recreate completed local-runtime/model or out-of-scope organization work
+```
