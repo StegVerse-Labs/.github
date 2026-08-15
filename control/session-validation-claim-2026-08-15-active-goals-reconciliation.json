@@ -6,62 +6,23 @@
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
   "claimant": "current ChatGPT active-goals reconciliation session",
-  "role": "CLAIMED_FOR_VALIDATION_AND_RECONCILIATION",
-  "claim_state": "ACTIVE",
+  "role": "RELEASED_RECONCILIATION_ONLY",
+  "claim_state": "RELEASED_SCOPE_CORRECTION",
   "claim_created_at": "2026-08-15T09:00:00-05:00",
-  "claim_expires_at": "2026-08-15T11:00:00-05:00",
-  "release_condition": "Release when current canonical handoffs/tasks are reconciled with live repository evidence and either a new machine/runtime receipt is incorporated or no further nonconflicting support mutation remains.",
-  "collision_scope": {
-    "allowed": [
-      "read-only inspection of live runtime/trade/MCP tasks and handoffs",
-      "reconcile stale handoff/task metadata after already-completed merges or validations",
-      "install durable session-inventory amendments and evidence-only receipts",
-      "inspect worker/service wiring for missing non-authorizing integration support",
-      "correct source defects only when directly evidenced and outside an active implementation claim"
-    ],
-    "prohibited": [
-      "sovereign heartbeat claim/fence/lease mutation",
-      "TVC credential or route authority mutation",
-      "provider secret acquisition or export",
-      "live provider operation from chat",
-      "wallet signing or broadcast",
-      "duplicate local model/runtime implementation",
-      "competing with SDK-MCP-CANONICAL-VALIDATION-009",
-      "competing with STEGFIN-CONTINUITY-CARRIER-007 or TVC-CAPABILITY-RUNTIME-002"
-    ]
-  },
+  "claim_released_at": "2026-08-15T09:06:00-05:00",
+  "release_reason": "Session scope is MCP testing only. Broader sovereign-runtime and StegFin work is owned by other canonical sessions/workers and must not be duplicated here. MCP remaining sovereign validation is independently machine-owned by SDK-MCP-CANONICAL-VALIDATION-009; this released claim retains no implementation, validation, integration, or observation ownership over those other workstreams.",
   "completed_reconciliation": [
     "Updated StegVerse-org/StegVerse-SDK tasks/SDK-MCP-CANONICAL-VALIDATION-009.json to target merged main after PR #31; commit f241964ff76bb1a6cfdc9aec41ec3e5da49fc4a5.",
     "Reconciled docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md after PR #140 merge and issue #120 completion; commit 6eecf946d42ead8b2399e23ce016d68941b406a5.",
     "Installed control/session-goal-inventory-2026-08-15-active-goals-amendment.json; commit 990c53d12f9930df756eef4f9a9aaa192aa821b4.",
     "Recorded merged-source MCP continuation on StegVerse-org/StegVerse-SDK#30.",
-    "Recorded fresh HB29/G18 reconciliation observation on StegVerse-Labs/.github#60.",
-    "Inspected current StegFin continuity worker v3, machine executor, post-bootstrap bridge, task state, worker registry, and TVC runtime observer without executing machine-owned provider/wallet paths."
+    "Recorded fresh HB29/G18 reconciliation observation on StegVerse-Labs/.github#60."
   ],
-  "current_observation": {
-    "heartbeat_epoch": 29,
-    "heartbeat_generation": 29,
-    "heartbeat_last_cycle_at": "2026-08-10T20:51:11Z",
-    "g18_transition": "SOVEREIGN_RUNTIME_SOLUTION_REQUIRED",
-    "g18_fencing_token": 18,
-    "formal_local_model_runtime": "COMPLETE_RELEASED",
-    "mcp_source": "SOURCE_VALIDATED_MERGED",
-    "mcp_sovereign_integration": "PENDING_MACHINE_OWNED",
-    "stegfin_trade_deliverables": "7/8",
-    "wallet_handoff_ready": false
-  },
-  "canonical_continuations": [
-    "StegVerse-Labs/.github/handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
-    "StegVerse-Labs/.github/data/stegfin-continuity-machine-executor/task-state.json",
-    "StegVerse-Labs/.github/handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
-    "StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json",
-    "StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json",
-    "StegVerse-org/StegVerse-SDK/tasks/SDK-MCP-CANONICAL-VALIDATION-009.json",
-    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md"
-  ],
-  "next_support_action": "Observe for a new node-local sovereign activation receipt, TVC route/runtime receipt, MCP canonical validation receipt, or StegFin executor/worker receipt and reconcile it into canonical handoffs. Do not substitute hosted execution, GitHub credentials, or chat provider/wallet execution for the machine-owned lanes.",
+  "canonical_mcp_continuation": "StegVerse-org/StegVerse-SDK/tasks/SDK-MCP-CANONICAL-VALIDATION-009.json",
+  "mcp_source_state": "SOURCE_VALIDATED_MERGED",
+  "mcp_goal_state": "PENDING_MACHINE_OWNED_SOVEREIGN_INTEGRATION",
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "non_tv_tvc_secret_or_token_allowed": false,
-  "authority_effect": "NONE_VALIDATION_RECONCILIATION_ONLY"
+  "authority_effect": "NONE_RELEASED"
 }
