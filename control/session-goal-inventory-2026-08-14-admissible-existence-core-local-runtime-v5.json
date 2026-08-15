@@ -3,7 +3,7 @@
   "inventory_id": "ADMISSIBLE-EXISTENCE-CORE-LOCAL-RUNTIME-TRADE-CLEANUP-2026-08-14-V5",
   "supersedes": "control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v4.json",
   "repository": "StegVerse-Labs/.github",
-  "updated_at": "2026-08-14T23:34:00-05:00",
+  "updated_at": "2026-08-15T01:14:00-05:00",
   "session_scope": "StegCore Admissible-Existence review/conformance, sovereign local-runtime discovery/launch/proof and formal local-model development, TV/TVC-only credential authority, StegFin trade readiness through WALLET_HANDOFF_READY, session-scoped worker assistance, GitHub Actions cost containment, repository hygiene, workflow-surface minimization, and durable session consolidation.",
   "originating_goal_ids": [
     "G01-AE-DESIGN-SCOPE-REVIEW",
@@ -29,7 +29,7 @@
     {"goal_id":"G08-STEGFIN-TRADE-READY","status":"ACTIVE_MACHINE_OWNED_HOST_ACTIVATION_AND_WALLET_HANDOFF_PENDING","owner":"StegVerse-Labs/stegfin-governance + StegVerse-Labs/.github continuity executor/worker + StegVerse-Labs/TV + StegVerse-Labs/TVC","archive_dependency":true},
     {"goal_id":"G09-ACTIONS-COST-CONTAINMENT","status":"ACTIVE_REMEDIATION","owner":"StegVerse-Labs/.github#164 + StegVerse-Labs/StegCore#125 + StegVerse-Labs/Site#265","archive_dependency":true},
     {"goal_id":"G10-REPOSITORY-HYGIENE","status":"ACTIVE_REMEDIATION","owner":"StegVerse-Labs/.github#165 + repository-local handoffs/issues","archive_dependency":true},
-    {"goal_id":"G17-WORKFLOW-SURFACE-MINIMIZATION","status":"ACTIVE_REMEDIATION","owner":"StegVerse-Labs/.github#167/#168 + StegVerse-Labs/StegCore#128 + StegVerse-Labs/Site#268","archive_dependency":true}
+    {"goal_id":"G17-WORKFLOW-SURFACE-MINIMIZATION","status":"ACTIVE_REMEDIATION_ONE_ORG_SURFACE_ELIMINATED","owner":"StegVerse-Labs/.github#167/#168 + StegVerse-Labs/StegCore#128 + StegVerse-Labs/Site#268","archive_dependency":true}
   ],
   "worker_assistance_bindings": [
     {"worker_or_task_id":"STEGFIN-CONTINUITY-CARRIER-007","session_goal_id":"G08-STEGFIN-TRADE-READY","scope_decision":"IN_SCOPE_ASSIST","collision":"MACHINE_OWNED_DO_NOT_DUPLICATE"},
@@ -58,6 +58,10 @@
     "site_audit_start_workflows": 131,
     "site_recurring_schedules_removed": 9,
     "site_workflow_files_consolidated": 0,
+    "org_workflow_files_eliminated": 1,
+    "org_workflow_elimination_ref": ".github/workflows/stegfin-continuity-machine-executor.yml -> stable heartbeat-worker-project.yml validation",
+    "org_workflow_elimination_commit": "f98e25c585602b28199cdd41e9add95dd3fc1d9e",
+    "org_workflow_elimination_receipt": "receipts/workflow-minimization/STEGFIN-CONTINUITY-WORKFLOW-MINIMIZATION-010.json",
     "branch_issue_pr_cleanup": "ACTIVE_UNDER_.github#165"
   },
   "trade_readiness": {
@@ -80,6 +84,7 @@
     "StegVerse-Labs/.github#165",
     "StegVerse-Labs/.github#167",
     "StegVerse-Labs/.github#168",
+    "receipts/workflow-minimization/STEGFIN-CONTINUITY-WORKFLOW-MINIMIZATION-010.json",
     "StegVerse-Labs/StegCore/docs/ACTIONS_COST_CONTAINMENT_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegCore#125",
     "StegVerse-Labs/StegCore#128",
