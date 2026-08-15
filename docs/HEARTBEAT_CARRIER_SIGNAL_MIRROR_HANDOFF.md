@@ -1,6 +1,6 @@
 # Heartbeat Carrier Signal Mirror Handoff
 
-Updated: 2026-08-15T09:00:00-05:00
+Updated: 2026-08-15T14:23:00-05:00
 
 ## Canonical authority
 
@@ -142,7 +142,13 @@ No local-model/runtime reimplementation or StegFin live execution is authorized 
 
 ### MANUAL / SESSION-STARTABLE
 
-None for `HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120`. The merge/release support role is released.
+```yaml
+manual_execution_allowed: false
+worker_registry_ref: NONE_COMPLETED_SOURCE_GOAL
+collision_scope: heartbeat carrier semantics source is released; no session may reopen implementation ownership
+release_condition: COMPLETE_RELEASED_PR_140
+next_executable_action: NONE
+```
 
 ### WORKER-OWNED / DO NOT COMPETE
 
@@ -150,20 +156,41 @@ None for `HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120`. The merge/release support rol
 - task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122
   execution_owner: StegVerse-Labs/.github#122 + current runtime owners
   manual_execution_allowed: false
+  worker_registry_ref: control/worker-registry.json
   collision_scope: heartbeat runtime/schema, worker coordination, claims, fences, leases, route state and live carrier operation
+  release_condition: canonical runtime owner completes live producer/consumer migration with immutable evidence
+  next_executable_action: continue through the already-owned issue #122 runtime lane
 
 - task_id: STEGFIN-CONTINUITY-CARRIER-007
   execution_owner: canonical StegFin continuity worker + TV/TVC
   manual_execution_allowed: false
   worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
   collision_scope: live claim, TV/TVC transport, Inventory N, quote/pretrade and WALLET_HANDOFF_READY
+  release_condition: WALLET_HANDOFF_READY or exact fail-closed terminal receipt
+  next_executable_action: canonical machine worker continues after its release predicates are satisfied
 ```
 
 ### ESCALATED / AUTHORITY-OWNED
 
+```yaml
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: credential/route authority, admissibility, and terminal custody
+release_condition: authority-specific canonical owner resolves its own bounded task
+next_executable_action: TV/TVC, StegCore/StegGate, and Master Records continue only within their existing authority
+```
+
 Credential/route authority remains TV/TVC; admissibility remains canonical StegCore/StegGate; custody remains Master Records.
 
 ### COMPLETED / SUPERSEDED
+
+```yaml
+manual_execution_allowed: false
+worker_registry_ref: NONE_TERMINAL
+collision_scope: completed heartbeat-carrier semantics and superseded PR lineage
+release_condition: already satisfied
+next_executable_action: NONE
+```
 
 ```text
 HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120: COMPLETE_RELEASED
