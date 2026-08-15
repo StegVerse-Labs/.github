@@ -1,0 +1,38 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SDK-MCP-CANONICAL-VALIDATION-009",
+  "adapters": [
+    {
+      "adapter_ref": "process:sdk-mcp-canonical-validation-v1",
+      "authority_ref": "handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "canonical_artifact_validation",
+        "master_records_replay_reconstruction_validation"
+      ],
+      "command": ["python", "workers/sdk_mcp_canonical_validation_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SDK_SOURCE_ROOT",
+        "STEGVERSE_STEGCORE_SOURCE_ROOT",
+        "STEGVERSE_CORE_LITE_SOURCE_ROOT",
+        "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+        "HOME",
+        "XDG_STATE_HOME",
+        "LOCALAPPDATA"
+      ],
+      "timeout_seconds": 480,
+      "type": "process_json_v0.1",
+      "notes": [
+        "Exact-artifact validation only; no source checkout, runtime credential, provider credential, signing or broadcast authority.",
+        "Canonical scheduler must assign the claim before execution.",
+        "All source-root values are non-secret local locators to already-materialized artifacts.",
+        "No GitHub token, provider API key, wallet credential, bearer token or cloud credential is allowlisted.",
+        "Hosted environments fail closed.",
+        "The worker must prove exact governed MCP execution, MR/MRR/MRO custody, replay/reconstruction no-reexecution, bounded write, and TV/TVC-only credential semantics."
+      ]
+    }
+  ]
+}
