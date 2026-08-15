@@ -22,6 +22,7 @@
         "capability_id": "stegverse:capability:sdk-mcp-canonical-validation:v1",
         "capability_version": "1.0.0",
         "phase": "ADMISSIBLE",
+        "task_relationship": "validates_capability",
         "activation_proof_ref": null,
         "blockers": ["EXACT_SOVEREIGN_ARTIFACT_RUN_NOT_YET_OBSERVED"],
         "continuation_owner": "sdk-mcp-canonical-validation-worker",
