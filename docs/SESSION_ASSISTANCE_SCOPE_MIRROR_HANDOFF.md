@@ -1,6 +1,6 @@
 # Session Assistance Scope Mirror Handoff
 
-Updated: 2026-08-15T01:25:00-05:00
+Updated: 2026-08-15T01:29:00-05:00
 
 ## Authority and current session state
 
@@ -26,7 +26,7 @@ This handoff decides whether an interactive session may assist a worker/task. It
 
 `assist workers` means assist only workers whose durable lineage intersects an originating goal established in this conversation, or a direct durable dependency, validation, integration, reconciliation, or propagation descendant of such a goal. Activity elsewhere in StegVerse is not sufficient to widen this session's scope.
 
-The superseded v5 inventory imported organization cost-containment, repository-hygiene, and workflow-minimization goals from concurrent workstreams. Those goals remain valid in their own canonical workstreams but are not originating goals of this conversation and are excluded from v6 worker selection.
+The superseded v5 inventory imported organization cost-containment, repository-hygiene, and workflow-minimization goals from concurrent workstreams. Those remain valid in their own canonical workstreams but are excluded from this conversation.
 
 ```text
 G09-ACTIONS-COST-CONTAINMENT       -> OUT OF CURRENT SESSION SCOPE
@@ -51,8 +51,6 @@ The formal local model/runtime source remains complete in `StegVerse-002/micro-n
 
 ## Validation of current-session-only scope
 
-The initial v6 attempt exposed stale validator/test assumptions rather than being treated as complete. Canonical v6 now stays on the existing inventory-lineage basename, the alternate-date duplicate was removed, and the scope tests were corrected.
-
 ```text
 workflow: Org Continuation Check - No GitHub Token Authority
 run: 31869162728
@@ -63,8 +61,6 @@ focused scope tests: 7/7 PASS
 NO_GITHUB_CREDENTIAL_TOKEN_PRESENT: PASS
 ORG_CONTINUATION_NON_AUTHORIZING_PASS: PASS
 ```
-
-The broader Heartbeat Worker Project can remain independently red from other repository work; that does not widen this session's worker scope.
 
 ## Canonical G08 continuation — RELEASED SOURCE CHAIN
 
@@ -101,7 +97,26 @@ post-bootstrap source claim: COMPLETE_VALIDATED_RELEASED
 canonical bridge handoff: docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md
 ```
 
-The bootstrap and bridge require **no credential input** (`credential_requirement=NONE`). That does not widen credential authority: TV/TVC remains the only provider/credential/route/vault authority. GitHub tokens have no runtime authority. The bridge cannot acquire the StegFin claim, contact a provider or wallet, sign, broadcast, claim settlement, or claim `WALLET_HANDOFF_READY`.
+The bootstrap and bridge require no credential input (`credential_requirement=NONE`). TV/TVC remains the only provider/credential/route/vault authority. GitHub tokens have no runtime authority. The bridge cannot acquire the StegFin claim, contact a provider or wallet, sign, broadcast, claim settlement, or claim `WALLET_HANDOFF_READY`.
+
+## G18 current control reconciliation
+
+The current G18 management blocker and the released StegFin executor task-state have been reconciled so their next-action semantics no longer regress to the pre-bootstrap declaration deadlock.
+
+```text
+G18 blocker reconciliation commit: 77a83c63b77012ef62736f743ed2c1e419cce0e2
+G08 executor task-state reconciliation commit: 8aa0b1e4dbf990fb5da030fe3648876da117d0ee
+G18 active worker owner: SHWP-DURABLE-RUNTIME-ACTIVATION / fencing token 18
+missing_implementation: false
+live_activation_observed: false
+pre_existing_resident_heartbeat_required: false
+pre_existing_node_declaration_required_to_initiate: false
+current initiation entrypoint: scripts/bootstrap_sovereign_runtime.py
+current proof requirement: all nine predicates true
+post-proof downstream bridge: scripts/activate_stegfin_after_sovereign_bootstrap.py
+```
+
+The historical `receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json` remains immutable evidence of the older blocked state; it is not rewritten as if live activation occurred.
 
 ## Collision boundaries
 
@@ -120,7 +135,7 @@ G09/G10/G17 workers: OUT OF THIS SESSION SCOPE
 
 ## Exact remaining machine/authority boundary
 
-Repository/source implementation is complete for the local model, local runtime discovery/launch/proof, pre-heartbeat sovereign bootstrap, rootless StegFin machine executor, and sovereign-to-StegFin activation bridge. These live facts are still unobserved:
+Repository/source implementation is complete for the local model, local runtime discovery/launch/proof, pre-heartbeat sovereign bootstrap, rootless StegFin machine executor, and sovereign-to-StegFin activation bridge. These live facts remain unobserved:
 
 ```text
 nine-predicate sovereign activation proof observed: false
