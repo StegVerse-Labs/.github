@@ -1,6 +1,6 @@
 # StegFin Continuity Machine Executor Mirror Handoff
 
-Updated: 2026-08-15T01:12:00-05:00
+Updated: 2026-08-15T01:13:00-05:00
 
 ```text
 goal_id: STEGFIN-CONTINUITY-MACHINE-EXECUTOR-008
@@ -13,7 +13,7 @@ credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 wallet_signing_authority: USER_ONLY
 broadcast_authority: USER_ONLY
-state: SOURCE_COMPLETE_VALIDATED_RELEASED_HOST_INSTALLATION_PENDING
+state: SOURCE_COMPLETE_VALIDATED_RELEASED_POST_SOVEREIGN_INTEGRATION_PENDING_VALIDATION
 ```
 
 ## Gap closed
@@ -22,7 +22,7 @@ The canonical trade handoff permits `ANY_AUTHORIZED_STEGVERSE_CONTINUITY_EXECUTO
 
 Before this task, the repository had the worker, process-adapter fragment and resident-heartbeat adapter machinery but no task-specific non-heartbeat machine executor or rootless host-start delivery surface for this HANDOFF_READY continuity task. The generic heartbeat `ProcessWorkerAdapter` requires a pre-existing claim/fence and therefore could not lawfully be repurposed as the non-heartbeat carrier because the trade handoff explicitly forbids a carrier from inventing its own claim/fence.
 
-That source gap is now closed without changing the canonical claim issuer, StegFin worker, TV/TVC broker/runtime authority, heartbeat state, or wallet authority.
+That source gap is closed without changing the canonical claim issuer, StegFin worker, TV/TVC broker/runtime authority, heartbeat state, or wallet authority.
 
 ## Released implementation
 
@@ -35,7 +35,7 @@ tests/test_stegfin_continuity_machine_executor.py
 receipts/stegfin-continuity-machine-executor/source-validation-20260814.json
 ```
 
-The formerly dedicated `.github/workflows/stegfin-continuity-machine-executor.yml` validation workflow is no longer an active source surface. It was removed under `G17-WORKFLOW-SURFACE-MINIMIZATION` after confirming that the stable `.github/workflows/heartbeat-worker-project.yml` already triggers on the executor's `scripts/**`, `tests/**`, `control/**`, `docs/**`, and `workers/**` surfaces and runs the complete deterministic repository test suite. The focused workflow's successful historical receipt remains evidence; capability validation was consolidated rather than dropped.
+The formerly dedicated `.github/workflows/stegfin-continuity-machine-executor.yml` validation workflow is no longer an active source surface. It was removed under `G17-WORKFLOW-SURFACE-MINIMIZATION` after confirming that stable `.github/workflows/heartbeat-worker-project.yml` already triggers on the executor's `scripts/**`, `tests/**`, `control/**`, `docs/**`, and `workers/**` surfaces and runs the complete deterministic repository test suite. The focused workflow's successful historical receipt remains evidence; capability validation was consolidated rather than dropped.
 
 Key commits:
 
@@ -59,7 +59,7 @@ dedicated workflow elimination: f98e25c585602b28199cdd41e9add95dd3fc1d9e
 The executor is a one-shot local host adapter, not a heartbeat and not an authority source. It:
 
 - rejects GitHub Actions, CI, Render, Vercel and Cloudflare-hosted execution;
-- requires an existing `/etc/stegverse/node.json` or `~/.stegverse/node.json` sovereign-node declaration with `declared=true`, `credential_authority=TV/TVC`, and `github_token_required=false`;
+- requires a valid `/etc/stegverse/node.json` or `~/.stegverse/node.json` sovereign-node declaration with `declared=true`, `credential_authority=TV/TVC`, and `github_token_required=false`;
 - requires the canonical handoff to remain machine-only and the canonical registry task to remain `HANDOFF_READY` with no existing claim and the worker `AVAILABLE`;
 - invokes only `workers/stegfin_continuity_carrier_worker_v3.py`;
 - passes `claim_id=null` and no heartbeat timing/fence to the child, so the executor does not invent a claim/fence; the existing worker remains the canonical continuity-claim issuer;
@@ -111,6 +111,8 @@ source_claim_ref: control/session-implementation-claim-2026-08-14-stegfin-contin
 source_claim_state: COMPLETE_VALIDATED_RELEASED
 workflow_minimization_claim_ref: control/session-integration-claim-2026-08-15-stegfin-workflow-minimization.json
 workflow_minimization_role: CONSOLIDATE_INTO_STABLE_DISPATCHER
+post_bootstrap_claim_ref: control/session-implementation-claim-2026-08-15-sovereign-stegfin-post-bootstrap.json
+post_bootstrap_claim_state: CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION
 ```
 
 Collision exclusions remain absolute:
@@ -123,19 +125,86 @@ Collision exclusions remain absolute:
 - no wallet contact/sign/broadcast;
 - no live provider operation from hosted validation or chat.
 
-## Activation boundary still open
+## Sovereign post-bootstrap integration — ACTIVE IMPLEMENTATION
 
-**Repository source completion is not host activation and is not trade completion.** No available connector in this chat is the declared sovereign/local StegVerse host, so the native service was not installed or started from chat. Render and GitHub Actions are not substitutes.
+Task: `SOVEREIGN-STEGFIN-POST-BOOTSTRAP-001`  
+Issue: `StegVerse-Labs/.github#163`  
+Branch: `feat/sovereign-stegfin-post-bootstrap-001-v3`  
+Claim: `control/session-implementation-claim-2026-08-15-sovereign-stegfin-post-bootstrap.json`
 
-Exact next authority-owned action on an already-declared authorized non-hosted StegVerse node with locally materialized canonical source:
+The former requirement that an executor host be independently pre-declared is superseded as an initiation prerequisite. The released sovereign self-bootstrap (`scripts/bootstrap_sovereign_runtime.py`, issue #160 / PR #162) can derive the non-authorizing local declaration, materialize/start native heartbeat supervision, and produce the canonical nine-predicate activation proof without requiring a resident heartbeat to pre-exist.
+
+New integration surface:
+
+```text
+scripts/activate_stegfin_after_sovereign_bootstrap.py
+```
+
+It requires both:
+
+1. canonical sovereign `activation.latest.json` with `all_predicates_pass=true` and all nine predicates true;
+2. node declaration preserving `credential_authority=TV/TVC`, `github_token_required=false`, no third-party runtime requirement, and `RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY`.
+
+Only then may it invoke:
 
 ```text
 python scripts/install_stegfin_continuity_machine_service.py --root <local-StegVerse-Labs-.github-root>
 ```
 
-The resulting native service invokes the released executor. The executor invokes the existing worker. The worker self-acquires the canonical collision-safe continuity claim, selects a real same-host TV/TVC Unix broker when present or the existing HTTPS READY path otherwise, performs only bounded pretrade preparation, and stops at USER_ONLY wallet action.
+The integration accepts COMPLETE only when the installer receipt proves the rootless executor service active with:
 
-Machine-observable completion remains:
+```text
+credential_authority=TV/TVC
+github_token_runtime_authority=false
+non_tv_tvc_secret_or_token_embedded=false
+wallet_signing_authority=USER_ONLY
+broadcast_authority=USER_ONLY
+execution_authority_created=false
+```
+
+Its own receipt additionally fixes:
+
+```text
+credential_requirement=NONE
+provider_contacted=false
+wallet_contacted=false
+signed=false
+broadcast=false
+wallet_handoff_ready_claimed=false
+```
+
+This bridge therefore activates the already-released machine executor service; it does not execute the trade, acquire a continuity claim, choose credentials, contact a provider/wallet, or widen authority.
+
+Continuing hosted validation uses the stable workflow-minimized surface rather than recreating a dedicated workflow:
+
+```text
+.github/workflows/heartbeat-worker-project.yml
+python -m unittest discover -v tests
+```
+
+## Activation boundary still open
+
+Repository source completion is not host activation and is not trade completion.
+
+After release, the machine-owned chain becomes:
+
+```text
+canonical local source
+  -> scripts/bootstrap_sovereign_runtime.py
+  -> nine-predicate sovereign activation.latest.json PASS
+  -> scripts/activate_stegfin_after_sovereign_bootstrap.py
+  -> native rootless StegFin executor service active
+  -> released executor
+  -> canonical StegFin worker self-acquires claim
+  -> canonical TV/TVC transport selection
+  -> bounded pretrade preparation
+  -> WALLET_HANDOFF_READY OR exact fail-closed receipt
+  -> USER_ONLY wallet action boundary
+```
+
+No third-party host or pre-existing resident heartbeat is required to initiate this chain.
+
+Machine-observable trade completion remains:
 
 ```text
 WALLET_HANDOFF_READY
@@ -147,3 +216,7 @@ broadcast=false
 ```
 
 Until a native service activation receipt and terminal/fail-closed worker receipt exist, `G08-STEGFIN-TRADE-READY` remains active and this handoff must not claim governed activation.
+
+## Next action
+
+Run the stable Heartbeat Worker Project against the #163 branch, merge only if the new integration tests and repository-wide suite pass, then inspect the exact merged-main run and release the finite post-bootstrap claim. Live `WALLET_HANDOFF_READY` remains owned by the canonical machine executor/worker and TV/TVC runtime authority.
