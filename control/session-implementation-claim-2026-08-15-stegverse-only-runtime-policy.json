@@ -1,0 +1,38 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "claim_id": "STEGVERSE-ONLY-RUNTIME-POLICY-2026-08-15-1423",
+  "task_id": "STEGVERSE-ONLY-RUNTIME-POLICY-001",
+  "originating_goal": "User explicitly prohibited Render and directed sovereign activation to use StegVerse-controlled execution only while preserving TV/TVC-only credential authority and continuing trade-readiness activation work.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "policy/stegverse-only-sovereign-runtime",
+  "claimant": "current ChatGPT session",
+  "role": "CLAIMED_FOR_INTEGRATION",
+  "claim_state": "CLAIMED_FOR_INTEGRATION",
+  "claim_created_at": "2026-08-15T14:23:00-05:00",
+  "claim_release_condition": "Release after a canonical StegVerse-only runtime-platform policy is installed, source validation proves Render and other hosted third-party platforms remain fail-closed for sovereign activation, applicable handoffs/blocker state are reconciled, and the change is merged.",
+  "files": [
+    "control/sovereign-runtime-platform-policy.json",
+    "tests/test_sovereign_runtime_platform_policy.py",
+    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md"
+  ],
+  "collision_boundaries": [
+    "Do not acquire or mutate the G18 claim/fencing token.",
+    "Do not execute the live sovereign runtime from GitHub-hosted validation.",
+    "Do not use Render, Vercel, Cloudflare, GitHub Actions, or another third-party hosted process surface as sovereign production activation.",
+    "Do not create provider, wallet, route, signing, broadcast, settlement, or credential authority.",
+    "Credential authority remains TV/TVC; GitHub token runtime authority remains NONE; non-TV/TVC runtime secrets/tokens remain prohibited."
+  ],
+  "expected_evidence": [
+    "canonical policy names StegVerse-owned/federated execution as the only sovereign production domain",
+    "Render is explicitly prohibited rather than merely optional",
+    "existing activation and resolution workers retain hosted-environment fail-closed checks",
+    "deterministic repository validation passes",
+    "canonical handoffs and blocker point to the policy"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "authority_effect": "POLICY_AND_INTEGRATION_ONLY_NO_LIVE_EXECUTION_AUTHORITY"
+}

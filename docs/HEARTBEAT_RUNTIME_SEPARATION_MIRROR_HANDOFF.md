@@ -1,6 +1,6 @@
 # Heartbeat Runtime Separation Mirror Handoff
 
-Updated: 2026-08-15T02:28:00-05:00
+Updated: 2026-08-15T14:23:00-05:00
 
 ## Authority and active goal
 
@@ -123,15 +123,15 @@ state: COMPLETE_RELEASED
 release commit: 057a0e0b51ff2a95effaa6d6afeb2650fdc711c9
 ```
 
-## Ownership and collision partition
+## Execution ownership and collision partition
 
-### COMPLETE / RELEASED SOURCE
+### MANUAL / SESSION-STARTABLE
 
 ```yaml
-task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-SOURCE
-execution_owner: NONE
 manual_execution_allowed: false
-release_condition: COMPLETE_RELEASED_AFTER_EXACT_HEAD_VALIDATION_31849685349
+worker_registry_ref: NONE_SOURCE_RELEASED
+collision_scope: released source/schema separation only
+release_condition: COMPLETE_RELEASED
 next_executable_action: NONE
 ```
 
@@ -141,10 +141,32 @@ next_executable_action: NONE
 task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION
 execution_owner: StegVerse-Labs/.github#122 canonical runtime owner
 manual_execution_allowed: false
-worker_registry_ref: control/worker-registry.json + issue #122
+worker_registry_ref: control/worker-registry.json
 collision_scope: live heartbeat producer/consumer switch, control/heartbeat-state.json, active claims/fences/leases, resident worker processes, production carrier operation
 release_condition: live runtime migrates under a fresh authorized claim and produces immutable runtime evidence
 next_executable_action: consume the released carrier/control-plane/expired-worker contracts without rewriting historical provenance
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: TV/TVC credential/route authority, StegCore/StegGate admissibility, Master Records custody
+release_condition: each canonical authority owner resolves its own bounded dependency
+next_executable_action: escalate only through the named canonical authority owner when a live migration dependency cannot be satisfied within #122 scope
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-SOURCE
+execution_owner: NONE
+manual_execution_allowed: false
+worker_registry_ref: NONE_TERMINAL
+collision_scope: bounded source/schema separation and expired-worker convergence artifacts
+release_condition: COMPLETE_RELEASED_AFTER_EXACT_HEAD_VALIDATION_31849685349
+next_executable_action: NONE
 ```
 
 ### CROSS-REPOSITORY OWNERS
