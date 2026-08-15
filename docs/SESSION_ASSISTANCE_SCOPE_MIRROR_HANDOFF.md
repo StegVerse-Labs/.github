@@ -1,6 +1,6 @@
 # Session Assistance Scope Mirror Handoff
 
-Updated: 2026-08-15T01:44:00-05:00
+Updated: 2026-08-15T01:45:00-05:00
 
 ## Authority and session state
 
@@ -137,3 +137,45 @@ next_session_action: NONE_DO_NOT_RECREATE_COMPLETED_WORK
 ```
 
 Canonical archive evidence is `receipts/session-consolidation/SESSION-ARCHIVE-TRANSFER-G08-MACHINE-CONTINUATION-20260815.json` and inventory v7. Future conversations may inspect newly produced machine evidence when explicitly asked, but this conversation is not required for continuation.
+
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: session archival/consolidation only
+release_condition: COMPLETE; no session-startable execution remains
+next_executable_action: NONE_MANUAL_EXECUTION_PROHIBITED
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: G08 sovereign bootstrap, G18 heartbeat ownership, StegFin continuity executor, canonical continuity worker, and their claims/fences
+release_condition: machine-owned terminal/fail-closed evidence or canonical supersession recorded by the owning workstream
+next_executable_action: SHWP-DURABLE-RUNTIME-ACTIVATION G18 and STEGFIN-CONTINUITY-CARRIER-007 continue through their durable machine paths
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: TV/TVC credential/provider/route/vault authority and USER_ONLY wallet signing/broadcast authority
+release_condition: authority-owned receipt satisfies the exact downstream predicate without widening session authority
+next_executable_action: TV/TVC or USER_ONLY owner acts only within its canonical authority boundary
+```
+
+### COMPLETED / SUPERSEDED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: G01-G07 completed session goals, all G08 source-support/reconciliation tasks, v6 pre-transfer archive semantics, and unrelated G09/G10/G17 imports
+release_condition: COMPLETE_VALIDATED_RELEASED or MERGED_INTO_CANONICAL_MACHINE_WORKSTREAM
+next_executable_action: NONE; do not recreate completed local-runtime/model/bootstrap/bridge/provenance/session-consolidation work
+```
