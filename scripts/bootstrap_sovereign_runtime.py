@@ -6,6 +6,12 @@ derives a non-authorizing sovereign-node declaration, invokes the existing nativ
 materializer/service installer, then immediately invokes the canonical nine-
 predicate activation verifier.
 
+After canonical sovereign activation is proven, the same bounded machine execution
+also attempts the already-released post-bootstrap StegFin integration bridge. That
+bridge may activate only the rootless StegFin executor service; it cannot acquire the
+trade claim, contact a provider or wallet, sign, broadcast, settle, or claim
+WALLET_HANDOFF_READY.
+
 It never treats GitHub Actions, Render, Vercel, Cloudflare, provider credentials,
 or a repository token as production authority.
 """
@@ -92,6 +98,10 @@ def default_proof_path() -> Path:
 
 def default_receipt_path() -> Path:
     return (Path.home() / ".stegverse" / "heartbeat" / "bootstrap.latest.json").resolve()
+
+
+def default_post_bootstrap_receipt() -> Path:
+    return (Path.home() / ".stegverse" / "continuity" / "sovereign-post-bootstrap.latest.json").resolve()
 
 
 def atomic_write(path: Path, value: dict[str, Any]) -> None:
@@ -211,6 +221,56 @@ def all_predicates_pass(proof: dict[str, Any] | None) -> bool:
     return all(proof.get(name) is True for name in REQUIRED_PREDICATES)
 
 
+def _attempt_post_bootstrap_activation(
+    source_root: Path,
+    *,
+    proof_path: Path,
+    receipt_path: Path,
+    node_marker: Path,
+    env: dict[str, str] | None,
+    runner: Runner,
+) -> dict[str, Any]:
+    bridge = source_root / "scripts" / "activate_stegfin_after_sovereign_bootstrap.py"
+    integration_receipt = default_post_bootstrap_receipt()
+    if not bridge.is_file():
+        return {
+            "attempted": False,
+            "state": "NOT_AVAILABLE",
+            "reason": "POST_BOOTSTRAP_STEGFIN_BRIDGE_NOT_PRESENT",
+            "returncode": None,
+            "receipt_ref": str(integration_receipt),
+            "executor_service_active": False,
+        }
+    child_env = scrubbed_child_env(env, source_root=source_root, runtime_root=Path(load_json(receipt_path)["runtime_root"]), proof_path=proof_path)
+    command = [
+        sys.executable,
+        str(bridge),
+        "--root",
+        str(source_root),
+        "--proof-path",
+        str(proof_path),
+        "--bootstrap-receipt",
+        str(receipt_path),
+        "--node-marker",
+        str(node_marker),
+        "--integration-receipt",
+        str(integration_receipt),
+    ]
+    completed = runner(command, check=False, capture_output=True, text=True, timeout=180, env=child_env)
+    receipt = load_json(integration_receipt) or {}
+    return {
+        "attempted": True,
+        "state": receipt.get("state") or ("COMPLETE" if completed.returncode == 0 else "REVIEW_REQUIRED"),
+        "reason": receipt.get("reason"),
+        "returncode": completed.returncode,
+        "receipt_ref": str(integration_receipt),
+        "executor_service_active": receipt.get("executor_service_active") is True,
+        "credential_authority": receipt.get("credential_authority", "TV/TVC"),
+        "non_tv_tvc_secret_or_token_used": receipt.get("non_tv_tvc_secret_or_token_used", False),
+        "wallet_handoff_ready_claimed": receipt.get("wallet_handoff_ready_claimed", False),
+    }
+
+
 def bootstrap(
     source_root: Path,
     runtime_root: Path,
@@ -220,6 +280,7 @@ def bootstrap(
     receipt_path: Path,
     env: dict[str, str] | None = None,
     runner: Runner = subprocess.run,
+    activate_downstream: bool = True,
 ) -> dict[str, Any]:
     source_root = source_root.expanduser().resolve()
     runtime_root = runtime_root.expanduser().resolve()
@@ -243,6 +304,14 @@ def bootstrap(
         "installer_returncode": None,
         "verifier_returncode": None,
         "proof_path": str(proof_path),
+        "post_bootstrap_stegfin": {
+            "attempted": False,
+            "state": "NOT_ELIGIBLE",
+            "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE",
+            "returncode": None,
+            "executor_service_active": False,
+            "wallet_handoff_ready_claimed": False,
+        },
         "state": "FAIL_CLOSED",
         "reason": None,
     }
@@ -287,6 +356,18 @@ def bootstrap(
     if verify.returncode == 0 and all_predicates_pass(proof):
         body["state"] = "COMPLETE"
         body["reason"] = "SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_VERIFIED"
+        # The post-bootstrap bridge validates this exact persisted receipt, so
+        # establish sovereign completion before attempting downstream activation.
+        atomic_write(receipt_path, body)
+        if activate_downstream:
+            body["post_bootstrap_stegfin"] = _attempt_post_bootstrap_activation(
+                source_root,
+                proof_path=proof_path,
+                receipt_path=receipt_path,
+                node_marker=node_marker,
+                env=env,
+                runner=runner,
+            )
     else:
         body["state"] = "REVIEW_REQUIRED"
         body["reason"] = "SOVEREIGN_ACTIVATION_PROOF_INCOMPLETE"
@@ -302,6 +383,7 @@ def main() -> int:
     parser.add_argument("--node-marker", type=Path, default=None)
     parser.add_argument("--proof-path", type=Path, default=None)
     parser.add_argument("--receipt-path", type=Path, default=None)
+    parser.add_argument("--skip-post-bootstrap-stegfin", action="store_true")
     args = parser.parse_args()
 
     runtime_root = (args.runtime_root or default_runtime_root()).resolve()
@@ -315,6 +397,7 @@ def main() -> int:
         node_marker=node_marker,
         proof_path=proof_path,
         receipt_path=receipt_path,
+        activate_downstream=not args.skip_post_bootstrap_stegfin,
     )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result.get("state") == "COMPLETE" else 1
