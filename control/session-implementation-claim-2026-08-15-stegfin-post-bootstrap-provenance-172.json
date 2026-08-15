@@ -6,12 +6,15 @@
   "branch": "fix/stegfin-post-bootstrap-provenance-172-v2",
   "canonical_issue": "StegVerse-Labs/.github#172",
   "claimant": "current-session-validation-integration-lane",
-  "role": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION",
+  "role": "COMPLETE_VALIDATED_RELEASED",
   "claim_created_at": "2026-08-15T01:09:00-05:00",
   "claim_rebased_at": "2026-08-15T01:33:00-05:00",
+  "released_at": "2026-08-15T01:36:00-05:00",
   "superseded_branch": "fix/stegfin-post-bootstrap-provenance-172",
   "superseded_pr": "StegVerse-Labs/.github#173",
-  "claim_expiration_or_release_condition": "release after merge and exact merged-main validation; if no evidence-bearing update occurs within 24 hours, mark BLOCKED or release",
+  "merged_pr": "StegVerse-Labs/.github#177",
+  "merge_commit": "80568f5487ead7e0bd90813de6bae1f4c7bdc337",
+  "claim_expiration_or_release_condition": "SATISFIED: clean current-main PR merged and exact merged-main validation passed",
   "owned_surfaces": [
     "scripts/activate_stegfin_after_sovereign_bootstrap.py",
     "tests/test_activate_stegfin_after_sovereign_bootstrap.py",
@@ -26,14 +29,21 @@
     "do not sign, broadcast, settle or claim WALLET_HANDOFF_READY",
     "do not introduce GitHub or non-TV/TVC token runtime authority"
   ],
-  "expected_evidence": [
-    "forged boolean-complete proof rejected",
-    "mismatched bootstrap proof/node/source/runtime provenance rejected",
-    "non-complete bootstrap receipt rejected",
-    "canonical provenance fixture reaches only executor-service activation",
-    "hosted validation remains tokenless and non-authorizing",
-    "exact merged-main validation PASS"
-  ],
+  "evidence": {
+    "pr": "StegVerse-Labs/.github#177",
+    "merge_commit": "80568f5487ead7e0bd90813de6bae1f4c7bdc337",
+    "pr_head": "f20f45090debe5cf1bbb318d337a376fb201d64a",
+    "pr_heartbeat_validation_run": 31869788040,
+    "pr_org_control_validation_run": 31869787953,
+    "pr_handoff_render_run": 31869787932,
+    "pr_validation_conclusion": "SUCCESS",
+    "merged_main_heartbeat_run": 31869810980,
+    "merged_main_org_continuation_run": 31869810988,
+    "merged_main_validation_conclusion": "SUCCESS",
+    "non_tv_tvc_secret_or_token_used": false,
+    "github_token_runtime_authority": false,
+    "wallet_handoff_ready_claimed": false
+  },
   "next_task_after_release": "canonical local sovereign bootstrap and StegFin executor service may proceed on an authorized node; canonical StegFin worker alone may attempt WALLET_HANDOFF_READY",
-  "state": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION"
+  "state": "COMPLETE_VALIDATED_RELEASED"
 }
