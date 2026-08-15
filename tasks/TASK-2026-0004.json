@@ -1,0 +1,55 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "TASK-2026-0004",
+  "organization": "StegVerse-Labs",
+  "goal": "Project the released StegFin phone RPC resilience asset into the canonical Site participant entry without importing credential, wallet, provider, or hosted-runtime authority",
+  "status": "queued",
+  "flags": ["trade-readiness", "phone-sovereign", "no-render", "tv-tvc-only"],
+  "requested_at": "2026-08-15T23:38:00Z",
+  "priority_class": "critical",
+  "rank_reason": [
+    "current phone has repeatedly reached an RPC rate-limit boundary before WALLET_HANDOFF_READY",
+    "StegFin source task STEGFIN-PHONE-RPC-RESILIENCE-012 is merged and terminal",
+    "participant entry cannot exercise the released resilience layer until Site projects the exact asset"
+  ],
+  "requirements": {
+    "mandatory": [
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-Labs",
+          "name": "Site",
+          "full_name": "StegVerse-Labs/Site",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": false,
+        "scope": {
+          "paths": [
+            "assets/stegfin-phone/rpc-resilience.js",
+            "stegfin-trade.html",
+            "scripts/check_stegfin_phone_projection.py",
+            "docs/STEGFIN_PHONE_PROJECTION_MIRROR_HANDOFF.md",
+            "data/session-work-claims.json"
+          ],
+          "contracts": ["site-stegfin-phone-rpc-resilience-projection-v1"],
+          "release_surfaces": ["stegverse.org/stegfin-trade.html"],
+          "capabilities": ["static-phone-rpc-resilience-projection"],
+          "workflows": ["check-stegfin-phone-projection"],
+          "dependency_surfaces": ["site:stegfin-phone-participant-projection"]
+        }
+      }
+    ],
+    "optional": []
+  },
+  "dependencies": [],
+  "workspace": {
+    "branch": "fix/stegfin-phone-rpc-resilience-261",
+    "merge_target": "main",
+    "direct_push_allowed": false,
+    "pull_request_required": true
+  },
+  "machine_owner": "organization allocator -> Site pre-work claim gate -> admitted Site implementation worker",
+  "release_condition": "Site claim is admitted without collision; exact StegFin rpc-resilience blob 290b567eca2cc9f83e7438a80682ebaf8006ad76 is projected before phone-direct-route.js; Site validation/orchestration pass; PR merges; Pages build contains the merged lineage; StegFin #60 imports the retry condition.",
+  "completion_evidence": []
+}
