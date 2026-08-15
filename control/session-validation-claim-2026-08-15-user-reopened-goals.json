@@ -7,9 +7,21 @@
   "branch": "main",
   "claimant": "current ChatGPT session",
   "role": "DISTINCT_VALIDATION_RECONCILIATION_SUPPORT",
-  "claim_state": "CLAIMED_FOR_VALIDATION",
+  "claim_state": "RELEASED",
   "claim_created_at": "2026-08-15T09:34:00-05:00",
+  "claim_released_at": "2026-08-15T09:49:00-05:00",
   "claim_release_condition": "Release immediately after newly produced evidence and stale durable state are reconciled into canonical handoffs/task records and no session-specific requirement remains outside durable machine/authority ownership.",
+  "release_condition_satisfied": true,
+  "release_evidence": [
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md proves local model/runtime source COMPLETE_RELEASED with executable discovery/launch/inference/proof and canonical validation.",
+    "StegVerse-Labs/.github/handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json retains live sovereign local-model activation under G18 machine ownership.",
+    "StegVerse-Labs/.github/handoffs/STEGFIN-CONTINUITY-CARRIER-007.json + worker registry retain trade-ready continuation under stegfin-continuity-carrier-worker with TV/TVC authority and USER_ONLY wallet boundary.",
+    "StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json retains the exclusive governed HTTPS runtime observer without duplicative chat ownership.",
+    "StegVerse-Labs/.github PR #179 merged as 2694f3e8524595c7c0591d3fa7ebe5a32f92f70d, installing sdk-mcp-canonical-validation-worker, registry, adapter, executable handoff and tests.",
+    "StegVerse-Labs/.github workflow 31890771807 job 95026592450 SUCCESS validates the new MCP worker path under anonymous/no-GitHub-token validation with the complete deterministic repository suite passing.",
+    "StegVerse-org/StegVerse-SDK tasks/SDK-MCP-CANONICAL-VALIDATION-009.json and MCP_PORTABLE_AUTHORITY_MIRROR_HANDOFF.md now point to the concrete machine worker continuation and exact worker receipt boundary.",
+    "StegVerse-org/StegVerse-SDK issue #30 contains the worker transfer and validation evidence."
+  ],
   "collision_boundaries": [
     "Do not acquire or mutate G18 sovereign heartbeat claims, fences, epochs or leases.",
     "Do not execute STEGFIN-CONTINUITY-CARRIER-007 live Inventory/provider/pretrade work from chat.",
@@ -19,21 +31,15 @@
     "Do not use or introduce non-TV/TVC secret/token authority; GitHub token runtime authority remains NONE.",
     "Do not sign or broadcast wallet transactions; USER_ONLY."
   ],
-  "expected_evidence": [
-    "current authoritative handoffs read",
-    "current machine/runtime state inspected",
-    "MCP defect-correction and diagnostic evidence reconciled into canonical SDK handoff/task state",
-    "session active-goals inventory reconciled to current evidence",
-    "support claim released or converted to a narrowly evidenced blocker before archival"
-  ],
   "canonical_continuations": {
     "local_model_runtime": "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
     "sovereign_runtime_activation": "StegVerse-Labs/.github/handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "local_model_route": "StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json",
     "trade_readiness": "StegVerse-Labs/.github/handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
     "trade_https_observer": "StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json",
-    "mcp_exact_sovereign_validation": "StegVerse-org/StegVerse-SDK/tasks/SDK-MCP-CANONICAL-VALIDATION-009.json"
+    "mcp_exact_sovereign_validation": "StegVerse-Labs/.github/handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json -> sdk-mcp-canonical-validation-worker -> StegVerse-org/StegVerse-SDK/tasks/SDK-MCP-CANONICAL-VALIDATION-009.json"
   },
+  "remaining_chat_execution_responsibility": "NONE",
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "non_tv_tvc_secret_or_token_allowed": false,
