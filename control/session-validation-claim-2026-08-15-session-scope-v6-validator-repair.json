@@ -1,0 +1,30 @@
+{
+  "schema_version": "stegverse.session-validation-claim/v1",
+  "task_id": "SESSION-SCOPE-V6-VALIDATOR-REPAIR-012",
+  "goal_id": "G07-SESSION-SCOPED-WORKER-ASSISTANCE",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "state": "CLAIMED_FOR_VALIDATION_REPAIR",
+  "claimant": "current ChatGPT continuation session",
+  "claimed_at": "2026-08-15T01:19:00-05:00",
+  "expires_at": "2026-08-15T01:49:00-05:00",
+  "scope": [
+    "control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v6.json",
+    "control/session-goal-inventory-2026-08-15-admissible-existence-core-local-runtime-v6.json",
+    "tests/test_session_assistance_scope.py",
+    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
+    "receipts/session-consolidation/SESSION-SCOPE-V6-CURRENT-GOALS-ONLY-20260815.json"
+  ],
+  "collision_exclusions": [
+    "AE retrospective/source-generation mismatch",
+    "live StegFin execution",
+    "TVC runtime observer",
+    "TV/TVC credentials/routes/runtime",
+    "heartbeat claims/fences/leases",
+    "wallet signing/broadcast"
+  ],
+  "release_condition": "Canonical v6 uses the existing inventory lineage basename, satisfies session-scope policy fields, focused session-assistance tests pass, and the mistaken alternate-date v6 path is removed or superseded without ambiguity.",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "non_tv_tvc_secret_or_token_allowed": false
+}
