@@ -1,6 +1,6 @@
 # StegFin Continuity Machine Executor Mirror Handoff
 
-Updated: 2026-08-15T01:36:00-05:00
+Updated: 2026-08-15T14:01:00-05:00
 
 ```text
 goal_id: STEGFIN-CONTINUITY-MACHINE-EXECUTOR-008
@@ -13,16 +13,16 @@ credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 wallet_signing_authority: USER_ONLY
 broadcast_authority: USER_ONLY
-state: SOURCE_COMPLETE_VALIDATED_RELEASED_CANONICAL_BOOTSTRAP_PROVENANCE_BOUND
+state: SOURCE_COMPLETE_VALIDATED_RELEASED_AUTO_BOOTSTRAP_CHAIN_MERGED_LIVE_MACHINE_EVIDENCE_PENDING
 ```
 
 ## Canonical ownership
 
-This handoff owns only the released non-heartbeat StegFin continuity machine executor, its rootless native service delivery, and the bounded sovereign-bootstrap-to-executor activation bridge. It does not own the StegFin continuity claim algorithm, G18 heartbeat state/claim/fence/lease semantics, TV/TVC credential/provider/route/vault authority, provider execution authority, wallet signing, broadcast, or settlement.
+This handoff owns the released non-heartbeat StegFin continuity machine executor, its rootless native service delivery, and the bounded sovereign-bootstrap-to-executor activation integration. It does **not** own G18 heartbeat claim/fence/lease state, the StegFin continuity claim algorithm, TV/TVC credential/provider/route/vault authority, provider execution authority, wallet signing, broadcast, settlement, or publication.
 
-The canonical trade handoff permits `ANY_AUTHORIZED_STEGVERSE_CONTINUITY_EXECUTOR`, binds execution to machine scheduling, and requires the existing StegFin worker itself to acquire the collision-safe continuity claim through `scripts/acquire_stegfin_continuity_claim.py`.
+The canonical trade worker remains `STEGFIN-CONTINUITY-CARRIER-007`; it alone acquires the continuity claim at execution. Credential authority remains TV/TVC and wallet signing/broadcast remains USER_ONLY.
 
-## Released executor source
+## Released executor surfaces
 
 ```text
 scripts/run_stegfin_continuity_machine_executor.py
@@ -33,31 +33,17 @@ tests/test_stegfin_continuity_machine_executor.py
 receipts/stegfin-continuity-machine-executor/source-validation-20260814.json
 ```
 
-The executor is a one-shot local host adapter, not a heartbeat and not an authority source. It rejects hosted GitHub/CI/Render/Vercel/Cloudflare execution, requires a valid TV/TVC-bound sovereign-node declaration, invokes only `workers/stegfin_continuity_carrier_worker_v3.py`, does not mint a claim or fence, strips GitHub/provider/wallet credential-like environment variables, and accepts trade completion only when the canonical worker transition is exactly `STEGFIN_CONTINUITY_WALLET_HANDOFF_READY` with no provider-secret export, `signed=false`, and `broadcast=false`.
+The executor rejects hosted GitHub/CI/Render/Vercel/Cloudflare execution, requires a valid TV/TVC-bound sovereign-node declaration, invokes only the canonical StegFin worker, does not mint a claim or fence, strips credential-like environment variables, and accepts completion only at exact `STEGFIN_CONTINUITY_WALLET_HANDOFF_READY` with no provider-secret export, `signed=false`, and `broadcast=false`.
 
-Historical executor validation:
-
-```text
-run/job: 31850156719 / 94924299352
-focused tests: 8/8 PASS
-hosted execution fail-closed: PASS
-rootless service materialization: PASS_NON_AUTHORIZING
-```
-
-The former dedicated executor validation workflow was intentionally removed. Current validation is carried by stable repository validation surfaces and creates no production runtime authority.
-
-## Sovereign runtime self-bootstrap
-
-The former descriptive prerequisite to select or pre-declare a local runtime is superseded. Canonical source contains:
+## Sovereign self-bootstrap — RELEASED
 
 ```text
 scripts/bootstrap_sovereign_runtime.py
+scripts/install_sovereign_heartbeat_service.py
 scripts/verify_sovereign_runtime_activation.py
 ```
 
-The self-bootstrap can derive a non-authorizing local node declaration, materialize/start native heartbeat supervision, and produce the canonical nine-predicate sovereign activation proof on an eligible non-hosted machine. It uses no GitHub token and grants no credential, route, provider, trade, or wallet authority.
-
-The nine required predicates are:
+The former descriptive requirement to select or predeclare a local runtime remains superseded. The bootstrap derives non-authorizing node eligibility, materializes/starts native heartbeat supervision, and proves the canonical nine predicates:
 
 ```text
 runtime_materialized
@@ -71,84 +57,83 @@ no_duplicate_claim_or_fence
 state_reconstruction_pass
 ```
 
-Repository source completion does not prove those live predicates on a real machine.
+Repository validation does not substitute for live non-hosted proof.
 
-## Sovereign post-bootstrap integration — COMPLETE VALIDATED RELEASED
+## Automatic post-bootstrap chaining — COMPLETE / VALIDATED / MERGED
 
-Task: `SOVEREIGN-STEGFIN-POST-BOOTSTRAP-001`  
-Issue: `StegVerse-Labs/.github#163`  
-Merged PR: `StegVerse-Labs/.github#171`  
-Merge commit: `069d5f3211d73d987a6cf22be1db2b4519963d71`
+Task: `SOVEREIGN-BOOTSTRAP-STEGFIN-CHAIN-001`  
+PR: `StegVerse-Labs/.github#180`  
+Merge: `3a438dba11ec6af82f1563fe5a382a268ee0dcae`
 
-Released bridge:
+Before this change, the self-bootstrap and the already-released post-bootstrap StegFin service activator were separate executable steps. The source is now connected so one canonical non-hosted bootstrap invocation proceeds automatically:
 
 ```text
-scripts/activate_stegfin_after_sovereign_bootstrap.py
+scripts/bootstrap_sovereign_runtime.py
+-> derive/verify non-authorizing local node eligibility
+-> install/start native sovereign heartbeat
+-> verify all nine predicates
+-> persist bootstrap.latest.json COMPLETE
+-> automatically invoke scripts/activate_stegfin_after_sovereign_bootstrap.py
+-> validate exact bootstrap/proof/source/runtime/node lineage
+-> install/start rootless StegFin continuity executor service
+-> executor service invokes canonical machine executor
+-> canonical StegFin worker owns claim acquisition and bounded pretrade
 ```
 
-The bridge installs/observes only the already-released rootless StegFin executor service. It cannot execute the trade, acquire the StegFin continuity claim, choose provider credentials, contact provider/wallet, sign, broadcast, settle, or claim `WALLET_HANDOFF_READY`.
+The sovereign COMPLETE receipt is written **before** downstream StegFin service activation. A downstream service failure therefore cannot forge, erase, or downgrade the sovereign activation truth. Conversely, hosted execution, incomplete local source, or failed/missing nine-predicate proof never invokes the StegFin post-bootstrap bridge.
 
-## Canonical bootstrap provenance — COMPLETE VALIDATED RELEASED
+An explicit `--skip-post-bootstrap-stegfin` switch retains heartbeat-only deployment when required.
 
-Task: `STEGFIN-POST-BOOTSTRAP-PROVENANCE-172`  
-Issue: `StegVerse-Labs/.github#172`  
-Superseded PR: `StegVerse-Labs/.github#173`  
-Merged PR: `StegVerse-Labs/.github#177`  
-Merge commit: `80568f5487ead7e0bd90813de6bae1f4c7bdc337`  
-Claim: `control/session-implementation-claim-2026-08-15-stegfin-post-bootstrap-provenance-172.json`  
-Claim state: `COMPLETE_VALIDATED_RELEASED`
+Authority remains unchanged:
 
-A caller-supplied boolean-shaped activation document is not sufficient. Before invoking the executor-service installer, the bridge now requires all of the following to bind to the same local execution lineage:
-
-1. activation proof schema exactly `stegverse.sovereign-runtime-activation-proof/v1`;
-2. `all_predicates_pass=true` and all nine predicates true;
-3. bootstrap receipt schema exactly `stegverse.sovereign-runtime-self-bootstrap-receipt/v1`;
-4. bootstrap `state=COMPLETE` and `reason=SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_VERIFIED`;
-5. bootstrap `credential_requirement=NONE`, `credential_authority=TV/TVC`, `github_token_required=false`, and no third-party runtime requirement;
-6. bootstrap `source_root` exactly matches the local `.github` root being activated;
-7. bootstrap `proof_path` exactly matches the consumed activation proof;
-8. bootstrap `node_declaration_ref` exactly matches the consumed node declaration;
-9. bootstrap `runtime_root` exactly matches activation proof `detail.runtime_root`;
-10. node declaration preserves the non-authorizing TV/TVC boundary.
-
-Deterministic tests reject forged proof schemas, incomplete proofs, mismatched bootstrap proof references, mismatched node references, wrong source/runtime roots, non-complete bootstrap receipts, invalid node authority, hosted execution, and false executor activation receipts. The positive path strips GitHub/provider/wallet credential-like values before invoking the installer.
+```text
+provider operation from bootstrap: false
+trade claim acquisition from bootstrap: false
+wallet_handoff_ready claim from bootstrap: false
+credential authority: TV/TVC
+non-TV/TVC secret/token allowed: false
+GitHub runtime token authority: NONE
+wallet signing: USER_ONLY
+broadcast: USER_ONLY
+```
 
 Validation evidence:
 
 ```text
-PR #177 head: f20f45090debe5cf1bbb318d337a376fb201d64a
-PR Heartbeat Worker Project: 31869788040 SUCCESS
-PR organization control-plane validation: 31869787953 SUCCESS
-PR organization handoff render: 31869787932 SUCCESS
-merged main: 80568f5487ead7e0bd90813de6bae1f4c7bdc337
-merged-main Heartbeat Worker Project: 31869810980 SUCCESS
-merged-main Org Continuation Check: 31869810988 SUCCESS
-non-TV/TVC secret or token used: false
-GitHub-token runtime authority: NONE
-wallet_handoff_ready_claimed: false
+Heartbeat Worker Project run: 31902367481
+job: 95054972979
+result: SUCCESS
+anonymous public checkout: PASS
+NO_GITHUB_CREDENTIAL_TOKEN_PRESENT: PASS
+canonical JSON: PASS 194
+executable handoff validation: PASS count=28 live_lanes=24
+complete deterministic repository tests: 268/268 PASS
+new bootstrap chaining tests: PASS
+heartbeat dry-run non-mutating: PASS
+ephemeral projections: PASS
+workflow non-authorizing: PASS
 ```
+
+The parallel organization-control-plane workflow failed only on pre-existing ownership-documentation debt in `docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md` and `docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md`; it did not identify a defect in the new bootstrap-chain source. Those control-plane defects remain separately owned and are not treated as activation evidence.
 
 ## Current machine-owned continuation
 
-The canonical source chain is now:
-
 ```text
 canonical local source
-  -> scripts/bootstrap_sovereign_runtime.py
-  -> bootstrap.latest.json COMPLETE
-  -> canonical nine-predicate activation.latest.json PASS
-  -> scripts/activate_stegfin_after_sovereign_bootstrap.py
-  -> native rootless StegFin executor service active
-  -> scripts/run_stegfin_continuity_machine_executor.py
-  -> workers/stegfin_continuity_carrier_worker_v3.py
-  -> canonical worker self-acquires collision-safe continuity claim
-  -> canonical TV/TVC transport selection
-  -> bounded provider pretrade preparation
-  -> WALLET_HANDOFF_READY OR exact fail-closed receipt
-  -> USER_ONLY wallet action boundary
+-> scripts/bootstrap_sovereign_runtime.py
+-> bootstrap.latest.json COMPLETE
+-> activation.latest.json all nine predicates PASS
+-> automatic post-bootstrap StegFin service activation
+-> sovereign-post-bootstrap.latest.json executor_service_active=true
+-> executor-activation.latest.json active=true
+-> scripts/run_stegfin_continuity_machine_executor.py
+-> workers/stegfin_continuity_carrier_worker_v3.py
+-> canonical worker self-acquires collision-safe continuity claim
+-> same-host TV/TVC Unix broker if present OR governed READY TVC HTTPS path
+-> bounded 12.50 USDC -> WETH preparation
+-> WALLET_HANDOFF_READY OR exact fail-closed terminal receipt
+-> STOP at USER_ONLY wallet action boundary
 ```
-
-No third-party host or pre-existing resident heartbeat is required to initiate the local source chain. However, repository completion is not live host activation and is not trade completion.
 
 Machine-observable trade completion remains exclusively:
 
@@ -161,59 +146,67 @@ signed=false
 broadcast=false
 ```
 
-## Collision exclusions
+## Current observations
 
-- no G18 heartbeat state, claim, fence, epoch, lease or worker mutation from this lane;
-- no alternate StegFin continuity claim issuer;
-- no alternate TV/TVC provider broker, credential, route, vault or runtime authority;
-- no provider-secret input/export to StegFin;
-- no GitHub-token runtime authority;
-- no wallet signing or broadcast by StegFin or this bridge;
-- no claim that service activation equals `WALLET_HANDOFF_READY`;
-- no live provider operation from hosted validation/chat.
+```text
+nine-predicate sovereign activation observed: false
+rootless executor service active observed: false
+terminal/fail-closed StegFin worker receipt observed: false
+WALLET_HANDOFF_READY observed: false
+product activation complete: false
+```
 
-## Session consolidation / archive dependency
-
-All source implementation, validation, authority-boundary, collision, and continuation knowledge for #163 and #172 is durable in this repository. Their session implementation claims are released. The remaining G08 product activation is machine-owned and requires live evidence from an authorized non-hosted StegVerse node and the canonical StegFin worker. A new chat-owned implementation claim is justified only if machine-observable evidence exposes a new unclaimed source defect.
+No hosted validation, repository merge, service template, or handoff record is sufficient to flip those observations.
 
 ## Execution ownership and collision partition
 
-### MANUAL / SESSION-STARTABLE
+### SESSION / IMPLEMENTATION SUPPORT
 
 ```text
-manual_execution_allowed: false
-worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
-collision_scope: released StegFin executor source and native service activation chain
-release_condition: none; hosted/chat/manual execution cannot substitute for sovereign host execution
-next_executable_action: NONE_MANUAL_EXECUTION_PROHIBITED
+manual live execution allowed: false
+source integration task: SOVEREIGN-BOOTSTRAP-STEGFIN-CHAIN-001
+source state: COMPLETE_VALIDATED_MERGED
+remaining session role: evidence reconciliation only while the user requires active activation work
 ```
 
 ### WORKER-OWNED / DO NOT COMPETE
 
 ```text
-manual_execution_allowed: false
-worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
-collision_scope: canonical StegFin continuity claim, Inventory N, TV/TVC transport selection, provider pretrade preparation, and WALLET_HANDOFF_READY receipt
-release_condition: canonical worker emits WALLET_HANDOFF_READY or exact fail-closed terminal receipt and releases its claim
-next_executable_action: authorized native runtime executes the released bootstrap/provenance/service chain; the existing StegFin worker then self-acquires its canonical claim
+G18 owner: sovereign-runtime-activation-worker / fencing token 18
+trade worker: stegfin-continuity-carrier-worker
+trade task: STEGFIN-CONTINUITY-CARRIER-007
+release: nine-predicate PASS -> executor service active -> WALLET_HANDOFF_READY or exact fail-closed evidence
 ```
 
-### ESCALATED / AUTHORITY-OWNED
+### AUTHORITY-OWNED
 
 ```text
-manual_execution_allowed: false
-worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
-collision_scope: TV/TVC credential/provider/route/vault/runtime authority and USER_ONLY wallet signing/broadcast
-release_condition: required TV/TVC runtime/provider predicate or USER_ONLY wallet action is independently evidenced by its canonical owner
-next_executable_action: TV/TVC performs only authority-owned provider/runtime operations; USER_ONLY retains signing and broadcast
+credential/provider/route/vault authority: TV/TVC
+wallet signing/broadcast: USER_ONLY
+non-TV/TVC secret/token use: PROHIBITED
 ```
 
-### COMPLETED / SUPERSEDED
+## Completion accounting
+
+For machine-executor/source integration:
 
 ```text
-manual_execution_allowed: false
-worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
-collision_scope: executor source, installer, sovereign self-bootstrap, post-bootstrap bridge, bootstrap-provenance binding, and obsolete descriptive local-runtime/predeclared-node prerequisites
-release_condition: source surfaces are COMPLETE_VALIDATED_RELEASED and superseded prerequisites are replaced by the canonical executable chain
-next_executable_action: NONE_SOURCE_REIMPLEMENTATION; observe machine-owned live activation and trade-readiness evidence
+source/control surfaces: COMPLETE
+scaffolding/stubs: 0
+missing source files: 0
+deterministic validation: PASS
+automatic bootstrap-to-service integration: COMPLETE_VALIDATED_MERGED
+live sovereign activation: PENDING
+live executor activation: PENDING
+WALLET_HANDOFF_READY: PENDING
 ```
+
+For the outer StegFin trade-ready goal, the canonical denominator remains 8 deliverables: 7 complete, 1 live machine execution pending.
+
+## Next executable action
+
+`G18/local sovereign execution` runs the single released `scripts/bootstrap_sovereign_runtime.py` entrypoint on an eligible non-hosted StegVerse-controlled machine containing canonical source/runtime. A nine-predicate PASS now automatically attempts the rootless StegFin service activation, eliminating the former separate post-bootstrap invocation. The canonical StegFin worker then owns claim acquisition and bounded wallet-handoff preparation. No chat/hosted lane may substitute for that live execution.
+
+## Archive condition
+
+The current user explicitly requires this session to remain active while activation is incomplete. Do not archive until live activation evidence is reconciled or the user changes that requirement. Canonical blocker: `management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json`.
