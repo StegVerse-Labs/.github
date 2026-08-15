@@ -22,12 +22,27 @@
         "capability_id": "stegverse:capability:sdk-mcp-canonical-validation:v1",
         "capability_version": "1.0.0",
         "phase": "ADMISSIBLE",
-        "task_relationship": "validates_capability",
+        "standing_evidence_refs": [
+          "StegVerse-org/StegVerse-SDK:MCP_PORTABLE_AUTHORITY_MIRROR_HANDOFF.md",
+          "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json",
+          "StegVerse-org/StegVerse-SDK:tests/test_mcp_production_artifact.py",
+          "StegVerse-org/StegVerse-SDK:reports/mcp-production-artifact/local-integration-diagnostic-20260815.json"
+        ],
+        "integration_evidence_refs": [
+          "workers/sdk_mcp_canonical_validation_worker.py",
+          "control/worker-registry.d/sdk-mcp-canonical-validation-009.json",
+          "control/process-worker-adapters.d/sdk-mcp-canonical-validation-009.json"
+        ],
         "activation_proof_ref": null,
         "blockers": ["EXACT_SOVEREIGN_ARTIFACT_RUN_NOT_YET_OBSERVED"],
         "continuation_owner": "sdk-mcp-canonical-validation-worker",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "validates_capability",
         "target_phase": "ACTIVATED"
       }
     }
