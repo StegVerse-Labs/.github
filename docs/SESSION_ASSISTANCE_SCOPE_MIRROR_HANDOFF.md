@@ -1,6 +1,6 @@
 # Session Assistance Scope Mirror Handoff
 
-Updated: 2026-08-15T01:16:00-05:00
+Updated: 2026-08-15T01:25:00-05:00
 
 ## Authority and current session state
 
@@ -13,7 +13,7 @@ state: COMPLETE_VALIDATED_RELEASED_V6_CURRENT_SESSION_ONLY
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 execution_authority_created: NONE
-current_inventory: control/session-goal-inventory-2026-08-15-admissible-existence-core-local-runtime-v6.json
+current_inventory: control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v6.json
 superseded_inventory: control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v5.json
 scope_correction_receipt: receipts/session-consolidation/SESSION-SCOPE-V6-CURRENT-GOALS-ONLY-20260815.json
 ```
@@ -26,7 +26,7 @@ This handoff decides whether an interactive session may assist a worker/task. It
 
 `assist workers` means assist only workers whose durable lineage intersects an originating goal established in this conversation, or a direct durable dependency, validation, integration, reconciliation, or propagation descendant of such a goal. Activity elsewhere in StegVerse is not sufficient to widen this session's scope.
 
-The v5 inventory imported organization cost-containment, repository-hygiene, and workflow-minimization goals from concurrent workstreams. Those goals remain valid in their own canonical workstreams, but they are not originating goals of this conversation and are therefore excluded from v6 worker selection. The already-completed StegFin validation-workflow consolidation remains repository history and does not create continuing scope here.
+The v5 inventory imported organization cost-containment, repository-hygiene, and workflow-minimization goals from concurrent workstreams. Those goals remain valid in their own canonical workstreams, but they are not originating goals of this conversation and are therefore excluded from v6 worker selection.
 
 ## Current goal inventory
 
@@ -51,24 +51,42 @@ G17-WORKFLOW-SURFACE-MINIMIZATION  -> StegVerse-Labs/.github#167/#168 and reposi
 
 The formal local model/runtime goal remains complete in `StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md`; no duplicate local model/runtime is authorized.
 
-## Canonical G08 continuation
+## Validation of current-session-only scope
 
 ```text
-G08-STEGFIN-TRADE-READY
--> docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md
--> authorized non-hosted StegVerse node supervisor
+workflow: Org Continuation Check - No GitHub Token Authority
+head: e819f78fedec89593e6336fd521d9c7b94c86246
+run: 31869162728
+job: 94974973983
+conclusion: SUCCESS
+SESSION_ASSISTANCE_SCOPE_PASS inventories=1 bindings=8
+focused scope tests: 7/7 PASS
+NO_GITHUB_CREDENTIAL_TOKEN_PRESENT: PASS
+ORG_CONTINUATION_NON_AUTHORIZING_PASS: PASS
+```
+
+## Canonical G08 continuation
+
+The released local chain now contains the sovereign self-bootstrap and bounded post-bootstrap service activation bridge:
+
+```text
+canonical local .github source
+-> scripts/bootstrap_sovereign_runtime.py
+-> non-authorizing node declaration
+-> native sovereign heartbeat service
+-> canonical nine-predicate activation proof
+-> scripts/activate_stegfin_after_sovereign_bootstrap.py
+-> native rootless StegFin executor service
 -> scripts/run_stegfin_continuity_machine_executor.py
 -> workers/stegfin_continuity_carrier_worker_v3.py
--> canonical self-issued continuity claim
--> actual same-host TV/TVC Unix broker OR existing TVC-CAPABILITY-RUNTIME-002 READY HTTPS path
+-> canonical worker self-acquires continuity claim
+-> actual same-host TV/TVC Unix broker OR TVC-CAPABILITY-RUNTIME-002 READY HTTPS path
 -> bounded provider pretrade preparation
 -> WALLET_HANDOFF_READY
 -> STOP at USER_ONLY wallet authority
 ```
 
-The non-heartbeat continuity-executor source is complete and released. It is not a heartbeat, claim issuer, TV/TVC credential broker, runtime observer, provider authority, or wallet executor. It requires an already-declared sovereign StegVerse node, strips GitHub/provider/wallet/cloud credential-like inputs, invokes only the existing v3 continuity worker, and refuses COMPLETE unless durable exact `STEGFIN_CONTINUITY_WALLET_HANDOFF_READY` evidence exists with TV/TVC authority, no non-TV/TVC secret/token, no provider-secret export, `signed=false`, and `broadcast=false`.
-
-The former standalone StegFin executor validation workflow has been consolidated into the stable repository validation surface. Its prior successful focused validation remains historical evidence in `receipts/stegfin-continuity-machine-executor/source-validation-20260814.json`; deletion of that workflow does not alter production execution or authority.
+The non-heartbeat continuity executor is not a heartbeat, claim issuer, TV/TVC credential broker, provider authority, or wallet executor. The active bounded follow-up `.github#172` / PR #173 requires canonical bootstrap provenance—exact bootstrap receipt, proof/node references, source root and runtime root—before the released native executor service may be activated.
 
 ## Collision boundaries
 
@@ -83,18 +101,66 @@ GitHub token runtime authority: NONE
 Render/GitHub-hosted execution: NOT PRODUCTION AUTHORITY
 ```
 
-## Exact remaining machine/authority boundary
+## Execution ownership and collision partition
 
-Source is complete, but host installation is not observed and `WALLET_HANDOFF_READY` is not observed. No connected tool in this chat is the declared sovereign/local StegVerse node, so repository validation cannot be represented as host activation.
+### MANUAL / SESSION-STARTABLE
 
-On an already-declared authorized non-hosted StegVerse node with locally materialized canonical source, the installed next action remains:
-
-```text
-python scripts/install_stegfin_continuity_machine_service.py --root <local-StegVerse-Labs-.github-root>
+```yaml
+- task_id: STEGFIN-POST-BOOTSTRAP-PROVENANCE-172
+  execution_owner: current bounded G08 validation/integration session
+  claim_state: CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION
+  worker_registry_ref: control/session-implementation-claim-2026-08-15-stegfin-post-bootstrap-provenance-172.json
+  manual_execution_allowed: true
+  collision_scope: canonical bootstrap/proof/node provenance validation and current-session handoff reconciliation only; no live trade/provider/wallet execution
+  release_condition: PR #173 is merged after owned validation succeeds and exact merged-main validation confirms provenance binding; claim then released
+  next_executable_action: complete current-head validation for #173, repair only owned provenance/handoff surfaces, and merge when admissible
 ```
 
-The native service then runs the released executor; the existing worker self-acquires the canonical collision-safe continuity claim, selects a lawful TV/TVC transport, and either persists an exact fail-closed machine receipt or reaches `WALLET_HANDOFF_READY`. No protected credential value is exported to StegFin.
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: STEGFIN-CONTINUITY-CARRIER-007
+  execution_owner: canonical StegFin continuity worker
+  claim_state: MACHINE_CLAIM_ON_EXECUTION
+  worker_registry_ref: handoffs/STEGFIN-CONTINUITY-CARRIER-007.json
+  manual_execution_allowed: false
+  collision_scope: continuity claim, fresh Inventory N, TV/TVC transport selection, provider pretrade preparation, WALLET_HANDOFF_READY/fail-closed receipt
+  release_condition: terminal receipt persisted and canonical machine claim released
+  next_executable_action: authorized native executor invokes the existing worker after sovereign/local service admission
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: TV-TVC-CREDENTIAL-PROVIDER-RUNTIME-AUTHORITY
+  execution_owner: StegVerse-Labs/TV + StegVerse-Labs/TVC
+  claim_state: AUTHORITY_OWNED_WITH_EXCLUSIVE_HTTPS_OBSERVER
+  worker_registry_ref: StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json
+  manual_execution_allowed: false
+  collision_scope: credentials, provider/vault/route authority, protected values, and HTTPS primary-runtime activation/observation
+  release_condition: applicable TV/TVC runtime/route predicate is satisfied or the canonical same-host Unix broker is independently observed by the StegFin worker
+  next_executable_action: TV/TVC continues its existing authority-owned lanes without session-created credential substitutes
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF
+  execution_owner: StegVerse-002/micro-node-runtime
+  claim_state: COMPLETE_RELEASED
+  worker_registry_ref: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
+  manual_execution_allowed: false
+  collision_scope: released local model/runtime source; descriptive runtime selection superseded
+  release_condition: satisfied
+  next_executable_action: consume released runtime only through canonical governed activation chain
+```
+
+## Exact remaining machine/authority boundary
+
+Repository source completion is not live activation. `WALLET_HANDOFF_READY` is not observed. No connected tool in this chat is the sovereign/local StegVerse node, so repository validation cannot be represented as provider/pretrade execution.
+
+After canonical sovereign bootstrap and the provenance-bound service bridge, the existing StegFin worker alone self-acquires the collision-safe claim, selects a lawful TV/TVC transport, and either persists an exact fail-closed receipt or reaches `WALLET_HANDOFF_READY`. No protected credential is exported to StegFin.
 
 ## Archive condition
 
-The current session remains non-archive-ready while G08 is an explicit current-session goal and the native continuity executor has not been observed installed/active on an authorized node with a resulting terminal/fail-closed worker receipt. All source implementation and authority boundaries are durable. This session's remaining lawful role is distinct validation/reconciliation of evidence from workers already inside the v6 current-session goal inventory; it must not assist unrelated organization workstreams.
+The current session remains non-archive-ready while G08 is active and the bounded #172 implementation/validation claim remains open. After #172 is released, archival still requires that unresolved G08 execution have a proven active continuation sufficient to eliminate the session's distinct support role; durable recording alone is insufficient.
