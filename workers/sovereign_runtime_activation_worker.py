@@ -52,35 +52,6 @@ def sovereign_node_declared() -> bool:
     return truthy(os.environ.get("STEGVERSE_SOVEREIGN_NODE")) or any(path.is_file() for path in NODE_MARKERS)
 
 
-def persist_authorized_node_declaration() -> Path | None:
-    """Persist only a declaration that is already authorized/observable.
-
-    Existing node markers remain authoritative. An explicit STEGVERSE_SOVEREIGN_NODE
-    declaration may be persisted into the current user's StegVerse state so the
-    native heartbeat service retains node eligibility after environment loss or a
-    controlled restart. This function never invents a declaration when none exists.
-    """
-    for marker in NODE_MARKERS:
-        if marker.is_file():
-            return marker
-    if not truthy(os.environ.get("STEGVERSE_SOVEREIGN_NODE")):
-        return None
-    marker = Path.home() / ".stegverse" / "node.json"
-    atomic_write(
-        marker,
-        {
-            "schema": "stegverse.sovereign-node-declaration/v0.1",
-            "declared": True,
-            "declaration_source": "STEGVERSE_SOVEREIGN_NODE",
-            "credential_authority": "TV/TVC",
-            "github_token_required": False,
-            "third_party_runtime_required": False,
-            "authority_effect": "PERSIST_EXISTING_NODE_DECLARATION_ONLY",
-        },
-    )
-    return marker
-
-
 def default_runtime_root() -> Path:
     override = os.environ.get("STEGVERSE_HEARTBEAT_ROOT")
     if override:
@@ -105,83 +76,111 @@ def load_evidence() -> tuple[Path | None, dict | None]:
     return None, None
 
 
+def bootstrap_receipt_path() -> Path:
+    return (Path.home() / ".stegverse" / "heartbeat" / "bootstrap.latest.json").resolve()
+
+
+def load_json(path: Path) -> dict | None:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+        return value if isinstance(value, dict) else None
+    except Exception:
+        return None
+
+
 def execute_native_solution() -> dict:
+    """Consume the released self-bootstrap instead of requiring a predeclared node.
+
+    The self-bootstrap itself derives only non-authorizing node eligibility from
+    canonical local source/durable-state conditions. G18 retains its existing claim
+    and fence; this function does not manufacture credential, route, provider, or
+    wallet authority. Hosted environments still fail closed before execution.
+    """
     result = {
         "attempted": False,
         "eligible_node": False,
+        "pre_existing_node_declaration_required": False,
         "hosted_environment_rejected": False,
-        "installer_returncode": None,
-        "verifier_returncode": None,
+        "bootstrap_returncode": None,
         "runtime_root": str(default_runtime_root()),
         "node_declaration_marker": None,
+        "bootstrap_receipt_ref": str(bootstrap_receipt_path()),
+        "credential_requirement": "NONE",
+        "credential_authority": "TV/TVC",
+        "github_token_required": False,
     }
     if third_party_hosted_environment():
         result["hosted_environment_rejected"] = True
         result["reason"] = "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_RUNTIME_EVIDENCE"
         return result
-    if not sovereign_node_declared():
-        result["reason"] = "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT"
+
+    bootstrap = ROOT / "scripts" / "bootstrap_sovereign_runtime.py"
+    if not bootstrap.is_file():
+        result["reason"] = "SOVEREIGN_SELF_BOOTSTRAP_TOOLING_MISSING"
         return result
 
-    marker = persist_authorized_node_declaration()
-    result["node_declaration_marker"] = str(marker) if marker is not None else None
-    result["eligible_node"] = True
     result["attempted"] = True
     runtime_root = default_runtime_root()
-    installer = ROOT / "scripts" / "install_sovereign_heartbeat_service.py"
-    verifier = ROOT / "scripts" / "verify_sovereign_runtime_activation.py"
-    if not installer.is_file() or not verifier.is_file():
-        result["reason"] = "ACTIVATION_TOOLING_MISSING"
-        return result
-
-    install = subprocess.run(
-        [sys.executable, str(installer), "--source-root", str(ROOT), "--runtime-root", str(runtime_root)],
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(bootstrap),
+            "--source-root",
+            str(ROOT),
+            "--runtime-root",
+            str(runtime_root),
+        ],
         capture_output=True,
         text=True,
-        timeout=180,
+        timeout=420,
         check=False,
     )
-    result["installer_returncode"] = install.returncode
-    if install.returncode != 0:
-        result["reason"] = "NATIVE_INSTALLATION_RETRY_REQUIRED"
-        return result
+    result["bootstrap_returncode"] = completed.returncode
+    receipt = load_json(bootstrap_receipt_path()) or {}
+    result["bootstrap_state"] = receipt.get("state")
+    result["bootstrap_reason"] = receipt.get("reason")
+    declaration_ref = receipt.get("node_declaration_ref")
+    result["node_declaration_marker"] = declaration_ref
+    result["eligible_node"] = bool((receipt.get("node_eligibility") or {}).get("eligible"))
+    result["post_bootstrap_stegfin"] = receipt.get("post_bootstrap_stegfin")
 
-    verify = subprocess.run(
-        [sys.executable, str(verifier), "--runtime-root", str(runtime_root)],
-        capture_output=True,
-        text=True,
-        timeout=180,
-        check=False,
-    )
-    result["verifier_returncode"] = verify.returncode
-    result["reason"] = "SOVEREIGN_ACTIVATION_VERIFIED" if verify.returncode == 0 else "SOVEREIGN_ACTIVATION_PROOF_INCOMPLETE"
+    if completed.returncode == 0 and receipt.get("state") == "COMPLETE":
+        result["reason"] = "SOVEREIGN_SELF_BOOTSTRAP_VERIFIED"
+    elif receipt.get("reason"):
+        result["reason"] = receipt["reason"]
+    else:
+        result["reason"] = "SOVEREIGN_SELF_BOOTSTRAP_INCOMPLETE"
     return result
 
 
-def unresolved_node_resolution_contract() -> dict:
-    """Describe a physical-resource collision for engine-v11 task derivation.
+def unresolved_node_resolution_contract(solution_attempt: dict | None = None) -> dict:
+    """Describe the remaining physical/local-surface condition after self-bootstrap.
 
-    The current G18 worker cannot manufacture a new sovereign node or expand its
-    own authority. Returning BLOCKED is therefore only a trigger for the
-    canonical RESOLVE/ESCALATE path; it is never permission for passive waiting.
+    A missing pre-created node declaration is no longer a blocker. Escalation is
+    reserved for cases where the released bootstrap cannot run because this worker
+    is not executing on an eligible non-hosted local surface or canonical source is
+    not materialized there.
     """
+    reason = (solution_attempt or {}).get("reason")
     return {
         "dependency_class": "PHYSICAL_RESOURCE",
         "trigger_type": "CONDITIONAL_CONSTRAINT",
-        "problem_statement": "No currently executing environment is declared as a StegVerse-owned/federated sovereign node eligible for native service activation.",
+        "problem_statement": "The released self-bootstrap could not establish the sovereign local runtime on the current execution surface; a pre-existing node declaration is not required.",
         "solution_required": True,
         "resolvable_by_current_worker": False,
         "escalation_target": "REPOSITORY_OWNER",
         "required_capabilities": ["repository_resolution", "sandbox_validation"],
+        "observed_bootstrap_reason": reason,
         "workaround_candidates": [
-            "Bind this worker to any existing StegVerse-owned/federated Linux, macOS, or Windows node by installing the node declaration and running the canonical native installer.",
-            "Promote an existing StegVerse-002 micro-node to the carrier if it satisfies durable-state and native-supervision requirements.",
-            "Construct a new StegVerse-owned/federated node from the repository-local runtime capsule; no hosted provider is required."
+            "Run the existing G18 worker on a StegVerse-owned/federated non-hosted Linux, macOS, or Windows surface containing canonical local source; the worker will invoke self-bootstrap itself.",
+            "Promote an existing StegVerse-002 micro-node by materializing the canonical runtime capsule; no hand-created node declaration is required.",
+            "Construct a new StegVerse-owned/federated node from the repository-local runtime capsule without hosted-provider or GitHub-token production authority."
         ],
-        "next_solution_action": "Derive and register the next-level sovereign-node resolution task; that resolver must select, promote, or construct an eligible node without weakening the no-hosted-provider or TV/TVC authority boundary.",
+        "next_solution_action": "Bind the canonical G18 worker to an eligible non-hosted local execution surface containing canonical source/runtime capsule; the worker then invokes scripts/bootstrap_sovereign_runtime.py automatically.",
         "completion_evidence": [
-            "An eligible StegVerse-owned/federated node declaration is machine-observable.",
-            "The canonical native installer and verifier can execute on that node without GitHub-token or hosted-provider production authority."
+            "bootstrap.latest.json state COMPLETE with credential_requirement NONE and credential_authority TV/TVC",
+            "activation.latest.json reports all nine predicates true",
+            "no GitHub-token or hosted-provider production authority is used"
         ],
     }
 
@@ -221,29 +220,31 @@ def main() -> int:
         state = "COMPLETED"
         blocker = None
         expected = None
-    elif solution_attempt.get("attempted"):
+    elif solution_attempt.get("attempted") and solution_attempt.get("reason") not in {
+        "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_RUNTIME_EVIDENCE",
+        "LOCAL_RUNTIME_ELIGIBILITY_NOT_PROVEN",
+    }:
         transition = "SOVEREIGN_RUNTIME_SOLUTION_EXECUTING"
         state = "ACTIVE"
         expected = "SOVEREIGN_RUNTIME_SOLUTION_EXECUTION"
         blocker = {
             "dependency_class": "INTERNAL_CAPABILITY",
-            "problem_statement": "A declared sovereign node exists, but native installation and/or nine-predicate activation proof is not complete yet.",
+            "problem_statement": "The canonical self-bootstrap was attempted on this non-hosted surface, but nine-predicate activation proof is not complete yet.",
             "solution_required": True,
             "workaround_candidates": [
-                "Retry the node-local native installer and verifier on the same declared node.",
-                "Switch to another declared StegVerse-owned/federated node if native supervision cannot satisfy the proof predicates.",
-                "Use a StegVerse-002 micro-node carrier that can persist the same canonical runtime state and restart proof."
+                "Retry the released self-bootstrap on the same local surface after its machine-observable failure condition clears.",
+                "Use another StegVerse-owned/federated non-hosted surface containing the same canonical runtime capsule."
             ],
-            "next_solution_action": "Continue node-local installer/verifier execution until the proof producer emits all nine predicates true or select another eligible sovereign node."
+            "next_solution_action": "Continue the canonical self-bootstrap until activation.latest.json contains all nine predicates true or an exact fail-closed bootstrap reason requires local-surface remediation."
         }
     else:
         transition = "SOVEREIGN_RUNTIME_RESOLUTION_ESCALATION_REQUIRED"
         state = "BLOCKED"
         expected = "DERIVE_AND_REGISTER_RESOLUTION_TASK"
-        blocker = unresolved_node_resolution_contract()
+        blocker = unresolved_node_resolution_contract(solution_attempt)
 
     receipt = {
-        "schema": "stegverse.sovereign-runtime-worker-receipt/v0.4",
+        "schema": "stegverse.sovereign-runtime-worker-receipt/v0.5",
         "task_id": EXPECTED_TASK,
         "claim_id": claim_id,
         "worker_id": task.get("worker_id"),
@@ -256,10 +257,14 @@ def main() -> int:
         "required_predicates": REQUIRED_PREDICATES,
         "missing_predicates": missing,
         "solution_attempt": solution_attempt,
+        "pre_existing_node_declaration_required": False,
+        "self_bootstrap_entrypoint": "scripts/bootstrap_sovereign_runtime.py",
         "third_party_runtime_required": False,
         "third_party_dependency_is_blocker": False,
         "blocker_policy_ref": "control/blocker-resolution-policy.json",
         "blocker": blocker,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
         "authority_effect": "bounded_native_runtime_activation_under_existing_handoff",
         "completed": passed,
     }
@@ -277,12 +282,11 @@ def main() -> int:
         "checkpoint_ref": f"receipts/sovereign-runtime-activation/{EXPECTED_TASK}.json",
         "evidence_refs": [
             f"receipts/sovereign-runtime-activation/{EXPECTED_TASK}.json",
+            "scripts/bootstrap_sovereign_runtime.py",
             "scripts/install_sovereign_heartbeat_service.py",
             "scripts/verify_sovereign_runtime_activation.py",
             "StegVerse-Labs/.github#12",
-            "StegVerse-Labs/.github#59",
-            "StegVerse-Labs/.github#65",
-            "control/blocker-resolution-policy.json"
+            "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json"
         ],
         "blocker": blocker,
         "cost_observation": {
