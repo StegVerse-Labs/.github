@@ -1,0 +1,113 @@
+{
+  "schema": "stegverse.session-goal-inventory-amendment/v1",
+  "inventory_id": "ACTIVE-GOALS-AMENDMENT-2026-08-15-0900",
+  "base_inventory": "control/session-goal-inventory-2026-08-14-local-runtime-trade-readiness.json",
+  "created_at": "2026-08-15T09:00:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "archive_state": "ACTIVE_DISTINCT_SUPPORT_WORK_REMAINS",
+  "originating_session_goals": [
+    "Assist workers and make the bounded StegFin validation trade ready.",
+    "Use no non-TV/TVC secrets or tokens; TV/TVC manages protected credential semantics.",
+    "Replace descriptive local-runtime selection with executable local discovery/launch/inference/proof.",
+    "Formally develop the local StegVerse model.",
+    "Exercise production MCP artifacts through SDK -> ingestion/CGE -> StegCore/StegGate -> Master Records -> return ingestion/CGE -> SDK with selected modes 000/00/0/1/2.",
+    "Activate completed work where authority permits, reconcile stale durable state, and preserve every unresolved action in repository-native machine ownership."
+  ],
+  "tasks": [
+    {
+      "task_id": "SOVEREIGN-LOCAL-MODEL-001",
+      "destination": "StegVerse-002/micro-node-runtime",
+      "branch": "main",
+      "surface": "docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+      "owner": "StegVerse-002/micro-node-runtime",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS",
+      "integration_state": "SOURCE_RELEASED_LIVE_ROUTE_MACHINE_OWNED",
+      "archive_dependency": false,
+      "next_executable_action": "NONE_SOURCE; resident sovereign heartbeat/TV/TVC/LLM-adapter/Master Records own live activation."
+    },
+    {
+      "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "destination": "StegVerse-Labs/.github",
+      "branch": "main",
+      "surface": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+      "owner": "G18 sovereign-runtime-activation-worker",
+      "claim_state": "MACHINE_OWNED_BOUND_G18",
+      "completion_state": "SOURCE_BOOTSTRAP_COMPLETE_LIVE_ACTIVATION_PENDING",
+      "validation_state": "SOURCE_PASS",
+      "integration_state": "NINE_PREDICATE_LOCAL_PROOF_PENDING",
+      "archive_dependency": true,
+      "machine_observable_release_condition": "node-local activation.latest.json reports all nine required predicates true or exact fail-closed bootstrap receipt identifies a machine condition",
+      "next_executable_action": "eligible non-hosted StegVerse-controlled node runs scripts/bootstrap_sovereign_runtime.py"
+    },
+    {
+      "task_id": "TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002",
+      "destination": "StegVerse-Labs/TVC",
+      "branch": "main",
+      "surface": "tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json",
+      "owner": "TVC + resident heartbeat observation lane",
+      "claim_state": "MACHINE_OWNED_RUNTIME_OBSERVATION",
+      "completion_state": "SOURCE_COMPLETE",
+      "validation_state": "PASS_SOURCE",
+      "integration_state": "POST_HB29_ROUTE_OBSERVATION_PENDING",
+      "archive_dependency": true,
+      "next_executable_action": "TVC consumes exact sovereign local-model proof and admits only private/loopback endpoint with credential_requirement NONE"
+    },
+    {
+      "task_id": "SDK-MCP-PORTABLE-AUTHORITY-001",
+      "destination": "StegVerse-org/StegVerse-SDK",
+      "branch": "main",
+      "surface": "MCP_PORTABLE_AUTHORITY_MIRROR_HANDOFF.md",
+      "owner": "canonical sovereign SDK execution lane for remaining validation",
+      "claim_state": "SOURCE_RELEASED_MACHINE_VALIDATION_OWNED",
+      "completion_state": "SOURCE_VALIDATED_MERGED",
+      "validation_state": "8/8 SOURCE PASS; sovereign MR/MRR integration pending",
+      "integration_state": "PENDING_SOVEREIGN_INTEGRATION",
+      "archive_dependency": true,
+      "evidence": ["PR #31 merge 79656e42aeff0ce0eeba101523854706df198b00", "workflow 31873378300 SUCCESS", "task reconciliation f241964ff76bb1a6cfdc9aec41ec3e5da49fc4a5"],
+      "next_executable_action": "tasks/SDK-MCP-CANONICAL-VALIDATION-009.json validates merged main with already-materialized production artifacts and no prohibited credential workaround"
+    },
+    {
+      "task_id": "STEGFIN-CONTINUITY-CARRIER-007",
+      "destination": "StegVerse-Labs/stegfin-governance + StegVerse-Labs/.github",
+      "branch": "main",
+      "surface": "StegVerse-Labs/.github/handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
+      "owner": "stegfin-continuity-carrier-worker + TV/TVC",
+      "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+      "completion_state": "7/8 TRADE_READY DELIVERABLES COMPLETE",
+      "validation_state": "SOURCE_AND_TRANSPORT_PATHS_VALIDATED",
+      "integration_state": "WALLET_HANDOFF_READY_PENDING",
+      "archive_dependency": true,
+      "machine_observable_release_condition": "WALLET_HANDOFF_READY with credential_authority=TV/TVC, non_tv_tvc_secret_or_token_used=false, provider_secret_exported=false, signed=false, broadcast=false",
+      "next_executable_action": "local sovereign activation -> post-bootstrap bridge -> rootless StegFin executor -> canonical continuity worker"
+    },
+    {
+      "task_id": "HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120",
+      "destination": "StegVerse-Labs/.github",
+      "branch": "main",
+      "surface": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
+      "owner": "NONE_COMPLETED",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "COMPLETE",
+      "validation_state": "PASS",
+      "integration_state": "MERGED_RELEASED",
+      "archive_dependency": false,
+      "evidence": ["PR #140 merge 34a1744a4cf314ea4f3b80925d4cbd5a7910dd97", "handoff reconciliation 6eecf946d42ead8b2399e23ce016d68941b406a5"],
+      "next_executable_action": "NONE; downstream owner tasks continue independently"
+    }
+  ],
+  "active_support_claim": "control/session-validation-claim-2026-08-15-active-goals-reconciliation.json",
+  "duplicate_execution_prevention": [
+    "Do not compete with G18 sovereign runtime activation.",
+    "Do not compete with TVC-CAPABILITY-RUNTIME-002 or TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.",
+    "Do not compete with STEGFIN-CONTINUITY-CARRIER-007.",
+    "Do not compete with SDK-MCP-CANONICAL-VALIDATION-009.",
+    "Do not recreate the released local model/runtime."
+  ],
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "github_token_runtime_authority": "NONE",
+  "session_role": "DISTINCT_VALIDATION_RECONCILIATION_SUPPORT",
+  "next_support_action": "Inspect newly emitted machine/runtime receipts and reconcile canonical handoffs/tasks; source changes are permitted only for directly evidenced nonclaimed defects."
+}
