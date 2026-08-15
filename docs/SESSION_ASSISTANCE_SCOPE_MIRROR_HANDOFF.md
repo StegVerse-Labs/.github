@@ -1,6 +1,6 @@
 # Session Assistance Scope Mirror Handoff
 
-Updated: 2026-08-15T01:16:00-05:00
+Updated: 2026-08-15T01:21:00-05:00
 
 ## Authority and current session state
 
@@ -13,7 +13,7 @@ state: COMPLETE_VALIDATED_RELEASED_V6_CURRENT_SESSION_ONLY
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 execution_authority_created: NONE
-current_inventory: control/session-goal-inventory-2026-08-15-admissible-existence-core-local-runtime-v6.json
+current_inventory: control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v6.json
 superseded_inventory: control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v5.json
 scope_correction_receipt: receipts/session-consolidation/SESSION-SCOPE-V6-CURRENT-GOALS-ONLY-20260815.json
 ```
@@ -50,6 +50,24 @@ G17-WORKFLOW-SURFACE-MINIMIZATION  -> StegVerse-Labs/.github#167/#168 and reposi
 ```
 
 The formal local model/runtime goal remains complete in `StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md`; no duplicate local model/runtime is authorized.
+
+## Validation of current-session-only scope
+
+The initial v6 attempt exposed stale validator/test assumptions rather than being treated as complete. The canonical v6 now stays on the existing inventory lineage basename, the alternate-date duplicate was removed, and the scope tests were updated.
+
+```text
+workflow: Org Continuation Check - No GitHub Token Authority
+head: e819f78fedec89593e6336fd521d9c7b94c86246
+run: 31869162728
+job: 94974973983
+conclusion: SUCCESS
+SESSION_ASSISTANCE_SCOPE_PASS inventories=1 bindings=8
+focused scope tests: 7/7 PASS
+NO_GITHUB_CREDENTIAL_TOKEN_PRESENT: PASS
+ORG_CONTINUATION_NON_AUTHORIZING_PASS: PASS
+```
+
+The broader Heartbeat Worker Project at the same lineage remains red because of an independently owned Admissible-Existence retrospective/source-generation mismatch. That failure is outside this scope correction and does not change the successful current-session scope validation.
 
 ## Canonical G08 continuation
 
