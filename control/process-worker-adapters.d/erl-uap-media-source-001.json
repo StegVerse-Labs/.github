@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SHWP-ERL-UAP-MEDIA-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:erl-uap-media-source-v1",
+      "authority_ref": "handoffs/SHWP-ERL-UAP-MEDIA-001.json#authority",
+      "capabilities": ["runtime_observation", "bounded_process_execution", "public_source_acquisition", "evidence_class_preservation"],
+      "command": ["python", "workers/erl_uap_media_source_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_ERL_SOURCE_ROOT"],
+      "notes": [
+        "The only forwarded environment value is a non-secret local source locator.",
+        "The worker itself constructs a clean child environment and never forwards GitHub tokens, provider credentials, cookies, authorization headers, wallet material, or other secrets.",
+        "Public source acquisition is restricted to the class-aware allowlisted ERL queue and writes only bounded local research output plus the admitted worker receipt namespace.",
+        "This adapter grants no repository checkout/write, research promotion, publication, provider, wallet, trade, heartbeat-state, claim, or fence authority."
+      ],
+      "timeout_seconds": 360,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
