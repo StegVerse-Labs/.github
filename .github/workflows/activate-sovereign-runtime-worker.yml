@@ -8,6 +8,8 @@ on:
     branches: [main]
     paths:
       - 'workers/sovereign_runtime_activation_worker.py'
+      - 'scripts/bootstrap_sovereign_runtime.py'
+      - 'tests/test_g18_self_bootstrap_worker.py'
       - 'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json'
       - 'authorizations/SHWP-DURABLE-RUNTIME-ACTIVATION-policy-rebind-v0.4.json'
       - 'cost-basis/worker-runtime/sovereign-runtime-activation.json'
@@ -20,6 +22,8 @@ on:
   pull_request:
     paths:
       - 'workers/sovereign_runtime_activation_worker.py'
+      - 'scripts/bootstrap_sovereign_runtime.py'
+      - 'tests/test_g18_self_bootstrap_worker.py'
       - 'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json'
       - 'authorizations/SHWP-DURABLE-RUNTIME-ACTIVATION-policy-rebind-v0.4.json'
       - 'cost-basis/worker-runtime/sovereign-runtime-activation.json'
@@ -55,7 +59,7 @@ jobs:
       - name: Validate sovereign runtime worker surfaces
         run: |
           set -euo pipefail
-          python3 -m py_compile workers/sovereign_runtime_activation_worker.py heartbeat_runtime/*.py scripts/verify_sovereign_runtime_activation.py tools/validate_active_worker_states.py
+          python3 -m py_compile workers/sovereign_runtime_activation_worker.py scripts/bootstrap_sovereign_runtime.py heartbeat_runtime/*.py scripts/verify_sovereign_runtime_activation.py tools/validate_active_worker_states.py
           python3 - <<'PY'
           import json
           from pathlib import Path
@@ -69,7 +73,8 @@ jobs:
           assert h['task']['fencing_token']==18
           assert h['constraint']['operational_state']=='ACTIVE_SOLUTION_EXECUTION'
           assert h['constraint']['third_party_dependency'] is False
-          assert h['constraint']['next_solution_action']=='SOVEREIGN_RUNTIME_SOLUTION_EXECUTION'
+          assert h['constraint']['next_solution_action']=='EXECUTE_SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_AND_OBSERVE_NINE_PREDICATE_PROOF'
+          assert h['execution']['pre_heartbeat_bootstrap']=='scripts/bootstrap_sovereign_runtime.py'
           assert 'bounded_repository_mutation' in h['execution']['required_capabilities']
           assert h['authority']['credential_authority']=='TV/TVC'
           assert h['authority']['github_token_production_authority']=='NONE'
@@ -85,6 +90,7 @@ jobs:
           assert rb['github_token_production_authority']=='NONE'
           print('SOVEREIGN_RUNTIME_WORKER_SURFACES_PASS')
           PY
+          python3 -m unittest -v tests.test_g18_self_bootstrap_worker tests.test_sovereign_runtime_activation_escalation
 
       - name: Prove hosted runner is not sovereign activation authority
         run: |
