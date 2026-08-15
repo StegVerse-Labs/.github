@@ -18,21 +18,28 @@ class SessionAssistanceScopeTests(unittest.TestCase):
         )
 
     def test_newest_inventory_is_selected(self):
-        self.assertTrue(self.inventory.name.endswith('-v6.json'), self.inventory)
+        self.assertTrue(self.inventory.name.endswith('-v7.json'), self.inventory)
         self.assertNotIn(
-            Path('control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v5.json'),
+            Path('control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v6.json'),
             self.assert_inventory_paths,
         )
 
     def test_current_inventory_passes(self):
         self.assertGreaterEqual(validate_inventory(self.inventory, self.policy), 1)
 
-    def test_trade_is_current_user_explicit_goal_not_shared_directive_only(self):
+    def test_trade_is_current_user_explicit_goal_and_archive_safe_after_transfer(self):
         data = json.loads(self.inventory.read_text())
         self.assertIn('G08-STEGFIN-TRADE-READY', data['originating_goal_ids'])
         trade_goal = next(x for x in data['goals'] if x['goal_id'] == 'G08-STEGFIN-TRADE-READY')
         self.assertEqual(trade_goal['origin'], 'CURRENT_USER_EXPLICIT_GOAL')
-        self.assertTrue(trade_goal['archive_dependency'])
+        self.assertEqual(trade_goal['status'], 'MERGED_INTO_CANONICAL_MACHINE_WORKSTREAM_LIVE_EVIDENCE_PENDING')
+        self.assertFalse(trade_goal['archive_dependency'])
+        self.assertFalse(data['trade_readiness']['product_goal_complete'])
+        self.assertEqual(data['archive_state'], 'READY_MERGED_INTO_CANONICAL_MACHINE_WORKSTREAM_PRODUCT_ACTIVATION_PENDING')
+        self.assertEqual(data['session_unique_claims_remaining'], 0)
+        self.assertEqual(data['unassigned_session_requirements'], 0)
+        self.assertEqual(data['session_execution_responsibility_remaining'], 0)
+        self.assertTrue(data['archive_transfer_receipt'].endswith('SESSION-ARCHIVE-TRANSFER-G08-MACHINE-CONTINUATION-20260815.json'))
         declaration = data['explicit_goal_declarations'][0]
         self.assertEqual(declaration['goal_id'], 'G08-STEGFIN-TRADE-READY')
 
@@ -44,14 +51,15 @@ class SessionAssistanceScopeTests(unittest.TestCase):
         )
         self.assertEqual(binding['session_goal_id'], 'G08-STEGFIN-TRADE-READY')
         self.assertEqual(binding['scope_decision'], 'IN_SCOPE_ASSIST')
+        self.assertFalse(binding['archive_dependency'])
         self.assertEqual(data['collision_boundaries']['stegfin_live_execution'], 'MACHINE_OWNED_DO_NOT_MANUALLY_START')
 
-    def test_shared_trade_directive_uses_explicit_goal_lineage(self):
+    def test_shared_trade_directive_uses_explicit_goal_lineage_without_chat_retention(self):
         data = json.loads(self.inventory.read_text())
         trade = next(x for x in data['shared_directives'] if x['directive'] == 'make this trade ready')
         self.assertEqual(trade['scope_decision'], 'IN_SCOPE_ASSIST')
         self.assertFalse(trade['creates_originating_goal'])
-        self.assertTrue(trade['archive_dependency'])
+        self.assertFalse(trade['archive_dependency'])
         self.assertIn('G08-STEGFIN-TRADE-READY', trade['lineage_evidence_ref'])
 
     def test_in_scope_binding_must_intersect_originating_goal(self):
