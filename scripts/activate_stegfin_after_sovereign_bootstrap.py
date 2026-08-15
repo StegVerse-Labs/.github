@@ -2,9 +2,10 @@
 """Activate the released bounded StegFin executor after sovereign proof.
 
 This is a post-bootstrap integration adapter only. It does not acquire a StegFin
-claim, select/provider credentials, contact a wallet, sign, broadcast, or claim
-WALLET_HANDOFF_READY. It requires the canonical sovereign nine-predicate proof
-before invoking the already-released rootless StegFin continuity service installer.
+claim, select provider credentials, contact a wallet, sign, broadcast, or claim
+WALLET_HANDOFF_READY. It requires the canonical sovereign self-bootstrap receipt,
+nine-predicate activation proof, and non-authorizing node declaration before
+invoking the already-released rootless StegFin continuity service installer.
 """
 from __future__ import annotations
 
@@ -27,6 +28,8 @@ REQUIRED_PREDICATES = (
 )
 ALLOWED_NODE_AUTHORITY_EFFECTS = {"RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY"}
 SAFE_ENV_NAMES = {"HOME", "USER", "LOGNAME", "SHELL", "PATH", "LANG", "LC_ALL", "XDG_CONFIG_HOME", "XDG_STATE_HOME", "TMPDIR"}
+ACTIVATION_PROOF_SCHEMA = "stegverse.sovereign-runtime-activation-proof/v1"
+BOOTSTRAP_RECEIPT_SCHEMA = "stegverse.sovereign-runtime-self-bootstrap-receipt/v1"
 
 
 def truthy(value: str | None) -> bool:
@@ -46,21 +49,73 @@ def load_json(path: Path) -> dict[str, Any] | None:
     return value if isinstance(value, dict) else None
 
 
+def same_path(left: Any, right: Path) -> bool:
+    if not isinstance(left, str) or not left.strip():
+        return False
+    try:
+        return Path(left).expanduser().resolve() == right.expanduser().resolve()
+    except Exception:
+        return False
+
+
 def sovereign_proof_valid(proof: dict[str, Any] | None) -> bool:
-    if not proof or proof.get("all_predicates_pass") is not True:
+    if not proof or proof.get("schema") != ACTIVATION_PROOF_SCHEMA:
+        return False
+    if proof.get("all_predicates_pass") is not True:
         return False
     return all(proof.get(name) is True for name in REQUIRED_PREDICATES)
 
 
-def node_declaration_valid(node: dict[str, Any] | None) -> bool:
-    return bool(
+def node_declaration_valid(node: dict[str, Any] | None, *, root: Path) -> bool:
+    if not (
         node
         and node.get("declared") is True
         and node.get("credential_authority") == "TV/TVC"
         and node.get("github_token_required") is False
         and node.get("third_party_runtime_required") in (False, None)
         and node.get("authority_effect") in ALLOWED_NODE_AUTHORITY_EFFECTS
-    )
+    ):
+        return False
+    source_root = node.get("source_root")
+    return source_root is None or same_path(source_root, root)
+
+
+def bootstrap_receipt_valid(
+    bootstrap: dict[str, Any] | None,
+    *,
+    root: Path,
+    proof_path: Path,
+    node_marker: Path,
+    proof: dict[str, Any] | None,
+) -> bool:
+    if not bootstrap or not proof:
+        return False
+    if bootstrap.get("schema") != BOOTSTRAP_RECEIPT_SCHEMA:
+        return False
+    if bootstrap.get("state") != "COMPLETE" or bootstrap.get("reason") != "SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_VERIFIED":
+        return False
+    if bootstrap.get("credential_requirement") != "NONE" or bootstrap.get("credential_authority") != "TV/TVC":
+        return False
+    if bootstrap.get("github_token_required") is not False or bootstrap.get("third_party_runtime_required") is not False:
+        return False
+    if bootstrap.get("activation_all_predicates_pass") is not True:
+        return False
+    if not same_path(bootstrap.get("source_root"), root):
+        return False
+    if not same_path(bootstrap.get("proof_path"), proof_path):
+        return False
+    if not same_path(bootstrap.get("node_declaration_ref"), node_marker):
+        return False
+    runtime_root = bootstrap.get("runtime_root")
+    proof_runtime_root = ((proof.get("detail") or {}).get("runtime_root")) if isinstance(proof.get("detail"), dict) else None
+    if not isinstance(runtime_root, str) or not isinstance(proof_runtime_root, str):
+        return False
+    try:
+        if Path(runtime_root).expanduser().resolve() != Path(proof_runtime_root).expanduser().resolve():
+            return False
+    except Exception:
+        return False
+    return True
 
 
 def child_env(env: dict[str, str] | None = None) -> dict[str, str]:
@@ -83,6 +138,10 @@ def default_proof_path() -> Path:
     return (Path.home() / ".stegverse" / "heartbeat" / "activation.latest.json").resolve()
 
 
+def default_bootstrap_receipt() -> Path:
+    return (Path.home() / ".stegverse" / "heartbeat" / "bootstrap.latest.json").resolve()
+
+
 def default_node_marker() -> Path:
     return (Path.home() / ".stegverse" / "node.json").resolve()
 
@@ -95,11 +154,12 @@ def default_integration_receipt() -> Path:
     return (Path.home() / ".stegverse" / "continuity" / "sovereign-post-bootstrap.latest.json").resolve()
 
 
-def activate(root: Path, *, proof_path: Path, node_marker: Path, executor_activation_receipt: Path,
-             integration_receipt: Path, env: dict[str, str] | None = None,
-             runner: Runner = subprocess.run) -> dict[str, Any]:
+def activate(root: Path, *, proof_path: Path, bootstrap_receipt: Path, node_marker: Path,
+             executor_activation_receipt: Path, integration_receipt: Path,
+             env: dict[str, str] | None = None, runner: Runner = subprocess.run) -> dict[str, Any]:
     root = root.expanduser().resolve()
     proof_path = proof_path.expanduser().resolve()
+    bootstrap_receipt = bootstrap_receipt.expanduser().resolve()
     node_marker = node_marker.expanduser().resolve()
     executor_activation_receipt = executor_activation_receipt.expanduser().resolve()
     integration_receipt = integration_receipt.expanduser().resolve()
@@ -108,6 +168,7 @@ def activate(root: Path, *, proof_path: Path, node_marker: Path, executor_activa
         "task_id": "SOVEREIGN-STEGFIN-POST-BOOTSTRAP-001",
         "root": str(root),
         "sovereign_proof_ref": str(proof_path),
+        "bootstrap_receipt_ref": str(bootstrap_receipt),
         "node_declaration_ref": str(node_marker),
         "executor_activation_receipt_ref": str(executor_activation_receipt),
         "credential_requirement": "NONE",
@@ -129,17 +190,26 @@ def activate(root: Path, *, proof_path: Path, node_marker: Path, executor_activa
         result["reason"] = "HOSTED_ENVIRONMENT_IS_NOT_AUTHORIZED_LOCAL_INTEGRATION_SURFACE"
         atomic_write(integration_receipt, result)
         return result
+
     proof = load_json(proof_path)
     if not sovereign_proof_valid(proof):
         result["reason"] = "SOVEREIGN_NINE_PREDICATE_PROOF_NOT_ESTABLISHED"
         result["missing_predicates"] = [name for name in REQUIRED_PREDICATES if not proof or proof.get(name) is not True]
         atomic_write(integration_receipt, result)
         return result
+
     node = load_json(node_marker)
-    if not node_declaration_valid(node):
+    if not node_declaration_valid(node, root=root):
         result["reason"] = "SOVEREIGN_NODE_DECLARATION_AUTHORITY_BOUNDARY_INVALID"
         atomic_write(integration_receipt, result)
         return result
+
+    bootstrap = load_json(bootstrap_receipt)
+    if not bootstrap_receipt_valid(bootstrap, root=root, proof_path=proof_path, node_marker=node_marker, proof=proof):
+        result["reason"] = "SOVEREIGN_BOOTSTRAP_PROVENANCE_NOT_ESTABLISHED"
+        atomic_write(integration_receipt, result)
+        return result
+
     installer = root / "scripts" / "install_stegfin_continuity_machine_service.py"
     executor = root / "scripts" / "run_stegfin_continuity_machine_executor.py"
     if not installer.is_file() or not executor.is_file():
@@ -162,7 +232,7 @@ def activate(root: Path, *, proof_path: Path, node_marker: Path, executor_activa
     result["executor_service_active"] = active
     if active:
         result["state"] = "COMPLETE"
-        result["reason"] = "BOUNDED_STEGFIN_EXECUTOR_SERVICE_ACTIVE_AFTER_SOVEREIGN_PROOF"
+        result["reason"] = "BOUNDED_STEGFIN_EXECUTOR_SERVICE_ACTIVE_AFTER_CANONICAL_SOVEREIGN_BOOTSTRAP"
     else:
         result["state"] = "REVIEW_REQUIRED"
         result["reason"] = "STEGFIN_EXECUTOR_SERVICE_ACTIVATION_NOT_PROVEN"
@@ -174,6 +244,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--proof-path", type=Path, default=None)
+    parser.add_argument("--bootstrap-receipt", type=Path, default=None)
     parser.add_argument("--node-marker", type=Path, default=None)
     parser.add_argument("--executor-activation-receipt", type=Path, default=None)
     parser.add_argument("--integration-receipt", type=Path, default=None)
@@ -181,6 +252,7 @@ def main() -> int:
     result = activate(
         args.root,
         proof_path=(args.proof_path or default_proof_path()),
+        bootstrap_receipt=(args.bootstrap_receipt or default_bootstrap_receipt()),
         node_marker=(args.node_marker or default_node_marker()),
         executor_activation_receipt=(args.executor_activation_receipt or default_executor_activation_receipt()),
         integration_receipt=(args.integration_receipt or default_integration_receipt()),
