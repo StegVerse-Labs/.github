@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.session-validation-claim/v1",
+  "claim_id": "ORG-HANDOFF-NONCOMPETING-VALIDATION-2026-08-15-SDK-VACC-INTEGRATION-RECONCILIATION",
+  "task_id": "ORG-HANDOFF-NONCOMPETING-VALIDATION",
+  "originating_goal": "Reconcile the SDK governance worker-admission gap and the VACC sovereign-provider realignment while preserving TV/TVC-only credential authority and avoiding all resident-runtime, wallet, provider, and custody execution scopes.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "claimant": "current ChatGPT SDK/VACC integration reconciliation session",
+  "role": "CLAIMED_FOR_VALIDATION",
+  "claim_state": "ACTIVE",
+  "claim_created_at": "2026-08-15T09:09:00-05:00",
+  "claim_expires_at": "2026-08-15T10:09:00-05:00",
+  "collision_scope": {
+    "allowed": [
+      "read-only inspection of the canonical worker registry and process adapters",
+      "determine whether an existing admitted worker can consume StegVerse-SDK task SDK-GOVERNANCE-SOVEREIGN-VALIDATION-007",
+      "reconcile durable session inventory and handoff references after VACC GitHub-token route supersession",
+      "persist validation/reconciliation evidence only"
+    ],
+    "prohibited": [
+      "install or modify a resident worker/process adapter/worker-registry fragment without a separate exact implementation claim",
+      "execute SDK sovereign 000/0B validation task 007",
+      "launch or modify the local model/runtime",
+      "change heartbeat claim/fence/lease state",
+      "perform VACC provider/model execution",
+      "acquire, export, or use provider/GitHub/wallet credentials",
+      "perform StegFin provider operation, wallet signing, or broadcast",
+      "mutate TV/TVC, StegCore, Master Records, or Site authority"
+    ]
+  },
+  "expected_evidence": [
+    "existing process-worker-adapters capability comparison against SDK task 007 requirements",
+    "durable conclusion naming whether task 009 is admitted, superseded, or still requires an exact implementation claim",
+    "updated canonical session consolidation inventory including SDK connector/governance and VACC sovereign realignment goals"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "non_tv_tvc_secret_or_token_required": false,
+  "authority_effect": "NONE_VALIDATION_ONLY"
+}
