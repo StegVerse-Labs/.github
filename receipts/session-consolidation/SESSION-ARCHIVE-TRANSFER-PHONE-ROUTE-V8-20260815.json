@@ -1,0 +1,67 @@
+{
+  "schema": "stegverse.session-archive-transfer/v1",
+  "receipt_id": "SESSION-ARCHIVE-TRANSFER-PHONE-ROUTE-V8-20260815",
+  "created_at": "2026-08-15T16:42:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "inventory": "control/session-goal-inventory-2026-08-15-phone-route-v8.json",
+  "result": "MERGED_INTO_CANONICAL_WORKSTREAM_ARCHIVE_SAFE",
+  "product_activation_complete": false,
+  "wallet_handoff_ready_observed": false,
+  "session_unique_claims_remaining": 0,
+  "unassigned_session_requirements": 0,
+  "session_execution_responsibility_remaining": 0,
+  "session_observation_responsibility_remaining": 0,
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "non_tv_tvc_secret_or_token_used": false,
+  "provider_secret_exported": false,
+  "signed": false,
+  "broadcast": false,
+  "execution_authority_created_by_session": false,
+  "render_used_for_production_activation": false,
+  "completed_and_released": {
+    "formal_local_model_runtime": "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "stegverse_only_runtime_policy": "StegVerse-Labs/.github/control/sovereign-runtime-platform-policy.json",
+    "sovereign_bootstrap_stegfin_auto_chain": "StegVerse-Labs/.github/scripts/bootstrap_sovereign_runtime.py",
+    "g18_self_bootstrap_source": "StegVerse-Labs/.github/workers/sovereign_runtime_activation_worker.py",
+    "phone_direct_route_source": "StegVerse-Labs/stegfin-governance PR #59 merge 06c9c01d9253dcd39ce1206bdc2326fb4722c017",
+    "stegid_current_phone_bootstrap": "StegVerse-Labs/StegID merge 6a61dd291f7b66db31f1bb348975d8f829fca249",
+    "tvc_phone_direct_route": "StegVerse-Labs/TVC merge a00e52e3cde60c08969e22cf11aeba3971172108"
+  },
+  "live_continuation": [
+    {
+      "owner": "StegVerse-Labs/stegfin-governance issue #60",
+      "condition": "current phone produces StegID PREPARE evidence and terminal BLOCKED or WALLET_HANDOFF_READY receipt",
+      "manual_session_execution_allowed": false,
+      "authority_boundary": "phone participant gesture/USER_ONLY after released source; no chat credential or wallet authority"
+    },
+    {
+      "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18",
+      "location": "StegVerse-Labs/.github/handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+      "condition": "activation.latest.json all nine predicates true and sovereign-post-bootstrap.latest.json executor_service_active=true, or exact fail-closed receipt",
+      "manual_session_execution_allowed": false
+    },
+    {
+      "owner": "STEGFIN-CONTINUITY-CARRIER-007",
+      "location": "StegVerse-Labs/.github/handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
+      "condition": "WALLET_HANDOFF_READY or exact fail-closed worker receipt",
+      "manual_session_execution_allowed": false
+    },
+    {
+      "owner": "StegVerse-Labs/Site issue #261 + pre-work allocator",
+      "condition": "participant-facing projection admitted without credential/wallet authority",
+      "manual_session_execution_allowed": false
+    }
+  ],
+  "archive_basis": [
+    "all session source implementation goals are installed, committed, validated, released or explicitly transferred",
+    "the former descriptive local-runtime selection step is superseded by the released local discovery/launch/inference/proof implementation",
+    "the formal local model is repository-developed and released",
+    "the no-Render/StegVerse-only production-runtime rule is durably encoded",
+    "the phone-only bounded trade carrier is merged to main and has exact static source proof",
+    "remaining live activation is assigned to canonical non-chat owners with machine- or participant-observable release conditions",
+    "no unique implementation, validation, integration, propagation, reconciliation or observation responsibility remains in this conversation",
+    "archiving this conversation does not remove execution authority or required continuation state"
+  ],
+  "archive_ready": true
+}
