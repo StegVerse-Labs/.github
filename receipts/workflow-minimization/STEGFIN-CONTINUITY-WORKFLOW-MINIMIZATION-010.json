@@ -1,0 +1,43 @@
+{
+  "schema": "stegverse.workflow-surface-minimization-receipt/v1",
+  "task_id": "STEGFIN-CONTINUITY-WORKFLOW-MINIMIZATION-010",
+  "goal_id": "G17-WORKFLOW-SURFACE-MINIMIZATION",
+  "repository": "StegVerse-Labs/.github",
+  "state": "COMPLETE_STATIC_AND_HISTORICAL_VALIDATION",
+  "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+  "eliminated_workflow": ".github/workflows/stegfin-continuity-machine-executor.yml",
+  "elimination_commit": "f98e25c585602b28199cdd41e9add95dd3fc1d9e",
+  "replacement_validation_surface": ".github/workflows/heartbeat-worker-project.yml",
+  "coverage": {
+    "paths": ["scripts/**", "tests/**", "control/**", "docs/**", "workers/**"],
+    "repository_test_command": "python -m unittest discover -v tests",
+    "executor_test_module": "tests.test_stegfin_continuity_machine_executor"
+  },
+  "historical_focused_validation": {
+    "workflow_run": 31850156719,
+    "job": 94924299352,
+    "result": "SUCCESS",
+    "focused_tests": "8/8 PASS",
+    "hosted_execution_fail_closed": true,
+    "service_materialization_non_authorizing": true,
+    "workflow_non_authorizing": true,
+    "github_credential_token_present_in_validation_process": false
+  },
+  "current_hosted_revalidation": {
+    "attempted_by_path_trigger": true,
+    "workflow_run_observed": false,
+    "reason": "No new hosted run was observable for the handoff update at inspection time; hosted Actions is optional validation and not production authority.",
+    "capability_loss_inferred": false
+  },
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "non_tv_tvc_secret_or_token_used": false,
+  "provider_secret_used": false,
+  "provider_secret_exported": false,
+  "wallet_contacted": false,
+  "signed": false,
+  "broadcast": false,
+  "heartbeat_authority_changed": false,
+  "trade_execution_authority_changed": false,
+  "result": "ONE_REDUNDANT_GITHUB_WORKFLOW_SURFACE_ELIMINATED_WITH_VALIDATION_CAPABILITY_RETAINED"
+}
