@@ -6,16 +6,19 @@
   "repository": "StegVerse-Labs/.github",
   "branch": "policy/stegverse-only-sovereign-runtime",
   "claimant": "current ChatGPT session",
-  "role": "CLAIMED_FOR_INTEGRATION",
-  "claim_state": "CLAIMED_FOR_INTEGRATION",
+  "role": "COMPLETE_RELEASED",
+  "claim_state": "RELEASED_COMPLETE_VALIDATED_MERGED",
   "claim_created_at": "2026-08-15T14:23:00-05:00",
-  "claim_release_condition": "Release after a canonical StegVerse-only runtime-platform policy is installed, source validation proves Render and other hosted third-party platforms remain fail-closed for sovereign activation, applicable handoffs/blocker state are reconciled, and the change is merged.",
+  "claim_released_at": "2026-08-15T14:34:00-05:00",
+  "claim_release_condition": "SATISFIED",
   "files": [
     "control/sovereign-runtime-platform-policy.json",
     "tests/test_sovereign_runtime_platform_policy.py",
     "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
-    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md"
+    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
+    "handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json",
+    "control/worker-registry.d/sdk-mcp-canonical-validation-009.json"
   ],
   "collision_boundaries": [
     "Do not acquire or mutate the G18 claim/fencing token.",
@@ -24,13 +27,23 @@
     "Do not create provider, wallet, route, signing, broadcast, settlement, or credential authority.",
     "Credential authority remains TV/TVC; GitHub token runtime authority remains NONE; non-TV/TVC runtime secrets/tokens remain prohibited."
   ],
-  "expected_evidence": [
-    "canonical policy names StegVerse-owned/federated execution as the only sovereign production domain",
-    "Render is explicitly prohibited rather than merely optional",
-    "existing activation and resolution workers retain hosted-environment fail-closed checks",
-    "deterministic repository validation passes",
-    "canonical handoffs and blocker point to the policy"
-  ],
+  "validation_evidence": {
+    "pull_request": "StegVerse-Labs/.github#182",
+    "merge_commit": "dc9f3bc68449f4ead967eaea4426194fcca5beec",
+    "validated_head": "65f12e2de681fdb4caaeba507d33290bce46703d",
+    "organization_control_plane_run": 31904226799,
+    "organization_control_plane_result": "SUCCESS",
+    "heartbeat_worker_project_run": 31904226786,
+    "heartbeat_worker_project_result": "SUCCESS",
+    "handoff_render_run": 31904226789,
+    "handoff_render_result": "SUCCESS",
+    "handoff_execution_ownership": "PASS",
+    "admissible_existence_control_plane": "PASS",
+    "heartbeat_carrier_contract": "PASS",
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_used": false,
+    "live_activation_claimed": false
+  },
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "non_tv_tvc_secret_or_token_allowed": false,
