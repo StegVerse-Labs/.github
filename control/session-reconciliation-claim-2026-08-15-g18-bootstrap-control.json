@@ -5,30 +5,58 @@
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
   "claimant": "current-session-g18-control-reconciliation-lane",
-  "role": "CLAIMED_FOR_RECONCILIATION_AND_VALIDATION",
+  "role": "COMPLETE_VALIDATED_RELEASED_TO_G18_AND_CANONICAL_G08_MACHINE_CONTINUATION",
   "claim_created_at": "2026-08-15T01:27:00-05:00",
-  "claim_expiration_or_release_condition": "release after current management blocker references the released self-bootstrap/post-bootstrap chain and a descendant hosted validation proves JSON/handoff/source tests remain valid; otherwise release or mark BLOCKED within 24 hours",
-  "owned_surfaces": [
+  "claim_released_at": "2026-08-15T01:30:00-05:00",
+  "claim_expiration_or_release_condition": "SATISFIED",
+  "released_surfaces": [
     "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
-    "control/session-reconciliation-claim-2026-08-15-g18-bootstrap-control.json",
-    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md#G08"
+    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md#G08",
+    "data/stegfin-continuity-machine-executor/task-state.json"
+  ],
+  "release_evidence": {
+    "g08_task_state_reconciliation_commit": "8aa0b1e4dbf990fb5da030fe3648876da117d0ee",
+    "g18_blocker_reconciliation_commit": "77a83c63b77012ef62736f743ed2c1e419cce0e2",
+    "session_handoff_binding_commit": "1a790ac5d142795d5c4ca3ee4b866fd61333c4ce",
+    "org_continuation_run": 31869519718,
+    "org_continuation_job": 94975862671,
+    "org_continuation_conclusion": "SUCCESS",
+    "session_assistance_scope": "PASS inventories=1 bindings=8",
+    "session_scope_tests": "7/7 PASS",
+    "github_credential_token_present": false,
+    "heartbeat_worker_run": 31869519704,
+    "heartbeat_worker_job": 94975862789,
+    "heartbeat_worker_pre_cancel_validation": {
+      "compile": "PASS",
+      "canonical_json": "PASS_181",
+      "executable_handoffs": "PASS count=27 live_lanes=23",
+      "complete_deterministic_test_suite": "252/252 PASS",
+      "self_bootstrap_tests": "5/5 PASS",
+      "post_bootstrap_tests": "5/5 PASS",
+      "stegfin_executor_tests": "8/8 PASS",
+      "session_scope_tests": "7/7 PASS",
+      "ae_retrospective_tests": "7/7 PASS"
+    },
+    "heartbeat_worker_final_conclusion": "CANCELLED_AFTER_ALL_252_TESTS_PASSED_DURING_SUBSEQUENT_DRY_RUN_STEP"
+  },
+  "validated_semantics": [
+    "management blocker identifies scripts/bootstrap_sovereign_runtime.py as current initiation path",
+    "missing_implementation=false while live_activation_observed=false",
+    "pre-existing resident heartbeat and hand-created node declaration are not required to initiate",
+    "all nine sovereign live predicates remain required",
+    "G18 fencing token 18 ownership is preserved",
+    "credential_authority remains TV/TVC and GitHub-token production/runtime authority remains NONE",
+    "historical pre-bootstrap receipt remains historical rather than being rewritten as live activation",
+    "post-proof StegFin bridge cannot claim WALLET_HANDOFF_READY or provider/wallet/signing/broadcast authority"
   ],
   "collision_boundaries": [
-    "do not mutate G18 claim id fencing token heartbeat epoch leases or worker implementation",
-    "do not manufacture a live node proof",
-    "do not use Render GitHub Actions Vercel Cloudflare or another third-party host as sovereign production authority",
-    "do not modify TV/TVC credential route vault or provider authority",
-    "do not contact provider or wallet",
-    "do not sign or broadcast",
-    "do not assist G09 G10 or G17 unrelated workstreams"
+    "G18 claim id fencing token heartbeat epoch leases and worker implementation remain machine owned",
+    "canonical StegFin continuity worker remains claim issuer and trade executor",
+    "TV/TVC remains credential route vault provider and runtime authority",
+    "wallet signing and broadcast remain USER_ONLY",
+    "G09 G10 and G17 remain outside current-session scope"
   ],
-  "expected_evidence": [
-    "management blocker identifies self-bootstrap as current initiation path",
-    "missing_implementation=false while live_activation_observed=false",
-    "all nine live predicates remain required",
-    "G18 fencing token 18 ownership preserved",
-    "credential_authority=TV/TVC and github_token_production_authority=NONE preserved",
-    "hosted validation parses canonical JSON and self-bootstrap/post-bootstrap tests pass"
-  ],
-  "state": "CLAIMED_FOR_RECONCILIATION_AND_VALIDATION"
+  "next_owner": "SHWP-DURABLE-RUNTIME-ACTIVATION G18/local sovereign execution + canonical STEGFIN-CONTINUITY-CARRIER-007 machine executor/worker + TV/TVC runtime authority",
+  "next_task_after_release": "Observe a genuine local bootstrap receipt and nine-predicate activation proof; after PASS, observe rootless StegFin executor activation and the canonical worker terminal WALLET_HANDOFF_READY or exact fail-closed receipt. No additional chat-owned source implementation is assigned unless that machine evidence exposes a new unclaimed source defect.",
+  "state": "COMPLETE_VALIDATED_RELEASED"
 }
