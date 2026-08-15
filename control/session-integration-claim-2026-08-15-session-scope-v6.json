@@ -5,9 +5,10 @@
   "originating_session_goal": "Assist only workers whose durable task lineage belongs to the goals of the current session.",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
-  "state": "CLAIMED_FOR_INTEGRATION",
+  "state": "COMPLETE_VALIDATED_RELEASED",
   "claimant": "current ChatGPT continuation session",
   "claimed_at": "2026-08-15T01:13:00-05:00",
+  "released_at": "2026-08-15T01:17:00-05:00",
   "expires_at": "2026-08-15T01:43:00-05:00",
   "scope": [
     "control/session-goal-inventory-2026-08-15-admissible-existence-core-local-runtime-v6.json",
@@ -24,7 +25,13 @@
     "wallet signing/broadcast",
     "organization cost-containment/repository-hygiene/workflow-minimization workstreams not originating in this session"
   ],
-  "release_condition": "Create a superseding v6 current-session-only inventory, reconcile the session assistance handoff, persist a scope-correction receipt, and release this claim.",
+  "release_condition": "SATISFIED: v6 current-session-only inventory created; session assistance handoff reconciled; scope-correction receipt persisted.",
+  "release_evidence": [
+    "control/session-goal-inventory-2026-08-15-admissible-existence-core-local-runtime-v6.json",
+    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
+    "receipts/session-consolidation/SESSION-SCOPE-V6-CURRENT-GOALS-ONLY-20260815.json"
+  ],
+  "next_task_after_release": "Assist only workers inside the v6 current-session inventory. Do not select G09/G10/G17 organization workstreams from this session.",
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": false,
   "non_tv_tvc_secret_or_token_allowed": false
