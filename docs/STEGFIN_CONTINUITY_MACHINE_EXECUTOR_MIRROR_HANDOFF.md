@@ -1,6 +1,6 @@
 # StegFin Continuity Machine Executor Mirror Handoff
 
-Updated: 2026-08-15T14:01:00-05:00
+Updated: 2026-08-15T14:28:00-05:00
 
 ```text
 goal_id: STEGFIN-CONTINUITY-MACHINE-EXECUTOR-008
@@ -114,12 +114,10 @@ ephemeral projections: PASS
 workflow non-authorizing: PASS
 ```
 
-The parallel organization-control-plane workflow failed only on pre-existing ownership-documentation debt in `docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md` and `docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md`; it did not identify a defect in the new bootstrap-chain source. Those control-plane defects remain separately owned and are not treated as activation evidence.
-
 ## Current machine-owned continuation
 
 ```text
-canonical local source
+canonical StegVerse-owned/federated local source
 -> scripts/bootstrap_sovereign_runtime.py
 -> bootstrap.latest.json COMPLETE
 -> activation.latest.json all nine predicates PASS
@@ -160,30 +158,54 @@ No hosted validation, repository merge, service template, or handoff record is s
 
 ## Execution ownership and collision partition
 
-### SESSION / IMPLEMENTATION SUPPORT
+### MANUAL / SESSION-STARTABLE
 
-```text
-manual live execution allowed: false
-source integration task: SOVEREIGN-BOOTSTRAP-STEGFIN-CHAIN-001
-source state: COMPLETE_VALIDATED_MERGED
-remaining session role: evidence reconciliation only while the user requires active activation work
+```yaml
+manual_execution_allowed: false
+worker_registry_ref: NONE_SOURCE_RELEASED
+collision_scope: released source integration and mirror-handoff reconciliation only
+release_condition: source integration COMPLETE_VALIDATED_MERGED
+next_executable_action: NONE_LIVE_EXECUTION_FROM_SESSION
 ```
 
 ### WORKER-OWNED / DO NOT COMPETE
 
-```text
-G18 owner: sovereign-runtime-activation-worker / fencing token 18
-trade worker: stegfin-continuity-carrier-worker
-trade task: STEGFIN-CONTINUITY-CARRIER-007
-release: nine-predicate PASS -> executor service active -> WALLET_HANDOFF_READY or exact fail-closed evidence
+```yaml
+- task_id: SHWP-DURABLE-RUNTIME-ACTIVATION
+  execution_owner: sovereign-runtime-activation-worker / fencing token 18
+  manual_execution_allowed: false
+  worker_registry_ref: control/worker-registry.json
+  collision_scope: sovereign activation claim/fence, native runtime process, activation proof and service bootstrap
+  release_condition: StegVerse-owned/federated node-local nine-predicate PASS and executor service activation, or exact fail-closed receipt
+  next_executable_action: canonical G18 worker continues on eligible StegVerse sovereign local surface
+
+- task_id: STEGFIN-CONTINUITY-CARRIER-007
+  execution_owner: stegfin-continuity-carrier-worker
+  manual_execution_allowed: false
+  worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+  collision_scope: continuity claim, TV/TVC transport, provider/pretrade preparation, Inventory N and WALLET_HANDOFF_READY
+  release_condition: WALLET_HANDOFF_READY or exact fail-closed terminal receipt
+  next_executable_action: canonical worker proceeds after executor service activation
 ```
 
-### AUTHORITY-OWNED
+### ESCALATED / AUTHORITY-OWNED
 
-```text
-credential/provider/route/vault authority: TV/TVC
-wallet signing/broadcast: USER_ONLY
-non-TV/TVC secret/token use: PROHIBITED
+```yaml
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: credential/provider/route/vault authority and wallet signing/broadcast authority
+release_condition: TV/TVC resolves protected credential/route operation; USER_ONLY resolves signing/broadcast
+next_executable_action: preserve TV/TVC-only protected credential authority and stop before USER_ONLY wallet action
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+manual_execution_allowed: false
+worker_registry_ref: NONE_TERMINAL
+collision_scope: SOVEREIGN-BOOTSTRAP-STEGFIN-CHAIN-001 and released machine-executor source support
+release_condition: COMPLETE_VALIDATED_MERGED_RELEASED
+next_executable_action: NONE_DO_NOT_RECREATE
 ```
 
 ## Completion accounting
@@ -205,7 +227,7 @@ For the outer StegFin trade-ready goal, the canonical denominator remains 8 deli
 
 ## Next executable action
 
-`G18/local sovereign execution` runs the single released `scripts/bootstrap_sovereign_runtime.py` entrypoint on an eligible non-hosted StegVerse-controlled machine containing canonical source/runtime. A nine-predicate PASS now automatically attempts the rootless StegFin service activation, eliminating the former separate post-bootstrap invocation. The canonical StegFin worker then owns claim acquisition and bounded wallet-handoff preparation. No chat/hosted lane may substitute for that live execution.
+The canonical G18 worker runs the single released `scripts/bootstrap_sovereign_runtime.py` entrypoint on an eligible StegVerse-owned or StegVerse-federated sovereign machine containing canonical source/runtime. Render and other third-party hosted runtimes are not alternatives. A nine-predicate PASS automatically attempts the rootless StegFin service activation, and the canonical StegFin worker then owns claim acquisition and bounded wallet-handoff preparation.
 
 ## Archive condition
 
