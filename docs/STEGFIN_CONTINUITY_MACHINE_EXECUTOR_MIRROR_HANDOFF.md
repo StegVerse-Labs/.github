@@ -1,6 +1,6 @@
 # StegFin Continuity Machine Executor Mirror Handoff
 
-Updated: 2026-08-14T18:26:00-05:00
+Updated: 2026-08-15T01:12:00-05:00
 
 ```text
 goal_id: STEGFIN-CONTINUITY-MACHINE-EXECUTOR-008
@@ -32,9 +32,10 @@ scripts/install_stegfin_continuity_machine_service.py
 control/stegfin-continuity-machine-executor.json
 data/stegfin-continuity-machine-executor/task-state.json
 tests/test_stegfin_continuity_machine_executor.py
-.github/workflows/stegfin-continuity-machine-executor.yml
 receipts/stegfin-continuity-machine-executor/source-validation-20260814.json
 ```
+
+The formerly dedicated `.github/workflows/stegfin-continuity-machine-executor.yml` validation workflow is no longer an active source surface. It was removed under `G17-WORKFLOW-SURFACE-MINIMIZATION` after confirming that the stable `.github/workflows/heartbeat-worker-project.yml` already triggers on the executor's `scripts/**`, `tests/**`, `control/**`, `docs/**`, and `workers/**` surfaces and runs the complete deterministic repository test suite. The focused workflow's successful historical receipt remains evidence; capability validation was consolidated rather than dropped.
 
 Key commits:
 
@@ -46,9 +47,11 @@ installer hardening: 95dc1d269268d292c3ddc370ecf82c2faafeaf88
 policy: a9f14edd749701a2542e1dffb1255fc4fa041c33
 task-state initial: 63735646c2f84dad35dcc3bf70f094cbc0c7b0e4
 tests: 2de66dee6473c71bed5783d7b7857af7f6bda179
-focused workflow: b0d03891817b5ca764f097f1ae70e604eb192146
+focused workflow validation: b0d03891817b5ca764f097f1ae70e604eb192146
 source validation receipt: cbaa3255fef7761d270029cde9b8aa8a7ea729a9
 released task-state: 659b12303e349928a435b5648db9deb2efcf96de
+workflow-minimization claim: d5f409a579ed5a461ed2aab364adcc2236277969
+dedicated workflow elimination: f98e25c585602b28199cdd41e9add95dd3fc1d9e
 ```
 
 ## Machine contract
@@ -68,7 +71,7 @@ The native delivery installer produces a rootless systemd-user service on Linux 
 
 ## Validation evidence
 
-Focused validation is complete:
+Focused validation completed before workflow consolidation:
 
 ```text
 workflow: StegFin Continuity Machine Executor - Validation Only / No GitHub Token Authority
@@ -83,7 +86,17 @@ workflow non-authorizing proof: PASS
 GITHUB_TOKEN/GH_TOKEN/GITHUB_PAT present in validation process: false
 ```
 
-The broader Heartbeat Worker Project run `31850078913`, job `94924085568`, executed all eight new executor tests successfully but its overall repository suite had one unrelated failure in the concurrently changing Admissible-Existence source-generation retrospective binding. That surface is owned by a parallel workstream and is explicitly outside this claim; no competing mutation was made. The focused validation is therefore authoritative for this bounded source package while the unrelated repository-wide reconciliation remains separately owned.
+Stable validation surface after consolidation:
+
+```text
+.github/workflows/heartbeat-worker-project.yml
+trigger coverage: scripts/** tests/** control/** docs/** workers/**
+validation coverage: python -m unittest discover -v tests
+credential-token process authority: NONE
+production/runtime authority: NONE
+```
+
+The earlier broader Heartbeat Worker Project run `31850078913`, job `94924085568`, executed all eight executor tests successfully while an unrelated Admissible-Existence source-generation retrospective binding failed. That concurrent AE binding was later reconciled by its own owner. The focused validation remains retained historical evidence and the stable repository-wide suite now owns continuing regression validation.
 
 Receipt:
 
@@ -94,12 +107,10 @@ receipts/stegfin-continuity-machine-executor/source-validation-20260814.json
 ## Claim disposition
 
 ```text
-claim_ref: control/session-implementation-claim-2026-08-14-stegfin-continuity-machine-executor.json
-claimant: current ChatGPT continuation session
-claim_created_at: 2026-08-14T18:17:00-05:00
-claim_expiration: 2026-08-14T19:17:00-05:00
-source_release_condition: SATISFIED
-source_claim_disposition: RELEASE_TO_AUTHORIZED_STEGVERSE_NODE_AND_CANONICAL_STEGFIN_WORKER after final inventory/claim reconciliation
+source_claim_ref: control/session-implementation-claim-2026-08-14-stegfin-continuity-machine-executor.json
+source_claim_state: COMPLETE_VALIDATED_RELEASED
+workflow_minimization_claim_ref: control/session-integration-claim-2026-08-15-stegfin-workflow-minimization.json
+workflow_minimization_role: CONSOLIDATE_INTO_STABLE_DISPATCHER
 ```
 
 Collision exclusions remain absolute:
