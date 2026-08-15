@@ -1,6 +1,6 @@
 # StegFin Continuity Machine Executor Mirror Handoff
 
-Updated: 2026-08-15T01:17:00-05:00
+Updated: 2026-08-15T01:23:00-05:00
 
 ```text
 goal_id: STEGFIN-CONTINUITY-MACHINE-EXECUTOR-008
@@ -13,14 +13,16 @@ credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 wallet_signing_authority: USER_ONLY
 broadcast_authority: USER_ONLY
-state: SOURCE_COMPLETE_VALIDATED_RELEASED_POST_SOVEREIGN_INTEGRATION_RELEASED
+state: SOURCE_COMPLETE_VALIDATED_RELEASED_POST_BOOTSTRAP_PROVENANCE_HARDENING_ACTIVE
 ```
 
-## Canonical ownership and released source
+## Canonical ownership
 
-The canonical trade handoff permits `ANY_AUTHORIZED_STEGVERSE_CONTINUITY_EXECUTOR`, makes resident heartbeat execution preferred but not required, binds execution to `MACHINE_SCHEDULER_ONLY`, and requires the existing StegFin worker itself to acquire the collision-safe continuity claim through `scripts/acquire_stegfin_continuity_claim.py`.
+This handoff owns the non-heartbeat machine executor, native rootless delivery, and bounded sovereign post-bootstrap activation bridge. It does not own the StegFin continuity claim algorithm, TV/TVC transport/credential/vault authority, G18 heartbeat authority, provider operation authority, wallet signing, broadcast, settlement, or `WALLET_HANDOFF_READY` disposition.
 
-Released executor surfaces:
+The canonical trade handoff permits `ANY_AUTHORIZED_STEGVERSE_CONTINUITY_EXECUTOR`, makes resident heartbeat execution preferred but not required, binds live trade execution to machine scheduling, and requires the existing StegFin worker itself to acquire the collision-safe continuity claim through `scripts/acquire_stegfin_continuity_claim.py`.
+
+## Released machine executor source
 
 ```text
 scripts/run_stegfin_continuity_machine_executor.py
@@ -31,9 +33,7 @@ tests/test_stegfin_continuity_machine_executor.py
 receipts/stegfin-continuity-machine-executor/source-validation-20260814.json
 ```
 
-The dedicated executor validation workflow was intentionally removed under `G17-WORKFLOW-SURFACE-MINIMIZATION`. Continuing validation is owned by stable `.github/workflows/heartbeat-worker-project.yml`, which covers `scripts/**`, `tests/**`, `control/**`, `docs/**`, and `workers/**` and uses no GitHub credential-token authority.
-
-Historical executor validation:
+Historical focused validation:
 
 ```text
 run/job: 31850156719 / 94924299352
@@ -42,63 +42,76 @@ hosted execution fail-closed: PASS
 rootless service materialization: PASS_NON_AUTHORIZING
 ```
 
+The dedicated executor validation workflow was intentionally removed under `G17-WORKFLOW-SURFACE-MINIMIZATION`; continuing repository validation uses stable `.github/workflows/heartbeat-worker-project.yml` and the organization control-plane validators.
+
 ## Machine contract
 
 The executor is a one-shot local host adapter, not a heartbeat and not an authority source. It:
 
 - rejects hosted GitHub/CI/Render/Vercel/Cloudflare execution;
-- requires a valid sovereign-node declaration with `declared=true`, `credential_authority=TV/TVC`, and `github_token_required=false`;
+- requires a valid local sovereign-node declaration with `credential_authority=TV/TVC` and `github_token_required=false`;
 - requires the canonical trade handoff/registry to remain machine-ready and collision-free;
 - invokes only `workers/stegfin_continuity_carrier_worker_v3.py`;
-- does not invent a claim/fence; the existing worker remains the claim issuer;
+- does not invent a claim/fence; the existing worker remains the continuity-claim issuer;
 - strips GitHub/provider/wallet credential-like environment variables;
-- accepts trade completion only when the canonical worker transition is exactly `STEGFIN_CONTINUITY_WALLET_HANDOFF_READY` with TV/TVC authority, no non-TV/TVC secret/token, no provider-secret export, `signed=false`, and `broadcast=false`.
+- accepts trade completion only when the canonical transition is exactly `STEGFIN_CONTINUITY_WALLET_HANDOFF_READY` and durable evidence proves TV/TVC authority, no non-TV/TVC secret/token, no provider-secret export, `signed=false`, and `broadcast=false`.
 
 The native installer produces a rootless systemd-user service on Linux or LaunchAgent on macOS. It embeds no credential material, does not replace the heartbeat, and creates no execution authority.
 
-## Sovereign post-bootstrap integration — COMPLETE VALIDATED RELEASED
+## Sovereign self-bootstrap and post-bootstrap integration
 
-Task: `SOVEREIGN-STEGFIN-POST-BOOTSTRAP-001`  
-Issue: `StegVerse-Labs/.github#163`  
-Merged PR: `StegVerse-Labs/.github#171`  
-Merge commit: `069d5f3211d73d987a6cf22be1db2b4519963d71`  
-Claim: `control/session-implementation-claim-2026-08-15-sovereign-stegfin-post-bootstrap.json`  
-Claim state: `COMPLETE_VALIDATED_RELEASED`
-
-The former requirement that an executor host be independently pre-declared is superseded as an initiation prerequisite. The released sovereign self-bootstrap (`scripts/bootstrap_sovereign_runtime.py`, issue #160 / PR #162) can derive the non-authorizing local declaration, materialize/start native heartbeat supervision, and produce the canonical nine-predicate activation proof without requiring a resident heartbeat to pre-exist.
-
-Released bridge:
+The former initiation prerequisite requiring a pre-existing declared node is superseded. Released `scripts/bootstrap_sovereign_runtime.py` can, from canonical local source on a non-hosted machine:
 
 ```text
-scripts/activate_stegfin_after_sovereign_bootstrap.py
+prove local source/state eligibility
+-> derive non-authorizing node declaration
+-> install/start native sovereign heartbeat service
+-> run canonical activation verifier
+-> emit ~/.stegverse/heartbeat/bootstrap.latest.json
+-> emit ~/.stegverse/heartbeat/activation.latest.json with nine predicates
 ```
 
-It requires BOTH:
+Issue #160 is CLOSED_COMPLETED for this bootstrap source. Issue #163 / PR #171 merged the first post-bootstrap StegFin integration at `069d5f3211d73d987a6cf22be1db2b4519963d71`.
 
-1. canonical sovereign `activation.latest.json` with `all_predicates_pass=true` and all nine predicates true;
-2. a node declaration preserving `credential_authority=TV/TVC`, `github_token_required=false`, no third-party runtime requirement, and `RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY`.
+The first bridge correctly preserved credential and wallet boundaries, but subsequent validation found a provenance gap: it accepted caller-supplied proof/node JSON by shape. That was insufficient because a boolean-complete but noncanonical proof could masquerade as sovereign bootstrap evidence.
 
-Only then may it invoke:
+## Canonical bootstrap-provenance hardening — ACTIVE
+
+Task: `STEGFIN-POST-BOOTSTRAP-PROVENANCE-172`  
+Issue: `StegVerse-Labs/.github#172`  
+PR: `StegVerse-Labs/.github#173`  
+Branch: `fix/stegfin-post-bootstrap-provenance-172`  
+Claim: `control/session-implementation-claim-2026-08-15-stegfin-post-bootstrap-provenance-172.json`
+
+The bounded correction requires all of the following before the post-bootstrap adapter may invoke the already-released executor-service installer:
 
 ```text
-python scripts/install_stegfin_continuity_machine_service.py --root <local-StegVerse-Labs-.github-root>
+activation proof schema = stegverse.sovereign-runtime-activation-proof/v1
+all nine activation predicates = true
+bootstrap receipt schema = stegverse.sovereign-runtime-self-bootstrap-receipt/v1
+bootstrap state = COMPLETE
+bootstrap reason = SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_VERIFIED
+bootstrap credential_requirement = NONE
+bootstrap credential_authority = TV/TVC
+bootstrap github_token_required = false
+bootstrap proof_path == exact activation proof consumed
+bootstrap node_declaration_ref == exact node declaration consumed
+bootstrap source_root == exact local StegVerse-Labs/.github root
+proof.detail.runtime_root == bootstrap runtime_root
+node credential_authority = TV/TVC
+node github_token_required = false
+node authority_effect = RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY
 ```
 
-The bridge accepts COMPLETE only when the executor activation receipt proves the rootless service active with:
+Forged proof schema, mismatched proof/bootstrap, mismatched node declaration, wrong source/runtime root, and non-complete bootstrap receipt all fail closed before installer invocation.
 
-```text
-credential_authority=TV/TVC
-github_token_runtime_authority=false
-non_tv_tvc_secret_or_token_embedded=false
-wallet_signing_authority=USER_ONLY
-broadcast_authority=USER_ONLY
-execution_authority_created=false
-```
-
-Its own receipt fixes:
+The adapter still fixes these non-authorizing invariants in its receipt:
 
 ```text
 credential_requirement=NONE
+credential_authority=TV/TVC
+github_token_runtime_authority=NONE
+non_tv_tvc_secret_or_token_used=false
 provider_contacted=false
 wallet_contacted=false
 signed=false
@@ -106,78 +119,26 @@ broadcast=false
 wallet_handoff_ready_claimed=false
 ```
 
-The bridge therefore activates an already-released machine executor service; it does not execute the trade, acquire the continuity claim, choose credentials, contact provider/wallet, sign, broadcast, settle, or widen authority.
+Even a successful post-bootstrap adapter proves only that the released native executor service is active. It cannot claim trade readiness.
 
-## Post-bootstrap validation evidence
-
-Stable validation surface:
-
-```text
-.github/workflows/heartbeat-worker-project.yml
-```
-
-PR merge-ref evidence:
-
-```text
-run/job: 31868898830 / 94974292287
-new integration tests: 5/5 PASS
-compile: PASS
-canonical JSON: PASS
-executable handoffs: PASS
-GitHub credential token present: false
-```
-
-Exact merged-main evidence:
-
-```text
-commit: 069d5f3211d73d987a6cf22be1db2b4519963d71
-run/job: 31868980702 / 94974495941
-new integration tests: 5/5 PASS
-compile: PASS
-canonical JSON: PASS_175
-executable handoffs: PASS count=26 live_lanes=22
-GitHub credential token present: false
-```
-
-The aggregate stable workflow remains red only because the immediately preceding main baseline already contains the same unrelated defects. Baseline run/job `31868785931 / 94973992395` fails on:
-
-- `SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001` retrospective phase/task-relationship mismatch;
-- `control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v5.json` schema/test drift (`shared_directives`, goal `origin`, `collision_boundaries`, and a legacy test still expecting v4).
-
-No #163 surface introduced either failure class. This handoff therefore records the bounded post-bootstrap integration as validated while not falsely reporting the entire repository suite green.
-
-## Collision exclusions
-
-Absolute exclusions remain:
-
-- no G18 heartbeat state, claim, fence, epoch, lease or worker mutation;
-- no alternate StegFin continuity claim issuer;
-- no alternate TV/TVC provider broker, credential, route, vault or runtime authority;
-- no provider-secret input/export;
-- no GitHub-token runtime authority;
-- no wallet contact/sign/broadcast from the integration;
-- no claim that service activation equals `WALLET_HANDOFF_READY`;
-- no live provider operation from hosted validation/chat.
-
-## Machine-owned continuation
-
-The complete source chain is now:
+## Canonical live continuation
 
 ```text
 canonical local source
-  -> scripts/bootstrap_sovereign_runtime.py
-  -> nine-predicate sovereign activation.latest.json PASS
-  -> scripts/activate_stegfin_after_sovereign_bootstrap.py
-  -> native rootless StegFin executor service active
-  -> released executor
-  -> canonical StegFin worker self-acquires claim
-  -> canonical TV/TVC transport selection
-  -> bounded pretrade preparation
-  -> WALLET_HANDOFF_READY OR exact fail-closed receipt
-  -> USER_ONLY wallet action boundary
+-> sovereign self-bootstrap
+-> exact canonical bootstrap + nine-predicate activation proof
+-> provenance-bound post-bootstrap bridge
+-> native rootless StegFin executor service active
+-> released one-shot executor
+-> canonical StegFin worker self-acquires claim
+-> actual same-host TV/TVC Unix broker OR HTTPS path after TVC-CAPABILITY-RUNTIME-002 READY
+-> fresh complete Inventory N
+-> exact 12.50 USDC -> WETH governed preparation
+-> quote/allowance/gas/simulation
+-> WALLET_HANDOFF_READY OR exact fail-closed receipt
+-> STOP
+-> USER_ONLY wallet review/sign/broadcast
 ```
-
-No third-party host or pre-existing resident heartbeat is required to initiate the local chain.
 
 Machine-observable trade completion remains exclusively:
 
@@ -190,8 +151,60 @@ signed=false
 broadcast=false
 ```
 
-Repository source completion is not live host activation and is not trade completion. The remaining live facts are owned by `SHWP-DURABLE-RUNTIME-ACTIVATION` G18 plus the canonical StegFin machine executor/worker and TV/TVC runtime authority. A genuine local nine-predicate proof releases the post-bootstrap bridge; only the canonical StegFin worker may then produce `WALLET_HANDOFF_READY` or an exact fail-closed receipt.
+## Execution ownership and collision partition
 
-## Session consolidation / archive dependency
+### MANUAL / SESSION-STARTABLE
 
-This handoff contains all #163 implementation, validation, authority-boundary, collision, and continuation state needed without this chat. The #163 session claim is released. The remaining product activation work is machine-owned and does not require a new chat-owned implementation claim unless a machine-observable failure reveals a new unclaimed source gap.
+```yaml
+- task_id: STEGFIN-POST-BOOTSTRAP-PROVENANCE-172
+  execution_owner: current bounded validation/integration session
+  claim_state: CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION
+  worker_registry_ref: control/session-implementation-claim-2026-08-15-stegfin-post-bootstrap-provenance-172.json
+  manual_execution_allowed: true
+  collision_scope: post-bootstrap proof/bootstrap/node provenance validation, deterministic tests, and this handoff only
+  release_condition: PR #173 merged after owned validation passes and exact merged-main validation confirms provenance checks; claim then released
+  next_executable_action: validate PR #173, repair only owned provenance surfaces, merge when current-head gates pass, and record merged-main evidence
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: STEGFIN-CONTINUITY-CARRIER-007
+  execution_owner: stegfin-continuity-carrier-worker
+  claim_state: MACHINE_CLAIM_ON_EXECUTION
+  worker_registry_ref: handoffs/STEGFIN-CONTINUITY-CARRIER-007.json
+  manual_execution_allowed: false
+  collision_scope: continuity claim acquisition, Inventory N, TV/TVC transport selection, provider pretrade preparation, and WALLET_HANDOFF_READY/fail-closed receipt
+  release_condition: terminal wallet-handoff-ready or fail-closed receipt persisted and canonical claim released
+  next_executable_action: authorized native executor invokes the existing worker after local service activation; no chat/session substitutes
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: TVC-PROVIDER-AND-RUNTIME-AUTHORITY
+  execution_owner: StegVerse-Labs/TV + StegVerse-Labs/TVC
+  claim_state: AUTHORITY_OWNED_WITH_EXISTING_HTTPS_VALIDATION_CLAIM
+  worker_registry_ref: StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json
+  manual_execution_allowed: false
+  collision_scope: credential/provider/vault/route authority, protected values, HTTPS primary-runtime activation and observation
+  release_condition: applicable TV/TVC runtime/route evidence reaches its canonical release predicate, or the StegFin worker independently observes the admitted same-host Unix broker path
+  next_executable_action: TV/TVC continues its existing authority-owned lanes without session-created credentials or tokens
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: SOVEREIGN-STEGFIN-POST-BOOTSTRAP-001
+  execution_owner: StegVerse-Labs/.github source integration
+  claim_state: COMPLETE_VALIDATED_RELEASED_WITH_PROVENANCE_FOLLOWUP
+  worker_registry_ref: StegVerse-Labs/.github#163 / PR #171
+  manual_execution_allowed: false
+  collision_scope: released initial post-bootstrap integration source; superseded only where #172 tightens provenance acceptance
+  release_condition: source merged; provenance acceptance now governed by #172
+  next_executable_action: none outside #172 bounded hardening
+```
+
+## Archive dependency
+
+Repository source completion is not native host activation and is not trade completion. This handoff is sufficient for continuation without chat history only after the active #172 source claim is released. The wider session remains non-archive-ready while current v5 goals remain active and `WALLET_HANDOFF_READY` has not been observed.
