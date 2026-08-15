@@ -1,6 +1,6 @@
 # Session Assistance Scope Mirror Handoff
 
-Updated: 2026-08-15T01:21:00-05:00
+Updated: 2026-08-15T01:25:00-05:00
 
 ## Authority and current session state
 
@@ -26,7 +26,13 @@ This handoff decides whether an interactive session may assist a worker/task. It
 
 `assist workers` means assist only workers whose durable lineage intersects an originating goal established in this conversation, or a direct durable dependency, validation, integration, reconciliation, or propagation descendant of such a goal. Activity elsewhere in StegVerse is not sufficient to widen this session's scope.
 
-The v5 inventory imported organization cost-containment, repository-hygiene, and workflow-minimization goals from concurrent workstreams. Those goals remain valid in their own canonical workstreams, but they are not originating goals of this conversation and are therefore excluded from v6 worker selection. The already-completed StegFin validation-workflow consolidation remains repository history and does not create continuing scope here.
+The superseded v5 inventory imported organization cost-containment, repository-hygiene, and workflow-minimization goals from concurrent workstreams. Those goals remain valid in their own canonical workstreams but are not originating goals of this conversation and are excluded from v6 worker selection.
+
+```text
+G09-ACTIONS-COST-CONTAINMENT       -> OUT OF CURRENT SESSION SCOPE
+G10-REPOSITORY-HYGIENE             -> OUT OF CURRENT SESSION SCOPE
+G17-WORKFLOW-SURFACE-MINIMIZATION  -> OUT OF CURRENT SESSION SCOPE
+```
 
 ## Current goal inventory
 
@@ -38,26 +44,17 @@ G04-FORMAL-LOCAL-MODEL-DEVELOPMENT                  COMPLETE_RELEASED
 G05-TV-TVC-ONLY-CREDENTIAL-AUTHORITY                COMPLETE_AND_ONGOING_INVARIANT
 G06-SESSION-DURABLE-CONSOLIDATION                   COMPLETE_VALIDATED_RELEASED_V6
 G07-SESSION-SCOPED-WORKER-ASSISTANCE                COMPLETE_VALIDATED_RELEASED_V6
-G08-STEGFIN-TRADE-READY                             ACTIVE_MACHINE_OWNED_HOST_ACTIVATION_AND_WALLET_HANDOFF_PENDING
+G08-STEGFIN-TRADE-READY                             ACTIVE_MACHINE_OWNED_LIVE_EVIDENCE_PENDING
 ```
 
-Explicitly excluded from current-session worker selection:
-
-```text
-G09-ACTIONS-COST-CONTAINMENT       -> StegVerse-Labs/.github#164 and repository-local owners
-G10-REPOSITORY-HYGIENE             -> StegVerse-Labs/.github#165 and repository-local owners
-G17-WORKFLOW-SURFACE-MINIMIZATION  -> StegVerse-Labs/.github#167/#168 and repository-local owners
-```
-
-The formal local model/runtime goal remains complete in `StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md`; no duplicate local model/runtime is authorized.
+The formal local model/runtime source remains complete in `StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md`; no duplicate local model/runtime is authorized.
 
 ## Validation of current-session-only scope
 
-The initial v6 attempt exposed stale validator/test assumptions rather than being treated as complete. The canonical v6 now stays on the existing inventory lineage basename, the alternate-date duplicate was removed, and the scope tests were updated.
+The initial v6 attempt exposed stale validator/test assumptions rather than being treated as complete. Canonical v6 now stays on the existing inventory-lineage basename, the alternate-date duplicate was removed, and the scope tests were corrected.
 
 ```text
 workflow: Org Continuation Check - No GitHub Token Authority
-head: e819f78fedec89593e6336fd521d9c7b94c86246
 run: 31869162728
 job: 94974973983
 conclusion: SUCCESS
@@ -67,52 +64,73 @@ NO_GITHUB_CREDENTIAL_TOKEN_PRESENT: PASS
 ORG_CONTINUATION_NON_AUTHORIZING_PASS: PASS
 ```
 
-The broader Heartbeat Worker Project at the same lineage remains red because of an independently owned Admissible-Existence retrospective/source-generation mismatch. That failure is outside this scope correction and does not change the successful current-session scope validation.
+The broader Heartbeat Worker Project can remain independently red from other repository work; that does not widen this session's worker scope.
 
-## Canonical G08 continuation
+## Canonical G08 continuation — RELEASED SOURCE CHAIN
+
+The former instruction that the StegFin executor must begin only on an independently pre-declared node is superseded as an initiation prerequisite. Issue #160 / PR #162 released the pre-heartbeat sovereign bootstrap, and issue #163 / PR #171 released the sovereign-to-StegFin post-bootstrap bridge.
 
 ```text
-G08-STEGFIN-TRADE-READY
--> docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md
--> authorized non-hosted StegVerse node supervisor
+canonical local source
+-> scripts/bootstrap_sovereign_runtime.py
+-> derive non-authorizing local node eligibility/declaration
+-> materialize/register/start native sovereign heartbeat service
+-> node-local ~/.stegverse/heartbeat/activation.latest.json
+-> REQUIRE all nine sovereign activation predicates true
+-> scripts/activate_stegfin_after_sovereign_bootstrap.py
+-> REQUIRE TV/TVC-bound non-authorizing node declaration
+-> install/start released rootless StegFin continuity executor service
 -> scripts/run_stegfin_continuity_machine_executor.py
 -> workers/stegfin_continuity_carrier_worker_v3.py
--> canonical self-issued continuity claim
--> actual same-host TV/TVC Unix broker OR existing TVC-CAPABILITY-RUNTIME-002 READY HTTPS path
--> bounded provider pretrade preparation
--> WALLET_HANDOFF_READY
+-> canonical worker self-acquires collision-safe continuity claim
+-> same-host TV/TVC Unix broker OR TVC-CAPABILITY-RUNTIME-002 READY HTTPS path
+-> bounded provider pretrade preparation under TV/TVC authority
+-> WALLET_HANDOFF_READY OR exact fail-closed worker receipt
 -> STOP at USER_ONLY wallet authority
 ```
 
-The non-heartbeat continuity-executor source is complete and released. It is not a heartbeat, claim issuer, TV/TVC credential broker, runtime observer, provider authority, or wallet executor. It requires an already-declared sovereign StegVerse node, strips GitHub/provider/wallet/cloud credential-like inputs, invokes only the existing v3 continuity worker, and refuses COMPLETE unless durable exact `STEGFIN_CONTINUITY_WALLET_HANDOFF_READY` evidence exists with TV/TVC authority, no non-TV/TVC secret/token, no provider-secret export, `signed=false`, and `broadcast=false`.
+Source evidence:
 
-The former standalone StegFin executor validation workflow has been consolidated into the stable repository validation surface. Its prior successful focused validation remains historical evidence in `receipts/stegfin-continuity-machine-executor/source-validation-20260814.json`; deletion of that workflow does not alter production execution or authority.
+```text
+sovereign self-bootstrap merge: 57518101d0fab81f83451582854c8803daf080b8
+self-bootstrap merged-main validation: 31850285522 / 94924652012 SUCCESS
+post-bootstrap bridge merge: 069d5f3211d73d987a6cf22be1db2b4519963d71
+post-bootstrap PR validation: 31868898830 / 94974292287 — 5/5 new tests PASS
+post-bootstrap merged-main validation: 31868980702 / 94974495941 — 5/5 new tests PASS
+post-bootstrap source claim: COMPLETE_VALIDATED_RELEASED
+canonical bridge handoff: docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md
+```
+
+The bootstrap and bridge require **no credential input** (`credential_requirement=NONE`). That does not widen credential authority: TV/TVC remains the only provider/credential/route/vault authority. GitHub tokens have no runtime authority. The bridge cannot acquire the StegFin claim, contact a provider or wallet, sign, broadcast, claim settlement, or claim `WALLET_HANDOFF_READY`.
 
 ## Collision boundaries
 
 ```text
-heartbeat claims/fences/leases: NO MUTATION
-STEGFIN-CONTINUITY-CARRIER-007 continuity claim + Inventory/provider/pretrade execution: EXISTING MACHINE WORKER ONLY
+G18 heartbeat claims/fences/epochs/leases: MACHINE OWNED / NO CHAT MUTATION
+STEGFIN-CONTINUITY-CARRIER-007 claim + Inventory/provider/pretrade execution: EXISTING MACHINE WORKER ONLY
 STEGFIN-CONTINUITY-MACHINE-EXECUTOR-008 source: COMPLETE / RELEASED
+SOVEREIGN-STEGFIN-POST-BOOTSTRAP-001 source: COMPLETE / RELEASED
 TVC-CAPABILITY-RUNTIME-002 observer: EXCLUSIVE VALIDATION / DO NOT DUPLICATE
 TV/TVC credentials/routes/vault/provider secrets: AUTHORITY OWNED
 wallet signing/broadcast: USER_ONLY
 GitHub token runtime authority: NONE
 Render/GitHub-hosted execution: NOT PRODUCTION AUTHORITY
+G09/G10/G17 workers: OUT OF THIS SESSION SCOPE
 ```
 
 ## Exact remaining machine/authority boundary
 
-Source is complete, but host installation is not observed and `WALLET_HANDOFF_READY` is not observed. No connected tool in this chat is the declared sovereign/local StegVerse node, so repository validation cannot be represented as host activation.
-
-On an already-declared authorized non-hosted StegVerse node with locally materialized canonical source, the installed next action remains:
+Repository/source implementation is complete for the local model, local runtime discovery/launch/proof, pre-heartbeat sovereign bootstrap, rootless StegFin machine executor, and sovereign-to-StegFin activation bridge. These live facts are still unobserved:
 
 ```text
-python scripts/install_stegfin_continuity_machine_service.py --root <local-StegVerse-Labs-.github-root>
+nine-predicate sovereign activation proof observed: false
+rootless StegFin executor active receipt observed: false
+terminal/fail-closed StegFin worker receipt observed: false
+WALLET_HANDOFF_READY observed: false
 ```
 
-The native service then runs the released executor; the existing worker self-acquires the canonical collision-safe continuity claim, selects a lawful TV/TVC transport, and either persists an exact fail-closed machine receipt or reaches `WALLET_HANDOFF_READY`. No protected credential value is exported to StegFin.
+Those facts are owned by `SHWP-DURABLE-RUNTIME-ACTIVATION` G18/local sovereign execution, the canonical StegFin continuity machine executor/worker, and TV/TVC runtime authority. This chat may validate/reconcile their durable evidence but must not impersonate the sovereign execution surface, provider authority, or USER_ONLY wallet authority.
 
 ## Archive condition
 
-The current session remains non-archive-ready while G08 is an explicit current-session goal and the native continuity executor has not been observed installed/active on an authorized node with a resulting terminal/fail-closed worker receipt. All source implementation and authority boundaries are durable. This session's remaining lawful role is distinct validation/reconciliation of evidence from workers already inside the v6 current-session goal inventory; it must not assist unrelated organization workstreams.
+The current session remains non-archive-ready while G08 is an explicit current-session goal and no native sovereign→StegFin terminal/fail-closed worker evidence has been observed. All source implementation and authority boundaries are durable. The remaining lawful session role is distinct validation/reconciliation of G08 machine evidence only; unrelated organization workstreams remain excluded.
