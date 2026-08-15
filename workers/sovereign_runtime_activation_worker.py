@@ -16,6 +16,7 @@ CANDIDATE_EVIDENCE = [
     Path.home() / ".stegverse" / "heartbeat" / "activation.latest.json",
     ROOT / "runtime" / "sovereign" / "activation.latest.json",
 ]
+NODE_MARKERS = [Path("/etc/stegverse/node.json"), Path.home() / ".stegverse" / "node.json"]
 THIRD_PARTY_ENV_VARS = ("GITHUB_ACTIONS", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 REQUIRED_PREDICATES = [
     "runtime_materialized", "native_service_active", "continuous_runtime_live",
@@ -47,6 +48,35 @@ def third_party_hosted_environment(env: dict[str, str] | None = None) -> bool:
     return any(truthy(values.get(name)) for name in THIRD_PARTY_ENV_VARS)
 
 
+def sovereign_node_declared() -> bool:
+    return truthy(os.environ.get("STEGVERSE_SOVEREIGN_NODE")) or any(path.is_file() for path in NODE_MARKERS)
+
+
+def persist_authorized_node_declaration() -> Path | None:
+    """Persist an already-explicit declaration; never manufacture one.
+
+    This compatibility path remains useful across controlled restart. It is not a
+    prerequisite for self-bootstrap: when absent, bootstrap derives a separate
+    non-authorizing local-eligibility declaration from canonical source/state.
+    """
+    for marker in NODE_MARKERS:
+        if marker.is_file():
+            return marker
+    if not truthy(os.environ.get("STEGVERSE_SOVEREIGN_NODE")):
+        return None
+    marker = Path.home() / ".stegverse" / "node.json"
+    atomic_write(marker, {
+        "schema": "stegverse.sovereign-node-declaration/v0.1",
+        "declared": True,
+        "declaration_source": "STEGVERSE_SOVEREIGN_NODE",
+        "credential_authority": "TV/TVC",
+        "github_token_required": False,
+        "third_party_runtime_required": False,
+        "authority_effect": "PERSIST_EXISTING_NODE_DECLARATION_ONLY",
+    })
+    return marker
+
+
 def default_runtime_root(env: dict[str, str] | None = None) -> Path:
     values = os.environ if env is None else env
     override = values.get("STEGVERSE_HEARTBEAT_ROOT")
@@ -66,12 +96,9 @@ def bootstrap_receipt_path() -> Path:
 
 
 def clean_bootstrap_env(env: dict[str, str] | None = None) -> dict[str, str]:
-    """Forward only non-secret local process/runtime locators to self-bootstrap."""
     values = os.environ if env is None else env
     clean = {name: values[name] for name in SAFE_BOOTSTRAP_ENV if values.get(name)}
     clean["STEGVERSE_HEARTBEAT_ROOT"] = str(default_runtime_root(values))
-    # Explicitly carry no authority-bearing token/secret/key material. The bootstrap
-    # derives local node eligibility and TV/TVC remains the only credential authority.
     return clean
 
 
@@ -91,16 +118,17 @@ def load_evidence() -> tuple[Path | None, dict | None]:
 
 
 def execute_native_solution() -> dict:
-    """Run the released self-bootstrap; no pre-existing node declaration is required."""
+    """Run released self-bootstrap; pre-existing node declaration is optional."""
     runtime_root = default_runtime_root()
+    explicit_marker = persist_authorized_node_declaration()
     result = {
         "attempted": False,
-        "eligible_node": False,
+        "eligible_node": explicit_marker is not None,
         "pre_existing_node_declaration_required": False,
         "hosted_environment_rejected": False,
         "bootstrap_returncode": None,
         "runtime_root": str(runtime_root),
-        "node_declaration_marker": None,
+        "node_declaration_marker": str(explicit_marker) if explicit_marker else None,
         "bootstrap_receipt_ref": str(bootstrap_receipt_path()),
         "credential_requirement": "NONE",
         "credential_authority": "TV/TVC",
@@ -120,23 +148,16 @@ def execute_native_solution() -> dict:
     result["attempted"] = True
     completed = subprocess.run(
         [sys.executable, str(bootstrap), "--source-root", str(ROOT), "--runtime-root", str(runtime_root)],
-        capture_output=True,
-        text=True,
-        timeout=420,
-        check=False,
-        env=clean_bootstrap_env(),
+        capture_output=True, text=True, timeout=420, check=False, env=clean_bootstrap_env(),
     )
     result["bootstrap_returncode"] = completed.returncode
     receipt = load_json(bootstrap_receipt_path()) or {}
     result["bootstrap_state"] = receipt.get("state")
     result["bootstrap_reason"] = receipt.get("reason")
-    result["node_declaration_marker"] = receipt.get("node_declaration_ref")
-    result["eligible_node"] = bool((receipt.get("node_eligibility") or {}).get("eligible"))
+    result["node_declaration_marker"] = receipt.get("node_declaration_ref") or result["node_declaration_marker"]
+    result["eligible_node"] = bool((receipt.get("node_eligibility") or {}).get("eligible")) or result["eligible_node"]
     result["post_bootstrap_stegfin"] = receipt.get("post_bootstrap_stegfin")
-    if completed.returncode == 0 and receipt.get("state") == "COMPLETE":
-        result["reason"] = "SOVEREIGN_SELF_BOOTSTRAP_VERIFIED"
-    else:
-        result["reason"] = receipt.get("reason") or "SOVEREIGN_SELF_BOOTSTRAP_INCOMPLETE"
+    result["reason"] = "SOVEREIGN_SELF_BOOTSTRAP_VERIFIED" if completed.returncode == 0 and receipt.get("state") == "COMPLETE" else (receipt.get("reason") or "SOVEREIGN_SELF_BOOTSTRAP_INCOMPLETE")
     return result
 
 
@@ -151,7 +172,7 @@ def unresolved_node_resolution_contract(solution_attempt: dict | None = None) ->
         "required_capabilities": ["repository_resolution", "sandbox_validation"],
         "observed_bootstrap_reason": (solution_attempt or {}).get("reason"),
         "workaround_candidates": [
-            "Bind G18 to an existing StegVerse-owned/federated non-hosted Linux, macOS, or Windows surface containing canonical local source; G18 invokes self-bootstrap itself.",
+            "Bind G18 to a StegVerse-owned/federated non-hosted Linux, macOS, or Windows surface containing canonical local source; G18 invokes self-bootstrap itself.",
             "Promote an existing StegVerse-002 micro-node by materializing the canonical runtime capsule; no hand-created node declaration is required.",
             "Construct a StegVerse-owned/federated node from the repository-local runtime capsule without hosted-provider or GitHub-token production authority."
         ],
@@ -166,23 +187,17 @@ def unresolved_node_resolution_contract(solution_attempt: dict | None = None) ->
 
 def main() -> int:
     invocation = json.load(sys.stdin)
-    if invocation.get("schema") != "stegverse.worker-invocation/v0.1":
-        return 2
+    if invocation.get("schema") != "stegverse.worker-invocation/v0.1": return 2
     epoch = invocation.get("heartbeat_epoch")
     task = invocation.get("task") or {}
     execution = (invocation.get("handoff") or {}).get("execution") or {}
     timing = task.get("heartbeat_timing") or {}
-    claim_id = task.get("claim_id")
-    fence = timing.get("fencing_token")
-    if not isinstance(epoch, int) or task.get("task_id") != EXPECTED_TASK:
-        return 3
-    if not claim_id or not isinstance(fence, int):
-        return 4
+    claim_id, fence = task.get("claim_id"), timing.get("fencing_token")
+    if not isinstance(epoch, int) or task.get("task_id") != EXPECTED_TASK: return 3
+    if not claim_id or not isinstance(fence, int): return 4
     required_caps = set(execution.get("required_capabilities") or [])
-    if not {"runtime_observation", "continuous_process_execution", "durable_state_reconstruction", "bounded_repository_mutation"}.issubset(required_caps):
-        return 5
-    if "receipts/sovereign-runtime-activation/**" not in set(execution.get("allowed_paths") or []):
-        return 6
+    if not {"runtime_observation","continuous_process_execution","durable_state_reconstruction","bounded_repository_mutation"}.issubset(required_caps): return 5
+    if "receipts/sovereign-runtime-activation/**" not in set(execution.get("allowed_paths") or []): return 6
 
     evidence_path, evidence = load_evidence()
     passed = bool(evidence) and all(evidence.get(name) is True for name in REQUIRED_PREDICATES)
@@ -190,73 +205,33 @@ def main() -> int:
     if not passed and solution_attempt.get("attempted"):
         evidence_path, evidence = load_evidence()
         passed = bool(evidence) and all(evidence.get(name) is True for name in REQUIRED_PREDICATES)
-
-    missing = [] if passed else (REQUIRED_PREDICATES if evidence is None else [name for name in REQUIRED_PREDICATES if evidence.get(name) is not True])
-    hard_surface_reasons = {
-        "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_RUNTIME_EVIDENCE",
-        "LOCAL_RUNTIME_ELIGIBILITY_NOT_PROVEN",
-        "SOVEREIGN_SELF_BOOTSTRAP_TOOLING_MISSING",
-    }
+    missing = [] if passed else (REQUIRED_PREDICATES if evidence is None else [n for n in REQUIRED_PREDICATES if evidence.get(n) is not True])
+    hard_surface_reasons = {"THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_RUNTIME_EVIDENCE","LOCAL_RUNTIME_ELIGIBILITY_NOT_PROVEN","SOVEREIGN_SELF_BOOTSTRAP_TOOLING_MISSING"}
     if passed:
         transition, state, expected, blocker = "SOVEREIGN_RUNTIME_VERIFIED", "COMPLETED", None, None
     elif solution_attempt.get("attempted") and solution_attempt.get("reason") not in hard_surface_reasons:
         transition, state, expected = "SOVEREIGN_RUNTIME_SOLUTION_EXECUTING", "ACTIVE", "SOVEREIGN_RUNTIME_SOLUTION_EXECUTION"
-        blocker = {
-            "dependency_class": "INTERNAL_CAPABILITY",
-            "problem_statement": "Canonical self-bootstrap was attempted on this non-hosted surface, but nine-predicate activation proof is not complete.",
-            "solution_required": True,
-            "workaround_candidates": ["Retry the released self-bootstrap after its machine-observable condition clears.", "Use another StegVerse-owned/federated non-hosted surface containing the same canonical runtime capsule."],
-            "next_solution_action": "Continue canonical self-bootstrap until activation.latest.json has all nine predicates true or exact fail-closed evidence requires local-surface remediation."
-        }
+        blocker = {"dependency_class":"INTERNAL_CAPABILITY","problem_statement":"Canonical self-bootstrap was attempted on this non-hosted surface, but nine-predicate activation proof is not complete.","solution_required":True,"workaround_candidates":["Retry released self-bootstrap after its machine-observable condition clears.","Use another StegVerse-owned/federated non-hosted surface containing the same canonical runtime capsule."],"next_solution_action":"Continue canonical self-bootstrap until activation.latest.json has all nine predicates true or exact fail-closed evidence requires local-surface remediation."}
     else:
-        transition, state, expected = "SOVEREIGN_RUNTIME_RESOLUTION_ESCALATION_REQUIRED", "BLOCKED", "DERIVE_AND_REGISTER_RESOLUTION_TASK"
-        blocker = unresolved_node_resolution_contract(solution_attempt)
+        transition, state, expected, blocker = "SOVEREIGN_RUNTIME_RESOLUTION_ESCALATION_REQUIRED", "BLOCKED", "DERIVE_AND_REGISTER_RESOLUTION_TASK", unresolved_node_resolution_contract(solution_attempt)
 
     receipt = {
-        "schema": "stegverse.sovereign-runtime-worker-receipt/v0.5",
-        "task_id": EXPECTED_TASK,
-        "claim_id": claim_id,
-        "worker_id": task.get("worker_id"),
-        "worker_instance_id": task.get("worker_instance_id"),
-        "heartbeat_epoch": epoch,
-        "fencing_token": fence,
-        "transition_id": transition,
-        "state": state,
-        "evidence_path": str(evidence_path) if evidence_path else None,
-        "required_predicates": REQUIRED_PREDICATES,
-        "missing_predicates": missing,
-        "solution_attempt": solution_attempt,
-        "pre_existing_node_declaration_required": False,
-        "self_bootstrap_entrypoint": "scripts/bootstrap_sovereign_runtime.py",
-        "third_party_runtime_required": False,
-        "third_party_dependency_is_blocker": False,
-        "blocker_policy_ref": "control/blocker-resolution-policy.json",
-        "blocker": blocker,
-        "credential_authority": "TV/TVC",
-        "github_token_runtime_authority": "NONE",
-        "non_tv_tvc_secret_or_token_forwarded": False,
-        "authority_effect": "bounded_native_runtime_activation_under_existing_handoff",
-        "completed": passed,
+        "schema":"stegverse.sovereign-runtime-worker-receipt/v0.5","task_id":EXPECTED_TASK,"claim_id":claim_id,
+        "worker_id":task.get("worker_id"),"worker_instance_id":task.get("worker_instance_id"),"heartbeat_epoch":epoch,"fencing_token":fence,
+        "transition_id":transition,"state":state,"evidence_path":str(evidence_path) if evidence_path else None,"required_predicates":REQUIRED_PREDICATES,"missing_predicates":missing,
+        "solution_attempt":solution_attempt,"pre_existing_node_declaration_required":False,"self_bootstrap_entrypoint":"scripts/bootstrap_sovereign_runtime.py",
+        "third_party_runtime_required":False,"third_party_dependency_is_blocker":False,"blocker_policy_ref":"control/blocker-resolution-policy.json","blocker":blocker,
+        "credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","non_tv_tvc_secret_or_token_forwarded":False,
+        "authority_effect":"bounded_native_runtime_activation_under_existing_handoff","completed":passed,
     }
-    receipt_path = RECEIPT_ROOT / f"{EXPECTED_TASK}.json"
-    atomic_write(receipt_path, receipt)
+    atomic_write(RECEIPT_ROOT / f"{EXPECTED_TASK}.json", receipt)
     response = {
-        "schema": "stegverse.worker-response/v0.1",
-        "state": state,
-        "transition_id": transition,
-        "transition_sequence": 3,
-        "expected_next_transition": expected,
-        "expected_next_earliest_epoch": None if passed else epoch + 1,
-        "expected_next_latest_epoch": None if passed else epoch + 1,
-        "checkpoint_ref": f"receipts/sovereign-runtime-activation/{EXPECTED_TASK}.json",
-        "evidence_refs": [f"receipts/sovereign-runtime-activation/{EXPECTED_TASK}.json", "scripts/bootstrap_sovereign_runtime.py", "scripts/verify_sovereign_runtime_activation.py", "StegVerse-Labs/.github#12", "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json"],
-        "blocker": blocker,
-        "cost_observation": {"hb_transition_count": 1, "compute_units": 2 if solution_attempt.get("attempted") else 1, "external_cost_usd": 0, "task_class": "sovereign_runtime_activation"},
+        "schema":"stegverse.worker-response/v0.1","state":state,"transition_id":transition,"transition_sequence":3,"expected_next_transition":expected,
+        "expected_next_earliest_epoch":None if passed else epoch+1,"expected_next_latest_epoch":None if passed else epoch+1,
+        "checkpoint_ref":f"receipts/sovereign-runtime-activation/{EXPECTED_TASK}.json","evidence_refs":[f"receipts/sovereign-runtime-activation/{EXPECTED_TASK}.json","scripts/bootstrap_sovereign_runtime.py","scripts/verify_sovereign_runtime_activation.py","StegVerse-Labs/.github#12","management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json"],
+        "blocker":blocker,"cost_observation":{"hb_transition_count":1,"compute_units":2 if solution_attempt.get("attempted") else 1,"external_cost_usd":0,"task_class":"sovereign_runtime_activation"},
     }
-    json.dump(response, sys.stdout, sort_keys=True)
-    sys.stdout.write("\n")
-    return 0
+    json.dump(response, sys.stdout, sort_keys=True); sys.stdout.write("\n"); return 0
 
 
-if __name__ == "__main__":
-    raise SystemExit(main())
+if __name__ == "__main__": raise SystemExit(main())
