@@ -18,9 +18,9 @@ class SessionAssistanceScopeTests(unittest.TestCase):
         )
 
     def test_newest_inventory_is_selected(self):
-        self.assertTrue(self.inventory.name.endswith('-v4.json'), self.inventory)
+        self.assertTrue(self.inventory.name.endswith('-v6.json'), self.inventory)
         self.assertNotIn(
-            Path('control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v3.json'),
+            Path('control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v5.json'),
             self.assert_inventory_paths,
         )
 
@@ -59,6 +59,13 @@ class SessionAssistanceScopeTests(unittest.TestCase):
         binding = copy.deepcopy(data['worker_assistance_bindings'][0])
         binding['session_goal_id'] = 'NOT-AN-ORIGINATING-GOAL'
         self.assertNotIn(binding['session_goal_id'], set(data['originating_goal_ids']))
+
+    def test_unrelated_org_goals_are_not_current_session_goals(self):
+        data = json.loads(self.inventory.read_text())
+        origin_ids = set(data['originating_goal_ids'])
+        excluded = {x['goal_id'] for x in data['explicitly_not_current_session_goals']}
+        self.assertTrue({'G09-ACTIONS-COST-CONTAINMENT', 'G10-REPOSITORY-HYGIENE', 'G17-WORKFLOW-SURFACE-MINIMIZATION'} <= excluded)
+        self.assertTrue(excluded.isdisjoint(origin_ids))
 
 
 if __name__ == '__main__':
