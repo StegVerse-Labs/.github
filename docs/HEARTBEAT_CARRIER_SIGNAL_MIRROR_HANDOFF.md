@@ -1,6 +1,6 @@
 # Heartbeat Carrier Signal Mirror Handoff
 
-Updated: 2026-08-15T14:23:00-05:00
+Updated: 2026-08-15T14:32:00-05:00
 
 ## Canonical authority
 
@@ -54,7 +54,7 @@ manifest + expiration wrapper + data
 -> END_OF_LIFE
 ```
 
-Master Records is terminal transition custody, not deletion.
+Master Records is terminal transition custody, not deletion. **Master Records is the End-Of-Life state/destination for every Transition Table element.**
 
 ## Worker lifecycle record-pair contract
 
