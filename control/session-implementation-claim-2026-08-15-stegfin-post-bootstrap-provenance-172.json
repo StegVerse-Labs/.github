@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "task_id": "STEGFIN-POST-BOOTSTRAP-PROVENANCE-172",
+  "originating_goal": "G08-STEGFIN-TRADE-READY",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/stegfin-post-bootstrap-provenance-172",
+  "canonical_issue": "StegVerse-Labs/.github#172",
+  "claimant": "current-session-validation-integration-lane",
+  "role": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION",
+  "claim_created_at": "2026-08-15T01:09:00-05:00",
+  "claim_expiration_or_release_condition": "release after merge and exact merged-main validation; if no evidence-bearing update occurs within 24 hours, mark BLOCKED or release",
+  "owned_surfaces": [
+    "scripts/activate_stegfin_after_sovereign_bootstrap.py",
+    "tests/test_activate_stegfin_after_sovereign_bootstrap.py",
+    "docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md#canonical-bootstrap-provenance",
+    "control/session-implementation-claim-2026-08-15-stegfin-post-bootstrap-provenance-172.json"
+  ],
+  "collision_boundaries": [
+    "do not modify heartbeat G18 state, claim, fence, lease or worker semantics",
+    "do not modify canonical StegFin continuity claim issuer or trade worker semantics",
+    "do not modify TV/TVC credential, provider, route, vault or runtime authority",
+    "do not contact provider or wallet",
+    "do not sign, broadcast, settle or claim WALLET_HANDOFF_READY",
+    "do not introduce GitHub or non-TV/TVC token runtime authority"
+  ],
+  "expected_evidence": [
+    "forged boolean-complete proof rejected",
+    "mismatched bootstrap proof/node/source/runtime provenance rejected",
+    "non-complete bootstrap receipt rejected",
+    "canonical provenance fixture reaches only executor-service activation",
+    "hosted validation remains tokenless and non-authorizing"
+  ],
+  "next_task_after_release": "canonical local sovereign bootstrap and StegFin executor service may proceed on an authorized node; canonical StegFin worker alone may attempt WALLET_HANDOFF_READY",
+  "state": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION"
+}
