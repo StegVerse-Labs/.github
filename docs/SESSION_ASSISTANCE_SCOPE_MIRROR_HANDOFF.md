@@ -1,33 +1,44 @@
 # Session Assistance Scope Mirror Handoff
 
-Updated: 2026-08-15T17:07:00-05:00
+Updated: 2026-08-15T18:34:00-05:00
 
-## Authority and current state
+## Authority and corrected current state
 
 ```text
 goal_id: SESSION-GOAL-SCOPED-WORKER-ASSISTANCE-001
 repository: StegVerse-Labs/.github
 branch: main
 canonical_owner: StegVerse-Labs organization control plane
-state: V9_CANONICAL_CONTINUATION_ACTIVE_DISTINCT_VALIDATION_LANE
+state: V10_ORIGINAL_LOCAL_RUNTIME_MODEL_SCOPE_RESTORED
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 render_production_runtime: PROHIBITED
-current_inventory: control/session-goal-inventory-2026-08-15-phone-route-v9.json
-active_live_validation_claim: StegVerse-Labs/stegfin-governance/task-state/STEGFIN-PHONE-LIVE-EVIDENCE-RECONCILIATION-011.json
-active_live_validation_owner: separate current ChatGPT validation/evidence lane
-this_session_duplicate_execution_authority: NONE
+current_inventory: control/session-goal-inventory-2026-08-15-original-local-runtime-model-v10.json
 this_session_unique_claims_remaining: 0
 this_session_unassigned_requirements: 0
-this_session_role: MERGED_INTO_CANONICAL_WORKSTREAM
-product_activation_complete: false
+this_session_execution_responsibility_remaining: 0
+this_session_observation_responsibility_remaining: 0
+this_session_role: COMPLETE_MERGED_ORIGINAL_SCOPE
+archive_ready: true
 ```
 
-The v9 inventory supersedes v8 for the phone-route continuation. Product activation is still incomplete, but this session must not duplicate the already-claimed validation lane or the machine-owned runtime lanes. Archive eligibility for this session depends on durable transfer, not on falsely reporting product activation.
+## Scope correction
 
-## Completed/released requirements from the originating goal
+The user explicitly corrected this session's scope at 2026-08-15T18:34:00-05:00:
 
-### Local model/runtime
+> Revert to the original goals of this session. Wallet issues are handled in a different session.
+
+Accordingly, the v9 phone/wallet continuation is **not** a goal or archival dependency of this session. Wallet, StegFin trade, `WALLET_HANDOFF_READY`, phone participant activation, wallet signing/broadcast, Site StegFin projection, and live wallet evidence reconciliation remain owned by their separate canonical StegFin/Site/session lanes. This session must not claim, validate, reconcile, or wait on those tasks.
+
+Canonical corrected inventory:
+
+```text
+control/session-goal-inventory-2026-08-15-original-local-runtime-model-v10.json
+```
+
+## Original session goals
+
+### G03 — Actual local-runtime discovery / launch / proof
 
 Canonical owner:
 
@@ -38,7 +49,6 @@ StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDO
 Status:
 
 ```text
-formal repository-developed model: COMPLETE_VALIDATED_RELEASED
 former descriptive “select a local model/runtime” step: SUPERSEDED
 local candidate discovery: COMPLETE
 private launch: COMPLETE
@@ -50,160 +60,125 @@ third-party inference required: false
 github_token_required: false
 credential_requirement: NONE
 credential_authority: TV/TVC
+state: COMPLETE_VALIDATED_RELEASED
 ```
 
-No duplicate local-model/runtime implementation is authorized in the heartbeat, StegFin, Site, SDK, or TVC repositories.
+No duplicate local runtime implementation is authorized in heartbeat, StegFin, Site, SDK, or TVC.
 
-### StegVerse-only runtime policy
+### G04 — Formal local model development
 
-Canonical policy:
+Canonical owner remains `StegVerse-002/micro-node-runtime`.
 
 ```text
-control/sovereign-runtime-platform-policy.json
-execution_domain: STEGVERSE_OWNED_OR_FEDERATED_SOVEREIGN_ONLY
+formal repository-developed model: stegverse-reference-lm-v1
+state: COMPLETE_VALIDATED_RELEASED
+formal model/runtime evidence: retained in SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
+next action: NONE_DO_NOT_RECREATE
+```
+
+### G05 — TV/TVC-only credential authority
+
+Canonical authority:
+
+```text
+StegVerse-Labs/TV
+StegVerse-Labs/TVC
+StegVerse-Labs/.github/control/sovereign-runtime-platform-policy.json
+```
+
+Invariant:
+
+```text
+NON-TV/TVC secret/token authority: PROHIBITED
+GitHub token production/runtime authority: NONE
+third-party hosted production fallback: FAIL_CLOSED
 Render production activation: PROHIBITED
 Vercel production activation: PROHIBITED
 Cloudflare hosted production activation: PROHIBITED
 GitHub Actions production activation: PROHIBITED
-third-party hosted fallback: FAIL_CLOSED_NO_THIRD_PARTY_RUNTIME_SUBSTITUTION
-non-TV/TVC secret/token: PROHIBITED
-GitHub token runtime authority: NONE
 ```
 
-Released evidence remains PR #182 / merge `dc9f3bc68449f4ead967eaea4426194fcca5beec` with validation runs `31904226799`, `31904226786`, and `31904226789` SUCCESS.
+### G06 — Session consolidation
 
-### G18 sovereign runtime continuation
+This session's unique requirements are durably preserved in:
 
-Canonical machine owner:
+```text
+StegVerse-Labs/.github/control/session-goal-inventory-2026-08-15-original-local-runtime-model-v10.json
+StegVerse-Labs/.github/docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md
+StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
+StegVerse-Labs/.github/control/sovereign-runtime-platform-policy.json
+```
+
+State: `COMPLETE_VALIDATED_RELEASED_V10_SCOPE_CORRECTED`.
+
+### G07 — Assist existing workers without duplicate execution
+
+Existing machine-owned and separately claimed lanes remain authoritative. This session has no unique nonconflicting worker task left to take. It must not enter the wallet/trade lanes merely because they remain active elsewhere.
+
+## Explicitly out of scope after user correction
+
+```text
+StegFin wallet handoff readiness
+WALLET_HANDOFF_READY production observation
+wallet signing/broadcast
+phone trade participant activation
+StegFin direct-route hardening or live evidence
+Site StegFin phone projection
+trade settlement, P&L, round-trip execution
+```
+
+Disposition:
+
+```text
+TRANSFERRED_TO_DIFFERENT_SESSION_AND_EXISTING_CANONICAL_STEGFIN_SITE_LANES
+this_session_wallet_claim_allowed: false
+this_session_wallet_archival_dependency: false
+```
+
+Existing wallet/trade records are not deleted because they remain valid evidence for the other session/workstream; they are simply no longer part of this session's scope.
+
+## Collision and machine-owned continuation
+
+The sovereign runtime activation worker remains independent:
 
 ```text
 StegVerse-Labs/.github/handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-owner: sovereign-runtime-activation-worker / G18
 claim_state: MACHINE_OWNED
 manual/session execution allowed: false
 ```
 
-The self-bootstrap source is complete/released. Direct repository observation during this reconciliation still shows canonical heartbeat epoch `HB29`; live nine-predicate activation remains machine-owned and is not inferred from source completion.
+This does not make live G18 activation an archival dependency of the completed local-runtime/model source goal. Source completion and machine live activation remain distinct states.
 
-### Phone-sovereign bounded trade source hardening
-
-Canonical owner:
+## Completion truth for this session
 
 ```text
-StegVerse-Labs/stegfin-governance/docs/STEGFIN_PHONE_DIRECT_ROUTE_MIRROR_HANDOFF.md
-StegVerse-Labs/stegfin-governance#60
+actual local discovery/launch/proof path: COMPLETE_VALIDATED_RELEASED
+formal local model: COMPLETE_VALIDATED_RELEASED
+TV/TVC-only credential invariant: COMPLETE_AND_ONGOING
+session consolidation: COMPLETE
+worker-assistance transfer: COMPLETE
+wallet/trade work: OUT_OF_SCOPE_TRANSFERRED_TO_DIFFERENT_SESSION
+unique claims remaining: 0
+unassigned requirements: 0
+execution responsibility remaining: 0
+observation responsibility remaining: 0
+archive_ready: true
 ```
 
-The live-executability hardening discovered after v8 is now COMPLETE/RELEASED:
+## Canonical continuation
 
 ```text
-issue #61: CLOSED_COMPLETED
-PR #62 merge: e19f64ca53699cc626cf05524ff8398544696067
-exact static source receipt: PASS
-historical ERC-20 block-0 eth_getLogs scan: REMOVED
-bounded inventory: current-block ETH gas reserve + USDC + WETH
-credential_requirement: NONE
-non_tv_tvc_secret_or_token_used: false
-provider_secret_required: false
-hosted_runtime_required: false
-signing/broadcast: USER_ONLY
+LOCAL RUNTIME + MODEL:
+StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
+
+SESSION SCOPE:
+StegVerse-Labs/.github/control/session-goal-inventory-2026-08-15-original-local-runtime-model-v10.json
+
+CREDENTIAL/RUNTIME POLICY:
+StegVerse-Labs/.github/control/sovereign-runtime-platform-policy.json
+
+MACHINE LIVE ACTIVATION, independent of this completed session scope:
+StegVerse-Labs/.github/handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
 ```
 
-Hosted run `31910842049` failed during anonymous private-repository checkout before the validator executed. It is neither source failure nor PASS, and no token workaround is authorized.
-
-### Site participant projection
-
-Canonical handoff:
-
-```text
-StegVerse-Labs/Site/docs/STEGFIN_PHONE_PROJECTION_MIRROR_HANDOFF.md
-```
-
-Released evidence:
-
-```text
-PR #276 merge: 8b5319705dcf02c8edc8dd1612e9787cf70386a1
-Check StegFin Phone Projection: 31910836065 SUCCESS
-Ecosystem Heartbeat Orchestration: 31910836030 SUCCESS
-Site Handoff Orchestrator: 31910836202 SUCCESS
-Site Bootstrap Validate: 31910836064 SUCCESS
-GitHub Pages build: 1153781444 built from exact merge
-participant entry: https://stegverse.org/stegfin-trade.html
-```
-
-Site is projection only and receives no provider, credential, wallet, signing, broadcast, settlement, or Master Records authority.
-
-## Active claims and collision partition
-
-### CLAIMED_FOR_VALIDATION — DO NOT COMPETE
-
-```text
-task: STEGFIN-PHONE-LIVE-EVIDENCE-RECONCILIATION-011
-location: StegVerse-Labs/stegfin-governance/task-state/STEGFIN-PHONE-LIVE-EVIDENCE-RECONCILIATION-011.json
-owner: existing current ChatGPT validation/evidence lane
-claim_created_at: 2026-08-15T17:02:00-05:00
-claim_expiration: 2026-08-15T19:02:00-05:00 unless actual phone evidence is reconciled sooner
-role: validation/evidence reconciliation only
-release_condition: first actual current-phone terminal receipt is reconciled, or the claim expires and issue #60 continues independently
-```
-
-This session did not take or duplicate that claim.
-
-### MACHINE_OWNED — DO NOT COMPETE
-
-```text
-SHWP-DURABLE-RUNTIME-ACTIVATION / G18
-STEGFIN-CONTINUITY-CARRIER-007
-SDK-MCP-CANONICAL-VALIDATION-009
-```
-
-Their canonical handoffs and worker/task registries remain the execution authority. No session may substitute Render, GitHub Actions, hosted inference, GitHub tokens, or non-TV/TVC secrets for those lanes.
-
-### PARTICIPANT AUTHORITY BOUNDARY
-
-```text
-current phone participant
--> https://stegverse.org/stegfin-trade.html
--> Verify this phone and prepare wallet handoff
--> WebAuthn/device possession
--> PREPARE
--> exact bounded observation/quote/allowance/simulation
--> BLOCKED or WALLET_HANDOFF_READY
--> STOP
--> USER_ONLY review/sign/broadcast
-```
-
-The participant gesture cannot be performed by a repository worker or chat session.
-
-## Session convergence and transfer
-
-This session's requested goals were compared against live canonical state after the v9 inventory appeared. The only remaining live phone evidence role is already claimed by another validation/evidence lane. The runtime activation roles are machine-owned. The source hardening and Site projection are complete/released. Therefore this session has no nonconflicting implementation, validation, integration, propagation, or observation responsibility to claim.
-
-```text
-MERGED INTO: control/session-goal-inventory-2026-08-15-phone-route-v9.json
-MERGED INTO: StegVerse-Labs/stegfin-governance#60
-MERGED INTO: StegVerse-Labs/stegfin-governance/task-state/STEGFIN-PHONE-LIVE-EVIDENCE-RECONCILIATION-011.json
-MERGED INTO: StegVerse-Labs/Site/docs/STEGFIN_PHONE_PROJECTION_MIRROR_HANDOFF.md
-MERGED INTO: StegVerse-Labs/.github/handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-MERGED INTO: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
-```
-
-## Current completion truth
-
-```text
-formal local model developed: true
-local discovery/launch/proof source complete: true
-StegVerse-only runtime policy merged: true
-phone source hardened and released: true
-Site participant entry published: true
-current-phone PREPARE observed: false
-terminal BLOCKED/WALLET_HANDOFF_READY observed: false
-G18 nine-predicate live activation observed: false
-product_activation_complete: false
-this_session_unique_claims_remaining: 0
-this_session_execution_responsibility_remaining: 0
-this_session_observation_responsibility_remaining: 0
-this_session_archive_ready: true
-```
-
-Archiving this session does not remove any implementation requirement or execution authority. Product activation remains pending in canonical non-chat and separately claimed validation/participant lanes.
+Deleting or archiving this conversation does not remove any original-goal implementation state or execution authority. Wallet/trade work is intentionally excluded and continues in its different session/canonical workstream.
