@@ -1,6 +1,6 @@
 # Session Assistance Scope Mirror Handoff
 
-Updated: 2026-08-15T14:28:00-05:00
+Updated: 2026-08-15T14:35:00-05:00
 
 ## Authority and session state
 
@@ -9,16 +9,16 @@ goal_id: SESSION-GOAL-SCOPED-WORKER-ASSISTANCE-001
 repository: StegVerse-Labs/.github
 branch: main
 canonical_owner: StegVerse-Labs organization control plane
-state: ACTIVE_BLOCKED_PRODUCT_ACTIVATION_EVIDENCE_PENDING
+state: BLOCKED_RETAIN_TEMPORARILY_LIVE_PRODUCT_ACTIVATION_EVIDENCE_PENDING
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 execution_authority_created: NONE
 current_inventory: control/session-goal-inventory-2026-08-15-active-goals-amendment.json
-completed_source_claims:
+completed_claims:
   - control/session-implementation-claim-2026-08-15-sovereign-bootstrap-stegfin-chain.json
   - control/session-implementation-claim-2026-08-15-g18-self-bootstrap-worker.json
-active_integration_claim:
   - control/session-implementation-claim-2026-08-15-stegverse-only-runtime-policy.json
+active_session_implementation_claim: NONE
 runtime_platform_policy: control/sovereign-runtime-platform-policy.json
 canonical_activation_blocker: management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json
 archive_state: NOT_READY_UNDER_CURRENT_USER_DIRECTIVE
@@ -29,22 +29,22 @@ This handoff creates no heartbeat, provider, credential, route, signing, broadca
 ## Current-session goals
 
 ```text
-G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF           COMPLETE_RELEASED
-G04-FORMAL-LOCAL-MODEL-DEVELOPMENT                 COMPLETE_RELEASED
+G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF           COMPLETE_VALIDATED_RELEASED
+G04-FORMAL-LOCAL-MODEL-DEVELOPMENT                 COMPLETE_VALIDATED_RELEASED
 G05-TV-TVC-ONLY-CREDENTIAL-AUTHORITY               COMPLETE_ONGOING_INVARIANT
 G08-STEGFIN-TRADE-READY                            7_OF_8_COMPLETE_LIVE_MACHINE_EXECUTION_PENDING
 G08A-SOVEREIGN-BOOTSTRAP-STEGFIN-AUTO-CHAIN        COMPLETE_VALIDATED_MERGED_RELEASED
 G08B-G18-SELF-BOOTSTRAP-WORKER                     COMPLETE_VALIDATED_MERGED_RELEASED
-G08C-STEGVERSE-ONLY-RUNTIME-POLICY                 CLAIMED_FOR_INTEGRATION
+G08C-STEGVERSE-ONLY-RUNTIME-POLICY                 COMPLETE_VALIDATED_MERGED_RELEASED
 SDK-MCP-CANONICAL-VALIDATION-009                   MACHINE_OWNED_EXACT_RUN_PENDING
-SESSION-CONSOLIDATION                              DURABLE_BUT_ARCHIVE_BLOCKED_BY_CURRENT_ACTIVATION_REQUIREMENT
+SESSION-CONSOLIDATION                              DURABLE; LIVE ACTIVATION EVIDENCE REMAINS CURRENT SESSION BLOCKER
 ```
 
-The previous archive classification is superseded. `ARCHIVE THIS SESSION` did not mean all product capabilities were activated. Live sovereign activation, executor activation, and `WALLET_HANDOFF_READY` remain unobserved.
+`ARCHIVE THIS SESSION` from the earlier state did not mean all product capabilities were activated. Live nine-predicate sovereign activation, rootless StegFin executor activation, and `WALLET_HANDOFF_READY` remain unobserved.
 
-## StegVerse-only runtime requirement
+## StegVerse-only runtime policy — COMPLETE / VALIDATED / MERGED
 
-The user explicitly directed: **do not use Render; use StegVerse.** That requirement is now a durable runtime policy rather than a conversational preference:
+The requirement **do not use Render; use StegVerse** is installed as a canonical control-plane invariant:
 
 ```text
 policy: control/sovereign-runtime-platform-policy.json
@@ -53,86 +53,92 @@ Render production activation: PROHIBITED
 GitHub Actions production activation: PROHIBITED
 Vercel production activation: PROHIBITED
 Cloudflare hosted production activation: PROHIBITED
-third-party hosted fallback: FAIL_CLOSED
+third-party hosted fallback: FAIL_CLOSED_NO_THIRD_PARTY_RUNTIME_SUBSTITUTION
 allowed carrier classes: StegVerse-owned native node, StegVerse-federated native node, eligible StegVerse-002 micro-node
 credential_authority: TV/TVC
 non-TV/TVC secret/token: PROHIBITED
 GitHub token runtime authority: NONE
 ```
 
-The existing production sources already reject Render/hosted execution as sovereign evidence. The policy and deterministic regression tests make that prohibition explicit and durable so future activation work cannot substitute Render or another third-party host for StegVerse sovereign execution.
+Release evidence:
+
+```text
+PR: StegVerse-Labs/.github#182
+merge: dc9f3bc68449f4ead967eaea4426194fcca5beec
+validated head: 65f12e2de681fdb4caaeba507d33290bce46703d
+organization control-plane run: 31904226799 SUCCESS
+Heartbeat Worker Project run: 31904226786 SUCCESS
+handoff-state render run: 31904226789 SUCCESS
+handoff execution ownership: PASS
+Admissible-Existence control plane: PASS
+heartbeat carrier contract: PASS
+claim: RELEASED_COMPLETE_VALIDATED_MERGED
+```
+
+During validation, the session also repaired pre-existing canonical conformance debt in heartbeat ownership handoffs and completed the missing Admissible-Existence binding for `SDK-MCP-CANONICAL-VALIDATION-009`. Those repairs do not execute the MCP task; its exact sovereign artifact run remains machine-owned.
 
 ## Complete work that must not be duplicated
 
-The formal local model/runtime remains canonical in:
+Formal local runtime/model owner:
 
 ```text
 StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
 ```
 
-It already provides actual local runtime discovery, private launch, real inference, measurement/proof, and the formally repository-developed local reference model. Do not recreate it.
+It already provides actual local runtime discovery, private launch, real inference, measurement/proof, and the repository-developed `stegverse-reference-lm-v1`. The former descriptive local-runtime selection step is superseded.
 
-The canonical StegFin source/control plane is developed; the final trade-ready deliverable is live machine execution to `WALLET_HANDOFF_READY`.
-
-## Source integration completed in this activation pass
-
-### SOVEREIGN-BOOTSTRAP-STEGFIN-CHAIN-001
+Automatic activation source chain:
 
 ```text
-PR: #180
-merge: 3a438dba11ec6af82f1563fe5a382a268ee0dcae
-validation: run 31902367481 / job 95054972979 / SUCCESS
-repository suite: 268/268 PASS
-state: COMPLETE_VALIDATED_MERGED_RELEASED
+PR #180 merge 3a438dba11ec6af82f1563fe5a382a268ee0dcae
+scripts/bootstrap_sovereign_runtime.py
+nine-predicate PASS
+-> sovereign COMPLETE persisted
+-> automatic scripts/activate_stegfin_after_sovereign_bootstrap.py
 ```
 
-After exact nine-predicate sovereign PASS, `scripts/bootstrap_sovereign_runtime.py` persists sovereign `COMPLETE` and automatically invokes the already-released `scripts/activate_stegfin_after_sovereign_bootstrap.py`. Downstream service failure cannot forge or erase sovereign activation truth. Hosted/incomplete/proof-failing paths never invoke the downstream bridge.
-
-### G18-SELF-BOOTSTRAP-WORKER-001
+G18 self-bootstrap integration:
 
 ```text
-PR: #181
-merge: ed40b46b5922dccce698e331c76bfe474b147736
-worker: workers/sovereign_runtime_activation_worker.py
-focused validation: run 31902858623 / SUCCESS
-full Heartbeat Worker Project: run 31902858622 / job 95056159205 / SUCCESS
-state: COMPLETE_VALIDATED_MERGED_RELEASED
+PR #181 merge ed40b46b5922dccce698e331c76bfe474b147736
+workers/sovereign_runtime_activation_worker.py
+-> consumes released self-bootstrap directly
+-> no pre-created sovereign node declaration required
+-> secret/token-like child environment stripped
 ```
-
-G18 invokes `scripts/bootstrap_sovereign_runtime.py` itself on a StegVerse-owned/federated non-hosted local execution surface. A pre-existing node declaration is optional rather than required. Explicit authorized declarations can still be persisted for controlled-restart continuity. The bootstrap subprocess receives only non-secret local process/state locators; GitHub/provider/wallet/cloud secrets or tokens are not forwarded.
 
 ## Canonical active execution path
 
 ```text
-G18 sovereign-runtime-activation-worker on eligible StegVerse-owned/federated local surface
--> G18 invokes scripts/bootstrap_sovereign_runtime.py itself
--> bootstrap derives/reuses non-authorizing node declaration
+G18 sovereign-runtime-activation-worker
+on eligible StegVerse-owned/federated sovereign local surface
+-> scripts/bootstrap_sovereign_runtime.py
+-> derive/reuse non-authorizing node declaration
 -> native heartbeat install/start
--> activation.latest.json: all nine predicates true
--> bootstrap.latest.json: COMPLETE
--> automatic scripts/activate_stegfin_after_sovereign_bootstrap.py
--> sovereign-post-bootstrap.latest.json: executor_service_active=true
+-> activation.latest.json all nine predicates true
+-> bootstrap.latest.json COMPLETE
+-> automatic post-bootstrap StegFin executor-service activation
+-> sovereign-post-bootstrap.latest.json executor_service_active=true
 -> rootless StegFin machine executor
 -> stegfin-continuity-carrier-worker self-acquires collision-safe claim
 -> same-host TV/TVC Unix broker OR governed READY TVC HTTPS route
 -> bounded 12.50 USDC -> WETH preparation
 -> WALLET_HANDOFF_READY or exact fail-closed worker receipt
--> STOP before USER_ONLY wallet signing/broadcast
+-> STOP before USER_ONLY signing/broadcast
 ```
 
-No separate hand-created node declaration or separate post-bootstrap StegFin activation command is required on the normal path. Render or another third-party hosted runtime is not an alternative carrier.
+Render or another third-party hosted runtime is not a fallback or alternate production carrier.
 
 ## Execution ownership and collision partition
 
 ### MANUAL / SESSION-STARTABLE
 
 ```yaml
-task_id: STEGVERSE-ONLY-RUNTIME-POLICY-001
-manual_execution_allowed: true
-worker_registry_ref: NONE_SOURCE_INTEGRATION_ONLY
-collision_scope: control/sovereign-runtime-platform-policy.json, deterministic policy test, session handoff and activation blocker references only
-release_condition: PR #182 exact-head validation passes, change is merged, claim is released
-next_executable_action: validate and merge PR #182; do not perform live G18/provider/wallet execution from chat
+manual_execution_allowed: false
+worker_registry_ref: NONE_NO_SESSION_IMPLEMENTATION_CLAIM
+collision_scope: evidence reconciliation only; no live G18, MCP, provider or wallet execution
+release_condition: no additional session-startable source work remains
+next_executable_action: NONE_SOURCE
 ```
 
 ### WORKER-OWNED / DO NOT COMPETE
@@ -141,16 +147,23 @@ next_executable_action: validate and merge PR #182; do not perform live G18/prov
 - task_id: SHWP-DURABLE-RUNTIME-ACTIVATION
   manual_execution_allowed: false
   worker_registry_ref: control/worker-registry.json
-  collision_scope: G18 claim/fence, sovereign local runtime process, activation.latest.json, native supervision
-  release_condition: StegVerse-owned/federated node-local activation.latest.json has all nine predicates true or exact fail-closed receipt
-  next_executable_action: G18 continues on eligible StegVerse sovereign local surface after source integration completes
+  collision_scope: G18 claim/fence, sovereign runtime process, activation proof, native supervision
+  release_condition: StegVerse-owned/federated node-local activation.latest.json has all nine predicates true and post-bootstrap executor service is active, or exact fail-closed receipt
+  next_executable_action: canonical G18 executes on eligible StegVerse sovereign local surface
 
 - task_id: STEGFIN-CONTINUITY-CARRIER-007
   manual_execution_allowed: false
   worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
-  collision_scope: continuity claim, TV/TVC transport, provider operation preparation, Inventory N, WALLET_HANDOFF_READY
+  collision_scope: continuity claim, TV/TVC transport, Inventory N, provider/pretrade preparation and WALLET_HANDOFF_READY
   release_condition: WALLET_HANDOFF_READY or exact fail-closed terminal receipt
-  next_executable_action: canonical worker continues after executor service activation
+  next_executable_action: canonical StegFin worker proceeds after executor service activation
+
+- task_id: SDK-MCP-CANONICAL-VALIDATION-009
+  manual_execution_allowed: false
+  worker_registry_ref: control/worker-registry.d/sdk-mcp-canonical-validation-009.json
+  collision_scope: exact SDK/StegCore/Core-Lite/Master Records artifact validation, MR/MRR/MRO receipts, replay/reconstruction
+  release_condition: exact sovereign validation receipt or exact fail-closed local-artifact condition
+  next_executable_action: sdk-mcp-canonical-validation-worker executes on eligible StegVerse sovereign node
 ```
 
 ### ESCALATED / AUTHORITY-OWNED
@@ -160,7 +173,7 @@ manual_execution_allowed: false
 worker_registry_ref: control/worker-registry.json
 collision_scope: credential/provider/route/vault authority, signing/broadcast authority, Master Records custody
 release_condition: canonical authority owner satisfies or rejects the exact bounded request
-next_executable_action: TV/TVC handles protected credential/route semantics; USER_ONLY handles signing/broadcast; Master Records handles custody
+next_executable_action: TV/TVC owns protected credential/route semantics; USER_ONLY owns signing/broadcast; Master Records owns custody
 ```
 
 ### COMPLETED / SUPERSEDED
@@ -168,7 +181,7 @@ next_executable_action: TV/TVC handles protected credential/route semantics; USE
 ```yaml
 manual_execution_allowed: false
 worker_registry_ref: NONE_TERMINAL
-collision_scope: completed local-model, bootstrap-chain, and G18 self-bootstrap source claims
+collision_scope: local-model/runtime source, bootstrap-chain source, G18 source correction, StegVerse-only policy integration
 release_condition: COMPLETE_VALIDATED_MERGED_RELEASED
 next_executable_action: NONE_DO_NOT_RECREATE
 ```
@@ -179,8 +192,8 @@ next_executable_action: NONE_DO_NOT_RECREATE
 formal local model/runtime developed: true
 local discovery/launch/proof source complete: true
 G18 consumes released self-bootstrap: true
-bootstrap automatically chains to released StegFin executor activator after PASS: true
-StegVerse-only runtime policy installed on integration branch: true
+bootstrap automatically chains to StegFin executor activator after PASS: true
+StegVerse-only runtime policy merged: true
 nine-predicate sovereign live activation observed: false
 rootless StegFin executor active receipt observed: false
 terminal/fail-closed StegFin worker receipt observed: false
@@ -188,40 +201,31 @@ WALLET_HANDOFF_READY observed: false
 product goal complete: false
 ```
 
-## Validation truth
-
-```text
-PR #180 source integration: PASS
-PR #181 G18 self-bootstrap correction: PASS
-Sovereign Runtime Worker run 31902858623: SUCCESS
-Heartbeat Worker Project run 31902858622 job 95056159205: SUCCESS
-hosted validation equals live production activation: false
-StegVerse-only runtime policy validation: PENDING CURRENT PR/WORKFLOW
-```
-
 ## Next executable action and blocker
 
 Canonical live owner: `SHWP-DURABLE-RUNTIME-ACTIVATION / G18 fencing token 18`.
 
-Current session role: distinct integration/validation of the StegVerse-only execution invariant. After that integration claim is merged and released, the next live action remains machine-owned: execute G18 on the first eligible **StegVerse-owned or StegVerse-federated sovereign local surface** containing canonical source/runtime. Do not use Render or another third-party hosted runtime.
+The next live action is machine-owned: execute G18 on the first eligible **StegVerse-owned or StegVerse-federated sovereign local surface** containing canonical source/runtime. No Render or third-party hosted runtime may satisfy the activation proof.
 
-The machine-observable release condition is:
+Machine-observable release condition:
 
 ```text
 activation.latest.json on StegVerse-owned/federated sovereign node: all nine predicates true
 AND sovereign-post-bootstrap.latest.json: executor_service_active=true
-THEN stegfin-continuity-carrier-worker proceeds to WALLET_HANDOFF_READY or exact fail-closed evidence
+THEN stegfin-continuity-carrier-worker -> WALLET_HANDOFF_READY or exact fail-closed evidence
 ```
 
-The available chat/GitHub-hosted execution surfaces are validation/control surfaces, not eligible sovereign process hosts.
+The connected chat/GitHub surfaces are validation/control surfaces, not the eligible sovereign process host. Therefore no live activation claim is made here.
 
 ## Archive condition
 
 ```text
-unique integration work remaining in chat: StegVerse-only runtime policy validation/merge/release
+unique source/integration work remaining in chat: none
+all session requirements durable: true
+current user requires live activation reconciliation before archive: true
 canonical live activation observed: false
 WALLET_HANDOFF_READY observed: false
 archive_ready: false
 ```
 
-Required classification: **ACTIVE — DISTINCT SUPPORT ROLE** until the StegVerse-only runtime policy integration is validated, merged, and its claim released. After that, retain only if the current user directive still requires this chat to reconcile live activation evidence; do not duplicate G18, TVC, MCP, or StegFin live claims.
+Required classification under the current user directive: **BLOCKED — RETAIN TEMPORARILY**. The blocker has a named owner, durable handoff, machine-observable release condition, and exact next action. Do not duplicate G18, TVC, MCP, or StegFin machine claims.
