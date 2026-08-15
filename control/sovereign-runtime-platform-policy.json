@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.sovereign-runtime-platform-policy/v0.1",
+  "policy_id": "STEGVERSE-SOVEREIGN-RUNTIME-PLATFORM-001",
+  "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "repository": "StegVerse-Labs/.github",
+  "execution_domain": "STEGVERSE_OWNED_OR_FEDERATED_SOVEREIGN_ONLY",
+  "allowed_carrier_classes": [
+    "StegVerse-owned native sovereign node",
+    "StegVerse-federated native sovereign node",
+    "eligible StegVerse-002 micro-node with canonical runtime capsule"
+  ],
+  "prohibited_production_platforms": [
+    "Render",
+    "GitHub Actions",
+    "Vercel",
+    "Cloudflare hosted runtime",
+    "any other third-party hosted process or scheduler surface"
+  ],
+  "render_allowed": false,
+  "third_party_process_host_allowed": false,
+  "third_party_scheduler_allowed": false,
+  "third_party_deployment_required": false,
+  "fallback_policy": "FAIL_CLOSED_NO_THIRD_PARTY_RUNTIME_SUBSTITUTION",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "github_token_runtime_authority": "NONE",
+  "wallet_signing_authority": "USER_ONLY",
+  "broadcast_authority": "USER_ONLY",
+  "activation_evidence_must_be_node_local": true,
+  "hosted_validation_is_activation": false,
+  "required_source_enforcement": [
+    "workers/sovereign_runtime_activation_worker.py rejects hosted third-party environments",
+    "workers/sovereign_node_repository_resolution_worker.py rejects hosted third-party environments",
+    "scripts/bootstrap_sovereign_runtime.py rejects hosted third-party environments",
+    "scripts/verify_sovereign_runtime_activation.py rejects hosted third-party environments"
+  ],
+  "machine_observable_release_condition": "A StegVerse-owned/federated node-local activation.latest.json reports all nine sovereign predicates true; no prohibited hosted platform may satisfy or substitute for that proof.",
+  "authority_effect": "POLICY_ONLY_NO_EXECUTION_CREDENTIAL_PROVIDER_OR_WALLET_AUTHORITY"
+}
