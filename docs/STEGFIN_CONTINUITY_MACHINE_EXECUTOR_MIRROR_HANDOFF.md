@@ -195,3 +195,45 @@ Repository source completion is not live host activation and is not trade comple
 ## Session consolidation / archive dependency
 
 This handoff contains all #163 implementation, validation, authority-boundary, collision, and continuation state needed without this chat. The #163 session claim is released. The remaining product activation work is machine-owned and does not require a new chat-owned implementation claim unless a machine-observable failure reveals a new unclaimed source gap.
+
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+collision_scope: STEGFIN-CONTINUITY-MACHINE-EXECUTOR-008 source and native service activation chain
+release_condition: none; hosted/chat/manual execution cannot substitute for sovereign host execution
+next_executable_action: NONE_MANUAL_EXECUTION_PROHIBITED
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+collision_scope: canonical StegFin continuity claim, Inventory N, provider pretrade preparation, and WALLET_HANDOFF_READY receipt
+release_condition: canonical worker emits WALLET_HANDOFF_READY or exact fail-closed terminal receipt
+next_executable_action: released sovereign bootstrap and post-bootstrap bridge activate the registered executor; the existing StegFin worker then self-acquires its collision-safe claim
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+collision_scope: TV/TVC provider credential/route/vault/runtime authority and USER_ONLY wallet signing/broadcast
+release_condition: required TV/TVC runtime predicate or USER_ONLY wallet action is independently evidenced by its canonical owner
+next_executable_action: TV/TVC performs only provider/runtime operations it authorizes; USER_ONLY retains signing and broadcast
+```
+
+### COMPLETED / SUPERSEDED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
+collision_scope: executor source, installer, pre-heartbeat sovereign bootstrap, post-bootstrap bridge, and obsolete pre-declared-node initiation prerequisite
+release_condition: source surfaces are COMPLETE_VALIDATED_RELEASED and obsolete initiation prerequisite is superseded by the released bootstrap chain
+next_executable_action: NONE_SOURCE_REIMPLEMENTATION; observe the machine-owned live chain instead
+```
