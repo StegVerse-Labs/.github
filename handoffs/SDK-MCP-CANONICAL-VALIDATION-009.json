@@ -1,0 +1,124 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SDK-MCP-CANONICAL-VALIDATION-009",
+  "created_at": "2026-08-15T09:40:00-05:00",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "SDK-MCP-PORTABLE-AUTHORITY-001",
+    "objective": "Execute the merged StegVerse SDK MCP production-artifact test on an authorized sovereign/local node using the exact already-materialized StegCore, Core-Lite and Master Records packages; prove exact MR/MRR/MRO custody, governed tools/call, replay/reconstruction without consequence re-execution, and bounded-write retention.",
+    "success_predicates": [
+      "canonical governed integration suite executes without skip",
+      "MCP tools/call occurs only after canonical StegGate ALLOW and commit-coherence ALLOW",
+      "exact MCP contract and call hashes survive into execution observation",
+      "exact MR and MRR identifiers are retained",
+      "replay and reconstruction each retain MRO receipts and consequence_reexecuted=false",
+      "write_bounded_value(42) returns retained UPDATED result",
+      "transaction identity is continuous and chain_verified=true",
+      "no non-TV/TVC secret/token is used"
+    ],
+    "failure_predicates": [
+      "hosted execution surface",
+      "missing scheduler claim",
+      "missing exact local artifact root",
+      "integration suite skip or failure",
+      "replay/reconstruction consequence re-execution",
+      "missing custody receipt",
+      "GitHub/provider/wallet credential requirement or disclosure"
+    ],
+    "authority_ceiling": [
+      "validation only",
+      "local process execution only",
+      "no repository checkout authority",
+      "no credential authority",
+      "no provider operation authority",
+      "no signing",
+      "no broadcast"
+    ],
+    "successor_policy": "NONE",
+    "max_successor_depth": 0
+  },
+  "task": {
+    "task_id": "SDK-MCP-CANONICAL-VALIDATION-009",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json",
+      "StegVerse-org/StegVerse-SDK:MCP_PORTABLE_AUTHORITY_MIRROR_HANDOFF.md",
+      "StegVerse-org/StegVerse-SDK:tests/test_mcp_production_artifact.py",
+      "StegVerse-org/StegVerse-SDK:reports/mcp-production-artifact/local-integration-diagnostic-20260815.json",
+      "StegVerse-Labs/.github:workers/sdk_mcp_canonical_validation_worker.py",
+      "StegVerse-Labs/.github:control/worker-registry.d/sdk-mcp-canonical-validation-009.json",
+      "StegVerse-Labs/.github:control/process-worker-adapters.d/sdk-mcp-canonical-validation-009.json"
+    ],
+    "parent_task_id": null,
+    "derivation_reason": "The SDK source task is complete enough for sovereign exact-artifact execution but previously had no concrete StegVerse worker registration/adapter. This handoff binds that existing task to the canonical worker scheduler without changing SDK evaluation, custody, or credential authority.",
+    "canonical_owner_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json",
+    "canonical_lineage_key": "sdk:mcp:canonical-production-artifact-validation",
+    "derivation_depth": 0,
+    "source_task_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json",
+    "source_handoff_ref": "StegVerse-org/StegVerse-SDK:MCP_PORTABLE_AUTHORITY_MIRROR_HANDOFF.md",
+    "worker_registry_ref": "control/worker-registry.d/sdk-mcp-canonical-validation-009.json",
+    "worker_id": "sdk-mcp-canonical-validation-worker",
+    "adapter_ref": "process:sdk-mcp-canonical-validation-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "observation",
+    "priority": "release"
+  },
+  "authority": {
+    "authority_source": "StegVerse-org/StegVerse-SDK task SDK-MCP-CANONICAL-VALIDATION-009 + canonical sovereign worker scheduler",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "sdk-mcp-canonical-validation-v1",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "provider_secret_export_allowed": false,
+    "wallet_signing_authority": "NONE",
+    "broadcast_authority": "NONE",
+    "execution_authority_created": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "canonical_artifact_validation",
+      "master_records_replay_reconstruction_validation"
+    ],
+    "required_local_locators": [
+      "STEGVERSE_SDK_SOURCE_ROOT",
+      "STEGVERSE_STEGCORE_SOURCE_ROOT",
+      "STEGVERSE_CORE_LITE_SOURCE_ROOT",
+      "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT"
+    ],
+    "locator_semantics": "NON_SECRET_ALREADY_MATERIALIZED_LOCAL_SOURCE_PATHS_ONLY",
+    "worker": "workers/sdk_mcp_canonical_validation_worker.py",
+    "allowed_paths": [
+      "~/.stegverse/sdk-mcp-canonical-validation-009/**",
+      "~/.stegverse/receipts/sdk-mcp-canonical-validation-009.json"
+    ],
+    "allowed_services": [],
+    "max_actions": 32,
+    "max_retries": 3,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 64,
+    "rate_class": "sdk_mcp_canonical_validation",
+    "hosted_execution_allowed": false
+  },
+  "continuity": {
+    "master_records_required": true,
+    "result_receipt": "~/.stegverse/receipts/sdk-mcp-canonical-validation-009.json",
+    "source_task_reconciliation": "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json",
+    "source_handoff_reconciliation": "StegVerse-org/StegVerse-SDK:MCP_PORTABLE_AUTHORITY_MIRROR_HANDOFF.md"
+  },
+  "completion": {
+    "next_authorized_action": "Canonical sovereign worker scheduler assigns a collision-safe claim to sdk-mcp-canonical-validation-worker on an eligible non-hosted StegVerse node where the four declared source roots are already materialized. The worker executes the exact integration suite and governed reference MCP runs, then emits COMPLETE only when exact MR/MRR/MRO and bounded-write predicates pass.",
+    "terminal_when": [
+      "SDK_MCP_CANONICAL_VALIDATION_COMPLETE",
+      "credential_authority=TV/TVC",
+      "non_tv_tvc_secret_or_token_used=false",
+      "replay consequence_reexecuted=false",
+      "reconstruction consequence_reexecuted=false"
+    ],
+    "release_condition": "Complete worker receipt is produced and reconciled into the canonical SDK task/handoff/issue, or an exact fail-closed worker receipt identifies a machine-observable missing local-artifact/runtime condition."
+  }
+}

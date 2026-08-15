@@ -1,0 +1,57 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SDK-MCP-CANONICAL-VALIDATION-009",
+  "tasks": [
+    {
+      "task_id": "SDK-MCP-CANONICAL-VALIDATION-009",
+      "goal_id": "SDK-MCP-PORTABLE-AUTHORITY-001",
+      "state": "HANDOFF_READY",
+      "claim_id": null,
+      "archive_eligible": false,
+      "executor_binding": "AUTHORIZED",
+      "authorized_policy_version": "sdk-mcp-canonical-validation-v1",
+      "handoff_ref": "handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json",
+      "block_ref": "StegVerse-org/StegVerse-SDK:MCP_PORTABLE_AUTHORITY_MIRROR_HANDOFF.md",
+      "evidence_refs": [
+        "handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json",
+        "workers/sdk_mcp_canonical_validation_worker.py",
+        "control/process-worker-adapters.d/sdk-mcp-canonical-validation-009.json",
+        "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json"
+      ],
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:sdk-mcp-canonical-validation:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "task_relationship": "validates_capability",
+        "activation_proof_ref": null,
+        "blockers": ["EXACT_SOVEREIGN_ARTIFACT_RUN_NOT_YET_OBSERVED"],
+        "continuation_owner": "sdk-mcp-canonical-validation-worker",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "target_phase": "ACTIVATED"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "worker_id": "sdk-mcp-canonical-validation-worker",
+      "status": "AVAILABLE",
+      "executor_type": "repository_worker",
+      "adapter_ref": "process:sdk-mcp-canonical-validation-v1",
+      "authority_source": "handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "canonical_artifact_validation",
+        "master_records_replay_reconstruction_validation"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "last_seen_at": null
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "priority": "release"
+}

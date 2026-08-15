@@ -13,7 +13,7 @@ class AERetrospectiveConformanceTests(unittest.TestCase):
     def test_exact_effective_denominator(self):
         p = subprocess.run([sys.executable, str(ROOT / "scripts" / "validate_ae_retrospective_conformance.py")], cwd=ROOT, text=True, capture_output=True)
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
-        self.assertIn("effective_tasks=28 classified=28", p.stdout)
+        self.assertIn("effective_tasks=29 classified=29", p.stdout)
 
     def test_no_non_tvtvc_runtime_authority(self):
         self.assertEqual(self.report["credential_authority"], "TV/TVC")
