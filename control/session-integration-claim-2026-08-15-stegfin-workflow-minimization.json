@@ -5,9 +5,10 @@
   "originating_session_goal": "Reduce GitHub Actions workflow surfaces to the minimum possible while preserving StegFin trade-readiness validation and TV/TVC-only credential authority.",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
-  "state": "CLAIMED_FOR_INTEGRATION",
+  "state": "COMPLETE_VALIDATED_RELEASED",
   "claimant": "current ChatGPT continuation session",
   "claimed_at": "2026-08-15T01:10:00-05:00",
+  "released_at": "2026-08-15T01:15:00-05:00",
   "expires_at": "2026-08-15T01:40:00-05:00",
   "scope": [
     ".github/workflows/stegfin-continuity-machine-executor.yml",
@@ -16,11 +17,17 @@
     "control/session-integration-claim-2026-08-15-stegfin-workflow-minimization.json"
   ],
   "role": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
-  "source_evidence": [
-    ".github/workflows/heartbeat-worker-project.yml runs python -m unittest discover -v tests and triggers on scripts/**, tests/**, control/**, docs/** and workers/**",
-    "dedicated StegFin workflow run 31850156719 job 94924299352 previously passed 8/8 focused tests",
-    "docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md records source COMPLETE_VALIDATED_RELEASED"
+  "completion_evidence": [
+    "f98e25c585602b28199cdd41e9add95dd3fc1d9e deleted the dedicated completed-source StegFin validation workflow",
+    "66439b41098ee9a8a7f8464c04f859c358a6c4ac reconciled the StegFin executor mirror handoff",
+    "8f3aec4e08c800d2b9425c83a9210fed315eb231 persisted the workflow-minimization receipt",
+    "fe00f8d1d34efce7bcebb798f8e7499e74ca521a reconciled the canonical v5 session inventory",
+    "heartbeat-worker-project.yml continues to trigger on scripts/**, tests/**, control/**, docs/** and workers/** and runs python -m unittest discover -v tests",
+    "historical dedicated validation run 31850156719 job 94924299352 passed 8/8 focused executor tests and all no-token/non-authorizing proofs"
   ],
+  "validation_state": "STATIC_COVERAGE_PROVED_PLUS_PRIOR_FOCUSED_HOSTED_VALIDATION_RETAINED",
+  "current_hosted_revalidation_observed": false,
+  "current_hosted_revalidation_note": "No new hosted run was observable during this claim; GitHub Actions remains optional validation and is not production or credential authority.",
   "collision_exclusions": [
     "live StegFin execution",
     "heartbeat claims/fences/leases",
@@ -29,16 +36,9 @@
     "wallet signing/broadcast",
     "StegCore/Site workflow-minimization owner scopes"
   ],
-  "expected_evidence": [
-    "dedicated completed-source StegFin validation workflow removed",
-    "complete deterministic repository test suite remains the stable validation surface",
-    "StegFin handoff records the consolidation and preserves prior dedicated validation receipt",
-    "v5 session inventory records one organization workflow surface eliminated without capability loss",
-    "claim released after repository state is reconciled"
-  ],
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": false,
   "non_tv_tvc_secret_or_token_allowed": false,
-  "release_condition": "Dedicated completed-source StegFin workflow is eliminated after its tests are proven covered by heartbeat-worker-project.yml; handoff and v5 inventory are reconciled; then release this claim.",
+  "release_condition": "SATISFIED",
   "next_task_after_release": "Continue issue #167 classification of remaining workflow surfaces; do not recreate a standalone StegFin executor workflow unless a documented technical necessity appears."
 }
