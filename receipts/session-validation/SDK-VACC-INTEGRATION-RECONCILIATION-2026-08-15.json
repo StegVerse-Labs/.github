@@ -9,13 +9,14 @@
   "sdk_worker_admission": {
     "source_task": "StegVerse-org/StegVerse-SDK/tasks/SDK-GOVERNANCE-SOVEREIGN-VALIDATION-007.json",
     "admission_task": "StegVerse-org/StegVerse-SDK/tasks/SDK-GOVERNANCE-WORKER-ADMISSION-009.json",
+    "canonical_control_plane_issue": "StegVerse-Labs/.github#178",
     "registry_search_result": "NO_REFERENCE_TO_SDK-GOVERNANCE-SOVEREIGN-VALIDATION-007",
     "process_adapter_registry": "control/process-worker-adapters.json",
     "process_adapter_generation": 21,
     "existing_exact_capability_match": false,
     "reason": "All admitted process adapters use fixed commands and task-specific authority references. No adapter advertises an SDK governance validation capability or a fixed SDK validation command. Reusing a generic capability such as bounded_repository_mutation would expand authority beyond the adapter's declared command and receipt namespace.",
-    "classification": "REVIEW_REQUIRED_EXACT_IMPLEMENTATION_ADMISSION",
-    "next_executable_action": "The canonical .github worker-admission authority must acquire an exact noncompeting implementation claim before adding a bounded SDK validation adapter/worker/registry fragment, or explicitly supersede task 007 into a newly admitted equivalent worker.",
+    "classification": "AUTHORITY_OWNED_ADMISSION_WORK_ITEM_CREATED",
+    "next_executable_action": "StegVerse-Labs/.github#178 owns the exact admission decision: acquire an exact noncompeting implementation claim before installing a bounded SDK validation adapter/worker/registry fragment, or explicitly supersede SDK task 007 into an equivalent admitted worker.",
     "manual_runtime_execution_allowed": false
   },
   "vacc_provider_reconciliation": {
@@ -40,6 +41,11 @@
   },
   "stegfin": {
     "canonical_handoff": "StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md",
+    "worker_registry": "StegVerse-Labs/.github/control/worker-registry.d/stegfin-continuity-carrier-007.json",
+    "worker_state": "HANDOFF_READY",
+    "worker_status": "AVAILABLE",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
     "trade_ready_source_deliverables": "7/8",
     "developed_files": "24/24",
     "terminal_machine_execution": "PENDING",
@@ -48,6 +54,6 @@
     "broadcast_authority": "USER_ONLY",
     "chat_execution_allowed": false
   },
-  "result": "PASS_RECONCILIATION_NO_DUPLICATE_RUNTIME_EXECUTION",
+  "result": "PASS_RECONCILIATION_ALL_UNRESOLVED_ITEMS_HAVE_DURABLE_OWNERS",
   "authority_effect": "NONE_VALIDATION_ONLY"
 }
