@@ -1,6 +1,6 @@
 {
-  "schema": "stegverse.runtime-activation-constraint/v0.4",
-  "constraint_id": "SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09-SOVEREIGN",
+  "schema": "stegverse.runtime-activation-constraint/v0.5",
+  "constraint_id": "SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-15-SOVEREIGN",
   "goal_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
   "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
   "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18 fencing token 18",
@@ -8,8 +8,7 @@
   "branch": "main",
   "operational_state": "ACTIVE_SOLUTION_EXECUTION",
   "constraint_class": "SOVEREIGN_LOCAL_RUNTIME_LIVE_PROOF_NOT_YET_OBSERVED",
-  "observed_at": "2026-08-09T19:27:00Z",
-  "last_reconciled_at": "2026-08-15T01:28:00-05:00",
+  "last_reconciled_at": "2026-08-15T13:58:00-05:00",
   "boundary_ref": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
   "handoff_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
   "deployment_handoff_ref": "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
@@ -20,12 +19,14 @@
   "automation_terminal": false,
   "missing_implementation": false,
   "live_activation_observed": false,
-  "historical_resolution_implementation_receipt": {
-    "pull_request": "StegVerse-Labs/.github#93",
-    "merge_commit": "b5abe2c6fbaeafba5497e53275188d78d627e14b",
-    "sovereign_runtime_worker_validation_run": 31624274806,
-    "heartbeat_worker_project_run": 31624274755,
-    "organization_control_plane_run": 31624274826
+  "active_worker_owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / fencing token 18",
+  "current_main_observation": {
+    "canonical_heartbeat_state_epoch": 29,
+    "canonical_activation_proof_observed": false,
+    "all_nine_predicates_pass_observed": false,
+    "rootless_stegfin_executor_active_observed": false,
+    "wallet_handoff_ready_observed": false,
+    "hosted_validation_is_production_activation": false
   },
   "released_self_bootstrap": {
     "task_id": "SHWP-SOVEREIGN-RUNTIME-SELF-BOOTSTRAP-001",
@@ -35,36 +36,40 @@
     "entrypoint": "scripts/bootstrap_sovereign_runtime.py",
     "installer": "scripts/install_sovereign_heartbeat_service.py",
     "verifier": "scripts/verify_sovereign_runtime_activation.py",
-    "merged_main_validation_run": 31850285522,
-    "merged_main_validation_job": 94924652012,
-    "final_handoff_validation_run": 31850408103,
-    "final_handoff_validation_job": 94924996974,
     "credential_requirement": "NONE",
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": "NONE",
-    "authority_effect": "BOOTSTRAP_ORCHESTRATION_ONLY_NO_CREDENTIAL_ROUTE_OR_HEARTBEAT_AUTHORITY",
     "pre_existing_resident_heartbeat_required": false,
     "pre_existing_node_declaration_required_to_initiate": false
+  },
+  "automatic_post_bootstrap_integration": {
+    "task_id": "SOVEREIGN-BOOTSTRAP-STEGFIN-CHAIN-001",
+    "pull_request": "StegVerse-Labs/.github#180",
+    "merge_commit": "3a438dba11ec6af82f1563fe5a382a268ee0dcae",
+    "source": "scripts/bootstrap_sovereign_runtime.py",
+    "downstream_bridge": "scripts/activate_stegfin_after_sovereign_bootstrap.py",
+    "behavior": "After exact nine-predicate sovereign PASS, bootstrap persists its own COMPLETE receipt and automatically attempts the already-released bounded StegFin executor-service activator. Downstream failure cannot forge or erase sovereign activation truth.",
+    "heartbeat_worker_project_run": 31902367481,
+    "heartbeat_worker_project_job": 95054972979,
+    "validation": "SUCCESS_268_OF_268_REPOSITORY_TESTS",
+    "anonymous_checkout": true,
+    "github_credential_token_in_validation_process": false,
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "wallet_handoff_ready_claimed_by_bootstrap": false,
+    "provider_operation_authority_created": false,
+    "wallet_signing_authority_created": false,
+    "broadcast_authority_created": false
   },
   "downstream_post_bootstrap": {
     "task_id": "SOVEREIGN-STEGFIN-POST-BOOTSTRAP-001",
     "issue": "StegVerse-Labs/.github#163",
-    "pull_request": "StegVerse-Labs/.github#171",
     "merge_commit": "069d5f3211d73d987a6cf22be1db2b4519963d71",
     "entrypoint": "scripts/activate_stegfin_after_sovereign_bootstrap.py",
-    "merged_main_validation_run": 31868980702,
-    "merged_main_validation_job": 94974495941,
     "credential_requirement": "NONE",
     "credential_authority": "TV/TVC",
-    "wallet_handoff_ready_claimed_by_bridge": false
-  },
-  "canonical_runtime": {
-    "implementation": "heartbeat_runtime/engine_v11.py",
-    "entrypoint": "scripts/run_heartbeat_runtime.py --continuous --interval-ms 10.0",
-    "worker_coordination_subsignal": "control/heartbeat-subsignals.json#worker_coordination",
-    "worker_lease_clock": "canonical_heartbeat_cycle",
-    "nominal_cycles_per_second": 100,
-    "wall_clock_worker_expiry_authority": false
+    "wallet_handoff_ready_claimed_by_bridge": false,
+    "now_invoked_by_bootstrap_after_pass": true
   },
   "production_dependency_policy": {
     "github_required": false,
@@ -79,20 +84,6 @@
     "credential_authority": "TV/TVC",
     "github_token_production_authority": "NONE"
   },
-  "sovereign_activation_path": {
-    "bootstrap": "scripts/bootstrap_sovereign_runtime.py",
-    "source_requirement": "canonical_local_source_or_stegverse_runtime_capsule",
-    "derived_node_declaration": "RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY",
-    "installer": "scripts/install_sovereign_heartbeat_service.py",
-    "verifier": "scripts/verify_sovereign_runtime_activation.py",
-    "activation_proof": "~/.stegverse/heartbeat/activation.latest.json",
-    "runtime_storage": "durable_node_local_storage",
-    "process_supervision": "native_os_service_manager_liveness_only",
-    "network_fetch_after_materialization": false,
-    "heartbeat_timing_authority": "heartbeat_runtime.engine_v11.HeartbeatRuntime",
-    "master_records_role": "custody_and_reconstruction_only",
-    "hosted_environment_rejection": ["GitHub Actions", "Render", "Vercel", "Cloudflare hosted runtime"]
-  },
   "required_predicates": [
     "runtime_materialized",
     "native_service_active",
@@ -104,28 +95,32 @@
     "no_duplicate_claim_or_fence",
     "state_reconstruction_pass"
   ],
-  "current_observation": {
-    "activation_proof_observed": false,
-    "all_nine_predicates_pass_observed": false,
-    "repository_receipt_is_historical_pre_bootstrap_state": true,
-    "historical_receipt_ref": "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
-  },
-  "success_conditions": [
-    "One StegVerse-owned or StegVerse-federated local execution surface runs the released self-bootstrap from canonical local source/capsule.",
-    "Native service registration reports active.",
-    "Continuous runtime advances canonical heartbeat epochs from durable local storage.",
-    "A heartbeat-owned worker returns a response/checkpoint from that carrier.",
-    "A controlled native-service restart preserves or advances heartbeat epoch and registry generation.",
-    "No duplicate heartbeat, claim, fence, or split-brain state appears after restart.",
-    "Registry, event, cost, receipt, checkpoint, and worker-coordination state survive restart/reconstruction."
+  "canonical_execution_chain": [
+    "eligible non-hosted StegVerse-controlled node with canonical local source/runtime capsule",
+    "scripts/bootstrap_sovereign_runtime.py",
+    "derive non-authorizing node declaration when needed",
+    "install/start native heartbeat service",
+    "verify all nine sovereign predicates",
+    "persist bootstrap.latest.json COMPLETE and activation.latest.json PASS",
+    "automatically invoke scripts/activate_stegfin_after_sovereign_bootstrap.py",
+    "activate released rootless StegFin executor service only",
+    "canonical stegfin-continuity-carrier-worker self-acquires its collision-safe claim",
+    "select same-host TV/TVC Unix broker if present or governed READY TVC HTTPS path",
+    "produce WALLET_HANDOFF_READY or exact fail-closed receipt",
+    "STOP before USER_ONLY wallet signing/broadcast"
   ],
-  "next_executable_action": "On the first eligible non-hosted StegVerse-controlled local execution surface containing canonical source, invoke scripts/bootstrap_sovereign_runtime.py. The bootstrap derives the non-authorizing node declaration, materializes/registers/starts native supervision, and invokes the canonical nine-predicate verifier in one bounded path. Do not wait for a pre-existing resident heartbeat or hand-created node declaration. On nine-predicate PASS, the released post-bootstrap bridge may activate the rootless StegFin executor; G18 retains heartbeat claim/fence ownership throughout.",
-  "active_worker_owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / fencing token 18",
-  "escalation_required_if_unsolved": true,
-  "escalation_target_if_current_worker_unsolved": "COMPONENT_AUTHORITY_ONLY_IF_LOCAL_BOOTSTRAP_FAILS_FOR_A_MACHINE_OBSERVABLE_REASON",
-  "machine_observable_completion_condition": "node-local activation.latest.json reports every required predicate true",
-  "machine_observable_release_condition": "node-local activation.latest.json reports every required predicate true or the self-bootstrap emits an exact fail-closed receipt identifying canonical-source incompleteness, unwritable durable state, unsupported native supervision, or hosted/non-sovereign execution surface",
+  "success_conditions": [
+    "One StegVerse-owned or StegVerse-federated non-hosted execution surface runs the released self-bootstrap.",
+    "Native service registration reports active and continuous runtime advances epochs.",
+    "All nine sovereign predicates pass including controlled restart, no duplicate claim/fence, and reconstruction.",
+    "Automatic post-bootstrap bridge reports the rootless StegFin executor service active without creating execution or wallet authority.",
+    "The canonical StegFin worker emits WALLET_HANDOFF_READY or exact fail-closed evidence while preserving TV/TVC-only credential authority and USER_ONLY wallet authority."
+  ],
+  "next_executable_action": "G18/local sovereign execution runs scripts/bootstrap_sovereign_runtime.py on the first eligible non-hosted StegVerse-controlled local surface containing canonical source/runtime capsule. No separate human invocation of the StegFin post-bootstrap bridge is now required after a nine-predicate PASS: bootstrap automatically attempts it. The existing StegFin worker then owns claim acquisition and bounded wallet-handoff preparation.",
+  "machine_observable_completion_condition": "node-local activation.latest.json reports all nine predicates true AND sovereign-post-bootstrap.latest.json reports executor_service_active=true; trade activation separately requires WALLET_HANDOFF_READY from the canonical worker",
+  "machine_observable_release_condition": "activation.latest.json reports all nine predicates true and downstream executor service activation is observed, or bootstrap/post-bootstrap emits exact fail-closed evidence identifying canonical-source, durable-state, native-supervision, provenance, or service-activation failure",
   "heartbeat_or_execution_authority_effect": "NONE",
-  "chat_monitoring_required": false,
-  "session_retention_required": true
+  "chat_monitoring_required": true,
+  "session_retention_required": true,
+  "session_retention_reason": "The current user explicitly reopened the session and requires activation work to continue while live sovereign activation and WALLET_HANDOFF_READY remain unobserved."
 }
