@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.worker-capability-profiles/v0.1",
-  "generation": 10,
+  "generation": 11,
   "profiles": [
     {
       "profile_id": "deterministic-workflow-v1",
@@ -93,6 +93,21 @@
         "This profile exists only for engine-v11 generated repository-resolution work.",
         "It may observe an already-authorized sovereign-node declaration and write bounded resolution receipts, but it may not manufacture node ownership, credentials, provider capability, wallet authority, deployment authority, or hosted fallback.",
         "Failure to observe an eligible declaration must escalate through the existing resolution hierarchy rather than becoming passive BLOCKED state."
+      ]
+    },
+    {
+      "profile_id": "public-research-worker-v1",
+      "executor_type": "repository_worker",
+      "effect_class": "bounded_public_research",
+      "allowed_capabilities": ["runtime_observation", "bounded_process_execution", "public_source_acquisition", "evidence_class_preservation"],
+      "mutation_allowed": true,
+      "deployment_allowed": false,
+      "availability_grants_authority": false,
+      "capability_match_grants_authority": false,
+      "notes": [
+        "Public research execution is limited to an admitted source queue and bounded local receipt/workspace namespace.",
+        "The profile grants no GitHub repository checkout/write, credential, publication, research-promotion, provider, wallet, trade, heartbeat-state, claim, or fence authority.",
+        "Authenticated sources require a separate TV/TVC authority path and are not admitted by this profile."
       ]
     }
   ]
