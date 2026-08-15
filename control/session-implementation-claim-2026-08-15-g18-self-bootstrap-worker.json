@@ -1,0 +1,16 @@
+{
+  "schema":"stegverse.session-implementation-claim/v1",
+  "claim_id":"G18-SELF-BOOTSTRAP-WORKER-2026-08-15-1408",
+  "task_id":"G18-SELF-BOOTSTRAP-WORKER-001",
+  "originating_goal":"Continue actual activation work and remove stale prerequisites that prevent the released sovereign self-bootstrap/local-runtime path from being used by the canonical G18 worker.",
+  "repository":"StegVerse-Labs/.github",
+  "branch":"fix/g18-self-bootstrap-no-predeclared-node",
+  "claimant":"current ChatGPT session",
+  "role":"CLAIMED_FOR_IMPLEMENTATION",
+  "claim_state":"CLAIMED_FOR_IMPLEMENTATION",
+  "claim_created_at":"2026-08-15T14:08:00-05:00",
+  "claim_release_condition":"Release after the canonical G18 activation worker invokes the released self-bootstrap without requiring a pre-existing node declaration, tests validate no authority expansion/hosted rejection/credential boundary, and canonical blocker/handoff state is reconciled.",
+  "files":["workers/sovereign_runtime_activation_worker.py","tests/test_sovereign_runtime_activation_escalation.py","management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json","docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md"],
+  "collision_boundaries":["Do not alter G18 claim/fence ownership.","Do not create node credential/route/provider authority.","Do not permit hosted environments as sovereign production surfaces.","Use released scripts/bootstrap_sovereign_runtime.py rather than a second installer path.","Credential authority remains TV/TVC and GitHub token runtime authority remains NONE."],
+  "authority_effect":"SOURCE_CORRECTION_ONLY_NO_NEW_EXECUTION_AUTHORITY"
+}
