@@ -1,6 +1,6 @@
 # Session Assistance Scope Mirror Handoff
 
-Updated: 2026-08-15T01:29:00-05:00
+Updated: 2026-08-15T01:38:00-05:00
 
 ## Authority and current session state
 
@@ -9,13 +9,14 @@ goal_id: SESSION-GOAL-SCOPED-WORKER-ASSISTANCE-001
 repository: StegVerse-Labs/.github
 branch: main
 canonical_owner: StegVerse-Labs organization control plane
-state: COMPLETE_VALIDATED_RELEASED_V6_CURRENT_SESSION_ONLY
+state: COMPLETE_VALIDATED_RELEASED_V6_CURRENT_SESSION_ONLY_G08_PROVENANCE_RECONCILED
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 execution_authority_created: NONE
 current_inventory: control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v6.json
 superseded_inventory: control/session-goal-inventory-2026-08-14-admissible-existence-core-local-runtime-v5.json
 scope_correction_receipt: receipts/session-consolidation/SESSION-SCOPE-V6-CURRENT-GOALS-ONLY-20260815.json
+g08_provenance_reconciliation_receipt: receipts/session-consolidation/G08-BOOTSTRAP-PROVENANCE-RECONCILIATION-20260815.json
 ```
 
 This handoff decides whether an interactive session may assist a worker/task. It never creates worker execution authority, mutates heartbeat claims/fences/leases, exposes provider credentials, changes StegCore Admissible-Existence or StegGate semantics, or grants wallet authority.
@@ -64,16 +65,18 @@ ORG_CONTINUATION_NON_AUTHORIZING_PASS: PASS
 
 ## Canonical G08 continuation — RELEASED SOURCE CHAIN
 
-The former instruction that the StegFin executor must begin only on an independently pre-declared node is superseded as an initiation prerequisite. Issue #160 / PR #162 released the pre-heartbeat sovereign bootstrap, and issue #163 / PR #171 released the sovereign-to-StegFin post-bootstrap bridge.
+The former instruction that the StegFin executor must begin only on an independently pre-declared node is superseded as an initiation prerequisite. Issue #160 / PR #162 released the pre-heartbeat sovereign bootstrap, issue #163 / PR #171 released the sovereign-to-StegFin post-bootstrap bridge, and issue #172 / PR #177 released canonical bootstrap-provenance binding for that bridge.
 
 ```text
 canonical local source
 -> scripts/bootstrap_sovereign_runtime.py
 -> derive non-authorizing local node eligibility/declaration
 -> materialize/register/start native sovereign heartbeat service
+-> bootstrap.latest.json COMPLETE
 -> node-local ~/.stegverse/heartbeat/activation.latest.json
--> REQUIRE all nine sovereign activation predicates true
+-> REQUIRE canonical activation schema + all nine sovereign activation predicates true
 -> scripts/activate_stegfin_after_sovereign_bootstrap.py
+-> REQUIRE bootstrap receipt, proof, source root, runtime root and node declaration all bind to the same local execution lineage
 -> REQUIRE TV/TVC-bound non-authorizing node declaration
 -> install/start released rootless StegFin continuity executor service
 -> scripts/run_stegfin_continuity_machine_executor.py
@@ -91,17 +94,26 @@ Source evidence:
 sovereign self-bootstrap merge: 57518101d0fab81f83451582854c8803daf080b8
 self-bootstrap merged-main validation: 31850285522 / 94924652012 SUCCESS
 post-bootstrap bridge merge: 069d5f3211d73d987a6cf22be1db2b4519963d71
-post-bootstrap PR validation: 31868898830 / 94974292287 — 5/5 new tests PASS
-post-bootstrap merged-main validation: 31868980702 / 94974495941 — 5/5 new tests PASS
-post-bootstrap source claim: COMPLETE_VALIDATED_RELEASED
+post-bootstrap merged-main validation: 31868980702 / 94974495941
+canonical bootstrap provenance merge: 80568f5487ead7e0bd90813de6bae1f4c7bdc337
+canonical provenance merged-main Heartbeat Worker Project: 31869810980 / 94976587188 SUCCESS
+canonical provenance merged-main Org Continuation Check: 31869810988 SUCCESS
+canonical provenance full deterministic suite: 259/259 PASS
+canonical JSON: PASS_183
+executable handoffs: PASS count=27 live_lanes=23
+NO_GITHUB_CREDENTIAL_TOKEN_PRESENT: PASS
+WORKFLOW_NON_AUTHORIZING_PASS: PASS
+post-bootstrap/provenance source claims: COMPLETE_VALIDATED_RELEASED
 canonical bridge handoff: docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md
 ```
+
+The provenance hardening closes the remaining source-level possibility that a caller-supplied boolean-shaped activation document could release the StegFin service. The bridge now requires canonical schemas and exact same-lineage bindings among bootstrap receipt, activation proof, source root, runtime root and node declaration before invoking the already-released executor-service installer.
 
 The bootstrap and bridge require no credential input (`credential_requirement=NONE`). TV/TVC remains the only provider/credential/route/vault authority. GitHub tokens have no runtime authority. The bridge cannot acquire the StegFin claim, contact a provider or wallet, sign, broadcast, claim settlement, or claim `WALLET_HANDOFF_READY`.
 
 ## G18 current control reconciliation
 
-The current G18 management blocker and the released StegFin executor task-state have been reconciled so their next-action semantics no longer regress to the pre-bootstrap declaration deadlock.
+The current G18 management blocker and the released StegFin executor task-state are reconciled so their next-action semantics do not regress to the pre-bootstrap declaration deadlock.
 
 ```text
 G18 blocker reconciliation commit: 77a83c63b77012ef62736f743ed2c1e419cce0e2
@@ -116,7 +128,7 @@ current proof requirement: all nine predicates true
 post-proof downstream bridge: scripts/activate_stegfin_after_sovereign_bootstrap.py
 ```
 
-The historical `receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json` remains immutable evidence of the older blocked state; it is not rewritten as if live activation occurred.
+The historical `receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json` remains historical evidence; it is not rewritten as if live activation occurred. Hosted validation dry-runs remain non-mutating and cannot substitute for sovereign execution.
 
 ## Collision boundaries
 
@@ -125,6 +137,7 @@ G18 heartbeat claims/fences/epochs/leases: MACHINE OWNED / NO CHAT MUTATION
 STEGFIN-CONTINUITY-CARRIER-007 claim + Inventory/provider/pretrade execution: EXISTING MACHINE WORKER ONLY
 STEGFIN-CONTINUITY-MACHINE-EXECUTOR-008 source: COMPLETE / RELEASED
 SOVEREIGN-STEGFIN-POST-BOOTSTRAP-001 source: COMPLETE / RELEASED
+STEGFIN-POST-BOOTSTRAP-PROVENANCE-172 source: COMPLETE / RELEASED
 TVC-CAPABILITY-RUNTIME-002 observer: EXCLUSIVE VALIDATION / DO NOT DUPLICATE
 TV/TVC credentials/routes/vault/provider secrets: AUTHORITY OWNED
 wallet signing/broadcast: USER_ONLY
@@ -135,7 +148,7 @@ G09/G10/G17 workers: OUT OF THIS SESSION SCOPE
 
 ## Exact remaining machine/authority boundary
 
-Repository/source implementation is complete for the local model, local runtime discovery/launch/proof, pre-heartbeat sovereign bootstrap, rootless StegFin machine executor, and sovereign-to-StegFin activation bridge. These live facts remain unobserved:
+Repository/source implementation is complete for the local model, local runtime discovery/launch/proof, pre-heartbeat sovereign bootstrap, rootless StegFin machine executor, sovereign-to-StegFin activation bridge, and canonical bootstrap-provenance binding. These live facts remain unobserved:
 
 ```text
 nine-predicate sovereign activation proof observed: false
@@ -148,7 +161,7 @@ Those facts are owned by `SHWP-DURABLE-RUNTIME-ACTIVATION` G18/local sovereign e
 
 ## Archive condition
 
-The current session remains non-archive-ready while G08 is an explicit current-session goal and no native sovereign→StegFin terminal/fail-closed worker evidence has been observed. All source implementation and authority boundaries are durable. The remaining lawful session role is distinct validation/reconciliation of G08 machine evidence only; unrelated organization workstreams remain excluded.
+The current session remains non-archive-ready under the governing rule supplied for this session while G08 is an explicit current-session goal and no native sovereign→StegFin terminal/fail-closed worker evidence has been observed. All source implementation and authority boundaries are durable. The remaining lawful session role is distinct validation/reconciliation of G08 machine evidence only; unrelated organization workstreams remain excluded.
 
 ## Execution ownership and collision partition
 
@@ -187,7 +200,7 @@ next_executable_action: TV/TVC or USER_ONLY owner acts only within its canonical
 ```text
 manual_execution_allowed: false
 worker_registry_ref: control/worker-registry.json
-collision_scope: G01-G07 completed session goals and superseded v5 cross-session scope imports
-release_condition: completed/superseded in the durable current-session inventory and validation receipt
-next_executable_action: NONE; do not recreate completed local-runtime/model or out-of-scope organization work
+collision_scope: G01-G07 completed session goals, completed G08 source-support tasks, and superseded v5 cross-session scope imports
+release_condition: completed/superseded in durable handoffs, claims and validation receipts
+next_executable_action: NONE_SOURCE_REIMPLEMENTATION; observe machine-owned live activation and trade-readiness evidence
 ```
