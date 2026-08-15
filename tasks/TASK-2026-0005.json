@@ -1,0 +1,55 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "TASK-2026-0005",
+  "organization": "StegVerse-Labs",
+  "goal": "Develop and activate a StegVerse-owned or federated sovereign Base RPC capability so StegFin does not depend on third-party public RPC availability for production observation",
+  "status": "queued",
+  "flags": ["sovereign-runtime", "base-rpc", "trade-readiness", "no-render", "tv-tvc-only"],
+  "requested_at": "2026-08-15T23:39:00Z",
+  "priority_class": "critical",
+  "rank_reason": [
+    "Base public RPC rate limiting has blocked the live phone validation path",
+    "credential-free public failover is now released as immediate resilience but remains third-party transport",
+    "the governing objective requires StegVerse-owned/federated runtime authority rather than a permanent hosted-provider dependency"
+  ],
+  "requirements": {
+    "mandatory": [
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-002",
+          "name": "micro-node-runtime",
+          "full_name": "StegVerse-002/micro-node-runtime",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": false,
+        "scope": {
+          "paths": [
+            "micro_node/base_rpc_runtime.py",
+            "tools/run_sovereign_base_rpc.py",
+            "tools/verify_sovereign_base_rpc.py",
+            "tests/test_base_rpc_runtime.py",
+            "docs/SOVEREIGN_BASE_RPC_MIRROR_HANDOFF.md"
+          ],
+          "contracts": ["stegverse-sovereign-base-rpc-v1"],
+          "release_surfaces": ["sovereign-private-base-rpc"],
+          "capabilities": ["base-json-rpc-read-observation"],
+          "workflows": ["validate-micro-node-runtime"],
+          "dependency_surfaces": ["runtime:sovereign-base-rpc"]
+        }
+      }
+    ],
+    "optional": []
+  },
+  "dependencies": [],
+  "workspace": {
+    "branch": "feat/sovereign-base-rpc-runtime",
+    "merge_target": "main",
+    "direct_push_allowed": false,
+    "pull_request_required": true
+  },
+  "machine_owner": "organization allocator -> sovereign runtime worker -> TV/TVC route admission",
+  "release_condition": "A StegVerse-owned/federated Base RPC process is installed on an eligible sovereign surface, independently proves Base chain id 0x2105 and required read-only methods, emits an inspectable runtime proof/receipt, requires no NON-TV/TVC secret/token, is admitted by TV/TVC for StegFin observation, and the phone RPC resilience policy can prefer that admitted sovereign endpoint while retaining credential-free public endpoints only as bounded fallback.",
+  "completion_evidence": []
+}
