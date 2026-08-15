@@ -2,7 +2,37 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SDK-MCP-CANONICAL-VALIDATION-009",
   "created_at": "2026-08-15T09:40:00-05:00",
+  "updated_at": "2026-08-15T14:30:00-05:00",
   "state": "HANDOFF_READY_MACHINE_OWNED",
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:sdk-mcp-canonical-validation:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-org/StegVerse-SDK:MCP_PORTABLE_AUTHORITY_MIRROR_HANDOFF.md",
+      "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json",
+      "StegVerse-org/StegVerse-SDK:tests/test_mcp_production_artifact.py",
+      "StegVerse-org/StegVerse-SDK:reports/mcp-production-artifact/local-integration-diagnostic-20260815.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/sdk_mcp_canonical_validation_worker.py",
+      "control/worker-registry.d/sdk-mcp-canonical-validation-009.json",
+      "control/process-worker-adapters.d/sdk-mcp-canonical-validation-009.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "EXACT_SOVEREIGN_ARTIFACT_RUN_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "sdk-mcp-canonical-validation-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "validates_capability",
+    "target_phase": "ACTIVATED"
+  },
   "goal": {
     "goal_id": "SDK-MCP-PORTABLE-AUTHORITY-001",
     "objective": "Execute the merged StegVerse SDK MCP production-artifact test on an authorized sovereign/local node using the exact already-materialized StegCore, Core-Lite and Master Records packages; prove exact MR/MRR/MRO custody, governed tools/call, replay/reconstruction without consequence re-execution, and bounded-write retention.",
