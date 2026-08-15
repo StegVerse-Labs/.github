@@ -40,6 +40,20 @@
   "task": {
     "task_id": "SDK-MCP-CANONICAL-VALIDATION-009",
     "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json",
+      "StegVerse-org/StegVerse-SDK:MCP_PORTABLE_AUTHORITY_MIRROR_HANDOFF.md",
+      "StegVerse-org/StegVerse-SDK:tests/test_mcp_production_artifact.py",
+      "StegVerse-org/StegVerse-SDK:reports/mcp-production-artifact/local-integration-diagnostic-20260815.json",
+      "StegVerse-Labs/.github:workers/sdk_mcp_canonical_validation_worker.py",
+      "StegVerse-Labs/.github:control/worker-registry.d/sdk-mcp-canonical-validation-009.json",
+      "StegVerse-Labs/.github:control/process-worker-adapters.d/sdk-mcp-canonical-validation-009.json"
+    ],
+    "parent_task_id": null,
+    "derivation_reason": "The SDK source task is complete enough for sovereign exact-artifact execution but previously had no concrete StegVerse worker registration/adapter. This handoff binds that existing task to the canonical worker scheduler without changing SDK evaluation, custody, or credential authority.",
+    "canonical_owner_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json",
+    "canonical_lineage_key": "sdk:mcp:canonical-production-artifact-validation",
+    "derivation_depth": 0,
     "source_task_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json",
     "source_handoff_ref": "StegVerse-org/StegVerse-SDK:MCP_PORTABLE_AUTHORITY_MIRROR_HANDOFF.md",
     "worker_registry_ref": "control/worker-registry.d/sdk-mcp-canonical-validation-009.json",
@@ -52,6 +66,8 @@
   },
   "authority": {
     "authority_source": "StegVerse-org/StegVerse-SDK task SDK-MCP-CANONICAL-VALIDATION-009 + canonical sovereign worker scheduler",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "sdk-mcp-canonical-validation-v1",
     "credential_authority": "TV/TVC",
     "github_token_required": false,
     "github_token_runtime_authority": "NONE",
@@ -76,6 +92,11 @@
     ],
     "locator_semantics": "NON_SECRET_ALREADY_MATERIALIZED_LOCAL_SOURCE_PATHS_ONLY",
     "worker": "workers/sdk_mcp_canonical_validation_worker.py",
+    "allowed_paths": [
+      "~/.stegverse/sdk-mcp-canonical-validation-009/**",
+      "~/.stegverse/receipts/sdk-mcp-canonical-validation-009.json"
+    ],
+    "allowed_services": [],
     "max_actions": 32,
     "max_retries": 3,
     "external_cost_ceiling_usd": 0,
