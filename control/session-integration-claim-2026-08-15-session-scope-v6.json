@@ -1,0 +1,31 @@
+{
+  "schema_version": "stegverse.session-integration-claim/v1",
+  "task_id": "SESSION-SCOPE-V6-CURRENT-GOALS-ONLY-011",
+  "goal_id": "G07-SESSION-SCOPED-WORKER-ASSISTANCE",
+  "originating_session_goal": "Assist only workers whose durable task lineage belongs to the goals of the current session.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "state": "CLAIMED_FOR_INTEGRATION",
+  "claimant": "current ChatGPT continuation session",
+  "claimed_at": "2026-08-15T01:13:00-05:00",
+  "expires_at": "2026-08-15T01:43:00-05:00",
+  "scope": [
+    "control/session-goal-inventory-2026-08-15-admissible-existence-core-local-runtime-v6.json",
+    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
+    "control/session-integration-claim-2026-08-15-session-scope-v6.json",
+    "receipts/session-consolidation/SESSION-SCOPE-V6-CURRENT-GOALS-ONLY-20260815.json"
+  ],
+  "role": "RECONCILE_CURRENT_SESSION_GOAL_SCOPE",
+  "collision_exclusions": [
+    "StegFin live execution",
+    "TVC runtime observer",
+    "heartbeat claims/fences/leases",
+    "TV/TVC credentials/routes/runtime",
+    "wallet signing/broadcast",
+    "organization cost-containment/repository-hygiene/workflow-minimization workstreams not originating in this session"
+  ],
+  "release_condition": "Create a superseding v6 current-session-only inventory, reconcile the session assistance handoff, persist a scope-correction receipt, and release this claim.",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "non_tv_tvc_secret_or_token_allowed": false
+}
