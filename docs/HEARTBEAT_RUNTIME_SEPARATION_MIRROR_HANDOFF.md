@@ -1,6 +1,6 @@
 # Heartbeat Runtime Separation Mirror Handoff
 
-Updated: 2026-08-14T18:13:00-05:00
+Updated: 2026-08-15T02:28:00-05:00
 
 ## Authority and active goal
 
@@ -10,7 +10,7 @@ originating_goal: implement the AE-bound responsibility split so heartbeat remai
 repository: StegVerse-Labs/.github
 branch: main
 canonical_issue: StegVerse-Labs/.github#122
-parent_contract: StegVerse-Labs/.github#120 / PR #140 MERGED 2026-08-14T21:47:30Z
+parent_contract: StegVerse-Labs/.github#120 / PR #140 MERGED
 canonical_owner: StegVerse-Labs/.github
 source_implementation_claim: COMPLETE_RELEASED
 source_validation_claim: COMPLETE_RELEASED
@@ -20,7 +20,7 @@ github_token_runtime_authority: NONE
 non_tv_tvc_secret_or_token_required: false
 ```
 
-This scoped handoff is authoritative for issue #122 source/schema separation. `docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md` remains authoritative for carrier semantics. Live runtime claims, fences, leases, worker process state, route state, and production carrier operation are not granted to this source lane.
+This handoff is authoritative for issue #122 source/schema separation. `docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md` remains authoritative for carrier semantics. Live runtime claims, fences, leases, worker processes, route state, protected values, and production carrier operation are not granted to this source lane.
 
 ## Canonical responsibility split
 
@@ -34,16 +34,13 @@ TV/TVC = sole credential/secret/token authority
 
 Observation does not grant action authority. Signal formation does not grant execution authority. Master Records custody does not grant remediation authority.
 
-## Parent integration state
-
-PR #140 is merged at `34a1744a4cf314ea4f3b80925d4cbd5a7910dd97`; therefore the #122 source/schema separation prerequisite is satisfied. Issue #120 is closed completed. The carrier handoff remains authoritative for the carrier contract; its older pre-merge completion accounting is superseded by the verified merge/closure evidence.
-
 ## Installed bounded source implementation
 
 ```text
 docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md
 schemas/heartbeat-carrier-observation.schema.json
 schemas/worker-control-plane-coordination.schema.json
+schemas/expired-worker-history.schema.json
 control/runtime-separation-contract.json
 heartbeat_runtime/runtime_separation.py
 scripts/validate_heartbeat_runtime_separation.py
@@ -51,20 +48,39 @@ tests/test_heartbeat_runtime_separation.py
 .github/workflows/org-control-plane-validate.yml
 ```
 
-The executable `heartbeat_runtime/runtime_separation.py` is a pure compatibility projection over the historical combined registry. It emits two distinct objects without mutating live state: a carrier-observation object containing only reference/presence observations and a worker-control-plane object retaining task/worker/claim/fence/lease coordination. Historical `schemas/heartbeat-subsignal.schema.json` and historical receipts remain immutable provenance until a separately claimed live runtime migration switches producers/consumers.
+`heartbeat_runtime/runtime_separation.py` is a pure compatibility projection over the historical combined registry. It emits a carrier-observation object containing reference/presence observations and a separate worker/control-plane object retaining task/worker/claim/fence/lease coordination. Historical heartbeat-named schemas and receipts remain provenance until the separately claimed live migration switches producers/consumers.
 
-## Required semantics
+## Expired-worker convergence contract
 
-- carrier-observation contract contains continuity/reference-frame observations only and no task dispatch, claims, fences, leases, routes, credentials, custody decisions, or execution authority;
-- worker/control-plane coordination contract owns task/worker/claim/fence/lease coordination semantics and explicitly treats heartbeat references as observations rather than authority;
-- StegBrain typed enforcement signals are external inputs to the control plane and retain `authority_effect: NONE` / `execution_authority: false`;
-- Master Records is referenced only as passive custody/evidence; no remediation or worker-management authority is represented;
-- DEMO, TEST, StegVerse-org, StegGhost, and StegVerse-Labs transition domains remain structurally eligible for the same worker lifecycle opening/closure obligations;
-- TV/TVC remains sole credential authority; no non-TV/TVC secret/token is introduced; GitHub token runtime authority is NONE.
+The nonduplicative `schemas/expired-worker-history.schema.json` artifact from superseded PR #158 was selectively integrated without merging the competing branch. The terminal history packet is evidence only and preserves the opening/closure obligation:
+
+```text
+worker expiration at R_expire
+-> active worker/claim/lease authority ends
+-> immutable expired-worker history packet is finalized
+-> closure must be observable by NEXT_ADMISSIBLE_CARRIER_OR_EQUIVALENT_RETURN_REFERENCE
+-> Master Records passively records/custodies the terminal evidence
+```
+
+Required zero-authority predicates include:
+
+```text
+authority_effect=NONE
+execution_authority=false
+claim_active=false
+lease_active=false
+heartbeat_grants_authority=false
+reactivates_expired_worker=false
+master_records_action_authority=false
+credential_authority=TV/TVC
+non_tv_tvc_secret_or_token_required=false
+```
+
+StegBrain, not heartbeat or Master Records, derives present/due/missing/mismatch contract signals from observable evidence. The same lifecycle structure applies to StegVerse-Labs, DEMO, TEST, StegVerse-org, and StegGhost where worker capability is admitted.
 
 ## Validation evidence
 
-Source validation is complete and released.
+Initial separation validation:
 
 ```text
 workflow: Validate organization control plane - No GitHub Token Authority
@@ -72,119 +88,93 @@ run: 31849518737
 job: 94922516176
 head: ca0f4c6859bbb997d2db2e339106ac5fd444b687
 conclusion: SUCCESS
-handoff ownership: PASS
-AE control-plane conformance: PASS
-heartbeat carrier contract: PASS
-heartbeat runtime separation validator: PASS
+runtime separation validator: PASS
 runtime separation unit tests: PASS 4/4
-cross-repository dependency collision tests: PASS 7/7
-JSON/JSONL syntax: PASS
-validation no-authority check: PASS
+cross-repository collision tests: PASS 7/7
 ```
 
-The hosted runner exposed platform metadata permission only; the workflow subprocess explicitly ran without `GITHUB_TOKEN`/`GH_TOKEN`, used anonymous checkout, `permissions: {}`, and remained validation evidence rather than StegVerse runtime authority.
+Expired-worker convergence validation:
 
-Implementation claim release record:
+```text
+schema commit: e6ff6f9a0135c4e815ac0df9f859eabc7e1e66f4
+validator contract commit: 166806cf8ad0c0c121f746f1f0b7723852b5d795
+unit-test binding commit: cb692de072eac0e5114a0d9a135d86e3fbff87b3
+workflow: Heartbeat Worker Project - Validation Only / No GitHub Token Authority
+run: 31849685349
+job: 94922986048
+head: cb692de072eac0e5114a0d9a135d86e3fbff87b3
+conclusion: SUCCESS
+compile runtime/workers/scripts: PASS
+canonical JSON parsing: PASS
+executable handoffs: PASS
+complete deterministic repository suite including expired-worker contract: PASS
+heartbeat dry-run non-persistence: PASS
+ephemeral projection rebuild: PASS
+workflow non-authorizing proof: PASS
+```
+
+The later organization-control-plane run `31849685358` was cancelled and is not used as positive evidence. The successful Heartbeat Worker Project run above is the exact-head release evidence for the convergence artifact.
+
+Implementation/convergence claim:
 
 ```text
 control/session-implementation-claim-2026-08-14-heartbeat-runtime-separation-122.json
 state: COMPLETE_RELEASED
-release commit: 6509a38a3752ff3295233f6018a356bb9acf13df
+release commit: 057a0e0b51ff2a95effaa6d6afeb2650fdc711c9
 ```
 
-## Cross-repository dependencies
+## Ownership and collision partition
 
-```text
-StegVerse-Labs/StegBrain#860 / docs/STEGBRAIN_MIRROR_HANDOFF.md
-  source evaluator complete; repository-native validation remains separately owned
-master-records/orchestration#33
-  passive custody contract owner
-StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
-  local model/runtime source COMPLETE_RELEASED; do not duplicate
-StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md
-  live trade path MACHINE_OWNED; do not mutate provider/wallet authority
-```
-
-## Execution ownership and collision partition
-
-### MANUAL / SESSION-STARTABLE
+### COMPLETE / RELEASED SOURCE
 
 ```yaml
-- task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-SOURCE
-  execution_owner: NONE
-  manual_execution_allowed: false
-  worker_registry_ref: NONE
-  collision_scope: released source/schema implementation only
-  release_condition: COMPLETE_RELEASED_AFTER_RUN_31849518737
-  next_executable_action: NONE; source work is complete
+task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-SOURCE
+execution_owner: NONE
+manual_execution_allowed: false
+release_condition: COMPLETE_RELEASED_AFTER_EXACT_HEAD_VALIDATION_31849685349
+next_executable_action: NONE
 ```
 
 ### WORKER-OWNED / DO NOT COMPETE
 
 ```yaml
-- task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION
-  execution_owner: StegVerse-Labs/.github#122 canonical runtime owner
-  manual_execution_allowed: false
-  worker_registry_ref: control/worker-registry.json + issue #122
-  collision_scope: live heartbeat producer/consumer switch, control/heartbeat-state.json, active claims/fences/leases, resident worker processes, production carrier operation
-  release_condition: live runtime migrates to separated contracts under a fresh authorized runtime claim and produces runtime evidence
-  next_executable_action: adopt the released carrier/control-plane contracts and pure projection into the live producer/consumer path without rewriting historical provenance
+task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION
+execution_owner: StegVerse-Labs/.github#122 canonical runtime owner
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json + issue #122
+collision_scope: live heartbeat producer/consumer switch, control/heartbeat-state.json, active claims/fences/leases, resident worker processes, production carrier operation
+release_condition: live runtime migrates under a fresh authorized claim and produces immutable runtime evidence
+next_executable_action: consume the released carrier/control-plane/expired-worker contracts without rewriting historical provenance
 ```
 
-### ESCALATED / AUTHORITY-OWNED
+### CROSS-REPOSITORY OWNERS
 
-```yaml
-- task_id: HEARTBEAT-RUNTIME-SEPARATION-AUTHORITY-COLLISION
-  execution_owner: StegCore/StegGate + TV/TVC + affected domain owner
-  manual_execution_allowed: false
-  worker_registry_ref: applicable canonical owner record
-  collision_scope: admissibility, credential/route authority, protected values, custody authority conflicts
-  release_condition: exact canonical authority resolves the conflict
-  next_executable_action: fail closed; do not infer authority from heartbeat continuity or StegBrain signals
+```text
+NERVOUS SYSTEM: StegVerse-Labs/StegBrain#860 / docs/STEGBRAIN_MIRROR_HANDOFF.md
+PASSIVE CUSTODY: master-records/orchestration#33
+TRADE: StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md -> STEGFIN-CONTINUITY-CARRIER-007
+LOCAL MODEL LIVE ACTIVATION: StegVerse-Labs/.github#60 -> TVC -> LLM-adapter -> Master Records
 ```
 
-### COMPLETED / SUPERSEDED
+No source lane may mutate TV/TVC credential authority, live StegFin provider/wallet state, Master Records custody, or active runtime claims/fences/leases.
 
-```yaml
-- task_id: HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120
-  execution_owner: NONE
-  manual_execution_allowed: false
-  worker_registry_ref: NONE
-  collision_scope: parent carrier contract source/integration only
-  release_condition: COMPLETE_MERGED_PR_140_AND_ISSUE_120_CLOSED
-  next_executable_action: NONE; #122 consumes the merged contract
-```
-
-## Current state
+## Current state and completion accounting
 
 ```text
 parent carrier contract: COMPLETE_MERGED_RELEASED
 bounded source/schema separation: COMPLETE_VALIDATED_RELEASED
+expired-worker convergence artifact: COMPLETE_VALIDATED_RELEASED
 live runtime migration: MACHINE_OWNED / PENDING RUNTIME EVIDENCE
-StegBrain source enforcement: COMPLETE_SOURCE / repository-native validation separately owned
+StegBrain source enforcement: COMPLETE_SOURCE / validation separately owned
 Master Records passive-custody integration: CLAIMED_BY master-records/orchestration#33
 trade source readiness: 7/8; WALLET_HANDOFF_READY pending machine execution
 local model/runtime source: COMPLETE_RELEASED
-```
 
-## Canonical continuation
-
-```text
-PRIMARY LIVE MIGRATION: StegVerse-Labs/.github#122
-NERVOUS SYSTEM: StegVerse-Labs/StegBrain#860
-PASSIVE CUSTODY: master-records/orchestration#33
-TRADE: StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md -> canonical machine worker
-LOCAL MODEL LIVE ACTIVATION: StegVerse-Labs/.github#60 -> TVC -> LLM-adapter
-```
-
-## Completion accounting
-
-```text
-developed_files: 8/8
+developed_files: 9/9
 scaffolding_or_stubs: 0
 missing_required_files: 0
-validation: 2/2 PASS
-integration: 2/3 source+validation integrated; live runtime producer/consumer migration pending canonical #122 owner
-session_consolidation: 11/11 prior session goals durable; new source-separation implementation transferred to live runtime owner
-archive_ready: false while this reactivated session retains distinct integration/observation responsibility for activation goals
+validation: 3/3 PASS
+integration: 2/3 (source + validation integrated; live producer/consumer migration pending #122 runtime owner)
+session_consolidation: 12/12 current session requirements implemented or durably transferred
+archive_dependency: none from this source lane; remaining runtime work is machine-owned
 ```
