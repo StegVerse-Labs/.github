@@ -9,7 +9,9 @@ on:
       - "docs/STEGFIN_CONTINUITY_MACHINE_EXECUTOR_MIRROR_HANDOFF.md"
       - ".github/workflows/sovereign-stegfin-post-bootstrap.yml"
   push:
-    branches: [main]
+    branches:
+      - main
+      - feat/sovereign-stegfin-post-bootstrap-001-v2
     paths:
       - "scripts/activate_stegfin_after_sovereign_bootstrap.py"
       - "tests/test_activate_stegfin_after_sovereign_bootstrap.py"
