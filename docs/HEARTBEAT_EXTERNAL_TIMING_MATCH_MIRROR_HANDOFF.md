@@ -131,6 +131,32 @@ goal_activation for HEARTBEAT-EXTERNAL-TIMING-MATCH-191 source scope: 100%
 session consolidation for this source goal: COMPLETE
 ```
 
+## Execution ownership and collision partition
+
+```text
+MANUAL / SESSION-STARTABLE
+manual_execution_allowed: false
+scope: source lane is COMPLETE_RELEASED; no session may restart or duplicate implementation
+
+WORKER-OWNED / DO NOT COMPETE
+worker_registry_ref: StegVerse-Labs/.github#122 / HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION
+owner: #122 live producer/runtime consumer
+collision_scope: heartbeat external timing profile consumption and live carrier integration
+
+ESCALATED / AUTHORITY-OWNED
+credential authority: TV/TVC
+StegBrain contract evaluation: StegVerse-Labs/StegBrain#860
+BCI neural authority: StegVerse-Labs/StegNeuro separate contracts
+
+COMPLETED / SUPERSEDED
+source/schema implementation: COMPLETE_VALIDATED_MERGED_RELEASED
+source claim: RELEASED
+validation claim: RELEASED
+
+release_condition: already satisfied for source scope; live consumption remains separately owned by #122
+next_executable_action: #122 consumes the released external timing contract during its separately authorized live carrier migration; this source lane performs no competing execution
+```
+
 ## Archive conditions
 
 This source lane no longer requires a chat/session owner. Its implementation and validation claims are released. Remaining live heartbeat adoption is durably owned by #122 and must not be duplicated here.
