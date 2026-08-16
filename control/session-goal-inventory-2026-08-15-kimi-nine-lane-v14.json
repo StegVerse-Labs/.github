@@ -1,0 +1,106 @@
+{
+  "schema": "stegverse.session-goal-inventory/v14",
+  "inventory_id": "KIMI-NINE-LANE-ONE-HOST-SOVEREIGN-CONSOLE-2026-08-15-V14",
+  "supersedes": "control/session-goal-inventory-2026-08-15-kimi-nine-lane-v13.json",
+  "updated_at": "2026-08-16T02:16:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "session_scope": "Kimi nine-lane lineage inherited from v12 plus the one-host sovereign ephemeral-console validation descendant. Source implementation is released; live activation is owned by G18 and does not require continued chat observation.",
+  "originating_goal_ids": [
+    "G11-KIMI-NINE-LANE-GEN2",
+    "G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF",
+    "G04-FORMAL-LOCAL-MODEL-DEVELOPMENT",
+    "G12-SOVEREIGN-ONE-HOST-EPHEMERAL-CONSOLE",
+    "G12A-VERIFIER-ENGINE-BINDING-CORRECTION"
+  ],
+  "shared_directives": [],
+  "worker_assistance_bindings": [
+    {
+      "worker_or_task_id": "GCAT-BCAT-Engine/workflows/.github/workflows/sv-cost-nine-lane-candidate-proof.yml",
+      "session_goal_id": "G11-KIMI-NINE-LANE-GEN2",
+      "lineage_type": "DIRECT_GOAL_OWNER",
+      "lineage_evidence_ref": "GCAT-BCAT-Engine/workflows/experiments/sv-cost-program/nine-lane-results/SV_COST_NINE_LANE_MIRROR_HANDOFF.md",
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "archive_dependency": false
+    },
+    {
+      "worker_or_task_id": "StegVerse-002/micro-node-runtime",
+      "session_goal_id": "G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF",
+      "lineage_type": "DIRECT_GOAL_OWNER",
+      "lineage_evidence_ref": "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "archive_dependency": false
+    },
+    {
+      "worker_or_task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION/G18",
+      "session_goal_id": "G12-SOVEREIGN-ONE-HOST-EPHEMERAL-CONSOLE",
+      "lineage_type": "DIRECT_GOAL_OWNER",
+      "lineage_evidence_ref": "docs/SOVEREIGN_EPHEMERAL_CONSOLE_MIRROR_HANDOFF.md",
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "archive_dependency": false
+    }
+  ],
+  "inherits_complete_inventory": "control/session-goal-inventory-2026-08-15-kimi-nine-lane-v12.json",
+  "inheritance_rule": "All v12 Kimi nine-lane goals, owners, local-runtime/model completion, no-Render policy and TV/TVC-only credential authority remain authoritative unless explicitly changed by this delta.",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "github_token_runtime_authority": "NONE",
+  "render_production_runtime_allowed": false,
+  "physical_additional_machine_required": false,
+  "goals": [
+    {
+      "task_id": "G12-SOVEREIGN-ONE-HOST-EPHEMERAL-CONSOLE",
+      "originating_goal": "Generate a deployment-local ephemeral console and emulate independent peer machines with isolated logical nodes rather than requiring another physical computer.",
+      "destination_organization": "StegVerse-Labs",
+      "destination_repository": ".github",
+      "branch": "main",
+      "location": "docs/SOVEREIGN_EPHEMERAL_CONSOLE_MIRROR_HANDOFF.md",
+      "owner": "G18 / SHWP-DURABLE-RUNTIME-ACTIVATION after source release",
+      "claim_state": "SOURCE_COMPLETE_RELEASED; LIVE_ACTIVATION_MACHINE_OWNED_G18",
+      "completion_state": "ONE_HOST_LOGICAL_NODE_WORKAROUND_IMPLEMENTED_VALIDATED_BOUND_TO_G18",
+      "validation_state": "workflow run 31922398210 job 95104297651 SUCCESS; workflow registry and execution-ownership metadata reconciled 2026-08-16",
+      "integration_state": "G18 may invoke console after incomplete native bootstrap on the same eligible sovereign host",
+      "archival_dependency": false,
+      "evidence_location": "docs/SOVEREIGN_EPHEMERAL_CONSOLE_MIRROR_HANDOFF.md; management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json; handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+      "next_executable_action": "G18 executes on the deployment-local sovereign host; no second/third physical machine or hosted provider is searched for or required."
+    },
+    {
+      "task_id": "G12A-VERIFIER-ENGINE-BINDING-CORRECTION",
+      "originating_goal": "Eliminate false runtime-materialization blockers discovered while implementing the one-host workaround.",
+      "destination_organization": "StegVerse-Labs",
+      "destination_repository": ".github",
+      "branch": "main",
+      "location": "scripts/verify_sovereign_runtime_activation.py",
+      "owner": "released source",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "engine_v9 predicate replaced by current engine_v11 binding",
+      "validation_state": "deterministic verifier evidence retained by runs 31922343365 and 31922398210",
+      "integration_state": "canonical verifier",
+      "archival_dependency": false,
+      "evidence_location": "scripts/verify_sovereign_runtime_activation.py",
+      "next_executable_action": "NONE_UNLESS_NEW_RUNTIME_DEFECT_OBSERVED"
+    }
+  ],
+  "canonical_continuation": [
+    "docs/SOVEREIGN_EPHEMERAL_CONSOLE_MIRROR_HANDOFF.md",
+    "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "workers/sovereign_runtime_activation_worker.py",
+    "control/heartbeat-state.json",
+    "control/session-goal-inventory-2026-08-15-kimi-nine-lane-v12.json"
+  ],
+  "current_live_observation": {
+    "heartbeat_epoch": 29,
+    "live_activation_complete": false,
+    "connected_deployment_host_process_execution_available_to_current_chat": false,
+    "source_defect_remaining": false,
+    "alternate_physical_machine_dependency_remaining": false,
+    "current_control_boundary": "DEPLOYMENT_HOST_CONTROL_PLANE_REACHABILITY"
+  },
+  "machine_observable_release_condition": "G18 writes canonical activation.latest.json with all nine predicates true on the deployment-local sovereign host; if console fallback is used, ephemeral-console.latest.json also proves all nodes and isolation predicates pass.",
+  "session_unique_source_claims_remaining": 0,
+  "unassigned_session_requirements": 0,
+  "product_activation_complete": false,
+  "session_role": "MERGED_INTO_CANONICAL_MACHINE_WORKSTREAM",
+  "archive_state": "READY_SOURCE_COMPLETE_AND_LIVE_OBSERVATION_DURABLY_TRANSFERRED",
+  "archive_rule": "Chat retention is not required for G18 execution or observation. Product activation remains incomplete until machine-observable proof exists, but the source/session lineage is durable and has no unique interactive-session responsibility."
+}
