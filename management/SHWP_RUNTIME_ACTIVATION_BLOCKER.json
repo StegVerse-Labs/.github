@@ -8,7 +8,7 @@
   "branch": "main",
   "operational_state": "ACTIVE_SOLUTION_EXECUTION",
   "constraint_class": "SOVEREIGN_LOCAL_RUNTIME_LIVE_PROOF_NOT_YET_OBSERVED",
-  "last_reconciled_at": "2026-08-15T22:45:00-05:00",
+  "last_reconciled_at": "2026-08-15T23:52:00-05:00",
   "boundary_ref": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
   "handoff_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
   "ephemeral_console_handoff_ref": "docs/SOVEREIGN_EPHEMERAL_CONSOLE_MIRROR_HANDOFF.md",
@@ -47,7 +47,13 @@
     "state": "COMPLETE_VALIDATED_RELEASED",
     "physical_additional_machine_required": false,
     "logical_node_count": 3,
-    "isolation_dimensions": ["node_identity", "runtime_root", "process_pid", "state_tree", "receipt_tree"],
+    "isolation_dimensions": [
+      "node_identity",
+      "runtime_root",
+      "process_pid",
+      "state_tree",
+      "receipt_tree"
+    ],
     "canonical_verifier_engine_binding": "heartbeat_runtime/engine_v11.py",
     "g18_fallback_behavior": "After incomplete native bootstrap on THE deployment's sovereign host, G18 automatically launches the three-logical-node console on that same host and promotes the primary activation proof only when all nine predicates and isolation predicates pass.",
     "validation": {
@@ -112,8 +118,18 @@
     "owner": "G18 / deployment-local sovereign control plane",
     "release_condition": "G18 executes the released single-host chain on the deployment's existing sovereign host and writes canonical activation evidence."
   },
+  "session_observation_transfer": {
+    "state": "COMPLETE",
+    "durable_worker_owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18 fencing token 18",
+    "executor_binding": "BOUND",
+    "worker_registry_ref": "control/worker-registry.json#SHWP-DURABLE-RUNTIME-ACTIVATION",
+    "next_expected_transition": "SOVEREIGN_RUNTIME_SOLUTION_EXECUTION",
+    "expected_next_epoch": 30,
+    "machine_observable_completion_condition": "activation.latest.json reports all nine predicates true or the worker emits exact fail-closed evidence",
+    "chat_session_required_for_execution_or_observation": false
+  },
   "heartbeat_or_execution_authority_effect": "NONE",
-  "chat_monitoring_required": true,
-  "session_retention_required": true,
-  "session_retention_reason": "Continue activation work until the existing sovereign host is reachable by the StegVerse control plane and G18 emits live activation evidence; do not manufacture any additional-machine dependency."
+  "chat_monitoring_required": false,
+  "session_retention_required": false,
+  "session_retention_reason": "Executable continuation and observation are durably assigned to bound G18 with fencing token 18, heartbeat timing, checkpoints, deterministic next transition, and machine-observable completion/release conditions. A ChatGPT session is not an execution or observation dependency."
 }
