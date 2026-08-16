@@ -22,6 +22,7 @@
     {"path": ".github/workflows/org-heartbeat-watchdog.yml", "classification": "REVIEW_REQUIRED", "owner": "organization heartbeat diagnostic lane", "reason": "manual diagnostic candidate for consolidation"},
     {"path": ".github/workflows/org-heartbeat.yml", "classification": "REVIEW_REQUIRED", "owner": "organization heartbeat validation lane", "reason": "candidate for stable heartbeat validator consolidation"},
     {"path": ".github/workflows/sovereign-runtime-self-bootstrap.yml", "classification": "REVIEW_REQUIRED", "owner": "StegVerse-Labs/.github#59/#65", "reason": "source released but workflow retention requires runtime-owner evidence review"},
+    {"path": ".github/workflows/sovereign-ephemeral-console.yml", "classification": "REVIEW_REQUIRED", "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18 fencing token 18", "reason": "released validation-only same-host logical-node proof surface from SHWP-SOVEREIGN-EPHEMERAL-CONSOLE-002; registration closes workflow-proliferation drift and grants no retention, runtime, credential, or production authority"},
     {"path": ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml", "classification": "BLOCKED_ACTIVE_OWNERSHIP", "owner": "concurrent StegFin early-adopter workstream", "reason": "created during hygiene execution; separate active session"},
     {"path": ".github/workflows/steggate-heartbeat-integration.yml", "classification": "REVIEW_REQUIRED", "owner": "StegGate heartbeat integration lane", "reason": "candidate for stable heartbeat/control validation consolidation"}
   ],
@@ -39,7 +40,8 @@
   "concurrent_new_surfaces_observed_during_hygiene": [
     ".github/workflows/mcp-activation-binding-test.yml",
     ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml",
-    ".github/workflows/external-timing-match-validation.yml"
+    ".github/workflows/external-timing-match-validation.yml",
+    ".github/workflows/sovereign-ephemeral-console.yml"
   ],
   "invariant": "Every repository-authored workflow file must be explicitly registered before merge/push. Unregistered workflow proliferation fails closed; registration is classification evidence, not approval to retain the workflow permanently.",
   "completion_condition": "Every registered surface is KEEP_STABLE_DISPATCHER, KEEP_STANDALONE_EXCEPTION with evidence, CONSOLIDATE_INTO_STABLE_DISPATCHER, TRANSFER_TO_STEGVERSE_WORKER, ELIMINATE, or terminally removed; REVIEW_REQUIRED/BLOCKED states are zero unless supported by active ownership."
