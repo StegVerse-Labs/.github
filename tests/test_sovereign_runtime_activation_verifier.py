@@ -21,13 +21,18 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
     def _runtime(self, base: Path) -> Path:
         root = base / "heartbeat"
         (root / "heartbeat_runtime").mkdir(parents=True)
-        (root / "heartbeat_runtime" / "engine_v9.py").write_text("# runtime\n", encoding="utf-8")
+        (root / "heartbeat_runtime" / "engine_v11.py").write_text("# runtime\n", encoding="utf-8")
         (root / "scripts").mkdir(parents=True)
         (root / "scripts" / "run_heartbeat_runtime.py").write_text("# runner\n", encoding="utf-8")
         (root / "receipts" / "sovereign-host").mkdir(parents=True)
         (root / "receipts" / "sovereign-host" / "materialization.latest.json").write_text("{}\n", encoding="utf-8")
         (root / "receipts" / "sovereign-host" / "activation.latest.json").write_text(
-            json.dumps({"active": True, "third_party_process_host_required": False}) + "\n",
+            json.dumps({
+                "active": True,
+                "third_party_process_host_required": False,
+                "native_process_supervision_only": True,
+                "registration_kind": "systemd-user",
+            }) + "\n",
             encoding="utf-8",
         )
         (root / "checkpoints" / "workers" / "task").mkdir(parents=True)
