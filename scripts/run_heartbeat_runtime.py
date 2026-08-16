@@ -13,7 +13,23 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from heartbeat_runtime import HeartbeatRuntime
+from heartbeat_runtime import CarrierHeartbeatRuntime
+
+# Deprecated compatibility exports for callers that historically imported the
+# worker-adapter loader from this module. They are not used by the carrier.
+from scripts.run_worker_runtime import _read_registry, load_adapters
+
+
+def _adapter_entries(root: Path):
+    entries = []
+    registry_path = root / "control" / "process-worker-adapters.json"
+    if registry_path.exists():
+        entries.extend(_read_registry(registry_path, fragment=False))
+    fragment_root = root / "control" / "process-worker-adapters.d"
+    if fragment_root.is_dir():
+        for path in sorted(fragment_root.glob("*.json")):
+            entries.extend(_read_registry(path, fragment=True))
+    return entries
 
 
 def main() -> int:
@@ -30,7 +46,7 @@ def main() -> int:
         raise SystemExit("continuous dry-run is unsupported")
 
     root = Path(args.root).resolve()
-    runtime = HeartbeatRuntime(root)
+    runtime = CarrierHeartbeatRuntime(root)
     running = True
 
     def stop(_signum, _frame):
