@@ -78,6 +78,26 @@
     "master_records_required": true,
     "status_projection": "control/worker-status.json"
   },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:coherent-signal-formal-candidate:v1",
+    "capability_version": "0.1.0",
+    "phase": "STANDING",
+    "standing_evidence_refs": [
+      "docs/COHERENT_SIGNAL_SPACE_TRANSITION_MANIFOLD_MIRROR_HANDOFF.md",
+      "heartbeat_runtime/signal_space.py",
+      "handoffs/SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001.json"
+    ],
+    "admissibility_evidence_refs": [],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": ["FORMAL_MATHEMATICAL_CANDIDATE_NOT_YET_EMITTED"],
+    "continuation_owner": "SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "develops_capability",
+    "target_phase": "ADMISSIBLE"
+  },
   "completion": {
     "next_authorized_action": "Emit the formal candidate receipt, then subject it to mathematical review and evidence-driven falsification rather than promoting it directly to canonical AE standing.",
     "terminal_when": [

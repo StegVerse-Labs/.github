@@ -26,10 +26,11 @@ class HeartbeatCarrierNonAuthorityTests(unittest.TestCase):
         self.assertIn('"leases_expired": 0', source)
         self.assertIn('"authority_effect": "NONE_CARRIER_ONLY"', source)
 
-    def test_worker_coordinator_is_separate(self):
-        self.assertEqual(WorkerCoordinator.__module__, "heartbeat_runtime.engine_v11")
+    def test_worker_surfaces_are_not_the_production_carrier(self):
+        self.assertEqual(HeartbeatRuntime.__module__, "heartbeat_runtime.engine_v11")
+        self.assertEqual(WorkerCoordinator.__module__, "heartbeat_runtime.worker_runtime")
+        self.assertIsNot(HeartbeatRuntime, CarrierHeartbeatRuntime)
         self.assertIsNot(WorkerCoordinator, CarrierHeartbeatRuntime)
-        self.assertIs(HeartbeatRuntime, WorkerCoordinator)
 
     def test_public_heartbeat_runner_instantiates_carrier_only(self):
         root = Path(__file__).resolve().parents[1]
@@ -44,6 +45,7 @@ class HeartbeatCarrierNonAuthorityTests(unittest.TestCase):
         source = (root / "scripts" / "run_worker_runtime.py").read_text(encoding="utf-8")
         self.assertIn("WorkerCoordinator", source)
         self.assertIn("ProcessWorkerAdapter", source)
+        self.assertIn("--continuous", source)
 
 
 if __name__ == "__main__":

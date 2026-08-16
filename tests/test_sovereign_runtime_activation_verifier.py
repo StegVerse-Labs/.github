@@ -20,43 +20,71 @@ SPEC.loader.exec_module(mod)
 class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
     def _runtime(self, base: Path) -> Path:
         root = base / "heartbeat"
-        (root / "heartbeat_runtime").mkdir(parents=True)
-        (root / "heartbeat_runtime" / "engine_v11.py").write_text("# runtime\n", encoding="utf-8")
-        (root / "scripts").mkdir(parents=True)
-        (root / "scripts" / "run_heartbeat_runtime.py").write_text("# runner\n", encoding="utf-8")
-        (root / "receipts" / "sovereign-host").mkdir(parents=True)
-        (root / "receipts" / "sovereign-host" / "materialization.latest.json").write_text("{}\n", encoding="utf-8")
-        (root / "receipts" / "sovereign-host" / "activation.latest.json").write_text(
-            json.dumps({
-                "active": True,
-                "third_party_process_host_required": False,
-                "native_process_supervision_only": True,
-                "registration_kind": "systemd-user",
-            }) + "\n",
-            encoding="utf-8",
-        )
-        (root / "checkpoints" / "workers" / "task").mkdir(parents=True)
-        (root / "checkpoints" / "workers" / "task" / "HB1.json").write_text("{}\n", encoding="utf-8")
-        (root / "control").mkdir(parents=True)
-        state = {
-            "epoch": 10,
-            "generation": 10,
-            "subsignals": {
-                "worker_coordination": {
-                    "state": "ACTIVE",
-                    "active_leases": [
-                        {"claim_id": "A-G1", "fencing_token": 1, "worker_instance_id": "w1"},
-                        {"claim_id": "B-G2", "fencing_token": 2, "worker_instance_id": "w2"},
-                    ],
-                }
-            },
-        }
-        (root / "control" / "heartbeat-state.json").write_text(json.dumps(state) + "\n", encoding="utf-8")
-        (root / "control" / "worker-registry.json").write_text(
-            json.dumps({"tasks": [{"task_id": "A"}, {"task_id": "B"}]}) + "\n",
-            encoding="utf-8",
-        )
+        for rel in (
+            "heartbeat_runtime/engine_v12.py",
+            "heartbeat_runtime/worker_runtime.py",
+            "scripts/run_heartbeat_runtime.py",
+            "scripts/run_worker_runtime.py",
+        ):
+            path = root / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("# runtime fixture\n", encoding="utf-8")
+
+        receipts = root / "receipts" / "sovereign-host"
+        receipts.mkdir(parents=True)
+        (receipts / "materialization.latest.json").write_text(json.dumps({
+            "canonical_carrier_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
+            "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+        }) + "\n", encoding="utf-8")
+        (receipts / "activation.latest.json").write_text(json.dumps({
+            "active": True,
+            "carrier_active": True,
+            "worker_active": True,
+            "third_party_process_host_required": False,
+            "native_process_supervision_only": True,
+            "separate_carrier_and_worker_processes": True,
+            "registration_kind": "systemd-user-separated",
+        }) + "\n", encoding="utf-8")
+
+        checkpoint = root / "checkpoints" / "workers" / "task" / "HB1.json"
+        checkpoint.parent.mkdir(parents=True)
+        checkpoint.write_text("{}\n", encoding="utf-8")
+
+        control = root / "control"
+        control.mkdir(parents=True)
+        (control / "heartbeat-state.json").write_text(json.dumps({
+            "schema": "stegverse.org-heartbeat-state/v1",
+            "epoch": 29,
+            "generation": 29,
+        }) + "\n", encoding="utf-8")
+        (control / "heartbeat-carrier-runtime-state.json").write_text(json.dumps({
+            "schema": "stegverse.heartbeat-carrier-runtime-state/v1",
+            "epoch": 30,
+            "generation": 30,
+        }) + "\n", encoding="utf-8")
+        (control / "worker-registry.json").write_text(json.dumps({
+            "tasks": [{"task_id": "A"}, {"task_id": "B"}],
+        }) + "\n", encoding="utf-8")
+        (control / "worker-runtime-state.json").write_text(json.dumps({
+            "schema": "stegverse.worker-runtime-state/v1",
+            "runtime_tick": 1,
+        }) + "\n", encoding="utf-8")
+        self._write_control_plane(control / "worker-control-plane-coordination.json")
         return root
+
+    @staticmethod
+    def _write_control_plane(path: Path, *, duplicate_fence: bool = False) -> None:
+        path.write_text(json.dumps({
+            "schema": "stegverse.worker-control-plane-coordination/v1",
+            "worker_coordination": {
+                "state": "ACTIVE",
+                "worker_registry_ref": "control/worker-registry.json",
+                "active_leases": [
+                    {"claim_id": "A-G1", "fencing_token": 1, "worker_instance_id": "w1"},
+                    {"claim_id": "B-G2", "fencing_token": 1 if duplicate_fence else 2, "worker_instance_id": "w2"},
+                ],
+            },
+        }) + "\n", encoding="utf-8")
 
     def test_hosted_environment_never_counts_as_sovereign(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -67,23 +95,26 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
             self.assertFalse(any(result["predicates"].values()))
             self.assertEqual(result["detail"]["ineligible_reason"], "THIRD_PARTY_HOSTED_ENVIRONMENT")
 
-    def test_real_node_proof_requires_advance_restart_and_reconstruction(self) -> None:
+    def test_real_node_proof_requires_separated_advance_restart_and_reconstruction(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)
             root = self._runtime(base)
-            state_path = root / "control" / "heartbeat-state.json"
+            carrier_path = root / "control" / "heartbeat-carrier-runtime-state.json"
             calls = {"sleep": 0, "restart": 0}
 
             def sleeper(_seconds: float) -> None:
                 calls["sleep"] += 1
-                state = json.loads(state_path.read_text())
+                state = json.loads(carrier_path.read_text())
                 state["epoch"] += 1
                 state["generation"] += 1
-                state_path.write_text(json.dumps(state) + "\n", encoding="utf-8")
+                carrier_path.write_text(json.dumps(state) + "\n", encoding="utf-8")
 
             def runner(command, **_kwargs):
                 calls["restart"] += 1
-                self.assertIn("stegverse-heartbeat.service", command)
+                self.assertTrue(
+                    "stegverse-heartbeat.service" in command or "stegverse-worker-runtime.service" in command,
+                    command,
+                )
                 return SimpleNamespace(returncode=0, stdout="", stderr="")
 
             proof = mod.verify(
@@ -98,24 +129,24 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
                     "STEGVERSE_SOVEREIGN_PROOF_PATH": str(base / "activation.latest.json"),
                 },
             )
-            self.assertTrue(proof["all_predicates_pass"])
+            self.assertTrue(proof["all_predicates_pass"], proof)
             self.assertEqual(calls["sleep"], 2)
-            self.assertEqual(calls["restart"], 1)
+            self.assertEqual(calls["restart"], 2)
             for name in mod.REQUIRED_PREDICATES:
                 self.assertTrue(proof[name], name)
             persisted = json.loads((base / "activation.latest.json").read_text())
             self.assertTrue(persisted["all_predicates_pass"])
             self.assertFalse(persisted["third_party_runtime_required"])
+            self.assertEqual(persisted["credential_authority"], "TV/TVC")
+            self.assertEqual(persisted["credential_requirement"], "NONE")
 
     def test_duplicate_fence_fails_closed(self) -> None:
         state = {
-            "subsignals": {
-                "worker_coordination": {
-                    "active_leases": [
-                        {"claim_id": "A", "fencing_token": 1, "worker_instance_id": "w1"},
-                        {"claim_id": "B", "fencing_token": 1, "worker_instance_id": "w2"},
-                    ]
-                }
+            "worker_coordination": {
+                "active_leases": [
+                    {"claim_id": "A", "fencing_token": 1, "worker_instance_id": "w1"},
+                    {"claim_id": "B", "fencing_token": 1, "worker_instance_id": "w2"},
+                ]
             }
         }
         self.assertFalse(mod.no_duplicate_claim_or_fence(state))

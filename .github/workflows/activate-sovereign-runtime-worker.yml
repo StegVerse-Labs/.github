@@ -103,7 +103,9 @@ jobs:
           python3 - <<'PY' "$output"
           import json,sys
           row=json.loads(sys.argv[1])
-          assert row['authority_effect']=='none_beyond_existing_admitted_task_authority'
+          assert row['authority_effect']=='NONE_CARRIER_ONLY', row
+          assert row['legacy_hb29_cutover']=='PREVIEW_ONLY', row
+          assert row['claims_issued']==0 and row['workers_invoked']==0, row
           print('SOVEREIGN_RUNTIME_DRY_RUN_NONPERSISTENT_PASS')
           PY
 
