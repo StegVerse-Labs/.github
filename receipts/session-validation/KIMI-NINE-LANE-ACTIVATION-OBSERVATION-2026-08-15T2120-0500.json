@@ -1,0 +1,42 @@
+{
+  "schema": "stegverse.session-validation-receipt/v1",
+  "receipt_id": "KIMI-NINE-LANE-ACTIVATION-OBSERVATION-2026-08-15T2120-0500",
+  "observed_at": "2026-08-15T21:20:00-05:00",
+  "session_inventory": "control/session-goal-inventory-2026-08-15-kimi-nine-lane-v12.json",
+  "archive_claim_reconciliation": {
+    "prior_chat_used_archive_language": true,
+    "everything_product_activated": false,
+    "reason": "Session archival readiness and product activation are distinct. Canonical v12 already records product_activation_complete=false."
+  },
+  "nine_lane": {
+    "canonical_handoff": "GCAT-BCAT-Engine/workflows/experiments/sv-cost-program/nine-lane-results/SV_COST_NINE_LANE_MIRROR_HANDOFF.md",
+    "task_state": "GCAT-BCAT-Engine/workflows/experiments/sv-cost-program/nine-lane-results/task-state.json",
+    "state": "MACHINE_OWNED_BLOCKED_ON_EXTERNAL_CANDIDATES",
+    "candidate_directory_observation": "NOT_PRESENT_AT_OBSERVATION",
+    "missing_candidates": ["openai", "anthropic", "deepseek", "kimi"],
+    "release_condition": "Each candidate-inputs/<provider>.json exists and validates with provider_api_key_transferred_to_stegverse=false",
+    "machine_owner": "GCAT-BCAT-Engine/workflows/.github/workflows/sv-cost-nine-lane-candidate-proof.yml",
+    "provider_secret_authority_inside_workload": "NONE",
+    "credential_authority": "TV/TVC_OR_USER_EXISTING_PROVIDER_RELATIONSHIP"
+  },
+  "sovereign_runtime": {
+    "canonical_handoff": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "heartbeat_state": "control/heartbeat-state.json",
+    "observed_epoch": 29,
+    "claim": "SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+    "state": "BLOCKED_MACHINE_OWNED",
+    "source_implementation_missing": false,
+    "self_bootstrap_source": "COMPLETE_VALIDATED_RELEASED",
+    "next_authorized_action": "Execute scripts/bootstrap_sovereign_runtime.py on an eligible non-hosted StegVerse-controlled machine containing canonical source and observe node-local activation.latest.json",
+    "completion_condition": "node-local activation.latest.json reports all nine predicates true",
+    "human_action_required": false,
+    "render_allowed": false,
+    "non_tv_tvc_secret_or_token_allowed": false
+  },
+  "session_role_observed": "VALIDATION_AND_RECONCILIATION_ONLY",
+  "duplicate_implementation_prohibited": true,
+  "new_session_owned_source_work_found": false,
+  "unassigned_session_requirement_found": false,
+  "product_activation_complete": false,
+  "archive_readiness_effect": "Does not itself activate product state; confirms remaining work is already durably machine/authority owned with observable release conditions."
+}
