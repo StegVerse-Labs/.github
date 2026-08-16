@@ -26,9 +26,10 @@ class HeartbeatCarrierNonAuthorityTests(unittest.TestCase):
         self.assertIn('"leases_expired": 0', source)
         self.assertIn('"authority_effect": "NONE_CARRIER_ONLY"', source)
 
-    def test_worker_coordinator_compatibility_alias_is_not_carrier(self):
+    def test_worker_surfaces_are_not_the_production_carrier(self):
+        self.assertEqual(HeartbeatRuntime.__module__, "heartbeat_runtime.engine_v11")
         self.assertEqual(WorkerCoordinator.__module__, "heartbeat_runtime.worker_runtime")
-        self.assertIs(HeartbeatRuntime, WorkerCoordinator)
+        self.assertIsNot(HeartbeatRuntime, CarrierHeartbeatRuntime)
         self.assertIsNot(WorkerCoordinator, CarrierHeartbeatRuntime)
 
     def test_public_heartbeat_runner_instantiates_carrier_only(self):
