@@ -212,6 +212,12 @@ class HeartbeatRuntime(HeartbeatRuntimeV11):
         self._atomic_write(self.carrier_observation_path, self._carrier_observation(state))
         self._atomic_write(self.control_plane_path, self._control_plane_coordination(state, registry))
 
+        if self.cutover_receipt_path.exists():
+            existing = self._load(self.cutover_receipt_path)
+            if existing.get("legacy_state_sha256") != legacy_digest or existing.get("first_new_epoch") != 30:
+                raise RuntimeError("existing HB29 cutover receipt does not bind canonical legacy state")
+            return
+
         receipt_base: dict[str, Any] = {
             "schema": "stegverse.heartbeat-schema-cutover-receipt/v1",
             "state": "CLOSED_MIGRATED",
