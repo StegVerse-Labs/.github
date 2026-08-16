@@ -2,7 +2,7 @@
   "schema": "stegverse.session-goal-inventory/v14",
   "inventory_id": "LOCAL-RUNTIME-MODEL-TRADE-READINESS-2026-08-16-V14",
   "supersedes": "control/session-goal-inventory-2026-08-16-local-runtime-trade-readiness-v13.json",
-  "updated_at": "2026-08-16T03:35:00-05:00",
+  "updated_at": "2026-08-16T03:39:00-05:00",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
   "session_scope": "Final durable consolidation of sovereign local-runtime discovery/launch/proof, formal local model development, TV/TVC-only credential authority, StegVerse-only runtime, sovereign Base activation, bounded phone trade readiness, human-readable USER_ONLY wallet review, portable publication/SDK integration, ASRO continuation and worker assistance.",
@@ -28,62 +28,13 @@
     }
   ],
   "worker_assistance_bindings": [
-    {
-      "worker_or_task_id": "StegVerse-002/micro-node-runtime#22",
-      "session_goal_id": "G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF",
-      "lineage_type": "DIRECT_GOAL_OWNER",
-      "lineage_evidence_ref": "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
-      "scope_decision": "IN_SCOPE_ASSIST",
-      "archive_dependency": false
-    },
-    {
-      "worker_or_task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION/G18",
-      "session_goal_id": "G10-STEGVERSE-ONLY-PRODUCTION-RUNTIME",
-      "lineage_type": "DIRECT_GOAL_OWNER",
-      "lineage_evidence_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
-      "scope_decision": "IN_SCOPE_ASSIST",
-      "archive_dependency": false
-    },
-    {
-      "worker_or_task_id": "SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001",
-      "session_goal_id": "G09-SOVEREIGN-BASE-RPC-ACTIVATION",
-      "lineage_type": "DIRECT_GOAL_OWNER",
-      "lineage_evidence_ref": "docs/SOVEREIGN_BASE_RPC_ACTIVATION_MIRROR_HANDOFF.md",
-      "scope_decision": "IN_SCOPE_ASSIST",
-      "archive_dependency": false
-    },
-    {
-      "worker_or_task_id": "StegVerse-Labs/stegfin-governance#60/#68",
-      "session_goal_id": "G08-STEGFIN-PHONE-TRADE-READINESS",
-      "lineage_type": "INTEGRATION_DESCENDANT",
-      "lineage_evidence_ref": "StegVerse-Labs/stegfin-governance#60",
-      "scope_decision": "IN_SCOPE_ASSIST",
-      "archive_dependency": false
-    },
-    {
-      "worker_or_task_id": "StegVerse-Labs/TVC:TVC-PORTABLE-ARTIFACT-PUBLICATION-001",
-      "session_goal_id": "G16-TVC-PORTABLE-ARTIFACT-PUBLICATION",
-      "lineage_type": "DIRECT_GOAL_OWNER",
-      "lineage_evidence_ref": "StegVerse-Labs/TVC/docs/PORTABLE_ARTIFACT_PUBLICATION_MIRROR_HANDOFF.md",
-      "scope_decision": "IN_SCOPE_ASSIST",
-      "archive_dependency": false
-    },
-    {
-      "worker_or_task_id": "StegVerse-org/StegVerse-SDK:SDK-PORTABLE-ARTIFACT-BINDING-002",
-      "session_goal_id": "G17-SDK-VERSIONED-PORTABLE-CONSUMER",
-      "lineage_type": "INTEGRATION_DESCENDANT",
-      "lineage_evidence_ref": "StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md",
-      "scope_decision": "IN_SCOPE_ASSIST",
-      "archive_dependency": false
-    },
-    {
-      "worker_or_task_id": "StegVerse-Labs/admissibility-wiki#50",
-      "session_goal_id": "G11-ASRO-REVIEW-DISPOSITION-CONTINUATION",
-      "lineage_type": "DIRECT_GOAL_OWNER",
-      "lineage_evidence_ref": "StegVerse-Labs/admissibility-wiki/docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md",
-      "scope_decision": "IN_SCOPE_ASSIST",
-      "archive_dependency": false
-    }
+    {"worker_or_task_id":"StegVerse-002/micro-node-runtime#22","session_goal_id":"G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF","lineage_type":"DIRECT_GOAL_OWNER","lineage_evidence_ref":"StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
+    {"worker_or_task_id":"SHWP-DURABLE-RUNTIME-ACTIVATION/G18","session_goal_id":"G10-STEGVERSE-ONLY-PRODUCTION-RUNTIME","lineage_type":"DIRECT_GOAL_OWNER","lineage_evidence_ref":"handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
+    {"worker_or_task_id":"SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001","session_goal_id":"G09-SOVEREIGN-BASE-RPC-ACTIVATION","lineage_type":"DIRECT_GOAL_OWNER","lineage_evidence_ref":"docs/SOVEREIGN_BASE_RPC_ACTIVATION_MIRROR_HANDOFF.md","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
+    {"worker_or_task_id":"StegVerse-Labs/stegfin-governance#60/#68","session_goal_id":"G08-STEGFIN-PHONE-TRADE-READINESS","lineage_type":"INTEGRATION_DESCENDANT","lineage_evidence_ref":"StegVerse-Labs/stegfin-governance#60","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
+    {"worker_or_task_id":"StegVerse-Labs/TVC:TVC-PORTABLE-ARTIFACT-PUBLICATION-001","session_goal_id":"G16-TVC-PORTABLE-ARTIFACT-PUBLICATION","lineage_type":"DIRECT_GOAL_OWNER","lineage_evidence_ref":"StegVerse-Labs/TVC/docs/PORTABLE_ARTIFACT_PUBLICATION_MIRROR_HANDOFF.md","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
+    {"worker_or_task_id":"StegVerse-org/StegVerse-SDK:SDK-PORTABLE-ARTIFACT-BINDING-002","session_goal_id":"G17-SDK-VERSIONED-PORTABLE-CONSUMER","lineage_type":"INTEGRATION_DESCENDANT","lineage_evidence_ref":"StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false},
+    {"worker_or_task_id":"StegVerse-Labs/admissibility-wiki#50","session_goal_id":"G11-ASRO-REVIEW-DISPOSITION-CONTINUATION","lineage_type":"DIRECT_GOAL_OWNER","lineage_evidence_ref":"StegVerse-Labs/admissibility-wiki/docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md","scope_decision":"IN_SCOPE_ASSIST","archive_dependency":false}
   ],
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
@@ -99,7 +50,7 @@
     {"goal_id":"G16-TVC-PORTABLE-ARTIFACT-PUBLICATION","owner":"StegVerse-Labs/TVC/tasks/TVC-PORTABLE-ARTIFACT-PUBLICATION-001.json","state":"MACHINE_OWNED_BLOCKED_DEPENDENCY","archive_dependency":false,"next_action":"TVC-managed ephemeral publication capability admits and verifies immutable artifacts"},
     {"goal_id":"G17-SDK-VERSIONED-PORTABLE-CONSUMER","owner":"StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md","state":"SOURCE_COMPLETE_WAITING_ON_TVC_PUBLICATION","archive_dependency":false,"next_action":"Consume TVC-admitted immutable locators and pass download->verify->install"},
     {"goal_id":"G11-ASRO-REVIEW-DISPOSITION-CONTINUATION","owner":"StegVerse-Labs/admissibility-wiki issue #50","state":"MERGED_INTO_CANONICAL_WORKSTREAM","archive_dependency":false,"next_action":"Canonical ASRO worker acts only on directly observed legitimate evidence"},
-    {"goal_id":"G06-SESSION-CONSOLIDATION","owner":"StegVerse-Labs/.github/docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md","state":"COMPLETE_AFTER_V14_RELEASE","archive_dependency":true,"next_action":"Release v14 reconciliation and validation claims after merge and validation"}
+    {"goal_id":"G06-SESSION-CONSOLIDATION","owner":"StegVerse-Labs/.github/docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md","state":"COMPLETE_VALIDATED_RELEASED","archive_dependency":false,"next_action":"NONE"}
   ],
   "latest_trade_review_release": {
     "source_issue": "StegVerse-Labs/stegfin-governance#71 CLOSED_COMPLETED",
@@ -115,6 +66,20 @@
     "signing_authority": "USER_ONLY",
     "broadcast_authority": "USER_ONLY"
   },
+  "v14_release_evidence": {
+    "issue": 195,
+    "pr": 196,
+    "pr_head": "6ee235bc716c64ff6190e8321d5164297268402c",
+    "merge": "3d5938272d78a2695f8b4462147f5deed035876a",
+    "heartbeat_worker_project_run": 31936844989,
+    "sovereign_runtime_worker_run": 31936844902,
+    "organization_control_plane_run": 31936845001,
+    "organization_handoff_projection_run": 31936844913,
+    "all_pr_head_validation": "PASS",
+    "reconciliation_claim": "COMPLETE_RELEASED",
+    "g18_policy_test_validation_claim": "COMPLETE_RELEASED",
+    "production_runtime_semantics_mutated": false
+  },
   "activation_truth": {
     "product_activation_complete": false,
     "archive_this_session_means_all_products_activated": false,
@@ -122,21 +87,21 @@
   },
   "active_product_continuations": [
     {"owner":"SHWP-DURABLE-RUNTIME-ACTIVATION / G18 fencing token 18","location":"management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json","release_condition":"activation.latest.json proves all nine predicates or exact deployment-host fail-closed evidence","chat_dependency":false},
-    {"owner":"resident heartbeat -> SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001 -> TVC","location":"docs/SOVEREIGN_BASE_RPC_ACTIVATION_MIRROR_HANDOFF.md","release_condition":"private synchronized Base 0x2105 validation_only=false proof plus TVC ROUTE_ADMITTED","chat_dependency":false},
+    {"owner":"resident sovereign heartbeat -> SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001 -> TVC","location":"docs/SOVEREIGN_BASE_RPC_ACTIVATION_MIRROR_HANDOFF.md","release_condition":"private synchronized Base 0x2105 validation_only=false proof plus TVC ROUTE_ADMITTED","chat_dependency":false},
     {"owner":"StegVerse-Labs/stegfin-governance#60 + #68 + current-phone authority","location":"StegVerse-Labs/stegfin-governance#60","release_condition":"fresh phone PREPARE yields direct StegID evidence and exact terminal unsigned receipt","chat_dependency":false},
     {"owner":"StegVerse-Labs/TVC TVC-PORTABLE-ARTIFACT-PUBLICATION-001","location":"StegVerse-Labs/TVC/docs/PORTABLE_ARTIFACT_PUBLICATION_MIRROR_HANDOFF.md","release_condition":"TVC-admitted immutable publication proof","chat_dependency":false},
     {"owner":"StegVerse-org/StegVerse-SDK SDK-PORTABLE-ARTIFACT-BINDING-002","location":"StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md","release_condition":"published immutable locators/hashes and download->verify->install PASS","chat_dependency":false},
     {"owner":"StegVerse-Labs/admissibility-wiki issue #50","location":"StegVerse-Labs/admissibility-wiki/docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md","release_condition":"canonical ASRO workflow reaches legitimate terminal evidence","chat_dependency":false}
   ],
-  "session_unique_claims_remaining_after_v14_release": 0,
+  "session_unique_claims_remaining": 0,
   "session_unique_execution_responsibility_remaining": 0,
-  "session_unique_validation_responsibility_remaining_after_v14_release": 0,
+  "session_unique_validation_responsibility_remaining": 0,
   "session_unique_integration_responsibility_remaining": 0,
   "session_unique_propagation_responsibility_remaining": 0,
   "session_unique_observation_responsibility_remaining": 0,
   "unassigned_session_requirements": 0,
-  "session_consolidation_complete_after_v14_release": true,
-  "archive_state_after_v14_release": "READY_ALL_UNIQUE_SESSION_WORK_COMPLETED_SUPERSEDED_OR_DURABLY_TRANSFERRED",
+  "session_consolidation_complete": true,
+  "session_archive_state": "READY_ALL_UNIQUE_SESSION_WORK_COMPLETED_SUPERSEDED_OR_DURABLY_TRANSFERRED",
   "canonical_continuation": [
     "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
     "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
