@@ -3,9 +3,9 @@
   "task_id": "TASK-2026-0004",
   "organization": "StegVerse-Labs",
   "goal": "Project the released StegFin phone RPC resilience asset into the canonical Site participant entry without importing credential, wallet, provider, or hosted-runtime authority",
-  "status": "complete_released",
+  "status": "completed",
   "coordination_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
-  "flags": ["trade-readiness", "phone-sovereign", "no-render", "tv-tvc-only", "source-released", "site-published", "live-observation-transferred"],
+  "flags": [],
   "requested_at": "2026-08-15T23:38:00Z",
   "priority_class": "critical",
   "requirements": {
