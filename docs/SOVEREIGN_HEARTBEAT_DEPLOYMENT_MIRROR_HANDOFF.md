@@ -1,183 +1,210 @@
 # Sovereign Heartbeat Deployment Mirror Handoff
 
-Updated: 2026-08-16T16:33:00-05:00
+Updated: 2026-08-16T17:42:00-05:00
 
-## Active goal
+## Authority and active goal
 
 ```text
 goal_id: HEARTBEAT-HB29-CURRENT-MAIN-RECONCILE-197
 parent_goal: SHWP-SOVEREIGN-DEPLOYMENT-NO-THIRD-PARTY-001
-originating_goal: close retained legacy HB29 under the released carrier/control-plane separation, activate the current canonical carrier schema when an allowed StegVerse execution opportunity exists, and never reintroduce combined heartbeat worker authority
+originating_session_goal: activate the released StegVerse heartbeat/worker architecture without Render or non-TV/TVC credentials, preserve retained HB29 continuity, and keep trade/local-model continuation durable
 repository: StegVerse-Labs/.github
-branch: claim/heartbeat-hb29-main-reconcile-197
+branch: claim/heartbeat-hb29-main-reconcile-197-current
 canonical_issue: StegVerse-Labs/.github#197
-parent_issue: StegVerse-Labs/.github#122
-canonical_live_owner: StegVerse-Labs/.github#122/#12 resident StegVerse control plane
-implementation_claim: CLAIMED_FOR_INTEGRATION_RECONCILIATION
-validation_claim: SAME_BOUNDED_SOURCE_LANE
-claim_created_at: 2026-08-16T16:33:00-05:00
-claim_release_condition: stale v11 deployment binding is removed, installer/materialization selects current carrier v12 and separately materializes worker runtime without combining authority, deterministic validation passes, PR merges, and live migration remains explicitly assigned to the canonical resident owner
+parent_owners: StegVerse-Labs/.github#122 and #12
+implementation_claim: control/session-implementation-claim-2026-08-16-heartbeat-hb29-main-reconcile-197.json
+implementation_claim_state: CLAIMED_FOR_INTEGRATION
+validation_claim: SAME_BOUNDED_CURRENT_MAIN_LANE
+claim_created_at: 2026-08-16T17:42:00-05:00
+claim_release_condition: complete deterministic validation on current-main lineage, merge replacement PR, supersede stale #198/#199, and transfer live successor observation to #122/#12
 credential_authority: TV/TVC
+credential_requirement: NONE
 non_tv_tvc_secret_or_token_allowed: false
 github_token_runtime_authority: NONE
 render_production_runtime_allowed: false
 ```
 
-This is a distinct integration/reconciliation role. It does **not** claim the live heartbeat producer, `control/heartbeat-state.json`, current worker registry state, active claims/fences/leases, or resident process authority. Those remain worker-owned under #122/#12. It corrects source/deployment drift on current `main` so the released installer cannot reactivate the obsolete combined v11 runtime after `main` already separated carrier and worker coordination.
+This handoff is authoritative for the bounded source/deployment/verifier reconciliation. It does not own or mutate live `control/heartbeat-state.json`, live `control/worker-registry.json`, active claims/fences/leases, resident process authority, provider/wallet state, or TV/TVC protected material.
 
-## Physical carrier constraint
+## Current-main convergence preserved
 
-The current user's iPhone is the sole permitted user physical carrier for this workstream.
+The earlier reconciliation branch diverged while current `main` added the coherent signal-space candidate and formal-candidate worker. PR #199 therefore must not be force-merged. This replacement branch starts from current `main` and explicitly preserves:
 
 ```text
-sole_permitted_user_physical_carrier: CURRENT_USER_IPHONE
-additional_physical_machine_required: false
-additional_physical_machine_allowed: false
-third_party_machine_required: false
-third_party_process_host_required: false
-wait_for_other_machine: prohibited
-search_for_other_machine: prohibited
+heartbeat_runtime/signal_space.py
+workers/coherent_signal_formal_candidate_worker.py
+control/process-worker-adapters.d/coherent-signal-formal-candidate-001.json
+control/worker-registry.d/coherent-signal-formal-candidate-001.json
+cost-basis/worker-runtime/coherent-signal-formal-candidate.json
+handoffs/SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001.json
+docs/COHERENT_SIGNAL_SPACE_TRANSITION_MANIFOLD_MIRROR_HANDOFF.md
 ```
 
-A missing desktop, server, VM, Raspberry Pi, Render service, GitHub runner, Vercel host, Cloudflare worker, or other third-party process host is never a heartbeat activation blocker.
+The carrier remains an authority-neutral observation/reference mechanism. The coherent signal-space candidate remains evidence-led and explicitly not a completeness claim.
 
-## Canonical runtime split on current main
-
-Current `main` is authoritative over older deployment prose:
+## Reconciled production source
 
 ```text
-heartbeat_runtime.engine_v12.HeartbeatRuntime = non-authorizing carrier
-heartbeat_runtime.CarrierHeartbeatRuntime = canonical carrier export
-heartbeat_runtime.worker_runtime.WorkerCoordinator = separate worker lifecycle coordinator
+heartbeat_runtime.engine_v12.HeartbeatRuntime = canonical non-authorizing carrier
+heartbeat_runtime.HeartbeatRuntime = engine_v12 package export
+heartbeat_runtime.CarrierHeartbeatRuntime = engine_v12 package export
+heartbeat_runtime.worker_runtime.WorkerCoordinator = separate worker/control-plane runtime
 scripts/run_heartbeat_runtime.py = carrier-only runner
-scripts/run_worker_runtime.py = worker/control-plane runner
-heartbeat_runtime.HeartbeatRuntime = temporary v11 compatibility alias only; not production deployment target
+scripts/run_worker_runtime.py = independently supervised worker runner
+scripts/install_sovereign_heartbeat_service.py = materializes and supervises carrier + worker processes separately
+scripts/verify_sovereign_runtime_activation.py = node-local separated-state nine-predicate verifier
 ```
 
-The prior deployment handoff and `scripts/install_sovereign_heartbeat_service.py` still named `heartbeat_runtime.engine_v11.HeartbeatRuntime` as the canonical deployed runtime. That is source/deployment drift and is the precise defect owned by this reconciliation lane.
+The worker coordinator uses `control/.worker-runtime.lock`; the carrier retains its independent heartbeat lock. A carrier process can therefore run while the worker coordinator performs a worker-runtime tick without either process falsely serializing the other through the historical combined lock.
 
-## HB29 continuity model
-
-Heartbeat continuity is continuity of retained canonical state transitions, not an always-running wall-clock process.
+## HB29 cutover contract
 
 ```text
-historical retained state: HB29 / generation 29
-historical state is retained provenance: true
-wall-clock continuity required: false
-wall-clock worker expiry authority: false
-next valid carrier successor derives from retained state: true
-another physical node required before successor: false
-heartbeat grants execution authority: false
-worker lifecycle authority is separate: true
+legacy source: control/heartbeat-state.json
+required legacy schema: stegverse.org-heartbeat-state/v1
+required retained legacy epoch: 29
+legacy file mutation by v12: PROHIBITED
+first separated successor: HB30
+separated state: control/heartbeat-carrier-runtime-state.json
+carrier observation: control/heartbeat-carrier-observation.json
+worker control plane: control/worker-control-plane-coordination.json
+cutover receipt: receipts/heartbeat-schema-cutover/HB29.json
 ```
 
-The current-main source reconciliation may validate disposable HB29 successor behavior, but it may not mutate the repository/live HB29 snapshot. Actual HB30 or later durable successor evidence is emitted only by the canonical resident StegVerse execution owner when an allowed execution opportunity exists.
+The first persistent v12 carrier cycle derives HB30 from exact retained HB29. Subsequent carrier cycles require the immutable cutover receipt; a separated carrier state without that receipt fails closed. Claim/fence/lease details remain in the worker control plane and never become heartbeat authority.
 
-## Authority invariants
+## Assignment and Master Records transition
+
+The carrier may carry `stegverse.worker-assignment-trigger/v1` only as a non-authorizing observation. Independent worker authorization, eligibility, fencing, and cost-basis checks remain the worker coordinator's responsibility. On admitted assignment, the same packet identity transitions into the Master-Records-bound assignment record; no second transition packet is created.
 
 ```text
-heartbeat carrier authority effect: NONE
-worker/control-plane authority source: independent admitted worker task state
-Master Records role: custody/reconstruction only
-credential authority: TV/TVC
-non-TV/TVC runtime secret/token: PROHIBITED
-GitHub production runtime authority: NONE
-Render production runtime: PROHIBITED
-Vercel production runtime: PROHIBITED
-Cloudflare production runtime: PROHIBITED
-third-party scheduler/process host: PROHIBITED AS PRODUCTION AUTHORITY
+assignment timer unit: HB_UNIT
+timer clock: WORKER_RUNTIME_INTERNAL
+carrier epoch controls expiry: false
+carrier presence controls expiry: false
+heartbeat grants assignment authority: false
+Master Records effect: STATE_TRANSITION_CUSTODY only
 ```
 
-## Authoritative files for this reconciliation
+## Sovereign deployment boundary
+
+The current user iPhone remains an allowed StegVerse physical carrier; no additional machine or third-party process host is a prerequisite. GitHub/GitHub Actions are source/validation/evidence surfaces only. Render, Vercel, Cloudflare hosted runtime, hosted inference, or another third-party scheduler/process host may not become production heartbeat authority.
+
+Credential invariants:
 
 ```text
-docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md
-scripts/install_sovereign_heartbeat_service.py
-tests/test_sovereign_heartbeat_service.py
+credential_authority: TV/TVC
+credential_requirement: NONE
+non_tv_tvc_secret_or_token_used: false
+github_token_runtime_authority: NONE
+render_production_runtime_used: false
+wallet_signing_authority: USER_ONLY where applicable
+broadcast_authority: USER_ONLY where applicable
+```
+
+## Authoritative files
+
+```text
 control/session-implementation-claim-2026-08-16-heartbeat-hb29-main-reconcile-197.json
+docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md
+docs/HB29_RECONCILIATION_VALIDATION.md
+heartbeat_runtime/__init__.py
+heartbeat_runtime/engine_v12.py
+heartbeat_runtime/worker_runtime.py
+schemas/heartbeat-carrier-runtime-state.schema.json
+scripts/install_sovereign_heartbeat_service.py
+scripts/run_worker_runtime.py
+scripts/verify_sovereign_runtime_activation.py
+tests/test_heartbeat_engine_v12_cutover.py
+tests/test_worker_runtime_separation.py
+tests/test_heartbeat_carrier_non_authority.py
+tests/test_sovereign_heartbeat_service.py
+tests/test_sovereign_runtime_activation_v12.py
+.github/workflows/heartbeat-worker-project.yml
 ```
 
-Potential validation-only additions must remain bounded to this source integration role. `control/heartbeat-state.json`, `control/worker-registry.json`, `control/heartbeat-subsignals.json`, `authorizations/**`, `workers/**`, and live activation receipts are prohibited mutation surfaces for this claim.
+## Validation
 
-## Superseded/merged work
-
-PR #198 (`feat/heartbeat-hb29-cutover-197`) was created against an older base and attempted its own competing v12 cutover implementation. Current `main` subsequently acquired the canonical carrier-only v12 and separate worker coordinator. The unique requirement from #198 that remains valid is preserved here: retained HB29 must not be silently treated as worker authority, and the next live carrier successor must be directly evidenced by the canonical owner. The competing source implementation is to be closed/superseded after this current-main reconciliation is merged.
-
-MERGED INTO: `StegVerse-Labs/.github#122`, `StegVerse-Labs/.github#197`, this handoff, and the current-main carrier/worker split.
-
-## Validation commands
+Required source validation is the complete deterministic repository suite plus focused checks:
 
 ```text
+python -m unittest tests.test_heartbeat_engine_v12_cutover
+python -m unittest tests.test_worker_runtime_separation
 python -m unittest tests.test_sovereign_heartbeat_service
+python -m unittest tests.test_sovereign_runtime_activation_v12
 python -m unittest tests.test_heartbeat_carrier_non_authority
+python -m unittest discover -v tests
 python scripts/run_heartbeat_runtime.py --dry-run --cycles 1
-python scripts/run_worker_runtime.py --dry-run --cycles 1
 ```
 
-Validation must prove that deployment materialization names carrier v12 as the heartbeat carrier, includes the separate worker runner, does not bind v11 as production carrier authority, carries no non-TV/TVC credential requirement, and does not claim CI/disposable execution as live activation.
+Positive validation evidence must be inspected directly. A workflow file, authored test, missing workflow run, or disposable source result is not live activation. Live activation remains node-local #122/#12 evidence.
+
+## Cross-repository continuation
+
+```text
+local runtime/model: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md -> COMPLETE_VALIDATED_RELEASED
+formal coherent signal candidate: docs/COHERENT_SIGNAL_SPACE_TRANSITION_MANIFOLD_MIRROR_HANDOFF.md -> current-main preserved / worker-owned continuation
+sovereign Base: tasks/TASK-2026-0005.json -> machine-owned real endpoint observation
+StegFin phone: StegVerse-Labs/stegfin-governance#68/#60 -> current-phone exact evidence observer
+Site phone evidence exporter: StegVerse-Labs/Site#289 / PR #290 -> source published; release bookkeeping separate
+live heartbeat successor: StegVerse-Labs/.github#122/#12 -> resident StegVerse owner
+```
+
+MERGED INTO: `StegVerse-Labs/.github#197` for source reconciliation and `StegVerse-Labs/.github#122/#12` for live successor execution after this source lane releases.
 
 ## Execution ownership and collision partition
 
-### MANUAL / SESSION-STARTABLE
+### SESSION-STARTABLE
 
 ```yaml
-- task_id: HEARTBEAT-HB29-CURRENT-MAIN-RECONCILE-197
-  execution_owner: claim/heartbeat-hb29-main-reconcile-197
-  claim_state: CLAIMED_FOR_INTEGRATION_RECONCILIATION
-  worker_registry_ref: NONE_BOUNDED_SOURCE_RECONCILIATION
-  manual_execution_allowed: true
-  collision_scope: installer/materialization/tests/handoff only; live heartbeat state and worker authority excluded
-  release_condition: deterministic source validation PASS + PR merge + obsolete PR #198 superseded
-  next_executable_action: replace stale v11 deployment binding with carrier-v12 plus separate worker materialization and validate
+task_id: HEARTBEAT-HB29-CURRENT-MAIN-RECONCILE-197
+owner: claim/heartbeat-hb29-main-reconcile-197-current
+state: CLAIMED_FOR_INTEGRATION
+manual_execution_allowed: true
+collision_scope: bounded source/schema/deployment/verifier/validation files only
+release_condition: deterministic PASS + merge + stale PR supersession
+next_action: validate current-main replacement PR and correct any failures
 ```
 
-### WORKER-OWNED / DO NOT COMPETE
+### MACHINE-OWNED / DO NOT COMPETE
 
 ```yaml
-- task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION
-  execution_owner: StegVerse-Labs/.github#122/#12 resident StegVerse runtime
-  claim_state: MACHINE_OWNED
-  worker_registry_ref: control/worker-registry.json
-  manual_execution_allowed: false
-  collision_scope: live HB29 successor, active claims/fences/leases, resident processes, production carrier operation
-  release_condition: node/current-carrier observable successor receipt under current separated schema
-  next_executable_action: consume merged deployment reconciliation at next admitted StegVerse execution opportunity
+task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION
+owner: StegVerse-Labs/.github#122/#12 resident StegVerse runtime
+state: MACHINE_OWNED
+manual_execution_allowed: false
+collision_scope: live HB29 successor, resident carrier/worker processes, active claims/fences/leases
+release_condition: directly inspectable node-local separated-runtime activation proof
+next_action: consume merged source reconciliation at the next admitted StegVerse execution opportunity
 ```
 
-### ESCALATED / AUTHORITY-OWNED
+### AUTHORITY-OWNED
 
 ```yaml
-- task_id: TV-TVC-CREDENTIAL-AUTHORITY
-  execution_owner: TV/TVC
-  claim_state: AUTHORITY_OWNED
-  worker_registry_ref: canonical TV/TVC authority surfaces
-  manual_execution_allowed: false
-  collision_scope: protected credential/secret/token material only
-  release_condition: no non-TV/TVC runtime credential path exists
-  next_executable_action: none unless a protected credential decision is actually required
+task_id: TV-TVC-CREDENTIAL-AUTHORITY
+owner: TV/TVC
+state: AUTHORITY_OWNED
+manual_execution_allowed: false
+collision_scope: credential/secret/token material
+release_condition: no non-TV/TVC credential path exists
 ```
 
-### COMPLETED / SUPERSEDED
+### SUPERSEDED AFTER REPLACEMENT RELEASE
 
 ```yaml
-- task_id: LEGACY-ENGINE-V11-COMBINED-PRODUCTION-BINDING
-  execution_owner: NONE_AFTER_RECONCILIATION
-  claim_state: SUPERSEDED_BY_CURRENT_MAIN_CARRIER_WORKER_SPLIT
-  worker_registry_ref: NONE
-  manual_execution_allowed: false
-  collision_scope: old installer canonical-runtime declaration only
-  release_condition: installer/tests no longer describe engine_v11 as production heartbeat carrier
-  next_executable_action: NONE
+PR_198: older HB29 cutover implementation; do not merge after replacement release
+PR_199: divergent reconciliation branch; preserved as provenance, do not force over coherent-signal current main
 ```
 
-## Incomplete work and archive condition
-
-This source reconciliation remains active until the stale installer binding is corrected, validated and merged and PR #198 is superseded. Live HB29→successor observation remains separately machine-owned and is not fabricated by this lane. The complete session is not archive-ready while this unique reconciliation and the active Site phone-evidence publication lane remain unfinished.
+## Current completion and archive condition
 
 ```text
-developed files: 1/4 at claim creation
-validation: 0/4
-integration: 0/3
-live activation: canonical resident owner only
-session consolidation: current-main convergence recorded; execution transfer incomplete until merge
+developed_files: 16/16 source deliverables installed on current-main replacement branch
+scaffolding_or_stubs: 0
+missing_required_files: 0
+validation: 0/6 directly executed/observed on replacement branch at this handoff revision
+integration: 2/5 (current-main replay + coherent-signal convergence complete; PR validation/merge/supersession pending)
+live_activation: MACHINE_OWNED / not claimed here
+session_consolidation: original local-model goal and adjacent heartbeat/trade requirements all have durable owners; this source reconciliation remains unique until release
+archive_dependency: replacement branch validation/merge and transfer of this session's source claim
 ```
