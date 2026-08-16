@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.session-validation-claim/v1",
+  "claim_id": "SESSION-G18-POLICY-TEST-DRIFT-20260816",
+  "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION-VALIDATION-REPAIR",
+  "originating_goal": "Assist the canonical sovereign-runtime worker by reconciling stale deterministic tests with the already-released single-host StegVerse runtime policy, without mutating production runtime semantics or worker-owned activation state.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "claim/session-local-runtime-trade-readiness-v14-195",
+  "role": "CLAIMED_FOR_VALIDATION",
+  "claimed_at": "2026-08-16T03:31:00-05:00",
+  "allowed_paths": [
+    "tests/test_g18_self_bootstrap_worker.py",
+    "tests/test_sovereign_runtime_activation_escalation.py",
+    "tests/test_sovereign_runtime_activation_verifier.py",
+    "tests/test_sovereign_runtime_platform_policy.py",
+    "control/session-validation-claim-2026-08-16-g18-policy-test-drift.json"
+  ],
+  "prohibited_paths": [
+    "control/sovereign-runtime-platform-policy.json",
+    "workers/sovereign_runtime_activation_worker.py",
+    "scripts/bootstrap_sovereign_runtime.py",
+    "scripts/verify_sovereign_runtime_activation.py",
+    "control/heartbeat-state.json",
+    "control/worker-registry.json",
+    "receipts/sovereign-runtime-activation/**"
+  ],
+  "collision_scope": "Validation-only repair of expectations/fixtures after the canonical policy moved from federated/physical-resource wording to deployment-local single-host logical isolation. No product/runtime authority or behavior may change.",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "github_token_runtime_authority": "NONE",
+  "render_production_runtime_allowed": false,
+  "release_condition": "All deterministic repository tests pass on PR head and organization control-plane validation passes without production authority.",
+  "next_task_after_release": "G18 remains machine-owned and executes the already-released deployment-local single-host activation chain."
+}
