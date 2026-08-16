@@ -85,11 +85,12 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
             self.assertEqual(response["transition_id"], "SOVEREIGN_RUNTIME_RESOLUTION_ESCALATION_REQUIRED")
             self.assertEqual(response["expected_next_transition"], "DERIVE_AND_REGISTER_RESOLUTION_TASK")
             blocker = response["blocker"]
-            self.assertEqual(blocker["dependency_class"], "PHYSICAL_RESOURCE")
+            self.assertEqual(blocker["dependency_class"], "LOCAL_EXECUTION_SURFACE")
             self.assertEqual(blocker["trigger_type"], "CONDITIONAL_CONSTRAINT")
             self.assertTrue(blocker["solution_required"])
             self.assertFalse(blocker["resolvable_by_current_worker"])
-            self.assertEqual(blocker["escalation_target"], "REPOSITORY_OWNER")
+            self.assertFalse(blocker["physical_additional_machine_required"])
+            self.assertEqual(blocker["escalation_target"], "SOVEREIGN_RUNTIME_OWNER")
             self.assertIn("repository_resolution", blocker["required_capabilities"])
             self.assertGreaterEqual(len(blocker["workaround_candidates"]), 1)
             self.assertGreaterEqual(len(blocker["completion_evidence"]), 1)
@@ -181,13 +182,13 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
             registry = {"generation": 18, "workers": [], "tasks": [parent]}
             contract = {
                 "trigger_type": "CONDITIONAL_CONSTRAINT",
-                "dependency_class": "PHYSICAL_RESOURCE",
-                "problem_statement": "No declared sovereign carrier is observable.",
+                "dependency_class": "LOCAL_EXECUTION_SURFACE",
+                "problem_statement": "Current execution surface cannot establish the deployment-local sovereign carrier.",
                 "solution_required": True,
-                "workaround_candidates": ["promote an eligible sovereign micro-node"],
-                "next_solution_action": "select or materialize a sovereign carrier",
+                "workaround_candidates": ["run G18 on the existing sovereign deployment host"],
+                "next_solution_action": "execute deployment-local bootstrap and same-host logical isolation",
                 "resolvable_by_current_worker": False,
-                "escalation_target": "REPOSITORY_OWNER",
+                "escalation_target": "SOVEREIGN_RUNTIME_OWNER",
                 "required_capabilities": ["repository_resolution", "sandbox_validation"],
                 "completion_evidence": ["nine-predicate activation proof passes"],
             }

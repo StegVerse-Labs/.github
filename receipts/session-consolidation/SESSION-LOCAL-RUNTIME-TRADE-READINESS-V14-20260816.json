@@ -1,0 +1,58 @@
+{
+  "schema": "stegverse.session-consolidation-receipt/v2",
+  "receipt_id": "SESSION-LOCAL-RUNTIME-TRADE-READINESS-V14-20260816",
+  "inventory": "control/session-goal-inventory-2026-08-16-local-runtime-trade-readiness-v14.json",
+  "handoff": "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
+  "claim": "control/session-reconciliation-claim-2026-08-16-local-runtime-trade-readiness-v14.json",
+  "supersedes_receipt": "receipts/session-consolidation/SESSION-LOCAL-RUNTIME-TRADE-READINESS-V13-20260816.json",
+  "recorded_at": "2026-08-16T03:27:00-05:00",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "github_token_runtime_authority": "NONE",
+  "render_production_runtime_allowed": false,
+  "newly_reconciled_release": {
+    "goal": "human-readable USER_ONLY StegFin wallet handoff review",
+    "source_pr": "StegVerse-Labs/stegfin-governance#72",
+    "source_merge": "a921c5250cb6800bfe552038a5ac1e896b44fe02",
+    "source_app_blob": "433ef5e5db9f9f7af2c7c7df4ba01acc89125403",
+    "site_pr": "StegVerse-Labs/Site#288",
+    "site_merge": "abe63f6af052c460d102818e8dd16ccda90b72c6",
+    "site_pages_build": 1154455062,
+    "site_pages_state": "BUILT",
+    "authority_effect": "NONE_REVIEW_ONLY",
+    "wallet_contact_allowed": false,
+    "signing_authority": "USER_ONLY",
+    "broadcast_authority": "USER_ONLY"
+  },
+  "source_goal_state": {
+    "local_runtime_discovery_launch_inference_proof": "COMPLETE_VALIDATED_RELEASED",
+    "formal_local_model": "stegverse-reference-lm-v1 COMPLETE_VALIDATED_RELEASED",
+    "sovereign_runtime_activation_source": "COMPLETE_VALIDATED_RELEASED_LIVE_G18_PENDING",
+    "sovereign_base_activation_worker": "COMPLETE_VALIDATED_MERGED_RELEASED_LIVE_ENDPOINT_PENDING",
+    "stegfin_phone_route_and_review_source": "COMPLETE_RELEASED",
+    "site_phone_projection_and_review": "COMPLETE_RELEASED_PUBLISHED",
+    "tvc_portable_publication": "MACHINE_OWNED_BLOCKED_DEPENDENCY",
+    "sdk_remote_binding": "SOURCE_COMPLETE_WAITING_ON_TVC_PUBLICATION",
+    "asro_review_disposition": "DURABLY_TRANSFERRED_TO_ISSUE_50"
+  },
+  "activation_truth": {
+    "product_activation_complete": false,
+    "session_archive_ready_after_claim_release": true,
+    "archive_statement_does_not_assert_product_activation": true,
+    "reason": "All unfinished product states have exact durable StegVerse machine/current-authority owners and observable release conditions; no chat-owned execution or observation is required."
+  },
+  "active_product_continuations": [
+    "SHWP-DURABLE-RUNTIME-ACTIVATION / G18 fencing token 18",
+    "SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001 -> TVC",
+    "StegVerse-Labs/stegfin-governance#60 + #68 + current-phone authority",
+    "StegVerse-Labs/TVC TVC-PORTABLE-ARTIFACT-PUBLICATION-001",
+    "StegVerse-org/StegVerse-SDK SDK-PORTABLE-ARTIFACT-BINDING-002",
+    "StegVerse-Labs/admissibility-wiki issue #50"
+  ],
+  "session_unique_requirements_remaining_after_claim_release": 0,
+  "session_unique_claims_remaining_after_claim_release": 0,
+  "session_unique_execution_responsibility_remaining": 0,
+  "session_unique_observation_responsibility_remaining": 0,
+  "unassigned_session_requirements": 0,
+  "archive_basis": "The descriptive local-runtime step is already superseded by executable StegVerse discovery/launch/inference/proof; the local model is formally developed; wallet-review release is now durably reconciled; all incomplete activation work is machine/current-authority owned outside chat."
+}

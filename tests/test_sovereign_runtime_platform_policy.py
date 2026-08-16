@@ -15,18 +15,19 @@ VERIFIER = ROOT / "scripts" / "verify_sovereign_runtime_activation.py"
 class SovereignRuntimePlatformPolicyTests(unittest.TestCase):
     def test_policy_requires_stegverse_only_and_prohibits_render(self) -> None:
         policy = json.loads(POLICY.read_text(encoding="utf-8"))
-        self.assertEqual(
-            policy["execution_domain"],
-            "STEGVERSE_OWNED_OR_FEDERATED_SOVEREIGN_ONLY",
-        )
+        self.assertEqual(policy["execution_domain"], "DEPLOYMENT_LOCAL_SOVEREIGN_HOST_ONLY")
+        self.assertEqual(policy["physical_host_cardinality_default"], 1)
+        self.assertFalse(policy["additional_physical_host_required"])
+        self.assertTrue(policy["physical_peer_requirement_prohibited"])
         self.assertFalse(policy["render_allowed"])
         self.assertFalse(policy["third_party_process_host_allowed"])
         self.assertFalse(policy["third_party_scheduler_allowed"])
         self.assertEqual(
             policy["fallback_policy"],
-            "FAIL_CLOSED_NO_THIRD_PARTY_RUNTIME_SUBSTITUTION",
+            "FAIL_CLOSED_OR_USE_SAME_HOST_LOGICAL_ISOLATION; NEVER SUBSTITUTE_THIRD_PARTY_RUNTIME_OR_MACHINE",
         )
-        self.assertIn("Render", policy["prohibited_production_platforms"])
+        self.assertIn("Render", policy["prohibited_required_dependencies"])
+        self.assertIn("GitHub Actions", policy["prohibited_required_dependencies"])
         self.assertEqual(policy["credential_authority"], "TV/TVC")
         self.assertFalse(policy["non_tv_tvc_secret_or_token_allowed"])
         self.assertEqual(policy["github_token_runtime_authority"], "NONE")
@@ -52,11 +53,10 @@ class SovereignRuntimePlatformPolicyTests(unittest.TestCase):
         carriers = policy["allowed_carrier_classes"]
         self.assertGreaterEqual(len(carriers), 2)
         self.assertTrue(all("StegVerse" in carrier for carrier in carriers))
-        self.assertTrue(policy["activation_evidence_must_be_node_local"])
-        self.assertIn(
-            "StegVerse-owned/federated node-local activation.latest.json",
-            policy["machine_observable_release_condition"],
-        )
+        self.assertTrue(policy["activation_evidence_must_be_host_local"])
+        self.assertIn("deployment's own sovereign physical host", policy["machine_observable_release_condition"])
+        self.assertIn("isolated same-host StegVerse logical nodes", policy["machine_observable_release_condition"])
+        self.assertFalse(policy["third_party_machine_required"])
 
 
 if __name__ == "__main__":
