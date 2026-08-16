@@ -16,6 +16,9 @@
         "role": {"const": "REGULATORY_CARRIER_REFERENCE_FRAME"},
         "reference_frame": {"type": "string", "minLength": 1},
         "frequency_rule": {"const": "GATE_PASSBAND_DERIVED"},
+        "envelope_rule": {"const": "ADMISSIBLE_FREQUENCY_PHASE_CAPACITY_ENVELOPE"},
+        "phase_rule": {"const": "CALCULATED_MULTI_PHASE_REFERENCE_PLAN"},
+        "envelope_ref": {"type": "string", "minLength": 1},
         "authority_effect": {"const": "NONE"}
       }
     },
@@ -27,7 +30,7 @@
         "required": ["signal_id", "kind", "present", "source_ref", "authority_effect"],
         "properties": {
           "signal_id": {"type": "string", "minLength": 1},
-          "kind": {"enum": ["SUBSYSTEM_SIGNAL_PRESENCE", "CARRIER_CONTINUITY", "REFERENCE_DEADLINE"]},
+          "kind": {"enum": ["SUBSYSTEM_SIGNAL_PRESENCE", "CARRIER_CONTINUITY", "REFERENCE_DEADLINE", "FREQUENCY_DEVIATION", "PHASE_DEVIATION", "JITTER_DEVIATION", "ENVELOPE_RECALCULATION_REQUIRED"]},
           "present": {"type": "boolean"},
           "source_ref": {"type": "string", "minLength": 1},
           "authority_effect": {"const": "NONE"}
