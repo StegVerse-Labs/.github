@@ -15,7 +15,7 @@ on:
       - 'tests/**'
       - 'handoffs/**'
       - 'docs/**'
-      - '.github/workflows/org-control-plane-validate.yml'
+      - '.github/workflows/**'
   push:
     branches: [main]
     paths:
@@ -31,7 +31,7 @@ on:
       - 'tests/**'
       - 'handoffs/**'
       - 'docs/**'
-      - '.github/workflows/org-control-plane-validate.yml'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 permissions: {}
@@ -63,6 +63,9 @@ jobs:
           mkdir -p /tmp/stegverse-ci-bin
           ln -sf "$(command -v python3)" /tmp/stegverse-ci-bin/python
           echo /tmp/stegverse-ci-bin >> "$GITHUB_PATH"
+
+      - name: Fail closed on unregistered workflow proliferation
+        run: python scripts/validate_workflow_surface_hygiene.py
 
       - name: Validate control-plane invariants
         run: python scripts/validate_org_control_plane.py
