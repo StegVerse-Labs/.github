@@ -1,6 +1,6 @@
 # Heartbeat Carrier Envelope Mirror Handoff
 
-Updated: 2026-08-15T19:40:00-05:00
+Updated: 2026-08-15T21:03:00-05:00
 
 ## Authority and goal
 
@@ -77,14 +77,7 @@ delta_f = f_observed - f_nominal
 delta_phi = phi_observed - phi_expected
 ```
 
-and evaluates deterministic frequency-drift, phase-error, and jitter tolerances. Observable zero-authority outcomes include:
-
-```text
-FREQUENCY_DEVIATION
-PHASE_DEVIATION
-JITTER_DEVIATION
-ENVELOPE_RECALCULATION_REQUIRED
-```
+and evaluates deterministic frequency-drift, phase-error, and jitter tolerances. Observable zero-authority outcomes include `FREQUENCY_DEVIATION`, `PHASE_DEVIATION`, `JITTER_DEVIATION`, and `ENVELOPE_RECALCULATION_REQUIRED`.
 
 Carrier deviation is distinct from ordinary subsystem activity. StegBrain may observe these signals under its separate contract-evaluation authority; heartbeat itself does not remediate, schedule, route, claim, fence, or execute.
 
@@ -117,7 +110,7 @@ workflow non-authorizing proof: PASS
 Organization Heartbeat Validation run: 31917660045 SUCCESS
 ```
 
-Organization control-plane run `31917660057` failed before heartbeat-specific validation on an unrelated existing `TASK-2026-0004` unknown-flag set (`fail-closed-claim-gate`, `no-render`, `phone-sovereign`, `trade-readiness`, `tv-tvc-only`). It is explicitly not used as positive validation evidence for this goal. The complete deterministic repository suite and heartbeat-specific validation paths passed.
+Organization control-plane run `31917660057` failed before heartbeat-specific validation on an unrelated existing task-schema defect that has since been normalized. It is not positive validation evidence for this goal.
 
 ## Collision boundaries
 
@@ -138,6 +131,60 @@ The source/schema/calculator integration is complete. The separately claimed #12
 
 StegBrain#860 may consume deviation observations as evidence. Master Records remains passive custody only. Site/Publisher/wiki propagation is not required until the live carrier contract reaches its release/propagation gate.
 
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+- task_id: HEARTBEAT-CARRIER-ENVELOPE-183-SOURCE-VALIDATION
+  execution_owner: validation session only if a new source regression is directly observed
+  claim_state: COMPLETE_RELEASED_UNCLAIMED
+  worker_registry_ref: StegVerse-Labs/.github#183
+  manual_execution_allowed: true
+  collision_scope: source/schema regression validation only; excludes live carrier migration, resident heartbeat state, claims/fences and TV/TVC authority
+  release_condition: regression evidence is durably recorded or validation confirms no source defect, then validation claim releases
+  next_executable_action: NONE unless a directly observed regression creates a bounded validation need
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION
+  execution_owner: canonical live runtime owner under StegVerse-Labs/.github#122
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: StegVerse-Labs/.github#122 and current resident-heartbeat registry state
+  manual_execution_allowed: false
+  collision_scope: live producer/consumer switch, active carrier process and immutable runtime evidence
+  release_condition: #122 records governed live carrier migration evidence consuming the released envelope contract
+  next_executable_action: canonical #122 owner consumes the released envelope implementation during live migration
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: HEARTBEAT-CARRIER-CREDENTIAL-AUTHORITY
+  execution_owner: StegVerse-Labs/TV + StegVerse-Labs/TVC
+  claim_state: AUTHORITY_OWNED
+  worker_registry_ref: canonical TV/TVC authority contracts
+  manual_execution_allowed: false
+  collision_scope: credential/admission authority only; carrier observations grant no authority
+  release_condition: any credential-bearing continuation satisfies current TV/TVC policy
+  next_executable_action: fail closed on any non-TV/TVC credential or token authority request
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: HEARTBEAT-CARRIER-ENVELOPE-183
+  execution_owner: StegVerse-Labs/.github
+  claim_state: COMPLETE_VALIDATED_MERGED_RELEASED
+  worker_registry_ref: NONE_COMPLETE_SOURCE
+  manual_execution_allowed: false
+  collision_scope: seven-file carrier-envelope source/schema implementation
+  release_condition: SATISFIED by PR #188 merge 365b2835394523f46feb9b24633c265738af2a2a and cited validation
+  next_executable_action: NONE_SOURCE_COMPLETE
+```
+
 ## Completion accounting
 
 ```text
@@ -154,4 +201,4 @@ archive dependency from this source lane: NONE
 
 ## Next executable action
 
-`StegVerse-Labs/.github#122` / `HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION` consumes the merged envelope implementation under its fresh authorized runtime claim and produces immutable live carrier evidence. This source lane must not compete with that claim.
+`StegVerse-Labs/.github#122` / `HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION` consumes the merged envelope implementation under its authorized runtime claim and produces immutable live carrier evidence. This source lane must not compete with that claim.
