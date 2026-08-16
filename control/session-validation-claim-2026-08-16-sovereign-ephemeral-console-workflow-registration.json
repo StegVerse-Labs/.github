@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.session-validation-claim/v1",
+  "claim_id": "SESSION-SOVEREIGN-EPHEMERAL-CONSOLE-WORKFLOW-REGISTRATION-20260816",
+  "task_id": "HYGIENE-CAUSAL-ROOTS-VALIDATION",
+  "originating_goal": "Repair the fail-closed workflow-surface validation defect discovered while validating the v12 local-runtime/trade-readiness consolidation.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "canonical_issue": 165,
+  "role": "CLAIMED_FOR_VALIDATION_REPAIR",
+  "claimed_at": "2026-08-16T02:11:00-05:00",
+  "allowed_paths": [
+    "control/workflow-surface-registry.json",
+    "control/session-validation-claim-2026-08-16-sovereign-ephemeral-console-workflow-registration.json"
+  ],
+  "collision_boundary": "Register/classify the already-released sovereign-ephemeral-console validation workflow only. Do not modify the workflow, G18 runtime implementation, heartbeat state, worker registry, activation receipts, route authority, or wallet/trade state.",
+  "source_owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18 fencing token 18",
+  "source_handoff": "docs/SOVEREIGN_EPHEMERAL_CONSOLE_MIRROR_HANDOFF.md",
+  "workflow": ".github/workflows/sovereign-ephemeral-console.yml",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "github_token_runtime_authority": "NONE",
+  "render_production_runtime_allowed": false,
+  "expected_evidence": [
+    "workflow is present in control/workflow-surface-registry.json",
+    "classification preserves released G18 ownership and grants no retention/production authority",
+    "organization control-plane workflow hygiene validation passes",
+    "heartbeat worker validation advances beyond workflow-surface hygiene"
+  ],
+  "release_condition": "A successor main commit directly demonstrates the workflow-surface hygiene gate passes with sovereign-ephemeral-console.yml registered; any subsequent unrelated failure is separately classified.",
+  "next_task_after_release": "Return session consolidation to archive determination; live G18 activation remains machine-owned."
+}
