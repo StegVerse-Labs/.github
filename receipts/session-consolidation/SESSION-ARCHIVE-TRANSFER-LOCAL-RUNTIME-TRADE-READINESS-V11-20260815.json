@@ -1,0 +1,56 @@
+{
+  "schema": "stegverse.session-archive-transfer-receipt/v1",
+  "receipt_id": "SESSION-ARCHIVE-TRANSFER-LOCAL-RUNTIME-TRADE-READINESS-V11-20260815",
+  "created_at": "2026-08-15T20:02:00-05:00",
+  "session_inventory": "control/session-goal-inventory-2026-08-15-local-runtime-trade-readiness-v11.json",
+  "session_handoff": "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "render_production_runtime_allowed": false,
+  "github_token_production_runtime_authority": "NONE",
+  "completed_or_released": [
+    "StegGate commit-boundary technical discussion preserved at StegVerse-Labs/Site/papers/authority-at-the-commit-boundary.html",
+    "actual local-runtime discovery/launch/proof COMPLETE_VALIDATED_RELEASED in StegVerse-002/micro-node-runtime",
+    "formal local model stegverse-reference-lm-v1 COMPLETE_VALIDATED_RELEASED",
+    "Site phone RPC resilience TASK-2026-0004 COMPLETE_VALIDATED_MERGED_PUBLISHED via PR #281 merge 19db08571c679c3143b4c2f2b380497eb8630cd4 and Pages build 1153990519",
+    "StegVerse Base RPC source COMPLETE_VALIDATED_RELEASED via micro-node PR #35/#36",
+    "TVC exact sovereign Base route source COMPLETE_VALIDATED_RELEASED via PR #30/#31"
+  ],
+  "pending_but_durably_owned": [
+    {
+      "task": "TASK-2026-0005",
+      "owner": "resident sovereign heartbeat / StegVerse-Labs/.github#12 -> TVC-SOVEREIGN-BASE-RPC-ROUTE-003 -> StegFin #60",
+      "state": "MACHINE_OWNED_REAL_ENDPOINT_PENDING",
+      "release_condition": "real synchronized StegVerse Base endpoint produces validation_only=false Base 0x2105 proof with required methods and no NON-TV/TVC runtime secret/token; TVC ROUTE_ADMITTED; StegFin consumes exact endpoint"
+    },
+    {
+      "task": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "owner": "resident sovereign heartbeat / StegVerse-Labs/.github#12",
+      "state": "MACHINE_OWNED_NINE_PREDICATE_PROOF_PENDING",
+      "release_condition": "node-local activation.latest.json satisfies all nine canonical non-hosted heartbeat predicates"
+    },
+    {
+      "task": "current-phone StegFin terminal observation",
+      "owner": "StegVerse-Labs/stegfin-governance#60 + actual current-phone authority boundary",
+      "state": "PENDING_CURRENT_PHONE_OBSERVATION",
+      "release_condition": "actual WebAuthn/PREPARE run persists precise hash-bound BLOCKED or WALLET_HANDOFF_READY; sign/broadcast remain USER_ONLY"
+    }
+  ],
+  "session_unique_claims_remaining": 0,
+  "unassigned_session_requirements": 0,
+  "session_execution_responsibility_remaining": 0,
+  "session_observation_responsibility_remaining": 0,
+  "product_activation_complete": false,
+  "archive_ready": true,
+  "archive_basis": "Every unique session requirement is completed, superseded, or durably transferred to a canonical repository task/handoff/issue/worker or explicit current-phone/USER_ONLY authority boundary. Remaining activation predicates do not depend on undocumented chat state.",
+  "canonical_continuation": [
+    "StegVerse-Labs/.github/docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/control/session-goal-inventory-2026-08-15-local-runtime-trade-readiness-v11.json",
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site/docs/STEGFIN_PHONE_PROJECTION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/stegfin-governance#60",
+    "StegVerse-Labs/.github/tasks/TASK-2026-0005.json",
+    "StegVerse-Labs/.github#12",
+    "StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-BASE-RPC-ROUTE-003.json"
+  ]
+}
