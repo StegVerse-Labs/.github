@@ -63,7 +63,7 @@ broadcast authority: USER_ONLY
 8. Retain stdout/stderr hashes and bounded tails in the receipt.
 9. Never fetch, clone, pull, sign, broadcast, trade, or contact an external provider.
 
-## Installation surfaces
+## Installed surfaces
 
 ```text
 workers/stegfin_early_adopter_contribution_validation_worker.py
@@ -88,10 +88,19 @@ completion_condition: exact-bound focused tests PASS on an authorized sovereign/
 ## Current state
 
 ```text
-HANDOFF_INSTALLED: pending branch commit
-WORKER_SOURCE: pending
-REGISTRY_BINDING: pending
-DETERMINISTIC_TESTS: pending
-MERGED: pending
-LIVE_LOCAL_VALIDATION_RECEIPT: pending
+HANDOFF_INSTALLED: COMPLETE_ON_IMPLEMENTATION_BRANCH
+WORKER_SOURCE: COMPLETE_ON_IMPLEMENTATION_BRANCH
+REGISTRY_BINDING: COMPLETE_ON_IMPLEMENTATION_BRANCH
+DETERMINISTIC_WORKER_TESTS: INSTALLED_PENDING_HOSTED_SOURCE_VALIDATION
+MERGED: PENDING
+AUTHORIZED_LOCAL_PRIVATE_SOURCE_PATH_OBSERVED: FALSE
+LIVE_LOCAL_VALIDATION_RECEIPT: PENDING
 ```
+
+## Next executable actions
+
+1. Validate worker source/tests in the public organization control-plane repository.
+2. Merge only after source validation passes.
+3. Allow the registered worker to run only on an eligible StegVerse sovereign/local machine where the private StegFin source is already materialized through an authorized path.
+4. Reconcile its exact-bound PASS/FAIL_CLOSED receipt into the StegFin early-adopter contribution handoff.
+5. Do not alter the separate trade/wallet workers or use GitHub credentials to bypass the private-source boundary.
