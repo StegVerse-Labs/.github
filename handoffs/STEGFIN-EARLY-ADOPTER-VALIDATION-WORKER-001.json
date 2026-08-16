@@ -1,0 +1,129 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001",
+  "created_at": "2026-08-16T02:31:00Z",
+  "updated_at": "2026-08-16T02:31:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "STEGFIN-EARLY-ADOPTER-CONTRIBUTION-001",
+    "objective": "Validate the exact already-materialized private StegFin early-adopter contribution-ledger source on a sovereign/local surface without GitHub credential authority or any financial execution authority.",
+    "success_predicates": [
+      "Authorized local private source path exists",
+      "Exact ledger and focused-test Git blob identities match the released binding",
+      "Focused contribution-ledger tests pass with credential-like environment variables stripped",
+      "Validation receipt records TV/TVC credential authority and no source fetch, wallet signing, broadcast or trade execution"
+    ],
+    "failure_predicates": [
+      "Source is fetched with a GitHub credential",
+      "Blob identity drifts",
+      "Credential-like variables reach the child test process",
+      "Validation is treated as merge, issuance, wallet, signing, broadcast or trade authority"
+    ],
+    "expires_at": null,
+    "authority_ceiling": [
+      "local_private_source_validation",
+      "exact_git_blob_binding",
+      "credential_stripped_test_execution",
+      "validation_receipt_generation",
+      "no_source_fetch",
+      "no_financial_execution"
+    ],
+    "successor_policy": "SEPARATE_AUTHORIZATION_REQUIRED_FOR_EXPANSION",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_VALIDATION_MIRROR_HANDOFF.md",
+      "workers/stegfin_early_adopter_contribution_validation_worker.py",
+      "control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json",
+      "StegVerse-Labs/stegfin-governance:docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_MIRROR_HANDOFF.md"
+    ],
+    "dependencies": ["authorized_local_stegfin_governance_source"],
+    "parent_task_id": null,
+    "derivation_reason": "The worker and registry fragment were already released, but the registry incorrectly pointed handoff_ref at Markdown. Canonical heartbeat runtime loads handoff_ref as JSON; this executable handoff closes that integration defect without granting new authority.",
+    "canonical_owner_ref": "docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_VALIDATION_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "stegfin:early-adopter-contribution-validation",
+    "derivation_depth": 0,
+    "priority": "high"
+  },
+  "authority": {
+    "authority_source": "docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_VALIDATION_MIRROR_HANDOFF.md#authority-boundary",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "stegfin-early-adopter-contribution-validation-v1",
+    "credential_authority": "TV/TVC",
+    "credential_requirement": "NONE",
+    "github_token_required": false,
+    "github_token_production_authority": "NONE",
+    "provider_capability_authority": "NONE",
+    "wallet_authority": "NONE",
+    "trade_authority": "NONE"
+  },
+  "execution": {
+    "required_capabilities": [
+      "local_private_source_validation",
+      "exact_git_blob_binding",
+      "credential_stripped_test_execution",
+      "validation_receipt_generation"
+    ],
+    "allowed_paths": ["receipts/stegfin-early-adopter-contribution-validation/**"],
+    "allowed_services": [],
+    "max_actions": 8,
+    "max_retries": 4096,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 4096,
+    "rate_class": "local_private_source_validation"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED_LOCAL_SOURCE_ONLY",
+    "authorization_ref": "docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_VALIDATION_MIRROR_HANDOFF.md#authority-boundary",
+    "recheck_trigger": "each admitted heartbeat while the exact authorized local private StegFin source path remains unresolved",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/stegfin-early-adopter-contribution-validation/STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001.json",
+    "handoff_destination": "control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "Reconcile the exact-bound PASS or FAIL_CLOSED receipt into the StegFin early-adopter contribution handoff. Validation never grants merge, issuance, wallet, signing, broadcast or trade authority.",
+    "terminal_when": [
+      "exact source blobs match",
+      "focused tests pass",
+      "credential authority remains TV/TVC",
+      "network_fetch_used=false",
+      "wallet_signing_attempted=false",
+      "broadcast_attempted=false",
+      "trade_execution_attempted=false"
+    ]
+  },
+  "constraint": {
+    "operational_state": "BLOCKED_LOCAL_SOURCE_PENDING",
+    "condition": "AUTHORIZED_LOCAL_PRIVATE_SOURCE_PATH_NOT_YET_OBSERVED",
+    "owner": "stegfin-early-adopter-contribution-validation-worker on eligible StegVerse sovereign/local source surface",
+    "solution_required": true,
+    "machine_observable_release_condition": "An already-authorized local stegfin-governance source path exists and exact ledger/test blob bindings are observable",
+    "next_solution_action": "Validate only the already-local exact-bound source; do not fetch it through GitHub or any hosted credential path",
+    "third_party_dependency": false,
+    "human_action_required": false
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:private-source-focused-validation:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": ["StegVerse-Labs/stegfin-governance:docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_MIRROR_HANDOFF.md"],
+    "admissibility_evidence_refs": ["docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_VALIDATION_MIRROR_HANDOFF.md"],
+    "integration_evidence_refs": ["workers/stegfin_early_adopter_contribution_validation_worker.py"],
+    "activation_proof_ref": null,
+    "blockers": ["AUTHORIZED_LOCAL_PRIVATE_SOURCE_PATH_NOT_YET_OBSERVED"],
+    "continuation_owner": "stegfin-early-adopter-contribution-validation-worker on eligible StegVerse sovereign/local source surface",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "validates_capability",
+    "target_phase": "ACTIVATED"
+  }
+}
