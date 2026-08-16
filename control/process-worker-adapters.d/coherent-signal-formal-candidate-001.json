@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "COHERENT-SIGNAL-FORMAL-CANDIDATE-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:coherent-signal-formal-candidate-v1",
+      "authority_ref": "handoffs/SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001.json#authority",
+      "capabilities": ["formal_mathematical_candidate_generation"],
+      "command": ["python", "workers/coherent_signal_formal_candidate_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [],
+      "notes": [
+        "Deterministic evidence-only worker for the coherent signal-space formal mathematical candidate.",
+        "Writes only receipts/formalism-manifold-orchestration/**.",
+        "Grants no formalism, governance, credential, release, or execution authority beyond the separately admitted task.",
+        "No GitHub token, network provider, or external model is required."
+      ],
+      "timeout_seconds": 30,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
