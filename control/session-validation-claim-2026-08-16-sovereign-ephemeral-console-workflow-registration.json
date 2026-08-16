@@ -2,13 +2,13 @@
   "schema": "stegverse.session-validation-claim/v1",
   "claim_id": "SESSION-SOVEREIGN-EPHEMERAL-CONSOLE-WORKFLOW-REGISTRATION-20260816",
   "task_id": "HYGIENE-CAUSAL-ROOTS-VALIDATION",
-  "originating_goal": "Repair the fail-closed workflow-surface, handoff-ownership, and current session-inventory assistance-scope metadata defects discovered while validating the local-runtime/trade-readiness consolidation.",
+  "originating_goal": "Repair fail-closed workflow-surface, handoff-ownership, and current session-inventory assistance-scope metadata defects discovered while validating the local-runtime/trade-readiness consolidation.",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
   "canonical_issue": 165,
   "role": "CLAIMED_FOR_VALIDATION_REPAIR",
   "claimed_at": "2026-08-16T02:11:00-05:00",
-  "expanded_at": "2026-08-16T02:18:00-05:00",
+  "expanded_at": "2026-08-16T02:19:00-05:00",
   "allowed_paths": [
     "control/workflow-surface-registry.json",
     "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
@@ -18,6 +18,8 @@
     "control/session-goal-inventory-2026-08-15-kimi-nine-lane-v14.json",
     "control/session-goal-inventory-2026-08-15-portable-publication-v15.json",
     "control/session-goal-inventory-2026-08-15-portable-publication-v16.json",
+    "control/session-goal-inventory-2026-08-15-sdk-v3-worker-transfer-v16.json",
+    "control/session-goal-inventory-2026-08-15-sdk-v3-worker-transfer-v17.json",
     "control/session-validation-claim-2026-08-16-sovereign-ephemeral-console-workflow-registration.json"
   ],
   "collision_boundary": "Repair validation metadata/ownership/lineage fields only. Do not modify product source behavior, G18 runtime implementation, heartbeat state, worker registry, activation receipts, TV/TVC publication or route authority, provider credentials, SDK release artifacts, or wallet/trade state.",
@@ -27,19 +29,21 @@
   "github_token_runtime_authority": "NONE",
   "render_production_runtime_allowed": false,
   "observed_validation_failures": [
-    "workflow hygiene initially failed because .github/workflows/sovereign-ephemeral-console.yml was unregistered",
-    "after registration, workflow hygiene passed but handoff execution ownership failed for two mirror handoffs",
-    "after ownership repair, session-assistance validation exposed Kimi v13 missing required lineage fields; Kimi v14 now supersedes it",
-    "the next validation then exposed portable-publication v15 as another current inventory head missing the same required lineage fields"
+    "workflow hygiene initially failed because sovereign-ephemeral-console.yml was unregistered",
+    "after registration, handoff execution ownership failed for two handoffs; repaired",
+    "session-assistance validation then exposed Kimi v13; superseded by policy-complete v14",
+    "next exposed portable-publication v15; superseded by policy-complete v16",
+    "next exposed sdk-v3-worker-transfer v16 missing the same required lineage fields"
   ],
   "expected_evidence": [
     "workflow-surface hygiene PASS",
     "handoff execution ownership PASS",
-    "local-runtime v12 carries all required assistance-scope fields",
-    "Kimi v14 supersedes v13 and carries all required assistance-scope fields",
-    "portable-publication v16 supersedes v15 and carries all required assistance-scope fields without changing TV/TVC publication authority or product state",
+    "local-runtime v12 policy fields valid",
+    "Kimi v14 supersedes v13 and validates",
+    "portable-publication v16 supersedes v15 and validates",
+    "sdk-v3-worker-transfer v17 supersedes v16 and validates without changing product authority",
     "session-assistance-scope validation PASS"
   ],
   "release_condition": "A successor main commit directly demonstrates workflow-surface hygiene, handoff execution ownership, and session-assistance-scope gates PASS. Any later unrelated repository failure is separately owned and does not keep this bounded claim open.",
-  "next_task_after_release": "Finalize the session consolidation receipt/handoff, release this claim, and archive the chat if no unique session responsibility remains."
+  "next_task_after_release": "Finalize session consolidation receipt/handoff, release this claim, and archive the chat if no unique session responsibility remains."
 }
