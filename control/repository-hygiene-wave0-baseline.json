@@ -1,0 +1,93 @@
+{
+  "schema": "stegverse.repository-hygiene-wave-baseline/v1",
+  "goal_id": "HYGIENE-CAUSAL-ROOTS-001",
+  "wave": 0,
+  "observed_at": "2026-08-15T19:30:00-05:00",
+  "strategy": "CAUSAL_ROOTS_TO_SINKS",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "repositories": [
+    {
+      "repository": "StegVerse-Labs/.github",
+      "role": "ORGANIZATION_CONTROL_ROOT",
+      "canonical_hygiene_handoff": "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
+      "canonical_hygiene_issue": "StegVerse-Labs/.github#165",
+      "branch_count": 73,
+      "open_pr_count": 0,
+      "open_issue_count": 17,
+      "workflow_count": 20,
+      "classification": "ROOT_DEBT_PRESENT_CLASSIFICATION_REQUIRED",
+      "observations": [
+        "No open pull-request backlog exists, so the dominant visible debt is branch/workflow/issue lifecycle residue rather than PR review congestion.",
+        "Multiple versioned branch families are visible and require terminality/evidence-reference reconciliation before deletion.",
+        "Twenty active workflows exceed the preferred 0/1/2 stable-surface policy and require classification under issues #167/#168.",
+        "This repository is a causal producer of organization-wide worker, claim, handoff, validation and runtime policy; its own hygiene must be proven before downstream sink cleanup is declared durable."
+      ],
+      "next_actions": [
+        "Classify all 73 branches as ACTIVE_OWNER, EVIDENCE_RETAIN, MERGED_DELETE_CANDIDATE, SUPERSEDED_DELETE_CANDIDATE, RELEASE_PROTECTED or REVIEW_REQUIRED.",
+        "Classify all 20 workflows as KEEP_STANDALONE_EXCEPTION, CONSOLIDATE_INTO_STABLE_DISPATCHER, TRANSFER_TO_STEGVERSE_WORKER or ELIMINATE.",
+        "Reconcile 17 open issues against current handoffs/task registries for stale or terminal status."
+      ]
+    },
+    {
+      "repository": "StegVerse-Labs/repo-standards",
+      "role": "STANDARDS_AND_HANDOFF_ADOPTION_ROOT",
+      "canonical_handoff": "REPO_STANDARDS_MIRROR_HANDOFF.md",
+      "active_goal": "HANDOFF-OWNERSHIP-ADOPTION-001",
+      "canonical_issue": "StegVerse-Labs/repo-standards#37",
+      "branch_count": 16,
+      "open_pr_count": 2,
+      "open_issue_count": 4,
+      "workflow_count": 5,
+      "repository_yaml_workflow_count": 4,
+      "github_dynamic_security_workflow_count": 1,
+      "classification": "MODERATE_BRANCH_DEBT_WORKFLOW_MINIMIZATION_REQUIRED",
+      "ownership_boundary": "Handoff adoption integration is currently claimed under #37; hygiene must not modify active product/standard implementation scopes without explicit non-overlap.",
+      "observations": [
+        "Two open PRs remain: #40 is an active mergeable standards change; #36 is an older draft session-consolidation PR and is a hygiene reconciliation candidate, not an automatic close.",
+        "The canonical handoff explicitly says the repository retains bootstrap and Declared Tasks, yet two ST-018-specific YAML workflows remain in addition to those stable entry surfaces.",
+        "This makes repo-standards a direct test case for the <=2 workflow policy: determine whether ST-018 task-manager/validator behavior can be folded into Declared Tasks without losing evidence semantics.",
+        "The dynamic GitHub code-security workflow is platform-managed and should be counted separately from repository-authored workflow surface."
+      ],
+      "next_actions": [
+        "Reconcile PR #36 against issue #35 and current ST-020/ST-018 state; close as superseded only if its unique requirements are fully retained elsewhere.",
+        "Preserve PR #40 while issue #39 remains active unless validation/ownership evidence proves supersession.",
+        "Evaluate run-st018-task-manager.yml and validate-st018-governed-validation-evidence.yml for consolidation into declared-tasks.yml.",
+        "Classify the 15 non-main branches against PR/merge/task history before deletion."
+      ]
+    },
+    {
+      "repository": "StegVerse-Labs/Continuity",
+      "role": "HANDOFF_STANDARD_AND_CONTINUITY_ROOT",
+      "canonical_handoff": "docs/CONTINUITY_MIRROR_HANDOFF.md",
+      "active_goal": "SV-CONTINUITY-SINGLE-SCHEDULER-001",
+      "branch_count": 5,
+      "open_pr_count": 0,
+      "open_issue_count": 1,
+      "workflow_count": 9,
+      "classification": "BRANCH_HEALTHY_WORKFLOW_DEBT_PRESENT",
+      "ownership_boundary": "Canonical handoff assigns scheduler dispatch and quiet-enforcer work to StegVerse-Healer and heartbeat coverage to the resident sovereign heartbeat; hygiene must not compete with those machine-owned lanes.",
+      "observations": [
+        "Branch/PR/issue lifecycle is comparatively clean: 5 branches, no open PRs and one open issue.",
+        "Workflow surface is disproportionately large at 9 active workflows.",
+        "The canonical handoff already removed Continuity's local recurring schedule and moved scheduling authority to StegVerse-Healer, demonstrating the desired causal-hygiene direction.",
+        "Legacy workflows such as forward-to-bridge.yml, kick.yml, bootstrap_expand_omega.yml and multiple separate validators are candidates for necessity/supersession review under #167, but no deletion is authorized from age/name alone.",
+        "Continuity is therefore a useful reference showing that branch hygiene and workflow hygiene are separate dimensions."
+      ],
+      "next_actions": [
+        "Classify all 9 workflows against current Continuity handoff, Healer scheduler ownership and stable validation needs.",
+        "Determine whether Validate Continuity, Validate Recreatable Continuity, Validate Release Verification and Validate StegGate Decision State can share a stable dispatcher/validator surface.",
+        "Inspect the four non-main branches for merge/release/evidence retention status; preserve release/verification branches where current receipts depend on them."
+      ]
+    }
+  ],
+  "wave0_summary": {
+    "repositories_observed": 3,
+    "repositories_clean": 0,
+    "repositories_clean_with_exceptions": 0,
+    "repositories_requiring_classification": 3,
+    "finding": "The causal-root layer itself contains substantial hygiene debt. High downstream counts in Site/StegCore therefore cannot yet be treated as purely local defects.",
+    "sink_cleanup_allowed": false,
+    "sink_cleanup_release_condition": "Wave 0 and Wave 1 upstream debt generators are classified/remediated or explicitly justified, and the organization can distinguish newly generated downstream debt from historical residue."
+  }
+}
