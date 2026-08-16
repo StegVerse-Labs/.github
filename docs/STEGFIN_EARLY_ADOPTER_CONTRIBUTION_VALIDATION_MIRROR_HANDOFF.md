@@ -1,5 +1,7 @@
 # StegFin Early Adopter Contribution Validation Mirror Handoff
 
+Updated: 2026-08-15T21:04:00-05:00
+
 ## Goal
 
 `STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001`
@@ -71,36 +73,77 @@ control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json
 tests/test_stegfin_early_adopter_contribution_validation_worker.py
 ```
 
-## Execution ownership
-
-```yaml
-task_id: STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001
-execution_owner: stegfin-early-adopter-contribution-validation-worker
-manual_session_execution_allowed: false
-parallel_safety: DISTINCT_FROM_TRADE_AND_WALLET_WORKERS
-requires_local_private_source: true
-network_fetch_allowed: false
-credential_authority: TV/TVC
-github_token_runtime_authority: false
-completion_condition: exact-bound focused tests PASS on an authorized sovereign/local source checkout and receipt is reconciled into the StegFin contribution handoff
-```
-
 ## Current state
 
 ```text
-HANDOFF_INSTALLED: COMPLETE_ON_IMPLEMENTATION_BRANCH
-WORKER_SOURCE: COMPLETE_ON_IMPLEMENTATION_BRANCH
-REGISTRY_BINDING: COMPLETE_ON_IMPLEMENTATION_BRANCH
-DETERMINISTIC_WORKER_TESTS: INSTALLED_PENDING_HOSTED_SOURCE_VALIDATION
-MERGED: PENDING
+HANDOFF_INSTALLED: COMPLETE
+WORKER_SOURCE: COMPLETE
+REGISTRY_BINDING: COMPLETE
 AUTHORIZED_LOCAL_PRIVATE_SOURCE_PATH_OBSERVED: FALSE
 LIVE_LOCAL_VALIDATION_RECEIPT: PENDING
+worker_registry_state: HANDOFF_READY
+worker_status: AVAILABLE
+blocker: AUTHORIZED_LOCAL_PRIVATE_SOURCE_PATH_NOT_YET_OBSERVED
+credential_authority: TV/TVC
+github_token_runtime_authority: NONE
+```
+
+The current registry fragment `control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json` is authoritative over stale implementation-branch prose. It binds the worker only to an already materialized authorized local private source and does not grant network-fetch or source-mutation authority.
+
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+- task_id: STEGFIN-EARLY-ADOPTER-VALIDATION-SOURCE-CHECK
+  execution_owner: validation session only for public control-plane worker source/tests when explicitly claimed
+  claim_state: UNCLAIMED_VALIDATION_ONLY
+  worker_registry_ref: control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json
+  manual_execution_allowed: true
+  collision_scope: public worker source/test validation only; excludes private StegFin source mutation, trade/wallet paths, issuance, custody, signing and broadcast
+  release_condition: worker source/tests are validated and evidence is durably recorded, then validation claim releases
+  next_executable_action: validate only if current public worker source lacks directly inspectable PASS evidence; do not access private source through GitHub credentials
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001
+  execution_owner: stegfin-early-adopter-contribution-validation-worker
+  claim_state: HANDOFF_READY_MACHINE_OWNED
+  worker_registry_ref: control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json
+  manual_execution_allowed: false
+  collision_scope: exact-bound focused validation of already materialized authorized local StegFin source only
+  release_condition: eligible StegVerse sovereign/local source path is observed, exact ledger/test blobs match, focused tests execute with credentials stripped, and deterministic PASS/FAIL_CLOSED receipt is retained
+  next_executable_action: wait for an authorized local private source path; when present, execute the registered worker without network fetch
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: STEGFIN-EARLY-ADOPTER-PRIVATE-SOURCE-MATERIALIZATION
+  execution_owner: TV/TVC-authorized StegVerse source/materialization authority
+  claim_state: AUTHORITY_OWNED_BLOCKED
+  worker_registry_ref: canonical TV/TVC contracts + StegVerse-Labs/stegfin-governance contribution handoff
+  manual_execution_allowed: false
+  collision_scope: authorized private-source availability only; no GitHub credential workaround and no worker-side clone/fetch
+  release_condition: exact authorized local private stegfin-governance source path is materialized and visible to the worker
+  next_executable_action: materialize source only through an already-authorized StegVerse/TV-TVC path; otherwise remain BLOCKED
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-SOURCE
+  execution_owner: StegVerse-Labs/.github
+  claim_state: COMPLETE_INSTALLED
+  worker_registry_ref: control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json
+  manual_execution_allowed: false
+  collision_scope: worker implementation, registry binding and deterministic source tests already installed
+  release_condition: SATISFIED for installed source surfaces
+  next_executable_action: NONE_SOURCE_INSTALLATION
 ```
 
 ## Next executable actions
 
-1. Validate worker source/tests in the public organization control-plane repository.
-2. Merge only after source validation passes.
-3. Allow the registered worker to run only on an eligible StegVerse sovereign/local machine where the private StegFin source is already materialized through an authorized path.
-4. Reconcile its exact-bound PASS/FAIL_CLOSED receipt into the StegFin early-adopter contribution handoff.
-5. Do not alter the separate trade/wallet workers or use GitHub credentials to bypass the private-source boundary.
+The machine-owned worker remains fail-closed until an eligible StegVerse sovereign/local surface already contains the exact authorized private StegFin source. It then validates the exact bound blobs, strips credential-like environment variables, runs focused tests, and emits its receipt. No GitHub token, Render/provider runtime, wallet secret, signing, broadcast, trade, or external provider contact is permitted.
