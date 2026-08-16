@@ -1,5 +1,5 @@
 # Validation-only carrier for the unified StegVerse heartbeat.
-# The heartbeat runtime itself owns epoch advancement and worker scheduling.
+# The heartbeat runtime itself owns reference advancement and worker scheduling.
 name: Organization Heartbeat Validation - No GitHub Token Authority
 
 on:
@@ -10,6 +10,7 @@ on:
       - control/claims-active.json
       - control/org-state.json
       - heartbeat_runtime/**
+      - schemas/heartbeat-carrier-runtime-state.schema.json
       - scripts/issue_heartbeats.py
       - scripts/run_heartbeat_runtime.py
       - scripts/validate_heartbeat_returns.py
@@ -19,6 +20,7 @@ on:
       - control/claims-active.json
       - control/org-state.json
       - heartbeat_runtime/**
+      - schemas/heartbeat-carrier-runtime-state.schema.json
       - scripts/issue_heartbeats.py
       - scripts/run_heartbeat_runtime.py
       - scripts/validate_heartbeat_returns.py
@@ -52,7 +54,7 @@ jobs:
 
       - name: Compile unified heartbeat surfaces
         run: |
-          python3 -m py_compile heartbeat_runtime/org_assertions.py heartbeat_runtime/engine_v3.py
+          python3 -m py_compile heartbeat_runtime/org_assertions.py heartbeat_runtime/engine_v3.py heartbeat_runtime/engine_v12.py
           python3 -m py_compile scripts/issue_heartbeats.py scripts/run_heartbeat_runtime.py scripts/validate_heartbeat_returns.py
 
       - name: Prove legacy issuer cannot advance epoch
@@ -69,7 +71,7 @@ jobs:
           print('LEGACY_ISSUER_NO_EPOCH_OWNERSHIP_PASS')
           PY
 
-      - name: Prove unified runtime owns one nonpersistent dry-run epoch
+      - name: Prove unified runtime owns one nonpersistent dry-run reference
         run: |
           before="$(sha256sum control/heartbeat-state.json control/worker-registry.json | sha256sum | cut -d' ' -f1)"
           output="$(python3 scripts/run_heartbeat_runtime.py --dry-run --cycles 1)"
@@ -80,27 +82,47 @@ jobs:
           value=json.loads(sys.argv[1])
           assert 'organization_assertions' in value
           assert value['authority_effect']=='none_beyond_existing_admitted_task_authority'
-          print('UNIFIED_SINGLE_HEARTBEAT_DRY_RUN_PASS')
+          assert value['selected_runtime'].endswith('engine_v12.HeartbeatRuntime')
+          assert value['epoch']==30
+          print('SEPARATED_HEARTBEAT_DRY_RUN_HB30_PASS')
           PY
 
-      - name: Prove repeated internal machine-cycle ownership in disposable state
+      - name: Prove repeated separated carrier advancement in disposable state
         run: |
           tmp="$(mktemp -d)"
           mkdir -p "$tmp/control" "$tmp/handoffs" "$tmp/cost-basis"
-          cp control/heartbeat-state.json control/worker-registry.json control/worker-cost-observations.json control/process-worker-adapters.json control/claims-active.json control/org-state.json "$tmp/control/"
+          cp control/heartbeat-state.json control/worker-registry.json control/worker-cost-observations.json control/process-worker-adapters.json control/claims-active.json control/org-state.json control/heartbeat-subsignals.json "$tmp/control/"
           cp -R handoffs/. "$tmp/handoffs/"
           cp -R cost-basis/. "$tmp/cost-basis/"
+          legacy_before="$(sha256sum "$tmp/control/heartbeat-state.json" | cut -d' ' -f1)"
           start="$(python3 - <<'PY' "$tmp/control/heartbeat-state.json"
           import json,sys
           print(json.load(open(sys.argv[1]))['epoch'])
           PY
           )"
+          test "$start" = "29"
           python3 scripts/run_heartbeat_runtime.py --root "$tmp" --cycles 3 --interval-ms 1 >/tmp/heartbeat-three-cycles.jsonl
-          python3 - <<'PY' "$start" "$tmp/control/heartbeat-state.json" /tmp/heartbeat-three-cycles.jsonl
+          legacy_after="$(sha256sum "$tmp/control/heartbeat-state.json" | cut -d' ' -f1)"
+          test "$legacy_before" = "$legacy_after"
+          python3 - <<'PY' "$start" "$tmp/control/heartbeat-carrier-runtime-state.json" "$tmp/control/heartbeat-carrier-observation.json" "$tmp/control/worker-control-plane-coordination.json" "$tmp/receipts/heartbeat-schema-cutover/HB29.json" /tmp/heartbeat-three-cycles.jsonl
           import json,sys
-          start=int(sys.argv[1]); final=json.load(open(sys.argv[2]))['epoch']
-          rows=[json.loads(x) for x in open(sys.argv[3]) if x.strip()]
+          start=int(sys.argv[1])
+          carrier=json.load(open(sys.argv[2]))
+          observation=json.load(open(sys.argv[3]))
+          control=json.load(open(sys.argv[4]))
+          receipt=json.load(open(sys.argv[5]))
+          rows=[json.loads(x) for x in open(sys.argv[6]) if x.strip()]
           assert [r['epoch'] for r in rows]==[start+1,start+2,start+3]
-          assert final==start+3
-          print('REPEATED_INTERNAL_SINGLE_HEARTBEAT_PASS')
+          assert all(r['selected_runtime'].endswith('engine_v12.HeartbeatRuntime') for r in rows)
+          assert carrier['epoch']==start+3
+          assert carrier['schema']=='stegverse.heartbeat-carrier-runtime-state/v1'
+          assert observation['schema']=='stegverse.heartbeat-carrier-observation/v1'
+          assert control['schema']=='stegverse.worker-control-plane-coordination/v1'
+          assert receipt['state']=='CLOSED_MIGRATED'
+          assert receipt['legacy_epoch']==29 and receipt['first_new_epoch']==30
+          carrier_text=json.dumps(observation,sort_keys=True)
+          assert 'claim_id' not in carrier_text and 'fencing_token' not in carrier_text and 'active_leases' not in carrier_text
+          assert observation['authority']['credential_authority']=='TV/TVC'
+          assert observation['authority']['heartbeat_grants_execution_authority'] is False
+          print('REPEATED_SEPARATED_HEARTBEAT_PASS')
           PY
