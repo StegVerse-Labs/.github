@@ -1,6 +1,6 @@
 # Heartbeat External Timing Match Mirror Handoff
 
-Updated: 2026-08-15T21:27:00-05:00
+Updated: 2026-08-15T21:31:00-05:00
 
 ## Authority and goal
 
@@ -10,6 +10,7 @@ originating_session_goal: Generalize clock and waveform matching when StegVerse 
 repository: StegVerse-Labs/.github
 branch: feat/external-timing-match-191
 canonical_issue: StegVerse-Labs/.github#192
+canonical_pr: StegVerse-Labs/.github#193
 parent_runtime_owner: StegVerse-Labs/.github#122 / HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION
 canonical_task_owner: this bounded source/schema lane until merge/release; #122 remains live producer owner
 implementation_claim: CLAIMED_FOR_VALIDATION
@@ -41,9 +42,10 @@ heartbeat_runtime/external_timing_match.py
 control/external-timing-match-contract.json
 tests/test_external_timing_match.py
 .github/workflows/external-timing-match-validation.yml
+receipts/external-timing-match/source-validation-20260815.json
 ```
 
-All six surfaces are implemented on the branch. None is a placeholder or stub.
+All seven surfaces are implemented on the branch. None is a placeholder or stub.
 
 ## Required behavior installed
 
@@ -74,17 +76,24 @@ provider/model/wallet state: OUT OF SCOPE
 Master Records custody mutation: PROHIBITED
 ```
 
-## Validation paths
+## Validation evidence
 
 ```text
-python -m unittest -v tests.test_external_timing_match
-python -m compileall -q heartbeat_runtime
-JSON parse: schemas/external-timing-capability.schema.json + control/external-timing-match-contract.json
-workflow: .github/workflows/external-timing-match-validation.yml
-workflow authority: permissions {}; anonymous checkout; no runtime GitHub credential token; no write/push/secrets
+PR: #193
+validated head: 2198366abfb39b0f6b6524d442027a707d37fc07
+External Timing Match Validation run: 31921871531 SUCCESS
+job: 95102879797 SUCCESS
+anonymous checkout: PASS
+no runtime GitHub credential token: PASS
+compile: PASS
+JSON contract parse: PASS
+focused timing tests: 7/7 PASS
+fixed-cadence / workload-separation / zero-authority proof: PASS
+workflow non-authorizing proof: PASS
+receipt: receipts/external-timing-match/source-validation-20260815.json
 ```
 
-Validation is pending PR execution. Positive workflow evidence must be inspected before merge/release.
+The broad Heartbeat Worker Project run `31921871529` reached and passed all seven external timing tests, then failed only because `test_ae_retrospective_conformance` still expected `effective_tasks=29 classified=29` while current main produced `30/30`. This is existing organization denominator drift and is not attributed to this timing source lane.
 
 ## Integration and propagation obligations
 
@@ -105,20 +114,20 @@ StegNeuro BCI timing notation: COMPLETE in StegVerse-Labs/StegNeuro commits f3ca
 ## Completion accounting
 
 ```text
-required developed files: 6
-complete developed files: 6
+required developed files: 7
+complete developed files: 7
 scaffolding/stubs: 0
 missing required files: 0
-validation: 0/4 pending workflow
+validation: 4/4 COMPLETE for scoped source lane
 integration: 1/2 (source contract binds #122; live consumption pending #122)
-goal_activation: 60%
-session_consolidation: 4/5 session goals durably transferred or complete; this source validation/release remains active
+goal_activation: 80%
+session_consolidation: 4/5 session goals durably transferred or complete; merge/release/transfer remains active
 ```
 
 ## Archive conditions
 
-This bounded source lane is archive-safe only after the implementation/validation claim is released, all six authoritative surfaces are merged or superseded, validation evidence is retained, #122 has an explicit consumption reference, and no unique session requirement remains only in chat.
+This bounded source lane is archive-safe only after the implementation/validation claim is released, all seven authoritative surfaces are merged or superseded, validation evidence is retained, #122 has an explicit consumption reference, and no unique session requirement remains only in chat.
 
 ## Next executable action
 
-Open the scoped PR, execute/inspect the dedicated no-token validation workflow, correct any source defect, merge when green, release the claim, and transfer live runtime consumption to #122.
+Re-run/inspect the dedicated workflow for the current handoff-only head, merge PR #193 if green, release the claim, record #122 consumption dependency, and transfer live runtime adoption to #122.
