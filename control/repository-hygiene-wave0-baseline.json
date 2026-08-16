@@ -2,7 +2,7 @@
   "schema": "stegverse.repository-hygiene-wave-baseline/v1",
   "goal_id": "HYGIENE-CAUSAL-ROOTS-001",
   "wave": 0,
-  "observed_at": "2026-08-15T19:45:00-05:00",
+  "observed_at": "2026-08-15T19:50:00-05:00",
   "strategy": "CAUSAL_ROOTS_TO_SINKS",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
@@ -65,40 +65,50 @@
       "open_issue_count": 1,
       "workflow_count_before": 9,
       "workflow_count_current": 2,
-      "classification": "WORKFLOW_TARGET_MET_BRANCH_PR_HEALTHY_RUNTIME_GOAL_STILL_ACTIVE",
+      "classification": "WORKFLOW_TARGET_MET_VALIDATED_BRANCH_EVIDENCE_RECONCILIATION_PENDING",
       "ownership_boundary": "Scheduler dispatch/quiet-enforcer remain StegVerse-Healer-owned; repository-heartbeat coverage remains resident-heartbeat-owned.",
       "observations": [
         "Removed legacy forward-to-bridge.yml because it used secrets.GH_STEGVERSE_AI_TOKEN for cross-repository dispatch.",
         "Removed legacy kick.yml because it used PAT_WORKFLOW / GH_STEGVERSE_PAT.",
         "Removed legacy bootstrap_expand_omega.yml because it used contents/workflows write permissions and git push for GitHub-hosted self-mutation.",
         "Consolidated readiness, recreatable-continuity, release-verification and StegGate decision-state validation into validate-continuity.yml.",
-        "continuity.yml remains as the existing compatibility marker because cross-repository Healer ownership still references the continuity entry surface.",
-        "Direct workflow inventory is now exactly two repository workflows."
+        "continuity.yml remains as the compatibility marker because cross-repository Healer ownership still references the continuity entry surface.",
+        "Direct workflow inventory is exactly two repository workflows.",
+        "Consolidated validator no longer uses actions/checkout or actions/setup-python and consumes no GitHub credential for checkout/setup."
       ],
       "validation": {
-        "consolidated_run_id": 31917862644,
-        "state_at_baseline_update": "IN_PROGRESS_AFTER_PARSE_FIX",
-        "workflow_parse_error_fixed_commit": "58e59a823999d2a1cde36c6a96664ceef8de3024"
+        "source_validation_run_id": 31917953856,
+        "source_validation_commit": "e830429e24ed757075bd9fd172515c00d180697b",
+        "source_validation_conclusion": "SUCCESS",
+        "current_handoff_validation_run_id": 31918052502,
+        "current_handoff_commit": "a1aab928cd1ea967b40109af59460e64e4184d6d",
+        "current_handoff_validation_conclusion": "SUCCESS"
       },
+      "branch_classification": [
+        {"branch": "feat/handoff-execution-ownership-v1", "classification": "MERGED_DELETE_CANDIDATE", "ahead_by": 0, "behind_by": 12},
+        {"branch": "build/109-percent-recreatable-continuity", "classification": "REVIEW_REQUIRED_EVIDENCE_LINEAGE", "ahead_by": 26, "behind_by": 38},
+        {"branch": "release/109-percent-verification", "classification": "EVIDENCE_RETAIN_PENDING_RECONCILIATION", "ahead_by": 5, "behind_by": 37},
+        {"branch": "verify/109-percent-successor-block-receipt", "classification": "EVIDENCE_RETAIN_PENDING_RECONCILIATION", "ahead_by": 2, "behind_by": 36}
+      ],
       "next_actions": [
-        "Inspect consolidated run 31917862644 to terminal conclusion and fix only hygiene-induced failures.",
-        "Classify four non-main branches for merge/release/evidence retention.",
-        "Keep active product/runtime completion on its existing owners; workflow hygiene does not claim scheduler activation complete."
+        "Reconcile release/verification branch content against current main receipts/handoffs before any ref removal.",
+        "Keep active product/runtime completion on existing owners; workflow hygiene does not claim scheduler activation complete."
       ]
     }
   ],
   "wave0_summary": {
     "repositories_observed": 3,
     "repository_workflow_targets_met": 2,
+    "repository_workflow_targets_validated": 1,
     "repositories_complete_clean": 0,
     "repositories_clean_with_exceptions": 0,
     "repositories_requiring_additional_lifecycle_classification": 3,
     "workflow_reduction": {
       "StegVerse-Labs/.github": "20->17",
       "StegVerse-Labs/repo-standards": "5->3 reported / 4->2 repository-authored",
-      "StegVerse-Labs/Continuity": "9->2"
+      "StegVerse-Labs/Continuity": "9->2 validated"
     },
-    "finding": "Causal roots contained both lifecycle debt and workflow/credential debt; root-first cleanup is removing those generators before sink cleanup.",
+    "finding": "Causal roots contained lifecycle debt, workflow proliferation, legacy credential paths, and GitHub-hosted self-mutation. Root-first cleanup is removing those generators before sink cleanup.",
     "sink_cleanup_allowed": false,
     "sink_cleanup_release_condition": "Wave 0 and Wave 1 upstream debt generators are classified/remediated or explicitly justified, allowing historical sink residue to be distinguished from newly generated debt."
   }
