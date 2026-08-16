@@ -87,7 +87,13 @@ jobs:
           from pathlib import Path
           text=Path('.github/workflows/external-timing-match-validation.yml').read_text(encoding='utf-8')
           assert 'permissions: {}' in text
-          for marker in ('contents: write', 'git push', 'secrets.', 'github.token'):
-              assert marker not in text, marker
+          forbidden=(
+              'contents:' + ' write',
+              'git ' + 'push',
+              'secrets' + '.',
+              'github' + '.token',
+          )
+          found=[marker for marker in forbidden if marker in text]
+          assert not found, found
           print('EXTERNAL_TIMING_WORKFLOW_NON_AUTHORIZING_PASS')
           PY
