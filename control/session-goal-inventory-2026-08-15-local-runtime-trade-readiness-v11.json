@@ -2,8 +2,46 @@
   "schema": "stegverse.session-goal-inventory/v11",
   "inventory_id": "LOCAL-RUNTIME-MODEL-TRADE-READINESS-2026-08-15-V11",
   "supersedes": "control/session-goal-inventory-2026-08-15-original-local-runtime-model-v10.json",
-  "updated_at": "2026-08-15T19:58:00-05:00",
+  "updated_at": "2026-08-15T21:08:00-05:00",
   "repository": "StegVerse-Labs/.github",
+  "session_scope": "Local-runtime discovery/launch/proof, formal local model development, TV/TVC-only credential authority, bounded StegFin phone trade-readiness support, sovereign Base observation/runtime continuation, StegVerse-only production runtime and durable session consolidation.",
+  "originating_goal_ids": [
+    "G01-COMMIT-BOUNDARY-TECHNICAL-PRESERVATION",
+    "G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF",
+    "G04-FORMAL-LOCAL-MODEL-DEVELOPMENT",
+    "G05-TV-TVC-ONLY-CREDENTIAL-AUTHORITY",
+    "G08-STEGFIN-PHONE-TRADE-READINESS",
+    "G09-SOVEREIGN-BASE-RPC-ACTIVATION",
+    "G10-STEGVERSE-ONLY-PRODUCTION-RUNTIME",
+    "G06-SESSION-CONSOLIDATION-V11"
+  ],
+  "shared_directives": [],
+  "worker_assistance_bindings": [
+    {
+      "worker_or_task_id": "StegVerse-002/micro-node-runtime",
+      "session_goal_id": "G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF",
+      "lineage_type": "DIRECT_GOAL_OWNER",
+      "lineage_evidence_ref": "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "archive_dependency": false
+    },
+    {
+      "worker_or_task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "session_goal_id": "G10-STEGVERSE-ONLY-PRODUCTION-RUNTIME",
+      "lineage_type": "DIRECT_GOAL_OWNER",
+      "lineage_evidence_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "archive_dependency": false
+    },
+    {
+      "worker_or_task_id": "StegVerse-Labs/stegfin-governance#60",
+      "session_goal_id": "G08-STEGFIN-PHONE-TRADE-READINESS",
+      "lineage_type": "DIRECT_GOAL_OWNER",
+      "lineage_evidence_ref": "StegVerse-Labs/stegfin-governance#60",
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "archive_dependency": false
+    }
+  ],
   "scope_change": "The user's current governing directive explicitly makes trade readiness, worker assistance, sovereign Base observation, no-Render operation, TV/TVC-only credential authority, actual local-runtime discovery/launch/proof, formal local model development, activation of completed work, and session consolidation the active goals. This supersedes the earlier v10 exclusion of wallet/trade work for this session.",
   "originating_session_goals": [
     "Preserve the StegGate commit-boundary technical explanation and inspectable SDK testing position from the session discussion.",
@@ -157,21 +195,9 @@
     }
   ],
   "active_product_runtime_observations": [
-    {
-      "state": "PENDING_MACHINE_OWNED",
-      "owner": "StegVerse-Labs/.github#12 / TASK-2026-0005",
-      "condition": "real synchronized StegVerse Base endpoint proof and TVC route admission"
-    },
-    {
-      "state": "PENDING_CURRENT_PHONE_AND_CANONICAL_OBSERVER",
-      "owner": "StegVerse-Labs/stegfin-governance#60",
-      "condition": "actual current-phone PREPARE plus terminal BLOCKED or WALLET_HANDOFF_READY receipt"
-    },
-    {
-      "state": "PENDING_MACHINE_OWNED",
-      "owner": "StegVerse-Labs/.github#12 / SHWP-DURABLE-RUNTIME-ACTIVATION",
-      "condition": "non-hosted nine-predicate sovereign heartbeat activation proof"
-    }
+    {"state":"PENDING_MACHINE_OWNED","owner":"StegVerse-Labs/.github#12 / TASK-2026-0005","condition":"real synchronized StegVerse Base endpoint proof and TVC route admission"},
+    {"state":"PENDING_CURRENT_PHONE_AND_CANONICAL_OBSERVER","owner":"StegVerse-Labs/stegfin-governance#60","condition":"actual current-phone PREPARE plus terminal BLOCKED or WALLET_HANDOFF_READY receipt"},
+    {"state":"PENDING_MACHINE_OWNED","owner":"StegVerse-Labs/.github#12 / SHWP-DURABLE-RUNTIME-ACTIVATION","condition":"non-hosted nine-predicate sovereign heartbeat activation proof"}
   ],
   "session_unique_claims_remaining": 0,
   "unassigned_session_requirements": 0,
