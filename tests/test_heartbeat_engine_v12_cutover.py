@@ -32,40 +32,7 @@ class HeartbeatEngineV12CutoverTests(unittest.TestCase):
             "schema": "stegverse.heartbeat-worker-registry/v0.1",
             "generation": 18,
             "workers": [],
-            "tasks": [
-                {
-                    "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-                    "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-                    "state": "BLOCKED",
-                    "handoff_ref": "handoffs/unused.json",
-                    "executor_binding": "BOUND",
-                    "worker_id": "sovereign-runtime-activation-worker",
-                    "worker_instance_id": "sovereign-runtime-activation-worker-HB15-G18",
-                    "claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
-                    "lease": None,
-                    "heartbeat_timing": {
-                        "start_epoch": 15,
-                        "last_response_epoch": 29,
-                        "last_transition_epoch": 18,
-                        "current_transition": "SOVEREIGN_RUNTIME_SOLUTION_REQUIRED",
-                        "transition_sequence": 2,
-                        "expected_next_transition": "SOVEREIGN_RUNTIME_SOLUTION_EXECUTION",
-                        "expected_next_earliest_epoch": 30,
-                        "expected_next_latest_epoch": 30,
-                        "max_missing_response_beats": 3,
-                        "expiry_epoch": 4111,
-                        "expiry_basis": "TASK_CLASS_COST_BASIS",
-                        "fencing_token": 18,
-                    },
-                    "cost_basis_ref": None,
-                    "external_entity_job_ref": None,
-                    "last_checkpoint_ref": "checkpoints/workers/SHWP-DURABLE-RUNTIME-ACTIVATION/HB29-G18.json",
-                    "block_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#block",
-                    "archive_eligible": False,
-                    "archive_reason_codes": [],
-                    "evidence_refs": [],
-                }
-            ],
+            "tasks": [],
         }
         (control / "worker-registry.json").write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
         (control / "heartbeat-subsignals.json").write_text(
@@ -86,6 +53,27 @@ class HeartbeatEngineV12CutoverTests(unittest.TestCase):
             encoding="utf-8",
         )
         return root
+
+    def _g18_registry(self) -> dict:
+        return {
+            "generation": 18,
+            "tasks": [
+                {
+                    "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+                    "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+                    "state": "BLOCKED",
+                    "worker_id": "sovereign-runtime-activation-worker",
+                    "worker_instance_id": "sovereign-runtime-activation-worker-HB15-G18",
+                    "claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+                    "heartbeat_timing": {
+                        "current_transition": "SOVEREIGN_RUNTIME_SOLUTION_REQUIRED",
+                        "expiry_epoch": 4111,
+                        "expiry_basis": "TASK_CLASS_COST_BASIS",
+                        "fencing_token": 18,
+                    },
+                }
+            ],
+        }
 
     def test_first_write_freezes_legacy_hb29_and_activates_hb30_separated_schema(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -117,13 +105,17 @@ class HeartbeatEngineV12CutoverTests(unittest.TestCase):
             self.assertFalse(carrier["authority"]["heartbeat_grants_execution_authority"])
             self.assertEqual(carrier["authority"]["credential_authority"], "TV/TVC")
 
-            control = json.loads((root / "control" / "worker-control-plane-coordination.json").read_text())
-            self.assertEqual(control["schema"], "stegverse.worker-control-plane-coordination/v1")
-            self.assertEqual(control["observed_reference"]["reference_frame"], "heartbeat_epoch:30")
-            lease = control["worker_coordination"]["active_leases"][0]
+            persisted_control = json.loads((root / "control" / "worker-control-plane-coordination.json").read_text())
+            self.assertEqual(persisted_control["schema"], "stegverse.worker-control-plane-coordination/v1")
+            self.assertEqual(persisted_control["observed_reference"]["reference_frame"], "heartbeat_epoch:30")
+            self.assertEqual(persisted_control["worker_coordination"]["active_leases"], [])
+
+            projected_control = runtime._control_plane_coordination(carrier_state, self._g18_registry())
+            lease = projected_control["worker_coordination"]["active_leases"][0]
             self.assertEqual(lease["claim_id"], "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18")
             self.assertEqual(lease["fencing_token"], 18)
             self.assertFalse(lease["heartbeat_grants_authority"])
+            self.assertNotIn("claim_id", carrier_text)
 
             receipt = json.loads((root / "receipts" / "heartbeat-schema-cutover" / "HB29.json").read_text())
             self.assertEqual(receipt["state"], "CLOSED_MIGRATED")
