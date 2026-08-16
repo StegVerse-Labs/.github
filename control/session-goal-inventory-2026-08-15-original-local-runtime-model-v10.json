@@ -2,9 +2,28 @@
   "schema": "stegverse.session-goal-inventory/v10",
   "inventory_id": "ORIGINAL-LOCAL-RUNTIME-MODEL-SCOPE-2026-08-15-V10",
   "supersedes": "control/session-goal-inventory-2026-08-15-phone-route-v9.json",
-  "updated_at": "2026-08-15T18:34:00-05:00",
+  "updated_at": "2026-08-15T21:09:00-05:00",
   "repository": "StegVerse-Labs/.github",
-  "scope_correction": "User explicitly directed this session to revert to its original goals and exclude wallet/trade issues because those are handled in a different session.",
+  "session_scope": "Historical original local-runtime/model scope retained as superseded provenance; current expanded scope is v11/v12. This record may not recreate wallet/trade exclusions as current authority.",
+  "originating_goal_ids": [
+    "G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF",
+    "G04-FORMAL-LOCAL-MODEL-DEVELOPMENT",
+    "G05-TV-TVC-ONLY-CREDENTIAL-AUTHORITY",
+    "G06-SESSION-CONSOLIDATION",
+    "G07-WORKER-ASSISTANCE"
+  ],
+  "shared_directives": [],
+  "worker_assistance_bindings": [
+    {
+      "worker_or_task_id": "StegVerse-002/micro-node-runtime",
+      "session_goal_id": "G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF",
+      "lineage_type": "DIRECT_GOAL_OWNER",
+      "lineage_evidence_ref": "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+      "scope_decision": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "archive_dependency": false
+    }
+  ],
+  "scope_correction": "Historical user direction for this superseded inventory excluded wallet/trade issues because those were then handled in a different session. The later v11 user directive supersedes this exclusion for the current expanded scope.",
   "originating_session_goals": [
     "Remove the descriptive select-a-local-model/runtime step by installing an actual local-runtime discovery/launch/proof path analogous to sovereign heartbeat.",
     "Formally develop the model locally.",
@@ -12,7 +31,7 @@
     "Assist existing workers without duplicating active claims or machine-owned execution.",
     "Consolidate the session into durable repository handoffs, task registries, receipts, and canonical continuation surfaces so redundant chat sessions can close safely."
   ],
-  "explicitly_out_of_scope_for_this_session": [
+  "explicitly_out_of_scope_for_this_historical_version": [
     "StegFin wallet handoff readiness",
     "WALLET_HANDOFF_READY production observation",
     "wallet signing or broadcast",
@@ -20,7 +39,7 @@
     "StegFin phone direct-route source hardening",
     "Site StegFin phone projection and live evidence reconciliation"
   ],
-  "out_of_scope_disposition": "TRANSFERRED_TO_DIFFERENT_SESSION_AND_EXISTING_CANONICAL_STEGFIN_SITE_LANES; NOT_AN_ARCHIVAL_DEPENDENCY_OF_THIS_SESSION",
+  "out_of_scope_disposition": "SUPERSEDED_BY_V11_EXPANDED_SCOPE; retained only as historical provenance",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",
@@ -67,10 +86,10 @@
       "destination": "StegVerse-Labs/.github",
       "location": "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md + this inventory",
       "owner": "StegVerse-Labs organization control plane",
-      "claim_state": "COMPLETE_VALIDATED_RELEASED_V10_SCOPE_CORRECTED",
-      "completion_state": "ORIGINAL_GOALS_DURABLY_PRESERVED_WALLET_SCOPE_EXCLUDED",
-      "validation_state": "canonical scope corrected to user directive",
-      "integration_state": "COMPLETE",
+      "claim_state": "SUPERSEDED_BY_V11_CURRENT_SCOPE",
+      "completion_state": "HISTORICAL_SCOPE_DURABLY_PRESERVED",
+      "validation_state": "provenance retained; current continuation is v11/v12",
+      "integration_state": "SUPERSEDED",
       "archival_dependency": false,
       "next_action": "NONE"
     },
@@ -80,7 +99,7 @@
       "location": "canonical worker handoffs and claim registries",
       "owner": "existing named workers",
       "claim_state": "MERGED_INTO_CANONICAL_WORKSTREAMS",
-      "completion_state": "NO_UNIQUE_NONCONFLICTING_WORK_REMAINS_IN_THIS_SESSION",
+      "completion_state": "NO_UNIQUE_NONCONFLICTING_WORK_REMAINS_IN_THIS_HISTORICAL_SCOPE",
       "validation_state": "machine-owned and separately claimed lanes remain authoritative",
       "integration_state": "COMPLETE_TRANSFER",
       "archival_dependency": false,
@@ -88,20 +107,21 @@
     }
   ],
   "wallet_trade_scope": {
-    "state": "OUT_OF_SCOPE_TRANSFERRED",
-    "reason": "User states wallet issues are handled in a different session.",
-    "canonical_external_continuations": [
+    "state": "HISTORICAL_OUT_OF_SCOPE_SUPERSEDED_BY_V11",
+    "reason": "This was the v10 historical scope decision; v11 later explicitly expands the current session to trade readiness.",
+    "canonical_current_continuations": [
       "StegVerse-Labs/stegfin-governance/issues/60",
-      "StegVerse-Labs/Site/docs/STEGFIN_PHONE_PROJECTION_MIRROR_HANDOFF.md"
+      "StegVerse-Labs/Site/docs/STEGFIN_PHONE_PROJECTION_MIRROR_HANDOFF.md",
+      "control/session-goal-inventory-2026-08-15-local-runtime-trade-readiness-v11.json"
     ],
-    "this_session_may_claim_wallet_work": false,
-    "this_session_wallet_archival_dependency": false
+    "this_historical_record_may_claim_wallet_work": false,
+    "archive_dependency": false
   },
   "session_unique_claims_remaining": 0,
   "unassigned_session_requirements": 0,
   "session_execution_responsibility_remaining": 0,
   "session_observation_responsibility_remaining": 0,
   "original_goal_completion": true,
-  "archive_state": "READY_ORIGINAL_GOALS_COMPLETE_VALIDATED_RELEASED_AND_SCOPE_CORRECTED",
-  "next_session_action": "NONE_DO_NOT_RECREATE_COMPLETED_LOCAL_RUNTIME_OR_MODEL_WORK_AND_DO_NOT_ENTER_WALLET_LANES"
+  "archive_state": "SUPERSEDED_BY_V11_CURRENT_SCOPE",
+  "next_session_action": "NONE_DO_NOT_RECREATE_COMPLETED_LOCAL_RUNTIME_OR_MODEL_WORK; USE V11/V12 FOR CURRENT SCOPE"
 }
