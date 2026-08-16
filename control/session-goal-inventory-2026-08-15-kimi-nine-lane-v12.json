@@ -1,8 +1,33 @@
 {
   "schema": "stegverse.session-goal-inventory/v12",
   "inventory_id": "KIMI-NINE-LANE-LOCAL-RUNTIME-TRADE-READINESS-2026-08-15-V12",
-  "updated_at": "2026-08-15T20:56:00-05:00",
+  "updated_at": "2026-08-15T21:06:00-05:00",
   "repository": "StegVerse-Labs/.github",
+  "session_scope": "Expanded v11 local-runtime/model/trade-readiness lineage plus the directly originating Kimi nine-lane credentialless cost-analysis successor; shared worker-assistance language does not import unrelated global worker tasks.",
+  "originating_goal_ids": [
+    "G11-KIMI-NINE-LANE-GEN2",
+    "G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF",
+    "G04-FORMAL-LOCAL-MODEL-DEVELOPMENT"
+  ],
+  "shared_directives": [],
+  "worker_assistance_bindings": [
+    {
+      "worker_or_task_id": "GCAT-BCAT-Engine/workflows/.github/workflows/sv-cost-nine-lane-candidate-proof.yml",
+      "session_goal_id": "G11-KIMI-NINE-LANE-GEN2",
+      "lineage_type": "DIRECT_GOAL_OWNER",
+      "lineage_evidence_ref": "GCAT-BCAT-Engine/workflows/experiments/sv-cost-program/nine-lane-results/SV_COST_NINE_LANE_MIRROR_HANDOFF.md",
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "archive_dependency": false
+    },
+    {
+      "worker_or_task_id": "StegVerse-002/micro-node-runtime",
+      "session_goal_id": "G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF",
+      "lineage_type": "DIRECT_GOAL_OWNER",
+      "lineage_evidence_ref": "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "archive_dependency": false
+    }
+  ],
   "inherits_complete_inventory": "control/session-goal-inventory-2026-08-15-local-runtime-trade-readiness-v11.json",
   "inheritance_rule": "All v11 goals, owners, runtime blockers, trade-readiness boundaries, no-Render policy, TV/TVC credential authority, completed local-runtime discovery/launch/proof and stegverse-reference-lm-v1 state remain authoritative unless explicitly changed below.",
   "new_originating_session_goal": "Add Kimi raw and Kimi/StegVerse governed lanes to the credentialless provider-output cost analysis and keep building from the validated production SDK proof architecture.",
