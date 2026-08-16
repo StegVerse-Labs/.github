@@ -3,35 +3,35 @@ name: Validate organization control plane - No GitHub Token Authority
 on:
   pull_request:
     paths:
+      - 'README.md'
       - 'control/**'
       - 'events/**'
       - 'schemas/**'
       - 'tasks/**'
       - 'scripts/**'
+      - 'checks/**'
       - 'heartbeat_runtime/**'
       - 'tools/validate_active_worker_states.py'
       - 'tests/**'
       - 'handoffs/**'
-      - 'docs/**/*_MIRROR_HANDOFF.md'
-      - 'docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md'
+      - 'docs/**'
       - '.github/workflows/org-control-plane-validate.yml'
-      - '.github/workflows/org-allocator.yml'
   push:
     branches: [main]
     paths:
+      - 'README.md'
       - 'control/**'
       - 'events/**'
       - 'schemas/**'
       - 'tasks/**'
       - 'scripts/**'
+      - 'checks/**'
       - 'heartbeat_runtime/**'
       - 'tools/validate_active_worker_states.py'
       - 'tests/**'
       - 'handoffs/**'
-      - 'docs/**/*_MIRROR_HANDOFF.md'
-      - 'docs/ORG_HANDOFF_CONTROL_PLANE_V0_2.md'
+      - 'docs/**'
       - '.github/workflows/org-control-plane-validate.yml'
-      - '.github/workflows/org-allocator.yml'
   workflow_dispatch:
 
 permissions: {}
@@ -80,6 +80,17 @@ jobs:
         run: python -m unittest tests.test_heartbeat_runtime_separation -v
       - name: Prove cross-repository dependency collision enforcement
         run: python -m unittest tests.test_cross_repository_dependency_claims -v
+
+      - name: Validate organization continuation and aggregation surfaces
+        run: |
+          python3 scripts/check_org_operational_observer.py
+          python3 scripts/check_org_repository_inventory.py
+          python3 scripts/check_org_completion_dashboard.py
+          python3 scripts/validate_session_assistance_scope.py
+          python3 -m unittest tests.test_session_assistance_scope -v
+          python3 scripts/check_required_terms.py docs/ORG_MIRROR_HANDOFF.md checks/org_mirror_handoff_terms.txt
+          python3 scripts/check_org_aggregation_manifest.py
+
       - name: Exercise allocator deterministically without persistence authority
         run: |
           before="$(sha256sum control/claims-active.json 2>/dev/null || true)"
