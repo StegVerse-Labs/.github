@@ -4,7 +4,8 @@ import json
 import unittest
 from pathlib import Path
 
-from heartbeat_runtime.engine_v2 import HeartbeatRuntime
+from heartbeat_runtime import HeartbeatRuntime
+from scripts.run_heartbeat_runtime import load_adapters
 
 ROOT = Path(__file__).resolve().parents[1]
 HANDOFF = ROOT / "handoffs" / "SDK-MCP-CANONICAL-VALIDATION-009.json"
@@ -75,6 +76,20 @@ class SDKMCPActivationBindingTests(unittest.TestCase):
         self.assertFalse(profile["capability_match_grants_authority"])
         self.assertIn("canonical_artifact_validation", profile["allowed_capabilities"])
         self.assertIn("master_records_replay_reconstruction_validation", profile["allowed_capabilities"])
+
+    def test_canonical_runtime_resolves_exactly_one_mcp_worker_after_fragment_admission(self):
+        runtime = HeartbeatRuntime(ROOT, adapters=load_adapters(ROOT))
+        registry = json.loads((ROOT / "control" / "worker-registry.json").read_text(encoding="utf-8"))
+        runtime._apply_registry_fragments(registry)
+        task = next(
+            item for item in registry["tasks"]
+            if item.get("task_id") == "SDK-MCP-CANONICAL-VALIDATION-009"
+        )
+        worker = runtime._worker_for(task, registry)
+        self.assertIsNotNone(worker)
+        self.assertEqual("sdk-mcp-canonical-validation-worker", worker["worker_id"])
+        self.assertEqual("AVAILABLE", worker["status"])
+        self.assertEqual("process:sdk-mcp-canonical-validation-v1", worker["adapter_ref"])
 
 
 if __name__ == "__main__":
