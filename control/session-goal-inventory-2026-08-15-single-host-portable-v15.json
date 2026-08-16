@@ -1,0 +1,130 @@
+{
+  "schema": "stegverse.session-goal-inventory/v15",
+  "inventory_id": "SINGLE-HOST-SOVEREIGN-PORTABLE-PRODUCT-2026-08-15-V15",
+  "supersedes": "control/session-goal-inventory-2026-08-15-single-host-portable-v14.json",
+  "updated_at": "2026-08-16T02:20:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "session_scope": "Single-host sovereignty propagation into portable S/NS production and SDK verification, with no additional physical host, no hosted production runtime substitution and TV/TVC-only credential/publication authority.",
+  "originating_goal_ids": [
+    "G13-STEGCORE-SINGLE-HOST-PORTABLE-CONTRACT",
+    "G14-SDK-SINGLE-HOST-PORTABLE-CONSUMER",
+    "G15-PORTABLE-ARTIFACT-COLLISION-RECONCILIATION"
+  ],
+  "shared_directives": [],
+  "worker_assistance_bindings": [
+    {
+      "worker_or_task_id": "StegVerse-Labs/StegCore:portable-producer",
+      "session_goal_id": "G13-STEGCORE-SINGLE-HOST-PORTABLE-CONTRACT",
+      "lineage_type": "DIRECT_GOAL_OWNER",
+      "lineage_evidence_ref": "StegVerse-Labs/StegCore/docs/STEGVERSE_MICRO_ECOSYSTEM_MIRROR_HANDOFF.md",
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "archive_dependency": false
+    },
+    {
+      "worker_or_task_id": "StegVerse-org/StegVerse-SDK:portable-consumer",
+      "session_goal_id": "G14-SDK-SINGLE-HOST-PORTABLE-CONSUMER",
+      "lineage_type": "DIRECT_GOAL_OWNER",
+      "lineage_evidence_ref": "StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md",
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "archive_dependency": false
+    },
+    {
+      "worker_or_task_id": "StegVerse-Labs/TVC:TVC-PORTABLE-ARTIFACT-PUBLICATION-001",
+      "session_goal_id": "G15-PORTABLE-ARTIFACT-COLLISION-RECONCILIATION",
+      "lineage_type": "INTEGRATION_DESCENDANT",
+      "lineage_evidence_ref": "StegVerse-Labs/TVC/docs/PORTABLE_ARTIFACT_PUBLICATION_MIRROR_HANDOFF.md",
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "archive_dependency": false
+    }
+  ],
+  "inherits_complete_inventory": "control/session-goal-inventory-2026-08-15-kimi-nine-lane-v14.json",
+  "inheritance_rule": "Kimi/local-runtime/formal-model completion, one-host G18 execution ownership, no-Render production policy and TV/TVC-only protected credential authority remain authoritative unless explicitly changed below.",
+  "governing_sovereignty_invariant": {
+    "physical_host_topology": "ONE_SOVEREIGN_PHYSICAL_HOST",
+    "additional_physical_machine_required": false,
+    "third_party_machine_required": false,
+    "third_party_process_host_required": false,
+    "third_party_scheduler_required": false,
+    "third_party_state_host_required": false,
+    "third_party_control_plane_executor_required": false,
+    "third_party_platform_availability_may_block_declared_local_operation": false,
+    "independent_validation_mechanism": "SAME_HOST_ISOLATED_LOGICAL_BOUNDARIES",
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "github_token_runtime_authority": "NONE",
+    "render_production_runtime_allowed": false
+  },
+  "goals": [
+    {
+      "task_id": "G13-STEGCORE-SINGLE-HOST-PORTABLE-CONTRACT",
+      "destination": "StegVerse-Labs/StegCore",
+      "location": "docs/STEGVERSE_MICRO_ECOSYSTEM_MIRROR_HANDOFF.md",
+      "owner": "StegVerse-Labs/StegCore portable producer",
+      "claim_state": "COMPLETE_VALIDATED_RELEASED",
+      "completion_state": "single-host contract installed in portable producer",
+      "validation_state": "StegCore Tests 31925980402 SUCCESS; readiness 31925837384 SUCCESS",
+      "integration_state": "portable publication continuation transferred to TVC",
+      "archival_dependency": false,
+      "next_executable_action": "NONE_FOR_CHAT"
+    },
+    {
+      "task_id": "G14-SDK-SINGLE-HOST-PORTABLE-CONSUMER",
+      "destination": "StegVerse-org/StegVerse-SDK",
+      "location": "docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md",
+      "owner": "StegVerse-org/StegVerse-SDK portable consumer",
+      "claim_state": "COMPLETE_VALIDATED_RELEASED_SOURCE",
+      "completion_state": "SDK rejects portable packages that violate single-host or TV/TVC credential boundary",
+      "validation_state": "Portable Package Source Validation 31926083091 SUCCESS",
+      "integration_state": "waiting on immutable TVC-published artifact input",
+      "archival_dependency": false,
+      "next_executable_action": "SDK machine owner resumes after TVC immutable publication receipt exists"
+    },
+    {
+      "task_id": "G15-PORTABLE-ARTIFACT-COLLISION-RECONCILIATION",
+      "destination": "StegVerse-Labs/StegCore -> StegVerse-Labs/TVC",
+      "location": "canonical portable artifact publication chain",
+      "owner": "StegVerse-Labs/TVC TVC-PORTABLE-ARTIFACT-PUBLICATION-001",
+      "claim_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "completion_state": "producer collision reconciled; publication remains TVC-owned",
+      "validation_state": "canonical producer artifact evidence retained by portable-publication v16",
+      "integration_state": "TVC publication machine-owned",
+      "archival_dependency": false,
+      "next_executable_action": "TVC machine lane admits/publishes exact immutable candidate when its ephemeral publication capability becomes present"
+    }
+  ],
+  "current_incomplete_product_states": [
+    {
+      "state": "LIVE_ONE_HOST_G18_ACTIVATION_NOT_OBSERVED",
+      "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18 fencing token 18",
+      "location": "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+      "release_condition": "canonical activation.latest.json reports all nine predicates true or exact fail-closed host evidence is emitted",
+      "session_dependency": false
+    },
+    {
+      "state": "IMMUTABLE_PORTABLE_ARTIFACT_PUBLICATION_NOT_COMPLETE",
+      "owner": "StegVerse-Labs/TVC TVC-PORTABLE-ARTIFACT-PUBLICATION-001",
+      "location": "StegVerse-Labs/TVC/docs/PORTABLE_ARTIFACT_PUBLICATION_MIRROR_HANDOFF.md",
+      "release_condition": "exact immutable S/NS artifacts plus hashes are admitted and published under TV/TVC authority",
+      "session_dependency": false
+    },
+    {
+      "state": "SDK_REMOTE_DOWNLOAD_NOT_ACTIVE",
+      "owner": "StegVerse-org/StegVerse-SDK SDK-PORTABLE-ARTIFACT-BINDING-002",
+      "location": "StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md",
+      "release_condition": "admitted immutable artifact locators/hashes exist and download->verify->install passes",
+      "session_dependency": false
+    }
+  ],
+  "session_unique_source_claims_remaining": 0,
+  "unassigned_session_requirements": 0,
+  "product_activation_complete": false,
+  "session_role": "MERGED_INTO_CANONICAL_MACHINE_WORKSTREAMS",
+  "archive_state": "READY_ALL_UNIQUE_SESSION_WORK_COMPLETE_OR_DURABLY_TRANSFERRED",
+  "archive_rule": "Chat retention is not an activation predicate. Remaining G18, TVC publication and SDK consumer operations have exact durable owners and release conditions; archiving this inventory lineage does not imply product activation.",
+  "canonical_continuation": [
+    "StegVerse-Labs/.github/management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+    "StegVerse-Labs/StegCore/docs/STEGVERSE_MICRO_ECOSYSTEM_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/docs/PORTABLE_ARTIFACT_PUBLICATION_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md"
+  ]
+}
