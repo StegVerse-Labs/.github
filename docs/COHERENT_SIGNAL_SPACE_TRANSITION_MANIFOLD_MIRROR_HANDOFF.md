@@ -1,6 +1,6 @@
 # Coherent Signal-Space / State-Transition Manifold Mirror Handoff
 
-Updated: 2026-08-16T17:28:00-05:00
+Updated: 2026-08-16T18:32:00-05:00
 
 ## Active successor goal
 
@@ -162,3 +162,53 @@ unresolved questions
 ```
 
 No empirical or mathematical truth claim may be promoted merely because the worker produces a coherent candidate.
+
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+task_id: COHERENT-SIGNAL-SPACE-HANDOFF-METADATA-ONLY
+state: COMPLETE_METADATA_RECONCILIATION
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/coherent-signal-formal-candidate-001.json
+collision_scope: handoff ownership metadata only; mathematical candidate content and worker execution excluded
+release_condition: repository handoff ownership validator accepts this handoff
+next_executable_action: none; formal-candidate execution remains worker-owned
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+task_id: SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001
+state: HANDOFF_READY
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/coherent-signal-formal-candidate-001.json
+collision_scope: formal mathematical candidate generation, worker code, task state, receipt and checkpoint production
+release_condition: worker emits the required falsifiable mathematical-candidate receipt under the canonical handoff
+next_executable_action: worker coordinator may bind the available coherent-signal-formal-candidate-worker after independent task admission
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+task_id: COHERENT-SIGNAL-FORMALISM-AUTHORITY
+state: AUTHORITY_OWNED
+manual_execution_allowed: false
+worker_registry_ref: NONE_FORMALISM_AUTHORITY_IS_EXTERNAL_TO_WORKER_CLAIM
+collision_scope: promotion of candidate mathematics into canonical Admissible-Existence formal authority
+release_condition: separate evidence and admissibility process accepts a candidate result
+next_executable_action: none until worker evidence exists
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+task_id: HEARTBEAT-AS-COMPLETE-MECHANISM
+state: SUPERSEDED
+manual_execution_allowed: false
+worker_registry_ref: NONE
+collision_scope: prior interpretation that heartbeat alone exhausts the mechanism
+release_condition: coherent-signal-space successor handoff and implementation are present
+next_executable_action: none
+```
