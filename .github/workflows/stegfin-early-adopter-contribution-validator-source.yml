@@ -1,0 +1,65 @@
+name: StegFin Early Adopter Contribution Validator Source - No Credential Authority
+
+on:
+  pull_request:
+    paths:
+      - 'workers/stegfin_early_adopter_contribution_validation_worker.py'
+      - 'tests/test_stegfin_early_adopter_contribution_validation_worker.py'
+      - 'control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json'
+      - 'docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_VALIDATION_MIRROR_HANDOFF.md'
+      - '.github/workflows/stegfin-early-adopter-contribution-validator-source.yml'
+
+permissions: {}
+
+jobs:
+  validate-contribution-validator-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assert no GitHub credential authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+
+      - name: Materialize exact public PR source anonymously
+        shell: bash
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          git checkout --detach FETCH_HEAD
+
+      - name: Install focused test dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install pytest
+
+      - name: Run focused worker boundary tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pytest tests/test_stegfin_early_adopter_contribution_validation_worker.py -q
+
+      - name: Prove worker refuses absent private source without fetching
+        shell: bash
+        run: |
+          set -euo pipefail
+          if python workers/stegfin_early_adopter_contribution_validation_worker.py --repo-path /tmp/definitely-not-present > /tmp/receipt.json; then
+            echo 'worker unexpectedly passed without local private source' >&2
+            exit 1
+          fi
+          python - <<'PY'
+          import json
+          data = json.load(open('/tmp/receipt.json', encoding='utf-8'))
+          assert data['state'] == 'FAIL_CLOSED'
+          assert data['reason'] == 'LOCAL_SOURCE_INCOMPLETE'
+          assert data['network_fetch_used'] is False
+          assert data['github_token_runtime_authority'] is False
+          assert data['credential_authority'] == 'TV/TVC'
+          PY
