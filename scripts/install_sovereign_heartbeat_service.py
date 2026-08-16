@@ -7,7 +7,7 @@ from typing import Any, Callable
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
 COPY_DIRS=("heartbeat_runtime","control","handoffs","authorizations","workers","schemas","checkpoints","events","receipts","heartbeats","cost-basis")
 COPY_FILES=("scripts/run_heartbeat_runtime.py","scripts/verify_sovereign_runtime_activation.py")
-CANONICAL_RUNTIME="heartbeat_runtime.engine_v11.HeartbeatRuntime"
+CANONICAL_RUNTIME="scripts.run_heartbeat_runtime.select_runtime(HB29=>engine_v12;compat=>engine_v11)"
 DEFAULT_INTERVAL_MS=10.0
 
 def default_runtime_root(env=None):
@@ -36,25 +36,37 @@ def materialize(source_root:Path,target_root:Path,*,interval_ms:float=DEFAULT_IN
     required=(
         target_root/"heartbeat_runtime"/"__init__.py",
         target_root/"heartbeat_runtime"/"engine_v11.py",
+        target_root/"heartbeat_runtime"/"engine_v12.py",
         target_root/"control"/"heartbeat-state.json",
         target_root/"control"/"heartbeat-subsignals.json",
         target_root/"control"/"worker-registry.json",
+        target_root/"schemas"/"heartbeat-carrier-runtime-state.schema.json",
+        target_root/"schemas"/"heartbeat-carrier-observation.schema.json",
+        target_root/"schemas"/"worker-control-plane-coordination.schema.json",
         target_root/"scripts"/"run_heartbeat_runtime.py",
         target_root/"scripts"/"verify_sovereign_runtime_activation.py",
     )
     if not all(p.is_file() for p in required): raise RuntimeError("materialized runtime is incomplete")
     init_text=(target_root/"heartbeat_runtime"/"__init__.py").read_text(encoding="utf-8")
+    runner_text=(target_root/"scripts"/"run_heartbeat_runtime.py").read_text(encoding="utf-8")
     if "from .engine_v11 import HeartbeatRuntime" not in init_text:
-        raise RuntimeError("materialized runtime does not bind canonical engine_v11")
+        raise RuntimeError("materialized library compatibility does not bind engine_v11")
+    if "HeartbeatRuntimeV12" not in runner_text or "select_runtime" not in runner_text or "CUTOVER_EPOCH = 29" not in runner_text:
+        raise RuntimeError("materialized production runner does not bind HB29-aware engine_v12 selector")
     receipt={
-        "schema":"stegverse.sovereign-heartbeat-materialization/v2",
+        "schema":"stegverse.sovereign-heartbeat-materialization/v3",
         "source_root":str(source_root),
         "runtime_root":str(target_root),
         "canonical_runtime":CANONICAL_RUNTIME,
+        "library_compatibility_runtime":"heartbeat_runtime.engine_v11.HeartbeatRuntime",
+        "hb29_cutover_runtime":"heartbeat_runtime.engine_v12.HeartbeatRuntime",
+        "hb29_cutover_epoch":29,
+        "hb29_legacy_state_immutable":True,
         "heartbeat_default_interval_ms":float(interval_ms),
         "nominal_cycles_per_second":_nominal_cycles_per_second(float(interval_ms)),
-        "worker_coordination_subsignal":"control/heartbeat-subsignals.json#worker_coordination",
-        "worker_lease_clock":"canonical_heartbeat_cycle",
+        "worker_coordination_surface":"control/worker-control-plane-coordination.json after HB29 cutover",
+        "legacy_worker_coordination_source":"control/heartbeat-subsignals.json#worker_coordination",
+        "worker_lease_clock":"canonical_heartbeat_reference",
         "wall_clock_worker_expiry_authority":False,
         "network_fetch_required":False,
         "third_party_process_host_required":False,
@@ -63,7 +75,9 @@ def materialize(source_root:Path,target_root:Path,*,interval_ms:float=DEFAULT_IN
         "github_runtime_dependency":False,
         "render_runtime_dependency":False,
         "cloudflare_runtime_dependency":False,
-        "heartbeat_timing_authority":CANONICAL_RUNTIME,
+        "heartbeat_timing_authority":"NONE_CARRIER_IS_REFERENCE_ONLY",
+        "credential_authority":"TV/TVC",
+        "non_tv_tvc_secret_or_token_required":False,
         "execution_authority_effect":"NONE",
         "manual_action_required":False,
     }
@@ -87,7 +101,7 @@ def materialize_service(root:Path,*,interval_ms=DEFAULT_INTERVAL_MS,system=None,
     else: raise RuntimeError(f"unsupported sovereign host platform: {name}")
     path.parent.mkdir(parents=True,exist_ok=True); path.write_text(content)
     return {
-        "schema":"stegverse.sovereign-heartbeat-service/v2",
+        "schema":"stegverse.sovereign-heartbeat-service/v3",
         "platform":name,
         "registration_kind":kind,
         "registration_path":str(path),
