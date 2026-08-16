@@ -1,6 +1,6 @@
 # Sovereign Heartbeat Deployment Mirror Handoff
 
-Updated: 2026-08-16T17:42:00-05:00
+Updated: 2026-08-16T18:31:00-05:00
 
 ## Authority and active goal
 
@@ -46,8 +46,8 @@ The carrier remains an authority-neutral observation/reference mechanism. The co
 
 ```text
 heartbeat_runtime.engine_v12.HeartbeatRuntime = canonical non-authorizing carrier
-heartbeat_runtime.HeartbeatRuntime = engine_v12 package export
-heartbeat_runtime.CarrierHeartbeatRuntime = engine_v12 package export
+heartbeat_runtime.HeartbeatRuntime = engine_v11 compatibility export for historical worker consumers only
+heartbeat_runtime.CarrierHeartbeatRuntime = explicit engine_v12 production carrier export
 heartbeat_runtime.worker_runtime.WorkerCoordinator = separate worker/control-plane runtime
 scripts/run_heartbeat_runtime.py = carrier-only runner
 scripts/run_worker_runtime.py = independently supervised worker runner
@@ -120,7 +120,11 @@ tests/test_worker_runtime_separation.py
 tests/test_heartbeat_carrier_non_authority.py
 tests/test_sovereign_heartbeat_service.py
 tests/test_sovereign_runtime_activation_v12.py
+tests/test_sovereign_runtime_activation_verifier.py
+tests/test_sovereign_ephemeral_console.py
 .github/workflows/heartbeat-worker-project.yml
+.github/workflows/org-heartbeat.yml
+.github/workflows/activate-sovereign-runtime-worker.yml
 ```
 
 ## Validation
@@ -132,9 +136,12 @@ python -m unittest tests.test_heartbeat_engine_v12_cutover
 python -m unittest tests.test_worker_runtime_separation
 python -m unittest tests.test_sovereign_heartbeat_service
 python -m unittest tests.test_sovereign_runtime_activation_v12
+python -m unittest tests.test_sovereign_runtime_activation_verifier
+python -m unittest tests.test_sovereign_ephemeral_console
 python -m unittest tests.test_heartbeat_carrier_non_authority
 python -m unittest discover -v tests
 python scripts/run_heartbeat_runtime.py --dry-run --cycles 1
+python scripts/validate_handoff_execution_ownership.py
 ```
 
 Positive validation evidence must be inspected directly. A workflow file, authored test, missing workflow run, or disposable source result is not live activation. Live activation remains node-local #122/#12 evidence.
@@ -154,56 +161,65 @@ MERGED INTO: `StegVerse-Labs/.github#197` for source reconciliation and `StegVer
 
 ## Execution ownership and collision partition
 
-### SESSION-STARTABLE
+### MANUAL / SESSION-STARTABLE
 
 ```yaml
 task_id: HEARTBEAT-HB29-CURRENT-MAIN-RECONCILE-197
 owner: claim/heartbeat-hb29-main-reconcile-197-current
 state: CLAIMED_FOR_INTEGRATION
 manual_execution_allowed: true
+worker_registry_ref: NONE_BOUNDED_SOURCE_RECONCILIATION
 collision_scope: bounded source/schema/deployment/verifier/validation files only
 release_condition: deterministic PASS + merge + stale PR supersession
-next_action: validate current-main replacement PR and correct any failures
+next_executable_action: validate current-main replacement PR and correct any failures
 ```
 
-### MACHINE-OWNED / DO NOT COMPETE
+### WORKER-OWNED / DO NOT COMPETE
 
 ```yaml
 task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION
 owner: StegVerse-Labs/.github#122/#12 resident StegVerse runtime
 state: MACHINE_OWNED
 manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
 collision_scope: live HB29 successor, resident carrier/worker processes, active claims/fences/leases
 release_condition: directly inspectable node-local separated-runtime activation proof
-next_action: consume merged source reconciliation at the next admitted StegVerse execution opportunity
+next_executable_action: consume merged source reconciliation at the next admitted StegVerse execution opportunity
 ```
 
-### AUTHORITY-OWNED
+### ESCALATED / AUTHORITY-OWNED
 
 ```yaml
 task_id: TV-TVC-CREDENTIAL-AUTHORITY
 owner: TV/TVC
 state: AUTHORITY_OWNED
 manual_execution_allowed: false
+worker_registry_ref: canonical TV/TVC authority surfaces
 collision_scope: credential/secret/token material
 release_condition: no non-TV/TVC credential path exists
+next_executable_action: none unless a protected credential decision is actually required
 ```
 
-### SUPERSEDED AFTER REPLACEMENT RELEASE
+### COMPLETED / SUPERSEDED
 
 ```yaml
-PR_198: older HB29 cutover implementation; do not merge after replacement release
-PR_199: divergent reconciliation branch; preserved as provenance, do not force over coherent-signal current main
+task_id: LEGACY-HB29-RECONCILIATION-PR-LANES
+state: SUPERSEDED_AFTER_REPLACEMENT_RELEASE
+manual_execution_allowed: false
+worker_registry_ref: NONE
+collision_scope: PR #198 and divergent PR #199 only
+release_condition: replacement PR #200 merges after deterministic validation
+next_executable_action: close #198/#199 without merge after replacement release
 ```
 
 ## Current completion and archive condition
 
 ```text
-developed_files: 16/16 source deliverables installed on current-main replacement branch
+developed_files: 18/18 source deliverables installed on current-main replacement branch
 scaffolding_or_stubs: 0
 missing_required_files: 0
-validation: 0/6 directly executed/observed on replacement branch at this handoff revision
-integration: 2/5 (current-main replay + coherent-signal convergence complete; PR validation/merge/supersession pending)
+validation: 2/5 required PR workflow groups PASS at this revision (Heartbeat Worker Project, Organization Heartbeat); remaining groups require rerun after validation-contract repairs
+integration: 3/6 (current-main replay + coherent-signal convergence + source fixes complete; full PR validation/merge/supersession pending)
 live_activation: MACHINE_OWNED / not claimed here
 session_consolidation: original local-model goal and adjacent heartbeat/trade requirements all have durable owners; this source reconciliation remains unique until release
 archive_dependency: replacement branch validation/merge and transfer of this session's source claim
