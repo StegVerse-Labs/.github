@@ -1,0 +1,102 @@
+{
+  "schema": "stegverse.repository-hygiene-classification/v1",
+  "goal_id": "HYGIENE-CAUSAL-ROOTS-001",
+  "repository": "StegVerse-Labs/.github",
+  "wave": 0,
+  "observed_at": "2026-08-15T19:40:00-05:00",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_used": false,
+  "workflow_count_before_batch": 20,
+  "workflow_count_after_batch": 17,
+  "workflow_actions": [
+    {
+      "path": ".github/workflows/org-control-plane-validate.yml",
+      "classification": "KEEP_STABLE_DISPATCHER",
+      "action": "EXPANDED",
+      "absorbed": [
+        ".github/workflows/org-allocator.yml",
+        ".github/workflows/org-continuation-check.yml",
+        ".github/workflows/org-aggregation-check.yml"
+      ],
+      "reason": "The retained non-authorizing validator already exercised the allocator and is the canonical broad control-plane validation surface; continuation and aggregation validators duplicated scripts that can execute in the same stable validation entrypoint."
+    },
+    {
+      "path": ".github/workflows/org-allocator.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "action": "ELIMINATED",
+      "replacement": ".github/workflows/org-control-plane-validate.yml"
+    },
+    {
+      "path": ".github/workflows/org-continuation-check.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "action": "ELIMINATED",
+      "replacement": ".github/workflows/org-control-plane-validate.yml"
+    },
+    {
+      "path": ".github/workflows/org-aggregation-check.yml",
+      "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+      "action": "ELIMINATED",
+      "replacement": ".github/workflows/org-control-plane-validate.yml"
+    }
+  ],
+  "branch_classification_batch_1": [
+    {
+      "branch": "feat/sovereign-runtime-self-bootstrap-002",
+      "classification": "MERGED_DELETE_CANDIDATE",
+      "evidence": {
+        "compare_to_main": "behind",
+        "ahead_by": 0,
+        "behind_by": 164,
+        "head_sha": "efd2cb44970e384831e5b209f4376b1ec56c4346"
+      },
+      "deletion_authorized_by_this_record": false,
+      "reason": "Branch has no commits not already reachable from main; final deletion still requires evidence-reference and active-owner checks."
+    },
+    {
+      "branch": "feat/sovereign-runtime-self-bootstrap-001",
+      "classification": "REVIEW_REQUIRED",
+      "evidence": {
+        "compare_to_main": "diverged",
+        "ahead_by": 5,
+        "behind_by": 174
+      },
+      "deletion_authorized_by_this_record": false
+    },
+    {
+      "branch": "feat/sovereign-heartbeat-host",
+      "classification": "REVIEW_REQUIRED",
+      "evidence": {
+        "compare_to_main": "diverged",
+        "ahead_by": 6,
+        "behind_by": 894
+      },
+      "deletion_authorized_by_this_record": false
+    },
+    {
+      "branch": "feat/sovereign-heartbeat-host-v2",
+      "classification": "REVIEW_REQUIRED",
+      "evidence": {
+        "compare_to_main": "diverged",
+        "ahead_by": 3,
+        "behind_by": 880
+      },
+      "deletion_authorized_by_this_record": false
+    }
+  ],
+  "validation": {
+    "workflow_inventory_recheck": "PASS_17_ACTIVE",
+    "hosted_run_id": 31917615187,
+    "hosted_run_conclusion": "FAILURE_PREEXISTING_CONTROL_TASK_SCHEMA",
+    "failed_step": "Validate control-plane invariants",
+    "failure": "TASK-2026-0004 contains descriptive flags not admitted by scripts/validate_org_control_plane.py",
+    "hygiene_batch_failure_observed": false,
+    "remaining_steps_executed": false,
+    "interpretation": "The hosted workflow did not reach the newly consolidated continuation/aggregation checks. The failure is an existing organization task-schema mismatch and is not treated as proof that the consolidation passed."
+  },
+  "next_actions": [
+    "Classify the remaining 69 .github branches against main, PR history, handoffs, task/worker ownership, and evidence references.",
+    "Classify the remaining 16 workflow surfaces under KEEP_STANDALONE_EXCEPTION, CONSOLIDATE_INTO_STABLE_DISPATCHER, TRANSFER_TO_STEGVERSE_WORKER, or ELIMINATE.",
+    "Keep the unrelated TASK-2026-0004 wallet/trade task outside this hygiene session's implementation scope; record its schema mismatch only as a validation blocker unless its canonical owner repairs it.",
+    "Do not begin Site or StegCore destructive cleanup until Wave 0 and Wave 1 causal producers are classified."
+  ]
+}
