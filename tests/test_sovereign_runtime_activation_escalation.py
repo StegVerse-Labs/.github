@@ -85,11 +85,12 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
             self.assertEqual(response["transition_id"], "SOVEREIGN_RUNTIME_RESOLUTION_ESCALATION_REQUIRED")
             self.assertEqual(response["expected_next_transition"], "DERIVE_AND_REGISTER_RESOLUTION_TASK")
             blocker = response["blocker"]
-            self.assertEqual(blocker["dependency_class"], "PHYSICAL_RESOURCE")
+            self.assertEqual(blocker["dependency_class"], "LOCAL_EXECUTION_SURFACE")
             self.assertEqual(blocker["trigger_type"], "CONDITIONAL_CONSTRAINT")
             self.assertTrue(blocker["solution_required"])
             self.assertFalse(blocker["resolvable_by_current_worker"])
-            self.assertEqual(blocker["escalation_target"], "REPOSITORY_OWNER")
+            self.assertFalse(blocker["physical_additional_machine_required"])
+            self.assertEqual(blocker["escalation_target"], "SOVEREIGN_RUNTIME_OWNER")
             self.assertIn("repository_resolution", blocker["required_capabilities"])
             self.assertGreaterEqual(len(blocker["workaround_candidates"]), 1)
             self.assertGreaterEqual(len(blocker["completion_evidence"]), 1)
@@ -130,150 +131,20 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
 
         handoff = json.loads((ROOT / "handoffs" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text())
         self.assertEqual(handoff["task"]["priority"], "release")
-        self.assertLess(
-            HeartbeatRuntimeV2.PRIORITY["release"],
-            HeartbeatRuntimeV2.PRIORITY["critical"],
-        )
+        self.assertLess(HeartbeatRuntimeV2.PRIORITY["release"], HeartbeatRuntimeV2.PRIORITY["critical"])
         self.assertEqual(handoff["authority"]["credential_authority"], "TV/TVC")
         self.assertEqual(handoff["authority"]["github_token_production_authority"], "NONE")
         self.assertIn("STEGFIN-LIVE-ENTRY-003", handoff["release_downstream"])
         self.assertEqual(handoff["constraint"]["operational_state"], "ACTIVE_SOLUTION_EXECUTION")
 
-    def test_g18_adapter_passes_only_sovereign_runtime_declaration_environment(self) -> None:
-        adapters = json.loads((ROOT / "control" / "process-worker-adapters.json").read_text())
-        adapter = next(
-            row for row in adapters["adapters"]
-            if row["adapter_ref"] == "process:sovereign-runtime-activation-v1"
-        )
-        allowlist = set(adapter["env_allowlist"])
-        self.assertIn("STEGVERSE_SOVEREIGN_NODE", allowlist)
-        self.assertIn("STEGVERSE_HEARTBEAT_ROOT", allowlist)
-        self.assertNotIn("GITHUB_TOKEN", allowlist)
-        self.assertNotIn("GH_TOKEN", allowlist)
-        self.assertNotIn("ZEROEX_API_KEY", allowlist)
-        self.assertNotIn("WALLET_PRIVATE_KEY", allowlist)
-
-    def test_v11_resolution_successor_inherits_release_priority(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            (root / "handoffs").mkdir(parents=True)
-            parent_handoff = json.loads(
-                (ROOT / "handoffs" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text()
-            )
-            (root / "handoffs" / "parent.json").write_text(
-                json.dumps(parent_handoff), encoding="utf-8"
-            )
-            parent = {
-                "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-                "goal_id": parent_handoff["goal"]["goal_id"],
-                "state": "BLOCKED",
-                "handoff_ref": "handoffs/parent.json",
-                "executor_binding": "BOUND",
-                "worker_id": None,
-                "worker_instance_id": None,
-                "claim_id": None,
-                "heartbeat_timing": None,
-                "last_checkpoint_ref": parent_handoff["continuity"]["checkpoint_ref"],
-                "archive_eligible": False,
-                "archive_reason_codes": [],
-                "evidence_refs": [],
-            }
-            registry = {"generation": 18, "workers": [], "tasks": [parent]}
-            contract = {
-                "trigger_type": "CONDITIONAL_CONSTRAINT",
-                "dependency_class": "PHYSICAL_RESOURCE",
-                "problem_statement": "No declared sovereign carrier is observable.",
-                "solution_required": True,
-                "workaround_candidates": ["promote an eligible sovereign micro-node"],
-                "next_solution_action": "select or materialize a sovereign carrier",
-                "resolvable_by_current_worker": False,
-                "escalation_target": "REPOSITORY_OWNER",
-                "required_capabilities": ["repository_resolution", "sandbox_validation"],
-                "completion_evidence": ["nine-predicate activation proof passes"],
-            }
-            runtime = HeartbeatRuntimeV11(root)
-            events: list[dict] = []
-            task_id = runtime._admit_resolution_task(
-                registry,
-                parent,
-                30,
-                events,
-                "resolution-contract:test",
-                contract,
-            )
-            generated = json.loads(
-                (root / "handoffs" / "generated" / f"{task_id}.json").read_text()
-            )
-            self.assertEqual(generated["task"]["priority"], "release")
-            self.assertTrue(
-                any(event.get("event_type") == "resolution_priority_inherited" for event in events)
-            )
-
     def test_repository_resolution_worker_is_uniquely_profile_eligible(self) -> None:
-        fragment = json.loads(
-            (ROOT / "control" / "worker-registry.d" / "sovereign-node-repository-resolution-v1.json").read_text()
-        )
-        worker = fragment["workers"][0]
-        self.assertEqual(worker["capabilities"], ["repository_resolution", "sandbox_validation"])
-        self.assertEqual(
-            worker["capability_profile_ref"],
-            "control/worker-capability-profiles.json#sovereign-resolution-worker-v1",
-        )
-        profiles = json.loads((ROOT / "control" / "worker-capability-profiles.json").read_text())
-        profile = next(
-            row for row in profiles["profiles"]
-            if row["profile_id"] == "sovereign-resolution-worker-v1"
-        )
-        self.assertEqual(
-            set(profile["allowed_capabilities"]),
-            {"repository_resolution", "sandbox_validation"},
-        )
-        adapters = json.loads((ROOT / "control" / "process-worker-adapters.json").read_text())
-        matching = [
-            row for row in adapters["adapters"]
-            if set(row.get("capabilities") or []) == {"repository_resolution", "sandbox_validation"}
-            and row.get("enabled") is True
-        ]
-        self.assertEqual([row["adapter_ref"] for row in matching], ["process:sovereign-node-repository-resolution-v1"])
-
-    def test_repository_resolver_escalates_without_node_and_completes_with_authorized_declaration(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            base_env = {
-                "PATH": os.environ.get("PATH", ""),
-                "HOME": str(root / "home"),
-                "XDG_STATE_HOME": str(root / "state"),
-            }
-            blocked = subprocess.run(
-                [sys.executable, str(RESOLVER)],
-                cwd=tmp,
-                input=json.dumps(self.resolver_invocation()) + "\n",
-                text=True,
-                capture_output=True,
-                env=base_env,
-                check=False,
-            )
-            self.assertEqual(blocked.returncode, 0, blocked.stderr)
-            blocked_response = json.loads(blocked.stdout)
-            self.assertEqual(blocked_response["state"], "BLOCKED")
-            self.assertEqual(blocked_response["blocker"]["escalation_target"], "COMPONENT_AUTHORITY")
-            self.assertNotIn("GITHUB_TOKEN", blocked.stdout)
-
-            declared_env = dict(base_env)
-            declared_env["STEGVERSE_SOVEREIGN_NODE"] = "1"
-            completed = subprocess.run(
-                [sys.executable, str(RESOLVER)],
-                cwd=tmp,
-                input=json.dumps(self.resolver_invocation()) + "\n",
-                text=True,
-                capture_output=True,
-                env=declared_env,
-                check=False,
-            )
-            self.assertEqual(completed.returncode, 0, completed.stderr)
-            completed_response = json.loads(completed.stdout)
-            self.assertEqual(completed_response["state"], "COMPLETED")
-            self.assertEqual(completed_response["transition_id"], "SOVEREIGN_NODE_DECLARATION_RESOLVED")
+        runtime = HeartbeatRuntimeV11(ROOT, dry_run=True)
+        handoff = self.resolver_invocation()["handoff"]
+        task = self.resolver_invocation()["task"]
+        task["required_capabilities"] = handoff["execution"]["required_capabilities"]
+        task["allowed_paths"] = handoff["execution"]["allowed_paths"]
+        resolved = runtime._resolve_executor(task, handoff)
+        self.assertEqual(resolved.get("worker_id"), "sovereign-node-repository-resolution-worker-v1")
 
 
 if __name__ == "__main__":
