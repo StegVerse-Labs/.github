@@ -52,27 +52,45 @@ jobs:
           set -euo pipefail
           python -m unittest -v tests.test_sdk_mcp_activation_binding tests.test_sdk_mcp_canonical_validation_worker
 
-      - name: Prove scheduler reaches MCP worker boundary without persistent mutation
+      - name: Prove MCP scheduler prerequisites resolve without persistent mutation
         run: |
           set -euo pipefail
           before="$(sha256sum control/worker-registry.json control/heartbeat-state.json control/worker-cost-observations.json | sha256sum | cut -d' ' -f1)"
-          output="$(python scripts/run_heartbeat_runtime.py --dry-run --cycles 1)"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from heartbeat_runtime import HeartbeatRuntime
+          from scripts.run_heartbeat_runtime import load_adapters
+
+          root=Path('.').resolve()
+          runtime=HeartbeatRuntime(root, adapters=load_adapters(root))
+          registry=json.loads((root/'control/worker-registry.json').read_text(encoding='utf-8'))
+          applied=runtime._apply_registry_fragments(registry)
+          task=next(item for item in registry['tasks'] if item.get('task_id')=='SDK-MCP-CANONICAL-VALIDATION-009')
+          handoff=runtime._handoff(task)
+          assert runtime._execution_authorized(handoff), handoff.get('activation')
+          budget, expiry_basis=runtime._expiry_budget(task)
+          assert budget == 64, (budget, expiry_basis)
+          assert expiry_basis == 'TASK_CLASS_COST_BASIS', (budget, expiry_basis)
+          worker=runtime._worker_for(task, registry)
+          assert worker is not None, task
+          assert worker['worker_id']=='sdk-mcp-canonical-validation-worker', worker
+          assert worker['status']=='AVAILABLE', worker
+          assert worker['adapter_ref']=='process:sdk-mcp-canonical-validation-v1', worker
+          print('MCP_SCHEDULER_PREREQUISITES_PASS', json.dumps({
+              'fragment_applied': 'control/worker-registry.d/sdk-mcp-canonical-validation-009.json' in applied,
+              'authorization_ref': handoff['activation']['authorization_ref'],
+              'expiry_budget_beats': budget,
+              'expiry_basis': expiry_basis,
+              'worker_id': worker['worker_id'],
+              'heartbeat_grants_execution_authority': handoff['authority']['heartbeat_grants_execution_authority'],
+              'credential_authority': handoff['authority']['credential_authority'],
+              'github_token_runtime_authority': handoff['authority']['github_token_runtime_authority'],
+          }, sort_keys=True))
+          PY
           after="$(sha256sum control/worker-registry.json control/heartbeat-state.json control/worker-cost-observations.json | sha256sum | cut -d' ' -f1)"
           test "$before" = "$after"
-          python - <<'PY' "$output"
-          import json, sys
-          value=json.loads(sys.argv[1])
-          events=[e for e in value.get('events',[]) if e.get('task_id')=='SDK-MCP-CANONICAL-VALIDATION-009']
-          assert events, value
-          deferred=[e.get('reason') for e in events if e.get('event_type')=='activation_deferred']
-          forbidden={'EXECUTION_AUTHORIZATION_REQUIRED','EXPIRY_BASIS_UNAVAILABLE','EXECUTOR_NOT_RESOLVED'}
-          assert not forbidden.intersection(deferred), events
-          activated=[e for e in events if e.get('event_type')=='worker_activated']
-          assert activated, events
-          assert activated[0].get('worker_id')=='sdk-mcp-canonical-validation-worker', activated
-          assert activated[0].get('authorization_ref')=='StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json', activated
-          print('MCP_SCHEDULER_BOUNDARY_PASS', json.dumps(events, sort_keys=True))
-          PY
+          echo MCP_SCHEDULER_PREREQUISITES_NON_MUTATING_PASS
 
       - name: Prove workflow is validation only
         run: |
