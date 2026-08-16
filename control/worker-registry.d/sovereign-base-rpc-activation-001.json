@@ -1,0 +1,72 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": ["REAL_SYNCHRONIZED_STEGVERSE_BASE_ENDPOINT_NOT_YET_OBSERVED"],
+      "authorized_policy_version": "shwp-sovereign-base-rpc-activation-v0.1",
+      "block_ref": "tasks/TASK-2026-0005.json",
+      "claim_id": null,
+      "evidence_refs": [
+        "docs/SOVEREIGN_BASE_RPC_ACTIVATION_MIRROR_HANDOFF.md",
+        "handoffs/SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001.json",
+        "workers/sovereign_base_rpc_activation_worker.py",
+        "StegVerse-002/micro-node-runtime:docs/SOVEREIGN_BASE_RPC_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/TVC:docs/SOVEREIGN_BASE_RPC_ROUTE_MIRROR_HANDOFF.md"
+      ],
+      "executor_binding": "AUTHORIZED_LOCAL_SOURCE_ONLY",
+      "goal_id": "G09-SOVEREIGN-BASE-RPC-ACTIVATION",
+      "handoff_ref": "handoffs/SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": null,
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001",
+      "worker_id": "sovereign-base-rpc-activation-worker",
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:stegfin-base-pretrade:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": ["tasks/TASK-2026-0005.json"],
+        "admissibility_evidence_refs": [
+          "StegVerse-002/micro-node-runtime:docs/SOVEREIGN_BASE_RPC_MIRROR_HANDOFF.md",
+          "StegVerse-Labs/TVC:docs/SOVEREIGN_BASE_RPC_ROUTE_MIRROR_HANDOFF.md"
+        ],
+        "integration_evidence_refs": ["workers/sovereign_base_rpc_activation_worker.py"],
+        "activation_proof_ref": null,
+        "blockers": ["REAL_SYNCHRONIZED_STEGVERSE_BASE_ENDPOINT_NOT_YET_OBSERVED"],
+        "continuation_owner": "resident sovereign heartbeat -> sovereign-base-rpc-activation-worker -> StegVerse-Labs/TVC -> StegVerse-Labs/stegfin-governance#60",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:sovereign-base-rpc-activation-v1",
+      "authority_source": "handoffs/SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "bounded_repository_mutation",
+        "sovereign_base_rpc_activation"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "sovereign-base-rpc-activation-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "provider_capability_authority": "NONE",
+  "dependencies": ["SHWP-DURABLE-RUNTIME-ACTIVATION", "released_local_micro_node_runtime"],
+  "preferred_carrier_required": true,
+  "priority": "critical"
+}
