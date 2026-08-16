@@ -8,30 +8,43 @@
   "claimant": "current-session-validation-and-nonconflicting-dependency-lane",
   "role": "implementation + validation of logical-node workaround only",
   "claim_created": "2026-08-15T21:32:00-05:00",
-  "release_condition": "ephemeral console source/tests/workflow pass and G18 handoff/blocker explicitly accept logical isolated peer nodes without weakening the requirement that production carrier itself run on a StegVerse-controlled non-hosted surface",
+  "claim_released": "2026-08-15T21:38:00-05:00",
+  "release_condition": "SATISFIED",
   "surfaces": [
     "scripts/run_sovereign_ephemeral_console.py",
     "scripts/restart_sovereign_ephemeral_node.py",
     "scripts/verify_sovereign_runtime_activation.py",
+    "workers/sovereign_runtime_activation_worker.py",
     "tests/test_sovereign_ephemeral_console.py",
     ".github/workflows/sovereign-ephemeral-console.yml",
-    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "docs/SOVEREIGN_EPHEMERAL_CONSOLE_MIRROR_HANDOFF.md",
     "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json"
   ],
   "collision_boundary": [
-    "Do not acquire, replace, or mutate G18 fencing token 18.",
-    "Do not claim a GitHub-hosted validation runner is sovereign production activation.",
-    "Do not introduce Render, Vercel, Cloudflare, GitHub-token runtime authority, provider secrets, or NON-TV/TVC credentials.",
-    "Do not require another physical computer for peer-isolation validation when equivalent process/state/identity isolation is locally provable."
+    "G18 fencing token 18 remains canonical live activation authority.",
+    "GitHub-hosted validation is never sovereign production activation.",
+    "Render, Vercel, Cloudflare, GitHub-token runtime authority, provider secrets, and NON-TV/TVC credentials remain prohibited.",
+    "Additional physical computers are not required for peer-isolation validation when process/state/identity isolation is locally provable."
   ],
-  "expected_evidence": [
-    "three isolated runtime roots and node identities",
-    "independent process PIDs",
-    "controlled restart of an isolated logical peer",
-    "state reconstruction/non-regression proof",
-    "cross-node claim/fence collision proof",
-    "hosted validation that tests source semantics without claiming production activation"
+  "validation_evidence": {
+    "workflow": ".github/workflows/sovereign-ephemeral-console.yml",
+    "run": 31922343365,
+    "job": 95104160072,
+    "head": "04754fe620b014cefe0853abe214e59dc1a184cc",
+    "conclusion": "SUCCESS",
+    "passed_steps": [
+      "Reject runtime credentials",
+      "Compile console verifier and G18 worker",
+      "Run deterministic console tests",
+      "Verify G18 automatically owns fallback",
+      "Prove hosted runner is validation only",
+      "Assert production activation is not claimed"
+    ]
+  },
+  "defects_corrected": [
+    "Canonical activation verifier expected heartbeat_runtime/engine_v9.py although materialization binds engine_v11; verifier now requires engine_v11.",
+    "G18 physical-resource escalation implied another machine could be required; G18 now automatically attempts a three-logical-node StegVerse console on one eligible host after native bootstrap is incomplete."
   ],
-  "claim_state": "CLAIMED_FOR_IMPLEMENTATION",
-  "next_task_after_release": "G18 consumes the released console automatically on its first eligible StegVerse-controlled non-hosted execution surface; one physical host is sufficient."
+  "claim_state": "COMPLETE_RELEASED",
+  "next_task_after_release": "G18 automatically executes native self-bootstrap and, when needed, the one-host ephemeral sovereign console on its first eligible non-hosted StegVerse-controlled surface; canonical activation completes only when activation.latest.json has all nine predicates true."
 }
