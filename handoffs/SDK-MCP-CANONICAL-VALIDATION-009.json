@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SDK-MCP-CANONICAL-VALIDATION-009",
   "created_at": "2026-08-15T09:40:00-05:00",
-  "updated_at": "2026-08-15T14:30:00-05:00",
+  "updated_at": "2026-08-15T19:42:00-05:00",
   "state": "HANDOFF_READY_MACHINE_OWNED",
   "admissible_existence": {
     "capability_id": "stegverse:capability:sdk-mcp-canonical-validation:v1",
@@ -133,6 +133,13 @@
     "runtime_window_beats": 64,
     "rate_class": "sdk_mcp_canonical_validation",
     "hosted_execution_allowed": false
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json",
+    "recheck_trigger": "each admitted carrier reference while exact sovereign artifact proof remains incomplete",
+    "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {
     "master_records_required": true,
