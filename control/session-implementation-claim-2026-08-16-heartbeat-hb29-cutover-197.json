@@ -20,6 +20,7 @@
     "tests/test_sovereign_heartbeat_service.py",
     ".github/workflows/org-heartbeat.yml",
     "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+    "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
     "control/session-implementation-claim-2026-08-16-heartbeat-hb29-cutover-197.json"
   ],
   "prohibited_paths": [
@@ -30,7 +31,7 @@
     "authorizations/**",
     "workers/**"
   ],
-  "collision_boundary": "Source cutover implementation and validation only. Do not mutate the live/repository legacy HB29 snapshot, current claims/fences/leases, sovereign-host process state, TV/TVC protected values, provider/wallet state, or Master Records custody. Actual producer activation occurs only when the resident StegVerse host runs the released runtime. Package-level v11 compatibility remains available for arbitrary test/consumer fixtures; the production runner selects v12 only for canonical HB29 or an already-materialized separated carrier state. The validation workflow may exercise disposable state only and may not be treated as production activation.",
+  "collision_boundary": "Source cutover implementation and validation only. Do not mutate the live/repository legacy HB29 snapshot, current claims/fences/leases, sovereign-host process state, TV/TVC protected values, provider/wallet state, or Master Records custody. Actual producer activation occurs only when the resident StegVerse host runs the released runtime. Package-level v11 compatibility remains available for arbitrary test/consumer fixtures; the production runner selects v12 only for canonical HB29 or an already-materialized separated carrier state. The validation workflow may exercise disposable state only and may not be treated as production activation. The sovereign deployment handoff change is metadata-only conformance to the already-active execution-ownership policy and may not redefine runtime authority.",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",
@@ -44,6 +45,7 @@
     "production runner selects v12 for canonical HB29 while library compatibility fixtures retain v11 behavior",
     "sovereign materialization records the runtime selector and includes engine_v12",
     "validation workflow proves HB29 remains immutable while disposable separated carrier advances across multiple cycles",
+    "all heartbeat handoffs satisfy explicit execution ownership/collision partition policy",
     "complete deterministic repository validation passes"
   ],
   "release_condition": "PR merges after deterministic validation; actual live activation remains G18/resident-host owned until node-local HB30 separated-schema receipt is observed.",
