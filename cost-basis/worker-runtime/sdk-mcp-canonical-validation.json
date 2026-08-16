@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "sdk_mcp_canonical_validation",
+  "sample_count": 1,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 64,
+    "confidence": "MEDIUM"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 1048576,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 3
+  },
+  "evidence_refs": [
+    "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json",
+    "handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json",
+    "workers/sdk_mcp_canonical_validation_worker.py",
+    "control/process-worker-adapters.d/sdk-mcp-canonical-validation-009.json"
+  ],
+  "notes": [
+    "The expiry candidate is bounded by the executable handoff runtime_window_beats=64 and exists only to let the canonical scheduler mint a finite collision-safe validation claim.",
+    "The worker is expected to complete in one admitted execution once all exact local artifact roots are materialized; retries are separately bounded to three.",
+    "No provider, GitHub, wallet, cloud, or non-TV/TVC credential authority is created by this cost basis.",
+    "External cost is zero and wall-clock time is not worker lease authority."
+  ]
+}
