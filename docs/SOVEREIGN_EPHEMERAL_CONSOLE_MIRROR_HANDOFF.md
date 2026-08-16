@@ -1,8 +1,10 @@
 # Sovereign Ephemeral Console Mirror Handoff
 
-Updated: 2026-08-15T22:45:00-05:00
+Updated: 2026-08-16T02:13:00-05:00
 
 ## Source of truth
+
+This is the subordinate source/validation handoff for `SHWP-SOVEREIGN-EPHEMERAL-CONSOLE-002`. It does not replace the parent G18 activation handoff, fencing token, heartbeat authority, TV/TVC authority, Master Records custody, or wallet boundaries.
 
 ```text
 goal_id: SHWP-SOVEREIGN-EPHEMERAL-CONSOLE-002
@@ -14,19 +16,18 @@ live_owner: G18 / SHWP-DURABLE-RUNTIME-ACTIVATION fencing token 18
 source_claim: COMPLETE_RELEASED
 credential_authority: TV/TVC
 non_tv_tvc_secret_or_token_allowed: false
-render_allowed: false
+github_token_runtime_authority: NONE
+Render production runtime: PROHIBITED
 physical_host_cardinality_default: 1
 physical_additional_machine_required: false
 third_party_machine_or_service_required: false
 ```
 
-This is a subordinate implementation handoff. It does not replace the G18 activation handoff, fencing token, heartbeat authority, TV/TVC authority, Master Records custody, or wallet boundaries.
-
 ## Global sovereignty invariant
 
 Canonical policy: `control/sovereign-runtime-platform-policy.json`.
 
-A StegVerse deployment is sovereign only when every required production process, scheduler, runtime, state store, validation execution boundary, control-plane executor, and continuity dependency is satisfied by the deployment's own sovereign physical host and StegVerse-controlled logical boundaries on that host.
+A StegVerse deployment is sovereign only when every required production process, scheduler, runtime, state store, validation execution boundary, control-plane executor and continuity dependency is satisfied by the deployment's own sovereign physical host and StegVerse-controlled logical boundaries on that host.
 
 ```text
 ONE deployment = ONE sovereign physical host by default
@@ -38,37 +39,29 @@ third-party control-plane executor required: FALSE
 hosted validation may create production authority: FALSE
 ```
 
-External providers/networks may be optional user-selected inputs, but their loss may not prevent the sovereign StegVerse runtime, governance, proof, replay, reconstruction, continuity, or local control plane from operating within its declared scope.
+## Purpose and topology
 
-## Originating problem
-
-The activation path repeatedly escalated toward an "eligible machine" or physical-resource workaround even though the proof requirement is independence of execution/state boundaries, not possession of a second or third physical computer.
-
-That interpretation is now prohibited.
-
-The canonical topology is:
+The implementation corrects the prior tendency to escalate independent-peer proof toward additional physical machines. The proof requirement is independent execution/state boundaries, not possession of a second or third physical computer.
 
 ```text
-THE deployment's ONE sovereign physical StegVerse host
-  -> canonical persistent StegVerse runtime
-  -> G18 native self-bootstrap attempt
-  -> when independent-peer proof is required or native service proof is incomplete,
-     G18 automatically starts scripts/run_sovereign_ephemeral_console.py
-  -> isolated logical node 1
-  -> isolated logical node 2
-  -> isolated logical node 3
-  -> separate identities / runtime roots / state trees / receipt trees / process PIDs
-  -> controlled restart
-  -> state reconstruction / non-regression
-  -> collision / fencing isolation
-  -> canonical nine-predicate proof
-  -> validation peers terminate
-  -> primary local carrier may remain active
+THE deployment's sovereign StegVerse host
+-> canonical persistent StegVerse runtime
+-> G18 native self-bootstrap attempt
+-> when independent-peer proof is required or native service proof is incomplete:
+   scripts/run_sovereign_ephemeral_console.py
+-> isolated logical nodes 1, 2 and 3
+-> distinct identities, runtime roots, state trees, receipt trees and process PIDs
+-> controlled restart
+-> state reconstruction/non-regression
+-> collision/fencing isolation
+-> canonical nine-predicate proof
+-> validation peers terminate
+-> primary local carrier may remain active
 ```
 
-No additional physical computer is a valid required predicate. No third-party machine or service may substitute for the deployment's sovereign host.
+No additional physical computer, hosted provider or third-party machine/service is a valid required predicate.
 
-## Implemented files
+## Implemented surfaces
 
 ```text
 scripts/run_sovereign_ephemeral_console.py
@@ -80,168 +73,136 @@ tests/test_sovereign_ephemeral_console.py
 control/session-implementation-claim-2026-08-15-sovereign-ephemeral-console.json
 ```
 
-## Corrected verifier defect
-
-The installer materializes and binds:
-
-```text
-heartbeat_runtime.engine_v11.HeartbeatRuntime
-```
-
-but `scripts/verify_sovereign_runtime_activation.py` had still required `heartbeat_runtime/engine_v9.py` as a materialization predicate. That mismatch could falsely report `RUNTIME_NOT_MATERIALIZED` after a valid current installation.
-
-The verifier now requires `engine_v11.py` and records missing runtime files explicitly.
+The verifier now binds the canonical `heartbeat_runtime.engine_v11.HeartbeatRuntime` materialization path rather than the obsolete engine-v9 requirement.
 
 ## Logical-node proof invariants
 
-Each ephemeral logical node has an independent:
+Each validation node has an independent node identity, runtime root, heartbeat-state tree, worker-registry copy, checkpoint tree, receipt tree, process PID and restart lifecycle. The console proves distinct roots/PIDs, sentinel write isolation, controlled restart, state reconstruction, non-regression and claim/fence isolation. Validation identities grant no Node Sovereign membership or route/credential authority.
 
-```text
-node identity
-runtime root
-heartbeat-state tree
-worker-registry copy
-checkpoint tree
-receipt tree
-process PID
-restart lifecycle
-```
+The canonical predicate name `native_service_active` remains for schema compatibility. The verifier may satisfy it through a supported deployment-local native or bounded same-host supervision mode only when the canonical proof contract is met. Hosted Actions execution is validation-only and cannot count as production activation.
 
-The console requires at least three logical nodes for the former third-machine-emulation case. It proves distinct runtime roots, distinct active process IDs, sentinel write isolation, successful canonical nine-predicate proof for the third logical node, and all-node proof completion.
+## Released validation evidence
 
-The validation identities grant no Node Sovereign membership.
-
-## Supervision semantics
-
-The canonical predicate name remains `native_service_active` for schema compatibility, but the verifier accepts either:
-
-```text
-OS-native supervision:
-  systemd-user | launch-agent | scheduled-task
-
-OR
-
-StegVerse-native same-host supervision:
-  registration_kind: stegverse-ephemeral-console
-  stegverse_process_supervision: true
-  third_party_process_host_required: false
-  explicit local restart_command bound in the service receipt
-```
-
-This is not a third-party process host and introduces no external scheduler.
-
-## Hosted validation boundary
-
-GitHub Actions is validation-only.
-
-A hosted execution must return:
-
-```text
-state: VALIDATION_ONLY
-hosted_environment_observed: true
-canonical_proof_promoted: false
-```
-
-The hosted job may compile and test source semantics but cannot create sovereign production activation evidence.
-
-## Validation evidence
+Canonical source validation recorded by the parent blocker:
 
 ```text
 workflow: .github/workflows/sovereign-ephemeral-console.yml
 run: 31922398210
 job: 95104297651
-head: e9df7ebd7824a3ad822528ca1092b72c13cf57c0
 conclusion: SUCCESS
+hosted_execution_role: VALIDATION_ONLY
+production_activation_claimed: false
 ```
 
-Passed stages:
+The workflow itself was later found omitted from `control/workflow-surface-registry.json`. The 2026-08-16 bounded hygiene repair registers it as `REVIEW_REQUIRED` under G18 ownership; registration grants no retention, production, runtime, credential, route or heartbeat authority.
 
-1. runtime credential rejection;
-2. console/verifier/G18 compilation;
-3. deterministic logical-node tests;
-4. proof that G18 automatically owns the fallback;
-5. hosted runner forced to `VALIDATION_ONLY`;
-6. explicit assertion that production activation was not claimed.
+## Current live boundary
 
-Earlier source validation also passed at runs `31922281819` and `31922343365`.
-
-## G18 integration
-
-`workers/sovereign_runtime_activation_worker.py` performs:
+Repository-local source is complete. Live execution remains a parent G18 responsibility and is not implied by workflow PASS.
 
 ```text
-existing activation proof?
-  yes -> COMPLETE
-  no  -> native self-bootstrap on THE deployment host
-          success -> COMPLETE
-          incomplete -> same-host ephemeral console
-              all logical-node + nine predicates pass -> promote canonical proof
-              otherwise -> exact fail-closed evidence
+canonical heartbeat last directly observed: HB29
+parent live state: MACHINE_OWNED_BOUND_G18
+current constraint: SOVEREIGN_LOCAL_RUNTIME_LIVE_PROOF_NOT_YET_OBSERVED
+remaining control boundary: DEPLOYMENT_HOST_CONTROL_PLANE_REACHABILITY
+missing_implementation: false
+human_action_required: false
 ```
 
-No alternate-machine search or federated-host selection is part of the canonical deployment path.
+Machine completion requires `~/.stegverse/heartbeat/activation.latest.json` to report all nine canonical predicates true. If the console fallback is used, `ephemeral-console.latest.json` must additionally prove all nodes and all isolation predicates pass with no additional physical machine required.
 
-## Authority and secret boundary
+## Execution ownership and collision partition
 
-```text
-provider secret authority inside console: NONE
-GitHub token runtime authority: NONE
-credential requirement: NONE
-credential authority: TV/TVC
-Render production runtime: PROHIBITED
-Vercel/Cloudflare/GitHub-hosted production runtime: PROHIBITED
-third-party machine as production dependency: PROHIBITED
-third-party process host required: false
-third-party scheduler required: false
-third-party state host required: false
-additional physical machine required: false
-wallet signing/broadcast: NONE / USER_ONLY downstream
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+- task_id: SHWP-SOVEREIGN-EPHEMERAL-CONSOLE-METADATA-VALIDATION
+  execution_owner: bounded hygiene/validation session only when explicitly claimed under StegVerse-Labs/.github#165
+  claim_state: CLAIMED_FOR_VALIDATION_REPAIR_2026_08_16
+  worker_registry_ref: NONE_SOURCE_METADATA_ONLY
+  manual_execution_allowed: true
+  collision_scope: handoff/workflow registration metadata only; excludes console behavior, G18 runtime execution, heartbeat state, worker registry, activation receipts and production process control
+  release_condition: workflow-surface hygiene and handoff-execution-ownership validators pass and the bounded validation claim is released
+  next_executable_action: validate metadata repair, then release the validation claim without touching live G18 execution
 ```
 
-## Current activation condition
+### WORKER-OWNED / DO NOT COMPETE
 
-Source implementation and validation are complete. Hosted validation does not claim production activation.
-
-The only valid activation condition is:
-
-```text
-G18 executes on THE deployment's existing sovereign StegVerse physical host
-AND
-activation.latest.json reports all nine predicates true
+```yaml
+- task_id: SHWP-DURABLE-RUNTIME-ACTIVATION
+  execution_owner: resident sovereign heartbeat + sovereign-runtime-activation-worker / G18 fencing token 18
+  claim_state: MACHINE_OWNED_BOUND_G18
+  worker_registry_ref: control/worker-registry.json#SHWP-DURABLE-RUNTIME-ACTIVATION
+  manual_execution_allowed: false
+  collision_scope: native bootstrap, same-host ephemeral-console launch when required, heartbeat state, claim/fence, canonical activation receipts and restart/reconstruction proof
+  release_condition: node-local nine-predicate activation PASS or canonical fail-closed resolution/escalation releases/supersedes G18
+  next_executable_action: G18 executes the released single-host bootstrap and same-host logical-node fallback on the deployment-local sovereign host
 ```
 
-When independent execution boundaries are needed, G18 creates them as logical nodes on that same host. It must not search for, wait for, or require another machine.
+### ESCALATED / AUTHORITY-OWNED
 
-The current chat connector can mutate and validate repository state but does not expose process execution on the deployment's physical StegVerse host. That is a connector/control-plane reachability boundary, not a requirement for another machine and not permission to introduce a third-party runtime.
-
-## Claims
-
-```text
-implementation claim: COMPLETE_RELEASED
-validation claim: COMPLETE_RELEASED
-live activation claim: MACHINE_OWNED_G18
-collision rule: do not create a second G18 claim/fence; do not treat hosted validation as activation; do not introduce another physical-machine requirement
+```yaml
+- task_id: SHWP-DURABLE-RUNTIME-ACTIVATION-CONSTRAINT-RESOLUTION
+  execution_owner: heartbeat_runtime.engine_v11 authority chain and applicable repository/component authority
+  claim_state: ESCALATED_IF_G18_CANNOT_RESOLVE
+  worker_registry_ref: docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md + control/worker-registry.json
+  manual_execution_allowed: false
+  collision_scope: any canonical-source, writable-state, local-process, service-activation or authority condition beyond G18's ceiling
+  release_condition: the authority chain resolves the exact condition or explicitly assigns a bounded human-authority action
+  next_executable_action: derive/register the next bounded RESOLVE/ESCALATE task rather than inventing another machine or hosted provider
+- task_id: TV-TVC-CREDENTIAL-AND-ROUTE-AUTHORITY
+  execution_owner: StegVerse-Labs/TV + StegVerse-Labs/TVC
+  claim_state: AUTHORITY_OWNED
+  worker_registry_ref: canonical TV/TVC handoffs and route task records
+  manual_execution_allowed: false
+  collision_scope: credential and route semantics only; ephemeral nodes grant no credential or route authority
+  release_condition: TV/TVC emits the applicable admitted result for an exact proof
+  next_executable_action: no action from this source handoff; TV/TVC evaluates only when a live proof reaches its authority boundary
 ```
 
-## Next executable action
+### COMPLETED / SUPERSEDED
 
-G18 executes the already-wired chain on the deployment's existing sovereign host. If native bootstrap cannot finish, G18 invokes the logical-node console automatically on that same host. No human machine selection, alternate-host search, cloud fallback, or third-party execution service is authorized.
+```yaml
+- task_id: SHWP-SOVEREIGN-EPHEMERAL-CONSOLE-002-SOURCE
+  execution_owner: StegVerse-Labs/.github source implementation lane
+  claim_state: COMPLETE_RELEASED
+  worker_registry_ref: NONE_COMPLETE_SOURCE
+  manual_execution_allowed: false
+  collision_scope: scripts, verifier correction, tests and validation-only workflow source
+  release_condition: SATISFIED
+  next_executable_action: NONE_DO_NOT_RECREATE
+- task_id: ADDITIONAL-PHYSICAL-MACHINE-REQUIREMENT
+  execution_owner: NONE
+  claim_state: SUPERSEDED_PROHIBITED
+  worker_registry_ref: NONE_SUPERSEDED
+  manual_execution_allowed: false
+  collision_scope: any attempt to make a second/third physical computer or third-party host a required proof dependency
+  release_condition: PERMANENTLY_SUPERSEDED_BY_SINGLE_HOST_LOGICAL_ISOLATION_POLICY
+  next_executable_action: NONE
+```
+
+## Cross-repository and release boundary
+
+The console produces local runtime evidence only. It does not itself authorize TVC route admission, LLM-adapter execution, Master Records custody, StegFin trade preparation, signing, broadcast, release tagging or downstream Site/Publisher/wiki propagation.
+
+Canonical live continuation remains:
+
+`handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json` -> deployment-local G18 execution -> nine-predicate proof -> existing downstream worker/authority chain.
 
 ## Completion accounting
 
 ```text
-required source/control files: 7
-implemented: 7/7
+source implementation: COMPLETE_VALIDATED_RELEASED
+primary implemented surfaces: 7/7
 scaffolding/stubs: 0
-hosted validations required: 1
-hosted validations passed: 1/1
-G18 integration required: 1
-G18 integration complete: 1/1
-physical-machine dependency removal: COMPLETE
-single-host sovereignty policy normalization: COMPLETE
-live deployment-host activation observation: PENDING_MACHINE_OWNED
+missing source files: 0
+validation-only workflow source: COMPLETE
+workflow registry metadata: REPAIRED_PENDING_SUCCESSOR_VALIDATION
+execution ownership metadata: REPAIRED_PENDING_SUCCESSOR_VALIDATION
+live G18 activation: PENDING_MACHINE_OWNED
+product activation: NOT CLAIMED
 ```
 
-## Archive boundary
+## Archive condition
 
-This subordinate source work is complete and released. Session archival must still follow the parent session's governing rule; this handoff alone does not claim the product runtime is activated.
+This source handoff does not require a chat for product execution. The temporary 2026-08-16 validation-repair session remains only until the two repository metadata validators pass and that bounded claim is released. Live G18 activation remains machine-owned regardless of chat archival.
