@@ -43,7 +43,6 @@ class HeartbeatRuntime(LegacyRuntimeBase):
         self.carrier_state_path = self.root / "control" / "heartbeat-carrier-runtime-state.json"
         self.carrier_observation_path = self.root / "control" / "heartbeat-carrier-observation.json"
         self.control_plane_path = self.root / "control" / "worker-control-plane-coordination.json"
-        self.master_records_projection_path = self.root / "control" / "heartbeat-master-records-projection.json"
         self.cutover_receipt_path = self.root / "receipts" / "heartbeat-schema-cutover" / "HB29.json"
         self.hb_path = self.carrier_state_path if self.carrier_state_path.exists() else self.legacy_hb_path
 
