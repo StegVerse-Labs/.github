@@ -4,7 +4,7 @@
   "task_id": "HEARTBEAT-HB29-CURRENT-MAIN-RECONCILE-197",
   "issue": 197,
   "parent_issue": 122,
-  "originating_goal": "Reconcile current main so legacy HB29 closes immutably into the separated carrier schema, worker coordination consumes carrier references without advancing them, and the sovereign deployment path cannot reactivate combined v11 semantics.",
+  "originating_goal": "Reconcile current main so legacy HB29 closes immutably into the separated carrier schema, worker coordination consumes carrier references without advancing them, the node-local activation verifier reads that separated state, and the sovereign deployment path cannot reactivate combined v11 semantics.",
   "repository": "StegVerse-Labs/.github",
   "branch": "claim/heartbeat-hb29-main-reconcile-197",
   "role": "CLAIMED_FOR_INTEGRATION",
@@ -17,10 +17,12 @@
     "schemas/heartbeat-carrier-runtime-state.schema.json",
     "scripts/install_sovereign_heartbeat_service.py",
     "scripts/run_worker_runtime.py",
+    "scripts/verify_sovereign_runtime_activation.py",
     "tests/test_heartbeat_engine_v12_cutover.py",
     "tests/test_worker_runtime_separation.py",
     "tests/test_heartbeat_carrier_non_authority.py",
     "tests/test_sovereign_heartbeat_service.py",
+    "tests/test_sovereign_runtime_activation_v12.py",
     "control/session-implementation-claim-2026-08-16-heartbeat-hb29-main-reconcile-197.json"
   ],
   "prohibited_paths": [
@@ -31,7 +33,7 @@
     "workers/**",
     "receipts/sovereign-runtime-activation/**"
   ],
-  "collision_boundary": "Source/schema/deployment reconciliation only. Repository/live HB29, active claims/fences/leases, actual worker authority, TV/TVC protected material and resident process activation remain owned by #122/#12. Tests may use disposable state only.",
+  "collision_boundary": "Source/schema/deployment/verifier reconciliation only. Repository/live HB29, active claims/fences/leases, actual worker authority, TV/TVC protected material and resident process activation remain owned by #122/#12. Tests may use disposable state only.",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",
@@ -41,11 +43,14 @@
     "first separated carrier epoch is HB30 and uses stegverse.heartbeat-carrier-runtime-state/v1",
     "carrier observation contains no claim/fence/lease authority",
     "worker control plane observes carrier epoch and never increments heartbeat state",
+    "worker assignment timer advances on worker-runtime ticks rather than carrier epochs",
     "installer canonical carrier names heartbeat_runtime.engine_v12.HeartbeatRuntime",
     "materialization includes carrier and worker runners separately and does not deploy v11 as carrier",
+    "activation verifier reads separated carrier state and worker control-plane state",
+    "node-local proof still requires the nine production predicates",
     "deterministic validation passes",
     "PR merges and outdated competing PR #198 is superseded"
   ],
   "release_condition": "Merge after deterministic source validation; actual live HB29 successor remains canonical resident-owner evidence under #122/#12.",
-  "next_task_after_release": "Resident StegVerse owner consumes the corrected separated materialization at the next admitted execution opportunity and records live successor evidence."
+  "next_task_after_release": "Resident StegVerse owner consumes the corrected separated materialization/verifier at the next admitted execution opportunity and records live successor evidence."
 }
