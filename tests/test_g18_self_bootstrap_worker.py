@@ -107,10 +107,11 @@ class G18SelfBootstrapWorkerTests(unittest.TestCase):
 
     def test_resolution_contract_explicitly_removes_predeclared_node_requirement(self):
         contract = worker.unresolved_node_resolution_contract({"reason": "LOCAL_RUNTIME_ELIGIBILITY_NOT_PROVEN"})
-        self.assertEqual(contract["dependency_class"], "PHYSICAL_RESOURCE")
+        self.assertEqual(contract["dependency_class"], "LOCAL_EXECUTION_SURFACE")
         self.assertFalse(contract["resolvable_by_current_worker"])
-        self.assertIn("pre-existing node declaration is not required", contract["problem_statement"])
-        self.assertIn("scripts/bootstrap_sovereign_runtime.py", contract["next_solution_action"])
+        self.assertFalse(contract["physical_additional_machine_required"])
+        self.assertIn("second or third physical machine is not required", contract["problem_statement"])
+        self.assertIn("run_sovereign_ephemeral_console.py", contract["next_solution_action"])
 
 
 if __name__ == "__main__":
