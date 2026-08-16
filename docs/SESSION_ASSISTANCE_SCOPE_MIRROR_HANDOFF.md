@@ -1,6 +1,6 @@
 # Session Assistance Scope Mirror Handoff
 
-Updated: 2026-08-16T03:28:00-05:00
+Updated: 2026-08-16T03:30:00-05:00
 
 ## Canonical session state
 
@@ -75,8 +75,6 @@ No Render service, hosted scheduler, external process host, GitHub Actions produ
 
 Canonical Base handoff: `docs/SOVEREIGN_BASE_RPC_ACTIVATION_MIRROR_HANDOFF.md`.
 
-The released worker chain is:
-
 ```text
 resident sovereign heartbeat
 -> SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001
@@ -92,8 +90,6 @@ resident sovereign heartbeat
 Source implementation is complete. Real endpoint proof, TVC admission and current-phone execution remain durable activation work outside this session.
 
 ## Human-readable USER_ONLY wallet review — COMPLETE / RELEASED / PUBLISHED
-
-This v14 reconciliation adds the latest completed trade-readiness descendant so no session-specific release evidence remains only in chat.
 
 ```text
 StegFin source issue: #71 CLOSED_COMPLETED
@@ -126,19 +122,9 @@ broadcast authority: USER_ONLY
 ## Adjacent durable continuations
 
 ```text
-TVC portable publication:
-  StegVerse-Labs/TVC/docs/PORTABLE_ARTIFACT_PUBLICATION_MIRROR_HANDOFF.md
-  StegVerse-Labs/TVC/tasks/TVC-PORTABLE-ARTIFACT-PUBLICATION-001.json
-  state: MACHINE_OWNED_BLOCKED_DEPENDENCY
-
-SDK portable consumer:
-  StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md
-  state: SOURCE_COMPLETE_WAITING_ON_TVC_PUBLICATION
-
-ASRO:
-  StegVerse-Labs/admissibility-wiki/docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md
-  StegVerse-Labs/admissibility-wiki#50
-  state: MERGED_INTO_CANONICAL_WORKSTREAM
+TVC portable publication: StegVerse-Labs/TVC/docs/PORTABLE_ARTIFACT_PUBLICATION_MIRROR_HANDOFF.md + tasks/TVC-PORTABLE-ARTIFACT-PUBLICATION-001.json
+SDK portable consumer: StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md
+ASRO: StegVerse-Labs/admissibility-wiki/docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md + issue #50
 ```
 
 No Site, Publisher, admissibility-wiki, stegguardian-wiki or Master Records propagation is inferred from session archival. Each follows its own canonical release/activation evidence.
@@ -149,54 +135,107 @@ No Site, Publisher, admissibility-wiki, stegguardian-wiki or Master Records prop
 
 ```yaml
 - task_id: SESSION-LOCAL-RUNTIME-TRADE-READINESS-V14-RECONCILIATION
-  execution_owner: this bounded reconciliation branch only
-  claim_state: CLAIMED_FOR_RECONCILIATION until v14 merge/re-read/validation
-  allowed_paths:
-    - control/session-goal-inventory-2026-08-16-local-runtime-trade-readiness-v14.json
-    - docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md
-    - receipts/session-consolidation/SESSION-LOCAL-RUNTIME-TRADE-READINESS-V14-20260816.json
-    - control/session-reconciliation-claim-2026-08-16-local-runtime-trade-readiness-v14.json
-  prohibited_scope: heartbeat state, worker registries, runtime workers, Base activation receipts, TV/TVC route authority, phone execution, wallet authority
+  execution_owner: session-local-runtime-trade-readiness-v14-reconciliation
+  claim_state: CLAIMED_FOR_RECONCILIATION
+  worker_registry_ref: NONE_BOUNDED_SESSION_RECONCILIATION
+  manual_execution_allowed: true
+  collision_scope: inventory + canonical session handoff + consolidation receipt + reconciliation claim only
   release_condition: PR merge + strongest applicable validation + direct main re-read
+  next_executable_action: validate PR, merge if all gates pass, release reconciliation claim, re-read canonical main state
 ```
 
 ### WORKER-OWNED / DO NOT COMPETE
 
 ```yaml
 - task_id: SHWP-DURABLE-RUNTIME-ACTIVATION
-  owner: resident sovereign heartbeat / G18 fencing token 18
-  state: MACHINE_OWNED
+  execution_owner: resident sovereign heartbeat / G18 fencing token 18
+  claim_state: MACHINE_OWNED
+  worker_registry_ref: control/worker-registry.json#SHWP-DURABLE-RUNTIME-ACTIVATION
+  manual_execution_allowed: false
+  collision_scope: deployment-local sovereign carrier activation, heartbeat state, claims/fences and activation receipts
   release_condition: nine-predicate activation PASS or exact deployment-host fail-closed evidence
+  next_executable_action: G18 executes released single-host bootstrap/fallback on the existing sovereign host
 - task_id: SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001
-  owner: resident sovereign heartbeat -> TVC
-  state: MACHINE_OWNED_REAL_ENDPOINT_PENDING
+  execution_owner: resident sovereign heartbeat -> TVC
+  claim_state: MACHINE_OWNED_REAL_ENDPOINT_PENDING
+  worker_registry_ref: control/worker-registry.d/sovereign-base-rpc-activation-001.json
+  manual_execution_allowed: false
+  collision_scope: credential-free local Base endpoint/process discovery, proof and TVC handoff
   release_condition: validation_only=false private Base proof then TVC ROUTE_ADMITTED
+  next_executable_action: worker executes after sovereign carrier eligibility
 - task_id: STEGFIN-PHONE-LIVE-ACTIVATION
-  owner: StegVerse-Labs/stegfin-governance#60/#68 + current-phone authority
-  state: CURRENT_AUTHORITY_OWNED
+  execution_owner: StegVerse-Labs/stegfin-governance#60/#68 + current-phone authority
+  claim_state: CURRENT_AUTHORITY_OWNED
+  worker_registry_ref: StegVerse-Labs/stegfin-governance#60
+  manual_execution_allowed: false
+  collision_scope: actual phone WebAuthn/PREPARE and exact terminal unsigned receipt
   release_condition: fresh direct StegID evidence plus exact terminal unsigned receipt
+  next_executable_action: current phone executes canonical PREPARE when prerequisites are present
 - task_id: TVC-PORTABLE-ARTIFACT-PUBLICATION-001
-  owner: StegVerse-Labs/TVC
-  state: MACHINE_OWNED_BLOCKED_DEPENDENCY
+  execution_owner: StegVerse-Labs/TVC
+  claim_state: MACHINE_OWNED_BLOCKED_DEPENDENCY
+  worker_registry_ref: StegVerse-Labs/TVC/tasks/TVC-PORTABLE-ARTIFACT-PUBLICATION-001.json
+  manual_execution_allowed: false
+  collision_scope: exact immutable portable publication under TVC authority
+  release_condition: TVC-managed publication capability admits and verifies exact candidate
+  next_executable_action: TVC machine lane continues when its admitted capability is present
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: TV-TVC-CREDENTIAL-ROUTE-PUBLICATION-AUTHORITY
+  execution_owner: StegVerse-Labs/TV + StegVerse-Labs/TVC
+  claim_state: AUTHORITY_OWNED
+  worker_registry_ref: canonical TV/TVC handoffs and task registries
+  manual_execution_allowed: false
+  collision_scope: protected credentials, route admission, publication authority and any credential_requirement semantics
+  release_condition: TV/TVC emits exact governed decision/evidence for the applicable live proof or publication candidate
+  next_executable_action: evaluate only exact live proof/candidate and fail closed when required evidence is absent
+- task_id: ASRO-REVIEW-DISPOSITION-CONTINUATION
+  execution_owner: StegVerse-Labs/admissibility-wiki issue #50 / canonical worker
+  claim_state: MERGED_INTO_CANONICAL_WORKSTREAM
+  worker_registry_ref: StegVerse-Labs/admissibility-wiki/docs/external-frameworks/worker-task-registry.json
+  manual_execution_allowed: false
+  collision_scope: ASRO-specific review/disposition/provenance evidence only
+  release_condition: canonical issue/workflow reaches a legitimate terminal evidence state
+  next_executable_action: canonical ASRO worker acts only on directly observed ASRO evidence
 ```
 
 ### COMPLETED / SUPERSEDED
 
 ```yaml
-- G03 local-runtime discovery/launch/inference/proof: COMPLETE_RELEASED
-- G04 formal local model development: COMPLETE_RELEASED
-- descriptive select-local-runtime step: SUPERSEDED
-- GitHub-token runtime authority: PROHIBITED
-- Render production runtime: PROHIBITED
-- StegFin human-readable USER_ONLY wallet review source: COMPLETE_RELEASED
-- Site wallet review projection/publication: COMPLETE_RELEASED_PUBLISHED
+- task_id: G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF
+  execution_owner: StegVerse-002/micro-node-runtime
+  claim_state: COMPLETE_RELEASED
+  worker_registry_ref: NONE_COMPLETE
+  manual_execution_allowed: false
+  collision_scope: completed local runtime discovery/launch/inference/proof source
+  release_condition: SATISFIED
+  next_executable_action: NONE_DO_NOT_RECREATE
+- task_id: G04-FORMAL-LOCAL-MODEL-DEVELOPMENT
+  execution_owner: StegVerse-002/micro-node-runtime
+  claim_state: COMPLETE_RELEASED
+  worker_registry_ref: NONE_COMPLETE
+  manual_execution_allowed: false
+  collision_scope: stegverse-reference-lm-v1 formal local model source and proof
+  release_condition: SATISFIED
+  next_executable_action: NONE_DO_NOT_RECREATE
+- task_id: STEGFIN-PHONE-WALLET-REVIEW-014-SITE-286
+  execution_owner: StegVerse-Labs/stegfin-governance + StegVerse-Labs/Site
+  claim_state: COMPLETE_RELEASED_PUBLISHED
+  worker_registry_ref: NONE_COMPLETE
+  manual_execution_allowed: false
+  collision_scope: human-readable non-authorizing USER_ONLY wallet review source and static Site projection
+  release_condition: SATISFIED_BY_STEGFIN_PR72_SITE_PR288_PAGES_1154455062
+  next_executable_action: NONE_SOURCE_SIDE; fresh phone evidence remains separately owned by #60/#68
 ```
 
 ## Session goal inventory
 
 Current authoritative inventory: `control/session-goal-inventory-2026-08-16-local-runtime-trade-readiness-v14.json`.
 
-The inventory records every incomplete product condition with an exact durable owner, evidence location and machine-observable release condition. After this bounded reconciliation claim releases:
+After this bounded reconciliation claim releases:
 
 ```text
 session_unique_claims_remaining: 0
