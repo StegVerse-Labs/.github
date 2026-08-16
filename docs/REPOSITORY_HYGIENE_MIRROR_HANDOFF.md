@@ -1,6 +1,6 @@
 # Repository Hygiene Mirror Handoff
 
-Updated: 2026-08-15T19:30:00-05:00
+Updated: 2026-08-15T19:45:00-05:00
 
 ## Active goal
 
@@ -18,7 +18,7 @@ claimant: current repository-hygiene session
 role: IMPLEMENTATION_AND_VALIDATION
 claim_created_at: 2026-08-15T19:30:00-05:00
 claim_expires_at: 2026-08-15T22:30:00-05:00
-claim_release_condition: causal-root baseline and first-wave root repository classifications are committed, issue #165 is updated to the new ordering, and all remaining cleanup is assigned to durable repo-native owners
+claim_release_condition: Wave-0 roots are classified, safe cleanup batches are applied/assigned, and all remaining work is carried by durable repository-native owners
 credential_authority: TV/TVC
 non_tv_tvc_secret_or_token_allowed: false
 render_production_runtime: prohibited
@@ -26,153 +26,132 @@ render_production_runtime: prohibited
 
 ## Governing strategy
 
-The cleanup order is changed from "worst repositories first" to **causal roots -> shared infrastructure -> low-complexity leaves -> medium-complexity consumers -> high-complexity sinks (Site and StegCore)**.
+Canonical cleanup order:
 
-The purpose is not cosmetic count reduction. The purpose is to prove that upstream repositories and control surfaces do not continually create branch, PR, issue, workflow, claim, and session-state debt in downstream repositories.
+1. Wave 0 — organization/control roots: `.github`, `repo-standards`, `Continuity`.
+2. Wave 1 — shared authority/runtime producers: TV, TVC, StegID, micro-node-runtime, LLM-adapter, Master Records and live-contract peers.
+3. Wave 2 — low-complexity leaves used as healthy reference repos.
+4. Wave 3 — medium-complexity consumers.
+5. Wave 4 — Site and StegCore as high-complexity sinks.
 
-A downstream cleanup is not considered durable until its upstream dependency producers satisfy the hygiene invariants below.
+Site/StegCore destructive cleanup remains deferred until upstream debt generation is measured and remediated.
 
 ## Hygiene invariants
 
-A healthy repository should converge toward all of the following unless an explicit exception is recorded:
+A healthy repository converges toward: canonical handoffs with explicit supersession; bounded expiring claims; no branch-per-session lifecycle when durable worker/task state suffices; no duplicate terminal branch families without evidence-retention need; no stale PR/issue state contradicting current task evidence; GitHub Actions used only for validation/coordination; 0/1/2 stable workflow entry surfaces where technically sufficient; recurring production work on StegVerse-controlled workers; and TV/TVC-only credential authority.
 
-1. one canonical mirror handoff per active capability/workstream, with supersession links rather than parallel competing handoffs;
-2. bounded, expiring task/implementation claims with terminal release evidence;
-3. no branch-per-session or branch-per-observer pattern when repository-native task/worker state can carry continuation;
-4. no duplicate branch families pointing to the same terminal commit without an evidence-retention reason;
-5. completed/merged/superseded branches are deletion candidates after evidence and ownership references are verified;
-6. no stale open PR whose work is already merged, superseded, abandoned, or transferred;
-7. no stale issue whose completion state disagrees with current task receipts/handoffs;
-8. GitHub workflows are repository validation/coordination only, not production continuity;
-9. stable workflow entry surfaces are preferred over one-workflow-per-capability; >2 requires a documented technical exception;
-10. recurring operational work belongs to StegVerse-controlled resident workers when technically appropriate;
-11. TV/TVC remains the only credential/secret/token authority; repository hygiene must introduce no NON-TV/TVC runtime credential path;
-12. Site and StegCore are treated as downstream sinks until upstream debt generators are proven clean.
-
-## Causal cleanup order
-
-### Wave 0 — organization/control roots
-
-- `StegVerse-Labs/.github`
-- `StegVerse-Labs/repo-standards`
-- `StegVerse-Labs/Continuity` ownership/handoff standards and registries
-
-Purpose: prove that organization policy, worker/task coordination, handoff conventions, and automation patterns do not generate hygiene debt downstream.
-
-### Wave 1 — shared infrastructure / authority producers
-
-- `StegVerse-Labs/TV`
-- `StegVerse-Labs/TVC`
-- `StegVerse-Labs/StegID`
-- `StegVerse-002/micro-node-runtime`
-- `StegVerse-org/LLM-adapter`
-- `master-records/orchestration`
-- other shared SDK/runtime repositories discovered from live dependency contracts
-
-### Wave 2 — low-complexity leaves
-
-Repositories with low branch/PR/issue/workflow counts are audited and brought to the invariants first. These become reference examples for healthy StegVerse repository lifecycle behavior.
-
-### Wave 3 — medium-complexity consumers
-
-Repositories that consume the shared infrastructure but are not ecosystem-wide sinks.
-
-### Wave 4 — high-complexity sinks
-
-- `StegVerse-Labs/Site`
-- `StegVerse-Labs/StegCore`
-
-Only after Waves 0-3 are measured and remediated should the largest sink cleanup be considered causally complete.
-
-## First live baseline — StegVerse-Labs/.github
-
-Direct GitHub observations at claim creation:
+## Durable evidence surfaces
 
 ```text
-branch_count: 73
-open_pr_count: 0
-open_issue_count_observed: 17
-active_workflow_count: 20
-main_branch_present: true
+docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md
+control/repository-hygiene-wave0-baseline.json
+control/repository-hygiene-wave0-classification.json
+StegVerse-Labs/.github#165
+StegVerse-Labs/.github#167
+StegVerse-Labs/.github#168
 ```
 
-Notable branch-family debt visible in the root control repository includes repeated variants such as:
+## Wave-0 live baseline
 
-- `feat/fail-closed-resolution-task-escalation` + `-v2`;
-- `feat/master-records-same-carrier-reconstruction-20260810` + `-v2-20260810`;
-- `feat/sovereign-heartbeat-host` + `-v2`;
-- `feat/sovereign-runtime-self-bootstrap-001` + `-002`;
-- `feat/sovereign-stegfin-post-bootstrap-001`, `-v2`, `-v3`;
-- `fix/stegfin-post-bootstrap-provenance-172` + `-v2`;
-- `reconcile/ae-retrospective-127` + `-v2`;
-- `reconcile/heartbeat-carrier-contract-120-v2`.
+| repository | branches | open PRs | open issues observed | workflows | state |
+|---|---:|---:|---:|---:|---|
+| StegVerse-Labs/.github | 73 | 0 | 17 | 17 after batch-1 | ACTIVE_CLEANUP |
+| StegVerse-Labs/repo-standards | 16 | 2 | 4 | 5 | CLASSIFICATION_PENDING |
+| StegVerse-Labs/Continuity | 5 | 0 | 1 | 9 | CLASSIFICATION_PENDING |
 
-These are **candidates**, not deletion authorization. Each must be reconciled against merge history, open/closed PRs, current handoffs, task registries, worker ownership, and evidence references before removal.
+The control root itself therefore generates material lifecycle/automation debt; Site and StegCore cannot be treated as isolated causes.
 
-The root repo itself therefore already violates the desired low-debt posture. This validates the causal-root-first strategy: Site/StegCore are not the only repositories accumulating branch/workstream residue.
+## Completed cleanup batch 1 — organization validation surfaces
 
-## Required execution inventory
+The organization workflow surface was reduced from 20 to 17 active workflows.
 
-For every repository audited, persist:
+Retained stable entrypoint:
 
 ```text
-repository
-wave
-branch_count
-open_pr_count
-open_issue_count
-workflow_count
-canonical_handoff(s)
-active_claims
-machine_owned_branches
-protected_or_release_branches
-merged_branch_candidates
-superseded_branch_candidates
-duplicate_branch_families
-stale_pr_candidates
-stale_issue_candidates
-workflow_consolidation_candidates
-upstream_debt_generated
-upstream_debt_received
-cleanup_actions_applied
-validation_evidence
-remaining_blockers
-next_owner
+.github/workflows/org-control-plane-validate.yml
 ```
 
-## Completion states
+It now includes the non-authorizing organization control-plane, allocator, continuation, session-assistance, aggregation, observer, repository-inventory, dashboard, handoff-term and aggregation-manifest validation paths.
 
-- `COMPLETE_CLEAN`: invariants satisfied and evidence retained.
-- `COMPLETE_WITH_EXCEPTIONS`: remaining debt has explicit technical/evidence justification.
-- `CLEANUP_READY`: candidates classified and safe mutations identified.
-- `BLOCKED_ACTIVE_OWNERSHIP`: cleanup would collide with active worker/task ownership.
-- `BLOCKED_EVIDENCE_REFERENCE`: branch/PR/issue still referenced by canonical evidence.
-- `REVIEW_REQUIRED`: ambiguity remains after repository-state inspection.
-- `FAILED`: hygiene mutation broke validation or authority boundaries.
+Eliminated as redundant standalone entrypoints:
+
+```text
+.github/workflows/org-allocator.yml
+.github/workflows/org-continuation-check.yml
+.github/workflows/org-aggregation-check.yml
+```
+
+Commits:
+
+```text
+6703611f3181694667996b5a7ac5a25646887531  consolidate checks into org-control-plane-validate
+b14dfa8f3fa92c7460e1f9e4afa7bd2e2f175eab  remove org-allocator workflow
+9cee37ec5eb1a21245525004b37113d25b17c13b  remove org-continuation workflow
+f00f8cb42bd9aad40ad650ec9d7e65e13b49239a  remove org-aggregation workflow
+c13e63e91f9752b970516325cdf2612636099c4c  persist first classification record
+```
+
+No GitHub/provider/wallet/NON-TV/TVC secret or token path was introduced.
+
+## Validation
+
+Direct workflow inventory after cleanup reports `17` active workflows, down from `20`.
+
+Hosted run `31917615187` executed the retained workflow at commit `6703611f...` but failed before the new consolidated checks ran. Exact failure:
+
+```text
+TASK-2026-0004: unknown flags: ['fail-closed-claim-gate', 'no-render', 'phone-sovereign', 'trade-readiness', 'tv-tvc-only']
+```
+
+The failing source is `tasks/TASK-2026-0004.json`; `scripts/validate_org_control_plane.py` admits only the control flags `blocked`, `suspended`, `superseded`, and `reconciliation_required`.
+
+That task belongs to the separate wallet/trade workstream. This hygiene session will not repair or reinterpret its product semantics. The mismatch is recorded as a hosted-validation blocker; it is not counted as evidence that the new consolidated checks passed or failed.
+
+## Branch classification batch 1
+
+Persisted in `control/repository-hygiene-wave0-classification.json`.
+
+- `feat/sovereign-runtime-self-bootstrap-002`: `MERGED_DELETE_CANDIDATE`; compare to main is `behind`, `ahead_by=0`, `behind_by=164`. No unique commit remains off main. Final deletion still requires evidence-reference/ownership clearance.
+- `feat/sovereign-runtime-self-bootstrap-001`: `REVIEW_REQUIRED`; diverged, `ahead_by=5`, `behind_by=174`.
+- `feat/sovereign-heartbeat-host`: `REVIEW_REQUIRED`; diverged, `ahead_by=6`, `behind_by=894`.
+- `feat/sovereign-heartbeat-host-v2`: `REVIEW_REQUIRED`; diverged, `ahead_by=3`, `behind_by=880`.
+
+No branch is deleted from naming alone.
+
+## Current claims and collision boundaries
+
+The hygiene claim owns only repository lifecycle classification, safe workflow consolidation, stale issue/PR reconciliation, and evidence-preserving cleanup. It does not own product implementation, wallet/trade tasks, heartbeat runtime activation, TV/TVC authority, Site product work, StegCore product work, or active worker claims.
 
 ## Current next executable actions
 
-1. Update `.github#165` to make causal-root-first ordering canonical.
-2. Build a machine-readable Wave-0 baseline for `.github`, `repo-standards`, and `Continuity`.
-3. Classify `.github` branch families against merge/PR/task/handoff state before deleting anything.
-4. Inspect the 20 `.github` workflows against #167's 0/1/2 stable-surface policy.
-5. Close or supersede stale `.github` issues only when current handoffs/task records prove terminality.
-6. Proceed to `repo-standards` and `Continuity` before touching Site/StegCore cleanup again.
+1. Classify the remaining 69 `.github` branches against main, PR history, current handoffs/task registries, worker ownership, and evidence references.
+2. Classify the remaining 16 `.github` workflows into `KEEP_STANDALONE_EXCEPTION`, `CONSOLIDATE_INTO_STABLE_DISPATCHER`, `TRANSFER_TO_STEGVERSE_WORKER`, or `ELIMINATE`.
+3. Continue Wave-0 classification in `repo-standards` and `Continuity`, respecting their canonical handoffs before mutation.
+4. Close/supersede stale `.github` issues only when live state proves terminality.
+5. Do not resume Site/StegCore sink cleanup until Waves 0-3 establish causal cleanliness.
 
 ## Blockers
 
-None for audit/classification. Destructive cleanup remains fail-closed until each candidate is proven unowned or terminal and no evidence/reference requirement depends on it.
+- Hosted validation of batch 1 is blocked by the unrelated `TASK-2026-0004` flag/schema mismatch before consolidated checks execute.
+- Destructive branch cleanup remains fail-closed until each candidate is proven terminal/unowned and no canonical evidence reference requires the ref.
+
+## Machine-owned / authority-owned work
+
+Existing product/runtime workers remain authoritative for their scopes. Hygiene may observe those records to determine retention but must not mutate their execution authority. TV/TVC remains sole credential authority.
 
 ## Session-consolidation state
 
 ```text
 strategy_transfer: COMPLETE
 root_handoff_created: COMPLETE
-wave0_baseline: PARTIAL (1/3 repositories)
-root_branch_classification: NOT_STARTED
-root_workflow_classification: NOT_STARTED
+wave0_baseline: COMPLETE (3/3 repositories)
+root_workflow_cleanup_batch_1: COMPLETE (20 -> 17)
+root_branch_classification: PARTIAL (4/73)
+root_workflow_classification: PARTIAL (4/20 original surfaces; 3 eliminated, 1 retained)
 root_pr_classification: COMPLETE (0 open)
 root_issue_classification: NOT_STARTED
+repo-standards classification: BASELINED_NOT_CLEANED
+Continuity classification: BASELINED_NOT_CLEANED
 wave1: NOT_STARTED
 wave2: NOT_STARTED
 wave3: NOT_STARTED
@@ -182,10 +161,13 @@ wave4 Site/StegCore: DEFERRED_UNTIL_UPSTREAM_CAUSAL_AUDIT
 ## Completion accounting
 
 ```text
-developed control surfaces: 1/2
-validation: 1/5
-integration: 1/5
-goal activation: 10%
+task completion: 3/10 = 30%
+developed control surfaces: 2/2 = 100%
+validation: 2/5 = 40%
+integration: 2/5 = 40%
+propagation: 1/5 = 20%
+goal activation: 30%
+session consolidation: 1/1 = 100%
 ```
 
-Archive condition for this hygiene session: the causal-order strategy and all unique cleanup requirements are durably transferred to repository-native owners with no active session-only claim. This handoff does not claim organization-wide hygiene is complete.
+Archive condition: do not archive while this session still owns the active Wave-0 classification/cleanup claim. Release only after current unique cleanup work is completed or durably transferred to repository-native owners with exact next actions and evidence.
