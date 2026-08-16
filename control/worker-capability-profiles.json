@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.worker-capability-profiles/v0.1",
-  "generation": 11,
+  "generation": 12,
   "profiles": [
     {
       "profile_id": "deterministic-workflow-v1",
@@ -65,7 +65,7 @@
       "profile_id": "sovereign-runtime-worker-v1",
       "executor_type": "repository_worker",
       "effect_class": "sovereign_runtime_activation",
-      "allowed_capabilities": ["runtime_observation", "continuous_process_execution", "bounded_process_execution", "durable_state_reconstruction", "bounded_repository_mutation", "stegfin_live_entry_inventory_observation", "stegfin_sovereign_internal_trading_activation", "orphan_lifecycle_reconstruction", "stegnutrition_machine_continuation"],
+      "allowed_capabilities": ["runtime_observation", "continuous_process_execution", "bounded_process_execution", "durable_state_reconstruction", "bounded_repository_mutation", "canonical_artifact_validation", "master_records_replay_reconstruction_validation", "stegfin_live_entry_inventory_observation", "stegfin_sovereign_internal_trading_activation", "orphan_lifecycle_reconstruction", "stegnutrition_machine_continuation"],
       "mutation_allowed": true,
       "deployment_allowed": true,
       "availability_grants_authority": false,
@@ -74,6 +74,8 @@
         "This profile may only execute under an admitted sovereign-runtime HANDOFF and current heartbeat fence.",
         "Third-party provider availability never grants authority or satisfies sovereign activation.",
         "Mutation is limited to the admitted sovereign-runtime receipt namespace unless a separate deployment authority is present.",
+        "canonical_artifact_validation is validation-only execution against already-materialized local artifacts and grants no repository checkout, credential, provider, wallet, route, or deployment authority.",
+        "master_records_replay_reconstruction_validation is limited to exact local custody/replay/reconstruction proof under the task's bounded receipt namespace and may not create Master Records action authority.",
         "stegfin_live_entry_inventory_observation is read-only chain inventory plus bounded receipt persistence and grants no provider or wallet authority.",
         "stegfin_sovereign_internal_trading_activation is limited to the zero-external-cost internal activation round and grants no external trade, wallet, custody or scale-up authority.",
         "orphan_lifecycle_reconstruction is continuity-only eligibility for a generated orphan-recovery handoff; it cannot execute the recovered parent task or revive an ended claim/fence.",
