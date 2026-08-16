@@ -8,7 +8,7 @@
   "canonical_issue": 165,
   "role": "CLAIMED_FOR_VALIDATION_REPAIR",
   "claimed_at": "2026-08-16T02:11:00-05:00",
-  "expanded_at": "2026-08-16T02:19:00-05:00",
+  "expanded_at": "2026-08-16T02:20:00-05:00",
   "allowed_paths": [
     "control/workflow-surface-registry.json",
     "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
@@ -20,6 +20,8 @@
     "control/session-goal-inventory-2026-08-15-portable-publication-v16.json",
     "control/session-goal-inventory-2026-08-15-sdk-v3-worker-transfer-v16.json",
     "control/session-goal-inventory-2026-08-15-sdk-v3-worker-transfer-v17.json",
+    "control/session-goal-inventory-2026-08-15-single-host-portable-v14.json",
+    "control/session-goal-inventory-2026-08-15-single-host-portable-v15.json",
     "control/session-validation-claim-2026-08-16-sovereign-ephemeral-console-workflow-registration.json"
   ],
   "collision_boundary": "Repair validation metadata/ownership/lineage fields only. Do not modify product source behavior, G18 runtime implementation, heartbeat state, worker registry, activation receipts, TV/TVC publication or route authority, provider credentials, SDK release artifacts, or wallet/trade state.",
@@ -31,17 +33,19 @@
   "observed_validation_failures": [
     "workflow hygiene initially failed because sovereign-ephemeral-console.yml was unregistered",
     "after registration, handoff execution ownership failed for two handoffs; repaired",
-    "session-assistance validation then exposed Kimi v13; superseded by policy-complete v14",
+    "session-assistance validation exposed Kimi v13; superseded by policy-complete v14",
     "next exposed portable-publication v15; superseded by policy-complete v16",
-    "next exposed sdk-v3-worker-transfer v16 missing the same required lineage fields"
+    "next exposed sdk-v3-worker-transfer v16; superseded by policy-complete v17",
+    "next exposed single-host-portable v14 missing the same required lineage fields and retaining stale chat-retention wording"
   ],
   "expected_evidence": [
     "workflow-surface hygiene PASS",
     "handoff execution ownership PASS",
     "local-runtime v12 policy fields valid",
-    "Kimi v14 supersedes v13 and validates",
-    "portable-publication v16 supersedes v15 and validates",
-    "sdk-v3-worker-transfer v17 supersedes v16 and validates without changing product authority",
+    "Kimi v14 validates",
+    "portable-publication v16 validates",
+    "sdk-v3-worker-transfer v17 validates",
+    "single-host-portable v15 supersedes v14 with policy-complete lineage and machine-owned continuation",
     "session-assistance-scope validation PASS"
   ],
   "release_condition": "A successor main commit directly demonstrates workflow-surface hygiene, handoff execution ownership, and session-assistance-scope gates PASS. Any later unrelated repository failure is separately owned and does not keep this bounded claim open.",
