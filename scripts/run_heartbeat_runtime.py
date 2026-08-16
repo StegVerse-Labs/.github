@@ -14,12 +14,17 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from heartbeat_runtime import HeartbeatRuntime, ProcessWorkerAdapter
+from heartbeat_runtime import ProcessWorkerAdapter
+from heartbeat_runtime.engine_v11 import HeartbeatRuntime as HeartbeatRuntimeV11
+from heartbeat_runtime.engine_v12 import HeartbeatRuntime as HeartbeatRuntimeV12
 
 SCHEMA = "stegverse.process-worker-adapters/v0.1"
 FRAGMENT_SCHEMA = "stegverse.process-worker-adapter-fragment/v0.1"
 PROCESS_TYPE = "process_json_v0.1"
 BOUND_STATE_TYPE = "process_json_bound_state_v0.1"
+LEGACY_HEARTBEAT_SCHEMA = "stegverse.org-heartbeat-state/v1"
+SEPARATED_HEARTBEAT_SCHEMA = "stegverse.heartbeat-carrier-runtime-state/v1"
+CUTOVER_EPOCH = 29
 
 
 def _read_registry(path: Path, *, fragment: bool) -> list[dict[str, Any]]:
@@ -85,6 +90,29 @@ def load_adapters(root: Path) -> dict[str, ProcessWorkerAdapter]:
     return adapters
 
 
+def select_runtime(root: Path):
+    """Select v12 only at the canonical HB29 cutover or after v12 materialization.
+
+    Arbitrary repository/test fixtures remain on v11. This keeps the compatibility
+    API stable while making the production runner the explicit cutover authority
+    surface once it observes canonical legacy HB29.
+    """
+    separated = root / "control" / "heartbeat-carrier-runtime-state.json"
+    if separated.is_file():
+        state = json.loads(separated.read_text(encoding="utf-8"))
+        if state.get("schema") != SEPARATED_HEARTBEAT_SCHEMA:
+            raise RuntimeError("separated heartbeat carrier state has unsupported schema")
+        return HeartbeatRuntimeV12
+
+    legacy = root / "control" / "heartbeat-state.json"
+    if not legacy.is_file():
+        return HeartbeatRuntimeV11
+    state = json.loads(legacy.read_text(encoding="utf-8"))
+    if state.get("schema") == LEGACY_HEARTBEAT_SCHEMA and int(state.get("epoch", -1)) == CUTOVER_EPOCH:
+        return HeartbeatRuntimeV12
+    return HeartbeatRuntimeV11
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=str(REPO_ROOT))
@@ -99,7 +127,8 @@ def main() -> int:
         raise SystemExit("continuous dry-run is prohibited because non-persistent state cannot prove advancing heartbeat epochs")
 
     root = Path(args.root).resolve()
-    runtime = HeartbeatRuntime(root, adapters=load_adapters(root))
+    runtime_class = select_runtime(root)
+    runtime = runtime_class(root, adapters=load_adapters(root))
     running = True
 
     def stop(_signum, _frame):
@@ -112,6 +141,7 @@ def main() -> int:
     index = 0
     while running and (args.continuous or index < args.cycles):
         result = runtime.cycle(write=not args.dry_run)
+        result["selected_runtime"] = f"{runtime_class.__module__}.{runtime_class.__name__}"
         print(json.dumps(result, sort_keys=True), flush=True)
         index += 1
         if running and (args.continuous or index < args.cycles) and args.interval_ms:
