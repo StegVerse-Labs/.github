@@ -32,6 +32,10 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
 
     def __init__(self, root: str | Path, adapters: dict | None = None):
         super().__init__(root, adapters=adapters)
+        # Carrier and worker coordinator are separately supervised processes.
+        # They must never serialize each other through the historical combined
+        # heartbeat lock; registry writes remain atomic under this worker lock.
+        self.lock_path = self.root / "control" / ".worker-runtime.lock"
         self.carrier_state_path = self.root / "control" / "heartbeat-carrier-runtime-state.json"
         self.worker_runtime_state_path = self.root / "control" / "worker-runtime-state.json"
         self.worker_event_path = self.root / "events" / "worker-runtime.jsonl"
