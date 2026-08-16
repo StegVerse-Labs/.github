@@ -7,6 +7,7 @@ import json
 
 from .engine_v11 import HeartbeatRuntime as LegacyWorkerCoordinator, WorkerResponse
 from .assignment_timer import assignment_trigger_packet
+from .signal_space import coherent_signal_space_candidate
 
 
 class HeartbeatRuntime(LegacyWorkerCoordinator):
@@ -15,6 +16,10 @@ class HeartbeatRuntime(LegacyWorkerCoordinator):
     v12 removes worker scheduling, claim issuance, invocation, lease expiry,
     orphan recovery, and task activation from the heartbeat cycle. The heartbeat
     only advances its own carrier state and projects observational packets.
+
+    The carrier now also exposes an authority-neutral coherent signal-space
+    candidate. HB is the fundamental implemented mode of that space, not the
+    complete mechanism or a completeness claim about reality.
     """
 
     def _carrier_worker_observation(self, registry: dict[str, Any], epoch: int) -> dict[str, Any]:
@@ -65,12 +70,15 @@ class HeartbeatRuntime(LegacyWorkerCoordinator):
             "subsignals": {},
         }
         observation = self._carrier_worker_observation(registry, epoch)
+        signal_space = coherent_signal_space_candidate()
         payload = json.dumps(observation, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
         digest = hashlib.sha256(payload).hexdigest()
         data.setdefault("subsignals", {})[self.WORKER_COORDINATION_SUBSIGNAL] = observation
+        data["subsignals"]["coherent_signal_space"] = signal_space
         data["generation"] = int(data.get("generation", 0)) + 1
         heartbeat["subsignals"] = {
             self.WORKER_COORDINATION_SUBSIGNAL: observation,
+            "coherent_signal_space": signal_space,
             "registry_generation": registry.get("generation", 0),
             "worker_coordination_sha256": digest,
         }
@@ -80,6 +88,7 @@ class HeartbeatRuntime(LegacyWorkerCoordinator):
             "heartbeat_generation": heartbeat.get("generation"),
             "worker_coordination_sha256": digest,
             "worker_coordination_observation": observation,
+            "coherent_signal_space_observation": signal_space,
             "source_refs": [
                 "control/heartbeat-state.json",
                 "control/heartbeat-subsignals.json",
@@ -104,6 +113,7 @@ class HeartbeatRuntime(LegacyWorkerCoordinator):
             "worker_state_observation_carried",
             observed_worker_count=len(observation["observed_worker_state"]),
             assignment_trigger_count=len(observation["unassigned_task_trigger_packets"]),
+            signal_space_mode_count=len(signal_space["modes"]),
             worker_coordination_sha256=digest,
             master_records_projection_ref="control/heartbeat-master-records-projection.json",
             authority_effect=False,
@@ -127,11 +137,15 @@ class HeartbeatRuntime(LegacyWorkerCoordinator):
             events: list[dict[str, Any]] = []
             self._event(events, epoch, "heartbeat_carrier_advanced", authority_effect=False, claim_authority=False, lease_authority=False, expiry_authority=False, activation_authority=False, execution_authority=False)
             observation = self._carry_observations(heartbeat, registry, epoch, events)
+            signal_space = coherent_signal_space_candidate()
             result = {
                 "schema": "stegverse.heartbeat-carrier-cycle-result/v1",
                 "epoch": epoch,
                 "events": events,
-                "subsignals": {self.WORKER_COORDINATION_SUBSIGNAL: observation},
+                "subsignals": {
+                    self.WORKER_COORDINATION_SUBSIGNAL: observation,
+                    "coherent_signal_space": signal_space,
+                },
                 "registry_generation_observed": registry.get("generation", 0),
                 "claims_issued": 0,
                 "workers_invoked": 0,
