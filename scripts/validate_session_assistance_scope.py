@@ -17,17 +17,48 @@ def fail(message: str):
 
 
 def latest_inventory_paths(root: Path = Path('.')):
+    """Return current inventory heads, excluding records explicitly superseded by another inventory.
+
+    Filename-family versioning remains supported, but session inventories are also allowed to
+    rename their semantic family while carrying an explicit ``supersedes`` path.  An explicitly
+    superseded record is historical provenance, not a current assistance-scope authority, and
+    must not be forced to adopt future policy fields merely to keep current validation green.
+    ``inherits_complete_inventory`` is intentionally *not* treated as supersession because the
+    inherited inventory remains part of the current authoritative lineage.
+    """
     latest = {}
+    candidates = []
     for path in root.glob(INVENTORY_GLOB):
         match = _VERSION_RE.match(str(path))
         if not match:
             continue
-        base = match.group('base')
         version = int(match.group('version'))
+        base = match.group('base')
+        candidates.append(path)
         prior = latest.get(base)
         if prior is None or version > prior[0]:
             latest[base] = (version, path)
-    return [entry[1] for entry in sorted(latest.values(), key=lambda x: str(x[1]))]
+
+    candidate_keys = {str(path): path for path in candidates}
+    superseded = set()
+    for path in candidates:
+        try:
+            data = load(path)
+        except Exception as exc:
+            fail(f'{path}: cannot read inventory while resolving supersession: {exc}')
+        ref = data.get('supersedes')
+        if not isinstance(ref, str) or not ref:
+            continue
+        ref_path = Path(ref)
+        normalized = str(ref_path)
+        if normalized in candidate_keys:
+            superseded.add(candidate_keys[normalized])
+
+    return [
+        entry[1]
+        for entry in sorted(latest.values(), key=lambda x: str(x[1]))
+        if entry[1] not in superseded
+    ]
 
 
 def validate_inventory(path: Path, policy: dict):
