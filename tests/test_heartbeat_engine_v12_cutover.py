@@ -112,6 +112,8 @@ class HeartbeatEngineV12CutoverTests(unittest.TestCase):
             self.assertEqual(result["workers_invoked"], 0)
             self.assertEqual(result["tasks_activated"], 0)
             self.assertEqual(result["leases_expired"], 0)
+            self.assertIn("coherent_signal_space", result)
+            self.assertFalse(result["coherent_signal_space"].get("completeness_claim", False))
             self.assertEqual(len(result["assignment_trigger_packets"]), 1)
             trigger = result["assignment_trigger_packets"][0]
             self.assertEqual(trigger["task_id"], "READY-A")
@@ -133,6 +135,7 @@ class HeartbeatEngineV12CutoverTests(unittest.TestCase):
             self.assertNotIn("claim_id", observation_text)
             self.assertNotIn("fencing_token", observation_text)
             self.assertNotIn("active_leases", observation_text)
+            self.assertIn("coherent_signal_space_candidate_presence", observation_text)
             self.assertFalse(observation["authority"]["heartbeat_grants_execution_authority"])
             self.assertEqual(observation["authority"]["credential_authority"], "TV/TVC")
 
@@ -171,6 +174,16 @@ class HeartbeatEngineV12CutoverTests(unittest.TestCase):
             self.assertEqual(carrier["epoch"], 31)
             self.assertEqual(carrier["reference_frame"], "heartbeat_epoch:31")
 
+    def test_existing_carrier_without_cutover_receipt_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._root(Path(tmp))
+            runtime = HeartbeatRuntime(root)
+            runtime.cycle(write=True)
+            receipt_path = root / "receipts" / "heartbeat-schema-cutover" / "HB29.json"
+            receipt_path.unlink()
+            with self.assertRaisesRegex(RuntimeError, "without the immutable HB29 cutover receipt"):
+                runtime.cycle(write=True)
+
     def test_dry_run_previews_hb30_without_creating_cutover_state(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = self._root(Path(tmp))
@@ -179,6 +192,7 @@ class HeartbeatEngineV12CutoverTests(unittest.TestCase):
             result = HeartbeatRuntime(root).cycle(write=False)
             self.assertEqual(result["epoch"], 30)
             self.assertEqual(result["legacy_hb29_cutover"], "PREVIEW_ONLY")
+            self.assertIn("coherent_signal_space", result)
             self.assertEqual(legacy_path.read_bytes(), legacy_before)
             self.assertFalse((root / "control" / "heartbeat-carrier-runtime-state.json").exists())
             self.assertFalse((root / "receipts" / "heartbeat-schema-cutover" / "HB29.json").exists())
