@@ -1,32 +1,33 @@
 # Session Assistance Scope Mirror Handoff
 
-Updated: 2026-08-15T20:58:00-05:00
+Updated: 2026-08-16T02:03:00-05:00
 
-## Authority and current state
+## Authority and active scope
+
+This is the canonical session-scoped continuation and consolidation handoff for the local-runtime/model/trade-readiness goals. Repository-local specialized handoffs remain authoritative for their own implementation/runtime surfaces. Live repository state, current tasks/claims/receipts and worker state supersede historical prose.
 
 ```text
 goal_id: SESSION-GOAL-SCOPED-WORKER-ASSISTANCE-001
 repository: StegVerse-Labs/.github
 branch: main
 canonical_owner: StegVerse-Labs organization control plane
-state: V11_LOCAL_RUNTIME_MODEL_TRADE_READINESS_SCOPE_COMPLETE_TRANSFER
+state: V12_RECONCILIATION_ACTIVE
 credential_authority: TV/TVC
+NON-TV/TVC secret/token authority: PROHIBITED
 github_token_runtime_authority: NONE
-render_production_runtime: PROHIBITED
-current_inventory: control/session-goal-inventory-2026-08-15-local-runtime-trade-readiness-v11.json
-this_session_unique_claims_remaining: 0
-this_session_unassigned_requirements: 0
-this_session_execution_responsibility_remaining: 0
-this_session_observation_responsibility_remaining: 0
+Render production runtime: PROHIBITED
+current_inventory: control/session-goal-inventory-2026-08-16-local-runtime-trade-readiness-v12.json
+reconciliation_claim: control/session-reconciliation-claim-2026-08-16-local-runtime-trade-readiness-v12.json
 product_activation_complete: false
-archive_ready: true
 ```
 
-Live repository state, current tasks/claims/receipts, machine-owned worker state and canonical specialized handoffs supersede older prose.
+The complete session inventory is now v12. It supersedes v11 for current session state while preserving v11 as historical evidence.
 
-## Completed original local-runtime/model goals
+## Original local-runtime/model goals — complete and released
 
-Canonical owner: `StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md`.
+Canonical owner:
+
+`StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md`
 
 ```text
 former descriptive select-a-local-model/runtime step: SUPERSEDED
@@ -34,211 +35,194 @@ local candidate discovery: COMPLETE
 private launch: COMPLETE
 real inference: COMPLETE
 usage measurement/proof: COMPLETE
-canonical validation: 31339534741 SUCCESS
+canonical language-model validation: 31339534741 SUCCESS
 persistent endpoint validation: 31384116055 SUCCESS
 formal local model: stegverse-reference-lm-v1 COMPLETE_VALIDATED_RELEASED
+local visual-evidence model/runtime: COMPLETE_VALIDATED_RELEASED
 credential_requirement: NONE
 credential_authority: TV/TVC
-third-party inference required: false
+third_party_inference_required: false
 github_token_required: false
-next action: NONE_DO_NOT_RECREATE
+next source action: NONE_DO_NOT_RECREATE
 ```
 
-## TV/TVC and sovereign-runtime invariants
+No session may recreate this source implementation merely because live product activation remains pending.
+
+## Worker assistance completed since v11
+
+The prior v11 inventory described sovereign Base source and TVC admission source as released but still lacked the task-specific machine bridge from the heartbeat to an actual local Base endpoint/process proof. That gap is now closed.
+
+Canonical evidence:
 
 ```text
-credential authority: TV/TVC
-NON-TV/TVC secret/token authority: PROHIBITED
-GitHub token production/runtime authority: NONE
-Render production activation: PROHIBITED
-Vercel/Cloudflare/GitHub Actions production activation: PROHIBITED
-third-party hosted production fallback: FAIL_CLOSED
-wallet signing/broadcast: USER_ONLY
+StegVerse-Labs/.github PR #194: MERGED
+merge: 380b6f9794520014340ddee671020644632b8131
+handoff: docs/SOVEREIGN_BASE_RPC_ACTIVATION_MIRROR_HANDOFF.md
+worker: workers/sovereign_base_rpc_activation_worker.py
+executable handoff: handoffs/SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001.json
+worker registry fragment: control/worker-registry.d/sovereign-base-rpc-activation-001.json
+process adapter fragment: control/process-worker-adapters.d/sovereign-base-rpc-activation-001.json
+PR Heartbeat Worker Project: 31922179962 SUCCESS
+PR organization control plane: 31922179974 SUCCESS
+PR early-adopter source validator: 31922179965 SUCCESS
+post-merge Heartbeat Worker Project: 31922206593 SUCCESS
+post-merge organization control plane: 31922206653 SUCCESS
+post-merge organization handoff projection: 31922206725 SUCCESS
+complete deterministic repository tests on validated PR state: 299/299 PASS
+new Base activation worker tests: 5/5 PASS
 ```
 
-Canonical policy: `control/sovereign-runtime-platform-policy.json`.
+The worker consumes only already-materialized micro-node source plus credential-free local endpoint/process descriptors. It rejects credential-bearing descriptors, validation-only reference proofs, wrong chain, failed methods and unavailable synchronized endpoints. It cannot fetch source, grant TVC route authority, contact a wallet, sign, broadcast, settle, or use a hosted production runtime.
 
-## Trade-readiness state
+## Current sovereign runtime activation truth
 
-### Site phone resilience — complete
-
-`TASK-2026-0004` is normalized to the organization task schema as `status=completed`, `flags=[]`. Source/publication evidence remains:
+Canonical owners and evidence:
 
 ```text
-StegFin PR #66 merge: bcba49976a52024a233f998ce290ec4ab42618ff
-rpc-resilience blob: 290b567eca2cc9f83e7438a80682ebaf8006ad76
-Site PR #281 merge: 19db08571c679c3143b4c2f2b380497eb8630cd4
-Site runs: 31918210506 / 31918210541 / 31918210505 / 31918210534 SUCCESS
-Pages build: 1153990519 BUILT
+StegVerse-Labs/.github#12
+handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
+management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json
+G18 fencing token: 18
+canonical heartbeat epoch last directly observed: 29
 ```
 
-Live phone observation remains owned by `StegVerse-Labs/stegfin-governance#60` and the actual current-phone authority boundary. Required terminal evidence is a precise hash-bound `BLOCKED` or unsigned `WALLET_HANDOFF_READY`; signing and broadcast remain `USER_ONLY`.
+The older `SOVEREIGN_NODE_DECLARATION_NOT_PRESENT` phrasing is no longer the current executable blocker. The released self-bootstrap can derive non-authorizing local runtime eligibility before a heartbeat exists. A pre-existing heartbeat and a hand-created node declaration are both unnecessary.
 
-### Sovereign Base RPC — source complete, live endpoint pending
-
-Canonical source:
+Current constraint:
 
 ```text
-StegVerse-002/micro-node-runtime PR #35 -> c30837cc11c31771a01e09d768d75b60593f7b4f
-release reconciliation #36 -> 96d1120262e72fc902945c4c67bf4f56a0daba03
-runtime validation 31916537322 SUCCESS
-continuity provenance 31916537652 SUCCESS
-handoff authority 31916537345 SUCCESS
-PWC-003 runtime orchestrator 31916537324 SUCCESS
+class: SOVEREIGN_LOCAL_RUNTIME_LIVE_PROOF_NOT_YET_OBSERVED
+remaining blocker: DEPLOYMENT_HOST_CONTROL_PLANE_REACHABILITY
+missing_implementation: false
+human_action_required: false
+one physical host sufficient: true
+additional physical machine required: false
+third_party machine/process host required: false
+Render allowed: false
+credential_requirement: NONE
+credential_authority: TV/TVC
 ```
 
-Canonical TVC admission source:
+Released execution path:
 
 ```text
-TVC task: TVC-SOVEREIGN-BASE-RPC-ROUTE-003
-PR #30 -> 6fcedf65c414319ae1bee5feeb7d52f8a9d414d4
-reconciliation #31 -> 5a138064e170780ad168dc8981288dff6a86c909
-new route tests: 9/9 PASS
+G18 on the deployment-local sovereign StegVerse host
+-> scripts/bootstrap_sovereign_runtime.py
+-> native supervision if eligible
+-> same-host isolated logical-node fallback when needed
+-> canonical verifier
+-> ~/.stegverse/heartbeat/activation.latest.json
 ```
 
-`tasks/TASK-2026-0005.json` is normalized to the organization task schema as `status=active`, `flags=[blocked]`. This does not claim a live endpoint. The blocker remains `REAL_SYNCHRONIZED_STEGVERSE_BASE_ENDPOINT_NOT_YET_OBSERVED`.
+Activation is complete only when all nine predicates are directly observed true: runtime materialized; native service active; continuous runtime live; heartbeat epoch advanced; worker coordination checkpoint observed; controlled restart observed; epoch/generation non-regressing; no duplicate claim/fence; state reconstruction PASS.
 
-The organization allocator persists claims only for `queued` repository tasks. `TASK-2026-0005` is deliberately not represented as a new repository claim: its source claims are released and remaining execution authority is the already-bound sovereign runtime owner under `.github#12`. `control/claims-active.json` therefore must not be interpreted as live Base activation evidence.
+The connected repository tools do not expose deployment-host process execution. That limitation does not authorize another machine, Render, GitHub Actions, Vercel, Cloudflare, a third-party scheduler, or a new chat-owned runtime.
 
-Exact runtime chain:
+## Sovereign Base / trade-readiness continuation
+
+Source implementation is now complete and released. Live continuation is worker-owned:
 
 ```text
-SHWP-DURABLE-RUNTIME-ACTIVATION nine-predicate non-hosted proof
--> resident sovereign surface discovers/activates real synchronized Base runtime
--> micro-node validation_only=false proof, chain 0x2105, required read methods
--> TVC ROUTE_ADMITTED
--> StegFin consumes exact admitted endpoint
--> stegfin-governance#60 retains current-phone terminal receipt
+resident sovereign heartbeat
+-> SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001
+-> exact private Base proof with chain 0x2105 and validation_only=false
+-> StegVerse-Labs/TVC exact evaluator
+-> ROUTE_ADMITTED only when TVC independently passes the proof
+-> StegVerse-Labs/stegfin-governance#60 consumes exact endpoint
+-> current phone produces terminal BLOCKED or unsigned WALLET_HANDOFF_READY
+-> STOP before USER_ONLY sign/broadcast
 ```
 
-No session may substitute the repository validation-only Base process for production or introduce Render, a provider key, GitHub-token runtime authority, or any NON-TV/TVC secret/token.
+Current canonical phone observation surface is `StegVerse-Labs/stegfin-governance#60`. Source is COMPLETE_RELEASED and the issue remains open only for actual current-device WebAuthn/PREPARE plus a precise terminal receipt. Credential requirement is NONE; provider secret required is false; hosted runtime required is false; signing/broadcast remain USER_ONLY.
 
-## Sovereign heartbeat continuation
+## ASRO adjacent goal transfer
 
-Canonical owner: `StegVerse-Labs/.github#12` and `handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json`.
+The ASRO review-disposition/provenance-correction work from the immediately preceding session lane is durably transferred to:
 
-Source/bootstrap is complete, but production activation remains unproven until node-local `activation.latest.json` has all nine predicates true. The bound runtime worker remains the production continuation owner; this chat cannot manufacture a non-hosted execution surface.
-
-## Technical discussion preservation
-
-The session's StegGate commit-boundary/independent-testing discussion is durable at `StegVerse-Labs/Site/papers/authority-at-the-commit-boundary.html`.
-
-## Execution ownership and collision partition
-
-### MANUAL / SESSION-STARTABLE
-
-```yaml
-- task_id: SESSION-GOAL-SCOPED-WORKER-ASSISTANCE-001
-  execution_owner: no new implementation claimant; validation/reconciliation sessions only when a new repository defect is directly observed
-  claim_state: COMPLETE_TRANSFER
-  worker_registry_ref: NONE_SESSION_EXECUTION_RELEASED
-  manual_execution_allowed: true
-  collision_scope: validation and durable reconciliation of this handoff only; excludes local-model reimplementation, heartbeat activation, sovereign Base endpoint activation, live-phone gesture, signing and broadcast
-  release_condition: this handoff and v11 inventory remain sufficient for continuation and no unique chat-only requirement reappears
-  next_executable_action: inspect canonical machine/current-phone evidence only when asked for activation status; do not recreate released source work
+```text
+StegVerse-Labs/admissibility-wiki/docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md
+StegVerse-Labs/admissibility-wiki issue #50
+worker: external-framework-worker-issue50
+canonical workflow run at latest direct observation: 31932854800 IN_PROGRESS
 ```
+
+No PASS is inferred while that run remains in progress. This session has no competing ASRO implementation claim.
+
+## Collision partition
+
+### COMPLETED / DO NOT RECREATE
+
+- G03 local-runtime discovery/launch/inference/proof — COMPLETE_RELEASED.
+- G04 formal local language model — COMPLETE_RELEASED.
+- local visual-evidence model/runtime — COMPLETE_RELEASED.
+- TV/TVC-only credential invariant — COMPLETE and ongoing.
+- sovereign Base activation worker source — COMPLETE_VALIDATED_MERGED_RELEASED.
+- public phone-route source and publication — COMPLETE_RELEASED.
 
 ### WORKER-OWNED / DO NOT COMPETE
 
 ```yaml
 - task_id: SHWP-DURABLE-RUNTIME-ACTIVATION
-  execution_owner: resident sovereign heartbeat
-  claim_state: MACHINE_OWNED_BOUND_G18
-  worker_registry_ref: control/worker-registry.json + handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-  manual_execution_allowed: false
-  collision_scope: non-hosted sovereign heartbeat materialization, native supervision, nine-predicate activation and runtime continuity
-  release_condition: node-local activation.latest.json reports all nine predicates true
-  next_executable_action: execute released self-bootstrap on the first eligible StegVerse-controlled non-hosted surface
+  owner: resident sovereign heartbeat / G18 fence 18
+  state: MACHINE_OWNED
+  collision_scope: deployment-local process activation, heartbeat state, claims/fences and activation receipts
+  release_condition: node-local nine-predicate activation PASS or exact fail-closed evidence
 
-- task_id: TASK-2026-0005
-  execution_owner: resident sovereign heartbeat after sovereign carrier activation, then TVC route evaluator
-  claim_state: MACHINE_OWNED_BLOCKED
-  worker_registry_ref: StegVerse-Labs/.github#12; tasks/TASK-2026-0005.json; TVC/tasks/TVC-SOVEREIGN-BASE-RPC-ROUTE-003.json
-  manual_execution_allowed: false
-  collision_scope: real synchronized sovereign Base endpoint observation/proof/admission only; excludes source reimplementation and wallet authority
-  release_condition: validation_only=false Base proof is TVC ROUTE_ADMITTED and StegFin consumes the exact endpoint
-  next_executable_action: after nine-predicate heartbeat PASS, discover/activate and prove the real Base endpoint, then submit exact proof to TVC
+- task_id: SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001
+  owner: resident sovereign heartbeat
+  state: MACHINE_OWNED_REAL_ENDPOINT_PENDING
+  collision_scope: private synchronized Base endpoint/process proof and receipts/sovereign-base-rpc-activation/**
+  release_condition: validation_only=false proof exists for TVC evaluation
 
 - task_id: STEGFIN-PHONE-LIVE-ACTIVATION
-  execution_owner: StegVerse-Labs/stegfin-governance#60 plus actual current-phone authority boundary
-  claim_state: OBSERVER_OWNED
-  worker_registry_ref: StegVerse-Labs/stegfin-governance#60
-  manual_execution_allowed: false
-  collision_scope: current-phone WebAuthn/PREPARE and terminal receipt observation; excludes signing/broadcast
-  release_condition: issue #60 retains precise hash-bound BLOCKED or unsigned WALLET_HANDOFF_READY
-  next_executable_action: current-phone participant executes the published preparation flow when transport is available
+  owner: StegVerse-Labs/stegfin-governance#60 + current-phone authority boundary
+  state: OBSERVER_OWNED
+  collision_scope: actual phone WebAuthn/PREPARE and terminal receipt only
+  release_condition: exact BLOCKED or unsigned WALLET_HANDOFF_READY retained
+
+- task_id: ASRO-REVIEW-DISPOSITION-CONTINUATION
+  owner: StegVerse-Labs/admissibility-wiki issue #50 / canonical workflow
+  state: MERGED_INTO_CANONICAL_WORKSTREAM
+  collision_scope: ASRO-specific validation/repair only
+  release_condition: canonical workflow and issue #50 durable state determine next action
 ```
 
-### ESCALATED / AUTHORITY-OWNED
+### SESSION RECONCILIATION ONLY
 
-```yaml
-- task_id: TV-TVC-CREDENTIAL-AND-ROUTE-AUTHORITY
-  execution_owner: StegVerse-Labs/TV + StegVerse-Labs/TVC
-  claim_state: AUTHORITY_OWNED
-  worker_registry_ref: canonical TV/TVC contracts and TVC-SOVEREIGN-BASE-RPC-ROUTE-003
-  manual_execution_allowed: false
-  collision_scope: credential, route and provider admission authority only
-  release_condition: exact candidate proof satisfies current TVC admission contract
-  next_executable_action: evaluate exact Base proof when produced; fail closed otherwise
-```
+The current session owns only the bounded v12 handoff/inventory/consolidation reconciliation claim. It may not mutate any worker-owned execution/runtime surface.
 
-### COMPLETED / SUPERSEDED
+## Propagation and release boundary
 
-```yaml
-- task_id: G03-LOCAL-RUNTIME-DISCOVERY-LAUNCH-PROOF
-  execution_owner: StegVerse-002/micro-node-runtime
-  claim_state: COMPLETE_RELEASED
-  worker_registry_ref: NONE_COMPLETE
-  manual_execution_allowed: false
-  collision_scope: completed local model discovery/launch/inference/proof source
-  release_condition: SATISFIED
-  next_executable_action: NONE_DO_NOT_RECREATE
-- task_id: G04-FORMAL-LOCAL-MODEL-DEVELOPMENT
-  execution_owner: StegVerse-002/micro-node-runtime
-  claim_state: COMPLETE_RELEASED
-  worker_registry_ref: NONE_COMPLETE
-  manual_execution_allowed: false
-  collision_scope: stegverse-reference-lm-v1
-  release_condition: SATISFIED
-  next_executable_action: NONE_DO_NOT_RECREATE
-- task_id: TASK-2026-0004
-  execution_owner: StegVerse-Labs/Site
-  claim_state: COMPLETE_RELEASED
-  worker_registry_ref: NONE_COMPLETE
-  manual_execution_allowed: false
-  collision_scope: released Site phone RPC-resilience projection
-  release_condition: SATISFIED
-  next_executable_action: NONE_SOURCE_COMPLETE
-```
+No tag/release or downstream activation propagation is authorized solely from source completion. Site, Publisher, admissibility-wiki and stegguardian-wiki propagation must wait for the applicable immutable activation/release evidence and their own canonical handoffs. Repository release does not imply runtime activation; runtime activation does not imply wallet authority.
 
-## Completion and archival truth
+## Current completion truth
 
 ```text
 local discovery/launch/proof source: COMPLETE_VALIDATED_RELEASED
 formal local model: COMPLETE_VALIDATED_RELEASED
 TV/TVC-only credential invariant: COMPLETE_AND_ONGOING
 StegVerse-only/no-Render policy: DURABLY_ENCODED
-Site RPC-resilience source/publication: COMPLETE_VALIDATED_RELEASED
-micro-node sovereign Base source: COMPLETE_VALIDATED_RELEASED
-TVC exact sovereign Base route source: COMPLETE_VALIDATED_RELEASED
+Base activation worker source: COMPLETE_VALIDATED_MERGED_RELEASED
+phone route source/publication: COMPLETE_VALIDATED_RELEASED
+sovereign heartbeat live activation: PENDING_MACHINE_OWNED
+real synchronized Base proof/TVC admission: PENDING_MACHINE_OWNED
+current-phone terminal receipt: PENDING_CURRENT_PHONE
+ASRO canonical workflow observation: IN_PROGRESS_CANONICAL_OWNER
 product activation complete: false
-unique chat claims remaining: 0
-unassigned chat requirements: 0
-chat execution responsibility remaining: 0
-chat observation responsibility remaining: 0
-archive_ready: true
 ```
-
-Archive readiness does not mean every product runtime predicate is live. Pending activation has explicit machine/current-phone owners and machine-observable release conditions.
 
 ## Canonical continuation
 
 ```text
-SESSION INVENTORY: control/session-goal-inventory-2026-08-15-local-runtime-trade-readiness-v11.json
+SESSION INVENTORY: control/session-goal-inventory-2026-08-16-local-runtime-trade-readiness-v12.json
 LOCAL MODEL/RUNTIME: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
-PHONE SOURCE/PUBLICATION: StegVerse-Labs/Site/docs/STEGFIN_PHONE_PROJECTION_MIRROR_HANDOFF.md
-LIVE PHONE OBSERVATION: StegVerse-Labs/stegfin-governance#60
-SOVEREIGN BASE ACTIVATION: tasks/TASK-2026-0005.json + StegVerse-Labs/.github#12
-TVC BASE ADMISSION: StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-BASE-RPC-ROUTE-003.json
-TECHNICAL DISCUSSION: StegVerse-Labs/Site/papers/authority-at-the-commit-boundary.html
+SOVEREIGN RUNTIME: handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json + management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json + issue #12
+SOVEREIGN BASE: docs/SOVEREIGN_BASE_RPC_ACTIVATION_MIRROR_HANDOFF.md
+TVC LOCAL MODEL ROUTE: StegVerse-Labs/TVC/docs/SOVEREIGN_LOCAL_MODEL_ROUTE_MIRROR_HANDOFF.md
+LIVE PHONE: StegVerse-Labs/stegfin-governance#60
+ASRO: StegVerse-Labs/admissibility-wiki/docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md + issue #50
 ```
+
+## Archive condition
+
+The session is not declared archive-ready until the v12 reconciliation receipt is committed, the bounded reconciliation claim is released, and the canonical files are re-read. Product activation itself is not a chat archival dependency when all pending work is durably machine/current-authority owned.
