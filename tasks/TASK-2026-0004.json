@@ -3,16 +3,16 @@
   "task_id": "TASK-2026-0004",
   "organization": "StegVerse-Labs",
   "goal": "Project the released StegFin phone RPC resilience asset into the canonical Site participant entry without importing credential, wallet, provider, or hosted-runtime authority",
-  "status": "queued",
-  "coordination_state": "BLOCKED_BY_EXISTING_SITE_CLAIM_RECONCILIATION",
-  "flags": ["trade-readiness", "phone-sovereign", "no-render", "tv-tvc-only", "fail-closed-claim-gate"],
+  "status": "claimed",
+  "coordination_state": "CLAIMED_FOR_IMPLEMENTATION",
+  "flags": ["trade-readiness", "phone-sovereign", "no-render", "tv-tvc-only", "fail-closed-claim-gate", "site-claim-admitted"],
   "requested_at": "2026-08-15T23:38:00Z",
   "priority_class": "critical",
   "rank_reason": [
     "current phone has repeatedly reached an RPC rate-limit boundary before WALLET_HANDOFF_READY",
     "StegFin source task STEGFIN-PHONE-RPC-RESILIENCE-012 is merged and terminal",
     "participant entry cannot exercise the released resilience layer until Site projects the exact asset",
-    "Site canonical metadata still represents SITE-STEGFIN-PHONE-PROJECTION-261-HARDENING-20260815 as active, so a new overlapping mutable claim must fail closed until the machine-owned gate reconciles it"
+    "the prior Site hardening claim and its reconciliation are now terminal, so the scoped RPC-resilience projection can proceed without overlap"
   ],
   "requirements": {
     "mandatory": [
@@ -49,17 +49,22 @@
     "branch": "fix/stegfin-phone-rpc-resilience-261",
     "merge_target": "main",
     "direct_push_allowed": false,
-    "pull_request_required": true
+    "pull_request_required": true,
+    "pull_request": 280,
+    "current_head": "b9fed03c18c9fa48b5dd89a9e8599ee993d7ad15"
   },
-  "machine_owner": "StegVerse-Labs/Site:data/session-work-claims.json#SITE-PREWORK-CLAIM-GATE-MACHINE-001 -> organization allocator -> admitted Site implementation worker",
-  "machine_observable_blocker": "SITE-STEGFIN-PHONE-PROJECTION-261-HARDENING-20260815 remains represented as active in Site canonical claim/handoff metadata despite PR #278 having satisfied its historical release condition",
-  "machine_observable_release_condition": "Site's machine-owned pre-work gate reconciles the historical hardening claim to a terminal released state and the organization allocator can grant this scoped-exclusive dependency surface without overlap.",
-  "next_executable_action": "SITE-PREWORK-CLAIM-GATE-MACHINE-001 reconciles the stale historical claim; then the allocator admits this task and the Site worker projects exact StegFin blob 290b567eca2cc9f83e7438a80682ebaf8006ad76 before phone-direct-route.js.",
+  "machine_owner": "StegVerse-Labs/Site:data/session-work-claims.json#SITE-STEGFIN-PHONE-RPC-RESILIENCE-0004-20260815 -> Site repository validation gates -> StegVerse-Labs/stegfin-governance#60",
+  "current_claim": "StegVerse-Labs/Site@fix/stegfin-phone-rpc-resilience-261:data/session-work-claims.json#SITE-STEGFIN-PHONE-RPC-RESILIENCE-0004-20260815",
+  "current_pull_request": "StegVerse-Labs/Site#280",
+  "machine_observable_blocker": "NONE_FOR_SOURCE_IMPLEMENTATION",
+  "machine_observable_release_condition": "PR #280 passes Check StegFin Phone Projection, Site Handoff Orchestrator, Ecosystem Heartbeat Orchestration, and Site Bootstrap Validate; merges; the public Site build contains the merged lineage; StegFin #60 imports the resilient-phone continuation condition.",
+  "next_executable_action": "Repository-native validation evaluates PR #280. On PASS, merge and verify public build lineage, release the Site claim, and transfer current-phone PREPARE/terminal evidence to StegFin #60.",
   "release_condition": "Site claim is admitted without collision; exact StegFin rpc-resilience blob 290b567eca2cc9f83e7438a80682ebaf8006ad76 is projected before phone-direct-route.js; Site validation/orchestration pass; PR merges; Pages build contains the merged lineage; StegFin #60 imports the retry condition.",
   "completion_evidence": [
     "StegFin source PR #66 merged at bcba49976a52024a233f998ce290ec4ab42618ff",
     "released rpc-resilience blob 290b567eca2cc9f83e7438a80682ebaf8006ad76",
-    "Site canonical hardening handoff remains stale at docs/STEGFIN_PHONE_PROJECTION_MIRROR_HANDOFF.md",
-    "Site machine-owned admission owner: data/session-work-claims.json#SITE-PREWORK-CLAIM-GATE-MACHINE-001"
+    "Site hardening reconciliation PR #279 merged at 99f510d7e1d2026d09df0a4997cd7c2c3d5e9f9f",
+    "Site implementation claim SITE-STEGFIN-PHONE-RPC-RESILIENCE-0004-20260815",
+    "Site PR #280 head b9fed03c18c9fa48b5dd89a9e8599ee993d7ad15"
   ]
 }
