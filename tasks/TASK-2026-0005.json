@@ -4,13 +4,13 @@
   "organization": "StegVerse-Labs",
   "goal": "Develop and activate a StegVerse-owned or federated sovereign Base RPC capability so StegFin does not depend on third-party public RPC availability for production observation",
   "status": "active",
-  "flags": ["sovereign-runtime", "base-rpc", "trade-readiness", "no-render", "tv-tvc-only", "source-released", "machine-activation"],
+  "flags": ["sovereign-runtime", "base-rpc", "trade-readiness", "no-render", "tv-tvc-only", "source-released", "route-evaluator-released", "machine-activation"],
   "requested_at": "2026-08-15T23:39:00Z",
   "priority_class": "critical",
   "rank_reason": [
     "Base public RPC rate limiting blocked the live phone validation path",
     "credential-free public failover is released as immediate resilience but remains third-party transport",
-    "StegVerse-owned/federated Base RPC source is now released and the remaining goal is governed real-endpoint activation"
+    "StegVerse-owned/federated Base RPC source and exact TVC route evaluator are now released; the remaining goal is governed real-endpoint activation and consumption"
   ],
   "requirements": {
     "mandatory": [
@@ -48,25 +48,36 @@
     "source_branch": "main",
     "source_merge_commit": "c30837cc11c31771a01e09d768d75b60593f7b4f",
     "source_pull_request": 35,
-    "postmerge_reconciliation_pull_request": 36,
+    "source_reconciliation_merge_commit": "96d1120262e72fc902945c4c67bf4f56a0daba03",
+    "tvc_route_pull_request": 30,
+    "tvc_route_merge_commit": "6fcedf65c414319ae1bee5feeb7d52f8a9d414d4",
+    "tvc_route_reconciliation_pull_request": 31,
+    "tvc_route_reconciliation_merge_commit": "5a138064e170780ad168dc8981288dff6a86c909",
     "direct_push_allowed": false,
     "source_pull_request_required": true
   },
   "source_state": "COMPLETE_VALIDATED_MERGED",
-  "source_claim": "StegVerse-002/micro-node-runtime/work_claims/SOVEREIGN-BASE-RPC-001.json -> COMPLETE_RELEASED after PR #36 reconciliation",
-  "machine_owner": "resident sovereign heartbeat / StegVerse-Labs/.github#12 -> StegVerse-Labs/TVC exact route admission -> StegVerse-Labs/stegfin-governance#60",
+  "route_evaluator_state": "COMPLETE_VALIDATED_MERGED",
+  "source_claim": "StegVerse-002/micro-node-runtime/work_claims/SOVEREIGN-BASE-RPC-001.json -> COMPLETE_RELEASED",
+  "route_task": "StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-BASE-RPC-ROUTE-003.json -> COMPLETE_RELEASED_SOURCE / MACHINE_OWNED_RUNTIME_OBSERVATION",
+  "machine_owner": "resident sovereign heartbeat / StegVerse-Labs/.github#12 -> StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-BASE-RPC-ROUTE-003.json -> StegVerse-Labs/stegfin-governance#60",
   "activation_state": "MACHINE_OWNED_REAL_ENDPOINT_PENDING",
   "machine_observable_blocker": "REAL_SYNCHRONIZED_STEGVERSE_BASE_ENDPOINT_NOT_YET_OBSERVED",
-  "release_condition": "A real synchronized Base RPC process on an eligible StegVerse-owned/federated sovereign surface proves chain id 0x2105 and all required read-only methods, emits an inspectable proof with credential_requirement NONE and no NON-TV/TVC runtime secret/token, is admitted by TV/TVC for StegFin observation, StegFin consumes that exact endpoint as preferred transport, the Site carries the released phone resilience module, and issue #60 retains the resulting current-phone terminal receipt.",
-  "next_executable_action": "Resident sovereign heartbeat discovers or activates a real synchronized Base node/runtime using the released micro-node Base RPC runner/verifier and transfers its exact proof to TV/TVC for route admission.",
+  "release_condition": "A real synchronized Base RPC process on an eligible StegVerse-owned/federated sovereign surface proves chain id 0x2105 and all required read-only methods, emits an inspectable validation_only=false proof with credential_requirement NONE and no NON-TV/TVC runtime secret/token, is admitted by the released TVC evaluator for StegFin observation, StegFin consumes that exact endpoint as preferred transport, the Site carries the released phone resilience module, and issue #60 retains the resulting current-phone terminal receipt.",
+  "next_executable_action": "Resident sovereign heartbeat discovers or activates a real synchronized Base node/runtime using the released micro-node Base RPC runner/verifier and submits its exact validation_only=false proof to the released TVC evaluator; on ROUTE_ADMITTED, StegFin consumes that exact endpoint.",
   "completion_evidence": [
-    "source merge: StegVerse-002/micro-node-runtime#35 -> c30837cc11c31771a01e09d768d75b60593f7b4f",
+    "micro-node source merge: StegVerse-002/micro-node-runtime#35 -> c30837cc11c31771a01e09d768d75b60593f7b4f",
+    "micro-node release reconciliation: #36 -> 96d1120262e72fc902945c4c67bf4f56a0daba03",
     "runtime validation: run 31916537322 / job 95089126123 SUCCESS",
     "continuity provenance: run 31916537652 SUCCESS",
     "handoff authority: run 31916537345 SUCCESS",
     "PWC-003 runtime orchestrator: run 31916537324 SUCCESS",
     "validation artifact: 9255046588 / sha256:bf56e52e7d89ee26f060a3ed3749525d7a4ce4ee0f6eed4b1a1ce68184dd90a4",
     "reference proof hash: sha256:9b90695f20ad52241166ff0674a983e394708dc7a97d3da933715c8b84a4fd75",
-    "canonical source handoff: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_BASE_RPC_MIRROR_HANDOFF.md"
+    "TVC route source: PR #30 -> 6fcedf65c414319ae1bee5feeb7d52f8a9d414d4",
+    "TVC route source validations: Test Readiness 31916868462 SUCCESS; Architecture Guard 31916868482 SUCCESS; StegTVC Core CI 31916868452 SUCCESS; new route tests 9/9 PASS inside inspected Authority Boundary run 31916868479",
+    "TVC route release reconciliation: PR #31 -> 5a138064e170780ad168dc8981288dff6a86c909 with Test Readiness 31916940835 SUCCESS; Architecture Guard 31916940951 SUCCESS; StegTVC Core CI 31916940894 SUCCESS",
+    "canonical source handoff: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_BASE_RPC_MIRROR_HANDOFF.md",
+    "canonical route handoff: StegVerse-Labs/TVC/docs/SOVEREIGN_BASE_RPC_ROUTE_MIRROR_HANDOFF.md"
   ]
 }
