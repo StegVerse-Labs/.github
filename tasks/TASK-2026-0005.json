@@ -4,7 +4,7 @@
   "organization": "StegVerse-Labs",
   "goal": "Develop and activate a StegVerse-owned or federated sovereign Base RPC capability so StegFin does not depend on third-party public RPC availability for production observation",
   "status": "active",
-  "flags": ["sovereign-runtime", "base-rpc", "trade-readiness", "no-render", "tv-tvc-only", "source-released", "route-evaluator-released", "machine-activation"],
+  "flags": ["blocked"],
   "requested_at": "2026-08-15T23:39:00Z",
   "priority_class": "critical",
   "rank_reason": [
@@ -61,10 +61,11 @@
   "source_claim": "StegVerse-002/micro-node-runtime/work_claims/SOVEREIGN-BASE-RPC-001.json -> COMPLETE_RELEASED",
   "route_task": "StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-BASE-RPC-ROUTE-003.json -> COMPLETE_RELEASED_SOURCE / MACHINE_OWNED_RUNTIME_OBSERVATION",
   "machine_owner": "resident sovereign heartbeat / StegVerse-Labs/.github#12 -> StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-BASE-RPC-ROUTE-003.json -> StegVerse-Labs/stegfin-governance#60",
-  "activation_state": "MACHINE_OWNED_REAL_ENDPOINT_PENDING",
+  "activation_state": "BLOCKED_MACHINE_OWNED_REAL_ENDPOINT_PENDING",
   "machine_observable_blocker": "REAL_SYNCHRONIZED_STEGVERSE_BASE_ENDPOINT_NOT_YET_OBSERVED",
+  "control_plane_note": "The organization allocator only persists claims for queued tasks. This task is intentionally active+blocked because source claims are released and the remaining authority is the already-bound resident sovereign runtime owner, not a new repository implementation claim. control/claims-active.json must not be treated as evidence of live Base endpoint activation.",
   "release_condition": "A real synchronized Base RPC process on an eligible StegVerse-owned/federated sovereign surface proves chain id 0x2105 and all required read-only methods, emits an inspectable validation_only=false proof with credential_requirement NONE and no NON-TV/TVC runtime secret/token, is admitted by the released TVC evaluator for StegFin observation, StegFin consumes that exact endpoint as preferred transport, the Site carries the released phone resilience module, and issue #60 retains the resulting current-phone terminal receipt.",
-  "next_executable_action": "Resident sovereign heartbeat discovers or activates a real synchronized Base node/runtime using the released micro-node Base RPC runner/verifier and submits its exact validation_only=false proof to the released TVC evaluator; on ROUTE_ADMITTED, StegFin consumes that exact endpoint.",
+  "next_executable_action": "Resident sovereign heartbeat first satisfies SHWP-DURABLE-RUNTIME-ACTIVATION nine-predicate non-hosted proof, then discovers or activates a real synchronized Base node/runtime using the released micro-node Base RPC runner/verifier and submits its exact validation_only=false proof to the released TVC evaluator; on ROUTE_ADMITTED, StegFin consumes that exact endpoint.",
   "completion_evidence": [
     "micro-node source merge: StegVerse-002/micro-node-runtime#35 -> c30837cc11c31771a01e09d768d75b60593f7b4f",
     "micro-node release reconciliation: #36 -> 96d1120262e72fc902945c4c67bf4f56a0daba03",
@@ -76,7 +77,7 @@
     "reference proof hash: sha256:9b90695f20ad52241166ff0674a983e394708dc7a97d3da933715c8b84a4fd75",
     "TVC route source: PR #30 -> 6fcedf65c414319ae1bee5feeb7d52f8a9d414d4",
     "TVC route source validations: Test Readiness 31916868462 SUCCESS; Architecture Guard 31916868482 SUCCESS; StegTVC Core CI 31916868452 SUCCESS; new route tests 9/9 PASS inside inspected Authority Boundary run 31916868479",
-    "TVC route release reconciliation: PR #31 -> 5a138064e170780ad168dc8981288dff6a86c909 with Test Readiness 31916940835 SUCCESS; Architecture Guard 31916940951 SUCCESS; StegTVC Core CI 31916940894 SUCCESS",
+    "TVC route release reconciliation: PR #31 -> 5a138064e170780ad168dc8981288dff6a86c909 with Test Readiness 31916940835 SUCCESS; Architecture Guard 31916940951 SUCCESS; Core CI 31916940894 SUCCESS",
     "canonical source handoff: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_BASE_RPC_MIRROR_HANDOFF.md",
     "canonical route handoff: StegVerse-Labs/TVC/docs/SOVEREIGN_BASE_RPC_ROUTE_MIRROR_HANDOFF.md"
   ]
