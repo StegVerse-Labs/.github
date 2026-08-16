@@ -13,6 +13,7 @@
   "allowed_paths": [
     "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
     "scripts/install_sovereign_heartbeat_service.py",
+    "scripts/run_worker_runtime.py",
     "tests/test_sovereign_heartbeat_service.py",
     "control/session-implementation-claim-2026-08-16-heartbeat-hb29-main-reconcile-197.json"
   ],
@@ -24,7 +25,7 @@
     "workers/**",
     "receipts/sovereign-runtime-activation/**"
   ],
-  "collision_boundary": "Source deployment integration only. Live HB29 successor state, active claims/fences/leases, worker execution, TV/TVC protected material and resident process activation remain owned by #122/#12.",
+  "collision_boundary": "Source deployment integration only. Live HB29 successor state, active claims/fences/leases, actual worker authority, TV/TVC protected material and resident process activation remain owned by #122/#12. This lane may make the existing separate worker runner continuously runnable and separately materialized, but may not combine it into the carrier or mint task authority.",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",
@@ -34,9 +35,10 @@
     "materialization includes scripts/run_worker_runtime.py separately",
     "materialization does not identify engine_v11 as production heartbeat carrier",
     "carrier and worker execution remain separate commands/services",
+    "worker runner supports native continuous coordination without borrowing heartbeat authority",
     "deterministic deployment tests pass",
     "PR merges and outdated competing PR #198 is superseded"
   ],
   "release_condition": "Merge after deterministic validation; actual live HB29 successor remains canonical resident-owner evidence under #122/#12.",
-  "next_task_after_release": "Resident StegVerse owner consumes the corrected deployment materialization at the next admitted execution opportunity and records live successor evidence."
+  "next_task_after_release": "Resident StegVerse owner consumes the corrected carrier/worker materialization at the next admitted execution opportunity and records live successor evidence."
 }
