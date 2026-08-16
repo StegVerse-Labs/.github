@@ -21,17 +21,23 @@
     {"path": ".github/workflows/org-heartbeat-watchdog.yml", "classification": "REVIEW_REQUIRED", "owner": "organization heartbeat diagnostic lane", "reason": "manual diagnostic candidate for consolidation"},
     {"path": ".github/workflows/org-heartbeat.yml", "classification": "REVIEW_REQUIRED", "owner": "organization heartbeat validation lane", "reason": "candidate for stable heartbeat validator consolidation"},
     {"path": ".github/workflows/sovereign-runtime-self-bootstrap.yml", "classification": "REVIEW_REQUIRED", "owner": "StegVerse-Labs/.github#59/#65", "reason": "source released but workflow retention requires runtime-owner evidence review"},
-    {"path": ".github/workflows/sovereign-stegfin-post-bootstrap.yml", "classification": "BLOCKED_ACTIVE_OWNERSHIP", "owner": "separate StegFin workstream", "reason": "wallet/trade scope explicitly excluded from this hygiene session implementation"},
-    {"path": ".github/workflows/stegfin-continuity-machine-executor.yml", "classification": "BLOCKED_ACTIVE_OWNERSHIP", "owner": "separate StegFin workstream", "reason": "wallet/trade scope explicitly excluded from this hygiene session implementation"},
     {"path": ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml", "classification": "BLOCKED_ACTIVE_OWNERSHIP", "owner": "concurrent StegFin early-adopter workstream", "reason": "created during hygiene execution; separate active session"},
-    {"path": ".github/workflows/steggate-heartbeat-integration.yml", "classification": "REVIEW_REQUIRED", "owner": "StegGate heartbeat integration lane", "reason": "candidate for stable heartbeat/control validation consolidation"},
-    {"path": ".github/workflows/tvc-github-broker-crossrepo-validation.yml", "classification": "REVIEW_REQUIRED", "owner": "TVC transport validation lane", "reason": "credential-boundary validation requires TV/TVC owner review"},
-    {"path": ".github/workflows/validate-ae-handoff-worker-conformance.yml", "classification": "REVIEW_REQUIRED", "owner": "AE handoff conformance lane", "reason": "candidate for org-control-plane validator consolidation"}
+    {"path": ".github/workflows/steggate-heartbeat-integration.yml", "classification": "REVIEW_REQUIRED", "owner": "StegGate heartbeat integration lane", "reason": "candidate for stable heartbeat/control validation consolidation"}
   ],
-  "removed_in_batch_1": [
+  "removed_in_hygiene_batch_1": [
     ".github/workflows/org-allocator.yml",
     ".github/workflows/org-continuation-check.yml",
     ".github/workflows/org-aggregation-check.yml"
+  ],
+  "removed_by_other_workstreams_observed_during_hygiene": [
+    ".github/workflows/sovereign-stegfin-post-bootstrap.yml",
+    ".github/workflows/stegfin-continuity-machine-executor.yml",
+    ".github/workflows/tvc-github-broker-crossrepo-validation.yml",
+    ".github/workflows/validate-ae-handoff-worker-conformance.yml"
+  ],
+  "concurrent_new_surfaces_observed_during_hygiene": [
+    ".github/workflows/mcp-activation-binding-test.yml",
+    ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml"
   ],
   "invariant": "Every repository-authored workflow file must be explicitly registered before merge/push. Unregistered workflow proliferation fails closed; registration is classification evidence, not approval to retain the workflow permanently.",
   "completion_condition": "Every registered surface is KEEP_STABLE_DISPATCHER, KEEP_STANDALONE_EXCEPTION with evidence, CONSOLIDATE_INTO_STABLE_DISPATCHER, TRANSFER_TO_STEGVERSE_WORKER, ELIMINATE, or terminally removed; REVIEW_REQUIRED/BLOCKED states are zero unless supported by active ownership."
