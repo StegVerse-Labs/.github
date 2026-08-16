@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:sovereign-base-rpc-activation-v1",
+      "authority_ref": "handoffs/SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "bounded_repository_mutation",
+        "sovereign_base_rpc_activation"
+      ],
+      "command": ["python", "workers/sovereign_base_rpc_activation_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_MICRO_NODE_ROOT",
+        "STEGVERSE_BASE_RPC_URL",
+        "STEGVERSE_BASE_RPC_COMMAND",
+        "HOME",
+        "XDG_STATE_HOME",
+        "LOCALAPPDATA"
+      ],
+      "notes": [
+        "Heartbeat-owned bridge for TASK-2026-0005 real sovereign Base activation.",
+        "Consumes only already-materialized StegVerse-002/micro-node-runtime source and credential-free local endpoint/process descriptors.",
+        "Child execution receives a minimal reconstructed environment; parent GitHub/provider/wallet credential variables are not inherited.",
+        "A validation-only reference endpoint, credential-bearing descriptor, missing local source, unsynchronized endpoint or failed proof returns BLOCKED rather than success.",
+        "Writes only receipts/sovereign-base-rpc-activation/** and grants no TVC route admission, trade, wallet, signing, broadcast or settlement authority.",
+        "No Render, Vercel, Cloudflare hosted runtime, GitHub token/runtime or third-party scheduler is a production dependency."
+      ],
+      "timeout_seconds": 210,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
