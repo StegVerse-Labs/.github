@@ -8,7 +8,7 @@ import json
 
 TRIGGER_SCHEMA = "stegverse.worker-assignment-trigger/v1"
 TIMER_SCHEMA = "stegverse.worker-assignment-timer/v1"
-TRANSITION_SCHEMA = "stegverse.master-records-worker-assignment-transition/v1"
+RECORD_SCHEMA = "stegverse.master-records-worker-assignment-record/v1"
 
 
 def _sha256(value: Any) -> str:
@@ -71,7 +71,7 @@ class AssignmentTimer:
 
 
 def assignment_trigger_packet(*, carrier_epoch: int, task: dict[str, Any]) -> dict[str, Any]:
-    """Build a non-authorizing carrier packet describing unassigned runnable work."""
+    """Build the non-authorizing carrier state that may transition into MR custody."""
     stable = {
         "carrier_epoch": carrier_epoch,
         "task_id": task.get("task_id"),
@@ -84,13 +84,14 @@ def assignment_trigger_packet(*, carrier_epoch: int, task: dict[str, Any]) -> di
         "schema": TRIGGER_SCHEMA,
         **stable,
         "packet_id": "HBTRIG-" + _sha256(stable)[:20],
+        "state": "CARRIED_UNASSIGNED_TASK_OBSERVATION",
         "observation": "UNASSIGNED_TASK_PRESENT",
         "authority_effect": "NONE",
         "execution_authority": False,
         "claim_authority": False,
         "timer_authority": False,
-        "single_use": True,
-        "dissipates_on_assignment": True,
+        "single_use_transition": True,
+        "terminal_destination": "MASTER_RECORDS",
     }
 
 
@@ -104,10 +105,12 @@ def bind_assignment_from_trigger(
     allocated_hb_units: int,
     expiry_basis: str,
 ) -> tuple[AssignmentTimer, dict[str, Any]]:
-    """Consume a carrier trigger and create the assignment timer + MR transition packet.
+    """Transition the carried packet into the durable Master Records state.
 
-    Authorization and worker selection must already have been established by the
-    worker/governance runtime. The trigger is evidence/transport only.
+    There is no second packet. The carrier packet's identity is preserved while
+    its state changes from an unassigned-task observation into the durable bound
+    worker-assignment record retained by Master Records. Authorization and worker
+    selection must already have been established outside the carrier.
     """
     if trigger.get("schema") != TRIGGER_SCHEMA:
         raise ValueError("unsupported assignment trigger schema")
@@ -127,25 +130,34 @@ def bind_assignment_from_trigger(
         cost_basis_ref=trigger.get("cost_basis_ref"),
         expiry_basis=expiry_basis,
     )
-    transition = {
-        "schema": TRANSITION_SCHEMA,
-        "transition": "UNASSIGNED_TASK_TO_BOUND_WORKER_ASSIGNMENT",
-        "source_trigger_packet_id": trigger.get("packet_id"),
-        "source_trigger_state": "DISSIPATED_AFTER_CONSUMPTION",
+
+    record = {
+        "schema": RECORD_SCHEMA,
+        "packet_id": trigger.get("packet_id"),
+        "prior_schema": trigger.get("schema"),
+        "prior_state": trigger.get("state", "CARRIED_UNASSIGNED_TASK_OBSERVATION"),
+        "state": "MASTER_RECORDS_BOUND_WORKER_ASSIGNMENT",
+        "state_transition": "CARRIED_UNASSIGNED_TASK_OBSERVATION_TO_BOUND_WORKER_ASSIGNMENT",
+        "carrier_epoch_observed": trigger.get("carrier_epoch"),
         "task_id": timer.task_id,
+        "goal_id": trigger.get("goal_id"),
+        "handoff_ref": trigger.get("handoff_ref"),
         "worker_id": worker_id,
         "worker_instance_id": worker_instance_id,
         "claim_id": claim_id,
         "fencing_token": fencing_token,
         "assignment_timer": timer.as_dict(),
+        "custodian": "master-records/orchestration",
         "master_records_binding_required": True,
         "recording_effect": "STATE_TRANSITION_CUSTODY",
+        "carrier_packet_continues_after_transition": False,
+        "separate_transition_packet_created": False,
         "carrier_granted_authority": False,
         "carrier_controls_timer": False,
         "authority_effect": "NONE_FROM_CARRIER",
     }
-    transition["transition_sha256"] = _sha256(transition)
-    return timer, transition
+    record["record_sha256"] = _sha256(record)
+    return timer, record
 
 
 __all__ = [
@@ -154,5 +166,5 @@ __all__ = [
     "bind_assignment_from_trigger",
     "TRIGGER_SCHEMA",
     "TIMER_SCHEMA",
-    "TRANSITION_SCHEMA",
+    "RECORD_SCHEMA",
 ]
