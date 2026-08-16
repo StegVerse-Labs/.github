@@ -113,7 +113,9 @@ jobs:
           assert value['workers_invoked'] == 0, value
           assert value['tasks_activated'] == 0, value
           assert value['leases_expired'] == 0, value
-          assert 'coherent_signal_space' in value['subsignals'], value
+          assert value['legacy_hb29_cutover'] == 'PREVIEW_ONLY', value
+          assert 'coherent_signal_space' in value, value
+          assert value['coherent_signal_space'].get('completeness_claim') is not True, value
           print('HEARTBEAT_CARRIER_NON_AUTHORITY_PASS')
           PY
 
@@ -123,9 +125,10 @@ jobs:
           from heartbeat_runtime import CarrierHeartbeatRuntime, HeartbeatRuntime
           from heartbeat_runtime.worker_runtime import WorkerCoordinator
           assert CarrierHeartbeatRuntime.__module__ == 'heartbeat_runtime.engine_v12'
-          assert WorkerCoordinator.__module__ == 'heartbeat_runtime.engine_v11'
+          assert HeartbeatRuntime.__module__ == 'heartbeat_runtime.engine_v12'
+          assert HeartbeatRuntime is CarrierHeartbeatRuntime
+          assert WorkerCoordinator.__module__ == 'heartbeat_runtime.worker_runtime'
           assert WorkerCoordinator is not CarrierHeartbeatRuntime
-          assert HeartbeatRuntime is WorkerCoordinator
           print('WORKER_COORDINATOR_SEPARATION_PASS')
           PY
 
