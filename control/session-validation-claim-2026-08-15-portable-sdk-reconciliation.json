@@ -6,11 +6,12 @@
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
   "claimant": "current ChatGPT session",
-  "role": "CLAIMED_FOR_VALIDATION",
-  "claim_state": "CLAIMED_FOR_VALIDATION",
+  "role": "COMPLETE_RELEASED",
+  "claim_state": "COMPLETE_RELEASED",
   "claim_created_at": "2026-08-15T23:56:00-05:00",
   "claim_expires_at": "2026-08-16T00:56:00-05:00",
-  "claim_release_condition": "Release immediately after control/session-goal-inventory-2026-08-15-portable-publication-v15.json records the canonical StegCore convergence, SDK #39 merge/validation/handoff, current worker-owned blockers, and archive-safe transfer state.",
+  "claim_released_at": "2026-08-15T23:59:00-05:00",
+  "claim_release_condition": "SATISFIED: central v15 inventory now records canonical StegCore convergence, SDK #39 merge/validation/handoff, current worker-owned blockers, and archive-safe transfer state.",
   "collision_scope": {
     "allowed": [
       "read-only validation of portable publication and local-runtime worker ownership",
@@ -29,18 +30,27 @@
       "StegCore release-factory implementation beyond canonical merged source"
     ]
   },
-  "expected_evidence": [
-    "StegVerse-Labs/StegCore cbbe8a0046bc23844d2d8a4baeea9eeb4e11996a and artifact 9257951032 remain canonical",
-    "StegCore 716667e80b1b99ebbcec84ac6dabc5e3d24e4c33 has zero file delta relative to cbbe8a0046bc23844d2d8a4baeea9eeb4e11996a",
-    "StegVerse-org/StegVerse-SDK #39 merged at bee2b903bfa31ef0a3af3edda5d5bc5f5fa34099 after runs 31927711993 and 31927711997 succeeded",
-    "SDK handoff reconciliation commit 070884aede2ea92867ea71655488849ebd9b2305",
-    "local-model source implementation remains COMPLETE_RELEASED and live activation remains worker-owned",
-    "TVC publication remains BLOCKED_DEPENDENCY_MACHINE_OWNED with explicit machine release conditions"
-  ],
+  "release_evidence": {
+    "central_inventory_commit": "7dbd330321265454d0777afd4e2210bf65f008b9",
+    "canonical_stegcore_merge": "cbbe8a0046bc23844d2d8a4baeea9eeb4e11996a",
+    "canonical_stegcore_artifact": 9257951032,
+    "duplicate_no_file_delta_merge": "716667e80b1b99ebbcec84ac6dabc5e3d24e4c33",
+    "sdk_version_contract_merge": "bee2b903bfa31ef0a3af3edda5d5bc5f5fa34099",
+    "sdk_package_validation_run": 31927711993,
+    "sdk_release_index_validation_run": 31927711997,
+    "sdk_handoff_commit": "070884aede2ea92867ea71655488849ebd9b2305",
+    "next_owners": [
+      "StegVerse-Labs/.github resident sovereign heartbeat / G18",
+      "StegVerse-Labs/TVC TVC-PORTABLE-ARTIFACT-PUBLICATION-001",
+      "StegVerse-org/StegVerse-SDK SDK-PORTABLE-ARTIFACT-BINDING-002 after immutable publication",
+      "StegVerse-Labs/TVC -> StegVerse-org/LLM-adapter -> master-records/orchestration for live local-model activation"
+    ]
+  },
+  "next_executable_action": "NONE_SESSION_OWNED; canonical machine and authority owners continue under their durable tasks and release conditions.",
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "non_tv_tvc_secret_or_token_allowed": false,
   "render_production_runtime_allowed": false,
   "authority_effect": "NONE_VALIDATION_ONLY",
-  "archive_dependency": true
+  "archive_dependency": false
 }
