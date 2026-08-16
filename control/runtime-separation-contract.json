@@ -6,6 +6,28 @@
   "nervous_system_owner": "StegVerse-Labs/StegBrain#860",
   "master_records_role": "PASSIVE_CUSTODY_AND_QUERYABLE_EVIDENCE",
   "required_domains": ["StegVerse-Labs", "DEMO", "TEST", "StegVerse-org", "StegGhost"],
+  "carrier_envelope": {
+    "schema_ref": "schemas/heartbeat-carrier-envelope.schema.json",
+    "calculator_ref": "heartbeat_runtime/carrier_envelope.py",
+    "frequency_rule": "GATE_PASSBAND_DERIVED",
+    "interval_rule": "ADMISSIBLE_MIN_MAX_INTERVAL",
+    "nominal_operating_point_rule": "BOUNDED_MARGIN_INSIDE_ADMISSIBLE_INTERVAL",
+    "amplitude_capacity_rule": "MAX_ADMISSIBLE_SIMULTANEOUS_COMPOSITE_LOAD_PLUS_GROWTH_RESERVE",
+    "phase_rule": "CALCULATED_MULTI_PHASE_REFERENCE_PLAN",
+    "alternate_phase_purpose": "OFF_BEAT_AND_INTERMITTENT_REFERENCE_OPPORTUNITIES",
+    "alternate_phase_grants_execution_authority": false,
+    "deviation_observability": ["FREQUENCY_DEVIATION", "PHASE_DEVIATION", "JITTER_DEVIATION", "ENVELOPE_RECALCULATION_REQUIRED"],
+    "growth_aware": true,
+    "fixed_universal_frequency": false,
+    "recalculation_required_on": [
+      "ADMITTED_SIGNAL_SET_CHANGED",
+      "GATE_OR_PASSBAND_CHANGED",
+      "DEADLINE_OR_RETURN_PATH_CHANGED",
+      "SUSTAINABLE_CARRIER_CAPACITY_CHANGED",
+      "GROWTH_RESERVE_THRESHOLD_REACHED",
+      "PERSISTENT_FREQUENCY_OR_PHASE_DEVIATION"
+    ]
+  },
   "forbidden_carrier_fields": ["claim_id", "fencing_token", "active_leases", "lease_action", "worker_registry_ref", "master_records_projection", "route", "credential", "execution_authority"],
   "authority": {
     "heartbeat_grants_execution_authority": false,
