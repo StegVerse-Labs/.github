@@ -19,6 +19,7 @@
     "scripts/run_worker_runtime.py",
     "tests/test_heartbeat_engine_v12_cutover.py",
     "tests/test_worker_runtime_separation.py",
+    "tests/test_heartbeat_carrier_non_authority.py",
     "tests/test_sovereign_heartbeat_service.py",
     "control/session-implementation-claim-2026-08-16-heartbeat-hb29-main-reconcile-197.json"
   ],
