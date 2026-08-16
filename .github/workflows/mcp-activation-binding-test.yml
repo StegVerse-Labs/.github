@@ -98,7 +98,15 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           text=Path('.github/workflows/mcp-activation-binding-test.yml').read_text(encoding='utf-8')
-          forbidden=('contents: write','git push','actions/checkout@','actions/setup-python@','secrets.','github.token')
+          pieces=(
+              ('contents', ': write'),
+              ('git', ' push'),
+              ('actions/', 'checkout@'),
+              ('actions/', 'setup-python@'),
+              ('secrets', '.'),
+              ('github', '.token'),
+          )
+          forbidden=[left+right for left,right in pieces]
           found=[item for item in forbidden if item in text]
           assert not found, found
           assert 'permissions: {}' in text
