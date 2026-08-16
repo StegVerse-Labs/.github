@@ -1,0 +1,93 @@
+name: External Timing Match Validation - Non-Authorizing
+
+on:
+  pull_request:
+    paths:
+      - 'docs/HEARTBEAT_EXTERNAL_TIMING_MATCH_MIRROR_HANDOFF.md'
+      - 'schemas/external-timing-capability.schema.json'
+      - 'heartbeat_runtime/external_timing_match.py'
+      - 'control/external-timing-match-contract.json'
+      - 'tests/test_external_timing_match.py'
+      - '.github/workflows/external-timing-match-validation.yml'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Anonymous checkout without credential authority
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
+
+      - name: Prove no runtime credential token
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          test -z "${GITHUB_PAT:-}"
+          echo EXTERNAL_TIMING_NO_GITHUB_CREDENTIAL_TOKEN_PASS
+
+      - name: Compile timing implementation
+        run: python -m compileall -q heartbeat_runtime
+
+      - name: Parse timing JSON contracts
+        run: |
+          python - <<'PY'
+          import json
+          for path in (
+              'schemas/external-timing-capability.schema.json',
+              'control/external-timing-match-contract.json',
+          ):
+              with open(path, encoding='utf-8') as fh:
+                  json.load(fh)
+          print('EXTERNAL_TIMING_JSON_PASS')
+          PY
+
+      - name: Run focused timing tests
+        run: python -m unittest -v tests.test_external_timing_match
+
+      - name: Prove fixed-cadence and zero-authority contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          contract=json.loads(Path('control/external-timing-match-contract.json').read_text(encoding='utf-8'))
+          logical=contract['logical_heartbeat']
+          authority=contract['authority']
+          assert logical['cadence_semantics']=='FIXED_AFTER_PROFILE_SELECTION_AND_LOCK'
+          assert logical['frequency_is_workload_control'] is False
+          assert logical['min_max_semantics']=='WORKLOAD_HEALTH_BOUNDS_PER_PULSE'
+          assert logical['load_may_change_period'] is False
+          assert authority['credential_authority']=='TV/TVC'
+          assert authority['github_token_runtime_authority']=='NONE'
+          assert authority['non_tv_tvc_secret_or_token_allowed'] is False
+          assert authority['render_dependency']=='PROHIBITED'
+          assert not any(authority[k] for k in authority if k.startswith('timing_match_grants_'))
+          print('EXTERNAL_TIMING_FIXED_CADENCE_ZERO_AUTHORITY_PASS')
+          PY
+
+      - name: Prove workflow is validation only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text=Path('.github/workflows/external-timing-match-validation.yml').read_text(encoding='utf-8')
+          assert 'permissions: {}' in text
+          for marker in ('contents: write', 'git push', 'secrets.', 'github.token'):
+              assert marker not in text, marker
+          print('EXTERNAL_TIMING_WORKFLOW_NON_AUTHORIZING_PASS')
+          PY
