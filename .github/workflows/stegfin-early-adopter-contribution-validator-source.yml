@@ -34,6 +34,12 @@ jobs:
           env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
           git checkout --detach FETCH_HEAD
 
+      - name: Install focused test dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install pytest
+
       - name: Run focused worker boundary tests
         shell: bash
         run: |
