@@ -1,0 +1,79 @@
+{
+  "schema": "stegverse.external-timing-match-contract/v1",
+  "goal_id": "HEARTBEAT-EXTERNAL-TIMING-MATCH-191",
+  "canonical_issue": "StegVerse-Labs/.github#192",
+  "live_runtime_owner": "StegVerse-Labs/.github#122",
+  "source_module": "heartbeat_runtime/external_timing_match.py",
+  "capability_schema": "schemas/external-timing-capability.schema.json",
+  "logical_heartbeat": {
+    "cadence_semantics": "FIXED_AFTER_PROFILE_SELECTION_AND_LOCK",
+    "frequency_is_workload_control": false,
+    "min_max_semantics": "WORKLOAD_HEALTH_BOUNDS_PER_PULSE",
+    "load_may_change_period": false,
+    "period_change_requires": "BOUNDED_REPROFILE_AND_RELOCK"
+  },
+  "external_matching": {
+    "supported_source_classes": [
+      "os_monotonic_clock",
+      "hardware_clock",
+      "network_time_source",
+      "bus",
+      "radio",
+      "sensor",
+      "industrial_controller",
+      "bci_device",
+      "external_sovereign_system",
+      "other_profiled_timing_source"
+    ],
+    "profile_fields": [
+      "clock_source_class",
+      "monotonic_resolution",
+      "timer_or_wakeup_floor",
+      "observed_jitter",
+      "sustainable_fixed_period_interval",
+      "phase_capacity",
+      "waveform_family",
+      "waveform_signature",
+      "workload_capacity_per_pulse"
+    ],
+    "residuals": [
+      "clock_offset",
+      "phase_error",
+      "period_drift",
+      "jitter",
+      "loss_of_lock"
+    ],
+    "workload_states": [
+      "UNDERLOAD",
+      "NORMAL",
+      "ELEVATED",
+      "SATURATED",
+      "OVERLOADED"
+    ]
+  },
+  "identity": {
+    "deployment_classes": ["S", "NS"],
+    "deployment_class_is_explicit_metadata": true,
+    "deployment_class_inferred_from_frequency": false,
+    "waveform_signature_is_identity_authority": false
+  },
+  "consumer_contracts": {
+    "heartbeat_runtime": "#122 consumes fixed-cadence lock/profile output without transferring live producer authority to this source lane",
+    "stegbrain": "StegVerse-Labs/StegBrain#860 may observe typed residual/deviation evidence under separate authority",
+    "stegneuro": "StegVerse-Labs/StegNeuro may consume timing alignment for BCI/device synchronization; phase lock is not neural READ/WRITE authority",
+    "sdk": "StegVerse-org/StegVerse-SDK#13 may consume generalized timing capability metadata for device compatibility"
+  },
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "render_dependency": "PROHIBITED",
+    "timing_match_grants_execution_authority": false,
+    "timing_match_grants_claim_authority": false,
+    "timing_match_grants_routing_authority": false,
+    "timing_match_grants_custody_authority": false,
+    "timing_match_grants_governance_authority": false,
+    "timing_match_grants_neural_authority": false
+  },
+  "live_state_mutation_allowed": false
+}

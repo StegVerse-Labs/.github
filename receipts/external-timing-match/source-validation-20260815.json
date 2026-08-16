@@ -1,0 +1,34 @@
+{
+  "schema": "stegverse.external-timing-match-validation-receipt/v1",
+  "goal_id": "HEARTBEAT-EXTERNAL-TIMING-MATCH-191",
+  "issue": "StegVerse-Labs/.github#192",
+  "pull_request": 193,
+  "validated_head": "2198366abfb39b0f6b6524d442027a707d37fc07",
+  "workflow": "External Timing Match Validation - Non-Authorizing",
+  "run_id": 31921871531,
+  "job_id": 95102879797,
+  "result": "SUCCESS",
+  "evidence": {
+    "anonymous_checkout": "PASS",
+    "no_runtime_github_credential_token": "PASS",
+    "compile": "PASS",
+    "json_contract_parse": "PASS",
+    "focused_tests": "7/7 PASS",
+    "fixed_cadence_zero_authority_contract": "PASS",
+    "workflow_non_authorizing": "PASS"
+  },
+  "broad_validation_observation": {
+    "heartbeat_worker_run": 31921871529,
+    "result": "FAILURE_UNRELATED_EXISTING_DENOMINATOR_DRIFT",
+    "focused_external_timing_tests_within_broad_suite": "7/7 PASS",
+    "failure": "test_ae_retrospective_conformance expected effective_tasks=29/classified=29 while current main produced 30/30",
+    "attributed_to_external_timing_match": false
+  },
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_used": false,
+    "render_used": false,
+    "authority_effect": "NONE"
+  }
+}
