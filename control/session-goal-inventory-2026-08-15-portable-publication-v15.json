@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.session-goal-inventory/v15",
   "inventory_id": "PORTABLE-PUBLICATION-SINGLE-HOST-2026-08-15-V15",
-  "updated_at": "2026-08-15T23:35:00-05:00",
+  "updated_at": "2026-08-15T23:58:00-05:00",
   "repository": "StegVerse-Labs/.github",
   "inherits_complete_inventory": "control/session-goal-inventory-2026-08-15-single-host-portable-v14.json",
   "inheritance_rule": "All v14 goals, Kimi nine-lane continuation, local model/runtime completion, sole-host G18 policy, no-Render rule, and TV/TVC-only protected credential authority remain authoritative unless explicitly changed below.",
@@ -41,6 +41,16 @@
       "next_owner": "StegVerse-Labs/TVC TVC-PORTABLE-ARTIFACT-PUBLICATION-001"
     },
     {
+      "task_id": "G15B-DUPLICATE-STEGCORE-CONVERGENCE-RECONCILIATION",
+      "state": "COMPLETE_SUPERSEDED_AS_CANONICAL_EVIDENCE",
+      "repository": "StegVerse-Labs/StegCore",
+      "duplicate_pr": 139,
+      "duplicate_merge_commit": "716667e80b1b99ebbcec84ac6dabc5e3d24e4c33",
+      "canonical_preexisting_merge": "cbbe8a0046bc23844d2d8a4baeea9eeb4e11996a",
+      "comparison": "0 changed files between cbbe8a0046bc23844d2d8a4baeea9eeb4e11996a and 716667e80b1b99ebbcec84ac6dabc5e3d24e4c33",
+      "canonical_evidence_rule": "Keep cbbe8a0046bc23844d2d8a4baeea9eeb4e11996a / run 31926374208 / artifact 9257951032 as publication source. The later no-file-delta merge creates no second candidate authority or publication lineage."
+    },
+    {
       "task_id": "G16-TVC-PORTABLE-ARTIFACT-PUBLICATION",
       "state": "BLOCKED_DEPENDENCY_MACHINE_OWNED",
       "repository": "StegVerse-Labs/TVC",
@@ -67,6 +77,28 @@
       "additional_machine_allowed_as_solution": false,
       "non_tvtvc_credential_allowed_as_solution": false,
       "next_owner_after_publication": "StegVerse-org/StegVerse-SDK SDK-PORTABLE-ARTIFACT-BINDING-002"
+    },
+    {
+      "task_id": "G17-SDK-VERSIONED-PORTABLE-CONSUMER",
+      "state": "COMPLETE_RELEASED",
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "superseded_pr": 38,
+      "canonical_pr": 39,
+      "canonical_pr_head": "993bb172d8369e44448a2420419a0f54b89af108",
+      "canonical_merge": "bee2b903bfa31ef0a3af3edda5d5bc5f5fa34099",
+      "package_source_validation_run": 31927711993,
+      "release_index_validation_run": 31927711997,
+      "handoff_reconciliation_commit": "070884aede2ea92867ea71655488849ebd9b2305",
+      "completed_contract": [
+        "stable S/NS package family IDs",
+        "explicit semantic package_version and release_version",
+        "versioned package IDs and ZIP/TAR.GZ filenames",
+        "versioned installation targets",
+        "release-index v2 exposes overall release and S/NS component versions",
+        "release completeness requires version-consistent S/NS ZIP and TAR.GZ pairs",
+        "single-host sovereignty and NS non-accreditation remain fail closed"
+      ],
+      "next_owner": "StegVerse-Labs/TVC TVC-PORTABLE-ARTIFACT-PUBLICATION-001; SDK resumes only after immutable publication receipt exists"
     }
   ],
   "remaining_active_product_states": [
@@ -75,35 +107,53 @@
       "owner": "G18 / existing sole StegVerse deployment host",
       "location": "StegVerse-Labs/.github/management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
       "release_condition": "canonical activation.latest.json reports all nine predicates true on the existing physical StegVerse host",
-      "another_machine_is_not_a_valid_solution": true
+      "another_machine_is_not_a_valid_solution": true,
+      "session_execution_allowed": false
+    },
+    {
+      "state": "ECOSYSTEM_CHAT_POST_HB29_ACTIVATION_NOT_OBSERVED",
+      "owner": "resident sovereign heartbeat -> StegVerse-Labs/TVC -> StegVerse-org/LLM-adapter -> master-records/orchestration",
+      "location": "StegVerse-Labs/.github/docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md",
+      "release_condition": "recovery completes under a fresh fence >20, exact local model route executes with credential requirement NONE, and provider-usage plus transition reconstruction PASS in the same execution",
+      "session_execution_allowed": false
     },
     {
       "state": "TVC_PORTABLE_PUBLICATION_BLOCKED",
       "owner": "StegVerse-Labs/TVC repository heartbeat / sole-host StegVerse control plane",
       "location": "StegVerse-Labs/TVC/docs/PORTABLE_ARTIFACT_PUBLICATION_MIRROR_HANDOFF.md",
       "release_condition": "TVC-managed ephemeral publication capability permits exact candidate admission and immutable publication",
-      "generic_github_token_is_not_a_valid_solution": true
+      "generic_github_token_is_not_a_valid_solution": true,
+      "session_execution_allowed": false
     },
     {
       "state": "SDK_REMOTE_DOWNLOAD_NOT_ACTIVE",
       "owner": "StegVerse-org/StegVerse-SDK SDK-PORTABLE-ARTIFACT-BINDING-002",
       "location": "StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md",
-      "release_condition": "TVC-admitted immutable S/NS locators and hashes exist and download->verify->install passes"
+      "release_condition": "TVC-admitted immutable S/NS locators and hashes exist and download->verify->install passes",
+      "session_execution_allowed": false
     },
     {
       "state": "NINE_LANE_PROVIDER_CANDIDATES_PENDING",
       "owner": "GCAT-BCAT-Engine/workflows machine lane plus user-existing-provider/TV-TVC candidate export boundary",
       "location": "GCAT-BCAT-Engine/workflows/experiments/sv-cost-program/nine-lane-results/task-state.json",
-      "release_condition": "OpenAI, Anthropic, DeepSeek and Kimi candidate files validate without provider credential transfer"
+      "release_condition": "OpenAI, Anthropic, DeepSeek and Kimi candidate files validate without provider credential transfer",
+      "session_execution_allowed": false
     }
   ],
   "session_unique_source_claims_remaining": 0,
   "unassigned_session_requirements": 0,
   "product_activation_complete": false,
-  "session_role": "ACTIVE_DISTINCT_SUPPORT_OBSERVATION_AND_MACHINE_HANDOFF_VALIDATION",
-  "archive_state": "NOT_READY_USER_REQUIRES_CONTINUED_ACTIVATION_AND_TRADE_READINESS",
+  "session_role": "MERGED_INTO_CANONICAL_WORKSTREAM",
+  "archive_state": "READY_ALL_SESSION_UNIQUE_WORK_COMPLETE_OR_DURABLY_TRANSFERRED",
+  "archive_rule": "Product activation may remain incomplete when every unfinished goal has an active canonical StegVerse machine/authority owner, collision boundary, machine-observable release condition, and no chat-owned role remains. Archival does not imply product activation.",
+  "validation_reconciliation_claim": "control/session-validation-claim-2026-08-15-portable-sdk-reconciliation.json",
   "canonical_continuation": [
-    "StegVerse-Labs/.github/management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+    "StegVerse-Labs/.github/docs/ORG_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "StegVerse-Labs/.github/docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md",
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/docs/SOVEREIGN_LOCAL_MODEL_ROUTE_MIRROR_HANDOFF.md",
+    "StegVerse-org/LLM-adapter/LLM_ADAPTER_MIRROR_HANDOFF.md",
     "StegVerse-Labs/TVC/docs/PORTABLE_ARTIFACT_PUBLICATION_MIRROR_HANDOFF.md",
     "StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md",
     "GCAT-BCAT-Engine/workflows/experiments/sv-cost-program/nine-lane-results/SV_COST_NINE_LANE_MIRROR_HANDOFF.md"
