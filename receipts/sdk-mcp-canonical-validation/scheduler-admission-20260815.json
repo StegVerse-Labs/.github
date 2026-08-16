@@ -1,0 +1,75 @@
+{
+  "schema": "stegverse.sdk-mcp-scheduler-admission-validation-receipt/v1",
+  "task_id": "SDK-MCP-CANONICAL-VALIDATION-009",
+  "goal_id": "SDK-MCP-PORTABLE-AUTHORITY-001",
+  "observed_at": "2026-08-15T19:49:00-05:00",
+  "state": "SCHEDULER_ADMISSION_SOURCE_VALIDATED",
+  "repository": "StegVerse-Labs/.github",
+  "pull_request": 190,
+  "merge_commit": "47c4dd8e469a2f6b829b75682a3305e4d44fde21",
+  "defects_corrected": [
+    "EXECUTION_AUTHORIZATION_REQUIRED caused by missing executable-handoff activation binding",
+    "EXPIRY_BASIS_UNAVAILABLE caused by missing finite cost-basis reference",
+    "EXECUTOR_NOT_RESOLVED caused by sovereign-runtime worker profile not admitting MCP exact-artifact validation capabilities"
+  ],
+  "installed_surfaces": [
+    "handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json#activation",
+    "cost-basis/worker-runtime/sdk-mcp-canonical-validation.json",
+    "control/worker-registry.d/sdk-mcp-canonical-validation-009.json#tasks/0/cost_basis_ref",
+    "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+    "tests/test_sdk_mcp_activation_binding.py",
+    ".github/workflows/mcp-activation-binding-test.yml"
+  ],
+  "positive_validation": {
+    "workflow": "MCP Activation Binding Validation - Non-Authorizing",
+    "run": 31918144518,
+    "job": 95093401878,
+    "result": "SUCCESS",
+    "focused_mcp_tests": "13/13 PASS",
+    "registry_fragment_admission": "PASS",
+    "execution_authorization_binding": "PASS",
+    "expiry_budget_beats": 64,
+    "expiry_basis": "TASK_CLASS_COST_BASIS",
+    "worker_resolution": "sdk-mcp-canonical-validation-worker",
+    "persistent_state_mutation": false,
+    "workflow_authority": "VALIDATION_ONLY"
+  },
+  "unrelated_repository_validation_debt": {
+    "state": "NOT_MCP_OWNED",
+    "evidence": "Heartbeat Worker Project full-suite failure on missing STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001 AE retrospective entry",
+    "disposition": "Do not repair from the MCP session; StegFin/wallet work is separately owned."
+  },
+  "remaining_exact_gate": {
+    "state": "PENDING_MACHINE_OWNED_SOVEREIGN_EXECUTION",
+    "worker_id": "sdk-mcp-canonical-validation-worker",
+    "required_surface": "eligible non-hosted StegVerse sovereign node",
+    "required_local_source_roots": [
+      "STEGVERSE_SDK_SOURCE_ROOT",
+      "STEGVERSE_STEGCORE_SOURCE_ROOT",
+      "STEGVERSE_CORE_LITE_SOURCE_ROOT",
+      "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT"
+    ],
+    "terminal_receipt": "~/.stegverse/receipts/sdk-mcp-canonical-validation-009.json",
+    "required_terminal_evidence": [
+      "exact MR custody",
+      "exact MRR route-transition custody",
+      "exact MRO replay custody",
+      "exact MRO reconstruction custody",
+      "tools/call after StegGate ALLOW plus commit-coherence ALLOW",
+      "continuous transaction identity",
+      "replay consequence_reexecuted=false",
+      "reconstruction consequence_reexecuted=false",
+      "write_bounded_value(42) retained as UPDATED",
+      "credential_authority=TV/TVC",
+      "non_tv_tvc_secret_or_token_used=false"
+    ]
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "master_records_action_authority_created": false,
+    "execution_authority_created": false
+  }
+}
