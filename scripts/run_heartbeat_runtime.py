@@ -15,21 +15,13 @@ if str(REPO_ROOT) not in sys.path:
 
 from heartbeat_runtime import CarrierHeartbeatRuntime
 
-# Deprecated compatibility exports for callers that historically imported the
-# worker-adapter loader from this module. They are not used by the carrier.
-from scripts.run_worker_runtime import _read_registry, load_adapters
+# Deprecated compatibility exports for callers/tests that historically imported
+# worker-adapter helpers from this module. The carrier main path never calls them.
+from scripts.run_worker_runtime import _read_registry, adapter_entries as _worker_adapter_entries, load_adapters
 
 
 def _adapter_entries(root: Path):
-    entries = []
-    registry_path = root / "control" / "process-worker-adapters.json"
-    if registry_path.exists():
-        entries.extend(_read_registry(registry_path, fragment=False))
-    fragment_root = root / "control" / "process-worker-adapters.d"
-    if fragment_root.is_dir():
-        for path in sorted(fragment_root.glob("*.json")):
-            entries.extend(_read_registry(path, fragment=True))
-    return entries
+    return _worker_adapter_entries(root)
 
 
 def main() -> int:
