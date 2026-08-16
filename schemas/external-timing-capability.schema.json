@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/external-timing-capability.schema.json",
+  "title": "StegVerse External Timing Capability",
+  "type": "object",
+  "required": ["schema", "source", "clock", "waveform", "workload", "authority"],
+  "properties": {
+    "schema": {"const": "stegverse.external-timing-capability/v1"},
+    "source": {
+      "type": "object",
+      "required": ["source_id", "source_class", "deployment_class_inferred_from_frequency"],
+      "properties": {
+        "source_id": {"type": "string", "minLength": 1},
+        "source_class": {"type": "string", "minLength": 1},
+        "deployment_class": {"type": ["string", "null"], "enum": ["S", "NS", null]},
+        "deployment_class_inferred_from_frequency": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "clock": {
+      "type": "object",
+      "required": ["monotonic_resolution_ns", "timer_floor_ms", "observed_jitter_ms", "sustainable_period_min_ms", "sustainable_period_max_ms"],
+      "properties": {
+        "monotonic_resolution_ns": {"type": "integer", "minimum": 1},
+        "timer_floor_ms": {"type": "number", "exclusiveMinimum": 0},
+        "observed_jitter_ms": {"type": "number", "minimum": 0},
+        "sustainable_period_min_ms": {"type": "number", "exclusiveMinimum": 0},
+        "sustainable_period_max_ms": {"type": "number", "exclusiveMinimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "waveform": {
+      "type": "object",
+      "required": ["family", "signature", "phase_capacity"],
+      "properties": {
+        "family": {"type": "string", "minLength": 1},
+        "signature": {"type": "string", "minLength": 1},
+        "phase_capacity": {"type": "integer", "minimum": 1}
+      },
+      "additionalProperties": false
+    },
+    "workload": {
+      "type": "object",
+      "required": ["capacity_per_pulse"],
+      "properties": {
+        "capacity_per_pulse": {"type": "number", "exclusiveMinimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "authority": {
+      "type": "object",
+      "required": ["authority_effect", "credential_authority", "github_token_runtime_authority", "external_timing_source_grants_authority", "waveform_match_grants_authority", "phase_lock_grants_authority"],
+      "properties": {
+        "authority_effect": {"const": "NONE"},
+        "credential_authority": {"const": "TV/TVC"},
+        "github_token_runtime_authority": {"const": "NONE"},
+        "external_timing_source_grants_authority": {"const": false},
+        "waveform_match_grants_authority": {"const": false},
+        "phase_lock_grants_authority": {"const": false}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
