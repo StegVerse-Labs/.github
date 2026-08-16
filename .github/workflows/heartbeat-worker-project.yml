@@ -1,6 +1,6 @@
 # Validation-only workflow for SHWP control-plane artifacts.
 # It has no scheduler, activation, repository mutation, credential, claim, or fence role.
-# TV/TVC owns credential semantics; the resident sovereign heartbeat owns execution.
+# TV/TVC owns credential semantics; worker lifecycle coordination is separate from the heartbeat carrier.
 name: Heartbeat Worker Project - Validation Only / No GitHub Token Authority
 
 on:
@@ -97,7 +97,7 @@ jobs:
       - name: Run complete deterministic repository test suite
         run: python -m unittest discover -v tests
 
-      - name: Prove heartbeat dry-run cannot persist registry or epoch state
+      - name: Prove heartbeat dry-run is carrier-only and non-mutating
         run: |
           set -euo pipefail
           before="$(sha256sum control/worker-registry.json control/heartbeat-state.json control/worker-cost-observations.json | sha256sum | cut -d' ' -f1)"
@@ -108,8 +108,23 @@ jobs:
           python - <<'PY' "$output"
           import json, sys
           value=json.loads(sys.argv[1])
-          assert value['authority_effect']=='none_beyond_existing_admitted_task_authority', value
-          print('DRY_RUN_NON_MUTATING_PASS')
+          assert value['authority_effect']=='NONE_CARRIER_ONLY', value
+          assert value['claims_issued'] == 0, value
+          assert value['workers_invoked'] == 0, value
+          assert value['tasks_activated'] == 0, value
+          assert value['leases_expired'] == 0, value
+          print('HEARTBEAT_CARRIER_NON_AUTHORITY_PASS')
+          PY
+
+      - name: Prove worker coordinator is a separate runtime surface
+        run: |
+          python - <<'PY'
+          from heartbeat_runtime import HeartbeatRuntime
+          from heartbeat_runtime.worker_runtime import WorkerCoordinator
+          assert HeartbeatRuntime.__module__ == 'heartbeat_runtime.engine_v12'
+          assert WorkerCoordinator.__module__ == 'heartbeat_runtime.engine_v11'
+          assert WorkerCoordinator is not HeartbeatRuntime
+          print('WORKER_COORDINATOR_SEPARATION_PASS')
           PY
 
       - name: Rebuild projections ephemerally without repository persistence
