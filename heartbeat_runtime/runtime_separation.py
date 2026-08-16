@@ -8,7 +8,39 @@ def _subsignals(legacy: dict) -> dict:
     return value if isinstance(value, dict) else {}
 
 
-def build_carrier_observation(legacy: dict) -> dict:
+def _deviation_observations(deviation: dict | None, source_ref: str) -> list[dict]:
+    if not deviation or deviation.get("state") != "DEVIATION":
+        return []
+    mapping = {
+        "FREQUENCY_OUTSIDE_ADMISSIBLE_INTERVAL": "FREQUENCY_DEVIATION",
+        "FREQUENCY_DRIFT_EXCEEDED": "FREQUENCY_DEVIATION",
+        "PHASE_ERROR_EXCEEDED": "PHASE_DEVIATION",
+        "JITTER_EXCEEDED": "JITTER_DEVIATION",
+    }
+    kinds = []
+    for reason in deviation.get("reasons") or []:
+        kind = mapping.get(reason)
+        if kind and kind not in kinds:
+            kinds.append(kind)
+    return [
+        {
+            "signal_id": "carrier_deviation:%s" % kind.lower(),
+            "kind": kind,
+            "present": True,
+            "source_ref": source_ref,
+            "authority_effect": "NONE",
+        }
+        for kind in kinds
+    ]
+
+
+def build_carrier_observation(
+    legacy: dict,
+    *,
+    envelope_ref: str | None = None,
+    deviation: dict | None = None,
+    deviation_source_ref: str = "runtime:carrier-observation",
+) -> dict:
     subsignals = _subsignals(legacy)
     generation = int(legacy.get("generation", 0) or 0)
     reference_frame = "heartbeat_generation:%d" % generation
@@ -23,15 +55,25 @@ def build_carrier_observation(legacy: dict) -> dict:
                 "authority_effect": "NONE",
             }
         )
+    observations.extend(_deviation_observations(deviation, deviation_source_ref))
+    carrier = {
+        "role": "REGULATORY_CARRIER_REFERENCE_FRAME",
+        "reference_frame": reference_frame,
+        "frequency_rule": "GATE_PASSBAND_DERIVED",
+        "authority_effect": "NONE",
+    }
+    if envelope_ref:
+        carrier.update(
+            {
+                "envelope_rule": "ADMISSIBLE_FREQUENCY_PHASE_CAPACITY_ENVELOPE",
+                "phase_rule": "CALCULATED_MULTI_PHASE_REFERENCE_PLAN",
+                "envelope_ref": envelope_ref,
+            }
+        )
     return {
         "schema": "stegverse.heartbeat-carrier-observation/v1",
         "generation": generation,
-        "carrier": {
-            "role": "REGULATORY_CARRIER_REFERENCE_FRAME",
-            "reference_frame": reference_frame,
-            "frequency_rule": "GATE_PASSBAND_DERIVED",
-            "authority_effect": "NONE",
-        },
+        "carrier": carrier,
         "observations": observations,
         "authority": {
             "heartbeat_grants_execution_authority": False,
