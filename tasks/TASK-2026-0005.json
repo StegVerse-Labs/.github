@@ -11,7 +11,7 @@
     "Base public RPC rate limiting blocked the live phone validation path",
     "credential-free public failover is released as immediate resilience but remains third-party transport",
     "StegVerse-owned/federated Base RPC source and exact TVC route evaluator are released",
-    "the organization heartbeat now has a task-specific activation adapter that can prove an already-local real synchronized endpoint without GitHub/provider/wallet credential authority"
+    "the organization heartbeat now has a merged, validated task-specific activation adapter that can prove an already-local real synchronized endpoint without GitHub/provider/wallet credential authority"
   ],
   "requirements": {
     "mandatory": [
@@ -54,25 +54,27 @@
     "tvc_route_merge_commit": "6fcedf65c414319ae1bee5feeb7d52f8a9d414d4",
     "tvc_route_reconciliation_pull_request": 31,
     "tvc_route_reconciliation_merge_commit": "5a138064e170780ad168dc8981288dff6a86c909",
-    "activation_worker_branch": "feat/sovereign-base-rpc-activation-worker",
+    "activation_worker_pull_request": 194,
+    "activation_worker_merge_commit": "380b6f9794520014340ddee671020644632b8131",
     "direct_push_allowed": false,
     "source_pull_request_required": true
   },
   "source_state": "COMPLETE_VALIDATED_MERGED",
   "route_evaluator_state": "COMPLETE_VALIDATED_MERGED",
-  "activation_automation_state": "IMPLEMENTED_PENDING_BRANCH_VALIDATION_AND_MERGE",
+  "activation_automation_state": "COMPLETE_VALIDATED_MERGED_RELEASED",
   "activation_worker_task": "SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001",
   "activation_worker_handoff": "handoffs/SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001.json",
   "activation_worker_registry_ref": "control/worker-registry.d/sovereign-base-rpc-activation-001.json",
   "activation_worker_adapter_ref": "process:sovereign-base-rpc-activation-v1",
   "source_claim": "StegVerse-002/micro-node-runtime/work_claims/SOVEREIGN-BASE-RPC-001.json -> COMPLETE_RELEASED",
+  "activation_source_claim": "docs/SOVEREIGN_BASE_RPC_ACTIVATION_MIRROR_HANDOFF.md -> COMPLETE_RELEASED",
   "route_task": "StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-BASE-RPC-ROUTE-003.json -> COMPLETE_RELEASED_SOURCE / MACHINE_OWNED_RUNTIME_OBSERVATION",
   "machine_owner": "resident sovereign heartbeat / StegVerse-Labs/.github#12 -> SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001 -> StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-BASE-RPC-ROUTE-003.json -> StegVerse-Labs/stegfin-governance#60",
   "activation_state": "BLOCKED_MACHINE_OWNED_REAL_ENDPOINT_PENDING",
   "machine_observable_blocker": "REAL_SYNCHRONIZED_STEGVERSE_BASE_ENDPOINT_NOT_YET_OBSERVED",
-  "control_plane_note": "The organization allocator only persists claims for queued tasks. This task remains active+blocked because source claims are released and the resident sovereign runtime owns execution. The task-specific worker does not fetch source, install software from a provider, infer TVC route admission, or take wallet/trade authority.",
+  "control_plane_note": "The organization allocator only persists claims for queued tasks. This task remains active+blocked because all source/automation claims are released and the resident sovereign runtime owns execution. The task-specific worker does not fetch source, install software from a provider, infer TVC route admission, or take wallet/trade authority.",
   "release_condition": "A real synchronized Base RPC process on an eligible StegVerse-owned/federated sovereign surface proves chain id 0x2105 and all required read-only methods, emits an inspectable validation_only=false proof with credential_requirement NONE and no NON-TV/TVC runtime secret/token, is admitted by the released TVC evaluator for StegFin observation, StegFin consumes that exact endpoint as preferred transport, the Site carries the released phone resilience module, and issue #60 retains the resulting current-phone terminal receipt.",
-  "next_executable_action": "After this activation adapter is validated/merged, the resident heartbeat executes SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001 after the nine-predicate sovereign carrier proof. The worker resolves already-local micro-node source and credential-free private Base endpoint/process descriptors, emits the exact validation_only=false proof, then stops for TVC route admission; on ROUTE_ADMITTED, StegFin consumes that exact endpoint.",
+  "next_executable_action": "The resident heartbeat executes SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001 after the nine-predicate sovereign carrier proof. The worker resolves already-local micro-node source and credential-free private Base endpoint/process descriptors and persists exact BLOCKED or validation_only=false proof evidence. On a live proof, TVC independently evaluates ROUTE_ADMITTED; only then may StegFin #60 consume the exact endpoint.",
   "completion_evidence": [
     "micro-node source merge: StegVerse-002/micro-node-runtime#35 -> c30837cc11c31771a01e09d768d75b60593f7b4f",
     "micro-node release reconciliation: #36 -> 96d1120262e72fc902945c4c67bf4f56a0daba03",
@@ -85,8 +87,11 @@
     "TVC route source: PR #30 -> 6fcedf65c414319ae1bee5feeb7d52f8a9d414d4",
     "TVC route source validations: Test Readiness 31916868462 SUCCESS; Architecture Guard 31916868482 SUCCESS; StegTVC Core CI 31916868452 SUCCESS; new route tests 9/9 PASS inside inspected Authority Boundary run 31916868479",
     "TVC route release reconciliation: PR #31 -> 5a138064e170780ad168dc8981288dff6a86c909 with Test Readiness 31916940835 SUCCESS; Architecture Guard 31916940951 SUCCESS; Core CI 31916940894 SUCCESS",
+    "activation worker PR #194 -> merge 380b6f9794520014340ddee671020644632b8131",
+    "activation worker PR validation: Heartbeat Worker Project 31922179962 SUCCESS; organization control plane 31922179974 SUCCESS; early-adopter validator source 31922179965 SUCCESS",
+    "activation worker post-merge validation: Heartbeat Worker Project 31922206593 SUCCESS; organization control plane 31922206653 SUCCESS; organization handoff projection 31922206725 SUCCESS",
     "canonical source handoff: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_BASE_RPC_MIRROR_HANDOFF.md",
     "canonical route handoff: StegVerse-Labs/TVC/docs/SOVEREIGN_BASE_RPC_ROUTE_MIRROR_HANDOFF.md",
-    "activation adapter branch handoff: docs/SOVEREIGN_BASE_RPC_ACTIVATION_MIRROR_HANDOFF.md"
+    "canonical activation handoff: docs/SOVEREIGN_BASE_RPC_ACTIVATION_MIRROR_HANDOFF.md"
   ]
 }
