@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import signal
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -18,6 +20,7 @@ SCHEMA = "stegverse.process-worker-adapters/v0.1"
 FRAGMENT_SCHEMA = "stegverse.process-worker-adapter-fragment/v0.1"
 PROCESS_TYPE = "process_json_v0.1"
 BOUND_STATE_TYPE = "process_json_bound_state_v0.1"
+DEFAULT_INTERVAL_MS = 10.0
 
 
 def _read_registry(path: Path, *, fragment: bool) -> list[dict[str, Any]]:
@@ -71,17 +74,34 @@ def load_adapters(root: Path) -> dict[str, ProcessWorkerAdapter]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=str(REPO_ROOT))
-    parser.add_argument("--cycles", type=int, default=1)
+    parser.add_argument("--cycles", type=int, default=1, help="Finite worker-runtime cycles when --continuous is not set.")
+    parser.add_argument("--continuous", action="store_true", help="Run worker coordination continuously under native process supervision.")
+    parser.add_argument("--interval-ms", type=float, default=DEFAULT_INTERVAL_MS, help="Delay between worker-runtime ticks. Assignment timers use HB-sized logical units but this loop does not advance or depend on carrier epochs.")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
-    if args.cycles < 1:
-        raise SystemExit("cycles must be >= 1")
+    if args.cycles < 1 or args.interval_ms < 0:
+        raise SystemExit("cycles must be >= 1 and interval-ms must be >= 0")
+    if args.continuous and args.dry_run:
+        raise SystemExit("continuous dry-run is prohibited because it cannot retain worker timer state")
 
     root = Path(args.root).resolve()
     runtime = WorkerCoordinator(root, adapters=load_adapters(root))
-    for _ in range(args.cycles):
+    running = True
+
+    def stop(_signum, _frame):
+        nonlocal running
+        running = False
+
+    signal.signal(signal.SIGTERM, stop)
+    signal.signal(signal.SIGINT, stop)
+
+    index = 0
+    while running and (args.continuous or index < args.cycles):
         result = runtime.cycle(write=not args.dry_run)
         print(json.dumps(result, sort_keys=True), flush=True)
+        index += 1
+        if running and (args.continuous or index < args.cycles) and args.interval_ms:
+            time.sleep(args.interval_ms / 1000.0)
     return 0
 
 
