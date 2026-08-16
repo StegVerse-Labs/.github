@@ -1,0 +1,131 @@
+{
+  "schema": "stegverse.session-goal-inventory/v17",
+  "inventory_id": "SDK-V3-WORKER-TRANSFER-2026-08-15-V17",
+  "supersedes": "control/session-goal-inventory-2026-08-15-sdk-v3-worker-transfer-v16.json",
+  "updated_at": "2026-08-16T02:19:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "session_scope": "SDK v3 portable package identity convergence and transfer of live sole-host runtime observation to canonical StegVerse workers, preserving TV/TVC-only credential/publication authority and no hosted production runtime substitution.",
+  "originating_goal_ids": [
+    "G16-SDK-REAL-V3-PACKAGE-IDENTITY",
+    "G16-G18-CHAT-OBSERVATION-TRANSFER"
+  ],
+  "shared_directives": [],
+  "worker_assistance_bindings": [
+    {
+      "worker_or_task_id": "StegVerse-org/StegVerse-SDK:SDK-PORTABLE-ARTIFACT-BINDING-002",
+      "session_goal_id": "G16-SDK-REAL-V3-PACKAGE-IDENTITY",
+      "lineage_type": "DIRECT_GOAL_OWNER",
+      "lineage_evidence_ref": "StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md",
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "archive_dependency": false
+    },
+    {
+      "worker_or_task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION/G18",
+      "session_goal_id": "G16-G18-CHAT-OBSERVATION-TRANSFER",
+      "lineage_type": "DIRECT_GOAL_OWNER",
+      "lineage_evidence_ref": "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+      "scope_decision": "IN_SCOPE_ASSIST",
+      "archive_dependency": false
+    }
+  ],
+  "inherits_complete_inventory": "control/session-goal-inventory-2026-08-15-portable-publication-v16.json",
+  "inheritance_rule": "All portable-publication v16 goals, TVC publication ownership, local model/runtime completion, sole-host G18 policy, no-Render rule and TV/TVC-only protected credential authority remain authoritative unless explicitly changed below.",
+  "governing_sovereignty_invariant": {
+    "physical_host_topology": "ONE_SOVEREIGN_PHYSICAL_HOST",
+    "additional_physical_machine_required": false,
+    "third_party_runtime_infrastructure_required": false,
+    "independent_validation_mechanism": "SAME_HOST_ISOLATED_LOGICAL_BOUNDARIES",
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "github_token_runtime_authority": "NONE",
+    "render_production_runtime_allowed": false
+  },
+  "completed_or_transferred_deltas": [
+    {
+      "task_id": "G16-SDK-REAL-V3-PACKAGE-IDENTITY",
+      "originating_goal": "Correct the SDK consumer to accept the actual merged StegCore v3 portable package identity rather than the legacy prototype package ID.",
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "canonical_handoff": "docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md",
+      "collision_state": "MERGED_INTO_CANONICAL_WORKSTREAM",
+      "canonical_pr": 39,
+      "canonical_merge": "bee2b903bfa31ef0a3af3edda5d5bc5f5fa34099",
+      "validation_runs": [31927711993, 31927711997, 31927737361],
+      "producer_artifact_id": 9257951032,
+      "producer_artifact_digest": "sha256:ffac18929f2f9dca7fabc124fc9d3245e2641cef45f4a2f3a3a937a5f647f709",
+      "session_claim_state": "RELEASED_NO_DUPLICATE_MUTATION",
+      "next_owner": "StegVerse-Labs/TVC TVC-PORTABLE-ARTIFACT-PUBLICATION-001; SDK resumes after immutable publication"
+    },
+    {
+      "task_id": "G16-G18-CHAT-OBSERVATION-TRANSFER",
+      "originating_goal": "Ensure live sole-host runtime activation is owned by actual StegVerse workers rather than requiring a ChatGPT session to remain open.",
+      "repository": "StegVerse-Labs/.github",
+      "canonical_blocker": "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+      "worker_owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18 fencing token 18",
+      "executor_binding": "BOUND",
+      "operational_state": "ACTIVE_SOLUTION_EXECUTION",
+      "source_implementation_missing": false,
+      "live_activation_observed": false,
+      "chat_monitoring_required": false,
+      "session_retention_required": false,
+      "machine_observable_release_condition": "G18 writes canonical activation.latest.json with all nine predicates true on the existing sovereign host, or emits exact fail-closed evidence from that host.",
+      "another_machine_is_not_a_valid_solution": true,
+      "third_party_runtime_is_not_a_valid_solution": true
+    }
+  ],
+  "original_session_goal_status": {
+    "remove_descriptive_local_runtime_selection": "COMPLETE_RELEASED",
+    "formal_local_language_model": "COMPLETE_RELEASED",
+    "local_runtime_discovery_launch_inference_proof": "COMPLETE_RELEASED",
+    "canonical_handoff": "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "live_activation": "MACHINE_OWNED_NOT_YET_OBSERVED"
+  },
+  "remaining_active_product_states": [
+    {
+      "state": "LIVE_ONE_HOST_G18_ACTIVATION_NOT_OBSERVED",
+      "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18 fencing token 18",
+      "location": "StegVerse-Labs/.github/management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+      "release_condition": "canonical activation.latest.json reports all nine predicates true or exact fail-closed evidence is emitted",
+      "session_execution_or_observation_dependency": false
+    },
+    {
+      "state": "TVC_PORTABLE_PUBLICATION_BLOCKED",
+      "owner": "StegVerse-Labs/TVC repository heartbeat / sole-host StegVerse control plane",
+      "location": "StegVerse-Labs/TVC/tasks/TVC-PORTABLE-ARTIFACT-PUBLICATION-001.json",
+      "release_condition": "TVC-managed ephemeral publication capability permits exact candidate admission and immutable publication",
+      "session_execution_or_observation_dependency": false
+    },
+    {
+      "state": "SDK_REMOTE_DOWNLOAD_NOT_ACTIVE",
+      "owner": "StegVerse-org/StegVerse-SDK SDK-PORTABLE-ARTIFACT-BINDING-002",
+      "location": "StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md",
+      "release_condition": "TVC-admitted immutable S/NS locators and hashes exist and download->verify->install passes",
+      "session_execution_or_observation_dependency": false
+    }
+  ],
+  "cross_repository_propagation": {
+    "site": "NOT_YET_AUTHORIZED_PENDING_RELEASE",
+    "publisher": "NOT_YET_AUTHORIZED_PENDING_RELEASE",
+    "admissibility_wiki": "NOT_YET_AUTHORIZED_PENDING_RELEASE",
+    "stegguardian_wiki": "NOT_YET_AUTHORIZED_PENDING_RELEASE",
+    "master_records": "OWNED_BY_EXISTING_MACHINE_CUSTODY_CHAIN_WHERE_APPLICABLE"
+  },
+  "session_unique_source_claims_remaining": 0,
+  "session_unique_validation_claims_remaining": 0,
+  "session_unique_integration_claims_remaining": 0,
+  "session_unique_propagation_claims_remaining": 0,
+  "session_unique_observation_claims_remaining": 0,
+  "unassigned_session_requirements": 0,
+  "stale_or_conflicting_session_claims_remaining": 0,
+  "product_activation_complete": false,
+  "session_consolidation_complete": true,
+  "session_role": "COMPLETE_MERGED_AND_TRANSFERRED",
+  "archive_state": "READY_ALL_UNIQUE_SESSION_WORK_COMPLETED_SUPERSEDED_OR_DURABLY_TRANSFERRED",
+  "archive_basis": "SDK identity convergence is merged and validated; live G18 execution/observation is durably machine-owned; TVC publication remains authority-owned with an exact release condition. Product activation is incomplete, but this inventory has no chat-owned execution or observation role.",
+  "canonical_continuation": [
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+    "StegVerse-Labs/TVC/docs/PORTABLE_ARTIFACT_PUBLICATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/tasks/TVC-PORTABLE-ARTIFACT-PUBLICATION-001.json",
+    "StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md"
+  ]
+}
