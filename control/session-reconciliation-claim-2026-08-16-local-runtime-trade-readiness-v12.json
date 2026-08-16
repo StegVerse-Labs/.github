@@ -5,9 +5,10 @@
   "originating_goal": "Reconcile the local-runtime/model/trade-readiness session inventory with the released sovereign Base activation worker and current sovereign runtime activation constraint without competing with machine-owned execution.",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
-  "role": "CLAIMED_FOR_RECONCILIATION",
+  "role": "COMPLETE_RELEASED",
   "claimant": "session-local-runtime-trade-readiness-v12-reconciliation",
   "claimed_at": "2026-08-16T02:03:00-05:00",
+  "released_at": "2026-08-16T02:06:00-05:00",
   "allowed_paths": [
     "control/session-goal-inventory-2026-08-16-local-runtime-trade-readiness-v12.json",
     "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
@@ -23,17 +24,20 @@
     "receipts/sovereign-runtime-activation/**",
     "receipts/sovereign-base-rpc-activation/**"
   ],
-  "collision_boundary": "Read/reconcile durable session state only. Do not execute or mutate sovereign heartbeat activation, Base endpoint activation, TVC route admission, StegFin current-phone observation, signing, broadcast, settlement, or any worker-owned runtime state.",
+  "collision_boundary": "Read/reconcile durable session state only. No sovereign heartbeat activation, Base endpoint activation, TVC route admission, StegFin current-phone observation, signing, broadcast, settlement, or worker-owned runtime state was mutated by this claim.",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",
   "render_production_runtime_allowed": false,
-  "expected_evidence": [
-    "v12 inventory records PR #194 and current activation blocker truth",
-    "session mirror handoff points to v12 and preserves machine-owned continuation",
-    "session consolidation receipt identifies exact canonical continuation and archive posture",
-    "claim released after durable reconciliation"
+  "completion_evidence": [
+    "control/session-goal-inventory-2026-08-16-local-runtime-trade-readiness-v12.json committed and directly re-read from main",
+    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md reconciled to v12 and directly re-read from main",
+    "receipts/session-consolidation/SESSION-LOCAL-RUNTIME-TRADE-READINESS-V12-20260816.json committed and directly re-read from main",
+    "PR #194 and current G18 deployment-host reachability blocker are now durable in session state",
+    "ASRO adjacent goal is explicitly transferred to admissibility-wiki issue #50/canonical workflow"
   ],
-  "release_condition": "v12 inventory, session handoff and consolidation receipt are committed and directly re-read from main with no new session-owned execution or observation responsibility.",
-  "next_task_after_release": "Machine-owned G18 sovereign runtime activation, then sovereign Base proof/TVC admission and StegFin #60 current-phone terminal observation continue under their existing owners."
+  "release_condition": "SATISFIED",
+  "session_execution_responsibility_remaining": 0,
+  "session_observation_responsibility_remaining": 0,
+  "next_task_after_release": "Machine-owned G18 sovereign runtime activation, then sovereign Base proof/TVC admission and StegFin #60 current-phone terminal observation continue under their existing owners; ASRO continues under admissibility-wiki issue #50."
 }
