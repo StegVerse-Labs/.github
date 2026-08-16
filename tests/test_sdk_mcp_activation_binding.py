@@ -9,6 +9,7 @@ from heartbeat_runtime.engine_v2 import HeartbeatRuntime
 ROOT = Path(__file__).resolve().parents[1]
 HANDOFF = ROOT / "handoffs" / "SDK-MCP-CANONICAL-VALIDATION-009.json"
 FRAGMENT = ROOT / "control" / "worker-registry.d" / "sdk-mcp-canonical-validation-009.json"
+PROFILES = ROOT / "control" / "worker-capability-profiles.json"
 
 
 class SDKMCPActivationBindingTests(unittest.TestCase):
@@ -16,6 +17,7 @@ class SDKMCPActivationBindingTests(unittest.TestCase):
     def setUpClass(cls):
         cls.handoff = json.loads(HANDOFF.read_text(encoding="utf-8"))
         cls.fragment = json.loads(FRAGMENT.read_text(encoding="utf-8"))
+        cls.profiles = json.loads(PROFILES.read_text(encoding="utf-8"))
 
     def test_handoff_uses_existing_machine_authorization_binding(self):
         activation = self.handoff["activation"]
@@ -60,6 +62,19 @@ class SDKMCPActivationBindingTests(unittest.TestCase):
         self.assertEqual(64, cost["hb_estimate"]["expiry_candidate_beats"])
         self.assertEqual(64, self.handoff["execution"]["runtime_window_beats"])
         self.assertEqual(0, cost["cost_estimate"]["external_cost_usd"])
+
+    def test_sovereign_profile_admits_exact_validation_capabilities_without_authority(self):
+        worker = self.fragment["workers"][0]
+        profile_id = worker["capability_profile_ref"].split("#", 1)[1]
+        profile = next(p for p in self.profiles["profiles"] if p["profile_id"] == profile_id)
+        required = set(self.handoff["execution"]["required_capabilities"])
+        self.assertTrue(required.issubset(set(worker["capabilities"])))
+        self.assertTrue(required.issubset(set(profile["allowed_capabilities"])))
+        self.assertEqual("repository_worker", profile["executor_type"])
+        self.assertFalse(profile["availability_grants_authority"])
+        self.assertFalse(profile["capability_match_grants_authority"])
+        self.assertIn("canonical_artifact_validation", profile["allowed_capabilities"])
+        self.assertIn("master_records_replay_reconstruction_validation", profile["allowed_capabilities"])
 
 
 if __name__ == "__main__":
