@@ -6,6 +6,7 @@ on:
       - 'scripts/run_sovereign_ephemeral_console.py'
       - 'scripts/restart_sovereign_ephemeral_node.py'
       - 'scripts/verify_sovereign_runtime_activation.py'
+      - 'workers/sovereign_runtime_activation_worker.py'
       - 'tests/test_sovereign_ephemeral_console.py'
       - '.github/workflows/sovereign-ephemeral-console.yml'
       - 'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json'
@@ -27,15 +28,24 @@ jobs:
           test -z "${GITHUB_TOKEN:-}"
           test -z "${GH_TOKEN:-}"
           test -z "${TVC_TOKEN:-}"
-      - name: Compile console and verifier
+      - name: Compile console verifier and G18 worker
         run: |
           python -m py_compile \
             scripts/run_sovereign_ephemeral_console.py \
             scripts/restart_sovereign_ephemeral_node.py \
             scripts/verify_sovereign_runtime_activation.py \
+            workers/sovereign_runtime_activation_worker.py \
             tests/test_sovereign_ephemeral_console.py
       - name: Run deterministic console tests
         run: python -m unittest -v tests.test_sovereign_ephemeral_console
+      - name: Verify G18 automatically owns fallback
+        shell: bash
+        run: |
+          set -eu
+          grep -q 'run_sovereign_ephemeral_console.py' workers/sovereign_runtime_activation_worker.py
+          grep -q 'physical_additional_machine_required' workers/sovereign_runtime_activation_worker.py
+          grep -q 'SOVEREIGN_EPHEMERAL_CONSOLE_VERIFIED' workers/sovereign_runtime_activation_worker.py
+          echo 'G18_ONE_HOST_FALLBACK_BOUND'
       - name: Prove hosted runner is validation only
         shell: bash
         run: |
@@ -53,6 +63,7 @@ jobs:
           assert p['physical_additional_machine_required'] is False, p
           assert p['third_party_runtime_required'] is False, p
           assert p['credential_authority']=='TV/TVC', p
+          assert p['canonical_proof_promoted'] is False, p
           print('HOSTED_VALIDATION_ONLY_PASS')
           PY
       - name: Assert production activation is not claimed
