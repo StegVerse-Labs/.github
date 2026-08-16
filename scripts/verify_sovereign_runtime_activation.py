@@ -3,9 +3,14 @@
 
 This verifier is node-local. It never treats GitHub Actions, Render, Cloudflare,
 or another hosted platform as production evidence. It observes live heartbeat
-advance, performs one controlled native-service restart, verifies non-regression
+advance, performs one controlled local-supervision restart, verifies non-regression
 and registry continuity, and writes activation.latest.json for the heartbeat
 activation worker to consume.
+
+A StegVerse ephemeral logical node is an allowed local supervision mode when its
+service receipt binds an explicit local restart command and no third-party process
+host. This removes any physical second/third-machine requirement without weakening
+the hosted-environment rejection boundary.
 """
 from __future__ import annotations
 
@@ -93,7 +98,19 @@ def worker_coordination_observed(state: dict, runtime_root: Path) -> bool:
     return checkpoint_root.is_dir() and any(checkpoint_root.rglob("*.json"))
 
 
-def restart_command(system: str | None = None, env: dict[str, str] | None = None) -> list[str]:
+def restart_command(
+    *,
+    service_receipt: dict | None = None,
+    system: str | None = None,
+    env: dict[str, str] | None = None,
+) -> list[str]:
+    service = service_receipt or {}
+    if service.get("registration_kind") == "stegverse-ephemeral-console":
+        command = service.get("restart_command")
+        if isinstance(command, list) and command and all(isinstance(item, str) and item for item in command):
+            return list(command)
+        raise RuntimeError("ephemeral console service receipt missing restart_command")
+
     name = (system or platform.system()).lower()
     values = dict(os.environ if env is None else env)
     if name == "linux":
@@ -104,6 +121,16 @@ def restart_command(system: str | None = None, env: dict[str, str] | None = None
     if name == "windows":
         return ["schtasks", "/Run", "/TN", "StegVerse Heartbeat"]
     raise RuntimeError(f"unsupported sovereign host platform: {name}")
+
+
+def _local_supervision_active(service_receipt: dict) -> bool:
+    if service_receipt.get("active") is not True:
+        return False
+    if service_receipt.get("third_party_process_host_required") is not False:
+        return False
+    if service_receipt.get("registration_kind") == "stegverse-ephemeral-console":
+        return service_receipt.get("stegverse_process_supervision") is True
+    return service_receipt.get("native_process_supervision_only") is True
 
 
 def evaluate_runtime(
@@ -138,7 +165,7 @@ def evaluate_runtime(
         return {"predicates": predicates, "detail": detail}
 
     required_files = (
-        runtime_root / "heartbeat_runtime" / "engine_v9.py",
+        runtime_root / "heartbeat_runtime" / "engine_v11.py",
         runtime_root / "scripts" / "run_heartbeat_runtime.py",
         state_path,
         registry_path,
@@ -148,10 +175,13 @@ def evaluate_runtime(
     predicates["runtime_materialized"] = all(path.is_file() for path in required_files)
     if not predicates["runtime_materialized"]:
         detail["ineligible_reason"] = "RUNTIME_NOT_MATERIALIZED"
+        detail["missing_runtime_files"] = [str(path) for path in required_files if not path.is_file()]
         return {"predicates": predicates, "detail": detail}
 
     service_receipt = load_json(service_path)
-    predicates["native_service_active"] = service_receipt.get("active") is True and service_receipt.get("third_party_process_host_required") is False
+    predicates["native_service_active"] = _local_supervision_active(service_receipt)
+    detail["registration_kind"] = service_receipt.get("registration_kind")
+    detail["stegverse_process_supervision"] = service_receipt.get("stegverse_process_supervision") is True
 
     before = load_json(state_path)
     registry_before = load_json(registry_path)
@@ -163,7 +193,7 @@ def evaluate_runtime(
     predicates["continuous_runtime_live"] = predicates["native_service_active"] and e1 > e0
     predicates["worker_coordination_checkpoint_observed"] = worker_coordination_observed(observed, runtime_root)
 
-    command = restart_command(system=system, env=values)
+    command = restart_command(service_receipt=service_receipt, system=system, env=values)
     completed = runner(command, check=False, capture_output=True, text=True)
     predicates["controlled_restart_observed"] = completed.returncode == 0
     detail["restart_command"] = command
@@ -184,7 +214,14 @@ def evaluate_runtime(
         and before_task_ids == after_task_ids
         and worker_coordination_observed(after, runtime_root)
     )
-    detail.update({"epoch_before": e0, "epoch_observed": e1, "epoch_after_restart": e2, "generation_before": g0, "generation_observed": g1, "generation_after_restart": g2})
+    detail.update({
+        "epoch_before": e0,
+        "epoch_observed": e1,
+        "epoch_after_restart": e2,
+        "generation_before": g0,
+        "generation_observed": g1,
+        "generation_after_restart": g2,
+    })
     return {"predicates": predicates, "detail": detail}
 
 
@@ -196,6 +233,7 @@ def verify(runtime_root: Path, **kwargs: Any) -> dict:
         **predicates,
         "all_predicates_pass": all(predicates.values()),
         "third_party_runtime_required": False,
+        "physical_additional_machine_required": False,
         "detail": evaluated["detail"],
     }
     path = proof_path(kwargs.get("env"))
