@@ -24,14 +24,15 @@ def _read_registry(path: Path, *, fragment: bool) -> list[dict[str, Any]]:
     value = json.loads(path.read_text(encoding="utf-8"))
     expected = FRAGMENT_SCHEMA if fragment else SCHEMA
     if value.get("schema") != expected:
-        raise RuntimeError(f"unsupported process worker adapter registry: {path}")
+        kind = "fragment" if fragment else "registry"
+        raise RuntimeError(f"unsupported process worker adapter {kind}: {path}")
     adapters = value.get("adapters")
     if not isinstance(adapters, list):
         raise RuntimeError(f"process worker adapters must be a list: {path}")
     return [entry for entry in adapters if isinstance(entry, dict)]
 
 
-def load_adapters(root: Path) -> dict[str, ProcessWorkerAdapter]:
+def adapter_entries(root: Path) -> list[dict[str, Any]]:
     entries: list[dict[str, Any]] = []
     registry_path = root / "control" / "process-worker-adapters.json"
     if registry_path.exists():
@@ -40,23 +41,41 @@ def load_adapters(root: Path) -> dict[str, ProcessWorkerAdapter]:
     if fragment_root.is_dir():
         for path in sorted(fragment_root.glob("*.json")):
             entries.extend(_read_registry(path, fragment=True))
+    return entries
 
+
+def load_adapters(root: Path) -> dict[str, ProcessWorkerAdapter]:
     adapters: dict[str, ProcessWorkerAdapter] = {}
-    for entry in entries:
+    for entry in adapter_entries(root):
         if not entry.get("enabled"):
             continue
-        adapter_ref = entry["adapter_ref"]
+        adapter_ref = entry.get("adapter_ref")
+        if not isinstance(adapter_ref, str) or not adapter_ref:
+            raise RuntimeError("enabled process adapter missing adapter_ref")
+        if adapter_ref in adapters:
+            raise RuntimeError(f"duplicate enabled adapter_ref: {adapter_ref}")
+
         adapter_type = entry.get("type", PROCESS_TYPE)
         if adapter_type not in {PROCESS_TYPE, BOUND_STATE_TYPE}:
             raise RuntimeError(f"unsupported process adapter type: {adapter_type}")
         cwd = Path(entry["cwd"])
         if not cwd.is_absolute():
             cwd = root / cwd
+
         bound_state_root = None
         bound_state_allowed_paths: tuple[str, ...] = ()
         if adapter_type == BOUND_STATE_TYPE:
-            bound_state_root = Path(entry["bound_state_root"]).expanduser()
-            bound_state_allowed_paths = tuple(entry.get("bound_state_allowed_paths", []))
+            state_value = entry.get("bound_state_root")
+            patterns = entry.get("bound_state_allowed_paths")
+            if not isinstance(state_value, str) or not state_value:
+                raise RuntimeError(f"bound-state adapter missing bound_state_root: {adapter_ref}")
+            if not isinstance(patterns, list) or not patterns or any(not isinstance(item, str) or not item for item in patterns):
+                raise RuntimeError(f"bound-state adapter missing bound_state_allowed_paths: {adapter_ref}")
+            bound_state_root = Path(state_value).expanduser()
+            if not bound_state_root.is_absolute():
+                raise RuntimeError(f"bound_state_root must resolve to an absolute host path: {adapter_ref}")
+            bound_state_allowed_paths = tuple(patterns)
+
         adapters[adapter_ref] = ProcessWorkerAdapter(
             list(entry["command"]),
             cwd=cwd,
