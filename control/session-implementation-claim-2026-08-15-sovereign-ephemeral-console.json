@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "claim_id": "SESSION-SOVEREIGN-EPHEMERAL-CONSOLE-2026-08-15",
+  "task_id": "SHWP-SOVEREIGN-EPHEMERAL-CONSOLE-002",
+  "originating_goal": "Remove any physical second/third-machine dependency from sovereign runtime validation by creating StegVerse-controlled ephemeral logical nodes on one eligible sovereign host.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "claimant": "current-session-validation-and-nonconflicting-dependency-lane",
+  "role": "implementation + validation of logical-node workaround only",
+  "claim_created": "2026-08-15T21:32:00-05:00",
+  "release_condition": "ephemeral console source/tests/workflow pass and G18 handoff/blocker explicitly accept logical isolated peer nodes without weakening the requirement that production carrier itself run on a StegVerse-controlled non-hosted surface",
+  "surfaces": [
+    "scripts/run_sovereign_ephemeral_console.py",
+    "scripts/restart_sovereign_ephemeral_node.py",
+    "scripts/verify_sovereign_runtime_activation.py",
+    "tests/test_sovereign_ephemeral_console.py",
+    ".github/workflows/sovereign-ephemeral-console.yml",
+    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json"
+  ],
+  "collision_boundary": [
+    "Do not acquire, replace, or mutate G18 fencing token 18.",
+    "Do not claim a GitHub-hosted validation runner is sovereign production activation.",
+    "Do not introduce Render, Vercel, Cloudflare, GitHub-token runtime authority, provider secrets, or NON-TV/TVC credentials.",
+    "Do not require another physical computer for peer-isolation validation when equivalent process/state/identity isolation is locally provable."
+  ],
+  "expected_evidence": [
+    "three isolated runtime roots and node identities",
+    "independent process PIDs",
+    "controlled restart of an isolated logical peer",
+    "state reconstruction/non-regression proof",
+    "cross-node claim/fence collision proof",
+    "hosted validation that tests source semantics without claiming production activation"
+  ],
+  "claim_state": "CLAIMED_FOR_IMPLEMENTATION",
+  "next_task_after_release": "G18 consumes the released console automatically on its first eligible StegVerse-controlled non-hosted execution surface; one physical host is sufficient."
+}
