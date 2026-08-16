@@ -18,7 +18,7 @@ SPEC.loader.exec_module(mod)
 
 
 class SovereignHeartbeatServiceTests(unittest.TestCase):
-    def test_materialization_is_network_independent_and_runtime_v11(self) -> None:
+    def test_materialization_is_network_independent_and_hb29_cutover_aware(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / "heartbeat"
             receipt = mod.materialize(ROOT, target)
@@ -29,12 +29,20 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
             self.assertFalse(receipt["github_runtime_dependency"])
             self.assertFalse(receipt["render_runtime_dependency"])
             self.assertFalse(receipt["cloudflare_runtime_dependency"])
-            self.assertEqual(receipt["canonical_runtime"], "heartbeat_runtime.engine_v11.HeartbeatRuntime")
+            self.assertIn("select_runtime", receipt["canonical_runtime"])
+            self.assertEqual(receipt["library_compatibility_runtime"], "heartbeat_runtime.engine_v11.HeartbeatRuntime")
+            self.assertEqual(receipt["hb29_cutover_runtime"], "heartbeat_runtime.engine_v12.HeartbeatRuntime")
+            self.assertEqual(receipt["hb29_cutover_epoch"], 29)
+            self.assertTrue(receipt["hb29_legacy_state_immutable"])
+            self.assertEqual(receipt["credential_authority"], "TV/TVC")
+            self.assertFalse(receipt["non_tv_tvc_secret_or_token_required"])
             self.assertEqual(receipt["heartbeat_default_interval_ms"], 10.0)
             self.assertEqual(receipt["nominal_cycles_per_second"], 100.0)
-            self.assertEqual(receipt["worker_lease_clock"], "canonical_heartbeat_cycle")
+            self.assertEqual(receipt["worker_lease_clock"], "canonical_heartbeat_reference")
             self.assertFalse(receipt["wall_clock_worker_expiry_authority"])
             self.assertTrue((target / "heartbeat_runtime" / "engine_v11.py").is_file())
+            self.assertTrue((target / "heartbeat_runtime" / "engine_v12.py").is_file())
+            self.assertTrue((target / "schemas" / "heartbeat-carrier-runtime-state.schema.json").is_file())
             self.assertTrue((target / "control" / "heartbeat-subsignals.json").is_file())
             self.assertTrue((target / "control" / "worker-registry.json").is_file())
             written = json.loads((target / "receipts" / "sovereign-host" / "materialization.latest.json").read_text())
@@ -55,6 +63,7 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
             self.assertEqual(receipt["heartbeat_interval_ms"], 10.0)
             self.assertEqual(receipt["nominal_cycles_per_second"], 100.0)
             self.assertTrue(receipt["native_process_supervision_only"])
+            self.assertIn("select_runtime", receipt["canonical_runtime"])
             self.assertIn("run_heartbeat_runtime.py", text)
             self.assertIn("--continuous", text)
             self.assertIn("--interval-ms", text)
@@ -84,7 +93,8 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
             )
             self.assertTrue(receipt["active"])
             self.assertEqual(receipt["execution_authority_effect"], "NONE")
-            self.assertEqual(receipt["canonical_runtime"], "heartbeat_runtime.engine_v11.HeartbeatRuntime")
+            self.assertIn("select_runtime", receipt["canonical_runtime"])
+            self.assertEqual(receipt["hb29_cutover_runtime"], "heartbeat_runtime.engine_v12.HeartbeatRuntime")
             self.assertFalse(receipt["third_party_process_host_required"])
             self.assertFalse(receipt["third_party_deployment_required"])
             self.assertFalse(receipt["third_party_scheduler_required"])
