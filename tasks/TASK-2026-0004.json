@@ -12,7 +12,7 @@
     "current phone has repeatedly reached an RPC rate-limit boundary before WALLET_HANDOFF_READY",
     "StegFin source task STEGFIN-PHONE-RPC-RESILIENCE-012 is merged and terminal",
     "participant entry cannot exercise the released resilience layer until Site projects the exact asset",
-    "the prior Site hardening claim and its reconciliation are now terminal, so the scoped RPC-resilience projection can proceed without overlap"
+    "the prior Site hardening claim and its reconciliation are terminal, and the current Site claim is explicitly bound to the collision-safe claim branch"
   ],
   "requirements": {
     "mandatory": [
@@ -46,25 +46,28 @@
   },
   "dependencies": [],
   "workspace": {
-    "branch": "fix/stegfin-phone-rpc-resilience-261",
+    "branch": "claim/stegfin-phone-rpc-resilience-261",
     "merge_target": "main",
     "direct_push_allowed": false,
     "pull_request_required": true,
-    "pull_request": 280,
-    "current_head": "b9fed03c18c9fa48b5dd89a9e8599ee993d7ad15"
+    "pull_request": 281,
+    "current_head": "90e0542e75ee77320847e354d8f5611f75669d5a",
+    "superseded_pull_request": 280,
+    "superseded_pull_request_state": "CLOSED_UNMERGED"
   },
   "machine_owner": "StegVerse-Labs/Site:data/session-work-claims.json#SITE-STEGFIN-PHONE-RPC-RESILIENCE-0004-20260815 -> Site repository validation gates -> StegVerse-Labs/stegfin-governance#60",
-  "current_claim": "StegVerse-Labs/Site@fix/stegfin-phone-rpc-resilience-261:data/session-work-claims.json#SITE-STEGFIN-PHONE-RPC-RESILIENCE-0004-20260815",
-  "current_pull_request": "StegVerse-Labs/Site#280",
+  "current_claim": "StegVerse-Labs/Site@claim/stegfin-phone-rpc-resilience-261:data/session-work-claims.json#SITE-STEGFIN-PHONE-RPC-RESILIENCE-0004-20260815",
+  "current_pull_request": "StegVerse-Labs/Site#281",
   "machine_observable_blocker": "NONE_FOR_SOURCE_IMPLEMENTATION",
-  "machine_observable_release_condition": "PR #280 passes Check StegFin Phone Projection, Site Handoff Orchestrator, Ecosystem Heartbeat Orchestration, and Site Bootstrap Validate; merges; the public Site build contains the merged lineage; StegFin #60 imports the resilient-phone continuation condition.",
-  "next_executable_action": "Repository-native validation evaluates PR #280. On PASS, merge and verify public build lineage, release the Site claim, and transfer current-phone PREPARE/terminal evidence to StegFin #60.",
+  "machine_observable_release_condition": "PR #281 passes Check StegFin Phone Projection, Site Handoff Orchestrator, Ecosystem Heartbeat Orchestration, and Site Bootstrap Validate; merges; the public Site build contains the merged lineage; StegFin #60 imports the resilient-phone continuation condition.",
+  "next_executable_action": "Repository-native validation evaluates PR #281. On PASS, merge and verify public build lineage, release the Site claim, and transfer current-phone PREPARE/terminal evidence to StegFin #60.",
   "release_condition": "Site claim is admitted without collision; exact StegFin rpc-resilience blob 290b567eca2cc9f83e7438a80682ebaf8006ad76 is projected before phone-direct-route.js; Site validation/orchestration pass; PR merges; Pages build contains the merged lineage; StegFin #60 imports the retry condition.",
   "completion_evidence": [
     "StegFin source PR #66 merged at bcba49976a52024a233f998ce290ec4ab42618ff",
     "released rpc-resilience blob 290b567eca2cc9f83e7438a80682ebaf8006ad76",
     "Site hardening reconciliation PR #279 merged at 99f510d7e1d2026d09df0a4997cd7c2c3d5e9f9f",
     "Site implementation claim SITE-STEGFIN-PHONE-RPC-RESILIENCE-0004-20260815",
-    "Site PR #280 head b9fed03c18c9fa48b5dd89a9e8599ee993d7ad15"
+    "Site PR #280 closed unmerged after orchestrator branch-class failure",
+    "Site PR #281 current claim branch head 90e0542e75ee77320847e354d8f5611f75669d5a"
   ]
 }
