@@ -5,8 +5,10 @@
   "originating_goal": "Assist the canonical sovereign-runtime worker by reconciling stale deterministic tests with the already-released single-host StegVerse runtime policy, without mutating production runtime semantics or worker-owned activation state.",
   "repository": "StegVerse-Labs/.github",
   "branch": "claim/session-local-runtime-trade-readiness-v14-195",
-  "role": "CLAIMED_FOR_VALIDATION",
+  "role": "COMPLETE_RELEASED",
   "claimed_at": "2026-08-16T03:31:00-05:00",
+  "released_at": "2026-08-16T03:37:00-05:00",
+  "release_merge": "3d5938272d78a2695f8b4462147f5deed035876a",
   "allowed_paths": [
     "tests/test_g18_self_bootstrap_worker.py",
     "tests/test_sovereign_runtime_activation_escalation.py",
@@ -23,11 +25,26 @@
     "control/worker-registry.json",
     "receipts/sovereign-runtime-activation/**"
   ],
-  "collision_scope": "Validation-only repair of expectations/fixtures after the canonical policy moved from federated/physical-resource wording to deployment-local single-host logical isolation. No product/runtime authority or behavior may change.",
+  "collision_scope": "Validation-only repair of expectations/fixtures after the canonical policy moved from federated/physical-resource wording to deployment-local single-host logical isolation. No product/runtime authority or behavior changed.",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",
   "render_production_runtime_allowed": false,
-  "release_condition": "All deterministic repository tests pass on PR head and organization control-plane validation passes without production authority.",
+  "completion_evidence": {
+    "pr": 196,
+    "merge": "3d5938272d78a2695f8b4462147f5deed035876a",
+    "head": "6ee235bc716c64ff6190e8321d5164297268402c",
+    "heartbeat_worker_project_run": 31936844989,
+    "heartbeat_worker_project_conclusion": "success",
+    "sovereign_runtime_worker_run": 31936844902,
+    "sovereign_runtime_worker_conclusion": "success",
+    "organization_control_plane_run": 31936845001,
+    "organization_control_plane_conclusion": "success",
+    "organization_handoff_projection_run": 31936844913,
+    "organization_handoff_projection_conclusion": "success",
+    "deterministic_repository_suite": "PASS",
+    "production_runtime_mutated": false
+  },
+  "release_condition": "SATISFIED: deterministic repository suite and all applicable PR-head validation surfaces passed, then PR #196 merged.",
   "next_task_after_release": "G18 remains machine-owned and executes the already-released deployment-local single-host activation chain."
 }
