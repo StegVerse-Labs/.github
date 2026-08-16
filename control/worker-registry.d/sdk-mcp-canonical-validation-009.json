@@ -12,10 +12,12 @@
       "authorized_policy_version": "sdk-mcp-canonical-validation-v1",
       "handoff_ref": "handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json",
       "block_ref": "StegVerse-org/StegVerse-SDK:MCP_PORTABLE_AUTHORITY_MIRROR_HANDOFF.md",
+      "cost_basis_ref": "cost-basis/worker-runtime/sdk-mcp-canonical-validation.json",
       "evidence_refs": [
         "handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json",
         "workers/sdk_mcp_canonical_validation_worker.py",
         "control/process-worker-adapters.d/sdk-mcp-canonical-validation-009.json",
+        "cost-basis/worker-runtime/sdk-mcp-canonical-validation.json",
         "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json"
       ],
       "admissible_existence": {
@@ -34,7 +36,8 @@
         "integration_evidence_refs": [
           "workers/sdk_mcp_canonical_validation_worker.py",
           "control/worker-registry.d/sdk-mcp-canonical-validation-009.json",
-          "control/process-worker-adapters.d/sdk-mcp-canonical-validation-009.json"
+          "control/process-worker-adapters.d/sdk-mcp-canonical-validation-009.json",
+          "cost-basis/worker-runtime/sdk-mcp-canonical-validation.json"
         ],
         "activation_proof_ref": null,
         "blockers": ["EXACT_SOVEREIGN_ARTIFACT_RUN_NOT_YET_OBSERVED"],

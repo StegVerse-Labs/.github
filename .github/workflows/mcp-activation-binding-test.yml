@@ -1,0 +1,114 @@
+name: MCP Activation Binding Validation - Non-Authorizing
+
+on:
+  pull_request:
+    paths:
+      - 'handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json'
+      - 'control/worker-registry.d/sdk-mcp-canonical-validation-009.json'
+      - 'control/worker-capability-profiles.json'
+      - 'cost-basis/worker-runtime/sdk-mcp-canonical-validation.json'
+      - 'tests/test_sdk_mcp_activation_binding.py'
+      - 'workers/sdk_mcp_canonical_validation_worker.py'
+      - 'control/process-worker-adapters.d/sdk-mcp-canonical-validation-009.json'
+      - '.github/workflows/mcp-activation-binding-test.yml'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Anonymous checkout without credential authority
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
+          mkdir -p /tmp/stegverse-ci-bin
+          ln -sf "$(command -v python3)" /tmp/stegverse-ci-bin/python
+          echo /tmp/stegverse-ci-bin >> "$GITHUB_PATH"
+
+      - name: Prove validation environment has no runtime credential token
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          test -z "${GITHUB_PAT:-}"
+          echo MCP_BINDING_NO_GITHUB_CREDENTIAL_TOKEN_PASS
+
+      - name: Run focused MCP activation-binding tests
+        run: |
+          set -euo pipefail
+          python -m unittest -v tests.test_sdk_mcp_activation_binding tests.test_sdk_mcp_canonical_validation_worker
+
+      - name: Prove MCP scheduler prerequisites resolve without persistent mutation
+        run: |
+          set -euo pipefail
+          before="$(sha256sum control/worker-registry.json control/heartbeat-state.json control/worker-cost-observations.json | sha256sum | cut -d' ' -f1)"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from heartbeat_runtime import HeartbeatRuntime
+          from scripts.run_heartbeat_runtime import load_adapters
+
+          root=Path('.').resolve()
+          runtime=HeartbeatRuntime(root, adapters=load_adapters(root))
+          registry=json.loads((root/'control/worker-registry.json').read_text(encoding='utf-8'))
+          applied=runtime._apply_registry_fragments(registry)
+          task=next(item for item in registry['tasks'] if item.get('task_id')=='SDK-MCP-CANONICAL-VALIDATION-009')
+          handoff=runtime._handoff(task)
+          assert runtime._execution_authorized(handoff), handoff.get('activation')
+          budget, expiry_basis=runtime._expiry_budget(task)
+          assert budget == 64, (budget, expiry_basis)
+          assert expiry_basis == 'TASK_CLASS_COST_BASIS', (budget, expiry_basis)
+          worker=runtime._worker_for(task, registry)
+          assert worker is not None, task
+          assert worker['worker_id']=='sdk-mcp-canonical-validation-worker', worker
+          assert worker['status']=='AVAILABLE', worker
+          assert worker['adapter_ref']=='process:sdk-mcp-canonical-validation-v1', worker
+          print('MCP_SCHEDULER_PREREQUISITES_PASS', json.dumps({
+              'fragment_applied': 'control/worker-registry.d/sdk-mcp-canonical-validation-009.json' in applied,
+              'authorization_ref': handoff['activation']['authorization_ref'],
+              'expiry_budget_beats': budget,
+              'expiry_basis': expiry_basis,
+              'worker_id': worker['worker_id'],
+              'heartbeat_grants_execution_authority': handoff['authority']['heartbeat_grants_execution_authority'],
+              'credential_authority': handoff['authority']['credential_authority'],
+              'github_token_runtime_authority': handoff['authority']['github_token_runtime_authority'],
+          }, sort_keys=True))
+          PY
+          after="$(sha256sum control/worker-registry.json control/heartbeat-state.json control/worker-cost-observations.json | sha256sum | cut -d' ' -f1)"
+          test "$before" = "$after"
+          echo MCP_SCHEDULER_PREREQUISITES_NON_MUTATING_PASS
+
+      - name: Prove workflow is validation only
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          text=Path('.github/workflows/mcp-activation-binding-test.yml').read_text(encoding='utf-8')
+          pieces=(
+              ('contents', ': write'),
+              ('git', ' push'),
+              ('actions/', 'checkout@'),
+              ('actions/', 'setup-python@'),
+              ('secrets', '.'),
+              ('github', '.token'),
+          )
+          forbidden=[left+right for left,right in pieces]
+          found=[item for item in forbidden if item in text]
+          assert not found, found
+          assert 'permissions: {}' in text
+          print('MCP_BINDING_WORKFLOW_NON_AUTHORIZING_PASS')
+          PY
