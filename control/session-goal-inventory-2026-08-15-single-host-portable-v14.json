@@ -1,0 +1,135 @@
+{
+  "schema": "stegverse.session-goal-inventory/v14",
+  "inventory_id": "SINGLE-HOST-SOVEREIGN-PORTABLE-PRODUCT-2026-08-15-V14",
+  "updated_at": "2026-08-15T23:13:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "inherits_complete_inventory": "control/session-goal-inventory-2026-08-15-kimi-nine-lane-v13.json",
+  "inheritance_rule": "All v13 goals, one-host G18 console ownership, Kimi nine-lane continuation, local model/runtime completion, no-Render policy, and TV/TVC-only protected credential authority remain authoritative unless explicitly changed below.",
+  "governing_sovereignty_invariant": {
+    "physical_host_topology": "ONE_SOVEREIGN_PHYSICAL_HOST",
+    "additional_physical_machine_required": false,
+    "third_party_machine_required": false,
+    "third_party_process_host_required": false,
+    "third_party_scheduler_required": false,
+    "third_party_state_host_required": false,
+    "third_party_control_plane_executor_required": false,
+    "third_party_platform_availability_may_block_declared_local_operation": false,
+    "independent_validation_mechanism": "SAME_HOST_ISOLATED_LOGICAL_BOUNDARIES",
+    "external_participants_may_be_optional_inputs_not_runtime_dependencies": true,
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "render_production_runtime_allowed": false
+  },
+  "new_originating_goal": "Propagate the one-physical-host sovereignty rule from G18/runtime policy into portable S/NS production and SDK verification so no StegVerse deployment can regress to a required third-party service/machine or additional physical validation host.",
+  "goals": [
+    {
+      "task_id": "G13-STEGCORE-SINGLE-HOST-PORTABLE-CONTRACT",
+      "originating_goal": "Make single-host sovereignty an executable portable S/NS product contract, not documentation only.",
+      "destination_organization": "StegVerse-Labs",
+      "destination_repository": "StegCore",
+      "branch": "main",
+      "location": "docs/STEGVERSE_MICRO_ECOSYSTEM_MIRROR_HANDOFF.md",
+      "authoritative_files": [
+        "micro_ecosystem/manifest.json",
+        "tools/run_stegverse_micro_ecosystem.py",
+        "tools/build_portable_ecosystem_package.py",
+        "tests/test_stegverse_micro_ecosystem.py",
+        "tests/test_portable_ecosystem_package.py"
+      ],
+      "owner": "StegVerse-Labs/StegCore portable producer",
+      "claim_state": "COMPLETE_VALIDATED; ARTIFACT_TRANSPORT_SUCCESSOR_DISTINCT_PR_137",
+      "completion_state": "manifest v3, proof receipt v3, package receipt v2 current-main builder, and fail-closed single-host checks installed",
+      "validation_state": "StegCore Tests run 31925980402 SUCCESS on head 72083dbcad3199ec0055ebefff6d870c30b18c5b; readiness run 31925837384 SUCCESS on f5f5cc04410c72ed5059103304730f5f45d4974d",
+      "integration_state": "SDK consumer contract propagated; PR #137 remains distinct artifact-transport claimant",
+      "archival_dependency": false,
+      "evidence_location": "StegVerse-Labs/StegCore/docs/STEGVERSE_MICRO_ECOSYSTEM_MIRROR_HANDOFF.md",
+      "next_executable_action": "PR #137 owner reconciles current main while retaining the contract; no competing artifact transport may be created."
+    },
+    {
+      "task_id": "G14-SDK-SINGLE-HOST-PORTABLE-CONSUMER",
+      "originating_goal": "Reject S/NS packages that require another physical machine, third-party runtime infrastructure, or non-TV/TVC credential authority.",
+      "destination_organization": "StegVerse-org",
+      "destination_repository": "StegVerse-SDK",
+      "branch": "main",
+      "location": "docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md",
+      "authoritative_files": [
+        "stegverse/portable_packages.py",
+        "tests/test_portable_packages.py",
+        "tests/test_portable_dual_archive.py",
+        ".github/workflows/portable-package-source-validation.yml"
+      ],
+      "owner": "StegVerse-org/StegVerse-SDK portable consumer",
+      "claim_state": "COMPLETE_VALIDATED; WAITING_ON_CANONICAL_ARTIFACT_PRODUCER",
+      "completion_state": "v2/v3 package receipts accepted only under matching embedded manifest single-host sovereignty contract",
+      "validation_state": "Portable Package Source Validation run 31926083091 SUCCESS on head 67dfa4f80d9e5d9e0105dfb75bbfe0217827bb8e",
+      "integration_state": "compatible with current StegCore v2 and active PR #137 v3 receipt evolution; does not own publication",
+      "archival_dependency": false,
+      "evidence_location": "StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md",
+      "next_executable_action": "Consume admitted immutable S/NS locators and hashes after PR #137/TVC producer-publication chain completes."
+    },
+    {
+      "task_id": "G15-PORTABLE-ARTIFACT-COLLISION-RECONCILIATION",
+      "originating_goal": "Assist workers without duplicating the artifact transport implementation.",
+      "destination_organization": "StegVerse-Labs",
+      "destination_repository": "StegCore",
+      "branch": "feat/portable-candidate-artifact-transport-v0",
+      "location": "pull/137",
+      "owner": "StegVerse-Labs/StegCore PR #137 artifact-transport claimant",
+      "claim_state": "CLAIMED_FOR_IMPLEMENTATION_DISTINCT_OWNER",
+      "completion_state": "PR carries versioned package receipt v3 and candidate artifact transport; permanent publication remains TV/TVC-owned",
+      "validation_state": "current session inspected PR metadata and changed-file collision; no duplicate implementation created",
+      "integration_state": "SDK v3 consumer compatibility completed on main",
+      "archival_dependency": false,
+      "evidence_location": "StegVerse-Labs/StegCore#137 + producer/consumer handoffs",
+      "next_executable_action": "Canonical PR #137 owner reconciles/rebases current main if merge conflict remains, preserving single-host contract and TV/TVC publication boundary."
+    }
+  ],
+  "converged_work": {
+    "runtime_single_host_source": "StegVerse-Labs/.github/control/sovereign-runtime-platform-policy.json",
+    "runtime_ephemeral_proof": "StegVerse-Labs/.github/docs/SOVEREIGN_EPHEMERAL_CONSOLE_MIRROR_HANDOFF.md",
+    "portable_producer": "StegVerse-Labs/StegCore/docs/STEGVERSE_MICRO_ECOSYSTEM_MIRROR_HANDOFF.md",
+    "portable_consumer": "StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md",
+    "artifact_transport": "StegVerse-Labs/StegCore#137",
+    "permanent_artifact_publication_authority": "TV/TVC"
+  },
+  "collision_boundaries": [
+    "Do not create a second physical-host requirement for S, NS, runtime validation, replay, reconstruction, or independent proof.",
+    "Do not use GitHub Actions, Render, Vercel, Cloudflare, or another hosted machine as production StegVerse runtime authority.",
+    "Do not duplicate StegCore PR #137 artifact transport or TV/TVC permanent publication authority.",
+    "Do not relax SDK v2/v3 receipt verification to accommodate versioning; v3 must preserve the exact sovereignty contract.",
+    "Do not introduce any non-TV/TVC secret/token authority."
+  ],
+  "current_incomplete_product_states": [
+    {
+      "state": "LIVE_ONE_HOST_G18_ACTIVATION_NOT_OBSERVED",
+      "owner": "G18 / existing sole StegVerse deployment host",
+      "location": "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+      "release_condition": "canonical activation.latest.json reports all nine predicates true on the existing StegVerse physical host",
+      "additional_machine_allowed_as_solution": false
+    },
+    {
+      "state": "IMMUTABLE_PORTABLE_ARTIFACT_PUBLICATION_NOT_COMPLETE",
+      "owner": "StegVerse-Labs/StegCore#137 -> TV/TVC permanent publication",
+      "location": "StegVerse-Labs/StegCore/docs/STEGVERSE_MICRO_ECOSYSTEM_MIRROR_HANDOFF.md",
+      "release_condition": "exact immutable S/NS artifacts plus hashes are admitted/published under TV/TVC boundary and exposed to SDK consumer"
+    },
+    {
+      "state": "SDK_REMOTE_DOWNLOAD_NOT_ACTIVE",
+      "owner": "StegVerse-org/StegVerse-SDK SDK-PORTABLE-ARTIFACT-BINDING-002",
+      "location": "StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md",
+      "release_condition": "admitted immutable artifact locators and hashes exist; download->verify->install passes for S and NS"
+    },
+    {
+      "state": "NINE_LANE_PROVIDER_CANDIDATES_PENDING",
+      "owner": "GCAT-BCAT-Engine/workflows/.github/workflows/sv-cost-nine-lane-candidate-proof.yml plus user-existing-provider/TV-TVC candidate export boundary",
+      "location": "GCAT-BCAT-Engine/workflows/experiments/sv-cost-program/nine-lane-results/task-state.json",
+      "release_condition": "OpenAI, Anthropic, DeepSeek and Kimi candidate files validate without provider credential transfer"
+    }
+  ],
+  "session_unique_source_claims_remaining": 0,
+  "unassigned_session_requirements": 0,
+  "product_activation_complete": false,
+  "session_role": "ACTIVE_DISTINCT_SUPPORT_AND_INTEGRATION_OBSERVATION",
+  "archive_state": "NOT_READY_LIVE_ACTIVATION_AND_TRADE_READINESS_STILL_UNOBSERVED",
+  "archive_rule": "Do not archive while the user's active directive requires continued activation/trade-readiness work and the parent runtime blocker retains session retention. All required deployment-local sovereignty must remain satisfiable on the one existing physical StegVerse machine."
+}
