@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.session-validation-claim/v1",
+  "task_id": "ORG-HANDOFF-NONCOMPETING-VALIDATION",
+  "originating_goal": "Assist canonical StegVerse workers by validating current sovereign-runtime activation, sovereign local-model route, and StegFin wallet-handoff readiness without competing for worker-owned execution scopes.",
+  "organization": "StegVerse-Labs",
+  "repository": ".github",
+  "branch": "main",
+  "claimant": "current-session-validation-reconciliation-lane",
+  "role": "CLAIMED_FOR_VALIDATION",
+  "claim_created_at": "2026-08-16T18:48:00-05:00",
+  "claim_expiration_or_release_condition": "Release immediately after a durable validation receipt records current canonical state and exact machine-owned next actions.",
+  "owned_surfaces": [
+    "read-only validation of control/heartbeat-state.json",
+    "read-only validation of handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "read-only validation of control/worker-registry.d/stegfin-continuity-carrier-007.json",
+    "read-only validation of control/process-worker-adapters.d/stegfin-continuity-carrier-007.json",
+    "read-only validation of StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json",
+    "receipt creation under receipts/session-validation/**",
+    "session inventory reconciliation only"
+  ],
+  "collision_boundaries": [
+    "do not acquire or alter G18 or any heartbeat fence/lease/claim",
+    "do not execute or modify the sovereign-runtime activation worker",
+    "do not execute or modify the Ecosystem Chat inference worker",
+    "do not execute the StegFin pretrade worker or wallet path",
+    "do not create a second heartbeat, runtime, route authority, credential authority, provider transport, or Master Records path",
+    "do not use Render or another hosted runtime as production authority",
+    "do not use GitHub tokens or any NON-TV/TVC secret/token as runtime authority",
+    "do not access provider secrets",
+    "do not sign or broadcast wallet transactions"
+  ],
+  "expected_evidence": "receipts/session-validation/2026-08-16-tt-local-runtime-trade-support.json",
+  "next_task_after_release": "Existing machine owners continue: G18 sovereign runtime activation -> issue #60 sovereign inference chain -> STEGFIN-CONTINUITY-CARRIER-007 wallet-handoff preparation.",
+  "state": "CLAIMED_FOR_VALIDATION"
+}
