@@ -1,0 +1,41 @@
+{
+  "schema": "stegverse.session-reconciliation-claim/v1",
+  "claim_id": "SESSION-LOCAL-RUNTIME-TRADE-READINESS-V14-RECONCILIATION",
+  "task_id": "ORG-HANDOFF-NONCOMPETING-VALIDATION",
+  "issue": 195,
+  "originating_goal": "Reconcile the canonical local-runtime/model/trade-readiness session state with the released human-readable USER_ONLY StegFin wallet review while preserving machine-owned runtime activation boundaries.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "claim/session-local-runtime-trade-readiness-v14-195",
+  "role": "CLAIMED_FOR_RECONCILIATION",
+  "claimant": "session-local-runtime-trade-readiness-v14-reconciliation",
+  "claimed_at": "2026-08-16T03:26:00-05:00",
+  "allowed_paths": [
+    "control/session-goal-inventory-2026-08-16-local-runtime-trade-readiness-v14.json",
+    "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
+    "receipts/session-consolidation/SESSION-LOCAL-RUNTIME-TRADE-READINESS-V14-20260816.json",
+    "control/session-reconciliation-claim-2026-08-16-local-runtime-trade-readiness-v14.json"
+  ],
+  "prohibited_paths": [
+    "control/heartbeat-state.json",
+    "control/worker-registry.json",
+    "control/worker-registry.d/**",
+    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "workers/**",
+    "receipts/sovereign-runtime-activation/**",
+    "receipts/sovereign-base-rpc-activation/**"
+  ],
+  "collision_boundary": "Session-state reconciliation only. Do not execute or mutate sovereign heartbeat activation, local model runtime execution, Base endpoint activation, TVC route admission, phone execution, signing, broadcast, settlement, or worker-owned runtime state.",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "github_token_runtime_authority": "NONE",
+  "render_production_runtime_allowed": false,
+  "expected_evidence": [
+    "StegVerse-Labs/stegfin-governance PR #72 merge a921c5250cb6800bfe552038a5ac1e896b44fe02",
+    "StegVerse-Labs/Site PR #288 merge abe63f6af052c460d102818e8dd16ccda90b72c6",
+    "Site Pages build 1154455062 BUILT from exact merge",
+    "organization control-plane validation PASS",
+    "updated v14 inventory, receipt and canonical session assistance handoff"
+  ],
+  "release_condition": "Release after PR merge, direct main re-read of all four reconciliation surfaces, and strongest applicable organization validation succeeds.",
+  "next_task_after_release": "No chat-owned task. G18, sovereign Base activation/TVC, StegFin #60/#68, TVC portable publication, SDK remote binding and ASRO continue under their durable owners."
+}
