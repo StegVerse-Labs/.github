@@ -119,17 +119,17 @@ jobs:
           print('HEARTBEAT_CARRIER_NON_AUTHORITY_PASS')
           PY
 
-      - name: Prove worker coordinator is a separate runtime surface
+      - name: Prove carrier and worker compatibility surfaces are distinct
         run: |
           python - <<'PY'
           from heartbeat_runtime import CarrierHeartbeatRuntime, HeartbeatRuntime
           from heartbeat_runtime.worker_runtime import WorkerCoordinator
           assert CarrierHeartbeatRuntime.__module__ == 'heartbeat_runtime.engine_v12'
-          assert HeartbeatRuntime.__module__ == 'heartbeat_runtime.engine_v12'
-          assert HeartbeatRuntime is CarrierHeartbeatRuntime
+          assert HeartbeatRuntime.__module__ == 'heartbeat_runtime.engine_v11'
           assert WorkerCoordinator.__module__ == 'heartbeat_runtime.worker_runtime'
+          assert HeartbeatRuntime is not CarrierHeartbeatRuntime
           assert WorkerCoordinator is not CarrierHeartbeatRuntime
-          print('WORKER_COORDINATOR_SEPARATION_PASS')
+          print('CARRIER_WORKER_SEPARATION_PASS')
           PY
 
       - name: Rebuild projections ephemerally without repository persistence
