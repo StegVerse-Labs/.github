@@ -9,6 +9,8 @@ from heartbeat_runtime.worker_runtime import WorkerCoordinator
 class HeartbeatCarrierNonAuthorityTests(unittest.TestCase):
     def test_canonical_carrier_is_v12(self):
         self.assertEqual(CarrierHeartbeatRuntime.__module__, "heartbeat_runtime.engine_v12")
+        self.assertEqual(HeartbeatRuntime.__module__, "heartbeat_runtime.engine_v12")
+        self.assertIs(HeartbeatRuntime, CarrierHeartbeatRuntime)
         source = inspect.getsource(CarrierHeartbeatRuntime.cycle)
         forbidden = (
             "issue_claim_assertions",
@@ -27,9 +29,9 @@ class HeartbeatCarrierNonAuthorityTests(unittest.TestCase):
         self.assertIn('"authority_effect": "NONE_CARRIER_ONLY"', source)
 
     def test_worker_coordinator_is_separate(self):
-        self.assertEqual(WorkerCoordinator.__module__, "heartbeat_runtime.engine_v11")
+        self.assertEqual(WorkerCoordinator.__module__, "heartbeat_runtime.worker_runtime")
         self.assertIsNot(WorkerCoordinator, CarrierHeartbeatRuntime)
-        self.assertIs(HeartbeatRuntime, WorkerCoordinator)
+        self.assertIsNot(WorkerCoordinator, HeartbeatRuntime)
 
     def test_public_heartbeat_runner_instantiates_carrier_only(self):
         root = Path(__file__).resolve().parents[1]
@@ -44,6 +46,7 @@ class HeartbeatCarrierNonAuthorityTests(unittest.TestCase):
         source = (root / "scripts" / "run_worker_runtime.py").read_text(encoding="utf-8")
         self.assertIn("WorkerCoordinator", source)
         self.assertIn("ProcessWorkerAdapter", source)
+        self.assertIn("--continuous", source)
 
 
 if __name__ == "__main__":
