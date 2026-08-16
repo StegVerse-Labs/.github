@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/heartbeat-carrier-envelope.schema.json",
+  "title": "StegVerse Heartbeat Carrier Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "frequency", "phase_plan", "capacity", "tolerances", "recalculation", "authority"],
+  "properties": {
+    "schema": {"const": "stegverse.heartbeat-carrier-envelope/v1"},
+    "frequency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule", "admissible_min_hz", "admissible_max_hz", "nominal_hz", "nominal_period_ms", "bounded_edge_margin_hz", "throughput_floor_hz"],
+      "properties": {
+        "rule": {"const": "GATE_PASSBAND_DERIVED"},
+        "admissible_min_hz": {"type": "number", "exclusiveMinimum": 0},
+        "admissible_max_hz": {"type": "number", "exclusiveMinimum": 0},
+        "nominal_hz": {"type": "number", "exclusiveMinimum": 0},
+        "nominal_period_ms": {"type": "number", "exclusiveMinimum": 0},
+        "bounded_edge_margin_hz": {"type": "number", "minimum": 0},
+        "throughput_floor_hz": {"type": "number", "minimum": 0}
+      }
+    },
+    "phase_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_phase_deg", "phase_slots", "phase_offsets_deg", "alternate_phases_are_authority_channels", "purpose"],
+      "properties": {
+        "primary_phase_deg": {"const": 0.0},
+        "phase_slots": {"type": "integer", "minimum": 1},
+        "phase_offsets_deg": {"type": "array", "minItems": 1, "items": {"type": "number", "minimum": 0, "exclusiveMaximum": 360}},
+        "alternate_phases_are_authority_channels": {"const": false},
+        "purpose": {"const": "OFF_BEAT_AND_INTERMITTENT_REFERENCE_OPPORTUNITIES"}
+      }
+    },
+    "capacity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["current_composite_load_units", "design_composite_load_units", "design_capacity_units", "growth_reserve_ratio", "reserve_units", "reserve_fraction", "events_per_reference_capacity"],
+      "properties": {
+        "current_composite_load_units": {"type": "number", "exclusiveMinimum": 0},
+        "design_composite_load_units": {"type": "number", "exclusiveMinimum": 0},
+        "design_capacity_units": {"type": "number", "exclusiveMinimum": 0},
+        "growth_reserve_ratio": {"type": "number", "minimum": 0, "exclusiveMaximum": 1},
+        "reserve_units": {"type": "number", "minimum": 0},
+        "reserve_fraction": {"type": "number", "minimum": 0, "maximum": 1},
+        "events_per_reference_capacity": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "tolerances": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_jitter_ms", "max_phase_error_deg", "max_frequency_drift_hz"],
+      "properties": {
+        "max_jitter_ms": {"type": ["number", "null"], "exclusiveMinimum": 0},
+        "max_phase_error_deg": {"type": ["number", "null"], "exclusiveMinimum": 0},
+        "max_frequency_drift_hz": {"type": ["number", "null"], "exclusiveMinimum": 0}
+      }
+    },
+    "recalculation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reserve_recalculation_threshold", "recalculate_when_reserve_fraction_lte", "triggers"],
+      "properties": {
+        "reserve_recalculation_threshold": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+        "recalculate_when_reserve_fraction_lte": {"type": "number", "minimum": 0, "exclusiveMaximum": 1},
+        "triggers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["ADMITTED_SIGNAL_SET_CHANGED", "GATE_OR_PASSBAND_CHANGED", "DEADLINE_OR_RETURN_PATH_CHANGED", "SUSTAINABLE_CARRIER_CAPACITY_CHANGED", "GROWTH_RESERVE_THRESHOLD_REACHED", "PERSISTENT_FREQUENCY_OR_PHASE_DEVIATION"]}
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["heartbeat_grants_execution_authority", "alternate_phase_grants_execution_authority", "signal_grants_execution_authority", "credential_authority", "github_token_runtime_authority", "master_records_action_authority"],
+      "properties": {
+        "heartbeat_grants_execution_authority": {"const": false},
+        "alternate_phase_grants_execution_authority": {"const": false},
+        "signal_grants_execution_authority": {"const": false},
+        "credential_authority": {"const": "TV/TVC"},
+        "github_token_runtime_authority": {"const": false},
+        "master_records_action_authority": {"const": false}
+      }
+    }
+  }
+}
