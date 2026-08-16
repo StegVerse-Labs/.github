@@ -13,6 +13,7 @@
   "allowed_paths": [
     "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
     "docs/HB29_RECONCILIATION_VALIDATION.md",
+    "docs/COHERENT_SIGNAL_SPACE_TRANSITION_MANIFOLD_MIRROR_HANDOFF.md",
     "heartbeat_runtime/__init__.py",
     "heartbeat_runtime/engine_v12.py",
     "heartbeat_runtime/worker_runtime.py",
@@ -29,6 +30,7 @@
     "tests/test_sovereign_ephemeral_console.py",
     ".github/workflows/heartbeat-worker-project.yml",
     ".github/workflows/org-heartbeat.yml",
+    ".github/workflows/activate-sovereign-runtime-worker.yml",
     "control/session-implementation-claim-2026-08-16-heartbeat-hb29-main-reconcile-197.json"
   ],
   "preserved_current_main_surfaces": [
@@ -37,8 +39,7 @@
     "control/process-worker-adapters.d/coherent-signal-formal-candidate-001.json",
     "control/worker-registry.d/coherent-signal-formal-candidate-001.json",
     "cost-basis/worker-runtime/coherent-signal-formal-candidate.json",
-    "handoffs/SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001.json",
-    "docs/COHERENT_SIGNAL_SPACE_TRANSITION_MANIFOLD_MIRROR_HANDOFF.md"
+    "handoffs/SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001.json"
   ],
   "prohibited_paths": [
     "control/heartbeat-state.json",
@@ -48,7 +49,7 @@
     "workers/**",
     "receipts/sovereign-runtime-activation/**"
   ],
-  "collision_boundary": "Source/schema/deployment/export/verifier/validation reconciliation only. Repository/live HB29, active claims/fences/leases, actual worker authority, formal-candidate worker ownership, TV/TVC protected material and resident process activation remain owned by their canonical owners. Tests may use disposable state only.",
+  "collision_boundary": "Source/schema/deployment/export/verifier/validation reconciliation only. Repository/live HB29, active claims/fences/leases, actual worker authority, formal-candidate worker code/registry/adapter/task semantics, TV/TVC protected material and resident process activation remain owned by their canonical owners. The coherent-signal handoff may receive ownership-partition metadata only because the repository-wide validator requires it; its mathematical content and worker authority may not change. Tests may use disposable state only.",
   "credential_authority": "TV/TVC",
   "credential_requirement": "NONE",
   "non_tv_tvc_secret_or_token_allowed": false,
@@ -69,6 +70,7 @@
     "legacy-only v11 fixtures cannot prove current production activation",
     "node-local proof still requires the nine production predicates",
     "validation workflows assert the separated runtime while preserving current-main signal-space work",
+    "all mirror handoffs satisfy execution-ownership partition metadata without transferring worker authority",
     "deterministic validation passes",
     "replacement PR merges and outdated PRs #198/#199 are superseded"
   ],
