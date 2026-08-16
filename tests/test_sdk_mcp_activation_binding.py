@@ -48,6 +48,19 @@ class SDKMCPActivationBindingTests(unittest.TestCase):
         self.assertEqual("TV/TVC", self.fragment["credential_authority"])
         self.assertFalse(self.fragment["non_tv_tvc_secret_or_token_allowed"])
 
+    def test_registry_has_finite_expiry_basis_bounded_by_runtime_window(self):
+        task = self.fragment["tasks"][0]
+        self.assertEqual(
+            "cost-basis/worker-runtime/sdk-mcp-canonical-validation.json",
+            task["cost_basis_ref"],
+        )
+        cost = json.loads((ROOT / task["cost_basis_ref"]).read_text(encoding="utf-8"))
+        self.assertEqual("stegverse.worker-runtime-cost-basis/v0.1", cost["schema"])
+        self.assertEqual("sdk_mcp_canonical_validation", cost["task_class"])
+        self.assertEqual(64, cost["hb_estimate"]["expiry_candidate_beats"])
+        self.assertEqual(64, self.handoff["execution"]["runtime_window_beats"])
+        self.assertEqual(0, cost["cost_estimate"]["external_cost_usd"])
+
 
 if __name__ == "__main__":
     unittest.main()
