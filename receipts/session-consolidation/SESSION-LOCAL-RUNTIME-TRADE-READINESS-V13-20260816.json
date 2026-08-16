@@ -1,0 +1,98 @@
+{
+  "schema": "stegverse.session-consolidation-receipt/v2",
+  "receipt_id": "SESSION-LOCAL-RUNTIME-TRADE-READINESS-V13-20260816",
+  "inventory": "control/session-goal-inventory-2026-08-16-local-runtime-trade-readiness-v13.json",
+  "handoff": "docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
+  "supersedes_receipt": "receipts/session-consolidation/SESSION-LOCAL-RUNTIME-TRADE-READINESS-V12-20260816.json",
+  "recorded_at": "2026-08-16T02:22:00-05:00",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "github_token_runtime_authority": "NONE",
+  "render_production_runtime_allowed": false,
+  "source_goal_state": {
+    "local_runtime_discovery_launch_inference_proof": "COMPLETE_VALIDATED_RELEASED",
+    "formal_local_model": "stegverse-reference-lm-v1 COMPLETE_VALIDATED_RELEASED",
+    "local_visual_evidence_runtime": "COMPLETE_VALIDATED_RELEASED",
+    "sovereign_runtime_bootstrap_and_same_host_fallback": "COMPLETE_VALIDATED_RELEASED_SOURCE",
+    "sovereign_base_activation_worker": "COMPLETE_VALIDATED_MERGED_RELEASED_SOURCE",
+    "stegfin_phone_route_source": "COMPLETE_RELEASED",
+    "portable_single_host_contract": "COMPLETE_VALIDATED_RELEASED",
+    "sdk_portable_consumer_source": "COMPLETE_VALIDATED_RELEASED",
+    "asro_review_disposition": "DURABLY_TRANSFERRED_TO_ISSUE_50"
+  },
+  "validation_repair": {
+    "claim": "control/session-validation-claim-2026-08-16-sovereign-ephemeral-console-workflow-registration.json",
+    "claim_state": "COMPLETE_RELEASED",
+    "run_id": 31933592418,
+    "head_sha": "f2b70cd205a39d271d51a84887a33b6ebac6917e",
+    "workflow": "Validate organization control plane - No GitHub Token Authority",
+    "conclusion": "success",
+    "workflow_surface_hygiene": "PASS_REGISTERED_SURFACES",
+    "handoff_execution_ownership": "PASS",
+    "session_assistance_scope": "PASS",
+    "anonymous_checkout_token_authority": "NONE"
+  },
+  "validation_lineage_repairs": [
+    "sovereign-ephemeral-console workflow registered under G18 without granting production authority",
+    "session and ephemeral-console handoffs now carry canonical execution ownership partitions",
+    "Kimi inventory v14 supersedes nonconforming v13",
+    "portable-publication inventory v16 supersedes nonconforming v15",
+    "SDK-v3-transfer inventory v17 supersedes nonconforming v16",
+    "single-host-portable inventory v15 supersedes nonconforming/stale v14",
+    "local-runtime/trade-readiness v13 is the final session head"
+  ],
+  "active_product_continuations": [
+    {
+      "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18 fencing token 18",
+      "condition": "deployment-local nine-predicate sovereign runtime proof",
+      "session_dependency": false
+    },
+    {
+      "owner": "resident heartbeat -> SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001 -> TVC",
+      "condition": "real private synchronized Base 0x2105 proof validation_only=false and TVC ROUTE_ADMITTED",
+      "session_dependency": false
+    },
+    {
+      "owner": "StegVerse-Labs/stegfin-governance#60 + current-phone authority boundary",
+      "condition": "actual phone PREPARE evidence and exact BLOCKED or unsigned WALLET_HANDOFF_READY receipt",
+      "session_dependency": false
+    },
+    {
+      "owner": "StegVerse-Labs/TVC TVC-PORTABLE-ARTIFACT-PUBLICATION-001",
+      "condition": "TVC-managed exact immutable portable publication",
+      "session_dependency": false
+    },
+    {
+      "owner": "StegVerse-org/StegVerse-SDK SDK-PORTABLE-ARTIFACT-BINDING-002",
+      "condition": "published immutable locators/hashes and download->verify->install PASS",
+      "session_dependency": false
+    },
+    {
+      "owner": "StegVerse-Labs/admissibility-wiki issue #50 / external-framework-worker-issue50",
+      "condition": "ASRO canonical continuation reaches legitimate terminal evidence state",
+      "session_dependency": false
+    }
+  ],
+  "session_unique_requirements_remaining": 0,
+  "session_unique_claims_remaining": 0,
+  "session_unique_execution_responsibility_remaining": 0,
+  "session_unique_validation_responsibility_remaining": 0,
+  "session_unique_integration_responsibility_remaining": 0,
+  "session_unique_propagation_responsibility_remaining": 0,
+  "session_unique_observation_responsibility_remaining": 0,
+  "unassigned_session_requirements": 0,
+  "product_activation_complete": false,
+  "archive_ready": true,
+  "archive_basis": "All unique session goals are completed, superseded, or durably transferred. Every incomplete product condition has an exact StegVerse machine/current-authority owner and observable release condition. No part of the conversation is required to recover state or continue execution.",
+  "canonical_continuation": [
+    "StegVerse-Labs/.github/docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "StegVerse-Labs/.github/docs/SOVEREIGN_BASE_RPC_ACTIVATION_MIRROR_HANDOFF.md",
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/docs/SOVEREIGN_LOCAL_MODEL_ROUTE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/docs/PORTABLE_ARTIFACT_PUBLICATION_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK/docs/SDK_PORTABLE_PACKAGE_CONSOLE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/stegfin-governance#60",
+    "StegVerse-Labs/admissibility-wiki/docs/external-frameworks/ASRO_REVIEW_DISPOSITION_MIRROR_HANDOFF.md"
+  ]
+}
