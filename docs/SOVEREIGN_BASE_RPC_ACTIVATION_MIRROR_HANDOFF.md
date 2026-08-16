@@ -1,6 +1,6 @@
 # Sovereign Base RPC Activation Mirror Handoff
 
-Updated: 2026-08-15T21:34:00-05:00
+Updated: 2026-08-15T21:36:00-05:00
 
 ## Active goal
 
@@ -8,17 +8,20 @@ Updated: 2026-08-15T21:34:00-05:00
 goal_id: SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001
 originating_session_goal: Assist the workers and make the StegFin trade path ready using StegVerse-only execution, TV/TVC-only credential authority, no NON-TV/TVC secrets/tokens, and no Render production dependency.
 repository: StegVerse-Labs/.github
-branch: feat/sovereign-base-rpc-activation-worker
+branch: main
 canonical_task: tasks/TASK-2026-0005.json
 canonical_runtime_owner: resident sovereign heartbeat / StegVerse-Labs/.github#12
-implementation_claim: CLAIMED_FOR_IMPLEMENTATION by this bounded branch only for the missing heartbeat-to-micro-node activation adapter
-validation_claim: CLAIMED_FOR_VALIDATION until aggregate organization control validation passes on the latest PR merge state
+implementation_claim: COMPLETE_RELEASED
+validation_claim: COMPLETE_RELEASED
 claim_created_at: 2026-08-15T21:22:00-05:00
-claim_release_condition: worker, executable handoff, registry fragment, process adapter and deterministic tests are merged and validated; live endpoint activation remains machine-owned
+claim_released_at: 2026-08-15T21:36:00-05:00
+claim_release_condition: SATISFIED_BY_PR_194_MERGE_AND_POST_MERGE_VALIDATION
 credential_authority: TV/TVC
 non_tv_tvc_secret_or_token_allowed: false
 github_token_runtime_authority: NONE
 render_production_runtime: PROHIBITED
+source_state: COMPLETE_VALIDATED_MERGED_RELEASED
+live_activation_state: MACHINE_OWNED_REAL_ENDPOINT_PENDING
 ```
 
 ## Source of truth read before mutation
@@ -31,11 +34,11 @@ render_production_runtime: PROHIBITED
 - `StegVerse-Labs/TVC/docs/SOVEREIGN_BASE_RPC_ROUTE_MIRROR_HANDOFF.md`
 - `StegVerse-Labs/stegfin-governance#60`
 
-## Gap established from live repository state
+## Gap closed
 
-`TASK-2026-0005` assigned real sovereign Base activation to the resident heartbeat and released micro-node runner/verifier, but the organization process-adapter registry contained no task-specific sovereign Base RPC activation worker. The heartbeat therefore had durable ownership without a deterministic execution bridge capable of discovering an already-materialized micro-node source, probing a private Base endpoint, optionally launching an explicitly configured local process, requiring `validation_only=false`, and retaining bounded evidence.
+`TASK-2026-0005` assigned real sovereign Base activation to the resident heartbeat and released micro-node runner/verifier, but the organization process-adapter registry contained no task-specific sovereign Base RPC activation worker. PR #194 installed that missing deterministic execution bridge. The heartbeat can now discover an already-materialized micro-node source, probe a private Base endpoint, optionally launch an explicitly configured credential-free local process, require a passing `validation_only=false` proof, retain bounded evidence, and stop before TVC route authority.
 
-This branch fills that gap. It does not create a second heartbeat, fetch private source, install a blockchain client from the network, mint route authority, contact a wallet, sign, broadcast, settle, or treat the validation-only reference server as production.
+The worker does not create a second heartbeat, fetch private source, install a blockchain client from the network, mint route authority, contact a wallet, sign, broadcast, settle, or treat the validation-only reference server as production.
 
 ## Installed primary surfaces
 
@@ -51,7 +54,7 @@ tasks/TASK-2026-0005.json
 receipts/sovereign-base-rpc-activation/**   # runtime output only
 ```
 
-Validation also exposed two pre-existing control-plane integration defects. They were repaired only to the degree needed to restore deterministic validation: the early-adopter worker registry now points at an executable JSON handoff instead of Markdown, and the newly merged external-timing validation workflow is registered in the hygiene registry. The external timing source lane itself remains COMPLETE_RELEASED and its live owner remains #122.
+Validation also exposed two pre-existing control-plane integration defects. They were repaired without expanding their authority: the early-adopter worker registry now points at an executable JSON handoff instead of Markdown, and the newly merged external-timing validation workflow is registered in the hygiene registry. The external timing source lane remains COMPLETE_RELEASED and its live owner remains #122.
 
 ## Execution contract
 
@@ -76,39 +79,41 @@ resident sovereign heartbeat
 
 ## Validation evidence
 
-Latest fully inspected Heartbeat Worker Project run after source repair:
-
 ```text
-run: 31922102524
-job: 95103532708
-anonymous public checkout without GitHub token: PASS
-NO_GITHUB_CREDENTIAL_TOKEN_PRESENT: PASS
+PR: StegVerse-Labs/.github#194 MERGED
+merge_commit: 380b6f9794520014340ddee671020644632b8131
+validated_pr_head: f919a4ccb05a23cce5cb1bc2afd4cc12069162b1
+PR Heartbeat Worker Project: 31922179962 SUCCESS / job 95103738416 SUCCESS
+PR organization control plane: 31922179974 SUCCESS / job 95103738241 SUCCESS
+PR early-adopter validator source: 31922179965 SUCCESS / job 95103738175 SUCCESS
+post_merge Heartbeat Worker Project: 31922206593 SUCCESS
+post_merge organization control plane: 31922206653 SUCCESS
+post_merge organization handoff projection: 31922206725 SUCCESS
+anonymous no-GitHub-token checkout: PASS
 compile runtime/workers/scripts: PASS
 canonical JSON parse: PASS
 executable handoffs: PASS
-complete deterministic repository tests: 299/299 PASS
+complete deterministic repository tests: 299/299 PASS on validated PR state
 new sovereign Base worker tests: 5/5 PASS
 heartbeat dry-run non-persistence: PASS
 projection rebuild: PASS
 workflow non-authorizing proof: PASS
-conclusion: SUCCESS
 ```
 
-The immediately preceding run `31921928113` had already reached `299/299 PASS` but failed its dry-run because an existing early-adopter registry task pointed `handoff_ref` at a Markdown handoff. That runtime integration defect was corrected by adding `handoffs/STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001.json` and rebinding the registry; no private source, credential, financial or activation authority was added.
-
-The organization-control run `31922102455` then passed workflow registration, organization task invariants and active-worker ownership, but exposed a separate newly merged external-timing handoff missing the mandatory execution-ownership section. That source lane was already COMPLETE_RELEASED; its main handoff has now been metadata-reconciled to #122 without reopening its source claim. A fresh aggregate run is required before merge.
+The earlier `31921928113` run reached `299/299 PASS` but exposed an existing Markdown `handoff_ref` runtime integration defect. The earlier organization run `31922102455` exposed the newly merged external-timing handoff ownership omission. Both defects were reconciled, and the subsequent PR and post-merge validation paths passed.
 
 ## Execution ownership and collision partition
 
 ```text
 MANUAL / SESSION-STARTABLE
 manual_execution_allowed: false
-scope: branch source implementation and validation only
+scope: source implementation is COMPLETE_RELEASED; no interactive session should run a competing Base activation lane
 
 WORKER-OWNED / DO NOT COMPETE
 worker_registry_ref: control/worker-registry.d/sovereign-base-rpc-activation-001.json
-owner: resident sovereign heartbeat after merge
+owner: resident sovereign heartbeat
 collision_scope: runtime:sovereign-base-rpc plus receipts/sovereign-base-rpc-activation/**
+state: MACHINE_OWNED_REAL_ENDPOINT_PENDING
 
 ESCALATED / AUTHORITY-OWNED
 TVC route admission: StegVerse-Labs/TVC
@@ -122,10 +127,11 @@ formal local model stegverse-reference-lm-v1: COMPLETE_VALIDATED_RELEASED; do no
 micro-node Base RPC discovery/proof source: COMPLETE_RELEASED
 TVC exact route evaluator source: COMPLETE_RELEASED
 public RPC resilience source/Site projection: COMPLETE_RELEASED
+Base activation worker source: COMPLETE_VALIDATED_MERGED_RELEASED
 external timing source lane encountered during validation: COMPLETE_RELEASED; live adoption remains #122
 
-release_condition: latest PR merge-state Heartbeat Worker Project and organization-control validation both PASS, PR merges, and post-merge main validation confirms registry/adapter/task integration; live completion remains separately machine-owned
-next_executable_action: obtain fresh aggregate organization-control PASS against the updated merge state, merge PR #194 only on PASS, reconcile main task/handoff, then resident heartbeat owns the real endpoint attempt
+release_condition: source condition SATISFIED; live condition remains a real synchronized validation_only=false Base proof followed by TVC ROUTE_ADMITTED and StegFin current-phone evidence
+next_executable_action: resident sovereign heartbeat checks out SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001 when the sovereign carrier is eligible, resolves already-local micro-node source and credential-free Base endpoint/process descriptors, and persists either precise BLOCKED evidence or a live proof for TVC evaluation
 ```
 
 ## Completion accounting
@@ -134,12 +140,13 @@ next_executable_action: obtain fresh aggregate organization-control PASS against
 primary developed files: 8/8 = 100%
 scaffolding/stubs: 0
 missing primary required files: 0
-source validation gates: 4/5 = 80% (compile/JSON+handoff/tests/heartbeat dry-run PASS; latest aggregate organization-control PASS pending)
-source integration: 3/4 = 75% (task + registry + adapter integrated on branch; merge/main release pending)
-goal_activation: 0% (no real validation_only=false synchronized endpoint proof observed)
+source validation gates: 5/5 = 100%
+source integration: 4/4 = 100%
+source release: COMPLETE
+live goal activation: 0% until an actual validation_only=false synchronized endpoint proof is observed
 session-consolidation: all original/adjacent requirements retained by v11/v12 inventories and canonical specialized owners
 ```
 
 ## Archive condition
 
-The branch implementation claim may be released after PR #194 merges and post-merge validation confirms the executable worker path. Live endpoint activation then remains machine-owned with a machine-observable release condition. This chat must not claim that the trade is fully activated until the real Base proof, TVC route admission and current-phone terminal evidence exist.
+This source lane no longer requires a chat/session implementation or validation owner. Live activation is now machine-owned by the resident sovereign heartbeat with an exact receipt path and release condition. Full trade activation is not claimed until the real Base proof, TVC route admission and current-phone terminal evidence exist.
