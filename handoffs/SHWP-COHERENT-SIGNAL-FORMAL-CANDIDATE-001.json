@@ -1,0 +1,90 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001",
+  "created_at": "2026-08-16T17:28:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "COHERENT-SIGNAL-FORMAL-CANDIDATE-001",
+    "objective": "Produce a falsifiable formal mathematical candidate for the coherent signal-space mechanism underlying HB and many-state transition manifold evaluation, without promoting hypotheses into mathematical authority.",
+    "success_predicates": [
+      "Candidate defines state space, coherent signal space, coordinate set, operator-family alternatives, and transition/response manifold",
+      "Candidate states frequency-dependent state transformation explicitly",
+      "Candidate distinguishes hypotheses from proved claims",
+      "Candidate includes PDE/differential relationships only as justified candidates",
+      "Candidate includes coordinate-completeness and falsification criteria",
+      "Candidate binds relationship to AE, HB, Master Records, and governance boundaries"
+    ],
+    "failure_predicates": [
+      "Operator-family hypothesis is promoted to theorem without evidence",
+      "Frequency/phase coordinates are declared complete without evidence",
+      "Physical time is smuggled in as a primitive requirement",
+      "Signal-space output grants execution or governance authority",
+      "Worker mutates Admissible-Existence canonical formalism"
+    ],
+    "authority_ceiling": [
+      "formal_mathematical_candidate_generation",
+      "receipts/formalism-manifold-orchestration/**",
+      "no_cross_repo_mutation",
+      "no_formalism_authority",
+      "no_execution_authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 2
+  },
+  "task": {
+    "task_id": "SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "docs/COHERENT_SIGNAL_SPACE_TRANSITION_MANIFOLD_MIRROR_HANDOFF.md",
+      "heartbeat_runtime/signal_space.py",
+      "workers/coherent_signal_formal_candidate_worker.py",
+      "Admissible-Existence/AE:docs/research/coherent-signal-space-state-transition-manifold.md"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "Evidence from the HB carrier, phase/harmonic production capability, and state-transition primitive now supports a distinct formal candidate lane for a coherent signal-space many-state transition mechanism.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#COHERENT-SIGNAL-SPACE-TRANSITION-MANIFOLD-001",
+    "canonical_lineage_key": "coherent-signal-space:formal-mathematical-candidate",
+    "derivation_depth": 0,
+    "priority": "critical"
+  },
+  "authority": {
+    "authority_source": "docs/COHERENT_SIGNAL_SPACE_TRANSITION_MANIFOLD_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "policy_version": "coherent-signal-space-candidate-v0.1"
+  },
+  "execution": {
+    "required_capabilities": ["formal_mathematical_candidate_generation"],
+    "allowed_paths": ["receipts/formalism-manifold-orchestration/**"],
+    "allowed_services": [],
+    "max_actions": 8,
+    "max_retries": 8,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 256,
+    "rate_class": "formal_mathematical_candidate_generation"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "docs/COHERENT_SIGNAL_SPACE_TRANSITION_MANIFOLD_MIRROR_HANDOFF.md",
+    "recheck_trigger": "carrier observes this authorized unassigned task; trigger packet transitions into Master Records assignment custody when worker runtime binds the assignment",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/formalism-manifold-orchestration/SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": true,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "Emit the formal candidate receipt, then subject it to mathematical review and evidence-driven falsification rather than promoting it directly to canonical AE standing.",
+    "terminal_when": [
+      "Formal candidate receipt exists and is hash-bound",
+      "Candidate assumptions, alternatives, falsification criteria, and open questions are explicit",
+      "No authority or completeness overclaim is present"
+    ]
+  },
+  "block": null
+}
