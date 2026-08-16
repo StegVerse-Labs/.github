@@ -18,7 +18,7 @@ SPEC.loader.exec_module(mod)
 
 
 class SovereignHeartbeatServiceTests(unittest.TestCase):
-    def test_materialization_is_network_independent_and_runtime_v11(self) -> None:
+    def test_materialization_is_network_independent_and_separated_v12(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / "heartbeat"
             receipt = mod.materialize(ROOT, target)
@@ -29,18 +29,29 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
             self.assertFalse(receipt["github_runtime_dependency"])
             self.assertFalse(receipt["render_runtime_dependency"])
             self.assertFalse(receipt["cloudflare_runtime_dependency"])
-            self.assertEqual(receipt["canonical_runtime"], "heartbeat_runtime.engine_v11.HeartbeatRuntime")
+            self.assertEqual(receipt["canonical_runtime"], "heartbeat_runtime.engine_v12.HeartbeatRuntime")
+            self.assertEqual(receipt["canonical_carrier_runtime"], "heartbeat_runtime.engine_v12.HeartbeatRuntime")
+            self.assertEqual(receipt["worker_runtime"], "heartbeat_runtime.worker_runtime.WorkerCoordinator")
+            self.assertFalse(receipt["legacy_combined_runtime_is_production_target"])
             self.assertEqual(receipt["heartbeat_default_interval_ms"], 10.0)
-            self.assertEqual(receipt["nominal_cycles_per_second"], 100.0)
-            self.assertEqual(receipt["worker_lease_clock"], "canonical_heartbeat_cycle")
+            self.assertEqual(receipt["worker_default_interval_ms"], 10.0)
+            self.assertEqual(receipt["nominal_carrier_cycles_per_second"], 100.0)
+            self.assertEqual(receipt["nominal_worker_ticks_per_second"], 100.0)
+            self.assertEqual(receipt["worker_lease_clock"], "WORKER_RUNTIME_INTERNAL_HB_UNIT")
+            self.assertFalse(receipt["carrier_epoch_controls_worker_expiry"])
+            self.assertFalse(receipt["carrier_presence_controls_worker_expiry"])
             self.assertFalse(receipt["wall_clock_worker_expiry_authority"])
-            self.assertTrue((target / "heartbeat_runtime" / "engine_v11.py").is_file())
-            self.assertTrue((target / "control" / "heartbeat-subsignals.json").is_file())
-            self.assertTrue((target / "control" / "worker-registry.json").is_file())
+            self.assertEqual(receipt["credential_authority"], "TV/TVC")
+            self.assertEqual(receipt["credential_requirement"], "NONE")
+            self.assertFalse(receipt["non_tv_tvc_secret_or_token_used"])
+            self.assertTrue((target / "heartbeat_runtime" / "engine_v12.py").is_file())
+            self.assertTrue((target / "heartbeat_runtime" / "worker_runtime.py").is_file())
+            self.assertTrue((target / "scripts" / "run_heartbeat_runtime.py").is_file())
+            self.assertTrue((target / "scripts" / "run_worker_runtime.py").is_file())
             written = json.loads((target / "receipts" / "sovereign-host" / "materialization.latest.json").read_text())
             self.assertEqual(written["canonical_runtime"], receipt["canonical_runtime"])
 
-    def test_linux_service_runs_continuous_runtime_directly_at_high_frequency(self) -> None:
+    def test_linux_service_runs_carrier_and_worker_as_separate_native_processes(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)
             root = base / "heartbeat"
@@ -50,22 +61,30 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
                 system="linux",
                 env={"XDG_CONFIG_HOME": str(base / "config")},
             )
-            text = Path(receipt["registration_path"]).read_text(encoding="utf-8")
-            self.assertEqual(receipt["registration_kind"], "systemd-user")
+            carrier = Path(receipt["carrier_registration_path"]).read_text(encoding="utf-8")
+            worker = Path(receipt["worker_registration_path"]).read_text(encoding="utf-8")
+            self.assertEqual(receipt["registration_kind"], "systemd-user-separated")
             self.assertEqual(receipt["heartbeat_interval_ms"], 10.0)
+            self.assertEqual(receipt["worker_interval_ms"], 10.0)
             self.assertEqual(receipt["nominal_cycles_per_second"], 100.0)
             self.assertTrue(receipt["native_process_supervision_only"])
-            self.assertIn("run_heartbeat_runtime.py", text)
-            self.assertIn("--continuous", text)
-            self.assertIn("--interval-ms", text)
-            self.assertIn("10.0", text)
-            self.assertIn("Restart=always", text)
-            self.assertNotIn("github", text.lower())
-            self.assertNotIn("render", text.lower())
-            self.assertNotIn("cloudflare", text.lower())
-            self.assertNotIn("network-online.target", text.lower())
+            self.assertTrue(receipt["separate_carrier_and_worker_processes"])
+            self.assertFalse(receipt["heartbeat_grants_execution_authority"])
+            self.assertFalse(receipt["carrier_epoch_controls_worker_expiry"])
+            self.assertIn("run_heartbeat_runtime.py", carrier)
+            self.assertNotIn("run_worker_runtime.py", carrier)
+            self.assertIn("run_worker_runtime.py", worker)
+            self.assertNotIn("run_heartbeat_runtime.py", worker)
+            for text in (carrier, worker):
+                self.assertIn("--continuous", text)
+                self.assertIn("--interval-ms", text)
+                self.assertIn("10.0", text)
+                self.assertIn("Restart=always", text)
+                self.assertNotIn("render", text.lower())
+                self.assertNotIn("cloudflare", text.lower())
+                self.assertNotIn("network-online.target", text.lower())
 
-    def test_install_records_native_activation_without_granting_authority(self) -> None:
+    def test_install_records_both_native_processes_without_carrier_authority(self) -> None:
         calls = []
 
         def runner(command, **_kwargs):
@@ -83,24 +102,33 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
                 env={"XDG_CONFIG_HOME": str(base / "config")},
             )
             self.assertTrue(receipt["active"])
-            self.assertEqual(receipt["execution_authority_effect"], "NONE")
-            self.assertEqual(receipt["canonical_runtime"], "heartbeat_runtime.engine_v11.HeartbeatRuntime")
+            self.assertTrue(receipt["carrier_active"])
+            self.assertTrue(receipt["worker_active"])
+            self.assertEqual(receipt["execution_authority_effect"], "NONE_FROM_CARRIER")
+            self.assertEqual(receipt["canonical_runtime"], "heartbeat_runtime.engine_v12.HeartbeatRuntime")
+            self.assertEqual(receipt["worker_runtime"], "heartbeat_runtime.worker_runtime.WorkerCoordinator")
             self.assertFalse(receipt["third_party_process_host_required"])
             self.assertFalse(receipt["third_party_deployment_required"])
             self.assertFalse(receipt["third_party_scheduler_required"])
-            self.assertEqual(len(calls), 2)
-            self.assertTrue(
-                (target / "receipts" / "sovereign-host" / "activation.latest.json").is_file()
-            )
+            self.assertFalse(receipt["render_production_runtime_used"])
+            self.assertEqual(len(calls), 3)
+            self.assertTrue((target / "receipts" / "sovereign-host" / "activation.latest.json").is_file())
 
-    def test_custom_cycle_rate_is_local_runtime_configuration(self) -> None:
+    def test_custom_logical_rate_configures_both_local_loops_without_timer_authority_transfer(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / "heartbeat"
             receipt = mod.materialize(ROOT, target, interval_ms=5.0)
-            service = mod.materialize_service(target, interval_ms=5.0, system="linux", env={"XDG_CONFIG_HOME": str(Path(tmp) / "config")})
-            self.assertEqual(receipt["nominal_cycles_per_second"], 200.0)
+            service = mod.materialize_service(
+                target,
+                interval_ms=5.0,
+                system="linux",
+                env={"XDG_CONFIG_HOME": str(Path(tmp) / "config")},
+            )
+            self.assertEqual(receipt["nominal_carrier_cycles_per_second"], 200.0)
+            self.assertEqual(receipt["nominal_worker_ticks_per_second"], 200.0)
             self.assertEqual(service["nominal_cycles_per_second"], 200.0)
             self.assertFalse(receipt["third_party_scheduler_required"])
+            self.assertFalse(receipt["carrier_epoch_controls_worker_expiry"])
 
 
 if __name__ == "__main__":

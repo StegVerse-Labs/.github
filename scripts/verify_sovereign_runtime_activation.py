@@ -1,17 +1,5 @@
 #!/usr/bin/env python3
-"""Produce the nine-predicate sovereign heartbeat activation proof on a real node.
-
-This verifier is node-local. It never treats GitHub Actions, Render, Cloudflare,
-or another hosted platform as production evidence. It observes live heartbeat
-advance, performs one controlled local-supervision restart, verifies non-regression
-and registry continuity, and writes activation.latest.json for the heartbeat
-activation worker to consume.
-
-A StegVerse ephemeral logical node is an allowed local supervision mode when its
-service receipt binds an explicit local restart command and no third-party process
-host. This removes any physical second/third-machine requirement without weakening
-the hosted-environment rejection boundary.
-"""
+"""Produce the nine-predicate sovereign activation proof for separated v12 runtime."""
 from __future__ import annotations
 
 import argparse
@@ -21,7 +9,7 @@ import platform
 import subprocess
 import time
 from pathlib import Path
-from typing import Callable, Any
+from typing import Any, Callable
 
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
 REQUIRED_PREDICATES = (
@@ -36,12 +24,7 @@ REQUIRED_PREDICATES = (
     "state_reconstruction_pass",
 )
 THIRD_PARTY_ENV_VARS = (
-    "GITHUB_ACTIONS",
-    "RENDER",
-    "RENDER_SERVICE_ID",
-    "VERCEL",
-    "CF_PAGES",
-    "CLOUDFLARE_WORKERS",
+    "GITHUB_ACTIONS", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS"
 )
 
 
@@ -64,73 +47,79 @@ def third_party_hosted_environment(env: dict[str, str] | None = None) -> bool:
 
 def sovereign_node_declared(env: dict[str, str] | None = None) -> bool:
     values = dict(os.environ if env is None else env)
-    explicit = str(values.get("STEGVERSE_SOVEREIGN_NODE", "")).strip().lower()
-    if explicit in ("1", "true", "yes"):
+    if str(values.get("STEGVERSE_SOVEREIGN_NODE", "")).strip().lower() in ("1", "true", "yes"):
         return True
-    markers = (
-        Path("/etc/stegverse/node.json"),
-        Path.home() / ".stegverse" / "node.json",
-    )
-    return any(path.is_file() for path in markers)
+    return any(path.is_file() for path in (Path("/etc/stegverse/node.json"), Path.home() / ".stegverse" / "node.json"))
 
 
 def _epoch_generation(state: dict) -> tuple[int, int]:
     return int(state.get("epoch", -1)), int(state.get("generation", -1))
 
 
-def _active_leases(state: dict) -> list[dict]:
-    return list((((state.get("subsignals") or {}).get("worker_coordination") or {}).get("active_leases") or []))
+def _active_leases(control_plane: dict) -> list[dict]:
+    return list((((control_plane.get("worker_coordination") or {}).get("active_leases")) or []))
 
 
-def no_duplicate_claim_or_fence(state: dict) -> bool:
-    leases = _active_leases(state)
+def no_duplicate_claim_or_fence(control_plane: dict) -> bool:
+    leases = _active_leases(control_plane)
     claims = [row.get("claim_id") for row in leases if row.get("claim_id")]
     fences = [row.get("fencing_token") for row in leases if isinstance(row.get("fencing_token"), int)]
     instances = [row.get("worker_instance_id") for row in leases if row.get("worker_instance_id")]
     return len(claims) == len(set(claims)) and len(fences) == len(set(fences)) and len(instances) == len(set(instances))
 
 
-def worker_coordination_observed(state: dict, runtime_root: Path) -> bool:
-    coordination = ((state.get("subsignals") or {}).get("worker_coordination") or {})
-    if coordination.get("state") != "ACTIVE":
+def worker_coordination_observed(control_plane: dict, runtime_root: Path) -> bool:
+    coordination = control_plane.get("worker_coordination") or {}
+    if coordination.get("state") not in {"ACTIVE", "IDLE"}:
+        return False
+    if coordination.get("worker_registry_ref") != "control/worker-registry.json":
         return False
     checkpoint_root = runtime_root / "checkpoints" / "workers"
-    return checkpoint_root.is_dir() and any(checkpoint_root.rglob("*.json"))
+    worker_runtime_state = runtime_root / "control" / "worker-runtime-state.json"
+    return worker_runtime_state.is_file() or (checkpoint_root.is_dir() and any(checkpoint_root.rglob("*.json")))
 
 
-def restart_command(
-    *,
-    service_receipt: dict | None = None,
-    system: str | None = None,
-    env: dict[str, str] | None = None,
-) -> list[str]:
+def restart_commands(*, service_receipt: dict | None = None, system: str | None = None, env: dict[str, str] | None = None) -> list[list[str]]:
     service = service_receipt or {}
     if service.get("registration_kind") == "stegverse-ephemeral-console":
         command = service.get("restart_command")
         if isinstance(command, list) and command and all(isinstance(item, str) and item for item in command):
-            return list(command)
+            return [list(command)]
         raise RuntimeError("ephemeral console service receipt missing restart_command")
 
     name = (system or platform.system()).lower()
     values = dict(os.environ if env is None else env)
     if name == "linux":
-        return ["systemctl", "--user", "restart", "stegverse-heartbeat.service"]
+        return [
+            ["systemctl", "--user", "restart", "stegverse-heartbeat.service"],
+            ["systemctl", "--user", "restart", "stegverse-worker-runtime.service"],
+        ]
     if name == "darwin":
         uid = getattr(os, "getuid", lambda: int(values.get("UID", "0")))()
-        return ["launchctl", "kickstart", "-k", f"gui/{uid}/org.stegverse.heartbeat"]
+        domain = f"gui/{uid}"
+        return [
+            ["launchctl", "kickstart", "-k", f"{domain}/org.stegverse.heartbeat"],
+            ["launchctl", "kickstart", "-k", f"{domain}/org.stegverse.worker-runtime"],
+        ]
     if name == "windows":
-        return ["schtasks", "/Run", "/TN", "StegVerse Heartbeat"]
+        return [
+            ["schtasks", "/Run", "/TN", "StegVerse Heartbeat"],
+            ["schtasks", "/Run", "/TN", "StegVerse Worker Runtime"],
+        ]
     raise RuntimeError(f"unsupported sovereign host platform: {name}")
 
 
-def _local_supervision_active(service_receipt: dict) -> bool:
-    if service_receipt.get("active") is not True:
+def _local_supervision_active(service: dict) -> bool:
+    if service.get("active") is not True or service.get("third_party_process_host_required") is not False:
         return False
-    if service_receipt.get("third_party_process_host_required") is not False:
-        return False
-    if service_receipt.get("registration_kind") == "stegverse-ephemeral-console":
-        return service_receipt.get("stegverse_process_supervision") is True
-    return service_receipt.get("native_process_supervision_only") is True
+    if service.get("registration_kind") == "stegverse-ephemeral-console":
+        return service.get("stegverse_process_supervision") is True
+    return (
+        service.get("native_process_supervision_only") is True
+        and service.get("separate_carrier_and_worker_processes") is True
+        and service.get("carrier_active") is True
+        and service.get("worker_active") is True
+    )
 
 
 def evaluate_runtime(
@@ -143,31 +132,42 @@ def evaluate_runtime(
     system: str | None = None,
     env: dict[str, str] | None = None,
 ) -> dict:
-    runtime_root = runtime_root.expanduser().resolve()
+    root = runtime_root.expanduser().resolve()
     values = dict(os.environ if env is None else env)
     hosted = third_party_hosted_environment(values)
     declared = sovereign_node_declared(values)
-    state_path = runtime_root / "control" / "heartbeat-state.json"
-    registry_path = runtime_root / "control" / "worker-registry.json"
-    materialization_path = runtime_root / "receipts" / "sovereign-host" / "materialization.latest.json"
-    service_path = runtime_root / "receipts" / "sovereign-host" / "activation.latest.json"
+    carrier_path = root / "control" / "heartbeat-carrier-runtime-state.json"
+    legacy_path = root / "control" / "heartbeat-state.json"
+    control_plane_path = root / "control" / "worker-control-plane-coordination.json"
+    worker_state_path = root / "control" / "worker-runtime-state.json"
+    registry_path = root / "control" / "worker-registry.json"
+    materialization_path = root / "receipts" / "sovereign-host" / "materialization.latest.json"
+    service_path = root / "receipts" / "sovereign-host" / "activation.latest.json"
 
     predicates = {name: False for name in REQUIRED_PREDICATES}
     detail: dict[str, Any] = {
-        "runtime_root": str(runtime_root),
+        "runtime_root": str(root),
         "third_party_hosted_environment": hosted,
         "sovereign_node_declared": declared,
         "third_party_runtime_required": False,
+        "credential_authority": "TV/TVC",
+        "credential_requirement": "NONE",
+        "non_tv_tvc_secret_or_token_used": False,
+        "carrier_state_ref": "control/heartbeat-carrier-runtime-state.json",
+        "worker_control_plane_ref": "control/worker-control-plane-coordination.json",
     }
-
     if hosted or not declared:
         detail["ineligible_reason"] = "THIRD_PARTY_HOSTED_ENVIRONMENT" if hosted else "SOVEREIGN_NODE_DECLARATION_ABSENT"
         return {"predicates": predicates, "detail": detail}
 
     required_files = (
-        runtime_root / "heartbeat_runtime" / "engine_v11.py",
-        runtime_root / "scripts" / "run_heartbeat_runtime.py",
-        state_path,
+        root / "heartbeat_runtime" / "engine_v12.py",
+        root / "heartbeat_runtime" / "worker_runtime.py",
+        root / "scripts" / "run_heartbeat_runtime.py",
+        root / "scripts" / "run_worker_runtime.py",
+        carrier_path,
+        legacy_path,
+        control_plane_path,
         registry_path,
         materialization_path,
         service_path,
@@ -178,49 +178,68 @@ def evaluate_runtime(
         detail["missing_runtime_files"] = [str(path) for path in required_files if not path.is_file()]
         return {"predicates": predicates, "detail": detail}
 
-    service_receipt = load_json(service_path)
-    predicates["native_service_active"] = _local_supervision_active(service_receipt)
-    detail["registration_kind"] = service_receipt.get("registration_kind")
-    detail["stegverse_process_supervision"] = service_receipt.get("stegverse_process_supervision") is True
+    materialization = load_json(materialization_path)
+    service = load_json(service_path)
+    if materialization.get("canonical_carrier_runtime") != "heartbeat_runtime.engine_v12.HeartbeatRuntime":
+        detail["ineligible_reason"] = "CARRIER_RUNTIME_BINDING_MISMATCH"
+        return {"predicates": predicates, "detail": detail}
+    if materialization.get("worker_runtime") != "heartbeat_runtime.worker_runtime.WorkerCoordinator":
+        detail["ineligible_reason"] = "WORKER_RUNTIME_BINDING_MISMATCH"
+        return {"predicates": predicates, "detail": detail}
+    predicates["native_service_active"] = _local_supervision_active(service)
 
-    before = load_json(state_path)
+    legacy_before = legacy_path.read_bytes()
+    before = load_json(carrier_path)
     registry_before = load_json(registry_path)
     e0, g0 = _epoch_generation(before)
     sleeper(observe_seconds)
-    observed = load_json(state_path)
+    observed = load_json(carrier_path)
+    control_observed = load_json(control_plane_path)
     e1, g1 = _epoch_generation(observed)
     predicates["heartbeat_epoch_advanced"] = e1 > e0
-    predicates["continuous_runtime_live"] = predicates["native_service_active"] and e1 > e0
-    predicates["worker_coordination_checkpoint_observed"] = worker_coordination_observed(observed, runtime_root)
+    worker_runtime_live = worker_state_path.is_file()
+    predicates["continuous_runtime_live"] = predicates["native_service_active"] and e1 > e0 and worker_runtime_live
+    predicates["worker_coordination_checkpoint_observed"] = worker_coordination_observed(control_observed, root)
 
-    command = restart_command(service_receipt=service_receipt, system=system, env=values)
-    completed = runner(command, check=False, capture_output=True, text=True)
-    predicates["controlled_restart_observed"] = completed.returncode == 0
-    detail["restart_command"] = command
-    detail["restart_returncode"] = completed.returncode
+    commands = restart_commands(service_receipt=service, system=system, env=values)
+    results = []
+    for command in commands:
+        completed = runner(command, check=False, capture_output=True, text=True)
+        results.append({"command": command, "returncode": completed.returncode})
+    predicates["controlled_restart_observed"] = bool(results) and all(row["returncode"] == 0 for row in results)
+    detail["restart_results"] = results
 
     sleeper(restart_seconds)
-    after = load_json(state_path)
+    after = load_json(carrier_path)
+    control_after = load_json(control_plane_path)
     registry_after = load_json(registry_path)
     e2, g2 = _epoch_generation(after)
     predicates["epoch_and_generation_non_regressing"] = e2 >= e1 and g2 >= g1 and e1 >= e0 and g1 >= g0
-    predicates["no_duplicate_claim_or_fence"] = no_duplicate_claim_or_fence(after)
-
-    before_task_ids = {row.get("task_id") for row in registry_before.get("tasks", []) if row.get("task_id")}
-    after_task_ids = {row.get("task_id") for row in registry_after.get("tasks", []) if row.get("task_id")}
+    predicates["no_duplicate_claim_or_fence"] = no_duplicate_claim_or_fence(control_after)
+    before_tasks = {row.get("task_id") for row in registry_before.get("tasks", []) if row.get("task_id")}
+    after_tasks = {row.get("task_id") for row in registry_after.get("tasks", []) if row.get("task_id")}
+    legacy_unchanged = legacy_path.read_bytes() == legacy_before
     predicates["state_reconstruction_pass"] = (
         predicates["controlled_restart_observed"]
         and predicates["epoch_and_generation_non_regressing"]
-        and before_task_ids == after_task_ids
-        and worker_coordination_observed(after, runtime_root)
+        and before_tasks == after_tasks
+        and worker_coordination_observed(control_after, root)
+        and legacy_unchanged
+        and int(load_json(legacy_path).get("epoch", -1)) == 29
     )
     detail.update({
+        "registration_kind": service.get("registration_kind"),
+        "carrier_active": service.get("carrier_active"),
+        "worker_active": service.get("worker_active"),
         "epoch_before": e0,
         "epoch_observed": e1,
         "epoch_after_restart": e2,
         "generation_before": g0,
         "generation_observed": g1,
         "generation_after_restart": g2,
+        "legacy_hb29_unchanged": legacy_unchanged,
+        "worker_runtime_state_observed": worker_runtime_live,
+        "active_control_lease_count": len(_active_leases(control_after)),
     })
     return {"predicates": predicates, "detail": detail}
 
@@ -229,11 +248,16 @@ def verify(runtime_root: Path, **kwargs: Any) -> dict:
     evaluated = evaluate_runtime(runtime_root, **kwargs)
     predicates = evaluated["predicates"]
     body = {
-        "schema": "stegverse.sovereign-runtime-activation-proof/v1",
+        "schema": "stegverse.sovereign-runtime-activation-proof/v2",
         **predicates,
         "all_predicates_pass": all(predicates.values()),
         "third_party_runtime_required": False,
         "physical_additional_machine_required": False,
+        "credential_authority": "TV/TVC",
+        "credential_requirement": "NONE",
+        "non_tv_tvc_secret_or_token_used": False,
+        "github_token_runtime_authority": "NONE",
+        "render_production_runtime_used": False,
         "detail": evaluated["detail"],
     }
     path = proof_path(kwargs.get("env"))
