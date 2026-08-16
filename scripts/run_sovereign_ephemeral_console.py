@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Create isolated StegVerse logical nodes on one sovereign host.
 
-The console exists to remove a physical second/third-machine requirement from
-validation. It materializes three independent runtime/state roots, launches local
-heartbeat processes, verifies the canonical activation predicates, proves process
-and state-root isolation, and tears down validation peers.
+The console removes any physical second/third-machine requirement from validation.
+It materializes three independent runtime/state roots, launches local heartbeat
+processes, verifies the canonical activation predicates, proves process/state-root
+isolation, tears down validation peers, and can retain the primary local carrier.
 
 A hosted CI runner may validate this source but may not use it to claim sovereign
 production activation. Provider credentials, GitHub tokens, Render, Vercel,
@@ -16,6 +16,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import signal
 import subprocess
 import sys
@@ -191,10 +192,12 @@ def run_console(
     interval_ms: float = 10.0,
     validation_only: bool = False,
     retain_primary: bool = True,
+    canonical_proof_path: Path | None = None,
     env: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     source_root = source_root.expanduser().resolve()
     console_root = console_root.expanduser().resolve()
+    canonical_proof_path = canonical_proof_path.expanduser().resolve() if canonical_proof_path else None
     values = dict(os.environ if env is None else env)
     hosted = hosted_environment(values)
     body: dict[str, Any] = {
@@ -211,6 +214,7 @@ def run_console(
         "third_party_runtime_required": False,
         "hosted_environment_observed": hosted,
         "validation_only": validation_only,
+        "canonical_proof_promoted": False,
         "state": "FAIL_CLOSED",
         "nodes": [],
     }
@@ -259,6 +263,12 @@ def run_console(
         if body["all_nodes_pass"] and body["all_isolation_predicates_pass"]:
             body["state"] = "COMPLETE"
             body["reason"] = "THREE_LOGICAL_SOVEREIGN_NODES_PROVED_ON_ONE_STEGVERSE_HOST"
+            if retain_primary and canonical_proof_path is not None:
+                primary_proof = Path(verifications[0]["proof_path"])
+                canonical_proof_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(primary_proof, canonical_proof_path)
+                body["canonical_proof_promoted"] = True
+                body["canonical_proof_path"] = str(canonical_proof_path)
         else:
             body["state"] = "REVIEW_REQUIRED"
             body["reason"] = "LOGICAL_NODE_OR_ISOLATION_PROOF_INCOMPLETE"
@@ -287,6 +297,7 @@ def main() -> int:
     parser.add_argument("--interval-ms", type=float, default=10.0)
     parser.add_argument("--validation-only", action="store_true")
     parser.add_argument("--no-retain-primary", action="store_true")
+    parser.add_argument("--canonical-proof-path", type=Path, default=None)
     args = parser.parse_args()
     root = args.console_root or Path(tempfile.gettempdir()) / "stegverse-ephemeral-sovereign-console"
     result = run_console(
@@ -296,6 +307,7 @@ def main() -> int:
         interval_ms=args.interval_ms,
         validation_only=args.validation_only,
         retain_primary=not args.no_retain_primary,
+        canonical_proof_path=args.canonical_proof_path,
     )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result.get("state") in {"COMPLETE", "VALIDATION_ONLY"} else 1
