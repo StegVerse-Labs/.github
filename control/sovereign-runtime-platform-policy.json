@@ -1,39 +1,53 @@
 {
-  "schema": "stegverse.sovereign-runtime-platform-policy/v0.1",
+  "schema": "stegverse.sovereign-runtime-platform-policy/v0.2",
   "policy_id": "STEGVERSE-SOVEREIGN-RUNTIME-PLATFORM-001",
   "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
   "repository": "StegVerse-Labs/.github",
-  "execution_domain": "STEGVERSE_OWNED_OR_FEDERATED_SOVEREIGN_ONLY",
+  "sovereignty_definition": "A StegVerse deployment is sovereign only when every required production process, scheduler, runtime, state store, validation execution boundary, control-plane executor, and continuity dependency is satisfied by the deployment's own sovereign physical host and StegVerse-controlled logical boundaries on that host. No third-party machine or service may be a required production dependency.",
+  "physical_host_cardinality_default": 1,
+  "additional_physical_host_required": false,
+  "physical_peer_requirement_prohibited": true,
+  "execution_domain": "DEPLOYMENT_LOCAL_SOVEREIGN_HOST_ONLY",
   "allowed_carrier_classes": [
-    "StegVerse-owned native sovereign node",
-    "StegVerse-federated native sovereign node",
-    "eligible StegVerse-002 micro-node with canonical runtime capsule"
+    "the deployment's sole StegVerse sovereign physical host",
+    "isolated StegVerse logical nodes/processes/state roots created on that same sovereign host"
   ],
-  "prohibited_production_platforms": [
+  "logical_independence_rule": "When proof requires independent execution, peer behavior, restart, reconstruction, collision, replay, or isolation, satisfy it with independently identified and isolated logical processes/state roots on the same sovereign physical host whenever technically sufficient; never manufacture a second-machine requirement.",
+  "prohibited_required_dependencies": [
     "Render",
     "GitHub Actions",
     "Vercel",
     "Cloudflare hosted runtime",
-    "any other third-party hosted process or scheduler surface"
+    "third-party VM or machine",
+    "third-party process host",
+    "third-party scheduler",
+    "third-party state host",
+    "third-party control-plane executor",
+    "any additional physical machine required solely to prove independence"
   ],
+  "third_party_services_may_be_optional_inputs_only": true,
+  "third_party_optional_input_rule": "A user may voluntarily interact with external providers or networks, but loss or unavailability of any such service must not prevent the sovereign StegVerse runtime, governance, proof, replay, reconstruction, continuity, or local control plane from operating within its declared scope.",
   "render_allowed": false,
   "third_party_process_host_allowed": false,
   "third_party_scheduler_allowed": false,
   "third_party_deployment_required": false,
-  "fallback_policy": "FAIL_CLOSED_NO_THIRD_PARTY_RUNTIME_SUBSTITUTION",
+  "third_party_machine_required": false,
+  "fallback_policy": "FAIL_CLOSED_OR_USE_SAME_HOST_LOGICAL_ISOLATION; NEVER SUBSTITUTE_THIRD_PARTY_RUNTIME_OR_MACHINE",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",
   "wallet_signing_authority": "USER_ONLY",
   "broadcast_authority": "USER_ONLY",
-  "activation_evidence_must_be_node_local": true,
+  "activation_evidence_must_be_host_local": true,
   "hosted_validation_is_activation": false,
   "required_source_enforcement": [
     "workers/sovereign_runtime_activation_worker.py rejects hosted third-party environments",
     "workers/sovereign_node_repository_resolution_worker.py rejects hosted third-party environments",
     "scripts/bootstrap_sovereign_runtime.py rejects hosted third-party environments",
-    "scripts/verify_sovereign_runtime_activation.py rejects hosted third-party environments"
+    "scripts/verify_sovereign_runtime_activation.py rejects hosted third-party environments",
+    "scripts/run_sovereign_ephemeral_console.py provides same-host logical-node independence proof",
+    "G18 must not escalate to acquiring or binding another physical machine when same-host logical isolation is technically sufficient"
   ],
-  "machine_observable_release_condition": "A StegVerse-owned/federated node-local activation.latest.json reports all nine sovereign predicates true; no prohibited hosted platform may satisfy or substitute for that proof.",
+  "machine_observable_release_condition": "The deployment's own sovereign physical host produces activation.latest.json with all required sovereign predicates true. Any independent-peer requirement must be satisfied by isolated same-host StegVerse logical nodes unless a product owner explicitly changes the deployment topology; no third-party machine or hosted platform may satisfy or substitute for that proof.",
   "authority_effect": "POLICY_ONLY_NO_EXECUTION_CREDENTIAL_PROVIDER_OR_WALLET_AUTHORITY"
 }
