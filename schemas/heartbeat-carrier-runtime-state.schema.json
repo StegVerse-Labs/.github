@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/heartbeat-carrier-runtime-state.schema.json",
+  "title": "StegVerse Heartbeat Carrier Runtime State",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "epoch",
+    "generation",
+    "role",
+    "reference_frame",
+    "frequency_rule",
+    "authority_effect",
+    "activation_state",
+    "legacy_cutover"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.heartbeat-carrier-runtime-state/v1"},
+    "epoch": {"type": "integer", "minimum": 29},
+    "generation": {"type": "integer", "minimum": 0},
+    "last_cycle_at": {"type": ["string", "null"]},
+    "role": {"const": "REGULATORY_CARRIER_REFERENCE_FRAME"},
+    "reference_frame": {"type": "string", "pattern": "^heartbeat_epoch:[0-9]+$"},
+    "frequency_rule": {"const": "GATE_PASSBAND_DERIVED"},
+    "authority_effect": {"const": "NONE"},
+    "activation_state": {"enum": ["PREPARED", "ACTIVE"]},
+    "legacy_cutover": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "legacy_schema",
+        "legacy_epoch",
+        "legacy_generation",
+        "legacy_state_sha256",
+        "source_ref",
+        "closed"
+      ],
+      "properties": {
+        "legacy_schema": {"const": "stegverse.org-heartbeat-state/v1"},
+        "legacy_epoch": {"const": 29},
+        "legacy_generation": {"type": "integer", "minimum": 0},
+        "legacy_state_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "source_ref": {"const": "control/heartbeat-state.json"},
+        "closed": {"type": "boolean"}
+      }
+    }
+  }
+}
