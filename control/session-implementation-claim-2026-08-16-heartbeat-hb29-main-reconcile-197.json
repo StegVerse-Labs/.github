@@ -4,7 +4,7 @@
   "task_id": "HEARTBEAT-HB29-CURRENT-MAIN-RECONCILE-197",
   "issue": 197,
   "parent_issue": 122,
-  "originating_goal": "Reconcile current main so legacy HB29 closes immutably into the separated carrier schema, canonical package exports select carrier v12, worker coordination consumes carrier references without advancing them, coherent signal-space work remains intact, the node-local activation verifier reads separated state, and deployment cannot reactivate combined v11 semantics.",
+  "originating_goal": "Reconcile current main so legacy HB29 closes immutably into the separated carrier schema, production deployment selects carrier v12 explicitly, worker coordination consumes carrier references without advancing them, coherent signal-space work remains intact, stale unified-runtime validation contracts are superseded, and the node-local activation verifier reads separated state.",
   "repository": "StegVerse-Labs/.github",
   "branch": "claim/heartbeat-hb29-main-reconcile-197-current",
   "role": "CLAIMED_FOR_INTEGRATION",
@@ -25,7 +25,10 @@
     "tests/test_heartbeat_carrier_non_authority.py",
     "tests/test_sovereign_heartbeat_service.py",
     "tests/test_sovereign_runtime_activation_v12.py",
+    "tests/test_sovereign_runtime_activation_verifier.py",
+    "tests/test_sovereign_ephemeral_console.py",
     ".github/workflows/heartbeat-worker-project.yml",
+    ".github/workflows/org-heartbeat.yml",
     "control/session-implementation-claim-2026-08-16-heartbeat-hb29-main-reconcile-197.json"
   ],
   "preserved_current_main_surfaces": [
@@ -54,7 +57,7 @@
   "expected_evidence": [
     "legacy control/heartbeat-state.json remains byte-stable during v12 cutover tests",
     "first separated carrier epoch is HB30 and uses stegverse.heartbeat-carrier-runtime-state/v1",
-    "canonical heartbeat_runtime.HeartbeatRuntime export resolves to engine_v12 rather than v11",
+    "production carrier resolves explicitly through CarrierHeartbeatRuntime/engine_v12 while HeartbeatRuntime remains a non-production worker compatibility alias",
     "coherent signal-space candidate remains observable and authority-neutral",
     "carrier observation contains no claim/fence/lease authority",
     "worker control plane observes carrier epoch and never increments heartbeat state",
@@ -63,8 +66,9 @@
     "installer canonical carrier names heartbeat_runtime.engine_v12.HeartbeatRuntime",
     "materialization includes carrier and worker runners separately and does not deploy v11 as carrier",
     "activation verifier reads separated carrier state and worker control-plane state",
+    "legacy-only v11 fixtures cannot prove current production activation",
     "node-local proof still requires the nine production predicates",
-    "validation workflow asserts the separated runtime while preserving current-main signal-space work",
+    "validation workflows assert the separated runtime while preserving current-main signal-space work",
     "deterministic validation passes",
     "replacement PR merges and outdated PRs #198/#199 are superseded"
   ],
