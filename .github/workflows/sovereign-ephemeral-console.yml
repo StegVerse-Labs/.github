@@ -1,4 +1,4 @@
-name: Sovereign Ephemeral Console Validation
+name: Sovereign Ephemeral Console Validation - No GitHub Token Authority
 
 on:
   push:
@@ -8,10 +8,23 @@ on:
       - 'scripts/verify_sovereign_runtime_activation.py'
       - 'workers/sovereign_runtime_activation_worker.py'
       - 'tests/test_sovereign_ephemeral_console.py'
+      - 'tests/test_ephemeral_separated_runtime_supervision.py'
       - '.github/workflows/sovereign-ephemeral-console.yml'
       - 'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json'
       - 'management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json'
-      - 'control/session-implementation-claim-2026-08-15-sovereign-ephemeral-console.json'
+      - 'control/session-implementation-claim-2026-08-16-heartbeat-ephemeral-worker-runtime.json'
+  pull_request:
+    paths:
+      - 'scripts/run_sovereign_ephemeral_console.py'
+      - 'scripts/restart_sovereign_ephemeral_node.py'
+      - 'scripts/verify_sovereign_runtime_activation.py'
+      - 'workers/sovereign_runtime_activation_worker.py'
+      - 'tests/test_sovereign_ephemeral_console.py'
+      - 'tests/test_ephemeral_separated_runtime_supervision.py'
+      - '.github/workflows/sovereign-ephemeral-console.yml'
+      - 'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json'
+      - 'management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json'
+      - 'control/session-implementation-claim-2026-08-16-heartbeat-ephemeral-worker-runtime.json'
   workflow_dispatch:
 
 permissions: {}
@@ -20,7 +33,24 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Anonymous public checkout without GitHub credential token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
+
       - name: Reject runtime credentials
         shell: bash
         run: |
@@ -28,16 +58,23 @@ jobs:
           test -z "${GITHUB_TOKEN:-}"
           test -z "${GH_TOKEN:-}"
           test -z "${TVC_TOKEN:-}"
-      - name: Compile console verifier and G18 worker
+
+      - name: Compile console verifier and separated-runtime supervisor
         run: |
           python -m py_compile \
             scripts/run_sovereign_ephemeral_console.py \
             scripts/restart_sovereign_ephemeral_node.py \
             scripts/verify_sovereign_runtime_activation.py \
             workers/sovereign_runtime_activation_worker.py \
-            tests/test_sovereign_ephemeral_console.py
-      - name: Run deterministic console tests
-        run: python -m unittest -v tests.test_sovereign_ephemeral_console
+            tests/test_sovereign_ephemeral_console.py \
+            tests/test_ephemeral_separated_runtime_supervision.py
+
+      - name: Run deterministic console and separated-runtime tests
+        run: |
+          python -m unittest -v \
+            tests.test_sovereign_ephemeral_console \
+            tests.test_ephemeral_separated_runtime_supervision
+
       - name: Verify G18 automatically owns fallback
         shell: bash
         run: |
@@ -45,7 +82,11 @@ jobs:
           grep -q 'run_sovereign_ephemeral_console.py' workers/sovereign_runtime_activation_worker.py
           grep -q 'physical_additional_machine_required' workers/sovereign_runtime_activation_worker.py
           grep -q 'SOVEREIGN_EPHEMERAL_CONSOLE_VERIFIED' workers/sovereign_runtime_activation_worker.py
-          echo 'G18_ONE_HOST_FALLBACK_BOUND'
+          grep -q 'run_worker_runtime.py' scripts/restart_sovereign_ephemeral_node.py
+          grep -q 'heartbeat_runtime.engine_v12.HeartbeatRuntime' scripts/run_sovereign_ephemeral_console.py
+          grep -q 'heartbeat_runtime.worker_runtime.WorkerCoordinator' scripts/run_sovereign_ephemeral_console.py
+          echo 'G18_ONE_HOST_SEPARATED_RUNTIME_FALLBACK_BOUND'
+
       - name: Prove hosted runner is validation only
         shell: bash
         run: |
@@ -63,9 +104,12 @@ jobs:
           assert p['physical_additional_machine_required'] is False, p
           assert p['third_party_runtime_required'] is False, p
           assert p['credential_authority']=='TV/TVC', p
+          assert p['github_token_required'] is False, p
+          assert p['non_tv_tvc_secret_or_token_used'] is False, p
           assert p['canonical_proof_promoted'] is False, p
           print('HOSTED_VALIDATION_ONLY_PASS')
           PY
+
       - name: Assert production activation is not claimed
         run: |
           set -eu
