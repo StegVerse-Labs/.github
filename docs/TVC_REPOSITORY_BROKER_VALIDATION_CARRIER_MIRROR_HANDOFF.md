@@ -48,6 +48,56 @@ upstream task: tasks/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.json
 
 If PR #20 head changes before validation, the worker fails closed with `EXACT_TVC_SOURCE_NOT_MATERIALIZED` until this binding is deliberately advanced to the reviewed new head. It must not silently validate a different commit.
 
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/tvc-repository-broker-validation-001.json
+collision_scope: tvc:github-repository-operation-broker:validation
+release_condition: none; this bucket contains no manually executable action
+next_executable_action: NONE_MANUAL
+```
+
+A chat/session may inspect evidence and repair this carrier's own declarative defects, but it must not directly substitute itself for the heartbeat worker or execute credential-bearing TVC transport.
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/tvc-repository-broker-validation-001.json
+collision_scope: tvc:github-repository-operation-broker:validation
+release_condition: receipts/tvc-repository-broker-validation/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json state=COMPLETED for the exact pinned TVC PR #20 head
+next_executable_action: heartbeat scheduler admits SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001 and invokes process:tvc-repository-broker-validation-v1
+```
+
+The registered worker owns exact local-source discovery plus deterministic execution of the already-installed TVC verifier. No session may compete for the same validation receipt.
+
+### ESCALATED / AUTHORITY-OWNED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/tvc-repository-broker-validation-001.json
+collision_scope: tvc:github-repository-operation-broker:integration
+release_condition: validation carrier receipt COMPLETED, followed by TVC repository-owner admission decision for PR #20
+next_executable_action: StegVerse-Labs/TVC canonical integration authority reviews the exact PASS receipt and admits or retains PR #20 according to its handoff
+```
+
+Credential-bearing source materialization and any repository integration remain TV/TVC/repository-owner authority, not this worker's authority.
+
+### COMPLETED / SUPERSEDED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/tvc-repository-broker-validation-001.json
+collision_scope: tvc:github-repository-operation-broker:validation
+release_condition: terminal PASS receipt retained and downstream TVC admission state recorded, or this lane is explicitly superseded by a narrower canonical machine-owned validation carrier
+next_executable_action: release this worker claim and allow the existing formalism TVC transport consumer plus StegCore private-source validation task to observe the downstream release
+```
+
+Completion of this validation carrier grants no transport, credential, merge, model, wallet, signing, broadcast, or runtime authority.
+
 ## Execution states
 
 ```text
@@ -81,13 +131,16 @@ No downstream state is inferred from this handoff alone.
 
 Repository tests for this carrier verify the exact head binding, credential stripping, adapter env allowlist, registry declarations, and absence of source-fetch transport in the worker. Runtime validation still requires a heartbeat execution opportunity with exact local TVC source.
 
+The first repository-wide validation after installation exposed only two integration bookkeeping defects in this new lane: the AE retrospective denominator did not yet classify the newly registered task, and this mirror handoff lacked the organization-required execution-ownership partition. The denominator was reconciled in commit `d14f36f2ad06368c98fbdb245d0f68ecbdae99c2`; this section repairs the ownership partition. Neither failure was a TVC broker code-test failure.
+
 ## Completion inventory
 
 ```text
-developed files: 5/5
+developed files: 6/6
 scaffolding/stubs: 0
 missing required files: 0
-static/unit validation: pending repository test execution
+focused carrier declarations/static integration: installed
+heartbeat-worker repository validation: pending final-head rerun after ownership-partition repair
 runtime carrier receipt: 0/1
 TVC PR #20 admission: 0/1
 StegCore downstream source-materialization release: 0/1
