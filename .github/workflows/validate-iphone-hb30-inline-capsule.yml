@@ -56,11 +56,14 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           text=Path('.github/workflows/validate-iphone-hb30-inline-capsule.yml').read_text()
+          forbidden = [
+              'git ' + 'push',
+              'actions/' + 'checkout@',
+              'upload-' + 'artifact',
+              'pip ' + 'install',
+          ]
           assert 'permissions: {}' in text
-          assert 'git push' not in text
-          assert 'actions/checkout@' not in text
-          assert 'upload-artifact' not in text
-          assert 'pip install' not in text
+          assert all(marker not in text for marker in forbidden), forbidden
           print('IPHONE_HB30_INLINE_VALIDATION_ONLY=PASS')
           print('IPHONE_HB30_INLINE_RUNTIME_AUTHORITY=NONE')
           PY
