@@ -22,12 +22,18 @@ class SovereignRuntimeHandoffV12ContractTests(unittest.TestCase):
 
     def test_legacy_hb29_is_immutable_cutover_source_not_live_progress_file(self):
         cutover = self.handoff["v12_cutover_contract"]
+        execution = self.handoff["execution"]
+        action = self.handoff["completion"]["next_authorized_action"]
         self.assertEqual(cutover["legacy_source"], "control/heartbeat-state.json")
         self.assertEqual(cutover["legacy_epoch"], 29)
         self.assertTrue(cutover["legacy_source_must_remain_immutable"])
         self.assertEqual(cutover["first_persistent_carrier_epoch"], 30)
         self.assertEqual(cutover["carrier_state"], "control/heartbeat-carrier-runtime-state.json")
-        self.assertIn("immutable legacy HB29", self.handoff["completion"]["next_authorized_action"])
+        self.assertFalse(execution["legacy_state_mutable_after_cutover"])
+        self.assertEqual(execution["legacy_state_epoch"], 29)
+        self.assertIn("control/heartbeat-state.json", action)
+        self.assertIn("remaining at HB29", action)
+        self.assertIn("HB30 or later", action)
 
     def test_worker_coordinator_and_all_nine_predicates_are_required(self):
         continuity = self.handoff["continuity"]
