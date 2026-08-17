@@ -6,6 +6,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 MODULE_PATH = ROOT / "scripts" / "verify_iphone_heartbeat_transition_receipt.py"
@@ -90,7 +91,10 @@ class IPhoneHeartbeatTransitionReceiptTests(unittest.TestCase):
         before = (root / "control" / "heartbeat-state.json").read_bytes()
         verification = mod.validate_receipt(receipt, root=root)
         self.assertEqual(verification["state"], "PASS")
-        result = mod.materialize(receipt, verification, root=root)
+        # Production materialization must reject hosted runners. This unit test
+        # explicitly exercises the non-hosted code path without weakening that guard.
+        with mock.patch.object(mod, "hosted", return_value=False):
+            result = mod.materialize(receipt, verification, root=root)
         self.assertEqual(result["state"], "CARRIER_TRANSITION_COMPLETE")
         carrier = json.loads((root / "control" / "heartbeat-carrier-runtime-state.json").read_text())
         self.assertEqual(carrier["epoch"], 30)
@@ -98,6 +102,17 @@ class IPhoneHeartbeatTransitionReceiptTests(unittest.TestCase):
         self.assertEqual((root / "control" / "heartbeat-state.json").read_bytes(), before)
         self.assertFalse(result["all_release_predicates_pass"])
         self.assertTrue(result["worker_checkpoint_required"])
+
+    def test_hosted_materialization_fails_closed(self):
+        td, root, blob = self.make_root()
+        self.addCleanup(td.cleanup)
+        receipt = self.receipt(blob)
+        verification = mod.validate_receipt(receipt, root=root)
+        self.assertEqual(verification["state"], "PASS")
+        with mock.patch.object(mod, "hosted", return_value=True):
+            with self.assertRaisesRegex(RuntimeError, "hosted environment"):
+                mod.materialize(receipt, verification, root=root)
+        self.assertFalse((root / "control" / "heartbeat-carrier-runtime-state.json").exists())
 
     def test_wrong_seed_fails_closed(self):
         td, root, blob = self.make_root()
