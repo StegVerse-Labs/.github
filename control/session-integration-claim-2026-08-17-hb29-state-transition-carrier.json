@@ -1,0 +1,44 @@
+{
+  "schema": "stegverse.work-claim/v1",
+  "task_id": "SHWP-HB29-STATE-TRANSITION-CARRIER-RECONCILIATION-001",
+  "originating_goal": "Reconcile the live heartbeat activation contract with the canonical iPhone-associated state-transition continuity model so HB29 can validly terminate into HB30 without requiring an always-on external host.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/hb29-state-transition-carrier-reconcile",
+  "claimant": "current-session-heartbeat-contract-reconciliation-lane",
+  "role": "CLAIMED_FOR_INTEGRATION",
+  "claim_created_at": "2026-08-17T01:43:00-05:00",
+  "claim_expiration_or_release_condition": "Release when canonical handoff/bootstrap/constraint semantics no longer require an additional or continuously resident external host, v12 source eligibility is internally consistent, and deterministic validation is green or the claim is explicitly superseded.",
+  "owned_surfaces": [
+    "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "scripts/bootstrap_sovereign_runtime.py",
+    "docs/ORG_MIRROR_HANDOFF.md",
+    "tests/test_hb29_state_transition_carrier_contract.py",
+    "control/session-integration-claim-2026-08-17-hb29-state-transition-carrier.json"
+  ],
+  "collision_boundaries": [
+    "do not mutate control/heartbeat-state.json or any live v12 carrier/worker runtime state",
+    "do not acquire, release, renew, or alter G18 claim/fence/lease",
+    "do not manually execute the machine-owned sovereign activation worker",
+    "do not introduce another physical machine, hosted runtime, Render, GitHub Actions, Vercel, or Cloudflare as production authority",
+    "do not introduce GitHub token or NON-TV/TVC secret/token authority",
+    "do not contact provider or wallet, sign, broadcast, settle, or change USER_ONLY authority",
+    "do not duplicate StegBrain #860 or issue #122 architectural ownership beyond this bounded contract reconciliation"
+  ],
+  "observed_conflict": {
+    "policy_ref": "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+    "policy_semantics": "CURRENT_USER_IPHONE is the sole permitted user physical carrier; another physical machine and always-on external host may not block release; heartbeat continuity is state-transition continuity and wall-clock continuous process is not required.",
+    "conflicting_handoff_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "conflicting_handoff_semantics": "requires continuous_process_execution and continuously live carrier+WorkerCoordinator on a local node",
+    "bootstrap_drift": "scripts/bootstrap_sovereign_runtime.py still requires heartbeat_runtime/engine_v11.py despite canonical separated-v12 cutover"
+  },
+  "expected_evidence": [
+    "canonical G18 handoff distinguishes state-transition continuity from optional resident supervision",
+    "no extra machine or always-on external host is a release prerequisite",
+    "bootstrap local eligibility requires canonical v12 carrier and separate WorkerCoordinator sources",
+    "legacy HB29 remains immutable and the first valid successor is HB30 or later",
+    "TV/TVC remains sole credential authority and no non-TV/TVC secret/token is added"
+  ],
+  "next_task_after_release": "G18 machine owner consumes the reconciled contract on the next admitted StegVerse execution opportunity associated with the permitted carrier/control plane and emits HB30+ or an exact fail-closed receipt without requiring another host.",
+  "state": "CLAIMED_FOR_INTEGRATION"
+}
