@@ -2,7 +2,7 @@
   "schema": "stegverse.session-goal-inventory/v1",
   "inventory_id": "SESSION-2026-08-16-TT-LOCAL-RUNTIME-TRADE-CONVERGENCE",
   "created_at": "2026-08-16T18:27:00-05:00",
-  "updated_at": "2026-08-16T21:22:00-05:00",
+  "updated_at": "2026-08-17T02:05:00-05:00",
   "origin": "current ChatGPT session",
   "governing_objective": "Consolidate the Transition Table consequence/black-transition formalism, sovereign local-model runtime activation, TV/TVC-only credential semantics, heartbeat restoration, and StegFin trade-readiness into durable canonical StegVerse workstreams without duplicate execution.",
   "credential_boundary": {
@@ -58,11 +58,11 @@
       "originating_goal": "Activate the released sovereign local model/runtime using StegVerse workers and no third-party production runtime; priority one is restore the canonical heartbeat.",
       "destination": "StegVerse-Labs/.github",
       "branch": "main",
-      "canonical_location": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json + issue #65",
-      "owner": "sovereign-runtime-activation-worker / G18 resident sovereign heartbeat",
+      "canonical_location": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json + handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json + issue #65",
+      "owner": "sovereign-runtime-activation-worker / G18",
       "claim_state": "MACHINE_OWNED_BOUND_G18",
       "completion_state": "ACTIVE_MACHINE_WORK",
-      "validation_state": "V12_SOURCE_AND_HANDOFF_VALIDATED_LIVE_PROOF_PENDING",
+      "validation_state": "BOUNDED_STATE_TRANSITION_SOURCE_VALIDATED_LIVE_HB30_AND_WORKER_CHECKPOINT_PENDING",
       "integration_state": "DOWNSTREAM_RELEASES_ECOSYSTEM_CHAT_AND_STEGFIN",
       "evidence": [
         "legacy control/heartbeat-state.json intentionally immutable at HB29",
@@ -70,15 +70,19 @@
         "PR #203 merge b56662cdb840bb2b30b10db2f6236db472261d87 repairs adapter liveness envelope",
         "PR #204 merge ef56f32d389ae1c5ded93a10d20763f21b4e4341 repairs one-host separated carrier+WorkerCoordinator fallback",
         "PR #205 merge 6e8317e9eaf42fa263eabdf6f31beef42c67b981 reconciles canonical handoff to v12",
-        "Sovereign Runtime validation 31986928619 SUCCESS",
-        "Heartbeat Worker Project validation 31986928612 SUCCESS",
-        "organization control-plane validation 31986928573 SUCCESS",
-        "current repository observation: control/heartbeat-carrier-runtime-state.json NOT PRESENT"
+        "PR #206 merge b7c5b5e9199c5af46029210fe7909dcf19033b41 reconciles G18 to state-transition continuity and installs scripts/advance_heartbeat_transition.py",
+        "Sovereign Runtime Worker run 32004079913 SUCCESS",
+        "Organization handoff run 32004079897 SUCCESS",
+        "Sovereign Ephemeral Console run 32004079895 SUCCESS",
+        "Sovereign Runtime Self-Bootstrap run 32004079898 SUCCESS",
+        "Heartbeat Worker Project run 32004079907 SUCCESS",
+        "organization control-plane run 32004079896 SUCCESS",
+        "current repository observation before machine execution: control/heartbeat-carrier-runtime-state.json NOT PRESENT"
       ],
-      "next_executable_action": "G18 executes current main on an eligible StegVerse-controlled non-hosted local surface, runs scripts/bootstrap_sovereign_runtime.py, uses the repaired one-host separated-runtime fallback when needed, and records node-local activation.latest.json with all nine predicates true.",
-      "release_condition": "legacy HB29 remains unchanged; control/heartbeat-carrier-runtime-state.json exists and advances from HB30 onward; separate WorkerCoordinator state/coordination is live; nine-predicate activation proof passes; controlled restart/reconstruction passes; no duplicate claim/fence exists",
+      "next_executable_action": "On the next admitted G18 execution opportunity associated with the permitted current-iPhone carrier/control-plane policy, execute scripts/advance_heartbeat_transition.py. It must derive HB30 or a later valid successor from immutable HB29/latest v12 state; the independent WorkerCoordinator then observes that successor on its current or next tick.",
+      "release_condition": "receipts/heartbeat-transition-continuity/latest.json is CARRIER_TRANSITION_COMPLETE at HB30 or later; legacy control/heartbeat-state.json remains HB29; control/worker-runtime-state.json independently observes the successor epoch; worker control-plane evidence is present; no duplicate claim/fence exists; reconstruction passes. Resident native supervision/nine-predicate service proof is optional stronger evidence rather than a continuity prerequisite.",
       "product_completion_dependency": true,
-      "archival_dependency": false
+      "archival_dependency": true
     },
     {
       "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
@@ -97,10 +101,10 @@
         "GitHub token runtime authority NONE",
         "receipts/session-validation/2026-08-16-tt-local-runtime-trade-support.json"
       ],
-      "next_executable_action": "After resident v12 carrier and WorkerCoordinator activation, acquire a fresh authorized parent fence >20, launch/retain the private local runtime through route admission and exact LLM-adapter execution, persist measured usage, and require same-execution Master Records reconstruction PASS.",
+      "next_executable_action": "After HB30+ state-transition continuity and an independent WorkerCoordinator checkpoint are observed, acquire the applicable fresh authorized inference fence, launch/retain the private local runtime through TVC route admission and exact LLM-adapter execution, persist measured usage, and require same-execution Master Records reconstruction PASS.",
       "release_condition": "private model process observed + TVC ROUTE_ADMITTED + exact LLM-adapter request + measured usage + same_execution=true reconstruction PASS",
       "product_completion_dependency": true,
-      "archival_dependency": false
+      "archival_dependency": true
     },
     {
       "task_id": "STEGFIN-CONTINUITY-CARRIER-007",
@@ -120,10 +124,10 @@
         "wallet signing/broadcast USER_ONLY",
         "receipts/session-validation/2026-08-16-tt-local-runtime-trade-support.json"
       ],
-      "next_executable_action": "Machine scheduler admits process:stegfin-continuity-carrier-v1, selects an actual TV/TVC transport, acquires the collision-safe claim, produces WALLET_HANDOFF_READY, and stops before USER_ONLY signing/broadcast.",
+      "next_executable_action": "After the heartbeat release predicate is satisfied, the machine scheduler admits the canonical StegFin worker, selects the admitted TV/TVC transport, acquires its collision-safe claim, produces WALLET_HANDOFF_READY, and stops before USER_ONLY signing/broadcast.",
       "release_condition": "WALLET_HANDOFF_READY + credential_authority=TV/TVC + non_tv_tvc_secret_or_token_used=false + provider_secret_exported=false + signed=false + broadcast=false",
       "product_completion_dependency": true,
-      "archival_dependency": false
+      "archival_dependency": true
     }
   ],
   "heartbeat_repair_support": {
@@ -136,7 +140,11 @@
     "v12_handoff_claim": "control/session-integration-claim-2026-08-16-heartbeat-v12-handoff.json",
     "v12_handoff_state": "COMPLETE_RELEASED",
     "v12_handoff_pr": 205,
-    "result": "THREE_HEARTBEAT_SOURCE_OR_CONTRACT_DEFECTS_REPAIRED_AND_RELEASED; LIVE_NODE_PROOF_REMAINS_G18_OWNED"
+    "state_transition_claim": "control/session-integration-claim-2026-08-17-hb29-state-transition-carrier.json",
+    "state_transition_claim_state": "COMPLETE_RELEASED",
+    "state_transition_pr": 206,
+    "state_transition_merge": "b7c5b5e9199c5af46029210fe7909dcf19033b41",
+    "result": "FOUR_HEARTBEAT_SOURCE_OR_CONTRACT_DEFECTS_REPAIRED_AND_RELEASED; LIVE_HB30_PLUS_INDEPENDENT_WORKER_CHECKPOINT_REMAINS_G18_OWNED"
   },
   "local_model_v12_integration_support": {
     "claim": "StegVerse-002/micro-node-runtime/work_claims/SOVEREIGN-LOCAL-MODEL-V12-CONTINUATION-SEMANTICS-004.json",
@@ -161,8 +169,9 @@
   },
   "convergence": {
     "duplicate_execution_detected": true,
-    "duplicate_execution_action": "Do not reopen local-model source implementation, acquire G18 runtime authority, compete with TV/TVC route ownership, or retain this chat merely to observe machine-owned completion. All executable continuation is installed in canonical machine workstreams.",
+    "duplicate_execution_action": "Do not reopen local-model source implementation, acquire G18 runtime authority, compete with TV/TVC route ownership, manually fabricate HB30, or invoke provider/wallet authority. The session may perform bounded validation/reconciliation while machine-owned activation remains unobserved.",
     "merged_into": [
+      "StegVerse-Labs/.github/management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
       "StegVerse-Labs/.github/handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
       "StegVerse-Labs/.github#60",
       "StegVerse-Labs/.github#65",
@@ -177,7 +186,10 @@
     "legacy_heartbeat_state_is_cutover_source": true,
     "legacy_heartbeat_state_should_advance": false,
     "v12_carrier_state_ref": "control/heartbeat-carrier-runtime-state.json",
+    "state_transition_receipt_ref": "receipts/heartbeat-transition-continuity/latest.json",
     "v12_carrier_state_repository_observed": false,
+    "hb30_state_transition_observed": false,
+    "worker_checkpoint_at_or_after_hb30_observed": false,
     "durable_runtime_claim": "G18",
     "durable_runtime_operational_state": "ACTIVE_SOLUTION_EXECUTION",
     "stegfin_worker_status": "AVAILABLE",
@@ -190,10 +202,11 @@
     "transferred_or_complete": 5,
     "unique_chat_only_requirements_remaining": 0,
     "active_session_claims_remaining": 0,
-    "session_execution_role": "MERGED_INTO_CANONICAL_MACHINE_WORKSTREAM",
-    "archive_safe": true,
-    "archive_reason": "Every originating and adjacent session requirement is implemented, superseded, or durably transferred. Remaining live activation, inference, reconstruction, and WALLET_HANDOFF_READY work is explicitly machine-owned with canonical handoffs, task records, collision boundaries, and machine-observable release conditions. No remaining task requires this chat as an execution or information authority.",
+    "session_execution_role": "ACTIVE_DISTINCT_VALIDATION_RECONCILIATION_SUPPORT",
+    "archive_safe": false,
+    "archive_reason": "All session knowledge and source repairs are durable, but the user's activation goal is not yet satisfied: live HB30+ state-transition evidence, the independent WorkerCoordinator checkpoint, sovereign local-model route/reconstruction evidence, and WALLET_HANDOFF_READY remain unobserved.",
     "canonical_continuation_locations": [
+      "StegVerse-Labs/.github/management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
       "StegVerse-Labs/.github/handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
       "StegVerse-Labs/.github#60",
       "StegVerse-Labs/.github#65",
@@ -202,17 +215,16 @@
       "StegVerse-Labs/StegScholar/TT_MIRROR_HANDOFF.md"
     ],
     "product_completion_still_pending": [
-      "G18 live separated-v12 carrier + WorkerCoordinator nine-predicate activation proof",
+      "G18 bounded v12 transition receipt producing HB30+ from immutable HB29",
+      "independently admitted WorkerCoordinator checkpoint observing HB30+ with reconstruction/no-duplicate proof",
       "sovereign local-model TVC -> LLM-adapter -> same-execution Master Records execution evidence",
       "StegFin WALLET_HANDOFF_READY machine receipt"
     ],
     "archive_release_conditions": [
-      "all session-originating requirements durable",
-      "no unique chat-only requirement remains",
-      "no active session-owned claim remains",
-      "all incomplete product work has a named machine owner and machine-observable release condition",
-      "canonical handoffs contain enough state to continue without this conversation"
+      "receipts/heartbeat-transition-continuity/latest.json proves HB30+ from immutable HB29 and the independent WorkerCoordinator checkpoint observes the successor",
+      "SHWP-ECOSYSTEM-CHAT-INFERENCE-001 produces immutable private-model -> TVC ROUTE_ADMITTED -> exact LLM-adapter -> measured usage -> same-execution Master Records PASS evidence",
+      "STEGFIN-CONTINUITY-CARRIER-007 produces WALLET_HANDOFF_READY with all six terminal predicates or is explicitly superseded by equivalent canonical evidence"
     ],
-    "archive_release_conditions_satisfied": true
+    "archive_release_conditions_satisfied": false
   }
 }
