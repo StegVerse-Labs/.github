@@ -21,7 +21,7 @@ thread_archive_ready: false
 archive_blocker: CURRENT_SESSION_POST_PR206_AUTHORITY_RECONCILIATION_UNTIL_ISSUE_207_CLOSED
 ```
 
-## Governing runtime invariant
+## Canonical architecture
 
 Heartbeat continuity is **state-transition continuity**, not wall-clock daemon residency.
 
@@ -62,7 +62,7 @@ NON-TV/TVC secret/token allowed: false
 
 Hosted validation is source/policy evidence only and never production activation evidence.
 
-## Completed protocol/source capabilities
+## Completed protocol capabilities
 
 ```text
 formal local model: COMPLETE_RELEASED
@@ -86,7 +86,7 @@ independent WorkerCoordinator observation of HB30+: NOT YET OBSERVED
 Canonical local-model handoff: `StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md`.
 Canonical runtime activation handoff: `handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json`.
 
-## Durable runtime activation — machine-owned
+## Physical-resource execution boundary — durable runtime activation
 
 ```text
 operational_state: ACTIVE_WORKER
@@ -119,7 +119,7 @@ After v12 carrier/WorkerCoordinator continuity and recovery predicates are satis
 
 Canonical owner records remain in `StegVerse-Labs/stegfin-governance`, including the current `docs/STEGFIN_MIRROR_HANDOFF.md` and machine task state. TV/TVC owns credential/provider authority. Wallet signing and broadcast remain USER_ONLY. No live transaction, settlement, or production sizing is claimed by this organization handoff.
 
-## Cross-repository continuation and propagation
+## Cross-repository dependencies / propagation
 
 ```text
 StegVerse-002/micro-node-runtime
@@ -260,7 +260,7 @@ python scripts/run_heartbeat_runtime.py --dry-run --cycles 1
 python tools/validate_active_worker_states.py
 ```
 
-## Session goal inventory and consolidation
+## Session consolidation
 
 Canonical session inventory: `control/session-goal-inventory-2026-08-16-tt-local-runtime-trade-convergence.json`.
 
