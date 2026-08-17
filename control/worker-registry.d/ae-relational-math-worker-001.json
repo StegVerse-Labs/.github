@@ -13,6 +13,7 @@
         "handoffs/AE-RELATIONAL-MATH-WORKER-001.json",
         "workers/ae_relational_math_worker.py",
         "control/process-worker-adapters.d/ae-relational-math-worker-001.json",
+        "management/RELATIONAL_GOVERNANCE_MATHEMATICS_INTEGRATION.json",
         "Admissible-Existence/AE:data/autonomous_goal_seeds/AE-AUTO-0011.json"
       ],
       "executor_binding": "AUTHORIZED",
@@ -32,7 +33,7 @@
         "phase": "ADMISSIBLE",
         "standing_evidence_refs": [
           "Admissible-Existence/AE:data/autonomous_standing.json",
-          "Admissible-Existence/AE:docs/protocols/CONTINUING_EXECUTION_ADMISSIBILITY_MIRROR_HANDOFF.md"
+          "Admissible-Existence/AE:docs/STATE_MANIFOLD_RELATIONAL_GOVERNANCE_MIRROR_HANDOFF.md"
         ],
         "admissibility_evidence_refs": [
           "handoffs/AE-RELATIONAL-MATH-WORKER-001.json",
@@ -40,7 +41,8 @@
         ],
         "integration_evidence_refs": [
           "workers/ae_relational_math_worker.py",
-          "control/process-worker-adapters.d/ae-relational-math-worker-001.json"
+          "control/process-worker-adapters.d/ae-relational-math-worker-001.json",
+          "management/RELATIONAL_GOVERNANCE_MATHEMATICS_INTEGRATION.json"
         ],
         "activation_proof_ref": null,
         "blockers": ["AE_AUTO_0011_TERMINAL_VALIDATED_STATE_NOT_YET_OBSERVED"],
@@ -48,7 +50,7 @@
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
-        "task_relationship": "integrates_capability",
+        "task_relationship": "develops_capability",
         "target_phase": "ACTIVATED"
       }
     }
