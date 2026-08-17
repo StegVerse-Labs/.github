@@ -16,7 +16,7 @@ active_inference_owner: StegVerse-Labs/.github#60 + heartbeat-managed sovereign 
 canonical_carrier_runtime: heartbeat_runtime.engine_v12.HeartbeatRuntime
 canonical_worker_runtime: heartbeat_runtime.worker_runtime.WorkerCoordinator
 product_state: ACTIVE_MACHINE_WORK / NOT YET ACTIVATED
-session_role: MERGED_INTO_CANONICAL_WORKSTREAM
+session_role: ACTIVE_DISTINCT_SUPPORT_ROLE
 thread_archive_ready: false
 archive_blocker: CURRENT_SESSION_POST_PR206_AUTHORITY_RECONCILIATION_UNTIL_ISSUE_207_CLOSED
 ```
@@ -83,33 +83,10 @@ live HB30+ transition observation: NOT YET OBSERVED
 independent WorkerCoordinator observation of HB30+: NOT YET OBSERVED
 ```
 
-Canonical local-model handoff:
-
-```text
-StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
-```
-
-Canonical runtime activation handoff:
-
-```text
-handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-```
+Canonical local-model handoff: `StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md`.
+Canonical runtime activation handoff: `handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json`.
 
 ## Durable runtime activation — machine-owned
-
-Owner records:
-
-```text
-StegVerse-Labs/.github#59
-StegVerse-Labs/.github#65
-handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
-management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json
-management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json
-workers/sovereign_runtime_activation_worker.py
-scripts/advance_heartbeat_transition.py
-```
-
-Current machine state:
 
 ```text
 operational_state: ACTIVE_WORKER
@@ -124,20 +101,9 @@ next_solution_action: EXECUTE_BOUNDED_V12_STATE_TRANSITION_THEN_OBSERVE_WORKER_C
 
 The next admitted G18 StegVerse execution opportunity must run `scripts/advance_heartbeat_transition.py`. The producer derives HB30 or a later valid successor from immutable HB29/latest v12 state, persists transition evidence, forwards no credentials, and does not grant WorkerCoordinator execution authority. The independently admitted WorkerCoordinator then observes the persisted carrier state on its current or next tick.
 
-Machine-observable completion requires:
+Machine-observable completion requires `receipts/heartbeat-transition-continuity/latest.json` at HB30+, `control/heartbeat-carrier-runtime-state.json` at HB30+ while legacy HB29 remains unchanged, independent `control/worker-runtime-state.json` observation, valid worker-control-plane evidence, non-regressing generation, no duplicate claim/fence, reconstruction PASS, and no additional machine/always-on external host/GitHub token/NON-TV/TVC credential becoming authority.
 
-```text
-receipts/heartbeat-transition-continuity/latest.json records a valid HB30+ carrier transition
-control/heartbeat-carrier-runtime-state.json exists at HB30+ while legacy HB29 remains unchanged
-control/worker-runtime-state.json independently observes that carrier epoch
-control/worker-control-plane-coordination.json is present/valid
-carrier generation does not regress
-no duplicate claim/fence is introduced
-state reconstruction PASS
-no additional machine / always-on external host / GitHub token / NON-TV/TVC credential became authority
-```
-
-Optional `~/.stegverse/heartbeat/activation.latest.json` nine-predicate native-service proof remains valid stronger resident-supervision evidence, but absence of that service does not negate state-transition continuity.
+Optional `~/.stegverse/heartbeat/activation.latest.json` nine-predicate native-service proof remains stronger resident-supervision evidence, but absence of that service does not negate state-transition continuity.
 
 ## Ecosystem Chat inference activation — machine-owned downstream
 
@@ -145,19 +111,13 @@ Owner: `StegVerse-Labs/.github#60`.
 
 The descriptive “select a local model/runtime” step is removed. The released path discovers and launches the canonical private `StegVerse-002/micro-node-runtime`, proves runtime/model identity and health, obtains TVC `ROUTE_ADMITTED` with `credential_requirement=NONE`, executes the exact LLM-adapter route, persists measured usage, and requires same-execution Master Records reconstruction.
 
-Recovery lane:
-
-```text
-control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json
-```
+Recovery lane: `control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json`.
 
 After v12 carrier/WorkerCoordinator continuity and recovery predicates are satisfied, the parent independently reacquires a fresh authorized fence >20. Completion requires immutable same-execution evidence proving private model process observed, TVC credential requirement NONE, exact LLM-adapter execution, measured usage, provider-usage and transition reconstruction PASS, `same_execution=true`, and `github_token_required=false`.
 
 ## StegFin continuation — machine/human authority boundary
 
 Canonical owner records remain in `StegVerse-Labs/stegfin-governance`, including the current `docs/STEGFIN_MIRROR_HANDOFF.md` and machine task state. TV/TVC owns credential/provider authority. Wallet signing and broadcast remain USER_ONLY. No live transaction, settlement, or production sizing is claimed by this organization handoff.
-
-The v12 carrier/WorkerCoordinator transition is a prerequisite to downstream StegFin worker admission where the current task record requires it; it does not grant signing/broadcast authority.
 
 ## Cross-repository continuation and propagation
 
@@ -178,37 +138,98 @@ Site/Publisher/wiki publication remains gated on immutable activation/release ev
 
 Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`.
 
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+- task_id: POST-PR206-AUTHORITY-RECONCILIATION
+  execution_owner: issue #207 / current reconciliation session
+  claim_state: CLAIMED_FOR_INTEGRATION
+  worker_registry_ref: NONE
+  manual_execution_allowed: true
+  manual_allowed_role: integration
+  collision_scope: docs/ORG_MIRROR_HANDOFF.md plus issue #59/#60/#65 prose/control reconciliation only
+  release_condition: scoped authority surfaces agree with PR #206 and validation passes, then issue #207 closes
+  next_executable_action: inspect post-reconciliation workflow results, correct any validator failures, close issue #207, then release this session claim
+```
+
 ### WORKER-OWNED / DO NOT COMPETE
 
 ```yaml
 - task_id: SHWP-DURABLE-RUNTIME-ACTIVATION
-  owner: G18 sovereign-runtime-activation-worker
+  execution_owner: G18 sovereign-runtime-activation-worker
   claim_state: MACHINE_OWNED_BOUND_G18
+  worker_registry_ref: control/worker-registry.json#SHWP-DURABLE-RUNTIME-ACTIVATION
   manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: carrier state, worker state, claims/fences/leases, runtime receipts, reconstruction evidence
   release_condition: HB30+ carrier transition plus independent WorkerCoordinator observation and reconstruction PASS
+  next_executable_action: execute scripts/advance_heartbeat_transition.py on next admitted StegVerse G18 opportunity, then observe independent WorkerCoordinator checkpoint
 
 - task_id: RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28
-  owner: ecosystem-chat-orphan-recovery-worker
+  execution_owner: ecosystem-chat-orphan-recovery-worker
   claim_state: MACHINE_OWNED
+  worker_registry_ref: control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json
   manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: orphan reconstruction and parent re-acquisition sequencing
   release_condition: recovery receipt COMPLETE and parent eligible for fresh fence >20
+  next_executable_action: execute recovery after carrier/worker predicates permit it
 
 - task_id: ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION
-  owner: heartbeat-managed sovereign inference worker -> TVC -> LLM-adapter -> Master Records
+  execution_owner: heartbeat-managed sovereign inference worker -> TVC -> LLM-adapter -> Master Records
   claim_state: MACHINE_OWNED
+  worker_registry_ref: StegVerse-Labs/.github#60
   manual_execution_allowed: false
-  release_condition: immutable same-execution local-model activation evidence
+  manual_allowed_role: observation
+  collision_scope: private model launch/use, TVC admission, exact adapter execution, usage and reconstruction receipts
+  release_condition: immutable same-execution local-model activation evidence under fresh fence >20
+  next_executable_action: execute canonical local-model chain after carrier/recovery predicates are satisfied
 ```
 
-### CURRENT SESSION DISTINCT SUPPORT CLAIM
+### ESCALATED / AUTHORITY-OWNED
 
 ```yaml
-- task_id: POST-PR206-AUTHORITY-RECONCILIATION
-  owner: issue #207
-  role: CLAIMED_FOR_INTEGRATION
-  surfaces: docs/ORG_MIRROR_HANDOFF.md + issue #59 + issue #60 + issue #65
-  collision_scope: prose/control reconciliation only; no runtime state, claim/fence/lease, provider, wallet, or receipt mutation
-  release_condition: all scoped authority surfaces agree with merged PR #206 and issue #207 is closed with evidence
+- task_id: SHWP-DURABLE-RUNTIME-ACTIVATION-CONSTRAINT-RESOLUTION
+  execution_owner: canonical StegVerse resolution authority chain
+  claim_state: ESCALATED_IF_G18_CANNOT_RESOLVE
+  worker_registry_ref: docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md + control/worker-registry.json
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  collision_scope: exact capability/authority constraint emitted by G18
+  release_condition: current executor resolves the condition or derives/registers the next authorized resolution task
+  next_executable_action: derive/register exact successor resolution task only if bounded v12 transition cannot execute within current authority
+
+- task_id: TV-TVC-CREDENTIAL-AND-ROUTE-AUTHORITY
+  execution_owner: StegVerse-Labs/TV + StegVerse-Labs/TVC
+  claim_state: AUTHORITY_OWNED
+  worker_registry_ref: TV/TVC current handoffs and route task records
+  manual_execution_allowed: false
+  manual_allowed_role: integration
+  collision_scope: credential semantics, provider route admission, secret custody
+  release_condition: TV/TVC emits the applicable admitted route/credential result
+  next_executable_action: execute currently admitted TV/TVC authority path when downstream worker requests it
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: SOVEREIGN-LOCAL-MODEL-SOURCE
+  execution_owner: StegVerse-002/micro-node-runtime
+  claim_state: COMPLETE_RELEASED
+  worker_registry_ref: StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  release_condition: already satisfied
+  next_executable_action: none; continuation transferred to v12 live activation and inference workers
+
+- task_id: LEGACY_RESIDENT_DAEMON_CONTINUITY_PREREQUISITE
+  execution_owner: SUPERSEDED_BY_PR_206
+  claim_state: SUPERSEDED
+  worker_registry_ref: NONE
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  release_condition: PR #206 merged
+  next_executable_action: none
 ```
 
 ## Validation evidence
@@ -241,11 +262,7 @@ python tools/validate_active_worker_states.py
 
 ## Session goal inventory and consolidation
 
-Canonical session inventory:
-
-```text
-control/session-goal-inventory-2026-08-16-tt-local-runtime-trade-convergence.json
-```
+Canonical session inventory: `control/session-goal-inventory-2026-08-16-tt-local-runtime-trade-convergence.json`.
 
 Transferred/completed goals:
 
@@ -263,7 +280,7 @@ No session goal may be considered product-activated until its runtime/settlement
 
 ```text
 thread_archive_ready: false
-reason: issue #207 is the current distinct support claim and must be closed after this handoff/issue reconciliation is validated
+reason: issue #207 is the current distinct support claim and must be closed after reconciliation validation
 product_activation: ACTIVE_MACHINE_WORK / INCOMPLETE
 live_hb30_transition_observed: false
 worker_checkpoint_observed: false
@@ -276,8 +293,8 @@ After issue #207 closes with validation evidence, this session may be classified
 
 ```text
 developed_files: 1/1 for ORG_MIRROR_HANDOFF reconciliation
-validation: 0/2 post-reconciliation organization checks until new runs complete
-integration: 3/4 scoped surfaces reconciled before this commit; 4/4 after this file update
+validation: pending post-reconciliation organization checks
+integration: 4/4 scoped surfaces reconciled
 session_consolidation: 7/7 goals durably transferred or assigned
 current goal activation: pending HB30+ runtime evidence; do not infer activation from this handoff update
 ```
