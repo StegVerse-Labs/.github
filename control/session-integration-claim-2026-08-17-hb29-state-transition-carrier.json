@@ -5,9 +5,10 @@
   "repository": "StegVerse-Labs/.github",
   "branch": "fix/hb29-state-transition-carrier-reconcile",
   "claimant": "current-session-heartbeat-contract-reconciliation-lane",
-  "role": "CLAIMED_FOR_INTEGRATION",
+  "role": "COMPLETE_RELEASED",
   "claim_created_at": "2026-08-17T01:43:00-05:00",
-  "claim_expiration_or_release_condition": "Release when canonical handoff/bootstrap/constraint semantics no longer require an additional or continuously resident external host, v12 source eligibility is internally consistent, the bounded state-transition producer is installed, and final-head deterministic validation is green or the claim is explicitly superseded.",
+  "released_at": "2026-08-17T02:04:00-05:00",
+  "claim_expiration_or_release_condition": "SATISFIED: canonical G18 handoff, bootstrap, constraint, worker, and validation semantics no longer require an additional or continuously resident external host for heartbeat continuity; v12 source eligibility is internally consistent; the bounded state-transition producer is installed and merged; final-head validation is green.",
   "owned_surfaces": [
     "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
     "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
@@ -49,16 +50,26 @@
     "resident_supervision": "OPTIONAL_STRONGER_EVIDENCE_NOT_CONTINUITY_PREREQUISITE",
     "bootstrap_runtime": "separated v12 carrier + WorkerCoordinator sources"
   },
-  "expected_evidence": [
-    "canonical G18 handoff distinguishes state-transition continuity from optional resident supervision",
-    "no extra machine or always-on external host is a release prerequisite",
-    "bootstrap local eligibility requires canonical v12 carrier and separate WorkerCoordinator sources",
-    "legacy HB29 remains immutable and the first valid successor is HB30 or later",
-    "bounded transition producer forwards no GitHub token or NON-TV/TVC secret/token",
-    "TV/TVC remains sole credential authority"
-  ],
-  "pull_request": 206,
-  "validation_state": "FINAL_HEAD_VALIDATION_IN_PROGRESS",
-  "next_task_after_release": "G18 machine owner consumes the reconciled contract on the next admitted StegVerse execution opportunity associated with the permitted carrier/control plane and emits HB30+; the independent WorkerCoordinator then observes that successor on its current or next tick.",
-  "state": "CLAIMED_FOR_INTEGRATION"
+  "release_evidence": {
+    "pull_request": 206,
+    "final_head": "c011940c07e9b8f43b455ba1c7cda9bd3fcf7af7",
+    "merge_commit": "b7c5b5e9199c5af46029210fe7909dcf19033b41",
+    "sovereign_runtime_worker_run": 32004079913,
+    "sovereign_runtime_worker_result": "SUCCESS",
+    "organization_handoff_run": 32004079897,
+    "organization_handoff_result": "SUCCESS",
+    "sovereign_ephemeral_console_run": 32004079895,
+    "sovereign_ephemeral_console_result": "SUCCESS",
+    "sovereign_self_bootstrap_run": 32004079898,
+    "sovereign_self_bootstrap_result": "SUCCESS",
+    "heartbeat_worker_project_run": 32004079907,
+    "heartbeat_worker_project_result": "SUCCESS",
+    "organization_control_plane_run": 32004079896,
+    "organization_control_plane_result": "SUCCESS",
+    "live_hb30_claimed": false,
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_used": false
+  },
+  "next_task_after_release": "G18 machine owner consumes the merged bounded state-transition producer on the next admitted StegVerse execution opportunity associated with the permitted carrier/control plane and emits HB30+; the independent WorkerCoordinator then observes that successor on its current or next tick.",
+  "state": "COMPLETE_RELEASED"
 }
