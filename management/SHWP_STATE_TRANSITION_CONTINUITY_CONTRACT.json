@@ -1,0 +1,58 @@
+{
+  "schema": "stegverse.heartbeat-state-transition-continuity/v1",
+  "contract_id": "SHWP-HB29-TO-HB30-STATE-TRANSITION-CONTINUITY-001",
+  "goal_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
+  "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "canonical_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
+  "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+  "legacy_source": "control/heartbeat-state.json",
+  "legacy_epoch": 29,
+  "legacy_source_immutable": true,
+  "first_successor_epoch": 30,
+  "carrier_state": "control/heartbeat-carrier-runtime-state.json",
+  "worker_runtime_state": "control/worker-runtime-state.json",
+  "worker_control_plane": "control/worker-control-plane-coordination.json",
+  "transition_producer": "scripts/advance_heartbeat_transition.py",
+  "continuity_model": "STATE_TRANSITION_CONTINUITY",
+  "physical_carrier_policy_ref": "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+  "sole_permitted_user_physical_carrier": "CURRENT_USER_IPHONE",
+  "transition_compute_grants_physical_carrier_identity": false,
+  "another_physical_machine_required": false,
+  "always_on_external_host_required": false,
+  "wall_clock_continuous_process_required": false,
+  "resident_native_supervision_optional": true,
+  "resident_native_supervision_is_completion_prerequisite": false,
+  "completion_predicates": [
+    "legacy_hb29_unchanged",
+    "carrier_epoch_at_least_30",
+    "carrier_generation_non_regressing",
+    "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch",
+    "worker_control_plane_observed",
+    "no_duplicate_claim_or_fence",
+    "state_reconstruction_pass"
+  ],
+  "execution_semantics": {
+    "trigger": "next admitted StegVerse worker/control-plane execution opportunity",
+    "carrier_transition": "one bounded v12 carrier cycle derives the valid successor from retained HB29 or the latest v12 carrier state",
+    "worker_transition": "the independently admitted WorkerCoordinator observes the new carrier state on its current or next tick",
+    "persistence": "state is retained between execution opportunities; wall-clock process residency is not continuity authority",
+    "authority_effect": "NONE_FROM_CARRIER_TRANSITION"
+  },
+  "credential_boundary": {
+    "credential_authority": "TV/TVC",
+    "credential_requirement": "NONE",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false
+  },
+  "prohibited_substitutions": [
+    "Render production runtime",
+    "GitHub Actions production runtime",
+    "Vercel production runtime",
+    "Cloudflare hosted runtime",
+    "additional physical machine requirement",
+    "always-on external host requirement",
+    "manual rewriting of control/heartbeat-state.json to HB30"
+  ],
+  "release_condition": "A bounded v12 transition produces HB30 or later from immutable HB29, then an independently admitted WorkerCoordinator checkpoint observes that carrier state and the state-transition completion predicates pass without duplicate claim/fence or non-TV/TVC credential authority.",
+  "authority_effect": "NONE"
+}
