@@ -1,6 +1,6 @@
 # StegVerse-Labs Organization Mirror Handoff
 
-Updated: 2026-08-17 14:02 -05:00
+Updated: 2026-08-17 14:06 -05:00
 Repository: `StegVerse-Labs/.github`
 Branch: `main`
 
@@ -15,7 +15,7 @@ Canonical session inventory surfaces:
 
 The addendum is cumulative with the base inventory and does not replace historical evidence.
 
-## Active organization goal and ownership
+## Active goal and ownership
 
 ```text
 goal_id: ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION
@@ -35,7 +35,7 @@ Render_production_authority: NONE
 
 Archival of a chat does not assert product activation. Product continuation remains owned by the physical-carrier boundary and canonical machine workers below.
 
-## Canonical heartbeat architecture
+## Canonical architecture
 
 Heartbeat continuity is state-transition continuity, not a requirement for an always-on third-party process host.
 
@@ -72,7 +72,22 @@ control/heartbeat-carrier-runtime-state.json: NOT YET PRESENT / HB30 NOT YET OBS
 
 Do not fabricate HB30 by mutating legacy HB29 or by treating hosted CI/source merge as production activation.
 
-## Durable runtime activation — PHYSICAL + MACHINE OWNED / DO NOT COMPETE
+## Completed protocol capabilities
+
+```text
+SOVEREIGN-LOCAL-MODEL-SOURCE: COMPLETE_RELEASED
+SHWP-IPHONE-HB30-TRANSITION-CAPSULE source contract/verifier: COMPLETE_RELEASED
+StegVerse-Labs/Site heartbeat-transition browser source: COMPLETE_RELEASED
+SHWP-IPHONE-HB30-INLINE-CAPSULE-002 source: COMPLETE_RELEASED
+POST-PR206-AUTHORITY-RECONCILIATION: COMPLETE_RELEASED
+STEGFIN wallet-handoff preparation: COMPLETE_ACTIVATED_AT_PRE_SIGN_BOUNDARY
+legacy resident-daemon prerequisite: SUPERSEDED_BY_PR_206
+GitHub-token runtime authority: PROHIBITED / SUPERSEDED
+```
+
+Source completeness does not claim physical HB30, WorkerCoordinator observation, sovereign inference activation, wallet signing, broadcast, or settlement.
+
+## Physical-resource execution boundary — durable runtime activation
 
 Canonical owners:
 
@@ -183,7 +198,7 @@ wallet signing/broadcast authority: USER_ONLY
 
 No session may introduce a GitHub token, provider secret, Render credential, or other non-TV/TVC secret/token as a workaround.
 
-## Cross-repository continuation
+## Cross-repository dependencies / propagation
 
 ```text
 CURRENT_USER_IPHONE browser capsule
@@ -232,7 +247,7 @@ session goals transferred or complete: 10/10
 unique chat-only requirements remaining: 0
 active session claims remaining: 0
 session role: MERGED_INTO_CANONICAL_WORKSTREAMS
-thread archive ready: true
+thread_archive_ready: true
 product sovereign runtime activation: incomplete / physical + machine owned
 StegFin pre-sign trade-ready activation: complete
 ```
