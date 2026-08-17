@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "TVC-REPOSITORY-BROKER-VALIDATION-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:tvc-repository-broker-validation-v1",
+      "authority_ref": "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json#authority",
+      "capabilities": ["tvc_repository_broker_validation"],
+      "command": ["python", "workers/tvc_repository_broker_validation_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_TVC_ROOT"],
+      "notes": [
+        "Validation-only worker for the existing TVC repository-operation broker.",
+        "Never fetches private source or receives a GitHub/provider/wallet credential.",
+        "Executes only the existing TVC repository-native validation dispatcher on an exact clean local source root.",
+        "Writes only receipts/tvc-repository-broker-validation/** and grants no merge or transport authority."
+      ],
+      "timeout_seconds": 240,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
