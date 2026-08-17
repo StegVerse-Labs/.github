@@ -1,0 +1,41 @@
+{
+  "schema": "stegverse.session-integration-claim/v1",
+  "task_id": "SHWP-V12-HANDOFF-CONTRACT-RECONCILIATION-001",
+  "originating_goal": "Priority number one: fix the heartbeat by reconciling the canonical durable runtime handoff with the released v12 separated carrier and worker runtime.",
+  "organization": "StegVerse-Labs",
+  "repository": ".github",
+  "branch": "fix/heartbeat-v12-handoff-contract",
+  "claimant": "current-session-heartbeat-v12-contract-integration-lane",
+  "role": "CLAIMED_FOR_INTEGRATION",
+  "claim_created_at": "2026-08-16T21:07:00-05:00",
+  "claim_expiration_or_release_condition": "Release immediately after the handoff contract is reconciled to v12, regression validation passes, and the change is merged or superseded.",
+  "owned_surfaces": [
+    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json contract metadata only",
+    "tests/test_sovereign_runtime_handoff_v12_contract.py",
+    ".github/workflows/activate-sovereign-runtime-worker.yml validation assertions only",
+    "this claim record"
+  ],
+  "collision_boundaries": [
+    "do not acquire, alter, release, or replace G18 claim/fence/lease",
+    "do not mutate live heartbeat carrier state, worker runtime state, node-local activation proof, or runtime receipts",
+    "do not change runtime execution code already owned by G18",
+    "do not change TV/TVC credential or route authority",
+    "do not use GitHub tokens or NON-TV/TVC secrets/tokens as production authority",
+    "do not create a second heartbeat"
+  ],
+  "observed_contract_drift": [
+    "handoff source_refs still names heartbeat_runtime/engine_v11.py while installer canonical runtime is heartbeat_runtime.engine_v12.HeartbeatRuntime",
+    "eligible declaration text still names canonical engine_v11",
+    "completion language does not explicitly preserve legacy control/heartbeat-state.json as immutable HB29 after v12 cutover",
+    "handoff does not explicitly require separate WorkerCoordinator liveness even though current verifier does"
+  ],
+  "expected_evidence": [
+    "handoff names engine_v12 carrier and WorkerCoordinator",
+    "handoff states legacy HB29 is immutable and new carrier state advances in control/heartbeat-carrier-runtime-state.json",
+    "handoff binds PR #203 and #204 source repairs",
+    "regression test rejects v11 or legacy-HB mutation semantics",
+    "hosted validation remains non-authorizing/no-token"
+  ],
+  "next_task_after_release": "G18 consumes the reconciled v12 contract and current main on an eligible StegVerse-controlled surface and emits the nine-predicate proof.",
+  "state": "CLAIMED_FOR_INTEGRATION"
+}

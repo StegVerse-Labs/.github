@@ -10,6 +10,7 @@ on:
       - 'workers/sovereign_runtime_activation_worker.py'
       - 'scripts/bootstrap_sovereign_runtime.py'
       - 'tests/test_g18_self_bootstrap_worker.py'
+      - 'tests/test_sovereign_runtime_handoff_v12_contract.py'
       - 'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json'
       - 'authorizations/SHWP-DURABLE-RUNTIME-ACTIVATION-policy-rebind-v0.4.json'
       - 'cost-basis/worker-runtime/sovereign-runtime-activation.json'
@@ -24,6 +25,7 @@ on:
       - 'workers/sovereign_runtime_activation_worker.py'
       - 'scripts/bootstrap_sovereign_runtime.py'
       - 'tests/test_g18_self_bootstrap_worker.py'
+      - 'tests/test_sovereign_runtime_handoff_v12_contract.py'
       - 'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json'
       - 'authorizations/SHWP-DURABLE-RUNTIME-ACTIVATION-policy-rebind-v0.4.json'
       - 'cost-basis/worker-runtime/sovereign-runtime-activation.json'
@@ -47,6 +49,7 @@ jobs:
           set -euo pipefail
           test -z "${GITHUB_TOKEN:-}"
           test -z "${GH_TOKEN:-}"
+          git config --global --unset-all http.https://github.com/.extraheader || true
           git init .
           git remote add origin https://github.com/StegVerse-Labs/.github.git
           if [ -n "${PR_NUMBER:-}" ]; then
@@ -56,10 +59,10 @@ jobs:
           fi
           git checkout --detach FETCH_HEAD
 
-      - name: Validate sovereign runtime worker surfaces
+      - name: Validate sovereign runtime worker and v12 handoff surfaces
         run: |
           set -euo pipefail
-          python3 -m py_compile workers/sovereign_runtime_activation_worker.py scripts/bootstrap_sovereign_runtime.py heartbeat_runtime/*.py scripts/verify_sovereign_runtime_activation.py tools/validate_active_worker_states.py
+          python3 -m py_compile workers/sovereign_runtime_activation_worker.py scripts/bootstrap_sovereign_runtime.py heartbeat_runtime/*.py scripts/verify_sovereign_runtime_activation.py tools/validate_active_worker_states.py tests/test_sovereign_runtime_handoff_v12_contract.py
           python3 - <<'PY'
           import json
           from pathlib import Path
@@ -73,11 +76,17 @@ jobs:
           assert h['task']['fencing_token']==18
           assert h['constraint']['operational_state']=='ACTIVE_SOLUTION_EXECUTION'
           assert h['constraint']['third_party_dependency'] is False
-          assert h['constraint']['next_solution_action']=='EXECUTE_SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_AND_OBSERVE_NINE_PREDICATE_PROOF'
+          assert h['constraint']['next_solution_action']=='EXECUTE_CURRENT_V12_SELF_BOOTSTRAP_AND_OBSERVE_SEPARATED_RUNTIME_NINE_PREDICATE_PROOF'
+          assert h['execution']['canonical_carrier_runtime']=='heartbeat_runtime.engine_v12.HeartbeatRuntime'
+          assert h['execution']['worker_runtime']=='heartbeat_runtime.worker_runtime.WorkerCoordinator'
+          assert h['execution']['legacy_state_epoch']==29
+          assert h['execution']['legacy_state_mutable_after_cutover'] is False
+          assert h['execution']['carrier_state_ref']=='control/heartbeat-carrier-runtime-state.json'
           assert h['execution']['pre_heartbeat_bootstrap']=='scripts/bootstrap_sovereign_runtime.py'
           assert 'bounded_repository_mutation' in h['execution']['required_capabilities']
           assert h['authority']['credential_authority']=='TV/TVC'
           assert h['authority']['github_token_production_authority']=='NONE'
+          assert h['authority']['non_tv_tvc_secret_or_token_allowed'] is False
           assert p['github_token_production_authority']=='NONE'
           assert rb['status']=='ADMITTED'
           assert rb['heartbeat_grants_rebind'] is False
@@ -88,9 +97,10 @@ jobs:
           assert rb['authority_source']==h['authority']['authority_source']
           assert rb['credential_authority']=='TV/TVC'
           assert rb['github_token_production_authority']=='NONE'
-          print('SOVEREIGN_RUNTIME_WORKER_SURFACES_PASS')
+          print('SOVEREIGN_RUNTIME_V12_HANDOFF_SURFACES_PASS')
           PY
-          python3 -m unittest -v tests.test_g18_self_bootstrap_worker tests.test_sovereign_runtime_activation_escalation
+          python3 scripts/validate_executable_handoffs.py
+          python3 -m unittest -v tests.test_g18_self_bootstrap_worker tests.test_sovereign_runtime_activation_escalation tests.test_sovereign_runtime_handoff_v12_contract
 
       - name: Prove hosted runner is not sovereign activation authority
         run: |
