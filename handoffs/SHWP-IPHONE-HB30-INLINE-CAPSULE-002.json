@@ -1,0 +1,78 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "SHWP-IPHONE-HB30-INLINE-CAPSULE-002",
+  "updated_at": "2026-08-17T13:35:00-05:00",
+  "state": "SOURCE_IMPLEMENTATION_IN_PROGRESS",
+  "originating_session_goal": "Activate the sovereign heartbeat/local-model path without Render or any NON-TV/TVC secret/token and remove remaining descriptive/manual runtime-selection deadlocks.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "feat/iphone-hb30-inline-capsule-209",
+  "canonical_issue": "StegVerse-Labs/.github#209",
+  "parent_task": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18",
+  "canonical_parent_handoff": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+  "canonical_task_owner": "G18 sovereign-runtime-activation-worker",
+  "implementation_claim": "control/session-integration-claim-2026-08-17-iphone-hb30-inline-capsule.json",
+  "role": "DISTINCT_INTEGRATION_SUPPORT",
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "credential_requirement": "NONE",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "render_production_authority": "NONE",
+    "heartbeat_authority_effect": "NONE",
+    "worker_authority_effect": "NONE",
+    "wallet_authority_effect": "NONE"
+  },
+  "problem": "The exact Site browser capsule source is merged, but its new public route is not yet proven published. HB30 physical initiation must not depend on a GitHub Pages deployment token, hosted provider runtime, another physical machine, or an always-on host.",
+  "implemented_solution": {
+    "capsule": "capsules/iphone-hb30-inline-capsule.js",
+    "validator": "scripts/check_iphone_hb30_inline_capsule.py",
+    "tests": "tests/test_iphone_hb30_inline_capsule.py",
+    "contract": "management/SHWP_IPHONE_TRANSITION_CAPSULE_CONTRACT.json",
+    "execution_context": "existing https://stegverse.org Safari page on CURRENT_USER_IPHONE",
+    "transport": "STEGVERSE_INLINE_SAFARI_CAPSULE",
+    "new_publication_required": false,
+    "receipt_schema": "stegverse.iphone-heartbeat-transition-receipt/v1",
+    "receipt_compatibility": "same canonical verifier/materializer as the published Site capsule"
+  },
+  "completion_boundary": {
+    "source_complete_when": [
+      "capsule/validator/tests/contract are merged",
+      "exact-head source validation passes",
+      "integration claim is released"
+    ],
+    "physical_complete_when": [
+      "CURRENT_USER_IPHONE executes the exact released capsule in an existing stegverse.org secure Safari context",
+      "portable receipt is retained"
+    ],
+    "canonical_activation_complete_when": [
+      ".github verifier/materializer independently validates receipt and materializes HB30 without changing HB29",
+      "WorkerCoordinator independently observes HB30+",
+      "reconstruction PASS and no duplicate claim/fence"
+    ]
+  },
+  "machine_owned_tasks": [
+    "G18 canonical HB30 materialization after physical receipt",
+    "WorkerCoordinator independent HB30+ observation",
+    ".github#60 sovereign same-execution inference after carrier release"
+  ],
+  "human_authority_boundary": "CURRENT_USER_IPHONE must perform the physical Safari execution; this cannot be truthfully replaced by hosted CI or repository mutation.",
+  "validation_commands": [
+    "python3 scripts/check_iphone_hb30_inline_capsule.py",
+    "python3 -m pytest -q tests/test_iphone_hb30_inline_capsule.py"
+  ],
+  "integration_and_propagation": [
+    "Merge into StegVerse-Labs/.github main",
+    "Record source release on .github#209",
+    "Do not claim Site publication, HB30, WorkerCoordinator observation, inference activation, or wallet execution from source merge"
+  ],
+  "session_consolidation": {
+    "merged_into": "StegVerse-Labs/.github#209 -> SHWP-DURABLE-RUNTIME-ACTIVATION/G18 -> .github#60",
+    "archive_condition": "This support lane releases after source merge and transfer; the chat need not remain open merely to observe machine-owned G18/inference continuation once all unique source work is durably transferred."
+  },
+  "progress": {
+    "developed_files": "4/6",
+    "validation": "0/2",
+    "integration": "0/1",
+    "goal_activation": "source in progress; physical HB30 not claimed"
+  }
+}
