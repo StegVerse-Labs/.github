@@ -15,6 +15,13 @@
   "transition_receipt_ref": "receipts/heartbeat-transition-continuity/latest.json",
   "physical_execution_surface": "CURRENT_USER_IPHONE",
   "physical_execution_transport": "STEGVERSE_BROWSER_CAPSULE",
+  "physical_execution_transports": [
+    "STEGVERSE_PUBLISHED_BROWSER_CAPSULE",
+    "STEGVERSE_INLINE_SAFARI_CAPSULE"
+  ],
+  "inline_capsule_ref": "capsules/iphone-hb30-inline-capsule.js",
+  "inline_capsule_execution_context": "EXISTING_HTTPS_STEGVERSE_ORG_SAFARI_PAGE",
+  "inline_capsule_requires_new_publication": false,
   "transition_compute_grants_physical_carrier_identity": false,
   "authority_effect": "NONE",
   "credential_authority": "TV/TVC",
@@ -34,7 +41,8 @@
     "credential_authority_effect": false,
     "wallet_authority": false,
     "model_output_authority": false,
-    "required_receipt_schema": "stegverse.iphone-heartbeat-transition-receipt/v1"
+    "required_receipt_schema": "stegverse.iphone-heartbeat-transition-receipt/v1",
+    "published_and_inline_capsules_must_emit_same_receipt_contract": true
   },
   "materialization_semantics": {
     "independent_verifier_required": true,
@@ -45,12 +53,13 @@
     "materializer_must_not_modify_worker_claims_or_fences": true,
     "worker_observation_still_required_after_materialization": true
   },
-  "completion_condition": "A physical CURRENT_USER_IPHONE executes the exact published capsule, emits a valid portable receipt bound to the immutable HB29 blob, the independent canonical verifier/materializer accepts that receipt and materializes HB30 without changing HB29, and WorkerCoordinator independently observes HB30+ with reconstruction PASS and no duplicate claim/fence.",
+  "completion_condition": "A physical CURRENT_USER_IPHONE executes either the exact published browser capsule or the exact released inline Safari capsule in an existing https://stegverse.org secure page context, emits a valid portable receipt bound to immutable HB29, the independent canonical verifier/materializer accepts that receipt and materializes HB30 without changing HB29, and WorkerCoordinator independently observes HB30+ with reconstruction PASS and no duplicate claim/fence.",
   "prohibited_substitutions": [
     "GitHub Actions as production transition executor",
     "Render production runtime",
     "Vercel production runtime",
     "Cloudflare hosted runtime",
+    "GitHub Pages deployment credential as transition authority",
     "second non-StegVerse physical machine",
     "GitHub token as runtime credential",
     "NON-TV/TVC secret or token",

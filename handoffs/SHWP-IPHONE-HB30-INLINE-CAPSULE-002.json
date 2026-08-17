@@ -1,0 +1,109 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "SHWP-IPHONE-HB30-INLINE-CAPSULE-002",
+  "created_at": "2026-08-17T13:35:00-05:00",
+  "updated_at": "2026-08-17T13:42:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "SHWP-IPHONE-HB30-INLINE-CAPSULE-002",
+    "objective": "Provide a publication-independent, non-authorizing CURRENT_USER_IPHONE Safari execution path for the exact HB29->HB30 portable receipt so physical initiation does not depend on GitHub Pages, Render, another machine, an always-on host, or any NON-TV/TVC secret/token.",
+    "success_predicates": [
+      "The released inline capsule executes only in an existing https://stegverse.org secure Safari context on an iPhone",
+      "The inline capsule emits the same canonical portable HB29->HB30 receipt contract as the published Site capsule",
+      "The inline capsule performs no automatic network, provider, wallet, route, claim, fence, or worker action",
+      "Credential authority remains TV/TVC with credential requirement NONE and GitHub-token runtime authority NONE",
+      "Source validation passes and continuation returns to .github#209/G18 for physical receipt materialization and independent WorkerCoordinator observation"
+    ],
+    "failure_predicates": [
+      "A hosted deployment credential or provider runtime becomes required for physical initiation",
+      "A NON-TV/TVC secret or token is introduced",
+      "The inline capsule mutates heartbeat state, worker state, claim/fence state, route authority, wallet authority, or model-output authority",
+      "Source merge is represented as HB30 activation"
+    ],
+    "expires_at": null,
+    "authority_ceiling": [
+      "source-only inline browser capsule integration",
+      "portable receipt generation on CURRENT_USER_IPHONE",
+      "no heartbeat materialization authority",
+      "no WorkerCoordinator authority",
+      "no route/provider/wallet authority",
+      "no NON-TV/TVC credential authority"
+    ],
+    "successor_policy": "SEPARATE_AUTHORIZATION_REQUIRED_FOR_EXPANSION",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SHWP-IPHONE-HB30-INLINE-CAPSULE-002",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-Labs/.github#209",
+      "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+      "management/SHWP_IPHONE_TRANSITION_CAPSULE_CONTRACT.json",
+      "capsules/iphone-hb30-inline-capsule.js",
+      "scripts/check_iphone_hb30_inline_capsule.py",
+      "tests/test_iphone_hb30_inline_capsule.py",
+      "control/session-integration-claim-2026-08-17-iphone-hb30-inline-capsule.json",
+      "StegVerse-Labs/Site#358",
+      "StegVerse-Labs/Site#368"
+    ],
+    "dependencies": [],
+    "parent_task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+    "derivation_reason": "The published Site capsule source is released, but physical initiation must not depend on a hosted publication credential. The inline capsule preserves the same verifier contract while removing that transport dependency.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#209",
+    "canonical_lineage_key": "shwp:durable-runtime-activation:iphone-inline-capsule",
+    "derivation_depth": 1,
+    "priority": "release"
+  },
+  "authority": {
+    "authority_source": "management/SHWP_IPHONE_TRANSITION_CAPSULE_CONTRACT.json + handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "shwp-iphone-inline-capsule-v0.1",
+    "credential_authority": "TV/TVC",
+    "credential_requirement": "NONE",
+    "github_token_production_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false
+  },
+  "execution": {
+    "required_capabilities": ["browser_local_execution", "webcrypto_sha256", "local_receipt_persistence"],
+    "allowed_paths": ["capsules/iphone-hb30-inline-capsule.js", "receipts/heartbeat-transition-continuity/**"],
+    "allowed_services": [],
+    "max_actions": 4,
+    "max_retries": 1,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 1,
+    "rate_class": "iphone_inline_transition_capsule"
+  },
+  "activation": {
+    "carrier": "CURRENT_USER_IPHONE",
+    "executor_binding": "HUMAN_PHYSICAL_EXECUTION_BOUNDARY",
+    "authorization_ref": "management/SHWP_IPHONE_TRANSITION_CAPSULE_CONTRACT.json",
+    "recheck_trigger": "execute only while immutable HB29 remains canonical and no HB30+ carrier state already exists",
+    "checkout_policy": "no_claim_or_fence_mutation"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/heartbeat-transition-continuity/latest.json",
+    "handoff_destination": "StegVerse-Labs/.github#209 / SHWP-DURABLE-RUNTIME-ACTIVATION/G18",
+    "master_records_required": false,
+    "status_projection": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+  },
+  "completion": {
+    "next_authorized_action": "After source release, CURRENT_USER_IPHONE executes the exact inline capsule in an existing https://stegverse.org secure Safari page context, retains the returned portable receipt, and transfers that receipt to the existing .github#209 verifier/materializer. G18 and WorkerCoordinator remain the only canonical continuation owners for HB30 materialization and observation.",
+    "terminal_when": [
+      "inline_capsule_source_merged=true",
+      "inline_capsule_validation_pass=true",
+      "integration_claim_released=true",
+      "github_token_runtime_authority=NONE",
+      "non_tv_tvc_secret_or_token_used=false"
+    ]
+  },
+  "constraint": {
+    "operational_state": "ACTIVE_INTEGRATION",
+    "condition": "PHYSICAL_RECEIPT_NOT_YET_OBSERVED",
+    "owner": "StegVerse-Labs/.github#209 / G18 after source release",
+    "solution_required": true,
+    "machine_observable_release_condition": "A valid CURRENT_USER_IPHONE portable receipt passes scripts/verify_iphone_heartbeat_transition_receipt.py and HB30 is materialized without modifying legacy HB29; WorkerCoordinator then observes HB30+",
+    "next_solution_action": "Complete and merge this source lane, then return execution to the physical iPhone and canonical G18 verifier/materializer path",
+    "third_party_dependency": false,
+    "human_action_required": true
+  }
+}
