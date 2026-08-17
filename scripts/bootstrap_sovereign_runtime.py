@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-"""Bootstrap the canonical StegVerse sovereign heartbeat from local source.
+"""Bootstrap optional resident supervision for the canonical v12 heartbeat.
 
-This entry point exists before the resident heartbeat. It proves local eligibility,
-derives a non-authorizing sovereign-node declaration, invokes the existing native
-materializer/service installer, then immediately invokes the canonical nine-
-predicate activation verifier.
+This entry point exists before a resident service.  Heartbeat continuity itself is
+state-transition continuity and is produced by ``advance_heartbeat_transition.py``;
+this bootstrap is the optional stronger resident-supervision path.  It proves local
+eligibility, derives a non-authorizing sovereign-node declaration, invokes the native
+materializer/service installer, then invokes the resident nine-predicate verifier.
 
-After canonical sovereign activation is proven, the same bounded machine execution
-also attempts the already-released post-bootstrap StegFin integration bridge. That
-bridge may activate only the rootless StegFin executor service; it cannot acquire the
-trade claim, contact a provider or wallet, sign, broadcast, settle, or claim
+After resident activation is proven, the same bounded machine execution may also
+attempt the already-released post-bootstrap StegFin integration bridge.  That bridge
+may activate only the rootless StegFin executor service; it cannot acquire the trade
+claim, contact a provider or wallet, sign, broadcast, settle, or claim
 WALLET_HANDOFF_READY.
 
 It never treats GitHub Actions, Render, Vercel, Cloudflare, provider credentials,
@@ -44,12 +45,16 @@ CREDENTIAL_ENV_VARS = (
     "TVC_TOKEN",
 )
 REQUIRED_SOURCE_FILES = (
-    Path("heartbeat_runtime/engine_v11.py"),
+    Path("heartbeat_runtime/engine_v12.py"),
+    Path("heartbeat_runtime/worker_runtime.py"),
+    Path("heartbeat_runtime/assignment_timer.py"),
     Path("scripts/install_sovereign_heartbeat_service.py"),
     Path("scripts/verify_sovereign_runtime_activation.py"),
     Path("scripts/run_heartbeat_runtime.py"),
+    Path("scripts/run_worker_runtime.py"),
     Path("control/heartbeat-state.json"),
     Path("control/worker-registry.json"),
+    Path("management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json"),
 )
 REQUIRED_PREDICATES = (
     "runtime_materialized",
@@ -136,6 +141,11 @@ def local_eligibility(source_root: Path, runtime_root: Path, env: dict[str, str]
         "durable_state_writable": durable_state_writable,
         "hosted_environment_rejected": hosted,
         "eligible": source_complete and durable_state_writable and not hosted,
+        "continuity_model": "STATE_TRANSITION_CONTINUITY",
+        "state_transition_contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
+        "always_on_external_host_required": False,
+        "wall_clock_continuous_process_required": False,
+        "resident_native_supervision_optional": True,
         "credential_requirement": "NONE",
         "credential_authority": "TV/TVC",
         "github_token_required": False,
@@ -180,6 +190,8 @@ def derive_node_declaration(
         "canonical_runtime_complete": True,
         "durable_state_writable": True,
         "hosted_environment_rejected": False,
+        "continuity_model": "STATE_TRANSITION_CONTINUITY",
+        "always_on_external_host_required": False,
         "credential_requirement": "NONE",
         "credential_authority": "TV/TVC",
         "github_token_required": False,
@@ -290,17 +302,22 @@ def bootstrap(
 
     declared, declaration_ref, eligibility = derive_node_declaration(source_root, runtime_root, node_marker, env)
     body: dict[str, Any] = {
-        "schema": "stegverse.sovereign-runtime-self-bootstrap-receipt/v1",
+        "schema": "stegverse.sovereign-runtime-self-bootstrap-receipt/v1.1",
         "task_id": "SHWP-SOVEREIGN-RUNTIME-SELF-BOOTSTRAP-001",
         "source_root": str(source_root),
         "runtime_root": str(runtime_root),
         "node_declaration_ref": declaration_ref,
         "node_eligibility": eligibility,
+        "continuity_model": "STATE_TRANSITION_CONTINUITY",
+        "state_transition_contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
+        "always_on_external_host_required": False,
+        "wall_clock_continuous_process_required": False,
+        "resident_native_supervision_optional": True,
         "credential_requirement": "NONE",
         "credential_authority": "TV/TVC",
         "github_token_required": False,
         "third_party_runtime_required": False,
-        "authority_effect": "BOOTSTRAP_ORCHESTRATION_ONLY_NO_CREDENTIAL_ROUTE_OR_HEARTBEAT_AUTHORITY",
+        "authority_effect": "OPTIONAL_RESIDENT_BOOTSTRAP_ONLY_NO_CREDENTIAL_ROUTE_OR_HEARTBEAT_AUTHORITY",
         "installer_returncode": None,
         "verifier_returncode": None,
         "proof_path": str(proof_path),
@@ -341,7 +358,7 @@ def bootstrap(
     body["installer_returncode"] = install.returncode
     if install.returncode != 0:
         body["state"] = "RETRY"
-        body["reason"] = "NATIVE_INSTALLATION_RETRY_REQUIRED"
+        body["reason"] = "OPTIONAL_NATIVE_INSTALLATION_RETRY_REQUIRED"
         atomic_write(receipt_path, body)
         return body
 
@@ -355,9 +372,7 @@ def bootstrap(
 
     if verify.returncode == 0 and all_predicates_pass(proof):
         body["state"] = "COMPLETE"
-        body["reason"] = "SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_VERIFIED"
-        # The post-bootstrap bridge validates this exact persisted receipt, so
-        # establish sovereign completion before attempting downstream activation.
+        body["reason"] = "OPTIONAL_RESIDENT_SUPERVISION_VERIFIED"
         atomic_write(receipt_path, body)
         if activate_downstream:
             body["post_bootstrap_stegfin"] = _attempt_post_bootstrap_activation(
@@ -370,7 +385,7 @@ def bootstrap(
             )
     else:
         body["state"] = "REVIEW_REQUIRED"
-        body["reason"] = "SOVEREIGN_ACTIVATION_PROOF_INCOMPLETE"
+        body["reason"] = "OPTIONAL_RESIDENT_SUPERVISION_PROOF_INCOMPLETE"
 
     atomic_write(receipt_path, body)
     return body
