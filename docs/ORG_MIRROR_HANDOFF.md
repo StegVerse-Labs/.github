@@ -10,63 +10,59 @@ This is the canonical StegVerse-Labs organization continuation/exit record. Repo
 goal_id: ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION
 repository: StegVerse-Labs/.github
 canonical_branch: main
-active_runtime_owner: StegVerse-Labs/.github#59 + resident sovereign heartbeat
-active_progress_remediation_owner: StegVerse-Labs/.github#65 + resident sovereign heartbeat
-active_inference_owner: StegVerse-Labs/.github#60 + resident sovereign heartbeat
-active_constraint_resolution_runtime: heartbeat_runtime.engine_v11.HeartbeatRuntime
+active_runtime_owner: StegVerse-Labs/.github#59 + SHWP-DURABLE-RUNTIME-ACTIVATION/G18
+active_progress_remediation_owner: StegVerse-Labs/.github#65 + SHWP-DURABLE-RUNTIME-ACTIVATION/G18
+active_inference_owner: StegVerse-Labs/.github#60 + heartbeat-managed sovereign inference worker
+canonical_carrier_runtime: heartbeat_runtime.engine_v12.HeartbeatRuntime
+canonical_worker_runtime: heartbeat_runtime.worker_runtime.WorkerCoordinator
 product_state: ACTIVE_MACHINE_WORK / NOT YET ACTIVATED
 session_role: MERGED_INTO_CANONICAL_WORKSTREAM
-thread_archive_ready: true
-archive_reason: ALL_SESSION_UNIQUE_WORK_COMPLETE_OR_TRANSFERRED_AND_ALL_UNFINISHED_GOALS_HAVE_ACTIVE_CANONICAL_MACHINE_OWNERS
+thread_archive_ready: false
+archive_blocker: CURRENT_SESSION_POST_PR206_AUTHORITY_RECONCILIATION_UNTIL_ISSUE_207_CLOSED
 ```
 
-Archival of this chat is not product activation. Product work remains active under canonical workers and authority boundaries after the chat is archived.
+## Governing runtime invariant
 
-## Operational-state invariant
-
-Unresolved work is never an idle terminal `BLOCKED` task. It is actively owned by a session, documented StegVerse worker/machine lane, or it is complete/superseded. A fail-closed/conditional consequence preserves the governing goal by deriving a RESOLVE/ESCALATE task and advancing through the authority chain until solved or explicitly escalated.
-
-Canonical policy:
+Heartbeat continuity is **state-transition continuity**, not wall-clock daemon residency.
 
 ```text
-control/active-worker-state-policy.json
-control/handoff-execution-ownership-policy.json
-forbidden_unresolved_state: BLOCKED
-credential_authority: TV/TVC
-github_token_production_authority: NONE
+legacy source: control/heartbeat-state.json
+legacy epoch: HB29
+legacy source mutable after cutover: false
+first separated-v12 successor: HB30
+carrier state: control/heartbeat-carrier-runtime-state.json
+worker state: control/worker-runtime-state.json
+worker control plane: control/worker-control-plane-coordination.json
+transition producer: scripts/advance_heartbeat_transition.py
+transition contract: management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json
+another physical machine required: false
+always-on external host required: false
+wall-clock continuous process required: false
+resident native supervision: optional stronger evidence only
 ```
 
-Canonical fail-closed resolution handoff:
+PR #206 merged as `b7c5b5e9199c5af46029210fe7909dcf19033b41` and superseded organization prose that still described `engine_v11` plus continuously resident native supervision as the release prerequisite.
+
+No GitHub-hosted workflow, Render, Vercel, Cloudflare runtime, additional physical machine, GitHub token, or NON-TV/TVC credential may substitute for the canonical StegVerse state-transition path.
+
+## Credential and authority boundary
 
 ```text
-docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md
-PR #82 merge: e0500245085f7dcdabd87c801b5654a619264ca4
+credential authority: TV/TVC
+local-model credential requirement: NONE
+route authority: StegVerse-Labs/TVC
+model/runtime: StegVerse-002/micro-node-runtime
+transport/evidence: StegVerse-org/LLM-adapter
+custody/reconstruction: master-records/orchestration
+GitHub token production authority: NONE
+GitHub Actions production activation role: NONE
+GitHub Actions heartbeat persistence role: NONE
+NON-TV/TVC secret/token allowed: false
 ```
 
-## Canonical architecture
+Hosted validation is source/policy evidence only and never production activation evidence.
 
-```text
-heartbeat runtime: heartbeat_runtime.engine_v11.HeartbeatRuntime
-heartbeat runner: scripts/run_heartbeat_runtime.py
-worker registry: control/worker-registry.json
-worker coordination: control/heartbeat-subsignals.json
-Master Records projection: control/heartbeat-master-records-projection.json
-last directly observed heartbeat epoch: 29
-last cycle: 2026-08-10T20:51:11Z
-resident carrier post-HB29 advance: NOT YET OBSERVED
-SHWP-DURABLE-RUNTIME-ACTIVATION fence: 18
-runtime operational state: ACTIVE_WORKER
-runtime solution state: ACTIVE_SOLUTION_EXECUTION
-current constraint: SOVEREIGN_NODE_DECLARATION_NOT_PRESENT
-constraint class: PHYSICAL_RESOURCE
-human_action_required: false
-missing_implementation: false
-next_solution_action: SOVEREIGN_RUNTIME_SOLUTION_EXECUTION
-```
-
-There is one canonical heartbeat and one canonical worker registry. No GitHub-hosted workflow may substitute for the resident sovereign carrier.
-
-## Completed protocol capabilities
+## Completed protocol/source capabilities
 
 ```text
 formal local model: COMPLETE_RELEASED
@@ -82,7 +78,9 @@ GitHub-token production/control-plane authority retirement: COMPLETE_RELEASED
 fail-closed RESOLVE/ESCALATE derivation: COMPLETE_MERGED
 active-worker state policy and validator: COMPLETE_RELEASED
 historical passive-state normalization: COMPLETE_RELEASED
-live same-carrier activation: ACTIVE_MACHINE_WORK / NOT YET COMPLETE
+bounded HB29->HB30 v12 transition producer: COMPLETE_MERGED
+live HB30+ transition observation: NOT YET OBSERVED
+independent WorkerCoordinator observation of HB30+: NOT YET OBSERVED
 ```
 
 Canonical local-model handoff:
@@ -97,36 +95,7 @@ Canonical runtime activation handoff:
 handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
 ```
 
-## TV/TVC credential authority and no-GitHub-token production boundary
-
-```text
-credential authority: TV/TVC
-local-model credential requirement: NONE
-route authority: StegVerse-Labs/TVC
-model/runtime: StegVerse-002/micro-node-runtime
-transport/evidence: StegVerse-org/LLM-adapter
-custody/reconstruction: master-records/orchestration
-GitHub token production authority: NONE
-GitHub Actions production activation role: NONE
-GitHub Actions heartbeat persistence role: NONE
-```
-
-GitHub-hosted validation is optional/non-authorizing. GitHub account pause, billing exhaustion, or hosted workflow outage is not a production continuity release condition.
-
-## Active-worker normalization — completed
-
-Issues #83, #84, and #85 are closed completed.
-
-```text
-#83 Normalize unresolved worker states to ACTIVE/MACHINE_OWNED semantics: COMPLETE
-#84 Bind unowned constraint tasks to workers or supersede them: COMPLETE
-#85 Add active-worker state invariant validator: COMPLETE
-active-worker invariant validation run: 31622026042 PASS
-```
-
-Run `31622026042` is recorded by #83/#84 as proving that the current canonical task graph has no detected unresolved unowned work. Historical raw registry response labels may remain as provenance, but authoritative operational state is normalized by current handoffs/status projection and is not an idle stopping state.
-
-## Physical-resource execution boundary — durable runtime activation
+## Durable runtime activation — machine-owned
 
 Owner records:
 
@@ -134,99 +103,67 @@ Owner records:
 StegVerse-Labs/.github#59
 StegVerse-Labs/.github#65
 handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
+management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json
 management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json
 workers/sovereign_runtime_activation_worker.py
-scripts/install_sovereign_heartbeat_service.py
-scripts/verify_sovereign_runtime_activation.py
+scripts/advance_heartbeat_transition.py
 ```
 
-Current state:
+Current machine state:
 
 ```text
 operational_state: ACTIVE_WORKER
-solution_state: ACTIVE_SOLUTION_EXECUTION
-current_constraint: SOVEREIGN_NODE_DECLARATION_NOT_PRESENT
-eligible_declaration: STEGVERSE_SOVEREIGN_NODE=1 OR /etc/stegverse/node.json OR ~/.stegverse/node.json
+claim_state: MACHINE_OWNED_BOUND_G18
+fencing_token: 18
+constraint: HB30_STATE_TRANSITION_NOT_YET_OBSERVED
+constraint_class: STATE_TRANSITION_CONTINUITY
 human_action_required: false
 missing_implementation: false
-external_cost_ceiling_usd: 0
+next_solution_action: EXECUTE_BOUNDED_V12_STATE_TRANSITION_THEN_OBSERVE_WORKER_CHECKPOINT
 ```
 
-The active worker must select/materialize an eligible StegVerse-owned/federated carrier, promote an eligible StegVerse-002 micro-node, construct a node from the repository-local runtime capsule, or escalate an impossible authority collision through engine v11. GitHub Actions, Render, Vercel, Cloudflare, or repository-only mutation are prohibited substitutes.
+The next admitted G18 StegVerse execution opportunity must run `scripts/advance_heartbeat_transition.py`. The producer derives HB30 or a later valid successor from immutable HB29/latest v12 state, persists transition evidence, forwards no credentials, and does not grant WorkerCoordinator execution authority. The independently admitted WorkerCoordinator then observes the persisted carrier state on its current or next tick.
 
-Completion remains machine-observable:
+Machine-observable completion requires:
 
 ```text
-~/.stegverse/heartbeat/activation.latest.json has all nine predicates true
-heartbeat advances beyond HB29
-controlled restart continuity passes
-no duplicate claim/fence
-Master Records reconstruction PASS
+receipts/heartbeat-transition-continuity/latest.json records a valid HB30+ carrier transition
+control/heartbeat-carrier-runtime-state.json exists at HB30+ while legacy HB29 remains unchanged
+control/worker-runtime-state.json independently observes that carrier epoch
+control/worker-control-plane-coordination.json is present/valid
+carrier generation does not regress
+no duplicate claim/fence is introduced
+state reconstruction PASS
+no additional machine / always-on external host / GitHub token / NON-TV/TVC credential became authority
 ```
 
-## Ecosystem Chat inference activation — active machine continuation
+Optional `~/.stegverse/heartbeat/activation.latest.json` nine-predicate native-service proof remains valid stronger resident-supervision evidence, but absence of that service does not negate state-transition continuity.
 
-Owner record:
+## Ecosystem Chat inference activation — machine-owned downstream
 
-```text
-StegVerse-Labs/.github#60
-```
+Owner: `StegVerse-Labs/.github#60`.
 
-Active recovery is already authorized in:
+The descriptive “select a local model/runtime” step is removed. The released path discovers and launches the canonical private `StegVerse-002/micro-node-runtime`, proves runtime/model identity and health, obtains TVC `ROUTE_ADMITTED` with `credential_requirement=NONE`, executes the exact LLM-adapter route, persists measured usage, and requires same-execution Master Records reconstruction.
+
+Recovery lane:
 
 ```text
 control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json
 ```
 
-Completion requires a fresh authorized parent fence >20 and immutable same-execution evidence proving:
+After v12 carrier/WorkerCoordinator continuity and recovery predicates are satisfied, the parent independently reacquires a fresh authorized fence >20. Completion requires immutable same-execution evidence proving private model process observed, TVC credential requirement NONE, exact LLM-adapter execution, measured usage, provider-usage and transition reconstruction PASS, `same_execution=true`, and `github_token_required=false`.
 
-```text
-private local model process observed
-TVC credential_requirement NONE under TV/TVC
-exact LLM-adapter route executed
-measured usage persisted
-Master Records provider-usage reconstruction PASS
-Master Records transition reconstruction PASS
-same_execution=true
-github_token_required=false
-```
+## StegFin continuation — machine/human authority boundary
 
-## StegFin live Base continuation — active machine/human authority path
+Canonical owner records remain in `StegVerse-Labs/stegfin-governance`, including the current `docs/STEGFIN_MIRROR_HANDOFF.md` and machine task state. TV/TVC owns credential/provider authority. Wallet signing and broadcast remain USER_ONLY. No live transaction, settlement, or production sizing is claimed by this organization handoff.
 
-Canonical task:
+The v12 carrier/WorkerCoordinator transition is a prerequisite to downstream StegFin worker admission where the current task record requires it; it does not grant signing/broadcast authority.
 
-```text
-StegVerse-Labs/stegfin-governance/task-state/STEGFIN-LIVE-ENTRY-003.json
-```
-
-Owner:
-
-```text
-resident sovereign heartbeat + StegFin runtime + TV/TVC/vault + USER_ONLY wallet authority
-```
-
-Continuation:
-
-```text
-post-HB29 live claim/fence
--> fresh Inventory N
--> TV/TVC/vault provider capability
--> exact governed 12.50 USDC -> WETH entry
--> USER_ONLY signature/broadcast
--> settlement observation
--> successor inventory
--> governed exit
--> replay/P&L
--> production sizing
-```
-
-No live transaction, settlement, or production sizing is claimed by this handoff.
-
-## Cross-repository dependencies / propagation
+## Cross-repository continuation and propagation
 
 ```text
 StegVerse-002/micro-node-runtime
--> StegVerse-Labs/.github resident heartbeat
+-> StegVerse-Labs/.github separated-v12 heartbeat + WorkerCoordinator
 -> StegVerse-Labs/TV + StegVerse-Labs/TVC
 -> StegVerse-org/LLM-adapter
 -> master-records/orchestration
@@ -235,128 +172,63 @@ StegVerse-002/micro-node-runtime
 -> GCAT-BCAT-Engine/Publisher + admissibility-wiki + stegguardian-wiki
 ```
 
-Site/Publisher/wiki propagation remains not yet authorized because immutable activation/release evidence is not yet present. That propagation is a machine-owned successor condition, not unique chat work.
+Site/Publisher/wiki publication remains gated on immutable activation/release evidence. No propagation is claimed merely because source validation is green.
 
 ## Execution ownership and collision partition
 
-Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`. Organization enforcement: `control/handoff-execution-ownership-policy.json`.
-
-A task that is merely described as pending, not activated, awaiting evidence, or constrained is **not** manually available. A session must consult the worker/task registry and current claims before acting. Current fence/lease/claim/escalation state takes precedence over stale prose.
-
-### MANUAL / SESSION-STARTABLE
-
-No current organization-level implementation task is manual-startable by default.
-
-```yaml
-- task_id: ORG-HANDOFF-NONCOMPETING-VALIDATION
-  execution_owner: explicitly claimed validation or reconciliation session
-  claim_state: UNCLAIMED
-  worker_registry_ref: NONE
-  manual_execution_allowed: true
-  manual_allowed_role: validation
-  collision_scope: read-only or evidence-only validation outside worker-owned implementation/runtime paths; any mutation requires its own exact claim
-  release_condition: validation/reconciliation claim is durably released after evidence is recorded
-  next_executable_action: acquire a distinct nonoverlapping validation/reconciliation claim before mutation
-```
+Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`.
 
 ### WORKER-OWNED / DO NOT COMPETE
 
 ```yaml
 - task_id: SHWP-DURABLE-RUNTIME-ACTIVATION
-  execution_owner: resident sovereign heartbeat + sovereign-runtime-activation-worker
-  claim_state: ACTIVE_WORKER
-  worker_registry_ref: control/worker-registry.json#SHWP-DURABLE-RUNTIME-ACTIVATION
+  owner: G18 sovereign-runtime-activation-worker
+  claim_state: MACHINE_OWNED_BOUND_G18
   manual_execution_allowed: false
-  manual_allowed_role: observation
-  collision_scope: sovereign carrier selection/materialization, native service activation, heartbeat state, claim/fence, activation receipts, and restart/reconstruction proof
-  release_condition: node-local nine-predicate activation proof and heartbeat advance beyond HB29, or canonical engine-v11 successor/escalation releases this collision scope
-  next_executable_action: active worker executes native solution or derives/registers the next RESOLVE/ESCALATE task
+  release_condition: HB30+ carrier transition plus independent WorkerCoordinator observation and reconstruction PASS
 
 - task_id: RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28
-  execution_owner: resident sovereign heartbeat + ecosystem-chat-orphan-recovery-worker
+  owner: ecosystem-chat-orphan-recovery-worker
   claim_state: MACHINE_OWNED
-  worker_registry_ref: control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json
   manual_execution_allowed: false
-  manual_allowed_role: observation
-  collision_scope: orphan continuity reconstruction, recovery claim/fence, parent re-acquisition sequencing, and recovery receipts
-  release_condition: recovery receipt is COMPLETED and parent becomes eligible for a fresh authorized fence >20
-  next_executable_action: resident heartbeat executes recovery when carrier is live
+  release_condition: recovery receipt COMPLETE and parent eligible for fresh fence >20
 
 - task_id: ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION
-  execution_owner: resident sovereign heartbeat -> TVC -> LLM-adapter -> Master Records
+  owner: heartbeat-managed sovereign inference worker -> TVC -> LLM-adapter -> Master Records
   claim_state: MACHINE_OWNED
-  worker_registry_ref: StegVerse-Labs/.github#60
   manual_execution_allowed: false
-  manual_allowed_role: observation
-  collision_scope: private model launch/use, TVC admission, exact LLM-adapter route, usage evidence, and same-execution Master Records reconstruction
-  release_condition: immutable same-execution activation evidence under fresh authorized fence >20
-  next_executable_action: canonical chain executes after carrier/recovery predicates are satisfied
-
-- task_id: ECOSYSTEM-CHAT-ACTIVATION-PROPAGATION
-  execution_owner: canonical downstream consumer workers
-  claim_state: MACHINE_OWNED
-  worker_registry_ref: Site/Publisher/wiki propagation tasks named by current repository handoffs
-  manual_execution_allowed: false
-  manual_allowed_role: observation
-  collision_scope: activation evidence ingestion/publication to Site, Publisher, admissibility-wiki, and stegguardian-wiki
-  release_condition: immutable same-execution activation receipt is present and consumer release gates admit propagation
-  next_executable_action: downstream consumers ingest only after activation evidence exists
+  release_condition: immutable same-execution local-model activation evidence
 ```
 
-### ESCALATED / AUTHORITY-OWNED
+### CURRENT SESSION DISTINCT SUPPORT CLAIM
 
 ```yaml
-- task_id: SHWP-DURABLE-RUNTIME-ACTIVATION-CONSTRAINT-RESOLUTION
-  execution_owner: engine-v11 authority chain
-  claim_state: ESCALATED
-  worker_registry_ref: docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md + control/worker-registry.json
-  manual_execution_allowed: false
-  manual_allowed_role: NONE
-  collision_scope: any unresolved physical-resource/capability/authority collision emitted by the current runtime worker
-  release_condition: WORKER -> REPOSITORY_OWNER -> COMPONENT_AUTHORITY -> ECOSYSTEM_GOVERNANCE resolves the condition, or HUMAN_AUTHORITY is explicitly assigned an exact decision/correction
-  next_executable_action: derive/register the next-level resolution task when the current executor cannot resolve the constraint
-
-- task_id: TV-TVC-CREDENTIAL-AND-ROUTE-AUTHORITY
-  execution_owner: StegVerse-Labs/TV + StegVerse-Labs/TVC
-  claim_state: ESCALATED
-  worker_registry_ref: TV/TVC current authority handoffs and route task records
-  manual_execution_allowed: false
-  manual_allowed_role: integration
-  collision_scope: credential semantics, route admission, and any provider/runtime authority decision; GitHub tokens may not substitute
-  release_condition: TV/TVC emits the applicable admitted route/credential result
-  next_executable_action: route/credential owners execute the currently admitted authority path
+- task_id: POST-PR206-AUTHORITY-RECONCILIATION
+  owner: issue #207
+  role: CLAIMED_FOR_INTEGRATION
+  surfaces: docs/ORG_MIRROR_HANDOFF.md + issue #59 + issue #60 + issue #65
+  collision_scope: prose/control reconciliation only; no runtime state, claim/fence/lease, provider, wallet, or receipt mutation
+  release_condition: all scoped authority surfaces agree with merged PR #206 and issue #207 is closed with evidence
 ```
-
-### COMPLETED / SUPERSEDED
-
-- Formal local model implementation: complete/released.
-- Local discovery/launch/inference/proof: complete/released.
-- GitHub-token production authority retirement: complete/released.
-- Fail-closed RESOLVE/ESCALATE runtime: complete/merged.
-- Active-worker state normalization and validator: complete/released.
-- Historical passive/unowned task normalization: complete/released.
-
-The rule for all subordinate handoffs is fail-closed on manual implementation if their own ownership section is absent or stale. No continuation session may interpret an incomplete handoff item as manual work until the required ownership check is satisfied.
 
 ## Validation evidence
 
-Retained source/control-plane evidence includes:
+PR #206 final-head validations:
 
 ```text
-Ecosystem Chat no-token validation: 31453552033 SUCCESS
-Heartbeat Worker Project no-token validation: 31453552032 SUCCESS
-Organization control-plane no-token validation: 31453552110 SUCCESS
-Org Continuation no-token validation: 31464416581 SUCCESS
-Sovereign Runtime hosted-authority retirement: 31464631729 SUCCESS
-Native runtime activation/proof source path: 31338817754 SUCCESS
-Active sovereign worker semantics: 31620645190 SUCCESS
-Active-worker canonical graph aggregation: 31622026042 PASS
-Fail-closed resolution/escalation: PR #82 merged e0500245085f7dcdabd87c801b5654a619264ca4
+Sovereign Runtime Worker: 32004079913 SUCCESS
+Organization handoff: 32004079897 SUCCESS
+Sovereign Ephemeral Console: 32004079895 SUCCESS
+Sovereign Runtime Self-Bootstrap: 32004079898 SUCCESS
+Heartbeat Worker Project: 32004079907 SUCCESS
+Organization control plane: 32004079896 SUCCESS
 ```
 
-Hosted validation proves source/policy only and never grants production activation authority.
+These runs validate source and policy. They do not prove a production HB30 transition.
 
-Canonical local validation commands remain:
+Historical retained evidence includes active-worker invariant run `31622026042` PASS and fail-closed resolution/escalation PR #82 merge `e0500245085f7dcdabd87c801b5654a619264ca4`.
+
+Canonical validation commands:
 
 ```text
 python -m compileall -q heartbeat_runtime workers scripts
@@ -367,50 +239,45 @@ python scripts/run_heartbeat_runtime.py --dry-run --cycles 1
 python tools/validate_active_worker_states.py
 ```
 
-Anonymous local clone from the current ChatGPT execution container is presently unavailable because that container cannot resolve `github.com`; this is an execution-environment networking limitation, not a StegVerse runtime dependency. Existing canonical validation receipts above remain authoritative.
+## Session goal inventory and consolidation
 
-## Session consolidation
-
-All session-unique requirements are now completed, superseded, or durably transferred:
-
-1. actual local-runtime discovery/launch/inference/proof;
-2. formal local model development;
-3. TV/TVC credential semantics;
-4. GitHub-token production authority removal;
-5. GitHub-hosted runtime/release authority retirement;
-6. fail-closed constraint -> active RESOLVE/ESCALATE behavior;
-7. active-worker state invariant;
-8. normalization of passive/unowned canonical task states;
-9. Ecosystem Chat activation continuation;
-10. StegFin live-entry continuation;
-11. downstream propagation gates.
-
-Canonical continuation locations are this handoff, issues #59/#60/#65, `handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json`, the worker registry, and `StegVerse-Labs/stegfin-governance/task-state/STEGFIN-LIVE-ENTRY-003.json`.
-
-No chat-session implementation, validation, integration, propagation, reconciliation, or observation claim remains.
-
-## Archive state
+Canonical session inventory:
 
 ```text
-thread_archive_ready: true
-product_activation: ACTIVE_MACHINE_WORK / INCOMPLETE
-session_unique_work: COMPLETE_OR_TRANSFERRED
-unowned_unresolved_tasks: 0 detected by canonical validation
-active_unfinished_goals: OWNED_BY_CANONICAL_MACHINE/HUMAN_AUTHORITY_RECORDS
+control/session-goal-inventory-2026-08-16-tt-local-runtime-trade-convergence.json
 ```
 
-Archiving this conversation does not stop or complete the active product goals. It only removes a redundant chat-session coordination surface now that execution state is durable.
+Transferred/completed goals:
 
-## Completeness
+1. Transition Table consequence/observer/black-transition formalism -> `StegVerse-Labs/StegScholar/TT_MIRROR_HANDOFF.md`.
+2. Formal local model + actual discovery/launch/inference/proof -> `StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md`.
+3. TV/TVC-only credential semantics -> TV/TVC authority records and downstream route contracts.
+4. Heartbeat/source/runtime repair -> `handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json`, issues #59/#65, worker registry, merged PR #206.
+5. Ecosystem Chat sovereign inference -> issue #60 and recovery worker registry.
+6. StegFin trade-readiness continuation -> `StegVerse-Labs/stegfin-governance` canonical handoff/task state.
+7. Publication/propagation -> gated machine-owned downstream consumers.
+
+No session goal may be considered product-activated until its runtime/settlement/reconstruction evidence exists. Source completion and machine ownership are sufficient for session transfer only when no unique chat-owned implementation or information remains.
+
+## Current archive state
 
 ```text
-developed_files: 23/23 scoped source/session deliverables
-scaffolding_or_stubs: 0
-missing_required_files: 0
-source_validation: 19/19
-source_integration: 12/12
-session_consolidation: 23/23
-product_activation: active machine work / incomplete
-propagation: machine-owned successor / not yet authorized
-archive_readiness: true
+thread_archive_ready: false
+reason: issue #207 is the current distinct support claim and must be closed after this handoff/issue reconciliation is validated
+product_activation: ACTIVE_MACHINE_WORK / INCOMPLETE
+live_hb30_transition_observed: false
+worker_checkpoint_observed: false
+session_unique_runtime_authority: none
+```
+
+After issue #207 closes with validation evidence, this session may be classified MERGED INTO CANONICAL WORKSTREAM if no additional unique support obligation is discovered. Product activation may remain machine-owned and incomplete after chat archival.
+
+## Completion percentages for this organization handoff
+
+```text
+developed_files: 1/1 for ORG_MIRROR_HANDOFF reconciliation
+validation: 0/2 post-reconciliation organization checks until new runs complete
+integration: 3/4 scoped surfaces reconciled before this commit; 4/4 after this file update
+session_consolidation: 7/7 goals durably transferred or assigned
+current goal activation: pending HB30+ runtime evidence; do not infer activation from this handoff update
 ```
