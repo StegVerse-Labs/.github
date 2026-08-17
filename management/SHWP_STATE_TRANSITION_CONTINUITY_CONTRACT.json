@@ -3,6 +3,7 @@
   "contract_id": "SHWP-HB29-TO-HB30-STATE-TRANSITION-CONTINUITY-001",
   "goal_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
   "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "validation_trigger_revision": 2,
   "canonical_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
   "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
   "legacy_source": "control/heartbeat-state.json",
