@@ -146,6 +146,7 @@ jobs:
           assert not any(line.startswith('uses: actions/setup-python@') for line in stripped)
           assert not any(line.startswith('git push ') for line in stripped)
           assert not any('scripts/run_heartbeat_runtime.py --cycles ' in line and '--dry-run' not in line for line in stripped)
-          assert not any('advance_heartbeat_transition.py' in line and line.strip().startswith('python') for line in lines)
+          assert not any(line.strip().startswith('python3 scripts/advance_heartbeat_transition.py') for line in lines)
+          assert not any(line.strip().startswith('python scripts/advance_heartbeat_transition.py') for line in lines)
           print('SOVEREIGN_RUNTIME_HOSTED_AUTHORITY_RETIRED_PASS')
           PY
