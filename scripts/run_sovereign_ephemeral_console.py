@@ -2,9 +2,10 @@
 """Create isolated StegVerse logical nodes on one sovereign host.
 
 The console removes any physical second/third-machine requirement from validation.
-It materializes three independent runtime/state roots, launches local heartbeat
-processes, verifies the canonical activation predicates, proves process/state-root
-isolation, tears down validation peers, and can retain the primary local carrier.
+It materializes three independent runtime/state roots, launches separated local
+carrier and worker-coordinator processes, verifies the canonical activation
+predicates, proves process/state-root isolation, tears down validation peers, and
+can retain the primary local node.
 
 A hosted CI runner may validate this source but may not use it to claim sovereign
 production activation. Provider credentials, GitHub tokens, Render, Vercel,
@@ -90,15 +91,30 @@ def _scrubbed_env(base: dict[str, str] | None = None) -> dict[str, str]:
 
 def _service_receipt(source_root: Path, runtime_root: Path, process: dict[str, Any], interval_ms: float) -> dict[str, Any]:
     restart_helper = source_root / "scripts" / "restart_sovereign_ephemeral_node.py"
+    separated_active = (
+        process.get("active") is True
+        and process.get("carrier_active") is True
+        and process.get("worker_active") is True
+        and isinstance(process.get("carrier_pid"), int)
+        and isinstance(process.get("worker_pid"), int)
+    )
     return {
         "schema": "stegverse.sovereign-heartbeat-service/v3",
         "platform": "logical-node",
         "registration_kind": "stegverse-ephemeral-console",
         "runtime_root": str(runtime_root),
-        "canonical_runtime": "heartbeat_runtime.engine_v11.HeartbeatRuntime",
+        "canonical_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
+        "canonical_carrier_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
+        "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
         "heartbeat_interval_ms": interval_ms,
-        "active": process.get("active") is True,
-        "pid": process.get("pid"),
+        "worker_interval_ms": interval_ms,
+        "active": separated_active,
+        "pid": process.get("carrier_pid", process.get("pid")),
+        "carrier_pid": process.get("carrier_pid", process.get("pid")),
+        "worker_pid": process.get("worker_pid"),
+        "carrier_active": process.get("carrier_active") is True,
+        "worker_active": process.get("worker_active") is True,
+        "separate_carrier_and_worker_processes": True,
         "stegverse_process_supervision": True,
         "native_process_supervision_only": False,
         "restart_command": [
@@ -115,6 +131,7 @@ def _service_receipt(source_root: Path, runtime_root: Path, process: dict[str, A
         "credential_requirement": "NONE",
         "credential_authority": "TV/TVC",
         "github_token_required": False,
+        "non_tv_tvc_secret_or_token_used": False,
         "authority_effect": "LOGICAL_NODE_PROCESS_SUPERVISION_ONLY",
     }
 
@@ -161,6 +178,11 @@ def _stop_pid(pid: Any) -> None:
         return
 
 
+def _stop_node_processes(process: dict[str, Any]) -> None:
+    _stop_pid(process.get("carrier_pid", process.get("pid")))
+    _stop_pid(process.get("worker_pid"))
+
+
 def verify_node(source_root: Path, runtime_root: Path, node_index: int, env: dict[str, str]) -> dict[str, Any]:
     proof_path = runtime_root / "receipts" / "sovereign-host" / "canonical-nine-predicate-proof.json"
     child_env = _scrubbed_env(env)
@@ -201,16 +223,17 @@ def run_console(
     values = dict(os.environ if env is None else env)
     hosted = hosted_environment(values)
     body: dict[str, Any] = {
-        "schema": "stegverse.sovereign-ephemeral-console-proof/v1",
+        "schema": "stegverse.sovereign-ephemeral-console-proof/v2",
         "task_id": "SHWP-SOVEREIGN-EPHEMERAL-CONSOLE-002",
         "source_root": str(source_root),
         "console_root": str(console_root),
         "requested_node_count": node_count,
         "physical_additional_machine_required": False,
-        "logical_isolation_dimensions": ["node_identity", "runtime_root", "process_pid", "receipt_tree", "state_tree"],
+        "logical_isolation_dimensions": ["node_identity", "runtime_root", "carrier_pid", "worker_pid", "receipt_tree", "state_tree"],
         "credential_requirement": "NONE",
         "credential_authority": "TV/TVC",
         "github_token_required": False,
+        "non_tv_tvc_secret_or_token_used": False,
         "third_party_runtime_required": False,
         "hosted_environment_observed": hosted,
         "validation_only": validation_only,
@@ -240,7 +263,12 @@ def run_console(
             verify_node(source_root, console_root / f"node-{index}", index, values)
             for index in range(1, node_count + 1)
         ]
-        pids = [(_load(console_root / f"node-{index}" / "receipts/sovereign-host/ephemeral-process.latest.json").get("pid")) for index in range(1, node_count + 1)]
+        process_rows = [
+            _load(console_root / f"node-{index}" / "receipts/sovereign-host/ephemeral-process.latest.json")
+            for index in range(1, node_count + 1)
+        ]
+        carrier_pids = [row.get("carrier_pid", row.get("pid")) for row in process_rows]
+        worker_pids = [row.get("worker_pid") for row in process_rows]
         roots = [str((console_root / f"node-{index}").resolve()) for index in range(1, node_count + 1)]
         sentinels_isolated = True
         for index in range(1, node_count + 1):
@@ -253,13 +281,21 @@ def run_console(
                 leaked = console_root / f"node-{other}" / "receipts" / "sovereign-host" / f"isolation-node-{index}.sentinel"
                 if leaked.exists():
                     sentinels_isolated = False
+        all_pids = carrier_pids + worker_pids
         body["nodes"] = verifications
         body["unique_runtime_roots"] = len(roots) == len(set(roots))
-        body["unique_process_pids"] = all(isinstance(pid, int) for pid in pids) and len(pids) == len(set(pids))
+        body["separated_processes_present"] = all(isinstance(pid, int) and pid > 0 for pid in all_pids)
+        body["unique_process_pids"] = body["separated_processes_present"] and len(all_pids) == len(set(all_pids))
         body["state_root_write_isolation"] = sentinels_isolated
         body["third_logical_machine_proven"] = len(verifications) >= 3 and verifications[2].get("all_predicates_pass") is True
         body["all_nodes_pass"] = all(row.get("all_predicates_pass") is True for row in verifications)
-        body["all_isolation_predicates_pass"] = all((body["unique_runtime_roots"], body["unique_process_pids"], body["state_root_write_isolation"], body["third_logical_machine_proven"]))
+        body["all_isolation_predicates_pass"] = all((
+            body["unique_runtime_roots"],
+            body["separated_processes_present"],
+            body["unique_process_pids"],
+            body["state_root_write_isolation"],
+            body["third_logical_machine_proven"],
+        ))
         if body["all_nodes_pass"] and body["all_isolation_predicates_pass"]:
             body["state"] = "COMPLETE"
             body["reason"] = "THREE_LOGICAL_SOVEREIGN_NODES_PROVED_ON_ONE_STEGVERSE_HOST"
@@ -273,16 +309,18 @@ def run_console(
             body["state"] = "REVIEW_REQUIRED"
             body["reason"] = "LOGICAL_NODE_OR_ISOLATION_PROOF_INCOMPLETE"
     finally:
-        for index, row in enumerate(prepared, start=1):
+        for index, _row in enumerate(prepared, start=1):
             if retain_primary and index == 1:
                 continue
             latest = _load(console_root / f"node-{index}" / "receipts/sovereign-host/ephemeral-process.latest.json")
-            _stop_pid(latest.get("pid"))
+            _stop_node_processes(latest)
         body["primary_retained"] = retain_primary and bool(prepared)
         if retain_primary and prepared:
             primary = _load(console_root / "node-1" / "receipts/sovereign-host/ephemeral-process.latest.json")
             body["primary_runtime_root"] = str((console_root / "node-1").resolve())
-            body["primary_pid"] = primary.get("pid")
+            body["primary_pid"] = primary.get("carrier_pid", primary.get("pid"))
+            body["primary_carrier_pid"] = primary.get("carrier_pid", primary.get("pid"))
+            body["primary_worker_pid"] = primary.get("worker_pid")
     receipt = console_root / "ephemeral-console.latest.json"
     receipt.write_text(json.dumps(body, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     body["receipt_path"] = str(receipt)
