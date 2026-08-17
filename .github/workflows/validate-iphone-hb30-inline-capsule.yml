@@ -50,7 +50,7 @@ jobs:
       - name: Validate capsule contract
         run: python3 scripts/check_iphone_hb30_inline_capsule.py
       - name: Run deterministic tests
-        run: python3 -m pytest -q tests/test_iphone_hb30_inline_capsule.py
+        run: python3 tests/test_iphone_hb30_inline_capsule.py
       - name: Confirm validation-only boundary
         run: |
           python3 - <<'PY'
@@ -60,6 +60,7 @@ jobs:
           assert 'git push' not in text
           assert 'actions/checkout@' not in text
           assert 'upload-artifact' not in text
+          assert 'pip install' not in text
           print('IPHONE_HB30_INLINE_VALIDATION_ONLY=PASS')
           print('IPHONE_HB30_INLINE_RUNTIME_AUTHORITY=NONE')
           PY
