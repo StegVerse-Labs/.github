@@ -1,0 +1,42 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "task_id": "SHWP-EPHEMERAL-SEPARATED-RUNTIME-REPAIR-001",
+  "originating_goal": "Priority number one: fix the heartbeat by making the one-host sovereign ephemeral-console fallback actually run both separated v12 processes required by the activation verifier.",
+  "organization": "StegVerse-Labs",
+  "repository": ".github",
+  "branch": "fix/heartbeat-ephemeral-worker-runtime",
+  "claimant": "current-session-heartbeat-ephemeral-runtime-repair-lane",
+  "role": "CLAIMED_FOR_IMPLEMENTATION",
+  "claim_created_at": "2026-08-16T20:58:00-05:00",
+  "claim_expiration_or_release_condition": "Release immediately after the separated ephemeral carrier+worker repair is merged or superseded and validation evidence is recorded.",
+  "owned_surfaces": [
+    "scripts/restart_sovereign_ephemeral_node.py",
+    "scripts/run_sovereign_ephemeral_console.py",
+    "tests/test_sovereign_ephemeral_console.py or a new focused regression test",
+    "this claim record"
+  ],
+  "collision_boundaries": [
+    "do not acquire, alter, release, or replace G18 claim/fence/lease",
+    "do not mutate control/heartbeat-state.json, live carrier state, node-local activation receipts, or worker registry runtime state",
+    "do not change TV/TVC credential or route authority",
+    "do not use GitHub tokens or NON-TV/TVC secrets/tokens as production authority",
+    "do not use Render/Vercel/Cloudflare/GitHub Actions as sovereign runtime authority",
+    "do not create a second canonical heartbeat"
+  ],
+  "defect_evidence": {
+    "canonical_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
+    "required_worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+    "ephemeral_start_current": "launches scripts/run_heartbeat_runtime.py only",
+    "verifier_requirement": "continuous_runtime_live requires worker-runtime-state.json and worker_coordination_checkpoint_observed requires worker runtime output",
+    "finding": "The one-host fallback can start only the carrier while the v12 verifier requires both carrier and worker coordinator. A newly materialized ephemeral node therefore cannot satisfy all nine activation predicates through this fallback."
+  },
+  "expected_evidence": [
+    "ephemeral start launches and records both carrier and worker coordinator processes",
+    "restart replaces both processes and proves both restarts",
+    "service receipt identifies separated v12 carrier and worker runtime",
+    "regression test proves worker-runtime command/pid/state are present",
+    "no GitHub/provider/wallet credential forwarding"
+  ],
+  "next_task_after_release": "Existing G18 machine owner consumes the repaired one-host fallback and produces the nine-predicate node-local activation proof.",
+  "state": "CLAIMED_FOR_IMPLEMENTATION"
+}
