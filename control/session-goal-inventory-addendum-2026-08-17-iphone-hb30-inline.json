@@ -1,0 +1,64 @@
+{
+  "schema": "stegverse.session-goal-inventory-addendum/v1",
+  "inventory_addendum_id": "SESSION-2026-08-17-IPHONE-HB30-INLINE-CONSOLIDATION",
+  "created_at": "2026-08-17T13:59:00-05:00",
+  "base_inventory_ref": "control/session-goal-inventory-2026-08-17-hil-erl-runtime-trade-convergence.json",
+  "base_inventory_goal_count": 9,
+  "base_inventory_transferred_or_complete": 9,
+  "originating_issue": "StegVerse-Labs/.github#215",
+  "goal": {
+    "task_id": "SHWP-IPHONE-HB30-INLINE-CAPSULE-002",
+    "originating_session_goal": "Eliminate the practical physical-initiation deadlock for HB29->HB30 on CURRENT_USER_IPHONE without Render, another machine, hosted production authority, GitHub-token runtime authority, or any NON-TV/TVC secret/token.",
+    "destination": "StegVerse-Labs/.github",
+    "branch": "main",
+    "canonical_locations": [
+      "StegVerse-Labs/.github#209",
+      "handoffs/SHWP-IPHONE-HB30-INLINE-CAPSULE-002.json",
+      "management/SHWP_IPHONE_TRANSITION_CAPSULE_CONTRACT.json",
+      "capsules/iphone-hb30-inline-capsule.js",
+      "scripts/check_iphone_hb30_inline_capsule.py",
+      "tests/test_iphone_hb30_inline_capsule.py",
+      "control/session-integration-claim-2026-08-17-iphone-hb30-inline-capsule.json"
+    ],
+    "current_owner": "source lane COMPLETE_RELEASED; physical execution CURRENT_USER_IPHONE; canonical materialization G18/.github#209; independent observation WorkerCoordinator",
+    "claim_state": "COMPLETE_RELEASED",
+    "completion_state": "SOURCE_COMPLETE_PHYSICAL_EXECUTION_PENDING",
+    "validation_state": "PR214 exact-head Heartbeat Worker Project run 32056394503 / job 95467436421 SUCCESS; executable handoffs PASS; 345/345 deterministic tests PASS; inline capsule and canonical verifier/materializer tests PASS",
+    "integration_state": "MERGED_TO_MAIN_AND_TRANSFERRED_TO_CANONICAL_IPHONE_G18_CONTINUATION",
+    "archival_dependency": false,
+    "evidence": [
+      "PR #214 merge c079216deeaa8fa5d049f6c634d829bde5689596",
+      "final source head e4aba9859f2deed5f626723dfd7faa1ee4720a5e",
+      "claim release f640aef00beb0fd586be8299ae9347537f316c6f",
+      "scoped handoff finalization e56aa8c69c8505d0cf2c392b9a41410ef9aaf1d4",
+      "StegVerse-Labs/.github#209 issue comment 5318804399"
+    ],
+    "next_executable_action": "CURRENT_USER_IPHONE executes the released browser capsule while immutable HB29 remains canonical, retains the portable receipt, then the existing .github verifier/materializer validates/materializes HB30 and WorkerCoordinator independently observes HB30+.",
+    "release_condition": "valid physical CURRENT_USER_IPHONE receipt + canonical HB30 materialization with HB29 unchanged + independent WorkerCoordinator checkpoint + reconstruction PASS + no duplicate claim/fence + no GitHub/NON-TV-TVC runtime credential authority"
+  },
+  "authority_boundary": {
+    "credential_authority": "TV/TVC",
+    "credential_requirement": "NONE",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "render_production_authority": "NONE",
+    "hosted_production_transition_authority": "NONE",
+    "wallet_signing_and_broadcast_authority": "USER_ONLY"
+  },
+  "consolidated_session_totals": {
+    "total_session_goals": 10,
+    "transferred_or_complete": 10,
+    "unique_chat_only_requirements_remaining": 0,
+    "active_session_claims_remaining": 0,
+    "session_execution_role": "MERGED_INTO_CANONICAL_WORKSTREAMS",
+    "archive_safe": true
+  },
+  "canonical_continuation": [
+    "StegVerse-Labs/.github#209",
+    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "StegVerse-Labs/.github#60",
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md"
+  ],
+  "archive_statement": "This addendum preserves the tenth session goal introduced after the base inventory was finalized. The source lane is released and no chat-owned claim remains. Product activation is still incomplete, but its physical and machine continuation owners, evidence paths, and release conditions are repository-resident."
+}
