@@ -16,7 +16,7 @@ def test_inline_capsule_is_publication_independent_and_non_authorizing():
     assert contract['credential_requirement'] == 'NONE'
     assert contract['github_token_runtime_authority'] == 'NONE'
     assert contract['hosted_runtime_production_authority'] == 'NONE'
-    assert "fetch(" not in source
+    assert 'fetch(' not in source
     assert 'XMLHttpRequest' not in source
     assert 'WebSocket' not in source
     assert 'window.ethereum' not in source
@@ -32,7 +32,18 @@ def test_inline_capsule_matches_first_v12_successor():
     assert 'generation: 29' in source
     assert 'epoch: 30' in source
     assert 'generation: 30' in source
-    assert "legacy_hb29_immutable: true" in source
-    assert "worker_authority: false" in source
-    assert "claim_or_fence_mutation: false" in source
-    assert "wallet_authority: false" in source
+    assert 'legacy_hb29_immutable: true' in source
+    assert 'worker_authority: false' in source
+    assert 'claim_or_fence_mutation: false' in source
+    assert 'wallet_authority: false' in source
+
+
+def main() -> int:
+    test_inline_capsule_is_publication_independent_and_non_authorizing()
+    test_inline_capsule_matches_first_v12_successor()
+    print('IPHONE_HB30_INLINE_TESTS_PASS cases=2')
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
