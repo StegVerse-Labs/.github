@@ -47,10 +47,76 @@ When AE-AUTO-0011 produces a validated mathematical state, downstream semantic i
 ```text
 StegVerse-Labs/StegScholar/RELATIONAL_GOVERNANCE_MATH_INTEGRATION_MIRROR_HANDOFF.md
 StegVerse-Labs/StegCore/RELATIONAL_GOVERNANCE_MATH_ALIGNMENT_MIRROR_HANDOFF.md
+Admissible-Existence/TT/TT_MIRROR_HANDOFF.md
+Admissible-Existence/STCM/STCM_MIRROR_HANDOFF.md
+Admissible-Existence/GTG/RELATIONAL_GOVERNANCE_MATH_ALIGNMENT_MIRROR_HANDOFF.md
 Data-Continuation/RTG-Tests/RTG_TESTS_MIRROR_HANDOFF.md
 ```
 
 The worker may emit integration-ready evidence references but may not directly mutate those repositories.
+
+## Execution ownership and collision partition
+
+Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`.
+
+### MANUAL / SESSION-STARTABLE
+
+```yaml
+- task_id: AE-RELATIONAL-MATH-EVIDENCE-REVIEW
+  execution_owner: future explicitly claimed validation/reconciliation session
+  claim_state: UNCLAIMED
+  worker_registry_ref: NONE
+  manual_execution_allowed: true
+  manual_allowed_role: observation
+  collision_scope: read-only review of AE-AUTO-0011 receipts and downstream exact-version bindings only
+  release_condition: review evidence recorded without mutating worker queue, claim, source mathematics, or consumer authority
+  next_executable_action: none unless a future mismatch or receipt requires distinct review
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```yaml
+- task_id: AE-RELATIONAL-MATH-WORKER-001
+  execution_owner: ae-relational-math-worker + Admissible-Existence/AE autonomous math goal loop
+  claim_state: MACHINE_CLAIM_ON_EXECUTION
+  worker_registry_ref: control/worker-registry.d/ae-relational-math-worker-001.json
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  collision_scope: AE-AUTO-0011 queue admission, repository-local mathematical validation, derivation receipts, and terminal state observation
+  release_condition: AE-AUTO-0011 reaches terminal validated state and downstream exact-version integration bindings are durable
+  next_executable_action: on next admitted StegVerse execution opportunity locate canonical local AE source and run process:ae-relational-math-v1
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```yaml
+- task_id: AE-RELATIONAL-MATH-CONSTRAINT-RESOLUTION
+  execution_owner: Admissible-Existence/AE source authority and canonical StegVerse resolution chain
+  claim_state: ESCALATED_IF_WORKER_CANNOT_RESOLVE
+  worker_registry_ref: control/worker-registry.d/ae-relational-math-worker-001.json
+  manual_execution_allowed: false
+  manual_allowed_role: NONE
+  collision_scope: contradictory mathematical authority, unsupported queue mutation, missing canonical source, or request exceeding worker authority ceiling
+  release_condition: AE source authority resolves the exact condition or a bounded successor task is durably admitted
+  next_executable_action: fail closed and record the exact machine-observable constraint rather than broadening worker authority
+```
+
+### COMPLETED / SUPERSEDED
+
+```yaml
+- task_id: CHAT-OWNED-AE-RELATIONAL-MATH-DERIVATION
+  execution_owner: SUPERSEDED_BY_MACHINE_WORKER
+  claim_state: SUPERSEDED
+  worker_registry_ref: control/worker-registry.d/ae-relational-math-worker-001.json
+  manual_execution_allowed: false
+  manual_allowed_role: observation
+  release_condition: worker registry + executable handoff installed
+  next_executable_action: none; do not recreate a chat-owned derivation lane
+```
+
+## Validation state
+
+Organization active-worker and control-plane invariants accepted the registered task/worker. The first organization-control validation exposed only this handoff's missing required ownership partition; this revision installs that partition. Revalidation must pass before the worker registration is treated as source-validated.
 
 ## Release condition
 
