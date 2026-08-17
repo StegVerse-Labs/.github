@@ -1,6 +1,6 @@
 # StegVerse-Labs Organization Mirror Handoff
 
-Updated: 2026-08-17 13:59 -05:00
+Updated: 2026-08-17 14:02 -05:00
 Repository: `StegVerse-Labs/.github`
 Branch: `main`
 
@@ -128,7 +128,6 @@ Do not reopen or duplicate this implementation.
 ## Ecosystem Chat sovereign inference — MACHINE OWNED / NOT YET LIVE-PROVEN
 
 Owner: `StegVerse-Labs/.github#60`.
-
 Recovery lane: `control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json`.
 
 After v12 carrier/WorkerCoordinator continuity and recovery predicates are satisfied, the parent must acquire a fresh authorized fence >20 and execute:
@@ -146,16 +145,12 @@ Completion requires immutable evidence with `same_execution=true` and `github_to
 ## StegFin trade-ready boundary — COMPLETE AT PRE-SIGN HANDOFF
 
 Canonical StegFin authority:
-
 `StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md`
 
 Canonical receipt:
-
 `StegVerse-Labs/stegfin-governance/receipts/phone-live/STEGFIN-PHONE-LIVE-EVIDENCE-20260816T2150-0500.json`
 
 Evidence commit: `53fc6263fa1e4f2e690389f16351b97a5ff9c880`.
-
-Verified boundary:
 
 ```text
 WALLET_HANDOFF_READY: true
@@ -208,47 +203,7 @@ StegFin pre-sign evidence
 
 Site/Publisher/admissibility-wiki/stegguardian-wiki propagation is capability-specific and remains governed by each consumer's release gate. No blanket propagation is claimed.
 
-## Collision partition
-
-### PHYSICAL / MACHINE OWNED — DO NOT COMPETE
-
-```text
-SHWP-IPHONE-HB30-INLINE-CAPSULE-002
-  source: COMPLETE_RELEASED
-  physical boundary: CURRENT_USER_IPHONE
-  continuation: .github#209 -> G18 -> WorkerCoordinator
-
-SHWP-DURABLE-RUNTIME-ACTIVATION
-  owner: G18 sovereign-runtime-activation-worker
-  release: HB30+ carrier + independent WorkerCoordinator + reconstruction PASS
-
-RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28
-  owner: ecosystem-chat-orphan-recovery-worker
-  release: recovery receipt complete + parent eligible for a fresh fence
-
-ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION
-  owner: heartbeat-managed sovereign inference worker -> TVC -> LLM-adapter -> Master Records
-  release: immutable same-execution private-model activation evidence
-
-TV-TVC-CREDENTIAL-AND-ROUTE-AUTHORITY
-  owner: StegVerse-Labs/TV + StegVerse-Labs/TVC
-```
-
-### COMPLETE / SUPERSEDED
-
-```text
-SOVEREIGN-LOCAL-MODEL-SOURCE: COMPLETE_RELEASED
-SHWP-IPHONE-HB30-INLINE-CAPSULE-002 source: COMPLETE_RELEASED
-POST-PR206-AUTHORITY-RECONCILIATION: COMPLETE_RELEASED
-STEGFIN trade-ready wallet-handoff preparation: COMPLETE_ACTIVATED_AT_PRE_SIGN_BOUNDARY
-STEGFIN-CONTINUITY-CARRIER-007 for wallet-handoff goal: SUPERSEDED / RELEASED
-legacy resident-daemon prerequisite: SUPERSEDED_BY_PR_206
-GitHub-token runtime authority: PROHIBITED / SUPERSEDED
-```
-
 ## Validation evidence
-
-Retained validations include:
 
 ```text
 PR #206 merge: b7c5b5e9199c5af46029210fe7909dcf19033b41
@@ -293,7 +248,39 @@ Canonical continuation locations:
 - `StegVerse-Labs/Executive_Rhetoric_Ledger/assessments/machine/CHATGPT_MODEL_BEHAVIOR_MIRROR_HANDOFF.md`
 - `StegVerse-Labs/TVC/docs/HIL_TVC_MIRROR_HANDOFF.md`
 
-Archiving this conversation cannot remove or disable the physical receipt contract, G18, WorkerCoordinator, sovereign inference work, or USER_ONLY trade boundary. Their owners, evidence paths, collision boundaries, and release conditions are repository-resident.
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: organization handoff documentation and session-consolidation records only
+release_condition: no chat-owned claim remains; physical CURRENT_USER_IPHONE and canonical machine owners retain their own authority boundaries
+next_executable_action: do not manually execute G18, WorkerCoordinator, sovereign inference, provider, or wallet actions from a chat/session lane
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+- `SHWP-DURABLE-RUNTIME-ACTIVATION` — G18 sovereign-runtime-activation-worker; release at HB30+ carrier + independent WorkerCoordinator + reconstruction PASS.
+- `RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28` — ecosystem-chat-orphan-recovery-worker; release when the parent can receive a fresh fence.
+- `ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION` — heartbeat-managed sovereign inference worker -> TVC -> LLM-adapter -> Master Records; release at immutable same-execution evidence.
+
+### ESCALATED / AUTHORITY-OWNED
+
+- Physical transition execution is `CURRENT_USER_IPHONE` under `.github#209`; the browser receipt has authority effect `NONE`.
+- Credential/route authority remains TV/TVC.
+- Wallet signing and broadcast remain USER_ONLY.
+
+### COMPLETED / SUPERSEDED
+
+- `SOVEREIGN-LOCAL-MODEL-SOURCE`: COMPLETE_RELEASED.
+- `SHWP-IPHONE-HB30-INLINE-CAPSULE-002` source: COMPLETE_RELEASED.
+- `POST-PR206-AUTHORITY-RECONCILIATION`: COMPLETE_RELEASED.
+- StegFin wallet-handoff preparation: COMPLETE_ACTIVATED_AT_PRE_SIGN_BOUNDARY.
+- `STEGFIN-CONTINUITY-CARRIER-007` for the completed wallet-handoff goal: SUPERSEDED / RELEASED.
+- legacy resident-daemon prerequisite: SUPERSEDED_BY_PR_206.
+- GitHub-token runtime authority: PROHIBITED / SUPERSEDED.
 
 ## Completion / archive posture
 
