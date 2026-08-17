@@ -19,7 +19,7 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
     def invocation(self) -> dict:
         return {
             "schema": "stegverse.worker-invocation/v0.1",
-            "heartbeat_epoch": 30,
+            "heartbeat_epoch": 29,
             "task": {
                 "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
                 "claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
@@ -29,13 +29,8 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
             },
             "handoff": {
                 "execution": {
-                    "required_capabilities": [
-                        "runtime_observation",
-                        "continuous_process_execution",
-                        "durable_state_reconstruction",
-                        "bounded_repository_mutation",
-                    ],
-                    "allowed_paths": ["receipts/sovereign-runtime-activation/**"],
+                    "required_capabilities": ["runtime_observation", "continuous_process_execution", "durable_state_reconstruction", "bounded_repository_mutation"],
+                    "allowed_paths": ["receipts/sovereign-runtime-activation/**", "receipts/heartbeat-transition-continuity/**"],
                 }
             },
         }
@@ -51,226 +46,129 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
                 "worker_instance_id": "sovereign-node-repository-resolution-worker-v1-HB31-G21",
                 "heartbeat_timing": {"fencing_token": 21},
             },
-            "handoff": {
-                "execution": {
-                    "required_capabilities": ["repository_resolution", "sandbox_validation"],
-                    "allowed_paths": ["receipts/sovereign-runtime-activation/**"],
-                }
-            },
-            "scope": {
-                "required_capabilities": ["repository_resolution", "sandbox_validation"],
-                "allowed_paths": ["receipts/sovereign-runtime-activation/**"],
-            },
+            "handoff": {"execution": {"required_capabilities": ["repository_resolution", "sandbox_validation"], "allowed_paths": ["receipts/sovereign-runtime-activation/**"]}},
+            "scope": {"required_capabilities": ["repository_resolution", "sandbox_validation"], "allowed_paths": ["receipts/sovereign-runtime-activation/**"]},
         }
 
-    def test_missing_declared_node_emits_next_level_resolution_contract(self) -> None:
+    def _materialize_worker_source(self, root: Path) -> None:
+        for rel in (
+            "workers/sovereign_runtime_activation_worker.py",
+            "scripts/advance_heartbeat_transition.py",
+            "scripts/run_heartbeat_runtime.py",
+            "heartbeat_runtime/engine_v12.py",
+            "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
+            "control/heartbeat-state.json",
+            "control/worker-control-plane-coordination.json",
+        ):
+            source = ROOT / rel
+            target = root / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(source.read_bytes())
+
+    def test_missing_transition_context_emits_exact_execution_opportunity_contract(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
-            env = {
-                "PATH": os.environ.get("PATH", ""),
-                "HOME": str(Path(tmp) / "home"),
-                "XDG_STATE_HOME": str(Path(tmp) / "state"),
-            }
-            completed = subprocess.run(
-                [sys.executable, str(WORKER)],
-                cwd=tmp,
-                input=json.dumps(self.invocation()) + "\n",
-                text=True,
-                capture_output=True,
-                env=env,
-                check=False,
-            )
+            root = Path(tmp)
+            self._materialize_worker_source(root)
+            # Remove the transition contract to force the new exact fail-closed path.
+            (root / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json").unlink()
+            env = {"PATH": os.environ.get("PATH", ""), "HOME": str(root / "home"), "XDG_STATE_HOME": str(root / "state")}
+            completed = subprocess.run([sys.executable, str(root / "workers" / "sovereign_runtime_activation_worker.py")], cwd=root, input=json.dumps(self.invocation()) + "\n", text=True, capture_output=True, env=env, check=False)
             self.assertEqual(completed.returncode, 0, completed.stderr)
             response = json.loads(completed.stdout)
             self.assertEqual(response["state"], "BLOCKED")
             self.assertEqual(response["transition_id"], "SOVEREIGN_RUNTIME_RESOLUTION_ESCALATION_REQUIRED")
-            self.assertEqual(response["expected_next_transition"], "DERIVE_AND_REGISTER_RESOLUTION_TASK")
+            self.assertEqual(response["expected_next_transition"], "EXECUTE_BOUNDED_V12_STATE_TRANSITION")
             blocker = response["blocker"]
-            self.assertEqual(blocker["dependency_class"], "LOCAL_EXECUTION_SURFACE")
-            self.assertEqual(blocker["trigger_type"], "CONDITIONAL_CONSTRAINT")
-            self.assertTrue(blocker["solution_required"])
-            self.assertFalse(blocker["resolvable_by_current_worker"])
+            self.assertEqual(blocker["dependency_class"], "EXECUTION_OPPORTUNITY")
+            self.assertTrue(blocker["resolvable_by_current_worker"])
             self.assertFalse(blocker["physical_additional_machine_required"])
-            self.assertEqual(blocker["escalation_target"], "SOVEREIGN_RUNTIME_OWNER")
-            self.assertIn("repository_resolution", blocker["required_capabilities"])
-            self.assertGreaterEqual(len(blocker["workaround_candidates"]), 1)
-            self.assertGreaterEqual(len(blocker["completion_evidence"]), 1)
-            self.assertNotIn("may_remain_blocked", blocker)
+            self.assertFalse(blocker["always_on_external_host_required"])
             self.assertNotIn("GITHUB_TOKEN", completed.stdout)
 
-    def test_hosted_environment_is_not_used_as_sovereign_activation(self) -> None:
+    def test_hosted_environment_is_not_used_as_sovereign_transition(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
-            env = {
-                "PATH": os.environ.get("PATH", ""),
-                "HOME": str(Path(tmp) / "home"),
-                "XDG_STATE_HOME": str(Path(tmp) / "state"),
-                "GITHUB_ACTIONS": "true",
-                "STEGVERSE_SOVEREIGN_NODE": "1",
-            }
-            completed = subprocess.run(
-                [sys.executable, str(WORKER)],
-                cwd=tmp,
-                input=json.dumps(self.invocation()) + "\n",
-                text=True,
-                capture_output=True,
-                env=env,
-                check=False,
-            )
+            root = Path(tmp)
+            self._materialize_worker_source(root)
+            env = {"PATH": os.environ.get("PATH", ""), "HOME": str(root / "home"), "XDG_STATE_HOME": str(root / "state"), "GITHUB_ACTIONS": "true"}
+            completed = subprocess.run([sys.executable, str(root / "workers" / "sovereign_runtime_activation_worker.py")], cwd=root, input=json.dumps(self.invocation()) + "\n", text=True, capture_output=True, env=env, check=False)
             self.assertEqual(completed.returncode, 0, completed.stderr)
             response = json.loads(completed.stdout)
             self.assertEqual(response["state"], "BLOCKED")
-            self.assertFalse(response["blocker"]["resolvable_by_current_worker"])
-            receipt = json.loads(
-                (Path(tmp) / "receipts" / "sovereign-runtime-activation" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text()
-            )
-            self.assertTrue(receipt["solution_attempt"]["hosted_environment_rejected"])
-            self.assertEqual(receipt["solution_attempt"]["reason"], "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_RUNTIME_EVIDENCE")
+            self.assertFalse(response["blocker"]["physical_additional_machine_required"])
+            receipt = json.loads((root / "receipts" / "sovereign-runtime-activation" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text())
+            self.assertFalse(receipt["solution_attempt"]["attempted"])
+            self.assertEqual(receipt["solution_attempt"]["reason"], "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_TRANSITION_EVIDENCE")
             self.assertFalse(receipt["third_party_runtime_required"])
 
     def test_carrier_is_release_priority_and_names_stegfin_as_downstream(self) -> None:
         from heartbeat_runtime.engine_v2 import HeartbeatRuntime as HeartbeatRuntimeV2
-
         handoff = json.loads((ROOT / "handoffs" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text())
         self.assertEqual(handoff["task"]["priority"], "release")
-        self.assertLess(
-            HeartbeatRuntimeV2.PRIORITY["release"],
-            HeartbeatRuntimeV2.PRIORITY["critical"],
-        )
+        self.assertLess(HeartbeatRuntimeV2.PRIORITY["release"], HeartbeatRuntimeV2.PRIORITY["critical"])
         self.assertEqual(handoff["authority"]["credential_authority"], "TV/TVC")
         self.assertEqual(handoff["authority"]["github_token_production_authority"], "NONE")
         self.assertIn("STEGFIN-LIVE-ENTRY-003", handoff["release_downstream"])
         self.assertEqual(handoff["constraint"]["operational_state"], "ACTIVE_SOLUTION_EXECUTION")
 
-    def test_g18_adapter_passes_only_sovereign_runtime_declaration_environment(self) -> None:
+    def test_g18_adapter_passes_only_nonsecret_runtime_environment(self) -> None:
         adapters = json.loads((ROOT / "control" / "process-worker-adapters.json").read_text())
-        adapter = next(
-            row for row in adapters["adapters"]
-            if row["adapter_ref"] == "process:sovereign-runtime-activation-v1"
-        )
+        adapter = next(row for row in adapters["adapters"] if row["adapter_ref"] == "process:sovereign-runtime-activation-v1")
         allowlist = set(adapter["env_allowlist"])
-        self.assertIn("STEGVERSE_SOVEREIGN_NODE", allowlist)
         self.assertIn("STEGVERSE_HEARTBEAT_ROOT", allowlist)
-        self.assertNotIn("GITHUB_TOKEN", allowlist)
-        self.assertNotIn("GH_TOKEN", allowlist)
-        self.assertNotIn("ZEROEX_API_KEY", allowlist)
-        self.assertNotIn("WALLET_PRIVATE_KEY", allowlist)
+        for name in ("GITHUB_TOKEN", "GH_TOKEN", "ZEROEX_API_KEY", "WALLET_PRIVATE_KEY", "TVC_TOKEN"):
+            self.assertNotIn(name, allowlist)
 
     def test_v11_resolution_successor_inherits_release_priority(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / "handoffs").mkdir(parents=True)
-            parent_handoff = json.loads(
-                (ROOT / "handoffs" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text()
-            )
-            (root / "handoffs" / "parent.json").write_text(
-                json.dumps(parent_handoff), encoding="utf-8"
-            )
+            parent_handoff = json.loads((ROOT / "handoffs" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text())
+            (root / "handoffs" / "parent.json").write_text(json.dumps(parent_handoff), encoding="utf-8")
             parent = {
-                "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-                "goal_id": parent_handoff["goal"]["goal_id"],
-                "state": "BLOCKED",
-                "handoff_ref": "handoffs/parent.json",
-                "executor_binding": "BOUND",
-                "worker_id": None,
-                "worker_instance_id": None,
-                "claim_id": None,
-                "heartbeat_timing": None,
-                "last_checkpoint_ref": parent_handoff["continuity"]["checkpoint_ref"],
-                "archive_eligible": False,
-                "archive_reason_codes": [],
-                "evidence_refs": [],
+                "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION", "goal_id": parent_handoff["goal"]["goal_id"], "state": "BLOCKED",
+                "handoff_ref": "handoffs/parent.json", "executor_binding": "BOUND", "worker_id": None, "worker_instance_id": None,
+                "claim_id": None, "heartbeat_timing": None, "last_checkpoint_ref": parent_handoff["continuity"]["checkpoint_ref"],
+                "archive_eligible": False, "archive_reason_codes": [], "evidence_refs": [],
             }
             registry = {"generation": 18, "workers": [], "tasks": [parent]}
             contract = {
-                "trigger_type": "CONDITIONAL_CONSTRAINT",
-                "dependency_class": "LOCAL_EXECUTION_SURFACE",
-                "problem_statement": "Current execution surface cannot establish the deployment-local sovereign carrier.",
-                "solution_required": True,
-                "workaround_candidates": ["run G18 on the existing sovereign deployment host"],
-                "next_solution_action": "execute deployment-local bootstrap and same-host logical isolation",
-                "resolvable_by_current_worker": False,
-                "escalation_target": "SOVEREIGN_RUNTIME_OWNER",
-                "required_capabilities": ["repository_resolution", "sandbox_validation"],
-                "completion_evidence": ["nine-predicate activation proof passes"],
+                "trigger_type": "CONDITIONAL_CONSTRAINT", "dependency_class": "EXECUTION_OPPORTUNITY",
+                "problem_statement": "Bounded successor transition could not execute on this opportunity.", "solution_required": True,
+                "workaround_candidates": ["retry bounded v12 transition"], "next_solution_action": "execute bounded v12 transition",
+                "resolvable_by_current_worker": False, "escalation_target": "SOVEREIGN_RUNTIME_OWNER",
+                "required_capabilities": ["repository_resolution", "sandbox_validation"], "completion_evidence": ["HB30 successor evidence"],
             }
             runtime = HeartbeatRuntimeV11(root)
             events: list[dict] = []
-            task_id = runtime._admit_resolution_task(
-                registry,
-                parent,
-                30,
-                events,
-                "resolution-contract:test",
-                contract,
-            )
-            generated = json.loads(
-                (root / "handoffs" / "generated" / f"{task_id}.json").read_text()
-            )
+            task_id = runtime._admit_resolution_task(registry, parent, 30, events, "resolution-contract:test", contract)
+            generated = json.loads((root / "handoffs" / "generated" / f"{task_id}.json").read_text())
             self.assertEqual(generated["task"]["priority"], "release")
-            self.assertTrue(
-                any(event.get("event_type") == "resolution_priority_inherited" for event in events)
-            )
+            self.assertTrue(any(event.get("event_type") == "resolution_priority_inherited" for event in events))
 
     def test_repository_resolution_worker_is_uniquely_profile_eligible(self) -> None:
-        fragment = json.loads(
-            (ROOT / "control" / "worker-registry.d" / "sovereign-node-repository-resolution-v1.json").read_text()
-        )
-        worker = fragment["workers"][0]
-        self.assertEqual(worker["capabilities"], ["repository_resolution", "sandbox_validation"])
-        self.assertEqual(
-            worker["capability_profile_ref"],
-            "control/worker-capability-profiles.json#sovereign-resolution-worker-v1",
-        )
+        fragment = json.loads((ROOT / "control" / "worker-registry.d" / "sovereign-node-repository-resolution-v1.json").read_text())
+        worker_row = fragment["workers"][0]
+        self.assertEqual(worker_row["capabilities"], ["repository_resolution", "sandbox_validation"])
+        self.assertEqual(worker_row["capability_profile_ref"], "control/worker-capability-profiles.json#sovereign-resolution-worker-v1")
         profiles = json.loads((ROOT / "control" / "worker-capability-profiles.json").read_text())
-        profile = next(
-            row for row in profiles["profiles"]
-            if row["profile_id"] == "sovereign-resolution-worker-v1"
-        )
-        self.assertEqual(
-            set(profile["allowed_capabilities"]),
-            {"repository_resolution", "sandbox_validation"},
-        )
+        profile = next(row for row in profiles["profiles"] if row["profile_id"] == "sovereign-resolution-worker-v1")
+        self.assertEqual(set(profile["allowed_capabilities"]), {"repository_resolution", "sandbox_validation"})
         adapters = json.loads((ROOT / "control" / "process-worker-adapters.json").read_text())
-        matching = [
-            row for row in adapters["adapters"]
-            if set(row.get("capabilities") or []) == {"repository_resolution", "sandbox_validation"}
-            and row.get("enabled") is True
-        ]
+        matching = [row for row in adapters["adapters"] if set(row.get("capabilities") or []) == {"repository_resolution", "sandbox_validation"} and row.get("enabled") is True]
         self.assertEqual([row["adapter_ref"] for row in matching], ["process:sovereign-node-repository-resolution-v1"])
 
     def test_repository_resolver_escalates_without_node_and_completes_with_authorized_declaration(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            base_env = {
-                "PATH": os.environ.get("PATH", ""),
-                "HOME": str(root / "home"),
-                "XDG_STATE_HOME": str(root / "state"),
-            }
-            blocked = subprocess.run(
-                [sys.executable, str(RESOLVER)],
-                cwd=tmp,
-                input=json.dumps(self.resolver_invocation()) + "\n",
-                text=True,
-                capture_output=True,
-                env=base_env,
-                check=False,
-            )
+            base_env = {"PATH": os.environ.get("PATH", ""), "HOME": str(root / "home"), "XDG_STATE_HOME": str(root / "state")}
+            blocked = subprocess.run([sys.executable, str(RESOLVER)], cwd=tmp, input=json.dumps(self.resolver_invocation()) + "\n", text=True, capture_output=True, env=base_env, check=False)
             self.assertEqual(blocked.returncode, 0, blocked.stderr)
             blocked_response = json.loads(blocked.stdout)
             self.assertEqual(blocked_response["state"], "BLOCKED")
             self.assertEqual(blocked_response["blocker"]["escalation_target"], "COMPONENT_AUTHORITY")
             self.assertNotIn("GITHUB_TOKEN", blocked.stdout)
-
-            declared_env = dict(base_env)
-            declared_env["STEGVERSE_SOVEREIGN_NODE"] = "1"
-            completed = subprocess.run(
-                [sys.executable, str(RESOLVER)],
-                cwd=tmp,
-                input=json.dumps(self.resolver_invocation()) + "\n",
-                text=True,
-                capture_output=True,
-                env=declared_env,
-                check=False,
-            )
+            declared_env = dict(base_env); declared_env["STEGVERSE_SOVEREIGN_NODE"] = "1"
+            completed = subprocess.run([sys.executable, str(RESOLVER)], cwd=tmp, input=json.dumps(self.resolver_invocation()) + "\n", text=True, capture_output=True, env=declared_env, check=False)
             self.assertEqual(completed.returncode, 0, completed.stderr)
             completed_response = json.loads(completed.stdout)
             self.assertEqual(completed_response["state"], "COMPLETED")
