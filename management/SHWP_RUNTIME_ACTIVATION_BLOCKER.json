@@ -1,13 +1,16 @@
 {
-  "schema": "stegverse.runtime-activation-constraint/v1.0",
+  "schema": "stegverse.runtime-activation-constraint/v1.1",
   "constraint_id": "SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-16-IPHONE-CARRIER",
   "goal_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
   "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
-  "operational_state": "CARRIER_CONSTRAINT_CORRECTED",
-  "last_reconciled_at": "2026-08-16T13:38:00-05:00",
-  "resolution_runtime": "heartbeat_runtime.engine_v11.HeartbeatRuntime",
+  "operational_state": "STATE_TRANSITION_CONTINUITY_RECONCILED_PENDING_EXECUTION",
+  "last_reconciled_at": "2026-08-17T01:43:00-05:00",
+  "resolution_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
+  "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+  "state_transition_contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
+  "state_transition_producer": "scripts/advance_heartbeat_transition.py",
   "missing_implementation": false,
   "physical_host_cardinality_default": 1,
   "sole_permitted_user_physical_carrier": "CURRENT_USER_IPHONE",
@@ -15,6 +18,9 @@
   "third_party_machine_allowed_or_required": false,
   "github_actions_is_production_runtime": false,
   "third_party_process_host_required": false,
+  "always_on_external_host_required": false,
+  "wall_clock_continuous_process_required": false,
+  "resident_native_supervision_optional": true,
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_production_authority": "NONE",
@@ -22,7 +28,7 @@
     "canonical_heartbeat_state_epoch": 29,
     "canonical_generation": 29,
     "last_durable_cycle_observed_at": "2026-08-10T20:51:11Z",
-    "meaning": "retained historical heartbeat state; not evidence that a missing second machine is required"
+    "meaning": "immutable legacy HB29 cutover source; not evidence that another physical machine or an always-on external host is required"
   },
   "corrected_invariants": {
     "another_physical_machine_may_block_release": false,
@@ -30,25 +36,34 @@
     "current_iphone_is_only_permitted_user_physical_carrier": true,
     "heartbeat_continuity_is_state_transition_continuity": true,
     "wall_clock_continuous_process_is_required_for_continuity": false,
+    "resident_native_supervision_is_required_for_continuity": false,
     "wall_clock_worker_expiry_authority": false,
     "historical_hb29_may_be_replayed_or_reconstructed": true,
-    "future_transition_must_advance_from_retained_state_without_rewriting_hb29": true
+    "future_transition_must_advance_from_retained_state_without_rewriting_hb29": true,
+    "first_separated_v12_successor_epoch": 30,
+    "worker_runtime_is_independently_authorized_from_carrier": true
   },
   "superseded_blockers": [
     "SOVEREIGN_NODE_RUNTIME_NOT_YET_OBSERVED",
     "DEPLOYMENT_HOST_CONTROL_PLANE_REACHABILITY",
-    "WAIT_FOR_ADDITIONAL_STEGVERSE_OWNED_OR_FEDERATED_MACHINE"
+    "WAIT_FOR_ADDITIONAL_STEGVERSE_OWNED_OR_FEDERATED_MACHINE",
+    "ALWAYS_ON_EXTERNAL_HOST_REQUIRED",
+    "CONTINUOUS_NATIVE_SERVICE_REQUIRED_FOR_HEARTBEAT_CONTINUITY"
   ],
-  "current_blocker": null,
+  "current_blocker": "HB30_STATE_TRANSITION_NOT_YET_OBSERVED",
   "release_blocked_by_physical_node_availability": false,
+  "release_blocked_by_always_on_host_availability": false,
   "release_blocked_by_heartbeat_epoch_remaining_at_29": false,
-  "next_transition_semantics": "When the canonical heartbeat next executes on an allowed StegVerse execution surface associated with the current iPhone session/control plane, derive the next state from retained HB29 and emit HB30 or a later valid successor. Do not search for or require another physical machine and do not require an always-on third-party host.",
+  "next_transition_semantics": "At the next admitted StegVerse worker/control-plane execution opportunity associated with the current iPhone carrier policy, execute scripts/advance_heartbeat_transition.py. The bounded v12 carrier cycle derives HB30 or the next valid successor from retained state, leaves control/heartbeat-state.json immutable at HB29, and persists separated carrier state. The independent WorkerCoordinator observes that carrier state on its current or next tick. Do not search for or require another physical machine and do not require an always-on external host.",
+  "machine_observable_release_condition": "receipts/heartbeat-transition-continuity/latest.json is CARRIER_TRANSITION_COMPLETE at HB30 or later, then control/worker-runtime-state.json and control/worker-control-plane-coordination.json observe that carrier epoch without duplicate claim/fence and state reconstruction passes",
   "worker_policy": {
     "search_for_other_machine": "PROHIBITED",
     "wait_for_other_machine": "PROHIBITED",
     "activate_other_machine": "PROHIBITED",
     "substitute_render_github_actions_vercel_cloudflare_as_runtime": "PROHIBITED",
-    "retain_and_reconstruct_state_between_execution opportunities": "REQUIRED"
+    "require_wall_clock_daemon_for_continuity": "PROHIBITED",
+    "retain_and_reconstruct_state_between_execution_opportunities": "REQUIRED",
+    "resident_native_supervision": "OPTIONAL_OPTIMIZATION_NOT_CONTINUITY_AUTHORITY"
   },
   "authority_effect": "NONE"
 }

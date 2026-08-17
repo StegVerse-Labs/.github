@@ -12,7 +12,7 @@ on:
       - '.github/workflows/sovereign-ephemeral-console.yml'
       - 'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json'
       - 'management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json'
-      - 'control/session-implementation-claim-2026-08-16-heartbeat-ephemeral-worker-runtime.json'
+      - 'management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json'
   pull_request:
     paths:
       - 'scripts/run_sovereign_ephemeral_console.py'
@@ -24,7 +24,7 @@ on:
       - '.github/workflows/sovereign-ephemeral-console.yml'
       - 'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json'
       - 'management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json'
-      - 'control/session-implementation-claim-2026-08-16-heartbeat-ephemeral-worker-runtime.json'
+      - 'management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json'
   workflow_dispatch:
 
 permissions: {}
@@ -75,17 +75,17 @@ jobs:
             tests.test_sovereign_ephemeral_console \
             tests.test_ephemeral_separated_runtime_supervision
 
-      - name: Verify G18 automatically owns fallback
+      - name: Verify optional resident fallback remains separated and non-authorizing
         shell: bash
         run: |
           set -eu
-          grep -q 'run_sovereign_ephemeral_console.py' workers/sovereign_runtime_activation_worker.py
-          grep -q 'physical_additional_machine_required' workers/sovereign_runtime_activation_worker.py
-          grep -q 'SOVEREIGN_EPHEMERAL_CONSOLE_VERIFIED' workers/sovereign_runtime_activation_worker.py
           grep -q 'run_worker_runtime.py' scripts/restart_sovereign_ephemeral_node.py
           grep -q 'heartbeat_runtime.engine_v12.HeartbeatRuntime' scripts/run_sovereign_ephemeral_console.py
           grep -q 'heartbeat_runtime.worker_runtime.WorkerCoordinator' scripts/run_sovereign_ephemeral_console.py
-          echo 'G18_ONE_HOST_SEPARATED_RUNTIME_FALLBACK_BOUND'
+          grep -q 'resident_native_supervision_optional' management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json
+          grep -q 'always_on_external_host_required' management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json
+          grep -q 'scripts/advance_heartbeat_transition.py' handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
+          echo 'OPTIONAL_ONE_HOST_SEPARATED_RUNTIME_FALLBACK_PASS'
 
       - name: Prove hosted runner is validation only
         shell: bash

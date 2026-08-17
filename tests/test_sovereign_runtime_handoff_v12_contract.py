@@ -31,27 +31,30 @@ class SovereignRuntimeHandoffV12ContractTests(unittest.TestCase):
         self.assertEqual(cutover["carrier_state"], "control/heartbeat-carrier-runtime-state.json")
         self.assertFalse(execution["legacy_state_mutable_after_cutover"])
         self.assertEqual(execution["legacy_state_epoch"], 29)
-        self.assertIn("control/heartbeat-state.json", action)
-        self.assertIn("remaining at HB29", action)
-        self.assertIn("HB30 or later", action)
+        self.assertIn("advance_heartbeat_transition.py", action)
+        self.assertIn("legacy HB29", action)
+        self.assertIn("HB30 or a later valid successor", action)
 
-    def test_worker_coordinator_and_all_nine_predicates_are_required(self):
-        continuity = self.handoff["continuity"]
+    def test_state_transition_continuity_replaces_resident_service_as_completion_prerequisite(self):
+        continuity = self.handoff["state_transition_continuity"]
         expected = {
-            "runtime_materialized",
-            "native_service_active",
-            "continuous_runtime_live",
-            "heartbeat_epoch_advanced",
-            "worker_coordination_checkpoint_observed",
-            "controlled_restart_observed",
-            "epoch_and_generation_non_regressing",
+            "legacy_hb29_unchanged",
+            "carrier_epoch_at_least_30",
+            "carrier_generation_non_regressing",
+            "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch",
+            "worker_control_plane_observed",
             "no_duplicate_claim_or_fence",
             "state_reconstruction_pass",
         }
-        self.assertEqual(set(continuity["required_predicates"]), expected)
-        terminal = " ".join(self.handoff["completion"]["terminal_when"])
-        self.assertIn("WorkerCoordinator", terminal)
-        self.assertIn("control/heartbeat-carrier-runtime-state.json", terminal)
+        self.assertEqual(set(continuity["terminal_predicates"]), expected)
+        self.assertFalse(continuity["another_physical_machine_required"])
+        self.assertFalse(continuity["always_on_external_host_required"])
+        self.assertFalse(continuity["wall_clock_continuous_process_required"])
+        self.assertTrue(continuity["resident_native_supervision_optional"])
+        self.assertEqual(continuity["transition_producer"], "scripts/advance_heartbeat_transition.py")
+        resident = set(self.handoff["continuity"]["resident_supervision_optional_predicates"])
+        self.assertIn("continuous_runtime_live", resident)
+        self.assertIn("controlled_restart_observed", resident)
 
     def test_repairs_and_authority_boundaries_are_durable(self):
         repairs = self.handoff["released_repairs"]
