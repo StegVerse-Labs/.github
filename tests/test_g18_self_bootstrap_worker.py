@@ -113,6 +113,22 @@ class G18SelfBootstrapWorkerTests(unittest.TestCase):
         self.assertIn("second or third physical machine is not required", contract["problem_statement"])
         self.assertIn("run_sovereign_ephemeral_console.py", contract["next_solution_action"])
 
+    def test_process_adapter_timeout_covers_full_released_solution_envelope(self):
+        registry = json.loads((ROOT / "control" / "process-worker-adapters.json").read_text(encoding="utf-8"))
+        adapters = {entry["adapter_ref"]: entry for entry in registry["adapters"]}
+        adapter = adapters["process:sovereign-runtime-activation-v1"]
+
+        # execute_native_solution() permits a 420s self-bootstrap attempt followed
+        # by a 600s one-host ephemeral-console fallback.  The enclosing process
+        # adapter must not kill the worker before those bounded child operations
+        # can complete and emit their fail-closed/COMPLETE receipt.
+        self.assertGreaterEqual(adapter["timeout_seconds"], 420 + 600 + 120)
+        self.assertNotIn("GITHUB_TOKEN", adapter["env_allowlist"])
+        self.assertNotIn("GH_TOKEN", adapter["env_allowlist"])
+        self.assertNotIn("TVC_TOKEN", adapter["env_allowlist"])
+        self.assertTrue(any("self-bootstrap" in note for note in adapter["notes"]))
+        self.assertTrue(any("ephemeral-console" in note for note in adapter["notes"]))
+
 
 if __name__ == "__main__":
     unittest.main()
