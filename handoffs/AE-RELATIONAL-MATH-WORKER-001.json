@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-AE-RELATIONAL-MATH-WORKER-001",
   "created_at": "2026-08-17T02:56:00-05:00",
-  "updated_at": "2026-08-17T03:12:00-05:00",
+  "updated_at": "2026-08-17T09:55:00-05:00",
   "state": "HANDOFF_READY_MACHINE_OWNED",
   "admissible_existence": {
     "capability_id": "stegverse:capability:ae-relational-math:v1",
@@ -90,6 +90,8 @@
   },
   "authority": {
     "authority_source": "Admissible-Existence/AE autonomous standing + user-directed bounded StegVerse worker registration",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "stegverse-worker-handoff-v1",
     "credential_authority": "TV/TVC",
     "credential_requirement": "NONE",
     "github_token_production_authority": "NONE",
