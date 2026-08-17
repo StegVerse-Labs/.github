@@ -2,6 +2,7 @@
   "schema_version": "1.0.0",
   "integration_id": "ECOSYSTEM-RELATIONAL-GOVERNANCE-MATHEMATICS-001",
   "created_at": "2026-08-17T02:56:00-05:00",
+  "updated_at": "2026-08-17T03:14:00-05:00",
   "source_authority": {
     "repository": "Admissible-Existence/AE",
     "goal_id": "AE-AUTO-0011",
@@ -29,6 +30,13 @@
       "role": "research_integration",
       "handoff": "RELATIONAL_GOVERNANCE_MATH_INTEGRATION_MIRROR_HANDOFF.md",
       "installed_surface": "papers/relational-transition-geometry/state-manifold-governance-extension.md",
+      "state": "BOUND_PENDING_TERMINAL_AE_MATH"
+    },
+    {
+      "repository": "Admissible-Existence/RTG",
+      "role": "rtg_protocol_alignment",
+      "handoff": "RTG_MIRROR_HANDOFF.md",
+      "installed_surface": "docs/state-manifold-governance-alignment.md",
       "state": "BOUND_PENDING_TERMINAL_AE_MATH"
     },
     {
@@ -63,10 +71,19 @@
       "repository": "Data-Continuation/RTG-Tests",
       "role": "independent_validation",
       "handoff": "RTG_TESTS_MIRROR_HANDOFF.md",
-      "installed_surface": "fixtures/state-manifold-governance/core-cases.json",
-      "state": "VALIDATION_ACTIVE"
+      "installed_surface": "evidence/state-manifold-governance/latest.json",
+      "state": "PROVISIONAL_SOURCE_VALIDATION_PASS_5_OF_5; TERMINAL_SOURCE_REVALIDATION_PENDING"
     }
   ],
+  "independent_validation": {
+    "repository": "Data-Continuation/RTG-Tests",
+    "run_id": 32008822202,
+    "job_id": 95323796338,
+    "head_sha": "d567ccb088bfdadc63b61be60d34e7187eadf031",
+    "result": "SUCCESS",
+    "tests": "5/5",
+    "binding": "PROVISIONAL_AE_AUTO_0011_SEED"
+  },
   "publication_consumers": [
     "StegVerse-Labs/Site",
     "GCAT-BCAT-Engine/Publisher",
