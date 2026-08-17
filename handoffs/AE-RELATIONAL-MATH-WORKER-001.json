@@ -1,0 +1,95 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-AE-RELATIONAL-MATH-WORKER-001",
+  "created_at": "2026-08-17T02:56:00-05:00",
+  "updated_at": "2026-08-17T02:56:00-05:00",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "AE-RELATIONAL-MATH-WORKER-001",
+    "objective": "Drive Admissible-Existence/AE autonomous goal AE-AUTO-0011 to formalize, derive, falsify, and integrate state-manifold relational governance mathematics without granting the carrier mathematical, publication, credential, or foreign-repository authority.",
+    "success_predicates": [
+      "Admissible-Existence/AE is locally materialized and repository identity is verified",
+      "AE-AUTO-0011 is present in the canonical autonomous queue",
+      "AE autonomous standing authorizes the state-manifold validator and write surfaces",
+      "deterministic relational-governance fixtures validate",
+      "the worker emits a receipt identifying queue state and exact AE source commit when locally available",
+      "no non-TV/TVC secret or token is accepted or emitted"
+    ],
+    "failure_predicates": [
+      "AE source root cannot be verified",
+      "queue or standing invariants fail",
+      "validator fails",
+      "the requested action would publish, release, certify, tag, or modify a foreign repository",
+      "a credential or provider secret is requested"
+    ],
+    "authority_ceiling": [
+      "local_repository_discovery",
+      "bounded_process_execution",
+      "ae_autonomous_queue_enqueue",
+      "ae_repository_local_validation",
+      "bounded_receipt_emission",
+      "no_publication",
+      "no_release",
+      "no_external_execution",
+      "no_foreign_repository_mutation",
+      "no_credentials"
+    ],
+    "successor_policy": "NONE",
+    "max_successor_depth": 0
+  },
+  "task": {
+    "task_id": "AE-RELATIONAL-MATH-WORKER-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "Admissible-Existence/AE:data/autonomous_goal_seeds/AE-AUTO-0011.json",
+    "source_refs": [
+      "docs/AE_RELATIONAL_MATH_WORKER_MIRROR_HANDOFF.md",
+      "workers/ae_relational_math_worker.py",
+      "control/worker-registry.d/ae-relational-math-worker-001.json",
+      "control/process-worker-adapters.d/ae-relational-math-worker-001.json",
+      "Admissible-Existence/AE:data/autonomous_goal_seeds/AE-AUTO-0011.json",
+      "Admissible-Existence/AE:docs/STATE_MANIFOLD_RELATIONAL_GOVERNANCE_MATHEMATICS.md"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "User-directed employment of an AE-owned worker for relational mathematics formalization and ecosystem integration.",
+    "derivation_depth": 0,
+    "canonical_lineage_key": "admissible-existence:relational-governance-mathematics",
+    "priority": "research",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "worker_registry_ref": "control/worker-registry.d/ae-relational-math-worker-001.json",
+    "worker_id": "ae-relational-math-worker",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "observation"
+  },
+  "authority": {
+    "authority_source": "Admissible-Existence/AE autonomous standing + user-directed bounded StegVerse worker registration",
+    "credential_authority": "TV/TVC",
+    "credential_requirement": "NONE",
+    "github_token_production_authority": "NONE",
+    "github_token_required": false,
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "foreign_repository_write_authority": false,
+    "publication_authority": false,
+    "release_authority": false
+  },
+  "execution": {
+    "required_capabilities": ["runtime_observation", "bounded_process_execution", "repository_local_validation"],
+    "allowed_paths": ["Admissible-Existence/AE:data/**", "Admissible-Existence/AE:docs/**", "Admissible-Existence/AE:tools/**", "receipts/ae-relational-math/**"],
+    "allowed_services": [],
+    "max_actions": 32,
+    "max_retries": 3,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 64,
+    "rate_class": "ae_relational_math"
+  },
+  "completion": {
+    "next_authorized_action": "On the next admitted StegVerse worker opportunity, locate a local Admissible-Existence/AE checkout, execute the bounded AE queue/validation path, and persist a receipt; do not compete with AE's source authority or downstream repository integration owners.",
+    "terminal_when": [
+      "AE-AUTO-0011 terminal validated state observed",
+      "deterministic validation receipt present",
+      "cross-repository integration bindings recorded",
+      "non_tv_tvc_secret_or_token_used=false"
+    ],
+    "release_condition": "AE-AUTO-0011 terminal validated state plus durable downstream integration bindings, or fail-closed receipt with a machine-observable release condition"
+  }
+}
