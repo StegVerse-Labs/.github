@@ -24,7 +24,23 @@
       "state": "HANDOFF_READY",
       "task_id": "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001",
       "worker_id": null,
-      "worker_instance_id": null
+      "worker_instance_id": null,
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:tvc-repository-broker-validation:v1",
+        "capability_version": "1.0.0",
+        "phase": "DECLARED",
+        "standing_evidence_refs": [],
+        "admissibility_evidence_refs": [],
+        "integration_evidence_refs": [],
+        "activation_proof_ref": null,
+        "blockers": ["EXACT_TVC_PR20_LOCAL_VALIDATION_RECEIPT_NOT_YET_OBSERVED"],
+        "continuation_owner": "tvc-repository-broker-validation-worker + StegVerse-Labs/TVC#20",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "validates_capability",
+        "target_phase": "ADMISSIBLE"
+      }
     }
   ],
   "workers": [
