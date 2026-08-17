@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.worker-cost-basis/v1",
+  "task_class": "ae_relational_math",
+  "max_actions": 32,
+  "max_retries": 3,
+  "runtime_window_beats": 64,
+  "external_cost_ceiling_usd": 0,
+  "network_required": false,
+  "credential_requirement": "NONE",
+  "github_token_required": false,
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "allowed_capabilities": [
+    "runtime_observation",
+    "bounded_process_execution",
+    "repository_local_validation"
+  ]
+}
