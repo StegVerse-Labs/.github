@@ -2,15 +2,32 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-08-14T18:27:00-05:00",
+  "updated_at": "2026-08-16T21:09:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-    "objective": "Activate the canonical StegVerse single-heartbeat runtime continuously on a StegVerse-owned or StegVerse-federated node using only node-local durable storage and native process supervision.",
-    "success_predicates": ["A sovereign continuous carrier runs the canonical runtime", "Restart/replacement preserves heartbeat and worker state", "No external scheduler or process host owns worker activation"],
-    "failure_predicates": ["A third-party platform becomes a required production dependency", "The worker repeats observation-only failure instead of deriving or escalating solution work", "Carrier restart forks canonical state"],
+    "objective": "Activate the canonical StegVerse separated v12 single-heartbeat carrier plus worker coordinator continuously on a StegVerse-owned or StegVerse-federated node using only node-local durable storage and StegVerse/native process supervision.",
+    "success_predicates": [
+      "A sovereign continuous v12 carrier advances control/heartbeat-carrier-runtime-state.json from the immutable legacy HB29 cutover source",
+      "The separate WorkerCoordinator is continuously live and produces worker runtime/coordination evidence without carrier-granted execution authority",
+      "Controlled restart/replacement preserves carrier and worker continuity and the nine-predicate activation proof passes",
+      "No external scheduler, hosted process provider, GitHub token, or NON-TV/TVC credential becomes production authority"
+    ],
+    "failure_predicates": [
+      "control/heartbeat-state.json is mutated beyond the immutable legacy HB29 source instead of using the v12 carrier state",
+      "Only the carrier is live while the required separate WorkerCoordinator is absent",
+      "A third-party platform becomes a required production dependency",
+      "Carrier or worker restart forks canonical state or duplicates a claim/fence",
+      "The worker repeats observation-only failure instead of deriving or escalating solution work"
+    ],
     "expires_at": null,
-    "authority_ceiling": ["bounded sovereign carrier activation only", "no_cross_subsystem_resource_appropriation", "no_external_scheduler_as_heartbeat_authority", "no_third_party_deployment_dependency"],
+    "authority_ceiling": [
+      "bounded sovereign carrier and worker-runtime activation only",
+      "no_cross_subsystem_resource_appropriation",
+      "no_external_scheduler_as_heartbeat_authority",
+      "no_third_party_deployment_dependency",
+      "no_non_tv_tvc_credential_authority"
+    ],
     "successor_policy": "INHERIT_OR_NARROW",
     "max_successor_depth": 4
   },
@@ -20,28 +37,32 @@
     "source_refs": [
       "StegVerse-Labs/.github#59",
       "StegVerse-Labs/.github#65",
-      "StegVerse-Labs/.github#83",
-      "StegVerse-Labs/.github#117",
       "StegVerse-Labs/.github#160",
-      "control/active-worker-state-policy.json",
+      "StegVerse-Labs/.github#203",
+      "StegVerse-Labs/.github#204",
       "docs/ORG_MIRROR_HANDOFF.md",
       "docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md",
+      "heartbeat_runtime/engine_v12.py",
+      "heartbeat_runtime/worker_runtime.py",
+      "heartbeat_runtime/assignment_timer.py",
       "workers/sovereign_runtime_activation_worker.py",
-      "workers/sovereign_node_repository_resolution_worker.py",
-      "heartbeat_runtime/engine_v11.py",
-      "control/process-worker-adapters.json",
-      "control/worker-capability-profiles.json",
-      "control/worker-registry.d/sovereign-node-repository-resolution-v1.json",
       "scripts/bootstrap_sovereign_runtime.py",
       "scripts/install_sovereign_heartbeat_service.py",
+      "scripts/run_heartbeat_runtime.py",
+      "scripts/run_worker_runtime.py",
+      "scripts/run_sovereign_ephemeral_console.py",
+      "scripts/restart_sovereign_ephemeral_node.py",
       "scripts/verify_sovereign_runtime_activation.py",
-      "control/session-implementation-claim-2026-08-14-sovereign-runtime-self-bootstrap.json",
+      "control/process-worker-adapters.json",
       "control/worker-registry.json",
+      "control/active-worker-state-policy.json",
+      "control/session-implementation-claim-2026-08-16-heartbeat-g18-adapter-liveness.json",
+      "control/session-implementation-claim-2026-08-16-heartbeat-ephemeral-worker-runtime.json",
       "handoffs/STEGFIN-LIVE-ENTRY-003.json"
     ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "Production activation must remain actively worker-owned and solution-executing. PR #117 removed the hand-created declaration deadlock for an already-running local heartbeat source. PR #162 and issue #160 then removed the initiation circularity by installing a pre-heartbeat entry point that can prove local eligibility, derive the non-authorizing node declaration, materialize/start the native service, and invoke the nine-predicate verifier without requiring a resident heartbeat to pre-exist.",
+    "derivation_reason": "Production activation remains G18 machine-owned. Pre-heartbeat self-bootstrap removed initiation circularity; PR #203 repaired the G18 process-adapter liveness envelope; PR #204 repaired the one-host fallback so it supervises both separated v12 processes required by the activation verifier.",
     "canonical_owner_ref": "StegVerse-Labs/.github#59",
     "canonical_lineage_key": "shwp:durable-runtime-activation",
     "derivation_depth": 0,
@@ -53,143 +74,152 @@
   "authority": {
     "authority_source": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json#resolution",
     "heartbeat_grants_execution_authority": false,
-    "policy_version": "shwp-single-hb-v0.4-sovereign-solution-execution",
+    "policy_version": "shwp-single-hb-v0.5-separated-v12-sovereign-solution-execution",
     "credential_authority": "TV/TVC",
-    "github_token_production_authority": "NONE"
+    "github_token_production_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false
   },
   "execution": {
-    "required_capabilities": ["runtime_observation", "continuous_process_execution", "durable_state_reconstruction", "bounded_repository_mutation"],
-    "allowed_paths": ["receipts/sovereign-runtime-activation/**", "StegVerse-Labs/.github", "master-records/orchestration", "StegVerse-002/micro-node-runtime"],
+    "required_capabilities": [
+      "runtime_observation",
+      "continuous_process_execution",
+      "durable_state_reconstruction",
+      "bounded_repository_mutation"
+    ],
+    "allowed_paths": [
+      "receipts/sovereign-runtime-activation/**",
+      "StegVerse-Labs/.github",
+      "master-records/orchestration",
+      "StegVerse-002/micro-node-runtime"
+    ],
     "allowed_services": [],
     "max_actions": 100,
     "max_retries": 4096,
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 4096,
     "rate_class": "sovereign_runtime_activation",
+    "canonical_carrier_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
+    "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+    "legacy_combined_runtime_is_production_target": false,
+    "legacy_state_ref": "control/heartbeat-state.json",
+    "legacy_state_epoch": 29,
+    "legacy_state_mutable_after_cutover": false,
+    "carrier_state_ref": "control/heartbeat-carrier-runtime-state.json",
+    "worker_runtime_state_ref": "control/worker-runtime-state.json",
+    "worker_control_plane_ref": "control/worker-control-plane-coordination.json",
     "pre_heartbeat_bootstrap": "scripts/bootstrap_sovereign_runtime.py",
     "native_solution_executor": "workers/sovereign_runtime_activation_worker.py",
     "native_installer": "scripts/install_sovereign_heartbeat_service.py",
-    "activation_proof_producer": "scripts/verify_sovereign_runtime_activation.py",
-    "repository_resolution_executor": "workers/sovereign_node_repository_resolution_worker.py"
+    "one_host_fallback": "scripts/run_sovereign_ephemeral_console.py",
+    "separated_process_supervisor": "scripts/restart_sovereign_ephemeral_node.py",
+    "activation_proof_producer": "scripts/verify_sovereign_runtime_activation.py"
   },
   "activation": {
     "carrier": "heartbeat",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json#resolution",
-    "recheck_trigger": "each admitted heartbeat while unfinished",
+    "recheck_trigger": "each admitted worker-runtime tick while unfinished; carrier observations grant no execution authority",
     "checkout_policy": "fenced_atomic_checkout",
     "eligible_node_declaration": [
       "STEGVERSE_SOVEREIGN_NODE=1",
       "/etc/stegverse/node.json",
       "~/.stegverse/node.json",
-      "DERIVED_LOCAL_RUNTIME_ELIGIBILITY when canonical engine_v11 + installer + verifier are locally present, durable state is writable, and hosted-environment rejection passes",
-      "SELF_BOOTSTRAP_LOCAL_RUNTIME_ELIGIBILITY from scripts/bootstrap_sovereign_runtime.py before heartbeat existence"
+      "DERIVED_LOCAL_RUNTIME_ELIGIBILITY when canonical engine_v12 carrier + WorkerCoordinator + installer + verifier are locally present, durable state is writable, and hosted-environment rejection passes",
+      "SELF_BOOTSTRAP_LOCAL_RUNTIME_ELIGIBILITY from scripts/bootstrap_sovereign_runtime.py before resident heartbeat existence"
     ],
     "derived_declaration_authority_effect": "RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY",
     "node_declaration_environment_bridge": "control/process-worker-adapters.json#process:sovereign-runtime-activation-v1",
-    "hosted_environment_rejection": ["GitHub Actions", "Render", "Vercel", "Cloudflare hosted runtime"]
-  },
-  "self_bootstrap_dependency": {
-    "task_id": "SHWP-SOVEREIGN-RUNTIME-SELF-BOOTSTRAP-001",
-    "issue": "StegVerse-Labs/.github#160",
-    "claim_ref": "control/session-implementation-claim-2026-08-14-sovereign-runtime-self-bootstrap.json",
-    "entrypoint": "scripts/bootstrap_sovereign_runtime.py",
-    "state": "COMPLETE_RELEASED",
-    "purpose": "Initiate sovereign carrier creation before a resident heartbeat exists by proving local canonical source plus writable durable state, deriving a non-authorizing node declaration, invoking the existing native installer, and immediately invoking the canonical nine-predicate verifier.",
-    "does_not_own": ["G18 heartbeat claim/fence", "TV/TVC credential or route authority", "LLM-adapter execution", "Master Records custody", "wallet signing or broadcast"],
+    "hosted_environment_rejection": [
+      "GitHub Actions",
+      "Render",
+      "Vercel",
+      "Cloudflare hosted runtime"
+    ],
     "credential_requirement": "NONE",
     "credential_authority": "TV/TVC",
-    "github_token_runtime_authority": "NONE",
-    "authority_effect": "BOOTSTRAP_ORCHESTRATION_ONLY_NO_CREDENTIAL_ROUTE_OR_HEARTBEAT_AUTHORITY",
-    "source_release_evidence": {
-      "superseded_pr": 161,
-      "canonical_pr": 162,
-      "canonical_pr_head": "efd2cb44970e384831e5b209f4376b1ec56c4346",
-      "merge_commit": "57518101d0fab81f83451582854c8803daf080b8",
-      "pr_head_validation_run": 31850258595,
-      "pr_head_validation_job": 94924581516,
-      "merged_main_validation_run": 31850285522,
-      "merged_main_validation_job": 94924652012,
-      "deterministic_tests": "5/5 PASS",
-      "hosted_runner_behavior": "FAIL_CLOSED_BEFORE_INSTALLER_OR_VERIFIER",
-      "workflow_authority_effect": "NONE_VALIDATION_ONLY"
+    "non_tv_tvc_secret_or_token_used": false
+  },
+  "v12_cutover_contract": {
+    "legacy_source": "control/heartbeat-state.json",
+    "legacy_epoch": 29,
+    "legacy_source_must_remain_immutable": true,
+    "first_persistent_carrier_epoch": 30,
+    "carrier_state": "control/heartbeat-carrier-runtime-state.json",
+    "carrier_observation": "control/heartbeat-carrier-observation.json",
+    "worker_control_plane": "control/worker-control-plane-coordination.json",
+    "worker_runtime_state": "control/worker-runtime-state.json",
+    "cutover_receipt": "receipts/heartbeat-schema-cutover/HB29.json",
+    "carrier_grants_worker_authority": false,
+    "carrier_epoch_controls_worker_expiry": false,
+    "wall_clock_worker_expiry_authority": false
+  },
+  "released_repairs": {
+    "g18_adapter_liveness": {
+      "pull_request": 203,
+      "merge_commit": "b56662cdb840bb2b30b10db2f6236db472261d87",
+      "result": "process:sovereign-runtime-activation-v1 timeout raised to 1200 seconds so the bounded 420-second bootstrap plus bounded 600-second one-host fallback can finish with orchestration margin",
+      "claim_ref": "control/session-implementation-claim-2026-08-16-heartbeat-g18-adapter-liveness.json"
     },
-    "live_completion_condition": "node-local activation.latest.json reports all nine predicates true"
+    "ephemeral_separated_runtime": {
+      "pull_request": 204,
+      "merge_commit": "ef56f32d389ae1c5ded93a10d20763f21b4e4341",
+      "result": "one-host fallback now launches, records, restarts, and verifies both the v12 carrier and WorkerCoordinator; validation peers stop both and the primary retains both",
+      "claim_ref": "control/session-implementation-claim-2026-08-16-heartbeat-ephemeral-worker-runtime.json",
+      "validation_runs": {
+        "sovereign_ephemeral_console": 31986679303,
+        "heartbeat_worker_project": 31986679323,
+        "organization_control_plane": 31986679273
+      }
+    }
   },
   "continuity": {
     "checkpoint_ref": "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "handoff_destination": "StegVerse-Labs/.github/control/worker-registry.json",
     "master_records_required": true,
     "status_projection": "StegVerse-Labs/.github/control/worker-status.json",
-    "activation_proof_ref": "~/.stegverse/heartbeat/activation.latest.json"
+    "activation_proof_ref": "~/.stegverse/heartbeat/activation.latest.json",
+    "required_predicates": [
+      "runtime_materialized",
+      "native_service_active",
+      "continuous_runtime_live",
+      "heartbeat_epoch_advanced",
+      "worker_coordination_checkpoint_observed",
+      "controlled_restart_observed",
+      "epoch_and_generation_non_regressing",
+      "no_duplicate_claim_or_fence",
+      "state_reconstruction_pass"
+    ]
   },
   "completion": {
-    "next_authorized_action": "The pre-heartbeat bootstrap source is released. On an eligible local StegVerse-controlled machine containing the canonical source, invoke scripts/bootstrap_sovereign_runtime.py; it must derive/reuse local eligibility, materialize/register/start the native service, invoke the canonical verifier, and return COMPLETE only when node-local activation.latest.json has all nine predicates true. G18 remains the canonical live heartbeat owner once the carrier is running.",
-    "terminal_when": ["A continuously executing sovereign heartbeat carrier is active", "The nine-predicate activation proof passes", "Restart/reconstruction continuity passes", "No duplicate claim or fence exists"],
-    "implementation_validation": {
-      "workflow": "Heartbeat Worker Project plus Sovereign Runtime Self-Bootstrap Validation",
-      "baseline_run_id": 31338817754,
-      "baseline_conclusion": "SUCCESS",
-      "derived_declaration_pr": 117,
-      "derived_declaration_merge_commit": "41c2b62283260966747e8b390e0756ef977d1578",
-      "derived_declaration_validation": "MERGED_MAIN_SUCCESS",
-      "derived_declaration_validation_run": 31819559203,
-      "derived_declaration_validation_job": 94829287288,
-      "derived_declaration_tests": [
-        "test_nonhosted_canonical_local_runtime_derives_declaration PASS",
-        "test_hosted_environment_cannot_derive_declaration PASS",
-        "test_incomplete_local_source_fails_closed PASS"
-      ],
-      "self_bootstrap_issue": 160,
-      "self_bootstrap_pr": 162,
-      "self_bootstrap_merge_commit": "57518101d0fab81f83451582854c8803daf080b8",
-      "self_bootstrap_validation": "MERGED_MAIN_SUCCESS",
-      "self_bootstrap_pr_head_run": 31850258595,
-      "self_bootstrap_pr_head_job": 94924581516,
-      "self_bootstrap_merged_main_run": 31850285522,
-      "self_bootstrap_merged_main_job": 94924652012,
-      "self_bootstrap_tests": "5/5 PASS",
-      "github_credential_token_present": false,
-      "workflow_authority_effect": "NONE_VALIDATION_ONLY",
-      "live_activation_claimed": false
-    },
-    "activation_assist_commits": [
-      "6b2601d8be04409fe1150fb37c87bf6493544bb2",
-      "25f57403999630fda9c30a2bd1714dec6eac58e3",
-      "7390eedd112f5833cad874261b5eca8f4226a297",
-      "0b9920b571ff1e3e105773341bd072e5c572ac0e",
-      "c12676f9c21b7613ffc01e952eaac00fd19f544f",
-      "e52a2908d0578c4e10a4cf3cf1e4fb4e1c23f66d",
-      "0a775136ebe042f1a368ac1631cf6c044cb6cbdb",
-      "6747fb2bff50ad7a698337bf007feed8bc007b9f",
-      "c83a65cee1da60b3ac3366044e0399292d778005",
-      "f907c87d1e8669c96300cef0a572113cca6a4adc",
-      "41c2b62283260966747e8b390e0756ef977d1578",
-      "57518101d0fab81f83451582854c8803daf080b8"
-    ]
+    "next_authorized_action": "G18 executes current main on an eligible non-hosted StegVerse-controlled local surface. Run scripts/bootstrap_sovereign_runtime.py; use the repaired one-host separated-runtime fallback automatically if native service activation does not complete. Completion requires node-local activation.latest.json with all nine predicates true, a live v12 carrier state at HB30 or later, a live WorkerCoordinator state, and immutable legacy control/heartbeat-state.json remaining at HB29.",
+    "terminal_when": [
+      "control/heartbeat-carrier-runtime-state.json exists and advances from HB30 onward while legacy control/heartbeat-state.json remains unchanged at HB29",
+      "A continuously executing separate WorkerCoordinator is live and worker coordination evidence is present",
+      "The node-local nine-predicate activation proof passes",
+      "Controlled restart/reconstruction continuity passes for carrier and worker runtimes",
+      "No duplicate claim or fence exists and no GitHub token or NON-TV/TVC credential became production authority"
+    ],
+    "live_activation_claimed": false,
+    "source_implementation_state": "COMPLETE_RELEASED",
+    "live_activation_state": "MACHINE_OWNED_PENDING_OBSERVATION"
   },
   "constraint": {
     "operational_state": "ACTIVE_SOLUTION_EXECUTION",
     "class": "LIVE_SOVEREIGN_ACTIVATION",
-    "condition": "SELF_BOOTSTRAP_SOURCE_COMPLETE_LIVE_NINE_PREDICATE_PROOF_PENDING",
-    "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18; source bootstrap dependency #160 is COMPLETE_RELEASED",
+    "condition": "V12_SOURCE_AND_FALLBACK_REPAIRS_COMPLETE_LIVE_NINE_PREDICATE_PROOF_PENDING",
+    "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18",
     "solution_required": true,
-    "solution_candidates": [
-      "invoke released self-bootstrap on canonical local StegVerse-controlled source",
-      "reuse an existing eligible sovereign node",
-      "eligible StegVerse-002 micro-node",
-      "new node from repository-local runtime capsule"
-    ],
-    "next_solution_action": "EXECUTE_SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_AND_OBSERVE_NINE_PREDICATE_PROOF",
-    "next_solution_detail": "The initiation circularity is removed. No pre-existing heartbeat is required to begin activation; the bootstrap can derive eligibility, install/start native supervision, and invoke verification. Live activation is not claimed until the local proof itself reports all nine predicates true.",
-    "machine_observable_completion_condition": "node-local activation.latest.json reports all nine predicates true",
-    "escalation_rule": "escalate only if canonical local source is incomplete, durable state is not writable, native OS supervision cannot be installed, or the execution surface is hosted/non-sovereign",
-    "resolution_executor_state": "DERIVED_DECLARATION_COMPLETE_VALIDATED_RELEASED",
-    "node_declaration_transport_state": "PRE_HEARTBEAT_AND_RESIDENT_DERIVATION_SUPPORTED_VALIDATED",
+    "next_solution_action": "EXECUTE_CURRENT_V12_SELF_BOOTSTRAP_AND_OBSERVE_SEPARATED_RUNTIME_NINE_PREDICATE_PROOF",
+    "machine_observable_completion_condition": "node-local ~/.stegverse/heartbeat/activation.latest.json reports all nine predicates true and identifies live v12 carrier + WorkerCoordinator with immutable legacy HB29",
     "third_party_dependency": false,
     "human_action_required": false,
     "missing_implementation": false,
     "missing_implementation_ref": null
+  },
+  "superseded_contract_history": {
+    "prior_blob_sha": "9f7cddb99ab577e03735e95094acfc57144a93e8",
+    "reason": "Prior handoff described engine_v11-era runtime semantics and did not encode the released v12 separated carrier/worker cutover. Git history preserves all prior evidence; this handoff is the canonical continuation contract.",
+    "preservation": "Git history plus source issue/PR/run references above retain prior implementation evidence without carrying stale v11 semantics into current activation."
   },
   "release_downstream": [
     "STEGFIN-LIVE-ENTRY-003",
