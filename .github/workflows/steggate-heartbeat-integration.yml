@@ -1,6 +1,6 @@
 # Validation-only StegGate integration lane. Production heartbeat cadence, claims,
 # fences, credential authority and persistence belong to the resident sovereign
-# heartbeat plus TC/TVC; GitHub Actions is not an activation carrier.
+# heartbeat plus TV/TVC; GitHub Actions is not an activation carrier.
 name: StegGate Canonical Heartbeat Integration - Validation Only / No GitHub Token Authority
 
 on:
@@ -76,7 +76,7 @@ jobs:
           python3 - <<'PY' "$output"
           import json,sys
           row=json.loads(sys.argv[1])
-          assert row['authority_effect']=='none_beyond_existing_admitted_task_authority'
+          assert row['authority_effect']=='NONE_CARRIER_ONLY'
           assert row['subsignals']['worker_coordination']['authority_effect'] is False
           print('STEGGATE_DRY_RUN_NONPERSISTENT_PASS')
           PY
