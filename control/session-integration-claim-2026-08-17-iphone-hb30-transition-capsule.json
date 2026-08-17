@@ -1,0 +1,38 @@
+{
+  "schema": "stegverse.work-claim/v1",
+  "task_id": "SHWP-IPHONE-HB30-TRANSITION-CAPSULE-001",
+  "originating_goal": "Eliminate the HB29-to-HB30 initiation deadlock without another physical machine, hosted runtime, or NON-TV/TVC secret/token by allowing the permitted current iPhone to produce a bounded non-authorizing portable transition receipt.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/iphone-hb30-transition-capsule-209",
+  "canonical_issue": "StegVerse-Labs/.github#209",
+  "claimant": "chatgpt-session-distinct-support-hb30-capsule-20260817",
+  "role": "CLAIMED_FOR_INTEGRATION",
+  "state": "CLAIMED_FOR_INTEGRATION",
+  "claim_created_at": "2026-08-17T09:48:00-05:00",
+  "claim_expiration_or_release_condition": "Release after canonical portable transition contract, verifier/materializer, tests, Site projection handoff, source validation, and durable transfer of physical receipt execution to the current iPhone lane.",
+  "owned_surfaces": [
+    "management/SHWP_IPHONE_TRANSITION_CAPSULE_CONTRACT.json",
+    "schemas/iphone_heartbeat_transition_receipt.schema.json",
+    "scripts/verify_iphone_heartbeat_transition_receipt.py",
+    "tests/test_iphone_heartbeat_transition_receipt.py",
+    "docs/IPHONE_HEARTBEAT_TRANSITION_MIRROR_HANDOFF.md",
+    "control/session-integration-claim-2026-08-17-iphone-hb30-transition-capsule.json"
+  ],
+  "collision_boundaries": [
+    "do not mutate control/heartbeat-state.json from this source branch",
+    "do not acquire, renew, release, or alter the G18 claim, fence, lease, or WorkerCoordinator authority",
+    "do not mint TVC route or credential authority",
+    "do not introduce GitHub token, Render, Vercel, Cloudflare, provider credential, wallet credential, or NON-TV/TVC secret/token authority",
+    "do not treat Site or browser publication as carrier-state activation",
+    "do not infer HB30 until a physical receipt is independently verified and materialized"
+  ],
+  "expected_evidence": [
+    "portable receipt verifier rejects wrong seed/ref/epoch/generation/authority/credential fields",
+    "materializer emits deterministic HB30 carrier candidate without altering immutable HB29 input",
+    "Site publishes exact browser capsule",
+    "physical current-iPhone receipt is observed",
+    "verified receipt is materialized into canonical carrier state",
+    "independent WorkerCoordinator observes HB30+"
+  ],
+  "next_task_after_release": "Current iPhone executes the published capsule; canonical verifier/materializer accepts the resulting receipt; G18/WorkerCoordinator then continue from HB30+ without any second machine."
+}
