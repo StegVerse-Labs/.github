@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.repository-visibility-decision-receipt/v1",
+  "goal_id": "REPOSITORY-VISIBILITY-BOUNDARY-001",
+  "repository": "StegVerse-Labs/StegVerse-Healer",
+  "observed_visibility": "public",
+  "decision": "PRIVATE_REQUIRED",
+  "decision_state": "APPROVED_MUTATION_PENDING_AUTHORIZED_VISIBILITY_WRITE",
+  "evidence": {
+    "canonical_handoff": "StegVerse-Labs/StegVerse-Healer/docs/HEALER_MIRROR_HANDOFF.md",
+    "handoff_finding": "Healer is a sovereign internal scheduler/repair and pre-carrier diagnostic component. It consumes already-materialized local StegVerse repositories, rejects GitHub/provider/wallet credential variables for its credential-free assist, owns no public evaluator or publication authority, and is explicitly machine-owned for live continuation.",
+    "public_sdk_aperture": "StegVerse-org/StegVerse-SDK",
+    "external_public_source_requirement_found": false
+  },
+  "reason": "Canonical Healer behavior is internal control-plane and repair machinery. Public repository visibility adds no required evaluator/interoperability/publication capability and exposes scheduler/control implementation unnecessarily.",
+  "credential_policy": {
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "github_token_runtime_authority": "NONE"
+  },
+  "mutation": {
+    "target_visibility": "private",
+    "current_connector_visibility_write_supported": false,
+    "owner": "TV/TVC-governed GitHub organization administration authority",
+    "release_condition": "live GitHub repository metadata reports visibility=private",
+    "post_mutation_verifier": "StegVerse-Labs/.github repository-governance verifier"
+  },
+  "historical_disclosure": "Previously public material remains historically disclosed after privatization.",
+  "next_action": "Authorized visibility executor applies private visibility; verifier re-reads live metadata and persists terminal verification evidence.",
+  "state": "BLOCKED_ON_AUTHORIZED_VISIBILITY_WRITE"
+}
