@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/iphone_heartbeat_transition_receipt.schema.json",
+  "title": "StegVerse iPhone Heartbeat Transition Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "contract_id",
+    "physical_execution_surface",
+    "executed_at",
+    "seed",
+    "successor",
+    "authority",
+    "browser",
+    "receipt_sha256"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.iphone-heartbeat-transition-receipt/v1"},
+    "contract_id": {"const": "SHWP-IPHONE-HB30-TRANSITION-CAPSULE-001"},
+    "physical_execution_surface": {"const": "CURRENT_USER_IPHONE"},
+    "executed_at": {"type": "string", "minLength": 1},
+    "seed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "legacy_state_ref", "legacy_state_git_blob_sha", "epoch", "generation"],
+      "properties": {
+        "repository": {"const": "StegVerse-Labs/.github"},
+        "legacy_state_ref": {"const": "control/heartbeat-state.json"},
+        "legacy_state_git_blob_sha": {"const": "d18d57d83cf19b7799cde1a1b4487e496eca7f76"},
+        "epoch": {"const": 29},
+        "generation": {"const": 29}
+      }
+    },
+    "successor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "epoch", "generation", "reference_frame", "activation_state", "authority_effect", "legacy_hb29_immutable"],
+      "properties": {
+        "schema": {"const": "stegverse.heartbeat-carrier-runtime-state/v1"},
+        "epoch": {"const": 30},
+        "generation": {"const": 30},
+        "reference_frame": {"const": "heartbeat_epoch:30"},
+        "activation_state": {"const": "ACTIVE"},
+        "authority_effect": {"const": "NONE"},
+        "legacy_hb29_immutable": {"const": true}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "credential_authority",
+        "credential_requirement",
+        "github_token_runtime_authority",
+        "non_tv_tvc_secret_or_token_used",
+        "worker_authority",
+        "claim_or_fence_mutation",
+        "route_authority",
+        "wallet_authority",
+        "model_output_authority",
+        "hosted_runtime_production_authority",
+        "another_physical_machine_required"
+      ],
+      "properties": {
+        "credential_authority": {"const": "TV/TVC"},
+        "credential_requirement": {"const": "NONE"},
+        "github_token_runtime_authority": {"const": "NONE"},
+        "non_tv_tvc_secret_or_token_used": {"const": false},
+        "worker_authority": {"const": false},
+        "claim_or_fence_mutation": {"const": false},
+        "route_authority": {"const": false},
+        "wallet_authority": {"const": false},
+        "model_output_authority": {"const": "NONE"},
+        "hosted_runtime_production_authority": {"const": "NONE"},
+        "another_physical_machine_required": {"const": false}
+      }
+    },
+    "browser": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["origin", "user_agent", "secure_context", "webcrypto"],
+      "properties": {
+        "origin": {"type": "string", "minLength": 1},
+        "user_agent": {"type": "string", "minLength": 1},
+        "secure_context": {"const": true},
+        "webcrypto": {"const": true}
+      }
+    },
+    "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
