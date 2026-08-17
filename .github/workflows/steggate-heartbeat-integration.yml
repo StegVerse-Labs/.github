@@ -77,7 +77,8 @@ jobs:
           import json,sys
           row=json.loads(sys.argv[1])
           assert row['authority_effect']=='NONE_CARRIER_ONLY'
-          assert row['subsignals']['worker_coordination']['authority_effect'] is False
+          assert row['claims_issued']==0
+          assert row['workers_invoked']==0
           print('STEGGATE_DRY_RUN_NONPERSISTENT_PASS')
           PY
 
