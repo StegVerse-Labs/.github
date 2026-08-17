@@ -1,0 +1,41 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "task_id": "SHWP-G18-ADAPTER-LIVENESS-REPAIR-001",
+  "originating_goal": "Priority number one: fix the heartbeat by removing a control-plane timeout that can terminate the released G18 self-bootstrap plus ephemeral-console recovery path before it completes.",
+  "organization": "StegVerse-Labs",
+  "repository": ".github",
+  "branch": "fix/heartbeat-g18-adapter-liveness",
+  "claimant": "current-session-heartbeat-liveness-repair-lane",
+  "role": "CLAIMED_FOR_IMPLEMENTATION",
+  "claim_created_at": "2026-08-16T20:28:00-05:00",
+  "claim_expiration_or_release_condition": "Release immediately after the adapter timeout/contract repair is merged or superseded and validation evidence is recorded.",
+  "owned_surfaces": [
+    "control/process-worker-adapters.json#process:sovereign-runtime-activation-v1",
+    "tests/test_g18_self_bootstrap_worker.py",
+    ".github/workflows/activate-sovereign-runtime-worker.yml validation assertions only",
+    "this claim record"
+  ],
+  "collision_boundaries": [
+    "do not acquire, alter, release, or replace G18 claim/fence/lease",
+    "do not mutate control/heartbeat-state.json, runtime receipts, checkpoints, activation.latest.json, or node-local state",
+    "do not change TV/TVC credential or route authority",
+    "do not execute provider or wallet operations",
+    "do not use GitHub tokens or NON-TV/TVC secrets/tokens as production authority",
+    "do not use Render/Vercel/Cloudflare/GitHub Actions as sovereign runtime authority",
+    "do not create a second heartbeat or worker registry"
+  ],
+  "defect_evidence": {
+    "worker_bootstrap_timeout_seconds": 420,
+    "worker_ephemeral_console_timeout_seconds": 600,
+    "adapter_timeout_seconds_current": 420,
+    "finding": "The process adapter can kill sovereign_runtime_activation_worker.py before its released bootstrap-plus-fallback solution envelope can finish. The adapter timeout is shorter than the worker's own bounded worst-case child execution envelope."
+  },
+  "expected_evidence": [
+    "adapter timeout exceeds the bounded bootstrap+fallback envelope with margin",
+    "adapter notes match current self-bootstrap behavior rather than obsolete declaration-wait behavior",
+    "deterministic test prevents regression",
+    "hosted validation remains non-authorizing and no-secret"
+  ],
+  "next_task_after_release": "Existing G18 machine owner consumes the repaired adapter on an eligible StegVerse-controlled carrier and produces the nine-predicate node-local activation proof.",
+  "state": "CLAIMED_FOR_IMPLEMENTATION"
+}
