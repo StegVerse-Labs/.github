@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.process-worker-adapter/v1",
+  "adapter_id": "process:ae-relational-math-v1",
+  "worker_id": "ae-relational-math-worker",
+  "task_id": "AE-RELATIONAL-MATH-WORKER-001",
+  "command": ["python", "workers/ae_relational_math_worker.py"],
+  "working_directory": ".",
+  "timeout_seconds": 180,
+  "success_exit_codes": [0],
+  "blocked_exit_codes": [2],
+  "credential_requirement": "NONE",
+  "github_token_required": false,
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "network_required": false,
+  "external_cost_ceiling_usd": 0,
+  "receipt_mode": "stdout_json",
+  "authority_effect": "NONE_EXECUTOR_ONLY"
+}
