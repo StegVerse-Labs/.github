@@ -1,0 +1,45 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "TVC-REPOSITORY-BROKER-VALIDATION-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": ["TVC_BROKER_VALIDATION_RECEIPT_NOT_YET_OBSERVED"],
+      "authorized_policy_version": "tvc-repository-broker-validation-carrier-v0.1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
+        "workers/tvc_repository_broker_validation_worker.py",
+        "StegVerse-Labs/TVC#20"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": "StegVerse-Labs/TVC:TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001",
+      "goal_id": "TVC-REPOSITORY-BROKER-VALIDATION-CARRIER-001",
+      "handoff_ref": "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001",
+      "worker_id": null,
+      "worker_instance_id": null
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:tvc-repository-broker-validation-v1",
+      "authority_source": "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json#authority",
+      "capabilities": ["tvc_repository_broker_validation"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "tvc-repository-broker-validation-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}
