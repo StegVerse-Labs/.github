@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "integration_id": "ECOSYSTEM-RELATIONAL-GOVERNANCE-MATHEMATICS-001",
+  "created_at": "2026-08-17T02:56:00-05:00",
+  "source_authority": {
+    "repository": "Admissible-Existence/AE",
+    "goal_id": "AE-AUTO-0011",
+    "handoff": "docs/STATE_MANIFOLD_RELATIONAL_GOVERNANCE_MIRROR_HANDOFF.md",
+    "math": "docs/STATE_MANIFOLD_RELATIONAL_GOVERNANCE_MATHEMATICS.md",
+    "worker": "StegVerse-Labs/.github:AE-RELATIONAL-MATH-WORKER-001",
+    "state": "MACHINE_OWNED_DERIVATION_PENDING_TERMINAL_RECEIPT"
+  },
+  "semantic_invariants": [
+    "snapshots_do_not_establish_causal_relationship",
+    "causal_continuity_is_attributable_only_over_established_causal_relation",
+    "refinement_may_add_transitions_without_erasing_established_coarse_transition",
+    "admissibility_is_governor_indexed",
+    "observed_transition_witnesses_first_order_realizability",
+    "higher_order_inadmissibility_does_not_erase_causal_transition",
+    "no_implicit_trajectory_taint",
+    "lineage_taint_requires_explicit_invariant",
+    "governance_precedence_requires_explicit_relation",
+    "classification_is_not_enforcement_without_causal_effect",
+    "time_is_evidence_unless_explicitly_consumed_by_governance"
+  ],
+  "consumers": [
+    {
+      "repository": "StegVerse-Labs/StegScholar",
+      "role": "research_integration",
+      "handoff": "RELATIONAL_GOVERNANCE_MATH_INTEGRATION_MIRROR_HANDOFF.md",
+      "installed_surface": "papers/relational-transition-geometry/state-manifold-governance-extension.md",
+      "state": "BOUND_PENDING_TERMINAL_AE_MATH"
+    },
+    {
+      "repository": "StegVerse-Labs/StegCore",
+      "role": "runtime_semantic_alignment",
+      "handoff": "RELATIONAL_GOVERNANCE_MATH_ALIGNMENT_MIRROR_HANDOFF.md",
+      "installed_surface": "docs/RELATIONAL_GOVERNANCE_MATHEMATICS_ALIGNMENT.md",
+      "state": "BOUND_NO_RUNTIME_REWRITE_AUTHORIZED_WITHOUT_MISMATCH"
+    },
+    {
+      "repository": "Admissible-Existence/TT",
+      "role": "transition_table_semantic_alignment",
+      "handoff": "TT_MIRROR_HANDOFF.md",
+      "installed_surface": "RELATIONAL_GOVERNANCE_ALIGNMENT.md",
+      "state": "BOUND_PENDING_TERMINAL_AE_MATH"
+    },
+    {
+      "repository": "Admissible-Existence/STCM",
+      "role": "moment_receipt_semantic_alignment",
+      "handoff": "STCM_MIRROR_HANDOFF.md",
+      "installed_surface": "formalism/state-manifold-governance-alignment.md",
+      "state": "BOUND_PENDING_TERMINAL_AE_MATH"
+    },
+    {
+      "repository": "Admissible-Existence/GTG",
+      "role": "reconstruction_semantic_alignment",
+      "handoff": "RELATIONAL_GOVERNANCE_MATH_ALIGNMENT_MIRROR_HANDOFF.md",
+      "installed_surface": null,
+      "state": "ALIGNMENT_HANDOFF_INSTALLED_PENDING_EXACT_RECONCILIATION"
+    },
+    {
+      "repository": "Data-Continuation/RTG-Tests",
+      "role": "independent_validation",
+      "handoff": "RTG_TESTS_MIRROR_HANDOFF.md",
+      "installed_surface": "fixtures/state-manifold-governance/core-cases.json",
+      "state": "VALIDATION_ACTIVE"
+    }
+  ],
+  "publication_consumers": [
+    "StegVerse-Labs/Site",
+    "GCAT-BCAT-Engine/Publisher",
+    "StegVerse-Labs/admissibility-wiki",
+    "StegVerse-002/stegguardian-wiki"
+  ],
+  "publication_gate": "NO_PROPAGATION_UNTIL_TERMINAL_VALIDATED_AE_MATH_AND_EACH_DESTINATION_HANDOFF_AUTHORIZES_SCOPE",
+  "credential_authority": "TV/TVC",
+  "credential_requirement": "NONE",
+  "github_token_runtime_authority": "NONE",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "session_collision_rule": "DO_NOT_DUPLICATE_AE_DERIVATION_OR_CONSUMER_ALIGNMENT_CLAIMS",
+  "completion_condition": "AE-AUTO-0011 terminal validated receipt plus exact-version consumer reconciliation and independent validation evidence"
+}
