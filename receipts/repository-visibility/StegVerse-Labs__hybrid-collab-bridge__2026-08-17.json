@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.repository-visibility-decision-receipt/v1",
+  "goal_id": "REPOSITORY-VISIBILITY-BOUNDARY-001",
+  "repository": "StegVerse-Labs/hybrid-collab-bridge",
+  "observed_visibility": "public",
+  "decision": "PRIVATE_REQUIRED",
+  "decision_state": "APPROVED_MUTATION_PENDING_AUTHORIZED_VISIBILITY_WRITE",
+  "evidence": {
+    "canonical_handoff": "StegVerse-Labs/hybrid-collab-bridge/HYBRID_COLLAB_BRIDGE_MIRROR_HANDOFF.md",
+    "handoff_finding": "Repository explicitly identifies itself as the second LLM adapter internal to the StegVerse ecosystem, distinct from the SDK-facing adapter, and prohibits execution/publication/delegation/final-receipt authority.",
+    "public_sdk_aperture": "StegVerse-org/StegVerse-SDK",
+    "external_public_source_requirement_found": false
+  },
+  "reason": "The canonical handoff defines this repository as an internal ecosystem adapter. Public source visibility is not an execution, interoperability, publication, or verification requirement for its role; the SDK-facing adapter/public SDK are the external surfaces.",
+  "credential_policy": {
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "github_token_runtime_authority": "NONE"
+  },
+  "mutation": {
+    "target_visibility": "private",
+    "current_connector_visibility_write_supported": false,
+    "owner": "TV/TVC-governed GitHub organization administration authority",
+    "release_condition": "live GitHub repository metadata reports visibility=private",
+    "post_mutation_verifier": "StegVerse-Labs/.github repository-governance verifier"
+  },
+  "historical_disclosure": "Previously public material must be treated as already disclosed; privatization does not retract clones, forks, caches, packages, releases, or commit history.",
+  "next_action": "Authorized visibility executor applies private visibility; verifier re-reads live metadata and updates this receipt or emits a terminal verification receipt.",
+  "state": "BLOCKED_ON_AUTHORIZED_VISIBILITY_WRITE"
+}
