@@ -74,7 +74,7 @@
   "authority": {
     "authority_source": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json#resolution",
     "heartbeat_grants_execution_authority": false,
-    "policy_version": "shwp-single-hb-v0.5-separated-v12-sovereign-solution-execution",
+    "policy_version": "shwp-single-hb-v0.4-sovereign-solution-execution",
     "credential_authority": "TV/TVC",
     "github_token_production_authority": "NONE",
     "non_tv_tvc_secret_or_token_allowed": false
