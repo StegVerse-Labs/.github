@@ -1,6 +1,6 @@
 # Repository Visibility Boundary Mirror Handoff
 
-Updated: 2026-08-17T09:39:00-05:00
+Updated: 2026-08-17T14:02:00-05:00
 
 ## Canonical authority
 
@@ -69,11 +69,11 @@ StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md
 StegVerse-Labs/.github/docs/SESSION_ASSISTANCE_SCOPE_MIRROR_HANDOFF.md
 ```
 
-This session therefore takes the distinct role `CLAIMED_FOR_IMPLEMENTATION` for the new repository-visibility governance lane and remains observation-only for the live trade/runtime lanes.
+This visibility lane remains distinct from heartbeat, sovereign inference, wallet, and provider execution.
 
 ## Initial live evidence
 
-Direct repository metadata observed in this session confirms the SDK is public and multiple implementation repositories remain public. Examples requiring classification include:
+Direct repository metadata observed by the visibility workstream confirms the SDK is public and multiple implementation repositories remain public. Examples requiring classification include:
 
 ```text
 StegVerse-org/StegVerse-SDK                         public   public-aperture candidate
@@ -129,7 +129,7 @@ next_task_after_release: machine/current-org-admin visibility executor applies r
 
 ## Authority boundary
 
-The currently connected GitHub mutation surface can create/update repository files, issues, branches, PRs and related records but does not expose a repository-visibility mutation action. Therefore a visibility decision is not counted as applied until live repository metadata reports the target visibility. Any unexecutable visibility transition must be assigned to a durable exact owner/task rather than described as future/manual work.
+The connected GitHub mutation surface may create/update repository files, issues, branches, PRs and related records but does not necessarily expose repository-visibility mutation authority in every execution context. A visibility decision is not counted as applied until live repository metadata reports the target visibility. Any unexecutable transition must be assigned to a durable exact owner/task rather than described as future/manual work.
 
 The execution owner for visibility changes that require GitHub organization-administration capability is:
 
@@ -140,8 +140,6 @@ release condition: live GitHub repository metadata visibility == approved target
 ```
 
 ## Validation commands / observations
-
-Validation is metadata based:
 
 ```text
 GitHub get-repository/list-repository metadata -> visibility/private fields
@@ -167,17 +165,45 @@ No propagation is claimed until destination evidence is directly inspected.
 
 ## Archive conditions
 
-Archive only when:
+Archive this visibility workstream only when:
 
 ```text
 all session-specific visibility requirements are in durable records
 all repositories in the reachable estate have a classification or explicit UNKNOWN/BLOCKED record
-all mutations available to the current connector are executed and verified
+all mutations available to the authorized executor are executed and verified
 all remaining mutations have exact machine/current-authority owners and machine-observable release conditions
 no visibility requirement remains only in chat
 claim is released or transferred
 session consolidation receipt is committed
 ```
+
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.json
+collision_scope: repository-visibility policy, estate classification inventory, visibility mutation ownership, and verification receipts only
+release_condition: SESSION-REPOSITORY-VISIBILITY-AUDIT-20260817 is released or transferred after its durable inventory/task handoff and all currently authorized mutations are executed/verified
+next_executable_action: the existing visibility claimant continues only within its declared surfaces; no other session starts duplicate visibility mutation work
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+- Any repository-native visibility executor admitted from `handoffs/REPOSITORY-VISIBILITY-BOUNDARY-001.json` owns exact approved mutations and post-mutation verification.
+- Heartbeat/G18, sovereign inference, StegFin, local-model, and Site activation workers are outside this collision scope and must not be altered by this lane.
+
+### ESCALATED / AUTHORITY-OWNED
+
+- Repository visibility mutations requiring organization-admin capability are owned by the TV/TVC-governed GitHub organization administration authority.
+- Credential authority remains TV/TVC; NON-TV/TVC secret/token authority is prohibited.
+
+### COMPLETED / SUPERSEDED
+
+- Local-model/runtime source work is COMPLETE_RELEASED and not part of this visibility implementation claim.
+- StegFin pre-sign trade-readiness is complete at its separate USER_ONLY wallet boundary and is not part of this visibility claim.
+- Any legacy assumption that public implementation source is required merely because outputs are externally verifiable is superseded by the affirmative-public-necessity rule, subject to per-repository dependency checks.
 
 ## Completion accounting
 
