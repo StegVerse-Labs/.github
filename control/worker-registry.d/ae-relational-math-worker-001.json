@@ -1,0 +1,73 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "AE-RELATIONAL-MATH-WORKER-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [],
+      "authorized_policy_version": "ae-relational-math-v1",
+      "block_ref": "docs/AE_RELATIONAL_MATH_WORKER_MIRROR_HANDOFF.md",
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/ae-relational-math-worker.json",
+      "evidence_refs": [
+        "handoffs/AE-RELATIONAL-MATH-WORKER-001.json",
+        "workers/ae_relational_math_worker.py",
+        "control/process-worker-adapters.d/ae-relational-math-worker-001.json",
+        "Admissible-Existence/AE:data/autonomous_goal_seeds/AE-AUTO-0011.json"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "AE-RELATIONAL-MATH-WORKER-001",
+      "handoff_ref": "handoffs/AE-RELATIONAL-MATH-WORKER-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": null,
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "AE-RELATIONAL-MATH-WORKER-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:ae-relational-math:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "Admissible-Existence/AE:data/autonomous_standing.json",
+          "Admissible-Existence/AE:docs/protocols/CONTINUING_EXECUTION_ADMISSIBILITY_MIRROR_HANDOFF.md"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/AE-RELATIONAL-MATH-WORKER-001.json",
+          "docs/AE_RELATIONAL_MATH_WORKER_MIRROR_HANDOFF.md"
+        ],
+        "integration_evidence_refs": [
+          "workers/ae_relational_math_worker.py",
+          "control/process-worker-adapters.d/ae-relational-math-worker-001.json"
+        ],
+        "activation_proof_ref": null,
+        "blockers": ["AE_AUTO_0011_TERMINAL_VALIDATED_STATE_NOT_YET_OBSERVED"],
+        "continuation_owner": "Admissible-Existence/AE autonomous math worker via StegVerse machine scheduler",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:ae-relational-math-v1",
+      "authority_source": "handoffs/AE-RELATIONAL-MATH-WORKER-001.json#authority",
+      "capabilities": ["runtime_observation", "bounded_process_execution", "repository_local_validation"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "ae-relational-math-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "dependencies": [],
+  "priority": "research"
+}
