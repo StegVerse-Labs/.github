@@ -3,7 +3,7 @@
   "contract_id": "SHWP-HB29-TO-HB30-STATE-TRANSITION-CONTINUITY-001",
   "goal_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
   "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-  "validation_trigger_revision": 2,
+  "validation_trigger_revision": 3,
   "canonical_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
   "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
   "legacy_source": "control/heartbeat-state.json",
@@ -16,7 +16,11 @@
   "transition_producer": "scripts/advance_heartbeat_transition.py",
   "continuity_model": "STATE_TRANSITION_CONTINUITY",
   "physical_carrier_policy_ref": "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
-  "sole_permitted_user_physical_carrier": "CURRENT_USER_IPHONE",
+  "sole_permitted_user_physical_carrier": "CURRENT_USER_STEGVERSE_IOS_NODE",
+  "physical_carrier_node_id": "stegnode-web-cc9e0b8608af6043aed37808004b0233",
+  "physical_carrier_evidence_owner": "StegVerse-Labs/StegOS#13 / COMPLETE_CLOSED",
+  "permitted_ios_browser_device_families": ["iPod", "iPhone"],
+  "device_model_grants_authority": false,
   "transition_compute_grants_physical_carrier_identity": false,
   "another_physical_machine_required": false,
   "always_on_external_host_required": false,
@@ -33,8 +37,8 @@
     "state_reconstruction_pass"
   ],
   "execution_semantics": {
-    "trigger": "next admitted StegVerse worker/control-plane execution opportunity",
-    "carrier_transition": "one bounded v12 carrier cycle derives the valid successor from retained HB29 or the latest v12 carrier state",
+    "trigger": "next admitted StegVerse worker/control-plane execution opportunity or a verified portable transition receipt from the established StegVerse iOS node",
+    "carrier_transition": "one bounded v12 carrier cycle or independently verified portable transition derives the valid successor from retained HB29 or the latest v12 carrier state",
     "worker_transition": "the independently admitted WorkerCoordinator observes the new carrier state on its current or next tick",
     "persistence": "state is retained between execution opportunities; wall-clock process residency is not continuity authority",
     "authority_effect": "NONE_FROM_CARRIER_TRANSITION"
@@ -52,8 +56,9 @@
     "Cloudflare hosted runtime",
     "additional physical machine requirement",
     "always-on external host requirement",
-    "manual rewriting of control/heartbeat-state.json to HB30"
+    "manual rewriting of control/heartbeat-state.json to HB30",
+    "device model or user-agent branding as execution authority"
   ],
-  "release_condition": "A bounded v12 transition produces HB30 or later from immutable HB29, then an independently admitted WorkerCoordinator checkpoint observes that carrier state and the state-transition completion predicates pass without duplicate claim/fence or non-TV/TVC credential authority.",
+  "release_condition": "A bounded v12 transition or independently verified portable receipt from the exact established StegVerse iOS node produces HB30 or later from immutable HB29, then an independently admitted WorkerCoordinator checkpoint observes that carrier state and the state-transition completion predicates pass without duplicate claim/fence or non-TV/TVC credential authority.",
   "authority_effect": "NONE"
 }
