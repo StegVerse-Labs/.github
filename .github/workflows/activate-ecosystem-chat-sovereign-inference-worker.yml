@@ -111,6 +111,6 @@ jobs:
           import json
           rows=[json.loads(x) for x in open('/tmp/ecosystem-chat-dry-run.jsonl') if x.strip()]
           assert len(rows)==1
-          assert rows[0]['authority_effect']=='none_beyond_existing_admitted_task_authority'
+          assert rows[0]['authority_effect']=='NONE_CARRIER_ONLY'
           print('VALIDATION_ONLY_NO_PERSISTENCE_PASS')
           PY
