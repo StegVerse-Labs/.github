@@ -6,13 +6,15 @@
   "repository": ".github",
   "branch": "fix/heartbeat-g18-adapter-liveness",
   "claimant": "current-session-heartbeat-liveness-repair-lane",
-  "role": "CLAIMED_FOR_IMPLEMENTATION",
+  "role": "COMPLETE_RELEASED",
   "claim_created_at": "2026-08-16T20:28:00-05:00",
-  "claim_expiration_or_release_condition": "Release immediately after the adapter timeout/contract repair is merged or superseded and validation evidence is recorded.",
+  "claim_released_at": "2026-08-16T20:34:00-05:00",
+  "claim_expiration_or_release_condition": "SATISFIED: adapter liveness repair merged and PR validation succeeded.",
   "owned_surfaces": [
     "control/process-worker-adapters.json#process:sovereign-runtime-activation-v1",
     "tests/test_g18_self_bootstrap_worker.py",
-    ".github/workflows/activate-sovereign-runtime-worker.yml validation assertions only",
+    ".github/workflows/steggate-heartbeat-integration.yml validation assertion",
+    ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml validation assertion",
     "this claim record"
   ],
   "collision_boundaries": [
@@ -27,15 +29,26 @@
   "defect_evidence": {
     "worker_bootstrap_timeout_seconds": 420,
     "worker_ephemeral_console_timeout_seconds": 600,
-    "adapter_timeout_seconds_current": 420,
-    "finding": "The process adapter can kill sovereign_runtime_activation_worker.py before its released bootstrap-plus-fallback solution envelope can finish. The adapter timeout is shorter than the worker's own bounded worst-case child execution envelope."
+    "adapter_timeout_seconds_before": 420,
+    "adapter_timeout_seconds_after": 1200,
+    "finding": "The prior process-adapter timeout was shorter than the worker's own bounded bootstrap-plus-fallback execution envelope and could terminate G18 before it emitted its governed receipt."
   },
-  "expected_evidence": [
-    "adapter timeout exceeds the bounded bootstrap+fallback envelope with margin",
-    "adapter notes match current self-bootstrap behavior rather than obsolete declaration-wait behavior",
-    "deterministic test prevents regression",
-    "hosted validation remains non-authorizing and no-secret"
-  ],
+  "release_evidence": {
+    "pull_request": "StegVerse-Labs/.github#203",
+    "merge_commit": "b56662cdb840bb2b30b10db2f6236db472261d87",
+    "validated_head": "1c1f9553a66d9c1c42bbaa4d6697ed13bb2797c9",
+    "sovereign_runtime_validation_run": 31985256563,
+    "organization_control_plane_validation_run": 31985256518,
+    "heartbeat_worker_validation_run": 31985256570,
+    "steggate_heartbeat_validation_run": 31985256581,
+    "ecosystem_chat_validation_run": 31985256553,
+    "native_process_canary_validation_run": 31985256622,
+    "all_listed_pr_head_validations": "SUCCESS",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_used": false,
+    "live_activation_claimed": false
+  },
   "next_task_after_release": "Existing G18 machine owner consumes the repaired adapter on an eligible StegVerse-controlled carrier and produces the nine-predicate node-local activation proof.",
-  "state": "CLAIMED_FOR_IMPLEMENTATION"
+  "state": "COMPLETE_RELEASED"
 }
