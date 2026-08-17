@@ -1,0 +1,29 @@
+{
+  "schema": "stegverse.session-reconciliation-claim/v1",
+  "claim_id": "SESSION-ORIGINAL-GOALS-ACTIVATION-GATE-RECONCILIATION-20260817",
+  "originating_goal": "Prevent false archival of the original local-model/runtime, sovereign activation, and StegFin trade-readiness session while governed activation evidence remains incomplete.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "reconcile/original-session-activation-gate-20260817",
+  "role": "RECONCILIATION_VALIDATION",
+  "state": "CLAIMED_FOR_INTEGRATION",
+  "claimed_paths": [
+    "control/original-session-activation-gate-2026-08-17.json",
+    "control/session-reconciliation-claim-2026-08-17-original-goals-activation-gate.json"
+  ],
+  "claim_created_at": "2026-08-17T13:06:00-05:00",
+  "claim_expires_when": "Released immediately after the activation-gate record is merged, canonical validation passes, and the release commit is recorded; otherwise BLOCKED with the exact failing validation or collision condition.",
+  "collision_boundaries": [
+    "Do not mutate control/heartbeat-state.json, carrier runtime state, worker runtime state, G18 claim/fence/lease, or runtime receipts.",
+    "Do not execute or duplicate SHWP-DURABLE-RUNTIME-ACTIVATION or SHWP-ECOSYSTEM-CHAT-INFERENCE-001.",
+    "Do not recreate the local-model/runtime implementation.",
+    "Do not use Render or any NON-TV/TVC secret/token.",
+    "Do not sign or broadcast a StegFin wallet transaction; USER_ONLY remains sole authority."
+  ],
+  "expected_evidence": [
+    "control/original-session-activation-gate-2026-08-17.json merged on main",
+    "organization control validation PASS",
+    "heartbeat worker/source validation PASS where triggered",
+    "claim released with merge/validation references"
+  ],
+  "next_task_after_release": "Observation only: G18 produces HB30+ and independent WorkerCoordinator evidence, then issue #60 owns same-execution sovereign inference activation."
+}
