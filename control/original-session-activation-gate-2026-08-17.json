@@ -1,0 +1,109 @@
+{
+  "schema": "stegverse.original-session-activation-gate/v1",
+  "gate_id": "ORIGINAL-SESSION-ACTIVATION-GATE-2026-08-17",
+  "scope": "ORIGINAL_SESSION_GOALS_ONLY",
+  "updated_at": "2026-08-17T13:06:00-05:00",
+  "supersedes_archive_interpretation_only": [
+    "docs/ORG_MIRROR_HANDOFF.md#thread_archive_ready",
+    "control/session-goal-inventory-2026-08-17-hil-erl-runtime-trade-convergence.json#session_consolidation.archive_safe"
+  ],
+  "does_not_supersede": [
+    "canonical task ownership",
+    "G18 machine claim/fence/lease",
+    "TVC route authority",
+    "StegFin USER_ONLY wallet authority",
+    "local-model/runtime source release state"
+  ],
+  "governing_rule": "For this conversation, do not archive while an original session activation goal remains unobserved. Archival does not substitute for activation evidence.",
+  "credential_boundary": {
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "github_token_production_runtime_authority": "NONE",
+    "render_production_authority": "NONE"
+  },
+  "original_goal_inventory": [
+    {
+      "goal_id": "SOVEREIGN-LOCAL-MODEL-001",
+      "goal": "Remove the descriptive local-model/runtime selection step and formally develop the model locally.",
+      "owner": "StegVerse-002/micro-node-runtime",
+      "state": "COMPLETE_RELEASED",
+      "activation_observed": true,
+      "evidence": [
+        "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+        "validation 31339534741 SUCCESS",
+        "persistent endpoint validation 31384116055 SUCCESS"
+      ],
+      "next_action": "NONE_SOURCE_SCOPE"
+    },
+    {
+      "goal_id": "STEGFIN-TRADE-READY-WALLET-HANDOFF-001",
+      "goal": "Assist workers and make the bounded Base apparatus trade-ready without machine signing/broadcast authority.",
+      "owner": "StegVerse-Labs/stegfin-governance",
+      "state": "COMPLETE_ACTIVATED_AT_PRE_SIGN_BOUNDARY",
+      "activation_observed": true,
+      "evidence": [
+        "StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md",
+        "receipts/phone-live/STEGFIN-PHONE-LIVE-EVIDENCE-20260816T2150-0500.json",
+        "WALLET_HANDOFF_READY=true",
+        "signed=false",
+        "broadcast=false"
+      ],
+      "next_action": "USER_ONLY may review/sign/broadcast if desired; no chat or machine wallet authority is granted."
+    },
+    {
+      "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "goal": "Activate the sovereign separated-v12 heartbeat/runtime continuation without Render, GitHub-token runtime authority, or NON-TV/TVC credentials.",
+      "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18",
+      "state": "MACHINE_OWNED_PENDING_HB30_OBSERVATION",
+      "activation_observed": false,
+      "evidence": [
+        "control/heartbeat-state.json remains immutable HB29/generation29",
+        "control/heartbeat-carrier-runtime-state.json NOT_PRESENT at observation time",
+        "receipts/heartbeat-transition-continuity/latest.json NOT_PRESENT at observation time"
+      ],
+      "next_action": "G18 executes scripts/advance_heartbeat_transition.py on the next admitted StegVerse execution opportunity; independent WorkerCoordinator then observes the successor."
+    },
+    {
+      "goal_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+      "goal": "Execute the released local model through TVC -> LLM-adapter -> Master Records with same-execution evidence.",
+      "owner": "StegVerse-Labs/.github#60 + heartbeat-managed sovereign inference worker",
+      "state": "MACHINE_OWNED_PENDING_LIVE_SAME_EXECUTION_EVIDENCE",
+      "activation_observed": false,
+      "evidence": [
+        "issue #60 remains open",
+        "HB30+/WorkerCoordinator dependency not yet observed",
+        "same_execution sovereign inference receipt not yet observed"
+      ],
+      "next_action": "After HB30+/WorkerCoordinator and recovery predicates pass, acquire a fresh authorized fence >20 and execute private local model -> TVC ROUTE_ADMITTED credential NONE -> exact LLM-adapter route -> measured usage -> same-execution Master Records reconstruction PASS."
+    }
+  ],
+  "current_observation": {
+    "observed_at": "2026-08-17T13:06:00-05:00",
+    "legacy_heartbeat_epoch": 29,
+    "legacy_heartbeat_generation": 29,
+    "carrier_hb30_or_later_observed": false,
+    "heartbeat_transition_receipt_observed": false,
+    "independent_worker_checkpoint_observed": false,
+    "sovereign_inference_same_execution_observed": false,
+    "local_model_source_released": true,
+    "stegfin_wallet_handoff_ready": true,
+    "stegfin_signed": false,
+    "stegfin_broadcast": false
+  },
+  "archive_ready": false,
+  "archive_blockers": [
+    {
+      "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18",
+      "condition": "HB30+ carrier transition and independent WorkerCoordinator observation not yet directly evidenced",
+      "release_condition": "receipts/heartbeat-transition-continuity/latest.json records HB30+; control/heartbeat-carrier-runtime-state.json is HB30+ with immutable HB29; independent worker runtime/coordination evidence observes that epoch; reconstruction PASS; no duplicate claim/fence; no unauthorized credential authority"
+    },
+    {
+      "owner": "StegVerse-Labs/.github#60",
+      "condition": "same-execution sovereign inference activation not yet directly evidenced",
+      "release_condition": "fresh authorized fence >20; private model observed; TVC ROUTE_ADMITTED credential NONE; exact LLM-adapter execution; measured usage; Master Records provider/transition reconstruction PASS; same_execution=true"
+    }
+  ],
+  "session_role": "ACTIVE_DISTINCT_SUPPORT_OBSERVATION_RECONCILIATION",
+  "manual_execution_allowed_for_machine_owned_goals": false,
+  "authority_effect": "NONE"
+}
