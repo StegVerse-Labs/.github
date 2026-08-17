@@ -5,15 +5,16 @@
   "repository": "StegVerse-Labs/.github",
   "branch": "feat/iphone-hb30-inline-capsule-209",
   "claimant": "current-session-iphone-inline-capsule-integration-lane",
-  "role": "CLAIMED_FOR_INTEGRATION",
+  "role": "COMPLETE_RELEASED",
   "claim_created_at": "2026-08-17T13:35:00-05:00",
-  "claim_expiration_or_release_condition": "Release after the exact iPhone inline browser capsule, validator, contract/handoff reconciliation, and source validation merge; physical receipt generation then remains CURRENT_USER_IPHONE and canonical materialization remains G18/.github#209.",
+  "released_at": "2026-08-17T13:45:00-05:00",
+  "claim_expiration_or_release_condition": "SATISFIED: exact inline iPhone browser capsule, validator, tests, executable handoff and transition contract were merged; canonical Heartbeat Worker validation passed; physical receipt generation is now CURRENT_USER_IPHONE and canonical materialization remains G18/.github#209.",
   "owned_surfaces": [
     "capsules/iphone-hb30-inline-capsule.js",
     "scripts/check_iphone_hb30_inline_capsule.py",
     "tests/test_iphone_hb30_inline_capsule.py",
     "management/SHWP_IPHONE_TRANSITION_CAPSULE_CONTRACT.json",
-    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "handoffs/SHWP-IPHONE-HB30-INLINE-CAPSULE-002.json",
     "control/session-integration-claim-2026-08-17-iphone-hb30-inline-capsule.json"
   ],
   "collision_boundaries": [
@@ -21,17 +22,25 @@
     "do not acquire, release, renew, or alter G18 claim/fence/lease",
     "do not execute or duplicate WorkerCoordinator",
     "do not create a second heartbeat, scheduler, runtime authority, or route authority",
-    "do not use Render, Vercel, Cloudflare hosted runtime, or GitHub Actions as production transition executor",
+    "do not use Render, Vercel, Cloudflare hosted runtime, GitHub Pages credentials, or GitHub Actions as production transition executor",
     "do not introduce GitHub token or NON-TV/TVC secret/token authority",
     "do not change StegFin USER_ONLY signing/broadcast authority"
   ],
-  "expected_evidence": [
-    "inline capsule validator PASS",
-    "deterministic receipt-shape test PASS",
-    "contract records INLINE_SAFARI_EXECUTION as an allowed transport without changing authority",
-    "canonical handoff records the inline path as publication-independent physical initiation",
-    "PR exact-head validation PASS"
-  ],
+  "release_evidence": {
+    "pull_request": 214,
+    "final_head": "e4aba9859f2deed5f626723dfd7faa1ee4720a5e",
+    "merge_commit": "c079216deeaa8fa5d049f6c634d829bde5689596",
+    "heartbeat_worker_validation_run": 32056394503,
+    "heartbeat_worker_validation_job": 95467436421,
+    "heartbeat_worker_validation_result": "SUCCESS",
+    "deterministic_test_count": 345,
+    "executable_handoff_validation": "PASS",
+    "inline_capsule_tests": "PASS",
+    "anonymous_no_github_credential_checkout": true,
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_used": false,
+    "live_hb30_claimed": false
+  },
   "next_task_after_release": "CURRENT_USER_IPHONE executes the exact released inline capsule in an existing https://stegverse.org Safari page context; .github#209 verifier/materializer accepts the resulting receipt and G18/WorkerCoordinator continue from HB30+.",
-  "state": "CLAIMED_FOR_INTEGRATION"
+  "state": "COMPLETE_RELEASED"
 }
