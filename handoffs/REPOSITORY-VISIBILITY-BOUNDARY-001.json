@@ -1,0 +1,96 @@
+{
+  "schema": "stegverse.handoff-execution-ownership/v1",
+  "task_id": "REPOSITORY-VISIBILITY-BOUNDARY-001",
+  "goal_id": "REPOSITORY-VISIBILITY-BOUNDARY-001",
+  "originating_goal": "Reduce the public GitHub implementation surface after StegVerse-SDK became the canonical public evaluator/proof aperture, while preserving only affirmative public contract/proof/publication surfaces.",
+  "owner_repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "canonical_handoff": "docs/REPOSITORY_VISIBILITY_BOUNDARY_MIRROR_HANDOFF.md",
+  "inventory": "control/repository-visibility-boundary-2026-08-17.json",
+  "claim": {
+    "state": "CLAIMED_FOR_IMPLEMENTATION",
+    "claimant": "current repository-governance session lane",
+    "created_at": "2026-08-17T09:39:00-05:00",
+    "expiration_or_release_condition": "Release when estate inventory is complete, every reachable repository is classified, all visibility writes available to the current connector are applied and verified, and unavailable writes are transferred to the TV/TVC-governed GitHub organization administration executor with an observable release condition.",
+    "collision_scope": [
+      "repository visibility policy",
+      "estate classification inventory",
+      "visibility mutation ownership",
+      "post-mutation verification receipts"
+    ]
+  },
+  "credential_policy": {
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "github_token_runtime_authority": "NONE",
+    "secret_export_allowed": false
+  },
+  "trigger": {
+    "type": "repository-control-plane task admission",
+    "conditions": [
+      "inventory contains repository with state PENDING_HANDOFF_DEPENDENCY_REVIEW, PENDING_CONTRACT_REVIEW, PENDING_PUBLICATION_REVIEW, PENDING_IP_PUBLICATION_REVIEW, or PENDING_SANITIZATION_REVALIDATION",
+      "or an approved target visibility differs from live GitHub metadata"
+    ]
+  },
+  "execution": {
+    "phase_1_owner": "StegVerse-Labs/.github repository-governance worker",
+    "phase_1_action": "Enumerate reachable StegVerse repositories, read each newest applicable *_MIRROR_HANDOFF.md, resolve public dependency obligations, and update the canonical inventory deterministically.",
+    "phase_2_owner": "TV/TVC-governed GitHub organization administration authority",
+    "phase_2_action": "For entries explicitly approved PRIVATE_REQUIRED whose live metadata is public, apply the repository visibility transition without exporting or introducing a non-TV/TVC credential.",
+    "phase_3_owner": "StegVerse-Labs/.github repository-governance verifier",
+    "phase_3_action": "Re-read live repository metadata, verify SDK/public-contract regression conditions, and persist a verification receipt for every attempted mutation.",
+    "manual_chat_execution_allowed": false,
+    "fail_closed": true
+  },
+  "allowed_states": [
+    "COMPLETE",
+    "BLOCKED",
+    "RETRY",
+    "REVIEW_REQUIRED",
+    "FAILED",
+    "CLAIMED",
+    "SUPERSEDED",
+    "MERGED"
+  ],
+  "deterministic_inputs": [
+    "live repository metadata",
+    "newest applicable repository *_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK public contract and SDK_MIRROR_HANDOFF.md",
+    "cross-repository publication/dependency contracts",
+    "canonical visibility inventory"
+  ],
+  "deterministic_outputs": [
+    "classification decision with reason",
+    "approved target visibility or explicit review/block state",
+    "exact execution owner",
+    "post-mutation live metadata observation",
+    "verification receipt",
+    "next executable task"
+  ],
+  "duplicate_execution_prevention": {
+    "key": "repository_full_name",
+    "rule": "Only one active visibility mutation claim per repository. A mutation is not retryable while an unexpired claim or unresolved receipt exists.",
+    "stale_claim_rule": "Expired claims must be released, renewed with new live evidence, or marked BLOCKED with a machine-observable release condition."
+  },
+  "release_conditions": {
+    "per_repository": "live visibility equals approved target and verification receipt is committed, or the repository is explicitly retained public with a current affirmative public requirement",
+    "whole_goal": "all reachable repositories classified; all approved mutations verified; public aperture regression passes; no visibility requirement remains only in chat"
+  },
+  "blocked_state": {
+    "condition": "current connected GitHub action set has no repository-visibility write action",
+    "owner": "TV/TVC-governed GitHub organization administration authority",
+    "observable_release": "a StegVerse-authorized org-admin visibility executor becomes available or live metadata reflects an approved transition",
+    "next_action": "continue classification and dependency review without guessing; apply only mutations for which authorized visibility-write capability exists"
+  },
+  "cross_repository_propagation_check": [
+    "StegVerse-Labs/Site",
+    "GCAT-BCAT-Engine/Publisher",
+    "StegVerse-Labs/admissibility-wiki",
+    "StegVerse-Labs/stegguardian-wiki",
+    "master-records",
+    "StegVerse-org/StegVerse-SDK"
+  ],
+  "historical_disclosure_rule": "Changing a repository from public to private does not retract prior clones, forks, caches, packages, releases or disclosed commit history. Persist that fact in each mutation receipt.",
+  "next_executable_action": "Complete repository-local handoff/dependency review for CANDIDATE_PRIVATE entries, beginning with StegVerse-Labs/StegCore, then LLM-adapter, hybrid-collab-bridge, StegVerse-Healer and discovery; approve mutations only after public-contract sufficiency is verified.",
+  "archive_dependency": true
+}
