@@ -2,8 +2,8 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "SHWP-IPHONE-HB30-INLINE-CAPSULE-002",
   "created_at": "2026-08-17T13:35:00-05:00",
-  "updated_at": "2026-08-17T13:42:00-05:00",
-  "state": "HANDOFF_READY",
+  "updated_at": "2026-08-17T13:45:00-05:00",
+  "state": "COMPLETE_RELEASED",
   "goal": {
     "goal_id": "SHWP-IPHONE-HB30-INLINE-CAPSULE-002",
     "objective": "Provide a publication-independent, non-authorizing CURRENT_USER_IPHONE Safari execution path for the exact HB29->HB30 portable receipt so physical initiation does not depend on GitHub Pages, Render, another machine, an always-on host, or any NON-TV/TVC secret/token.",
@@ -87,7 +87,7 @@
     "status_projection": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
   },
   "completion": {
-    "next_authorized_action": "After source release, CURRENT_USER_IPHONE executes the exact inline capsule in an existing https://stegverse.org secure Safari page context, retains the returned portable receipt, and transfers that receipt to the existing .github#209 verifier/materializer. G18 and WorkerCoordinator remain the only canonical continuation owners for HB30 materialization and observation.",
+    "next_authorized_action": "CURRENT_USER_IPHONE executes the exact released inline capsule in an existing https://stegverse.org secure Safari page context, retains the returned portable receipt, and transfers that receipt to the existing .github#209 verifier/materializer. G18 and WorkerCoordinator remain the only canonical continuation owners for HB30 materialization and observation.",
     "terminal_when": [
       "inline_capsule_source_merged=true",
       "inline_capsule_validation_pass=true",
@@ -97,13 +97,32 @@
     ]
   },
   "constraint": {
-    "operational_state": "ACTIVE_INTEGRATION",
+    "operational_state": "HUMAN_PHYSICAL_EXECUTION_BOUNDARY",
     "condition": "PHYSICAL_RECEIPT_NOT_YET_OBSERVED",
-    "owner": "StegVerse-Labs/.github#209 / G18 after source release",
+    "owner": "CURRENT_USER_IPHONE -> StegVerse-Labs/.github#209 / G18",
     "solution_required": true,
     "machine_observable_release_condition": "A valid CURRENT_USER_IPHONE portable receipt passes scripts/verify_iphone_heartbeat_transition_receipt.py and HB30 is materialized without modifying legacy HB29; WorkerCoordinator then observes HB30+",
-    "next_solution_action": "Complete and merge this source lane, then return execution to the physical iPhone and canonical G18 verifier/materializer path",
+    "next_solution_action": "Execute the exact merged inline capsule on CURRENT_USER_IPHONE; then allow the existing canonical verifier/materializer and WorkerCoordinator continuation to proceed",
     "third_party_dependency": false,
     "human_action_required": true
+  },
+  "release_evidence": {
+    "pull_request": 214,
+    "final_head": "e4aba9859f2deed5f626723dfd7faa1ee4720a5e",
+    "merge_commit": "c079216deeaa8fa5d049f6c634d829bde5689596",
+    "heartbeat_worker_validation_run": 32056394503,
+    "heartbeat_worker_validation_job": 95467436421,
+    "heartbeat_worker_validation_result": "SUCCESS",
+    "deterministic_repository_tests": "345/345 PASS",
+    "executable_handoff_validation": "PASS",
+    "anonymous_no_github_credential_checkout": true,
+    "source_lane_complete": true,
+    "physical_receipt_observed": false,
+    "hb30_claimed": false
+  },
+  "session_consolidation": {
+    "source_role_released": true,
+    "merged_into": "StegVerse-Labs/.github#209 -> SHWP-DURABLE-RUNTIME-ACTIVATION/G18 -> .github#60",
+    "unique_chat_source_work_remaining": false
   }
 }
