@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.cosv-live-integration-release/v1",
+  "goal_id": "COSV-HEARTBEAT-STATE-PACKET-002-LIVE-INTEGRATION",
+  "canonical_issue": 217,
+  "released_at": "2026-08-18T15:00:00-05:00",
+  "state": "COMPLETE_RELEASED",
+  "live_packet_ref": "receipts/cosv/live/HB31.json",
+  "validation_ref": "receipts/cosv/live/HB31-validation.json",
+  "packet_sha256": "618ca9d0b8d6a2dbd661378b8ca9814dd9b882efb40d351c0d517bff8f4e17bd",
+  "carrier_ref": "heartbeat_epoch:31",
+  "release_basis": [
+    "carrier runtime ACTIVE at epoch/generation 31/31",
+    "WorkerCoordinator independently observed carrier 31/31",
+    "heartbeat transition receipt RELEASE_COMPLETE with all release predicates true",
+    "first authority-neutral FULL COSV packet persisted",
+    "canonical packet digest/state root/authority invariants revalidated"
+  ],
+  "downstream_required": [
+    "next changed admitted carrier reference",
+    "DELTA COSV packet against HB31 baseline",
+    "StegVerse-Labs/StegBrain#861 first live gradient observation",
+    "StegVerse-Labs/StegBrain#865 first live precommitted expectation-residual observation",
+    "StegVerse-Labs/StegBrain#863/#865 ordered matrix/residual-series evidence after sufficient live observations",
+    "StegVerse-Labs/.github#60 sovereign inference same-execution activation evidence"
+  ],
+  "archive_eligible": false,
+  "archive_blocker": "Required downstream live session goals remain nonterminal under the governing completion rule.",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_used": false,
+  "github_token_runtime_authority": "NONE",
+  "third_party_runtime_role": "FALLBACK_ONLY",
+  "stegverse_primary": true
+}
