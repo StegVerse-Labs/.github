@@ -2,12 +2,13 @@
 """Run StegVerse worker lifecycle coordination separately from the heartbeat carrier.
 
 When the separated-v12 carrier has not yet been materialized, this entry point
-first consumes a valid portable iPhone recovery receipt when one is present; if
-none is available it executes the canonical bounded transition producer. If a
-carrier is already materialized but the worker control-plane projection is
-absent, it reconstructs that observation without advancing the carrier. After
-each WorkerCoordinator cycle it refreshes the seven transition release
-predicates without advancing the carrier.
+tries verified portable iPhone recovery receipts newest-first; if none can be
+materialized it executes the canonical bounded transition producer. Third-party
+hosted compute is allowed only as an explicit FALLBACK_ONLY execution surface
+and is never hidden from the verifier. If a carrier is already materialized but
+the worker control-plane projection is absent, it reconstructs that observation
+without advancing the carrier. After each WorkerCoordinator cycle it refreshes
+the seven transition release predicates without advancing the carrier.
 """
 from __future__ import annotations
 
@@ -18,6 +19,7 @@ import signal
 import subprocess
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -41,9 +43,11 @@ PORTABLE_RECEIPT_DIR_REL = Path("receipts/heartbeat-transition-continuity")
 IPHONE_VERIFIER_REL = Path("scripts/verify_iphone_heartbeat_transition_receipt.py")
 TRANSITION_REFRESH_REL = Path("scripts/refresh_heartbeat_transition_receipt.py")
 CONTROL_PLANE_PROJECTOR_REL = Path("scripts/project_worker_control_plane_from_carrier.py")
+HOSTED_ENV = ("GITHUB_ACTIONS", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 SAFE_BOOTSTRAP_ENV = {
     "HOME", "USER", "LOGNAME", "SHELL", "PATH", "PYTHONPATH", "LANG", "LC_ALL", "TMPDIR",
     "XDG_CONFIG_HOME", "XDG_STATE_HOME", "LOCALAPPDATA", "UID", "STEGVERSE_HEARTBEAT_ROOT",
+    *HOSTED_ENV,
 }
 
 
@@ -108,27 +112,61 @@ def load_adapters(root: Path) -> dict[str, ProcessWorkerAdapter]:
     return adapters
 
 
+def _truthy(value: str | None) -> bool:
+    return str(value or "").strip().lower() not in ("", "0", "false", "no")
+
+
 def _safe_bootstrap_env(values: dict[str, str] | None = None) -> dict[str, str]:
     source = os.environ if values is None else values
     return {name: source[name] for name in SAFE_BOOTSTRAP_ENV if source.get(name)}
 
 
-def _latest_portable_receipt(root: Path) -> Path | None:
+def _fallback_origin(values: dict[str, str] | None = None) -> str | None:
+    source = os.environ if values is None else values
+    active = [name for name in HOSTED_ENV if _truthy(source.get(name))]
+    return active[0] if active else None
+
+
+def _portable_receipts(root: Path) -> list[Path]:
     directory = root / PORTABLE_RECEIPT_DIR_REL
     if not directory.is_dir():
-        return None
-    candidates = sorted(directory.glob("iphone-portable-*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
-    return candidates[0] if candidates else None
+        return []
+    ranked: list[tuple[datetime, Path]] = []
+    for path in directory.glob("iphone-portable-*.json"):
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+            stamp = str(value.get("executed_at") or "")
+            parsed = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
+        except Exception:
+            continue
+        ranked.append((parsed, path))
+    ranked.sort(key=lambda item: (item[0], item[1].name), reverse=True)
+    return [path for _, path in ranked]
 
 
-def _materialize_portable_receipt(root: Path, receipt: Path, *, env: dict[str, str] | None = None, runner=subprocess.run) -> dict[str, Any]:
+def _materialize_portable_receipt(
+    root: Path,
+    receipt: Path,
+    *,
+    env: dict[str, str] | None = None,
+    runner=subprocess.run,
+) -> dict[str, Any]:
     verifier = root / IPHONE_VERIFIER_REL
     carrier = root / INITIAL_CARRIER_REL
     if not verifier.is_file():
         return {"attempted": False, "state": "PORTABLE_VERIFIER_MISSING"}
+    source_env = os.environ if env is None else env
+    fallback = _fallback_origin(source_env)
+    command = [sys.executable, str(verifier), str(receipt), "--root", str(root), "--materialize"]
+    if fallback:
+        command.extend(["--allow-third-party-fallback", fallback])
     completed = runner(
-        [sys.executable, str(verifier), str(receipt), "--root", str(root), "--materialize"],
-        check=False, capture_output=True, text=True, timeout=90, env=_safe_bootstrap_env(env),
+        command,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=90,
+        env=_safe_bootstrap_env(source_env),
     )
     if completed.returncode == 0 and carrier.is_file():
         value = json.loads(carrier.read_text(encoding="utf-8"))
@@ -138,12 +176,18 @@ def _materialize_portable_receipt(root: Path, receipt: Path, *, env: dict[str, s
                 "state": "PORTABLE_RECEIPT_MATERIALIZED",
                 "carrier_epoch": value["epoch"],
                 "portable_receipt_ref": str(receipt.relative_to(root)),
+                "execution_provider": fallback or "STEGVERSE_NATIVE",
+                "provider_role": "FALLBACK_ONLY" if fallback else "PRIMARY",
+                "third_party_required_dependency": False,
                 "credential_authority": "TV/TVC",
                 "github_token_runtime_authority": "NONE",
             }
     return {
         "attempted": True,
         "state": "PORTABLE_RECEIPT_MATERIALIZATION_FAILED",
+        "portable_receipt_ref": str(receipt.relative_to(root)),
+        "execution_provider": fallback or "STEGVERSE_NATIVE",
+        "provider_role": "FALLBACK_ONLY" if fallback else "PRIMARY",
         "returncode": completed.returncode,
         "stderr_tail": completed.stderr[-1000:],
     }
@@ -160,21 +204,41 @@ def bootstrap_initial_carrier(root: Path, *, env: dict[str, str] | None = None, 
         epoch = carrier.get("epoch")
         if not isinstance(epoch, int) or epoch < 30:
             raise RuntimeError("existing separated carrier state is below HB30")
-        return {"attempted": False, "state": "CARRIER_ALREADY_PRESENT", "carrier_epoch": epoch,
-                "credential_authority": "TV/TVC", "github_token_runtime_authority": "NONE"}
+        return {
+            "attempted": False,
+            "state": "CARRIER_ALREADY_PRESENT",
+            "carrier_epoch": epoch,
+            "credential_authority": "TV/TVC",
+            "github_token_runtime_authority": "NONE",
+        }
     if not legacy_path.is_file() or not producer_path.is_file():
         raise RuntimeError("HB29 bootstrap source is incomplete")
     legacy = json.loads(legacy_path.read_text(encoding="utf-8"))
-    if int(legacy.get("epoch", -1)) != 29:
-        raise RuntimeError("initial separated-v12 bootstrap requires immutable legacy HB29")
-    portable = _latest_portable_receipt(root)
-    if portable is not None:
+    if int(legacy.get("epoch", -1)) != 29 or int(legacy.get("generation", -1)) != 29:
+        raise RuntimeError("initial separated-v12 bootstrap requires immutable legacy HB29/generation29")
+
+    rejected: list[dict[str, Any]] = []
+    for portable in _portable_receipts(root):
         portable_result = _materialize_portable_receipt(root, portable, env=env, runner=runner)
         if portable_result.get("state") == "PORTABLE_RECEIPT_MATERIALIZED":
+            if rejected:
+                portable_result["rejected_newer_or_invalid_receipts"] = rejected
             return portable_result
+        rejected.append(
+            {
+                "portable_receipt_ref": portable_result.get("portable_receipt_ref"),
+                "returncode": portable_result.get("returncode"),
+                "state": portable_result.get("state"),
+            }
+        )
+
     completed = runner(
         [sys.executable, str(producer_path), "--root", str(root), "--receipt-path", str(receipt_path)],
-        check=False, capture_output=True, text=True, timeout=90, env=_safe_bootstrap_env(env),
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=90,
+        env=_safe_bootstrap_env(env),
     )
     receipt = json.loads(receipt_path.read_text(encoding="utf-8")) if receipt_path.is_file() else {}
     if completed.returncode != 0 or receipt.get("state") != "CARRIER_TRANSITION_COMPLETE" or not carrier_path.is_file():
@@ -184,9 +248,16 @@ def bootstrap_initial_carrier(root: Path, *, env: dict[str, str] | None = None, 
     epoch = carrier.get("epoch")
     if not isinstance(epoch, int) or epoch < 30:
         raise RuntimeError("HB29->HB30 bootstrap did not persist an HB30+ carrier state")
-    return {"attempted": True, "state": "CARRIER_TRANSITION_COMPLETE", "carrier_epoch": epoch,
-            "receipt_ref": str(TRANSITION_RECEIPT_REL), "credential_authority": "TV/TVC",
-            "github_token_runtime_authority": "NONE", "non_tv_tvc_secret_or_token_forwarded": False}
+    return {
+        "attempted": True,
+        "state": "CARRIER_TRANSITION_COMPLETE",
+        "carrier_epoch": epoch,
+        "receipt_ref": str(TRANSITION_RECEIPT_REL),
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "non_tv_tvc_secret_or_token_forwarded": False,
+        "portable_receipts_rejected": rejected,
+    }
 
 
 def project_control_plane_if_missing(root: Path, *, runner=subprocess.run) -> dict[str, Any] | None:
@@ -199,12 +270,27 @@ def project_control_plane_if_missing(root: Path, *, runner=subprocess.run) -> di
         raise RuntimeError("HB30 carrier exists without worker control-plane projection source")
     completed = runner(
         [sys.executable, str(script), "--root", str(root)],
-        check=False, capture_output=True, text=True, timeout=30, env=_safe_bootstrap_env(),
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=30,
+        env=_safe_bootstrap_env(),
     )
     if completed.returncode != 0 or not control.is_file():
         raise RuntimeError("failed to project worker control plane from existing carrier")
     value = json.loads(control.read_text(encoding="utf-8"))
-    return {"state": "CONTROL_PLANE_PROJECTED", "carrier_generation": (value.get("observed_reference") or {}).get("carrier_generation")}
+    carrier_value = json.loads(carrier.read_text(encoding="utf-8"))
+    observed = value.get("observed_reference") or {}
+    if (
+        observed.get("carrier_generation") != carrier_value.get("generation")
+        or observed.get("reference_frame") != carrier_value.get("reference_frame")
+    ):
+        raise RuntimeError("worker control-plane projection does not match current carrier")
+    return {
+        "state": "CONTROL_PLANE_PROJECTED",
+        "carrier_generation": observed.get("carrier_generation"),
+        "reference_frame": observed.get("reference_frame"),
+    }
 
 
 def refresh_transition_release(root: Path, *, runner=subprocess.run) -> dict[str, Any] | None:
@@ -214,10 +300,18 @@ def refresh_transition_release(root: Path, *, runner=subprocess.run) -> dict[str
         return None
     completed = runner(
         [sys.executable, str(script), "--root", str(root)],
-        check=False, capture_output=True, text=True, timeout=30, env=_safe_bootstrap_env(),
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=30,
+        env=_safe_bootstrap_env(),
     )
     value = json.loads(receipt.read_text(encoding="utf-8"))
-    return {"returncode": completed.returncode, "release_state": value.get("release_state"), "all_release_predicates_pass": value.get("all_release_predicates_pass")}
+    return {
+        "returncode": completed.returncode,
+        "release_state": value.get("release_state"),
+        "all_release_predicates_pass": value.get("all_release_predicates_pass"),
+    }
 
 
 def main() -> int:
@@ -241,9 +335,11 @@ def main() -> int:
         control_projection = project_control_plane_if_missing(root)
     runtime = WorkerCoordinator(root, adapters=load_adapters(root))
     running = True
+
     def stop(_signum, _frame):
         nonlocal running
         running = False
+
     signal.signal(signal.SIGTERM, stop)
     signal.signal(signal.SIGINT, stop)
     index = 0
