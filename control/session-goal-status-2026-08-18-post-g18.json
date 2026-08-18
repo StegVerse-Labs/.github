@@ -1,9 +1,9 @@
 {
   "schema": "stegverse.session-goal-status/v2",
   "session_id": "SESSION-2026-08-18-COSV-STATE-GRADIENT-INTROSPECTION",
-  "updated_at": "2026-08-18T18:03:00-05:00",
+  "updated_at": "2026-08-18T18:08:00-05:00",
   "archive_eligible": false,
-  "archive_reason": "The heartbeat semantic/runtime correction is source-complete but has not yet produced a corrected oscillator-backed sovereign carrier observation; sovereign inference and live COSV gradient/residual/matrix outcomes also remain nonterminal.",
+  "archive_reason": "The independent-heartbeat correction is source-complete and its canonical machine-owned live proof task is now HANDOFF_READY, but the corrected oscillator-backed sovereign carrier observation has not yet been produced; sovereign inference and live COSV gradient/residual/matrix outcomes also remain nonterminal.",
   "heartbeat_semantics": {
     "canonical_rule": "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL",
     "progression_dependency": "OSCILLATOR_ONLY",
@@ -17,6 +17,12 @@
     "observation_is_causal": false,
     "persisted_carrier_state_is_observation_only": true,
     "source_validation_ref": "receipts/heartbeat/HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008-source-validation.json",
+    "live_proof_task": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
+    "live_proof_handoff": "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
+    "live_proof_registry": "control/worker-registry.d/heartbeat-independent-oscillator-live-009.json",
+    "live_proof_adapter": "control/process-worker-adapters.d/heartbeat-independent-oscillator-live-009.json",
+    "live_proof_worker": "workers/independent_heartbeat_live_proof_worker.py",
+    "live_proof_task_state": "HANDOFF_READY",
     "live_corrected_observation": false
   },
   "observed_repository_snapshots": {
@@ -33,9 +39,17 @@
   "goals": [
     {
       "goal_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008",
-      "state": "SOURCE_COMPLETE_RELEASED_PENDING_LIVE_CORRECTED_OSCILLATOR_OBSERVATION",
+      "state": "SOURCE_COMPLETE_RELEASED",
       "owner": "StegVerse-Labs/.github#122",
       "evidence": "receipts/heartbeat/HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008-source-validation.json",
+      "terminal": true
+    },
+    {
+      "goal_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
+      "state": "HANDOFF_READY_MACHINE_EXECUTION_REQUIRED",
+      "owner": "StegVerse-Labs/.github#122 / WorkerCoordinator / independent-heartbeat-live-proof-worker",
+      "evidence": "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
+      "machine_observable_release_condition": "worker response COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED and persisted carrier/observation state contains oscillator-only 10 ms noncausal sampling invariants",
       "terminal": false
     },
     {
@@ -80,7 +94,7 @@
       "terminal": false
     }
   ],
-  "next_executable_action": "Execute/observe the corrected StegVerse v12 heartbeat sampler on the sovereign runtime. The resulting persisted carrier state must contain oscillator.progression_dependency=OSCILLATOR_ONLY, phase_travel_time_ms=10, observation_is_causal=false, and snapshot_is_observation_only=true. Treat the observed ordinal as a sample of the independently progressed signal, not as a transition caused by that execution. Then rebind downstream COSV/StegBrain observations to corrected oscillator-derived references. Do not use the invalidated HB32 expectation.",
+  "next_executable_action": "WorkerCoordinator must bind HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009 and execute independent-heartbeat-live-proof-worker once. Observe and verify the persisted oscillator-backed carrier state. Then rebind downstream COSV/StegBrain observations to the corrected oscillator-derived reference and continue sovereign inference outputs. Do not use the invalidated HB32 expectation.",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",
