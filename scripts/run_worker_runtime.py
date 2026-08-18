@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
-"""Run StegVerse worker lifecycle coordination separately from the heartbeat carrier."""
+"""Run StegVerse worker lifecycle coordination separately from the heartbeat carrier.
+
+When the separated-v12 carrier has not yet been materialized, this entry point
+performs the one bounded HB29 -> HB30 carrier transition before starting the
+WorkerCoordinator. This breaks the bootstrap deadlock where WorkerCoordinator
+required HB30 before the already-installed transition producer could run.
+"""
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import signal
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -21,6 +29,14 @@ FRAGMENT_SCHEMA = "stegverse.process-worker-adapter-fragment/v0.1"
 PROCESS_TYPE = "process_json_v0.1"
 BOUND_STATE_TYPE = "process_json_bound_state_v0.1"
 DEFAULT_INTERVAL_MS = 10.0
+INITIAL_CARRIER_REL = Path("control/heartbeat-carrier-runtime-state.json")
+LEGACY_STATE_REL = Path("control/heartbeat-state.json")
+TRANSITION_PRODUCER_REL = Path("scripts/advance_heartbeat_transition.py")
+TRANSITION_RECEIPT_REL = Path("receipts/heartbeat-transition-continuity/latest.json")
+SAFE_BOOTSTRAP_ENV = {
+    "HOME", "USER", "LOGNAME", "SHELL", "PATH", "PYTHONPATH", "LANG", "LC_ALL", "TMPDIR",
+    "XDG_CONFIG_HOME", "XDG_STATE_HOME", "LOCALAPPDATA", "UID", "STEGVERSE_HEARTBEAT_ROOT",
+}
 
 
 def _read_registry(path: Path, *, fragment: bool) -> list[dict[str, Any]]:
@@ -57,14 +73,12 @@ def load_adapters(root: Path) -> dict[str, ProcessWorkerAdapter]:
             raise RuntimeError("enabled process adapter missing adapter_ref")
         if adapter_ref in adapters:
             raise RuntimeError(f"duplicate enabled adapter_ref: {adapter_ref}")
-
         adapter_type = entry.get("type", PROCESS_TYPE)
         if adapter_type not in {PROCESS_TYPE, BOUND_STATE_TYPE}:
             raise RuntimeError(f"unsupported process adapter type: {adapter_type}")
         cwd = Path(entry["cwd"])
         if not cwd.is_absolute():
             cwd = root / cwd
-
         bound_state_root = None
         bound_state_allowed_paths: tuple[str, ...] = ()
         if adapter_type == BOUND_STATE_TYPE:
@@ -78,16 +92,53 @@ def load_adapters(root: Path) -> dict[str, ProcessWorkerAdapter]:
             if not bound_state_root.is_absolute():
                 raise RuntimeError(f"bound_state_root must resolve to an absolute host path: {adapter_ref}")
             bound_state_allowed_paths = tuple(patterns)
-
         adapters[adapter_ref] = ProcessWorkerAdapter(
-            list(entry["command"]),
-            cwd=cwd,
-            timeout_seconds=float(entry["timeout_seconds"]),
-            env_allowlist=tuple(entry.get("env_allowlist", [])),
-            bound_state_root=bound_state_root,
+            list(entry["command"]), cwd=cwd, timeout_seconds=float(entry["timeout_seconds"]),
+            env_allowlist=tuple(entry.get("env_allowlist", [])), bound_state_root=bound_state_root,
             bound_state_allowed_paths=bound_state_allowed_paths,
         )
     return adapters
+
+
+def _safe_bootstrap_env(values: dict[str, str] | None = None) -> dict[str, str]:
+    source = os.environ if values is None else values
+    return {name: source[name] for name in SAFE_BOOTSTRAP_ENV if source.get(name)}
+
+
+def bootstrap_initial_carrier(root: Path, *, env: dict[str, str] | None = None, runner=subprocess.run) -> dict[str, Any]:
+    """Materialize the first separated-v12 carrier state before worker startup."""
+    root = root.resolve()
+    carrier_path = root / INITIAL_CARRIER_REL
+    legacy_path = root / LEGACY_STATE_REL
+    producer_path = root / TRANSITION_PRODUCER_REL
+    receipt_path = root / TRANSITION_RECEIPT_REL
+    if carrier_path.is_file():
+        carrier = json.loads(carrier_path.read_text(encoding="utf-8"))
+        epoch = carrier.get("epoch")
+        if not isinstance(epoch, int) or epoch < 30:
+            raise RuntimeError("existing separated carrier state is below HB30")
+        return {"attempted": False, "state": "CARRIER_ALREADY_PRESENT", "carrier_epoch": epoch,
+                "credential_authority": "TV/TVC", "github_token_runtime_authority": "NONE"}
+    if not legacy_path.is_file() or not producer_path.is_file():
+        raise RuntimeError("HB29 bootstrap source is incomplete")
+    legacy = json.loads(legacy_path.read_text(encoding="utf-8"))
+    if int(legacy.get("epoch", -1)) != 29:
+        raise RuntimeError("initial separated-v12 bootstrap requires immutable legacy HB29")
+    completed = runner(
+        [sys.executable, str(producer_path), "--root", str(root), "--receipt-path", str(receipt_path)],
+        check=False, capture_output=True, text=True, timeout=90, env=_safe_bootstrap_env(env),
+    )
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8")) if receipt_path.is_file() else {}
+    if completed.returncode != 0 or receipt.get("state") != "CARRIER_TRANSITION_COMPLETE" or not carrier_path.is_file():
+        reason = receipt.get("reason") or "INITIAL_CARRIER_TRANSITION_FAILED"
+        raise RuntimeError(f"HB29->HB30 bootstrap failed closed: {reason}")
+    carrier = json.loads(carrier_path.read_text(encoding="utf-8"))
+    epoch = carrier.get("epoch")
+    if not isinstance(epoch, int) or epoch < 30:
+        raise RuntimeError("HB29->HB30 bootstrap did not persist an HB30+ carrier state")
+    return {"attempted": True, "state": "CARRIER_TRANSITION_COMPLETE", "carrier_epoch": epoch,
+            "receipt_ref": str(TRANSITION_RECEIPT_REL), "credential_authority": "TV/TVC",
+            "github_token_runtime_authority": "NONE", "non_tv_tvc_secret_or_token_forwarded": False}
 
 
 def main() -> int:
@@ -102,21 +153,23 @@ def main() -> int:
         raise SystemExit("cycles must be >= 1 and interval-ms must be >= 0")
     if args.continuous and args.dry_run:
         raise SystemExit("continuous dry-run is prohibited because it cannot retain worker timer state")
-
     root = Path(args.root).resolve()
+    bootstrap_result = None
+    if not args.dry_run and not (root / INITIAL_CARRIER_REL).is_file():
+        bootstrap_result = bootstrap_initial_carrier(root)
     runtime = WorkerCoordinator(root, adapters=load_adapters(root))
     running = True
-
     def stop(_signum, _frame):
         nonlocal running
         running = False
-
     signal.signal(signal.SIGTERM, stop)
     signal.signal(signal.SIGINT, stop)
-
     index = 0
     while running and (args.continuous or index < args.cycles):
         result = runtime.cycle(write=not args.dry_run)
+        if bootstrap_result is not None:
+            result["initial_carrier_bootstrap"] = bootstrap_result
+            bootstrap_result = None
         print(json.dumps(result, sort_keys=True), flush=True)
         index += 1
         if running and (args.continuous or index < args.cycles) and args.interval_ms:
