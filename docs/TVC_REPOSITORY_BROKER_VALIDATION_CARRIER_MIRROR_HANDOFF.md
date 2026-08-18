@@ -16,7 +16,7 @@ validation_claim: VALIDATED_REPOSITORY_INTEGRATION_MACHINE_RUNTIME_PENDING
 archive_ready: false
 ```
 
-Legacy PR #20 is closed and superseded. It had diverged hundreds of commits behind private `main` and could no longer be the exact admission target. PR #79 re-materializes the same bounded 16-file broker delta directly on current main and is the only current validation/admission target.
+Legacy PR #20 is closed and superseded. It had diverged hundreds of commits behind private `main` and could no longer be the exact admission target. PR #79 re-materializes the bounded broker delta directly on current main and is the only current validation/admission target.
 
 ## Current exact source binding
 
@@ -25,8 +25,8 @@ TVC repository: StegVerse-Labs/TVC
 PR: #79
 branch: repair/github-repository-operation-broker-rebase-001
 base_at_rematerialization: 389e2aee2dc00c60149c901f7b5ad4bac6d0309f
-expected_head: 2701badb7fc8485ea4c277071272b92609d8c10d
-observed_current_PR_head: 2701badb7fc8485ea4c277071272b92609d8c10d
+expected_head: 2ff7dacc70557f8281c18c92b2ac3ed2cf6f2cf1
+observed_current_PR_head: 2ff7dacc70557f8281c18c92b2ac3ed2cf6f2cf1
 legacy_PR20_head: dfbf736d9e205e1fc179dc8636af74e638c2aec5
 upstream handoff: docs/GITHUB_REPOSITORY_OPERATION_BROKER_MIRROR_HANDOFF.md
 upstream task: tasks/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.json
@@ -77,7 +77,7 @@ WORKER-OWNED:
   task: SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001
   worker: tvc-repository-broker-validation-worker
   adapter: process:tvc-repository-broker-validation-v1
-  expected_head: 2701badb7fc8485ea4c277071272b92609d8c10d
+  expected_head: 2ff7dacc70557f8281c18c92b2ac3ed2cf6f2cf1
 
 AUTHORITY-OWNED AFTER PASS:
   TVC repository integration authority may admit PR #79 only after exact governed PASS.
@@ -91,7 +91,7 @@ No chat/session may substitute itself for the machine worker, mint a PASS receip
 1. sovereign carrier executes engine_v13 after this exact binding is resident
 2. carrier emits worker_assignment_trigger_carried for SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001
 3. task-capable WorkerCoordinator consumes the packet and independently binds the registered worker
-4. worker locates clean local TVC PR #79 source at 2701badb7fc8485ea4c277071272b92609d8c10d
+4. worker locates clean local TVC PR #79 source at 2ff7dacc70557f8281c18c92b2ac3ed2cf6f2cf1
 5. worker executes tvc.github_repository_operation_broker.verify with forbidden credential variables removed
 6. receipts/tvc-repository-broker-validation/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json records actual PASS or fail-closed result
 7. only exact PASS permits TVC PR #79 admission review
