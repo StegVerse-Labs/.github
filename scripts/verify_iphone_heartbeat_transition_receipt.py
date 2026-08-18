@@ -61,7 +61,6 @@ def contains_protected_material(value: Any, path: str = "$") -> list[str]:
         for key, child in value.items():
             lowered = str(key).lower()
             if any(fragment in lowered for fragment in PROTECTED_KEYS):
-                # Expected authority declarations are allowed only when they are non-secret constants.
                 allowed = {
                     "credential_authority": "TV/TVC",
                     "credential_requirement": "NONE",
@@ -75,6 +74,30 @@ def contains_protected_material(value: Any, path: str = "$") -> list[str]:
         for index, child in enumerate(value):
             hits.extend(contains_protected_material(child, f"{path}[{index}]"))
     return hits
+
+
+def browser_proves_iphone(browser: dict[str, Any]) -> bool:
+    """Accept normal iPhone UA or privacy/reduced-UA iPhone-class evidence.
+
+    Some iOS browser surfaces expose a desktop/reduced UA even on an iPhone.
+    The fallback remains bounded to a touch-capable iPhone-sized CSS screen and
+    must be explicitly recorded by the browser capsule.
+    """
+    ua = str(browser.get("user_agent") or "")
+    if "iPhone" in ua:
+        return True
+    try:
+        touch = int(browser.get("max_touch_points", 0))
+        width = float(browser.get("screen_width_css", 0))
+        height = float(browser.get("screen_height_css", 0))
+    except (TypeError, ValueError):
+        return False
+    if browser.get("iphone_class_evidence") is not True:
+        return False
+    if touch < 2 or width <= 0 or height <= 0:
+        return False
+    short_side, long_side = sorted((width, height))
+    return short_side <= 500 and long_side <= 1000
 
 
 def validate_receipt(receipt: dict[str, Any], *, root: Path = ROOT) -> dict[str, Any]:
@@ -148,9 +171,8 @@ def validate_receipt(receipt: dict[str, Any], *, root: Path = ROOT) -> dict[str,
         errors.append("browser.webcrypto must be true")
     if not str(browser.get("origin") or "").startswith("https://stegverse.org"):
         errors.append("browser.origin must be stegverse.org HTTPS")
-    ua = str(browser.get("user_agent") or "")
-    if "iPhone" not in ua:
-        errors.append("browser.user_agent does not prove CURRENT_USER_IPHONE execution")
+    if not browser_proves_iphone(browser):
+        errors.append("browser evidence does not prove an iPhone-class execution surface")
 
     protected = contains_protected_material(receipt)
     if protected:
@@ -172,6 +194,7 @@ def validate_receipt(receipt: dict[str, Any], *, root: Path = ROOT) -> dict[str,
         "receipt_sha256": claimed_digest,
         "successor_epoch": successor.get("epoch"),
         "successor_generation": successor.get("generation"),
+        "iphone_execution_evidence": browser_proves_iphone(browser),
         "authority_effect": "NONE",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
