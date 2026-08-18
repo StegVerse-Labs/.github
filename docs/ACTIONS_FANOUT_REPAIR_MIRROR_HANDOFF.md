@@ -59,6 +59,21 @@ These surfaces remain non-authorizing and credential-clean.
    - main push automatic triggers reduced to StegGate worker/schema/workflow source.
    - management/control/cost/handoff/authorization persistence remains available to PR validation and manual dispatch without triggering every main-state write.
 
+5. `.github/workflows/activate-host-self-attest-worker.yml`
+   - commit: `164094f43f1d2c67a677d760cbf2b981d38da593`
+   - historical completed self-attest evidence/handoff/cost persistence removed from automatic main fanout.
+   - automatic main validation now occurs only when the retained workflow definition changes; broad evidence validation remains on pull requests and manual dispatch.
+
+## Inspected and retained unchanged
+
+The following candidates were inspected and do not currently create main-branch fanout:
+
+- `.github/workflows/external-timing-match-validation.yml` — pull-request + manual dispatch only.
+- `.github/workflows/mcp-activation-binding-test.yml` — pull-request + manual dispatch only.
+- `.github/workflows/org-heartbeat-watchdog.yml` — manual diagnostic only.
+
+No mutation was warranted for those surfaces.
+
 ## Collision/ownership check
 
 The active machine-owned heartbeat, federation, StegGate, and sovereign-inference lanes retain their execution ownership. This repair changes hosted validation trigger surfaces only and does not acquire or mutate their claims, fences, leases, runtime receipts, deployment authority, or task state.
@@ -72,18 +87,14 @@ Relevant source-of-truth handoffs/records inspected before mutation:
 
 ## Validation evidence
 
-Post-write repository reads confirmed the narrowed trigger surfaces are present on `main`. The workflows retain `workflow_dispatch` and credential-clean `permissions: {}` semantics. No runtime claim, heartbeat epoch, worker fence, or credential state was mutated by this repair lane.
+Post-write repository reads confirmed the narrowed trigger surfaces are present on `main`. The repaired workflows retain `workflow_dispatch` and credential-clean `permissions: {}` semantics. No runtime claim, heartbeat epoch, worker fence, or credential state was mutated by this repair lane.
 
 No hosted workflow pass is claimed as runtime proof.
 
 ## Remaining fanout review candidates
 
-The following files remain to be inspected for the same source-vs-state trigger separation. They are candidates, not asserted defects until inspected against their current handoffs/owners:
+The following files remain to be inspected for source-vs-state trigger separation. They are candidates, not asserted defects until inspected against their current handoffs/owners:
 
-- `.github/workflows/external-timing-match-validation.yml`
-- `.github/workflows/mcp-activation-binding-test.yml`
-- `.github/workflows/org-heartbeat-watchdog.yml`
-- `.github/workflows/activate-host-self-attest-worker.yml`
 - `.github/workflows/activate-sovereign-runtime-worker.yml`
 - `.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml`
 - `.github/workflows/sovereign-ephemeral-console.yml`
@@ -93,6 +104,17 @@ Activation/worker workflows must not be narrowed merely for cost reduction if th
 ## Private-repository adjacent scope
 
 Private-repository repair remains a separate authority/visibility lane. Do not make a private repository public, introduce broad GitHub credentials, or use hosted Actions as a substitute for TV/TVC repository authority. Any private-repository fanout fix must be applied in that repository only after reading its repository-local `*_MIRROR_HANDOFF.md` and current claim/task ownership.
+
+## Known files/modules still to inspect or install
+
+Destination `StegVerse-Labs/.github`:
+
+- inspect trigger/authority semantics for `.github/workflows/activate-sovereign-runtime-worker.yml`;
+- inspect trigger/authority semantics for `.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml`;
+- inspect trigger/authority semantics for `.github/workflows/sovereign-ephemeral-console.yml`;
+- if a remaining state-triggered hosted validator is proven redundant, narrow its main push paths without removing source/config validation, PR validation, or manual dispatch.
+
+No missing runtime module is asserted by this fanout lane.
 
 ## Release / propagation
 
