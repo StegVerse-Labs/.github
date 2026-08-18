@@ -2,16 +2,18 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-08-18T15:14:00-05:00",
-  "state": "COMPLETION_EVIDENCE_OBSERVED_PENDING_RUNTIME_REGISTRY_RELEASE",
+  "updated_at": "2026-08-18T17:19:00-05:00",
+  "state": "CARRIER_CONTINUITY_OBSERVED_TASK_CAPABLE_RELEASE_PENDING",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-    "objective": "Advance the canonical separated v12 heartbeat from immutable legacy HB29 through state-transition continuity while keeping WorkerCoordinator authority separate and requiring no third-party production dependency.",
+    "objective": "Advance the canonical separated v12 heartbeat from immutable legacy HB29 through state-transition continuity and a task-capable WorkerCoordinator cycle while keeping carrier and worker authority separate and requiring no third-party production dependency.",
     "success_predicates": [
       "A bounded v12 carrier transition derives HB30 or a later valid successor into control/heartbeat-carrier-runtime-state.json while control/heartbeat-state.json remains immutable at HB29",
-      "The independently admitted WorkerCoordinator observes the successor and produces worker runtime/coordination evidence without carrier-granted execution authority",
+      "The independently admitted WorkerCoordinator observes the successor without carrier-granted execution authority",
+      "A real task-capable WorkerCoordinator cycle executes at or after the target carrier epoch; observation-only CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION state is insufficient for runtime release",
       "State reconstruction passes and no duplicate claim/fence is introduced",
-      "No additional physical machine, always-on external host, external scheduler, hosted process provider, GitHub token, or NON-TV/TVC credential becomes production authority"
+      "The already-bound G18 worker consumes its terminal response and the registry/control-plane release the stale G18 claim/fence",
+      "No additional physical machine, external scheduler, hosted process provider, GitHub token, or NON-TV/TVC credential becomes production authority"
     ],
     "expires_at": null,
     "authority_ceiling": [
@@ -30,8 +32,8 @@
     "canonical_owner_ref": "StegVerse-Labs/.github#12",
     "canonical_lineage_key": "shwp:durable-runtime-activation",
     "priority": "release",
-    "operational_state": "COMPLETION_EVIDENCE_OBSERVED_PENDING_REGISTRY_RELEASE",
-    "claim_state": "MACHINE_OWNED_G18_STALE_COMPLETION_PENDING_WORKER_TICK",
+    "operational_state": "REQUIRED_TASK_CAPABLE_WORKER_RUNTIME_EXECUTION",
+    "claim_state": "MACHINE_OWNED_G18_ACTIVE_PENDING_TASK_CAPABLE_WORKER_TICK",
     "fencing_token": 18,
     "source_refs": [
       "StegVerse-Labs/.github#12",
@@ -40,11 +42,14 @@
       "heartbeat_runtime/engine_v12.py",
       "heartbeat_runtime/worker_runtime.py",
       "workers/sovereign_runtime_activation_worker.py",
+      "scripts/run_worker_runtime.py",
+      "scripts/refresh_heartbeat_transition_receipt.py",
       "scripts/advance_heartbeat_transition.py",
       "control/heartbeat-carrier-runtime-state.json",
       "control/worker-runtime-state.json",
       "control/worker-control-plane-coordination.json",
-      "receipts/heartbeat-transition-continuity/latest.json"
+      "receipts/heartbeat-transition-continuity/latest.json",
+      "control/session-implementation-claim-2026-08-18-worker-task-capable-release-hardening.json"
     ]
   },
   "authority": {
@@ -58,7 +63,12 @@
     "stegverse_primary": true
   },
   "execution": {
-    "required_capabilities": ["runtime_observation", "continuous_process_execution", "durable_state_reconstruction", "bounded_repository_mutation"],
+    "required_capabilities": [
+      "runtime_observation",
+      "continuous_process_execution",
+      "durable_state_reconstruction",
+      "bounded_repository_mutation"
+    ],
     "allowed_paths": [
       "receipts/sovereign-runtime-activation/**",
       "receipts/heartbeat-transition-continuity/**",
@@ -70,6 +80,7 @@
     "external_cost_ceiling_usd": 0,
     "canonical_carrier_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
     "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+    "worker_runtime_entrypoint": "scripts/run_worker_runtime.py",
     "legacy_state_ref": "control/heartbeat-state.json",
     "legacy_state_epoch": 29,
     "legacy_state_mutable_after_cutover": false,
@@ -80,10 +91,10 @@
   "state_transition_continuity": {
     "contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
     "continuity_model": "STATE_TRANSITION_CONTINUITY",
-    "resident_native_supervision_optional": true,
+    "resident_native_supervision_optional_for_carrier_continuity_only": true,
+    "task_capable_worker_cycle_required_for_goal_release": true,
     "another_physical_machine_required": false,
     "always_on_external_host_required": false,
-    "wall_clock_continuous_process_required": false,
     "carrier_transition_receipt": "receipts/heartbeat-transition-continuity/latest.json",
     "observed": {
       "legacy_hb29_unchanged": true,
@@ -92,39 +103,52 @@
       "carrier_activation_state": "ACTIVE",
       "worker_observed_carrier_epoch": 31,
       "worker_observed_carrier_generation": 31,
+      "worker_observation_mode": "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION",
       "worker_control_plane_observed": true,
       "no_duplicate_claim_or_fence": true,
       "state_reconstruction_pass": true,
       "transition_state": "CARRIER_TRANSITION_COMPLETE",
-      "release_state": "RELEASE_COMPLETE",
-      "all_release_predicates_pass": true
+      "prior_release_state": "RELEASE_COMPLETE",
+      "prior_all_release_predicates_pass": true,
+      "prior_release_interpretation_superseded": true,
+      "task_capable_worker_cycle_observed": false,
+      "corrected_release_state": "WORKER_TASK_CAPABLE_CYCLE_PENDING",
+      "corrected_all_release_predicates_pass": false
     }
   },
   "completion": {
-    "success_predicates_satisfied": true,
-    "live_state_transition_continuity_proven": true,
-    "resident_service_proof_required": false,
+    "success_predicates_satisfied": false,
+    "carrier_continuity_proven": true,
+    "task_capable_worker_runtime_proven": false,
     "runtime_registry_terminal_state_observed": false,
-    "next_authorized_action": "On the next admitted WorkerCoordinator tick, invoke the already-bound G18 worker. workers/sovereign_runtime_activation_worker.py will observe the completed transition predicates and return state COMPLETED / transition SOVEREIGN_RUNTIME_STATE_TRANSITION_VERIFIED. The coordinator must then release the G18 claim/fence and persist terminal registry/checkpoint evidence.",
+    "next_authorized_action": "The existing #122/#12 StegVerse runtime owner starts or restarts the already-released task-capable scripts/run_worker_runtime.py process on the materialized sovereign node. Its next admitted WorkerCoordinator cycle invokes the already-bound G18 worker, consumes COMPLETED / SOVEREIGN_RUNTIME_STATE_TRANSITION_VERIFIED, releases the G18 claim/fence, and continues downstream.",
     "terminal_when": [
+      "a task-capable WorkerCoordinator event at HB31 or later is durably observed",
+      "the corrected heartbeat transition release validator reports RELEASE_COMPLETE",
       "control/worker-registry.json records SHWP-DURABLE-RUNTIME-ACTIVATION terminal with no active G18 claim/worker binding",
       "control/worker-control-plane-coordination.json no longer lists G18 as an active lease",
-      "terminal checkpoint/receipt references the HB31 release-complete continuity evidence"
+      "terminal checkpoint/receipt binds the HB31 continuity evidence and task-capable worker cycle"
     ],
-    "source_implementation_state": "COMPLETE_RELEASED",
-    "live_activation_state": "CONTINUITY_PROVEN_PENDING_TASK_REGISTRY_TERMINALIZATION"
+    "source_implementation_state": "RELEASE_HARDENING_INSTALLED_VALIDATION_PENDING",
+    "live_activation_state": "CARRIER_CONTINUITY_PROVEN_TASK_CAPABLE_WORKER_EXECUTION_PENDING"
   },
   "constraint": {
     "operational_state": "REQUIRED_EXECUTION_REMAINS",
-    "class": "RUNTIME_REGISTRY_RECONCILIATION",
-    "condition": "G18_ACTIVE_LEASE_STILL_PROJECTED_AFTER_SUCCESS_PREDICATES_PASSED",
-    "owner": "heartbeat_runtime.worker_runtime.WorkerCoordinator + sovereign-runtime-activation-worker",
+    "class": "SEPARATED_WORKER_SUPERVISION_AND_RUNTIME_REGISTRY_RECONCILIATION",
+    "condition": "OBSERVATION_ONLY_WORKER_STATE_WITH_G18_ACTIVE_LEASE",
+    "owner": "StegVerse-Labs/.github#122/#12 resident StegVerse runtime -> heartbeat_runtime.worker_runtime.WorkerCoordinator + sovereign-runtime-activation-worker",
     "solution_required": true,
-    "next_solution_action": "INVOKE_BOUND_G18_ON_NEXT_WORKER_RUNTIME_TICK_AND_CONSUME_COMPLETED_RESPONSE",
-    "machine_observable_completion_condition": "worker registry and worker-control-plane projection no longer contain an active G18 claim/lease and terminal G18 evidence binds receipts/heartbeat-transition-continuity/latest.json at HB31",
+    "next_solution_action": "START_OR_RESTART_TASK_CAPABLE_RUN_WORKER_RUNTIME_AND_CONSUME_G18_COMPLETED_RESPONSE",
+    "machine_observable_completion_condition": "events/worker-runtime.jsonl contains a non-observation WorkerCoordinator event at HB31+; corrected transition release becomes RELEASE_COMPLETE; worker registry/control-plane no longer contain an active G18 claim/lease",
     "third_party_dependency": false,
     "human_action_required": false,
     "missing_implementation": false
+  },
+  "release_hardening": {
+    "validator_commit": "130c18fb9e87682400d8b9e43c836ad322b803eb",
+    "regression_test_commit": "5d728a928de9ed5b5f4d24d474bb1e4252725591",
+    "claim_commit": "0486bbcfb0afe4f38796664050a5a65c14736d98",
+    "rule": "Observation-only worker evidence may prove carrier continuity but may not satisfy runtime RELEASE_COMPLETE."
   },
   "released_repairs": {
     "g18_adapter_liveness": {"pull_request": 203, "merge_commit": "b56662cdb840bb2b30b10db2f6236db472261d87"},
@@ -132,12 +156,14 @@
     "bounded_hb29_to_hb30_transition": {"pull_request": 206, "merge_commit": "b7c5b5e9199c5af46029210fe7909dcf19033b41"}
   },
   "superseded_contract_history": {
-    "prior_blob_sha": "eafb2bbe55f13441617a72c9a339ce92b742bbc6",
-    "reason": "The prior handoff still described HB30 as not observed. Direct canonical evidence now proves active HB31/31, independent WorkerCoordinator 31/31 observation, transition RELEASE_COMPLETE, reconstruction PASS and no duplicate claim/fence. Only runtime-registry terminalization of the already-bound G18 claim remains.",
-    "preservation": "Git history preserves the prior handoff and older resident-service blocker semantics. Resident supervision remains optional stronger evidence rather than a continuity prerequisite."
+    "prior_blob_sha": "49a64b966693bb241fefe907f676bc12107ac6d7",
+    "reason": "The prior handoff correctly observed HB31 continuity but incorrectly allowed observation-only WorkerCoordinator state to satisfy RELEASE_COMPLETE. The stronger release gate now requires task-capable WorkerCoordinator evidence before runtime activation/release can be claimed.",
+    "preservation": "Git history preserves the HB31 continuity evidence; only the release interpretation is superseded."
   },
   "release_downstream": [
+    "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
     "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+    "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
     "COSV-LIVE-PACKET-AUTOMATION-006"
   ]
 }
