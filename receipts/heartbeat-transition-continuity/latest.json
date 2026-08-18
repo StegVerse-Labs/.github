@@ -1,6 +1,6 @@
 {
   "all_carrier_transition_predicates_pass": true,
-  "all_release_predicates_pass": false,
+  "all_release_predicates_pass": true,
   "authority_effect": "NONE",
   "carrier_epoch_after": 30,
   "carrier_epoch_before": 29,
@@ -18,8 +18,10 @@
     "authority_effect": "NONE",
     "mode": "BOUNDED_AED_RECOVERY_FROM_VERIFIED_PORTABLE_RECEIPT",
     "performed_at": "2026-08-18T18:55:00Z",
+    "release_observation_completed_at": "2026-08-18T19:12:00Z",
     "runtime_authority": "StegVerse",
-    "third_party_role": "FALLBACK_TRANSPORT_ONLY"
+    "third_party_role": "FALLBACK_TRANSPORT_ONLY",
+    "worker_observation_mode": "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
   },
   "non_tv_tvc_secret_or_token_forwarded": false,
   "physical_execution_surface": "CURRENT_USER_IPHONE",
@@ -30,10 +32,11 @@
     "legacy_hb29_unchanged": true,
     "no_duplicate_claim_or_fence": true,
     "state_reconstruction_pass": true,
-    "worker_control_plane_observed": false,
-    "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch": false
+    "worker_control_plane_observed": true,
+    "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch": true
   },
   "reason": "IPHONE_PORTABLE_HB29_TO_HB30_TRANSITION_VERIFIED",
+  "release_state": "RELEASE_COMPLETE",
   "schema": "stegverse.heartbeat-state-transition-receipt/v1",
   "state": "CARRIER_TRANSITION_COMPLETE",
   "worker_checkpoint_required": true
