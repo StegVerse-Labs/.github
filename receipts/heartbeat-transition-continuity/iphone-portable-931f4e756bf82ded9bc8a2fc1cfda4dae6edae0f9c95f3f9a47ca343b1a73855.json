@@ -1,0 +1,47 @@
+{
+  "schema": "stegverse.iphone-heartbeat-transition-receipt/v1",
+  "contract_id": "SHWP-IPHONE-HB30-TRANSITION-CAPSULE-001",
+  "physical_execution_surface": "CURRENT_USER_IPHONE",
+  "executed_at": "2026-08-18T18:01:24.404Z",
+  "seed": {
+    "repository": "StegVerse-Labs/.github",
+    "legacy_state_ref": "control/heartbeat-state.json",
+    "legacy_state_git_blob_sha": "d18d57d83cf19b7799cde1a1b4487e496eca7f76",
+    "epoch": 29,
+    "generation": 29
+  },
+  "successor": {
+    "schema": "stegverse.heartbeat-carrier-runtime-state/v1",
+    "epoch": 30,
+    "generation": 30,
+    "reference_frame": "heartbeat_epoch:30",
+    "activation_state": "ACTIVE",
+    "authority_effect": "NONE",
+    "legacy_hb29_immutable": true
+  },
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "credential_requirement": "NONE",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_used": false,
+    "worker_authority": false,
+    "claim_or_fence_mutation": false,
+    "route_authority": false,
+    "wallet_authority": false,
+    "model_output_authority": "NONE",
+    "hosted_runtime_production_authority": "NONE",
+    "another_physical_machine_required": false
+  },
+  "browser": {
+    "origin": "https://stegverse.org",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Safari/605.1.15",
+    "platform": "MacIntel",
+    "max_touch_points": 5,
+    "screen_width_css": 440,
+    "screen_height_css": 956,
+    "iphone_class_evidence": true,
+    "secure_context": true,
+    "webcrypto": true
+  },
+  "receipt_sha256": "931f4e756bf82ded9bc8a2fc1cfda4dae6edae0f9c95f3f9a47ca343b1a73855"
+}
