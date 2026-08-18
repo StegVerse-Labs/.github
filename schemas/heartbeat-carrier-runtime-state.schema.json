@@ -44,6 +44,28 @@
         "source_ref": {"const": "control/heartbeat-state.json"},
         "closed": {"type": "boolean"}
       }
+    },
+    "portable_transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_id",
+        "physical_execution_surface",
+        "portable_receipt_sha256",
+        "verified",
+        "authority_effect"
+      ],
+      "properties": {
+        "contract_id": {"type": "string", "minLength": 1},
+        "physical_execution_surface": {"const": "CURRENT_USER_IPHONE"},
+        "portable_receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "verified": {"const": true},
+        "authority_effect": {"const": "NONE"},
+        "execution_provider": {"type": "string", "minLength": 1},
+        "provider_role": {"enum": ["PRIMARY", "FALLBACK_ONLY"]},
+        "required_dependency": {"const": false},
+        "runtime_authority": {"const": "StegVerse"}
+      }
     }
   }
 }
