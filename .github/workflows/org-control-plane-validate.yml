@@ -75,6 +75,8 @@ jobs:
         run: python scripts/validate_heartbeat_runtime_separation.py
       - name: Test heartbeat runtime/control-plane semantic separation
         run: python -m unittest tests.test_heartbeat_runtime_separation -v
+      - name: Test independent 10ms heartbeat oscillator and capacity separation
+        run: python -m unittest tests.test_independent_heartbeat_oscillator tests.test_heartbeat_carrier_envelope -v
       - name: Prove cross-repository dependency collision enforcement
         run: python -m unittest tests.test_cross_repository_dependency_claims -v
 
