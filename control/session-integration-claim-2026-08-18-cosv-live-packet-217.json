@@ -1,0 +1,34 @@
+{
+  "schema": "stegverse.integration-claim/v1",
+  "task_id": "COSV-HEARTBEAT-STATE-PACKET-002-LIVE-INTEGRATION",
+  "originating_goal": "Consume newly observed separated-v12 HB31 carrier/WorkerCoordinator state and emit the first authority-neutral live COSV state packet without mutating heartbeat, worker, claim, fence, route, credential, wallet, or custody authority.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "canonical_issue": 217,
+  "claimant": "chatgpt-session-cosv-live-integration-20260818",
+  "role": "CLAIMED_FOR_INTEGRATION",
+  "claimed_at": "2026-08-18T15:00:00-05:00",
+  "release_condition": "First live COSV packet is emitted from directly observed HB31 carrier/worker evidence, validated against the released packet contract, persisted with evidence references, issue #217 is updated, and downstream StegBrain integration owners are notified; or an existing canonical claimant is discovered and this claim is released/superseded before overlapping mutation.",
+  "collision_boundaries": [
+    "Do not mutate control/heartbeat-state.json.",
+    "Do not mutate control/heartbeat-carrier-runtime-state.json.",
+    "Do not mutate control/worker-runtime-state.json.",
+    "Do not mutate G18 claims, fences, leases, or worker authority.",
+    "Do not mutate TV/TVC protected values or route authority.",
+    "Do not mutate model/provider/wallet authority or Master Records custody.",
+    "Do not redefine COSV digit semantics or packet schema."
+  ],
+  "expected_evidence": [
+    "control/heartbeat-carrier-runtime-state.json at HB31",
+    "control/worker-runtime-state.json observing HB31",
+    "receipts/heartbeat-transition-continuity/latest.json release complete",
+    "management/COSV_HEARTBEAT_STATE_PACKET_CONTRACT.json",
+    "scripts/cosv_state_packet.py",
+    "persisted first-live packet and validation receipt"
+  ],
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "github_token_runtime_authority": "NONE",
+  "third_party_runtime_role": "FALLBACK_ONLY",
+  "stegverse_primary": true
+}
