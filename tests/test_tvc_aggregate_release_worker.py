@@ -6,6 +6,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from heartbeat_runtime.blocker_policy import validate_worker_response_blocker
+
 ROOT = Path(__file__).resolve().parents[1]
 WORKER = ROOT / "workers" / "tvc_aggregate_release_worker.py"
 HANDOFF = ROOT / "handoffs" / "TVC-ODA3-AGGREGATE-RELEASE-027.json"
@@ -40,7 +42,7 @@ class AggregateReleaseWorkerTests(unittest.TestCase):
         self.assertEqual(execution["generalized_executor"], "tasks/aggregate_release.py")
         self.assertEqual(execution["release_set_id"], "ODA3-EVALUATOR-PATH-2026-08-18-R1")
 
-    def test_worker_emits_valid_blocked_protocol_without_tvc_materialization(self):
+    def test_worker_emits_policy_valid_blocked_protocol_without_tvc_materialization(self):
         with tempfile.TemporaryDirectory() as tmp:
             env = {
                 "PATH": os.environ.get("PATH", ""),
@@ -67,7 +69,10 @@ class AggregateReleaseWorkerTests(unittest.TestCase):
         self.assertFalse(result["result"]["non_tv_tvc_credential_used"])
         self.assertIsInstance(result["blocker"], dict)
         self.assertTrue(result["blocker"]["solution_required"])
+        self.assertTrue(result["blocker"]["workaround_candidates"])
         self.assertTrue(result["blocker"]["machine_observable_release_condition"])
+        validate_worker_response_blocker(result)
+        self.assertTrue(any(ref.startswith("resolution-contract:v1:") for ref in result["evidence_refs"]))
 
 
 if __name__ == "__main__":
