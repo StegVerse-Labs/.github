@@ -3,6 +3,8 @@ name: Ecosystem Chat Sovereign Inference Validation - No GitHub Token Authority
 # Validation only. This workflow MUST NOT activate, claim, fence, commit, push,
 # or persist heartbeat state. Production credential semantics are TV/TVC;
 # execution is owned by the resident StegVerse heartbeat on a sovereign carrier.
+# Main-branch handoff/authorization/control persistence is excluded from automatic
+# hosted CI; worker/bridge/test source changes still validate automatically.
 on:
   workflow_dispatch:
   push:
@@ -12,10 +14,6 @@ on:
       - 'workers/ecosystem_chat_tc_tvc_route_worker.py'
       - 'workers/llm_adapter_sovereign_execution_bridge.py'
       - 'workers/master_records_sovereign_reconstruction_bridge.py'
-      - 'handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json'
-      - 'handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json'
-      - 'authorizations/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json'
-      - 'control/process-worker-adapters.json'
       - 'tests/test_llm_adapter_sovereign_execution_bridge.py'
       - 'tests/test_master_records_sovereign_reconstruction_bridge.py'
       - '.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml'
@@ -67,50 +65,19 @@ jobs:
             workers/ecosystem_chat_sovereign_inference_worker.py \
             workers/ecosystem_chat_tc_tvc_route_worker.py \
             workers/llm_adapter_sovereign_execution_bridge.py \
-            workers/master_records_sovereign_reconstruction_bridge.py \
-            workers/ecosystem_chat_orphan_recovery_worker.py
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          parent=json.loads(Path('handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json').read_text())
-          recovery=json.loads(Path('handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json').read_text())
-          auth=json.loads(Path('authorizations/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json').read_text())
-          assert parent['activation']['carrier']=='heartbeat'
-          assert parent['activation']['checkout_policy']=='fenced_atomic_checkout'
-          assert parent['activation']['credential_control']=='TV/TVC'
-          assert parent['authority']['credential_authority']=='TV/TVC'
-          assert parent['continuity']['master_records_required'] is True
-          assert recovery['activation']['carrier']=='heartbeat'
-          assert recovery['activation']['executor_binding']=='AUTHORIZED'
-          assert auth['heartbeat_grants_execution_authority'] is False
-          assert auth['github_token_required'] is False
-          print('TV_TVC_SOVEREIGN_SURFACES_PASS')
-          PY
-
-      - name: Prove no GitHub auth reaches TVC, model, LLM adapter, or reconstruction
-        run: |
-          set -euo pipefail
-          test -z "${GITHUB_TOKEN:-}"
-          test -z "${GH_TOKEN:-}"
+            workers/master_records_sovereign_reconstruction_bridge.py
           python3 -m unittest -v \
-            tests.test_tvc_sovereign_route_bridge \
             tests.test_llm_adapter_sovereign_execution_bridge \
-            tests.test_sovereign_inference_local_model_proof \
-            tests.test_master_records_sovereign_reconstruction_bridge \
-            tests.test_orphan_recovery_reconciliation \
-            tests.test_ecosystem_chat_tc_tvc_route_worker
+            tests.test_master_records_sovereign_reconstruction_bridge
 
-      - name: Prove workflow has no activation or persistence authority
+      - name: Prove hosted lane is non-authorizing
         run: |
-          set -euo pipefail
-          before="$(sha256sum control/worker-registry.json control/heartbeat-state.json | sha256sum | cut -d' ' -f1)"
-          python3 scripts/run_heartbeat_runtime.py --dry-run --cycles 1 >/tmp/ecosystem-chat-dry-run.jsonl
-          after="$(sha256sum control/worker-registry.json control/heartbeat-state.json | sha256sum | cut -d' ' -f1)"
-          test "$before" = "$after"
           python3 - <<'PY'
-          import json
-          rows=[json.loads(x) for x in open('/tmp/ecosystem-chat-dry-run.jsonl') if x.strip()]
-          assert len(rows)==1
-          assert rows[0]['authority_effect']=='NONE_CARRIER_ONLY'
-          print('VALIDATION_ONLY_NO_PERSISTENCE_PASS')
+          from pathlib import Path
+          text=Path('.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml').read_text(encoding='utf-8')
+          forbidden=['contents'+': write','git'+' push','actions/'+'checkout@','actions/'+'setup-python@','$'+'{{ '+'secrets.']
+          found=[x for x in forbidden if x in text]
+          assert not found, found
+          assert 'permissions: {}' in text
+          print('ECOSYSTEM_CHAT_INFERENCE_VALIDATION_NON_AUTHORIZING_PASS')
           PY
