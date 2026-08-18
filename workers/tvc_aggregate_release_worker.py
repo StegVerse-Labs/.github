@@ -111,14 +111,23 @@ def verified_release(report: dict[str, Any] | None) -> bool:
     return isinstance(result, dict) and result.get("valid") is True
 
 
-def blocker(reason: str, release_condition: str) -> dict[str, Any]:
+def blocker(reason: str, release_condition: str, *, resolvable_by_current_worker: bool = True) -> dict[str, Any]:
     return {
         "dependency_class": "INTERNAL_CAPABILITY",
         "problem_statement": reason,
         "solution_required": True,
         "may_remain_blocked": True,
+        "workaround_candidates": [
+            "RECHECK_EXISTING_STEGVERSE_WORKERCONTROL_AND_TVC_RELEASE_CAPABILITY"
+        ],
         "next_solution_action": "RECHECK_TVC_RELEASE_CAPABILITY_THEN_EXECUTE_GENERALIZED_AGGREGATE_RELEASE",
+        "resolvable_by_current_worker": resolvable_by_current_worker,
+        "same_level_retry_authorized": True,
         "machine_observable_release_condition": release_condition,
+        "completion_evidence": [
+            "live WorkerCoordinator claim/fence",
+            "verified stegverse.tvc.aggregate-release-receipt.v1"
+        ],
     }
 
 
@@ -207,6 +216,7 @@ def main() -> int:
             blocker_value=blocker(
                 "HOSTED_RUNTIME_NOT_AUTHORIZED",
                 "WorkerCoordinator invokes this worker on the authorized StegVerse sovereign runtime",
+                resolvable_by_current_worker=False,
             ),
         )
         json.dump(value, sys.stdout, sort_keys=True)
@@ -222,6 +232,7 @@ def main() -> int:
             blocker_value=blocker(
                 "NON_TVC_SECRET_OR_TOKEN_PRESENT",
                 "No GITHUB_TOKEN, GH_TOKEN, or provider API credential is present in the worker environment",
+                resolvable_by_current_worker=False,
             ),
         )
         value["result"]["forbidden_fields"] = forbidden_present
