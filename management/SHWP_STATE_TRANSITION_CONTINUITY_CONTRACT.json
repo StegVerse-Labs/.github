@@ -1,52 +1,56 @@
 {
-  "schema": "stegverse.heartbeat-state-transition-continuity/v1",
-  "contract_id": "SHWP-HB29-TO-HB30-STATE-TRANSITION-CONTINUITY-001",
+  "schema": "stegverse.heartbeat-state-transition-continuity/v2",
+  "contract_id": "SHWP-INDEPENDENT-HEARTBEAT-CONTINUITY-002",
   "goal_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
   "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-  "validation_trigger_revision": 3,
+  "validation_trigger_revision": 4,
   "canonical_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
   "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
   "legacy_source": "control/heartbeat-state.json",
   "legacy_epoch": 29,
   "legacy_source_immutable": true,
-  "first_successor_epoch": 30,
   "carrier_state": "control/heartbeat-carrier-runtime-state.json",
   "worker_runtime_state": "control/worker-runtime-state.json",
   "worker_control_plane": "control/worker-control-plane-coordination.json",
   "transition_producer": "scripts/advance_heartbeat_transition.py",
-  "continuity_model": "STATE_TRANSITION_CONTINUITY",
-  "physical_carrier_policy_ref": "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
-  "sole_permitted_user_physical_carrier": "CURRENT_USER_IPHONE",
-  "transition_compute_grants_physical_carrier_identity": false,
-  "another_physical_machine_required": false,
-  "always_on_external_host_required": false,
-  "wall_clock_continuous_process_required": false,
-  "resident_native_supervision_optional": true,
-  "resident_native_supervision_is_completion_prerequisite": false,
-  "completion_predicates": [
+  "continuity_model": "INDEPENDENT_OSCILLATOR_CONTINUITY",
+  "oscillator": {
+    "mechanism": "INDEPENDENT_PHASE_OSCILLATOR",
+    "phase_travel_time_ms": 10,
+    "reference_increment_interval_ms": 10,
+    "reference_frequency_hz": 100,
+    "progression_dependency": "OSCILLATOR_ONLY",
+    "worker_or_task_gating": false,
+    "admission_gating": false,
+    "claim_or_fence_gating": false,
+    "route_or_credential_gating": false,
+    "observation_is_causal": false
+  },
+  "carrier_completion_predicates": [
     "legacy_hb29_unchanged",
-    "carrier_epoch_at_least_30",
-    "carrier_generation_non_regressing",
-    "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch",
-    "worker_control_plane_observed",
-    "no_duplicate_claim_or_fence",
+    "oscillator_period_exactly_10ms",
+    "carrier_epoch_non_regressing",
+    "carrier_reference_derived_from_oscillator",
     "state_reconstruction_pass"
   ],
+  "consumer_observation_predicates": [
+    "worker_runtime_checkpoint_observed_reference_when_worker_runs",
+    "worker_control_plane_observed_when_control_plane_runs",
+    "no_duplicate_claim_or_fence"
+  ],
   "execution_semantics": {
-    "trigger": "next admitted StegVerse worker/control-plane execution opportunity",
-    "carrier_transition": "one bounded v12 carrier cycle derives the valid successor from retained HB29 or the latest v12 carrier state",
-    "worker_transition": "the independently admitted WorkerCoordinator observes the new carrier state on its current or next tick",
-    "persistence": "state is retained between execution opportunities; wall-clock process residency is not continuity authority",
-    "authority_effect": "NONE_FROM_CARRIER_TRANSITION"
+    "carrier_progression": "The heartbeat exists and advances independently every 10 ms according to its oscillator. No worker, task, admission, claim, fence, route, credential or observation call causes or gates heartbeat progression.",
+    "sampling": "heartbeat_runtime.engine_v12.HeartbeatRuntime.cycle samples the oscillator-derived reference and persists an observation; it does not advance the heartbeat.",
+    "missed_references": "A delayed sampler may observe a later heartbeat and skip any number of intermediate references. Those references are not retroactively created by the sampler.",
+    "worker_transition": "WorkerCoordinator independently observes whichever carrier reference is visible when WorkerCoordinator executes. Worker observation is downstream evidence, never a prerequisite for the carrier reference to exist.",
+    "authority_effect": "NONE_FROM_CARRIER_OR_OBSERVATION"
   },
   "third_party_fallback_policy": {
     "allowed": true,
     "role": "FALLBACK_ONLY",
     "primary_runtime_authority": "StegVerse",
     "required_dependency": false,
-    "may_materialize_verified_portable_receipt": true,
     "must_be_explicitly_recorded": true,
-    "may_be_concealed_from_verifier": false,
     "grants_credential_authority": false,
     "grants_claim_or_fence_authority": false,
     "grants_heartbeat_authority": false
@@ -58,15 +62,19 @@
     "non_tv_tvc_secret_or_token_allowed": false
   },
   "prohibited_substitutions": [
+    "WorkerCoordinator as heartbeat clock",
+    "G18 as heartbeat clock",
+    "task admission as heartbeat clock",
+    "claim or fence state as heartbeat clock",
+    "route or credential state as heartbeat clock",
+    "observation invocation count as heartbeat clock",
     "Render production runtime",
     "GitHub Actions production runtime",
     "Vercel production runtime",
     "Cloudflare hosted production runtime",
     "third-party fallback promoted to required dependency or production authority",
-    "additional physical machine requirement",
-    "always-on external host requirement",
-    "manual rewriting of control/heartbeat-state.json to HB30"
+    "manual rewriting of control/heartbeat-state.json"
   ],
-  "release_condition": "A bounded v12 transition produces HB30 or later from immutable HB29, then an independently admitted WorkerCoordinator checkpoint observes that carrier state and the state-transition completion predicates pass without duplicate claim/fence or non-TV/TVC credential authority. A third-party execution surface may be used only as an explicit FALLBACK_ONLY transport/compute path and never as required runtime authority.",
+  "release_condition": "Carrier semantics are correct when the canonical reference is derived only from the independent 10 ms oscillator, persisted state is explicitly an observation/snapshot, legacy HB29 remains immutable provenance, and downstream consumers cannot cause, delay, authorize or suppress heartbeat progression.",
   "authority_effect": "NONE"
 }
