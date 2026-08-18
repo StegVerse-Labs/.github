@@ -1,0 +1,59 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "TVC-ODA3-AGGREGATE-RELEASE-027",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "REQUIRED_RELEASE_PUBLICATION_AND_VERIFICATION_PENDING",
+        "REQUIRED_ODA3_GOVERNED_EXECUTION_PENDING"
+      ],
+      "authorized_policy_version": "tvc-aggregate-release-v1",
+      "block_ref": "handoffs/TVC-ODA3-AGGREGATE-RELEASE-027.json#completion_criteria",
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/tvc-aggregate-release-oda3-r1.json",
+      "evidence_refs": [
+        "handoffs/TVC-ODA3-AGGREGATE-RELEASE-027.json",
+        "authorizations/TVC-ODA3-AGGREGATE-RELEASE-027.json",
+        "workers/tvc_aggregate_release_worker.py",
+        "StegVerse-Labs/TVC:docs/AGGREGATE_RELEASE_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/TVC:tasks/TVC-ODA3-AGGREGATE-RELEASE-027.json",
+        "StegVerse-org/StegVerse-SDK#47"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "ODA3-EVALUATOR-PATH-2026-08-18-R1",
+      "handoff_ref": "handoffs/TVC-ODA3-AGGREGATE-RELEASE-027.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": null,
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "TVC-ODA3-AGGREGATE-RELEASE-027",
+      "worker_id": null,
+      "worker_instance_id": null
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:tvc-aggregate-release-oda3-r1-v1",
+      "authority_source": "handoffs/TVC-ODA3-AGGREGATE-RELEASE-027.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "tvc_aggregate_release"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "tvc-aggregate-release-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "heartbeat_grants_execution_authority": false,
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "provider_secret_transport_allowed": false,
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "priority": "release"
+}
