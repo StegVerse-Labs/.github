@@ -18,7 +18,7 @@ SPEC.loader.exec_module(mod)
 
 
 class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
-    def _runtime(self, base: Path) -> Path:
+    def _runtime(self, base: Path, *, observation_only: bool = False) -> Path:
         root = base / "heartbeat"
         for rel in (
             "heartbeat_runtime/engine_v12.py",
@@ -65,10 +65,15 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
         (control / "worker-registry.json").write_text(json.dumps({
             "tasks": [{"task_id": "A"}, {"task_id": "B"}],
         }) + "\n", encoding="utf-8")
-        (control / "worker-runtime-state.json").write_text(json.dumps({
+        worker = {
             "schema": "stegverse.worker-runtime-state/v1",
             "runtime_tick": 1,
-        }) + "\n", encoding="utf-8")
+            "last_observed_carrier_epoch": 30,
+            "last_observed_carrier_generation": 30,
+        }
+        if observation_only:
+            worker["observation_mode"] = "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
+        (control / "worker-runtime-state.json").write_text(json.dumps(worker) + "\n", encoding="utf-8")
         self._write_control_plane(control / "worker-control-plane-coordination.json")
         return root
 
@@ -95,11 +100,12 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
             self.assertFalse(any(result["predicates"].values()))
             self.assertEqual(result["detail"]["ineligible_reason"], "THIRD_PARTY_HOSTED_ENVIRONMENT")
 
-    def test_real_node_proof_requires_separated_advance_restart_and_reconstruction(self) -> None:
+    def test_real_node_proof_requires_carrier_and_worker_progress_restart_and_reconstruction(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)
             root = self._runtime(base)
             carrier_path = root / "control" / "heartbeat-carrier-runtime-state.json"
+            worker_path = root / "control" / "worker-runtime-state.json"
             calls = {"sleep": 0, "restart": 0}
 
             def sleeper(_seconds: float) -> None:
@@ -108,6 +114,12 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
                 state["epoch"] += 1
                 state["generation"] += 1
                 carrier_path.write_text(json.dumps(state) + "\n", encoding="utf-8")
+                worker = json.loads(worker_path.read_text())
+                worker["runtime_tick"] += 1
+                worker["last_observed_carrier_epoch"] = state["epoch"]
+                worker["last_observed_carrier_generation"] = state["generation"]
+                worker.pop("observation_mode", None)
+                worker_path.write_text(json.dumps(worker) + "\n", encoding="utf-8")
 
             def runner(command, **_kwargs):
                 calls["restart"] += 1
@@ -136,9 +148,65 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
                 self.assertTrue(proof[name], name)
             persisted = json.loads((base / "activation.latest.json").read_text())
             self.assertTrue(persisted["all_predicates_pass"])
+            self.assertTrue(persisted["worker_task_capable_cycle_observed"])
             self.assertFalse(persisted["third_party_runtime_required"])
             self.assertEqual(persisted["credential_authority"], "TV/TVC")
             self.assertEqual(persisted["credential_requirement"], "NONE")
+
+    def test_observation_only_worker_cannot_satisfy_activation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            root = self._runtime(base, observation_only=True)
+            carrier_path = root / "control" / "heartbeat-carrier-runtime-state.json"
+            worker_path = root / "control" / "worker-runtime-state.json"
+
+            def sleeper(_seconds: float) -> None:
+                state = json.loads(carrier_path.read_text())
+                state["epoch"] += 1
+                state["generation"] += 1
+                carrier_path.write_text(json.dumps(state) + "\n", encoding="utf-8")
+                worker = json.loads(worker_path.read_text())
+                worker["runtime_tick"] += 1
+                worker_path.write_text(json.dumps(worker) + "\n", encoding="utf-8")
+
+            def runner(_command, **_kwargs):
+                return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+            result = mod.evaluate_runtime(
+                root,
+                runner=runner,
+                sleeper=sleeper,
+                observe_seconds=0,
+                restart_seconds=0,
+                system="linux",
+                env={"STEGVERSE_SOVEREIGN_NODE": "1"},
+            )
+            self.assertFalse(result["predicates"]["worker_task_capable_cycle_observed"], result)
+            self.assertFalse(result["predicates"]["continuous_runtime_live"], result)
+            self.assertFalse(result["predicates"]["state_reconstruction_pass"], result)
+
+    def test_worker_tick_must_advance(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._runtime(Path(tmp))
+            carrier_path = root / "control" / "heartbeat-carrier-runtime-state.json"
+
+            def sleeper(_seconds: float) -> None:
+                state = json.loads(carrier_path.read_text())
+                state["epoch"] += 1
+                state["generation"] += 1
+                carrier_path.write_text(json.dumps(state) + "\n", encoding="utf-8")
+
+            result = mod.evaluate_runtime(
+                root,
+                runner=lambda _command, **_kwargs: SimpleNamespace(returncode=0, stdout="", stderr=""),
+                sleeper=sleeper,
+                observe_seconds=0,
+                restart_seconds=0,
+                system="linux",
+                env={"STEGVERSE_SOVEREIGN_NODE": "1"},
+            )
+            self.assertFalse(result["predicates"]["worker_task_capable_cycle_observed"], result)
+            self.assertFalse(result["predicates"]["all_predicates_pass"] if "all_predicates_pass" in result["predicates"] else False)
 
     def test_duplicate_fence_fails_closed(self) -> None:
         state = {
