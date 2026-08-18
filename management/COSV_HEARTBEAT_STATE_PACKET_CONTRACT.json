@@ -1,0 +1,61 @@
+{
+  "schema": "stegverse.cosv-state-packet-contract/v1",
+  "goal_id": "COSV-HEARTBEAT-STATE-PACKET-002",
+  "parent_profile": "management/COSV_PROFILE_V1.json",
+  "packet_schema": "schemas/cosv_state_packet.schema.json",
+  "packet_modes": ["FULL", "DELTA"],
+  "carrier_role": "REFERENCE_FRAME_ONLY",
+  "packet_role": "STATE_TRANSITION_EVIDENCE_INDEX",
+  "gradient_role": "INPUT_ONLY",
+  "gradient_evaluator": "StegVerse-Labs/StegBrain#860/#861",
+  "live_migration_owner": "StegVerse-Labs/.github#122",
+  "master_records_role": "PASSIVE_CUSTODY_ONLY",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "github_token_runtime_authority": "NONE",
+  "third_party_runtime_required": false,
+  "authority_effect": "NONE",
+  "required_packet_fields": [
+    "schema",
+    "mode",
+    "carrier_ref",
+    "observed_at",
+    "previous_packet_sha256",
+    "state_root_sha256",
+    "unchanged_state_root_sha256",
+    "records",
+    "gradient_inputs",
+    "constraint_summary",
+    "authority",
+    "packet_sha256"
+  ],
+  "full_packet": {
+    "records": "complete ordered state set",
+    "unchanged_state_root_sha256": null,
+    "gradient_inputs": "empty unless separately derived by an evaluator"
+  },
+  "delta_packet": {
+    "records": "changed/new records only",
+    "previous_packet_sha256": "required",
+    "unchanged_state_root_sha256": "required",
+    "state_root_sha256": "root of reconstructed current full state",
+    "record_removal": "FAIL_CLOSED_IN_V1",
+    "gradient_inputs": "deterministic previous/current/transition inputs for changed records"
+  },
+  "prohibited_authority_inference": [
+    "execution",
+    "claim",
+    "fence",
+    "lease",
+    "route",
+    "credential",
+    "wallet",
+    "signing",
+    "broadcast",
+    "custody",
+    "policy",
+    "admissibility",
+    "coherency",
+    "gradient"
+  ]
+}
