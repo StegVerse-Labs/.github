@@ -12,7 +12,7 @@
       "evidence_refs": [
         "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
         "workers/tvc_repository_broker_validation_worker.py",
-        "StegVerse-Labs/TVC#20"
+        "StegVerse-Labs/TVC#79"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": "StegVerse-Labs/TVC:TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001",
@@ -33,8 +33,8 @@
         "admissibility_evidence_refs": [],
         "integration_evidence_refs": [],
         "activation_proof_ref": null,
-        "blockers": ["EXACT_TVC_PR20_LOCAL_VALIDATION_RECEIPT_NOT_YET_OBSERVED"],
-        "continuation_owner": "tvc-repository-broker-validation-worker + StegVerse-Labs/TVC#20",
+        "blockers": ["EXACT_TVC_PR79_LOCAL_VALIDATION_RECEIPT_NOT_YET_OBSERVED"],
+        "continuation_owner": "tvc-repository-broker-validation-worker + StegVerse-Labs/TVC#79",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
