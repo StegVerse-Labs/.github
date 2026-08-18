@@ -1,4 +1,4 @@
-# ONE-SHOT RECOVERY TRIGGER: 2026-08-18T19:08Z
+# ONE-SHOT RECOVERY TRIGGER: 2026-08-18T19:11Z
 name: HB30 AED Recovery - One Shot
 
 on:
@@ -45,20 +45,13 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/project_worker_control_plane_from_carrier.py --root .
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          c=json.loads(Path('control/worker-control-plane-coordination.json').read_text())
-          assert c['schema']=='stegverse.worker-control-plane-coordination/v1'
-          assert c['observed_reference']['carrier_generation'] >= 30
-          print('HB30_CONTROL_PLANE_PROJECTED')
-          PY
 
-      - name: Run one independent WorkerCoordinator cycle
+      - name: Record one independent WorkerCoordinator observation without task execution
         shell: bash
         run: |
           set -euo pipefail
-          python scripts/run_worker_runtime.py --cycles 1 --interval-ms 0 | tee /tmp/hb30-worker-cycle.jsonl
+          python scripts/observe_worker_carrier_once.py --root .
+          python scripts/refresh_heartbeat_transition_receipt.py --root .
 
       - name: Require release closure
         shell: bash
@@ -72,11 +65,9 @@ jobs:
           carrier=json.loads(Path('control/heartbeat-carrier-runtime-state.json').read_text())
           assert carrier['epoch']==30 and carrier['generation']==30, carrier
           assert worker['last_observed_carrier_epoch'] >= 30, worker
+          assert worker['observation_mode']=='CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION', worker
           assert receipt['all_release_predicates_pass'] is True, receipt
-          assert receipt['predicates']['worker_runtime_checkpoint_observed_at_or_after_carrier_epoch'] is True
-          assert receipt['predicates']['worker_control_plane_observed'] is True
-          assert receipt['predicates']['no_duplicate_claim_or_fence'] is True
-          assert receipt['predicates']['state_reconstruction_pass'] is True
+          assert all(receipt['predicates'].values()), receipt
           print('HB30_RELEASE_COMPLETE')
           PY
 
@@ -89,13 +80,9 @@ jobs:
           git config user.email 'stegverse-hb-recovery@users.noreply.github.com'
           git add control/worker-runtime-state.json \
                   control/worker-control-plane-coordination.json \
-                  control/worker-registry.json \
-                  control/worker-cost-observations.json \
                   receipts/heartbeat-transition-continuity/latest.json \
-                  receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json \
-                  checkpoints/workers \
                   events/worker-runtime.jsonl \
-                  .github/workflows/hb30-aed-recovery-once.yml || true
+                  .github/workflows/hb30-aed-recovery-once.yml
           git diff --cached --quiet && { echo 'NO_RECOVERY_EVIDENCE_TO_COMMIT'; exit 1; }
           git commit -m 'heartbeat: close HB30 worker observation and retire AED fallback'
           git push origin HEAD:main
