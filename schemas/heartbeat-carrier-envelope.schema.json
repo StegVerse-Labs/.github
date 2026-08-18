@@ -6,45 +6,48 @@
   "additionalProperties": false,
   "required": ["schema", "frequency", "phase_plan", "capacity", "tolerances", "recalculation", "authority"],
   "properties": {
-    "schema": {"const": "stegverse.heartbeat-carrier-envelope/v1"},
+    "schema": {"const": "stegverse.heartbeat-carrier-envelope/v2"},
     "frequency": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["rule", "admissible_min_hz", "admissible_max_hz", "nominal_hz", "nominal_period_ms", "bounded_edge_margin_hz", "throughput_floor_hz"],
+      "required": ["rule", "nominal_hz", "nominal_period_ms", "admissible_min_hz", "admissible_max_hz", "progression_dependency", "downstream_constraints_may_change_frequency"],
       "properties": {
-        "rule": {"const": "GATE_PASSBAND_DERIVED"},
+        "rule": {"const": "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL"},
+        "nominal_hz": {"const": 100.0},
+        "nominal_period_ms": {"const": 10.0},
         "admissible_min_hz": {"type": "number", "exclusiveMinimum": 0},
         "admissible_max_hz": {"type": "number", "exclusiveMinimum": 0},
-        "nominal_hz": {"type": "number", "exclusiveMinimum": 0},
-        "nominal_period_ms": {"type": "number", "exclusiveMinimum": 0},
-        "bounded_edge_margin_hz": {"type": "number", "minimum": 0},
-        "throughput_floor_hz": {"type": "number", "minimum": 0}
+        "progression_dependency": {"const": "OSCILLATOR_ONLY"},
+        "downstream_constraints_may_change_frequency": {"const": false}
       }
     },
     "phase_plan": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["primary_phase_deg", "phase_slots", "phase_offsets_deg", "alternate_phases_are_authority_channels", "purpose"],
+      "required": ["primary_phase_deg", "phase_slots", "phase_offsets_deg", "alternate_phases_are_authority_channels", "phase_plan_changes_reference_interval", "purpose"],
       "properties": {
         "primary_phase_deg": {"const": 0.0},
         "phase_slots": {"type": "integer", "minimum": 1},
         "phase_offsets_deg": {"type": "array", "minItems": 1, "items": {"type": "number", "minimum": 0, "exclusiveMaximum": 360}},
         "alternate_phases_are_authority_channels": {"const": false},
-        "purpose": {"const": "OFF_BEAT_AND_INTERMITTENT_REFERENCE_OPPORTUNITIES"}
+        "phase_plan_changes_reference_interval": {"const": false},
+        "purpose": {"const": "DOWNSTREAM_REFERENCE_UTILIZATION_ONLY"}
       }
     },
     "capacity": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["current_composite_load_units", "design_composite_load_units", "design_capacity_units", "growth_reserve_ratio", "reserve_units", "reserve_fraction", "events_per_reference_capacity"],
+      "required": ["current_composite_load_units", "design_composite_load_units", "design_capacity_units", "growth_reserve_ratio", "reserve_units", "reserve_fraction", "events_per_reference_capacity", "reference_rate_hz", "event_capacity_per_second"],
       "properties": {
-        "current_composite_load_units": {"type": "number", "exclusiveMinimum": 0},
-        "design_composite_load_units": {"type": "number", "exclusiveMinimum": 0},
-        "design_capacity_units": {"type": "number", "exclusiveMinimum": 0},
+        "current_composite_load_units": {"type": "number", "minimum": 0},
+        "design_composite_load_units": {"type": "number", "minimum": 0},
+        "design_capacity_units": {"type": "number", "minimum": 0},
         "growth_reserve_ratio": {"type": "number", "minimum": 0, "exclusiveMaximum": 1},
         "reserve_units": {"type": "number", "minimum": 0},
         "reserve_fraction": {"type": "number", "minimum": 0, "maximum": 1},
-        "events_per_reference_capacity": {"type": "number", "exclusiveMinimum": 0}
+        "events_per_reference_capacity": {"type": "number", "exclusiveMinimum": 0},
+        "reference_rate_hz": {"const": 100.0},
+        "event_capacity_per_second": {"type": "number", "exclusiveMinimum": 0}
       }
     },
     "tolerances": {
@@ -60,15 +63,16 @@
     "recalculation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["reserve_recalculation_threshold", "recalculate_when_reserve_fraction_lte", "triggers"],
+      "required": ["reserve_recalculation_threshold", "recalculate_when_reserve_fraction_lte", "triggers", "recalculation_changes_heartbeat_frequency"],
       "properties": {
         "reserve_recalculation_threshold": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
         "recalculate_when_reserve_fraction_lte": {"type": "number", "minimum": 0, "exclusiveMaximum": 1},
         "triggers": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"enum": ["ADMITTED_SIGNAL_SET_CHANGED", "GATE_OR_PASSBAND_CHANGED", "DEADLINE_OR_RETURN_PATH_CHANGED", "SUSTAINABLE_CARRIER_CAPACITY_CHANGED", "GROWTH_RESERVE_THRESHOLD_REACHED", "PERSISTENT_FREQUENCY_OR_PHASE_DEVIATION"]}
-        }
+          "items": {"enum": ["ADMITTED_SIGNAL_SET_CHANGED", "DEADLINE_OR_RETURN_PATH_CHANGED", "SUSTAINABLE_CONSUMER_CAPACITY_CHANGED", "GROWTH_RESERVE_THRESHOLD_REACHED", "PERSISTENT_OBSERVED_FREQUENCY_OR_PHASE_DEVIATION"]}
+        },
+        "recalculation_changes_heartbeat_frequency": {"const": false}
       }
     },
     "authority": {
