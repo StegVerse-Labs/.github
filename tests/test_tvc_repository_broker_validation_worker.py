@@ -17,7 +17,7 @@ def test_handoff_and_adapter_are_credential_clean():
     registry = json.loads((ROOT / "control/worker-registry.d/tvc-repository-broker-validation-001.json").read_text())
     assert handoff["authority"]["credential_authority"] == "TV/TVC"
     assert handoff["authority"]["github_token_required"] is False
-    assert handoff["execution"]["expected_tvc_head"] == "dfbf736d9e205e1fc179dc8636af74e638c2aec5"
+    assert handoff["execution"]["expected_tvc_head"] == "2701badb7fc8485ea4c277071272b92609d8c10d"
     assert adapter["adapters"][0]["env_allowlist"] == ["STEGVERSE_TVC_ROOT"]
     assert registry["credential_authority"] == "TV/TVC"
     assert registry["github_token_required"] is False
