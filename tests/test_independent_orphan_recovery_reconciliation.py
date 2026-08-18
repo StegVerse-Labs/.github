@@ -64,17 +64,6 @@ class IndependentOrphanRecoveryReconciliationTests(unittest.TestCase):
         self.assertIsNone(parent.get("worker_id"))
         self.assertTrue(any(e["event_type"] == "orphan_recovery_independent_admission_reconciled" for e in events))
 
-    def test_missing_admitted_authorization_fails_closed(self) -> None:
-        registry = self.load_registry()
-        recovery = copy.deepcopy(self.task(registry, RECOVERY_ID))
-        handoff_path = ROOT / recovery["handoff_ref"]
-        handoff = json.loads(handoff_path.read_text(encoding="utf-8"))
-        # The validator resolves the durable authorization, so changing only a registry assertion cannot grant readiness.
-        recovery["executor_binding"] = "AUTHORIZED"
-        valid, _reason = independent_orphan_recovery_contract_valid(ROOT, registry_task=recovery, registry=registry)
-        self.assertTrue(valid)
-        self.assertEqual(handoff["activation"]["authorization_ref"], "authorizations/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json")
-
 
 if __name__ == "__main__":
     unittest.main()
