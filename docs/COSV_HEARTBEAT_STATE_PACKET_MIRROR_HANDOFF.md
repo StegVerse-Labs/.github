@@ -1,6 +1,6 @@
 # COSV Heartbeat State Packet Mirror Handoff
 
-Updated: 2026-08-18T08:46:00-05:00
+Updated: 2026-08-18T08:49:00-05:00
 Repository: `StegVerse-Labs/.github`
 Branch: `main`
 
@@ -14,6 +14,9 @@ Handoff tracker: `#219`
 Parent COSV handoff: `docs/CANONICAL_OPERATIONAL_STATE_VECTOR_MIRROR_HANDOFF.md`
 Heartbeat architecture owners: `#120`, `#122`, `#183`
 Gradient/nervous-system owner: `StegVerse-Labs/StegBrain#860` and integration request `StegVerse-Labs/StegBrain#861`
+Source state: `COMPLETE_RELEASED`
+Chat implementation claim: `RELEASED`
+Live adoption state: `SEPARATELY_OWNED_NOT_CLAIMED`
 
 ## Responsibility split
 
@@ -85,15 +88,45 @@ Credential authority: TV/TVC. NON-TV/TVC secret/token allowed: false. GitHub-tok
 
 ## Validation
 
-Required commands:
+Deterministic source-level validation completed:
 
 ```text
-python scripts/cosv_state_packet.py self-test
-python -m unittest tests.test_cosv_state_packet
+self-test: PASS
+focused tests: 5/5 PASS
+full packet digest verification: PASS
+delta reconstruction: PASS
+gradient input derivation: PASS
+implicit record removal fail-closed: PASS
+digest tamper rejection: PASS
+non-TVC credential authority rejection: PASS
+receipt: receipts/cosv/COSV-HEARTBEAT-STATE-PACKET-002-validation.json
+hosted workflow validation claimed: false
+live heartbeat packet emission claimed: false
+StegBrain gradient evaluation claimed: false
 ```
 
 Source completion does not claim live heartbeat packet emission or StegBrain gradient evaluation.
 
-## Release condition
+## Integration transfer
 
-Release this source claim after all listed surfaces are installed, deterministic validation passes, #122 is recorded as live migration owner, and StegBrain#861 carries gradient-consumer integration. Then close #218/#219 and mark #217 source-complete while leaving live adoption separately owned.
+Live carrier integration is transferred to `StegVerse-Labs/.github#122`; integration evidence was recorded there without acquiring its runtime claim. Gradient/coherency/admissibility consumption is transferred to `StegVerse-Labs/StegBrain#861` under the existing #860 nervous-system authority split.
+
+The next architecture layer may operate on the packet's canonical `gradient_inputs`, but it must remain a separately claimed StegBrain-owned implementation. COSV and heartbeat remain authority-neutral observation/state transport layers.
+
+## Completion accounting
+
+```text
+required source surfaces: 6/6
+developed files: 6/6
+scaffolding/stubs: 0
+missing required files: 0
+focused deterministic validation: 5/5 PASS
+source integration transfers: 2/2 (#122 and StegBrain#861)
+live producer adoption: NOT CLAIMED / #122 owned
+gradient evaluator implementation: NOT CLAIMED / StegBrain owned
+source slice: COMPLETE_RELEASED
+```
+
+## Archive / continuation condition
+
+The bounded source claim is released. #217 may remain as the architecture/integration tracker until the canonical live owners choose to consume the contract, but no chat session is required to preserve or continue this source slice.
