@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse, json, sys
+import argparse, json, sys, math
 from pathlib import Path
 
 LIFECYCLE={"UNKNOWN":0,"UNCLAIMED":1,"CLAIMED_IMPLEMENTATION":2,"CLAIMED_VALIDATION":3,"CLAIMED_INTEGRATION":4,"MACHINE_OWNED":5,"BLOCKED":6,"COMPLETE":7,"SUPERSEDED":8,"MERGED_INTO_CANONICAL_WORKSTREAM":9}
@@ -20,8 +20,11 @@ def tern(v):
 def factor(p):
     p=float(p)
     if not 0<=p<=100: raise ValueError("factor percent out of range")
-    for lo,hi,d in FACTOR_BANDS:
-        if lo<=p<=hi:return d
+    if p >= 100: return 9
+    if p <= 0: return 0
+    d=min(99,max(1,math.floor(p)))
+    for lo,hi,band in FACTOR_BANDS:
+        if lo<=d<=hi:return band
     raise ValueError("factor encoding failed")
 def lifecycle(v):
     if isinstance(v,int) and 0<=v<=9:return v
@@ -92,6 +95,7 @@ def self_test():
     assert v=="91000000100102",v
     a=encode_aggregate({"lifecycle":"MACHINE_OWNED","developed":100,"validation":88,"integration":75,"propagation":50,"activation":25,"readiness":62,"ownership":100,"evidence":99,"critical_blockers":12,"conflicting_claims":0,"unassigned_work":0,"stale_claims":2,"thread_required":False})
     assert a=="59875359890020",a
+    assert factor(0)==0 and factor(0.5)==1 and factor(12.5)==1 and factor(99.5)==8 and factor(100)==9
     assert transition("task.v1","91200000100102","91100000100102")[2]=="1"
     assert validate_vector("task.v1",v)
     assert transition("task.v1",v,v)=="0"*14
