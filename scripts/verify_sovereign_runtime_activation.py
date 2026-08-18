@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Produce the nine-predicate sovereign activation proof for separated v12 runtime."""
+"""Produce the sovereign activation proof for separated v12 runtime.
+
+Carrier continuity alone is not runtime activation. The proof requires both
+separated processes and observable task-capable WorkerCoordinator progress.
+"""
 from __future__ import annotations
 
 import argparse
@@ -12,12 +16,14 @@ from pathlib import Path
 from typing import Any, Callable
 
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
+OBSERVATION_ONLY_MODE = "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
 REQUIRED_PREDICATES = (
     "runtime_materialized",
     "native_service_active",
     "continuous_runtime_live",
     "heartbeat_epoch_advanced",
     "worker_coordination_checkpoint_observed",
+    "worker_task_capable_cycle_observed",
     "controlled_restart_observed",
     "epoch_and_generation_non_regressing",
     "no_duplicate_claim_or_fence",
@@ -54,6 +60,19 @@ def sovereign_node_declared(env: dict[str, str] | None = None) -> bool:
 
 def _epoch_generation(state: dict) -> tuple[int, int]:
     return int(state.get("epoch", -1)), int(state.get("generation", -1))
+
+
+def _runtime_tick(state: dict) -> int:
+    value = state.get("runtime_tick")
+    return int(value) if isinstance(value, int) and not isinstance(value, bool) else -1
+
+
+def _worker_task_capable(state: dict) -> bool:
+    return (
+        state.get("schema") == "stegverse.worker-runtime-state/v1"
+        and _runtime_tick(state) >= 0
+        and state.get("observation_mode") != OBSERVATION_ONLY_MODE
+    )
 
 
 def _active_leases(control_plane: dict) -> list[dict]:
@@ -155,6 +174,7 @@ def evaluate_runtime(
         "non_tv_tvc_secret_or_token_used": False,
         "carrier_state_ref": "control/heartbeat-carrier-runtime-state.json",
         "worker_control_plane_ref": "control/worker-control-plane-coordination.json",
+        "worker_state_ref": "control/worker-runtime-state.json",
     }
     if hosted or not declared:
         detail["ineligible_reason"] = "THIRD_PARTY_HOSTED_ENVIRONMENT" if hosted else "SOVEREIGN_NODE_DECLARATION_ABSENT"
@@ -169,6 +189,7 @@ def evaluate_runtime(
         legacy_path,
         control_plane_path,
         registry_path,
+        worker_state_path,
         materialization_path,
         service_path,
     )
@@ -190,15 +211,24 @@ def evaluate_runtime(
 
     legacy_before = legacy_path.read_bytes()
     before = load_json(carrier_path)
+    worker_before = load_json(worker_state_path)
     registry_before = load_json(registry_path)
     e0, g0 = _epoch_generation(before)
+    wt0 = _runtime_tick(worker_before)
+
     sleeper(observe_seconds)
     observed = load_json(carrier_path)
+    worker_observed_state = load_json(worker_state_path)
     control_observed = load_json(control_plane_path)
     e1, g1 = _epoch_generation(observed)
+    wt1 = _runtime_tick(worker_observed_state)
     predicates["heartbeat_epoch_advanced"] = e1 > e0
-    worker_runtime_live = worker_state_path.is_file()
-    predicates["continuous_runtime_live"] = predicates["native_service_active"] and e1 > e0 and worker_runtime_live
+    predicates["worker_task_capable_cycle_observed"] = _worker_task_capable(worker_observed_state) and wt1 > wt0
+    predicates["continuous_runtime_live"] = (
+        predicates["native_service_active"]
+        and predicates["heartbeat_epoch_advanced"]
+        and predicates["worker_task_capable_cycle_observed"]
+    )
     predicates["worker_coordination_checkpoint_observed"] = worker_coordination_observed(control_observed, root)
 
     commands = restart_commands(service_receipt=service, system=system, env=values)
@@ -211,17 +241,21 @@ def evaluate_runtime(
 
     sleeper(restart_seconds)
     after = load_json(carrier_path)
+    worker_after = load_json(worker_state_path)
     control_after = load_json(control_plane_path)
     registry_after = load_json(registry_path)
     e2, g2 = _epoch_generation(after)
+    wt2 = _runtime_tick(worker_after)
     predicates["epoch_and_generation_non_regressing"] = e2 >= e1 and g2 >= g1 and e1 >= e0 and g1 >= g0
     predicates["no_duplicate_claim_or_fence"] = no_duplicate_claim_or_fence(control_after)
     before_tasks = {row.get("task_id") for row in registry_before.get("tasks", []) if row.get("task_id")}
     after_tasks = {row.get("task_id") for row in registry_after.get("tasks", []) if row.get("task_id")}
     legacy_unchanged = legacy_path.read_bytes() == legacy_before
+    worker_progress_after_restart = _worker_task_capable(worker_after) and wt2 > wt1
     predicates["state_reconstruction_pass"] = (
         predicates["controlled_restart_observed"]
         and predicates["epoch_and_generation_non_regressing"]
+        and worker_progress_after_restart
         and before_tasks == after_tasks
         and worker_coordination_observed(control_after, root)
         and legacy_unchanged
@@ -237,8 +271,12 @@ def evaluate_runtime(
         "generation_before": g0,
         "generation_observed": g1,
         "generation_after_restart": g2,
+        "worker_runtime_tick_before": wt0,
+        "worker_runtime_tick_observed": wt1,
+        "worker_runtime_tick_after_restart": wt2,
+        "worker_observation_mode": worker_observed_state.get("observation_mode"),
+        "worker_progress_after_restart": worker_progress_after_restart,
         "legacy_hb29_unchanged": legacy_unchanged,
-        "worker_runtime_state_observed": worker_runtime_live,
         "active_control_lease_count": len(_active_leases(control_after)),
     })
     return {"predicates": predicates, "detail": detail}
@@ -248,7 +286,7 @@ def verify(runtime_root: Path, **kwargs: Any) -> dict:
     evaluated = evaluate_runtime(runtime_root, **kwargs)
     predicates = evaluated["predicates"]
     body = {
-        "schema": "stegverse.sovereign-runtime-activation-proof/v2",
+        "schema": "stegverse.sovereign-runtime-activation-proof/v3",
         **predicates,
         "all_predicates_pass": all(predicates.values()),
         "third_party_runtime_required": False,
