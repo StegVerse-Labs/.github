@@ -1,5 +1,7 @@
 # Validation-only federation lane. The resident sovereign heartbeat owns
 # production worker allocation, cycle advancement, claims, fences and persistence.
+# Main-branch state persistence is intentionally excluded from automatic hosted CI;
+# source changes still validate automatically, while PRs retain broad state coverage.
 name: All-Organization Heartbeat Federation - Validation Only / No GitHub Token Authority
 
 on:
@@ -7,13 +9,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'control/organization-federation.json'
-      - 'control/organization-task-registry.json'
-      - 'control/heartbeat-subsignals.json'
       - 'workers/organization_federation_readiness_worker.py'
-      - 'handoffs/SHWP-ALL-ORG-FEDERATION-001.json'
-      - 'authorizations/SHWP-ALL-ORG-FEDERATION-001.json'
-      - 'cost-basis/worker-runtime/organization-federation-readiness.json'
       - '.github/workflows/all-org-heartbeat-federation.yml'
   pull_request:
     paths:
