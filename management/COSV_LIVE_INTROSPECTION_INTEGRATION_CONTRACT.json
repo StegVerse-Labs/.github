@@ -1,0 +1,88 @@
+{
+  "schema": "stegverse.cosv-live-introspection-integration/v1",
+  "goal_id": "COSV-LIVE-INTROSPECTION-INTEGRATION-005",
+  "created_at": "2026-08-18T11:26:00-05:00",
+  "source_owners": {
+    "heartbeat_reference": "StegVerse-Labs/.github#122",
+    "cosv_packet": "StegVerse-Labs/.github#217",
+    "gradient_observer": "StegVerse-Labs/StegBrain#861",
+    "gradient_matrix": "StegVerse-Labs/StegBrain#863",
+    "expectation_residual": "StegVerse-Labs/StegBrain#865"
+  },
+  "authority": {
+    "heartbeat_authority_effect": "NONE",
+    "packet_authority_effect": "NONE",
+    "analytic_authority_effect": "NONE",
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "github_token_runtime_authority": "NONE",
+    "third_party_runtime_role": "FALLBACK_ONLY",
+    "stegverse_primary": true
+  },
+  "trigger": {
+    "type": "ADMITTED_HEARTBEAT_REFERENCE_PROGRESSION",
+    "required": [
+      "control/heartbeat-carrier-runtime-state.json exists at HB30 or later",
+      "legacy control/heartbeat-state.json remains immutable at HB29",
+      "control/worker-runtime-state.json independently observes the carrier reference",
+      "no duplicate claim or fence",
+      "reconstruction passes"
+    ]
+  },
+  "sequence": [
+    {
+      "step": 1,
+      "owner": "StegVerse-Labs/.github#122/#217",
+      "input": "admitted progressing carrier reference",
+      "output": "authority-neutral stegverse.cosv-state-packet/v1 FULL or DELTA observation",
+      "fail_closed_if": "carrier/reference evidence unavailable or packet cannot reconstruct"
+    },
+    {
+      "step": 2,
+      "owner": "applicable goal/subsystem expectation source consumed by StegVerse-Labs/StegBrain#865",
+      "input": "expectation committed before target reference",
+      "output": "expectation provenance binding with class, confidence, envelope, source ref, evidence ref, and SHA-256 commitment",
+      "fail_closed_if": "expectation issued at/after target reference or commitment mismatch"
+    },
+    {
+      "step": 3,
+      "owner": "StegVerse-Labs/StegBrain#861",
+      "input": "packet gradient_inputs",
+      "output": "authority-neutral gradient observation",
+      "fail_closed_if": "packet authority invariant, reference binding, or credential invariant fails"
+    },
+    {
+      "step": 4,
+      "owner": "StegVerse-Labs/StegBrain#865",
+      "input": "same-identity/profile/reference precommitted expectation plus actual packet-derived state/transition",
+      "output": "authority-neutral expectation residual observation",
+      "fail_closed_if": "reference mismatch, expectation provenance failure, insufficient evidence, or malformed vectors"
+    },
+    {
+      "step": 5,
+      "owner": "StegVerse-Labs/StegBrain#863/#865",
+      "input": "two or more strictly ordered real observations",
+      "output": "gradient matrix and/or residual gradient series; curvature after sufficient observations",
+      "fail_closed_if": "reference ordinals are not strictly increasing or identities are incompatible"
+    }
+  ],
+  "persistent_outputs": [
+    "COSV packet observation/receipt owned by .github#122/#217",
+    "StegBrain gradient observation receipt owned by #861",
+    "StegBrain expectation residual observation receipt owned by #865",
+    "StegBrain gradient matrix receipt owned by #863 after >=2 observations",
+    "StegBrain residual-series receipt owned by #865 after >=2 residual observations"
+  ],
+  "current_observation": {
+    "legacy_heartbeat_epoch": 29,
+    "legacy_heartbeat_generation": 29,
+    "carrier_runtime_state_present": false,
+    "worker_runtime_state_present": false,
+    "live_cosv_packet_observed": false,
+    "live_gradient_observed": false,
+    "live_expectation_residual_observed": false,
+    "live_gradient_matrix_observed": false
+  },
+  "release_condition": "A valid HB30+ carrier state and independent WorkerCoordinator observation exist, the first canonical COSV packet is emitted, a precommitted same-reference expectation is available, StegBrain persists the first live residual/gradient observation, and subsequent ordered observations permit matrix/series construction without widening authority.",
+  "chat_session_required": false
+}
