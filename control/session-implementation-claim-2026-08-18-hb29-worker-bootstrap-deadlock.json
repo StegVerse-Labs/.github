@@ -7,29 +7,44 @@
   "initial_pull_request": 221,
   "initial_merge_commit": "3e7d67b3940ca0ce325b6fbf0b43a87fb83e65a8",
   "hardening_pull_request": 222,
-  "hardening_branch": "fix/hb29-g18-bootstrap-220",
-  "claim_state": "CLAIMED_FOR_IMPLEMENTATION",
-  "claimant": "chatgpt-session-hb29-g18-bootstrap-hardening-20260818",
-  "claim_reopened_at": "2026-08-18T11:45:00-05:00",
-  "claim_release_condition": "Current-head focused validation passes, PR #222 merges to current main, the canonical handoff records release, and #220 retains only any independently required evidence work.",
-  "current_owner": "PR #222 source hardening; live runtime is separately active at HB31 and remains authoritative runtime evidence",
-  "chat_session_required": true,
-  "implementation_state": "REBASED_ON_LIVE_HB31_MAIN_PENDING_CURRENT_HEAD_VALIDATION",
-  "activation_state": "LIVE_HB31_CONTINUITY_OBSERVED_SEPARATE_FROM_SOURCE_HARDENING",
+  "hardening_merge_commit": "ccf98693c24e91a138bf90da8ef3b3c5ce488383",
+  "claim_state": "COMPLETE",
+  "former_claimant": "chatgpt-session-hb29-g18-bootstrap-hardening-20260818",
+  "implementation_claim_released_at": "2026-08-18T15:15:00-05:00",
+  "chat_session_required_for_source": false,
+  "implementation_state": "COMPLETE_MERGED",
+  "activation_state": "LIVE_HB31_CONTINUITY_RELEASE_COMPLETE",
   "owned_surfaces": [
     "scripts/run_worker_runtime.py",
     "tests/test_hb29_worker_bootstrap_deadlock.py",
     "docs/HB29_WORKER_BOOTSTRAP_DEADLOCK_MIRROR_HANDOFF.md",
     "control/session-implementation-claim-2026-08-18-hb29-worker-bootstrap-deadlock.json"
   ],
-  "required_hardening": [
-    "Reuse exact SHWP-DURABLE-RUNTIME-ACTIVATION G18 task, worker, claim, fence 18, policy, and authorized handoff.",
-    "Serialize and recheck first-carrier absence under the existing worker-runtime lock.",
-    "Use StegVerse-native advance_heartbeat_transition.py as PRIMARY.",
-    "Keep verified portable receipt materialization FALLBACK_ONLY; hosted third-party origin cannot execute the primary producer.",
-    "Require exact 29->30 initial continuity; 30->31 cannot satisfy cold-start bootstrap.",
-    "Forward no GitHub/provider/Render/wallet/NON-TV/TVC secret or token material."
+  "released_hardening": [
+    "Exact retained G18 task/worker/claim/fence-18/policy/authorized-handoff verification before future initial carrier production.",
+    "Serialized first-carrier decision and carrier recheck under the existing worker-runtime lock.",
+    "StegVerse-native advance_heartbeat_transition.py remains PRIMARY.",
+    "Verified portable receipt materialization remains FALLBACK_ONLY; hosted third-party origin cannot execute the primary producer.",
+    "Initial cold-start success requires exact 29->30 continuity.",
+    "No GitHub/provider/Render/wallet/NON-TV/TVC secret or token forwarding."
   ],
+  "validation_evidence": {
+    "validated_head": "b792dc796f8b3d7d755667d814392e0acfb8770c",
+    "heartbeat_worker_run": 32181073722,
+    "focused_hardening_tests": "8/8 PASS",
+    "compile_pass": true,
+    "canonical_json_pass": true,
+    "executable_handoff_pass": true,
+    "organization_control_run": 32181073715,
+    "this_handoff_ownership_contract_pass": true,
+    "repository_wide_green": false,
+    "remaining_failures_outside_claim": [
+      "tests/test_hb29_state_transition_carrier_contract.py::test_transition_producer_advances_without_forwarding_credentials",
+      "tests/test_iphone_heartbeat_transition_receipt.py compatibility tests expecting removed hosted symbol",
+      "tests/test_test_lanes_autolaunch_matrix.py::test_ready_matrix_only_requests_fresh_claim",
+      "other ownership-validator failures in COSV/Test Lanes handoffs"
+    ]
+  },
   "runtime_evidence_consumed": {
     "carrier_ref": "control/heartbeat-carrier-runtime-state.json",
     "observed_epoch": 31,
@@ -38,32 +53,14 @@
     "continuity_release_state": "RELEASE_COMPLETE",
     "all_release_predicates_pass": true,
     "primary_runtime_authority": "StegVerse",
-    "third_party_role": "FALLBACK_ONLY"
-  },
-  "authority": {
-    "primary_provider": "StegVerse",
-    "third_party_fallback_allowed": true,
-    "third_party_primary_allowed": false,
-    "credential_authority": "TV/TVC",
-    "credential_requirement": "NONE",
-    "github_token_runtime_authority": "NONE",
-    "non_tv_tvc_secret_or_token_allowed": false,
-    "new_claim_or_fence_allowed": false
-  },
-  "validation_evidence": {
-    "prior_reconciled_head": "4f899f2ab2fc0d730ebfe8fa651c2e10986d74ee",
-    "prior_run": 32180288511,
-    "focused_hardening_tests": "8/8 PASS",
-    "prior_suite_failures": "three concurrent failures outside the four owned surfaces",
-    "current_rebased_head_validation": "PENDING"
+    "third_party_role": "FALLBACK_ONLY",
+    "credential_authority": "TV/TVC"
   },
   "collision_boundaries": [
-    "Do not rewrite live HB31 state or immutable legacy HB29.",
-    "Do not alter the existing G18 claim/fence; verify it only for future initial bootstrap.",
-    "Do not create another heartbeat, WorkerCoordinator, scheduler, primary hosted runtime, route authority, or wallet authority.",
-    "Do not remove portable receipt fallback, worker-control-plane projection, or transition-release refresh.",
-    "Do not introduce NON-TV/TVC secrets or tokens."
+    "Do not reset live HB31 to manufacture a cold-start runtime proof.",
+    "Do not alter the existing G18 claim/fence or create a second heartbeat/WorkerCoordinator/scheduler.",
+    "Do not introduce third-party primary runtime authority or NON-TV/TVC secrets/tokens."
   ],
-  "next_executable_action": "Validate the freshly rebased PR #222 head, repair only hardening-specific failures, merge on scoped PASS, then consume downstream HB31 inference activation evidence separately.",
-  "state": "ACTIVE_SOURCE_HARDENING_PENDING_VALIDATION"
+  "next_executable_action": "Consume HB31 downstream in the existing Ecosystem Chat sovereign inference #60 recovery/re-admission lane; source hardening needs no further chat implementation.",
+  "state": "COMPLETE_MERGED_SOURCE_AND_LIVE_CONTINUITY_OBSERVED"
 }
