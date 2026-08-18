@@ -1,0 +1,45 @@
+{
+  "records": [
+    {
+      "identity": "SESSION-2026-08-17-LOCAL-RUNTIME-TRADE-ACTIVATION-RECONCILIATION",
+      "profile": "task.v1",
+      "level": "task",
+      "vector": "91000000100102",
+      "evidence_refs": ["control/session-consolidations/SESSION-2026-08-17-LOCAL-RUNTIME-TRADE-ACTIVATION-ARCHIVE-DISPOSITION.json"],
+      "source_commit": "cd4ced463cbcd1e99789d6623d9217f039b060e4",
+      "observed_at": "2026-08-18T08:06:00-05:00",
+      "exact_metrics": {
+        "unassigned_work": 0,
+        "chat_owned_implementation": 0,
+        "chat_owned_validation": 0,
+        "chat_owned_integration": 0,
+        "chat_owned_observation": 0,
+        "chat_owned_credentials": 0,
+        "blocker_count": 0
+      }
+    },
+    {
+      "identity": "EXAMPLE-SUBSYSTEM-A",
+      "profile": "aggregate.v1",
+      "level": "subsystem",
+      "vector": "59875359810020",
+      "evidence_refs": ["examples/cosv_examples.json#EXAMPLE-SUBSYSTEM-A"],
+      "observed_at": "2026-08-18T08:29:00-05:00",
+      "exact_metrics": {
+        "developed": 100,
+        "validation": 99,
+        "integration": 81,
+        "propagation": 56,
+        "activation": 31,
+        "readiness": 62,
+        "ownership": 100,
+        "evidence": 99,
+        "critical_blockers": 1,
+        "conflicting_claims": 0,
+        "unassigned_work": 0,
+        "stale_claims": 2
+      },
+      "weight": 5
+    }
+  ]
+}
