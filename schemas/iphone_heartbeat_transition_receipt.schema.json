@@ -79,10 +79,25 @@
     "browser": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["origin", "user_agent", "secure_context", "webcrypto"],
+      "required": [
+        "origin",
+        "user_agent",
+        "platform",
+        "max_touch_points",
+        "screen_width_css",
+        "screen_height_css",
+        "iphone_class_evidence",
+        "secure_context",
+        "webcrypto"
+      ],
       "properties": {
         "origin": {"type": "string", "minLength": 1},
-        "user_agent": {"type": "string", "minLength": 1},
+        "user_agent": {"type": "string"},
+        "platform": {"type": "string"},
+        "max_touch_points": {"type": "integer", "minimum": 0},
+        "screen_width_css": {"type": "number", "exclusiveMinimum": 0},
+        "screen_height_css": {"type": "number", "exclusiveMinimum": 0},
+        "iphone_class_evidence": {"type": "boolean"},
         "secure_context": {"const": true},
         "webcrypto": {"const": true}
       }

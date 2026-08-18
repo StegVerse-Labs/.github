@@ -77,12 +77,21 @@ class IPhoneHeartbeatTransitionReceiptTests(unittest.TestCase):
             "browser": {
                 "origin": "https://stegverse.org",
                 "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_6 like Mac OS X)",
+                "platform": "iPhone",
+                "max_touch_points": 5,
+                "screen_width_css": 430,
+                "screen_height_css": 932,
+                "iphone_class_evidence": True,
                 "secure_context": True,
                 "webcrypto": True,
             },
         }
         value["receipt_sha256"] = hashlib.sha256(mod.canonical_bytes(value)).hexdigest()
         return value
+
+    @staticmethod
+    def resign(receipt):
+        receipt["receipt_sha256"] = hashlib.sha256(mod.canonical_bytes({k: v for k, v in receipt.items() if k != "receipt_sha256"})).hexdigest()
 
     def test_valid_receipt_passes_and_materializes_hb30_without_mutating_legacy(self):
         td, root, blob = self.make_root()
@@ -91,8 +100,7 @@ class IPhoneHeartbeatTransitionReceiptTests(unittest.TestCase):
         before = (root / "control" / "heartbeat-state.json").read_bytes()
         verification = mod.validate_receipt(receipt, root=root)
         self.assertEqual(verification["state"], "PASS")
-        # Production materialization must reject hosted runners. This unit test
-        # explicitly exercises the non-hosted code path without weakening that guard.
+        self.assertTrue(verification["iphone_execution_evidence"])
         with mock.patch.object(mod, "hosted", return_value=False):
             result = mod.materialize(receipt, verification, root=root)
         self.assertEqual(result["state"], "CARRIER_TRANSITION_COMPLETE")
@@ -102,6 +110,40 @@ class IPhoneHeartbeatTransitionReceiptTests(unittest.TestCase):
         self.assertEqual((root / "control" / "heartbeat-state.json").read_bytes(), before)
         self.assertFalse(result["all_release_predicates_pass"])
         self.assertTrue(result["worker_checkpoint_required"])
+
+    def test_reduced_desktop_user_agent_passes_with_bounded_iphone_class_evidence(self):
+        td, root, blob = self.make_root()
+        self.addCleanup(td.cleanup)
+        receipt = self.receipt(blob)
+        receipt["browser"].update({
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/26.0 Safari/605.1.15",
+            "platform": "MacIntel",
+            "max_touch_points": 5,
+            "screen_width_css": 430,
+            "screen_height_css": 932,
+            "iphone_class_evidence": True,
+        })
+        self.resign(receipt)
+        verification = mod.validate_receipt(receipt, root=root)
+        self.assertEqual(verification["state"], "PASS")
+        self.assertTrue(verification["iphone_execution_evidence"])
+
+    def test_reduced_user_agent_without_iphone_sized_touch_evidence_fails_closed(self):
+        td, root, blob = self.make_root()
+        self.addCleanup(td.cleanup)
+        receipt = self.receipt(blob)
+        receipt["browser"].update({
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+            "platform": "MacIntel",
+            "max_touch_points": 0,
+            "screen_width_css": 1440,
+            "screen_height_css": 900,
+            "iphone_class_evidence": False,
+        })
+        self.resign(receipt)
+        verification = mod.validate_receipt(receipt, root=root)
+        self.assertEqual(verification["state"], "FAIL_CLOSED")
+        self.assertTrue(any("iPhone-class" in error for error in verification["errors"]))
 
     def test_hosted_materialization_fails_closed(self):
         td, root, blob = self.make_root()
@@ -119,7 +161,7 @@ class IPhoneHeartbeatTransitionReceiptTests(unittest.TestCase):
         self.addCleanup(td.cleanup)
         receipt = self.receipt(blob)
         receipt["seed"]["epoch"] = 28
-        receipt["receipt_sha256"] = hashlib.sha256(mod.canonical_bytes({k: v for k, v in receipt.items() if k != "receipt_sha256"})).hexdigest()
+        self.resign(receipt)
         verification = mod.validate_receipt(receipt, root=root)
         self.assertEqual(verification["state"], "FAIL_CLOSED")
         self.assertTrue(any("seed.epoch" in error for error in verification["errors"]))
@@ -129,7 +171,7 @@ class IPhoneHeartbeatTransitionReceiptTests(unittest.TestCase):
         self.addCleanup(td.cleanup)
         receipt = self.receipt(blob)
         receipt["browser"]["authorization"] = "Bearer x"
-        receipt["receipt_sha256"] = hashlib.sha256(mod.canonical_bytes({k: v for k, v in receipt.items() if k != "receipt_sha256"})).hexdigest()
+        self.resign(receipt)
         verification = mod.validate_receipt(receipt, root=root)
         self.assertEqual(verification["state"], "FAIL_CLOSED")
         self.assertTrue(any("protected material" in error for error in verification["errors"]))
