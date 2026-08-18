@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:test-lanes-autolaunch-v1",
+      "authority_ref": "authorizations/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "durable_state_reconstruction",
+        "test_lanes_autolaunch"
+      ],
+      "command": ["python", "workers/test_lanes_autolaunch_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_TVC_ROOT",
+        "STEGVERSE_TEST_LANES_ROOT",
+        "STEGVERSE_TEST_LANES_MODEL_SELECTION",
+        "STEGVERSE_VAULT_AGENT_SOCKET",
+        "STEGVERSE_VAULT_BROKER_SOCKET",
+        "HOME",
+        "XDG_STATE_HOME",
+        "LOCALAPPDATA"
+      ],
+      "notes": [
+        "Heartbeat/WorkerCoordinator wakes the evaluator but never grants test execution authority.",
+        "A canonical 9/9 run starts only after the condition matrix passes and the worker acquires a fresh bounded test-run claim under the current heartbeat fence.",
+        "StegVerse-local is mandatory PRIMARY/reference; OpenAI, Anthropic, DeepSeek and Kimi are CONTROL_OR_FALLBACK_ONLY and are required only for the named canonical full-nine-lane run.",
+        "Provider credentials never enter this worker or its environment; external calls are delegated to the existing TVC vault broker through Unix sockets.",
+        "No GitHub token, provider API key, NON-TV/TVC secret, hosted process provider or external scheduler is a production dependency.",
+        "Writes only receipts/test-lanes-autolaunch/**."
+      ],
+      "timeout_seconds": 1200,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
