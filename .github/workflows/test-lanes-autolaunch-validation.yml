@@ -1,0 +1,94 @@
+name: Validate Test Lanes Autolaunch
+
+on:
+  push:
+    paths:
+      - "control/test-lanes-autolaunch-matrix.v1.json"
+      - "control/worker-registry.d/test-lanes-autolaunch.json"
+      - "control/process-worker-adapters.d/test-lanes-autolaunch.json"
+      - "authorizations/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json"
+      - "scripts/evaluate_test_lanes_autolaunch_matrix.py"
+      - "workers/test_lanes_autolaunch_worker.py"
+      - "tests/test_test_lanes_autolaunch_matrix.py"
+      - "tests/test_test_lanes_autolaunch_worker.py"
+      - "docs/STEGVERSE_TEST_LANES_AUTOLAUNCH_MIRROR_HANDOFF.md"
+      - ".github/workflows/test-lanes-autolaunch-validation.yml"
+  pull_request:
+    paths:
+      - "control/test-lanes-autolaunch-matrix.v1.json"
+      - "control/worker-registry.d/test-lanes-autolaunch.json"
+      - "control/process-worker-adapters.d/test-lanes-autolaunch.json"
+      - "authorizations/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json"
+      - "scripts/evaluate_test_lanes_autolaunch_matrix.py"
+      - "workers/test_lanes_autolaunch_worker.py"
+      - "tests/test_test_lanes_autolaunch_matrix.py"
+      - "tests/test_test_lanes_autolaunch_worker.py"
+      - "docs/STEGVERSE_TEST_LANES_AUTOLAUNCH_MIRROR_HANDOFF.md"
+      - ".github/workflows/test-lanes-autolaunch-validation.yml"
+  workflow_dispatch: {}
+
+permissions: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Anonymous source checkout without GitHub credential authority
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
+
+      - name: Run deterministic matrix tests
+        run: python3 tests/test_test_lanes_autolaunch_matrix.py
+
+      - name: Run worker boundary tests
+        run: python3 tests/test_test_lanes_autolaunch_worker.py
+
+      - name: Validate native registry and adapter bindings
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          task=json.loads(Path('control/worker-registry.d/test-lanes-autolaunch.json').read_text())
+          adapter=json.loads(Path('control/process-worker-adapters.d/test-lanes-autolaunch.json').read_text())
+          auth=json.loads(Path('authorizations/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json').read_text())
+          assert task['schema'] == 'stegverse.worker-registry-fragment/v0.1'
+          assert task['tasks'][0]['task_id'] == 'STEGVERSE-TEST-LANES-AUTOLAUNCH-001'
+          assert task['tasks'][0]['executor_binding'] == 'AUTHORIZED'
+          assert adapter['schema'] == 'stegverse.process-worker-adapter-fragment/v0.1'
+          a=adapter['adapters'][0]
+          assert a['adapter_ref'] == 'process:test-lanes-autolaunch-v1'
+          assert 'OPENAI_API_KEY' not in a['env_allowlist']
+          assert 'ANTHROPIC_API_KEY' not in a['env_allowlist']
+          assert 'DEEPSEEK_API_KEY' not in a['env_allowlist']
+          assert 'MOONSHOT_API_KEY' not in a['env_allowlist']
+          assert 'GITHUB_TOKEN' not in a['env_allowlist']
+          assert auth['credential_authority'] == 'TV/TVC'
+          assert auth['heartbeat_grants_execution_authority'] is False
+          assert auth['primary_provider'] == 'stegverse_local'
+          assert auth['provider_secret_transport_allowed'] is False
+          print('TEST_LANES_AUTOLAUNCH_NATIVE_BINDING_PASS')
+          PY
+
+      - name: Prove validation-only authority boundary
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          text=Path('.github/workflows/test-lanes-autolaunch-validation.yml').read_text()
+          assert 'permissions: {}' in text
+          assert 'secrets.' not in text
+          assert 'git push' not in text
+          assert 'pip install' not in text
+          print('TEST_LANES_AUTOLAUNCH_VALIDATION_ONLY_PASS')
+          PY
