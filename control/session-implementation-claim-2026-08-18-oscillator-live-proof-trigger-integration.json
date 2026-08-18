@@ -1,0 +1,81 @@
+{
+  "schema": "stegverse.work-claim/v1",
+  "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009-INTEGRATION",
+  "originating_goal": "Make the already-released independent heartbeat oscillator source actually claimable, triggerable, and consumable by the canonical StegVerse WorkerCoordinator without making worker/task state causal to heartbeat progression.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "claim_state": "CLAIMED_FOR_INTEGRATION_AND_LIVE_VALIDATION",
+  "claimant": "current-session-oscillator-live-proof-integration",
+  "claim_created_at": "2026-08-18T18:24:00-05:00",
+  "claim_expiration_or_release_condition": "Release only after source integration is directly validated and the canonical #122/#12 StegVerse runtime executes the bounded worker(1)->carrier(1)->worker(1) progression, producing corrected oscillator carrier evidence plus actual WorkerCoordinator claims/results for the independently authorized 009/recovery tasks.",
+  "owned_surfaces": [
+    "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json",
+    "control/worker-registry.d/heartbeat-independent-oscillator-live-009.json",
+    "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
+    "tests/test_independent_heartbeat_live_proof_registration.py",
+    "scripts/refresh_heartbeat_transition_receipt.py compatibility/integration semantics only",
+    "tests/test_worker_task_capable_event_shape.py",
+    "workers/sovereign_runtime_activation_entrypoint.py G18 compatibility guard only",
+    "tests/test_g18_task_capable_release_guard.py",
+    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json reconciliation only",
+    "this claim record"
+  ],
+  "collision_boundaries": [
+    "Do not change heartbeat_runtime/independent_oscillator.py or the oscillator algorithm owned by the active #122 source lane.",
+    "Do not make WorkerCoordinator, G18, claims, fences, routes or credentials causal to heartbeat progression.",
+    "Do not revive or overwrite the superseded SHWP-WORKER-TASK-CAPABLE-RELEASE-HARDENING-001 claim.",
+    "Do not mint or directly mutate G18/G20/recovery claims or fencing tokens.",
+    "Do not create a second heartbeat, WorkerCoordinator, scheduler, vault, route or model runtime.",
+    "StegVerse remains primary; third-party runtime is fallback-only.",
+    "TV/TVC remains sole credential authority; GitHub tokens and NON-TV/TVC secrets/tokens are prohibited from production authority."
+  ],
+  "completed_source_integration": {
+    "carrier_runtime_separation_commit": "9598603471cf807cedd0030975a6bfe1a0899229",
+    "carrier_runtime_separation_test_commit": "3533842ee23cc145ef51be5cc6bb3cd88271dc59",
+    "g18_oscillator_guard_commit": "c46c44ac666337acde5dc9203ef5393a76501119",
+    "g18_oscillator_guard_test_commit": "bbb83465a997e1cffca7bcdd9edafde50bc248f8",
+    "worker_event_shape_fix_commit": "6d10f6ee5dc1ed014c92890cec4c035869e11eaf",
+    "worker_event_shape_test_commit": "b01281a0be79e3ac49d8499688ea79a846d47d32",
+    "cost_basis_commit": "512daae81603fc520b81cb825946f6b351605bea",
+    "registry_cost_binding_commit": "808675894d943aed850e69a62a6859e2775f7344",
+    "registration_test_commit": "723147911f2128723671999d9d50a00ab177232d",
+    "009_handoff_reconciliation_commit": "da75dd8a680773a48e9a2cd1160b4b2eb2eede94",
+    "g18_handoff_parallelism_reconciliation_commit": "f4d8db22be77dfd8e1d8cd685fb5d4ea54a870d5"
+  },
+  "live_state_at_claim": {
+    "carrier_epoch": 31,
+    "carrier_frequency_rule": "GATE_PASSBAND_DERIVED",
+    "corrected_oscillator_live_proof_observed": false,
+    "worker_runtime_tick": 2,
+    "worker_state": "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION",
+    "g18_fence18_active": true,
+    "oscillator_live_proof_009": "HANDOFF_READY",
+    "orphan_recovery": "HANDOFF_READY_AUTHORIZED_INDEPENDENT_TASK_CONTROL",
+    "persisted_assignment_trigger_packets_for_new_tasks": false
+  },
+  "machine_progression": [
+    "python scripts/run_worker_runtime.py --cycles 1",
+    "python scripts/run_heartbeat_runtime.py --cycles 1",
+    "python scripts/run_worker_runtime.py --cycles 1"
+  ],
+  "progression_semantics": [
+    "First worker cycle applies registry fragments into the canonical registry and persists task-capable WorkerCoordinator events; it does not advance heartbeat.",
+    "Carrier cycle samples the independent oscillator, persists oscillator-only carrier evidence, and carries non-authorizing assignment-trigger packets for unclaimed HANDOFF_READY tasks; it grants no execution authority.",
+    "Second worker cycle independently validates task authority, binds fresh fenced claims, consumes guarded G18 lifecycle state, and may activate the separately authorized 009 and orphan-recovery tasks."
+  ],
+  "validation": {
+    "canonical_workflow": ".github/workflows/heartbeat-worker-project.yml",
+    "complete_unittest_discovery_includes_new_tests": true,
+    "hosted_run_observed_for_latest_heads": false,
+    "hosted_pass_claimed": false,
+    "local_clone_validation_available": false,
+    "state": "SOURCE_VALIDATION_PENDING_DIRECT_EVIDENCE"
+  },
+  "machine_observable_release_condition": "Corrected carrier state contains oscillator progression_dependency=OSCILLATOR_ONLY and observation-only provenance; heartbeat event log contains assignment-trigger packets; WorkerCoordinator event log contains canonical non-observer task-capable events; 009 and recovery receive independently authorized claims or terminal receipts; G18 cleanup may complete independently and is not an authority prerequisite for recovery.",
+  "next_executable_action": "Canonical #122/#12 StegVerse runtime owner executes the bounded worker(1)->carrier(1)->worker(1) sequence and this session immediately consumes and verifies the resulting carrier, trigger, worker, claim and receipt evidence.",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "primary_runtime_authority": "StegVerse",
+  "third_party_role": "FALLBACK_ONLY",
+  "archive_dependency": true
+}
