@@ -110,7 +110,7 @@ def main() -> int:
             "reason": "EXACT_TVC_SOURCE_NOT_MATERIALIZED",
             "expected_tvc_head": expected_head,
             "observed_candidates": observed,
-            "machine_observable_release_condition": "A StegVerse-controlled local TVC repository exists at the exact pinned PR #20 head with a clean worktree",
+            "machine_observable_release_condition": "A StegVerse-controlled local TVC repository exists at the exact pinned PR #79 head with a clean worktree",
             "credential_authority": "TV/TVC",
             "non_tv_tvc_secret_or_token_used": False,
         }
