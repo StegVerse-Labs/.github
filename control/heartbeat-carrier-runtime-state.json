@@ -1,0 +1,26 @@
+{
+  "activation_state": "ACTIVE",
+  "authority_effect": "NONE",
+  "epoch": 30,
+  "frequency_rule": "GATE_PASSBAND_DERIVED",
+  "generation": 30,
+  "last_cycle_at": "2026-08-18T18:01:24.404Z",
+  "legacy_cutover": {
+    "closed": true,
+    "legacy_epoch": 29,
+    "legacy_generation": 29,
+    "legacy_schema": "stegverse.org-heartbeat-state/v1",
+    "legacy_state_sha256": "0860e70af7c3734b58a364bc2258f8c1983dff95aa0e60e0c0f5b9d9bf06ef02",
+    "source_ref": "control/heartbeat-state.json"
+  },
+  "portable_transition": {
+    "authority_effect": "NONE",
+    "contract_id": "SHWP-IPHONE-HB30-TRANSITION-CAPSULE-001",
+    "physical_execution_surface": "CURRENT_USER_IPHONE",
+    "portable_receipt_sha256": "931f4e756bf82ded9bc8a2fc1cfda4dae6edae0f9c95f3f9a47ca343b1a73855",
+    "verified": true
+  },
+  "reference_frame": "heartbeat_epoch:30",
+  "role": "REGULATORY_CARRIER_REFERENCE_FRAME",
+  "schema": "stegverse.heartbeat-carrier-runtime-state/v1"
+}
