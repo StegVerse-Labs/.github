@@ -1,58 +1,69 @@
 {
   "schema": "stegverse.work-claim/v1",
   "task_id": "SHWP-HB29-WORKER-BOOTSTRAP-DEADLOCK-003",
-  "originating_goal": "Fix the coding defect that prevents the machine-owned HB29 to HB30 transition from starting because WorkerCoordinator requires the separated carrier state before its execution loop can run.",
+  "originating_goal": "Make future retained-HB29 startup deterministic under exact existing G18 authority while StegVerse remains primary and third-party execution remains fallback-only.",
   "repository": "StegVerse-Labs/.github",
   "canonical_issue": 220,
-  "pull_request": 221,
-  "merge_commit": "3e7d67b3940ca0ce325b6fbf0b43a87fb83e65a8",
-  "claim_state": "SOURCE_FIX_MERGED_OBSERVATION_MACHINE_OWNED",
-  "former_claimant": "chatgpt-session-hb29-bootstrap-deadlock-repair-20260818",
-  "implementation_claim_released_at": "2026-08-18T11:33:00-05:00",
-  "current_owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18 + normal StegVerse-native WorkerCoordinator execution",
-  "chat_session_required": false,
-  "implementation_state": "COMPLETE_MERGED",
-  "activation_state": "PENDING_REAL_HB30_OBSERVATION",
+  "initial_pull_request": 221,
+  "initial_merge_commit": "3e7d67b3940ca0ce325b6fbf0b43a87fb83e65a8",
+  "hardening_pull_request": 222,
+  "hardening_branch": "fix/hb29-g18-bootstrap-220",
+  "claim_state": "CLAIMED_FOR_IMPLEMENTATION",
+  "claimant": "chatgpt-session-hb29-g18-bootstrap-hardening-20260818",
+  "claim_reopened_at": "2026-08-18T11:45:00-05:00",
+  "claim_release_condition": "Current-head focused validation passes, PR #222 merges to current main, the canonical handoff records release, and #220 retains only any independently required evidence work.",
+  "current_owner": "PR #222 source hardening; live runtime is separately active at HB31 and remains authoritative runtime evidence",
+  "chat_session_required": true,
+  "implementation_state": "REBASED_ON_LIVE_HB31_MAIN_PENDING_CURRENT_HEAD_VALIDATION",
+  "activation_state": "LIVE_HB31_CONTINUITY_OBSERVED_SEPARATE_FROM_SOURCE_HARDENING",
   "owned_surfaces": [
     "scripts/run_worker_runtime.py",
     "tests/test_hb29_worker_bootstrap_deadlock.py",
     "docs/HB29_WORKER_BOOTSTRAP_DEADLOCK_MIRROR_HANDOFF.md",
     "control/session-implementation-claim-2026-08-18-hb29-worker-bootstrap-deadlock.json"
   ],
-  "implemented_resolution": {
-    "defect": "WorkerCoordinator required a separated carrier before coordination, while the first separated carrier state was expected to be produced only after the worker path became reachable.",
-    "repair": "The normal worker-runtime entrypoint now invokes the existing canonical scripts/advance_heartbeat_transition.py exactly once when no separated carrier exists and immutable legacy HB29 is present; WorkerCoordinator starts only after HB30+ has been persisted.",
-    "credential_forwarding": "SAFE_ENV_ONLY_NO_GITHUB_PROVIDER_OR_TVC_SECRET_FORWARDING",
-    "legacy_hb29_mutation": false,
-    "new_scheduler_or_heartbeat": false
+  "required_hardening": [
+    "Reuse exact SHWP-DURABLE-RUNTIME-ACTIVATION G18 task, worker, claim, fence 18, policy, and authorized handoff.",
+    "Serialize and recheck first-carrier absence under the existing worker-runtime lock.",
+    "Use StegVerse-native advance_heartbeat_transition.py as PRIMARY.",
+    "Keep verified portable receipt materialization FALLBACK_ONLY; hosted third-party origin cannot execute the primary producer.",
+    "Require exact 29->30 initial continuity; 30->31 cannot satisfy cold-start bootstrap.",
+    "Forward no GitHub/provider/Render/wallet/NON-TV/TVC secret or token material."
+  ],
+  "runtime_evidence_consumed": {
+    "carrier_ref": "control/heartbeat-carrier-runtime-state.json",
+    "observed_epoch": 31,
+    "observed_generation": 31,
+    "continuity_receipt_ref": "receipts/heartbeat-transition-continuity/latest.json",
+    "continuity_release_state": "RELEASE_COMPLETE",
+    "all_release_predicates_pass": true,
+    "primary_runtime_authority": "StegVerse",
+    "third_party_role": "FALLBACK_ONLY"
+  },
+  "authority": {
+    "primary_provider": "StegVerse",
+    "third_party_fallback_allowed": true,
+    "third_party_primary_allowed": false,
+    "credential_authority": "TV/TVC",
+    "credential_requirement": "NONE",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "new_claim_or_fence_allowed": false
   },
   "validation_evidence": {
-    "exact_pr_head": "9b0563bde31e766c78ac85e6ec375b480ce51c18",
-    "heartbeat_worker_run": 32160758517,
-    "new_regression_tests_passed": "4/4",
-    "existing_hb29_transition_tests_passed": true,
-    "compile_passed": true,
-    "canonical_json_parse_passed": true,
-    "executable_handoff_validation_passed": true,
-    "full_suite_green": false,
-    "full_suite_blocker_is_unrelated": true,
-    "full_suite_blocker": "pre-existing/concurrent COSV aggregate test error in scripts/cosv.py factor encoding",
-    "organization_control_run": 32160758629,
-    "repair_handoff_ownership_partition_passed": true,
-    "organization_control_remaining_failures_unrelated": [
-      "docs/CANONICAL_OPERATIONAL_STATE_VECTOR_MIRROR_HANDOFF.md missing ownership section",
-      "docs/COSV_HEARTBEAT_STATE_PACKET_MIRROR_HANDOFF.md missing ownership section",
-      "docs/COSV_SESSION_CONSOLIDATION_MIRROR_HANDOFF.md missing ownership section"
-    ]
+    "prior_reconciled_head": "4f899f2ab2fc0d730ebfe8fa651c2e10986d74ee",
+    "prior_run": 32180288511,
+    "focused_hardening_tests": "8/8 PASS",
+    "prior_suite_failures": "three concurrent failures outside the four owned surfaces",
+    "current_rebased_head_validation": "PENDING"
   },
   "collision_boundaries": [
-    "Do not modify control/heartbeat-state.json or fabricate HB30 in repository source.",
-    "Do not acquire, release, renew, or alter the existing G18 claim/fence.",
-    "Do not create another heartbeat, WorkerCoordinator, scheduler, hosted runtime, or physical-machine prerequisite.",
-    "Do not introduce GitHub token, Render, hosted provider, or NON-TV/TVC secret/token authority.",
-    "Do not alter TV/TVC route authority, provider authority, wallet signing/broadcast authority, or Master Records custody authority."
+    "Do not rewrite live HB31 state or immutable legacy HB29.",
+    "Do not alter the existing G18 claim/fence; verify it only for future initial bootstrap.",
+    "Do not create another heartbeat, WorkerCoordinator, scheduler, primary hosted runtime, route authority, or wallet authority.",
+    "Do not remove portable receipt fallback, worker-control-plane projection, or transition-release refresh.",
+    "Do not introduce NON-TV/TVC secrets or tokens."
   ],
-  "machine_observable_release_condition": "A normal StegVerse-native worker-runtime startup on the retained HB29 state produces control/heartbeat-carrier-runtime-state.json at HB30+ and receipts/heartbeat-transition-continuity/latest.json with CARRIER_TRANSITION_COMPLETE; WorkerCoordinator then independently records the successor with reconstruction PASS and no duplicate claim/fence.",
-  "next_executable_action": "Existing G18/WorkerCoordinator machine owner executes the merged normal worker-runtime entrypoint. If HB30 is still absent, the merged initial-carrier bootstrap invokes the canonical transition producer before WorkerCoordinator construction. Inspect the resulting carrier/continuity/worker state; do not use hosted CI as activation evidence.",
-  "state": "COMPLETE_MERGED_SOURCE_PENDING_MACHINE_OBSERVATION"
+  "next_executable_action": "Validate the freshly rebased PR #222 head, repair only hardening-specific failures, merge on scoped PASS, then consume downstream HB31 inference activation evidence separately.",
+  "state": "ACTIVE_SOURCE_HARDENING_PENDING_VALIDATION"
 }
