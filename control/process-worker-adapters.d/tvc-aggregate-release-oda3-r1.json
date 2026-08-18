@@ -1,0 +1,46 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "TVC-ODA3-AGGREGATE-RELEASE-027",
+  "adapters": [
+    {
+      "adapter_ref": "process:tvc-aggregate-release-oda3-r1-v1",
+      "authority_ref": "authorizations/TVC-ODA3-AGGREGATE-RELEASE-027.json",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "tvc_aggregate_release"
+      ],
+      "command": [
+        "python",
+        "workers/tvc_aggregate_release_worker.py",
+        "--release-set-id",
+        "ODA3-EVALUATOR-PATH-2026-08-18-R1",
+        "--readiness",
+        "tvc.release.aggregate.oda3_r1.readiness",
+        "--execute",
+        "tvc.release.aggregate.oda3_r1.execute",
+        "--verify",
+        "tvc.release.aggregate.oda3_r1.verify"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_TVC_ROOT",
+        "TVC_EPHEMERAL_GITHUB_TOKEN",
+        "HOME",
+        "XDG_STATE_HOME",
+        "LOCALAPPDATA"
+      ],
+      "notes": [
+        "Heartbeat is wake/reference only and grants no execution or release authority.",
+        "WorkerCoordinator must bind a fresh authorized claim/fence before invoking this adapter.",
+        "The adapter invokes the generalized TVC aggregate-release executor through task-bound instance catalog entries; no ODA3-specific executor exists.",
+        "GITHUB_TOKEN, GH_TOKEN and provider API keys are rejected by the worker.",
+        "Only TVC_EPHEMERAL_GITHUB_TOKEN may be inherited by the TVC child process, and its value is never logged or returned.",
+        "GitHub Actions remains validation-only and is not a release/runtime authority."
+      ],
+      "timeout_seconds": 1200,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
