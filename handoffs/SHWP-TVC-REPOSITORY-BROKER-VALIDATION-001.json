@@ -71,7 +71,8 @@
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 4096,
     "rate_class": "tvc_repository_broker_validation",
-    "expected_tvc_head": "6209396bc9846ec5f301b24d3b6f0207e571af1d",
+    "expected_tvc_head": "dfbf736d9e205e1fc179dc8636af74e638c2aec5",
+    "expected_head_change_reason": "PR #20 private-repository fanout repair removed automatic anonymous pull_request validation while preserving the local TV/TVC validation path",
     "validation_command": ["python", "tools/task_dispatcher.py", "tvc.github_repository_operation_broker.verify"]
   },
   "activation": {
@@ -88,8 +89,8 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Locate exact locally materialized TVC PR #20 source and execute the existing repository-native validation task with all non-TV/TVC credential environment variables removed.",
-    "terminal_when": ["A PASS carrier receipt records the exact TVC source head and sanitized dispatcher result"]
+    "next_authorized_action": "Locate exact locally materialized TVC PR #20 source at dfbf736d9e205e1fc179dc8636af74e638c2aec5 and execute the existing repository-native validation task with all non-TV/TVC credential environment variables removed.",
+    "terminal_when": ["A PASS carrier receipt records exact TVC source head dfbf736d9e205e1fc179dc8636af74e638c2aec5 and sanitized dispatcher result"]
   },
   "block": null
 }
