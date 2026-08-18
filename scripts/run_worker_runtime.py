@@ -2,13 +2,15 @@
 """Run StegVerse worker lifecycle coordination separately from the heartbeat carrier.
 
 When the separated-v12 carrier has not yet been materialized, this entry point
-tries verified portable iPhone recovery receipts newest-first; if none can be
-materialized it executes the canonical bounded transition producer. Third-party
-hosted compute is allowed only as an explicit FALLBACK_ONLY execution surface
-and is never hidden from the verifier. If a carrier is already materialized but
-the worker control-plane projection is absent, it reconstructs that observation
-without advancing the carrier. After each WorkerCoordinator cycle it refreshes
-the seven transition release predicates without advancing the carrier.
+uses the canonical StegVerse-native HB29 -> HB30 producer as the primary path
+under the exact retained G18 authority. Verified portable iPhone recovery
+receipts remain a fallback path, including explicitly identified third-party
+hosted fallback, never a primary provider. Initial-carrier production is
+serialized with the worker-runtime lock so concurrent starts cannot race the
+cutover. If a carrier is already materialized but the worker control-plane
+projection is absent, that observation is reconstructed without advancing the
+carrier. After each WorkerCoordinator cycle the transition release predicates
+are refreshed without advancing the carrier.
 """
 from __future__ import annotations
 
@@ -43,6 +45,11 @@ PORTABLE_RECEIPT_DIR_REL = Path("receipts/heartbeat-transition-continuity")
 IPHONE_VERIFIER_REL = Path("scripts/verify_iphone_heartbeat_transition_receipt.py")
 TRANSITION_REFRESH_REL = Path("scripts/refresh_heartbeat_transition_receipt.py")
 CONTROL_PLANE_PROJECTOR_REL = Path("scripts/project_worker_control_plane_from_carrier.py")
+G18_TASK_ID = "SHWP-DURABLE-RUNTIME-ACTIVATION"
+G18_WORKER_ID = "sovereign-runtime-activation-worker"
+G18_CLAIM_ID = "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18"
+G18_FENCE = 18
+G18_POLICY = "shwp-single-hb-v0.4-sovereign-solution-execution"
 HOSTED_ENV = ("GITHUB_ACTIONS", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 SAFE_BOOTSTRAP_ENV = {
     "HOME", "USER", "LOGNAME", "SHELL", "PATH", "PYTHONPATH", "LANG", "LC_ALL", "TMPDIR",
@@ -127,6 +134,44 @@ def _fallback_origin(values: dict[str, str] | None = None) -> str | None:
     return active[0] if active else None
 
 
+def _exact_g18_task(runtime: WorkerCoordinator) -> dict[str, Any]:
+    registry = runtime._load(runtime.registry_path)
+    matches = [task for task in registry.get("tasks", []) if task.get("task_id") == G18_TASK_ID]
+    if len(matches) != 1:
+        raise RuntimeError("initial carrier bootstrap requires exactly one canonical G18 task")
+    task = matches[0]
+    timing = task.get("heartbeat_timing") or {}
+    checks = {
+        "state": task.get("state") in {"ACTIVE", "BLOCKED"},
+        "executor_binding": task.get("executor_binding") == "BOUND",
+        "worker_id": task.get("worker_id") == G18_WORKER_ID,
+        "claim_id": task.get("claim_id") == G18_CLAIM_ID,
+        "fencing_token": timing.get("fencing_token") == G18_FENCE,
+        "policy": task.get("authorized_policy_version") == G18_POLICY,
+    }
+    failed = sorted(name for name, ok in checks.items() if not ok)
+    if failed:
+        raise RuntimeError(f"initial carrier bootstrap G18 invariant mismatch: {','.join(failed)}")
+    handoff = runtime._handoff(task)
+    if not runtime._execution_authorized(handoff):
+        raise RuntimeError("initial carrier bootstrap requires execution-authorized G18 handoff")
+    return task
+
+
+def _existing_carrier_result(carrier_path: Path) -> dict[str, Any]:
+    carrier = json.loads(carrier_path.read_text(encoding="utf-8"))
+    epoch = carrier.get("epoch")
+    if not isinstance(epoch, int) or epoch < 30:
+        raise RuntimeError("existing separated carrier state is below HB30")
+    return {
+        "attempted": False,
+        "state": "CARRIER_ALREADY_PRESENT",
+        "carrier_epoch": epoch,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+    }
+
+
 def _portable_receipts(root: Path) -> list[Path]:
     directory = root / PORTABLE_RECEIPT_DIR_REL
     if not directory.is_dir():
@@ -161,23 +206,18 @@ def _materialize_portable_receipt(
     if fallback:
         command.extend(["--allow-third-party-fallback", fallback])
     completed = runner(
-        command,
-        check=False,
-        capture_output=True,
-        text=True,
-        timeout=90,
-        env=_safe_bootstrap_env(source_env),
+        command, check=False, capture_output=True, text=True, timeout=90, env=_safe_bootstrap_env(source_env),
     )
     if completed.returncode == 0 and carrier.is_file():
         value = json.loads(carrier.read_text(encoding="utf-8"))
-        if isinstance(value.get("epoch"), int) and value["epoch"] >= 30:
+        if value.get("epoch") == 30:
             return {
                 "attempted": True,
                 "state": "PORTABLE_RECEIPT_MATERIALIZED",
-                "carrier_epoch": value["epoch"],
+                "carrier_epoch": 30,
                 "portable_receipt_ref": str(receipt.relative_to(root)),
                 "execution_provider": fallback or "STEGVERSE_NATIVE",
-                "provider_role": "FALLBACK_ONLY" if fallback else "PRIMARY",
+                "provider_role": "FALLBACK_ONLY",
                 "third_party_required_dependency": False,
                 "credential_authority": "TV/TVC",
                 "github_token_runtime_authority": "NONE",
@@ -187,77 +227,121 @@ def _materialize_portable_receipt(
         "state": "PORTABLE_RECEIPT_MATERIALIZATION_FAILED",
         "portable_receipt_ref": str(receipt.relative_to(root)),
         "execution_provider": fallback or "STEGVERSE_NATIVE",
-        "provider_role": "FALLBACK_ONLY" if fallback else "PRIMARY",
+        "provider_role": "FALLBACK_ONLY",
         "returncode": completed.returncode,
         "stderr_tail": completed.stderr[-1000:],
     }
 
 
-def bootstrap_initial_carrier(root: Path, *, env: dict[str, str] | None = None, runner=subprocess.run) -> dict[str, Any]:
+def _try_portable_fallback(root: Path, *, env: dict[str, str] | None, runner) -> dict[str, Any] | None:
+    rejected: list[dict[str, Any]] = []
+    for portable in _portable_receipts(root):
+        result = _materialize_portable_receipt(root, portable, env=env, runner=runner)
+        if result.get("state") == "PORTABLE_RECEIPT_MATERIALIZED":
+            result["rejected_newer_or_invalid_receipts"] = rejected
+            return result
+        rejected.append({
+            "portable_receipt_ref": result.get("portable_receipt_ref"),
+            "returncode": result.get("returncode"),
+            "state": result.get("state"),
+        })
+    return None
+
+
+def bootstrap_initial_carrier(
+    root: Path,
+    runtime: WorkerCoordinator,
+    *,
+    env: dict[str, str] | None = None,
+    runner=subprocess.run,
+) -> dict[str, Any]:
+    """Materialize exactly the first separated carrier under existing G18 authority."""
     root = root.resolve()
     carrier_path = root / INITIAL_CARRIER_REL
     legacy_path = root / LEGACY_STATE_REL
     producer_path = root / TRANSITION_PRODUCER_REL
     receipt_path = root / TRANSITION_RECEIPT_REL
-    if carrier_path.is_file():
-        carrier = json.loads(carrier_path.read_text(encoding="utf-8"))
-        epoch = carrier.get("epoch")
-        if not isinstance(epoch, int) or epoch < 30:
-            raise RuntimeError("existing separated carrier state is below HB30")
-        return {
-            "attempted": False,
-            "state": "CARRIER_ALREADY_PRESENT",
-            "carrier_epoch": epoch,
-            "credential_authority": "TV/TVC",
-            "github_token_runtime_authority": "NONE",
-        }
-    if not legacy_path.is_file() or not producer_path.is_file():
-        raise RuntimeError("HB29 bootstrap source is incomplete")
-    legacy = json.loads(legacy_path.read_text(encoding="utf-8"))
-    if int(legacy.get("epoch", -1)) != 29 or int(legacy.get("generation", -1)) != 29:
-        raise RuntimeError("initial separated-v12 bootstrap requires immutable legacy HB29/generation29")
+    source_env = os.environ if env is None else env
 
-    rejected: list[dict[str, Any]] = []
-    for portable in _portable_receipts(root):
-        portable_result = _materialize_portable_receipt(root, portable, env=env, runner=runner)
-        if portable_result.get("state") == "PORTABLE_RECEIPT_MATERIALIZED":
-            if rejected:
-                portable_result["rejected_newer_or_invalid_receipts"] = rejected
-            return portable_result
-        rejected.append(
-            {
-                "portable_receipt_ref": portable_result.get("portable_receipt_ref"),
-                "returncode": portable_result.get("returncode"),
-                "state": portable_result.get("state"),
-            }
-        )
+    runtime._acquire()
+    try:
+        if carrier_path.is_file():
+            return _existing_carrier_result(carrier_path)
+        if not legacy_path.is_file() or not producer_path.is_file():
+            raise RuntimeError("HB29 bootstrap source is incomplete")
+        legacy = json.loads(legacy_path.read_text(encoding="utf-8"))
+        if (
+            legacy.get("schema") != "stegverse.org-heartbeat-state/v1"
+            or int(legacy.get("epoch", -1)) != 29
+            or int(legacy.get("generation", -1)) != 29
+        ):
+            raise RuntimeError("initial separated-v12 bootstrap requires immutable legacy HB29/generation29")
 
-    completed = runner(
-        [sys.executable, str(producer_path), "--root", str(root), "--receipt-path", str(receipt_path)],
-        check=False,
-        capture_output=True,
-        text=True,
-        timeout=90,
-        env=_safe_bootstrap_env(env),
-    )
-    receipt = json.loads(receipt_path.read_text(encoding="utf-8")) if receipt_path.is_file() else {}
-    if completed.returncode != 0 or receipt.get("state") != "CARRIER_TRANSITION_COMPLETE" or not carrier_path.is_file():
-        reason = receipt.get("reason") or "INITIAL_CARRIER_TRANSITION_FAILED"
+        task = _exact_g18_task(runtime)
+        fallback_origin = _fallback_origin(source_env)
+
+        if not fallback_origin:
+            completed = runner(
+                [sys.executable, str(producer_path), "--root", str(root), "--receipt-path", str(receipt_path)],
+                check=False, capture_output=True, text=True, timeout=90, env=_safe_bootstrap_env(source_env),
+            )
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8")) if receipt_path.is_file() else {}
+            if (
+                completed.returncode == 0
+                and receipt.get("state") == "CARRIER_TRANSITION_COMPLETE"
+                and receipt.get("carrier_epoch_before") == 29
+                and receipt.get("carrier_epoch_after") == 30
+                and carrier_path.is_file()
+            ):
+                carrier = json.loads(carrier_path.read_text(encoding="utf-8"))
+                if carrier.get("epoch") == 30 and isinstance(carrier.get("generation"), int) and carrier["generation"] >= 30:
+                    return {
+                        "attempted": True,
+                        "state": "CARRIER_TRANSITION_COMPLETE",
+                        "carrier_epoch": 30,
+                        "carrier_generation": carrier["generation"],
+                        "receipt_ref": str(TRANSITION_RECEIPT_REL),
+                        "execution_provider": "STEGVERSE_NATIVE",
+                        "provider_role": "PRIMARY",
+                        "task_id": task.get("task_id"),
+                        "worker_id": task.get("worker_id"),
+                        "claim_id": task.get("claim_id"),
+                        "fencing_token": (task.get("heartbeat_timing") or {}).get("fencing_token"),
+                        "existing_g18_authority_reused": True,
+                        "new_claim_or_fence_created": False,
+                        "serialized_under_worker_runtime_lock": True,
+                        "credential_authority": "TV/TVC",
+                        "credential_requirement": "NONE",
+                        "github_token_runtime_authority": "NONE",
+                        "non_tv_tvc_secret_or_token_forwarded": False,
+                        "third_party_runtime_required": False,
+                        "authority_effect": "EXISTING_G18_AUTHORITY_ONLY",
+                    }
+
+        fallback = _try_portable_fallback(root, env=source_env, runner=runner)
+        if fallback is not None:
+            fallback.update({
+                "task_id": task.get("task_id"),
+                "claim_id": task.get("claim_id"),
+                "fencing_token": (task.get("heartbeat_timing") or {}).get("fencing_token"),
+                "existing_g18_authority_reused": True,
+                "new_claim_or_fence_created": False,
+                "serialized_under_worker_runtime_lock": True,
+                "authority_effect": "EXISTING_G18_AUTHORITY_ONLY",
+            })
+            return fallback
+
+        if fallback_origin:
+            raise RuntimeError("third-party hosted execution is FALLBACK_ONLY and no verified portable receipt could materialize HB30")
+        reason = "INITIAL_CARRIER_TRANSITION_FAILED"
+        if receipt_path.is_file():
+            try:
+                reason = json.loads(receipt_path.read_text(encoding="utf-8")).get("reason") or reason
+            except Exception:
+                pass
         raise RuntimeError(f"HB29->HB30 bootstrap failed closed: {reason}")
-    carrier = json.loads(carrier_path.read_text(encoding="utf-8"))
-    epoch = carrier.get("epoch")
-    if not isinstance(epoch, int) or epoch < 30:
-        raise RuntimeError("HB29->HB30 bootstrap did not persist an HB30+ carrier state")
-    return {
-        "attempted": True,
-        "state": "CARRIER_TRANSITION_COMPLETE",
-        "carrier_epoch": epoch,
-        "receipt_ref": str(TRANSITION_RECEIPT_REL),
-        "credential_authority": "TV/TVC",
-        "github_token_runtime_authority": "NONE",
-        "non_tv_tvc_secret_or_token_forwarded": False,
-        "portable_receipts_rejected": rejected,
-    }
+    finally:
+        runtime._release_lock()
 
 
 def project_control_plane_if_missing(root: Path, *, runner=subprocess.run) -> dict[str, Any] | None:
@@ -269,28 +353,17 @@ def project_control_plane_if_missing(root: Path, *, runner=subprocess.run) -> di
     if not script.is_file():
         raise RuntimeError("HB30 carrier exists without worker control-plane projection source")
     completed = runner(
-        [sys.executable, str(script), "--root", str(root)],
-        check=False,
-        capture_output=True,
-        text=True,
-        timeout=30,
-        env=_safe_bootstrap_env(),
+        [sys.executable, str(script), "--root", str(root)], check=False, capture_output=True, text=True,
+        timeout=30, env=_safe_bootstrap_env(),
     )
     if completed.returncode != 0 or not control.is_file():
         raise RuntimeError("failed to project worker control plane from existing carrier")
     value = json.loads(control.read_text(encoding="utf-8"))
     carrier_value = json.loads(carrier.read_text(encoding="utf-8"))
     observed = value.get("observed_reference") or {}
-    if (
-        observed.get("carrier_generation") != carrier_value.get("generation")
-        or observed.get("reference_frame") != carrier_value.get("reference_frame")
-    ):
+    if observed.get("carrier_generation") != carrier_value.get("generation") or observed.get("reference_frame") != carrier_value.get("reference_frame"):
         raise RuntimeError("worker control-plane projection does not match current carrier")
-    return {
-        "state": "CONTROL_PLANE_PROJECTED",
-        "carrier_generation": observed.get("carrier_generation"),
-        "reference_frame": observed.get("reference_frame"),
-    }
+    return {"state": "CONTROL_PLANE_PROJECTED", "carrier_generation": observed.get("carrier_generation"), "reference_frame": observed.get("reference_frame")}
 
 
 def refresh_transition_release(root: Path, *, runner=subprocess.run) -> dict[str, Any] | None:
@@ -299,19 +372,11 @@ def refresh_transition_release(root: Path, *, runner=subprocess.run) -> dict[str
     if not script.is_file() or not receipt.is_file():
         return None
     completed = runner(
-        [sys.executable, str(script), "--root", str(root)],
-        check=False,
-        capture_output=True,
-        text=True,
-        timeout=30,
-        env=_safe_bootstrap_env(),
+        [sys.executable, str(script), "--root", str(root)], check=False, capture_output=True, text=True,
+        timeout=30, env=_safe_bootstrap_env(),
     )
     value = json.loads(receipt.read_text(encoding="utf-8"))
-    return {
-        "returncode": completed.returncode,
-        "release_state": value.get("release_state"),
-        "all_release_predicates_pass": value.get("all_release_predicates_pass"),
-    }
+    return {"returncode": completed.returncode, "release_state": value.get("release_state"), "all_release_predicates_pass": value.get("all_release_predicates_pass")}
 
 
 def main() -> int:
@@ -327,13 +392,13 @@ def main() -> int:
     if args.continuous and args.dry_run:
         raise SystemExit("continuous dry-run is prohibited because it cannot retain worker timer state")
     root = Path(args.root).resolve()
+    runtime = WorkerCoordinator(root, adapters=load_adapters(root))
     bootstrap_result = None
     if not args.dry_run and not (root / INITIAL_CARRIER_REL).is_file():
-        bootstrap_result = bootstrap_initial_carrier(root)
+        bootstrap_result = bootstrap_initial_carrier(root, runtime)
     control_projection = None
     if not args.dry_run:
         control_projection = project_control_plane_if_missing(root)
-    runtime = WorkerCoordinator(root, adapters=load_adapters(root))
     running = True
 
     def stop(_signum, _frame):
