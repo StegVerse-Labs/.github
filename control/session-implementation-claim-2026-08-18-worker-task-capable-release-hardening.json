@@ -7,7 +7,7 @@
   "claim_state": "CLAIMED_FOR_VALIDATION_AND_LIVE_INTEGRATION",
   "claimant": "current-session-runtime-reconciliation",
   "claim_created_at": "2026-08-18T17:19:00-05:00",
-  "claim_release_condition": "Corrected release/supervision/activation validators are directly validated and a live task-capable WorkerCoordinator cycle is observed at HB31+; G18 is terminalized/released and the result is consumed into orphan recovery/parent continuation.",
+  "claim_release_condition": "Corrected release/supervision/activation/G18 production guards are directly validated and a live task-capable WorkerCoordinator cycle is observed at HB31+; G18 is terminalized/released and the result is consumed into orphan recovery/parent continuation.",
   "owned_surfaces": [
     "scripts/refresh_heartbeat_transition_receipt.py",
     "tests/test_heartbeat_transition_integrity_hardening.py",
@@ -15,6 +15,9 @@
     "tests/test_ephemeral_separated_runtime_supervision.py",
     "scripts/verify_sovereign_runtime_activation.py",
     "tests/test_sovereign_runtime_activation_verifier.py",
+    "workers/sovereign_runtime_activation_entrypoint.py",
+    "tests/test_g18_task_capable_release_guard.py",
+    "control/process-worker-adapters.json",
     "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
     "docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md",
@@ -40,7 +43,10 @@
     "orphan_handoff_reconciliation_commit": "e13396c9346b052a1d0a62654dd76099c08fc4ac",
     "activation_verifier_hardening_commit": "1200bfa4d3d38770dedd4d8eb99ff95539bb553b",
     "activation_verifier_test_commit": "aba4c7fc658f1d23cd8e64cc664aa76dc50de323",
-    "test_lanes_autolaunch_handoff_reconciliation_commit": "1c15bda3015904169929dc053e3244abc3187074"
+    "test_lanes_autolaunch_handoff_reconciliation_commit": "1c15bda3015904169929dc053e3244abc3187074",
+    "g18_guard_entrypoint_commit": "74ddf48a8efc47e83e686cfb30e23ae00fec4d56",
+    "g18_guard_test_commit": "d8d988f21892591cc20d46264b27d132f9051fd1",
+    "g18_adapter_switch_commit": "5d9f7c90ea18e87f99c866b3ab817223636e93eb"
   },
   "validation": {
     "canonical_workflow_ref": ".github/workflows/heartbeat-worker-project.yml",
@@ -48,6 +54,8 @@
     "changed_paths_trigger_push_validation": true,
     "workflow_permissions": "NONE",
     "github_token_validation_authority": "NONE",
+    "local_clone_validation_available": false,
+    "local_clone_validation_blocker": "container DNS cannot resolve github.com",
     "hosted_workflow_runs_exposed_for_latest_head": false,
     "combined_status_entries_exposed_for_latest_head": false,
     "hosted_pass_claimed": false,
@@ -63,6 +71,16 @@
       "owner": "StegVerse-Labs/.github#122",
       "comment_id": 5335171473,
       "requested_action": "START_OR_RESTART_EXISTING_TASK_CAPABLE_RUN_WORKER_RUNTIME_CONTINUOUS"
+    },
+    {
+      "owner": "StegVerse-Labs/.github#12",
+      "comment_id": 5335268402,
+      "requested_action": "CONSUME_GUARDED_G18_PRODUCTION_ADAPTER_ON_NEXT_TASK_CAPABLE_WORKER_CYCLE"
+    },
+    {
+      "owner": "StegVerse-Labs/.github#122",
+      "comment_id": 5335270120,
+      "requested_action": "CONSUME_GUARDED_G18_PRODUCTION_ADAPTER_ON_NEXT_TASK_CAPABLE_WORKER_CYCLE"
     }
   ],
   "live_evidence_observed": {
@@ -78,8 +96,8 @@
     "resident_continuous_carrier_process_currently_proven": false,
     "resident_continuous_worker_process_currently_proven": false
   },
-  "corrected_release_rule": "Carrier continuity may be proven by observation-only evidence, but runtime RELEASE_COMPLETE and sovereign activation require measurable task-capable WorkerCoordinator progress. PID presence, state-file presence, HANDOFF_READY, workflow success, or observation-only checkpoints are insufficient.",
-  "next_executable_action": "The existing #122/#12 sovereign runtime owner must start or restart the already-released task-capable scripts/run_worker_runtime.py process on the materialized StegVerse node. The next admitted cycle must consume G18 completion, release fence18, and continue orphan recovery/parent inference. This claim remains open until that live evidence is observed, verified, and consumed.",
+  "corrected_release_rule": "Carrier continuity may be proven by observation-only evidence, but runtime RELEASE_COMPLETE and sovereign activation require measurable task-capable WorkerCoordinator progress. PID presence, state-file presence, HANDOFF_READY, workflow success, observation-only checkpoints, or an older RELEASE_COMPLETE receipt are insufficient. The registered G18 production adapter now independently enforces this rule before allowing G18 completion.",
+  "next_executable_action": "The existing #122/#12 sovereign runtime owner must start or restart the already-released task-capable scripts/run_worker_runtime.py process on the materialized StegVerse node. Its next admitted cycle must invoke G18 through workers/sovereign_runtime_activation_entrypoint.py, consume a guarded COMPLETED response only if task-capable worker evidence exists, release fence18, and continue orphan recovery/parent inference. This claim remains open until that live evidence is observed, verified, and consumed.",
   "machine_observable_release_condition": "control/worker-runtime-state.json advances beyond runtime_tick 2 under a task-capable WorkerCoordinator cycle at HB31+; observation_mode is no longer CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION; control/worker-control-plane-coordination.json no longer projects G18/fence18 as an active lease after terminal response consumption; downstream orphan recovery then obtains a fresh fence greater than 20.",
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
