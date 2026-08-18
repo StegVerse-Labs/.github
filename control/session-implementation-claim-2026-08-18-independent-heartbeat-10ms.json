@@ -1,0 +1,25 @@
+{
+  "schema": "stegverse.implementation-claim/v1",
+  "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008",
+  "originating_goal": "Correct the heartbeat implementation so carrier progression is independent of workers, tasks, admissions, G18, or observation calls and is derived only from the heartbeat oscillator with a 10 ms phase-travel/reference interval.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "canonical_issue": 122,
+  "claimant": "chatgpt-session-heartbeat-semantic-correction-20260818",
+  "role": "CLAIMED_FOR_IMPLEMENTATION",
+  "claimed_at": "2026-08-18T17:47:00-05:00",
+  "release_condition": "Independent oscillator module, v12 carrier integration, schemas/contracts, compatibility sampler, deterministic tests, and canonical handoffs are installed and source-validated; claim then releases while live observation remains separately evidenced.",
+  "collision_boundaries": [
+    "Heartbeat progression must not depend on WorkerCoordinator, G18, task state, claims, fences, leases, route state, credentials, or downstream admission.",
+    "Consumers may sample/observe heartbeat references but may not cause, delay, authorize, or suppress them.",
+    "Do not mutate TV/TVC credential authority or introduce NON-TV/TVC secrets/tokens.",
+    "Do not promote GitHub, Render, Vercel, Cloudflare, or another third party to primary runtime authority.",
+    "Preserve immutable legacy HB29 provenance while correcting the separated carrier semantics."
+  ],
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "github_token_runtime_authority": "NONE",
+  "third_party_runtime_role": "FALLBACK_ONLY",
+  "stegverse_primary": true,
+  "state": "ACTIVE"
+}
