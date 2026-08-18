@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/cosv_record.schema.json",
+  "title": "StegVerse Canonical Operational State Vector Record",
+  "type": "object",
+  "required": ["identity", "profile", "level", "vector", "evidence_refs", "observed_at", "exact_metrics"],
+  "properties": {
+    "identity": {"type": "string", "minLength": 1},
+    "profile": {"enum": ["task.v1", "aggregate.v1", "transition.v1"]},
+    "level": {"enum": ["task", "goal", "component", "subsystem", "system", "ecosystem", "transition"]},
+    "vector": {"type": "string", "pattern": "^[0-9]+$"},
+    "from_vector": {"type": "string", "pattern": "^[0-9]+$"},
+    "to_vector": {"type": "string", "pattern": "^[0-9]+$"},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "source_hash": {"type": "string"},
+    "source_commit": {"type": "string"},
+    "observed_at": {"type": "string", "minLength": 1},
+    "exact_metrics": {"type": "object"},
+    "weight": {"type": "integer", "minimum": 1, "maximum": 9},
+    "children": {"type": "array", "items": {"type": "string"}},
+    "consolidation_only": {"type": "boolean"}
+  },
+  "allOf": [
+    {"if": {"properties": {"profile": {"const": "task.v1"}}}, "then": {"properties": {"level": {"const": "task"}, "vector": {"pattern": "^[0-9]{14}$"}}}},
+    {"if": {"properties": {"profile": {"const": "aggregate.v1"}}}, "then": {"properties": {"level": {"enum": ["goal", "component", "subsystem", "system", "ecosystem"]}, "vector": {"pattern": "^[0-9]{14}$"}}}},
+    {"if": {"properties": {"profile": {"const": "transition.v1"}}}, "then": {"required": ["from_vector", "to_vector"], "properties": {"level": {"const": "transition"}, "vector": {"pattern": "^[0-9]{14}$"}, "from_vector": {"pattern": "^[0-9]{14}$"}, "to_vector": {"pattern": "^[0-9]{14}$"}}}}
+  ],
+  "additionalProperties": true
+}
