@@ -1,163 +1,148 @@
 # COSV Session Consolidation Mirror Handoff
 
-Updated: 2026-08-18T11:26:00-05:00
+Updated: 2026-08-18T15:00:00-05:00
 Repository: `StegVerse-Labs/.github`
 Branch: `main`
 
 ## Session disposition
 
-This handoff consolidates the 2026-08-18 COSV state/gradient/introspection session into durable repository-native owners.
-
 ```text
 session_id: SESSION-2026-08-18-COSV-STATE-GRADIENT-INTROSPECTION
-state: MERGED_INTO_CANONICAL_WORKSTREAMS
-chat_owned_claims: 0
-unique_chat_only_requirements: 0
-product_activation_complete: false
-heartbeat_progression_dependency: true
-archive_ready_as_session: true
+state: ACTIVE_REQUIRED_EXECUTION_REMAINS
+archive_ready_as_session: false
+archive_rule: durable transfer/assignment/machine ownership never satisfies a required goal
+credential_authority: TV/TVC
+NON-TV/TVC_secret_or_token_allowed: false
+StegVerse_provider_priority: PRIMARY
+third_party_provider_role: FALLBACK_ONLY
+GitHub_token_runtime_authority: NONE
 ```
 
-Archive readiness does not mean heartbeat, packet emission, inference, wallet settlement, or governed runtime activation is complete.
+This handoff supersedes the earlier archive-ready interpretation. The session remains open until every primary and adjacent goal is actually terminal through its required implementation, validation, integration, release, propagation, deployment/runtime proof, governed activation, and evidence path. `READY`, `WAITING`, `BLOCKED`, `ASSIGNED`, and `MACHINE_OWNED` are not terminal states.
 
 ## Original and adjacent goals
 
-1. Preserve StegVerse as the primary local/private provider; third-party runtime/inference may be fallback-only and never authority.
+1. Preserve StegVerse as the primary local/private provider; third-party runtime/inference may be fallback-only and never primary authority.
 2. Replace descriptive local-runtime selection with executable StegVerse-first discovery/launch/inference/proof and formally develop the local model.
 3. Canonicalize task/goal/component/subsystem/system/ecosystem operational state as compact COSV vectors and aggregates.
 4. Carry COSV state as authority-neutral FULL/DELTA packets on the heartbeat reference frame.
-5. Derive authority-neutral gradient/coherency observations from packet transitions.
-6. Derive ordered gradient matrices, trajectory, curvature, and descriptive convergence/divergence.
+5. Derive authority-neutral gradient/coherency observations from live packet transitions.
+6. Derive ordered gradient matrices, trajectory, curvature, and descriptive convergence/divergence from live observations.
 7. Compare precommitted expected state/Δ against actual state/Δ with uncertainty, constraint/evidence residuals, novelty, admissibility observations, causal hypotheses, residual gradient, and residual curvature.
-8. Bind live use of all of the above to admitted heartbeat progression without widening heartbeat, packet, StegBrain, Master Records, TV/TVC, model, provider, or wallet authority.
+8. Bind live use of the above to admitted heartbeat progression without widening heartbeat, packet, StegBrain, Master Records, TV/TVC, model, provider, or wallet authority.
+9. Complete live sovereign inference activation with StegVerse-local model, TVC route admission, exact LLM-adapter execution, measured usage, and same-execution Master Records reconstruction.
 
-Machine-readable inventory: `control/session-goal-inventory-addendum-2026-08-18-cosv-introspection.json`.
-Live integration contract: `management/COSV_LIVE_INTROSPECTION_INTEGRATION_CONTRACT.json`.
+Machine-readable current status:
+`control/session-goal-status-2026-08-18-post-g18.json`.
 
-## Canonical owners
+Live integration contract:
+`management/COSV_LIVE_INTROSPECTION_INTEGRATION_CONTRACT.json`.
+
+## Authoritative owners / collision boundaries
 
 ```text
-local model/runtime source:
-  StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md
-  source COMPLETE_RELEASED
-  live activation -> StegVerse-Labs/.github#60 / G18 -> TV/TVC -> LLM-adapter -> Master Records
-
-heartbeat progression/live carrier adoption:
+heartbeat carrier/runtime separation:
   StegVerse-Labs/.github#122
-  StegVerse-Labs/.github#209 / CURRENT_USER_IPHONE physical boundary
-  SHWP-DURABLE-RUNTIME-ACTIVATION / G18
+  docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md
 
-COSV vectors:
-  docs/CANONICAL_OPERATIONAL_STATE_VECTOR_MIRROR_HANDOFF.md
-  source COMPLETE_RELEASED
+state-transition continuity / G18:
+  handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
+  receipts/heartbeat-transition-continuity/latest.json
 
-COSV heartbeat state packet:
-  docs/COSV_HEARTBEAT_STATE_PACKET_MIRROR_HANDOFF.md
+sovereign inference:
+  StegVerse-Labs/.github#60
+  -> StegVerse-002/micro-node-runtime
+  -> StegVerse-Labs/TVC
+  -> StegVerse-org/LLM-adapter
+  -> master-records/orchestration
+
+COSV packet:
   StegVerse-Labs/.github#217
-  source COMPLETE_RELEASED
-  live adoption #122 owned
+  docs/COSV_HEARTBEAT_STATE_PACKET_MIRROR_HANDOFF.md
 
-COSV gradient observation:
+gradient observation:
   StegVerse-Labs/StegBrain#861
-  docs/COSV_GRADIENT_MECHANICS_MIRROR_HANDOFF.md
-  source COMPLETE_RELEASED
 
-COSV gradient matrix:
+gradient matrix / trajectory:
   StegVerse-Labs/StegBrain#863
-  docs/COSV_GRADIENT_MATRIX_MIRROR_HANDOFF.md
-  source COMPLETE_RELEASED
 
-COSV expectation residual introspection:
+expectation residual introspection:
   StegVerse-Labs/StegBrain#865
-  docs/COSV_EXPECTATION_RESIDUAL_MIRROR_HANDOFF.md
-  source COMPLETE_RELEASED
 ```
+
+Do not create competing heartbeat, route, credential, model-runtime, Master Records, wallet, or duplicate COSV semantic authority.
 
 ## Current direct live observation
 
-Direct repository inspection at consolidation time:
+Fresh direct repository observation now proves that the former G18 carrier-continuity dependency has advanced beyond the earlier HB29-only state:
 
 ```text
-control/heartbeat-state.json: epoch 29 / generation 29
-control/heartbeat-carrier-runtime-state.json: absent
-control/worker-runtime-state.json: absent
-HB30+ live carrier observation: NOT PROVEN
-live COSV packet: NOT PROVEN
-live StegBrain gradient observation: NOT PROVEN
-live expectation residual observation: NOT PROVEN
-live gradient matrix/residual series: NOT PROVEN
+legacy control/heartbeat-state.json: HB29 immutable source
+control/heartbeat-carrier-runtime-state.json:
+  activation_state: ACTIVE
+  epoch/generation: 31/31
+  role: REGULATORY_CARRIER_REFERENCE_FRAME
+
+control/worker-runtime-state.json:
+  last_observed_carrier_epoch/generation: 31/31
+  runtime_tick: 2
+  observation_mode: CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION
+
+receipts/heartbeat-transition-continuity/latest.json:
+  CARRIER_TRANSITION_COMPLETE
+  RELEASE_COMPLETE
+  all_carrier_transition_predicates_pass: true
+  all_release_predicates_pass: true
 ```
 
-Therefore no source merge, deterministic test, handoff, or archival record may be represented as live HB progression or product activation.
+The old `receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json` still reflects an earlier resident-service blocker and is superseded for state-transition-continuity completion by the later canonical transition receipt plus current carrier/worker state. Resident native service evidence remains optional stronger evidence unless a downstream goal explicitly requires it.
 
-## Live sequence and automation ownership
+## Work completed in this execution
 
-`management/COSV_LIVE_INTROSPECTION_INTEGRATION_CONTRACT.json` defines the repository-native continuation:
+The first live authority-neutral COSV FULL packet has now been emitted from actual HB31 evidence:
 
 ```text
-admitted heartbeat progression
--> authority-neutral COSV packet
--> pre-observation expectation commitment for target reference
--> StegBrain gradient observation
--> StegBrain expected-vs-actual residual observation
--> ordered gradient matrix / residual series when sufficient observations exist
+packet: receipts/cosv/live/HB31.json
+validation: receipts/cosv/live/HB31-validation.json
+release: receipts/cosv/live/HB31-integration-release.json
+packet_sha256: 618ca9d0b8d6a2dbd661378b8ca9814dd9b882efb40d351c0d517bff8f4e17bd
+state_root_sha256: b9ae6209961a3cbd85cc9531088ca91531b03c3eaa4ccc53ee46b0dc1937d22a
+carrier_ref: heartbeat_epoch:31
 ```
 
-The sequence is fail-closed and does not grant action authority. Expected state must be committed before the target reference; hindsight mutation is rejected.
+The packet is a FULL baseline and therefore intentionally has empty `gradient_inputs`. It does not claim a gradient. Its authority effect is NONE; TV/TVC remains the sole credential authority; no NON-TV/TVC token/secret or GitHub-token runtime authority was introduced.
 
-## Credential/provider invariants
+The bounded integration claim is complete/released:
+`control/session-integration-claim-2026-08-18-cosv-live-packet-217.json`.
+
+## Remaining required goals
+
+The session must remain open because these required outcomes are not terminal:
+
+1. **Sovereign inference activation — `.github#60`.** Required: fresh authorized inference fence, live StegVerse-private model process, TVC `ROUTE_ADMITTED` with credential requirement NONE, exact LLM-adapter execution, measured usage, same-execution Master Records provider-usage + transition reconstruction PASS, `github_token_required=false`.
+2. **First live DELTA packet.** Required: next admitted carrier reference after HB31 with a changed canonical state, producing a DELTA against `receipts/cosv/live/HB31.json` with deterministic `gradient_inputs`.
+3. **First live gradient — `StegBrain#861`.** Required: consume that actual DELTA and persist an authority-neutral gradient observation receipt.
+4. **First live expectation residual — `StegBrain#865`.** Required: an expectation committed before the target reference for the same identity/profile/reference, then actual state/Δ consumption and persisted residual observation.
+5. **First real matrix / residual series — `StegBrain#863/#865`.** Required: sufficient strictly ordered live observations to persist matrix/trajectory/residual-series evidence, including curvature when the required number of observations exists.
+6. **Required propagation/release evidence.** After each live capability becomes terminal, update the applicable canonical handoff/task/issue and any consumer propagation contract actually required by its release gate. Do not infer blanket Site/Publisher/wiki propagation.
+
+## Next executable action
+
+Observe the next admitted changed carrier reference after HB31. As soon as it exists, emit the canonical DELTA packet against the HB31 FULL baseline and immediately consume its `gradient_inputs` through `StegVerse-Labs/StegBrain#861`. In parallel, consume `.github#60` worker output when the fresh sovereign inference activation chain executes. If a required authority action is not available to this session, keep the session open and consume the canonical TV/TVC or machine-owned result rather than treating assignment as completion.
+
+## Validation / evidence posture
 
 ```text
-StegVerse local/private provider priority: PRIMARY
-third-party provider role: FALLBACK_ONLY
-third-party required: false
-credential authority: TV/TVC
-NON-TV/TVC secret/token allowed: false
-GitHub token runtime authority: NONE
-GitHub Actions production activation authority: NONE
-Master Records: passive custody/reconstruction
-wallet sign/broadcast authority: USER_ONLY
+G18 state-transition continuity: LIVE RELEASE COMPLETE at HB31
+first live COSV FULL packet: COMPLETE + locally deterministic validation + direct live evidence
+first live DELTA: NOT YET AVAILABLE
+first live gradient: NOT YET AVAILABLE
+first live expectation residual: NOT YET AVAILABLE
+first live gradient matrix: NOT YET AVAILABLE
+sovereign inference live activation: NOT YET PROVEN
+archive eligible: false
 ```
 
-## Validation/evidence retained
+## Session status
 
-- Local model/runtime canonical validations are retained in the micro-node handoff.
-- COSV packet deterministic source validation is retained in `receipts/cosv/COSV-HEARTBEAT-STATE-PACKET-002-validation.json`.
-- StegBrain gradient mechanics focused validation is retained by #861 / its source receipt.
-- Gradient matrix focused validation is retained by #863 / its source receipt.
-- Expectation-residual exact-source deterministic validation is retained by #865 / `receipts/STEGBRAIN-COSV-EXPECTATION-RESIDUAL-004-source-validation.json`.
-- Current live HB state was directly re-observed at HB29; separated carrier/worker runtime state files were not present.
-
-## Incomplete work and release conditions
-
-All remaining work is durably owned and depends on live carrier progression rather than additional chat-only source design.
-
-1. `.github#122/#209/G18`: produce and independently observe valid HB30+ while immutable legacy HB29 remains unchanged; reconstruction/no-duplicate-fence PASS.
-2. `.github#217`: emit/observe first authority-neutral COSV packet from the admitted live reference.
-3. `StegBrain#861`: consume the live packet and persist first gradient observation.
-4. `StegBrain#865`: consume a separately precommitted expectation and same-reference actual packet state; persist first expectation residual observation.
-5. `StegBrain#863` and `#865`: after sufficient ordered observations, persist first real gradient matrix and residual series/curvature observations.
-6. `.github#60/G18 -> TV/TVC -> LLM-adapter -> Master Records`: live sovereign inference activation remains a separate machine-owned chain; do not reopen local model source.
-
-## Session consolidation
-
-```text
-session goals inventoried: 6 source/capability goals plus live-integration obligation
-source/capability goals complete or transferred: all
-active chat claims: 0
-unassigned work: 0
-machine/repository owners installed: true
-thread required to continue: false
-archive dependency from chat: none
-```
-
-MERGED INTO:
-- `StegVerse-Labs/.github#122`
-- `StegVerse-Labs/.github#217`
-- `management/COSV_LIVE_INTROSPECTION_INTEGRATION_CONTRACT.json`
-- `StegVerse-Labs/StegBrain#861`
-- `StegVerse-Labs/StegBrain#863`
-- `StegVerse-Labs/StegBrain#865`
-- `StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md`
-
-Deleting or archiving the chat does not remove implementation state, requirements, blockers, owners, or release conditions.
+`DO NOT ARCHIVE THIS SESSION — REQUIRED EXECUTION REMAINS IN AN ACTIVE DEPENDENCY LANE.`
