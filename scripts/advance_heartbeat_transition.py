@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """Advance the canonical heartbeat by one bounded state transition.
 
-This producer exists for the state-transition continuity model.  It does not
-require an always-on external host and it does not grant physical-carrier,
-worker, credential, route, wallet, or custody authority.  The canonical legacy
-HB29 file remains immutable; v12 writes the successor into the separated carrier
-state.  The independently admitted WorkerCoordinator observes that successor on
-its current or next execution opportunity.
+The carrier transition and final release are intentionally separate: this
+producer derives/persists the successor, while an independently admitted
+WorkerCoordinator must later observe that successor. The transition receipt
+always contains the full seven-predicate continuity contract and is refreshable
+without advancing the carrier.
 """
 from __future__ import annotations
 
@@ -25,6 +24,7 @@ CONTRACT_REL = Path("management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json")
 LEGACY_REL = Path("control/heartbeat-state.json")
 CARRIER_REL = Path("control/heartbeat-carrier-runtime-state.json")
 CONTROL_PLANE_REL = Path("control/worker-control-plane-coordination.json")
+WORKER_STATE_REL = Path("control/worker-runtime-state.json")
 CUTOVER_REL = Path("receipts/heartbeat-schema-cutover/HB29.json")
 DEFAULT_RECEIPT_REL = Path("receipts/heartbeat-transition-continuity/latest.json")
 THIRD_PARTY_ENV_VARS = (
@@ -36,20 +36,8 @@ THIRD_PARTY_ENV_VARS = (
     "CLOUDFLARE_WORKERS",
 )
 SAFE_CHILD_ENV = {
-    "HOME",
-    "USER",
-    "LOGNAME",
-    "SHELL",
-    "PATH",
-    "PYTHONPATH",
-    "LANG",
-    "LC_ALL",
-    "TMPDIR",
-    "XDG_CONFIG_HOME",
-    "XDG_STATE_HOME",
-    "LOCALAPPDATA",
-    "UID",
-    "STEGVERSE_HEARTBEAT_ROOT",
+    "HOME", "USER", "LOGNAME", "SHELL", "PATH", "PYTHONPATH", "LANG", "LC_ALL", "TMPDIR",
+    "XDG_CONFIG_HOME", "XDG_STATE_HOME", "LOCALAPPDATA", "UID", "STEGVERSE_HEARTBEAT_ROOT",
 }
 
 
@@ -93,11 +81,7 @@ def no_duplicate_claim_or_fence(control_plane: dict[str, Any]) -> bool:
     claims = [row.get("claim_id") for row in rows if row.get("claim_id")]
     fences = [row.get("fencing_token") for row in rows if isinstance(row.get("fencing_token"), int)]
     instances = [row.get("worker_instance_id") for row in rows if row.get("worker_instance_id")]
-    return (
-        len(claims) == len(set(claims))
-        and len(fences) == len(set(fences))
-        and len(instances) == len(set(instances))
-    )
+    return len(claims) == len(set(claims)) and len(fences) == len(set(fences)) and len(instances) == len(set(instances))
 
 
 def clean_child_env(env: dict[str, str] | None = None) -> dict[str, str]:
@@ -112,6 +96,7 @@ def advance(root: Path, receipt_path: Path, *, env: dict[str, str] | None = None
     legacy_path = root / LEGACY_REL
     carrier_path = root / CARRIER_REL
     control_plane_path = root / CONTROL_PLANE_REL
+    worker_state_path = root / WORKER_STATE_REL
     cutover_path = root / CUTOVER_REL
     runner_path = root / "scripts" / "run_heartbeat_runtime.py"
 
@@ -121,6 +106,7 @@ def advance(root: Path, receipt_path: Path, *, env: dict[str, str] | None = None
         "legacy_state_ref": str(LEGACY_REL),
         "carrier_state_ref": str(CARRIER_REL),
         "worker_control_plane_ref": str(CONTROL_PLANE_REL),
+        "worker_runtime_state_ref": str(WORKER_STATE_REL),
         "continuity_model": "STATE_TRANSITION_CONTINUITY",
         "sole_permitted_user_physical_carrier": "CURRENT_USER_IPHONE",
         "transition_compute_grants_physical_carrier_identity": False,
@@ -150,11 +136,21 @@ def advance(root: Path, receipt_path: Path, *, env: dict[str, str] | None = None
         return receipt
 
     contract = load_json(contract_path)
+    expected_predicates = [
+        "legacy_hb29_unchanged",
+        "carrier_epoch_at_least_30",
+        "carrier_generation_non_regressing",
+        "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch",
+        "worker_control_plane_observed",
+        "no_duplicate_claim_or_fence",
+        "state_reconstruction_pass",
+    ]
     if (
         contract.get("continuity_model") != "STATE_TRANSITION_CONTINUITY"
         or contract.get("legacy_epoch") != 29
         or contract.get("first_successor_epoch") != 30
         or contract.get("always_on_external_host_required") is not False
+        or contract.get("completion_predicates") != expected_predicates
     ):
         receipt["reason"] = "STATE_TRANSITION_CONTRACT_INVALID"
         atomic_write(receipt_path, receipt)
@@ -178,24 +174,8 @@ def advance(root: Path, receipt_path: Path, *, env: dict[str, str] | None = None
             atomic_write(receipt_path, receipt)
             return receipt
 
-    command = [
-        sys.executable,
-        str(runner_path),
-        "--root",
-        str(root),
-        "--cycles",
-        "1",
-        "--interval-ms",
-        "0",
-    ]
-    completed = subprocess.run(
-        command,
-        check=False,
-        capture_output=True,
-        text=True,
-        timeout=60,
-        env=clean_child_env(env),
-    )
+    command = [sys.executable, str(runner_path), "--root", str(root), "--cycles", "1", "--interval-ms", "0"]
+    completed = subprocess.run(command, check=False, capture_output=True, text=True, timeout=60, env=clean_child_env(env))
     receipt["transition_command"] = command
     receipt["transition_returncode"] = completed.returncode
     if completed.returncode != 0:
@@ -211,6 +191,7 @@ def advance(root: Path, receipt_path: Path, *, env: dict[str, str] | None = None
 
     after = load_json(carrier_path)
     control_plane = load_json(control_plane_path)
+    worker_state = load_json(worker_state_path) if worker_state_path.is_file() else {}
     legacy_after = legacy_path.read_bytes()
     after_epoch = int(after.get("epoch", -1))
     after_generation = int(after.get("generation", -1))
@@ -218,15 +199,19 @@ def advance(root: Path, receipt_path: Path, *, env: dict[str, str] | None = None
     legacy_unchanged = legacy_after == legacy_before
     no_duplicates = no_duplicate_claim_or_fence(control_plane)
     cutover_bound = cutover_path.is_file() if before_epoch == 29 else True
+    observed_epoch = worker_state.get("last_observed_carrier_epoch")
+    worker_observed = isinstance(observed_epoch, int) and observed_epoch >= after_epoch
 
     predicates = {
         "legacy_hb29_unchanged": legacy_unchanged and sha256_bytes(legacy_after) == sha256_bytes(legacy_before),
         "carrier_epoch_at_least_30": after_epoch >= expected_min_epoch,
         "carrier_generation_non_regressing": after_generation >= before_generation,
+        "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch": worker_observed,
         "worker_control_plane_observed": control_plane.get("schema") == "stegverse.worker-control-plane-coordination/v1",
         "no_duplicate_claim_or_fence": no_duplicates,
         "state_reconstruction_pass": legacy_unchanged and cutover_bound and after_epoch >= expected_min_epoch,
     }
+    carrier_predicates = {k: v for k, v in predicates.items() if k != "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch"}
     receipt.update({
         "legacy_state_sha256": sha256_bytes(legacy_before),
         "carrier_epoch_before": before_epoch,
@@ -235,9 +220,11 @@ def advance(root: Path, receipt_path: Path, *, env: dict[str, str] | None = None
         "carrier_generation_after": after_generation,
         "cutover_receipt_observed": cutover_bound,
         "predicates": predicates,
-        "all_carrier_transition_predicates_pass": all(predicates.values()),
+        "all_carrier_transition_predicates_pass": all(carrier_predicates.values()),
+        "all_release_predicates_pass": all(predicates.values()),
+        "release_state": "RELEASE_COMPLETE" if all(predicates.values()) else "WORKER_CHECKPOINT_PENDING",
     })
-    if all(predicates.values()):
+    if all(carrier_predicates.values()):
         receipt["state"] = "CARRIER_TRANSITION_COMPLETE"
         receipt["reason"] = "HB29_TO_V12_SUCCESSOR_TRANSITION_VERIFIED" if before_epoch == 29 else "V12_SUCCESSOR_TRANSITION_VERIFIED"
     else:
