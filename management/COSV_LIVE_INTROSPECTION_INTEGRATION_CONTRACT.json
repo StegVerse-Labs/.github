@@ -2,12 +2,14 @@
   "schema": "stegverse.cosv-live-introspection-integration/v1",
   "goal_id": "COSV-LIVE-INTROSPECTION-INTEGRATION-005",
   "created_at": "2026-08-18T11:26:00-05:00",
+  "updated_at": "2026-08-18T15:00:00-05:00",
   "source_owners": {
     "heartbeat_reference": "StegVerse-Labs/.github#122",
     "cosv_packet": "StegVerse-Labs/.github#217",
     "gradient_observer": "StegVerse-Labs/StegBrain#861",
     "gradient_matrix": "StegVerse-Labs/StegBrain#863",
-    "expectation_residual": "StegVerse-Labs/StegBrain#865"
+    "expectation_residual": "StegVerse-Labs/StegBrain#865",
+    "sovereign_inference": "StegVerse-Labs/.github#60"
   },
   "authority": {
     "heartbeat_authority_effect": "NONE",
@@ -27,7 +29,8 @@
       "control/worker-runtime-state.json independently observes the carrier reference",
       "no duplicate claim or fence",
       "reconstruction passes"
-    ]
+    ],
+    "current_state": "SATISFIED_AT_HEARTBEAT_EPOCH_31"
   },
   "sequence": [
     {
@@ -35,54 +38,78 @@
       "owner": "StegVerse-Labs/.github#122/#217",
       "input": "admitted progressing carrier reference",
       "output": "authority-neutral stegverse.cosv-state-packet/v1 FULL or DELTA observation",
-      "fail_closed_if": "carrier/reference evidence unavailable or packet cannot reconstruct"
+      "fail_closed_if": "carrier/reference evidence unavailable or packet cannot reconstruct",
+      "current_state": "FIRST_FULL_PACKET_COMPLETE_AT_HB31",
+      "evidence_ref": "receipts/cosv/live/HB31.json"
     },
     {
       "step": 2,
       "owner": "applicable goal/subsystem expectation source consumed by StegVerse-Labs/StegBrain#865",
       "input": "expectation committed before target reference",
       "output": "expectation provenance binding with class, confidence, envelope, source ref, evidence ref, and SHA-256 commitment",
-      "fail_closed_if": "expectation issued at/after target reference or commitment mismatch"
+      "fail_closed_if": "expectation issued at/after target reference or commitment mismatch",
+      "current_state": "HB32_PREOBSERVATION_EXPECTATION_COMMITTED_AND_VALIDATED",
+      "evidence_ref": "StegVerse-Labs/StegBrain:expectations/cosv/live/HB32-ecosystem-chat-orphan-recovery.json",
+      "commitment_sha256": "77451b4f5c7af66a71c0557240eb570c959180f34de9ea1908c3e65137107b18"
     },
     {
       "step": 3,
       "owner": "StegVerse-Labs/StegBrain#861",
       "input": "packet gradient_inputs",
       "output": "authority-neutral gradient observation",
-      "fail_closed_if": "packet authority invariant, reference binding, or credential invariant fails"
+      "fail_closed_if": "packet authority invariant, reference binding, or credential invariant fails",
+      "current_state": "WAITING_FOR_FIRST_CHANGED_LIVE_DELTA_AFTER_HB31"
     },
     {
       "step": 4,
       "owner": "StegVerse-Labs/StegBrain#865",
       "input": "same-identity/profile/reference precommitted expectation plus actual packet-derived state/transition",
       "output": "authority-neutral expectation residual observation",
-      "fail_closed_if": "reference mismatch, expectation provenance failure, insufficient evidence, or malformed vectors"
+      "fail_closed_if": "reference mismatch, expectation provenance failure, insufficient evidence, or malformed vectors",
+      "current_state": "HB32_EXPECTATION_READY_ACTUAL_HB32_NOT_YET_OBSERVED"
     },
     {
       "step": 5,
       "owner": "StegVerse-Labs/StegBrain#863/#865",
       "input": "two or more strictly ordered real observations",
       "output": "gradient matrix and/or residual gradient series; curvature after sufficient observations",
-      "fail_closed_if": "reference ordinals are not strictly increasing or identities are incompatible"
+      "fail_closed_if": "reference ordinals are not strictly increasing or identities are incompatible",
+      "current_state": "WAITING_FOR_SUFFICIENT_ORDERED_LIVE_OBSERVATIONS"
     }
   ],
   "persistent_outputs": [
-    "COSV packet observation/receipt owned by .github#122/#217",
-    "StegBrain gradient observation receipt owned by #861",
-    "StegBrain expectation residual observation receipt owned by #865",
+    "receipts/cosv/live/HB31.json",
+    "receipts/cosv/live/HB31-validation.json",
+    "receipts/cosv/live/HB31-integration-release.json",
+    "StegVerse-Labs/StegBrain:expectations/cosv/live/HB32-ecosystem-chat-orphan-recovery.json",
+    "StegVerse-Labs/StegBrain:receipts/STEGBRAIN-COSV-EXPECTATION-HB32-001-precommit-validation.json",
+    "StegBrain gradient observation receipt owned by #861 after changed DELTA",
+    "StegBrain expectation residual observation receipt owned by #865 after actual HB32",
     "StegBrain gradient matrix receipt owned by #863 after >=2 observations",
     "StegBrain residual-series receipt owned by #865 after >=2 residual observations"
   ],
   "current_observation": {
     "legacy_heartbeat_epoch": 29,
     "legacy_heartbeat_generation": 29,
-    "carrier_runtime_state_present": false,
-    "worker_runtime_state_present": false,
-    "live_cosv_packet_observed": false,
+    "carrier_runtime_state_present": true,
+    "carrier_epoch": 31,
+    "carrier_generation": 31,
+    "carrier_activation_state": "ACTIVE",
+    "worker_runtime_state_present": true,
+    "worker_observed_carrier_epoch": 31,
+    "worker_observed_carrier_generation": 31,
+    "heartbeat_transition_release_complete": true,
+    "live_cosv_packet_observed": true,
+    "live_cosv_packet_ref": "receipts/cosv/live/HB31.json",
+    "hb32_preobservation_expectation_committed": true,
+    "hb32_actual_observed": false,
     "live_gradient_observed": false,
     "live_expectation_residual_observed": false,
-    "live_gradient_matrix_observed": false
+    "live_gradient_matrix_observed": false,
+    "sovereign_inference_activation_observed": false
   },
-  "release_condition": "A valid HB30+ carrier state and independent WorkerCoordinator observation exist, the first canonical COSV packet is emitted, a precommitted same-reference expectation is available, StegBrain persists the first live residual/gradient observation, and subsequent ordered observations permit matrix/series construction without widening authority.",
-  "chat_session_required": false
+  "release_condition": "A valid HB30+ carrier state and independent WorkerCoordinator observation exist; first live FULL packet exists; a valid precommitted expectation exists before the next target reference; a changed DELTA is emitted and StegBrain persists the first live gradient and expectation-residual observations; sufficient ordered observations produce matrix/residual-series evidence; and the session's required sovereign inference activation reaches immutable same-execution proof without widening authority.",
+  "chat_session_required": true,
+  "archive_eligible": false,
+  "archive_blocker": "Required live gradient, expectation-residual, matrix/trajectory and sovereign-inference outcomes remain nonterminal. Assignment or machine ownership does not satisfy them."
 }
