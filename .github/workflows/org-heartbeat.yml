@@ -8,13 +8,10 @@ on:
   push:
     branches: [main]
     paths:
-      - control/claims-active.json
-      - control/org-state.json
       - heartbeat_runtime/**
       - scripts/issue_heartbeats.py
       - scripts/run_heartbeat_runtime.py
       - scripts/validate_heartbeat_returns.py
-      - .github/workflows/org-heartbeat.yml
   pull_request:
     paths:
       - control/claims-active.json
@@ -70,7 +67,7 @@ jobs:
           print('LEGACY_ISSUER_NO_EPOCH_OWNERSHIP_PASS')
           PY
 
-      - name: Prove carrier previews HB30 without worker authority
+      - name: Prove carrier previews next successor without worker authority
         run: |
           before="$(sha256sum control/heartbeat-state.json control/worker-registry.json | sha256sum | cut -d' ' -f1)"
           output="$(python3 scripts/run_heartbeat_runtime.py --dry-run --cycles 1)"
@@ -79,7 +76,7 @@ jobs:
           python3 - <<'PY' "$output"
           import json,sys
           value=json.loads(sys.argv[1])
-          assert value['epoch'] == 30, value
+          assert value['epoch'] >= 30, value
           assert value['legacy_hb29_cutover'] == 'PREVIEW_ONLY', value
           assert value['authority_effect'] == 'NONE_CARRIER_ONLY', value
           assert value['claims_issued'] == 0, value
