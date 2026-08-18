@@ -1,6 +1,6 @@
 # COSV Session Consolidation Mirror Handoff
 
-Updated: 2026-08-18T15:00:00-05:00
+Updated: 2026-08-18T15:14:00-05:00
 Repository: `StegVerse-Labs/.github`
 Branch: `main`
 
@@ -31,6 +31,7 @@ This handoff supersedes the earlier archive-ready interpretation. The session re
 7. Compare precommitted expected state/Δ against actual state/Δ with uncertainty, constraint/evidence residuals, novelty, admissibility observations, causal hypotheses, residual gradient, and residual curvature.
 8. Bind live use of the above to admitted heartbeat progression without widening heartbeat, packet, StegBrain, Master Records, TV/TVC, model, provider, or wallet authority.
 9. Complete live sovereign inference activation with StegVerse-local model, TVC route admission, exact LLM-adapter execution, measured usage, and same-execution Master Records reconstruction.
+10. Remove recurring manual/chat packet observation by installing a repository-native WorkerCoordinator packet materialization path.
 
 Machine-readable current status:
 `control/session-goal-status-2026-08-18-post-g18.json`.
@@ -48,6 +49,7 @@ heartbeat carrier/runtime separation:
 state-transition continuity / G18:
   handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
   receipts/heartbeat-transition-continuity/latest.json
+  current condition: continuity proven; runtime-registry terminalization still required
 
 sovereign inference:
   StegVerse-Labs/.github#60
@@ -57,8 +59,13 @@ sovereign inference:
   -> master-records/orchestration
 
 COSV packet:
-  StegVerse-Labs/.github#217
+  StegVerse-Labs/.github#217 CLOSED for first-live FULL packet
   docs/COSV_HEARTBEAT_STATE_PACKET_MIRROR_HANDOFF.md
+
+recurring COSV packet production:
+  task COSV-LIVE-PACKET-AUTOMATION-006
+  handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json
+  WorkerCoordinator -> cosv-live-packet-worker
 
 gradient observation:
   StegVerse-Labs/StegBrain#861
@@ -74,7 +81,7 @@ Do not create competing heartbeat, route, credential, model-runtime, Master Reco
 
 ## Current direct live observation
 
-Fresh direct repository observation now proves that the former G18 carrier-continuity dependency has advanced beyond the earlier HB29-only state:
+Fresh direct repository observation proves that the former G18 carrier-continuity dependency has advanced beyond the earlier HB29-only state:
 
 ```text
 legacy control/heartbeat-state.json: HB29 immutable source
@@ -95,11 +102,11 @@ receipts/heartbeat-transition-continuity/latest.json:
   all_release_predicates_pass: true
 ```
 
-The old `receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json` still reflects an earlier resident-service blocker and is superseded for state-transition-continuity completion by the later canonical transition receipt plus current carrier/worker state. Resident native service evidence remains optional stronger evidence unless a downstream goal explicitly requires it.
+However `control/worker-control-plane-coordination.json` still projects the G18 claim/fence as an active BLOCKED lease. Therefore continuity is live-proven but the G18 task itself is not terminal yet. The canonical G18 handoff was reconciled at commit `8bfa5fe4fc77f879e943fd701e040d6b212001b0` to require one admitted WorkerCoordinator execution opportunity to consume the already-passing evidence and release the G18 claim/fence. Issue #12 remains open until that registry/control-plane terminal state is directly observed.
 
-## Work completed in this execution
+## Live packet and introspection work completed
 
-The first live authority-neutral COSV FULL packet has now been emitted from actual HB31 evidence:
+The first live authority-neutral COSV FULL packet is persisted from actual HB31 evidence:
 
 ```text
 packet: receipts/cosv/live/HB31.json
@@ -110,36 +117,93 @@ state_root_sha256: b9ae6209961a3cbd85cc9531088ca91531b03c3eaa4ccc53ee46b0dc1937d
 carrier_ref: heartbeat_epoch:31
 ```
 
-The packet is a FULL baseline and therefore intentionally has empty `gradient_inputs`. It does not claim a gradient. Its authority effect is NONE; TV/TVC remains the sole credential authority; no NON-TV/TVC token/secret or GitHub-token runtime authority was introduced.
+The packet is a FULL baseline and intentionally has empty `gradient_inputs`; it does not claim a gradient.
 
-The bounded integration claim is complete/released:
-`control/session-integration-claim-2026-08-18-cosv-live-packet-217.json`.
+Before HB32 is observed, StegBrain now holds a pre-observation expectation:
+
+```text
+StegVerse-Labs/StegBrain/expectations/cosv/live/HB32-ecosystem-chat-orphan-recovery.json
+target reference: heartbeat_epoch:32
+issued ordinal: 31
+expectation identity: task:RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28
+commitment_sha256: 77451b4f5c7af66a71c0557240eb570c959180f34de9ea1908c3e65137107b18
+```
+
+The commitment was validated against the released StegBrain commitment algorithm. HB32 actual state or residual is not claimed.
+
+## Recurring COSV packet automation installed
+
+The prior repeated action `wait for next reference -> manually construct packet` is now replaced by repository-native source under `COSV-LIVE-PACKET-AUTOMATION-006`:
+
+```text
+materializer: scripts/materialize_live_cosv_packet.py
+worker: workers/cosv_live_packet_worker.py
+handoff: handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json
+registry fragment: control/worker-registry.d/cosv-live-packet-automation-006.json
+process adapter fragment: control/process-worker-adapters.d/cosv-live-packet-automation-006.json
+cost basis: cost-basis/worker-runtime/cosv-live-packet-automation.json
+focused tests: tests/test_cosv_live_packet_automation.py
+validation receipt: receipts/cosv/COSV-LIVE-PACKET-AUTOMATION-006-source-validation.json
+source claim: control/session-implementation-claim-2026-08-18-cosv-live-packet-automation.json COMPLETE_RELEASED
+```
+
+The materializer fails closed on carrier/worker reference disagreement, transition-release failure, carrier regression, cache mismatch, record removal, packet digest/state-root mismatch, or conflicting packet contents. It writes only under `receipts/cosv/live/**`; heartbeat, worker, claim/fence, route, credential, model, wallet, policy, admissibility, and custody authority remain outside this task.
+
+The WorkerCoordinator task is currently `HANDOFF_READY` / source-installed. Source installation does not count as live execution. Required runtime evidence is an actual fenced WorkerCoordinator claim and worker response, followed by a genuine post-HB31 packet when a later carrier reference exists.
+
+## Validation / evidence added in this execution
+
+```text
+COSV live packet automation source surfaces: 7/7 installed
+registry-fragment contract review: PASS
+process-adapter fragment contract review: PASS
+focused test cases installed: 4
+algorithm replay of HB31 -> candidate HB32 DELTA: PASS
+candidate changed identities: 4
+candidate new recovery transition vector: 99999999999999
+candidate state root: 5ec19fa7871655635ca0c4d8e380b0d7bac48023ff055267398b97c9ae73a777
+candidate unchanged-state root: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+hosted workflow success claimed: false
+live worker execution claimed: false
+live HB32 claimed: false
+```
+
+The candidate replay is source-level deterministic validation only. It is not a substitute for the future actual HB32 state.
 
 ## Remaining required goals
 
-The session must remain open because these required outcomes are not terminal:
+The session remains open because these required outcomes are not terminal:
 
-1. **Sovereign inference activation — `.github#60`.** Required: fresh authorized inference fence, live StegVerse-private model process, TVC `ROUTE_ADMITTED` with credential requirement NONE, exact LLM-adapter execution, measured usage, same-execution Master Records provider-usage + transition reconstruction PASS, `github_token_required=false`.
-2. **First live DELTA packet.** Required: next admitted carrier reference after HB31 with a changed canonical state, producing a DELTA against `receipts/cosv/live/HB31.json` with deterministic `gradient_inputs`.
-3. **First live gradient — `StegBrain#861`.** Required: consume that actual DELTA and persist an authority-neutral gradient observation receipt.
-4. **First live expectation residual — `StegBrain#865`.** Required: an expectation committed before the target reference for the same identity/profile/reference, then actual state/Δ consumption and persisted residual observation.
-5. **First real matrix / residual series — `StegBrain#863/#865`.** Required: sufficient strictly ordered live observations to persist matrix/trajectory/residual-series evidence, including curvature when the required number of observations exists.
-6. **Required propagation/release evidence.** After each live capability becomes terminal, update the applicable canonical handoff/task/issue and any consumer propagation contract actually required by its release gate. Do not infer blanket Site/Publisher/wiki propagation.
+1. **G18 registry terminalization — `.github#12`.** Required: the already-bound G18 worker consumes the current PASS continuity evidence on an admitted WorkerCoordinator tick, returns `COMPLETED / SOVEREIGN_RUNTIME_STATE_TRANSITION_VERIFIED`, and the registry/control-plane no longer projects an active G18 claim/lease.
+2. **Sovereign inference activation — `.github#60`.** Required: orphan recovery completion under a fresh recovery fence >20; separately authorized fresh parent inference fence >20; live StegVerse-private model process; TVC `ROUTE_ADMITTED` with credential requirement NONE; exact LLM-adapter execution; measured usage; same-execution Master Records provider-usage + transition reconstruction PASS; `github_token_required=false`.
+3. **Recurring packet worker live activation.** Required: `COSV-LIVE-PACKET-AUTOMATION-006` is actually bound by WorkerCoordinator under its own fence and emits/validates packet state when a later reference exists.
+4. **First live DELTA packet.** Required: next admitted carrier reference after HB31 with actual state observations, producing a DELTA against `receipts/cosv/live/HB31.json` with deterministic `gradient_inputs`.
+5. **First live gradient — `StegBrain#861`.** Required: consume the actual DELTA and persist an authority-neutral gradient observation receipt.
+6. **First live expectation residual — `StegBrain#865`.** Required: if the next actual target is HB32, consume the already precommitted HB32 expectation plus same-reference actual packet state/Δ and persist the residual observation. If HB32 is skipped or invalid, fail closed rather than rewriting the expectation.
+7. **First real matrix / residual series — `StegBrain#863/#865`.** Required: sufficient strictly ordered live observations to persist matrix/trajectory/residual-series evidence and curvature when the minimum observation count exists.
+8. **Required propagation/release evidence.** After each live capability becomes terminal, update the applicable canonical handoff/task/issue and any consumer propagation contract actually required by its release gate. Do not infer blanket Site/Publisher/wiki propagation.
 
 ## Next executable action
 
-Observe the next admitted changed carrier reference after HB31. As soon as it exists, emit the canonical DELTA packet against the HB31 FULL baseline and immediately consume its `gradient_inputs` through `StegVerse-Labs/StegBrain#861`. In parallel, consume `.github#60` worker output when the fresh sovereign inference activation chain executes. If a required authority action is not available to this session, keep the session open and consume the canonical TV/TVC or machine-owned result rather than treating assignment as completion.
+Consume the next admitted WorkerCoordinator tick and the next admitted carrier progression. The WorkerCoordinator should first reconcile G18 against already-passing continuity evidence, then apply/bind eligible HANDOFF_READY tasks including `COSV-LIVE-PACKET-AUTOMATION-006` and the separately authorized Ecosystem Chat orphan-recovery task according to collision/fence rules. If a later carrier reference is observed, consume the resulting real COSV DELTA through StegBrain#861 and #865. In parallel consume `.github#60` sovereign-inference outputs when its recovery and fresh parent claim become executable.
 
-## Validation / evidence posture
+If those machine-owned actions do not occur, keep this session open; assignment does not satisfy them and no fake HB32 or synthetic runtime proof may be created from chat.
+
+## Completion accounting
 
 ```text
-G18 state-transition continuity: LIVE RELEASE COMPLETE at HB31
-first live COSV FULL packet: COMPLETE + locally deterministic validation + direct live evidence
-first live DELTA: NOT YET AVAILABLE
-first live gradient: NOT YET AVAILABLE
-first live expectation residual: NOT YET AVAILABLE
-first live gradient matrix: NOT YET AVAILABLE
-sovereign inference live activation: NOT YET PROVEN
+G18 continuity proof: COMPLETE
+G18 task-registry terminalization: PENDING
+first live COSV FULL packet: COMPLETE
+recurring COSV packet automation source: COMPLETE_RELEASED
+recurring COSV packet worker runtime activation: PENDING
+HB32 expectation precommit: COMPLETE
+HB32 actual observation: PENDING
+first live DELTA: PENDING
+first live gradient: PENDING
+first live expectation residual: PENDING
+first live gradient matrix / residual series: PENDING
+sovereign inference live activation: PENDING
 archive eligible: false
 ```
 
