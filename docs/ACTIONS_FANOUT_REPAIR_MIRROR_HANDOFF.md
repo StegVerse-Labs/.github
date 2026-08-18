@@ -76,6 +76,13 @@ Reduce avoidable GitHub-hosted Actions fanout without weakening the repository's
    - pull-request coverage remains broad across those integration surfaces and `workflow_dispatch` is preserved.
    - validation remains credential-clean with `permissions: {}` and explicit rejection of GitHub/provider token authority.
 
+10. `.github/workflows/sovereign-runtime-self-bootstrap.yml` — `82992cf9897a75586732c4e773e71a6ad88e6b34` / PR #228
+   - main automatic validation retained for self-bootstrap implementation, deterministic tests, and the workflow definition.
+   - the session implementation claim and durable-runtime handoff remain covered on pull requests but no longer retrigger hosted validation on every main state/handoff write.
+   - `workflow_dispatch` is now available for explicit validation.
+   - `permissions: {}` and the existing fail-closed/no-GitHub-token/no-provider-token authority assertions remain intact.
+   - PR validation run `32194852134`, job `95896645663`, completed successfully before merge; this is validation evidence only, not runtime/activation evidence.
+
 ## Inspected and retained unchanged
 
 - `.github/workflows/external-timing-match-validation.yml` — pull-request + manual dispatch only.
@@ -95,8 +102,11 @@ Relevant current source-of-truth handoffs/records inspected during this pass inc
 - `docs/ARCHIVE_GATE_PROGRESS_MIRROR_HANDOFF.md`
 - `docs/STEGVERSE_TEST_LANES_AUTOLAUNCH_MIRROR_HANDOFF.md`
 - `handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json`
+- `handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json`
 - `docs/REPOSITORY_VISIBILITY_BOUNDARY_MIRROR_HANDOFF.md`
 - `control/repository-visibility-boundary-2026-08-17.json`
+
+The current durable-runtime handoff reports HB31 carrier continuity and independent WorkerCoordinator observation, but task-capable WorkerCoordinator execution remains pending. This fanout lane did not compete with G18/#12/#122 runtime ownership or reinterpret validation as runtime proof.
 
 ## Private-repository adjacent scope
 
@@ -106,9 +116,9 @@ No private-repository visibility mutation is authorized by this lane. Any future
 
 ## Validation evidence
 
-Post-write repository reads confirmed the selective trigger structures installed on `main`, including the new test-lanes autolaunch repair. Repaired workflows retain `workflow_dispatch` where intended and credential-clean `permissions: {}` semantics. No runtime claim, heartbeat epoch, worker fence, credential state, repository visibility, deployment state, or canonical test-run claim was mutated by this repair lane.
+Post-write repository reads confirmed the selective trigger structures installed on `main`, including the new test-lanes autolaunch and sovereign-runtime self-bootstrap repairs. Repaired workflows retain `workflow_dispatch` where intended and credential-clean `permissions: {}` semantics. No runtime claim, heartbeat epoch, worker fence, credential state, repository visibility, deployment state, or canonical test-run claim was mutated by this repair lane.
 
-No hosted workflow pass is claimed as runtime proof.
+For PR #228, hosted run `32194852134` / job `95896645663` passed compile, deterministic self-bootstrap tests, fail-closed hosted-runner proof, and non-authorizing authority proof before merge. No hosted workflow pass is claimed as runtime proof.
 
 ## Known files/modules remaining
 
