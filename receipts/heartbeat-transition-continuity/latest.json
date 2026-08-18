@@ -1,0 +1,40 @@
+{
+  "all_carrier_transition_predicates_pass": true,
+  "all_release_predicates_pass": false,
+  "authority_effect": "NONE",
+  "carrier_epoch_after": 30,
+  "carrier_epoch_before": 29,
+  "carrier_generation_after": 30,
+  "carrier_generation_before": 29,
+  "carrier_state_ref": "control/heartbeat-carrier-runtime-state.json",
+  "continuity_model": "STATE_TRANSITION_CONTINUITY",
+  "contract_ref": "management/SHWP_IPHONE_TRANSITION_CAPSULE_CONTRACT.json",
+  "credential_authority": "TV/TVC",
+  "credential_requirement": "NONE",
+  "github_token_runtime_authority": "NONE",
+  "legacy_state_ref": "control/heartbeat-state.json",
+  "legacy_state_sha256": "0860e70af7c3734b58a364bc2258f8c1983dff95aa0e60e0c0f5b9d9bf06ef02",
+  "manual_recovery": {
+    "authority_effect": "NONE",
+    "mode": "BOUNDED_AED_RECOVERY_FROM_VERIFIED_PORTABLE_RECEIPT",
+    "performed_at": "2026-08-18T18:55:00Z",
+    "runtime_authority": "StegVerse",
+    "third_party_role": "FALLBACK_TRANSPORT_ONLY"
+  },
+  "non_tv_tvc_secret_or_token_forwarded": false,
+  "physical_execution_surface": "CURRENT_USER_IPHONE",
+  "portable_receipt_sha256": "931f4e756bf82ded9bc8a2fc1cfda4dae6edae0f9c95f3f9a47ca343b1a73855",
+  "predicates": {
+    "carrier_epoch_at_least_30": true,
+    "carrier_generation_non_regressing": true,
+    "legacy_hb29_unchanged": true,
+    "no_duplicate_claim_or_fence": true,
+    "state_reconstruction_pass": true,
+    "worker_control_plane_observed": false,
+    "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch": false
+  },
+  "reason": "IPHONE_PORTABLE_HB29_TO_HB30_TRANSITION_VERIFIED",
+  "schema": "stegverse.heartbeat-state-transition-receipt/v1",
+  "state": "CARRIER_TRANSITION_COMPLETE",
+  "worker_checkpoint_required": true
+}
