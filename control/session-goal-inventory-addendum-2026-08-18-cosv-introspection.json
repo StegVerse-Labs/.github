@@ -1,0 +1,117 @@
+{
+  "schema": "stegverse.session-goal-inventory-addendum/v1",
+  "session_id": "SESSION-2026-08-18-COSV-STATE-GRADIENT-INTROSPECTION",
+  "created_at": "2026-08-18T11:26:00-05:00",
+  "originating_objective": "Extend StegVerse heartbeat-carried canonical state into subsystem/system aggregates, gradient mechanics, and expected-vs-actual introspection while preserving sovereign local runtime and TV/TVC authority boundaries.",
+  "canonical_continuation": [
+    "StegVerse-Labs/.github#122",
+    "StegVerse-Labs/.github#217",
+    "StegVerse-Labs/StegBrain#861",
+    "StegVerse-Labs/StegBrain#863",
+    "StegVerse-Labs/StegBrain#865",
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md"
+  ],
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "github_token_runtime_authority": "NONE",
+    "third_party_runtime_role": "FALLBACK_ONLY",
+    "stegverse_primary": true
+  },
+  "goals": [
+    {
+      "goal_id": "SOVEREIGN-LOCAL-MODEL-001",
+      "origin": "Replace descriptive local-runtime selection with executable StegVerse-first discovery/launch/inference/proof and formally develop the local model.",
+      "destination": "StegVerse-002/micro-node-runtime",
+      "branch": "main",
+      "owner": "StegVerse-002/micro-node-runtime source; live activation StegVerse-Labs/.github#60/G18 -> TV/TVC -> LLM-adapter -> Master Records",
+      "claim_state": "COMPLETE_RELEASED_SOURCE_MACHINE_OWNED_LIVE_ACTIVATION",
+      "completion_state": "SOURCE_COMPLETE_RELEASED",
+      "validation_state": "CANONICAL_VALIDATION_SUCCESS",
+      "integration_state": "LIVE_ACTIVATION_PENDING_MACHINE_OWNED",
+      "archive_dependency": false,
+      "evidence": "docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+      "next_executable_action": "Do not duplicate source; G18/HB continuation owns live activation."
+    },
+    {
+      "goal_id": "COSV-ARCHITECTURE-001",
+      "origin": "Canonical numeric state vectors for task/goal/component/subsystem/system/ecosystem state and aggregates.",
+      "destination": "StegVerse-Labs/.github",
+      "branch": "main",
+      "owner": "StegVerse-Labs/.github",
+      "claim_state": "COMPLETE_RELEASED",
+      "completion_state": "COMPLETE_RELEASED",
+      "validation_state": "DETERMINISTIC_VALIDATED",
+      "integration_state": "PACKET_CONSUMER_PATH_RELEASED",
+      "archive_dependency": false,
+      "evidence": "docs/CANONICAL_OPERATIONAL_STATE_VECTOR_MIRROR_HANDOFF.md",
+      "next_executable_action": "Consume through COSV-HEARTBEAT-STATE-PACKET-002; do not duplicate vector semantics."
+    },
+    {
+      "goal_id": "COSV-HEARTBEAT-STATE-PACKET-002",
+      "origin": "Carry full/delta canonical state vectors on the heartbeat reference frame as authority-neutral state packets.",
+      "destination": "StegVerse-Labs/.github",
+      "branch": "main",
+      "owner": "StegVerse-Labs/.github#217 source; .github#122 live adoption",
+      "claim_state": "COMPLETE_RELEASED_SOURCE_LIVE_ADOPTION_MACHINE_OWNED",
+      "completion_state": "SOURCE_COMPLETE_RELEASED",
+      "validation_state": "SELF_TEST_AND_FOCUSED_TESTS_PASS",
+      "integration_state": "LIVE_PACKET_EMISSION_PENDING_122",
+      "archive_dependency": false,
+      "evidence": "docs/COSV_HEARTBEAT_STATE_PACKET_MIRROR_HANDOFF.md",
+      "next_executable_action": ".github#122 exposes first authority-neutral live packet observation after admitted heartbeat progression."
+    },
+    {
+      "goal_id": "STEGBRAIN-COSV-GRADIENT-MECHANICS-002",
+      "origin": "Derive operational, knowledge, constraint-relief, change-density, exact-metric, and coherency gradients from COSV packet transitions.",
+      "destination": "StegVerse-Labs/StegBrain",
+      "branch": "main",
+      "owner": "StegVerse-Labs/StegBrain#861",
+      "claim_state": "COMPLETE_RELEASED_SOURCE",
+      "completion_state": "SOURCE_COMPLETE_RELEASED",
+      "validation_state": "5_OF_5_PASS",
+      "integration_state": "LIVE_PACKET_CONSUMPTION_PENDING_122_217",
+      "archive_dependency": false,
+      "evidence": "docs/COSV_GRADIENT_MECHANICS_MIRROR_HANDOFF.md",
+      "next_executable_action": "Consume first live COSV packet and persist authority-neutral gradient observation."
+    },
+    {
+      "goal_id": "STEGBRAIN-COSV-GRADIENT-MATRIX-003",
+      "origin": "Compare gradients across ordered heartbeat references to derive trajectory, curvature, and descriptive convergence/divergence.",
+      "destination": "StegVerse-Labs/StegBrain",
+      "branch": "main",
+      "owner": "StegVerse-Labs/StegBrain#863",
+      "claim_state": "COMPLETE_RELEASED_SOURCE",
+      "completion_state": "SOURCE_COMPLETE_RELEASED",
+      "validation_state": "5_OF_5_PASS",
+      "integration_state": "WAITING_FOR_TWO_LIVE_PACKET_DERIVED_GRADIENT_OBSERVATIONS",
+      "archive_dependency": false,
+      "evidence": "docs/COSV_GRADIENT_MATRIX_MIRROR_HANDOFF.md",
+      "next_executable_action": "Build first real matrix after two ordered live observations exist."
+    },
+    {
+      "goal_id": "STEGBRAIN-COSV-EXPECTATION-RESIDUAL-004",
+      "origin": "Compare current canonical state plus precommitted expected delta/state against actual state plus actual delta, constraints, evidence, novelty, admissibility, coherency, and causal hypotheses.",
+      "destination": "StegVerse-Labs/StegBrain",
+      "branch": "main",
+      "owner": "StegVerse-Labs/StegBrain#865",
+      "claim_state": "COMPLETE_RELEASED_SOURCE",
+      "completion_state": "SOURCE_COMPLETE_RELEASED",
+      "validation_state": "10_OF_10_EXACT_SOURCE_DETERMINISTIC_PASS",
+      "integration_state": "LIVE_RESIDUAL_OBSERVATION_PENDING_PRECOMMITTED_EXPECTATION_AND_PACKET_REFERENCE",
+      "archive_dependency": false,
+      "evidence": "docs/COSV_EXPECTATION_RESIDUAL_MIRROR_HANDOFF.md",
+      "next_executable_action": "At an admitted progressing reference, bind a pre-observation expectation to the same identity/profile/reference, consume actual packet state, and persist residual observation; after two ordered observations persist residual series."
+    }
+  ],
+  "session_consolidation": {
+    "goals_total": 6,
+    "goals_source_complete_or_transferred": 6,
+    "unique_chat_only_requirements_remaining": 0,
+    "active_chat_claims_remaining": 0,
+    "live_product_activation_complete": false,
+    "heartbeat_progression_dependency": true,
+    "archive_ready_when_read_with_canonical_owners": true,
+    "note": "Archive readiness does not assert HB30+, live packet emission, live gradient/residual observations, sovereign inference activation, wallet signing/broadcast, or settlement."
+  }
+}
