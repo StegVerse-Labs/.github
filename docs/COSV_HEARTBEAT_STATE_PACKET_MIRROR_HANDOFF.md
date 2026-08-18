@@ -1,6 +1,6 @@
 # COSV Heartbeat State Packet Mirror Handoff
 
-Updated: 2026-08-18T15:00:00-05:00
+Updated: 2026-08-18T15:14:00-05:00
 Repository: `StegVerse-Labs/.github`
 Branch: `main`
 
@@ -8,7 +8,7 @@ Branch: `main`
 
 `COSV-HEARTBEAT-STATE-PACKET-002` extends released COSV vectors into an authority-neutral packet layer carried/observed on the heartbeat reference frame and suitable as the canonical input surface for gradient mechanics.
 
-Canonical issue: `#217`
+Canonical issue: `#217` CLOSED COMPLETED for first-live-packet integration
 Source claim: `#218` CLOSED COMPLETED
 Handoff tracker: `#219` CLOSED COMPLETED
 Parent COSV handoff: `docs/CANONICAL_OPERATIONAL_STATE_VECTOR_MIRROR_HANDOFF.md`
@@ -16,7 +16,9 @@ Heartbeat architecture/live owner: `#122`
 Gradient/nervous-system owner: `StegVerse-Labs/StegBrain#860/#861`
 Source state: `COMPLETE_RELEASED`
 Live adoption state: `FIRST_LIVE_FULL_PACKET_EMITTED_HB31`
+Recurring live packet automation: `COSV-LIVE-PACKET-AUTOMATION-006 SOURCE_INSTALLED_PENDING_FIRST_WORKER_EXECUTION`
 Live integration claim: `control/session-integration-claim-2026-08-18-cosv-live-packet-217.json`
+Automation source claim: `control/session-implementation-claim-2026-08-18-cosv-live-packet-automation.json`
 Credential authority: `TV/TVC`
 NON-TV/TVC secret/token allowed: `false`
 GitHub-token runtime authority: `NONE`
@@ -46,7 +48,7 @@ Every packet carries schema/mode, carrier reference and observation time, predec
 
 ## First live carrier-bound packet — HB31
 
-Direct live evidence now satisfies the former `#122` release dependency:
+Direct live evidence satisfies the former `#122` release dependency:
 
 ```text
 control/heartbeat-carrier-runtime-state.json
@@ -88,6 +90,29 @@ Validation receipt:
 
 The packet was generated from directly observed committed carrier/worker/release evidence and deterministically rechecked for canonical packet digest, state root, vector shape, evidence references, constraint summary, and authority invariants. No hosted-workflow runtime proof is substituted for the live carrier evidence.
 
+## Recurring repository-native packet automation
+
+The prior continuation step `observe next heartbeat, then manually emit a packet` is now replaced by an installed WorkerCoordinator-owned path:
+
+```text
+handoff: handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json
+materializer: scripts/materialize_live_cosv_packet.py
+worker: workers/cosv_live_packet_worker.py
+worker fragment: control/worker-registry.d/cosv-live-packet-automation-006.json
+adapter fragment: control/process-worker-adapters.d/cosv-live-packet-automation-006.json
+cost basis: cost-basis/worker-runtime/cosv-live-packet-automation.json
+focused tests: tests/test_cosv_live_packet_automation.py
+source validation: receipts/cosv/COSV-LIVE-PACKET-AUTOMATION-006-source-validation.json
+```
+
+The materializer reads only committed carrier, WorkerCoordinator, transition, and registry evidence. It fails closed if the worker reference lags the carrier, if the transition release is not complete, if the state cache no longer binds the latest packet, if the carrier regresses, or if a packet/state-root invariant fails.
+
+For HB31, the existing FULL packet remains the canonical baseline. On the next later admitted carrier reference, the automation can emit a DELTA that binds the actual previous packet SHA and a persistent reconstructable `receipts/cosv/live/latest-state.json` cache. This extends DELTA chaining beyond the original helper's FULL-only build convenience without changing the packet schema or authority semantics. Record removal remains fail-closed.
+
+The live automation also projects the current registry state of the orphan-recovery and sovereign-inference tasks into authority-neutral task vectors so the already precommitted HB32 recovery expectation has an actual same-reference observation surface when HB32 is genuinely admitted.
+
+This source installation is not itself live worker execution. The task remains `HANDOFF_READY` until the canonical v12 carrier carries its non-authorizing assignment trigger and WorkerCoordinator independently binds the worker under admitted authority.
+
 ## Gradient-ready interface
 
 Each changed identity in a DELTA packet may expose:
@@ -106,7 +131,7 @@ coherency_group_ref
 authority_effect=NONE
 ```
 
-The HB31 packet is intentionally a FULL baseline and therefore has empty `gradient_inputs`. The next admitted carrier reference with a changed state can produce a DELTA packet against HB31; that DELTA is the first eligible live gradient-input surface for `StegVerse-Labs/StegBrain#861`.
+The HB31 packet is intentionally a FULL baseline and therefore has empty `gradient_inputs`. The next admitted carrier reference with a changed state can produce the first live DELTA; that DELTA is the first eligible live gradient-input surface for `StegVerse-Labs/StegBrain#861`.
 
 ## Canonical source surfaces
 
@@ -119,6 +144,14 @@ examples/cosv_state_packet_examples.json
 receipts/cosv/COSV-HEARTBEAT-STATE-PACKET-002-validation.json
 receipts/cosv/live/HB31.json
 receipts/cosv/live/HB31-validation.json
+scripts/materialize_live_cosv_packet.py
+workers/cosv_live_packet_worker.py
+handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json
+control/worker-registry.d/cosv-live-packet-automation-006.json
+control/process-worker-adapters.d/cosv-live-packet-automation-006.json
+cost-basis/worker-runtime/cosv-live-packet-automation.json
+tests/test_cosv_live_packet_automation.py
+receipts/cosv/COSV-LIVE-PACKET-AUTOMATION-006-source-validation.json
 ```
 
 ## Collision boundaries
@@ -127,7 +160,7 @@ Do not mutate `control/heartbeat-state.json`, carrier runtime state, WorkerCoord
 
 ## Validation
 
-Source validation remains:
+Base packet source validation remains:
 
 ```text
 self-test: PASS
@@ -140,7 +173,7 @@ digest tamper rejection: PASS
 non-TVC credential authority rejection: PASS
 ```
 
-Live integration validation now additionally records:
+Live HB31 integration validation records:
 
 ```text
 HB31 live carrier observed: PASS
@@ -154,33 +187,51 @@ hosted workflow claimed as live proof: false
 StegBrain live gradient observation claimed: false
 ```
 
+Recurring automation source validation records:
+
+```text
+registry fragment contract review: PASS
+process-adapter fragment contract review: PASS
+focused test cases installed: 4
+algorithm replay HB31 -> HB32 candidate: PASS
+changed identities: 4
+new recovery identity transition: 99999999999999
+state-root / unchanged-root deterministic recomputation: PASS
+hosted workflow claimed: false
+resident worker execution claimed: false
+live HB32 packet claimed: false
+```
+
 ## Integration / continuation
 
-The packet architecture's first live-adoption requirement is satisfied at HB31. Issue `#217` may close as completed for first-live-packet integration.
+The packet architecture's first live-adoption requirement is satisfied at HB31 and issue `#217` is closed completed for that bounded outcome. Recurring packet production source is now installed in the canonical WorkerCoordinator path and no longer requires a chat to manually construct every next packet.
 
-Downstream work remains required and is not satisfied by this release:
+Downstream required outcomes remain unsatisfied until they actually occur:
 
-1. the carrier must advance to another admitted reference with state change;
-2. `.github` emits a DELTA packet against `receipts/cosv/live/HB31.json`;
-3. `StegVerse-Labs/StegBrain#861` consumes the DELTA `gradient_inputs` and persists the first live gradient observation;
-4. `StegVerse-Labs/StegBrain#865` consumes a separately precommitted expectation for the same target reference and persists the first live expectation-residual observation;
-5. after at least two ordered live observations, `StegVerse-Labs/StegBrain#863/#865` may persist the first real gradient matrix/residual series and curvature evidence.
+1. the carrier advances to another admitted reference after HB31;
+2. `COSV-LIVE-PACKET-AUTOMATION-006` is actually claimed/executed and persists the first live DELTA;
+3. `StegVerse-Labs/StegBrain#861` consumes that actual DELTA `gradient_inputs` and persists the first live gradient observation;
+4. `StegVerse-Labs/StegBrain#865` consumes the separately precommitted expectation for the same target reference and persists the first live expectation-residual observation;
+5. after sufficient strictly ordered live observations, `StegVerse-Labs/StegBrain#863/#865` persists the first real gradient matrix/residual series and curvature evidence;
+6. `.github#60` independently completes the StegVerse-local model -> TVC -> LLM-adapter -> same-execution Master Records sovereign inference activation chain.
 
 ## Completion accounting
 
 ```text
-source required surfaces: 6/6
-source developed files: 6/6
-live adoption required surfaces for first packet: 2/2
+base source required surfaces: 6/6
+base source developed files: 6/6
+first-live-packet adoption surfaces: 2/2
+recurring automation source surfaces: 7/7
 scaffolding/stubs: 0
-missing required files: 0
-source focused deterministic validation: 5/5 PASS
-first-live-packet validation: PASS
+missing required automation source files: 0
+base focused deterministic validation: 5/5 PASS
+automation algorithm replay: PASS
 first live producer adoption: COMPLETE_AT_HB31
-first live gradient observation: PENDING_NEXT_CHANGED_DELTA
-packet-layer integration claim: RELEASEABLE
+recurring worker activation: PENDING_CANONICAL_WORKERCOORDINATOR_EXECUTION
+first live DELTA: PENDING_NEXT_ADMITTED_REFERENCE
+first live gradient observation: PENDING
 ```
 
 ## Archive / continuation condition
 
-The packet source and first-live-packet integration are complete. The broader session is not archive-eligible under the governing completion rule while required downstream live gradient, expectation-residual, matrix/trajectory, sovereign inference, propagation, activation, or evidence obligations remain nonterminal. Canonical continuation is `.github#122/#60` plus `StegBrain#861/#863/#865`.
+The packet source, first-live-packet integration, and recurring automation source are installed. The broader session remains not archive-eligible under the governing completion rule while the required live DELTA, gradient, expectation-residual, ordered matrix/trajectory, sovereign inference activation, propagation, release, or evidence obligations remain nonterminal. Canonical runtime continuation is `.github#122/#60` plus the new `COSV-LIVE-PACKET-AUTOMATION-006` WorkerCoordinator task and `StegBrain#861/#863/#865`.
