@@ -1,0 +1,34 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "test_lanes_autolaunch",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 128,
+    "confidence": "LOW_PRE_FIRST_LIVE_RUN"
+  },
+  "cost_estimate": {
+    "compute_units": 5,
+    "token_units": 0,
+    "storage_bytes": 8388608,
+    "network_bytes": null,
+    "operator_seconds": 0,
+    "external_cost_usd": null,
+    "latency_ms": null,
+    "failure_recovery_units": 4
+  },
+  "evidence_refs": [
+    "docs/STEGVERSE_TEST_LANES_AUTOLAUNCH_MIRROR_HANDOFF.md",
+    "handoffs/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json",
+    "workers/test_lanes_autolaunch_entrypoint.py",
+    "workers/test_lanes_autolaunch_worker.py",
+    "control/test-lanes-autolaunch-matrix.v1.json"
+  ],
+  "notes": [
+    "The finite 128-unit assignment timer bounds one conditional evaluation/execution claim and permits re-evaluation while prerequisites remain incomplete.",
+    "External provider spend is not estimated here and is not execution authority; actual provider usage/cost evidence is produced by TVC after an admitted run.",
+    "StegVerse primary remains credential-free and third-party providers remain CONTROL_OR_FALLBACK_ONLY.",
+    "No GitHub token, provider key, wallet credential, hosted runtime or NON-TV/TVC secret authority is created by this cost basis."
+  ]
+}
