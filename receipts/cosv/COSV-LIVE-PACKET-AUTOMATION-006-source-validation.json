@@ -1,0 +1,43 @@
+{
+  "schema": "stegverse.cosv-live-packet-automation-validation/v1",
+  "goal_id": "COSV-LIVE-PACKET-AUTOMATION-006",
+  "validated_at": "2026-08-18T15:14:00-05:00",
+  "source_refs": [
+    "scripts/materialize_live_cosv_packet.py",
+    "workers/cosv_live_packet_worker.py",
+    "handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json",
+    "control/worker-registry.d/cosv-live-packet-automation-006.json",
+    "control/process-worker-adapters.d/cosv-live-packet-automation-006.json",
+    "cost-basis/worker-runtime/cosv-live-packet-automation.json",
+    "tests/test_cosv_live_packet_automation.py"
+  ],
+  "validation": {
+    "canonical_dependency_review": "PASS",
+    "registry_fragment_schema_review": "PASS",
+    "process_adapter_fragment_contract_review": "PASS",
+    "algorithm_replay": {
+      "baseline_epoch": 31,
+      "target_epoch": 32,
+      "changed_identity_count": 4,
+      "new_recovery_identity_transition_vector": "99999999999999",
+      "delta_state_root_recomputed": "5ec19fa7871655635ca0c4d8e380b0d7bac48023ff055267398b97c9ae73a777",
+      "unchanged_state_root_recomputed": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "result": "PASS"
+    },
+    "focused_test_cases_installed": 4,
+    "hosted_workflow_claimed": false,
+    "resident_worker_execution_claimed": false,
+    "live_hb32_packet_claimed": false
+  },
+  "authority": {
+    "heartbeat_authority_effect": "NONE",
+    "packet_authority_effect": "NONE",
+    "analytic_authority_effect": "NONE",
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_used": false,
+    "github_token_runtime_authority": "NONE",
+    "third_party_runtime_required": false,
+    "stegverse_primary": true
+  },
+  "result": "PASS_SOURCE_AND_DETERMINISTIC_ALGORITHM_REPLAY_PENDING_LIVE_WORKER_EXECUTION"
+}
