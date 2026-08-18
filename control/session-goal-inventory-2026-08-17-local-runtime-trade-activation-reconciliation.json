@@ -2,14 +2,16 @@
   "schema": "stegverse.session-goal-inventory/v1",
   "inventory_id": "SESSION-2026-08-17-LOCAL-RUNTIME-TRADE-ACTIVATION-RECONCILIATION",
   "created_at": "2026-08-17T16:40:00-05:00",
-  "updated_at": "2026-08-17T22:21:00-05:00",
+  "updated_at": "2026-08-17T23:52:00-05:00",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
   "session_role": "ACTIVE_DISTINCT_SUPPORT_ROLE",
   "archive_ready": false,
-  "archive_block_reason": "The current session rule requires governed activation observation before archival. Local model/runtime source is released and StegFin pre-sign trade readiness is complete. A fresh Site #388 publication recheck was triggered on main at commit 63333dbe0d90611b477a85b39bf38356567d95b5, but direct VERIFIED_PUBLICATION for both exact public blobs is not yet recorded; the CURRENT_USER_IPHONE HB30 materialization/WorkerCoordinator chain is also not observed.",
+  "archive_block_reason": "The current session rule requires governed activation observation before archival. Local model/runtime source is released and StegFin pre-sign trade readiness is complete, but direct dual-blob Site publication proof and CURRENT_USER_IPHONE HB30/WorkerCoordinator/live sovereign inference activation remain unobserved. An adjacent stale StegGate rendezvous worker reference was also transferred to its canonical Site owner for reconciliation without acquiring that worker claim.",
   "governing_constraints": {
     "render_allowed": false,
+    "primary_provider": "STEGVERSE_OWNED_LOCAL_PRIVATE",
+    "third_party_provider_policy": "FALLBACK_ONLY_IF_SEPARATELY_ADMITTED_NEVER_REQUIRED_NEVER_AUTHORITY",
     "credential_authority": "TV/TVC",
     "non_tv_tvc_secret_or_token_allowed": false,
     "github_token_runtime_authority": "NONE",
@@ -20,8 +22,11 @@
     "docs/ORG_MIRROR_HANDOFF.md",
     "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/docs/SOVEREIGN_LOCAL_MODEL_ROUTE_MIRROR_HANDOFF.md",
+    "StegVerse-org/LLM-adapter/docs/LLM_ADAPTER_MIRROR_HANDOFF.md",
     "StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/Site/docs/STEGFIN_PHONE_PROJECTION_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/Site/docs/STEGFIN_PHONE_PROJECTION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site#24"
   ],
   "goals": [
     {
@@ -53,7 +58,7 @@
       "destination": "StegVerse-Labs/Site#388",
       "claim_state": "CLAIMED_FOR_VALIDATION",
       "completion_state": "SOURCE_AND_SITE_INTEGRATION_COMPLETE_PUBLICATION_RECHECK_TRIGGERED",
-      "validation_state": "StegFin #81 PR #83 merged 39cd7b144523063fe0c3046453e9920a6ad2dde6; Site PR #390 merged 8c5882b2ff3a17c847d48376b856db32c0331832; PR-head Site gates 32092420729/32092420660/32092420772/32092420704 SUCCESS; fresh main-push validation opportunity triggered by support request commit 63333dbe0d90611b477a85b39bf38356567d95b5; connector does not expose a push-triggered run result for that commit, so direct corrected public proof remains unclaimed",
+      "validation_state": "StegFin #81 PR #83 merged 39cd7b144523063fe0c3046453e9920a6ad2dde6; Site PR #390 merged 8c5882b2ff3a17c847d48376b856db32c0331832; PR-head Site gates 32092420729/32092420660/32092420772/32092420704 SUCCESS; support request 63333dbe0d90611b477a85b39bf38356567d95b5 triggered a fresh main-push observation opportunity; direct dual-blob VERIFIED_PUBLICATION remains unobserved",
       "integration_state": "CANONICAL_SITE_PUBLICATION_OBSERVER_ACTIVE_RECHECK_TRIGGERED",
       "archival_dependency": true,
       "evidence": [
@@ -65,7 +70,7 @@
         "StegVerse-Labs/Site#388 issue comment 5323199778"
       ],
       "machine_observable_release_condition": "Canonical Site #388 credential-free main-push observer returns VERIFIED_PUBLICATION for wallet UI blob 114b3c39052d5b1622407080407259a0040a1369 and corrected bootstrap blob dc1a86bc564146cdaa645620c8fc698e45029440; then current phone performs a NEW MetaMask-browser WebAuthn/PREPARE and governed injected-provider proof before USER_ONLY review.",
-      "next_executable_action": "Inspect the canonical Site #388 recheck result from the already-bound push-triggered validation lane. Do not create another observer/scheduler. On VERIFIED_PUBLICATION, release/propagate the Site claim; on mismatch, retain the exact fail-closed public observation."
+      "next_executable_action": "Inspect the canonical Site #388 recheck result from the already-bound push-triggered validation lane. Do not create another observer/scheduler."
     },
     {
       "task_id": "SHWP-IPHONE-HB30-INLINE-CAPSULE-002",
@@ -81,20 +86,48 @@
     },
     {
       "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
-      "originating_goal": "Activate the completed sovereign local runtime through the canonical governed inference path.",
+      "originating_goal": "Activate the completed sovereign local runtime through the canonical governed inference path with StegVerse as primary provider.",
       "destination": "StegVerse-Labs/.github#60",
       "claim_state": "MACHINE_OWNED",
       "completion_state": "NOT_YET_ACTIVATED",
-      "validation_state": "Source path complete; latest direct repository observation still finds control/heartbeat-carrier-runtime-state.json, control/worker-runtime-state.json, and receipts/heartbeat-transition-continuity/latest.json absent",
+      "validation_state": "Source path complete; 2026-08-17T23:52-05:00 direct repository observation still finds control/heartbeat-carrier-runtime-state.json, control/worker-runtime-state.json, and receipts/heartbeat-transition-continuity/latest.json absent while legacy control/heartbeat-state.json remains HB29/G18",
       "integration_state": "BLOCKED_ON_HB30_AND_WORKERCOORDINATOR_OBSERVATION",
       "archival_dependency": true,
+      "provider_policy": "StegVerse-owned/local/private inference PRIMARY; third-party fallback only if separately admitted and never required or authoritative",
+      "evidence": [
+        "StegVerse-Labs/.github#60 issue comment 5323136934 current-phone web-node/journal evidence transfer",
+        "StegVerse-Labs/.github#60 issue comment 5323782736 provider-priority reconciliation"
+      ],
       "machine_observable_release_condition": "HB30+ carrier + WorkerCoordinator observation + orphan recovery completion + fresh authorized inference fence >20 + private local model proof + TVC ROUTE_ADMITTED credential_requirement NONE + exact LLM-adapter execution + measured usage + same-execution Master Records reconstruction PASS.",
       "next_executable_action": "G18 and the canonical inference worker continue automatically after the HB30 physical/materialization boundary is satisfied."
+    },
+    {
+      "task_id": "VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023",
+      "originating_goal": "Use StegVerse as the primary model/provider path across adjacent consumers and do not force third-party dependencies.",
+      "destination": "StegVerse-org/LLM-adapter#142",
+      "claim_state": "MACHINE_OWNED",
+      "completion_state": "SOURCE_POLICY_COMPLETE_LIVE_ACTIVATION_PENDING",
+      "validation_state": "Task 023 already requires credential_requirement NONE, github_token_required false, third_party_inference_required false, hosted_provider_fallback DISALLOWED; provider-priority reconciliation recorded in issue comment 5323783633",
+      "integration_state": "BLOCKED_ON_SOVEREIGN_ROUTE_ACTIVATION",
+      "archival_dependency": false,
+      "next_executable_action": "Existing resident sovereign heartbeat/TVC/LLM-adapter/Master Records lane executes after post-HB29 route predicates pass; do not create a competing provider runtime."
+    },
+    {
+      "task_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
+      "originating_goal": "Assist adjacent workers while keeping StegVerse-owned services primary and third-party deployment paths fallback-only.",
+      "destination": "StegVerse-Labs/Site#24",
+      "claim_state": "EXISTING_G13_WORKER_REFERENCE_OBSERVED_NO_CLAIM_ACQUIRED",
+      "completion_state": "RECONCILIATION_REQUIRED_BY_CANONICAL_OWNER",
+      "validation_state": "Legacy control/heartbeat-state.json at HB29 still records active lease STEGGATE-STABLE-RENDEZVOUS-WORKER-001 G13 / THIRD_PARTY_WORKAROUND_REQUIRED; referenced handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json is absent from current .github/main and exists only historically at 4ff8115d...; finding transferred to Site#24 comment 5323784558",
+      "integration_state": "MERGED_INTO_CANONICAL_SITE_ISSUE_FOR_RECONCILIATION",
+      "archival_dependency": false,
+      "provider_policy": "StegVerse-owned endpoint/runtime PRIMARY; Cloudflare or any other third-party path fallback-only and never blocker/authority",
+      "next_executable_action": "Canonical Site/.github owner reconciles or supersedes the stale G13 worker reference; this session must not revive or mutate that worker claim."
     }
   ],
   "direct_observation": {
-    "observed_at": "2026-08-17T22:21:00-05:00",
-    "legacy_heartbeat": "HB29 / generation 29; immutable cutover source",
+    "observed_at": "2026-08-17T23:52:00-05:00",
+    "legacy_heartbeat": "HB29 / generation 29; G18 SOVEREIGN_RUNTIME_SOLUTION_REQUIRED retained",
     "heartbeat_carrier_runtime_state": "NOT_PRESENT",
     "worker_runtime_state": "NOT_PRESENT",
     "heartbeat_transition_continuity_receipt": "NOT_PRESENT",
@@ -106,6 +139,7 @@
     "site_wallet_browser_projection": "MERGED_AND_VALIDATED",
     "site_corrected_publication_recheck_trigger": "63333dbe0d90611b477a85b39bf38356567d95b5",
     "site_corrected_publication_proof": "RECHECK_TRIGGERED_RESULT_NOT_YET_OBSERVED",
+    "steggate_g13_reference": "STALE_HANDOFF_REF_RECONCILIATION_TRANSFERRED_TO_SITE_24",
     "product_activation_complete": false
   },
   "duplicate_execution_prevention": {
@@ -114,14 +148,16 @@
     "do_not_acquire_g18_claim_or_fence_from_chat": true,
     "do_not_create_second_heartbeat_or_workercoordinator": true,
     "do_not_create_second_site_publication_observer": true,
-    "do_not_use_github_actions_as_runtime_authority": true
+    "do_not_revive_stale_steggate_g13_worker_from_chat": true,
+    "do_not_use_github_actions_as_runtime_authority": true,
+    "do_not_make_third_party_provider_primary_or_required": true
   },
   "session_consolidation": {
-    "total_goal_classes": 5,
-    "complete_or_durably_owned": 5,
+    "total_goal_classes": 7,
+    "complete_or_durably_owned": 7,
     "unique_implementation_work_remaining": 0,
     "distinct_support_work_remaining": 1,
-    "support_role": "Observe and reconcile Site #388 corrected publication plus CURRENT_USER_IPHONE/HB30/WorkerCoordinator activation without acquiring machine, publication, route, credential, wallet, signing, or broadcast authority.",
+    "support_role": "Observe and reconcile Site #388 corrected publication plus CURRENT_USER_IPHONE/HB30/WorkerCoordinator activation, while preserving StegVerse-primary provider policy and avoiding machine/publication/route/credential/wallet/signing/broadcast claim collisions.",
     "canonical_continuation": [
       "StegVerse-Labs/Site#388",
       "StegVerse-Labs/Site/docs/STEGFIN_PHONE_PROJECTION_MIRROR_HANDOFF.md",
@@ -130,6 +166,9 @@
       "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
       "StegVerse-Labs/.github#60",
       "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json",
+      "StegVerse-org/LLM-adapter#142",
+      "StegVerse-Labs/Site#24",
       "StegVerse-Labs/stegfin-governance/task-state/STEGFIN-IOS-LOCAL-WALLET-TRANSPORT-019.json"
     ]
   }
