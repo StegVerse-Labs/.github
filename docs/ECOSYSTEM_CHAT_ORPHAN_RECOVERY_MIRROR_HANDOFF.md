@@ -1,5 +1,7 @@
 # Ecosystem Chat Orphan Recovery Mirror Handoff
 
+Updated: 2026-08-18T15:21:00-05:00
+
 ## Authority and scope
 
 This scoped handoff is subordinate to `docs/ORG_MIRROR_HANDOFF.md` and authoritative for recovery task `RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28` and its deterministic return to parent task `SHWP-ECOSYSTEM-CHAT-INFERENCE-001`. It does not create a second heartbeat, worker registry, model authority, route authority, credential authority, or execution authority.
@@ -7,7 +9,7 @@ This scoped handoff is subordinate to `docs/ORG_MIRROR_HANDOFF.md` and authorita
 ```text
 repository: StegVerse-Labs/.github
 canonical branch: main
-canonical heartbeat: heartbeat_runtime.engine_v9.HeartbeatRuntime
+canonical carrier: separated heartbeat v12
 parent task: SHWP-ECOSYSTEM-CHAT-INFERENCE-001
 ended claim: SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G20
 ended fence: 20
@@ -19,7 +21,9 @@ local model credential requirement: NONE
 github token authority: NONE
 github actions activation role: NONE
 github actions persistence role: NONE
-resident heartbeat epoch last directly observed: 29
+resident carrier epoch last directly observed: 31
+resident worker-runtime carrier epoch last directly observed: 31
+current runtime continuity release: RELEASE_COMPLETE
 ```
 
 ## Originating session requirements transferred
@@ -30,7 +34,8 @@ resident heartbeat epoch last directly observed: 29
 - no manual or descriptive `select a local model/runtime` step remains;
 - an orphaned worker may not reuse its old claim or fence;
 - recovery is machine executable, fail closed, and returns the parent to executable work when reconstruction is complete;
-- hosted validation cannot commit or push heartbeat state and cannot activate the production worker.
+- hosted validation cannot commit or push heartbeat state and cannot activate the production worker;
+- StegVerse is the primary provider/runtime path; third-party providers are fallback/control only and cannot satisfy sovereign activation.
 
 MERGED INTO: `StegVerse-Labs/.github/docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md` and `master-records/orchestration/ECOSYSTEM_CHAT_SOVEREIGN_RECONSTRUCTION_MIRROR_HANDOFF.md`.
 
@@ -43,9 +48,10 @@ HB25 checkpoint sha256: 56ac0cce7e0f575fe8500ff0dd6321c76e26f5fd1d8ea9ac32220d6f
 HB26-HB28: EXECUTOR_RESPONSE_ERROR:BlockerPolicyError
 HB28: response-loss threshold reached; recovery task admitted; G20 worker orphaned; old claim/worker released
 HB29: generated recovery quarantine reconciled to BLOCKED; old authority not reused
+HB30-HB31: separated-v12 carrier transition and independent worker-runtime observation became durable; runtime continuity release reached RELEASE_COMPLETE without executing the orphan-recovery task
 ```
 
-The root cause was a blocker-policy contract mismatch: historical `BLOCKED` responses required a nonempty workaround candidate plus a concrete next solution action. The TV/TVC wrapper now normalizes legacy child constraint responses without changing state or authority.
+The root cause was a blocker-policy contract mismatch: historical `BLOCKED` responses required a nonempty workaround candidate plus a concrete next solution action. The TV/TVC wrapper normalizes legacy child constraint responses without changing state or authority.
 
 ## Released implementation
 
@@ -84,8 +90,6 @@ complete deterministic heartbeat suite: 97 tests PASS
 authority result: GitHub Actions cannot activate, persist, claim, fence, or provide TV/TVC credentials
 ```
 
-GitHub Actions itself reports its platform-internal metadata-read token even under `permissions: {}`. StegVerse workflow commands do not receive or use `GITHUB_TOKEN`, `GH_TOKEN`, or a PAT; checkout is anonymous public git fetch. That platform metadata facility is not a StegVerse credential surface and is not forwarded to TVC, the model runtime, LLM-adapter, Master Records, or the resident heartbeat.
-
 ## Installed recovery surfaces
 
 ```text
@@ -103,15 +107,14 @@ tests/test_orphan_recovery_reconciliation.py
 tests/test_ecosystem_chat_orphan_recovery_activation.py
 ```
 
-## TV/TVC and no-GitHub-token boundary
-
-Current authority contract:
+## TV/TVC and provider boundary
 
 ```text
 credential_authority: TV/TVC
 credential_requirement: NONE
 route_authority: StegVerse-Labs/TVC
-model/runtime: StegVerse-local
+model/runtime PRIMARY: StegVerse-local
+third_party_role: CONTROL_OR_FALLBACK_ONLY
 transport: StegVerse-org/LLM-adapter
 reconstruction: master-records/orchestration
 github_token_authority: false
@@ -120,18 +123,16 @@ github_actions_persistence_role: false
 source_checkout_runtime_requirement: false
 ```
 
-The former hosted activation workflow that used authenticated checkout, `contents: write`, heartbeat mutation, commit, and push is retired. Its filename remains for compatibility but it is now validation-only with `permissions: {}`, anonymous public git fetch, no action-based checkout/setup, no commit/push, and dry-run-only heartbeat evaluation. `heartbeat-worker-project.yml` and `org-control-plane-validate.yml` follow the same non-authorizing/no-project-token validation model.
-
 ## Recovery design and automatic continuation
 
 The orphan task is a continuity root, not an authority-bearing goal successor. `recovery_parent_task_id` binds evidence to the ended parent while `derivation_depth=0` and absence of `parent_task_id` prevents successor-policy inheritance from recreating `SUCCESSOR_DEPTH_LIMIT_EXCEEDED`.
 
 The bounded authorization permits only `orphan_lifecycle_reconstruction`, only the existing Ecosystem Chat receipt namespace, zero external cost, no services, no GitHub token, no old-authority revival, no parent execution, and no successor-parent authority. The recovery worker rejects any recovery fence `<=20`.
 
-The parent task remains activation-pending on recovery continuity; that dependency does not make the parent or recovery scope manual work. Once recovery reaches `COMPLETED`, the normal resident allocator must issue a fresh fencing generation greater than 20. The resumed parent follows:
+Once recovery reaches `COMPLETED`, the normal resident allocator must issue a fresh fencing generation greater than 20. The resumed parent follows:
 
 ```text
-locally developed model/runtime
+locally developed StegVerse model/runtime
 -> live private proof
 -> TVC ROUTE_ADMITTED / credential_requirement NONE
 -> exact LLM-adapter task 020 execution
@@ -143,24 +144,33 @@ locally developed model/runtime
 -> zero-blocker activation verification
 ```
 
-## Current machine state
+## Current machine state — LIVE CARRIER, RECOVERY STILL UNEXECUTED
 
-The last directly observed canonical `control/heartbeat-state.json` remained at epoch 29. PR #79 deliberately cannot advance it. Source implementation and authority cleanup are complete, but resident runtime activation is not inferred from merge or hosted validation.
-
-Dry-run validation proves what the next resident heartbeat will do if the released source and Master Records workload are locally materialized: it releases the recovery authorization, selects the unique recovery worker, allocates fence 23 (>20), and fails closed at `MASTER_RECORDS_CUSTODY_NOT_PROVEN` when the custody workload is absent. That dry-run claim is not a live claim.
-
-Machine-observable next state:
+Direct repository evidence now supersedes the old HB29-only observation:
 
 ```text
-resident heartbeat advances beyond epoch 29
+control/heartbeat-carrier-runtime-state.json: epoch 31 / generation 31 / activation_state ACTIVE
+receipts/heartbeat-transition-continuity/latest.json: CARRIER_TRANSITION_COMPLETE / RELEASE_COMPLETE / all_release_predicates_pass true
+control/worker-runtime-state.json: last_observed_carrier_epoch 31 / last_observed_carrier_generation 31
+worker runtime observation mode: CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION
+```
+
+Therefore the carrier/runtime dependency is no longer pending. The still-unsatisfied dependency is narrower: the authorized orphan recovery has not yet received/finished a live recovery claim, and the parent sovereign inference receipt remains incomplete. `control/worker-registry.json` still shows the parent G20 authority ended and the recovery task unbound/BLOCKED; the generated recovery handoff remains `HANDOFF_READY` / `AUTHORIZED_FOR_HEARTBEAT_CLAIM`.
+
+The next required machine sequence is now:
+
+```text
+resident WorkerCoordinator executes a task-capable tick against HB31+
 -> registry fragment is consumed
 -> recovery task receives a live claim/fence > 20
--> local Master Records task-025 custody resolves
+-> local Master Records G20 custody resolves
 -> orphan recovery receipt reaches PASS / task COMPLETED
 -> parent becomes HANDOFF_READY
 -> parent receives a new live fence > 20
--> local model/TVC/LLM/Master Records chain executes
+-> StegVerse local model/TVC/LLM/Master Records chain executes
 ```
+
+Do not fabricate a recovery claim from chat and do not reset HB31 merely to force the old transition. A task-capable resident WorkerCoordinator tick is the machine-observable release event.
 
 ## Claims and collision boundaries
 
@@ -168,7 +178,7 @@ resident heartbeat advances beyond epoch 29
 recovery implementation claim: RELEASED / PR #78
 Master Records task-025 claim: RELEASED
 TV/TVC no-token authority cleanup claim: RELEASED / PR #79
-current owner: MACHINE_OWNED_RUNTIME_OBSERVATION / resident heartbeat
+current owner: MACHINE_OWNED_RUNTIME_EXECUTION / resident WorkerCoordinator + ecosystem-chat-orphan-recovery-worker
 old fence reuse: prohibited
 parent execution by recovery worker: prohibited
 recovery execution by parent worker: prohibited
@@ -179,32 +189,36 @@ GitHub token runtime/activation authority: prohibited
 
 ## Execution ownership and collision partition
 
-Standard: `StegVerse-Labs/Continuity/docs/REPOSITORY_HANDOFF_STANDARD.md` / `stegverse.handoff-execution-ownership/v1`.
-
 ### MANUAL / SESSION-STARTABLE
 
-No recovery or parent-inference implementation is manually startable from this handoff. A separate evidence-only review may be claimed after a receipt exists, but it may not mutate worker registry, claim/fence, recovery, route, model, or reconstruction state.
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json
+collision_scope: observation and handoff reconciliation only; no manual recovery claim/fence allocation or parent inference execution
+release_condition: recovery task reaches COMPLETED under a live fence >20
+next_executable_action: none that may lawfully replace the machine owner
+```
 
 ### WORKER-OWNED / DO NOT COMPETE
 
 ```yaml
 - task_id: RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28
-  execution_owner: resident sovereign heartbeat + ecosystem-chat-orphan-recovery-worker
+  execution_owner: resident WorkerCoordinator + ecosystem-chat-orphan-recovery-worker
   claim_state: MACHINE_OWNED
   worker_registry_ref: control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json
   manual_execution_allowed: false
   manual_allowed_role: observation
   collision_scope: recovery claim/fence allocation, orphan lifecycle reconstruction, recovery receipts/checkpoints, and transition back to parent readiness
   release_condition: recovery task reaches COMPLETED under a live fence greater than 20 and the registry explicitly releases recovery ownership
-  next_executable_action: resident heartbeat executes recovery when carrier and Master Records custody inputs are present
+  next_executable_action: task-capable resident WorkerCoordinator tick consumes HB31+ and executes recovery when custody inputs are present
 
 - task_id: SHWP-ECOSYSTEM-CHAT-INFERENCE-001
-  execution_owner: resident sovereign heartbeat -> TVC -> LLM-adapter -> Master Records
-  claim_state: MACHINE_OWNED
+  execution_owner: resident WorkerCoordinator -> TVC -> LLM-adapter -> Master Records
+  claim_state: MACHINE_OWNED_AFTER_RECOVERY
   worker_registry_ref: handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json + StegVerse-Labs/.github#60
   manual_execution_allowed: false
   manual_allowed_role: observation
-  collision_scope: fresh parent claim/fence, private model process, TVC route admission, exact LLM-adapter execution, measured usage, and same-execution reconstruction
+  collision_scope: fresh parent claim/fence, private StegVerse model process, TVC route admission, exact LLM-adapter execution, measured usage, and same-execution reconstruction
   release_condition: immutable same-execution activation evidence exists and the registry completes/releases the parent task
   next_executable_action: parent reacquires fresh fence >20 only after recovery completion, then executes the canonical local-model chain
 ```
@@ -213,7 +227,7 @@ No recovery or parent-inference implementation is manually startable from this h
 
 ```yaml
 - task_id: ECOSYSTEM-CHAT-RECOVERY-CONSTRAINT-RESOLUTION
-  execution_owner: engine-v11 resolution/escalation chain plus TV/TVC or Master Records authority where applicable
+  execution_owner: runtime resolution/escalation chain plus TV/TVC or Master Records authority where applicable
   claim_state: ESCALATED
   worker_registry_ref: control/worker-registry.json + docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md
   manual_execution_allowed: false
@@ -228,9 +242,8 @@ No recovery or parent-inference implementation is manually startable from this h
 - Orphan recovery source implementation: complete/released.
 - Historical G20 custody task: complete/released.
 - No-GitHub-token authority cleanup: complete/released.
+- HB29→HB31 carrier/runtime continuity: complete/released at runtime level.
 - Old G20 claim/fence reuse: superseded/prohibited.
-
-Historical `BLOCKED` wording in this file is provenance only and cannot be interpreted as manual-start permission.
 
 ## Completion accounting
 
@@ -243,11 +256,12 @@ source implementation validation: PASS
 source integration merge: PASS
 Master Records G20 custody: COMPLETE_RELEASED
 TV/TVC no-GitHub-token authority cleanup: COMPLETE_RELEASED
-resident heartbeat post-release observation: PENDING_MACHINE_OWNED
+resident carrier/runtime continuity: RELEASE_COMPLETE_HB31
+orphan recovery live execution: PENDING_MACHINE_OWNED
 higher-fence parent inference execution: PENDING_MACHINE_OWNED
 same-execution activation proof: PENDING_MACHINE_OWNED
 ```
 
 ## Archive condition
 
-All unique design, implementation, recovery, and credential-authority knowledge from this session is durable. Product activation remains incomplete because the resident sovereign heartbeat has not been directly observed advancing past HB29 and completing the recovery -> higher-fence parent -> local model -> TVC -> LLM-adapter -> Master Records chain. The organization handoff and worker registry remain authoritative; source release alone does not permit an activation-complete claim.
+Product activation remains incomplete. Live HB31 closes the old carrier-continuity gap, but archive is prohibited while the required recovery task remains MACHINE_OWNED/unexecuted and the parent sovereign inference chain lacks real model, route, LLM-adapter usage, and same-execution Master Records proof. This session must remain open to observe/consume the machine result and continue downstream; source transfer alone is not completion.
