@@ -2,15 +2,15 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
   "created_at": "2026-08-18T18:08:00-05:00",
-  "updated_at": "2026-08-18T18:18:00-05:00",
+  "updated_at": "2026-08-18T18:37:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
     "objective": "Execute the corrected StegVerse heartbeat sampler once under the canonical WorkerCoordinator/runtime owner and persist inspectable oscillator-backed carrier observation proving that heartbeat progression depends only on the independent 10 ms phase oscillator.",
     "success_predicates": [
-      "Carrier runtime state persists progression_dependency=OSCILLATOR_ONLY.",
-      "Carrier runtime state persists phase_travel_time_ms=10 and snapshot_is_observation_only=true.",
-      "Carrier observation records observation_is_causal=false.",
+      "Carrier runtime state persists nested oscillator.progression_dependency=OSCILLATOR_ONLY.",
+      "Carrier runtime state persists nested oscillator.phase_travel_time_ms=10 and oscillator.snapshot_is_observation_only=true.",
+      "Carrier observation records observation_is_causal=false and authority_effect=NONE.",
       "Heartbeat ordinal is sampled from elapsed oscillator quanta rather than incremented by invocation.",
       "No worker/task/admission/claim/fence/lease/route/credential state gates carrier progression.",
       "No GitHub token or NON-TV/TVC secret/token is required or forwarded.",
@@ -18,7 +18,7 @@
     ],
     "failure_predicates": [
       "Observed carrier state still uses GATE_PASSBAND_DERIVED as the progression rule.",
-      "Observed carrier state lacks oscillator-only provenance.",
+      "Observed carrier state lacks canonical nested oscillator-only provenance.",
       "WorkerCoordinator or a task state is made causal to heartbeat progression.",
       "A NON-TV/TVC credential or GitHub token becomes runtime authority.",
       "A third-party runtime becomes required or primary."
@@ -44,9 +44,11 @@
       "scripts/run_heartbeat_runtime.py",
       "scripts/run_worker_runtime.py",
       "workers/independent_heartbeat_live_proof_worker.py",
+      "tests/test_independent_heartbeat_live_proof_worker.py",
       "control/worker-registry.d/heartbeat-independent-oscillator-live-009.json",
       "control/process-worker-adapters.d/heartbeat-independent-oscillator-live-009.json",
       "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json",
+      "tests/test_independent_heartbeat_live_proof_registration.py",
       "receipts/heartbeat/HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008-source-validation.json"
     ],
     "dependencies": [],
@@ -84,7 +86,8 @@
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 32,
     "rate_class": "independent_heartbeat_live_proof",
-    "finite_worker_budget_beats": 4
+    "finite_worker_budget_beats": 4,
+    "evidence_verifier": "workers/independent_heartbeat_live_proof_worker.py#verify_live_proof"
   },
   "activation": {
     "carrier": "heartbeat",
@@ -108,14 +111,17 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Under the existing #122 StegVerse runtime owner, execute the bounded worker(1) -> carrier(1) -> worker(1) sequence. Verify the carrier sample persists oscillator-only evidence and carries the assignment trigger; verify the second WorkerCoordinator cycle binds and executes this task under the finite cost basis; then consume COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED.",
+    "next_authorized_action": "Under the existing #122 StegVerse runtime owner, execute worker(1) -> carrier(1) -> worker(1). Verify canonical nested oscillator carrier/observation evidence, assignment trigger carriage, fresh fenced task binding, and COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED.",
     "terminal_when": [
-      "Carrier state and observation contain the required oscillator invariants.",
+      "Carrier state contains frequency_rule=INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL and canonical nested oscillator invariants.",
+      "Carrier observation contains phase_travel_time_ms=10, observation_is_causal=false and authority_effect=NONE.",
       "events/heartbeat-runtime.jsonl contains a non-authorizing worker_assignment_trigger_carried packet for this task.",
-      "WorkerCoordinator binds the task under a fresh fenced claim using cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json.",
+      "WorkerCoordinator binds the task under a fresh fenced claim using the finite cost basis.",
       "Worker response is COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED."
     ],
-    "source_integration_state": "CLAIMABLE_TRIGGERABLE_VALIDATION_PENDING",
-    "live_activation_state": "NOT_OBSERVED"
+    "source_integration_state": "CLAIMABLE_TRIGGERABLE_SCHEMA_VERIFIER_CORRECTED_VALIDATION_PENDING",
+    "live_activation_state": "NOT_OBSERVED",
+    "verifier_correction_commit": "d214105ce30af9d4bdd262a339a6b422a9c88885",
+    "verifier_test_commit": "eb5eb6d36a003603a652aa86df44f6386bb2e44c"
   }
 }
