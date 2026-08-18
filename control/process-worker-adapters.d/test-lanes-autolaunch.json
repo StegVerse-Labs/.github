@@ -11,7 +11,7 @@
         "durable_state_reconstruction",
         "test_lanes_autolaunch"
       ],
-      "command": ["python", "workers/test_lanes_autolaunch_worker.py"],
+      "command": ["python", "workers/test_lanes_autolaunch_entrypoint.py"],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [
@@ -26,6 +26,7 @@
       ],
       "notes": [
         "Heartbeat/WorkerCoordinator wakes the evaluator but never grants test execution authority.",
+        "The adapter entrypoint replaces development-only pytest launch checks with runtime-safe stdlib/import/CLI validation; hosted pytest remains validation-only evidence.",
         "A canonical 9/9 run starts only after the condition matrix passes and the worker acquires a fresh bounded test-run claim under the current heartbeat fence.",
         "StegVerse-local is mandatory PRIMARY/reference; OpenAI, Anthropic, DeepSeek and Kimi are CONTROL_OR_FALLBACK_ONLY and are required only for the named canonical full-nine-lane run.",
         "Provider credentials never enter this worker or its environment; external calls are delegated to the existing TVC vault broker through Unix sockets.",
