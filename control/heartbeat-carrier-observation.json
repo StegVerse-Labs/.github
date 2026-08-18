@@ -1,0 +1,39 @@
+{
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "heartbeat_grants_execution_authority": false,
+    "master_records_action_authority": false
+  },
+  "carrier": {
+    "authority_effect": "NONE",
+    "frequency_rule": "GATE_PASSBAND_DERIVED",
+    "reference_frame": "heartbeat_epoch:31",
+    "role": "REGULATORY_CARRIER_REFERENCE_FRAME"
+  },
+  "generation": 31,
+  "observations": [
+    {
+      "authority_effect": "NONE",
+      "kind": "CARRIER_CONTINUITY",
+      "present": true,
+      "signal_id": "carrier_continuity",
+      "source_ref": "control/heartbeat-carrier-runtime-state.json"
+    },
+    {
+      "authority_effect": "NONE",
+      "kind": "SUBSYSTEM_SIGNAL_PRESENCE",
+      "present": true,
+      "signal_id": "worker_control_plane_presence",
+      "source_ref": "control/worker-control-plane-coordination.json#sha256=15a5d7de9aa45ed67baa4920b98e7f7cb690585f079be36f3c0fb85a54a10610"
+    },
+    {
+      "authority_effect": "NONE",
+      "kind": "SUBSYSTEM_SIGNAL_PRESENCE",
+      "present": true,
+      "signal_id": "coherent_signal_space_candidate_presence",
+      "source_ref": "heartbeat_runtime/signal_space.py#coherent_signal_space_candidate"
+    }
+  ],
+  "schema": "stegverse.heartbeat-carrier-observation/v1"
+}
