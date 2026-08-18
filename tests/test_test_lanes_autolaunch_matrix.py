@@ -42,6 +42,7 @@ def ready_snapshot():
             "manifest_valid": True,
             "task_blob_exact": True,
             "plan_state": "READY",
+            "external_models_selected": True,
             "primary_provider": "stegverse_local",
             "ready_lane_count": 9,
             "ready_execution_group_count": 5,
@@ -69,6 +70,13 @@ class MatrixTests(unittest.TestCase):
         self.assertEqual(result["state"], "BLOCKED")
         self.assertIn("carrier_hb30_plus", result["blocking_predicates"])
         self.assertFalse(result["execution_authority_granted"])
+
+    def test_missing_external_model_selection_blocks(self):
+        snapshot = ready_snapshot()
+        snapshot["test"]["external_models_selected"] = False
+        result = MODULE.evaluate(MATRIX, snapshot)
+        self.assertEqual(result["state"], "BLOCKED")
+        self.assertIn("external_models_selected", result["blocking_predicates"])
 
     def test_non_tv_tvc_secret_violation_fails_closed(self):
         snapshot = ready_snapshot()
