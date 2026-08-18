@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.validation-support-receipt/v1",
+  "task_id": "SHWP-WORKER-TASK-CAPABLE-RELEASE-HARDENING-001",
+  "observed_at": "2026-08-18T17:56:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "role": "DISTINCT_VALIDATION_SUPPORT",
+  "canonical_claim_ref": "control/session-implementation-claim-2026-08-18-worker-task-capable-release-hardening.json",
+  "canonical_claim_state": "CLAIMED_FOR_VALIDATION_AND_LIVE_INTEGRATION",
+  "credential_authority": "TV/TVC",
+  "primary_runtime_authority": "StegVerse",
+  "third_party_role": "FALLBACK_ONLY",
+  "authority_effect": "NONE",
+  "finding": {
+    "state": "REVIEW_REQUIRED",
+    "severity": "RELEASE_BLOCKING_FOR_NO_NON_TV_TVC_SECRET_FORWARDING_CLAIM",
+    "surface": "scripts/restart_sovereign_ephemeral_node.py",
+    "source_blob": "8d09c377efe314b18da5fa1db86bdccfba3253d9",
+    "test_surface": "tests/test_ephemeral_separated_runtime_supervision.py",
+    "test_blob": "23e6108a5ce8e89c3b9f9c0186b65e58f8357208",
+    "problem": "_child_env() copies the complete parent environment and only blanks GITHUB_TOKEN, GH_TOKEN, STEGVERSE_GITHUB_TOKEN, and TVC_TOKEN. Arbitrary unrelated secret/token variables therefore remain eligible to reach the carrier and WorkerCoordinator child processes while the emitted receipt unconditionally claims non_tv_tvc_secret_or_token_used=false.",
+    "why_existing_test_is_insufficient": "The current test proves only that the four named FORBIDDEN_ENV variables are blank. It does not inject and reject an arbitrary non-TV/TVC secret such as OPENAI_API_KEY, AWS_SECRET_ACCESS_KEY, provider credentials, or another unknown *_TOKEN/*_SECRET variable.",
+    "required_correction": "Construct child process environments from an explicit non-secret allowlist plus StegVerse runtime-control variables, rather than copying os.environ. Preserve TV/TVC as credential authority but do not forward a TVC credential unless a separately admitted task capability explicitly requires it; this runtime path currently declares credential_requirement NONE.",
+    "required_regression": "Inject representative unrelated secret/token variables and assert they are absent from both spawned child environments; continue asserting StegVerse runtime root/node markers and required non-secret process variables are present.",
+    "release_rule": "Do not claim the no-NON-TV/TVC-secret runtime predicate from this supervisor until the corrected environment boundary and regression test are directly validated."
+  },
+  "collision_boundary": {
+    "claimed_implementation_files_mutated_by_this_receipt": false,
+    "live_g18_claim_or_fence_mutated": false,
+    "second_heartbeat_or_worker_created": false,
+    "github_actions_runtime_authority_added": false,
+    "render_or_other_third_party_runtime_authority_added": false
+  },
+  "next_executable_action": "Canonical task-capable release-hardening claimant corrects the child-environment boundary and adds the regression test, then validates the exact current head before proceeding to live WorkerCoordinator execution and G18 terminalization."
+}
