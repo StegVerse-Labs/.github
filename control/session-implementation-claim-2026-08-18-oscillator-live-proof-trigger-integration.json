@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.work-claim/v1",
   "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009-INTEGRATION",
-  "originating_goal": "Make the already-released independent heartbeat oscillator source actually claimable, triggerable, and consumable by the canonical StegVerse WorkerCoordinator without making worker/task state causal to heartbeat progression.",
+  "originating_goal": "Make the already-released independent heartbeat oscillator source and independently authorized orphan recovery actually claimable, triggerable, and consumable by the canonical StegVerse WorkerCoordinator without making worker/task state causal to heartbeat progression or reviving old authority.",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
   "claim_state": "CLAIMED_FOR_INTEGRATION_AND_LIVE_VALIDATION",
@@ -18,6 +18,9 @@
     "workers/sovereign_runtime_activation_entrypoint.py G18 compatibility guard only",
     "tests/test_g18_task_capable_release_guard.py",
     "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json reconciliation only",
+    "heartbeat_runtime/orphan_recovery.py independent-task-control reconciliation only",
+    "tests/test_independent_orphan_recovery_reconciliation.py",
+    "handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json reconciliation only",
     "this claim record"
   ],
   "collision_boundaries": [
@@ -25,6 +28,7 @@
     "Do not make WorkerCoordinator, G18, claims, fences, routes or credentials causal to heartbeat progression.",
     "Do not revive or overwrite the superseded SHWP-WORKER-TASK-CAPABLE-RELEASE-HARDENING-001 claim.",
     "Do not mint or directly mutate G18/G20/recovery claims or fencing tokens.",
+    "Recovery promotion may only make the existing recovery task HANDOFF_READY after exact admitted authorization validation; WorkerCoordinator remains the only claim/fence allocator.",
     "Do not create a second heartbeat, WorkerCoordinator, scheduler, vault, route or model runtime.",
     "StegVerse remains primary; third-party runtime is fallback-only.",
     "TV/TVC remains sole credential authority; GitHub tokens and NON-TV/TVC secrets/tokens are prohibited from production authority."
@@ -40,7 +44,9 @@
     "registry_cost_binding_commit": "808675894d943aed850e69a62a6859e2775f7344",
     "registration_test_commit": "723147911f2128723671999d9d50a00ab177232d",
     "009_handoff_reconciliation_commit": "da75dd8a680773a48e9a2cd1160b4b2eb2eede94",
-    "g18_handoff_parallelism_reconciliation_commit": "f4d8db22be77dfd8e1d8cd685fb5d4ea54a870d5"
+    "g18_handoff_parallelism_reconciliation_commit": "f4d8db22be77dfd8e1d8cd685fb5d4ea54a870d5",
+    "independent_recovery_reconciler_commit": "bb7c85385782eb499fedecd9689a3f59735311d5",
+    "independent_recovery_test_commit": "83a3450dec202914007305ea0637dbdfa0f33fb4"
   },
   "live_state_at_claim": {
     "carrier_epoch": 31,
@@ -49,8 +55,9 @@
     "worker_runtime_tick": 2,
     "worker_state": "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION",
     "g18_fence18_active": true,
-    "oscillator_live_proof_009": "HANDOFF_READY",
-    "orphan_recovery": "HANDOFF_READY_AUTHORIZED_INDEPENDENT_TASK_CONTROL",
+    "oscillator_live_proof_009": "HANDOFF_READY_FRAGMENT_NOT_BASE_REGISTRY_MATERIALIZED",
+    "orphan_recovery_handoff": "HANDOFF_READY_AUTHORIZED_INDEPENDENT_TASK_CONTROL",
+    "orphan_recovery_base_registry": "BLOCKED_PENDING_RECONCILER_CYCLE",
     "persisted_assignment_trigger_packets_for_new_tasks": false
   },
   "machine_progression": [
@@ -59,9 +66,13 @@
     "python scripts/run_worker_runtime.py --cycles 1"
   ],
   "progression_semantics": [
-    "First worker cycle applies registry fragments into the canonical registry and persists task-capable WorkerCoordinator events; it does not advance heartbeat.",
+    "First worker cycle applies registry fragments, promotes the independently admitted recovery record from BLOCKED to HANDOFF_READY without minting authority, and persists task-capable WorkerCoordinator events; it does not advance heartbeat.",
     "Carrier cycle samples the independent oscillator, persists oscillator-only carrier evidence, and carries non-authorizing assignment-trigger packets for unclaimed HANDOFF_READY tasks; it grants no execution authority.",
     "Second worker cycle independently validates task authority, binds fresh fenced claims, consumes guarded G18 lifecycle state, and may activate the separately authorized 009 and orphan-recovery tasks."
+  ],
+  "machine_activation_requests": [
+    {"owner": "StegVerse-Labs/.github#122", "comment_id": 5335451180, "sequence": "worker1-carrier1-worker1"},
+    {"owner": "StegVerse-Labs/.github#12", "comment_id": 5335453638, "sequence": "worker1-carrier1-worker1"}
   ],
   "validation": {
     "canonical_workflow": ".github/workflows/heartbeat-worker-project.yml",
@@ -71,7 +82,7 @@
     "local_clone_validation_available": false,
     "state": "SOURCE_VALIDATION_PENDING_DIRECT_EVIDENCE"
   },
-  "machine_observable_release_condition": "Corrected carrier state contains oscillator progression_dependency=OSCILLATOR_ONLY and observation-only provenance; heartbeat event log contains assignment-trigger packets; WorkerCoordinator event log contains canonical non-observer task-capable events; 009 and recovery receive independently authorized claims or terminal receipts; G18 cleanup may complete independently and is not an authority prerequisite for recovery.",
+  "machine_observable_release_condition": "Corrected carrier state contains oscillator progression_dependency=OSCILLATOR_ONLY and observation-only provenance; heartbeat event log contains assignment-trigger packets; WorkerCoordinator event log contains canonical non-observer task-capable events; recovery base record is promoted and 009/recovery receive independently authorized claims or terminal receipts; G18 cleanup may complete independently and is not an authority prerequisite for recovery.",
   "next_executable_action": "Canonical #122/#12 StegVerse runtime owner executes the bounded worker(1)->carrier(1)->worker(1) sequence and this session immediately consumes and verifies the resulting carrier, trigger, worker, claim and receipt evidence.",
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
