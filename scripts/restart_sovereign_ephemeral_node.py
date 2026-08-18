@@ -4,7 +4,9 @@
 This helper is local-process supervision. It has no provider, repository-token,
 cloud-host, credential, route, wallet, or publication authority. The runtime root
 is the complete isolation boundary for one logical node. A valid v12 logical node
-runs both the non-authorizing carrier and the separate worker coordinator.
+runs both the non-authorizing carrier and the separate task-capable worker
+coordinator. Merely spawning a worker PID is not sufficient: the worker runtime
+state must advance after the spawned run_worker_runtime.py process starts.
 """
 from __future__ import annotations
 
@@ -19,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 PROCESS_RECEIPT = Path("receipts/sovereign-host/ephemeral-process.latest.json")
+WORKER_STATE = Path("control/worker-runtime-state.json")
 FORBIDDEN_ENV = ("GITHUB_TOKEN", "GH_TOKEN", "STEGVERSE_GITHUB_TOKEN", "TVC_TOKEN")
 
 
@@ -85,7 +88,43 @@ def _spawn(command: list[str], runtime_root: Path, stdout_name: str, stderr_name
     )
 
 
-def start(runtime_root: Path, *, interval_ms: float = 10.0) -> dict[str, Any]:
+def _runtime_tick(runtime_root: Path) -> int:
+    value = _load(runtime_root / WORKER_STATE)
+    tick = value.get("runtime_tick")
+    return int(tick) if isinstance(tick, int) and not isinstance(tick, bool) else -1
+
+
+def _wait_for_worker_tick(runtime_root: Path, baseline_tick: int, worker_pid: int, timeout: float = 3.0) -> dict[str, Any]:
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        if not _alive(worker_pid):
+            return {
+                "observed": False,
+                "reason": "WORKER_PROCESS_EXITED_BEFORE_TASK_CAPABLE_TICK",
+                "baseline_tick": baseline_tick,
+                "observed_tick": _runtime_tick(runtime_root),
+            }
+        current = _runtime_tick(runtime_root)
+        if current > baseline_tick:
+            state = _load(runtime_root / WORKER_STATE)
+            return {
+                "observed": True,
+                "reason": "TASK_CAPABLE_WORKER_RUNTIME_TICK_OBSERVED",
+                "baseline_tick": baseline_tick,
+                "observed_tick": current,
+                "observed_carrier_epoch": state.get("last_observed_carrier_epoch"),
+                "observed_carrier_generation": state.get("last_observed_carrier_generation"),
+            }
+        time.sleep(0.02)
+    return {
+        "observed": False,
+        "reason": "TASK_CAPABLE_WORKER_RUNTIME_TICK_TIMEOUT",
+        "baseline_tick": baseline_tick,
+        "observed_tick": _runtime_tick(runtime_root),
+    }
+
+
+def start(runtime_root: Path, *, interval_ms: float = 10.0, worker_tick_timeout: float = 3.0) -> dict[str, Any]:
     runtime_root = runtime_root.expanduser().resolve()
     carrier_runner = runtime_root / "scripts" / "run_heartbeat_runtime.py"
     worker_runner = runtime_root / "scripts" / "run_worker_runtime.py"
@@ -94,6 +133,7 @@ def start(runtime_root: Path, *, interval_ms: float = 10.0) -> dict[str, Any]:
     if not worker_runner.is_file():
         raise RuntimeError(f"materialized worker runtime runner missing: {worker_runner}")
 
+    baseline_tick = _runtime_tick(runtime_root)
     carrier_command = [
         sys.executable,
         str(carrier_runner),
@@ -132,8 +172,14 @@ def start(runtime_root: Path, *, interval_ms: float = 10.0) -> dict[str, Any]:
         _terminate(carrier.pid)
         raise
 
+    worker_tick = _wait_for_worker_tick(runtime_root, baseline_tick, worker.pid, timeout=worker_tick_timeout)
+    if not worker_tick.get("observed"):
+        _terminate(worker.pid)
+        _terminate(carrier.pid)
+        raise RuntimeError(str(worker_tick.get("reason") or "TASK_CAPABLE_WORKER_RUNTIME_TICK_NOT_OBSERVED"))
+
     receipt = {
-        "schema": "stegverse.ephemeral-sovereign-process/v2",
+        "schema": "stegverse.ephemeral-sovereign-process/v3",
         "runtime_root": str(runtime_root),
         "pid": carrier.pid,
         "carrier_pid": carrier.pid,
@@ -142,9 +188,11 @@ def start(runtime_root: Path, *, interval_ms: float = 10.0) -> dict[str, Any]:
         "carrier_command": carrier_command,
         "worker_command": worker_command,
         "interval_ms": interval_ms,
-        "carrier_active": True,
-        "worker_active": True,
-        "active": True,
+        "carrier_active": _alive(carrier.pid),
+        "worker_active": _alive(worker.pid),
+        "worker_task_capable_cycle_observed": True,
+        "worker_tick_evidence": worker_tick,
+        "active": _alive(carrier.pid) and _alive(worker.pid),
         "separate_carrier_and_worker_processes": True,
         "canonical_carrier_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
         "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
@@ -158,25 +206,30 @@ def start(runtime_root: Path, *, interval_ms: float = 10.0) -> dict[str, Any]:
         "authority_effect": "LOCAL_RUNTIME_SUPERVISION_ONLY",
     }
     path = runtime_root / PROCESS_RECEIPT
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return receipt
 
 
-def restart(runtime_root: Path, *, interval_ms: float = 10.0) -> dict[str, Any]:
+def restart(runtime_root: Path, *, interval_ms: float = 10.0, worker_tick_timeout: float = 3.0) -> dict[str, Any]:
     runtime_root = runtime_root.expanduser().resolve()
     previous = _load(runtime_root / PROCESS_RECEIPT)
     previous_carrier_pid = previous.get("carrier_pid", previous.get("pid"))
     previous_worker_pid = previous.get("worker_pid")
     carrier_terminated = _terminate(previous_carrier_pid)
     worker_terminated = _terminate(previous_worker_pid)
-    fresh = start(runtime_root, interval_ms=interval_ms)
+    fresh = start(runtime_root, interval_ms=interval_ms, worker_tick_timeout=worker_tick_timeout)
     fresh["previous_pid"] = previous_carrier_pid
     fresh["previous_carrier_pid"] = previous_carrier_pid
     fresh["previous_worker_pid"] = previous_worker_pid
     fresh["previous_process_terminated"] = carrier_terminated and worker_terminated
     fresh["carrier_restart_observed"] = carrier_terminated and fresh["carrier_pid"] != previous_carrier_pid
     fresh["worker_restart_observed"] = worker_terminated and fresh["worker_pid"] != previous_worker_pid
-    fresh["restart_observed"] = fresh["carrier_restart_observed"] and fresh["worker_restart_observed"]
+    fresh["restart_observed"] = (
+        fresh["carrier_restart_observed"]
+        and fresh["worker_restart_observed"]
+        and fresh.get("worker_task_capable_cycle_observed") is True
+    )
     (runtime_root / PROCESS_RECEIPT).write_text(json.dumps(fresh, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return fresh
 
@@ -185,10 +238,15 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--runtime-root", type=Path, required=True)
     parser.add_argument("--interval-ms", type=float, default=10.0)
+    parser.add_argument("--worker-tick-timeout", type=float, default=3.0)
     args = parser.parse_args()
-    if args.interval_ms < 0:
-        raise SystemExit("interval-ms must be >= 0")
-    result = restart(args.runtime_root, interval_ms=args.interval_ms)
+    if args.interval_ms < 0 or args.worker_tick_timeout <= 0:
+        raise SystemExit("interval-ms must be >= 0 and worker-tick-timeout must be > 0")
+    result = restart(
+        args.runtime_root,
+        interval_ms=args.interval_ms,
+        worker_tick_timeout=args.worker_tick_timeout,
+    )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result.get("restart_observed") else 1
 
