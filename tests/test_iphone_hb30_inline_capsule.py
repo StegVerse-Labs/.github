@@ -26,7 +26,9 @@ class IphoneHb30InlineCapsuleTests(unittest.TestCase):
         self.assertNotIn('WebSocket', source)
         self.assertNotIn('window.ethereum', source)
         self.assertIn("location.origin !== EXPECTED_ORIGIN", source)
-        self.assertIn("navigator.userAgent.includes('iPhone')", source)
+        self.assertIn("navigator.maxTouchPoints", source)
+        self.assertIn("ua.includes('iPhone') || (touch >= 2", source)
+        self.assertIn("iphone_class_evidence: iphoneClassEvidence", source)
         self.assertIn("receipt.receipt_sha256 = await sha256Hex(canonicalize(receipt))", source)
         self.assertIn("localStorage.setItem(STORAGE_KEY, serialized)", source)
 
@@ -47,6 +49,7 @@ class IphoneHb30InlineCapsuleTests(unittest.TestCase):
         self.assertIn('IPHONE_HB30_INLINE_CAPSULE_PASS', result.stdout)
         self.assertIn('credential_authority=TV/TVC', result.stdout)
         self.assertIn('github_token_runtime_authority=NONE', result.stdout)
+        self.assertIn('reduced_ua_iphone_evidence=true', result.stdout)
         self.assertIn('hosted_publication_required=false', result.stdout)
 
 
