@@ -6,9 +6,21 @@
   "branch": "main",
   "canonical_issue": 217,
   "claimant": "chatgpt-session-cosv-live-integration-20260818",
-  "role": "CLAIMED_FOR_INTEGRATION",
+  "role": "COMPLETE_RELEASED",
   "claimed_at": "2026-08-18T15:00:00-05:00",
-  "release_condition": "First live COSV packet is emitted from directly observed HB31 carrier/worker evidence, validated against the released packet contract, persisted with evidence references, issue #217 is updated, and downstream StegBrain integration owners are notified; or an existing canonical claimant is discovered and this claim is released/superseded before overlapping mutation.",
+  "released_at": "2026-08-18T15:00:00-05:00",
+  "release_reason": "Direct live HB31 carrier/worker evidence satisfied the former live-adoption blocker; first FULL packet and validation receipt are persisted and the scoped integration is complete.",
+  "completion_evidence": [
+    "control/heartbeat-carrier-runtime-state.json",
+    "control/worker-runtime-state.json",
+    "control/worker-control-plane-coordination.json",
+    "receipts/heartbeat-transition-continuity/latest.json",
+    "receipts/cosv/live/HB31.json",
+    "receipts/cosv/live/HB31-validation.json",
+    "docs/COSV_HEARTBEAT_STATE_PACKET_MIRROR_HANDOFF.md"
+  ],
+  "packet_sha256": "618ca9d0b8d6a2dbd661378b8ca9814dd9b882efb40d351c0d517bff8f4e17bd",
+  "state_root_sha256": "b9ae6209961a3cbd85cc9531088ca91531b03c3eaa4ccc53ee46b0dc1937d22a",
   "collision_boundaries": [
     "Do not mutate control/heartbeat-state.json.",
     "Do not mutate control/heartbeat-carrier-runtime-state.json.",
@@ -18,14 +30,7 @@
     "Do not mutate model/provider/wallet authority or Master Records custody.",
     "Do not redefine COSV digit semantics or packet schema."
   ],
-  "expected_evidence": [
-    "control/heartbeat-carrier-runtime-state.json at HB31",
-    "control/worker-runtime-state.json observing HB31",
-    "receipts/heartbeat-transition-continuity/latest.json release complete",
-    "management/COSV_HEARTBEAT_STATE_PACKET_CONTRACT.json",
-    "scripts/cosv_state_packet.py",
-    "persisted first-live packet and validation receipt"
-  ],
+  "next_after_release": "Wait for the next admitted changed carrier reference, emit a DELTA against receipts/cosv/live/HB31.json, then StegVerse-Labs/StegBrain#861 consumes its gradient_inputs; StegBrain#865 consumes a separately precommitted same-reference expectation; #863/#865 require sufficient ordered observations for matrix/residual-series curvature.",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",
