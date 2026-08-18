@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
+  "adapters": [
+    {
+      "adapter_ref": "process:heartbeat-independent-oscillator-live-proof-v1",
+      "authority_ref": "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json#authority",
+      "capabilities": ["heartbeat_runtime_observation", "bounded_repository_mutation", "independent_oscillator_live_proof"],
+      "command": ["python", "workers/independent_heartbeat_live_proof_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [],
+      "notes": [
+        "One-shot WorkerCoordinator-owned live proof for the corrected independent heartbeat sampler.",
+        "Heartbeat progression remains oscillator-only; this worker samples and verifies it but does not cause it.",
+        "No GitHub token, NON-TV/TVC credential, hosted runtime, route, model, wallet or admissibility authority is exposed."
+      ],
+      "timeout_seconds": 30,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
