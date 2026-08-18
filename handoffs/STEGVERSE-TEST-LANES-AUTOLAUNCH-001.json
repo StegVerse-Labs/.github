@@ -1,0 +1,139 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
+  "created_at": "2026-08-18T15:00:00-05:00",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
+    "objective": "On authoritative StegVerse carrier/worker state changes, evaluate the canonical full-nine-lane launch matrix and automatically execute the exact nine-lane test only after all runtime, validation, TV/TVC credential, model-selection, plan, duplicate-claim and evidence boundaries are satisfied.",
+    "success_predicates": [
+      "HB30+ separated carrier is directly observed",
+      "WorkerCoordinator observes the current carrier and state reconstruction passes",
+      "same-execution StegVerse sovereign activation is directly evidenced",
+      "StegVerse local is PRIMARY with credential requirement NONE and third_party_inference_required=false",
+      "TVC route is admitted under TV/TVC-only credential authority",
+      "OpenAI, Anthropic, DeepSeek and Kimi capsules are live READY for the named canonical 9/9 run",
+      "external model selection is explicit and non-secret",
+      "exact manifest, task blob and READY plan are bound",
+      "a fresh fenced test-run claim exists with no duplicate execution claim",
+      "five candidate executions produce exactly nine sanitized lane-evidence records",
+      "deterministic comparison state is PASS"
+    ],
+    "failure_predicates": [
+      "heartbeat or assignment packet is treated as execution authority",
+      "a third-party provider is promoted to PRIMARY",
+      "a NON-TV/TVC secret or token is introduced",
+      "GitHub/hosted runtime becomes production execution authority",
+      "a static capsule BOUND claim substitutes for live TVC vault readiness",
+      "an incomplete/partial run is labeled canonical nine-lane",
+      "a duplicate or stale execution claim is allowed to run",
+      "source/workflow success is substituted for runtime evidence"
+    ],
+    "authority_ceiling": [
+      "runtime observation",
+      "bounded local process execution after fresh scheduler claim",
+      "receipt persistence under receipts/test-lanes-autolaunch/**",
+      "no credential authority",
+      "no source checkout authority",
+      "no wallet signing or broadcast authority",
+      "no provider authority promotion"
+    ],
+    "successor_policy": "NONE",
+    "max_successor_depth": 0
+  },
+  "task": {
+    "task_id": "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "docs/STEGVERSE_TEST_LANES_AUTOLAUNCH_MIRROR_HANDOFF.md",
+      "control/test-lanes-autolaunch-matrix.v1.json",
+      "workers/test_lanes_autolaunch_entrypoint.py",
+      "workers/test_lanes_autolaunch_worker.py",
+      "control/worker-registry.d/test-lanes-autolaunch.json",
+      "control/process-worker-adapters.d/test-lanes-autolaunch.json",
+      "authorizations/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json",
+      "cost-basis/worker-runtime/test-lanes-autolaunch.json",
+      "StegVerse-Labs/TVC:docs/PROVIDER_CAPSULE_MIRROR_HANDOFF.md",
+      "GCAT-BCAT-Engine/workflows:experiments/stegverse-test-lanes/TEST_LANES_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/.github#60"
+    ],
+    "parent_task_id": null,
+    "derivation_reason": "The heartbeat carrier is a non-authorizing state-transition signal. This task turns that signal into a conditional reevaluation surface and runs the canonical nine-lane experiment only through independently verified durable state plus a fresh WorkerCoordinator claim/fence.",
+    "canonical_owner_ref": "StegVerse-Labs/.github:docs/STEGVERSE_TEST_LANES_AUTOLAUNCH_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "stegverse:test-lanes:canonical-nine-lane-autolaunch",
+    "derivation_depth": 0,
+    "worker_registry_ref": "control/worker-registry.d/test-lanes-autolaunch.json",
+    "worker_id": "test-lanes-autolaunch-worker",
+    "adapter_ref": "process:test-lanes-autolaunch-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "observation_and_nonsecret_model_selection",
+    "priority": "release"
+  },
+  "authority": {
+    "authority_source": "StegVerse Test Lanes canonical contracts + TV/TVC provider authority + separated v12 WorkerCoordinator",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "shwp-test-lanes-autolaunch-v1",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "provider_secret_export_allowed": false,
+    "primary_provider": "stegverse_local",
+    "third_party_role": "CONTROL_OR_FALLBACK_ONLY",
+    "wallet_signing_authority": "NONE",
+    "broadcast_authority": "NONE",
+    "execution_authority_created_by_heartbeat": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "durable_state_reconstruction",
+      "test_lanes_autolaunch"
+    ],
+    "required_local_locators": [
+      "STEGVERSE_TVC_ROOT",
+      "STEGVERSE_TEST_LANES_ROOT",
+      "STEGVERSE_TEST_LANES_MODEL_SELECTION"
+    ],
+    "locator_semantics": "NON_SECRET_ALREADY_MATERIALIZED_LOCAL_PATHS_ONLY",
+    "worker": "workers/test_lanes_autolaunch_entrypoint.py",
+    "allowed_paths": ["receipts/test-lanes-autolaunch/**"],
+    "allowed_services": [],
+    "max_actions": 64,
+    "max_retries": 128,
+    "external_cost_ceiling_usd": null,
+    "runtime_window_beats": 128,
+    "rate_class": "test_lanes_autolaunch",
+    "hosted_execution_allowed": false
+  },
+  "activation": {
+    "carrier": "heartbeat_v12_assignment_trigger",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "authorizations/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json",
+    "recheck_trigger": "each carried assignment trigger / WorkerCoordinator reevaluation while the canonical nine-lane goal remains nonterminal",
+    "checkout_policy": "fenced_atomic_checkout",
+    "heartbeat_role": "WAKE_AND_REFERENCE_ONLY"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/test-lanes-autolaunch/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json",
+    "worker_registry_ref": "control/worker-registry.d/test-lanes-autolaunch.json",
+    "matrix_ref": "control/test-lanes-autolaunch-matrix.v1.json",
+    "master_records_required": true,
+    "terminal_destination": "master-records/orchestration"
+  },
+  "completion": {
+    "next_authorized_action": "After the fragment is projected into the live worker registry, the v12 carrier emits a non-authorizing assignment trigger. WorkerCoordinator independently validates this handoff, selects the exact worker capability, creates a fresh claim/fence, and invokes the conditional matrix worker. The worker remains BLOCKED until every canonical 9/9 predicate is directly satisfied, then executes one StegVerse PRIMARY candidate and four TVC external candidates, builds nine lane-evidence records and requires deterministic comparison PASS.",
+    "terminal_when": [
+      "CANONICAL_9_LANE_TEST_COMPLETE",
+      "all_nine_lanes_executed=true",
+      "comparison_pass=true",
+      "primary_provider=stegverse_local",
+      "credential_authority=TV/TVC",
+      "non_tv_tvc_secret_or_token_used=false",
+      "heartbeat_grants_execution_authority=false"
+    ],
+    "release_condition": "The canonical autolaunch worker receipt directly proves all nine lanes executed under a fresh fenced claim and the deterministic comparison passed, with required sovereign activation and TV/TVC credential/runtime evidence retained."
+  }
+}
