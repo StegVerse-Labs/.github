@@ -4,18 +4,13 @@ on:
   push:
     paths:
       - "control/test-lanes-autolaunch-matrix.v1.json"
-      - "control/worker-registry.d/test-lanes-autolaunch.json"
       - "control/process-worker-adapters.d/test-lanes-autolaunch.json"
-      - "authorizations/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json"
-      - "handoffs/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json"
-      - "cost-basis/worker-runtime/test-lanes-autolaunch.json"
       - "scripts/evaluate_test_lanes_autolaunch_matrix.py"
       - "workers/test_lanes_autolaunch_worker.py"
       - "workers/test_lanes_autolaunch_entrypoint.py"
       - "tests/test_test_lanes_autolaunch_matrix.py"
       - "tests/test_test_lanes_autolaunch_worker.py"
       - "tests/test_worker_registry_fragments.py"
-      - "docs/STEGVERSE_TEST_LANES_AUTOLAUNCH_MIRROR_HANDOFF.md"
       - ".github/workflows/test-lanes-autolaunch-validation.yml"
   pull_request:
     paths:
