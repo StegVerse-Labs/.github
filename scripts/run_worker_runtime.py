@@ -2,9 +2,10 @@
 """Run StegVerse worker lifecycle coordination separately from the heartbeat carrier.
 
 When the separated-v12 carrier has not yet been materialized, this entry point
-performs the one bounded HB29 -> HB30 carrier transition before starting the
-WorkerCoordinator. This breaks the bootstrap deadlock where WorkerCoordinator
-required HB30 before the already-installed transition producer could run.
+first consumes a valid portable iPhone recovery receipt when one is present; if
+none is available it executes the canonical bounded transition producer. After
+each WorkerCoordinator cycle it refreshes the seven transition release
+predicates without advancing the carrier.
 """
 from __future__ import annotations
 
@@ -33,6 +34,9 @@ INITIAL_CARRIER_REL = Path("control/heartbeat-carrier-runtime-state.json")
 LEGACY_STATE_REL = Path("control/heartbeat-state.json")
 TRANSITION_PRODUCER_REL = Path("scripts/advance_heartbeat_transition.py")
 TRANSITION_RECEIPT_REL = Path("receipts/heartbeat-transition-continuity/latest.json")
+PORTABLE_RECEIPT_DIR_REL = Path("receipts/heartbeat-transition-continuity")
+IPHONE_VERIFIER_REL = Path("scripts/verify_iphone_heartbeat_transition_receipt.py")
+TRANSITION_REFRESH_REL = Path("scripts/refresh_heartbeat_transition_receipt.py")
 SAFE_BOOTSTRAP_ENV = {
     "HOME", "USER", "LOGNAME", "SHELL", "PATH", "PYTHONPATH", "LANG", "LC_ALL", "TMPDIR",
     "XDG_CONFIG_HOME", "XDG_STATE_HOME", "LOCALAPPDATA", "UID", "STEGVERSE_HEARTBEAT_ROOT",
@@ -105,6 +109,42 @@ def _safe_bootstrap_env(values: dict[str, str] | None = None) -> dict[str, str]:
     return {name: source[name] for name in SAFE_BOOTSTRAP_ENV if source.get(name)}
 
 
+def _latest_portable_receipt(root: Path) -> Path | None:
+    directory = root / PORTABLE_RECEIPT_DIR_REL
+    if not directory.is_dir():
+        return None
+    candidates = sorted(directory.glob("iphone-portable-*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    return candidates[0] if candidates else None
+
+
+def _materialize_portable_receipt(root: Path, receipt: Path, *, env: dict[str, str] | None = None, runner=subprocess.run) -> dict[str, Any]:
+    verifier = root / IPHONE_VERIFIER_REL
+    carrier = root / INITIAL_CARRIER_REL
+    if not verifier.is_file():
+        return {"attempted": False, "state": "PORTABLE_VERIFIER_MISSING"}
+    completed = runner(
+        [sys.executable, str(verifier), str(receipt), "--root", str(root), "--materialize"],
+        check=False, capture_output=True, text=True, timeout=90, env=_safe_bootstrap_env(env),
+    )
+    if completed.returncode == 0 and carrier.is_file():
+        value = json.loads(carrier.read_text(encoding="utf-8"))
+        if isinstance(value.get("epoch"), int) and value["epoch"] >= 30:
+            return {
+                "attempted": True,
+                "state": "PORTABLE_RECEIPT_MATERIALIZED",
+                "carrier_epoch": value["epoch"],
+                "portable_receipt_ref": str(receipt.relative_to(root)),
+                "credential_authority": "TV/TVC",
+                "github_token_runtime_authority": "NONE",
+            }
+    return {
+        "attempted": True,
+        "state": "PORTABLE_RECEIPT_MATERIALIZATION_FAILED",
+        "returncode": completed.returncode,
+        "stderr_tail": completed.stderr[-1000:],
+    }
+
+
 def bootstrap_initial_carrier(root: Path, *, env: dict[str, str] | None = None, runner=subprocess.run) -> dict[str, Any]:
     """Materialize the first separated-v12 carrier state before worker startup."""
     root = root.resolve()
@@ -124,6 +164,13 @@ def bootstrap_initial_carrier(root: Path, *, env: dict[str, str] | None = None, 
     legacy = json.loads(legacy_path.read_text(encoding="utf-8"))
     if int(legacy.get("epoch", -1)) != 29:
         raise RuntimeError("initial separated-v12 bootstrap requires immutable legacy HB29")
+
+    portable = _latest_portable_receipt(root)
+    if portable is not None:
+        portable_result = _materialize_portable_receipt(root, portable, env=env, runner=runner)
+        if portable_result.get("state") == "PORTABLE_RECEIPT_MATERIALIZED":
+            return portable_result
+
     completed = runner(
         [sys.executable, str(producer_path), "--root", str(root), "--receipt-path", str(receipt_path)],
         check=False, capture_output=True, text=True, timeout=90, env=_safe_bootstrap_env(env),
@@ -139,6 +186,23 @@ def bootstrap_initial_carrier(root: Path, *, env: dict[str, str] | None = None, 
     return {"attempted": True, "state": "CARRIER_TRANSITION_COMPLETE", "carrier_epoch": epoch,
             "receipt_ref": str(TRANSITION_RECEIPT_REL), "credential_authority": "TV/TVC",
             "github_token_runtime_authority": "NONE", "non_tv_tvc_secret_or_token_forwarded": False}
+
+
+def refresh_transition_release(root: Path, *, runner=subprocess.run) -> dict[str, Any] | None:
+    script = root / TRANSITION_REFRESH_REL
+    receipt = root / TRANSITION_RECEIPT_REL
+    if not script.is_file() or not receipt.is_file():
+        return None
+    completed = runner(
+        [sys.executable, str(script), "--root", str(root)],
+        check=False, capture_output=True, text=True, timeout=30, env=_safe_bootstrap_env(),
+    )
+    value = json.loads(receipt.read_text(encoding="utf-8"))
+    return {
+        "returncode": completed.returncode,
+        "release_state": value.get("release_state"),
+        "all_release_predicates_pass": value.get("all_release_predicates_pass"),
+    }
 
 
 def main() -> int:
@@ -170,6 +234,10 @@ def main() -> int:
         if bootstrap_result is not None:
             result["initial_carrier_bootstrap"] = bootstrap_result
             bootstrap_result = None
+        if not args.dry_run:
+            refresh = refresh_transition_release(root)
+            if refresh is not None:
+                result["transition_release_refresh"] = refresh
         print(json.dumps(result, sort_keys=True), flush=True)
         index += 1
         if running and (args.continuous or index < args.cycles) and args.interval_ms:
