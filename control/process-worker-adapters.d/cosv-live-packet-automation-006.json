@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "COSV-LIVE-PACKET-AUTOMATION-006",
+  "adapters": [
+    {
+      "adapter_ref": "process:cosv-live-packet-automation-v1",
+      "authority_ref": "handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json#authority",
+      "capabilities": ["runtime_observation", "bounded_repository_mutation", "cosv_live_packet_materialization"],
+      "command": ["python", "workers/cosv_live_packet_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [],
+      "notes": [
+        "WorkerCoordinator-owned recurring COSV packet materializer.",
+        "Reads canonical carrier/worker/registry evidence and writes only receipts/cosv/live/**.",
+        "No GitHub token, provider secret, NON-TV/TVC credential, network source checkout, hosted inference, deployment, wallet, route or custody authority is exposed.",
+        "Heartbeat and packet authority effects remain NONE; StegBrain remains the gradient/introspection evaluator."
+      ],
+      "timeout_seconds": 30,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
