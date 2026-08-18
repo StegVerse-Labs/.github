@@ -10,23 +10,30 @@ on:
     branches: [main]
     paths:
       - 'workers/sovereign_runtime_activation_worker.py'
+      - 'workers/sovereign_runtime_activation_entrypoint.py'
       - 'scripts/advance_heartbeat_transition.py'
       - 'scripts/bootstrap_sovereign_runtime.py'
+      - 'scripts/refresh_heartbeat_transition_receipt.py'
       - 'management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json'
       - 'tests/test_g18_self_bootstrap_worker.py'
+      - 'tests/test_g18_task_capable_release_guard.py'
       - 'tests/test_hb29_state_transition_carrier_contract.py'
       - 'tests/test_sovereign_runtime_handoff_v12_contract.py'
       - 'scripts/verify_sovereign_runtime_activation.py'
       - 'tools/validate_active_worker_states.py'
+      - 'control/process-worker-adapters.json'
       - '.github/workflows/activate-sovereign-runtime-worker.yml'
   pull_request:
     paths:
       - 'workers/sovereign_runtime_activation_worker.py'
+      - 'workers/sovereign_runtime_activation_entrypoint.py'
       - 'scripts/advance_heartbeat_transition.py'
       - 'scripts/bootstrap_sovereign_runtime.py'
+      - 'scripts/refresh_heartbeat_transition_receipt.py'
       - 'management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json'
       - 'management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json'
       - 'tests/test_g18_self_bootstrap_worker.py'
+      - 'tests/test_g18_task_capable_release_guard.py'
       - 'tests/test_hb29_state_transition_carrier_contract.py'
       - 'tests/test_sovereign_runtime_handoff_v12_contract.py'
       - 'handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json'
@@ -65,8 +72,8 @@ jobs:
       - name: Validate sovereign state-transition worker and v12 handoff surfaces
         run: |
           set -euo pipefail
-          python3 -m py_compile workers/sovereign_runtime_activation_worker.py scripts/advance_heartbeat_transition.py scripts/bootstrap_sovereign_runtime.py scripts/verify_sovereign_runtime_activation.py tools/validate_active_worker_states.py
-          python3 -m unittest -v tests.test_g18_self_bootstrap_worker tests.test_hb29_state_transition_carrier_contract tests.test_sovereign_runtime_handoff_v12_contract
+          python3 -m py_compile workers/sovereign_runtime_activation_worker.py workers/sovereign_runtime_activation_entrypoint.py scripts/advance_heartbeat_transition.py scripts/bootstrap_sovereign_runtime.py scripts/refresh_heartbeat_transition_receipt.py scripts/verify_sovereign_runtime_activation.py tools/validate_active_worker_states.py
+          python3 -m unittest -v tests.test_g18_self_bootstrap_worker tests.test_g18_task_capable_release_guard tests.test_hb29_state_transition_carrier_contract tests.test_sovereign_runtime_handoff_v12_contract
 
       - name: Prove validation lane is non-authorizing
         run: |
