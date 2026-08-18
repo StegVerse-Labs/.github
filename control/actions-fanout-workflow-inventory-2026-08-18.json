@@ -1,0 +1,47 @@
+{
+  "schema": "stegverse.actions-fanout-workflow-inventory/v1",
+  "date": "2026-08-18",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "tree_sha": "5bc4db843c32d0f39fef51afe12f6937d17c8045",
+  "workflow_tree_sha": "e7c11359207c9110f854a9154f6108f8e3ccc1c4",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "render_authority": false,
+  "workflow_count": 18,
+  "classification_complete": true,
+  "selectively_repaired_count": 14,
+  "retained_unchanged_count": 4,
+  "workflows": [
+    {"path": ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml", "classification": "SELECTIVE_REPAIR_INSTALLED"},
+    {"path": ".github/workflows/activate-host-self-attest-worker.yml", "classification": "SELECTIVE_REPAIR_INSTALLED"},
+    {"path": ".github/workflows/activate-sovereign-runtime-worker.yml", "classification": "SELECTIVE_REPAIR_INSTALLED"},
+    {"path": ".github/workflows/all-org-heartbeat-federation.yml", "classification": "SELECTIVE_REPAIR_INSTALLED"},
+    {"path": ".github/workflows/archive-readiness-validate.yml", "classification": "SELECTIVE_REPAIR_INSTALLED"},
+    {"path": ".github/workflows/external-timing-match-validation.yml", "classification": "RETAIN_PR_MANUAL_ONLY"},
+    {"path": ".github/workflows/heartbeat-worker-project.yml", "classification": "SELECTIVE_REPAIR_INSTALLED"},
+    {"path": ".github/workflows/mcp-activation-binding-test.yml", "classification": "RETAIN_PR_MANUAL_ONLY"},
+    {"path": ".github/workflows/native-process-worker-canary.yml", "classification": "SELECTIVE_REPAIR_INSTALLED"},
+    {"path": ".github/workflows/org-control-plane-validate.yml", "classification": "SELECTIVE_REPAIR_INSTALLED"},
+    {"path": ".github/workflows/org-handoff-render.yml", "classification": "SELECTIVE_REPAIR_INSTALLED"},
+    {"path": ".github/workflows/org-heartbeat-watchdog.yml", "classification": "RETAIN_MANUAL_ONLY"},
+    {"path": ".github/workflows/org-heartbeat.yml", "classification": "SELECTIVE_REPAIR_INSTALLED"},
+    {"path": ".github/workflows/sovereign-ephemeral-console.yml", "classification": "SELECTIVE_REPAIR_INSTALLED"},
+    {"path": ".github/workflows/sovereign-runtime-self-bootstrap.yml", "classification": "SELECTIVE_REPAIR_INSTALLED"},
+    {"path": ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml", "classification": "RETAIN_PR_ONLY"},
+    {"path": ".github/workflows/steggate-heartbeat-integration.yml", "classification": "SELECTIVE_REPAIR_INSTALLED"},
+    {"path": ".github/workflows/test-lanes-autolaunch-validation.yml", "classification": "SELECTIVE_REPAIR_INSTALLED"}
+  ],
+  "retained_rationale": {
+    ".github/workflows/external-timing-match-validation.yml": "No automatic main push fanout; pull-request and manual coverage are intentional.",
+    ".github/workflows/mcp-activation-binding-test.yml": "No automatic main push fanout; pull-request and manual coverage are intentional.",
+    ".github/workflows/org-heartbeat-watchdog.yml": "Manual diagnostic only.",
+    ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml": "Pull-request only, permissions empty, no GitHub credential authority, fail-closed without private source; no routine main-state fanout to remove."
+  },
+  "completion_evidence": {
+    "exact_live_tree_inventory": true,
+    "routine_main_state_persistence_trigger_inventory_complete": true,
+    "post_repair_quantitative_run_history": "AWAITING_SUPPORTED_REPOSITORY_LEVEL_RUN_HISTORY_READ"
+  },
+  "status": "ACTIVE_EVIDENCE_FOLLOWUP_REQUIRED"
+}
