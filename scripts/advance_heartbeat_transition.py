@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Advance the canonical heartbeat by one bounded state transition.
+"""Compatibility command that samples the independent heartbeat oscillator.
 
-The carrier transition and final release are intentionally separate: this
-producer derives/persists the successor, while an independently admitted
-WorkerCoordinator must later observe that successor. The transition receipt
-always contains the full seven-predicate continuity contract and is refreshable
-without advancing the carrier.
+This command does not advance, authorize, schedule, or gate the heartbeat.
+The heartbeat progresses independently at a 10 ms phase-travel/reference
+interval. This command merely persists the oscillator-derived reference visible
+at sampling time and records downstream observation status separately.
 """
 from __future__ import annotations
 
@@ -13,32 +12,26 @@ import argparse
 import hashlib
 import json
 import os
-import subprocess
 import sys
 import tempfile
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-CONTRACT_REL = Path("management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json")
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from heartbeat_runtime.engine_v12 import HeartbeatRuntime  # noqa: E402
+from heartbeat_runtime.independent_oscillator import FREQUENCY_RULE, OSCILLATOR_PERIOD_MS  # noqa: E402
+
 LEGACY_REL = Path("control/heartbeat-state.json")
 CARRIER_REL = Path("control/heartbeat-carrier-runtime-state.json")
 CONTROL_PLANE_REL = Path("control/worker-control-plane-coordination.json")
 WORKER_STATE_REL = Path("control/worker-runtime-state.json")
-CUTOVER_REL = Path("receipts/heartbeat-schema-cutover/HB29.json")
 DEFAULT_RECEIPT_REL = Path("receipts/heartbeat-transition-continuity/latest.json")
 THIRD_PARTY_ENV_VARS = (
-    "GITHUB_ACTIONS",
-    "RENDER",
-    "RENDER_SERVICE_ID",
-    "VERCEL",
-    "CF_PAGES",
-    "CLOUDFLARE_WORKERS",
+    "GITHUB_ACTIONS", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS",
 )
-SAFE_CHILD_ENV = {
-    "HOME", "USER", "LOGNAME", "SHELL", "PATH", "PYTHONPATH", "LANG", "LC_ALL", "TMPDIR",
-    "XDG_CONFIG_HOME", "XDG_STATE_HOME", "LOCALAPPDATA", "UID", "STEGVERSE_HEARTBEAT_ROOT",
-}
 
 
 def truthy(value: str | None) -> bool:
@@ -66,8 +59,8 @@ def atomic_write(path: Path, value: dict[str, Any]) -> None:
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as handle:
         json.dump(value, handle, indent=2, sort_keys=True)
         handle.write("\n")
-        temp_name = handle.name
-    os.replace(temp_name, path)
+        name = handle.name
+    os.replace(name, path)
 
 
 def active_leases(control_plane: dict[str, Any]) -> list[dict[str, Any]]:
@@ -84,153 +77,96 @@ def no_duplicate_claim_or_fence(control_plane: dict[str, Any]) -> bool:
     return len(claims) == len(set(claims)) and len(fences) == len(set(fences)) and len(instances) == len(set(instances))
 
 
-def clean_child_env(env: dict[str, str] | None = None) -> dict[str, str]:
-    values = os.environ if env is None else env
-    return {name: values[name] for name in SAFE_CHILD_ENV if values.get(name)}
-
-
-def advance(root: Path, receipt_path: Path, *, env: dict[str, str] | None = None) -> dict[str, Any]:
+def sample(root: Path, receipt_path: Path, *, env: dict[str, str] | None = None) -> dict[str, Any]:
     root = root.expanduser().resolve()
     receipt_path = receipt_path.expanduser().resolve()
-    contract_path = root / CONTRACT_REL
     legacy_path = root / LEGACY_REL
     carrier_path = root / CARRIER_REL
     control_plane_path = root / CONTROL_PLANE_REL
     worker_state_path = root / WORKER_STATE_REL
-    cutover_path = root / CUTOVER_REL
-    runner_path = root / "scripts" / "run_heartbeat_runtime.py"
 
     receipt: dict[str, Any] = {
-        "schema": "stegverse.heartbeat-state-transition-receipt/v1",
-        "contract_ref": str(CONTRACT_REL),
-        "legacy_state_ref": str(LEGACY_REL),
-        "carrier_state_ref": str(CARRIER_REL),
-        "worker_control_plane_ref": str(CONTROL_PLANE_REL),
-        "worker_runtime_state_ref": str(WORKER_STATE_REL),
-        "continuity_model": "STATE_TRANSITION_CONTINUITY",
-        "sole_permitted_user_physical_carrier": "CURRENT_USER_IPHONE",
-        "transition_compute_grants_physical_carrier_identity": False,
-        "always_on_external_host_required": False,
-        "wall_clock_continuous_process_required": False,
+        "schema": "stegverse.heartbeat-state-transition-receipt/v2",
+        "contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
+        "continuity_model": "INDEPENDENT_OSCILLATOR_CONTINUITY",
+        "oscillator_period_ms": OSCILLATOR_PERIOD_MS,
+        "frequency_rule": FREQUENCY_RULE,
+        "progression_dependency": "OSCILLATOR_ONLY",
+        "observation_is_causal": False,
         "credential_authority": "TV/TVC",
-        "credential_requirement": "NONE",
         "github_token_runtime_authority": "NONE",
         "non_tv_tvc_secret_or_token_forwarded": False,
-        "hosted_environment_rejected": False,
         "state": "FAIL_CLOSED",
-        "reason": None,
+        "release_state": "FAIL_CLOSED",
     }
 
     if hosted_environment(env):
-        receipt["hosted_environment_rejected"] = True
-        receipt["reason"] = "HOSTED_ENVIRONMENT_CANNOT_PRODUCE_SOVEREIGN_TRANSITION"
+        receipt["reason"] = "THIRD_PARTY_HOST_IS_NOT_PRIMARY_SOVEREIGN_CARRIER_EVIDENCE"
         atomic_write(receipt_path, receipt)
         return receipt
-
-    required = [contract_path, legacy_path, runner_path, root / "heartbeat_runtime" / "engine_v12.py"]
-    missing = [str(path.relative_to(root)) for path in required if not path.is_file()]
-    if missing:
-        receipt["reason"] = "CANONICAL_TRANSITION_SOURCE_INCOMPLETE"
-        receipt["missing_source"] = missing
-        atomic_write(receipt_path, receipt)
-        return receipt
-
-    contract = load_json(contract_path)
-    expected_predicates = [
-        "legacy_hb29_unchanged",
-        "carrier_epoch_at_least_30",
-        "carrier_generation_non_regressing",
-        "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch",
-        "worker_control_plane_observed",
-        "no_duplicate_claim_or_fence",
-        "state_reconstruction_pass",
-    ]
-    if (
-        contract.get("continuity_model") != "STATE_TRANSITION_CONTINUITY"
-        or contract.get("legacy_epoch") != 29
-        or contract.get("first_successor_epoch") != 30
-        or contract.get("always_on_external_host_required") is not False
-        or contract.get("completion_predicates") != expected_predicates
-    ):
-        receipt["reason"] = "STATE_TRANSITION_CONTRACT_INVALID"
+    if not legacy_path.is_file():
+        receipt["reason"] = "LEGACY_HB29_PROVENANCE_MISSING"
         atomic_write(receipt_path, receipt)
         return receipt
 
     legacy_before = legacy_path.read_bytes()
-    legacy = json.loads(legacy_before.decode("utf-8"))
-    if int(legacy.get("epoch", -1)) != 29:
-        receipt["reason"] = "LEGACY_HB29_SOURCE_INVALID"
-        atomic_write(receipt_path, receipt)
-        return receipt
-
     before_epoch = 29
-    before_generation = int(legacy.get("generation", 29))
+    before_generation = 29
     if carrier_path.is_file():
-        before = load_json(carrier_path)
-        before_epoch = int(before.get("epoch", -1))
-        before_generation = int(before.get("generation", -1))
-        if before_epoch < 30:
-            receipt["reason"] = "EXISTING_CARRIER_STATE_BELOW_HB30"
-            atomic_write(receipt_path, receipt)
-            return receipt
+        prior = load_json(carrier_path)
+        before_epoch = int(prior.get("epoch", 29))
+        before_generation = int(prior.get("generation", before_epoch))
 
-    command = [sys.executable, str(runner_path), "--root", str(root), "--cycles", "1", "--interval-ms", "0"]
-    completed = subprocess.run(command, check=False, capture_output=True, text=True, timeout=60, env=clean_child_env(env))
-    receipt["transition_command"] = command
-    receipt["transition_returncode"] = completed.returncode
-    if completed.returncode != 0:
-        receipt["reason"] = "CARRIER_TRANSITION_EXECUTION_FAILED"
-        receipt["stderr_tail"] = completed.stderr[-2000:]
+    result = HeartbeatRuntime(root).cycle(write=True)
+    if not carrier_path.is_file():
+        receipt["reason"] = "OSCILLATOR_SAMPLE_NOT_YET_PAST_FIRST_10MS_REFERENCE"
+        receipt["sample_result"] = result
         atomic_write(receipt_path, receipt)
         return receipt
 
-    if not carrier_path.is_file() or not control_plane_path.is_file():
-        receipt["reason"] = "CARRIER_TRANSITION_OUTPUT_INCOMPLETE"
-        atomic_write(receipt_path, receipt)
-        return receipt
-
-    after = load_json(carrier_path)
-    control_plane = load_json(control_plane_path)
+    carrier = load_json(carrier_path)
+    control_plane = load_json(control_plane_path) if control_plane_path.is_file() else {}
     worker_state = load_json(worker_state_path) if worker_state_path.is_file() else {}
+    after_epoch = int(carrier.get("epoch", -1))
+    after_generation = int(carrier.get("generation", -1))
+    oscillator = carrier.get("oscillator") or {}
     legacy_after = legacy_path.read_bytes()
-    after_epoch = int(after.get("epoch", -1))
-    after_generation = int(after.get("generation", -1))
-    expected_min_epoch = 30 if before_epoch == 29 else before_epoch + 1
-    legacy_unchanged = legacy_after == legacy_before
-    no_duplicates = no_duplicate_claim_or_fence(control_plane)
-    cutover_bound = cutover_path.is_file() if before_epoch == 29 else True
-    observed_epoch = worker_state.get("last_observed_carrier_epoch")
-    worker_observed = isinstance(observed_epoch, int) and observed_epoch >= after_epoch
 
-    predicates = {
-        "legacy_hb29_unchanged": legacy_unchanged and sha256_bytes(legacy_after) == sha256_bytes(legacy_before),
-        "carrier_epoch_at_least_30": after_epoch >= expected_min_epoch,
+    carrier_predicates = {
+        "legacy_hb29_unchanged": legacy_after == legacy_before and int(json.loads(legacy_after.decode("utf-8")).get("epoch", -1)) == 29,
+        "oscillator_period_exactly_10ms": oscillator.get("period_ns") == 10_000_000 and oscillator.get("phase_travel_time_ms") == 10,
+        "carrier_epoch_non_regressing": after_epoch >= before_epoch,
         "carrier_generation_non_regressing": after_generation >= before_generation,
-        "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch": worker_observed,
-        "worker_control_plane_observed": control_plane.get("schema") == "stegverse.worker-control-plane-coordination/v1",
-        "no_duplicate_claim_or_fence": no_duplicates,
-        "state_reconstruction_pass": legacy_unchanged and cutover_bound and after_epoch >= expected_min_epoch,
+        "carrier_reference_derived_from_oscillator": carrier.get("frequency_rule") == FREQUENCY_RULE and oscillator.get("progression_dependency") == "OSCILLATOR_ONLY" and oscillator.get("observation_is_causal") is False,
+        "state_reconstruction_pass": carrier.get("reference_frame") == f"heartbeat_epoch:{after_epoch}" and oscillator.get("sampled_reference_epoch") == after_epoch,
     }
-    carrier_predicates = {k: v for k, v in predicates.items() if k != "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch"}
+    observed_epoch = worker_state.get("last_observed_carrier_epoch")
+    consumer_observation = {
+        "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch": isinstance(observed_epoch, int) and observed_epoch >= after_epoch,
+        "worker_control_plane_observed": control_plane.get("schema") == "stegverse.worker-control-plane-coordination/v1",
+        "no_duplicate_claim_or_fence": bool(control_plane) and no_duplicate_claim_or_fence(control_plane),
+    }
+
     receipt.update({
         "legacy_state_sha256": sha256_bytes(legacy_before),
-        "carrier_epoch_before": before_epoch,
-        "carrier_generation_before": before_generation,
+        "carrier_epoch_before_observation": before_epoch,
+        "carrier_generation_before_observation": before_generation,
         "carrier_epoch_after": after_epoch,
         "carrier_generation_after": after_generation,
-        "cutover_receipt_observed": cutover_bound,
-        "predicates": predicates,
+        "elapsed_heartbeat_references_since_prior_observation": max(0, after_epoch - before_epoch),
+        "predicates": {**carrier_predicates, **consumer_observation},
+        "carrier_predicates": carrier_predicates,
+        "consumer_observation_predicates": consumer_observation,
         "all_carrier_transition_predicates_pass": all(carrier_predicates.values()),
-        "all_release_predicates_pass": all(predicates.values()),
-        "release_state": "RELEASE_COMPLETE" if all(predicates.values()) else "WORKER_CHECKPOINT_PENDING",
+        "all_release_predicates_pass": all(carrier_predicates.values()),
+        "consumer_observation_complete": all(consumer_observation.values()),
+        "state": "CARRIER_TRANSITION_COMPLETE" if all(carrier_predicates.values()) else "REVIEW_REQUIRED",
+        "release_state": "RELEASE_COMPLETE" if all(carrier_predicates.values()) else "REVIEW_REQUIRED",
+        "reason": "OSCILLATOR_REFERENCE_SAMPLED_AND_VERIFIED" if all(carrier_predicates.values()) else "OSCILLATOR_SAMPLE_INVARIANTS_INCOMPLETE",
+        "heartbeat_progression_waited_for_worker": False,
+        "heartbeat_progression_waited_for_task": False,
+        "heartbeat_progression_waited_for_admission": False,
     })
-    if all(carrier_predicates.values()):
-        receipt["state"] = "CARRIER_TRANSITION_COMPLETE"
-        receipt["reason"] = "HB29_TO_V12_SUCCESSOR_TRANSITION_VERIFIED" if before_epoch == 29 else "V12_SUCCESSOR_TRANSITION_VERIFIED"
-    else:
-        receipt["state"] = "REVIEW_REQUIRED"
-        receipt["reason"] = "CARRIER_TRANSITION_PREDICATES_INCOMPLETE"
-
     atomic_write(receipt_path, receipt)
     return receipt
 
@@ -242,7 +178,7 @@ def main() -> int:
     args = parser.parse_args()
     root = args.root.expanduser().resolve()
     receipt_path = (args.receipt_path or (root / DEFAULT_RECEIPT_REL)).expanduser().resolve()
-    result = advance(root, receipt_path)
+    result = sample(root, receipt_path)
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result.get("state") == "CARRIER_TRANSITION_COMPLETE" else 1
 
