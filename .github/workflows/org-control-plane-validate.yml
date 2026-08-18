@@ -1,8 +1,31 @@
 name: Validate organization control plane - No GitHub Token Authority
 
-# Cost control: explicit/manual validation only. Heartbeat/state commits must not
-# automatically fan out into paid hosted validation runs.
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'schemas/**'
+      - 'scripts/**'
+      - 'checks/**'
+      - 'heartbeat_runtime/**'
+      - 'tools/validate_active_worker_states.py'
+      - 'tests/**'
+      - 'handoffs/**'
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'control/**'
+      - 'events/**'
+      - 'schemas/**'
+      - 'tasks/**'
+      - 'scripts/**'
+      - 'checks/**'
+      - 'heartbeat_runtime/**'
+      - 'tools/validate_active_worker_states.py'
+      - 'tests/**'
+      - 'handoffs/**'
+      - 'docs/**'
+      - '.github/workflows/org-control-plane-validate.yml'
   workflow_dispatch:
 
 permissions: {}
@@ -16,6 +39,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Anonymous public checkout without GitHub credential token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
           test -z "${GITHUB_TOKEN:-}"
@@ -23,7 +48,11 @@ jobs:
           git config --global --unset-all http.https://github.com/.extraheader || true
           git init .
           git remote add origin https://github.com/StegVerse-Labs/.github.git
-          env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
           git checkout --detach FETCH_HEAD
           mkdir -p /tmp/stegverse-ci-bin
           ln -sf "$(command -v python3)" /tmp/stegverse-ci-bin/python
@@ -31,6 +60,7 @@ jobs:
 
       - name: Fail closed on unregistered workflow proliferation
         run: python scripts/validate_workflow_surface_hygiene.py
+
       - name: Validate control-plane invariants
         run: python scripts/validate_org_control_plane.py
       - name: Validate active-worker ownership invariant
@@ -47,6 +77,7 @@ jobs:
         run: python -m unittest tests.test_heartbeat_runtime_separation -v
       - name: Prove cross-repository dependency collision enforcement
         run: python -m unittest tests.test_cross_repository_dependency_claims -v
+
       - name: Validate organization continuation and aggregation surfaces
         run: |
           python3 scripts/check_org_operational_observer.py
@@ -56,6 +87,7 @@ jobs:
           python3 -m unittest tests.test_session_assistance_scope -v
           python3 scripts/check_required_terms.py docs/ORG_MIRROR_HANDOFF.md checks/org_mirror_handoff_terms.txt
           python3 scripts/check_org_aggregation_manifest.py
+
       - name: Exercise allocator deterministically without persistence authority
         run: |
           before="$(sha256sum control/claims-active.json 2>/dev/null || true)"
@@ -84,7 +116,14 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           text=Path('.github/workflows/org-control-plane-validate.yml').read_text(encoding='utf-8')
-          pieces=(('contents', ': write'),('git',' push'),('actions/','checkout@'),('actions/','setup-python@'),('secrets.','GITHUB_TOKEN'),('github.','token'))
+          pieces=(
+              ('contents', ': write'),
+              ('git', ' push'),
+              ('actions/', 'checkout@'),
+              ('actions/', 'setup-python@'),
+              ('secrets.', 'GITHUB_TOKEN'),
+              ('github.', 'token'),
+          )
           found=[a+b for a,b in pieces if a+b in text]
           assert not found, found
           assert 'permissions: {}' in text
