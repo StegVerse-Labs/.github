@@ -2,12 +2,12 @@
   "schema": "stegverse.session-goal-inventory/v1",
   "inventory_id": "SESSION-2026-08-17-LOCAL-RUNTIME-TRADE-ACTIVATION-RECONCILIATION",
   "created_at": "2026-08-17T16:40:00-05:00",
-  "updated_at": "2026-08-17T23:52:00-05:00",
+  "updated_at": "2026-08-17T23:59:00-05:00",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
   "session_role": "ACTIVE_DISTINCT_SUPPORT_ROLE",
   "archive_ready": false,
-  "archive_block_reason": "The current session rule requires governed activation observation before archival. Local model/runtime source is released and StegFin pre-sign trade readiness is complete, but direct dual-blob Site publication proof and CURRENT_USER_IPHONE HB30/WorkerCoordinator/live sovereign inference activation remain unobserved. An adjacent stale StegGate rendezvous worker reference was also transferred to its canonical Site owner for reconciliation without acquiring that worker claim.",
+  "archive_block_reason": "The current session rule requires governed activation observation before archival. Local model/runtime source is released and StegFin pre-sign trade readiness is complete, but the newly explicit StegVerse-primary provider refinement is implemented on micro-node-runtime PR #40 and blocked on TVC private-source-read validation, while direct dual-blob Site publication proof and CURRENT_USER_IPHONE HB30/WorkerCoordinator/live sovereign inference activation remain unobserved.",
   "governing_constraints": {
     "render_allowed": false,
     "primary_provider": "STEGVERSE_OWNED_LOCAL_PRIVATE",
@@ -22,6 +22,8 @@
     "docs/ORG_MIRROR_HANDOFF.md",
     "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_RUNTIME_PROVIDER_PRIORITY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/docs/PRIVATE_SOURCE_READ_MIRROR_HANDOFF.md",
     "StegVerse-Labs/TVC/docs/SOVEREIGN_LOCAL_MODEL_ROUTE_MIRROR_HANDOFF.md",
     "StegVerse-org/LLM-adapter/docs/LLM_ADAPTER_MIRROR_HANDOFF.md",
     "StegVerse-Labs/stegfin-governance/docs/STEGFIN_MIRROR_HANDOFF.md",
@@ -38,7 +40,28 @@
       "validation_state": "canonical language-model runtime validation 31339534741 SUCCESS; persistent endpoint validation 31384116055 SUCCESS; visual model/runtime release COMPLETE_RELEASED",
       "integration_state": "TRANSFERRED_TO_CANONICAL_LIVE_ACTIVATION_CHAIN",
       "archival_dependency": false,
-      "next_executable_action": "No duplicate implementation. G18/TVC/LLM-adapter/Master Records consumes the released runtime after HB30+ activation predicates are satisfied."
+      "next_executable_action": "No duplicate base implementation. The bounded provider-priority refinement below must complete before the live chain consumes the selected runtime."
+    },
+    {
+      "task_id": "SOVEREIGN-LOCAL-RUNTIME-PROVIDER-PRIORITY-004",
+      "originating_goal": "Use StegVerse as the primary model/runtime provider; optional third-party local engines may be fallback solutions only and may never become required or authoritative.",
+      "destination": "StegVerse-002/micro-node-runtime#39 / PR #40",
+      "claim_state": "BLOCKED_VALIDATION_TVC_PRIVATE_SOURCE_CAPABILITY",
+      "completion_state": "IMPLEMENTED_PENDING_EXECUTABLE_VALIDATION",
+      "validation_state": "PR #40 exact observed head 072d5a594ab82e4b3f4b82ac33a902aac31db3cb; Validate Micro-Node Runtime run 32101099109 job 95601632536 completed SUCCESS only in bounded BLOCKED_DEPENDENCY mode; source materialization and canonical verification skipped because TVC_PRIVATE_SOURCE_READ_TOKEN/capability was absent; GITHUB_TOKEN/GH_TOKEN explicitly empty; no fallback credential substituted",
+      "integration_state": "IMPLEMENTATION_CLAIM_ACTIVE_PR_OPEN_MERGE_PROHIBITED_UNTIL_EXACT_SOURCE_PASS",
+      "archival_dependency": true,
+      "evidence": [
+        "StegVerse-002/micro-node-runtime#39",
+        "StegVerse-002/micro-node-runtime#40",
+        "StegVerse-002/micro-node-runtime/work_claims/SOVEREIGN-LOCAL-RUNTIME-PROVIDER-PRIORITY-004.json",
+        "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_RUNTIME_PROVIDER_PRIORITY_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/TVC#33 comment 5323813144",
+        "StegVerse-002/micro-node-runtime#39 comment 5323814709"
+      ],
+      "provider_policy": "stegverse-reference PRIMARY; local llama.cpp/Ollama FALLBACK_ONLY; hosted provider fallback DISALLOWED",
+      "machine_observable_release_condition": "TVC canonical owner provides tvc.private-source-read.v1 bound to the exact then-current PR #40 head/caller/source/task with <=900s TTL and no credential disclosure; source-dependent runtime validation, handoff/semantic verification and continuity provenance actually execute and PASS; PR #40 merges current; bounded claim becomes COMPLETE_RELEASED.",
+      "next_executable_action": "Existing TVC #33 heartbeat/credential-admission owner evaluates the newly registered PR #40 exact-source read request; this session observes and validates without minting credentials or modifying the active #40 implementation claim."
     },
     {
       "task_id": "STEGFIN-BASE-ROUNDTRIP-001",
@@ -90,7 +113,7 @@
       "destination": "StegVerse-Labs/.github#60",
       "claim_state": "MACHINE_OWNED",
       "completion_state": "NOT_YET_ACTIVATED",
-      "validation_state": "Source path complete; 2026-08-17T23:52-05:00 direct repository observation still finds control/heartbeat-carrier-runtime-state.json, control/worker-runtime-state.json, and receipts/heartbeat-transition-continuity/latest.json absent while legacy control/heartbeat-state.json remains HB29/G18",
+      "validation_state": "Source path complete; direct repository observation still finds control/heartbeat-carrier-runtime-state.json, control/worker-runtime-state.json, and receipts/heartbeat-transition-continuity/latest.json absent while legacy control/heartbeat-state.json remains HB29/G18",
       "integration_state": "BLOCKED_ON_HB30_AND_WORKERCOORDINATOR_OBSERVATION",
       "archival_dependency": true,
       "provider_policy": "StegVerse-owned/local/private inference PRIMARY; third-party fallback only if separately admitted and never required or authoritative",
@@ -99,7 +122,7 @@
         "StegVerse-Labs/.github#60 issue comment 5323782736 provider-priority reconciliation"
       ],
       "machine_observable_release_condition": "HB30+ carrier + WorkerCoordinator observation + orphan recovery completion + fresh authorized inference fence >20 + private local model proof + TVC ROUTE_ADMITTED credential_requirement NONE + exact LLM-adapter execution + measured usage + same-execution Master Records reconstruction PASS.",
-      "next_executable_action": "G18 and the canonical inference worker continue automatically after the HB30 physical/materialization boundary is satisfied."
+      "next_executable_action": "G18 and the canonical inference worker continue automatically after the HB30 physical/materialization boundary is satisfied and the StegVerse-primary runtime refinement is released."
     },
     {
       "task_id": "VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023",
@@ -126,7 +149,7 @@
     }
   ],
   "direct_observation": {
-    "observed_at": "2026-08-17T23:52:00-05:00",
+    "observed_at": "2026-08-17T23:59:00-05:00",
     "legacy_heartbeat": "HB29 / generation 29; G18 SOVEREIGN_RUNTIME_SOLUTION_REQUIRED retained",
     "heartbeat_carrier_runtime_state": "NOT_PRESENT",
     "worker_runtime_state": "NOT_PRESENT",
@@ -139,11 +162,16 @@
     "site_wallet_browser_projection": "MERGED_AND_VALIDATED",
     "site_corrected_publication_recheck_trigger": "63333dbe0d90611b477a85b39bf38356567d95b5",
     "site_corrected_publication_proof": "RECHECK_TRIGGERED_RESULT_NOT_YET_OBSERVED",
+    "stegverse_primary_runtime_refinement": "PR_40_IMPLEMENTED_BLOCKED_ON_TVC_PRIVATE_SOURCE_VALIDATION",
+    "stegverse_primary_runtime_pr_head": "072d5a594ab82e4b3f4b82ac33a902aac31db3cb",
+    "tvc_private_source_read_request": "TVC_33_COMMENT_5323813144",
     "steggate_g13_reference": "STALE_HANDOFF_REF_RECONCILIATION_TRANSFERRED_TO_SITE_24",
     "product_activation_complete": false
   },
   "duplicate_execution_prevention": {
     "do_not_reimplement_local_model_runtime": true,
+    "do_not_compete_with_micro_node_pr_40_provider_priority_claim": true,
+    "do_not_mint_or_substitute_private_source_credential_outside_tvc_33": true,
     "do_not_execute_stegfin_continuity_fallback_for_completed_wallet_handoff": true,
     "do_not_acquire_g18_claim_or_fence_from_chat": true,
     "do_not_create_second_heartbeat_or_workercoordinator": true,
@@ -153,12 +181,17 @@
     "do_not_make_third_party_provider_primary_or_required": true
   },
   "session_consolidation": {
-    "total_goal_classes": 7,
-    "complete_or_durably_owned": 7,
+    "total_goal_classes": 8,
+    "complete_or_durably_owned": 8,
     "unique_implementation_work_remaining": 0,
     "distinct_support_work_remaining": 1,
-    "support_role": "Observe and reconcile Site #388 corrected publication plus CURRENT_USER_IPHONE/HB30/WorkerCoordinator activation, while preserving StegVerse-primary provider policy and avoiding machine/publication/route/credential/wallet/signing/broadcast claim collisions.",
+    "support_role": "Validate and reconcile the active StegVerse-primary runtime refinement through TVC #33 without taking its implementation/credential claim, observe Site #388 corrected publication plus CURRENT_USER_IPHONE/HB30/WorkerCoordinator activation, and avoid machine/publication/route/credential/wallet/signing/broadcast claim collisions.",
     "canonical_continuation": [
+      "StegVerse-002/micro-node-runtime#39",
+      "StegVerse-002/micro-node-runtime#40",
+      "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_RUNTIME_PROVIDER_PRIORITY_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/TVC#33",
+      "StegVerse-Labs/TVC/docs/PRIVATE_SOURCE_READ_MIRROR_HANDOFF.md",
       "StegVerse-Labs/Site#388",
       "StegVerse-Labs/Site/docs/STEGFIN_PHONE_PROJECTION_MIRROR_HANDOFF.md",
       "StegVerse-Labs/Site/data/support-validation-requests/SITE-STEGFIN-388-PUBLICATION-RECHECK-20260817T2221-0500.json",
