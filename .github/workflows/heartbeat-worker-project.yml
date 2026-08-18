@@ -1,10 +1,31 @@
 # Validation-only workflow for SHWP control-plane artifacts.
-# Cost control: explicit/manual validation only. Heartbeat/state commits must not
-# automatically fan out into paid hosted validation runs.
+# It has no scheduler, activation, repository mutation, credential, claim, or fence role.
 # TV/TVC owns credential semantics; worker lifecycle coordination is separate from the heartbeat carrier.
 name: Heartbeat Worker Project - Validation Only / No GitHub Token Authority
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'heartbeat_runtime/**'
+      - 'workers/**'
+      - 'tests/**'
+      - 'cost-basis/worker-runtime/**'
+      - 'schemas/**'
+      - 'scripts/**'
+      - 'handoffs/**'
+  pull_request:
+    paths:
+      - 'handoffs/**'
+      - 'heartbeat_runtime/**'
+      - 'workers/**'
+      - 'tests/**'
+      - 'control/**'
+      - 'cost-basis/worker-runtime/**'
+      - 'docs/**'
+      - 'schemas/**'
+      - 'scripts/**'
+      - '.github/workflows/heartbeat-worker-project.yml'
   workflow_dispatch:
 
 permissions: {}
@@ -18,6 +39,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Anonymous public checkout without GitHub token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
           test -z "${GITHUB_TOKEN:-}"
@@ -25,7 +48,11 @@ jobs:
           git config --global --unset-all http.https://github.com/.extraheader || true
           git init .
           git remote add origin https://github.com/StegVerse-Labs/.github.git
-          env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
           git checkout --detach FETCH_HEAD
           mkdir -p /tmp/stegverse-ci-bin
           ln -sf "$(command -v python3)" /tmp/stegverse-ci-bin/python
@@ -38,8 +65,12 @@ jobs:
           test -z "${GH_TOKEN:-}"
           test -z "${GITHUB_PAT:-}"
           echo NO_GITHUB_CREDENTIAL_TOKEN_PRESENT
+
       - name: Compile runtime, workers, and scripts
-        run: python -m compileall -q heartbeat_runtime workers scripts
+        run: |
+          set -euo pipefail
+          python -m compileall -q heartbeat_runtime workers scripts
+
       - name: Parse canonical JSON surfaces
         run: |
           python - <<'PY'
@@ -56,10 +87,13 @@ jobs:
           assert count > 0
           print('CANONICAL_JSON_PASS', count)
           PY
+
       - name: Validate executable handoffs
         run: python scripts/validate_executable_handoffs.py
+
       - name: Run complete deterministic repository test suite
         run: python -m unittest discover -v tests
+
       - name: Prove heartbeat dry-run is carrier-only and non-mutating
         run: |
           set -euo pipefail
@@ -77,8 +111,11 @@ jobs:
           assert value['tasks_activated'] == 0, value
           assert value['leases_expired'] == 0, value
           assert value['legacy_hb29_cutover'] == 'PREVIEW_ONLY', value
+          assert 'coherent_signal_space' in value, value
+          assert value['coherent_signal_space'].get('completeness_claim') is not True, value
           print('HEARTBEAT_CARRIER_NON_AUTHORITY_PASS')
           PY
+
       - name: Prove carrier and worker compatibility surfaces are distinct
         run: |
           python - <<'PY'
@@ -91,6 +128,7 @@ jobs:
           assert WorkerCoordinator is not CarrierHeartbeatRuntime
           print('CARRIER_WORKER_SEPARATION_PASS')
           PY
+
       - name: Rebuild projections ephemerally without repository persistence
         run: |
           set -euo pipefail
@@ -98,14 +136,30 @@ jobs:
           python scripts/evaluate_goal_convergence.py --write >/tmp/goal-convergence.json
           python scripts/reconcile_heartbeat_continuity.py --write >/tmp/heartbeat-continuity.json
           python scripts/query_worker_status.py --state BLOCKED >/tmp/blocked-query.json
+          python - <<'PY'
+          import json
+          q=json.load(open('/tmp/blocked-query.json'))
+          assert q['observational_only'] is True
+          assert q['execution_authority'] is False
+          print('EPHEMERAL_PROJECTION_VALIDATION_PASS', q['count'])
+          PY
           git status --short
+
       - name: Prove workflow itself is non-authorizing
         run: |
           python - <<'PY'
           from pathlib import Path
           text=Path('.github/workflows/heartbeat-worker-project.yml').read_text(encoding='utf-8')
-          pieces=(('contents', ': write'),('git',' push'),('actions/','checkout@'),('actions/','setup-python@'),('secrets.','GITHUB_TOKEN'),('github.','token'))
-          found=[a+b for a,b in pieces if a+b in text]
+          pieces=(
+              ('contents', ': write'),
+              ('git', ' push'),
+              ('actions/', 'checkout@'),
+              ('actions/', 'setup-python@'),
+              ('secrets.', 'GITHUB_TOKEN'),
+              ('github.', 'token'),
+          )
+          forbidden=[left+right for left,right in pieces]
+          found=[needle for needle in forbidden if needle in text]
           assert not found, found
           assert 'permissions: {}' in text
           print('WORKFLOW_NON_AUTHORIZING_PASS')
