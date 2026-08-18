@@ -1,22 +1,27 @@
 # COSV Heartbeat State Packet Mirror Handoff
 
-Updated: 2026-08-18T08:49:00-05:00
+Updated: 2026-08-18T15:00:00-05:00
 Repository: `StegVerse-Labs/.github`
 Branch: `main`
 
 ## Goal
 
-`COSV-HEARTBEAT-STATE-PACKET-002` extends released COSV vectors into an authority-neutral packet layer carried/observed on the heartbeat reference frame and suitable as the canonical input surface for later gradient mechanics.
+`COSV-HEARTBEAT-STATE-PACKET-002` extends released COSV vectors into an authority-neutral packet layer carried/observed on the heartbeat reference frame and suitable as the canonical input surface for gradient mechanics.
 
 Canonical issue: `#217`
-Source claim: `#218`
-Handoff tracker: `#219`
+Source claim: `#218` CLOSED COMPLETED
+Handoff tracker: `#219` CLOSED COMPLETED
 Parent COSV handoff: `docs/CANONICAL_OPERATIONAL_STATE_VECTOR_MIRROR_HANDOFF.md`
-Heartbeat architecture owners: `#120`, `#122`, `#183`
-Gradient/nervous-system owner: `StegVerse-Labs/StegBrain#860` and integration request `StegVerse-Labs/StegBrain#861`
+Heartbeat architecture/live owner: `#122`
+Gradient/nervous-system owner: `StegVerse-Labs/StegBrain#860/#861`
 Source state: `COMPLETE_RELEASED`
-Chat implementation claim: `RELEASED`
-Live adoption state: `SEPARATELY_OWNED_NOT_CLAIMED`
+Live adoption state: `FIRST_LIVE_FULL_PACKET_EMITTED_HB31`
+Live integration claim: `control/session-integration-claim-2026-08-18-cosv-live-packet-217.json`
+Credential authority: `TV/TVC`
+NON-TV/TVC secret/token allowed: `false`
+GitHub-token runtime authority: `NONE`
+Third-party runtime role: `FALLBACK_ONLY`
+StegVerse primary: `true`
 
 ## Responsibility split
 
@@ -37,21 +42,55 @@ The packet never grants execution, claim, fence, lease, route, credential, walle
 
 `DELTA` packets carry only changed COSV records, bind the predecessor packet hash, bind an unchanged-state root, carry the resulting full-state root, and expose deterministic transition/gradient-input records. Record deletion is intentionally fail-closed in v1.
 
-Every packet carries:
-- schema/mode;
-- carrier reference and observation time;
-- predecessor packet digest where applicable;
-- full state root;
-- unchanged-state root for deltas;
-- ordered COSV records;
-- gradient inputs for changed records;
-- exact constraint summary;
-- explicit authority invariants;
-- packet SHA-256 over canonical JSON excluding the digest field itself.
+Every packet carries schema/mode, carrier reference and observation time, predecessor packet digest where applicable, full state root, unchanged-state root for deltas, ordered COSV records, gradient inputs for changed records, exact constraint summary, authority invariants, and a packet SHA-256 over canonical JSON excluding the digest field itself.
+
+## First live carrier-bound packet — HB31
+
+Direct live evidence now satisfies the former `#122` release dependency:
+
+```text
+control/heartbeat-carrier-runtime-state.json
+  activation_state: ACTIVE
+  epoch/generation: 31/31
+  role: REGULATORY_CARRIER_REFERENCE_FRAME
+
+control/worker-runtime-state.json
+  last_observed_carrier_epoch/generation: 31/31
+  observation_mode: CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION
+
+receipts/heartbeat-transition-continuity/latest.json
+  state: CARRIER_TRANSITION_COMPLETE
+  release_state: RELEASE_COMPLETE
+  all_carrier_transition_predicates_pass: true
+  all_release_predicates_pass: true
+```
+
+The first live FULL COSV packet is persisted at:
+
+`receipts/cosv/live/HB31.json`
+
+```text
+carrier_ref: heartbeat_epoch:31
+packet_sha256: 618ca9d0b8d6a2dbd661378b8ca9814dd9b882efb40d351c0d517bff8f4e17bd
+state_root_sha256: b9ae6209961a3cbd85cc9531088ca91531b03c3eaa4ccc53ee46b0dc1937d22a
+records: 2 authority-neutral task.v1 state records
+critical_blockers: 0
+unassigned_work: 0
+heartbeat_authority_effect: NONE
+packet_authority_effect: NONE
+credential_authority: TV/TVC
+non_tv_tvc_secret_or_token_used: false
+github_token_runtime_authority: NONE
+```
+
+Validation receipt:
+`receipts/cosv/live/HB31-validation.json`.
+
+The packet was generated from directly observed committed carrier/worker/release evidence and deterministically rechecked for canonical packet digest, state root, vector shape, evidence references, constraint summary, and authority invariants. No hosted-workflow runtime proof is substituted for the live carrier evidence.
 
 ## Gradient-ready interface
 
-Each changed identity may expose:
+Each changed identity in a DELTA packet may expose:
 
 ```text
 identity
@@ -67,7 +106,7 @@ coherency_group_ref
 authority_effect=NONE
 ```
 
-This is the input plane for gradient mechanics, not gradient authority. StegBrain owns interpretation under its existing contract.
+The HB31 packet is intentionally a FULL baseline and therefore has empty `gradient_inputs`. The next admitted carrier reference with a changed state can produce a DELTA packet against HB31; that DELTA is the first eligible live gradient-input surface for `StegVerse-Labs/StegBrain#861`.
 
 ## Canonical source surfaces
 
@@ -78,17 +117,17 @@ scripts/cosv_state_packet.py
 tests/test_cosv_state_packet.py
 examples/cosv_state_packet_examples.json
 receipts/cosv/COSV-HEARTBEAT-STATE-PACKET-002-validation.json
+receipts/cosv/live/HB31.json
+receipts/cosv/live/HB31-validation.json
 ```
 
 ## Collision boundaries
 
-Do not mutate `control/heartbeat-state.json`, HB30 carrier state, G18 claim/fence/lease, WorkerCoordinator, worker registry, TV/TVC protected state, model/provider/wallet state, or Master Records custody. Live producer/consumer migration remains with `#122`.
-
-Credential authority: TV/TVC. NON-TV/TVC secret/token allowed: false. GitHub-token runtime authority: NONE. Third-party runtime required: false.
+Do not mutate `control/heartbeat-state.json`, carrier runtime state, WorkerCoordinator state, G18 claim/fence/lease, TV/TVC protected state, model/provider/wallet state, or Master Records custody from the packet layer. Live packet observation reads carrier state; it does not become carrier authority.
 
 ## Validation
 
-Deterministic source-level validation completed:
+Source validation remains:
 
 ```text
 self-test: PASS
@@ -99,34 +138,49 @@ gradient input derivation: PASS
 implicit record removal fail-closed: PASS
 digest tamper rejection: PASS
 non-TVC credential authority rejection: PASS
-receipt: receipts/cosv/COSV-HEARTBEAT-STATE-PACKET-002-validation.json
-hosted workflow validation claimed: false
-live heartbeat packet emission claimed: false
-StegBrain gradient evaluation claimed: false
 ```
 
-Source completion does not claim live heartbeat packet emission or StegBrain gradient evaluation.
+Live integration validation now additionally records:
 
-## Integration transfer
+```text
+HB31 live carrier observed: PASS
+HB31 independent worker reference observed: PASS
+heartbeat transition release predicates: PASS
+live FULL packet persisted: PASS
+packet canonical digest recomputation: PASS
+state-root recomputation: PASS
+authority invariants: PASS
+hosted workflow claimed as live proof: false
+StegBrain live gradient observation claimed: false
+```
 
-Live carrier integration is transferred to `StegVerse-Labs/.github#122`; integration evidence was recorded there without acquiring its runtime claim. Gradient/coherency/admissibility consumption is transferred to `StegVerse-Labs/StegBrain#861` under the existing #860 nervous-system authority split.
+## Integration / continuation
 
-The next architecture layer may operate on the packet's canonical `gradient_inputs`, but it must remain a separately claimed StegBrain-owned implementation. COSV and heartbeat remain authority-neutral observation/state transport layers.
+The packet architecture's first live-adoption requirement is satisfied at HB31. Issue `#217` may close as completed for first-live-packet integration.
+
+Downstream work remains required and is not satisfied by this release:
+
+1. the carrier must advance to another admitted reference with state change;
+2. `.github` emits a DELTA packet against `receipts/cosv/live/HB31.json`;
+3. `StegVerse-Labs/StegBrain#861` consumes the DELTA `gradient_inputs` and persists the first live gradient observation;
+4. `StegVerse-Labs/StegBrain#865` consumes a separately precommitted expectation for the same target reference and persists the first live expectation-residual observation;
+5. after at least two ordered live observations, `StegVerse-Labs/StegBrain#863/#865` may persist the first real gradient matrix/residual series and curvature evidence.
 
 ## Completion accounting
 
 ```text
-required source surfaces: 6/6
-developed files: 6/6
+source required surfaces: 6/6
+source developed files: 6/6
+live adoption required surfaces for first packet: 2/2
 scaffolding/stubs: 0
 missing required files: 0
-focused deterministic validation: 5/5 PASS
-source integration transfers: 2/2 (#122 and StegBrain#861)
-live producer adoption: NOT CLAIMED / #122 owned
-gradient evaluator implementation: NOT CLAIMED / StegBrain owned
-source slice: COMPLETE_RELEASED
+source focused deterministic validation: 5/5 PASS
+first-live-packet validation: PASS
+first live producer adoption: COMPLETE_AT_HB31
+first live gradient observation: PENDING_NEXT_CHANGED_DELTA
+packet-layer integration claim: RELEASEABLE
 ```
 
 ## Archive / continuation condition
 
-The bounded source claim is released. #217 may remain as the architecture/integration tracker until the canonical live owners choose to consume the contract, but no chat session is required to preserve or continue this source slice.
+The packet source and first-live-packet integration are complete. The broader session is not archive-eligible under the governing completion rule while required downstream live gradient, expectation-residual, matrix/trajectory, sovereign inference, propagation, activation, or evidence obligations remain nonterminal. Canonical continuation is `.github#122/#60` plus `StegBrain#861/#863/#865`.
