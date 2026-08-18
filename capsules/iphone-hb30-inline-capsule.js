@@ -17,6 +17,26 @@
   const toHex = (buffer) => Array.from(new Uint8Array(buffer), (byte) => byte.toString(16).padStart(2, '0')).join('');
   const sha256Hex = async (text) => toHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)));
 
+  const browserEvidence = () => {
+    const width = Number(screen && screen.width) || Number(innerWidth) || 0;
+    const height = Number(screen && screen.height) || Number(innerHeight) || 0;
+    const touch = Number(navigator.maxTouchPoints || 0);
+    const ua = String(navigator.userAgent || '');
+    const [shortSide, longSide] = [width, height].sort((a, b) => a - b);
+    const iphoneClassEvidence = ua.includes('iPhone') || (touch >= 2 && shortSide > 0 && shortSide <= 500 && longSide <= 1000);
+    return {
+      origin: location.origin,
+      user_agent: ua,
+      platform: String(navigator.platform || ''),
+      max_touch_points: touch,
+      screen_width_css: width,
+      screen_height_css: height,
+      iphone_class_evidence: iphoneClassEvidence,
+      secure_context: window.isSecureContext === true,
+      webcrypto: Boolean(globalThis.crypto && crypto.subtle && typeof crypto.subtle.digest === 'function')
+    };
+  };
+
   const fail = (message) => {
     const result = JSON.stringify({ state: 'FAIL_CLOSED', reason: message, authority_effect: 'NONE' });
     if (typeof completion === 'function') completion(result);
@@ -24,8 +44,9 @@
   };
 
   const run = async () => {
+    const evidence = browserEvidence();
     if (location.origin !== EXPECTED_ORIGIN) return fail(`origin must be ${EXPECTED_ORIGIN}`);
-    if (!navigator.userAgent.includes('iPhone')) return fail('CURRENT_USER_IPHONE user agent required');
+    if (!evidence.iphone_class_evidence) return fail('CURRENT_USER_IPHONE evidence required');
     if (window.isSecureContext !== true) return fail('secure browser context required');
     if (!globalThis.crypto || !crypto.subtle || typeof crypto.subtle.digest !== 'function') return fail('WebCrypto SHA-256 required');
 
@@ -63,12 +84,7 @@
         hosted_runtime_production_authority: 'NONE',
         another_physical_machine_required: false
       },
-      browser: {
-        origin: location.origin,
-        user_agent: navigator.userAgent,
-        secure_context: window.isSecureContext === true,
-        webcrypto: true
-      }
+      browser: evidence
     };
 
     receipt.receipt_sha256 = await sha256Hex(canonicalize(receipt));
