@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 import hashlib
 import json
+import time
 
 from .engine_v11 import HeartbeatRuntime as LegacyRuntimeBase, WorkerResponse
 from .assignment_timer import assignment_trigger_packet
+from .independent_oscillator import FREQUENCY_RULE, sample_state
 from .signal_space import coherent_signal_space_candidate
 
 LEGACY_SCHEMA = "stegverse.org-heartbeat-state/v1"
@@ -19,22 +20,22 @@ CUTOVER_LEGACY_EPOCH = 29
 
 
 class HeartbeatRuntime(LegacyRuntimeBase):
-    """Non-authorizing carrier with immutable HB29 -> separated-schema cutover.
+    """Independent non-authorizing heartbeat carrier plus downstream sampling.
 
-    The class reuses only durable IO/locking/event helpers inherited from the
-    compatibility runtime. It never calls the legacy worker-lifecycle cycle.
-    Historical ``control/heartbeat-state.json`` remains immutable at HB29. The
-    first persistent v12 cycle derives a new carrier state from that exact
-    snapshot and emits HB30 in ``heartbeat-carrier-runtime-state.json``.
+    Heartbeat progression is NOT caused by this method, WorkerCoordinator,
+    G18, task state, claims, fences, leases, route state, credentials, or any
+    downstream admission. The carrier's canonical reference advances only as a
+    function of the independent oscillator's 10 ms phase-travel interval.
 
-    Unassigned-task packets are carried as non-authorizing runtime events. They
-    may be consumed by the separate worker coordinator, which must independently
-    validate task authority, worker eligibility and the assignment timer. Claim,
-    fence, lease and worker lifecycle state never become carrier authority.
+    ``cycle()`` samples the oscillator-derived reference and persists that
+    observation. Multiple observations inside one 10 ms quantum do not advance
+    the heartbeat. Delayed observation may skip arbitrarily many heartbeat
+    references because those references existed independently while no consumer
+    was sampling them.
 
-    The released coherent signal-space candidate remains observable from the
-    carrier result. HB is one implemented mode of that candidate, not a claim
-    that the family of operators or state-transition coordinate system is final.
+    Historical ``control/heartbeat-state.json`` remains immutable at HB29.
+    Worker/control-plane data may be associated with a sampled reference but is
+    never causal to that reference.
     """
 
     def __init__(self, root: str | Path, adapters: dict | None = None):
@@ -76,7 +77,7 @@ class HeartbeatRuntime(LegacyRuntimeBase):
             "last_cycle_at": legacy.get("last_cycle_at"),
             "role": "REGULATORY_CARRIER_REFERENCE_FRAME",
             "reference_frame": f"heartbeat_epoch:{CUTOVER_LEGACY_EPOCH}",
-            "frequency_rule": "GATE_PASSBAND_DERIVED",
+            "frequency_rule": FREQUENCY_RULE,
             "authority_effect": "NONE",
             "activation_state": "PREPARED",
             "legacy_cutover": {
@@ -205,7 +206,9 @@ class HeartbeatRuntime(LegacyRuntimeBase):
             "carrier": {
                 "role": "REGULATORY_CARRIER_REFERENCE_FRAME",
                 "reference_frame": f"heartbeat_epoch:{epoch}",
-                "frequency_rule": "GATE_PASSBAND_DERIVED",
+                "frequency_rule": FREQUENCY_RULE,
+                "phase_travel_time_ms": 10,
+                "observation_is_causal": False,
                 "authority_effect": "NONE",
             },
             "observations": observations,
@@ -228,6 +231,7 @@ class HeartbeatRuntime(LegacyRuntimeBase):
                 "carrier_generation": int(state["generation"]),
                 "reference_frame": f"heartbeat_epoch:{epoch}",
                 "heartbeat_is_authority": False,
+                "observation_is_causal": False,
             },
             "worker_coordination": {
                 "state": "ACTIVE" if leases else "IDLE",
@@ -264,47 +268,53 @@ class HeartbeatRuntime(LegacyRuntimeBase):
             "control_plane_ref": "control/worker-control-plane-coordination.json",
             "control_plane_sha256": control_hash,
             "worker_registry_ref": "control/worker-registry.json",
+            "oscillator_period_ms": 10,
+            "carrier_progression_dependency": "OSCILLATOR_ONLY",
+            "observation_is_causal": False,
             "heartbeat_grants_execution_authority": False,
             "credential_authority": "TV/TVC",
             "non_tv_tvc_secret_or_token_used": False,
             "github_token_runtime_authority": "NONE",
             "render_production_runtime_used": False,
             "authority_effect": "NONE_CARRIER_ONLY",
-            "recorded_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+            "recorded_at": state["last_cycle_at"],
         }
         receipt = dict(base)
         receipt["receipt_sha256"] = self._canonical_sha256(base)
         return receipt
 
-    def cycle(self, write: bool = True) -> dict[str, Any]:
+    def cycle(self, write: bool = True, *, now_ns: int | None = None) -> dict[str, Any]:
         self._persist = write
         self._acquire()
         try:
             _legacy, legacy_raw_before, legacy_digest = self._legacy_source()
-            state, first_cutover = self._load_carrier_state()
+            previous_state, first_cutover = self._load_carrier_state()
+            previous_epoch = int(previous_state.get("epoch", CUTOVER_LEGACY_EPOCH))
             registry = self._load(self.registry_path)
-            epoch = int(state.get("epoch", CUTOVER_LEGACY_EPOCH)) + 1
-            generation = int(state.get("generation", CUTOVER_LEGACY_EPOCH)) + 1
-            now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+            sampled_ns = time.time_ns() if now_ns is None else int(now_ns)
+            state = sample_state(previous_state, now_ns=sampled_ns)
+            epoch = int(state["epoch"])
+            generation = int(state["generation"])
+            if epoch < previous_epoch:
+                raise RuntimeError("heartbeat oscillator-derived reference regressed")
+            state["legacy_cutover"]["closed"] = epoch >= CUTOVER_LEGACY_EPOCH + 1
 
-            state["epoch"] = epoch
-            state["generation"] = generation
-            state["last_cycle_at"] = now
-            state["reference_frame"] = f"heartbeat_epoch:{epoch}"
-            state["activation_state"] = "ACTIVE"
-            state["authority_effect"] = "NONE"
-            state["legacy_cutover"]["closed"] = True
-
+            reference_advanced = epoch > previous_epoch
             control = self._control_plane_coordination(state, registry)
             control_hash = self._canonical_sha256(control)
-            triggers = self._assignment_triggers(registry, epoch)
+            triggers = self._assignment_triggers(registry, epoch) if reference_advanced else []
             observation = self._carrier_observation(state, control_hash, len(triggers))
             signal_space = coherent_signal_space_candidate()
             events: list[dict[str, Any]] = []
             self._event(
                 events,
                 epoch,
-                "heartbeat_carrier_advanced",
+                "heartbeat_carrier_sampled",
+                previous_observed_epoch=previous_epoch,
+                elapsed_heartbeat_references=epoch - previous_epoch,
+                progression_dependency="OSCILLATOR_ONLY",
+                oscillator_period_ms=10,
+                observation_is_causal=False,
                 authority_effect=False,
                 claim_authority=False,
                 lease_authority=False,
@@ -333,12 +343,18 @@ class HeartbeatRuntime(LegacyRuntimeBase):
                 })
 
             result = {
-                "schema": "stegverse.heartbeat-carrier-cycle-result/v2",
+                "schema": "stegverse.heartbeat-carrier-cycle-result/v3",
                 "runtime_schema": CARRIER_STATE_SCHEMA,
                 "epoch": epoch,
                 "generation": generation,
                 "reference_frame": f"heartbeat_epoch:{epoch}",
-                "legacy_hb29_cutover": "ACTIVATED" if write else "PREVIEW_ONLY",
+                "previous_observed_epoch": previous_epoch,
+                "elapsed_heartbeat_references": epoch - previous_epoch,
+                "reference_advanced_since_last_observation": reference_advanced,
+                "oscillator_period_ms": 10,
+                "progression_dependency": "OSCILLATOR_ONLY",
+                "observation_is_causal": False,
+                "legacy_hb29_cutover": "ACTIVATED" if epoch >= 30 and write else "PREVIEW_ONLY",
                 "legacy_hb29_was_first_cutover": first_cutover,
                 "carrier_observation_ref": "control/heartbeat-carrier-observation.json",
                 "control_plane_ref": "control/worker-control-plane-coordination.json",
@@ -353,14 +369,14 @@ class HeartbeatRuntime(LegacyRuntimeBase):
                 "authority_effect": "NONE_CARRIER_ONLY",
             }
 
-            if write:
+            if write and (not first_cutover or epoch >= 30):
                 if self._sha256_bytes(self.legacy_hb_path.read_bytes()) != legacy_digest:
-                    raise RuntimeError("legacy HB29 changed during carrier cutover")
+                    raise RuntimeError("legacy HB29 changed during carrier sampling")
                 self._atomic_write(self.carrier_state_path, state)
                 self._atomic_write(self.control_plane_path, control)
                 self._atomic_write(self.carrier_observation_path, observation)
                 projection = {
-                    "schema": "stegverse.heartbeat-master-records-projection/v3",
+                    "schema": "stegverse.heartbeat-master-records-projection/v4",
                     "heartbeat_epoch": epoch,
                     "heartbeat_generation": generation,
                     "carrier_state_ref": "control/heartbeat-carrier-runtime-state.json",
@@ -372,6 +388,9 @@ class HeartbeatRuntime(LegacyRuntimeBase):
                     "coherent_signal_space_source_ref": "heartbeat_runtime/signal_space.py#coherent_signal_space_candidate",
                     "coherent_signal_space_sha256": self._canonical_sha256(signal_space),
                     "assignment_trigger_packet_ids": [item["packet_id"] for item in triggers],
+                    "oscillator_period_ms": 10,
+                    "carrier_progression_dependency": "OSCILLATOR_ONLY",
+                    "snapshot_is_observation_only": True,
                     "destination": "master-records/orchestration",
                     "recording_effect": "custody_and_reconstruction_only",
                     "authority_effect": False,
