@@ -2,6 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
   "created_at": "2026-08-18T18:08:00-05:00",
+  "updated_at": "2026-08-18T18:18:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
@@ -37,9 +38,15 @@
     "repository": "StegVerse-Labs/.github",
     "source_refs": [
       "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+      "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
       "heartbeat_runtime/independent_oscillator.py",
       "heartbeat_runtime/engine_v12.py",
+      "scripts/run_heartbeat_runtime.py",
+      "scripts/run_worker_runtime.py",
       "workers/independent_heartbeat_live_proof_worker.py",
+      "control/worker-registry.d/heartbeat-independent-oscillator-live-009.json",
+      "control/process-worker-adapters.d/heartbeat-independent-oscillator-live-009.json",
+      "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json",
       "receipts/heartbeat/HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008-source-validation.json"
     ],
     "dependencies": [],
@@ -48,7 +55,8 @@
     "canonical_owner_ref": "StegVerse-Labs/.github#122",
     "canonical_lineage_key": "heartbeat:independent-oscillator-live-proof",
     "derivation_depth": 1,
-    "priority": "release"
+    "priority": "release",
+    "cost_basis_ref": "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json"
   },
   "authority": {
     "authority_source": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
@@ -75,7 +83,8 @@
     "max_retries": 3,
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 32,
-    "rate_class": "independent_heartbeat_live_proof"
+    "rate_class": "independent_heartbeat_live_proof",
+    "finite_worker_budget_beats": 4
   },
   "activation": {
     "carrier": "heartbeat",
@@ -84,7 +93,13 @@
     "credential_control": "TV/TVC",
     "github_actions_may_activate": false,
     "recheck_trigger": "next canonical WorkerCoordinator execution opportunity independent of heartbeat progression",
-    "checkout_policy": "fenced_atomic_checkout"
+    "checkout_policy": "fenced_atomic_checkout",
+    "bootstrap_sequence": [
+      "python scripts/run_worker_runtime.py --cycles 1",
+      "python scripts/run_heartbeat_runtime.py --cycles 1",
+      "python scripts/run_worker_runtime.py --cycles 1"
+    ],
+    "bootstrap_semantics": "The first worker cycle materializes registry fragments into the canonical registry. The carrier cycle then samples the independent oscillator and carries non-authorizing assignment-trigger packets for unclaimed HANDOFF_READY tasks. The next worker cycle independently validates authority, binds a fresh claim/fence, and executes the live-proof worker. The heartbeat sample does not grant execution authority."
   },
   "continuity": {
     "checkpoint_ref": "control/heartbeat-carrier-runtime-state.json",
@@ -93,9 +108,14 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Bind this task through the existing WorkerCoordinator and execute workers/independent_heartbeat_live_proof_worker.py once. Verify the persisted oscillator-only carrier and observation evidence; then terminalize the task.",
+    "next_authorized_action": "Under the existing #122 StegVerse runtime owner, execute the bounded worker(1) -> carrier(1) -> worker(1) sequence. Verify the carrier sample persists oscillator-only evidence and carries the assignment trigger; verify the second WorkerCoordinator cycle binds and executes this task under the finite cost basis; then consume COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED.",
     "terminal_when": [
-      "Worker response is COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED and persisted carrier/observation evidence contains the required oscillator invariants."
-    ]
+      "Carrier state and observation contain the required oscillator invariants.",
+      "events/heartbeat-runtime.jsonl contains a non-authorizing worker_assignment_trigger_carried packet for this task.",
+      "WorkerCoordinator binds the task under a fresh fenced claim using cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json.",
+      "Worker response is COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED."
+    ],
+    "source_integration_state": "CLAIMABLE_TRIGGERABLE_VALIDATION_PENDING",
+    "live_activation_state": "NOT_OBSERVED"
   }
 }
