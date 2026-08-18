@@ -1,0 +1,60 @@
+{
+  "schema": "stegverse.cosv-state-packet-examples/v1",
+  "goal_id": "COSV-HEARTBEAT-STATE-PACKET-002",
+  "base_carrier_ref": "HB29",
+  "next_carrier_ref": "HB30",
+  "base_records": [
+    {
+      "identity": "task:example-worker",
+      "profile": "task.v1",
+      "level": "task",
+      "vector": "51000000110100",
+      "evidence_refs": ["example://worker/hb29"],
+      "observed_at": "2026-08-18T13:00:00Z",
+      "exact_metrics": {}
+    },
+    {
+      "identity": "subsystem:example-runtime",
+      "profile": "aggregate.v1",
+      "level": "subsystem",
+      "vector": "57665579810010",
+      "evidence_refs": ["example://runtime/hb29"],
+      "observed_at": "2026-08-18T13:00:00Z",
+      "exact_metrics": {"critical_blockers": 1},
+      "admissibility_ref": "example://admissibility/runtime",
+      "coherency_group_ref": "example://coherency/runtime"
+    }
+  ],
+  "current_records": [
+    {
+      "identity": "task:example-worker",
+      "profile": "task.v1",
+      "level": "task",
+      "vector": "71000000100110",
+      "evidence_refs": ["example://worker/hb30"],
+      "observed_at": "2026-08-18T13:01:00Z",
+      "exact_metrics": {}
+    },
+    {
+      "identity": "subsystem:example-runtime",
+      "profile": "aggregate.v1",
+      "level": "subsystem",
+      "vector": "57665579810010",
+      "evidence_refs": ["example://runtime/hb29"],
+      "observed_at": "2026-08-18T13:00:00Z",
+      "exact_metrics": {"critical_blockers": 1},
+      "admissibility_ref": "example://admissibility/runtime",
+      "coherency_group_ref": "example://coherency/runtime"
+    }
+  ],
+  "expected": {
+    "full_packet_mode": "FULL",
+    "delta_packet_mode": "DELTA",
+    "delta_changed_record_count": 1,
+    "gradient_input_count": 1,
+    "heartbeat_authority_effect": "NONE",
+    "packet_authority_effect": "NONE",
+    "credential_authority": "TV/TVC",
+    "implicit_record_removal": "FAIL_CLOSED"
+  }
+}
