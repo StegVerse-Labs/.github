@@ -1,6 +1,7 @@
 name: Sovereign Runtime Self-Bootstrap Validation
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - "scripts/bootstrap_sovereign_runtime.py"
@@ -13,8 +14,6 @@ on:
     paths:
       - "scripts/bootstrap_sovereign_runtime.py"
       - "tests/test_bootstrap_sovereign_runtime.py"
-      - "control/session-implementation-claim-2026-08-14-sovereign-runtime-self-bootstrap.json"
-      - "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
       - ".github/workflows/sovereign-runtime-self-bootstrap.yml"
 
 permissions: {}
