@@ -1,15 +1,14 @@
+# Archive-readiness validation is credential-clean hosted CI only; it is never
+# runtime or archive authority. Main-branch state/projection persistence is excluded
+# from automatic runs; validator source changes still run, and PRs retain full coverage.
 name: Archive Readiness Validate - No GitHub Token Authority
 
 on:
   push:
     branches: [main]
     paths:
-      - 'control/archive-readiness.json'
-      - 'control/worker-registry.json'
       - 'scripts/validate_archive_readiness.py'
       - 'tests/test_archive_readiness.py'
-      - 'docs/ORG_MIRROR_HANDOFF.md'
-      - 'docs/ARCHIVE_GATE_PROGRESS_MIRROR_HANDOFF.md'
       - '.github/workflows/archive-readiness-validate.yml'
   pull_request:
     paths:
