@@ -1,5 +1,7 @@
 # Historical canary validation only. The canary lifecycle is already COMPLETE;
 # GitHub Actions may verify retained evidence but may not advance or persist heartbeat state.
+# Main-branch registry/evidence persistence is excluded from automatic hosted CI;
+# implementation changes still validate automatically and PRs retain broad coverage.
 name: Native Process Worker Canary - Validation Only / No GitHub Token Authority
 
 on:
@@ -7,10 +9,6 @@ on:
     branches: [main]
     paths:
       - 'workers/heartbeat_receipt_canary.py'
-      - 'handoffs/SHWP-NATIVE-PROCESS-CANARY-001.json'
-      - 'cost-basis/worker-runtime/native-process-canary.json'
-      - 'control/process-worker-adapters.json'
-      - 'control/worker-registry.json'
       - 'heartbeat_runtime/process_adapter.py'
       - '.github/workflows/native-process-worker-canary.yml'
   pull_request:
