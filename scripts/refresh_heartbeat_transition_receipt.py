@@ -74,7 +74,11 @@ def _reference_frame(epoch: int) -> str:
 
 
 def task_capable_worker_cycle_observed(root: Path, worker: dict[str, Any], target_epoch: int) -> bool:
-    """Require evidence from the real WorkerCoordinator, not the observer shim."""
+    """Require evidence from the real WorkerCoordinator, not the observer shim.
+
+    Canonical WorkerCoordinator events use ``epoch``. ``carrier_epoch`` is
+    accepted only for compatibility with older/specialized event producers.
+    """
     if worker.get("observation_mode") == TASK_CAPABLE_MODE:
         return True
     events_path = root / WORKER_EVENTS_REL
@@ -91,7 +95,9 @@ def task_capable_worker_cycle_observed(root: Path, worker: dict[str, Any], targe
                     continue
                 if not isinstance(event, dict):
                     continue
-                epoch = event.get("carrier_epoch")
+                epoch = event.get("epoch")
+                if not isinstance(epoch, int):
+                    epoch = event.get("carrier_epoch")
                 event_type = event.get("event_type")
                 if isinstance(epoch, int) and epoch >= target_epoch and isinstance(event_type, str) and event_type and event_type != OBSERVATION_ONLY_EVENT:
                     return True
@@ -229,7 +235,6 @@ def refresh(root: Path) -> dict[str, Any]:
         "worker_task_capable_cycle_observed": worker_task_capable,
         "worker_control_plane_observed_when_control_plane_runs": control_aligned,
         "no_duplicate_claim_or_fence": no_duplicates,
-        # Compatibility aliases used by older receipts/consumers.
         "carrier_epoch_at_least_30": carrier_non_regressing,
         "carrier_generation_non_regressing": carrier_non_regressing,
         "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch": worker_observed,
@@ -252,13 +257,8 @@ def refresh(root: Path) -> dict[str, Any]:
     )
     transition["all_carrier_transition_predicates_pass"] = all(predicates[name] for name in carrier_names)
     transition["all_consumer_observation_predicates_pass"] = all(predicates[name] for name in consumer_names)
-    transition["all_runtime_goal_predicates_pass"] = (
-        transition["all_carrier_transition_predicates_pass"]
-        and transition["all_consumer_observation_predicates_pass"]
-        and worker_task_capable
-    )
+    transition["all_runtime_goal_predicates_pass"] = transition["all_carrier_transition_predicates_pass"] and transition["all_consumer_observation_predicates_pass"] and worker_task_capable
 
-    # Historical field retained, but now correctly means carrier release only.
     transition["all_release_predicates_pass"] = transition["all_carrier_transition_predicates_pass"]
     transition["release_state"] = "RELEASE_COMPLETE" if transition["all_carrier_transition_predicates_pass"] else "FAIL_CLOSED_CARRIER_INTEGRITY"
 
