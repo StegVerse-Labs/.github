@@ -3,7 +3,9 @@
 
 When the separated-v12 carrier has not yet been materialized, this entry point
 first consumes a valid portable iPhone recovery receipt when one is present; if
-none is available it executes the canonical bounded transition producer. After
+none is available it executes the canonical bounded transition producer. If a
+carrier is already materialized but the worker control-plane projection is
+absent, it reconstructs that observation without advancing the carrier. After
 each WorkerCoordinator cycle it refreshes the seven transition release
 predicates without advancing the carrier.
 """
@@ -31,12 +33,14 @@ PROCESS_TYPE = "process_json_v0.1"
 BOUND_STATE_TYPE = "process_json_bound_state_v0.1"
 DEFAULT_INTERVAL_MS = 10.0
 INITIAL_CARRIER_REL = Path("control/heartbeat-carrier-runtime-state.json")
+CONTROL_PLANE_REL = Path("control/worker-control-plane-coordination.json")
 LEGACY_STATE_REL = Path("control/heartbeat-state.json")
 TRANSITION_PRODUCER_REL = Path("scripts/advance_heartbeat_transition.py")
 TRANSITION_RECEIPT_REL = Path("receipts/heartbeat-transition-continuity/latest.json")
 PORTABLE_RECEIPT_DIR_REL = Path("receipts/heartbeat-transition-continuity")
 IPHONE_VERIFIER_REL = Path("scripts/verify_iphone_heartbeat_transition_receipt.py")
 TRANSITION_REFRESH_REL = Path("scripts/refresh_heartbeat_transition_receipt.py")
+CONTROL_PLANE_PROJECTOR_REL = Path("scripts/project_worker_control_plane_from_carrier.py")
 SAFE_BOOTSTRAP_ENV = {
     "HOME", "USER", "LOGNAME", "SHELL", "PATH", "PYTHONPATH", "LANG", "LC_ALL", "TMPDIR",
     "XDG_CONFIG_HOME", "XDG_STATE_HOME", "LOCALAPPDATA", "UID", "STEGVERSE_HEARTBEAT_ROOT",
@@ -146,7 +150,6 @@ def _materialize_portable_receipt(root: Path, receipt: Path, *, env: dict[str, s
 
 
 def bootstrap_initial_carrier(root: Path, *, env: dict[str, str] | None = None, runner=subprocess.run) -> dict[str, Any]:
-    """Materialize the first separated-v12 carrier state before worker startup."""
     root = root.resolve()
     carrier_path = root / INITIAL_CARRIER_REL
     legacy_path = root / LEGACY_STATE_REL
@@ -164,13 +167,11 @@ def bootstrap_initial_carrier(root: Path, *, env: dict[str, str] | None = None, 
     legacy = json.loads(legacy_path.read_text(encoding="utf-8"))
     if int(legacy.get("epoch", -1)) != 29:
         raise RuntimeError("initial separated-v12 bootstrap requires immutable legacy HB29")
-
     portable = _latest_portable_receipt(root)
     if portable is not None:
         portable_result = _materialize_portable_receipt(root, portable, env=env, runner=runner)
         if portable_result.get("state") == "PORTABLE_RECEIPT_MATERIALIZED":
             return portable_result
-
     completed = runner(
         [sys.executable, str(producer_path), "--root", str(root), "--receipt-path", str(receipt_path)],
         check=False, capture_output=True, text=True, timeout=90, env=_safe_bootstrap_env(env),
@@ -188,6 +189,24 @@ def bootstrap_initial_carrier(root: Path, *, env: dict[str, str] | None = None, 
             "github_token_runtime_authority": "NONE", "non_tv_tvc_secret_or_token_forwarded": False}
 
 
+def project_control_plane_if_missing(root: Path, *, runner=subprocess.run) -> dict[str, Any] | None:
+    carrier = root / INITIAL_CARRIER_REL
+    control = root / CONTROL_PLANE_REL
+    script = root / CONTROL_PLANE_PROJECTOR_REL
+    if control.is_file() or not carrier.is_file():
+        return None
+    if not script.is_file():
+        raise RuntimeError("HB30 carrier exists without worker control-plane projection source")
+    completed = runner(
+        [sys.executable, str(script), "--root", str(root)],
+        check=False, capture_output=True, text=True, timeout=30, env=_safe_bootstrap_env(),
+    )
+    if completed.returncode != 0 or not control.is_file():
+        raise RuntimeError("failed to project worker control plane from existing carrier")
+    value = json.loads(control.read_text(encoding="utf-8"))
+    return {"state": "CONTROL_PLANE_PROJECTED", "carrier_generation": (value.get("observed_reference") or {}).get("carrier_generation")}
+
+
 def refresh_transition_release(root: Path, *, runner=subprocess.run) -> dict[str, Any] | None:
     script = root / TRANSITION_REFRESH_REL
     receipt = root / TRANSITION_RECEIPT_REL
@@ -198,11 +217,7 @@ def refresh_transition_release(root: Path, *, runner=subprocess.run) -> dict[str
         check=False, capture_output=True, text=True, timeout=30, env=_safe_bootstrap_env(),
     )
     value = json.loads(receipt.read_text(encoding="utf-8"))
-    return {
-        "returncode": completed.returncode,
-        "release_state": value.get("release_state"),
-        "all_release_predicates_pass": value.get("all_release_predicates_pass"),
-    }
+    return {"returncode": completed.returncode, "release_state": value.get("release_state"), "all_release_predicates_pass": value.get("all_release_predicates_pass")}
 
 
 def main() -> int:
@@ -221,6 +236,9 @@ def main() -> int:
     bootstrap_result = None
     if not args.dry_run and not (root / INITIAL_CARRIER_REL).is_file():
         bootstrap_result = bootstrap_initial_carrier(root)
+    control_projection = None
+    if not args.dry_run:
+        control_projection = project_control_plane_if_missing(root)
     runtime = WorkerCoordinator(root, adapters=load_adapters(root))
     running = True
     def stop(_signum, _frame):
@@ -234,6 +252,9 @@ def main() -> int:
         if bootstrap_result is not None:
             result["initial_carrier_bootstrap"] = bootstrap_result
             bootstrap_result = None
+        if control_projection is not None:
+            result["worker_control_plane_projection"] = control_projection
+            control_projection = None
         if not args.dry_run:
             refresh = refresh_transition_release(root)
             if refresh is not None:
