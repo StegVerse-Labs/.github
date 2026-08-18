@@ -2,23 +2,16 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-08-17T01:43:00-05:00",
-  "state": "HANDOFF_READY",
+  "updated_at": "2026-08-18T15:14:00-05:00",
+  "state": "COMPLETION_EVIDENCE_OBSERVED_PENDING_RUNTIME_REGISTRY_RELEASE",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-    "objective": "Advance the canonical separated v12 heartbeat from immutable legacy HB29 through state-transition continuity associated with the permitted current-iPhone carrier policy, while keeping WorkerCoordinator authority separate. Resident native supervision may be used when available but is not a heartbeat-continuity prerequisite.",
+    "objective": "Advance the canonical separated v12 heartbeat from immutable legacy HB29 through state-transition continuity while keeping WorkerCoordinator authority separate and requiring no third-party production dependency.",
     "success_predicates": [
       "A bounded v12 carrier transition derives HB30 or a later valid successor into control/heartbeat-carrier-runtime-state.json while control/heartbeat-state.json remains immutable at HB29",
-      "The independently admitted WorkerCoordinator observes the successor on its current or next execution opportunity and produces worker runtime/coordination evidence without carrier-granted execution authority",
+      "The independently admitted WorkerCoordinator observes the successor and produces worker runtime/coordination evidence without carrier-granted execution authority",
       "State reconstruction passes and no duplicate claim/fence is introduced",
       "No additional physical machine, always-on external host, external scheduler, hosted process provider, GitHub token, or NON-TV/TVC credential becomes production authority"
-    ],
-    "failure_predicates": [
-      "control/heartbeat-state.json is mutated beyond the immutable legacy HB29 source instead of using the v12 carrier state",
-      "A valid HB30+ state transition is rejected solely because no always-on external host or resident daemon is present",
-      "A third-party platform becomes a required production dependency",
-      "Carrier or worker state forks canonical lineage or duplicates a claim/fence",
-      "The worker repeats observation-only failure instead of executing the bounded transition or deriving/escalating exact solution work"
     ],
     "expires_at": null,
     "authority_ceiling": [
@@ -34,47 +27,25 @@
   "task": {
     "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
     "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "StegVerse-Labs/.github#12",
+    "canonical_lineage_key": "shwp:durable-runtime-activation",
+    "priority": "release",
+    "operational_state": "COMPLETION_EVIDENCE_OBSERVED_PENDING_REGISTRY_RELEASE",
+    "claim_state": "MACHINE_OWNED_G18_STALE_COMPLETION_PENDING_WORKER_TICK",
+    "fencing_token": 18,
     "source_refs": [
-      "StegVerse-Labs/.github#59",
-      "StegVerse-Labs/.github#65",
+      "StegVerse-Labs/.github#12",
       "StegVerse-Labs/.github#122",
-      "StegVerse-Labs/.github#160",
-      "StegVerse-Labs/.github#203",
-      "StegVerse-Labs/.github#204",
-      "docs/ORG_MIRROR_HANDOFF.md",
-      "docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md",
-      "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
       "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
       "heartbeat_runtime/engine_v12.py",
       "heartbeat_runtime/worker_runtime.py",
-      "heartbeat_runtime/assignment_timer.py",
       "workers/sovereign_runtime_activation_worker.py",
       "scripts/advance_heartbeat_transition.py",
-      "scripts/bootstrap_sovereign_runtime.py",
-      "scripts/install_sovereign_heartbeat_service.py",
-      "scripts/run_heartbeat_runtime.py",
-      "scripts/run_worker_runtime.py",
-      "scripts/run_sovereign_ephemeral_console.py",
-      "scripts/restart_sovereign_ephemeral_node.py",
-      "scripts/verify_sovereign_runtime_activation.py",
-      "control/process-worker-adapters.json",
-      "control/worker-registry.json",
-      "control/active-worker-state-policy.json",
-      "control/session-implementation-claim-2026-08-16-heartbeat-g18-adapter-liveness.json",
-      "control/session-implementation-claim-2026-08-16-heartbeat-ephemeral-worker-runtime.json",
-      "control/session-integration-claim-2026-08-17-hb29-state-transition-carrier.json",
-      "handoffs/STEGFIN-LIVE-ENTRY-003.json"
-    ],
-    "dependencies": [],
-    "parent_task_id": null,
-    "derivation_reason": "Production activation remains G18 machine-owned. Pre-heartbeat self-bootstrap removed initiation circularity; PR #203 repaired the G18 process-adapter liveness envelope; PR #204 repaired the one-host separated-runtime fallback; the 2026-08-17 reconciliation removes the later-discovered contradiction between the iPhone-associated state-transition continuity policy and the handoff's former always-on continuous-host completion semantics.",
-    "canonical_owner_ref": "StegVerse-Labs/.github#59",
-    "canonical_lineage_key": "shwp:durable-runtime-activation",
-    "derivation_depth": 0,
-    "priority": "release",
-    "operational_state": "ACTIVE_WORKER",
-    "claim_state": "MACHINE_OWNED_BOUND_G18",
-    "fencing_token": 18
+      "control/heartbeat-carrier-runtime-state.json",
+      "control/worker-runtime-state.json",
+      "control/worker-control-plane-coordination.json",
+      "receipts/heartbeat-transition-continuity/latest.json"
+    ]
   },
   "authority": {
     "authority_source": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json#resolution",
@@ -82,19 +53,12 @@
     "policy_version": "shwp-single-hb-v0.4-sovereign-solution-execution",
     "credential_authority": "TV/TVC",
     "github_token_production_authority": "NONE",
-    "non_tv_tvc_secret_or_token_allowed": false
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "third_party_runtime_role": "FALLBACK_ONLY",
+    "stegverse_primary": true
   },
   "execution": {
-    "required_capabilities": [
-      "runtime_observation",
-      "continuous_process_execution",
-      "durable_state_reconstruction",
-      "bounded_repository_mutation"
-    ],
-    "capability_semantics": {
-      "continuous_process_execution": "permitted capability ceiling for optional resident supervision; not a heartbeat-continuity completion prerequisite",
-      "bounded_state_transition_execution": "primary completion path under management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json"
-    },
+    "required_capabilities": ["runtime_observation", "continuous_process_execution", "durable_state_reconstruction", "bounded_repository_mutation"],
     "allowed_paths": [
       "receipts/sovereign-runtime-activation/**",
       "receipts/heartbeat-transition-continuity/**",
@@ -103,175 +67,77 @@
       "StegVerse-002/micro-node-runtime"
     ],
     "allowed_services": [],
-    "max_actions": 100,
-    "max_retries": 4096,
     "external_cost_ceiling_usd": 0,
-    "runtime_window_beats": 4096,
-    "rate_class": "sovereign_runtime_activation",
     "canonical_carrier_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
     "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
-    "legacy_combined_runtime_is_production_target": false,
     "legacy_state_ref": "control/heartbeat-state.json",
     "legacy_state_epoch": 29,
     "legacy_state_mutable_after_cutover": false,
     "carrier_state_ref": "control/heartbeat-carrier-runtime-state.json",
     "worker_runtime_state_ref": "control/worker-runtime-state.json",
-    "worker_control_plane_ref": "control/worker-control-plane-coordination.json",
-    "state_transition_producer": "scripts/advance_heartbeat_transition.py",
-    "state_transition_contract": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
-    "pre_heartbeat_bootstrap": "scripts/bootstrap_sovereign_runtime.py",
-    "native_solution_executor": "workers/sovereign_runtime_activation_worker.py",
-    "native_installer": "scripts/install_sovereign_heartbeat_service.py",
-    "one_host_fallback": "scripts/run_sovereign_ephemeral_console.py",
-    "separated_process_supervisor": "scripts/restart_sovereign_ephemeral_node.py",
-    "resident_activation_proof_producer": "scripts/verify_sovereign_runtime_activation.py"
-  },
-  "activation": {
-    "carrier": "heartbeat",
-    "executor_binding": "AUTHORIZED",
-    "authorization_ref": "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json#resolution",
-    "recheck_trigger": "each admitted worker-runtime tick while unfinished; carrier observations grant no execution authority",
-    "checkout_policy": "fenced_atomic_checkout",
-    "eligible_transition_context": [
-      "current admitted WorkerCoordinator execution opportunity",
-      "CURRENT_USER_IPHONE carrier policy association from management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
-      "repository-local v12 carrier source present and retained state writable",
-      "hosted-environment rejection passes"
-    ],
-    "eligible_node_declaration": [
-      "OPTIONAL for resident native supervision only: STEGVERSE_SOVEREIGN_NODE=1",
-      "OPTIONAL for resident native supervision only: /etc/stegverse/node.json",
-      "OPTIONAL for resident native supervision only: ~/.stegverse/node.json",
-      "SELF_BOOTSTRAP_LOCAL_RUNTIME_ELIGIBILITY from scripts/bootstrap_sovereign_runtime.py when resident supervision is desired"
-    ],
-    "derived_declaration_authority_effect": "RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY",
-    "node_declaration_environment_bridge": "control/process-worker-adapters.json#process:sovereign-runtime-activation-v1",
-    "hosted_environment_rejection": [
-      "GitHub Actions",
-      "Render",
-      "Vercel",
-      "Cloudflare hosted runtime"
-    ],
-    "credential_requirement": "NONE",
-    "credential_authority": "TV/TVC",
-    "non_tv_tvc_secret_or_token_used": false
-  },
-  "v12_cutover_contract": {
-    "legacy_source": "control/heartbeat-state.json",
-    "legacy_epoch": 29,
-    "legacy_source_must_remain_immutable": true,
-    "first_persistent_carrier_epoch": 30,
-    "carrier_state": "control/heartbeat-carrier-runtime-state.json",
-    "carrier_observation": "control/heartbeat-carrier-observation.json",
-    "worker_control_plane": "control/worker-control-plane-coordination.json",
-    "worker_runtime_state": "control/worker-runtime-state.json",
-    "cutover_receipt": "receipts/heartbeat-schema-cutover/HB29.json",
-    "carrier_grants_worker_authority": false,
-    "carrier_epoch_controls_worker_expiry": false,
-    "wall_clock_worker_expiry_authority": false
+    "worker_control_plane_ref": "control/worker-control-plane-coordination.json"
   },
   "state_transition_continuity": {
     "contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
-    "transition_producer": "scripts/advance_heartbeat_transition.py",
     "continuity_model": "STATE_TRANSITION_CONTINUITY",
-    "sole_permitted_user_physical_carrier": "CURRENT_USER_IPHONE",
+    "resident_native_supervision_optional": true,
     "another_physical_machine_required": false,
     "always_on_external_host_required": false,
     "wall_clock_continuous_process_required": false,
-    "resident_native_supervision_optional": true,
-    "transition_compute_grants_physical_carrier_identity": false,
     "carrier_transition_receipt": "receipts/heartbeat-transition-continuity/latest.json",
-    "terminal_predicates": [
-      "legacy_hb29_unchanged",
-      "carrier_epoch_at_least_30",
-      "carrier_generation_non_regressing",
-      "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch",
-      "worker_control_plane_observed",
-      "no_duplicate_claim_or_fence",
-      "state_reconstruction_pass"
-    ]
-  },
-  "released_repairs": {
-    "g18_adapter_liveness": {
-      "pull_request": 203,
-      "merge_commit": "b56662cdb840bb2b30b10db2f6236db472261d87",
-      "result": "process:sovereign-runtime-activation-v1 timeout raised to 1200 seconds so the bounded 420-second bootstrap plus bounded 600-second one-host fallback can finish with orchestration margin",
-      "claim_ref": "control/session-implementation-claim-2026-08-16-heartbeat-g18-adapter-liveness.json"
-    },
-    "ephemeral_separated_runtime": {
-      "pull_request": 204,
-      "merge_commit": "ef56f32d389ae1c5ded93a10d20763f21b4e4341",
-      "result": "one-host fallback now launches, records, restarts, and verifies both the v12 carrier and WorkerCoordinator; validation peers stop both and the primary retains both",
-      "claim_ref": "control/session-implementation-claim-2026-08-16-heartbeat-ephemeral-worker-runtime.json",
-      "validation_runs": {
-        "sovereign_ephemeral_console": 31986679303,
-        "heartbeat_worker_project": 31986679323,
-        "organization_control_plane": 31986679273
-      }
+    "observed": {
+      "legacy_hb29_unchanged": true,
+      "carrier_epoch": 31,
+      "carrier_generation": 31,
+      "carrier_activation_state": "ACTIVE",
+      "worker_observed_carrier_epoch": 31,
+      "worker_observed_carrier_generation": 31,
+      "worker_control_plane_observed": true,
+      "no_duplicate_claim_or_fence": true,
+      "state_reconstruction_pass": true,
+      "transition_state": "CARRIER_TRANSITION_COMPLETE",
+      "release_state": "RELEASE_COMPLETE",
+      "all_release_predicates_pass": true
     }
   },
-  "continuity": {
-    "checkpoint_ref": "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
-    "handoff_destination": "StegVerse-Labs/.github/control/worker-registry.json",
-    "master_records_required": true,
-    "status_projection": "StegVerse-Labs/.github/control/worker-status.json",
-    "state_transition_receipt_ref": "receipts/heartbeat-transition-continuity/latest.json",
-    "resident_activation_proof_ref": "~/.stegverse/heartbeat/activation.latest.json",
-    "state_transition_required_predicates": [
-      "legacy_hb29_unchanged",
-      "carrier_epoch_at_least_30",
-      "carrier_generation_non_regressing",
-      "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch",
-      "worker_control_plane_observed",
-      "no_duplicate_claim_or_fence",
-      "state_reconstruction_pass"
-    ],
-    "resident_supervision_optional_predicates": [
-      "runtime_materialized",
-      "native_service_active",
-      "continuous_runtime_live",
-      "heartbeat_epoch_advanced",
-      "worker_coordination_checkpoint_observed",
-      "controlled_restart_observed",
-      "epoch_and_generation_non_regressing",
-      "no_duplicate_claim_or_fence",
-      "state_reconstruction_pass"
-    ]
-  },
   "completion": {
-    "next_authorized_action": "On the next admitted G18 worker execution opportunity, run scripts/advance_heartbeat_transition.py first. It must derive HB30 or a later valid successor from retained state without rewriting legacy HB29. The independent WorkerCoordinator then observes that successor on its current or next tick. Resident bootstrap/supervision remains an optional optimization and diagnostic path, not a continuity release prerequisite.",
+    "success_predicates_satisfied": true,
+    "live_state_transition_continuity_proven": true,
+    "resident_service_proof_required": false,
+    "runtime_registry_terminal_state_observed": false,
+    "next_authorized_action": "On the next admitted WorkerCoordinator tick, invoke the already-bound G18 worker. workers/sovereign_runtime_activation_worker.py will observe the completed transition predicates and return state COMPLETED / transition SOVEREIGN_RUNTIME_STATE_TRANSITION_VERIFIED. The coordinator must then release the G18 claim/fence and persist terminal registry/checkpoint evidence.",
     "terminal_when": [
-      "control/heartbeat-carrier-runtime-state.json exists at HB30 or later while legacy control/heartbeat-state.json remains unchanged at HB29",
-      "control/worker-runtime-state.json has independently observed that carrier epoch and worker coordination evidence is present",
-      "The state-transition continuity predicates pass, including reconstruction and no duplicate claim/fence",
-      "No additional physical machine or always-on external host was required",
-      "No GitHub token or NON-TV/TVC credential became production authority"
+      "control/worker-registry.json records SHWP-DURABLE-RUNTIME-ACTIVATION terminal with no active G18 claim/worker binding",
+      "control/worker-control-plane-coordination.json no longer lists G18 as an active lease",
+      "terminal checkpoint/receipt references the HB31 release-complete continuity evidence"
     ],
-    "resident_supervision_may_additionaly_prove": "The historical nine-predicate node-local activation proof may be retained as stronger resident-service evidence when an eligible native supervision surface exists, but absence of that wall-clock service does not negate state-transition continuity.",
-    "live_activation_claimed": false,
-    "source_implementation_state": "STATE_TRANSITION_PRODUCER_INSTALLED_PENDING_VALIDATION",
-    "live_activation_state": "MACHINE_OWNED_PENDING_HB30_OBSERVATION"
+    "source_implementation_state": "COMPLETE_RELEASED",
+    "live_activation_state": "CONTINUITY_PROVEN_PENDING_TASK_REGISTRY_TERMINALIZATION"
   },
   "constraint": {
-    "operational_state": "ACTIVE_SOLUTION_EXECUTION",
-    "class": "STATE_TRANSITION_CONTINUITY",
-    "condition": "HB30_STATE_TRANSITION_NOT_YET_OBSERVED",
-    "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18",
+    "operational_state": "REQUIRED_EXECUTION_REMAINS",
+    "class": "RUNTIME_REGISTRY_RECONCILIATION",
+    "condition": "G18_ACTIVE_LEASE_STILL_PROJECTED_AFTER_SUCCESS_PREDICATES_PASSED",
+    "owner": "heartbeat_runtime.worker_runtime.WorkerCoordinator + sovereign-runtime-activation-worker",
     "solution_required": true,
-    "next_solution_action": "EXECUTE_BOUNDED_V12_STATE_TRANSITION_THEN_OBSERVE_WORKER_CHECKPOINT",
-    "machine_observable_completion_condition": "receipts/heartbeat-transition-continuity/latest.json is CARRIER_TRANSITION_COMPLETE at HB30 or later and an independently admitted WorkerCoordinator checkpoint observes that carrier state with reconstruction PASS and no duplicate claim/fence",
+    "next_solution_action": "INVOKE_BOUND_G18_ON_NEXT_WORKER_RUNTIME_TICK_AND_CONSUME_COMPLETED_RESPONSE",
+    "machine_observable_completion_condition": "worker registry and worker-control-plane projection no longer contain an active G18 claim/lease and terminal G18 evidence binds receipts/heartbeat-transition-continuity/latest.json at HB31",
     "third_party_dependency": false,
     "human_action_required": false,
-    "missing_implementation": false,
-    "missing_implementation_ref": null
+    "missing_implementation": false
+  },
+  "released_repairs": {
+    "g18_adapter_liveness": {"pull_request": 203, "merge_commit": "b56662cdb840bb2b30b10db2f6236db472261d87"},
+    "ephemeral_separated_runtime": {"pull_request": 204, "merge_commit": "ef56f32d389ae1c5ded93a10d20763f21b4e4341"},
+    "bounded_hb29_to_hb30_transition": {"pull_request": 206, "merge_commit": "b7c5b5e9199c5af46029210fe7909dcf19033b41"}
   },
   "superseded_contract_history": {
-    "prior_blob_sha": "ce3f49c05f83de324c47bf42236d6daa96138fe1",
-    "reason": "The prior v12 handoff correctly separated carrier and WorkerCoordinator but still made continuously resident native execution and the nine-predicate service proof a release prerequisite. That contradicted the canonical iPhone-associated state-transition continuity constraint, which explicitly forbids another machine or always-on host from blocking continuity.",
-    "preservation": "Git history plus source issue/PR/run references preserve the prior resident-supervision evidence. Resident supervision remains optional stronger evidence, while the bounded transition contract is canonical for heartbeat continuity."
+    "prior_blob_sha": "eafb2bbe55f13441617a72c9a339ce92b742bbc6",
+    "reason": "The prior handoff still described HB30 as not observed. Direct canonical evidence now proves active HB31/31, independent WorkerCoordinator 31/31 observation, transition RELEASE_COMPLETE, reconstruction PASS and no duplicate claim/fence. Only runtime-registry terminalization of the already-bound G18 claim remains.",
+    "preservation": "Git history preserves the prior handoff and older resident-service blocker semantics. Resident supervision remains optional stronger evidence rather than a continuity prerequisite."
   },
   "release_downstream": [
-    "STEGFIN-LIVE-ENTRY-003",
-    "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+    "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+    "COSV-LIVE-PACKET-AUTOMATION-006"
   ]
 }
