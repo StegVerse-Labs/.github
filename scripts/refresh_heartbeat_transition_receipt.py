@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Recompute heartbeat transition release predicates without advancing the carrier.
 
-This verifier is deliberately fail-closed.  A release refresh must prove the
+This verifier is deliberately fail-closed. A release refresh must prove the
 immutable HB29 bytes, the cutover/carrier lineage, the current carrier/control-
-plane alignment, and worker observation.  Merely seeing epoch/generation fields
-with plausible values is not sufficient.
+plane alignment, and a task-capable WorkerCoordinator cycle. Merely seeing an
+observation-only worker checkpoint is continuity evidence, not runtime release.
 """
 from __future__ import annotations
 
@@ -23,9 +23,13 @@ CARRIER_REL = Path("control/heartbeat-carrier-runtime-state.json")
 CUTOVER_REL = Path("receipts/heartbeat-schema-cutover/HB29.json")
 WORKER_REL = Path("control/worker-runtime-state.json")
 CONTROL_REL = Path("control/worker-control-plane-coordination.json")
+WORKER_EVENTS_REL = Path("events/worker-runtime.jsonl")
 CARRIER_SCHEMA = "stegverse.heartbeat-carrier-runtime-state/v1"
 CONTROL_SCHEMA = "stegverse.worker-control-plane-coordination/v1"
 CUTOVER_SCHEMA = "stegverse.heartbeat-schema-cutover-receipt/v1"
+OBSERVATION_ONLY_MODE = "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
+TASK_CAPABLE_MODE = "TASK_CAPABLE_WORKER_COORDINATOR"
+OBSERVATION_ONLY_EVENT = "worker_carrier_reference_observed"
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -72,6 +76,40 @@ def no_duplicate_claim_or_fence(control_plane: dict[str, Any]) -> bool:
 
 def _reference_frame(epoch: int) -> str:
     return f"heartbeat_epoch:{epoch}"
+
+
+def task_capable_worker_cycle_observed(root: Path, worker: dict[str, Any], target_epoch: int) -> bool:
+    """Require evidence from the real WorkerCoordinator, not the observer shim."""
+    if worker.get("observation_mode") == TASK_CAPABLE_MODE:
+        return True
+
+    events_path = root / WORKER_EVENTS_REL
+    if not events_path.is_file():
+        return False
+    try:
+        with events_path.open("r", encoding="utf-8") as stream:
+            for line in stream:
+                if not line.strip():
+                    continue
+                try:
+                    event = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if not isinstance(event, dict):
+                    continue
+                epoch = event.get("carrier_epoch")
+                event_type = event.get("event_type")
+                if (
+                    isinstance(epoch, int)
+                    and epoch >= target_epoch
+                    and isinstance(event_type, str)
+                    and event_type
+                    and event_type != OBSERVATION_ONLY_EVENT
+                ):
+                    return True
+    except OSError:
+        return False
+    return False
 
 
 def refresh(root: Path) -> dict[str, Any]:
@@ -145,11 +183,6 @@ def refresh(root: Path) -> dict[str, Any]:
         and cutover.get("observed_new_epoch") >= 30
     )
 
-    # While the carrier is still the first materialized successor, prove the
-    # exact canonical carrier object bound into the cutover receipt.  Once a
-    # later carrier epoch legitimately exists, lineage is instead proven by the
-    # immutable legacy binding retained inside the current carrier plus the
-    # closed cutover receipt.
     initial_carrier_digest_ok = True
     if carrier_valid and carrier_epoch == target_epoch == cutover.get("observed_new_epoch"):
         expected_carrier_digest = cutover.get("new_carrier_state_sha256")
@@ -174,6 +207,11 @@ def refresh(root: Path) -> dict[str, Any]:
         and worker_epoch >= target_epoch
         and worker_generation >= target_generation
     )
+    worker_task_capable = (
+        worker_observed
+        and isinstance(target_epoch, int)
+        and task_capable_worker_cycle_observed(root, worker, target_epoch)
+    )
 
     reconstruction_ok = (
         target_valid
@@ -190,11 +228,13 @@ def refresh(root: Path) -> dict[str, Any]:
         "carrier_epoch_at_least_30": carrier_valid,
         "carrier_generation_non_regressing": carrier_valid,
         "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch": worker_observed,
+        "worker_task_capable_cycle_observed": worker_task_capable,
         "worker_control_plane_observed": control_aligned,
         "no_duplicate_claim_or_fence": bool(control) and no_duplicate_claim_or_fence(control),
         "state_reconstruction_pass": reconstruction_ok,
     }
     transition["predicates"] = predicates
+    transition["worker_runtime_observation_mode"] = worker.get("observation_mode")
     transition["all_carrier_transition_predicates_pass"] = all(
         predicates[name]
         for name in (
@@ -209,6 +249,8 @@ def refresh(root: Path) -> dict[str, Any]:
     transition["all_release_predicates_pass"] = all(predicates.values())
     if transition["all_release_predicates_pass"]:
         transition["release_state"] = "RELEASE_COMPLETE"
+    elif transition["all_carrier_transition_predicates_pass"] and worker_observed:
+        transition["release_state"] = "WORKER_TASK_CAPABLE_CYCLE_PENDING"
     elif transition["all_carrier_transition_predicates_pass"]:
         transition["release_state"] = "WORKER_CHECKPOINT_PENDING"
     else:
