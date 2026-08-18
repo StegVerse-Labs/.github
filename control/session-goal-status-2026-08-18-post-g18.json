@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.session-goal-status/v1",
   "session_id": "SESSION-2026-08-18-COSV-STATE-GRADIENT-INTROSPECTION",
-  "updated_at": "2026-08-18T15:14:00-05:00",
+  "updated_at": "2026-08-18T17:19:00-05:00",
   "archive_eligible": false,
   "archive_reason": "Required G18 registry terminalization, live DELTA/gradient/introspection evidence, sovereign inference activation, and downstream ordered matrix/trajectory evidence remain nonterminal. Durable assignment or source release does not satisfy the goals.",
   "observed_live_state": {
@@ -19,7 +19,9 @@
     "hb32_preobservation_expectation": "StegVerse-Labs/StegBrain:expectations/cosv/live/HB32-ecosystem-chat-orphan-recovery.json",
     "hb32_actual_observed": false,
     "recurring_cosv_packet_automation_source_installed": true,
-    "recurring_cosv_packet_worker_live_claim_observed": false
+    "recurring_cosv_packet_worker_live_claim_observed": false,
+    "stegbrain_live_gradient_consumer_source_installed": true,
+    "stegbrain_live_gradient_observed": false
   },
   "goals": [
     {
@@ -49,6 +51,13 @@
       "terminal": false
     },
     {
+      "goal_id": "STEGBRAIN-COSV-LIVE-GRADIENT-CONSUMER-007",
+      "state": "SOURCE_COMPLETE_RELEASED_PENDING_FIRST_REAL_DELTA_CONSUMPTION",
+      "owner": "StegVerse-Labs/StegBrain#861",
+      "evidence": "StegVerse-Labs/StegBrain:docs/COSV_LIVE_GRADIENT_CONSUMER_MIRROR_HANDOFF.md",
+      "terminal": false
+    },
+    {
       "goal_id": "STEGBRAIN-COSV-GRADIENT-MECHANICS-002",
       "state": "WAITING_FOR_FIRST_CHANGED_LIVE_DELTA_PACKET",
       "owner": "StegVerse-Labs/StegBrain#861",
@@ -67,7 +76,7 @@
       "terminal": false
     }
   ],
-  "next_executable_action": "Consume the next admitted WorkerCoordinator tick. It must terminalize the already-complete G18 claim, apply/bind COSV-LIVE-PACKET-AUTOMATION-006, and when a later carrier reference exists materialize the next genuine DELTA. Immediately consume that DELTA in StegBrain#861 and compare the HB32 precommit in #865 if the actual target reference is HB32. In parallel consume .github#60 sovereign-inference worker outputs.",
+  "next_executable_action": "Consume the next admitted WorkerCoordinator tick. It must terminalize the already-complete G18 claim, apply/bind COSV-LIVE-PACKET-AUTOMATION-006, and when a later carrier reference exists materialize the next genuine DELTA. Immediately execute the installed StegBrain live-gradient consumer against that immutable DELTA and compare the HB32 precommit in #865 if the actual target reference is HB32. In parallel consume .github#60 sovereign-inference worker outputs.",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",
