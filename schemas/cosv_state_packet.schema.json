@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/cosv_state_packet.schema.json",
+  "title": "COSV Heartbeat State Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema","mode","carrier_ref","observed_at","previous_packet_sha256","state_root_sha256","unchanged_state_root_sha256","records","gradient_inputs","constraint_summary","authority","packet_sha256"],
+  "properties": {
+    "schema": {"const": "stegverse.cosv-state-packet/v1"},
+    "mode": {"enum": ["FULL","DELTA"]},
+    "carrier_ref": {"type": "string", "minLength": 1},
+    "observed_at": {"type": "string", "minLength": 1},
+    "previous_packet_sha256": {"type": ["string","null"], "pattern": "^[0-9a-f]{64}$"},
+    "state_root_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "unchanged_state_root_sha256": {"type": ["string","null"], "pattern": "^[0-9a-f]{64}$"},
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["identity","profile","level","vector","evidence_refs","observed_at","exact_metrics"],
+        "properties": {
+          "identity": {"type": "string", "minLength": 1},
+          "profile": {"enum": ["task.v1","aggregate.v1"]},
+          "level": {"enum": ["task","goal","component","subsystem","system","ecosystem"]},
+          "vector": {"type": "string", "pattern": "^[0-9]{14}$"},
+          "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "observed_at": {"type": "string", "minLength": 1},
+          "exact_metrics": {"type": "object"},
+          "admissibility_ref": {"type": ["string","null"]},
+          "coherency_group_ref": {"type": ["string","null"]}
+        }
+      }
+    },
+    "gradient_inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["identity","level","profile","previous_vector","current_vector","transition_vector","previous_exact_metrics","current_exact_metrics","authority_effect"],
+        "properties": {
+          "identity": {"type": "string"},
+          "level": {"enum": ["task","goal","component","subsystem","system","ecosystem"]},
+          "profile": {"enum": ["task.v1","aggregate.v1"]},
+          "previous_vector": {"type": ["string","null"], "pattern": "^[0-9]{14}$"},
+          "current_vector": {"type": "string", "pattern": "^[0-9]{14}$"},
+          "transition_vector": {"type": "string", "pattern": "^[0-9]{14}$"},
+          "previous_exact_metrics": {"type": "object"},
+          "current_exact_metrics": {"type": "object"},
+          "admissibility_ref": {"type": ["string","null"]},
+          "coherency_group_ref": {"type": ["string","null"]},
+          "authority_effect": {"const": "NONE"}
+        }
+      }
+    },
+    "constraint_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["critical_blockers","conflicting_claims","unassigned_work","stale_claims","thread_required"],
+      "properties": {
+        "critical_blockers": {"type": "integer", "minimum": 0},
+        "conflicting_claims": {"type": "integer", "minimum": 0},
+        "unassigned_work": {"type": "integer", "minimum": 0},
+        "stale_claims": {"type": "integer", "minimum": 0},
+        "thread_required": {"type": "boolean"}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["heartbeat_authority_effect","packet_authority_effect","credential_authority","non_tv_tvc_secret_or_token_used","github_token_runtime_authority"],
+      "properties": {
+        "heartbeat_authority_effect": {"const": "NONE"},
+        "packet_authority_effect": {"const": "NONE"},
+        "credential_authority": {"const": "TV/TVC"},
+        "non_tv_tvc_secret_or_token_used": {"const": false},
+        "github_token_runtime_authority": {"const": "NONE"}
+      }
+    },
+    "packet_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {"if": {"properties": {"mode": {"const": "FULL"}}}, "then": {"properties": {"unchanged_state_root_sha256": {"type": "null"}}}},
+    {"if": {"properties": {"mode": {"const": "DELTA"}}}, "then": {"properties": {"previous_packet_sha256": {"type": "string"}, "unchanged_state_root_sha256": {"type": "string"}}}}
+  ]
+}
