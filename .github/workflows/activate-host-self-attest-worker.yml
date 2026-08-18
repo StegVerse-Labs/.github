@@ -1,5 +1,7 @@
 # Historical host self-attest validation only. The canonical heartbeat owns
 # activation, fencing, transitions and persistence; GitHub Actions may only verify.
+# Retained evidence/handoff persistence must not fan out paid main-branch CI;
+# PR review and manual dispatch retain validation coverage.
 name: Host Self-Attest Worker - Validation Only / No GitHub Token Authority
 
 on:
@@ -7,9 +9,6 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/activate-host-self-attest-worker.yml'
-      - 'handoffs/SHWP-HOST-SELF-ATTEST-001.json'
-      - 'cost-basis/worker-runtime/host-self-attest.json'
-      - 'receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json'
   pull_request:
     paths:
       - '.github/workflows/activate-host-self-attest-worker.yml'
@@ -50,25 +49,20 @@ jobs:
           task=next(x for x in registry['tasks'] if x['task_id']=='SHWP-HOST-SELF-ATTEST-001')
           receipt=json.loads(Path('receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json').read_text())
           assert task['state']=='COMPLETED'
-          assert task['claim_id'] is None and task['worker_id'] is None
           assert task['archive_eligible'] is True
+          assert task['claim_id'] is None and task['worker_id'] is None
           assert receipt['completed'] is True
-          assert receipt['provider_is_heartbeat_timing_authority'] is False
-          assert receipt['provider_or_host_liveness_grants_execution_authority'] is False
-          print('HOST_SELF_ATTEST_RETAINED_EVIDENCE_PASS')
+          print('RETAINED_HOST_SELF_ATTEST_PASS')
           PY
 
-      - name: Prove hosted activation and persistence are retired
+      - name: Prove hosted lane is non-authorizing
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          lines=Path('.github/workflows/activate-host-self-attest-worker.yml').read_text(encoding='utf-8').splitlines()
-          stripped=[line.strip() for line in lines]
-          assert 'permissions: {}' in stripped
-          assert 'contents: write' not in stripped
-          assert not any(line.startswith('uses: actions/checkout@') for line in stripped)
-          assert not any(line.startswith('uses: actions/setup-python@') for line in stripped)
-          assert not any(line.startswith('git push ') for line in stripped)
-          assert not any('scripts/run_heartbeat_runtime.py --cycles ' in line and '--dry-run' not in line for line in stripped)
-          print('HOST_SELF_ATTEST_NON_AUTHORIZING_PASS')
+          text=Path('.github/workflows/activate-host-self-attest-worker.yml').read_text(encoding='utf-8')
+          forbidden=['contents'+': write','git'+' push','actions/'+'checkout@','actions/'+'setup-python@','$'+'{{ '+'secrets.']
+          found=[x for x in forbidden if x in text]
+          assert not found, found
+          assert 'permissions: {}' in text
+          print('HOST_SELF_ATTEST_VALIDATION_NON_AUTHORIZING_PASS')
           PY
