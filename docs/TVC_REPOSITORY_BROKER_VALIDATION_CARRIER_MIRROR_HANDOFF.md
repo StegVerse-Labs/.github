@@ -42,13 +42,22 @@ The validation subprocess receives no `GITHUB_TOKEN`, `GH_TOKEN`, `GITHUB_PAT`, 
 TVC repository: StegVerse-Labs/TVC
 PR: #20
 branch: feat/github-repository-operation-broker-001
-expected_head: 6209396bc9846ec5f301b24d3b6f0207e571af1d
-observed_current_PR_head: 6209396bc9846ec5f301b24d3b6f0207e571af1d
+expected_head: dfbf736d9e205e1fc179dc8636af74e638c2aec5
+observed_current_PR_head: dfbf736d9e205e1fc179dc8636af74e638c2aec5
+head_change_reason: private-repository fanout repair removed automatic anonymous pull_request validation from the supplementary hosted workflow; canonical local TV/TVC validation semantics are unchanged
 upstream handoff: docs/GITHUB_REPOSITORY_OPERATION_BROKER_MIRROR_HANDOFF.md
 upstream task: tasks/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.json
 ```
 
-If PR #20 head changes before runtime validation, the worker fails closed with `EXACT_TVC_SOURCE_NOT_MATERIALIZED` until this binding is deliberately advanced to the reviewed new head. It must not silently validate a different commit.
+The prior pin `6209396bc9846ec5f301b24d3b6f0207e571af1d` is superseded. If PR #20 head changes again before runtime validation, the worker must fail closed until the handoff/test binding is deliberately advanced to the reviewed new head. It must never silently validate a different commit.
+
+## Private-repository hosted-workflow repair consumed
+
+PR #20 itself is in a private repository. Its supplementary hosted workflow previously contained a `pull_request` trigger followed by anonymous private-source fetch, which cannot provide authoritative validation under the TV/TVC-only credential rule.
+
+PR #20 head `dfbf736d9e205e1fc179dc8636af74e638c2aec5` now removes that automatic pull-request fanout and restricts the historical anonymous workflow to manual public-mode execution guarded by `github.event.repository.private == false`.
+
+This is noise/failure-surface removal only. It is not a validation PASS and it does not replace the machine-owned local carrier.
 
 ## Execution ownership and collision partition
 
@@ -62,7 +71,7 @@ release_condition: none; this bucket contains no manually executable action
 next_executable_action: NONE_MANUAL
 ```
 
-A chat/session may inspect evidence and repair this carrier's own declarative defects, but it must not directly substitute itself for the heartbeat worker or execute credential-bearing TVC transport.
+A chat/session may inspect evidence and repair this carrier's own declarative defects, including stale exact-head bindings, but it must not directly substitute itself for the heartbeat worker or execute credential-bearing TVC transport.
 
 ### WORKER-OWNED / DO NOT COMPETE
 
@@ -70,7 +79,7 @@ A chat/session may inspect evidence and repair this carrier's own declarative de
 manual_execution_allowed: false
 worker_registry_ref: control/worker-registry.d/tvc-repository-broker-validation-001.json
 collision_scope: tvc:github-repository-operation-broker:validation
-release_condition: receipts/tvc-repository-broker-validation/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json state=COMPLETED for the exact pinned TVC PR #20 head
+release_condition: receipts/tvc-repository-broker-validation/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json state=COMPLETED for exact head dfbf736d9e205e1fc179dc8636af74e638c2aec5
 next_executable_action: heartbeat scheduler admits SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001 and invokes process:tvc-repository-broker-validation-v1
 ```
 
@@ -119,11 +128,11 @@ COMPLETED
 ## Downstream release chain
 
 ```text
-carrier receipt COMPLETED
+carrier receipt COMPLETED for dfbf736d9e205e1fc179dc8636af74e638c2aec5
 -> TVC integration authority may admit PR #20 after its own branch/task/claim consistency check
 -> formalism TVC transport worker may mark broker standing CANONICAL_VALIDATED
 -> StegCore private-source bridge may use TVC MATERIALIZE_SOURCE_ARCHIVE
--> StegCore PR #141 sovereign validation executes
+-> StegCore PR #141 sovereign validation executes against its then-current exact head
 -> only actual PASS permits StegCore merge/consumer release
 ```
 
@@ -131,34 +140,9 @@ No downstream state is inferred from this handoff alone.
 
 ## Validation evidence
 
-The first repository-wide validation after installation exposed two carrier-integration bookkeeping defects, not TVC broker code failures: the AE retrospective denominator did not classify the newly registered task, and this mirror handoff lacked the organization-required execution-ownership partition. The denominator was reconciled at `d14f36f2ad06368c98fbdb245d0f68ecbdae99c2`; the ownership partition was installed at `5b560bc826ad2e4dc4385ead37b0bbeb4f9bc07e`; explicit AE task-conformance bindings were then installed in the handoff/registry ending at `871e764b1a09550dd6ad8fccf18e377981286d4b`.
+Repository integration for this carrier was previously validated after the AE denominator and ownership-partition repairs, including successful Heartbeat Worker Project and organization-control-plane validation on implementation head `871e764b1a09550dd6ad8fccf18e377981286d4b`.
 
-Final inspected validation on `871e764b1a09550dd6ad8fccf18e377981286d4b`:
-
-```text
-Heartbeat Worker Project - Validation Only / No GitHub Token Authority
-run: 32065432398
-job: 95496297296
-result: SUCCESS
-complete deterministic repository test suite: SUCCESS
-credential-clean anonymous checkout: SUCCESS
-executable handoff validation: SUCCESS
-heartbeat dry-run carrier-only/non-mutating proof: SUCCESS
-
-Validate organization control plane - No GitHub Token Authority
-run: 32065432433
-job: 95496297459
-result: SUCCESS
-handoff execution ownership: SUCCESS
-Admissible-Existence handoff/worker-registry conformance: SUCCESS
-canonical heartbeat carrier contract: SUCCESS
-runtime/control-plane semantic separation: SUCCESS
-cross-repository collision enforcement: SUCCESS
-allocator dry-run without persistence authority: SUCCESS
-JSON/JSONL and no-authority workflow checks: SUCCESS
-```
-
-These workflows are validation surfaces only and grant no production runtime, repository, transport, credential, model, or trade authority. Repository integration is validated. Runtime carrier execution remains separately required on an admitted heartbeat opportunity with exact locally materialized TVC source.
+The exact-head pin was advanced after the TVC private-repository fanout repair. The handoff and its deterministic test now agree on `dfbf736d9e205e1fc179dc8636af74e638c2aec5`. This declarative reconciliation does not constitute runtime execution.
 
 ## Completion inventory
 
@@ -166,13 +150,16 @@ These workflows are validation surfaces only and grant no production runtime, re
 developed files: 7/7
 scaffolding/stubs: 0
 missing required files: 0
-repository integration validation: 2/2 PASS on inspected final implementation head
+repository integration validation: HISTORICAL PASS; exact-head declarative pin reconciled
 runtime carrier receipt: 0/1
 TVC PR #20 admission: 0/1
 StegCore downstream source-materialization release: 0/1
-session-specific validation-carrier requirement transferred: complete
 ```
 
 ## Archive condition
 
-This support lane has no remaining chat-only design requirement: implementation, collision partition, AE conformance, validation commands, owner, runtime release condition, and downstream continuation are durably recorded. Product activation remains incomplete until the machine-owned runtime receipt, TVC admission, and StegCore downstream sovereign validation occur. A runtime BLOCKED state does not authorize a PASS claim.
+Product activation remains incomplete until the machine-owned runtime receipt, TVC admission, and StegCore downstream sovereign validation occur. A runtime BLOCKED, HANDOFF_READY, assigned, or machine-owned state does not authorize a PASS or archival claim.
+
+```text
+DO NOT ARCHIVE THIS SESSION — REQUIRED EXECUTION REMAINS IN AN ACTIVE DEPENDENCY LANE.
+```
