@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.worker-authorization/v0.1",
+  "authorization_id": "AUTH-STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
+  "task_id": "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
+  "goal_id": "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
+  "state": "AUTHORIZED",
+  "authority_source": "docs/STEGVERSE_TEST_LANES_AUTOLAUNCH_MIRROR_HANDOFF.md",
+  "capabilities": [
+    "runtime_observation",
+    "bounded_process_execution",
+    "durable_state_reconstruction",
+    "test_lanes_autolaunch"
+  ],
+  "allowed_paths": [
+    "receipts/test-lanes-autolaunch/**"
+  ],
+  "allowed_services": [],
+  "credential_authority": "TV/TVC",
+  "heartbeat_grants_execution_authority": false,
+  "provider_secret_transport_allowed": false,
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "github_token_required": false,
+  "primary_provider": "stegverse_local",
+  "third_party_role": "CONTROL_OR_FALLBACK_ONLY",
+  "execution_contract": {
+    "heartbeat_role": "WAKE_AND_REEVALUATE_ONLY",
+    "matrix_allow_effect": "REQUEST_FRESH_BOUNDED_TEST_RUN_CLAIM_ONLY",
+    "fresh_claim_required": true,
+    "canonical_run_requires_all_nine_lanes": true,
+    "external_operations_must_use_tvc": true,
+    "sovereign_primary_must_use_existing_local_endpoint": true,
+    "credential_values_may_enter_worker": false
+  },
+  "release_condition": "The canonical nine-lane comparison completes under a fresh fenced test-run claim with exactly nine sanitized lane-evidence records, comparator PASS, StegVerse PRIMARY, TV/TVC-only credential authority, and no NON-TV/TVC secret/token authority."
+}
