@@ -20,6 +20,9 @@ class HeartbeatRuntimeSeparationTests(unittest.TestCase):
         self.assertNotIn('"active_leases"', text)
         self.assertNotIn('"worker_registry_ref"', text)
         self.assertEqual(carrier["carrier"]["role"], "REGULATORY_CARRIER_REFERENCE_FRAME")
+        self.assertEqual(carrier["carrier"]["frequency_rule"], "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL")
+        self.assertEqual(carrier["carrier"]["phase_travel_time_ms"], 10)
+        self.assertFalse(carrier["carrier"]["observation_is_causal"])
         self.assertEqual(carrier["authority"]["credential_authority"], "TV/TVC")
         self.assertFalse(carrier["authority"]["heartbeat_grants_execution_authority"])
         self.assertFalse(carrier["authority"]["master_records_action_authority"])
@@ -29,6 +32,7 @@ class HeartbeatRuntimeSeparationTests(unittest.TestCase):
         legacy_worker = self.legacy["subsignals"]["worker_coordination"]
         self.assertEqual(control["worker_coordination"]["active_leases"], legacy_worker["active_leases"])
         self.assertFalse(control["observed_reference"]["heartbeat_is_authority"])
+        self.assertFalse(control["observed_reference"]["observation_is_causal"])
         self.assertFalse(control["authority"]["heartbeat_grants_execution_authority"])
         self.assertFalse(control["authority"]["signal_grants_execution_authority"])
         self.assertFalse(control["authority"]["master_records_action_authority"])
@@ -42,7 +46,7 @@ class HeartbeatRuntimeSeparationTests(unittest.TestCase):
         self.assertEqual(before, after)
         self.assertEqual(carrier["generation"], control["generation"])
 
-    def test_contract_includes_all_required_transition_domains(self):
+    def test_contract_includes_all_required_transition_domains_and_oscillator_boundary(self):
         contract = json.loads((ROOT / "control" / "runtime-separation-contract.json").read_text(encoding="utf-8"))
         self.assertEqual(
             set(contract["required_domains"]),
@@ -51,6 +55,14 @@ class HeartbeatRuntimeSeparationTests(unittest.TestCase):
         self.assertEqual(contract["nervous_system_owner"], "StegVerse-Labs/StegBrain#860")
         self.assertEqual(contract["master_records_role"], "PASSIVE_CUSTODY_AND_QUERYABLE_EVIDENCE")
         self.assertFalse(contract["authority"]["non_tv_tvc_secret_or_token_required"])
+        oscillator = contract["carrier_oscillator"]
+        self.assertEqual(oscillator["phase_travel_time_ms"], 10)
+        self.assertEqual(oscillator["progression_dependency"], "OSCILLATOR_ONLY")
+        self.assertFalse(oscillator["worker_or_task_gating"])
+        self.assertFalse(oscillator["admission_gating"])
+        self.assertFalse(oscillator["claim_or_fence_gating"])
+        self.assertFalse(oscillator["route_or_credential_gating"])
+        self.assertFalse(oscillator["observation_is_causal"])
 
     def test_expired_worker_history_is_terminal_evidence_only(self):
         schema = json.loads((ROOT / "schemas" / "expired-worker-history.schema.json").read_text(encoding="utf-8"))
