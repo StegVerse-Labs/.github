@@ -11,11 +11,12 @@
     "observed_reference": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["carrier_generation", "reference_frame", "heartbeat_is_authority"],
+      "required": ["carrier_generation", "reference_frame", "heartbeat_is_authority", "observation_is_causal"],
       "properties": {
         "carrier_generation": {"type": "integer", "minimum": 0},
         "reference_frame": {"type": "string", "minLength": 1},
-        "heartbeat_is_authority": {"const": false}
+        "heartbeat_is_authority": {"const": false},
+        "observation_is_causal": {"const": false}
       }
     },
     "worker_coordination": {
