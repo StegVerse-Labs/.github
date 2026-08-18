@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.cosv-state-packet-validation/v1",
+  "goal_id": "COSV-HEARTBEAT-STATE-PACKET-002",
+  "observed_at": "2026-08-18T08:48:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "source_surfaces": [
+    "docs/COSV_HEARTBEAT_STATE_PACKET_MIRROR_HANDOFF.md",
+    "management/COSV_HEARTBEAT_STATE_PACKET_CONTRACT.json",
+    "schemas/cosv_state_packet.schema.json",
+    "scripts/cosv_state_packet.py",
+    "tests/test_cosv_state_packet.py",
+    "examples/cosv_state_packet_examples.json"
+  ],
+  "deterministic_validation": {
+    "self_test": "PASS",
+    "focused_tests": "5/5 PASS",
+    "full_packet_digest_verification": "PASS",
+    "delta_reconstruction": "PASS",
+    "gradient_input_derivation": "PASS",
+    "implicit_record_removal_fail_closed": "PASS",
+    "digest_tamper_rejection": "PASS",
+    "non_tvc_credential_authority_rejection": "PASS"
+  },
+  "hosted_workflow_validation_claimed": false,
+  "live_heartbeat_packet_emission_claimed": false,
+  "stegbrain_gradient_evaluation_claimed": false,
+  "heartbeat_authority_effect": "NONE",
+  "packet_authority_effect": "NONE",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_used": false,
+  "github_token_runtime_authority": "NONE",
+  "live_migration_owner": "StegVerse-Labs/.github#122",
+  "gradient_consumer_owner": "StegVerse-Labs/StegBrain#860/#861",
+  "result": "PASS_SOURCE_LEVEL_ONLY"
+}
