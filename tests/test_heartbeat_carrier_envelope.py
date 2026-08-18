@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
 import unittest
 
 from heartbeat_runtime.carrier_envelope import (
@@ -8,6 +10,8 @@ from heartbeat_runtime.carrier_envelope import (
     assess_carrier_observation,
     derive_carrier_envelope,
 )
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class HeartbeatCarrierEnvelopeTests(unittest.TestCase):
@@ -47,6 +51,7 @@ class HeartbeatCarrierEnvelopeTests(unittest.TestCase):
             growth_reserve_ratio=0.25,
         )
         frequency = envelope["frequency"]
+        self.assertEqual("stegverse.heartbeat-carrier-envelope/v2", envelope["schema"])
         self.assertEqual("INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL", frequency["rule"])
         self.assertEqual(100.0, frequency["nominal_hz"])
         self.assertEqual(10.0, frequency["nominal_period_ms"])
@@ -54,6 +59,21 @@ class HeartbeatCarrierEnvelopeTests(unittest.TestCase):
         self.assertFalse(frequency["downstream_constraints_may_change_frequency"])
         self.assertEqual(4, envelope["phase_plan"]["phase_slots"])
         self.assertFalse(envelope["phase_plan"]["phase_plan_changes_reference_interval"])
+
+    def test_schema_cannot_reintroduce_gate_or_state_driven_heartbeat(self):
+        schema = json.loads((ROOT / "schemas" / "heartbeat-carrier-envelope.schema.json").read_text(encoding="utf-8"))
+        self.assertEqual(
+            "stegverse.heartbeat-carrier-envelope/v2",
+            schema["properties"]["schema"]["const"],
+        )
+        frequency = schema["properties"]["frequency"]["properties"]
+        self.assertEqual("INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL", frequency["rule"]["const"])
+        self.assertEqual("OSCILLATOR_ONLY", frequency["progression_dependency"]["const"])
+        self.assertIs(frequency["downstream_constraints_may_change_frequency"]["const"], False)
+        self.assertEqual(100.0, frequency["nominal_hz"]["const"])
+        self.assertEqual(10.0, frequency["nominal_period_ms"]["const"])
+        recalculation = schema["properties"]["recalculation"]["properties"]
+        self.assertIs(recalculation["recalculation_changes_heartbeat_frequency"]["const"], False)
 
     def test_strictest_tolerance_wins(self):
         envelope = derive_carrier_envelope(
