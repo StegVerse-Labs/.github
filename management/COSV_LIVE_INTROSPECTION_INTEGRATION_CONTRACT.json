@@ -2,10 +2,11 @@
   "schema": "stegverse.cosv-live-introspection-integration/v1",
   "goal_id": "COSV-LIVE-INTROSPECTION-INTEGRATION-005",
   "created_at": "2026-08-18T11:26:00-05:00",
-  "updated_at": "2026-08-18T15:00:00-05:00",
+  "updated_at": "2026-08-18T15:14:00-05:00",
   "source_owners": {
     "heartbeat_reference": "StegVerse-Labs/.github#122",
     "cosv_packet": "StegVerse-Labs/.github#217",
+    "cosv_recurring_packet_runtime": "StegVerse-Labs/.github:COSV-LIVE-PACKET-AUTOMATION-006",
     "gradient_observer": "StegVerse-Labs/StegBrain#861",
     "gradient_matrix": "StegVerse-Labs/StegBrain#863",
     "expectation_residual": "StegVerse-Labs/StegBrain#865",
@@ -35,12 +36,18 @@
   "sequence": [
     {
       "step": 1,
-      "owner": "StegVerse-Labs/.github#122/#217",
-      "input": "admitted progressing carrier reference",
+      "owner": "StegVerse-Labs/.github#122 + COSV-LIVE-PACKET-AUTOMATION-006",
+      "input": "admitted progressing carrier reference plus independently observed WorkerCoordinator reference",
       "output": "authority-neutral stegverse.cosv-state-packet/v1 FULL or DELTA observation",
-      "fail_closed_if": "carrier/reference evidence unavailable or packet cannot reconstruct",
-      "current_state": "FIRST_FULL_PACKET_COMPLETE_AT_HB31",
-      "evidence_ref": "receipts/cosv/live/HB31.json"
+      "fail_closed_if": "carrier/reference evidence unavailable, worker reference lags, packet cannot reconstruct, packet/cache digest mismatches, record removal occurs, or carrier regresses",
+      "current_state": "FIRST_FULL_PACKET_COMPLETE_AT_HB31_RECURRING_WORKER_SOURCE_INSTALLED_PENDING_FIRST_CLAIM",
+      "evidence_refs": [
+        "receipts/cosv/live/HB31.json",
+        "handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json",
+        "control/worker-registry.d/cosv-live-packet-automation-006.json",
+        "control/process-worker-adapters.d/cosv-live-packet-automation-006.json",
+        "receipts/cosv/COSV-LIVE-PACKET-AUTOMATION-006-source-validation.json"
+      ]
     },
     {
       "step": 2,
@@ -55,7 +62,7 @@
     {
       "step": 3,
       "owner": "StegVerse-Labs/StegBrain#861",
-      "input": "packet gradient_inputs",
+      "input": "actual live packet gradient_inputs",
       "output": "authority-neutral gradient observation",
       "fail_closed_if": "packet authority invariant, reference binding, or credential invariant fails",
       "current_state": "WAITING_FOR_FIRST_CHANGED_LIVE_DELTA_AFTER_HB31"
@@ -65,7 +72,7 @@
       "owner": "StegVerse-Labs/StegBrain#865",
       "input": "same-identity/profile/reference precommitted expectation plus actual packet-derived state/transition",
       "output": "authority-neutral expectation residual observation",
-      "fail_closed_if": "reference mismatch, expectation provenance failure, insufficient evidence, or malformed vectors",
+      "fail_closed_if": "reference mismatch, expectation provenance failure, insufficient evidence, malformed vectors, or target reference was not actually observed",
       "current_state": "HB32_EXPECTATION_READY_ACTUAL_HB32_NOT_YET_OBSERVED"
     },
     {
@@ -77,14 +84,33 @@
       "current_state": "WAITING_FOR_SUFFICIENT_ORDERED_LIVE_OBSERVATIONS"
     }
   ],
+  "runtime_dependencies": {
+    "g18_registry_terminalization": {
+      "state": "REQUIRED_EXECUTION_REMAINS",
+      "owner": "StegVerse-Labs/.github#12 / WorkerCoordinator / G18",
+      "condition": "continuity predicates PASS at HB31 but G18 claim/lease remains projected active",
+      "release_condition": "G18 worker returns COMPLETED on an admitted WorkerCoordinator tick and registry/control-plane no longer project active G18 claim/fence"
+    },
+    "cosv_packet_worker": {
+      "state": "HANDOFF_READY_PENDING_FIRST_WORKER_EXECUTION",
+      "owner": "COSV-LIVE-PACKET-AUTOMATION-006 / cosv-live-packet-worker",
+      "release_condition": "WorkerCoordinator binds the task under a fenced claim and the worker returns a valid authority-neutral packet materialization/current-reference response"
+    },
+    "sovereign_inference": {
+      "state": "NOT_ACTIVATED",
+      "owner": "StegVerse-Labs/.github#60 -> TV/TVC -> StegVerse-org/LLM-adapter -> master-records/orchestration",
+      "release_condition": "real StegVerse-private model + TVC ROUTE_ADMITTED credential NONE + exact LLM-adapter + measured usage + same-execution Master Records provider and transition reconstruction PASS"
+    }
+  },
   "persistent_outputs": [
     "receipts/cosv/live/HB31.json",
     "receipts/cosv/live/HB31-validation.json",
     "receipts/cosv/live/HB31-integration-release.json",
+    "receipts/cosv/live/latest-state.json after first recurring worker materialization",
     "StegVerse-Labs/StegBrain:expectations/cosv/live/HB32-ecosystem-chat-orphan-recovery.json",
     "StegVerse-Labs/StegBrain:receipts/STEGBRAIN-COSV-EXPECTATION-HB32-001-precommit-validation.json",
     "StegBrain gradient observation receipt owned by #861 after changed DELTA",
-    "StegBrain expectation residual observation receipt owned by #865 after actual HB32",
+    "StegBrain expectation residual observation receipt owned by #865 after actual target reference",
     "StegBrain gradient matrix receipt owned by #863 after >=2 observations",
     "StegBrain residual-series receipt owned by #865 after >=2 residual observations"
   ],
@@ -99,8 +125,11 @@
     "worker_observed_carrier_epoch": 31,
     "worker_observed_carrier_generation": 31,
     "heartbeat_transition_release_complete": true,
+    "g18_registry_terminalized": false,
     "live_cosv_packet_observed": true,
     "live_cosv_packet_ref": "receipts/cosv/live/HB31.json",
+    "recurring_cosv_packet_source_installed": true,
+    "recurring_cosv_packet_worker_claim_observed": false,
     "hb32_preobservation_expectation_committed": true,
     "hb32_actual_observed": false,
     "live_gradient_observed": false,
@@ -108,8 +137,8 @@
     "live_gradient_matrix_observed": false,
     "sovereign_inference_activation_observed": false
   },
-  "release_condition": "A valid HB30+ carrier state and independent WorkerCoordinator observation exist; first live FULL packet exists; a valid precommitted expectation exists before the next target reference; a changed DELTA is emitted and StegBrain persists the first live gradient and expectation-residual observations; sufficient ordered observations produce matrix/residual-series evidence; and the session's required sovereign inference activation reaches immutable same-execution proof without widening authority.",
+  "release_condition": "G18 is terminalized in runtime registry/control-plane; the recurring COSV worker is actually bound/executed; a changed DELTA is emitted from a real later reference; StegBrain persists live gradient and expectation-residual observations; sufficient ordered observations produce matrix/residual-series evidence; and required sovereign inference activation reaches immutable same-execution proof without widening authority.",
   "chat_session_required": true,
   "archive_eligible": false,
-  "archive_blocker": "Required live gradient, expectation-residual, matrix/trajectory and sovereign-inference outcomes remain nonterminal. Assignment or machine ownership does not satisfy them."
+  "archive_blocker": "Required runtime terminalization, live packet worker execution, live DELTA/gradient/expectation-residual/matrix evidence and sovereign-inference activation remain nonterminal. Assignment, handoff readiness, machine ownership, or source release does not satisfy them."
 }
