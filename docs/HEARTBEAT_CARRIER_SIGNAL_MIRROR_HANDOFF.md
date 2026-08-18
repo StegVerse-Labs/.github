@@ -1,44 +1,75 @@
 # Heartbeat Carrier Signal Mirror Handoff
 
-Updated: 2026-08-15T14:32:00-05:00
+Updated: 2026-08-18T17:47:00-05:00
 
 ## Canonical authority
 
 ```text
 goal_id: HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120
+runtime_correction_id: HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008
 repository: StegVerse-Labs/.github
 branch: main
-canonical_issue: StegVerse-Labs/.github#120 CLOSED_COMPLETED
-canonical_pr: StegVerse-Labs/.github#140 MERGED
-merge_commit: 34a1744a4cf314ea4f3b80925d4cbd5a7910dd97
-superseded_pr: StegVerse-Labs/.github#121 CLOSED_SUPERSEDED
+canonical_issue: StegVerse-Labs/.github#120
+runtime_owner: StegVerse-Labs/.github#122
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 non_tv_tvc_secret_or_token_required: false
-implementation_claim: RELEASED_COMPLETE
-validation_claim: RELEASED_COMPLETE
-integration_claim: RELEASED_COMPLETE
-status: COMPLETE_RELEASED
 ```
 
-This handoff is authoritative for heartbeat semantics. Live repository state, issue #120, merged PR #140, current validators, downstream owner tasks, and current runtime handoffs supersede historical chat claims and older heartbeat wording.
+This handoff is authoritative for heartbeat semantics. The 2026-08-18 oscillator correction supersedes prior wording that allowed heartbeat frequency/progression to be derived from gate passbands, admitted signal load, worker cycles, or control-plane execution opportunities.
 
 ## Canonical architecture
 
-Heartbeat is the StegVerse **carrier/synchronization signal only**. It is not a scheduler, task dispatcher, route executor, claim/fence/lease issuer, credential authority, application message bus, provider/model executor, or Master Records transport.
+Heartbeat is the StegVerse **carrier/synchronization signal only**. It is an independent signal tied to the heartbeat oscillator and its phase travel/reference interval of **10 ms**.
 
 ```text
-A_carrier = A_required(max_admissible_simultaneous_composite_load) + epsilon_margin
-
-f_carrier = derive_from(gate_passbands,
-                        admitted_signal_spectrum,
-                        simultaneous_load,
-                        destination_paths,
-                        master_records_return_path,
-                        bounded_margin)
+carrier progression dependency: OSCILLATOR_ONLY
+phase travel time: 10 ms
+reference increment interval: 10 ms
+reference rate: 100 Hz
+worker/task gating: false
+admission gating: false
+claim/fence gating: false
+route/credential gating: false
+observation is causal: false
+persisted carrier state: observation/snapshot only
 ```
 
-No universal fixed cadence is normative. Subsystem communication remains:
+Therefore:
+
+```text
+HB_n --10 ms oscillator phase travel--> HB_(n+1)
+```
+
+No worker, task, G18 state, admission decision, claim, fence, lease, route, credential, repository action, or observer invocation causes, permits, delays, suppresses, or advances that transition.
+
+A consumer may observe HB_n, miss HB_(n+1), and later observe HB_(n+k). The missed references existed independently; the later observation does not create them retroactively.
+
+**Observation does not cause heartbeat progression.** WorkerCoordinator, COSV, StegBrain, domain workers, and Master Records are downstream consumers/observers only.
+
+Heartbeat is not a scheduler, task dispatcher, route executor, claim/fence/lease issuer, credential authority, application message bus, provider/model executor, or Master Records transport.
+
+## Capacity/envelope separation
+
+Carrier-capacity, passband, load, phase-slot, jitter, or deviation analysis may evaluate whether downstream communication can use the heartbeat reference effectively, but such analysis may not set or gate heartbeat progression. Any earlier `GATE_PASSBAND_DERIVED` carrier-frequency statement is superseded for heartbeat progression.
+
+The canonical runtime implementation is:
+
+```text
+heartbeat_runtime/independent_oscillator.py
+heartbeat_runtime/engine_v12.py
+schemas/heartbeat-carrier-runtime-state.schema.json
+schemas/heartbeat-carrier-observation.schema.json
+control/runtime-separation-contract.json
+management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json
+scripts/advance_heartbeat_transition.py  # compatibility sampler, not a clock
+```
+
+`engine_v12.cycle()` samples the independent oscillator-derived reference. Multiple observations inside the same 10 ms quantum cannot advance the heartbeat. A delayed observation can jump across multiple references based on elapsed oscillator quanta.
+
+## Communication and lifecycle
+
+Subsystem communication remains:
 
 ```text
 manifest packet + expiration wrapper + data packet
@@ -56,170 +87,45 @@ manifest + expiration wrapper + data
 
 Master Records is terminal transition custody, not deletion. **Master Records is the End-Of-Life state/destination for every Transition Table element.**
 
-## Worker lifecycle record-pair contract
-
-Worker initiation creates an opening Master Records record binding task/goal identity, worker/instance identity, claim/fence, authority source, start frame, expiration basis, and expected closure identity. Every opening worker record requires a matching terminal closure record. Expired workers lose execution authority and collision ownership; only the immutable expired-worker history/closure packet survives for custody/reconstruction.
+## Responsibility and authority
 
 ```text
-opening worker record + matching closure record = COMPLETE LIFECYCLE RECORD
-opening record + closure deadline passed + no matching closure = MISSING RECORD
+heartbeat = independent carrier/reference signal only
+WorkerCoordinator = downstream task/worker observer/coordinator under separate authority
+StegBrain = nervous-system observer/evaluator
+Master Records = passive custody/evidence
+TV/TVC = sole credential/secret/token authority
 ```
 
-Missing-record reconstruction may repair custody from immutable lineage but may not resurrect an expired worker or restore its claim/fence.
+`credential_authority: TV/TVC`
 
-## Admissible-Existence structural binding
+`github_token_runtime_authority: NONE`
 
-StegCore issue #105 / PR #119 is released and distinguishes:
+Third-party infrastructure may be fallback-only and never primary heartbeat authority.
+
+## Historical provenance
+
+Legacy `control/heartbeat-state.json` remains immutable HB29 provenance. Existing separated carrier snapshots such as persisted HB31 are historical observations, not proof that the oscillator itself stopped at that ordinal. The corrected runtime migrates a pre-fix snapshot by using its observed epoch/time as an oscillator anchor and derives later sampled references from 10 ms quanta.
+
+Historical receipts are not rewritten. Where older receipts or handoffs state that a worker/control-plane execution opportunity causes the next heartbeat, that causal interpretation is superseded by this handoff and `management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json` v2.
+
+## Validation obligation
+
+Required deterministic invariants:
 
 ```text
-stegverse:capability:heartbeat-carrier:v1
-stegverse:capability:worker-control-plane:v1
-stegverse:capability:manifest-communication:v1
-stegverse:capability:master-records-terminal-custody:v1
+same sample time -> same heartbeat reference
+<10 ms from anchor -> no reference increment
+exactly 10 ms -> +1 reference
+95 ms -> +9 references with 5 ms phase offset
+worker/task/admission state absent from oscillator derivation
+persisted state explicitly marked observation-only
+TV/TVC credential authority preserved
+GitHub token runtime authority NONE
 ```
 
-Carrier continuity is not activation proof for another capability.
+Canonical tests: `tests/test_independent_heartbeat_oscillator.py`.
 
-## Installed canonical surfaces
+## Completion state
 
-```text
-docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md
-control/heartbeat-documentation-semantics-audit.json
-scripts/validate_heartbeat_carrier_contract.py
-.github/workflows/org-control-plane-validate.yml
-docs/STALE_HEARTBEAT_RECLAMATION_MIRROR_HANDOFF.md
-```
-
-## Validation and release evidence
-
-```text
-PR #140 merged: true
-merge_commit: 34a1744a4cf314ea4f3b80925d4cbd5a7910dd97
-issue #120: CLOSED_COMPLETED
-validated head before merge: f60268e7616d254fc77544f0f5d9ab1a49ee5f80
-organization control-plane run: 31841173561 SUCCESS
-job: 94898170191 SUCCESS
-Heartbeat Worker Project run: 31841173579 SUCCESS
-Render Organization Handoff State run: 31841173557 SUCCESS
-ACTIVE_WORKER_STATE_INVARIANT_PASS: true
-HANDOFF_EXECUTION_OWNERSHIP_PASS: true
-AE_CONTROL_PLANE_VALIDATION_PASS: true
-HEARTBEAT_CARRIER_CONTRACT_PASS: true
-non-authorizing hosted validation: true
-GitHub runtime authority: NONE
-credential authority: TV/TVC
-```
-
-## Cross-repository continuation
-
-The heartbeat semantics goal itself is complete. Remaining downstream adoption is owned by its existing repositories/tasks and must not reopen this implementation claim:
-
-```text
-StegVerse-Labs/.github#122: runtime/control-plane separation
-StegVerse-Labs/Site#264: Site prose
-StegVerse-Labs/StegCore#104: StegCore remaining prose
-StegVerse-Labs/admissibility-wiki#99: research wording
-StegVerse-Labs/repo-standards#39: packet/Transition Table standard
-master-records/orchestration#33: terminal packet/EOL
-GCAT-BCAT-Engine/Publisher#27: transport reclassification
-```
-
-Historical receipts remain immutable.
-
-## Local-model and trade convergence
-
-```text
-formal local model/runtime: COMPLETE_RELEASED at StegVerse-002/micro-node-runtime
-local discovery/launch/inference/proof: COMPLETE_RELEASED
-trade source readiness: 7/8
-governed wallet handoff: MACHINE_OWNED_PENDING
-wallet signing/broadcast after WALLET_HANDOFF_READY: USER_ONLY
-```
-
-No local-model/runtime reimplementation or StegFin live execution is authorized from this heartbeat handoff.
-
-## Execution ownership and collision partition
-
-### MANUAL / SESSION-STARTABLE
-
-```yaml
-manual_execution_allowed: false
-worker_registry_ref: NONE_COMPLETED_SOURCE_GOAL
-collision_scope: heartbeat carrier semantics source is released; no session may reopen implementation ownership
-release_condition: COMPLETE_RELEASED_PR_140
-next_executable_action: NONE
-```
-
-### WORKER-OWNED / DO NOT COMPETE
-
-```yaml
-- task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122
-  execution_owner: StegVerse-Labs/.github#122 + current runtime owners
-  manual_execution_allowed: false
-  worker_registry_ref: control/worker-registry.json
-  collision_scope: heartbeat runtime/schema, worker coordination, claims, fences, leases, route state and live carrier operation
-  release_condition: canonical runtime owner completes live producer/consumer migration with immutable evidence
-  next_executable_action: continue through the already-owned issue #122 runtime lane
-
-- task_id: STEGFIN-CONTINUITY-CARRIER-007
-  execution_owner: canonical StegFin continuity worker + TV/TVC
-  manual_execution_allowed: false
-  worker_registry_ref: control/worker-registry.d/stegfin-continuity-carrier-007.json
-  collision_scope: live claim, TV/TVC transport, Inventory N, quote/pretrade and WALLET_HANDOFF_READY
-  release_condition: WALLET_HANDOFF_READY or exact fail-closed terminal receipt
-  next_executable_action: canonical machine worker continues after its release predicates are satisfied
-```
-
-### ESCALATED / AUTHORITY-OWNED
-
-```yaml
-manual_execution_allowed: false
-worker_registry_ref: control/worker-registry.json
-collision_scope: credential/route authority, admissibility, and terminal custody
-release_condition: authority-specific canonical owner resolves its own bounded task
-next_executable_action: TV/TVC, StegCore/StegGate, and Master Records continue only within their existing authority
-```
-
-Credential/route authority remains TV/TVC; admissibility remains canonical StegCore/StegGate; custody remains Master Records.
-
-### COMPLETED / SUPERSEDED
-
-```yaml
-manual_execution_allowed: false
-worker_registry_ref: NONE_TERMINAL
-collision_scope: completed heartbeat-carrier semantics and superseded PR lineage
-release_condition: already satisfied
-next_executable_action: NONE
-```
-
-```text
-HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120: COMPLETE_RELEASED
-HEARTBEAT-CARRIER-STALE-PR-121: COMPLETE_SUPERSEDED_BY_PR_140
-PR #140 integration support claim: RELEASED_COMPLETE
-```
-
-## Completion accounting
-
-Denominator for this goal: five required deliverables.
-
-```text
-1 current-main canonical handoff: COMPLETE
-2 machine-readable audit: COMPLETE
-3 conflicting .github heartbeat prose subordinated/reconciled: COMPLETE
-4 deterministic validator + no-token validation gate: COMPLETE_VALIDATED
-5 merge/release evidence: COMPLETE
-
-task completion: 5/5 = 100%
-developed files: 4/4 = 100%
-scaffolding/stubs: 0
-missing required files: 0
-validation: 2/2 PASS
-integration: 1/1 COMPLETE
-propagation: downstream owner tasks durable; downstream execution independent
-session consolidation for this goal: COMPLETE
-archive dependency from this goal: NONE
-```
-
-## Next executable action
-
-No heartbeat-carrier implementation action remains. Downstream owners continue their already-installed tasks. Sessions assisting broader local-runtime or StegFin goals must not reopen this completed semantics claim.
+The semantic/runtime correction is source-installed but is not declared live-activated until the corrected v12 sampler executes on the sovereign runtime and produces an inspectable oscillator-backed carrier observation. Source completion does not equal live activation.
