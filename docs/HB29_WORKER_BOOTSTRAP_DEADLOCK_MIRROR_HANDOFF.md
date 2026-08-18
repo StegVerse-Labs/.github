@@ -45,15 +45,16 @@ No second heartbeat, scheduler, WorkerCoordinator, claim, fence, route authority
 
 ## Validation evidence
 
-Prior reconciled head `4f899f2ab2fc0d730ebfe8fa651c2e10986d74ee` ran under Heartbeat Worker Project `32180288511`. Compile, canonical JSON, executable handoff validation, COSV aggregate, and all eight PR #222 bootstrap-hardening tests passed. The full suite remained red for three concurrent failures outside the four owned surfaces: one direct state-transition producer test and two iPhone verifier compatibility tests.
+Prior reconciled head `4f899f2ab2fc0d730ebfe8fa651c2e10986d74ee` ran under Heartbeat Worker Project `32180288511`. Compile, canonical JSON, executable handoff validation, COSV aggregate, and all eight PR #222 bootstrap-hardening tests passed.
 
-Because `main` advanced through live HB31 and additional unrelated work, that earlier merge reference is not used as release evidence for the newly rebased head. The current head must be inspected again.
+Freshly rebased head `bc666a44ec90aee30965222f2a716d44d7d7c804` ran under Heartbeat Worker Project `32180962008`: compile PASS, canonical JSON PASS, executable handoff PASS, and all eight hardening tests PASS. The complete suite remained red only for concurrent failures outside the four claimed source surfaces: one direct transition-producer test, two iPhone-verifier compatibility tests, and one Test Lanes autolaunch test.
 
-Required current-head validation:
+Organization Control Plane `32180961947` passed workflow hygiene, organization invariants, and active-worker ownership. Its ownership validator exposed this handoff's missing exact canonical bucket labels/fields plus unrelated COSV/Test Lanes handoff defects. This revision repairs this handoff's ownership-contract failure. The unrelated handoffs remain outside this claim.
+
+Required release validation after this revision:
 
 ```bash
 python -m unittest -v tests.test_hb29_worker_bootstrap_deadlock
-python -m unittest -v tests.test_hb29_state_transition_carrier_contract tests.test_g18_self_bootstrap_worker tests.test_sovereign_runtime_activation_escalation
 python scripts/validate_executable_handoffs.py
 python scripts/validate_handoff_execution_ownership.py
 ```
@@ -62,36 +63,49 @@ Hosted workflow evidence is source validation only and never substitutes for the
 
 ## Execution ownership and collision partition
 
-### SESSION / SOURCE HARDENING
+### MANUAL / SESSION-STARTABLE
 
 ```text
-claim_state: CLAIMED_FOR_IMPLEMENTATION
-scope: the four PR #222 files only
-release_condition: current-head focused validation PASS + PR #222 merge + claim/handoff reconciliation
-next_executable_action: inspect the new PR-head workflows and merge only if hardening-specific tests remain green
+manual_execution_allowed: true
+worker_registry_ref: control/session-implementation-claim-2026-08-18-hb29-worker-bootstrap-deadlock.json
+collision_scope: four PR #222 source surfaces only; do not mutate live HB31 carrier/runtime state, G18 claim/fence, downstream inference state, or unrelated Test Lanes/COSV work
+release_condition: current-head focused validation PASS + this handoff ownership PASS + PR #222 merge + claim reconciliation
+next_executable_action: inspect current PR #222 validation and merge only when hardening-specific checks and this handoff ownership contract pass
 ```
 
-### LIVE RUNTIME / DO NOT COMPETE
+### WORKER-OWNED / DO NOT COMPETE
 
 ```text
-carrier_state: ACTIVE at HB31
-authoritative_receipt: receipts/heartbeat-transition-continuity/latest.json
-release_state: RELEASE_COMPLETE
-runtime_authority: StegVerse
-third_party_role: FALLBACK_ONLY
-next_downstream_owner: Ecosystem Chat sovereign inference / #60 and its existing recovery/re-admission path
+manual_execution_allowed: false
+worker_registry_ref: handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json + control/worker-registry.json
+collision_scope: live heartbeat carrier, WorkerCoordinator execution, G18 claim/fence, runtime reconstruction, and downstream machine activation
+release_condition: already observed HB31 continuity remains valid; downstream workers consume it under their own claims and receipts
+next_executable_action: Ecosystem Chat sovereign inference #60 consumes the released carrier dependency through its existing recovery/re-admission path
 ```
 
-### AUTHORITY-OWNED
+### ESCALATED / AUTHORITY-OWNED
 
 ```text
-credential_authority: TV/TVC
-wallet_signing_broadcast_authority: USER_ONLY
+manual_execution_allowed: false
+worker_registry_ref: StegVerse-Labs/TV + StegVerse-Labs/TVC
+collision_scope: credential and route authority; USER_ONLY retains any wallet signing/broadcast authority
+release_condition: TV/TVC-only authority remains preserved
+next_executable_action: none for the HB29 source hardening lane
+```
+
+### COMPLETED / SUPERSEDED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/heartbeat-carrier-runtime-state.json + receipts/heartbeat-transition-continuity/latest.json
+collision_scope: current runtime continuity outcome only; it does not erase future cold-start source correctness
+release_condition: HB31 ACTIVE + RELEASE_COMPLETE + all release predicates PASS
+next_executable_action: do not recreate HB30 or rerun current runtime activation merely to validate source hardening
 ```
 
 ## Downstream obligation
 
-HB31 continuity releases the previous carrier dependency but does not itself prove the user's sovereign local-model activation goal terminal. `StegVerse-Labs/.github#60` still requires real private model execution, TVC credential-free route admission, exact LLM-adapter execution, measured usage, and same-execution Master Records reconstruction. The current persisted #60 receipt remains older and incomplete until its machine lane consumes HB31 and emits newer evidence.
+HB31 continuity releases the previous carrier dependency but does not itself prove the user's sovereign local-model activation goal terminal. `StegVerse-Labs/.github#60` still requires real private model execution, TVC credential-free route admission, exact LLM-adapter execution, measured usage, and same-execution Master Records reconstruction. The currently persisted #60 receipt remains older and incomplete until its machine lane consumes HB31 and emits newer evidence.
 
 ## Completion accounting
 
@@ -99,8 +113,8 @@ HB31 continuity releases the previous carrier dependency but does not itself pro
 developed_files: 4/4
 scaffolding_or_stubs: 0
 missing_required_files: 0
-source_implementation: COMPLETE_ON_REBASED_BRANCH_PENDING_CURRENT_HEAD_VALIDATION
-focused_validation: prior head 8/8 PASS; rebased head PENDING
+source_implementation: COMPLETE_ON_REBASED_BRANCH_PENDING_FINAL_OWNERSHIP_VALIDATION
+focused_validation: 8/8 PASS on current rebased source before handoff-label repair
 integration: PR_222_OPEN
 runtime_continuity: RELEASE_COMPLETE_HB31
 downstream_sovereign_inference_activation: INCOMPLETE
