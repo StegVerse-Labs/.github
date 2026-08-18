@@ -1,0 +1,72 @@
+{
+  "schema": "stegverse.cosv-state-packet/v1",
+  "mode": "FULL",
+  "carrier_ref": "heartbeat_epoch:31",
+  "observed_at": "2026-08-18T19:47:00Z",
+  "previous_packet_sha256": null,
+  "state_root_sha256": "b9ae6209961a3cbd85cc9531088ca91531b03c3eaa4ccc53ee46b0dc1937d22a",
+  "unchanged_state_root_sha256": null,
+  "records": [
+    {
+      "identity": "task:HEARTBEAT-WORKER-REFERENCE-OBSERVATION",
+      "profile": "task.v1",
+      "level": "task",
+      "vector": "70000000100111",
+      "evidence_refs": [
+        "control/worker-runtime-state.json",
+        "control/worker-control-plane-coordination.json",
+        "receipts/heartbeat-transition-continuity/latest.json"
+      ],
+      "observed_at": "2026-08-18T19:47:00Z",
+      "exact_metrics": {
+        "unassigned_work": 0,
+        "blocker_count": 0,
+        "last_observed_carrier_epoch": 31,
+        "last_observed_carrier_generation": 31,
+        "runtime_tick": 2
+      },
+      "admissibility_ref": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+      "coherency_group_ref": "coherency:heartbeat-runtime"
+    },
+    {
+      "identity": "task:SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "profile": "task.v1",
+      "level": "task",
+      "vector": "70000000100111",
+      "evidence_refs": [
+        "control/heartbeat-carrier-runtime-state.json",
+        "control/worker-runtime-state.json",
+        "control/worker-control-plane-coordination.json",
+        "receipts/heartbeat-transition-continuity/latest.json"
+      ],
+      "observed_at": "2026-08-18T19:47:00Z",
+      "exact_metrics": {
+        "unassigned_work": 0,
+        "blocker_count": 0,
+        "carrier_epoch": 31,
+        "carrier_generation": 31,
+        "worker_last_observed_carrier_epoch": 31,
+        "release_predicates_pass": 7,
+        "release_predicates_required": 7
+      },
+      "admissibility_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
+      "coherency_group_ref": "coherency:heartbeat-runtime"
+    }
+  ],
+  "gradient_inputs": [],
+  "constraint_summary": {
+    "critical_blockers": 0,
+    "conflicting_claims": 0,
+    "unassigned_work": 0,
+    "stale_claims": 0,
+    "thread_required": false
+  },
+  "authority": {
+    "heartbeat_authority_effect": "NONE",
+    "packet_authority_effect": "NONE",
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_used": false,
+    "github_token_runtime_authority": "NONE"
+  },
+  "packet_sha256": "618ca9d0b8d6a2dbd661378b8ca9814dd9b882efb40d351c0d517bff8f4e17bd"
+}
