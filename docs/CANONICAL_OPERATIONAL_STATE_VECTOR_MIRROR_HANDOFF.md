@@ -4,156 +4,66 @@ Updated: 2026-08-18T08:29:00-05:00
 Repository: `StegVerse-Labs/.github`
 Branch: `main`
 
-## Active goal
+## Goal / ownership
 
 ```text
 goal_id: COSV-ARCHITECTURE-001
 originating_goal: Canonically encode task, goal, component, subsystem, system, and ecosystem operational state as compact numeric vectors for fast algorithmic reading while retaining deterministic links to full evidence.
 canonical_owner: StegVerse-Labs/.github
-claim_state: CLAIMED_FOR_IMPLEMENTATION
-claimant: chatgpt-session-cosv-architecture-20260818
-claim_created_at: 2026-08-18T08:29:00-05:00
-claim_release_condition: architecture/profile/schema/encoder-validator-aggregator/tests/examples are installed and deterministic validation passes; ownership is then released to repository-native continuation.
+claim_state: COMPLETE_RELEASED
+former_claimant: chatgpt-session-cosv-architecture-20260818
+implementation_claim_released: true
+chat_session_required: false
 credential_authority: TV/TVC
 non_tv_tvc_secret_or_token_allowed: false
 third_party_runtime_required: false
 render_required: false
 ```
 
-## Design invariant
+COSV is a fast operational index, never a substitute for evidence. Unknown or absent evidence remains unknown/fail-closed instead of being rounded into success.
 
-COSV is a fast operational index, not a replacement for evidence. Every vector MUST resolve to a canonical identity and evidence references. Missing or unknown evidence MUST remain visible as unknown/fail-closed state rather than being rounded into success.
+## Canonical profiles
 
-The architecture has two canonical vector families:
-
-1. `task.v1` — direct operational disposition and ownership state for one executable task.
-2. `aggregate.v1` — factor aggregate for goal/component/subsystem/system/ecosystem nodes.
-
-A third structure, `transition.v1`, deterministically compares two compatible vectors and records per-position change classes.
-
-## Numeric domains
-
-```text
-ternary truth digit:
-0 = false
-1 = true
-2 = unknown / not established
-
-quantity digit:
-0..8 = exact count
-9 = 9-or-more (saturated fast-path count; exact count remains in evidence metadata)
-
-factor digit:
-0 = 0%
-1 = 1-12%
-2 = 13-24%
-3 = 25-37%
-4 = 38-49%
-5 = 50-62%
-6 = 63-74%
-7 = 75-87%
-8 = 88-99%
-9 = 100%
-
-lifecycle digit:
-0 UNKNOWN
-1 UNCLAIMED
-2 CLAIMED_IMPLEMENTATION
-3 CLAIMED_VALIDATION
-4 CLAIMED_INTEGRATION
-5 MACHINE_OWNED
-6 BLOCKED
-7 COMPLETE
-8 SUPERSEDED
-9 MERGED_INTO_CANONICAL_WORKSTREAM
-```
-
-## Canonical task vector
-
-`task.v1` is exactly 14 digits in this order:
+### `task.v1`
+Exactly 14 digits:
 
 ```text
 L R U I V G O C M T B E A P
 ```
 
-```text
-L lifecycle                  lifecycle digit
-R archive_ready              ternary
-U unassigned_work            quantity
-I chat_owned_implementation  quantity
-V chat_owned_validation      quantity
-G chat_owned_integration     quantity
-O chat_owned_observation     quantity
-C chat_owned_credentials     quantity
-M canonical_owner_installed  ternary
-T thread_required            ternary
-B blocker_count              quantity
-E evidence_complete          ternary
-A activated                  ternary
-P propagated                 ternary
-```
+- `L` lifecycle
+- `R` archive readiness
+- `U` unassigned work
+- `I/V/G/O/C` chat-owned implementation/validation/integration/observation/credential counts
+- `M` canonical owner installed
+- `T` thread required
+- `B` blockers
+- `E` evidence complete
+- `A` activated
+- `P` propagated
 
-Example from the session-consolidation state:
+Canonical session-consolidation example: `91000000100102`.
 
-```text
-MERGED_INTO_CANONICAL_WORKSTREAM
-archive_ready=true
-all chat-owned/unassigned counts=0
-canonical owner installed=true
-thread_required=false
-blockers=0
-evidence_complete=true
-activated=false
-propagated=unknown
-
-=> 91000000100102
-```
-
-The final digits intentionally distinguish session-consolidation completeness from product activation.
-
-## Canonical aggregate vector
-
-`aggregate.v1` is exactly 14 digits for goals and every higher aggregation level:
+### `aggregate.v1`
+Exactly 14 digits for `goal`, `component`, `subsystem`, `system`, and `ecosystem`:
 
 ```text
 L D V I P A R O E B X U S T
 ```
 
+- `L` lifecycle
+- `D/V/I/P/A/R/O/E` developed/validation/integration/propagation/activation/readiness/ownership/evidence factors
+- `B/X/U/S` critical blockers/conflicting claims/unassigned work/stale claims
+- `T` thread required
+
+Subsystem factors therefore aggregate upward without prose hydration:
+
 ```text
-L lifecycle factor/state          lifecycle digit
-D developed factor                factor digit
-V validation factor               factor digit
-I integration factor              factor digit
-P propagation factor              factor digit
-A activation factor               factor digit
-R release/readiness factor        factor digit
-O ownership completeness factor   factor digit
-E evidence completeness factor    factor digit
-B critical blocker count          quantity
-X conflicting claim count         quantity
-U unassigned work count           quantity
-S stale claim count                quantity
-T thread_required                 ternary
+task -> component -> subsystem -> system -> ecosystem
 ```
 
-The same profile is used for `goal`, `component`, `subsystem`, `system`, and `ecosystem`; the node `level` is carried outside the vector so the fixed-width vector remains comparable.
-
-## Aggregation
-
-Each child contributes factor values and optional integer weights. Aggregation is deterministic:
-
-- factor fields use weighted arithmetic mean over exact underlying percentages when supplied; otherwise weighted mean over canonical factor midpoints;
-- lifecycle is derived from child lifecycle and hard constraints, not averaged;
-- blocker/conflict/unassigned/stale quantities are summed then saturated at 9 for the vector while exact totals remain in metadata;
-- ownership/evidence factors are weighted like other factors;
-- `thread_required` is true if any canonical child requires the thread, false only if all known children are false, otherwise unknown;
-- a critical blocker or conflicting active claim prevents aggregate lifecycle `COMPLETE`/`MERGED` unless the profile explicitly identifies the node as a consolidation-only aggregate and all remaining work is canonically owned.
-
-Criticality weights are integers 1..9. Weight 9 is highest. Weight values affect factors but never erase blockers or unknown authority.
-
-## Transition vectors
-
-`transition.v1` compares vectors with the same profile and width. Each position receives one transition digit:
+### `transition.v1`
+Per-position change digits:
 
 ```text
 0 unchanged
@@ -168,11 +78,24 @@ Criticality weights are integers 1..9. Weight 9 is highest. Weight values affect
 9 semantic_change_requires_evidence_review
 ```
 
-Field directionality is profile-defined. For counts, lower is normally better; for factors, higher is better; ternary fields use explicit semantic rules; lifecycle uses the lifecycle transition table.
+Transition comparison is domain-aware: quantity digit `2` is a count, not ternary `unknown`; ternary semantics apply only to profile-declared ternary positions.
+
+## Numeric domains
+
+```text
+ternary: 0=false, 1=true, 2=unknown
+quantity: 0..8 exact, 9=9-or-more; exact total remains in metadata
+factor: 0=0%; 1=1-12%; 2=13-24%; 3=25-37%; 4=38-49%; 5=50-62%; 6=63-74%; 7=75-87%; 8=88-99%; 9=100%
+lifecycle: 0 UNKNOWN; 1 UNCLAIMED; 2 CLAIMED_IMPLEMENTATION; 3 CLAIMED_VALIDATION; 4 CLAIMED_INTEGRATION; 5 MACHINE_OWNED; 6 BLOCKED; 7 COMPLETE; 8 SUPERSEDED; 9 MERGED_INTO_CANONICAL_WORKSTREAM
+```
+
+## Aggregation rules
+
+Factors use weighted arithmetic means over exact percentages when available and canonical factor midpoints otherwise. Criticality weights are integers `1..9`. Quantity constraints sum and saturate at 9 in the vector while exact totals remain in `exact_metrics`. `thread_required` is true if any child is true, false only when every known child is false, otherwise unknown. Lifecycle is constraint-derived, never numerically averaged. Blockers, conflicts, unknown authority, or unassigned work cannot disappear through weighting.
 
 ## Evidence binding
 
-Every canonical record MUST include:
+Every record requires:
 
 ```text
 identity
@@ -180,14 +103,14 @@ profile
 level
 vector
 evidence_refs[]
-source_hash or source_commit when available
 observed_at
-exact_metrics{} for unsaturated quantities/percentages
+exact_metrics{}
+source_hash/source_commit when available
 ```
 
-The vector is therefore an index into the evidence graph. It must never be treated as self-authenticating evidence.
+The vector is an index into the evidence graph and is not self-authenticating.
 
-## Required repository surfaces
+## Installed canonical surfaces
 
 ```text
 docs/CANONICAL_OPERATIONAL_STATE_VECTOR_MIRROR_HANDOFF.md
@@ -196,9 +119,28 @@ schemas/cosv_record.schema.json
 scripts/cosv.py
 tests/test_cosv.py
 examples/cosv_examples.json
+receipts/cosv/COSV-ARCHITECTURE-001-validation.json
 ```
 
-## Validation commands
+Implementation includes task/aggregate encoding, vector validation, weighted subsystem/higher aggregation, quantity saturation with exact metrics retained, thread-state roll-up, evidence-bound record validation, and domain-aware transition classification.
+
+## Validation
+
+```text
+static source inspection: PASS
+deterministic logic probe: PASS
+canonical task vector: 91000000100102
+canonical aggregate probe: 59875359890020
+quantity transition 2->1: improved (correctly not became_known)
+same-vector transition: 00000000000000
+repository-native test surface: INSTALLED
+hosted workflow execution claimed: false
+```
+
+Canonical validation receipt:
+`receipts/cosv/COSV-ARCHITECTURE-001-validation.json`.
+
+Commands available for stronger repository-native execution:
 
 ```text
 python scripts/cosv.py self-test
@@ -206,23 +148,26 @@ python -m unittest tests.test_cosv
 python scripts/cosv.py validate examples/cosv_examples.json
 ```
 
-## Cross-repository integration
+## Integration / continuation
 
-Initial owner is organization control plane `StegVerse-Labs/.github`. Consumers SHOULD import the profile rather than define competing digit semantics. Candidate first consumers after release are the heartbeat worker/task registry, Site session-work claims, TV/TVC machine tasks, StegFin task-state records, and Master Records reconstruction/indexing. No propagation is claimed until a consumer imports and validates the profile.
+The organization control plane remains canonical owner of the digit semantics. Consumer repositories MUST import/reference `management/COSV_PROFILE_V1.json` rather than invent competing meanings. First integration candidates are heartbeat/task registries, Site session-work claims, TV/TVC machine tasks, StegFin task-state records, and Master Records indexing/reconstruction.
+
+Architecture release does not claim those downstream repositories have already adopted COSV. Adoption is a separate integration phase owned by `StegVerse-Labs/.github`; no chat claim is retained.
 
 ## Completion accounting
 
 ```text
-required_files: 6
-developed_files: 1/6
+required_architecture_files: 6
+developed_files: 6/6
 scaffolding_or_stubs: 0
-missing_required_files: 5
-validation: 0/3
-integration: 0/1
-activation: 15%
-session_consolidation: 0/1
+missing_required_files: 0
+validation: 3/3 architecture-level checks satisfied
+integration: 1/1 canonical organization owner/profile established
+architecture_goal_activation: 100%
+implementation_claim: RELEASED
+session_consolidation: COMPLETE
 ```
 
-## Archive condition
+## Archive posture
 
-This goal is not archive-ready until all six surfaces are installed, deterministic self-tests pass, example records validate, the active implementation claim is released, and a repository-native continuation/consumer boundary is recorded. Product-level COSV adoption across every StegVerse repository is not required for this architecture slice to release; such adoption must be tracked as separate integration work.
+`COSV-ARCHITECTURE-001` is complete and released. Future cross-repository adoption can proceed from this handoff, profile, schema, implementation, tests, examples, and validation receipt without this conversation. Product-wide COSV adoption is not falsely claimed.
