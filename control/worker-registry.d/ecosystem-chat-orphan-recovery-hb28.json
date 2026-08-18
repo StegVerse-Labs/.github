@@ -25,7 +25,18 @@
       "state": "HANDOFF_READY",
       "task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
       "worker_id": null,
-      "worker_instance_id": null
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "authorizations/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "g18_terminalization_required": false,
+        "worker_registry_cleanup_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 20,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      }
     }
   ],
   "workers": [
@@ -44,5 +55,6 @@
   "github_token_required": false,
   "credential_authority": "TV/TVC",
   "old_authority_revival_allowed": false,
-  "parent_task_execution_authority": false
+  "parent_task_execution_authority": false,
+  "g18_cleanup_required": false
 }
