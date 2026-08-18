@@ -1,0 +1,49 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "COSV-LIVE-PACKET-AUTOMATION-006",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [],
+      "authorized_policy_version": "cosv-live-packet-v1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/cosv-live-packet-automation.json",
+      "evidence_refs": [
+        "handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json",
+        "management/COSV_HEARTBEAT_STATE_PACKET_CONTRACT.json",
+        "scripts/materialize_live_cosv_packet.py",
+        "workers/cosv_live_packet_worker.py",
+        "receipts/cosv/live/HB31.json"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "COSV-LIVE-PACKET-AUTOMATION-006",
+      "handoff_ref": "handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "receipts/cosv/live/HB31.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "COSV-LIVE-PACKET-AUTOMATION-006",
+      "worker_id": null,
+      "worker_instance_id": null
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:cosv-live-packet-automation-v1",
+      "authority_source": "handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json#authority",
+      "capabilities": ["runtime_observation", "bounded_repository_mutation", "cosv_live_packet_materialization"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "cosv-live-packet-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_required": false,
+  "third_party_runtime_required": false
+}
