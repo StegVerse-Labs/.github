@@ -144,15 +144,46 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
 
 
 def _carrier_command(root: Path, interval_ms: float) -> list[str]:
-    return [sys.executable, str(root / "scripts" / "run_heartbeat_runtime.py"), "--root", str(root), "--continuous", "--interval-ms", str(interval_ms)]
+    return [
+        sys.executable,
+        str(root / "scripts" / "run_heartbeat_runtime.py"),
+        "--root",
+        str(root),
+        "--continuous",
+        "--interval-ms",
+        str(interval_ms),
+    ]
 
 
 def _worker_command(root: Path, interval_ms: float) -> list[str]:
-    return [sys.executable, str(root / "scripts" / "run_worker_runtime.py"), "--root", str(root), "--continuous", "--interval-ms", str(interval_ms)]
+    return [
+        sys.executable,
+        str(root / "scripts" / "run_worker_runtime.py"),
+        "--root",
+        str(root),
+        "--continuous",
+        "--interval-ms",
+        str(interval_ms),
+    ]
 
 
 def _systemd_unit(description: str, command: list[str], root: Path) -> str:
-    return "\n".join(["[Unit]", f"Description={description}", "After=local-fs.target", "", "[Service]", "Type=simple", "ExecStart=" + " ".join(f'\"{part}\"' for part in command), "Restart=always", "RestartSec=2", f"Environment=STEGVERSE_HEARTBEAT_ROOT={root}", "", "[Install]", "WantedBy=default.target", ""])
+    return "\n".join([
+        "[Unit]",
+        f"Description={description}",
+        "After=local-fs.target",
+        "",
+        "[Service]",
+        "Type=simple",
+        "ExecStart=" + " ".join(f'\"{part}\"' for part in command),
+        "Restart=always",
+        "RestartSec=2",
+        f"Environment=STEGVERSE_HEARTBEAT_ROOT={root}",
+        "",
+        "[Install]",
+        "WantedBy=default.target",
+        "",
+    ])
 
 
 def materialize_service(root: Path, *, interval_ms=DEFAULT_INTERVAL_MS, system=None, env=None):
@@ -160,50 +191,150 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_INTERVAL_MS, system=N
     values = dict(os.environ if env is None else env)
     carrier_command = _carrier_command(root, interval_ms)
     worker_command = _worker_command(root, interval_ms)
+
     if name == "linux":
         base = Path(values.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "systemd" / "user"
-        carrier_path = base / "stegverse-heartbeat.service"; worker_path = base / "stegverse-worker-runtime.service"
+        carrier_path = base / "stegverse-heartbeat.service"
+        worker_path = base / "stegverse-worker-runtime.service"
         carrier_content = _systemd_unit("StegVerse non-authorizing heartbeat carrier", carrier_command, root)
         worker_content = _systemd_unit("StegVerse worker control-plane runtime", worker_command, root)
-        activation_commands = [["systemctl", "--user", "daemon-reload"], ["systemctl", "--user", "enable", "--now", carrier_path.name], ["systemctl", "--user", "enable", "--now", worker_path.name]]
-        carrier_success_index = 1; worker_success_index = 2; kind = "systemd-user-separated"
+        activation_commands = [
+            ["systemctl", "--user", "daemon-reload"],
+            ["systemctl", "--user", "enable", "--now", carrier_path.name],
+            ["systemctl", "--user", "enable", "--now", worker_path.name],
+        ]
+        carrier_success_index = 1
+        worker_success_index = 2
+        kind = "systemd-user-separated"
     elif name == "darwin":
         base = Path.home() / "Library" / "LaunchAgents"
-        carrier_path = base / "org.stegverse.heartbeat.plist"; worker_path = base / "org.stegverse.worker-runtime.plist"
-        uid = getattr(os, "getuid", lambda: int(values.get("UID", "0")))(); domain = f"gui/{uid}"
-        carrier_content = plistlib.dumps({"Label":"org.stegverse.heartbeat","ProgramArguments":carrier_command,"RunAtLoad":True,"KeepAlive":True,"EnvironmentVariables":{"STEGVERSE_HEARTBEAT_ROOT":str(root)},"StandardOutPath":str(root / "receipts" / "sovereign-host" / "carrier.stdout.log"),"StandardErrorPath":str(root / "receipts" / "sovereign-host" / "carrier.stderr.log")}).decode()
-        worker_content = plistlib.dumps({"Label":"org.stegverse.worker-runtime","ProgramArguments":worker_command,"RunAtLoad":True,"KeepAlive":True,"EnvironmentVariables":{"STEGVERSE_HEARTBEAT_ROOT":str(root)},"StandardOutPath":str(root / "receipts" / "sovereign-host" / "worker.stdout.log"),"StandardErrorPath":str(root / "receipts" / "sovereign-host" / "worker.stderr.log")}).decode()
-        activation_commands = [["launchctl","bootout",domain,str(carrier_path)],["launchctl","bootstrap",domain,str(carrier_path)],["launchctl","bootout",domain,str(worker_path)],["launchctl","bootstrap",domain,str(worker_path)]]
-        carrier_success_index = 1; worker_success_index = 3; kind = "launch-agent-separated"
+        carrier_path = base / "org.stegverse.heartbeat.plist"
+        worker_path = base / "org.stegverse.worker-runtime.plist"
+        uid = getattr(os, "getuid", lambda: int(values.get("UID", "0")))()
+        domain = f"gui/{uid}"
+        carrier_content = plistlib.dumps({
+            "Label": "org.stegverse.heartbeat",
+            "ProgramArguments": carrier_command,
+            "RunAtLoad": True,
+            "KeepAlive": True,
+            "EnvironmentVariables": {"STEGVERSE_HEARTBEAT_ROOT": str(root)},
+            "StandardOutPath": str(root / "receipts" / "sovereign-host" / "carrier.stdout.log"),
+            "StandardErrorPath": str(root / "receipts" / "sovereign-host" / "carrier.stderr.log"),
+        }).decode()
+        worker_content = plistlib.dumps({
+            "Label": "org.stegverse.worker-runtime",
+            "ProgramArguments": worker_command,
+            "RunAtLoad": True,
+            "KeepAlive": True,
+            "EnvironmentVariables": {"STEGVERSE_HEARTBEAT_ROOT": str(root)},
+            "StandardOutPath": str(root / "receipts" / "sovereign-host" / "worker.stdout.log"),
+            "StandardErrorPath": str(root / "receipts" / "sovereign-host" / "worker.stderr.log"),
+        }).decode()
+        activation_commands = [
+            ["launchctl", "bootout", domain, str(carrier_path)],
+            ["launchctl", "bootstrap", domain, str(carrier_path)],
+            ["launchctl", "bootout", domain, str(worker_path)],
+            ["launchctl", "bootstrap", domain, str(worker_path)],
+        ]
+        carrier_success_index = 1
+        worker_success_index = 3
+        kind = "launch-agent-separated"
     elif name == "windows":
         base = Path(values.get("APPDATA", Path.home() / "AppData" / "Roaming")) / "StegVerse"
-        carrier_path = base / "heartbeat-start.cmd"; worker_path = base / "worker-runtime-start.cmd"
-        carrier_content = "@echo off\r\n" + subprocess.list2cmdline(carrier_command) + "\r\n"; worker_content = "@echo off\r\n" + subprocess.list2cmdline(worker_command) + "\r\n"
-        activation_commands = [["schtasks","/Create","/F","/SC","ONLOGON","/TN","StegVerse Heartbeat","/TR",str(carrier_path)],["schtasks","/Create","/F","/SC","ONLOGON","/TN","StegVerse Worker Runtime","/TR",str(worker_path)]]
-        carrier_success_index = 0; worker_success_index = 1; kind = "scheduled-task-separated"
+        carrier_path = base / "heartbeat-start.cmd"
+        worker_path = base / "worker-runtime-start.cmd"
+        carrier_content = "@echo off\r\n" + subprocess.list2cmdline(carrier_command) + "\r\n"
+        worker_content = "@echo off\r\n" + subprocess.list2cmdline(worker_command) + "\r\n"
+        activation_commands = [
+            ["schtasks", "/Create", "/F", "/SC", "ONLOGON", "/TN", "StegVerse Heartbeat", "/TR", str(carrier_path)],
+            ["schtasks", "/Create", "/F", "/SC", "ONLOGON", "/TN", "StegVerse Worker Runtime", "/TR", str(worker_path)],
+        ]
+        carrier_success_index = 0
+        worker_success_index = 1
+        kind = "scheduled-task-separated"
     else:
         raise RuntimeError(f"unsupported sovereign host platform: {name}")
-    carrier_path.parent.mkdir(parents=True, exist_ok=True); carrier_path.write_text(carrier_content, encoding="utf-8"); worker_path.parent.mkdir(parents=True, exist_ok=True); worker_path.write_text(worker_content, encoding="utf-8")
-    return {"schema":"stegverse.sovereign-heartbeat-service/v3","platform":name,"registration_kind":kind,"registration_path":str(carrier_path),"carrier_registration_path":str(carrier_path),"worker_registration_path":str(worker_path),"carrier_command":carrier_command,"worker_command":worker_command,"activation_commands":activation_commands,"carrier_success_index":carrier_success_index,"worker_success_index":worker_success_index,"runtime_root":str(root),"canonical_runtime":CANONICAL_RUNTIME,"canonical_carrier_runtime":CANONICAL_CARRIER_RUNTIME,"worker_runtime":WORKER_RUNTIME,"heartbeat_interval_ms":float(interval_ms),"worker_interval_ms":float(interval_ms),"nominal_cycles_per_second":_nominal_cycles_per_second(float(interval_ms)),"native_process_supervision_only":True,"separate_carrier_and_worker_processes":True,"heartbeat_grants_execution_authority":False,"carrier_epoch_controls_worker_expiry":False,"credential_authority":"TV/TVC","credential_requirement":"NONE","non_tv_tvc_secret_or_token_used":False,"third_party_process_host_required":False,"third_party_deployment_required":False,"third_party_scheduler_required":False,"render_production_runtime_used":False,"manual_action_required":False}
+
+    carrier_path.parent.mkdir(parents=True, exist_ok=True)
+    carrier_path.write_text(carrier_content, encoding="utf-8")
+    worker_path.parent.mkdir(parents=True, exist_ok=True)
+    worker_path.write_text(worker_content, encoding="utf-8")
+    return {
+        "schema": "stegverse.sovereign-heartbeat-service/v3",
+        "platform": name,
+        "registration_kind": kind,
+        "registration_path": str(carrier_path),
+        "carrier_registration_path": str(carrier_path),
+        "worker_registration_path": str(worker_path),
+        "carrier_command": carrier_command,
+        "worker_command": worker_command,
+        "activation_commands": activation_commands,
+        "carrier_success_index": carrier_success_index,
+        "worker_success_index": worker_success_index,
+        "runtime_root": str(root),
+        "canonical_runtime": CANONICAL_RUNTIME,
+        "canonical_carrier_runtime": CANONICAL_CARRIER_RUNTIME,
+        "worker_runtime": WORKER_RUNTIME,
+        "heartbeat_interval_ms": float(interval_ms),
+        "worker_interval_ms": float(interval_ms),
+        "nominal_cycles_per_second": _nominal_cycles_per_second(float(interval_ms)),
+        "native_process_supervision_only": True,
+        "separate_carrier_and_worker_processes": True,
+        "heartbeat_grants_execution_authority": False,
+        "carrier_epoch_controls_worker_expiry": False,
+        "credential_authority": "TV/TVC",
+        "credential_requirement": "NONE",
+        "non_tv_tvc_secret_or_token_used": False,
+        "third_party_process_host_required": False,
+        "third_party_deployment_required": False,
+        "third_party_scheduler_required": False,
+        "render_production_runtime_used": False,
+        "manual_action_required": False,
+    }
 
 
 def install(source_root, target_root, runner=subprocess.run, *, interval_ms=DEFAULT_INTERVAL_MS, system=None, env=None):
-    materialization = materialize(source_root, target_root, interval_ms=interval_ms); service = materialize_service(target_root, interval_ms=interval_ms, system=system, env=env); results = []
+    materialization = materialize(source_root, target_root, interval_ms=interval_ms)
+    service = materialize_service(target_root, interval_ms=interval_ms, system=system, env=env)
+    results = []
     for command in service["activation_commands"]:
-        completed = runner(command, check=False, capture_output=True, text=True); results.append({"command": command, "returncode": completed.returncode})
-    carrier_index = int(service["carrier_success_index"]); worker_index = int(service["worker_success_index"])
-    carrier_active = len(results) > carrier_index and results[carrier_index]["returncode"] == 0; worker_active = len(results) > worker_index and results[worker_index]["returncode"] == 0
-    receipt = {**materialization, **service, "activation_results": results, "carrier_active": carrier_active, "worker_active": worker_active, "active": carrier_active and worker_active}
-    path = target_root / "receipts" / "sovereign-host" / "activation.latest.json"; path.parent.mkdir(parents=True, exist_ok=True); path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8"); return receipt
+        completed = runner(command, check=False, capture_output=True, text=True)
+        results.append({"command": command, "returncode": completed.returncode})
+    carrier_index = int(service["carrier_success_index"])
+    worker_index = int(service["worker_success_index"])
+    carrier_active = len(results) > carrier_index and results[carrier_index]["returncode"] == 0
+    worker_active = len(results) > worker_index and results[worker_index]["returncode"] == 0
+    receipt = {
+        **materialization,
+        **service,
+        "activation_results": results,
+        "carrier_active": carrier_active,
+        "worker_active": worker_active,
+        "active": carrier_active and worker_active,
+    }
+    path = target_root / "receipts" / "sovereign-host" / "activation.latest.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return receipt
 
 
 def main():
-    parser = argparse.ArgumentParser(); parser.add_argument("--source-root", type=Path, default=Path(__file__).resolve().parents[1]); parser.add_argument("--runtime-root", type=Path); parser.add_argument("--interval-ms", type=float, default=DEFAULT_INTERVAL_MS); parser.add_argument("--materialize-only", action="store_true"); args = parser.parse_args(); root = (args.runtime_root or default_runtime_root()).resolve()
-    if args.interval_ms < 0: raise SystemExit("interval-ms must be >= 0")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--source-root", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--runtime-root", type=Path)
+    parser.add_argument("--interval-ms", type=float, default=DEFAULT_INTERVAL_MS)
+    parser.add_argument("--materialize-only", action="store_true")
+    args = parser.parse_args()
+    root = (args.runtime_root or default_runtime_root()).resolve()
+    if args.interval_ms < 0:
+        raise SystemExit("interval-ms must be >= 0")
     if args.materialize_only:
-        result = materialize(args.source_root, root, interval_ms=args.interval_ms); result["service"] = materialize_service(root, interval_ms=args.interval_ms)
-    else: result = install(args.source_root, root, interval_ms=args.interval_ms)
-    print(json.dumps(result, indent=2, sort_keys=True)); return 0 if result.get("active", True) else 1
+        result = materialize(args.source_root, root, interval_ms=args.interval_ms)
+        result["service"] = materialize_service(root, interval_ms=args.interval_ms)
+    else:
+        result = install(args.source_root, root, interval_ms=args.interval_ms)
+    print(json.dumps(result, indent=2, sort_keys=True))
+    return 0 if result.get("active", True) else 1
 
 
 if __name__ == "__main__":
