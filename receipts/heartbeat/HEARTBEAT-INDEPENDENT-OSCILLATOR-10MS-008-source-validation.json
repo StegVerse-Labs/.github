@@ -1,0 +1,66 @@
+{
+  "schema": "stegverse.heartbeat-independent-oscillator-source-validation/v1",
+  "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "validated_at": "2026-08-18T17:58:00-05:00",
+  "state": "SOURCE_VALIDATED_BOUNDED",
+  "source_surfaces": [
+    "heartbeat_runtime/independent_oscillator.py",
+    "heartbeat_runtime/engine_v12.py",
+    "heartbeat_runtime/runtime_separation.py",
+    "heartbeat_runtime/carrier_envelope.py",
+    "schemas/heartbeat-carrier-runtime-state.schema.json",
+    "schemas/heartbeat-carrier-observation.schema.json",
+    "schemas/worker-control-plane-coordination.schema.json",
+    "control/runtime-separation-contract.json",
+    "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
+    "scripts/advance_heartbeat_transition.py",
+    "control/heartbeat-documentation-semantics-audit.json",
+    "scripts/validate_heartbeat_carrier_contract.py",
+    "tests/test_independent_heartbeat_oscillator.py",
+    "tests/test_heartbeat_carrier_envelope.py",
+    "tests/test_heartbeat_runtime_separation.py",
+    "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
+    "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md"
+  ],
+  "direct_repository_inspection": {
+    "completed": true,
+    "engine_v12_semantics": "SAMPLE_OSCILLATOR_NOT_INCREMENT_ON_CALL",
+    "carrier_progression_dependency": "OSCILLATOR_ONLY",
+    "phase_travel_time_ms": 10,
+    "worker_or_task_gating": false,
+    "admission_gating": false,
+    "claim_or_fence_gating": false,
+    "route_or_credential_gating": false,
+    "observation_is_causal": false,
+    "capacity_envelope_changes_heartbeat_frequency": false
+  },
+  "deterministic_algorithm_replay": {
+    "executed_in_session": true,
+    "checks": {
+      "same_sample_time_does_not_advance_reference": true,
+      "ten_ms_advances_exactly_one_reference": true,
+      "ninety_five_ms_advances_nine_references_with_five_ms_phase_offset": true
+    },
+    "passed": 3,
+    "required": 3
+  },
+  "hosted_workflow_validation": {
+    "claimed": false,
+    "reason": "No exact source workflow run was directly observed in this execution. Workflow success is not substituted or fabricated."
+  },
+  "live_runtime_activation": {
+    "claimed": false,
+    "required_evidence": "Corrected StegVerse v12 sampler executes on sovereign runtime and persists oscillator-backed carrier state with progression_dependency=OSCILLATOR_ONLY, phase_travel_time_ms=10, snapshot_is_observation_only=true."
+  },
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_used": false,
+    "github_token_runtime_authority": "NONE",
+    "third_party_runtime_role": "FALLBACK_ONLY",
+    "stegverse_primary": true,
+    "heartbeat_grants_execution_authority": false
+  },
+  "completion_boundary": "Source correction is installed and bounded-source validated. This receipt does not claim live corrected carrier observation or downstream runtime activation."
+}
