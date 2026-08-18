@@ -37,6 +37,7 @@
     {"id": "manifest_valid", "class": "REQUIRED", "path": "test.manifest_valid", "op": "eq", "value": true, "required": true},
     {"id": "task_blob_exact", "class": "REQUIRED", "path": "test.task_blob_exact", "op": "eq", "value": true, "required": true},
     {"id": "plan_ready", "class": "REQUIRED", "path": "test.plan_state", "op": "eq", "value": "READY", "required": true},
+    {"id": "external_models_selected", "class": "REQUIRED", "path": "test.external_models_selected", "op": "eq", "value": true, "required": true},
     {"id": "primary_provider_stegverse", "class": "PROHIBITIVE", "path": "test.primary_provider", "op": "eq", "value": "stegverse_local", "required": true},
     {"id": "all_nine_logical_lanes_ready", "class": "REQUIRED", "path": "test.ready_lane_count", "op": "eq", "value": 9, "required": true},
     {"id": "five_execution_groups_ready", "class": "REQUIRED", "path": "test.ready_execution_group_count", "op": "eq", "value": 5, "required": true},
