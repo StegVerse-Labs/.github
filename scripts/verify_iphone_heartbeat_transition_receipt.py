@@ -49,10 +49,12 @@ def atomic_write(path: Path, value: dict[str, Any]) -> None:
     os.replace(tmp, path)
 
 
-def hosted() -> bool:
-    def truthy(v: str | None) -> bool:
-        return str(v or "").strip().lower() not in ("", "0", "false", "no")
-    return any(truthy(os.environ.get(name)) for name in HOSTED_ENV)
+def truthy(value: str | None) -> bool:
+    return str(value or "").strip().lower() not in ("", "0", "false", "no")
+
+
+def active_hosted_origins() -> list[str]:
+    return [name for name in HOSTED_ENV if truthy(os.environ.get(name))]
 
 
 def contains_protected_material(value: Any, path: str = "$") -> list[str]:
@@ -77,12 +79,6 @@ def contains_protected_material(value: Any, path: str = "$") -> list[str]:
 
 
 def browser_proves_iphone(browser: dict[str, Any]) -> bool:
-    """Accept normal iPhone UA or privacy/reduced-UA iPhone-class evidence.
-
-    Some iOS browser surfaces expose a desktop/reduced UA even on an iPhone.
-    The fallback remains bounded to a touch-capable iPhone-sized CSS screen and
-    must be explicitly recorded by the browser capsule.
-    """
     ua = str(browser.get("user_agent") or "")
     if "iPhone" in ua:
         return True
@@ -201,11 +197,40 @@ def validate_receipt(receipt: dict[str, Any], *, root: Path = ROOT) -> dict[str,
     }
 
 
-def materialize(receipt: dict[str, Any], verification: dict[str, Any], *, root: Path = ROOT) -> dict[str, Any]:
+def _fallback_record(fallback_origin: str | None) -> dict[str, Any] | None:
+    origins = active_hosted_origins()
+    if not origins:
+        if fallback_origin:
+            raise RuntimeError("third-party fallback declared outside a detected hosted environment")
+        return None
+    if not fallback_origin:
+        raise RuntimeError(
+            "hosted execution requires an explicit --allow-third-party-fallback marker; "
+            "hosted compute may be fallback only and never hidden"
+        )
+    if fallback_origin not in origins:
+        raise RuntimeError(
+            f"declared fallback origin {fallback_origin!r} does not match detected hosted origin(s) {origins!r}"
+        )
+    return {
+        "execution_provider": fallback_origin,
+        "provider_role": "FALLBACK_ONLY",
+        "required_dependency": False,
+        "runtime_authority": "StegVerse",
+        "authority_effect": "NONE",
+    }
+
+
+def materialize(
+    receipt: dict[str, Any],
+    verification: dict[str, Any],
+    *,
+    root: Path = ROOT,
+    fallback_origin: str | None = None,
+) -> dict[str, Any]:
     if verification.get("state") != "PASS":
         raise RuntimeError("cannot materialize an unverified iPhone transition receipt")
-    if hosted():
-        raise RuntimeError("hosted environment cannot materialize sovereign carrier state")
+    fallback = _fallback_record(fallback_origin)
 
     legacy_path = root / "control" / "heartbeat-state.json"
     carrier_path = root / "control" / "heartbeat-carrier-runtime-state.json"
@@ -218,6 +243,16 @@ def materialize(receipt: dict[str, Any], verification: dict[str, Any], *, root: 
 
     now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     legacy_sha256 = sha256_hex(legacy_before)
+    portable_transition: dict[str, Any] = {
+        "contract_id": receipt["contract_id"],
+        "physical_execution_surface": receipt["physical_execution_surface"],
+        "portable_receipt_sha256": receipt["receipt_sha256"],
+        "verified": True,
+        "authority_effect": "NONE",
+    }
+    if fallback:
+        portable_transition.update(fallback)
+
     carrier = {
         "schema": "stegverse.heartbeat-carrier-runtime-state/v1",
         "epoch": 30,
@@ -236,13 +271,7 @@ def materialize(receipt: dict[str, Any], verification: dict[str, Any], *, root: 
             "source_ref": "control/heartbeat-state.json",
             "closed": True,
         },
-        "portable_transition": {
-            "contract_id": receipt["contract_id"],
-            "physical_execution_surface": receipt["physical_execution_surface"],
-            "portable_receipt_sha256": receipt["receipt_sha256"],
-            "verified": True,
-            "authority_effect": "NONE",
-        },
+        "portable_transition": portable_transition,
     }
     carrier_digest = sha256_hex(canonical_bytes(carrier))
     cutover = {
@@ -270,6 +299,8 @@ def materialize(receipt: dict[str, Any], verification: dict[str, Any], *, root: 
         "portable_transition_receipt_sha256": receipt["receipt_sha256"],
         "recorded_at": now,
     }
+    if fallback:
+        cutover["third_party_fallback"] = fallback
     cutover["receipt_sha256"] = sha256_hex(canonical_bytes(cutover))
     transition = {
         "schema": "stegverse.heartbeat-state-transition-receipt/v1",
@@ -296,13 +327,17 @@ def materialize(receipt: dict[str, Any], verification: dict[str, Any], *, root: 
             "legacy_hb29_unchanged": True,
             "carrier_epoch_at_least_30": True,
             "carrier_generation_non_regressing": True,
+            "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch": False,
+            "worker_control_plane_observed": False,
             "no_duplicate_claim_or_fence": True,
             "state_reconstruction_pass": True,
-            "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch": False,
         },
-        "all_carrier_transition_predicates_pass": True,
+        "all_carrier_transition_predicates_pass": False,
         "all_release_predicates_pass": False,
+        "release_state": "WORKER_CHECKPOINT_PENDING",
     }
+    if fallback:
+        transition["third_party_fallback"] = fallback
 
     atomic_write(root / "control" / "heartbeat-carrier-runtime-state.json", carrier)
     atomic_write(root / "receipts" / "heartbeat-schema-cutover" / "HB29.json", cutover)
@@ -317,6 +352,12 @@ def main() -> int:
     parser.add_argument("receipt", type=Path)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--materialize", action="store_true")
+    parser.add_argument(
+        "--allow-third-party-fallback",
+        choices=HOSTED_ENV,
+        default=None,
+        help="Explicitly permit the detected hosted provider as FALLBACK_ONLY; never grants runtime authority.",
+    )
     args = parser.parse_args()
     receipt = load(args.receipt)
     verification = validate_receipt(receipt, root=args.root.resolve())
@@ -324,7 +365,12 @@ def main() -> int:
     if verification["state"] != "PASS":
         return 1
     if args.materialize:
-        result = materialize(receipt, verification, root=args.root.resolve())
+        result = materialize(
+            receipt,
+            verification,
+            root=args.root.resolve(),
+            fallback_origin=args.allow_third_party_fallback,
+        )
         print(json.dumps(result, indent=2, sort_keys=True))
     return 0
 
