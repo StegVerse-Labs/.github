@@ -35,38 +35,52 @@ The following validators had already been narrowed from broad state-triggered fa
 - `.github/workflows/org-handoff-render.yml`
 - `.github/workflows/org-heartbeat.yml`
 
-These surfaces remain non-authorizing and credential-clean.
-
 ### 2026-08-18 repair pass
 
 1. `.github/workflows/all-org-heartbeat-federation.yml`
    - commit: `059617b7d052e3752403297f2c566939753c097b`
-   - main push automatic triggers reduced to worker source + workflow definition.
-   - `control/organization-federation.json`, `control/organization-task-registry.json`, `control/heartbeat-subsignals.json`, handoff/auth, and cost-basis persistence remain covered on pull requests and manual dispatch, but no longer fan out hosted CI on routine main persistence.
+   - main automatic triggers reduced to federation worker source + workflow definition.
+   - routine federation/task/subsignal/handoff/auth/cost persistence no longer triggers main hosted CI; PR/manual coverage remains.
 
 2. `.github/workflows/archive-readiness-validate.yml`
    - commit: `636e14918445230594331b5bb0c6e5c5ff8fbc26`
-   - main push automatic triggers reduced to validator source/tests + workflow definition.
-   - archive-readiness/worker-registry/prose projection persistence remains covered on pull requests and manual dispatch.
+   - main automatic triggers reduced to validator source/tests + workflow definition.
+   - archive-readiness/worker-registry/projection persistence remains PR/manual covered without main fanout.
 
 3. `.github/workflows/native-process-worker-canary.yml`
    - commit: `3fa46b8c02711d96835b70dafff8a1fe8bc087e1`
-   - historical completed-canary registry/evidence persistence removed from automatic main fanout.
-   - canary/process-adapter implementation changes retain automatic validation; PR coverage remains broad.
+   - completed-canary registry/evidence persistence removed from automatic main fanout.
+   - canary/process-adapter implementation changes retain automatic validation.
 
 4. `.github/workflows/steggate-heartbeat-integration.yml`
    - commit: `dc361958985a446b7653d36d86c022788fcbe023`
-   - main push automatic triggers reduced to StegGate worker/schema/workflow source.
-   - management/control/cost/handoff/authorization persistence remains available to PR validation and manual dispatch without triggering every main-state write.
+   - main automatic triggers reduced to StegGate worker/schema/workflow source.
+   - management/control/cost/handoff/authorization persistence remains PR/manual covered.
 
 5. `.github/workflows/activate-host-self-attest-worker.yml`
    - commit: `164094f43f1d2c67a677d760cbf2b981d38da593`
    - historical completed self-attest evidence/handoff/cost persistence removed from automatic main fanout.
-   - automatic main validation now occurs only when the retained workflow definition changes; broad evidence validation remains on pull requests and manual dispatch.
+   - main automatic validation now occurs only when the retained validator itself changes.
+
+6. `.github/workflows/activate-sovereign-runtime-worker.yml`
+   - commit: `1260dd3f187175c22038bca3bf5b80a695a9962c`
+   - main automatic validation retained for worker/scripts/tests/state-transition contract/verifier source.
+   - runtime blocker, handoff, authorization, cost-basis, and mutable control-policy persistence no longer trigger this hosted validator on main.
+   - PR/manual validation retains those broader integration surfaces.
+
+7. `.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml`
+   - commit: `9471c459277a75560aac8f1e368ddc1790991555`
+   - main automatic validation retained for sovereign worker/bridge/test source only.
+   - handoff/generated-recovery/authorization/process-adapter persistence no longer triggers every main-state write.
+   - PR/manual coverage remains broad.
+
+8. `.github/workflows/sovereign-ephemeral-console.yml`
+   - commit: `c0c6f41b994a95fb5ee9c28b4d7a24da3cfb1019`
+   - main automatic validation retained for console/supervision source, tests, workflow, and the state-transition continuity contract.
+   - runtime blocker and durable-runtime handoff persistence removed from automatic main fanout.
+   - PR/manual coverage remains broad.
 
 ## Inspected and retained unchanged
-
-The following candidates were inspected and do not currently create main-branch fanout:
 
 - `.github/workflows/external-timing-match-validation.yml` — pull-request + manual dispatch only.
 - `.github/workflows/mcp-activation-binding-test.yml` — pull-request + manual dispatch only.
@@ -76,52 +90,45 @@ No mutation was warranted for those surfaces.
 
 ## Collision/ownership check
 
-The active machine-owned heartbeat, federation, StegGate, and sovereign-inference lanes retain their execution ownership. This repair changes hosted validation trigger surfaces only and does not acquire or mutate their claims, fences, leases, runtime receipts, deployment authority, or task state.
+The active machine-owned heartbeat, federation, StegGate, durable-runtime, and sovereign-inference lanes retain their execution ownership. This repair changes hosted validation trigger surfaces only and does not acquire or mutate their claims, fences, leases, runtime receipts, deployment authority, or task state.
 
-Relevant source-of-truth handoffs/records inspected before mutation:
+Relevant current source-of-truth handoffs/records inspected during this pass:
 
 - `docs/ORG_MIRROR_HANDOFF.md`
 - `docs/ALL_ORGS_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md`
 - `docs/ARCHIVE_GATE_PROGRESS_MIRROR_HANDOFF.md`
 - `handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json`
-
-## Validation evidence
-
-Post-write repository reads confirmed the narrowed trigger surfaces are present on `main`. The repaired workflows retain `workflow_dispatch` and credential-clean `permissions: {}` semantics. No runtime claim, heartbeat epoch, worker fence, or credential state was mutated by this repair lane.
-
-No hosted workflow pass is claimed as runtime proof.
-
-## Remaining fanout review candidates
-
-The following files remain to be inspected for source-vs-state trigger separation. They are candidates, not asserted defects until inspected against their current handoffs/owners:
-
-- `.github/workflows/activate-sovereign-runtime-worker.yml`
-- `.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml`
-- `.github/workflows/sovereign-ephemeral-console.yml`
-
-Activation/worker workflows must not be narrowed merely for cost reduction if their trigger is itself part of an admitted machine-owned execution path. Their current handoffs/claims must be read first.
+- `docs/REPOSITORY_VISIBILITY_BOUNDARY_MIRROR_HANDOFF.md`
+- `control/repository-visibility-boundary-2026-08-17.json`
 
 ## Private-repository adjacent scope
 
-Private-repository repair remains a separate authority/visibility lane. Do not make a private repository public, introduce broad GitHub credentials, or use hosted Actions as a substitute for TV/TVC repository authority. Any private-repository fanout fix must be applied in that repository only after reading its repository-local `*_MIRROR_HANDOFF.md` and current claim/task ownership.
+The repository-visibility workstream is already actively claimed by `SESSION-REPOSITORY-VISIBILITY-AUDIT-20260817`. Its machine-readable inventory currently records 41 repositories, 18 complete classifications, 23 pending reviews, 0 approved visibility mutations, and 0 verified visibility mutations. This Actions lane must not duplicate that active visibility claim.
 
-## Known files/modules still to inspect or install
+No private-repository visibility mutation was attempted in this pass. Any future private-repository Actions repair must first inspect that repository's local handoff and current visibility/dependency decision, while retaining TV/TVC-only authority and never using hosted Actions as runtime/control-plane authority.
+
+## Validation evidence
+
+Post-write repository reads confirmed the selective trigger structures installed on `main`. Repaired workflows retain `workflow_dispatch` and credential-clean `permissions: {}` semantics. No runtime claim, heartbeat epoch, worker fence, credential state, repository visibility, or deployment state was mutated by this repair lane.
+
+No hosted workflow pass is claimed as runtime proof.
+
+## Known files/modules remaining
 
 Destination `StegVerse-Labs/.github`:
 
-- inspect trigger/authority semantics for `.github/workflows/activate-sovereign-runtime-worker.yml`;
-- inspect trigger/authority semantics for `.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml`;
-- inspect trigger/authority semantics for `.github/workflows/sovereign-ephemeral-console.yml`;
-- if a remaining state-triggered hosted validator is proven redundant, narrow its main push paths without removing source/config validation, PR validation, or manual dispatch.
+- continue inventory of any additional workflow not yet captured by the current workflow-surface search, especially newly added validation-only workflows;
+- inspect actual subsequent run history when the connector exposes a supported workflow-run listing path, to prove fanout reduction quantitatively rather than infer it only from trigger definitions;
+- reconcile this handoff if another worker adds or changes a workflow trigger surface.
 
-No missing runtime module is asserted by this fanout lane.
+Private-repository visibility/dependency review remains owned by the separate active repository-visibility claim and is not duplicated here.
 
 ## Release / propagation
 
-No release/tag is required solely for these workflow-trigger configuration changes at this stage. Therefore no aggregate release is claimed. Site, Publisher, admissibility-wiki, and stegguardian-wiki propagation is not required unless a later repair changes a public contract or capability consumed by those surfaces.
+No release/tag is required solely for these workflow-trigger configuration changes at this stage. No aggregate release is claimed. Site, Publisher, admissibility-wiki, and stegguardian-wiki propagation is not required unless a later repair changes a public contract or capability consumed by those surfaces.
 
 ## Completion gate
 
-This lane is not terminal while materially redundant automatic hosted fanout remains uninspected or proven, or while a required repair is unvalidated/unintegrated. Durable recording of this handoff does not satisfy the repair objective by itself.
+This lane is not terminal until the repository workflow surface has been fully inventoried against current live definitions and quantitative post-repair fanout evidence is available or an equivalent direct proof exists. Durable recording of this handoff does not satisfy that objective by itself.
 
 Current status: `DO NOT ARCHIVE THIS SESSION — UNIQUE ACTIVE WORK REMAINS.`
