@@ -2,12 +2,12 @@
   "schema": "stegverse.session-goal-inventory/v1",
   "inventory_id": "SESSION-2026-08-17-LOCAL-RUNTIME-TRADE-ACTIVATION-RECONCILIATION",
   "created_at": "2026-08-17T16:40:00-05:00",
-  "updated_at": "2026-08-17T21:47:00-05:00",
+  "updated_at": "2026-08-17T22:21:00-05:00",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
   "session_role": "ACTIVE_DISTINCT_SUPPORT_ROLE",
   "archive_ready": false,
-  "archive_block_reason": "The current session rule requires governed activation observation before archival. Local model/runtime source is released and StegFin pre-sign trade readiness is complete, but the CURRENT_USER_IPHONE HB30 materialization/WorkerCoordinator chain is not observed and the corrected Site #388 public participant has not yet produced direct VERIFIED_PUBLICATION for both required blobs.",
+  "archive_block_reason": "The current session rule requires governed activation observation before archival. Local model/runtime source is released and StegFin pre-sign trade readiness is complete. A fresh Site #388 publication recheck was triggered on main at commit 63333dbe0d90611b477a85b39bf38356567d95b5, but direct VERIFIED_PUBLICATION for both exact public blobs is not yet recorded; the CURRENT_USER_IPHONE HB30 materialization/WorkerCoordinator chain is also not observed.",
   "governing_constraints": {
     "render_allowed": false,
     "credential_authority": "TV/TVC",
@@ -52,18 +52,20 @@
       "originating_goal": "Project and prove the corrected current-phone MetaMask wallet-browser WebAuthn continuation without hosted wallet authority or NON-TV/TVC credentials.",
       "destination": "StegVerse-Labs/Site#388",
       "claim_state": "CLAIMED_FOR_VALIDATION",
-      "completion_state": "SOURCE_AND_SITE_INTEGRATION_COMPLETE_PUBLICATION_PROOF_PENDING",
-      "validation_state": "StegFin #81 PR #83 merged 39cd7b144523063fe0c3046453e9920a6ad2dde6; Site PR #390 merged 8c5882b2ff3a17c847d48376b856db32c0331832; PR-head Site gates 32092420729/32092420660/32092420772/32092420704 SUCCESS; direct corrected public proof not yet recorded",
-      "integration_state": "CANONICAL_SITE_PUBLICATION_OBSERVER_ACTIVE",
+      "completion_state": "SOURCE_AND_SITE_INTEGRATION_COMPLETE_PUBLICATION_RECHECK_TRIGGERED",
+      "validation_state": "StegFin #81 PR #83 merged 39cd7b144523063fe0c3046453e9920a6ad2dde6; Site PR #390 merged 8c5882b2ff3a17c847d48376b856db32c0331832; PR-head Site gates 32092420729/32092420660/32092420772/32092420704 SUCCESS; fresh main-push validation opportunity triggered by support request commit 63333dbe0d90611b477a85b39bf38356567d95b5; connector does not expose a push-triggered run result for that commit, so direct corrected public proof remains unclaimed",
+      "integration_state": "CANONICAL_SITE_PUBLICATION_OBSERVER_ACTIVE_RECHECK_TRIGGERED",
       "archival_dependency": true,
       "evidence": [
         "StegVerse-Labs/Site/docs/STEGFIN_PHONE_PROJECTION_MIRROR_HANDOFF.md",
         "StegVerse-Labs/Site/scripts/check_stegfin_public_wallet_transport.py",
         "StegVerse-Labs/Site/receipts/stegfin-ios-local-wallet-transport-388-validation.json",
-        "StegVerse-Labs/Site/data/session-work-claims.json"
+        "StegVerse-Labs/Site/data/session-work-claims.json",
+        "StegVerse-Labs/Site/data/support-validation-requests/SITE-STEGFIN-388-PUBLICATION-RECHECK-20260817T2221-0500.json@63333dbe0d90611b477a85b39bf38356567d95b5",
+        "StegVerse-Labs/Site#388 issue comment 5323199778"
       ],
       "machine_observable_release_condition": "Canonical Site #388 credential-free main-push observer returns VERIFIED_PUBLICATION for wallet UI blob 114b3c39052d5b1622407080407259a0040a1369 and corrected bootstrap blob dc1a86bc564146cdaa645620c8fc698e45029440; then current phone performs a NEW MetaMask-browser WebAuthn/PREPARE and governed injected-provider proof before USER_ONLY review.",
-      "next_executable_action": "Existing Site #388 publication-validation owner executes/observes the already-bound main-push publication verifier. This session must not create a second observer or scheduler."
+      "next_executable_action": "Inspect the canonical Site #388 recheck result from the already-bound push-triggered validation lane. Do not create another observer/scheduler. On VERIFIED_PUBLICATION, release/propagate the Site claim; on mismatch, retain the exact fail-closed public observation."
     },
     {
       "task_id": "SHWP-IPHONE-HB30-INLINE-CAPSULE-002",
@@ -83,7 +85,7 @@
       "destination": "StegVerse-Labs/.github#60",
       "claim_state": "MACHINE_OWNED",
       "completion_state": "NOT_YET_ACTIVATED",
-      "validation_state": "Source path complete; 2026-08-17T21:47-05:00 direct repository observation still finds control/heartbeat-carrier-runtime-state.json, control/worker-runtime-state.json, and receipts/heartbeat-transition-continuity/latest.json absent",
+      "validation_state": "Source path complete; latest direct repository observation still finds control/heartbeat-carrier-runtime-state.json, control/worker-runtime-state.json, and receipts/heartbeat-transition-continuity/latest.json absent",
       "integration_state": "BLOCKED_ON_HB30_AND_WORKERCOORDINATOR_OBSERVATION",
       "archival_dependency": true,
       "machine_observable_release_condition": "HB30+ carrier + WorkerCoordinator observation + orphan recovery completion + fresh authorized inference fence >20 + private local model proof + TVC ROUTE_ADMITTED credential_requirement NONE + exact LLM-adapter execution + measured usage + same-execution Master Records reconstruction PASS.",
@@ -91,7 +93,7 @@
     }
   ],
   "direct_observation": {
-    "observed_at": "2026-08-17T21:47:00-05:00",
+    "observed_at": "2026-08-17T22:21:00-05:00",
     "legacy_heartbeat": "HB29 / generation 29; immutable cutover source",
     "heartbeat_carrier_runtime_state": "NOT_PRESENT",
     "worker_runtime_state": "NOT_PRESENT",
@@ -102,7 +104,8 @@
     "wallet_broadcast": false,
     "site_wallet_browser_source_fix": "MERGED",
     "site_wallet_browser_projection": "MERGED_AND_VALIDATED",
-    "site_corrected_publication_proof": "PENDING",
+    "site_corrected_publication_recheck_trigger": "63333dbe0d90611b477a85b39bf38356567d95b5",
+    "site_corrected_publication_proof": "RECHECK_TRIGGERED_RESULT_NOT_YET_OBSERVED",
     "product_activation_complete": false
   },
   "duplicate_execution_prevention": {
@@ -122,6 +125,7 @@
     "canonical_continuation": [
       "StegVerse-Labs/Site#388",
       "StegVerse-Labs/Site/docs/STEGFIN_PHONE_PROJECTION_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/Site/data/support-validation-requests/SITE-STEGFIN-388-PUBLICATION-RECHECK-20260817T2221-0500.json",
       "StegVerse-Labs/.github#209",
       "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
       "StegVerse-Labs/.github#60",
