@@ -3,7 +3,7 @@
   "contract_id": "SHWP-HB29-TO-HB30-STATE-TRANSITION-CONTINUITY-001",
   "goal_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
   "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-  "validation_trigger_revision": 2,
+  "validation_trigger_revision": 3,
   "canonical_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
   "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
   "legacy_source": "control/heartbeat-state.json",
@@ -39,6 +39,18 @@
     "persistence": "state is retained between execution opportunities; wall-clock process residency is not continuity authority",
     "authority_effect": "NONE_FROM_CARRIER_TRANSITION"
   },
+  "third_party_fallback_policy": {
+    "allowed": true,
+    "role": "FALLBACK_ONLY",
+    "primary_runtime_authority": "StegVerse",
+    "required_dependency": false,
+    "may_materialize_verified_portable_receipt": true,
+    "must_be_explicitly_recorded": true,
+    "may_be_concealed_from_verifier": false,
+    "grants_credential_authority": false,
+    "grants_claim_or_fence_authority": false,
+    "grants_heartbeat_authority": false
+  },
   "credential_boundary": {
     "credential_authority": "TV/TVC",
     "credential_requirement": "NONE",
@@ -49,11 +61,12 @@
     "Render production runtime",
     "GitHub Actions production runtime",
     "Vercel production runtime",
-    "Cloudflare hosted runtime",
+    "Cloudflare hosted production runtime",
+    "third-party fallback promoted to required dependency or production authority",
     "additional physical machine requirement",
     "always-on external host requirement",
     "manual rewriting of control/heartbeat-state.json to HB30"
   ],
-  "release_condition": "A bounded v12 transition produces HB30 or later from immutable HB29, then an independently admitted WorkerCoordinator checkpoint observes that carrier state and the state-transition completion predicates pass without duplicate claim/fence or non-TV/TVC credential authority.",
+  "release_condition": "A bounded v12 transition produces HB30 or later from immutable HB29, then an independently admitted WorkerCoordinator checkpoint observes that carrier state and the state-transition completion predicates pass without duplicate claim/fence or non-TV/TVC credential authority. A third-party execution surface may be used only as an explicit FALLBACK_ONLY transport/compute path and never as required runtime authority.",
   "authority_effect": "NONE"
 }
