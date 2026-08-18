@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "tvc_aggregate_release",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 64,
+    "confidence": "LOW_PRE_FIRST_LIVE_RUN"
+  },
+  "cost_estimate": {
+    "compute_units": 2,
+    "token_units": 0,
+    "storage_bytes": 1048576,
+    "network_bytes": null,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 3
+  },
+  "evidence_refs": [
+    "handoffs/TVC-ODA3-AGGREGATE-RELEASE-027.json",
+    "workers/tvc_aggregate_release_worker.py",
+    "StegVerse-Labs/TVC:docs/AGGREGATE_RELEASE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC:tasks/TVC-ODA3-AGGREGATE-RELEASE-027.json"
+  ],
+  "notes": [
+    "This cost basis covers one bounded readiness/execute/verify release attempt through the existing WorkerCoordinator and TVC dispatcher.",
+    "Heartbeat is carrier/reference only and is not scheduler or release authority.",
+    "No GitHub token, provider API key, wallet credential, hosted runtime, or NON-TV/TVC secret authority is created by this cost basis."
+  ]
+}
