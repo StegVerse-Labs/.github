@@ -1,0 +1,101 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
+  "created_at": "2026-08-18T18:08:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
+    "objective": "Execute the corrected StegVerse heartbeat sampler once under the canonical WorkerCoordinator/runtime owner and persist inspectable oscillator-backed carrier observation proving that heartbeat progression depends only on the independent 10 ms phase oscillator.",
+    "success_predicates": [
+      "Carrier runtime state persists progression_dependency=OSCILLATOR_ONLY.",
+      "Carrier runtime state persists phase_travel_time_ms=10 and snapshot_is_observation_only=true.",
+      "Carrier observation records observation_is_causal=false.",
+      "Heartbeat ordinal is sampled from elapsed oscillator quanta rather than incremented by invocation.",
+      "No worker/task/admission/claim/fence/lease/route/credential state gates carrier progression.",
+      "No GitHub token or NON-TV/TVC secret/token is required or forwarded.",
+      "StegVerse remains primary; third-party runtime is not required."
+    ],
+    "failure_predicates": [
+      "Observed carrier state still uses GATE_PASSBAND_DERIVED as the progression rule.",
+      "Observed carrier state lacks oscillator-only provenance.",
+      "WorkerCoordinator or a task state is made causal to heartbeat progression.",
+      "A NON-TV/TVC credential or GitHub token becomes runtime authority.",
+      "A third-party runtime becomes required or primary."
+    ],
+    "expires_at": null,
+    "authority_ceiling": [
+      "execute the canonical StegVerse heartbeat sampler",
+      "persist canonical heartbeat carrier/observation/projection evidence",
+      "no credential/route/model/wallet/admissibility authority",
+      "no third-party primary runtime"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 0
+  },
+  "task": {
+    "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+      "heartbeat_runtime/independent_oscillator.py",
+      "heartbeat_runtime/engine_v12.py",
+      "workers/independent_heartbeat_live_proof_worker.py",
+      "receipts/heartbeat/HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008-source-validation.json"
+    ],
+    "dependencies": [],
+    "parent_task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008",
+    "derivation_reason": "Source correction is complete; the remaining required outcome is live sovereign execution evidence from the corrected sampler.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#122",
+    "canonical_lineage_key": "heartbeat:independent-oscillator-live-proof",
+    "derivation_depth": 1,
+    "priority": "release"
+  },
+  "authority": {
+    "authority_source": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "credential_requirement": "NONE",
+    "github_token_production_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "third_party_runtime_role": "FALLBACK_ONLY",
+    "stegverse_primary": true
+  },
+  "execution": {
+    "required_capabilities": ["heartbeat_runtime_observation", "bounded_repository_mutation", "independent_oscillator_live_proof"],
+    "allowed_paths": [
+      "control/heartbeat-carrier-runtime-state.json",
+      "control/heartbeat-carrier-observation.json",
+      "control/worker-control-plane-coordination.json",
+      "master-records/heartbeat.json",
+      "events/heartbeat-runtime.jsonl",
+      "receipts/heartbeat-schema-cutover/HB29.json"
+    ],
+    "allowed_services": [],
+    "max_actions": 1,
+    "max_retries": 3,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 32,
+    "rate_class": "independent_heartbeat_live_proof"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+    "credential_control": "TV/TVC",
+    "github_actions_may_activate": false,
+    "recheck_trigger": "next canonical WorkerCoordinator execution opportunity independent of heartbeat progression",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "control/heartbeat-carrier-runtime-state.json",
+    "handoff_destination": "control/worker-registry.d/heartbeat-independent-oscillator-live-009.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "Bind this task through the existing WorkerCoordinator and execute workers/independent_heartbeat_live_proof_worker.py once. Verify the persisted oscillator-only carrier and observation evidence; then terminalize the task.",
+    "terminal_when": [
+      "Worker response is COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED and persisted carrier/observation evidence contains the required oscillator invariants."
+    ]
+  }
+}
