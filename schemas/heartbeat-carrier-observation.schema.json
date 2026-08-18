@@ -11,14 +11,13 @@
     "carrier": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["role", "reference_frame", "frequency_rule", "authority_effect"],
+      "required": ["role", "reference_frame", "frequency_rule", "phase_travel_time_ms", "observation_is_causal", "authority_effect"],
       "properties": {
         "role": {"const": "REGULATORY_CARRIER_REFERENCE_FRAME"},
         "reference_frame": {"type": "string", "minLength": 1},
-        "frequency_rule": {"const": "GATE_PASSBAND_DERIVED"},
-        "envelope_rule": {"const": "ADMISSIBLE_FREQUENCY_PHASE_CAPACITY_ENVELOPE"},
-        "phase_rule": {"const": "CALCULATED_MULTI_PHASE_REFERENCE_PLAN"},
-        "envelope_ref": {"type": "string", "minLength": 1},
+        "frequency_rule": {"const": "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL"},
+        "phase_travel_time_ms": {"const": 10},
+        "observation_is_causal": {"const": false},
         "authority_effect": {"const": "NONE"}
       }
     },
