@@ -2,11 +2,11 @@
   "carrier_controls_timer": false,
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
-  "last_cycle_at": "2026-08-18T19:12:00Z",
-  "last_observed_carrier_epoch": 30,
-  "last_observed_carrier_generation": 30,
+  "last_cycle_at": "2026-08-18T19:47:00Z",
+  "last_observed_carrier_epoch": 31,
+  "last_observed_carrier_generation": 31,
   "observation_mode": "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION",
-  "runtime_tick": 1,
+  "runtime_tick": 2,
   "schema": "stegverse.worker-runtime-state/v1",
   "seen_assignment_packet_ids": []
 }
