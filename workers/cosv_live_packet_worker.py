@@ -30,10 +30,12 @@ def main() -> int:
         return 4
     claim_id = task.get("claim_id")
     fence = ((task.get("assignment_timer") or {}).get("fencing_token"))
+    timing = task.get("heartbeat_timing") or {}
     if fence is None:
-        fence = ((task.get("heartbeat_timing") or {}).get("fencing_token"))
+        fence = timing.get("fencing_token")
     if not isinstance(claim_id, str) or not isinstance(fence, int):
         return 5
+    sequence = int(timing.get("transition_sequence", 0)) + 1
 
     try:
         result = materialize(ROOT)
@@ -42,7 +44,7 @@ def main() -> int:
             "schema": "stegverse.worker-response/v0.1",
             "state": "BLOCKED",
             "transition_id": "COSV_LIVE_PACKET_MATERIALIZATION_BLOCKED",
-            "transition_sequence": 1,
+            "transition_sequence": sequence,
             "expected_next_transition": "COSV_LIVE_PACKET_MATERIALIZED",
             "expected_next_earliest_epoch": epoch + 1,
             "expected_next_latest_epoch": epoch + 1,
@@ -86,7 +88,7 @@ def main() -> int:
         "schema": "stegverse.worker-response/v0.1",
         "state": "ACTIVE",
         "transition_id": transition_id,
-        "transition_sequence": 1,
+        "transition_sequence": sequence,
         "expected_next_transition": "COSV_LIVE_PACKET_MATERIALIZED",
         "expected_next_earliest_epoch": epoch + 1,
         "expected_next_latest_epoch": epoch + 1,
