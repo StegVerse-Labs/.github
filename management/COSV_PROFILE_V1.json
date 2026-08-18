@@ -1,0 +1,78 @@
+{
+  "schema": "stegverse.cosv.profile/v1",
+  "profile_id": "cosv.v1",
+  "owner": "StegVerse-Labs/.github",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "task": {
+    "profile": "task.v1",
+    "width": 14,
+    "positions": [
+      {"index": 0, "symbol": "L", "name": "lifecycle", "domain": "lifecycle"},
+      {"index": 1, "symbol": "R", "name": "archive_ready", "domain": "ternary"},
+      {"index": 2, "symbol": "U", "name": "unassigned_work", "domain": "quantity", "direction": "lower_better"},
+      {"index": 3, "symbol": "I", "name": "chat_owned_implementation", "domain": "quantity", "direction": "lower_better"},
+      {"index": 4, "symbol": "V", "name": "chat_owned_validation", "domain": "quantity", "direction": "lower_better"},
+      {"index": 5, "symbol": "G", "name": "chat_owned_integration", "domain": "quantity", "direction": "lower_better"},
+      {"index": 6, "symbol": "O", "name": "chat_owned_observation", "domain": "quantity", "direction": "lower_better"},
+      {"index": 7, "symbol": "C", "name": "chat_owned_credentials", "domain": "quantity", "direction": "lower_better"},
+      {"index": 8, "symbol": "M", "name": "canonical_owner_installed", "domain": "ternary"},
+      {"index": 9, "symbol": "T", "name": "thread_required", "domain": "ternary"},
+      {"index": 10, "symbol": "B", "name": "blocker_count", "domain": "quantity", "direction": "lower_better"},
+      {"index": 11, "symbol": "E", "name": "evidence_complete", "domain": "ternary"},
+      {"index": 12, "symbol": "A", "name": "activated", "domain": "ternary"},
+      {"index": 13, "symbol": "P", "name": "propagated", "domain": "ternary"}
+    ]
+  },
+  "aggregate": {
+    "profile": "aggregate.v1",
+    "levels": ["goal", "component", "subsystem", "system", "ecosystem"],
+    "width": 14,
+    "positions": [
+      {"index": 0, "symbol": "L", "name": "lifecycle", "domain": "lifecycle"},
+      {"index": 1, "symbol": "D", "name": "developed", "domain": "factor", "direction": "higher_better"},
+      {"index": 2, "symbol": "V", "name": "validation", "domain": "factor", "direction": "higher_better"},
+      {"index": 3, "symbol": "I", "name": "integration", "domain": "factor", "direction": "higher_better"},
+      {"index": 4, "symbol": "P", "name": "propagation", "domain": "factor", "direction": "higher_better"},
+      {"index": 5, "symbol": "A", "name": "activation", "domain": "factor", "direction": "higher_better"},
+      {"index": 6, "symbol": "R", "name": "readiness", "domain": "factor", "direction": "higher_better"},
+      {"index": 7, "symbol": "O", "name": "ownership", "domain": "factor", "direction": "higher_better"},
+      {"index": 8, "symbol": "E", "name": "evidence", "domain": "factor", "direction": "higher_better"},
+      {"index": 9, "symbol": "B", "name": "critical_blockers", "domain": "quantity", "direction": "lower_better"},
+      {"index": 10, "symbol": "X", "name": "conflicting_claims", "domain": "quantity", "direction": "lower_better"},
+      {"index": 11, "symbol": "U", "name": "unassigned_work", "domain": "quantity", "direction": "lower_better"},
+      {"index": 12, "symbol": "S", "name": "stale_claims", "domain": "quantity", "direction": "lower_better"},
+      {"index": 13, "symbol": "T", "name": "thread_required", "domain": "ternary"}
+    ]
+  },
+  "domains": {
+    "ternary": {"0": "false", "1": "true", "2": "unknown"},
+    "quantity": {"0": "0", "1": "1", "2": "2", "3": "3", "4": "4", "5": "5", "6": "6", "7": "7", "8": "8", "9": "9_or_more"},
+    "factor": {"0": "0_percent", "1": "1_to_12_percent", "2": "13_to_24_percent", "3": "25_to_37_percent", "4": "38_to_49_percent", "5": "50_to_62_percent", "6": "63_to_74_percent", "7": "75_to_87_percent", "8": "88_to_99_percent", "9": "100_percent"},
+    "lifecycle": {"0": "UNKNOWN", "1": "UNCLAIMED", "2": "CLAIMED_IMPLEMENTATION", "3": "CLAIMED_VALIDATION", "4": "CLAIMED_INTEGRATION", "5": "MACHINE_OWNED", "6": "BLOCKED", "7": "COMPLETE", "8": "SUPERSEDED", "9": "MERGED_INTO_CANONICAL_WORKSTREAM"},
+    "transition": {"0": "unchanged", "1": "improved", "2": "regressed", "3": "became_known", "4": "became_unknown", "5": "ownership_transfer", "6": "entered_blocked", "7": "exited_blocked", "8": "terminalized", "9": "semantic_change_requires_evidence_review"}
+  },
+  "factor_encoding": {
+    "0": [0, 0],
+    "1": [1, 12],
+    "2": [13, 24],
+    "3": [25, 37],
+    "4": [38, 49],
+    "5": [50, 62],
+    "6": [63, 74],
+    "7": [75, 87],
+    "8": [88, 99],
+    "9": [100, 100]
+  },
+  "factor_midpoints": {"0": 0, "1": 6.5, "2": 18.5, "3": 31, "4": 43.5, "5": 56, "6": 68.5, "7": 81, "8": 93.5, "9": 100},
+  "criticality_weights": {"minimum": 1, "maximum": 9},
+  "aggregation": {
+    "factor_method": "weighted_mean_exact_percent_when_available_else_factor_midpoint",
+    "quantity_method": "sum_then_saturate_9",
+    "thread_required_method": "true_if_any_true_false_if_all_known_false_else_unknown",
+    "lifecycle_method": "constraint_derived_not_averaged",
+    "complete_guard": "critical_blockers_conflicting_claims_or_unassigned_work_prevent_COMPLETE_or_MERGED_except consolidation-only aggregates with canonical ownership evidence"
+  },
+  "record_required_fields": ["identity", "profile", "level", "vector", "evidence_refs", "observed_at", "exact_metrics"],
+  "transition": {"profile": "transition.v1", "requires_same_profile_and_width": true}
+}
