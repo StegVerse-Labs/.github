@@ -33,6 +33,7 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
             self.assertEqual(receipt["canonical_carrier_runtime"], "heartbeat_runtime.engine_v12.HeartbeatRuntime")
             self.assertEqual(receipt["worker_runtime"], "heartbeat_runtime.worker_runtime.WorkerCoordinator")
             self.assertEqual(receipt["state_transition_producer_ref"], "scripts/advance_heartbeat_transition.py")
+            self.assertEqual(receipt["state_transition_contract_ref"], "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json")
             self.assertTrue(receipt["initial_carrier_bootstrap_ready"])
             self.assertFalse(receipt["legacy_combined_runtime_is_production_target"])
             self.assertEqual(receipt["heartbeat_default_interval_ms"], 10.0)
@@ -51,8 +52,10 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
             self.assertTrue((target / "scripts" / "run_heartbeat_runtime.py").is_file())
             self.assertTrue((target / "scripts" / "run_worker_runtime.py").is_file())
             self.assertTrue((target / "scripts" / "advance_heartbeat_transition.py").is_file())
+            self.assertTrue((target / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json").is_file())
             written = json.loads((target / "receipts" / "sovereign-host" / "materialization.latest.json").read_text())
             self.assertEqual(written["canonical_runtime"], receipt["canonical_runtime"])
+            self.assertEqual(written["state_transition_contract_ref"], receipt["state_transition_contract_ref"])
             self.assertTrue(written["initial_carrier_bootstrap_ready"])
 
     def test_linux_service_runs_carrier_and_worker_as_separate_native_processes(self) -> None:
@@ -118,6 +121,7 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
             self.assertFalse(receipt["render_production_runtime_used"])
             self.assertEqual(len(calls), 3)
             self.assertTrue((target / "scripts" / "advance_heartbeat_transition.py").is_file())
+            self.assertTrue((target / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json").is_file())
             self.assertTrue((target / "receipts" / "sovereign-host" / "activation.latest.json").is_file())
 
     def test_custom_logical_rate_configures_both_local_loops_without_timer_authority_transfer(self) -> None:

@@ -32,6 +32,7 @@ COPY_FILES = (
     "scripts/run_worker_runtime.py",
     "scripts/advance_heartbeat_transition.py",
     "scripts/verify_sovereign_runtime_activation.py",
+    "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
 )
 CANONICAL_RUNTIME = "heartbeat_runtime.engine_v12.HeartbeatRuntime"
 CANONICAL_CARRIER_RUNTIME = CANONICAL_RUNTIME
@@ -88,6 +89,7 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         target_root / "scripts" / "run_worker_runtime.py",
         target_root / "scripts" / "advance_heartbeat_transition.py",
         target_root / "scripts" / "verify_sovereign_runtime_activation.py",
+        target_root / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
     )
     if not all(path.is_file() for path in required):
         raise RuntimeError("materialized separated runtime is incomplete")
@@ -104,6 +106,7 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         "canonical_carrier_runtime": CANONICAL_CARRIER_RUNTIME,
         "worker_runtime": WORKER_RUNTIME,
         "state_transition_producer_ref": "scripts/advance_heartbeat_transition.py",
+        "state_transition_contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
         "initial_carrier_bootstrap_ready": True,
         "legacy_combined_runtime_is_production_target": False,
         "heartbeat_default_interval_ms": float(interval_ms),
