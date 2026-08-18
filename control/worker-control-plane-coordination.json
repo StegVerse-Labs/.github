@@ -1,0 +1,112 @@
+{
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "heartbeat_grants_execution_authority": false,
+    "master_records_action_authority": false,
+    "signal_grants_execution_authority": false
+  },
+  "enforcement_signal_refs": [],
+  "generation": 21,
+  "observed_reference": {
+    "carrier_generation": 30,
+    "heartbeat_is_authority": false,
+    "reference_frame": "heartbeat_epoch:30"
+  },
+  "organization_federation": {
+    "authority_effect": false,
+    "blocked_count": 4,
+    "detail_classes": [
+      "MEMORY",
+      "ACTION",
+      "AWARENESS",
+      "AUTHORITY",
+      "EVIDENCE",
+      "BLOCKER",
+      "CAPABILITY",
+      "CONTEXT"
+    ],
+    "kind": "organization_readiness_federation",
+    "organization_count": 14,
+    "progress_rule": "ONLY_ADMITTED_STATE_TRANSITIONS_ADVANCE_PROGRESS",
+    "ready_count": 10,
+    "recheck_policy": "ON_EACH_ADMITTED_HEARTBEAT_WHILE_ANY_ORGANIZATION_IS_BLOCKED_OR_CHANGED",
+    "registry_ref": "control/organization-federation.json",
+    "state": "ACTIVE_PARTIAL_COVERAGE",
+    "task_registry_ref": "control/organization-task-registry.json",
+    "transport_grants_authority": false,
+    "unassigned_count": 0
+  },
+  "schema": "stegverse.worker-control-plane-coordination/v1",
+  "transport_leases": [
+    {
+      "authority_effect": false,
+      "dependent_tasks": [],
+      "kind": "transport_lease",
+      "lease_action": "EXTEND",
+      "lease_id": "STEGGATE-TUNNEL-LEASE-001",
+      "opened_epoch": 10,
+      "release_policy": {
+        "handoff_on_successor_acceptance": true,
+        "release_on_all_dependents_terminal": true,
+        "terminal_task_states": [
+          "COMPLETE",
+          "CLOSED",
+          "CANCELLED",
+          "SUPERSEDED"
+        ],
+        "wall_clock_expiry_authority": false
+      },
+      "state": "OPEN",
+      "successor_lease_id": null
+    }
+  ],
+  "worker_coordination": {
+    "active_leases": [
+      {
+        "assignment_timer_remaining_hb_units": null,
+        "carrier_reference_unit": "heartbeat_reference",
+        "claim_id": "SHWP-SHWP-ALL-ORG-FEDERATION-001-G17",
+        "current_transition": "FEDERATION_INTERNAL_SOLUTIONS_REQUIRED",
+        "expiry_basis": "TASK_CLASS_COST_BASIS",
+        "fencing_token": 17,
+        "goal_id": "ALL-ORG-HEARTBEAT-FEDERATION-001",
+        "heartbeat_grants_authority": false,
+        "task_id": "SHWP-ALL-ORG-FEDERATION-001",
+        "task_state": "BLOCKED",
+        "worker_id": "organization-federation-readiness-worker",
+        "worker_instance_id": "organization-federation-readiness-worker-HB11-G17"
+      },
+      {
+        "assignment_timer_remaining_hb_units": null,
+        "carrier_reference_unit": "heartbeat_reference",
+        "claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+        "current_transition": "SOVEREIGN_RUNTIME_SOLUTION_REQUIRED",
+        "expiry_basis": "TASK_CLASS_COST_BASIS",
+        "fencing_token": 18,
+        "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+        "heartbeat_grants_authority": false,
+        "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+        "task_state": "BLOCKED",
+        "worker_id": "sovereign-runtime-activation-worker",
+        "worker_instance_id": "sovereign-runtime-activation-worker-HB15-G18"
+      },
+      {
+        "assignment_timer_remaining_hb_units": null,
+        "carrier_reference_unit": "heartbeat_reference",
+        "claim_id": "SHWP-STEGGATE-STABLE-RENDEZVOUS-WORKER-001-G13",
+        "current_transition": "THIRD_PARTY_WORKAROUND_REQUIRED",
+        "expiry_basis": "TASK_CLASS_COST_BASIS",
+        "fencing_token": 13,
+        "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
+        "heartbeat_grants_authority": false,
+        "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+        "task_state": "ACTIVE",
+        "worker_id": "steggate-rendezvous-deployment-worker",
+        "worker_instance_id": "steggate-rendezvous-deployment-worker-HB7-G13"
+      }
+    ],
+    "state": "ACTIVE",
+    "worker_registry_ref": "control/worker-registry.json"
+  }
+}
