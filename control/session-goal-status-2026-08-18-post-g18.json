@@ -1,9 +1,9 @@
 {
   "schema": "stegverse.session-goal-status/v1",
   "session_id": "SESSION-2026-08-18-COSV-STATE-GRADIENT-INTROSPECTION",
-  "updated_at": "2026-08-18T15:00:00-05:00",
+  "updated_at": "2026-08-18T15:14:00-05:00",
   "archive_eligible": false,
-  "archive_reason": "Required live integration, sovereign inference activation, and downstream gradient/introspection evidence remain nonterminal. Durable assignment does not satisfy the goals.",
+  "archive_reason": "Required G18 registry terminalization, live DELTA/gradient/introspection evidence, sovereign inference activation, and downstream ordered matrix/trajectory evidence remain nonterminal. Durable assignment or source release does not satisfy the goals.",
   "observed_live_state": {
     "legacy_heartbeat_epoch": 29,
     "carrier_epoch": 31,
@@ -13,8 +13,13 @@
     "worker_observed_carrier_generation": 31,
     "transition_release_complete": true,
     "transition_all_release_predicates_pass": true,
+    "g18_active_lease_still_projected": true,
     "first_live_cosv_packet": "receipts/cosv/live/HB31.json",
-    "first_live_cosv_packet_validated": true
+    "first_live_cosv_packet_validated": true,
+    "hb32_preobservation_expectation": "StegVerse-Labs/StegBrain:expectations/cosv/live/HB32-ecosystem-chat-orphan-recovery.json",
+    "hb32_actual_observed": false,
+    "recurring_cosv_packet_automation_source_installed": true,
+    "recurring_cosv_packet_worker_live_claim_observed": false
   },
   "goals": [
     {
@@ -25,15 +30,23 @@
     },
     {
       "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-      "state": "CARRIER_CONTINUITY_RELEASE_COMPLETE_AT_HB31",
-      "evidence": "receipts/heartbeat-transition-continuity/latest.json",
-      "terminal_for_state_transition_continuity": true
+      "state": "CONTINUITY_RELEASE_COMPLETE_HB31_PENDING_G18_REGISTRY_TERMINALIZATION",
+      "evidence": "receipts/heartbeat-transition-continuity/latest.json + handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+      "terminal_for_state_transition_continuity": true,
+      "terminal_task_registry": false
     },
     {
       "goal_id": "COSV-HEARTBEAT-STATE-PACKET-002",
       "state": "FIRST_LIVE_FULL_PACKET_COMPLETE_HB31",
       "evidence": "receipts/cosv/live/HB31.json",
       "terminal_for_first_live_packet": true
+    },
+    {
+      "goal_id": "COSV-LIVE-PACKET-AUTOMATION-006",
+      "state": "SOURCE_COMPLETE_RELEASED_HANDOFF_READY_PENDING_FIRST_WORKER_EXECUTION",
+      "owner": "StegVerse-Labs/.github WorkerCoordinator / cosv-live-packet-worker",
+      "evidence": "receipts/cosv/COSV-LIVE-PACKET-AUTOMATION-006-source-validation.json",
+      "terminal": false
     },
     {
       "goal_id": "STEGBRAIN-COSV-GRADIENT-MECHANICS-002",
@@ -43,7 +56,7 @@
     },
     {
       "goal_id": "STEGBRAIN-COSV-EXPECTATION-RESIDUAL-004",
-      "state": "WAITING_FOR_PRECOMMITTED_EXPECTATION_AND_SAME_REFERENCE_ACTUAL_DELTA",
+      "state": "HB32_EXPECTATION_PRECOMMITTED_WAITING_FOR_SAME_REFERENCE_ACTUAL_DELTA",
       "owner": "StegVerse-Labs/StegBrain#865",
       "terminal": false
     },
@@ -54,7 +67,7 @@
       "terminal": false
     }
   ],
-  "next_executable_action": "Observe the next admitted changed carrier reference after HB31; emit a DELTA COSV packet against the HB31 FULL baseline and immediately consume its gradient_inputs in StegBrain#861 while preserving TV/TVC-only credential authority and StegVerse-primary provider precedence.",
+  "next_executable_action": "Consume the next admitted WorkerCoordinator tick. It must terminalize the already-complete G18 claim, apply/bind COSV-LIVE-PACKET-AUTOMATION-006, and when a later carrier reference exists materialize the next genuine DELTA. Immediately consume that DELTA in StegBrain#861 and compare the HB32 precommit in #865 if the actual target reference is HB32. In parallel consume .github#60 sovereign-inference worker outputs.",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",
