@@ -39,7 +39,7 @@ class HeartbeatCarrierEnvelopeTests(unittest.TestCase):
             ),
         ]
 
-    def test_derives_admissible_interval_and_growth_aware_phase_plan(self):
+    def test_frequency_is_fixed_by_independent_10ms_oscillator(self):
         envelope = derive_carrier_envelope(
             self.sample_constraints(),
             sustainable_max_hz=500.0,
@@ -47,14 +47,13 @@ class HeartbeatCarrierEnvelopeTests(unittest.TestCase):
             growth_reserve_ratio=0.25,
         )
         frequency = envelope["frequency"]
-        self.assertEqual(80.0, frequency["admissible_min_hz"])
-        self.assertEqual(300.0, frequency["admissible_max_hz"])
-        self.assertGreater(frequency["nominal_hz"], 80.0)
-        self.assertLess(frequency["nominal_hz"], 300.0)
+        self.assertEqual("INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL", frequency["rule"])
+        self.assertEqual(100.0, frequency["nominal_hz"])
+        self.assertEqual(10.0, frequency["nominal_period_ms"])
+        self.assertEqual("OSCILLATOR_ONLY", frequency["progression_dependency"])
+        self.assertFalse(frequency["downstream_constraints_may_change_frequency"])
         self.assertEqual(4, envelope["phase_plan"]["phase_slots"])
-        self.assertEqual([0.0, 90.0, 180.0, 270.0], envelope["phase_plan"]["phase_offsets_deg"])
-        self.assertFalse(envelope["phase_plan"]["alternate_phases_are_authority_channels"])
-        self.assertGreater(envelope["capacity"]["design_composite_load_units"], envelope["capacity"]["current_composite_load_units"])
+        self.assertFalse(envelope["phase_plan"]["phase_plan_changes_reference_interval"])
 
     def test_strictest_tolerance_wins(self):
         envelope = derive_carrier_envelope(
@@ -66,10 +65,16 @@ class HeartbeatCarrierEnvelopeTests(unittest.TestCase):
         self.assertEqual(10.0, envelope["tolerances"]["max_phase_error_deg"])
         self.assertEqual(5.0, envelope["tolerances"]["max_frequency_drift_hz"])
 
-    def test_rejects_empty_admissible_interval(self):
+    def test_rejects_consumer_that_requires_different_heartbeat_frequency(self):
         with self.assertRaises(CarrierEnvelopeError):
             derive_carrier_envelope(
-                [SignalConstraint(signal_id="impossible", min_frequency_hz=250.0, max_frequency_hz=100.0)],
+                [SignalConstraint(signal_id="impossible", min_frequency_hz=250.0)],
+                sustainable_max_hz=500.0,
+                events_per_reference_capacity=1.0,
+            )
+        with self.assertRaises(CarrierEnvelopeError):
+            derive_carrier_envelope(
+                [SignalConstraint(signal_id="too-slow", max_frequency_hz=50.0)],
                 sustainable_max_hz=500.0,
                 events_per_reference_capacity=1.0,
             )
@@ -82,7 +87,7 @@ class HeartbeatCarrierEnvelopeTests(unittest.TestCase):
         )
         observation = assess_carrier_observation(
             envelope,
-            observed_frequency_hz=envelope["frequency"]["nominal_hz"] + 12.0,
+            observed_frequency_hz=112.0,
             observed_phase_deg=30.0,
             expected_phase_deg=0.0,
             observed_jitter_ms=2.0,
@@ -95,7 +100,7 @@ class HeartbeatCarrierEnvelopeTests(unittest.TestCase):
         self.assertEqual("TV/TVC", observation["credential_authority"])
         self.assertFalse(observation["heartbeat_grants_execution_authority"])
 
-    def test_within_envelope_is_not_confused_with_subsystem_activity(self):
+    def test_within_envelope_does_not_change_heartbeat(self):
         envelope = derive_carrier_envelope(
             self.sample_constraints(),
             sustainable_max_hz=500.0,
@@ -103,13 +108,14 @@ class HeartbeatCarrierEnvelopeTests(unittest.TestCase):
         )
         observation = assess_carrier_observation(
             envelope,
-            observed_frequency_hz=envelope["frequency"]["nominal_hz"] + 1.0,
+            observed_frequency_hz=101.0,
             observed_phase_deg=5.0,
             expected_phase_deg=0.0,
             observed_jitter_ms=0.5,
         )
         self.assertEqual("WITHIN_ENVELOPE", observation["state"])
         self.assertEqual([], observation["reasons"])
+        self.assertFalse(envelope["recalculation"]["recalculation_changes_heartbeat_frequency"])
 
     def test_authority_contract_is_zero_authority(self):
         envelope = derive_carrier_envelope(
