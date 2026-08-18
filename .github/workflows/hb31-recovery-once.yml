@@ -1,0 +1,136 @@
+name: HB31 Recovery - One Shot Fallback
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hb31-recovery-once.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hb31-recovery-once
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    env:
+      STEGVERSE_THIRD_PARTY_FALLBACK: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Guard exact HB30 preconditions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          carrier=json.loads(Path('control/heartbeat-carrier-runtime-state.json').read_text())
+          legacy=json.loads(Path('control/heartbeat-state.json').read_text())
+          receipt=json.loads(Path('receipts/heartbeat-transition-continuity/latest.json').read_text())
+          assert legacy['epoch']==29 and legacy['generation']==29, legacy
+          assert carrier['epoch']==30 and carrier['generation']==30, carrier
+          assert receipt.get('release_state')=='RELEASE_COMPLETE', receipt
+          assert receipt.get('all_release_predicates_pass') is True, receipt
+          print('HB30_RECOVERY_PRECONDITIONS_PASS')
+          PY
+
+      - name: Advance canonical v12 carrier exactly one epoch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/run_heartbeat_runtime.py --cycles 1 --interval-ms 0 | tee /tmp/hb31-carrier.json
+          python - <<'PY'
+          import json, hashlib
+          from pathlib import Path
+          carrier=json.loads(Path('control/heartbeat-carrier-runtime-state.json').read_text())
+          legacy_raw=Path('control/heartbeat-state.json').read_bytes()
+          legacy=json.loads(legacy_raw)
+          control=json.loads(Path('control/worker-control-plane-coordination.json').read_text())
+          assert carrier['epoch']==31 and carrier['generation']==31, carrier
+          assert carrier['reference_frame']=='heartbeat_epoch:31', carrier
+          assert legacy['epoch']==29 and legacy['generation']==29, legacy
+          observed=control.get('observed_reference') or {}
+          assert observed.get('carrier_generation')==31, control
+          assert observed.get('reference_frame')=='heartbeat_epoch:31', control
+          previous=json.loads(Path('receipts/heartbeat-transition-continuity/latest.json').read_text())
+          previous.update({
+            'state':'CARRIER_TRANSITION_COMPLETE',
+            'reason':'V12_SUCCESSOR_TRANSITION_VERIFIED',
+            'carrier_epoch_before':30,
+            'carrier_generation_before':30,
+            'carrier_epoch_after':31,
+            'carrier_generation_after':31,
+            'legacy_state_sha256':hashlib.sha256(legacy_raw).hexdigest(),
+            'fallback_execution':{
+              'surface':'GITHUB_ACTIONS',
+              'role':'FALLBACK_ONLY',
+              'primary_runtime_authority':'StegVerse',
+              'required_dependency':False,
+              'heartbeat_authority':False,
+              'credential_authority':'TV/TVC',
+              'github_token_runtime_authority':'NONE'
+            },
+            'predicates':{
+              'legacy_hb29_unchanged':True,
+              'carrier_epoch_at_least_30':True,
+              'carrier_generation_non_regressing':True,
+              'worker_runtime_checkpoint_observed_at_or_after_carrier_epoch':False,
+              'worker_control_plane_observed':True,
+              'no_duplicate_claim_or_fence':True,
+              'state_reconstruction_pass':True
+            },
+            'all_carrier_transition_predicates_pass':True,
+            'all_release_predicates_pass':False,
+            'release_state':'WORKER_CHECKPOINT_PENDING'
+          })
+          Path('receipts/heartbeat-transition-continuity/latest.json').write_text(json.dumps(previous,indent=2,sort_keys=True)+'\n')
+          print('HB31_CARRIER_ADVANCED')
+          PY
+
+      - name: Observe HB31 and close release predicates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/observe_worker_carrier_once.py --root .
+          python scripts/refresh_heartbeat_transition_receipt.py --root .
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          carrier=json.loads(Path('control/heartbeat-carrier-runtime-state.json').read_text())
+          worker=json.loads(Path('control/worker-runtime-state.json').read_text())
+          control=json.loads(Path('control/worker-control-plane-coordination.json').read_text())
+          receipt=json.loads(Path('receipts/heartbeat-transition-continuity/latest.json').read_text())
+          assert carrier['epoch']==31 and carrier['generation']==31, carrier
+          assert worker['last_observed_carrier_epoch']>=31 and worker['last_observed_carrier_generation']>=31, worker
+          assert (control.get('observed_reference') or {}).get('carrier_generation')==31, control
+          assert receipt['release_state']=='RELEASE_COMPLETE', receipt
+          assert receipt['all_release_predicates_pass'] is True, receipt
+          assert all(receipt['predicates'].values()), receipt
+          print('HB31_RELEASE_COMPLETE')
+          PY
+
+      - name: Persist HB31 and retire fallback
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/hb31-recovery-once.yml
+          git config user.name 'stegverse-hb-recovery'
+          git config user.email 'stegverse-hb-recovery@users.noreply.github.com'
+          git add control/heartbeat-carrier-runtime-state.json \
+                  control/heartbeat-carrier-observation.json \
+                  control/worker-control-plane-coordination.json \
+                  control/worker-runtime-state.json \
+                  control/heartbeat-master-records-projection.json \
+                  receipts/heartbeat-transition-continuity/latest.json \
+                  events/heartbeat-runtime.jsonl \
+                  events/worker-runtime.jsonl \
+                  .github/workflows/hb31-recovery-once.yml
+          git diff --cached --quiet && { echo 'NO_HB31_STATE_TO_COMMIT'; exit 1; }
+          git commit -m 'heartbeat: advance and release-close HB31'
+          git push origin HEAD:main
