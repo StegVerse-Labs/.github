@@ -8,10 +8,12 @@ repository: StegVerse-Labs/.github
 credential_authority: TV/TVC
 non_tv_tvc_secret_or_token_allowed: false
 parent_goal: TVC-REPOSITORY-BROKER-VALIDATION-CARRIER-001
+canonical_tvc_pr: #79
+superseded_tvc_pr: #20
 archive_ready: false
 ```
 
-This scoped handoff supplements `docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md`. It owns only the carrier observation defect that prevented fragment-only HANDOFF_READY tasks from producing worker-assignment trigger packets.
+This scoped handoff supplements `docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md`. It owns only the carrier observation defect that prevented fragment-only `HANDOFF_READY` tasks from producing worker-assignment trigger packets.
 
 ## Observed defect
 
@@ -53,7 +55,9 @@ The repair reuses `_apply_registry_fragments` from the existing heartbeat runtim
 
 ## Authority preservation
 
-This repair does not bind a worker, create a claim, mint a fence, execute the TVC broker validator, fetch private source, expose a credential, merge TVC PR #20, or claim validation PASS. The carrier remains non-authorizing. The separate WorkerCoordinator must still consume the carried packet, independently validate authority/eligibility, bind the worker, and execute the existing process adapter.
+This repair does not bind a worker, create a claim, mint a fence, execute the TVC broker validator, fetch private source, expose a credential, merge TVC PR #79, or claim validation PASS. The carrier remains non-authorizing. The separate WorkerCoordinator must still consume the carried packet, independently validate authority/eligibility, bind the worker, and execute the existing process adapter.
+
+Legacy PR #20 is closed and superseded. The active exact source binding is maintained in `handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json` and `docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md`; this scoped repair does not independently pin a moving TVC head.
 
 ## Validation state
 
@@ -74,9 +78,9 @@ No workflow or source-complete state is treated as runtime proof.
 1. next sovereign carrier cycle uses CarrierHeartbeatRuntime(engine_v13)
 2. carrier applies registry fragment and emits worker_assignment_trigger_carried for SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001
 3. WorkerCoordinator consumes packet and binds tvc-repository-broker-validation-worker under existing authorization
-4. worker executes exact local TVC PR #20 head validation with no non-TV/TVC credential
+4. worker executes exact locally materialized TVC PR #79 head validation with no non-TV/TVC credential
 5. receipts/tvc-repository-broker-validation/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json records actual PASS or fail-closed evidence
-6. only actual PASS permits TVC PR #20 admission review
+6. only actual PASS permits TVC PR #79 admission review
 7. admitted TVC broker permits StegCore private-source materialization and downstream sovereign validation
 ```
 
