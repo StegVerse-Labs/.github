@@ -6,9 +6,11 @@
   "branch": "main",
   "canonical_issue": 122,
   "claimant": "chatgpt-session-heartbeat-semantic-correction-20260818",
-  "role": "CLAIMED_FOR_IMPLEMENTATION",
+  "role": "RELEASED_SOURCE_IMPLEMENTATION",
   "claimed_at": "2026-08-18T17:47:00-05:00",
+  "released_at": "2026-08-18T17:58:00-05:00",
   "release_condition": "Independent oscillator module, v12 carrier integration, schemas/contracts, compatibility sampler, deterministic tests, and canonical handoffs are installed and source-validated; claim then releases while live observation remains separately evidenced.",
+  "release_evidence": "receipts/heartbeat/HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008-source-validation.json",
   "collision_boundaries": [
     "Heartbeat progression must not depend on WorkerCoordinator, G18, task state, claims, fences, leases, route state, credentials, or downstream admission.",
     "Consumers may sample/observe heartbeat references but may not cause, delay, authorize, or suppress them.",
@@ -21,5 +23,7 @@
   "github_token_runtime_authority": "NONE",
   "third_party_runtime_role": "FALLBACK_ONLY",
   "stegverse_primary": true,
-  "state": "ACTIVE"
+  "state": "COMPLETE_RELEASED_SOURCE_ONLY",
+  "live_activation_claimed": false,
+  "next_live_evidence": "Corrected StegVerse v12 sampler persists an oscillator-backed carrier observation on the sovereign runtime."
 }
