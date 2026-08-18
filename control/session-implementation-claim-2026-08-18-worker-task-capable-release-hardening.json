@@ -26,7 +26,8 @@
     "Do not create a second heartbeat, WorkerCoordinator, scheduler, vault, model runtime, or route authority.",
     "Do not use GitHub Actions, Render, Vercel, Cloudflare, or another hosted provider as production runtime authority.",
     "StegVerse remains primary; third-party recovery remains fallback-only.",
-    "TV/TVC remains sole credential authority; no NON-TV/TVC secret/token may be introduced."
+    "TV/TVC remains sole credential authority; no NON-TV/TVC secret/token may be introduced.",
+    "Do not compete with the concurrent heartbeat carrier-envelope/oscillator source lane; consume only its released runtime contract when canonical handoff reconciliation is complete."
   ],
   "source_changes": {
     "release_validator_commit": "130c18fb9e87682400d8b9e43c836ad322b803eb",
@@ -38,26 +39,48 @@
     "deployment_handoff_reconciliation_commit": "eb04d7a7555abb9456fe48ddb0c2ad3aca2f623f",
     "orphan_handoff_reconciliation_commit": "e13396c9346b052a1d0a62654dd76099c08fc4ac",
     "activation_verifier_hardening_commit": "1200bfa4d3d38770dedd4d8eb99ff95539bb553b",
-    "activation_verifier_test_commit": "aba4c7fc658f1d23cd8e64cc664aa76dc50de323"
+    "activation_verifier_test_commit": "aba4c7fc658f1d23cd8e64cc664aa76dc50de323",
+    "test_lanes_autolaunch_handoff_reconciliation_commit": "1c15bda3015904169929dc053e3244abc3187074"
   },
   "validation": {
+    "canonical_workflow_ref": ".github/workflows/heartbeat-worker-project.yml",
+    "canonical_workflow_runs_complete_unittest_discovery": true,
+    "changed_paths_trigger_push_validation": true,
+    "workflow_permissions": "NONE",
+    "github_token_validation_authority": "NONE",
     "hosted_workflow_runs_exposed_for_latest_head": false,
     "combined_status_entries_exposed_for_latest_head": false,
     "hosted_pass_claimed": false,
     "source_validation_state": "INSTALLED_UNVALIDATED_BY_DIRECT_HOSTED_EVIDENCE"
   },
+  "machine_activation_requests": [
+    {
+      "owner": "StegVerse-Labs/.github#12",
+      "comment_id": 5335168685,
+      "requested_action": "START_OR_RESTART_EXISTING_TASK_CAPABLE_RUN_WORKER_RUNTIME_CONTINUOUS"
+    },
+    {
+      "owner": "StegVerse-Labs/.github#122",
+      "comment_id": 5335171473,
+      "requested_action": "START_OR_RESTART_EXISTING_TASK_CAPABLE_RUN_WORKER_RUNTIME_CONTINUOUS"
+    }
+  ],
   "live_evidence_observed": {
     "carrier_epoch": 31,
     "carrier_generation": 31,
+    "carrier_last_cycle_at": "2026-08-18T19:47:00Z",
     "worker_observed_epoch": 31,
     "worker_observation_mode": "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION",
     "worker_runtime_tick": 2,
     "task_adapters_invoked_by_observer": 0,
     "g18_still_active_in_control_plane": true,
-    "task_capable_worker_cycle_observed_at_hb31_or_later": false
+    "task_capable_worker_cycle_observed_at_hb31_or_later": false,
+    "resident_continuous_carrier_process_currently_proven": false,
+    "resident_continuous_worker_process_currently_proven": false
   },
   "corrected_release_rule": "Carrier continuity may be proven by observation-only evidence, but runtime RELEASE_COMPLETE and sovereign activation require measurable task-capable WorkerCoordinator progress. PID presence, state-file presence, HANDOFF_READY, workflow success, or observation-only checkpoints are insufficient.",
   "next_executable_action": "The existing #122/#12 sovereign runtime owner must start or restart the already-released task-capable scripts/run_worker_runtime.py process on the materialized StegVerse node. The next admitted cycle must consume G18 completion, release fence18, and continue orphan recovery/parent inference. This claim remains open until that live evidence is observed, verified, and consumed.",
+  "machine_observable_release_condition": "control/worker-runtime-state.json advances beyond runtime_tick 2 under a task-capable WorkerCoordinator cycle at HB31+; observation_mode is no longer CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION; control/worker-control-plane-coordination.json no longer projects G18/fence18 as an active lease after terminal response consumption; downstream orphan recovery then obtains a fresh fence greater than 20.",
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "third_party_role": "FALLBACK_ONLY",
