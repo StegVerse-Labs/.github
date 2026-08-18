@@ -8,12 +8,13 @@
       "authorized_policy_version": "heartbeat-independent-oscillator-v1",
       "block_ref": null,
       "claim_id": null,
-      "cost_basis_ref": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json",
       "evidence_refs": [
         "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
         "heartbeat_runtime/independent_oscillator.py",
         "heartbeat_runtime/engine_v12.py",
-        "receipts/heartbeat/HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008-source-validation.json"
+        "receipts/heartbeat/HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008-source-validation.json",
+        "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
