@@ -1,0 +1,56 @@
+{
+  "schema": "stegverse.heartbeat-transition-release-reconciliation/v1",
+  "recorded_at": "2026-08-18T17:19:00-05:00",
+  "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "source_transition_receipt": "receipts/heartbeat-transition-continuity/latest.json",
+  "source_transition_receipt_blob_sha": "955454f7f5156045064b45966aad01da59f07249",
+  "carrier_state_ref": "control/heartbeat-carrier-runtime-state.json",
+  "carrier_state_blob_sha": "bb1411cd8dc13a6b49bac26a8ace3ac342e506a3",
+  "worker_runtime_state_ref": "control/worker-runtime-state.json",
+  "worker_runtime_state_blob_sha": "770a04a4212ad340e6d555ad79cb6d3df3565752",
+  "worker_control_plane_ref": "control/worker-control-plane-coordination.json",
+  "worker_control_plane_blob_sha": "ae48f8a6be0092ad40c7e0e1c978098ce837abb9",
+  "observed": {
+    "carrier_epoch": 31,
+    "carrier_generation": 31,
+    "worker_observed_carrier_epoch": 31,
+    "worker_observed_carrier_generation": 31,
+    "worker_observation_mode": "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION",
+    "task_adapters_invoked_by_observation_shim": 0,
+    "carrier_continuity_proven": true,
+    "state_reconstruction_pass": true,
+    "no_duplicate_claim_or_fence": true,
+    "g18_active_lease_still_projected": true,
+    "task_capable_worker_cycle_observed_at_or_after_hb31": false
+  },
+  "prior_interpretation": {
+    "release_state": "RELEASE_COMPLETE",
+    "all_release_predicates_pass": true,
+    "status": "SUPERSEDED_FOR_RUNTIME_GOAL_RELEASE_ONLY",
+    "reason": "The historical release predicate treated an observation-only WorkerCoordinator checkpoint as sufficient worker release evidence."
+  },
+  "corrected_interpretation": {
+    "carrier_transition_state": "CARRIER_TRANSITION_COMPLETE",
+    "carrier_continuity_state": "PROVEN",
+    "runtime_release_state": "WORKER_TASK_CAPABLE_CYCLE_PENDING",
+    "all_runtime_release_predicates_pass": false,
+    "required_missing_predicate": "worker_task_capable_cycle_observed",
+    "corrected_validator_commit": "130c18fb9e87682400d8b9e43c836ad322b803eb",
+    "regression_test_commit": "5d728a928de9ed5b5f4d24d474bb1e4252725591"
+  },
+  "next_required_execution": {
+    "owner": "StegVerse-Labs/.github#122/#12 resident StegVerse runtime",
+    "entrypoint": "scripts/run_worker_runtime.py",
+    "mode": "TASK_CAPABLE_WORKER_COORDINATOR",
+    "required_effect": "Invoke already-bound G18 under its existing authority, consume terminal COMPLETED response, release G18 claim/fence, then continue the admitted downstream recovery/sovereign-inference graph.",
+    "manual_claim_or_fence_creation_allowed": false,
+    "second_heartbeat_allowed": false,
+    "third_party_primary_allowed": false,
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_allowed": false
+  },
+  "authority_effect": "NONE_RECONCILIATION_ONLY",
+  "runtime_execution_claimed": false,
+  "activation_claimed": false,
+  "archive_dependency": true
+}
