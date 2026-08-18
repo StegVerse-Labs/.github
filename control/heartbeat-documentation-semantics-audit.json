@@ -1,7 +1,8 @@
 {
-  "schema": "stegverse.heartbeat-documentation-semantics-audit/v2",
+  "schema": "stegverse.heartbeat-documentation-semantics-audit/v3",
   "goal_id": "HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120",
   "canonical_issue": "StegVerse-Labs/.github#120",
+  "canonical_runtime_issue": "StegVerse-Labs/.github#122",
   "canonical_handoff": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": false,
@@ -13,52 +14,39 @@
     "heartbeat_routes_communications": false,
     "heartbeat_grants_authority": false,
     "heartbeat_is_master_records_transport": false,
-    "carrier_amplitude_rule": "MINIMUM_SUFFICIENT_FOR_MAXIMUM_ADMISSIBLE_SIMULTANEOUS_COMPOSITE_SIGNAL_PLUS_BOUNDED_MARGIN",
-    "carrier_frequency_rule": "GATE_PASSBAND_DERIVED",
-    "fixed_universal_frequency": false,
+    "carrier_progression_dependency": "OSCILLATOR_ONLY",
+    "phase_travel_time_ms": 10,
+    "reference_increment_interval_ms": 10,
+    "reference_frequency_hz": 100,
+    "carrier_frequency_rule": "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL",
+    "worker_or_task_gating": false,
+    "admission_gating": false,
+    "claim_or_fence_gating": false,
+    "route_or_credential_gating": false,
+    "observation_is_causal": false,
+    "persisted_state_is_sample_only": true,
     "communication_object": ["manifest_packet", "expiration_wrapper", "data_packet"],
     "terminal_triggers": ["ENDPOINT_OBJECTIVE_COMPLETE", "EXPIRED"],
     "terminal_object": "MASTER_RECORDS_PACKET",
     "transition_table_end_of_life": "MASTER_RECORDS"
   },
-  "current_main_surfaces": [
-    {
-      "path": "docs/ORG_MIRROR_HANDOFF.md",
-      "state": "REQUIRES_CANONICAL_SUBORDINATION",
-      "owner": "StegVerse-Labs/.github#120"
-    },
-    {
-      "path": "docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md",
-      "state": "REQUIRES_CANONICAL_SUBORDINATION",
-      "owner": "StegVerse-Labs/.github#120"
-    },
-    {
-      "path": "docs/ALL_ORGS_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md",
-      "state": "REQUIRES_CANONICAL_SUBORDINATION",
-      "owner": "StegVerse-Labs/.github#120"
-    },
-    {
-      "path": "schemas/heartbeat-subsignal.schema.json",
-      "state": "RUNTIME_REFACTOR_OWNED_ELSEWHERE",
-      "owner": "StegVerse-Labs/.github#122"
-    },
-    {
-      "path": "control/heartbeat-subsignals.json",
-      "state": "RUNTIME_REFACTOR_OWNED_ELSEWHERE",
-      "owner": "StegVerse-Labs/.github#122"
-    }
-  ],
-  "downstream_owners": [
-    "StegVerse-Labs/Site#264",
-    "StegVerse-Labs/StegCore#104",
-    "StegVerse-Labs/StegCore#105:COMPLETE_RELEASED",
-    "StegVerse-Labs/admissibility-wiki#99",
-    "StegVerse-Labs/repo-standards#39",
-    "master-records/orchestration#33",
-    "GCAT-BCAT-Engine/Publisher#27"
-  ],
+  "superseded_semantics": {
+    "carrier_frequency_rule": "GATE_PASSBAND_DERIVED",
+    "fixed_universal_frequency": false,
+    "reason": "These values incorrectly coupled the heartbeat carrier frequency/progression to downstream load/passband calculation. Capacity/envelope analysis may observe the carrier but may not set or gate the independent oscillator."
+  },
+  "runtime_correction": {
+    "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008",
+    "module": "heartbeat_runtime/independent_oscillator.py",
+    "runtime": "heartbeat_runtime/engine_v12.py",
+    "continuity_contract": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
+    "sampler": "scripts/advance_heartbeat_transition.py",
+    "state_schema": "schemas/heartbeat-carrier-runtime-state.schema.json",
+    "observation_schema": "schemas/heartbeat-carrier-observation.schema.json",
+    "tests": "tests/test_independent_heartbeat_oscillator.py"
+  },
   "historical_evidence_rewrite_allowed": false,
   "runtime_refactor_required": true,
   "runtime_refactor_owner": "StegVerse-Labs/.github#122",
-  "audit_state": "CURRENT_MAIN_RECONCILIATION_ACTIVE"
+  "audit_state": "INDEPENDENT_OSCILLATOR_CORRECTION_ACTIVE"
 }
