@@ -7,10 +7,14 @@ on:
       - "control/worker-registry.d/test-lanes-autolaunch.json"
       - "control/process-worker-adapters.d/test-lanes-autolaunch.json"
       - "authorizations/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json"
+      - "handoffs/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json"
+      - "cost-basis/worker-runtime/test-lanes-autolaunch.json"
       - "scripts/evaluate_test_lanes_autolaunch_matrix.py"
       - "workers/test_lanes_autolaunch_worker.py"
+      - "workers/test_lanes_autolaunch_entrypoint.py"
       - "tests/test_test_lanes_autolaunch_matrix.py"
       - "tests/test_test_lanes_autolaunch_worker.py"
+      - "tests/test_worker_registry_fragments.py"
       - "docs/STEGVERSE_TEST_LANES_AUTOLAUNCH_MIRROR_HANDOFF.md"
       - ".github/workflows/test-lanes-autolaunch-validation.yml"
   pull_request:
@@ -19,10 +23,14 @@ on:
       - "control/worker-registry.d/test-lanes-autolaunch.json"
       - "control/process-worker-adapters.d/test-lanes-autolaunch.json"
       - "authorizations/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json"
+      - "handoffs/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json"
+      - "cost-basis/worker-runtime/test-lanes-autolaunch.json"
       - "scripts/evaluate_test_lanes_autolaunch_matrix.py"
       - "workers/test_lanes_autolaunch_worker.py"
+      - "workers/test_lanes_autolaunch_entrypoint.py"
       - "tests/test_test_lanes_autolaunch_matrix.py"
       - "tests/test_test_lanes_autolaunch_worker.py"
+      - "tests/test_worker_registry_fragments.py"
       - "docs/STEGVERSE_TEST_LANES_AUTOLAUNCH_MIRROR_HANDOFF.md"
       - ".github/workflows/test-lanes-autolaunch-validation.yml"
   workflow_dispatch: {}
@@ -55,7 +63,10 @@ jobs:
       - name: Run worker boundary tests
         run: python3 tests/test_test_lanes_autolaunch_worker.py
 
-      - name: Validate native registry and adapter bindings
+      - name: Run native registry-fragment tests
+        run: python3 tests/test_worker_registry_fragments.py
+
+      - name: Validate native registry adapter authorization handoff and cost basis
         run: |
           python3 - <<'PY'
           import json
@@ -63,21 +74,31 @@ jobs:
           task=json.loads(Path('control/worker-registry.d/test-lanes-autolaunch.json').read_text())
           adapter=json.loads(Path('control/process-worker-adapters.d/test-lanes-autolaunch.json').read_text())
           auth=json.loads(Path('authorizations/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json').read_text())
+          handoff=json.loads(Path('handoffs/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json').read_text())
+          cost=json.loads(Path('cost-basis/worker-runtime/test-lanes-autolaunch.json').read_text())
           assert task['schema'] == 'stegverse.worker-registry-fragment/v0.1'
-          assert task['tasks'][0]['task_id'] == 'STEGVERSE-TEST-LANES-AUTOLAUNCH-001'
-          assert task['tasks'][0]['executor_binding'] == 'AUTHORIZED'
+          t=task['tasks'][0]
+          assert t['task_id'] == 'STEGVERSE-TEST-LANES-AUTOLAUNCH-001'
+          assert t['state'] == 'HANDOFF_READY'
+          assert t['executor_binding'] == 'AUTHORIZED'
+          assert t['handoff_ref'] == 'handoffs/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json'
+          assert t['cost_basis_ref'] == 'cost-basis/worker-runtime/test-lanes-autolaunch.json'
           assert adapter['schema'] == 'stegverse.process-worker-adapter-fragment/v0.1'
           a=adapter['adapters'][0]
           assert a['adapter_ref'] == 'process:test-lanes-autolaunch-v1'
-          assert 'OPENAI_API_KEY' not in a['env_allowlist']
-          assert 'ANTHROPIC_API_KEY' not in a['env_allowlist']
-          assert 'DEEPSEEK_API_KEY' not in a['env_allowlist']
-          assert 'MOONSHOT_API_KEY' not in a['env_allowlist']
-          assert 'GITHUB_TOKEN' not in a['env_allowlist']
+          assert a['command'] == ['python','workers/test_lanes_autolaunch_entrypoint.py']
+          for name in ('OPENAI_API_KEY','ANTHROPIC_API_KEY','DEEPSEEK_API_KEY','MOONSHOT_API_KEY','GITHUB_TOKEN','GH_TOKEN'):
+              assert name not in a['env_allowlist']
           assert auth['credential_authority'] == 'TV/TVC'
           assert auth['heartbeat_grants_execution_authority'] is False
           assert auth['primary_provider'] == 'stegverse_local'
           assert auth['provider_secret_transport_allowed'] is False
+          assert handoff['schema'] == 'stegverse.executable-handoff/v0.1'
+          assert handoff['authority']['heartbeat_grants_execution_authority'] is False
+          assert handoff['authority']['credential_authority'] == 'TV/TVC'
+          assert handoff['execution']['runtime_window_beats'] == 128
+          assert cost['schema'] == 'stegverse.worker-runtime-cost-basis/v0.1'
+          assert cost['hb_estimate']['expiry_candidate_beats'] == 128
           print('TEST_LANES_AUTOLAUNCH_NATIVE_BINDING_PASS')
           PY
 
