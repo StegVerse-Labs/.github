@@ -3,41 +3,56 @@
   "task_id": "SHWP-HB29-WORKER-BOOTSTRAP-DEADLOCK-003",
   "originating_goal": "Fix the coding defect that prevents the machine-owned HB29 to HB30 transition from starting because WorkerCoordinator requires the separated carrier state before its execution loop can run.",
   "repository": "StegVerse-Labs/.github",
-  "branch": "fix/hb29-worker-bootstrap-deadlock-220-v2",
   "canonical_issue": 220,
-  "claimant": "chatgpt-session-hb29-bootstrap-deadlock-repair-20260818",
-  "role": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION",
-  "claim_created_at": "2026-08-18T11:25:00-05:00",
-  "claim_expiration_or_release_condition": "Release after exact-head tests prove automatic initial carrier bootstrap, PR merges, canonical runtime handoff is reconciled, and no chat-owned implementation role remains.",
+  "pull_request": 221,
+  "merge_commit": "3e7d67b3940ca0ce325b6fbf0b43a87fb83e65a8",
+  "claim_state": "SOURCE_FIX_MERGED_OBSERVATION_MACHINE_OWNED",
+  "former_claimant": "chatgpt-session-hb29-bootstrap-deadlock-repair-20260818",
+  "implementation_claim_released_at": "2026-08-18T11:33:00-05:00",
+  "current_owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18 + normal StegVerse-native WorkerCoordinator execution",
+  "chat_session_required": false,
+  "implementation_state": "COMPLETE_MERGED",
+  "activation_state": "PENDING_REAL_HB30_OBSERVATION",
   "owned_surfaces": [
     "scripts/run_worker_runtime.py",
     "tests/test_hb29_worker_bootstrap_deadlock.py",
     "docs/HB29_WORKER_BOOTSTRAP_DEADLOCK_MIRROR_HANDOFF.md",
     "control/session-implementation-claim-2026-08-18-hb29-worker-bootstrap-deadlock.json"
   ],
+  "implemented_resolution": {
+    "defect": "WorkerCoordinator required a separated carrier before coordination, while the first separated carrier state was expected to be produced only after the worker path became reachable.",
+    "repair": "The normal worker-runtime entrypoint now invokes the existing canonical scripts/advance_heartbeat_transition.py exactly once when no separated carrier exists and immutable legacy HB29 is present; WorkerCoordinator starts only after HB30+ has been persisted.",
+    "credential_forwarding": "SAFE_ENV_ONLY_NO_GITHUB_PROVIDER_OR_TVC_SECRET_FORWARDING",
+    "legacy_hb29_mutation": false,
+    "new_scheduler_or_heartbeat": false
+  },
+  "validation_evidence": {
+    "exact_pr_head": "9b0563bde31e766c78ac85e6ec375b480ce51c18",
+    "heartbeat_worker_run": 32160758517,
+    "new_regression_tests_passed": "4/4",
+    "existing_hb29_transition_tests_passed": true,
+    "compile_passed": true,
+    "canonical_json_parse_passed": true,
+    "executable_handoff_validation_passed": true,
+    "full_suite_green": false,
+    "full_suite_blocker_is_unrelated": true,
+    "full_suite_blocker": "pre-existing/concurrent COSV aggregate test error in scripts/cosv.py factor encoding",
+    "organization_control_run": 32160758629,
+    "repair_handoff_ownership_partition_passed": true,
+    "organization_control_remaining_failures_unrelated": [
+      "docs/CANONICAL_OPERATIONAL_STATE_VECTOR_MIRROR_HANDOFF.md missing ownership section",
+      "docs/COSV_HEARTBEAT_STATE_PACKET_MIRROR_HANDOFF.md missing ownership section",
+      "docs/COSV_SESSION_CONSOLIDATION_MIRROR_HANDOFF.md missing ownership section"
+    ]
+  },
   "collision_boundaries": [
     "Do not modify control/heartbeat-state.json or fabricate HB30 in repository source.",
     "Do not acquire, release, renew, or alter the existing G18 claim/fence.",
     "Do not create another heartbeat, WorkerCoordinator, scheduler, hosted runtime, or physical-machine prerequisite.",
     "Do not introduce GitHub token, Render, hosted provider, or NON-TV/TVC secret/token authority.",
-    "Do not alter TV/TVC route authority, provider authority, wallet signing/broadcast authority, or Master Records custody authority.",
-    "Do not broaden the bootstrap exception beyond materializing the first separated-v12 carrier state from immutable HB29 before normal WorkerCoordinator startup."
+    "Do not alter TV/TVC route authority, provider authority, wallet signing/broadcast authority, or Master Records custody authority."
   ],
-  "implemented_resolution": {
-    "defect": "scripts/run_worker_runtime.py constructed WorkerCoordinator before an HB30 carrier existed; WorkerCoordinator._carrier_reference() fails closed when the carrier file is absent, while the transition producer that creates HB30 was only reachable through later worker execution paths.",
-    "repair": "run_worker_runtime now invokes the existing canonical scripts/advance_heartbeat_transition.py exactly once when no separated carrier state exists and immutable legacy HB29 is present, then constructs WorkerCoordinator only after HB30+ is persisted.",
-    "credential_forwarding": "SAFE_ENV_ONLY_NO_GITHUB_PROVIDER_OR_TVC_SECRET_FORWARDING",
-    "legacy_hb29_mutation": false,
-    "new_scheduler_or_heartbeat": false
-  },
-  "expected_evidence": [
-    "initial worker runtime startup materializes HB30+ before WorkerCoordinator construction",
-    "existing HB30+ is reused without another bootstrap transition",
-    "missing or non-HB29 legacy state fails closed",
-    "failed transition prevents WorkerCoordinator startup",
-    "credential-bearing environment variables are not forwarded to the transition producer",
-    "full heartbeat worker validation remains green"
-  ],
-  "next_executable_action": "Run exact-head deterministic validation, inspect workflow jobs/logs, reconcile canonical handoff if green, merge while current, then observe whether normal machine execution can materialize HB30 without the former circular dependency.",
-  "state": "IMPLEMENTED_PENDING_VALIDATION"
+  "machine_observable_release_condition": "A normal StegVerse-native worker-runtime startup on the retained HB29 state produces control/heartbeat-carrier-runtime-state.json at HB30+ and receipts/heartbeat-transition-continuity/latest.json with CARRIER_TRANSITION_COMPLETE; WorkerCoordinator then independently records the successor with reconstruction PASS and no duplicate claim/fence.",
+  "next_executable_action": "Existing G18/WorkerCoordinator machine owner executes the merged normal worker-runtime entrypoint. If HB30 is still absent, the merged initial-carrier bootstrap invokes the canonical transition producer before WorkerCoordinator construction. Inspect the resulting carrier/continuity/worker state; do not use hosted CI as activation evidence.",
+  "state": "COMPLETE_MERGED_SOURCE_PENDING_MACHINE_OBSERVATION"
 }
