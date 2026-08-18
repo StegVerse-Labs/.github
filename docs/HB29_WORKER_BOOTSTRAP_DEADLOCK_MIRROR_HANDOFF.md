@@ -6,7 +6,7 @@ This is a bounded subordinate handoff for the HB29→HB30 startup defect. It doe
 goal_id: SHWP-HB29-WORKER-BOOTSTRAP-DEADLOCK-003
 originating_goal: Fix the implementation defect preventing machine-owned HB29→HB30 transition execution.
 repository: StegVerse-Labs/.github
-branch: fix/hb29-worker-bootstrap-deadlock-220-v2
+branch: fix/hb29-worker-bootstrap-deadlock-220
 canonical_issue: #220
 parent_runtime_handoff: handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
 organization_handoff: docs/ORG_MIRROR_HANDOFF.md
@@ -70,6 +70,48 @@ Required predicates:
 
 After exact-head validation passes, reconcile `docs/ORG_MIRROR_HANDOFF.md` and `handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json`, merge the repair while current, release the bounded claim, close #220, and observe the next normal StegVerse-native worker-runtime execution for real HB30+ state and continuity receipt. Live HB30 is not claimed until those runtime surfaces are observed.
 
+## Execution ownership and collision partition
+
+### MANUAL / SESSION-STARTABLE
+
+```text
+manual_execution_allowed: true
+worker_registry_ref: control/session-implementation-claim-2026-08-18-hb29-worker-bootstrap-deadlock.json
+collision_scope: source repair and validation for scripts/run_worker_runtime.py plus the dedicated regression test/handoff only; no live G18 claim/fence or runtime-state mutation
+release_condition: exact-head regression validation passes, branch is current/mergeable, canonical runtime handoffs are reconciled, and source repair merges
+next_executable_action: validate the repair branch and merge only on green current-head evidence; do not manually fabricate HB30 or execute G18 outside its machine owner
+```
+
+### WORKER-OWNED / DO NOT COMPETE
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json + control/worker-registry.json
+collision_scope: live G18 claim/fence, actual sovereign worker invocation, HB30+ runtime-state persistence, WorkerCoordinator observation, reconstruction, and downstream activation
+release_condition: canonical HB30+ carrier state and continuity receipt exist, WorkerCoordinator observes the successor, no duplicate claim/fence exists, and reconstruction passes
+next_executable_action: after the source repair is merged, the existing StegVerse-native worker-runtime entrypoint starts normally and uses the repaired initial-carrier bootstrap if HB30 is still absent
+```
+
+### ESCALATED / AUTHORITY-OWNED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: StegVerse-Labs/TV + StegVerse-Labs/TVC
+collision_scope: credential and route authority only; this repair requests no credential value and no route/provider authority
+release_condition: unchanged TV/TVC authority boundary remains satisfied with credential requirement NONE for the heartbeat transition
+next_executable_action: none unless a later governed route/credential decision is independently required
+```
+
+### COMPLETED / SUPERSEDED
+
+```text
+manual_execution_allowed: false
+worker_registry_ref: control/session-integration-claim-2026-08-17-hb29-state-transition-carrier.json
+collision_scope: prior PR #206 transition-producer implementation and the former assumption that producer presence alone guaranteed reachable startup execution
+release_condition: PR #206 source remains retained; the unreachable-startup assumption is superseded by issue #220 / this repair
+next_executable_action: preserve the prior transition producer and use it through the repaired worker-runtime startup path
+```
+
 ## Completion accounting
 
 ```text
@@ -77,7 +119,7 @@ developed_files: 4/4
 scaffolding_or_stubs: 0
 missing_required_files: 0
 implementation: COMPLETE_ON_BRANCH
-validation: 0/4 pending execution
+validation: focused new tests 4/4 PASS in first observed full-suite run; full suite currently blocked by unrelated COSV mainline error
 integration: 0/1 pending merge
 activation: 0/1 pending real HB30 observation
 ```
