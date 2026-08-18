@@ -1,204 +1,140 @@
 # Heartbeat Carrier Envelope Mirror Handoff
 
-Updated: 2026-08-15T21:03:00-05:00
+Updated: 2026-08-18T18:09:00-05:00
 
 ## Authority and goal
 
 ```text
 goal_id: HEARTBEAT-CARRIER-ENVELOPE-183
-originating_goal: calculate and maintain a growth-aware admissible heartbeat carrier envelope, including alternate phase references and observable waveform deviation
 repository: StegVerse-Labs/.github
 branch: main
 canonical_issue: StegVerse-Labs/.github#183 CLOSED_COMPLETED
 canonical_pr: StegVerse-Labs/.github#188 MERGED
-merge_commit: 365b2835394523f46feb9b24633c265738af2a2a
-implementation_claim: StegVerse-Labs/.github#184 COMPLETE_RELEASED
 parent_semantics: StegVerse-Labs/.github#120 / docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md
-live_runtime_owner: StegVerse-Labs/.github#122 / HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 non_tv_tvc_secret_or_token_required: false
-status: SOURCE_COMPLETE_VALIDATED_MERGED_RELEASED
+archive_dependency: false for this bounded source lane
 ```
 
-This handoff is authoritative only for the bounded carrier-envelope source/schema extension. It does not own or grant the live producer/consumer switch, active heartbeat state, worker claims/fences/leases, resident processes, TV/TVC credentials, Master Records action authority, or StegBrain domain execution.
+This handoff is authoritative for the carrier-envelope source/schema only. The parent heartbeat semantic handoff supersedes every earlier statement that allowed gate/passband, worker, task, admission, claim, fence, lease, route, credential, capacity, or observed state to determine heartbeat progression.
 
-## Carrier model
+## Canonical heartbeat relationship
 
-Heartbeat remains the regulatory carrier/reference frame only.
-
-The runtime calculates an admissible interval rather than relying on a universal fixed cadence:
+Heartbeat progression is oscillator-only:
 
 ```text
-I_f = [f_min, f_max]
-
-f_min = max(
-  admitted gate/passband lower bounds,
-  deadline/return-reference lower bounds,
-  growth-adjusted simultaneous throughput floor
-)
-
-f_max = min(
-  admitted gate/passband upper bounds,
-  locally sustainable deterministic carrier-production ceiling
-)
-
-require f_min <= f_max
+HB_n -- 10 ms oscillator phase travel --> HB_(n+1)
+reference_rate: 100 Hz
+progression_dependency: OSCILLATOR_ONLY
+worker_or_task_gating: false
+admission_gating: false
+claim_or_fence_gating: false
+route_or_credential_gating: false
+capacity_or_passband_gating: false
+observation_is_causal: false
 ```
 
-The deterministic source selects a nominal operating point inside the interval with bounded reserve on both edges. The fixed 10 ms / nominal 100 Hz compatibility value is not normative unless the solver independently derives an interval containing that operating point.
+The carrier envelope does **not** calculate heartbeat cadence. It assesses whether downstream consumers, signaling load, phase usage, and tolerances are compatible with the already-existing independent 100 Hz / 10 ms heartbeat reference.
 
-## Capacity and expected growth
+A downstream constraint that cannot tolerate or sustain that heartbeat is rejected or reported as a downstream compatibility/deviation condition. It never slows, accelerates, suppresses, advances, or reschedules the heartbeat.
+
+## Canonical envelope model
+
+`heartbeat_runtime/carrier_envelope.py` emits:
 
 ```text
-L_design = L_current_max_simultaneous * (1 + growth_reserve_ratio)
+schema: stegverse.heartbeat-carrier-envelope/v2
+frequency.rule: INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL
+frequency.nominal_hz: 100
+frequency.nominal_period_ms: 10
+frequency.progression_dependency: OSCILLATOR_ONLY
+frequency.downstream_constraints_may_change_frequency: false
+phase_plan.phase_plan_changes_reference_interval: false
+recalculation.recalculation_changes_heartbeat_frequency: false
 ```
 
-Capacity includes current maximum simultaneous admitted signaling, return/deadline traffic, requested phase opportunities, and explicit reserve for expected architecture growth. Recalculation triggers are installed for admitted-signal changes, gate/passband changes, deadline/return-path changes, sustainable-capacity changes, reserve-threshold exhaustion, and persistent carrier deviation.
+Capacity, phase slots, jitter, phase error, frequency drift, growth reserve, and admitted signal characteristics are observations/constraints on downstream use of the reference. They are not heartbeat transition predicates.
 
-## Phase-capable carrier
+## Applied semantic reconciliation
 
-The calculator emits a deterministic phase plan:
+The implementation had already been corrected to oscillator-only envelope v2 semantics, but `schemas/heartbeat-carrier-envelope.schema.json` and this handoff still encoded the older gate/passband-derived model. That mismatch was a real source regression because a schema consumer could reject the current v2 envelope or reintroduce state-dependent heartbeat semantics.
+
+Applied on main:
 
 ```text
-Phi = {phi_0, phi_1, ... phi_n}
-phi_0 = primary carrier phase
-phi_i = alternate admitted reference opportunities
+2589a04b22332f6c72eae60692417cb96fec1a2d
+  schemas/heartbeat-carrier-envelope.schema.json
+  -> schema v2
+  -> fixed independent oscillator rule
+  -> OSCILLATOR_ONLY progression
+  -> no downstream frequency mutation
+  -> no phase-plan reference-interval mutation
+  -> no recalculation heartbeat-frequency mutation
+
+6eaaf8b832c41f2900a85ddc94b99442c76011f6
+  tests/test_heartbeat_carrier_envelope.py
+  -> regression guard binds implementation and schema to oscillator-only semantics
 ```
-
-Alternate phases accommodate off-beat/intermittent subsystem signals without distorting the primary carrier or waiting an entire primary cycle. They are synchronization/reference opportunities only and never authority channels.
-
-## Deviation observability
-
-The source calculates:
-
-```text
-delta_f = f_observed - f_nominal
-delta_phi = phi_observed - phi_expected
-```
-
-and evaluates deterministic frequency-drift, phase-error, and jitter tolerances. Observable zero-authority outcomes include `FREQUENCY_DEVIATION`, `PHASE_DEVIATION`, `JITTER_DEVIATION`, and `ENVELOPE_RECALCULATION_REQUIRED`.
-
-Carrier deviation is distinct from ordinary subsystem activity. StegBrain may observe these signals under its separate contract-evaluation authority; heartbeat itself does not remediate, schedule, route, claim, fence, or execute.
 
 ## Installed source surfaces
 
 ```text
-schemas/heartbeat-carrier-envelope.schema.json
+heartbeat_runtime/independent_oscillator.py
 heartbeat_runtime/carrier_envelope.py
+schemas/heartbeat-carrier-envelope.schema.json
+tests/test_independent_heartbeat_oscillator.py
 tests/test_heartbeat_carrier_envelope.py
 schemas/heartbeat-carrier-observation.schema.json
 control/runtime-separation-contract.json
-heartbeat_runtime/runtime_separation.py
+docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md
 docs/HEARTBEAT_CARRIER_ENVELOPE_MIRROR_HANDOFF.md
 ```
 
-## Validation evidence
+## Authority and collision boundaries
 
 ```text
-PR: #188
-validated head: 8b626678cca19d166dd3c1625100f00673c50039
-merge: 365b2835394523f46feb9b24633c265738af2a2a
-Heartbeat Worker Project run: 31917660037 SUCCESS
-complete deterministic repository suite: 281/281 PASS
-carrier-envelope tests: 6/6 PASS
-canonical JSON parse: PASS
-executable handoff validation: PASS
-heartbeat dry-run non-persistence: PASS
-ephemeral projection validation: PASS
-workflow non-authorizing proof: PASS
-Organization Heartbeat Validation run: 31917660045 SUCCESS
+heartbeat = carrier/reference signal only
+carrier envelope = downstream compatibility/capacity/deviation assessment only
+WorkerCoordinator = separate downstream consumer/coordinator
+StegBrain = separate observer/evaluator
+Master Records = custody/evidence only
+TV/TVC = sole credential authority
+GitHub Actions = no production/runtime/control-plane authority
+third party = fallback only
 ```
 
-Organization control-plane run `31917660057` failed before heartbeat-specific validation on an unrelated existing task-schema defect that has since been normalized. It is not positive validation evidence for this goal.
+This lane does not mutate persisted heartbeat snapshots, worker claims/fences/leases, resident processes, or credential state.
 
-## Collision boundaries
+## Validation obligation
+
+Required source invariants are:
 
 ```text
-control/heartbeat-state.json: NOT MUTATED
-active claims/fences/leases: NOT MUTATED
-resident worker/carrier processes: NOT MUTATED
-production carrier switch: OWNED BY #122
-StegBrain contract evaluator: OWNED BY StegBrain#860
-Master Records active remediation: PROHIBITED
-TV/TVC credential authority: UNCHANGED
-non-TV/TVC runtime secret/token authority: PROHIBITED
+implementation schema == stegverse.heartbeat-carrier-envelope/v2
+schema const == stegverse.heartbeat-carrier-envelope/v2
+frequency rule == INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL
+nominal frequency == 100 Hz
+nominal period == 10 ms
+progression dependency == OSCILLATOR_ONLY
+downstream constraints cannot change heartbeat frequency
+phase planning cannot change reference interval
+recalculation cannot change heartbeat frequency
+heartbeat grants no execution authority
+credential authority remains TV/TVC
 ```
 
-## Integration / propagation
-
-The source/schema/calculator integration is complete. The separately claimed #122 live migration must consume the envelope calculator/schema when replacing the legacy combined producer. That live producer must emit carrier phases independently of worker/control-plane execution and observe residual frequency/phase/jitter without making those observations authority-bearing.
-
-StegBrain#860 may consume deviation observations as evidence. Master Records remains passive custody only. Site/Publisher/wiki propagation is not required until the live carrier contract reaches its release/propagation gate.
-
-## Execution ownership and collision partition
-
-### MANUAL / SESSION-STARTABLE
-
-```yaml
-- task_id: HEARTBEAT-CARRIER-ENVELOPE-183-SOURCE-VALIDATION
-  execution_owner: validation session only if a new source regression is directly observed
-  claim_state: COMPLETE_RELEASED_UNCLAIMED
-  worker_registry_ref: StegVerse-Labs/.github#183
-  manual_execution_allowed: true
-  collision_scope: source/schema regression validation only; excludes live carrier migration, resident heartbeat state, claims/fences and TV/TVC authority
-  release_condition: regression evidence is durably recorded or validation confirms no source defect, then validation claim releases
-  next_executable_action: NONE unless a directly observed regression creates a bounded validation need
-```
-
-### WORKER-OWNED / DO NOT COMPETE
-
-```yaml
-- task_id: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION
-  execution_owner: canonical live runtime owner under StegVerse-Labs/.github#122
-  claim_state: MACHINE_OWNED
-  worker_registry_ref: StegVerse-Labs/.github#122 and current resident-heartbeat registry state
-  manual_execution_allowed: false
-  collision_scope: live producer/consumer switch, active carrier process and immutable runtime evidence
-  release_condition: #122 records governed live carrier migration evidence consuming the released envelope contract
-  next_executable_action: canonical #122 owner consumes the released envelope implementation during live migration
-```
-
-### ESCALATED / AUTHORITY-OWNED
-
-```yaml
-- task_id: HEARTBEAT-CARRIER-CREDENTIAL-AUTHORITY
-  execution_owner: StegVerse-Labs/TV + StegVerse-Labs/TVC
-  claim_state: AUTHORITY_OWNED
-  worker_registry_ref: canonical TV/TVC authority contracts
-  manual_execution_allowed: false
-  collision_scope: credential/admission authority only; carrier observations grant no authority
-  release_condition: any credential-bearing continuation satisfies current TV/TVC policy
-  next_executable_action: fail closed on any non-TV/TVC credential or token authority request
-```
-
-### COMPLETED / SUPERSEDED
-
-```yaml
-- task_id: HEARTBEAT-CARRIER-ENVELOPE-183
-  execution_owner: StegVerse-Labs/.github
-  claim_state: COMPLETE_VALIDATED_MERGED_RELEASED
-  worker_registry_ref: NONE_COMPLETE_SOURCE
-  manual_execution_allowed: false
-  collision_scope: seven-file carrier-envelope source/schema implementation
-  release_condition: SATISFIED by PR #188 merge 365b2835394523f46feb9b24633c265738af2a2a and cited validation
-  next_executable_action: NONE_SOURCE_COMPLETE
-```
+The source/schema regression is repaired. Hosted workflow success is not required to establish heartbeat runtime progression and must never be treated as heartbeat activation proof.
 
 ## Completion accounting
 
 ```text
-required developed files: 7
-complete developed files: 7
-scaffolding/stubs: 0
-missing required source files: 0
-source validation: COMPLETE
-source integration: COMPLETE
-live producer integration: PENDING / #122 MACHINE-OWNED
-source claim: RELEASED
-archive dependency from this source lane: NONE
+carrier-envelope implementation: developed
+schema alignment to implementation: repaired
+oscillator-only regression test: installed
+scaffolding/stubs: 0 known
+heartbeat progression dependency on state changes: NONE
+runtime heartbeat progression: independent of this source lane
 ```
 
-## Next executable action
-
-`StegVerse-Labs/.github#122` / `HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122-LIVE-MIGRATION` consumes the merged envelope implementation under its authorized runtime claim and produces immutable live carrier evidence. This source lane must not compete with that claim.
+This source lane is terminal when direct repository validation confirms the corrected source/schema contract. Any separate worker/runtime task remains separate and cannot be described as a heartbeat blocker.
