@@ -50,13 +50,58 @@ class TransitionIntegrityTests(unittest.TestCase):
         return json.loads((self.root / rel).read_text(encoding="utf-8"))
 
     def write(self, rel: str, value: dict) -> None:
-        (self.root / rel).write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        path = self.root / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
-    def test_current_hb30_release_reconstructs(self):
+    def append_event(self, value: dict) -> None:
+        path = self.root / "events" / "worker-runtime.jsonl"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as stream:
+            stream.write(json.dumps(value, sort_keys=True) + "\n")
+
+    def test_observation_only_worker_does_not_release_transition(self):
         result = refresh_mod.refresh(self.root)
+        self.assertTrue(result["all_carrier_transition_predicates_pass"], result)
+        self.assertTrue(result["predicates"]["worker_runtime_checkpoint_observed_at_or_after_carrier_epoch"], result)
+        self.assertFalse(result["predicates"]["worker_task_capable_cycle_observed"], result)
+        self.assertFalse(result["all_release_predicates_pass"], result)
+        self.assertEqual(result["release_state"], "WORKER_TASK_CAPABLE_CYCLE_PENDING")
+
+    def test_task_capable_worker_event_releases_transition(self):
+        transition = self.read("receipts/heartbeat-transition-continuity/latest.json")
+        target_epoch = int(transition["carrier_epoch_after"])
+        self.append_event({
+            "event_type": "worker_response_observed",
+            "carrier_epoch": target_epoch,
+            "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+            "authority_effect": False,
+        })
+        result = refresh_mod.refresh(self.root)
+        self.assertTrue(result["predicates"]["worker_task_capable_cycle_observed"], result)
         self.assertTrue(result["all_release_predicates_pass"], result)
         self.assertEqual(result["release_state"], "RELEASE_COMPLETE")
-        self.assertTrue(all(result["predicates"].values()), result)
+
+    def test_observer_event_is_not_task_capable_evidence(self):
+        transition = self.read("receipts/heartbeat-transition-continuity/latest.json")
+        target_epoch = int(transition["carrier_epoch_after"])
+        self.append_event({
+            "event_type": "worker_carrier_reference_observed",
+            "carrier_epoch": target_epoch,
+            "task_adapters_invoked": 0,
+            "authority_effect": False,
+        })
+        result = refresh_mod.refresh(self.root)
+        self.assertFalse(result["predicates"]["worker_task_capable_cycle_observed"], result)
+        self.assertEqual(result["release_state"], "WORKER_TASK_CAPABLE_CYCLE_PENDING")
+
+    def test_explicit_task_capable_runtime_marker_releases_transition(self):
+        worker = self.read("control/worker-runtime-state.json")
+        worker["observation_mode"] = "TASK_CAPABLE_WORKER_COORDINATOR"
+        self.write("control/worker-runtime-state.json", worker)
+        result = refresh_mod.refresh(self.root)
+        self.assertTrue(result["predicates"]["worker_task_capable_cycle_observed"], result)
+        self.assertTrue(result["all_release_predicates_pass"], result)
 
     def test_legacy_content_change_fails_even_when_epoch_generation_stay_29(self):
         legacy = self.read("control/heartbeat-state.json")
