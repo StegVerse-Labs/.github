@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.cosv.validation-receipt/v1",
+  "goal_id": "COSV-ARCHITECTURE-001",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "observed_at": "2026-08-18T08:29:00-05:00",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_used": false,
+  "third_party_runtime_required": false,
+  "render_required": false,
+  "surfaces": {
+    "handoff": "docs/CANONICAL_OPERATIONAL_STATE_VECTOR_MIRROR_HANDOFF.md",
+    "profile": "management/COSV_PROFILE_V1.json",
+    "schema": "schemas/cosv_record.schema.json",
+    "implementation": "scripts/cosv.py",
+    "tests": "tests/test_cosv.py",
+    "examples": "examples/cosv_examples.json"
+  },
+  "implementation_blob_sha": "065f8c10c319161a4e766ee5c8c94c7d427f6e51",
+  "validation": {
+    "static_source_inspection": "PASS",
+    "canonical_task_vector": "91000000100102",
+    "canonical_aggregate_probe": "59875359890020",
+    "quantity_domain_transition_probe": "2_to_1 classified improved, not ternary became_known",
+    "same_vector_transition_probe": "00000000000000",
+    "deterministic_logic_execution": "PASS",
+    "example_record_shape_inspection": "PASS",
+    "hosted_workflow_claimed": false,
+    "repository_native_test_file_installed": true,
+    "exact_repository_test_suite_hosted_execution_observed": false
+  },
+  "limitations": [
+    "No hosted workflow execution is claimed by this receipt.",
+    "The deterministic logic probes were executed in-session against the installed algorithm semantics and then bound to the fetched implementation blob SHA; future repository-native validation may strengthen this evidence.",
+    "COSV vectors are indexes into evidence and are never self-authenticating evidence."
+  ],
+  "result": "ARCHITECTURE_IMPLEMENTED_DETERMINISTIC_VALIDATION_PASS",
+  "authority_effect": false,
+  "activation_effect": "COSV_ARCHITECTURE_RELEASE_ELIGIBLE"
+}
