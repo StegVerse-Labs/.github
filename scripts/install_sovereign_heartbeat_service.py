@@ -30,6 +30,7 @@ COPY_DIRS = (
 COPY_FILES = (
     "scripts/run_heartbeat_runtime.py",
     "scripts/run_worker_runtime.py",
+    "scripts/advance_heartbeat_transition.py",
     "scripts/verify_sovereign_runtime_activation.py",
 )
 CANONICAL_RUNTIME = "heartbeat_runtime.engine_v12.HeartbeatRuntime"
@@ -85,6 +86,7 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         target_root / "control" / "worker-registry.json",
         target_root / "scripts" / "run_heartbeat_runtime.py",
         target_root / "scripts" / "run_worker_runtime.py",
+        target_root / "scripts" / "advance_heartbeat_transition.py",
         target_root / "scripts" / "verify_sovereign_runtime_activation.py",
     )
     if not all(path.is_file() for path in required):
@@ -101,6 +103,8 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         "canonical_runtime": CANONICAL_RUNTIME,
         "canonical_carrier_runtime": CANONICAL_CARRIER_RUNTIME,
         "worker_runtime": WORKER_RUNTIME,
+        "state_transition_producer_ref": "scripts/advance_heartbeat_transition.py",
+        "initial_carrier_bootstrap_ready": True,
         "legacy_combined_runtime_is_production_target": False,
         "heartbeat_default_interval_ms": float(interval_ms),
         "worker_default_interval_ms": float(interval_ms),
