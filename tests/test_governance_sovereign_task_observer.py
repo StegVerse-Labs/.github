@@ -98,11 +98,46 @@ class GovernanceSovereignTaskObserverTests(unittest.TestCase):
             with patch.dict(os.environ, clean_env, clear=True), patch.object(worker, "NODE_MARKERS", (marker,)):
                 receipt = worker.execute(self.invocation())
             self.assertEqual(receipt["state"], "COMPLETE")
+            self.assertEqual(receipt["source_discovery_mode"], "explicit")
             self.assertEqual(receipt["cge_architecture_watch_state"], "blocked")
             self.assertFalse(receipt["architecture_decision_receipt_observed"])
             self.assertFalse(receipt["github_token_used"])
             self.assertFalse(receipt["repository_writeback_performed"])
             self.assertFalse(receipt["heartbeat_effect"])
+
+    def test_canonical_local_source_path_is_discovered_without_env_binding(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            home = base / "home"
+            source = home / ".stegverse" / "source" / "Governance"
+            home.mkdir(); source.mkdir(parents=True)
+            self.build_source(source, include_decision=False)
+            marker = base / "node.json"
+            marker.write_text(json.dumps({
+                "declared": True,
+                "credential_authority": "TV/TVC",
+                "github_token_required": False,
+                "declaration_source": "unit-test",
+            }), encoding="utf-8")
+            clean_env = {
+                "HOME": str(home),
+                "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
+            }
+            with patch.dict(os.environ, clean_env, clear=True), patch.object(worker, "NODE_MARKERS", (marker,)):
+                receipt = worker.execute(self.invocation())
+            self.assertEqual(receipt["source_root"], str(source.resolve()))
+            self.assertEqual(receipt["source_discovery_mode"], "canonical_local_path")
+            self.assertEqual(receipt["cge_architecture_watch_state"], "blocked")
+
+    def test_incomplete_canonical_candidate_is_not_selected(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            home = base / "home"
+            incomplete = home / ".stegverse" / "source" / "Governance"
+            incomplete.mkdir(parents=True)
+            (incomplete / "GOVERNANCE_MIRROR_HANDOFF.md").write_text("incomplete\n", encoding="utf-8")
+            with patch.dict(os.environ, {"HOME": str(home)}, clear=True):
+                self.assertIsNone(worker.find_source_root())
 
     def test_hosted_environment_is_rejected(self) -> None:
         with patch.dict(os.environ, {"GITHUB_ACTIONS": "true"}, clear=True):
