@@ -1,0 +1,75 @@
+{
+  "schema": "stegverse.heartbeat-reference-snapshot/v1",
+  "monitor_id": "SHWP-DURABLE-RUNTIME-ACTIVATION-REFERENCE-MONITOR",
+  "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "policy_revision": 1,
+  "acquired_at": "2026-08-18T19:21:00-05:00",
+  "snapshot_id": "SHWP-DURABLE-RUNTIME-ACTIVATION-REFERENCE-MONITOR:31:165ceac24cfddfe7",
+  "previous_snapshot_id": null,
+  "previous_snapshot_sha256": null,
+  "reference": {
+    "carrier_epoch": 31,
+    "carrier_generation": 31,
+    "reference_frame": "heartbeat_epoch:31",
+    "carrier_frequency_rule_observed": "GATE_PASSBAND_DERIVED",
+    "snapshot_is_observation_only": true
+  },
+  "reacquisition": {
+    "rule": "GATE_PASSBAND_DERIVED",
+    "passband_width_references": 1,
+    "reference_delta_from_previous": 0,
+    "reason": "INITIAL",
+    "carrier_progression_effect": "NONE"
+  },
+  "gate": {
+    "state": "OPEN",
+    "required_count": 3,
+    "complete_count": 0,
+    "pending_count": 3,
+    "completion_claim_requires_evidence": true
+  },
+  "required_state_fingerprint": "165ceac24cfddfe7221266a1f001c1731129dc3121adf84ed381102fb856b5f7",
+  "required_states": [
+    {
+      "state_id": "CORRECTED_OSCILLATOR_CARRIER_OBSERVED",
+      "description": "The current persisted carrier sample is derived from the independent 10 ms oscillator and is explicitly observation-only.",
+      "complete": false,
+      "observations": [
+        {"type":"json_path","source_ref":"control/heartbeat-carrier-runtime-state.json","path":["frequency_rule"],"task_id":null,"field":null,"operator":"eq","expected":"INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL","observed":"GATE_PASSBAND_DERIVED","passed":false},
+        {"type":"json_path","source_ref":"control/heartbeat-carrier-runtime-state.json","path":["oscillator","progression_dependency"],"task_id":null,"field":null,"operator":"eq","expected":"OSCILLATOR_ONLY","observed":null,"passed":false},
+        {"type":"json_path","source_ref":"control/heartbeat-carrier-runtime-state.json","path":["oscillator","snapshot_is_observation_only"],"task_id":null,"field":null,"operator":"eq","expected":true,"observed":null,"passed":false}
+      ],
+      "evidence_refs": ["control/heartbeat-carrier-runtime-state.json"]
+    },
+    {
+      "state_id": "TASK_CAPABLE_WORKER_CYCLE_OBSERVED",
+      "description": "The runtime-goal receipt contains direct evidence of a task-capable WorkerCoordinator cycle.",
+      "complete": false,
+      "observations": [
+        {"type":"json_path","source_ref":"receipts/heartbeat-transition-continuity/latest.json","path":["predicates","worker_task_capable_cycle_observed"],"task_id":null,"field":null,"operator":"eq","expected":true,"observed":null,"passed":false}
+      ],
+      "evidence_refs": ["receipts/heartbeat-transition-continuity/latest.json"]
+    },
+    {
+      "state_id": "G18_RUNTIME_GOAL_TERMINAL",
+      "description": "The existing G18 runtime-activation task is terminal and its old claim/worker binding has been released.",
+      "complete": false,
+      "observations": [
+        {"type":"registry_task_field","source_ref":"control/worker-registry.json","path":null,"task_id":"SHWP-DURABLE-RUNTIME-ACTIVATION","field":"state","operator":"eq","expected":"COMPLETED","observed":"BLOCKED","passed":false},
+        {"type":"registry_task_field","source_ref":"control/worker-registry.json","path":null,"task_id":"SHWP-DURABLE-RUNTIME-ACTIVATION","field":"claim_id","operator":"is_none","expected":null,"observed":"SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18","passed":false},
+        {"type":"registry_task_field","source_ref":"control/worker-registry.json","path":null,"task_id":"SHWP-DURABLE-RUNTIME-ACTIVATION","field":"worker_id","operator":"is_none","expected":null,"observed":"sovereign-runtime-activation-worker","passed":false}
+      ],
+      "evidence_refs": ["control/worker-registry.json"]
+    }
+  ],
+  "authority": {
+    "authority_effect": "NONE",
+    "heartbeat_grants_execution_authority": false,
+    "snapshot_grants_execution_authority": false,
+    "snapshot_grants_claim_or_fence_authority": false,
+    "snapshot_controls_carrier_progression": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false
+  },
+  "snapshot_sha256": "611bf71f0e954603127c2841143519704977182e4d5f26e0ae23f1463c2a8262"
+}
