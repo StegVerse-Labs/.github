@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 import argparse, hashlib, json
 from pathlib import Path
-from cosv import transition, validate_vector
+
+try:
+    from scripts.cosv import transition, validate_vector
+except ModuleNotFoundError:
+    from cosv import transition, validate_vector
 
 SCHEMA = "stegverse.cosv-state-packet/v1"
 MODES = {"FULL", "DELTA"}
