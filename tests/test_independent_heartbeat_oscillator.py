@@ -106,6 +106,18 @@ class IndependentHeartbeatOscillatorTests(unittest.TestCase):
         self.assertFalse(oscillator["route_or_credential_gating"])
         self.assertFalse(oscillator["observation_is_causal"])
 
+    def test_runtime_state_schema_restricts_gate_rule_to_historical_hb31_or_earlier(self):
+        schema = json.loads((ROOT / "schemas" / "heartbeat-carrier-runtime-state.schema.json").read_text(encoding="utf-8"))
+        branches = schema["oneOf"]
+        current = branches[0]
+        historical = branches[1]
+        self.assertIn("oscillator", current["required"])
+        self.assertEqual(current["properties"]["frequency_rule"]["const"], FREQUENCY_RULE)
+        self.assertEqual(historical["properties"]["frequency_rule"]["const"], "GATE_PASSBAND_DERIVED")
+        self.assertEqual(historical["properties"]["epoch"]["maximum"], 31)
+        self.assertEqual(historical["properties"]["generation"]["maximum"], 31)
+        self.assertEqual(historical["not"]["required"], ["oscillator"])
+
 
 if __name__ == "__main__":
     unittest.main()
