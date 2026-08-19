@@ -18,6 +18,19 @@
     "release_authority": false,
     "heartbeat_authority": false
   },
+  "source_producer": {
+    "repository": "StegVerse-Labs/TVC",
+    "task_ref": "StegVerse-Labs/TVC:tasks/TVC-PRIVATE-SOURCE-READ-001.json",
+    "capability_id": "tvc.private-source-read.v1",
+    "source_repository": "StegVerse-Labs/Governance",
+    "requested_ref": "refs/heads/main",
+    "last_observed_sha": "31193910b603d8920bd4bcf292a47158c661cfbc",
+    "must_reresolve_exact_sha_before_grant": true,
+    "credential_authority": "TV/TVC",
+    "consumer_receives_credential": false,
+    "write_authority": false,
+    "runtime_authority": false
+  },
   "execution": {
     "worker_id": "governance-sovereign-task-observer-worker",
     "adapter_ref": "process:governance-sovereign-task-observer-v1",
@@ -36,6 +49,7 @@
       "scripts/run_governance_tasks.py",
       "docs/governance/CGE_DECISION_ISSUER_ARCHITECTURE_MIRROR_HANDOFF.md"
     ],
+    "source_validation_receipt": "docs/receipts/governance-sovereign-task-observer-source-validation-2026-08-19.json",
     "credential_authority": "TV/TVC",
     "remote_checkout_allowed": false
   },
@@ -49,14 +63,16 @@
   },
   "failure_policy": {
     "repairable": "repair bounded source/observer defect and rerun the same observation predicate",
-    "missing_materialized_source": "remain BLOCKED until TV/TVC-controlled source materialization is observed",
+    "missing_materialized_source": "remain BLOCKED on TVC-PRIVATE-SOURCE-READ-001 until a current exact TV/TVC-controlled materialization receipt is observed",
     "unable_or_impossible_to_repair": "submit sandbox resolution task",
     "hosted_github_actions_substitute_allowed": false
   },
   "state": "HANDOFF_READY",
   "blockers": [
+    "TVC_PRIVATE_SOURCE_READ_GOVERNANCE_CONSUMER_AUTHORITY_INJECTION_PENDING",
     "TV_TVC_MATERIALIZED_GOVERNANCE_SOURCE_NOT_YET_OBSERVED",
-    "CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND"
+    "CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND",
+    "SOVEREIGN_GOVERNANCE_TASK_OBSERVER_RECEIPT_NOT_YET_OBSERVED"
   ],
   "archive_eligible": false,
   "authority_effect": "NONE_HANDOFF_ONLY",
