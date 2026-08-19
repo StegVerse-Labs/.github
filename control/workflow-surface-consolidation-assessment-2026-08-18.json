@@ -1,0 +1,82 @@
+{
+  "schema": "stegverse.workflow-surface-consolidation-assessment/v1",
+  "date": "2026-08-18",
+  "repository": "StegVerse-Labs/.github",
+  "policy_issue": "StegVerse-Labs/.github#167",
+  "goal_issue": "StegVerse-Labs/.github#168",
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "current_workflow_count": 18,
+  "preferred_max_workflow_count": 2,
+  "target_workflow_count": 2,
+  "target_surfaces": [
+    {
+      "path": ".github/workflows/org-control-plane-validate.yml",
+      "role": "KEEP_STABLE_DISPATCHER",
+      "absorbs": [
+        ".github/workflows/archive-readiness-validate.yml",
+        ".github/workflows/org-handoff-render.yml",
+        ".github/workflows/org-heartbeat-watchdog.yml",
+        ".github/workflows/mcp-activation-binding-test.yml",
+        ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml"
+      ]
+    },
+    {
+      "path": ".github/workflows/heartbeat-worker-project.yml",
+      "role": "KEEP_STABLE_DISPATCHER",
+      "absorbs": [
+        ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml",
+        ".github/workflows/activate-host-self-attest-worker.yml",
+        ".github/workflows/activate-sovereign-runtime-worker.yml",
+        ".github/workflows/all-org-heartbeat-federation.yml",
+        ".github/workflows/external-timing-match-validation.yml",
+        ".github/workflows/native-process-worker-canary.yml",
+        ".github/workflows/org-heartbeat.yml",
+        ".github/workflows/sovereign-runtime-self-bootstrap.yml",
+        ".github/workflows/sovereign-ephemeral-console.yml",
+        ".github/workflows/steggate-heartbeat-integration.yml",
+        ".github/workflows/test-lanes-autolaunch-validation.yml"
+      ]
+    }
+  ],
+  "classification": {
+    ".github/workflows/org-control-plane-validate.yml": "KEEP_STABLE_DISPATCHER",
+    ".github/workflows/heartbeat-worker-project.yml": "KEEP_STABLE_DISPATCHER",
+    ".github/workflows/archive-readiness-validate.yml": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+    ".github/workflows/org-handoff-render.yml": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+    ".github/workflows/org-heartbeat-watchdog.yml": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+    ".github/workflows/mcp-activation-binding-test.yml": "CONSOLIDATE_AFTER_OWNER_RECONCILIATION",
+    ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml": "CONSOLIDATE_AFTER_OWNER_RECONCILIATION",
+    ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml": "CONSOLIDATE_AFTER_OWNER_RECONCILIATION",
+    ".github/workflows/activate-host-self-attest-worker.yml": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+    ".github/workflows/activate-sovereign-runtime-worker.yml": "CONSOLIDATE_AFTER_OWNER_RECONCILIATION",
+    ".github/workflows/all-org-heartbeat-federation.yml": "CONSOLIDATE_AFTER_OWNER_RECONCILIATION",
+    ".github/workflows/external-timing-match-validation.yml": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+    ".github/workflows/native-process-worker-canary.yml": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+    ".github/workflows/org-heartbeat.yml": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+    ".github/workflows/sovereign-runtime-self-bootstrap.yml": "CONSOLIDATE_AFTER_OWNER_RECONCILIATION",
+    ".github/workflows/sovereign-ephemeral-console.yml": "CONSOLIDATE_AFTER_OWNER_RECONCILIATION",
+    ".github/workflows/steggate-heartbeat-integration.yml": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
+    ".github/workflows/test-lanes-autolaunch-validation.yml": "CONSOLIDATE_INTO_STABLE_DISPATCHER"
+  },
+  "reduction_feasible": true,
+  "immediate_safe_consolidation_candidates": 9,
+  "owner_reconciliation_required_candidates": 7,
+  "standalone_exception_required_count": 0,
+  "technical_basis": [
+    "The policy explicitly prefers <=2 repository-authored workflows and requires evidence for any standalone exception.",
+    "The two retained surfaces already provide credential-empty anonymous checkout, path-filtered push/PR validation, manual dispatch, concurrency control, and broad repository validation coverage.",
+    "Most feature-specific workflows are validation-only and do not possess production/runtime authority, so their checks can be moved into stable dispatcher jobs or repository scripts without changing runtime ownership.",
+    "Routine heartbeat, receipts, observations, projections, handoffs and event persistence must remain excluded from automatic main fanout after consolidation.",
+    "No existing workflow presently has evidence establishing a technically necessary standalone exception beyond the two stable dispatcher surfaces."
+  ],
+  "safe_execution_order": [
+    "Move validation commands from immediate-safe candidates into the appropriate stable dispatcher or scripts invoked by it.",
+    "Preserve feature-specific path gates inside dispatcher job conditions or validation-selection scripts.",
+    "Validate parity for each migrated check before deleting its standalone workflow.",
+    "Reconcile active-owner candidates before migrating/deleting them; assignment does not satisfy completion.",
+    "Update control/workflow-surface-registry.json after each deletion so the proliferation guard remains fail-closed.",
+    "Re-audit final live workflow tree and record <=2 count plus validation evidence."
+  ],
+  "status": "REDUCTION_FEASIBLE_NOT_YET_ACTIVATED"
+}
