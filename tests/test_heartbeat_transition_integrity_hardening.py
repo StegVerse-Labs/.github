@@ -77,87 +77,69 @@ class TransitionIntegrityTests(unittest.TestCase):
         }
         self.write("control/heartbeat-carrier-runtime-state.json", carrier)
 
-    def append_event(self, value: dict) -> None:
-        path = self.root / "events" / "worker-runtime.jsonl"
-        path.parent.mkdir(parents=True, exist_ok=True)
-        with path.open("a", encoding="utf-8") as stream:
-            stream.write(json.dumps(value, sort_keys=True) + "\n")
-
-    def test_observation_only_worker_releases_carrier_but_not_runtime_goal(self):
+    def test_oscillator_observation_releases_without_worker_predicates(self):
         result = refresh_mod.refresh(self.root)
         self.assertTrue(result["all_carrier_transition_predicates_pass"], result)
         self.assertTrue(result["all_release_predicates_pass"], result)
-        self.assertEqual(result["release_state"], "RELEASE_COMPLETE")
-        self.assertTrue(result["predicates"]["worker_runtime_checkpoint_observed_reference_when_worker_runs"], result)
-        self.assertFalse(result["predicates"]["worker_task_capable_cycle_observed"], result)
-        self.assertFalse(result["all_runtime_goal_predicates_pass"], result)
-        self.assertEqual(result["runtime_goal_release_state"], "WORKER_TASK_CAPABLE_CYCLE_PENDING")
+        self.assertEqual(result["release_state"], "OSCILLATOR_OBSERVATION_VERIFIED")
+        self.assertEqual(result["continuity_model"], "OSCILLATOR_REFERENCE_CONTINUITY")
+        self.assertEqual(result["heartbeat_progression_dependency"], "OSCILLATOR_ONLY")
+        self.assertFalse(result["worker_checkpoint_required"])
+        self.assertFalse(result["worker_checkpoint_is_heartbeat_predicate"])
+        self.assertNotIn("worker_runtime_checkpoint_observed_at_or_after_carrier_epoch", result["predicates"])
+        self.assertNotIn("worker_control_plane_observed", result["predicates"])
+        self.assertFalse(result["predicates"]["worker_or_task_state_gates_progression"])
+        self.assertFalse(result["downstream_runtime_observation"]["causal_to_heartbeat"])
+        self.assertNotIn("runtime_goal_release_state", result)
+        self.assertNotIn("all_runtime_goal_predicates_pass", result)
 
-    def test_task_capable_worker_event_releases_runtime_goal(self):
-        transition = self.read("receipts/heartbeat-transition-continuity/latest.json")
-        target_epoch = int(transition["carrier_epoch_after"])
-        self.append_event({
-            "event_type": "worker_response_observed",
-            "carrier_epoch": target_epoch,
-            "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-            "authority_effect": False,
-        })
-        result = refresh_mod.refresh(self.root)
-        self.assertTrue(result["predicates"]["worker_task_capable_cycle_observed"], result)
-        self.assertTrue(result["all_runtime_goal_predicates_pass"], result)
-        self.assertEqual(result["runtime_goal_release_state"], "RELEASE_COMPLETE")
-
-    def test_observer_event_is_not_task_capable_evidence(self):
-        transition = self.read("receipts/heartbeat-transition-continuity/latest.json")
-        target_epoch = int(transition["carrier_epoch_after"])
-        self.append_event({
-            "event_type": "worker_carrier_reference_observed",
-            "carrier_epoch": target_epoch,
-            "task_adapters_invoked": 0,
-            "authority_effect": False,
-        })
-        result = refresh_mod.refresh(self.root)
-        self.assertTrue(result["all_release_predicates_pass"], result)
-        self.assertFalse(result["predicates"]["worker_task_capable_cycle_observed"], result)
-        self.assertEqual(result["runtime_goal_release_state"], "WORKER_TASK_CAPABLE_CYCLE_PENDING")
-
-    def test_explicit_task_capable_runtime_marker_releases_runtime_goal(self):
+    def test_worker_mode_change_cannot_change_heartbeat_release(self):
+        before = refresh_mod.refresh(self.root)
         worker = self.read("control/worker-runtime-state.json")
         worker["observation_mode"] = "TASK_CAPABLE_WORKER_COORDINATOR"
         self.write("control/worker-runtime-state.json", worker)
-        result = refresh_mod.refresh(self.root)
-        self.assertTrue(result["predicates"]["worker_task_capable_cycle_observed"], result)
-        self.assertTrue(result["all_runtime_goal_predicates_pass"], result)
+        after = refresh_mod.refresh(self.root)
+        self.assertEqual(after["release_state"], before["release_state"])
+        self.assertEqual(after["all_release_predicates_pass"], before["all_release_predicates_pass"])
+        self.assertEqual(after["predicates"], before["predicates"])
+        self.assertEqual(after["downstream_runtime_observation"]["worker_observation_mode"], "TASK_CAPABLE_WORKER_COORDINATOR")
+        self.assertFalse(after["downstream_runtime_observation"]["causal_to_heartbeat"])
 
-    def test_missing_oscillator_binding_fails_carrier_release(self):
+    def test_historical_hb31_snapshot_is_pending_observation_not_heartbeat_block(self):
         carrier = self.read("control/heartbeat-carrier-runtime-state.json")
         carrier.pop("oscillator", None)
         carrier["frequency_rule"] = "GATE_PASSBAND_DERIVED"
         self.write("control/heartbeat-carrier-runtime-state.json", carrier)
         result = refresh_mod.refresh(self.root)
+        self.assertTrue(result["predicates"]["historical_pre_correction_snapshot_only"])
         self.assertFalse(result["predicates"]["oscillator_period_exactly_10ms"])
         self.assertFalse(result["predicates"]["carrier_reference_derived_from_oscillator"])
         self.assertFalse(result["all_release_predicates_pass"])
-        self.assertEqual(result["release_state"], "FAIL_CLOSED_CARRIER_INTEGRITY")
+        self.assertEqual(result["release_state"], "OSCILLATOR_LIVE_OBSERVATION_PENDING")
+        self.assertEqual(result["heartbeat_progression_dependency"], "OSCILLATOR_ONLY")
 
-    def test_legacy_content_change_fails_carrier_release(self):
+    def test_legacy_content_change_breaks_integrity_without_worker_semantics(self):
         legacy = self.read("control/heartbeat-state.json")
         legacy["last_cycle_at"] = "2099-01-01T00:00:00Z"
         self.write("control/heartbeat-state.json", legacy)
         result = refresh_mod.refresh(self.root)
         self.assertFalse(result["predicates"]["legacy_hb29_unchanged"])
         self.assertFalse(result["predicates"]["state_reconstruction_pass"])
-        self.assertEqual(result["release_state"], "FAIL_CLOSED_CARRIER_INTEGRITY")
+        self.assertFalse(result["all_carrier_transition_predicates_pass"])
+        self.assertFalse(result["all_release_predicates_pass"])
+        self.assertNotIn("worker_control_plane_observed", result["predicates"])
 
-    def test_stale_consumer_control_plane_does_not_gate_carrier(self):
+    def test_control_plane_reference_change_is_downstream_only(self):
+        before = refresh_mod.refresh(self.root)
         control = self.read("control/worker-control-plane-coordination.json")
         control["observed_reference"]["carrier_generation"] = 29
         control["observed_reference"]["reference_frame"] = "heartbeat_epoch:29"
         self.write("control/worker-control-plane-coordination.json", control)
-        result = refresh_mod.refresh(self.root)
-        self.assertTrue(result["all_release_predicates_pass"], result)
-        self.assertTrue(result["predicates"]["worker_control_plane_observed_when_control_plane_runs"], result)
-        self.assertFalse(result["all_runtime_goal_predicates_pass"], result)
+        after = refresh_mod.refresh(self.root)
+        self.assertEqual(after["release_state"], before["release_state"])
+        self.assertEqual(after["all_release_predicates_pass"], before["all_release_predicates_pass"])
+        self.assertEqual(after["predicates"], before["predicates"])
+        self.assertFalse(after["downstream_runtime_observation"]["causal_to_heartbeat"])
 
     def test_cutover_hash_mismatch_fails_reconstruction(self):
         cutover = self.read("receipts/heartbeat-schema-cutover/HB29.json")
@@ -166,21 +148,6 @@ class TransitionIntegrityTests(unittest.TestCase):
         result = refresh_mod.refresh(self.root)
         self.assertFalse(result["predicates"]["state_reconstruction_pass"])
         self.assertFalse(result["all_carrier_transition_predicates_pass"])
-
-    def test_duplicate_fence_blocks_runtime_goal_not_carrier_progression(self):
-        control = self.read("control/worker-control-plane-coordination.json")
-        leases = control["worker_coordination"]["active_leases"]
-        duplicate = dict(leases[0])
-        duplicate["task_id"] = "DUPLICATE-FENCE-TEST"
-        duplicate["claim_id"] = "DUPLICATE-FENCE-TEST-CLAIM"
-        duplicate["worker_instance_id"] = "duplicate-fence-test-instance"
-        duplicate["fencing_token"] = leases[1]["fencing_token"]
-        leases.append(duplicate)
-        self.write("control/worker-control-plane-coordination.json", control)
-        result = refresh_mod.refresh(self.root)
-        self.assertFalse(result["predicates"]["no_duplicate_claim_or_fence"])
-        self.assertTrue(result["all_release_predicates_pass"], result)
-        self.assertFalse(result["all_runtime_goal_predicates_pass"], result)
 
 
 class PortableFallbackTests(unittest.TestCase):
