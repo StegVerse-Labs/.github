@@ -3,7 +3,7 @@
   "contract_id": "SHWP-INDEPENDENT-HEARTBEAT-CONTINUITY-002",
   "goal_id": "STEGVERSE-HEARTBEAT-WORKER-PROTOCOL-001",
   "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-  "validation_trigger_revision": 4,
+  "validation_trigger_revision": 5,
   "canonical_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
   "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
   "legacy_source": "control/heartbeat-state.json",
@@ -26,6 +26,20 @@
     "route_or_credential_gating": false,
     "observation_is_causal": false
   },
+  "reference_snapshot": {
+    "monitoring_model": "GATE_PASSBAND_DERIVED_REFERENCE_REACQUISITION",
+    "implementation": "heartbeat_runtime/reference_snapshot.py",
+    "policy": "control/heartbeat-reference-snapshot-policy.json",
+    "latest": "control/heartbeat-reference-snapshot.json",
+    "history": "receipts/heartbeat-reference-snapshots/",
+    "gate_semantics": "Required completion states are observed together at a carrier reference. The gate remains OPEN while any state is unresolved and CLOSES only when every required state is directly evidenced complete.",
+    "passband_semantics": "While the gate is OPEN, a new reference snapshot is reacquired after the configured carrier-reference delta even if state values are unchanged; state progress may trigger earlier reacquisition inside the passband.",
+    "historical_gate_passband_frequency_rule_interpretation": "Historical GATE_PASSBAND_DERIVED carrier records remain immutable provenance. The label is retained prospectively only for snapshot reacquisition/monitoring, not oscillator progression.",
+    "reacquisition_causes_carrier_progression": false,
+    "reacquisition_grants_execution_authority": false,
+    "reacquisition_grants_claim_or_fence_authority": false,
+    "terminal_snapshot_stops_periodic_reacquisition": true
+  },
   "carrier_completion_predicates": [
     "legacy_hb29_unchanged",
     "oscillator_period_exactly_10ms",
@@ -39,9 +53,10 @@
     "no_duplicate_claim_or_fence"
   ],
   "execution_semantics": {
-    "carrier_progression": "The heartbeat exists and advances independently every 10 ms according to its oscillator. No worker, task, admission, claim, fence, route, credential or observation call causes or gates heartbeat progression.",
+    "carrier_progression": "The heartbeat exists and advances independently every 10 ms according to its oscillator. No worker, task, admission, claim, fence, route, credential, reference snapshot, or observation call causes or gates heartbeat progression.",
     "sampling": "heartbeat_runtime.engine_v12.HeartbeatRuntime.cycle samples the oscillator-derived reference and persists an observation; it does not advance the heartbeat.",
-    "missed_references": "A delayed sampler may observe a later heartbeat and skip any number of intermediate references. Those references are not retroactively created by the sampler.",
+    "snapshot_reacquisition": "GATE_PASSBAND_DERIVED reacquires a new non-authorizing monitoring snapshot at the current carrier reference when required-state evidence changes or an unresolved monitoring passband is crossed. It never creates the carrier reference it observes.",
+    "missed_references": "A delayed sampler may observe a later heartbeat and skip any number of intermediate references. Those references are not retroactively created by the sampler or snapshot monitor.",
     "worker_transition": "WorkerCoordinator independently observes whichever carrier reference is visible when WorkerCoordinator executes. Worker observation is downstream evidence, never a prerequisite for the carrier reference to exist.",
     "authority_effect": "NONE_FROM_CARRIER_OR_OBSERVATION"
   },
@@ -67,6 +82,7 @@
     "task admission as heartbeat clock",
     "claim or fence state as heartbeat clock",
     "route or credential state as heartbeat clock",
+    "reference snapshot reacquisition as heartbeat clock",
     "observation invocation count as heartbeat clock",
     "Render production runtime",
     "GitHub Actions production runtime",
@@ -75,6 +91,6 @@
     "third-party fallback promoted to required dependency or production authority",
     "manual rewriting of control/heartbeat-state.json"
   ],
-  "release_condition": "Carrier semantics are correct when the canonical reference is derived only from the independent 10 ms oscillator, persisted state is explicitly an observation/snapshot, legacy HB29 remains immutable provenance, and downstream consumers cannot cause, delay, authorize or suppress heartbeat progression.",
+  "release_condition": "Carrier semantics are correct when the canonical reference is derived only from the independent 10 ms oscillator, persisted carrier state is explicitly an observation/sample, GATE_PASSBAND_DERIVED is limited to non-authorizing reference-snapshot reacquisition for completion monitoring, legacy HB29 remains immutable provenance, and downstream consumers cannot cause, delay, authorize or suppress heartbeat progression.",
   "authority_effect": "NONE"
 }
