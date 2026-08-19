@@ -93,7 +93,7 @@ class IPhoneHeartbeatTransitionReceiptTests(unittest.TestCase):
     def resign(receipt):
         receipt["receipt_sha256"] = hashlib.sha256(mod.canonical_bytes({k: v for k, v in receipt.items() if k != "receipt_sha256"})).hexdigest()
 
-    def test_valid_receipt_passes_and_materializes_hb30_without_mutating_legacy(self):
+    def test_valid_receipt_materializes_oscillator_only_hb30_without_mutating_legacy(self):
         td, root, blob = self.make_root()
         self.addCleanup(td.cleanup)
         receipt = self.receipt(blob)
@@ -101,15 +101,24 @@ class IPhoneHeartbeatTransitionReceiptTests(unittest.TestCase):
         verification = mod.validate_receipt(receipt, root=root)
         self.assertEqual(verification["state"], "PASS")
         self.assertTrue(verification["iphone_execution_evidence"])
-        with mock.patch.object(mod, "hosted", return_value=False):
-            result = mod.materialize(receipt, verification, root=root)
+        result = mod.materialize(receipt, verification, root=root)
         self.assertEqual(result["state"], "CARRIER_TRANSITION_COMPLETE")
         carrier = json.loads((root / "control" / "heartbeat-carrier-runtime-state.json").read_text())
         self.assertEqual(carrier["epoch"], 30)
         self.assertEqual(carrier["generation"], 30)
+        self.assertEqual(carrier["frequency_rule"], "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL")
+        self.assertEqual(carrier["oscillator"]["progression_dependency"], "OSCILLATOR_ONLY")
+        self.assertEqual(carrier["oscillator"]["phase_travel_time_ms"], 10)
+        self.assertEqual(carrier["oscillator"]["reference_frequency_hz"], 100)
+        self.assertFalse(carrier["oscillator"]["downstream_gating"])
+        self.assertFalse(carrier["oscillator"]["observation_is_causal"])
+        self.assertTrue(carrier["oscillator"]["snapshot_is_observation_only"])
         self.assertEqual((root / "control" / "heartbeat-state.json").read_bytes(), before)
-        self.assertFalse(result["all_release_predicates_pass"])
-        self.assertTrue(result["worker_checkpoint_required"])
+        self.assertTrue(result["all_carrier_transition_predicates_pass"])
+        self.assertTrue(result["all_release_predicates_pass"])
+        self.assertFalse(result["worker_checkpoint_required"])
+        self.assertFalse(result["worker_checkpoint_is_heartbeat_predicate"])
+        self.assertEqual(result["downstream_worker_runtime"], "SEPARATE_NON_HEARTBEAT_LANE")
 
     def test_reduced_desktop_user_agent_passes_with_bounded_iphone_class_evidence(self):
         td, root, blob = self.make_root()
@@ -145,16 +154,26 @@ class IPhoneHeartbeatTransitionReceiptTests(unittest.TestCase):
         self.assertEqual(verification["state"], "FAIL_CLOSED")
         self.assertTrue(any("iPhone-class" in error for error in verification["errors"]))
 
-    def test_hosted_materialization_fails_closed(self):
+    def test_hosted_materialization_requires_explicit_fallback_marker(self):
         td, root, blob = self.make_root()
         self.addCleanup(td.cleanup)
         receipt = self.receipt(blob)
         verification = mod.validate_receipt(receipt, root=root)
         self.assertEqual(verification["state"], "PASS")
-        with mock.patch.object(mod, "hosted", return_value=True):
-            with self.assertRaisesRegex(RuntimeError, "hosted environment"):
+        with mock.patch.dict(mod.os.environ, {"GITHUB_ACTIONS": "true"}, clear=False):
+            with self.assertRaisesRegex(RuntimeError, "explicit --allow-third-party-fallback"):
                 mod.materialize(receipt, verification, root=root)
-        self.assertFalse((root / "control" / "heartbeat-carrier-runtime-state.json").exists())
+
+    def test_explicit_hosted_fallback_remains_non_authoritative(self):
+        td, root, blob = self.make_root()
+        self.addCleanup(td.cleanup)
+        receipt = self.receipt(blob)
+        verification = mod.validate_receipt(receipt, root=root)
+        with mock.patch.dict(mod.os.environ, {"GITHUB_ACTIONS": "true"}, clear=False):
+            result = mod.materialize(receipt, verification, root=root, fallback_origin="GITHUB_ACTIONS")
+        self.assertEqual(result["third_party_fallback"]["provider_role"], "FALLBACK_ONLY")
+        self.assertEqual(result["third_party_fallback"]["runtime_authority"], "StegVerse")
+        self.assertEqual(result["heartbeat_progression_dependency"], "OSCILLATOR_ONLY")
 
     def test_wrong_seed_fails_closed(self):
         td, root, blob = self.make_root()
