@@ -43,6 +43,7 @@
           "workers/governance_sovereign_task_observer_worker.py",
           "control/worker-registry.d/governance-sovereign-task-observer-001.json",
           "control/process-worker-adapters.d/governance-sovereign-task-observer-001.json",
+          "control/worker-capability-profiles.json#governance-sovereign-observer-v1",
           "cost-basis/worker-runtime/governance-sovereign-task-observer.json",
           "StegVerse-Labs/TVC:tasks/TVC-PRIVATE-SOURCE-READ-001.json",
           "StegVerse-Labs/TVC:docs/GOVERNANCE_SOURCE_MATERIALIZATION_MIRROR_HANDOFF.md"
@@ -76,7 +77,7 @@
         "registry_validation",
         "architecture_watch_verification"
       ],
-      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "capability_profile_ref": "control/worker-capability-profiles.json#governance-sovereign-observer-v1",
       "last_seen_at": null
     }
   ],
