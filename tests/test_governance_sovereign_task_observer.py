@@ -1,3 +1,4 @@
+# Validation-only branch trigger for repaired capability-profile binding; do not merge.
 from __future__ import annotations
 
 import importlib.util
