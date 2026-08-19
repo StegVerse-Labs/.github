@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:healer-failure-mailbox-shadow-v1",
+      "authority_ref": "handoffs/HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "failure_mailbox_shadow_processing",
+        "coverage_verification",
+        "deterministic_replay"
+      ],
+      "command": ["python", "workers/healer_failure_mailbox_shadow_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_HEALER_SOURCE_ROOT",
+        "STEGVERSE_HEALER_SHADOW_BATCH_PATH",
+        "STEGVERSE_HEALER_SHADOW_MANIFEST_PATH",
+        "HOME",
+        "XDG_STATE_HOME",
+        "LOCALAPPDATA"
+      ],
+      "timeout_seconds": 240,
+      "type": "process_json_v0.1",
+      "notes": [
+        "Consumes only an already-materialized non-secret mailbox observation batch and manifest.",
+        "The TV/TVC mailbox transport is a separate producer and is not embedded in this worker.",
+        "Mailbox credentials, GitHub tokens, provider tokens, and remote checkout are forbidden.",
+        "A coverage gap blocks batch completion instead of being treated as successful shadow evidence.",
+        "Canonical scheduler must bind a collision-safe claim before execution.",
+        "Heartbeat progression is independent and is never caused, gated, delayed, or advanced by this worker."
+      ]
+    }
+  ]
+}
