@@ -1,6 +1,6 @@
 # Heartbeat Carrier Signal Mirror Handoff
 
-Updated: 2026-08-18T19:14:00-05:00
+Updated: 2026-08-18T20:08:00-05:00
 
 ## Canonical authority
 
@@ -99,6 +99,28 @@ No historical persisted receipt was rewritten. Legacy HB29 remains immutable pro
 
 Current GitHub combined-status observation for `0dde633f54d960a8aee64a24a3983d71a25f2b54` returned no status contexts. Therefore these source changes are installed but no hosted check is claimed as PASS, and hosted workflow status would not constitute sovereign runtime activation in any case.
 
+## 2026-08-18 current-state schema hardening
+
+Direct inspection after the cutover repair found one remaining current-schema compatibility hole: `schemas/heartbeat-carrier-runtime-state.schema.json` still allowed `GATE_PASSBAND_DERIVED` at arbitrary future heartbeat ordinals and did not require oscillator provenance for a current carrier observation. That allowed newly materialized state to satisfy the schema while violating this handoff.
+
+Applied on `main`:
+
+```text
+7106ad597d0e677accebd36b8e0a1d5883baa3be
+  schemas/heartbeat-carrier-runtime-state.schema.json
+  - requires nested oscillator provenance for current canonical carrier state
+  - constrains current frequency_rule to INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL
+  - permits GATE_PASSBAND_DERIVED only as pre-correction historical HB29-HB31 observation compatibility
+  - prevents the historical rule from validating at HB32+
+
+66ba8ff9fa65303977427fe61010e2e6599ba7d6
+  tests/test_independent_heartbeat_oscillator.py
+  - locks the schema branch to oscillator provenance for current state
+  - asserts the historical compatibility branch cannot extend past HB31
+```
+
+This hardening does not rewrite `control/heartbeat-carrier-runtime-state.json`; that HB31 file remains historical observation evidence. It changes what future current state is allowed to validate as canonical.
+
 ## Communication and lifecycle
 
 Subsystem communication remains:
@@ -148,6 +170,8 @@ exactly 10 ms -> +1 reference
 95 ms -> +9 references with 5 ms phase offset
 worker/task/state/admission absent from oscillator derivation
 persisted state explicitly observation-only
+current runtime schema requires oscillator provenance
+GATE_PASSBAND_DERIVED cannot validate as current state after HB31
 cutover materialization emits oscillator-only semantics
 worker checkpoint is not a heartbeat release predicate
 TV/TVC credential authority preserved
@@ -165,6 +189,8 @@ tests/test_iphone_heartbeat_transition_receipt.py
 ## Completion state
 
 The semantic/source correction is installed. Source completion is not sovereign runtime activation. Required remaining heartbeat evidence is an inspectable oscillator-backed observation from the StegVerse sovereign runtime using the corrected implementation. Any worker/runtime activation work remains a separate downstream lane and must not be represented as a heartbeat progression dependency.
+
+The separate live-proof task remains `HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009`. Its current durable handoff is still `HANDOFF_READY`; that state is a downstream runtime-evidence obligation, not a heartbeat progression blocker.
 
 ```text
 DO NOT ARCHIVE THIS SESSION — REQUIRED EXECUTION REMAINS IN AN ACTIVE DEPENDENCY LANE.
