@@ -1,0 +1,42 @@
+{
+  "schema": "stegverse.worker-handoff/v0.1",
+  "task_id": "HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001",
+  "goal_id": "HEALER-GITHUB-FAILURE-MAILBOX-001",
+  "owner": {
+    "repository": "StegVerse-Labs/StegVerse-Healer",
+    "handoff_ref": "StegVerse-Labs/StegVerse-Healer:failure_mailbox/FAILURE_MAILBOX_BENCHMARK_MIRROR_HANDOFF.md"
+  },
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "repository_writeback_authority": false,
+    "runtime_authority": false,
+    "release_authority": false,
+    "heartbeat_authority": false
+  },
+  "execution": {
+    "worker_id": "healer-failure-mailbox-benchmark-worker",
+    "adapter_ref": "process:healer-failure-mailbox-benchmark-v1",
+    "required_local_locator": "STEGVERSE_HEALER_SOURCE_ROOT",
+    "command": ["python", "workers/healer_failure_mailbox_benchmark_worker.py"],
+    "success_transition": "HEALER_FAILURE_MAILBOX_BENCHMARK_COMPLETE",
+    "blocked_transition": "HEALER_FAILURE_MAILBOX_BENCHMARK_BLOCKED"
+  },
+  "success_predicate": {
+    "benchmark_result": "PASS",
+    "deterministic_core_pass": true,
+    "package_release_allowed": false,
+    "historical_corpus_benchmark_required": true,
+    "live_incremental_benchmark_required": true
+  },
+  "failure_policy": {
+    "repairable": "repair bounded source defect and rerun the same benchmark predicate",
+    "unable_or_impossible_to_repair": "submit sandbox resolution task",
+    "hosted_github_actions_substitute_allowed": false
+  },
+  "state": "HANDOFF_READY",
+  "archive_eligible": false,
+  "authority_effect": "NONE_HANDOFF_ONLY",
+  "heartbeat_effect": false
+}
