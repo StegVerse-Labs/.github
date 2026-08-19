@@ -25,7 +25,9 @@
         "StegVerse-Labs/StegDB:master-records/monitoring/canonical/active-requests/healer_failure_mailbox_service_review.json",
         "StegVerse-Labs/StegDB:master-records/monitoring/canonical/cge-handoffs/healer_failure_mailbox_service_review.blocked.json",
         "StegVerse-Labs/StegDB:meta/cge_handoff_reference_integrity_validation_2026-08-19.json",
-        "StegVerse-Labs/StegDB:meta/cge_closure_receipt_contract_validation_2026-08-19.json"
+        "StegVerse-Labs/StegDB:meta/cge_closure_receipt_contract_validation_2026-08-19.json",
+        "StegVerse-Labs/StegDB:meta/cge_decision_issuer_gap_validation_2026-08-19.json",
+        "StegVerse-Labs/Governance#19"
       ],
       "admissible_existence": {
         "capability_id": "stegverse:capability:healer-failure-mailbox-shadow:v1",
@@ -36,7 +38,8 @@
         ],
         "admissibility_evidence_refs": [
           "handoffs/HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001.json",
-          "StegVerse-Labs/StegDB:master-records/monitoring/canonical/cge-handoffs/healer_failure_mailbox_service_review.blocked.json"
+          "StegVerse-Labs/StegDB:master-records/monitoring/canonical/cge-handoffs/healer_failure_mailbox_service_review.blocked.json",
+          "StegVerse-Labs/StegDB:meta/cge_decision_issuer_gap_validation_2026-08-19.json"
         ],
         "integration_evidence_refs": [
           "workers/healer_failure_mailbox_shadow_worker.py",
@@ -47,6 +50,7 @@
         "blockers": [
           "MR.GAP.AUTHORITY_CONTEXT.001",
           "MR.GAP.COMMIT_TIME_STANDING.001",
+          "MR.GAP.CGE_DECISION_ISSUER.001",
           "TVC_SERVICE_REQUEST_PENDING_CGE",
           "TV_TVC_MATERIALIZED_MAILBOX_BATCH_AND_MANIFEST_NOT_YET_OBSERVED",
           "EXACT_SOVEREIGN_SHADOW_BATCH_RUN_NOT_YET_OBSERVED"
