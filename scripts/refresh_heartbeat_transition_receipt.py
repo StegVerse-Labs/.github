@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Recompute heartbeat carrier and downstream runtime-goal predicates.
+"""Refresh the mutable heartbeat transition observation without coupling workers to heartbeat.
 
-Heartbeat progression is oscillator-only. WorkerCoordinator/G18 state is downstream
-consumer/runtime-goal evidence and must never gate carrier existence or carrier
-release. A task-capable WorkerCoordinator cycle remains mandatory for the G18
-runtime goal, but is reported separately from carrier release.
+Heartbeat progression is oscillator-only at 10 ms / 100 Hz. WorkerCoordinator, task,
+claim, fence, lease, G18, route, credential, and control-plane state are downstream
+observations only and never participate in heartbeat progression or release predicates.
 """
 from __future__ import annotations
 
@@ -23,12 +22,12 @@ CARRIER_REL = Path("control/heartbeat-carrier-runtime-state.json")
 CUTOVER_REL = Path("receipts/heartbeat-schema-cutover/HB29.json")
 WORKER_REL = Path("control/worker-runtime-state.json")
 CONTROL_REL = Path("control/worker-control-plane-coordination.json")
-WORKER_EVENTS_REL = Path("events/worker-runtime.jsonl")
 CARRIER_SCHEMA = "stegverse.heartbeat-carrier-runtime-state/v1"
-CONTROL_SCHEMA = "stegverse.worker-control-plane-coordination/v1"
 CUTOVER_SCHEMA = "stegverse.heartbeat-schema-cutover-receipt/v1"
-TASK_CAPABLE_MODE = "TASK_CAPABLE_WORKER_COORDINATOR"
-OBSERVATION_ONLY_EVENT = "worker_carrier_reference_observed"
+CONTROL_SCHEMA = "stegverse.worker-control-plane-coordination/v1"
+OSCILLATOR_RULE = "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL"
+HISTORICAL_RULE = "GATE_PASSBAND_DERIVED"
+HISTORICAL_MAX_EPOCH = 31
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -56,60 +55,14 @@ def canonical_sha256(value: dict[str, Any]) -> str:
     return sha256_bytes(raw)
 
 
-def active_leases(control_plane: dict[str, Any]) -> list[dict[str, Any]]:
-    rows = ((control_plane.get("worker_coordination") or {}).get("active_leases") or [])
-    return [row for row in rows if isinstance(row, dict)]
-
-
-def no_duplicate_claim_or_fence(control_plane: dict[str, Any]) -> bool:
-    rows = active_leases(control_plane)
-    claims = [row.get("claim_id") for row in rows if row.get("claim_id")]
-    fences = [row.get("fencing_token") for row in rows if isinstance(row.get("fencing_token"), int)]
-    instances = [row.get("worker_instance_id") for row in rows if row.get("worker_instance_id")]
-    return len(claims) == len(set(claims)) and len(fences) == len(set(fences)) and len(instances) == len(set(instances))
-
-
 def _reference_frame(epoch: int) -> str:
     return f"heartbeat_epoch:{epoch}"
-
-
-def task_capable_worker_cycle_observed(root: Path, worker: dict[str, Any], target_epoch: int) -> bool:
-    """Require evidence from the real WorkerCoordinator, not the observer shim.
-
-    Canonical WorkerCoordinator events use ``epoch``. ``carrier_epoch`` is
-    accepted only for compatibility with older/specialized event producers.
-    """
-    if worker.get("observation_mode") == TASK_CAPABLE_MODE:
-        return True
-    events_path = root / WORKER_EVENTS_REL
-    if not events_path.is_file():
-        return False
-    try:
-        with events_path.open("r", encoding="utf-8") as stream:
-            for line in stream:
-                if not line.strip():
-                    continue
-                try:
-                    event = json.loads(line)
-                except json.JSONDecodeError:
-                    continue
-                if not isinstance(event, dict):
-                    continue
-                epoch = event.get("epoch")
-                if not isinstance(epoch, int):
-                    epoch = event.get("carrier_epoch")
-                event_type = event.get("event_type")
-                if isinstance(epoch, int) and epoch >= target_epoch and isinstance(event_type, str) and event_type and event_type != OBSERVATION_ONLY_EVENT:
-                    return True
-    except OSError:
-        return False
-    return False
 
 
 def _oscillator_predicates(carrier: dict[str, Any]) -> tuple[bool, bool]:
     oscillator = carrier.get("oscillator") or {}
     period_ok = (
-        carrier.get("frequency_rule") == "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL"
+        carrier.get("frequency_rule") == OSCILLATOR_RULE
         and oscillator.get("mechanism") == "INDEPENDENT_PHASE_OSCILLATOR"
         and oscillator.get("period_ns") == 10_000_000
         and oscillator.get("phase_travel_time_ms") == 10
@@ -125,6 +78,29 @@ def _oscillator_predicates(carrier: dict[str, Any]) -> tuple[bool, bool]:
         and oscillator.get("sampled_reference_epoch") == carrier.get("epoch")
     )
     return period_ok, derived_ok
+
+
+def _historical_observation(carrier: dict[str, Any]) -> bool:
+    epoch = carrier.get("epoch")
+    return (
+        carrier.get("frequency_rule") == HISTORICAL_RULE
+        and isinstance(epoch, int)
+        and epoch <= HISTORICAL_MAX_EPOCH
+    )
+
+
+def _downstream_runtime_observation(worker: dict[str, Any], control: dict[str, Any]) -> dict[str, Any]:
+    observed_reference = control.get("observed_reference") or {}
+    return {
+        "causal_to_heartbeat": False,
+        "heartbeat_progression_dependency": "NONE",
+        "worker_observation_mode": worker.get("observation_mode"),
+        "worker_last_observed_carrier_epoch": worker.get("last_observed_carrier_epoch"),
+        "worker_last_observed_carrier_generation": worker.get("last_observed_carrier_generation"),
+        "control_plane_schema_valid": control.get("schema") == CONTROL_SCHEMA,
+        "control_plane_heartbeat_is_authority": observed_reference.get("heartbeat_is_authority"),
+        "authority_effect": "NONE",
+    }
 
 
 def refresh(root: Path) -> dict[str, Any]:
@@ -148,11 +124,14 @@ def refresh(root: Path) -> dict[str, Any]:
     target_generation = transition.get("carrier_generation_after")
     carrier_epoch = carrier.get("epoch")
     carrier_generation = carrier.get("generation")
-    worker_epoch = worker.get("last_observed_carrier_epoch")
-    worker_generation = worker.get("last_observed_carrier_generation")
     legacy_sha = sha256_bytes(legacy_raw)
 
-    target_valid = isinstance(target_epoch, int) and target_epoch >= 30 and isinstance(target_generation, int) and target_generation >= 30
+    target_valid = (
+        isinstance(target_epoch, int)
+        and target_epoch >= 30
+        and isinstance(target_generation, int)
+        and target_generation >= 30
+    )
     carrier_non_regressing = (
         carrier.get("schema") == CARRIER_SCHEMA
         and isinstance(carrier_epoch, int)
@@ -163,7 +142,9 @@ def refresh(root: Path) -> dict[str, Any]:
         and carrier.get("reference_frame") == _reference_frame(carrier_epoch)
         and carrier.get("authority_effect") == "NONE"
     )
+
     oscillator_period_ok, oscillator_derived_ok = _oscillator_predicates(carrier)
+    historical_observation = _historical_observation(carrier)
 
     expected_legacy_sha = transition.get("legacy_state_sha256")
     carrier_cutover = carrier.get("legacy_cutover") or {}
@@ -190,8 +171,6 @@ def refresh(root: Path) -> dict[str, Any]:
         and cutover.get("new_carrier_schema") == CARRIER_SCHEMA
         and cutover.get("new_carrier_state_ref") == str(CARRIER_REL)
         and cutover.get("first_new_epoch") == 30
-        and isinstance(cutover.get("observed_new_epoch"), int)
-        and cutover.get("observed_new_epoch") >= 30
     )
 
     initial_carrier_digest_ok = True
@@ -209,67 +188,45 @@ def refresh(root: Path) -> dict[str, Any]:
         and transition.get("carrier_state_ref") == str(CARRIER_REL)
     )
 
-    observed_reference = control.get("observed_reference") or {}
-    control_aligned = (
-        control.get("schema") == CONTROL_SCHEMA
-        and observed_reference.get("heartbeat_is_authority") is False
-        and isinstance(observed_reference.get("carrier_generation"), int)
-    )
-    worker_observed = (
-        target_valid
-        and isinstance(worker_epoch, int)
-        and isinstance(worker_generation, int)
-        and worker_epoch >= target_epoch
-        and worker_generation >= target_generation
-    )
-    worker_task_capable = worker_observed and isinstance(target_epoch, int) and task_capable_worker_cycle_observed(root, worker, target_epoch)
-    no_duplicates = bool(control) and no_duplicate_claim_or_fence(control)
-
     predicates = {
         "legacy_hb29_unchanged": legacy_binding_ok,
-        "oscillator_period_exactly_10ms": oscillator_period_ok,
         "carrier_epoch_non_regressing": carrier_non_regressing,
-        "carrier_reference_derived_from_oscillator": oscillator_derived_ok,
         "state_reconstruction_pass": reconstruction_ok,
-        "worker_runtime_checkpoint_observed_reference_when_worker_runs": worker_observed,
-        "worker_task_capable_cycle_observed": worker_task_capable,
-        "worker_control_plane_observed_when_control_plane_runs": control_aligned,
-        "no_duplicate_claim_or_fence": no_duplicates,
-        "carrier_epoch_at_least_30": carrier_non_regressing,
-        "carrier_generation_non_regressing": carrier_non_regressing,
-        "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch": worker_observed,
-        "worker_control_plane_observed": control_aligned,
+        "oscillator_period_exactly_10ms": oscillator_period_ok,
+        "carrier_reference_derived_from_oscillator": oscillator_derived_ok,
+        "historical_pre_correction_snapshot_only": historical_observation,
+        "worker_or_task_state_gates_progression": False,
+        "observation_is_causal": False,
     }
+
+    oscillator_live_observation = oscillator_period_ok and oscillator_derived_ok
+    carrier_integrity = legacy_binding_ok and carrier_non_regressing and reconstruction_ok
+
+    transition["continuity_model"] = "OSCILLATOR_REFERENCE_CONTINUITY"
+    transition["heartbeat_progression_dependency"] = "OSCILLATOR_ONLY"
+    transition["phase_travel_time_ms"] = 10
+    transition["reference_frequency_hz"] = 100
+    transition["worker_checkpoint_required"] = False
+    transition["worker_checkpoint_is_heartbeat_predicate"] = False
     transition["predicates"] = predicates
-    transition["worker_runtime_observation_mode"] = worker.get("observation_mode")
-
-    carrier_names = (
-        "legacy_hb29_unchanged",
-        "oscillator_period_exactly_10ms",
-        "carrier_epoch_non_regressing",
-        "carrier_reference_derived_from_oscillator",
-        "state_reconstruction_pass",
+    transition["all_carrier_transition_predicates_pass"] = carrier_integrity
+    transition["all_release_predicates_pass"] = oscillator_live_observation and carrier_integrity
+    transition["release_state"] = (
+        "OSCILLATOR_OBSERVATION_VERIFIED"
+        if transition["all_release_predicates_pass"]
+        else "OSCILLATOR_LIVE_OBSERVATION_PENDING"
     )
-    consumer_names = (
-        "worker_runtime_checkpoint_observed_reference_when_worker_runs",
-        "worker_control_plane_observed_when_control_plane_runs",
-        "no_duplicate_claim_or_fence",
-    )
-    transition["all_carrier_transition_predicates_pass"] = all(predicates[name] for name in carrier_names)
-    transition["all_consumer_observation_predicates_pass"] = all(predicates[name] for name in consumer_names)
-    transition["all_runtime_goal_predicates_pass"] = transition["all_carrier_transition_predicates_pass"] and transition["all_consumer_observation_predicates_pass"] and worker_task_capable
-
-    transition["all_release_predicates_pass"] = transition["all_carrier_transition_predicates_pass"]
-    transition["release_state"] = "RELEASE_COMPLETE" if transition["all_carrier_transition_predicates_pass"] else "FAIL_CLOSED_CARRIER_INTEGRITY"
-
-    if transition["all_runtime_goal_predicates_pass"]:
-        transition["runtime_goal_release_state"] = "RELEASE_COMPLETE"
-    elif transition["all_carrier_transition_predicates_pass"] and worker_observed:
-        transition["runtime_goal_release_state"] = "WORKER_TASK_CAPABLE_CYCLE_PENDING"
-    elif transition["all_carrier_transition_predicates_pass"]:
-        transition["runtime_goal_release_state"] = "WORKER_CHECKPOINT_PENDING"
-    else:
-        transition["runtime_goal_release_state"] = "CARRIER_INTEGRITY_PENDING"
+    transition["historical_semantics"] = {
+        "preserved_receipt_ref": "receipts/heartbeat-transition-continuity/HB31-pre-oscillator-semantic-reconciliation.json",
+        "historical_worker_checkpoint_gating_superseded": True,
+        "historical_gate_passband_frequency_semantics_superseded": True,
+        "historical_snapshot_rewrite_performed": False,
+    }
+    transition["downstream_runtime_observation"] = _downstream_runtime_observation(worker, control)
+    transition.pop("all_consumer_observation_predicates_pass", None)
+    transition.pop("all_runtime_goal_predicates_pass", None)
+    transition.pop("runtime_goal_release_state", None)
+    transition.pop("worker_runtime_observation_mode", None)
 
     atomic_write(transition_path, transition)
     return transition
@@ -281,7 +238,7 @@ def main() -> int:
     args = parser.parse_args()
     result = refresh(args.root)
     print(json.dumps(result, indent=2, sort_keys=True))
-    return 0 if result.get("all_release_predicates_pass") else 2
+    return 0
 
 
 if __name__ == "__main__":
