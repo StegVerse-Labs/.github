@@ -1,22 +1,118 @@
 {
-  "schema": "stegverse.worker-handoff/v0.1",
-  "task_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
-  "goal_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVATION-001",
-  "owner": {
-    "repository": "StegVerse-Labs/Governance",
-    "handoff_ref": "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md"
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
+  "created_at": "2026-08-19T00:02:00-05:00",
+  "updated_at": "2026-08-19T07:01:00-05:00",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:governance-sovereign-task-observer:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/Governance:automation/governance_task_registry.json"
+    ],
+    "admissibility_evidence_refs": [
+      "docs/receipts/governance-sovereign-task-observer-source-validation-2026-08-19.json",
+      "docs/receipts/governance-sovereign-task-observer-source-discovery-validation-2026-08-19.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/governance_sovereign_task_observer_worker.py",
+      "control/worker-registry.d/governance-sovereign-task-observer-001.json",
+      "control/process-worker-adapters.d/governance-sovereign-task-observer-001.json",
+      "cost-basis/worker-runtime/governance-sovereign-task-observer.json",
+      "StegVerse-Labs/TVC:tasks/TVC-PRIVATE-SOURCE-READ-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "TVC_PRIVATE_SOURCE_READ_GOVERNANCE_CONSUMER_AUTHORITY_INJECTION_PENDING",
+      "TV_TVC_MATERIALIZED_GOVERNANCE_SOURCE_NOT_YET_OBSERVED",
+      "CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND",
+      "SOVEREIGN_GOVERNANCE_TASK_OBSERVER_RECEIPT_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "governance-sovereign-task-observer-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "observes_capability",
+    "target_phase": "ACTIVATED"
+  },
+  "goal": {
+    "goal_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVATION-001",
+    "objective": "Observe the exact Governance task registry from already-materialized local Governance source on an admitted sovereign StegVerse node, preserve the CGE architecture ownership watch state faithfully, and emit fenced local evidence without acquiring repository, credential, CGE, or heartbeat authority.",
+    "success_predicates": [
+      "exact local Governance source is discovered without remote checkout",
+      "Governance task registry validation passes",
+      "CGE architecture ownership watch matches actual architecture-decision receipt presence",
+      "observer result is persisted only through fenced bound-state projection",
+      "no GitHub/provider credential is available to the worker",
+      "no Governance repository writeback occurs",
+      "heartbeat progression remains unaffected"
+    ],
+    "failure_predicates": [
+      "hosted execution is treated as sovereign runtime",
+      "missing scheduler claim or fence",
+      "non-TV/TVC secret or token is required or forwarded",
+      "observer mutates Governance source",
+      "missing CGE architecture receipt is treated as completed",
+      "bound-state mutation escapes observed/** or receipts/**",
+      "missing materialized source creates duplicate source-resolution ownership"
+    ],
+    "authority_ceiling": [
+      "observation only",
+      "bounded local process execution",
+      "fenced local bound-state receipt projection",
+      "no source retrieval authority",
+      "no repository writeback authority",
+      "no credential authority",
+      "no CGE decision authority",
+      "no heartbeat authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 4
+  },
+  "task": {
+    "task_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/Governance:automation/governance_task_registry.json",
+      "StegVerse-Labs/Governance:docs/governance/CGE_DECISION_ISSUER_ARCHITECTURE_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/TVC:tasks/TVC-PRIVATE-SOURCE-READ-001.json",
+      "workers/governance_sovereign_task_observer_worker.py",
+      "control/worker-registry.d/governance-sovereign-task-observer-001.json",
+      "control/process-worker-adapters.d/governance-sovereign-task-observer-001.json",
+      "cost-basis/worker-runtime/governance-sovereign-task-observer.json"
+    ],
+    "parent_task_id": null,
+    "derivation_reason": "Governance explicitly transferred task observation from the former hosted GitHub Actions executor to the sovereign WorkerCoordinator path. This handoff binds that existing owner decision to the canonical executable-worker schema without widening authority.",
+    "canonical_owner_ref": "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "governance:sovereign-task-observer",
+    "derivation_depth": 0,
+    "source_handoff_ref": "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md",
+    "worker_registry_ref": "control/worker-registry.d/governance-sovereign-task-observer-001.json",
+    "worker_id": "governance-sovereign-task-observer-worker",
+    "adapter_ref": "process:governance-sovereign-task-observer-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "observation and evidence review only",
+    "priority": "release"
   },
   "authority": {
+    "authority_source": "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md + canonical sovereign WorkerCoordinator",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "governance-sovereign-task-observer-v1",
     "credential_authority": "TV/TVC",
     "source_materialization_authority": "TV/TVC_ONLY_SEPARATE_PRODUCER",
     "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
     "non_tv_tvc_secret_or_token_allowed": false,
     "repository_writeback_authority": false,
     "governance_decision_authority": false,
     "cge_decision_authority": false,
     "runtime_authority": false,
     "release_authority": false,
-    "heartbeat_authority": false
+    "execution_authority_created": false
   },
   "source_producer": {
     "repository": "StegVerse-Labs/TVC",
@@ -27,34 +123,40 @@
     "requested_ref": "refs/heads/main",
     "last_observed_sha": "e4d3ca8cd09c427eae66a6cc0910a2c13cedaa36",
     "must_reresolve_exact_sha_before_grant": true,
-    "credential_authority": "TV/TVC",
     "consumer_receives_credential": false,
     "write_authority": false,
     "runtime_authority": false
   },
   "execution": {
-    "worker_id": "governance-sovereign-task-observer-worker",
-    "adapter_ref": "process:governance-sovereign-task-observer-v1",
+    "required_capabilities": [
+      "bounded_process_execution",
+      "governance_task_observation",
+      "registry_validation",
+      "architecture_watch_verification"
+    ],
+    "required_local_locators": [],
     "optional_local_locator": "STEGVERSE_GOVERNANCE_SOURCE_ROOT",
     "canonical_local_source_paths_supported": true,
-    "command": ["python", "workers/governance_sovereign_task_observer_worker.py"],
-    "success_transition": "GOVERNANCE_SOVEREIGN_TASK_OBSERVATION_COMPLETE",
-    "blocked_transition": "GOVERNANCE_SOVEREIGN_TASK_OBSERVATION_BLOCKED"
+    "worker": "workers/governance_sovereign_task_observer_worker.py",
+    "allowed_paths": [
+      "receipts/governance-sovereign-task-observer/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 4,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 16,
+    "rate_class": "governance_sovereign_task_observation",
+    "hosted_execution_allowed": false,
+    "bound_state_root": "~/.stegverse/state/governance-sovereign-task-observer",
+    "bound_state_allowed_paths": [
+      "observed/**",
+      "receipts/**"
+    ],
+    "remote_checkout_allowed": false
   },
   "input_contract": {
     "source": "already-materialized exact Governance repository source",
-    "canonical_source_paths": [
-      "<central-runtime>/workloads/Governance",
-      "<central-runtime>/workloads/governance",
-      "~/.stegverse/workloads/Governance",
-      "~/.stegverse/workloads/governance",
-      "/var/lib/stegverse/workloads/Governance",
-      "/var/lib/stegverse/workloads/governance",
-      "~/.stegverse/source/Governance",
-      "~/.stegverse/source/governance",
-      "/var/lib/stegverse/source/Governance",
-      "/var/lib/stegverse/source/governance"
-    ],
     "required_source_files": [
       "GOVERNANCE_MIRROR_HANDOFF.md",
       "automation/governance_task_registry.json",
@@ -65,31 +167,39 @@
       "docs/receipts/governance-sovereign-task-observer-source-validation-2026-08-19.json",
       "docs/receipts/governance-sovereign-task-observer-source-discovery-validation-2026-08-19.json"
     ],
-    "credential_authority": "TV/TVC",
-    "remote_checkout_allowed": false
+    "credential_authority": "TV/TVC"
   },
-  "success_predicate": {
-    "registry_validation_status": "pass",
-    "cge_architecture_watch_matches_receipt_presence": true,
-    "github_token_used": false,
-    "repository_writeback_performed": false,
-    "authority_effect": "OBSERVATION_ONLY_NO_NEW_AUTHORITY",
-    "heartbeat_effect": false
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md",
+    "recheck_trigger": "each admitted assignment opportunity while sovereign observer evidence remains incomplete",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "master_records_required": true,
+    "result_receipt": "~/.stegverse/state/governance-sovereign-task-observer/receipts/latest.json",
+    "observed_state": "~/.stegverse/state/governance-sovereign-task-observer/observed/latest.json",
+    "source_task_reconciliation": "StegVerse-Labs/Governance:automation/governance_task_registry.json",
+    "source_handoff_reconciliation": "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md",
+    "repository_persistence_requires_separate_admission": true
   },
   "failure_policy": {
-    "repairable": "repair bounded source/observer defect and rerun the same observation predicate",
-    "missing_materialized_source": "remain BLOCKED on TVC-PRIVATE-SOURCE-READ-001 until a current exact TV/TVC-controlled materialization receipt/source tree is observed in an explicit or canonical local path",
-    "unable_or_impossible_to_repair": "submit sandbox resolution task",
+    "missing_materialized_source": "return HANDOFF_READY and relinquish the claim; retain TVC-PRIVATE-SOURCE-READ-001 as the sole source-materialization owner",
+    "repairable_observer_defect": "emit BLOCKED with a machine-readable sandbox-resolution contract",
+    "unable_or_impossible_to_repair": "submit sandbox resolution successor task",
     "hosted_github_actions_substitute_allowed": false
   },
-  "state": "HANDOFF_READY",
-  "blockers": [
-    "TVC_PRIVATE_SOURCE_READ_GOVERNANCE_CONSUMER_AUTHORITY_INJECTION_PENDING",
-    "TV_TVC_MATERIALIZED_GOVERNANCE_SOURCE_NOT_YET_OBSERVED",
-    "CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND",
-    "SOVEREIGN_GOVERNANCE_TASK_OBSERVER_RECEIPT_NOT_YET_OBSERVED"
-  ],
-  "archive_eligible": false,
-  "authority_effect": "NONE_HANDOFF_ONLY",
-  "heartbeat_effect": false
+  "completion": {
+    "next_authorized_action": "The existing TVC private-source machine lane materializes the then-current exact Governance source into a canonical local path. On the next admitted assignment opportunity, WorkerCoordinator binds a collision-safe claim to governance-sovereign-task-observer-worker; the worker runs the Governance registry observer through the fenced bound-state adapter and completes only when registry validation and CGE-watch state predicates pass.",
+    "terminal_when": [
+      "GOVERNANCE_SOVEREIGN_TASK_OBSERVATION_COMPLETE",
+      "registry_validation_status=pass",
+      "credential_authority=TV/TVC",
+      "github_token_used=false",
+      "repository_writeback_performed=false",
+      "heartbeat_effect=false"
+    ],
+    "release_condition": "A fenced sovereign observer receipt is produced from exact locally materialized Governance source and reconciled without granting repository, CGE, credential, or heartbeat authority."
+  }
 }
