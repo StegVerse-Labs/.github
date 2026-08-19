@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.validation-probe/v0.1",
+  "probe_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-002-VALIDATION",
+  "target_files": [
+    "workers/governance_sovereign_task_observer_worker.py",
+    "handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json",
+    "control/worker-registry.d/governance-sovereign-task-observer-001.json",
+    "control/process-worker-adapters.d/governance-sovereign-task-observer-001.json",
+    "tests/test_governance_sovereign_task_observer.py",
+    "control/admissible-existence-retrospective-conformance.json"
+  ],
+  "required_predicates": [
+    "new observer unit tests pass",
+    "AE retrospective exact denominator includes all effective tasks",
+    "no GitHub credential token authority",
+    "no repository writeback authority",
+    "no heartbeat authority"
+  ],
+  "authority_effect": "NONE_VALIDATION_ONLY",
+  "runtime_activation_claimed": false
+}
