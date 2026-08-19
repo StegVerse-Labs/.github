@@ -62,6 +62,7 @@
   },
   "authority": {
     "authority_source": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+    "policy_version": "heartbeat-independent-oscillator-live-proof-v1",
     "heartbeat_grants_execution_authority": false,
     "credential_authority": "TV/TVC",
     "credential_requirement": "NONE",
