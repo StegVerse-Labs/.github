@@ -10,7 +10,7 @@ on:
       - 'heartbeat_runtime/**'
       - 'tools/validate_active_worker_states.py'
       - 'tests/**'
-      - 'handoffs/**'
+      - '.github/workflows/org-control-plane-validate.yml'
   pull_request:
     paths:
       - 'README.md'
