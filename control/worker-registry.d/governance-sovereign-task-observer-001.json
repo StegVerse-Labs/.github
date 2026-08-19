@@ -12,9 +12,12 @@
       "authorized_policy_version": "governance-sovereign-task-observer-v1",
       "handoff_ref": "handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json",
       "block_ref": "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md",
+      "cost_basis_ref": "cost-basis/worker-runtime/governance-sovereign-task-observer.json",
       "evidence_refs": [
+        "handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json",
         "workers/governance_sovereign_task_observer_worker.py",
         "control/process-worker-adapters.d/governance-sovereign-task-observer-001.json",
+        "cost-basis/worker-runtime/governance-sovereign-task-observer.json",
         "docs/receipts/governance-sovereign-task-observer-source-validation-2026-08-19.json",
         "docs/receipts/governance-sovereign-task-observer-source-discovery-validation-2026-08-19.json",
         "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md",
@@ -40,6 +43,7 @@
           "workers/governance_sovereign_task_observer_worker.py",
           "control/worker-registry.d/governance-sovereign-task-observer-001.json",
           "control/process-worker-adapters.d/governance-sovereign-task-observer-001.json",
+          "cost-basis/worker-runtime/governance-sovereign-task-observer.json",
           "StegVerse-Labs/TVC:tasks/TVC-PRIVATE-SOURCE-READ-001.json",
           "StegVerse-Labs/TVC:docs/GOVERNANCE_SOURCE_MATERIALIZATION_MIRROR_HANDOFF.md"
         ],
