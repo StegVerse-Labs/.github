@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:healer-failure-mailbox-benchmark-v1",
+      "authority_ref": "handoffs/HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "sandbox_validation",
+        "failure_intelligence_benchmark"
+      ],
+      "command": ["python", "workers/healer_failure_mailbox_benchmark_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_HEALER_SOURCE_ROOT",
+        "HOME",
+        "XDG_STATE_HOME",
+        "LOCALAPPDATA"
+      ],
+      "timeout_seconds": 180,
+      "type": "process_json_v0.1",
+      "notes": [
+        "Runs only against an already-materialized local StegVerse-Healer source root.",
+        "No GitHub token, mailbox credential, provider credential or remote checkout is allowed.",
+        "Benchmark execution is validation only and never grants package release authority.",
+        "Canonical scheduler must bind a collision-safe claim before execution."
+      ]
+    }
+  ]
+}
