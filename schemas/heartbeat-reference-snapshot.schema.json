@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/heartbeat-reference-snapshot.schema.json",
+  "title": "StegVerse Heartbeat Reference Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "monitor_id",
+    "goal_id",
+    "policy_revision",
+    "acquired_at",
+    "snapshot_id",
+    "previous_snapshot_id",
+    "previous_snapshot_sha256",
+    "reference",
+    "reacquisition",
+    "gate",
+    "required_state_fingerprint",
+    "required_states",
+    "authority",
+    "snapshot_sha256"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.heartbeat-reference-snapshot/v1"},
+    "monitor_id": {"type": "string", "minLength": 1},
+    "goal_id": {"type": "string", "minLength": 1},
+    "policy_revision": {"type": "integer", "minimum": 1},
+    "acquired_at": {"type": "string", "minLength": 1},
+    "snapshot_id": {"type": "string", "minLength": 1},
+    "previous_snapshot_id": {"type": ["string", "null"]},
+    "previous_snapshot_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["carrier_epoch", "carrier_generation", "reference_frame", "carrier_frequency_rule_observed", "snapshot_is_observation_only"],
+      "properties": {
+        "carrier_epoch": {"type": "integer", "minimum": 0},
+        "carrier_generation": {"type": "integer", "minimum": 0},
+        "reference_frame": {"type": ["string", "null"]},
+        "carrier_frequency_rule_observed": {"type": ["string", "null"]},
+        "snapshot_is_observation_only": {"const": true}
+      }
+    },
+    "reacquisition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule", "passband_width_references", "reference_delta_from_previous", "reason", "carrier_progression_effect"],
+      "properties": {
+        "rule": {"const": "GATE_PASSBAND_DERIVED"},
+        "passband_width_references": {"type": "integer", "minimum": 1},
+        "reference_delta_from_previous": {"type": "integer", "minimum": 0},
+        "reason": {"enum": ["INITIAL", "REFERENCE_REPAIR", "REQUIRED_STATE_CHANGED", "PASSBAND_CROSSED", "TERMINAL_GATE_CLOSED"]},
+        "carrier_progression_effect": {"const": "NONE"}
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "required_count", "complete_count", "pending_count", "completion_claim_requires_evidence"],
+      "properties": {
+        "state": {"enum": ["OPEN", "CLOSED"]},
+        "required_count": {"type": "integer", "minimum": 1},
+        "complete_count": {"type": "integer", "minimum": 0},
+        "pending_count": {"type": "integer", "minimum": 0},
+        "completion_claim_requires_evidence": {"const": true}
+      }
+    },
+    "required_state_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "required_states": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["state_id", "description", "complete", "observations", "evidence_refs"],
+        "properties": {
+          "state_id": {"type": "string", "minLength": 1},
+          "description": {"type": ["string", "null"]},
+          "complete": {"type": "boolean"},
+          "observations": {"type": "array", "items": {"type": "object"}},
+          "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority_effect", "heartbeat_grants_execution_authority", "snapshot_grants_execution_authority", "snapshot_grants_claim_or_fence_authority", "snapshot_controls_carrier_progression", "credential_authority", "github_token_runtime_authority"],
+      "properties": {
+        "authority_effect": {"const": "NONE"},
+        "heartbeat_grants_execution_authority": {"const": false},
+        "snapshot_grants_execution_authority": {"const": false},
+        "snapshot_grants_claim_or_fence_authority": {"const": false},
+        "snapshot_controls_carrier_progression": {"const": false},
+        "credential_authority": {"const": "TV/TVC"},
+        "github_token_runtime_authority": {"const": false}
+      }
+    },
+    "snapshot_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
