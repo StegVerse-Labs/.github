@@ -18,6 +18,12 @@ FORBIDDEN_CREDENTIAL_ENV = (
     "GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT", "GIT_ASKPASS",
     "GOOGLE_ACCESS_TOKEN", "GOOGLE_REFRESH_TOKEN", "OAUTH_TOKEN",
 )
+REQUIRED_SOURCE_FILES = (
+    Path("GOVERNANCE_MIRROR_HANDOFF.md"),
+    Path("automation/governance_task_registry.json"),
+    Path("scripts/run_governance_tasks.py"),
+    Path("docs/governance/CGE_DECISION_ISSUER_ARCHITECTURE_MIRROR_HANDOFF.md"),
+)
 
 
 def truthy(value: str | None) -> bool:
@@ -66,13 +72,53 @@ def validate_invocation(invocation: Mapping[str, Any]) -> None:
         raise RuntimeError("observer may not have heartbeat authority")
 
 
+def local_governance_roots() -> list[Path]:
+    roots: list[Path] = []
+    explicit = str(os.getenv(ROOT_ENV) or "").strip()
+    if explicit:
+        roots.append(Path(explicit))
+    roots.extend([
+        Path.cwd() / "workloads" / "Governance",
+        Path.cwd() / "workloads" / "governance",
+        Path.home() / ".stegverse" / "workloads" / "Governance",
+        Path.home() / ".stegverse" / "workloads" / "governance",
+        Path("/var/lib/stegverse/workloads/Governance"),
+        Path("/var/lib/stegverse/workloads/governance"),
+        Path.home() / ".stegverse" / "source" / "Governance",
+        Path.home() / ".stegverse" / "source" / "governance",
+        Path("/var/lib/stegverse/source/Governance"),
+        Path("/var/lib/stegverse/source/governance"),
+    ])
+    unique: list[Path] = []
+    seen: set[str] = set()
+    for candidate in roots:
+        try:
+            key = str(candidate.expanduser().resolve())
+        except Exception:
+            key = str(candidate)
+        if key not in seen:
+            seen.add(key)
+            unique.append(candidate)
+    return unique
+
+
+def find_source_root() -> Path | None:
+    for candidate in local_governance_roots():
+        try:
+            root = candidate.expanduser().resolve()
+        except Exception:
+            continue
+        if root.is_dir() and all((root / relative).is_file() for relative in REQUIRED_SOURCE_FILES):
+            return root
+    return None
+
+
 def require_source_root() -> Path:
-    raw = str(os.getenv(ROOT_ENV) or "").strip()
-    if not raw:
-        raise RuntimeError(f"missing non-secret local locator {ROOT_ENV}")
-    root = Path(raw).expanduser().resolve()
-    if not root.is_dir():
-        raise RuntimeError("materialized Governance source root is missing")
+    root = find_source_root()
+    if root is None:
+        raise RuntimeError(
+            "materialized Governance source root is missing from the explicit locator and canonical StegVerse source/workload paths"
+        )
     return root
 
 
@@ -86,16 +132,6 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
     node_path, node = find_node()
     validate_invocation(invocation)
     root = require_source_root()
-
-    required = (
-        root / "GOVERNANCE_MIRROR_HANDOFF.md",
-        root / "automation" / "governance_task_registry.json",
-        root / "scripts" / "run_governance_tasks.py",
-        root / "docs" / "governance" / "CGE_DECISION_ISSUER_ARCHITECTURE_MIRROR_HANDOFF.md",
-    )
-    for path in required:
-        if not path.is_file():
-            raise RuntimeError(f"required Governance source missing: {path}")
 
     registry = read_json(root / "automation" / "governance_task_registry.json")
     task_ids = {str(item.get("id")) for item in registry.get("tasks", []) if isinstance(item, dict)}
@@ -150,6 +186,7 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "node_declaration_ref": str(node_path),
         "node_declaration_source": node.get("declaration_source"),
         "source_root": str(root),
+        "source_discovery_mode": "explicit" if str(os.getenv(ROOT_ENV) or "").strip() else "canonical_local_path",
         "observed_state_ref": str(observed),
         "registry_validation_status": "pass",
         "cge_architecture_watch_state": cge.get("state"),
