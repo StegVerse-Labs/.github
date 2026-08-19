@@ -30,85 +30,102 @@ Canonical machine-readable inventory:
 
 `control/actions-fanout-workflow-inventory-2026-08-18.json`
 
-Inventory evidence is bound to repository tree `5bc4db843c32d0f39fef51afe12f6937d17c8045` and workflow tree `e7c11359207c9110f854a9154f6108f8e3ccc1c4`.
+The inventory contains 18 workflow files: 14 automatic-push validation surfaces and 4 intentionally non-push surfaces. Classification is retained, but the earlier claim that every automatic-push surface was already correctly narrowed was disproven by direct live-file inspection on 2026-08-18 and has been corrected rather than treated as completion.
 
 ```text
 live workflow files: 18
 classification complete: true
-selectively repaired: 14
-retained unchanged: 4
-routine-main-state-persistence trigger inventory complete: true
+automatic-push workflows: 14
+non-push workflows: 4
 quantitative post-repair run-history evidence: awaiting supported repository-level run-history read
 ```
 
-## Selectively repaired workflows
+## Selective repairs installed
 
-Previously repaired:
+Earlier repair sequence covered:
 
-1. `.github/workflows/org-control-plane-validate.yml`
-2. `.github/workflows/heartbeat-worker-project.yml`
-3. `.github/workflows/org-handoff-render.yml`
-4. `.github/workflows/org-heartbeat.yml`
+- `.github/workflows/all-org-heartbeat-federation.yml`
+- `.github/workflows/archive-readiness-validate.yml`
+- `.github/workflows/native-process-worker-canary.yml`
+- `.github/workflows/steggate-heartbeat-integration.yml`
+- `.github/workflows/activate-host-self-attest-worker.yml`
+- `.github/workflows/activate-sovereign-runtime-worker.yml`
+- `.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml`
+- `.github/workflows/sovereign-ephemeral-console.yml`
+- `.github/workflows/test-lanes-autolaunch-validation.yml`
+- `.github/workflows/sovereign-runtime-self-bootstrap.yml`
+- `.github/workflows/org-handoff-render.yml`
+- `.github/workflows/org-heartbeat.yml`
 
-2026-08-18 repair pass:
+The current run re-opened direct inspection of workflows previously marked repaired and found two stale broad main-push edges.
 
-5. `.github/workflows/all-org-heartbeat-federation.yml` — `059617b7d052e3752403297f2c566939753c097b`
-6. `.github/workflows/archive-readiness-validate.yml` — `636e14918445230594331b5bb0c6e5c5ff8fbc26`
-7. `.github/workflows/native-process-worker-canary.yml` — `3fa46b8c02711d96835b70dafff8a1fe8bc087e1`
-8. `.github/workflows/steggate-heartbeat-integration.yml` — `dc361958985a446b7653d36d86c022788fcbe023`
-9. `.github/workflows/activate-host-self-attest-worker.yml` — `164094f43f1d2c67a677d760cbf2b981d38da593`
-10. `.github/workflows/activate-sovereign-runtime-worker.yml` — `1260dd3f187175c22038bca3bf5b80a695a9962c`
-11. `.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml` — `9471c459277a75560aac8f1e368ddc1790991555`
-12. `.github/workflows/sovereign-ephemeral-console.yml` — `c0c6f41b994a95fb5ee9c28b4d7a24da3cfb1019`
-13. `.github/workflows/test-lanes-autolaunch-validation.yml` — `a84ff434fea245f8795667bd9f8fe440a1428532`
-14. `.github/workflows/sovereign-runtime-self-bootstrap.yml` — `82992cf9897a75586732c4e773e71a6ad88e6b34` / PR #228
+### Corrective repair: organization control-plane validator
 
-Across these workflows, automatic main validation is narrowed to implementation/schema/config/test/workflow-definition surfaces while mutable handoffs, claims, authorizations, receipts, observations, projections, event persistence, cost-basis records, or runtime state are excluded from routine main fanout unless technically necessary. PR coverage remains broader and credential-clean authority boundaries remain intact.
+PR #229 merged as `f99f4c3eac76bcac8590c4737f62250ac39330df`.
 
-PR #228 validation run `32194852134`, job `95896645663`, passed compile, deterministic self-bootstrap tests, hosted-runner fail-closed proof, and non-authorizing validation proof before merge. This is validation evidence only, not runtime proof.
+Before correction, `.github/workflows/org-control-plane-validate.yml` still included `handoffs/**` under `push.paths`, so routine executable-handoff persistence could launch the broad organization validator. The repair:
+
+- removed `handoffs/**` from automatic main-push validation;
+- retained `handoffs/**` under pull-request coverage;
+- retained manual dispatch;
+- added the workflow definition itself to automatic push validation;
+- changed no validator body, runtime authority, credential semantics, claims, fences, heartbeat state, wallet state, deployment state, or repository visibility.
+
+The final merged patch was exactly one deletion and one addition.
+
+### Corrective repair: Heartbeat Worker Project
+
+PR #230 merged as `cf4a028047b2359c333cfae150963448e1c41522`.
+
+Before correction, `.github/workflows/heartbeat-worker-project.yml` still included both `handoffs/**` and `cost-basis/worker-runtime/**` under `push.paths`. That meant routine handoff and worker-cost persistence could launch the complete deterministic repository suite plus heartbeat validation. The repair:
+
+- removed `handoffs/**` and `cost-basis/worker-runtime/**` from automatic main-push validation;
+- retained both surfaces under pull-request validation;
+- retained manual dispatch;
+- kept `heartbeat_runtime/**`, `workers/**`, `tests/**`, `schemas/**`, and `scripts/**` automatic;
+- added the workflow definition itself to the automatic push surface;
+- changed no validation body or runtime/control-plane authority.
+
+The final PR patch was two deletions and one addition.
 
 ## Retained unchanged after inspection
 
-1. `.github/workflows/external-timing-match-validation.yml` — pull-request + manual dispatch only; no automatic main fanout.
-2. `.github/workflows/mcp-activation-binding-test.yml` — pull-request + manual dispatch only; no automatic main fanout.
-3. `.github/workflows/org-heartbeat-watchdog.yml` — manual diagnostic only.
-4. `.github/workflows/stegfin-early-adopter-contribution-validator-source.yml` — pull-request only, `permissions: {}`, explicit empty GitHub credential authority, and fail-closed behavior when private source is absent. It does not create routine main-state fanout, so trigger narrowing would reduce useful pre-merge coverage without solving the cost objective.
+- `.github/workflows/external-timing-match-validation.yml` — pull-request + manual dispatch only.
+- `.github/workflows/mcp-activation-binding-test.yml` — pull-request + manual dispatch only.
+- `.github/workflows/org-heartbeat-watchdog.yml` — manual diagnostic only.
+- `.github/workflows/stegfin-early-adopter-contribution-validator-source.yml` — pull-request only, `permissions: {}`, empty GitHub credential authority, and fail-closed behavior when private source is absent.
+- `.github/workflows/native-process-worker-canary.yml` — implementation-only main trigger; handoff/cost/control state remains PR-only.
+- `.github/workflows/activate-host-self-attest-worker.yml` — workflow-definition-only main trigger; retained evidence/handoff/cost surfaces remain PR-only.
+- `.github/workflows/org-heartbeat.yml` — heartbeat runtime/source only on main; mutable claim/org-state surfaces remain PR-only.
+- `.github/workflows/all-org-heartbeat-federation.yml` — worker/workflow source only on main; mutable federation/handoff/auth/cost surfaces remain PR-only.
+- `.github/workflows/steggate-heartbeat-integration.yml` — worker/schema/workflow source only on main; mutable integration/handoff/auth/cost surfaces remain PR-only.
+- `.github/workflows/test-lanes-autolaunch-validation.yml` — matrix/config/worker/test/workflow source on main; worker-registry/handoff/auth/cost state remains PR-only.
 
 ## Collision / ownership boundaries
 
-The active machine-owned heartbeat, federation, StegGate, durable-runtime, sovereign-inference, canonical test-lanes, StegFin, and repository-visibility lanes retain their own execution authority. This fanout lane does not acquire or mutate their claims, fences, leases, runtime receipts, deployment state, wallet authority, provider authority, task state, canonical test-run claims, or repository visibility.
+The active machine-owned heartbeat, federation, StegGate, durable-runtime, sovereign-inference, canonical test-lanes, StegFin, oscillator-live-proof, and repository-visibility lanes retain their own execution authority. This fanout lane does not acquire or mutate their claims, fences, leases, runtime receipts, deployment state, wallet authority, provider authority, task state, canonical test-run claims, or repository visibility.
 
-Relevant current source-of-truth surfaces inspected during this repair sequence include:
-
-- `docs/ORG_MIRROR_HANDOFF.md`
-- `docs/ALL_ORGS_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md`
-- `docs/ARCHIVE_GATE_PROGRESS_MIRROR_HANDOFF.md`
-- `docs/STEGVERSE_TEST_LANES_AUTOLAUNCH_MIRROR_HANDOFF.md`
-- `docs/REPOSITORY_VISIBILITY_BOUNDARY_MIRROR_HANDOFF.md`
-- `handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json`
-- `handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json`
-- `control/repository-visibility-boundary-2026-08-17.json`
-- `control/actions-fanout-workflow-inventory-2026-08-18.json`
-
-The separate repository-visibility workstream remains actively owned by `SESSION-REPOSITORY-VISIBILITY-AUDIT-20260817`; this lane does not duplicate or authorize visibility mutations.
+The latest oscillator work observed in this run remained a separate machine/runtime lane. Its handoff persistence was used only as evidence demonstrating that stale `handoffs/**` push triggers could cause paid validation fanout; the fanout repair did not acquire the oscillator claim or execute its runtime task.
 
 ## Validation evidence
 
-- Exact recursive live tree inspection established all 18 workflow files.
-- The machine-readable inventory records all 18 with one classification each and was read back from `main` after commit.
-- The previously missed StegFin validator was inspected directly and proven not to be an automatic main fanout source.
-- Post-write repository reads of repaired workflows confirm selective trigger structures and credential-clean validation semantics.
-- No runtime claim, heartbeat epoch, worker fence, credential state, repository visibility, deployment state, wallet state, or canonical test-run claim was mutated by this lane.
+- Direct live reads proved the stale `org-control-plane-validate.yml` and `heartbeat-worker-project.yml` main-push edges.
+- PR #229 final diff: one deletion / one addition; merge `f99f4c3eac76bcac8590c4737f62250ac39330df`.
+- PR #230 final diff: two deletions / one addition; merge `cf4a028047b2359c333cfae150963448e1c41522`.
+- Post-merge readback of `org-control-plane-validate.yml` confirms `handoffs/**` is absent from main push and retained on PR.
+- Machine-readable inventory updated after the first corrective repair; this handoff records both corrections and the need to continue live-file verification instead of trusting prior classification alone.
+- No runtime claim, heartbeat epoch, worker fence, credential state, repository visibility, deployment state, wallet state, oscillator runtime state, or canonical test-run claim was mutated by this lane.
 
 ## Remaining work
 
 Destination `StegVerse-Labs/.github`:
 
+- continue direct live-file audit of every automatic-push workflow because two earlier classifications were proven stale;
+- update the machine-readable inventory with any further corrective repairs and bind it to the newest workflow tree after the audit stabilizes;
 - obtain repository-wide post-repair Actions run-history evidence sufficient to quantify actual fanout reduction once a supported read path is available;
-- reconcile this handoff and machine-readable inventory whenever another worker adds or changes a workflow trigger surface;
-- investigate any newly observed repeated failure or paid-run source without reopening already classified safe workflows.
+- investigate any newly observed repeated failure or paid-run source without reopening workflows whose live main triggers are already proven narrow.
 
-The connected GitHub workflow-run reader currently exposes commit-associated pull-request runs but not the repository-wide run listing required for quantitative before/after proof. A public web fallback did not expose repository run history, so no unsupported or credential-bearing workaround was introduced.
+The connected GitHub workflow-run reader exposes commit-associated pull-request runs but not the repository-wide run listing required for quantitative before/after proof. No unsupported credential-bearing workaround is authorized.
 
 ## Release / propagation
 
@@ -116,6 +133,6 @@ No release/tag is required solely for these validation-trigger/inventory changes
 
 ## Completion gate
 
-The exact workflow inventory objective is now satisfied at 18/18. The lane remains nonterminal because quantitative post-repair run-history evidence is still unavailable. Durable recording does not satisfy that evidence requirement by itself.
+The lane is nonterminal. Exact file enumeration remains 18/18, but the trigger-policy audit must be based on current live definitions, not prior classification. Quantitative post-repair run-history evidence also remains unavailable.
 
 Current status: `DO NOT ARCHIVE THIS SESSION — UNIQUE ACTIVE WORK REMAINS.`
