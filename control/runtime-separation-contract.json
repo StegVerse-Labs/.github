@@ -32,6 +32,25 @@
     "deviation_observability": ["FREQUENCY_DEVIATION", "PHASE_DEVIATION", "JITTER_DEVIATION"],
     "growth_aware_capacity_is_separate_from_carrier_progression": true
   },
+  "reference_snapshot_monitoring": {
+    "schema_ref": "schemas/heartbeat-reference-snapshot.schema.json",
+    "implementation_ref": "heartbeat_runtime/reference_snapshot.py",
+    "policy_ref": "control/heartbeat-reference-snapshot-policy.json",
+    "latest_snapshot_ref": "control/heartbeat-reference-snapshot.json",
+    "history_ref": "receipts/heartbeat-reference-snapshots/",
+    "reacquisition_rule": "GATE_PASSBAND_DERIVED",
+    "meaning": "GATE_PASSBAND_DERIVED applies to non-authorizing reference-snapshot reacquisition for completion monitoring, never to carrier progression.",
+    "gate": "the evidenced set of required states for the monitored goal; OPEN while any required state is pending and CLOSED only when all are complete",
+    "passband": "the configured carrier-reference delta after which unresolved state must be re-observed even when no required-state value has changed",
+    "reacquire_when": ["INITIAL", "REQUIRED_STATE_CHANGED", "PASSBAND_CROSSED", "TERMINAL_GATE_CLOSED", "REFERENCE_REPAIR"],
+    "reacquire_on_state_change_inside_passband": true,
+    "stop_periodic_reacquisition_when_gate_closed": true,
+    "snapshot_is_observation_only": true,
+    "snapshot_controls_carrier_progression": false,
+    "snapshot_grants_execution_authority": false,
+    "snapshot_grants_claim_or_fence_authority": false,
+    "historical_carrier_state_may_be_observed_without_rewrite": true
+  },
   "forbidden_carrier_fields": ["claim_id", "fencing_token", "active_leases", "lease_action", "worker_registry_ref", "master_records_projection", "route", "credential", "execution_authority"],
   "authority": {
     "heartbeat_grants_execution_authority": false,
@@ -47,6 +66,7 @@
     "live_state_mutation_by_projection": false,
     "pre_v2_frequency_rule": "GATE_PASSBAND_DERIVED",
     "pre_v2_frequency_rule_superseded_for_carrier_progression": true,
+    "pre_v2_frequency_rule_retained_for_reference_snapshot_reacquisition": true,
     "capacity_envelope_may_not_gate_oscillator": true
   }
 }
