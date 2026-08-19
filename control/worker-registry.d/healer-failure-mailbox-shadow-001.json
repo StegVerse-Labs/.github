@@ -18,7 +18,10 @@
         "control/process-worker-adapters.d/healer-failure-mailbox-shadow-001.json",
         "StegVerse-Labs/StegVerse-Healer:failure_mailbox/shadow.py",
         "StegVerse-Labs/StegVerse-Healer:failure_mailbox/coverage_monitor.py",
-        "StegVerse-Labs/StegVerse-Healer:failure_mailbox/benchmarks/deterministic-v0.4-validation.json"
+        "StegVerse-Labs/StegVerse-Healer:failure_mailbox/benchmarks/deterministic-v0.4-validation.json",
+        "StegVerse-Labs/TVC:tasks/TVC-MAILBOX-FAILURE-OBSERVATION-001.json",
+        "StegVerse-Labs/TVC:requests/tv-tvc/HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001.json",
+        "StegVerse-Labs/TV@270e01a5fe58a8a465575e1de6db130c28f49b32:policies/mailbox_failure_observation_capability_policy.json"
       ],
       "admissible_existence": {
         "capability_id": "stegverse:capability:healer-failure-mailbox-shadow:v1",
@@ -37,6 +40,7 @@
         ],
         "activation_proof_ref": null,
         "blockers": [
+          "TVC_SERVICE_REQUEST_PENDING_CGE",
           "TV_TVC_MATERIALIZED_MAILBOX_BATCH_AND_MANIFEST_NOT_YET_OBSERVED",
           "EXACT_SOVEREIGN_SHADOW_BATCH_RUN_NOT_YET_OBSERVED"
         ],
