@@ -4,7 +4,7 @@
   "goal_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVATION-001",
   "owner": {
     "repository": "StegVerse-Labs/Governance",
-    "handoff_ref": "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_SOVEREIGN_TASK_OBSERVER_MIRROR_HANDOFF.md"
+    "handoff_ref": "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md"
   },
   "authority": {
     "credential_authority": "TV/TVC",
@@ -25,7 +25,7 @@
     "capability_id": "tvc.private-source-read.v1",
     "source_repository": "StegVerse-Labs/Governance",
     "requested_ref": "refs/heads/main",
-    "last_observed_sha": "31193910b603d8920bd4bcf292a47158c661cfbc",
+    "last_observed_sha": "e4d3ca8cd09c427eae66a6cc0910a2c13cedaa36",
     "must_reresolve_exact_sha_before_grant": true,
     "credential_authority": "TV/TVC",
     "consumer_receives_credential": false,
@@ -61,7 +61,10 @@
       "scripts/run_governance_tasks.py",
       "docs/governance/CGE_DECISION_ISSUER_ARCHITECTURE_MIRROR_HANDOFF.md"
     ],
-    "source_validation_receipt": "docs/receipts/governance-sovereign-task-observer-source-validation-2026-08-19.json",
+    "source_validation_receipts": [
+      "docs/receipts/governance-sovereign-task-observer-source-validation-2026-08-19.json",
+      "docs/receipts/governance-sovereign-task-observer-source-discovery-validation-2026-08-19.json"
+    ],
     "credential_authority": "TV/TVC",
     "remote_checkout_allowed": false
   },
