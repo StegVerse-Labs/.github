@@ -1,0 +1,71 @@
+{
+  "schema": "stegverse.governance.sovereign-observer-source-validation/v1",
+  "goal_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVATION-001",
+  "task_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
+  "state": "SOURCE_VALIDATED_BOUNDED_RUNTIME_CONTRACT",
+  "validated_main_head": "f65e4b988a9ddc4bd9befd36073aff6bbf4e973e",
+  "validation_pr": 237,
+  "validation_branch_head": "b0511568515725e3fb59936be6e2696c646733eb",
+  "workflow_run": {
+    "name": "Heartbeat Worker Project - Validation Only / No GitHub Token Authority",
+    "run_id": 32251749247,
+    "run_number": 1237,
+    "overall_conclusion": "failure_due_to_unrelated_legacy_suite_debt"
+  },
+  "bounded_predicates": {
+    "anonymous_public_checkout_without_github_token": "PASS",
+    "no_github_credential_token_present": "PASS",
+    "compile_runtime_workers_scripts": "PASS",
+    "canonical_json_parse": "PASS",
+    "executable_handoff_validation": "PASS",
+    "governance_observer_test_count": 10,
+    "governance_observer_test_pass_count": 10,
+    "governance_observer_test_fail_count": 0,
+    "worker_coordinator_unique_worker_selection": "PASS",
+    "least_privilege_capability_profile": "PASS",
+    "finite_cost_basis": "PASS",
+    "bound_state_scope": "PASS",
+    "missing_source_returns_handoff_ready_without_duplicate_resolution": "PASS",
+    "real_observer_defect_emits_sandbox_resolution_contract": "PASS",
+    "completed_response_matches_runtime_state_machine": "PASS",
+    "hosted_environment_rejected": "PASS",
+    "github_token_environment_rejected": "PASS",
+    "repository_writeback_authority_rejected": "PASS",
+    "heartbeat_authority_rejected": "PASS",
+    "cge_watch_requires_actual_architecture_decision_receipt": "PASS"
+  },
+  "capability_profile": {
+    "profile_id": "governance-sovereign-observer-v1",
+    "executor_type": "repository_worker",
+    "mutation_allowed": false,
+    "deployment_allowed": false,
+    "availability_grants_authority": false,
+    "capability_match_grants_authority": false
+  },
+  "unrelated_full_suite_debt": {
+    "total_tests": 444,
+    "failures": 10,
+    "errors": 16,
+    "classes": [
+      "legacy heartbeat v12/state-transition expectations",
+      "historical task-capable release guard API expectations",
+      "legacy sovereign runtime handoff fields",
+      "historical hosted-fallback test assumptions"
+    ],
+    "governance_observer_caused_failure": false
+  },
+  "not_proven": [
+    "TV/TVC credential injection",
+    "short-lived private-source grant issuance",
+    "exact Governance source materialization on a sovereign node",
+    "live WorkerCoordinator claim/fence",
+    "live sovereign Governance observer execution",
+    "CGE architecture decision",
+    "Governance repository persistence",
+    "runtime activation",
+    "heartbeat progression or effect"
+  ],
+  "authority_effect": "NONE_VALIDATION_EVIDENCE_ONLY",
+  "heartbeat_effect": false,
+  "archive_eligible": false
+}
