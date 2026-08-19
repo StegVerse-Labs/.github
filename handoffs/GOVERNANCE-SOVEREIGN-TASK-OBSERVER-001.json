@@ -21,6 +21,7 @@
   "source_producer": {
     "repository": "StegVerse-Labs/TVC",
     "task_ref": "StegVerse-Labs/TVC:tasks/TVC-PRIVATE-SOURCE-READ-001.json",
+    "consumer_handoff_ref": "StegVerse-Labs/TVC:docs/GOVERNANCE_SOURCE_MATERIALIZATION_MIRROR_HANDOFF.md",
     "capability_id": "tvc.private-source-read.v1",
     "source_repository": "StegVerse-Labs/Governance",
     "requested_ref": "refs/heads/main",
@@ -34,15 +35,26 @@
   "execution": {
     "worker_id": "governance-sovereign-task-observer-worker",
     "adapter_ref": "process:governance-sovereign-task-observer-v1",
-    "required_local_locators": [
-      "STEGVERSE_GOVERNANCE_SOURCE_ROOT"
-    ],
+    "optional_local_locator": "STEGVERSE_GOVERNANCE_SOURCE_ROOT",
+    "canonical_local_source_paths_supported": true,
     "command": ["python", "workers/governance_sovereign_task_observer_worker.py"],
     "success_transition": "GOVERNANCE_SOVEREIGN_TASK_OBSERVATION_COMPLETE",
     "blocked_transition": "GOVERNANCE_SOVEREIGN_TASK_OBSERVATION_BLOCKED"
   },
   "input_contract": {
     "source": "already-materialized exact Governance repository source",
+    "canonical_source_paths": [
+      "<central-runtime>/workloads/Governance",
+      "<central-runtime>/workloads/governance",
+      "~/.stegverse/workloads/Governance",
+      "~/.stegverse/workloads/governance",
+      "/var/lib/stegverse/workloads/Governance",
+      "/var/lib/stegverse/workloads/governance",
+      "~/.stegverse/source/Governance",
+      "~/.stegverse/source/governance",
+      "/var/lib/stegverse/source/Governance",
+      "/var/lib/stegverse/source/governance"
+    ],
     "required_source_files": [
       "GOVERNANCE_MIRROR_HANDOFF.md",
       "automation/governance_task_registry.json",
@@ -63,7 +75,7 @@
   },
   "failure_policy": {
     "repairable": "repair bounded source/observer defect and rerun the same observation predicate",
-    "missing_materialized_source": "remain BLOCKED on TVC-PRIVATE-SOURCE-READ-001 until a current exact TV/TVC-controlled materialization receipt is observed",
+    "missing_materialized_source": "remain BLOCKED on TVC-PRIVATE-SOURCE-READ-001 until a current exact TV/TVC-controlled materialization receipt/source tree is observed in an explicit or canonical local path",
     "unable_or_impossible_to_repair": "submit sandbox resolution task",
     "hosted_github_actions_substitute_allowed": false
   },
