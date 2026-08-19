@@ -21,7 +21,7 @@
     {"path": ".github/workflows/all-org-heartbeat-federation.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
     {"path": ".github/workflows/archive-readiness-validate.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
     {"path": ".github/workflows/external-timing-match-validation.yml", "classification": "RETAIN_PR_MANUAL_ONLY", "automatic_push": false},
-    {"path": ".github/workflows/heartbeat-worker-project.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
+    {"path": ".github/workflows/heartbeat-worker-project.yml", "classification": "SELECTIVE_REPAIR_INSTALLED_CORRECTED", "automatic_push": true, "repair_commit": "cf4a028047b2359c333cfae150963448e1c41522", "removed_main_push_paths": ["handoffs/**", "cost-basis/worker-runtime/**"], "retained_pr_paths": ["handoffs/**", "cost-basis/worker-runtime/**"]},
     {"path": ".github/workflows/mcp-activation-binding-test.yml", "classification": "RETAIN_PR_MANUAL_ONLY", "automatic_push": false},
     {"path": ".github/workflows/native-process-worker-canary.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
     {"path": ".github/workflows/org-control-plane-validate.yml", "classification": "SELECTIVE_REPAIR_INSTALLED_CORRECTED", "automatic_push": true, "repair_commit": "f99f4c3eac76bcac8590c4737f62250ac39330df", "removed_main_push_path": "handoffs/**", "retained_pr_path": "handoffs/**"},
@@ -43,14 +43,16 @@
   "completion_evidence": {
     "exact_live_tree_inventory": true,
     "exact_automatic_push_inventory": true,
-    "routine_main_state_persistence_trigger_inventory_complete": true,
-    "automatic_push_surface": "14/14 SELECTIVE_REPAIR_INSTALLED_OR_CORRECTED",
+    "routine_main_state_persistence_trigger_inventory_complete": false,
+    "automatic_push_surface": "14/14 ENUMERATED; LIVE_TRIGGER_REAUDIT_ACTIVE",
     "non_push_surface": "4/4 INTENTIONALLY_RETAINED",
     "org_control_plane_handoff_push_false_positive_corrected": true,
     "org_control_plane_repair_pr": 229,
     "org_control_plane_repair_commit": "f99f4c3eac76bcac8590c4737f62250ac39330df",
-    "post_repair_control_handoff_commit_pr_runs": 0,
+    "heartbeat_worker_handoff_cost_push_false_positive_corrected": true,
+    "heartbeat_worker_repair_pr": 230,
+    "heartbeat_worker_repair_commit": "cf4a028047b2359c333cfae150963448e1c41522",
     "post_repair_quantitative_repository_run_history": "AWAITING_SUPPORTED_REPOSITORY_LEVEL_RUN_HISTORY_READ"
   },
-  "status": "ACTIVE_EVIDENCE_FOLLOWUP_REQUIRED"
+  "status": "ACTIVE_LIVE_TRIGGER_REAUDIT_AND_EVIDENCE_FOLLOWUP_REQUIRED"
 }
