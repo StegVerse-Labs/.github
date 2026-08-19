@@ -88,14 +88,46 @@ jobs:
           python3 scripts/validate_session_assistance_scope.py
           python3 -m unittest tests.test_session_assistance_scope -v
           python3 scripts/check_required_terms.py docs/ORG_MIRROR_HANDOFF.md checks/org_mirror_handoff_terms.txt
+          python3 scripts/check_org_aggregation_manifest.py
 
-      - name: Prove GitHub token is not runtime authority
+      - name: Exercise allocator deterministically without persistence authority
         run: |
-          python3 - <<'PY'
+          before="$(sha256sum control/claims-active.json 2>/dev/null || true)"
+          python scripts/allocate_claims.py
+          python scripts/validate_org_control_plane.py
+          after="$(sha256sum control/claims-active.json 2>/dev/null || true)"
+          echo "allocator local before=${before} after=${after}"
+          echo 'Allocator mutations are runner-local validation evidence only; this workflow never commits or pushes them.'
+      - name: Validate check-in reconciliation
+        run: python scripts/reconcile_checkins.py
+      - name: Validate JSON and JSONL syntax
+        run: |
+          python - <<'PY'
+          import json
           from pathlib import Path
-          text=Path('.github/workflows/org-control-plane-validate.yml').read_text()
+          paths = sorted(Path('.').glob('control/**/*.json')) + sorted(Path('.').glob('schemas/**/*.json')) + sorted(Path('.').glob('tasks/**/*.json'))
+          for path in paths:
+              json.loads(path.read_text(encoding='utf-8'))
+          for path in sorted(Path('.').glob('events/**/*.jsonl')):
+              for line in path.read_text(encoding='utf-8').splitlines():
+                  json.loads(line)
+          print('ORG_CONTROL_JSON_JSONL_PASS')
+          PY
+      - name: Prove validation has no GitHub authority-bearing constructs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text=Path('.github/workflows/org-control-plane-validate.yml').read_text(encoding='utf-8')
+          pieces=(
+              ('contents', ': write'),
+              ('git', ' push'),
+              ('actions/', 'checkout@'),
+              ('actions/', 'setup-python@'),
+              ('secrets.', 'GITHUB_TOKEN'),
+              ('github.', 'token'),
+          )
+          found=[a+b for a,b in pieces if a+b in text]
+          assert not found, found
           assert 'permissions: {}' in text
-          assert 'secrets.' not in text
-          assert 'git push' not in text
-          print('ORG_CONTROL_PLANE_VALIDATION_ONLY_PASS')
+          print('ORG_CONTROL_VALIDATION_NON_AUTHORIZING_PASS')
           PY
