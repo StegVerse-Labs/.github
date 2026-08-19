@@ -105,5 +105,23 @@
         "runtime_authority": {"const": "StegVerse"}
       }
     }
-  }
+  },
+  "oneOf": [
+    {
+      "$comment": "Current canonical heartbeat carrier state. Every newly materialized observation must carry independent 10 ms oscillator provenance.",
+      "required": ["oscillator"],
+      "properties": {
+        "frequency_rule": {"const": "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL"}
+      }
+    },
+    {
+      "$comment": "Historical pre-correction HB29-HB31 observation compatibility only. GATE_PASSBAND_DERIVED is provenance, never current progression semantics.",
+      "not": {"required": ["oscillator"]},
+      "properties": {
+        "frequency_rule": {"const": "GATE_PASSBAND_DERIVED"},
+        "epoch": {"type": "integer", "minimum": 29, "maximum": 31},
+        "generation": {"type": "integer", "minimum": 0, "maximum": 31}
+      }
+    }
+  ]
 }
