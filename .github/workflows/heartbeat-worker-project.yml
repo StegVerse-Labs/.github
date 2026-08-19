@@ -10,10 +10,9 @@ on:
       - 'heartbeat_runtime/**'
       - 'workers/**'
       - 'tests/**'
-      - 'cost-basis/worker-runtime/**'
       - 'schemas/**'
       - 'scripts/**'
-      - 'handoffs/**'
+      - '.github/workflows/heartbeat-worker-project.yml'
   pull_request:
     paths:
       - 'handoffs/**'
