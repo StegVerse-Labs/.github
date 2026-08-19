@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.validation-probe/v0.1",
+  "probe_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001-VALIDATION",
+  "target_files": [
+    "workers/governance_sovereign_task_observer_worker.py",
+    "handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json",
+    "control/worker-registry.d/governance-sovereign-task-observer-001.json",
+    "control/process-worker-adapters.d/governance-sovereign-task-observer-001.json",
+    "tests/test_governance_sovereign_task_observer.py"
+  ],
+  "required_predicates": [
+    "deterministic unit tests pass",
+    "hosted execution rejected",
+    "GitHub credential environment rejected",
+    "repository writeback authority rejected",
+    "heartbeat authority rejected",
+    "CGE architecture watch remains blocked absent decision receipt"
+  ],
+  "authority_effect": "NONE_VALIDATION_ONLY",
+  "runtime_activation_claimed": false
+}
