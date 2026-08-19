@@ -1,0 +1,67 @@
+{
+  "schema": "stegverse.task-state/v1",
+  "task_id": "GATE-PASSBAND-REFERENCE-SNAPSHOT-010",
+  "goal_id": "GATE-PASSBAND-REFERENCE-SNAPSHOT-010",
+  "repository": "StegVerse-Labs/.github",
+  "canonical_issue": "StegVerse-Labs/.github#122",
+  "state": "SOURCE_IMPLEMENTED_VALIDATION_PENDING",
+  "objective": "Redefine GATE_PASSBAND_DERIVED as a non-authorizing reference-snapshot reacquisition policy that continuously re-observes required completion states at current carrier references without controlling heartbeat progression.",
+  "source": {
+    "handoff": "docs/GATE_PASSBAND_REFERENCE_SNAPSHOT_MIRROR_HANDOFF.md",
+    "implementation": "heartbeat_runtime/reference_snapshot.py",
+    "schema": "schemas/heartbeat-reference-snapshot.schema.json",
+    "policy": "control/heartbeat-reference-snapshot-policy.json",
+    "runner": "scripts/reacquire_heartbeat_reference_snapshot.py",
+    "tests": "tests/test_reference_snapshot_reacquisition.py",
+    "latest_snapshot": "control/heartbeat-reference-snapshot.json",
+    "history": "receipts/heartbeat-reference-snapshots/"
+  },
+  "initial_snapshot": {
+    "snapshot_id": "SHWP-DURABLE-RUNTIME-ACTIVATION-REFERENCE-MONITOR:31:165ceac24cfddfe7",
+    "snapshot_sha256": "611bf71f0e954603127c2841143519704977182e4d5f26e0ae23f1463c2a8262",
+    "reference_frame": "heartbeat_epoch:31",
+    "observed_carrier_frequency_rule": "GATE_PASSBAND_DERIVED",
+    "gate_state": "OPEN",
+    "complete_required_states": 0,
+    "required_states": 3,
+    "authority_effect": "NONE"
+  },
+  "required_runtime_states": [
+    "CORRECTED_OSCILLATOR_CARRIER_OBSERVED",
+    "TASK_CAPABLE_WORKER_CYCLE_OBSERVED",
+    "G18_RUNTIME_GOAL_TERMINAL"
+  ],
+  "reacquisition": {
+    "rule": "GATE_PASSBAND_DERIVED",
+    "passband_width_references": 1,
+    "on_required_state_change": true,
+    "on_passband_crossing_while_open": true,
+    "terminal_snapshot_closes_gate": true,
+    "periodic_reacquisition_after_closed": false,
+    "carrier_progression_effect": "NONE"
+  },
+  "authority": {
+    "primary_runtime": "StegVerse",
+    "third_party_role": "FALLBACK_ONLY",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "snapshot_grants_execution_authority": false,
+    "snapshot_grants_claim_or_fence_authority": false,
+    "snapshot_controls_carrier_progression": false
+  },
+  "validation": {
+    "tests_installed": true,
+    "exact_head_hosted_status_observed": false,
+    "hosted_pass_claimed": false,
+    "state": "PENDING_DIRECT_EVIDENCE"
+  },
+  "completion": {
+    "source_complete": true,
+    "validation_complete": false,
+    "live_snapshot_chain_active": true,
+    "monitored_gate_closed": false,
+    "terminal": false,
+    "next_authorized_action": "Run deterministic validation and continue invoking the reference snapshot reacquisition runner as carrier references or required-state evidence change. Close only when all required states are directly evidenced complete."
+  },
+  "archive_eligible": false
+}
