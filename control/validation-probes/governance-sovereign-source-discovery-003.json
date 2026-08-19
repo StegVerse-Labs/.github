@@ -1,0 +1,20 @@
+{
+  "schema": "stegverse.validation-probe/v0.1",
+  "probe_id": "GOVERNANCE-SOVEREIGN-SOURCE-DISCOVERY-003",
+  "target_files": [
+    "workers/governance_sovereign_task_observer_worker.py",
+    "tests/test_governance_sovereign_task_observer.py",
+    "handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json"
+  ],
+  "required_predicates": [
+    "explicit non-secret Governance source locator still works",
+    "canonical local Governance source path works without env binding",
+    "incomplete canonical candidate is not selected",
+    "hosted environment remains rejected",
+    "GitHub credential environment remains rejected",
+    "repository writeback and heartbeat authority remain rejected",
+    "AE exact effective denominator remains complete"
+  ],
+  "authority_effect": "NONE_VALIDATION_ONLY",
+  "runtime_activation_claimed": false
+}
