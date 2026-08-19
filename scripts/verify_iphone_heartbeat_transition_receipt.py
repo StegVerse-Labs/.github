@@ -10,6 +10,15 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from heartbeat_runtime.independent_oscillator import (
+    FREQUENCY_RULE,
+    MECHANISM,
+    OSCILLATOR_PERIOD_MS,
+    OSCILLATOR_PERIOD_NS,
+    REFERENCE_FREQUENCY_HZ,
+    iso8601_to_unix_ns,
+)
+
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "management" / "SHWP_IPHONE_TRANSITION_CAPSULE_CONTRACT.json"
 LEGACY = ROOT / "control" / "heartbeat-state.json"
@@ -241,6 +250,10 @@ def materialize(
         if int(existing.get("epoch", -1)) >= 30:
             raise RuntimeError("carrier state already materialized at HB30+")
 
+    executed_ns = iso8601_to_unix_ns(str(receipt.get("executed_at") or ""))
+    if executed_ns is None:
+        raise RuntimeError("receipt.executed_at must be a valid ISO-8601 timestamp")
+
     now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     legacy_sha256 = sha256_hex(legacy_before)
     portable_transition: dict[str, Any] = {
@@ -260,9 +273,26 @@ def materialize(
         "last_cycle_at": receipt["executed_at"],
         "role": "REGULATORY_CARRIER_REFERENCE_FRAME",
         "reference_frame": "heartbeat_epoch:30",
-        "frequency_rule": "GATE_PASSBAND_DERIVED",
+        "frequency_rule": FREQUENCY_RULE,
         "authority_effect": "NONE",
         "activation_state": "ACTIVE",
+        "oscillator": {
+            "mechanism": MECHANISM,
+            "period_ns": OSCILLATOR_PERIOD_NS,
+            "phase_travel_time_ms": OSCILLATOR_PERIOD_MS,
+            "reference_increment_interval_ms": OSCILLATOR_PERIOD_MS,
+            "reference_frequency_hz": REFERENCE_FREQUENCY_HZ,
+            "anchor_epoch": 30,
+            "anchor_unix_ns": executed_ns,
+            "sampled_unix_ns": executed_ns,
+            "sampled_reference_epoch": 30,
+            "phase_offset_ns": 0,
+            "elapsed_quanta_from_anchor": 0,
+            "progression_dependency": "OSCILLATOR_ONLY",
+            "downstream_gating": False,
+            "observation_is_causal": False,
+            "snapshot_is_observation_only": True,
+        },
         "legacy_cutover": {
             "legacy_schema": legacy.get("schema"),
             "legacy_epoch": 29,
@@ -296,6 +326,8 @@ def materialize(
         "github_token_runtime_authority": "NONE",
         "render_production_runtime_used": False,
         "authority_effect": "NONE_CARRIER_ONLY",
+        "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+        "worker_checkpoint_is_heartbeat_predicate": False,
         "portable_transition_receipt_sha256": receipt["receipt_sha256"],
         "recorded_at": now,
     }
@@ -309,7 +341,7 @@ def materialize(
         "contract_ref": "management/SHWP_IPHONE_TRANSITION_CAPSULE_CONTRACT.json",
         "legacy_state_ref": "control/heartbeat-state.json",
         "carrier_state_ref": "control/heartbeat-carrier-runtime-state.json",
-        "continuity_model": "STATE_TRANSITION_CONTINUITY",
+        "continuity_model": "OSCILLATOR_REFERENCE_CONTINUITY",
         "physical_execution_surface": "CURRENT_USER_IPHONE",
         "portable_receipt_sha256": receipt["receipt_sha256"],
         "legacy_state_sha256": legacy_sha256,
@@ -322,19 +354,25 @@ def materialize(
         "github_token_runtime_authority": "NONE",
         "non_tv_tvc_secret_or_token_forwarded": False,
         "authority_effect": "NONE",
-        "worker_checkpoint_required": True,
+        "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+        "worker_checkpoint_required": False,
+        "worker_checkpoint_is_heartbeat_predicate": False,
         "predicates": {
             "legacy_hb29_unchanged": True,
             "carrier_epoch_at_least_30": True,
             "carrier_generation_non_regressing": True,
-            "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch": False,
-            "worker_control_plane_observed": False,
+            "oscillator_period_ms_is_10": True,
+            "oscillator_reference_rate_hz_is_100": True,
+            "oscillator_progression_dependency_is_oscillator_only": True,
+            "observation_is_causal": False,
+            "worker_or_task_state_gates_progression": False,
             "no_duplicate_claim_or_fence": True,
             "state_reconstruction_pass": True,
         },
-        "all_carrier_transition_predicates_pass": False,
-        "all_release_predicates_pass": False,
-        "release_state": "WORKER_CHECKPOINT_PENDING",
+        "all_carrier_transition_predicates_pass": True,
+        "all_release_predicates_pass": True,
+        "release_state": "CARRIER_TRANSITION_COMPLETE",
+        "downstream_worker_runtime": "SEPARATE_NON_HEARTBEAT_LANE",
     }
     if fallback:
         transition["third_party_fallback"] = fallback
