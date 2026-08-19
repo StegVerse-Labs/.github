@@ -1,0 +1,90 @@
+{
+  "schema": "stegverse.heartbeat-reference-snapshot-policy/v1",
+  "monitor_id": "SHWP-DURABLE-RUNTIME-ACTIVATION-REFERENCE-MONITOR",
+  "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "revision": 1,
+  "reacquisition_rule": "GATE_PASSBAND_DERIVED",
+  "passband_width_references": 1,
+  "carrier_state_ref": "control/heartbeat-carrier-runtime-state.json",
+  "snapshot_state_ref": "control/heartbeat-reference-snapshot.json",
+  "required_states": [
+    {
+      "state_id": "CORRECTED_OSCILLATOR_CARRIER_OBSERVED",
+      "description": "The current persisted carrier sample is derived from the independent 10 ms oscillator and is explicitly observation-only.",
+      "checks": [
+        {
+          "type": "json_path",
+          "source_ref": "control/heartbeat-carrier-runtime-state.json",
+          "path": ["frequency_rule"],
+          "operator": "eq",
+          "expected": "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL"
+        },
+        {
+          "type": "json_path",
+          "source_ref": "control/heartbeat-carrier-runtime-state.json",
+          "path": ["oscillator", "progression_dependency"],
+          "operator": "eq",
+          "expected": "OSCILLATOR_ONLY"
+        },
+        {
+          "type": "json_path",
+          "source_ref": "control/heartbeat-carrier-runtime-state.json",
+          "path": ["oscillator", "snapshot_is_observation_only"],
+          "operator": "eq",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "state_id": "TASK_CAPABLE_WORKER_CYCLE_OBSERVED",
+      "description": "The runtime-goal receipt contains direct evidence of a task-capable WorkerCoordinator cycle.",
+      "checks": [
+        {
+          "type": "json_path",
+          "source_ref": "receipts/heartbeat-transition-continuity/latest.json",
+          "path": ["predicates", "worker_task_capable_cycle_observed"],
+          "operator": "eq",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "state_id": "G18_RUNTIME_GOAL_TERMINAL",
+      "description": "The existing G18 runtime-activation task is terminal and its old claim/worker binding has been released.",
+      "checks": [
+        {
+          "type": "registry_task_field",
+          "source_ref": "control/worker-registry.json",
+          "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+          "field": "state",
+          "operator": "eq",
+          "expected": "COMPLETED"
+        },
+        {
+          "type": "registry_task_field",
+          "source_ref": "control/worker-registry.json",
+          "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+          "field": "claim_id",
+          "operator": "is_none",
+          "expected": null
+        },
+        {
+          "type": "registry_task_field",
+          "source_ref": "control/worker-registry.json",
+          "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+          "field": "worker_id",
+          "operator": "is_none",
+          "expected": null
+        }
+      ]
+    }
+  ],
+  "authority": {
+    "authority_effect": "NONE",
+    "snapshot_controls_carrier_progression": false,
+    "snapshot_grants_execution_authority": false,
+    "snapshot_grants_claim_or_fence_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false
+  }
+}
