@@ -1,0 +1,60 @@
+{
+  "schema": "stegverse.governance-sovereign-task-observer-source-validation/v1",
+  "validated_at": "2026-08-19T05:50:03Z",
+  "target_task_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
+  "source_main_commit_before_probe": "817720a440e71b966d35ce636fa2dd4fb933eea9",
+  "validation_probe_pr": 234,
+  "validation_probe_head": "ff3f7a9f390aa51e3c5b036f20d6b8234f306f30",
+  "heartbeat_worker_project": {
+    "run_id": 32220913705,
+    "job_id": 95971069549,
+    "overall_conclusion": "failure_unrelated_legacy_semantic_debt",
+    "credential_token_proof": "NO_GITHUB_CREDENTIAL_TOKEN_PRESENT",
+    "compile_runtime_workers_scripts": "PASS",
+    "canonical_json_parse": "PASS",
+    "executable_handoff_validation": "PASS",
+    "governance_observer_tests": {
+      "blocked_watch_is_valid_sovereign_observation": "PASS",
+      "github_token_environment_is_rejected": "PASS",
+      "hosted_environment_is_rejected": "PASS",
+      "writeback_and_heartbeat_authority_are_rejected": "PASS"
+    },
+    "ae_retrospective_exact_denominator": "PASS",
+    "full_suite": {
+      "tests_run": 438,
+      "failures": 10,
+      "errors": 16,
+      "observer_failure_present": false,
+      "ae_denominator_failure_present": false,
+      "remaining_failure_class": "pre_existing_heartbeat_v12_and_state_transition_semantic_debt"
+    }
+  },
+  "render_organization_handoff_state": {
+    "run_id": 32220913692,
+    "conclusion": "success"
+  },
+  "organization_control_plane": {
+    "run_id": 32220913732,
+    "conclusion": "failure_pre_existing_handoff_ownership_debt",
+    "observer_registration_invalid": false
+  },
+  "source_validation_state": "SOURCE_VALIDATED_BOUNDED",
+  "runtime_execution_observed": false,
+  "tvtvc_governance_source_materialization_observed": false,
+  "canonical_scheduler_claim_observed": false,
+  "sovereign_observer_receipt_observed": false,
+  "governance_writeback_observed": false,
+  "cge_architecture_decision_observed": false,
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": false,
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "heartbeat_effect": false,
+  "authority_effect": "NONE_VALIDATION_EVIDENCE_ONLY",
+  "next_required_steps": [
+    "materialize exact Governance source through a separately authorized TV/TVC source producer",
+    "bind a canonical WorkerCoordinator claim to GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
+    "execute the sovereign observer on a declared StegVerse node",
+    "retain the resulting local sovereign observation receipt",
+    "keep the CGE architecture ownership watch blocked until its actual architecture-decision receipt exists"
+  ]
+}
