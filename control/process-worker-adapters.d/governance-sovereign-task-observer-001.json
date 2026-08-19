@@ -16,18 +16,23 @@
       "enabled": true,
       "env_allowlist": [
         "STEGVERSE_GOVERNANCE_SOURCE_ROOT",
-        "HOME",
-        "XDG_STATE_HOME",
-        "LOCALAPPDATA"
+        "HOME"
+      ],
+      "bound_state_root": "~/.stegverse/state/governance-sovereign-task-observer",
+      "bound_state_allowed_paths": [
+        "observed/**",
+        "receipts/**"
       ],
       "timeout_seconds": 240,
-      "type": "process_json_v0.1",
+      "type": "process_json_bound_state_v0.1",
       "notes": [
         "Consumes only already-materialized Governance source; source retrieval remains a separate TV/TVC-controlled producer.",
+        "The authoritative local observer state path is never exposed to the worker; only a sandbox-local bound-state mirror is provided.",
+        "Observed task state and observer receipts are projected only after current claim/fence and bound-state path validation.",
         "GitHub tokens, provider credentials, hosted checkout, repository push, and canonical Governance mutation are forbidden.",
         "The observer verifies that the CGE architecture ownership watch remains blocked until its actual decision receipt exists.",
-        "Canonical scheduler must bind a collision-safe claim before execution.",
-        "Unable/impossible repair follows the handoff sandbox-resolution policy.",
+        "Missing Governance source returns HANDOFF_READY and releases the worker rather than creating a duplicate resolution task.",
+        "Unable/impossible observer repair follows the handoff sandbox-resolution policy.",
         "Heartbeat progression is independent and is never caused, gated, delayed, or advanced by this worker."
       ]
     }
