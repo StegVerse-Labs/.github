@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.worker-capability-profiles/v0.1",
-  "generation": 13,
+  "generation": 14,
   "profiles": [
     {
       "profile_id": "deterministic-workflow-v1",
@@ -81,6 +81,27 @@
         "stegfin_sovereign_internal_trading_activation is limited to the zero-external-cost internal activation round and grants no external trade, wallet, custody or scale-up authority.",
         "orphan_lifecycle_reconstruction is continuity-only eligibility for a generated orphan-recovery handoff; it cannot execute the recovered parent task or revive an ended claim/fence.",
         "stegnutrition_machine_continuation is limited to locally materialized StegNutrition observation, fixed no-network validation, continuation projection and receipts; it grants no GitHub fetch/write, general code-generation, credential, deployment or release authority."
+      ]
+    },
+    {
+      "profile_id": "governance-sovereign-observer-v1",
+      "executor_type": "repository_worker",
+      "effect_class": "governance_observation_only",
+      "allowed_capabilities": [
+        "bounded_process_execution",
+        "governance_task_observation",
+        "registry_validation",
+        "architecture_watch_verification"
+      ],
+      "mutation_allowed": false,
+      "deployment_allowed": false,
+      "availability_grants_authority": false,
+      "capability_match_grants_authority": false,
+      "notes": [
+        "This profile is limited to credential-clean observation of already-materialized Governance source under a separately admitted executable handoff and current WorkerCoordinator fence.",
+        "It grants no Governance repository writeback, source retrieval, credential, CGE decision, release, deployment, or heartbeat authority.",
+        "Local observer state may be projected only through the ProcessWorkerAdapter bound-state scope admitted by the current handoff and claim/fence.",
+        "Missing materialized source is not a resolution authority: the worker must relinquish its claim and preserve TVC-PRIVATE-SOURCE-READ-001 as the existing source owner."
       ]
     },
     {
