@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:governance-sovereign-task-observer-v1",
+      "authority_ref": "handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "governance_task_observation",
+        "registry_validation",
+        "architecture_watch_verification"
+      ],
+      "command": ["python", "workers/governance_sovereign_task_observer_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_GOVERNANCE_SOURCE_ROOT",
+        "HOME",
+        "XDG_STATE_HOME",
+        "LOCALAPPDATA"
+      ],
+      "timeout_seconds": 240,
+      "type": "process_json_v0.1",
+      "notes": [
+        "Consumes only already-materialized Governance source; source retrieval remains a separate TV/TVC-controlled producer.",
+        "GitHub tokens, provider credentials, hosted checkout, repository push, and canonical Governance mutation are forbidden.",
+        "The observer verifies that the CGE architecture ownership watch remains blocked until its actual decision receipt exists.",
+        "Canonical scheduler must bind a collision-safe claim before execution.",
+        "Unable/impossible repair follows the handoff sandbox-resolution policy.",
+        "Heartbeat progression is independent and is never caused, gated, delayed, or advanced by this worker."
+      ]
+    }
+  ]
+}
