@@ -1,0 +1,64 @@
+{
+  "schema": "stegverse.worker-handoff/v0.1",
+  "task_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
+  "goal_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVATION-001",
+  "owner": {
+    "repository": "StegVerse-Labs/Governance",
+    "handoff_ref": "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_SOVEREIGN_TASK_OBSERVER_MIRROR_HANDOFF.md"
+  },
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "source_materialization_authority": "TV/TVC_ONLY_SEPARATE_PRODUCER",
+    "github_token_required": false,
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "repository_writeback_authority": false,
+    "governance_decision_authority": false,
+    "cge_decision_authority": false,
+    "runtime_authority": false,
+    "release_authority": false,
+    "heartbeat_authority": false
+  },
+  "execution": {
+    "worker_id": "governance-sovereign-task-observer-worker",
+    "adapter_ref": "process:governance-sovereign-task-observer-v1",
+    "required_local_locators": [
+      "STEGVERSE_GOVERNANCE_SOURCE_ROOT"
+    ],
+    "command": ["python", "workers/governance_sovereign_task_observer_worker.py"],
+    "success_transition": "GOVERNANCE_SOVEREIGN_TASK_OBSERVATION_COMPLETE",
+    "blocked_transition": "GOVERNANCE_SOVEREIGN_TASK_OBSERVATION_BLOCKED"
+  },
+  "input_contract": {
+    "source": "already-materialized exact Governance repository source",
+    "required_source_files": [
+      "GOVERNANCE_MIRROR_HANDOFF.md",
+      "automation/governance_task_registry.json",
+      "scripts/run_governance_tasks.py",
+      "docs/governance/CGE_DECISION_ISSUER_ARCHITECTURE_MIRROR_HANDOFF.md"
+    ],
+    "credential_authority": "TV/TVC",
+    "remote_checkout_allowed": false
+  },
+  "success_predicate": {
+    "registry_validation_status": "pass",
+    "cge_architecture_watch_matches_receipt_presence": true,
+    "github_token_used": false,
+    "repository_writeback_performed": false,
+    "authority_effect": "OBSERVATION_ONLY_NO_NEW_AUTHORITY",
+    "heartbeat_effect": false
+  },
+  "failure_policy": {
+    "repairable": "repair bounded source/observer defect and rerun the same observation predicate",
+    "missing_materialized_source": "remain BLOCKED until TV/TVC-controlled source materialization is observed",
+    "unable_or_impossible_to_repair": "submit sandbox resolution task",
+    "hosted_github_actions_substitute_allowed": false
+  },
+  "state": "HANDOFF_READY",
+  "blockers": [
+    "TV_TVC_MATERIALIZED_GOVERNANCE_SOURCE_NOT_YET_OBSERVED",
+    "CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND"
+  ],
+  "archive_eligible": false,
+  "authority_effect": "NONE_HANDOFF_ONLY",
+  "heartbeat_effect": false
+}
