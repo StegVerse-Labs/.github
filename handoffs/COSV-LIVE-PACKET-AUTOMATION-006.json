@@ -53,6 +53,7 @@
   },
   "authority": {
     "authority_source": "management/COSV_HEARTBEAT_STATE_PACKET_CONTRACT.json",
+    "policy_version": "cosv-heartbeat-state-packet-v1",
     "heartbeat_grants_execution_authority": false,
     "packet_grants_execution_authority": false,
     "credential_authority": "TV/TVC",
