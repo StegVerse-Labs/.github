@@ -103,7 +103,7 @@
     "allowed_services": [],
     "max_actions": 64,
     "max_retries": 128,
-    "external_cost_ceiling_usd": null,
+    "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 128,
     "rate_class": "test_lanes_autolaunch",
     "hosted_execution_allowed": false
@@ -124,7 +124,7 @@
     "terminal_destination": "master-records/orchestration"
   },
   "completion": {
-    "next_authorized_action": "After the fragment is projected into the live worker registry, the v12 carrier emits a non-authorizing assignment trigger. WorkerCoordinator independently validates this handoff, selects the exact worker capability, creates a fresh claim/fence, and invokes the conditional matrix worker. The worker remains BLOCKED until every canonical 9/9 predicate is directly satisfied, then executes one StegVerse PRIMARY candidate and four TVC external candidates, builds nine lane-evidence records and requires deterministic comparison PASS.",
+    "next_authorized_action": "After the fragment is projected into the live worker registry, the v12 carrier emits a non-authorizing assignment trigger. WorkerCoordinator independently validates this handoff, selects the exact worker capability, creates a fresh claim/fence, and invokes the conditional matrix worker. The worker remains BLOCKED until every canonical 9/9 predicate is directly satisfied, then executes one StegVerse PRIMARY candidate and four TVC external candidates, builds nine lane-evidence records and requires deterministic comparison PASS. External provider spend remains separately admitted by TVC and is not authorized by this handoff's zero-dollar ceiling.",
     "terminal_when": [
       "CANONICAL_9_LANE_TEST_COMPLETE",
       "all_nine_lanes_executed=true",
