@@ -1,0 +1,75 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
+  "tasks": [
+    {
+      "task_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
+      "goal_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVATION-001",
+      "state": "HANDOFF_READY",
+      "claim_id": null,
+      "archive_eligible": false,
+      "executor_binding": "AUTHORIZED",
+      "authorized_policy_version": "governance-sovereign-task-observer-v1",
+      "handoff_ref": "handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json",
+      "block_ref": "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_SOVEREIGN_TASK_OBSERVER_MIRROR_HANDOFF.md",
+      "evidence_refs": [
+        "workers/governance_sovereign_task_observer_worker.py",
+        "control/process-worker-adapters.d/governance-sovereign-task-observer-001.json",
+        "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_SOVEREIGN_TASK_OBSERVER_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Governance:automation/governance_task_registry.json",
+        "StegVerse-Labs/Governance:docs/governance/CGE_DECISION_ISSUER_ARCHITECTURE_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Governance#19"
+      ],
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:governance-sovereign-task-observer:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_SOVEREIGN_TASK_OBSERVER_MIRROR_HANDOFF.md"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json"
+        ],
+        "integration_evidence_refs": [
+          "workers/governance_sovereign_task_observer_worker.py",
+          "control/worker-registry.d/governance-sovereign-task-observer-001.json",
+          "control/process-worker-adapters.d/governance-sovereign-task-observer-001.json"
+        ],
+        "activation_proof_ref": null,
+        "blockers": [
+          "TV_TVC_MATERIALIZED_GOVERNANCE_SOURCE_NOT_YET_OBSERVED",
+          "CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND",
+          "SOVEREIGN_GOVERNANCE_TASK_OBSERVER_RECEIPT_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "governance-sovereign-task-observer-worker",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "observes_capability",
+        "target_phase": "ACTIVATED"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "worker_id": "governance-sovereign-task-observer-worker",
+      "status": "AVAILABLE",
+      "executor_type": "repository_worker",
+      "adapter_ref": "process:governance-sovereign-task-observer-v1",
+      "authority_source": "handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "governance_task_observation",
+        "registry_validation",
+        "architecture_watch_verification"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "last_seen_at": null
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "priority": "release"
+}
