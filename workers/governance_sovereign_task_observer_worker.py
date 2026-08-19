@@ -12,6 +12,7 @@ from typing import Any, Mapping
 TASK_ID = "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001"
 WORKER_ID = "governance-sovereign-task-observer-worker"
 ROOT_ENV = "STEGVERSE_GOVERNANCE_SOURCE_ROOT"
+BOUND_STATE_ENV = "STEGVERSE_BOUND_STATE_ROOT"
 NODE_MARKERS = (Path("/etc/stegverse/node.json"), Path.home() / ".stegverse" / "node.json")
 HOSTED_ENV = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 FORBIDDEN_CREDENTIAL_ENV = (
@@ -24,6 +25,10 @@ REQUIRED_SOURCE_FILES = (
     Path("scripts/run_governance_tasks.py"),
     Path("docs/governance/CGE_DECISION_ISSUER_ARCHITECTURE_MIRROR_HANDOFF.md"),
 )
+
+
+class SourceUnavailable(RuntimeError):
+    """Exact Governance source is not yet locally materialized."""
 
 
 def truthy(value: str | None) -> bool:
@@ -68,8 +73,8 @@ def validate_invocation(invocation: Mapping[str, Any]) -> None:
         raise RuntimeError("handoff permits non-TV/TVC secret/token")
     if authority.get("repository_writeback_authority") is not False:
         raise RuntimeError("observer may not write back to Governance repository")
-    if authority.get("heartbeat_authority") is not False:
-        raise RuntimeError("observer may not have heartbeat authority")
+    if authority.get("heartbeat_grants_execution_authority") is not False:
+        raise RuntimeError("heartbeat may not grant observer execution authority")
 
 
 def local_governance_roots() -> list[Path]:
@@ -116,9 +121,18 @@ def find_source_root() -> Path | None:
 def require_source_root() -> Path:
     root = find_source_root()
     if root is None:
-        raise RuntimeError(
+        raise SourceUnavailable(
             "materialized Governance source root is missing from the explicit locator and canonical StegVerse source/workload paths"
         )
+    return root
+
+
+def require_bound_state_root() -> Path:
+    raw = str(os.getenv(BOUND_STATE_ENV) or "").strip()
+    if not raw:
+        raise RuntimeError("bounded observer state root is not available")
+    root = Path(raw).expanduser().resolve()
+    root.mkdir(parents=True, exist_ok=True)
     return root
 
 
@@ -132,23 +146,20 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
     node_path, node = find_node()
     validate_invocation(invocation)
     root = require_source_root()
+    bound_state = require_bound_state_root()
 
     registry = read_json(root / "automation" / "governance_task_registry.json")
     task_ids = {str(item.get("id")) for item in registry.get("tasks", []) if isinstance(item, dict)}
     if "CGE-DECISION-ISSUER-ARCHITECTURE-OWNERSHIP-001" not in task_ids:
         raise RuntimeError("Governance registry missing CGE architecture ownership watch")
 
-    state_root = Path.home() / ".stegverse" / "state" / "governance-task-observer"
-    receipt_root = Path.home() / ".stegverse" / "receipts"
-    state_root.mkdir(parents=True, exist_ok=True)
-    receipt_root.mkdir(parents=True, exist_ok=True)
-    observed = state_root / "latest.json"
+    observed = bound_state / "observed" / "latest.json"
+    observed.parent.mkdir(parents=True, exist_ok=True)
 
     child = {
         "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
-        "HOME": os.environ.get("HOME", str(Path.home())),
-        "LANG": os.environ.get("LANG", "C.UTF-8"),
-        "LC_ALL": os.environ.get("LC_ALL", "C.UTF-8"),
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
     }
     proc = subprocess.run(
         [sys.executable, "scripts/run_governance_tasks.py", "--receipt", str(observed)],
@@ -177,7 +188,7 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         raise RuntimeError(f"CGE architecture watch state mismatch: expected {expected_state}")
 
     receipt = {
-        "schema": "stegverse.governance.sovereign-task-observer-receipt/v0.1",
+        "schema": "stegverse.governance.sovereign-task-observer-receipt/v0.2",
         "task_id": TASK_ID,
         "state": "COMPLETE",
         "transition_id": "GOVERNANCE_SOVEREIGN_TASK_OBSERVATION_COMPLETE",
@@ -187,20 +198,82 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "node_declaration_source": node.get("declaration_source"),
         "source_root": str(root),
         "source_discovery_mode": "explicit" if str(os.getenv(ROOT_ENV) or "").strip() else "canonical_local_path",
-        "observed_state_ref": str(observed),
+        "observed_state_ref": "observed/latest.json",
         "registry_validation_status": "pass",
         "cge_architecture_watch_state": cge.get("state"),
         "architecture_decision_receipt_observed": decision_receipt.is_file(),
         "credential_authority": "TV/TVC",
         "github_token_used": False,
         "repository_writeback_performed": False,
+        "bound_state_projection_required": True,
         "authority_effect": "OBSERVATION_ONLY_NO_NEW_AUTHORITY",
         "heartbeat_effect": False,
     }
-    target = receipt_root / "governance-sovereign-task-observer-latest.json"
+    target = bound_state / "receipts" / "latest.json"
+    target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    receipt["local_receipt_ref"] = str(target)
+    receipt["local_receipt_ref"] = "receipts/latest.json"
     return receipt
+
+
+def completed_response(receipt: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "schema": "stegverse.worker-response/v0.1",
+        "state": "COMPLETED",
+        "transition_id": "GOVERNANCE_SOVEREIGN_TASK_OBSERVATION_COMPLETE",
+        "transition_sequence": 2,
+        "expected_next_transition": None,
+        "evidence_refs": [str(receipt["local_receipt_ref"])],
+        "credential_authority": "TV/TVC",
+        "github_token_used": False,
+        "repository_writeback_performed": False,
+    }
+
+
+def source_wait_response(exc: Exception) -> dict[str, Any]:
+    return {
+        "schema": "stegverse.worker-response/v0.1",
+        "state": "HANDOFF_READY",
+        "transition_id": "GOVERNANCE_SOURCE_MATERIALIZATION_PENDING",
+        "transition_sequence": 1,
+        "expected_next_transition": "GOVERNANCE_SOVEREIGN_TASK_OBSERVATION_COMPLETE",
+        "error": str(exc),
+        "evidence_refs": ["StegVerse-Labs/TVC:tasks/TVC-PRIVATE-SOURCE-READ-001.json"],
+        "credential_authority": "TV/TVC",
+        "github_token_used": False,
+        "repository_writeback_performed": False,
+    }
+
+
+def blocked_response(exc: Exception) -> dict[str, Any]:
+    return {
+        "schema": "stegverse.worker-response/v0.1",
+        "state": "BLOCKED",
+        "transition_id": "GOVERNANCE_SOVEREIGN_TASK_OBSERVATION_BLOCKED",
+        "transition_sequence": 1,
+        "expected_next_transition": "GOVERNANCE_SOVEREIGN_TASK_OBSERVATION_COMPLETE",
+        "error": str(exc),
+        "evidence_refs": [],
+        "credential_authority": "TV/TVC",
+        "github_token_used": False,
+        "repository_writeback_performed": False,
+        "blocker": {
+            "trigger_type": "OBSERVATION_EXECUTION_DEFECT",
+            "dependency_class": "INTERNAL_CAPABILITY",
+            "problem_statement": str(exc),
+            "solution_required": True,
+            "workaround_candidates": [
+                "sandbox-test a bounded repair of the Governance observer/adapter contract",
+                "revalidate the exact observer predicate before readmitting execution"
+            ],
+            "next_solution_action": "Submit the canonical sandbox-resolution successor task for the observer defect; do not widen credential, repository-write, or heartbeat authority.",
+            "resolvable_by_current_worker": False,
+            "escalation_target": "SOVEREIGN_RUNTIME_SANDBOX_RESOLUTION",
+            "required_capabilities": ["repository_resolution", "sandbox_validation"],
+            "completion_evidence": ["bounded repair test PASS", "observer process-adapter contract PASS"],
+            "same_level_retry_authorized": False,
+        },
+    }
 
 
 def main() -> int:
@@ -210,28 +283,14 @@ def main() -> int:
         if not isinstance(invocation, dict):
             raise RuntimeError("worker invocation must be a JSON object")
         receipt = execute(invocation)
-        print(json.dumps({
-            "schema": "stegverse.worker-response/v0.1",
-            "state": "COMPLETE",
-            "transition_id": "GOVERNANCE_SOVEREIGN_TASK_OBSERVATION_COMPLETE",
-            "evidence_refs": [receipt["local_receipt_ref"]],
-            "credential_authority": "TV/TVC",
-            "github_token_used": False,
-            "repository_writeback_performed": False,
-        }, sort_keys=True))
+        print(json.dumps(completed_response(receipt), sort_keys=True))
+        return 0
+    except SourceUnavailable as exc:
+        print(json.dumps(source_wait_response(exc), sort_keys=True))
         return 0
     except Exception as exc:
-        print(json.dumps({
-            "schema": "stegverse.worker-response/v0.1",
-            "state": "BLOCKED",
-            "transition_id": "GOVERNANCE_SOVEREIGN_TASK_OBSERVATION_BLOCKED",
-            "error": str(exc),
-            "evidence_refs": [],
-            "credential_authority": "TV/TVC",
-            "github_token_used": False,
-            "repository_writeback_performed": False,
-        }, sort_keys=True))
-        return 75
+        print(json.dumps(blocked_response(exc), sort_keys=True))
+        return 0
 
 
 if __name__ == "__main__":
