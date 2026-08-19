@@ -15,10 +15,12 @@
       "evidence_refs": [
         "workers/governance_sovereign_task_observer_worker.py",
         "control/process-worker-adapters.d/governance-sovereign-task-observer-001.json",
+        "docs/receipts/governance-sovereign-task-observer-source-validation-2026-08-19.json",
         "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_SOVEREIGN_TASK_OBSERVER_MIRROR_HANDOFF.md",
         "StegVerse-Labs/Governance:automation/governance_task_registry.json",
         "StegVerse-Labs/Governance:docs/governance/CGE_DECISION_ISSUER_ARCHITECTURE_MIRROR_HANDOFF.md",
-        "StegVerse-Labs/Governance#19"
+        "StegVerse-Labs/Governance#19",
+        "StegVerse-Labs/TVC:tasks/TVC-PRIVATE-SOURCE-READ-001.json"
       ],
       "admissible_existence": {
         "capability_id": "stegverse:capability:governance-sovereign-task-observer:v1",
@@ -28,15 +30,18 @@
           "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_SOVEREIGN_TASK_OBSERVER_MIRROR_HANDOFF.md"
         ],
         "admissibility_evidence_refs": [
-          "handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json"
+          "handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json",
+          "docs/receipts/governance-sovereign-task-observer-source-validation-2026-08-19.json"
         ],
         "integration_evidence_refs": [
           "workers/governance_sovereign_task_observer_worker.py",
           "control/worker-registry.d/governance-sovereign-task-observer-001.json",
-          "control/process-worker-adapters.d/governance-sovereign-task-observer-001.json"
+          "control/process-worker-adapters.d/governance-sovereign-task-observer-001.json",
+          "StegVerse-Labs/TVC:tasks/TVC-PRIVATE-SOURCE-READ-001.json"
         ],
         "activation_proof_ref": null,
         "blockers": [
+          "TVC_PRIVATE_SOURCE_READ_GOVERNANCE_CONSUMER_AUTHORITY_INJECTION_PENDING",
           "TV_TVC_MATERIALIZED_GOVERNANCE_SOURCE_NOT_YET_OBSERVED",
           "CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND",
           "SOVEREIGN_GOVERNANCE_TASK_OBSERVER_RECEIPT_NOT_YET_OBSERVED"
