@@ -15,10 +15,8 @@ OLD_FENCE = 20
 CHECKPOINT_REF = "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json"
 RECEIPT = ROOT / "receipts" / "ecosystem-chat-sovereign-inference" / "orphan-recovery-HB28.json"
 
-
 def stable_hash(value: dict) -> str:
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
-
 
 def load_json(path: Path) -> dict | None:
     try:
@@ -27,7 +25,6 @@ def load_json(path: Path) -> dict | None:
         return None
     return value if isinstance(value, dict) else None
 
-
 def atomic_write(path: Path, value: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as stream:
@@ -35,7 +32,6 @@ def atomic_write(path: Path, value: dict) -> None:
         stream.write("\n")
         name = stream.name
     os.replace(name, path)
-
 
 def master_records_roots() -> list[Path]:
     values: list[Path] = []
@@ -50,6 +46,24 @@ def master_records_roots() -> list[Path]:
     ])
     return values
 
+def canonical_master_records_ref(path: Path | None) -> str | None:
+    if path is None:
+        return None
+    resolved = path.resolve()
+    for root in master_records_roots():
+        try:
+            relative = resolved.relative_to(root.resolve())
+        except ValueError:
+            continue
+        return f"master-records/orchestration:{relative.as_posix()}"
+    return None
+
+def canonical_checkpoint_hash(checkpoint: dict | None) -> str | None:
+    if not isinstance(checkpoint, dict):
+        return None
+    value = dict(checkpoint)
+    value.pop("checkpoint_sha256", None)
+    return stable_hash(value)
 
 def find_lifecycle_custody() -> tuple[Path | None, dict | None]:
     for root in master_records_roots():
@@ -75,7 +89,6 @@ def find_lifecycle_custody() -> tuple[Path | None, dict | None]:
             ):
                 return path, record
     return None, None
-
 
 def main() -> int:
     invocation = json.load(__import__("sys").stdin)
@@ -103,6 +116,7 @@ def main() -> int:
         and checkpoint.get("claim_id") == OLD_CLAIM
         and checkpoint.get("fencing_token") == OLD_FENCE
         and checkpoint.get("heartbeat_epoch") == 25
+        and checkpoint.get("checkpoint_sha256") == canonical_checkpoint_hash(checkpoint)
     )
     old_authority_ended = bool(
         isinstance(parent, dict)
@@ -112,7 +126,8 @@ def main() -> int:
         and {"WORKER_ORPHANED", "OLD_AUTHORITY_RELEASED", "RECOVERY_RECONSTRUCTION_REQUIRED"}.issubset(set(parent.get("archive_reason_codes") or []))
     )
     custody_path, custody = find_lifecycle_custody()
-    custody_valid = custody is not None
+    custody_ref = canonical_master_records_ref(custody_path)
+    custody_valid = custody is not None and custody_ref is not None
 
     passed = checkpoint_valid and old_authority_ended and custody_valid
     receipt = {
@@ -125,10 +140,11 @@ def main() -> int:
         "old_claim_id": OLD_CLAIM,
         "old_fencing_token": OLD_FENCE,
         "checkpoint_ref": CHECKPOINT_REF,
-        "checkpoint_sha256": stable_hash(checkpoint) if checkpoint else None,
+        "checkpoint_sha256": checkpoint.get("checkpoint_sha256") if checkpoint else None,
         "checkpoint_valid": checkpoint_valid,
         "old_authority_ended": old_authority_ended,
-        "master_records_custody_ref": str(custody_path) if custody_path else None,
+        "master_records_custody_ref": custody_ref,
+        "master_records_custody_record_hash": custody.get("record_hash") if custody else None,
         "master_records_custody_valid": custody_valid,
         "old_authority_reused": False,
         "successor_authority_granted": False,
@@ -166,14 +182,13 @@ def main() -> int:
         "expected_next_earliest_epoch": None if passed else epoch + 1,
         "expected_next_latest_epoch": None if passed else epoch + 1,
         "checkpoint_ref": "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
-        "evidence_refs": [CHECKPOINT_REF, "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json"] + ([str(custody_path)] if custody_path else []),
+        "evidence_refs": [CHECKPOINT_REF, "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json"] + ([custody_ref] if custody_ref else []),
         "blocker": blocker,
         "cost_observation": {"hb_transition_count": 1, "compute_units": 1, "external_cost_usd": 0, "task_class": "orphan_lifecycle_reconstruction"},
     }
     json.dump(response, __import__("sys").stdout, sort_keys=True)
     __import__("sys").stdout.write("\n")
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())
