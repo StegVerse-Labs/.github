@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
   "created_at": "2026-08-10T15:38:34Z",
-  "updated_at": "2026-08-18T18:31:00-05:00",
+  "updated_at": "2026-08-20T17:40:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
@@ -86,7 +86,8 @@
       "authorized_promotion": "BLOCKED_OR_QUARANTINED_TO_HANDOFF_READY_ONLY",
       "promotion_mints_claim_or_fence": false,
       "validation_commit": "bb7c85385782eb499fedecd9689a3f59735311d5",
-      "test_commit": "83a3450dec202914007305ea0637dbdfa0f33fb4"
+      "test_commit": "83a3450dec202914007305ea0637dbdfa0f33fb4",
+      "observed_registry_state": "HANDOFF_READY"
     }
   },
   "continuity": {
@@ -97,25 +98,26 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "On the first real WorkerCoordinator cycle, reconcile the existing canonical recovery task from its historical BLOCKED projection to HANDOFF_READY only after exact admitted authorization validation; mint no authority. After a non-authorizing carrier sample carries its assignment-trigger packet, a later WorkerCoordinator cycle independently acquires a fresh recovery claim/fence greater than 20, validates the ended HB25/G20 lifecycle against canonical Master Records custody, and writes only the recovery receipt. PASS completes recovery; the parent then independently re-enters execution under another fresh authorized fence greater than 20.",
+    "next_authorized_action": "Any compliant StegVerse task-control executor with orphan_lifecycle_reconstruction capability may atomically acquire the already HANDOFF_READY recovery task under a fresh fencing token strictly greater than 20, validate the ended HB25/G20 lifecycle against canonical Master Records custody, and write only the recovery receipt. No G18 cleanup, WorkerCoordinator-specific promotion, carrier-trigger prerequisite, GitHub token, or parent inference authority is required. PASS completes recovery; the parent then independently re-enters execution under another fresh authorized fence greater than 20.",
     "terminal_when": [
-      "Canonical registry records recovery HANDOFF_READY from exact bounded authorization without claim/fence mutation",
-      "A later WorkerCoordinator activation uses a fresh fencing token greater than 20",
+      "Canonical registry remains HANDOFF_READY until a lawful fresh claim/fence is acquired",
+      "Recovery execution uses a fresh fencing token greater than 20",
       "Reconstruction receipt is durable and Master Records evidence is bound",
       "Old claim and fence remain unusable",
       "Recovery reaches COMPLETED without granting parent execution authority"
     ],
-    "source_integration_state": "AUTHORIZED_REGISTRY_PROMOTION_IMPLEMENTED_VALIDATION_PENDING",
-    "live_state": "BASE_REGISTRY_STILL_BLOCKED_UNTIL_REAL_WORKER_CYCLE"
+    "source_integration_state": "AUTHORIZED_REGISTRY_PROMOTION_COMPLETE",
+    "live_state": "HANDOFF_READY_AWAITING_FRESH_FENCE_EXECUTION"
   },
   "constraint": {
     "operational_state": "ACTIVE_MACHINE_CONTINUATION",
-    "condition": "FIRST_WORKER_RECONCILIATION_AND_FRESH_TASK_CONTROL_CLAIM_NOT_YET_OBSERVED",
+    "condition": "FRESH_TASK_CONTROL_CLAIM_AND_RECOVERY_EXECUTION_NOT_YET_OBSERVED",
     "owner": "ecosystem-chat-orphan-recovery-worker via independently admitted StegVerse task control",
-    "next_solution_action": "REAL_WORKER_CYCLE_PROMOTES_READY_THEN_CARRIER_TRIGGER_THEN_FRESH_RECOVERY_CLAIM_AND_EXECUTE",
-    "machine_observable_completion_condition": "base registry recovery record reaches HANDOFF_READY without claim/fence; later recovery task reaches COMPLETED with durable Master Records-bound receipt under a fresh fencing token greater than 20",
+    "next_solution_action": "ACQUIRE_FRESH_FENCE_GT20_AND_EXECUTE_RECOVERY_NOW",
+    "machine_observable_completion_condition": "recovery task reaches COMPLETED with durable Master Records-bound receipt under a fresh fencing token greater than 20",
     "human_action_required": false,
     "github_token_required": false,
-    "g18_cleanup_required": false
+    "g18_cleanup_required": false,
+    "workercoordinator_specific_execution_required": false
   }
 }
