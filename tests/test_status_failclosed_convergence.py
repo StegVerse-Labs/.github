@@ -39,6 +39,46 @@ class StatusFailClosedConvergenceTests(unittest.TestCase):
         self.assertFalse(projection["archive_eligible"])
         self.assertIn("EXECUTOR_AMBIGUOUS", projection["archive_reason_codes"])
 
+    def test_reference_only_carrier_is_not_execution_authority(self):
+        h = handoff("RECOVERY")
+        h["activation"]["carrier"] = "heartbeat_reference_only"
+        h["activation"]["executor_binding"] = "AUTHORIZED"
+        h["activation"]["checkout_policy"] = "fenced_atomic_checkout"
+        h["execution"]["required_capabilities"] = ["orphan_lifecycle_reconstruction"]
+        task = {"task_id": "RECOVERY", "goal_id": "RECOVERY", "state": "HANDOFF_READY", "executor_binding": "AUTHORIZED", "worker_id": None, "worker_instance_id": None, "claim_id": None, "heartbeat_timing": None, "archive_reason_codes": [], "evidence_refs": []}
+        workers = [{"worker_id": "recovery", "status": "AVAILABLE", "adapter_ref": "process:recovery", "capabilities": ["orphan_lifecycle_reconstruction"]}]
+        projection, errors = evaluate_status(task, h, workers, 29)
+        self.assertEqual(errors, [])
+        self.assertEqual(projection["activation_carrier"], "heartbeat_reference_only")
+        self.assertEqual(projection["activation_mode"], "INDEPENDENT_TASK_CONTROL_WITH_HEARTBEAT_REFERENCE")
+        self.assertFalse(projection["heartbeat_reference_is_causal"])
+        self.assertTrue(projection["authority_resolved"])
+        self.assertTrue(projection["executor_resolved"])
+
+    def test_existing_bound_runtime_does_not_require_synthetic_heartbeat_activation_block(self):
+        h = handoff("BOUND")
+        h.pop("activation")
+        task = {
+            "task_id": "BOUND", "goal_id": "BOUND", "state": "ACTIVE", "executor_binding": "BOUND",
+            "worker_id": "worker", "worker_instance_id": "instance", "claim_id": "claim",
+            "heartbeat_timing": {"start_epoch": 1, "last_response_epoch": 2, "last_transition_epoch": 2, "current_transition": "WORK", "transition_sequence": 1, "max_missing_response_beats": 2, "expiry_epoch": 10, "expiry_basis": "TASK_CLASS_COST_BASIS", "fencing_token": 3},
+            "last_checkpoint_ref": "checkpoints/workers/BOUND/HB2-G3.json", "archive_reason_codes": [], "evidence_refs": []
+        }
+        projection, errors = evaluate_status(task, h, [], 3)
+        self.assertEqual(errors, [])
+        self.assertEqual(projection["activation_mode"], "EXISTING_BOUND_TASK_CONTROL")
+        self.assertIsNone(projection["activation_carrier"])
+        self.assertFalse(projection["heartbeat_reference_is_causal"])
+
+    def test_unbound_activation_without_explicit_authority_fails_closed(self):
+        h = handoff("TASK-A")
+        h["activation"].pop("executor_binding", None)
+        task = {"task_id": "TASK-A", "goal_id": "TASK-A", "state": "HANDOFF_READY", "executor_binding": "AUTHORIZED", "worker_id": None, "worker_instance_id": None, "claim_id": None, "heartbeat_timing": None, "archive_reason_codes": [], "evidence_refs": []}
+        projection, errors = evaluate_status(task, h, [], 1)
+        self.assertTrue(errors)
+        self.assertFalse(projection["archive_eligible"])
+        self.assertIn("VALIDATION_ERROR_FAIL_CLOSED", projection["archive_reason_codes"])
+
     def test_query_is_deterministic_observational_and_includes_checkpoint_evidence(self):
         status = {"schema": "stegverse.heartbeat-worker-status/v0.3", "source_registry_generation": 9, "heartbeat_epoch": 5, "tasks": [
             {"task_id": "B", "goal_id": "G2", "state": "BLOCKED", "archive_eligible": False, "archive_reason_codes": ["BLOCKED_UNCLAIMED"], "worker_id": None, "claim_id": None, "fencing_token": None, "last_checkpoint_ref": "cp-b", "next_authorized_action": "wait", "evidence_refs": ["e2"]},
