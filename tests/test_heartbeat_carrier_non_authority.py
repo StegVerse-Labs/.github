@@ -7,15 +7,14 @@ from heartbeat_runtime.worker_runtime import WorkerCoordinator
 
 
 class HeartbeatCarrierNonAuthorityTests(unittest.TestCase):
-    def test_canonical_carrier_is_v12(self):
-        self.assertEqual(CarrierHeartbeatRuntime.__module__, "heartbeat_runtime.engine_v12")
+    def test_canonical_carrier_is_fragment_aware_v13_without_authority(self):
+        self.assertEqual(CarrierHeartbeatRuntime.__module__, "heartbeat_runtime.engine_v13")
         source = inspect.getsource(CarrierHeartbeatRuntime.cycle)
         forbidden = (
             "issue_claim_assertions",
             "_invoke(",
             "_activate_one(",
             "_expire(",
-            "_apply_registry_fragments(",
             "_reconcile_orphan_recovery_quarantines(",
         )
         for token in forbidden:
@@ -25,6 +24,10 @@ class HeartbeatCarrierNonAuthorityTests(unittest.TestCase):
         self.assertIn('"tasks_activated": 0', source)
         self.assertIn('"leases_expired": 0', source)
         self.assertIn('"authority_effect": "NONE_CARRIER_ONLY"', source)
+
+        fragment_source = inspect.getsource(CarrierHeartbeatRuntime._assignment_triggers)
+        self.assertIn("_apply_registry_fragments", fragment_source)
+        self.assertIn("return super()._assignment_triggers", fragment_source)
 
     def test_worker_surfaces_are_not_the_production_carrier(self):
         self.assertEqual(HeartbeatRuntime.__module__, "heartbeat_runtime.engine_v11")
