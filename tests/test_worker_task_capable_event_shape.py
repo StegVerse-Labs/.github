@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import inspect
 import json
 import tempfile
 import unittest
@@ -52,6 +53,14 @@ class WorkerTaskCapableEventShapeTests(unittest.TestCase):
                 "authority_effect": False,
             }) + "\n", encoding="utf-8")
             self.assertTrue(release.task_capable_worker_cycle_observed(root, {}, 31))
+
+    def test_task_capable_observer_is_downstream_only(self) -> None:
+        source = inspect.getsource(release.task_capable_worker_cycle_observed)
+        self.assertNotIn("sample_state", source)
+        self.assertNotIn("derive_reference", source)
+        self.assertNotIn("CarrierHeartbeatRuntime", source)
+        self.assertNotIn("claim_id =", source)
+        self.assertNotIn("fencing_token =", source)
 
 
 if __name__ == "__main__":
