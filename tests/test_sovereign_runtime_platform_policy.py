@@ -41,20 +41,24 @@ class SovereignRuntimePlatformPolicyTests(unittest.TestCase):
             self.assertIn("GITHUB_ACTIONS", source)
 
         self.assertIn("THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_TRANSITION_EVIDENCE", activation)
-        self.assertIn("HOSTED_ENVIRONMENT_CANNOT_PRODUCE_SOVEREIGN_TRANSITION", transition)
+        self.assertIn("THIRD_PARTY_HOST_IS_NOT_PRIMARY_SOVEREIGN_CARRIER_EVIDENCE", transition)
         self.assertIn("hosted_environment", resolution)
         self.assertIn("hosted", bootstrap.lower())
         self.assertIn("hosted", verifier.lower())
 
-    def test_state_transition_contract_forbids_host_substitution(self) -> None:
+    def test_oscillator_continuity_forbids_host_substitution(self) -> None:
         contract = json.loads((ROOT / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json").read_text(encoding="utf-8"))
-        self.assertFalse(contract["another_physical_machine_required"])
-        self.assertFalse(contract["always_on_external_host_required"])
-        self.assertFalse(contract["wall_clock_continuous_process_required"])
-        self.assertEqual(contract["sole_permitted_user_physical_carrier"], "CURRENT_USER_IPHONE")
+        self.assertEqual(contract["continuity_model"], "INDEPENDENT_OSCILLATOR_CONTINUITY")
+        self.assertEqual(contract["oscillator"]["progression_dependency"], "OSCILLATOR_ONLY")
+        self.assertFalse(contract["oscillator"]["worker_or_task_gating"])
+        fallback = contract["third_party_fallback_policy"]
+        self.assertFalse(fallback["required_dependency"])
+        self.assertEqual(fallback["role"], "FALLBACK_ONLY")
+        self.assertEqual(fallback["primary_runtime_authority"], "StegVerse")
         prohibited = " ".join(contract["prohibited_substitutions"])
         self.assertIn("Render", prohibited)
         self.assertIn("GitHub Actions", prohibited)
+        self.assertIn("third-party fallback", prohibited)
         self.assertEqual(contract["credential_boundary"]["credential_authority"], "TV/TVC")
 
 
