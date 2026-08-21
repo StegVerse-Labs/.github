@@ -24,7 +24,8 @@ class SovereignRuntimeHandoffContractTests(unittest.TestCase):
         self.assertEqual(self.contract["oscillator_producer"], "heartbeat_runtime/oscillator_producer.py")
         scoped = OSCILLATOR_HANDOFF.read_text(encoding="utf-8")
         self.assertIn("heartbeat_runtime/oscillator_producer.py", scoped)
-        self.assertIn("OSCILLATOR_PHASE_DRIVEN", scoped)
+        self.assertIn("public runner production mode: oscillator phase deadline driven", scoped)
+        self.assertIn("progression dependency: OSCILLATOR_ONLY", scoped)
         self.assertIn("carrier event prerequisite: false", scoped)
 
     def test_legacy_hb29_is_immutable_while_oscillator_produces_successors(self):
