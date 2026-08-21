@@ -1,0 +1,140 @@
+# Ecosystem Worker Blocker Fallback Invariant
+
+## Status
+
+```text
+goal_id: WORKER-BLOCKER-FALLBACK-ECOSYSTEM-001
+owner: StegVerse-Labs/.github#242
+source_runtime_policy: docs/BLOCKER_RESOLUTION_MIRROR_HANDOFF.md / issue #65
+state: ADOPTION_IN_PROGRESS
+credential_authority: TV/TVC_ONLY
+github_token_runtime_authority: NONE
+```
+
+## Purpose
+
+A blocker constrains a surface; it does not terminate a worker's broader assignment.
+
+Every StegVerse or Admissible-Existence worker that can encounter more than one admissible in-scope surface MUST preserve the blocked surface as durable work state and continue to the next admissible, non-colliding surface.
+
+This contract extends the existing blocker-resolution rule that a blocker requires solution/workaround/escalation. It does not replace the runtime blocker policy, widen worker authority, or transfer repository-local ownership.
+
+## Normative invariant
+
+For each assigned scope, a worker MUST:
+
+1. inspect the current canonical `*_MIRROR_HANDOFF.md`, active claim, task registry, or equivalent owner record before mutation;
+2. attempt the highest-priority admissible non-duplicate work;
+3. when a surface cannot proceed, classify the constraint and preserve the exact evidence;
+4. persist a blocker record in the repository-local handoff/task/receipt when authorized;
+5. if repository-local persistence is unavailable, persist the blocker in the coordinating worker/task registry or central adoption owner;
+6. record at minimum:
+   - repository or system;
+   - task/surface identity;
+   - failure or constraint class;
+   - observed evidence;
+   - authority/collision boundary;
+   - `solution_required=true` unless the surface is explicitly not applicable;
+   - release condition;
+   - expected completion evidence;
+   - next executable action;
+   - durable owner;
+7. enumerate all remaining in-scope surfaces immediately after persisting the blocker;
+8. execute the next highest-priority admissible, non-colliding surface;
+9. avoid unchanged retry loops; repeated observation without state change is not progress;
+10. revisit blocked surfaces when their release conditions change or new evidence appears;
+11. stop only when every in-scope surface is COMPLETE, SUPERSEDED/NOT_APPLICABLE with evidence, or durably constrained and no other admissible work remains.
+
+## Required state semantics
+
+`BLOCKED` means the specific surface cannot currently progress through the attempted path. It MUST NOT mean:
+
+- worker stopped;
+- task abandoned;
+- assignment complete;
+- authority silently transferred;
+- retry forever;
+- wait without a durable owner;
+- skip later in-scope work.
+
+Workers SHOULD expose a machine-readable fallback state equivalent to:
+
+```text
+fallback_mode: PERSIST_BLOCKER_AND_CONTINUE
+```
+
+## Constraint classes
+
+### Internal solvable constraint
+
+The worker SHOULD derive or execute another admitted implementation path within its existing authority.
+
+### Third-party constraint
+
+Third-party failure is never a terminal StegVerse blocker. Preserve the unavailable path and select an admitted StegVerse-owned, federated, or explicitly governed fallback consistent with `docs/BLOCKER_RESOLUTION_MIRROR_HANDOFF.md`.
+
+### Authority constraint
+
+If the worker lacks authority, it MUST create or refresh the correct TV/TVC, machine-owned, or authority-owner continuation and continue unrelated admissible in-scope work. Authority escalation does not imply completion.
+
+### Collision constraint
+
+If another live claim owns the exact surface, the worker MUST not compete. It records the collision/owner/release condition and continues elsewhere in scope.
+
+### Evidence constraint
+
+Missing proof, artifact, receipt, hosted result, runtime observation, or physical evidence remains open. The worker records the evidence requirement and continues any other work whose prerequisites remain satisfied.
+
+## Failure isolation requirement
+
+A repository-local or item-local exception MUST NOT abort a multi-item worker sweep unless continuing would violate authority, integrity, or safety for every remaining item.
+
+Controllers SHOULD isolate each independent repository/task item so that an exception is converted into a durable blocker record and later items continue.
+
+Tests for multi-item workers MUST include at least one case proving:
+
+1. item A encounters a blocker;
+2. item A blocker is persisted with owner, release condition, and next action;
+3. item B is still executed;
+4. final aggregate status remains fail-closed while item A is unresolved.
+
+## Handoff/task propagation
+
+When a blocker is found, the worker MUST prefer the following durable destination order:
+
+1. repository-local canonical handoff/task/receipt owned by the affected scope;
+2. existing repository-native worker issue/task registry;
+3. coordinating worker registry/control-plane blocker queue;
+4. authority-owner escalation task.
+
+A blocker reported only in transient logs or chat is non-conformant.
+
+## Adoption boundary
+
+Issue `StegVerse-Labs/.github#242` owns ecosystem adoption inventory and bounded follow-up task creation.
+
+Issue `StegVerse-Labs/.github#65` and canonical heartbeat workers retain machine-owned runtime blocker classification, workaround selection, successor task derivation, runtime transitions, and remediation receipts for already-bound worker scopes.
+
+Adoption MUST NOT mass-edit worker repositories without reading their current handoffs and claims.
+
+## Credential and authority invariants
+
+```text
+credential_authority: TV/TVC_ONLY
+non_tv_tvc_secrets_allowed: false
+github_token_runtime_authority: NONE
+model_output_execution_authority: NONE
+blocker_persistence_creates_authority: false
+worker_continuation_creates_authority: false
+```
+
+## Completion condition
+
+Ecosystem adoption is complete only when:
+
+- shared runtime/control-plane contracts reference equivalent semantics;
+- worker-family adoption inventory is complete;
+- each applicable worker family is `ADOPTED`, `ALREADY_CONFORMANT`, or has a durable `FOLLOWUP_TASK_CREATED` owner;
+- representative controller/runtime tests prove blocker isolation and continuation;
+- hosted validation evidence is inspected where applicable;
+- no unresolved adoption surface is left only in chat or transient logs.
