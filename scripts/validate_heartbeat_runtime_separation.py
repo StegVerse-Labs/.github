@@ -16,6 +16,8 @@ CONTRACT = ROOT / "control" / "runtime-separation-contract.json"
 CARRIER_SCHEMA = ROOT / "schemas" / "heartbeat-carrier-observation.schema.json"
 CONTROL_SCHEMA = ROOT / "schemas" / "worker-control-plane-coordination.schema.json"
 EXPIRED_WORKER_SCHEMA = ROOT / "schemas" / "expired-worker-history.schema.json"
+OSCILLATOR_PRODUCER = ROOT / "heartbeat_runtime" / "oscillator_producer.py"
+OSCILLATOR_PRODUCER_TEST = ROOT / "tests" / "test_oscillator_producer.py"
 
 
 def require(condition: bool, message: str, errors: list[str]) -> None:
@@ -82,20 +84,34 @@ def main() -> int:
     require(contract.get("master_records_role") == "PASSIVE_CUSTODY_AND_QUERYABLE_EVIDENCE", "Master Records passive role mismatch", errors)
     require((contract.get("authority") or {}).get("non_tv_tvc_secret_or_token_required") is False, "non-TV/TVC secret/token requirement must be false", errors)
 
-    require(expired_schema.get("properties", {}).get("schema", {}).get("const") == "stegverse.expired-worker-history/v1", "expired-worker schema id mismatch", errors)
-    wrapper = (expired_schema.get("properties") or {}).get("expiration_wrapper") or {}
+    oscillator = contract.get("carrier_oscillator") or {}
+    producer = oscillator.get("producer") or {}
+    require(oscillator.get("progression_dependency") == "OSCILLATOR_ONLY", "carrier progression must remain oscillator-only", errors)
+    require(OSCILLATOR_PRODUCER.is_file(), "oscillator producer implementation missing", errors)
+    require(OSCILLATOR_PRODUCER_TEST.is_file(), "oscillator producer tests missing", errors)
+    require(producer.get("implementation_ref") == "heartbeat_runtime/oscillator_producer.py", "oscillator producer ref mismatch", errors)
+    require(producer.get("production_mode") == "OSCILLATOR_PHASE_DRIVEN", "oscillator production mode mismatch", errors)
+    for key in ("event_trigger_required", "repository_event_required", "workflow_event_required", "task_event_required", "worker_event_required"):
+        require(producer.get(key) is False, f"oscillator producer may not require {key}", errors)
+    require(producer.get("delayed_consumer_behavior") == "COMPRESS_CONTIGUOUS_DUE_REFERENCE_RANGE", "delayed oscillator references must compress into a bounded range", errors)
+    require(producer.get("sink_controls_progression") is False, "producer sink may not control oscillator progression", errors)
+    require(producer.get("sink_grants_authority") is False, "producer sink may not grant authority", errors)
+
+    expired_props = expired_schema.get("properties", {})
+    require(expired_props.get("schema", {}).get("const") == "stegverse.expired-worker-history/v1", "expired-worker schema id mismatch", errors)
+    wrapper = expired_props.get("expiration_wrapper") or {}
     wrapper_props = wrapper.get("properties") or {}
     require(
         (wrapper_props.get("closure_deadline_rule") or {}).get("const") == "NEXT_ADMISSIBLE_CARRIER_OR_EQUIVALENT_RETURN_REFERENCE",
         "expired-worker closure deadline must be next admissible reference",
         errors,
     )
-    data_props = (((expired_schema.get("properties") or {}).get("data_packet") or {}).get("properties") or {})
+    data_props = ((expired_props.get("data_packet") or {}).get("properties") or {})
     require((data_props.get("authority_effect") or {}).get("const") == "NONE", "expired-worker authority_effect must be NONE", errors)
     require((data_props.get("execution_authority") or {}).get("const") is False, "expired-worker execution authority must be false", errors)
     require((data_props.get("claim_active") or {}).get("const") is False, "expired-worker claim must be inactive", errors)
     require((data_props.get("lease_active") or {}).get("const") is False, "expired-worker lease must be inactive", errors)
-    expired_auth = (((expired_schema.get("properties") or {}).get("authority") or {}).get("properties") or {})
+    expired_auth = ((expired_props.get("authority") or {}).get("properties") or {})
     require((expired_auth.get("credential_authority") or {}).get("const") == "TV/TVC", "expired-worker credential authority must be TV/TVC", errors)
     require((expired_auth.get("github_token_runtime_authority") or {}).get("const") is False, "expired-worker GitHub token authority must be false", errors)
     require((expired_auth.get("heartbeat_grants_authority") or {}).get("const") is False, "heartbeat must not grant expired-worker authority", errors)
@@ -109,8 +125,9 @@ def main() -> int:
 
     print(
         "HEARTBEAT_RUNTIME_SEPARATION_PASS "
-        "carrier=regulatory_reference control_plane=separate nervous_system=StegBrain "
-        "expired_worker=terminal_history master_records=passive credential_authority=TV/TVC"
+        "carrier=oscillator_produced reference_interval_ms=10 event_trigger_required=false "
+        "control_plane=separate nervous_system=StegBrain expired_worker=terminal_history "
+        "master_records=passive credential_authority=TV/TVC"
     )
     return 0
 
