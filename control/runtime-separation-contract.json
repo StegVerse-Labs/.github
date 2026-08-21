@@ -20,7 +20,21 @@
     "persisted_state_is_sample_only": true,
     "missed_references_are_permitted": true,
     "consumer_may_delay_carrier": false,
-    "consumer_may_advance_carrier": false
+    "consumer_may_advance_carrier": false,
+    "producer": {
+      "implementation_ref": "heartbeat_runtime/oscillator_producer.py",
+      "production_mode": "OSCILLATOR_PHASE_DRIVEN",
+      "event_trigger_required": false,
+      "repository_event_required": false,
+      "workflow_event_required": false,
+      "task_event_required": false,
+      "worker_event_required": false,
+      "normal_batch_size": 1,
+      "delayed_consumer_behavior": "COMPRESS_CONTIGUOUS_DUE_REFERENCE_RANGE",
+      "missed_reference_expansion_required": false,
+      "sink_grants_authority": false,
+      "sink_controls_progression": false
+    }
   },
   "carrier_envelope": {
     "schema_ref": "schemas/heartbeat-carrier-envelope.schema.json",
