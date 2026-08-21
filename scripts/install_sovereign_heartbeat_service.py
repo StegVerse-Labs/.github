@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Materialize and activate separated StegVerse carrier/worker runtimes locally."""
+"""Materialize and activate separated StegVerse oscillator carrier/worker runtimes.
+
+The carrier cadence is immutable: 10 ms / 100 Hz from the independent oscillator.
+``interval_ms`` remains only as the WorkerCoordinator scheduling interval for
+backward-compatible callers. It cannot change heartbeat phase progression.
+"""
 from __future__ import annotations
 
 import argparse
@@ -31,13 +36,18 @@ COPY_FILES = (
     "scripts/run_heartbeat_runtime.py",
     "scripts/run_worker_runtime.py",
     "scripts/advance_heartbeat_transition.py",
+    "scripts/refresh_heartbeat_transition_receipt.py",
     "scripts/verify_sovereign_runtime_activation.py",
     "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
 )
-CANONICAL_RUNTIME = "heartbeat_runtime.engine_v12.HeartbeatRuntime"
+CANONICAL_RUNTIME = "heartbeat_runtime.engine_v13.HeartbeatRuntime"
 CANONICAL_CARRIER_RUNTIME = CANONICAL_RUNTIME
 WORKER_RUNTIME = "heartbeat_runtime.worker_runtime.WorkerCoordinator"
-DEFAULT_INTERVAL_MS = 10.0
+OSCILLATOR_PERIOD_MS = 10.0
+OSCILLATOR_FREQUENCY_HZ = 100.0
+DEFAULT_WORKER_INTERVAL_MS = 10.0
+# Compatibility export. This is NOT heartbeat timing authority.
+DEFAULT_INTERVAL_MS = DEFAULT_WORKER_INTERVAL_MS
 
 
 def default_runtime_root(env=None):
@@ -55,13 +65,12 @@ def default_runtime_root(env=None):
     return (base / "stegverse" / "heartbeat-runtime").resolve()
 
 
-def _nominal_cycles_per_second(interval_ms: float) -> float | None:
-    if interval_ms <= 0:
-        return None
-    return 1000.0 / interval_ms
+def _nominal_ticks_per_second(interval_ms: float) -> float | None:
+    return None if interval_ms <= 0 else 1000.0 / interval_ms
 
 
-def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DEFAULT_INTERVAL_MS):
+def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DEFAULT_WORKER_INTERVAL_MS):
+    """Copy the sovereign runtime without network access or hosted authority."""
     source_root = source_root.resolve()
     target_root = target_root.resolve()
     target_root.mkdir(parents=True, exist_ok=True)
@@ -79,7 +88,9 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
 
     required = (
         target_root / "heartbeat_runtime" / "__init__.py",
-        target_root / "heartbeat_runtime" / "engine_v12.py",
+        target_root / "heartbeat_runtime" / "engine_v13.py",
+        target_root / "heartbeat_runtime" / "independent_oscillator.py",
+        target_root / "heartbeat_runtime" / "oscillator_producer.py",
         target_root / "heartbeat_runtime" / "worker_runtime.py",
         target_root / "heartbeat_runtime" / "assignment_timer.py",
         target_root / "schemas" / "heartbeat-carrier-runtime-state.schema.json",
@@ -87,32 +98,38 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         target_root / "control" / "worker-registry.json",
         target_root / "scripts" / "run_heartbeat_runtime.py",
         target_root / "scripts" / "run_worker_runtime.py",
-        target_root / "scripts" / "advance_heartbeat_transition.py",
-        target_root / "scripts" / "verify_sovereign_runtime_activation.py",
         target_root / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
     )
     if not all(path.is_file() for path in required):
-        raise RuntimeError("materialized separated runtime is incomplete")
+        raise RuntimeError("materialized oscillator-separated runtime is incomplete")
 
     init_text = (target_root / "heartbeat_runtime" / "__init__.py").read_text(encoding="utf-8")
     if "CarrierHeartbeatRuntime" not in init_text or "WorkerCoordinator" not in init_text:
         raise RuntimeError("materialized package does not expose separated carrier and worker runtimes")
 
     receipt = {
-        "schema": "stegverse.sovereign-heartbeat-materialization/v3",
+        "schema": "stegverse.sovereign-heartbeat-materialization/v4",
         "source_root": str(source_root),
         "runtime_root": str(target_root),
         "canonical_runtime": CANONICAL_RUNTIME,
         "canonical_carrier_runtime": CANONICAL_CARRIER_RUNTIME,
         "worker_runtime": WORKER_RUNTIME,
+        "carrier_producer_ref": "heartbeat_runtime/oscillator_producer.py",
+        "carrier_runtime_entrypoint": "scripts/run_heartbeat_runtime.py",
+        "worker_runtime_entrypoint": "scripts/run_worker_runtime.py",
         "state_transition_producer_ref": "scripts/advance_heartbeat_transition.py",
         "state_transition_contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
         "initial_carrier_bootstrap_ready": True,
         "legacy_combined_runtime_is_production_target": False,
-        "heartbeat_default_interval_ms": float(interval_ms),
+        "heartbeat_production_mode": "OSCILLATOR_PHASE_DRIVEN",
+        "heartbeat_period_ms": OSCILLATOR_PERIOD_MS,
+        "heartbeat_reference_frequency_hz": OSCILLATOR_FREQUENCY_HZ,
+        "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+        "heartbeat_event_trigger_required": False,
+        "heartbeat_interval_argument_controls_progression": False,
         "worker_default_interval_ms": float(interval_ms),
-        "nominal_carrier_cycles_per_second": _nominal_cycles_per_second(float(interval_ms)),
-        "nominal_worker_ticks_per_second": _nominal_cycles_per_second(float(interval_ms)),
+        "nominal_carrier_references_per_second": OSCILLATOR_FREQUENCY_HZ,
+        "nominal_worker_ticks_per_second": _nominal_ticks_per_second(float(interval_ms)),
         "carrier_state_ref": "control/heartbeat-carrier-runtime-state.json",
         "legacy_hb29_source_ref": "control/heartbeat-state.json",
         "worker_registry_ref": "control/worker-registry.json",
@@ -131,7 +148,7 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         "credential_authority": "TV/TVC",
         "credential_requirement": "NONE",
         "non_tv_tvc_secret_or_token_used": False,
-        "heartbeat_timing_authority": "NONE_CARRIER_REFERENCE_ONLY",
+        "heartbeat_timing_authority": "INDEPENDENT_OSCILLATOR_ONLY",
         "worker_timer_authority": WORKER_RUNTIME,
         "heartbeat_grants_execution_authority": False,
         "execution_authority_effect": "NONE_FROM_CARRIER",
@@ -143,15 +160,14 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
     return receipt
 
 
-def _carrier_command(root: Path, interval_ms: float) -> list[str]:
+def _carrier_command(root: Path) -> list[str]:
+    # No interval argument: the public carrier runner wakes from oscillator phase.
     return [
         sys.executable,
         str(root / "scripts" / "run_heartbeat_runtime.py"),
         "--root",
         str(root),
         "--continuous",
-        "--interval-ms",
-        str(interval_ms),
     ]
 
 
@@ -186,25 +202,24 @@ def _systemd_unit(description: str, command: list[str], root: Path) -> str:
     ])
 
 
-def materialize_service(root: Path, *, interval_ms=DEFAULT_INTERVAL_MS, system=None, env=None):
+def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, system=None, env=None):
     name = (system or platform.system()).lower()
     values = dict(os.environ if env is None else env)
-    carrier_command = _carrier_command(root, interval_ms)
+    carrier_command = _carrier_command(root)
     worker_command = _worker_command(root, interval_ms)
 
     if name == "linux":
         base = Path(values.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "systemd" / "user"
         carrier_path = base / "stegverse-heartbeat.service"
         worker_path = base / "stegverse-worker-runtime.service"
-        carrier_content = _systemd_unit("StegVerse non-authorizing heartbeat carrier", carrier_command, root)
+        carrier_content = _systemd_unit("StegVerse oscillator-produced non-authorizing heartbeat carrier", carrier_command, root)
         worker_content = _systemd_unit("StegVerse worker control-plane runtime", worker_command, root)
         activation_commands = [
             ["systemctl", "--user", "daemon-reload"],
             ["systemctl", "--user", "enable", "--now", carrier_path.name],
             ["systemctl", "--user", "enable", "--now", worker_path.name],
         ]
-        carrier_success_index = 1
-        worker_success_index = 2
+        carrier_success_index, worker_success_index = 1, 2
         kind = "systemd-user-separated"
     elif name == "darwin":
         base = Path.home() / "Library" / "LaunchAgents"
@@ -236,8 +251,7 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_INTERVAL_MS, system=N
             ["launchctl", "bootout", domain, str(worker_path)],
             ["launchctl", "bootstrap", domain, str(worker_path)],
         ]
-        carrier_success_index = 1
-        worker_success_index = 3
+        carrier_success_index, worker_success_index = 1, 3
         kind = "launch-agent-separated"
     elif name == "windows":
         base = Path(values.get("APPDATA", Path.home() / "AppData" / "Roaming")) / "StegVerse"
@@ -249,8 +263,7 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_INTERVAL_MS, system=N
             ["schtasks", "/Create", "/F", "/SC", "ONLOGON", "/TN", "StegVerse Heartbeat", "/TR", str(carrier_path)],
             ["schtasks", "/Create", "/F", "/SC", "ONLOGON", "/TN", "StegVerse Worker Runtime", "/TR", str(worker_path)],
         ]
-        carrier_success_index = 0
-        worker_success_index = 1
+        carrier_success_index, worker_success_index = 0, 1
         kind = "scheduled-task-separated"
     else:
         raise RuntimeError(f"unsupported sovereign host platform: {name}")
@@ -260,7 +273,7 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_INTERVAL_MS, system=N
     worker_path.parent.mkdir(parents=True, exist_ok=True)
     worker_path.write_text(worker_content, encoding="utf-8")
     return {
-        "schema": "stegverse.sovereign-heartbeat-service/v3",
+        "schema": "stegverse.sovereign-heartbeat-service/v4",
         "platform": name,
         "registration_kind": kind,
         "registration_path": str(carrier_path),
@@ -275,9 +288,13 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_INTERVAL_MS, system=N
         "canonical_runtime": CANONICAL_RUNTIME,
         "canonical_carrier_runtime": CANONICAL_CARRIER_RUNTIME,
         "worker_runtime": WORKER_RUNTIME,
-        "heartbeat_interval_ms": float(interval_ms),
+        "heartbeat_production_mode": "OSCILLATOR_PHASE_DRIVEN",
+        "heartbeat_period_ms": OSCILLATOR_PERIOD_MS,
+        "heartbeat_reference_frequency_hz": OSCILLATOR_FREQUENCY_HZ,
+        "heartbeat_interval_argument_controls_progression": False,
         "worker_interval_ms": float(interval_ms),
-        "nominal_cycles_per_second": _nominal_cycles_per_second(float(interval_ms)),
+        "nominal_carrier_references_per_second": OSCILLATOR_FREQUENCY_HZ,
+        "nominal_worker_ticks_per_second": _nominal_ticks_per_second(float(interval_ms)),
         "native_process_supervision_only": True,
         "separate_carrier_and_worker_processes": True,
         "heartbeat_grants_execution_authority": False,
@@ -293,7 +310,7 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_INTERVAL_MS, system=N
     }
 
 
-def install(source_root, target_root, runner=subprocess.run, *, interval_ms=DEFAULT_INTERVAL_MS, system=None, env=None):
+def install(source_root, target_root, runner=subprocess.run, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, system=None, env=None):
     materialization = materialize(source_root, target_root, interval_ms=interval_ms)
     service = materialize_service(target_root, interval_ms=interval_ms, system=system, env=env)
     results = []
@@ -322,7 +339,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--runtime-root", type=Path)
-    parser.add_argument("--interval-ms", type=float, default=DEFAULT_INTERVAL_MS)
+    parser.add_argument("--interval-ms", type=float, default=DEFAULT_WORKER_INTERVAL_MS, help="WorkerCoordinator interval only; heartbeat remains fixed at 10 ms oscillator phase.")
     parser.add_argument("--materialize-only", action="store_true")
     args = parser.parse_args()
     root = (args.runtime_root or default_runtime_root()).resolve()
