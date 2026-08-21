@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -42,11 +43,15 @@ class SovereignNodeDeclarationPersistenceTests(unittest.TestCase):
             self.assertFalse(body["github_token_required"])
             self.assertEqual(body["authority_effect"], "RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY")
 
-    def test_declaration_is_not_a_state_transition_continuity_prerequisite(self) -> None:
-        contract = __import__("json").loads((ROOT / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json").read_text(encoding="utf-8"))
-        self.assertFalse(contract["resident_native_supervision_is_completion_prerequisite"])
-        self.assertFalse(contract["always_on_external_host_required"])
+    def test_declaration_is_not_an_oscillator_continuity_prerequisite(self) -> None:
+        contract = json.loads((ROOT / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json").read_text(encoding="utf-8"))
+        self.assertEqual(contract["continuity_model"], "INDEPENDENT_OSCILLATOR_CONTINUITY")
         self.assertEqual(contract["transition_producer"], "scripts/advance_heartbeat_transition.py")
+        self.assertFalse(contract["oscillator"]["worker_or_task_gating"])
+        self.assertFalse(contract["oscillator"]["admission_gating"])
+        self.assertFalse(contract["third_party_fallback_policy"]["required_dependency"])
+        self.assertNotIn("node declaration", contract["release_condition"].lower())
+        self.assertNotIn("sovereign node", " ".join(contract["carrier_completion_predicates"]).lower())
 
 
 if __name__ == "__main__":
