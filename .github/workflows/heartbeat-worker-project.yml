@@ -134,10 +134,10 @@ jobs:
       - name: Rebuild projections ephemerally without repository persistence
         run: |
           set -euo pipefail
-          python scripts/project_heartbeat_workers.py --write >/tmp/worker-status.json
-          python scripts/evaluate_goal_convergence.py --write >/tmp/goal-convergence.json
-          python scripts/reconcile_heartbeat_continuity.py --write >/tmp/heartbeat-continuity.json
-          python scripts/query_worker_status.py --state BLOCKED >/tmp/blocked-query.json
+          python scripts/project_heartbeat_workers.py --write | tee /tmp/worker-status.json
+          python scripts/evaluate_goal_convergence.py --write | tee /tmp/goal-convergence.json
+          python scripts/reconcile_heartbeat_continuity.py --write | tee /tmp/heartbeat-continuity.json
+          python scripts/query_worker_status.py --state BLOCKED | tee /tmp/blocked-query.json
           python - <<'PY'
           import json
           q=json.load(open('/tmp/blocked-query.json'))
