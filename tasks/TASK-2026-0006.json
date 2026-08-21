@@ -53,7 +53,7 @@
   "dependencies": [],
   "workspace": {
     "branch": "claim/stegos-web-command-ingress-399-r1",
-    "base_commit": "44a695bee1080adbdf747ec29fc1cabdfd32c460",
+    "base_commit": "887ab16c10ca4b4eb1c97755e4f33c312e82a837",
     "merge_target": "main",
     "direct_push_allowed": false,
     "pull_request_required": true
