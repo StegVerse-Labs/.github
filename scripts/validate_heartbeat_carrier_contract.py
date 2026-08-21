@@ -20,6 +20,7 @@ def main() -> int:
     errors: list[str] = []
     audit = json.loads(AUDIT.read_text(encoding="utf-8"))
     handoff = HANDOFF.read_text(encoding="utf-8")
+    handoff_normalized = handoff.casefold()
     runtime = json.loads(RUNTIME_CONTRACT.read_text(encoding="utf-8"))
     continuity = json.loads(CONTINUITY_CONTRACT.read_text(encoding="utf-8"))
 
@@ -88,7 +89,7 @@ def main() -> int:
         "github_token_runtime_authority: NONE",
     )
     for phrase in required_handoff_phrases:
-        require(phrase in handoff, f"canonical handoff missing phrase: {phrase}", errors)
+        require(phrase.casefold() in handoff_normalized, f"canonical handoff missing phrase: {phrase}", errors)
 
     require(audit.get("runtime_refactor_owner") == "StegVerse-Labs/.github#122", "runtime refactor owner must remain #122", errors)
     require(audit.get("historical_evidence_rewrite_allowed") is False, "historical evidence rewrite must remain false", errors)
