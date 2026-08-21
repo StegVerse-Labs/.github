@@ -2,24 +2,25 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
   "created_at": "2026-08-18T18:08:00-05:00",
-  "updated_at": "2026-08-18T18:37:00-05:00",
+  "updated_at": "2026-08-20T23:09:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
-    "objective": "Execute the corrected StegVerse heartbeat sampler once under the canonical WorkerCoordinator/runtime owner and persist inspectable oscillator-backed carrier observation proving that heartbeat progression depends only on the independent 10 ms phase oscillator.",
+    "objective": "Execute the corrected StegVerse heartbeat sampler once under the canonical resident runtime and persist inspectable oscillator-backed carrier observation proving that heartbeat progression depends only on the independent 10 ms phase oscillator; independently admitted WorkerCoordinator task control verifies the resulting evidence without becoming causal to heartbeat progression.",
     "success_predicates": [
       "Carrier runtime state persists nested oscillator.progression_dependency=OSCILLATOR_ONLY.",
       "Carrier runtime state persists nested oscillator.phase_travel_time_ms=10 and oscillator.snapshot_is_observation_only=true.",
       "Carrier observation records observation_is_causal=false and authority_effect=NONE.",
       "Heartbeat ordinal is sampled from elapsed oscillator quanta rather than incremented by invocation.",
       "No worker/task/admission/claim/fence/lease/route/credential state gates carrier progression.",
+      "Live-proof task admission is independent task control; carrier observation or compatibility trigger carriage is not execution authority or a prerequisite for claimability.",
       "No GitHub token or NON-TV/TVC secret/token is required or forwarded.",
       "StegVerse remains primary; third-party runtime is not required."
     ],
     "failure_predicates": [
       "Observed carrier state still uses GATE_PASSBAND_DERIVED as the progression rule.",
       "Observed carrier state lacks canonical nested oscillator-only provenance.",
-      "WorkerCoordinator or a task state is made causal to heartbeat progression.",
+      "WorkerCoordinator, assignment-trigger carriage, or a task state is made causal to heartbeat progression or task authority.",
       "A NON-TV/TVC credential or GitHub token becomes runtime authority.",
       "A third-party runtime becomes required or primary."
     ],
@@ -27,6 +28,7 @@
     "authority_ceiling": [
       "execute the canonical StegVerse heartbeat sampler",
       "persist canonical heartbeat carrier/observation/projection evidence",
+      "independently verify live proof under existing task-control authority",
       "no credential/route/model/wallet/admissibility authority",
       "no third-party primary runtime"
     ],
@@ -40,7 +42,9 @@
       "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
       "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
       "heartbeat_runtime/independent_oscillator.py",
-      "heartbeat_runtime/engine_v12.py",
+      "heartbeat_runtime/oscillator_producer.py",
+      "heartbeat_runtime/engine_v13.py",
+      "heartbeat_runtime/worker_runtime.py",
       "scripts/run_heartbeat_runtime.py",
       "scripts/run_worker_runtime.py",
       "workers/independent_heartbeat_live_proof_worker.py",
@@ -49,11 +53,12 @@
       "control/process-worker-adapters.d/heartbeat-independent-oscillator-live-009.json",
       "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json",
       "tests/test_independent_heartbeat_live_proof_registration.py",
+      "tests/test_worker_runtime_independent_admission.py",
       "receipts/heartbeat/HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008-source-validation.json"
     ],
     "dependencies": [],
     "parent_task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008",
-    "derivation_reason": "Source correction is complete; the remaining required outcome is live sovereign execution evidence from the corrected sampler.",
+    "derivation_reason": "Source correction is complete; the remaining required outcome is live sovereign execution evidence from the corrected sampler plus independent verification under existing task-control authority.",
     "canonical_owner_ref": "StegVerse-Labs/.github#122",
     "canonical_lineage_key": "heartbeat:independent-oscillator-live-proof",
     "derivation_depth": 1,
@@ -62,7 +67,7 @@
   },
   "authority": {
     "authority_source": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
-    "policy_version": "heartbeat-independent-oscillator-live-proof-v1",
+    "policy_version": "heartbeat-independent-oscillator-live-proof-v2-independent-task-control",
     "heartbeat_grants_execution_authority": false,
     "credential_authority": "TV/TVC",
     "credential_requirement": "NONE",
@@ -79,6 +84,7 @@
       "control/worker-control-plane-coordination.json",
       "master-records/heartbeat.json",
       "events/heartbeat-runtime.jsonl",
+      "events/worker-runtime.jsonl",
       "receipts/heartbeat-schema-cutover/HB29.json"
     ],
     "allowed_services": [],
@@ -91,19 +97,20 @@
     "evidence_verifier": "workers/independent_heartbeat_live_proof_worker.py#verify_live_proof"
   },
   "activation": {
-    "carrier": "heartbeat",
+    "carrier": "heartbeat_reference_only",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
     "credential_control": "TV/TVC",
     "github_actions_may_activate": false,
-    "recheck_trigger": "next canonical WorkerCoordinator execution opportunity independent of heartbeat progression",
+    "recheck_trigger": "each admitted StegVerse task-control execution opportunity while HANDOFF_READY",
     "checkout_policy": "fenced_atomic_checkout",
+    "carrier_trigger_required": false,
     "bootstrap_sequence": [
       "python scripts/run_worker_runtime.py --cycles 1",
       "python scripts/run_heartbeat_runtime.py --cycles 1",
       "python scripts/run_worker_runtime.py --cycles 1"
     ],
-    "bootstrap_semantics": "The first worker cycle materializes registry fragments into the canonical registry. The carrier cycle then samples the independent oscillator and carries non-authorizing assignment-trigger packets for unclaimed HANDOFF_READY tasks. The next worker cycle independently validates authority, binds a fresh claim/fence, and executes the live-proof worker. The heartbeat sample does not grant execution authority."
+    "bootstrap_semantics": "The first worker cycle materializes registry fragments and independently observes claimable work under task-control authority. The carrier process independently samples/persists the oscillator-produced reference; any assignment-trigger packet it carries is compatibility observation with authority_effect=NONE, not a prerequisite for claimability or execution. The next worker cycle independently validates authority, binds a fresh claim/fence when lawful, and executes the live-proof worker against the persisted oscillator evidence. Neither worker cycle causes the heartbeat and the carrier sample grants no execution authority."
   },
   "continuity": {
     "checkpoint_ref": "control/heartbeat-carrier-runtime-state.json",
@@ -112,17 +119,19 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Under the existing #122 StegVerse runtime owner, execute worker(1) -> carrier(1) -> worker(1). Verify canonical nested oscillator carrier/observation evidence, assignment trigger carriage, fresh fenced task binding, and COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED.",
+    "next_authorized_action": "Under the existing #122 StegVerse runtime owner, execute worker(1) -> carrier(1) -> worker(1). Verify canonical nested oscillator carrier/observation evidence, fresh fenced independent task binding, and COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED. Compatibility assignment-trigger carriage may be observed but is not a release predicate.",
     "terminal_when": [
       "Carrier state contains frequency_rule=INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL and canonical nested oscillator invariants.",
       "Carrier observation contains phase_travel_time_ms=10, observation_is_causal=false and authority_effect=NONE.",
-      "events/heartbeat-runtime.jsonl contains a non-authorizing worker_assignment_trigger_carried packet for this task.",
-      "WorkerCoordinator binds the task under a fresh fenced claim using the finite cost basis.",
-      "Worker response is COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED."
+      "WorkerCoordinator binds the task under a fresh fenced claim using independently admitted task-control authority and the finite cost basis.",
+      "Worker response is COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED.",
+      "No carrier event, compatibility trigger packet, GitHub workflow, or observer is represented as execution authority."
     ],
-    "source_integration_state": "CLAIMABLE_TRIGGERABLE_SCHEMA_VERIFIER_CORRECTED_VALIDATION_PENDING",
+    "source_integration_state": "CLAIMABLE_INDEPENDENT_TASK_CONTROL_SCHEMA_VERIFIER_VALIDATION_PENDING",
     "live_activation_state": "NOT_OBSERVED",
     "verifier_correction_commit": "d214105ce30af9d4bdd262a339a6b422a9c88885",
-    "verifier_test_commit": "eb5eb6d36a003603a652aa86df44f6386bb2e44c"
+    "verifier_test_commit": "eb5eb6d36a003603a652aa86df44f6386bb2e44c",
+    "projection_semantics_commit": "ca0b833f0939ac8fd07b81930c50c78cf7c6e296",
+    "projection_test_commit": "2862c4f9f3d71923509deb7bd412c5c921b00e89"
   }
 }
