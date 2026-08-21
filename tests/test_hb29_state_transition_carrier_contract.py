@@ -61,9 +61,12 @@ class HB29StateTransitionCarrierContractTests(unittest.TestCase):
     def test_bootstrap_eligibility_uses_separated_sources(self):
         text = BOOTSTRAP.read_text(encoding="utf-8")
         required_block = text.split("REQUIRED_SOURCE_FILES = (", 1)[1].split(")\nREQUIRED_PREDICATES", 1)[0]
-        self.assertIn('Path("heartbeat_runtime/engine_v12.py")', required_block)
+        self.assertIn('Path("heartbeat_runtime/engine_v13.py")', required_block)
+        self.assertIn('Path("heartbeat_runtime/independent_oscillator.py")', required_block)
+        self.assertIn('Path("heartbeat_runtime/oscillator_producer.py")', required_block)
         self.assertIn('Path("heartbeat_runtime/worker_runtime.py")', required_block)
         self.assertIn('Path("scripts/run_worker_runtime.py")', required_block)
+        self.assertNotIn('Path("heartbeat_runtime/engine_v12.py")', required_block)
         self.assertNotIn('Path("heartbeat_runtime/engine_v11.py")', required_block)
 
     def test_compatibility_command_is_sampling_not_invocation_driven_advancement(self):
