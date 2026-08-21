@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Validate executable handoff state and project canonical worker status.
 
-This surface is observational only. Engine v11 owns fail-closed resolution task
-creation. Projection normalizes legacy registry state so stale BLOCKED labels do
-not contradict authoritative completed handoffs or actively bound workers.
+This surface is observational only. Worker/task execution authority is resolved
+from each handoff and bound claim state; heartbeat is an independently produced
+reference signal and never an activation authority. Projection normalizes legacy
+registry state so stale BLOCKED labels do not contradict authoritative completed
+handoffs or actively bound workers.
 """
 from __future__ import annotations
 
@@ -28,6 +30,7 @@ UNFINISHED_STATES = {
     "FAILED_RETRYABLE", "QUARANTINED"
 }
 TERMINAL_HANDOFF_STATES = {"COMPLETE", "COMPLETED", "COMPLETE_RELEASED"}
+REFERENCE_ONLY_CARRIERS = {"heartbeat", "heartbeat_reference_only"}
 
 
 def load(path: Path) -> dict:
@@ -45,12 +48,7 @@ def capabilities_match(required: set[str], workers: list[dict]) -> list[str]:
 
 
 def normalize_state(task_state: dict, handoff: dict) -> tuple[str, str | None]:
-    """Return effective operational state plus reconciliation reason.
-
-    Registry rows are historical runtime projections. A newer authoritative
-    handoff can prove a task complete, and a legacy BLOCKED row with an active
-    bound worker represents active solution execution rather than idle work.
-    """
+    """Return effective operational state plus reconciliation reason."""
     raw = str(task_state.get("state", ""))
     handoff_state = str(handoff.get("state", ""))
     handoff_task_state = str(handoff.get("task", {}).get("operational_state", ""))
@@ -64,6 +62,55 @@ def normalize_state(task_state: dict, handoff: dict) -> tuple[str, str | None]:
     return raw, None
 
 
+def activation_contract(handoff: dict, state: str, binding: str | None) -> tuple[dict, list[str]]:
+    """Describe activation without making heartbeat causal.
+
+    `heartbeat` and `heartbeat_reference_only` are accepted only as non-authorizing
+    observation/reference declarations. An already BOUND worker-owned lifecycle may
+    legitimately predate the explicit activation block; its bound claim remains the
+    execution authority. Unbound work still requires an explicit executor binding.
+    """
+    errors: list[str] = []
+    activation = handoff.get("activation") or {}
+    authority = handoff.get("authority") or {}
+    carrier = activation.get("carrier")
+    checkout_policy = activation.get("checkout_policy")
+
+    if authority.get("heartbeat_grants_execution_authority") is not False:
+        errors.append("heartbeat must not expand execution authority")
+
+    if carrier is not None and carrier not in REFERENCE_ONLY_CARRIERS:
+        errors.append(f"unsupported non-authorizing carrier declaration: {carrier}")
+
+    if checkout_policy is not None and checkout_policy != "fenced_atomic_checkout":
+        errors.append("checkout policy must be fenced_atomic_checkout when declared")
+
+    activation_required = state in {"HANDOFF_READY", "ACTIVATION_PENDING"}
+    if activation_required and binding != "BOUND":
+        if activation.get("executor_binding") not in {"AUTHORIZED", "RELEASED"}:
+            errors.append("unbound activation requires explicit authorized executor binding")
+        if checkout_policy != "fenced_atomic_checkout":
+            errors.append("unbound activation requires fenced_atomic_checkout")
+
+    if carrier == "heartbeat_reference_only":
+        mode = "INDEPENDENT_TASK_CONTROL_WITH_HEARTBEAT_REFERENCE"
+    elif carrier == "heartbeat":
+        mode = "TASK_CONTROL_WITH_NONAUTHORIZING_HEARTBEAT_REFERENCE"
+    elif binding == "BOUND":
+        mode = "EXISTING_BOUND_TASK_CONTROL"
+    else:
+        mode = "INDEPENDENT_TASK_CONTROL"
+
+    return {
+        "carrier": carrier,
+        "mode": mode,
+        "checkout_policy": checkout_policy,
+        "activation_required": activation_required,
+        "heartbeat_reference_is_causal": False,
+        "heartbeat_grants_execution_authority": False,
+    }, errors
+
+
 def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int) -> tuple[dict, list[str]]:
     errors: list[str] = []
     task_id = task_state["task_id"]
@@ -73,16 +120,13 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
         errors.append(f"{task_id}: handoff task_id mismatch")
     if handoff.get("goal", {}).get("goal_id") != task_state.get("goal_id"):
         errors.append(f"{task_id}: goal_id mismatch")
-    if handoff.get("authority", {}).get("heartbeat_grants_execution_authority") is not False:
-        errors.append(f"{task_id}: heartbeat must not expand execution authority")
-    if handoff.get("activation", {}).get("carrier") != "heartbeat":
-        errors.append(f"{task_id}: activation carrier must be heartbeat")
-    if handoff.get("activation", {}).get("checkout_policy") != "fenced_atomic_checkout":
-        errors.append(f"{task_id}: checkout policy must be fenced_atomic_checkout")
 
     raw_state = str(task_state.get("state", ""))
     state, reconciliation = normalize_state(task_state, handoff)
     binding = task_state.get("executor_binding")
+    activation_info, activation_errors = activation_contract(handoff, state, binding)
+    errors.extend(f"{task_id}: {error}" for error in activation_errors)
+
     timing = task_state.get("heartbeat_timing") or None
     hb_timing_valid = False
     hb_expired = False
@@ -114,11 +158,11 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
             errors.append(f"{task_id}: worker-owned state requires heartbeat_timing")
 
     execution = handoff.get("execution", {})
-    activation = handoff.get("activation", {})
+    activation = handoff.get("activation", {}) or {}
     continuity = handoff.get("continuity", {})
     required = set(execution.get("required_capabilities", []))
     eligible_workers = capabilities_match(required, workers)
-    activation_required = state in {"HANDOFF_READY", "ACTIVATION_PENDING"}
+    activation_required = activation_info["activation_required"]
     unique_executor = len(eligible_workers) == 1
     executor_resolved = binding == "BOUND" or (binding in {"AUTHORIZED", "RELEASED"} and unique_executor)
     authority_resolved = (
@@ -134,7 +178,6 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
         archive_eligible = bool(
             worker_owned and binding == "BOUND" and executor_resolved and authority_resolved
             and hb_timing_valid and continuity.get("status_projection")
-            and activation.get("carrier") == "heartbeat"
         )
         if binding != "BOUND": reasons.append("EXECUTOR_NOT_BOUND")
         if not eligible_workers and binding != "BOUND": reasons.append("EXECUTOR_NOT_RESOLVED")
@@ -145,7 +188,7 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
             archive_eligible = False
             reasons.append("CHECKPOINT_MISSING")
         if hb_expired: reasons.append("HB_RELATIVE_EXPIRY_REACHED")
-        if activation_required: reasons.append("HEARTBEAT_ACTIVATION_REQUIRED")
+        if activation_required: reasons.append("TASK_CONTROL_ACTIVATION_REQUIRED")
         if reconciliation == "LEGACY_UNOWNED_CONSTRAINT_REQUIRES_RESOLUTION_OR_RECONCILIATION":
             archive_eligible = False
             reasons.append("RESOLUTION_OR_COMPLETION_RECONCILIATION_REQUIRED")
@@ -177,8 +220,10 @@ def evaluate(task_state: dict, handoff: dict, workers: list[dict], hb_epoch: int
         "state_reconciliation": reconciliation,
         "constraint_present": bool(handoff.get("constraint") or handoff.get("block_ref") or task_state.get("block_ref")),
         "executor_binding": binding,
-        "activation_carrier": "heartbeat",
+        "activation_carrier": activation_info["carrier"],
+        "activation_mode": activation_info["mode"],
         "activation_required": activation_required,
+        "heartbeat_reference_is_causal": False,
         "executor_resolved": executor_resolved,
         "authority_resolved": authority_resolved,
         "eligible_workers": eligible_workers,
@@ -240,11 +285,12 @@ def project(now: datetime) -> tuple[dict, list[str]]:
         errors.extend(task_errors)
 
     status = {
-        "schema": "stegverse.heartbeat-worker-status/v0.4",
+        "schema": "stegverse.heartbeat-worker-status/v0.5",
         "generated_at": now.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "source_registry_generation": registry.get("generation", 0),
         "heartbeat_epoch": hb_epoch,
-        "activation_driver": "internal_heartbeat_registry_evaluation",
+        "activation_driver": "independent_task_control_with_heartbeat_observation",
+        "heartbeat_observation_is_causal": False,
         "single_heartbeat_timing_frame": True,
         "execution_authority_from_heartbeat": False,
         "query_is_observational": True,
