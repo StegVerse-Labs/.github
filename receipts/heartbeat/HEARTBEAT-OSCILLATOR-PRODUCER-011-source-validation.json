@@ -1,0 +1,65 @@
+{
+  "schema": "stegverse.heartbeat-source-validation-receipt/v1",
+  "goal_id": "HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122",
+  "task_id": "HEARTBEAT-OSCILLATOR-PRODUCER-011",
+  "state": "SOURCE_VALIDATED_BOUNDED_REPOSITORY_DIVERGENCE_REMAINS",
+  "source_commits": [
+    "2a9f16e670124636bf07cd21eb063739fff4192b",
+    "1e3a41c9b18778dd140e2dcd7576f2e5955ae8f8",
+    "975419bd2c02dd241e0cb408d8b7e962d65aae0e",
+    "c9be04b422c2a6ba248e6ccecca77732c839bf88"
+  ],
+  "implementation_ref": "heartbeat_runtime/oscillator_producer.py",
+  "test_ref": "tests/test_oscillator_producer.py",
+  "contract_ref": "control/runtime-separation-contract.json",
+  "validation_guard_ref": "scripts/validate_heartbeat_runtime_separation.py",
+  "hosted_run": {
+    "run_id": 32431877047,
+    "job_id": 96624983857,
+    "workflow": "Heartbeat Worker Project - Validation Only / No GitHub Token Authority",
+    "head_sha": "c9be04b422c2a6ba248e6ccecca77732c839bf88",
+    "anonymous_checkout": "PASS",
+    "github_credential_token_present": false,
+    "compile_runtime_workers_scripts": "PASS",
+    "canonical_json_parse": "PASS",
+    "executable_handoff_validation": "PASS",
+    "oscillator_producer_tests": {
+      "tests_run": 6,
+      "passed": 6,
+      "failed": 0
+    },
+    "repository_suite": {
+      "tests_run": 450,
+      "state": "FAIL",
+      "failures": 10,
+      "errors": 16,
+      "classification": "PREEXISTING_HEARTBEAT_ARCHITECTURE_TEST_DIVERGENCE_OUTSIDE_PRODUCER_TESTS"
+    }
+  },
+  "producer_invariants": {
+    "mechanism": "INDEPENDENT_PHASE_OSCILLATOR",
+    "period_ns": 10000000,
+    "reference_frequency_hz": 100,
+    "progression_dependency": "OSCILLATOR_ONLY",
+    "event_trigger_required": false,
+    "repository_event_required": false,
+    "workflow_event_required": false,
+    "task_event_required": false,
+    "worker_event_required": false,
+    "delayed_consumer_behavior": "COMPRESS_CONTIGUOUS_DUE_REFERENCE_RANGE",
+    "sink_controls_progression": false,
+    "sink_grants_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "activation_claimed": false,
+  "live_oscillator_process_observed": false,
+  "repository_full_validation_claimed": false,
+  "next_required_work": [
+    "reconcile stale heartbeat architecture tests and handoff expectations with oscillator-produced carrier semantics",
+    "install a resident oscillator-driven production loop without making WorkerCoordinator or repository events the clock",
+    "remove WorkerCoordinator dependency on carrier assignment-trigger packets for independently admitted HANDOFF_READY tasks",
+    "obtain live oscillator-produced carrier evidence and independent worker observation"
+  ],
+  "authority_effect": "NONE_VALIDATION_ONLY"
+}
