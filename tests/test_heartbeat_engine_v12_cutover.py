@@ -156,18 +156,24 @@ class HeartbeatEngineV12CutoverTests(unittest.TestCase):
             self.assertEqual(receipt["credential_authority"], "TV/TVC")
             self.assertFalse(receipt["non_tv_tvc_secret_or_token_used"])
 
-    def test_second_cycle_advances_carrier_without_rewriting_hb29_or_cutover_receipt(self) -> None:
+    def test_repeated_observation_does_not_advance_until_next_oscillator_quantum(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = self._root(Path(tmp))
             legacy_path = root / "control" / "heartbeat-state.json"
             legacy_before = legacy_path.read_bytes()
             runtime = HeartbeatRuntime(root)
-            runtime.cycle(write=True)
+            first_ns = 2_000_000_000
+            first = runtime.cycle(write=True, now_ns=first_ns)
+            self.assertEqual(first["epoch"], 30)
             receipt_path = root / "receipts" / "heartbeat-schema-cutover" / "HB29.json"
             receipt_before = receipt_path.read_bytes()
-            second = runtime.cycle(write=True)
-            self.assertEqual(second["epoch"], 31)
-            self.assertFalse(second["legacy_hb29_was_first_cutover"])
+
+            same_phase = runtime.cycle(write=True, now_ns=first_ns)
+            self.assertEqual(same_phase["epoch"], 30)
+            self.assertFalse(same_phase["legacy_hb29_was_first_cutover"])
+
+            next_phase = runtime.cycle(write=True, now_ns=first_ns + 10_000_000)
+            self.assertEqual(next_phase["epoch"], 31)
             self.assertEqual(legacy_path.read_bytes(), legacy_before)
             self.assertEqual(receipt_path.read_bytes(), receipt_before)
             carrier = json.loads((root / "control" / "heartbeat-carrier-runtime-state.json").read_text())
