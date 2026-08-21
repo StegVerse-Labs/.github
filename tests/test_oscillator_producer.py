@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from heartbeat_runtime.oscillator_producer import OscillatorProducer, due_pulse_batch
+from heartbeat_runtime.oscillator_producer import OscillatorProducer, due_pulse_batch, next_due_unix_ns
 
 
 class OscillatorProducerTests(unittest.TestCase):
@@ -28,6 +28,16 @@ class OscillatorProducerTests(unittest.TestCase):
         self.assertFalse(value["event_trigger_required"])
         self.assertEqual(value["progression_dependency"], "OSCILLATOR_ONLY")
         self.assertEqual(value["authority_effect"], "NONE")
+
+    def test_next_deadline_is_exact_phase_boundary(self):
+        self.assertEqual(
+            next_due_unix_ns(self.oscillator(), last_emitted_epoch=31),
+            1_010_000_000,
+        )
+        self.assertEqual(
+            next_due_unix_ns(self.oscillator(), last_emitted_epoch=40),
+            1_100_000_000,
+        )
 
     def test_subperiod_observation_does_not_create_reference(self):
         self.assertIsNone(
@@ -74,11 +84,13 @@ class OscillatorProducerTests(unittest.TestCase):
             clock_ns=lambda: now[0],
             sink=emitted.append,
         )
+        self.assertEqual(producer.next_due_unix_ns, 1_010_000_000)
         self.assertIsNone(producer.run_once())
         now[0] += 10_000_000
         batch = producer.run_once()
         self.assertIsNotNone(batch)
         self.assertEqual(producer.last_emitted_epoch, 32)
+        self.assertEqual(producer.next_due_unix_ns, 1_020_000_000)
         self.assertEqual(len(emitted), 1)
         self.assertEqual(emitted[0].last_epoch, 32)
 
