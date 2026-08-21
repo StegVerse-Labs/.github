@@ -6,55 +6,49 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 HANDOFF = ROOT / "handoffs" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+OSCILLATOR_HANDOFF = ROOT / "docs" / "HEARTBEAT_OSCILLATOR_PRODUCER_MIRROR_HANDOFF.md"
+CONTRACT = ROOT / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json"
 
 
-class SovereignRuntimeHandoffV12ContractTests(unittest.TestCase):
+class SovereignRuntimeHandoffContractTests(unittest.TestCase):
     def setUp(self):
         self.handoff = json.loads(HANDOFF.read_text(encoding="utf-8"))
+        self.contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
 
-    def test_canonical_runtime_is_separated_v12(self):
+    def test_canonical_runtime_is_separated_and_oscillator_contract_is_v13(self):
         execution = self.handoff["execution"]
-        self.assertEqual(execution["canonical_carrier_runtime"], "heartbeat_runtime.engine_v12.HeartbeatRuntime")
         self.assertEqual(execution["worker_runtime"], "heartbeat_runtime.worker_runtime.WorkerCoordinator")
-        self.assertFalse(execution["legacy_combined_runtime_is_production_target"])
-        self.assertIn("heartbeat_runtime/engine_v12.py", self.handoff["task"]["source_refs"])
-        self.assertNotIn("heartbeat_runtime/engine_v11.py", self.handoff["task"]["source_refs"])
+        self.assertEqual(execution["carrier_runtime_entrypoint"], "scripts/run_heartbeat_runtime.py")
+        self.assertEqual(execution["worker_runtime_entrypoint"], "scripts/run_worker_runtime.py")
+        self.assertEqual(self.contract["canonical_runtime"], "heartbeat_runtime.engine_v13.HeartbeatRuntime")
+        self.assertEqual(self.contract["oscillator_producer"], "heartbeat_runtime/oscillator_producer.py")
+        scoped = OSCILLATOR_HANDOFF.read_text(encoding="utf-8")
+        self.assertIn("heartbeat_runtime/oscillator_producer.py", scoped)
+        self.assertIn("OSCILLATOR_PHASE_DRIVEN", scoped)
+        self.assertIn("carrier event prerequisite: false", scoped)
 
-    def test_legacy_hb29_is_immutable_cutover_source_not_live_progress_file(self):
-        cutover = self.handoff["v12_cutover_contract"]
+    def test_legacy_hb29_is_immutable_while_oscillator_produces_successors(self):
         execution = self.handoff["execution"]
-        action = self.handoff["completion"]["next_authorized_action"]
-        self.assertEqual(cutover["legacy_source"], "control/heartbeat-state.json")
-        self.assertEqual(cutover["legacy_epoch"], 29)
-        self.assertTrue(cutover["legacy_source_must_remain_immutable"])
-        self.assertEqual(cutover["first_persistent_carrier_epoch"], 30)
-        self.assertEqual(cutover["carrier_state"], "control/heartbeat-carrier-runtime-state.json")
+        continuity = self.handoff["state_transition_continuity"]
         self.assertFalse(execution["legacy_state_mutable_after_cutover"])
         self.assertEqual(execution["legacy_state_epoch"], 29)
-        self.assertIn("advance_heartbeat_transition.py", action)
-        self.assertIn("legacy HB29", action)
-        self.assertIn("HB30 or a later valid successor", action)
-
-    def test_state_transition_continuity_replaces_resident_service_as_completion_prerequisite(self):
-        continuity = self.handoff["state_transition_continuity"]
-        expected = {
-            "legacy_hb29_unchanged",
-            "carrier_epoch_at_least_30",
-            "carrier_generation_non_regressing",
-            "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch",
-            "worker_control_plane_observed",
-            "no_duplicate_claim_or_fence",
-            "state_reconstruction_pass",
-        }
-        self.assertEqual(set(continuity["terminal_predicates"]), expected)
+        self.assertEqual(execution["legacy_state_ref"], "control/heartbeat-state.json")
+        self.assertEqual(continuity["continuity_model"], "INDEPENDENT_OSCILLATOR_CONTINUITY")
+        self.assertEqual(continuity["heartbeat_progression_dependency"], "OSCILLATOR_ONLY")
+        self.assertFalse(continuity["worker_or_task_gating_of_heartbeat"])
         self.assertFalse(continuity["another_physical_machine_required"])
         self.assertFalse(continuity["always_on_external_host_required"])
-        self.assertFalse(continuity["wall_clock_continuous_process_required"])
-        self.assertTrue(continuity["resident_native_supervision_optional"])
-        self.assertEqual(continuity["transition_producer"], "scripts/advance_heartbeat_transition.py")
-        resident = set(self.handoff["continuity"]["resident_supervision_optional_predicates"])
-        self.assertIn("continuous_runtime_live", resident)
-        self.assertIn("controlled_restart_observed", resident)
+
+    def test_worker_evidence_is_goal_evidence_not_heartbeat_clock(self):
+        continuity = self.handoff["state_transition_continuity"]
+        self.assertTrue(continuity["task_capable_worker_cycle_required_for_g18_goal_release"])
+        self.assertFalse(continuity["g18_terminalization_required_for_orphan_recovery"])
+        self.assertFalse(continuity["worker_or_task_gating_of_heartbeat"])
+        parallel = {row["task_id"]: row for row in self.handoff["parallel_continuations"]}
+        recovery = parallel["RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28"]
+        self.assertEqual(recovery["state"], "HANDOFF_READY")
+        self.assertFalse(recovery["g18_terminalization_required"])
+        self.assertGreater(recovery["minimum_fencing_token_exclusive"], 19)
 
     def test_repairs_and_authority_boundaries_are_durable(self):
         repairs = self.handoff["released_repairs"]
@@ -64,7 +58,10 @@ class SovereignRuntimeHandoffV12ContractTests(unittest.TestCase):
         self.assertEqual(authority["credential_authority"], "TV/TVC")
         self.assertEqual(authority["github_token_production_authority"], "NONE")
         self.assertFalse(authority["non_tv_tvc_secret_or_token_allowed"])
-        self.assertFalse(self.handoff["completion"]["live_activation_claimed"])
+        completion = self.handoff["completion"]
+        self.assertFalse(completion["success_predicates_satisfied"])
+        self.assertFalse(completion["corrected_oscillator_live_carrier_proven"])
+        self.assertFalse(completion["task_capable_worker_runtime_proven"])
 
 
 if __name__ == "__main__":
