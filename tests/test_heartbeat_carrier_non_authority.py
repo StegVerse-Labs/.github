@@ -35,11 +35,16 @@ class HeartbeatCarrierNonAuthorityTests(unittest.TestCase):
         self.assertIsNot(HeartbeatRuntime, CarrierHeartbeatRuntime)
         self.assertIsNot(WorkerCoordinator, CarrierHeartbeatRuntime)
 
-    def test_public_heartbeat_runner_instantiates_carrier_only(self):
+    def test_public_heartbeat_runner_is_oscillator_phase_driven(self):
         root = Path(__file__).resolve().parents[1]
         source = (root / "scripts" / "run_heartbeat_runtime.py").read_text(encoding="utf-8")
         self.assertIn("CarrierHeartbeatRuntime", source)
         self.assertIn("runtime = CarrierHeartbeatRuntime(root)", source)
+        self.assertIn("OscillatorProducer", source)
+        self.assertIn("producer.next_due_unix_ns", source)
+        self.assertIn("_sleep_until(producer.next_due_unix_ns)", source)
+        self.assertIn("runtime.cycle(write=True, now_ns=batch.produced_unix_ns)", source)
+        self.assertNotIn("time.sleep(args.interval_ms / 1000.0)", source)
         self.assertNotIn("runtime = WorkerCoordinator", source)
         self.assertNotIn("runtime = HeartbeatRuntime(root", source)
 
