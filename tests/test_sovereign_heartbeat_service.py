@@ -97,6 +97,15 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
                 self.assertNotIn("cloudflare", text.lower())
                 self.assertNotIn("network-online.target", text.lower())
 
+    def test_carrier_command_has_no_configurable_cadence_argument(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "heartbeat"
+            command = mod._carrier_command(root)
+            self.assertIn("run_heartbeat_runtime.py", " ".join(command))
+            self.assertIn("--continuous", command)
+            self.assertNotIn("--interval-ms", command)
+            self.assertNotIn("5.0", command)
+
     def test_install_records_both_native_processes_without_carrier_authority(self) -> None:
         calls = []
 
