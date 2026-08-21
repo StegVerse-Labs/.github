@@ -2,64 +2,83 @@
   "schema": "stegverse.heartbeat-source-validation-receipt/v1",
   "goal_id": "HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122",
   "task_id": "HEARTBEAT-OSCILLATOR-PRODUCER-011",
-  "state": "SOURCE_VALIDATED_BOUNDED_REPOSITORY_DIVERGENCE_REMAINS",
+  "state": "CURRENT_SOURCE_CONVERGED_EXACT_HEAD_VALIDATION_REQUESTED",
   "source_commits": [
     "2a9f16e670124636bf07cd21eb063739fff4192b",
-    "1e3a41c9b18778dd140e2dcd7576f2e5955ae8f8",
-    "975419bd2c02dd241e0cb408d8b7e962d65aae0e",
-    "c9be04b422c2a6ba248e6ccecca77732c839bf88"
+    "010d89452946000cec14fa3c467d2987f5abdf08",
+    "f2f9ae46f7b8a48b8385bfcbfbb18e74d4e0ddc5",
+    "940165c40915cf7cb8d59edd66694e7e146d0c11",
+    "d16d1f68094c7ddb5193aecf8b464c6b8efd4c92"
   ],
-  "implementation_ref": "heartbeat_runtime/oscillator_producer.py",
-  "test_ref": "tests/test_oscillator_producer.py",
+  "implementation_refs": [
+    "heartbeat_runtime/independent_oscillator.py",
+    "heartbeat_runtime/oscillator_producer.py",
+    "scripts/run_heartbeat_runtime.py",
+    "heartbeat_runtime/assignment_timer.py",
+    "heartbeat_runtime/worker_runtime.py",
+    "scripts/install_sovereign_heartbeat_service.py"
+  ],
+  "test_refs": [
+    "tests/test_oscillator_producer.py",
+    "tests/test_heartbeat_carrier_non_authority.py",
+    "tests/test_worker_assignment_timer.py",
+    "tests/test_worker_runtime_independent_admission.py",
+    "tests/test_sovereign_heartbeat_service.py"
+  ],
   "contract_ref": "control/runtime-separation-contract.json",
+  "continuity_contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
   "validation_guard_ref": "scripts/validate_heartbeat_runtime_separation.py",
-  "hosted_run": {
-    "run_id": 32431877047,
-    "job_id": 96624983857,
-    "workflow": "Heartbeat Worker Project - Validation Only / No GitHub Token Authority",
-    "head_sha": "c9be04b422c2a6ba248e6ccecca77732c839bf88",
+  "previous_hosted_run": {
+    "run_id": 32432599514,
+    "job_id": 96627193822,
+    "head_sha": "f37761009f0f8bfc545f701380b01d8be504777b",
     "anonymous_checkout": "PASS",
     "github_credential_token_present": false,
     "compile_runtime_workers_scripts": "PASS",
     "canonical_json_parse": "PASS",
     "executable_handoff_validation": "PASS",
-    "oscillator_producer_tests": {
-      "tests_run": 6,
-      "passed": 6,
-      "failed": 0
-    },
     "repository_suite": {
-      "tests_run": 450,
+      "tests_run": 456,
       "state": "FAIL",
-      "failures": 10,
-      "errors": 16,
-      "classification": "PREEXISTING_HEARTBEAT_ARCHITECTURE_TEST_DIVERGENCE_OUTSIDE_PRODUCER_TESTS"
-    }
+      "failures": 7,
+      "errors": 10
+    },
+    "new_oscillator_and_independent_admission_tests": "PASS"
   },
   "producer_invariants": {
     "mechanism": "INDEPENDENT_PHASE_OSCILLATOR",
     "period_ns": 10000000,
     "reference_frequency_hz": 100,
     "progression_dependency": "OSCILLATOR_ONLY",
+    "production_mode": "OSCILLATOR_PHASE_DRIVEN",
     "event_trigger_required": false,
     "repository_event_required": false,
     "workflow_event_required": false,
     "task_event_required": false,
     "worker_event_required": false,
+    "interval_argument_controls_progression": false,
     "delayed_consumer_behavior": "COMPRESS_CONTIGUOUS_DUE_REFERENCE_RANGE",
     "sink_controls_progression": false,
     "sink_grants_authority": false,
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": "NONE"
   },
+  "worker_control_invariants": {
+    "independent_handoff_ready_requires_carrier_event": false,
+    "independent_authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "fresh_fence_floor_enforced": true,
+    "master_records_assignment_path_reused": true,
+    "carrier_grants_execution_authority": false
+  },
   "activation_claimed": false,
   "live_oscillator_process_observed": false,
   "repository_full_validation_claimed": false,
   "next_required_work": [
-    "reconcile stale heartbeat architecture tests and handoff expectations with oscillator-produced carrier semantics",
-    "install a resident oscillator-driven production loop without making WorkerCoordinator or repository events the clock",
-    "remove WorkerCoordinator dependency on carrier assignment-trigger packets for independently admitted HANDOFF_READY tasks",
-    "obtain live oscillator-produced carrier evidence and independent worker observation"
+    "consume exact-head hosted validation result for the converged source batch",
+    "repair only remaining genuine stale tests or source divergences without restoring event-trigger heartbeat semantics",
+    "obtain resident oscillator-produced carrier evidence",
+    "obtain independent WorkerCoordinator observation and execute admitted recovery work through no-carrier-event task control",
+    "continue sovereign inference, TVC, LLM-adapter, and Master Records same-execution activation chain"
   ],
   "authority_effect": "NONE_VALIDATION_ONLY"
 }
