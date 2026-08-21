@@ -46,11 +46,13 @@ class SovereignEphemeralConsoleTests(unittest.TestCase):
         self.assertEqual(result["state"], "FAIL_CLOSED")
         self.assertEqual(result["reason"], "THREE_LOGICAL_NODES_REQUIRED_FOR_THIRD_MACHINE_EMULATION")
 
-    def test_verifier_accepts_separated_v12_stegverse_ephemeral_restart(self):
+    def test_verifier_accepts_oscillator_v13_stegverse_ephemeral_restart(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             for rel in (
-                "heartbeat_runtime/engine_v12.py",
+                "heartbeat_runtime/engine_v13.py",
+                "heartbeat_runtime/independent_oscillator.py",
+                "heartbeat_runtime/oscillator_producer.py",
                 "heartbeat_runtime/worker_runtime.py",
                 "scripts/run_heartbeat_runtime.py",
                 "scripts/run_worker_runtime.py",
@@ -60,8 +62,10 @@ class SovereignEphemeralConsoleTests(unittest.TestCase):
                 path.write_text("# materialized runtime surface\n", encoding="utf-8")
 
             materialization = {
-                "canonical_carrier_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
+                "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
                 "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+                "heartbeat_production_mode": "OSCILLATOR_PHASE_DRIVEN",
+                "heartbeat_interval_argument_controls_progression": False,
                 "credential_authority": "TV/TVC",
                 "credential_requirement": "NONE",
                 "non_tv_tvc_secret_or_token_used": False,
@@ -91,12 +95,14 @@ class SovereignEphemeralConsoleTests(unittest.TestCase):
 
             registry = {"tasks": [{"task_id": "A"}]}
             (control / "worker-registry.json").write_text(json.dumps(registry), encoding="utf-8")
-            (control / "worker-runtime-state.json").write_text(
+            worker_state_path = control / "worker-runtime-state.json"
+            worker_state_path.write_text(
                 json.dumps({
                     "schema": "stegverse.worker-runtime-state/v1",
                     "runtime_tick": 1,
                     "last_observed_carrier_epoch": 30,
                     "last_observed_carrier_generation": 30,
+                    "observation_mode": "TASK_CAPABLE_WORKER_COORDINATOR",
                     "carrier_controls_timer": False,
                     "credential_authority": "TV/TVC",
                     "github_token_runtime_authority": "NONE",
@@ -104,36 +110,37 @@ class SovereignEphemeralConsoleTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            control_plane = {
-                "schema": "stegverse.worker-control-plane-coordination/v1",
-                "generation": 1,
-                "observed_reference": {
-                    "carrier_generation": 30,
-                    "reference_frame": "heartbeat_epoch:30",
-                    "heartbeat_is_authority": False,
-                },
-                "worker_coordination": {
-                    "state": "ACTIVE",
-                    "worker_registry_ref": "control/worker-registry.json",
-                    "active_leases": [
-                        {
-                            "claim_id": "claim-A",
-                            "fencing_token": 1,
-                            "worker_instance_id": "worker-A",
-                        }
-                    ],
-                },
-                "authority": {
-                    "heartbeat_grants_execution_authority": False,
-                    "signal_grants_execution_authority": False,
-                    "master_records_action_authority": False,
-                    "credential_authority": "TV/TVC",
-                    "github_token_runtime_authority": False,
-                },
-            }
-            (control / "worker-control-plane-coordination.json").write_text(
-                json.dumps(control_plane), encoding="utf-8"
-            )
+            def control_plane(epoch: int):
+                return {
+                    "schema": "stegverse.worker-control-plane-coordination/v1",
+                    "generation": 1,
+                    "observed_reference": {
+                        "carrier_generation": epoch,
+                        "reference_frame": f"heartbeat_epoch:{epoch}",
+                        "heartbeat_is_authority": False,
+                    },
+                    "worker_coordination": {
+                        "state": "ACTIVE",
+                        "worker_registry_ref": "control/worker-registry.json",
+                        "active_leases": [
+                            {
+                                "claim_id": "claim-A",
+                                "fencing_token": 1,
+                                "worker_instance_id": "worker-A",
+                            }
+                        ],
+                    },
+                    "authority": {
+                        "heartbeat_grants_execution_authority": False,
+                        "signal_grants_execution_authority": False,
+                        "master_records_action_authority": False,
+                        "credential_authority": "TV/TVC",
+                        "github_token_runtime_authority": False,
+                    },
+                }
+
+            control_plane_path = control / "worker-control-plane-coordination.json"
+            control_plane_path.write_text(json.dumps(control_plane(30)), encoding="utf-8")
 
             def carrier_state(epoch: int, generation: int):
                 return {
@@ -142,9 +149,23 @@ class SovereignEphemeralConsoleTests(unittest.TestCase):
                     "generation": generation,
                     "role": "REGULATORY_CARRIER_REFERENCE_FRAME",
                     "reference_frame": f"heartbeat_epoch:{epoch}",
-                    "frequency_rule": "GATE_PASSBAND_DERIVED",
+                    "frequency_rule": "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL",
                     "authority_effect": "NONE",
                     "activation_state": "ACTIVE",
+                    "oscillator": {
+                        "mechanism": "INDEPENDENT_PHASE_OSCILLATOR",
+                        "period_ns": 10_000_000,
+                        "phase_travel_time_ms": 10,
+                        "reference_increment_interval_ms": 10,
+                        "reference_frequency_hz": 100,
+                        "anchor_epoch": 30,
+                        "anchor_unix_ns": 1_000_000_000,
+                        "progression_dependency": "OSCILLATOR_ONLY",
+                        "downstream_gating": False,
+                        "observation_is_causal": False,
+                        "sampled_reference_epoch": epoch,
+                        "snapshot_is_observation_only": True,
+                    },
                     "legacy_cutover": {
                         "legacy_schema": "stegverse.org-heartbeat-state/v1",
                         "legacy_epoch": 29,
@@ -163,15 +184,17 @@ class SovereignEphemeralConsoleTests(unittest.TestCase):
                 sleeps["count"] += 1
                 next_epoch = 31 if sleeps["count"] == 1 else 32
                 state_path.write_text(json.dumps(carrier_state(next_epoch, next_epoch)), encoding="utf-8")
-                next_control = dict(control_plane)
-                next_control["observed_reference"] = {
-                    "carrier_generation": next_epoch,
-                    "reference_frame": f"heartbeat_epoch:{next_epoch}",
-                    "heartbeat_is_authority": False,
-                }
-                (control / "worker-control-plane-coordination.json").write_text(
-                    json.dumps(next_control), encoding="utf-8"
-                )
+                control_plane_path.write_text(json.dumps(control_plane(next_epoch)), encoding="utf-8")
+                worker_state_path.write_text(json.dumps({
+                    "schema": "stegverse.worker-runtime-state/v1",
+                    "runtime_tick": 1 + sleeps["count"],
+                    "last_observed_carrier_epoch": next_epoch,
+                    "last_observed_carrier_generation": next_epoch,
+                    "observation_mode": "TASK_CAPABLE_WORKER_COORDINATOR",
+                    "carrier_controls_timer": False,
+                    "credential_authority": "TV/TVC",
+                    "github_token_runtime_authority": "NONE",
+                }), encoding="utf-8")
 
             seen = {}
 
@@ -189,9 +212,14 @@ class SovereignEphemeralConsoleTests(unittest.TestCase):
             self.assertEqual(seen["command"], service["restart_command"])
             self.assertEqual(result["detail"]["registration_kind"], "stegverse-ephemeral-console")
             self.assertTrue(result["detail"]["legacy_hb29_unchanged"])
+            self.assertTrue(result["detail"]["oscillator_carrier_observed"])
+            self.assertTrue(result["detail"]["oscillator_carrier_after_restart"])
             self.assertEqual(result["detail"]["epoch_before"], 30)
             self.assertEqual(result["detail"]["epoch_observed"], 31)
             self.assertEqual(result["detail"]["epoch_after_restart"], 32)
+            self.assertEqual(result["detail"]["worker_runtime_tick_before"], 1)
+            self.assertEqual(result["detail"]["worker_runtime_tick_observed"], 2)
+            self.assertEqual(result["detail"]["worker_runtime_tick_after_restart"], 3)
 
     def test_hosted_environment_detector_is_not_credential_based(self):
         self.assertTrue(hosted_environment({"GITHUB_ACTIONS": "1", "GITHUB_TOKEN": ""}))
