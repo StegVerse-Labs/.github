@@ -101,7 +101,10 @@ class IPhoneHeartbeatTransitionReceiptTests(unittest.TestCase):
         verification = mod.validate_receipt(receipt, root=root)
         self.assertEqual(verification["state"], "PASS")
         self.assertTrue(verification["iphone_execution_evidence"])
-        result = mod.materialize(receipt, verification, root=root)
+        # This test exercises the sovereign/local path even when the test suite is
+        # itself hosted. Hosted fallback behavior is tested separately below.
+        with mock.patch.dict(mod.os.environ, {"GITHUB_ACTIONS": ""}, clear=False):
+            result = mod.materialize(receipt, verification, root=root)
         self.assertEqual(result["state"], "CARRIER_TRANSITION_COMPLETE")
         carrier = json.loads((root / "control" / "heartbeat-carrier-runtime-state.json").read_text())
         self.assertEqual(carrier["epoch"], 30)
