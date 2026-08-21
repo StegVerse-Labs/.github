@@ -38,6 +38,24 @@ class OscillatorPulseBatch:
         }
 
 
+def next_due_unix_ns(oscillator: dict[str, Any], *, last_emitted_epoch: int) -> int:
+    """Return the exact oscillator phase boundary for the next reference.
+
+    This converts the producer from "sleep after an event" to "wake for the
+    next oscillator phase boundary". The deadline is derived solely from the
+    immutable oscillator anchor and period.
+    """
+    period_ns = int(oscillator["period_ns"])
+    anchor_epoch = int(oscillator["anchor_epoch"])
+    anchor_unix_ns = int(oscillator["anchor_unix_ns"])
+    if period_ns != OSCILLATOR_PERIOD_NS:
+        raise RuntimeError("heartbeat oscillator period must remain exactly 10 ms")
+    next_epoch = int(last_emitted_epoch) + 1
+    if next_epoch <= anchor_epoch:
+        return anchor_unix_ns
+    return anchor_unix_ns + (next_epoch - anchor_epoch) * period_ns
+
+
 def due_pulse_batch(
     oscillator: dict[str, Any],
     *,
@@ -68,9 +86,10 @@ class OscillatorProducer:
     """Produce heartbeat reference batches from oscillator phase travel only.
 
     The producer is deliberately ignorant of GitHub events and worker/task
-    state. A resident runtime may call ``run_once`` from its own process loop;
-    the supplied sink is downstream observation/transport only and cannot
-    influence which references exist.
+    state. A resident runtime waits for ``next_due_unix_ns`` and calls
+    ``run_once`` at that oscillator-derived phase boundary. The supplied sink is
+    downstream observation/transport only and cannot influence which references
+    exist.
     """
 
     def __init__(
@@ -90,6 +109,10 @@ class OscillatorProducer:
     def last_emitted_epoch(self) -> int:
         return self._last_emitted_epoch
 
+    @property
+    def next_due_unix_ns(self) -> int:
+        return next_due_unix_ns(self._oscillator, last_emitted_epoch=self._last_emitted_epoch)
+
     def run_once(self) -> OscillatorPulseBatch | None:
         now_ns = int(self._clock_ns())
         batch = due_pulse_batch(
@@ -108,4 +131,5 @@ __all__ = [
     "OscillatorPulseBatch",
     "OscillatorProducer",
     "due_pulse_batch",
+    "next_due_unix_ns",
 ]
