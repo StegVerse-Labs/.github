@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.admissible-existence-control-plane-policy/v1",
-  "policy_version": "1.1.0",
+  "policy_version": "1.2.0",
   "effective_at": "2026-08-14T17:20:00Z",
   "task_conformance_effective_at": "2026-08-14T17:28:36Z",
   "canonical_stegcore": {
@@ -10,10 +10,13 @@
     "capability_registry_current_binding_commit": "ca484e0786ee4539af06394bc036e6a7624256f8",
     "task_conformance_merge_commit": "ca484e0786ee4539af06394bc036e6a7624256f8",
     "capability_handoff_current_commit": "dc539b252f764662340acb9dce10597dfe0a66b2",
-    "handoff": "docs/ADMISSIBLE_EXISTENCE_CAPABILITY_MODEL_MIRROR_HANDOFF.md",
     "task_conformance_handoff": "docs/AE_HANDOFF_TASK_CONFORMANCE_MIRROR_HANDOFF.md",
     "task_conformance_manifest": "ecosystem_management/ae_task_conformance.v1.json",
     "task_conformance_verifier": "tools/verify_ae_handoff_task_conformance.py",
+    "continuation_conformance_release_commit": "78d00ca0e977af3e666c2acec431b111aea0deef",
+    "continuation_conformance_handoff": "docs/AE_CONTINUATION_CONFORMANCE_MIRROR_HANDOFF.md",
+    "continuation_conformance_policy": "management/ae-continuation-conformance-policy.json",
+    "continuation_conformance_verifier": "scripts/validate_ae_continuation_conformance.py",
     "lifecycle_module": "src/stegcore/admissible_existence.py",
     "registry_module": "src/stegcore/capability_registry.py"
   },
@@ -36,9 +39,11 @@
   },
   "temporal_classes": ["recently_completed", "current", "future"],
   "task_relationships": ["develops_capability", "integrates_capability", "validates_capability", "propagates_capability"],
+  "ae_impacts": ["CAPABILITY", "NONE"],
   "verification_scope": {
     "executable_handoffs": "handoffs/*.json where schema=stegverse.executable-handoff/v0.1",
-    "worker_registry": ["control/worker-registry.json", "control/worker-registry.d/*.json"]
+    "worker_registry": ["control/worker-registry.json", "control/worker-registry.d/*.json"],
+    "none_impact_projection": "control/admissible-existence-retrospective-conformance.json"
   },
   "rules": {
     "completed_task_does_not_imply_activated_capability": true,
@@ -53,7 +58,11 @@
     "current_requires_owner_and_continuation": true,
     "future_requires_relationship_and_target_phase": true,
     "legacy_unbound_records_are_conformant": false,
-    "legacy_unbound_records_may_create_new_activation_authority": false
+    "legacy_unbound_records_may_create_new_activation_authority": false,
+    "none_impact_may_not_create_capability_phase": true,
+    "none_impact_requires_explicit_rationale": true,
+    "retrospective_projection_may_normalize_repository_specific_none_impact_records": true,
+    "retrospective_projection_grants_execution_or_activation_authority": false
   },
   "future_binding_contract": {
     "field": "admissible_existence",
@@ -74,7 +83,26 @@
       "temporal_class",
       "task_relationship",
       "target_phase"
+    ],
+    "none_impact_required_projection_keys": [
+      "task_id",
+      "temporal_class",
+      "ae_impact",
+      "task_relationship",
+      "result",
+      "continuation_owner",
+      "rationale"
     ]
+  },
+  "none_impact_projection": {
+    "source": "control/admissible-existence-retrospective-conformance.json",
+    "required_ae_impact": "NONE",
+    "allowed_results": ["PASS", "REVIEW_REQUIRED"],
+    "capability_phase_authority": "NONE",
+    "execution_authority": "NONE",
+    "activation_authority": "NONE",
+    "legacy_or_repository_specific_binding_conflict": "RECONCILIATION_REQUIRED_FAIL_CLOSED",
+    "meaning": "A task explicitly classified ae_impact=NONE may be normalized by the existing retrospective conformance sidecar without inventing a capability_id or existence phase. Any stale repository-specific capability-shaped binding remains non-authorizing reconciliation debt and may not create capability standing or activation."
   },
   "legacy_projection": {
     "enabled": true,
