@@ -92,15 +92,18 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
             self.assertFalse(receipt["third_party_runtime_required"])
             self.assertFalse(receipt["physical_additional_machine_required"])
 
-    def test_carrier_is_release_priority_and_names_stegfin_as_downstream(self) -> None:
+    def test_carrier_remains_release_priority_and_current_downstream_is_governed(self) -> None:
         from heartbeat_runtime.engine_v2 import HeartbeatRuntime as HeartbeatRuntimeV2
         handoff = json.loads((ROOT / "handoffs" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text())
         self.assertEqual(handoff["task"]["priority"], "release")
         self.assertLess(HeartbeatRuntimeV2.PRIORITY["release"], HeartbeatRuntimeV2.PRIORITY["critical"])
         self.assertEqual(handoff["authority"]["credential_authority"], "TV/TVC")
         self.assertEqual(handoff["authority"]["github_token_production_authority"], "NONE")
-        self.assertIn("STEGFIN-LIVE-ENTRY-003", handoff["release_downstream"])
-        self.assertEqual(handoff["constraint"]["operational_state"], "ACTIVE_SOLUTION_EXECUTION")
+        downstream = " ".join(handoff["release_downstream"])
+        self.assertIn("HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009", downstream)
+        self.assertIn("RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28", downstream)
+        self.assertIn("SHWP-ECOSYSTEM-CHAT-INFERENCE-001", downstream)
+        self.assertEqual(handoff["constraint"]["operational_state"], "REQUIRED_EXECUTION_REMAINS")
 
     def test_g18_adapter_passes_only_nonsecret_runtime_environment(self) -> None:
         adapters = json.loads((ROOT / "control" / "process-worker-adapters.json").read_text())
@@ -110,14 +113,22 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
         for name in ("GITHUB_TOKEN", "GH_TOKEN", "ZEROEX_API_KEY", "WALLET_PRIVATE_KEY", "TVC_TOKEN"):
             self.assertNotIn(name, allowlist)
 
-    def test_v11_resolution_successor_inherits_release_priority(self) -> None:
+    def test_v11_resolution_successor_inherits_release_priority_from_legacy_shape(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp); (root / "handoffs").mkdir(parents=True)
-            parent_handoff = json.loads((ROOT / "handoffs" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text())
+            parent_handoff = {
+                "schema": "stegverse.executable-handoff/v0.1",
+                "state": "BLOCKED",
+                "goal": {"goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION", "authority_ceiling": [], "successor_policy": "INHERIT_OR_NARROW", "max_successor_depth": 4},
+                "task": {"task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION", "repository": "StegVerse-Labs/.github", "canonical_owner_ref": "StegVerse-Labs/.github#12", "derivation_depth": 0, "priority": "release"},
+                "authority": {"authority_source": "test", "policy_version": "test"},
+                "execution": {"required_capabilities": [], "allowed_paths": [], "allowed_services": [], "max_actions": 3, "max_retries": 3, "external_cost_ceiling_usd": 0, "runtime_window_beats": 32},
+                "continuity": {"checkpoint_ref": "checkpoints/parent.json"},
+            }
             (root / "handoffs" / "parent.json").write_text(json.dumps(parent_handoff), encoding="utf-8")
-            parent = {"task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION", "goal_id": parent_handoff["goal"]["goal_id"], "state": "BLOCKED", "handoff_ref": "handoffs/parent.json", "executor_binding": "BOUND", "worker_id": None, "worker_instance_id": None, "claim_id": None, "heartbeat_timing": None, "last_checkpoint_ref": parent_handoff["continuity"]["checkpoint_ref"], "archive_eligible": False, "archive_reason_codes": [], "evidence_refs": []}
+            parent = {"task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION", "goal_id": parent_handoff["goal"]["goal_id"], "state": "BLOCKED", "handoff_ref": "handoffs/parent.json", "executor_binding": "BOUND", "worker_id": None, "worker_instance_id": None, "claim_id": None, "heartbeat_timing": None, "last_checkpoint_ref": "checkpoints/parent.json", "archive_eligible": False, "archive_reason_codes": [], "evidence_refs": []}
             registry = {"generation": 18, "workers": [], "tasks": [parent]}
-            contract = {"trigger_type": "CONDITIONAL_CONSTRAINT", "dependency_class": "EXECUTION_OPPORTUNITY", "problem_statement": "Bounded successor transition could not execute on this opportunity.", "solution_required": True, "workaround_candidates": ["retry bounded v12 transition"], "next_solution_action": "execute bounded v12 transition", "resolvable_by_current_worker": False, "escalation_target": "SOVEREIGN_RUNTIME_OWNER", "required_capabilities": ["repository_resolution", "sandbox_validation"], "completion_evidence": ["HB30 successor evidence"]}
+            contract = {"trigger_type": "CONDITIONAL_CONSTRAINT", "dependency_class": "EXECUTION_OPPORTUNITY", "problem_statement": "Bounded successor transition could not execute on this opportunity.", "solution_required": True, "workaround_candidates": ["retry bounded transition"], "next_solution_action": "execute bounded transition", "resolvable_by_current_worker": False, "escalation_target": "SOVEREIGN_RUNTIME_OWNER", "required_capabilities": ["repository_resolution", "sandbox_validation"], "completion_evidence": ["successor evidence"]}
             runtime = HeartbeatRuntimeV11(root); events: list[dict] = []
             task_id = runtime._admit_resolution_task(registry, parent, 30, events, "resolution-contract:test", contract)
             generated = json.loads((root / "handoffs" / "generated" / f"{task_id}.json").read_text())
