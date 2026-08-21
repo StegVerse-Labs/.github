@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Produce the sovereign activation proof for separated v12 runtime.
+"""Produce sovereign activation proof for separated oscillator carrier/runtime.
 
-Carrier continuity alone is not runtime activation. The proof requires both
-separated processes and observable task-capable WorkerCoordinator progress.
+Carrier continuity alone is not runtime activation. The proof requires the
+oscillator-produced v13 carrier, the independently executing WorkerCoordinator,
+and observable task-capable worker progress. Worker progress is downstream
+runtime evidence and never heartbeat timing authority.
 """
 from __future__ import annotations
 
@@ -17,6 +19,8 @@ from typing import Any, Callable
 
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
 OBSERVATION_ONLY_MODE = "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
+CANONICAL_CARRIER_RUNTIME = "heartbeat_runtime.engine_v13.HeartbeatRuntime"
+CANONICAL_WORKER_RUNTIME = "heartbeat_runtime.worker_runtime.WorkerCoordinator"
 REQUIRED_PREDICATES = (
     "runtime_materialized",
     "native_service_active",
@@ -72,6 +76,22 @@ def _worker_task_capable(state: dict) -> bool:
         state.get("schema") == "stegverse.worker-runtime-state/v1"
         and _runtime_tick(state) >= 0
         and state.get("observation_mode") != OBSERVATION_ONLY_MODE
+    )
+
+
+def _oscillator_carrier(state: dict) -> bool:
+    oscillator = state.get("oscillator") or {}
+    return (
+        state.get("schema") == "stegverse.heartbeat-carrier-runtime-state/v1"
+        and state.get("frequency_rule") == "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL"
+        and oscillator.get("mechanism") == "INDEPENDENT_PHASE_OSCILLATOR"
+        and oscillator.get("period_ns") == 10_000_000
+        and oscillator.get("reference_frequency_hz") == 100
+        and oscillator.get("progression_dependency") == "OSCILLATOR_ONLY"
+        and oscillator.get("downstream_gating") is False
+        and oscillator.get("observation_is_causal") is False
+        and oscillator.get("snapshot_is_observation_only") is True
+        and oscillator.get("sampled_reference_epoch") == state.get("epoch")
     )
 
 
@@ -175,13 +195,17 @@ def evaluate_runtime(
         "carrier_state_ref": "control/heartbeat-carrier-runtime-state.json",
         "worker_control_plane_ref": "control/worker-control-plane-coordination.json",
         "worker_state_ref": "control/worker-runtime-state.json",
+        "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+        "worker_controls_heartbeat_progression": False,
     }
     if hosted or not declared:
         detail["ineligible_reason"] = "THIRD_PARTY_HOSTED_ENVIRONMENT" if hosted else "SOVEREIGN_NODE_DECLARATION_ABSENT"
         return {"predicates": predicates, "detail": detail}
 
     required_files = (
-        root / "heartbeat_runtime" / "engine_v12.py",
+        root / "heartbeat_runtime" / "engine_v13.py",
+        root / "heartbeat_runtime" / "independent_oscillator.py",
+        root / "heartbeat_runtime" / "oscillator_producer.py",
         root / "heartbeat_runtime" / "worker_runtime.py",
         root / "scripts" / "run_heartbeat_runtime.py",
         root / "scripts" / "run_worker_runtime.py",
@@ -201,11 +225,17 @@ def evaluate_runtime(
 
     materialization = load_json(materialization_path)
     service = load_json(service_path)
-    if materialization.get("canonical_carrier_runtime") != "heartbeat_runtime.engine_v12.HeartbeatRuntime":
+    if materialization.get("canonical_carrier_runtime") != CANONICAL_CARRIER_RUNTIME:
         detail["ineligible_reason"] = "CARRIER_RUNTIME_BINDING_MISMATCH"
         return {"predicates": predicates, "detail": detail}
-    if materialization.get("worker_runtime") != "heartbeat_runtime.worker_runtime.WorkerCoordinator":
+    if materialization.get("worker_runtime") != CANONICAL_WORKER_RUNTIME:
         detail["ineligible_reason"] = "WORKER_RUNTIME_BINDING_MISMATCH"
+        return {"predicates": predicates, "detail": detail}
+    if materialization.get("heartbeat_production_mode") != "OSCILLATOR_PHASE_DRIVEN":
+        detail["ineligible_reason"] = "OSCILLATOR_PRODUCER_BINDING_MISSING"
+        return {"predicates": predicates, "detail": detail}
+    if materialization.get("heartbeat_interval_argument_controls_progression") is not False:
+        detail["ineligible_reason"] = "INTERVAL_ARGUMENT_REGAINED_HEARTBEAT_AUTHORITY"
         return {"predicates": predicates, "detail": detail}
     predicates["native_service_active"] = _local_supervision_active(service)
 
@@ -215,6 +245,7 @@ def evaluate_runtime(
     registry_before = load_json(registry_path)
     e0, g0 = _epoch_generation(before)
     wt0 = _runtime_tick(worker_before)
+    detail["oscillator_carrier_before"] = _oscillator_carrier(before)
 
     sleeper(observe_seconds)
     observed = load_json(carrier_path)
@@ -222,7 +253,7 @@ def evaluate_runtime(
     control_observed = load_json(control_plane_path)
     e1, g1 = _epoch_generation(observed)
     wt1 = _runtime_tick(worker_observed_state)
-    predicates["heartbeat_epoch_advanced"] = e1 > e0
+    predicates["heartbeat_epoch_advanced"] = e1 > e0 and _oscillator_carrier(observed)
     predicates["worker_task_capable_cycle_observed"] = _worker_task_capable(worker_observed_state) and wt1 > wt0
     predicates["continuous_runtime_live"] = (
         predicates["native_service_active"]
@@ -255,6 +286,7 @@ def evaluate_runtime(
     predicates["state_reconstruction_pass"] = (
         predicates["controlled_restart_observed"]
         and predicates["epoch_and_generation_non_regressing"]
+        and _oscillator_carrier(after)
         and worker_progress_after_restart
         and before_tasks == after_tasks
         and worker_coordination_observed(control_after, root)
@@ -277,6 +309,8 @@ def evaluate_runtime(
         "worker_observation_mode": worker_observed_state.get("observation_mode"),
         "worker_progress_after_restart": worker_progress_after_restart,
         "legacy_hb29_unchanged": legacy_unchanged,
+        "oscillator_carrier_observed": _oscillator_carrier(observed),
+        "oscillator_carrier_after_restart": _oscillator_carrier(after),
         "active_control_lease_count": len(_active_leases(control_after)),
     })
     return {"predicates": predicates, "detail": detail}
@@ -286,9 +320,10 @@ def verify(runtime_root: Path, **kwargs: Any) -> dict:
     evaluated = evaluate_runtime(runtime_root, **kwargs)
     predicates = evaluated["predicates"]
     body = {
-        "schema": "stegverse.sovereign-runtime-activation-proof/v3",
+        "schema": "stegverse.sovereign-runtime-activation-proof/v4",
         **predicates,
         "all_predicates_pass": all(predicates.values()),
+        "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
         "third_party_runtime_required": False,
         "physical_additional_machine_required": False,
         "credential_authority": "TV/TVC",
