@@ -40,6 +40,7 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
             "carrier_producer_ref": "heartbeat_runtime/oscillator_producer.py",
             "heartbeat_production_mode": "OSCILLATOR_PHASE_DRIVEN",
             "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+            "heartbeat_interval_argument_controls_progression": False,
         }) + "\n", encoding="utf-8")
         (receipts / "activation.latest.json").write_text(json.dumps({
             "active": True,
@@ -70,11 +71,14 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
             "frequency_rule": "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL",
             "oscillator": {
                 "mechanism": "INDEPENDENT_PHASE_OSCILLATOR",
+                "period_ns": 10_000_000,
                 "phase_travel_time_ms": 10,
                 "reference_frequency_hz": 100,
                 "progression_dependency": "OSCILLATOR_ONLY",
+                "downstream_gating": False,
                 "observation_is_causal": False,
                 "snapshot_is_observation_only": True,
+                "sampled_reference_epoch": 30,
             },
         }) + "\n", encoding="utf-8")
         (control / "worker-registry.json").write_text(json.dumps({
@@ -106,6 +110,16 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
             },
         }) + "\n", encoding="utf-8")
 
+    @staticmethod
+    def _advance_carrier(carrier_path: Path) -> dict:
+        state = json.loads(carrier_path.read_text())
+        state["epoch"] += 1
+        state["generation"] += 1
+        state["reference_frame"] = f"heartbeat_epoch:{state['epoch']}"
+        state["oscillator"]["sampled_reference_epoch"] = state["epoch"]
+        carrier_path.write_text(json.dumps(state) + "\n", encoding="utf-8")
+        return state
+
     def test_hosted_environment_never_counts_as_sovereign(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             result = mod.evaluate_runtime(
@@ -125,11 +139,7 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
 
             def sleeper(_seconds: float) -> None:
                 calls["sleep"] += 1
-                state = json.loads(carrier_path.read_text())
-                state["epoch"] += 1
-                state["generation"] += 1
-                state["reference_frame"] = f"heartbeat_epoch:{state['epoch']}"
-                carrier_path.write_text(json.dumps(state) + "\n", encoding="utf-8")
+                state = self._advance_carrier(carrier_path)
                 worker = json.loads(worker_path.read_text())
                 worker["runtime_tick"] += 1
                 worker["last_observed_carrier_epoch"] = state["epoch"]
@@ -178,11 +188,7 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
             worker_path = root / "control" / "worker-runtime-state.json"
 
             def sleeper(_seconds: float) -> None:
-                state = json.loads(carrier_path.read_text())
-                state["epoch"] += 1
-                state["generation"] += 1
-                state["reference_frame"] = f"heartbeat_epoch:{state['epoch']}"
-                carrier_path.write_text(json.dumps(state) + "\n", encoding="utf-8")
+                self._advance_carrier(carrier_path)
                 worker = json.loads(worker_path.read_text())
                 worker["runtime_tick"] += 1
                 worker_path.write_text(json.dumps(worker) + "\n", encoding="utf-8")
@@ -209,11 +215,7 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
             carrier_path = root / "control" / "heartbeat-carrier-runtime-state.json"
 
             def sleeper(_seconds: float) -> None:
-                state = json.loads(carrier_path.read_text())
-                state["epoch"] += 1
-                state["generation"] += 1
-                state["reference_frame"] = f"heartbeat_epoch:{state['epoch']}"
-                carrier_path.write_text(json.dumps(state) + "\n", encoding="utf-8")
+                self._advance_carrier(carrier_path)
 
             result = mod.evaluate_runtime(
                 root,
