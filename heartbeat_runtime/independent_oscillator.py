@@ -32,10 +32,15 @@ def unix_ns_to_iso8601(value: int) -> str:
 def normalize_oscillator(state: dict[str, Any], *, now_ns: int) -> dict[str, Any]:
     """Return a stable oscillator anchor without making observation causal.
 
-    Existing pre-fix carrier snapshots are migrated by treating their persisted
-    epoch and observation timestamp as the last known sample of an oscillator
-    that continued independently after that sample. No worker/task state is
-    consulted.
+    Existing oscillator-backed carrier state preserves its immutable anchor.
+    Historical separated carrier snapshots are migrated by treating their
+    persisted observation as the last known sample. The one special bootstrap
+    boundary is immutable legacy HB29: its historical wall-clock timestamp must
+    not be extrapolated across days of inactivity and accidentally manufacture
+    millions of heartbeat references. The first separated successor therefore
+    binds HB29 to the immediately preceding 10 ms oscillator quantum, yielding
+    exactly HB30 at cutover; all later references are phase-derived normally.
+    No worker/task state is consulted.
     """
     oscillator = state.get("oscillator")
     if isinstance(oscillator, dict):
@@ -57,9 +62,18 @@ def normalize_oscillator(state: dict[str, Any], *, now_ns: int) -> dict[str, Any
             }
 
     sampled_epoch = int(state.get("epoch", 0))
-    sampled_ns = iso8601_to_unix_ns(state.get("last_cycle_at"))
-    if sampled_ns is None or sampled_ns > now_ns:
-        sampled_ns = now_ns
+    legacy_cutover = state.get("legacy_cutover") or {}
+    is_initial_hb29_cutover = (
+        sampled_epoch == 29
+        and int(legacy_cutover.get("legacy_epoch", 29)) == 29
+        and legacy_cutover.get("closed") is not True
+    )
+    if is_initial_hb29_cutover:
+        sampled_ns = max(0, now_ns - OSCILLATOR_PERIOD_NS)
+    else:
+        sampled_ns = iso8601_to_unix_ns(state.get("last_cycle_at"))
+        if sampled_ns is None or sampled_ns > now_ns:
+            sampled_ns = now_ns
     return {
         "mechanism": MECHANISM,
         "period_ns": OSCILLATOR_PERIOD_NS,
