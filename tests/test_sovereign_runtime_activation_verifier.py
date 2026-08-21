@@ -21,7 +21,9 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
     def _runtime(self, base: Path, *, observation_only: bool = False) -> Path:
         root = base / "heartbeat"
         for rel in (
-            "heartbeat_runtime/engine_v12.py",
+            "heartbeat_runtime/engine_v13.py",
+            "heartbeat_runtime/independent_oscillator.py",
+            "heartbeat_runtime/oscillator_producer.py",
             "heartbeat_runtime/worker_runtime.py",
             "scripts/run_heartbeat_runtime.py",
             "scripts/run_worker_runtime.py",
@@ -33,8 +35,11 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
         receipts = root / "receipts" / "sovereign-host"
         receipts.mkdir(parents=True)
         (receipts / "materialization.latest.json").write_text(json.dumps({
-            "canonical_carrier_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
+            "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
             "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+            "carrier_producer_ref": "heartbeat_runtime/oscillator_producer.py",
+            "heartbeat_production_mode": "OSCILLATOR_PHASE_DRIVEN",
+            "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
         }) + "\n", encoding="utf-8")
         (receipts / "activation.latest.json").write_text(json.dumps({
             "active": True,
@@ -61,6 +66,16 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
             "schema": "stegverse.heartbeat-carrier-runtime-state/v1",
             "epoch": 30,
             "generation": 30,
+            "reference_frame": "heartbeat_epoch:30",
+            "frequency_rule": "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL",
+            "oscillator": {
+                "mechanism": "INDEPENDENT_PHASE_OSCILLATOR",
+                "phase_travel_time_ms": 10,
+                "reference_frequency_hz": 100,
+                "progression_dependency": "OSCILLATOR_ONLY",
+                "observation_is_causal": False,
+                "snapshot_is_observation_only": True,
+            },
         }) + "\n", encoding="utf-8")
         (control / "worker-registry.json").write_text(json.dumps({
             "tasks": [{"task_id": "A"}, {"task_id": "B"}],
@@ -113,6 +128,7 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
                 state = json.loads(carrier_path.read_text())
                 state["epoch"] += 1
                 state["generation"] += 1
+                state["reference_frame"] = f"heartbeat_epoch:{state['epoch']}"
                 carrier_path.write_text(json.dumps(state) + "\n", encoding="utf-8")
                 worker = json.loads(worker_path.read_text())
                 worker["runtime_tick"] += 1
@@ -149,6 +165,7 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
             persisted = json.loads((base / "activation.latest.json").read_text())
             self.assertTrue(persisted["all_predicates_pass"])
             self.assertTrue(persisted["worker_task_capable_cycle_observed"])
+            self.assertEqual(persisted["heartbeat_progression_dependency"], "OSCILLATOR_ONLY")
             self.assertFalse(persisted["third_party_runtime_required"])
             self.assertEqual(persisted["credential_authority"], "TV/TVC")
             self.assertEqual(persisted["credential_requirement"], "NONE")
@@ -164,6 +181,7 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
                 state = json.loads(carrier_path.read_text())
                 state["epoch"] += 1
                 state["generation"] += 1
+                state["reference_frame"] = f"heartbeat_epoch:{state['epoch']}"
                 carrier_path.write_text(json.dumps(state) + "\n", encoding="utf-8")
                 worker = json.loads(worker_path.read_text())
                 worker["runtime_tick"] += 1
@@ -194,6 +212,7 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
                 state = json.loads(carrier_path.read_text())
                 state["epoch"] += 1
                 state["generation"] += 1
+                state["reference_frame"] = f"heartbeat_epoch:{state['epoch']}"
                 carrier_path.write_text(json.dumps(state) + "\n", encoding="utf-8")
 
             result = mod.evaluate_runtime(
