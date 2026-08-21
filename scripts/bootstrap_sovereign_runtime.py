@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Bootstrap optional resident supervision for the canonical v12 heartbeat.
+"""Bootstrap optional resident supervision for the oscillator-produced carrier.
 
-Heartbeat continuity itself is state-transition continuity and is produced by
-``advance_heartbeat_transition.py``.  This entry point preserves the released
-resident-supervision bootstrap contract as optional stronger evidence.
+The bootstrap installs a local v13 oscillator carrier and separate
+WorkerCoordinator. It never becomes the heartbeat clock: progression remains
+OSCILLATOR_ONLY at 10 ms / 100 Hz and hosted environments are validation-only.
 """
 from __future__ import annotations
 
@@ -24,7 +24,9 @@ THIRD_PARTY_ENV_VARS = (
 )
 CREDENTIAL_ENV_VARS = ("GITHUB_TOKEN", "GH_TOKEN", "STEGVERSE_GITHUB_TOKEN", "TVC_TOKEN")
 REQUIRED_SOURCE_FILES = (
-    Path("heartbeat_runtime/engine_v12.py"),
+    Path("heartbeat_runtime/engine_v13.py"),
+    Path("heartbeat_runtime/independent_oscillator.py"),
+    Path("heartbeat_runtime/oscillator_producer.py"),
     Path("heartbeat_runtime/worker_runtime.py"),
     Path("heartbeat_runtime/assignment_timer.py"),
     Path("scripts/install_sovereign_heartbeat_service.py"),
@@ -39,8 +41,9 @@ REQUIRED_SOURCE_FILES = (
 REQUIRED_PREDICATES = (
     "runtime_materialized", "native_service_active", "continuous_runtime_live",
     "heartbeat_epoch_advanced", "worker_coordination_checkpoint_observed",
-    "controlled_restart_observed", "epoch_and_generation_non_regressing",
-    "no_duplicate_claim_or_fence", "state_reconstruction_pass",
+    "worker_task_capable_cycle_observed", "controlled_restart_observed",
+    "epoch_and_generation_non_regressing", "no_duplicate_claim_or_fence",
+    "state_reconstruction_pass",
 )
 
 
@@ -109,16 +112,26 @@ def local_eligibility(source_root: Path, runtime_root: Path, env: dict[str, str]
         durable_state_writable = False
     source_complete = all(source_files.values())
     return {
-        "source_root": str(source_root), "runtime_root": str(runtime_root),
-        "required_source_files": source_files, "canonical_source_complete": source_complete,
-        "durable_state_writable": durable_state_writable, "hosted_environment_rejected": hosted,
+        "source_root": str(source_root),
+        "runtime_root": str(runtime_root),
+        "required_source_files": source_files,
+        "canonical_source_complete": source_complete,
+        "durable_state_writable": durable_state_writable,
+        "hosted_environment_rejected": hosted,
         "eligible": source_complete and durable_state_writable and not hosted,
-        "continuity_model": "STATE_TRANSITION_CONTINUITY",
+        "continuity_model": "INDEPENDENT_OSCILLATOR_CONTINUITY",
+        "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+        "oscillator_producer_ref": "heartbeat_runtime/oscillator_producer.py",
+        "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+        "heartbeat_event_trigger_required": False,
         "state_transition_contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
         "state_transition_producer_ref": "scripts/advance_heartbeat_transition.py",
-        "always_on_external_host_required": False, "wall_clock_continuous_process_required": False,
-        "resident_native_supervision_optional": True, "credential_requirement": "NONE",
-        "credential_authority": "TV/TVC", "github_token_required": False,
+        "always_on_external_host_required": False,
+        "wall_clock_continuous_process_required": False,
+        "resident_native_supervision_optional": True,
+        "credential_requirement": "NONE",
+        "credential_authority": "TV/TVC",
+        "github_token_required": False,
         "third_party_runtime_required": False,
         "authority_effect": "RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY",
     }
@@ -146,18 +159,27 @@ def derive_node_declaration(source_root: Path, runtime_root: Path, node_marker: 
         eligibility["declaration_mode"] = "NOT_DERIVED"
         return False, None, eligibility
     body = {
-        "schema": "stegverse.sovereign-node-declaration/v0.3", "declared": True,
-        "declaration_source": "SELF_BOOTSTRAP_LOCAL_RUNTIME_ELIGIBILITY",
-        "source_root": eligibility["source_root"], "state_root": eligibility["runtime_root"],
-        "canonical_runtime_complete": True, "durable_state_writable": True,
-        "hosted_environment_rejected": False, "continuity_model": "STATE_TRANSITION_CONTINUITY",
-        "always_on_external_host_required": False, "credential_requirement": "NONE",
-        "credential_authority": "TV/TVC", "github_token_required": False,
+        "schema": "stegverse.sovereign-node-declaration/v0.4",
+        "declared": True,
+        "declaration_source": "SELF_BOOTSTRAP_LOCAL_OSCILLATOR_RUNTIME_ELIGIBILITY",
+        "source_root": eligibility["source_root"],
+        "state_root": eligibility["runtime_root"],
+        "canonical_runtime_complete": True,
+        "durable_state_writable": True,
+        "hosted_environment_rejected": False,
+        "continuity_model": "INDEPENDENT_OSCILLATOR_CONTINUITY",
+        "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+        "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+        "heartbeat_event_trigger_required": False,
+        "always_on_external_host_required": False,
+        "credential_requirement": "NONE",
+        "credential_authority": "TV/TVC",
+        "github_token_required": False,
         "third_party_runtime_required": False,
         "authority_effect": "RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY",
     }
     atomic_write(node_marker, body)
-    eligibility["declaration_mode"] = "SELF_BOOTSTRAP_LOCAL_RUNTIME_ELIGIBILITY"
+    eligibility["declaration_mode"] = "SELF_BOOTSTRAP_LOCAL_OSCILLATOR_RUNTIME_ELIGIBILITY"
     return True, str(node_marker), eligibility
 
 
@@ -194,8 +216,11 @@ def _attempt_post_bootstrap_activation(source_root: Path, *, proof_path: Path, r
     completed = runner(command, check=False, capture_output=True, text=True, timeout=180, env=child_env)
     receipt = load_json(integration_receipt) or {}
     return {
-        "attempted": True, "state": receipt.get("state") or ("COMPLETE" if completed.returncode == 0 else "REVIEW_REQUIRED"),
-        "reason": receipt.get("reason"), "returncode": completed.returncode, "receipt_ref": str(integration_receipt),
+        "attempted": True,
+        "state": receipt.get("state") or ("COMPLETE" if completed.returncode == 0 else "REVIEW_REQUIRED"),
+        "reason": receipt.get("reason"),
+        "returncode": completed.returncode,
+        "receipt_ref": str(integration_receipt),
         "executor_service_active": receipt.get("executor_service_active") is True,
         "credential_authority": receipt.get("credential_authority", "TV/TVC"),
         "non_tv_tvc_secret_or_token_used": receipt.get("non_tv_tvc_secret_or_token_used", False),
@@ -204,32 +229,57 @@ def _attempt_post_bootstrap_activation(source_root: Path, *, proof_path: Path, r
 
 
 def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof_path: Path, receipt_path: Path, env: dict[str, str] | None = None, runner: Runner = subprocess.run, activate_downstream: bool = True) -> dict[str, Any]:
-    source_root, runtime_root = source_root.expanduser().resolve(), runtime_root.expanduser().resolve()
-    node_marker, proof_path, receipt_path = node_marker.expanduser().resolve(), proof_path.expanduser().resolve(), receipt_path.expanduser().resolve()
+    source_root = source_root.expanduser().resolve()
+    runtime_root = runtime_root.expanduser().resolve()
+    node_marker = node_marker.expanduser().resolve()
+    proof_path = proof_path.expanduser().resolve()
+    receipt_path = receipt_path.expanduser().resolve()
     declared, declaration_ref, eligibility = derive_node_declaration(source_root, runtime_root, node_marker, env)
     body: dict[str, Any] = {
-        "schema": "stegverse.sovereign-runtime-self-bootstrap-receipt/v1",
-        "task_id": "SHWP-SOVEREIGN-RUNTIME-SELF-BOOTSTRAP-001", "source_root": str(source_root),
-        "runtime_root": str(runtime_root), "node_declaration_ref": declaration_ref, "node_eligibility": eligibility,
-        "continuity_model": "STATE_TRANSITION_CONTINUITY", "state_transition_contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
+        "schema": "stegverse.sovereign-runtime-self-bootstrap-receipt/v2",
+        "task_id": "SHWP-SOVEREIGN-RUNTIME-SELF-BOOTSTRAP-001",
+        "source_root": str(source_root),
+        "runtime_root": str(runtime_root),
+        "node_declaration_ref": declaration_ref,
+        "node_eligibility": eligibility,
+        "continuity_model": "INDEPENDENT_OSCILLATOR_CONTINUITY",
+        "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+        "oscillator_producer_ref": "heartbeat_runtime/oscillator_producer.py",
+        "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+        "heartbeat_event_trigger_required": False,
+        "state_transition_contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
         "state_transition_producer_ref": "scripts/advance_heartbeat_transition.py",
-        "always_on_external_host_required": False, "wall_clock_continuous_process_required": False,
-        "resident_native_supervision_optional": True, "credential_requirement": "NONE", "credential_authority": "TV/TVC",
-        "github_token_required": False, "third_party_runtime_required": False,
+        "always_on_external_host_required": False,
+        "wall_clock_continuous_process_required": False,
+        "resident_native_supervision_optional": True,
+        "credential_requirement": "NONE",
+        "credential_authority": "TV/TVC",
+        "github_token_required": False,
+        "third_party_runtime_required": False,
         "authority_effect": "OPTIONAL_RESIDENT_BOOTSTRAP_ONLY_NO_CREDENTIAL_ROUTE_OR_HEARTBEAT_AUTHORITY",
-        "installer_returncode": None, "verifier_returncode": None, "proof_path": str(proof_path),
+        "installer_returncode": None,
+        "verifier_returncode": None,
+        "proof_path": str(proof_path),
         "post_bootstrap_stegfin": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "executor_service_active": False, "wallet_handoff_ready_claimed": False},
-        "state": "FAIL_CLOSED", "reason": None,
+        "state": "FAIL_CLOSED",
+        "reason": None,
     }
     if third_party_hosted_environment(env):
-        body["reason"] = "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_BOOTSTRAP_SURFACE"; atomic_write(receipt_path, body); return body
+        body["reason"] = "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_BOOTSTRAP_SURFACE"
+        atomic_write(receipt_path, body)
+        return body
     if not declared or not eligibility.get("eligible"):
-        body["reason"] = "LOCAL_RUNTIME_ELIGIBILITY_NOT_PROVEN"; atomic_write(receipt_path, body); return body
+        body["reason"] = "LOCAL_RUNTIME_ELIGIBILITY_NOT_PROVEN"
+        atomic_write(receipt_path, body)
+        return body
     child_env = scrubbed_child_env(env, source_root=source_root, runtime_root=runtime_root, proof_path=proof_path)
     install = runner([sys.executable, str(source_root / "scripts" / "install_sovereign_heartbeat_service.py"), "--source-root", str(source_root), "--runtime-root", str(runtime_root)], check=False, capture_output=True, text=True, timeout=180, env=child_env)
     body["installer_returncode"] = install.returncode
     if install.returncode != 0:
-        body["state"] = "RETRY"; body["reason"] = "NATIVE_INSTALLATION_RETRY_REQUIRED"; atomic_write(receipt_path, body); return body
+        body["state"] = "RETRY"
+        body["reason"] = "NATIVE_INSTALLATION_RETRY_REQUIRED"
+        atomic_write(receipt_path, body)
+        return body
     verify = runner([sys.executable, str(source_root / "scripts" / "verify_sovereign_runtime_activation.py"), "--runtime-root", str(runtime_root)], check=False, capture_output=True, text=True, timeout=180, env=child_env)
     body["verifier_returncode"] = verify.returncode
     proof = load_json(proof_path)
@@ -243,7 +293,8 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         if activate_downstream:
             body["post_bootstrap_stegfin"] = _attempt_post_bootstrap_activation(source_root, proof_path=proof_path, receipt_path=receipt_path, node_marker=node_marker, env=env, runner=runner)
     else:
-        body["state"] = "REVIEW_REQUIRED"; body["reason"] = "SOVEREIGN_ACTIVATION_PROOF_INCOMPLETE"
+        body["state"] = "REVIEW_REQUIRED"
+        body["reason"] = "SOVEREIGN_ACTIVATION_PROOF_INCOMPLETE"
     atomic_write(receipt_path, body)
     return body
 
@@ -257,7 +308,14 @@ def main() -> int:
     parser.add_argument("--receipt-path", type=Path, default=None)
     parser.add_argument("--skip-post-bootstrap-stegfin", action="store_true")
     args = parser.parse_args()
-    result = bootstrap(args.source_root, (args.runtime_root or default_runtime_root()).resolve(), node_marker=(args.node_marker or default_node_marker()).resolve(), proof_path=(args.proof_path or default_proof_path()).resolve(), receipt_path=(args.receipt_path or default_receipt_path()).resolve(), activate_downstream=not args.skip_post_bootstrap_stegfin)
+    result = bootstrap(
+        args.source_root,
+        (args.runtime_root or default_runtime_root()).resolve(),
+        node_marker=(args.node_marker or default_node_marker()).resolve(),
+        proof_path=(args.proof_path or default_proof_path()).resolve(),
+        receipt_path=(args.receipt_path or default_receipt_path()).resolve(),
+        activate_downstream=not args.skip_post_bootstrap_stegfin,
+    )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result.get("state") == "COMPLETE" else 1
 
