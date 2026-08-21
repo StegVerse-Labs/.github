@@ -71,10 +71,14 @@ def load_state(path: Path) -> dict[str, Any] | None:
 
 
 def _child_env(adapter_root: Path, proof_path: Path, route_path: Path) -> dict[str, str]:
+    source_registry = adapter_root / "va_claim_assistant" / "source-registry.site-projection.json"
+    if not source_registry.is_file():
+        raise RuntimeError("va_source_registry_projection_missing")
     env = {key: value for key, value in os.environ.items() if key not in FORBIDDEN_ENV}
     env["PYTHONPATH"] = str(adapter_root)
     env["STEGVERSE_CANONICAL_RUNTIME_PROOF_FILE"] = str(proof_path)
     env["STEGVERSE_TVC_ROUTE_RECEIPT_FILE"] = str(route_path)
+    env["STEGVERSE_VA_SOURCE_REGISTRY_FILE"] = str(source_registry)
     env["STEGVERSE_LOCAL_MODEL_CREDENTIAL_REQUIREMENT"] = "NONE"
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = CREDENTIAL_AUTHORITY
     return env
@@ -126,8 +130,16 @@ def ensure_runtime_gateway(
 
     port = _free_port()
     endpoint = f"http://127.0.0.1:{port}"
-    env = _child_env(adapter_root, proof_path, route_path)
-    command = [sys.executable, "-m", "llm_adapter.runtime_gateway"]
+    try:
+        env = _child_env(adapter_root, proof_path, route_path)
+    except Exception as exc:
+        return {
+            "attempted": False,
+            "state": "FAILED",
+            "reason": f"VA_RUNTIME_INPUT_CONFIGURATION_FAILED:{exc}",
+            "github_token_required": False,
+        }
+    command = [sys.executable, "-m", "llm_adapter.va_runtime_http_server"]
     process = subprocess.Popen(
         command,
         cwd=adapter_root,
@@ -167,7 +179,9 @@ def ensure_runtime_gateway(
         "endpoint": endpoint,
         "readiness_path": "/api/va-claims/v1/readiness",
         "chat_path": "/api/va-claims/v1/chat",
+        "runtime_module": "llm_adapter.va_runtime_http_server",
         "adapter_root": str(adapter_root),
+        "source_registry_path": str(adapter_root / "va_claim_assistant" / "source-registry.site-projection.json"),
         "proof_path": str(proof_path),
         "route_path": str(route_path),
         "credential_authority": CREDENTIAL_AUTHORITY,
