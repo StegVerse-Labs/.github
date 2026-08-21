@@ -1,0 +1,61 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "TASK-2026-0006",
+  "organization": "StegVerse-Labs",
+  "goal": "Admit and publish the exact StegOS bounded web-command ingress through StegVerse-Labs/Site for physical iPod validation without granting model, transport, hosted CI, Render, or non-TV/TVC credential authority.",
+  "status": "queued",
+  "requested_at": "2026-08-21T04:00:00Z",
+  "priority_class": "release",
+  "rank_reason": [
+    "StegVerse-Labs/StegOS#17 source implementation is COMPLETE_RELEASED at 19c14d12658173372e8df45102e58ca4b745976e",
+    "StegVerse-Labs/Site#385 is CLOSED_COMPLETED and the prior overlapping #298 Site claim is terminal RELEASED_INTEGRATION",
+    "StegVerse-Labs/Site#399 is the canonical collision-safe Site projection task",
+    "physical iPod positive/negative command-ingress validation cannot begin until the exact public command consumer is published"
+  ],
+  "requirements": {
+    "mandatory": [
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-Labs",
+          "name": "Site",
+          "full_name": "StegVerse-Labs/Site",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": true,
+        "scope": {
+          "paths": [
+            "stegos-bootstrap/command.html",
+            "stegos-bootstrap/command-ingress.js",
+            "docs/STEGOS_WEB_COMMAND_INGRESS_PROJECTION_MIRROR_HANDOFF.md",
+            "scripts/check_stegos_web_command_ingress_projection.py",
+            "data/tasks/SITE-STEGOS-WEB-COMMAND-INGRESS-399.json"
+          ],
+          "contracts": [
+            "stegos.web_command.v1"
+          ],
+          "release_surfaces": [
+            "site:stegos-web-command-ingress-publication"
+          ],
+          "capabilities": [
+            "bounded-browser-command-ingress-publication"
+          ],
+          "workflows": [],
+          "dependency_surfaces": [
+            "site:stegos-web-command-ingress-publication"
+          ]
+        }
+      }
+    ],
+    "optional": []
+  },
+  "dependencies": [],
+  "workspace": {
+    "branch": "claim/stegos-web-command-ingress-399-r1",
+    "base_commit": "44a695bee1080adbdf747ec29fc1cabdfd32c460",
+    "merge_target": "main",
+    "direct_push_allowed": false,
+    "pull_request_required": true
+  }
+}
