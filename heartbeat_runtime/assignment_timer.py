@@ -70,8 +70,7 @@ class AssignmentTimer:
         }
 
 
-def assignment_trigger_packet(*, carrier_epoch: int, task: dict[str, Any]) -> dict[str, Any]:
-    """Build the non-authorizing carrier state that may transition into MR custody."""
+def _base_assignment_packet(*, carrier_epoch: int, task: dict[str, Any], source: str, state: str) -> dict[str, Any]:
     stable = {
         "carrier_epoch": carrier_epoch,
         "task_id": task.get("task_id"),
@@ -79,12 +78,13 @@ def assignment_trigger_packet(*, carrier_epoch: int, task: dict[str, Any]) -> di
         "handoff_ref": task.get("handoff_ref"),
         "executor_binding": task.get("executor_binding"),
         "cost_basis_ref": task.get("cost_basis_ref"),
+        "source": source,
     }
     return {
         "schema": TRIGGER_SCHEMA,
         **stable,
         "packet_id": "HBTRIG-" + _sha256(stable)[:20],
-        "state": "CARRIED_UNASSIGNED_TASK_OBSERVATION",
+        "state": state,
         "observation": "UNASSIGNED_TASK_PRESENT",
         "authority_effect": "NONE",
         "execution_authority": False,
@@ -93,6 +93,31 @@ def assignment_trigger_packet(*, carrier_epoch: int, task: dict[str, Any]) -> di
         "single_use_transition": True,
         "terminal_destination": "MASTER_RECORDS",
     }
+
+
+def assignment_trigger_packet(*, carrier_epoch: int, task: dict[str, Any]) -> dict[str, Any]:
+    """Build the non-authorizing carrier observation that may enter MR custody."""
+    return _base_assignment_packet(
+        carrier_epoch=carrier_epoch,
+        task=task,
+        source="HEARTBEAT_CARRIER_OBSERVATION",
+        state="CARRIED_UNASSIGNED_TASK_OBSERVATION",
+    )
+
+
+def independent_task_control_packet(*, carrier_epoch: int, task: dict[str, Any]) -> dict[str, Any]:
+    """Build a non-authorizing observation for already-admitted task control.
+
+    The carrier epoch is contextual evidence only. This packet exists because an
+    independently admitted HANDOFF_READY task is present; it does not require a
+    carrier event and the heartbeat grants no execution/claim/fence authority.
+    """
+    return _base_assignment_packet(
+        carrier_epoch=carrier_epoch,
+        task=task,
+        source="INDEPENDENT_TASK_CONTROL",
+        state="INDEPENDENT_ADMITTED_TASK_OBSERVATION",
+    )
 
 
 def bind_assignment_from_trigger(
@@ -105,17 +130,16 @@ def bind_assignment_from_trigger(
     allocated_hb_units: int,
     expiry_basis: str,
 ) -> tuple[AssignmentTimer, dict[str, Any]]:
-    """Transition the carried packet into the durable Master Records state.
+    """Transition a non-authorizing task observation into durable MR custody.
 
-    There is no second packet. The carrier packet's identity is preserved while
-    its state changes from an unassigned-task observation into the durable bound
-    worker-assignment record retained by Master Records. Authorization and worker
-    selection must already have been established outside the carrier.
+    Authorization and worker selection must already have been established
+    outside the observation packet. Carrier-origin and independently admitted
+    task-control observations share the same claim/fence/timer custody path.
     """
     if trigger.get("schema") != TRIGGER_SCHEMA:
         raise ValueError("unsupported assignment trigger schema")
     if trigger.get("authority_effect") != "NONE" or trigger.get("execution_authority") is not False:
-        raise ValueError("carrier trigger may not grant authority")
+        raise ValueError("assignment observation may not grant authority")
     if allocated_hb_units < 1:
         raise ValueError("allocated_hb_units must be >= 1")
 
@@ -131,13 +155,15 @@ def bind_assignment_from_trigger(
         expiry_basis=expiry_basis,
     )
 
+    prior_state = str(trigger.get("state") or "CARRIED_UNASSIGNED_TASK_OBSERVATION")
     record = {
         "schema": RECORD_SCHEMA,
         "packet_id": trigger.get("packet_id"),
         "prior_schema": trigger.get("schema"),
-        "prior_state": trigger.get("state", "CARRIED_UNASSIGNED_TASK_OBSERVATION"),
+        "prior_state": prior_state,
+        "source": trigger.get("source", "HEARTBEAT_CARRIER_OBSERVATION"),
         "state": "MASTER_RECORDS_BOUND_WORKER_ASSIGNMENT",
-        "state_transition": "CARRIED_UNASSIGNED_TASK_OBSERVATION_TO_BOUND_WORKER_ASSIGNMENT",
+        "state_transition": f"{prior_state}_TO_BOUND_WORKER_ASSIGNMENT",
         "carrier_epoch_observed": trigger.get("carrier_epoch"),
         "task_id": timer.task_id,
         "goal_id": trigger.get("goal_id"),
@@ -163,6 +189,7 @@ def bind_assignment_from_trigger(
 __all__ = [
     "AssignmentTimer",
     "assignment_trigger_packet",
+    "independent_task_control_packet",
     "bind_assignment_from_trigger",
     "TRIGGER_SCHEMA",
     "TIMER_SCHEMA",
