@@ -3,6 +3,7 @@ import unittest
 from heartbeat_runtime.assignment_timer import (
     AssignmentTimer,
     assignment_trigger_packet,
+    independent_task_control_packet,
     bind_assignment_from_trigger,
 )
 
@@ -21,10 +22,42 @@ class WorkerAssignmentTimerTests(unittest.TestCase):
         )
         self.assertEqual(trigger["observation"], "UNASSIGNED_TASK_PRESENT")
         self.assertEqual(trigger["state"], "CARRIED_UNASSIGNED_TASK_OBSERVATION")
+        self.assertEqual(trigger["source"], "HEARTBEAT_CARRIER_OBSERVATION")
         self.assertEqual(trigger["authority_effect"], "NONE")
         self.assertFalse(trigger["execution_authority"])
         self.assertTrue(trigger["single_use_transition"])
         self.assertEqual(trigger["terminal_destination"], "MASTER_RECORDS")
+
+    def test_independent_task_control_packet_needs_no_carrier_event_authority(self):
+        packet = independent_task_control_packet(
+            carrier_epoch=31,
+            task={
+                "task_id": "TASK-I",
+                "goal_id": "GOAL-I",
+                "handoff_ref": "handoffs/TASK-I.json",
+                "executor_binding": "AUTHORIZED",
+                "cost_basis_ref": "cost-basis/TASK-I.json",
+            },
+        )
+        self.assertEqual(packet["state"], "INDEPENDENT_ADMITTED_TASK_OBSERVATION")
+        self.assertEqual(packet["source"], "INDEPENDENT_TASK_CONTROL")
+        self.assertFalse(packet["execution_authority"])
+        self.assertFalse(packet["claim_authority"])
+        self.assertFalse(packet["timer_authority"])
+        timer, record = bind_assignment_from_trigger(
+            trigger=packet,
+            worker_id="WORKER-I",
+            worker_instance_id="WORKER-I-R1",
+            claim_id="CLAIM-I",
+            fencing_token=22,
+            allocated_hb_units=2,
+            expiry_basis="TASK_CLASS_COST_BASIS",
+        )
+        self.assertEqual(record["source"], "INDEPENDENT_TASK_CONTROL")
+        self.assertEqual(record["prior_state"], "INDEPENDENT_ADMITTED_TASK_OBSERVATION")
+        self.assertEqual(record["state_transition"], "INDEPENDENT_ADMITTED_TASK_OBSERVATION_TO_BOUND_WORKER_ASSIGNMENT")
+        self.assertFalse(record["carrier_granted_authority"])
+        self.assertEqual(timer.fencing_token, 22)
 
     def test_carrier_packet_becomes_master_records_assignment_record(self):
         trigger = assignment_trigger_packet(carrier_epoch=30, task={"task_id": "TASK-A", "cost_basis_ref": "cost.json"})
@@ -39,6 +72,7 @@ class WorkerAssignmentTimerTests(unittest.TestCase):
         )
         self.assertEqual(record["packet_id"], trigger["packet_id"])
         self.assertEqual(record["prior_state"], "CARRIED_UNASSIGNED_TASK_OBSERVATION")
+        self.assertEqual(record["state_transition"], "CARRIED_UNASSIGNED_TASK_OBSERVATION_TO_BOUND_WORKER_ASSIGNMENT")
         self.assertEqual(record["state"], "MASTER_RECORDS_BOUND_WORKER_ASSIGNMENT")
         self.assertFalse(record["carrier_packet_continues_after_transition"])
         self.assertFalse(record["separate_transition_packet_created"])
