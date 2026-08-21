@@ -15,6 +15,8 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+from heartbeat_runtime.task_capable_observation import task_capable_worker_cycle_observed
+
 ROOT = Path(__file__).resolve().parents[1]
 TRANSITION_REL = Path("receipts/heartbeat-transition-continuity/latest.json")
 LEGACY_REL = Path("control/heartbeat-state.json")
