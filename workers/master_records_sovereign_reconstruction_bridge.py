@@ -105,6 +105,64 @@ def reconstruction_receipt_verified(
     )
 
 
+def _start_conversational_runtime_after_pass(
+    *,
+    proof: dict,
+    route: dict,
+    output_path: Path,
+) -> dict[str, Any]:
+    """Keep the admitted model useful after proof by starting the bounded chat gateway.
+
+    The exact proof and route are projected into the same admitted receipt namespace.
+    They are runtime inputs, not new authority. The gateway binds only to loopback;
+    public HTTPS transport remains a separate admitted transport transition.
+    """
+    try:
+        workers = Path(__file__).resolve().parent
+        if str(workers) not in sys.path:
+            sys.path.insert(0, str(workers))
+        from llm_adapter_sovereign_execution_bridge import find_llm_adapter_root
+        from va_conversational_runtime_bridge import ensure_runtime_gateway
+
+        carrier_root = Path.cwd().resolve()
+        adapter_root = find_llm_adapter_root(carrier_root)
+        if adapter_root is None:
+            return {
+                "state": "BLOCKED",
+                "reason": "VA_RUNTIME_ADAPTER_CAPSULE_NOT_MATERIALIZED",
+                "github_token_required": False,
+            }
+        receipt_root = output_path.parent.resolve()
+        proof_path = receipt_root / "va_runtime_canonical_proof.json"
+        route_path = receipt_root / "va_runtime_tvc_route.json"
+        state_path = receipt_root / "va_conversational_runtime_process.json"
+        proof_path.write_text(json.dumps(proof, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        route_path.write_text(json.dumps(route, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        result = ensure_runtime_gateway(
+            adapter_root,
+            proof_path=proof_path,
+            route_path=route_path,
+            state_path=state_path,
+        )
+        return {
+            **result,
+            "proof_path": str(proof_path),
+            "route_path": str(route_path),
+            "runtime_state_path": str(state_path),
+            "authority_effect": "NONE",
+            "activation_effect": False,
+            "github_token_required": False,
+        }
+    except Exception as exc:
+        return {
+            "state": "FAILED",
+            "reason": f"VA_RUNTIME_POST_RECONSTRUCTION_START_FAILED:{type(exc).__name__}:{exc}",
+            "authority_effect": "NONE",
+            "activation_effect": False,
+            "github_token_required": False,
+        }
+
+
 def reconstruct_same_execution(
     master_records_root: Path,
     *,
@@ -154,14 +212,26 @@ def reconstruct_same_execution(
         if isinstance(candidate, dict):
             receipt = candidate
         verified = reconstruction_receipt_verified(receipt, proof=proof, route=route, execution=execution)
+        runtime_result = (
+            _start_conversational_runtime_after_pass(proof=proof, route=route, output_path=output_path)
+            if verified else None
+        )
+        runtime_ready = isinstance(runtime_result, dict) and runtime_result.get("state") == "COMPLETE"
         return {
             "attempted": True,
-            "state": "COMPLETE" if verified else "FAILED",
-            "reason": "MASTER_RECORDS_SAME_EXECUTION_RECONSTRUCTED" if verified else "MASTER_RECORDS_SAME_EXECUTION_RECONSTRUCTION_FAILED",
+            "state": "COMPLETE" if verified and runtime_ready else ("RECONSTRUCTED_RUNTIME_PENDING" if verified else "FAILED"),
+            "reason": (
+                "MASTER_RECORDS_RECONSTRUCTED_AND_VA_RUNTIME_LIVE"
+                if verified and runtime_ready
+                else "MASTER_RECORDS_RECONSTRUCTED_VA_RUNTIME_NOT_LIVE"
+                if verified
+                else "MASTER_RECORDS_SAME_EXECUTION_RECONSTRUCTION_FAILED"
+            ),
             "returncode": process.returncode,
             "master_records_root": str(master_records_root),
             "reconstruction_receipt_path": str(output_path) if verified else None,
             "reconstruction_receipt": receipt if verified else None,
+            "va_conversational_runtime": runtime_result,
             "stdout_tail": None if verified else process.stdout[-1200:],
             "stderr_tail": None if verified else process.stderr[-1200:],
             "credential_authority": CREDENTIAL_AUTHORITY,
