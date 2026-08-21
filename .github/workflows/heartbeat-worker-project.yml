@@ -110,6 +110,9 @@ jobs:
           assert value['tasks_activated'] == 0, value
           assert value['leases_expired'] == 0, value
           assert value['legacy_hb29_cutover'] == 'PREVIEW_ONLY', value
+          assert value['progression_dependency'] == 'OSCILLATOR_ONLY', value
+          assert value['observation_is_causal'] is False, value
+          assert value['oscillator_period_ms'] == 10, value
           assert 'coherent_signal_space' in value, value
           assert value['coherent_signal_space'].get('completeness_claim') is not True, value
           print('HEARTBEAT_CARRIER_NON_AUTHORITY_PASS')
@@ -120,7 +123,7 @@ jobs:
           python - <<'PY'
           from heartbeat_runtime import CarrierHeartbeatRuntime, HeartbeatRuntime
           from heartbeat_runtime.worker_runtime import WorkerCoordinator
-          assert CarrierHeartbeatRuntime.__module__ == 'heartbeat_runtime.engine_v12'
+          assert CarrierHeartbeatRuntime.__module__ == 'heartbeat_runtime.engine_v13'
           assert HeartbeatRuntime.__module__ == 'heartbeat_runtime.engine_v11'
           assert WorkerCoordinator.__module__ == 'heartbeat_runtime.worker_runtime'
           assert HeartbeatRuntime is not CarrierHeartbeatRuntime
