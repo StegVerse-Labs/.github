@@ -1,8 +1,9 @@
 """Worker lifecycle coordinator separated from the heartbeat carrier.
 
-The carrier provides a reference frame and non-authorizing assignment-trigger
-packets. This coordinator owns worker lifecycle only under already-admitted task
-authority. It never increments or writes the heartbeat carrier state.
+The heartbeat provides a reference frame only. This coordinator owns worker
+lifecycle under already-admitted task authority and never increments or writes
+the heartbeat carrier state. Independently admitted HANDOFF_READY tasks do not
+need a heartbeat-emitted event before lawful task-control acquisition.
 """
 from __future__ import annotations
 
@@ -17,24 +18,22 @@ from .assignment_timer import (
     AssignmentTimer,
     TRIGGER_SCHEMA,
     bind_assignment_from_trigger,
+    independent_task_control_packet,
 )
 
 
 class WorkerCoordinator(LegacyWorkerCoordinator):
     """Control-plane worker runtime synchronized to, but not controlled by, HB.
 
-    New assignments require a carried, non-authorizing trigger packet emitted by
-    the carrier. Authorization, executor selection, claims/fences and lifecycle
-    decisions remain independent control-plane decisions. The assignment timer
-    is measured in HB-sized logical units but advances on worker-runtime ticks,
-    not carrier epochs or carrier presence.
+    Carrier packets remain a compatibility observation path. A HANDOFF_READY task
+    that is explicitly admitted under INDEPENDENT_TASK_CONTROL can instead enter
+    the same worker-selection, fencing, timer, and Master Records custody path
+    directly. The observed carrier epoch is context only and grants no execution,
+    claim, fence, timer, route, credential, or lifecycle authority.
     """
 
     def __init__(self, root: str | Path, adapters: dict | None = None):
         super().__init__(root, adapters=adapters)
-        # Carrier and worker coordinator are separately supervised processes.
-        # They must never serialize each other through the historical combined
-        # heartbeat lock; registry writes remain atomic under this worker lock.
         self.lock_path = self.root / "control" / ".worker-runtime.lock"
         self.carrier_state_path = self.root / "control" / "heartbeat-carrier-runtime-state.json"
         self.worker_runtime_state_path = self.root / "control" / "worker-runtime-state.json"
@@ -114,9 +113,6 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
                 runtime_tick=int(value.get("runtime_tick", 0)),
             )
 
-        # Compatibility migration for work that was already active at retained
-        # HB29. This transfers its remaining budget into the independent timer;
-        # it does not create a new claim/fence or restore expired authority.
         timing = task.get("heartbeat_timing") or {}
         required = (
             task.get("task_id"), task.get("worker_id"), task.get("worker_instance_id"),
@@ -170,6 +166,19 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             self._event(events, carrier_epoch, "assignment_trigger_stale", task_id=task_id, packet_id=trigger.get("packet_id"), authority_effect=False)
             return False
 
+        source = str(trigger.get("source") or "HEARTBEAT_CARRIER_OBSERVATION")
+        independent = source == "INDEPENDENT_TASK_CONTROL"
+        admission = task.get("admission") or {}
+        if independent:
+            if (
+                admission.get("authority_domain") != "INDEPENDENT_TASK_CONTROL"
+                or admission.get("claim_state") != "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+                or admission.get("heartbeat_grants_execution_authority") is not False
+                or admission.get("fresh_fence_required") is not True
+            ):
+                self._event(events, carrier_epoch, "independent_assignment_deferred", task_id=task_id, packet_id=trigger.get("packet_id"), reason="INDEPENDENT_TASK_CONTROL_ADMISSION_INVALID", authority_effect=False)
+                return False
+
         by_id = {item["task_id"]: item for item in registry.get("tasks", []) if item.get("task_id")}
         if not self._dependencies_complete(task, by_id):
             self._event(events, carrier_epoch, "assignment_trigger_deferred", task_id=task_id, packet_id=trigger.get("packet_id"), reason="DEPENDENCIES_INCOMPLETE", authority_effect=False)
@@ -202,6 +211,9 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             return False
 
         generation = int(registry.get("generation", 0)) + 1
+        minimum_fence = admission.get("minimum_fencing_token_exclusive") if independent else None
+        if independent and isinstance(minimum_fence, int) and generation <= minimum_fence:
+            generation = minimum_fence + 1
         registry["generation"] = generation
         claim_id = f"SHWP-{task_id}-G{generation}"
         worker_instance_id = f"{worker['worker_id']}-HB{carrier_epoch}-G{generation}"
@@ -241,16 +253,59 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
         })
         worker["status"] = "BUSY"
         worker["last_seen_at"] = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-        record["source_carrier_event_ref"] = f"events/heartbeat-runtime.jsonl#packet_id={trigger.get('packet_id')}"
+        if independent:
+            record["source_admission_ref"] = admission.get("authority_source")
+            record["source_carrier_event_ref"] = None
+        else:
+            record["source_carrier_event_ref"] = f"events/heartbeat-runtime.jsonl#packet_id={trigger.get('packet_id')}"
         record["worker_runtime_event_ref"] = f"events/worker-runtime.jsonl#claim_id={claim_id}"
         record["terminal_destination"] = "master-records/orchestration"
         self._append_assignment_record(record)
         evidence_ref = f"events/master-records-worker-assignment.jsonl#packet_id={trigger.get('packet_id')}"
         if evidence_ref not in task.setdefault("evidence_refs", []):
             task["evidence_refs"].append(evidence_ref)
-        self._event(events, carrier_epoch, "worker_assignment_bound_from_carrier_packet", task_id=task_id, worker_id=worker["worker_id"], claim_id=claim_id, fencing_token=generation, packet_id=trigger.get("packet_id"), assignment_timer_units=budget, master_records_binding_ref=evidence_ref, carrier_granted_authority=False, authority_effect=False)
+        event_type = "worker_assignment_bound_from_independent_task_control" if independent else "worker_assignment_bound_from_carrier_packet"
+        self._event(
+            events,
+            carrier_epoch,
+            event_type,
+            task_id=task_id,
+            worker_id=worker["worker_id"],
+            claim_id=claim_id,
+            fencing_token=generation,
+            packet_id=trigger.get("packet_id"),
+            assignment_timer_units=budget,
+            master_records_binding_ref=evidence_ref,
+            independent_task_control=independent,
+            carrier_granted_authority=False,
+            authority_effect=False,
+        )
         self._invoke(registry, task, carrier_epoch, cost_log, events)
         return True
+
+    def _activate_independently_admitted_tasks(
+        self,
+        registry: dict[str, Any],
+        carrier_epoch: int,
+        cost_log: dict[str, Any],
+        events: list[dict[str, Any]],
+    ) -> int:
+        activated = 0
+        candidates = sorted(registry.get("tasks", []), key=lambda item: str(item.get("task_id", "")))
+        for task in candidates:
+            admission = task.get("admission") or {}
+            if (
+                task.get("state") != "HANDOFF_READY"
+                or task.get("worker_id")
+                or task.get("claim_id")
+                or admission.get("authority_domain") != "INDEPENDENT_TASK_CONTROL"
+                or admission.get("claim_state") != "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+            ):
+                continue
+            packet = independent_task_control_packet(carrier_epoch=carrier_epoch, task=task)
+            if self._activate_from_trigger(registry, packet, carrier_epoch, cost_log, events):
+                activated += 1
+        return activated
 
     def _tick_active_timer(self, task: dict[str, Any], carrier_epoch: int, registry: dict[str, Any], cost_log: dict[str, Any], events: list[dict[str, Any]]) -> None:
         timer = self._timer_from_task(task, carrier_epoch)
@@ -299,12 +354,14 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
                 if task.get("state") in self.WORKER_OWNED | {"BLOCKED"} and task.get("worker_id"):
                     self._tick_active_timer(task, carrier_epoch, registry, cost_log, events)
 
-            activated = 0
+            independent_activated = self._activate_independently_admitted_tasks(registry, carrier_epoch, cost_log, events)
+
+            carrier_activated = 0
             packets = self._trigger_packets(seen, carrier_epoch)
             for packet in packets:
                 packet_id = str(packet["packet_id"])
                 if self._activate_from_trigger(registry, packet, carrier_epoch, cost_log, events):
-                    activated += 1
+                    carrier_activated += 1
                 seen.add(packet_id)
 
             state["seen_assignment_packet_ids"] = sorted(seen)[-4096:]
@@ -317,13 +374,16 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
                 "observed_carrier_generation": carrier_generation,
                 "carrier_epoch_advanced_by_worker_runtime": False,
                 "assignment_packets_observed": len(packets),
-                "workers_activated": activated,
+                "independent_task_control_activations": independent_activated,
+                "carrier_packet_activations": carrier_activated,
+                "workers_activated": independent_activated + carrier_activated,
                 "registry_generation": registry.get("generation", 0),
                 "registry_fragments_applied": registry_fragments_applied,
                 "orphan_recoveries_reconciled": reconciled,
                 "events": events,
                 "credential_authority": "TV/TVC",
                 "github_token_runtime_authority": "NONE",
+                "heartbeat_event_required_for_independent_task_control": False,
                 "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY",
             }
             if write:
