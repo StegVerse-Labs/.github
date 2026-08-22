@@ -1,0 +1,34 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "hil_sovereign_receiver_activation",
+  "sample_count": 1,
+  "hb_estimate": {
+    "expected_completion_beats": 4,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 256,
+    "confidence": "MEDIUM"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 1048576,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 4
+  },
+  "evidence_refs": [
+    "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+    "workers/hil_sovereign_receiver_bridge.py",
+    "workers/hil_sovereign_receiver_worker.py",
+    "tests/test_hil_sovereign_receiver_bridge.py",
+    "tests/test_hil_sovereign_receiver_worker_registration.py"
+  ],
+  "notes": [
+    "Local sovereign receiver launch and observation only; public HTTPS transport remains a later bounded transition.",
+    "The worker remains ACTIVE after local READY until the public browser/restart/TVC evidence sequence is proven.",
+    "TV/TVC remains credential authority; GitHub tokens and NON-TV/TVC secrets are not runtime inputs.",
+    "No participant, developer, iPhone, iPod, or HB30 browser capsule is a runtime prerequisite."
+  ]
+}
