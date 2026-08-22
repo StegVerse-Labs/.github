@@ -76,6 +76,22 @@ def cleaned_env() -> dict[str, str]:
     return env
 
 
+def _optional_task_control_identity(invocation: dict[str, Any], task: dict[str, Any]) -> dict[str, Any]:
+    lease = task.get("lease") if isinstance(task.get("lease"), dict) else {}
+    legacy_timing = task.get("heartbeat_timing") if isinstance(task.get("heartbeat_timing"), dict) else {}
+    fence = lease.get("fencing_token")
+    if fence is None:
+        fence = legacy_timing.get("fencing_token")
+    observed_epoch = invocation.get("heartbeat_epoch")
+    return {
+        "claim_id": task.get("claim_id") if isinstance(task.get("claim_id"), str) else None,
+        "fencing_token": fence if isinstance(fence, int) else None,
+        "observed_heartbeat_epoch": observed_epoch if isinstance(observed_epoch, int) else None,
+        "heartbeat_reference_only": True,
+        "heartbeat_dependency": False,
+    }
+
+
 def main() -> int:
     try:
         invocation = json.load(sys.stdin)
@@ -83,22 +99,18 @@ def main() -> int:
         return 2
     if invocation.get("schema") != "stegverse.worker-invocation/v0.1":
         return 3
-    epoch = invocation.get("heartbeat_epoch")
     task = invocation.get("task") or {}
     handoff = invocation.get("handoff") or {}
-    if not isinstance(epoch, int) or task.get("task_id") != TASK_ID:
+    if task.get("task_id") != TASK_ID:
         return 4
-    timing = task.get("heartbeat_timing") or {}
-    claim_id = task.get("claim_id")
-    fence = timing.get("fencing_token")
-    if not isinstance(claim_id, str) or not claim_id or not isinstance(fence, int):
-        return 5
+
     execution = handoff.get("execution") or {}
     if CAPABILITY not in set(execution.get("required_capabilities") or []):
         return 6
     if "receipts/tvc-repository-broker-validation/**" not in set(execution.get("allowed_paths") or []):
         return 7
 
+    task_control = _optional_task_control_identity(invocation, task)
     canonical = load(HANDOFF_PATH)
     expected_head = str((canonical.get("execution") or {}).get("expected_tvc_head") or "")
     tvc_root, observed = locate_tvc(expected_head)
@@ -110,7 +122,7 @@ def main() -> int:
             "reason": "EXACT_TVC_SOURCE_NOT_MATERIALIZED",
             "expected_tvc_head": expected_head,
             "observed_candidates": observed,
-            "machine_observable_release_condition": "A StegVerse-controlled local TVC repository exists at the exact pinned PR #79 head with a clean worktree",
+            "machine_observable_release_condition": "A StegVerse-controlled local TVC repository exists at the exact pinned PR #92 head with a clean worktree",
             "credential_authority": "TV/TVC",
             "non_tv_tvc_secret_or_token_used": False,
         }
@@ -122,9 +134,12 @@ def main() -> int:
         except Exception:
             report = None
         nested = report.get("result") if isinstance(report, dict) else None
+        bundle_digest = nested.get("source_bundle_sha256") if isinstance(nested, dict) else None
+        bundle_count = nested.get("source_bundle_file_count") if isinstance(nested, dict) else None
         passed = (
             proc.returncode == 0 and isinstance(report, dict) and report.get("status") == "ok" and
             isinstance(nested, dict) and nested.get("result") == "PASS" and
+            bundle_count == 16 and isinstance(bundle_digest, str) and len(bundle_digest) == 64 and
             nested.get("consumer_credential_used") is False and
             nested.get("tvc_github_credential_used") is False and
             nested.get("non_tv_tvc_secret_or_token_used") is False and
@@ -136,6 +151,9 @@ def main() -> int:
             "expected_tvc_head": expected_head,
             "source_root": str(tvc_root),
             "source_head": git(tvc_root, "rev-parse", "HEAD"),
+            "source_bundle_file_count": bundle_count,
+            "source_bundle_sha256": bundle_digest,
+            "integration_binding_rule": "REVALIDATE_IF_BUNDLE_DIGEST_CHANGES",
             "dispatcher_exit_code": proc.returncode,
             "dispatcher_report": report,
             "stderr_tail": (proc.stderr or "")[-4000:],
@@ -145,17 +163,16 @@ def main() -> int:
         }
 
     receipt = {
-        "schema": "stegverse.tvc-repository-broker-validation-carrier-receipt/v0.1",
+        "schema": "stegverse.tvc-repository-broker-validation-carrier-receipt/v0.2",
         "task_id": TASK_ID,
-        "heartbeat_epoch": epoch,
-        "claim_id": claim_id,
-        "fencing_token": fence,
+        "task_control": task_control,
         "generated_at": now,
         "state": state,
         "result": result,
         "credential_authority": "TV/TVC",
         "github_token_required": False,
         "heartbeat_grants_execution_authority": False,
+        "heartbeat_dependency": False,
         "authority_effect": "NONE_VALIDATION_ONLY",
     }
     atomic_write(RECEIPT_PATH, receipt)
@@ -168,7 +185,7 @@ def main() -> int:
             "solution_required": True,
             "may_remain_blocked": state == "BLOCKED",
             "next_solution_action": "RECHECK_LOCAL_TVC_SOURCE_THEN_EXECUTE_REPOSITORY_NATIVE_VALIDATION",
-            "machine_observable_release_condition": result.get("machine_observable_release_condition", "The exact validation command returns PASS")
+            "machine_observable_release_condition": result.get("machine_observable_release_condition", "The exact validation command returns PASS with a 16-file source bundle digest")
         }
     response = {
         "schema": "stegverse.worker-response/v0.1",
@@ -176,12 +193,19 @@ def main() -> int:
         "transition_id": f"TVC_REPOSITORY_BROKER_VALIDATION_{state}",
         "transition_sequence": 1,
         "expected_next_transition": None if state == "COMPLETED" else "TVC_REPOSITORY_BROKER_VALIDATION_RECHECK",
-        "expected_next_earliest_epoch": None if state == "COMPLETED" else epoch + 1,
-        "expected_next_latest_epoch": None if state == "COMPLETED" else epoch + 1,
+        "expected_next_earliest_epoch": None,
+        "expected_next_latest_epoch": None,
+        "recheck_policy": None if state == "COMPLETED" else "SEPARATE_TASK_CONTROL_EVALUATION",
         "checkpoint_ref": "receipts/tvc-repository-broker-validation/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
         "evidence_refs": ["handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json", "receipts/tvc-repository-broker-validation/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json"],
         "blocker": blocker,
-        "cost_observation": {"hb_transition_count": 1, "compute_units": 1, "external_cost_usd": 0, "task_class": "tvc_repository_broker_validation"}
+        "cost_observation": {
+            "task_control_evaluations": 1,
+            "observed_heartbeat_reference_count": 1 if task_control["observed_heartbeat_epoch"] is not None else 0,
+            "compute_units": 1,
+            "external_cost_usd": 0,
+            "task_class": "tvc_repository_broker_validation"
+        }
     }
     json.dump(response, sys.stdout, sort_keys=True)
     sys.stdout.write("\n")
