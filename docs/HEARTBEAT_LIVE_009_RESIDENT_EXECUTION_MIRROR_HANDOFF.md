@@ -33,13 +33,37 @@ python scripts/run_live_009_resident.py
 
 The runner performs real execution only:
 
-1. invokes `scripts/install_sovereign_heartbeat_carrier.py` to materialize and activate the carrier-only native `engine_v13` service;
-2. executes `scripts/run_worker_runtime.py --cycles 1` under independent task-control authority;
-3. executes `scripts/run_heartbeat_runtime.py --cycles 1` as an oscillator observation/sampler only;
-4. executes `scripts/run_worker_runtime.py --cycles 1` so the independently admitted LIVE-009 task can bind a fresh lawful fence and execute;
-5. fails closed unless persisted evidence proves terminal completion.
+1. resolves the canonical resident runtime root using the sovereign installer default or an explicit `--runtime-root`;
+2. invokes `scripts/install_sovereign_heartbeat_carrier.py --runtime-root <resident-root>` from the source checkout to materialize and activate the carrier-only native `engine_v13` service;
+3. executes the first `run_worker_runtime.py --cycles 1` from and against the materialized resident runtime root under independent task-control authority;
+4. executes `run_heartbeat_runtime.py --cycles 1` from and against the same resident root as an oscillator observation/sampler only;
+5. executes the second resident-root worker cycle so the independently admitted LIVE-009 task can bind a fresh lawful fence and execute;
+6. verifies all activation/carrier/observation/worker evidence from that same resident runtime root and fails closed unless terminal completion is present.
 
 The runner does not fabricate a heartbeat epoch, claim, fence, lease, carrier observation, or worker response. It does not use a network fetch, hosted process service, GitHub runtime, Render, or non-TV/TVC credential.
+
+### Resident-root correction
+
+Direct inspection found that the original one-command runner installed the carrier into the resident runtime root but then executed both worker cycles, the carrier sample, and evidence verification against the source repository checkout. That path could not produce valid resident completion evidence even on a correctly admitted host.
+
+Corrected on `main`:
+
+```text
+4098dab52d70e5922b980308ec8d00b9b537c443
+  scripts/run_live_009_resident.py
+  - resolves the actual resident runtime root
+  - passes that root explicitly into carrier installation
+  - runs worker(1) -> carrier(1) -> worker(1) from the materialized resident root
+  - verifies terminal evidence from the resident root rather than the source checkout
+
+ecae3d01f276ea07e3342e0132480ffc05d5e406
+  tests/test_live_009_resident_runner.py
+  - asserts installation originates from the source checkout
+  - asserts all runtime cycles target the resident root
+  - retains fail-closed activation and terminal-evidence checks
+```
+
+An independent local validation attempt could not clone the public repository because the available validation container had no DNS resolution for `github.com`. Therefore these exact commits are source-installed but this handoff does not claim an independently executed test PASS from that container. GitHub-hosted validation would be validation evidence only and would not count as resident runtime proof.
 
 ## Required terminal evidence
 
@@ -90,10 +114,11 @@ The worker/task evidence must show an independently admitted fresh fenced claim 
 ## Source / validation state
 
 ```text
-scripts/run_live_009_resident.py: INSTALLED
-source commit: 2da3482d0ffb5744c66e1d3e35fcc375ca08916a
-tests/test_live_009_resident_runner.py: INSTALLED
-test commit: 8984a684f16d7a7cee4da60e44f2a894614e7a95
+scripts/run_live_009_resident.py: INSTALLED / RESIDENT-ROOT CORRECTED
+current source commit: 4098dab52d70e5922b980308ec8d00b9b537c443
+tests/test_live_009_resident_runner.py: INSTALLED / RESIDENT-ROOT ASSERTIONS ADDED
+current test commit: ecae3d01f276ea07e3342e0132480ffc05d5e406
+independent exact-head test execution: UNAVAILABLE (validation container DNS failure)
 resident execution: NOT YET OBSERVED
 LIVE-009 terminal evidence: NOT YET OBSERVED
 ```
