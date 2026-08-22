@@ -30,6 +30,7 @@ def _task_semantics(task: dict[str, Any]) -> dict[str, Any]:
         "admission",
         "endpoint",
         "source_state_hash",
+        "source_state_vector_ref",
         "source_handoff_ref",
     )
     return {key: deepcopy(task.get(key)) for key in keys if key in task}
