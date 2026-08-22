@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.work-claim/v1",
+  "task_id": "SHWP-INDEPENDENT-ORPHAN-RECOVERY-EXECUTOR-001",
+  "originating_goal": "Execute the already-authorized Ecosystem Chat orphan recovery under independent StegVerse task-control authority without making heartbeat, G18, WorkerCoordinator-specific activity, GitHub Actions, Render, or any third party a prerequisite.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "claim_state": "CLAIMED_FOR_IMPLEMENTATION",
+  "claimant": "chatgpt-session-independent-orphan-recovery-executor-20260822",
+  "claim_created_at": "2026-08-22T07:02:00-05:00",
+  "claim_release_condition": "Independent bounded executor source, focused tests, and canonical recovery handoff binding are installed; validation passes on the strongest available non-authorizing path; then live execution ownership returns to the admitted StegVerse task-control lane.",
+  "owned_surfaces": [
+    "scripts/run_independent_orphan_recovery.py",
+    "tests/test_independent_orphan_recovery_executor.py",
+    "docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md",
+    "control/session-implementation-claim-2026-08-22-independent-orphan-recovery-executor.json"
+  ],
+  "collision_boundaries": [
+    "Do not mutate heartbeat carrier state or make heartbeat grant execution authority.",
+    "Do not require or terminalize G18.",
+    "Do not reuse G20 or fencing token 20.",
+    "Do not mint parent inference authority.",
+    "Do not create a second heartbeat, scheduler, credential authority, model runtime, provider route, or Master Records custody path.",
+    "Do not use GitHub Actions, Render, Vercel, Cloudflare, or another hosted provider as production/runtime authority.",
+    "StegVerse remains primary; third-party support is fallback-only.",
+    "TV/TVC remains sole credential/secret/token authority; no NON-TV/TVC secret/token may be introduced."
+  ],
+  "expected_evidence": [
+    "Independent executor acquires only an already HANDOFF_READY recovery task validated by the admitted bounded authorization.",
+    "Fresh fencing token is strictly greater than 20 and greater than every currently projected generation/fence.",
+    "ProcessWorkerAdapter enforces the recovery handoff mutation scope and minimal environment allowlist.",
+    "A bounded execution attempt releases its claim after COMPLETED or BLOCKED rather than leaving stale recovery authority active.",
+    "No parent claim/fence is created by the recovery executor."
+  ],
+  "next_task_after_release": "Run the released independent executor on an admitted StegVerse task-control surface; consume PASS into parent HANDOFF_READY reconciliation, then independently admit the parent sovereign inference task under a fresh fence >20.",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "third_party_role": "FALLBACK_ONLY",
+  "primary_runtime_authority": "StegVerse",
+  "archive_dependency": true
+}
