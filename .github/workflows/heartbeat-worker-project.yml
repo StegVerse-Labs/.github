@@ -94,6 +94,27 @@ jobs:
       - name: Run complete deterministic repository test suite
         run: python -m unittest discover -v tests
 
+      - name: Validate external timing fixed-cadence zero-authority contract
+        run: |
+          python -m unittest -v tests.test_external_timing_match
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          contract=json.loads(Path('control/external-timing-match-contract.json').read_text(encoding='utf-8'))
+          logical=contract['logical_heartbeat']
+          authority=contract['authority']
+          assert logical['cadence_semantics']=='FIXED_AFTER_PROFILE_SELECTION_AND_LOCK'
+          assert logical['frequency_is_workload_control'] is False
+          assert logical['min_max_semantics']=='WORKLOAD_HEALTH_BOUNDS_PER_PULSE'
+          assert logical['load_may_change_period'] is False
+          assert authority['credential_authority']=='TV/TVC'
+          assert authority['github_token_runtime_authority']=='NONE'
+          assert authority['non_tv_tvc_secret_or_token_allowed'] is False
+          assert authority['render_dependency']=='PROHIBITED'
+          assert not any(authority[k] for k in authority if k.startswith('timing_match_grants_'))
+          print('EXTERNAL_TIMING_FIXED_CADENCE_ZERO_AUTHORITY_PASS')
+          PY
+
       - name: Validate retained native-process canary completion evidence
         run: |
           python3 -m py_compile workers/heartbeat_receipt_canary.py heartbeat_runtime/process_adapter.py
