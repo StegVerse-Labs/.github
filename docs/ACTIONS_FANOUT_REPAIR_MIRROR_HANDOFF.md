@@ -31,7 +31,8 @@ workflow files: 18
 automatic-push workflows: 12
 PR/manual-only workflows: 6
 repository hygiene owner: StegVerse-Labs/StegVerse-Healer
-Healer evaluation: PR #33 OPEN on current Healer main
+Healer evaluation admission: PR #33 MERGED as 9090dde4b38795226f3179e03dcbf1ad8592dc64
+Healer execution owner: issue #34 OPEN
 repository-wide quantitative run-history proof: AWAITING_SUPPORTED_READ
 ```
 
@@ -47,15 +48,15 @@ This supersedes the earlier fanout classification that still counted Heartbeat W
 
 Commit `599cac6417bc67874416d2b0125929a2601f8fe2` removed the `push` trigger from `.github/workflows/test-lanes-autolaunch-validation.yml`, retained pull-request/manual validation, and added concurrency cancellation. This prevents direct-main machine activity from launching this hosted validation surface and cancels superseded PR/manual runs. It does not prove nine-lane execution, credential availability, WorkerCoordinator execution, heartbeat activation, or runtime completion.
 
-## Healer dependency refresh — 2026-08-22
+## Healer dependency admission — 2026-08-22
 
-The original Healer evaluation PR #20 was still based on an August 19 Healer `main`. Its historical Test Readiness run `32201566661` failed on `test_target_is_hourly_on_existing_scheduler` because that old branch expected `no-github-token` in the Site StegFin public-wallet observer target while canonical Healer state had already marked the target `superseded-disabled-canonical-site-validation-lane-owns-publication-proof`.
+The refreshed Healer evaluation PR #33 was validated on exact head `b150868c9d6083a6c032fb0d8a2f747f7e142283` by Test Readiness run `32577928955` with conclusion SUCCESS. PR #33 was then merged into Healer `main` as `9090dde4b38795226f3179e03dcbf1ad8592dc64`.
 
-Current Healer `main` already contains the corrected test `test_target_is_superseded_and_disabled_on_existing_scheduler`, so the failure was stale-branch validation debt rather than a current product/runtime defect. PR #20 was closed unmerged to avoid repeatedly spending hosted validation on obsolete source.
+That merge admits the workflow-hygiene evaluation document into the canonical Healer repository; it does not itself approve 18→2, remove workflows, or prove parity.
 
-A fresh evaluation branch was cut from current Healer `main`, the hygiene reasoning was refreshed with the current 18-workflow / 12 automatic-push / 6 PR-manual classification, and Healer PR #33 was opened. It imports evaluation evidence only; it authorizes no deletion/consolidation and makes no runtime claim.
+Healer issue #34, `Evaluate and execute .github workflow-surface minimization`, is now the active execution surface. It requires independent per-workflow classification, parity preservation, owner reconciliation, admitted consolidation/transfer/elimination, final-count evidence, and exact-current-main validation.
 
-This is a concrete fanout/cost repair because it removes an obsolete PR branch whose deterministic suite was guaranteed to fail on superseded expectations and replaces it with current-source evaluation instead of rerunning the legacy validator.
+Healer's own mirror handoff now binds PR #33/merge `9090dde4...`, Test Readiness `32577928955`, and issue #34. This fanout lane must consume and re-audit the eventual Healer result; assignment or issue creation does not complete that obligation.
 
 ## Earlier corrective repairs retained as evidence
 
@@ -67,7 +68,7 @@ This is a concrete fanout/cost repair because it removes an obsolete PR branch w
 
 Workflow consolidation, deletion, and the preferred 0/1/2 workflow hygiene target are not owned by this lane.
 
-`StegVerse-Labs/StegVerse-Healer#33` is now the active evaluation surface for the `.github` 18→2 hypothesis. It must independently classify workflow surfaces, preserve validation parity and active-owner boundaries, and implement any admitted consolidation/transfer/elimination. This fanout lane must consume and re-audit the resulting workflow surface after Healer acts; transfer does not complete that downstream obligation.
+`StegVerse-Labs/StegVerse-Healer#34` now owns execution of the `.github` hygiene evaluation admitted by merged PR #33. It must independently classify workflow surfaces, preserve validation parity and active-owner boundaries, and implement any admitted consolidation/transfer/elimination. This fanout lane must consume and re-audit the resulting workflow surface after Healer acts; transfer does not complete that downstream obligation.
 
 ## Remaining work
 
@@ -76,13 +77,14 @@ Destination `StegVerse-Labs/.github`:
 1. Continue detecting concrete hosted Actions cost/failure/fanout defects without duplicating Healer hygiene work.
 2. Keep the machine inventory synchronized with live trigger changes.
 3. Obtain repository-wide post-repair Actions run-history evidence when a supported read path exists; commit-associated PR-run reads are not a substitute for repository-level quantitative proof.
-4. Consume Healer's eventual workflow-hygiene result and re-audit the resulting retained workflow surface for fanout regressions.
+4. Consume Healer issue #34's eventual workflow-hygiene result and re-audit the resulting retained workflow surface for fanout regressions.
 
 Destination `StegVerse-Labs/StegVerse-Healer` (dependency lane):
 
-1. Evaluate current PR #33.
-2. If admitted, classify and implement workflow consolidation/transfer/elimination with parity evidence and active-owner reconciliation.
+1. Execute issue #34's independent workflow classifications.
+2. Implement admitted consolidation/transfer/elimination with parity evidence and active-owner reconciliation.
 3. Record technical exceptions if final repository workflow count remains above two.
+4. Update `docs/HEALER_MIRROR_HANDOFF.md` with exact final count and evidence before claiming completion.
 
 ## Release / propagation
 
@@ -90,6 +92,6 @@ No tag/release is required solely for trigger/inventory/handoff changes. No aggr
 
 ## Completion gate
 
-This fanout lane is nonterminal while repository-wide quantitative post-repair run evidence is unavailable and while the Healer output still must be consumed/re-audited.
+This fanout lane is nonterminal while repository-wide quantitative post-repair run evidence is unavailable and while the Healer #34 output still must be consumed/re-audited.
 
 Current status: `DO NOT ARCHIVE THIS SESSION — REQUIRED EXECUTION REMAINS IN AN ACTIVE DEPENDENCY LANE.`
