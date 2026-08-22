@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0.0",
+  "goal_id": "SITE-HEARTBEAT-RESPONSE-ACTIONS-FANOUT-411",
+  "repository": "StegVerse-Labs/Site",
+  "site_issue": 411,
+  "canonical_heartbeat_issue": 234,
+  "healer_issue": 35,
+  "observed_at": "2026-08-22T16:14:00-05:00",
+  "current_hosted_pressure": {
+    "heartbeat_response_self_node_scheduled_starts_per_day": 24,
+    "heartbeat_response_collector_scheduled_starts_per_day": 24,
+    "minimum_scheduled_starts_per_day": 48,
+    "additional_push_fanout_possible": true,
+    "persistence_self_fanout_present": true
+  },
+  "replacement_source": {
+    "state": "SOURCE_MERGED_VALIDATED",
+    "repository": "StegVerse-Labs/StegVerse-Healer",
+    "pull_request": 36,
+    "merge_commit": "3d60904b145f5b2abf28e0a0082ca47998349012",
+    "functional_head": "6a398c090c5995dadd33c0ea7d30cfbeb3e65bd8",
+    "functional_validation_run": 32598762926,
+    "functional_validation_job": 97093712054,
+    "functional_tests_passed": 87,
+    "carrier_tests_passed": 5,
+    "final_evidence_head": "4e0988560e50fca3556acdb9693dad25d4fc1f14",
+    "final_exact_head_validation_run": 32598845285,
+    "final_exact_head_validation_job": 97093914196
+  },
+  "runtime_dependency": {
+    "task_id": "SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
+    "state": "HANDOFF_READY",
+    "authorized_worker_state": "AVAILABLE",
+    "required_receipt": "StegVerse-Labs/StegVerse-Healer/receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+    "receipt_observed": false,
+    "site_clock_retirement_allowed": false,
+    "next_required_outcome": "Resident sovereign scheduler executes the merged carrier against a current locally materialized Site checkout and emits the required receipt; Site #234/#411 then proves durable persistence/propagation before retiring hosted clocks."
+  },
+  "authority": {
+    "primary": "StegVerse",
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_used": false,
+    "github_token_runtime_authority": "NONE",
+    "render_authority": "NONE",
+    "repository_writeback_authority_from_healer_carrier": false,
+    "runtime_activation_effect_from_source_merge": false
+  },
+  "classification": "DEPENDENCY_EXECUTION_REMAINS",
+  "archive_ready": false
+}
