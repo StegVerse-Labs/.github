@@ -1,6 +1,6 @@
 # Heartbeat Carrier Signal Mirror Handoff
 
-Updated: 2026-08-22T07:20:00-05:00
+Updated: 2026-08-22T12:12:00-05:00
 
 ## Canonical authority
 
@@ -40,9 +40,15 @@ persisted carrier state: observation/snapshot only
 HB_n --10 ms oscillator phase travel--> HB_(n+1)
 ```
 
-No worker, task, G18 state, application/domain transition, admission decision, claim, fence, lease, route, credential, repository action, carrier-capacity calculation, passband, observer invocation, or assignment-trigger packet causes, permits, delays, suppresses, or advances heartbeat progression.
+No worker, task, G18 state, application/domain transition, admission decision, claim, fence, lease, route, credential, repository action, carrier-capacity calculation, passband, observer invocation, or assignment-trigger packet causes, permits, delays, suppresses, or advances heartbeat progression. Observation does not cause heartbeat progression.
 
 A consumer may observe HB_n, miss HB_(n+1), and later observe HB_(n+k). Missed references existed independently. Observation does not create them retroactively.
+
+## Communication and terminal-object separation
+
+The communication object is the **manifest packet + expiration wrapper + data packet**. It is distinct from the heartbeat carrier; the heartbeat does not become application payload, transport, task dispatcher, or authority by carrying synchronization/reference semantics.
+
+Terminal triggers remain endpoint-objective completion or expiration. **Master Records is the End-Of-Life state/destination for every Transition Table element.** The terminal object is a Master Records packet. This custody/EOL rule does not make heartbeat a Master Records transport and does not make observation causal.
 
 ## Canonical implementation surfaces
 
