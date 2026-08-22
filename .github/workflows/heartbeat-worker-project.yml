@@ -1,8 +1,7 @@
 # Validation-only workflow for SHWP control-plane artifacts.
 # It has no scheduler, activation, repository mutation, credential, claim, or fence role.
 # TV/TVC owns credential semantics; worker lifecycle coordination is separate from the heartbeat carrier.
-# Automatic main validation is limited to heartbeat source changed by the retired organization-heartbeat validator;
-# routine carrier/state/receipt persistence remains excluded from hosted fanout.
+# Automatic main validation is limited to heartbeat/process-adapter source; routine state/receipt persistence is excluded.
 name: Heartbeat Worker Project - Validation Only / No GitHub Token Authority
 
 on:
@@ -10,6 +9,7 @@ on:
     branches: [main]
     paths:
       - 'heartbeat_runtime/**'
+      - 'workers/heartbeat_receipt_canary.py'
       - 'scripts/issue_heartbeats.py'
       - 'scripts/run_heartbeat_runtime.py'
       - 'scripts/validate_heartbeat_returns.py'
@@ -93,6 +93,27 @@ jobs:
 
       - name: Run complete deterministic repository test suite
         run: python -m unittest discover -v tests
+
+      - name: Validate retained native-process canary completion evidence
+        run: |
+          python3 -m py_compile workers/heartbeat_receipt_canary.py heartbeat_runtime/process_adapter.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          registry=json.loads(Path('control/worker-registry.json').read_text())
+          task=next(x for x in registry['tasks'] if x['task_id']=='SHWP-NATIVE-PROCESS-CANARY-001')
+          receipt=json.loads(Path('receipts/native-worker-canary/SHWP-NATIVE-PROCESS-CANARY-001.json').read_text())
+          handoff=json.loads(Path('handoffs/SHWP-NATIVE-PROCESS-CANARY-001.json').read_text())
+          assert handoff['state']=='COMPLETED'
+          assert handoff['goal']['successor_policy']=='NONE'
+          assert task['state']=='COMPLETED'
+          assert task['archive_eligible'] is True
+          assert task['claim_id'] is None and task['worker_id'] is None
+          assert receipt['completed'] is True
+          assert receipt['transition_id']=='CANARY_COMPLETE'
+          assert isinstance(receipt['fencing_token'],int) and receipt['fencing_token']>0
+          print('RETAINED_NATIVE_CANARY_PASS')
+          PY
 
       - name: Prove legacy issuer cannot advance epoch
         run: |
