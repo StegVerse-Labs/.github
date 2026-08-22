@@ -1,0 +1,26 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "resident_heartbeat_start",
+  "sample_count": 1,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 0,
+    "expiry_candidate_beats": 4,
+    "confidence": "MEDIUM"
+  },
+  "cost_estimate": {
+    "compute_units": 2,
+    "token_units": 0,
+    "storage_bytes": 32768,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json:max_actions=1,runtime_window_beats=4",
+    "workers/start_sovereign_heartbeat_worker.py:one-shot-native-service-start",
+    "control/process-worker-adapters.d/heartbeat-oscillator-resident-start-012.json:timeout_seconds=60"
+  ]
+}
