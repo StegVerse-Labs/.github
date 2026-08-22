@@ -66,38 +66,10 @@ def execution_commands(source_root: Path, runtime_root: Path, python: str) -> li
     source_root = source_root.resolve()
     runtime_root = runtime_root.resolve()
     return [
-        ([
-            python,
-            str(source_root / "scripts/install_sovereign_heartbeat_carrier.py"),
-            "--source-root",
-            str(source_root),
-            "--runtime-root",
-            str(runtime_root),
-        ], source_root),
-        ([
-            python,
-            str(runtime_root / "scripts/run_worker_runtime.py"),
-            "--root",
-            str(runtime_root),
-            "--cycles",
-            "1",
-        ], runtime_root),
-        ([
-            python,
-            str(runtime_root / "scripts/run_heartbeat_runtime.py"),
-            "--root",
-            str(runtime_root),
-            "--cycles",
-            "1",
-        ], runtime_root),
-        ([
-            python,
-            str(runtime_root / "scripts/run_worker_runtime.py"),
-            "--root",
-            str(runtime_root),
-            "--cycles",
-            "1",
-        ], runtime_root),
+        ([python, str(source_root / "scripts/install_sovereign_heartbeat_carrier.py"), "--source-root", str(source_root), "--runtime-root", str(runtime_root)], source_root),
+        ([python, str(runtime_root / "scripts/run_worker_runtime.py"), "--root", str(runtime_root), "--cycles", "1"], runtime_root),
+        ([python, str(runtime_root / "scripts/run_heartbeat_runtime.py"), "--root", str(runtime_root), "--cycles", "1"], runtime_root),
+        ([python, str(runtime_root / "scripts/run_worker_runtime.py"), "--root", str(runtime_root), "--cycles", "1"], runtime_root),
     ]
 
 
@@ -126,16 +98,13 @@ def _fresh_independent_assignment(root: Path) -> dict:
 def _terminal_worker_event(root: Path, claim_id: str) -> dict:
     events = load_jsonl(root / "events/worker-runtime.jsonl")
     for event in reversed(events):
-        if event.get("task_id") != TASK_ID:
-            continue
-        if event.get("claim_id") != claim_id:
+        if event.get("task_id") != TASK_ID or event.get("claim_id") != claim_id:
             continue
         if event.get("transition_id") == TERMINAL:
             return event
         response = event.get("response")
         if isinstance(response, dict) and response.get("transition_id") == TERMINAL:
-            response_claim_id = response.get("claim_id")
-            if response_claim_id not in (None, claim_id):
+            if response.get("claim_id") != claim_id:
                 continue
             return event
     raise RuntimeError("terminal LIVE-009 worker evidence not found for fresh claim")
