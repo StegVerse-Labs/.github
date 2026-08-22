@@ -269,6 +269,15 @@ def assert_full_nine_ready(plan: Mapping[str, Any]) -> None:
         raise RuntimeError("canonical 9/9 provider set mismatch")
 
 
+def execution_passed(success: bool, execution: Mapping[str, Any] | None) -> bool:
+    return bool(
+        success
+        and isinstance(execution, Mapping)
+        and execution.get("comparison_state") == "PASS"
+        and execution.get("lane_evidence_count") == 9
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run the canonical StegVerse nine-lane experiment directly without heartbeat/G18 dependency.")
     parser.add_argument("--tvc-root", type=Path, default=Path(os.environ.get("STEGVERSE_TVC_ROOT", Path.home() / ".stegverse" / "workloads" / "TVC")))
@@ -295,6 +304,8 @@ def main() -> int:
         "credential_authority": "TV/TVC",
         "third_party_role": "CONTROL_OR_FALLBACK_ONLY",
         "credential_material_present": False,
+        "candidate_execution_count_expected": 5,
+        "lane_evidence_count_expected": 9,
     }
     run_dir: Path | None = None
     primary_process: subprocess.Popen[str] | None = None
@@ -365,8 +376,8 @@ def main() -> int:
         }
         receipt["plan_hash"] = plan.get("plan_hash")
         receipt["manifest_hash"] = plan.get("manifest_hash")
-        receipt["lane_count"] = 9
-        receipt["candidate_execution_count"] = 5
+        receipt["lane_count_planned"] = 9
+        receipt["candidate_execution_count_planned"] = 5
 
         success, execution = HELPERS.execute_run(
             plan=plan,
@@ -379,8 +390,11 @@ def main() -> int:
             vault_broker_socket=str(vault_broker_socket),
         )
         receipt["execution"] = execution
-        comparison = execution.get("comparison") if isinstance(execution, Mapping) else None
-        receipt["state"] = "PASS" if success and isinstance(comparison, Mapping) and comparison.get("state") == "PASS" and comparison.get("lane_evidence_count") == 9 else "FAILED"
+        passed = execution_passed(success, execution if isinstance(execution, Mapping) else None)
+        receipt["comparison_state"] = execution.get("comparison_state") if isinstance(execution, Mapping) else None
+        receipt["lane_evidence_count"] = execution.get("lane_evidence_count") if isinstance(execution, Mapping) else None
+        receipt["candidate_execution_count"] = 5 if passed else None
+        receipt["state"] = "PASS" if passed else "FAILED"
         receipt["finished_at"] = datetime.now(timezone.utc).isoformat()
     except Exception as exc:
         receipt["state"] = "BLOCKED"
