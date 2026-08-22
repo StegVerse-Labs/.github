@@ -69,6 +69,14 @@ class DirectTestLanesRunnerTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "TVC_PROVIDER_SECRET_PERMISSIONS_TOO_BROAD:openai"):
                 MODULE.provider_secret_paths(root)
 
+    def test_terminal_pass_requires_helper_success_comparison_pass_and_nine_evidence_records(self) -> None:
+        good = {"comparison_state": "PASS", "lane_evidence_count": 9}
+        self.assertTrue(MODULE.execution_passed(True, good))
+        self.assertFalse(MODULE.execution_passed(False, good))
+        self.assertFalse(MODULE.execution_passed(True, {"comparison_state": "BLOCKED", "lane_evidence_count": 9}))
+        self.assertFalse(MODULE.execution_passed(True, {"comparison_state": "PASS", "lane_evidence_count": 8}))
+        self.assertFalse(MODULE.execution_passed(True, None))
+
     def test_canonical_model_selection_requires_all_four_external_models(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / "models.json"
