@@ -1,6 +1,10 @@
+import json
+import tempfile
 import unittest
 from copy import deepcopy
+from pathlib import Path
 
+from heartbeat_runtime.worker_runtime import WorkerCoordinator
 from state_language import (
     build_alignment_packet,
     canonical_hash,
@@ -105,6 +109,40 @@ class StateLanguageReconciliationTests(unittest.TestCase):
         ok, reason = preclaim_revalidate(task, current)
         self.assertFalse(ok)
         self.assertEqual(reason, "TASK_SOURCE_STATE_STALE")
+
+    def test_worker_preclaim_guard_is_opt_in_for_legacy_tasks(self):
+        coordinator = WorkerCoordinator.__new__(WorkerCoordinator)
+        coordinator.root = Path("/")
+        ok, reason = coordinator._semantic_state_preclaim({"task_id": "legacy"})
+        self.assertTrue(ok)
+        self.assertEqual(reason, "SEMANTIC_STATE_BINDING_NOT_PRESENT")
+
+    def test_worker_preclaim_guard_reads_bound_vector_and_rejects_drift(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            state_path = root / "control" / "state-projections" / "module.json"
+            state_path.parent.mkdir(parents=True)
+            current = vector(runtime="ACTIVE")
+            state_path.write_text(json.dumps(current), encoding="utf-8")
+            coordinator = WorkerCoordinator.__new__(WorkerCoordinator)
+            coordinator.root = root
+            coordinator._load = lambda path: json.loads(path.read_text(encoding="utf-8"))
+
+            current_task = {
+                "task_id": "bound",
+                "source_state_hash": canonical_hash(normalize_vector(current)),
+                "source_state_vector_ref": "control/state-projections/module.json",
+                "reconciliation_disposition": "UNCHANGED",
+            }
+            ok, reason = coordinator._semantic_state_preclaim(current_task)
+            self.assertTrue(ok)
+            self.assertEqual(reason, "CURRENT_CANONICAL_STATE_CONFIRMED")
+
+            stale = vector(runtime="BLOCKED")
+            stale_task = dict(current_task, source_state_hash=canonical_hash(normalize_vector(stale)))
+            ok, reason = coordinator._semantic_state_preclaim(stale_task)
+            self.assertFalse(ok)
+            self.assertEqual(reason, "TASK_SOURCE_STATE_STALE")
 
     def test_alignment_packet_binds_transition_and_master_records_destination(self):
         before = vector(runtime="BLOCKED")
