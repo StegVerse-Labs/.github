@@ -14,6 +14,12 @@ from heartbeat_runtime import CarrierHeartbeatRuntime  # noqa: E402
 
 EXPECTED_TASK = "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009"
 REQUIRED_CAPS = {"heartbeat_runtime_observation", "bounded_repository_mutation", "independent_oscillator_live_proof"}
+CANONICAL_RUNTIME_REFS = [
+    "heartbeat_runtime/independent_oscillator.py",
+    "heartbeat_runtime/oscillator_producer.py",
+    "heartbeat_runtime/engine_v13.py",
+    "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+]
 
 
 def verify_live_proof(result: dict[str, Any], carrier: dict[str, Any], observation: dict[str, Any]) -> None:
@@ -79,14 +85,14 @@ def main() -> int:
             "expected_next_earliest_epoch": invocation.get("heartbeat_epoch"),
             "expected_next_latest_epoch": None,
             "checkpoint_ref": "control/heartbeat-carrier-runtime-state.json",
-            "evidence_refs": ["heartbeat_runtime/independent_oscillator.py", "heartbeat_runtime/engine_v12.py", "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md"],
+            "evidence_refs": CANONICAL_RUNTIME_REFS,
             "blocker": {
                 "dependency_class": "INTERNAL_CAPABILITY",
                 "problem_statement": str(exc),
                 "solution_required": True,
                 "may_remain_blocked": False,
                 "next_solution_action": "RECHECK_CORRECTED_SOVEREIGN_HEARTBEAT_RUNTIME",
-                "machine_observable_release_condition": "one corrected sampler execution persists canonical nested oscillator-only carrier and observation state",
+                "machine_observable_release_condition": "one corrected v13 sampler execution persists canonical nested oscillator-only carrier and observation state",
                 "github_token_required": False,
                 "third_party_blocker": False,
             },
@@ -105,7 +111,11 @@ def main() -> int:
         "expected_next_earliest_epoch": None,
         "expected_next_latest_epoch": None,
         "checkpoint_ref": "control/heartbeat-carrier-runtime-state.json",
-        "evidence_refs": ["control/heartbeat-carrier-runtime-state.json", "control/heartbeat-carrier-observation.json", "heartbeat_runtime/independent_oscillator.py", "heartbeat_runtime/engine_v12.py"],
+        "evidence_refs": [
+            "control/heartbeat-carrier-runtime-state.json",
+            "control/heartbeat-carrier-observation.json",
+            *CANONICAL_RUNTIME_REFS[:3],
+        ],
         "blocker": None,
         "cost_observation": {"hb_transition_count": int(result.get("elapsed_heartbeat_references", 0)), "compute_units": 1, "external_cost_usd": 0, "task_class": "independent_heartbeat_live_proof"},
     }
