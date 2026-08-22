@@ -17,10 +17,15 @@ def test_handoff_and_adapter_are_credential_clean():
     registry = json.loads((ROOT / "control/worker-registry.d/tvc-repository-broker-validation-001.json").read_text())
     assert handoff["authority"]["credential_authority"] == "TV/TVC"
     assert handoff["authority"]["github_token_required"] is False
-    assert handoff["execution"]["expected_tvc_head"] == "50d84499e255f8c54814c79f6c9060853c62dae4"
+    assert handoff["authority"]["heartbeat_dependency"] is False
+    assert handoff["execution"]["expected_tvc_head"] == "8eae9764599817f92aa24a71c64dcd1ba1dccfed"
+    assert handoff["activation"]["heartbeat_dependency"] is False
+    assert handoff["activation"]["carrier_trigger_required"] is False
     assert adapter["adapters"][0]["env_allowlist"] == ["STEGVERSE_TVC_ROOT"]
     assert registry["credential_authority"] == "TV/TVC"
     assert registry["github_token_required"] is False
+    assert registry["tasks"][0]["heartbeat_dependency"] is False
+    assert "StegVerse-Labs/TVC#92" in registry["tasks"][0]["evidence_refs"]
 
 
 def test_cleaned_env_removes_all_forbidden(monkeypatch):
