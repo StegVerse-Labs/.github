@@ -70,7 +70,7 @@
     "max_actions": 4,
     "max_retries": 4096,
     "external_cost_ceiling_usd": 0,
-    "runtime_window_beats": null,
+    "runtime_window_beats": 24000,
     "rate_class": "tvc_repository_broker_validation",
     "expected_tvc_head": "8eae9764599817f92aa24a71c64dcd1ba1dccfed",
     "expected_head_change_reason": "PR #92 re-materialized the exact bounded broker delta onto latest current main after PR #79 became non-mergeable and was closed unmerged",

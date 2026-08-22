@@ -146,8 +146,11 @@ class MasterRecordsSovereignReconstructionBridgeTests(unittest.TestCase):
             )
             out = Path(temp) / "receipts" / "reconstruction.json"
             result = mod.reconstruct_same_execution(root, proof=proof, route=route, execution=execution, output_path=out)
-            self.assertEqual(result["state"], "COMPLETE")
+            self.assertEqual(result["state"], "RECONSTRUCTED_RUNTIME_PENDING")
+            self.assertEqual(result["reason"], "MASTER_RECORDS_RECONSTRUCTED_VA_RUNTIME_NOT_LIVE")
             self.assertTrue(mod.reconstruction_receipt_verified(result["reconstruction_receipt"], proof=proof, route=route, execution=execution))
+            self.assertIsInstance(result["va_conversational_runtime"], dict)
+            self.assertNotEqual(result["va_conversational_runtime"].get("state"), "COMPLETE")
             self.assertEqual(list(out.parent.glob("mr-reconstruction-packet-*.json")), [])
 
 
