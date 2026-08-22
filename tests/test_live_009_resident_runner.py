@@ -30,7 +30,7 @@ class Live009ResidentRunnerTests(unittest.TestCase):
             self.assertNotIn(str(source / "scripts/run_worker_runtime.py"), command)
             self.assertNotIn(str(source / "scripts/run_heartbeat_runtime.py"), command)
 
-    def make_valid_runtime(self, root: Path, *, fence: int = 22, terminal: bool = True):
+    def make_valid_runtime(self, root: Path, *, fence: int = 22, terminal: bool = True, terminal_claim: str | None = "MATCH"):
         (root / "receipts/sovereign-host").mkdir(parents=True)
         (root / "control").mkdir(parents=True)
         (root / "events").mkdir(parents=True)
@@ -72,7 +72,11 @@ class Live009ResidentRunnerTests(unittest.TestCase):
             "source_carrier_event_ref": None,
         }
         (root / "events/master-records-worker-assignment.jsonl").write_text(json.dumps(assignment) + "\n")
-        worker_event = {"task_id": mod.TASK_ID, "claim_id": claim_id}
+        worker_event = {"task_id": mod.TASK_ID}
+        if terminal_claim == "MATCH":
+            worker_event["claim_id"] = claim_id
+        elif terminal_claim is not None:
+            worker_event["claim_id"] = terminal_claim
         if terminal:
             worker_event["transition_id"] = mod.TERMINAL
         (root / "events/worker-runtime.jsonl").write_text(json.dumps(worker_event) + "\n")
@@ -105,6 +109,20 @@ class Live009ResidentRunnerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             self.make_valid_runtime(root, terminal=False)
+            with self.assertRaisesRegex(RuntimeError, "terminal LIVE-009"):
+                mod.require_runtime_evidence(root)
+
+    def test_rejects_terminal_event_without_claim_binding(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            self.make_valid_runtime(root, terminal_claim=None)
+            with self.assertRaisesRegex(RuntimeError, "terminal LIVE-009"):
+                mod.require_runtime_evidence(root)
+
+    def test_rejects_terminal_event_bound_to_different_claim(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            self.make_valid_runtime(root, terminal_claim="SHWP-OTHER-G999")
             with self.assertRaisesRegex(RuntimeError, "terminal LIVE-009"):
                 mod.require_runtime_evidence(root)
 
