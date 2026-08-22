@@ -12,6 +12,24 @@ SPEC.loader.exec_module(mod)
 
 
 class Live009ResidentRunnerTests(unittest.TestCase):
+    def test_execution_sequence_uses_materialized_resident_root(self):
+        source = Path("/source/stegverse").resolve()
+        resident = Path("/resident/stegverse-heartbeat").resolve()
+        commands = mod.execution_commands(source, resident, "/usr/bin/python3")
+
+        install, install_cwd = commands[0]
+        self.assertEqual(install_cwd, source)
+        self.assertIn(str(source / "scripts/install_sovereign_heartbeat_carrier.py"), install)
+        self.assertIn("--runtime-root", install)
+        self.assertIn(str(resident), install)
+
+        for command, cwd in commands[1:]:
+            self.assertEqual(cwd, resident)
+            self.assertIn("--root", command)
+            self.assertIn(str(resident), command)
+            self.assertNotIn(str(source / "scripts/run_worker_runtime.py"), command)
+            self.assertNotIn(str(source / "scripts/run_heartbeat_runtime.py"), command)
+
     def test_requires_real_activation_and_terminal_evidence(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
