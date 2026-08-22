@@ -14,6 +14,12 @@ import subprocess
 import sys
 from pathlib import Path
 
+SOURCE_ROOT = Path(__file__).resolve().parents[1]
+if str(SOURCE_ROOT) not in sys.path:
+    sys.path.insert(0, str(SOURCE_ROOT))
+
+from scripts import install_sovereign_heartbeat_service as sovereign_installer
+
 TASK_ID = "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009"
 TERMINAL = "INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED"
 
@@ -29,6 +35,58 @@ def run(command: list[str], root: Path) -> None:
     completed = subprocess.run(command, cwd=root, check=False)
     if completed.returncode != 0:
         raise RuntimeError(f"command failed ({completed.returncode}): {' '.join(command)}")
+
+
+def resolve_runtime_root(explicit: Path | None = None) -> Path:
+    if explicit is not None:
+        return explicit.expanduser().resolve()
+    return sovereign_installer.default_runtime_root()
+
+
+def execution_commands(source_root: Path, runtime_root: Path, python: str) -> list[tuple[list[str], Path]]:
+    """Return the exact resident execution sequence.
+
+    Installation is launched from the source checkout, but all runtime cycles
+    execute from and against the materialized resident runtime root. This keeps
+    generated activation/carrier/worker evidence on the actual resident surface
+    rather than accidentally writing it into the source repository checkout.
+    """
+    source_root = source_root.resolve()
+    runtime_root = runtime_root.resolve()
+    return [
+        ([
+            python,
+            str(source_root / "scripts/install_sovereign_heartbeat_carrier.py"),
+            "--source-root",
+            str(source_root),
+            "--runtime-root",
+            str(runtime_root),
+        ], source_root),
+        ([
+            python,
+            str(runtime_root / "scripts/run_worker_runtime.py"),
+            "--root",
+            str(runtime_root),
+            "--cycles",
+            "1",
+        ], runtime_root),
+        ([
+            python,
+            str(runtime_root / "scripts/run_heartbeat_runtime.py"),
+            "--root",
+            str(runtime_root),
+            "--cycles",
+            "1",
+        ], runtime_root),
+        ([
+            python,
+            str(runtime_root / "scripts/run_worker_runtime.py"),
+            "--root",
+            str(runtime_root),
+            "--cycles",
+            "1",
+        ], runtime_root),
+    ]
 
 
 def require_runtime_evidence(root: Path) -> None:
@@ -79,22 +137,24 @@ def require_runtime_evidence(root: Path) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--source-root", type=Path, default=SOURCE_ROOT)
+    parser.add_argument("--runtime-root", type=Path)
     args = parser.parse_args()
-    root = args.root.resolve()
 
+    source_root = args.source_root.resolve()
+    runtime_root = resolve_runtime_root(args.runtime_root)
     py = sys.executable
-    run([py, "scripts/install_sovereign_heartbeat_carrier.py", "--source-root", str(root)], root)
-    run([py, "scripts/run_worker_runtime.py", "--root", str(root), "--cycles", "1"], root)
-    run([py, "scripts/run_heartbeat_runtime.py", "--root", str(root), "--cycles", "1"], root)
-    run([py, "scripts/run_worker_runtime.py", "--root", str(root), "--cycles", "1"], root)
-    require_runtime_evidence(root)
+
+    for command, cwd in execution_commands(source_root, runtime_root, py):
+        run(command, cwd)
+    require_runtime_evidence(runtime_root)
 
     print(json.dumps({
         "schema": "stegverse.heartbeat-live-009-resident-execution/v1",
         "state": "COMPLETED",
         "task_id": TASK_ID,
         "transition_id": TERMINAL,
+        "runtime_root": str(runtime_root),
         "runtime_authority": "StegVerse",
         "credential_authority": "TV/TVC",
         "third_party_runtime_required": False,
