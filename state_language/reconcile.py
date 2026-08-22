@@ -46,7 +46,8 @@ def reconcile_tasks(
 
     Historical tasks are retained. Reconciliation cannot mutate an ACTIVE task into a
     semantically different job under the same claim; such a task is marked for
-    revalidation/escalation instead.
+    revalidation/escalation instead. Reapplying an already-reconciled projection does
+    not advance reconciliation_generation.
     """
     result = deepcopy(registry)
     tasks = result.setdefault("tasks", [])
@@ -85,14 +86,25 @@ def reconcile_tasks(
             effects.append({"task_id": task_id, "disposition": "ESCALATION_REQUIRED", "reason": current["reconciliation_reason"]})
             continue
 
+        prior_snapshot = _task_semantics(current)
+        history = deepcopy(current.get("history", []))
+        if not history or canonical_hash(history[-1].get("task_semantics", {})) != canonical_hash(prior_snapshot):
+            history.append(
+                {
+                    "disposition": "AMENDED",
+                    "superseded_by_state_hash": source_state_hash,
+                    "task_semantics": prior_snapshot,
+                }
+            )
         preserved = {
             key: deepcopy(current[key])
-            for key in ("created_at", "evidence_refs", "history")
+            for key in ("created_at", "evidence_refs")
             if key in current
         }
         current.clear()
         current.update(target)
         current.update(preserved)
+        current["history"] = history
         current.setdefault("state", "HANDOFF_READY")
         current["reconciliation_disposition"] = "AMENDED"
         effects.append({"task_id": task_id, "disposition": "AMENDED"})
@@ -115,7 +127,11 @@ def reconcile_tasks(
 
     result["source_state_hash"] = source_state_hash
     result["source_handoff_ref"] = source_handoff_ref
-    result["reconciliation_generation"] = int(result.get("reconciliation_generation", 0)) + 1
+    materially_changed = any(effect["disposition"] != "UNCHANGED" for effect in effects)
+    if materially_changed:
+        result["reconciliation_generation"] = int(result.get("reconciliation_generation", 0)) + 1
+    else:
+        result.setdefault("reconciliation_generation", int(registry.get("reconciliation_generation", 0)))
     return result, effects
 
 
