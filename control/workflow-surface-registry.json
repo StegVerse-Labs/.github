@@ -8,12 +8,11 @@
   "preferred_repository_workflow_count_max": 2,
   "current_state": "REVIEW_REQUIRED_ACTIVE_CLEANUP",
   "surfaces": [
-    {"path": ".github/workflows/org-control-plane-validate.yml", "classification": "KEEP_STABLE_DISPATCHER", "owner": "HYGIENE-CAUSAL-ROOTS-001", "reason": "canonical organization validation/consolidation surface; includes ephemeral org handoff render/projection parity after Healer consolidation"},
+    {"path": ".github/workflows/org-control-plane-validate.yml", "classification": "KEEP_STABLE_DISPATCHER", "owner": "HYGIENE-CAUSAL-ROOTS-001", "reason": "canonical organization validation/consolidation surface; includes ephemeral org handoff render/projection parity and archive-readiness validation after Healer consolidation"},
     {"path": ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml", "classification": "REVIEW_REQUIRED", "owner": "StegVerse-Labs/.github#60", "reason": "existing machine-owned validation surface; do not remove before owner reconciliation"},
     {"path": ".github/workflows/activate-host-self-attest-worker.yml", "classification": "REVIEW_REQUIRED", "owner": "organization runtime worker lane", "reason": "existing validation surface requires owner reconciliation"},
     {"path": ".github/workflows/activate-sovereign-runtime-worker.yml", "classification": "REVIEW_REQUIRED", "owner": "StegVerse-Labs/.github#59", "reason": "existing machine-owned validation surface; do not compete"},
     {"path": ".github/workflows/all-org-heartbeat-federation.yml", "classification": "REVIEW_REQUIRED", "owner": "StegVerse-Labs/.github#81", "reason": "heartbeat-federation validation requires canonical owner review"},
-    {"path": ".github/workflows/archive-readiness-validate.yml", "classification": "REVIEW_REQUIRED", "owner": "organization archive-readiness lane", "reason": "candidate for dispatcher consolidation after contract review"},
     {"path": ".github/workflows/external-timing-match-validation.yml", "classification": "REVIEW_REQUIRED", "owner": "HEARTBEAT-EXTERNAL-TIMING-MATCH-191 source released -> StegVerse-Labs/.github#122 live consumer", "reason": "merged source-validation workflow was omitted from the hygiene registry; registration records the released owner lineage only and grants no retention or production authority"},
     {"path": ".github/workflows/heartbeat-worker-project.yml", "classification": "REVIEW_REQUIRED", "owner": "canonical heartbeat worker project", "reason": "candidate stable worker validation surface; owner review required"},
     {"path": ".github/workflows/mcp-activation-binding-test.yml", "classification": "BLOCKED_ACTIVE_OWNERSHIP", "owner": "concurrent MCP activation workstream", "reason": "created during hygiene execution; fresh active owner prevents competing cleanup"},
@@ -38,7 +37,8 @@
     ".github/workflows/validate-ae-handoff-worker-conformance.yml"
   ],
   "removed_by_healer_hygiene": [
-    ".github/workflows/org-handoff-render.yml"
+    ".github/workflows/org-handoff-render.yml",
+    ".github/workflows/archive-readiness-validate.yml"
   ],
   "concurrent_new_surfaces_observed_during_hygiene": [
     ".github/workflows/mcp-activation-binding-test.yml",

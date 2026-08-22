@@ -23,6 +23,7 @@ on:
       - 'scripts/allocate_claims.py'
       - 'scripts/reconcile_checkins.py'
       - 'scripts/render_org_handoff.py'
+      - 'scripts/validate_archive_readiness.py'
       - 'docs/ORG_CONTROL_PLANE_STATE.md'
       - 'tools/validate_active_worker_states.py'
       - 'tests/test_heartbeat_runtime_separation.py'
@@ -30,6 +31,7 @@ on:
       - 'tests/test_heartbeat_carrier_envelope.py'
       - 'tests/test_cross_repository_dependency_claims.py'
       - 'tests/test_session_assistance_scope.py'
+      - 'tests/test_archive_readiness.py'
       - '.github/workflows/org-control-plane-validate.yml'
   pull_request:
     paths:
@@ -114,6 +116,11 @@ jobs:
         run: |
           python3 scripts/render_org_handoff.py
           git diff --exit-code -- docs/ORG_CONTROL_PLANE_STATE.md
+
+      - name: Validate archive readiness semantics
+        run: |
+          python3 scripts/validate_archive_readiness.py
+          python3 -m unittest tests.test_archive_readiness
 
       - name: Exercise allocator deterministically without persistence authority
         run: |
