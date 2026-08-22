@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/master-records-alignment-transition-v1.schema.json",
+  "title": "StegVerse Master Records Alignment Transition v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "transition_id", "source_handoff_ref", "source_state_hash", "target_state_hash", "semantic_delta_hash", "module_id", "endpoint_id", "projection_before_hash", "projection_after_hash", "task_effects", "alignment_disposition", "reconstruction_state", "evidence_refs", "authority_effect"],
+  "properties": {
+    "schema": {"const": "stegverse.master-records-alignment-transition/v1"},
+    "transition_id": {"type": "string", "minLength": 1},
+    "parent_transition_id": {"type": ["string", "null"]},
+    "source_handoff_ref": {"type": "string", "minLength": 1},
+    "source_state_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "target_state_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "semantic_delta_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "module_id": {"type": "string", "minLength": 1},
+    "endpoint_id": {"type": "string", "minLength": 1},
+    "projection_before_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "projection_after_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "task_effects": {"type": "array", "items": {"type": "object"}},
+    "alignment_disposition": {"enum": ["ALIGNED", "PROPAGATING", "ALIGNED_WITH_DRIFT", "STALE", "DIVERGENT", "OSCILLATING", "FAIL_CLOSED"]},
+    "reconstruction_state": {"enum": ["PASS", "FAIL", "PENDING", "NOT_APPLICABLE"]},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "authority_effect": {"type": "string", "minLength": 1},
+    "custody_destination": {"const": "master-records/orchestration"}
+  }
+}
