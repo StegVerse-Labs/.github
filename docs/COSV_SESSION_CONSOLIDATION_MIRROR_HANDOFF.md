@@ -26,24 +26,21 @@ Historical persisted HB31 remains pre-correction observation evidence only. It i
 
 ## Task-load reduction completed in this execution
 
-A concrete source/control-plane mismatch was found in two critical HANDOFF_READY tasks. WorkerCoordinator direct admission requires the task registry row to contain:
+WorkerCoordinator direct admission requires a HANDOFF_READY task registry row to contain `INDEPENDENT_TASK_CONTROL`, `AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM`, a fresh-fence requirement, and `heartbeat_grants_execution_authority=false`.
 
-```text
-admission.authority_domain = INDEPENDENT_TASK_CONTROL
-admission.claim_state = AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM
-admission.fresh_fence_required = true
-admission.heartbeat_grants_execution_authority = false
-```
-
-The heartbeat live-proof and recurring COSV packet handoffs already described independent/non-authorizing control, but their registry fragments did not carry those fields. Therefore `_activate_independently_admitted_tasks()` could not directly acquire them and they remained unnecessarily dependent on optional heartbeat compatibility-trigger carriage.
-
-This mismatch is repaired:
+Several critical handoffs already described non-authorizing/direct task control but their registry fragments did not carry those fields, so `_activate_independently_admitted_tasks()` could not directly acquire them. That mismatch is now repaired on the session critical path:
 
 ```text
 HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009
   registry: dd3098a2897e4eb70f1462d4dc6b4c27e0b05505
   handoff: fe894c81559f6a2163a24dc187b0743b0555df83
   state: HANDOFF_READY / independently claimable / fresh fence >21
+
+HEARTBEAT-OSCILLATOR-RESIDENT-START-012
+  registry: b586ca6808630e12d26bd78de4d879515b002e61
+  state: HANDOFF_READY / independently claimable / fresh fence >21
+  direct resident path: python scripts/install_sovereign_heartbeat_carrier.py
+  WorkerCoordinator required for carrier start: false
 
 COSV-LIVE-PACKET-AUTOMATION-006
   registry: 9f9d24b3ccdd9efe34927bdb9d8e5f0a265945bc
@@ -54,18 +51,28 @@ RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28
   pre-existing state: HANDOFF_READY / independently claimable / fresh fence >20
 ```
 
-Focused regression assertions are installed at `tests/test_task_load_independent_admission.py` (`5bc2fb2865c99ba4aff6eaee153b257071b965b1`). No hosted or resident execution PASS is inferred from installing the test.
+Focused regression assertions are installed at `tests/test_task_load_independent_admission.py` (`f7871baaa5d1be334caee9c77a534b7515d24eed`). No hosted or resident execution PASS is inferred from installing the test.
 
-This means one canonical WorkerCoordinator execution opportunity can now apply registry fragments and independently evaluate all three critical tasks without waiting for heartbeat-carried assignment packets. WorkerCoordinator still owns lawful claim/fence creation; chat/source mutation did not mint any claim, fence or lease.
+Two source claims were released after direct source inspection:
 
-## Current critical path
+```text
+TASK-LOAD-INDEPENDENT-ADMISSION-011
+TASK-LOAD-RESIDENT-START-ADMISSION-012A
+```
 
-1. Run canonical WorkerCoordinator task control and consume actual results for the three independently claimable critical tasks.
-2. `HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009` must produce inspectable oscillator-backed live carrier evidence and return `COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED`.
-3. Ecosystem Chat orphan recovery must execute under a fresh fence >20 and bind the ended G20 lifecycle to Master Records without reviving old authority.
-4. After recovery, parent sovereign inference independently acquires a fresh fence >20 and executes StegVerse-local model -> TVC `ROUTE_ADMITTED` credential requirement NONE -> exact LLM-adapter -> measured usage -> same-execution Master Records reconstruction PASS.
-5. COSV recurring packet production consumes corrected oscillator-derived observed references. A corrected changed DELTA feeds StegBrain gradient/residual/matrix lanes.
-6. The invalidated historical HB32 expectation remains prohibited from live residual use; new expectations must be proven committed before target occurrence.
+No live claim, fence or lease was minted by chat/source mutation.
+
+## Shortest current critical path
+
+1. **Start the carrier directly on the admitted resident StegVerse host** using the already-installed carrier-only path: `python scripts/install_sovereign_heartbeat_carrier.py`. This path requires no WorkerCoordinator start, no LIVE-009 prerequisite, no prior heartbeat proof, no network fetch and no third-party process host.
+2. Consume `receipts/sovereign-host/carrier-activation.latest.json`. Do not infer success until `carrier_active=true` and the carrier-only/engine_v13/OSCILLATOR_ONLY/10 ms predicates are actually present.
+3. Run/consume `HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009` as post-start verification; it is now independently claimable and does not require heartbeat-carried trigger authority.
+4. Independently execute Ecosystem Chat orphan recovery under a fresh fence >20, bind ended G20 lifecycle to Master Records, and keep old G20 authority dead.
+5. After recovery, parent sovereign inference independently acquires a fresh fence >20 and executes StegVerse-local model -> TVC `ROUTE_ADMITTED` credential requirement NONE -> exact LLM-adapter -> measured usage -> same-execution Master Records reconstruction PASS.
+6. Recurring COSV packet production is now independently claimable and consumes corrected oscillator-derived observed references. A corrected changed DELTA feeds StegBrain gradient/residual/matrix lanes.
+7. The invalidated historical HB32 expectation remains prohibited from live residual use; new expectations must be proven committed before target occurrence.
+
+The canonical WorkerCoordinator can also apply current registry fragments and independently evaluate the task-control representations of LIVE-009, resident start, orphan recovery and recurring COSV packet production. That task-control path is not a heartbeat progression prerequisite and is not required for the direct carrier-only resident start.
 
 G18 bookkeeping cleanup remains nonblocking to heartbeat progression and sovereign inference activation.
 
@@ -73,6 +80,8 @@ G18 bookkeeping cleanup remains nonblocking to heartbeat progression and soverei
 
 ```text
 heartbeat semantic correction source: COMPLETE_RELEASED
+resident carrier-only start source: COMPLETE_SOURCE / LIVE START PENDING
+resident-start independent claimability: COMPLETE_SOURCE
 heartbeat live-proof independent claimability: COMPLETE_SOURCE
 orphan-recovery independent claimability: COMPLETE_SOURCE
 COSV recurring-worker independent claimability: COMPLETE_SOURCE
