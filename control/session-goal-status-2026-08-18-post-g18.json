@@ -1,9 +1,9 @@
 {
-  "schema": "stegverse.session-goal-status/v3",
+  "schema": "stegverse.session-goal-status/v4",
   "session_id": "SESSION-2026-08-18-COSV-STATE-GRADIENT-INTROSPECTION",
   "updated_at": "2026-08-22T07:01:00-05:00",
   "archive_eligible": false,
-  "archive_reason": "Required live oscillator proof, sovereign inference activation, corrected COSV packet/gradient/residual/matrix evidence, and downstream release evidence remain nonterminal. Source, handoff, assignment, independent claimability, and machine ownership do not satisfy runtime outcomes.",
+  "archive_reason": "Required resident carrier start/live oscillator proof, sovereign inference activation, corrected COSV packet/gradient/residual/matrix evidence, and downstream release evidence remain nonterminal. Source, handoff, assignment, independent claimability, and machine ownership do not satisfy runtime outcomes.",
   "heartbeat_semantics": {
     "canonical_runtime": "heartbeat_runtime/engine_v13.py",
     "canonical_rule": "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL",
@@ -30,20 +30,19 @@
     "hb32_expectation_supersession_ref": "StegVerse-Labs/StegBrain:receipts/STEGBRAIN-COSV-EXPECTATION-HB32-001-supersession.json"
   },
   "task_load_reduction": {
-    "repair_task": "TASK-LOAD-INDEPENDENT-ADMISSION-011",
-    "problem_found": "Two already-authorized HANDOFF_READY critical tasks lacked the admission metadata WorkerCoordinator requires for direct INDEPENDENT_TASK_CONTROL acquisition, leaving them dependent on optional heartbeat compatibility-trigger carriage despite canonical handoffs saying otherwise.",
-    "worker_runtime_rule_ref": "heartbeat_runtime/worker_runtime.py#_activate_independently_admitted_tasks",
-    "independently_claimable_critical_tasks": [
-      "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
-      "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
-      "COSV-LIVE-PACKET-AUTOMATION-006"
-    ],
     "repairs": [
       {
         "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
         "registry_commit": "dd3098a2897e4eb70f1462d4dc6b4c27e0b05505",
         "handoff_commit": "fe894c81559f6a2163a24dc187b0743b0555df83",
         "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE"
+      },
+      {
+        "task_id": "HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
+        "registry_commit": "b586ca6808630e12d26bd78de4d879515b002e61",
+        "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_OR_DIRECT_RESIDENT_INSTALLER",
+        "direct_start_command": "python scripts/install_sovereign_heartbeat_carrier.py",
+        "workercoordinator_required_for_carrier_start": false
       },
       {
         "task_id": "COSV-LIVE-PACKET-AUTOMATION-006",
@@ -57,64 +56,26 @@
         "minimum_fence_exclusive": 20
       }
     ],
+    "worker_runtime_rule_ref": "heartbeat_runtime/worker_runtime.py#_activate_independently_admitted_tasks",
     "regression_test_ref": "tests/test_task_load_independent_admission.py",
-    "regression_test_commit": "5bc2fb2865c99ba4aff6eaee153b257071b965b1",
+    "regression_test_commit": "f7871baaa5d1be334caee9c77a534b7515d24eed",
     "live_claims_created_by_chat": false,
     "runtime_completion_claimed": false
   },
   "goals": [
-    {
-      "goal_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008",
-      "state": "SOURCE_COMPLETE_RELEASED",
-      "terminal": true
-    },
-    {
-      "goal_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
-      "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_LIVE_EXECUTION_REQUIRED",
-      "terminal": false
-    },
-    {
-      "goal_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
-      "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_FRESH_FENCE_GT20_REQUIRED",
-      "terminal": false
-    },
-    {
-      "goal_id": "SOVEREIGN-LOCAL-MODEL-001",
-      "state": "SOURCE_COMPLETE_RELEASED_LIVE_ACTIVATION_REQUIRED_AFTER_RECOVERY",
-      "terminal": false
-    },
-    {
-      "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-      "state": "BOOKKEEPING_RECONCILIATION_NONBLOCKING_TO_INFERENCE_OR_HEARTBEAT",
-      "terminal": false
-    },
-    {
-      "goal_id": "COSV-HEARTBEAT-STATE-PACKET-002",
-      "state": "HB31_HISTORICAL_BASELINE_PRESERVED_NEXT_PACKET_MUST_BIND_CORRECTED_OSCILLATOR_OBSERVATION",
-      "terminal": false
-    },
-    {
-      "goal_id": "COSV-LIVE-PACKET-AUTOMATION-006",
-      "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_PENDING_CORRECTED_REFERENCE_EXECUTION",
-      "terminal": false
-    },
-    {
-      "goal_id": "STEGBRAIN-COSV-LIVE-GRADIENT-CONSUMER-007",
-      "state": "SOURCE_COMPLETE_RELEASED_PENDING_FIRST_CORRECTED_OSCILLATOR_BOUND_DELTA",
-      "terminal": false
-    },
-    {
-      "goal_id": "STEGBRAIN-COSV-EXPECTATION-RESIDUAL-004",
-      "state": "HB32_EXPECTATION_INVALIDATED_PENDING_PROVABLY_PRE_OCCURRENCE_EXPECTATION_AND_ACTUAL",
-      "terminal": false
-    },
-    {
-      "goal_id": "STEGBRAIN-COSV-GRADIENT-MATRIX-003",
-      "state": "WAITING_FOR_SUFFICIENT_ORDERED_CORRECTED_LIVE_OBSERVATIONS",
-      "terminal": false
-    }
+    {"goal_id":"HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008","state":"SOURCE_COMPLETE_RELEASED","terminal":true},
+    {"goal_id":"HEARTBEAT-OSCILLATOR-RESIDENT-START-012","state":"CARRIER_ONLY_START_PATH_INSTALLED_HANDOFF_READY_DIRECT_START_OR_INDEPENDENT_TASK_CONTROL_EXECUTION_REQUIRED","terminal":false},
+    {"goal_id":"HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009","state":"HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_POST_START_LIVE_PROOF_REQUIRED","terminal":false},
+    {"goal_id":"RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28","state":"HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_FRESH_FENCE_GT20_REQUIRED","terminal":false},
+    {"goal_id":"SOVEREIGN-LOCAL-MODEL-001","state":"SOURCE_COMPLETE_RELEASED_LIVE_ACTIVATION_REQUIRED_AFTER_RECOVERY","terminal":false},
+    {"goal_id":"SHWP-DURABLE-RUNTIME-ACTIVATION","state":"BOOKKEEPING_RECONCILIATION_NONBLOCKING_TO_HEARTBEAT_OR_INFERENCE","terminal":false},
+    {"goal_id":"COSV-HEARTBEAT-STATE-PACKET-002","state":"HB31_HISTORICAL_BASELINE_PRESERVED_NEXT_PACKET_MUST_BIND_CORRECTED_OSCILLATOR_OBSERVATION","terminal":false},
+    {"goal_id":"COSV-LIVE-PACKET-AUTOMATION-006","state":"HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_PENDING_CORRECTED_REFERENCE_EXECUTION","terminal":false},
+    {"goal_id":"STEGBRAIN-COSV-LIVE-GRADIENT-CONSUMER-007","state":"SOURCE_COMPLETE_RELEASED_PENDING_FIRST_CORRECTED_OSCILLATOR_BOUND_DELTA","terminal":false},
+    {"goal_id":"STEGBRAIN-COSV-EXPECTATION-RESIDUAL-004","state":"HB32_EXPECTATION_INVALIDATED_PENDING_PROVABLY_PRE_OCCURRENCE_EXPECTATION_AND_ACTUAL","terminal":false},
+    {"goal_id":"STEGBRAIN-COSV-GRADIENT-MATRIX-003","state":"WAITING_FOR_SUFFICIENT_ORDERED_CORRECTED_LIVE_OBSERVATIONS","terminal":false}
   ],
-  "next_executable_action": "Run the existing canonical WorkerCoordinator task-control path. Registry fragments are applied at cycle start and three critical HANDOFF_READY tasks are now directly claimable under INDEPENDENT_TASK_CONTROL without heartbeat-carried trigger authority: heartbeat live proof, Ecosystem Chat orphan recovery, and recurring COSV packet production. Consume their actual worker results, then continue parent sovereign inference and corrected COSV/StegBrain downstream outcomes. Do not mint claims/fences manually and do not use the invalidated HB32 expectation.",
+  "next_executable_action": "Shortest heartbeat path: on the admitted resident StegVerse host execute the already-installed carrier-only command `python scripts/install_sovereign_heartbeat_carrier.py`; it does not require WorkerCoordinator, LIVE-009, a prior heartbeat proof, network fetch, or third-party host. After carrier activation evidence exists, LIVE-009 verifies it. Separately, the canonical WorkerCoordinator can apply fragments and independently acquire LIVE-009, Ecosystem Chat orphan recovery, resident-start task-control representation, and recurring COSV packet production without heartbeat-carried trigger authority. Consume actual worker/runtime results, then continue parent sovereign inference and corrected COSV/StegBrain outcomes. Do not mint claims/fences manually and do not use the invalidated HB32 expectation.",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",
