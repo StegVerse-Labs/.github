@@ -18,7 +18,7 @@ def test_handoff_and_adapter_are_credential_clean():
     assert handoff["authority"]["credential_authority"] == "TV/TVC"
     assert handoff["authority"]["github_token_required"] is False
     assert handoff["authority"]["heartbeat_dependency"] is False
-    assert handoff["execution"]["expected_tvc_head"] == "8eae9764599817f92aa24a71c64dcd1ba1dccfed"
+    assert handoff["execution"]["expected_tvc_head"] == "a817cc8aa58ece1ae104ebfc59f4074ccbc60031"
     assert handoff["activation"]["heartbeat_dependency"] is False
     assert handoff["activation"]["carrier_trigger_required"] is False
     assert adapter["adapters"][0]["env_allowlist"] == ["STEGVERSE_TVC_ROOT"]
