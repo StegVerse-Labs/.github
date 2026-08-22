@@ -105,9 +105,12 @@ jobs:
           import json,sys
           carrier=json.load(open(sys.argv[1]))
           rows=[json.loads(x) for x in open(sys.argv[2]) if x.strip()]
-          assert [r['epoch'] for r in rows] == [30,31,32], rows
+          observations=[row.get('carrier_observation', row) for row in rows]
+          assert [r['epoch'] for r in observations] == [30,31,32], rows
           assert carrier['epoch'] == 32, carrier
-          assert all(r['authority_effect']=='NONE_CARRIER_ONLY' for r in rows), rows
-          assert all(r['workers_invoked']==0 for r in rows), rows
+          assert all(r['authority_effect']=='NONE_CARRIER_ONLY' for r in observations), rows
+          assert all(r['workers_invoked']==0 for r in observations), rows
+          assert rows[0].get('carrier_observation') is None, rows
+          assert all('pulse_batch' in row and 'carrier_observation' in row for row in rows[1:]), rows
           print('REPEATED_SEPARATED_CARRIER_PASS')
           PY
