@@ -5,7 +5,7 @@ This script performs only real local execution: carrier-only native activation,
 then the handoff-authorized worker(1) -> carrier(1) -> worker(1) sequence. It
 fails closed unless persisted runtime evidence proves the canonical 10 ms /
 100 Hz OSCILLATOR_ONLY carrier, a fresh independently admitted fenced claim,
-and terminal LIVE-009 completion.
+and terminal LIVE-009 completion bound to that exact claim.
 """
 from __future__ import annotations
 
@@ -128,12 +128,15 @@ def _terminal_worker_event(root: Path, claim_id: str) -> dict:
     for event in reversed(events):
         if event.get("task_id") != TASK_ID:
             continue
-        if event.get("claim_id") not in (None, claim_id):
+        if event.get("claim_id") != claim_id:
             continue
         if event.get("transition_id") == TERMINAL:
             return event
         response = event.get("response")
         if isinstance(response, dict) and response.get("transition_id") == TERMINAL:
+            response_claim_id = response.get("claim_id")
+            if response_claim_id not in (None, claim_id):
+                continue
             return event
     raise RuntimeError("terminal LIVE-009 worker evidence not found for fresh claim")
 
