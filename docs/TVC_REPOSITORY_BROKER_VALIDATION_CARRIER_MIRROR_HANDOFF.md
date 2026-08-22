@@ -29,6 +29,8 @@ base_at_latest_rematerialization: e718abdacfce1a0c6d524464f549cbbb54af7724
 expected_head: a817cc8aa58ece1ae104ebfc59f4074ccbc60031
 current_diff_file_count: 16
 latest_compare_at_reconciliation: one commit ahead / zero behind
+current_pr_mergeable: true
+current_pr_draft: true
 upstream handoff: docs/GITHUB_REPOSITORY_OPERATION_BROKER_MIRROR_HANDOFF.md
 upstream task: tasks/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.json
 ```
