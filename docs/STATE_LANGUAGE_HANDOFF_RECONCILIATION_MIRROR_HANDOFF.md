@@ -1,89 +1,60 @@
 # State Language + Handoff Reconciliation Mirror Handoff
 
-Updated: 2026-08-22 12:20 -05:00
+Updated: 2026-08-22 12:27 -05:00
 Repository: `StegVerse-Labs/.github`
 Branch: `feat/state-language-handoff-reconciliation`
+PR: #249
 
 ## Authority
 
-This handoff is the canonical source of truth for implementation of typed StegVerse state vectors, semantic handoff deltas, endpoint propagation, task-registry reconciliation, worker pre-claim revalidation, and Master Records alignment packets.
+This handoff is the canonical source of truth for typed StegVerse state vectors, semantic handoff deltas, endpoint propagation, task-registry reconciliation, worker pre-claim revalidation, Master Records alignment packets, and module alignment health.
 
 Repository-local `*_MIRROR_HANDOFF.md` files remain authoritative for their own module state. Machine-readable state and evidence supersede prose when they conflict.
 
 ## Goal
 
-Implement a governed state-language control loop where:
-
-1. authoritative handoffs expose typed machine-readable state rather than relying on prose interpretation;
-2. semantic handoff transitions emit canonical state deltas;
-3. affected module endpoints reconcile their projections from those deltas;
-4. worker task registries are updated, added to, narrowed, superseded, or satisfied before workers claim stale work;
-5. workers independently revalidate canonical state immediately before execution fencing;
-6. every material alignment transition emits a Master Records packet;
-7. module alignment and health are derived from observed transition evidence.
+Implement a governed state-language control loop where authoritative handoffs expose typed machine state; semantic changes emit canonical deltas; affected module endpoints reconcile from those deltas; task registries update before workers claim stale work; workers independently revalidate immediately before fencing; and every material alignment transition emits reconstructable Master Records evidence.
 
 ## Governing invariants
 
 - Prose does not grant machine transition authority.
 - State dimensions are typed, namespaced, sparse, explicit, and reconstructable.
-- Unknown state remains unknown; it is never approximated to the nearest known state.
-- A semantic delta is canonicalized and hashable.
-- Cosmetic handoff edits produce no semantic state transition.
+- Unknown state remains unknown and is never approximated.
+- Cosmetic/prose-only handoff edits produce no semantic state transition.
 - Reconciliation is deterministic and idempotent.
 - Task registries are derived execution projections, not canonical intent.
-- Historical tasks are not hard-deleted when semantics change; they terminalize with explicit dispositions such as `SUPERSEDED` or `SATISFIED_BY_EXISTING_STATE`.
-- Reconciliation may not expand authority, credential scope, execution scope, or completion predicates.
-- No worker acquires an execution fence until the current task premise has been reconciled against current authoritative state.
-- Every material endpoint/task alignment transition is accompanied by a Master Records transition packet.
+- Historical task semantics are preserved when tasks are amended or superseded.
+- Reconciliation may not expand authority, credential scope, execution scope, or weaken completion predicates.
+- Active claimed work is never silently rewritten into a different job.
+- No task carrying a state binding is executable when its `source_state_hash` differs from current canonical state.
+- Every material endpoint/task alignment transition is capable of producing a Master Records transition packet.
 - TV/TVC remains credential authority. GitHub tokens and NON-TV/TVC secrets/tokens provide no runtime authority.
 
-## State model v1
+## State language v1
 
-Canonical schema name:
+Implemented schema: `stegverse.semantic-state-vector/v1`.
 
-`stegverse.semantic-state-vector/v1`
+The vector is sparse and resolution-sensitive. Required envelope includes subject, resolution, typed dimensions, evidence refs, and explicit authority domain/effect. State vectors are semantic machine state, not embeddings.
 
-A state vector may include only the dimensions required for the state claim being made. It is sparse and resolution-sensitive.
+Canonical implementation:
 
-Required envelope:
+- `schemas/semantic-state-vector-v1.schema.json`
+- `state_language/vector.py`
 
-```json
-{
-  "schema": "stegverse.semantic-state-vector/v1",
-  "subject": "<canonical subject id>",
-  "resolution": "<projection name>",
-  "dimensions": {},
-  "evidence_refs": [],
-  "authority": {
-    "effect": "NONE|BOUNDED|...",
-    "domain": "<authority domain>"
-  }
-}
-```
-
-State vectors are semantic machine state, not embedding vectors.
+`canonical_hash()` uses deterministic compact sorted JSON. `normalize_vector()` validates the executable contract. `derive_delta()` compares typed dimensions only; metadata/prose revision changes do not become executable semantic changes.
 
 ## Semantic delta v1
 
-Canonical schema name:
+Implemented schema: `stegverse.semantic-state-delta/v1`.
 
-`stegverse.semantic-state-delta/v1`
+A delta binds source/target vector hashes, changed dimensions, affected scopes, authority effect, source revision/ref, and evidence refs.
 
-A delta binds:
+Canonical implementation:
 
-- source vector hash;
-- target vector hash;
-- changed typed dimensions;
-- source handoff and revision/hash;
-- affected scopes/endpoints;
-- authority effect;
-- evidence references.
-
-The transition is `S0 -> S1`; `delta` contains only distinguished changed dimensions required to establish that transition.
+- `schemas/semantic-state-delta-v1.schema.json`
+- `state_language/vector.py`
 
 ## Reconciliation lifecycle
-
-Canonical execution order:
 
 ```text
 HANDOFF_STATE_OBSERVED
@@ -98,50 +69,55 @@ HANDOFF_STATE_OBSERVED
 -> RESULTING_STATE/EVIDENCE RECORDED
 ```
 
-Worker-side pull reconciliation remains mandatory even after push propagation.
+Push reconciliation does not replace the worker-side pull check.
 
-## Task dispositions
+## Task registry reconciliation
 
-A task reconciliation may produce:
+Implemented in `state_language/reconcile.py`.
 
+Current dispositions/effects include:
+
+- `CREATED`
 - `UNCHANGED`
 - `AMENDED`
-- `NARROWED`
-- `UNBLOCKED`
-- `SATISFIED_BY_EXISTING_STATE`
 - `SUPERSEDED`
-- `CANCELLED_BY_AUTHORITY`
 - `ESCALATION_REQUIRED`
 
-`SUPERSEDED`, `SATISFIED_BY_EXISTING_STATE`, and `CANCELLED_BY_AUTHORITY` preserve the historical task record and transition evidence.
+The public contract also reserves `NARROWED`, `UNBLOCKED`, `SATISFIED_BY_EXISTING_STATE`, and `CANCELLED_BY_AUTHORITY` for subsequent policy projection.
 
-## Master Records alignment packet v1
+Properties already implemented:
 
-Canonical schema name:
+- new desired work can be created;
+- stale unclaimed work can be amended;
+- removed desired work terminalizes as `SUPERSEDED`, not hard-deleted;
+- prior amended task semantics are appended to task history;
+- active/claimed work is not silently rewritten;
+- authority-envelope changes escalate rather than silently expanding authority;
+- repeated identical reconciliation does not advance `reconciliation_generation`.
 
-`stegverse.master-records-alignment-transition/v1`
+## Worker pre-claim guard
 
-Minimum packet fields:
+`preclaim_revalidate()` is implemented in `state_language/reconcile.py`.
 
-- transition id;
-- parent transition id when applicable;
-- source handoff ref;
-- source state hash;
-- target state hash;
-- semantic delta hash;
-- affected module/endpoint;
-- endpoint projection before/after hashes;
-- task effects;
-- resulting alignment disposition;
-- reconstruction status;
-- evidence refs;
-- authority effect.
+It fails closed for:
 
-Canonical custody destination: `master-records/orchestration`.
+- missing source state hash;
+- canonical state hash drift;
+- `SUPERSEDED` / `SATISFIED_BY_EXISTING_STATE` / `CANCELLED_BY_AUTHORITY` / `ESCALATION_REQUIRED` disposition.
 
-## Module alignment projection v1
+The primitive exists and is tested. Direct wiring into `heartbeat_runtime.worker_runtime.WorkerCoordinator` remains a downstream integration step so legacy tasks without semantic-state binding are not accidentally invalidated during rollout.
 
-Initial deterministic alignment dispositions:
+## Master Records alignment transition v1
+
+Implemented schema: `stegverse.master-records-alignment-transition/v1`.
+
+Implemented generator: `build_alignment_packet()`.
+
+Packets bind source/target state hashes, semantic delta hash, module/endpoint, before/after projection hashes, task effects, alignment disposition, reconstruction state, evidence refs, authority effect, and canonical custody destination `master-records/orchestration`.
+
+## Module alignment / health
+
+Initial deterministic dispositions are installed in the MR schema/generator contract:
 
 - `ALIGNED`
 - `PROPAGATING`
@@ -151,59 +127,86 @@ Initial deterministic alignment dispositions:
 - `OSCILLATING`
 - `FAIL_CLOSED`
 
-Hard authority/invariant mismatch must be capable of forcing `FAIL_CLOSED` independently of aggregate drift score.
+Weighted/gradient health scoring remains downstream. Hard invariant/authority mismatch must be able to force `FAIL_CLOSED` without depending on an aggregate score.
 
-## Reference implementation scope
+## Executable reconciler
 
-Primary implementation repository: `StegVerse-Labs/.github`.
+`scripts/reconcile_handoff_state.py` consumes a JSON transition bundle and deterministically produces:
 
-Initial reference consumer: unified conversational capability state, because it already contains a real example where canonical topology changed while legacy execution/status surfaces retained older projections.
+- semantic change/no-change decision;
+- canonical semantic delta;
+- reconciled task registry projection;
+- task effects;
+- Master Records alignment packet.
 
-Initial implementation files planned:
+The caller retains normal authority/custody responsibility for persistent writes. The script does not itself acquire execution authority.
 
-- `schemas/semantic-state-vector-v1.schema.json`
-- `schemas/semantic-state-delta-v1.schema.json`
-- `schemas/master-records-alignment-transition-v1.schema.json`
-- `state_language/__init__.py`
-- `state_language/vector.py`
-- `state_language/reconcile.py`
-- `scripts/reconcile_handoff_state.py`
-- `tests/test_state_language_reconciliation.py`
-- reference projection under `control/` or `data/` for unified conversational capability state.
+## Reference module projection
+
+Installed:
+
+`control/state-projections/unified-conversational-capability.json`
+
+It projects the current unified conversational topology into the state language, including:
+
+- `ecosystem-chat.html` as primary surface;
+- `StegVerse-org/LLM-adapter` as shared runtime owner;
+- VACC, Math, and HIL as specialty capabilities;
+- browser/device-local execution as proven;
+- resident-carrier proof as a distinct pending state;
+- product activation as incomplete.
+
+This projection has authority effect `NONE`; it records/reconstructs state and does not activate the product.
+
+## Validation
+
+PR #249 currently exercises the standard no-GitHub-token validation workflows.
+
+Observed on head `fc5f36272afd98eced5b063a0fafafc3cd4a0662` before the unittest-discovery correction:
+
+- `Render Organization Handoff State - No GitHub Token Authority`: PASS
+- `Validate organization control plane - No GitHub Token Authority`: PASS
+- `Heartbeat Worker Project - Validation Only / No GitHub Token Authority`: repository suite reached 486 tests and failed one pre-existing sovereign-reference-model assertion unrelated to this state-language file set.
+
+The new reconciliation tests were then converted from bare pytest-style functions to `unittest.TestCase` in commit `7c65aa2a325b4710b70ad6399d5cf5bf6302c1a9` so the repository's canonical `python -m unittest discover -v tests` path actually executes them.
+
+Do not mark validation complete until the exact latest head run is observed and the unrelated repository-suite failure is reconciled or proven baseline-independent.
 
 ## Completion predicates
 
-This goal is not complete until all of the following are true:
-
-1. schemas exist and validate representative state/delta/alignment packets;
-2. canonical hashing is deterministic;
-3. semantic delta derivation distinguishes semantic from non-semantic changes;
-4. endpoint reconciliation is deterministic/idempotent;
-5. task reconciliation can create/amend/narrow/satisfy/supersede without hard-deleting history;
-6. worker pre-claim guard can reject a stale task against a newer canonical state revision;
-7. Master Records alignment packet generation is implemented and validated;
-8. at least one real module projection is reconciled through the mechanism;
-9. tests pass on the exact implementation branch;
-10. merged implementation and propagation state are recorded here.
+1. schemas exist and representative state/delta/alignment packets validate — IMPLEMENTED / exact schema validation runner still to add;
+2. canonical hashing deterministic — IMPLEMENTED;
+3. semantic vs metadata-only delta distinction — IMPLEMENTED;
+4. endpoint/task reconciliation deterministic/idempotent — IMPLEMENTED;
+5. create/amend/supersede/history preservation — IMPLEMENTED; reserved narrow/satisfy policy helpers remain;
+6. worker stale-state guard primitive — IMPLEMENTED; WorkerCoordinator wiring remains;
+7. Master Records alignment packet generation — IMPLEMENTED;
+8. real module state projection — IMPLEMENTED; live endpoint/task-registry reconciliation against that projection remains;
+9. exact-branch tests pass — PENDING latest run / repository baseline failure reconciliation;
+10. merge and downstream propagation recorded — PENDING.
 
 ## Current state
 
 ```text
-handoff_source_of_truth: CREATED
-schema_implementation: PENDING
-state_vector_runtime: PENDING
-semantic_delta_runtime: PENDING
-endpoint_reconciler: PENDING
-task_registry_reconciler: PENDING
-worker_preclaim_guard: PENDING
-master_records_alignment_packet: PENDING
-module_alignment_health: PENDING
-reference_module_projection: PENDING
-validation: PENDING
+handoff_source_of_truth: ACTIVE
+schema_implementation: IMPLEMENTED
+state_vector_runtime: IMPLEMENTED
+semantic_delta_runtime: IMPLEMENTED
+endpoint_reconciler: IMPLEMENTED_LIBRARY
+ task_registry_reconciler: IMPLEMENTED_LIBRARY
+worker_preclaim_guard: IMPLEMENTED_NOT_YET_WIRED
+master_records_alignment_packet: IMPLEMENTED
+module_alignment_health: INITIAL_DISPOSITIONS_IMPLEMENTED
+reference_module_projection: IMPLEMENTED
+validation: IN_PROGRESS
 merge: PENDING
 activation_effect: NONE
 ```
 
-## Next executable action
+## Next executable actions
 
-Implement the v1 schemas and deterministic state-vector/delta/reconciliation library on this branch, then validate against the unified conversational capability reference state before touching downstream module task registries.
+1. observe the exact latest PR #249 validation run and correct any state-language failures;
+2. reconcile the unrelated sovereign-reference-model suite failure without weakening that proof boundary;
+3. wire semantic-state pre-claim validation into WorkerCoordinator behind explicit task state bindings;
+4. run the unified conversational projection through a real endpoint/task projection and emit its first deterministic alignment packet;
+5. merge only after exact-head validation; then record downstream propagation/custody without claiming product activation.
