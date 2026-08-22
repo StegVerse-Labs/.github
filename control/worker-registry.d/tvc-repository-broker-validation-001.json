@@ -5,7 +5,7 @@
     {
       "archive_eligible": false,
       "archive_reason_codes": ["TVC_BROKER_VALIDATION_RECEIPT_NOT_YET_OBSERVED"],
-      "authorized_policy_version": "tvc-repository-broker-validation-carrier-v0.2",
+      "authorized_policy_version": "tvc-repository-broker-validation-carrier-v0.3",
       "block_ref": null,
       "claim_id": null,
       "cost_basis_ref": null,
@@ -13,7 +13,7 @@
         "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
         "workers/tvc_repository_broker_validation_worker.py",
         "StegVerse-Labs/TVC#92",
-        "StegVerse-Labs/TVC@a817cc8aa58ece1ae104ebfc59f4074ccbc60031"
+        "StegVerse-Labs/TVC@06569c885f33e5761d43911ba1088fdf958855b4"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": "StegVerse-Labs/TVC:TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001",
@@ -27,6 +27,13 @@
       "task_id": "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001",
       "worker_id": null,
       "worker_instance_id": null,
+      "validation_identity": {
+        "expected_tvc_head": "06569c885f33e5761d43911ba1088fdf958855b4",
+        "source_bundle_file_count": 16,
+        "source_bundle_sha256_required": true,
+        "full_revalidation_if_bundle_digest_changes": true,
+        "heartbeat_dependency": false
+      },
       "admissible_existence": {
         "capability_id": "stegverse:capability:tvc-repository-broker-validation:v1",
         "capability_version": "1.0.0",
