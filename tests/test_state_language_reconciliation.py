@@ -74,8 +74,21 @@ def test_reconciliation_creates_amends_and_supersedes_without_deletion():
     assert by_id["old"]["state"] == "SUPERSEDED"
     assert by_id["keep"]["goal"] == "new wording"
     assert by_id["keep"]["reconciliation_disposition"] == "AMENDED"
+    assert by_id["keep"]["history"][-1]["task_semantics"]["goal"] == "old wording"
     assert by_id["new"]["state"] == "HANDOFF_READY"
     assert {effect["disposition"] for effect in effects} == {"SUPERSEDED", "AMENDED", "CREATED"}
+
+
+def test_reapplying_same_projection_does_not_advance_generation():
+    state = vector(runtime="ACTIVE")
+    state_hash = canonical_hash(normalize_vector(state))
+    desired = [{"task_id": "t", "state": "HANDOFF_READY", "goal": "same", "authority": {"domain": "TEST", "ceiling_ref": "A"}}]
+    first, first_effects = reconcile_tasks({"tasks": []}, desired, source_state_hash=state_hash, source_handoff_ref="docs/TEST_MIRROR_HANDOFF.md")
+    second, second_effects = reconcile_tasks(first, desired, source_state_hash=state_hash, source_handoff_ref="docs/TEST_MIRROR_HANDOFF.md")
+    assert first["reconciliation_generation"] == 1
+    assert second["reconciliation_generation"] == 1
+    assert first_effects[0]["disposition"] == "CREATED"
+    assert second_effects[0]["disposition"] == "UNCHANGED"
 
 
 def test_active_task_is_not_silently_rewritten():
