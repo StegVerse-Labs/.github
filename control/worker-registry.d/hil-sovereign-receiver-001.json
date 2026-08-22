@@ -1,0 +1,59 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "LIVE_SOVEREIGN_RECEIVER_NOT_YET_OBSERVED",
+        "PUBLIC_HTTPS_RENDEZVOUS_NOT_YET_PROVEN",
+        "SITE_BROWSER_RECEIPT_NOT_YET_PRESERVED",
+        "POST_RESTART_EXACT_BYTE_PROOF_NOT_YET_PRESERVED",
+        "TVC_HIL_LIFECYCLE_HANDOFF_NOT_YET_PROVEN"
+      ],
+      "authorized_policy_version": "hil-sovereign-receiver-v0.1",
+      "block_ref": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+        "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+        "workers/hil_sovereign_receiver_bridge.py",
+        "StegVerse-Labs/.github#246",
+        "StegVerse-org/LLM-adapter@40eaa9af5cb7e3845ddaf4e79e02d299c76b9655",
+        "StegVerse-Labs/.github:Heartbeat Worker Project - Validation Only / No GitHub Token Authority run 32604491867:SUCCESS",
+        "StegVerse-Labs/.github:Validate organization control plane - No GitHub Token Authority run 32604491868:SUCCESS"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "HIL-SOVEREIGN-RECEIVER-ACTIVATION",
+      "handoff_ref": "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+      "worker_id": null,
+      "worker_instance_id": null
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:hil-sovereign-receiver-v1",
+      "authority_source": "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "sovereign_hil_receiver_activation"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "hil-sovereign-receiver-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}
