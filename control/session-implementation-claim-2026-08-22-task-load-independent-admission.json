@@ -5,9 +5,26 @@
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
   "claimant": "chatgpt-session-task-load-reduction-20260822",
-  "role": "CLAIMED_FOR_IMPLEMENTATION",
+  "role": "RELEASED_SOURCE_IMPLEMENTATION",
   "claimed_at": "2026-08-22T07:01:00-05:00",
+  "released_at": "2026-08-22T07:01:00-05:00",
   "release_condition": "Registry admission metadata, focused regression assertions, and handoff/status reconciliation are installed and directly inspected; live execution remains separately evidenced and is not claimed by source mutation.",
+  "release_evidence": [
+    "control/worker-registry.d/heartbeat-independent-oscillator-live-009.json@dd3098a2897e4eb70f1462d4dc6b4c27e0b05505",
+    "control/worker-registry.d/cosv-live-packet-automation-006.json@9f9d24b3ccdd9efe34927bdb9d8e5f0a265945bc",
+    "tests/test_task_load_independent_admission.py@5bc2fb2865c99ba4aff6eaee153b257071b965b1",
+    "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json@fe894c81559f6a2163a24dc187b0743b0555df83",
+    "handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json@40d6dc0271e1c1b7b9f1209fde0fcc00dcccefd6",
+    "control/session-goal-status-2026-08-18-post-g18.json@0f7ba000453312f3fda344f6a84a96431a712c8b",
+    "docs/COSV_SESSION_CONSOLIDATION_MIRROR_HANDOFF.md@3f8f09f12762906dd9dd906a562a4fe3c3d6f3d5"
+  ],
+  "validation": {
+    "direct_source_inspection": true,
+    "worker_runtime_rule_verified": "heartbeat_runtime/worker_runtime.py#_activate_independently_admitted_tasks requires INDEPENDENT_TASK_CONTROL + AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM on HANDOFF_READY tasks",
+    "focused_regression_assertions_installed": true,
+    "hosted_test_run_claimed": false,
+    "resident_runtime_execution_claimed": false
+  },
   "collision_boundaries": [
     "Do not mint claims/fences/leases manually.",
     "Do not make heartbeat progression or heartbeat-carried assignment packets execution authority.",
@@ -20,5 +37,6 @@
   "github_token_runtime_authority": "NONE",
   "third_party_runtime_role": "FALLBACK_ONLY",
   "stegverse_primary": true,
-  "state": "ACTIVE"
+  "state": "COMPLETE_RELEASED_SOURCE_ONLY",
+  "live_activation_claimed": false
 }
