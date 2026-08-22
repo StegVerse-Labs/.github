@@ -22,6 +22,7 @@ on:
       - 'tests/**'
       - 'control/**'
       - 'cost-basis/worker-runtime/**'
+      - 'receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json'
       - 'docs/**'
       - 'schemas/**'
       - 'scripts/**'
@@ -113,6 +114,25 @@ jobs:
           assert authority['render_dependency']=='PROHIBITED'
           assert not any(authority[k] for k in authority if k.startswith('timing_match_grants_'))
           print('EXTERNAL_TIMING_FIXED_CADENCE_ZERO_AUTHORITY_PASS')
+          PY
+
+      - name: Validate retained host self-attest completion evidence
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          registry=json.loads(Path('control/worker-registry.json').read_text())
+          task=next(x for x in registry['tasks'] if x['task_id']=='SHWP-HOST-SELF-ATTEST-001')
+          receipt=json.loads(Path('receipts/host-self-attest/SHWP-HOST-SELF-ATTEST-001.json').read_text())
+          handoff=json.loads(Path('handoffs/SHWP-HOST-SELF-ATTEST-001.json').read_text())
+          assert handoff['state']=='COMPLETED'
+          assert handoff['goal']['successor_policy']=='NONE'
+          assert handoff['completion']['next_authorized_action'].startswith('NONE_FOR_THIS_TASK')
+          assert task['state']=='COMPLETED'
+          assert task['archive_eligible'] is True
+          assert task['claim_id'] is None and task['worker_id'] is None
+          assert receipt['completed'] is True
+          print('RETAINED_HOST_SELF_ATTEST_PASS')
           PY
 
       - name: Validate retained native-process canary completion evidence
