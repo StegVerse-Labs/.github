@@ -1,0 +1,26 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
+  "adapters": [
+    {
+      "adapter_ref": "process:heartbeat-oscillator-resident-start-v1",
+      "authority_ref": "handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json#authority",
+      "capabilities": [
+        "heartbeat_runtime_start",
+        "native_process_supervision",
+        "bounded_repository_mutation"
+      ],
+      "command": ["python", "workers/start_sovereign_heartbeat_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [],
+      "notes": [
+        "Starts the canonical resident engine_v13 oscillator carrier using native process supervision.",
+        "Startup does not require prior heartbeat or live-proof evidence.",
+        "No GitHub token, non-TV/TVC credential, hosted scheduler, route, model, wallet, merge, or release authority is exposed."
+      ],
+      "timeout_seconds": 60,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
