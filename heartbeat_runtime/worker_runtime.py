@@ -12,6 +12,8 @@ from pathlib import Path
 from typing import Any
 import json
 
+from state_language import preclaim_revalidate
+
 from .engine_v11 import HeartbeatRuntime as LegacyWorkerCoordinator, WorkerResponse
 from .process_adapter import ProcessWorkerAdapter
 from .assignment_timer import (
@@ -152,6 +154,31 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
         with self.assignment_record_path.open("a", encoding="utf-8") as stream:
             stream.write(json.dumps(record, sort_keys=True) + "\n")
 
+    def _semantic_state_preclaim(self, task: dict[str, Any]) -> tuple[bool, str]:
+        """Revalidate only tasks explicitly bound to a local canonical state vector.
+
+        Legacy tasks remain unaffected until their registry projection includes
+        `source_state_vector_ref`. A bound reference must stay inside this repository
+        root and the vector hash must still equal the task's `source_state_hash`.
+        """
+        state_ref = task.get("source_state_vector_ref")
+        if state_ref is None:
+            return True, "SEMANTIC_STATE_BINDING_NOT_PRESENT"
+        if not isinstance(state_ref, str) or not state_ref.strip():
+            return False, "TASK_SOURCE_STATE_VECTOR_REF_INVALID"
+        candidate = (self.root / state_ref).resolve()
+        try:
+            candidate.relative_to(self.root.resolve())
+        except ValueError:
+            return False, "TASK_SOURCE_STATE_VECTOR_REF_OUTSIDE_ROOT"
+        if not candidate.is_file():
+            return False, "TASK_SOURCE_STATE_VECTOR_MISSING"
+        try:
+            canonical_state = self._load(candidate)
+        except Exception:
+            return False, "TASK_SOURCE_STATE_VECTOR_UNREADABLE"
+        return preclaim_revalidate(task, canonical_state)
+
     def _activate_from_trigger(
         self,
         registry: dict[str, Any],
@@ -165,6 +192,35 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
         if task is None or task.get("state") != "HANDOFF_READY" or task.get("worker_id") or task.get("claim_id"):
             self._event(events, carrier_epoch, "assignment_trigger_stale", task_id=task_id, packet_id=trigger.get("packet_id"), authority_effect=False)
             return False
+
+        state_current, state_reason = self._semantic_state_preclaim(task)
+        if not state_current:
+            task["reconciliation_disposition"] = "ESCALATION_REQUIRED"
+            task["reconciliation_reason"] = state_reason
+            task["archive_reason_codes"] = sorted(set(task.get("archive_reason_codes", []) + [state_reason]))
+            self._event(
+                events,
+                carrier_epoch,
+                "worker_preclaim_state_revalidation_deferred",
+                task_id=task_id,
+                packet_id=trigger.get("packet_id"),
+                reason=state_reason,
+                source_state_hash=task.get("source_state_hash"),
+                source_state_vector_ref=task.get("source_state_vector_ref"),
+                authority_effect=False,
+            )
+            return False
+        if task.get("source_state_vector_ref"):
+            self._event(
+                events,
+                carrier_epoch,
+                "worker_preclaim_state_revalidation_passed",
+                task_id=task_id,
+                packet_id=trigger.get("packet_id"),
+                source_state_hash=task.get("source_state_hash"),
+                source_state_vector_ref=task.get("source_state_vector_ref"),
+                authority_effect=False,
+            )
 
         source = str(trigger.get("source") or "HEARTBEAT_CARRIER_OBSERVATION")
         independent = source == "INDEPENDENT_TASK_CONTROL"
