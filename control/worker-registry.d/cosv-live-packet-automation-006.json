@@ -5,13 +5,14 @@
     {
       "archive_eligible": false,
       "archive_reason_codes": [],
-      "authorized_policy_version": "cosv-live-packet-v1",
+      "authorized_policy_version": "cosv-live-packet-v2-independent-task-control",
       "block_ref": null,
       "claim_id": null,
       "cost_basis_ref": "cost-basis/worker-runtime/cosv-live-packet-automation.json",
       "evidence_refs": [
         "handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json",
         "management/COSV_HEARTBEAT_STATE_PACKET_CONTRACT.json",
+        "heartbeat_runtime/worker_runtime.py",
         "scripts/materialize_live_cosv_packet.py",
         "workers/cosv_live_packet_worker.py",
         "receipts/cosv/live/HB31.json"
@@ -26,7 +27,17 @@
       "state": "HANDOFF_READY",
       "task_id": "COSV-LIVE-PACKET-AUTOMATION-006",
       "worker_id": null,
-      "worker_instance_id": null
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "management/COSV_HEARTBEAT_STATE_PACKET_CONTRACT.json",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 21,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      }
     }
   ],
   "workers": [
