@@ -11,16 +11,16 @@
   "automatic_push_workflow_count": 12,
   "no_automatic_push_workflow_count": 6,
   "workflows": [
-    {"path": ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
+    {"path": ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml", "classification": "SELECTIVE_REPAIR_INSTALLED_ACTIVE_OWNER_SOURCE_BLOCKER", "automatic_push": true, "active_owner_issue": 60, "known_source_blocker": "reference_model_proof_verified does not reject qualifies_as_large_production_llm=true"},
     {"path": ".github/workflows/activate-host-self-attest-worker.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
     {"path": ".github/workflows/activate-sovereign-runtime-worker.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
     {"path": ".github/workflows/all-org-heartbeat-federation.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
     {"path": ".github/workflows/archive-readiness-validate.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
     {"path": ".github/workflows/external-timing-match-validation.yml", "classification": "RETAIN_PR_MANUAL_ONLY", "automatic_push": false},
-    {"path": ".github/workflows/heartbeat-worker-project.yml", "classification": "DIRECT_MAIN_FANOUT_CONTAINED_PR_MANUAL_RETAINED", "automatic_push": false, "latest_repair_commit": "f55b7d653044bb2e1be3c6b2c2e736241389c3ab", "prior_repair_commit": "cf4a028047b2359c333cfae150963448e1c41522"},
+    {"path": ".github/workflows/heartbeat-worker-project.yml", "classification": "DIRECT_MAIN_FANOUT_CONTAINED_PR_MANUAL_RETAINED", "automatic_push": false, "latest_repair_commit": "f55b7d653044bb2e1be3c6b2c2e736241389c3ab", "prior_repair_commit": "cf4a028047b2359c333cfae150963448e1c41522", "latest_full_suite_observation": {"run_id": 32587174763, "tests_reached": 486, "remaining_failure_count": 1, "remaining_failure_owner": "StegVerse-Labs/.github#60"}},
     {"path": ".github/workflows/mcp-activation-binding-test.yml", "classification": "RETAIN_PR_MANUAL_ONLY", "automatic_push": false},
     {"path": ".github/workflows/native-process-worker-canary.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
-    {"path": ".github/workflows/org-control-plane-validate.yml", "classification": "DUPLICATE_BROAD_MAIN_FANOUT_NARROWED", "automatic_push": true, "latest_repair_commit": "52c64f0fbf2b6375a5546a0a2af0d5000f4fcef4", "prior_repair_commit": "f99f4c3eac76bcac8590c4737f62250ac39330df", "removed_broad_main_push_paths": ["scripts/**", "tests/**", "heartbeat_runtime/**"], "retained_main_push_scope": "exact executed control-plane scripts/tests plus schemas/checks/tool/workflow", "retained_pr_scope": "broad pre-merge coverage"},
+    {"path": ".github/workflows/org-control-plane-validate.yml", "classification": "DUPLICATE_BROAD_MAIN_FANOUT_NARROWED", "automatic_push": true, "latest_repair_commit": "52c64f0fbf2b6375a5546a0a2af0d5000f4fcef4", "prior_repair_commit": "f99f4c3eac76bcac8590c4737f62250ac39330df", "removed_broad_main_push_paths": ["scripts/**", "tests/**", "heartbeat_runtime/**"], "retained_main_push_scope": "exact executed control-plane scripts/tests plus schemas/checks/tool/workflow", "retained_pr_scope": "broad pre-merge coverage", "exact_head_validation_run": 32587174761, "exact_head_validation_conclusion": "success"},
     {"path": ".github/workflows/org-handoff-render.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
     {"path": ".github/workflows/org-heartbeat-watchdog.yml", "classification": "RETAIN_MANUAL_ONLY", "automatic_push": false},
     {"path": ".github/workflows/org-heartbeat.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
@@ -35,7 +35,7 @@
     ".github/workflows/mcp-activation-binding-test.yml": "Pull-request and manual coverage; no automatic main push fanout.",
     ".github/workflows/org-heartbeat-watchdog.yml": "Manual diagnostic only.",
     ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml": "Pull-request only and credential-clean/fail-closed.",
-    ".github/workflows/heartbeat-worker-project.yml": "Direct-main hosted validation removed after machine commit storms; pull-request and manual validation retained. This is fanout containment, not runtime activation evidence.",
+    ".github/workflows/heartbeat-worker-project.yml": "Direct-main hosted validation removed after machine commit storms; pull-request and manual validation retained. Current PR validation reaches the complete suite and exposes one source-level inference-owner defect rather than a trigger defect.",
     ".github/workflows/test-lanes-autolaunch-validation.yml": "Direct-main hosted validation removed; pull-request/manual validation retained and concurrency cancellation installed. This is fanout containment, not test-lane execution proof."
   },
   "completion_evidence": {
@@ -49,11 +49,26 @@
     "test_lanes_cancel_in_progress": true,
     "org_control_duplicate_broad_main_fanout_narrowed": true,
     "org_control_latest_repair_commit": "52c64f0fbf2b6375a5546a0a2af0d5000f4fcef4",
+    "org_control_exact_head_success_run": 32587174761,
+    "validation_drift_repair_pr": 248,
+    "validation_drift_repair_merge": "86787f97bd63d3aba4c8a8722f1555ad4bcdef85",
+    "validation_drift_repairs": [
+      "resident-start AE-neutral classification",
+      "canonical heartbeat handoff phrase reconciliation",
+      "resident-start external-parent source binding",
+      "TVC broker finite validation runtime window",
+      "Master Records reconstruction-vs-runtime-pending test correction"
+    ],
+    "heartbeat_worker_latest_full_suite_run": 32587174763,
+    "heartbeat_worker_latest_full_suite_tests_reached": 486,
+    "heartbeat_worker_latest_remaining_failure_count": 1,
+    "heartbeat_worker_latest_remaining_failure": "test_reference_proof_cannot_claim_production_llm_equivalence",
+    "heartbeat_worker_latest_remaining_failure_owner": "StegVerse-Labs/.github#60",
     "repository_hygiene_owner": "StegVerse-Labs/StegVerse-Healer",
     "healer_evaluation_pr": 33,
     "healer_evaluation_merge": "9090dde4b38795226f3179e03dcbf1ad8592dc64",
     "healer_execution_issue": 34,
     "post_repair_quantitative_repository_run_history": "AWAITING_SUPPORTED_REPOSITORY_LEVEL_RUN_HISTORY_READ"
   },
-  "status": "ACTIVE_EVIDENCE_FOLLOWUP_AND_HEALER_DEPENDENCY"
+  "status": "ACTIVE_EVIDENCE_FOLLOWUP_WITH_INFERENCE_AND_HEALER_DEPENDENCIES"
 }
