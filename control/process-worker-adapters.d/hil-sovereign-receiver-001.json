@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:hil-sovereign-receiver-v1",
+      "authority_ref": "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "sovereign_hil_receiver_activation"
+      ],
+      "command": ["python", "workers/hil_sovereign_receiver_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_LLM_ADAPTER_ROOT", "STEGVERSE_HIL_STATE_ROOT", "STEGVERSE_HIL_RECEIVER_PORT"],
+      "notes": [
+        "Only non-secret local source/state locators and a bounded local port may be forwarded.",
+        "The worker strips GitHub authentication variables before launching the receiver and rejects hosted GitHub/Render/Vercel/Cloudflare execution surfaces.",
+        "This adapter grants no heartbeat fence, TV/TVC route, HIL review/publication, Master Records custody, public transport, or execution authority.",
+        "A READY local receiver observation does not constitute public HIL activation; HTTPS rendezvous, Site browser receipt, restart byte proof, and TVC lifecycle continuation remain required."
+      ],
+      "timeout_seconds": 120,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
