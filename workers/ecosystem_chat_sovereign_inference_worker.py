@@ -101,7 +101,6 @@ def reference_model_proof_verified(proof: dict | None) -> bool:
         proof.get("schema") == "stegverse.sovereign-local-model-proof/v1"
         and proof.get("state") == "VERIFIED_REFERENCE_MODEL_RUNTIME"
         and proof.get("authority_effect") == "NONE"
-        and proof.get("qualifies_as_large_production_llm") is False
         and predicates.get("real_model_process_observed") is True
         and predicates.get("private_endpoint_only") is True
         and predicates.get("real_inference_response_observed") is True
@@ -179,251 +178,269 @@ def retire_live_model_process(reason: str) -> dict:
     conversational runtime must keep serving after proof has been obtained.
     """
     state = load_live_model_state() or {}
-    pid = int(state.get("pid") or 0)
-    retired = _terminate_pid(pid) if pid else True
-    result = {
-        "state": "RETIRED" if retired else "FAILED",
-        "reason": reason,
-        "pid": pid or None,
-        "authority_effect": "NONE",
-        "github_token_required": False,
-    }
-    atomic_write(LIVE_MODEL_STATE, result)
-    return result
+    if reason == "ECOSYSTEM_CHAT_SOVEREIGN_INFERENCE_VERIFIED":
+        retained = {
+            **state,
+            "state": "LIVE_VERIFIED" if isinstance(state.get("pid"), int) and _pid_alive(state["pid"]) else state.get("state", "UNKNOWN"),
+            "retained_reason": "PERSISTENT_CONVERSATIONAL_RUNTIME_REQUIRES_MODEL",
+            "retained_after_activation": True,
+            "github_token_required": False,
+        }
+        atomic_write(LIVE_MODEL_STATE, retained)
+        return retained
+    pid = state.get("pid")
+    terminated = True
+    if isinstance(pid, int) and state.get("heartbeat_owned") is True:
+        terminated = _terminate_pid(pid)
+    retired = {**state, "state": "RETIRED" if terminated else "RETIRE_FAILED", "retired_reason": reason, "retired_at_heartbeat_worker": True, "github_token_required": False}
+    atomic_write(LIVE_MODEL_STATE, retired)
+    return retired
 
 
-def _launch_persistent_reference_model(root: Path) -> dict:
+def run_reference_model_verifier(root: Path, endpoint: str | None = None) -> dict:
     verifier = root / "tools" / "verify_sovereign_model_runtime.py"
     if not verifier.is_file():
-        return {"state": "BLOCKED", "reason": "LOCAL_MODEL_VERIFIER_NOT_AVAILABLE"}
-    proof_result = run_reference_model_verifier(root)
-    if proof_result.get("state") != "COMPLETE":
-        return proof_result
-    proof = proof_result.get("proof") or {}
-    if not reference_model_proof_verified(proof):
-        return {"state": "BLOCKED", "reason": "REFERENCE_MODEL_PROOF_NOT_VERIFIED"}
+        return {"attempted": False, "state": "BLOCKED", "reason": "CANONICAL_LOCAL_MODEL_VERIFIER_NOT_INSTALLED", "runtime_root": str(root)}
+    command = [sys.executable, str(verifier)]
+    if endpoint:
+        command.extend(["--endpoint", endpoint])
+    process = subprocess.run(command, cwd=root, capture_output=True, text=True, timeout=45, check=False, env={**os.environ, "PYTHONPATH": str(root)})
+    proof: dict | None = None
+    if process.returncode == 0:
+        try:
+            candidate = json.loads(process.stdout)
+        except Exception:
+            candidate = None
+        if isinstance(candidate, dict):
+            proof = candidate
+    verified = live_reference_model_proof_verified(proof) if endpoint else reference_model_proof_verified(proof)
+    if verified and proof is not None:
+        atomic_write(LOCAL_PROOF_RECEIPT, proof)
+    return {
+        "attempted": True,
+        "state": "COMPLETE" if verified else "FAILED",
+        "reason": "SOVEREIGN_REFERENCE_MODEL_RUNTIME_VERIFIED" if verified else "LOCAL_MODEL_RUNTIME_PROOF_FAILED",
+        "returncode": process.returncode,
+        "runtime_root": str(root),
+        "endpoint": endpoint,
+        "proof_path": str(LOCAL_PROOF_RECEIPT) if verified else None,
+        "proof": proof if verified else None,
+        "stdout_tail": process.stdout[-1000:] if not verified else None,
+        "stderr_tail": process.stderr[-1000:] if process.stderr else None,
+        "github_token_required": False,
+        "third_party_execution_platform_required": False,
+    }
 
+
+def ensure_live_reference_model(root: Path, *, heartbeat_epoch: int, claim_id: str, fencing_token: int) -> dict:
     existing = load_live_model_state()
     if isinstance(existing, dict):
+        pid = existing.get("pid")
         endpoint = existing.get("endpoint")
-        pid = int(existing.get("pid") or 0)
-        if isinstance(endpoint, str) and _pid_alive(pid):
-            health = _health(endpoint)
-            if isinstance(health, dict):
-                live = dict(proof)
-                live.update({
-                    "endpoint": endpoint,
-                    "process_owned_by_verifier": False,
-                    "model_id": existing.get("model_id") or "stegverse-reference-lm-v1",
-                    "model_hash": existing.get("model_hash") or proof.get("model_hash"),
-                    "proof_hash": existing.get("proof_hash") or proof.get("proof_hash"),
-                })
-                live.setdefault("predicates", {})["live_endpoint_remains_available"] = True
-                return {"state": "COMPLETE", "reason": "EXISTING_LIVE_REFERENCE_MODEL_REUSED", "proof": live}
+        if existing.get("state") == "LIVE_VERIFIED" and isinstance(pid, int) and isinstance(endpoint, str) and _pid_alive(pid) and (_health(endpoint) or {}).get("state") == "READY":
+            proof_path, proof = load_first_json([LOCAL_PROOF_RECEIPT])
+            if live_reference_model_proof_verified(proof):
+                return {"attempted": False, "state": "COMPLETE", "reason": "REUSED_LIVE_VERIFIED_MODEL_PROCESS", "runtime_root": str(root), "pid": pid, "endpoint": endpoint, "proof": proof, "proof_path": str(proof_path), "github_token_required": False}
+        if isinstance(pid, int) and existing.get("heartbeat_owned") is True:
+            _terminate_pid(pid)
 
     port = _free_port()
     endpoint = f"http://127.0.0.1:{port}"
-    command = [
-        sys.executable,
-        str(root / "tools" / "run_sovereign_model.py"),
-        "--host", "127.0.0.1",
-        "--port", str(port),
-    ]
-    log_dir = RECEIPT_ROOT
-    log_dir.mkdir(parents=True, exist_ok=True)
-    stdout_path = log_dir / "sovereign_reference_model.stdout.log"
-    stderr_path = log_dir / "sovereign_reference_model.stderr.log"
-    stdout_handle = stdout_path.open("ab")
-    stderr_handle = stderr_path.open("ab")
+    server = root / "tools" / "run_sovereign_model.py"
     process = subprocess.Popen(
-        command,
-        cwd=root,
-        stdout=stdout_handle,
-        stderr=stderr_handle,
-        start_new_session=True,
-        env={
-            "PATH": os.environ.get("PATH", ""),
-            "PYTHONPATH": str(root),
-            "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC",
-        },
+        [sys.executable, str(server), "--host", "127.0.0.1", "--port", str(port)],
+        cwd=root, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        start_new_session=True, close_fds=True, env={**os.environ, "PYTHONPATH": str(root)},
     )
-    for _ in range(40):
-        health = _health(endpoint)
-        if isinstance(health, dict):
-            break
+    for _ in range(60):
         if process.poll() is not None:
+            return {"attempted": True, "state": "FAILED", "reason": "LIVE_MODEL_PROCESS_EXITED_EARLY", "returncode": process.returncode, "runtime_root": str(root), "github_token_required": False}
+        health = _health(endpoint)
+        if health and health.get("state") == "READY":
             break
         time.sleep(0.05)
     else:
-        health = None
-    if not isinstance(health, dict):
         _terminate_pid(process.pid)
-        return {"state": "BLOCKED", "reason": "REFERENCE_MODEL_ENDPOINT_NOT_LIVE"}
+        return {"attempted": True, "state": "FAILED", "reason": "LIVE_MODEL_PROCESS_NOT_READY", "runtime_root": str(root), "github_token_required": False}
 
-    live = dict(proof)
-    live.update({
-        "endpoint": endpoint,
-        "process_owned_by_verifier": False,
-        "model_id": proof.get("model_id") or "stegverse-reference-lm-v1",
-        "model_hash": proof.get("model_hash"),
-        "proof_hash": proof.get("proof_hash"),
-    })
-    live.setdefault("predicates", {})["live_endpoint_remains_available"] = True
-    state = {
-        "state": "LIVE",
+    proof_result = run_reference_model_verifier(root, endpoint=endpoint)
+    proof = proof_result.get("proof") if isinstance(proof_result, dict) else None
+    if not live_reference_model_proof_verified(proof):
+        _terminate_pid(process.pid)
+        return {**proof_result, "pid": process.pid, "endpoint": endpoint, "state": "FAILED", "reason": "LIVE_MODEL_ENDPOINT_PROOF_FAILED"}
+
+    lifecycle = {
+        "schema": "stegverse.sovereign-live-model-process/v0.2",
+        "state": "LIVE_VERIFIED",
+        "task_id": EXPECTED_TASK,
+        "heartbeat_owned": True,
         "pid": process.pid,
         "endpoint": endpoint,
-        "model_id": live.get("model_id"),
-        "model_hash": live.get("model_hash"),
-        "proof_hash": live.get("proof_hash"),
-        "credential_authority": "TV/TVC",
+        "runtime_root": str(root),
+        "model_id": proof.get("model_id"),
+        "model_hash": proof.get("model_hash"),
+        "proof_hash": proof.get("proof_hash"),
+        "heartbeat_epoch_started": heartbeat_epoch,
+        "claim_id": claim_id,
+        "fencing_token": fencing_token,
         "credential_requirement": "NONE",
         "github_token_required": False,
-        "third_party_inference_required": False,
-        "authority_effect": "NONE",
+        "third_party_execution_platform_required": False,
+        "release_condition": "retain for admitted conversational service; retire only on stale/failed authority, failed health, replacement by a stronger admitted local model, or explicit governed shutdown",
     }
-    atomic_write(LIVE_MODEL_STATE, state)
-    return {"state": "COMPLETE", "reason": "LIVE_REFERENCE_MODEL_STARTED", "proof": live}
-
-
-def run_reference_model_verifier(root: Path) -> dict:
-    verifier = root / "tools" / "verify_sovereign_model_runtime.py"
-    if not verifier.is_file():
-        return {"state": "BLOCKED", "reason": "LOCAL_MODEL_VERIFIER_NOT_AVAILABLE"}
-    env = {
-        "PATH": os.environ.get("PATH", ""),
-        "PYTHONPATH": str(root),
-        "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC",
-    }
-    try:
-        proc = subprocess.run(
-            [sys.executable, str(verifier)],
-            cwd=root,
-            capture_output=True,
-            text=True,
-            timeout=120,
-            check=False,
-            env=env,
-        )
-    except Exception as exc:
-        return {"state": "BLOCKED", "reason": f"LOCAL_MODEL_VERIFIER_FAILED:{type(exc).__name__}"}
-    if proc.returncode != 0:
-        return {"state": "BLOCKED", "reason": "LOCAL_MODEL_VERIFIER_NONZERO", "stderr": proc.stderr[-1200:]}
-    try:
-        proof = json.loads(proc.stdout)
-    except Exception:
-        return {"state": "BLOCKED", "reason": "LOCAL_MODEL_VERIFIER_OUTPUT_INVALID"}
-    if not reference_model_proof_verified(proof):
-        return {"state": "BLOCKED", "reason": "LOCAL_MODEL_PROOF_INVALID"}
-    atomic_write(LOCAL_PROOF_RECEIPT, proof)
-    return {"state": "COMPLETE", "reason": "REFERENCE_MODEL_PROOF_VERIFIED", "proof": proof}
-
-
-def activation_receipt_complete(value: dict | None) -> bool:
-    if not isinstance(value, dict):
-        return False
-    return (
-        all(value.get(key) is True for key in REQUIRED_TRUE)
-        and value.get("same_execution") is True
-        and value.get("credential_authority") == "TV/TVC"
-        and value.get("credential_requirement") == "NONE"
-        and value.get("github_token_required") is False
-        and value.get("github_actions_activation_role") is False
-        and value.get("third_party_inference_required") is False
-    )
+    atomic_write(LIVE_MODEL_STATE, lifecycle)
+    return {**proof_result, "pid": process.pid, "endpoint": endpoint, "lifecycle_path": str(LIVE_MODEL_STATE), "state": "COMPLETE"}
 
 
 def main() -> int:
-    if third_party_hosted_environment():
-        print(json.dumps({
-            "schema": "stegverse.sovereign-inference-worker/v1",
-            "task_id": EXPECTED_TASK,
-            "state": "BLOCKED",
-            "reason": "THIRD_PARTY_HOSTED_ENVIRONMENT_NOT_SOVEREIGN_RUNTIME",
-            "credential_authority": "TV/TVC",
-            "github_token_required": False,
-        }, sort_keys=True))
+    invocation = json.load(sys.stdin)
+    if invocation.get("schema") != "stegverse.worker-invocation/v0.1":
         return 2
+    epoch = invocation.get("heartbeat_epoch")
+    task = invocation.get("task") or {}
+    handoff = invocation.get("handoff") or {}
+    if not isinstance(epoch, int) or task.get("task_id") != EXPECTED_TASK:
+        return 3
+    timing = task.get("heartbeat_timing") or {}
+    claim_id = task.get("claim_id")
+    fence = timing.get("fencing_token")
+    if not claim_id or not isinstance(fence, int):
+        return 4
+    execution = handoff.get("execution") or {}
+    required_caps = set(execution.get("required_capabilities") or [])
+    for cap in ("runtime_observation", "durable_state_reconstruction", "bounded_repository_mutation"):
+        if cap not in required_caps:
+            return 5
+    if "receipts/ecosystem-chat-sovereign-inference/**" not in set(execution.get("allowed_paths") or []):
+        return 6
 
     evidence_path, evidence = load_first_json(CANDIDATE_EVIDENCE)
-    if activation_receipt_complete(evidence):
-        runtime_state = load_live_model_state()
-        endpoint = runtime_state.get("endpoint") if isinstance(runtime_state, dict) else None
-        pid = int(runtime_state.get("pid") or 0) if isinstance(runtime_state, dict) else 0
-        if isinstance(endpoint, str) and endpoint and _pid_alive(pid) and isinstance(_health(endpoint), dict):
-            result = {
-                "schema": "stegverse.sovereign-inference-worker/v1",
-                "task_id": EXPECTED_TASK,
-                "state": "COMPLETE",
-                "evidence": str(evidence_path),
-                "live_model_endpoint": endpoint,
-                "live_model_pid": pid,
-                "credential_authority": "TV/TVC",
-                "github_token_required": False,
-                "third_party_inference_required": False,
-                "authority_effect": "NONE",
-                "runtime_persistence": "LIVE_UNTIL_STALE_AUTHORITY_OR_EXPLICIT_SHUTDOWN",
-            }
-            print(json.dumps(result, sort_keys=True))
-            return 0
-        result = {
-            "schema": "stegverse.sovereign-inference-worker/v1",
-            "task_id": EXPECTED_TASK,
-            "state": "BLOCKED",
-            "reason": "ACTIVATION_RECEIPT_PRESENT_BUT_LIVE_MODEL_NOT_SERVING",
-            "evidence": str(evidence_path),
-            "credential_authority": "TV/TVC",
-            "github_token_required": False,
-            "authority_effect": "NONE",
-        }
-        print(json.dumps(result, sort_keys=True))
-        return 2
+    model_proof_path, model_proof = load_first_json(LOCAL_MODEL_PROOF_CANDIDATES)
+    reference_ready = live_reference_model_proof_verified(model_proof)
+    runtime_root = find_micro_node_root()
+    launch_result: dict | None = None
 
-    root = find_micro_node_root()
-    if root is None:
-        result = {
-            "schema": "stegverse.sovereign-inference-worker/v1",
-            "task_id": EXPECTED_TASK,
-            "state": "BLOCKED",
-            "reason": "LOCAL_MODEL_RUNTIME_NOT_MATERIALIZED",
-            "credential_authority": "TV/TVC",
-            "github_token_required": False,
-            "third_party_inference_required": False,
-            "authority_effect": "NONE",
-        }
-        print(json.dumps(result, sort_keys=True))
-        return 2
+    if not reference_ready and not third_party_hosted_environment() and runtime_root is not None:
+        launch_result = ensure_live_reference_model(runtime_root, heartbeat_epoch=epoch, claim_id=claim_id, fencing_token=fence)
+        candidate = launch_result.get("proof") if isinstance(launch_result, dict) else None
+        if live_reference_model_proof_verified(candidate):
+            model_proof = candidate
+            model_proof_path = LOCAL_PROOF_RECEIPT
+            reference_ready = True
 
-    launched = _launch_persistent_reference_model(root)
-    if launched.get("state") != "COMPLETE":
-        result = {
-            "schema": "stegverse.sovereign-inference-worker/v1",
-            "task_id": EXPECTED_TASK,
-            "state": "BLOCKED",
-            "reason": launched.get("reason"),
-            "credential_authority": "TV/TVC",
-            "github_token_required": False,
-            "third_party_inference_required": False,
-            "authority_effect": "NONE",
-        }
-        print(json.dumps(result, sort_keys=True))
-        return 2
+    passed = bool(evidence) and all(evidence.get(k) is True for k in REQUIRED_TRUE) and evidence.get("third_party_inference_required") is False
+    missing = REQUIRED_TRUE if evidence is None else [k for k in REQUIRED_TRUE if evidence.get(k) is not True]
+    if evidence is not None and evidence.get("third_party_inference_required") is not False:
+        missing.append("third_party_inference_required=false")
 
-    proof = launched.get("proof") or {}
-    result = {
-        "schema": "stegverse.sovereign-inference-worker/v1",
+    live_state = load_live_model_state()
+    live_endpoint = (model_proof or {}).get("endpoint") if reference_ready else None
+
+    if passed:
+        retention = retire_live_model_process("ECOSYSTEM_CHAT_SOVEREIGN_INFERENCE_VERIFIED")
+        state = "COMPLETED"
+        transition = "ECOSYSTEM_CHAT_SOVEREIGN_INFERENCE_VERIFIED"
+        next_transition = None
+        next_action = None
+        blocker = None
+    elif reference_ready:
+        retention = None
+        state = "ACTIVE"
+        transition = "SOVEREIGN_LIVE_MODEL_ENDPOINT_VERIFIED"
+        next_transition = "TVC_LOCAL_MODEL_ROUTE_ADMISSION"
+        next_action = (
+            f"Evaluate the exact live endpoint {live_endpoint} and its proof through TVC sovereign-local route authority, require ROUTE_ADMITTED "
+            "with credential_requirement=NONE, consume exactly that endpoint through StegVerseLocalHTTPProviderClient, execute governed E1-to-worker-to-E2, "
+            "persist measured usage, obtain same-execution Master Records reconstruction, then retain the model for the conversational service."
+        )
+        blocker = None
+    elif third_party_hosted_environment():
+        retention = None
+        state = "BLOCKED"
+        transition = "SOVEREIGN_LOCAL_MODEL_RUNTIME_AWAITS_STEGVERSE_CARRIER"
+        next_transition = "SOVEREIGN_LIVE_MODEL_ENDPOINT_VERIFIED"
+        next_action = "Execute the installed heartbeat worker on the StegVerse-owned/federated carrier; hosted runners are validation-only and may not launch the persistent production model process."
+        blocker = {"dependency_class": "INTERNAL_CAPABILITY", "problem_statement": "Current invocation is on a hosted validation surface; production model lifecycle belongs to the StegVerse carrier.", "solution_required": True, "may_remain_blocked": False, "next_solution_action": next_action, "machine_observable_release_condition": "heartbeat carrier emits SOVEREIGN_LIVE_MODEL_ENDPOINT_VERIFIED with a live_model_process receipt", "github_token_required": False, "third_party_blocker": False}
+    elif runtime_root is None:
+        retention = None
+        state = "BLOCKED"
+        transition = "SOVEREIGN_LOCAL_MODEL_CAPSULE_NOT_MATERIALIZED"
+        next_transition = "SOVEREIGN_LIVE_MODEL_ENDPOINT_VERIFIED"
+        next_action = "Materialize the already-built micro-node-runtime capsule into a canonical StegVerse-local workload path; the heartbeat then discovers, launches, proves, leases, and retains the live endpoint automatically."
+        blocker = {"dependency_class": "INTERNAL_CAPABILITY", "problem_statement": "The canonical micro-node runtime capsule is not present at a StegVerse-local workload path.", "solution_required": True, "may_remain_blocked": False, "next_solution_action": next_action, "machine_observable_release_condition": "find_micro_node_root resolves the capsule and ensure_live_reference_model emits LIVE_VERIFIED", "github_token_required": False, "third_party_blocker": False}
+    else:
+        retention = None
+        state = "BLOCKED"
+        transition = "SOVEREIGN_LIVE_MODEL_ENDPOINT_PROOF_FAILED"
+        next_transition = "SOVEREIGN_LIVE_MODEL_ENDPOINT_VERIFIED"
+        next_action = "Repair the locally materialized runtime/server/verifier and re-execute on the next heartbeat cycle."
+        blocker = {"dependency_class": "INTERNAL_CAPABILITY", "problem_statement": "The canonical local runtime was found but the persistent live endpoint proof did not pass.", "solution_required": True, "may_remain_blocked": False, "next_solution_action": next_action, "machine_observable_release_condition": "ensure_live_reference_model emits state COMPLETE with live_endpoint_remains_available=true", "github_token_required": False, "third_party_blocker": False}
+
+    live_state = load_live_model_state()
+    receipt = {
+        "schema": "stegverse.ecosystem-chat-sovereign-inference-worker-receipt/v0.6",
         "task_id": EXPECTED_TASK,
-        "state": "HANDOFF_READY",
-        "reason": "LIVE_REFERENCE_MODEL_READY_FOR_TVC_ROUTE_LLM_ADAPTER_AND_MASTER_RECORDS",
-        "runtime_proof": proof,
-        "credential_authority": "TV/TVC",
-        "credential_requirement": "NONE",
-        "github_token_required": False,
+        "claim_id": claim_id,
+        "worker_id": task.get("worker_id"),
+        "worker_instance_id": task.get("worker_instance_id"),
+        "heartbeat_epoch": epoch,
+        "fencing_token": fence,
+        "transition_id": transition,
+        "evidence_path": str(evidence_path) if evidence_path else None,
+        "local_model_proof_path": str(model_proof_path) if model_proof_path else None,
+        "live_model_process_path": str(LIVE_MODEL_STATE) if live_state else None,
+        "live_model_endpoint": live_endpoint,
+        "live_model_process": live_state,
+        "va_conversational_runtime_state_path": str(VA_RUNTIME_STATE) if VA_RUNTIME_STATE.exists() else None,
+        "local_model_runtime_root": str(runtime_root) if runtime_root else None,
+        "local_model_launch_result": launch_result,
+        "model_process_retention": retention,
+        "reference_model_runtime_verified": reference_ready,
+        "reference_model_is_production_scale_llm": False,
+        "missing_predicates": missing,
+        "next_authorized_action": next_action,
         "third_party_inference_required": False,
-        "authority_effect": "NONE",
-        "next_transition": "TVC_ROUTE_LLM_ADAPTER_MASTER_RECORDS",
+        "github_token_required": False,
+        "github_models_required": False,
+        "github_actions_production_role": False,
+        "render_required": False,
+        "cloudflare_required": False,
+        "third_party_dependency_is_blocker": False,
+        "tvc_route_authority_required": True,
+        "credential_requirement": "NONE",
+        "blocker_policy_ref": "control/blocker-resolution-policy.json",
+        "blocker": blocker,
+        "authority_effect": "none_beyond_admitted_receipt_namespace",
+        "completed": passed,
+        "persistent_service_requires_model": True,
     }
-    print(json.dumps(result, sort_keys=True))
+    atomic_write(RECEIPT_ROOT / f"{EXPECTED_TASK}.json", receipt)
+    evidence_refs = [
+        "StegVerse-org/LLM-adapter#18", "StegVerse-Labs/.github#60", "StegVerse-002/micro-node-runtime#22",
+        "StegVerse-Labs/TVC:TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002", f"receipts/ecosystem-chat-sovereign-inference/{EXPECTED_TASK}.json",
+        "control/blocker-resolution-policy.json",
+    ]
+    if model_proof_path:
+        evidence_refs.append(str(model_proof_path))
+    if live_state:
+        evidence_refs.append(str(LIVE_MODEL_STATE))
+    if VA_RUNTIME_STATE.exists():
+        evidence_refs.append(str(VA_RUNTIME_STATE))
+    response = {
+        "schema": "stegverse.worker-response/v0.1",
+        "state": state,
+        "transition_id": transition,
+        "transition_sequence": 2 if reference_ready and not passed else (3 if passed else 1),
+        "expected_next_transition": next_transition,
+        "expected_next_earliest_epoch": None if passed else epoch + 1,
+        "expected_next_latest_epoch": None if passed else epoch + 1,
+        "checkpoint_ref": f"receipts/ecosystem-chat-sovereign-inference/{EXPECTED_TASK}.json",
+        "evidence_refs": evidence_refs,
+        "blocker": blocker,
+        "cost_observation": {"hb_transition_count": 1, "compute_units": 3 if launch_result and launch_result.get("attempted") else 1, "external_cost_usd": 0, "task_class": "ecosystem_chat_sovereign_inference"},
+    }
+    json.dump(response, sys.stdout, sort_keys=True)
+    sys.stdout.write("\n")
     return 0
 
 
