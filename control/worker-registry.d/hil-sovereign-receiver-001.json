@@ -14,11 +14,14 @@
       "authorized_policy_version": "hil-sovereign-receiver-v0.1",
       "block_ref": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
       "claim_id": null,
-      "cost_basis_ref": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/hil-sovereign-receiver.json",
       "evidence_refs": [
         "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
         "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
         "workers/hil_sovereign_receiver_bridge.py",
+        "workers/hil_sovereign_receiver_worker.py",
+        "control/process-worker-adapters.d/hil-sovereign-receiver-001.json",
+        "cost-basis/worker-runtime/hil-sovereign-receiver.json",
         "StegVerse-Labs/.github#246",
         "StegVerse-org/LLM-adapter@40eaa9af5cb7e3845ddaf4e79e02d299c76b9655",
         "StegVerse-Labs/.github:Heartbeat Worker Project - Validation Only / No GitHub Token Authority run 32604491867:SUCCESS",
@@ -34,7 +37,17 @@
       "state": "HANDOFF_READY",
       "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
       "worker_id": null,
-      "worker_instance_id": null
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "StegVerse-Labs/.github#246",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 21,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      }
     }
   ],
   "workers": [
@@ -55,5 +68,7 @@
   ],
   "authority_effect": "NONE_REGISTRATION_ONLY",
   "credential_authority": "TV/TVC",
-  "github_token_required": false
+  "github_token_required": false,
+  "non_tv_tvc_secret_or_token_required": false,
+  "third_party_runtime_required": false
 }
