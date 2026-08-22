@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -35,7 +36,38 @@ class DirectTestLanesRunnerTests(unittest.TestCase):
         self.assertIn('"tools/run_sovereign_model.py"', text)
         self.assertIn('"http://127.0.0.1:11435"', text)
         self.assertIn('"BOUNDED_CANONICAL_TEST_PROCESS"', text)
-        self.assertIn("stop_test_primary(primary_process)", text)
+        self.assertIn("stop_process(primary_process)", text)
+
+    def test_direct_runner_bootstraps_existing_tvc_services_without_reading_secret_values(self) -> None:
+        text = PATH.read_text(encoding="utf-8")
+        self.assertIn('"stegwallet.container_vault_agent"', text)
+        self.assertIn('"scripts/run_vault_broker.py"', text)
+        self.assertIn('"--provider-secret-file"', text)
+        self.assertIn('"BOUNDED_EXISTING_TVC_SERVICES"', text)
+        self.assertNotIn("read_text(encoding=\"utf-8\") for provider", text)
+        self.assertNotIn("read_bytes()", text)
+
+    def test_missing_provider_registration_is_explicit_blocker(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "runtime-secrets").mkdir()
+            with self.assertRaisesRegex(RuntimeError, "TVC_PROVIDER_CREDENTIAL_REGISTRATION_REQUIRED"):
+                MODULE.provider_secret_paths(root)
+
+    def test_provider_secret_metadata_must_be_restrictive(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            secret_dir = root / "runtime-secrets"
+            secret_dir.mkdir()
+            for provider, name in MODULE.PROVIDER_SECRET_FILES.items():
+                path = secret_dir / name
+                path.write_text("placeholder", encoding="utf-8")
+                os.chmod(path, 0o400)
+            paths = MODULE.provider_secret_paths(root)
+            self.assertEqual(set(paths), set(MODULE.PROVIDERS))
+            os.chmod(paths["openai"], 0o440)
+            with self.assertRaisesRegex(RuntimeError, "TVC_PROVIDER_SECRET_PERMISSIONS_TOO_BROAD:openai"):
+                MODULE.provider_secret_paths(root)
 
     def test_canonical_model_selection_requires_all_four_external_models(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
