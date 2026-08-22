@@ -1,10 +1,11 @@
 {
-  "schema": "stegverse.session-goal-status/v2",
+  "schema": "stegverse.session-goal-status/v3",
   "session_id": "SESSION-2026-08-18-COSV-STATE-GRADIENT-INTROSPECTION",
-  "updated_at": "2026-08-18T18:08:00-05:00",
+  "updated_at": "2026-08-22T07:01:00-05:00",
   "archive_eligible": false,
-  "archive_reason": "The independent-heartbeat correction is source-complete and its canonical machine-owned live proof task is now HANDOFF_READY, but the corrected oscillator-backed sovereign carrier observation has not yet been produced; sovereign inference and live COSV gradient/residual/matrix outcomes also remain nonterminal.",
+  "archive_reason": "Required live oscillator proof, sovereign inference activation, corrected COSV packet/gradient/residual/matrix evidence, and downstream release evidence remain nonterminal. Source, handoff, assignment, independent claimability, and machine ownership do not satisfy runtime outcomes.",
   "heartbeat_semantics": {
+    "canonical_runtime": "heartbeat_runtime/engine_v13.py",
     "canonical_rule": "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL",
     "progression_dependency": "OSCILLATOR_ONLY",
     "phase_travel_time_ms": 10,
@@ -16,85 +17,104 @@
     "route_or_credential_gating": false,
     "observation_is_causal": false,
     "persisted_carrier_state_is_observation_only": true,
-    "source_validation_ref": "receipts/heartbeat/HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008-source-validation.json",
-    "live_proof_task": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
-    "live_proof_handoff": "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
-    "live_proof_registry": "control/worker-registry.d/heartbeat-independent-oscillator-live-009.json",
-    "live_proof_adapter": "control/process-worker-adapters.d/heartbeat-independent-oscillator-live-009.json",
-    "live_proof_worker": "workers/independent_heartbeat_live_proof_worker.py",
-    "live_proof_task_state": "HANDOFF_READY",
     "live_corrected_observation": false
   },
   "observed_repository_snapshots": {
     "legacy_heartbeat_epoch": 29,
     "pre_correction_separated_carrier_snapshot_epoch": 31,
     "pre_correction_worker_observed_epoch": 31,
-    "snapshot_warning": "HB31 is a historical observation from the superseded sampling-driven implementation. It is not evidence that the independent heartbeat oscillator is currently at HB31 or that HB32 has not occurred.",
+    "worker_runtime_tick": 2,
+    "snapshot_warning": "HB31 is historical pre-correction observation evidence and is not the current oscillator position or corrected-runtime proof.",
     "first_live_cosv_packet_under_old_sampling_model": "receipts/cosv/live/HB31.json",
-    "first_live_cosv_packet_validated_for_packet_integrity": true,
-    "first_live_cosv_packet_not_heartbeat_clock_authority": true,
     "hb32_expectation_invalidated": true,
     "hb32_expectation_supersession_ref": "StegVerse-Labs/StegBrain:receipts/STEGBRAIN-COSV-EXPECTATION-HB32-001-supersession.json"
+  },
+  "task_load_reduction": {
+    "repair_task": "TASK-LOAD-INDEPENDENT-ADMISSION-011",
+    "problem_found": "Two already-authorized HANDOFF_READY critical tasks lacked the admission metadata WorkerCoordinator requires for direct INDEPENDENT_TASK_CONTROL acquisition, leaving them dependent on optional heartbeat compatibility-trigger carriage despite canonical handoffs saying otherwise.",
+    "worker_runtime_rule_ref": "heartbeat_runtime/worker_runtime.py#_activate_independently_admitted_tasks",
+    "independently_claimable_critical_tasks": [
+      "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
+      "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+      "COSV-LIVE-PACKET-AUTOMATION-006"
+    ],
+    "repairs": [
+      {
+        "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
+        "registry_commit": "dd3098a2897e4eb70f1462d4dc6b4c27e0b05505",
+        "handoff_commit": "fe894c81559f6a2163a24dc187b0743b0555df83",
+        "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE"
+      },
+      {
+        "task_id": "COSV-LIVE-PACKET-AUTOMATION-006",
+        "registry_commit": "9f9d24b3ccdd9efe34927bdb9d8e5f0a265945bc",
+        "handoff_commit": "40d6dc0271e1c1b7b9f1209fde0fcc00dcccefd6",
+        "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE"
+      },
+      {
+        "task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+        "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_PREEXISTING",
+        "minimum_fence_exclusive": 20
+      }
+    ],
+    "regression_test_ref": "tests/test_task_load_independent_admission.py",
+    "regression_test_commit": "5bc2fb2865c99ba4aff6eaee153b257071b965b1",
+    "live_claims_created_by_chat": false,
+    "runtime_completion_claimed": false
   },
   "goals": [
     {
       "goal_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008",
       "state": "SOURCE_COMPLETE_RELEASED",
-      "owner": "StegVerse-Labs/.github#122",
-      "evidence": "receipts/heartbeat/HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008-source-validation.json",
       "terminal": true
     },
     {
       "goal_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
-      "state": "HANDOFF_READY_MACHINE_EXECUTION_REQUIRED",
-      "owner": "StegVerse-Labs/.github#122 / WorkerCoordinator / independent-heartbeat-live-proof-worker",
-      "evidence": "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
-      "machine_observable_release_condition": "worker response COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED and persisted carrier/observation state contains oscillator-only 10 ms noncausal sampling invariants",
+      "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_LIVE_EXECUTION_REQUIRED",
+      "terminal": false
+    },
+    {
+      "goal_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+      "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_FRESH_FENCE_GT20_REQUIRED",
       "terminal": false
     },
     {
       "goal_id": "SOVEREIGN-LOCAL-MODEL-001",
-      "state": "SOURCE_COMPLETE_RELEASED_LIVE_ACTIVATION_REQUIRED",
-      "next_owner": "StegVerse-Labs/.github#60 -> TV/TVC -> StegVerse-org/LLM-adapter -> master-records/orchestration",
+      "state": "SOURCE_COMPLETE_RELEASED_LIVE_ACTIVATION_REQUIRED_AFTER_RECOVERY",
       "terminal": false
     },
     {
       "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-      "state": "PREVIOUS_CONTINUITY_RECEIPT_PRESERVED_RUNTIME_TASK_RECONCILIATION_REQUIRED_UNDER_CORRECTED_HEARTBEAT_SEMANTICS",
-      "owner": "StegVerse-Labs/.github#12/#122",
+      "state": "BOOKKEEPING_RECONCILIATION_NONBLOCKING_TO_INFERENCE_OR_HEARTBEAT",
       "terminal": false
     },
     {
       "goal_id": "COSV-HEARTBEAT-STATE-PACKET-002",
-      "state": "HB31_FULL_PACKET_PRESERVED_AS_HISTORICAL_OBSERVATION_BASELINE_NEXT_LIVE_PACKET_MUST_BIND_CORRECTED_OSCILLATOR_REFERENCE",
+      "state": "HB31_HISTORICAL_BASELINE_PRESERVED_NEXT_PACKET_MUST_BIND_CORRECTED_OSCILLATOR_OBSERVATION",
       "terminal": false
     },
     {
       "goal_id": "COSV-LIVE-PACKET-AUTOMATION-006",
-      "state": "SOURCE_COMPLETE_RELEASED_PENDING_FIRST_CORRECTED_OSCILLATOR_BOUND_EXECUTION",
-      "owner": "StegVerse-Labs/.github WorkerCoordinator / cosv-live-packet-worker",
+      "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_PENDING_CORRECTED_REFERENCE_EXECUTION",
       "terminal": false
     },
     {
       "goal_id": "STEGBRAIN-COSV-LIVE-GRADIENT-CONSUMER-007",
       "state": "SOURCE_COMPLETE_RELEASED_PENDING_FIRST_CORRECTED_OSCILLATOR_BOUND_DELTA",
-      "owner": "StegVerse-Labs/StegBrain#861",
       "terminal": false
     },
     {
       "goal_id": "STEGBRAIN-COSV-EXPECTATION-RESIDUAL-004",
-      "state": "HB32_EXPECTATION_INVALIDATED_PENDING_FIRST_PROVABLY_PRE_OCCURRENCE_EXPECTATION_AND_ACTUAL",
-      "owner": "StegVerse-Labs/StegBrain#865",
+      "state": "HB32_EXPECTATION_INVALIDATED_PENDING_PROVABLY_PRE_OCCURRENCE_EXPECTATION_AND_ACTUAL",
       "terminal": false
     },
     {
       "goal_id": "STEGBRAIN-COSV-GRADIENT-MATRIX-003",
       "state": "WAITING_FOR_SUFFICIENT_ORDERED_CORRECTED_LIVE_OBSERVATIONS",
-      "owner": "StegVerse-Labs/StegBrain#863",
       "terminal": false
     }
   ],
-  "next_executable_action": "WorkerCoordinator must bind HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009 and execute independent-heartbeat-live-proof-worker once. Observe and verify the persisted oscillator-backed carrier state. Then rebind downstream COSV/StegBrain observations to the corrected oscillator-derived reference and continue sovereign inference outputs. Do not use the invalidated HB32 expectation.",
+  "next_executable_action": "Run the existing canonical WorkerCoordinator task-control path. Registry fragments are applied at cycle start and three critical HANDOFF_READY tasks are now directly claimable under INDEPENDENT_TASK_CONTROL without heartbeat-carried trigger authority: heartbeat live proof, Ecosystem Chat orphan recovery, and recurring COSV packet production. Consume their actual worker results, then continue parent sovereign inference and corrected COSV/StegBrain downstream outcomes. Do not mint claims/fences manually and do not use the invalidated HB32 expectation.",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "github_token_runtime_authority": "NONE",
