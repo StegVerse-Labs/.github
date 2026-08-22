@@ -1,9 +1,10 @@
 # State Language + Handoff Reconciliation Mirror Handoff
 
-Updated: 2026-08-22 12:44 -05:00
+Updated: 2026-08-22 13:03 -05:00
 Repository: `StegVerse-Labs/.github`
-Branch: `feat/state-language-handoff-reconciliation`
-PR: #249
+Branch: `main`
+PR: #249 — MERGED
+Merge commit: `8d00f171db0bcc85aab559f35bfd72e05fda3696`
 
 ## Authority
 
@@ -30,7 +31,7 @@ Authoritative handoffs expose typed machine state; semantic changes emit canonic
 - Material endpoint/task alignment transitions bind to Master Records evidence.
 - TV/TVC remains credential authority; GitHub tokens and NON-TV/TVC secrets/tokens provide no runtime authority.
 
-## Implemented v1 surfaces
+## Implemented and merged v1 surfaces
 
 - `schemas/semantic-state-vector-v1.schema.json` — `stegverse.semantic-state-vector/v1`
 - `schemas/semantic-state-delta-v1.schema.json` — `stegverse.semantic-state-delta/v1`
@@ -80,44 +81,70 @@ Current properties:
 
 ## Worker pre-claim guard
 
-`heartbeat_runtime.worker_runtime.WorkerCoordinator` now performs semantic-state revalidation immediately after basic `HANDOFF_READY`/unclaimed eligibility and before independent-task admission, dependency evaluation, worker selection, generation/fence creation, or invocation.
+`heartbeat_runtime.worker_runtime.WorkerCoordinator` performs semantic-state revalidation immediately after basic `HANDOFF_READY`/unclaimed eligibility and before independent-task admission, dependency evaluation, worker selection, generation/fence creation, or invocation.
 
-The rollout is explicitly opt-in: legacy tasks without `source_state_vector_ref` retain their existing lifecycle. A state-bound task must reference a vector inside the repository root; missing, unreadable, out-of-root, or stale state fails closed before a claim/fence is acquired. Successful and deferred revalidations emit worker-runtime events. Tests cover legacy compatibility, current-state acceptance, and stale-state rejection.
+The rollout is opt-in: legacy tasks without `source_state_vector_ref` retain their existing lifecycle. A state-bound task must reference a vector inside the repository root; missing, unreadable, out-of-root, or stale state fails closed before a claim/fence is acquired. Successful and deferred revalidations emit worker-runtime events. Tests cover legacy compatibility, current-state acceptance, and stale-state rejection.
 
 The state-language import is lazy inside the state-bound path so carrier-only validation/deployment capsules that intentionally copy only `heartbeat_runtime` remain independent of the optional state-language package.
 
-## Master Records alignment packet
-
-`build_alignment_packet()` binds source/target state hashes, semantic delta hash, module/endpoint, before/after projection hashes, task effects, alignment disposition, reconstruction state, evidence refs, authority effect, and canonical custody destination `master-records/orchestration`.
-
-Initial deterministic alignment dispositions are `ALIGNED`, `PROPAGATING`, `ALIGNED_WITH_DRIFT`, `STALE`, `DIVERGENT`, `OSCILLATING`, and `FAIL_CLOSED`. Hard authority/invariant mismatch must be able to force `FAIL_CLOSED` independently of aggregate health scoring.
-
-## Reference module projection and first endpoint propagation
+## Reference module and endpoint propagation
 
 `control/state-projections/unified-conversational-capability.json` records current unified conversation state:
 
-- primary surface: `ecosystem-chat.html`;
-- shared runtime owner: `StegVerse-org/LLM-adapter`;
-- VACC, Math, HIL: specialty capabilities;
-- browser/device-local execution: `PROVEN`;
-- resident carrier: distinct pending proof state;
-- product activation: `INCOMPLETE`.
+```text
+primary_surface: ecosystem-chat.html
+shared_runtime_owner: StegVerse-org/LLM-adapter
+VACC: SPECIALTY_CAPABILITY
+Math: SPECIALTY_CAPABILITY
+HIL: SPECIALTY_CAPABILITY
+browser/device-local execution: PROVEN
+resident carrier: PENDING_DISTINCT_PROOF
+product activation: INCOMPLETE
+```
 
-Its normalized canonical state hash is:
+Normalized canonical state hash:
 
 `b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7`
 
-The first derived endpoint projection now exists at `control/task-projections/unified-conversational-capability.json`. It projects two still-required specialty integrations (Math and HIL) and references, without duplicating or expanding, the existing resident-carrier activation task. Projected desired tasks are explicitly `NONE_UNTIL_SEPARATELY_ADMITTED`; this endpoint projection itself grants no execution authority.
+`control/task-projections/unified-conversational-capability.json` projects two still-required specialty integrations (Math and HIL) and references, without duplicating or expanding, the existing resident-carrier activation task. Projected desired tasks are `NONE_UNTIL_SEPARATELY_ADMITTED`; the projection itself grants no execution authority.
 
-The first alignment packet is `receipts/state-alignment/ALIGN-UNIFIED-CONVERSATION-TASK-PROJECTION-001.json`. It records projection initialization as `PROPAGATING`, reconstruction `PASS`, authority effect `NONE`, and custody destination `master-records/orchestration`. Because the canonical module state itself did not change during initial endpoint materialization, source and target state hashes are equal; the material transition is the endpoint projection from empty to the derived task view. Durable custody in the Master Records repository remains the next downstream step.
+## Master Records custody
+
+First alignment packet:
+
+`receipts/state-alignment/ALIGN-UNIFIED-CONVERSATION-TASK-PROJECTION-001.json`
+
+```text
+transition: ALIGN-UNIFIED-CONVERSATION-TASK-PROJECTION-001
+alignment_disposition: PROPAGATING
+reconstruction_state: PASS
+authority_effect: NONE
+custody_destination: master-records/orchestration
+canonical packet SHA-256: 536dd23f137d61e42dfee9a91581eb9ab419f9992202a7c0e6d225f889f4ec6a
+```
+
+Durable external custody is now complete in `master-records/orchestration`:
+
+```text
+PR: master-records/orchestration#37
+merge: cad1b46e1fe11e2ebc16d4fb5155596bd5f6e520
+custody object: custody/state-alignment/ALIGN-UNIFIED-CONVERSATION-TASK-PROJECTION-001.custody.json
+final exact PR head: dd10bdfa66131334e2d5bea597dcbd37e54604ee
+validation run: 32588534385 — SUCCESS
+validation job: 97068509967 — SUCCESS
+custody decision: ACCEPTED_FOR_CUSTODY
+authority effect: NONE
+```
+
+The source and target state hashes in this first packet are equal because initial endpoint materialization did not alter canonical module state. The recorded transition is the projection from no derived endpoint view to the current derived task endpoint.
 
 ## Validation and adjacent repairs
 
-An existing fail-closed defect was exposed during this work: a reference-model proof could falsely set `qualifies_as_large_production_llm=true` and still pass `reference_model_proof_verified()`. After rereading the canonical Ecosystem Chat orphan-recovery handoff, commit `372b856ca2b9d9cf408408fe8c63bbb1937f6b77` repaired the verifier to require that field to be exactly `false`. This does not promote the reference model; it restores the intended proof boundary.
+An existing fail-closed defect was exposed during this work: a reference-model proof could falsely set `qualifies_as_large_production_llm=true` and still pass `reference_model_proof_verified()`. Commit `372b856ca2b9d9cf408408fe8c63bbb1937f6b77` repaired the verifier to require that field to be exactly `false`; the reference model remains explicitly non-production-scale.
 
-WorkerCoordinator integration also exposed a stale validation assumption in `.github/workflows/org-heartbeat.yml`: the workflow treated every oscillator-produced row as a flat carrier observation, while the current runtime intentionally emits the bootstrap row flat and later rows as `{pulse_batch, carrier_observation}` envelopes. After rereading `docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md`, commit `495212f626fc83f0d8fbbc289ca4f1301813c79b` updated validation to normalize the observation envelope without weakening carrier-only assertions.
+WorkerCoordinator integration exposed a stale validation assumption in `.github/workflows/org-heartbeat.yml`. Commit `495212f626fc83f0d8fbbc289ca4f1301813c79b` updated validation to normalize the current oscillator observation envelope without weakening carrier-only assertions.
 
-Exact head `495212f626fc83f0d8fbbc289ca4f1301813c79b` passed all five relevant no-GitHub-token workflows:
+Exact executable-code head `495212f626fc83f0d8fbbc289ca4f1301813c79b` passed all five relevant no-GitHub-token workflows:
 
 - Ecosystem Chat Sovereign Inference Validation: run 32588175337 PASS
 - Validate organization control plane: run 32588175343 PASS
@@ -125,45 +152,40 @@ Exact head `495212f626fc83f0d8fbbc289ca4f1301813c79b` passed all five relevant n
 - Organization Heartbeat Validation: run 32588175377 PASS
 - Heartbeat Worker Project: run 32588175317 PASS
 
-The branch has advanced after that exact validated head to add the first task endpoint projection, alignment packet, and this handoff update. Final exact-head validation must be observed before merge.
+The three commits after that executable-code head added only the derived task projection, the alignment receipt, and handoff state. PR #249 remained mergeable and was merged with exact expected head `fd6b0ffedb58fc4667c34c888013c6ec1c86c037` as `8d00f171db0bcc85aab559f35bfd72e05fda3696`.
 
-## Completion predicates
+## Completion predicates for v1 foundation
 
-1. state/delta/alignment schemas — IMPLEMENTED + VALIDATED;
-2. deterministic canonical hashing — IMPLEMENTED + VALIDATED;
-3. semantic vs metadata-only delta distinction — IMPLEMENTED + VALIDATED;
-4. deterministic/idempotent task reconciliation — IMPLEMENTED + VALIDATED;
-5. create/amend/supersede/history preservation — IMPLEMENTED + VALIDATED;
-6. stale-state guard integrated before worker claim/fence — IMPLEMENTED + VALIDATED on prior exact head; latest head revalidation pending;
-7. Master Records packet generation — IMPLEMENTED + VALIDATED;
-8. real module state projection + endpoint task projection + local alignment packet — IMPLEMENTED; external Master Records custody pending;
-9. exact final branch tests — PENDING latest head validation;
-10. merge/downstream propagation — PENDING.
+1. state/delta/alignment schemas — COMPLETE;
+2. deterministic canonical hashing — COMPLETE + VALIDATED;
+3. semantic vs metadata-only delta distinction — COMPLETE + VALIDATED;
+4. deterministic/idempotent task reconciliation — COMPLETE + VALIDATED;
+5. create/amend/supersede/history preservation — COMPLETE + VALIDATED;
+6. stale-state guard integrated before worker claim/fence — COMPLETE + VALIDATED;
+7. Master Records packet generation — COMPLETE + VALIDATED;
+8. real module state projection + derived task endpoint + first alignment packet — COMPLETE;
+9. durable Master Records custody of first alignment packet — COMPLETE + VALIDATED;
+10. merge to main — COMPLETE.
 
 ## Current state
 
 ```text
-handoff_source_of_truth: ACTIVE
-schema_implementation: VALIDATED
-state_vector_runtime: VALIDATED
-semantic_delta_runtime: VALIDATED
-endpoint_reconciler: VALIDATED_LIBRARY
-task_registry_reconciler: VALIDATED_LIBRARY
-worker_preclaim_guard: WIRED_OPT_IN
-master_records_alignment_packet: LOCAL_PACKET_EMITTED
+handoff_source_of_truth: ACTIVE_NEXT_INTEGRATION
+schema_implementation: MERGED_VALIDATED
+state_vector_runtime: MERGED_VALIDATED
+semantic_delta_runtime: MERGED_VALIDATED
+endpoint_reconciler: MERGED_VALIDATED_LIBRARY
+task_registry_reconciler: MERGED_VALIDATED_LIBRARY
+worker_preclaim_guard: MERGED_WIRED_OPT_IN
+master_records_alignment_packet: FIRST_PACKET_CUSTODIED
 module_alignment_health: INITIAL_DISPOSITIONS_VALIDATED
-reference_module_projection: IMPLEMENTED
-reference_task_endpoint_projection: IMPLEMENTED
-master_records_external_custody: PENDING
-validation: FINAL_HEAD_REVALIDATION_PENDING
-merge: PENDING
+reference_module_projection: MERGED
+reference_task_endpoint_projection: MERGED
+master_records_external_custody: COMPLETE
+foundation_merge: COMPLETE
 activation_effect: NONE
 ```
 
-## Next executable actions
+## Next integration goal
 
-1. observe exact final PR #249 validation and repair only real failures without weakening proof boundaries;
-2. merge PR #249 with exact-head protection;
-3. read the canonical `master-records/orchestration` handoff and commit the first alignment packet into durable Master Records custody;
-4. propagate state/task projections into the dependent Site module handoffs/task registries;
-5. continue Math/HIL integration and resident-carrier work under their existing authority boundaries rather than creating duplicate runtime authority.
+Propagate typed state/task projections into dependent Site module handoffs and actual worker-task endpoints, beginning with Math and HIL specialty integration. Every material endpoint transition should produce a new append-only alignment packet and Master Records custody record. Resident-carrier work remains under its existing authority/task and must not be duplicated or conflated with the already-proven browser/device-local topology.
