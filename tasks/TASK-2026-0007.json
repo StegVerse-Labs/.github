@@ -64,7 +64,7 @@
   "dependencies": [],
   "workspace": {
     "branch": "claim/unified-conversational-capabilities-site-239-r1",
-    "base_commit": "0379829cd0bbdd2d637639e1a436e38ba31a0a94",
+    "base_commit": "f493acbb1d4c0f47a0b7e61f01303713a7bd8216",
     "merge_target": "main",
     "direct_push_allowed": false,
     "pull_request_required": true
