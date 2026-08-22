@@ -3,7 +3,7 @@
   "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
   "goal_id": "HIL-SOVEREIGN-RECEIVER-ACTIVATION",
   "issue": "StegVerse-Labs/.github#246",
-  "state": "SOURCE_IMPLEMENTATION_IN_PROGRESS",
+  "state": "SOURCE_COMPLETE_VALIDATED_PENDING_MERGE",
   "execution_owner": "canonical heartbeat worker after source merge",
   "manual_execution_allowed": false,
   "manual_allowed_role": "source implementation and observation only",
@@ -11,6 +11,12 @@
   "source_bridge": "workers/hil_sovereign_receiver_bridge.py",
   "source_test": "tests/test_hil_sovereign_receiver_bridge.py",
   "handoff": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+  "source_validation": {
+    "heartbeat_worker_project_run": 32604367918,
+    "heartbeat_worker_project_conclusion": "success",
+    "organization_control_plane_run": 32604367925,
+    "organization_control_plane_conclusion": "success"
+  },
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "non_tv_tvc_secret_or_token_allowed": false,
