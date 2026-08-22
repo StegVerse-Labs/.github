@@ -1,3 +1,5 @@
+# Broad source directories are intentionally excluded from automatic main-branch
+# validation when specialized validators already cover them. PR coverage remains broad.
 name: Validate organization control plane - No GitHub Token Authority
 
 on:
@@ -5,11 +7,27 @@ on:
     branches: [main]
     paths:
       - 'schemas/**'
-      - 'scripts/**'
       - 'checks/**'
-      - 'heartbeat_runtime/**'
+      - 'scripts/validate_workflow_surface_hygiene.py'
+      - 'scripts/validate_org_control_plane.py'
+      - 'scripts/validate_handoff_execution_ownership.py'
+      - 'scripts/validate_admissible_existence_control_plane.py'
+      - 'scripts/validate_heartbeat_carrier_contract.py'
+      - 'scripts/validate_heartbeat_runtime_separation.py'
+      - 'scripts/check_org_operational_observer.py'
+      - 'scripts/check_org_repository_inventory.py'
+      - 'scripts/check_org_completion_dashboard.py'
+      - 'scripts/validate_session_assistance_scope.py'
+      - 'scripts/check_required_terms.py'
+      - 'scripts/check_org_aggregation_manifest.py'
+      - 'scripts/allocate_claims.py'
+      - 'scripts/reconcile_checkins.py'
       - 'tools/validate_active_worker_states.py'
-      - 'tests/**'
+      - 'tests/test_heartbeat_runtime_separation.py'
+      - 'tests/test_independent_heartbeat_oscillator.py'
+      - 'tests/test_heartbeat_carrier_envelope.py'
+      - 'tests/test_cross_repository_dependency_claims.py'
+      - 'tests/test_session_assistance_scope.py'
       - '.github/workflows/org-control-plane-validate.yml'
   pull_request:
     paths:
