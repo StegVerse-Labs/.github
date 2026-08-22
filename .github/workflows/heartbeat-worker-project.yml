@@ -1,10 +1,19 @@
 # Validation-only workflow for SHWP control-plane artifacts.
 # It has no scheduler, activation, repository mutation, credential, claim, or fence role.
 # TV/TVC owns credential semantics; worker lifecycle coordination is separate from the heartbeat carrier.
-# Direct-to-main machine commit storms do not launch this hosted validation lane.
+# Automatic main validation is limited to heartbeat source changed by the retired organization-heartbeat validator;
+# routine carrier/state/receipt persistence remains excluded from hosted fanout.
 name: Heartbeat Worker Project - Validation Only / No GitHub Token Authority
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'heartbeat_runtime/**'
+      - 'scripts/issue_heartbeats.py'
+      - 'scripts/run_heartbeat_runtime.py'
+      - 'scripts/validate_heartbeat_returns.py'
+      - '.github/workflows/heartbeat-worker-project.yml'
   pull_request:
     paths:
       - 'handoffs/**'
@@ -85,6 +94,20 @@ jobs:
       - name: Run complete deterministic repository test suite
         run: python -m unittest discover -v tests
 
+      - name: Prove legacy issuer cannot advance epoch
+        run: |
+          before="$(sha256sum control/heartbeat-state.json | cut -d' ' -f1)"
+          output="$(python3 scripts/issue_heartbeats.py --dry-run)"
+          after="$(sha256sum control/heartbeat-state.json | cut -d' ' -f1)"
+          test "$before" = "$after"
+          python3 - <<'PY' "$output"
+          import json,sys
+          value=json.loads(sys.argv[1])
+          assert value['epoch_advanced'] is False
+          assert value['authority_effect']=='none'
+          print('LEGACY_ISSUER_NO_EPOCH_OWNERSHIP_PASS')
+          PY
+
       - name: Prove heartbeat dry-run is carrier-only and non-mutating
         run: |
           set -euo pipefail
@@ -108,6 +131,33 @@ jobs:
           assert 'coherent_signal_space' in value, value
           assert value['coherent_signal_space'].get('completeness_claim') is not True, value
           print('HEARTBEAT_CARRIER_NON_AUTHORITY_PASS')
+          PY
+
+      - name: Prove repeated carrier cycles preserve legacy HB29
+        run: |
+          tmp="$(mktemp -d)"
+          mkdir -p "$tmp/control" "$tmp/handoffs" "$tmp/cost-basis" "$tmp/heartbeat_runtime" "$tmp/receipts"
+          cp control/heartbeat-state.json control/worker-registry.json control/worker-cost-observations.json control/process-worker-adapters.json "$tmp/control/"
+          if [ -f control/heartbeat-subsignals.json ]; then cp control/heartbeat-subsignals.json "$tmp/control/"; fi
+          cp -R handoffs/. "$tmp/handoffs/"
+          cp -R cost-basis/. "$tmp/cost-basis/"
+          cp -R heartbeat_runtime/. "$tmp/heartbeat_runtime/"
+          legacy_before="$(sha256sum "$tmp/control/heartbeat-state.json" | cut -d' ' -f1)"
+          PYTHONPATH="$tmp" python3 scripts/run_heartbeat_runtime.py --root "$tmp" --cycles 3 --interval-ms 1 >/tmp/carrier-three-cycles.jsonl
+          legacy_after="$(sha256sum "$tmp/control/heartbeat-state.json" | cut -d' ' -f1)"
+          test "$legacy_before" = "$legacy_after"
+          python3 - <<'PY' "$tmp/control/heartbeat-carrier-runtime-state.json" /tmp/carrier-three-cycles.jsonl
+          import json,sys
+          carrier=json.load(open(sys.argv[1]))
+          rows=[json.loads(x) for x in open(sys.argv[2]) if x.strip()]
+          observations=[row.get('carrier_observation', row) for row in rows]
+          assert [r['epoch'] for r in observations] == [30,31,32], rows
+          assert carrier['epoch'] == 32, carrier
+          assert all(r['authority_effect']=='NONE_CARRIER_ONLY' for r in observations), rows
+          assert all(r['workers_invoked']==0 for r in observations), rows
+          assert rows[0].get('carrier_observation') is None, rows
+          assert all('pulse_batch' in row and 'carrier_observation' in row for row in rows[1:]), rows
+          print('REPEATED_SEPARATED_CARRIER_PASS')
           PY
 
       - name: Prove carrier and worker compatibility surfaces are distinct
