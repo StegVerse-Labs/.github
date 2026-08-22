@@ -30,6 +30,13 @@ class DirectTestLanesRunnerTests(unittest.TestCase):
         self.assertIn('"g18_required": False', text)
         self.assertIn('"worker_coordinator_required": False', text)
 
+    def test_direct_runner_uses_canonical_bounded_primary_launcher(self) -> None:
+        text = PATH.read_text(encoding="utf-8")
+        self.assertIn('"tools/run_sovereign_model.py"', text)
+        self.assertIn('"http://127.0.0.1:11435"', text)
+        self.assertIn('"BOUNDED_CANONICAL_TEST_PROCESS"', text)
+        self.assertIn("stop_test_primary(primary_process)", text)
+
     def test_canonical_model_selection_requires_all_four_external_models(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / "models.json"
