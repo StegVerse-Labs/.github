@@ -32,56 +32,85 @@ Healer execution owner: issue #34 OPEN
 repository-wide quantitative run-history proof: AWAITING_SUPPORTED_READ
 ```
 
-## 2026-08-22 fanout repair — organization control-plane duplicate main fanout
+## Green inference/full-suite dependency consumed
 
-Direct live inspection proved `.github/workflows/org-control-plane-validate.yml` still auto-ran on blanket `scripts/**`, `tests/**`, and `heartbeat_runtime/**` main changes even though specialized validators already cover many of those source domains. That produced avoidable duplicate hosted fanout.
+The prior fail-closed mismatch in `workers/ecosystem_chat_sovereign_inference_worker.py::reference_model_proof_verified()` is no longer present on current `main`: the verifier now requires `qualifies_as_large_production_llm` to be exactly `false`.
 
-PR #247 narrowed automatic-main coverage to the exact control-plane scripts/tests this validator executes while preserving `schemas/**`, `checks/**`, `tools/validate_active_worker_states.py`, the workflow definition, broad pull-request coverage, manual dispatch, concurrency cancellation, `permissions: {}`, and anonymous no-token source acquisition.
-
-Merged repair: `52c64f0fbf2b6375a5546a0a2af0d5000f4fcef4`.
-Machine evidence update: `712d499a16c1821add872a64ef931db8c07073ee`.
-Exact-head organization-control validation later passed in run `32587174761`.
-
-This repair changes hosted validation fanout only. It does not consolidate/delete workflow files, acquire Healer hygiene authority, mutate runtime state, or introduce credential/claim/fence/deployment authority.
-
-## Validator drift exposed by strongest-path validation
-
-Validating the fanout repair exposed multiple pre-existing repository conformance defects. They were repaired without weakening validation:
-
-1. `HEARTBEAT-OSCILLATOR-RESIDENT-START-012` had no explicit Admissible-Existence classification. It is now explicitly retrospective `ae_impact=NONE`; resident carrier startup does not create capability standing or activation authority.
-2. `docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md` had drifted from three already-installed machine-readable canonical semantics. The authoritative prose now explicitly states that observation does not cause heartbeat progression, that the communication object is the manifest packet + expiration wrapper + data packet, and that Master Records is the End-Of-Life state/destination for every Transition Table element.
-3. `handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json` omitted its external parent `HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122` from `source_refs`; the lineage binding is restored.
-4. `handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json` had `runtime_window_beats=null` despite a hard 240-second adapter timeout. The handoff now carries a finite 24000-reference-beat validation window at the canonical 100 Hz reference while retaining `heartbeat_dependency=false` and validation-only authority.
-5. `tests/test_master_records_sovereign_reconstruction_bridge.py` still equated successful reconstruction with a live conversational runtime. It now accepts `RECONSTRUCTED_RUNTIME_PENDING` when Master Records reconstruction succeeds but the VA conversational gateway remains non-live, preserving the runtime proof distinction.
-
-These five corrections were merged through PR #248 as `86787f97bd63d3aba4c8a8722f1555ad4bcdef85`.
-
-Exact-head validation before merge:
+PR #249 exact head `fd6b0ffedb58fc4667c34c888013c6ec1c86c037` was validated before merge. Relevant successful runs include:
 
 ```text
-Organization control-plane: run 32587174761 SUCCESS
-Ecosystem Chat focused validator: run 32587174751 SUCCESS
-Executable handoffs: PASS count=38 live_lanes=34 skipped_non_executable=5
-Heartbeat Worker full suite: 486 tests reached; exactly one remaining failure
+Heartbeat Worker Project: run 32588349952 / #1315 SUCCESS / complete 486-test suite green
+Ecosystem Chat Sovereign Inference: run 32588349889 / #57 SUCCESS
+Organization control-plane: run 32588349823 / #1153 SUCCESS
+Organization heartbeat: run 32588349779 / #107 SUCCESS
+Organization handoff render: run 32588349794 / #612 SUCCESS
 ```
 
-## Remaining repeated-failure source — active inference owner
+PR #249 merged as `8d00f171db0bcc85aab559f35bfd72e05fda3696`. Because the Heartbeat Worker workflow's direct-main trigger was intentionally removed by prior containment, the exact PR-head success is the relevant hosted validation evidence; absence of a duplicate main run is expected cost containment rather than missing proof.
 
-Heartbeat Worker run `32587174763` now reaches the complete deterministic 486-test suite and has exactly one failure:
+The prior `1/486` inference-owner failure is therefore resolved and must not remain listed as a blocker.
 
-`test_sovereign_inference_local_model_proof.SovereignInferenceLocalModelProofTests.test_reference_proof_cannot_claim_production_llm_equivalence`
+## 2026-08-22 fanout repair — organization control-plane duplicate main fanout
 
-Current `workers/ecosystem_chat_sovereign_inference_worker.py::reference_model_proof_verified()` accepts a proof even when `qualifies_as_large_production_llm=true`. That conflicts with the active inference handoff/issue, which explicitly defines misrepresenting the StegVerse reference model as a production-scale LLM as a failure predicate.
+Direct inspection proved `.github/workflows/org-control-plane-validate.yml` auto-ran on blanket `scripts/**`, `tests/**`, and `heartbeat_runtime/**` main changes even though specialized validators cover many of those domains.
 
-This is a real fail-closed source mismatch, not a trigger defect. The fanout lane did not weaken/remove the test and did not acquire the active inference implementation scope. The exact blocker was durably reported to canonical owner `StegVerse-Labs/.github#60` in issue comment `5381626030`.
+PR #247 narrowed automatic-main coverage to the exact control-plane scripts/tests it executes while preserving `schemas/**`, `checks/**`, `tools/validate_active_worker_states.py`, workflow-definition coverage, broad PR validation, manual dispatch, concurrency cancellation, `permissions: {}`, and anonymous no-token source acquisition.
 
-A temporary branch-edit truncation occurred while probing this source. It never reached `main`; the branch was restored to the exact current-main worker blob before PR #248 merge. PR #248 therefore contains no inference-worker source change.
+```text
+merge: 52c64f0fbf2b6375a5546a0a2af0d5000f4fcef4
+exact-head validation: 32587174761 SUCCESS
+```
+
+## 2026-08-22 fanout repair — organization handoff renderer broad PR fanout
+
+PR #249 demonstrated another concrete duplicate-cost edge: `Render Organization Handoff State` ran even though the state-language PR changed `control/state-projections/**`, not any input consumed by `scripts/render_org_handoff.py`.
+
+Direct script inspection proved the renderer reads exactly:
+
+```text
+control/org-state.json
+control/claims-active.json
+control/queue.json
+```
+
+Before repair, `.github/workflows/org-handoff-render.yml` watched all `control/**` on pull requests and all `tasks/**` on both main push and pull requests. Those globs exceeded the validator's true dependency surface.
+
+PR #250 changed only trigger scope:
+
+- removed `tasks/**` from main-push triggering;
+- removed `tasks/**` from PR triggering;
+- replaced PR `control/**` with the three exact control inputs above;
+- retained renderer source, generated output, workflow-definition coverage, manual dispatch, `permissions: {}`, anonymous no-token checkout, and the existing render/diff validation body.
+
+```text
+PR: #250
+exact validated head: 2ea08c5c7671baba771b27a5090a0cbea9413eba
+Render Organization Handoff State run: 32589927827 / #613 SUCCESS
+merge: 8d9f8a33e84e88812be80ac0655b72610193874c
+```
+
+This is a fanout repair, not workflow-count hygiene. It neither consolidates nor deletes workflow files and does not acquire Healer #34 authority.
+
+## Validator drift repaired during strongest-path validation
+
+PR #248 merged five pre-existing conformance corrections without weakening checks:
+
+1. resident heartbeat start explicitly classified AE-neutral;
+2. canonical heartbeat prose reconciled to installed machine semantics;
+3. resident-start parent lineage restored;
+4. TVC broker given a finite validation window without heartbeat dependency;
+5. Master Records reconstruction test distinguishes successful reconstruction from still-pending conversational runtime.
+
+```text
+PR #248 merge: 86787f97bd63d3aba4c8a8722f1555ad4bcdef85
+```
 
 ## Prior containment retained as evidence
 
 - `heartbeat-worker-project.yml`: direct-main hosted validation removed by `f55b7d653044bb2e1be3c6b2c2e736241389c3ab`; PR/manual validation retained. Earlier handoff/cost path narrowing: PR #230 / `cf4a028047b2359c333cfae150963448e1c41522`.
 - `test-lanes-autolaunch-validation.yml`: direct-main hosted validation removed by `599cac6417bc67874416d2b0125929a2601f8fe2`; PR/manual validation retained and concurrency cancellation enabled.
-- `org-control-plane-validate.yml`: PR #229 / `f99f4c3eac76bcac8590c4737f62250ac39330df` removed `handoffs/**` from automatic main push; PR #247 / `52c64f0f...` later removed blanket source/test/runtime main globs.
+- `org-control-plane-validate.yml`: PR #229 / `f99f4c3eac76bcac8590c4737f62250ac39330df` removed `handoffs/**` from automatic main push; PR #247 later removed blanket source/test/runtime main globs.
+- `org-handoff-render.yml`: PR #250 / `8d9f8a33e84e88812be80ac0655b72610193874c` narrowed PR control scope to actual renderer inputs and removed irrelevant task-trigger fanout.
 - Other previously narrowed surfaces remain governed by the machine-readable inventory and direct live-file verification.
 
 ## Healer dependency boundary
@@ -94,17 +123,16 @@ Workflow consolidation, deletion, and the preferred 0/1/2 workflow hygiene targe
 
 Destination `StegVerse-Labs/.github`:
 
-1. Canonical inference owner `.github#60` must restore fail-closed rejection of `qualifies_as_large_production_llm=true` while preserving the complete current worker, then the Heartbeat Worker 486-test suite must be re-observed green. This fanout lane must consume that result rather than duplicate active-owner source work.
-2. Continue detecting concrete hosted Actions cost/failure/fanout defects without duplicating Healer hygiene work.
-3. Keep the machine inventory synchronized with live trigger changes.
-4. Obtain repository-wide post-repair Actions run-history evidence when a supported read path exists; commit-associated PR-run reads are not a substitute for repository-level quantitative proof.
-5. Consume Healer issue #34's eventual workflow-hygiene result and re-audit the resulting retained workflow surface for fanout regressions.
+1. Continue detecting concrete hosted Actions cost/failure/fanout defects without duplicating Healer hygiene work.
+2. Keep `control/actions-fanout-workflow-inventory-2026-08-18.json` synchronized with live trigger changes.
+3. Obtain repository-wide post-repair Actions run-history evidence when a supported repository-level read path exists; commit-associated PR-run reads are not a substitute for before/after quantitative proof.
+4. Consume Healer issue #34's workflow-hygiene result and re-audit the retained workflow surface for fanout regressions.
 
 Destination `StegVerse-Labs/StegVerse-Healer`:
 
 1. Execute issue #34's independent workflow classifications.
 2. Implement admitted consolidation/transfer/elimination with parity evidence and active-owner reconciliation.
-3. Record technical exceptions if final repository workflow count remains above two.
+3. Record technical exceptions if final `.github` workflow count remains above two.
 4. Update `docs/HEALER_MIRROR_HANDOFF.md` with exact final count and evidence before claiming completion.
 
 ## Release / propagation
@@ -113,6 +141,6 @@ No tag/release is required solely for trigger/inventory/handoff/conformance corr
 
 ## Completion gate
 
-This fanout lane is nonterminal while the active inference source mismatch remains unresolved, repository-wide quantitative post-repair run evidence is unavailable, and the Healer #34 output still must be consumed/re-audited.
+The inference/full-suite blocker is resolved. This fanout lane remains nonterminal because repository-wide quantitative post-repair run evidence is unavailable and Healer #34 output still must be consumed/re-audited.
 
 Current status: `DO NOT ARCHIVE THIS SESSION — REQUIRED EXECUTION REMAINS IN AN ACTIVE DEPENDENCY LANE.`
