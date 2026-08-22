@@ -9,16 +9,15 @@
   "current_state": "REVIEW_REQUIRED_ACTIVE_CLEANUP",
   "surfaces": [
     {"path": ".github/workflows/org-control-plane-validate.yml", "classification": "KEEP_STABLE_DISPATCHER", "owner": "HYGIENE-CAUSAL-ROOTS-001", "reason": "canonical organization validation/consolidation surface; includes ephemeral org handoff render/projection parity and archive-readiness validation after Healer consolidation"},
-    {"path": ".github/workflows/heartbeat-worker-project.yml", "classification": "KEEP_STABLE_DISPATCHER", "owner": "canonical heartbeat worker project", "reason": "canonical heartbeat/runtime/worker validation surface; absorbs organization-heartbeat source triggers/carrier parity, manual watchdog diagnostics, retained completed native-canary evidence, and external-timing fixed-cadence zero-authority validation while routine state persistence remains excluded from automatic hosted fanout"},
+    {"path": ".github/workflows/heartbeat-worker-project.yml", "classification": "KEEP_STABLE_DISPATCHER", "owner": "canonical heartbeat worker project", "reason": "canonical heartbeat/runtime/worker validation surface; absorbs organization-heartbeat source triggers/carrier parity, manual watchdog diagnostics, retained terminal host/native canary evidence, and external-timing fixed-cadence zero-authority validation while routine state persistence remains excluded from automatic hosted fanout"},
     {"path": ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml", "classification": "REVIEW_REQUIRED", "owner": "StegVerse-Labs/.github#60", "reason": "existing machine-owned validation surface; do not remove before owner reconciliation"},
-    {"path": ".github/workflows/activate-host-self-attest-worker.yml", "classification": "REVIEW_REQUIRED", "owner": "organization runtime worker lane", "reason": "existing validation surface requires owner reconciliation"},
     {"path": ".github/workflows/activate-sovereign-runtime-worker.yml", "classification": "REVIEW_REQUIRED", "owner": "StegVerse-Labs/.github#59", "reason": "existing machine-owned validation surface; do not compete"},
     {"path": ".github/workflows/all-org-heartbeat-federation.yml", "classification": "REVIEW_REQUIRED", "owner": "StegVerse-Labs/.github#81", "reason": "heartbeat-federation validation requires canonical owner review"},
     {"path": ".github/workflows/mcp-activation-binding-test.yml", "classification": "BLOCKED_ACTIVE_OWNERSHIP", "owner": "concurrent MCP activation workstream", "reason": "active owner prevents competing cleanup"},
     {"path": ".github/workflows/sovereign-runtime-self-bootstrap.yml", "classification": "REVIEW_REQUIRED", "owner": "StegVerse-Labs/.github#59/#65", "reason": "source released but workflow retention requires runtime-owner evidence review"},
     {"path": ".github/workflows/sovereign-ephemeral-console.yml", "classification": "REVIEW_REQUIRED", "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18 fencing token 18", "reason": "released validation-only same-host logical-node proof surface; retention remains subject to Healer classification and active-owner safety"},
     {"path": ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml", "classification": "BLOCKED_ACTIVE_OWNERSHIP", "owner": "concurrent StegFin early-adopter workstream", "reason": "separate active owner prevents competing cleanup"},
-    {"path": ".github/workflows/steggate-heartbeat-integration.yml", "classification": "REVIEW_REQUIRED", "owner": "StegGate heartbeat integration lane", "reason": "candidate for stable heartbeat/control validation consolidation"},
+    {"path": ".github/workflows/steggate-heartbeat-integration.yml", "classification": "REVIEW_REQUIRED", "owner": "StegGate heartbeat integration lane", "reason": "candidate for stable heartbeat/control validation consolidation, but active rendezvous execution must remain untouched"},
     {"path": ".github/workflows/test-lanes-autolaunch-validation.yml", "classification": "REVIEW_REQUIRED", "owner": "STEGVERSE-TEST-LANES-AUTOLAUNCH-001", "reason": "credentialless source-validation surface for machine-owned canonical nine-lane autolaunch task; retention remains subject to owner-safe Healer classification"}
   ],
   "removed_in_hygiene_batch_1": [
@@ -38,7 +37,8 @@
     ".github/workflows/org-heartbeat.yml",
     ".github/workflows/org-heartbeat-watchdog.yml",
     ".github/workflows/native-process-worker-canary.yml",
-    ".github/workflows/external-timing-match-validation.yml"
+    ".github/workflows/external-timing-match-validation.yml",
+    ".github/workflows/activate-host-self-attest-worker.yml"
   ],
   "concurrent_new_surfaces_observed_during_hygiene": [
     ".github/workflows/mcp-activation-binding-test.yml",
