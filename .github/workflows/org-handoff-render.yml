@@ -4,13 +4,14 @@ on:
   push:
     branches: [main]
     paths:
-      - 'tasks/**'
       - 'scripts/render_org_handoff.py'
       - 'docs/ORG_CONTROL_PLANE_STATE.md'
+      - '.github/workflows/org-handoff-render.yml'
   pull_request:
     paths:
-      - 'control/**'
-      - 'tasks/**'
+      - 'control/org-state.json'
+      - 'control/claims-active.json'
+      - 'control/queue.json'
       - 'scripts/render_org_handoff.py'
       - 'docs/ORG_CONTROL_PLANE_STATE.md'
       - '.github/workflows/org-handoff-render.yml'
