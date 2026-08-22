@@ -22,6 +22,8 @@ on:
       - 'scripts/check_org_aggregation_manifest.py'
       - 'scripts/allocate_claims.py'
       - 'scripts/reconcile_checkins.py'
+      - 'scripts/render_org_handoff.py'
+      - 'docs/ORG_CONTROL_PLANE_STATE.md'
       - 'tools/validate_active_worker_states.py'
       - 'tests/test_heartbeat_runtime_separation.py'
       - 'tests/test_independent_heartbeat_oscillator.py'
@@ -107,6 +109,11 @@ jobs:
           python3 -m unittest tests.test_session_assistance_scope -v
           python3 scripts/check_required_terms.py docs/ORG_MIRROR_HANDOFF.md checks/org_mirror_handoff_terms.txt
           python3 scripts/check_org_aggregation_manifest.py
+
+      - name: Render organization handoff state ephemerally and require projection parity
+        run: |
+          python3 scripts/render_org_handoff.py
+          git diff --exit-code -- docs/ORG_CONTROL_PLANE_STATE.md
 
       - name: Exercise allocator deterministically without persistence authority
         run: |
