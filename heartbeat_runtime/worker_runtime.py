@@ -12,8 +12,6 @@ from pathlib import Path
 from typing import Any
 import json
 
-from state_language import preclaim_revalidate
-
 from .engine_v11 import HeartbeatRuntime as LegacyWorkerCoordinator, WorkerResponse
 from .process_adapter import ProcessWorkerAdapter
 from .assignment_timer import (
@@ -177,6 +175,9 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             canonical_state = self._load(candidate)
         except Exception:
             return False, "TASK_SOURCE_STATE_VECTOR_UNREADABLE"
+        # Import lazily so carrier-only validation/deployment capsules that copy only
+        # heartbeat_runtime remain independent of the optional state-language package.
+        from state_language import preclaim_revalidate
         return preclaim_revalidate(task, canonical_state)
 
     def _activate_from_trigger(
