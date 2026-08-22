@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.handoff-execution-ownership/v1",
+  "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "goal_id": "HIL-SOVEREIGN-RECEIVER-ACTIVATION",
+  "issue": "StegVerse-Labs/.github#246",
+  "state": "SOURCE_COMPLETE_VALIDATED_PENDING_MERGE",
+  "execution_owner": "canonical heartbeat worker after source merge",
+  "manual_execution_allowed": false,
+  "manual_allowed_role": "source implementation and observation only",
+  "source_dependency": "StegVerse-org/LLM-adapter@40eaa9af5cb7e3845ddaf4e79e02d299c76b9655",
+  "source_bridge": "workers/hil_sovereign_receiver_bridge.py",
+  "source_test": "tests/test_hil_sovereign_receiver_bridge.py",
+  "handoff": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+  "source_validation": {
+    "heartbeat_worker_project_run": 32604367918,
+    "heartbeat_worker_project_conclusion": "success",
+    "organization_control_plane_run": 32604367925,
+    "organization_control_plane_conclusion": "success"
+  },
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "participant_machine_required": false,
+  "developer_machine_required": false,
+  "current_user_iphone_required": false,
+  "hb30_browser_capsule_required": false,
+  "third_party_runtime_required": false,
+  "collision_scope_excluded": [
+    "SHWP-DURABLE-RUNTIME-ACTIVATION",
+    "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+    "WorkerCoordinator fences and claims",
+    "TV/TVC credential and route authority",
+    "Master Records custody authority"
+  ],
+  "next_executable_action": "After source merge, an admitted StegVerse carrier worker materializes the exact LLM-adapter receiver tree, launches the loopback receiver with durable StegVerse state, verifies profile/readiness, then derives the public HTTPS rendezvous proof without granting transport authority.",
+  "release_condition": "real StegVerse carrier READY observation + public HTTPS rendezvous + Site browser HIL-RECEIVER-RECEIPT-v2 + post-restart exact-byte SHA-256 verification + TVC lifecycle handoff"
+}
