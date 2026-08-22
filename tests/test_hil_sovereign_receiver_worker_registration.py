@@ -18,17 +18,37 @@ TASK_ID = "SHWP-HIL-SOVEREIGN-RECEIVER-001"
 
 
 class HILSovereignReceiverWorkerRegistrationTests(unittest.TestCase):
-    def test_registry_fragment_binds_exact_worker_and_adapter(self) -> None:
+    def test_registry_fragment_binds_exact_worker_adapter_and_independent_admission(self) -> None:
         registry = json.loads(
             (ROOT / "control/worker-registry.d/hil-sovereign-receiver-001.json").read_text(encoding="utf-8")
         )
+        task = registry["tasks"][0]
         self.assertEqual(registry["schema"], "stegverse.worker-registry-fragment/v0.1")
-        self.assertEqual(registry["tasks"][0]["task_id"], TASK_ID)
-        self.assertEqual(registry["tasks"][0]["state"], "HANDOFF_READY")
-        self.assertEqual(registry["tasks"][0]["executor_binding"], "AUTHORIZED")
+        self.assertEqual(task["task_id"], TASK_ID)
+        self.assertEqual(task["state"], "HANDOFF_READY")
+        self.assertEqual(task["executor_binding"], "AUTHORIZED")
+        self.assertEqual(task["cost_basis_ref"], "cost-basis/worker-runtime/hil-sovereign-receiver.json")
+        admission = task["admission"]
+        self.assertEqual(admission["authority_domain"], "INDEPENDENT_TASK_CONTROL")
+        self.assertEqual(admission["claim_state"], "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM")
+        self.assertTrue(admission["heartbeat_reference_only"])
+        self.assertFalse(admission["heartbeat_grants_execution_authority"])
+        self.assertFalse(admission["carrier_trigger_required"])
+        self.assertTrue(admission["fresh_fence_required"])
         self.assertEqual(registry["workers"][0]["worker_id"], "hil-sovereign-receiver-worker")
         self.assertEqual(registry["workers"][0]["adapter_ref"], "process:hil-sovereign-receiver-v1")
         self.assertFalse(registry["github_token_required"])
+
+    def test_cost_basis_is_bounded_and_zero_external_cost(self) -> None:
+        value = json.loads(
+            (ROOT / "cost-basis/worker-runtime/hil-sovereign-receiver.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(value["schema"], "stegverse.worker-runtime-cost-basis/v0.1")
+        self.assertEqual(value["task_class"], "hil_sovereign_receiver_activation")
+        self.assertGreaterEqual(value["hb_estimate"]["expiry_candidate_beats"], 1)
+        self.assertNotEqual(value["hb_estimate"]["confidence"], "NONE")
+        self.assertEqual(value["cost_estimate"]["external_cost_usd"], 0)
+        self.assertEqual(value["cost_estimate"]["operator_seconds"], 0)
 
     def test_process_adapter_is_enabled_and_credential_minimal(self) -> None:
         adapters = json.loads(

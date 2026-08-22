@@ -32,7 +32,7 @@
       "no Master Records authority",
       "no public transport authority"
     ],
-    "successor_policy": "DERIVE_PUBLIC_RENDEZVOUS_AND_EVIDENCE_CONTINUATION",
+    "successor_policy": "INHERIT_OR_NARROW",
     "max_successor_depth": 4
   },
   "task": {

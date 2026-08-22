@@ -73,7 +73,7 @@
     "max_actions": 4,
     "max_retries": 4096,
     "external_cost_ceiling_usd": 0,
-    "runtime_window_evaluations": 24000,
+    "runtime_window_beats": 24000,
     "rate_class": "tvc_repository_broker_validation",
     "expected_tvc_head": "06569c885f33e5761d43911ba1088fdf958855b4",
     "expected_head_change_reason": "PR #92 added content-bound validation evidence: governed PASS now emits source_bundle_file_count=16 plus source_bundle_sha256 so identical broker bytes can be rematerialized onto later main without treating unrelated main movement as source change",
