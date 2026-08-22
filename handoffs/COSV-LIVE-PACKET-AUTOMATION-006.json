@@ -2,21 +2,24 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-COSV-LIVE-PACKET-AUTOMATION-006",
   "created_at": "2026-08-18T15:14:00-05:00",
+  "updated_at": "2026-08-22T07:01:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "COSV-LIVE-PACKET-AUTOMATION-006",
-    "objective": "On each admitted WorkerCoordinator opportunity, materialize the authority-neutral COSV packet for the latest jointly observed heartbeat reference, preserving a reconstructable state cache and deterministic gradient inputs without granting carrier or analytic authority.",
+    "objective": "On each admitted StegVerse task-control opportunity, materialize the authority-neutral COSV packet for the latest jointly observed heartbeat reference, preserving a reconstructable state cache and deterministic gradient inputs without granting carrier or analytic authority.",
     "success_predicates": [
-      "The worker consumes only admitted local heartbeat/WorkerCoordinator state.",
-      "A new carrier reference produces a verified FULL or DELTA packet under receipts/cosv/live/**.",
+      "The worker consumes only canonical local heartbeat/WorkerCoordinator observation state.",
+      "A new observed carrier reference produces a verified FULL or DELTA packet under receipts/cosv/live/**.",
       "DELTA packets bind the previous packet SHA, unchanged-state root, current full-state root and deterministic gradient_inputs.",
+      "The task may be claimed through independently admitted task control without waiting for a heartbeat-carried compatibility trigger.",
       "No GitHub token or NON-TV/TVC secret/token is required or forwarded.",
       "StegVerse remains primary and third-party runtime dependency is false."
     ],
     "failure_predicates": [
       "The worker mutates heartbeat carrier or worker authority state.",
-      "The worker fabricates a carrier reference not present in canonical live state.",
+      "The worker fabricates a carrier reference not present in canonical observed state.",
       "A packet fails digest/state-root reconstruction or authority invariants.",
+      "A heartbeat-carried compatibility trigger is treated as execution authority or a prerequisite for claimability.",
       "The worker grants gradient/admissibility/policy/execution authority.",
       "A third-party runtime or NON-TV/TVC credential becomes required."
     ],
@@ -25,7 +28,7 @@
       "read canonical heartbeat/worker/registry evidence",
       "write receipts/cosv/live/** only",
       "no heartbeat mutation",
-      "no claim/fence/lease mutation",
+      "no claim/fence/lease mutation outside WorkerCoordinator task-control binding",
       "no route/credential/model/wallet/custody mutation"
     ],
     "successor_policy": "INHERIT_OR_NARROW",
@@ -37,15 +40,18 @@
     "source_refs": [
       "docs/COSV_HEARTBEAT_STATE_PACKET_MIRROR_HANDOFF.md",
       "management/COSV_HEARTBEAT_STATE_PACKET_CONTRACT.json",
+      "heartbeat_runtime/worker_runtime.py",
       "scripts/cosv.py",
       "scripts/cosv_state_packet.py",
       "scripts/materialize_live_cosv_packet.py",
       "workers/cosv_live_packet_worker.py",
+      "control/worker-registry.d/cosv-live-packet-automation-006.json",
+      "tests/test_task_load_independent_admission.py",
       "receipts/cosv/live/HB31.json"
     ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "The first live HB31 packet proved the manual integration. Recurring packet production is repeated dependency-bound work and therefore must move into the existing WorkerCoordinator rather than remain a chat observation step.",
+    "derivation_reason": "The first live HB31 packet proved the manual integration. Recurring packet production is repeated dependency-bound work and therefore belongs to existing WorkerCoordinator task control rather than chat observation or heartbeat-trigger authority.",
     "canonical_owner_ref": "StegVerse-Labs/.github#217 + StegVerse-Labs/.github#122",
     "canonical_lineage_key": "cosv:live-packet-automation",
     "derivation_depth": 0,
@@ -53,7 +59,7 @@
   },
   "authority": {
     "authority_source": "management/COSV_HEARTBEAT_STATE_PACKET_CONTRACT.json",
-    "policy_version": "cosv-heartbeat-state-packet-v1",
+    "policy_version": "cosv-heartbeat-state-packet-v2-independent-task-control",
     "heartbeat_grants_execution_authority": false,
     "packet_grants_execution_authority": false,
     "credential_authority": "TV/TVC",
@@ -74,13 +80,16 @@
     "rate_class": "cosv_live_packet_automation"
   },
   "activation": {
-    "carrier": "heartbeat",
+    "carrier": "heartbeat_reference_only",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "management/COSV_HEARTBEAT_STATE_PACKET_CONTRACT.json",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
     "credential_control": "TV/TVC",
     "github_actions_may_activate": false,
-    "recheck_trigger": "each admitted WorkerCoordinator tick while the task remains active",
-    "checkout_policy": "fenced_atomic_checkout"
+    "carrier_trigger_required": false,
+    "recheck_trigger": "each admitted StegVerse task-control execution opportunity while the task remains active",
+    "checkout_policy": "fenced_atomic_checkout",
+    "claim_generation_rule": "fresh WorkerCoordinator fencing generation; no historical claim/fence reuse"
   },
   "continuity": {
     "checkpoint_ref": "receipts/cosv/live/latest-state.json",
@@ -89,9 +98,11 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Bind this task through the existing v12 WorkerCoordinator. If the carrier has advanced beyond the latest persisted COSV packet, materialize and verify the next packet; otherwise emit NO_NEW_REFERENCE and remain active for the next admitted reference.",
+    "next_authorized_action": "Existing WorkerCoordinator task control may independently claim this HANDOFF_READY task under a fresh fence. If canonical observed carrier state is newer than the latest persisted COSV packet, materialize and verify the next packet; otherwise emit NO_NEW_REFERENCE and remain active. No heartbeat compatibility trigger is required.",
     "terminal_when": [
-      "The broader COSV live integration goal is explicitly retired or superseded after required live gradient/introspection evidence is terminal; until then this packet producer remains a recurring active infrastructure task."
-    ]
+      "The broader COSV live integration goal is explicitly retired or superseded after required live gradient/introspection evidence is terminal; until then this packet producer remains recurring active infrastructure."
+    ],
+    "source_integration_state": "INDEPENDENT_TASK_CONTROL_CLAIMABLE",
+    "live_activation_state": "NOT_OBSERVED"
   }
 }
