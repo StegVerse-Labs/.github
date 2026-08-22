@@ -17,7 +17,7 @@ heartbeat_dependency: false
 archive_ready: false
 ```
 
-PR #20 and PR #79 are closed and superseded. PR #92 re-materializes the same bounded broker delta on current private main and is the only current validation/admission target.
+PR #20 and PR #79 are closed and superseded. PR #92 carries the same bounded broker delta and is the only current validation/admission target.
 
 ## Current exact source binding
 
@@ -25,16 +25,15 @@ PR #20 and PR #79 are closed and superseded. PR #92 re-materializes the same bou
 TVC repository: StegVerse-Labs/TVC
 PR: #92
 branch: repair/github-repository-operation-broker-rebase-002
-base_at_latest_rematerialization: cafb77cd902f4ebcc4045bbc4138c1c8da002276
-expected_head: 8eae9764599817f92aa24a71c64dcd1ba1dccfed
+base_at_latest_rematerialization: e718abdacfce1a0c6d524464f549cbbb54af7724
+expected_head: a817cc8aa58ece1ae104ebfc59f4074ccbc60031
 current_diff_file_count: 16
-current_pr_mergeable: true
-current_pr_draft: true
+latest_compare_at_reconciliation: one commit ahead / zero behind
 upstream handoff: docs/GITHUB_REPOSITORY_OPERATION_BROKER_MIRROR_HANDOFF.md
 upstream task: tasks/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.json
 ```
 
-If PR #92 head changes before governed validation, the worker must fail closed until this handoff, executable handoff, and deterministic binding test are deliberately advanced to the reviewed head.
+If PR #92 head changes before governed validation, the worker must fail closed until this handoff, executable handoff, and deterministic binding test are deliberately advanced to the reviewed head. Subsequent unrelated movement of `main` does not change the exact validation identity; integration must re-check base compatibility immediately before merge without silently substituting a different validated head.
 
 ## Installed execution surfaces
 
@@ -72,11 +71,11 @@ WORKER-OWNED:
   task: SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001
   worker: tvc-repository-broker-validation-worker
   adapter: process:tvc-repository-broker-validation-v1
-  expected_head: 8eae9764599817f92aa24a71c64dcd1ba1dccfed
+  expected_head: a817cc8aa58ece1ae104ebfc59f4074ccbc60031
   heartbeat_dependency: false
 
 AUTHORITY-OWNED AFTER PASS:
-  TVC repository integration authority may admit PR #92 only after exact governed PASS.
+  TVC repository integration authority may admit PR #92 only after exact governed PASS and current-base compatibility review.
 ```
 
 No session may substitute itself for the machine validation worker, mint a PASS receipt, expose a credential, merge from source completeness, or treat assignment/machine ownership/readiness as done.
@@ -85,10 +84,10 @@ No session may substitute itself for the machine validation worker, mint a PASS 
 
 ```text
 1. separate task-control runtime resolves SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001 independently of heartbeat progression
-2. exact clean local TVC PR #92 source at 8eae9764599817f92aa24a71c64dcd1ba1dccfed is resolved
+2. exact clean local TVC PR #92 source at a817cc8aa58ece1ae104ebfc59f4074ccbc60031 is resolved
 3. worker executes tvc.github_repository_operation_broker.verify with forbidden credential variables removed
 4. receipts/tvc-repository-broker-validation/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json records actual PASS or fail-closed result
-5. only exact PASS permits TVC PR #92 admission review
+5. only exact PASS plus current-base compatibility permits TVC PR #92 admission review
 6. admitted TVC broker permits StegCore private-source MATERIALIZE_SOURCE_ARCHIVE
 7. StegCore PR #141 sovereign validation executes against its then-current exact head
 8. only actual StegCore PASS permits its downstream merge/release continuation
