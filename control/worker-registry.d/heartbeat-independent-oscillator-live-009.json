@@ -11,6 +11,9 @@
       "cost_basis_ref": "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json",
       "evidence_refs": [
         "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
+        "docs/HEARTBEAT_LIVE_009_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+        "scripts/run_live_009_resident.py",
+        "tests/test_live_009_resident_runner.py",
         "heartbeat_runtime/independent_oscillator.py",
         "heartbeat_runtime/oscillator_producer.py",
         "heartbeat_runtime/engine_v13.py",
@@ -45,7 +48,11 @@
     {
       "adapter_ref": "process:heartbeat-independent-oscillator-live-proof-v1",
       "authority_source": "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json#authority",
-      "capabilities": ["heartbeat_runtime_observation", "bounded_repository_mutation", "independent_oscillator_live_proof"],
+      "capabilities": [
+        "heartbeat_runtime_observation",
+        "bounded_repository_mutation",
+        "independent_oscillator_live_proof"
+      ],
       "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
       "executor_type": "repository_worker",
       "last_seen_at": null,
