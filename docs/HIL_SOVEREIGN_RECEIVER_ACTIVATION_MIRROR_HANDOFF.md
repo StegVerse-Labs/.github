@@ -7,6 +7,11 @@ goal_id: SHWP-HIL-SOVEREIGN-RECEIVER-001
 issue: StegVerse-Labs/.github#246
 source_dependency: StegVerse-org/LLM-adapter@40eaa9af5cb7e3845ddaf4e79e02d299c76b9655
 carrier_bridge_merge: 4cc85164a8fc02405140dd53f3d431d7c4f79b89
+independent_admission_validation_pr: #259
+independent_admission_validation_head: 9c75f65f2e275a47c60262a578e18b6b22b84476
+independent_admission_validation_merge: 2f20b0c55cab8e28923955bfde8972090ae562b4
+heartbeat_worker_validation_run: 32606493583 SUCCESS
+organization_control_plane_validation_run: 32606493617 SUCCESS
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 non_tv_tvc_secret_or_token_allowed: false
@@ -17,7 +22,8 @@ hb30_browser_capsule_required: false
 third_party_runtime_required: false
 execution_authority_from_transport: false
 source_implementation: COMPLETE_MERGED
-resident_worker_registration: INSTALLED_MAIN
+resident_worker_registration: INSTALLED_MAIN_VALIDATED
+independent_task_control_admission: VALIDATED_MERGED
 resident_worker_execution: PENDING_MACHINE_OWNED_OBSERVATION
 public_activation: NOT_YET_PROVEN
 ```
@@ -26,26 +32,38 @@ Live repository state, worker receipts, TV/TVC lifecycle evidence, Site browser 
 
 ## Installed implementation
 
-The HIL v1.1 receiver source is merged in `StegVerse-org/LLM-adapter`. The StegVerse carrier bridge is merged through `.github` PR #258. The organization runtime now also contains the resident execution surfaces:
+The HIL v1.1 receiver source is merged in `StegVerse-org/LLM-adapter`. The StegVerse carrier bridge is merged through `.github` PR #258. The organization runtime contains the resident execution surfaces:
 
 ```text
 workers/hil_sovereign_receiver_bridge.py
 workers/hil_sovereign_receiver_worker.py
 control/worker-registry.d/hil-sovereign-receiver-001.json
 control/process-worker-adapters.d/hil-sovereign-receiver-001.json
+cost-basis/worker-runtime/hil-sovereign-receiver.json
 handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json
 tests/test_hil_sovereign_receiver_bridge.py
 tests/test_hil_sovereign_receiver_worker_registration.py
 docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_STATUS.md
 ```
 
-The executable handoff is `HANDOFF_READY`; the registry binds `SHWP-HIL-SOVEREIGN-RECEIVER-001` to `hil-sovereign-receiver-worker` through `process:hil-sovereign-receiver-v1`. The process adapter forwards only non-secret local source/state locators and a bounded port. No GitHub credential is an allowed runtime input.
+The executable handoff is `HANDOFF_READY`; the registry binds `SHWP-HIL-SOVEREIGN-RECEIVER-001` to `hil-sovereign-receiver-worker` through `process:hil-sovereign-receiver-v1`. Its `INDEPENDENT_TASK_CONTROL` admission requires a fresh fence and does not depend on a carrier packet as execution authority. The process adapter forwards only non-secret local source/state locators and a bounded port. No GitHub credential is an allowed runtime input.
+
+PR #259 validated the complete merged admission shape rather than only the HIL source files. Exact-head validation proved:
+
+- executable handoff conformance across the organization;
+- HIL registry fragment, process-adapter fragment, bounded cost basis and fresh-fence independent admission;
+- exact HIL bridge and worker registration tests;
+- WorkerCoordinator independent-admission behavior without carrier-event authority;
+- no GitHub credential token in validation;
+- Admissible-Existence retrospective classification includes the new HIL task without granting it capability phase or activation authority.
+
+The same validation pass also corrected a stale TVC executable-handoff field name (`runtime_window_evaluations` -> `runtime_window_beats`) without changing the TVC validation task's authority or runtime window.
 
 ## Resident execution behavior
 
-On an admitted heartbeat invocation, the worker:
+On an admitted WorkerCoordinator invocation, the worker:
 
-1. requires a real claim and fencing token from the existing worker plane;
+1. requires a real claim and fresh fencing token from the existing worker plane;
 2. resolves the already-merged LLM-adapter receiver only from admitted local StegVerse workload/source locations;
 3. rejects hosted GitHub/Render/Vercel/Cloudflare execution surfaces as the sovereign receiver runtime;
 4. launches `llm_adapter.combined_gateway:app` on loopback with durable non-temporary StegVerse state and all GitHub authentication variables removed;
@@ -57,13 +75,13 @@ If local source, launch, or readiness is unavailable, the worker emits an active
 
 ## Collision boundary
 
-This task does not steal or mutate claims/fences belonging to `SHWP-DURABLE-RUNTIME-ACTIVATION`, `SHWP-ECOSYSTEM-CHAT-INFERENCE-001`, WorkerCoordinator, TV/TVC, or Master Records. The HIL worker consumes the existing worker plane and has no independent heartbeat, model, route, credential, review, publication, custody, or execution authority.
+This task does not steal or mutate claims/fences belonging to `SHWP-DURABLE-RUNTIME-ACTIVATION`, `SHWP-ECOSYSTEM-CHAT-INFERENCE-001`, WorkerCoordinator, TV/TVC, or Master Records. The HIL worker consumes the existing worker plane and has no independent heartbeat, model, route, credential, review, publication, custody, or execution authority. `heartbeat_reference_only=true` and `heartbeat_grants_execution_authority=false` remain explicit in the registry admission.
 
 ## Activation proof still required
 
-Repository source, registry installation, process-adapter binding, deterministic tests, or CI success do **not** activate HIL. Completion of #246 still requires all of the following on the real StegVerse runtime path:
+Repository source, registry installation, process-adapter binding, deterministic tests, CI success, or independent-task-control admission do **not** activate HIL. Completion of #246 still requires all of the following on the real StegVerse runtime path:
 
-1. resident worker execution produces a real carrier observation with the HIL receiver `READY`;
+1. resident worker execution produces a real carrier/runtime observation with the HIL receiver `READY`;
 2. a public HTTPS rendezvous reachable from `stegverse.org` is bound to that ready receiver without gaining execution/lifecycle authority;
 3. the public Site upload control becomes `READY` from direct observation of that receiver;
 4. one controlled Site browser submission returns and preserves `HIL-RECEIVER-RECEIPT-v2`;
@@ -76,10 +94,11 @@ Only after those observations may downstream private review, publication, Site l
 
 ```text
 manual_execution_allowed: false
-source_implementation_lane: COMPLETE_MERGED
+source_implementation_lane: COMPLETE_MERGED_VALIDATED
 runtime_execution_owner: resident WorkerCoordinator + hil-sovereign-receiver-worker
 worker_task: SHWP-HIL-SOVEREIGN-RECEIVER-001
 worker_adapter: process:hil-sovereign-receiver-v1
+worker_admission: INDEPENDENT_TASK_CONTROL / fresh fence required
 credential_route_authority: TV/TVC
 review_publication_authority: existing TVC HIL lifecycle only
 master_records_authority: master-records/orchestration
@@ -89,8 +108,9 @@ participant_or_developer_machine_role: NONE
 ## Current next transition
 
 ```text
-HANDOFF_READY
--> admitted resident worker claim/fence
+HANDOFF_READY + VALIDATED INDEPENDENT ADMISSION
+-> resident WorkerCoordinator allocates real claim/fresh fence
+-> hil-sovereign-receiver-worker executes
 -> local sovereign receiver launch/observation
 -> HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED
 -> HIL_PUBLIC_HTTPS_RENDEZVOUS
