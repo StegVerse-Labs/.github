@@ -1,164 +1,93 @@
 # Actions Fanout Repair Mirror Handoff
 
-Updated: 2026-08-18
+Updated: 2026-08-22
 Repository: `StegVerse-Labs/.github`
 Branch: `main`
-State: ACTIVE
+State: ACTIVE_DEPENDENCY_AND_EVIDENCE_FOLLOWUP
 
-## Authority and invariants
+## Authority
 
-This handoff governs the hosted GitHub Actions cost/fanout repair lane only. It does not grant heartbeat, claim, lease, fence, credential, deployment, wallet, runtime, repository-visibility, repository-hygiene, or control-plane authority.
+This lane owns hosted GitHub Actions cost/fanout defects only. It does not own repository hygiene, heartbeat/runtime activation, claims, fences, credentials, deployment, wallet, visibility, or product authority.
 
 - Primary runtime/control plane: StegVerse.
-- Third-party execution: fallback only when explicitly required and admitted.
+- Third-party execution: fallback only when explicitly required/admitted.
 - Credential authority: TV/TVC only.
-- GitHub token production/runtime authority: NONE.
-- Render authority: NONE.
-- Hosted workflow success is validation evidence only and never runtime/activation evidence.
-- Routine heartbeat/carrier/receipt/observation/projection/event persistence must not automatically trigger paid hosted validation unless a validator genuinely depends on that persistence edge.
-- Source/schema/config changes retain automatic validation where technically useful.
-- Pull requests retain broader pre-merge validation coverage where safe.
-- Intentionally expensive checks remain manually dispatchable where applicable.
-- Repository hygiene and workflow-count minimization belong to `StegVerse-Labs/StegVerse-Healer`; this lane must not independently consolidate/delete workflows merely to reach the <=2 hygiene target.
+- GitHub-token production/runtime authority: NONE.
+- NON-TV/TVC secret/token: prohibited.
+- Render: prohibited.
+- Hosted workflow success is validation evidence only; never runtime/activation evidence.
+- Repository workflow-count hygiene/minimization belongs to `StegVerse-Labs/StegVerse-Healer`.
 
-## Current objective
+## Current live fanout state
 
-Reduce avoidable GitHub-hosted Actions fanout without weakening meaningful source/config/schema regression coverage. Detect and repair concrete cost-trigger defects. Do not duplicate the separate StegVerse-Healer hygiene evaluation/cleanup lane.
-
-## Exact live inventory
-
-Canonical machine-readable inventory:
+Canonical machine evidence:
 
 `control/actions-fanout-workflow-inventory-2026-08-18.json`
 
-The inventory contains 18 workflow files: 14 automatic-push validation surfaces and 4 intentionally non-push surfaces. Classification is retained as fanout evidence, but workflow-retention/consolidation authority is now explicitly outside this lane.
+Current exact classification after the 2026-08-22 containment commits:
 
 ```text
-live workflow files: 18
-automatic-push workflows: 14
-non-push workflows: 4
-workflow-count hygiene owner: StegVerse-Labs/StegVerse-Healer
+workflow files: 18
+automatic-push workflows: 12
+PR/manual-only workflows: 6
+repository hygiene owner: StegVerse-Labs/StegVerse-Healer
 Healer evaluation: PR #20 OPEN / MERGEABLE
-quantitative post-repair run-history evidence: awaiting supported repository-level run-history read
+repository-wide quantitative run-history proof: AWAITING_SUPPORTED_READ
 ```
 
-## Selective repairs installed
+## Latest concrete repairs consumed
 
-Earlier repair sequence covered:
+### Heartbeat Worker Project direct-main fanout containment
 
-- `.github/workflows/all-org-heartbeat-federation.yml`
-- `.github/workflows/archive-readiness-validate.yml`
-- `.github/workflows/native-process-worker-canary.yml`
-- `.github/workflows/steggate-heartbeat-integration.yml`
-- `.github/workflows/activate-host-self-attest-worker.yml`
-- `.github/workflows/activate-sovereign-runtime-worker.yml`
-- `.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml`
-- `.github/workflows/sovereign-ephemeral-console.yml`
-- `.github/workflows/test-lanes-autolaunch-validation.yml`
-- `.github/workflows/sovereign-runtime-self-bootstrap.yml`
-- `.github/workflows/org-handoff-render.yml`
-- `.github/workflows/org-heartbeat.yml`
+Commit `f55b7d653044bb2e1be3c6b2c2e736241389c3ab` removed the `push` trigger from `.github/workflows/heartbeat-worker-project.yml` after direct-to-main machine commit storms were proven to launch the hosted validation lane. Pull-request validation and manual dispatch remain. No scheduler, heartbeat carrier, claim, fence, credential, or runtime authority was introduced.
 
-Direct re-audit then found two stale broad main-push edges and corrected them.
+This supersedes the earlier fanout classification that still counted Heartbeat Worker Project as an automatic-push workflow. The earlier path-narrowing repair remains historical evidence: PR #230 / `cf4a028047b2359c333cfae150963448e1c41522`.
 
-### Corrective repair: organization control-plane validator
+### Test Lanes direct-main fanout containment
 
-PR #229 merged as `f99f4c3eac76bcac8590c4737f62250ac39330df`.
+Commit `599cac6417bc67874416d2b0125929a2601f8fe2` removed the `push` trigger from `.github/workflows/test-lanes-autolaunch-validation.yml`, retained pull-request/manual validation, and added:
 
-Before correction, `.github/workflows/org-control-plane-validate.yml` still included `handoffs/**` under `push.paths`, so routine executable-handoff persistence could launch the broad organization validator. The repair:
-
-- removed `handoffs/**` from automatic main-push validation;
-- retained `handoffs/**` under pull-request coverage;
-- retained manual dispatch;
-- added the workflow definition itself to automatic push validation;
-- changed no validator body, runtime authority, credential semantics, claims, fences, heartbeat state, wallet state, deployment state, or repository visibility.
-
-### Corrective repair: Heartbeat Worker Project
-
-PR #230 merged as `cf4a028047b2359c333cfae150963448e1c41522`.
-
-Before correction, `.github/workflows/heartbeat-worker-project.yml` still included both `handoffs/**` and `cost-basis/worker-runtime/**` under `push.paths`. That meant routine handoff and worker-cost persistence could launch the complete deterministic repository suite plus heartbeat validation. The repair:
-
-- removed `handoffs/**` and `cost-basis/worker-runtime/**` from automatic main-push validation;
-- retained both surfaces under pull-request validation;
-- retained manual dispatch;
-- kept `heartbeat_runtime/**`, `workers/**`, `tests/**`, `schemas/**`, and `scripts/**` automatic;
-- added the workflow definition itself to the automatic push surface;
-- changed no validation body or runtime/control-plane authority.
-
-## Retained unchanged after inspection
-
-- `.github/workflows/external-timing-match-validation.yml` — pull-request + manual dispatch only.
-- `.github/workflows/mcp-activation-binding-test.yml` — pull-request + manual dispatch only.
-- `.github/workflows/org-heartbeat-watchdog.yml` — manual diagnostic only.
-- `.github/workflows/stegfin-early-adopter-contribution-validator-source.yml` — pull-request only, `permissions: {}`, empty GitHub credential authority, and fail-closed behavior when private source is absent.
-- `.github/workflows/native-process-worker-canary.yml` — implementation-only main trigger; handoff/cost/control state remains PR-only.
-- `.github/workflows/activate-host-self-attest-worker.yml` — workflow-definition-only main trigger; retained evidence/handoff/cost surfaces remain PR-only.
-- `.github/workflows/org-heartbeat.yml` — heartbeat runtime/source only on main; mutable claim/org-state surfaces remain PR-only.
-- `.github/workflows/all-org-heartbeat-federation.yml` — worker/workflow source only on main; mutable federation/handoff/auth/cost surfaces remain PR-only.
-- `.github/workflows/steggate-heartbeat-integration.yml` — worker/schema/workflow source only on main; mutable integration/handoff/auth/cost surfaces remain PR-only.
-- `.github/workflows/test-lanes-autolaunch-validation.yml` — matrix/config/worker/test/workflow source on main; worker-registry/handoff/auth/cost state remains PR-only.
-
-## Healer hygiene dependency boundary
-
-Repository hygiene and the preferred `0/1/2` workflow-surface policy are now treated as `StegVerse-Labs/StegVerse-Healer` responsibilities.
-
-Current durable dependency:
-
-```text
-repository: StegVerse-Labs/StegVerse-Healer
-PR: #20
-state: OPEN / MERGEABLE
-title: Evaluate .github workflow hygiene and 18→2 consolidation hypothesis
-head: eval/github-root-workflow-hygiene-v2
-head_sha: 4882a0c3c7b52cb7e1e5c2df93f77b2bdcc72e15
+```yaml
+concurrency:
+  group: test-lanes-autolaunch-validation-${{ github.ref }}
+  cancel-in-progress: true
 ```
 
-PR #20 transfers the evidence and 18→2 hypothesis for Healer evaluation only. It does not authorize deletion and does not prove parity, consolidation, runtime activation, or hygiene completion.
+This prevents direct-main machine activity from launching this hosted validation surface and cancels superseded PR/manual runs. It does not prove nine-lane execution, credential availability, WorkerCoordinator execution, heartbeat activation, or runtime completion.
 
-This fanout lane must therefore:
+## Earlier corrective repairs retained as evidence
 
-- continue repairing concrete trigger/failure/cost defects when independently proven;
-- provide evidence to Healer when a workflow is a consolidation/transfer candidate;
-- not delete, merge, or reorganize workflow surfaces solely for hygiene-count reduction while Healer owns that evaluation;
-- consume Healer's accepted outcome once it becomes durable, then re-audit cost/fanout behavior of the resulting workflow surface.
+- `org-control-plane-validate.yml`: PR #229 / `f99f4c3eac76bcac8590c4737f62250ac39330df` removed `handoffs/**` from automatic main push while retaining PR coverage.
+- `heartbeat-worker-project.yml`: PR #230 / `cf4a028047b2359c333cfae150963448e1c41522` previously removed handoff/cost persistence from main-push paths before the later direct-main containment above.
+- Other previously repaired/narrowed surfaces remain governed by the machine-readable inventory and direct live-file verification.
 
-## Collision / ownership boundaries
+## Healer dependency boundary
 
-The active machine-owned heartbeat, federation, StegGate, durable-runtime, sovereign-inference, canonical test-lanes, StegFin, oscillator-live-proof, repository-visibility, and Healer hygiene lanes retain their own execution authority. This fanout lane does not acquire or mutate their claims, fences, leases, runtime receipts, deployment state, wallet authority, provider authority, task state, canonical test-run claims, repository visibility, or hygiene decisions.
+Workflow consolidation, deletion, and the preferred 0/1/2 workflow hygiene target are not owned by this lane.
 
-## Validation evidence
-
-- Direct live reads proved the stale `org-control-plane-validate.yml` and `heartbeat-worker-project.yml` main-push edges.
-- PR #229 merged `f99f4c3eac76bcac8590c4737f62250ac39330df`.
-- PR #230 merged `cf4a028047b2359c333cfae150963448e1c41522`.
-- Current Healer PR #20 is independently observed OPEN and MERGEABLE at head `4882a0c3c7b52cb7e1e5c2df93f77b2bdcc72e15`.
-- No runtime claim, heartbeat epoch, worker fence, credential state, repository visibility, deployment state, wallet state, oscillator runtime state, canonical test-run claim, or hygiene cleanup authority was mutated by this lane.
+`StegVerse-Labs/StegVerse-Healer#20` is the active evaluation surface for the `.github` 18→2 hypothesis. It must independently classify workflow surfaces, preserve validation parity and active-owner boundaries, and implement any admitted consolidation/transfer/elimination. This fanout lane must consume and re-audit the resulting workflow surface after Healer acts; transfer does not complete that downstream obligation.
 
 ## Remaining work
 
 Destination `StegVerse-Labs/.github`:
 
-- continue direct live-file audit only for concrete automatic-trigger/failure/cost defects not already repaired;
-- update the machine-readable inventory if further fanout defects are proven;
-- obtain repository-wide post-repair Actions run-history evidence sufficient to quantify actual fanout reduction once a supported read path is available;
-- consume the eventual StegVerse-Healer workflow-hygiene decision and re-audit the resulting stable workflow surface for cost/fanout regressions.
+1. Continue detecting concrete hosted Actions cost/failure/fanout defects without duplicating Healer hygiene work.
+2. Keep the machine inventory synchronized with live trigger changes.
+3. Obtain repository-wide post-repair Actions run-history evidence when a supported read path exists; commit-associated PR-run reads are not a substitute for repository-level quantitative proof.
+4. Consume Healer's eventual workflow-hygiene result and re-audit the resulting retained workflow surface for fanout regressions.
 
-Destination `StegVerse-Labs/StegVerse-Healer` (dependency lane; do not duplicate here):
+Destination `StegVerse-Labs/StegVerse-Healer` (dependency lane):
 
-- evaluate PR #20 reasoning;
-- independently classify the current `.github` workflow surface;
-- if admitted, implement workflow consolidation/transfer/elimination with validation-parity evidence and owner reconciliation;
-- record any >2 standalone exceptions with technical necessity.
-
-The connected GitHub workflow-run reader exposes commit-associated pull-request runs but not the repository-wide run listing required for quantitative before/after proof. No unsupported credential-bearing workaround is authorized.
+1. Evaluate PR #20.
+2. If admitted, classify and implement workflow consolidation/transfer/elimination with parity evidence and active-owner reconciliation.
+3. Record technical exceptions if final repository workflow count remains above two.
 
 ## Release / propagation
 
-No release/tag is required solely for these validation-trigger/inventory/handoff changes. No aggregate release is claimed. Site, Publisher, admissibility-wiki, and stegguardian-wiki propagation is not required unless a later repair changes a public contract or capability consumed by those surfaces.
+No tag/release is required solely for trigger/inventory/handoff changes. No aggregate release is claimed. Site, Publisher, admissibility-wiki, and stegguardian-wiki propagation is required only if a later repair changes a public capability or contract consumed by those surfaces.
 
 ## Completion gate
 
-The fanout lane remains nonterminal because repository-wide quantitative post-repair run-history evidence is unavailable and future Healer consolidation output must be consumed/re-audited. Workflow-count hygiene itself is an active dependency lane, not unique work owned here.
+This fanout lane is nonterminal while repository-wide quantitative post-repair run evidence is unavailable and while the Healer output still must be consumed/re-audited.
 
 Current status: `DO NOT ARCHIVE THIS SESSION — REQUIRED EXECUTION REMAINS IN AN ACTIVE DEPENDENCY LANE.`
