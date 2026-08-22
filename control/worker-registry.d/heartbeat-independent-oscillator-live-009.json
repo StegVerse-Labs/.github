@@ -5,14 +5,15 @@
     {
       "archive_eligible": false,
       "archive_reason_codes": [],
-      "authorized_policy_version": "heartbeat-independent-oscillator-v1",
+      "authorized_policy_version": "heartbeat-independent-oscillator-v2-independent-task-control",
       "block_ref": null,
       "claim_id": null,
       "cost_basis_ref": "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json",
       "evidence_refs": [
         "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
         "heartbeat_runtime/independent_oscillator.py",
-        "heartbeat_runtime/engine_v12.py",
+        "heartbeat_runtime/oscillator_producer.py",
+        "heartbeat_runtime/engine_v13.py",
         "receipts/heartbeat/HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008-source-validation.json",
         "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json"
       ],
