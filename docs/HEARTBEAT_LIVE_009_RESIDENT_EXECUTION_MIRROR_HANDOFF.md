@@ -38,11 +38,11 @@ The runner performs real execution only:
 3. executes the first `run_worker_runtime.py --cycles 1` from and against the materialized resident runtime root under independent task-control authority;
 4. executes `run_heartbeat_runtime.py --cycles 1` from and against the same resident root as an oscillator observation/sampler only;
 5. executes the second resident-root worker cycle so the independently admitted LIVE-009 task can bind a fresh lawful fence and execute;
-6. verifies all activation/carrier/observation/worker evidence from that same resident runtime root and fails closed unless terminal completion is present.
+6. verifies all activation/carrier/observation/assignment/worker evidence from that same resident runtime root and fails closed unless terminal completion is present.
 
 The runner does not fabricate a heartbeat epoch, claim, fence, lease, carrier observation, or worker response. It does not use a network fetch, hosted process service, GitHub runtime, Render, or non-TV/TVC credential.
 
-### Resident-root correction
+## Resident-root correction
 
 Direct inspection found that the original one-command runner installed the carrier into the resident runtime root but then executed both worker cycles, the carrier sample, and evidence verification against the source repository checkout. That path could not produce valid resident completion evidence even on a correctly admitted host.
 
@@ -63,7 +63,33 @@ ecae3d01f276ea07e3342e0132480ffc05d5e406
   - retains fail-closed activation and terminal-evidence checks
 ```
 
-An independent local validation attempt could not clone the public repository because the available validation container had no DNS resolution for `github.com`. Therefore these exact commits are source-installed but this handoff does not claim an independently executed test PASS from that container. GitHub-hosted validation would be validation evidence only and would not count as resident runtime proof.
+## Fresh independent fence verification hardening
+
+The resident runner previously accepted terminal worker log strings without independently proving that LIVE-009 actually received the fresh independently admitted fenced claim required by its handoff. That could overstate terminal evidence.
+
+Corrected on `main`:
+
+```text
+b83e1530d225d6bd46bff6562424d632a5eb37f8
+  scripts/run_live_009_resident.py
+  - parses durable Master Records worker-assignment evidence
+  - requires task_id=HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009
+  - requires a nonempty claim_id
+  - requires fencing_token > 21
+  - requires source_admission_ref
+  - requires source_carrier_event_ref=null, proving independent task-control acquisition
+  - binds terminal worker evidence to that fresh claim
+  - additionally verifies carrier authority_effect=NONE and oscillator observation_is_causal=false
+
+31dc0ae8521fa840528020039f4f3c275a65edf5
+  tests/test_live_009_resident_runner.py
+  - accepts fresh independent fence 22
+  - rejects stale fence 21
+  - rejects carrier-derived assignment evidence
+  - rejects missing terminal worker evidence
+```
+
+These are source/verification repairs only. They are not runtime proof.
 
 ## Required terminal evidence
 
@@ -89,10 +115,12 @@ credential_requirement=NONE
 
 ```text
 frequency_rule=INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL
+authority_effect=NONE
 oscillator.progression_dependency=OSCILLATOR_ONLY
 oscillator.phase_travel_time_ms=10
 oscillator.reference_frequency_hz=100
 oscillator.snapshot_is_observation_only=true
+oscillator.observation_is_causal=false
 ```
 
 `control/heartbeat-carrier-observation.json` must prove:
@@ -102,23 +130,31 @@ observation_is_causal=false
 authority_effect=NONE
 ```
 
-`events/worker-runtime.jsonl` must contain LIVE-009 terminal evidence for:
+`events/master-records-worker-assignment.jsonl` must prove a fresh independently admitted LIVE-009 assignment:
+
+```text
+task_id=HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009
+claim_id=<nonempty>
+fencing_token>21
+source_admission_ref=<present>
+source_carrier_event_ref=null
+```
+
+`events/worker-runtime.jsonl` must contain terminal evidence for that fresh claim:
 
 ```text
 HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009
 INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED
 ```
 
-The worker/task evidence must show an independently admitted fresh fenced claim satisfying the LIVE-009 handoff requirement (`fence > 21`).
+## Validation / live state
 
-## Source / validation state
+An independent local validation attempt previously could not clone the public repository because the available validation container had no DNS resolution for `github.com`. GitHub-hosted validation would be validation evidence only and would not count as resident runtime proof.
+
+Current repository observation:
 
 ```text
-scripts/run_live_009_resident.py: INSTALLED / RESIDENT-ROOT CORRECTED
-current source commit: 4098dab52d70e5922b980308ec8d00b9b537c443
-tests/test_live_009_resident_runner.py: INSTALLED / RESIDENT-ROOT ASSERTIONS ADDED
-current test commit: ecae3d01f276ea07e3342e0132480ffc05d5e406
-independent exact-head test execution: UNAVAILABLE (validation container DNS failure)
+receipts/sovereign-host/carrier-activation.latest.json: NOT PRESENT
 resident execution: NOT YET OBSERVED
 LIVE-009 terminal evidence: NOT YET OBSERVED
 ```
