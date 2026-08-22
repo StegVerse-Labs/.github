@@ -189,6 +189,23 @@ jobs:
           PY
           git status --short
 
+      - name: Run manual heartbeat watchdog diagnostic without durable authority
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python3 scripts/watch_heartbeat_returns.py
+          git diff -- heartbeats/watchdog warrants
+          git diff --quiet -- control/heartbeat-state.json control/worker-registry.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          files=sorted(Path('heartbeats/watchdog').glob('epoch-*.json'))
+          if not files:
+              raise SystemExit('no watchdog diagnostic produced')
+          value=json.loads(files[-1].read_text())
+          assert value.get('authority_effect')=='none', value
+          print('WATCHDOG_DIAGNOSTIC_NON_AUTHORITATIVE_PASS')
+          PY
+
       - name: Prove workflow itself is non-authorizing
         run: |
           python - <<'PY'
