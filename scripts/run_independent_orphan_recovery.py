@@ -61,12 +61,25 @@ def max_projected_fence(registry: dict[str, Any]) -> int:
     return maximum
 
 
-def current_reference_epoch(root: Path) -> int:
-    state = load_json(root / CARRIER_PATH)
+def current_reference_epoch(root: Path) -> tuple[int, bool]:
+    """Return optional heartbeat-reference metadata without making it a gate.
+
+    Independent task-control admission must still work when no carrier snapshot is
+    locally materialized. Zero is an explicit no-current-reference sentinel in
+    this execution wrapper; it grants no authority and is not persisted as a
+    heartbeat transition.
+    """
+    path = root / CARRIER_PATH
+    if not path.is_file():
+        return 0, False
+    try:
+        state = load_json(path)
+    except Exception:
+        return 0, False
     epoch = state.get("epoch")
-    if not isinstance(epoch, int):
-        raise RuntimeError("carrier reference is missing an integer epoch")
-    return epoch
+    if not isinstance(epoch, int) or epoch < 0:
+        return 0, False
+    return epoch, True
 
 
 def validate_registered_executor(root: Path) -> None:
@@ -103,8 +116,6 @@ def acquire_recovery_claim(
     task = task_by_id(registry, RECOVERY_ID)
     parent = task_by_id(registry, PARENT_ID)
 
-    # A previous bounded attempt may have released back to BLOCKED. Reconcile only
-    # the already-admitted continuity contract; this never mints authority.
     if task.get("state") in {"BLOCKED", "QUARANTINED"}:
         reconcile_quarantined_orphan_recoveries(root, registry, epoch=reference_epoch)
         task = task_by_id(registry, RECOVERY_ID)
@@ -202,8 +213,6 @@ def release_recovery_claim(
         task["archive_reason_codes"] = [f"RECOVERY_ATTEMPT_{response_state or 'UNKNOWN'}"]
         task["block_ref"] = None
 
-    # Every bounded attempt releases its authority. A future retry must acquire a
-    # new generation. The parent remains untouched and receives no authority.
     task["executor_binding"] = "AUTHORIZED" if task["state"] != "COMPLETED" else "UNBOUND"
     task["worker_id"] = None
     task["worker_instance_id"] = None
@@ -227,7 +236,10 @@ def execute_once(root: Path, *, reference_epoch: int | None = None) -> dict[str,
     validate_registered_executor(root)
     registry_path = root / REGISTRY_PATH
     registry = load_json(registry_path)
-    epoch = current_reference_epoch(root) if reference_epoch is None else int(reference_epoch)
+    if reference_epoch is None:
+        epoch, reference_observed = current_reference_epoch(root)
+    else:
+        epoch, reference_observed = int(reference_epoch), True
     task, fence = acquire_recovery_claim(root, registry, reference_epoch=epoch)
     atomic_write(registry_path, registry)
 
@@ -241,8 +253,6 @@ def execute_once(root: Path, *, reference_epoch: int | None = None) -> dict[str,
     try:
         response = adapter(task, handoff, epoch)
     except Exception:
-        # Fail closed without stranding authority. The same admitted task may be
-        # retried only after a fresh claim/fence is acquired.
         registry = load_json(registry_path)
         release_recovery_claim(
             registry,
@@ -267,6 +277,8 @@ def execute_once(root: Path, *, reference_epoch: int | None = None) -> dict[str,
         "schema": "stegverse.independent-orphan-recovery-execution/v1",
         "task_id": RECOVERY_ID,
         "reference_epoch": epoch,
+        "reference_observed": reference_observed,
+        "heartbeat_reference_required": False,
         "fencing_token": fence,
         "response_state": response.state,
         "transition_id": response.transition_id,

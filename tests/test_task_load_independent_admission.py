@@ -40,6 +40,19 @@ class TaskLoadIndependentAdmissionTests(unittest.TestCase):
             "COSV-LIVE-PACKET-AUTOMATION-006",
         )
 
+    def test_resident_heartbeat_start_is_independently_claimable_without_becoming_a_startup_dependency(self) -> None:
+        rel = "control/worker-registry.d/heartbeat-oscillator-resident-start-012.json"
+        self.assert_independent(rel, "HEARTBEAT-OSCILLATOR-RESIDENT-START-012")
+        fragment = self.load(rel)
+        admission = fragment["tasks"][0]["admission"]
+        self.assertTrue(admission["direct_resident_installer_remains_authorized"])
+        self.assertFalse(admission["workercoordinator_required_for_carrier_start"])
+        self.assertFalse(fragment["worker_runtime_dependency_for_carrier_start"])
+        self.assertFalse(fragment["network_fetch_required"])
+        self.assertFalse(fragment["third_party_process_host_required"])
+        self.assertFalse(fragment["third_party_scheduler_required"])
+        self.assertFalse(fragment["third_party_deployment_required"])
+
 
 if __name__ == "__main__":
     unittest.main()
