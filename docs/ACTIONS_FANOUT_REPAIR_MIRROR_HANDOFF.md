@@ -3,112 +3,100 @@
 Updated: 2026-08-22
 Repository: `StegVerse-Labs/.github`
 Branch: `main`
-State: ACTIVE_DEPENDENCY_AND_EVIDENCE_FOLLOWUP
+State: ACTIVE_COST_REDUCTION_AND_DEPENDENCY_FOLLOWUP
 
 ## Authority
 
-This lane owns hosted GitHub Actions cost/fanout defects only. Repository hygiene/workflow-count minimization is owned by `StegVerse-Labs/StegVerse-Healer` issue #34. Healer-produced cleanup outputs are consumed here for fanout re-audit; transfer never substitutes for downstream verification.
+This lane owns hosted GitHub Actions cost/fanout defects. Repository hygiene/workflow-count minimization is owned by `StegVerse-Labs/StegVerse-Healer#34`; admitted Healer outputs are consumed here and re-audited for fanout regressions.
 
 - Primary runtime/control plane: StegVerse.
 - Credential authority: TV/TVC only.
 - GitHub-token production/runtime authority: NONE.
 - NON-TV/TVC secret/token: prohibited.
 - Render: prohibited.
-- Hosted workflow success is validation evidence only; never runtime/activation evidence.
+- Hosted workflow success is validation evidence only, never runtime/activation evidence.
+- Workflow transfer/consolidation does not satisfy runtime/product goals.
 
 ## Current live fanout state
 
 Canonical machine evidence: `control/actions-fanout-workflow-inventory-2026-08-18.json`.
 
 ```text
-workflow files: 16
-automatic-push workflows: 10
-PR/manual-only workflows: 6
-Healer reduction this tranche: 18 -> 16
+baseline workflow files: 18
+current workflow files: 12
+automatic-push workflows: 9
+PR/manual-only workflows: 3
+Healer workflows removed with parity: 6
+stable dispatchers: 2
 repository hygiene owner: StegVerse-Labs/StegVerse-Healer#34
 repository-wide quantitative run-history proof: AWAITING_SUPPORTED_READ
 ```
 
-Exact live directory inspection after Healer PRs #251/#252 confirms the two removed workflow files are absent from `main` and the stable organization validator is present.
-
-## Healer consolidation consumed — organization handoff renderer
-
-Healer #34 classified `.github/workflows/org-handoff-render.yml` as safely consolidatable into the stable organization validator.
-
-PR #251 preserved the renderer's executable semantics inside `.github/workflows/org-control-plane-validate.yml`:
+The two stable dispatcher candidates are now concretely established:
 
 ```text
-python3 scripts/render_org_handoff.py
-git diff --exit-code -- docs/ORG_CONTROL_PLANE_STATE.md
+.github/workflows/org-control-plane-validate.yml
+.github/workflows/heartbeat-worker-project.yml
 ```
 
-It retained automatic main validation for the renderer source and committed projection, broad PR coverage, manual dispatch, anonymous credential-clean checkout, `permissions: {}`, and no runtime authority.
+## Healer consolidations consumed
 
-```text
-PR: #251
-exact head: 8a2b7de3398a28808a79188c967916ebb0c29ab8
-Heartbeat Worker: 32590490975 / #1316 SUCCESS
-Organization control-plane: 32590490904 / #1155 SUCCESS
-merge: 82a5909aa37ea228e9c00dd55fc1e11ab706850b
-workflow count: 18 -> 17
-```
+All six tranches were exact-head validated by both retained dispatcher families before merge.
 
-## Healer consolidation consumed — archive readiness
+| Removed standalone workflow | Retained destination | PR | Merge | Heartbeat Worker | Org control | Result |
+| --- | --- | ---: | --- | ---: | ---: | --- |
+| `org-handoff-render.yml` | `org-control-plane-validate.yml` | #251 | `82a5909aa37ea228e9c00dd55fc1e11ab706850b` | 32590490975 | 32590490904 | PASS |
+| `archive-readiness-validate.yml` | `org-control-plane-validate.yml` | #252 | `fae7f6a1edc4d54dd67134773faf76acc87eae59` | 32590584716 | 32590584788 | PASS |
+| `org-heartbeat.yml` | `heartbeat-worker-project.yml` | #253 | `2236df65a495975ca9bc7d9c8fad7d863934617f` | 32590794869 | 32590794862 | PASS |
+| `org-heartbeat-watchdog.yml` | `heartbeat-worker-project.yml` manual dispatch only | #254 | `c3256be218dbabdf4fb82e877e71d2884925c904` | 32590947641 | 32590947607 | PASS |
+| `native-process-worker-canary.yml` | `heartbeat-worker-project.yml` | #255 | `856d1823283f3ade54ac95094d73ec149c245d74` | 32591051012 | 32591050991 | PASS |
+| `external-timing-match-validation.yml` | `heartbeat-worker-project.yml` | #256 | `278299617d17a4f410b0ef0e2d1da1a609b67fc4` | 32591188347 | 32591188133 | PASS |
 
-Healer #34 then classified `.github/workflows/archive-readiness-validate.yml` as safely consolidatable into the same stable validator.
+### Preserved semantics
 
-PR #252 preserved:
+- Organization handoff rendering still executes and requires committed projection parity.
+- Archive readiness still executes its validator and unittest.
+- Organization heartbeat source validation moved to the stable Heartbeat Worker dispatcher without restoring routine state/receipt main-push fanout.
+- Watchdog diagnostics remain manually invocable only; they were not added to automatic PR/push execution.
+- Native-process canary validation now checks retained terminal evidence only. Its handoff is `COMPLETED`, successor policy `NONE`; no canary reactivation was introduced.
+- External timing source/validation is `COMPLETE_RELEASED`; fixed-cadence and zero-authority assertions remain in the stable dispatcher. Live timing consumption remains owned by `.github#122`.
 
-```text
-python3 scripts/validate_archive_readiness.py
-python3 -m unittest tests.test_archive_readiness
-```
+## Prior fanout containment retained
 
-Automatic main validation remains on the exact validator/test source; broad PR coverage and manual dispatch remain through the stable org validator. No archive/runtime authority was granted to hosted CI.
-
-```text
-PR: #252
-exact head: b75299c2278663edcbbbf9f04dfc400b4c606e9e
-Heartbeat Worker: 32590584716 / #1317 SUCCESS
-Organization control-plane: 32590584788 / #1157 SUCCESS
-merge: fae7f6a1edc4d54dd67134773faf76acc87eae59
-workflow count: 17 -> 16
-```
-
-## Prior fanout repairs retained
-
-- Heartbeat Worker direct-main hosted validation removed by `f55b7d653044bb2e1be3c6b2c2e736241389c3ab`; PR/manual validation retained.
-- Test-lanes direct-main hosted validation removed by `599cac6417bc67874416d2b0125929a2601f8fe2`; PR/manual validation retained with concurrency cancellation.
-- Organization control-plane blanket `scripts/**`, `tests/**`, and `heartbeat_runtime/**` main fanout narrowed by PR #247 / `52c64f0fbf2b6375a5546a0a2af0d5000f4fcef4`.
-- Organization handoff renderer broad PR trigger was first narrowed by PR #250 / `8d9f8a33e84e88812be80ac0655b72610193874c`, then the standalone workflow was eliminated by Healer PR #251.
+- Heartbeat Worker direct-main machine-commit storm fanout was removed by `f55b7d653044bb2e1be3c6b2c2e736241389c3ab`. Healer later restored automatic validation only for exact heartbeat/process-adapter source needed by absorbed workflows; routine carrier/state/receipt persistence remains excluded.
+- Test-lanes direct-main validation removed by `599cac6417bc67874416d2b0125929a2601f8fe2`; PR/manual retained with concurrency cancellation.
+- Organization control blanket `scripts/**`, `tests/**`, and `heartbeat_runtime/**` main fanout narrowed by PR #247 / `52c64f0fbf2b6375a5546a0a2af0d5000f4fcef4`.
 - Full Heartbeat Worker suite is green: run `32588349952`, 486 tests, zero failures.
-- Ecosystem Chat sovereign inference focused validation is green: `32588349889`; `qualifies_as_large_production_llm` must be false.
+- Ecosystem Chat inference validation is green: `32588349889`; reference proof rejects `qualifies_as_large_production_llm=true`.
 
-## Healer dependency boundary
+## Remaining `.github` workflow surface
 
-`StegVerse-Labs/StegVerse-Healer#34` remains open. Sixteen live workflows remain. Healer must continue independent classification toward the preferred 0/1/2 stable-entry-surface target, preserving parity and active-owner boundaries. Any count above two requires explicit technical exception evidence.
+Twelve workflow files remain. Nine still have selective automatic source pushes; three are PR/manual-only. The registry is authoritative for current classification. Active-owner-sensitive surfaces must not be removed merely to hit the two-workflow target.
 
-This fanout lane must consume each admitted Healer tranche and verify that consolidation does not reintroduce broad push/PR triggers.
+Healer #34 must continue classification/consolidation/exception work. Any final count above two requires explicit technical necessity evidence.
 
 ## Site cost lane
 
-Billing evidence supplied 2026-08-22 identifies `StegVerse-Labs/Site` as the largest observed repository Actions cost center. Site's canonical `docs/ACTIONS_COST_CONTAINMENT_MIRROR_HANDOFF.md` reports `ACTIVE_REMEDIATION`, no active cost-remediation implementation/validation claim, 98 workflows at its last recorded census, and an explicit next action to take the next bounded unclaimed redundant/token-bearing workflow. Site mutations still require its pre-work claim registry and must not bypass protected owners.
+User-provided GitHub billing evidence on 2026-08-22 showed Site as the largest observed StegVerse-Labs Actions repository cost center at `$201.44`, compared with `.github` at `$31.66` at that observation point.
 
-A concrete unclaimed Site candidate was identified but not mutated in this tranche: `.github/workflows/va-claims-guide-surface.yml` still contains a six-hour hosted schedule, `contents: write`, credential-persisting checkout, repository receipt writeback, and artifact upload even though credential-clean `.github/workflows/validate.yml` already runs `scripts/validate_va_claims_guide_surface.py` and validates the same deterministic receipt without artifact custody. Site's claim gate must be satisfied before that cleanup is executed.
+Site has an existing B27 cost-reduction task/claim (`SITE-ACTIONS-COST-CONTAINMENT-001-B27`, PR #387) to retire the hourly Thought Experiments workflow. Its source changes exist, and a StegVerse-Healer native validation carrier is released, but exact-head live validation still requires the machine-owned Healer scheduler receipt. GitHub CI/source merge cannot substitute for that receipt.
+
+A separate high-value Site candidate has also been proven but not yet mutated: `.github/workflows/va-claims-guide-surface.yml` uses a six-hour hosted schedule, `contents: write`, credential-persisting checkout, repository receipt writeback, and artifact upload while Site's credential-clean `validate.yml` already runs the same deterministic `scripts/validate_va_claims_guide_surface.py`. A distinct Site pre-work claim is required before that surface can be changed.
 
 ## Remaining work
 
-1. Continue Healer #34 workflow consolidation with parity evidence and owner reconciliation.
-2. Re-audit each retained `.github` workflow for avoidable automatic push/PR fanout after consolidation.
-3. Acquire the Site pre-work claim before mutating the identified VA guide workflow; if admitted, retire its six-hour hosted schedule/writeback/artifact loop while preserving deterministic validation.
-4. Obtain repository-wide post-repair Actions run-history evidence when a supported repository-level read path exists.
+1. Continue Healer #34 consolidation on non-owner-sensitive `.github` validation surfaces.
+2. Reconcile active owners before touching runtime-sensitive/MCP/StegFin/test-lane surfaces.
+3. Consume the Site B27 scheduler receipt when it exists; do not substitute hosted CI.
+4. Acquire a distinct Site pre-work claim before retiring the redundant VA guide scheduled/writeback/artifact workflow.
+5. Obtain repository-wide quantitative post-repair run history when a supported reader exists.
 
 ## Release / propagation
 
-No tag/release is required solely for these validation workflow consolidations. No public product contract changed.
+No tag/release is required solely for these workflow-validation consolidations. No public product capability contract changed.
 
 ## Completion gate
 
-The current cost-reduction work is nonterminal. Two workflow surfaces have been eliminated with parity proof, but Healer #34 and Site cost remediation remain active, and repository-wide quantitative run-history evidence remains unavailable.
+Cost reduction is materially advanced but nonterminal: `.github` is 18 -> 12 with six parity-proven removals; Healer #34 and Site remediation remain active, and repository-wide quantitative run-history evidence remains unavailable.
 
 Current status: `DO NOT ARCHIVE THIS SESSION — UNIQUE ACTIVE WORK REMAINS.`
