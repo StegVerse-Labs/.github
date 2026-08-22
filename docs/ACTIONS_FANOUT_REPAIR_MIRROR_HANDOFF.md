@@ -86,12 +86,21 @@ Site has an existing B27 cost-reduction task/claim (`SITE-ACTIONS-COST-CONTAINME
 
 A separate high-value Site candidate has been proven but not mutated: `.github/workflows/va-claims-guide-surface.yml` uses a six-hour hosted schedule, `contents: write`, credential-persisting checkout, repository receipt writeback, and artifact upload while credential-clean `validate.yml` already runs the same deterministic `scripts/validate_va_claims_guide_surface.py`. A distinct Site pre-work claim is required before mutation.
 
+### 2026-08-22 Site bootstrap fanout finding
+
+A second material Site cost source is now proven from current `main`: `.github/workflows/validate.yml` has unfiltered `push:` and `pull_request:` triggers. The workflow performs the full Site bootstrap lane, including deterministic HIL, Master Records import checks, SV-CONTINUITY-109, VA guided workflow checks, child-safety contract checks, workflow inventory, Site handoff orchestration, ecosystem-heartbeat orchestration, canonical application validation, iPhone heartbeat projection, ST-017 sandbox validation, StegFin phone projection, and the main-push public-wallet observer.
+
+This means routine commits outside those source/config surfaces can still start the complete hosted Site bootstrap job. The workflow is credential-clean (`permissions: {}` and explicit GitHub credential refusal), but credential cleanliness does not remove its hosted-runner cost. The safe repair is trigger narrowing, not disabling validation: retain automatic execution for source/schema/config/workflow changes that affect the validators, exclude routine heartbeat carrier state, receipts, observations, projections, and unrelated persistence, and preserve `workflow_dispatch` for intentional full checks.
+
+Direct mutation was not performed in this pass because the live Site claim registry currently contains an active validation claim (`SITE-STEGFIN-IOS-LOCAL-WALLET-TRANSPORT-388-20260817`) whose `claimed_paths` explicitly include `.github/workflows/validate.yml`; the Site pre-work policy requires one active owner per dependency surface. The fanout defect therefore remains open until that claim releases or the canonical Site claim gate admits a non-overlapping repair.
+
 ## Remaining work
 
 1. Continue Healer #34 only after active-owner reconciliation for the remaining owner-sensitive `.github` surfaces.
 2. Consume the Site B27 sovereign scheduler receipt when it actually exists; do not substitute hosted CI.
 3. Acquire a distinct Site pre-work claim before retiring the redundant VA guide scheduled/writeback/artifact workflow.
-4. Obtain repository-wide quantitative post-repair run history when a supported reader exists.
+4. After the active Site publication-validation claim releases, admit and implement trigger narrowing for `.github/workflows/validate.yml` while preserving source/schema/config automatic validation and manual full validation.
+5. Obtain repository-wide quantitative post-repair run history when a supported reader exists.
 
 ## Release / propagation
 
