@@ -89,6 +89,25 @@ b83e1530d225d6bd46bff6562424d632a5eb37f8
   - rejects missing terminal worker evidence
 ```
 
+## Exact terminal claim binding hardening
+
+A second direct inspection found that `_terminal_worker_event()` still allowed a terminal worker event whose top-level `claim_id` was absent. That meant a valid fresh assignment could be paired with an unbound terminal event and still pass verification.
+
+Corrected on `main`:
+
+```text
+b566f63c123439c792503a2cf1b7b03e6ea3ac85
+  scripts/run_live_009_resident.py
+  - terminal worker evidence must carry the exact fresh assignment claim_id
+  - claim_id=null no longer satisfies terminal proof
+  - a different claim_id no longer satisfies terminal proof
+
+db15bf305542500de5e9ce3e38bd4ace367eb4a3
+  tests/test_live_009_resident_runner.py
+  - rejects terminal event with no claim binding
+  - rejects terminal event bound to a different claim
+```
+
 These are source/verification repairs only. They are not runtime proof.
 
 ## Required terminal evidence
@@ -140,11 +159,12 @@ source_admission_ref=<present>
 source_carrier_event_ref=null
 ```
 
-`events/worker-runtime.jsonl` must contain terminal evidence for that fresh claim:
+`events/worker-runtime.jsonl` must contain terminal evidence bound to that exact fresh claim:
 
 ```text
-HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009
-INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED
+task_id=HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009
+claim_id=<same claim_id as fresh assignment>
+transition_id=INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED
 ```
 
 ## Validation / live state
