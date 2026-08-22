@@ -1,0 +1,72 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "TASK-2026-0007",
+  "organization": "StegVerse-Labs",
+  "goal": "Reconcile StegVerse-Labs/Site to one primary governed conversational surface consumed by specialty capability families, and install one shared conversational capability contract for general/Ecosystem, VACC, mathematics, and future specialties without duplicating provider/runtime authority.",
+  "status": "queued",
+  "requested_at": "2026-08-22T04:39:00Z",
+  "priority_class": "release",
+  "rank_reason": [
+    "StegVerse-Labs/Site#239 now canonically defines four governed capability families through the unified conversational surface rather than four competing primary chat applications",
+    "StegVerse-Labs/Site#113 now defines VACC as the broad VA specialty capability consumed by the shared surface",
+    "StegVerse-Labs/Site#240 now defines the universal mathematics educator capability, including image-to-transcription-to-guided-solution behavior",
+    "legacy Site handoffs and machine status still contain older four-app/two-entry wording that can drive duplicate UI/runtime implementation if not reconciled",
+    "the common capability contract must be installed once before specialty implementations continue to diverge"
+  ],
+  "requirements": {
+    "mandatory": [
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-Labs",
+          "name": "Site",
+          "full_name": "StegVerse-Labs/Site",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": true,
+        "scope": {
+          "paths": [
+            "docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+            "data/unified-conversational-capabilities.json",
+            "scripts/check_unified_conversational_capabilities.py",
+            "tests/test_unified_conversational_capabilities.py",
+            "docs/STEGGATE_FOUR_APP_MIRROR_HANDOFF.md",
+            "data/steggate-four-app-status.json",
+            "scripts/check_steggate_four_app_status.py",
+            "docs/VA_CLAIM_ASSISTANT_MIRROR_HANDOFF.md",
+            "math-solver/README.md",
+            "docs/TWO_ENTRY_POINTS_MIRROR_HANDOFF.md",
+            "data/two-entry-points-execution-state.json",
+            "docs/SITE_UNIFIED_GOVERNED_EXPERIENCE_STATUS.md"
+          ],
+          "contracts": [
+            "stegverse.site.unified-conversational-capability.v1"
+          ],
+          "release_surfaces": [
+            "site:unified-conversational-capability-contract"
+          ],
+          "capabilities": [
+            "shared-conversation-runtime-contract",
+            "specialty-capability-routing",
+            "vacc-va-specialty-profile",
+            "mathematics-educator-specialty-profile"
+          ],
+          "workflows": [],
+          "dependency_surfaces": [
+            "site:unified-conversational-capability-contract"
+          ]
+        }
+      }
+    ],
+    "optional": []
+  },
+  "dependencies": [],
+  "workspace": {
+    "branch": "claim/unified-conversational-capabilities-site-239-r1",
+    "base_commit": "0379829cd0bbdd2d637639e1a436e38ba31a0a94",
+    "merge_target": "main",
+    "direct_push_allowed": false,
+    "pull_request_required": true
+  }
+}
