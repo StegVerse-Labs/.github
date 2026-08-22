@@ -6,6 +6,8 @@ import importlib.util
 import json
 import os
 import secrets
+import socket
+import stat
 import subprocess
 import sys
 import time
@@ -18,6 +20,12 @@ from urllib.request import urlopen
 ROOT = Path(__file__).resolve().parents[1]
 HELPER_PATH = ROOT / "workers" / "test_lanes_autolaunch_worker.py"
 PROVIDERS = ("openai", "anthropic", "deepseek", "kimi")
+PROVIDER_SECRET_FILES = {
+    "openai": "provider_openai",
+    "anthropic": "provider_anthropic",
+    "deepseek": "provider_deepseek",
+    "kimi": "provider_kimi",
+}
 FORBIDDEN_SECRET_ENV = (
     "OPENAI_API_KEY",
     "ANTHROPIC_API_KEY",
@@ -133,16 +141,12 @@ def start_test_primary(micro_node_root: Path, endpoint: str) -> subprocess.Popen
     try:
         wait_for_primary(endpoint, timeout_seconds=10.0)
     except Exception:
-        process.terminate()
-        try:
-            process.wait(timeout=3)
-        except subprocess.TimeoutExpired:
-            process.kill()
+        stop_process(process)
         raise
     return process
 
 
-def stop_test_primary(process: subprocess.Popen[str] | None) -> None:
+def stop_process(process: subprocess.Popen[str] | None) -> None:
     if process is None or process.poll() is not None:
         return
     process.terminate()
@@ -151,6 +155,100 @@ def stop_test_primary(process: subprocess.Popen[str] | None) -> None:
     except subprocess.TimeoutExpired:
         process.kill()
         process.wait(timeout=2)
+
+
+def unix_health(socket_path: Path) -> bool:
+    request = json.dumps({"operation": "health"}, separators=(",", ":")).encode("utf-8") + b"\n"
+    try:
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
+            client.settimeout(1.0)
+            client.connect(str(socket_path))
+            client.sendall(request)
+            raw = client.recv(65536).split(b"\n", 1)[0]
+        value = json.loads(raw.decode("utf-8"))
+        return isinstance(value, Mapping) and value.get("decision") == "READY"
+    except Exception:
+        return False
+
+
+def wait_unix_health(socket_path: Path, timeout_seconds: float = 10.0) -> None:
+    deadline = time.monotonic() + timeout_seconds
+    while time.monotonic() < deadline:
+        if unix_health(socket_path):
+            return
+        time.sleep(0.1)
+    raise RuntimeError(f"TVC service did not become READY: {socket_path}")
+
+
+def provider_secret_paths(governance_root: Path) -> dict[str, Path]:
+    secret_dir = governance_root / "runtime-secrets"
+    result = {provider: secret_dir / name for provider, name in PROVIDER_SECRET_FILES.items()}
+    missing = [provider for provider, path in result.items() if not path.is_file()]
+    if missing:
+        raise RuntimeError("TVC_PROVIDER_CREDENTIAL_REGISTRATION_REQUIRED:" + ",".join(missing))
+    for provider, path in result.items():
+        metadata = path.stat()
+        if not stat.S_ISREG(metadata.st_mode):
+            raise RuntimeError(f"TVC_PROVIDER_SECRET_NOT_REGULAR:{provider}")
+        if metadata.st_mode & (stat.S_IRWXG | stat.S_IRWXO):
+            raise RuntimeError(f"TVC_PROVIDER_SECRET_PERMISSIONS_TOO_BROAD:{provider}")
+        if metadata.st_size <= 0:
+            raise RuntimeError(f"TVC_PROVIDER_SECRET_EMPTY:{provider}")
+    return result
+
+
+def start_tvc_vault_services(governance_root: Path, run_dir: Path) -> tuple[subprocess.Popen[str], subprocess.Popen[str], Path, Path]:
+    root = require_root(governance_root, (
+        "stegwallet/container_vault_agent.py",
+        "scripts/run_vault_broker.py",
+    ), "stegfin-governance")
+    secrets_by_provider = provider_secret_paths(root)
+    service_dir = run_dir / "tvc-runtime"
+    service_dir.mkdir(parents=True, exist_ok=True)
+    agent_socket = service_dir / "vault-agent.sock"
+    broker_socket = service_dir / "vault-broker.sock"
+    agent_command = [sys.executable, "-m", "stegwallet.container_vault_agent", "--socket", str(agent_socket)]
+    for provider in PROVIDERS:
+        agent_command.extend(["--provider-secret-file", f"{provider}={secrets_by_provider[provider]}"])
+    environment = {
+        "PATH": os.environ.get("PATH", ""),
+        "PYTHONPATH": str(root),
+        "HOME": os.environ.get("HOME", ""),
+        "LANG": os.environ.get("LANG", "C.UTF-8"),
+        "LC_ALL": os.environ.get("LC_ALL", "C.UTF-8"),
+    }
+    agent = subprocess.Popen(
+        agent_command,
+        cwd=root,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        env=environment,
+    )
+    broker: subprocess.Popen[str] | None = None
+    try:
+        wait_unix_health(agent_socket)
+        broker = subprocess.Popen(
+            [sys.executable, "scripts/run_vault_broker.py", "--broker-socket", str(broker_socket), "--vault-agent-socket", str(agent_socket)],
+            cwd=root,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            env=environment,
+        )
+        wait_unix_health(broker_socket)
+        return agent, broker, agent_socket, broker_socket
+    except Exception:
+        stop_process(broker)
+        stop_process(agent)
+        for path in (broker_socket, agent_socket):
+            try:
+                path.unlink()
+            except FileNotFoundError:
+                pass
+        raise
 
 
 def assert_full_nine_ready(plan: Mapping[str, Any]) -> None:
@@ -176,10 +274,12 @@ def main() -> int:
     parser.add_argument("--tvc-root", type=Path, default=Path(os.environ.get("STEGVERSE_TVC_ROOT", Path.home() / ".stegverse" / "workloads" / "TVC")))
     parser.add_argument("--test-lanes-root", type=Path, default=Path(os.environ.get("STEGVERSE_TEST_LANES_ROOT", Path.home() / ".stegverse" / "workloads" / "workflows")))
     parser.add_argument("--micro-node-root", type=Path, default=Path(os.environ.get("STEGVERSE_MICRO_NODE_ROOT", Path.home() / ".stegverse" / "workloads" / "micro-node-runtime")))
+    parser.add_argument("--stegfin-governance-root", type=Path, default=Path(os.environ.get("STEGVERSE_STEGFIN_GOVERNANCE_ROOT", Path.home() / ".stegverse" / "workloads" / "stegfin-governance")))
     parser.add_argument("--primary-endpoint", default=os.environ.get("STEGVERSE_PRIMARY_ENDPOINT", "http://127.0.0.1:11435"))
     parser.add_argument("--launch-primary-if-needed", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--vault-agent-socket", default=os.environ.get("STEGVERSE_VAULT_AGENT_SOCKET", "/run/stegverse/vault-agent.sock"))
     parser.add_argument("--vault-broker-socket", default=os.environ.get("STEGVERSE_VAULT_BROKER_SOCKET", "/run/stegverse/vault-broker.sock"))
+    parser.add_argument("--launch-vault-services-if-needed", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--model-selection", type=Path)
     parser.add_argument("--run-root", type=Path, default=Path.home() / ".stegverse" / "test-lanes" / "runs")
     args = parser.parse_args()
@@ -198,6 +298,9 @@ def main() -> int:
     }
     run_dir: Path | None = None
     primary_process: subprocess.Popen[str] | None = None
+    vault_agent_process: subprocess.Popen[str] | None = None
+    vault_broker_process: subprocess.Popen[str] | None = None
+    service_sockets: tuple[Path, Path] | None = None
     try:
         preflight_environment()
         tvc_root = require_root(args.tvc_root, (
@@ -217,6 +320,9 @@ def main() -> int:
         model_path = (args.model_selection or (tvc_root / "config" / "test_lanes_model_selection.sv-cost-nine-lane.v1.json")).resolve()
         models = validate_model_selection(model_path)
 
+        run_dir = args.run_root.expanduser().resolve() / receipt["run_id"].replace(":", "_")
+        run_dir.mkdir(parents=True, exist_ok=False)
+
         try:
             health = primary_health(args.primary_endpoint)
             primary_mode = "PREEXISTING_LOOPBACK_RUNTIME"
@@ -227,14 +333,20 @@ def main() -> int:
             health = primary_health(args.primary_endpoint)
             primary_mode = "BOUNDED_CANONICAL_TEST_PROCESS"
 
-        if not Path(args.vault_agent_socket).exists():
-            raise RuntimeError("TVC vault-agent socket is not present")
-        if not Path(args.vault_broker_socket).exists():
-            raise RuntimeError("TVC vault-broker socket is not present")
+        configured_agent_socket = Path(args.vault_agent_socket)
+        configured_broker_socket = Path(args.vault_broker_socket)
+        if unix_health(configured_agent_socket) and unix_health(configured_broker_socket):
+            vault_agent_socket = configured_agent_socket
+            vault_broker_socket = configured_broker_socket
+            vault_mode = "PREEXISTING_TVC_SERVICES"
+        else:
+            if not args.launch_vault_services_if_needed:
+                raise RuntimeError("TVC_VAULT_SERVICES_NOT_READY")
+            vault_agent_process, vault_broker_process, vault_agent_socket, vault_broker_socket = start_tvc_vault_services(args.stegfin_governance_root, run_dir)
+            service_sockets = (vault_agent_socket, vault_broker_socket)
+            vault_mode = "BOUNDED_EXISTING_TVC_SERVICES"
 
-        run_dir = args.run_root.expanduser().resolve() / receipt["run_id"].replace(":", "_")
-        run_dir.mkdir(parents=True, exist_ok=False)
-        plan, plan_steps = HELPERS.plan_and_resolve(tvc_root, lanes_root, run_dir, args.vault_agent_socket)
+        plan, plan_steps = HELPERS.plan_and_resolve(tvc_root, lanes_root, run_dir, str(vault_agent_socket))
         if not isinstance(plan, Mapping):
             raise RuntimeError("TVC capsule materialization/resolution did not produce a plan")
         assert_full_nine_ready(plan)
@@ -243,6 +355,8 @@ def main() -> int:
         receipt["model_selection_ref"] = str(model_path)
         receipt["primary_runtime_mode"] = primary_mode
         receipt["primary_runtime_was_started_by_direct_runner"] = primary_process is not None
+        receipt["vault_runtime_mode"] = vault_mode
+        receipt["vault_services_were_started_by_direct_runner"] = vault_agent_process is not None or vault_broker_process is not None
         receipt["primary_health"] = {
             "state": health.get("state"),
             "model": health.get("model"),
@@ -262,7 +376,7 @@ def main() -> int:
             tvc_root=tvc_root,
             lanes_root=lanes_root,
             run_dir=run_dir,
-            vault_broker_socket=args.vault_broker_socket,
+            vault_broker_socket=str(vault_broker_socket),
         )
         receipt["execution"] = execution
         comparison = execution.get("comparison") if isinstance(execution, Mapping) else None
@@ -273,8 +387,19 @@ def main() -> int:
         receipt["reason"] = str(exc)
         receipt["finished_at"] = datetime.now(timezone.utc).isoformat()
     finally:
+        if vault_broker_process is not None:
+            stop_process(vault_broker_process)
+        if vault_agent_process is not None:
+            stop_process(vault_agent_process)
+        if service_sockets is not None:
+            for path in service_sockets:
+                try:
+                    path.unlink()
+                except FileNotFoundError:
+                    pass
+            receipt["bounded_vault_services_stopped"] = True
         if primary_process is not None:
-            stop_test_primary(primary_process)
+            stop_process(primary_process)
             receipt["primary_test_process_stopped"] = True
 
     if run_dir is None:
