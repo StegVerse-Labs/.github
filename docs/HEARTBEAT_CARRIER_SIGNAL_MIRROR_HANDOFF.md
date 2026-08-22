@@ -1,6 +1,6 @@
 # Heartbeat Carrier Signal Mirror Handoff
 
-Updated: 2026-08-21T10:26:00-05:00
+Updated: 2026-08-22T07:20:00-05:00
 
 ## Canonical authority
 
@@ -59,6 +59,8 @@ schemas/heartbeat-carrier-observation.schema.json
 control/runtime-separation-contract.json
 management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json
 scripts/run_heartbeat_runtime.py
+scripts/install_sovereign_heartbeat_carrier.py   # direct carrier-only native activation
+scripts/install_sovereign_heartbeat_service.py   # combined compatibility installer
 scripts/run_worker_runtime.py
 scripts/advance_heartbeat_transition.py          # compatibility sampler/verifier, not a clock
 scripts/verify_iphone_heartbeat_transition_receipt.py
@@ -67,6 +69,35 @@ scripts/verify_iphone_heartbeat_transition_receipt.py
 `engine_v13.HeartbeatRuntime` is the canonical carrier class. It inherits oscillator-derived sampling behavior and applies authority-neutral registry-fragment observation before optional compatibility assignment-trigger derivation. Those packets grant no execution authority and are not prerequisites for independently authorized WorkerCoordinator admission.
 
 `OscillatorProducer` derives phase deadlines/references independently. Runtime observation is non-causal.
+
+## Zero-third-party resident startup
+
+The preferred resident activation path is now:
+
+```text
+python scripts/install_sovereign_heartbeat_carrier.py
+```
+
+That path materializes the StegVerse runtime from the local repository, registers only the heartbeat carrier with the resident operating system's native process supervisor, and starts the canonical `engine_v13` carrier continuously. It deliberately does not start WorkerCoordinator.
+
+Required startup properties:
+
+```text
+activation scope: CARRIER_ONLY
+worker runtime required for carrier start: false
+worker claim/fence/lease required for carrier start: false
+network fetch required: false
+third-party process host required: false
+third-party scheduler required: false
+third-party deployment required: false
+GitHub runtime dependency: false
+credential requirement: NONE
+credential authority: TV/TVC
+```
+
+The native operating-system supervisor is part of the resident StegVerse host execution surface, not a third-party runtime dependency. WorkerCoordinator startup and task/control-plane execution remain separate downstream obligations.
+
+The corresponding resident-start task is `HEARTBEAT-OSCILLATOR-RESIDENT-START-012`. Its post-start evidence is `receipts/sovereign-host/carrier-activation.latest.json`. `HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009` is a verifier of the already-running carrier and must not be used as a startup prerequisite.
 
 ## Capacity/envelope separation
 
@@ -91,9 +122,9 @@ Heartbeat is not a scheduler, task dispatcher, route executor, claim/fence/lease
 
 ## Validation obligation
 
-Required deterministic invariants include same-sample stability, <10 ms no increment, 10 ms exactly +1, delayed observation skipping references according to elapsed phase, oscillator-only derivation, observation-only persistence, v13 canonical carrier identity, WorkerCoordinator independence, TV/TVC credential authority, and GitHub-token runtime authority NONE.
+Required deterministic invariants include same-sample stability, <10 ms no increment, 10 ms exactly +1, delayed observation skipping references according to elapsed phase, oscillator-only derivation, observation-only persistence, v13 canonical carrier identity, WorkerCoordinator independence, direct carrier-only resident startup, TV/TVC credential authority, and GitHub-token runtime authority NONE.
 
-Repository deterministic validation reached 457/457 PASS on the oscillator conversion lineage. Later corrections reconciled stale v12 compatibility assertions and worker projection semantics. Hosted validation remains validation evidence only.
+Repository deterministic validation reached 457/457 PASS on the oscillator conversion lineage. Later corrections reconciled stale v12 compatibility assertions and worker projection semantics. The carrier-only installer has focused regression coverage proving that the worker activation command is not executed by the direct carrier path. Hosted validation remains validation evidence only.
 
 ## Live proof
 
@@ -115,7 +146,9 @@ independent oscillator semantics: COMPLETE_SOURCE
 canonical carrier implementation: engine_v13
 engine_v12: COMPATIBILITY_BASE_ONLY
 oscillator producer: COMPLETE_SOURCE
+carrier-only native startup path: COMPLETE_SOURCE
 worker-trigger causality: NONE
+resident carrier activation receipt: PENDING MACHINE EXECUTION
 resident oscillator-backed observation: PENDING MACHINE EXECUTION
 live proof 009: HANDOFF_READY / NOT COMPLETED
 archive_ready: false
