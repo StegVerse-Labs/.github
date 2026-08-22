@@ -6,7 +6,9 @@ import importlib.util
 import json
 import os
 import secrets
+import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
@@ -96,6 +98,61 @@ def primary_health(endpoint: str) -> dict[str, Any]:
     return health
 
 
+def wait_for_primary(endpoint: str, timeout_seconds: float = 10.0) -> dict[str, Any]:
+    deadline = time.monotonic() + timeout_seconds
+    last_error: Exception | None = None
+    while time.monotonic() < deadline:
+        try:
+            return primary_health(endpoint)
+        except Exception as exc:
+            last_error = exc
+            time.sleep(0.1)
+    raise RuntimeError(f"StegVerse PRIMARY did not become READY: {last_error}")
+
+
+def start_test_primary(micro_node_root: Path, endpoint: str) -> subprocess.Popen[str]:
+    parsed = urlparse(endpoint)
+    if parsed.scheme != "http" or parsed.hostname not in {"127.0.0.1", "localhost", "::1"} or not isinstance(parsed.port, int):
+        raise RuntimeError("auto-launch primary requires explicit loopback http endpoint with port")
+    root = require_root(micro_node_root, ("tools/run_sovereign_model.py",), "micro-node")
+    process = subprocess.Popen(
+        [sys.executable, "tools/run_sovereign_model.py", "--host", str(parsed.hostname), "--port", str(parsed.port)],
+        cwd=root,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        env={
+            "PATH": os.environ.get("PATH", ""),
+            "PYTHONPATH": str(root),
+            "HOME": os.environ.get("HOME", ""),
+            "LANG": os.environ.get("LANG", "C.UTF-8"),
+            "LC_ALL": os.environ.get("LC_ALL", "C.UTF-8"),
+        },
+    )
+    try:
+        wait_for_primary(endpoint, timeout_seconds=10.0)
+    except Exception:
+        process.terminate()
+        try:
+            process.wait(timeout=3)
+        except subprocess.TimeoutExpired:
+            process.kill()
+        raise
+    return process
+
+
+def stop_test_primary(process: subprocess.Popen[str] | None) -> None:
+    if process is None or process.poll() is not None:
+        return
+    process.terminate()
+    try:
+        process.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.wait(timeout=2)
+
+
 def assert_full_nine_ready(plan: Mapping[str, Any]) -> None:
     if plan.get("state") != "READY" or plan.get("primary_provider") != "stegverse_local":
         raise RuntimeError("canonical Test Lanes plan is not READY with StegVerse local PRIMARY")
@@ -118,7 +175,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run the canonical StegVerse nine-lane experiment directly without heartbeat/G18 dependency.")
     parser.add_argument("--tvc-root", type=Path, default=Path(os.environ.get("STEGVERSE_TVC_ROOT", Path.home() / ".stegverse" / "workloads" / "TVC")))
     parser.add_argument("--test-lanes-root", type=Path, default=Path(os.environ.get("STEGVERSE_TEST_LANES_ROOT", Path.home() / ".stegverse" / "workloads" / "workflows")))
-    parser.add_argument("--primary-endpoint", default=os.environ.get("STEGVERSE_PRIMARY_ENDPOINT", "http://127.0.0.1:8765"))
+    parser.add_argument("--micro-node-root", type=Path, default=Path(os.environ.get("STEGVERSE_MICRO_NODE_ROOT", Path.home() / ".stegverse" / "workloads" / "micro-node-runtime")))
+    parser.add_argument("--primary-endpoint", default=os.environ.get("STEGVERSE_PRIMARY_ENDPOINT", "http://127.0.0.1:11435"))
+    parser.add_argument("--launch-primary-if-needed", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--vault-agent-socket", default=os.environ.get("STEGVERSE_VAULT_AGENT_SOCKET", "/run/stegverse/vault-agent.sock"))
     parser.add_argument("--vault-broker-socket", default=os.environ.get("STEGVERSE_VAULT_BROKER_SOCKET", "/run/stegverse/vault-broker.sock"))
     parser.add_argument("--model-selection", type=Path)
@@ -138,6 +197,7 @@ def main() -> int:
         "credential_material_present": False,
     }
     run_dir: Path | None = None
+    primary_process: subprocess.Popen[str] | None = None
     try:
         preflight_environment()
         tvc_root = require_root(args.tvc_root, (
@@ -156,7 +216,17 @@ def main() -> int:
         ), "Test Lanes")
         model_path = (args.model_selection or (tvc_root / "config" / "test_lanes_model_selection.sv-cost-nine-lane.v1.json")).resolve()
         models = validate_model_selection(model_path)
-        health = primary_health(args.primary_endpoint)
+
+        try:
+            health = primary_health(args.primary_endpoint)
+            primary_mode = "PREEXISTING_LOOPBACK_RUNTIME"
+        except Exception:
+            if not args.launch_primary_if_needed:
+                raise
+            primary_process = start_test_primary(args.micro_node_root, args.primary_endpoint)
+            health = primary_health(args.primary_endpoint)
+            primary_mode = "BOUNDED_CANONICAL_TEST_PROCESS"
+
         if not Path(args.vault_agent_socket).exists():
             raise RuntimeError("TVC vault-agent socket is not present")
         if not Path(args.vault_broker_socket).exists():
@@ -171,6 +241,8 @@ def main() -> int:
 
         receipt["model_selection"] = models
         receipt["model_selection_ref"] = str(model_path)
+        receipt["primary_runtime_mode"] = primary_mode
+        receipt["primary_runtime_was_started_by_direct_runner"] = primary_process is not None
         receipt["primary_health"] = {
             "state": health.get("state"),
             "model": health.get("model"),
@@ -200,6 +272,10 @@ def main() -> int:
         receipt["state"] = "BLOCKED"
         receipt["reason"] = str(exc)
         receipt["finished_at"] = datetime.now(timezone.utc).isoformat()
+    finally:
+        if primary_process is not None:
+            stop_test_primary(primary_process)
+            receipt["primary_test_process_stopped"] = True
 
     if run_dir is None:
         args.run_root.expanduser().resolve().mkdir(parents=True, exist_ok=True)
