@@ -1,0 +1,66 @@
+{
+  "schema": "stegverse.derived-task-projection/v1",
+  "subject": "StegVerse-Labs/Site:unified-conversational-capability",
+  "source_handoff_ref": "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+  "source_state_vector_ref": "control/state-projections/unified-conversational-capability.json",
+  "source_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+  "authority_effect": "NONE",
+  "projection_state": "PROPAGATING",
+  "tasks": [
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-SPECIALTY-001",
+      "goal": "Connect Mathematics Educator specialty execution to the shared conversational state contract without creating a competing primary chat surface.",
+      "state": "DESIRED",
+      "source_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+      "source_state_vector_ref": "control/state-projections/unified-conversational-capability.json",
+      "source_handoff_ref": "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+      "authority": {
+        "domain": "SITE_CONVERSATIONAL_ALIGNMENT",
+        "ceiling_ref": "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+        "effect": "NONE_UNTIL_SEPARATELY_ADMITTED"
+      },
+      "success_predicates": [
+        "math specialty is routable from ecosystem-chat.html",
+        "governed solver/tool execution remains replayable when applicable",
+        "no duplicate primary conversational authority is introduced"
+      ]
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-HIL-SPECIALTY-001",
+      "goal": "Connect HIL specialty routing/execution to the shared conversational state contract while preserving its distinct participant/experiment destination.",
+      "state": "DESIRED",
+      "source_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+      "source_state_vector_ref": "control/state-projections/unified-conversational-capability.json",
+      "source_handoff_ref": "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+      "authority": {
+        "domain": "SITE_CONVERSATIONAL_ALIGNMENT",
+        "ceiling_ref": "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+        "effect": "NONE_UNTIL_SEPARATELY_ADMITTED"
+      },
+      "success_predicates": [
+        "HIL specialty is discoverable/routable from ecosystem-chat.html",
+        "humans-as-interoperability-layer.html remains the canonical specialty destination",
+        "no duplicate primary conversational authority is introduced"
+      ]
+    },
+    {
+      "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "goal": "Advance the distinct resident sovereign carrier proof without invalidating or repeating the already-proven browser/device-local execution topology.",
+      "state": "REFERENCE_EXISTING_TASK",
+      "existing_task_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+      "source_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+      "source_state_vector_ref": "control/state-projections/unified-conversational-capability.json",
+      "source_handoff_ref": "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+      "authority": {
+        "domain": "REFERENCE_ONLY",
+        "ceiling_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+        "effect": "NONE"
+      },
+      "success_predicates": [
+        "resident carrier proof remains a distinct evidence path",
+        "browser/device-local proof is not redundantly re-requested",
+        "existing carrier task authority is not expanded by this projection"
+      ]
+    }
+  ]
+}

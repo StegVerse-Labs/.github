@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/semantic-state-delta-v1.schema.json",
+  "title": "StegVerse Semantic State Delta v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "subject", "source_state_hash", "target_state_hash", "changes", "affected_scopes", "authority_effect", "evidence_refs"],
+  "properties": {
+    "schema": {"const": "stegverse.semantic-state-delta/v1"},
+    "subject": {"type": "string", "minLength": 1},
+    "source_state_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "target_state_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "source_ref": {"type": ["string", "null"]},
+    "source_revision": {"type": ["string", "integer", "null"]},
+    "changes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["before", "after"],
+        "properties": {
+          "before": {},
+          "after": {},
+          "criticality": {"enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]}
+        }
+      }
+    },
+    "affected_scopes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "authority_effect": {"type": "string", "minLength": 1},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+  }
+}

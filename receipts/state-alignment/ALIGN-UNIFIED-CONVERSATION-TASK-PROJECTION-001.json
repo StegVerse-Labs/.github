@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.master-records-alignment-transition/v1",
+  "transition_id": "ALIGN-UNIFIED-CONVERSATION-TASK-PROJECTION-001",
+  "parent_transition_id": null,
+  "source_handoff_ref": "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+  "source_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+  "target_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+  "semantic_delta_hash": "fd044c9d178a4935f94ee1b40038f6efd319cfc9a7ea2a4570bf7afbdab29aa5",
+  "module_id": "StegVerse-Labs/Site:unified-conversational-capability",
+  "endpoint_id": "StegVerse-Labs/.github:control/task-projections/unified-conversational-capability.json",
+  "projection_before_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "projection_after_hash": "70d49ad90948a0e94fb44856ef38890cd29880860407fc3788ca5097629bd3cb",
+  "task_effects": [
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-SPECIALTY-001",
+      "disposition": "PROJECTED_DESIRED_NOT_ADMITTED"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-HIL-SPECIALTY-001",
+      "disposition": "PROJECTED_DESIRED_NOT_ADMITTED"
+    },
+    {
+      "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "disposition": "REFERENCE_EXISTING_NO_AUTHORITY_CHANGE"
+    }
+  ],
+  "alignment_disposition": "PROPAGATING",
+  "reconstruction_state": "PASS",
+  "evidence_refs": [
+    "control/state-projections/unified-conversational-capability.json",
+    "control/task-projections/unified-conversational-capability.json"
+  ],
+  "authority_effect": "NONE",
+  "custody_destination": "master-records/orchestration"
+}

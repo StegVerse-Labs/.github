@@ -101,6 +101,7 @@ def reference_model_proof_verified(proof: dict | None) -> bool:
         proof.get("schema") == "stegverse.sovereign-local-model-proof/v1"
         and proof.get("state") == "VERIFIED_REFERENCE_MODEL_RUNTIME"
         and proof.get("authority_effect") == "NONE"
+        and proof.get("qualifies_as_large_production_llm") is False
         and predicates.get("real_model_process_observed") is True
         and predicates.get("private_endpoint_only") is True
         and predicates.get("real_inference_response_observed") is True
