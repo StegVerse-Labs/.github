@@ -1,19 +1,15 @@
 {
   "schema": "stegverse.actions-fanout-workflow-inventory/v1",
-  "date": "2026-08-18",
+  "date": "2026-08-22",
   "repository": "StegVerse-Labs/.github",
   "branch": "main",
-  "tree_sha": "5bc4db843c32d0f39fef51afe12f6937d17c8045",
-  "workflow_tree_sha": "e7c11359207c9110f854a9154f6108f8e3ccc1c4",
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": false,
   "render_authority": false,
   "workflow_count": 18,
   "classification_complete": true,
-  "automatic_push_workflow_count": 14,
-  "no_automatic_push_workflow_count": 4,
-  "selectively_repaired_count": 14,
-  "retained_unchanged_count": 4,
+  "automatic_push_workflow_count": 12,
+  "no_automatic_push_workflow_count": 6,
   "workflows": [
     {"path": ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
     {"path": ".github/workflows/activate-host-self-attest-worker.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
@@ -21,7 +17,7 @@
     {"path": ".github/workflows/all-org-heartbeat-federation.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
     {"path": ".github/workflows/archive-readiness-validate.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
     {"path": ".github/workflows/external-timing-match-validation.yml", "classification": "RETAIN_PR_MANUAL_ONLY", "automatic_push": false},
-    {"path": ".github/workflows/heartbeat-worker-project.yml", "classification": "SELECTIVE_REPAIR_INSTALLED_CORRECTED", "automatic_push": true, "repair_commit": "cf4a028047b2359c333cfae150963448e1c41522", "removed_main_push_paths": ["handoffs/**", "cost-basis/worker-runtime/**"], "retained_pr_paths": ["handoffs/**", "cost-basis/worker-runtime/**"]},
+    {"path": ".github/workflows/heartbeat-worker-project.yml", "classification": "DIRECT_MAIN_FANOUT_CONTAINED_PR_MANUAL_RETAINED", "automatic_push": false, "latest_repair_commit": "f55b7d653044bb2e1be3c6b2c2e736241389c3ab", "prior_repair_commit": "cf4a028047b2359c333cfae150963448e1c41522"},
     {"path": ".github/workflows/mcp-activation-binding-test.yml", "classification": "RETAIN_PR_MANUAL_ONLY", "automatic_push": false},
     {"path": ".github/workflows/native-process-worker-canary.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
     {"path": ".github/workflows/org-control-plane-validate.yml", "classification": "SELECTIVE_REPAIR_INSTALLED_CORRECTED", "automatic_push": true, "repair_commit": "f99f4c3eac76bcac8590c4737f62250ac39330df", "removed_main_push_path": "handoffs/**", "retained_pr_path": "handoffs/**"},
@@ -32,27 +28,28 @@
     {"path": ".github/workflows/sovereign-runtime-self-bootstrap.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
     {"path": ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml", "classification": "RETAIN_PR_ONLY", "automatic_push": false},
     {"path": ".github/workflows/steggate-heartbeat-integration.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true},
-    {"path": ".github/workflows/test-lanes-autolaunch-validation.yml", "classification": "SELECTIVE_REPAIR_INSTALLED", "automatic_push": true}
+    {"path": ".github/workflows/test-lanes-autolaunch-validation.yml", "classification": "DIRECT_MAIN_FANOUT_CONTAINED_PR_MANUAL_RETAINED", "automatic_push": false, "latest_repair_commit": "599cac6417bc67874416d2b0125929a2601f8fe2", "concurrency_cancel_in_progress": true}
   ],
   "retained_rationale": {
-    ".github/workflows/external-timing-match-validation.yml": "No automatic main push fanout; pull-request and manual coverage are intentional.",
-    ".github/workflows/mcp-activation-binding-test.yml": "No automatic main push fanout; pull-request and manual coverage are intentional.",
+    ".github/workflows/external-timing-match-validation.yml": "Pull-request and manual coverage; no automatic main push fanout.",
+    ".github/workflows/mcp-activation-binding-test.yml": "Pull-request and manual coverage; no automatic main push fanout.",
     ".github/workflows/org-heartbeat-watchdog.yml": "Manual diagnostic only.",
-    ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml": "Pull-request only, permissions empty, no GitHub credential authority, fail-closed without private source; no routine main-state fanout to remove."
+    ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml": "Pull-request only and credential-clean/fail-closed.",
+    ".github/workflows/heartbeat-worker-project.yml": "Direct-main hosted validation removed after machine commit storms; pull-request and manual validation retained. This is fanout containment, not runtime activation evidence.",
+    ".github/workflows/test-lanes-autolaunch-validation.yml": "Direct-main hosted validation removed; pull-request/manual validation retained and concurrency cancellation installed. This is fanout containment, not test-lane execution proof."
   },
   "completion_evidence": {
-    "exact_live_tree_inventory": true,
-    "exact_automatic_push_inventory": true,
-    "routine_main_state_persistence_trigger_inventory_complete": false,
-    "automatic_push_surface": "14/14 ENUMERATED; LIVE_TRIGGER_REAUDIT_ACTIVE",
-    "non_push_surface": "4/4 INTENTIONALLY_RETAINED",
-    "org_control_plane_handoff_push_false_positive_corrected": true,
-    "org_control_plane_repair_pr": 229,
-    "org_control_plane_repair_commit": "f99f4c3eac76bcac8590c4737f62250ac39330df",
-    "heartbeat_worker_handoff_cost_push_false_positive_corrected": true,
-    "heartbeat_worker_repair_pr": 230,
-    "heartbeat_worker_repair_commit": "cf4a028047b2359c333cfae150963448e1c41522",
+    "exact_live_file_count": 18,
+    "automatic_push_surface": "12/18",
+    "non_push_surface": "6/18",
+    "heartbeat_worker_direct_main_fanout_contained": true,
+    "heartbeat_worker_containment_commit": "f55b7d653044bb2e1be3c6b2c2e736241389c3ab",
+    "test_lanes_direct_main_fanout_contained": true,
+    "test_lanes_containment_commit": "599cac6417bc67874416d2b0125929a2601f8fe2",
+    "test_lanes_cancel_in_progress": true,
+    "repository_hygiene_owner": "StegVerse-Labs/StegVerse-Healer",
+    "healer_evaluation_pr": 20,
     "post_repair_quantitative_repository_run_history": "AWAITING_SUPPORTED_REPOSITORY_LEVEL_RUN_HISTORY_READ"
   },
-  "status": "ACTIVE_LIVE_TRIGGER_REAUDIT_AND_EVIDENCE_FOLLOWUP_REQUIRED"
+  "status": "ACTIVE_EVIDENCE_FOLLOWUP_AND_HEALER_DEPENDENCY"
 }
