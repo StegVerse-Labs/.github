@@ -1,17 +1,6 @@
 name: Validate Test Lanes Autolaunch
 
 on:
-  push:
-    paths:
-      - "control/test-lanes-autolaunch-matrix.v1.json"
-      - "control/process-worker-adapters.d/test-lanes-autolaunch.json"
-      - "scripts/evaluate_test_lanes_autolaunch_matrix.py"
-      - "workers/test_lanes_autolaunch_worker.py"
-      - "workers/test_lanes_autolaunch_entrypoint.py"
-      - "tests/test_test_lanes_autolaunch_matrix.py"
-      - "tests/test_test_lanes_autolaunch_worker.py"
-      - "tests/test_worker_registry_fragments.py"
-      - ".github/workflows/test-lanes-autolaunch-validation.yml"
   pull_request:
     paths:
       - "control/test-lanes-autolaunch-matrix.v1.json"
@@ -31,6 +20,10 @@ on:
   workflow_dispatch: {}
 
 permissions: {}
+
+concurrency:
+  group: test-lanes-autolaunch-validation-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate:
