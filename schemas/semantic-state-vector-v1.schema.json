@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/semantic-state-vector-v1.schema.json",
+  "title": "StegVerse Semantic State Vector v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "subject", "resolution", "dimensions", "evidence_refs", "authority"],
+  "properties": {
+    "schema": {"const": "stegverse.semantic-state-vector/v1"},
+    "subject": {"type": "string", "minLength": 1},
+    "resolution": {"type": "string", "minLength": 1},
+    "revision": {"type": ["string", "integer"]},
+    "source_ref": {"type": ["string", "null"]},
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "value"],
+        "properties": {
+          "type": {"enum": ["string", "integer", "number", "boolean", "enum", "set", "object", "unknown"]},
+          "value": {},
+          "unit": {"type": ["string", "null"]},
+          "namespace": {"type": ["string", "null"]},
+          "criticality": {"enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        }
+      }
+    },
+    "evidence_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["effect", "domain"],
+      "properties": {
+        "effect": {"type": "string", "minLength": 1},
+        "domain": {"type": "string", "minLength": 1},
+        "ceiling_ref": {"type": ["string", "null"]}
+      }
+    }
+  }
+}
