@@ -12,7 +12,8 @@
       "evidence_refs": [
         "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
         "workers/tvc_repository_broker_validation_worker.py",
-        "StegVerse-Labs/TVC#92"
+        "StegVerse-Labs/TVC#92",
+        "StegVerse-Labs/TVC@a817cc8aa58ece1ae104ebfc59f4074ccbc60031"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": "StegVerse-Labs/TVC:TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001",
