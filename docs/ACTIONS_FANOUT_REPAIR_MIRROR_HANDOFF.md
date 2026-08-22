@@ -38,6 +38,18 @@ repository-wide quantitative run-history proof: AWAITING_SUPPORTED_READ
 
 ## Latest concrete repairs consumed
 
+### Organization control-plane duplicate broad-main fanout containment
+
+PR #247 merged as `52c64f0fbf2b6375a5546a0a2af0d5000f4fcef4`.
+
+Direct live inspection proved `.github/workflows/org-control-plane-validate.yml` still auto-ran on every `scripts/**`, `tests/**`, and `heartbeat_runtime/**` main change. Those broad globs overlapped specialized validators and caused avoidable duplicate hosted fanout unrelated to routine organization-control changes.
+
+The repair removed those three broad automatic-main globs and replaced them with the exact control-plane scripts and deterministic tests actually executed by this workflow. `schemas/**`, `checks/**`, `tools/validate_active_worker_states.py`, and the workflow definition remain automatic. Pull-request coverage remains broad across control/events/tasks/scripts/heartbeat runtime/tests/handoffs/docs, manual dispatch remains available, concurrency cancellation remains enabled, and `permissions: {}` / anonymous no-token source acquisition remain unchanged.
+
+This was a fanout/cost repair only. It did not consolidate/delete workflow files, acquire Healer hygiene authority, mutate runtime state, or introduce credential/claim/fence/deployment authority.
+
+Machine evidence update: `712d499a16c1821add872a64ef931db8c07073ee`.
+
 ### Heartbeat Worker Project direct-main fanout containment
 
 Commit `f55b7d653044bb2e1be3c6b2c2e736241389c3ab` removed the `push` trigger from `.github/workflows/heartbeat-worker-project.yml` after direct-to-main machine commit storms were proven to launch the hosted validation lane. Pull-request validation and manual dispatch remain. No scheduler, heartbeat carrier, claim, fence, credential, or runtime authority was introduced.
@@ -56,11 +68,11 @@ That merge admits the workflow-hygiene evaluation document into the canonical He
 
 Healer issue #34, `Evaluate and execute .github workflow-surface minimization`, is now the active execution surface. It requires independent per-workflow classification, parity preservation, owner reconciliation, admitted consolidation/transfer/elimination, final-count evidence, and exact-current-main validation.
 
-Healer's own mirror handoff now binds PR #33/merge `9090dde4...`, Test Readiness `32577928955`, and issue #34. This fanout lane must consume and re-audit the eventual Healer result; assignment or issue creation does not complete that obligation.
+Healer's own mirror handoff binds PR #33/merge `9090dde4...`, Test Readiness `32577928955`, and issue #34. This fanout lane must consume and re-audit the eventual Healer result; assignment or issue creation does not complete that obligation.
 
 ## Earlier corrective repairs retained as evidence
 
-- `org-control-plane-validate.yml`: PR #229 / `f99f4c3eac76bcac8590c4737f62250ac39330df` removed `handoffs/**` from automatic main push while retaining PR coverage.
+- `org-control-plane-validate.yml`: PR #229 / `f99f4c3eac76bcac8590c4737f62250ac39330df` removed `handoffs/**` from automatic main push while retaining PR coverage; PR #247 / `52c64f0f...` later removed duplicate broad source/test/runtime main globs.
 - `heartbeat-worker-project.yml`: PR #230 / `cf4a028047b2359c333cfae150963448e1c41522` previously removed handoff/cost persistence from main-push paths before the later direct-main containment above.
 - Other previously repaired/narrowed surfaces remain governed by the machine-readable inventory and direct live-file verification.
 
@@ -68,7 +80,7 @@ Healer's own mirror handoff now binds PR #33/merge `9090dde4...`, Test Readiness
 
 Workflow consolidation, deletion, and the preferred 0/1/2 workflow hygiene target are not owned by this lane.
 
-`StegVerse-Labs/StegVerse-Healer#34` now owns execution of the `.github` hygiene evaluation admitted by merged PR #33. It must independently classify workflow surfaces, preserve validation parity and active-owner boundaries, and implement any admitted consolidation/transfer/elimination. This fanout lane must consume and re-audit the resulting workflow surface after Healer acts; transfer does not complete that downstream obligation.
+`StegVerse-Labs/StegVerse-Healer#34` owns execution of the `.github` hygiene evaluation admitted by merged PR #33. It must independently classify workflow surfaces, preserve validation parity and active-owner boundaries, and implement any admitted consolidation/transfer/elimination. This fanout lane must consume and re-audit the resulting workflow surface after Healer acts; transfer does not complete that downstream obligation.
 
 ## Remaining work
 
