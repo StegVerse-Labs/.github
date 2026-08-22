@@ -1,0 +1,52 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [],
+      "authorized_policy_version": "heartbeat-resident-start-v1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/heartbeat-oscillator-resident-start.json",
+      "evidence_refs": [
+        "handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json",
+        "scripts/install_sovereign_heartbeat_service.py",
+        "heartbeat_runtime/oscillator_producer.py",
+        "heartbeat_runtime/engine_v13.py"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
+      "handoff_ref": "handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "receipts/sovereign-host/activation.latest.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
+      "worker_id": null,
+      "worker_instance_id": null
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:heartbeat-oscillator-resident-start-v1",
+      "authority_source": "handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json#authority",
+      "capabilities": [
+        "heartbeat_runtime_start",
+        "native_process_supervision",
+        "bounded_repository_mutation"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "heartbeat-oscillator-resident-start-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_required": false,
+  "third_party_runtime_required": false
+}
