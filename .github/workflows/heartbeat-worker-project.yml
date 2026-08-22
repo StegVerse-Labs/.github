@@ -1,18 +1,10 @@
 # Validation-only workflow for SHWP control-plane artifacts.
 # It has no scheduler, activation, repository mutation, credential, claim, or fence role.
 # TV/TVC owns credential semantics; worker lifecycle coordination is separate from the heartbeat carrier.
+# Direct-to-main machine commit storms do not launch this hosted validation lane.
 name: Heartbeat Worker Project - Validation Only / No GitHub Token Authority
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'heartbeat_runtime/**'
-      - 'workers/**'
-      - 'tests/**'
-      - 'schemas/**'
-      - 'scripts/**'
-      - '.github/workflows/heartbeat-worker-project.yml'
   pull_request:
     paths:
       - 'handoffs/**'
