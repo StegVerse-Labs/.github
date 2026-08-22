@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.implementation-claim/v1",
+  "task_id": "TASK-LOAD-RESIDENT-START-ADMISSION-012A",
+  "originating_goal": "Remove the same direct-task-control admission gap from HEARTBEAT-OSCILLATOR-RESIDENT-START-012 without making WorkerCoordinator or heartbeat observation a startup prerequisite.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "claimant": "chatgpt-session-task-load-reduction-20260822",
+  "role": "CLAIMED_FOR_IMPLEMENTATION",
+  "claimed_at": "2026-08-22T07:01:00-05:00",
+  "release_condition": "Resident-start registry admission metadata and regression coverage match the existing carrier-only handoff; direct installer startup remains valid and no live start is claimed from source mutation.",
+  "collision_boundaries": [
+    "Do not alter the carrier-only installer semantics.",
+    "Do not make WorkerCoordinator a prerequisite for heartbeat startup.",
+    "Do not mint claims/fences/leases manually.",
+    "Do not widen native-process, credential, route, model, wallet, merge, release, or third-party authority."
+  ],
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "github_token_runtime_authority": "NONE",
+  "third_party_runtime_role": "FORBIDDEN_FOR_PRIMARY_START",
+  "stegverse_primary": true,
+  "state": "ACTIVE"
+}
