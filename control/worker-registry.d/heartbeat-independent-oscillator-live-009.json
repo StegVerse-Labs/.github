@@ -3,8 +3,8 @@
   "fragment_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
   "tasks": [
     {
-      "archive_eligible": false,
-      "archive_reason_codes": [],
+      "archive_eligible": true,
+      "archive_reason_codes": ["TERMINAL_PROTOCOL_PROOF_PASS"],
       "authorized_policy_version": "heartbeat-independent-oscillator-v5-protocol-anchor",
       "block_ref": null,
       "claim_id": null,
@@ -13,54 +13,36 @@
         "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
         "control/heartbeat-protocol-anchor.json",
         "control/heartbeat-live-status.json",
-        "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
         "heartbeat_runtime/independent_oscillator.py",
-        "tests/test_heartbeat_protocol_anchor.py"
+        "tests/test_heartbeat_protocol_anchor.py",
+        "receipts/heartbeat/HEARTBEAT-PROTOCOL-ANCHOR-013-validation.json"
       ],
-      "executor_binding": "AUTHORIZED",
+      "executor_binding": "TERMINAL_DIRECT_DETERMINISTIC_VERIFICATION",
       "external_entity_job_ref": null,
       "goal_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
       "handoff_ref": "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
       "heartbeat_timing": null,
-      "last_checkpoint_ref": "control/heartbeat-protocol-anchor.json",
+      "last_checkpoint_ref": "receipts/heartbeat/HEARTBEAT-PROTOCOL-ANCHOR-013-validation.json",
       "lease": null,
-      "state": "HANDOFF_READY",
+      "state": "COMPLETED",
+      "terminal_transition_id": "INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED",
       "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
       "worker_id": null,
       "worker_instance_id": null,
       "dependencies": [],
-      "admission": {
-        "authority_source": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
-        "authority_domain": "INDEPENDENT_TASK_CONTROL",
-        "heartbeat_reference_only": true,
-        "heartbeat_grants_execution_authority": false,
-        "carrier_trigger_required": false,
-        "fresh_fence_required": true,
-        "minimum_fencing_token_exclusive": 21,
-        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+      "completion": {
+        "result": "PASS",
+        "verification_mode": "DIRECT_DETERMINISTIC_PROTOCOL_DERIVATION",
+        "tests_run": 6,
+        "tests_passed": 6,
         "resident_sampler_required": false,
-        "dependency_release_condition": null
+        "claim_or_fence_required_for_reference_derivation": false,
+        "authority_effect": "NONE"
       }
     }
   ],
-  "workers": [
-    {
-      "adapter_ref": "process:heartbeat-independent-oscillator-live-proof-v1",
-      "authority_source": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
-      "capabilities": [
-        "heartbeat_protocol_derivation_verification",
-        "heartbeat_runtime_observation",
-        "bounded_repository_mutation",
-        "independent_oscillator_live_proof"
-      ],
-      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
-      "executor_type": "repository_worker",
-      "last_seen_at": null,
-      "status": "AVAILABLE",
-      "worker_id": "independent-heartbeat-live-proof-worker"
-    }
-  ],
-  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "workers": [],
+  "authority_effect": "NONE_TERMINAL_VERIFICATION",
   "github_token_required": false,
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_required": false,
