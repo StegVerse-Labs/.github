@@ -3,7 +3,7 @@
   "fragment_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
   "tasks": [
     {
-      "archive_eligible": false,
+      "archive_eligible": true,
       "archive_reason_codes": [],
       "authorized_policy_version": "shwp-single-hb-v0.3-sovereign",
       "block_ref": null,
@@ -13,19 +13,32 @@
         "handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json",
         "authorizations/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json",
         "workers/ecosystem_chat_orphan_recovery_worker.py",
+        "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
         "master-records/orchestration:custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json"
       ],
-      "executor_binding": "AUTHORIZED",
+      "executor_binding": "UNBOUND",
       "external_entity_job_ref": null,
       "goal_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
       "handoff_ref": "handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json",
       "heartbeat_timing": null,
-      "last_checkpoint_ref": "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json",
+      "last_checkpoint_ref": "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
       "lease": null,
-      "state": "HANDOFF_READY",
+      "state": "COMPLETED",
       "task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
       "worker_id": null,
       "worker_instance_id": null,
+      "completion": {
+        "transition_id": "ORPHAN_LIFECYCLE_RECONSTRUCTED",
+        "receipt_ref": "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
+        "recovery_claim_id": "SHWP-RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28-G22",
+        "recovery_fencing_token": 22,
+        "old_fencing_token": 20,
+        "old_authority_ended": true,
+        "old_authority_reused": false,
+        "master_records_custody_valid": true,
+        "successor_authority_granted": false,
+        "next_transition": "SEPARATE_HIGHER_FENCE_PARENT_SUCCESSOR_AUTHORIZATION"
+      },
       "admission": {
         "authority_source": "authorizations/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json",
         "authority_domain": "INDEPENDENT_TASK_CONTROL",
@@ -35,7 +48,7 @@
         "worker_registry_cleanup_required": false,
         "fresh_fence_required": true,
         "minimum_fencing_token_exclusive": 20,
-        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+        "claim_state": "TERMINAL_COMPLETED_NO_REACQUISITION"
       }
     }
   ],
