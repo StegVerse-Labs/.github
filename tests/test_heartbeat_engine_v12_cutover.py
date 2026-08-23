@@ -10,6 +10,12 @@ from heartbeat_runtime.engine_v12 import HeartbeatRuntime
 
 
 class HeartbeatEngineV12CutoverTests(unittest.TestCase):
+    # Historical HB29 -> HB30 replay must remain time-stable even after the
+    # canonical HB32 protocol anchor becomes active in wall-clock time.  These
+    # tests exercise the pre-protocol migration path, so they use a fixed
+    # pre-anchor sample instant rather than implicitly depending on CI's clock.
+    HISTORICAL_CUTOVER_SAMPLE_NS = 2_000_000_000
+
     def _root(self, base: Path) -> Path:
         root = base / "repo"
         control = root / "control"
@@ -101,7 +107,10 @@ class HeartbeatEngineV12CutoverTests(unittest.TestCase):
             root = self._root(Path(tmp))
             legacy_path = root / "control" / "heartbeat-state.json"
             legacy_before = legacy_path.read_bytes()
-            result = HeartbeatRuntime(root).cycle(write=True)
+            result = HeartbeatRuntime(root).cycle(
+                write=True,
+                now_ns=self.HISTORICAL_CUTOVER_SAMPLE_NS,
+            )
 
             self.assertEqual(result["epoch"], 30)
             self.assertEqual(result["runtime_schema"], "stegverse.heartbeat-carrier-runtime-state/v1")
@@ -162,7 +171,7 @@ class HeartbeatEngineV12CutoverTests(unittest.TestCase):
             legacy_path = root / "control" / "heartbeat-state.json"
             legacy_before = legacy_path.read_bytes()
             runtime = HeartbeatRuntime(root)
-            first_ns = 2_000_000_000
+            first_ns = self.HISTORICAL_CUTOVER_SAMPLE_NS
             first = runtime.cycle(write=True, now_ns=first_ns)
             self.assertEqual(first["epoch"], 30)
             receipt_path = root / "receipts" / "heartbeat-schema-cutover" / "HB29.json"
@@ -184,18 +193,21 @@ class HeartbeatEngineV12CutoverTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = self._root(Path(tmp))
             runtime = HeartbeatRuntime(root)
-            runtime.cycle(write=True)
+            runtime.cycle(write=True, now_ns=self.HISTORICAL_CUTOVER_SAMPLE_NS)
             receipt_path = root / "receipts" / "heartbeat-schema-cutover" / "HB29.json"
             receipt_path.unlink()
             with self.assertRaisesRegex(RuntimeError, "without the immutable HB29 cutover receipt"):
-                runtime.cycle(write=True)
+                runtime.cycle(write=True, now_ns=self.HISTORICAL_CUTOVER_SAMPLE_NS)
 
     def test_dry_run_previews_hb30_without_creating_cutover_state(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = self._root(Path(tmp))
             legacy_path = root / "control" / "heartbeat-state.json"
             legacy_before = legacy_path.read_bytes()
-            result = HeartbeatRuntime(root).cycle(write=False)
+            result = HeartbeatRuntime(root).cycle(
+                write=False,
+                now_ns=self.HISTORICAL_CUTOVER_SAMPLE_NS,
+            )
             self.assertEqual(result["epoch"], 30)
             self.assertEqual(result["legacy_hb29_cutover"], "PREVIEW_ONLY")
             self.assertIn("coherent_signal_space", result)
@@ -211,7 +223,10 @@ class HeartbeatEngineV12CutoverTests(unittest.TestCase):
             value["epoch"] = 28
             path.write_text(json.dumps(value) + "\n", encoding="utf-8")
             with self.assertRaisesRegex(RuntimeError, "requires legacy epoch 29"):
-                HeartbeatRuntime(root).cycle(write=True)
+                HeartbeatRuntime(root).cycle(
+                    write=True,
+                    now_ns=self.HISTORICAL_CUTOVER_SAMPLE_NS,
+                )
 
 
 if __name__ == "__main__":
