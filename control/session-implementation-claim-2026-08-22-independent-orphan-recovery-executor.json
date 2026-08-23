@@ -3,16 +3,60 @@
   "task_id": "SHWP-INDEPENDENT-ORPHAN-RECOVERY-EXECUTOR-001",
   "originating_goal": "Execute the already-authorized Ecosystem Chat orphan recovery under independent StegVerse task-control authority without making heartbeat, G18, WorkerCoordinator-specific activity, GitHub Actions, Render, or any third party a prerequisite.",
   "repository": "StegVerse-Labs/.github",
-  "branch": "main",
-  "claim_state": "CLAIMED_FOR_IMPLEMENTATION",
+  "branch": "validate-independent-orphan-recovery-executor-20260822",
+  "claim_state": "COMPLETE_RELEASED_SOURCE_VALIDATED",
   "claimant": "chatgpt-session-independent-orphan-recovery-executor-20260822",
   "claim_created_at": "2026-08-22T07:02:00-05:00",
+  "claim_released_at": "2026-08-22T19:43:00-05:00",
   "claim_release_condition": "Independent bounded executor source, focused tests, and canonical recovery handoff binding are installed; validation passes on the strongest available non-authorizing path; then live execution ownership returns to the admitted StegVerse task-control lane.",
   "owned_surfaces": [
     "scripts/run_independent_orphan_recovery.py",
     "tests/test_independent_orphan_recovery_executor.py",
     "docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md",
     "control/session-implementation-claim-2026-08-22-independent-orphan-recovery-executor.json"
+  ],
+  "source_changes": {
+    "claim_commit": "4c6a36e92eecff8f36aaebc0af2fd9d1beeb29ca",
+    "executor_install_commit": "d30032c737fa356f7481050333c4e152ee3c8433",
+    "heartbeat_snapshot_decoupling_commit": "93febaab3edda6cacee92364741a5091feac1f7a",
+    "focused_test_install_commit": "6195372e64d13a0e8ca55135b3df99eb69209f61",
+    "no_heartbeat_snapshot_regression_commit": "466524be3bd79ba3c8fcfa06ae121909780b9c37",
+    "validation_rebase_head": "dd2eb7ca632d3f376c008ad10b3db1d4b6794f13"
+  },
+  "validation": {
+    "state": "SCOPED_SOURCE_VALIDATION_PASS",
+    "pr": 245,
+    "validated_head": "dd2eb7ca632d3f376c008ad10b3db1d4b6794f13",
+    "heartbeat_worker_run": 32608524799,
+    "heartbeat_worker_job": 97117508606,
+    "org_control_run": 32608524804,
+    "org_control_job": 97117508786,
+    "anonymous_no_github_token_checkout": "PASS",
+    "compile_runtime_workers_scripts": "PASS",
+    "canonical_json_parse": "PASS_324",
+    "executable_handoff_validation": "PASS_39_LIVE_LANES_35",
+    "focused_tests": {
+      "test_acquire_claim_uses_new_generation_without_parent_or_g18_dependency": "PASS",
+      "test_blocked_attempt_releases_claim_for_fresh_retry": "PASS",
+      "test_completed_attempt_releases_recovery_authority_without_minting_parent_authority": "PASS",
+      "test_missing_carrier_snapshot_is_not_an_execution_prerequisite": "PASS",
+      "test_registered_executor_is_independent_and_available": "PASS"
+    },
+    "org_control_validation": "PASS_ALL_STEPS",
+    "repository_wide_suite": "FAIL_UNRELATED_TWO_HEARTBEAT_LIVE_PROOF_STATE_EXPECTATIONS",
+    "repository_wide_suite_failures": [
+      "test_independent_heartbeat_live_proof_registration.IndependentHeartbeatLiveProofRegistrationTests.test_registry_handoff_adapter_and_cost_basis_are_bound expected HANDOFF_READY but observed BLOCKED_DEPENDENCY",
+      "test_task_load_independent_admission.TaskLoadIndependentAdmissionTests.test_heartbeat_live_proof_is_independently_claimable expected HANDOFF_READY but observed BLOCKED_DEPENDENCY"
+    ],
+    "focused_recovery_failures": 0,
+    "non_authorizing_only": true,
+    "github_actions_runtime_authority": "NONE",
+    "live_execution_claimed": false
+  },
+  "release_evidence": [
+    "PR245@dd2eb7ca632d3f376c008ad10b3db1d4b6794f13",
+    "workflow:32608524799/job:97117508606 focused independent orphan recovery tests PASS 5/5",
+    "workflow:32608524804/job:97117508786 organization control validation PASS"
   ],
   "collision_boundaries": [
     "Do not mutate heartbeat carrier state or make heartbeat grant execution authority.",
@@ -24,17 +68,11 @@
     "StegVerse remains primary; third-party support is fallback-only.",
     "TV/TVC remains sole credential/secret/token authority; no NON-TV/TVC secret/token may be introduced."
   ],
-  "expected_evidence": [
-    "Independent executor acquires only an already HANDOFF_READY recovery task validated by the admitted bounded authorization.",
-    "Fresh fencing token is strictly greater than 20 and greater than every currently projected generation/fence.",
-    "ProcessWorkerAdapter enforces the recovery handoff mutation scope and minimal environment allowlist.",
-    "A bounded execution attempt releases its claim after COMPLETED or BLOCKED rather than leaving stale recovery authority active.",
-    "No parent claim/fence is created by the recovery executor."
-  ],
-  "next_task_after_release": "Run the released independent executor on an admitted StegVerse task-control surface; consume PASS into parent HANDOFF_READY reconciliation, then independently admit the parent sovereign inference task under a fresh fence >20.",
+  "next_task_after_release": "Execute the already HANDOFF_READY recovery task on an admitted StegVerse task-control surface using the released standalone executor or canonical independent task-control path; consume recovery PASS into parent HANDOFF_READY reconciliation, then independently admit the parent sovereign inference task under a fresh fence >20.",
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "third_party_role": "FALLBACK_ONLY",
   "primary_runtime_authority": "StegVerse",
-  "archive_dependency": true
+  "archive_dependency": false,
+  "live_activation_complete": false
 }

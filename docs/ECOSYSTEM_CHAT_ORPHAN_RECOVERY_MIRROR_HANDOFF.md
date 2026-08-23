@@ -1,6 +1,6 @@
 # Ecosystem Chat Orphan Recovery Mirror Handoff
 
-Updated: 2026-08-18T18:04:00-05:00
+Updated: 2026-08-22T19:44:00-05:00
 
 ## Authority and scope
 
@@ -8,8 +8,7 @@ This handoff is canonical for recovery task `RECOVER-SHWP-ECOSYSTEM-CHAT-INFEREN
 
 ```text
 repository: StegVerse-Labs/.github
-branch: main
-canonical carrier: separated heartbeat v12
+canonical carrier: independent oscillator-derived heartbeat reference only
 ended parent claim: SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G20
 ended parent fence: 20
 recovery task: RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28
@@ -17,149 +16,125 @@ recovery worker: ecosystem-chat-orphan-recovery-worker
 credential authority: TV/TVC
 local model credential requirement: NONE
 primary runtime/provider: StegVerse
-third-party role: CONTROL_OR_FALLBACK_ONLY
+third_party_role: FALLBACK_ONLY
 github token runtime authority: NONE
-archive_dependency: true
 ```
 
-The recovery worker cannot revive G20, reuse fence 20, create a second heartbeat, introduce a provider/runtime credential path, or inherit stale G18 authority.
+Heartbeat, G18, WorkerCoordinator-specific execution, hosted CI, and third-party infrastructure are not recovery execution prerequisites. Heartbeat grants no recovery authority. The recovery worker cannot revive G20, reuse fence20, create a second heartbeat, introduce a provider/runtime credential path, or inherit stale G18 authority.
 
-## Current heartbeat state
+## Released independent recovery executor
 
-Heartbeat continuity is already released:
+The descriptive execution gap is closed at source level. The repository contains:
 
 ```text
-control/heartbeat-carrier-runtime-state.json: ACTIVE HB31 / generation31
-control/worker-runtime-state.json: observed carrier 31/31
-legacy control/heartbeat-state.json: immutable HB29
-receipts/heartbeat-transition-continuity/latest.json: CARRIER_TRANSITION_COMPLETE / RELEASE_COMPLETE
-state reconstruction: PASS
-no duplicate claim/fence predicate for released transition: PASS
+scripts/run_independent_orphan_recovery.py
+  install: d30032c737fa356f7481050333c4e152ee3c8433
+  heartbeat-snapshot decoupling: 93febaab3edda6cacee92364741a5091feac1f7a
+
+tests/test_independent_orphan_recovery_executor.py
+  install: 6195372e64d13a0e8ca55135b3df99eb69209f61
+  no-heartbeat-snapshot regression: 466524be3bd79ba3c8fcfa06ae121909780b9c37
+
+source claim:
+  control/session-implementation-claim-2026-08-22-independent-orphan-recovery-executor.json
+  state: COMPLETE_RELEASED_SOURCE_VALIDATED
+  validation PR: #245
 ```
 
-Under the corrected architecture in `.github#122`, heartbeat is the regulatory carrier/reference frame. Worker/control-plane lifecycle is separate. Therefore neither G18 registry terminalization nor a task-capable WorkerCoordinator cycle performed merely for G18 may gate this recovery.
+The executor validates the already-ADMITTED bounded recovery authorization and `HANDOFF_READY` registry contract, allocates a fresh fence greater than fence20 and every projected generation/fence, invokes only `ecosystem-chat-orphan-recovery-worker` through `ProcessWorkerAdapter`, carries only the optional `STEGVERSE_MASTER_RECORDS_ROOT` location reference, releases recovery authority after every bounded attempt, and never creates parent authority. A missing heartbeat snapshot is not an execution prerequisite and does not stop acquisition or execution.
 
-## Historical recovery source
+## Validation evidence
 
-Orphan recovery source remains released and valid:
+PR #245 was rebased onto current `main` at head `dd2eb7ca632d3f376c008ad10b3db1d4b6794f13` and directly inspected.
+
+Heartbeat Worker Project validation:
 
 ```text
-StegVerse-Labs/.github PR #78
-merge: 477b0d5e3737662a4d51fe87538bbbc2d4acc99e
-recovery dry-run fence: 23 > ended fence 20
+run: 32608524799
+job: 97117508606
+anonymous/no-GitHub-token checkout: PASS
+compile runtime/workers/scripts: PASS
+canonical JSON parse: PASS (324)
+executable handoff validation: PASS (39, live lanes 35)
+independent orphan recovery focused tests: PASS 5/5
 ```
 
-Historical G20 custody remains available in Master Records:
+Focused PASS set:
+
+- `test_acquire_claim_uses_new_generation_without_parent_or_g18_dependency`
+- `test_blocked_attempt_releases_claim_for_fresh_retry`
+- `test_completed_attempt_releases_recovery_authority_without_minting_parent_authority`
+- `test_missing_carrier_snapshot_is_not_an_execution_prerequisite`
+- `test_registered_executor_is_independent_and_available`
+
+The repository-wide suite continued and failed only on two unrelated heartbeat-live-proof tests whose fixtures expected `HANDOFF_READY` while current state was `BLOCKED_DEPENDENCY`. Those unrelated failures do not invalidate the five recovery tests and are not represented as repository-wide PASS.
+
+Organization control-plane validation:
 
 ```text
-master-records/orchestration PR #27
-merge: 4c6f4679c20c7fc70a65753cf4f87e6b929f09ef
-MR-ECOSYSTEM-CHAT-G20-ORPHAN-CUSTODY-025: COMPLETE_RELEASED
-pinned checkpoint/event reconstruction: PASS
+run: 32608524804
+job: 97117508786
+result: PASS
+all validation steps: PASS
+GitHub credential authority: NONE
 ```
 
-TV/TVC no-GitHub-token authority cleanup remains released; hosted validation does not grant runtime authority.
+CI remains validation-only and grants no runtime/task-control authority.
 
-## Corrected recovery design
-
-Recovery is its own worker/domain transition under independently admitted authority. It consumes HB31 as a reference/evidence input, not as an application-control gate.
-
-Required sequence:
-
-```text
-HB31 RELEASE_COMPLETE evidence available
--> recovery task independently admitted under a fresh claim/fence >20
--> admitted StegVerse task executor runs ecosystem-chat-orphan-recovery-worker
--> Master Records G20 custody reconstruction PASS
--> recovery COMPLETED
--> parent becomes HANDOFF_READY
--> parent independently receives a fresh fence >20
--> StegVerse local/private model launch + proof
--> TVC ROUTE_ADMITTED / credential_requirement NONE
--> exact LLM-adapter execution
--> measured E1 -> model -> E2 usage
--> same-execution Master Records provider-usage + transition reconstruction PASS
-```
-
-The executor may be the canonical WorkerCoordinator when available, but **no specific G18 transition, G18 terminal response, G18 claim cleanup, or task-capable WorkerCoordinator cycle performed for heartbeat completion is a prerequisite**. A compliant StegVerse task-control execution opportunity under the recovery task's own authority is sufficient.
-
-## G18 treatment
-
-G18/fence18 may remain projected in historical/live registry state until independent lifecycle maintenance reconciles it. Recovery and parent activation must ignore that stale projection except as historical evidence and collision context.
-
-```text
-g18 cleanup required for heartbeat release: false
-g18 cleanup required for recovery admission: false
-g18 cleanup required for parent inference admission: false
-g18 authority reusable by recovery/parent: false
-```
-
-## Current claim state
+## Current execution state
 
 ```yaml
-obsolete_release_hardening:
-  task_id: SHWP-WORKER-TASK-CAPABLE-RELEASE-HARDENING-001
-  claim_ref: control/session-implementation-claim-2026-08-18-worker-task-capable-release-hardening.json
-  state: SUPERSEDED
+independent_executor_source:
+  task_id: SHWP-INDEPENDENT-ORPHAN-RECOVERY-EXECUTOR-001
+  state: COMPLETE_RELEASED_SOURCE_VALIDATED
   archive_dependency: false
 
 recovery:
   task_id: RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28
+  state: HANDOFF_READY_AWAITING_FRESH_FENCE_EXECUTION
   owner: admitted StegVerse task-control executor + ecosystem-chat-orphan-recovery-worker
-  state: MACHINE_OWNED_REQUIRED_EXECUTION
-  manual_execution_allowed: false
   release_condition: recovery COMPLETED under fresh independently admitted fence >20
 
 parent:
   task_id: SHWP-ECOSYSTEM-CHAT-INFERENCE-001
-  owner: admitted StegVerse task-control executor -> TVC -> LLM-adapter -> Master Records
   state: MACHINE_OWNED_AFTER_RECOVERY
-  manual_execution_allowed: false
+  owner: admitted StegVerse task-control executor -> TVC -> LLM-adapter -> Master Records
   release_condition: immutable same-execution sovereign activation evidence
+```
+
+The recovery registry fragment is already `HANDOFF_READY`, `AUTHORIZED`, `INDEPENDENT_TASK_CONTROL`, `fresh_fence_required=true`, and `minimum_fencing_token_exclusive=20`. No new scheduler, heartbeat, or duplicate task is required.
+
+## Required downstream sequence
+
+```text
+HANDOFF_READY recovery
+-> admitted StegVerse task-control execution opportunity
+-> fresh recovery claim/fence >20
+-> ecosystem-chat-orphan-recovery-worker
+-> Master Records G20 custody reconstruction PASS
+-> recovery claim released
+-> recovery COMPLETED
+-> parent reconciled to HANDOFF_READY without authority creation
+-> separate fresh parent claim/fence >20
+-> real StegVerse local/private model process
+-> TVC ROUTE_ADMITTED / credential_requirement NONE
+-> exact LLM-adapter execution
+-> measured usage persisted
+-> same-execution Master Records provider-usage + transition reconstruction PASS
 ```
 
 ## Collision boundaries
 
-1. Do not reset HB31.
-2. Do not reuse G18 or G20 authority.
-3. Do not manually mint recovery or parent fences.
-4. Do not create a second heartbeat/scheduler/credential authority.
-5. Do not use GitHub Actions or any hosted provider as production activation authority.
-6. StegVerse remains PRIMARY; third parties remain fallback/control only.
-7. TV/TVC remains sole credential authority.
-8. Do not wait for G18 cleanup before admitting recovery under its own authority.
-
-## Machine-observable release conditions
-
-Before recovery completion:
-
-- recovery owns a fresh independently admitted claim/fence strictly greater than 20;
-- the recovery worker executes using an admitted StegVerse task-control executor;
-- Master Records G20 custody reconstruction passes;
-- recovery emits terminal evidence without reviving G20 or G18.
-
-Before parent completion:
-
-- parent owns a separate fresh fence >20;
-- real private StegVerse model process observed;
-- TVC route admitted with credential requirement NONE;
-- exact LLM-adapter path executed;
-- measured usage persisted;
-- provider-usage and transition reconstruction PASS;
-- `same_execution=true`;
-- no non-TV/TVC secret/token authority.
-
-## Validation state
-
-```text
-heartbeat continuity: RELEASE_COMPLETE HB31
-recovery source validation: historical PASS
-G18 cleanup prerequisite: SUPERSEDED / NOT REQUIRED
-recovery live execution: NO
-fresh parent inference execution: NO
-same-execution activation proof: NO
-```
+1. Do not reset, advance, or require heartbeat merely to execute recovery.
+2. Do not require or terminalize G18.
+3. Do not reuse G18 or G20 authority.
+4. Do not manually mint recovery or parent fences from chat/GitHub mutation authority.
+5. Do not create a second heartbeat, scheduler, credential authority, model runtime, provider route, or Master Records custody path.
+6. GitHub Actions and hosted providers are validation/control surfaces only, never production activation authority.
+7. StegVerse remains PRIMARY; third parties remain fallback-only.
+8. TV/TVC remains sole credential/secret/token authority.
+9. Recovery completion does not itself grant parent authority.
 
 ## Archive rule
 
-Archive is prohibited because recovery, parent inference, and same-execution evidence have not occurred. It is **not** prohibited by stale G18 projection or absence of a G18 terminalization event.
+Archive is prohibited because live recovery execution, fresh parent inference, and same-execution activation evidence have not occurred. The source executor itself is validated and released; stale G18 state, WorkerCoordinator-specific execution, or heartbeat snapshot availability are not completion prerequisites.
