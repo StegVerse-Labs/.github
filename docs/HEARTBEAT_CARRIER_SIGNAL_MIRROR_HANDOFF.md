@@ -1,6 +1,6 @@
 # Heartbeat Carrier Signal Mirror Handoff
 
-Updated: 2026-08-23T16:05:00-05:00
+Updated: 2026-08-23T16:08:00-05:00
 
 ## Canonical authority
 
@@ -89,29 +89,49 @@ scripts/run_worker_runtime.py                   # separate worker process
 
 Legacy HB29 and persisted HB30/HB31 remain immutable historical observations. HB32 is the canonical protocol-anchor cutover reference. Historical `GATE_PASSBAND_DERIVED` state does not extend into the anchored protocol sequence and cannot override the anchor.
 
-Historical cutover tests must replay with an explicit pre-anchor timestamp. They must not implicitly use the CI runner wall clock, because after HB32 activation a wall-clock sample correctly derives the current protocol reference rather than historical HB30.
+Historical cutover tests replay with an explicit pre-anchor timestamp. They do not use the CI runner wall clock, because after HB32 activation a wall-clock sample correctly derives the current protocol reference rather than historical HB30.
 
-## Full-suite reconciliation on 2026-08-23
+## Exact-head validation and merge — terminal
 
 The first complete deterministic repository suite after HB32 activation exposed two historical replay failures because the tests used live wall-clock time while asserting historical HB30. Commit `d36e7b330634337d42d9020abfee728aebaa69ca` pinned historical v12 replay to a pre-anchor time.
 
-A bounded exact-head validation PR (`#266`) then exposed stale terminal-state metadata around LIVE-009. Those defects were reconciled without reopening the completed proof: the executable handoff retains its required schema, the terminal registry fragment remains `NONE_REGISTRATION_ONLY`, AE classifies LIVE-009 as `recently_completed`, and stale tests now assert terminal non-reacquisition plus optional resident sampler semantics.
+Bounded PR `#266` then reconciled stale terminal-state metadata without reopening completed LIVE-009: the executable handoff retains the required schema, the terminal registry fragment remains `NONE_REGISTRATION_ONLY`, AE classifies LIVE-009 as `recently_completed`, stale tests assert terminal non-reacquisition, and resident-start 012 remains an optional independently controlled sampler service.
 
-Current exact-head validation evidence on PR #266:
+Terminal validation evidence for PR #266:
 
 ```text
-Heartbeat Worker Project run: 32669436465 / #1363
+Heartbeat Worker Project run: 32669500515 / #1364
 result: SUCCESS
 complete deterministic repository suite: PASS
 historical HB29->HB30 replay: PASS
 HB32 protocol-anchor focused proof: PASS
 executable handoff validation: PASS
-AE retrospective conformance: PASS
-organization control-plane run: 32669436479 / #1197
-organization control-plane result: PENDING REPAIR AT CANONICAL HANDOFF PHRASE CONTRACT
+external timing contract: PASS
+retained completion evidence: PASS
+carrier/worker separation: PASS
+workflow non-authority proof: PASS
+
+organization control-plane run: 32669500490 / #1198
+result: SUCCESS
+workflow surface hygiene: PASS
+organization control-plane invariants: PASS
+active-worker ownership: PASS
+handoff execution ownership: PASS
+AE control-plane + retrospective conformance: PASS
+canonical heartbeat carrier contract: PASS
+runtime/control-plane separation: PASS
+independent 10 ms oscillator: PASS
+archive-readiness semantics: PASS
+validation non-authority proof: PASS
 ```
 
-The remaining organization-control failure is documentation-contract parity only: `scripts/validate_heartbeat_carrier_contract.py` requires canonical phrases that preserve communication and Master Records terminal-object semantics. This handoff now restores those phrases explicitly; exact-head rerun is required before merge/closure.
+PR `#266` was squash-merged to `main` as commit:
+
+```text
+2a98b14c54cc5604685f594c80adb6ab00679437
+```
+
+The validated PR merge ref combined the then-current `main` base and exact PR head; the squash merge preserves the validated file content. This status-only handoff update records that evidence and does not alter heartbeat derivation semantics.
 
 ## Communication and terminal-object separation
 
@@ -141,23 +161,26 @@ Focused protocol-anchor coverage is installed at `tests/test_heartbeat_protocol_
 ## Completion state
 
 ```text
-independent oscillator semantics: COMPLETE_SOURCE
+independent oscillator semantics: COMPLETE
 canonical protocol anchor: INSTALLED
 canonical daemon-free derivation: INSTALLED
-heartbeat protocol progression: ACTIVE_BY_PROTOCOL_DERIVATION
+heartbeat protocol progression: ACTIVE_PROTOCOL_VERIFIED
 LIVE-009: COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED
 focused HB32 tests: PASS
-complete deterministic repository suite on PR #266: PASS
-historical compatibility regression: FIXED
-terminal registry/handoff/AE reconciliation: FIXED
-organization control-plane exact-head validation: RERUN REQUIRED AFTER HANDOFF PARITY FIX
+complete deterministic repository suite: PASS
+historical compatibility regression: FIXED / PASS
+terminal registry/handoff/AE reconciliation: FIXED / PASS
+organization control-plane validation: PASS
+PR #266: MERGED
+validated merge commit: 2a98b14c54cc5604685f594c80adb6ab00679437
 resident sampler: OPTIONAL OBSERVER
 resident activation receipt: NOT A HEARTBEAT EXISTENCE PREDICATE
 worker-trigger causality: NONE
 third-party runtime requirement: NONE
-remaining work: obtain green organization-control exact-head run; merge #266; record main-head validation; then execute downstream propagation #263
-archive_ready: false until exact-head retained validation is green on merged main and propagation is durably owned
+heartbeat activation goal: TERMINAL
+next integration goal: DOWNSTREAM HB32 PROTOCOL PROPAGATION / issue #263
+archive_ready_for_heartbeat_activation_workstream: true
 ```
 
 DO NOT REINTRODUCE A RESIDENT-DAEMON REQUIREMENT AS HEARTBEAT PROGRESSION AUTHORITY.
-DO NOT CLAIM MERGED-MAIN EXACT-HEAD COMPLETION UNTIL THE RETAINED VALIDATION SURFACES PASS.
+Successor propagation may update consumers but must not reopen the terminal heartbeat activation goal.
