@@ -1,6 +1,6 @@
 # Ecosystem Chat Orphan Recovery Mirror Handoff
 
-Updated: 2026-08-23T16:12:00-05:00
+Updated: 2026-08-23T16:19:00-05:00
 
 ## Authority and scope
 
@@ -59,11 +59,11 @@ Organization control plane run 32619209070 / job 97144669666: SUCCESS
 Ecosystem Chat Sovereign Inference Validation run 32619209045: SUCCESS
 ```
 
-The reconciliation claim is released as `COMPLETE_RELEASED`.
+The recovery reconciliation claim is `COMPLETE_RELEASED`.
 
-## Parent source continuation installed in PR #265
+## Independent parent source executor: COMPLETE_RELEASED
 
-The parent no longer depends on an unspecified future scheduler action. PR #265 installs an explicit independent-task-control execution path:
+PR #265 installed the explicit independent-task-control execution path:
 
 ```text
 authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json
@@ -85,28 +85,44 @@ The executor:
 7. permits repository mutation only to `control/worker-registry.json` plus `receipts/ecosystem-chat-sovereign-inference/**`;
 8. performs exact same-execution Master Records reconstruction;
 9. requires the persistent conversational runtime to be ready after reconstruction before terminal completion;
-10. releases each bounded parent attempt claim truthfully; nonterminal attempts return to HANDOFF_READY instead of leaving stale authority.
+10. releases each bounded parent attempt claim truthfully; nonterminal attempts return to HANDOFF_READY instead of leaving stale authority;
+11. releases the parent claim before propagating an execution error or out-of-scope mutation denial, preventing fail-closed validation from stranding a live claim/fence.
 
 Hosted CI is validation-only. It cannot satisfy the live activation transition.
 
-### Exact source validation
+### Exact final source validation and merge
 
-PR #265 exact head `4a003a253a13b8a7d3eedd5bbedcc5703da20bc8` produced:
+PR #265 final exact validated head:
+
+`5d4fc1c60936098cf1128b43095a9b3f2504cd55`
 
 ```text
 Ecosystem Chat Sovereign Inference Validation
-run: 32666656393
-job: 97260981994
+run: 32666957662
+job: 97261739082
 result: SUCCESS
 compile: PASS
-independent parent executor tests: 10/10 PASS
+independent parent executor tests: 11/11 PASS
 LLM-adapter bridge tests: 4/4 PASS
 Master Records reconstruction bridge tests: 5/5 PASS
-total focused tests: 19/19 PASS
+total focused tests: 20/20 PASS
+scope-denial claim-release regression: PASS
 hosted lane non-authorizing proof: PASS
 ```
 
-The generic Heartbeat Worker and organization-control workflows on the same PR currently fail before reaching this lane because base `main` contains an unrelated malformed `handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json` introduced by concurrent heartbeat work. That failure is outside the #264 ownership surface and must not be concealed or misrepresented as a #265 source failure. The dedicated source-dependent Ecosystem Chat validation is green.
+PR #265 merged as:
+
+`b5119c742dc2438fed5f143c6afebcedff78b1db`
+
+The source implementation claim was released to `COMPLETE_RELEASED` in:
+
+`control/session-implementation-claim-2026-08-23-ecosystem-chat-independent-parent-264.json`
+
+Release evidence commit:
+
+`cb2f2ffd8f532d92dec7edf707cc8495896a3c77`
+
+The generic Heartbeat Worker and organization-control workflows on the PR encountered an unrelated malformed `handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json` from concurrent heartbeat work. That failure is outside #264 ownership and does not override the exact source-dependent Ecosystem Chat PASS. This lane does not mutate that concurrent heartbeat source.
 
 ## Current canonical parent state
 
@@ -117,7 +133,12 @@ recovery:
   terminal_fence: 22
   reacquisition_allowed: false
 
-parent:
+parent_source:
+  state: COMPLETE_RELEASED
+  merge: b5119c742dc2438fed5f143c6afebcedff78b1db
+  claim_required_from_chat: false
+
+parent_runtime:
   task_id: SHWP-ECOSYSTEM-CHAT-INFERENCE-001
   state: HANDOFF_READY
   recovery_dependency: SATISFIED
@@ -159,8 +180,8 @@ No heartbeat transition, G18 terminalization, WorkerCoordinator-specific cycle, 
 6. GitHub/hosted workflows remain validation-only.
 7. StegVerse remains primary; third parties remain fallback-only.
 8. TV/TVC remains sole credential/secret/token authority.
-9. Do not mutate the concurrent heartbeat protocol-anchor/LIVE-009 source lane from this claim.
+9. Do not mutate the concurrent heartbeat protocol-anchor/LIVE-009 source lane from this workstream.
 
 ## Archive rule
 
-Recovery is terminal and its reconciliation is released. The #264 source lane remains active until PR #265 reaches a validated merge/release state. Product activation remains nonterminal until actual fresh-fence parent execution produces same-execution Master Records PASS and persistent conversational runtime readiness. Site #388 publication and current-phone governed wallet proof remain separate nonterminal goals.
+Recovery and the #264 parent-executor source implementation are terminal and released. This chat session no longer owns a source implementation claim for them. Product activation remains nonterminal until actual fresh-fence parent execution produces same-execution Master Records PASS and persistent conversational runtime readiness. Site #388 publication and current-phone governed wallet proof remain separate nonterminal goals and should continue through their canonical owners.
