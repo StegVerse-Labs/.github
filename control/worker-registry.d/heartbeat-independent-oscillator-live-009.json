@@ -42,7 +42,9 @@
     }
   ],
   "workers": [],
-  "authority_effect": "NONE_TERMINAL_VERIFICATION",
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "terminal_registration_only": true,
+  "reacquisition_allowed": false,
   "github_token_required": false,
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_required": false,

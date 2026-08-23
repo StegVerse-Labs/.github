@@ -6,8 +6,14 @@
       "temporal_class": "recently_completed",
       "continuation_owner": "NONE_TERMINAL_TASK",
       "rationale": "Durable current-main recovery receipt proves PASS under fresh G22, old G20 authority ended and was not reused, Master Records custody reconstruction passed, and no successor authority was granted. Parent sovereign inference remains a separate fresh-authority task."
+    },
+    {
+      "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
+      "temporal_class": "recently_completed",
+      "continuation_owner": "NONE_TERMINAL_TASK",
+      "rationale": "LIVE-009 is terminal evidence for deterministic HB32 protocol-anchor verification. Completion does not create heartbeat progression, runtime, credential, worker, claim, fence, or resident-process authority; downstream protocol propagation is a separate successor goal."
     }
   ],
-  "evidence_ref": "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
+  "evidence_ref": "receipts/heartbeat/HEARTBEAT-PROTOCOL-ANCHOR-013-validation.json",
   "authority_effect": "NONE"
 }

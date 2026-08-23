@@ -2,21 +2,57 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
   "created_at": "2026-08-18T18:08:00-05:00",
-  "updated_at": "2026-08-23T14:19:00-05:00",
+  "updated_at": "2026-08-23T16:02:00-05:00",
   "state": "COMPLETED",
   "goal": {
     "goal_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
     "objective": "Verify that the canonical StegVerse heartbeat is derivable from the durable HB32 protocol anchor at 10 ms / 100 Hz without a resident daemon, persisted state, worker state, GitHub runtime, or third-party process becoming causal to progression.",
+    "success_predicates": [
+      "control/heartbeat-protocol-anchor.json is the canonical post-cutover anchor.",
+      "The anchor instant derives HB32.",
+      "The same timestamp derives the same reference independent of observer state.",
+      "Less than 10 ms does not increment and exactly 10 ms increments once.",
+      "Delayed observation skips independently existing references according to elapsed phase.",
+      "Persisted, worker, and task state cannot override the post-cutover protocol anchor.",
+      "A continuously running resident process is not required for heartbeat progression.",
+      "Optional sampler observations remain authority-neutral snapshots.",
+      "No GitHub token or NON-TV/TVC secret/token is required or forwarded.",
+      "Third-party runtime is not required."
+    ],
+    "failure_predicates": [
+      "A resident process, repository event, worker, task, observer, claim, fence, lease, or persisted snapshot becomes heartbeat progression authority.",
+      "A post-cutover observer derives from a local or historical anchor instead of control/heartbeat-protocol-anchor.json.",
+      "A NON-TV/TVC credential or GitHub token becomes runtime authority.",
+      "A third-party runtime becomes required or primary."
+    ],
+    "authority_ceiling": [
+      "verify canonical heartbeat protocol derivation",
+      "persist authority-neutral verification evidence",
+      "no credential, route, model, wallet, or admissibility authority",
+      "no third-party primary runtime"
+    ],
     "successor_policy": "INHERIT_OR_NARROW",
     "max_successor_depth": 0
   },
   "task": {
     "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
     "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
+      "control/heartbeat-protocol-anchor.json",
+      "control/heartbeat-live-status.json",
+      "heartbeat_runtime/independent_oscillator.py",
+      "tests/test_heartbeat_protocol_anchor.py",
+      "receipts/heartbeat/HEARTBEAT-PROTOCOL-ANCHOR-013-validation.json"
+    ],
     "dependencies": [],
+    "parent_task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008",
+    "derivation_reason": "Canonical semantics require missed references to exist independently of observation. The durable protocol anchor makes those semantics directly derivable without process-liveness authority.",
     "canonical_owner_ref": "StegVerse-Labs/.github#122",
     "canonical_lineage_key": "heartbeat:independent-oscillator-live-proof",
-    "priority": "release"
+    "derivation_depth": 1,
+    "priority": "release",
+    "cost_basis_ref": "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json"
   },
   "authority": {
     "authority_source": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
@@ -28,6 +64,32 @@
     "non_tv_tvc_secret_or_token_allowed": false,
     "third_party_runtime_role": "FALLBACK_ONLY",
     "stegverse_primary": true
+  },
+  "execution": {
+    "required_capabilities": [
+      "heartbeat_protocol_derivation_verification",
+      "bounded_repository_mutation",
+      "independent_oscillator_live_proof"
+    ],
+    "allowed_paths": [
+      "control/heartbeat-live-status.json",
+      "control/heartbeat-protocol-anchor.json",
+      "receipts/heartbeat/HEARTBEAT-PROTOCOL-ANCHOR-013-validation.json"
+    ],
+    "allowed_services": [],
+    "max_actions": 1,
+    "max_retries": 3,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 32,
+    "rate_class": "independent_heartbeat_live_proof",
+    "finite_worker_budget_beats": 4,
+    "evidence_verifier": "tests/test_heartbeat_protocol_anchor.py"
+  },
+  "continuity": {
+    "checkpoint_ref": "control/heartbeat-protocol-anchor.json",
+    "handoff_destination": "control/worker-registry.d/heartbeat-independent-oscillator-live-009.json",
+    "master_records_required": false,
+    "status_projection": "control/heartbeat-live-status.json"
   },
   "completion": {
     "result": "COMPLETED",
@@ -52,6 +114,14 @@
     "authority_effect": "NONE",
     "github_runtime_authority": "NONE",
     "third_party_runtime_required": false,
+    "terminal_when": [
+      "HB32 is derived at the canonical anchor instant.",
+      "Same timestamp produces the same reference independent of persisted or worker state.",
+      "Less than 10 ms produces no increment and exactly 10 ms produces one increment.",
+      "Delayed observation skips independently existing references.",
+      "continuous_process_required=false and resident_sampler_required_for_progression=false.",
+      "No GitHub workflow, resident sampler, observer, or worker is represented as heartbeat progression authority."
+    ],
     "next_authorized_action": "Propagate the corrected heartbeat protocol semantics to downstream consumers. Optional resident sampler installation may proceed independently and must not reopen heartbeat activation."
   }
 }
