@@ -5,59 +5,50 @@
     {
       "archive_eligible": false,
       "archive_reason_codes": [],
-      "authorized_policy_version": "heartbeat-independent-oscillator-v4-post-resident-start",
-      "block_ref": "HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
+      "authorized_policy_version": "heartbeat-independent-oscillator-v5-protocol-anchor",
+      "block_ref": null,
       "claim_id": null,
       "cost_basis_ref": "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json",
       "evidence_refs": [
+        "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
+        "control/heartbeat-protocol-anchor.json",
+        "control/heartbeat-live-status.json",
         "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
-        "handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json",
-        "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
-        "docs/HEARTBEAT_LIVE_009_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
-        "scripts/run_live_009_resident.py",
-        "scripts/verify_sovereign_heartbeat_carrier_activation.py",
-        "tests/test_live_009_resident_runner.py",
-        "tests/test_verify_sovereign_heartbeat_carrier_activation.py",
         "heartbeat_runtime/independent_oscillator.py",
-        "heartbeat_runtime/oscillator_producer.py",
-        "heartbeat_runtime/engine_v13.py",
-        "heartbeat_runtime/worker_runtime.py",
-        "receipts/heartbeat/HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008-source-validation.json",
-        "receipts/sovereign-host/carrier-activation.latest.json",
-        "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json"
+        "tests/test_heartbeat_protocol_anchor.py"
       ],
-      "executor_binding": "AUTHORIZED_AFTER_DEPENDENCY",
+      "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
       "goal_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
       "handoff_ref": "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
       "heartbeat_timing": null,
-      "last_checkpoint_ref": "receipts/sovereign-host/carrier-activation.latest.json",
+      "last_checkpoint_ref": "control/heartbeat-protocol-anchor.json",
       "lease": null,
-      "state": "BLOCKED_DEPENDENCY",
+      "state": "HANDOFF_READY",
       "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
       "worker_id": null,
       "worker_instance_id": null,
-      "dependencies": [
-        "HEARTBEAT-OSCILLATOR-RESIDENT-START-012"
-      ],
+      "dependencies": [],
       "admission": {
-        "authority_source": "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json#authority",
+        "authority_source": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
         "authority_domain": "INDEPENDENT_TASK_CONTROL",
         "heartbeat_reference_only": true,
         "heartbeat_grants_execution_authority": false,
         "carrier_trigger_required": false,
         "fresh_fence_required": true,
         "minimum_fencing_token_exclusive": 21,
-        "claim_state": "WAITING_FOR_RESIDENT_START_DEPENDENCY",
-        "dependency_release_condition": "receipts/sovereign-host/carrier-activation.latest.json exists and scripts/verify_sovereign_heartbeat_carrier_activation.py returns verified=true"
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+        "resident_sampler_required": false,
+        "dependency_release_condition": null
       }
     }
   ],
   "workers": [
     {
       "adapter_ref": "process:heartbeat-independent-oscillator-live-proof-v1",
-      "authority_source": "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json#authority",
+      "authority_source": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
       "capabilities": [
+        "heartbeat_protocol_derivation_verification",
         "heartbeat_runtime_observation",
         "bounded_repository_mutation",
         "independent_oscillator_live_proof"
@@ -73,5 +64,7 @@
   "github_token_required": false,
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_required": false,
+  "continuous_process_required": false,
+  "resident_sampler_required_for_progression": false,
   "third_party_runtime_required": false
 }
