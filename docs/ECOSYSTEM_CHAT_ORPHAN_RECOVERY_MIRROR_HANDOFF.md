@@ -1,17 +1,20 @@
 # Ecosystem Chat Orphan Recovery Mirror Handoff
 
-Updated: 2026-08-23T00:01:00-05:00
+Updated: 2026-08-23T16:12:00-05:00
 
 ## Authority and scope
 
 Canonical recovery task: `RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28`.
 Parent task: `SHWP-ECOSYSTEM-CHAT-INFERENCE-001`.
+Independent parent-executor issue: `.github#264`.
+Independent parent-executor PR: `.github#265`.
 
 ```text
 repository: StegVerse-Labs/.github
 primary runtime/provider: StegVerse
 third-party role: FALLBACK_ONLY
 credential authority: TV/TVC
+credential requirement: NONE
 GitHub token runtime authority: NONE
 heartbeat task authority: NONE
 G18 task authority: NONE
@@ -39,38 +42,73 @@ third_party_execution_platform_required: false
 authority_effect: NONE
 ```
 
-Runtime commit `b70ece41ecf0ac35eb2b38ca9381b55c33ec50db` created that durable PASS. Later projections had regressed to awaiting recovery; the current receipt is the stronger execution evidence and recovery must not be replayed merely to satisfy stale bookkeeping.
+Recovery is terminal. It must not be reacquired or replayed merely to satisfy a stale projection.
 
-## Released source and portability
+## Released recovery and reconciliation source
 
 - Independent recovery executor: PR #245 merge `3bfc17f6d4b59f219b3354f5bdae0ecfe6b96ed5`.
-- Self-contained immutable G20 custody: PR #260 merge `5e85a2d602fe7234a4bdff34aa1521b752dc2b49` at `workloads/master-records/orchestration/custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json`.
+- Self-contained immutable G20 custody: PR #260 merge `5e85a2d602fe7234a4bdff34aa1521b752dc2b49`.
 - LIVE-009 stale validation reconciliation: PR #261 merge `ec5f95ca6125b3b46a5d0959ef1b0ad229f4c259`.
 - Terminal recovery/parent reconciliation: PR #262 merge `fd10d4cfee8712663096a886f5275a3224857ebf`.
 
-PR #262 exact validated head was `c540de44f9a9b2bde680def6109f0edb9c0f117d`:
+PR #262 exact validated head `c540de44f9a9b2bde680def6109f0edb9c0f117d` passed:
 
 ```text
 Heartbeat Worker Project run 32619209041 / job 97144669508: SUCCESS
-  anonymous/no-GitHub-token checkout: PASS
-  compile + canonical JSON + executable handoffs: PASS
-  complete deterministic repository suite: PASS
-  projection rebuild: PASS
-  validation-only/non-authorizing invariant: PASS
-
 Organization control plane run 32619209070 / job 97144669666: SUCCESS
-  active-worker ownership: PASS
-  handoff partitioning: PASS
-  AE conformance: PASS
-  heartbeat/control-plane separation: PASS
-  archive/readiness semantics: PASS
-
 Ecosystem Chat Sovereign Inference Validation run 32619209045: SUCCESS
 ```
 
-The reconciliation claim is released as `COMPLETE_RELEASED`; it is not an archive dependency.
+The reconciliation claim is released as `COMPLETE_RELEASED`.
 
-## Current canonical state
+## Parent source continuation installed in PR #265
+
+The parent no longer depends on an unspecified future scheduler action. PR #265 installs an explicit independent-task-control execution path:
+
+```text
+authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json
+scripts/run_independent_ecosystem_chat_parent.py
+control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json
+workers/ecosystem_chat_sovereign_route_worker.py
+workers/master_records_sovereign_reconstruction_bridge.py
+tests/test_independent_ecosystem_chat_parent_executor.py
+```
+
+The executor:
+
+1. refuses a duplicate current/newer parent claim;
+2. projects the released parent HANDOFF_READY registration into the task-control checkout surface;
+3. atomically mints a fresh fencing generation strictly greater than terminal G22;
+4. treats heartbeat only as optional noncausal reference metadata;
+5. invokes the existing StegVerse-local model -> TVC -> LLM-adapter worker on the actual sovereign execution surface instead of a disposable ProcessWorkerAdapter sandbox;
+6. forwards only nonsecret local workload locators and explicitly strips GitHub/cloud/hosted authority inputs;
+7. permits repository mutation only to `control/worker-registry.json` plus `receipts/ecosystem-chat-sovereign-inference/**`;
+8. performs exact same-execution Master Records reconstruction;
+9. requires the persistent conversational runtime to be ready after reconstruction before terminal completion;
+10. releases each bounded parent attempt claim truthfully; nonterminal attempts return to HANDOFF_READY instead of leaving stale authority.
+
+Hosted CI is validation-only. It cannot satisfy the live activation transition.
+
+### Exact source validation
+
+PR #265 exact head `4a003a253a13b8a7d3eedd5bbedcc5703da20bc8` produced:
+
+```text
+Ecosystem Chat Sovereign Inference Validation
+run: 32666656393
+job: 97260981994
+result: SUCCESS
+compile: PASS
+independent parent executor tests: 10/10 PASS
+LLM-adapter bridge tests: 4/4 PASS
+Master Records reconstruction bridge tests: 5/5 PASS
+total focused tests: 19/19 PASS
+hosted lane non-authorizing proof: PASS
+```
+
+The generic Heartbeat Worker and organization-control workflows on the same PR currently fail before reaching this lane because base `main` contains an unrelated malformed `handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json` introduced by concurrent heartbeat work. That failure is outside the #264 ownership surface and must not be concealed or misrepresented as a #265 source failure. The dedicated source-dependent Ecosystem Chat validation is green.
+
+## Current canonical parent state
 
 ```yaml
 recovery:
@@ -84,18 +122,19 @@ parent:
   state: HANDOFF_READY
   recovery_dependency: SATISFIED
   executor_registration: control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json
-  executor: ecosystem-chat-sovereign-inference-worker
+  executor_source: scripts/run_independent_ecosystem_chat_parent.py
+  authorization: authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json
   authority_domain: INDEPENDENT_TASK_CONTROL
   required_next_authority: independently admitted fresh fence >22
   recovery_grants_parent_authority: false
+  live_activation_proven: false
 ```
 
-The parent registration is non-authorizing until an admitted StegVerse task-control execution opportunity actually acquires a fresh fenced claim. It exists to prevent the completed recovery from being mistaken for an unresolved passive blocker and to make the real next executor machine-observable.
-
-## Next required execution
+## Next required live execution
 
 ```text
-independent StegVerse task-control admission
+admitted StegVerse task-control execution surface
+-> scripts/run_independent_ecosystem_chat_parent.py
 -> fresh parent claim/fence >22
 -> real StegVerse local/private model process
 -> private/loopback endpoint proof
@@ -104,6 +143,8 @@ independent StegVerse task-control admission
 -> measured E1 -> model -> E2 usage
 -> same-execution Master Records provider-usage reconstruction PASS
 -> same-execution transition reconstruction PASS
+-> persistent conversational runtime READY
+-> bounded parent claim released terminally
 ```
 
 No heartbeat transition, G18 terminalization, WorkerCoordinator-specific cycle, recovery replay, sibling Master Records checkout, GitHub workflow, Render service, or third-party provider is required to begin that parent transition.
@@ -118,7 +159,8 @@ No heartbeat transition, G18 terminalization, WorkerCoordinator-specific cycle, 
 6. GitHub/hosted workflows remain validation-only.
 7. StegVerse remains primary; third parties remain fallback-only.
 8. TV/TVC remains sole credential/secret/token authority.
+9. Do not mutate the concurrent heartbeat protocol-anchor/LIVE-009 source lane from this claim.
 
 ## Archive rule
 
-Recovery is terminal and its reconciliation is released. The session remains non-archiveable because parent sovereign inference, TVC route, exact LLM-adapter execution, measured usage, same-execution Master Records proof, Site #388 exact publication, and current-phone governed wallet proof remain nonterminal.
+Recovery is terminal and its reconciliation is released. The #264 source lane remains active until PR #265 reaches a validated merge/release state. Product activation remains nonterminal until actual fresh-fence parent execution produces same-execution Master Records PASS and persistent conversational runtime readiness. Site #388 publication and current-phone governed wallet proof remain separate nonterminal goals.
