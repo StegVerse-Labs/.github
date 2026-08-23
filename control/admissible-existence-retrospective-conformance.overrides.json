@@ -1,0 +1,13 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-overrides/v1",
+  "overrides": [
+    {
+      "task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+      "temporal_class": "recently_completed",
+      "continuation_owner": "NONE_TERMINAL_TASK",
+      "rationale": "Durable current-main recovery receipt proves PASS under fresh G22, old G20 authority ended and was not reused, Master Records custody reconstruction passed, and no successor authority was granted. Parent sovereign inference remains a separate fresh-authority task."
+    }
+  ],
+  "evidence_ref": "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
+  "authority_effect": "NONE"
+}
