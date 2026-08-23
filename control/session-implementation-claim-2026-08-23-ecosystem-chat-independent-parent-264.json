@@ -8,13 +8,14 @@
   "claimant": "SESSION_EXECUTION_LANE_20260823_ECOSYSTEM_CHAT_PARENT_264",
   "role": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION",
   "claimed_at": "2026-08-23T16:04:00-05:00",
-  "release_condition": "Independent parent executor source, authorization, deterministic tests, and canonical handoff bindings validate on the exact branch head; merge only after source-dependent validation passes. Live activation remains separate and may only be claimed from actual StegVerse execution evidence.",
+  "release_condition": "Independent parent executor source, authorization, deterministic tests, canonical handoff bindings, and the existing non-authorizing Ecosystem Chat validation workflow validate on the exact branch head; merge only after source-dependent validation passes. Live activation remains separate and may only be claimed from actual StegVerse execution evidence.",
   "owned_surfaces": [
     "scripts/run_independent_ecosystem_chat_parent.py",
     "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
     "tests/test_independent_ecosystem_chat_parent_executor.py",
     "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
     "docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md",
+    ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml",
     "control/session-implementation-claim-2026-08-23-ecosystem-chat-independent-parent-264.json"
   ],
   "collision_boundaries": [
