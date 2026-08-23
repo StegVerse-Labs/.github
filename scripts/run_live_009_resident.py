@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Resident-only launcher for HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.
+"""Resident-only post-start verifier for HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.
 
-This script performs only real local execution: carrier-only native activation,
-then the handoff-authorized worker(1) -> carrier(1) -> worker(1) sequence. It
-fails closed unless persisted runtime evidence proves the canonical 10 ms /
-100 Hz OSCILLATOR_ONLY carrier, a fresh independently admitted fenced claim,
-and terminal LIVE-009 completion bound to that exact claim.
+The resident carrier must already be active from HEARTBEAT-OSCILLATOR-RESIDENT-START-012.
+This script never installs or starts the carrier. It first fail-closed verifies the
+persisted resident-start activation receipt, then performs only the handoff-authorized
+worker(1) -> carrier-observation(1) -> worker(1) LIVE-009 verification sequence.
 """
 from __future__ import annotations
 
@@ -62,11 +61,12 @@ def resolve_runtime_root(explicit: Path | None = None) -> Path:
 
 
 def execution_commands(source_root: Path, runtime_root: Path, python: str) -> list[tuple[list[str], Path]]:
-    """Return the exact resident execution sequence."""
+    """Return the exact post-start resident verification sequence."""
     source_root = source_root.resolve()
     runtime_root = runtime_root.resolve()
+    activation_receipt = runtime_root / "receipts/sovereign-host/carrier-activation.latest.json"
     return [
-        ([python, str(source_root / "scripts/install_sovereign_heartbeat_carrier.py"), "--source-root", str(source_root), "--runtime-root", str(runtime_root)], source_root),
+        ([python, str(source_root / "scripts/verify_sovereign_heartbeat_carrier_activation.py"), str(activation_receipt)], source_root),
         ([python, str(runtime_root / "scripts/run_worker_runtime.py"), "--root", str(runtime_root), "--cycles", "1"], runtime_root),
         ([python, str(runtime_root / "scripts/run_heartbeat_runtime.py"), "--root", str(runtime_root), "--cycles", "1"], runtime_root),
         ([python, str(runtime_root / "scripts/run_worker_runtime.py"), "--root", str(runtime_root), "--cycles", "1"], runtime_root),
@@ -115,6 +115,8 @@ def require_runtime_evidence(root: Path) -> None:
     required_activation = {
         "carrier_active": True,
         "activation_scope": "CARRIER_ONLY",
+        "worker_start_attempted": False,
+        "worker_runtime_dependency_for_carrier_start": False,
         "canonical_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
         "heartbeat_production_mode": "OSCILLATOR_PHASE_DRIVEN",
         "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
@@ -126,6 +128,7 @@ def require_runtime_evidence(root: Path) -> None:
         "third_party_deployment_required": False,
         "github_runtime_dependency": False,
         "credential_requirement": "NONE",
+        "credential_authority": "TV/TVC",
     }
     for key, expected in required_activation.items():
         if activation.get(key) != expected:
@@ -173,7 +176,7 @@ def main() -> int:
     require_runtime_evidence(runtime_root)
 
     print(json.dumps({
-        "schema": "stegverse.heartbeat-live-009-resident-execution/v1",
+        "schema": "stegverse.heartbeat-live-009-resident-execution/v2",
         "state": "COMPLETED",
         "task_id": TASK_ID,
         "transition_id": TERMINAL,
@@ -182,6 +185,7 @@ def main() -> int:
         "credential_authority": "TV/TVC",
         "third_party_runtime_required": False,
         "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+        "resident_start_dependency_verified": True,
     }, sort_keys=True))
     return 0
 
