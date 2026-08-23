@@ -4,7 +4,10 @@
   "tasks": [
     {
       "archive_eligible": false,
-      "archive_reason_codes": ["HEALER_NO_TOKEN_SOVEREIGN_SCHEDULER_NOT_YET_LIVE_PROVEN"],
+      "archive_reason_codes": [
+        "HEALER_NO_TOKEN_SOVEREIGN_SCHEDULER_NOT_YET_LIVE_PROVEN",
+        "SITE_ERL_SOVEREIGN_SYNC_TARGET_AWAITING_LIVE_SCHEDULER_RECEIPT"
+      ],
       "authorized_policy_version": "shwp-healer-sovereign-scheduler-v0.1",
       "block_ref": null,
       "claim_id": null,
@@ -12,7 +15,11 @@
       "evidence_refs": [
         "handoffs/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
         "workers/healer_sovereign_scheduler_worker.py",
-        "StegVerse-Labs/StegVerse-Healer/app/sovereign_scheduler.py"
+        "StegVerse-Labs/StegVerse-Healer/app/sovereign_scheduler.py",
+        "StegVerse-Labs/StegVerse-Healer#39",
+        "StegVerse-Labs/StegVerse-Healer#40@ff3d9985b773d91dce0d90351a7a8a04a499c59b",
+        "StegVerse-Labs/StegVerse-Healer/docs/SITE_ERL_SOVEREIGN_SYNC_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegVerse-Healer:Test Readiness:32670203077:SUCCESS"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
