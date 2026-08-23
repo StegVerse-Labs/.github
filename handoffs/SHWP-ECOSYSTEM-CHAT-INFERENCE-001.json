@@ -51,7 +51,8 @@
     "rate_class": "ecosystem_chat_sovereign_inference"
   },
   "activation": {
-    "carrier": "independent_task_control",
+    "carrier": "heartbeat_reference_only",
+    "activation_mode": "INDEPENDENT_TASK_CONTROL_WITH_HEARTBEAT_REFERENCE",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "TV/TVC + StegVerse-org/LLM-adapter#18 + master-records/orchestration:MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024",
     "credential_control": "TV/TVC",
