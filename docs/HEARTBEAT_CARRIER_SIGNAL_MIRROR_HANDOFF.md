@@ -1,6 +1,6 @@
 # Heartbeat Carrier Signal Mirror Handoff
 
-Updated: 2026-08-23T14:33:00-05:00
+Updated: 2026-08-23T16:05:00-05:00
 
 ## Canonical authority
 
@@ -16,7 +16,7 @@ github_token_runtime_authority: NONE
 non_tv_tvc_secret_or_token_required: false
 ```
 
-This handoff is authoritative for heartbeat semantics.
+This handoff is authoritative for heartbeat semantics. Heartbeat is the StegVerse **carrier/synchronization signal** and has no application, task-control, credential, or repository authority.
 
 ## Corrected canonical heartbeat
 
@@ -38,7 +38,7 @@ progression dependency: OSCILLATOR_ONLY
 HB_n --10 ms elapsed oscillator phase--> HB_(n+1)
 ```
 
-Every conforming StegVerse observer derives the same reference for the same timestamp from that anchor. A consumer may observe HB_n, miss HB_(n+1)...HB_(n+k-1), and later observe HB_(n+k); the missed references existed independently. Observation, persistence, process liveness, worker state, repository activity, and task-control state do not create heartbeat progression.
+Every conforming StegVerse observer derives the same reference for the same timestamp from that anchor. A consumer may observe HB_n, miss HB_(n+1)...HB_(n+k-1), and later observe HB_(n+k); the missed references existed independently. **Observation does not cause** heartbeat progression. Observation, persistence, process liveness, worker state, repository activity, and task-control state do not create heartbeat progression.
 
 ## Authority separation
 
@@ -83,7 +83,7 @@ scripts/run_worker_runtime.py                   # separate worker process
 
 `HEARTBEAT-OSCILLATOR-RESIDENT-START-012` is no longer a prerequisite for heartbeat existence or progression. It installs an optional continuously resident sampler/persistence observer for environments that want one. Its activation receipt proves only that the observer service was installed and active; it does not activate the heartbeat.
 
-`HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009` must verify canonical derivability and observation neutrality. It must not wait on resident-start 012 merely to prove that heartbeat references exist.
+`HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009` is terminal protocol proof. Its completed registry declaration is retained only as append-only provenance and is not reacquirable. LIVE-009 does not depend on resident-start 012.
 
 ## Historical provenance
 
@@ -91,33 +91,33 @@ Legacy HB29 and persisted HB30/HB31 remain immutable historical observations. HB
 
 Historical cutover tests must replay with an explicit pre-anchor timestamp. They must not implicitly use the CI runner wall clock, because after HB32 activation a wall-clock sample correctly derives the current protocol reference rather than historical HB30.
 
-## Full-suite regression found 2026-08-23
+## Full-suite reconciliation on 2026-08-23
 
-The focused HB32 protocol-anchor suite passed 6/6, but the subsequent complete deterministic repository suite exposed two failures in `tests/test_heartbeat_engine_v12_cutover.py`:
+The first complete deterministic repository suite after HB32 activation exposed two historical replay failures because the tests used live wall-clock time while asserting historical HB30. Commit `d36e7b330634337d42d9020abfee728aebaa69ca` pinned historical v12 replay to a pre-anchor time.
 
-```text
-test_dry_run_previews_hb30_without_creating_cutover_state
-test_first_write_freezes_hb29_and_emits_hb30_separated_schema
-observed epoch: 138224
-expected historical replay epoch: 30
-suite result: 519 tests / 2 failures
-```
+A bounded exact-head validation PR (`#266`) then exposed stale terminal-state metadata around LIVE-009. Those defects were reconciled without reopening the completed proof: the executable handoff retains its required schema, the terminal registry fragment remains `NONE_REGISTRATION_ONLY`, AE classifies LIVE-009 as `recently_completed`, and stale tests now assert terminal non-reacquisition plus optional resident sampler semantics.
 
-Root cause: those historical replay tests called `HeartbeatRuntime.cycle()` without `now_ns`, so once the protocol anchor became active they sampled the live wall clock and legitimately entered the post-anchor derivation path. The assertions were historical, but the test input was no longer historical.
-
-Correction commit:
+Current exact-head validation evidence on PR #266:
 
 ```text
-d36e7b330634337d42d9020abfee728aebaa69ca
+Heartbeat Worker Project run: 32669436465 / #1363
+result: SUCCESS
+complete deterministic repository suite: PASS
+historical HB29->HB30 replay: PASS
+HB32 protocol-anchor focused proof: PASS
+executable handoff validation: PASS
+AE retrospective conformance: PASS
+organization control-plane run: 32669436479 / #1197
+organization control-plane result: PENDING REPAIR AT CANONICAL HANDOFF PHRASE CONTRACT
 ```
 
-The v12 cutover tests now use an explicit fixed pre-anchor replay instant (`HISTORICAL_CUTOVER_SAMPLE_NS = 2_000_000_000`) for all historical migration operations. This preserves HB29/HB30/HB31 replay semantics without weakening the HB32 protocol anchor.
+The remaining organization-control failure is documentation-contract parity only: `scripts/validate_heartbeat_carrier_contract.py` requires canonical phrases that preserve communication and Master Records terminal-object semantics. This handoff now restores those phrases explicitly; exact-head rerun is required before merge/closure.
 
-Do not alter `current_reference()` or allow persisted historical state to override HB32 merely to make the legacy tests pass.
-
-## Communication separation
+## Communication and terminal-object separation
 
 The communication object remains the **manifest packet + expiration wrapper + data packet**. Heartbeat is reference/synchronization only; it is not application payload, transport, task dispatcher, credential authority, model/provider executor, or Master Records transport.
+
+Terminal triggers remain endpoint-objective completion or expiration. **Master Records is the End-Of-Life state/destination for every Transition Table element**. The terminal object is a Master Records packet. This custody/EOL rule does not make heartbeat a Master Records transport and does not make observation causal.
 
 ## Validation obligations
 
@@ -133,7 +133,8 @@ Required deterministic invariants:
 8. persisted sampler state is observation-only;
 9. TV/TVC remains sole credential authority;
 10. GitHub and third parties have no heartbeat runtime authority;
-11. historical HB29->HB30 replay uses an explicit pre-anchor timestamp and remains deterministic after protocol activation.
+11. historical HB29->HB30 replay uses an explicit pre-anchor timestamp and remains deterministic after protocol activation;
+12. manifest/expiration/data communication semantics and Master Records EOL semantics remain preserved while heartbeat stays transport-neutral.
 
 Focused protocol-anchor coverage is installed at `tests/test_heartbeat_protocol_anchor.py`.
 
@@ -144,17 +145,19 @@ independent oscillator semantics: COMPLETE_SOURCE
 canonical protocol anchor: INSTALLED
 canonical daemon-free derivation: INSTALLED
 heartbeat protocol progression: ACTIVE_BY_PROTOCOL_DERIVATION
-focused HB32 tests: 6/6 PASS
-complete deterministic repository suite: PREVIOUS RUN 519 / 2 FAILURES
-historical compatibility regression: PATCHED IN d36e7b330634337d42d9020abfee728aebaa69ca
-exact-head complete-suite validation after patch: PENDING CI EVIDENCE
+LIVE-009: COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED
+focused HB32 tests: PASS
+complete deterministic repository suite on PR #266: PASS
+historical compatibility regression: FIXED
+terminal registry/handoff/AE reconciliation: FIXED
+organization control-plane exact-head validation: RERUN REQUIRED AFTER HANDOFF PARITY FIX
 resident sampler: OPTIONAL OBSERVER
 resident activation receipt: NOT A HEARTBEAT EXISTENCE PREDICATE
 worker-trigger causality: NONE
 third-party runtime requirement: NONE
-remaining work: obtain exact-head full-suite PASS; then reconcile downstream propagation
-archive_ready: false until exact-head full-suite validation is terminal
+remaining work: obtain green organization-control exact-head run; merge #266; record main-head validation; then execute downstream propagation #263
+archive_ready: false until exact-head retained validation is green on merged main and propagation is durably owned
 ```
 
 DO NOT REINTRODUCE A RESIDENT-DAEMON REQUIREMENT AS HEARTBEAT PROGRESSION AUTHORITY.
-DO NOT CLAIM FULL REPOSITORY VALIDATION UNTIL THE POST-PATCH COMPLETE SUITE PASSES.
+DO NOT CLAIM MERGED-MAIN EXACT-HEAD COMPLETION UNTIL THE RETAINED VALIDATION SURFACES PASS.
