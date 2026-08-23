@@ -36,17 +36,22 @@ class TaskLoadIndependentAdmissionTests(unittest.TestCase):
         self.assertFalse(fragment["third_party_runtime_required"])
         return task
 
-    def test_heartbeat_live_proof_is_dependency_blocked_but_independent_after_release(self) -> None:
-        task = self.assert_independent(
-            "control/worker-registry.d/heartbeat-independent-oscillator-live-009.json",
-            "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
-            expected_state="BLOCKED_DEPENDENCY",
-            expected_claim_state="WAITING_FOR_RESIDENT_START_DEPENDENCY",
-        )
-        self.assertEqual(task["dependencies"], ["HEARTBEAT-OSCILLATOR-RESIDENT-START-012"])
-        self.assertEqual(task["block_ref"], "HEARTBEAT-OSCILLATOR-RESIDENT-START-012")
-        self.assertIn("carrier-activation.latest.json", task["admission"]["dependency_release_condition"])
-        self.assertIn("verified=true", task["admission"]["dependency_release_condition"])
+    def test_heartbeat_live_proof_is_terminal_and_not_reacquirable(self) -> None:
+        fragment = self.load("control/worker-registry.d/heartbeat-independent-oscillator-live-009.json")
+        task = fragment["tasks"][0]
+        self.assertEqual(task["task_id"], "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009")
+        self.assertEqual(task["state"], "COMPLETED")
+        self.assertTrue(task["archive_eligible"])
+        self.assertEqual(task["dependencies"], [])
+        self.assertIsNone(task["block_ref"])
+        self.assertIsNone(task["claim_id"])
+        self.assertIsNone(task["worker_id"])
+        self.assertEqual(task["terminal_transition_id"], "INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED")
+        self.assertTrue(fragment["terminal_registration_only"])
+        self.assertFalse(fragment["reacquisition_allowed"])
+        self.assertEqual(fragment["authority_effect"], "NONE_REGISTRATION_ONLY")
+        self.assertFalse(fragment["continuous_process_required"])
+        self.assertFalse(fragment["resident_sampler_required_for_progression"])
 
     def test_cosv_packet_automation_is_independently_claimable(self) -> None:
         self.assert_independent(
@@ -54,18 +59,24 @@ class TaskLoadIndependentAdmissionTests(unittest.TestCase):
             "COSV-LIVE-PACKET-AUTOMATION-006",
         )
 
-    def test_resident_heartbeat_start_is_independently_claimable_without_becoming_a_startup_dependency(self) -> None:
+    def test_optional_resident_sampler_is_independently_claimable_but_not_heartbeat_authority(self) -> None:
         rel = "control/worker-registry.d/heartbeat-oscillator-resident-start-012.json"
-        self.assert_independent(rel, "HEARTBEAT-OSCILLATOR-RESIDENT-START-012")
+        task = self.assert_independent(
+            rel,
+            "HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
+            expected_claim_state="AUTHORIZED_FOR_OPTIONAL_RESIDENT_SAMPLER_CLAIM",
+        )
         fragment = self.load(rel)
-        admission = fragment["tasks"][0]["admission"]
+        admission = task["admission"]
+        self.assertEqual(task["role"], "OPTIONAL_RESIDENT_SAMPLER_AND_PERSISTENCE")
+        self.assertFalse(task["heartbeat_existence_dependency"])
+        self.assertFalse(task["heartbeat_progression_dependency"])
         self.assertTrue(admission["direct_resident_installer_remains_authorized"])
         self.assertFalse(admission["workercoordinator_required_for_carrier_start"])
-        self.assertFalse(fragment["worker_runtime_dependency_for_carrier_start"])
+        self.assertFalse(admission["live_009_depends_on_this_task"])
+        self.assertFalse(fragment["continuous_process_required_for_heartbeat"])
+        self.assertFalse(fragment["resident_sampler_required_for_progression"])
         self.assertFalse(fragment["network_fetch_required"])
-        self.assertFalse(fragment["third_party_process_host_required"])
-        self.assertFalse(fragment["third_party_scheduler_required"])
-        self.assertFalse(fragment["third_party_deployment_required"])
 
 
 if __name__ == "__main__":
