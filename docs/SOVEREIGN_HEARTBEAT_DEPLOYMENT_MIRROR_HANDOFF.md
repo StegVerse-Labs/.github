@@ -1,6 +1,6 @@
 # Sovereign Heartbeat Deployment Mirror Handoff
 
-Updated: 2026-08-22T19:37:00-05:00
+Updated: 2026-08-23T09:15:00-05:00
 
 ## Authority and active goal
 
@@ -96,8 +96,8 @@ worker claim/fence/lease required for carrier start: false
 prior heartbeat proof required: false
 network fetch required: false
 third-party process host required: false
-third-party scheduler required: false
-third-party deployment required: false
+third_party_scheduler_required: false
+third_party_deployment_required: false
 GitHub runtime dependency: false
 credential requirement: NONE
 credential authority: TV/TVC
@@ -122,6 +122,19 @@ required receipt: receipts/sovereign-host/carrier-activation.latest.json
 `HEARTBEAT-OSCILLATOR-RESIDENT-START-012` has no task dependencies and may execute directly on the admitted resident StegVerse host. WorkerCoordinator is not a prerequisite for carrier startup. The registered worker path remains an independently admitted alternative execution path, but direct native installation is explicitly authorized.
 
 The activation receipt is terminal for resident startup only when it records all required invariants including `carrier_active=true`, `activation_scope=CARRIER_ONLY`, `worker_start_attempted=false`, canonical runtime `heartbeat_runtime.engine_v13.HeartbeatRuntime`, `OSCILLATOR_PHASE_DRIVEN`, `OSCILLATOR_ONLY`, 10 ms, 100 Hz, zero network fetch, zero third-party process/scheduler/deployment dependency, zero GitHub runtime dependency, and credential requirement `NONE`.
+
+### Windows activation hardening
+
+A final activation review on 2026-08-23 found that Windows scheduled-task registration could previously return success from `schtasks /Create` without immediately starting the ONLOGON carrier task. That could allow the carrier-only installer to emit `carrier_active=true` from registration evidence rather than actual process-start evidence.
+
+This is corrected in `scripts/install_sovereign_heartbeat_carrier.py`: when the native registration kind is `scheduled-task-separated`, the installer now executes `schtasks /Run /TN "StegVerse Heartbeat"` and requires that immediate start command to succeed before `carrier_active=true` may be emitted. It still does not start WorkerCoordinator. Focused tests now cover both successful immediate Windows start and fail-closed behavior when `/Run` fails.
+
+```text
+7c1971dc12b920c0f2d56d17526779883c9275f6  require actual Windows carrier start before activation receipt
+291acf3c3fcd856c55698ebdd5ef1be549df3984  regression tests for registration-only false activation
+```
+
+These commits harden source correctness. They are not resident runtime proof.
 
 ## Activation receipt verification
 
@@ -152,9 +165,11 @@ carrier_trigger_required: false
 required terminal result: COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED
 ```
 
-The canonical LIVE-009 handoff and registry now encode the resident-start dependency. `scripts/run_live_009_resident.py` has been corrected to post-start-only behavior: it first verifies the preexisting resident activation receipt and then performs worker(1) -> carrier-observation(1) -> worker(1). It no longer installs or starts the carrier.
+The canonical LIVE-009 handoff and registry encode the resident-start dependency. `scripts/run_live_009_resident.py` is post-start-only: it first verifies the preexisting resident activation receipt and then performs worker(1) -> carrier-observation(1) -> worker(1). It does not install or start the carrier.
 
 After resident startup, LIVE-009 must verify inspectable v13 oscillator-backed evidence showing nested `oscillator.progression_dependency=OSCILLATOR_ONLY`, `oscillator.phase_travel_time_ms=10`, `oscillator.snapshot_is_observation_only=true`, carrier observation `observation_is_causal=false`, `authority_effect=NONE`, and independent task-control execution under a fresh lawful fence. Worker execution verifies the carrier; it does not advance the oscillator.
+
+Issue #12 was reconciled on 2026-08-23 to remove stale wording that described LIVE-009 as independently claimable before resident startup. The canonical issue state now agrees with this handoff: LIVE-009 remains `BLOCKED_DEPENDENCY` until the genuine resident activation receipt exists and the fail-closed verifier returns verified.
 
 ## Worker/runtime activation lane
 
@@ -163,21 +178,21 @@ Task-capable WorkerCoordinator execution remains a separate open runtime goal un
 ## Current machine-observed state
 
 ```text
-carrier-only installer source: COMPLETE_SOURCE
+carrier-only installer source: COMPLETE_SOURCE / WINDOWS_FALSE_ACTIVATION_HARDENED
 carrier activation receipt verifier: COMPLETE_SOURCE
 carrier-only focused test source: COMPLETE_SOURCE
 activation verifier focused test source: COMPLETE_SOURCE
 resident-start handoff/registry/adapter/worker: INSTALLED / HANDOFF_READY
 resident activation receipt: ABSENT / NOT YET OBSERVED
 resident carrier activation: NOT YET PROVEN
-LIVE-009 handoff/registry: RECONCILED / BLOCKED_ON_RESIDENT_START_012
+LIVE-009 handoff/registry/issue: RECONCILED / BLOCKED_ON_RESIDENT_START_012
 LIVE-009 resident runner: POST_START_ONLY
 worker task-capable runtime: SEPARATE OPEN LANE
 ```
 
-A direct repository read on 2026-08-22 after the reconciliation commits found `receipts/sovereign-host/carrier-activation.latest.json` absent. No receipt is manufactured from source state. GitHub-hosted validation cannot substitute for resident execution.
+A direct repository review on 2026-08-23 found no canonical `receipts/sovereign-host/carrier-activation.latest.json`. No receipt is manufactured from source state. GitHub-hosted validation cannot substitute for resident execution.
 
-## Reconciliation installed 2026-08-22
+## Reconciliation installed
 
 ```text
 9f1b8b300272c2c5f59887649aa45bfde0f8bd02  standalone activation receipt verifier
@@ -187,11 +202,15 @@ db87e70381ea8612033096dcb55daccfc5d24f79  LIVE-009 registry dependency gate
 9eeaf74970a88fc9d40bb052371fd0e78be18a77  LIVE-009 resident execution handoff correction
 c82c7835f822882a131aef90505b3ddcbd14f0b7  LIVE-009 runner post-start-only correction
 a343a4880a118c71f2abccdae10445ce0c5e51e6  LIVE-009 runner tests updated for dependency enforcement
+7c1971dc12b920c0f2d56d17526779883c9275f6  Windows immediate carrier-start requirement
+291acf3c3fcd856c55698ebdd5ef1be549df3984  Windows activation regression tests
 ```
 
 These commits improve source/evidence correctness only. They do not prove resident activation.
 
-## Next executable sequence
+## Final executable sequence
+
+There is no remaining architectural or documentation prerequisite before resident start.
 
 1. On the admitted resident StegVerse host, run `python scripts/install_sovereign_heartbeat_carrier.py` directly.
 2. Run `python scripts/verify_sovereign_heartbeat_carrier_activation.py` against the resident receipt and require `verified=true`.
@@ -206,17 +225,19 @@ Do not create a second oscillator, scheduler, WorkerCoordinator, or synthetic ru
 heartbeat independent-oscillator semantics: COMPLETE_SOURCE
 canonical resident sampler source: engine_v13
 oscillator producer source: COMPLETE
-carrier-only resident installer source: COMPLETE
+carrier-only resident installer source: COMPLETE / FALSE-ACTIVATION-HARDENED
 activation receipt verifier source: COMPLETE
 LIVE-009 startup/proof separation: COMPLETE_SOURCE_RECONCILIATION
 heartbeat progression dependency on worker/state changes: NONE
 persisted HB31: HISTORICAL OBSERVATION ONLY
-resident carrier start task 012: HANDOFF_READY / PENDING MACHINE EXECUTION
+resident carrier start task 012: HANDOFF_READY / PENDING RESIDENT EXECUTION
 resident carrier activation receipt: ABSENT
-oscillator-backed sovereign runtime observation: PENDING MACHINE EXECUTION
-live proof 009: BLOCKED_DEPENDENCY / PENDING POST-START MACHINE EXECUTION
+oscillator-backed sovereign runtime observation: PENDING RESIDENT EXECUTION
+live proof 009: BLOCKED_DEPENDENCY / PENDING POST-START RESIDENT EXECUTION
 worker task-capable runtime: SEPARATE OPEN LANE
 archive: prohibited while required deployment/runtime goals remain nonterminal
 ```
 
-DO NOT ARCHIVE THIS SESSION — REQUIRED EXECUTION REMAINS IN AN ACTIVE DEPENDENCY LANE.
+This is the final repository-side activation boundary. Additional architecture sessions are not required to start the heartbeat; the next required state transition is genuine execution on the admitted resident StegVerse host followed by receipt verification and LIVE-009.
+
+DO NOT ARCHIVE THIS SESSION — REQUIRED RESIDENT EXECUTION REMAINS NONTERMINAL.
