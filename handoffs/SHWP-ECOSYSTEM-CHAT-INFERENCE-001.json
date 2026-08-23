@@ -2,25 +2,71 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
   "created_at": "2026-08-09T19:59:00Z",
+  "updated_at": "2026-08-23T16:11:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
-    "objective": "Complete Ecosystem Chat activation through a StegVerse-local/private model process and the sovereign ephemeral E1-to-worker-to-E2 carrier with same-execution Master Records reconstruction and no third-party production dependency.",
-    "success_predicates": ["A real local model process executes on a StegVerse-owned or federated node", "The inference endpoint is loopback/private/StegVerse-local only", "The sovereign ephemeral E1-to-worker-to-E2 execution path is observed", "Measured provider/model usage is persisted", "Provider-usage reconstruction passes in Master Records", "Transition reconstruction passes for the same execution", "Current credential authority is TV/TVC with credential requirement NONE", "GitHub token is absent from credential, activation, model, route, transport, reconstruction, and runtime persistence paths"],
-    "failure_predicates": ["A fixture or synthetic response is treated as live model activation", "The StegVerse reference language model is misrepresented as a production-scale LLM", "A public hosted endpoint becomes the production inference authority", "A third-party platform outage blocks StegVerse production activation", "A GitHub token, GitHub Actions write permission, or source checkout becomes an activation/runtime prerequisite", "Provider output or reconstruction is treated as governance or execution authority"],
+    "objective": "Complete Ecosystem Chat activation through a StegVerse-local/private model process, TVC route admission, exact LLM-adapter execution, and same-execution Master Records reconstruction with a persistent conversational runtime and no third-party production dependency.",
+    "success_predicates": [
+      "A real local model process executes on a StegVerse-owned or federated node",
+      "The inference endpoint is loopback/private/StegVerse-local only",
+      "The exact TVC-admitted endpoint executes through the canonical LLM-adapter route",
+      "Measured provider/model usage is persisted",
+      "Provider-usage reconstruction passes in Master Records",
+      "Transition reconstruction passes for the same execution",
+      "Persistent conversational runtime readiness is verified after reconstruction",
+      "Current credential authority is TV/TVC with credential requirement NONE",
+      "GitHub token is absent from credential, activation, model, route, transport, reconstruction, and runtime persistence paths"
+    ],
+    "failure_predicates": [
+      "A fixture or synthetic response is treated as live model activation",
+      "The StegVerse reference language model is misrepresented as a production-scale LLM",
+      "A public hosted endpoint becomes production inference authority",
+      "A third-party platform outage blocks StegVerse production activation",
+      "A GitHub token, GitHub Actions write permission, source checkout credential, or Render dependency becomes an activation/runtime prerequisite",
+      "Heartbeat, G18, G20, or terminal G22 recovery evidence is reused as parent execution authority",
+      "Provider output or reconstruction is treated as governance authority"
+    ],
     "expires_at": null,
-    "authority_ceiling": ["bounded sovereign inference observation", "no_external_model_provider_authority", "no_public_endpoint_requirement", "no_third_party_deployment_dependency"],
+    "authority_ceiling": [
+      "bounded_sovereign_inference_execution",
+      "independent_task_control",
+      "receipt_namespace_mutation",
+      "same_execution_reconstruction",
+      "no_external_model_provider_authority",
+      "no_public_endpoint_requirement",
+      "no_third_party_deployment_dependency"
+    ],
     "successor_policy": "NONE",
     "max_successor_depth": 0
   },
   "task": {
     "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
     "repository": "StegVerse-Labs/.github",
-    "source_refs": ["StegVerse-Labs/.github#60", "StegVerse-Labs/.github#77", "StegVerse-org/LLM-adapter#18", "StegVerse-org/LLM-adapter:tasks/LLMA-SOVEREIGN-CARRIER-EXECUTION-020.json", "StegVerse-002/micro-node-runtime#22", "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md", "StegVerse-Labs/TV", "StegVerse-Labs/TVC:tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json", "master-records/orchestration:tasks/MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024.json", "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json", "workloads/master-records/orchestration/custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json", "workers/ecosystem_chat_sovereign_inference_worker.py", "workers/ecosystem_chat_sovereign_route_worker.py", "workers/master_records_sovereign_reconstruction_bridge.py", "tests/test_sovereign_inference_local_model_proof.py", "tests/test_master_records_sovereign_reconstruction_bridge.py", "cost-basis/worker-runtime/ecosystem-chat-sovereign-inference.json", "control/worker-registry.json"],
+    "source_refs": [
+      "StegVerse-Labs/.github#60",
+      "StegVerse-Labs/.github#264",
+      "StegVerse-Labs/.github#265",
+      "StegVerse-org/LLM-adapter#18",
+      "StegVerse-org/LLM-adapter:tasks/LLMA-SOVEREIGN-CARRIER-EXECUTION-020.json",
+      "StegVerse-002/micro-node-runtime#22",
+      "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/TVC:tasks/TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002.json",
+      "master-records/orchestration:tasks/MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024.json",
+      "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
+      "workloads/master-records/orchestration/custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json",
+      "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+      "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
+      "scripts/run_independent_ecosystem_chat_parent.py",
+      "workers/ecosystem_chat_sovereign_inference_worker.py",
+      "workers/ecosystem_chat_sovereign_route_worker.py",
+      "workers/master_records_sovereign_reconstruction_bridge.py",
+      "tests/test_independent_ecosystem_chat_parent_executor.py"
+    ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "Formal local model, persistent endpoint proof, TVC route evaluator, exact LLM-adapter carrier executor, same-execution Master Records verifier bridge, and historical G20 recovery are complete at source/evidence level. Recovery PASS under G22 is durable; this parent may now be separately admitted under fresh authority greater than 22.",
-    "canonical_owner_ref": "StegVerse-org/LLM-adapter#18 + master-records/orchestration:MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024",
+    "derivation_reason": "Formal local model, persistent endpoint proof, TVC route evaluator, exact LLM-adapter carrier executor, same-execution Master Records verifier bridge, terminal G22 orphan recovery, and an independent parent fresh-fence executor are installed. The remaining transition is actual sovereign execution, not source construction or recovery replay.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#264 -> StegVerse-Labs/TVC -> StegVerse-org/LLM-adapter#18 -> master-records/orchestration:MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024",
     "canonical_lineage_key": "ecosystem-chat:sovereign-inference-activation",
     "derivation_depth": 0,
     "priority": "release",
@@ -28,7 +74,7 @@
     "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
   },
   "authority": {
-    "authority_source": "TV/TVC credential semantics + StegVerse-org/LLM-adapter#18 transport + master-records/orchestration reconstruction",
+    "authority_source": "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json + TV/TVC route semantics + LLM-adapter transport + Master Records reconstruction",
     "credential_authority": "TV/TVC",
     "credential_requirement": "NONE",
     "github_token_authority": false,
@@ -37,12 +83,20 @@
     "source_checkout_runtime_requirement": false,
     "heartbeat_grants_execution_authority": false,
     "g18_grants_execution_authority": false,
+    "g20_authority_reuse_allowed": false,
+    "g22_recovery_authority_reuse_allowed": false,
     "recovery_grants_parent_execution_authority": false,
-    "policy_version": "shwp-single-hb-v0.3-sovereign"
+    "policy_version": "shwp-independent-task-control-v0.4-sovereign"
   },
   "execution": {
-    "required_capabilities": ["runtime_observation", "durable_state_reconstruction", "bounded_repository_mutation"],
-    "allowed_paths": ["receipts/ecosystem-chat-sovereign-inference/**"],
+    "required_capabilities": [
+      "runtime_observation",
+      "durable_state_reconstruction",
+      "bounded_repository_mutation"
+    ],
+    "allowed_paths": [
+      "receipts/ecosystem-chat-sovereign-inference/**"
+    ],
     "allowed_services": [],
     "max_actions": 64,
     "max_retries": 4096,
@@ -54,40 +108,65 @@
     "carrier": "heartbeat_reference_only",
     "activation_mode": "INDEPENDENT_TASK_CONTROL_WITH_HEARTBEAT_REFERENCE",
     "executor_binding": "AUTHORIZED",
-    "authorization_ref": "TV/TVC + StegVerse-org/LLM-adapter#18 + master-records/orchestration:MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024",
+    "executor_ref": "scripts/run_independent_ecosystem_chat_parent.py",
+    "authorization_ref": "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
+    "registry_fragment_ref": "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
     "credential_control": "TV/TVC",
     "github_actions_may_activate": false,
     "heartbeat_required_for_admission": false,
+    "heartbeat_reference_is_causal": false,
     "g18_terminalization_required": false,
     "workercoordinator_specific_execution_required": false,
     "recovery_terminal_evidence_ref": "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
+    "recovery_reacquisition_allowed": false,
     "fresh_fence_required": true,
     "minimum_fencing_token_exclusive": 22,
-    "recheck_trigger": "each admitted StegVerse task-control execution opportunity while HANDOFF_READY",
-    "checkout_policy": "fenced_atomic_checkout"
+    "checkout_policy": "fenced_atomic_checkout",
+    "attempt_claim_release_required": true,
+    "recheck_trigger": "each admitted StegVerse task-control execution opportunity while HANDOFF_READY"
   },
   "continuity": {
     "checkpoint_ref": "receipts/ecosystem-chat-sovereign-inference/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "activation_receipt_ref": "receipts/ecosystem-chat-sovereign-inference/independent_parent_activation.latest.json",
+    "master_records_receipt_ref": "receipts/ecosystem-chat-sovereign-inference/master_records_same_execution_reconstruction.json",
     "handoff_destination": "control/worker-registry.json",
     "master_records_required": true,
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "A compliant StegVerse task-control executor may independently acquire a fresh parent claim/fence strictly greater than 22, execute or consume the verified StegVerse-local model proof, require TVC ROUTE_ADMITTED with credential_requirement NONE, execute the exact endpoint through LLM-adapter task 020, then invoke locally materialized Master Records task 024 and advance only on exact same-execution reconstruction PASS whose proof, route, provider-usage, and reconstruction self-hashes all bind.",
-    "terminal_when": ["real_model_process_observed=true", "private_endpoint_only=true", "ephemeral_e1_e2_execution_observed=true", "measured_usage_persisted=true", "provider_usage_reconstruction_pass=true", "transition_reconstruction_pass=true", "same_execution=true", "credential_authority=TV/TVC", "github_token_required=false", "github_actions_activation_role=false", "third_party_inference_required=false"]
+    "next_authorized_action": "On an admitted StegVerse task-control execution surface, run scripts/run_independent_ecosystem_chat_parent.py. It must atomically acquire a fresh parent fence >22, invoke the installed StegVerse-local model -> TVC -> exact LLM-adapter chain with a credential-clean environment, perform same-execution Master Records reconstruction, verify persistent conversational runtime readiness, and release the bounded parent claim truthfully. Hosted CI validates source only and may not satisfy this transition.",
+    "terminal_when": [
+      "real_model_process_observed=true",
+      "private_endpoint_only=true",
+      "ephemeral_e1_e2_execution_observed=true",
+      "measured_usage_persisted=true",
+      "provider_usage_reconstruction_pass=true",
+      "transition_reconstruction_pass=true",
+      "same_execution=true",
+      "persistent_conversational_runtime_ready=true",
+      "credential_authority=TV/TVC",
+      "credential_requirement=NONE",
+      "github_token_required=false",
+      "github_actions_activation_role=false",
+      "third_party_inference_required=false"
+    ]
   },
   "block": {
-    "state": "NONE_RECOVERY_RELEASED",
-    "class": "NONE",
-    "owner": "admitted StegVerse task-control executor -> TVC -> LLM-adapter -> Master Records",
-    "problem_statement": "Recovery is complete. Remaining work is fresh-authority sovereign inference execution and same-execution reconstruction, not heartbeat, G18, or recovery replay.",
+    "state": "SOURCE_EXECUTOR_INSTALLED_LIVE_EXECUTION_PENDING",
+    "class": "EXECUTION_PENDING",
+    "owner": "independent admitted StegVerse task-control executor -> TVC -> LLM-adapter -> Master Records",
+    "problem_statement": "The recovery and source gaps are closed. Live same-execution activation evidence has not yet been observed from a sovereign StegVerse execution surface.",
     "solution_required": true,
     "dependency": null,
     "observer": "independent StegVerse task-control",
     "recheck_trigger": "each admitted StegVerse task-control execution opportunity while parent remains HANDOFF_READY",
-    "workaround_candidates": ["Use the locally developed stegverse-reference-lm-v1 as the guaranteed zero-external-dependency runtime", "Use a stronger qualifying locally developed or locally installed model while preserving private endpoint/proof semantics", "Move execution to another StegVerse-owned/federated node if current sovereign hardware cannot support the desired model"],
-    "next_solution_action": "ACQUIRE_FRESH_PARENT_FENCE_GT22_AND_EXECUTE_LOCAL_MODEL_ROUTE_LLM_AND_MASTER_RECORDS",
-    "machine_observable_release_condition": "a separately acquired parent fencing generation greater than 22 reaches MASTER_RECORDS_SAME_EXECUTION_RECONSTRUCTED with provider_usage_reconstruction_pass=true, transition_reconstruction_pass=true, same_execution=true, credential_authority=TV/TVC, github_token_required=false and exact proof/route/usage/self-hash bindings",
+    "workaround_candidates": [
+      "Use the locally developed stegverse-reference-lm-v1 as the guaranteed zero-external-dependency runtime",
+      "Use a stronger qualifying locally developed or locally installed model while preserving private endpoint/proof semantics",
+      "Move execution to another StegVerse-owned/federated node if the current sovereign surface lacks the materialized workload roots"
+    ],
+    "next_solution_action": "EXECUTE_INSTALLED_INDEPENDENT_PARENT_FRESH_FENCE_GT22",
+    "machine_observable_release_condition": "receipts/ecosystem-chat-sovereign-inference/independent_parent_activation.latest.json state PASS with fresh parent fence >22, same_execution=true, persistent_conversational_runtime_ready=true, provider_usage_reconstruction_pass=true, transition_reconstruction_pass=true, credential_authority=TV/TVC, github_token_required=false and exact proof/route/usage/reconstruction hash bindings",
     "third_party_blocker": false,
     "human_action_required": false
   }
