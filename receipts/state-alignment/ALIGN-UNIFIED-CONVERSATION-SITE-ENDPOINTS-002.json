@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.master-records-alignment-transition/v1",
+  "transition_id": "ALIGN-UNIFIED-CONVERSATION-SITE-ENDPOINTS-002",
+  "parent_transition_id": "ALIGN-UNIFIED-CONVERSATION-TASK-PROJECTION-001",
+  "source_handoff_ref": "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+  "source_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+  "target_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+  "semantic_delta_hash": "15cff142d2b4df21c68f11cc29723e38ae823938f361d46eeae19a77985465c7",
+  "module_id": "StegVerse-Labs/Site:unified-conversational-capability",
+  "endpoint_id": "StegVerse-Labs/Site:data/tasks/unified-conversation-specialty-projections",
+  "projection_before_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "projection_after_hash": "3d65f7b24ab8ca593fe0d719d8c2fce3c42314948261e196cf53e72067f5b3cc",
+  "task_effects": [
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-SPECIALTY-001",
+      "disposition": "PROPAGATED_UNCLAIMED_PENDING_SEPARATE_ADMISSION",
+      "site_commit": "abc8bfc68a5aafb6c229c911bc5e6bd1b8c6fdc1"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-HIL-SPECIALTY-001",
+      "disposition": "PROPAGATED_UNCLAIMED_PENDING_SEPARATE_ADMISSION",
+      "site_commit": "5aeea4052d4d0fbcb481acf4f7a2ff3c3c752dce"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-SITE-HANDOFF-BINDING",
+      "disposition": "HANDOFF_UPDATED_NO_AUTHORITY_CHANGE",
+      "site_commit": "05cb5d85e9b3679a4198d3660cc05c68b552cc48"
+    }
+  ],
+  "alignment_disposition": "PROPAGATING",
+  "reconstruction_state": "PASS",
+  "evidence_refs": [
+    "receipts/state-alignment/ALIGN-UNIFIED-CONVERSATION-TASK-PROJECTION-001.json",
+    "StegVerse-Labs/Site/data/tasks/UNIFIED-CONVERSATION-MATH-SPECIALTY-001.json",
+    "StegVerse-Labs/Site/data/tasks/UNIFIED-CONVERSATION-HIL-SPECIALTY-001.json",
+    "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md"
+  ],
+  "authority_effect": "NONE",
+  "custody_destination": "master-records/orchestration"
+}
