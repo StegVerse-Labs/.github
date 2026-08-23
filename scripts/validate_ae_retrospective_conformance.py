@@ -6,6 +6,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "control" / "admissible-existence-retrospective-conformance.json"
+OVERRIDES = ROOT / "control" / "admissible-existence-retrospective-conformance.overrides.json"
 TERMINAL = {"COMPLETED", "SUPERSEDED", "TERMINATED"}
 RESULTS = {"PASS", "REVIEW_REQUIRED", "FAIL_CLOSED"}
 IMPACTS = {"NONE", "CAPABILITY", "SUPPORTING_OPERATION_OF"}
@@ -30,40 +31,48 @@ def effective_tasks() -> dict[str, dict[str, Any]]:
     found: dict[str, dict[str, Any]] = {}
     aggregate = load(ROOT / "control" / "worker-registry.json")
     for task in aggregate.get("tasks", []):
-        if isinstance(task, dict) and isinstance(task.get("task_id"), str):
-            found[task["task_id"]] = task
+        if isinstance(task, dict) and isinstance(task.get("task_id"), str): found[task["task_id"]] = task
     for path in sorted((ROOT / "control" / "worker-registry.d").glob("*.json")):
         doc = load(path)
         for task in doc.get("tasks", []):
-            if isinstance(task, dict) and isinstance(task.get("task_id"), str):
-                found[task["task_id"]] = task
+            if isinstance(task, dict) and isinstance(task.get("task_id"), str): found[task["task_id"]] = task
     return found
 
 
+def apply_overrides(indexed: dict[str, dict[str, Any]]) -> None:
+    if not OVERRIDES.is_file(): return
+    doc = load(OVERRIDES)
+    if doc.get("schema") != "stegverse.admissible-existence-retrospective-conformance-overrides/v1":
+        raise ValueError("AE retrospective override schema mismatch")
+    for override in doc.get("overrides", []):
+        if not isinstance(override, dict) or not isinstance(override.get("task_id"), str):
+            raise ValueError("invalid AE retrospective override")
+        task_id = override["task_id"]
+        if task_id not in indexed: raise ValueError(f"AE retrospective override targets missing task:{task_id}")
+        for key in ("temporal_class", "continuation_owner", "rationale"):
+            if key in override: indexed[task_id][key] = override[key]
+
+
 def main() -> int:
-    report = load(REPORT)
-    tasks = effective_tasks()
-    errors: list[str] = []
+    report = load(REPORT); tasks = effective_tasks(); errors: list[str] = []
     if report.get("schema") != "stegverse.admissible-existence-retrospective-conformance/v1": errors.append("schema mismatch")
     if report.get("credential_authority") != "TV/TVC": errors.append("credential authority must be TV/TVC")
     if report.get("github_token_runtime_authority") is not False: errors.append("GitHub-token runtime authority must be false")
     entries = report.get("entries") if isinstance(report.get("entries"), list) else []
     indexed: dict[str, dict[str, Any]] = {}
     for entry in entries:
-        if not isinstance(entry, dict) or not isinstance(entry.get("task_id"), str):
-            errors.append("entry without task_id")
-            continue
+        if not isinstance(entry, dict) or not isinstance(entry.get("task_id"), str): errors.append("entry without task_id"); continue
         if entry["task_id"] in indexed: errors.append(f"duplicate:{entry['task_id']}")
-        indexed[entry["task_id"]] = entry
+        indexed[entry["task_id"]] = dict(entry)
+    try: apply_overrides(indexed)
+    except ValueError as exc: errors.append(str(exc))
     missing = sorted(set(tasks) - set(indexed)); extra = sorted(set(indexed) - set(tasks))
     if missing: errors.append("missing:" + ",".join(missing))
     if extra: errors.append("extra:" + ",".join(extra))
-
     for task_id, task in tasks.items():
         entry = indexed.get(task_id)
         if not entry: continue
-        state = task.get("state")
-        temporal = entry.get("temporal_class")
+        state = task.get("state"); temporal = entry.get("temporal_class")
         if state in TERMINAL and temporal != "recently_completed": errors.append(f"{task_id}:terminal must be recently_completed")
         if state not in TERMINAL and temporal != "current": errors.append(f"{task_id}:nonterminal must be current")
         if entry.get("result") not in RESULTS: errors.append(f"{task_id}:invalid result")
@@ -80,18 +89,16 @@ def main() -> int:
             if known and entry.get("phase") != known: errors.append(f"{task_id}:phase differs from canonical snapshot {known}")
             if entry.get("phase") == "ACTIVATED":
                 binding = task.get("admissible_existence") if isinstance(task.get("admissible_existence"), dict) else {}
-                if not binding.get("activation_proof_ref") and cap != "stegverse:capability:steggate:canonical:v1":
-                    errors.append(f"{task_id}:ACTIVATED lacks independent activation proof")
+                if not binding.get("activation_proof_ref") and cap != "stegverse:capability:steggate:canonical:v1": errors.append(f"{task_id}:ACTIVATED lacks independent activation proof")
         doc_binding = task.get("admissible_existence") if isinstance(task.get("admissible_existence"), dict) else None
         if doc_binding and entry.get("ae_impact") != "NONE":
             for key in ("capability_id", "phase", "task_relationship"):
                 if entry.get(key) != doc_binding.get(key): errors.append(f"{task_id}:{key} disagrees with explicit registry binding")
-
     if errors:
         for error in errors: print("AE_RETROSPECTIVE_INVALID:" + error)
         return 1
     counts = {key: 0 for key in RESULTS}
-    for entry in entries: counts[entry["result"]] += 1
+    for entry in indexed.values(): counts[entry["result"]] += 1
     print(f"AE_RETROSPECTIVE_CONFORMANCE_PASS effective_tasks={len(tasks)} classified={len(indexed)} pass={counts['PASS']} review_required={counts['REVIEW_REQUIRED']} fail_closed={counts['FAIL_CLOSED']} registry_generation={report['source_registry_generation']}")
     return 0
 

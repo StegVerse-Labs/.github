@@ -2,56 +2,32 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
   "created_at": "2026-08-10T15:38:34Z",
-  "updated_at": "2026-08-20T17:40:00Z",
-  "state": "HANDOFF_READY",
+  "updated_at": "2026-08-22T23:58:00-05:00",
+  "state": "COMPLETED",
   "goal": {
     "goal_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
     "objective": "Reconstruct the ended G20 worker lifecycle from durable evidence without reviving its claim or inheriting parent execution authority.",
-    "success_predicates": [
-      "Prior lifecycle is reconstructed from durable checkpoint and Master Records evidence",
-      "Old worker instance authority remains ended",
-      "Any recovery claim uses a separately authorized fencing generation strictly greater than 20",
-      "Recovery registry readiness is derived from the admitted bounded authorization rather than heartbeat/G18 state"
-    ],
-    "failure_predicates": [
-      "Heartbeat state or G18 lifecycle cleanup is treated as execution authority",
-      "Old claim or fence is reused",
-      "Recovery executor performs parent inference work",
-      "Registry promotion itself mints a claim or fence"
-    ],
+    "success_predicates": ["Prior lifecycle is reconstructed from durable checkpoint and Master Records evidence", "Old worker instance authority remains ended", "Recovery claim used a separately authorized fencing generation strictly greater than 20", "Recovery completed without granting parent execution authority"],
+    "failure_predicates": ["Heartbeat state or G18 lifecycle cleanup is treated as execution authority", "Old claim or fence is reused", "Recovery executor performs parent inference work", "Recovery completion implicitly grants parent authority"],
     "expires_at": null,
-    "authority_ceiling": [
-      "orphan_lifecycle_reconstruction",
-      "no_external_model_provider_authority",
-      "no_public_endpoint_requirement",
-      "no_third_party_deployment_dependency"
-    ],
+    "authority_ceiling": ["orphan_lifecycle_reconstruction", "no_external_model_provider_authority", "no_public_endpoint_requirement", "no_third_party_deployment_dependency"],
     "successor_policy": "NONE",
     "max_successor_depth": 0
   },
   "task": {
     "task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
     "repository": "StegVerse-Labs/.github",
-    "source_refs": [
-      "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
-      "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json",
-      "authorizations/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json",
-      "control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json",
-      "heartbeat_runtime/orphan_recovery.py",
-      "tests/test_independent_orphan_recovery_reconciliation.py",
-      "cost-basis/worker-runtime/ecosystem-chat-sovereign-inference.json",
-      "master-records/orchestration:custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json"
-    ],
+    "source_refs": ["handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json", "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json", "authorizations/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json", "control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json", "workers/ecosystem_chat_orphan_recovery_worker.py", "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json", "workloads/master-records/orchestration/custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json", "master-records/orchestration:custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json"],
     "dependencies": [],
     "parent_task_id": null,
     "recovery_parent_task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
-    "derivation_reason": "Operational continuity reconstruction after the expected worker-response threshold was exceeded; recovery is separately authorized and does not inherit parent inference authority.",
+    "derivation_reason": "Operational continuity reconstruction after the old G20 worker authority ended. Durable G22 recovery receipt now proves terminal reconstruction without successor authority grant.",
     "canonical_owner_ref": "StegVerse-org/LLM-adapter#18",
     "canonical_lineage_key": "ecosystem-chat:sovereign-inference-activation:orphan-recovery:HB28",
     "derivation_depth": 0,
     "priority": "critical",
-    "operational_state": "MACHINE_OWNED",
-    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+    "operational_state": "COMPLETE",
+    "claim_state": "TERMINAL_COMPLETED_NO_REACQUISITION"
   },
   "authority": {
     "authority_source": "StegVerse-org/LLM-adapter#18 + StegVerse-002/micro-node-runtime#16/#22",
@@ -74,47 +50,42 @@
   },
   "activation": {
     "carrier": "heartbeat_reference_only",
-    "executor_binding": "AUTHORIZED",
+    "executor_binding": "UNBOUND_TERMINAL",
     "authorization_ref": "authorizations/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json",
-    "recheck_trigger": "each admitted StegVerse task-control execution opportunity while HANDOFF_READY",
+    "recheck_trigger": null,
     "checkout_policy": "fenced_atomic_checkout",
-    "claim_generation_rule": "fresh fencing token strictly greater than ended parent fence 20",
+    "claim_generation_rule": "completed recovery G22 is historical evidence only and cannot be reused; fenced_atomic_checkout remains the canonical declared policy if any historical validator inspects this terminal handoff",
     "requires_g18_terminalization": false,
-    "requires_task_capable_cycle_for_heartbeat_completion": false,
-    "registry_reconciliation": {
-      "entrypoint": "heartbeat_runtime.orphan_recovery.reconcile_quarantined_orphan_recoveries",
-      "authorized_promotion": "BLOCKED_OR_QUARANTINED_TO_HANDOFF_READY_ONLY",
-      "promotion_mints_claim_or_fence": false,
-      "validation_commit": "bb7c85385782eb499fedecd9689a3f59735311d5",
-      "test_commit": "83a3450dec202914007305ea0637dbdfa0f33fb4",
-      "observed_registry_state": "HANDOFF_READY"
-    }
+    "requires_task_capable_cycle_for_heartbeat_completion": false
   },
   "continuity": {
-    "checkpoint_ref": "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json",
-    "handoff_destination": "control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json",
+    "checkpoint_ref": "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
+    "handoff_destination": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
     "master_records_required": true,
     "master_records_custody_ref": "master-records/orchestration:custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json",
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Any compliant StegVerse task-control executor with orphan_lifecycle_reconstruction capability may atomically acquire the already HANDOFF_READY recovery task under a fresh fencing token strictly greater than 20, validate the ended HB25/G20 lifecycle against canonical Master Records custody, and write only the recovery receipt. No G18 cleanup, WorkerCoordinator-specific promotion, carrier-trigger prerequisite, GitHub token, or parent inference authority is required. PASS completes recovery; the parent then independently re-enters execution under another fresh authorized fence greater than 20.",
-    "terminal_when": [
-      "Canonical registry remains HANDOFF_READY until a lawful fresh claim/fence is acquired",
-      "Recovery execution uses a fresh fencing token greater than 20",
-      "Reconstruction receipt is durable and Master Records evidence is bound",
-      "Old claim and fence remain unusable",
-      "Recovery reaches COMPLETED without granting parent execution authority"
-    ],
-    "source_integration_state": "AUTHORIZED_REGISTRY_PROMOTION_COMPLETE",
-    "live_state": "HANDOFF_READY_AWAITING_FRESH_FENCE_EXECUTION"
+    "terminal_receipt": "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
+    "receipt_state": "PASS",
+    "recovery_claim_id": "SHWP-RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28-G22",
+    "recovery_fencing_token": 22,
+    "old_fencing_token": 20,
+    "old_authority_ended": true,
+    "old_authority_reused": false,
+    "master_records_custody_valid": true,
+    "successor_authority_granted": false,
+    "next_authorized_action": "Parent task SHWP-ECOSYSTEM-CHAT-INFERENCE-001 must be independently admitted under a separate fresh fencing token greater than 22 and then execute the StegVerse-local model -> TVC -> LLM-adapter -> Master Records same-execution chain.",
+    "terminal_when": ["receipt state PASS", "recovery fence 22 > ended parent fence 20", "checkpoint_valid=true", "master_records_custody_valid=true", "old_authority_ended=true", "old_authority_reused=false", "successor_authority_granted=false"],
+    "source_integration_state": "COMPLETE_RELEASED",
+    "live_state": "COMPLETED"
   },
   "constraint": {
-    "operational_state": "ACTIVE_MACHINE_CONTINUATION",
-    "condition": "FRESH_TASK_CONTROL_CLAIM_AND_RECOVERY_EXECUTION_NOT_YET_OBSERVED",
-    "owner": "ecosystem-chat-orphan-recovery-worker via independently admitted StegVerse task control",
-    "next_solution_action": "ACQUIRE_FRESH_FENCE_GT20_AND_EXECUTE_RECOVERY_NOW",
-    "machine_observable_completion_condition": "recovery task reaches COMPLETED with durable Master Records-bound receipt under a fresh fencing token greater than 20",
+    "operational_state": "TERMINAL",
+    "condition": "NONE",
+    "owner": "NONE_RECOVERY_COMPLETE",
+    "next_solution_action": "INDEPENDENTLY_ADMIT_PARENT_UNDER_FRESH_FENCE_GT22",
+    "machine_observable_completion_condition": "already satisfied by receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
     "human_action_required": false,
     "github_token_required": false,
     "g18_cleanup_required": false,
