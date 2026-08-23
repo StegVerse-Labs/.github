@@ -27,8 +27,31 @@ class IndependentOrphanRecoveryExecutorTests(unittest.TestCase):
     def task(self, registry: dict, task_id: str) -> dict:
         return next(row for row in registry["tasks"] if row.get("task_id") == task_id)
 
-    def test_registered_executor_is_independent_and_available(self) -> None:
-        mod.validate_registered_executor(ROOT)
+    def test_completed_registry_fragment_prevents_reacquisition(self) -> None:
+        fragment = json.loads((ROOT / mod.FRAGMENT_PATH).read_text(encoding="utf-8"))
+        task = next(row for row in fragment["tasks"] if row.get("task_id") == mod.RECOVERY_ID)
+        self.assertEqual(task["state"], "COMPLETED")
+        self.assertIsNone(task["claim_id"])
+        self.assertEqual(task["admission"]["claim_state"], "TERMINAL_COMPLETED_NO_REACQUISITION")
+        self.assertEqual(task["completion"]["recovery_fencing_token"], 22)
+        self.assertFalse(task["completion"]["successor_authority_granted"])
+        with self.assertRaisesRegex(RuntimeError, "not HANDOFF_READY"):
+            mod.validate_registered_executor(ROOT)
+
+    def test_current_terminal_receipt_binds_g22_without_parent_authority(self) -> None:
+        receipt = json.loads((ROOT / "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json").read_text(encoding="utf-8"))
+        self.assertEqual(receipt["state"], "PASS")
+        self.assertEqual(receipt["recovery_fencing_token"], 22)
+        self.assertGreater(receipt["recovery_fencing_token"], receipt["old_fencing_token"])
+        self.assertTrue(receipt["checkpoint_valid"])
+        self.assertTrue(receipt["master_records_custody_valid"])
+        self.assertTrue(receipt["old_authority_ended"])
+        self.assertFalse(receipt["old_authority_reused"])
+        self.assertFalse(receipt["successor_authority_granted"])
+        self.assertEqual(receipt["next_transition"], "SEPARATE_HIGHER_FENCE_PARENT_SUCCESSOR_AUTHORIZATION")
+        self.assertFalse(receipt["github_token_required"])
+        self.assertFalse(receipt["third_party_execution_platform_required"])
+        self.assertEqual(receipt["authority_effect"], "NONE")
 
     def test_recovery_package_contains_canonical_non_authorizing_g20_custody(self) -> None:
         path, custody = worker_mod.find_lifecycle_custody()
