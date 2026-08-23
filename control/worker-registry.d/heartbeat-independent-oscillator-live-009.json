@@ -5,33 +5,41 @@
     {
       "archive_eligible": false,
       "archive_reason_codes": [],
-      "authorized_policy_version": "heartbeat-independent-oscillator-v3-independent-task-control",
-      "block_ref": null,
+      "authorized_policy_version": "heartbeat-independent-oscillator-v4-post-resident-start",
+      "block_ref": "HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
       "claim_id": null,
       "cost_basis_ref": "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json",
       "evidence_refs": [
         "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
+        "handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json",
+        "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
         "docs/HEARTBEAT_LIVE_009_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
         "scripts/run_live_009_resident.py",
+        "scripts/verify_sovereign_heartbeat_carrier_activation.py",
         "tests/test_live_009_resident_runner.py",
+        "tests/test_verify_sovereign_heartbeat_carrier_activation.py",
         "heartbeat_runtime/independent_oscillator.py",
         "heartbeat_runtime/oscillator_producer.py",
         "heartbeat_runtime/engine_v13.py",
         "heartbeat_runtime/worker_runtime.py",
         "receipts/heartbeat/HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008-source-validation.json",
+        "receipts/sovereign-host/carrier-activation.latest.json",
         "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json"
       ],
-      "executor_binding": "AUTHORIZED",
+      "executor_binding": "AUTHORIZED_AFTER_DEPENDENCY",
       "external_entity_job_ref": null,
       "goal_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
       "handoff_ref": "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
       "heartbeat_timing": null,
-      "last_checkpoint_ref": "control/heartbeat-carrier-runtime-state.json",
+      "last_checkpoint_ref": "receipts/sovereign-host/carrier-activation.latest.json",
       "lease": null,
-      "state": "HANDOFF_READY",
+      "state": "BLOCKED_DEPENDENCY",
       "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
       "worker_id": null,
       "worker_instance_id": null,
+      "dependencies": [
+        "HEARTBEAT-OSCILLATOR-RESIDENT-START-012"
+      ],
       "admission": {
         "authority_source": "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json#authority",
         "authority_domain": "INDEPENDENT_TASK_CONTROL",
@@ -40,7 +48,8 @@
         "carrier_trigger_required": false,
         "fresh_fence_required": true,
         "minimum_fencing_token_exclusive": 21,
-        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+        "claim_state": "WAITING_FOR_RESIDENT_START_DEPENDENCY",
+        "dependency_release_condition": "receipts/sovereign-host/carrier-activation.latest.json exists and scripts/verify_sovereign_heartbeat_carrier_activation.py returns verified=true"
       }
     }
   ],
