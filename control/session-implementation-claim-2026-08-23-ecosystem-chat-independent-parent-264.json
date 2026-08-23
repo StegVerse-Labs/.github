@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.implementation-claim/v1",
+  "task_id": "ECOSYSTEM-CHAT-INDEPENDENT-PARENT-EXECUTOR-264",
+  "originating_goal": "Advance SHWP-ECOSYSTEM-CHAT-INFERENCE-001 from post-recovery HANDOFF_READY into an independently admitted fresh-fence execution path that can run the installed StegVerse-local model, TVC route, LLM-adapter execution, and same-execution Master Records reconstruction without G18 or recovery replay.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "feat/ecosystem-chat-independent-parent-264",
+  "issue_ref": "StegVerse-Labs/.github#264",
+  "claimant": "SESSION_EXECUTION_LANE_20260823_ECOSYSTEM_CHAT_PARENT_264",
+  "role": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION",
+  "claimed_at": "2026-08-23T16:04:00-05:00",
+  "release_condition": "Independent parent executor source, authorization, deterministic tests, and canonical handoff bindings validate on the exact branch head; merge only after source-dependent validation passes. Live activation remains separate and may only be claimed from actual StegVerse execution evidence.",
+  "owned_surfaces": [
+    "scripts/run_independent_ecosystem_chat_parent.py",
+    "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
+    "tests/test_independent_ecosystem_chat_parent_executor.py",
+    "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md",
+    "control/session-implementation-claim-2026-08-23-ecosystem-chat-independent-parent-264.json"
+  ],
+  "collision_boundaries": [
+    "Do not execute or reacquire RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28; its G22 PASS is terminal evidence.",
+    "Do not reuse G18, G20, or G22 authority.",
+    "Do not mutate heartbeat protocol-anchor or resident-runtime implementation surfaces owned by concurrent heartbeat work.",
+    "Do not treat GitHub Actions or hosted CI as production activation.",
+    "Do not introduce GitHub runtime credentials, Render, or NON-TV/TVC secrets/tokens.",
+    "Do not grant worker, model, route, or Master Records authority from heartbeat observation.",
+    "StegVerse remains primary; third-party execution is fallback-only and never required."
+  ],
+  "fresh_parent_fence_minimum_exclusive": 22,
+  "credential_authority": "TV/TVC",
+  "credential_requirement": "NONE",
+  "github_token_runtime_authority": "NONE",
+  "third_party_runtime_role": "FALLBACK_ONLY",
+  "state": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION"
+}
