@@ -1,6 +1,6 @@
 # Heartbeat Carrier Signal Mirror Handoff
 
-Updated: 2026-08-23T14:19:00-05:00
+Updated: 2026-08-23T14:33:00-05:00
 
 ## Canonical authority
 
@@ -89,6 +89,32 @@ scripts/run_worker_runtime.py                   # separate worker process
 
 Legacy HB29 and persisted HB30/HB31 remain immutable historical observations. HB32 is the canonical protocol-anchor cutover reference. Historical `GATE_PASSBAND_DERIVED` state does not extend into the anchored protocol sequence and cannot override the anchor.
 
+Historical cutover tests must replay with an explicit pre-anchor timestamp. They must not implicitly use the CI runner wall clock, because after HB32 activation a wall-clock sample correctly derives the current protocol reference rather than historical HB30.
+
+## Full-suite regression found 2026-08-23
+
+The focused HB32 protocol-anchor suite passed 6/6, but the subsequent complete deterministic repository suite exposed two failures in `tests/test_heartbeat_engine_v12_cutover.py`:
+
+```text
+test_dry_run_previews_hb30_without_creating_cutover_state
+test_first_write_freezes_hb29_and_emits_hb30_separated_schema
+observed epoch: 138224
+expected historical replay epoch: 30
+suite result: 519 tests / 2 failures
+```
+
+Root cause: those historical replay tests called `HeartbeatRuntime.cycle()` without `now_ns`, so once the protocol anchor became active they sampled the live wall clock and legitimately entered the post-anchor derivation path. The assertions were historical, but the test input was no longer historical.
+
+Correction commit:
+
+```text
+d36e7b330634337d42d9020abfee728aebaa69ca
+```
+
+The v12 cutover tests now use an explicit fixed pre-anchor replay instant (`HISTORICAL_CUTOVER_SAMPLE_NS = 2_000_000_000`) for all historical migration operations. This preserves HB29/HB30/HB31 replay semantics without weakening the HB32 protocol anchor.
+
+Do not alter `current_reference()` or allow persisted historical state to override HB32 merely to make the legacy tests pass.
+
 ## Communication separation
 
 The communication object remains the **manifest packet + expiration wrapper + data packet**. Heartbeat is reference/synchronization only; it is not application payload, transport, task dispatcher, credential authority, model/provider executor, or Master Records transport.
@@ -106,7 +132,8 @@ Required deterministic invariants:
 7. no continuously running process is required for progression;
 8. persisted sampler state is observation-only;
 9. TV/TVC remains sole credential authority;
-10. GitHub and third parties have no heartbeat runtime authority.
+10. GitHub and third parties have no heartbeat runtime authority;
+11. historical HB29->HB30 replay uses an explicit pre-anchor timestamp and remains deterministic after protocol activation.
 
 Focused protocol-anchor coverage is installed at `tests/test_heartbeat_protocol_anchor.py`.
 
@@ -117,12 +144,17 @@ independent oscillator semantics: COMPLETE_SOURCE
 canonical protocol anchor: INSTALLED
 canonical daemon-free derivation: INSTALLED
 heartbeat protocol progression: ACTIVE_BY_PROTOCOL_DERIVATION
+focused HB32 tests: 6/6 PASS
+complete deterministic repository suite: PREVIOUS RUN 519 / 2 FAILURES
+historical compatibility regression: PATCHED IN d36e7b330634337d42d9020abfee728aebaa69ca
+exact-head complete-suite validation after patch: PENDING CI EVIDENCE
 resident sampler: OPTIONAL OBSERVER
 resident activation receipt: NOT A HEARTBEAT EXISTENCE PREDICATE
 worker-trigger causality: NONE
 third-party runtime requirement: NONE
-remaining work: validate exact-head tests; reconcile LIVE-009/012 registry and deployment documentation to this authority
-archive_ready: false until reconciliation/validation is terminal
+remaining work: obtain exact-head full-suite PASS; then reconcile downstream propagation
+archive_ready: false until exact-head full-suite validation is terminal
 ```
 
 DO NOT REINTRODUCE A RESIDENT-DAEMON REQUIREMENT AS HEARTBEAT PROGRESSION AUTHORITY.
+DO NOT CLAIM FULL REPOSITORY VALIDATION UNTIL THE POST-PATCH COMPLETE SUITE PASSES.
