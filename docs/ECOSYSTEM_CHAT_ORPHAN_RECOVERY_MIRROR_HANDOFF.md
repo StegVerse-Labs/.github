@@ -1,6 +1,6 @@
 # Ecosystem Chat Orphan Recovery Mirror Handoff
 
-Updated: 2026-08-22T23:56:00-05:00
+Updated: 2026-08-23T00:01:00-05:00
 
 ## Authority and scope
 
@@ -21,11 +21,7 @@ Heartbeat is reference-only. Recovery and parent claims/fences belong to indepen
 
 ## Authoritative terminal recovery evidence
 
-Current `main` contains the durable receipt:
-
-`receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json`
-
-It proves:
+Current `main` contains `receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json` proving:
 
 ```text
 state: PASS
@@ -43,19 +39,38 @@ third_party_execution_platform_required: false
 authority_effect: NONE
 ```
 
-This receipt was introduced by runtime commit `b70ece41ecf0ac35eb2b38ca9381b55c33ec50db` and remains present on current `main`. Later handoff/registry projections incorrectly continued to describe recovery as awaiting execution. Under the session evidence rules, the durable current receipt is stronger evidence than those stale projections. Recovery must not be rerun merely to satisfy stale bookkeeping.
+Runtime commit `b70ece41ecf0ac35eb2b38ca9381b55c33ec50db` created that durable PASS. Later projections had regressed to awaiting recovery; the current receipt is the stronger execution evidence and recovery must not be replayed merely to satisfy stale bookkeeping.
 
-## Source and custody portability
+## Released source and portability
 
-The bounded standalone executor is released from PR #245 merge `3bfc17f6d4b59f219b3354f5bdae0ecfe6b96ed5`.
+- Independent recovery executor: PR #245 merge `3bfc17f6d4b59f219b3354f5bdae0ecfe6b96ed5`.
+- Self-contained immutable G20 custody: PR #260 merge `5e85a2d602fe7234a4bdff34aa1521b752dc2b49` at `workloads/master-records/orchestration/custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json`.
+- LIVE-009 stale validation reconciliation: PR #261 merge `ec5f95ca6125b3b46a5d0959ef1b0ad229f4c259`.
+- Terminal recovery/parent reconciliation: PR #262 merge `fd10d4cfee8712663096a886f5275a3224857ebf`.
 
-PR #260 merge `5e85a2d602fe7234a4bdff34aa1521b752dc2b49` added the immutable non-authorizing G20 custody record to:
+PR #262 exact validated head was `c540de44f9a9b2bde680def6109f0edb9c0f117d`:
 
-`workloads/master-records/orchestration/custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json`
+```text
+Heartbeat Worker Project run 32619209041 / job 97144669508: SUCCESS
+  anonymous/no-GitHub-token checkout: PASS
+  compile + canonical JSON + executable handoffs: PASS
+  complete deterministic repository suite: PASS
+  projection rebuild: PASS
+  validation-only/non-authorizing invariant: PASS
 
-The custody record is `ACCEPTED_FOR_CUSTODY`, reconstruction `PASS`, authority effect `NONE`, and does not grant execution or successor authority.
+Organization control plane run 32619209070 / job 97144669666: SUCCESS
+  active-worker ownership: PASS
+  handoff partitioning: PASS
+  AE conformance: PASS
+  heartbeat/control-plane separation: PASS
+  archive/readiness semantics: PASS
 
-## Reconciliation state
+Ecosystem Chat Sovereign Inference Validation run 32619209045: SUCCESS
+```
+
+The reconciliation claim is released as `COMPLETE_RELEASED`; it is not an archive dependency.
+
+## Current canonical state
 
 ```yaml
 recovery:
@@ -68,11 +83,14 @@ parent:
   task_id: SHWP-ECOSYSTEM-CHAT-INFERENCE-001
   state: HANDOFF_READY
   recovery_dependency: SATISFIED
+  executor_registration: control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json
+  executor: ecosystem-chat-sovereign-inference-worker
+  authority_domain: INDEPENDENT_TASK_CONTROL
   required_next_authority: independently admitted fresh fence >22
   recovery_grants_parent_authority: false
 ```
 
-The recovery registry fragment and generated handoff are reconciled to `COMPLETED`. The parent handoff is released from the recovery block but still has no execution authority until a separate fresh task-control admission occurs.
+The parent registration is non-authorizing until an admitted StegVerse task-control execution opportunity actually acquires a fresh fenced claim. It exists to prevent the completed recovery from being mistaken for an unresolved passive blocker and to make the real next executor machine-observable.
 
 ## Next required execution
 
@@ -90,17 +108,17 @@ independent StegVerse task-control admission
 
 No heartbeat transition, G18 terminalization, WorkerCoordinator-specific cycle, recovery replay, sibling Master Records checkout, GitHub workflow, Render service, or third-party provider is required to begin that parent transition.
 
-## Validation obligations
+## Collision boundaries
 
-Reconciliation validation must prove:
-
-1. terminal recovery evidence remains current and hash-bound;
-2. a completed recovery cannot be reacquired by the standalone executor;
-3. recovery completion does not create parent authority;
-4. parent admission requires a separate fresh fence strictly greater than 22;
-5. TV/TVC remains sole credential authority;
-6. GitHub/hosted validation remains non-authorizing.
+1. Do not reacquire or replay completed G22 recovery.
+2. Do not reuse G18, G20, or G22 authority.
+3. Recovery completion does not create parent authority.
+4. Parent authority must be separately admitted with fencing token >22.
+5. Heartbeat remains reference-only and cannot grant task authority.
+6. GitHub/hosted workflows remain validation-only.
+7. StegVerse remains primary; third parties remain fallback-only.
+8. TV/TVC remains sole credential/secret/token authority.
 
 ## Archive rule
 
-Recovery itself is terminal. The session remains non-archiveable because parent sovereign inference, TVC route, exact LLM-adapter execution, measured usage, same-execution Master Records proof, Site #388 exact publication, and current-phone governed wallet proof remain nonterminal.
+Recovery is terminal and its reconciliation is released. The session remains non-archiveable because parent sovereign inference, TVC route, exact LLM-adapter execution, measured usage, same-execution Master Records proof, Site #388 exact publication, and current-phone governed wallet proof remain nonterminal.
