@@ -32,13 +32,24 @@ def install_carrier(source_root: Path, target_root: Path, runner=subprocess.run,
         len(results) > carrier_success_index
         and results[carrier_success_index]["returncode"] == 0
     )
+
+    # Windows scheduled-task registration does not itself start an ONLOGON task.
+    # Require an explicit immediate launch before claiming carrier_active=true.
+    # This prevents a successful `schtasks /Create` from being misreported as
+    # evidence that the heartbeat process is actually resident.
+    if service.get("registration_kind") == "scheduled-task-separated":
+        run_command = ["schtasks", "/Run", "/TN", "StegVerse Heartbeat"]
+        completed = runner(run_command, check=False, capture_output=True, text=True)
+        results.append({"command": run_command, "returncode": completed.returncode})
+        carrier_active = carrier_active and completed.returncode == 0
+
     receipt = {
         **materialization,
         "schema": "stegverse.sovereign-heartbeat-carrier-activation/v1",
         "activation_scope": "CARRIER_ONLY",
         "carrier_registration_path": service["carrier_registration_path"],
         "carrier_command": service["carrier_command"],
-        "carrier_activation_commands": carrier_commands,
+        "carrier_activation_commands": [item["command"] for item in results],
         "carrier_activation_results": results,
         "carrier_active": carrier_active,
         "worker_start_attempted": False,
