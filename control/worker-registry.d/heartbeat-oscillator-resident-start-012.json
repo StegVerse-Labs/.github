@@ -5,21 +5,18 @@
     {
       "archive_eligible": false,
       "archive_reason_codes": [],
-      "authorized_policy_version": "heartbeat-resident-start-v3-independent-task-control",
+      "authorized_policy_version": "heartbeat-resident-sampler-v4-optional-observer",
       "block_ref": null,
       "claim_id": null,
       "cost_basis_ref": "cost-basis/worker-runtime/heartbeat-oscillator-resident-start.json",
       "evidence_refs": [
+        "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
+        "control/heartbeat-protocol-anchor.json",
         "handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json",
         "scripts/install_sovereign_heartbeat_carrier.py",
-        "scripts/install_sovereign_heartbeat_service.py",
-        "heartbeat_runtime/oscillator_producer.py",
-        "heartbeat_runtime/engine_v13.py",
-        "heartbeat_runtime/worker_runtime.py",
-        "tests/test_install_sovereign_heartbeat_carrier.py",
-        "tests/test_task_load_independent_admission.py"
+        "tests/test_install_sovereign_heartbeat_carrier.py"
       ],
-      "executor_binding": "AUTHORIZED",
+      "executor_binding": "AUTHORIZED_OPTIONAL_SERVICE",
       "external_entity_job_ref": null,
       "goal_id": "HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
       "handoff_ref": "handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json",
@@ -30,26 +27,30 @@
       "task_id": "HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
       "worker_id": null,
       "worker_instance_id": null,
+      "role": "OPTIONAL_RESIDENT_SAMPLER_AND_PERSISTENCE",
+      "heartbeat_existence_dependency": false,
+      "heartbeat_progression_dependency": false,
       "admission": {
-        "authority_source": "handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json#authority",
+        "authority_source": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
         "authority_domain": "INDEPENDENT_TASK_CONTROL",
         "heartbeat_reference_only": true,
         "heartbeat_grants_execution_authority": false,
         "carrier_trigger_required": false,
         "fresh_fence_required": true,
         "minimum_fencing_token_exclusive": 21,
-        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+        "claim_state": "AUTHORIZED_FOR_OPTIONAL_RESIDENT_SAMPLER_CLAIM",
         "direct_resident_installer_remains_authorized": true,
-        "workercoordinator_required_for_carrier_start": false
+        "workercoordinator_required_for_carrier_start": false,
+        "live_009_depends_on_this_task": false
       }
     }
   ],
   "workers": [
     {
       "adapter_ref": "process:heartbeat-oscillator-resident-start-v1",
-      "authority_source": "handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json#authority",
+      "authority_source": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
       "capabilities": [
-        "heartbeat_runtime_start",
+        "heartbeat_runtime_observation",
         "native_process_supervision",
         "bounded_repository_mutation"
       ],
@@ -61,13 +62,11 @@
     }
   ],
   "authority_effect": "NONE_REGISTRATION_ONLY",
+  "continuous_process_required_for_heartbeat": false,
+  "resident_sampler_required_for_progression": false,
   "github_token_required": false,
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_required": false,
   "third_party_runtime_required": false,
-  "worker_runtime_dependency_for_carrier_start": false,
-  "network_fetch_required": false,
-  "third_party_process_host_required": false,
-  "third_party_scheduler_required": false,
-  "third_party_deployment_required": false
+  "network_fetch_required": false
 }
