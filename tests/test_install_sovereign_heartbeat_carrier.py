@@ -48,6 +48,65 @@ class CarrierOnlyInstallerTests(unittest.TestCase):
             self.assertEqual(receipt["heartbeat_reference_frequency_hz"], 100.0)
             self.assertTrue((root / "receipts/sovereign-host/carrier-activation.latest.json").is_file())
 
+    def test_windows_registration_requires_immediate_task_start(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            service = {
+                "carrier_success_index": 0,
+                "activation_commands": [
+                    ["schtasks", "/Create", "/F", "/SC", "ONLOGON", "/TN", "StegVerse Heartbeat", "/TR", "heartbeat-start.cmd"],
+                    ["schtasks", "/Create", "/F", "/SC", "ONLOGON", "/TN", "StegVerse Worker Runtime", "/TR", "worker-start.cmd"],
+                ],
+                "carrier_registration_path": "heartbeat-start.cmd",
+                "carrier_command": ["python", "run_heartbeat_runtime.py", "--continuous"],
+                "registration_kind": "scheduled-task-separated",
+            }
+            calls = []
+
+            def runner(command, **kwargs):
+                calls.append(command)
+                return mock.Mock(returncode=0)
+
+            with mock.patch.object(mod.base, "materialize", return_value={
+                "network_fetch_required": False,
+                "github_runtime_dependency": False,
+            }), mock.patch.object(mod.base, "materialize_service", return_value=service):
+                receipt = mod.install_carrier(root, root, runner=runner)
+
+            self.assertEqual(calls, [
+                service["activation_commands"][0],
+                ["schtasks", "/Run", "/TN", "StegVerse Heartbeat"],
+            ])
+            self.assertTrue(receipt["carrier_active"])
+            self.assertFalse(receipt["worker_start_attempted"])
+
+    def test_windows_run_failure_cannot_claim_carrier_active(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            service = {
+                "carrier_success_index": 0,
+                "activation_commands": [
+                    ["schtasks", "/Create", "/F", "/SC", "ONLOGON", "/TN", "StegVerse Heartbeat", "/TR", "heartbeat-start.cmd"],
+                    ["schtasks", "/Create", "/F", "/SC", "ONLOGON", "/TN", "StegVerse Worker Runtime", "/TR", "worker-start.cmd"],
+                ],
+                "carrier_registration_path": "heartbeat-start.cmd",
+                "carrier_command": ["python", "run_heartbeat_runtime.py", "--continuous"],
+                "registration_kind": "scheduled-task-separated",
+            }
+            calls = []
+
+            def runner(command, **kwargs):
+                calls.append(command)
+                return mock.Mock(returncode=0 if len(calls) == 1 else 1)
+
+            with mock.patch.object(mod.base, "materialize", return_value={
+                "network_fetch_required": False,
+                "github_runtime_dependency": False,
+            }), mock.patch.object(mod.base, "materialize_service", return_value=service):
+                receipt = mod.install_carrier(root, root, runner=runner)
+
+            self.assertFalse(receipt["carrier_active"])
+
 
 if __name__ == "__main__":
     unittest.main()
