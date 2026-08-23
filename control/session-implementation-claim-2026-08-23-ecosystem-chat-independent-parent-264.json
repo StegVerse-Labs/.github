@@ -5,10 +5,12 @@
   "repository": "StegVerse-Labs/.github",
   "branch": "feat/ecosystem-chat-independent-parent-264",
   "issue_ref": "StegVerse-Labs/.github#264",
+  "pull_request_ref": "StegVerse-Labs/.github#265",
   "claimant": "SESSION_EXECUTION_LANE_20260823_ECOSYSTEM_CHAT_PARENT_264",
-  "role": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION",
+  "role": "RELEASED_FROM_CHAT_SESSION",
   "claimed_at": "2026-08-23T16:04:00-05:00",
-  "release_condition": "Independent parent executor source, authorization, deterministic tests, canonical handoff bindings, and the existing non-authorizing Ecosystem Chat validation workflow validate on the exact branch head; merge only after source-dependent validation passes. Live activation remains separate and may only be claimed from actual StegVerse execution evidence.",
+  "released_at": "2026-08-23T16:18:00-05:00",
+  "release_condition": "SATISFIED: independent parent executor source, authorization, deterministic tests, canonical handoff bindings, and non-authorizing Ecosystem Chat validation passed on the exact PR head and PR #265 merged. Live activation remains separate and may only be claimed from actual StegVerse execution evidence.",
   "owned_surfaces": [
     "scripts/run_independent_ecosystem_chat_parent.py",
     "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
@@ -18,6 +20,19 @@
     ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml",
     "control/session-implementation-claim-2026-08-23-ecosystem-chat-independent-parent-264.json"
   ],
+  "release_evidence": {
+    "exact_validated_head": "5d4fc1c60936098cf1128b43095a9b3f2504cd55",
+    "validation_workflow": "Ecosystem Chat Sovereign Inference Validation - No GitHub Token Authority",
+    "validation_run_id": 32666957662,
+    "validation_job_id": 97261739082,
+    "validation_conclusion": "SUCCESS",
+    "focused_tests": "20/20 PASS",
+    "scope_denial_claim_release_regression": "PASS",
+    "hosted_lane_non_authorizing": true,
+    "merge_commit": "b5119c742dc2438fed5f143c6afebcedff78b1db",
+    "source_state": "COMPLETE_RELEASED",
+    "live_activation_claimed": false
+  },
   "collision_boundaries": [
     "Do not execute or reacquire RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28; its G22 PASS is terminal evidence.",
     "Do not reuse G18, G20, or G22 authority.",
@@ -32,5 +47,7 @@
   "credential_requirement": "NONE",
   "github_token_runtime_authority": "NONE",
   "third_party_runtime_role": "FALLBACK_ONLY",
-  "state": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION"
+  "state": "COMPLETE_RELEASED",
+  "chat_session_required_for_current_claim": false,
+  "next_owner": "INDEPENDENT_ADMITTED_STEGVERSE_TASK_CONTROL -> TVC -> LLM-adapter -> Master Records"
 }
