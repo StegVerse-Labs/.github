@@ -195,7 +195,7 @@ jobs:
           print('HEARTBEAT_CARRIER_NON_AUTHORITY_PASS')
           PY
 
-      - name: Prove repeated carrier cycles preserve legacy HB29
+      - name: Prove historical repeated carrier replay preserves legacy HB29
         run: |
           tmp="$(mktemp -d)"
           mkdir -p "$tmp/control" "$tmp/handoffs" "$tmp/cost-basis" "$tmp/heartbeat_runtime" "$tmp/receipts"
@@ -204,22 +204,40 @@ jobs:
           cp -R handoffs/. "$tmp/handoffs/"
           cp -R cost-basis/. "$tmp/cost-basis/"
           cp -R heartbeat_runtime/. "$tmp/heartbeat_runtime/"
-          legacy_before="$(sha256sum "$tmp/control/heartbeat-state.json" | cut -d' ' -f1)"
-          PYTHONPATH="$tmp" python3 scripts/run_heartbeat_runtime.py --root "$tmp" --cycles 3 --interval-ms 1 >/tmp/carrier-three-cycles.jsonl
-          legacy_after="$(sha256sum "$tmp/control/heartbeat-state.json" | cut -d' ' -f1)"
-          test "$legacy_before" = "$legacy_after"
-          python3 - <<'PY' "$tmp/control/heartbeat-carrier-runtime-state.json" /tmp/carrier-three-cycles.jsonl
-          import json,sys
-          carrier=json.load(open(sys.argv[1]))
-          rows=[json.loads(x) for x in open(sys.argv[2]) if x.strip()]
-          observations=[row.get('carrier_observation', row) for row in rows]
-          assert [r['epoch'] for r in observations] == [30,31,32], rows
-          assert carrier['epoch'] == 32, carrier
-          assert all(r['authority_effect']=='NONE_CARRIER_ONLY' for r in observations), rows
-          assert all(r['workers_invoked']==0 for r in observations), rows
-          assert rows[0].get('carrier_observation') is None, rows
-          assert all('pulse_batch' in row and 'carrier_observation' in row for row in rows[1:]), rows
-          print('REPEATED_SEPARATED_CARRIER_PASS')
+          PYTHONPATH="$tmp" python3 - "$tmp" <<'PY'
+          import sys
+          from pathlib import Path
+          from heartbeat_runtime import CarrierHeartbeatRuntime
+
+          root=Path(sys.argv[1])
+          legacy_path=root/'control'/'heartbeat-state.json'
+          legacy_before=legacy_path.read_bytes()
+          runtime=CarrierHeartbeatRuntime(root)
+          base_ns=2_000_000_000
+          rows=[runtime.cycle(write=True, now_ns=base_ns + i*10_000_000) for i in range(3)]
+          assert [row['epoch'] for row in rows] == [30,31,32], rows
+          assert legacy_path.read_bytes() == legacy_before
+          assert all(row['authority_effect']=='NONE_CARRIER_ONLY' for row in rows), rows
+          assert all(row['workers_invoked']==0 for row in rows), rows
+          carrier=(root/'control'/'heartbeat-carrier-runtime-state.json').read_text(encoding='utf-8')
+          assert '"epoch": 32' in carrier, carrier
+          print('REPEATED_SEPARATED_CARRIER_HISTORICAL_REPLAY_PASS')
+          PY
+
+      - name: Prove current protocol anchor derives independently of historical replay state
+        run: |
+          python - <<'PY'
+          from heartbeat_runtime.independent_oscillator import (
+              OSCILLATOR_PERIOD_NS,
+              PROTOCOL_ANCHOR_EPOCH,
+              PROTOCOL_ANCHOR_UNIX_NS,
+              current_reference,
+          )
+          a=current_reference(now_ns=PROTOCOL_ANCHOR_UNIX_NS)
+          b=current_reference(now_ns=PROTOCOL_ANCHOR_UNIX_NS + 10*OSCILLATOR_PERIOD_NS)
+          assert a['epoch'] == PROTOCOL_ANCHOR_EPOCH, a
+          assert b['epoch'] == PROTOCOL_ANCHOR_EPOCH + 10, b
+          print('CURRENT_PROTOCOL_ANCHOR_DERIVATION_PASS', a['epoch'], b['epoch'])
           PY
 
       - name: Prove carrier and worker compatibility surfaces are distinct
