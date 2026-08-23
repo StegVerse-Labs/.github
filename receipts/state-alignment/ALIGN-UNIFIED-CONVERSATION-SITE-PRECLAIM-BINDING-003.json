@@ -1,0 +1,50 @@
+{
+  "schema": "stegverse.master-records-alignment-transition/v1",
+  "transition_id": "ALIGN-UNIFIED-CONVERSATION-SITE-PRECLAIM-BINDING-003",
+  "parent_transition_id": "ALIGN-UNIFIED-CONVERSATION-SITE-ENDPOINTS-002",
+  "source_handoff_ref": "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+  "source_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+  "target_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+  "semantic_delta_hash": "ab2d944953bfeb2fc57dc3944f683f6ce2fdebd6a2f654e6a36cd20c417008d9",
+  "module_id": "StegVerse-Labs/Site:unified-conversational-capability",
+  "endpoint_id": "StegVerse-Labs/Site:data/state-projections+state-bound-specialty-tasks",
+  "projection_before_hash": "3d65f7b24ab8ca593fe0d719d8c2fce3c42314948261e196cf53e72067f5b3cc",
+  "projection_after_hash": "39ad5f2a94e63774ed6859cd5aeae0d356c906ec772683f48e3a55e291918b5e",
+  "task_effects": [
+    {
+      "task_id": "UNIFIED-CONVERSATION-SITE-LOCAL-STATE-VECTOR",
+      "disposition": "LOCAL_CANONICAL_STATE_MIRROR_MATERIALIZED",
+      "site_commit": "5710cc35d064efc7940310a27356c75b9ba22538",
+      "canonical_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-SPECIALTY-001",
+      "disposition": "STATE_BOUND_UNCLAIMED_PENDING_SEPARATE_ADMISSION",
+      "site_commit": "0bb85acd0dcab3b17c5c51224a45f3190988e754",
+      "source_state_vector_ref": "data/state-projections/unified-conversational-capability.json"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-HIL-SPECIALTY-001",
+      "disposition": "STATE_BOUND_UNCLAIMED_PENDING_SEPARATE_ADMISSION",
+      "site_commit": "d864c8503bb078b105b415d9d69c9929a58dff1e",
+      "source_state_vector_ref": "data/state-projections/unified-conversational-capability.json"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-SITE-HANDOFF-PRECLAIM-BINDING",
+      "disposition": "HANDOFF_UPDATED_NO_AUTHORITY_CHANGE",
+      "site_commit": "9343b6c7a691728e5b1a186b849fdb3b673c15d1"
+    }
+  ],
+  "alignment_disposition": "PROPAGATING",
+  "reconstruction_state": "PASS",
+  "evidence_refs": [
+    "receipts/state-alignment/ALIGN-UNIFIED-CONVERSATION-SITE-ENDPOINTS-002.json",
+    "StegVerse-Labs/Site/data/state-projections/unified-conversational-capability.json",
+    "StegVerse-Labs/Site/data/tasks/UNIFIED-CONVERSATION-MATH-SPECIALTY-001.json",
+    "StegVerse-Labs/Site/data/tasks/UNIFIED-CONVERSATION-HIL-SPECIALTY-001.json",
+    "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+    "heartbeat_runtime/worker_runtime.py"
+  ],
+  "authority_effect": "NONE",
+  "custody_destination": "master-records/orchestration"
+}
