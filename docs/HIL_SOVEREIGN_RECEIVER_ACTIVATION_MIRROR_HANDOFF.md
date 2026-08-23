@@ -12,6 +12,9 @@ independent_admission_validation_head: 9c75f65f2e275a47c60262a578e18b6b22b84476
 independent_admission_validation_merge: 2f20b0c55cab8e28923955bfde8972090ae562b4
 heartbeat_worker_validation_run: 32606493583 SUCCESS
 organization_control_plane_validation_run: 32606493617 SUCCESS
+site_discovery_pr: StegVerse-Labs/Site#435
+site_discovery_merge: 1d9575fa0f2ee19b78b9232f79313c5e12426b94
+site_discovery_state: COMPLETE_MERGED_MAIN_FAIL_CLOSED_UNTIL_RUNTIME_READY
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 non_tv_tvc_secret_or_token_allowed: false
@@ -48,16 +51,51 @@ docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_STATUS.md
 
 The executable handoff is `HANDOFF_READY`; the registry binds `SHWP-HIL-SOVEREIGN-RECEIVER-001` to `hil-sovereign-receiver-worker` through `process:hil-sovereign-receiver-v1`. Its `INDEPENDENT_TASK_CONTROL` admission requires a fresh fence and does not depend on a carrier packet as execution authority. The process adapter forwards only non-secret local source/state locators and a bounded port. No GitHub credential is an allowed runtime input.
 
-PR #259 validated the complete merged admission shape rather than only the HIL source files. Exact-head validation proved:
+PR #259 validated the complete merged admission shape rather than only the HIL source files. Exact-head validation proved executable-handoff conformance, HIL registry/process/cost-basis binding, fresh-fence independent admission, HIL bridge/worker tests, WorkerCoordinator independent-admission behavior without carrier-event authority, no GitHub credential token in validation, and an Admissible-Existence retrospective classification that represents the HIL task without granting capability phase or activation authority.
 
-- executable handoff conformance across the organization;
-- HIL registry fragment, process-adapter fragment, bounded cost basis and fresh-fence independent admission;
-- exact HIL bridge and worker registration tests;
-- WorkerCoordinator independent-admission behavior without carrier-event authority;
-- no GitHub credential token in validation;
-- Admissible-Existence retrospective classification includes the new HIL task without granting it capability phase or activation authority.
+## Site discovery/public-participant integration
 
-The same validation pass also corrected a stale TVC executable-handoff field name (`runtime_window_evaluations` -> `runtime_window_beats`) without changing the TVC validation task's authority or runtime window.
+`StegVerse-Labs/Site` PR #435 merged as `1d9575fa0f2ee19b78b9232f79313c5e12426b94` and removed the stale Cloudflare receiver projection. Site now preserves the unproven runtime state explicitly:
+
+```text
+receiver_base_url: null
+participant_visible_provider: false
+service_operator: StegVerse sovereign receiver runtime
+configuration_state: AWAITING_CONFORMING_HTTPS_RECEIVER
+```
+
+The public participant surface exposes the exact Primary and prompt SHA-256 identities and retains periodic readiness observation. Source validators now distinguish source-contract validity from runtime readiness, so CI success cannot promote the null discovery state into a live receiver claim.
+
+Exact successful final-PR validation included:
+
+```text
+Check HIL v1 Upload Surface                       32608760847 SUCCESS
+Check HIL LinkedIn Launch Readiness              32608760802 SUCCESS
+Check HIL v1.1 Release                           32608760774 SUCCESS
+HIL Post-Submit Continuity                       32608760804 SUCCESS
+HIL Site Contract                                32608760830 SUCCESS
+Site Handoff Orchestrator                        32608760827 SUCCESS
+Ecosystem Heartbeat Orchestration                32608760772 SUCCESS
+Site Bootstrap Validate - No Non-TV/TVC Authority 32608760811 SUCCESS
+Session Retirement Validate                      32608760834 SUCCESS
+```
+
+The scoped Site implementation claim was released after merge. This closes the stale discovery/source-integration gap only.
+
+## Current live-evidence boundary
+
+The checked-in `control/worker-runtime-state.json` still records:
+
+```text
+last_cycle_at: 2026-08-18T19:47:00Z
+last_observed_carrier_epoch: 31
+last_observed_carrier_generation: 31
+runtime_tick: 2
+observation_mode: CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION
+seen_assignment_packet_ids: []
+```
+
+Repository search currently exposes no `receipts/hil-sovereign-receiver/**` execution receipt. Therefore the resident HIL worker has not been proven to have executed merely because the source and Site paths are merged and validated.
 
 ## Resident execution behavior
 
@@ -79,14 +117,15 @@ This task does not steal or mutate claims/fences belonging to `SHWP-DURABLE-RUNT
 
 ## Activation proof still required
 
-Repository source, registry installation, process-adapter binding, deterministic tests, CI success, or independent-task-control admission do **not** activate HIL. Completion of #246 still requires all of the following on the real StegVerse runtime path:
+Repository source, registry installation, process-adapter binding, deterministic tests, CI success, independent-task-control admission, or the merged Site discovery correction do **not** activate HIL. Completion of #246 still requires all of the following on the real StegVerse runtime path:
 
-1. resident worker execution produces a real carrier/runtime observation with the HIL receiver `READY`;
-2. a public HTTPS rendezvous reachable from `stegverse.org` is bound to that ready receiver without gaining execution/lifecycle authority;
-3. the public Site upload control becomes `READY` from direct observation of that receiver;
-4. one controlled Site browser submission returns and preserves `HIL-RECEIVER-RECEIPT-v2`;
-5. the exact submitted bytes are independently retrieved after controlled receiver restart/replacement and the SHA-256 remains exact;
-6. the package/receipt is admitted into the existing TVC HIL lifecycle continuation.
+1. resident WorkerCoordinator allocates a real claim/fresh fence and the HIL worker produces a real receiver observation;
+2. `/api/hil/sovereign-receiver-profile` reports the active sovereign receiver contract and `/api/hil/readiness` reports exact HIL v1.1 `READY`;
+3. a public HTTPS rendezvous reachable from `stegverse.org` is bound without gaining execution/lifecycle authority;
+4. Site directly observes that receiver and only then promotes discovery to `CONFORMING_HTTPS_RECEIVER_CONFIGURED`;
+5. one controlled Site browser submission returns and preserves `HIL-RECEIVER-RECEIPT-v2`;
+6. exact submitted bytes are independently retrieved after controlled receiver restart/replacement and the SHA-256 remains exact;
+7. the package/receipt is admitted into the existing TVC HIL lifecycle continuation.
 
 Only after those observations may downstream private review, publication, Site lifecycle projection, Master Record release, Publisher, admissibility-wiki, or stegguardian-wiki propagation be treated as eligible.
 
@@ -95,6 +134,7 @@ Only after those observations may downstream private review, publication, Site l
 ```text
 manual_execution_allowed: false
 source_implementation_lane: COMPLETE_MERGED_VALIDATED
+site_discovery_lane: COMPLETE_MERGED_MAIN
 runtime_execution_owner: resident WorkerCoordinator + hil-sovereign-receiver-worker
 worker_task: SHWP-HIL-SOVEREIGN-RECEIVER-001
 worker_adapter: process:hil-sovereign-receiver-v1
@@ -108,12 +148,13 @@ participant_or_developer_machine_role: NONE
 ## Current next transition
 
 ```text
-HANDOFF_READY + VALIDATED INDEPENDENT ADMISSION
+HANDOFF_READY + VALIDATED INDEPENDENT ADMISSION + SITE DISCOVERY MERGED FAIL-CLOSED
 -> resident WorkerCoordinator allocates real claim/fresh fence
 -> hil-sovereign-receiver-worker executes
 -> local sovereign receiver launch/observation
 -> HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED
 -> HIL_PUBLIC_HTTPS_RENDEZVOUS
+-> Site direct readiness observation + discovery promotion
 -> Site browser receipt
 -> restart exact-byte proof
 -> TVC lifecycle handoff
