@@ -8,6 +8,7 @@ from heartbeat_runtime.worker_runtime import WorkerCoordinator
 
 ROOT = Path(__file__).resolve().parents[1]
 TASK_ID = "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009"
+RESIDENT_START_ID = "HEARTBEAT-OSCILLATOR-RESIDENT-START-012"
 
 
 class IndependentHeartbeatLiveProofRegistrationTests(unittest.TestCase):
@@ -28,10 +29,22 @@ class IndependentHeartbeatLiveProofRegistrationTests(unittest.TestCase):
         task = registry_fragment["tasks"][0]
         worker = registry_fragment["workers"][0]
         adapter = adapter_fragment["adapters"][0]
+        admission = task["admission"]
 
         self.assertEqual(task["task_id"], TASK_ID)
-        self.assertEqual(task["state"], "HANDOFF_READY")
+        self.assertEqual(task["state"], "BLOCKED_DEPENDENCY")
+        self.assertEqual(task["dependencies"], [RESIDENT_START_ID])
+        self.assertEqual(task["block_ref"], RESIDENT_START_ID)
         self.assertIsNone(task["claim_id"])
+        self.assertEqual(admission["authority_domain"], "INDEPENDENT_TASK_CONTROL")
+        self.assertEqual(admission["claim_state"], "WAITING_FOR_RESIDENT_START_DEPENDENCY")
+        self.assertFalse(admission["heartbeat_grants_execution_authority"])
+        self.assertFalse(admission["carrier_trigger_required"])
+        self.assertTrue(admission["fresh_fence_required"])
+        self.assertEqual(
+            admission["dependency_release_condition"],
+            "receipts/sovereign-host/carrier-activation.latest.json exists and scripts/verify_sovereign_heartbeat_carrier_activation.py returns verified=true",
+        )
         self.assertEqual(task["cost_basis_ref"], "cost-basis/worker-runtime/heartbeat-independent-oscillator-live-proof.json")
         self.assertEqual(worker["adapter_ref"], adapter["adapter_ref"])
         self.assertEqual(worker["authority_source"], adapter["authority_ref"])
