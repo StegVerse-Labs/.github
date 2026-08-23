@@ -8,6 +8,10 @@ OSCILLATOR_PERIOD_MS = 10
 REFERENCE_FREQUENCY_HZ = 100
 FREQUENCY_RULE = "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL"
 MECHANISM = "INDEPENDENT_PHASE_OSCILLATOR"
+PROTOCOL_ANCHOR_EPOCH = 32
+PROTOCOL_ANCHOR_UNIX_NS = 1_787_511_600_000_000_000
+PROTOCOL_ANCHOR_TIME_UTC = "2026-08-23T19:00:00.000Z"
+PROTOCOL_ANCHOR_REF = "control/heartbeat-protocol-anchor.json"
 
 
 def iso8601_to_unix_ns(value: str | None) -> int | None:
@@ -29,19 +33,43 @@ def unix_ns_to_iso8601(value: int) -> str:
     return datetime.fromtimestamp(value / 1_000_000_000, tz=timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
 
 
-def normalize_oscillator(state: dict[str, Any], *, now_ns: int) -> dict[str, Any]:
-    """Return a stable oscillator anchor without making observation causal.
+def _canonical_protocol_oscillator() -> dict[str, Any]:
+    return {
+        "mechanism": MECHANISM,
+        "period_ns": OSCILLATOR_PERIOD_NS,
+        "phase_travel_time_ms": OSCILLATOR_PERIOD_MS,
+        "reference_increment_interval_ms": OSCILLATOR_PERIOD_MS,
+        "reference_frequency_hz": REFERENCE_FREQUENCY_HZ,
+        "anchor_epoch": PROTOCOL_ANCHOR_EPOCH,
+        "anchor_unix_ns": PROTOCOL_ANCHOR_UNIX_NS,
+        "anchor_time_utc": PROTOCOL_ANCHOR_TIME_UTC,
+        "anchor_source": PROTOCOL_ANCHOR_REF,
+        "protocol_anchor_is_authority": True,
+        "progression_dependency": "OSCILLATOR_ONLY",
+        "continuous_process_required": False,
+        "resident_sampler_required_for_progression": False,
+        "downstream_gating": False,
+        "observation_is_causal": False,
+    }
 
-    Existing oscillator-backed carrier state preserves its immutable anchor.
-    Historical separated carrier snapshots are migrated by treating their
-    persisted observation as the last known sample. The one special bootstrap
-    boundary is immutable legacy HB29: its historical wall-clock timestamp must
-    not be extrapolated across days of inactivity and accidentally manufacture
-    millions of heartbeat references. The first separated successor therefore
-    binds HB29 to the immediately preceding 10 ms oscillator quantum, yielding
-    exactly HB30 at cutover; all later references are phase-derived normally.
-    No worker/task state is consulted.
+
+def normalize_oscillator(state: dict[str, Any], *, now_ns: int) -> dict[str, Any]:
+    """Return the heartbeat oscillator used to derive the reference at ``now_ns``.
+
+    At and after the protocol cutover, every observer uses the same durable
+    protocol anchor.  No resident process has to remain alive between samples:
+    the reference is a pure function of the protocol anchor and elapsed phase.
+    Missed references therefore exist independently of observation, exactly as
+    required by the heartbeat semantics handoff.
+
+    Samples before the protocol cutover retain the historical migration logic
+    solely so immutable HB29/HB30/HB31 evidence and pre-cutover deterministic
+    tests remain replayable.  Historical local anchors have no authority over
+    references at or after the protocol cutover.
     """
+    if now_ns >= PROTOCOL_ANCHOR_UNIX_NS:
+        return _canonical_protocol_oscillator()
+
     oscillator = state.get("oscillator")
     if isinstance(oscillator, dict):
         anchor_epoch = oscillator.get("anchor_epoch")
@@ -59,6 +87,7 @@ def normalize_oscillator(state: dict[str, Any], *, now_ns: int) -> dict[str, Any
                 "progression_dependency": "OSCILLATOR_ONLY",
                 "downstream_gating": False,
                 "observation_is_causal": False,
+                "historical_pre_protocol_anchor": True,
             }
 
     sampled_epoch = int(state.get("epoch", 0))
@@ -85,6 +114,7 @@ def normalize_oscillator(state: dict[str, Any], *, now_ns: int) -> dict[str, Any
         "progression_dependency": "OSCILLATOR_ONLY",
         "downstream_gating": False,
         "observation_is_causal": False,
+        "historical_pre_protocol_anchor": True,
     }
 
 
@@ -107,6 +137,13 @@ def derive_reference(oscillator: dict[str, Any], *, now_ns: int) -> dict[str, in
     }
 
 
+def current_reference(*, now_ns: int) -> dict[str, int]:
+    """Derive the canonical heartbeat reference without persisted runtime state."""
+    if now_ns < PROTOCOL_ANCHOR_UNIX_NS:
+        raise RuntimeError("canonical heartbeat protocol anchor is not active yet")
+    return derive_reference(_canonical_protocol_oscillator(), now_ns=now_ns)
+
+
 def sample_state(state: dict[str, Any], *, now_ns: int) -> dict[str, Any]:
     oscillator = normalize_oscillator(state, now_ns=now_ns)
     reference = derive_reference(oscillator, now_ns=now_ns)
@@ -118,6 +155,8 @@ def sample_state(state: dict[str, Any], *, now_ns: int) -> dict[str, Any]:
     sampled["last_cycle_at"] = unix_ns_to_iso8601(now_ns)
     sampled["activation_state"] = "ACTIVE"
     sampled["authority_effect"] = "NONE"
+    sampled["continuous_process_required"] = False
+    sampled["resident_sampler_required_for_progression"] = False
     sampled["oscillator"] = {
         **oscillator,
         "sampled_unix_ns": now_ns,
@@ -135,6 +174,11 @@ __all__ = [
     "REFERENCE_FREQUENCY_HZ",
     "FREQUENCY_RULE",
     "MECHANISM",
+    "PROTOCOL_ANCHOR_EPOCH",
+    "PROTOCOL_ANCHOR_UNIX_NS",
+    "PROTOCOL_ANCHOR_TIME_UTC",
+    "PROTOCOL_ANCHOR_REF",
+    "current_reference",
     "derive_reference",
     "normalize_oscillator",
     "sample_state",
