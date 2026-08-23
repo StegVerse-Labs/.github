@@ -179,7 +179,7 @@ def validate_registered_executor(root: Path) -> None:
         raise RuntimeError("authorization introduces prohibited hosted authority")
     if auth.get("recovery_reacquisition_allowed") is not False:
         raise RuntimeError("authorization permits terminal recovery reacquisition")
-    if not ROUTE_WORKER.is_file():
+    if not (root / ROUTE_WORKER.relative_to(ROOT)).is_file():
         raise RuntimeError("canonical sovereign route worker is missing")
 
 
@@ -497,6 +497,44 @@ def finalize_same_execution(root: Path, task: dict[str, Any], epoch: int) -> tup
     return True, activation
 
 
+def release_attempt_guarded(
+    root: Path,
+    *,
+    registry_path: Path,
+    before: dict[str, str],
+    response_state: str,
+    transition_id: str,
+    evidence_refs: list[str],
+    terminal_verified: bool,
+) -> BaseException | None:
+    """Always release bounded parent authority, even when scope validation fails.
+
+    A worker scope violation remains fatal and is returned to the caller for
+    re-raising after the claim has been durably released. This prevents a
+    fail-closed mutation denial from accidentally stranding a live claim/fence.
+    """
+    scope_error: BaseException | None = None
+    try:
+        after = snapshot_protected_tree(root)
+        assert_protected_tree_unchanged(before, after)
+    except BaseException as exc:
+        scope_error = exc
+        response_state = "HANDOFF_READY"
+        transition_id = "OUT_OF_SCOPE_MUTATION_DENIED"
+        terminal_verified = False
+
+    registry = load_json(registry_path)
+    release_parent_claim(
+        registry,
+        response_state=response_state,
+        transition_id=transition_id,
+        evidence_refs=evidence_refs,
+        terminal_verified=terminal_verified,
+    )
+    atomic_write(registry_path, registry)
+    return scope_error
+
+
 def execute_once(root: Path, *, reference_epoch: int | None = None) -> dict[str, Any]:
     validate_registered_executor(root)
     registry_path = root / REGISTRY_PATH
@@ -517,6 +555,8 @@ def execute_once(root: Path, *, reference_epoch: int | None = None) -> dict[str,
     response_state = "HANDOFF_READY"
     route_response: dict[str, Any] | None = None
     terminal_receipt: dict[str, Any] | None = None
+    execution_error: BaseException | None = None
+
     try:
         route_response = invoke_route_worker(root, task, handoff, epoch)
         transition_id = str(route_response.get("transition_id") or "UNKNOWN_PARENT_TRANSITION")
@@ -530,20 +570,37 @@ def execute_once(root: Path, *, reference_epoch: int | None = None) -> dict[str,
             else:
                 response_state = "HANDOFF_READY"
                 transition_id = str((terminal_receipt or {}).get("transition_id") or transition_id)
-        else:
-            response_state = "HANDOFF_READY"
-    finally:
-        after = snapshot_protected_tree(root)
-        assert_protected_tree_unchanged(before, after)
-        registry = load_json(registry_path)
-        release_parent_claim(
-            registry,
+    except BaseException as exc:
+        execution_error = exc
+        response_state = "HANDOFF_READY"
+        transition_id = f"INDEPENDENT_PARENT_EXECUTOR_ERROR_{type(exc).__name__}"
+        terminal_verified = False
+
+    scope_error: BaseException | None = None
+    release_error: BaseException | None = None
+    try:
+        scope_error = release_attempt_guarded(
+            root,
+            registry_path=registry_path,
+            before=before,
             response_state=response_state,
             transition_id=transition_id,
             evidence_refs=evidence_refs,
             terminal_verified=terminal_verified,
         )
-        atomic_write(registry_path, registry)
+    except BaseException as exc:
+        release_error = exc
+
+    if release_error is not None:
+        if scope_error is not None:
+            raise RuntimeError("parent claim release failed after scope violation") from release_error
+        if execution_error is not None:
+            raise RuntimeError("parent claim release failed after execution error") from release_error
+        raise release_error
+    if scope_error is not None:
+        raise scope_error
+    if execution_error is not None:
+        raise execution_error
 
     return {
         "schema": "stegverse.independent-ecosystem-chat-parent-execution/v1",
