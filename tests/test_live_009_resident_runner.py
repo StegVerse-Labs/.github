@@ -12,15 +12,18 @@ SPEC.loader.exec_module(mod)
 
 
 class Live009ResidentRunnerTests(unittest.TestCase):
-    def test_execution_sequence_uses_materialized_resident_root(self):
+    def test_execution_sequence_verifies_resident_start_before_live_proof(self):
         source = Path("/source/stegverse").resolve()
         resident = Path("/resident/stegverse-heartbeat").resolve()
         commands = mod.execution_commands(source, resident, "/usr/bin/python3")
-        install, install_cwd = commands[0]
-        self.assertEqual(install_cwd, source)
-        self.assertIn(str(source / "scripts/install_sovereign_heartbeat_carrier.py"), install)
-        self.assertIn("--runtime-root", install)
-        self.assertIn(str(resident), install)
+
+        verify, verify_cwd = commands[0]
+        self.assertEqual(verify_cwd, source)
+        self.assertIn(str(source / "scripts/verify_sovereign_heartbeat_carrier_activation.py"), verify)
+        self.assertIn(str(resident / "receipts/sovereign-host/carrier-activation.latest.json"), verify)
+        self.assertNotIn(str(source / "scripts/install_sovereign_heartbeat_carrier.py"), verify)
+
+        self.assertEqual(len(commands), 4)
         for command, cwd in commands[1:]:
             self.assertEqual(cwd, resident)
             self.assertIn("--root", command)
@@ -30,7 +33,24 @@ class Live009ResidentRunnerTests(unittest.TestCase):
         (root / "receipts/sovereign-host").mkdir(parents=True)
         (root / "control").mkdir(parents=True)
         (root / "events").mkdir(parents=True)
-        activation = {"carrier_active": True, "activation_scope": "CARRIER_ONLY", "canonical_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime", "heartbeat_production_mode": "OSCILLATOR_PHASE_DRIVEN", "heartbeat_progression_dependency": "OSCILLATOR_ONLY", "heartbeat_period_ms": 10.0, "heartbeat_reference_frequency_hz": 100.0, "network_fetch_required": False, "third_party_process_host_required": False, "third_party_scheduler_required": False, "third_party_deployment_required": False, "github_runtime_dependency": False, "credential_requirement": "NONE"}
+        activation = {
+            "carrier_active": True,
+            "activation_scope": "CARRIER_ONLY",
+            "worker_start_attempted": False,
+            "worker_runtime_dependency_for_carrier_start": False,
+            "canonical_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+            "heartbeat_production_mode": "OSCILLATOR_PHASE_DRIVEN",
+            "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+            "heartbeat_period_ms": 10.0,
+            "heartbeat_reference_frequency_hz": 100.0,
+            "network_fetch_required": False,
+            "third_party_process_host_required": False,
+            "third_party_scheduler_required": False,
+            "third_party_deployment_required": False,
+            "github_runtime_dependency": False,
+            "credential_requirement": "NONE",
+            "credential_authority": "TV/TVC",
+        }
         (root / "receipts/sovereign-host/carrier-activation.latest.json").write_text(json.dumps(activation))
         carrier = {"frequency_rule": "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL", "authority_effect": "NONE", "oscillator": {"progression_dependency": "OSCILLATOR_ONLY", "phase_travel_time_ms": 10, "reference_frequency_hz": 100, "snapshot_is_observation_only": True, "observation_is_causal": False}}
         (root / "control/heartbeat-carrier-runtime-state.json").write_text(json.dumps(carrier))
@@ -54,6 +74,13 @@ class Live009ResidentRunnerTests(unittest.TestCase):
     def test_requires_real_activation_fresh_fence_and_terminal_evidence(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td); self.make_valid_runtime(root); mod.require_runtime_evidence(root)
+
+    def test_rejects_activation_that_started_worker(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td); self.make_valid_runtime(root)
+            p = root / "receipts/sovereign-host/carrier-activation.latest.json"
+            activation = json.loads(p.read_text()); activation["worker_start_attempted"] = True; p.write_text(json.dumps(activation))
+            with self.assertRaisesRegex(RuntimeError, "worker_start_attempted"): mod.require_runtime_evidence(root)
 
     def test_accepts_nested_terminal_bound_to_same_claim(self):
         with tempfile.TemporaryDirectory() as td:
