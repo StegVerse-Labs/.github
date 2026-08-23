@@ -1,32 +1,43 @@
 name: Ecosystem Chat Sovereign Inference Validation - No GitHub Token Authority
 
 # Validation only. This workflow MUST NOT activate, claim, fence, commit, push,
-# or persist heartbeat state. Production credential semantics are TV/TVC;
-# execution is owned by the resident StegVerse heartbeat on a sovereign carrier.
-# Main-branch handoff/authorization/control persistence is excluded from automatic
-# hosted CI; worker/bridge/test source changes still validate automatically.
+# or persist production task state. Production credential semantics are TV/TVC;
+# execution belongs to independently admitted StegVerse task control on a
+# sovereign execution surface. Heartbeat is reference-only and grants no task
+# authority. Hosted CI is source validation only.
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
       - 'workers/ecosystem_chat_sovereign_inference_worker.py'
+      - 'workers/ecosystem_chat_sovereign_route_worker.py'
       - 'workers/ecosystem_chat_tc_tvc_route_worker.py'
       - 'workers/llm_adapter_sovereign_execution_bridge.py'
       - 'workers/master_records_sovereign_reconstruction_bridge.py'
+      - 'scripts/run_independent_ecosystem_chat_parent.py'
+      - 'authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json'
+      - 'control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json'
+      - 'handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json'
+      - 'tests/test_independent_ecosystem_chat_parent_executor.py'
       - 'tests/test_llm_adapter_sovereign_execution_bridge.py'
       - 'tests/test_master_records_sovereign_reconstruction_bridge.py'
       - '.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml'
   pull_request:
     paths:
       - 'workers/ecosystem_chat_sovereign_inference_worker.py'
+      - 'workers/ecosystem_chat_sovereign_route_worker.py'
       - 'workers/ecosystem_chat_tc_tvc_route_worker.py'
       - 'workers/llm_adapter_sovereign_execution_bridge.py'
       - 'workers/master_records_sovereign_reconstruction_bridge.py'
+      - 'scripts/run_independent_ecosystem_chat_parent.py'
       - 'handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json'
       - 'handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json'
       - 'authorizations/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json'
+      - 'authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json'
       - 'control/process-worker-adapters.json'
+      - 'control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json'
+      - 'tests/test_independent_ecosystem_chat_parent_executor.py'
       - 'tests/test_llm_adapter_sovereign_execution_bridge.py'
       - 'tests/test_master_records_sovereign_reconstruction_bridge.py'
       - '.github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml'
@@ -58,15 +69,18 @@ jobs:
           fi
           git checkout --detach FETCH_HEAD
 
-      - name: Validate TV/TVC and sovereign worker surfaces
+      - name: Validate TV/TVC and sovereign parent executor surfaces
         run: |
           set -euo pipefail
           python3 -m py_compile \
             workers/ecosystem_chat_sovereign_inference_worker.py \
+            workers/ecosystem_chat_sovereign_route_worker.py \
             workers/ecosystem_chat_tc_tvc_route_worker.py \
             workers/llm_adapter_sovereign_execution_bridge.py \
-            workers/master_records_sovereign_reconstruction_bridge.py
+            workers/master_records_sovereign_reconstruction_bridge.py \
+            scripts/run_independent_ecosystem_chat_parent.py
           python3 -m unittest -v \
+            tests.test_independent_ecosystem_chat_parent_executor \
             tests.test_llm_adapter_sovereign_execution_bridge \
             tests.test_master_records_sovereign_reconstruction_bridge
 
@@ -79,5 +93,13 @@ jobs:
           found=[x for x in forbidden if x in text]
           assert not found, found
           assert 'permissions: {}' in text
+          source=Path('scripts/run_independent_ecosystem_chat_parent.py').read_text(encoding='utf-8')
+          assert 'ProcessWorkerAdapter' not in source
+          assert 'GITHUB_TOKEN' in source
+          assert 'clean_exec_env' in source
+          auth=Path('authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json').read_text(encoding='utf-8')
+          assert '"minimum_fencing_token_exclusive": 22' in auth
+          assert '"heartbeat_grants_execution_authority": false' in auth
+          assert '"recovery_reacquisition_allowed": false' in auth
           print('ECOSYSTEM_CHAT_INFERENCE_VALIDATION_NON_AUTHORIZING_PASS')
           PY
