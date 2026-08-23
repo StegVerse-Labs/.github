@@ -9,10 +9,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "run_independent_orphan_recovery.py"
+WORKER = ROOT / "workers" / "ecosystem_chat_orphan_recovery_worker.py"
 spec = importlib.util.spec_from_file_location("independent_orphan_recovery_executor", SCRIPT)
 assert spec and spec.loader
 mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
+worker_spec = importlib.util.spec_from_file_location("ecosystem_chat_orphan_recovery_worker", WORKER)
+assert worker_spec and worker_spec.loader
+worker_mod = importlib.util.module_from_spec(worker_spec)
+worker_spec.loader.exec_module(worker_mod)
 
 
 class IndependentOrphanRecoveryExecutorTests(unittest.TestCase):
@@ -24,6 +29,22 @@ class IndependentOrphanRecoveryExecutorTests(unittest.TestCase):
 
     def test_registered_executor_is_independent_and_available(self) -> None:
         mod.validate_registered_executor(ROOT)
+
+    def test_recovery_package_contains_canonical_non_authorizing_g20_custody(self) -> None:
+        path, custody = worker_mod.find_lifecycle_custody()
+        self.assertIsNotNone(path)
+        self.assertIsNotNone(custody)
+        assert custody is not None
+        self.assertEqual(custody["schema"], "stegverse.worker_lifecycle_custody.v2")
+        self.assertEqual(custody["custody_id"], "SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001")
+        self.assertTrue(custody["claim"]["released"])
+        self.assertEqual(custody["claim"]["fencing_token"], 20)
+        self.assertEqual(custody["custody"]["status"], "ACCEPTED_FOR_CUSTODY")
+        self.assertEqual(custody["custody"]["reconstruction_status"], "PASS")
+        self.assertEqual(custody["custody"]["authority_effect"], "NONE")
+        self.assertFalse(custody["github_token_required"])
+        self.assertEqual(custody["authority_effect"], "NONE")
+        self.assertEqual(worker_mod.canonical_master_records_ref(path), "master-records/orchestration:custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json")
 
     def test_missing_carrier_snapshot_is_not_an_execution_prerequisite(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

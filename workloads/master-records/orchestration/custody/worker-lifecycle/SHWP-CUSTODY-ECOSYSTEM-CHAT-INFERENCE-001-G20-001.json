@@ -1,0 +1,97 @@
+{
+  "schema": "stegverse.worker_lifecycle_custody.v2",
+  "custody_id": "SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001",
+  "source": {
+    "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
+    "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_commit": "636a405c195081c028ee28c4ec5398501cce6726",
+    "worker_registry_ref": "StegVerse-Labs/.github@636a405c195081c028ee28c4ec5398501cce6726:control/worker-registry.json",
+    "handoff_ref": "StegVerse-Labs/.github@636a405c195081c028ee28c4ec5398501cce6726:handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "checkpoint_ref": "StegVerse-Labs/.github@636a405c195081c028ee28c4ec5398501cce6726:checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json",
+    "event_log_ref": "StegVerse-Labs/.github@636a405c195081c028ee28c4ec5398501cce6726:events/heartbeat-runtime.jsonl"
+  },
+  "worker": {
+    "worker_id": "ecosystem-chat-sovereign-inference-worker",
+    "worker_instance_id": "ecosystem-chat-sovereign-inference-worker-HB17-G20",
+    "executor_type": "repository_worker",
+    "adapter_ref": "process:ecosystem-chat-sovereign-inference-v1"
+  },
+  "claim": {
+    "claim_id": "SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G20",
+    "fencing_token": 20,
+    "policy_version": "shwp-single-hb-v0.3-sovereign",
+    "released": true,
+    "release_reason": "WORKER_ORPHANED"
+  },
+  "heartbeat_lifecycle": {
+    "start_epoch": 17,
+    "authorized_expiry_epoch": 4113,
+    "last_response_epoch": 25,
+    "last_checkpoint_epoch": 25,
+    "missing_response_epochs": [26, 27, 28],
+    "missing_response_threshold_beats": 3,
+    "orphan_epoch": 28,
+    "final_transition_id": "WORKER_ORPHANED",
+    "last_worker_transition_id": "SOVEREIGN_LOCAL_MODEL_RUNTIME_NOT_YET_VERIFIED",
+    "last_worker_transition_sequence": 1
+  },
+  "checkpoint": {
+    "checkpoint_ref": "checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json",
+    "checkpoint_sha256": "56ac0cce7e0f575fe8500ff0dd6321c76e26f5fd1d8ea9ac32220d6fa9aa15e6",
+    "heartbeat_epoch": 25,
+    "claim_id": "SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G20",
+    "fencing_token": 20
+  },
+  "event_reconstruction": {
+    "activation_observed": true,
+    "responses_observed_through_epoch_25": true,
+    "missing_response_observed_epochs": [26, 27, 28],
+    "threshold_crossing_observed": true,
+    "orphan_recovery_task_admitted": true,
+    "worker_orphaned_observed": true,
+    "released_claim_id_matches": true,
+    "released_worker_instance_matches": true,
+    "last_valid_fencing_token": 20,
+    "old_authority_reuse_observed": false
+  },
+  "handoff": {
+    "final_state": "BLOCKED",
+    "activation_carrier": "heartbeat",
+    "executor_binding_after_orphan": "UNBOUND",
+    "heartbeat_grants_execution_authority": false
+  },
+  "completion": {
+    "task_completed": false,
+    "worker_released": true,
+    "orphan_recovery_required": true,
+    "archive_eligible": false,
+    "next_task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28"
+  },
+  "validation": {
+    "status": "PASS",
+    "validation_type": "DETERMINISTIC_HISTORICAL_LIFECYCLE_RECONSTRUCTION",
+    "runtime_execution_claimed": false,
+    "evidence_refs": [
+      "StegVerse-Labs/.github@636a405c195081c028ee28c4ec5398501cce6726:checkpoints/workers/SHWP-ECOSYSTEM-CHAT-INFERENCE-001/HB25-G20.json",
+      "StegVerse-Labs/.github@636a405c195081c028ee28c4ec5398501cce6726:events/heartbeat-runtime.jsonl",
+      "StegVerse-Labs/.github@636a405c195081c028ee28c4ec5398501cce6726:control/worker-registry.json"
+    ]
+  },
+  "custody": {
+    "status": "ACCEPTED_FOR_CUSTODY",
+    "reconstruction_status": "PASS",
+    "authority_effect": "NONE"
+  },
+  "boundaries": [
+    "historical lifecycle reconstruction does not claim the parent task completed",
+    "custody does not grant execution authority",
+    "custody does not grant release authority",
+    "old fencing token 20 remains dead",
+    "successor execution requires a separately admitted higher fencing generation",
+    "GitHub token is not a production runtime requirement"
+  ],
+  "github_token_required": false,
+  "authority_effect": "NONE",
+  "record_hash": "6870d36c29faa098933a268a647e7a6325856b64dc521629b8071cf2c5d58030"
+}
