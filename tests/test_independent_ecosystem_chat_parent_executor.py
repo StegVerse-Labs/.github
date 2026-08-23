@@ -3,7 +3,6 @@ from __future__ import annotations
 import copy
 import importlib.util
 import json
-import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -129,6 +128,45 @@ class IndependentEcosystemChatParentExecutorTests(unittest.TestCase):
         self.assertIsNone(released["worker_id"])
         self.assertTrue(released["independent_task_control"]["terminal_verified"])
 
+    def test_scope_denial_releases_claim_before_error_propagation(self) -> None:
+        registry = copy.deepcopy(self.load(mod.REGISTRY_PATH))
+        fragment = self.load(mod.FRAGMENT_PATH)
+        claimed, fence = mod.acquire_parent_claim(registry, fragment, reference_epoch=0)
+        claim_id = claimed["claim_id"]
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "control").mkdir(parents=True)
+            registry_path = root / mod.REGISTRY_PATH
+            registry_path.write_text(json.dumps(registry) + "\n", encoding="utf-8")
+            (root / "protected-source.txt").write_text("before", encoding="utf-8")
+            before = mod.snapshot_protected_tree(root)
+            (root / "protected-source.txt").write_text("after", encoding="utf-8")
+
+            scope_error = mod.release_attempt_guarded(
+                root,
+                registry_path=registry_path,
+                before=before,
+                response_state="COMPLETED",
+                transition_id="MASTER_RECORDS_SAME_EXECUTION_RECONSTRUCTED",
+                evidence_refs=[],
+                terminal_verified=True,
+            )
+
+            self.assertIsInstance(scope_error, RuntimeError)
+            released_registry = json.loads(registry_path.read_text(encoding="utf-8"))
+            released = mod.task_by_id(released_registry, mod.TASK_ID)
+            self.assertIsNotNone(released)
+            assert released is not None
+            self.assertEqual(released["state"], "HANDOFF_READY")
+            self.assertEqual(released["executor_binding"], "AUTHORIZED")
+            self.assertIsNone(released["claim_id"])
+            self.assertIsNone(released["worker_id"])
+            self.assertEqual(released["independent_task_control"]["last_released_claim_id"], claim_id)
+            self.assertEqual(released["independent_task_control"]["last_released_fencing_token"], fence)
+            self.assertFalse(released["independent_task_control"]["terminal_verified"])
+            self.assertEqual(released["transition_history"][-1]["transition_id"], "OUT_OF_SCOPE_MUTATION_DENIED")
+
     def test_clean_environment_forwards_only_nonsecret_locators_and_no_hosted_markers(self) -> None:
         source = {
             "PATH": "/bin",
@@ -233,6 +271,7 @@ class IndependentEcosystemChatParentExecutorTests(unittest.TestCase):
         self.assertNotIn("ProcessWorkerAdapter", source)
         self.assertNotIn("run_independent_orphan_recovery", source)
         self.assertIn("clean_exec_env", source)
+        self.assertIn("release_attempt_guarded", source)
         self.assertIn("reconstruct_same_execution", source)
         self.assertIn("minimum_fencing_token_exclusive", (ROOT / mod.AUTH_PATH).read_text(encoding="utf-8"))
 
