@@ -1,0 +1,64 @@
+{
+  "schema": "stegverse.master-records-alignment-transition/v1",
+  "transition_id": "ALIGN-UNIFIED-CONVERSATION-MATH-SOURCE-CONSUMPTION-004",
+  "parent_transition_id": "ALIGN-UNIFIED-CONVERSATION-SITE-PRECLAIM-BINDING-003",
+  "source_handoff_ref": "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+  "source_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+  "target_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+  "semantic_delta_hash": "9fd1e726e004a9dc9b5b23506f0c158bc9e251a8f696d036400f0ef373a36641",
+  "module_id": "StegVerse-Labs/Site:unified-conversational-capability",
+  "endpoint_id": "StegVerse-Labs/Site:mathematics-educator-shared-runtime",
+  "projection_before_hash": "39ad5f2a94e63774ed6859cd5aeae0d356c906ec772683f48e3a55e291918b5e",
+  "projection_after_hash": "746cb90d7f1a2405708dcc1364e3c33f386f641814b971dadd0407782bbaaf38",
+  "task_effects": [
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-SPECIALTY-001",
+      "disposition": "RESIDENT_SOURCE_CONSUMPTION_INSTALLED_HOSTED_REVERIFY_PENDING",
+      "site_commit": "bef3ac521344b2732085858af0c5ae8f444c573a"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-SHARED-RUNTIME",
+      "disposition": "EDUCATOR_ROUTE_INSTALLED_NO_SECOND_RUNTIME",
+      "site_commit": "6c1acfc02bc0abd69a01daf7338f68323f056478"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-PRIMARY-CLIENT",
+      "disposition": "PRIMARY_CONVERSATION_CONSUMPTION_INSTALLED",
+      "site_commit": "005035a56b36a75c38fb8e61270918624d6a8e1d"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-PUBLIC-ENTRY",
+      "disposition": "USER_FIRST_MATH_ENTRY_INSTALLED",
+      "site_commit": "6f05dd2127558bfb17e6bd8570274429f86be83c"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-BOUNDARY",
+      "disposition": "CANDIDATE_ONLY_TOOL_AND_IMAGE_TRANSCRIPTION_BOUNDARY_INSTALLED",
+      "site_commit": "2cb79bcc1d73b4776384b9228041faae1fadafb7"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-CANONICAL-APPLICATION-BOUNDARY",
+      "disposition": "SHARED_CHAT_BOUNDARY_ADDED_TO_CANONICAL_VALIDATION",
+      "site_commit": "f5f8e145c49622711ade0920dc04460e424ea1c2"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-HANDOFF",
+      "disposition": "HANDOFF_UPDATED_NO_AUTHORITY_CHANGE",
+      "site_commit": "40edc90713c77d4d7e564d04d9f23bdce2ed6d4f"
+    }
+  ],
+  "alignment_disposition": "PROPAGATING",
+  "reconstruction_state": "PASS",
+  "evidence_refs": [
+    "receipts/state-alignment/ALIGN-UNIFIED-CONVERSATION-SITE-PRECLAIM-BINDING-003.json",
+    "StegVerse-Labs/Site/assets/ecosystem-chat-va-runtime.js",
+    "StegVerse-Labs/Site/assets/ecosystem-chat-simple.js",
+    "StegVerse-Labs/Site/ecosystem-chat.html",
+    "StegVerse-Labs/Site/scripts/check_ecosystem_chat_boundary.py",
+    "StegVerse-Labs/Site/scripts/check_ecosystem_chat_application.py",
+    "StegVerse-Labs/Site/data/tasks/UNIFIED-CONVERSATION-MATH-SPECIALTY-001.json",
+    "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md"
+  ],
+  "authority_effect": "NONE",
+  "custody_destination": "master-records/orchestration"
+}
