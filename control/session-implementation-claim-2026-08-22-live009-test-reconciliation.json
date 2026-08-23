@@ -5,8 +5,9 @@
   "repository": "StegVerse-Labs/.github",
   "branch": "fix/live009-state-test-reconciliation-20260822",
   "claimant": "chatgpt-session-20260822-live009-validation-reconciliation",
-  "role": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION",
+  "role": "COMPLETE_RELEASED_SOURCE_VALIDATED",
   "claimed_at": "2026-08-22T23:49:00-05:00",
+  "released_at": "2026-08-22T23:52:00-05:00",
   "release_condition": "The two stale LIVE-009 test expectations are reconciled to the canonical BLOCKED_DEPENDENCY/WAITING_FOR_RESIDENT_START_DEPENDENCY contract, focused and repository validation pass except for any independently evidenced unrelated failures, and the change is merged or transferred to a canonical owner.",
   "owned_surfaces": [
     "tests/test_independent_heartbeat_live_proof_registration.py",
@@ -17,6 +18,18 @@
     "docs/HEARTBEAT_LIVE_009_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
     "control/worker-registry.d/heartbeat-independent-oscillator-live-009.json"
   ],
+  "validation": {
+    "pr": 261,
+    "head": "c5d89da15896c40906e84cb91b4d5df8906c01a6",
+    "heartbeat_worker_run": 32618664898,
+    "heartbeat_worker_job": 97143345982,
+    "heartbeat_worker_result": "PASS_COMPLETE_DETERMINISTIC_REPOSITORY_SUITE",
+    "org_control_run": 32618664180,
+    "org_control_job": 97143344100,
+    "org_control_result": "PASS_ALL_STEPS",
+    "github_credential_token_present": false,
+    "runtime_authority_granted_by_validation": false
+  },
   "collision_boundaries": [
     "Do not change LIVE-009 runtime state merely to satisfy tests.",
     "Do not make LIVE-009 responsible for resident carrier startup.",
@@ -28,5 +41,6 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "third_party_runtime_role": "FALLBACK_ONLY",
-  "state": "CLAIMED_FOR_IMPLEMENTATION_AND_VALIDATION"
+  "state": "COMPLETE_RELEASED_SOURCE_VALIDATED",
+  "archive_dependency": false
 }
