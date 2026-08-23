@@ -1,12 +1,12 @@
 # Heartbeat Carrier Signal Mirror Handoff
 
-Updated: 2026-08-22T12:12:00-05:00
+Updated: 2026-08-23T14:19:00-05:00
 
 ## Canonical authority
 
 ```text
 goal_id: HEARTBEAT-CARRIER-SIGNAL-SEMANTICS-120
-runtime_correction_id: HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008
+runtime_correction_id: HEARTBEAT-PROTOCOL-ANCHOR-013
 repository: StegVerse-Labs/.github
 branch: main
 canonical_issue: StegVerse-Labs/.github#120
@@ -14,18 +14,38 @@ runtime_owner: StegVerse-Labs/.github#122
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 non_tv_tvc_secret_or_token_required: false
-archive_ready: false
 ```
 
-This handoff is authoritative for heartbeat semantics. Heartbeat is the StegVerse carrier/synchronization signal only and is produced by an independent 10 ms phase oscillator.
+This handoff is authoritative for heartbeat semantics.
 
-## Canonical architecture
+## Corrected canonical heartbeat
+
+Heartbeat is a protocol-derived 100 Hz synchronization/reference signal. Its current reference is a pure function of a durable protocol anchor plus elapsed 10 ms phase quanta. A continuously running process is **not** required for references to exist.
+
+Canonical anchor:
 
 ```text
-carrier progression dependency: OSCILLATOR_ONLY
-phase travel time: 10 ms
-reference increment interval: 10 ms
-reference rate: 100 Hz
+control/heartbeat-protocol-anchor.json
+anchor epoch: 32
+anchor time: 2026-08-23T19:00:00.000Z
+anchor unix ns: 1787511600000000000
+period: 10 ms / 10000000 ns
+rate: 100 Hz
+progression dependency: OSCILLATOR_ONLY
+```
+
+```text
+HB_n --10 ms elapsed oscillator phase--> HB_(n+1)
+```
+
+Every conforming StegVerse observer derives the same reference for the same timestamp from that anchor. A consumer may observe HB_n, miss HB_(n+1)...HB_(n+k-1), and later observe HB_(n+k); the missed references existed independently. Observation, persistence, process liveness, worker state, repository activity, and task-control state do not create heartbeat progression.
+
+## Authority separation
+
+```text
+continuous process required: false
+resident sampler required for progression: false
+resident sampler role: OPTIONAL_OBSERVER_AND_PERSISTENCE
 worker/task gating: false
 state-transition gating: false
 admission gating: false
@@ -34,130 +54,75 @@ route/credential gating: false
 capacity/passband gating: false
 observation is causal: false
 persisted carrier state: observation/snapshot only
-```
-
-```text
-HB_n --10 ms oscillator phase travel--> HB_(n+1)
-```
-
-No worker, task, G18 state, application/domain transition, admission decision, claim, fence, lease, route, credential, repository action, carrier-capacity calculation, passband, observer invocation, or assignment-trigger packet causes, permits, delays, suppresses, or advances heartbeat progression. Observation does not cause heartbeat progression.
-
-A consumer may observe HB_n, miss HB_(n+1), and later observe HB_(n+k). Missed references existed independently. Observation does not create them retroactively.
-
-## Communication and terminal-object separation
-
-The communication object is the **manifest packet + expiration wrapper + data packet**. It is distinct from the heartbeat carrier; the heartbeat does not become application payload, transport, task dispatcher, or authority by carrying synchronization/reference semantics.
-
-Terminal triggers remain endpoint-objective completion or expiration. **Master Records is the End-Of-Life state/destination for every Transition Table element.** The terminal object is a Master Records packet. This custody/EOL rule does not make heartbeat a Master Records transport and does not make observation causal.
-
-## Canonical implementation surfaces
-
-```text
-heartbeat_runtime/independent_oscillator.py
-heartbeat_runtime/oscillator_producer.py
-heartbeat_runtime/engine_v13.py                 # canonical package carrier sampler
-heartbeat_runtime/engine_v12.py                 # compatibility/base beneath v13
-heartbeat_runtime/worker_runtime.py              # separate downstream task control
-heartbeat_runtime/carrier_envelope.py
-schemas/heartbeat-carrier-runtime-state.schema.json
-schemas/heartbeat-carrier-envelope.schema.json
-schemas/heartbeat-carrier-observation.schema.json
-control/runtime-separation-contract.json
-management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json
-scripts/run_heartbeat_runtime.py
-scripts/install_sovereign_heartbeat_carrier.py   # direct carrier-only native activation
-scripts/install_sovereign_heartbeat_service.py   # combined compatibility installer
-scripts/run_worker_runtime.py
-scripts/advance_heartbeat_transition.py          # compatibility sampler/verifier, not a clock
-scripts/verify_iphone_heartbeat_transition_receipt.py
-```
-
-`engine_v13.HeartbeatRuntime` is the canonical carrier class. It inherits oscillator-derived sampling behavior and applies authority-neutral registry-fragment observation before optional compatibility assignment-trigger derivation. Those packets grant no execution authority and are not prerequisites for independently authorized WorkerCoordinator admission.
-
-`OscillatorProducer` derives phase deadlines/references independently. Runtime observation is non-causal.
-
-## Zero-third-party resident startup
-
-The preferred resident activation path is now:
-
-```text
-python scripts/install_sovereign_heartbeat_carrier.py
-```
-
-That path materializes the StegVerse runtime from the local repository, registers only the heartbeat carrier with the resident operating system's native process supervisor, and starts the canonical `engine_v13` carrier continuously. It deliberately does not start WorkerCoordinator.
-
-Required startup properties:
-
-```text
-activation scope: CARRIER_ONLY
-worker runtime required for carrier start: false
-worker claim/fence/lease required for carrier start: false
-network fetch required: false
-third-party process host required: false
-third-party scheduler required: false
-third-party deployment required: false
-GitHub runtime dependency: false
+GitHub Actions runtime authority: NONE
+third-party runtime dependency: false
 credential requirement: NONE
 credential authority: TV/TVC
 ```
 
-The native operating-system supervisor is part of the resident StegVerse host execution surface, not a third-party runtime dependency. WorkerCoordinator startup and task/control-plane execution remain separate downstream obligations.
+No worker, task, G18 state, application/domain transition, admission decision, claim, fence, lease, route, credential, repository action, carrier-capacity calculation, passband, observer invocation, sampler process, native supervisor, or assignment-trigger packet causes, permits, delays, suppresses, or advances heartbeat progression.
 
-The corresponding resident-start task is `HEARTBEAT-OSCILLATOR-RESIDENT-START-012`. Its post-start evidence is `receipts/sovereign-host/carrier-activation.latest.json`. `HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009` is a verifier of the already-running carrier and must not be used as a startup prerequisite.
+## Canonical implementation surfaces
 
-## Capacity/envelope separation
+```text
+control/heartbeat-protocol-anchor.json          # durable protocol anchor
+heartbeat_runtime/independent_oscillator.py     # canonical reference derivation
+heartbeat_runtime/oscillator_producer.py        # optional observation/deadline producer
+heartbeat_runtime/engine_v13.py                 # canonical sampler/observer
+heartbeat_runtime/worker_runtime.py             # separate downstream task control
+schemas/heartbeat-carrier-runtime-state.schema.json
+schemas/heartbeat-carrier-observation.schema.json
+scripts/run_heartbeat_runtime.py                # optional resident sampler
+scripts/install_sovereign_heartbeat_carrier.py  # optional resident sampler installation
+scripts/run_worker_runtime.py                   # separate worker process
+```
 
-Carrier-capacity, passband, load, phase-slot, jitter, or deviation analysis may assess use of heartbeat references but may not set or gate progression. `GATE_PASSBAND_DERIVED` is superseded as a carrier-frequency rule and retained only for completion-monitor snapshot reacquisition.
+`heartbeat_runtime.independent_oscillator.current_reference()` is the canonical daemon-free derivation path. At and after the protocol cutover, historical/local persisted oscillator anchors cannot override the protocol anchor.
+
+## Resident sampler correction
+
+`HEARTBEAT-OSCILLATOR-RESIDENT-START-012` is no longer a prerequisite for heartbeat existence or progression. It installs an optional continuously resident sampler/persistence observer for environments that want one. Its activation receipt proves only that the observer service was installed and active; it does not activate the heartbeat.
+
+`HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009` must verify canonical derivability and observation neutrality. It must not wait on resident-start 012 merely to prove that heartbeat references exist.
 
 ## Historical provenance
 
-Legacy HB29 and persisted HB30/HB31 remain immutable/historical observations. Their ordinal does not indicate oscillator stoppage. Historical receipts are not rewritten. Current-state schema requires oscillator provenance and does not allow historical `GATE_PASSBAND_DERIVED` semantics to extend to HB32+.
+Legacy HB29 and persisted HB30/HB31 remain immutable historical observations. HB32 is the canonical protocol-anchor cutover reference. Historical `GATE_PASSBAND_DERIVED` state does not extend into the anchored protocol sequence and cannot override the anchor.
 
-## Responsibility and authority
+## Communication separation
 
-```text
-heartbeat = independent carrier/reference signal only
-WorkerCoordinator = separate downstream task-control observer/coordinator
-StegBrain = nervous-system observer/evaluator
-Master Records = passive custody/evidence
-TV/TVC = sole credential/secret/token authority
-GitHub Actions = validation only; no production heartbeat authority
-```
+The communication object remains the **manifest packet + expiration wrapper + data packet**. Heartbeat is reference/synchronization only; it is not application payload, transport, task dispatcher, credential authority, model/provider executor, or Master Records transport.
 
-Heartbeat is not a scheduler, task dispatcher, route executor, claim/fence/lease issuer, credential authority, application message bus, provider/model executor, or Master Records transport.
+## Validation obligations
 
-## Validation obligation
+Required deterministic invariants:
 
-Required deterministic invariants include same-sample stability, <10 ms no increment, 10 ms exactly +1, delayed observation skipping references according to elapsed phase, oscillator-only derivation, observation-only persistence, v13 canonical carrier identity, WorkerCoordinator independence, direct carrier-only resident startup, TV/TVC credential authority, and GitHub-token runtime authority NONE.
+1. anchor instant derives HB32;
+2. the same timestamp derives the same reference on every observer;
+3. less than 10 ms does not increment;
+4. exactly 10 ms increments one reference;
+5. delayed observation skips references according to elapsed phase;
+6. worker/task/persisted state cannot change the post-cutover anchor;
+7. no continuously running process is required for progression;
+8. persisted sampler state is observation-only;
+9. TV/TVC remains sole credential authority;
+10. GitHub and third parties have no heartbeat runtime authority.
 
-Repository deterministic validation reached 457/457 PASS on the oscillator conversion lineage. Later corrections reconciled stale v12 compatibility assertions and worker projection semantics. The carrier-only installer has focused regression coverage proving that the worker activation command is not executed by the direct carrier path. Hosted validation remains validation evidence only.
-
-## Live proof
-
-The separate live-proof task is:
-
-```text
-HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009
-state: HANDOFF_READY
-carrier: heartbeat_reference_only
-carrier_trigger_required: false
-```
-
-Source completion is not sovereign runtime activation. Required heartbeat activation evidence remains an inspectable oscillator-backed observation from the resident StegVerse runtime using the canonical v13 sampler. Worker/runtime activation is a separate downstream lane and must never be represented as a heartbeat progression dependency.
+Focused protocol-anchor coverage is installed at `tests/test_heartbeat_protocol_anchor.py`.
 
 ## Completion state
 
 ```text
 independent oscillator semantics: COMPLETE_SOURCE
-canonical carrier implementation: engine_v13
-engine_v12: COMPATIBILITY_BASE_ONLY
-oscillator producer: COMPLETE_SOURCE
-carrier-only native startup path: COMPLETE_SOURCE
+canonical protocol anchor: INSTALLED
+canonical daemon-free derivation: INSTALLED
+heartbeat protocol progression: ACTIVE_BY_PROTOCOL_DERIVATION
+resident sampler: OPTIONAL OBSERVER
+resident activation receipt: NOT A HEARTBEAT EXISTENCE PREDICATE
 worker-trigger causality: NONE
-resident carrier activation receipt: PENDING MACHINE EXECUTION
-resident oscillator-backed observation: PENDING MACHINE EXECUTION
-live proof 009: HANDOFF_READY / NOT COMPLETED
-archive_ready: false
+third-party runtime requirement: NONE
+remaining work: validate exact-head tests; reconcile LIVE-009/012 registry and deployment documentation to this authority
+archive_ready: false until reconciliation/validation is terminal
 ```
 
-DO NOT ARCHIVE THIS SESSION — REQUIRED EXECUTION REMAINS IN AN ACTIVE DEPENDENCY LANE.
+DO NOT REINTRODUCE A RESIDENT-DAEMON REQUIREMENT AS HEARTBEAT PROGRESSION AUTHORITY.
