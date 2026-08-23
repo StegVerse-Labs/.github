@@ -1,6 +1,6 @@
 # Sovereign Heartbeat Deployment Mirror Handoff
 
-Updated: 2026-08-22T07:28:00-05:00
+Updated: 2026-08-22T19:37:00-05:00
 
 ## Authority and active goal
 
@@ -66,6 +66,9 @@ scripts/run_heartbeat_runtime.py
 scripts/install_sovereign_heartbeat_carrier.py
   direct carrier-only native resident installer
 
+scripts/verify_sovereign_heartbeat_carrier_activation.py
+  fail-closed non-authorizing verifier for persisted resident-start receipt
+
 scripts/run_worker_runtime.py
   independently scheduled task-capable worker process
 ```
@@ -120,21 +123,36 @@ required receipt: receipts/sovereign-host/carrier-activation.latest.json
 
 The activation receipt is terminal for resident startup only when it records all required invariants including `carrier_active=true`, `activation_scope=CARRIER_ONLY`, `worker_start_attempted=false`, canonical runtime `heartbeat_runtime.engine_v13.HeartbeatRuntime`, `OSCILLATOR_PHASE_DRIVEN`, `OSCILLATOR_ONLY`, 10 ms, 100 Hz, zero network fetch, zero third-party process/scheduler/deployment dependency, zero GitHub runtime dependency, and credential requirement `NONE`.
 
+## Activation receipt verification
+
+A standalone fail-closed verifier is installed:
+
+```text
+python scripts/verify_sovereign_heartbeat_carrier_activation.py
+```
+
+It grants no runtime authority and reports `authority_effect=NONE`. It verifies the persisted resident-start receipt against the exact terminal carrier-only invariants before any downstream LIVE-009 claim becomes lawful.
+
+Focused tests are installed at `tests/test_verify_sovereign_heartbeat_carrier_activation.py`.
+
 ## Historical state
 
 Repository HB31/generation31 and corresponding worker observations are historical snapshots. Legacy HB29 remains immutable provenance. Do not report worker-runtime inactivity, assignment packets, G18 state, task state, or claim/fence state as heartbeat progression blockers.
 
 ## Post-start live proof
 
-`HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009` is post-start verification of the already-running carrier; it is not a startup prerequisite.
+`HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009` is post-start verification of the already-running carrier; it is not a startup prerequisite and must not be used to install or start the carrier.
 
 ```text
 task: HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009
-state: HANDOFF_READY
+state: BLOCKED_DEPENDENCY
+blocked_on: HEARTBEAT-OSCILLATOR-RESIDENT-START-012
 carrier: heartbeat_reference_only
 carrier_trigger_required: false
 required terminal result: COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED
 ```
+
+The canonical LIVE-009 handoff and registry now encode the resident-start dependency. `scripts/run_live_009_resident.py` has been corrected to post-start-only behavior: it first verifies the preexisting resident activation receipt and then performs worker(1) -> carrier-observation(1) -> worker(1). It no longer installs or starts the carrier.
 
 After resident startup, LIVE-009 must verify inspectable v13 oscillator-backed evidence showing nested `oscillator.progression_dependency=OSCILLATOR_ONLY`, `oscillator.phase_travel_time_ms=10`, `oscillator.snapshot_is_observation_only=true`, carrier observation `observation_is_causal=false`, `authority_effect=NONE`, and independent task-control execution under a fresh lawful fence. Worker execution verifies the carrier; it does not advance the oscillator.
 
@@ -146,21 +164,38 @@ Task-capable WorkerCoordinator execution remains a separate open runtime goal un
 
 ```text
 carrier-only installer source: COMPLETE_SOURCE
+carrier activation receipt verifier: COMPLETE_SOURCE
 carrier-only focused test source: COMPLETE_SOURCE
+activation verifier focused test source: COMPLETE_SOURCE
 resident-start handoff/registry/adapter/worker: INSTALLED / HANDOFF_READY
 resident activation receipt: ABSENT / NOT YET OBSERVED
 resident carrier activation: NOT YET PROVEN
-LIVE-009: HANDOFF_READY / POST-START VERIFICATION PENDING
+LIVE-009 handoff/registry: RECONCILED / BLOCKED_ON_RESIDENT_START_012
+LIVE-009 resident runner: POST_START_ONLY
 worker task-capable runtime: SEPARATE OPEN LANE
 ```
 
-A direct repository read on 2026-08-22 found `receipts/sovereign-host/carrier-activation.latest.json` absent. No receipt is manufactured from source state. GitHub-hosted validation cannot substitute for resident execution.
+A direct repository read on 2026-08-22 after the reconciliation commits found `receipts/sovereign-host/carrier-activation.latest.json` absent. No receipt is manufactured from source state. GitHub-hosted validation cannot substitute for resident execution.
+
+## Reconciliation installed 2026-08-22
+
+```text
+9f1b8b300272c2c5f59887649aa45bfde0f8bd02  standalone activation receipt verifier
+786a37d82087e450955c1b1d7158172e2dafe32d  verifier focused tests
+49ec81ec7068289b871c527d23f9369099373ce9  LIVE-009 handoff resident-start dependency
+db87e70381ea8612033096dcb55daccfc5d24f79  LIVE-009 registry dependency gate
+9eeaf74970a88fc9d40bb052371fd0e78be18a77  LIVE-009 resident execution handoff correction
+c82c7835f822882a131aef90505b3ddcbd14f0b7  LIVE-009 runner post-start-only correction
+a343a4880a118c71f2abccdae10445ce0c5e51e6  LIVE-009 runner tests updated for dependency enforcement
+```
+
+These commits improve source/evidence correctness only. They do not prove resident activation.
 
 ## Next executable sequence
 
 1. On the admitted resident StegVerse host, run `python scripts/install_sovereign_heartbeat_carrier.py` directly.
-2. Verify `receipts/sovereign-host/carrier-activation.latest.json` and all resident-start terminal invariants.
-3. Execute/consume `HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009` as post-start verification.
+2. Run `python scripts/verify_sovereign_heartbeat_carrier_activation.py` against the resident receipt and require `verified=true`.
+3. Release LIVE-009 from its resident-start dependency and execute the post-start worker(1) -> carrier-observation(1) -> worker(1) sequence under a fresh lawful fence.
 4. Reconcile issue #122, resident-start/live-proof handoffs, carrier/observation evidence, and the separate worker-runtime activation lane.
 
 Do not create a second oscillator, scheduler, WorkerCoordinator, or synthetic runtime receipt. Do not manually mint claims/fences. Do not use Render. Do not make GitHub Actions, GitHub tokens, a model/provider, or another third-party service production heartbeat authority.
@@ -172,12 +207,14 @@ heartbeat independent-oscillator semantics: COMPLETE_SOURCE
 canonical resident sampler source: engine_v13
 oscillator producer source: COMPLETE
 carrier-only resident installer source: COMPLETE
+activation receipt verifier source: COMPLETE
+LIVE-009 startup/proof separation: COMPLETE_SOURCE_RECONCILIATION
 heartbeat progression dependency on worker/state changes: NONE
 persisted HB31: HISTORICAL OBSERVATION ONLY
 resident carrier start task 012: HANDOFF_READY / PENDING MACHINE EXECUTION
 resident carrier activation receipt: ABSENT
 oscillator-backed sovereign runtime observation: PENDING MACHINE EXECUTION
-live proof 009: HANDOFF_READY / PENDING POST-START MACHINE EXECUTION
+live proof 009: BLOCKED_DEPENDENCY / PENDING POST-START MACHINE EXECUTION
 worker task-capable runtime: SEPARATE OPEN LANE
 archive: prohibited while required deployment/runtime goals remain nonterminal
 ```
