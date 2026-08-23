@@ -1,6 +1,6 @@
 # Ecosystem Chat Orphan Recovery Mirror Handoff
 
-Updated: 2026-08-22T19:44:00-05:00
+Updated: 2026-08-22T23:47:00-05:00
 
 ## Authority and scope
 
@@ -43,6 +43,34 @@ source claim:
 
 The executor validates the already-ADMITTED bounded recovery authorization and `HANDOFF_READY` registry contract, allocates a fresh fence greater than fence20 and every projected generation/fence, invokes only `ecosystem-chat-orphan-recovery-worker` through `ProcessWorkerAdapter`, carries only the optional `STEGVERSE_MASTER_RECORDS_ROOT` location reference, releases recovery authority after every bounded attempt, and never creates parent authority. A missing heartbeat snapshot is not an execution prerequisite and does not stop acquisition or execution.
 
+## Self-contained immutable G20 custody
+
+The remaining sibling-checkout portability dependency has been removed. PR #260 merged as `5e85a2d602fe7234a4bdff34aa1521b752dc2b49` and installs the exact immutable, non-authorizing Master Records G20 lifecycle custody record under the recovery worker's existing repository-local workload search path:
+
+```text
+workloads/master-records/orchestration/custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json
+```
+
+The packaged record is bound to released G20 fence20 custody, `ACCEPTED_FOR_CUSTODY`, reconstruction `PASS`, `authority_effect: NONE`, and the canonical Master Records identity. It grants no execution, parent, release, heartbeat, credential, or provider authority.
+
+PR #260 validation evidence:
+
+```text
+head: a181df62e094195c04bf59cfcf4f66b8c468dda2
+Heartbeat Worker Project: run 32609238302 / job 97119379258
+  no-GitHub-token checkout: PASS
+  compile: PASS
+  canonical JSON: PASS
+  executable handoffs: PASS
+  independent recovery tests: PASS, including self-contained G20 custody
+  repository-wide result: RED only on two unrelated LIVE-009 state-expectation tests
+Organization control plane: run 32609238303 / job 97119379172
+  all steps: PASS
+merge: 5e85a2d602fe7234a4bdff34aa1521b752dc2b49
+```
+
+Recovery therefore no longer requires a sibling `master-records/orchestration` checkout merely to locate the already-released custody evidence. An explicit `STEGVERSE_MASTER_RECORDS_ROOT` may still be used when available, but absence of that sibling checkout is no longer a recovery-start blocker.
+
 ## Validation evidence
 
 PR #245 was rebased onto current `main` at head `dd2eb7ca632d3f376c008ad10b3db1d4b6794f13` and directly inspected.
@@ -67,7 +95,7 @@ Focused PASS set:
 - `test_missing_carrier_snapshot_is_not_an_execution_prerequisite`
 - `test_registered_executor_is_independent_and_available`
 
-The repository-wide suite continued and failed only on two unrelated heartbeat-live-proof tests whose fixtures expected `HANDOFF_READY` while current state was `BLOCKED_DEPENDENCY`. Those unrelated failures do not invalidate the five recovery tests and are not represented as repository-wide PASS.
+The repository-wide suite continued and failed only on two unrelated heartbeat-live-proof tests whose fixtures expected `HANDOFF_READY` while current state was `BLOCKED_DEPENDENCY`. Those unrelated failures do not invalidate the recovery tests and are not represented as repository-wide PASS.
 
 Organization control-plane validation:
 
@@ -89,6 +117,12 @@ independent_executor_source:
   state: COMPLETE_RELEASED_SOURCE_VALIDATED
   archive_dependency: false
 
+recovery_custody_portability:
+  state: COMPLETE_RELEASED_INTEGRATED
+  pr: 260
+  merge: 5e85a2d602fe7234a4bdff34aa1521b752dc2b49
+  authority_effect: NONE
+
 recovery:
   task_id: RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28
   state: HANDOFF_READY_AWAITING_FRESH_FENCE_EXECUTION
@@ -102,7 +136,7 @@ parent:
   release_condition: immutable same-execution sovereign activation evidence
 ```
 
-The recovery registry fragment is already `HANDOFF_READY`, `AUTHORIZED`, `INDEPENDENT_TASK_CONTROL`, `fresh_fence_required=true`, and `minimum_fencing_token_exclusive=20`. No new scheduler, heartbeat, or duplicate task is required.
+The recovery registry fragment is already `HANDOFF_READY`, `AUTHORIZED`, `INDEPENDENT_TASK_CONTROL`, `fresh_fence_required=true`, and `minimum_fencing_token_exclusive=20`. No new scheduler, heartbeat, sibling checkout, or duplicate task is required.
 
 ## Required downstream sequence
 
@@ -111,7 +145,7 @@ HANDOFF_READY recovery
 -> admitted StegVerse task-control execution opportunity
 -> fresh recovery claim/fence >20
 -> ecosystem-chat-orphan-recovery-worker
--> Master Records G20 custody reconstruction PASS
+-> packaged/canonical G20 custody reconstruction PASS
 -> recovery claim released
 -> recovery COMPLETED
 -> parent reconciled to HANDOFF_READY without authority creation
@@ -137,4 +171,4 @@ HANDOFF_READY recovery
 
 ## Archive rule
 
-Archive is prohibited because live recovery execution, fresh parent inference, and same-execution activation evidence have not occurred. The source executor itself is validated and released; stale G18 state, WorkerCoordinator-specific execution, or heartbeat snapshot availability are not completion prerequisites.
+Archive is prohibited because live recovery execution, fresh parent inference, and same-execution activation evidence have not occurred. The source executor and its self-contained historical custody input are validated and released; stale G18 state, WorkerCoordinator-specific execution, heartbeat snapshot availability, or a sibling Master Records checkout are not completion prerequisites.
