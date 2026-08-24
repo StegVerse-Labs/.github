@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from validate_ae_retrospective_conformance import main as validate_retrospective_conformance
+from validate_ae_retrospective_conformance import effective_entries, main as validate_retrospective_conformance
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = ROOT / "control" / "admissible-existence-control-plane-policy.json"
@@ -133,8 +133,10 @@ def load_none_impact_projections(policy: dict[str, Any], errors: list[str]) -> d
         "retrospective AE projection schema invalid",
         errors,
     )
+    entries, fragment_errors = effective_entries(document)
+    errors.extend(fragment_errors)
     projections: dict[str, dict[str, Any]] = {}
-    for entry in document.get("entries") or []:
+    for entry in entries:
         if not isinstance(entry, dict):
             continue
         task_id = entry.get("task_id")
