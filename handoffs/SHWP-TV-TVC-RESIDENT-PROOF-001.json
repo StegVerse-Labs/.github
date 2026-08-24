@@ -1,0 +1,116 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-TV-TVC-RESIDENT-PROOF-001",
+  "created_at": "2026-08-24T16:50:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "TVC-TV-CREDENTIAL-MIGRATION-089",
+    "objective": "Execute the already-validated TV/TVC resident operational proof on the existing sovereign host without granting credential authority to heartbeat or expanding G18 authority.",
+    "success_predicates": [
+      "an already-local TV tree has exact HEAD e0d102a8c187c059754eced9ac017fdb056a0222",
+      "an already-local TVC tree contains rootless activation merge e4bef703b4d6ccad858459ec502637c598948c42",
+      "TVC dispatcher preflight reports READY_FOR_TV_TVC_RESIDENT_ACTIVATION",
+      "the admitted /run/stegverse signing credential is consumed only by TVC systemd LoadCredential and never by the worker",
+      "dispatcher activation returns TV_TVC_RESIDENT_OPERATIONAL_PROOF_ACTIVATED",
+      "credential_value_exposed=false and consumer_secret_received=false",
+      "runtime_execution_observed=true with a retained TVC runtime receipt path and proof SHA-256"
+    ],
+    "failure_predicates": [
+      "worker reads, hashes, logs, copies or transports signing credential bytes",
+      "worker fetches TV or TVC source from the network",
+      "hosted CI, GitHub, Render, Vercel or Cloudflare is accepted as runtime execution",
+      "TV source HEAD differs from the exact authorized commit",
+      "TVC rootless activation source is absent",
+      "a BLOCKED dispatcher result is converted to success",
+      "G18 claim/fence or authority is reused or expanded"
+    ],
+    "expires_at": null,
+    "authority_ceiling": [
+      "already-local TV/TVC source observation",
+      "bounded TVC dispatcher execution",
+      "systemd-user TV artifact-exchange service execution",
+      "secret-free receipt persistence",
+      "no credential acquisition or transport",
+      "no source fetch or source mutation",
+      "no G18 authority expansion"
+    ],
+    "successor_policy": "SEPARATE_AUTHORIZATION_REQUIRED_FOR_EXPANSION",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SHWP-TV-TVC-RESIDENT-PROOF-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "StegVerse-Labs/TVC#89",
+    "canonical_lineage_key": "tvc:tv-credential-migration:resident-proof",
+    "derivation_depth": 0,
+    "priority": "release",
+    "source_refs": [
+      "StegVerse-Labs/TV@e0d102a8c187c059754eced9ac017fdb056a0222",
+      "StegVerse-Labs/TVC@e4bef703b4d6ccad858459ec502637c598948c42",
+      "StegVerse-Labs/TVC:docs/TV_CREDENTIAL_MIGRATION_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/TVC:tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json",
+      "workers/tv_tvc_resident_proof_worker.py",
+      "control/process-worker-adapters.d/tv-tvc-resident-proof-001.json",
+      "control/worker-registry.d/tv-tvc-resident-proof-001.json"
+    ],
+    "dependencies": []
+  },
+  "authority": {
+    "authority_source": "StegVerse-Labs/TVC#89 + TV/TVC credential-processing policy",
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "credential_value_available_to_worker": false,
+    "github_token_production_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "g18_authority_inherited": false,
+    "policy_version": "shwp-tv-tvc-resident-proof-v0.1"
+  },
+  "execution": {
+    "required_capabilities": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "durable_state_reconstruction",
+      "tv_tvc_resident_operational_proof_activation"
+    ],
+    "allowed_paths": ["receipts/tv-tvc-resident-proof/**"],
+    "allowed_services": ["stegtvc-tv-artifact-exchange@.service"],
+    "max_actions": 4,
+    "max_retries": 4096,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 4096,
+    "rate_class": "tv_tvc_resident_operational_proof"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "handoffs/SHWP-TV-TVC-RESIDENT-PROOF-001.json#authority",
+    "recheck_trigger": "each admitted worker cycle while unfinished",
+    "checkout_policy": "separate_fenced_claim_no_g18_reuse"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/tv-tvc-resident-proof/SHWP-TV-TVC-RESIDENT-PROOF-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "WorkerCoordinator assigns a fresh claim/fence to the dedicated adapter. The worker observes only already-local TV/TVC trees, invokes TVC preflight and then activation in systemd-user mode, and persists only the secret-free result identity.",
+    "terminal_when": [
+      "dispatcher_state=TV_TVC_RESIDENT_OPERATIONAL_PROOF_ACTIVATED",
+      "runtime_execution_observed=true",
+      "credential_value_exposed=false",
+      "consumer_secret_received=false",
+      "receipt_path_present=true",
+      "proof_sha256_present=true"
+    ]
+  },
+  "block": {
+    "block_reason": "Real local TV/TVC source, readable admitted /run/stegverse credential, or systemd-user execution may still be unavailable; any such condition remains BLOCKED and is rechecked without chat authority.",
+    "dependency": "StegVerse-Labs/TVC#89",
+    "observer": "single sovereign StegVerse WorkerCoordinator",
+    "recheck_trigger": "each admitted worker cycle while unfinished",
+    "next_check": null,
+    "escalation_condition": "source mismatch, forbidden hosted runtime, credential transport attempt, or authority expansion",
+    "block_expires_at": null
+  }
+}
