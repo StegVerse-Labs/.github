@@ -8,7 +8,7 @@
       "authorized_policy_version": "shwp-tv-tvc-resident-proof-v0.1",
       "block_ref": "handoffs/SHWP-TV-TVC-RESIDENT-PROOF-001.json#block",
       "claim_id": null,
-      "cost_basis_ref": "cost-basis/worker-runtime/tv-tvc-resident-operational-proof.json",
+      "cost_basis_ref": null,
       "evidence_refs": [
         "handoffs/SHWP-TV-TVC-RESIDENT-PROOF-001.json",
         "workers/tv_tvc_resident_proof_worker.py",
