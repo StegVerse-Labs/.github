@@ -23,7 +23,9 @@
         "control/process-worker-adapters.d/hil-sovereign-receiver-001.json",
         "cost-basis/worker-runtime/hil-sovereign-receiver.json",
         "StegVerse-Labs/.github#246",
-        "StegVerse-org/LLM-adapter@40eaa9af5cb7e3845ddaf4e79e02d299c76b9655",
+        "StegVerse-org/LLM-adapter@40eaa9af5cb7e3845ddaf4e79e02d299c76b9655 receiver binding ancestor",
+        "StegVerse-org/LLM-adapter@f90be5e4cb277c46426b0aa956ee1652f9b60b4a post-submit reconstruction floor",
+        "StegVerse-org/LLM-adapter@9928284a2abf229dd7c7c19eae75eb9838024e43 Site durable-ingress compatibility floor",
         "StegVerse-Labs/.github:Heartbeat Worker Project - Validation Only / No GitHub Token Authority run 32604491867:SUCCESS",
         "StegVerse-Labs/.github:Validate organization control plane - No GitHub Token Authority run 32604491868:SUCCESS"
       ],
