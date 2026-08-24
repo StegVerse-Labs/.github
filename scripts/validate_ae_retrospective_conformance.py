@@ -6,6 +6,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "control" / "admissible-existence-retrospective-conformance.json"
+FRAGMENT_DIR = ROOT / "control" / "admissible-existence-retrospective-conformance.d"
 OVERRIDES = ROOT / "control" / "admissible-existence-retrospective-conformance.overrides.json"
 TERMINAL = {"COMPLETED", "SUPERSEDED", "TERMINATED"}
 RESULTS = {"PASS", "REVIEW_REQUIRED", "FAIL_CLOSED"}
@@ -39,6 +40,26 @@ def effective_tasks() -> dict[str, dict[str, Any]]:
     return found
 
 
+def effective_entries(report: dict[str, Any]) -> tuple[list[dict[str, Any]], list[str]]:
+    entries = list(report.get("entries")) if isinstance(report.get("entries"), list) else []
+    errors: list[str] = []
+    if FRAGMENT_DIR.exists():
+        for path in sorted(FRAGMENT_DIR.glob("*.json")):
+            try:
+                doc = load(path)
+            except ValueError as exc:
+                errors.append(str(exc)); continue
+            if doc.get("schema") != "stegverse.admissible-existence-retrospective-conformance-fragment/v1":
+                errors.append(f"AE retrospective fragment schema mismatch:{path.name}")
+                continue
+            fragment_entries = doc.get("entries")
+            if not isinstance(fragment_entries, list):
+                errors.append(f"AE retrospective fragment entries invalid:{path.name}")
+                continue
+            entries.extend(fragment_entries)
+    return entries, errors
+
+
 def apply_overrides(indexed: dict[str, dict[str, Any]]) -> None:
     if not OVERRIDES.is_file(): return
     doc = load(OVERRIDES)
@@ -58,7 +79,7 @@ def main() -> int:
     if report.get("schema") != "stegverse.admissible-existence-retrospective-conformance/v1": errors.append("schema mismatch")
     if report.get("credential_authority") != "TV/TVC": errors.append("credential authority must be TV/TVC")
     if report.get("github_token_runtime_authority") is not False: errors.append("GitHub-token runtime authority must be false")
-    entries = report.get("entries") if isinstance(report.get("entries"), list) else []
+    entries, fragment_errors = effective_entries(report); errors.extend(fragment_errors)
     indexed: dict[str, dict[str, Any]] = {}
     for entry in entries:
         if not isinstance(entry, dict) or not isinstance(entry.get("task_id"), str): errors.append("entry without task_id"); continue
