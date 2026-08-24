@@ -7,6 +7,7 @@
     "goal_id": "TVC-TV-CREDENTIAL-MIGRATION-089",
     "objective": "Execute the already-validated TV/TVC resident operational proof on the existing sovereign host without granting credential authority to heartbeat or expanding G18 authority.",
     "success_predicates": [
+      "the resident WorkerCoordinator has consumed the current task/adapter source rather than a stale materialized snapshot",
       "an already-local TV tree has exact HEAD e0d102a8c187c059754eced9ac017fdb056a0222",
       "an already-local TVC tree contains rootless activation merge e4bef703b4d6ccad858459ec502637c598948c42",
       "TVC dispatcher preflight reports READY_FOR_TV_TVC_RESIDENT_ACTIVATION",
@@ -22,7 +23,8 @@
       "TV source HEAD differs from the exact authorized commit",
       "TVC rootless activation source is absent",
       "a BLOCKED dispatcher result is converted to success",
-      "G18 claim/fence or authority is reused or expanded"
+      "G18 claim/fence or authority is reused or expanded",
+      "a source merge or validation run is represented as resident runtime refresh or operational proof"
     ],
     "expires_at": null,
     "authority_ceiling": [
@@ -47,11 +49,16 @@
     "source_refs": [
       "StegVerse-Labs/TV@e0d102a8c187c059754eced9ac017fdb056a0222",
       "StegVerse-Labs/TVC@e4bef703b4d6ccad858459ec502637c598948c42",
+      "StegVerse-Labs/.github@e4564c49c37bc551fc62268c4416fd8d8e633d13",
+      "StegVerse-Labs/.github@e22b8694ad8bbda33c4403ad08e99243c2d68ba4",
+      "StegVerse-Labs/.github@f70b432c5d90428c54800ba8e514f01d175c4f4e",
       "StegVerse-Labs/TVC:docs/TV_CREDENTIAL_MIGRATION_MIRROR_HANDOFF.md",
       "StegVerse-Labs/TVC:tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json",
       "workers/tv_tvc_resident_proof_worker.py",
       "control/process-worker-adapters.d/tv-tvc-resident-proof-001.json",
-      "control/worker-registry.d/tv-tvc-resident-proof-001.json"
+      "control/worker-registry.d/tv-tvc-resident-proof-001.json",
+      "scripts/refresh_sovereign_worker_runtime_source.py",
+      "scripts/install_sovereign_worker_source_refresh_service.py"
     ],
     "dependencies": []
   },
@@ -93,9 +100,28 @@
     "master_records_required": false,
     "status_projection": "control/worker-status.json"
   },
+  "validation_evidence": {
+    "task_registration_merge": "e4564c49c37bc551fc62268c4416fd8d8e633d13",
+    "canonical_local_source_discovery_merge": "e22b8694ad8bbda33c4403ad08e99243c2d68ba4",
+    "resident_runtime_source_refresh_merge": "f70b432c5d90428c54800ba8e514f01d175c4f4e",
+    "source_discovery_heartbeat_validation": "PASS",
+    "source_discovery_org_control_validation": "PASS",
+    "source_refresh_heartbeat_validation": "PASS",
+    "source_refresh_org_control_validation": "PASS",
+    "last_observed_worker_state_ref": "control/worker-runtime-state.json",
+    "last_observed_worker_cycle_at": "2026-08-18T19:47:00Z",
+    "last_observed_carrier_epoch": 31,
+    "last_observed_worker_runtime_tick": 2,
+    "last_observed_worker_mode": "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION",
+    "resident_task_receipt_observed": false,
+    "source_validation_is_runtime_activation": false
+  },
   "completion": {
-    "next_authorized_action": "WorkerCoordinator assigns a fresh claim/fence to the dedicated adapter. The worker observes only already-local TV/TVC trees, invokes TVC preflight and then activation in systemd-user mode, and persists only the secret-free result identity.",
+    "next_authorized_action": "The existing sole host must consume the already-merged local-only WorkerCoordinator source-refresh repair from a current already-local .github source, preserving mutable runtime state and restarting only stegverse-worker-runtime.service. After the refreshed WorkerCoordinator sees this task, it assigns a fresh claim/fence to the dedicated adapter; the worker auto-discovers canonical local TV/TVC trees, invokes TVC preflight and activation in systemd-user mode, and persists only the secret-free result identity.",
     "terminal_when": [
+      "resident_worker_source_refresh_receipt_present=true",
+      "resident_worker_cycle_after_source_refresh=true",
+      "dedicated_task_claimed_with_fresh_fence=true",
       "dispatcher_state=TV_TVC_RESIDENT_OPERATIONAL_PROOF_ACTIVATED",
       "runtime_execution_observed=true",
       "credential_value_exposed=false",
@@ -105,12 +131,12 @@
     ]
   },
   "block": {
-    "block_reason": "Real local TV/TVC source, readable admitted /run/stegverse credential, or systemd-user execution may still be unavailable; any such condition remains BLOCKED and is rechecked without chat authority.",
-    "dependency": "StegVerse-Labs/TVC#89",
+    "block_reason": "The repository-side task, local TV/TVC source discovery, and stale-materialization refresh implementation are merged and validated. The currently observable resident WorkerCoordinator projection is still the Aug 18 HB31/runtime-tick-2 CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION snapshot, and the dedicated task receipt is absent. The remaining first transition is resident-host consumption of the local-only source-refresh repair; repository/hosted validation cannot substitute for that execution.",
+    "dependency": "resident sole-host WorkerCoordinator source refresh from current already-local StegVerse-Labs/.github source",
     "observer": "single sovereign StegVerse WorkerCoordinator",
-    "recheck_trigger": "each admitted worker cycle while unfinished",
-    "next_check": null,
-    "escalation_condition": "source mismatch, forbidden hosted runtime, credential transport attempt, or authority expansion",
+    "recheck_trigger": "after any resident worker source-refresh receipt or newer WorkerCoordinator runtime tick is observed",
+    "next_check": "receipts/sovereign-host/worker-source-refresh-installation.latest.json -> control/worker-runtime-state.json -> receipts/tv-tvc-resident-proof/SHWP-TV-TVC-RESIDENT-PROOF-001.json",
+    "escalation_condition": "source mismatch, forbidden hosted runtime, credential transport attempt, authority expansion, mutable runtime-state overwrite, or carrier restart caused by worker-source refresh",
     "block_expires_at": null
   }
 }
