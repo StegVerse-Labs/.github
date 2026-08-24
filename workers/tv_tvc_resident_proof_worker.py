@@ -23,6 +23,8 @@ ALLOWED_CAPABILITIES = {
 }
 ALLOWED_PATHS = ["receipts/tv-tvc-resident-proof/**"]
 ALLOWED_SERVICES = ["stegtvc-tv-artifact-exchange@.service"]
+TV_REQUIRED = [Path("scripts/tv_run_resident_operational_proof.py"), Path("docs/TV_OPERATIONAL_PROOF_SCHEMA.json")]
+TVC_REQUIRED = [Path("tools/task_dispatcher.py"), Path("tv_resident_operational_proof_task.py"), Path("scripts/activate_tv_resident_operational_proof.py")]
 
 
 def atomic_write(path: Path, value: dict[str, Any]) -> None:
@@ -55,14 +57,95 @@ def _response(state: str, transition_id: str, checkpoint: str, *, next_epoch: in
     }
 
 
+def _git(root: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", "-C", str(root), *args],
+        capture_output=True,
+        text=True,
+        check=check,
+    )
+
+
 def _git_head(root: Path) -> str:
-    result = subprocess.run(["git", "-C", str(root), "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
-    return result.stdout.strip().lower()
+    return _git(root, "rev-parse", "HEAD").stdout.strip().lower()
+
+
+def _clean_worktree(root: Path) -> bool:
+    return not _git(root, "status", "--porcelain").stdout.strip()
 
 
 def _tvc_contains_required_source(root: Path) -> bool:
-    result = subprocess.run(["git", "-C", str(root), "merge-base", "--is-ancestor", TVC_MIN_SHA, "HEAD"], capture_output=True, text=True)
-    return result.returncode == 0
+    return _git(root, "merge-base", "--is-ancestor", TVC_MIN_SHA, "HEAD", check=False).returncode == 0
+
+
+def _canonical_candidates(repo_name: str, env_name: str) -> list[Path]:
+    candidates: list[Path] = []
+    override = os.environ.get(env_name, "").strip()
+    if override:
+        candidates.append(Path(override).expanduser())
+    home = Path(os.environ.get("HOME", str(Path.home()))).expanduser()
+    candidates.extend([
+        home / ".stegverse" / "repos" / "StegVerse-Labs" / repo_name,
+        Path("/var/lib/stegverse/source/StegVerse-Labs") / repo_name,
+        Path("/srv/stegverse/repos/StegVerse-Labs") / repo_name,
+        Path("/opt/stegverse/repos/StegVerse-Labs") / repo_name,
+    ])
+    result: list[Path] = []
+    seen: set[str] = set()
+    for candidate in candidates:
+        try:
+            resolved = candidate.resolve()
+        except Exception:
+            continue
+        marker = str(resolved)
+        if marker in seen:
+            continue
+        seen.add(marker)
+        result.append(resolved)
+    return result
+
+
+def _locate_local_source(repo_name: str, env_name: str, required: list[Path], *, exact_head: str | None = None, required_ancestor: str | None = None) -> tuple[Path | None, list[dict[str, Any]]]:
+    observed: list[dict[str, Any]] = []
+    for root in _canonical_candidates(repo_name, env_name):
+        record: dict[str, Any] = {"root": str(root), "present": root.is_dir()}
+        if not root.is_dir():
+            observed.append(record)
+            continue
+        missing = [str(path) for path in required if not (root / path).is_file()]
+        if missing:
+            record["missing_required"] = missing
+            observed.append(record)
+            continue
+        if not (root / ".git").is_dir():
+            record["git_repository"] = False
+            observed.append(record)
+            continue
+        try:
+            head = _git_head(root)
+            clean = _clean_worktree(root)
+        except Exception as exc:
+            record["git_error_type"] = type(exc).__name__
+            observed.append(record)
+            continue
+        record.update({"head": head, "clean_worktree": clean})
+        if not clean:
+            observed.append(record)
+            continue
+        if exact_head is not None and head != exact_head:
+            record["exact_head_match"] = False
+            observed.append(record)
+            continue
+        if required_ancestor is not None:
+            ancestor_ok = _git(root, "merge-base", "--is-ancestor", required_ancestor, "HEAD", check=False).returncode == 0
+            record["required_ancestor_present"] = ancestor_ok
+            if not ancestor_ok:
+                observed.append(record)
+                continue
+        record["selected"] = True
+        observed.append(record)
+        return root, observed
+    return None, observed
 
 
 def _parse_dispatcher(stdout: str) -> dict[str, Any]:
@@ -159,18 +242,21 @@ def main() -> int:
     if _hosted_runtime_observed():
         return block("HOSTED_RUNTIME_NOT_AUTHORIZED")
 
-    tv_value = os.environ.get("STEGVERSE_TV_ROOT", "").strip()
-    tvc_value = os.environ.get("STEGVERSE_TVC_ROOT", "").strip()
-    if not tv_value or not tvc_value:
-        return block("LOCAL_TV_TVC_ROOTS_NOT_DECLARED")
-    tv_root = Path(tv_value).expanduser().resolve()
-    tvc_root = Path(tvc_value).expanduser().resolve()
-    required_tv = [tv_root / "scripts/tv_run_resident_operational_proof.py", tv_root / "docs/TV_OPERATIONAL_PROOF_SCHEMA.json"]
-    required_tvc = [tvc_root / "tools/task_dispatcher.py", tvc_root / "tv_resident_operational_proof_task.py", tvc_root / "scripts/activate_tv_resident_operational_proof.py"]
-    if not all(path.is_file() for path in required_tv):
-        return block("LOCAL_TV_SOURCE_INCOMPLETE")
-    if not all(path.is_file() for path in required_tvc):
-        return block("LOCAL_TVC_SOURCE_INCOMPLETE")
+    tv_root, tv_observed = _locate_local_source("TV", "STEGVERSE_TV_ROOT", TV_REQUIRED, exact_head=TV_SHA)
+    tvc_root, tvc_observed = _locate_local_source("TVC", "STEGVERSE_TVC_ROOT", TVC_REQUIRED, required_ancestor=TVC_MIN_SHA)
+    if tv_root is None or tvc_root is None:
+        return block(
+            "LOCAL_TV_TVC_SOURCE_NOT_MATERIALIZED",
+            {
+                "tv_selected": str(tv_root) if tv_root else None,
+                "tvc_selected": str(tvc_root) if tvc_root else None,
+                "tv_candidates": tv_observed,
+                "tvc_candidates": tvc_observed,
+                "network_lookup_performed": False,
+            },
+        )
+
+    # Recheck identities at execution time after discovery. No fetch/pull/update is performed.
     try:
         tv_head = _git_head(tv_root)
     except Exception as exc:
@@ -242,6 +328,8 @@ def main() -> int:
         "worker_instance_id": worker_instance_id,
         "state": "COMPLETED",
         "transition_id": "TV_TVC_RESIDENT_OPERATIONAL_PROOF_ACTIVATED",
+        "tv_source_root": str(tv_root),
+        "tvc_source_root": str(tvc_root),
         "tv_source_sha": TV_SHA,
         "tvc_required_source_ancestor": TVC_MIN_SHA,
         "service_manager": "systemd-user",
