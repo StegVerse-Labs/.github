@@ -3,11 +3,24 @@ import json, subprocess, sys, unittest
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "control" / "admissible-existence-retrospective-conformance.json"
+FRAGMENT_DIR = ROOT / "control" / "admissible-existence-retrospective-conformance.d"
+
+
+def effective_entries():
+    data = json.loads(REPORT.read_text(encoding="utf-8"))
+    entries = list(data["entries"])
+    if FRAGMENT_DIR.exists():
+        for path in sorted(FRAGMENT_DIR.glob("*.json")):
+            fragment = json.loads(path.read_text(encoding="utf-8"))
+            if fragment.get("schema") == "stegverse.admissible-existence-retrospective-conformance-fragment/v1":
+                entries.extend(fragment.get("entries", []))
+    return data, entries
+
 
 class AERetrospectiveConformanceTests(unittest.TestCase):
     def setUp(self):
-        data = json.loads(REPORT.read_text(encoding="utf-8"))
-        self.entries = {x["task_id"]: x for x in data["entries"]}
+        data, entries = effective_entries()
+        self.entries = {x["task_id"]: x for x in entries}
         self.report = data
 
     def test_exact_effective_denominator(self):
@@ -53,5 +66,11 @@ class AERetrospectiveConformanceTests(unittest.TestCase):
         for task_id in ("SHWP-DURABLE-RUNTIME-ACTIVATION", "SHWP-REPO-HEARTBEAT-FEDERATION-001"):
             self.assertEqual(self.entries[task_id]["result"], "REVIEW_REQUIRED")
             self.assertIn("heartbeat", self.entries[task_id]["rationale"].lower())
+
+    def test_tv_tvc_resident_proof_is_non_authorizing_runtime_support(self):
+        entry = self.entries["SHWP-TV-TVC-RESIDENT-PROOF-001"]
+        self.assertEqual(entry["ae_impact"], "NONE")
+        self.assertIsNone(entry["phase"])
+        self.assertEqual(entry["result"], "PASS")
 
 if __name__ == "__main__": unittest.main()
