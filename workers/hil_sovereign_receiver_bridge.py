@@ -29,6 +29,30 @@ PROHIBITED_HOST_ENV = {
     "CF_PAGES",
     "CLOUDFLARE_WORKERS",
 }
+REQUIRED_BACKEND_FILES = (
+    Path("llm_adapter/combined_gateway.py"),
+    Path("llm_adapter/hil_intake_v1_1_api.py"),
+    Path("llm_adapter/hil_sovereign_receiver_profile.py"),
+    Path("tasks/LLMA-HIL-SOVEREIGN-RECEIVER-021.json"),
+    Path("tasks/LLMA-HIL-POST-SUBMIT-RECONSTRUCTION-029.json"),
+    Path("tasks/LLMA-HIL-SITE-RECEIPT-COMPAT-030.json"),
+    Path("docs/HIL_RUNTIME_MIRROR_HANDOFF.md"),
+    Path("docs/HIL_SITE_RECEIPT_COMPAT_MIRROR_HANDOFF.md"),
+)
+REQUIRED_INTAKE_MARKERS = (
+    '@router.get("/submissions/{submission_id}/status")',
+    '@router.get("/submissions/{submission_id}/exact-bytes")',
+    '"custody_state": "EXACT_BYTES_PERSISTED"',
+    '"registry_state": "RECORDED"',
+    'EXACT_BYTES_HASH_VERIFIED',
+    'hil_submission_registry_hash_mismatch',
+    'hil_submission_persistence_verification_failed',
+)
+REQUIRED_GATEWAY_MARKERS = (
+    'hil_intake_status_endpoint_template',
+    'hil_intake_exact_bytes_endpoint_template',
+    'EXISTING_TV_TVC_REVIEW_AUTH_REQUIRED',
+)
 
 
 def _truthy(value: str | None) -> bool:
@@ -56,16 +80,35 @@ def local_llm_adapter_roots(root: Path, env: dict[str, str] | None = None) -> li
     return candidates
 
 
-def find_hil_receiver_root(root: Path, env: dict[str, str] | None = None) -> Path | None:
-    required = (
-        Path("llm_adapter/combined_gateway.py"),
-        Path("llm_adapter/hil_intake_v1_1_api.py"),
-        Path("llm_adapter/hil_sovereign_receiver_profile.py"),
-        Path("tasks/LLMA-HIL-SOVEREIGN-RECEIVER-021.json"),
-        Path("docs/HIL_RUNTIME_MIRROR_HANDOFF.md"),
+def _backend_contract_current(candidate: Path) -> bool:
+    if not all((candidate / relative).is_file() for relative in REQUIRED_BACKEND_FILES):
+        return False
+    try:
+        intake = (candidate / "llm_adapter/hil_intake_v1_1_api.py").read_text(encoding="utf-8")
+        gateway = (candidate / "llm_adapter/combined_gateway.py").read_text(encoding="utf-8")
+        receipt_task = json.loads(
+            (candidate / "tasks/LLMA-HIL-SITE-RECEIPT-COMPAT-030.json").read_text(encoding="utf-8")
+        )
+        reconstruction_task = json.loads(
+            (candidate / "tasks/LLMA-HIL-POST-SUBMIT-RECONSTRUCTION-029.json").read_text(encoding="utf-8")
+        )
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return False
+
+    contract = receipt_task.get("required_receipt_contract") or {}
+    return (
+        all(marker in intake for marker in REQUIRED_INTAKE_MARKERS)
+        and all(marker in gateway for marker in REQUIRED_GATEWAY_MARKERS)
+        and receipt_task.get("state") == "COMPLETE_MERGED_VALIDATED_RELEASED"
+        and contract.get("custody_state") == "EXACT_BYTES_PERSISTED"
+        and contract.get("registry_state") == "RECORDED"
+        and reconstruction_task.get("state") == "COMPLETE_MERGED_VALIDATED_RELEASED"
     )
+
+
+def find_hil_receiver_root(root: Path, env: dict[str, str] | None = None) -> Path | None:
     for candidate in local_llm_adapter_roots(root, env):
-        if all((candidate / relative).is_file() for relative in required):
+        if _backend_contract_current(candidate):
             return candidate.resolve()
     return None
 
@@ -183,6 +226,9 @@ __all__ = [
     "CREDENTIAL_AUTHORITY",
     "PRIMARY_SHA256",
     "PROMPT_SHA256",
+    "REQUIRED_BACKEND_FILES",
+    "REQUIRED_GATEWAY_MARKERS",
+    "REQUIRED_INTAKE_MARKERS",
     "credential_free_receiver_env",
     "find_hil_receiver_root",
     "hosted_environment",
