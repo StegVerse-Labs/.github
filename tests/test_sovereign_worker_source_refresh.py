@@ -1,0 +1,158 @@
+from __future__ import annotations
+
+import importlib.util
+import json
+import tempfile
+import unittest
+from pathlib import Path
+from types import SimpleNamespace
+from unittest import mock
+
+ROOT = Path(__file__).resolve().parents[1]
+
+REFRESH_SPEC = importlib.util.spec_from_file_location(
+    "refresh_sovereign_worker_runtime_source",
+    ROOT / "scripts/refresh_sovereign_worker_runtime_source.py",
+)
+assert REFRESH_SPEC and REFRESH_SPEC.loader
+refresh_mod = importlib.util.module_from_spec(REFRESH_SPEC)
+REFRESH_SPEC.loader.exec_module(refresh_mod)
+
+INSTALL_SPEC = importlib.util.spec_from_file_location(
+    "install_sovereign_worker_source_refresh_service",
+    ROOT / "scripts/install_sovereign_worker_source_refresh_service.py",
+)
+assert INSTALL_SPEC and INSTALL_SPEC.loader
+install_mod = importlib.util.module_from_spec(INSTALL_SPEC)
+INSTALL_SPEC.loader.exec_module(install_mod)
+
+
+class SovereignWorkerSourceRefreshTests(unittest.TestCase):
+    def test_refresh_copies_static_source_and_preserves_mutable_runtime_state(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            source = base / "source"
+            runtime = base / "runtime"
+            for rel in (
+                "heartbeat_runtime", "workers", "handoffs", "authorizations", "schemas", "cost-basis", "management",
+                "scripts", "control/worker-registry.d", "control/process-worker-adapters.d",
+            ):
+                (source / rel).mkdir(parents=True, exist_ok=True)
+            (source / "heartbeat_runtime/worker_runtime.py").write_text("VERSION='new'\n", encoding="utf-8")
+            (source / "workers/new_worker.py").write_text("x=1\n", encoding="utf-8")
+            (source / "handoffs/new.json").write_text("{}\n", encoding="utf-8")
+            (source / "control/worker-registry.json").write_text('{"schema":"x"}\n', encoding="utf-8")
+            (source / "control/process-worker-adapters.json").write_text('{"schema":"x"}\n', encoding="utf-8")
+            (source / "control/worker-registry.d/new.json").write_text("{}\n", encoding="utf-8")
+            (source / "control/process-worker-adapters.d/new.json").write_text("{}\n", encoding="utf-8")
+            for rel in refresh_mod.STATIC_FILES:
+                path = source / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("# source\n", encoding="utf-8")
+
+            (runtime / "heartbeat_runtime").mkdir(parents=True)
+            (runtime / "heartbeat_runtime/worker_runtime.py").write_text("VERSION='old'\n", encoding="utf-8")
+            (runtime / "control").mkdir(parents=True)
+            mutable = {
+                "heartbeat-state.json": '{"epoch":29}\n',
+                "heartbeat-carrier-runtime-state.json": '{"epoch":31}\n',
+                "worker-runtime-state.json": '{"runtime_tick":2}\n',
+                "worker-control-plane-coordination.json": '{"state":"retained"}\n',
+                "worker-status.json": '{"state":"retained"}\n',
+            }
+            for name, value in mutable.items():
+                (runtime / "control" / name).write_text(value, encoding="utf-8")
+            (runtime / "receipts/sovereign-host").mkdir(parents=True)
+            (runtime / "receipts/sovereign-host/existing.json").write_text('{"keep":true}\n', encoding="utf-8")
+
+            receipt = refresh_mod.refresh(source, runtime)
+            self.assertTrue(receipt["mutable_runtime_state_preserved"])
+            self.assertFalse(receipt["network_fetch_performed"])
+            self.assertFalse(receipt["credential_read_or_acquired"])
+            self.assertFalse(receipt["github_token_required"])
+            self.assertEqual((runtime / "heartbeat_runtime/worker_runtime.py").read_text(), "VERSION='new'\n")
+            self.assertTrue((runtime / "workers/new_worker.py").is_file())
+            self.assertTrue((runtime / "control/worker-registry.d/new.json").is_file())
+            for name, value in mutable.items():
+                self.assertEqual((runtime / "control" / name).read_text(), value)
+            self.assertTrue((runtime / "receipts/sovereign-host/existing.json").is_file())
+            self.assertTrue((runtime / "receipts/sovereign-host/worker-source-refresh.latest.json").is_file())
+
+    def test_mutable_runtime_state_is_explicitly_forbidden_as_refresh_source(self) -> None:
+        for value in (
+            Path("receipts/x.json"),
+            Path("checkpoints/x.json"),
+            Path("control/worker-runtime-state.json"),
+            Path("control/heartbeat-carrier-runtime-state.json"),
+        ):
+            with self.subTest(value=value):
+                with self.assertRaises(ValueError):
+                    refresh_mod._assert_static_path(value)
+
+    def test_rootless_watcher_is_filesystem_event_driven_and_secret_free(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            source = base / "source"
+            runtime = base / "runtime"
+            source.mkdir()
+            runtime.mkdir()
+            service, path_unit = install_mod.render_units(
+                source_root=source,
+                runtime_root=runtime,
+                python=Path("/usr/bin/python3"),
+            )
+            self.assertIn("systemctl --user try-restart stegverse-worker-runtime.service", service)
+            self.assertIn("PathChanged=", path_unit)
+            self.assertIn("workers", path_unit)
+            self.assertIn("worker-registry.d", path_unit)
+            self.assertIn("WantedBy=default.target", path_unit)
+            combined = service + path_unit
+            for forbidden in ("GITHUB_TOKEN", "GH_TOKEN", "LoadCredential=", "git clone", "git fetch", "git pull"):
+                self.assertNotIn(forbidden, combined)
+
+    def test_installer_immediately_refreshes_then_restarts_only_worker(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            runtime = base / "runtime"
+            unit_root = base / "units"
+            calls: list[list[str]] = []
+
+            def runner(command, **_kwargs):
+                calls.append(command)
+                return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+            with mock.patch.object(install_mod, "refresh", return_value={
+                "schema": "stegverse.sovereign-worker-runtime-source-refresh/v1",
+                "mutable_runtime_state_preserved": True,
+                "network_fetch_performed": False,
+            }), mock.patch.object(install_mod.shutil, "which", return_value="/usr/bin/systemctl"):
+                receipt = install_mod.install(
+                    ROOT,
+                    runtime,
+                    unit_root=unit_root,
+                    runner=runner,
+                    activate=True,
+                    system="linux",
+                )
+            self.assertTrue(receipt["activated"])
+            self.assertTrue(receipt["filesystem_event_driven"])
+            self.assertFalse(receipt["second_heartbeat_created"])
+            self.assertFalse(receipt["third_party_scheduler_required"])
+            self.assertFalse(receipt["carrier_restarted_by_refresh"])
+            self.assertEqual(len(calls), 3)
+            flattened = [" ".join(command) for command in calls]
+            self.assertTrue(any("enable --now stegverse-worker-source-refresh.path" in value for value in flattened))
+            self.assertTrue(any("try-restart stegverse-worker-runtime.service" in value for value in flattened))
+            self.assertFalse(any("stegverse-heartbeat.service" in value for value in flattened))
+
+    def test_refresh_sources_contain_no_network_transport_or_credential_path(self) -> None:
+        combined = (
+            (ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").read_text(encoding="utf-8")
+            + (ROOT / "scripts/install_sovereign_worker_source_refresh_service.py").read_text(encoding="utf-8")
+        )
+        for forbidden in ("git clone", "git fetch", "git pull", "urlopen(", "requests.get", "GITHUB_TOKEN=", "GH_TOKEN=", "LoadCredential="):
+            self.assertNotIn(forbidden, combined)
+
+
+if __name__ == "__main__":
+    unittest.main()
