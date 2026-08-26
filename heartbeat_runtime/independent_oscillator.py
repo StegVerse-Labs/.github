@@ -12,6 +12,47 @@ PROTOCOL_ANCHOR_EPOCH = 32
 PROTOCOL_ANCHOR_UNIX_NS = 1_787_511_600_000_000_000
 PROTOCOL_ANCHOR_TIME_UTC = "2026-08-23T19:00:00.000Z"
 PROTOCOL_ANCHOR_REF = "control/heartbeat-protocol-anchor.json"
+HEARTBEAT_ID_RADIX = 36
+HEARTBEAT_ID_WIDTH = 8
+HEARTBEAT_ID_PREFIX = "HB-"
+HEARTBEAT_ID_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+HEARTBEAT_ID_MAX_EPOCH = HEARTBEAT_ID_RADIX**HEARTBEAT_ID_WIDTH - 1
+
+
+def encode_heartbeat_id(epoch: int) -> str:
+    if not isinstance(epoch, int) or isinstance(epoch, bool):
+        raise TypeError("heartbeat epoch must be an integer")
+    if epoch < 0:
+        raise ValueError("heartbeat epoch must be non-negative")
+    if epoch > HEARTBEAT_ID_MAX_EPOCH:
+        raise ValueError("heartbeat epoch exceeds fixed-width Base36 range")
+    value = epoch
+    chars: list[str] = []
+    if value == 0:
+        chars.append("0")
+    while value:
+        value, remainder = divmod(value, HEARTBEAT_ID_RADIX)
+        chars.append(HEARTBEAT_ID_ALPHABET[remainder])
+    encoded = "".join(reversed(chars)).rjust(HEARTBEAT_ID_WIDTH, "0")
+    return f"{HEARTBEAT_ID_PREFIX}{encoded}"
+
+
+def decode_heartbeat_id(identifier: str) -> int:
+    if not isinstance(identifier, str):
+        raise TypeError("heartbeat identifier must be a string")
+    if not identifier.startswith(HEARTBEAT_ID_PREFIX):
+        raise ValueError("heartbeat identifier must start with HB-")
+    body = identifier[len(HEARTBEAT_ID_PREFIX):]
+    if len(body) != HEARTBEAT_ID_WIDTH:
+        raise ValueError("heartbeat identifier has noncanonical width")
+    if body != body.upper() or any(ch not in HEARTBEAT_ID_ALPHABET for ch in body):
+        raise ValueError("heartbeat identifier must use canonical uppercase Base36 alphabet")
+    value = 0
+    for ch in body:
+        value = value * HEARTBEAT_ID_RADIX + HEARTBEAT_ID_ALPHABET.index(ch)
+    if encode_heartbeat_id(value) != identifier:
+        raise ValueError("heartbeat identifier is not canonical")
+    return value
 
 
 def iso8601_to_unix_ns(value: str | None) -> int | None:
@@ -54,22 +95,8 @@ def _canonical_protocol_oscillator() -> dict[str, Any]:
 
 
 def normalize_oscillator(state: dict[str, Any], *, now_ns: int) -> dict[str, Any]:
-    """Return the heartbeat oscillator used to derive the reference at ``now_ns``.
-
-    At and after the protocol cutover, every observer uses the same durable
-    protocol anchor.  No resident process has to remain alive between samples:
-    the reference is a pure function of the protocol anchor and elapsed phase.
-    Missed references therefore exist independently of observation, exactly as
-    required by the heartbeat semantics handoff.
-
-    Samples before the protocol cutover retain the historical migration logic
-    solely so immutable HB29/HB30/HB31 evidence and pre-cutover deterministic
-    tests remain replayable.  Historical local anchors have no authority over
-    references at or after the protocol cutover.
-    """
     if now_ns >= PROTOCOL_ANCHOR_UNIX_NS:
         return _canonical_protocol_oscillator()
-
     oscillator = state.get("oscillator")
     if isinstance(oscillator, dict):
         anchor_epoch = oscillator.get("anchor_epoch")
@@ -89,14 +116,9 @@ def normalize_oscillator(state: dict[str, Any], *, now_ns: int) -> dict[str, Any
                 "observation_is_causal": False,
                 "historical_pre_protocol_anchor": True,
             }
-
     sampled_epoch = int(state.get("epoch", 0))
     legacy_cutover = state.get("legacy_cutover") or {}
-    is_initial_hb29_cutover = (
-        sampled_epoch == 29
-        and int(legacy_cutover.get("legacy_epoch", 29)) == 29
-        and legacy_cutover.get("closed") is not True
-    )
+    is_initial_hb29_cutover = sampled_epoch == 29 and int(legacy_cutover.get("legacy_epoch", 29)) == 29 and legacy_cutover.get("closed") is not True
     if is_initial_hb29_cutover:
         sampled_ns = max(0, now_ns - OSCILLATOR_PERIOD_NS)
     else:
@@ -118,7 +140,7 @@ def normalize_oscillator(state: dict[str, Any], *, now_ns: int) -> dict[str, Any
     }
 
 
-def derive_reference(oscillator: dict[str, Any], *, now_ns: int) -> dict[str, int]:
+def derive_reference(oscillator: dict[str, Any], *, now_ns: int) -> dict[str, Any]:
     period_ns = int(oscillator["period_ns"])
     anchor_epoch = int(oscillator["anchor_epoch"])
     anchor_ns = int(oscillator["anchor_unix_ns"])
@@ -128,17 +150,18 @@ def derive_reference(oscillator: dict[str, Any], *, now_ns: int) -> dict[str, in
         raise RuntimeError("heartbeat oscillator sample precedes anchor")
     elapsed_ns = now_ns - anchor_ns
     elapsed_quanta, phase_offset_ns = divmod(elapsed_ns, period_ns)
+    epoch = anchor_epoch + elapsed_quanta
     return {
-        "epoch": anchor_epoch + elapsed_quanta,
-        "generation": anchor_epoch + elapsed_quanta,
+        "epoch": epoch,
+        "generation": epoch,
+        "heartbeat_id": encode_heartbeat_id(epoch),
         "elapsed_quanta": elapsed_quanta,
         "phase_offset_ns": phase_offset_ns,
         "sampled_unix_ns": now_ns,
     }
 
 
-def current_reference(*, now_ns: int) -> dict[str, int]:
-    """Derive the canonical heartbeat reference without persisted runtime state."""
+def current_reference(*, now_ns: int) -> dict[str, Any]:
     if now_ns < PROTOCOL_ANCHOR_UNIX_NS:
         raise RuntimeError("canonical heartbeat protocol anchor is not active yet")
     return derive_reference(_canonical_protocol_oscillator(), now_ns=now_ns)
@@ -150,7 +173,9 @@ def sample_state(state: dict[str, Any], *, now_ns: int) -> dict[str, Any]:
     sampled = dict(state)
     sampled["epoch"] = reference["epoch"]
     sampled["generation"] = reference["generation"]
-    sampled["reference_frame"] = f"heartbeat_epoch:{reference['epoch']}"
+    sampled["heartbeat_id"] = reference["heartbeat_id"]
+    sampled["reference_frame"] = reference["heartbeat_id"]
+    sampled["legacy_reference_frame"] = f"heartbeat_epoch:{reference['epoch']}"
     sampled["frequency_rule"] = FREQUENCY_RULE
     sampled["last_cycle_at"] = unix_ns_to_iso8601(now_ns)
     sampled["activation_state"] = "ACTIVE"
@@ -161,6 +186,7 @@ def sample_state(state: dict[str, Any], *, now_ns: int) -> dict[str, Any]:
         **oscillator,
         "sampled_unix_ns": now_ns,
         "sampled_reference_epoch": reference["epoch"],
+        "sampled_heartbeat_id": reference["heartbeat_id"],
         "phase_offset_ns": reference["phase_offset_ns"],
         "elapsed_quanta_from_anchor": reference["elapsed_quanta"],
         "snapshot_is_observation_only": True,
@@ -169,17 +195,8 @@ def sample_state(state: dict[str, Any], *, now_ns: int) -> dict[str, Any]:
 
 
 __all__ = [
-    "OSCILLATOR_PERIOD_NS",
-    "OSCILLATOR_PERIOD_MS",
-    "REFERENCE_FREQUENCY_HZ",
-    "FREQUENCY_RULE",
-    "MECHANISM",
-    "PROTOCOL_ANCHOR_EPOCH",
-    "PROTOCOL_ANCHOR_UNIX_NS",
-    "PROTOCOL_ANCHOR_TIME_UTC",
-    "PROTOCOL_ANCHOR_REF",
-    "current_reference",
-    "derive_reference",
-    "normalize_oscillator",
-    "sample_state",
+    "OSCILLATOR_PERIOD_NS", "OSCILLATOR_PERIOD_MS", "REFERENCE_FREQUENCY_HZ", "FREQUENCY_RULE", "MECHANISM",
+    "PROTOCOL_ANCHOR_EPOCH", "PROTOCOL_ANCHOR_UNIX_NS", "PROTOCOL_ANCHOR_TIME_UTC", "PROTOCOL_ANCHOR_REF",
+    "HEARTBEAT_ID_RADIX", "HEARTBEAT_ID_WIDTH", "HEARTBEAT_ID_PREFIX", "HEARTBEAT_ID_ALPHABET", "HEARTBEAT_ID_MAX_EPOCH",
+    "encode_heartbeat_id", "decode_heartbeat_id", "current_reference", "derive_reference", "normalize_oscillator", "sample_state",
 ]
