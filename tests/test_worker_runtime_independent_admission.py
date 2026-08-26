@@ -4,6 +4,7 @@ import inspect
 import unittest
 
 from heartbeat_runtime.worker_runtime import WorkerCoordinator
+from heartbeat_runtime.worker_runtime_legacy import WorkerCoordinator as LegacyWorkerCoordinator
 
 
 class WorkerRuntimeIndependentAdmissionTests(unittest.TestCase):
@@ -25,14 +26,19 @@ class WorkerRuntimeIndependentAdmissionTests(unittest.TestCase):
         self.assertIn('"independent_task_control_activations": independent_activated', source)
         self.assertIn('"carrier_packet_activations": carrier_activated', source)
 
-    def test_fresh_fence_floor_is_enforced_inside_canonical_assignment_path(self):
-        source = inspect.getsource(WorkerCoordinator._activate_from_trigger)
-        self.assertIn('minimum_fencing_token_exclusive', source)
-        self.assertIn('generation = minimum_fence + 1', source)
-        self.assertIn('source_admission_ref', source)
-        self.assertIn('source_carrier_event_ref"] = None', source)
-        self.assertIn('carrier_granted_authority=False', source)
-        self.assertIn('worker_assignment_bound_from_independent_task_control', source)
+    def test_fresh_fence_floor_is_enforced_after_mandatory_admission_review(self):
+        admitted_source = inspect.getsource(WorkerCoordinator._activate_from_trigger)
+        self.assertIn("review_worker_task_admission", admitted_source)
+        self.assertIn('verdict != "ADMIT"', admitted_source)
+        self.assertIn("return super()._activate_from_trigger", admitted_source)
+
+        legacy_source = inspect.getsource(LegacyWorkerCoordinator._activate_from_trigger)
+        self.assertIn('minimum_fencing_token_exclusive', legacy_source)
+        self.assertIn('generation = minimum_fence + 1', legacy_source)
+        self.assertIn('source_admission_ref', legacy_source)
+        self.assertIn('source_carrier_event_ref"] = None', legacy_source)
+        self.assertIn('carrier_granted_authority=False', legacy_source)
+        self.assertIn('worker_assignment_bound_from_independent_task_control', legacy_source)
 
 
 if __name__ == "__main__":
