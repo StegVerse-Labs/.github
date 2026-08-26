@@ -1,6 +1,6 @@
 # Heartbeat Runtime Separation Mirror Handoff
 
-Updated: 2026-08-22T19:37:00-05:00
+Updated: 2026-08-26T16:18:00-05:00
 
 ## Authority and active goal
 
@@ -103,19 +103,27 @@ receipts/heartbeat-reference-snapshots/
 
 Existing pre-correction carrier state remains historical provenance. Legacy `control/heartbeat-state.json` remains immutable HB29 provenance.
 
-## Startup / live-proof separation
+## 2026-08-26 terminal heartbeat reconciliation
 
-Resident carrier startup is a separate prerequisite task:
+The later protocol-anchor correction in `docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md` supersedes the resident-start/live-proof gating text that previously lived here.
+
+Current authoritative state:
 
 ```text
-task: HEARTBEAT-OSCILLATOR-RESIDENT-START-012
-state: HANDOFF_READY
-command: python scripts/install_sovereign_heartbeat_carrier.py
-required receipt: receipts/sovereign-host/carrier-activation.latest.json
-verifier: python scripts/verify_sovereign_heartbeat_carrier_activation.py
+heartbeat protocol: ACTIVE_PROTOCOL_VERIFIED
+protocol anchor: HB32 / 2026-08-23T19:00:00.000Z
+period: 10 ms / 100 Hz
+progression dependency: OSCILLATOR_ONLY
+continuous resident process required: false
+resident sampler role: OPTIONAL_OBSERVER_AND_PERSISTENCE
+HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009: COMPLETED / INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED
+heartbeat activation issue #12: CLOSED / COMPLETED
+issue #122: OPEN only for runtime/control-plane separation and downstream cleanup; not a heartbeat activation gate
 ```
 
-LIVE-009 is not a startup path. Its handoff and worker-registry fragment now explicitly depend on resident-start 012. `scripts/run_live_009_resident.py` has been corrected so it no longer invokes the installer; it first verifies the preexisting activation receipt and only then performs worker(1) -> carrier-observation(1) -> worker(1).
+Resident task `HEARTBEAT-OSCILLATOR-RESIDENT-START-012` may still be used when persistent observation is desired, but it is not a heartbeat existence/progression predicate and LIVE-009 no longer depends on it.
+
+The separate `SHWP-DURABLE-RUNTIME-ACTIVATION` / G18 lane remains a worker/runtime substrate concern. It may block downstream machine-owned workers that require a sovereign node, but it does not block or advance heartbeat progression.
 
 ## Superseded and retained semantics
 
@@ -148,26 +156,21 @@ Canonical invariants require same-instant stability, <10 ms no increment, exactl
 
 Repository deterministic validation has reached 457/457 PASS on the oscillator conversion lineage. Subsequent validation repaired stale v12 compatibility assertions and projection semantics. The 2026-08-22 source reconciliation added a fail-closed activation receipt verifier and focused tests, plus post-start-only LIVE-009 runner tests. These source changes are not resident runtime proof.
 
-## Live proof task
+## Live proof and current state
 
 ```text
-task: HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009
-handoff: handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json
-registry: control/worker-registry.d/heartbeat-independent-oscillator-live-009.json
-adapter: control/process-worker-adapters.d/heartbeat-independent-oscillator-live-009.json
-worker: workers/independent_heartbeat_live_proof_worker.py
-state: BLOCKED_DEPENDENCY
-blocked_on: HEARTBEAT-OSCILLATOR-RESIDENT-START-012
-canonical owner: StegVerse-Labs/.github#122
-carrier: heartbeat_reference_only
-carrier_trigger_required: false
+LIVE-009 state: COMPLETED
+transition: INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED
+verification mode: DIRECT_DETERMINISTIC_PROTOCOL_DERIVATION
+canonical status: control/heartbeat-live-status.json = ACTIVE_PROTOCOL_VERIFIED
+focused protocol-anchor tests: 6/6 PASS
+exact-head retained validation: PASS
+resident sampler required for progression: false
 ```
 
-After resident-start verification, the one-shot worker may complete only from inspectable resident oscillator-backed carrier evidence. Worker execution does not advance the oscillator. Independently authorized task control may acquire the task under a fresh lawful fence only after its resident-start dependency is released; no heartbeat-carried assignment trigger is required.
+Historical `control/heartbeat-carrier-runtime-state.json` and `control/heartbeat-carrier-observation.json` remain HB31 provenance and intentionally retain pre-anchor fields. They are not current oscillator authority. The current authority is `control/heartbeat-protocol-anchor.json` plus `heartbeat_runtime/independent_oscillator.py`.
 
-## Live state / activation distinction
-
-Historical HB31 is not corrected oscillator-live proof. Direct repository recheck on 2026-08-22 still found `receipts/sovereign-host/carrier-activation.latest.json` absent. Therefore resident carrier activation is not yet proven and LIVE-009 remains blocked on resident-start 012.
+Successor work is downstream consumer propagation and separation cleanup, tracked separately (including issue #263). Do not reopen heartbeat activation or require a daemon to satisfy that successor work.
 
 ## Collision boundaries
 
@@ -191,18 +194,18 @@ a343a4880a118c71f2abccdae10445ce0c5e51e6  LIVE-009 runner dependency tests
 ```text
 semantic defect identified: COMPLETE
 independent oscillator source correction: COMPLETE_RELEASED
-v13 canonical sampling integration: COMPLETE_SOURCE
-v12 role: COMPATIBILITY_BASE_ONLY
-independent WorkerCoordinator admission: COMPLETE_SOURCE
-runtime/state/observation contracts: COMPLETE_SOURCE
-reference snapshot redefinition: COMPLETE_SOURCE
-activation receipt verifier: COMPLETE_SOURCE
-initial HB31 monitoring snapshot: ACQUIRED / HISTORICAL / GATE OPEN
-resident start 012: HANDOFF_READY / PENDING RESIDENT EXECUTION
-resident activation receipt: ABSENT
-live proof worker/handoff/registry/adapter: INSTALLED / BLOCKED_ON_RESIDENT_START_012
-live corrected oscillator-backed carrier observation: PENDING MACHINE EXECUTION
-archive eligible: false while required live correction evidence remains nonterminal
+canonical protocol anchor: INSTALLED
+heartbeat protocol progression: ACTIVE_PROTOCOL_VERIFIED
+LIVE-009: COMPLETED / TERMINAL / NON-REACQUIRABLE
+heartbeat activation issue #12: CLOSED / COMPLETED
+resident sampler 012: OPTIONAL OBSERVER ONLY
+historical HB29/HB30/HB31: IMMUTABLE PROVENANCE
+worker-trigger causality: NONE
+GitHub runtime authority: NONE
+third-party runtime requirement: NONE
+credential authority: TV/TVC
+heartbeat activation archive eligibility: true
+separate runtime/control-plane cleanup: ACTIVE under issue #122 and downstream handoffs
 ```
 
-DO NOT ARCHIVE THIS SESSION — REQUIRED RESIDENT EXECUTION REMAINS NONTERMINAL.
+Heartbeat activation is terminal. Keep issue #122 open only for its distinct separation/integration obligations; do not use its open state to reclassify heartbeat activation as incomplete.
