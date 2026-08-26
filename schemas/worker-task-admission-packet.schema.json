@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stegverse.worker-task-admission-packet/v1",
+  "title": "StegVerse Worker Task Admission Packet",
+  "type": "object",
+  "required": ["schema","task_id","heartbeat_id","carrier_epoch","trigger_source","review","digests","authority"],
+  "properties": {
+    "schema": {"const":"stegverse.worker-task-admission-packet/v1"},
+    "task_id": {"type":"string","minLength":1},
+    "goal_id": {"type":["string","null"]},
+    "heartbeat_id": {"type":"string","pattern":"^HB-[0-9A-Z]{8}$"},
+    "carrier_epoch": {"type":"integer","minimum":0},
+    "trigger_source": {"type":"string","minLength":1},
+    "review": {
+      "type":"object",
+      "required":["verdict","reasons","predicates"],
+      "properties": {
+        "verdict":{"enum":["ADMIT","UPDATE","RETIRE","BLOCK"]},
+        "reasons":{"type":"array","items":{"type":"string"}},
+        "predicates":{"type":"object","additionalProperties":{"type":"boolean"}}
+      },
+      "additionalProperties":true
+    },
+    "digests": {
+      "type":"object",
+      "required":["task_sha256","handoff_sha256","registry_sha256"],
+      "properties": {
+        "task_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+        "handoff_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+        "registry_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"}
+      }
+    },
+    "authority": {
+      "type":"object",
+      "required":["credential_authority","review_grants_execution_authority","heartbeat_grants_execution_authority","github_token_runtime_authority"],
+      "properties": {
+        "credential_authority":{"const":"TV/TVC"},
+        "review_grants_execution_authority":{"const":false},
+        "heartbeat_grants_execution_authority":{"const":false},
+        "github_token_runtime_authority":{"const":"NONE"}
+      }
+    }
+  },
+  "additionalProperties": true
+}
