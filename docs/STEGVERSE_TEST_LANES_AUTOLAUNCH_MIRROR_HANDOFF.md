@@ -1,6 +1,6 @@
 # StegVerse Test Lanes Autolaunch Mirror Handoff
 
-Updated: 2026-08-22T07:03:00-05:00
+Updated: 2026-08-26T18:36:00-05:00
 
 ## Current role
 
@@ -73,6 +73,25 @@ Anthropic claude-opus-5
 DeepSeek  deepseek-v4-pro
 Kimi      kimi-k3
 ```
+
+## 2026-08-26 validation-surface consolidation
+
+The standalone GitHub validation workflow was redundant with the stable heartbeat-worker validation dispatcher and has been retired without changing the optional autolaunch runtime/task surfaces.
+
+```text
+removed workflow: .github/workflows/test-lanes-autolaunch-validation.yml
+stable validation owner: .github/workflows/heartbeat-worker-project.yml
+preserved focused binding coverage: tests/test_test_lanes_autolaunch_binding.py
+existing matrix tests: PRESERVED
+existing worker-boundary tests: PRESERVED
+registry-fragment tests: PRESERVED
+runtime/autolaunch worker removed: false
+direct-run path changed: false
+credential authority changed: false
+heartbeat execution authority changed: false
+```
+
+The stable dispatcher already runs the complete deterministic repository unittest suite for relevant pull-request changes and covers the autolaunch paths. The former workflow-only native-binding assertions are now a normal unittest, so removing the standalone workflow does not remove semantic coverage. GitHub remains validation-only; the direct Test Lanes runtime remains StegVerse-controlled and separately governed.
 
 ## Current live boundary
 
