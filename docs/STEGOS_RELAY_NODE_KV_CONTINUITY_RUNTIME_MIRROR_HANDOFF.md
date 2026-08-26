@@ -5,16 +5,19 @@ Updated: 2026-08-26
 ```text
 goal_id: SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001
 repository: StegVerse-Labs/.github
-branch: dev/stegos-relay-node-kv-continuity-runtime
+branch: main
 parent_goal: SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001
 upstream_goal: STEGOS-SOVEREIGN-NETWORK-CAPACITY-001
-state: SOURCE_IMPLEMENTED_SUCCESSOR_VALIDATION_PENDING
+state: SOURCE_COMPLETE_VALIDATED_MERGED_RUNTIME_HANDOFF_READY
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 heartbeat_grants_execution_authority: false
 physical_additional_machine_required: false
 third_party_runtime_required: false
 runtime_activation: false
+pull_request: #277
+merge_commit: 1c435e1b82542f478fe208890acb360ac577cead
+validated_premerge_head: fe5caf9d220f83f97ef0443587885a725c9267fc
 ```
 
 ## Purpose and authority boundary
@@ -120,6 +123,28 @@ physical-network sovereignty
 
 Each remains separately governed.
 
-## Validation progress
+## Validation and merge evidence
 
-PR #277 first validation pass established that this lane itself clears executable-handoff validation and the complete deterministic repository test suite. The remaining Heartbeat workflow failure was an unrelated concurrent main-branch WorkerCoordinator separation assertion. Main subsequently repaired that assertion and Heartbeat Worker Project run 33014153166 passed. This successor commit intentionally retriggers PR validation against the repaired current main merge base; no final success is claimed until the exact PR head is green.
+PR #277 exact successor head `fe5caf9d220f83f97ef0443587885a725c9267fc` passed the repository-owned validation gates against the repaired merge base:
+
+```text
+Heartbeat Worker Project run 33014209344: SUCCESS
+Validate organization control plane run 33014209279: SUCCESS
+```
+
+The complete deterministic repository suite and executable-handoff validation passed inside that Heartbeat validation. The earlier unrelated WorkerCoordinator separation failure was repaired on main before the final successor validation. PR #277 then merged as `1c435e1b82542f478fe208890acb360ac577cead`.
+
+Source implementation, validation, and merge are complete. Runtime completion remains pending the authentic parent `SOVEREIGN_RELAY_LEASE_OPEN` followed by deployment-local teardown/recreation under this successor worker.
+
+
+## Completion accounting
+
+```text
+source files/modules required by this lane: 8/8 installed
+known scaffolding/stubs in this lane: 0
+source implementation: COMPLETE
+source validation: COMPLETE
+merge/release integration: COMPLETE
+parent authentic LEASE_OPEN: PENDING MACHINE-OWNED DEPLOYMENT-LOCAL EXECUTION
+Node-KV teardown/recreation continuity: PENDING AFTER PARENT LEASE_OPEN
+```
