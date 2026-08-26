@@ -1,0 +1,108 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+  "created_at": "2026-08-26T20:10:00Z",
+  "updated_at": "2026-08-26T20:10:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+    "objective": "Execute the merged StegOS sovereign relay adapter through the existing deployment-local sovereign runtime and preserve one non-authorizing ESRL LEASE_OPEN proof without creating another HeartBeat, worker scheduler, credential path, route authority, or host.",
+    "success_predicates": [
+      "Pinned StegOS relay source is already materialized on the sovereign carrier.",
+      "The existing .github sovereign materializer and supervisor are used.",
+      "The bounded relay reaches identity-verified ESRL LEASE_OPEN.",
+      "TV/TVC remains sole credential authority and credential material is absent.",
+      "Route admission, outbound EGRESS, and canonical transition remain false."
+    ],
+    "failure_predicates": [
+      "Heartbeat grants execution authority.",
+      "A second scheduler/runtime owner is created.",
+      "A GitHub token or NON-TV/TVC secret becomes runtime authority.",
+      "Hosted validation is represented as deployment-local runtime proof.",
+      "Relay startup is represented as route admission or EGRESS execution."
+    ],
+    "authority_ceiling": [
+      "bounded deployment-local relay materialization only",
+      "no route admission",
+      "no outbound egress",
+      "no credential issuance",
+      "no canonical state commit"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 2
+  },
+  "task": {
+    "task_id": "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "docs/STEGOS_SOVEREIGN_RELAY_MATERIALIZATION_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "shwp:stegos-sovereign-relay-materialization",
+    "derivation_depth": 0,
+    "priority": "release",
+    "operational_state": "REQUIRED_RUNTIME_EXECUTION",
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "fencing_token": null,
+    "source_refs": [
+      "docs/STEGOS_SOVEREIGN_RELAY_MATERIALIZATION_MIRROR_HANDOFF.md",
+      "workers/stegos_sovereign_relay_bridge.py",
+      "workers/stegos_sovereign_relay_materialization_worker.py",
+      "StegVerse-Labs/StegOS@a91838bf1c20eaacbbdada7e391aa462a862d72e"
+    ]
+  },
+  "authority": {
+    "authority_source": "StegVerse-Labs/StegOS#53 + SHWP-DURABLE-RUNTIME-ACTIVATION",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_grants_execution_authority": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 21,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "third_party_runtime_required": false,
+    "physical_additional_machine_required": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "sovereign_relay_materialization"
+    ],
+    "allowed_paths": [
+      "receipts/stegos-sovereign-relay/**",
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegOS"
+    ],
+    "allowed_services": [],
+    "max_actions": 4,
+    "max_retries": 3,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 16,
+    "rate_class": "stegos_sovereign_relay_materialization",
+    "relay_activation_request": {
+      "schema": "stegverse.sovereign-relay-materialization-request/v1",
+      "admission_state": "ADMITTED",
+      "evidence_class": "CONTROLLED_SOVEREIGN_RUNTIME_ACTIVATION",
+      "capacity_event_id": "CAPACITY-ACTIVATION-PROOF-001",
+      "region_id": "SOVEREIGN-LOCAL-001",
+      "source_receipt_id": "HANDOFF-STEGOS-RELAY-ACTIVATION-001",
+      "consequence_id": "CONSEQUENCE-SOVEREIGN-RELAY-ACTIVATION-001",
+      "consequence_registry_hash": "sha256:stegos-sovereign-relay-activation-v1",
+      "implementation_ref": "StegVerse-Labs/StegOS@a91838bf1c20eaacbbdada7e391aa462a862d72e",
+      "node_kv_state_root": "kv://stegos-sovereign-relay/controlled-activation-root-1",
+      "generation": 1,
+      "pressure_score": 0.95,
+      "regional_spare_ratio": 0.05,
+      "requested_additional_capacity": 1.0,
+      "max_transport_operations": 1,
+      "credential_authority": "TV/TVC",
+      "route_admitted": false,
+      "outbound_egress_authorized": false,
+      "production_capacity_deficit_claimed": false
+    }
+  },
+  "completion": {
+    "source_implementation_state": "ACTIVE",
+    "runtime_activation_state": "PENDING_MACHINE_EXECUTION",
+    "terminal_evidence": "receipts/stegos-sovereign-relay/SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001.json with state COMPLETED and transition_id SOVEREIGN_RELAY_LEASE_OPEN",
+    "next_authorized_action": "The existing WorkerCoordinator independently admits this HANDOFF_READY task under a fresh fence greater than 21 and invokes process:stegos-sovereign-relay-materialization-v1 on the deployment-local sovereign carrier."
+  }
+}
