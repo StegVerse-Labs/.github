@@ -160,6 +160,22 @@ The historical `SHWP-IPHONE-HB30-INLINE-CAPSULE-002` physical boundary is satisf
 
 To unblock the scheduler, identify/provision an eligible StegVerse-owned/federated sovereign node and let the existing G18 runtime worker perform canonical native installation/verification. No new scheduler, heartbeat, GitHub-token runtime, Render path, or NON-TV/TVC credential lane is authorized.
 
+## 2026-08-26 test-lanes validation consolidation
+
+`.github/workflows/test-lanes-autolaunch-validation.yml` was retired as a redundant PR/manual-only validation carrier.
+
+Coverage was preserved by moving its workflow-only native binding assertions into `tests/test_test_lanes_autolaunch_binding.py`, which is consumed by the stable `heartbeat-worker-project.yml` complete deterministic unittest suite on relevant pull requests. Existing matrix, worker-boundary, registry-fragment, handoff, authorization and cost-basis surfaces remain unchanged.
+
+```text
+workflow count: 11 -> 10
+automatic-push workflows: 8 -> 8
+PR/manual-only workflows: 3 -> 2
+standalone workflows removed with parity preservation: 7 -> 8
+runtime authority effect: NONE
+test-lanes runtime task changed: false
+credential authority: TV/TVC
+```
+
 ## Quantitative evidence limitation
 
 Repository-wide quantitative post-repair Actions run-history evidence remains `AWAITING_SUPPORTED_READ`. The connected commit workflow reader exposes PR-triggered runs only and cannot supply complete push/schedule history. No GitHub token or alternate credential workaround is permitted.
