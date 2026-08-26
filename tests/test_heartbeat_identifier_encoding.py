@@ -42,12 +42,12 @@ class HeartbeatIdentifierEncodingTests(unittest.TestCase):
         self.assertNotEqual(first["heartbeat_id"], next_ref["heartbeat_id"])
         self.assertEqual(decode_heartbeat_id(next_ref["heartbeat_id"]), PROTOCOL_ANCHOR_EPOCH + 1)
 
-    def test_sample_state_preserves_integer_and_adds_display_alias(self):
+    def test_sample_state_preserves_legacy_machine_frame_and_adds_display_alias(self):
         sampled = sample_state({}, now_ns=PROTOCOL_ANCHOR_UNIX_NS)
         self.assertEqual(sampled["epoch"], 32)
         self.assertEqual(sampled["heartbeat_id"], "HB-0000000W")
-        self.assertEqual(sampled["reference_frame"], "HB-0000000W")
-        self.assertEqual(sampled["legacy_reference_frame"], "heartbeat_epoch:32")
+        self.assertEqual(sampled["display_reference_frame"], "HB-0000000W")
+        self.assertEqual(sampled["reference_frame"], "heartbeat_epoch:32")
 
     def test_rejects_noncanonical_values(self):
         for bad in (-1, HEARTBEAT_ID_MAX_EPOCH + 1):
