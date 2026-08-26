@@ -11,7 +11,7 @@ canonical heartbeat semantics: docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md
 identifier encoding: docs/HEARTBEAT_IDENTIFIER_ENCODING_MIRROR_HANDOFF.md
 organization federation: docs/ALL_ORGS_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md
 repository federation: docs/REPO_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md
-state: SOURCE_COMPLETE_VALIDATION_PENDING
+state: COMPLETE_VALIDATED
 credential authority: TV/TVC
 heartbeat authority effect: NONE
 ```
@@ -128,7 +128,23 @@ Central deterministic validator:
 tests/test_heartbeat_participant_topology.py
 ```
 
-It asserts:
+Exact-head hosted validation:
+
+```text
+Heartbeat Worker Project run: 33012858322
+job: 98323364799
+result: SUCCESS
+complete deterministic repository suite: PASS
+canonical JSON parsing: PASS
+executable handoffs: PASS
+external timing zero-authority contract: PASS
+historical HB29 replay: PASS
+current protocol anchor derivation: PASS
+carrier/worker separation: PASS
+workflow non-authority proof: PASS
+```
+
+The focused topology test was included in the complete deterministic suite and asserts:
 
 1. HB32 / `HB-0000000W` / `HB-XXXXXXXX` / Base36 contract;
 2. exact 10 ms / 100 Hz / OSCILLATOR_ONLY semantics;
@@ -139,8 +155,6 @@ It asserts:
 7. reciprocal awareness is true;
 8. all authority grants remain false;
 9. Drive/repository/organization progression authority remains false.
-
-Hosted exact-head validation remains to be observed before promotion from SOURCE_COMPLETE to COMPLETE_VALIDATED.
 
 ## Relationship to repository live-health coverage
 
@@ -160,7 +174,8 @@ Base36 compact ID propagated: YES
 heartbeat/participant awareness reciprocal: YES
 heartbeat progression semantics unchanged: YES
 historical heartbeat artifacts unchanged: YES
-hosted exact-head central validation: PENDING
+hosted exact-head central validation: PASS
+goal state: COMPLETE_VALIDATED
 ```
 
 No known source module remains missing for reciprocal-awareness implementation. Expansion to newly admitted organizations, repositories, modules, devices, vaults, or Drive resources must register into this topology as part of their admission rather than creating an independent heartbeat.
