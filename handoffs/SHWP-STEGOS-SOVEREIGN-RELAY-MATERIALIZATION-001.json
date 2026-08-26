@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
   "created_at": "2026-08-26T20:10:00Z",
-  "updated_at": "2026-08-26T20:10:00Z",
+  "updated_at": "2026-08-26T20:36:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
@@ -51,6 +51,7 @@
   "authority": {
     "authority_source": "StegVerse-Labs/StegOS#53 + SHWP-DURABLE-RUNTIME-ACTIVATION",
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "policy_version": "stegos-sovereign-relay-materialization-v0.1",
     "heartbeat_grants_execution_authority": false,
     "fresh_fence_required": true,
     "minimum_fencing_token_exclusive": 21,
@@ -103,6 +104,14 @@
     "source_implementation_state": "ACTIVE",
     "runtime_activation_state": "PENDING_MACHINE_EXECUTION",
     "terminal_evidence": "receipts/stegos-sovereign-relay/SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001.json with state COMPLETED and transition_id SOVEREIGN_RELAY_LEASE_OPEN",
+    "terminal_when": [
+      "the relay worker receipt state is COMPLETED",
+      "transition_id is SOVEREIGN_RELAY_LEASE_OPEN",
+      "all runtime identity and rendezvous predicates are true",
+      "route_admitted and outbound_egress_executed remain false",
+      "credential_authority remains TV/TVC with no credential material",
+      "canonical_transition_committed remains false"
+    ],
     "next_authorized_action": "The existing WorkerCoordinator independently admits this HANDOFF_READY task under a fresh fence greater than 21 and invokes process:stegos-sovereign-relay-materialization-v1 on the deployment-local sovereign carrier."
   }
 }
