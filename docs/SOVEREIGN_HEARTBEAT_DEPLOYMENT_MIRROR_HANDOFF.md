@@ -1,6 +1,6 @@
 # Sovereign Heartbeat Deployment Mirror Handoff
 
-Updated: 2026-08-23T14:19:00-05:00
+Updated: 2026-08-26T16:18:00-05:00
 
 ## Authority
 
@@ -80,17 +80,18 @@ LIVE-009 dependency: false
 
 The previously installed native-service path remains valid when persistent local observation is desired. Windows immediate-start hardening remains in force so an optional sampler activation receipt cannot falsely claim process activity from registration alone.
 
-## LIVE-009
+## LIVE-009 — terminal
 
 ```text
 task: HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009
-state: HANDOFF_READY
+state: COMPLETED
+transition: INDEPENDENT_HEARTBEAT_LIVE_PROOF_VERIFIED
 blocked_on: NONE
 carrier: protocol_derived_reference
 resident_sampler_required: false
 ```
 
-LIVE-009 now proves the actual heartbeat contract: HB32 at the protocol anchor, deterministic same-time reference, <10 ms stability, exactly-10-ms increment, skipped unobserved references, post-cutover anchor immutability, and absence of resident/worker/GitHub/third-party causality.
+Terminal evidence is retained in `handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json` and `receipts/heartbeat/HEARTBEAT-PROTOCOL-ANCHOR-013-validation.json`. It must not be reacquired or reopened by an optional resident sampler.
 
 ## Historical state
 
@@ -101,27 +102,18 @@ HB29, HB30, and HB31 remain immutable historical observations. Their persisted s
 ```text
 canonical protocol anchor: INSTALLED
 canonical protocol derivation: INSTALLED
-protocol heartbeat: ACTIVE_PROTOCOL_DERIVABLE
+protocol heartbeat: ACTIVE_PROTOCOL_VERIFIED
+heartbeat activation issue #12: CLOSED / COMPLETED
+LIVE-009: COMPLETED / TERMINAL
 continuous process required: false
-resident sampler: OPTIONAL / NOT AN ACTIVATION GATE
-resident sampler receipt: OPTIONAL EVIDENCE ONLY
-LIVE-009: HANDOFF_READY / UNBLOCKED
-worker task-capable runtime: SEPARATE LANE
+resident sampler: OPTIONAL OBSERVER / NOT AN ACTIVATION GATE
+worker task-capable runtime: SEPARATE ACTIVE/BLOCKED LANE AS APPLICABLE
 GitHub runtime authority: NONE
 third-party runtime requirement: NONE
+next heartbeat integration owner: issue #263 downstream protocol propagation
 ```
 
-## Validation and completion
-
-The remaining heartbeat-specific completion sequence is:
-
-1. run exact-head deterministic validation including `tests/test_heartbeat_protocol_anchor.py`;
-2. prove the canonical anchor derives HB32 and subsequent 10 ms references without persisted state;
-3. persist terminal LIVE-009 verification evidence;
-4. reconcile issues #12/#122 and any stale heartbeat documentation/registries;
-5. propagate the corrected semantics to downstream heartbeat consumers.
-
-Optional resident sampler installation is not in this completion predicate.
+Exact-head validation and terminal reconciliation are already complete on the lineage recorded in the canonical heartbeat handoff. No heartbeat-specific release, resident-start, iPhone capsule, or LIVE-009 execution remains.
 
 ## Installed correction lineage
 
@@ -138,4 +130,4 @@ d83acd630b4ce732a4ad56848e3a2341ec6190b6  resident sampler registry reclassifica
 
 Do not manufacture sampler receipts. Do not make GitHub Actions runtime authority. Do not restore a resident-daemon prerequisite for heartbeat progression.
 
-DO NOT ARCHIVE UNTIL EXACT-HEAD VALIDATION AND LIVE-009 TERMINAL RECONCILIATION COMPLETE.
+Heartbeat activation/deployment semantics are terminal. Archive decisions for other runtime or downstream integration lanes must use their own handoffs and must not reopen this heartbeat goal.
