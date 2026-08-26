@@ -1,6 +1,6 @@
 # Heartbeat Identifier Encoding Mirror Handoff
 
-Updated: 2026-08-26T15:24:00-05:00
+Updated: 2026-08-26T18:36:00-05:00
 
 ## Authority and goal
 
@@ -118,6 +118,19 @@ heartbeat runtime semantics changed: NO
 user action required: NONE
 ```
 
-## Successor integration
+## Successor integration — COMPLETE
 
-Propagate `HB-XXXXXXXX` display aliases to current Site, Publisher, admissibility-wiki, and StegGuardian status/UI consumers without rewriting historical decimal labels. Consumer propagation is a downstream integration goal and must not reopen this completed encoding implementation.
+The declared downstream display/awareness propagation is terminal:
+
+```text
+StegVerse-Labs/Site: COMPLETE_VALIDATED
+GCAT-BCAT-Engine/Publisher: COMPLETE_VALIDATED
+StegVerse-Labs/admissibility-wiki: COMPLETE_VALIDATED_BOUNDED
+StegVerse-002/stegguardian-wiki: COMPLETE_VALIDATED_MERGED / compact-ID bounded PASS
+coordinating issue: StegVerse-Labs/.github#263 CLOSED / COMPLETED
+historical decimal labels rewritten: false
+heartbeat semantics changed: false
+authority effect: NONE
+```
+
+Consumer-local release, HIL, admissibility, Guardian, publication, or runtime projects remain separate and are not implied complete by identifier propagation.
