@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.heartbeat-live-status/v2",
-  "observed_at": "2026-08-26T16:18:00-05:00",
+  "observed_at": "2026-08-26T18:36:00-05:00",
   "repository": "StegVerse-Labs/.github",
   "state": "ACTIVE_PROTOCOL_VERIFIED",
   "working": true,
@@ -56,7 +56,17 @@
   "focused_tests_run": 6,
   "focused_tests_passed": 6,
   "focused_tests_failed": 0,
-  "next_required_transition": "HB32_DOWNSTREAM_CONSUMER_PROPAGATION",
-  "next_required_action": "Continue issue #263 and current downstream consumer handoffs to propagate HB32/HB-XXXXXXXX protocol semantics without reopening terminal heartbeat activation.",
-  "authority_effect": "NONE_STATUS_ONLY"
+  "next_required_transition": "NONE_HEARTBEAT_CORE_TERMINAL",
+  "next_required_action": "No heartbeat-core or declared HB32 consumer-propagation action remains. Continue separate worker/runtime, repository-health, and consumer-local projects under their own handoffs without reopening heartbeat activation.",
+  "authority_effect": "NONE_STATUS_ONLY",
+  "downstream_protocol_propagation": {
+    "state": "COMPLETE",
+    "issue": 263,
+    "issue_state": "CLOSED_COMPLETED",
+    "site": "COMPLETE_VALIDATED",
+    "publisher": "COMPLETE_VALIDATED",
+    "admissibility_wiki": "COMPLETE_VALIDATED_BOUNDED",
+    "stegguardian_wiki": "COMPLETE_VALIDATED_MERGED",
+    "authority_effect": "NONE"
+  }
 }
