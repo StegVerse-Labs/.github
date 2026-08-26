@@ -31,9 +31,13 @@ class HeartbeatCarrierNonAuthorityTests(unittest.TestCase):
 
     def test_worker_surfaces_are_not_the_production_carrier(self):
         self.assertEqual(HeartbeatRuntime.__module__, "heartbeat_runtime.engine_v11")
-        self.assertEqual(WorkerCoordinator.__module__, "heartbeat_runtime.worker_runtime")
+        self.assertEqual(WorkerCoordinator.__module__, "heartbeat_runtime.admitted_worker_runtime")
         self.assertIsNot(HeartbeatRuntime, CarrierHeartbeatRuntime)
         self.assertIsNot(WorkerCoordinator, CarrierHeartbeatRuntime)
+        source = inspect.getsource(WorkerCoordinator._activate_from_trigger)
+        self.assertIn("review_worker_task_admission", source)
+        self.assertIn('verdict != "ADMIT"', source)
+        self.assertIn("return super()._activate_from_trigger", source)
 
     def test_public_heartbeat_runner_is_oscillator_phase_driven(self):
         root = Path(__file__).resolve().parents[1]
