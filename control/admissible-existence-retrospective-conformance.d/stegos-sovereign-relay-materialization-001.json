@@ -1,0 +1,16 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "fragment_id": "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+  "entries": [
+    {
+      "task_id": "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+      "temporal_class": "current",
+      "ae_impact": "NONE",
+      "phase": null,
+      "task_relationship": "integrates_capability",
+      "result": "PASS",
+      "continuation_owner": "stegos-sovereign-relay-materialization-worker + SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "rationale": "This lane executes an already-admitted bounded runtime proof using the existing sovereign runtime and the already-merged StegOS relay capability. Registration, fresh fencing, relay startup, and LEASE_OPEN evidence create no new Admissible-Existence capability standing, route authority, credential authority, canonical-state authority, or HeartBeat authority."
+    }
+  ]
+}
