@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:stegos-sovereign-relay-materialization-v1",
+      "authority_ref": "handoffs/SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "sovereign_relay_materialization"
+      ],
+      "command": ["python", "workers/stegos_sovereign_relay_materialization_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_STEGOS_ROOT", "STEGVERSE_RELAY_RUNTIME_BASE"],
+      "notes": [
+        "Only non-secret local source/runtime-root locators may be forwarded.",
+        "The worker uses the existing .github sovereign runtime materializer/supervisor and the merged StegOS relay adapter; it creates no second runtime owner.",
+        "Heartbeat is reference-only and grants no execution, fence, credential, route, or canonical-state authority.",
+        "A LEASE_OPEN result proves bounded relay materialization only; route admission and outbound EGRESS remain separate governed transitions."
+      ],
+      "timeout_seconds": 180,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
