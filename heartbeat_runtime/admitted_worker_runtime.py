@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from .worker_runtime import WorkerCoordinator as LegacySeparatedWorkerCoordinator, ProcessWorkerAdapter
+from .worker_runtime_legacy import WorkerCoordinator as LegacySeparatedWorkerCoordinator, ProcessWorkerAdapter
 from .worker_task_admission import persist_admission_receipt, review_worker_task_admission
 
 
