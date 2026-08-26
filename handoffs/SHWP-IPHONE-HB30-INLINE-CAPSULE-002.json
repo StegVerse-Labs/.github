@@ -2,7 +2,7 @@
   "schema": "stegverse.source-support-handoff/v1",
   "handoff_id": "SHWP-IPHONE-HB30-INLINE-CAPSULE-002",
   "created_at": "2026-08-17T13:35:00-05:00",
-  "updated_at": "2026-08-17T14:04:00-05:00",
+  "updated_at": "2026-08-26T16:18:00-05:00",
   "state": "COMPLETE_RELEASED",
   "execution_contract_type": "NON_EXECUTABLE_SOURCE_AND_PHYSICAL_BOUNDARY_RECORD",
   "goal": {
@@ -65,8 +65,15 @@
     "non_tv_tvc_secret_or_token_allowed": false
   },
   "execution": {
-    "required_capabilities": ["browser_local_execution", "webcrypto_sha256", "local_receipt_persistence"],
-    "allowed_paths": ["capsules/iphone-hb30-inline-capsule.js", "receipts/heartbeat-transition-continuity/**"],
+    "required_capabilities": [
+      "browser_local_execution",
+      "webcrypto_sha256",
+      "local_receipt_persistence"
+    ],
+    "allowed_paths": [
+      "capsules/iphone-hb30-inline-capsule.js",
+      "receipts/heartbeat-transition-continuity/**"
+    ],
     "allowed_services": [],
     "max_actions": 4,
     "max_retries": 1,
@@ -88,7 +95,7 @@
     "status_projection": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
   },
   "completion": {
-    "next_authorized_action": "CURRENT_USER_IPHONE executes the exact released inline capsule in an existing https://stegverse.org secure Safari page context, retains the returned portable receipt, and transfers that receipt to the existing .github#209 verifier/materializer. G18 and WorkerCoordinator remain the only canonical continuation owners for HB30 materialization and observation.",
+    "next_authorized_action": "NONE. Historical HB30 physical transition evidence is already present; do not re-execute after HB30+. Use control/heartbeat-protocol-anchor.json and current heartbeat handoffs for present protocol state.",
     "terminal_when": [
       "inline_capsule_source_merged=true",
       "inline_capsule_validation_pass=true",
@@ -98,14 +105,14 @@
     ]
   },
   "constraint": {
-    "operational_state": "HUMAN_PHYSICAL_EXECUTION_BOUNDARY",
-    "condition": "PHYSICAL_RECEIPT_NOT_YET_OBSERVED",
-    "owner": "CURRENT_USER_IPHONE -> StegVerse-Labs/.github#209 / G18",
-    "solution_required": true,
-    "machine_observable_release_condition": "A valid CURRENT_USER_IPHONE portable receipt passes scripts/verify_iphone_heartbeat_transition_receipt.py and HB30 is materialized without modifying legacy HB29; WorkerCoordinator then observes HB30+",
-    "next_solution_action": "Execute the exact merged inline capsule on CURRENT_USER_IPHONE; then allow the existing canonical verifier/materializer and WorkerCoordinator continuation to proceed",
+    "operational_state": "HISTORICAL_PHYSICAL_BOUNDARY_SATISFIED",
+    "condition": "HB30_PLUS_AND_VERIFIED_PORTABLE_TRANSITION_ALREADY_OBSERVED",
+    "owner": "HISTORICAL_CURRENT_USER_IPHONE -> StegVerse-Labs/.github#209 / G18",
+    "solution_required": false,
+    "machine_observable_release_condition": "SATISFIED: historical carrier state records a verified portable transition and HB30/HB31 provenance exists while immutable HB29 remains preserved.",
+    "next_solution_action": "NONE. Do not rerun this capsule after HB30+; current heartbeat authority is the HB32 protocol anchor.",
     "third_party_dependency": false,
-    "human_action_required": true
+    "human_action_required": false
   },
   "release_evidence": {
     "pull_request": 214,
@@ -117,12 +124,17 @@
     "deterministic_repository_tests": "345/345 PASS",
     "anonymous_no_github_credential_checkout": true,
     "source_lane_complete": true,
-    "physical_receipt_observed": false,
-    "hb30_claimed": false
+    "physical_receipt_observed": true,
+    "hb30_claimed": false,
+    "portable_receipt_verified": true,
+    "portable_receipt_sha256": "931f4e756bf82ded9bc8a2fc1cfda4dae6edae0f9c95f3f9a47ca343b1a73855",
+    "hb30_plus_carrier_observed": true
   },
   "session_consolidation": {
     "source_role_released": true,
-    "merged_into": "StegVerse-Labs/.github#209 -> SHWP-DURABLE-RUNTIME-ACTIVATION/G18 -> .github#60",
-    "unique_chat_source_work_remaining": false
+    "merged_into": "historical .github#209 -> HB30/HB31 provenance; current heartbeat authority is HB32 protocol anchor",
+    "unique_chat_source_work_remaining": false,
+    "user_action_remaining": false,
+    "superseded_as_current_execution_boundary": true
   }
 }
