@@ -55,7 +55,9 @@
       "StegVerse-Labs/Continuity/scripts/guardian.py",
       "workers/healer_sovereign_scheduler_worker.py"
     ],
-    "dependencies": ["SHWP-DURABLE-RUNTIME-ACTIVATION"],
+    "dependencies": [
+      "SHWP-DURABLE-RUNTIME-ACTIVATION"
+    ],
     "parent_task_id": null,
     "derivation_reason": "The prior Healer scheduler used HEALER_GH_TOKEN and GitHub workflow-dispatch as production transport, contrary to the TV/TVC authority boundary. The released Site ERL target now additionally requires the same sovereign carrier before its daily GitHub-token sync may be retired.",
     "canonical_owner_ref": "StegVerse-Labs/StegVerse-Healer/data/session_consolidation/tv-tvc-no-github-token-dispatch-migration.json",
@@ -69,8 +71,12 @@
     "policy_version": "shwp-healer-sovereign-scheduler-v0.1"
   },
   "execution": {
-    "required_capabilities": ["healer_sovereign_scheduling"],
-    "allowed_paths": ["receipts/healer-sovereign-scheduler/**"],
+    "required_capabilities": [
+      "healer_sovereign_scheduling"
+    ],
+    "allowed_paths": [
+      "receipts/healer-sovereign-scheduler/**"
+    ],
     "allowed_services": [],
     "max_actions": 16,
     "max_retries": 256,
@@ -79,10 +85,10 @@
     "rate_class": "healer_sovereign_scheduler"
   },
   "activation": {
-    "carrier": "heartbeat",
+    "carrier": "separate_sovereign_worker_runtime_observing_heartbeat_reference",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "authorizations/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
-    "recheck_trigger": "each admitted heartbeat according to Healer target cadence while any target is due or requires a derived solution action",
+    "recheck_trigger": "each admitted execution opportunity on the eligible StegVerse-owned/federated sovereign runtime while a fixed Healer target is due or requires a derived solution action",
     "checkout_policy": "fenced_atomic_checkout"
   },
   "continuity": {
@@ -94,14 +100,24 @@
   "completion": {
     "source_state": "COMPLETE_VALIDATED_WITH_SITE_ERL_TARGET_RELEASED",
     "source_validation_evidence": "StegVerse-Labs/StegVerse-Healer Test Readiness run 32670203077 job 97269769966 PASS on aca5b7871e2720b0d56757e33fc2a22c10291136; PR #40 merge ff3d9985b773d91dce0d90351a7a8a04a499c59b",
-    "next_authorized_action": "Resident heartbeat claims the authorized Healer scheduler worker, consumes the current materialized Healer source including executive-rhetoric-ledger-local-sync, executes due fixed local handlers, and persists the no-token scheduler receipt. Do not retire Site .github/workflows/sync-executive-rhetoric-ledger.yml until the receipt proves that target COMPLETE with a PASS destination acknowledgment.",
+    "next_authorized_action": "After SHWP-DURABLE-RUNTIME-ACTIVATION produces real eligible sovereign-node runtime evidence, the existing WorkerCoordinator/task-control lane claims this authorized Healer scheduler worker, consumes the current materialized Healer source including executive-rhetoric-ledger-local-sync, executes due fixed local handlers, and persists the no-token scheduler receipt. Heartbeat references may be observed but do not grant execution authority. Do not retire Site .github/workflows/sync-executive-rhetoric-ledger.yml until the receipt proves that target COMPLETE with a PASS destination acknowledgment.",
     "terminal_when": [
       "No forbidden GitHub credential is present",
       "All due targets have COMPLETE or explicitly terminal superseded outcomes",
       "The executive-rhetoric-ledger-local-sync target has live COMPLETE/PASS evidence before legacy Site carrier retirement",
       "Scheduler receipt is persisted",
       "No target depends on GitHub workflow-dispatch as production transport"
-    ]
+    ],
+    "dependency_state": {
+      "dependency": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "state": "BLOCKED",
+      "blocker": "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT",
+      "heartbeat_activation_dependency": false,
+      "current_iphone_hb30_action_required": false,
+      "third_party_primary_runtime_required": false,
+      "credential_authority": "TV/TVC"
+    }
   },
-  "block": null
+  "block": null,
+  "updated_at": "2026-08-26T16:18:00-05:00"
 }
