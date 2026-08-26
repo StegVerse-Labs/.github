@@ -174,8 +174,8 @@ def sample_state(state: dict[str, Any], *, now_ns: int) -> dict[str, Any]:
     sampled["epoch"] = reference["epoch"]
     sampled["generation"] = reference["generation"]
     sampled["heartbeat_id"] = reference["heartbeat_id"]
-    sampled["reference_frame"] = reference["heartbeat_id"]
-    sampled["legacy_reference_frame"] = f"heartbeat_epoch:{reference['epoch']}"
+    sampled["display_reference_frame"] = reference["heartbeat_id"]
+    sampled["reference_frame"] = f"heartbeat_epoch:{reference['epoch']}"
     sampled["frequency_rule"] = FREQUENCY_RULE
     sampled["last_cycle_at"] = unix_ns_to_iso8601(now_ns)
     sampled["activation_state"] = "ACTIVE"
