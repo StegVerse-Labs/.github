@@ -1,1 +1,10 @@
-"""Compatibility import path for the canonical admitted WorkerCoordinator.\n\nThe pre-admission implementation is retained as worker_runtime_legacy.py for\ninternal inheritance only. All normal imports through heartbeat_runtime.worker_runtime\nnow receive the mandatory Worker Task Admission Packet gate.\n"""\nfrom .admitted_worker_runtime import WorkerCoordinator\nfrom .worker_runtime_legacy import ProcessWorkerAdapter, WorkerResponse\n\n__all__ = ["WorkerCoordinator", "ProcessWorkerAdapter", "WorkerResponse"]\n
+"""Compatibility import path for the canonical admitted WorkerCoordinator.
+
+The pre-admission implementation is retained as worker_runtime_legacy.py for
+internal inheritance only. All normal imports through heartbeat_runtime.worker_runtime
+now receive the mandatory Worker Task Admission Packet gate.
+"""
+from .admitted_worker_runtime import WorkerCoordinator
+from .worker_runtime_legacy import ProcessWorkerAdapter, WorkerResponse
+
+__all__ = ["WorkerCoordinator", "ProcessWorkerAdapter", "WorkerResponse"]
