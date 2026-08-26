@@ -5,11 +5,13 @@ Updated: 2026-08-26
 ```text
 goal_id: SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001
 repository: StegVerse-Labs/.github
-branch: dev/stegos-sovereign-relay-materialization
+branch: main
 pull_request: #275
+merge_commit: 3c1462b603817a41dcac5ac5360b4e3b31cb3015
+validated_premerge_head: 031cd9bff97b1aea56fed681e2d150f300e9dcb7
 parent_goal: SHWP-DURABLE-RUNTIME-ACTIVATION
 upstream_goal: STEGOS-SOVEREIGN-NETWORK-CAPACITY-001
-state: SOURCE_IMPLEMENTED_SUCCESSOR_VALIDATION_PENDING
+state: SOURCE_COMPLETE_VALIDATED_MERGED_RUNTIME_HANDOFF_READY
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 heartbeat_grants_execution_authority: false
@@ -26,7 +28,7 @@ Canonical upstream StegOS source is merge `a91838bf1c20eaacbbdada7e391aa462a862d
 
 Live HeartBeat/runtime authority remains `SHWP-DURABLE-RUNTIME-ACTIVATION` / G18 until its canonical owner releases or supersedes that fence. This task is independently admitted task-control work only; HeartBeat is a reference frame and grants no execution authority.
 
-## Implemented `.github` surfaces
+## Released `.github` surfaces
 
 ```text
 docs/STEGOS_SOVEREIGN_RELAY_MATERIALIZATION_MIRROR_HANDOFF.md
@@ -43,7 +45,7 @@ tests/test_stegos_sovereign_relay_materialization_worker.py
 
 The executable handoff is `HANDOFF_READY` under `INDEPENDENT_TASK_CONTROL`, requires a fresh fence greater than 21, and carries a controlled activation request. The request is explicitly **not** represented as an authentic production capacity deficit (`production_capacity_deficit_claimed: false`). Its purpose is to obtain deployment-local runtime proof of the already-admitted relay capability without broadening authority.
 
-## Intended runtime transition
+## Released runtime transition
 
 ```text
 HANDOFF_READY relay-materialization task
@@ -64,31 +66,35 @@ HANDOFF_READY relay-materialization task
 
 No network credential checkout is permitted. If the pinned StegOS source is not already materialized on the sovereign carrier, the worker remains active with a machine-resolvable source-materialization requirement rather than inventing another host or credential path.
 
-## Validation progress
+## Validation and merge evidence
 
-PR #275 initially exposed and repaired three source-integration defects rather than hiding them:
-
-```text
-run 33011119581: executable handoff rejected because policy_version and terminal_when were absent -> REPAIRED
-run 33011207117: new tests used pytest while repository CI uses unittest; AE retrospective classification absent -> BOTH REPAIRED
-```
-
-At source head `e2c45f896931ea74ff654334e9e6b842b60ac102`:
+PR #275 final source head `031cd9bff97b1aea56fed681e2d150f300e9dcb7` passed all repository-owned PR validations against the then-current merge base:
 
 ```text
-Validate organization control plane run 33011459601: SUCCESS
-Sovereign Runtime Worker validation run 33011459565: SUCCESS
-MCP Activation Binding validation run 33011459669: SUCCESS
-Heartbeat Worker Project run 33011459574: new relay tests PASS; executable handoffs PASS; AE retrospective PASS; one unrelated concurrent heartbeat-identifier test failed on the then-current PR merge base
+Heartbeat Worker Project - Validation Only / No GitHub Token Authority
+  run: 33011631973
+  result: SUCCESS
+
+Validate organization control plane - No GitHub Token Authority
+  run: 33011631944
+  result: SUCCESS
+
+Sovereign Runtime Worker - Validation Only / No GitHub Token Authority
+  run: 33011631878
+  result: SUCCESS
+
+MCP Activation Binding Validation - Non-Authorizing
+  run: 33011632034
+  result: SUCCESS
 ```
 
-The concurrent heartbeat-identifier expectation has since been corrected on `main` to preserve the legacy machine `reference_frame` while adding the Base36 display alias. This handoff-only successor commit intentionally triggers validation against the current main merge base before merge. No success is claimed until current-head repository-owned validation passes.
+Earlier CI failures were consumed and repaired: executable-handoff policy/terminal fields, unittest compatibility, AE retrospective classification, finite cost basis, and runtime capability-profile admission. No open source defect from those failures remains in this lane.
 
-## Completion predicates
+PR #275 merged successfully as `3c1462b603817a41dcac5ac5360b4e3b31cb3015`.
 
-Source completion requires the worker, source resolver, process-adapter registration, worker-registry fragment, executable handoff, capability profile, cost basis, AE classification, and tests to be merged with repository-owned validation.
+## Runtime completion predicates
 
-Runtime completion requires a deployment-local execution under an admitted fresh fence that observes all of:
+Source implementation, validation and merge are complete. Product/runtime completion remains a distinct deployment-local observation and requires a WorkerCoordinator execution under an admitted fresh fence that observes all of:
 
 ```text
 stegos source root resolved and exact required source surfaces present
@@ -106,7 +112,15 @@ outbound_egress_executed = false
 canonical_transition_committed = false
 ```
 
-A hosted CI pass, fake process/socket test, source merge, or controlled activation request does not satisfy runtime completion.
+Terminal runtime evidence is:
+
+```text
+receipts/stegos-sovereign-relay/SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001.json
+state: COMPLETED
+transition_id: SOVEREIGN_RELAY_LEASE_OPEN
+```
+
+A hosted CI pass, source merge, fake process/socket test, or controlled activation request does not satisfy runtime completion.
 
 ## Downstream
 
@@ -117,7 +131,13 @@ After authentic `LEASE_OPEN`, prove durable Node-KV identity continuity across t
 ```text
 source files/modules required by this lane: 10/10 installed
 known scaffolding/stubs in this lane: 0
-source integration validation: successor validation pending
-runtime LEASE_OPEN: pending deployment-local machine execution
-Node-KV teardown/recreation continuity: pending after LEASE_OPEN
+source implementation: COMPLETE
+source validation: COMPLETE
+merge/release integration: COMPLETE
+runtime LEASE_OPEN: PENDING MACHINE-OWNED DEPLOYMENT-LOCAL EXECUTION
+Node-KV teardown/recreation continuity: PENDING AFTER LEASE_OPEN
 ```
+
+## Archive condition
+
+This source/integration lane no longer requires session-local state. Continuation is fully durable in this handoff, the executable handoff, worker registry, process adapter, and merged source. Runtime activation remains machine-owned and must not be replaced by a chat-hosted or GitHub-hosted proof.
