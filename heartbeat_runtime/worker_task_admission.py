@@ -1,4 +1,8 @@
-"""Fail-closed pre-initiation review for StegVerse worker tasks."""
+"""Fail-closed pre-initiation review for StegVerse worker tasks.
+
+Admission review is evidence-only and must complete before new worker authority
+artifacts may be minted by the existing WorkerCoordinator.
+"""
 from __future__ import annotations
 
 import hashlib
