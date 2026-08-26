@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.worker-capability-profiles/v0.1",
-  "generation": 14,
+  "generation": 15,
   "profiles": [
     {
       "profile_id": "deterministic-workflow-v1",
@@ -66,7 +66,7 @@
       "profile_id": "sovereign-runtime-worker-v1",
       "executor_type": "repository_worker",
       "effect_class": "sovereign_runtime_activation",
-      "allowed_capabilities": ["runtime_observation", "continuous_process_execution", "bounded_process_execution", "durable_state_reconstruction", "bounded_repository_mutation", "canonical_artifact_validation", "master_records_replay_reconstruction_validation", "stegfin_live_entry_inventory_observation", "stegfin_sovereign_internal_trading_activation", "orphan_lifecycle_reconstruction", "stegnutrition_machine_continuation"],
+      "allowed_capabilities": ["runtime_observation", "continuous_process_execution", "bounded_process_execution", "durable_state_reconstruction", "bounded_repository_mutation", "canonical_artifact_validation", "master_records_replay_reconstruction_validation", "stegfin_live_entry_inventory_observation", "stegfin_sovereign_internal_trading_activation", "orphan_lifecycle_reconstruction", "stegnutrition_machine_continuation", "sovereign_relay_materialization"],
       "mutation_allowed": true,
       "deployment_allowed": true,
       "availability_grants_authority": false,
@@ -80,7 +80,8 @@
         "stegfin_live_entry_inventory_observation is read-only chain inventory plus bounded receipt persistence and grants no provider or wallet authority.",
         "stegfin_sovereign_internal_trading_activation is limited to the zero-external-cost internal activation round and grants no external trade, wallet, custody or scale-up authority.",
         "orphan_lifecycle_reconstruction is continuity-only eligibility for a generated orphan-recovery handoff; it cannot execute the recovered parent task or revive an ended claim/fence.",
-        "stegnutrition_machine_continuation is limited to locally materialized StegNutrition observation, fixed no-network validation, continuation projection and receipts; it grants no GitHub fetch/write, general code-generation, credential, deployment or release authority."
+        "stegnutrition_machine_continuation is limited to locally materialized StegNutrition observation, fixed no-network validation, continuation projection and receipts; it grants no GitHub fetch/write, general code-generation, credential, deployment or release authority.",
+        "sovereign_relay_materialization is limited to the existing deployment-local sovereign runtime plus the pinned StegOS relay adapter; it grants no route admission, outbound EGRESS, credential, canonical-state, or second-runtime authority."
       ]
     },
     {

@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "stegos_sovereign_relay_materialization",
+  "sample_count": 1,
+  "hb_estimate": {
+    "expected_completion_beats": 8,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 256,
+    "confidence": "MEDIUM"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 4194304,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 8
+  },
+  "evidence_refs": [
+    "docs/STEGOS_SOVEREIGN_RELAY_MATERIALIZATION_MIRROR_HANDOFF.md",
+    "workers/stegos_sovereign_relay_bridge.py",
+    "workers/stegos_sovereign_relay_materialization_worker.py",
+    "tests/test_stegos_sovereign_relay_materialization_worker.py",
+    "StegVerse-Labs/StegOS#53"
+  ],
+  "notes": [
+    "Deployment-local bounded relay materialization only; no route admission or outbound EGRESS is included.",
+    "TV/TVC remains credential authority and no credential material is admitted to the relay workload.",
+    "The task reuses the existing sovereign runtime and requires no additional physical machine or third-party runtime."
+  ]
+}
