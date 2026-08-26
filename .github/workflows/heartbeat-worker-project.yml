@@ -243,14 +243,19 @@ jobs:
       - name: Prove carrier and worker compatibility surfaces are distinct
         run: |
           python - <<'PY'
+          import inspect
           from heartbeat_runtime import CarrierHeartbeatRuntime, HeartbeatRuntime
           from heartbeat_runtime.worker_runtime import WorkerCoordinator
           assert CarrierHeartbeatRuntime.__module__ == 'heartbeat_runtime.engine_v13'
           assert HeartbeatRuntime.__module__ == 'heartbeat_runtime.engine_v11'
-          assert WorkerCoordinator.__module__ == 'heartbeat_runtime.worker_runtime'
+          assert WorkerCoordinator.__module__ == 'heartbeat_runtime.admitted_worker_runtime'
           assert HeartbeatRuntime is not CarrierHeartbeatRuntime
           assert WorkerCoordinator is not CarrierHeartbeatRuntime
-          print('CARRIER_WORKER_SEPARATION_PASS')
+          source=inspect.getsource(WorkerCoordinator._activate_from_trigger)
+          assert 'review_worker_task_admission' in source
+          assert 'verdict != "ADMIT"' in source
+          assert 'return super()._activate_from_trigger' in source
+          print('CARRIER_WORKER_SEPARATION_AND_ADMISSION_GATE_PASS')
           PY
 
       - name: Rebuild projections ephemerally without repository persistence
