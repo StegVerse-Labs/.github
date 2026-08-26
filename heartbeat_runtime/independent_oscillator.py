@@ -1,4 +1,7 @@
-"""Canonical 10 ms heartbeat derivation plus reversible compact display identifiers."""
+"""Canonical 10 ms heartbeat derivation plus reversible compact display identifiers.
+
+Participant topology is observation-only metadata and never heartbeat progression authority.
+"""
 from __future__ import annotations
 
 from datetime import datetime, timezone
