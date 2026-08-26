@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:stegos-relay-node-kv-continuity-v1",
+      "authority_ref": "handoffs/SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "durable_state_reconstruction"
+      ],
+      "command": ["python", "workers/stegos_relay_node_kv_continuity_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_STEGOS_ROOT", "STEGVERSE_RELAY_RUNTIME_BASE"],
+      "notes": [
+        "Only non-secret local source/runtime-root locators may be forwarded.",
+        "The worker is a successor to the authentic SOVEREIGN_RELAY_LEASE_OPEN observation and cannot create or replace that parent proof.",
+        "The same existing sovereign runtime materializer/supervisor and merged StegOS adapter are reused; no second runtime owner is created.",
+        "HeartBeat is reference-only; route admission, outbound EGRESS, credentials, and canonical transition remain outside this worker's authority."
+      ],
+      "timeout_seconds": 240,
+      "type": "process_json_v0.1"
+    }
+  ]
+}

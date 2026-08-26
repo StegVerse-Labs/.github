@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "stegos_relay_node_kv_continuity",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 8,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 512,
+    "confidence": "LOW"
+  },
+  "cost_estimate": {
+    "compute_units": 2,
+    "token_units": 0,
+    "storage_bytes": 2097152,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 6
+  },
+  "evidence_refs": [
+    "docs/STEGOS_RELAY_NODE_KV_CONTINUITY_RUNTIME_MIRROR_HANDOFF.md",
+    "workers/stegos_relay_node_kv_continuity_worker.py",
+    "StegVerse-Labs/StegOS@690b02f4b54271e67717a3180149a07a5aa44ed0"
+  ],
+  "notes": [
+    "Estimate is conservative until authentic teardown/recreation runtime samples exist.",
+    "No third-party process host, GitHub token, provider credential, route admission, outbound EGRESS, or external financial cost is admitted.",
+    "TV/TVC remains sole credential authority."
+  ]
+}
