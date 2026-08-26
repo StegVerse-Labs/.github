@@ -8,7 +8,7 @@
       "authorized_policy_version": "stegos-sovereign-relay-materialization-v0.1",
       "block_ref": "docs/STEGOS_SOVEREIGN_RELAY_MATERIALIZATION_MIRROR_HANDOFF.md",
       "claim_id": null,
-      "cost_basis_ref": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/stegos-sovereign-relay-materialization.json",
       "evidence_refs": [
         "docs/STEGOS_SOVEREIGN_RELAY_MATERIALIZATION_MIRROR_HANDOFF.md",
         "handoffs/SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001.json",
@@ -45,7 +45,7 @@
       "adapter_ref": "process:stegos-sovereign-relay-materialization-v1",
       "authority_source": "handoffs/SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001.json#authority",
       "capabilities": ["runtime_observation", "bounded_process_execution", "sovereign_relay_materialization"],
-      "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
       "executor_type": "repository_worker",
       "last_seen_at": null,
       "status": "AVAILABLE",
