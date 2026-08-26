@@ -1,0 +1,85 @@
+{
+  "schema": "stegverse.heartbeat-participant-topology/v1",
+  "goal_id": "HEARTBEAT-RECIPROCAL-AWARENESS-015",
+  "canonical_heartbeat_owner": "StegVerse-Labs/.github",
+  "canonical_semantics_ref": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
+  "identifier_encoding_ref": "docs/HEARTBEAT_IDENTIFIER_ENCODING_MIRROR_HANDOFF.md",
+  "heartbeat": {
+    "anchor_epoch": 32,
+    "anchor_heartbeat_id": "HB-0000000W",
+    "display_format": "HB-XXXXXXXX",
+    "encoding": "FIXED_WIDTH_BASE36",
+    "period_ms": 10,
+    "rate_hz": 100,
+    "progression_dependency": "OSCILLATOR_ONLY",
+    "observation_is_causal": false,
+    "authority_effect": "NONE"
+  },
+  "reciprocal_awareness_contract": {
+    "heartbeat_knows_participants": true,
+    "participants_know_heartbeat": true,
+    "participant_presence_is_topology_metadata_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "heartbeat_grants_credential_authority": false,
+    "heartbeat_grants_publication_authority": false,
+    "heartbeat_grants_custody_authority": false,
+    "heartbeat_grants_admissibility_authority": false,
+    "heartbeat_grants_route_authority": false,
+    "heartbeat_grants_wallet_authority": false,
+    "heartbeat_grants_deployment_authority": false
+  },
+  "organizations": [
+    "AaCT-E", "Admissible-Existence", "AdmittedCode", "Data-Continuation", "ECAT-ICAT-Formal", "formalism-tests", "GCAT-BCAT-Engine", "Infrastructure-Continuity-Ventures", "master-records", "StegGhost", "StegVerse-002", "StegVerse-Labs", "StegVerse-org", "Triad-Test"
+  ],
+  "critical_repositories": [
+    "StegVerse-Labs/StegCore",
+    "StegVerse-Labs/Continuity",
+    "StegVerse-Labs/TV",
+    "StegVerse-Labs/TVC",
+    "StegVerse-Labs/StegID",
+    "StegVerse-Labs/StegAgents",
+    "StegVerse-Labs/Site",
+    "StegVerse-Labs/ara-admissibility-interop",
+    "StegVerse-002/micro-node-runtime",
+    "StegVerse-org/LLM-adapter",
+    "master-records/orchestration"
+  ],
+  "connected_drive_resources": [
+    {
+      "resource_class": "GOOGLE_DRIVE_ROOT",
+      "name": "StegVerse",
+      "id": "14JzFbQelopGDkOEvQOz8vjHb1VNVW6to",
+      "role": "PERSISTENT_RESOURCE_ROOT"
+    },
+    {
+      "resource_class": "GOOGLE_DRIVE_FOLDER",
+      "name": "Projects",
+      "id": "1hCkdCCpjroN9PCSusMR7k3Eud9qr70pJ",
+      "role": "PROJECT_HANDOFF_ROOT"
+    },
+    {
+      "resource_class": "GOOGLE_DRIVE_DOCUMENT",
+      "name": "STEGVERSE_PROJECTS_HANDOFF_STATUS",
+      "id": "1WtFpaFi4ii-IjiATTTcYppwYF59RMngJT21EGa6tghU",
+      "role": "PROJECT_STATUS_OBSERVER"
+    },
+    {
+      "resource_class": "GOOGLE_DRIVE_DOCUMENT",
+      "name": "STEGVERSE_HEARTBEAT_FEDERATION_AWARENESS",
+      "id": "1coBvj8JsumtC3TfVlowXTscqAPBqdq6opuF7MXthMos",
+      "role": "DRIVE_HEARTBEAT_AWARENESS_MIRROR"
+    }
+  ],
+  "shared_drives_detected": 0,
+  "drive_provider": "GOOGLE_DRIVE",
+  "drive_progression_authority": false,
+  "repository_progression_authority": false,
+  "organization_progression_authority": false,
+  "historical_decimal_heartbeat_aliases_remain_valid": true,
+  "coverage": {
+    "organizations_registered": 14,
+    "critical_repositories_registered": 11,
+    "connected_drive_resources_registered": 4,
+    "unrepresented_known_participants": 0
+  }
+}
