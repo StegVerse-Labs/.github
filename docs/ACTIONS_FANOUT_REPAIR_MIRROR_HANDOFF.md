@@ -139,18 +139,26 @@ Release requires credential-clean main-push publication proof for exact wallet U
 
 Site B27 remains a machine-owned native-validation continuation. Its sovereign validation carrier exists, but the same `SHWP-HEALER-SOVEREIGN-SCHEDULER-001` live receipt is still required before the B27 retirement can be finalized. Source/CI cannot substitute for that receipt.
 
-## Heartbeat/runtime dependency relevant to cost migration
+## Sovereign runtime dependency relevant to cost migration — corrected 2026-08-26
 
-The Healer scheduler task depends on `SHWP-DURABLE-RUNTIME-ACTIVATION`. Current machine state still has no scheduler receipt. The released iPhone inline source handoff `handoffs/SHWP-IPHONE-HB30-INLINE-CAPSULE-002.json` records the outstanding physical boundary:
+Heartbeat activation is terminal and is **not** a blocker for Actions cost migration. The canonical heartbeat is HB32 protocol-derived / 10 ms / 100 Hz / `OSCILLATOR_ONLY`; LIVE-009 is completed and issue #12 is closed.
+
+The remaining upstream dependency for the Healer scheduler is the separate `SHWP-DURABLE-RUNTIME-ACTIVATION` worker/runtime substrate. Current authoritative evidence:
 
 ```text
-carrier: CURRENT_USER_IPHONE
-operational_state: HUMAN_PHYSICAL_EXECUTION_BOUNDARY
-condition: PHYSICAL_RECEIPT_NOT_YET_OBSERVED
-human_action_required: true
+handoff: handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json
+receipt: receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json
+state: BLOCKED
+blocker: SOVEREIGN_NODE_DECLARATION_NOT_PRESENT
+claim: existing G18 / fence18 machine-owned
+heartbeat dependency: false
+third-party primary runtime required: false
+current iPhone HB30 action required: false
 ```
 
-The current iPhone must execute the exact released inline capsule in an existing secure `https://stegverse.org` Safari context and transfer the portable receipt to the existing `.github#209` verifier/materializer. That physical action requires no new credential and grants no runtime/wallet/provider authority. G18 and WorkerCoordinator then own HB30 materialization/observation.
+The historical `SHWP-IPHONE-HB30-INLINE-CAPSULE-002` physical boundary is satisfied/superseded: HB30/HB31 provenance and its verified portable-transition digest are already present, and current heartbeat authority is the HB32 protocol anchor. Do **not** rerun the HB30 capsule.
+
+To unblock the scheduler, identify/provision an eligible StegVerse-owned/federated sovereign node and let the existing G18 runtime worker perform canonical native installation/verification. No new scheduler, heartbeat, GitHub-token runtime, Render path, or NON-TV/TVC credential lane is authorized.
 
 ## Quantitative evidence limitation
 
