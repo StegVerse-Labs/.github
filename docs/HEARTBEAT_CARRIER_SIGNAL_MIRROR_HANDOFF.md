@@ -1,6 +1,6 @@
 # Heartbeat Carrier Signal Mirror Handoff
 
-Updated: 2026-08-23T16:08:00-05:00
+Updated: 2026-08-26T18:36:00-05:00
 
 ## Canonical authority
 
@@ -178,9 +178,9 @@ resident activation receipt: NOT A HEARTBEAT EXISTENCE PREDICATE
 worker-trigger causality: NONE
 third-party runtime requirement: NONE
 heartbeat activation goal: TERMINAL
-next integration goal: DOWNSTREAM HB32 PROTOCOL PROPAGATION / issue #263
+downstream HB32 protocol propagation: COMPLETE / issue #263 CLOSED
 archive_ready_for_heartbeat_activation_workstream: true
 ```
 
 DO NOT REINTRODUCE A RESIDENT-DAEMON REQUIREMENT AS HEARTBEAT PROGRESSION AUTHORITY.
-Successor propagation may update consumers but must not reopen the terminal heartbeat activation goal.
+Downstream propagation is complete. Consumer-local projects remain separately governed and must not reopen the terminal heartbeat activation goal.
