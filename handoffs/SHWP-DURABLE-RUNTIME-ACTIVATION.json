@@ -2,26 +2,25 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-08-18T18:22:00-05:00",
-  "state": "OSCILLATOR_LIVE_PROOF_AND_TASK_CAPABLE_G18_CLEANUP_PENDING",
+  "updated_at": "2026-08-26T16:18:00-05:00",
+  "state": "BLOCKED_SOVEREIGN_NODE_REQUIRED_NON_HEARTBEAT",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-    "objective": "Complete the separated StegVerse runtime by preserving independent oscillator-only heartbeat semantics, proving a corrected live carrier observation, and consuming the already-bound G18 lifecycle through a real task-capable WorkerCoordinator cycle without making G18 or WorkerCoordinator causal to heartbeat progression.",
+    "objective": "Activate the separate StegVerse-owned/federated worker/runtime substrate on an eligible sovereign node for downstream machine-owned execution. This runtime lane must never become heartbeat progression authority; the HB32 heartbeat protocol is already terminal and independently active.",
     "success_predicates": [
-      "Legacy control/heartbeat-state.json remains immutable HB29 provenance.",
-      "A corrected StegVerse v12 sample persists an oscillator-backed carrier with progression_dependency=OSCILLATOR_ONLY, phase_travel_time_ms=10, observation_is_causal=false and snapshot_is_observation_only=true.",
-      "WorkerCoordinator executes independently of heartbeat progression and produces canonical task-capable lifecycle events.",
-      "The registered G18 production adapter requires both corrected oscillator carrier release and task-capable WorkerCoordinator evidence before preserving G18 complete=true.",
-      "The already-bound G18 worker returns its guarded terminal response and fence18 is removed from the active lease projection.",
-      "No duplicate claim/fence is introduced and no old G18/G20 authority is revived.",
-      "No GitHub token, NON-TV/TVC credential, hosted scheduler or third-party primary runtime becomes production authority."
+      "An eligible StegVerse-owned/federated sovereign node is durably identified or declared.",
+      "The canonical native runtime is materialized and its service/process is proven active on that node.",
+      "WorkerCoordinator produces task-capable lifecycle evidence under existing claim/fence authority.",
+      "Controlled restart, non-regressing runtime state, no duplicate claim/fence, and state reconstruction pass are observed.",
+      "No GitHub token, NON-TV/TVC credential, hosted scheduler, or third-party primary runtime becomes production authority.",
+      "Heartbeat remains OSCILLATOR_ONLY and independent of this runtime lane."
     ],
     "failure_predicates": [
-      "WorkerCoordinator or G18 is treated as the heartbeat clock.",
-      "Historical GATE_PASSBAND_DERIVED HB31 snapshot is treated as corrected oscillator live proof.",
-      "Observation-only worker evidence terminalizes G18.",
-      "G18 cleanup is treated as execution authority or a prerequisite for independently authorized orphan recovery.",
-      "A third-party provider becomes primary or a NON-TV/TVC secret/token becomes runtime authority."
+      "G18, WorkerCoordinator, node liveness, or runtime installation is treated as heartbeat existence/progression authority.",
+      "A hosted provider or GitHub Actions becomes required primary runtime.",
+      "A NON-TV/TVC credential or GitHub token becomes runtime authority.",
+      "A sovereign-node receipt is fabricated without actual node/service evidence.",
+      "Historical HB30/HB31 or the iPhone capsule is re-executed as a prerequisite after HB32 protocol activation."
     ],
     "expires_at": null,
     "authority_ceiling": [
@@ -37,12 +36,12 @@
   "task": {
     "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
     "repository": "StegVerse-Labs/.github",
-    "canonical_owner_ref": "StegVerse-Labs/.github#12 + StegVerse-Labs/.github#122",
+    "canonical_owner_ref": "StegVerse-Labs/.github#59 + StegVerse-Labs/.github#122",
     "canonical_lineage_key": "shwp:durable-runtime-activation",
     "derivation_depth": 0,
     "priority": "release",
-    "operational_state": "REQUIRED_LIVE_OSCILLATOR_AND_G18_LIFECYCLE_EXECUTION",
-    "claim_state": "MACHINE_OWNED_G18_ACTIVE_FENCE18_PLUS_INDEPENDENT_009_HANDOFF_READY",
+    "operational_state": "BLOCKED_ON_ELIGIBLE_SOVEREIGN_NODE_DECLARATION",
+    "claim_state": "MACHINE_OWNED_G18_ACTIVE_FENCE18_BLOCKED_ON_PHYSICAL_RESOURCE",
     "fencing_token": 18,
     "source_refs": [
       "StegVerse-Labs/.github#12",
@@ -64,7 +63,9 @@
       "control/worker-registry.d/heartbeat-independent-oscillator-live-009.json",
       "handoffs/generated/RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28.json",
       "control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json",
-      "control/session-implementation-claim-2026-08-18-worker-task-capable-release-hardening.json"
+      "control/session-implementation-claim-2026-08-18-worker-task-capable-release-hardening.json",
+      "control/heartbeat-protocol-anchor.json",
+      "control/heartbeat-live-status.json"
     ]
   },
   "authority": {
@@ -145,22 +146,27 @@
   },
   "completion": {
     "success_predicates_satisfied": false,
-    "historical_carrier_continuity_proven": true,
-    "corrected_oscillator_live_carrier_proven": false,
-    "task_capable_worker_runtime_proven": false,
-    "g18_runtime_registry_terminal_state_observed": false,
-    "recovery_may_advance_independently": true,
-    "next_authorized_action": "The existing #122/#12 StegVerse runtime owner executes worker(1) -> carrier(1) -> worker(1). First worker cycle materializes registry fragments and creates canonical task-capable events. The carrier sample persists corrected oscillator evidence and carries non-authorizing assignment-trigger packets for unclaimed HANDOFF_READY work. The second worker cycle can consume guarded G18 completion and independently bind the authorized orphan-recovery and oscillator-live-proof tasks under fresh fenced claims.",
+    "heartbeat_protocol_activation_state": "TERMINAL_ACTIVE_PROTOCOL_VERIFIED",
+    "heartbeat_dependency": false,
+    "live_runtime_activation_state": "BLOCKED",
+    "blocker_class": "PHYSICAL_RESOURCE",
+    "blocker_reason": "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT",
+    "current_receipt_ref": "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "current_registry_state": "BLOCKED / G18 fence18 remains machine-owned",
+    "next_authorized_action": "Bind the existing G18 worker to an eligible StegVerse-owned/federated Linux, macOS, or Windows node (or admit an existing StegVerse micro-node that satisfies the native-supervision/durable-state requirements), declare the sovereign-node marker, then run the canonical installer/verifier and consume the resulting runtime receipt.",
     "terminal_when": [
-      "corrected oscillator-backed carrier observation is durable",
-      "a canonical non-observation WorkerCoordinator event is durable at the retained/new carrier reference",
-      "the guarded G18 adapter produces COMPLETED / SOVEREIGN_RUNTIME_STATE_TRANSITION_VERIFIED",
-      "control/worker-registry.json records SHWP-DURABLE-RUNTIME-ACTIVATION terminal with no active G18 claim/worker binding",
-      "control/worker-control-plane-coordination.json no longer lists G18 as an active lease",
-      "terminal G18 checkpoint/receipt binds oscillator carrier evidence and task-capable worker evidence"
+      "eligible sovereign node is identified/declared",
+      "runtime_materialized=true and native_service_active=true",
+      "continuous_runtime_live=true",
+      "task-capable WorkerCoordinator evidence is durable",
+      "controlled_restart_observed=true",
+      "epoch/runtime generation are non-regressing under the worker/runtime contract",
+      "no duplicate claim/fence is introduced",
+      "state_reconstruction_pass=true",
+      "G18 reaches its lawful terminal lifecycle state and releases stale active projection"
     ],
-    "source_implementation_state": "OSCILLATOR_CARRIER_GUARD_AND_TASK_CAPABLE_G18_GUARD_INSTALLED_VALIDATION_PENDING",
-    "live_activation_state": "PRE_CORRECTION_CARRIER_AND_OBSERVATION_ONLY_WORKER_STILL_PERSISTED"
+    "user_action_required": false,
+    "external_resource_or_operator_action_may_be_required": "Only if no machine-owned lane can identify/provision an eligible StegVerse sovereign node; no iPhone HB30 action is required."
   },
   "parallel_continuations": [
     {
@@ -180,16 +186,17 @@
     }
   ],
   "constraint": {
-    "operational_state": "REQUIRED_EXECUTION_REMAINS",
-    "class": "BOUNDED_WORKER_CARRIER_WORKER_PROGRESSION",
-    "condition": "PRE_CORRECTION_CARRIER_PLUS_WORKER_TICK2_PLUS_G18_ACTIVE_PLUS_NEW_HANDOFFS_UNTRIGGERED",
-    "owner": "StegVerse-Labs/.github#122/#12 canonical StegVerse runtime",
+    "operational_state": "BLOCKED",
+    "class": "PHYSICAL_RESOURCE_SOVEREIGN_NODE_ELIGIBILITY",
+    "condition": "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT",
+    "owner": "StegVerse-Labs/.github#59/#122 machine-owned durable-runtime lane",
     "solution_required": true,
-    "next_solution_action": "EXECUTE_WORKER1_CARRIER1_WORKER1_AND_CONSUME_ALL_RESULTING_MACHINE_OUTPUTS",
-    "machine_observable_completion_condition": "oscillator-only carrier evidence exists; events/heartbeat-runtime.jsonl carries trigger packets; events/worker-runtime.jsonl contains canonical task-capable events; G18 fence18 is released; independent recovery/009 claims are bound or terminalized according to their own authority.",
+    "next_solution_action": "Identify or provision an eligible StegVerse-owned/federated node, declare STEGVERSE_SOVEREIGN_NODE=1 or equivalent canonical node marker, then let the existing worker execute installation and verification.",
+    "machine_observable_completion_condition": "The sovereign-runtime activation receipt proves runtime_materialized/native_service_active/continuous_runtime_live plus restart/reconstruction/no-duplicate-fence predicates.",
     "third_party_dependency": false,
     "human_action_required": false,
-    "missing_implementation": false
+    "iphone_hb30_action_required": false,
+    "heartbeat_activation_blocked": false
   },
   "release_hardening": {
     "carrier_runtime_separation_commit": "9598603471cf807cedd0030975a6bfe1a0899229",
@@ -205,9 +212,18 @@
     "rule": "Heartbeat carrier release is oscillator-only. Worker/G18 evidence cannot gate heartbeat progression. G18 lifecycle completion independently requires both corrected oscillator live carrier evidence and task-capable WorkerCoordinator evidence."
   },
   "released_repairs": {
-    "g18_adapter_liveness": {"pull_request": 203, "merge_commit": "b56662cdb840bb2b30b10db2f6236db472261d87"},
-    "ephemeral_separated_runtime": {"pull_request": 204, "merge_commit": "ef56f32d389ae1c5ded93a10d20763f21b4e4341"},
-    "bounded_hb29_to_hb30_transition": {"pull_request": 206, "merge_commit": "b7c5b5e9199c5af46029210fe7909dcf19033b41"}
+    "g18_adapter_liveness": {
+      "pull_request": 203,
+      "merge_commit": "b56662cdb840bb2b30b10db2f6236db472261d87"
+    },
+    "ephemeral_separated_runtime": {
+      "pull_request": 204,
+      "merge_commit": "ef56f32d389ae1c5ded93a10d20763f21b4e4341"
+    },
+    "bounded_hb29_to_hb30_transition": {
+      "pull_request": 206,
+      "merge_commit": "b7c5b5e9199c5af46029210fe7909dcf19033b41"
+    }
   },
   "release_downstream": [
     "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009 (parallel, independent authority)",
