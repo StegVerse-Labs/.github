@@ -31,29 +31,26 @@
       "worker_instance_id": null
     },
     {
-      "archive_eligible": false,
-      "archive_reason_codes": [
-        "BLOCKED_ON_REAL_BOUNDARY_TARGET",
-        "BLOCKED_ON_AUTHORITY_MODEL",
-        "EXECUTOR_NOT_BOUND",
-        "HB_RELATIVE_TIMING_NOT_ESTABLISHED"
-      ],
-      "block_ref": "handoffs/STEGGATE-FIRST-BOUNDARY-001.json#block",
+      "archive_eligible": true,
+      "archive_reason_codes": [],
+      "block_ref": null,
       "claim_id": null,
       "cost_basis_ref": null,
       "evidence_refs": [
-        "StegVerse-Labs/ara-admissibility-interop#13:BLOCKED_UNCLAIMED",
-        "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:management/first-boundary-activation.json:BLOCKED",
-        "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:tools/validate_first_boundary_activation.py"
+        "handoffs/STEGGATE-FIRST-BOUNDARY-001.json",
+        "StegVerse-Labs/ara-admissibility-interop:management/first-boundary-activation.json:COMPLETE",
+        "StegVerse-Labs/ara-admissibility-interop:real-boundary/admission-receipt.json:ALLOW",
+        "StegVerse-Labs/ara-admissibility-interop:real-boundary/consequence-observation.json:MATCH",
+        "StegVerse-Labs/ara-admissibility-interop@48b7c7f68b8dc17dc3b398b682ff4342755ab0da"
       ],
       "executor_binding": "UNBOUND",
       "external_entity_job_ref": null,
       "goal_id": "STEGGATE-FIRST-BOUNDARY-001",
       "handoff_ref": "handoffs/STEGGATE-FIRST-BOUNDARY-001.json",
       "heartbeat_timing": null,
-      "last_checkpoint_ref": "StegVerse-Labs/ara-admissibility-interop@feat/steggate-v46-schema-foundation:management/first-boundary-activation.json",
+      "last_checkpoint_ref": "StegVerse-Labs/ara-admissibility-interop:management/first-boundary-activation.json",
       "lease": null,
-      "state": "BLOCKED",
+      "state": "COMPLETED",
       "task_id": "STEGGATE-FIRST-BOUNDARY-001",
       "worker_id": null,
       "worker_instance_id": null
@@ -995,7 +992,7 @@
       "worker_instance_id": null
     }
   ],
-  "updated_at": "2026-08-27T16:24:00-05:00",
+  "updated_at": "2026-08-27T16:34:00-05:00",
   "workers": [
     {
       "adapter_ref": null,
