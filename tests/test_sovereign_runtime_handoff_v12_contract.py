@@ -59,10 +59,15 @@ class SovereignRuntimeHandoffContractTests(unittest.TestCase):
         self.assertEqual(authority["credential_authority"], "TV/TVC")
         self.assertEqual(authority["github_token_production_authority"], "NONE")
         self.assertFalse(authority["non_tv_tvc_secret_or_token_allowed"])
+
         completion = self.handoff["completion"]
         self.assertFalse(completion["success_predicates_satisfied"])
-        self.assertFalse(completion["corrected_oscillator_live_carrier_proven"])
-        self.assertFalse(completion["task_capable_worker_runtime_proven"])
+        self.assertEqual(completion["heartbeat_protocol_activation_state"], "TERMINAL_ACTIVE_PROTOCOL_VERIFIED")
+        self.assertFalse(completion["heartbeat_dependency"])
+
+        observed = self.handoff["state_transition_continuity"]["observed"]
+        self.assertFalse(observed["corrected_oscillator_live_proof_observed"])
+        self.assertFalse(observed["task_capable_worker_cycle_observed"])
 
 
 if __name__ == "__main__":
