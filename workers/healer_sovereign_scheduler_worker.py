@@ -23,6 +23,32 @@ def atomic_write(path: Path, value: dict) -> None:
     os.replace(name, path)
 
 
+TLS_LOCATOR_ENV = (
+    "STEGVERSE_SERVICE_GATEWAY_TLS_CERT_FILE",
+    "STEGVERSE_SERVICE_GATEWAY_TLS_KEY_FILE",
+    "STEGVERSE_SERVICE_GATEWAY_TLS_BIND_ADDRESS",
+    "STEGVERSE_SERVICE_GATEWAY_TLS_PORT",
+)
+
+
+def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
+    env = {
+        "PATH": os.environ.get("PATH", ""),
+        "PYTHONPATH": os.environ.get("PYTHONPATH", ""),
+        "LANG": os.environ.get("LANG", "C.UTF-8"),
+        "LC_ALL": os.environ.get("LC_ALL", "C.UTF-8"),
+        "RUN_SCOPE": "all",
+        "DISPATCH_MODE": "schedule",
+        "TARGETS_FILE": str(targets),
+        "STEGVERSE_REPO_ROOTS_JSON": roots_json,
+    }
+    for name in TLS_LOCATOR_ENV:
+        value = os.getenv(name, "").strip()
+        if value:
+            env[name] = value
+    return env
+
+
 def _response(state: str, transition: str, checkpoint: str, blocker: dict | None, epoch: int) -> dict:
     return {
         "schema": "stegverse.worker-response/v0.1",
@@ -116,25 +142,7 @@ def main() -> int:
                 "next_solution_action": "MATERIALIZE_COMPLETE_STEGVERSE_HEALER_TREE",
             }
         else:
-            env = {
-                "PATH": os.environ.get("PATH", ""),
-                "PYTHONPATH": os.environ.get("PYTHONPATH", ""),
-                "LANG": os.environ.get("LANG", "C.UTF-8"),
-                "LC_ALL": os.environ.get("LC_ALL", "C.UTF-8"),
-                "RUN_SCOPE": "all",
-                "DISPATCH_MODE": "schedule",
-                "TARGETS_FILE": str(targets),
-                "STEGVERSE_REPO_ROOTS_JSON": roots_json,
-            }
-            for name in (
-                "STEGVERSE_SERVICE_GATEWAY_TLS_CERT_FILE",
-                "STEGVERSE_SERVICE_GATEWAY_TLS_KEY_FILE",
-                "STEGVERSE_SERVICE_GATEWAY_TLS_BIND_ADDRESS",
-                "STEGVERSE_SERVICE_GATEWAY_TLS_PORT",
-            ):
-                value = os.getenv(name, "").strip()
-                if value:
-                    env[name] = value
+            env = build_healer_child_env(targets, roots_json)
             proc = subprocess.run(
                 [sys.executable, str(entry)],
                 cwd=healer_root,
