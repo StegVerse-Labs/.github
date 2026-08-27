@@ -64,6 +64,11 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "worker-control-plane-coordination.json": '{"state":"retained"}\n',
                 "worker-status.json": '{"state":"retained"}\n',
             }
+            resident_registry = (
+                '{"generation":44,"tasks":[{"task_id":"LIVE","claim_id":"claim-44",'
+                '"heartbeat_timing":{"fencing_token":44},"state":"ACTIVE"}]}\n'
+            )
+            (runtime / "control/worker-registry.json").write_text(resident_registry, encoding="utf-8")
             for name, value in mutable.items():
                 (runtime / "control" / name).write_text(value, encoding="utf-8")
             (runtime / "receipts/sovereign-host").mkdir(parents=True)
@@ -71,6 +76,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
 
             receipt = refresh_mod.refresh(source, runtime)
             self.assertTrue(receipt["mutable_runtime_state_preserved"])
+            self.assertNotIn("control/worker-registry.json", receipt["copied_static_paths"])
             self.assertFalse(receipt["network_fetch_performed"])
             self.assertFalse(receipt["credential_read_or_acquired"])
             self.assertFalse(receipt["github_token_required"])
@@ -91,6 +97,8 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 self.assertTrue((runtime / rel).is_file(), rel)
             for name, value in mutable.items():
                 self.assertEqual((runtime / "control" / name).read_text(), value)
+            self.assertEqual((runtime / "control/worker-registry.json").read_text(), resident_registry)
+            self.assertEqual((runtime / "control/worker-registry.d/new.json").read_text(), "{}\n")
             self.assertTrue((runtime / "receipts/sovereign-host/existing.json").is_file())
             self.assertTrue((runtime / "receipts/sovereign-host/worker-source-refresh.latest.json").is_file())
 
@@ -100,6 +108,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             Path("checkpoints/x.json"),
             Path("control/worker-runtime-state.json"),
             Path("control/heartbeat-carrier-runtime-state.json"),
+            Path("control/worker-registry.json"),
         ):
             with self.subTest(value=value):
                 with self.assertRaises(ValueError):
@@ -127,6 +136,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertIn("process-worker-adapters.d", path_unit)
             self.assertIn("control/task-vectors", path_unit)
             self.assertIn("control/task-vector-index.json", path_unit)
+            self.assertNotIn(f"PathChanged={source / 'control/worker-registry.json'}", path_unit)
             self.assertIn("authorizations", path_unit)
             self.assertIn("cost-basis", path_unit)
             self.assertIn("management", path_unit)

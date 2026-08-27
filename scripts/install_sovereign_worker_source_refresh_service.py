@@ -73,7 +73,6 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         source / "control/worker-registry.d",
         source / "control/process-worker-adapters.d",
         source / "control/task-vectors",
-        source / "control/worker-registry.json",
         source / "control/process-worker-adapters.json",
         source / "control/worker-capability-profiles.json",
         source / "control/blocker-resolution-policy.json",

@@ -48,7 +48,6 @@ CONTROL_DIRS = (
     Path("control/task-vectors"),
 )
 CONTROL_FILES = (
-    Path("control/worker-registry.json"),
     Path("control/process-worker-adapters.json"),
     Path("control/worker-capability-profiles.json"),
     Path("control/blocker-resolution-policy.json"),
@@ -64,6 +63,7 @@ MUTABLE_FORBIDDEN_FILES = {
     "control/heartbeat-state.json",
     "control/heartbeat-carrier-runtime-state.json",
     "control/worker-runtime-state.json",
+    "control/worker-registry.json",
     "control/worker-control-plane-coordination.json",
     "control/worker-status.json",
 }
