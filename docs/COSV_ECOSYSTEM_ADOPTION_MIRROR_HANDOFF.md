@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-27T16:19:00-05:00
+Updated: 2026-08-27T16:24:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -104,11 +104,11 @@ Machine-readable snapshot: `control/cosv-global-registry-coverage.json`.
 
 - 45 unique worker task IDs across the global worker registry plus fragments.
 - 4 canonically indexed task IDs.
-- 4 completed-only historical unvectorized task IDs.
-- 37 active worker task IDs lack canonical COSV coverage.
+- 5 completed-only historical unvectorized task IDs.
+- 36 active worker task IDs lack canonical COSV coverage.
 - 14 organization-registry task IDs lack canonical COSV coverage.
-- Total active .github task IDs lacking canonical COSV coverage: 51.
-- The orphan-recovery task has conflicting global/fragment states (BLOCKED vs COMPLETED); vector emission is forbidden until canonical state reconciliation.
+- Total active .github task IDs lacking canonical COSV coverage: 50.
+- The orphan-recovery aggregate/fragment contradiction is reconciled to terminal COMPLETED from the durable G22 PASS receipt; no vector was emitted for this completed historical task.
 
 No new vector digits were invented during this audit.
 
@@ -140,19 +140,18 @@ not-yet-task-surface-audited repositories: 189
 NO_ACTIVE_TASK_SURFACE proven in this adoption manifest: 0
 ```
 
-Within `StegVerse-Labs/.github`, the merged machine-readable coverage snapshot records 45 unique worker task IDs across the global registry plus fragments, 4 canonically indexed task IDs, 4 completed-only historical unvectorized task IDs, 37 active worker task IDs without canonical COSV coverage, and 14 active organization-registry task IDs without canonical COSV coverage. Total active local gap: 51 task IDs.
+Within `StegVerse-Labs/.github`, the machine-readable coverage snapshot records 45 unique worker task IDs across the global registry plus fragments, 4 canonically indexed task IDs, 5 completed-only historical unvectorized task IDs, 36 active worker task IDs without canonical COSV coverage, and 14 active organization-registry task IDs without canonical COSV coverage. Total active local gap: 50 task IDs.
 
-The orphan-recovery task remains intentionally fail-closed because live `control/worker-registry.json` records it as BLOCKED while `control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json` records terminal COMPLETED evidence. Reconcile canonical state before vector emission; do not infer digits from either label alone.
+The orphan-recovery aggregate/fragment contradiction is now reconciled to terminal `COMPLETED` from `receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json`. Recovery is terminal, non-reacquirable, grants no parent authority, and is not counted as active vector-required work.
 
 ### Remaining machine-executable work
 
-1. Reconcile the orphan-recovery global/fragment contradiction from terminal evidence.
-2. Project canonical vectors for the remaining active `.github` worker and organization tasks through canonical/local evidence-backed owners.
-3. Preserve `control/task-vector-index.json` parity and fail-closed admission.
-4. Continue Site-native terminal-task vector emission.
-5. Continue TV/TVC local task-surface completeness.
-6. Continue LLM-adapter, master-records/orchestration, GCAT-BCAT-Engine/Publisher, AdmittedCode/.github, Admissible-Existence task owners, StegVerse-002/stegguardian-wiki, then every remaining task-bearing repository.
-7. Audit all 189 currently not-yet-task-surface-audited repositories and reclassify each from repository-local evidence.
+1. Project canonical vectors for the remaining active `.github` worker and organization tasks through canonical/local evidence-backed owners.
+2. Preserve `control/task-vector-index.json` parity and fail-closed admission.
+3. Continue Site-native terminal-task vector emission.
+4. Continue TV/TVC local task-surface completeness.
+5. Continue LLM-adapter, master-records/orchestration, GCAT-BCAT-Engine/Publisher, AdmittedCode/.github, Admissible-Existence task owners, StegVerse-002/stegguardian-wiki, then every remaining task-bearing repository.
+6. Audit all 189 currently not-yet-task-surface-audited repositories and reclassify each from repository-local evidence.
 
 ### User/manual actions
 
@@ -172,3 +171,21 @@ The adoption manifest, validator, federation projection, handoff, and global-reg
 - When a downstream repository later reaches a true release boundary, propagate verified non-sensitive status/contract information through existing owners to Site, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki as applicable.
 
 Archive continuity: no COSV ecosystem-adoption state from this session requires rereading the ChatGPT conversation once the global project documents are updated from this canonical handoff.
+
+## Orphan aggregate reconciliation — 2026-08-27T16:24:00-05:00
+
+The stale aggregate row for `RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28` was reconciled to the already-canonical terminal fragment and G22 PASS receipt. This is bookkeeping/state-projection repair only; recovery was not re-executed.
+
+```text
+aggregate state: COMPLETED
+fragment state: COMPLETED
+receipt state: PASS
+recovery fence: 22
+old fence: 20
+old authority ended: true
+old authority reused: false
+successor authority granted: false
+claim state: TERMINAL_COMPLETED_NO_REACQUISITION
+```
+
+Active .github COSV gap after reconciliation: 36 worker tasks + 14 organization tasks = 50 active unvectorized task IDs.
