@@ -32,11 +32,11 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
         self.fragment_task = next(row for row in self.fragment["tasks"] if row.get("task_id") == TASK_ID)
 
     def test_terminal_recovery_is_not_reused_as_parent_authority(self):
-        completion = self.recovery["completion"]
-        self.assertEqual(completion["recovery_fencing_token"], 22)
-        self.assertTrue(completion["old_authority_ended"])
-        self.assertFalse(completion["old_authority_reused"])
-        self.assertFalse(completion["successor_authority_granted"])
+        self.assertEqual(self.recovery["state"], "PASS")
+        self.assertEqual(self.recovery["recovery_fencing_token"], 22)
+        self.assertTrue(self.recovery["old_authority_ended"])
+        self.assertFalse(self.recovery["old_authority_reused"])
+        self.assertFalse(self.recovery["successor_authority_granted"])
 
         prior = self.task["prior_authority_terminalization"]
         self.assertEqual(prior["old_fencing_token"], 20)
