@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "mode": "DEDICATED_ECOSYSTEM_CHAT_PARENT",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "fresh_fence_minimum_exclusive": 22,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "On a sovereign resident source refresh, attempt the already-authorized dedicated Ecosystem Chat parent exactly once. The parent executor remains sole claim/fence authority and must fail closed if local roots or runtime predicates are absent."
+}
