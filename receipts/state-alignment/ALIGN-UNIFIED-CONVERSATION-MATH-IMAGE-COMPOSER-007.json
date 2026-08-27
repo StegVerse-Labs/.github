@@ -1,0 +1,56 @@
+{
+  "schema": "stegverse.master-records-alignment-transition/v1",
+  "transition_id": "ALIGN-UNIFIED-CONVERSATION-MATH-IMAGE-COMPOSER-007",
+  "parent_transition_id": "ALIGN-UNIFIED-CONVERSATION-MATH-GOVERNED-SOLVER-CONSUMER-006",
+  "source_handoff_ref": "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+  "source_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+  "target_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+  "semantic_delta_hash": "a4e37cd7742aab732a36c8f12c743ee889515c44a104834e22d360b64b607668",
+  "module_id": "StegVerse-Labs/Site:unified-conversational-capability",
+  "endpoint_id": "StegVerse-Labs/Site:mathematics-educator-governed-image-composer",
+  "projection_before_hash": "111cc667c8c9d059d4e3549e396b403d2385cca81a8a004fdf370919bb5ee00c",
+  "projection_after_hash": "ae678028fd22e5c04df3fa15ca5d5648c86e9c63062d822daf52d97cb02b3d97",
+  "task_effects": [
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-IMAGE-RUNTIME-CLIENT",
+      "disposition": "SHARED_GOVERNED_ATTACHMENT_REVIEW_CLIENT_INSTALLED",
+      "site_commit": "93885334aa4c0f481a93bed89570098f4466e149"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-IMAGE-COMPOSER",
+      "disposition": "SINGLE_BOUNDED_MATH_IMAGE_INPUT_INSTALLED",
+      "site_commit": "fd3c60e66d98f5375a155627a7b2024514fe5ae6"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-IMAGE-TRANSCRIPTION-BOUNDARY",
+      "disposition": "IMAGE_REVIEW_SEPARATED_FROM_UNADMITTED_TRANSCRIPTION",
+      "site_commit": "b74082e785f7e328b26a2513efe33af2f2629bbb"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-IMAGE-PRODUCT-CONTRACT",
+      "disposition": "PRIVATE_GENERAL_UPLOAD_REMAINS_BLOCKED_MATH_IMAGE_ONLY",
+      "site_commit": "1d5b3187d59e631dc0f2fdd509a40b095e160e3d"
+    },
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-IMAGE-BOUNDARY-VALIDATOR",
+      "disposition": "HOSTED_VALIDATED",
+      "site_commit": "cea60d4b190eda0ec52b5be2c34c285e4748eff9"
+    }
+  ],
+  "alignment_disposition": "PROPAGATING",
+  "reconstruction_state": "PASS",
+  "evidence_refs": [
+    "receipts/state-alignment/ALIGN-UNIFIED-CONVERSATION-MATH-GOVERNED-SOLVER-CONSUMER-006.json",
+    "StegVerse-org/LLM-adapter/docs/SHARED_ATTACHMENT_MATH_IMAGE_MIRROR_HANDOFF.md",
+    "StegVerse-org/LLM-adapter/llm_adapter/attachment_intake.py",
+    "StegVerse-Labs/Site/assets/ecosystem-chat-va-runtime.js",
+    "StegVerse-Labs/Site/assets/ecosystem-chat-simple.js",
+    "StegVerse-Labs/Site/ecosystem-chat.html",
+    "StegVerse-Labs/Site/scripts/check_ecosystem_chat_contract.py",
+    "StegVerse-Labs/Site/scripts/check_ecosystem_chat_boundary.py",
+    "StegVerse-Labs/Site/actions/runs/33122205644",
+    "StegVerse-Labs/Site/actions/runs/33122205642"
+  ],
+  "authority_effect": "NONE",
+  "custody_destination": "master-records/orchestration"
+}
