@@ -25,7 +25,7 @@ PR #20 and PR #79 are closed and superseded. PR #92 carries the bounded broker d
 TVC repository: StegVerse-Labs/TVC
 PR: #92
 branch: repair/github-repository-operation-broker-rebase-002
-expected_head: 06569c885f33e5761d43911ba1088fdf958855b4
+expected_head: 4e87ad9f3a859ab3b18241640624abd5e1757002
 current_diff_file_count: 16
 source_bundle_digest_required: true
 source_bundle_file_count_required: 16
@@ -93,7 +93,7 @@ WORKER-OWNED:
   task: SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001
   worker: tvc-repository-broker-validation-worker
   adapter: process:tvc-repository-broker-validation-v1
-  expected_head: 06569c885f33e5761d43911ba1088fdf958855b4
+  expected_head: 4e87ad9f3a859ab3b18241640624abd5e1757002
   heartbeat_dependency: false
 
 AUTHORITY-OWNED AFTER PASS:
@@ -106,7 +106,7 @@ No session may substitute itself for the machine validation worker, mint a PASS 
 
 ```text
 1. separate task-control runtime resolves SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001 independently of heartbeat progression
-2. exact clean local TVC PR #92 source at 06569c885f33e5761d43911ba1088fdf958855b4 is resolved
+2. exact clean local TVC PR #92 source at 4e87ad9f3a859ab3b18241640624abd5e1757002 is resolved
 3. worker executes tvc.github_repository_operation_broker.verify with forbidden credential variables removed
 4. receipt records exact head + source_bundle_file_count=16 + source_bundle_sha256 + actual PASS/fail-closed result
 5. if main moved, identical digest rematerialization + current-base compatibility are required
@@ -131,10 +131,15 @@ scaffolding/stubs: 0
 missing required source files: 0
 ```
 
-## Archive condition
+## Continuity and archive semantics
 
-The lane remains open until the exact PASS receipt exists, TVC admission occurs, and required StegCore downstream validation is consumed. Transfer, assignment, machine ownership, readiness, source completeness, and hosted workflow results are nonterminal.
+The **validation project lane remains ACTIVE / BLOCKED** until the exact PASS receipt exists, TVC admission occurs, and required StegCore downstream validation is consumed. Transfer, assignment, machine ownership, readiness, source completeness, and hosted workflow results remain nonterminal project states.
+
+The ChatGPT session is not part of the execution chain. Continuation is durable in this handoff, the executable handoff, worker/registry surfaces, PR #92, and the receipt target. After global coordination capture, session archival does not alter validation, admission, release, runtime, or activation state.
 
 ```text
-DO NOT ARCHIVE THIS SESSION — REQUIRED EXECUTION REMAINS IN AN ACTIVE DEPENDENCY LANE.
+project_lifecycle: ACTIVE / BLOCKED
+chat_session_required: false
+tvc_governed_validation_receipt: 0/1
+tvc_broker_admission: 0/1
 ```
