@@ -141,3 +141,22 @@ Current distinction:
 - transition 005+: NOT YET EMITTED;
 - Master Records custody for 005+: NOT YET RECORDED;
 - product activation effect: NONE.
+
+
+## 2026-08-27 machine execution — transition 005 emitted and custodied
+
+The next append-only Math evidence transition now exists:
+
+```text
+005 ALIGN-UNIFIED-CONVERSATION-MATH-HOSTED-VALIDATION-005
+    parent: 004
+    packet commit: 4157dbca945cc13d02b756559ccab5219cba6af9
+    canonical packet sha256: 4c876fd25f112de941c0fda96d8c97629dc15621bbeda749993f3473fa97e4d2
+    Master Records custody commit: 1b3966d7a346133af57aea6bf35922002979023c
+    custody state: ACCEPTED_FOR_CUSTODY
+    hosted all-object reverification: PENDING_OBSERVABLE_RESULT
+```
+
+Transition 005 records only that the already-installed shared Math source boundary has later hosted Site validation evidence. It preserves the same semantic module state hash `b01c9197...`, reconstruction PASS, and authority effect NONE.
+
+Do not promote the Site Math task from its prior fail-closed projection until Master Records all-object custody validation including 005 is actually observed PASS. Solver/verifier execution and attachment/image intake remain unobserved/unadmitted.
