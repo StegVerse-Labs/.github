@@ -1,6 +1,6 @@
 # Heartbeat Carrier Signal Mirror Handoff
 
-Updated: 2026-08-26T18:36:00-05:00
+Updated: 2026-08-27T15:45:00-05:00
 
 ## Canonical authority
 
@@ -61,6 +61,50 @@ credential authority: TV/TVC
 ```
 
 No worker, task, G18 state, application/domain transition, admission decision, claim, fence, lease, route, credential, repository action, carrier-capacity calculation, passband, observer invocation, sampler process, native supervisor, or assignment-trigger packet causes, permits, delays, suppresses, or advances heartbeat progression.
+
+## Governed manifold observation — integrated
+
+Heartbeat now includes an implemented, non-authorizing governed-manifold observation surface. This is not a separate timing loop and does not redefine carrier progression.
+
+The carrier observes a reviewable projection of concurrently changing governed state rather than serializing machine-speed transitions into a per-transition human approval sequence.
+
+Canonical invariant:
+
+```text
+human-in-the-loop timing != governance authority
+heartbeat cadence != governance authority
+wall-clock time != governance authority
+observation != authorization
+
+machine-speed internal transitions may continue inside already-authorized bounds
+protected boundary crossing requires the separately applicable authority
+HB records the governed projection, transition evidence, and authority-boundary references
+```
+
+The projection is emitted by the canonical carrier cycle and uses:
+
+```text
+schema: stegverse.heartbeat-governed-manifold-observation/v1
+projection_role: GOVERNED_MANIFOLD_OBSERVATION
+state_model: MULTI_VARIABLE_CONCURRENT_TRANSITION_SPACE
+human_governance_model: AUTHORITY_OVER_ADMISSIBLE_BOUNDARIES_NOT_PER_TRANSITION_TIMING
+authority_effect: NONE_OBSERVATION_ONLY
+```
+
+Installed runtime surfaces:
+
+```text
+heartbeat_runtime/governed_manifold.py
+heartbeat_runtime/engine_v12.py
+heartbeat_runtime/engine_v13.py
+tests/test_governed_manifold.py
+```
+
+The canonical carrier result now includes `governed_manifold_observation`, emits a
+`governed_manifold_projection_observed` event, and includes the projection plus
+its digest in the Master Records projection for custody and reconstruction.
+
+This integration does not give HB state-transition gating, admission authority, execution authority, claim/fence authority, or credential authority. HB remains the synchronization/reference carrier and observation surface; governance authority remains attached to the relevant admissibility/transition boundary.
 
 ## Canonical implementation surfaces
 
@@ -155,6 +199,9 @@ Required deterministic invariants:
 10. GitHub and third parties have no heartbeat runtime authority;
 11. historical HB29->HB30 replay uses an explicit pre-anchor timestamp and remains deterministic after protocol activation;
 12. manifest/expiration/data communication semantics and Master Records EOL semantics remain preserved while heartbeat stays transport-neutral.
+13. governed-manifold projection is emitted as observation-only and cannot grant authority;
+14. wall-clock timing and heartbeat cadence are not human-governance authority;
+15. machine-speed internal transitions may remain observable while protected authority-boundary crossings remain separately governed.
 
 Focused protocol-anchor coverage is installed at `tests/test_heartbeat_protocol_anchor.py`.
 
@@ -179,6 +226,10 @@ worker-trigger causality: NONE
 third-party runtime requirement: NONE
 heartbeat activation goal: TERMINAL
 downstream HB32 protocol propagation: COMPLETE / issue #263 CLOSED
+governed manifold observation: IMPLEMENTED / VALIDATION PENDING ON BOUNDED PR
+human review timing as governance authority: FALSE
+wall-clock as governance authority: FALSE
+protected boundary authority: EXTERNAL_TO_HB
 archive_ready_for_heartbeat_activation_workstream: true
 ```
 
