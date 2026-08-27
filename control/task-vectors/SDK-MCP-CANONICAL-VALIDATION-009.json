@@ -1,0 +1,43 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SDK-MCP-CANONICAL-VALIDATION-009",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/sdk-mcp-canonical-validation-009.json",
+    "handoffs/SDK-MCP-CANONICAL-VALIDATION-009.json",
+    "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json",
+    "StegVerse-org/StegVerse-SDK:MCP_PORTABLE_AUTHORITY_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-08-27T16:50:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "SDK task state MACHINE_OWNED_EXACT_SOVEREIGN_ARTIFACT_RUN_PENDING; .github handoff state HANDOFF_READY_MACHINE_OWNED",
+    "archive_ready": "worker fragment archive_eligible=false",
+    "unassigned_work": "SDK task owner sdk-mcp-canonical-validation-worker via canonical sovereign scheduler",
+    "chat_owned_counts": "SDK task manual_execution_allowed=false; manual competing claim prohibited",
+    "canonical_owner_installed": "SDK task machine_worker_binding and .github worker/registry/adapter/handoff are merged and validated",
+    "thread_required": "SDK task archive_dependency states executable continuation is machine-owned; chat/manual execution observation/reconciliation only",
+    "blocker_count": "worker fragment admissible_existence.blockers has exactly one item",
+    "evidence_complete": "SDK outputs_currently_satisfied exact integration=false and exact artifact task-state receipt=false",
+    "activated": "worker fragment activation_proof_ref=null; target phase ACTIVATED remains pending",
+    "propagated": "SDK handoff release/tag NOT_READY/PENDING exact integration"
+  },
+  "authority_effect": "NONE"
+}
