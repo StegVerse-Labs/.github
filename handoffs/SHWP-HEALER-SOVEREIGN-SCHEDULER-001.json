@@ -138,5 +138,18 @@
     }
   },
   "block": null,
-  "updated_at": "2026-08-27T17:12:00-05:00"
+  "updated_at": "2026-08-27T17:12:00-05:00",
+  "source_state_vector_ref": "control/task-vectors/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-08-27T17:25:00-05:00",
+      "authority_effect": "NONE"
+    }
+  }
 }
