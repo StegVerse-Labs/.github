@@ -211,3 +211,35 @@ Therefore:
 - Site hosted verification of the new unified consumer: still PENDING;
 - actual governed Math Solver runtime execution: NOT OBSERVED;
 - authority/activation effect: NONE.
+
+
+## 2026-08-27 transition 006 source validation complete
+
+Exact Site head `4e6a9f920971902fce98fc17fb1d78cf68a0e2b3` completed both required hosted validation lanes:
+
+- Math Solver public activation validation run `33121892595` / job `98690515902`: SUCCESS;
+  - fail-closed runtime receipt evaluation PASS;
+  - unified conversational Math boundary PASS;
+  - four-app status projection PASS;
+  - validation-only authority boundary PASS;
+  - validation evidence artifact preserved.
+- Site Bootstrap run `33121892559` / job `98690515240`: SUCCESS;
+  - canonical application validation PASS;
+  - workflow inventory/entry-point validation PASS;
+  - validation-only authority boundary PASS.
+
+Master Records transition-006 all-object validation already passed at run `33121586481` / job `98689500256`.
+
+Therefore transition 006 is now:
+```text
+EMITTED
+CUSTODIED
+MASTER_RECORDS_HOSTED_VALIDATED
+SITE_HOSTED_VALIDATED
+ACTUAL_SOLVER_EXECUTION_NOT_OBSERVED
+AUTHORITY_EFFECT_NONE
+```
+
+Site Math task advanced at `153454fc8f73d0b6387b1779920aa34babf59e46` to `GOVERNED_SOLVER_CONSUMER_HOSTED_VALIDATED_RUNTIME_OBSERVATION_PENDING`.
+
+A future actual governed Math runtime execution remains a distinct material transition 007+.
