@@ -37,14 +37,19 @@
         "fresh_fence_required": true,
         "minimum_fencing_token_exclusive": 21,
         "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
-      }
+      },
+      "source_state_vector_ref": "control/task-vectors/COSV-LIVE-PACKET-AUTOMATION-006.json"
     }
   ],
   "workers": [
     {
       "adapter_ref": "process:cosv-live-packet-automation-v1",
       "authority_source": "handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json#authority",
-      "capabilities": ["runtime_observation", "bounded_repository_mutation", "cosv_live_packet_materialization"],
+      "capabilities": [
+        "runtime_observation",
+        "bounded_repository_mutation",
+        "cosv_live_packet_materialization"
+      ],
       "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
       "executor_type": "repository_worker",
       "last_seen_at": null,
