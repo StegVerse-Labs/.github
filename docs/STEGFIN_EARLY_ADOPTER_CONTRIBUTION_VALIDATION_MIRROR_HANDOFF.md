@@ -1,6 +1,6 @@
 # StegFin Early Adopter Contribution Validation Mirror Handoff
 
-Updated: 2026-08-15T21:04:00-05:00
+Updated: 2026-08-27T07:00:00-05:00
 
 ## Goal
 
@@ -72,6 +72,25 @@ workers/stegfin_early_adopter_contribution_validation_worker.py
 control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json
 tests/test_stegfin_early_adopter_contribution_validation_worker.py
 ```
+
+## 2026-08-27 validation-carrier consolidation
+
+The public worker-source validation no longer needs its own GitHub workflow. Its boundary tests were converted from pytest-fixture syntax to dependency-free `unittest` while preserving the worker's actual private-source command contract (`python -m pytest tests/test_contribution_ledger.py -q`), then absorbed into the stable heartbeat-worker validation dispatcher.
+
+```text
+removed workflow: .github/workflows/stegfin-early-adopter-contribution-validator-source.yml
+stable validation dispatcher: .github/workflows/heartbeat-worker-project.yml
+public boundary test: tests/test_stegfin_early_adopter_contribution_validation_worker.py
+external pytest install in hosted validation: removed
+private worker pytest command: unchanged
+machine-owned private-source worker: unchanged
+authorized local private source observed: false
+credential authority: TV/TVC
+GitHub runtime authority: NONE
+financial authority effect: NONE
+```
+
+This consolidation does not materialize the private StegFin repository and does not complete the machine-owned validation worker. It only removes redundant hosted source-validation fanout.
 
 ## Current state
 
