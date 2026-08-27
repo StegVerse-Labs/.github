@@ -4,7 +4,9 @@
   "tasks": [
     {
       "archive_eligible": false,
-      "archive_reason_codes": ["TVC_BROKER_VALIDATION_RECEIPT_NOT_YET_OBSERVED"],
+      "archive_reason_codes": [
+        "TVC_BROKER_VALIDATION_RECEIPT_NOT_YET_OBSERVED"
+      ],
       "authorized_policy_version": "tvc-repository-broker-validation-carrier-v0.3",
       "block_ref": null,
       "claim_id": null,
@@ -42,13 +44,28 @@
         "admissibility_evidence_refs": [],
         "integration_evidence_refs": [],
         "activation_proof_ref": null,
-        "blockers": ["EXACT_TVC_PR92_LOCAL_VALIDATION_RECEIPT_NOT_YET_OBSERVED"],
+        "blockers": [
+          "EXACT_TVC_PR92_LOCAL_VALIDATION_RECEIPT_NOT_YET_OBSERVED"
+        ],
         "continuation_owner": "tvc-repository-broker-validation-worker + StegVerse-Labs/TVC#92",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
         "task_relationship": "validates_capability",
         "target_phase": "ADMISSIBLE"
+      },
+      "source_state_vector_ref": "control/task-vectors/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-27T16:39:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],
@@ -56,7 +73,9 @@
     {
       "adapter_ref": "process:tvc-repository-broker-validation-v1",
       "authority_source": "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json#authority",
-      "capabilities": ["tvc_repository_broker_validation"],
+      "capabilities": [
+        "tvc_repository_broker_validation"
+      ],
       "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
       "executor_type": "repository_worker",
       "last_seen_at": null,
