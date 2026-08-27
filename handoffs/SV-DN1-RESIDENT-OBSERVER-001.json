@@ -1,0 +1,175 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SV-DN1-RESIDENT-OBSERVER-001",
+  "created_at": "2026-08-27T18:45:00-05:00",
+  "updated_at": "2026-08-27T18:45:00-05:00",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "SV-DN1-RESIDENT-PUBLIC-SOURCE-OBSERVATION-001",
+    "objective": "Acquire an exact public Hugging Face JSON response from the admitted Qwen/Qwen3-8B endpoint on a sovereign StegVerse resident node, preserve raw-byte identity before semantic normalization, run the merged Hugging Face-facing SV-DN-1 semantic Interlock, and emit fenced local evidence without creating Hugging Face, GitHub, credential, governance, publication, certification, heartbeat, or SDK authority.",
+    "success_predicates": [
+      "declared sovereign node is observed",
+      "exact locally materialized stegverse-demo-suite source is present",
+      "public HTTPS Hugging Face endpoint is fetched without credentials",
+      "source capture includes exact raw response sha256",
+      "source capture records requested/final URL, status and content type",
+      "semantic exchange is created by the canonical demo-suite HF-facing adapter",
+      "destination validation reports no exchange blockers",
+      "all durable writes stay within the bounded observer state namespace",
+      "github_token_used=false",
+      "credential_authority=TV/TVC",
+      "authority_effect=OBSERVATION_ONLY_NO_NEW_AUTHORITY"
+    ],
+    "failure_predicates": [
+      "hosted execution is treated as sovereign runtime",
+      "missing scheduler claim or fence",
+      "GitHub token or provider credential is present",
+      "remote repository checkout is attempted",
+      "Hugging Face redirect leaves admitted boundary",
+      "raw bytes are not hash-bound before semantic normalization",
+      "fixture binding is promoted to SDK_ADMITTED",
+      "repository writeback occurs",
+      "Hugging Face endorsement is inferred"
+    ],
+    "authority_ceiling": [
+      "public_source_acquisition",
+      "bounded_process_execution",
+      "semantic evidence formation",
+      "fenced local bound-state receipt projection",
+      "no repository writeback authority",
+      "no credential authority",
+      "no governance authority",
+      "no certification authority",
+      "no publication authority",
+      "no SDK admission authority",
+      "no heartbeat authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 3
+  },
+  "task": {
+    "task_id": "SV-DN1-RESIDENT-OBSERVER-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
+      "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json",
+      "StegVerse-org/stegverse-demo-suite:scripts/observe_sv_dn1_hf_public.py",
+      "StegVerse-org/stegverse-demo-suite:scripts/sv_dn1_hf_interlock.py",
+      "StegVerse-org/stegverse-demo-suite:scripts/sv_dn1_stegverse_interlock.py",
+      "workers/sv_dn1_resident_observer_worker.py",
+      "control/worker-registry.d/sv-dn1-resident-observer-001.json",
+      "control/process-worker-adapters.d/sv-dn1-resident-observer-001.json",
+      "cost-basis/worker-runtime/sv-dn1-resident-observer.json"
+    ],
+    "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "sv-dn1:resident-public-source-observer",
+    "worker_registry_ref": "control/worker-registry.d/sv-dn1-resident-observer-001.json",
+    "worker_id": "sv-dn1-resident-observer-worker",
+    "adapter_ref": "process:sv-dn1-resident-observer-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "observation and evidence review only",
+    "priority": "release"
+  },
+  "authority": {
+    "authority_source": "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json + canonical sovereign WorkerCoordinator",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "sv-dn1-resident-public-observer-v1",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "repository_writeback_authority": false,
+    "provider_credential_authority": false,
+    "governance_decision_authority": false,
+    "certification_authority": false,
+    "publication_authority": false,
+    "sdk_admission_authority": false,
+    "execution_authority_created": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "public_source_acquisition",
+      "evidence_class_preservation"
+    ],
+    "optional_local_locator": "STEGVERSE_SV_DN1_SOURCE_ROOT",
+    "worker": "workers/sv_dn1_resident_observer_worker.py",
+    "allowed_paths": [
+      "receipts/sv-dn1-resident-observer/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 6,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 32,
+    "rate_class": "sv_dn1_public_source_observation",
+    "hosted_execution_allowed": false,
+    "bound_state_root": "~/.stegverse/state/sv-dn1-resident-observer",
+    "bound_state_allowed_paths": [
+      "observed/**",
+      "receipts/**"
+    ],
+    "remote_checkout_allowed": false,
+    "public_network_access": {
+      "enabled": true,
+      "methods": [
+        "GET"
+      ],
+      "allowed_hosts": [
+        "huggingface.co",
+        "*.huggingface.co"
+      ],
+      "authenticated": false,
+      "credential_forwarding": false
+    }
+  },
+  "input_contract": {
+    "source": "already-materialized exact stegverse-demo-suite source",
+    "required_source_files": [
+      "docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
+      "tasks/SV-DN1-RESIDENT-OBSERVER-001.json",
+      "scripts/observe_sv_dn1_hf_public.py",
+      "scripts/sv_dn1_hf_interlock.py",
+      "scripts/sv_dn1_stegverse_interlock.py",
+      "config/sv_dn1_hf_mapping.v1.json"
+    ],
+    "target_url": "https://huggingface.co/api/models/Qwen/Qwen3-8B",
+    "target_source_system": "huggingface",
+    "credential_authority": "TV/TVC"
+  },
+  "activation": {
+    "carrier": "independent_task_control",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json",
+    "recheck_trigger": "each admitted assignment opportunity until exact resident source capture and semantic exchange evidence exist",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "master_records_required": true,
+    "result_receipt": "~/.stegverse/state/sv-dn1-resident-observer/receipts/latest.json",
+    "observed_capture": "~/.stegverse/state/sv-dn1-resident-observer/observed/source-capture.json",
+    "observed_exchange": "~/.stegverse/state/sv-dn1-resident-observer/observed/exchange.json",
+    "repository_persistence_requires_separate_admission": true
+  },
+  "failure_policy": {
+    "missing_materialized_source": "return HANDOFF_READY and relinquish the claim; do not perform remote checkout",
+    "public_endpoint_unavailable": "return HANDOFF_READY with exact public-source blocker",
+    "repairable_observer_defect": "emit BLOCKED with machine-readable sandbox-resolution contract",
+    "hosted_github_actions_substitute_allowed": false
+  },
+  "completion": {
+    "next_authorized_action": "On an admitted sovereign node with exact demo-suite source materialized locally, WorkerCoordinator claims SV-DN1-RESIDENT-OBSERVER-001 and runs the one-shot public observer. Completion requires a verified raw-byte source capture and HF-side semantic exchange. InTr runtime traversal and SDK live admission remain successor work and are not fabricated by this worker.",
+    "terminal_when": [
+      "SV_DN1_RESIDENT_SOURCE_CAPTURE_COMPLETE",
+      "raw_response_sha256_present=true",
+      "semantic_exchange_valid=true",
+      "credential_authority=TV/TVC",
+      "github_token_used=false",
+      "repository_writeback_performed=false",
+      "sdk_admitted=false"
+    ],
+    "release_condition": "A fenced resident observer receipt preserves the exact public Hugging Face raw-byte digest and a validated HF-side semantic exchange from the canonical locally materialized demo-suite source."
+  }
+}
