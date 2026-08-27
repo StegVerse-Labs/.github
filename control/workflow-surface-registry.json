@@ -27,24 +27,6 @@
       "reason": "existing machine-owned validation surface; do not remove before owner reconciliation"
     },
     {
-      "path": ".github/workflows/activate-sovereign-runtime-worker.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github#59",
-      "reason": "existing machine-owned validation surface; do not compete"
-    },
-    {
-      "path": ".github/workflows/sovereign-runtime-self-bootstrap.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github#59/#65",
-      "reason": "source released but workflow retention requires runtime-owner evidence review"
-    },
-    {
-      "path": ".github/workflows/sovereign-ephemeral-console.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "SHWP-DURABLE-RUNTIME-ACTIVATION / G18 fencing token 18",
-      "reason": "released validation-only same-host logical-node proof surface; retention remains subject to Healer classification and active-owner safety"
-    },
-    {
       "path": ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml",
       "classification": "BLOCKED_ACTIVE_OWNERSHIP",
       "owner": "concurrent StegFin early-adopter workstream",
@@ -78,7 +60,10 @@
     ".github/workflows/activate-host-self-attest-worker.yml",
     ".github/workflows/test-lanes-autolaunch-validation.yml",
     ".github/workflows/all-org-heartbeat-federation.yml",
-    ".github/workflows/mcp-activation-binding-test.yml"
+    ".github/workflows/mcp-activation-binding-test.yml",
+    ".github/workflows/activate-sovereign-runtime-worker.yml",
+    ".github/workflows/sovereign-runtime-self-bootstrap.yml",
+    ".github/workflows/sovereign-ephemeral-console.yml"
   ],
   "concurrent_new_surfaces_observed_during_hygiene": [
     ".github/workflows/mcp-activation-binding-test.yml",
