@@ -1,0 +1,30 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-TV-TVC-RESIDENT-PROOF-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "10100000111001",
+  "evidence_refs": [
+    "control/worker-registry.d/tv-tvc-resident-proof-001.json",
+    "handoffs/SHWP-TV-TVC-RESIDENT-PROOF-001.json",
+    "StegVerse-Labs/TVC/tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json#machine_readable_state.cosv"
+  ],
+  "source_owner_ref": "StegVerse-Labs/TVC/tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json#machine_readable_state.cosv",
+  "observed_at": "2026-08-27T07:04:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 1,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": true,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": true
+  }
+}

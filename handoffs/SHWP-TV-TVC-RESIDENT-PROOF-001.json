@@ -124,11 +124,32 @@
     "rate_class": "tv_tvc_resident_operational_proof"
   },
   "activation": {
-    "carrier": "heartbeat",
+    "carrier": "heartbeat_reference_only",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "handoffs/SHWP-TV-TVC-RESIDENT-PROOF-001.json#authority",
     "recheck_trigger": "each admitted worker cycle while unfinished",
-    "checkout_policy": "separate_fenced_claim_no_g18_reuse"
+    "checkout_policy": "separate_fenced_claim_no_g18_reuse",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "carrier_trigger_required": false,
+    "targeted_execution": {
+      "mode": "TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT",
+      "entrypoint": "scripts/run_worker_runtime.py",
+      "argv": [
+        "python",
+        "scripts/run_worker_runtime.py",
+        "--task-id",
+        "SHWP-TV-TVC-RESIDENT-PROOF-001"
+      ],
+      "requires_existing_separated_carrier_reference": true,
+      "g18_bootstrap_allowed": false,
+      "compatibility_carrier_packet_consumption": false,
+      "unrelated_worker_execution": false,
+      "broad_orphan_reconciliation": false,
+      "heartbeat_grants_execution_authority": false,
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": "NONE",
+      "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+    }
   },
   "continuity": {
     "checkpoint_ref": "receipts/tv-tvc-resident-proof/SHWP-TV-TVC-RESIDENT-PROOF-001.json",
@@ -164,7 +185,9 @@
       "consumer_secret_received=false",
       "receipt_path_present=true",
       "proof_sha256_present=true"
-    ]
+    ],
+    "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-TV-TVC-RESIDENT-PROOF-001",
+    "live_host_prerequisite": "resident sole-host must first consume current .github worker-runtime source so --task-id mode exists locally; source refresh itself is not runtime proof"
   },
   "block": {
     "block_reason": "The repository-side task, local TV/TVC source discovery, and stale-materialization refresh implementation are merged and validated. The currently observable resident WorkerCoordinator projection is still the Aug 18 HB31/runtime-tick-2 CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION snapshot, and the dedicated task receipt is absent. The remaining first transition is resident-host consumption of the local-only source-refresh repair; repository/hosted validation cannot substitute for that execution.",
@@ -173,6 +196,7 @@
     "recheck_trigger": "after any resident worker source-refresh receipt or newer WorkerCoordinator runtime tick is observed",
     "next_check": "receipts/sovereign-host/worker-source-refresh-installation.latest.json -> control/worker-runtime-state.json -> receipts/tv-tvc-resident-proof/SHWP-TV-TVC-RESIDENT-PROOF-001.json",
     "escalation_condition": "source mismatch, forbidden hosted runtime, credential transport attempt, authority expansion, mutable runtime-state overwrite, or carrier restart caused by worker-source refresh",
-    "block_expires_at": null
+    "block_expires_at": null,
+    "next_targeted_execution": "after source refresh, run the exact one-shot command above; if local TV/TVC source or systemd-user credential preflight is unavailable, the worker remains BLOCKED with a secret-free receipt"
   }
 }
