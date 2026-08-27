@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-27T16:34:00-05:00
+Updated: 2026-08-27T16:39:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -39,7 +39,7 @@ The 189 unaudited repositories are not exemptions. They are classified `NO_REPOS
 
 ## Current .github boundary
 
-`.github` remains `VECTOR_REQUIRED`. Four active vectors are indexed today, but the global worker registry and organization task registry contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
+`.github` remains `VECTOR_REQUIRED`. Five active vectors are indexed today, but the global worker registry and organization task registry contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
 
 Existing indexed examples remain unchanged:
 
@@ -105,9 +105,9 @@ Machine-readable snapshot: `control/cosv-global-registry-coverage.json`.
 - 45 unique worker task IDs across the global worker registry plus fragments.
 - 4 canonically indexed task IDs.
 - 6 completed-only historical unvectorized task IDs.
-- 35 active worker task IDs lack canonical COSV coverage.
+- 34 active worker task IDs lack canonical COSV coverage.
 - 14 organization-registry task IDs lack canonical COSV coverage.
-- Total active .github task IDs lacking canonical COSV coverage: 49.
+- Total active .github task IDs lacking canonical COSV coverage: 48.
 - The orphan-recovery aggregate/fragment contradiction is reconciled to terminal COMPLETED from the durable G22 PASS receipt; no vector was emitted for this completed historical task.
 
 No new vector digits were invented during this audit.
@@ -195,3 +195,16 @@ Active .github COSV gap after reconciliation: 36 worker tasks + 14 organization 
 `STEGGATE-FIRST-BOUNDARY-001` is reconciled from stale aggregate BLOCKED state to terminal `COMPLETED` using canonical ARA owner evidence: activation `COMPLETE`, admission `ALLOW`, consequence observation `MATCH`, and released claim `COMPLETE_RELEASED`. No task vector is emitted for this completed historical task.
 
 Active .github COSV gap: 35 worker tasks + 14 organization tasks = 49 active unvectorized task IDs.
+
+## TVC repository-broker validation vector adoption — 2026-08-27T16:39:00-05:00
+
+The first post-reconciliation active task vector is projected from explicit machine-readable evidence, not from a prose-only state label:
+
+```text
+SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001
+task.v1 [L R U I V G O C M T B E A P] = 50000000101000
+```
+
+The vector record carries per-metric evidence, the worker fragment and executable handoff bind `source_state_vector_ref`, and `control/task-vector-index.json` now indexes five canonical tasks. This vector does not claim governed broker validation PASS, broker admission, StegCore downstream propagation, or activation; those remain open exactly as recorded by the TVC broker validation handoff.
+
+Active .github COSV gap after this projection: 34 worker tasks + 14 organization tasks = 48 active unvectorized task IDs.
