@@ -576,7 +576,20 @@
         }
       ],
       "worker_id": "steggate-rendezvous-deployment-worker",
-      "worker_instance_id": "steggate-rendezvous-deployment-worker-HB7-G13"
+      "worker_instance_id": "steggate-rendezvous-deployment-worker-HB7-G13",
+      "source_state_vector_ref": "control/task-vectors/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-27T16:45:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "archive_eligible": false,
@@ -992,7 +1005,7 @@
       "worker_instance_id": null
     }
   ],
-  "updated_at": "2026-08-27T16:34:00-05:00",
+  "updated_at": "2026-08-27T16:45:00-05:00",
   "workers": [
     {
       "adapter_ref": null,
