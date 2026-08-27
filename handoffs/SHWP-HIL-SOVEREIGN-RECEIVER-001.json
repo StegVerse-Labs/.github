@@ -120,6 +120,25 @@
       "credential_authority": "TV/TVC",
       "github_token_runtime_authority": "NONE",
       "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+    },
+    "portable_refresh_then_execute": {
+      "mode": "PORTABLE_REFRESH_THEN_TARGETED_ONE_SHOT",
+      "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+      "argv": [
+        "python",
+        "scripts/refresh_and_execute_resident_task.py",
+        "--task-id",
+        "SHWP-HIL-SOVEREIGN-RECEIVER-001"
+      ],
+      "systemd_required": false,
+      "second_machine_required": false,
+      "network_source_fetch_allowed": false,
+      "source_root_requirement": "already-local current StegVerse-Labs/.github source",
+      "runtime_state_preserved": true,
+      "source_refresh_is_runtime_execution": false,
+      "heartbeat_grants_execution_authority": false,
+      "github_token_runtime_authority": "NONE",
+      "credential_authority": "TV/TVC"
     }
   },
   "continuity": {

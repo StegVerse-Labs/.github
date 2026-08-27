@@ -67,5 +67,39 @@ class TargetedExecutionEntrypointBindingTests(unittest.TestCase):
         self.assertEqual(target["github_token_runtime_authority"], "NONE")
 
 
+    def test_portable_refresh_then_execute_bindings_require_no_systemd_or_second_machine(self):
+        for rel, task_id in GENERIC.items():
+            with self.subTest(rel=rel):
+                handoff = self.load(rel)
+                portable = handoff["activation"]["portable_refresh_then_execute"]
+                self.assertEqual(portable["mode"], "PORTABLE_REFRESH_THEN_TARGETED_ONE_SHOT")
+                self.assertEqual(
+                    portable["argv"],
+                    ["python", "scripts/refresh_and_execute_resident_task.py", "--task-id", task_id],
+                )
+                self.assertFalse(portable["systemd_required"])
+                self.assertFalse(portable["second_machine_required"])
+                self.assertFalse(portable["network_source_fetch_allowed"])
+                self.assertTrue(portable["runtime_state_preserved"])
+                self.assertFalse(portable["source_refresh_is_runtime_execution"])
+                self.assertFalse(portable["heartbeat_grants_execution_authority"])
+                self.assertEqual(portable["github_token_runtime_authority"], "NONE")
+                self.assertEqual(portable["credential_authority"], "TV/TVC")
+
+    def test_ecosystem_chat_portable_refresh_keeps_dedicated_parent_mode(self):
+        handoff = self.load("handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json")
+        portable = handoff["activation"]["portable_refresh_then_execute"]
+        self.assertEqual(portable["mode"], "PORTABLE_REFRESH_THEN_DEDICATED_PARENT_ONE_SHOT")
+        self.assertEqual(
+            portable["argv"],
+            ["python", "scripts/refresh_and_execute_resident_task.py", "--ecosystem-chat-parent"],
+        )
+        self.assertFalse(portable["systemd_required"])
+        self.assertFalse(portable["second_machine_required"])
+        self.assertFalse(portable["network_source_fetch_allowed"])
+        self.assertFalse(portable["source_refresh_is_runtime_execution"])
+        self.assertEqual(portable["credential_authority"], "TV/TVC")
+
+
 if __name__ == "__main__":
     unittest.main()

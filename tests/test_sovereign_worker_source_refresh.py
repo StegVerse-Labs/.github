@@ -82,6 +82,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertTrue((runtime / "state_language/__init__.py").is_file())
             for rel in (
                 "scripts/run_worker_runtime.py",
+                "scripts/refresh_and_execute_resident_task.py",
                 "scripts/run_independent_ecosystem_chat_parent.py",
                 "scripts/materialize_live_cosv_packet.py",
                 "scripts/cosv.py",
