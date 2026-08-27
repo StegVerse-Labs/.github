@@ -226,3 +226,34 @@ state:    EMITTED
 ```
 
 This reconciliation does not execute the parent task and does not mint live activation evidence. It removes a stale canonical-registry blocker so the already-authorized independent task-control executor can truthfully acquire a new fence strictly greater than 22 when an admitted StegVerse execution surface is available.
+
+
+## Resident execution request bridge — source validation pending
+
+To reduce dependence on manual resident-console invocation without weakening task authority, this branch adds a bounded local source-refresh consumption path:
+
+```text
+control/resident-execution-request.json
+-> local source refresh copies the non-authorizing request
+-> scripts/consume_resident_execution_request.py
+-> exactly one attempt per request id + content hash
+-> scripts/refresh_and_execute_resident_task.py --ecosystem-chat-parent
+-> scripts/run_independent_ecosystem_chat_parent.py
+```
+
+Required semantics:
+
+```text
+request grants authority: false
+parent executor retains claim/fence authority: true
+fresh fence floor: >22
+heartbeat execution authority: false
+GitHub-token runtime authority: NONE
+credential authority: TV/TVC
+network source fetch: false
+second user-operated machine required: false
+same request automatic retry: false
+runtime execution observed: false
+```
+
+This is source integration only until exact validation succeeds and the source is merged. Even after merge, it does not prove the resident source-refresh service is installed or active and does not prove the request was consumed. The direct portable one-shot remains valid independently of the watcher. A resident attempt must be evidenced by sovereign-host receipts and a fresh parent fence; hosted validation cannot satisfy that boundary.
