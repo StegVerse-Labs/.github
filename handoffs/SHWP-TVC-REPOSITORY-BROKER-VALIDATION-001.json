@@ -29,7 +29,7 @@
     "source_refs": [
       "StegVerse-Labs/TVC#19",
       "StegVerse-Labs/TVC#92",
-      "StegVerse-Labs/TVC@06569c885f33e5761d43911ba1088fdf958855b4",
+      "StegVerse-Labs/TVC@4e87ad9f3a859ab3b18241640624abd5e1757002",
       "StegVerse-Labs/TVC/docs/GITHUB_REPOSITORY_OPERATION_BROKER_MIRROR_HANDOFF.md",
       "StegVerse-Labs/TVC/tasks/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.json",
       "workers/tvc_repository_broker_validation_worker.py"
@@ -75,7 +75,7 @@
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 24000,
     "rate_class": "tvc_repository_broker_validation",
-    "expected_tvc_head": "06569c885f33e5761d43911ba1088fdf958855b4",
+    "expected_tvc_head": "4e87ad9f3a859ab3b18241640624abd5e1757002",
     "expected_head_change_reason": "PR #92 added content-bound validation evidence: governed PASS now emits source_bundle_file_count=16 plus source_bundle_sha256 so identical broker bytes can be rematerialized onto later main without treating unrelated main movement as source change",
     "validation_command": ["python", "tools/task_dispatcher.py", "tvc.github_repository_operation_broker.verify"],
     "validated_identity": ["exact_tvc_head", "source_bundle_sha256"],
@@ -98,8 +98,8 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Locate exact locally materialized TVC PR #92 source at 06569c885f33e5761d43911ba1088fdf958855b4 and execute the repository-native validation task with all non-TV/TVC credential environment variables removed.",
-    "terminal_when": ["A PASS validation receipt records exact TVC source head 06569c885f33e5761d43911ba1088fdf958855b4, source_bundle_file_count=16, source_bundle_sha256, and sanitized dispatcher result"]
+    "next_authorized_action": "Locate exact locally materialized TVC PR #92 source at 4e87ad9f3a859ab3b18241640624abd5e1757002 and execute the repository-native validation task with all non-TV/TVC credential environment variables removed.",
+    "terminal_when": ["A PASS validation receipt records exact TVC source head 4e87ad9f3a859ab3b18241640624abd5e1757002, source_bundle_file_count=16, source_bundle_sha256, and sanitized dispatcher result"]
   },
   "block": null
 }
