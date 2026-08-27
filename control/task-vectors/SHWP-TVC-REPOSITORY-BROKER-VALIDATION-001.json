@@ -1,0 +1,43 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/tvc-repository-broker-validation-001.json",
+    "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
+    "docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC#92@4e87ad9f3a859ab3b18241640624abd5e1757002"
+  ],
+  "observed_at": "2026-08-27T16:39:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md#implementation_claim=RELEASED_TO_MACHINE_WORKER and worker-owned partition",
+    "archive_ready": "docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md#archive_ready=false",
+    "unassigned_work": "control/worker-registry.d/tvc-repository-broker-validation-001.json#admissible_existence.continuation_owner",
+    "chat_owned_counts": "docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md#manual_validation_execution_allowed=false and chat_session_required=false",
+    "canonical_owner_installed": "docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md#Installed execution surfaces",
+    "thread_required": "docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md#ChatGPT session is not part of execution chain",
+    "blocker_count": "control/worker-registry.d/tvc-repository-broker-validation-001.json#admissible_existence.blockers[1]",
+    "evidence_complete": "docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md#tvc_governed_validation_receipt=0/1",
+    "activated": "docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md#tvc_broker_admission=0/1",
+    "propagated": "docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md#StegCore_downstream_materialization=0/1"
+  },
+  "authority_effect": "NONE"
+}
