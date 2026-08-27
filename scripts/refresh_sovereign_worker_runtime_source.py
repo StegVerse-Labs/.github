@@ -31,6 +31,7 @@ STATIC_DIRS = (
 )
 STATIC_FILES = (
     Path("scripts/run_worker_runtime.py"),
+    Path("scripts/refresh_and_execute_resident_task.py"),
     Path("scripts/run_independent_ecosystem_chat_parent.py"),
     Path("scripts/materialize_live_cosv_packet.py"),
     Path("scripts/cosv.py"),
