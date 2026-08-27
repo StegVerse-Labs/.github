@@ -1,0 +1,41 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SV-DN1-RESIDENT-OBSERVER-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:sv-dn1-resident-observer-v1",
+      "authority_ref": "handoffs/SV-DN1-RESIDENT-OBSERVER-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "public_source_acquisition",
+        "evidence_class_preservation"
+      ],
+      "command": [
+        "python",
+        "workers/sv_dn1_resident_observer_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SV_DN1_SOURCE_ROOT",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/state/sv-dn1-resident-observer",
+      "bound_state_allowed_paths": [
+        "observed/**",
+        "receipts/**"
+      ],
+      "timeout_seconds": 240,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Consumes only already-materialized exact stegverse-demo-suite source; remote repository checkout is prohibited.",
+        "Public network access is restricted to unauthenticated HTTPS GET requests to huggingface.co or subdomains as enforced by canonical demo-suite observer source.",
+        "GitHub tokens, Hugging Face credentials, provider credentials and credential forwarding are forbidden.",
+        "The worker persists only bound-state source capture, semantic exchange and receipt evidence.",
+        "Completion stops before live InTr traversal, SDK admission, dashboard publication, governance decision or certification."
+      ]
+    }
+  ]
+}
