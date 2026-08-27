@@ -60,7 +60,39 @@
       "scripts/refresh_sovereign_worker_runtime_source.py",
       "scripts/install_sovereign_worker_source_refresh_service.py"
     ],
-    "dependencies": []
+    "dependencies": [],
+    "source_state_vector_ref": "StegVerse-Labs/TVC/tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json#machine_readable_state.cosv",
+    "machine_readable_state": {
+      "cosv": {
+        "profile": "task.v1",
+        "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+        "notation": "L R U I V G O C M T B E A P",
+        "width": 14,
+        "vector": "10100000111001",
+        "vector_state": "EMITTED",
+        "vector_observed_at": "2026-08-27T07:04:00-05:00",
+        "exact_metrics": {
+          "unassigned_work": 1,
+          "chat_owned_implementation": 0,
+          "chat_owned_validation": 0,
+          "chat_owned_integration": 0,
+          "chat_owned_observation": 0,
+          "chat_owned_credentials": 0,
+          "blocker_count": 1
+        },
+        "authority_effect": "NONE",
+        "interpretation": {
+          "lifecycle": "UNCLAIMED",
+          "archive_ready": false,
+          "canonical_owner_installed": true,
+          "thread_required": true,
+          "evidence_complete": false,
+          "activated": false,
+          "propagated": true,
+          "blocker_basis": "canonical owner task requires runtime-contract rebinding after credential-model consistency gate"
+        }
+      }
+    }
   },
   "authority": {
     "authority_source": "StegVerse-Labs/TVC#89 + TV/TVC credential-processing policy",
@@ -79,8 +111,12 @@
       "durable_state_reconstruction",
       "tv_tvc_resident_operational_proof_activation"
     ],
-    "allowed_paths": ["receipts/tv-tvc-resident-proof/**"],
-    "allowed_services": ["stegtvc-tv-artifact-exchange@.service"],
+    "allowed_paths": [
+      "receipts/tv-tvc-resident-proof/**"
+    ],
+    "allowed_services": [
+      "stegtvc-tv-artifact-exchange@.service"
+    ],
     "max_actions": 4,
     "max_retries": 4096,
     "external_cost_ceiling_usd": 0,
