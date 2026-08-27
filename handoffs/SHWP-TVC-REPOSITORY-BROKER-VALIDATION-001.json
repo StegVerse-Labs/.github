@@ -19,7 +19,12 @@
       "Any forbidden credential is supplied to the validation subprocess",
       "Dispatcher validation fails or returns malformed evidence"
     ],
-    "authority_ceiling": ["validation_only", "no_repository_mutation", "no_merge_authority", "no_credential_authority"],
+    "authority_ceiling": [
+      "validation_only",
+      "no_repository_mutation",
+      "no_merge_authority",
+      "no_credential_authority"
+    ],
     "successor_policy": "INHERIT_OR_NARROW",
     "max_successor_depth": 1
   },
@@ -58,7 +63,9 @@
     "admissibility_evidence_refs": [],
     "integration_evidence_refs": [],
     "activation_proof_ref": null,
-    "blockers": ["EXACT_TVC_PR92_LOCAL_VALIDATION_RECEIPT_NOT_YET_OBSERVED"],
+    "blockers": [
+      "EXACT_TVC_PR92_LOCAL_VALIDATION_RECEIPT_NOT_YET_OBSERVED"
+    ],
     "continuation_owner": "tvc-repository-broker-validation-worker + StegVerse-Labs/TVC#92",
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": false,
@@ -67,8 +74,12 @@
     "target_phase": "ADMISSIBLE"
   },
   "execution": {
-    "required_capabilities": ["tvc_repository_broker_validation"],
-    "allowed_paths": ["receipts/tvc-repository-broker-validation/**"],
+    "required_capabilities": [
+      "tvc_repository_broker_validation"
+    ],
+    "allowed_paths": [
+      "receipts/tvc-repository-broker-validation/**"
+    ],
     "allowed_services": [],
     "max_actions": 4,
     "max_retries": 4096,
@@ -77,8 +88,15 @@
     "rate_class": "tvc_repository_broker_validation",
     "expected_tvc_head": "4e87ad9f3a859ab3b18241640624abd5e1757002",
     "expected_head_change_reason": "PR #92 added content-bound validation evidence: governed PASS now emits source_bundle_file_count=16 plus source_bundle_sha256 so identical broker bytes can be rematerialized onto later main without treating unrelated main movement as source change",
-    "validation_command": ["python", "tools/task_dispatcher.py", "tvc.github_repository_operation_broker.verify"],
-    "validated_identity": ["exact_tvc_head", "source_bundle_sha256"],
+    "validation_command": [
+      "python",
+      "tools/task_dispatcher.py",
+      "tvc.github_repository_operation_broker.verify"
+    ],
+    "validated_identity": [
+      "exact_tvc_head",
+      "source_bundle_sha256"
+    ],
     "integration_revalidation_rule": "FULL_REVALIDATION_REQUIRED_IF_SOURCE_BUNDLE_SHA256_CHANGES",
     "main_drift_rule": "UNCHANGED_SOURCE_BUNDLE_REQUIRES_CURRENT_BASE_COMPATIBILITY_REVIEW_NOT_SOURCE_REVALIDATION"
   },
@@ -99,7 +117,22 @@
   },
   "completion": {
     "next_authorized_action": "Locate exact locally materialized TVC PR #92 source at 4e87ad9f3a859ab3b18241640624abd5e1757002 and execute the repository-native validation task with all non-TV/TVC credential environment variables removed.",
-    "terminal_when": ["A PASS validation receipt records exact TVC source head 4e87ad9f3a859ab3b18241640624abd5e1757002, source_bundle_file_count=16, source_bundle_sha256, and sanitized dispatcher result"]
+    "terminal_when": [
+      "A PASS validation receipt records exact TVC source head 4e87ad9f3a859ab3b18241640624abd5e1757002, source_bundle_file_count=16, source_bundle_sha256, and sanitized dispatcher result"
+    ]
   },
-  "block": null
+  "block": null,
+  "source_state_vector_ref": "control/task-vectors/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-08-27T16:39:00-05:00",
+      "authority_effect": "NONE"
+    }
+  }
 }
