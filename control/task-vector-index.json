@@ -121,11 +121,21 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "StegVerse-Labs/StegVerse-Healer:data/session_consolidation/tv-tvc-no-github-token-dispatch-migration.json"
+    },
+    {
+      "task_id": "AE-RELATIONAL-MATH-WORKER-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/ae-relational-math-worker-001.json",
+      "source_state_vector_ref": "control/task-vectors/AE-RELATIONAL-MATH-WORKER-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "Admissible-Existence/AE:data/autonomous_goal_seeds/AE-AUTO-0011.json"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 12,
-    "local_cosv_record_tasks": 12,
+    "indexed_vectorized_tasks": 13,
+    "local_cosv_record_tasks": 13,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
