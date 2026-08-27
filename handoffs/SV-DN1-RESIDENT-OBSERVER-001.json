@@ -175,5 +175,35 @@
       "sdk_admitted=false"
     ],
     "release_condition": "A fenced resident observer receipt preserves the exact public Hugging Face raw-byte digest and a validated HF-side semantic exchange from the canonical locally materialized demo-suite source."
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:sv-dn1-resident-public-observer:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
+      "docs/SV_DN1_RESIDENT_OBSERVER_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json",
+      "handoffs/SV-DN1-RESIDENT-OBSERVER-001.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/sv_dn1_resident_observer_worker.py",
+      "control/process-worker-adapters.d/sv-dn1-resident-observer-001.json",
+      "control/worker-registry.d/sv-dn1-resident-observer-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "EXACT_LOCAL_DEMO_SUITE_SOURCE_NOT_YET_OBSERVED",
+      "CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND",
+      "SOVEREIGN_SV_DN1_RESIDENT_SOURCE_CAPTURE_RECEIPT_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "sv-dn1-resident-observer-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
   }
 }
