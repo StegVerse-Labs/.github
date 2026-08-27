@@ -23,17 +23,20 @@ Canonical machine evidence: `control/actions-fanout-workflow-inventory-2026-08-1
 
 ```text
 baseline workflow files: 18
-current workflow files: 3
+current workflow files: 2
 automatic-push workflows: 2
 PR/manual-only workflows: 1
-Healer workflows removed with parity: 15
+Healer workflows removed with parity: 16
 stable dispatchers: 2
 repository hygiene owner: StegVerse-Labs/StegVerse-Healer#34
 repository-wide quantitative run-history proof: AWAITING_SUPPORTED_READ
 ```
 
-Live `main` now contains exactly these three workflow files:
+Live `main` now contains exactly these two workflow files:
 
+```text
+heartbeat-worker-project.yml
+org-control-plane-validate.yml
 ```text
 heartbeat-worker-project.yml
 org-control-plane-validate.yml
@@ -96,7 +99,7 @@ The full Heartbeat Worker suite is green: run `32588349952`, 486 tests, zero fai
 
 ## Remaining `.github` hygiene work
 
-Healer #34 remains OPEN. One non-dispatcher workflow remains owner-sensitive and require owner reconciliation or explicit standalone-exception evidence before any further removal. The active classes include sovereign runtime, inference, federation, MCP, StegFin, StegGate rendezvous, ephemeral console/bootstrap, and test-lane ownership. Count >2 is not terminal without evidence-backed technical exceptions.
+Healer #34 remains OPEN. No non-dispatcher workflows remain and require owner reconciliation or explicit standalone-exception evidence before any further removal. The active classes include sovereign runtime, inference, federation, MCP, StegFin, StegGate rendezvous, ephemeral console/bootstrap, and test-lane ownership. Count >2 is not terminal without evidence-backed technical exceptions.
 
 Canonical hygiene authority:
 
@@ -217,7 +220,7 @@ Current live workflow census after direct repository listing:
 ```text
 workflow files: 8
 automatic-push workflows: 2
-PR-only workflows: 1
+PR-only workflows: 0
 stable dispatchers: 2
 non-dispatchers remaining: 6
 ```
@@ -253,7 +256,7 @@ Current live workflow census:
 ```text
 workflow files: 5
 automatic-push workflows: 2
-PR-only workflows: 1
+PR-only workflows: 0
 stable dispatchers: 2
 non-dispatchers remaining: 3
 ```
@@ -287,10 +290,30 @@ Current live workflow census:
 ```text
 workflow files: 3
 automatic-push workflows: 2
-PR-only workflows: 1
+PR-only workflows: 0
 stable dispatchers: 2
 non-dispatcher remaining: 1
 ```
+
+## 2026-08-27 StegFin source-validation consolidation
+
+The final non-dispatcher, `.github/workflows/stegfin-early-adopter-contribution-validator-source.yml`, was consolidated after its public boundary tests were converted to dependency-free `unittest` and absorbed into `heartbeat-worker-project.yml`.
+
+```text
+removed standalone workflow: stegfin-early-adopter-contribution-validator-source.yml
+private-source worker task changed: false
+private StegFin source materialized: false
+hosted pytest installation removed: true
+stable workflow count: 2
+automatic-push workflows: 2
+PR-only standalone workflows: 0
+non-dispatchers: 0
+preferred workflow target: SATISFIED
+credential authority: TV/TVC
+GitHub runtime authority: NONE
+```
+
+The exact private-source validation outcome remains pending under its machine-owned handoff; workflow minimization does not imply private-source validation completion.
 
 ## Quantitative evidence limitation
 
@@ -311,6 +334,6 @@ No tag/release is required solely for these workflow-validation consolidations. 
 
 ## Completion gate
 
-Cost reduction is materially advanced but nonterminal. ````.github` is 18 -> 3 with fifteen parity-preserving removals/consolidations; Healer #34 has one owner-sensitive non-dispatcher; Site #268 remains active; VA governed-surface observation, Healer scheduler live receipt, Site #388 publication proof, B27, and quantitative run-history evidence remain unresolved.
+Cost reduction is materially advanced but nonterminal. `````.github` is 18 -> 2 with sixteen parity-preserving removals/consolidations; the preferred 0/1/2 target is reached; Site #268 remains active; VA governed-surface observation, Healer scheduler live receipt, Site #388 publication proof, B27, and quantitative run-history evidence remain unresolved.
 
 Current status: `DO NOT ARCHIVE THIS SESSION — UNIQUE ACTIVE WORK REMAINS.`
