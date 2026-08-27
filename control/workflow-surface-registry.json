@@ -21,22 +21,10 @@
       "reason": "canonical heartbeat/runtime/worker validation surface; absorbs organization-heartbeat source triggers/carrier parity, manual watchdog diagnostics, retained terminal host/native canary evidence, and external-timing fixed-cadence zero-authority validation while routine state persistence remains excluded from automatic hosted fanout"
     },
     {
-      "path": ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github#60",
-      "reason": "existing machine-owned validation surface; do not remove before owner reconciliation"
-    },
-    {
       "path": ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml",
       "classification": "BLOCKED_ACTIVE_OWNERSHIP",
       "owner": "concurrent StegFin early-adopter workstream",
       "reason": "separate active owner prevents competing cleanup"
-    },
-    {
-      "path": ".github/workflows/steggate-heartbeat-integration.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegGate heartbeat integration lane",
-      "reason": "candidate for stable heartbeat/control validation consolidation, but active rendezvous execution must remain untouched"
     }
   ],
   "removed_in_hygiene_batch_1": [
@@ -63,7 +51,9 @@
     ".github/workflows/mcp-activation-binding-test.yml",
     ".github/workflows/activate-sovereign-runtime-worker.yml",
     ".github/workflows/sovereign-runtime-self-bootstrap.yml",
-    ".github/workflows/sovereign-ephemeral-console.yml"
+    ".github/workflows/sovereign-ephemeral-console.yml",
+    ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml",
+    ".github/workflows/steggate-heartbeat-integration.yml"
   ],
   "concurrent_new_surfaces_observed_during_hygiene": [
     ".github/workflows/mcp-activation-binding-test.yml",
