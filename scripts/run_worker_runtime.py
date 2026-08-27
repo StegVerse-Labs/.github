@@ -386,18 +386,23 @@ def main() -> int:
     parser.add_argument("--continuous", action="store_true", help="Run worker coordination continuously under native StegVerse process supervision.")
     parser.add_argument("--interval-ms", type=float, default=DEFAULT_INTERVAL_MS, help="Delay between worker-runtime ticks. Timers use HB-sized logical units but this loop does not advance or depend on carrier epochs.")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--task-id", help="Execute exactly one independently admitted task without ticking unrelated workers or consuming carrier assignment packets.")
     args = parser.parse_args()
     if args.cycles < 1 or args.interval_ms < 0:
         raise SystemExit("cycles must be >= 1 and interval-ms must be >= 0")
     if args.continuous and args.dry_run:
         raise SystemExit("continuous dry-run is prohibited because it cannot retain worker timer state")
+    if args.task_id and (args.continuous or args.cycles != 1):
+        raise SystemExit("--task-id requires exactly one non-continuous worker-runtime cycle")
     root = Path(args.root).resolve()
     runtime = WorkerCoordinator(root, adapters=load_adapters(root))
     bootstrap_result = None
-    if not args.dry_run and not (root / INITIAL_CARRIER_REL).is_file():
+    if args.task_id and not (root / INITIAL_CARRIER_REL).is_file():
+        raise SystemExit("targeted independent execution requires an existing separated carrier reference; it may not bootstrap G18")
+    if not args.task_id and not args.dry_run and not (root / INITIAL_CARRIER_REL).is_file():
         bootstrap_result = bootstrap_initial_carrier(root, runtime)
     control_projection = None
-    if not args.dry_run:
+    if not args.task_id and not args.dry_run:
         control_projection = project_control_plane_if_missing(root)
     running = True
 
@@ -409,14 +414,14 @@ def main() -> int:
     signal.signal(signal.SIGINT, stop)
     index = 0
     while running and (args.continuous or index < args.cycles):
-        result = runtime.cycle(write=not args.dry_run)
+        result = runtime.cycle(write=not args.dry_run, target_task_id=args.task_id)
         if bootstrap_result is not None:
             result["initial_carrier_bootstrap"] = bootstrap_result
             bootstrap_result = None
         if control_projection is not None:
             result["worker_control_plane_projection"] = control_projection
             control_projection = None
-        if not args.dry_run:
+        if not args.task_id and not args.dry_run:
             refresh = refresh_transition_release(root)
             if refresh is not None:
                 result["transition_release_refresh"] = refresh

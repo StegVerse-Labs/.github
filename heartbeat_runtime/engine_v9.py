@@ -28,7 +28,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
     def registry_fragment_dir(self) -> Path:
         return self.root / "control" / "worker-registry.d"
 
-    def _apply_registry_fragments(self, registry: dict[str, Any]) -> list[str]:
+    def _apply_registry_fragments(self, registry: dict[str, Any], task_id_filter: str | None = None) -> list[str]:
         """Admit repository-owned registry fragments without replacing runtime state.
 
         Fragments are append-only bootstrap declarations. Once a task/worker ID is
@@ -48,6 +48,10 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
 
         for path in sorted(self.registry_fragment_dir.glob("*.json")):
             fragment = self._load(path)
+            if task_id_filter is not None:
+                declared_task_ids = {str(item.get("task_id")) for item in fragment.get("tasks", []) if isinstance(item, dict) and item.get("task_id")}
+                if task_id_filter not in declared_task_ids:
+                    continue
             if fragment.get("schema") != "stegverse.worker-registry-fragment/v0.1":
                 raise RuntimeError(f"unsupported worker registry fragment schema: {path.name}")
             if fragment.get("authority_effect") != "NONE_REGISTRATION_ONLY":
@@ -60,6 +64,8 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
                 if not isinstance(task, dict):
                     raise RuntimeError(f"invalid task in registry fragment: {path.name}")
                 task_id = task.get("task_id")
+                if task_id_filter is not None and task_id != task_id_filter:
+                    continue
                 handoff_ref = task.get("handoff_ref")
                 if not isinstance(task_id, str) or not task_id:
                     raise RuntimeError(f"registry fragment task_id missing: {path.name}")

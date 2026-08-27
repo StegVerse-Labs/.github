@@ -346,10 +346,13 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
         carrier_epoch: int,
         cost_log: dict[str, Any],
         events: list[dict[str, Any]],
+        target_task_id: str | None = None,
     ) -> int:
         activated = 0
         candidates = sorted(registry.get("tasks", []), key=lambda item: str(item.get("task_id", "")))
         for task in candidates:
+            if target_task_id is not None and task.get("task_id") != target_task_id:
+                continue
             admission = task.get("admission") or {}
             if (
                 task.get("state") != "HANDOFF_READY"
@@ -382,13 +385,13 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             if advanced.expired:
                 self._event(events, carrier_epoch, "worker_assignment_timer_reached_zero", task_id=task.get("task_id"), worker_id=task.get("worker_id"), claim_id=task.get("claim_id"), fencing_token=advanced.fencing_token, runtime_tick=advanced.runtime_tick, carrier_controls_timer=False, expiry_on_next_worker_cycle=True)
 
-    def cycle(self, write: bool = True) -> dict[str, Any]:
+    def cycle(self, write: bool = True, *, target_task_id: str | None = None) -> dict[str, Any]:
         self._persist = write
         self._acquire()
         try:
             carrier_epoch, carrier_generation = self._carrier_reference()
             registry = self._load(self.registry_path)
-            registry_fragments_applied = self._apply_registry_fragments(registry)
+            registry_fragments_applied = self._apply_registry_fragments(registry, task_id_filter=target_task_id)
             cost_log = self._load(self.cost_log_path) if self.cost_log_path.exists() else {
                 "schema": "stegverse.worker-cost-observation-log/v0.1",
                 "generation": 0,
@@ -405,16 +408,21 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
 
             if registry_fragments_applied:
                 self._event(events, carrier_epoch, "worker_registry_fragments_applied", fragment_refs=registry_fragments_applied, fragment_count=len(registry_fragments_applied), authority_effect=False, github_token_required=False)
-            reconciled = self._reconcile_orphan_recovery_quarantines(registry, carrier_epoch, events)
+            targeted = target_task_id is not None
+            reconciled = [] if targeted else self._reconcile_orphan_recovery_quarantines(registry, carrier_epoch, events)
 
             for task in list(registry.get("tasks", [])):
+                if targeted and task.get("task_id") != target_task_id:
+                    continue
                 if task.get("state") in self.WORKER_OWNED | {"BLOCKED"} and task.get("worker_id"):
                     self._tick_active_timer(task, carrier_epoch, registry, cost_log, events)
 
-            independent_activated = self._activate_independently_admitted_tasks(registry, carrier_epoch, cost_log, events)
+            independent_activated = self._activate_independently_admitted_tasks(
+                registry, carrier_epoch, cost_log, events, target_task_id=target_task_id
+            )
 
             carrier_activated = 0
-            packets = self._trigger_packets(seen, carrier_epoch)
+            packets = [] if targeted else self._trigger_packets(seen, carrier_epoch)
             for packet in packets:
                 packet_id = str(packet["packet_id"])
                 if self._activate_from_trigger(registry, packet, carrier_epoch, cost_log, events):
@@ -442,6 +450,11 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
                 "github_token_runtime_authority": "NONE",
                 "heartbeat_event_required_for_independent_task_control": False,
                 "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY",
+                "target_task_id": target_task_id,
+                "targeted_independent_task_control": targeted,
+                "unrelated_worker_execution_suppressed": targeted,
+                "carrier_packet_execution_suppressed": targeted,
+                "orphan_reconciliation_suppressed": targeted,
             }
             if write:
                 self._atomic_write(self.registry_path, registry)
