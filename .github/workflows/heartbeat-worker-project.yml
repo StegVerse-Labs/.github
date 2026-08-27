@@ -30,6 +30,26 @@ on:
       - 'tests/test_g18_*.py'
       - 'tests/test_hb29_state_transition_carrier_contract.py'
       - 'tests/test_sovereign_runtime_handoff_v12_contract.py'
+      - 'workers/ecosystem_chat_sovereign_inference_worker.py'
+      - 'workers/ecosystem_chat_sovereign_route_worker.py'
+      - 'workers/ecosystem_chat_tc_tvc_route_worker.py'
+      - 'workers/llm_adapter_sovereign_execution_bridge.py'
+      - 'workers/master_records_sovereign_reconstruction_bridge.py'
+      - 'scripts/run_independent_ecosystem_chat_parent.py'
+      - 'authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json'
+      - 'control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json'
+      - 'handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json'
+      - 'tests/test_independent_ecosystem_chat_parent_executor.py'
+      - 'tests/test_llm_adapter_sovereign_execution_bridge.py'
+      - 'tests/test_master_records_sovereign_reconstruction_bridge.py'
+      - 'tests/test_ecosystem_chat_inference_binding.py'
+      - 'management/STEGGATE_HEARTBEAT_CREDENTIAL_INTEGRATION_001.json'
+      - 'schemas/heartbeat-subsignal.schema.json'
+      - 'workers/steggate_rendezvous_deployment_worker.py'
+      - 'handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json'
+      - 'authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json'
+      - 'cost-basis/worker-runtime/steggate-rendezvous-deployment.json'
+      - 'tests/test_steggate_integration_binding.py'
       - '.github/workflows/heartbeat-worker-project.yml'
   pull_request:
     paths:
@@ -120,6 +140,12 @@ jobs:
           python -m unittest -v tests.test_sovereign_ephemeral_console tests.test_ephemeral_separated_runtime_supervision
           python -m unittest -v tests.test_g18_self_bootstrap_worker tests.test_g18_task_capable_release_guard
           python -m unittest -v tests.test_hb29_state_transition_carrier_contract tests.test_sovereign_runtime_handoff_v12_contract
+
+      - name: Validate consolidated inference and StegGate bindings
+        run: |
+          python -m unittest -v tests.test_ecosystem_chat_inference_binding
+          python -m unittest -v tests.test_independent_ecosystem_chat_parent_executor tests.test_llm_adapter_sovereign_execution_bridge tests.test_master_records_sovereign_reconstruction_bridge
+          python -m unittest -v tests.test_steggate_integration_binding
 
       - name: Validate consolidated Test Lanes autolaunch binding
         run: python -m unittest -v tests.test_test_lanes_autolaunch_binding
