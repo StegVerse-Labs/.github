@@ -2,8 +2,8 @@
 
 Updated: 2026-08-27T12:08:00-05:00
 Repository: `StegVerse-Labs/.github`
-Branch: `docs/enterprise-domain-reconcile-20260827`
-State: ACTIVE_RECONCILIATION
+Branch: `main`
+State: ACTIVE_RECONCILIATION / CANONICAL_HANDOFF_MERGED
 
 ## Authority
 
@@ -169,6 +169,17 @@ Blocker classes:
 4. Implement approved branded social redirects only after authoritative domain/routing inspection.
 5. Propagate confirmed Enterprise/domain state into any stale master-records / Site / publication handoffs without overwriting historical transition evidence.
 6. Keep this lane open until security/routing/billing evidence is actually verified.
+
+## Merge / validation evidence
+
+- PR #303: MERGED
+- exact validated head: `8fab4dde49180e450e4bbb59ba9ef79a7022bfdf`
+- merge commit: `f3fa962368e2f2077a0f7ab1b6f436d4c7d715b6`
+- organization control-plane validation run `33097022407`: SUCCESS
+- Heartbeat Worker validation run `33097022399`: SUCCESS
+- repository handoff state: IMPLEMENTED / VALIDATED / MERGED
+- Enterprise billing reconciliation: NOT YET VERIFIED
+- DNSSEC/TLS/routing/security activation: NOT YET VERIFIED / NOT ACTIVATED
 
 ## Completion gate
 
