@@ -123,7 +123,25 @@
     "minimum_fencing_token_exclusive": 22,
     "checkout_policy": "fenced_atomic_checkout",
     "attempt_claim_release_required": true,
-    "recheck_trigger": "each admitted StegVerse task-control execution opportunity while HANDOFF_READY"
+    "recheck_trigger": "each admitted StegVerse task-control execution opportunity while HANDOFF_READY",
+    "targeted_execution": {
+      "mode": "DEDICATED_INDEPENDENT_PARENT_ONE_SHOT",
+      "entrypoint": "scripts/run_independent_ecosystem_chat_parent.py",
+      "argv": [
+        "python",
+        "scripts/run_independent_ecosystem_chat_parent.py"
+      ],
+      "generic_worker_runtime_task_id_mode_allowed": false,
+      "generic_mode_exclusion_reason": "Historical same-ID G20 parent row requires dedicated released-authority replacement and fresh parent fence >22.",
+      "fresh_fence_minimum_exclusive": 22,
+      "heartbeat_reference_only": true,
+      "heartbeat_grants_execution_authority": false,
+      "g18_authority_used": false,
+      "g20_authority_reuse_allowed": false,
+      "g22_recovery_authority_reuse_allowed": false,
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": "NONE"
+    }
   },
   "continuity": {
     "checkpoint_ref": "receipts/ecosystem-chat-sovereign-inference/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
