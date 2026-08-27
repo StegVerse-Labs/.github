@@ -24,6 +24,12 @@ class IndependentOrphanRecoveryReconciliationTests(unittest.TestCase):
     def test_current_terminal_recovery_contract_is_not_reclaimable(self) -> None:
         registry = self.load_registry()
         recovery = self.task(registry, RECOVERY_ID)
+        fragment = json.loads((ROOT / "control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json").read_text(encoding="utf-8"))
+        terminal = fragment["tasks"][0]
+        self.assertEqual(recovery, terminal)
+        self.assertEqual(recovery["state"], "COMPLETED")
+        self.assertTrue(recovery["archive_eligible"])
+        self.assertEqual(recovery["admission"]["claim_state"], "TERMINAL_COMPLETED_NO_REACQUISITION")
         valid, reason = independent_orphan_recovery_contract_valid(ROOT, registry_task=recovery, registry=registry)
         self.assertFalse(valid)
         self.assertEqual(reason, "RECOVERY_HANDOFF_NOT_READY")
