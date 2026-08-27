@@ -144,8 +144,8 @@
       "resource_budget": {
         "actions_used": 1,
         "allowed_services": [],
-        "external_cost_ceiling_usd": 0.0,
-        "external_cost_usd": 0.0,
+        "external_cost_ceiling_usd": 0,
+        "external_cost_usd": 0,
         "max_actions": 1,
         "max_retries": 0,
         "rate_class": "bounded_local",
@@ -242,8 +242,8 @@
       "resource_budget": {
         "actions_used": 13,
         "allowed_services": [],
-        "external_cost_ceiling_usd": 0.0,
-        "external_cost_usd": 0.0,
+        "external_cost_ceiling_usd": 0,
+        "external_cost_usd": 0,
         "max_actions": 100,
         "max_retries": 4096,
         "rate_class": "sovereign_runtime_activation",
@@ -334,7 +334,8 @@
         }
       ],
       "worker_id": "sovereign-runtime-activation-worker",
-      "worker_instance_id": "sovereign-runtime-activation-worker-HB15-G18"
+      "worker_instance_id": "sovereign-runtime-activation-worker-HB15-G18",
+      "source_state_vector_ref": "control/task-vectors/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
     },
     {
       "archive_eligible": false,
@@ -426,8 +427,8 @@
           "stegverse.org",
           "raw.githubusercontent.com"
         ],
-        "external_cost_ceiling_usd": 0.0,
-        "external_cost_usd": 0.0,
+        "external_cost_ceiling_usd": 0,
+        "external_cost_usd": 0,
         "max_actions": 64,
         "max_retries": 32,
         "rate_class": "heartbeat_bounded_deployment",
@@ -659,8 +660,8 @@
       "resource_budget": {
         "actions_used": 19,
         "allowed_services": [],
-        "external_cost_ceiling_usd": 0.0,
-        "external_cost_usd": 0.0,
+        "external_cost_ceiling_usd": 0,
+        "external_cost_usd": 0,
         "max_actions": 128,
         "max_retries": 128,
         "rate_class": "heartbeat_federation_reconciliation",
@@ -850,8 +851,8 @@
       "resource_budget": {
         "actions_used": 12,
         "allowed_services": [],
-        "external_cost_ceiling_usd": 0.0,
-        "external_cost_usd": 0.0,
+        "external_cost_ceiling_usd": 0,
+        "external_cost_usd": 0,
         "max_actions": 64,
         "max_retries": 4096,
         "rate_class": "ecosystem_chat_sovereign_inference",
