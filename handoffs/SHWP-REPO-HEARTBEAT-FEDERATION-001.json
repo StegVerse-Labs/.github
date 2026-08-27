@@ -22,7 +22,14 @@
       "GitHub token availability becomes a production liveness requirement.",
       "Dependency loss is hidden from dependent repository state."
     ],
-    "authority_ceiling": ["repo_heartbeat_federation_reconciliation", "receipts/repo-heartbeat-federation/**", "no_cross_repo_mutation", "no_execution_authority", "no_credential_authority", "no_deployment_authority"],
+    "authority_ceiling": [
+      "repo_heartbeat_federation_reconciliation",
+      "receipts/repo-heartbeat-federation/**",
+      "no_cross_repo_mutation",
+      "no_execution_authority",
+      "no_credential_authority",
+      "no_deployment_authority"
+    ],
     "successor_policy": "NONE",
     "max_successor_depth": 0
   },
@@ -57,8 +64,12 @@
     "policy_version": "shwp-single-hb-repo-federation-v0.1"
   },
   "execution": {
-    "required_capabilities": ["repo_heartbeat_federation_reconciliation"],
-    "allowed_paths": ["receipts/repo-heartbeat-federation/**"],
+    "required_capabilities": [
+      "repo_heartbeat_federation_reconciliation"
+    ],
+    "allowed_paths": [
+      "receipts/repo-heartbeat-federation/**"
+    ],
     "allowed_services": [],
     "max_actions": 64,
     "max_retries": 256,
@@ -89,5 +100,18 @@
       "Coverage receipt reports coverage_complete=true"
     ]
   },
-  "block": null
+  "block": null,
+  "source_state_vector_ref": "control/task-vectors/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000100000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-08-27T16:55:00-05:00",
+      "authority_effect": "NONE"
+    }
+  }
 }
