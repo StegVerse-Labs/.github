@@ -114,6 +114,31 @@
       "credential_authority remains TV/TVC with no credential material",
       "canonical_transition_committed remains false"
     ],
-    "next_authorized_action": "After the parent receipt exists, the existing WorkerCoordinator independently admits this HANDOFF_READY task under a fresh fence greater than 21 and invokes process:stegos-relay-node-kv-continuity-v1 on the deployment-local sovereign carrier."
+    "next_authorized_action": "After the parent receipt exists, the existing WorkerCoordinator independently admits this HANDOFF_READY task under a fresh fence greater than 21 and invokes process:stegos-relay-node-kv-continuity-v1 on the deployment-local sovereign carrier.",
+    "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001"
+  },
+  "activation": {
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "carrier": "heartbeat_reference_only",
+    "carrier_trigger_required": false,
+    "targeted_execution": {
+      "mode": "TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT",
+      "entrypoint": "scripts/run_worker_runtime.py",
+      "argv": [
+        "python",
+        "scripts/run_worker_runtime.py",
+        "--task-id",
+        "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001"
+      ],
+      "requires_existing_separated_carrier_reference": true,
+      "g18_bootstrap_allowed": false,
+      "compatibility_carrier_packet_consumption": false,
+      "unrelated_worker_execution": false,
+      "broad_orphan_reconciliation": false,
+      "heartbeat_grants_execution_authority": false,
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": "NONE",
+      "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+    }
   }
 }

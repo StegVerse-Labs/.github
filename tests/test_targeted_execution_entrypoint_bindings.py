@@ -1,0 +1,70 @@
+from __future__ import annotations
+
+import json
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+GENERIC = {
+    "handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json": "COSV-LIVE-PACKET-AUTOMATION-006",
+    "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+    "handoffs/SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001.json": "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+    "handoffs/SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001.json": "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
+}
+
+
+class TargetedExecutionEntrypointBindingTests(unittest.TestCase):
+    def load(self, rel: str) -> dict:
+        return json.loads((ROOT / rel).read_text(encoding="utf-8"))
+
+    def test_generic_independent_tasks_bind_exact_one_shot_entrypoint(self):
+        for rel, task_id in GENERIC.items():
+            with self.subTest(rel=rel):
+                handoff = self.load(rel)
+                activation = handoff["activation"]
+                target = activation["targeted_execution"]
+                self.assertEqual(activation["authority_domain"], "INDEPENDENT_TASK_CONTROL")
+                self.assertEqual(activation["carrier"], "heartbeat_reference_only")
+                self.assertFalse(activation["carrier_trigger_required"])
+                self.assertEqual(target["mode"], "TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT")
+                self.assertEqual(
+                    target["argv"],
+                    ["python", "scripts/run_worker_runtime.py", "--task-id", task_id],
+                )
+                self.assertTrue(target["requires_existing_separated_carrier_reference"])
+                self.assertFalse(target["g18_bootstrap_allowed"])
+                self.assertFalse(target["compatibility_carrier_packet_consumption"])
+                self.assertFalse(target["unrelated_worker_execution"])
+                self.assertFalse(target["broad_orphan_reconciliation"])
+                self.assertFalse(target["heartbeat_grants_execution_authority"])
+                self.assertEqual(target["credential_authority"], "TV/TVC")
+                self.assertEqual(target["github_token_runtime_authority"], "NONE")
+
+    def test_hil_no_longer_requires_heartbeat_trigger(self):
+        handoff = self.load("handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json")
+        self.assertEqual(
+            handoff["block"]["solution_command"],
+            "python scripts/run_worker_runtime.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001",
+        )
+        self.assertEqual(handoff["block"]["observer"], "independent StegVerse task-control")
+        self.assertNotIn("each admitted heartbeat", handoff["activation"]["recheck_trigger"])
+
+    def test_ecosystem_chat_keeps_dedicated_historical_parent_executor(self):
+        handoff = self.load("handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json")
+        target = handoff["activation"]["targeted_execution"]
+        self.assertEqual(target["mode"], "DEDICATED_INDEPENDENT_PARENT_ONE_SHOT")
+        self.assertEqual(
+            target["argv"],
+            ["python", "scripts/run_independent_ecosystem_chat_parent.py"],
+        )
+        self.assertFalse(target["generic_worker_runtime_task_id_mode_allowed"])
+        self.assertEqual(target["fresh_fence_minimum_exclusive"], 22)
+        self.assertFalse(target["g20_authority_reuse_allowed"])
+        self.assertFalse(target["g22_recovery_authority_reuse_allowed"])
+        self.assertEqual(target["credential_authority"], "TV/TVC")
+        self.assertEqual(target["github_token_runtime_authority"], "NONE")
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -70,8 +70,14 @@
     "stegverse_primary": true
   },
   "execution": {
-    "required_capabilities": ["runtime_observation", "bounded_repository_mutation", "cosv_live_packet_materialization"],
-    "allowed_paths": ["receipts/cosv/live/**"],
+    "required_capabilities": [
+      "runtime_observation",
+      "bounded_repository_mutation",
+      "cosv_live_packet_materialization"
+    ],
+    "allowed_paths": [
+      "receipts/cosv/live/**"
+    ],
     "allowed_services": [],
     "max_actions": 4096,
     "max_retries": 4096,
@@ -89,7 +95,26 @@
     "carrier_trigger_required": false,
     "recheck_trigger": "each admitted StegVerse task-control execution opportunity while the task remains active",
     "checkout_policy": "fenced_atomic_checkout",
-    "claim_generation_rule": "fresh WorkerCoordinator fencing generation; no historical claim/fence reuse"
+    "claim_generation_rule": "fresh WorkerCoordinator fencing generation; no historical claim/fence reuse",
+    "targeted_execution": {
+      "mode": "TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT",
+      "entrypoint": "scripts/run_worker_runtime.py",
+      "argv": [
+        "python",
+        "scripts/run_worker_runtime.py",
+        "--task-id",
+        "COSV-LIVE-PACKET-AUTOMATION-006"
+      ],
+      "requires_existing_separated_carrier_reference": true,
+      "g18_bootstrap_allowed": false,
+      "compatibility_carrier_packet_consumption": false,
+      "unrelated_worker_execution": false,
+      "broad_orphan_reconciliation": false,
+      "heartbeat_grants_execution_authority": false,
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": "NONE",
+      "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+    }
   },
   "continuity": {
     "checkpoint_ref": "receipts/cosv/live/latest-state.json",
@@ -103,6 +128,7 @@
       "The broader COSV live integration goal is explicitly retired or superseded after required live gradient/introspection evidence is terminal; until then this packet producer remains recurring active infrastructure."
     ],
     "source_integration_state": "INDEPENDENT_TASK_CONTROL_CLAIMABLE",
-    "live_activation_state": "NOT_OBSERVED"
+    "live_activation_state": "NOT_OBSERVED",
+    "targeted_command": "python scripts/run_worker_runtime.py --task-id COSV-LIVE-PACKET-AUTOMATION-006"
   }
 }
