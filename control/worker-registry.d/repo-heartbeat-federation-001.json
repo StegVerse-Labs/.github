@@ -4,7 +4,9 @@
   "tasks": [
     {
       "archive_eligible": false,
-      "archive_reason_codes": ["REQUIRED_REPO_HEARTBEAT_COVERAGE_NOT_YET_PROVEN"],
+      "archive_reason_codes": [
+        "REQUIRED_REPO_HEARTBEAT_COVERAGE_NOT_YET_PROVEN"
+      ],
       "authorized_policy_version": "shwp-single-hb-repo-federation-v0.1",
       "block_ref": null,
       "claim_id": null,
@@ -25,14 +27,29 @@
       "state": "HANDOFF_READY",
       "task_id": "SHWP-REPO-HEARTBEAT-FEDERATION-001",
       "worker_id": null,
-      "worker_instance_id": null
+      "worker_instance_id": null,
+      "source_state_vector_ref": "control/task-vectors/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-27T16:55:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     }
   ],
   "workers": [
     {
       "adapter_ref": "process:repo-heartbeat-federation-v1",
       "authority_source": "authorizations/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
-      "capabilities": ["repo_heartbeat_federation_reconciliation"],
+      "capabilities": [
+        "repo_heartbeat_federation_reconciliation"
+      ],
       "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
       "executor_type": "repository_worker",
       "last_seen_at": null,

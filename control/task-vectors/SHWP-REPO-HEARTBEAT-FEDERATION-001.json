@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-REPO-HEARTBEAT-FEDERATION-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000100000",
+  "evidence_refs": [
+    "control/worker-registry.d/repo-heartbeat-federation-001.json",
+    "handoffs/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
+    "docs/REPO_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-08-27T16:55:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "docs/REPO_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md#live topology coverage MACHINE_OWNED / resident heartbeat pending",
+    "archive_ready": "worker fragment archive_eligible=false",
+    "unassigned_work": "docs/REPO_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md execution owner resident sovereign heartbeat + repo-heartbeat-federation worker",
+    "chat_owned_counts": "manual_execution_allowed=false; manual role observation only",
+    "canonical_owner_installed": "central developed files 12/12, participant descriptors 11/11, worker fragment/handoff installed",
+    "thread_required": "Archive conditions: source and participant enrollment no longer require chat history; broader activation is machine-owned",
+    "blocker_count": "worker fragment block_ref=null and executable handoff block=null; incomplete live coverage is evidence/readiness, not a registered task blocker",
+    "evidence_complete": "live resident coverage validation=0/1; critical live coverage=0/11 until first resident topology receipt",
+    "activated": "exact next task requires first resident single-heartbeat execution; no live resident coverage receipt yet",
+    "propagated": "coverage propagation is evaluated only after a real resident receipt exists"
+  },
+  "authority_effect": "NONE"
+}

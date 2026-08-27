@@ -2,7 +2,7 @@
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
   "observed_commit": "981dc445476f5049fc51194c93d29b9fc5e35d44",
-  "observed_at": "2026-08-27T16:50:00-05:00",
+  "observed_at": "2026-08-27T16:55:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,23 +11,22 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 45,
-    "canonically_indexed_task_ids": 7,
+    "canonically_indexed_task_ids": 8,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 32
+    "active_unvectorized_unique_task_ids": 31
   },
   "organization_registry_summary": {
     "active_task_ids": 14,
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 46,
+  "total_active_unvectorized_unique_task_ids": 45,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
     "SHWP-ERL-UAP-MEDIA-001",
     "STEGFIN-LIVE-PRETRADE-005",
     "SHWP-HIL-SOVEREIGN-RECEIVER-001",
-    "SHWP-REPO-HEARTBEAT-FEDERATION-001",
     "SHWP-STEGFIN-SOVEREIGN-TRADING-001",
     "AE-RELATIONAL-MATH-WORKER-001",
     "SHWP-STEGNUTRITION-CONTINUATION-001",
@@ -99,6 +98,10 @@
     {
       "task_id": "SDK-MCP-CANONICAL-VALIDATION-009",
       "vector": "50000000101000"
+    },
+    {
+      "task_id": "SHWP-REPO-HEARTBEAT-FEDERATION-001",
+      "vector": "50000000100000"
     }
   ],
   "evidence_conflicts": [],
