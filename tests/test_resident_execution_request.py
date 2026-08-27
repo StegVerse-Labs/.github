@@ -59,6 +59,7 @@ class ResidentExecutionRequestTests(unittest.TestCase):
             self.assertFalse(first["request_granted_authority"])
             self.assertEqual(first["fresh_fence_minimum_exclusive"], 22)
             self.assertEqual(len(calls), 1)
+            self.assertFalse(first["post_parent_activation_projection"]["attempted"])
             command = calls[0][0]
             self.assertIn("--ecosystem-chat-parent", command)
             self.assertIn("--source-root", command)
