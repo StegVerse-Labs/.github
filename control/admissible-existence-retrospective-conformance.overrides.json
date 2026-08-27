@@ -18,6 +18,12 @@
       "temporal_class": "recently_completed",
       "continuation_owner": "NONE_TERMINAL_TASK",
       "rationale": "Canonical ARA first-boundary activation is COMPLETE, the bounded admission receipt is ALLOW, consequence observation is MATCH, and the released claim is COMPLETE_RELEASED. The stale .github aggregate projection is reconciled to COMPLETED; no successor execution authority is implied."
+    },
+    {
+      "task_id": "STEGFIN-CONTINUITY-CARRIER-007",
+      "temporal_class": "recently_completed",
+      "continuation_owner": "NONE_TERMINAL_TASK",
+      "rationale": "Canonical StegFin owner records the continuity fallback as superseded by completed phone-direct WALLET_HANDOFF_READY evidence. The fallback did not execute, retains canonical ADMISSIBLE capability phase, and has no continuation requirement for the completed wallet-handoff goal."
     }
   ],
   "evidence_ref": "receipts/heartbeat/HEARTBEAT-PROTOCOL-ANCHOR-013-validation.json",
