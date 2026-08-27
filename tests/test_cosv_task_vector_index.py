@@ -8,6 +8,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "control" / "task-vector-index.json"
 FRAGMENTS = ROOT / "control" / "worker-registry.d"
+GLOBAL_REGISTRY = ROOT / "control" / "worker-registry.json"
 
 spec = importlib.util.spec_from_file_location("cosv", ROOT / "scripts" / "cosv.py")
 assert spec and spec.loader
@@ -21,7 +22,8 @@ class COSVTaskVectorIndexTests(unittest.TestCase):
 
     def vectorized_registry_tasks(self) -> dict[str, tuple[dict, Path]]:
         found: dict[str, tuple[dict, Path]] = {}
-        for path in sorted(FRAGMENTS.glob("*.json")):
+        paths = [GLOBAL_REGISTRY, *sorted(FRAGMENTS.glob("*.json"))]
+        for path in paths:
             payload = json.loads(path.read_text(encoding="utf-8"))
             for task in payload.get("tasks", []):
                 if task.get("source_state_vector_ref"):
@@ -68,6 +70,10 @@ class COSVTaskVectorIndexTests(unittest.TestCase):
                 self.assertEqual(record["profile"], "task.v1")
                 self.assertEqual(record["vector"], row["vector"])
                 self.assertEqual(record["exact_metrics"]["symbol_order"], "LRUIVGOCMTBEAP")
+                if row["task_id"] == "SHWP-DURABLE-RUNTIME-ACTIVATION":
+                    self.assertEqual(record["vector"], "60000000101000")
+                    self.assertEqual(record["exact_metrics"]["lifecycle"], "BLOCKED")
+                    self.assertEqual(record["exact_metrics"]["blocker_count"], 1)
             else:
                 embedded = task["machine_readable_state"]["cosv"]
                 self.assertEqual(embedded["profile"], "task.v1")
