@@ -162,3 +162,203 @@ G18 durable runtime substrate (BLOCKED / separate)
 Required project outcomes remain nonterminal, but the ChatGPT session no longer carries unique continuity state. The global `STEGVERSE_PROJECT_INDEX` now includes the stable Ecosystem Chat Sovereign Inference project identity and the HeartBeat status correction, and `STEGVERSE_PROJECTS_HANDOFF_STATUS` contains the full 2026-08-26 22:46 CDT consolidation overlay. Continuation must begin from this handoff, the scoped project handoffs, live receipts, and global coordination surfaces rather than session prose.
 
 Session archive readiness: `READY TO ARCHIVE`.
+
+
+## Machine-execution frontier — 2026-08-27
+
+This section supersedes older source-readiness descriptions where the merged implementation is newer. It does not claim resident execution.
+
+### Source / admission work now merged
+
+```text
+targeted one-shot WorkerCoordinator:
+  MERGED
+  PR #293
+  generic command: python scripts/run_worker_runtime.py --task-id <TASK_ID>
+
+COSV schema-aware preclaim:
+  MERGED
+  PR #294
+  semantic-state-vector/v1 -> hash reconciliation
+  task.v1 -> exact identity/profile/vector parity
+  unknown schema -> fail closed
+
+StegOS targeted handoff authorization:
+  MERGED
+  PR #297
+
+TV/TVC resident-proof independent admission + local vector + cost basis:
+  MERGED
+  PR #299
+
+Ecosystem Chat historical G20 row -> fresh independent parent registry reconciliation:
+  MERGED
+  PR #300
+  merge: 0b6140305725cbb23500e3279ff583f457774ba9
+
+complete resident refresh payload for targeted execution dependencies:
+  MERGED
+  PR #304
+  merge: 36cd211eedb4c6f138319f665d8921ccac6a462f
+
+portable refresh + one-task source bridge:
+  MERGED
+  PR #305
+  merge: d92121072cf43e3724c53cea71e850ae5427fd19
+
+resident mutable worker-registry preservation during source refresh:
+  MERGED
+  PR #306
+  merge: 4acba4d0e2011b14e56212c4b455804e02b11852
+
+TV/TVC canonical handoff reconciled to portable resident boundary:
+  MERGED
+  PR #307
+  merge: 8e7e12c66e88e36743e93d76bf22f3e720dd3fbb
+```
+
+### Resident refresh safety boundary
+
+`control/worker-registry.json` is mutable resident runtime state because it carries claims, fences, worker bindings, timers, leases and transition history.
+
+It is therefore **not** copied from canonical source during resident source refresh.
+
+Static source refresh does copy/update:
+
+- `heartbeat_runtime/**`
+- `workers/**`
+- `handoffs/**`
+- `authorizations/**`
+- `schemas/**`
+- `cost-basis/**`
+- `management/**`
+- `state_language/**`
+- `control/worker-registry.d/**`
+- `control/process-worker-adapters.d/**`
+- `control/task-vectors/**`
+- `control/task-vector-index.json`
+- targeted/COSV/dedicated-parent scripts
+
+This lets new task definitions and executable source arrive without overwriting resident claim/fence state.
+
+The dedicated Ecosystem Chat executor remains responsible for safe same-ID historical G20 reconciliation under explicit G20/G22 terminalization and fresh fence `>22`.
+
+### Portable resident source-consumption path
+
+The first resident attempt no longer requires installation of the optional Linux/systemd source watcher.
+
+Generic independently admitted task:
+
+```text
+python scripts/refresh_and_execute_resident_task.py --task-id <TASK_ID>
+```
+
+Historical Ecosystem Chat parent:
+
+```text
+python scripts/refresh_and_execute_resident_task.py --ecosystem-chat-parent
+```
+
+Properties:
+
+```text
+source root: already-local current StegVerse-Labs/.github
+network source fetch: false
+mutable runtime state preserved: true
+systemd source watcher required: false
+second user-operated machine required: false
+GitHub token runtime authority: NONE
+credential authority: TV/TVC
+source refresh == runtime execution: false
+```
+
+The optional `install_sovereign_worker_source_refresh_service.py` remains Linux/systemd-user integration for ongoing filesystem-event refresh only. It is not the first-execution prerequisite.
+
+TVC may still use its systemd-user credential consumer inside the TV/TVC boundary. That is a credential-consumption implementation detail and is not source-refresh authority.
+
+### Current targetable machine tasks
+
+Generic targeted one-shot:
+
+```text
+COSV-LIVE-PACKET-AUTOMATION-006
+SHWP-HIL-SOVEREIGN-RECEIVER-001
+SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001
+SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001
+SHWP-TV-TVC-RESIDENT-PROOF-001
+```
+
+All five currently have:
+
+```text
+HANDOFF_READY
+INDEPENDENT_TASK_CONTROL
+fresh fence required
+heartbeat grants execution authority: false
+enabled process adapter
+required worker/adapter capability parity
+non-null runtime cost basis
+targeted entrypoint recorded
+```
+
+StegOS continuity additionally requires authentic parent `SOVEREIGN_RELAY_LEASE_OPEN`.
+
+Ecosystem Chat parent remains a dedicated executor because the historical same-ID G20 row requires released-authority proof and a fresh parent fence `>22`.
+
+### Runtime evidence remains absent
+
+As observed from current `main` at this consolidation:
+
+```text
+control/worker-runtime-state.json:
+  last_cycle_at: 2026-08-18T19:47:00Z
+  last_observed_carrier_epoch: 31
+  runtime_tick: 2
+  observation_mode: CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION
+
+receipts/sovereign-host/worker-source-refresh.latest.json:
+  NOT OBSERVED
+
+receipts/sovereign-host/worker-source-refresh-installation.latest.json:
+  NOT OBSERVED
+
+receipts/sovereign-host/resident-targeted-execution.latest.json:
+  NOT OBSERVED
+
+TV/TVC resident-proof receipt:
+  NOT OBSERVED
+
+HIL sovereign receiver receipt:
+  NOT OBSERVED
+
+StegOS relay materialization receipt:
+  NOT OBSERVED
+
+StegOS Node-KV continuity receipt:
+  NOT OBSERVED
+
+Ecosystem Chat independent_parent_activation.latest.json:
+  NOT OBSERVED
+```
+
+Therefore the current truthful lifecycle boundary is:
+
+```text
+source implementation: MERGED
+source validation: PASS
+target admission: CLAIMABLE
+resident claim: NOT OBSERVED
+resident execution: NOT OBSERVED
+runtime observation: NOT OBSERVED
+activation: NOT PROVEN
+reconstruction: NOT PROVEN except historical recovery evidence
+release/completion: NOT SATISFIED for these runtime goals
+```
+
+### Next executable boundary
+
+The next legitimate transition is execution of the already-merged portable refresh+target bridge on the existing sovereign resident surface using already-local current source.
+
+No additional user-operated machine is required by the source contract.
+
+Repository or hosted validation must not synthesize the missing resident receipts, claims, fences, runtime ticks, model proof, TV/TVC proof, HIL proof, StegOS proof or parent activation.
