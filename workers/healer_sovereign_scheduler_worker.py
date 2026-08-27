@@ -126,6 +126,15 @@ def main() -> int:
                 "TARGETS_FILE": str(targets),
                 "STEGVERSE_REPO_ROOTS_JSON": roots_json,
             }
+            for name in (
+                "STEGVERSE_SERVICE_GATEWAY_TLS_CERT_FILE",
+                "STEGVERSE_SERVICE_GATEWAY_TLS_KEY_FILE",
+                "STEGVERSE_SERVICE_GATEWAY_TLS_BIND_ADDRESS",
+                "STEGVERSE_SERVICE_GATEWAY_TLS_PORT",
+            ):
+                value = os.getenv(name, "").strip()
+                if value:
+                    env[name] = value
             proc = subprocess.run(
                 [sys.executable, str(entry)],
                 cwd=healer_root,
