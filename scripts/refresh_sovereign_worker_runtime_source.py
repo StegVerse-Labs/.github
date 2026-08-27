@@ -27,9 +27,14 @@ STATIC_DIRS = (
     Path("schemas"),
     Path("cost-basis"),
     Path("management"),
+    Path("state_language"),
 )
 STATIC_FILES = (
     Path("scripts/run_worker_runtime.py"),
+    Path("scripts/run_independent_ecosystem_chat_parent.py"),
+    Path("scripts/materialize_live_cosv_packet.py"),
+    Path("scripts/cosv.py"),
+    Path("scripts/cosv_state_packet.py"),
     Path("scripts/advance_heartbeat_transition.py"),
     Path("scripts/refresh_heartbeat_transition_receipt.py"),
     Path("scripts/project_worker_control_plane_from_carrier.py"),
@@ -39,12 +44,14 @@ STATIC_FILES = (
 CONTROL_DIRS = (
     Path("control/worker-registry.d"),
     Path("control/process-worker-adapters.d"),
+    Path("control/task-vectors"),
 )
 CONTROL_FILES = (
     Path("control/worker-registry.json"),
     Path("control/process-worker-adapters.json"),
     Path("control/worker-capability-profiles.json"),
     Path("control/blocker-resolution-policy.json"),
+    Path("control/task-vector-index.json"),
 )
 MUTABLE_FORBIDDEN_PREFIXES = (
     "receipts/",

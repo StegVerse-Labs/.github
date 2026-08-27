@@ -35,7 +35,8 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             runtime = base / "runtime"
             for rel in (
                 "heartbeat_runtime", "workers", "handoffs", "authorizations", "schemas", "cost-basis", "management",
-                "scripts", "control/worker-registry.d", "control/process-worker-adapters.d",
+                "state_language", "scripts", "control/worker-registry.d", "control/process-worker-adapters.d",
+                "control/task-vectors",
             ):
                 (source / rel).mkdir(parents=True, exist_ok=True)
             (source / "heartbeat_runtime/worker_runtime.py").write_text("VERSION='new'\n", encoding="utf-8")
@@ -45,6 +46,9 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             (source / "control/process-worker-adapters.json").write_text('{"schema":"x"}\n', encoding="utf-8")
             (source / "control/worker-registry.d/new.json").write_text("{}\n", encoding="utf-8")
             (source / "control/process-worker-adapters.d/new.json").write_text("{}\n", encoding="utf-8")
+            (source / "control/task-vectors/new-task.json").write_text('{"profile":"task.v1","level":"task","vector":"50000000100000"}\n', encoding="utf-8")
+            (source / "state_language/__init__.py").write_text("# state-language\n", encoding="utf-8")
+            (source / "control/task-vector-index.json").write_text('{"schema":"stegverse.cosv-task-vector-index/v0.1"}\n', encoding="utf-8")
             for rel in refresh_mod.STATIC_FILES:
                 path = source / rel
                 path.parent.mkdir(parents=True, exist_ok=True)
@@ -73,6 +77,17 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertEqual((runtime / "heartbeat_runtime/worker_runtime.py").read_text(), "VERSION='new'\n")
             self.assertTrue((runtime / "workers/new_worker.py").is_file())
             self.assertTrue((runtime / "control/worker-registry.d/new.json").is_file())
+            self.assertTrue((runtime / "control/task-vectors/new-task.json").is_file())
+            self.assertTrue((runtime / "control/task-vector-index.json").is_file())
+            self.assertTrue((runtime / "state_language/__init__.py").is_file())
+            for rel in (
+                "scripts/run_worker_runtime.py",
+                "scripts/run_independent_ecosystem_chat_parent.py",
+                "scripts/materialize_live_cosv_packet.py",
+                "scripts/cosv.py",
+                "scripts/cosv_state_packet.py",
+            ):
+                self.assertTrue((runtime / rel).is_file(), rel)
             for name, value in mutable.items():
                 self.assertEqual((runtime / "control" / name).read_text(), value)
             self.assertTrue((runtime / "receipts/sovereign-host/existing.json").is_file())
@@ -104,7 +119,16 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertIn("systemctl --user try-restart stegverse-worker-runtime.service", service)
             self.assertIn("PathChanged=", path_unit)
             self.assertIn("workers", path_unit)
+            self.assertIn("heartbeat_runtime", path_unit)
+            self.assertIn("scripts", path_unit)
+            self.assertIn("state_language", path_unit)
             self.assertIn("worker-registry.d", path_unit)
+            self.assertIn("process-worker-adapters.d", path_unit)
+            self.assertIn("control/task-vectors", path_unit)
+            self.assertIn("control/task-vector-index.json", path_unit)
+            self.assertIn("authorizations", path_unit)
+            self.assertIn("cost-basis", path_unit)
+            self.assertIn("management", path_unit)
             self.assertIn("WantedBy=default.target", path_unit)
             combined = service + path_unit
             for forbidden in ("GITHUB_TOKEN", "GH_TOKEN", "LoadCredential=", "git clone", "git fetch", "git pull"):
