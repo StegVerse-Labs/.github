@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-27T17:00:00-05:00
+Updated: 2026-08-27T17:08:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -39,7 +39,7 @@ The 189 unaudited repositories are not exemptions. They are classified `NO_REPOS
 
 ## Current .github boundary
 
-`.github` remains `VECTOR_REQUIRED`. Eight active vectors are indexed today, but the global worker registry and organization task registry contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
+`.github` remains `VECTOR_REQUIRED`. Nine active vectors are indexed today, but the global worker registry and organization task registry contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
 
 Existing indexed examples remain unchanged:
 
@@ -105,9 +105,9 @@ Machine-readable snapshot: `control/cosv-global-registry-coverage.json`.
 - 45 unique worker task IDs across the global worker registry plus fragments.
 - 4 canonically indexed task IDs.
 - 6 completed-only historical unvectorized task IDs.
-- 30 active worker task IDs lack canonical COSV coverage.
+- 29 active worker task IDs lack canonical COSV coverage.
 - 14 organization-registry task IDs lack canonical COSV coverage.
-- Total active .github task IDs lacking canonical COSV coverage: 44.
+- Total active .github task IDs lacking canonical COSV coverage: 43.
 - The orphan-recovery aggregate/fragment contradiction is reconciled to terminal COMPLETED from the durable G22 PASS receipt; no vector was emitted for this completed historical task.
 
 No new vector digits were invented during this audit.
@@ -249,3 +249,14 @@ The canonical StegFin owner now records `STEGFIN-CONTINUITY-CARRIER-007` as `SUP
 The .github fragment/handoff are reconciled to terminal `SUPERSEDED`, execution claim released, and the task is removed from active vector-required coverage. It remains available only for a distinct future resilience requirement under a new claim.
 
 Active .github COSV gap: 30 worker tasks + 14 organization tasks = 44 active unvectorized task IDs.
+
+## StegFin early-adopter validation vector adoption — 2026-08-27T17:08:00-05:00
+
+```text
+STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001
+task.v1 [L R U I V G O C M T B E A P] = 50000000101000
+```
+
+The private-source validation worker is machine-owned and fail-closed on exactly one missing condition: an already-authorized local private StegFin source path. No GitHub credential workaround, source fetch, financial execution, wallet authority, issuance, merge authority, or provider authority is introduced. Activation remains false until the exact-bound local validation receipt exists.
+
+Active .github COSV gap: 29 worker tasks + 14 organization tasks = 43 active unvectorized task IDs.
