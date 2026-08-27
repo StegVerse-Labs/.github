@@ -92,6 +92,11 @@ jobs:
       - name: Validate executable handoffs
         run: python scripts/validate_executable_handoffs.py
 
+      - name: Validate consolidated federation and MCP bindings
+        run: |
+          python -m unittest -v tests.test_organization_federation_binding
+          python -m unittest -v tests.test_sdk_mcp_activation_binding tests.test_sdk_mcp_canonical_validation_worker
+
       - name: Validate consolidated Test Lanes autolaunch binding
         run: python -m unittest -v tests.test_test_lanes_autolaunch_binding
 
