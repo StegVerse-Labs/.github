@@ -58,14 +58,30 @@
     "policy_version": "shwp-single-hb-v0.2"
   },
   "execution": {
-    "required_capabilities": ["bounded_repository_mutation"],
-    "allowed_paths": ["receipts/organization-federation/**"],
+    "required_capabilities": [
+      "bounded_repository_mutation"
+    ],
+    "allowed_paths": [
+      "receipts/organization-federation/**"
+    ],
     "allowed_services": [],
     "max_actions": 128,
     "max_retries": 128,
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 256,
-    "rate_class": "heartbeat_federation_reconciliation"
+    "rate_class": "heartbeat_federation_reconciliation",
+    "validation_surface": {
+      "state": "CONSOLIDATED",
+      "removed_standalone_workflow": ".github/workflows/all-org-heartbeat-federation.yml",
+      "stable_validation_dispatcher": ".github/workflows/heartbeat-worker-project.yml",
+      "parity_tests": [
+        "tests/test_organization_federation_binding.py",
+        "tests/test_repo_heartbeat_federation_worker.py",
+        "tests/test_emit_repo_heartbeat_manifest.py"
+      ],
+      "live_federation_task_changed": false,
+      "authority_effect": "NONE"
+    }
   },
   "activation": {
     "carrier": "heartbeat",
@@ -82,7 +98,7 @@
     "reconstruction_ref": "control/organization-federation.json"
   },
   "completion": {
-    "next_authorized_action": "On the next admitted heartbeat, reconcile all 14 organization readiness rows and persist a federation receipt; blocked rows remain machine-owned until their explicit release conditions become true.",
+    "next_authorized_action": "Continue only through the existing machine-owned federation worker/runtime lane: on an eligible StegVerse runtime, emit/evaluate fresh manifests for the admitted critical denominator and persist the canonical coverage receipt. The standalone hosted validation workflow is retired; stable-dispatcher validation does not satisfy live coverage.",
     "terminal_when": [
       "All 14 organizations remain represented",
       "Unassigned organization count is zero",
@@ -90,5 +106,6 @@
       "Every blocked organization has an explicit release condition and next action"
     ]
   },
-  "block": null
+  "block": null,
+  "updated_at": "2026-08-27T07:00:00-05:00"
 }
