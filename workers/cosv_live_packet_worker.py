@@ -58,7 +58,7 @@ def main() -> int:
                 "problem_statement": str(exc),
                 "solution_required": True,
                 "may_remain_blocked": False,
-                "next_solution_action": "RECHECK_CANONICAL_CARRIER_WORKER_PACKET_STATE",
+                "next_solution_action": "RECHECK_CANONICAL_PROTOCOL_REFERENCE_AND_LOCAL_STATE_EVIDENCE",
                 "machine_observable_release_condition": "materializer returns PACKET_MATERIALIZED or NO_NEW_REFERENCE without invariant failure",
                 "github_token_required": False,
                 "third_party_blocker": False,

@@ -3,7 +3,10 @@
   "goal_id": "COSV-HEARTBEAT-STATE-PACKET-002",
   "parent_profile": "management/COSV_PROFILE_V1.json",
   "packet_schema": "schemas/cosv_state_packet.schema.json",
-  "packet_modes": ["FULL", "DELTA"],
+  "packet_modes": [
+    "FULL",
+    "DELTA"
+  ],
   "carrier_role": "REFERENCE_FRAME_ONLY",
   "packet_role": "STATE_TRANSITION_EVIDENCE_INDEX",
   "gradient_role": "INPUT_ONLY",
@@ -57,5 +60,14 @@
     "admissibility",
     "coherency",
     "gradient"
-  ]
+  ],
+  "canonical_reference_source": "heartbeat_runtime/independent_oscillator.py#current_reference",
+  "protocol_anchor_ref": "control/heartbeat-protocol-anchor.json",
+  "heartbeat_live_status_ref": "control/heartbeat-live-status.json",
+  "persisted_carrier_role": "HISTORICAL_OBSERVATION_EVIDENCE_ONLY",
+  "worker_runtime_role": "OBSERVED_OPERATIONAL_STATE_ONLY",
+  "worker_runtime_required_for_reference": false,
+  "resident_sampler_required_for_reference": false,
+  "carrier_event_required_for_reference": false,
+  "reference_progression_dependency": "OSCILLATOR_ONLY"
 }
