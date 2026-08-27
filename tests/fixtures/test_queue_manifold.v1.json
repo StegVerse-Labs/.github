@@ -1,0 +1,155 @@
+{
+  "schema": "stegverse.test-queue-manifold-fixtures/v1",
+  "available_capabilities": [
+    "python",
+    "network-observation",
+    "schema-validation"
+  ],
+  "available_evidence": [
+    "evidence:baseline",
+    "evidence:route"
+  ],
+  "tests": [
+    {
+      "schema": "stegverse.test-queue-manifold-descriptor/v1",
+      "test_id": "TQ-001",
+      "canonical_input_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "goal_transition": "VALIDATE_ROUTE",
+      "source_state": "DECLARED",
+      "target_state": "VALIDATED",
+      "transition_class": "VALIDATION",
+      "required_capabilities": [
+        "python",
+        "network-observation"
+      ],
+      "required_evidence": [
+        "evidence:route"
+      ],
+      "dependencies": [],
+      "authority_class": "VALIDATION_ONLY",
+      "cost_capacity": {
+        "cost_units": 1,
+        "capacity_units": 1
+      },
+      "urgency": 90,
+      "expected_information_gain": 8,
+      "coherency_group": "route-validation",
+      "lifecycle_state": "PENDING",
+      "execution_claim_ref": null,
+      "person_specific_route": false,
+      "authority_effect": "NONE"
+    },
+    {
+      "schema": "stegverse.test-queue-manifold-descriptor/v1",
+      "test_id": "TQ-002",
+      "canonical_input_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "goal_transition": "VALIDATE_ROUTE",
+      "source_state": "DECLARED",
+      "target_state": "VALIDATED",
+      "transition_class": "VALIDATION",
+      "required_capabilities": [
+        "python",
+        "network-observation"
+      ],
+      "required_evidence": [
+        "evidence:route"
+      ],
+      "dependencies": [],
+      "authority_class": "VALIDATION_ONLY",
+      "cost_capacity": {
+        "cost_units": 1,
+        "capacity_units": 1
+      },
+      "urgency": 80,
+      "expected_information_gain": 7,
+      "coherency_group": "route-validation",
+      "lifecycle_state": "PENDING",
+      "execution_claim_ref": null,
+      "person_specific_route": false,
+      "authority_effect": "NONE"
+    },
+    {
+      "schema": "stegverse.test-queue-manifold-descriptor/v1",
+      "test_id": "TQ-003",
+      "canonical_input_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "goal_transition": "VALIDATE_SCHEMA",
+      "source_state": "IMPLEMENTED",
+      "target_state": "VALIDATED",
+      "transition_class": "SCHEMA_VALIDATION",
+      "required_capabilities": [
+        "python",
+        "schema-validation"
+      ],
+      "required_evidence": [
+        "evidence:baseline"
+      ],
+      "dependencies": [],
+      "authority_class": "VALIDATION_ONLY",
+      "cost_capacity": {
+        "cost_units": 0.5,
+        "capacity_units": 1
+      },
+      "urgency": 70,
+      "expected_information_gain": 6,
+      "coherency_group": "schema-validation",
+      "lifecycle_state": "PENDING",
+      "execution_claim_ref": null,
+      "person_specific_route": false,
+      "authority_effect": "NONE"
+    },
+    {
+      "schema": "stegverse.test-queue-manifold-descriptor/v1",
+      "test_id": "TQ-004",
+      "canonical_input_hash": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "goal_transition": "RUN_DEPENDENT_TEST",
+      "source_state": "BLOCKED",
+      "target_state": "VALIDATED",
+      "transition_class": "INTEGRATION",
+      "required_capabilities": [
+        "python"
+      ],
+      "required_evidence": [
+        "evidence:baseline"
+      ],
+      "dependencies": [
+        "TQ-005"
+      ],
+      "authority_class": "VALIDATION_ONLY",
+      "cost_capacity": {
+        "cost_units": 2,
+        "capacity_units": 2
+      },
+      "urgency": 60,
+      "expected_information_gain": 5,
+      "coherency_group": "integration",
+      "lifecycle_state": "PENDING",
+      "execution_claim_ref": null,
+      "person_specific_route": false,
+      "authority_effect": "NONE"
+    },
+    {
+      "schema": "stegverse.test-queue-manifold-descriptor/v1",
+      "test_id": "TQ-005",
+      "canonical_input_hash": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "goal_transition": "PRESERVE_PRIOR_RESULT",
+      "source_state": "VALIDATED",
+      "target_state": "EXECUTED",
+      "transition_class": "DIRECT_TEST",
+      "required_capabilities": [],
+      "required_evidence": [],
+      "dependencies": [],
+      "authority_class": "INDEPENDENT_CLAIM",
+      "cost_capacity": {
+        "cost_units": 1,
+        "capacity_units": 1
+      },
+      "urgency": 50,
+      "expected_information_gain": 2,
+      "coherency_group": "integration",
+      "lifecycle_state": "EXECUTED",
+      "execution_claim_ref": "claim:TQ-005",
+      "person_specific_route": false,
+      "authority_effect": "NONE"
+    }
+  ]
+}
