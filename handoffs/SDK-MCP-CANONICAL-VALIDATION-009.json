@@ -170,5 +170,18 @@
       "reconstruction consequence_reexecuted=false"
     ],
     "release_condition": "Complete worker receipt is produced and reconciled into the canonical SDK task/handoff/issue, or an exact fail-closed worker receipt identifies a machine-observable missing local-artifact/runtime condition."
+  },
+  "source_state_vector_ref": "control/task-vectors/SDK-MCP-CANONICAL-VALIDATION-009.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-08-27T16:50:00-05:00",
+      "authority_effect": "NONE"
+    }
   }
 }
