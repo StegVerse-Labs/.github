@@ -100,5 +100,48 @@ class WorkerTaskAdmissionTests(unittest.TestCase):
         self.assertIn("github_token_runtime_authority_none", packet["review"]["reasons"])
 
 
+    def test_declared_cosv_vector_is_embedded_in_admission_packet(self):
+        packet = self.review(task={
+            "source_state_vector_ref": "tasks/TASK-1.json#machine_readable_state.cosv",
+            "machine_readable_state": {
+                "cosv": {
+                    "profile": "task.v1",
+                    "notation": "L R U I V G O C M T B E A P",
+                    "width": 14,
+                    "vector": "10000000100001",
+                    "vector_state": "EMITTED",
+                    "authority_effect": "NONE",
+                }
+            },
+        })
+        self.assertEqual(packet["review"]["verdict"], "ADMIT")
+        self.assertTrue(packet["review"]["predicates"]["source_state_vector_valid"])
+        self.assertEqual(packet["operational_state_vector"]["vector"], "10000000100001")
+        self.assertEqual(packet["operational_state_vector"]["notation"], "L R U I V G O C M T B E A P")
+
+    def test_declared_missing_cosv_blocks(self):
+        packet = self.review(task={
+            "source_state_vector_ref": "tasks/TASK-1.json#machine_readable_state.cosv",
+        })
+        self.assertEqual(packet["review"]["verdict"], "BLOCK")
+        self.assertIn("source_state_vector_valid", packet["review"]["reasons"])
+
+    def test_malformed_cosv_domain_blocks(self):
+        packet = self.review(task={
+            "source_state_vector_ref": "tasks/TASK-1.json#machine_readable_state.cosv",
+            "machine_readable_state": {
+                "cosv": {
+                    "profile": "task.v1",
+                    "notation": "L R U I V G O C M T B E A P",
+                    "width": 14,
+                    "vector": "19999999999999",
+                    "vector_state": "EMITTED",
+                    "authority_effect": "NONE",
+                }
+            },
+        })
+        self.assertEqual(packet["review"]["verdict"], "BLOCK")
+        self.assertIn("source_state_vector_valid", packet["review"]["reasons"])
+
 if __name__ == "__main__":
     unittest.main()

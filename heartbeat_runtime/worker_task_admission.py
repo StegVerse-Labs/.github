@@ -15,6 +15,39 @@ from .independent_oscillator import encode_heartbeat_id
 SCHEMA = "stegverse.worker-task-admission-packet/v1"
 VERDICTS = {"ADMIT", "UPDATE", "RETIRE", "BLOCK"}
 
+TASK_COSV_NOTATION = "L R U I V G O C M T B E A P"
+TASK_TERNARY_POSITIONS = {1, 8, 9, 11, 12, 13}
+TASK_QUANTITY_POSITIONS = {2, 3, 4, 5, 6, 7, 10}
+
+
+def _task_cosv(task: dict[str, Any]) -> tuple[dict[str, Any] | None, bool]:
+    """Return the task COSV projection and whether a declared binding is valid."""
+    source_ref = task.get("source_state_vector_ref")
+    machine = task.get("machine_readable_state")
+    cosv = machine.get("cosv") if isinstance(machine, dict) else None
+    if source_ref in (None, ""):
+        return None, True
+    if not isinstance(cosv, dict):
+        return None, False
+    vector = cosv.get("vector")
+    if (
+        cosv.get("profile") != "task.v1"
+        or cosv.get("notation") != TASK_COSV_NOTATION
+        or cosv.get("width") != 14
+        or cosv.get("vector_state") != "EMITTED"
+        or cosv.get("authority_effect") != "NONE"
+        or not isinstance(vector, str)
+        or len(vector) != 14
+        or not vector.isdigit()
+    ):
+        return cosv, False
+    digits = [int(x) for x in vector]
+    if any(digits[i] not in (0, 1, 2) for i in TASK_TERNARY_POSITIONS):
+        return cosv, False
+    if any(digits[i] not in range(10) for i in TASK_QUANTITY_POSITIONS):
+        return cosv, False
+    return cosv, True
+
 
 def _canonical(value: Any) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
@@ -48,6 +81,7 @@ def review_worker_task_admission(
     github_token_ok = task.get("github_token_runtime_authority") in (None, "NONE") and handoff.get("github_token_runtime_authority") in (None, "NONE")
     handoff_task_id = ((handoff.get("task") or {}).get("task_id") or handoff.get("task_id"))
     handoff_matches = handoff_task_id in (None, task.get("task_id"))
+    task_cosv, task_cosv_valid = _task_cosv(task)
     predicates = {
         "task_handoff_ready": state == "HANDOFF_READY",
         "task_not_terminal": not terminal,
@@ -60,6 +94,7 @@ def review_worker_task_admission(
         "credential_authority_tvc_only": bool(credential_ok),
         "github_token_runtime_authority_none": bool(github_token_ok),
         "handoff_task_identity_matches": bool(handoff_matches),
+        "source_state_vector_valid": bool(task_cosv_valid),
     }
     if terminal:
         verdict = "RETIRE"
@@ -90,6 +125,13 @@ def review_worker_task_admission(
             "handoff_ref": task.get("handoff_ref"),
             "cost_basis_ref": task.get("cost_basis_ref"),
             "source_state_vector_ref": task.get("source_state_vector_ref"),
+        },
+        "operational_state_vector": None if task_cosv is None else {
+            "profile": task_cosv.get("profile"),
+            "notation": task_cosv.get("notation"),
+            "vector": task_cosv.get("vector"),
+            "vector_state": task_cosv.get("vector_state"),
+            "authority_effect": "NONE",
         },
         "digests": {
             "task_sha256": _sha(task),
