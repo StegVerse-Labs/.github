@@ -16,7 +16,9 @@ class EcosystemChatParentCOSVTests(unittest.TestCase):
     def test_parent_task_vector_is_visible_and_canonical(self) -> None:
         record = json.loads((ROOT / "control" / "task-vectors" / "SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json").read_text())
         registry = json.loads((ROOT / "control" / "worker-registry.json").read_text())
-        task = next(row for row in registry["tasks"] if row.get("task_id") == "SHWP-ECOSYSTEM-CHAT-INFERENCE-001")
+        matches = [row for row in registry["tasks"] if row.get("task_id") == "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"]
+        self.assertEqual(len(matches), 1)
+        task = matches[0]
 
         self.assertEqual(record["profile"], "task.v1")
         self.assertEqual(record["level"], "task")
@@ -48,6 +50,10 @@ class EcosystemChatParentCOSVTests(unittest.TestCase):
         self.assertEqual(task["state"], "HANDOFF_READY")
         self.assertIsNone(task["claim_id"])
         self.assertFalse(task["archive_eligible"])
+        fragment = json.loads((ROOT / "control" / "worker-registry.d" / "ecosystem-chat-sovereign-inference-parent-001.json").read_text())
+        self.assertEqual(fragment["vector_projection_owner"], "control/worker-registry.json")
+        self.assertFalse(fragment["vector_duplicate_source_allowed"])
+        self.assertNotIn("source_state_vector_ref", fragment["tasks"][0])
 
 
 if __name__ == "__main__":
