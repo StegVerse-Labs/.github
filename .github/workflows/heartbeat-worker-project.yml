@@ -39,6 +39,9 @@ on:
       - 'scripts/run_independent_ecosystem_chat_parent.py'
       - 'authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json'
       - 'control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json'
+      - 'control/worker-registry.json'
+      - 'control/task-vectors/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json'
+      - 'tests/test_ecosystem_chat_parent_registry_reconciliation.py'
       - 'handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json'
       - 'tests/test_independent_ecosystem_chat_parent_executor.py'
       - 'tests/test_llm_adapter_sovereign_execution_bridge.py'
@@ -151,6 +154,7 @@ jobs:
         run: |
           python -m unittest -v tests.test_ecosystem_chat_inference_binding
           python -m unittest -v tests.test_independent_ecosystem_chat_parent_executor tests.test_llm_adapter_sovereign_execution_bridge tests.test_master_records_sovereign_reconstruction_bridge
+          python -m unittest -v tests.test_ecosystem_chat_parent_registry_reconciliation
           python -m unittest -v tests.test_steggate_integration_binding
 
       - name: Validate consolidated StegFin contribution validator source

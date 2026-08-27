@@ -8,7 +8,7 @@
     {
       "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
       "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+      "registry_ref": "control/worker-registry.json",
       "source_state_vector_ref": "control/task-vectors/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
       "vector": "50000000100000",
       "vector_state": "EMITTED",
