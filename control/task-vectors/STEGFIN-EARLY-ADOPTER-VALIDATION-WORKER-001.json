@@ -1,0 +1,43 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json",
+    "handoffs/STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001.json",
+    "docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_VALIDATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/stegfin-governance:docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-08-27T17:08:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_VALIDATION_MIRROR_HANDOFF.md#WORKER-OWNED / DO NOT COMPETE",
+    "archive_ready": "control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json#archive_eligible=false",
+    "unassigned_work": "worker_registry task has named worker_id and continuation_owner",
+    "chat_owned_counts": "machine-owned worker manual_execution_allowed=false; validation session source-check is a distinct public source lane",
+    "canonical_owner_installed": "handoff/worker/registry binding COMPLETE and worker_status AVAILABLE",
+    "thread_required": "machine worker continuation is durable and manual/session private-source execution is prohibited",
+    "blocker_count": "admissible_existence.blockers contains exactly AUTHORIZED_LOCAL_PRIVATE_SOURCE_PATH_NOT_YET_OBSERVED",
+    "evidence_complete": "AUTHORIZED_LOCAL_PRIVATE_SOURCE_PATH_OBSERVED=false and LIVE_LOCAL_VALIDATION_RECEIPT=PENDING",
+    "activated": "admissible_existence.activation_proof_ref=null and target_phase=ACTIVATED",
+    "propagated": "validation receipt has not been reconciled into private StegFin contribution handoff; no merge/issuance/trade authority"
+  },
+  "authority_effect": "NONE"
+}
