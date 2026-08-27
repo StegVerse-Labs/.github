@@ -1,0 +1,2707 @@
+{
+  "schema": "stegverse.cosv-ecosystem-adoption-manifest/v0.1",
+  "profile": "task.v1",
+  "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+  "notation": "L R U I V G O C M T B E A P",
+  "width": 14,
+  "observed_at": "2026-08-27T11:14:00-05:00",
+  "source": "live GitHub App installation enumeration plus durable task-surface evidence",
+  "authority_effect": "NONE",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "central_cross_private_execution_authority": false,
+  "repository_count": 222,
+  "organization_count": 14,
+  "universe_audit_complete": false,
+  "adoption_metrics": {
+    "numerator_vectorized_active_task_surfaces": 0,
+    "denominator_proven_active_task_surfaces": 33,
+    "ratio": "0/33",
+    "percentage": 0,
+    "interpretation": "Repository-level VECTOR_PRESENT requires proof that every active machine task in that repository is vectorized. Partial vector presence does not satisfy the numerator."
+  },
+  "classification_counts": {
+    "VECTOR_REQUIRED": 33,
+    "NO_REPOSITORY_OR_UNAVAILABLE": 189
+  },
+  "organization_projection": [
+    {
+      "organization": "Admissible-Existence",
+      "installation_id": 139890227,
+      "repository_count": 32,
+      "vector_required": 12,
+      "vector_present": 0,
+      "no_active_task_surface": 0,
+      "unavailable_or_not_yet_audited": 20
+    },
+    {
+      "organization": "AdmittedCode",
+      "installation_id": 139890420,
+      "repository_count": 6,
+      "vector_required": 1,
+      "vector_present": 0,
+      "no_active_task_surface": 0,
+      "unavailable_or_not_yet_audited": 5
+    },
+    {
+      "organization": "Data-Continuation",
+      "installation_id": 139890529,
+      "repository_count": 6,
+      "vector_required": 3,
+      "vector_present": 0,
+      "no_active_task_surface": 0,
+      "unavailable_or_not_yet_audited": 3
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "installation_id": 139890635,
+      "repository_count": 14,
+      "vector_required": 5,
+      "vector_present": 0,
+      "no_active_task_surface": 0,
+      "unavailable_or_not_yet_audited": 9
+    },
+    {
+      "organization": "master-records",
+      "installation_id": 139890727,
+      "repository_count": 4,
+      "vector_required": 3,
+      "vector_present": 0,
+      "no_active_task_surface": 0,
+      "unavailable_or_not_yet_audited": 1
+    },
+    {
+      "organization": "StegGhost",
+      "installation_id": 139890806,
+      "repository_count": 6,
+      "vector_required": 0,
+      "vector_present": 0,
+      "no_active_task_surface": 0,
+      "unavailable_or_not_yet_audited": 6
+    },
+    {
+      "organization": "StegVerse-002",
+      "installation_id": 139890929,
+      "repository_count": 8,
+      "vector_required": 1,
+      "vector_present": 0,
+      "no_active_task_surface": 0,
+      "unavailable_or_not_yet_audited": 7
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "installation_id": 139890998,
+      "repository_count": 100,
+      "vector_required": 7,
+      "vector_present": 0,
+      "no_active_task_surface": 0,
+      "unavailable_or_not_yet_audited": 93
+    },
+    {
+      "organization": "StegVerse-org",
+      "installation_id": 139891080,
+      "repository_count": 18,
+      "vector_required": 1,
+      "vector_present": 0,
+      "no_active_task_surface": 0,
+      "unavailable_or_not_yet_audited": 17
+    },
+    {
+      "organization": "formalism-tests",
+      "installation_id": 139891470,
+      "repository_count": 9,
+      "vector_required": 0,
+      "vector_present": 0,
+      "no_active_task_surface": 0,
+      "unavailable_or_not_yet_audited": 9
+    },
+    {
+      "organization": "Infrastructure-Continuity-Ventures",
+      "installation_id": 155782498,
+      "repository_count": 6,
+      "vector_required": 0,
+      "vector_present": 0,
+      "no_active_task_surface": 0,
+      "unavailable_or_not_yet_audited": 6
+    },
+    {
+      "organization": "AaCT-E",
+      "installation_id": 155782616,
+      "repository_count": 3,
+      "vector_required": 0,
+      "vector_present": 0,
+      "no_active_task_surface": 0,
+      "unavailable_or_not_yet_audited": 3
+    },
+    {
+      "organization": "ECAT-ICAT-Formal",
+      "installation_id": 155782655,
+      "repository_count": 8,
+      "vector_required": 0,
+      "vector_present": 0,
+      "no_active_task_surface": 0,
+      "unavailable_or_not_yet_audited": 8
+    },
+    {
+      "organization": "Triad-Test",
+      "installation_id": 155782693,
+      "repository_count": 2,
+      "vector_required": 0,
+      "vector_present": 0,
+      "no_active_task_surface": 0,
+      "unavailable_or_not_yet_audited": 2
+    }
+  ],
+  "repositories": [
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/telemetry",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/BC",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/CHF",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/DC",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/DaCo",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/AE",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/.github",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "data/formalism-task-claims.json"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/IW",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/RE",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/RE-Reduction",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/Triad",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/GCAT-BCAT",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/ECAT-ICAT",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/Existence",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/validator",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/tracker",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/core-lite",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/TT",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/STCM",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/ae-validation-factory",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/RTG",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/learning-transition-governance",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/standing-proof-formalism",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/IICT",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/CTA",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/ae-validation-research",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/validation-profile-registry",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/HPS",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/FI",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/GTG",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/SOL",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Admissible-Existence",
+      "repository": "Admissible-Existence/ET",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "AdmittedCode",
+      "repository": "AdmittedCode/code-admit-gate",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "AdmittedCode",
+      "repository": "AdmittedCode/coherency-scanner",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "AdmittedCode",
+      "repository": "AdmittedCode/admissibility-receipt",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "AdmittedCode",
+      "repository": "AdmittedCode/provider-harness",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "AdmittedCode",
+      "repository": "AdmittedCode/fleet-status",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "AdmittedCode",
+      "repository": "AdmittedCode/.github",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "data/tasks/ADMITTEDCODE-SITE-REVIEW-INTEGRATION.json"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Data-Continuation",
+      "repository": "Data-Continuation/formalisms",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Data-Continuation",
+      "repository": "Data-Continuation/formalism-tests",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Data-Continuation",
+      "repository": "Data-Continuation/products",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Data-Continuation",
+      "repository": "Data-Continuation/core-lite",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "stegverse.core_lite.task.v1 task objects / task.v1 search-visible adoption"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Data-Continuation",
+      "repository": "Data-Continuation/RTG-Tests",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Data-Continuation",
+      "repository": "Data-Continuation/StegClaw",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "repository": "GCAT-BCAT-Engine/Gemstone_IV",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "repository": "GCAT-BCAT-Engine/Publisher",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "data/publisher-orchestration-state.json"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "repository": "GCAT-BCAT-Engine/Triage",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "repository": "GCAT-BCAT-Engine/WZ",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "repository": "GCAT-BCAT-Engine/Marketplace",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "repository": "GCAT-BCAT-Engine/core-lite",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "repository": "GCAT-BCAT-Engine/core-full",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "repository": "GCAT-BCAT-Engine/core-addons",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "repository": "GCAT-BCAT-Engine/workflows",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "repository": "GCAT-BCAT-Engine/telemetry",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "repository": "GCAT-BCAT-Engine/core-master",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "repository": "GCAT-BCAT-Engine/Documentation",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "repository": "GCAT-BCAT-Engine/core-lite-prod",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "GCAT-BCAT-Engine",
+      "repository": "GCAT-BCAT-Engine/StegSim",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "master-records",
+      "repository": "master-records/monitoring",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "master-records",
+      "repository": "master-records/telemetry",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "master-records",
+      "repository": "master-records/orchestration",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "machine-owned custody/reconstruction task state and MIRROR handoff"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "master-records",
+      "repository": "master-records/core-lite",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegGhost",
+      "repository": "StegGhost/ghost-pat-lab",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegGhost",
+      "repository": "StegGhost/entity-sandbox-runner",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegGhost",
+      "repository": "StegGhost/stegverse-sandbox",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegGhost",
+      "repository": "StegGhost/StegCGE",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegGhost",
+      "repository": "StegGhost/automated_buildout",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegGhost",
+      "repository": "StegGhost/telemetry",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-002",
+      "repository": "StegVerse-002/legacy_core_lite",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-002",
+      "repository": "StegVerse-002/core-lite",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-002",
+      "repository": "StegVerse-002/StegGuardian",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-002",
+      "repository": "StegVerse-002/StegProfile",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-002",
+      "repository": "StegVerse-002/admissibility-gateway",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-002",
+      "repository": "StegVerse-002/capability-registry",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-002",
+      "repository": "StegVerse-002/stegguardian-wiki",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing machine state found in prior live audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-002",
+      "repository": "StegVerse-002/micro-node-runtime",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Site",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "data/tasks/SITE-TASK-RUNNER-SEMANTIC-LIVE-501.json#machine_readable_state.cosv"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/SCW",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegVerse-SCW",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegVerse-Healer",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/hybrid-collab-bridge",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/FREE-DOM",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/TV",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Continuity",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegBiography",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Trumpality",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Epsteinality",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Maxwellality",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Giuffre-ality",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/3I-Atlas",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Governance",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/TVC",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json#machine_readable_state.cosv"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Patents",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/CosDen",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegCore",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegDB",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegBrain",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegAgents",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "task-bearing repository discovered in live ecosystem task-surface audit"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegSocials",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/SDE",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegSports-CFP",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/FREE-DOM_Books",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegDJ",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Randolph_Geneaology_Hub",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegTalk",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegOps-Orchestrator",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegOps-Deliverables",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegID",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/FREE-DOM_OverSight",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/HouseHold",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Value",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegCustody",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/HEE-Showcase",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/DiamondOps-Core",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/HydraSafe",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/ReactorOps",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/YieldOS",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/CrystalWorks",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegScholar",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/stegseed",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/continuity-vault-kit",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/.github",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "control/worker-registry.json",
+        "control/organization-task-registry.json",
+        "control/task-vector-index.json"
+      ],
+      "vector_coverage_state": "PARTIAL_4_INDEXED_TASKS_NOT_GLOBAL_REGISTRY_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Fin-Co",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Fin-Co-Lab",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Administrations",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Executive_Rhetoric_Ledger",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/JRRZ",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Talarico",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/entity-sandbox",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegPay",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/footprint-auditor",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegKey",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/telemetry",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/core-master",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegFinCo",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/stegfin-governance",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegEntity",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/T-CL",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegLearn",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegLenses",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegOS",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/admissibility-wiki",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Ecosystem-Delegation",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Entity-Activation",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Remediation-Receipts",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/External-Actor-Gateway",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Delegation-Testbed",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/stegfin-provider-token-ledger",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/stegfin-provider-token-ledger-executor",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/patent-registry",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/stegfin-provider-treasury-record",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/stegfin-provider-banking",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/stegfin-provider-acquisition-close",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/stegfin-provider-vendor-payment",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegWhisper",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/VAwatchdog",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/crypto-bot",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/governed-agent-passport",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Boundary-Test",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/Standing-Proof-Engine",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/proposal-governance-core-lite",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/soil-to-structure-matrix",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/GP10",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegMusic",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/music-generator",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/collective-environment-engine",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegEnviro",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegVisual",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/StegAtmos",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/stegtalk-wiki",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/governance-observatory",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/ara-admissibility-interop",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/mood-channel-selector",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/media-runtime",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/music-engine",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-Labs",
+      "repository": "StegVerse-Labs/broadcast-runtime",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/.github",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/trust-kernel",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/StegVerse-admission",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/demo-suite-runner",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/stegverse-demo-suite",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/demo_ingest_engine",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/stegverse-gsl",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/LLM-adapter",
+      "classification": "VECTOR_REQUIRED",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "evidence_refs": [
+        "tasks/LLMA-HIL-SOVEREIGN-RECEIVER-021.json"
+      ],
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/demo-sandbox",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/discovery",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/manifests",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/TV",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/TVC",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/telemetry",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/core-node-runtime-demo",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/universal-transition-table-test-path",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "StegVerse-org",
+      "repository": "StegVerse-org/HPS-runtime",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "formalism-tests",
+      "repository": "formalism-tests/Triad",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "formalism-tests",
+      "repository": "formalism-tests/ECAT-ICAT",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "formalism-tests",
+      "repository": "formalism-tests/GCAT-BCAT",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "formalism-tests",
+      "repository": "formalism-tests/Existence",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "formalism-tests",
+      "repository": "formalism-tests/Inference-Window",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "formalism-tests",
+      "repository": "formalism-tests/Entropy-Reversibility",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "formalism-tests",
+      "repository": "formalism-tests/Transition-Periodic-Table",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "formalism-tests",
+      "repository": "formalism-tests/sandbox",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "formalism-tests",
+      "repository": "formalism-tests/core-lite",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Infrastructure-Continuity-Ventures",
+      "repository": "Infrastructure-Continuity-Ventures/infrastructure-continuity-engine",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Infrastructure-Continuity-Ventures",
+      "repository": "Infrastructure-Continuity-Ventures/infrastructure-continuity-jurisdictions",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Infrastructure-Continuity-Ventures",
+      "repository": "Infrastructure-Continuity-Ventures/infrastructure-continuity-workflows",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Infrastructure-Continuity-Ventures",
+      "repository": "Infrastructure-Continuity-Ventures/infrastructure-continuity-demo",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Infrastructure-Continuity-Ventures",
+      "repository": "Infrastructure-Continuity-Ventures/infrastructure-continuity-docs",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Infrastructure-Continuity-Ventures",
+      "repository": "Infrastructure-Continuity-Ventures/infrastructure-continuity-core-lite",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "AaCT-E",
+      "repository": "AaCT-E/.github",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "AaCT-E",
+      "repository": "AaCT-E/demo",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "AaCT-E",
+      "repository": "AaCT-E/telemetry",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "ECAT-ICAT-Formal",
+      "repository": "ECAT-ICAT-Formal/lean-verifier",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "ECAT-ICAT-Formal",
+      "repository": "ECAT-ICAT-Formal/reference-library",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "ECAT-ICAT-Formal",
+      "repository": "ECAT-ICAT-Formal/telemetry",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "ECAT-ICAT-Formal",
+      "repository": "ECAT-ICAT-Formal/docs",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "ECAT-ICAT-Formal",
+      "repository": "ECAT-ICAT-Formal/sandbox",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "ECAT-ICAT-Formal",
+      "repository": "ECAT-ICAT-Formal/validator",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "ECAT-ICAT-Formal",
+      "repository": "ECAT-ICAT-Formal/hybrid-bridge",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "ECAT-ICAT-Formal",
+      "repository": "ECAT-ICAT-Formal/publisher",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Triad-Test",
+      "repository": "Triad-Test/Documentation",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    },
+    {
+      "organization": "Triad-Test",
+      "repository": "Triad-Test/tests",
+      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
+      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "evidence_refs": [
+        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+      ],
+      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
+      "authority_effect": "NONE"
+    }
+  ],
+  "incomplete_adoption_release_conditions": [
+    "Every repository currently VECTOR_REQUIRED becomes VECTOR_PRESENT through repository-local canonical projection and validation.",
+    "Every repository currently NO_REPOSITORY_OR_UNAVAILABLE is audited and reclassified with durable evidence; existing repositories may not remain unavailable merely because code search is incomplete.",
+    "The .github global worker and organization task registries are covered by canonical task vectors without manually inventing digits.",
+    "Site vector=null states are resolved only by Site-native canonical COSV projection.",
+    "No central validator gains privileged cross-private execution or credential authority."
+  ]
+}

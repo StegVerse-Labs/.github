@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -99,6 +100,12 @@ def main() -> None:
                 fail(f"duplicate task identity: {task_id}")
             tasks[task_id] = task
     detect_dependency_cycles(tasks)
+
+    subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "validate_cosv_ecosystem_adoption.py")],
+        cwd=ROOT,
+        check=True,
+    )
 
     print(
         json.dumps(
