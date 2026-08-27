@@ -1,0 +1,113 @@
+{
+  "schema": "stegverse.cosv-global-registry-coverage/v0.1",
+  "repository": "StegVerse-Labs/.github",
+  "observed_commit": "b94d8507033b95cd396bfbc1c6c742e0472eceac",
+  "observed_at": "2026-08-27T11:32:00-05:00",
+  "profile": "task.v1",
+  "notation": "L R U I V G O C M T B E A P",
+  "width": 14,
+  "authority_effect": "NONE",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "worker_registry_summary": {
+    "unique_task_ids_global_plus_fragments": 45,
+    "canonically_indexed_task_ids": 4,
+    "completed_only_historical_unvectorized_task_ids": 4,
+    "active_unvectorized_unique_task_ids": 37
+  },
+  "organization_registry_summary": {
+    "active_task_ids": 14,
+    "canonically_vectorized_task_ids": 0,
+    "active_unvectorized_task_ids": 14
+  },
+  "total_active_unvectorized_unique_task_ids": 51,
+  "active_worker_task_ids_missing_canonical_cosv": [
+    "STEGGATE-FIRST-BOUNDARY-001",
+    "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+    "SHWP-ALL-ORG-FEDERATION-001",
+    "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+    "STEGFIN-LIVE-ENTRY-003",
+    "SHWP-ERL-UAP-MEDIA-001",
+    "STEGFIN-LIVE-PRETRADE-005",
+    "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+    "SHWP-REPO-HEARTBEAT-FEDERATION-001",
+    "SHWP-STEGFIN-SOVEREIGN-TRADING-001",
+    "AE-RELATIONAL-MATH-WORKER-001",
+    "SHWP-STEGNUTRITION-CONTINUATION-001",
+    "SHWP-FORMALISM-SOURCE-DISCOVERY-001",
+    "STEGFIN-CONTINUITY-CARRIER-007",
+    "SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
+    "SDK-MCP-CANONICAL-VALIDATION-009",
+    "SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001",
+    "HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001",
+    "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
+    "HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001",
+    "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001",
+    "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+    "SHWP-FORMALISM-INVENTORY-001",
+    "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001",
+    "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001",
+    "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001",
+    "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001",
+    "SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001",
+    "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001",
+    "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
+    "HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
+    "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+    "SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
+    "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
+    "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
+    "STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001",
+    "STEGVERSE-TEST-LANES-AUTOLAUNCH-001"
+  ],
+  "active_organization_task_ids_missing_canonical_cosv": [
+    "ORG-FED-AACT-E-001",
+    "ORG-FED-ADMISSIBLE-EXISTENCE-001",
+    "ORG-FED-ADMITTEDCODE-001",
+    "ORG-FED-DATA-CONTINUATION-001",
+    "ORG-FED-ECAT-ICAT-FORMAL-001",
+    "ORG-FED-FORMALISM-TESTS-001",
+    "ORG-FED-GCAT-BCAT-ENGINE-001",
+    "ORG-FED-INFRASTRUCTURE-CONTINUITY-VENTURES-001",
+    "ORG-FED-MASTER-RECORDS-001",
+    "ORG-FED-STEGGHOST-001",
+    "ORG-FED-STEGVERSE-002-001",
+    "ORG-FED-STEGVERSE-LABS-001",
+    "ORG-FED-STEGVERSE-ORG-001",
+    "ORG-FED-TRIAD-TEST-001"
+  ],
+  "indexed_vectors": [
+    {
+      "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "COSV-LIVE-PACKET-AUTOMATION-006",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "SHWP-TV-TVC-RESIDENT-PROOF-001",
+      "vector": "10100000111001"
+    },
+    {
+      "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "vector": "60000000101000"
+    }
+  ],
+  "evidence_conflicts": [
+    {
+      "task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
+      "global_registry_state": "BLOCKED",
+      "fragment_state": "COMPLETED",
+      "action": "RECONCILE_CANONICAL_STATE_BEFORE_VECTOR_EMISSION",
+      "vector_emission_allowed_from_current_conflicting_evidence": false
+    }
+  ],
+  "release_conditions": [
+    "Every active task ID is bound to exactly one canonical source_state_vector_ref or is removed/superseded by canonical evidence.",
+    "Conflicting registry states are reconciled before vector emission.",
+    "No task.v1 digits are inferred from prose-only state labels.",
+    "control/task-vector-index.json remains fail-closed and parity-valid.",
+    "TV/TVC remains sole credential authority and authority_effect remains NONE."
+  ]
+}

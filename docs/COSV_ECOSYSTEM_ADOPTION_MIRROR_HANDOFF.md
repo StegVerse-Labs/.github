@@ -1,8 +1,8 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-27T11:26:00-05:00
+Updated: 2026-08-27T11:32:00-05:00
 Repository: StegVerse-Labs/.github
-Branch: cosv/ecosystem-adoption-current-002 (current-main integration candidate)
+Branch: main (adoption integration merged; follow-on coverage audit in progress)
 State: ACTIVE_ADOPTION_INCOMPLETE
 
 ## Goal
@@ -88,4 +88,27 @@ Authority effect: NONE.
 - The adoption validator is invoked by `scripts/validate_org_control_plane.py`, which is already executed by the stable organization control-plane workflow.
 - Direct mutation of `.github/workflows/org-control-plane-validate.yml` was not used; no new workflow or runtime authority was introduced.
 - Merge, propagation, activation, and runtime proof are not claimed until independently observed.
+
+
+## Merged adoption integration
+
+- PR #301 merged exact validated head `c4fd73001e2f74cb77e097f5ba7f2f28b84dea1c`.
+- Merge commit: `b94d8507033b95cd396bfbc1c6c742e0472eceac`.
+- Organization control-plane validation run `33093474146`: PASS.
+- Heartbeat validation run `33093474165`: PASS.
+- This establishes the adoption manifest/validator/federation projection on main; it does not establish ecosystem activation.
+
+## .github global-registry coverage audit
+
+Machine-readable snapshot: `control/cosv-global-registry-coverage.json`.
+
+- 45 unique worker task IDs across the global worker registry plus fragments.
+- 4 canonically indexed task IDs.
+- 4 completed-only historical unvectorized task IDs.
+- 37 active worker task IDs lack canonical COSV coverage.
+- 14 organization-registry task IDs lack canonical COSV coverage.
+- Total active .github task IDs lacking canonical COSV coverage: 51.
+- The orphan-recovery task has conflicting global/fragment states (BLOCKED vs COMPLETED); vector emission is forbidden until canonical state reconciliation.
+
+No new vector digits were invented during this audit.
 
