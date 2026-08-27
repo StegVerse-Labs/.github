@@ -40,7 +40,8 @@
         "g18_terminalization_required": false,
         "workercoordinator_specific_execution_required": false,
         "recovery_grants_parent_execution_authority": false
-      }
+      },
+      "source_state_vector_ref": "control/task-vectors/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json"
     }
   ],
   "workers": [
