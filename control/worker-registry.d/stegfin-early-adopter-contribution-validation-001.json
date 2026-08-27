@@ -4,7 +4,9 @@
   "tasks": [
     {
       "archive_eligible": false,
-      "archive_reason_codes": ["AUTHORIZED_LOCAL_PRIVATE_SOURCE_PATH_NOT_YET_OBSERVED"],
+      "archive_reason_codes": [
+        "AUTHORIZED_LOCAL_PRIVATE_SOURCE_PATH_NOT_YET_OBSERVED"
+      ],
       "authorized_policy_version": "stegfin-early-adopter-contribution-validation-v1",
       "block_ref": "docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_VALIDATION_MIRROR_HANDOFF.md",
       "claim_id": null,
@@ -46,6 +48,19 @@
         "temporal_class": "current",
         "task_relationship": "validates_capability",
         "target_phase": "ACTIVATED"
+      },
+      "source_state_vector_ref": "control/task-vectors/STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-27T17:08:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],
