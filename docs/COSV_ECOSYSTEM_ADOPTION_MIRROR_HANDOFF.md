@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-27T17:30:00-05:00
+Updated: 2026-08-27T17:35:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -39,7 +39,7 @@ The 189 unaudited repositories are not exemptions. They are classified `NO_REPOS
 
 ## Current .github boundary
 
-`.github` remains `VECTOR_REQUIRED`. Thirteen active vectors are indexed today, but the global worker registry and organization task registry contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
+`.github` remains `VECTOR_REQUIRED`. Seventeen active vectors are indexed today, but the global worker registry and organization task registry contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
 
 Existing indexed examples remain unchanged:
 
@@ -105,9 +105,9 @@ Machine-readable snapshot: `control/cosv-global-registry-coverage.json`.
 - 45 unique worker task IDs across the global worker registry plus fragments.
 - 4 canonically indexed task IDs.
 - 6 completed-only historical unvectorized task IDs.
-- 25 active worker task IDs lack canonical COSV coverage.
+- 21 active worker task IDs lack canonical COSV coverage.
 - 14 organization-registry task IDs lack canonical COSV coverage.
-- Total active .github task IDs lacking canonical COSV coverage: 39.
+- Total active .github task IDs lacking canonical COSV coverage: 35.
 - The orphan-recovery aggregate/fragment contradiction is reconciled to terminal COMPLETED from the durable G22 PASS receipt; no vector was emitted for this completed historical task.
 
 No new vector digits were invented during this audit.
@@ -304,3 +304,18 @@ task.v1 [L R U I V G O C M T B E A P] = 50000000101000
 The canonical AE seed remains `ready`, full derivation remains `ACTIVE_MACHINE_WORK`, and the StegVerse worker receipt is still pending. Exactly one blocker remains: `AE_AUTO_0011_TERMINAL_VALIDATED_STATE_NOT_YET_OBSERVED`. Chat-owned derivation is explicitly superseded by the AE machine worker. Downstream semantic bindings are installed but remain provisional until terminal AE source is validated and rebound.
 
 Active .github COSV gap: 25 worker tasks + 14 organization tasks = 39 active unvectorized task IDs.
+
+## Formalism/manifold pre-reconciliation cohort vector adoption — 2026-08-27T17:35:00-05:00
+
+The first four formalism/manifold lanes share the same evidence-backed task state:
+
+```text
+SHWP-FORMALISM-INVENTORY-001                 50000000100000
+SHWP-FORMALISM-HANDOFF-NORMALIZATION-001     50000000100000
+SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001    50000000100000
+SHWP-MANIFOLD-GOVERNANCE-MAPPING-001         50000000100000
+```
+
+All four are machine-owned, source-validated/merged, session claim released, and thread-independent. Their handoffs and shared registry fragment have `block=null`; missing resident receipts are represented as incomplete evidence/activation rather than fabricated blockers. `SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001` is intentionally excluded because it consumes the four prerequisite lane receipts and requires separate dependency semantics.
+
+Active .github COSV gap after this cohort projection: 21 worker tasks + 14 organization tasks = 35 active unvectorized task IDs.
