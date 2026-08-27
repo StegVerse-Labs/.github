@@ -171,3 +171,87 @@ session_consolidation: COMPLETE
 ## Archive posture
 
 `COSV-ARCHITECTURE-001` is complete and released. Future cross-repository adoption can proceed from this handoff, profile, schema, implementation, tests, examples, and validation receipt without this conversation. Product-wide COSV adoption is not falsely claimed.
+
+## Downstream task-vector adoption — 2026-08-27
+
+The architecture profile remains unchanged. Downstream adoption has now advanced beyond notation-only exposure.
+
+### Merged emitted task vector
+
+Canonical consumer:
+`SHWP-TV-TVC-RESIDENT-PROOF-001`
+
+Canonical owner reference:
+`StegVerse-Labs/TVC/tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json#machine_readable_state.cosv`
+
+Merged machine-readable representation:
+
+```text
+notation: L R U I V G O C M T B E A P
+digits:   1 0 1 0 0 0 0 0 1 1 1 0 0 1
+vector:   10100000111001
+profile:  task.v1
+width:    14
+state:    EMITTED
+```
+
+The same vector is present in:
+
+- `control/worker-registry.d/tv-tvc-resident-proof-001.json`
+- `handoffs/SHWP-TV-TVC-RESIDENT-PROOF-001.json`
+
+and both point to the same canonical TVC owner vector reference.
+
+Interpretation retained by the machine-readable record:
+
+```text
+lifecycle: UNCLAIMED
+archive_ready: false
+unassigned_work: 1
+canonical_owner_installed: true
+thread_required: true
+blocker_count: 1
+evidence_complete: false
+activated: false
+propagated: true
+authority_effect: NONE
+```
+
+This representation does not assert runtime activation. The blocker basis remains the canonical owner task's runtime-contract rebinding / resident-runtime evidence boundary.
+
+### Merge and exact-head validation evidence
+
+Implementation successor PR: `#285`  
+Validated head: `22da2b98ac32061ea73f38b65068391d42c0f626`  
+Merge commit: `06fe773c2745de03313f5f82f10058402dfb80b9`
+
+Exact-head validation:
+
+- Heartbeat Worker Project run `33071412302`: PASS
+- Organization control-plane validation run `33071412299`: PASS
+
+The predecessor COSV branches/PRs (#278, #280, #282) were superseded/closed during concurrent main reconciliation and are not authoritative implementation state.
+
+### Adoption-state distinction
+
+```text
+COSV notation defined: COMPLETE_RELEASED
+task vector schema/encoder: COMPLETE_RELEASED
+notation visible in downstream Site task JSON: YES
+Site task vector values emitted: NOT GENERALLY — multiple Site task objects still expose vector=null / NOT_YET_EMITTED_FOR_THIS_SITE_TASK
+TV/TVC resident-proof vector emitted: YES
+TV/TVC resident-proof vector validated: YES
+TV/TVC resident-proof vector merged: YES
+runtime activation implied by vector: NO
+product-wide COSV adoption: NOT COMPLETE
+```
+
+Site task-vector emission remains a downstream adoption task subject to the Site repository's own machine admission and must not be bypassed from the organization control plane.
+
+### Next integration boundaries
+
+1. Continue emitting `task.v1` vectors from canonical task owners rather than inventing vectors in consumers.
+2. Require consumer registry/handoff parity through `source_state_vector_ref`.
+3. Extend vector emission to Site task objects only through Site-native admitted work.
+4. Continue aggregate/system packet adoption through the existing COSV heartbeat/state-packet lane.
+5. Preserve evidence references and exact metrics so compact vectors never replace source evidence.
