@@ -160,3 +160,17 @@ The next append-only Math evidence transition now exists:
 Transition 005 records only that the already-installed shared Math source boundary has later hosted Site validation evidence. It preserves the same semantic module state hash `b01c9197...`, reconstruction PASS, and authority effect NONE.
 
 Do not promote the Site Math task from its prior fail-closed projection until Master Records all-object custody validation including 005 is actually observed PASS. Solver/verifier execution and attachment/image intake remain unobserved/unadmitted.
+
+
+## 2026-08-27 transition 005 hosted validation complete
+
+Master Records hosted run `33120909226` / job `98687235580` completed SUCCESS after custody transition 005 was present. The run executed `python tools/run_tests_with_status.py`, which runs `pytest tests`. The canonical `tests/test_state_alignment_custody.py::test_all_custody_records_allow` iterates every `custody/state-alignment/*.custody.json` through `verify_record`; run status recorded 325 tests, 0 failures, 0 errors.
+
+Therefore:
+- transition 005: CUSTODIED + HOSTED VALIDATED;
+- canonical packet hash remains `4c876fd25f112de941c0fda96d8c97629dc15621bbeda749993f3473fa97e4d2`;
+- reconstruction remains PASS;
+- authority effect remains NONE;
+- Site Math task advanced at `5fdeff1fd3341d4487176f507b6cf54bbaa3d709` to `RESIDENT_SOURCE_CONSUMPTION_HOSTED_VALIDATED_TOOL_EXECUTION_PENDING`.
+
+The next material Math transition must be 006+ and may only represent an actually admitted solver/verifier execution or separately admitted attachment/image intake. Source validation is no longer the Math blocker.
