@@ -1,0 +1,38 @@
+{
+  "schema": "stegverse.master-records-alignment-transition/v1",
+  "transition_id": "ALIGN-UNIFIED-CONVERSATION-MATH-HOSTED-VALIDATION-005",
+  "parent_transition_id": "ALIGN-UNIFIED-CONVERSATION-MATH-SOURCE-CONSUMPTION-004",
+  "source_handoff_ref": "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+  "source_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+  "target_state_hash": "b01c9197a735eed4f5a460320db1fec01ea5a232d0a4fd87884809ac7d47e3b7",
+  "semantic_delta_hash": "08cf174a307229c1008753ef28e78fea5d3d2df1a334508ab5e72ddaa58427ad",
+  "module_id": "StegVerse-Labs/Site:unified-conversational-capability",
+  "endpoint_id": "StegVerse-Labs/Site:mathematics-educator-shared-runtime",
+  "projection_before_hash": "b251d72bc74723dc1739f591a840c7fb86931c67b3589f095a913bc8db09bd37",
+  "projection_after_hash": "d510134a034de0e0d4bf2015e6fadbcb2dd4a0153d01f4a63862c81e9bf8341f",
+  "task_effects": [
+    {
+      "task_id": "UNIFIED-CONVERSATION-MATH-SPECIALTY-001",
+      "disposition": "HOSTED_SOURCE_VALIDATION_OBSERVED_TOOL_EXECUTION_PENDING",
+      "site_source_head": "4a13c991dcfb83eccee3fb57cbf41de866466f0e",
+      "bootstrap_run": 33044633784,
+      "site_task_runner_run": 33044661032,
+      "later_full_runner_run": 33045293923
+    }
+  ],
+  "alignment_disposition": "PROPAGATING",
+  "reconstruction_state": "PASS",
+  "evidence_refs": [
+    "receipts/state-alignment/ALIGN-UNIFIED-CONVERSATION-MATH-SOURCE-CONSUMPTION-004.json",
+    "StegVerse-Labs/Site/docs/UNIFIED_CONVERSATIONAL_CAPABILITY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site/data/tasks/UNIFIED-CONVERSATION-MATH-SPECIALTY-001.json",
+    "StegVerse-Labs/Site/scripts/check_ecosystem_chat_application.py",
+    "StegVerse-Labs/Site/scripts/check_ecosystem_chat_boundary.py",
+    "StegVerse-Labs/Site@4a13c991dcfb83eccee3fb57cbf41de866466f0e",
+    "StegVerse-Labs/Site/actions/runs/33044633784",
+    "StegVerse-Labs/Site/actions/runs/33044661032",
+    "StegVerse-Labs/Site/actions/runs/33045293923"
+  ],
+  "authority_effect": "NONE",
+  "custody_destination": "master-records/orchestration"
+}
