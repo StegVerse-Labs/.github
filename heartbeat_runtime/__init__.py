@@ -12,6 +12,7 @@ from .engine_v13 import HeartbeatRuntime as CarrierHeartbeatRuntime
 from .engine_v11 import HeartbeatRuntime, WorkerResponse
 from .admitted_worker_runtime import WorkerCoordinator
 from .process_adapter import ProcessWorkerAdapter
+from .governed_manifold import GovernedProjectionDimension, governed_manifold_observation
 
 __all__ = [
     "HeartbeatRuntime",
@@ -19,4 +20,6 @@ __all__ = [
     "WorkerCoordinator",
     "WorkerResponse",
     "ProcessWorkerAdapter",
+    "GovernedProjectionDimension",
+    "governed_manifold_observation",
 ]
