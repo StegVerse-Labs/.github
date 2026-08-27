@@ -61,8 +61,10 @@ class SovereignRuntimeHandoffContractTests(unittest.TestCase):
         self.assertFalse(authority["non_tv_tvc_secret_or_token_allowed"])
         completion = self.handoff["completion"]
         self.assertFalse(completion["success_predicates_satisfied"])
-        self.assertFalse(completion["corrected_oscillator_live_carrier_proven"])
-        self.assertFalse(completion["task_capable_worker_runtime_proven"])
+        self.assertEqual(completion["heartbeat_protocol_activation_state"], "TERMINAL_ACTIVE_PROTOCOL_VERIFIED")
+        self.assertFalse(completion["heartbeat_dependency"])
+        self.assertEqual(completion["live_runtime_activation_state"], "BLOCKED")
+        self.assertEqual(completion["blocker_reason"], "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT")
 
 
 if __name__ == "__main__":
