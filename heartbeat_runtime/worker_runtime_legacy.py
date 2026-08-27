@@ -153,18 +153,22 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             stream.write(json.dumps(record, sort_keys=True) + "\n")
 
     def _semantic_state_preclaim(self, task: dict[str, Any]) -> tuple[bool, str]:
-        """Revalidate only tasks explicitly bound to a local canonical state vector.
+        """Revalidate tasks bound to either semantic or operational state vectors.
 
-        Legacy tasks remain unaffected until their registry projection includes
-        `source_state_vector_ref`. A bound reference must stay inside this repository
-        root and the vector hash must still equal the task's `source_state_hash`.
+        `source_state_vector_ref` predates COSV and historically pointed only to
+        `stegverse.semantic-state-vector/v1`. COSV adoption also uses this provenance
+        slot for local `task.v1` operational records. The schemas are intentionally
+        distinct: semantic vectors retain hash-based reconciliation, while COSV task
+        records require exact task identity/profile/vector parity with the embedded
+        machine-readable projection. Unknown schemas fail closed.
         """
         state_ref = task.get("source_state_vector_ref")
         if state_ref is None:
             return True, "SEMANTIC_STATE_BINDING_NOT_PRESENT"
         if not isinstance(state_ref, str) or not state_ref.strip():
             return False, "TASK_SOURCE_STATE_VECTOR_REF_INVALID"
-        candidate = (self.root / state_ref).resolve()
+        state_path = state_ref.split("#", 1)[0]
+        candidate = (self.root / state_path).resolve()
         try:
             candidate.relative_to(self.root.resolve())
         except ValueError:
@@ -175,10 +179,39 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             canonical_state = self._load(candidate)
         except Exception:
             return False, "TASK_SOURCE_STATE_VECTOR_UNREADABLE"
-        # Import lazily so carrier-only validation/deployment capsules that copy only
-        # heartbeat_runtime remain independent of the optional state-language package.
-        from state_language import preclaim_revalidate
-        return preclaim_revalidate(task, canonical_state)
+
+        if canonical_state.get("profile") == "task.v1" and canonical_state.get("level") == "task":
+            machine = task.get("machine_readable_state")
+            embedded = machine.get("cosv") if isinstance(machine, dict) else None
+            vector = canonical_state.get("vector")
+            identity = str(canonical_state.get("identity") or "")
+            task_id = str(task.get("task_id") or "")
+            if not isinstance(embedded, dict):
+                return False, "TASK_OPERATIONAL_STATE_VECTOR_MISSING"
+            checks = (
+                identity.endswith(f":task:{task_id}"),
+                embedded.get("profile") == "task.v1",
+                embedded.get("notation") == "L R U I V G O C M T B E A P",
+                embedded.get("width") == 14,
+                embedded.get("vector_state") == "EMITTED",
+                embedded.get("authority_effect") == "NONE",
+                isinstance(vector, str) and len(vector) == 14 and vector.isdigit(),
+                embedded.get("vector") == vector,
+            )
+            if not all(checks):
+                return False, "TASK_OPERATIONAL_STATE_VECTOR_STALE_OR_INVALID"
+            return True, "CURRENT_OPERATIONAL_STATE_VECTOR_CONFIRMED"
+
+        if canonical_state.get("schema") == "stegverse.semantic-state-vector/v1":
+            # Import lazily so carrier-only validation/deployment capsules that copy
+            # only heartbeat_runtime remain independent of the optional package.
+            from state_language import preclaim_revalidate
+            try:
+                return preclaim_revalidate(task, canonical_state)
+            except (KeyError, TypeError, ValueError):
+                return False, "TASK_SEMANTIC_STATE_VECTOR_INVALID"
+
+        return False, "TASK_SOURCE_STATE_VECTOR_SCHEMA_UNSUPPORTED"
 
     def _activate_from_trigger(
         self,
