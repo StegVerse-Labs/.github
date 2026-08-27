@@ -159,4 +159,6 @@ G18 durable runtime substrate (BLOCKED / separate)
 
 ## Session continuity / archive distinction
 
-Required project outcomes remain nonterminal. That does not require this ChatGPT session to remain open once this state is mirrored into the global StegVerse project index/handoff. Continuation must begin from this handoff, the scoped project handoffs, live receipts, and global coordination surfaces rather than session prose.
+Required project outcomes remain nonterminal, but the ChatGPT session no longer carries unique continuity state. The global `STEGVERSE_PROJECT_INDEX` now includes the stable Ecosystem Chat Sovereign Inference project identity and the HeartBeat status correction, and `STEGVERSE_PROJECTS_HANDOFF_STATUS` contains the full 2026-08-26 22:46 CDT consolidation overlay. Continuation must begin from this handoff, the scoped project handoffs, live receipts, and global coordination surfaces rather than session prose.
+
+Session archive readiness: `READY TO ARCHIVE`.
