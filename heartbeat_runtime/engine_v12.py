@@ -11,6 +11,7 @@ from .engine_v11 import HeartbeatRuntime as LegacyRuntimeBase, WorkerResponse
 from .assignment_timer import assignment_trigger_packet
 from .independent_oscillator import FREQUENCY_RULE, sample_state
 from .signal_space import coherent_signal_space_candidate
+from .governed_manifold import GovernedProjectionDimension, governed_manifold_observation
 
 LEGACY_SCHEMA = "stegverse.org-heartbeat-state/v1"
 CARRIER_STATE_SCHEMA = "stegverse.heartbeat-carrier-runtime-state/v1"
@@ -305,6 +306,59 @@ class HeartbeatRuntime(LegacyRuntimeBase):
             triggers = self._assignment_triggers(registry, epoch) if reference_advanced else []
             observation = self._carrier_observation(state, control_hash, len(triggers))
             signal_space = coherent_signal_space_candidate()
+            governed_manifold = governed_manifold_observation(
+                carrier_epoch=epoch,
+                carrier_generation=generation,
+                dimensions=[
+                    GovernedProjectionDimension(
+                        name="carrier_reference",
+                        value={
+                            "reference_frame": f"heartbeat_epoch:{epoch}",
+                            "reference_advanced_since_last_observation": reference_advanced,
+                            "elapsed_heartbeat_references": epoch - previous_epoch,
+                        },
+                        source_ref="control/heartbeat-carrier-runtime-state.json",
+                    ),
+                    GovernedProjectionDimension(
+                        name="worker_control_plane",
+                        value={
+                            "worker_coordination_state": control["worker_coordination"]["state"],
+                            "active_lease_count": len(control["worker_coordination"]["active_leases"]),
+                            "registry_generation": int(registry.get("generation", 0)),
+                        },
+                        source_ref="control/worker-control-plane-coordination.json",
+                    ),
+                    GovernedProjectionDimension(
+                        name="coherent_signal_space",
+                        value={
+                            "fundamental_mode": signal_space.get("fundamental_mode"),
+                            "many_state_transition_manifold_target": signal_space.get("interpretation", {}).get(
+                                "many_state_transition_manifold_target"
+                            ),
+                            "physical_time_is_not_assumed_primitive": signal_space.get("interpretation", {}).get(
+                                "physical_time_is_not_assumed_primitive"
+                            ),
+                        },
+                        source_ref="heartbeat_runtime/signal_space.py#coherent_signal_space_candidate",
+                    ),
+                    GovernedProjectionDimension(
+                        name="reviewable_authority_boundary",
+                        value={
+                            "assignment_trigger_count": len(triggers),
+                            "machine_transition_authority_effect": "NONE",
+                            "human_review_timing_is_authority": False,
+                        },
+                        source_ref="control/worker-registry.json",
+                    ),
+                ],
+                transition_refs=[
+                    f"events/heartbeat-runtime.jsonl#heartbeat_epoch:{epoch}",
+                ],
+                authority_boundary_refs=[
+                    "control/worker-registry.json",
+                    "control/worker-control-plane-coordination.json",
+                ],
+            )
             events: list[dict[str, Any]] = []
             self._event(
                 events,
@@ -331,6 +385,17 @@ class HeartbeatRuntime(LegacyRuntimeBase):
                 candidate_schema=signal_space.get("schema"),
                 authority_effect=False,
                 completeness_claim=False,
+            )
+            self._event(
+                events,
+                epoch,
+                "governed_manifold_projection_observed",
+                projection_schema=governed_manifold.get("schema"),
+                state_model=governed_manifold.get("state_model"),
+                human_governance_model=governed_manifold.get("human_governance_model"),
+                authority_effect=False,
+                wall_clock_is_governance_authority=False,
+                heartbeat_is_governance_authority=False,
             )
             for trigger in triggers:
                 events.append({
@@ -359,6 +424,7 @@ class HeartbeatRuntime(LegacyRuntimeBase):
                 "carrier_observation_ref": "control/heartbeat-carrier-observation.json",
                 "control_plane_ref": "control/worker-control-plane-coordination.json",
                 "coherent_signal_space": signal_space,
+                "governed_manifold_observation": governed_manifold,
                 "assignment_trigger_packets": triggers,
                 "registry_generation_observed": registry.get("generation", 0),
                 "claims_issued": 0,
@@ -387,6 +453,8 @@ class HeartbeatRuntime(LegacyRuntimeBase):
                     "worker_control_plane_sha256": control_hash,
                     "coherent_signal_space_source_ref": "heartbeat_runtime/signal_space.py#coherent_signal_space_candidate",
                     "coherent_signal_space_sha256": self._canonical_sha256(signal_space),
+                    "governed_manifold_observation": governed_manifold,
+                    "governed_manifold_observation_sha256": self._canonical_sha256(governed_manifold),
                     "assignment_trigger_packet_ids": [item["packet_id"] for item in triggers],
                     "oscillator_period_ms": 10,
                     "carrier_progression_dependency": "OSCILLATOR_ONLY",
