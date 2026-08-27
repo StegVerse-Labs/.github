@@ -1,0 +1,43 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000100000",
+  "evidence_refs": [
+    "control/worker-registry.json",
+    "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+    "receipts/steggate-rendezvous-worker/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+    "StegVerse-Labs/Site:data/steggate-rendezvous-activation.json"
+  ],
+  "observed_at": "2026-08-27T16:45:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json#task.derivation_reason machine-owned; control/worker-registry.json state ACTIVE with bound worker",
+    "archive_ready": "control/worker-registry.json#archive_eligible=false",
+    "unassigned_work": "control/worker-registry.json#claim_id/worker_id present and executor_binding=BOUND",
+    "chat_owned_counts": "handoff execution is independently admitted machine task-control; no chat execution ownership",
+    "canonical_owner_installed": "handoff, worker, authorization, receipt and Site owner activation record are installed",
+    "thread_required": "StegVerse-Labs/Site:data/steggate-rendezvous-activation.json#archive_dependency_for_originating_chat=false",
+    "blocker_count": "receipt third_party_dependency_is_blocker=false and blocker.may_remain_blocked=false; handoff block=null",
+    "evidence_complete": "current live lease state AWAIT_CURRENT_HEARTBEAT_TUNNEL and task receipt state ACTIVE",
+    "activated": "worker receipt state ACTIVE / transition THIRD_PARTY_WORKAROUND_REQUIRED; terminal LIVE_ACCEPTANCE_PASS not observed",
+    "propagated": "current stable-domain hardening completion/current lease acceptance not observed; no downstream propagation claimed"
+  },
+  "authority_effect": "NONE"
+}
