@@ -7,24 +7,25 @@
   "admissible_existence": {
     "capability_id": "stegverse:capability:stegfin-base-pretrade:v1",
     "capability_version": "1.0.0",
-    "phase": "ACTIVATED_AT_WALLET_HANDOFF_BOUNDARY",
+    "phase": "ADMISSIBLE",
     "standing_evidence_refs": [
       "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md"
     ],
     "admissibility_evidence_refs": [
-      "StegVerse-Labs/stegfin-governance:receipts/phone-live/STEGFIN-PHONE-LIVE-EVIDENCE-20260816T2150-0500.json"
-    ],
-    "integration_evidence_refs": [
       "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-CONTINUITY-CARRIER-007.json"
     ],
-    "activation_proof_ref": "StegVerse-Labs/stegfin-governance:receipts/phone-live/STEGFIN-PHONE-LIVE-EVIDENCE-20260816T2150-0500.json",
+    "integration_evidence_refs": [
+      "workers/stegfin_continuity_carrier_worker_v3.py",
+      "control/process-worker-adapters.d/stegfin-continuity-carrier-007.json"
+    ],
+    "activation_proof_ref": null,
     "blockers": [],
     "continuation_owner": "NONE_FOR_COMPLETED_WALLET_HANDOFF_GOAL",
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": false,
     "temporal_class": "recently_completed",
-    "task_relationship": "superseded_fallback_for_completed_goal",
-    "target_phase": "ACTIVATED_AT_WALLET_HANDOFF_BOUNDARY"
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
   },
   "goal": {
     "goal_id": "STEGFIN-BASE-ROUNDTRIP-001",
