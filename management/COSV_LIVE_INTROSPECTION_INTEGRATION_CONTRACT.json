@@ -1,9 +1,9 @@
 {
-  "schema": "stegverse.cosv-live-introspection-integration/v2",
+  "schema": "stegverse.cosv-live-introspection-integration/v3",
   "goal_id": "COSV-LIVE-INTROSPECTION-INTEGRATION-005",
-  "updated_at": "2026-08-18T18:04:00-05:00",
+  "updated_at": "2026-08-26T22:46:00-05:00",
   "source_owners": {
-    "heartbeat_reference": "StegVerse-Labs/.github#122",
+    "heartbeat_reference": "StegVerse-Labs/.github#122 / control/heartbeat-protocol-anchor.json",
     "cosv_packet": "StegVerse-Labs/.github#217",
     "cosv_recurring_packet_runtime": "StegVerse-Labs/.github:COSV-LIVE-PACKET-AUTOMATION-006",
     "gradient_observer": "StegVerse-Labs/StegBrain#861",
@@ -12,17 +12,20 @@
     "sovereign_inference": "StegVerse-Labs/.github#60"
   },
   "heartbeat_reference_semantics": {
+    "protocol_anchor_ref": "control/heartbeat-protocol-anchor.json",
+    "anchor_epoch": 32,
+    "anchor_time_utc": "2026-08-23T19:00:00.000Z",
     "progression_dependency": "OSCILLATOR_ONLY",
     "phase_travel_time_ms": 10,
-    "reference_increment_interval_ms": 10,
     "reference_frequency_hz": 100,
+    "continuous_process_required": false,
+    "resident_sampler_required_for_progression": false,
     "observation_is_causal": false,
-    "persisted_state_is_sample_only": true,
     "worker_or_task_gating": false,
-    "admission_gating": false,
     "claim_or_fence_gating": false,
     "route_or_credential_gating": false,
-    "canonical_ref": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md"
+    "live_proof_state": "COMPLETED",
+    "live_status": "ACTIVE_PROTOCOL_VERIFIED"
   },
   "authority": {
     "heartbeat_authority_effect": "NONE",
@@ -38,64 +41,63 @@
     {
       "step": 1,
       "owner": "StegVerse-Labs/.github#122",
-      "input": "independent oscillator occurrence",
-      "output": "sampled oscillator-derived heartbeat reference",
-      "rule": "sampling observes the carrier; it does not cause or gate it",
-      "current_state": "CORRECTED_SOURCE_INSTALLED_PENDING_FIRST_SOVEREIGN_OSCILLATOR_BACKED_OBSERVATION"
+      "input": "protocol anchor + elapsed 10 ms quanta",
+      "output": "canonical heartbeat reference",
+      "current_state": "COMPLETE_ACTIVE_PROTOCOL_VERIFIED"
     },
     {
       "step": 2,
       "owner": "StegVerse-Labs/.github#217 + COSV-LIVE-PACKET-AUTOMATION-006",
-      "input": "corrected oscillator-derived heartbeat observation plus canonical state evidence",
+      "input": "post-anchor heartbeat reference plus canonical state evidence",
       "output": "authority-neutral FULL/DELTA COSV packet",
-      "fail_closed_if": "heartbeat sample lacks oscillator binding, packet cannot reconstruct, state/cache digest mismatches, or authority invariant fails",
-      "current_state": "HB31_FULL_PRESERVED_AS_PRE_CORRECTION_HISTORICAL_BASELINE_NEXT_LIVE_PACKET_MUST_BIND_CORRECTED_OSCILLATOR_REFERENCE"
+      "current_state": "HB31_HISTORICAL_FULL_PRESERVED_NEXT_POST_ANCHOR_PACKET_PENDING"
     },
     {
       "step": 3,
       "owner": "StegVerse-Labs/StegBrain#861",
-      "input": "actual corrected live DELTA gradient_inputs",
+      "input": "actual post-anchor changed DELTA gradient_inputs",
       "output": "authority-neutral gradient observation",
-      "current_state": "WAITING_FOR_FIRST_CORRECTED_OSCILLATOR_BOUND_DELTA"
+      "current_state": "WAITING_FOR_FIRST_POST_ANCHOR_CHANGED_DELTA"
     },
     {
       "step": 4,
       "owner": "StegVerse-Labs/StegBrain#865",
-      "input": "expectation proven committed before target occurrence plus same-target actual state/transition",
-      "output": "authority-neutral expectation residual observation",
-      "fail_closed_if": "target was merely unobserved rather than provably future, reference mismatch, commitment failure, or insufficient evidence",
-      "current_state": "HB32_EXPECTATION_INVALIDATED_WAITING_FOR_FIRST_PROVABLY_PRE_OCCURRENCE_EXPECTATION",
-      "invalidated_ref": "StegVerse-Labs/StegBrain:receipts/STEGBRAIN-COSV-EXPECTATION-HB32-001-supersession.json"
+      "input": "expectation proven committed before target occurrence plus same-target actual",
+      "output": "authority-neutral expectation residual",
+      "current_state": "HB32_EXPECTATION_INVALIDATED_WAITING_FOR_FIRST_VALID_PRE_OCCURRENCE_EXPECTATION"
     },
     {
       "step": 5,
       "owner": "StegVerse-Labs/StegBrain#863/#865",
-      "input": "sufficient strictly ordered corrected live observations",
+      "input": "sufficient strictly ordered post-anchor live observations",
       "output": "gradient matrix/residual series/curvature",
-      "current_state": "WAITING_FOR_SUFFICIENT_CORRECTED_LIVE_OBSERVATIONS"
+      "current_state": "WAITING_FOR_SUFFICIENT_ORDERED_OBSERVATIONS"
     }
   ],
   "historical_evidence": {
     "hb31_packet_ref": "receipts/cosv/live/HB31.json",
     "hb31_packet_integrity_preserved": true,
-    "hb31_is_current_oscillator_position": false,
-    "hb32_expectation_ref": "StegVerse-Labs/StegBrain:expectations/cosv/live/HB32-ecosystem-chat-orphan-recovery.json",
+    "hb31_is_current_heartbeat_authority": false,
     "hb32_expectation_live_use_allowed": false,
     "hb32_expectation_supersession_ref": "StegVerse-Labs/StegBrain:receipts/STEGBRAIN-COSV-EXPECTATION-HB32-001-supersession.json"
   },
   "runtime_dependencies": {
-    "corrected_heartbeat_observation": {
-      "state": "NOT_YET_OBSERVED",
-      "owner": "StegVerse-Labs/.github#122",
-      "release_condition": "sovereign corrected v12 sampler persists oscillator-backed carrier observation with progression_dependency=OSCILLATOR_ONLY and phase_travel_time_ms=10"
+    "corrected_heartbeat_reference": {
+      "state": "SATISFIED_BY_PROTOCOL_ANCHOR",
+      "owner": "StegVerse-Labs/.github#122"
     },
     "sovereign_inference": {
-      "state": "NOT_ACTIVATED",
-      "owner": "StegVerse-Labs/.github#60 -> TV/TVC -> StegVerse-org/LLM-adapter -> master-records/orchestration"
+      "state": "HANDOFF_READY_LIVE_ACTIVATION_NOT_YET_PROVEN",
+      "owner": "StegVerse-Labs/.github#60 -> TVC -> LLM-adapter -> master-records/orchestration",
+      "fresh_parent_fence_min_exclusive": 22
+    },
+    "cosv_recurring_packet": {
+      "state": "HANDOFF_READY",
+      "owner": "COSV-LIVE-PACKET-AUTOMATION-006"
     }
   },
-  "release_condition": "Corrected oscillator-backed heartbeat observation exists; downstream COSV packets bind only corrected observed references; first live gradient is persisted; first residual uses an expectation proven committed before actual target occurrence; sufficient ordered observations produce matrix/residual-series evidence; and sovereign inference reaches its required same-execution proof without authority widening.",
-  "chat_session_required": true,
-  "archive_eligible": false,
-  "archive_blocker": "Corrected live heartbeat observation and required downstream runtime/analytic/sovereign-inference outcomes remain nonterminal."
+  "release_condition": "Post-anchor COSV packet production is observed; first changed DELTA is consumed into a live gradient; a valid pre-occurrence expectation produces a same-target residual; sufficient ordered observations produce matrix/residual-series evidence; and sovereign inference reaches same-execution reconstruction and persistent conversational runtime readiness without authority widening.",
+  "chat_session_required": false,
+  "archive_eligible_as_chat_surface": true,
+  "project_runtime_terminal": false
 }
