@@ -1,0 +1,34 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "sv_dn1_public_source_observation",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 4,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 32,
+    "confidence": "LOW_UNTIL_FIRST_RESIDENT_RUN"
+  },
+  "cost_estimate": {
+    "compute_units": 2,
+    "token_units": 0,
+    "storage_bytes": 10485760,
+    "network_bytes": 5242880,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 2
+  },
+  "evidence_refs": [
+    "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
+    "handoffs/SV-DN1-RESIDENT-OBSERVER-001.json",
+    "workers/sv_dn1_resident_observer_worker.py",
+    "control/process-worker-adapters.d/sv-dn1-resident-observer-001.json"
+  ],
+  "notes": [
+    "The observer is expected to complete in one admitted resident execution after exact demo-suite source is locally materialized.",
+    "The public Hugging Face endpoint requires no paid service and no credential.",
+    "Missing local source returns HANDOFF_READY rather than attempting remote checkout.",
+    "The 32-beat budget bounds claim occupancy and retry exposure; heartbeat remains reference-only and does not grant execution authority.",
+    "External cost is zero."
+  ]
+}
