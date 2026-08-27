@@ -243,3 +243,33 @@ AUTHORITY_EFFECT_NONE
 Site Math task advanced at `153454fc8f73d0b6387b1779920aa34babf59e46` to `GOVERNED_SOLVER_CONSUMER_HOSTED_VALIDATED_RUNTIME_OBSERVATION_PENDING`.
 
 A future actual governed Math runtime execution remains a distinct material transition 007+.
+
+
+## 2026-08-27 transition 007 complete — governed Math image composer
+
+Transition `ALIGN-UNIFIED-CONVERSATION-MATH-IMAGE-COMPOSER-007` is now fully source/custody validated.
+
+Evidence:
+- Site exact head `cea60d4b190eda0ec52b5be2c34c285e4748eff9`;
+- Math validation `33122205644` / `98691591282`: SUCCESS;
+- Site Bootstrap `33122205642`: SUCCESS;
+- transition packet commit `be44f63cc266e32e0dc00a55b7b850a3d3038060`;
+- packet canonical sha256 `2b8521f56eaa35d9ba2f3157792321737344aebfc4f216c7bd4b9e0028ef636d`;
+- Master Records custody commit `79cf2d4fdead77bf86958a43fc5e4c3c7b129f22`;
+- dedicated custody workflow `33122316112` / `98691971445`: SUCCESS;
+- every custody object verification: PASS;
+- custody tests: PASS;
+- validation-only authority boundary: PASS;
+- Site Math task projection `03542653b7199f65bafd8d8f6680cd4aba35aec7`.
+
+Transition 007 records:
+- one bounded Math image input on the existing public composer;
+- exact-byte/hash-bound shared attachment intake client;
+- real image-review client against the existing gateway;
+- immutable `source_image` state;
+- `interpreted_mathematical_transcription = NOT_PRODUCED`;
+- private/general document upload still unadmitted;
+- actual live upload/review/transcription execution NOT OBSERVED;
+- authority/activation effect NONE.
+
+The next material state may be live runtime intake/review or a separately admitted math-capable visual transcription runtime. Either becomes transition 008+ only when actually evidenced.
