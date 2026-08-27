@@ -300,3 +300,40 @@ next_executable_action: do not manually execute G18, WorkerCoordinator, sovereig
 ## Completion / archive posture
 
 For this session's consolidation objective, all ten goals are completed, superseded, or durably transferred and no chat-owned claim remains. Product activation itself is not complete: the physical iPhone receipt, canonical HB30 materialization/WorkerCoordinator observation, and same-execution sovereign inference evidence remain. Those remaining transitions are explicitly owned outside the chat and are not evidence that this session must remain active.
+
+
+## 2026-08-27 Coinbase sovereign Gateway native-TLS continuation
+
+A bounded cross-repository continuation has closed the Coinbase Service Gateway software path through native TLS and the resident-worker carrier.
+
+```text
+LLM-adapter native TLS:
+  PR #209 -> 10a6f6247771b2a85b07f5f19810403c3acde513
+  validation 33121152939 / 33121152794 SUCCESS
+
+StegVerse-Healer TLS carrier:
+  PR #43 -> 7aa88c39d5e46402e3368b5ebd81d27a773ce93d
+  validation 33121314608 SUCCESS
+
+organization resident-worker propagation:
+  PR #328 -> 583f3277c7eee9f0d12ab63280d31fbbc278aa85
+  worker validation 33121525095 SUCCESS
+  org validation 33121525130 SUCCESS
+```
+
+This work reuses the existing `SHWP-HEALER-SOVEREIGN-SCHEDULER-001`, Service Gateway, StegDeploy image, WorkerCoordinator lane, and HB32 reference stream. It creates no second scheduler/heartbeat/gateway and no GitHub-token or third-party runtime authority.
+
+Current authoritative blocker remains `handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json`:
+
+```text
+state: BLOCKED_SOVEREIGN_NODE_REQUIRED_NON_HEARTBEAT
+operational_state: BLOCKED_ON_ELIGIBLE_SOVEREIGN_NODE_DECLARATION
+claim_state: MACHINE_OWNED_G18_ACTIVE_FENCE18_BLOCKED_ON_PHYSICAL_RESOURCE
+fencing_token: 18
+user_action_required: false
+another_physical_machine_required: false
+always_on_external_host_required: false
+heartbeat_activation_dependency: false
+```
+
+No real TLS certificate/key materialization, local TLS execution receipt, public HTTPS observation, Coinbase owner ingress, provider capability, StegFin live approval, order, fill, settlement, or reconciliation is inferred from the source merges.
