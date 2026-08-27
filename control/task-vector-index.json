@@ -1,0 +1,42 @@
+{
+  "schema": "stegverse.cosv-task-vector-index/v0.1",
+  "profile": "task.v1",
+  "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+  "notation": "L R U I V G O C M T B E A P",
+  "width": 14,
+  "tasks": [
+    {
+      "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+      "vector": "50000000100000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "COSV-LIVE-PACKET-AUTOMATION-006",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/cosv-live-packet-automation-006.json",
+      "source_state_vector_ref": "control/task-vectors/COSV-LIVE-PACKET-AUTOMATION-006.json",
+      "vector": "50000000100000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SHWP-TV-TVC-RESIDENT-PROOF-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/tv-tvc-resident-proof-001.json",
+      "source_state_vector_ref": "StegVerse-Labs/TVC/tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json#machine_readable_state.cosv",
+      "vector": "10100000111001",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    }
+  ],
+  "coverage": {
+    "indexed_vectorized_tasks": 3,
+    "local_cosv_record_tasks": 2,
+    "external_owner_projection_tasks": 1
+  },
+  "authority_effect": "NONE"
+}
