@@ -48,5 +48,41 @@ class TvTvcWorkerCosvBindingTests(unittest.TestCase):
         for index in (2, 3, 4, 5, 6, 7, 10):
             self.assertIn(digits[index], range(10))
 
+
+    def test_registry_task_is_independently_claimable_with_local_cost_basis(self) -> None:
+        task = json.loads(REGISTRY.read_text(encoding="utf-8"))["tasks"][0]
+        admission = task["admission"]
+        self.assertEqual(admission["authority_domain"], "INDEPENDENT_TASK_CONTROL")
+        self.assertEqual(admission["claim_state"], "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM")
+        self.assertTrue(admission["fresh_fence_required"])
+        self.assertEqual(admission["minimum_fencing_token_exclusive"], 21)
+        self.assertFalse(admission["heartbeat_grants_execution_authority"])
+        self.assertFalse(admission["carrier_trigger_required"])
+        self.assertEqual(task["cost_basis_ref"], "cost-basis/worker-runtime/tv-tvc-resident-proof.json")
+        cost = json.loads((ROOT / task["cost_basis_ref"]).read_text(encoding="utf-8"))
+        self.assertEqual(cost["task_class"], "tv_tvc_resident_operational_proof")
+        self.assertGreaterEqual(cost["hb_estimate"]["expiry_candidate_beats"], 1)
+        self.assertNotEqual(cost["hb_estimate"]["confidence"], "NONE")
+
+    def test_handoff_binds_targeted_one_shot_without_g18_reuse(self) -> None:
+        handoff = json.loads(HANDOFF.read_text(encoding="utf-8"))
+        activation = handoff["activation"]
+        target = activation["targeted_execution"]
+        self.assertEqual(activation["carrier"], "heartbeat_reference_only")
+        self.assertEqual(activation["authority_domain"], "INDEPENDENT_TASK_CONTROL")
+        self.assertFalse(activation["carrier_trigger_required"])
+        self.assertEqual(activation["executor_binding"], "AUTHORIZED")
+        self.assertTrue(activation["authorization_ref"])
+        self.assertEqual(
+            target["argv"],
+            ["python", "scripts/run_worker_runtime.py", "--task-id", "SHWP-TV-TVC-RESIDENT-PROOF-001"],
+        )
+        self.assertFalse(target["g18_bootstrap_allowed"])
+        self.assertFalse(target["compatibility_carrier_packet_consumption"])
+        self.assertFalse(target["unrelated_worker_execution"])
+        self.assertFalse(target["heartbeat_grants_execution_authority"])
+        self.assertEqual(target["credential_authority"], "TV/TVC")
+        self.assertEqual(target["github_token_runtime_authority"], "NONE")
+
 if __name__ == "__main__":
     unittest.main()
