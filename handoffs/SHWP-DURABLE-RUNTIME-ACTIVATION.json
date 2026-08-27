@@ -166,7 +166,9 @@
       "G18 reaches its lawful terminal lifecycle state and releases stale active projection"
     ],
     "user_action_required": false,
-    "external_resource_or_operator_action_may_be_required": "Only if no machine-owned lane can identify/provision an eligible StegVerse sovereign node; no iPhone HB30 action is required."
+    "external_resource_or_operator_action_may_be_required": "Only if no machine-owned lane can identify/provision an eligible StegVerse sovereign node; no iPhone HB30 action is required.",
+    "corrected_oscillator_live_carrier_proven": false,
+    "task_capable_worker_runtime_proven": false
   },
   "parallel_continuations": [
     {
