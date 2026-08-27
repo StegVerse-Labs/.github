@@ -6,7 +6,7 @@ from .engine_v12 import HeartbeatRuntime as HeartbeatRuntimeV12, WorkerResponse
 
 
 class HeartbeatRuntime(HeartbeatRuntimeV12):
-    """Separated carrier with fragment-aware assignment-trigger observation.
+    """Separated carrier with fragment-aware assignment-trigger and governed-manifold observation.
 
     v12 intentionally keeps the heartbeat carrier non-authorizing, but it loaded
     only the canonical registry before producing unassigned-task trigger packets.
@@ -18,8 +18,13 @@ class HeartbeatRuntime(HeartbeatRuntimeV12):
     v13 closes that observation gap by applying the existing append-only,
     authority-neutral registry-fragment admission logic to the carrier's
     in-memory registry view immediately before assignment triggers are derived.
-    The carrier still grants no claim, fence, credential, execution, merge, or
-    repository authority and does not persist worker lifecycle state.
+    The inherited carrier cycle also emits a governed-manifold projection over
+    concurrent observed state, transition evidence, and authority-boundary refs.
+    Human review timing is not treated as transition authority; machine-speed
+    transitions may continue inside already-authorized bounds while protected
+    boundary crossings remain external-authority decisions. The carrier still
+    grants no claim, fence, credential, execution, merge, or repository authority
+    and does not persist worker lifecycle state.
     """
 
     def _assignment_triggers(self, registry: dict[str, Any], epoch: int) -> list[dict[str, Any]]:
