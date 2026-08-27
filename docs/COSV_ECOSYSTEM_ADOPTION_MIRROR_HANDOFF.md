@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-27T16:55:00-05:00
+Updated: 2026-08-27T17:00:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -105,9 +105,9 @@ Machine-readable snapshot: `control/cosv-global-registry-coverage.json`.
 - 45 unique worker task IDs across the global worker registry plus fragments.
 - 4 canonically indexed task IDs.
 - 6 completed-only historical unvectorized task IDs.
-- 31 active worker task IDs lack canonical COSV coverage.
+- 30 active worker task IDs lack canonical COSV coverage.
 - 14 organization-registry task IDs lack canonical COSV coverage.
-- Total active .github task IDs lacking canonical COSV coverage: 45.
+- Total active .github task IDs lacking canonical COSV coverage: 44.
 - The orphan-recovery aggregate/fragment contradiction is reconciled to terminal COMPLETED from the durable G22 PASS receipt; no vector was emitted for this completed historical task.
 
 No new vector digits were invented during this audit.
@@ -241,3 +241,11 @@ task.v1 [L R U I V G O C M T B E A P] = 50000000100000
 Central source/descriptor enrollment is complete and released, but the live resident topology receipt remains 0/1 and critical live coverage remains 0/11. The task is machine-owned with no registered task blocker; incomplete live topology is represented as incomplete evidence/activation, not fabricated BLOCKED state. Coverage propagation remains false until a genuine resident receipt exists.
 
 Active .github COSV gap: 31 worker tasks + 14 organization tasks = 45 active unvectorized task IDs.
+
+## StegFin continuity fallback supersession reconciliation — 2026-08-27T17:00:00-05:00
+
+The canonical StegFin owner now records `STEGFIN-CONTINUITY-CARRIER-007` as `SUPERSEDED_FOR_WALLET_HANDOFF_GOAL_BY_COMPLETED_PHONE_DIRECT_ROUTE`. The successful phone-direct task `STEGFIN-PHONE-DIRECT-ROUTE-010` independently proved `WALLET_HANDOFF_READY`; the continuity fallback itself did not execute and no such execution is inferred.
+
+The .github fragment/handoff are reconciled to terminal `SUPERSEDED`, execution claim released, and the task is removed from active vector-required coverage. It remains available only for a distinct future resilience requirement under a new claim.
+
+Active .github COSV gap: 30 worker tasks + 14 organization tasks = 44 active unvectorized task IDs.
