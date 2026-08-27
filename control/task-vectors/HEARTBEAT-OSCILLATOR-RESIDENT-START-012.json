@@ -1,0 +1,44 @@
+{
+  "identity": "StegVerse-Labs/.github:task:HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000100000",
+  "evidence_refs": [
+    "control/worker-registry.d/heartbeat-oscillator-resident-start-012.json",
+    "handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json",
+    "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
+    "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
+    "receipts/sovereign-host/carrier-activation.latest.json"
+  ],
+  "observed_at": "2026-08-27T17:20:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "fragment admission claim_state=AUTHORIZED_FOR_OPTIONAL_RESIDENT_SAMPLER_CLAIM; direct_resident_installer_remains_authorized=true; handoff owns native carrier start",
+    "archive_ready": "worker fragment archive_eligible=false",
+    "unassigned_work": "direct resident installer remains authorized and registered worker is AVAILABLE; no interactive assignment required",
+    "chat_owned_counts": "handoff directly authorizes resident installer; GitHub Actions/chat/WorkerCoordinator are not startup prerequisites",
+    "canonical_owner_installed": "carrier-only installer, engine_v13 runtime, handoff, registry fragment and verifier paths are installed",
+    "thread_required": "carrier_trigger_required=false, workercoordinator_required_for_carrier_start=false, direct resident installer remains authorized",
+    "blocker_count": "fragment block_ref=null and no task blocker/constraint is registered; START_NOT_YET_OBSERVED is incomplete evidence rather than BLOCKED state",
+    "evidence_complete": "completion.live_activation_state=START_NOT_YET_OBSERVED",
+    "activated": "carrier_active=true receipt has not been observed for this task state",
+    "propagated": "post-start LIVE-009 verification and downstream WorkerCoordinator advancement are separate and unobserved"
+  },
+  "authority_effect": "NONE"
+}
