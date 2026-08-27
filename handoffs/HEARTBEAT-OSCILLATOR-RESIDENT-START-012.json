@@ -138,5 +138,18 @@
     "live_activation_state": "START_NOT_YET_OBSERVED",
     "carrier_only_installer_commit": "75de38c47bce8622493c24b78f2f431d12c40db2",
     "carrier_only_test_commit": "709fc7963e8405f82b97f4db67defe14d421cf48"
+  },
+  "source_state_vector_ref": "control/task-vectors/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000100000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-08-27T17:20:00-05:00",
+      "authority_effect": "NONE"
+    }
   }
 }
