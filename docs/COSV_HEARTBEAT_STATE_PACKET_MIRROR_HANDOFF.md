@@ -86,7 +86,11 @@ Current lifecycle:
 source: COMPLETE_RELEASED
 task: HANDOFF_READY
 heartbeat-carried trigger required: false
-first post-anchor packet execution: PENDING
+canonical packet reference source: independent_oscillator.current_reference
+persisted HB31 carrier role: HISTORICAL_OBSERVATION_EVIDENCE_ONLY
+WorkerCoordinator required for heartbeat reference existence: false
+resident sampler required for heartbeat reference existence: false
+first post-anchor packet runtime execution: PENDING
 first post-anchor changed DELTA: PENDING
 ```
 
@@ -116,7 +120,7 @@ The historical HB32 expectation is invalidated and must not be used. A future re
 
 ## Current continuation
 
-1. Execute/consume `COSV-LIVE-PACKET-AUTOMATION-006` against canonical post-anchor reference/state evidence.
+1. Execute/consume `COSV-LIVE-PACKET-AUTOMATION-006` against a protocol-derived post-anchor reference from `heartbeat_runtime/independent_oscillator.py#current_reference`; do not wait for the immutable HB31 persisted carrier or WorkerCoordinator to catch up to that reference.
 2. Preserve HB31 as historical FULL provenance; do not rewrite it as post-anchor evidence.
 3. If canonical state differs, emit the first post-anchor DELTA with non-empty `gradient_inputs`.
 4. StegBrain #861 consumes that immutable DELTA and persists the first live gradient.
