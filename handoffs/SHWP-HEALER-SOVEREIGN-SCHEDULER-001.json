@@ -53,7 +53,11 @@
       "StegVerse-Labs/TV/scripts/sovereign_self_heal.py",
       "StegVerse-Labs/TVC/policies/local_repository_mutation/tv_self_heal.v1.json",
       "StegVerse-Labs/Continuity/scripts/guardian.py",
-      "workers/healer_sovereign_scheduler_worker.py"
+      "workers/healer_sovereign_scheduler_worker.py",
+      "StegVerse-org/LLM-adapter#209@10a6f6247771b2a85b07f5f19810403c3acde513",
+      "StegVerse-Labs/StegVerse-Healer#43@7aa88c39d5e46402e3368b5ebd81d27a773ce93d",
+      "StegVerse-Labs/StegVerse-Healer/app/coinbase_stegdeploy_gateway.py",
+      "StegVerse-org/LLM-adapter/docs/STEGDEPLOY_NATIVE_TLS_INGRESS_MIRROR_HANDOFF.md"
     ],
     "dependencies": [
       "SHWP-DURABLE-RUNTIME-ACTIVATION"
@@ -98,9 +102,9 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "source_state": "COMPLETE_VALIDATED_WITH_SITE_ERL_TARGET_RELEASED",
+    "source_state": "COMPLETE_VALIDATED_WITH_SITE_ERL_TARGET_AND_COINBASE_NATIVE_TLS_CARRIER",
     "source_validation_evidence": "StegVerse-Labs/StegVerse-Healer Test Readiness run 32670203077 job 97269769966 PASS on aca5b7871e2720b0d56757e33fc2a22c10291136; PR #40 merge ff3d9985b773d91dce0d90351a7a8a04a499c59b",
-    "next_authorized_action": "After SHWP-DURABLE-RUNTIME-ACTIVATION produces real eligible sovereign-node runtime evidence, the existing WorkerCoordinator/task-control lane claims this authorized Healer scheduler worker, consumes the current materialized Healer source including executive-rhetoric-ledger-local-sync, executes due fixed local handlers, and persists the no-token scheduler receipt. Heartbeat references may be observed but do not grant execution authority. Do not retire Site .github/workflows/sync-executive-rhetoric-ledger.yml until the receipt proves that target COMPLETE with a PASS destination acknowledgment.",
+    "next_authorized_action": "After SHWP-DURABLE-RUNTIME-ACTIVATION produces real eligible sovereign-node runtime evidence, the existing WorkerCoordinator/task-control lane claims this authorized Healer scheduler worker, consumes current materialized Healer/LLM-adapter/TVC source, and executes due fixed handlers. For the Coinbase StegDeploy target, if TV/TVC has materialized paired TLS certificate/key file locators plus bind/port config, propagate only those four path/config values into Healer and invoke native deploy-tls; otherwise retain local non-public readiness mode. Persist secret-free receipts. Heartbeat references may be observed but do not grant execution authority.",
     "terminal_when": [
       "No forbidden GitHub credential is present",
       "All due targets have COMPLETE or explicitly terminal superseded outcomes",
@@ -116,8 +120,23 @@
       "current_iphone_hb30_action_required": false,
       "third_party_primary_runtime_required": false,
       "credential_authority": "TV/TVC"
+    },
+    "coinbase_gateway_tls_source": {
+      "llm_adapter_native_tls_merge": "10a6f6247771b2a85b07f5f19810403c3acde513",
+      "healer_tls_locator_merge": "7aa88c39d5e46402e3368b5ebd81d27a773ce93d",
+      "tls_locator_names": [
+        "STEGVERSE_SERVICE_GATEWAY_TLS_CERT_FILE",
+        "STEGVERSE_SERVICE_GATEWAY_TLS_KEY_FILE",
+        "STEGVERSE_SERVICE_GATEWAY_TLS_BIND_ADDRESS",
+        "STEGVERSE_SERVICE_GATEWAY_TLS_PORT"
+      ],
+      "locator_values_are_path_or_nonsecret_config_only": true,
+      "certificate_private_key_bytes_propagated_by_worker": false,
+      "production_public_route_observed": false,
+      "local_tls_runtime_receipt_observed": false,
+      "authority_effect": "NONE_UNTIL_ADMITTED_SOVEREIGN_EXECUTION"
     }
   },
   "block": null,
-  "updated_at": "2026-08-26T16:18:00-05:00"
+  "updated_at": "2026-08-27T17:12:00-05:00"
 }
