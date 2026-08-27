@@ -119,3 +119,25 @@ activation_effect: NONE
 3. After hosted source proof, advance Math attachment/image intake or separately governed solver/verifier execution with replayable receipts.
 4. Any further material endpoint/runtime state becomes transition 005+ and a new custody object.
 5. Continue HIL live receiver/participant and resident-carrier proof under their existing distinct owners; downstream Publisher/wiki propagation remains gated on real release/activation predicates.
+
+
+## 2026-08-27 consolidation evidence update
+
+Later Site validation closes the previously unobserved hosted-source predicate for the installed Math boundary, but does not itself mutate the semantic module state or execute Math tools.
+
+Verified chain:
+- Site Math application binding `f5f8e145c49622711ade0920dc04460e424ea1c2` is an ancestor of validated source head `4a13c991dcfb83eccee3fb57cbf41de866466f0e`;
+- Site Bootstrap `33044633784`: SUCCESS;
+- canonical application validator invokes the shared Math boundary validator;
+- Site Task Runner `33044661032`: SUCCESS / no failed steps;
+- later full runner `33045293923`: SUCCESS.
+
+State-language rule remains append-only. Transition 004 is unchanged. The next machine transition for the Math task-state advance must be 005+ and must be custodied in Master Records before the Math task is promoted from its prior hosted-reverify-pending projection.
+
+Current distinction:
+- Math shared-runtime source: IMPLEMENTED + MERGED + HOSTED VALIDATED;
+- governed_math_solver/math_verifier execution: NOT OBSERVED;
+- attachment/image intake: NOT ADMITTED;
+- transition 005+: NOT YET EMITTED;
+- Master Records custody for 005+: NOT YET RECORDED;
+- product activation effect: NONE.
