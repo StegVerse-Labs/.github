@@ -55,7 +55,10 @@
   "authority": {
     "authority_source": "authorizations/SHWP-ALL-ORG-FEDERATION-001.json",
     "heartbeat_grants_execution_authority": false,
-    "policy_version": "shwp-single-hb-v0.2"
+    "policy_version": "shwp-single-hb-v0.2",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false
   },
   "execution": {
     "required_capabilities": [
