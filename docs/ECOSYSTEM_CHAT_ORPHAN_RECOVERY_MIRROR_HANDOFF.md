@@ -185,3 +185,44 @@ No heartbeat transition, G18 terminalization, WorkerCoordinator-specific cycle, 
 ## Archive rule
 
 Recovery and the #264 parent-executor source implementation are terminal and released. This chat session no longer owns a source implementation claim for them. Product activation remains nonterminal until actual fresh-fence parent execution produces same-execution Master Records PASS and persistent conversational runtime readiness. Site #388 publication and current-phone governed wallet proof remain separate nonterminal goals and should continue through their canonical owners.
+
+
+## Canonical parent registry reconciliation — 2026-08-27
+
+Live inspection found a material machine-state contradiction after terminal G22 recovery:
+
+```text
+authoritative parent handoff: HANDOFF_READY
+parent registry fragment: HANDOFF_READY / INDEPENDENT_TASK_CONTROL / fresh fence >22
+canonical control/worker-registry.json row: stale G20 BLOCKED / no admission object
+```
+
+Because registry fragments are intentionally append-only and do not overwrite an existing task ID, the stale canonical row prevented `WorkerCoordinator._activate_independently_admitted_tasks` from seeing the authorized parent candidate even though the newer fragment and handoff were correct.
+
+The canonical registry row is now reconciled to the terminal-recovery successor state while preserving historical G20 transition history as evidence. Required current machine state:
+
+```text
+task_id: SHWP-ECOSYSTEM-CHAT-INFERENCE-001
+state: HANDOFF_READY
+executor_binding: AUTHORIZED
+claim_id: null
+worker_id: null
+heartbeat_timing: null
+admission.authority_domain: INDEPENDENT_TASK_CONTROL
+admission.claim_state: AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM
+admission.minimum_fencing_token_exclusive: 22
+old G20 authority reused: false
+G22 recovery authority reused: false
+heartbeat grants execution authority: false
+```
+
+The emitted task vector remains canonical and visible:
+
+```text
+notation: L R U I V G O C M T B E A P
+vector:   50000000100000
+profile:  task.v1
+state:    EMITTED
+```
+
+This reconciliation does not execute the parent task and does not mint live activation evidence. It removes a stale canonical-registry blocker so the already-authorized independent task-control executor can truthfully acquire a new fence strictly greater than 22 when an admitted StegVerse execution surface is available.
