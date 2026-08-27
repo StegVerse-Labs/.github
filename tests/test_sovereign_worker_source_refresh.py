@@ -49,6 +49,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             (source / "control/task-vectors/new-task.json").write_text('{"profile":"task.v1","level":"task","vector":"50000000100000"}\n', encoding="utf-8")
             (source / "state_language/__init__.py").write_text("# state-language\n", encoding="utf-8")
             (source / "control/task-vector-index.json").write_text('{"schema":"stegverse.cosv-task-vector-index/v0.1"}\n', encoding="utf-8")
+            (source / "control/resident-execution-request.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
             for rel in refresh_mod.STATIC_FILES:
                 path = source / rel
                 path.parent.mkdir(parents=True, exist_ok=True)
@@ -85,11 +86,13 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertTrue((runtime / "control/worker-registry.d/new.json").is_file())
             self.assertTrue((runtime / "control/task-vectors/new-task.json").is_file())
             self.assertTrue((runtime / "control/task-vector-index.json").is_file())
+            self.assertTrue((runtime / "control/resident-execution-request.json").is_file())
             self.assertTrue((runtime / "state_language/__init__.py").is_file())
             for rel in (
                 "scripts/run_worker_runtime.py",
                 "scripts/refresh_and_execute_resident_task.py",
                 "scripts/run_independent_ecosystem_chat_parent.py",
+                "scripts/consume_resident_execution_request.py",
                 "scripts/materialize_live_cosv_packet.py",
                 "scripts/cosv.py",
                 "scripts/cosv_state_packet.py",
@@ -136,6 +139,8 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertIn("process-worker-adapters.d", path_unit)
             self.assertIn("control/task-vectors", path_unit)
             self.assertIn("control/task-vector-index.json", path_unit)
+            self.assertIn("control/resident-execution-request.json", path_unit)
+            self.assertIn("consume_resident_execution_request.py", service)
             self.assertNotIn(f"PathChanged={source / 'control/worker-registry.json'}", path_unit)
             self.assertIn("authorizations", path_unit)
             self.assertIn("cost-basis", path_unit)
