@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-27T16:24:00-05:00
+Updated: 2026-08-27T16:34:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -104,10 +104,10 @@ Machine-readable snapshot: `control/cosv-global-registry-coverage.json`.
 
 - 45 unique worker task IDs across the global worker registry plus fragments.
 - 4 canonically indexed task IDs.
-- 5 completed-only historical unvectorized task IDs.
-- 36 active worker task IDs lack canonical COSV coverage.
+- 6 completed-only historical unvectorized task IDs.
+- 35 active worker task IDs lack canonical COSV coverage.
 - 14 organization-registry task IDs lack canonical COSV coverage.
-- Total active .github task IDs lacking canonical COSV coverage: 50.
+- Total active .github task IDs lacking canonical COSV coverage: 49.
 - The orphan-recovery aggregate/fragment contradiction is reconciled to terminal COMPLETED from the durable G22 PASS receipt; no vector was emitted for this completed historical task.
 
 No new vector digits were invented during this audit.
@@ -189,3 +189,9 @@ claim state: TERMINAL_COMPLETED_NO_REACQUISITION
 ```
 
 Active .github COSV gap after reconciliation: 36 worker tasks + 14 organization tasks = 50 active unvectorized task IDs.
+
+## StegGate first-boundary aggregate reconciliation — 2026-08-27T16:34:00-05:00
+
+`STEGGATE-FIRST-BOUNDARY-001` is reconciled from stale aggregate BLOCKED state to terminal `COMPLETED` using canonical ARA owner evidence: activation `COMPLETE`, admission `ALLOW`, consequence observation `MATCH`, and released claim `COMPLETE_RELEASED`. No task vector is emitted for this completed historical task.
+
+Active .github COSV gap: 35 worker tasks + 14 organization tasks = 49 active unvectorized task IDs.

@@ -12,6 +12,12 @@
       "temporal_class": "recently_completed",
       "continuation_owner": "NONE_TERMINAL_TASK",
       "rationale": "LIVE-009 is terminal evidence for deterministic HB32 protocol-anchor verification. Completion does not create heartbeat progression, runtime, credential, worker, claim, fence, or resident-process authority; downstream protocol propagation is a separate successor goal."
+    },
+    {
+      "task_id": "STEGGATE-FIRST-BOUNDARY-001",
+      "temporal_class": "recently_completed",
+      "continuation_owner": "NONE_TERMINAL_TASK",
+      "rationale": "Canonical ARA first-boundary activation is COMPLETE, the bounded admission receipt is ALLOW, consequence observation is MATCH, and the released claim is COMPLETE_RELEASED. The stale .github aggregate projection is reconciled to COMPLETED; no successor execution authority is implied."
     }
   ],
   "evidence_ref": "receipts/heartbeat/HEARTBEAT-PROTOCOL-ANCHOR-013-validation.json",
