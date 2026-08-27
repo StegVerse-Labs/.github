@@ -1,0 +1,31 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "60000000101000",
+  "evidence_refs": [
+    "control/worker-registry.json",
+    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "boundaries/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+  ],
+  "source_hash": "3c32cd5f0304edf489b94ce0c6b02f62c019081f",
+  "observed_at": "2026-08-27T07:27:45-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "BLOCKED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  }
+}
