@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-27T16:39:00-05:00
+Updated: 2026-08-27T16:45:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -39,7 +39,7 @@ The 189 unaudited repositories are not exemptions. They are classified `NO_REPOS
 
 ## Current .github boundary
 
-`.github` remains `VECTOR_REQUIRED`. Five active vectors are indexed today, but the global worker registry and organization task registry contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
+`.github` remains `VECTOR_REQUIRED`. Six active vectors are indexed today, but the global worker registry and organization task registry contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
 
 Existing indexed examples remain unchanged:
 
@@ -105,9 +105,9 @@ Machine-readable snapshot: `control/cosv-global-registry-coverage.json`.
 - 45 unique worker task IDs across the global worker registry plus fragments.
 - 4 canonically indexed task IDs.
 - 6 completed-only historical unvectorized task IDs.
-- 34 active worker task IDs lack canonical COSV coverage.
+- 33 active worker task IDs lack canonical COSV coverage.
 - 14 organization-registry task IDs lack canonical COSV coverage.
-- Total active .github task IDs lacking canonical COSV coverage: 48.
+- Total active .github task IDs lacking canonical COSV coverage: 47.
 - The orphan-recovery aggregate/fragment contradiction is reconciled to terminal COMPLETED from the durable G22 PASS receipt; no vector was emitted for this completed historical task.
 
 No new vector digits were invented during this audit.
@@ -208,3 +208,14 @@ task.v1 [L R U I V G O C M T B E A P] = 50000000101000
 The vector record carries per-metric evidence, the worker fragment and executable handoff bind `source_state_vector_ref`, and `control/task-vector-index.json` now indexes five canonical tasks. This vector does not claim governed broker validation PASS, broker admission, StegCore downstream propagation, or activation; those remain open exactly as recorded by the TVC broker validation handoff.
 
 Active .github COSV gap after this projection: 34 worker tasks + 14 organization tasks = 48 active unvectorized task IDs.
+
+## StegGate stable-rendezvous vector adoption — 2026-08-27T16:45:00-05:00
+
+```text
+STEGGATE-STABLE-RENDEZVOUS-WORKER-001
+task.v1 [L R U I V G O C M T B E A P] = 50000000100000
+```
+
+The task is machine-owned and actively bound. The Cloudflare credential condition is explicitly a workaround condition, not a canonical blocker: `third_party_dependency_is_blocker=false` and `blocker.may_remain_blocked=false`. Current live-lease evidence remains incomplete, so evidence/activation/propagation remain false. This vector creates no provider, credential, policy, or execution authority.
+
+Active .github COSV gap: 33 worker tasks + 14 organization tasks = 47 active unvectorized task IDs.
