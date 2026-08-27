@@ -2,7 +2,7 @@
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
   "observed_commit": "981dc445476f5049fc51194c93d29b9fc5e35d44",
-  "observed_at": "2026-08-27T16:55:00-05:00",
+  "observed_at": "2026-08-27T17:00:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -13,14 +13,15 @@
     "unique_task_ids_global_plus_fragments": 45,
     "canonically_indexed_task_ids": 8,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 31
+    "active_unvectorized_unique_task_ids": 30,
+    "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
     "active_task_ids": 14,
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 45,
+  "total_active_unvectorized_unique_task_ids": 44,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -31,7 +32,6 @@
     "AE-RELATIONAL-MATH-WORKER-001",
     "SHWP-STEGNUTRITION-CONTINUATION-001",
     "SHWP-FORMALISM-SOURCE-DISCOVERY-001",
-    "STEGFIN-CONTINUITY-CARRIER-007",
     "SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
     "SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001",
     "HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001",
@@ -127,6 +127,15 @@
       "canonical_owner_state": "COMPLETE",
       "evidence_ref": "StegVerse-Labs/ara-admissibility-interop:management/first-boundary-activation.json",
       "vector_required_for_active_coverage": false,
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "STEGFIN-CONTINUITY-CARRIER-007",
+      "aggregate_state": "SUPERSEDED",
+      "canonical_owner_state": "SUPERSEDED_FOR_WALLET_HANDOFF_GOAL_BY_COMPLETED_PHONE_DIRECT_ROUTE",
+      "evidence_ref": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-CONTINUITY-CARRIER-007.json",
+      "vector_required_for_active_coverage": false,
+      "fallback_executed": false,
       "authority_effect": "NONE"
     }
   ]

@@ -3,10 +3,12 @@
   "fragment_id": "STEGFIN-CONTINUITY-CARRIER-007",
   "tasks": [
     {
-      "archive_eligible": false,
-      "archive_reason_codes": [],
+      "archive_eligible": true,
+      "archive_reason_codes": [
+        "SUPERSEDED_BY_COMPLETED_PHONE_DIRECT_ROUTE"
+      ],
       "authorized_policy_version": "stegfin-continuity-carrier-v1",
-      "block_ref": "docs/STEGFIN_CONTINUITY_CARRIER_MIRROR_HANDOFF.md",
+      "block_ref": null,
       "claim_id": null,
       "cost_basis_ref": "cost-basis/worker-runtime/stegfin-continuity-carrier.json",
       "evidence_refs": [
@@ -14,14 +16,14 @@
         "handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
         "workers/stegfin_continuity_carrier_worker.py"
       ],
-      "executor_binding": "AUTHORIZED",
+      "executor_binding": "RELEASED",
       "external_entity_job_ref": null,
       "goal_id": "STEGFIN-BASE-ROUNDTRIP-001",
       "handoff_ref": "handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
       "heartbeat_timing": null,
-      "last_checkpoint_ref": "handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
+      "last_checkpoint_ref": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-CONTINUITY-CARRIER-007.json",
       "lease": null,
-      "state": "HANDOFF_READY",
+      "state": "SUPERSEDED",
       "task_id": "STEGFIN-CONTINUITY-CARRIER-007",
       "worker_id": null,
       "worker_instance_id": null,
@@ -30,27 +32,31 @@
         "capability_version": "1.0.0",
         "phase": "ADMISSIBLE",
         "standing_evidence_refs": [
-          "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md",
-          "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-CONTINUITY-CARRIER-007.json"
+          "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md"
         ],
         "admissibility_evidence_refs": [
-          "handoffs/STEGFIN-CONTINUITY-CARRIER-007.json",
-          "docs/STEGFIN_LOCAL_TVC_BROKER_FASTPATH_MIRROR_HANDOFF.md"
+          "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-CONTINUITY-CARRIER-007.json"
         ],
         "integration_evidence_refs": [
           "workers/stegfin_continuity_carrier_worker_v3.py",
           "control/process-worker-adapters.d/stegfin-continuity-carrier-007.json"
         ],
         "activation_proof_ref": null,
-        "blockers": [
-          "WALLET_HANDOFF_READY_NOT_YET_OBSERVED"
-        ],
-        "continuation_owner": "stegfin-continuity-carrier-worker + TV/TVC runtime authority/observer as selected at execution",
+        "blockers": [],
+        "continuation_owner": "NONE_FOR_COMPLETED_WALLET_HANDOFF_GOAL",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
-        "temporal_class": "current",
+        "temporal_class": "recently_completed",
         "task_relationship": "integrates_capability",
         "target_phase": "ACTIVATED"
+      },
+      "supersession": {
+        "superseded_by_task_id": "STEGFIN-PHONE-DIRECT-ROUTE-010",
+        "canonical_owner_ref": "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-CONTINUITY-CARRIER-007.json",
+        "observed_terminal_state": "WALLET_HANDOFF_READY",
+        "fallback_executed": false,
+        "execution_required_for_completed_goal": false,
+        "authority_effect": "NONE"
       }
     }
   ],
@@ -66,7 +72,7 @@
       "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
       "executor_type": "repository_worker",
       "last_seen_at": null,
-      "status": "AVAILABLE",
+      "status": "AVAILABLE_FOR_DISTINCT_FUTURE_RESILIENCE_ONLY",
       "worker_id": "stegfin-continuity-carrier-worker"
     }
   ],
