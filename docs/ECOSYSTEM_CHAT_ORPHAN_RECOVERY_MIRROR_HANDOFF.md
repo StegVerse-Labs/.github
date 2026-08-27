@@ -257,3 +257,31 @@ runtime execution observed: false
 ```
 
 This is source integration only until exact validation succeeds and the source is merged. Even after merge, it does not prove the resident source-refresh service is installed or active and does not prove the request was consumed. The direct portable one-shot remains valid independently of the watcher. A resident attempt must be evidenced by sovereign-host receipts and a fresh parent fence; hosted validation cannot satisfy that boundary.
+
+
+## Resident execution request merge/validation — 2026-08-27
+
+PR #321 merged exact validated head `a4537c9b373d949481da21d0d76616ca22bf8ced` as `a81ee4e60916bb32aa7aa2c5f6a1cb25530b80e5`.
+
+Source validation:
+
+```text
+Heartbeat Worker Project run 33119900198: SUCCESS
+Organization control plane run 33119900137: SUCCESS
+complete deterministic repository suite: PASS
+```
+
+Current live boundary after merge:
+
+```text
+resident request source: MERGED / VALIDATED
+worker-source-refresh.latest.json: NOT OBSERVED
+resident-execution-request-consumption.latest.json: NOT OBSERVED
+resident-targeted-execution.latest.json: NOT OBSERVED
+fresh parent fence >22: NOT OBSERVED
+independent_parent_activation.latest.json: NOT OBSERVED
+runtime execution: NOT OBSERVED
+activation: NOT PROVEN
+```
+
+The merge therefore improves the resident execution path but does not satisfy runtime execution. The next machine boundary is observation or activation of an existing sovereign resident source-consumption/startup path. GitHub Actions remains validation-only.
