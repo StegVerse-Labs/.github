@@ -5,21 +5,176 @@
   "authority_effect": false,
   "blocker_policy_ref": "control/blocker-resolution-policy.json",
   "tasks": [
-    {"task_id":"ORG-FED-AACT-E-001","organization":"AaCT-E","state":"WORKAROUND_REQUIRED","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","dependency_class":"THIRD_PARTY","condition":"Current GitHub integration lacks push authority to AaCT-E","solution_required":true,"workaround_candidates":["Create or discover an AaCT-E-owned relay/control surface reachable by existing authority","Use an already-authorized AaCT-E repository if one becomes discoverable without waiting for connector permission changes","Represent AaCT-E through a signed outbound handoff that AaCT-E can ingest without granting the connector write authority"],"next_action":"SELECT_AACTE_OWNED_ALTERNATE_PATH"},
-    {"task_id":"ORG-FED-ADMISSIBLE-EXISTENCE-001","organization":"Admissible-Existence","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","next_action":"OBSERVE_TRANSITION"},
-    {"task_id":"ORG-FED-ADMITTEDCODE-001","organization":"AdmittedCode","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","next_action":"OBSERVE_TRANSITION"},
-    {"task_id":"ORG-FED-DATA-CONTINUATION-001","organization":"Data-Continuation","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","next_action":"OBSERVE_TRANSITION"},
-    {"task_id":"ORG-FED-ECAT-ICAT-FORMAL-001","organization":"ECAT-ICAT-Formal","state":"BLOCKED","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","dependency_class":"INTERNAL_CAPABILITY","condition":"No organization repository currently owns the canonical handoff/adapter surface","release_condition":"Organization exposes at least one repository that can own a canonical *_MIRROR_HANDOFF.md and heartbeat node adapter","solution_required":true,"workaround_candidates":["Create a minimal organization-owned control repository","Designate an existing organization-owned repository as canonical handoff/adapter owner","Create an organization-owned relay repository with only the required handoff and adapter surfaces"],"next_action":"CREATE_OR_DESIGNATE_CANONICAL_REPOSITORY"},
-    {"task_id":"ORG-FED-FORMALISM-TESTS-001","organization":"formalism-tests","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","next_action":"OBSERVE_TRANSITION"},
-    {"task_id":"ORG-FED-GCAT-BCAT-ENGINE-001","organization":"GCAT-BCAT-Engine","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","next_action":"OBSERVE_TRANSITION"},
-    {"task_id":"ORG-FED-INFRASTRUCTURE-CONTINUITY-VENTURES-001","organization":"Infrastructure-Continuity-Ventures","state":"BLOCKED","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","dependency_class":"INTERNAL_CAPABILITY","condition":"No organization repository currently owns the canonical handoff/adapter surface","release_condition":"Organization exposes at least one repository that can own a canonical *_MIRROR_HANDOFF.md and heartbeat node adapter","solution_required":true,"workaround_candidates":["Create a minimal organization-owned control repository","Designate an existing organization-owned repository as canonical handoff/adapter owner","Create an organization-owned relay repository with only the required handoff and adapter surfaces"],"next_action":"CREATE_OR_DESIGNATE_CANONICAL_REPOSITORY"},
-    {"task_id":"ORG-FED-MASTER-RECORDS-001","organization":"master-records","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","next_action":"OBSERVE_TRANSITION"},
-    {"task_id":"ORG-FED-STEGGHOST-001","organization":"StegGhost","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","next_action":"OBSERVE_TRANSITION"},
-    {"task_id":"ORG-FED-STEGVERSE-002-001","organization":"StegVerse-002","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","next_action":"OBSERVE_TRANSITION"},
-    {"task_id":"ORG-FED-STEGVERSE-LABS-001","organization":"StegVerse-Labs","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github#12","next_action":"EXECUTE_FEDERATION_CYCLE"},
-    {"task_id":"ORG-FED-STEGVERSE-ORG-001","organization":"StegVerse-org","state":"READY","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","next_action":"OBSERVE_TRANSITION"},
-    {"task_id":"ORG-FED-TRIAD-TEST-001","organization":"Triad-Test","state":"BLOCKED","carrier":"heartbeat","owner":"StegVerse-Labs/.github federation worker","dependency_class":"INTERNAL_CAPABILITY","condition":"No organization repository currently owns the canonical handoff/adapter surface","release_condition":"Organization exposes at least one repository that can own a canonical *_MIRROR_HANDOFF.md and heartbeat node adapter","solution_required":true,"workaround_candidates":["Create a minimal organization-owned control repository","Designate an existing organization-owned repository as canonical handoff/adapter owner","Create an organization-owned relay repository with only the required handoff and adapter surfaces"],"next_action":"CREATE_OR_DESIGNATE_CANONICAL_REPOSITORY"}
+    {
+      "task_id": "ORG-FED-AACT-E-001",
+      "organization": "AaCT-E",
+      "state": "WORKAROUND_REQUIRED",
+      "carrier": "heartbeat",
+      "owner": "StegVerse-Labs/.github federation worker",
+      "dependency_class": "THIRD_PARTY",
+      "condition": "Current GitHub integration lacks push authority to AaCT-E",
+      "solution_required": true,
+      "workaround_candidates": [
+        "Create or discover an AaCT-E-owned relay/control surface reachable by existing authority",
+        "Use an already-authorized AaCT-E repository if one becomes discoverable without waiting for connector permission changes",
+        "Represent AaCT-E through a signed outbound handoff that AaCT-E can ingest without granting the connector write authority"
+      ],
+      "next_action": "SELECT_AACTE_OWNED_ALTERNATE_PATH"
+    },
+    {
+      "task_id": "ORG-FED-ADMISSIBLE-EXISTENCE-001",
+      "organization": "Admissible-Existence",
+      "state": "READY",
+      "carrier": "heartbeat",
+      "owner": "StegVerse-Labs/.github federation worker",
+      "next_action": "OBSERVE_TRANSITION"
+    },
+    {
+      "task_id": "ORG-FED-ADMITTEDCODE-001",
+      "organization": "AdmittedCode",
+      "state": "READY",
+      "carrier": "heartbeat",
+      "owner": "StegVerse-Labs/.github federation worker",
+      "next_action": "OBSERVE_TRANSITION"
+    },
+    {
+      "task_id": "ORG-FED-DATA-CONTINUATION-001",
+      "organization": "Data-Continuation",
+      "state": "READY",
+      "carrier": "heartbeat",
+      "owner": "StegVerse-Labs/.github federation worker",
+      "next_action": "OBSERVE_TRANSITION"
+    },
+    {
+      "task_id": "ORG-FED-ECAT-ICAT-FORMAL-001",
+      "organization": "ECAT-ICAT-Formal",
+      "state": "BLOCKED",
+      "carrier": "heartbeat",
+      "owner": "StegVerse-Labs/.github federation worker",
+      "dependency_class": "INTERNAL_CAPABILITY",
+      "condition": "No organization repository currently owns the canonical handoff/adapter surface",
+      "release_condition": "Organization exposes at least one repository that can own a canonical *_MIRROR_HANDOFF.md and heartbeat node adapter",
+      "solution_required": true,
+      "workaround_candidates": [
+        "Create a minimal organization-owned control repository",
+        "Designate an existing organization-owned repository as canonical handoff/adapter owner",
+        "Create an organization-owned relay repository with only the required handoff and adapter surfaces"
+      ],
+      "next_action": "CREATE_OR_DESIGNATE_CANONICAL_REPOSITORY"
+    },
+    {
+      "task_id": "ORG-FED-FORMALISM-TESTS-001",
+      "organization": "formalism-tests",
+      "state": "READY",
+      "carrier": "heartbeat",
+      "owner": "StegVerse-Labs/.github federation worker",
+      "next_action": "OBSERVE_TRANSITION"
+    },
+    {
+      "task_id": "ORG-FED-GCAT-BCAT-ENGINE-001",
+      "organization": "GCAT-BCAT-Engine",
+      "state": "READY",
+      "carrier": "heartbeat",
+      "owner": "StegVerse-Labs/.github federation worker",
+      "next_action": "OBSERVE_TRANSITION"
+    },
+    {
+      "task_id": "ORG-FED-INFRASTRUCTURE-CONTINUITY-VENTURES-001",
+      "organization": "Infrastructure-Continuity-Ventures",
+      "state": "BLOCKED",
+      "carrier": "heartbeat",
+      "owner": "StegVerse-Labs/.github federation worker",
+      "dependency_class": "INTERNAL_CAPABILITY",
+      "condition": "No organization repository currently owns the canonical handoff/adapter surface",
+      "release_condition": "Organization exposes at least one repository that can own a canonical *_MIRROR_HANDOFF.md and heartbeat node adapter",
+      "solution_required": true,
+      "workaround_candidates": [
+        "Create a minimal organization-owned control repository",
+        "Designate an existing organization-owned repository as canonical handoff/adapter owner",
+        "Create an organization-owned relay repository with only the required handoff and adapter surfaces"
+      ],
+      "next_action": "CREATE_OR_DESIGNATE_CANONICAL_REPOSITORY"
+    },
+    {
+      "task_id": "ORG-FED-MASTER-RECORDS-001",
+      "organization": "master-records",
+      "state": "READY",
+      "carrier": "heartbeat",
+      "owner": "StegVerse-Labs/.github federation worker",
+      "next_action": "OBSERVE_TRANSITION"
+    },
+    {
+      "task_id": "ORG-FED-STEGGHOST-001",
+      "organization": "StegGhost",
+      "state": "READY",
+      "carrier": "heartbeat",
+      "owner": "StegVerse-Labs/.github federation worker",
+      "next_action": "OBSERVE_TRANSITION"
+    },
+    {
+      "task_id": "ORG-FED-STEGVERSE-002-001",
+      "organization": "StegVerse-002",
+      "state": "READY",
+      "carrier": "heartbeat",
+      "owner": "StegVerse-Labs/.github federation worker",
+      "next_action": "OBSERVE_TRANSITION"
+    },
+    {
+      "task_id": "ORG-FED-STEGVERSE-LABS-001",
+      "organization": "StegVerse-Labs",
+      "state": "READY",
+      "carrier": "heartbeat",
+      "owner": "StegVerse-Labs/.github#12",
+      "next_action": "EXECUTE_FEDERATION_CYCLE"
+    },
+    {
+      "task_id": "ORG-FED-STEGVERSE-ORG-001",
+      "organization": "StegVerse-org",
+      "state": "READY",
+      "carrier": "heartbeat",
+      "owner": "StegVerse-Labs/.github federation worker",
+      "next_action": "OBSERVE_TRANSITION"
+    },
+    {
+      "task_id": "ORG-FED-TRIAD-TEST-001",
+      "organization": "Triad-Test",
+      "state": "BLOCKED",
+      "carrier": "heartbeat",
+      "owner": "StegVerse-Labs/.github federation worker",
+      "dependency_class": "INTERNAL_CAPABILITY",
+      "condition": "No organization repository currently owns the canonical handoff/adapter surface",
+      "release_condition": "Organization exposes at least one repository that can own a canonical *_MIRROR_HANDOFF.md and heartbeat node adapter",
+      "solution_required": true,
+      "workaround_candidates": [
+        "Create a minimal organization-owned control repository",
+        "Designate an existing organization-owned repository as canonical handoff/adapter owner",
+        "Create an organization-owned relay repository with only the required handoff and adapter surfaces"
+      ],
+      "next_action": "CREATE_OR_DESIGNATE_CANONICAL_REPOSITORY"
+    }
   ],
-  "coverage": {"total":14,"ready":10,"blocked":3,"workaround_required":1,"unassigned":0},
-  "rule":"Third-party conditions are never BLOCKED. WORKAROUND_REQUIRED means the heartbeat worker must pursue an alternate StegVerse-owned path. Internal blockers require explicit solution candidates, release_condition, and next_action semantics."
+  "coverage": {
+    "total": 14,
+    "ready": 10,
+    "blocked": 3,
+    "workaround_required": 1,
+    "unassigned": 0
+  },
+  "rule": "Third-party conditions are never BLOCKED. WORKAROUND_REQUIRED means the heartbeat worker must pursue an alternate StegVerse-owned path. Internal blockers require explicit solution candidates, release_condition, and next_action semantics.",
+  "cosv_adoption_projection": {
+    "profile": "task.v1",
+    "notation": "L R U I V G O C M T B E A P",
+    "width": 14,
+    "manifest_ref": "control/cosv-ecosystem-adoption-manifest.json",
+    "observed_at": "2026-08-27T11:14:00-05:00",
+    "organization_installations": 14,
+    "repository_installation_inventory": 222,
+    "proven_active_task_surfaces": 33,
+    "fully_vectorized_active_task_surfaces": 0,
+    "ratio": "0/33",
+    "universe_audit_complete": false,
+    "state": "INCOMPLETE_FAIL_CLOSED",
+    "release_condition": "All VECTOR_REQUIRED repositories are VECTOR_PRESENT and all unavailable/not-yet-audited repositories are durably reclassified from repository-local evidence.",
+    "authority_effect": "NONE"
+  }
 }
