@@ -15,8 +15,8 @@ spec.loader.exec_module(cosv)
 class EcosystemChatParentCOSVTests(unittest.TestCase):
     def test_parent_task_vector_is_visible_and_canonical(self) -> None:
         record = json.loads((ROOT / "control" / "task-vectors" / "SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json").read_text())
-        fragment = json.loads((ROOT / "control" / "worker-registry.d" / "ecosystem-chat-sovereign-inference-parent-001.json").read_text())
-        task = fragment["tasks"][0]
+        registry = json.loads((ROOT / "control" / "worker-registry.json").read_text())
+        task = next(row for row in registry["tasks"] if row.get("task_id") == "SHWP-ECOSYSTEM-CHAT-INFERENCE-001")
 
         self.assertEqual(record["profile"], "task.v1")
         self.assertEqual(record["level"], "task")
