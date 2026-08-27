@@ -64,6 +64,8 @@ class HeartbeatRuntime(HeartbeatRuntimeV8):
                 if not isinstance(task, dict):
                     raise RuntimeError(f"invalid task in registry fragment: {path.name}")
                 task_id = task.get("task_id")
+                if task_id_filter is not None and task_id != task_id_filter:
+                    continue
                 handoff_ref = task.get("handoff_ref")
                 if not isinstance(task_id, str) or not task_id:
                     raise RuntimeError(f"registry fragment task_id missing: {path.name}")
