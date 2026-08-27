@@ -193,7 +193,7 @@
     "source_validation_is_runtime_activation": false
   },
   "completion": {
-    "next_authorized_action": "The existing sole host must consume the already-merged local-only WorkerCoordinator source-refresh repair from a current already-local .github source, preserving mutable runtime state and restarting only stegverse-worker-runtime.service. After the refreshed WorkerCoordinator sees this task, it assigns a fresh claim/fence to the dedicated adapter; the worker auto-discovers canonical local TV/TVC trees, invokes TVC preflight and activation in systemd-user mode, and persists only the secret-free result identity.",
+    "next_authorized_action": "On the existing sovereign resident surface, consume current already-local StegVerse-Labs/.github source and attempt exactly this task with `python scripts/refresh_and_execute_resident_task.py --task-id SHWP-TV-TVC-RESIDENT-PROOF-001`. The bridge preserves the resident worker registry and other mutable runtime state, requires no network source fetch, no second machine, and no systemd source-refresh watcher. The TV/TVC worker then auto-discovers already-local TV/TVC trees, runs TVC preflight, and may invoke the TVC systemd-user credential consumer only if preflight is READY. Source refresh alone is not runtime proof.",
     "terminal_when": [
       "resident_worker_source_refresh_receipt_present=true",
       "resident_worker_cycle_after_source_refresh=true",
@@ -206,16 +206,18 @@
       "proof_sha256_present=true"
     ],
     "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-TV-TVC-RESIDENT-PROOF-001",
-    "live_host_prerequisite": "resident sole-host must first consume current .github worker-runtime source so --task-id mode exists locally; source refresh itself is not runtime proof"
+    "live_host_prerequisite": "the existing sovereign resident surface must have an already-local current StegVerse-Labs/.github source tree plus its existing mutable runtime root; no additional user-operated machine, network source fetch, or systemd source-refresh watcher is required",
+    "portable_refresh_then_execute_command": "python scripts/refresh_and_execute_resident_task.py --task-id SHWP-TV-TVC-RESIDENT-PROOF-001",
+    "optional_continuous_refresh_integration": "scripts/install_sovereign_worker_source_refresh_service.py is optional Linux/systemd-user filesystem-watch integration after the portable one-shot path; it is not required for the first resident execution attempt."
   },
   "block": {
-    "block_reason": "The repository-side task, local TV/TVC source discovery, and stale-materialization refresh implementation are merged and validated. The currently observable resident WorkerCoordinator projection is still the Aug 18 HB31/runtime-tick-2 CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION snapshot, and the dedicated task receipt is absent. The remaining first transition is resident-host consumption of the local-only source-refresh repair; repository/hosted validation cannot substitute for that execution.",
-    "dependency": "resident sole-host WorkerCoordinator source refresh from current already-local StegVerse-Labs/.github source",
+    "block_reason": "The repository-side task, local TV/TVC source discovery, targeted execution, portable resident refresh bridge, and mutable-registry preservation are merged and validated. The currently observable resident WorkerCoordinator projection is still the Aug 18 HB31/runtime-tick-2 CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION snapshot, and no resident refresh/execution-attempt or dedicated TV/TVC proof receipt is present. The remaining transition is real execution of the portable refresh+target bridge on the existing sovereign resident surface; repository/hosted validation cannot substitute for that execution.",
+    "dependency": "existing sovereign resident surface executing the already-merged portable refresh+target bridge from an already-local current StegVerse-Labs/.github source",
     "observer": "single sovereign StegVerse WorkerCoordinator",
-    "recheck_trigger": "after any resident worker source-refresh receipt or newer WorkerCoordinator runtime tick is observed",
-    "next_check": "receipts/sovereign-host/worker-source-refresh-installation.latest.json -> control/worker-runtime-state.json -> receipts/tv-tvc-resident-proof/SHWP-TV-TVC-RESIDENT-PROOF-001.json",
+    "recheck_trigger": "after any resident worker source-refresh receipt, resident-targeted-execution receipt, newer WorkerCoordinator runtime tick, or TV/TVC resident-proof receipt is observed",
+    "next_check": "receipts/sovereign-host/resident-targeted-execution.latest.json -> receipts/sovereign-host/worker-source-refresh.latest.json -> control/worker-runtime-state.json -> receipts/tv-tvc-resident-proof/SHWP-TV-TVC-RESIDENT-PROOF-001.json",
     "escalation_condition": "source mismatch, forbidden hosted runtime, credential transport attempt, authority expansion, mutable runtime-state overwrite, or carrier restart caused by worker-source refresh",
     "block_expires_at": null,
-    "next_targeted_execution": "after source refresh, run the exact one-shot command above; if local TV/TVC source or systemd-user credential preflight is unavailable, the worker remains BLOCKED with a secret-free receipt"
+    "next_targeted_execution": "run `python scripts/refresh_and_execute_resident_task.py --task-id SHWP-TV-TVC-RESIDENT-PROOF-001` on the existing sovereign resident surface; if local TV/TVC source or the TVC systemd-user credential preflight is unavailable, the worker must remain BLOCKED with a secret-free receipt"
   }
 }
