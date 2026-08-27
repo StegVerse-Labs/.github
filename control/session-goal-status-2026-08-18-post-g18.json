@@ -1,84 +1,114 @@
 {
-  "schema": "stegverse.session-goal-status/v4",
+  "schema": "stegverse.session-goal-status/v5",
   "session_id": "SESSION-2026-08-18-COSV-STATE-GRADIENT-INTROSPECTION",
-  "updated_at": "2026-08-22T07:01:00-05:00",
-  "archive_eligible": false,
-  "archive_reason": "Required resident carrier start/live oscillator proof, sovereign inference activation, corrected COSV packet/gradient/residual/matrix evidence, and downstream release evidence remain nonterminal. Source, handoff, assignment, independent claimability, and machine ownership do not satisfy runtime outcomes.",
-  "heartbeat_semantics": {
-    "canonical_runtime": "heartbeat_runtime/engine_v13.py",
-    "canonical_rule": "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL",
+  "updated_at": "2026-08-26T22:46:00-05:00",
+  "chat_archive_ready": true,
+  "archive_eligible": true,
+  "project_runtime_terminal": false,
+  "archive_reason": "All unique session state is durably represented in current repo-local canonical handoffs/contracts/receipts and the global StegVerse project index/handoff. Active project runtime outcomes remain nonterminal but continuation no longer depends on rereading ChatGPT.",
+  "global_coordination": {
+    "project_index_document_id": "1O9zETF9WulbZmPMQQbsy-Ewqsbbc3EABRaA2kIFm0u0",
+    "project_index_revision": "AIroW36vuX0TI6HyHB72XDJzJ6f93Iscby_1p50YYtuh8JUbeD-sZWcEHcEmmK95xW9Kzn8RpSsNu2XmB-blNY113j5oCeJjgHaxNwWAm7Q",
+    "projects_handoff_document_id": "1WtFpaFi4ii-IjiATTTcYppwYF59RMngJT21EGa6tghU",
+    "projects_handoff_revision": "AIroW37TUADpjH2ptv86_MY1U3Zgdp6y1TSWQTTBdv4ZQJqLvU0THw99V8QNbgpOHTKC6_6QTYH1l2nf5fq6Tx2loef1tYMdmXU_CeRNg3A",
+    "session_overlay": "SESSION CONSOLIDATION UPDATE — 2026-08-26 22:46 CDT — HEARTBEAT / COSV / STEGBRAIN / ECOSYSTEM CHAT SOVEREIGN INFERENCE",
+    "unrelated_active_projects_preserved": true
+  },
+  "authority": {
+    "stegverse_primary": true,
+    "third_party_role": "FALLBACK_ONLY",
+    "credential_authority": "TV/TVC",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "github_token_runtime_authority": "NONE"
+  },
+  "heartbeat": {
+    "protocol_anchor_ref": "control/heartbeat-protocol-anchor.json",
+    "live_status_ref": "control/heartbeat-live-status.json",
+    "state": "ACTIVE_PROTOCOL_VERIFIED",
+    "live_proof_state": "COMPLETED",
+    "anchor_epoch": 32,
+    "anchor_time_utc": "2026-08-23T19:00:00.000Z",
+    "period_ms": 10,
+    "frequency_hz": 100,
     "progression_dependency": "OSCILLATOR_ONLY",
-    "phase_travel_time_ms": 10,
-    "reference_increment_interval_ms": 10,
-    "reference_frequency_hz": 100,
-    "worker_or_task_gating": false,
-    "admission_gating": false,
-    "claim_or_fence_gating": false,
-    "route_or_credential_gating": false,
-    "observation_is_causal": false,
-    "persisted_carrier_state_is_observation_only": true,
-    "live_corrected_observation": false
+    "resident_sampler_required_for_progression": false,
+    "historical_hb31_is_current_authority": false,
+    "core_terminal": true
   },
-  "observed_repository_snapshots": {
-    "legacy_heartbeat_epoch": 29,
-    "pre_correction_separated_carrier_snapshot_epoch": 31,
-    "pre_correction_worker_observed_epoch": 31,
-    "worker_runtime_tick": 2,
-    "snapshot_warning": "HB31 is historical pre-correction observation evidence and is not the current oscillator position or corrected-runtime proof.",
-    "first_live_cosv_packet_under_old_sampling_model": "receipts/cosv/live/HB31.json",
-    "hb32_expectation_invalidated": true,
-    "hb32_expectation_supersession_ref": "StegVerse-Labs/StegBrain:receipts/STEGBRAIN-COSV-EXPECTATION-HB32-001-supersession.json"
+  "ecosystem_chat_recovery": {
+    "state": "COMPLETE",
+    "receipt_ref": "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
+    "recovery_fence": 22,
+    "old_fence": 20,
+    "old_authority_ended": true,
+    "old_authority_reused": false,
+    "master_records_custody_valid": true,
+    "successor_authority_granted": false,
+    "reacquisition_allowed": false
   },
-  "task_load_reduction": {
-    "repairs": [
-      {
-        "task_id": "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
-        "registry_commit": "dd3098a2897e4eb70f1462d4dc6b4c27e0b05505",
-        "handoff_commit": "fe894c81559f6a2163a24dc187b0743b0555df83",
-        "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE"
-      },
-      {
-        "task_id": "HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
-        "registry_commit": "b586ca6808630e12d26bd78de4d879515b002e61",
-        "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_OR_DIRECT_RESIDENT_INSTALLER",
-        "direct_start_command": "python scripts/install_sovereign_heartbeat_carrier.py",
-        "workercoordinator_required_for_carrier_start": false
-      },
-      {
-        "task_id": "COSV-LIVE-PACKET-AUTOMATION-006",
-        "registry_commit": "9f9d24b3ccdd9efe34927bdb9d8e5f0a265945bc",
-        "handoff_commit": "40d6dc0271e1c1b7b9f1209fde0fcc00dcccefd6",
-        "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE"
-      },
-      {
-        "task_id": "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
-        "state": "HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_PREEXISTING",
-        "minimum_fence_exclusive": 20
-      }
-    ],
-    "worker_runtime_rule_ref": "heartbeat_runtime/worker_runtime.py#_activate_independently_admitted_tasks",
-    "regression_test_ref": "tests/test_task_load_independent_admission.py",
-    "regression_test_commit": "f7871baaa5d1be334caee9c77a534b7515d24eed",
-    "live_claims_created_by_chat": false,
-    "runtime_completion_claimed": false
-  },
-  "goals": [
-    {"goal_id":"HEARTBEAT-INDEPENDENT-OSCILLATOR-10MS-008","state":"SOURCE_COMPLETE_RELEASED","terminal":true},
-    {"goal_id":"HEARTBEAT-OSCILLATOR-RESIDENT-START-012","state":"CARRIER_ONLY_START_PATH_INSTALLED_HANDOFF_READY_DIRECT_START_OR_INDEPENDENT_TASK_CONTROL_EXECUTION_REQUIRED","terminal":false},
-    {"goal_id":"HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009","state":"HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_POST_START_LIVE_PROOF_REQUIRED","terminal":false},
-    {"goal_id":"RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28","state":"HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_FRESH_FENCE_GT20_REQUIRED","terminal":false},
-    {"goal_id":"SOVEREIGN-LOCAL-MODEL-001","state":"SOURCE_COMPLETE_RELEASED_LIVE_ACTIVATION_REQUIRED_AFTER_RECOVERY","terminal":false},
-    {"goal_id":"SHWP-DURABLE-RUNTIME-ACTIVATION","state":"BOOKKEEPING_RECONCILIATION_NONBLOCKING_TO_HEARTBEAT_OR_INFERENCE","terminal":false},
-    {"goal_id":"COSV-HEARTBEAT-STATE-PACKET-002","state":"HB31_HISTORICAL_BASELINE_PRESERVED_NEXT_PACKET_MUST_BIND_CORRECTED_OSCILLATOR_OBSERVATION","terminal":false},
-    {"goal_id":"COSV-LIVE-PACKET-AUTOMATION-006","state":"HANDOFF_READY_INDEPENDENT_TASK_CONTROL_CLAIMABLE_PENDING_CORRECTED_REFERENCE_EXECUTION","terminal":false},
-    {"goal_id":"STEGBRAIN-COSV-LIVE-GRADIENT-CONSUMER-007","state":"SOURCE_COMPLETE_RELEASED_PENDING_FIRST_CORRECTED_OSCILLATOR_BOUND_DELTA","terminal":false},
-    {"goal_id":"STEGBRAIN-COSV-EXPECTATION-RESIDUAL-004","state":"HB32_EXPECTATION_INVALIDATED_PENDING_PROVABLY_PRE_OCCURRENCE_EXPECTATION_AND_ACTUAL","terminal":false},
-    {"goal_id":"STEGBRAIN-COSV-GRADIENT-MATRIX-003","state":"WAITING_FOR_SUFFICIENT_ORDERED_CORRECTED_LIVE_OBSERVATIONS","terminal":false}
+  "active_runtime_frontiers": [
+    {
+      "goal_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+      "lifecycle": "ACTIVE",
+      "state": "HANDOFF_READY",
+      "source_state": "COMPLETE_RELEASED",
+      "next_boundary": "fresh parent fence >22 -> real private model -> TVC ROUTE_ADMITTED -> exact LLM-adapter -> measured usage -> same-execution Master Records PASS -> persistent conversational runtime READY"
+    },
+    {
+      "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "lifecycle": "BLOCKED",
+      "state": "BLOCKED_SOVEREIGN_NODE_REQUIRED_NON_HEARTBEAT",
+      "heartbeat_dependency": false,
+      "parent_inference_dependency": false
+    },
+    {
+      "goal_id": "COSV-LIVE-PACKET-AUTOMATION-006",
+      "lifecycle": "ACTIVE",
+      "state": "HANDOFF_READY",
+      "heartbeat_protocol_dependency": "SATISFIED",
+      "next_boundary": "first post-anchor packet execution; emit changed DELTA only when canonical state differs"
+    },
+    {
+      "goal_id": "STEGBRAIN-COSV-LIVE-GRADIENT-CONSUMER-007",
+      "lifecycle": "WAITING",
+      "source_state": "COMPLETE_RELEASED",
+      "next_boundary": "consume first post-anchor changed DELTA with non-empty gradient_inputs"
+    },
+    {
+      "goal_id": "STEGBRAIN-COSV-EXPECTATION-RESIDUAL-004",
+      "lifecycle": "WAITING",
+      "state": "HISTORICAL_HB32_EXPECTATION_INVALIDATED",
+      "next_boundary": "provably pre-occurrence expectation plus same-target actual"
+    },
+    {
+      "goal_id": "STEGBRAIN-COSV-GRADIENT-MATRIX-003",
+      "lifecycle": "WAITING",
+      "next_boundary": "sufficient strictly ordered live observations"
+    }
   ],
-  "next_executable_action": "Shortest heartbeat path: on the admitted resident StegVerse host execute the already-installed carrier-only command `python scripts/install_sovereign_heartbeat_carrier.py`; it does not require WorkerCoordinator, LIVE-009, a prior heartbeat proof, network fetch, or third-party host. After carrier activation evidence exists, LIVE-009 verifies it. Separately, the canonical WorkerCoordinator can apply fragments and independently acquire LIVE-009, Ecosystem Chat orphan recovery, resident-start task-control representation, and recurring COSV packet production without heartbeat-carried trigger authority. Consume actual worker/runtime results, then continue parent sovereign inference and corrected COSV/StegBrain outcomes. Do not mint claims/fences manually and do not use the invalidated HB32 expectation.",
-  "credential_authority": "TV/TVC",
-  "non_tv_tvc_secret_or_token_allowed": false,
-  "github_token_runtime_authority": "NONE",
-  "third_party_runtime_role": "FALLBACK_ONLY",
-  "stegverse_primary": true
+  "optional_surfaces": [
+    {
+      "goal_id": "HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
+      "lifecycle": "MONITORING",
+      "state": "HANDOFF_READY_OPTIONAL_RESIDENT_SAMPLER",
+      "heartbeat_activation_gate": false,
+      "activation_receipt_observed": false
+    }
+  ],
+  "user_action_required": {
+    "immediate": false,
+    "iphone_only": false,
+    "webauthn_owner_authorization": false,
+    "credential_entry": false,
+    "provider_activation": false,
+    "external_service_configuration": false,
+    "second_machine_required": false,
+    "note": "G18 separately requires actual sovereign-node/runtime evidence if resumed; this is not a requirement that the user operate a second machine."
+  },
+  "invalidated_evidence": {
+    "hb32_expectation_live_use_allowed": false,
+    "supersession_ref": "StegVerse-Labs/StegBrain:receipts/STEGBRAIN-COSV-EXPECTATION-HB32-001-supersession.json"
+  },
+  "canonical_session_handoff": "docs/COSV_SESSION_CONSOLIDATION_MIRROR_HANDOFF.md",
+  "continuation_requires_chat": false
 }
