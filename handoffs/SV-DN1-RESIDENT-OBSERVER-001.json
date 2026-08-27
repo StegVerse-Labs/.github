@@ -69,7 +69,11 @@
     "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
     "manual_execution_allowed": false,
     "manual_allowed_role": "observation and evidence review only",
-    "priority": "release"
+    "priority": "release",
+    "parent_task_id": null,
+    "derivation_reason": "The canonical demo-suite task merged a machine-readable resident observation requirement after source validation and public parsed-web preflight. This .github handoff binds that existing product-level owner decision to the sovereign WorkerCoordinator execution schema without widening authority.",
+    "derivation_depth": 0,
+    "source_handoff_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md"
   },
   "authority": {
     "authority_source": "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json + canonical sovereign WorkerCoordinator",
