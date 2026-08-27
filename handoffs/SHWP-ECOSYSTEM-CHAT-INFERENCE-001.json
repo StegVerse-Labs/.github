@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
   "created_at": "2026-08-09T19:59:00Z",
-  "updated_at": "2026-08-23T16:11:00-05:00",
+  "updated_at": "2026-08-27T16:50:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
@@ -61,7 +61,10 @@
       "workers/ecosystem_chat_sovereign_inference_worker.py",
       "workers/ecosystem_chat_sovereign_route_worker.py",
       "workers/master_records_sovereign_reconstruction_bridge.py",
-      "tests/test_independent_ecosystem_chat_parent_executor.py"
+      "tests/test_independent_ecosystem_chat_parent_executor.py",
+      "control/resident-execution-request.json",
+      "scripts/consume_resident_execution_request.py",
+      "tests/test_resident_execution_request.py"
     ],
     "dependencies": [],
     "parent_task_id": null,
@@ -159,6 +162,24 @@
       "heartbeat_grants_execution_authority": false,
       "github_token_runtime_authority": "NONE",
       "credential_authority": "TV/TVC"
+    },
+    "resident_execution_request": {
+      "state": "SOURCE_IMPLEMENTED_VALIDATION_PENDING",
+      "request_ref": "control/resident-execution-request.json",
+      "consumer_ref": "scripts/consume_resident_execution_request.py",
+      "request_id": "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-001",
+      "trigger_surface": "existing local source-refresh service only when installed/active",
+      "exactly_once_per_request_hash": true,
+      "request_grants_authority": false,
+      "dedicated_parent_executor_retains_claim_and_fence_authority": true,
+      "fresh_fence_minimum_exclusive": 22,
+      "heartbeat_grants_execution_authority": false,
+      "network_source_fetch_allowed": false,
+      "second_machine_required": false,
+      "github_token_runtime_authority": "NONE",
+      "credential_authority": "TV/TVC",
+      "runtime_execution_observed": false,
+      "authority_effect": "NONE_REQUEST_ONLY"
     }
   },
   "continuity": {
@@ -170,7 +191,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "On an admitted StegVerse task-control execution surface, run scripts/run_independent_ecosystem_chat_parent.py. It must atomically acquire a fresh parent fence >22, invoke the installed StegVerse-local model -> TVC -> exact LLM-adapter chain with a credential-clean environment, perform same-execution Master Records reconstruction, verify persistent conversational runtime readiness, and release the bounded parent claim truthfully. Hosted CI validates source only and may not satisfy this transition.",
+    "next_authorized_action": "On the existing sovereign resident surface, consume the already-local current source. The portable direct command remains `python scripts/refresh_and_execute_resident_task.py --ecosystem-chat-parent`. When the local source-refresh service is already installed and active, `control/resident-execution-request.json` may cause one exactly-once attempt through `scripts/consume_resident_execution_request.py`; the request grants no authority and the dedicated parent executor must still atomically acquire a fresh fence >22, execute the StegVerse-local model -> TVC -> exact LLM-adapter chain, perform same-execution Master Records reconstruction, verify persistent conversational runtime readiness, and release the bounded parent claim truthfully. Hosted CI cannot satisfy this transition.",
     "terminal_when": [
       "real_model_process_observed=true",
       "private_endpoint_only=true",
@@ -191,7 +212,7 @@
     "state": "SOURCE_EXECUTOR_INSTALLED_LIVE_EXECUTION_PENDING",
     "class": "EXECUTION_PENDING",
     "owner": "independent admitted StegVerse task-control executor -> TVC -> LLM-adapter -> Master Records",
-    "problem_statement": "The recovery and source gaps are closed. Live same-execution activation evidence has not yet been observed from a sovereign StegVerse execution surface.",
+    "problem_statement": "The recovery and direct/portable executor source gaps are closed. A bounded exactly-once resident execution-request bridge is now being validated so an already-installed local source-refresh service can attempt the dedicated parent without manual console interaction. No live same-execution activation evidence has yet been observed.",
     "solution_required": true,
     "dependency": null,
     "observer": "independent StegVerse task-control",
@@ -201,7 +222,7 @@
       "Use a stronger qualifying locally developed or locally installed model while preserving private endpoint/proof semantics",
       "Move execution to another StegVerse-owned/federated node if the current sovereign surface lacks the materialized workload roots"
     ],
-    "next_solution_action": "EXECUTE_INSTALLED_INDEPENDENT_PARENT_FRESH_FENCE_GT22",
+    "next_solution_action": "VALIDATE_AND_MERGE_RESIDENT_EXECUTION_REQUEST_THEN_OBSERVE_SOVEREIGN_RESIDENT_CONSUMPTION",
     "machine_observable_release_condition": "receipts/ecosystem-chat-sovereign-inference/independent_parent_activation.latest.json state PASS with fresh parent fence >22, same_execution=true, persistent_conversational_runtime_ready=true, provider_usage_reconstruction_pass=true, transition_reconstruction_pass=true, credential_authority=TV/TVC, github_token_required=false and exact proof/route/usage/reconstruction hash bindings",
     "third_party_blocker": false,
     "human_action_required": false
