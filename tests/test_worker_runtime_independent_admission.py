@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import inspect
+import json
+import tempfile
 import unittest
 
 from heartbeat_runtime.worker_runtime import WorkerCoordinator
@@ -111,6 +113,77 @@ class WorkerRuntimeIndependentAdmissionTests(unittest.TestCase):
         self.assertIn("if task_id_filter not in declared_task_ids", source)
         self.assertIn("if task_id_filter is not None and task_id != task_id_filter", source)
 
+
+
+    def test_cosv_task_record_passes_operational_preclaim_without_semantic_hash(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            vector_path = root / "control" / "task-vectors" / "TASK-COSV.json"
+            vector_path.parent.mkdir(parents=True)
+            vector_path.write_text(json.dumps({
+                "identity": "StegVerse-Labs/.github:task:TASK-COSV",
+                "profile": "task.v1",
+                "level": "task",
+                "vector": "50000000100000",
+                "evidence_refs": ["test"],
+                "observed_at": "2026-08-27T07:03:00-05:00",
+                "exact_metrics": {},
+            }), encoding="utf-8")
+            runtime = LegacyWorkerCoordinator.__new__(LegacyWorkerCoordinator)
+            runtime.root = root
+            task = {
+                "task_id": "TASK-COSV",
+                "source_state_vector_ref": "control/task-vectors/TASK-COSV.json",
+                "machine_readable_state": {
+                    "cosv": {
+                        "profile": "task.v1",
+                        "notation": "L R U I V G O C M T B E A P",
+                        "width": 14,
+                        "vector": "50000000100000",
+                        "vector_state": "EMITTED",
+                        "authority_effect": "NONE",
+                    }
+                },
+            }
+            self.assertEqual(
+                runtime._semantic_state_preclaim(task),
+                (True, "CURRENT_OPERATIONAL_STATE_VECTOR_CONFIRMED"),
+            )
+
+    def test_cosv_task_record_mismatch_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            vector_path = root / "control" / "task-vectors" / "TASK-COSV.json"
+            vector_path.parent.mkdir(parents=True)
+            vector_path.write_text(json.dumps({
+                "identity": "StegVerse-Labs/.github:task:TASK-COSV",
+                "profile": "task.v1",
+                "level": "task",
+                "vector": "50000000100000",
+                "evidence_refs": ["test"],
+                "observed_at": "2026-08-27T07:03:00-05:00",
+                "exact_metrics": {},
+            }), encoding="utf-8")
+            runtime = LegacyWorkerCoordinator.__new__(LegacyWorkerCoordinator)
+            runtime.root = root
+            task = {
+                "task_id": "TASK-COSV",
+                "source_state_vector_ref": "control/task-vectors/TASK-COSV.json",
+                "machine_readable_state": {
+                    "cosv": {
+                        "profile": "task.v1",
+                        "notation": "L R U I V G O C M T B E A P",
+                        "width": 14,
+                        "vector": "60000000101000",
+                        "vector_state": "EMITTED",
+                        "authority_effect": "NONE",
+                    }
+                },
+            }
+            self.assertEqual(
+                runtime._semantic_state_preclaim(task),
+                (False, "TASK_OPERATIONAL_STATE_VECTOR_STALE_OR_INVALID"),
+            )
 
 if __name__ == "__main__":
     unittest.main()
