@@ -26,11 +26,16 @@
       "CLOUDFLARE_ACCOUNT_ID"
     ],
     "values_may_be_persisted": false,
-    "missing_values_state": "BLOCKED",
-    "missing_values_release_condition": "Both credential references are populated in the authorized heartbeat execution environment."
+    "missing_values_state": "FALLBACK_PATH_UNAVAILABLE_SELECT_ALTERNATE",
+    "missing_values_release_condition": "No release wait is created. The worker selects an admitted StegVerse-owned/federated alternative; Cloudflare may be used only if TV/TVC-authorized references are already present.",
+    "required_only_for": "CLOUDFLARE_FALLBACK_PATH"
   },
   "provider_authority_effect": false,
   "heartbeat_grants_execution_authority": false,
   "external_cost_ceiling_usd": 0,
-  "revocation_condition": "Site#24 is closed/superseded, TVC reference authority is revoked, the credential profile is superseded, or this authorization is explicitly revoked."
+  "revocation_condition": "Site#24 is closed/superseded, TVC reference authority is revoked, the credential profile is superseded, or this authorization is explicitly revoked.",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "primary_runtime_authority": "StegVerse",
+  "third_party_role": "FALLBACK_ONLY"
 }

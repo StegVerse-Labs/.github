@@ -5,13 +5,14 @@
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "STEGGATE-STABLE-RENDEZVOUS-HARDENING",
-    "objective": "Activate and continuously advance the stable non-authorizing StegGate rendezvous through the single StegVerse heartbeat until live acceptance passes; any unavailable third-party deployment path triggers an alternate solution/workaround and may never become a StegVerse blocker.",
+    "objective": "Activate and continuously advance the stable non-authorizing StegGate rendezvous through independently admitted StegVerse task control. Heartbeat is reference-only and noncausal. StegVerse is primary; third-party transport is FALLBACK_ONLY and unavailable provider state may never block progress.",
     "success_predicates": [
-      "The worker is atomically claimed and heartbeat-timed in the canonical worker registry.",
-      "Any unavailable third-party credential, provider capability, quota, outage, or deployment path returns ACTIVE/THIRD_PARTY_WORKAROUND_REQUIRED rather than BLOCKED.",
-      "At least one admitted deployment path is selected and advanced without waiting for a third-party condition to change.",
+      "The worker is atomically claimed/fenced by separate admitted StegVerse task control.",
+      "Heartbeat observation is reference-only and grants no execution authority.",
+      "Any unavailable third-party credential, capability, quota, outage, or deployment path returns ACTIVE/THIRD_PARTY_WORKAROUND_REQUIRED rather than BLOCKED.",
+      "At least one admitted StegVerse-owned/federated path is selected and advanced before optional third-party fallback.",
       "Only the canonical Site rendezvous source blob is deployed.",
-      "The stable route passes readiness, canonical health, and exact ALLOW/DENY/REVIEW/FAIL_CLOSED self-test.",
+      "The selected stable route passes readiness, canonical health, and exact ALLOW/DENY/REVIEW/FAIL_CLOSED self-test.",
       "No credential value is persisted in repository state or receipts."
     ],
     "failure_predicates": [
@@ -52,7 +53,7 @@
     ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "Unresolved rendezvous work is heartbeat-worker managed. Cloudflare is an optional deployment path only; external provider state is never an unresolved task dependency.",
+    "derivation_reason": "Unresolved rendezvous work is machine-owned under separate admitted task control. Heartbeat is a noncausal reference only. Cloudflare is an optional FALLBACK_ONLY path; external provider state is never an unresolved task dependency.",
     "canonical_owner_ref": "StegVerse-Labs/Site#24",
     "canonical_lineage_key": "site:steggate-stable-rendezvous-hardening",
     "derivation_depth": 0,
@@ -61,12 +62,25 @@
   "authority": {
     "authority_source": "authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json + Site#24 + pinned TVC credential-reference authority",
     "heartbeat_grants_execution_authority": false,
-    "policy_version": "shwp-single-hb-v0.2"
+    "policy_version": "shwp-single-hb-v0.2",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "primary_runtime_authority": "StegVerse",
+    "third_party_role": "FALLBACK_ONLY"
   },
   "execution": {
-    "required_capabilities": ["deployment_update", "runtime_observation"],
-    "allowed_paths": ["receipts/steggate-rendezvous-worker/**"],
-    "allowed_services": ["api.cloudflare.com", "stegverse.org", "raw.githubusercontent.com"],
+    "required_capabilities": [
+      "deployment_update",
+      "runtime_observation"
+    ],
+    "allowed_paths": [
+      "receipts/steggate-rendezvous-worker/**"
+    ],
+    "allowed_services": [
+      "api.cloudflare.com",
+      "stegverse.org",
+      "raw.githubusercontent.com"
+    ],
     "max_actions": 64,
     "max_retries": 32,
     "external_cost_ceiling_usd": 0,
@@ -74,11 +88,14 @@
     "rate_class": "heartbeat_bounded_deployment"
   },
   "activation": {
-    "carrier": "heartbeat",
+    "carrier": "heartbeat_reference_only",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
-    "recheck_trigger": "each admitted heartbeat while task remains unfinished; third-party condition repeats must advance workaround selection rather than repeat blocker observation",
-    "checkout_policy": "fenced_atomic_checkout"
+    "recheck_trigger": "each admitted StegVerse task-control execution opportunity while task remains unfinished; third-party repeats must advance workaround selection rather than repeat blocker observation",
+    "checkout_policy": "fenced_atomic_checkout",
+    "activation_mode": "INDEPENDENT_TASK_CONTROL_WITH_HEARTBEAT_REFERENCE",
+    "heartbeat_reference_is_causal": false,
+    "heartbeat_required_for_admission": false
   },
   "continuity": {
     "checkpoint_ref": "receipts/steggate-rendezvous-worker/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
@@ -88,7 +105,7 @@
     "reconstruction_ref": "StegVerse-Labs/Site/data/steggate-rendezvous-activation.json"
   },
   "completion": {
-    "next_authorized_action": "Attempt the admitted Cloudflare path only when immediately usable; otherwise select and advance an admitted StegVerse-owned/federated or other non-provider-dependent rendezvous path and prove stable live acceptance.",
+    "next_authorized_action": "On the next admitted StegVerse task-control opportunity, select a StegVerse-owned/federated rendezvous path first. Use Cloudflare only when immediately usable as explicit FALLBACK_ONLY under TV/TVC; otherwise advance an admitted non-provider-dependent path and prove stable live acceptance.",
     "terminal_when": [
       "Worker returns COMPLETED with transition LIVE_ACCEPTANCE_PASS",
       "Stable readiness and health are externally observable",
@@ -97,5 +114,6 @@
       "No third-party service is required for continued StegVerse progress"
     ]
   },
-  "block": null
+  "block": null,
+  "updated_at": "2026-08-27T07:00:00-05:00"
 }
