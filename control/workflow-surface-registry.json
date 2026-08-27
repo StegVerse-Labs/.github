@@ -6,7 +6,7 @@
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_allowed": false,
   "preferred_repository_workflow_count_max": 2,
-  "current_state": "REVIEW_REQUIRED_ACTIVE_CLEANUP",
+  "current_state": "ACTIVE_CLEANUP_WITH_EXPLICIT_OWNERSHIP",
   "surfaces": [
     {
       "path": ".github/workflows/org-control-plane-validate.yml",
@@ -21,22 +21,10 @@
       "reason": "canonical heartbeat/runtime/worker validation surface; absorbs organization-heartbeat source triggers/carrier parity, manual watchdog diagnostics, retained terminal host/native canary evidence, and external-timing fixed-cadence zero-authority validation while routine state persistence remains excluded from automatic hosted fanout"
     },
     {
-      "path": ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github#60",
-      "reason": "existing machine-owned validation surface; do not remove before owner reconciliation"
-    },
-    {
       "path": ".github/workflows/stegfin-early-adopter-contribution-validator-source.yml",
       "classification": "BLOCKED_ACTIVE_OWNERSHIP",
       "owner": "concurrent StegFin early-adopter workstream",
       "reason": "separate active owner prevents competing cleanup"
-    },
-    {
-      "path": ".github/workflows/steggate-heartbeat-integration.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegGate heartbeat integration lane",
-      "reason": "candidate for stable heartbeat/control validation consolidation, but active rendezvous execution must remain untouched"
     }
   ],
   "removed_in_hygiene_batch_1": [
@@ -51,19 +39,21 @@
     ".github/workflows/validate-ae-handoff-worker-conformance.yml"
   ],
   "removed_by_healer_hygiene": [
-    ".github/workflows/org-handoff-render.yml",
-    ".github/workflows/archive-readiness-validate.yml",
-    ".github/workflows/org-heartbeat.yml",
-    ".github/workflows/org-heartbeat-watchdog.yml",
-    ".github/workflows/native-process-worker-canary.yml",
-    ".github/workflows/external-timing-match-validation.yml",
+    ".github/workflows/activate-ecosystem-chat-sovereign-inference-worker.yml",
     ".github/workflows/activate-host-self-attest-worker.yml",
-    ".github/workflows/test-lanes-autolaunch-validation.yml",
-    ".github/workflows/all-org-heartbeat-federation.yml",
-    ".github/workflows/mcp-activation-binding-test.yml",
     ".github/workflows/activate-sovereign-runtime-worker.yml",
+    ".github/workflows/all-org-heartbeat-federation.yml",
+    ".github/workflows/archive-readiness-validate.yml",
+    ".github/workflows/external-timing-match-validation.yml",
+    ".github/workflows/mcp-activation-binding-test.yml",
+    ".github/workflows/native-process-worker-canary.yml",
+    ".github/workflows/org-handoff-render.yml",
+    ".github/workflows/org-heartbeat-watchdog.yml",
+    ".github/workflows/org-heartbeat.yml",
+    ".github/workflows/sovereign-ephemeral-console.yml",
     ".github/workflows/sovereign-runtime-self-bootstrap.yml",
-    ".github/workflows/sovereign-ephemeral-console.yml"
+    ".github/workflows/steggate-heartbeat-integration.yml",
+    ".github/workflows/test-lanes-autolaunch-validation.yml"
   ],
   "concurrent_new_surfaces_observed_during_hygiene": [
     ".github/workflows/mcp-activation-binding-test.yml",
