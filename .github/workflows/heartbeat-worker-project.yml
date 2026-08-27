@@ -13,6 +13,23 @@ on:
       - 'scripts/issue_heartbeats.py'
       - 'scripts/run_heartbeat_runtime.py'
       - 'scripts/validate_heartbeat_returns.py'
+      - 'workers/sovereign_runtime_activation_worker.py'
+      - 'workers/sovereign_runtime_activation_entrypoint.py'
+      - 'scripts/advance_heartbeat_transition.py'
+      - 'scripts/bootstrap_sovereign_runtime.py'
+      - 'scripts/refresh_heartbeat_transition_receipt.py'
+      - 'scripts/verify_sovereign_runtime_activation.py'
+      - 'scripts/run_sovereign_ephemeral_console.py'
+      - 'scripts/restart_sovereign_ephemeral_node.py'
+      - 'management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json'
+      - 'management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json'
+      - 'tests/test_bootstrap_sovereign_runtime.py'
+      - 'tests/test_sovereign_runtime_activation*.py'
+      - 'tests/test_sovereign_ephemeral_console.py'
+      - 'tests/test_ephemeral_separated_runtime_supervision.py'
+      - 'tests/test_g18_*.py'
+      - 'tests/test_hb29_state_transition_carrier_contract.py'
+      - 'tests/test_sovereign_runtime_handoff_v12_contract.py'
       - '.github/workflows/heartbeat-worker-project.yml'
   pull_request:
     paths:
@@ -96,6 +113,13 @@ jobs:
         run: |
           python -m unittest -v tests.test_organization_federation_binding
           python -m unittest -v tests.test_sdk_mcp_activation_binding tests.test_sdk_mcp_canonical_validation_worker
+
+      - name: Validate consolidated sovereign runtime validation surfaces
+        run: |
+          python -m unittest -v tests.test_bootstrap_sovereign_runtime
+          python -m unittest -v tests.test_sovereign_ephemeral_console tests.test_ephemeral_separated_runtime_supervision
+          python -m unittest -v tests.test_g18_self_bootstrap_worker tests.test_g18_task_capable_release_guard
+          python -m unittest -v tests.test_hb29_state_transition_carrier_contract tests.test_sovereign_runtime_handoff_v12_contract
 
       - name: Validate consolidated Test Lanes autolaunch binding
         run: python -m unittest -v tests.test_test_lanes_autolaunch_binding
