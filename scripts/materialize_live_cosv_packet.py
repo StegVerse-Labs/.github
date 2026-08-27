@@ -9,12 +9,22 @@ import sys
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
+from time import time_ns
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "scripts"
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
+from heartbeat_runtime.independent_oscillator import (  # noqa: E402
+    OSCILLATOR_PERIOD_NS,
+    PROTOCOL_ANCHOR_EPOCH,
+    PROTOCOL_ANCHOR_UNIX_NS,
+    current_reference,
+    unix_ns_to_iso8601,
+)
 from cosv import encode_task  # noqa: E402
 from cosv_state_packet import (  # noqa: E402
     SCHEMA,
@@ -53,6 +63,54 @@ def atomic_write(path: Path, value: dict) -> None:
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def canonical_protocol_reference(root: Path, *, now_ns: int | None = None) -> dict:
+    """Derive the current heartbeat reference from the canonical protocol anchor.
+
+    The heartbeat reference exists independently of a persisted sampler or
+    WorkerCoordinator observation. Persisted carrier/worker files remain evidence
+    surfaces only and are never advanced by COSV packet materialization.
+    """
+    anchor = load_json(root / "control" / "heartbeat-protocol-anchor.json")
+    status = load_json(root / "control" / "heartbeat-live-status.json")
+    if anchor.get("schema") != "stegverse.heartbeat-protocol-anchor/v1":
+        raise RuntimeError("canonical heartbeat protocol anchor is missing or invalid")
+    if anchor.get("anchor_epoch") != PROTOCOL_ANCHOR_EPOCH:
+        raise RuntimeError("heartbeat protocol anchor epoch does not match canonical oscillator")
+    if anchor.get("anchor_unix_ns") != PROTOCOL_ANCHOR_UNIX_NS:
+        raise RuntimeError("heartbeat protocol anchor time does not match canonical oscillator")
+    if anchor.get("period_ns") != OSCILLATOR_PERIOD_NS:
+        raise RuntimeError("heartbeat protocol period is not canonical 10 ms")
+    if anchor.get("progression_dependency") != "OSCILLATOR_ONLY":
+        raise RuntimeError("heartbeat protocol progression dependency is not oscillator-only")
+    if anchor.get("continuous_process_required") is not False:
+        raise RuntimeError("heartbeat protocol incorrectly requires a continuous process")
+    if anchor.get("resident_sampler_required_for_progression") is not False:
+        raise RuntimeError("heartbeat protocol incorrectly requires a resident sampler")
+    if anchor.get("authority_effect") != "NONE_REFERENCE_ONLY":
+        raise RuntimeError("heartbeat protocol anchor authority boundary is invalid")
+    if status.get("schema") != "stegverse.heartbeat-live-status/v2":
+        raise RuntimeError("heartbeat live status schema is invalid")
+    if status.get("state") != "ACTIVE_PROTOCOL_VERIFIED" or status.get("working") is not True:
+        raise RuntimeError("heartbeat protocol is not verified active")
+    if status.get("protocol_anchor_ref") != "control/heartbeat-protocol-anchor.json":
+        raise RuntimeError("heartbeat live status does not bind canonical protocol anchor")
+    if status.get("worker_runtime_required_for_progression") is not False:
+        raise RuntimeError("heartbeat live status incorrectly gates progression on worker runtime")
+    sample_ns = time_ns() if now_ns is None else int(now_ns)
+    reference = current_reference(now_ns=sample_ns)
+    return {
+        **reference,
+        "carrier_ref": f"heartbeat_epoch:{reference['epoch']}",
+        "observed_at": unix_ns_to_iso8601(sample_ns),
+        "reference_source": "CANONICAL_PROTOCOL_DERIVATION",
+        "protocol_anchor_ref": "control/heartbeat-protocol-anchor.json",
+        "heartbeat_live_status_ref": "control/heartbeat-live-status.json",
+        "worker_runtime_required_for_reference": False,
+        "resident_sampler_required_for_reference": False,
+        "authority_effect": "NONE_REFERENCE_ONLY",
+    }
 
 
 def task_vector(*, lifecycle: str, archive_ready: bool, unassigned_work: int, thread_required: bool,
@@ -137,27 +195,31 @@ def registry_task_record(task_id: str, task: dict | None, observed_at: str) -> d
     }
 
 
-def current_records(root: Path) -> list[dict]:
+def current_records(root: Path, reference: dict, observed_at: str) -> list[dict]:
+    """Observe current operational state under a protocol-derived reference.
+
+    Historical carrier/worker snapshots remain evidence and may legitimately lag the
+    protocol reference. Their lag is state information, not a heartbeat existence gate.
+    """
     carrier = load_json(root / "control" / "heartbeat-carrier-runtime-state.json")
     worker = load_json(root / "control" / "worker-runtime-state.json")
     transition_receipt = load_json(root / "receipts" / "heartbeat-transition-continuity" / "latest.json")
     registry = load_json(root / "control" / "worker-registry.json")
 
-    epoch = int(carrier["epoch"])
-    generation = int(carrier["generation"])
+    if carrier.get("schema") != "stegverse.heartbeat-carrier-runtime-state/v1":
+        raise RuntimeError("historical persisted carrier observation schema is invalid")
+    if worker.get("schema") != "stegverse.worker-runtime-state/v1":
+        raise RuntimeError("worker runtime observation schema is invalid")
+    historical_epoch = int(carrier["epoch"])
+    historical_generation = int(carrier["generation"])
     worker_epoch = int(worker["last_observed_carrier_epoch"])
     worker_generation = int(worker["last_observed_carrier_generation"])
-    if epoch < 30 or worker_epoch < epoch or worker_generation < generation:
-        raise RuntimeError("carrier/WorkerCoordinator reference is not jointly admitted")
+    if historical_epoch < 30:
+        raise RuntimeError("historical persisted carrier evidence predates separated runtime")
     if transition_receipt.get("release_state") != "RELEASE_COMPLETE" or transition_receipt.get("all_release_predicates_pass") is not True:
-        raise RuntimeError("heartbeat transition release predicates are not complete")
+        raise RuntimeError("historical heartbeat transition release evidence is incomplete")
 
-    observed_at = str(carrier.get("last_cycle_at") or utc_now())
-    continuity_complete = bool(
-        transition_receipt.get("state") == "CARRIER_TRANSITION_COMPLETE"
-        and transition_receipt.get("all_release_predicates_pass") is True
-    )
-    observation_vector = task_vector(
+    heartbeat_vector = task_vector(
         lifecycle="COMPLETE",
         archive_ready=True,
         unassigned_work=0,
@@ -167,36 +229,38 @@ def current_records(root: Path) -> list[dict]:
         activated=True,
         propagated=True,
     )
-    g18_vector = task_vector(
-        lifecycle="COMPLETE" if continuity_complete else "BLOCKED",
-        archive_ready=continuity_complete,
-        unassigned_work=0,
-        thread_required=not continuity_complete,
-        blocker_count=0 if continuity_complete else 1,
-        evidence_complete=True,
-        activated=continuity_complete,
-        propagated=True if continuity_complete else False,
-    )
+
+    g18_record = load_json(root / "control" / "task-vectors" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json")
+    if g18_record.get("profile") != "task.v1" or g18_record.get("level") != "task":
+        raise RuntimeError("durable-runtime canonical COSV task record is invalid")
+    g18_vector = g18_record.get("vector")
+    if not isinstance(g18_vector, str) or len(g18_vector) != 14 or not g18_vector.isdigit():
+        raise RuntimeError("durable-runtime canonical COSV vector is invalid")
 
     records = [
         {
             "identity": "task:HEARTBEAT-WORKER-REFERENCE-OBSERVATION",
             "profile": "task.v1",
             "level": "task",
-            "vector": observation_vector,
+            "vector": heartbeat_vector,
             "evidence_refs": [
+                "control/heartbeat-protocol-anchor.json",
+                "control/heartbeat-live-status.json",
                 "control/heartbeat-carrier-runtime-state.json",
                 "control/worker-runtime-state.json",
-                "control/worker-control-plane-coordination.json",
-                "receipts/heartbeat-transition-continuity/latest.json",
             ],
             "observed_at": observed_at,
             "exact_metrics": {
-                "carrier_epoch": epoch,
-                "carrier_generation": generation,
+                "protocol_reference_epoch": int(reference["epoch"]),
+                "protocol_reference_generation": int(reference["generation"]),
+                "protocol_heartbeat_id": str(reference["heartbeat_id"]),
+                "historical_persisted_carrier_epoch": historical_epoch,
+                "historical_persisted_carrier_generation": historical_generation,
                 "worker_last_observed_carrier_epoch": worker_epoch,
                 "worker_last_observed_carrier_generation": worker_generation,
                 "runtime_tick": int(worker.get("runtime_tick", 0)),
+                "worker_runtime_required_for_reference": False,
+                "resident_sampler_required_for_reference": False,
             },
             "admissibility_ref": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
             "coherency_group_ref": "coherency:heartbeat-runtime",
@@ -207,22 +271,21 @@ def current_records(root: Path) -> list[dict]:
             "level": "task",
             "vector": g18_vector,
             "evidence_refs": [
+                "control/task-vectors/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
                 "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
-                "control/heartbeat-carrier-runtime-state.json",
                 "control/worker-runtime-state.json",
-                "control/worker-control-plane-coordination.json",
                 "receipts/heartbeat-transition-continuity/latest.json",
             ],
             "observed_at": observed_at,
             "exact_metrics": {
-                "carrier_epoch": epoch,
-                "carrier_generation": generation,
-                "worker_last_observed_carrier_epoch": worker_epoch,
-                "release_predicates_pass": sum(1 for value in (transition_receipt.get("predicates") or {}).values() if value is True),
-                "release_predicates_required": len(transition_receipt.get("predicates") or {}),
-                "blocker_count": 0 if continuity_complete else 1,
+                "protocol_reference_epoch": int(reference["epoch"]),
+                "historical_worker_runtime_tick": int(worker.get("runtime_tick", 0)),
+                "historical_worker_last_observed_carrier_epoch": worker_epoch,
+                "canonical_task_vector": g18_vector,
+                "heartbeat_progression_dependency": False,
+                "blocker_count": int((g18_record.get("exact_metrics") or {}).get("blocker_count", 1)),
             },
-            "admissibility_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
+            "admissibility_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
             "coherency_group_ref": "coherency:heartbeat-runtime",
         },
         registry_task_record(RECOVERY_TASK, find_task(registry, RECOVERY_TASK), observed_at),
@@ -303,14 +366,14 @@ def initialize_cache_from_full(packet: dict) -> dict:
     }
 
 
-def materialize(root: Path = ROOT) -> dict:
+def materialize(root: Path = ROOT, *, now_ns: int | None = None) -> dict:
     packet_dir = root / "receipts" / "cosv" / "live"
-    carrier = load_json(root / "control" / "heartbeat-carrier-runtime-state.json")
-    epoch = int(carrier["epoch"])
-    generation = int(carrier["generation"])
-    carrier_ref = f"heartbeat_epoch:{epoch}"
-    observed_at = str(carrier.get("last_cycle_at") or utc_now())
-    current = current_records(root)
+    reference = canonical_protocol_reference(root, now_ns=now_ns)
+    epoch = int(reference["epoch"])
+    generation = int(reference["generation"])
+    carrier_ref = str(reference["carrier_ref"])
+    observed_at = str(reference["observed_at"])
+    current = current_records(root, reference, observed_at)
 
     latest = latest_packet(packet_dir)
     cache_path = packet_dir / "latest-state.json"
@@ -328,6 +391,8 @@ def materialize(root: Path = ROOT) -> dict:
                 "schema": "stegverse.cosv-live-packet-materialization-result/v1",
                 "state": "NO_NEW_REFERENCE",
                 "carrier_ref": carrier_ref,
+                "heartbeat_id": reference["heartbeat_id"],
+                "reference_source": reference["reference_source"],
                 "packet_ref": str(previous_path.relative_to(root)),
                 "packet_sha256": previous_packet.get("packet_sha256"),
                 "authority_effect": "NONE",
@@ -371,6 +436,11 @@ def materialize(root: Path = ROOT) -> dict:
         "schema": VALIDATION_SCHEMA,
         "carrier_ref": carrier_ref,
         "carrier_generation": generation,
+        "heartbeat_id": reference["heartbeat_id"],
+        "reference_source": reference["reference_source"],
+        "protocol_anchor_ref": reference["protocol_anchor_ref"],
+        "worker_runtime_required_for_reference": False,
+        "resident_sampler_required_for_reference": False,
         "packet_ref": str(packet_path.relative_to(root)),
         "packet_sha256": packet["packet_sha256"],
         "state_root_sha256": packet["state_root_sha256"],
@@ -392,6 +462,8 @@ def materialize(root: Path = ROOT) -> dict:
         "schema": "stegverse.cosv-live-packet-materialization-result/v1",
         "state": "PACKET_MATERIALIZED",
         "carrier_ref": carrier_ref,
+        "heartbeat_id": reference["heartbeat_id"],
+        "reference_source": reference["reference_source"],
         "mode": mode,
         "packet_ref": str(packet_path.relative_to(root)),
         "validation_ref": str(validation_path.relative_to(root)),
