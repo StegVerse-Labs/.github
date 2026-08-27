@@ -4,7 +4,9 @@
   "tasks": [
     {
       "archive_eligible": false,
-      "archive_reason_codes": ["REAL_SYNCHRONIZED_STEGVERSE_BASE_ENDPOINT_NOT_YET_OBSERVED"],
+      "archive_reason_codes": [
+        "REAL_SYNCHRONIZED_STEGVERSE_BASE_ENDPOINT_NOT_YET_OBSERVED"
+      ],
       "authorized_policy_version": "shwp-sovereign-base-rpc-activation-v0.1",
       "block_ref": "tasks/TASK-2026-0005.json",
       "claim_id": null,
@@ -28,20 +30,39 @@
         "capability_id": "stegverse:capability:stegfin-base-pretrade:v1",
         "capability_version": "1.0.0",
         "phase": "ADMISSIBLE",
-        "standing_evidence_refs": ["tasks/TASK-2026-0005.json"],
+        "standing_evidence_refs": [
+          "tasks/TASK-2026-0005.json"
+        ],
         "admissibility_evidence_refs": [
           "StegVerse-002/micro-node-runtime:docs/SOVEREIGN_BASE_RPC_MIRROR_HANDOFF.md",
           "StegVerse-Labs/TVC:docs/SOVEREIGN_BASE_RPC_ROUTE_MIRROR_HANDOFF.md"
         ],
-        "integration_evidence_refs": ["workers/sovereign_base_rpc_activation_worker.py"],
+        "integration_evidence_refs": [
+          "workers/sovereign_base_rpc_activation_worker.py"
+        ],
         "activation_proof_ref": null,
-        "blockers": ["REAL_SYNCHRONIZED_STEGVERSE_BASE_ENDPOINT_NOT_YET_OBSERVED"],
+        "blockers": [
+          "REAL_SYNCHRONIZED_STEGVERSE_BASE_ENDPOINT_NOT_YET_OBSERVED"
+        ],
         "continuation_owner": "resident sovereign heartbeat -> sovereign-base-rpc-activation-worker -> StegVerse-Labs/TVC -> StegVerse-Labs/stegfin-governance#60",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
         "task_relationship": "integrates_capability",
         "target_phase": "ACTIVATED"
+      },
+      "source_state_vector_ref": "control/task-vectors/SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-27T17:15:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],
@@ -66,7 +87,10 @@
   "github_token_required": false,
   "credential_authority": "TV/TVC",
   "provider_capability_authority": "NONE",
-  "dependencies": ["SHWP-DURABLE-RUNTIME-ACTIVATION", "released_local_micro_node_runtime"],
+  "dependencies": [
+    "SHWP-DURABLE-RUNTIME-ACTIVATION",
+    "released_local_micro_node_runtime"
+  ],
   "preferred_carrier_required": true,
   "priority": "critical"
 }
