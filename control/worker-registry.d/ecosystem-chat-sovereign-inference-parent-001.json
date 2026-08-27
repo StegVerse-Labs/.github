@@ -14,7 +14,8 @@
         "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
         "workers/ecosystem_chat_sovereign_inference_worker.py",
         "workers/ecosystem_chat_sovereign_route_worker.py",
-        "workers/master_records_sovereign_reconstruction_bridge.py"
+        "workers/master_records_sovereign_reconstruction_bridge.py",
+        "control/task-vectors/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
@@ -40,19 +41,6 @@
         "g18_terminalization_required": false,
         "workercoordinator_specific_execution_required": false,
         "recovery_grants_parent_execution_authority": false
-      },
-      "source_state_vector_ref": "control/task-vectors/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
-      "machine_readable_state": {
-        "cosv": {
-          "profile": "task.v1",
-          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
-          "notation": "L R U I V G O C M T B E A P",
-          "width": 14,
-          "vector": "50000000100000",
-          "vector_state": "EMITTED",
-          "vector_observed_at": "2026-08-27T07:03:00-05:00",
-          "authority_effect": "NONE"
-        }
       }
     }
   ],
@@ -80,5 +68,7 @@
   "third_party_runtime_role": "FALLBACK_ONLY",
   "stegverse_primary": true,
   "parent_fresh_fence_required": true,
-  "minimum_parent_fencing_token_exclusive": 22
+  "minimum_parent_fencing_token_exclusive": 22,
+  "vector_projection_owner": "control/worker-registry.json",
+  "vector_duplicate_source_allowed": false
 }
