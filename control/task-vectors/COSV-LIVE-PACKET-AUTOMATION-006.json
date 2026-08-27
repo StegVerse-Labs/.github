@@ -1,0 +1,31 @@
+{
+  "identity": "StegVerse-Labs/.github:task:COSV-LIVE-PACKET-AUTOMATION-006",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000100000",
+  "evidence_refs": [
+    "control/worker-registry.d/cosv-live-packet-automation-006.json",
+    "handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json",
+    "docs/COSV_HEARTBEAT_STATE_PACKET_MIRROR_HANDOFF.md",
+    "receipts/cosv/live/HB31.json"
+  ],
+  "source_hash": "7546f2390c58601febeeb797fdbf520e940ac946",
+  "observed_at": "2026-08-27T07:03:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  }
+}
