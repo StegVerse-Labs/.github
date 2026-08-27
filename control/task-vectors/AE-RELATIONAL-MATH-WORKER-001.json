@@ -1,0 +1,44 @@
+{
+  "identity": "StegVerse-Labs/.github:task:AE-RELATIONAL-MATH-WORKER-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/ae-relational-math-worker-001.json",
+    "handoffs/AE-RELATIONAL-MATH-WORKER-001.json",
+    "docs/AE_RELATIONAL_MATH_WORKER_MIRROR_HANDOFF.md",
+    "Admissible-Existence/AE:data/autonomous_goal_seeds/AE-AUTO-0011.json",
+    "Admissible-Existence/AE:docs/STATE_MANIFOLD_RELATIONAL_GOVERNANCE_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-08-27T17:30:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "AE handoff claim_state=MACHINE_OWNED_ON_ADMISSION; .github handoff state=HANDOFF_READY_MACHINE_OWNED; manual execution false",
+    "archive_ready": "worker fragment archive_eligible=false",
+    "unassigned_work": "registered AE worker is AVAILABLE and canonical AE autonomous math goal loop owns execution",
+    "chat_owned_counts": "CHAT-OWNED-AE-RELATIONAL-MATH-DERIVATION is explicitly SUPERSEDED_BY_MACHINE_WORKER; manual execution false",
+    "canonical_owner_installed": "AE seed, validator, worker registration, handoff, integration map and downstream bindings are installed",
+    "thread_required": "AE archive condition states remaining derivation/reconciliation are machine/repository owned and do not require chat history",
+    "blocker_count": "admissible_existence.blockers contains exactly AE_AUTO_0011_TERMINAL_VALIDATED_STATE_NOT_YET_OBSERVED",
+    "evidence_complete": "AE handoff reports live worker receipt pending and full derivation ACTIVE_MACHINE_WORK",
+    "activated": "activation_proof_ref=null and target phase remains ACTIVATED",
+    "propagated": "downstream bindings are installed provisionally but independent validation must be rebound to terminal AE source before propagation is complete"
+  },
+  "authority_effect": "NONE"
+}
