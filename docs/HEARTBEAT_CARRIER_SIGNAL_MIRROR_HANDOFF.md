@@ -226,10 +226,16 @@ worker-trigger causality: NONE
 third-party runtime requirement: NONE
 heartbeat activation goal: TERMINAL
 downstream HB32 protocol propagation: COMPLETE / issue #263 CLOSED
-governed manifold observation: IMPLEMENTED / VALIDATION PENDING ON BOUNDED PR
+governed manifold observation: IMPLEMENTED / VALIDATED / MERGED
 human review timing as governance authority: FALSE
 wall-clock as governance authority: FALSE
 protected boundary authority: EXTERNAL_TO_HB
+governed manifold PR: #309
+governed manifold validated head: 7c07745334b24a555dfa1ade4ca3aa65487c6980
+governed manifold merge commit: 2d6093746b4ce49a3dbc5b5bf082e4228c91f7bd
+governed manifold validation:
+  organization control plane run 33117512121: SUCCESS
+  heartbeat worker validation run 33117512211: SUCCESS
 archive_ready_for_heartbeat_activation_workstream: true
 ```
 
