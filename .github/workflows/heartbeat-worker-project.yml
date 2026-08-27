@@ -50,6 +50,11 @@ on:
       - 'authorizations/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json'
       - 'cost-basis/worker-runtime/steggate-rendezvous-deployment.json'
       - 'tests/test_steggate_integration_binding.py'
+      - 'workers/stegfin_early_adopter_contribution_validation_worker.py'
+      - 'tests/test_stegfin_early_adopter_contribution_validation_worker.py'
+      - 'control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json'
+      - 'docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_VALIDATION_MIRROR_HANDOFF.md'
+      - 'handoffs/STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001.json'
       - '.github/workflows/heartbeat-worker-project.yml'
   pull_request:
     paths:
@@ -146,6 +151,9 @@ jobs:
           python -m unittest -v tests.test_ecosystem_chat_inference_binding
           python -m unittest -v tests.test_independent_ecosystem_chat_parent_executor tests.test_llm_adapter_sovereign_execution_bridge tests.test_master_records_sovereign_reconstruction_bridge
           python -m unittest -v tests.test_steggate_integration_binding
+
+      - name: Validate consolidated StegFin contribution validator source
+        run: python -m unittest -v tests.test_stegfin_early_adopter_contribution_validation_worker
 
       - name: Validate consolidated Test Lanes autolaunch binding
         run: python -m unittest -v tests.test_test_lanes_autolaunch_binding
