@@ -26,17 +26,17 @@
         "capability_version": "1.0.0",
         "phase": "ADMISSIBLE",
         "standing_evidence_refs": [
-          "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md"
+          "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
+          "docs/SV_DN1_RESIDENT_OBSERVER_MIRROR_HANDOFF.md"
         ],
         "admissibility_evidence_refs": [
+          "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json",
           "handoffs/SV-DN1-RESIDENT-OBSERVER-001.json"
         ],
         "integration_evidence_refs": [
           "workers/sv_dn1_resident_observer_worker.py",
-          "control/worker-registry.d/sv-dn1-resident-observer-001.json",
           "control/process-worker-adapters.d/sv-dn1-resident-observer-001.json",
-          "control/worker-capability-profiles.json#public-research-worker-v1",
-          "cost-basis/worker-runtime/sv-dn1-resident-observer.json"
+          "control/worker-registry.d/sv-dn1-resident-observer-001.json"
         ],
         "activation_proof_ref": null,
         "blockers": [
@@ -48,7 +48,7 @@
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
-        "task_relationship": "observes_capability",
+        "task_relationship": "integrates_capability",
         "target_phase": "ACTIVATED"
       }
     }
