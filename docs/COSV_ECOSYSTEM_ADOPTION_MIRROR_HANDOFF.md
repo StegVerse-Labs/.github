@@ -1,8 +1,8 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-27T11:14:00-05:00
+Updated: 2026-08-27T11:26:00-05:00
 Repository: StegVerse-Labs/.github
-Branch: main after merge
+Branch: cosv/ecosystem-adoption-current-002 (current-main integration candidate)
 State: ACTIVE_ADOPTION_INCOMPLETE
 
 ## Goal
@@ -80,3 +80,12 @@ task.v1 [L R U I V G O C M T B E A P] = 60000000101000
 10. Continue through all remaining live installations.
 
 Authority effect: NONE.
+
+## Integration candidate status
+
+- Fresh branch rebuilt from live `main` after the prior adoption branch diverged 4 ahead / 11 behind.
+- Live GitHub App organization inventory re-enumerated: 14 organization installations / 222 repositories.
+- The adoption validator is invoked by `scripts/validate_org_control_plane.py`, which is already executed by the stable organization control-plane workflow.
+- Direct mutation of `.github/workflows/org-control-plane-validate.yml` was not used; no new workflow or runtime authority was introduced.
+- Merge, propagation, activation, and runtime proof are not claimed until independently observed.
+
