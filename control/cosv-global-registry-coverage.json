@@ -2,7 +2,7 @@
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
   "observed_commit": "981dc445476f5049fc51194c93d29b9fc5e35d44",
-  "observed_at": "2026-08-27T16:34:00-05:00",
+  "observed_at": "2026-08-27T16:39:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,16 +11,16 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 45,
-    "canonically_indexed_task_ids": 4,
+    "canonically_indexed_task_ids": 5,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 35
+    "active_unvectorized_unique_task_ids": 34
   },
   "organization_registry_summary": {
     "active_task_ids": 14,
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 49,
+  "total_active_unvectorized_unique_task_ids": 48,
   "active_worker_task_ids_missing_canonical_cosv": [
     "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
     "SHWP-ALL-ORG-FEDERATION-001",
@@ -40,7 +40,6 @@
     "HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001",
     "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
     "HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001",
-    "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001",
     "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
     "SHWP-FORMALISM-INVENTORY-001",
     "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001",
@@ -90,6 +89,10 @@
     {
       "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
       "vector": "60000000101000"
+    },
+    {
+      "task_id": "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001",
+      "vector": "50000000101000"
     }
   ],
   "evidence_conflicts": [],
