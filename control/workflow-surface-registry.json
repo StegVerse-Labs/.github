@@ -33,18 +33,6 @@
       "reason": "existing machine-owned validation surface; do not compete"
     },
     {
-      "path": ".github/workflows/all-org-heartbeat-federation.yml",
-      "classification": "REVIEW_REQUIRED",
-      "owner": "StegVerse-Labs/.github#81",
-      "reason": "heartbeat-federation validation requires canonical owner review"
-    },
-    {
-      "path": ".github/workflows/mcp-activation-binding-test.yml",
-      "classification": "BLOCKED_ACTIVE_OWNERSHIP",
-      "owner": "concurrent MCP activation workstream",
-      "reason": "active owner prevents competing cleanup"
-    },
-    {
       "path": ".github/workflows/sovereign-runtime-self-bootstrap.yml",
       "classification": "REVIEW_REQUIRED",
       "owner": "StegVerse-Labs/.github#59/#65",
@@ -88,7 +76,9 @@
     ".github/workflows/native-process-worker-canary.yml",
     ".github/workflows/external-timing-match-validation.yml",
     ".github/workflows/activate-host-self-attest-worker.yml",
-    ".github/workflows/test-lanes-autolaunch-validation.yml"
+    ".github/workflows/test-lanes-autolaunch-validation.yml",
+    ".github/workflows/all-org-heartbeat-federation.yml",
+    ".github/workflows/mcp-activation-binding-test.yml"
   ],
   "concurrent_new_surfaces_observed_during_hygiene": [
     ".github/workflows/mcp-activation-binding-test.yml",
