@@ -40,7 +40,9 @@
       "control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json",
       "StegVerse-Labs/stegfin-governance:docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_MIRROR_HANDOFF.md"
     ],
-    "dependencies": ["authorized_local_stegfin_governance_source"],
+    "dependencies": [
+      "authorized_local_stegfin_governance_source"
+    ],
     "parent_task_id": null,
     "derivation_reason": "The worker and registry fragment were already released, but the registry incorrectly pointed handoff_ref at Markdown. Canonical heartbeat runtime loads handoff_ref as JSON; this executable handoff closes that integration defect without granting new authority.",
     "canonical_owner_ref": "docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_VALIDATION_MIRROR_HANDOFF.md",
@@ -67,7 +69,9 @@
       "credential_stripped_test_execution",
       "validation_receipt_generation"
     ],
-    "allowed_paths": ["receipts/stegfin-early-adopter-contribution-validation/**"],
+    "allowed_paths": [
+      "receipts/stegfin-early-adopter-contribution-validation/**"
+    ],
     "allowed_services": [],
     "max_actions": 8,
     "max_retries": 4096,
@@ -114,16 +118,37 @@
     "capability_id": "stegverse:capability:private-source-focused-validation:v1",
     "capability_version": "1.0.0",
     "phase": "ADMISSIBLE",
-    "standing_evidence_refs": ["StegVerse-Labs/stegfin-governance:docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_MIRROR_HANDOFF.md"],
-    "admissibility_evidence_refs": ["docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_VALIDATION_MIRROR_HANDOFF.md"],
-    "integration_evidence_refs": ["workers/stegfin_early_adopter_contribution_validation_worker.py"],
+    "standing_evidence_refs": [
+      "StegVerse-Labs/stegfin-governance:docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_VALIDATION_MIRROR_HANDOFF.md"
+    ],
+    "integration_evidence_refs": [
+      "workers/stegfin_early_adopter_contribution_validation_worker.py"
+    ],
     "activation_proof_ref": null,
-    "blockers": ["AUTHORIZED_LOCAL_PRIVATE_SOURCE_PATH_NOT_YET_OBSERVED"],
+    "blockers": [
+      "AUTHORIZED_LOCAL_PRIVATE_SOURCE_PATH_NOT_YET_OBSERVED"
+    ],
     "continuation_owner": "stegfin-early-adopter-contribution-validation-worker on eligible StegVerse sovereign/local source surface",
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": false,
     "temporal_class": "current",
     "task_relationship": "validates_capability",
     "target_phase": "ACTIVATED"
+  },
+  "source_state_vector_ref": "control/task-vectors/STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-08-27T17:08:00-05:00",
+      "authority_effect": "NONE"
+    }
   }
 }
