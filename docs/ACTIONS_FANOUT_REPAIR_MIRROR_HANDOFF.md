@@ -23,17 +23,26 @@ Canonical machine evidence: `control/actions-fanout-workflow-inventory-2026-08-1
 
 ```text
 baseline workflow files: 18
-current workflow files: 11
-automatic-push workflows: 8
-PR/manual-only workflows: 3
-Healer workflows removed with parity: 7
+current workflow files: 8
+automatic-push workflows: 7
+PR/manual-only workflows: 1
+Healer workflows removed with parity: 10
 stable dispatchers: 2
 repository hygiene owner: StegVerse-Labs/StegVerse-Healer#34
 repository-wide quantitative run-history proof: AWAITING_SUPPORTED_READ
 ```
 
-Live `main` still contains exactly these eleven workflow files:
+Live `main` now contains exactly these eight workflow files:
 
+```text
+activate-ecosystem-chat-sovereign-inference-worker.yml
+activate-sovereign-runtime-worker.yml
+heartbeat-worker-project.yml
+org-control-plane-validate.yml
+sovereign-ephemeral-console.yml
+sovereign-runtime-self-bootstrap.yml
+stegfin-early-adopter-contribution-validator-source.yml
+steggate-heartbeat-integration.yml
 ```text
 activate-ecosystem-chat-sovereign-inference-worker.yml
 activate-sovereign-runtime-worker.yml
@@ -77,7 +86,7 @@ The full Heartbeat Worker suite is green: run `32588349952`, 486 tests, zero fai
 
 ## Remaining `.github` hygiene work
 
-Healer #34 remains OPEN. Nine non-dispatcher workflows are predominantly owner-sensitive and require owner reconciliation or explicit standalone-exception evidence before any further removal. The active classes include sovereign runtime, inference, federation, MCP, StegFin, StegGate rendezvous, ephemeral console/bootstrap, and test-lane ownership. Count >2 is not terminal without evidence-backed technical exceptions.
+Healer #34 remains OPEN. Six non-dispatcher workflows are predominantly owner-sensitive and require owner reconciliation or explicit standalone-exception evidence before any further removal. The active classes include sovereign runtime, inference, federation, MCP, StegFin, StegGate rendezvous, ephemeral console/bootstrap, and test-lane ownership. Count >2 is not terminal without evidence-backed technical exceptions.
 
 Canonical hygiene authority:
 
@@ -168,12 +177,39 @@ Coverage was preserved by moving its workflow-only native binding assertions int
 
 ```text
 workflow count: 11 -> 10
-automatic-push workflows: 8 -> 8
-PR/manual-only workflows: 3 -> 2
+automatic-push workflows: 7 -> 8
+PR/manual-only workflows: 1 -> 2
 standalone workflows removed with parity preservation: 7 -> 8
 runtime authority effect: NONE
 test-lanes runtime task changed: false
 credential authority: TV/TVC
+```
+
+## 2026-08-27 federation and MCP consolidation
+
+Two more standalone validation workflows were removed after preserving their unique validation semantics in the stable heartbeat-worker dispatcher:
+
+```text
+removed: .github/workflows/all-org-heartbeat-federation.yml
+preserved federation coverage: tests/test_organization_federation_binding.py + existing federation worker/emitter suites
+removed: .github/workflows/mcp-activation-binding-test.yml
+preserved MCP coverage: tests/test_sdk_mcp_activation_binding.py + tests/test_sdk_mcp_canonical_validation_worker.py
+stable destination: .github/workflows/heartbeat-worker-project.yml
+runtime/task ownership changed: false
+credential authority: TV/TVC
+GitHub runtime authority: NONE
+```
+
+The federation issue #81 and SDK MCP canonical execution task remain nonterminal machine-owned runtime goals; removing duplicate hosted validation carriers does not complete or cancel those tasks.
+
+Current live workflow census after direct repository listing:
+
+```text
+workflow files: 8
+automatic-push workflows: 7
+PR-only workflows: 1
+stable dispatchers: 2
+non-dispatchers remaining: 6
 ```
 
 ## Quantitative evidence limitation
@@ -195,6 +231,6 @@ No tag/release is required solely for these workflow-validation consolidations. 
 
 ## Completion gate
 
-Cost reduction is materially advanced but nonterminal. `.github` is 18 -> 11 with seven parity-proven removals; Healer #34 still has nine owner-sensitive non-dispatchers; Site #268 remains active; VA governed-surface observation, Healer scheduler live receipt, Site #388 publication proof, B27, and quantitative run-history evidence remain unresolved.
+Cost reduction is materially advanced but nonterminal. ``.github` is 18 -> 8 with ten parity-preserving removals/consolidations; Healer #34 still has six owner-sensitive non-dispatchers; Site #268 remains active; VA governed-surface observation, Healer scheduler live receipt, Site #388 publication proof, B27, and quantitative run-history evidence remain unresolved.
 
 Current status: `DO NOT ARCHIVE THIS SESSION — UNIQUE ACTIVE WORK REMAINS.`
