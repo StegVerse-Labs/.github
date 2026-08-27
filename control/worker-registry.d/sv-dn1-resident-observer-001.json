@@ -1,0 +1,78 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SV-DN1-RESIDENT-OBSERVER-001",
+  "tasks": [
+    {
+      "task_id": "SV-DN1-RESIDENT-OBSERVER-001",
+      "goal_id": "SV-DN1-RESIDENT-PUBLIC-SOURCE-OBSERVATION-001",
+      "state": "HANDOFF_READY",
+      "claim_id": null,
+      "archive_eligible": false,
+      "executor_binding": "AUTHORIZED",
+      "authorized_policy_version": "sv-dn1-resident-public-observer-v1",
+      "handoff_ref": "handoffs/SV-DN1-RESIDENT-OBSERVER-001.json",
+      "block_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
+      "cost_basis_ref": "cost-basis/worker-runtime/sv-dn1-resident-observer.json",
+      "evidence_refs": [
+        "docs/SV_DN1_RESIDENT_OBSERVER_MIRROR_HANDOFF.md",
+        "handoffs/SV-DN1-RESIDENT-OBSERVER-001.json",
+        "workers/sv_dn1_resident_observer_worker.py",
+        "control/process-worker-adapters.d/sv-dn1-resident-observer-001.json",
+        "cost-basis/worker-runtime/sv-dn1-resident-observer.json",
+        "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json"
+      ],
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:sv-dn1-resident-public-observer:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/SV-DN1-RESIDENT-OBSERVER-001.json"
+        ],
+        "integration_evidence_refs": [
+          "workers/sv_dn1_resident_observer_worker.py",
+          "control/worker-registry.d/sv-dn1-resident-observer-001.json",
+          "control/process-worker-adapters.d/sv-dn1-resident-observer-001.json",
+          "control/worker-capability-profiles.json#public-research-worker-v1",
+          "cost-basis/worker-runtime/sv-dn1-resident-observer.json"
+        ],
+        "activation_proof_ref": null,
+        "blockers": [
+          "EXACT_LOCAL_DEMO_SUITE_SOURCE_NOT_YET_OBSERVED",
+          "CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND",
+          "SOVEREIGN_SV_DN1_RESIDENT_SOURCE_CAPTURE_RECEIPT_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "sv-dn1-resident-observer-worker",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "observes_capability",
+        "target_phase": "ACTIVATED"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "worker_id": "sv-dn1-resident-observer-worker",
+      "status": "AVAILABLE",
+      "executor_type": "repository_worker",
+      "adapter_ref": "process:sv-dn1-resident-observer-v1",
+      "authority_source": "handoffs/SV-DN1-RESIDENT-OBSERVER-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "public_source_acquisition",
+        "evidence_class_preservation"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#public-research-worker-v1",
+      "last_seen_at": null
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "priority": "release"
+}
