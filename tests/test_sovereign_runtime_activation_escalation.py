@@ -103,7 +103,10 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
         self.assertIn("HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009", downstream)
         self.assertIn("RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28", downstream)
         self.assertIn("SHWP-ECOSYSTEM-CHAT-INFERENCE-001", downstream)
-        self.assertEqual(handoff["constraint"]["operational_state"], "BLOCKED")\n        self.assertEqual(handoff["constraint"]["class"], "PHYSICAL_RESOURCE_SOVEREIGN_NODE_ELIGIBILITY")\n        self.assertEqual(handoff["constraint"]["condition"], "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT")\n        self.assertFalse(handoff["constraint"]["heartbeat_activation_blocked"])
+        self.assertEqual(handoff["constraint"]["operational_state"], "BLOCKED")
+        self.assertEqual(handoff["constraint"]["class"], "PHYSICAL_RESOURCE_SOVEREIGN_NODE_ELIGIBILITY")
+        self.assertEqual(handoff["constraint"]["condition"], "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT")
+        self.assertFalse(handoff["constraint"]["heartbeat_activation_blocked"])
 
     def test_g18_adapter_passes_only_nonsecret_runtime_environment(self) -> None:
         adapters = json.loads((ROOT / "control" / "process-worker-adapters.json").read_text())
