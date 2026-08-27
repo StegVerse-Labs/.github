@@ -6,7 +6,7 @@
 goal_id: SV-DN1-RESIDENT-PUBLIC-SOURCE-OBSERVATION-001
 task_id: SV-DN1-RESIDENT-OBSERVER-001
 repository: StegVerse-Labs/.github
-branch: feature/sv-dn1-resident-observer
+branch: main
 canonical product owner: StegVerse-org/stegverse-demo-suite
 canonical product handoff: docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md
 credential_authority: TV/TVC
@@ -156,12 +156,12 @@ canonical demo-suite source: MERGED
 demo-suite public observer source: MERGED
 demo-suite resident task: MERGED
 real public web parsed preflight: OBSERVED / NONADMISSIBLE_AS_LIVE_SOURCE_CAPTURE
-.github executable handoff: IMPLEMENTED_ON_FEATURE_BRANCH
-.github worker registry: IMPLEMENTED_ON_FEATURE_BRANCH
-.github process adapter: IMPLEMENTED_ON_FEATURE_BRANCH
-.github worker implementation: IMPLEMENTED_ON_FEATURE_BRANCH
-.github cost basis: IMPLEMENTED_ON_FEATURE_BRANCH
-.github tests: IMPLEMENTED_ON_FEATURE_BRANCH
+.github executable handoff: MERGED
+.github worker registry: MERGED
+.github process adapter: MERGED
+.github worker implementation: MERGED
+.github cost basis: MERGED
+.github tests: MERGED
 resident source capture: NOT OBSERVED
 raw-byte digest: NOT OBSERVED
 HF semantic exchange runtime: NOT OBSERVED
@@ -169,6 +169,21 @@ InTr live traversal: NOT OBSERVED
 SDK live admission: NOT OBSERVED
 dashboard live publication: NOT OBSERVED
 ```
+
+## Merge and validation evidence
+
+```text
+PR #335: MERGED
+merge_commit: d3dec277360327085ceb0266cfbf1f92e633da4e
+validated_head: 00762a32bac060cc33daa5638335d26aa86a2fe3
+organization control plane run 33127505443: PASS
+heartbeat worker validation run 33127505433: PASS
+complete deterministic repository suite: PASS
+AE handoff/registry conformance: PASS
+workflow token-authority checks: PASS
+```
+
+The resident observer is now registered and source-valid on main. This does not claim that WorkerCoordinator has yet bound a live claim or that a resident runtime receipt exists.
 
 ## Archive readiness
 
