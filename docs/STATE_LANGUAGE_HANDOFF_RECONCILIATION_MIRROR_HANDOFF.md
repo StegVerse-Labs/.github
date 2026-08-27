@@ -174,3 +174,27 @@ Therefore:
 - Site Math task advanced at `5fdeff1fd3341d4487176f507b6cf54bbaa3d709` to `RESIDENT_SOURCE_CONSUMPTION_HOSTED_VALIDATED_TOOL_EXECUTION_PENDING`.
 
 The next material Math transition must be 006+ and may only represent an actually admitted solver/verifier execution or separately admitted attachment/image intake. Source validation is no longer the Math blocker.
+
+
+## 2026-08-27 machine execution — transition 006 governed Math consumer
+
+Append-only transition 006 now records the installed Site unified-chat consumer for the canonical governed Math Solver:
+
+```text
+006 ALIGN-UNIFIED-CONVERSATION-MATH-GOVERNED-SOLVER-CONSUMER-006
+    parent: 005
+    packet commit: 9901f7ae1993421fe8f51eda48a5eb591c7cb669
+    packet canonical sha256: 3c1fbd317d76ee8605d5e7046264ec59f2bfed197e8f7080dda392403a927d9d
+    Master Records custody commit: 7ab374d88a6e047fb76ba84c163f4b7660cce240
+    custody: ACCEPTED_FOR_CUSTODY
+    Site task projection commit: c1c9663490b0d35203bde53379c96aa908df59e2
+    hosted Site reverify: PENDING
+    hosted Master Records all-object reverify: PENDING
+    actual solver execution: NOT OBSERVED
+```
+
+The consumer is fail-closed: it reads Site Math activation state, requires `COMPLETE`, exact StegVerse runtime authority, TV/TVC credential authority, canonical StegGate runtime identity, READY readiness, ALLOW/EXECUTED, executor invocation, and request/result/decision/response hashes. Otherwise the shared educator path continues without claiming tool execution.
+
+The historical hourly/writeback Site Math activation workflow was converted to validation/evidence transport only at `a2f9e4ed9ee0834a7e26f24661386a13ed4bb8b5`; it has no schedule, repository write authority, or runtime authority.
+
+Transition 006 does not represent a tool execution. A future actual governed solver execution/runtime observation is a separate material transition 007+.
