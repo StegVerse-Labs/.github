@@ -1,0 +1,45 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "tasks/TASK-2026-0005.json",
+    "control/worker-registry.d/sovereign-base-rpc-activation-001.json",
+    "handoffs/SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001.json",
+    "docs/SOVEREIGN_BASE_RPC_ACTIVATION_MIRROR_HANDOFF.md",
+    "StegVerse-002/micro-node-runtime:docs/SOVEREIGN_BASE_RPC_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC:docs/SOVEREIGN_BASE_RPC_ROUTE_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-08-27T17:15:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "tasks/TASK-2026-0005.json#machine_owner and activation_state=BLOCKED_MACHINE_OWNED_REAL_ENDPOINT_PENDING; activation mirror live_activation_state=MACHINE_OWNED_REAL_ENDPOINT_PENDING",
+    "archive_ready": "worker fragment archive_eligible=false",
+    "unassigned_work": "worker_id=sovereign-base-rpc-activation-worker and continuation_owner is the resident sovereign heartbeat chain",
+    "chat_owned_counts": "activation mirror manual_execution_allowed=false; source implementation claim is COMPLETE_RELEASED and live activation is machine-owned",
+    "canonical_owner_installed": "source, route evaluator, activation automation, worker fragment and executable handoff are complete/installed/released",
+    "thread_required": "activation mirror archive condition says source lane no longer requires chat/session implementation or validation owner; live activation has durable machine owner",
+    "blocker_count": "admissible_existence.blockers contains exactly REAL_SYNCHRONIZED_STEGVERSE_BASE_ENDPOINT_NOT_YET_OBSERVED",
+    "evidence_complete": "real synchronized Base endpoint observation=0/1; reference proof is validation_only=true and rejected for live route admission",
+    "activated": "activation_proof_ref=null; no validation_only=false synchronized endpoint proof exists",
+    "propagated": "TVC exact endpoint admission=0/1 and StegFin exact sovereign endpoint consumption=0/1"
+  },
+  "authority_effect": "NONE"
+}
