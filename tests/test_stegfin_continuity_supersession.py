@@ -27,7 +27,8 @@ class StegFinContinuitySupersessionTests(unittest.TestCase):
         self.assertFalse(matches[0]["vector_required_for_active_coverage"])
 
     def test_activation_belongs_to_phone_direct_evidence_not_fallback_execution(self):
-        self.assertEqual(self.task["admissible_existence"]["phase"],"ACTIVATED_AT_WALLET_HANDOFF_BOUNDARY")
+        self.assertEqual(self.task["admissible_existence"]["phase"],"ADMISSIBLE")
+        self.assertIsNone(self.task["admissible_existence"]["activation_proof_ref"])
         self.assertEqual(self.task["supersession"]["superseded_by_task_id"],"STEGFIN-PHONE-DIRECT-ROUTE-010")
         self.assertFalse(self.task["supersession"]["fallback_executed"])
 
