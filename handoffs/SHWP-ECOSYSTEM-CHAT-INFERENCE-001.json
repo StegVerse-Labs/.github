@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
   "created_at": "2026-08-09T19:59:00Z",
-  "updated_at": "2026-08-27T16:50:00-05:00",
+  "updated_at": "2026-08-27T16:56:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
@@ -164,7 +164,7 @@
       "credential_authority": "TV/TVC"
     },
     "resident_execution_request": {
-      "state": "SOURCE_IMPLEMENTED_VALIDATION_PENDING",
+      "state": "MERGED_VALIDATED_RUNTIME_NOT_OBSERVED",
       "request_ref": "control/resident-execution-request.json",
       "consumer_ref": "scripts/consume_resident_execution_request.py",
       "request_id": "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-001",
@@ -179,7 +179,14 @@
       "github_token_runtime_authority": "NONE",
       "credential_authority": "TV/TVC",
       "runtime_execution_observed": false,
-      "authority_effect": "NONE_REQUEST_ONLY"
+      "authority_effect": "NONE_REQUEST_ONLY",
+      "merge_commit": "a81ee4e60916bb32aa7aa2c5f6a1cb25530b80e5",
+      "validation": {
+        "heartbeat_worker_run": 33119900198,
+        "organization_control_plane_run": 33119900137,
+        "exact_head": "a4537c9b373d949481da21d0d76616ca22bf8ced",
+        "result": "PASS"
+      }
     }
   },
   "continuity": {
@@ -212,7 +219,7 @@
     "state": "SOURCE_EXECUTOR_INSTALLED_LIVE_EXECUTION_PENDING",
     "class": "EXECUTION_PENDING",
     "owner": "independent admitted StegVerse task-control executor -> TVC -> LLM-adapter -> Master Records",
-    "problem_statement": "The recovery and direct/portable executor source gaps are closed. A bounded exactly-once resident execution-request bridge is now being validated so an already-installed local source-refresh service can attempt the dedicated parent without manual console interaction. No live same-execution activation evidence has yet been observed.",
+    "problem_statement": "The recovery, direct/portable executor, and bounded exactly-once resident execution-request bridge are merged and source-validated. No worker-source refresh, request-consumption, resident-targeted-execution, fresh parent fence >22, or terminal same-execution activation receipt has yet been observed from the sovereign resident surface.",
     "solution_required": true,
     "dependency": null,
     "observer": "independent StegVerse task-control",
@@ -222,7 +229,7 @@
       "Use a stronger qualifying locally developed or locally installed model while preserving private endpoint/proof semantics",
       "Move execution to another StegVerse-owned/federated node if the current sovereign surface lacks the materialized workload roots"
     ],
-    "next_solution_action": "VALIDATE_AND_MERGE_RESIDENT_EXECUTION_REQUEST_THEN_OBSERVE_SOVEREIGN_RESIDENT_CONSUMPTION",
+    "next_solution_action": "OBSERVE_OR_TRIGGER_EXISTING_SOVEREIGN_RESIDENT_SOURCE_CONSUMPTION_WITHOUT_HOSTED_RUNTIME_AUTHORITY",
     "machine_observable_release_condition": "receipts/ecosystem-chat-sovereign-inference/independent_parent_activation.latest.json state PASS with fresh parent fence >22, same_execution=true, persistent_conversational_runtime_ready=true, provider_usage_reconstruction_pass=true, transition_reconstruction_pass=true, credential_authority=TV/TVC, github_token_required=false and exact proof/route/usage/reconstruction hash bindings",
     "third_party_blocker": false,
     "human_action_required": false
