@@ -7,7 +7,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "control" / "task-vector-index.json"
-FRAGMENTS = ROOT / "control" / "worker-registry.d"\nGLOBAL_REGISTRY = ROOT / "control" / "worker-registry.json"
+FRAGMENTS = ROOT / "control" / "worker-registry.d"
+GLOBAL_REGISTRY = ROOT / "control" / "worker-registry.json"
 
 spec = importlib.util.spec_from_file_location("cosv", ROOT / "scripts" / "cosv.py")
 assert spec and spec.loader
