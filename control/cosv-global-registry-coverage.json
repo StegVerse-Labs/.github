@@ -2,7 +2,7 @@
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
   "observed_commit": "981dc445476f5049fc51194c93d29b9fc5e35d44",
-  "observed_at": "2026-08-27T16:24:00-05:00",
+  "observed_at": "2026-08-27T16:34:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -12,17 +12,16 @@
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 45,
     "canonically_indexed_task_ids": 4,
-    "completed_only_historical_unvectorized_task_ids": 5,
-    "active_unvectorized_unique_task_ids": 36
+    "completed_only_historical_unvectorized_task_ids": 6,
+    "active_unvectorized_unique_task_ids": 35
   },
   "organization_registry_summary": {
     "active_task_ids": 14,
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 50,
+  "total_active_unvectorized_unique_task_ids": 49,
   "active_worker_task_ids_missing_canonical_cosv": [
-    "STEGGATE-FIRST-BOUNDARY-001",
     "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -107,6 +106,14 @@
       "aggregate_state": "COMPLETED",
       "fragment_state": "COMPLETED",
       "evidence_ref": "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
+      "vector_required_for_active_coverage": false,
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "STEGGATE-FIRST-BOUNDARY-001",
+      "aggregate_state": "COMPLETED",
+      "canonical_owner_state": "COMPLETE",
+      "evidence_ref": "StegVerse-Labs/ara-admissibility-interop:management/first-boundary-activation.json",
       "vector_required_for_active_coverage": false,
       "authority_effect": "NONE"
     }
