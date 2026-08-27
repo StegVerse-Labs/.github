@@ -157,11 +157,11 @@ demo-suite public observer source: MERGED
 demo-suite resident task: MERGED
 real public web parsed preflight: OBSERVED / NONADMISSIBLE_AS_LIVE_SOURCE_CAPTURE
 .github executable handoff: IMPLEMENTED_ON_FEATURE_BRANCH
-.github worker registry: PENDING
-.github process adapter: PENDING
-.github worker implementation: PENDING
-.github cost basis: PENDING
-.github tests: PENDING
+.github worker registry: IMPLEMENTED_ON_FEATURE_BRANCH
+.github process adapter: IMPLEMENTED_ON_FEATURE_BRANCH
+.github worker implementation: IMPLEMENTED_ON_FEATURE_BRANCH
+.github cost basis: IMPLEMENTED_ON_FEATURE_BRANCH
+.github tests: IMPLEMENTED_ON_FEATURE_BRANCH
 resident source capture: NOT OBSERVED
 raw-byte digest: NOT OBSERVED
 HF semantic exchange runtime: NOT OBSERVED
