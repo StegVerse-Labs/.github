@@ -61,11 +61,21 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "StegVerse-Labs/Site#24"
+    },
+    {
+      "task_id": "SDK-MCP-CANONICAL-VALIDATION-009",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/sdk-mcp-canonical-validation-009.json",
+      "source_state_vector_ref": "control/task-vectors/SDK-MCP-CANONICAL-VALIDATION-009.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 6,
-    "local_cosv_record_tasks": 6,
+    "indexed_vectorized_tasks": 7,
+    "local_cosv_record_tasks": 7,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"

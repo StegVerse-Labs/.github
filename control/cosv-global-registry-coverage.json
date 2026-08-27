@@ -2,7 +2,7 @@
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
   "observed_commit": "981dc445476f5049fc51194c93d29b9fc5e35d44",
-  "observed_at": "2026-08-27T16:45:00-05:00",
+  "observed_at": "2026-08-27T16:50:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,16 +11,16 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 45,
-    "canonically_indexed_task_ids": 6,
+    "canonically_indexed_task_ids": 7,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 33
+    "active_unvectorized_unique_task_ids": 32
   },
   "organization_registry_summary": {
     "active_task_ids": 14,
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 47,
+  "total_active_unvectorized_unique_task_ids": 46,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -34,7 +34,6 @@
     "SHWP-FORMALISM-SOURCE-DISCOVERY-001",
     "STEGFIN-CONTINUITY-CARRIER-007",
     "SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
-    "SDK-MCP-CANONICAL-VALIDATION-009",
     "SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001",
     "HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001",
     "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
@@ -96,6 +95,10 @@
     {
       "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
       "vector": "50000000100000"
+    },
+    {
+      "task_id": "SDK-MCP-CANONICAL-VALIDATION-009",
+      "vector": "50000000101000"
     }
   ],
   "evidence_conflicts": [],

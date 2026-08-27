@@ -40,13 +40,28 @@
           "cost-basis/worker-runtime/sdk-mcp-canonical-validation.json"
         ],
         "activation_proof_ref": null,
-        "blockers": ["EXACT_SOVEREIGN_ARTIFACT_RUN_NOT_YET_OBSERVED"],
+        "blockers": [
+          "EXACT_SOVEREIGN_ARTIFACT_RUN_NOT_YET_OBSERVED"
+        ],
         "continuation_owner": "sdk-mcp-canonical-validation-worker",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
         "task_relationship": "validates_capability",
         "target_phase": "ACTIVATED"
+      },
+      "source_state_vector_ref": "control/task-vectors/SDK-MCP-CANONICAL-VALIDATION-009.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-27T16:50:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],
