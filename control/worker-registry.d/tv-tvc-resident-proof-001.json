@@ -8,7 +8,7 @@
       "authorized_policy_version": "shwp-tv-tvc-resident-proof-v0.1",
       "block_ref": "handoffs/SHWP-TV-TVC-RESIDENT-PROOF-001.json#block",
       "claim_id": null,
-      "cost_basis_ref": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/tv-tvc-resident-proof.json",
       "evidence_refs": [
         "handoffs/SHWP-TV-TVC-RESIDENT-PROOF-001.json",
         "workers/tv_tvc_resident_proof_worker.py",
@@ -28,7 +28,7 @@
       "task_id": "SHWP-TV-TVC-RESIDENT-PROOF-001",
       "worker_id": null,
       "worker_instance_id": null,
-      "source_state_vector_ref": "StegVerse-Labs/TVC/tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json#machine_readable_state.cosv",
+      "source_state_vector_ref": "control/task-vectors/SHWP-TV-TVC-RESIDENT-PROOF-001.json",
       "machine_readable_state": {
         "cosv": {
           "profile": "task.v1",
@@ -59,6 +59,17 @@
             "blocker_basis": "canonical owner task requires runtime-contract rebinding after credential-model consistency gate"
           }
         }
+      },
+      "canonical_source_state_vector_ref": "StegVerse-Labs/TVC/tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json#machine_readable_state.cosv",
+      "admission": {
+        "authority_source": "StegVerse-Labs/TVC#89 + TV/TVC credential-processing policy",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 21,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
       }
     }
   ],
