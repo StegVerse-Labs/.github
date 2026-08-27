@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/test-queue-manifold-descriptor-v1.schema.json",
+  "title": "StegVerse Test Queue Manifold Descriptor v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "test_id",
+    "canonical_input_hash",
+    "goal_transition",
+    "source_state",
+    "target_state",
+    "transition_class",
+    "required_capabilities",
+    "required_evidence",
+    "dependencies",
+    "authority_class",
+    "cost_capacity",
+    "urgency",
+    "expected_information_gain",
+    "coherency_group",
+    "lifecycle_state",
+    "execution_claim_ref",
+    "person_specific_route",
+    "authority_effect"
+  ],
+  "properties": {
+    "schema": {
+      "const": "stegverse.test-queue-manifold-descriptor/v1"
+    },
+    "test_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_input_hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "goal_transition": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_state": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_state": {
+      "type": "string",
+      "minLength": 1
+    },
+    "transition_class": {
+      "type": "string",
+      "minLength": 1
+    },
+    "required_capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "required_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "authority_class": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cost_capacity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cost_units",
+        "capacity_units"
+      ],
+      "properties": {
+        "cost_units": {
+          "type": "number",
+          "minimum": 0
+        },
+        "capacity_units": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "urgency": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "expected_information_gain": {
+      "type": "number",
+      "minimum": 0
+    },
+    "coherency_group": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lifecycle_state": {
+      "enum": [
+        "PENDING",
+        "READY",
+        "CLAIMED",
+        "BLOCKED",
+        "EXECUTED",
+        "SUPERSEDED_BY_EVIDENCE",
+        "SATISFIED_BY_BUNDLE",
+        "NO_LONGER_APPLICABLE"
+      ]
+    },
+    "execution_claim_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "person_specific_route": {
+      "const": false
+    },
+    "authority_effect": {
+      "const": "NONE"
+    }
+  }
+}
