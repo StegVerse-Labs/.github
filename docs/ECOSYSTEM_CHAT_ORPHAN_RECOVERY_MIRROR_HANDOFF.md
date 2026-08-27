@@ -216,7 +216,7 @@ G22 recovery authority reused: false
 heartbeat grants execution authority: false
 ```
 
-The emitted task vector remains canonical and visible:
+The emitted task vector remains canonical and visible. After canonical-registry reconciliation, `control/worker-registry.json` is the single vector-bearing registry source for this task; the append-only registry fragment references the vector file but no longer duplicates the vector payload:
 
 ```text
 notation: L R U I V G O C M T B E A P
