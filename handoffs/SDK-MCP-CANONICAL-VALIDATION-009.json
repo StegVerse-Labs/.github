@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SDK-MCP-CANONICAL-VALIDATION-009",
   "created_at": "2026-08-15T09:40:00-05:00",
-  "updated_at": "2026-08-15T19:42:00-05:00",
+  "updated_at": "2026-08-27T07:00:00-05:00",
   "state": "HANDOFF_READY_MACHINE_OWNED",
   "admissible_existence": {
     "capability_id": "stegverse:capability:sdk-mcp-canonical-validation:v1",
@@ -132,7 +132,20 @@
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 64,
     "rate_class": "sdk_mcp_canonical_validation",
-    "hosted_execution_allowed": false
+    "hosted_execution_allowed": false,
+    "validation_surface": {
+      "state": "CONSOLIDATED",
+      "removed_standalone_workflow": ".github/workflows/mcp-activation-binding-test.yml",
+      "stable_validation_dispatcher": ".github/workflows/heartbeat-worker-project.yml",
+      "parity_tests": [
+        "tests/test_sdk_mcp_activation_binding.py",
+        "tests/test_sdk_mcp_canonical_validation_worker.py"
+      ],
+      "runtime_task_changed": false,
+      "execution_authority_changed": false,
+      "credential_authority": "TV/TVC",
+      "github_runtime_authority": "NONE"
+    }
   },
   "activation": {
     "carrier": "heartbeat",
@@ -148,7 +161,7 @@
     "source_handoff_reconciliation": "StegVerse-org/StegVerse-SDK:MCP_PORTABLE_AUTHORITY_MIRROR_HANDOFF.md"
   },
   "completion": {
-    "next_authorized_action": "Canonical sovereign worker scheduler assigns a collision-safe claim to sdk-mcp-canonical-validation-worker on an eligible non-hosted StegVerse node where the four declared source roots are already materialized. The worker executes the exact integration suite and governed reference MCP runs, then emits COMPLETE only when exact MR/MRR/MRO and bounded-write predicates pass.",
+    "next_authorized_action": "The machine-owned SDK MCP exact sovereign-artifact task remains HANDOFF_READY. On an eligible non-hosted StegVerse node with the four declared source roots already materialized, the canonical worker scheduler assigns a collision-safe claim to sdk-mcp-canonical-validation-worker, executes the exact integration and governed reference MCP runs, and emits COMPLETE only when MR/MRR/MRO, bounded-write, replay/reconstruction and no-reexecution predicates pass. The former standalone GitHub validation workflow has been removed; stable dispatcher tests are validation-only and do not substitute for this runtime proof.",
     "terminal_when": [
       "SDK_MCP_CANONICAL_VALIDATION_COMPLETE",
       "credential_authority=TV/TVC",
