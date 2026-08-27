@@ -57,6 +57,9 @@ class StegOSSovereignRelayMaterializationTests(unittest.TestCase):
         req = handoff["execution"]["relay_activation_request"]
         self.assertEqual(handoff["state"], "HANDOFF_READY")
         self.assertFalse(handoff["authority"]["heartbeat_grants_execution_authority"])
+        self.assertEqual(handoff["activation"]["executor_binding"], "AUTHORIZED")
+        self.assertTrue(handoff["activation"]["authorization_ref"])
+        self.assertEqual(handoff["activation"]["checkout_policy"], "fenced_atomic_checkout")
         self.assertEqual(req["admission_state"], "ADMITTED")
         self.assertEqual(req["evidence_class"], "CONTROLLED_SOVEREIGN_RUNTIME_ACTIVATION")
         self.assertFalse(req["production_capacity_deficit_claimed"])

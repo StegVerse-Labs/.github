@@ -44,6 +44,9 @@ class RelayNodeKVContinuityWorkerTests(unittest.TestCase):
         self.assertEqual(row["adapter_ref"], "process:stegos-relay-node-kv-continuity-v1")
         self.assertEqual(row["env_allowlist"], ["STEGVERSE_STEGOS_ROOT", "STEGVERSE_RELAY_RUNTIME_BASE"])
         self.assertFalse(handoff["authority"]["heartbeat_grants_execution_authority"])
+        self.assertEqual(handoff["activation"]["executor_binding"], "AUTHORIZED")
+        self.assertTrue(handoff["activation"]["authorization_ref"])
+        self.assertEqual(handoff["activation"]["checkout_policy"], "fenced_atomic_checkout")
         self.assertFalse(handoff["execution"]["parent_activation_request"]["production_capacity_deficit_claimed"])
 
     def test_missing_parent_receipt_remains_active_without_runtime_action(self):

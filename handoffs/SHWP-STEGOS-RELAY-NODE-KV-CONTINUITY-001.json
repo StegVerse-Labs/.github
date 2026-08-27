@@ -139,6 +139,10 @@
       "credential_authority": "TV/TVC",
       "github_token_runtime_authority": "NONE",
       "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
-    }
+    },
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001 + StegVerse-Labs/StegOS#55",
+    "checkout_policy": "fenced_atomic_checkout",
+    "claim_generation_rule": "fresh WorkerCoordinator fencing generation; no historical claim/fence reuse"
   }
 }
