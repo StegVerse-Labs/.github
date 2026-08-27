@@ -67,9 +67,12 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
             "state",
             "executor_binding",
             "handoff_ref",
-            "source_state_vector_ref",
         ):
             self.assertEqual(self.task[key], self.fragment_task[key])
+        self.assertNotIn("source_state_vector_ref", self.fragment_task)
+        self.assertNotIn("machine_readable_state", self.fragment_task)
+        self.assertEqual(self.fragment["vector_projection_owner"], "control/worker-registry.json")
+        self.assertFalse(self.fragment["vector_duplicate_source_allowed"])
 
     def test_independent_admission_runtime_will_consider_parent_candidate(self):
         runtime = WorkerCoordinator.__new__(WorkerCoordinator)
