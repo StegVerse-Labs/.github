@@ -80,7 +80,7 @@ def execute(env:dict[str,str]|None=None)->dict[str,Any]:
     key_stack_present=state=="BLOCKED_RESIDENT_BINDING_INVALID" and ("route observation" in reason)
     activation_performed=False
     if not key_stack_present:
-        gateway=values.get("STEGVERSE_COINBASE_GATEWAY_STORAGE_ROOT","").strip()
+        gateway=(values.get("STEGVERSE_COINBASE_GATEWAY_STORAGE_ROOT","").strip() or values.get("STEGVERSE_SERVICE_GATEWAY_STORAGE_ROOT","").strip() or values.get("STEGVERSE_HIL_STORAGE_ROOT","").strip())
         custody=values.get("STEGVERSE_KV_CUSTODY_ROOT","").strip()
         if not gateway or not custody:
             return _blocked("RESIDENT_STORAGE_BINDINGS_REQUIRED",readiness=ready)
