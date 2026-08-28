@@ -47,16 +47,19 @@ class TVCIntrActivationWorkerTests(unittest.TestCase):
                 p=root/rel; p.parent.mkdir(parents=True,exist_ok=True); p.write_text("# test\n",encoding="utf-8")
             route=root/"route.json"; activation=root/"activation.json"; liveness=root/"liveness.json"; projection=root/"projection.json"
             calls=[]
+            readiness_calls=0
             def fake_run(args,cwd,**kwargs):
+                nonlocal readiness_calls
                 calls.append(args)
-                joined=" ".join(args)
-                if "observe_coinbase_intr_resident_readiness.py" in joined and sum("observe_coinbase_intr_resident_readiness.py" in " ".join(x) for x in calls)==1:
-                    return 2,{"state":"BLOCKED_RESIDENT_BINDING_INVALID","reason":"current production public InTr route observation missing"},""
+                joined=" ".join(str(x) for x in args)
+                if "observe_coinbase_intr_resident_readiness.py" in joined:
+                    readiness_calls += 1
+                    if readiness_calls == 1:
+                        return 2,{"state":"BLOCKED_RESIDENT_BINDING_INVALID","reason":"current production public InTr route observation missing"},""
+                    return 0,{"state":"READY_FOR_OWNER_INGRESS","ready_for_owner_ingress":True,"recipient_key_id":"k","runtime_instance_id":"r","public_intr_route_observation_digest":"sha256:"+"a"*64},""
                 if "observe_coinbase_service_gateway_route.py" in joined:
                     route.write_text(json.dumps({"state":"OBSERVED"}),encoding="utf-8")
                     return 0,{"state":"OBSERVED"},""
-                if "observe_coinbase_intr_resident_readiness.py" in joined:
-                    return 0,{"state":"READY_FOR_OWNER_INGRESS","ready_for_owner_ingress":True,"recipient_key_id":"k","runtime_instance_id":"r","public_intr_route_observation_digest":"sha256:"+"a"*64},""
                 if "project_coinbase_owner_ingress_site_config.py" in joined:
                     projection.write_text(json.dumps({"ready_for_owner_ingress":True,"provider_operation_authorized":False,"provider_operation_started":False}),encoding="utf-8")
                     return 0,None,""
@@ -64,7 +67,7 @@ class TVCIntrActivationWorkerTests(unittest.TestCase):
             env={"STEGVERSE_TVC_ROOT":str(root),"STEGVERSE_COINBASE_PUBLIC_NODE_URL":"https://node.example/api/stegverse-node"}
             with patch.object(worker.os,"geteuid",return_value=0), patch.object(worker,"ROUTE_OBS",route), patch.object(worker,"ACTIVATION",activation), patch.object(worker,"LIVENESS",liveness), patch.object(worker,"SITE_PROJECTION",projection), patch.object(worker,"_run",side_effect=fake_run):
                 result=worker.execute(env)
-        self.assertEqual(result["state"],"COMPLETED")
+        self.assertEqual(result["state"],"COMPLETED",result)
         self.assertFalse(result["activation_performed"])
         self.assertTrue(result["route_observation_performed"])
         self.assertFalse(any("activate_coinbase_intr_resident.py" in " ".join(call) for call in calls))
