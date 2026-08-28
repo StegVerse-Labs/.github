@@ -205,6 +205,22 @@ The next machine lane is canonical sovereign SDK 0B governed execution. This InT
 
 There must be exactly one route-specific InTr runtime owner for the first SV-DN-1 public observation. Do not create a second worker that emits the same `SV-DN-1-HF-PUBLIC` runtime receipt while this task is HANDOFF_READY, CLAIMED, ACTIVE, or completed for the same exchange.
 
+## Independent task-control dependency
+
+PR #343 merged the explicit resident dependency:
+
+```text
+dependency: SV-DN1-RESIDENT-OBSERVER-001
+parent terminal state: COMPLETED
+parent terminal transition: SV_DN1_RESIDENT_SOURCE_CAPTURE_COMPLETE
+authority_domain: INDEPENDENT_TASK_CONTROL
+fresh fence: >22
+heartbeat_grants_execution_authority: false
+merge_commit: 75fbb638a8003d42517620cc95b383070ea3b15e
+```
+
+PR #348 merged the sovereign first-round chain that targets this task only after the resident task is terminal. Authentic route execution remains NOT OBSERVED.
+
 ## Current state
 
 ```text
