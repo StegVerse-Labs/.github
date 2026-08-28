@@ -162,6 +162,21 @@ Do not create another worker that independently fetches the same source for this
 
 The canonical demo-suite task remains the product-level owner. This `.github` lane only owns sovereign execution of the first live source-capture step.
 
+## Machine predecessor
+
+The missing exact-local-source prerequisite now has a dedicated machine-owned predecessor:
+
+```text
+task: SV-DN1-SOURCE-MATERIALIZATION-001
+worker: sv-dn1-source-materialization-worker
+handoff: docs/SV_DN1_SOURCE_MATERIALIZATION_MIRROR_HANDOFF.md
+state: HANDOFF_READY / source merged
+PR #337: MERGED
+merge_commit: f5ca06543d1dd17b3095d424dc5eed578c15299d
+```
+
+This predecessor may materialize the exact pinned demo-suite bytes without GitHub credentials, remote checkout, repository writeback, or observation authority. Completion only releases the existing resident observer's local-source prerequisite; it does not perform the Hugging Face observation.
+
 ## Current state
 
 ```text
@@ -175,7 +190,7 @@ real public web parsed preflight: OBSERVED / NONADMISSIBLE_AS_LIVE_SOURCE_CAPTUR
 .github worker implementation: MERGED
 .github cost basis: MERGED
 .github tests: MERGED
-exact pinned local source: NOT OBSERVED
+exact pinned local source: NOT OBSERVED / predecessor SV-DN1-SOURCE-MATERIALIZATION-001 registered
 resident source capture: NOT OBSERVED
 raw-byte digest: NOT OBSERVED
 HF semantic exchange runtime: NOT OBSERVED
