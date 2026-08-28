@@ -70,7 +70,8 @@
     "provider_operation_authority": "NONE",
     "site_repository_mutation_authority": "NONE",
     "physical_additional_machine_required": false,
-    "third_party_runtime_required": false
+    "third_party_runtime_required": false,
+    "policy_version": "tvc-coinbase-intr-resident-activation-v0.1"
   },
   "execution": {
     "required_capabilities": [
