@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SV-DN1-SOURCE-MATERIALIZATION-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:sv-dn1-source-materialization-v1",
+      "authority_ref": "handoffs/SV-DN1-SOURCE-MATERIALIZATION-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "public_source_acquisition",
+        "exact_source_materialization",
+        "evidence_class_preservation"
+      ],
+      "command": [
+        "python",
+        "workers/sv_dn1_source_materialization_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SV_DN1_MATERIALIZED_SOURCE_ROOT",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/state/sv-dn1-source-materialization",
+      "bound_state_allowed_paths": [
+        "materialization/**",
+        "receipts/**"
+      ],
+      "timeout_seconds": 300,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Credential-free public raw source acquisition only from raw.githubusercontent.com.",
+        "No Git client, remote checkout, GitHub token, repository writeback, Hugging Face observation, SDK admission, governance, publication or certification authority.",
+        "Every persisted source object is validated by admitted Git blob SHA-1 before completion.",
+        "Completion materializes the exact local source prerequisite consumed by SV-DN1-RESIDENT-OBSERVER-001."
+      ]
+    }
+  ]
+}
