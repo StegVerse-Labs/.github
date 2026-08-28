@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-08-28T00:47:00-05:00",
+  "updated_at": "2026-08-28T07:35:00-05:00",
   "state": "BLOCKED_SOVEREIGN_NODE_REQUIRED_NON_HEARTBEAT",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
@@ -20,7 +20,8 @@
       "A hosted provider or GitHub Actions becomes required primary runtime.",
       "A NON-TV/TVC credential or GitHub token becomes runtime authority.",
       "A sovereign-node receipt is fabricated without actual node/service evidence.",
-      "Historical HB30/HB31 or the iPhone capsule is re-executed as a prerequisite after HB32 protocol activation."
+      "Historical HB30/HB31 or the iPhone capsule is re-executed as a prerequisite after HB32 protocol activation.",
+      "Render, Vercel, Cloudflare hosted runtime, GitHub Actions, or another third-party process host is made a required activation dependency or allowed to satisfy sovereign resident proof."
     ],
     "expires_at": null,
     "authority_ceiling": [
@@ -79,8 +80,14 @@
     "credential_authority": "TV/TVC",
     "github_token_production_authority": "NONE",
     "non_tv_tvc_secret_or_token_allowed": false,
-    "third_party_runtime_role": "FALLBACK_ONLY",
-    "stegverse_primary": true
+    "third_party_runtime_role": "OPTIONAL_NON_AUTHORIZING_FALLBACK_METHODS_ONLY",
+    "stegverse_primary": true,
+    "render_runtime_dependency": false,
+    "render_fallback_method_allowed": true,
+    "render_may_satisfy_g18_activation": false,
+    "render_credential_authority": "NONE",
+    "render_canonical_state_authority": "NONE",
+    "render_heartbeat_authority": "NONE"
   },
   "execution": {
     "required_capabilities": [
@@ -170,7 +177,7 @@
     "blocker_reason": "NON_HOSTED_NATIVE_RESIDENT_EXECUTION_NOT_OBSERVED",
     "current_receipt_ref": "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "current_registry_state": "BLOCKED / G18 fence18 remains machine-owned",
-    "next_authorized_action": "WorkerCoordinator independently admits RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001 under a fresh fence >22. The merged resolution worker now attempts the canonical v13 local-source bootstrap first if the resident registry is absent, with post-bootstrap StegFin explicitly skipped. Only a verified COMPLETE bootstrap carrying the exact existing G18 fence18 claim may proceed to refresh/consume the queued request. No hosted surface may satisfy this predicate.",
+    "next_authorized_action": "Continue G18 only through StegVerse-owned/federated sovereign execution. WorkerCoordinator may admit RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001 under a fresh fence >22; on an eligible non-hosted StegVerse surface the merged worker attempts canonical v13 local-source bootstrap first and proceeds only after COMPLETE plus the exact existing G18 fence18 claim. Optional third-party fallback methods may exist outside this activation proof, but Render/Vercel/Cloudflare/GitHub-hosted runtime may not satisfy or replace the sovereign resident predicate.",
     "terminal_when": [
       "eligible sovereign node is identified/declared",
       "runtime_materialized=true and native_service_active=true",
@@ -231,12 +238,15 @@
     "condition": "NON_HOSTED_NATIVE_RESIDENT_EXECUTION_NOT_OBSERVED",
     "owner": "StegVerse-Labs/.github#59/#122 machine-owned durable-runtime lane",
     "solution_required": true,
-    "next_solution_action": "WorkerCoordinator independently admits RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001 under a fresh fence >22. The merged resolution worker now attempts the canonical v13 local-source bootstrap first if the resident registry is absent, with post-bootstrap StegFin explicitly skipped. Only a verified COMPLETE bootstrap carrying the exact existing G18 fence18 claim may proceed to refresh/consume the queued request. No hosted surface may satisfy this predicate.",
+    "next_solution_action": "Continue G18 only through StegVerse-owned/federated sovereign execution. WorkerCoordinator may admit RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001 under a fresh fence >22; on an eligible non-hosted StegVerse surface the merged worker attempts canonical v13 local-source bootstrap first and proceeds only after COMPLETE plus the exact existing G18 fence18 claim. Optional third-party fallback methods may exist outside this activation proof, but Render/Vercel/Cloudflare/GitHub-hosted runtime may not satisfy or replace the sovereign resident predicate.",
     "machine_observable_completion_condition": "The sovereign-runtime activation receipt proves runtime_materialized/native_service_active/continuous_runtime_live plus restart/reconstruction/no-duplicate-fence predicates.",
     "third_party_dependency": false,
     "human_action_required": false,
     "iphone_hb30_action_required": false,
-    "heartbeat_activation_blocked": false
+    "heartbeat_activation_blocked": false,
+    "render_dependency": false,
+    "render_optional_fallback_method_allowed": true,
+    "render_may_satisfy_sovereign_activation": false
   },
   "release_hardening": {
     "carrier_runtime_separation_commit": "9598603471cf807cedd0030975a6bfe1a0899229",
