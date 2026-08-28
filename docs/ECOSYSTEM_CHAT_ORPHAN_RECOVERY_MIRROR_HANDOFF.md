@@ -285,3 +285,43 @@ activation: NOT PROVEN
 ```
 
 The merge therefore improves the resident execution path but does not satisfy runtime execution. The next machine boundary is observation or activation of an existing sovereign resident source-consumption/startup path. GitHub Actions remains validation-only.
+
+
+## Post-parent projection + TVC persistence closure — 2026-08-27
+
+The resident execution source chain now includes both post-terminal projection and the downstream TVC-owned durable evidence-persistence seam.
+
+```text
+.github resident request bridge:
+  merge: a81ee4e60916bb32aa7aa2c5f6a1cb25530b80e5
+  runtime request consumption: NOT OBSERVED
+
+.github automatic post-parent projection:
+  validated head: d539b7ef074be46ff835962d28c1a80a3fdd68ba
+  Heartbeat Worker validation: 33135790458 SUCCESS
+  Organization Control Plane: 33135790453 SUCCESS
+  merge: b746671d1db4d16ab486f94b9b0bd4683c2a3010
+  runtime projection observed: false
+
+TVC activation-evidence persistence:
+  task: TVC-ECOSYSTEM-CHAT-ACTIVATION-EVIDENCE-001
+  validated head: 7af83362d3314105831b50240a23cf8e9079cb47
+  validation: 33135951150 SUCCESS
+  merge: 4c8d3440fde168414c700f7e54909e81b2f27e1e
+  runtime packet: receipts/ecosystem-chat-activation-evidence/transport.latest.json
+  runtime persistence observed: false
+  expected state after genuine execution: READY_FOR_SITE_IMPORT
+
+Site downstream owner:
+  active lane: PR #474
+  claim: SITE-ECOSYSTEM-CHAT-ACTIVATION-RETENTION-CREDENTIAL-CLEAN-471-20260823
+  duplicate Site importer authorized: false
+```
+
+Current live receipts remain absent for source refresh, request consumption, resident targeted execution, terminal parent activation, and TVC transport persistence. Therefore the actual product state remains `HANDOFF_READY / LIVE_EXECUTION_PENDING`, not activated.
+
+The machine sequence is now source-complete through the TVC persistence boundary:
+
+`resident consumption -> fresh fence >22 -> local model -> TVC route -> exact LLM-adapter -> same-execution Master Records PASS -> persistent runtime READY -> parent PASS -> LLM sovereign projection -> TVC READY_FOR_SITE_IMPORT packet -> existing Site activation-retention owner`.
+
+No iPhone/WebAuthn/credential/provider action is required by this inference lane at the current boundary. No second user-operated machine may be introduced as a workaround.
