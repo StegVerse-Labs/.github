@@ -372,3 +372,42 @@ Current lifecycle:
 - sovereign worker source/registry: IMPLEMENTED / VALIDATION PENDING
 - resident task claim/execution: NOT OBSERVED
 - Graph SEND/FETCH/MARK_READ runtime evidence: NOT OBSERVED
+
+
+### ARA Graph worker registration merge — 2026-08-27
+
+The machine-owned ARA Graph runtime lane is now validated and merged into the existing sovereign worker runtime.
+
+```text
+stale PR #345: CLOSED / superseded
+current-base PR #350
+validated head: 38465ac35df52505f9497e569b2f0e4233775fae
+Heartbeat Worker Project run: 33138546012 SUCCESS
+Validate organization control plane run: 33138546141 SUCCESS
+merge: 23c39a16516eeb8f1d96a11f703c0d5dd875a77a
+```
+
+Installed machine surfaces:
+- `handoffs/SHWP-ARA-GRAPH-RUNTIME-086.json`
+- `control/worker-registry.d/ara-graph-runtime-086.json`
+- `control/process-worker-adapters.d/ara-graph-runtime-086.json`
+- `workers/ara_graph_runtime_worker.py`
+- `tests/test_ara_graph_runtime_worker.py`
+- `control/admissible-existence-retrospective-conformance.d/ara-graph-runtime-086.json`
+
+Admissible-Existence state:
+`stegverse:capability:ara-graph-runtime-execution:v1 = ADMISSIBLE`
+
+No ACTIVATED claim is made. The activation proof remains absent until a resident worker execution records real bounded provider evidence.
+
+Machine lifecycle:
+- worker source: IMPLEMENTED / VALIDATED / MERGED
+- executable handoff: IMPLEMENTED / VALIDATED / MERGED
+- worker registry/adapter: IMPLEMENTED / VALIDATED / MERGED
+- AE conformance: VALIDATED / MERGED
+- sovereign task claim: NOT OBSERVED
+- resident preflight READY: NOT OBSERVED
+- provider operation result: NOT OBSERVED
+- capability ACTIVATED: NO
+
+The session has no remaining implementation, validation, integration, credential, runtime, claim, or fence authority in this lane. Live continuation belongs to the registered sovereign worker + TV/TVC runtime authority.
