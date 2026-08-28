@@ -239,3 +239,17 @@ resident consumption: NOT OBSERVED
 G18 activation: NOT OBSERVED
 authority effect: NONE_SOURCE_ONLY
 ```
+
+
+### G18 canonical self-bootstrap escalation repair — 2026-08-28
+
+```text
+PR: StegVerse-Labs/.github#357
+merge: 29da9372c705bee88de0e1005af8006af75e311e
+organization control-plane validation: 33144804379 SUCCESS
+Heartbeat Worker Project validation: 33144804403 SUCCESS
+```
+
+The registered G18 resident-request resolution worker no longer escalates merely because the resident `worker-registry.json` is absent. On an eligible non-hosted local source surface it first invokes the already-released canonical v13 sovereign bootstrap with post-bootstrap StegFin explicitly skipped. Only a verified COMPLETE bootstrap that materializes the exact existing G18 fence18 claim may proceed to source refresh and request consumption.
+
+This removes a circular source blocker. It does not prove that a non-hosted native resident actually executed the bootstrap. Hosted GitHub/Render/Vercel/Cloudflare surfaces remain invalid sovereign-runtime evidence.
