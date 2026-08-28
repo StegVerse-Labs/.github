@@ -4,11 +4,15 @@ import importlib.util
 import json
 import tempfile
 import unittest
+import sys
 from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
+SCRIPTS = ROOT / "scripts"
+if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
 
 REFRESH_SPEC = importlib.util.spec_from_file_location(
     "refresh_sovereign_worker_runtime_source",
