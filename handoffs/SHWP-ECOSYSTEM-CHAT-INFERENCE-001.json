@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
   "created_at": "2026-08-09T19:59:00Z",
-  "updated_at": "2026-08-27T21:26:00-05:00",
+  "updated_at": "2026-08-27T21:39:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
@@ -64,7 +64,8 @@
       "tests/test_independent_ecosystem_chat_parent_executor.py",
       "control/resident-execution-request.json",
       "scripts/consume_resident_execution_request.py",
-      "tests/test_resident_execution_request.py"
+      "tests/test_resident_execution_request.py",
+      "StegVerse-Labs/TVC:tasks/TVC-ECOSYSTEM-CHAT-ACTIVATION-EVIDENCE-001.json"
     ],
     "dependencies": [],
     "parent_task_id": null,
@@ -205,6 +206,24 @@
           "result": "PASS"
         }
       }
+    },
+    "post_projection_persistence": {
+      "state": "MERGED_VALIDATED_RUNTIME_NOT_OBSERVED",
+      "owner": "StegVerse-Labs/TVC",
+      "task_ref": "tasks/TVC-ECOSYSTEM-CHAT-ACTIVATION-EVIDENCE-001.json",
+      "handoff_ref": "docs/ECOSYSTEM_CHAT_ACTIVATION_EVIDENCE_TRANSPORT_MIRROR_HANDOFF.md",
+      "adapter": "tvc_ecosystem_chat_activation_evidence.py",
+      "output": "receipts/ecosystem-chat-activation-evidence/transport.latest.json",
+      "source_projection_schema": "stegverse.ecosystem_chat.sovereign_activation_projection.v1",
+      "output_schema": "stegverse.tvc.ecosystem-chat-activation-evidence/v1",
+      "merge_commit": "4c8d3440fde168414c700f7e54909e81b2f27e1e",
+      "validation_run": 33135951150,
+      "runtime_persistence_observed": false,
+      "site_import_observed": false,
+      "credential_authority": "TV/TVC",
+      "site_mutation_authority": false,
+      "publication_authority": false,
+      "github_runtime_authority": "NONE"
     }
   },
   "continuity": {
