@@ -1,0 +1,26 @@
+{
+  "schema":"stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id":"KV-CONNECTION-HEALTH-RECONCILER-001",
+  "adapters":[{
+    "adapter_ref":"process:kv-connection-health-reconciler-v1",
+    "authority_ref":"handoffs/KV-CONNECTION-HEALTH-RECONCILER-001.json#authority",
+    "capabilities":["runtime_observation","bounded_process_execution","private_kv_state_reconciliation"],
+    "command":["python","workers/kv_connection_health_reconciler_worker.py"],
+    "cwd":".",
+    "enabled":true,
+    "env_allowlist":[
+      "STEGVERSE_CVK_ROOT",
+      "STEGVERSE_KV_ROOT",
+      "STEGVERSE_KV_SOURCE_CHANGE_INPUT",
+      "PATH","HOME","LANG","LC_ALL","XDG_STATE_HOME","XDG_CONFIG_HOME"
+    ],
+    "notes":[
+      "Executes only on a genuine sovereign/resident worker runtime.",
+      "Uses exact locally materialized continuity-vault-kit source for canonical state transitions.",
+      "Mutates only private KV connection registry/source-change/health evidence surfaces.",
+      "Performs no provider network access, credential resolution, or provider operation."
+    ],
+    "timeout_seconds":300,
+    "type":"process_json_v0.1"
+  }]
+}
