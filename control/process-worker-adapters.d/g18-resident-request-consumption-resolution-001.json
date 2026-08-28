@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:g18-resident-request-consumption-resolution-v1",
+      "authority_ref": "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "durable_state_reconstruction",
+        "g18_resident_request_consumption_resolution"
+      ],
+      "command": [
+        "python",
+        "workers/g18_resident_request_consumption_resolution_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_HEARTBEAT_SOURCE_ROOT",
+        "STEGVERSE_HEARTBEAT_ROOT",
+        "STEGVERSE_SOVEREIGN_NODE",
+        "HOME",
+        "XDG_STATE_HOME",
+        "XDG_CONFIG_HOME",
+        "LOCALAPPDATA"
+      ],
+      "notes": [
+        "Executes only on an eligible non-hosted local resident surface; hosted validation cannot satisfy completion.",
+        "Refreshes already-local canonical source into the existing resident runtime and invokes the already-merged one-shot G18 request consumer.",
+        "The resolution task has its own independent fence but may not mint, replace, or widen the existing G18 fence18 claim.",
+        "No GitHub/provider credential, network source fetch, HeartBeat progression authority, route authority, or second machine is admitted."
+      ],
+      "timeout_seconds": 1100,
+      "type": "process_json_v0.1"
+    }
+  ]
+}\n
