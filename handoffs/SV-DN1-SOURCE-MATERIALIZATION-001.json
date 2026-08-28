@@ -1,0 +1,164 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SV-DN1-SOURCE-MATERIALIZATION-001",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "SV-DN1-EXACT-SOURCE-MATERIALIZATION-001",
+    "objective": "Materialize the exact pinned public stegverse-demo-suite source on the existing sovereign carrier without credentials, remote checkout, repository mutation, evaluation, or authority expansion.",
+    "success_predicates": [
+      "canonical runtime manifest blob identity verifies",
+      "every manifest-listed production source blob verifies",
+      "resident-required support file blobs verify",
+      "exact local source root is materialized",
+      "post-write validation passes",
+      "github_token_used=false",
+      "credential_used=false",
+      "repository_writeback_performed=false"
+    ],
+    "authority_ceiling": [
+      "public_source_acquisition",
+      "bounded_process_execution",
+      "exact_source_materialization",
+      "evidence_class_preservation",
+      "no repository writeback authority",
+      "no observation/evaluation authority",
+      "no SDK/governance/certification authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SV-DN1-SOURCE-MATERIALIZATION-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "sv-dn1:exact-source-materialization",
+    "worker_registry_ref": "control/worker-registry.d/sv-dn1-source-materialization-001.json",
+    "worker_id": "sv-dn1-source-materialization-worker",
+    "adapter_ref": "process:sv-dn1-source-materialization-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "evidence review only",
+    "priority": "release",
+    "parent_task_id": null,
+    "derivation_reason": "The resident observer is intentionally forbidden from remote checkout and currently reports exact pinned local demo-suite source as a blocker. This handoff creates a separate credential-free source-materialization prerequisite without duplicating observation ownership.",
+    "derivation_depth": 0,
+    "source_handoff_ref": "docs/SV_DN1_SOURCE_MATERIALIZATION_MIRROR_HANDOFF.md"
+  },
+  "authority": {
+    "authority_source": "canonical SV-DN-1 runtime source manifest + sovereign WorkerCoordinator",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "sv-dn1-source-materialization-v1",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "repository_writeback_authority": false,
+    "provider_credential_authority": false,
+    "public_source_materialization_authority": true,
+    "observation_authority": false,
+    "sdk_admission_authority": false,
+    "governance_decision_authority": false,
+    "certification_authority": false,
+    "publication_authority": false,
+    "execution_authority_created": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "public_source_acquisition",
+      "exact_source_materialization",
+      "evidence_class_preservation"
+    ],
+    "worker": "workers/sv_dn1_source_materialization_worker.py",
+    "allowed_services": [],
+    "max_actions": 24,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 24,
+    "rate_class": "sv_dn1_exact_source_materialization",
+    "hosted_execution_allowed": false,
+    "bound_state_root": "~/.stegverse/state/sv-dn1-source-materialization",
+    "bound_state_allowed_paths": [
+      "materialization/**",
+      "receipts/**"
+    ],
+    "materialized_source_root": "~/.stegverse/source/stegverse-demo-suite",
+    "remote_checkout_allowed": false,
+    "git_client_required": false,
+    "public_network_access": {
+      "enabled": true,
+      "methods": [
+        "GET"
+      ],
+      "allowed_hosts": [
+        "raw.githubusercontent.com"
+      ],
+      "authenticated": false,
+      "credential_forwarding": false
+    }
+  },
+  "input_contract": {
+    "source_repository": "StegVerse-org/stegverse-demo-suite",
+    "manifest_ref": "main",
+    "manifest_path": "config/sv_dn1_runtime_source_manifest.json",
+    "manifest_git_blob_sha1": "47760f63898fff0f5ba6dfab97eee5acd7290c9b",
+    "support_files": {
+      "docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md": "ba9acf76fd6eb488e5f3b9f9be01bb17e3a02d48",
+      "tasks/SV-DN1-RESIDENT-OBSERVER-001.json": "0dbe655a86bea3d2a0f77aa2ada57a62882f00db"
+    },
+    "credential_authority": "TV/TVC"
+  },
+  "activation": {
+    "carrier": "independent_task_control",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "docs/SV_DN1_SOURCE_MATERIALIZATION_MIRROR_HANDOFF.md",
+    "recheck_trigger": "each admitted assignment opportunity until exact pinned source materialization receipt exists",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "master_records_required": false,
+    "result_receipt": "~/.stegverse/state/sv-dn1-source-materialization/receipts/latest.json",
+    "materialization_validation": "~/.stegverse/state/sv-dn1-source-materialization/materialization/validation.json",
+    "repository_persistence_requires_separate_admission": true
+  },
+  "completion": {
+    "next_authorized_action": "After a verified source materialization receipt exists, the canonical resident observer task may consume the exact local source root and perform its existing fenced public observation.",
+    "terminal_when": [
+      "SV_DN1_EXACT_SOURCE_MATERIALIZATION_COMPLETE",
+      "manifest_blob_verified=true",
+      "production_source_blobs_verified=true",
+      "support_file_blobs_verified=true",
+      "post_write_validation=PASS",
+      "github_token_used=false",
+      "credential_used=false",
+      "repository_writeback_performed=false"
+    ],
+    "release_condition": "Exact pinned source bytes required by the resident observer are materialized on the same sovereign carrier with a hash-verified local root."
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:sv-dn1-exact-source-materialization:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "docs/SV_DN1_SOURCE_MATERIALIZATION_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SV-DN1-SOURCE-MATERIALIZATION-001.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/sv_dn1_source_materialization_worker.py",
+      "control/process-worker-adapters.d/sv-dn1-source-materialization-001.json",
+      "control/worker-registry.d/sv-dn1-source-materialization-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "SOVEREIGN_SOURCE_MATERIALIZATION_RECEIPT_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "sv-dn1-source-materialization-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  }
+}
