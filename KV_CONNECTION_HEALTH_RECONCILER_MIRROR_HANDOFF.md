@@ -1,6 +1,6 @@
 # KV Connection Health Reconciler Mirror Handoff
 
-Status: SOURCE_LANE_OPEN / IMPLEMENTATION_IN_PROGRESS
+Status: SOURCE_IMPLEMENTED_ON_BRANCH / VALIDATION_PENDING
 Repository: `StegVerse-Labs/.github`
 Issue: #364
 Branch: `feature/kv-connection-health-reconciler`
@@ -48,6 +48,8 @@ resident provider-change observer
 - `cost-basis/worker-runtime/kv-connection-health-reconciler.json`
 - `workers/kv_connection_health_reconciler_worker.py`
 - `tests/test_kv_connection_health_reconciler_worker.py`
+- `scripts/check_kv_connection_health_reconciler.py`
+- `control/admissible-existence-retrospective-conformance.d/kv-connection-health-reconciler-001.json`
 
 ## Admission dependencies
 
@@ -59,4 +61,4 @@ resident provider-change observer
 
 ## Current boundary
 
-Source lane only. No private KV connection state has been reconciled by this branch and no resident execution is claimed.
+Machine-executable source and WorkerCoordinator registration are implemented on this branch. No private KV connection state has been reconciled by this branch and no resident execution is claimed.
