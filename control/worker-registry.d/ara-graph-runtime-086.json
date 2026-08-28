@@ -38,6 +38,33 @@
         "carrier_trigger_required": false,
         "fresh_fence_required": true,
         "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      },
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:ara-graph-runtime-execution:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "StegVerse-Labs/TVC#86",
+          "StegVerse-Labs/TVC@e36dc36f697afc27936403db171f23a6cc45edf3",
+          "StegVerse-Labs/TVC/tasks/TVC-ARA-GRAPH-RUNTIME-EXECUTION-086.json"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/SHWP-ARA-GRAPH-RUNTIME-086.json",
+          "workers/ara_graph_runtime_worker.py",
+          "control/worker-registry.d/ara-graph-runtime-086.json",
+          "control/process-worker-adapters.d/ara-graph-runtime-086.json"
+        ],
+        "integration_evidence_refs": [],
+        "activation_proof_ref": null,
+        "blockers": [
+          "LIVE_ARA_GRAPH_PROVIDER_OPERATION_RECEIPT_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "ara-graph-runtime-worker + TV/TVC runtime authority + StegVerse-Labs/TVC#86",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
       }
     }
   ],
