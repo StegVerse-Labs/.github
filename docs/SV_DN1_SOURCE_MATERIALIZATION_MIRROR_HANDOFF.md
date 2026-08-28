@@ -6,7 +6,7 @@
 goal_id: SV-DN1-EXACT-SOURCE-MATERIALIZATION-001
 task_id: SV-DN1-SOURCE-MATERIALIZATION-001
 repository: StegVerse-Labs/.github
-branch: feature/sv-dn1-source-materialization
+branch: main
 canonical product owner: StegVerse-org/stegverse-demo-suite
 canonical product handoff: docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md
 upstream runtime manifest: config/sv_dn1_runtime_source_manifest.json
@@ -175,12 +175,28 @@ This task does not claim that the resident observer has executed merely because 
 canonical runtime manifest: MERGED
 resident source-pin validation: MERGED
 resident materialization blocker: OBSERVED
-dedicated source-materialization handoff: IMPLEMENTING
-dedicated worker: IMPLEMENTING
-worker registry/process adapter: IMPLEMENTING
+dedicated source-materialization handoff: MERGED
+dedicated worker: MERGED
+worker registry/process adapter: MERGED
 runtime materialization receipt: NOT OBSERVED
 resident observation: NOT OBSERVED
 ```
+
+## Merge and validation evidence
+
+```text
+PR #337: MERGED
+merge_commit: f5ca06543d1dd17b3095d424dc5eed578c15299d
+validated_head: a60e928c8ba304ab2457e8f1fd8c4119b07d7a1f
+organization control plane run 33135530888 / job 98734500203: PASS
+heartbeat worker validation run 33135530923 / job 98734508189: PASS
+complete deterministic repository suite: PASS
+AE conformance: PASS
+no GitHub token authority: PASS
+atomic source swap cwd-preservation regression: PASS
+```
+
+The source-materialization worker is registered and machine-owned on main. Runtime completion still requires an authentic sovereign WorkerCoordinator claim/fence and resulting materialization receipt.
 
 ## Archive readiness
 
