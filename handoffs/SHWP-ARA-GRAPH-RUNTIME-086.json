@@ -1,0 +1,119 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-ARA-GRAPH-RUNTIME-086",
+  "created_at": "2026-08-27T22:06:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "TVC-ARA-GRAPH-RUNTIME-EXECUTION-086",
+    "objective": "Execute one already-admitted bounded ARA Microsoft Graph operation on the existing TV/TVC resident runtime after the repository-native aggregate preflight reaches READY_FOR_RESIDENT_INTAKE, without exposing credentials or granting authority to heartbeat.",
+    "success_predicates": [
+      "current already-local TVC source contains merge e36dc36f697afc27936403db171f23a6cc45edf3 as an ancestor and is clean",
+      "tvc.ara_graph.activation_preflight returns READY_FOR_RESIDENT_INTAKE with a 64-character request hash",
+      "preflight reports resident_intake_invoked=false and provider_operation_performed=false",
+      "registered worker declares STEGTV_ARA_GRAPH_RUNTIME_AUTHORITY=TV/TVC only for tvc.ara_graph.execute_once",
+      "tvc.ara_graph.execute_once returns PROVIDER_OPERATION_RESULT_RECORDED",
+      "provider result is bound to the exact preflight request hash",
+      "credential_material_exported=false and provider_access_material_exported=false",
+      "runtime_activation_claimed=false and ara_release_authority_effect=NONE"
+    ],
+    "failure_predicates": [
+      "hosted runtime marker is active",
+      "current local TVC source is absent, dirty, missing required files, or does not contain the required source merge",
+      "worker attempts network source fetch or source mutation",
+      "aggregate preflight is not READY_FOR_RESIDENT_INTAKE",
+      "request hash changes between preflight and execute-once",
+      "any credential or provider-access material is exported",
+      "GitHub Actions, Render, Vercel, Cloudflare, or heartbeat is treated as runtime or credential authority"
+    ],
+    "authority_ceiling": [
+      "already-local TVC source observation",
+      "bounded repository-native TVC dispatcher execution",
+      "secret-free receipt persistence",
+      "one admitted ARA Graph provider operation per worker execution",
+      "no credential acquisition or transport",
+      "no source fetch or mutation",
+      "no ARA release authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SHWP-ARA-GRAPH-RUNTIME-086",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-Labs/TVC#86",
+      "StegVerse-Labs/TVC@e36dc36f697afc27936403db171f23a6cc45edf3",
+      "StegVerse-Labs/TVC/tasks/TVC-ARA-GRAPH-086.json",
+      "StegVerse-Labs/TVC/tasks/TVC-ARA-GRAPH-RUNTIME-EXECUTION-086.json",
+      "StegVerse-Labs/TVC/docs/CREDENTIAL_MODEL_CONSISTENCY_MIRROR_HANDOFF.md",
+      "workers/ara_graph_runtime_worker.py"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "TVC issue #86 source/control is complete and explicitly released to TV/TVC runtime authority. This worker only consumes the released dispatcher path on already-local current TVC source.",
+    "canonical_owner_ref": "StegVerse-Labs/TVC#86",
+    "canonical_lineage_key": "tvc:ara-graph:runtime-execution",
+    "derivation_depth": 0,
+    "priority": "release"
+  },
+  "authority": {
+    "authority_source": "StegVerse-Labs/TVC#86 + StegVerse-Labs/TVC/tasks/TVC-ARA-GRAPH-RUNTIME-EXECUTION-086.json",
+    "heartbeat_grants_execution_authority": false,
+    "heartbeat_dependency": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "policy_version": "shwp-ara-graph-runtime-v0.1"
+  },
+  "execution": {
+    "required_capabilities": [
+      "tvc_ara_graph_runtime_execution"
+    ],
+    "allowed_paths": [
+      "receipts/ara-graph-runtime/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 4,
+    "max_retries": 4096,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 24000,
+    "rate_class": "tvc_ara_graph_runtime_execution",
+    "required_tvc_ancestor": "e36dc36f697afc27936403db171f23a6cc45edf3",
+    "preflight_command": [
+      "python",
+      "tools/task_dispatcher.py",
+      "tvc.ara_graph.activation_preflight"
+    ],
+    "execute_command": [
+      "python",
+      "tools/task_dispatcher.py",
+      "tvc.ara_graph.execute_once"
+    ],
+    "execute_authority_environment": {
+      "STEGTV_ARA_GRAPH_RUNTIME_AUTHORITY": "TV/TVC"
+    },
+    "source_fetch_allowed": false,
+    "source_mutation_allowed": false
+  },
+  "activation": {
+    "carrier": "separate_worker_runtime",
+    "heartbeat_dependency": false,
+    "carrier_trigger_required": false,
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "StegVerse-Labs/TVC#86 runtime-authority boundary",
+    "recheck_trigger": "task-control evaluation while no completed secret-free ARA Graph runtime receipt exists",
+    "checkout_policy": "separate_fenced_independent_task_control"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/ara-graph-runtime/SHWP-ARA-GRAPH-RUNTIME-086.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "On the existing sovereign resident surface with current already-local TVC source, execute this independently admitted task through `python scripts/run_worker_runtime.py --task-id SHWP-ARA-GRAPH-RUNTIME-086`. The worker must stop BLOCKED unless TVC preflight is READY; only then may it declare TV/TVC runtime authority to the already-merged execute-once dispatcher.",
+    "terminal_when": [
+      "A COMPLETED receipt records one PROVIDER_OPERATION_RESULT_RECORDED outcome bound to the same preflight request hash with credential_material_exported=false, provider_access_material_exported=false, runtime_activation_claimed=false, and ara_release_authority_effect=NONE"
+    ]
+  },
+  "block": null
+}
