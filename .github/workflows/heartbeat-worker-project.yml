@@ -57,6 +57,12 @@ on:
       - 'workers/stegfin_early_adopter_contribution_validation_worker.py'
       - 'workers/ara_graph_runtime_worker.py'
       - 'tests/test_ara_graph_runtime_worker.py'
+      - 'tests/test_ara_graph_resident_execution_request.py'
+      - 'scripts/consume_ara_graph_resident_execution_request.py'
+      - 'scripts/refresh_and_execute_resident_task.py'
+      - 'scripts/refresh_sovereign_worker_runtime_source.py'
+      - 'scripts/install_sovereign_worker_source_refresh_service.py'
+      - 'control/resident-execution-request.d/ara-graph-runtime-086.json'
       - 'handoffs/SHWP-ARA-GRAPH-RUNTIME-086.json'
       - 'control/worker-registry.d/ara-graph-runtime-086.json'
       - 'control/process-worker-adapters.d/ara-graph-runtime-086.json'
@@ -168,6 +174,9 @@ jobs:
 
       - name: Validate ARA Graph sovereign runtime worker
         run: python -m unittest -v tests.test_ara_graph_runtime_worker
+
+      - name: Validate ARA Graph resident execution request
+        run: python -m unittest -v tests.test_ara_graph_resident_execution_request tests.test_sovereign_worker_source_refresh
 
       - name: Validate consolidated Test Lanes autolaunch binding
         run: python -m unittest -v tests.test_test_lanes_autolaunch_binding
