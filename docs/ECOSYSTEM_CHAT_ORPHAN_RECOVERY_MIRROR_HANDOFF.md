@@ -388,5 +388,23 @@ The canonical consumer now reads the dedicated multi-request registry entry. The
 
 The sovereign source-refresh path already copies the entire `control/resident-execution-request.d` directory, and the deterministic refresh tests now assert that the Ecosystem Chat request survives source refresh independently of the singleton.
 
-This is source durability only. It does not prove resident source refresh, request consumption, fresh fence issuance, model execution, Master Records reconstruction, or product activation.
+The durability correction was exact-head validated and merged:
+
+```text
+PR: #360
+exact validated head: fb441403fd28f5f1638494c5cca88f25b97a05c0
+Heartbeat Worker Project: 33171649292 SUCCESS
+Organization control plane: 33171649218 SUCCESS
+merge: 6531070319f562bbcd18a3136f21e21b3ded244c
+claim state: COMPLETE_RELEASED
+```
+
+The canonical executable handoff `handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json` is now reconciled to:
+- canonical request ref `control/resident-execution-request.d/ecosystem-chat-parent-001.json`;
+- compatibility singleton `control/resident-execution-request.json`;
+- current request id `RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002`;
+- durability merge and validation evidence;
+- `runtime_execution_observed:false`.
+
+This is source durability and machine-readable reconciliation only. It does not prove resident source refresh, request consumption, fresh fence issuance, model execution, Master Records reconstruction, or product activation.
 
