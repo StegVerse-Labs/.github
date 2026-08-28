@@ -148,6 +148,43 @@ def consume(
             result = candidate
             break
 
+    projection = {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "PARENT_NOT_TERMINAL_PASS"}
+    llm_root_raw = os.environ.get("STEGVERSE_LLM_ADAPTER_ROOT", "").strip()
+    terminal_pass = bool(
+        isinstance(result, dict)
+        and result.get("state") == "PASS"
+        and result.get("same_execution") is True
+        and result.get("persistent_conversational_runtime_ready") is True
+    )
+    if terminal_pass and llm_root_raw:
+        llm_root = Path(llm_root_raw).expanduser().resolve()
+        projector = llm_root / "scripts/project_independent_parent_activation.py"
+        output = llm_root / "receipts/ecosystem-chat-sovereign-activation.verified.json"
+        if projector.is_file():
+            projected = runner(
+                [sys.executable, str(projector), "--control-root", str(runtime), "--output", str(output)],
+                cwd=llm_root,
+                capture_output=True,
+                text=True,
+                check=False,
+                env={
+                    "PATH": os.environ.get("PATH", ""),
+                    "HOME": os.environ.get("HOME", ""),
+                    "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC",
+                },
+            )
+            projection = {
+                "attempted": True,
+                "state": "VERIFIED" if projected.returncode == 0 and output.is_file() else "FAIL_CLOSED",
+                "returncode": projected.returncode,
+                "output": str(output),
+                "authority_effect": "NONE",
+            }
+        else:
+            projection = {"attempted": False, "state": "NOT_AVAILABLE", "reason": "LLM_ADAPTER_PROJECTOR_NOT_MATERIALIZED"}
+    elif terminal_pass:
+        projection = {"attempted": False, "state": "NOT_AVAILABLE", "reason": "LLM_ADAPTER_ROOT_NOT_MATERIALIZED"}
+
     receipt = {
         "schema": "stegverse.resident-execution-request-consumption/v1",
         "state": "ATTEMPT_RECORDED",
@@ -159,6 +196,7 @@ def consume(
         "execution_returncode": completed.returncode,
         "execution_result_observed": isinstance(result, dict),
         "execution_result": result,
+        "post_parent_activation_projection": projection,
         "runtime_execution_attempted": True,
         "request_granted_authority": False,
         "fresh_fence_minimum_exclusive": MINIMUM_FENCE_EXCLUSIVE,
