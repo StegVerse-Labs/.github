@@ -133,6 +133,29 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
         for name in ("GITHUB_TOKEN", "GH_TOKEN", "ZEROEX_API_KEY", "WALLET_PRIVATE_KEY", "TVC_TOKEN"):
             self.assertNotIn(name, allowlist)
 
+
+    def test_v13_resolver_adapter_allows_local_source_and_state_overrides_without_credentials(self) -> None:
+        adapters = json.loads((ROOT / "control" / "process-worker-adapters.json").read_text())
+        adapter = next(row for row in adapters["adapters"] if row["adapter_ref"] == "process:sovereign-node-repository-resolution-v1")
+        allowlist = set(adapter["env_allowlist"])
+        self.assertIn("STEGVERSE_HEARTBEAT_SOURCE_ROOT", allowlist)
+        self.assertIn("STEGVERSE_HEARTBEAT_ROOT", allowlist)
+        for name in ("GITHUB_TOKEN", "GH_TOKEN", "ZEROEX_API_KEY", "WALLET_PRIVATE_KEY", "TVC_TOKEN"):
+            self.assertNotIn(name, allowlist)
+        notes = " ".join(adapter["notes"])
+        self.assertIn("derive the existing v0.4 declaration", notes)
+        self.assertNotIn("may not manufacture a node declaration", notes)
+
+    def test_g18_handoff_records_merged_v13_execution_repair_not_candidate(self) -> None:
+        handoff = json.loads((ROOT / "handoffs" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text())
+        repairs = handoff["released_repairs"]
+        self.assertNotIn("g18_v13_runtime_execution_candidate", repairs)
+        merged = repairs["g18_v13_runtime_execution"]
+        self.assertEqual(merged["pull_request"], 344)
+        self.assertEqual(merged["merge_commit"], "72e9315e557fdcc6e9d5c94c370993da6a2f7f88")
+        self.assertEqual(merged["validation_runs"], [33138207869, 33138207844])
+        self.assertEqual(merged["runtime_effect"], "SOURCE_ONLY_NO_SOVEREIGN_RUNTIME_RECEIPT_CLAIM")
+
     def test_v11_resolution_successor_inherits_release_priority_from_legacy_shape(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp); (root / "handoffs").mkdir(parents=True)
