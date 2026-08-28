@@ -1,6 +1,6 @@
 # KV Provider Change Observer Mirror Handoff
 
-Status: SOURCE_LANE_OPEN / IMPLEMENTATION_IN_PROGRESS
+Status: SOURCE_IMPLEMENTED_ON_BRANCH / VALIDATION_PENDING
 Repository: `StegVerse-Labs/.github`
 Issue: #362
 Branch: `feature/kv-provider-change-observer`
@@ -53,6 +53,8 @@ KV connection assembly monitoring targets
 - `control/process-worker-adapters.d/kv-provider-change-observer-001.json`
 - `workers/kv_provider_change_observer_worker.py`
 - `tests/test_kv_provider_change_observer_worker.py`
+- `schemas/kv-provider-monitor-targets.v1.schema.json`
+- `scripts/check_kv_provider_change_observer.py`
 
 ## Admission dependencies
 
@@ -72,4 +74,4 @@ and never marks a connection as VERIFIED by itself.
 
 ## Current boundary
 
-Source lane only. No provider source has been polled by this branch and no resident execution is claimed.
+Machine-executable source and worker registration are implemented on this branch. No provider source has been polled by this branch and no resident execution is claimed.
