@@ -55,6 +55,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             (source / "control/task-vector-index.json").write_text('{"schema":"stegverse.cosv-task-vector-index/v0.1"}\n', encoding="utf-8")
             (source / "control/resident-execution-request.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
             (source / "control/resident-execution-request.d/sv-dn1.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
+            (source / "control/resident-execution-request.d/ecosystem-chat-parent-001.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
             for rel in refresh_mod.STATIC_FILES:
                 path = source / rel
                 path.parent.mkdir(parents=True, exist_ok=True)
@@ -93,6 +94,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertTrue((runtime / "control/task-vector-index.json").is_file())
             self.assertTrue((runtime / "control/resident-execution-request.json").is_file())
             self.assertTrue((runtime / "control/resident-execution-request.d/sv-dn1.json").is_file())
+            self.assertTrue((runtime / "control/resident-execution-request.d/ecosystem-chat-parent-001.json").is_file())
             self.assertTrue((runtime / "state_language/__init__.py").is_file())
             for rel in (
                 "scripts/run_worker_runtime.py",
