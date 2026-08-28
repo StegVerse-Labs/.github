@@ -35,7 +35,7 @@
     "repository": "StegVerse-Labs/.github",
     "canonical_owner_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#constraint",
     "canonical_lineage_key": "shwp:durable-runtime-activation:resident-request-consumption-resolution",
-    "derivation_depth": 1,
+    "derivation_depth": 0,
     "priority": "release",
     "operational_state": "REQUIRED_RESOLUTION_EXECUTION",
     "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
@@ -47,7 +47,9 @@
       "scripts/consume_g18_resident_execution_request.py",
       "scripts/refresh_and_execute_resident_task.py",
       "workers/g18_resident_request_consumption_resolution_worker.py"
-    ]
+    ],
+    "parent_task_id": null,
+    "derivation_reason": "Blocker-resolution policy v2 requires the passive G18 resident-request wait to become an explicit registered machine-resolution capability. This root handoff preserves the parent G18 goal without inheriting or reusing its claim/fence."
   },
   "authority": {
     "authority_source": "control/blocker-resolution-policy.json + handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#constraint",
@@ -95,5 +97,32 @@
       "no new G18 claim/fence is minted"
     ],
     "next_authorized_action": "WorkerCoordinator independently admits this HANDOFF_READY resolution task under a fresh fence greater than 22 and executes process:g18-resident-request-consumption-resolution-v1 on an eligible sovereign resident surface."
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:g18-resident-request-consumption-resolution:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "control/blocker-resolution-policy.json",
+      "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+      "control/resident-execution-request.d/g18-sovereign-runtime-resume.json"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json",
+      "workers/g18_resident_request_consumption_resolution_worker.py",
+      "control/worker-registry.d/g18-resident-request-consumption-resolution-001.json",
+      "control/process-worker-adapters.d/g18-resident-request-consumption-resolution-001.json"
+    ],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": [
+      "G18_RESIDENT_REQUEST_CONSUMPTION_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "g18-resident-request-consumption-resolution-worker + SHWP-DURABLE-RUNTIME-ACTIVATION/G18 machine owner",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
   }
 }
