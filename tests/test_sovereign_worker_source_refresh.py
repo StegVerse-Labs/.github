@@ -95,6 +95,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "scripts/refresh_and_execute_resident_task.py",
                 "scripts/run_independent_ecosystem_chat_parent.py",
                 "scripts/consume_resident_execution_request.py",
+                "scripts/consume_g18_resident_execution_request.py",
                 "scripts/run_sv_dn1_first_round_chain.py",
                 "scripts/consume_sv_dn1_resident_execution_request.py",
                 "scripts/materialize_live_cosv_packet.py",
@@ -146,6 +147,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertIn("control/resident-execution-request.json", path_unit)
             self.assertIn("control/resident-execution-request.d", path_unit)
             self.assertIn("consume_resident_execution_request.py", service)
+            self.assertIn("consume_g18_resident_execution_request.py", service)
             self.assertIn("consume_sv_dn1_resident_execution_request.py", service)
             self.assertNotIn(f"PathChanged={source / 'control/worker-registry.json'}", path_unit)
             self.assertIn("authorizations", path_unit)
