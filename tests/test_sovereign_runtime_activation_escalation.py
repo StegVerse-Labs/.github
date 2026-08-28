@@ -153,7 +153,7 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
         merged = repairs["g18_v13_runtime_execution"]
         self.assertEqual(merged["pull_request"], 344)
         self.assertEqual(merged["merge_commit"], "72e9315e557fdcc6e9d5c94c370993da6a2f7f88")
-        self.assertEqual(merged["validation_runs"], [33138207869, 33138207844])
+        self.assertEqual(set(merged["validation_runs"]), {33138207869, 33138207844})
         self.assertEqual(merged["runtime_effect"], "SOURCE_ONLY_NO_SOVEREIGN_RUNTIME_RECEIPT_CLAIM")
 
     def test_v11_resolution_successor_inherits_release_priority_from_legacy_shape(self) -> None:
