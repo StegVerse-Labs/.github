@@ -192,5 +192,22 @@ class AraGraphResidentExecutionRequestTests(unittest.TestCase):
             self.assertFalse(receipt["runtime_execution_attempted"])
 
 
+    def test_generic_bridge_forwards_only_required_ara_nonsecret_bindings(self) -> None:
+        source = (ROOT / "scripts/refresh_and_execute_resident_task.py").read_text(encoding="utf-8")
+        for required in (
+            "STEGVERSE_ARA_MAIL_SENDER",
+            "STEGVERSE_ARA_MAIL_RECIPIENT",
+            "STEGVERSE_VAULT_AGENT_SOCKET",
+        ):
+            self.assertIn(required, source)
+        for forbidden in (
+            "STEGVERSE_MAIL_CLIENT_SECRET",
+            "STEGVERSE_MAIL_ACCESS_TOKEN",
+            "STEGVERSE_MAIL_REFRESH_TOKEN",
+            "AZURE_CLIENT_SECRET",
+        ):
+            self.assertNotIn(forbidden, source)
+
+
 if __name__ == "__main__":
     unittest.main()
