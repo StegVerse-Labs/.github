@@ -1,0 +1,99 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
+  "created_at": "2026-08-27T23:19:00-05:00",
+  "updated_at": "2026-08-27T23:19:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
+    "objective": "Actively consume the already-merged one-shot G18 resident execution request on an eligible deployment-local sovereign runtime by refreshing already-local source and invoking the existing request consumer, without waiting for a filesystem watcher event and without minting or replacing the existing G18 claim/fence.",
+    "success_predicates": [
+      "A deployment-local resident WorkerCoordinator registry is present.",
+      "The exact existing G18 claim SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18 at fence18 is observed before consumption.",
+      "Already-local source is refreshed into the resident runtime without network fetch or credential acquisition.",
+      "The existing G18 request consumer records ATTEMPT_RECORDED or a matching prior ALREADY_CONSUMED state.",
+      "No new G18 claim/fence, HeartBeat authority, third-party runtime, or credential authority is created."
+    ],
+    "failure_predicates": [
+      "Hosted CI is treated as resident execution evidence.",
+      "A new G18 claim/fence is minted or the existing fence18 identity is replaced.",
+      "Source is fetched over a network or a GitHub/provider credential is acquired.",
+      "A missing sovereign resident is converted into a second-machine requirement by default."
+    ],
+    "authority_ceiling": [
+      "goal-preserving G18 resident request consumption resolution only",
+      "no G18 claim/fence creation or replacement",
+      "no heartbeat progression authority",
+      "no credential or route authority",
+      "no third-party primary runtime"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 3
+  },
+  "task": {
+    "task_id": "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#constraint",
+    "canonical_lineage_key": "shwp:durable-runtime-activation:resident-request-consumption-resolution",
+    "derivation_depth": 1,
+    "priority": "release",
+    "operational_state": "REQUIRED_RESOLUTION_EXECUTION",
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "fencing_token": null,
+    "source_refs": [
+      "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+      "control/resident-execution-request.d/g18-sovereign-runtime-resume.json",
+      "scripts/refresh_sovereign_worker_runtime_source.py",
+      "scripts/consume_g18_resident_execution_request.py",
+      "scripts/refresh_and_execute_resident_task.py",
+      "workers/g18_resident_request_consumption_resolution_worker.py"
+    ]
+  },
+  "authority": {
+    "authority_source": "control/blocker-resolution-policy.json + handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#constraint",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "policy_version": "g18-resident-request-consumption-resolution-v0.1",
+    "heartbeat_grants_execution_authority": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "third_party_runtime_required": false,
+    "physical_additional_machine_required": false,
+    "target_existing_g18_claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+    "target_existing_g18_fencing_token": 18,
+    "new_g18_claim_allowed": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "durable_state_reconstruction",
+      "g18_resident_request_consumption_resolution"
+    ],
+    "allowed_paths": [
+      "receipts/sovereign-host/**",
+      "control/resident-execution-request.d/**",
+      "StegVerse-Labs/.github"
+    ],
+    "allowed_services": [],
+    "max_actions": 4,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 16,
+    "rate_class": "g18_resident_request_consumption_resolution"
+  },
+  "completion": {
+    "runtime_activation_claimed": false,
+    "g18_terminalization_claimed": false,
+    "terminal_evidence": "receipts/sovereign-host/g18-resident-request-resolution.latest.json with state COMPLETED and transition_id G18_RESIDENT_REQUEST_CONSUMPTION_VERIFIED",
+    "terminal_when": [
+      "the exact existing G18 fence18 claim is observed on the resident runtime",
+      "local source refresh completes without network transport",
+      "the one-shot G18 consumer is invoked or an exact prior consumption is verified",
+      "no new G18 claim/fence is minted"
+    ],
+    "next_authorized_action": "WorkerCoordinator independently admits this HANDOFF_READY resolution task under a fresh fence greater than 22 and executes process:g18-resident-request-consumption-resolution-v1 on an eligible sovereign resident surface."
+  }
+}\n
