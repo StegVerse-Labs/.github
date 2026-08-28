@@ -51,7 +51,8 @@
       "docs/SV_DN1_RESIDENT_OBSERVER_MIRROR_HANDOFF.md",
       "StegVerse-org/stegverse-demo-suite:schemas/sv-dn1-intr-runtime-receipt.schema.json",
       "StegVerse-org/stegverse-demo-suite:scripts/build_sv_dn1_sdk_ingress_manifest.py",
-      "StegVerse-Labs/StegOS:docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md"
+      "StegVerse-Labs/StegOS:docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md",
+      "handoffs/SV-DN1-RESIDENT-OBSERVER-001.json"
     ],
     "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
     "canonical_lineage_key": "sv-dn1:route-specific-intr-runtime",
