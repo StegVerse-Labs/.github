@@ -1,0 +1,45 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "ARA-GRAPH-RUNTIME-086",
+  "adapters": [
+    {
+      "adapter_ref": "process:ara-graph-runtime-v1",
+      "authority_ref": "handoffs/SHWP-ARA-GRAPH-RUNTIME-086.json#authority",
+      "capabilities": [
+        "tvc_ara_graph_runtime_execution"
+      ],
+      "command": [
+        "python",
+        "workers/ara_graph_runtime_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_TVC_ROOT",
+        "STEGVERSE_ARA_MAIL_SENDER",
+        "STEGVERSE_ARA_MAIL_RECIPIENT",
+        "STEGVERSE_VAULT_AGENT_SOCKET",
+        "HOME",
+        "USER",
+        "LOGNAME",
+        "SHELL",
+        "PATH",
+        "PYTHONPATH",
+        "LANG",
+        "LC_ALL",
+        "TMPDIR",
+        "XDG_CONFIG_HOME",
+        "XDG_STATE_HOME"
+      ],
+      "notes": [
+        "Independent TVC issue #86 runtime worker under the existing sovereign worker runtime; heartbeat does not grant authority.",
+        "Uses only already-local current TVC source containing the validated authority-gated ARA merge as an ancestor.",
+        "Runs aggregate preflight before execute-once and declares STEGTV_ARA_GRAPH_RUNTIME_AUTHORITY=TV/TVC only inside the registered worker child environment.",
+        "Never receives or exports Microsoft client secrets, access tokens, refresh tokens, GitHub tokens, wallet material, or other non-TV/TVC credentials.",
+        "No network source fetch, source mutation, hosted runtime authority, new service, provider broker, OAuth broker, or ARA release authority."
+      ],
+      "timeout_seconds": 480,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
