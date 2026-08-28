@@ -3,7 +3,7 @@
 Updated: 2026-08-28
 Repository: `StegVerse-Labs/.github`
 Branch: `feat/tvc-intr-resident-activation-worker-20260828`
-State: SOURCE_IN_VALIDATION / RUNTIME_NOT_OBSERVED
+State: SOURCE_MERGED_VALIDATED / RUNTIME_NOT_OBSERVED
 
 ## Goal
 
@@ -48,6 +48,7 @@ Non-secret deployment bindings are:
 ```text
 STEGVERSE_REPO_ROOTS_JSON or STEGVERSE_TVC_ROOT
 STEGVERSE_COINBASE_GATEWAY_STORAGE_ROOT
+or canonical Gateway aliases: STEGVERSE_SERVICE_GATEWAY_STORAGE_ROOT / STEGVERSE_HIL_STORAGE_ROOT
 STEGVERSE_KV_CUSTODY_ROOT
 STEGVERSE_COINBASE_PUBLIC_NODE_URL
 ```
@@ -82,3 +83,21 @@ This transition requires a genuine resident TVC stack, fresh public route observ
 ## Successor
 
 Only after that transition may the current owner-authorized iPhone use the trusted browser sealing surface. Credential plaintext is never an input to this WorkerCoordinator task.
+
+
+## 2026-08-28 source release and runtime-binding reconciliation
+
+Initial worker registration merged through PR #358:
+
+```text
+merge: 847a147c6aead7656ce1ac37f5fe515dac8c9d98
+organization control-plane validation: 33146078300 SUCCESS
+heartbeat worker validation: 33146078317 SUCCESS
+```
+
+The worker now reuses the Gateway's already-canonical non-secret storage-root binding when present:
+`STEGVERSE_SERVICE_GATEWAY_STORAGE_ROOT`, with `STEGVERSE_HIL_STORAGE_ROOT` retained as the Gateway's existing compatibility alias. `STEGVERSE_COINBASE_GATEWAY_STORAGE_ROOT` remains an explicit TVC override.
+
+The shared KV custody root is intentionally still explicit as `STEGVERSE_KV_CUSTODY_ROOT`: current canonical source does not establish one universal production shared-KV filesystem path, and the worker must not guess or silently bind a different vault.
+
+This reconciliation reduces deployment configuration duplication without expanding credential, filesystem, provider, Site, or HeartBeat authority.
