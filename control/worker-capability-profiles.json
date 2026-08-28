@@ -117,7 +117,8 @@
         "orphan_lifecycle_reconstruction",
         "stegnutrition_machine_continuation",
         "sovereign_relay_materialization",
-        "g18_resident_request_consumption_resolution"
+        "g18_resident_request_consumption_resolution",
+        "sovereign_runtime_self_bootstrap"
       ],
       "mutation_allowed": true,
       "deployment_allowed": true,
@@ -134,7 +135,8 @@
         "orphan_lifecycle_reconstruction is continuity-only eligibility for a generated orphan-recovery handoff; it cannot execute the recovered parent task or revive an ended claim/fence.",
         "stegnutrition_machine_continuation is limited to locally materialized StegNutrition observation, fixed no-network validation, continuation projection and receipts; it grants no GitHub fetch/write, general code-generation, credential, deployment or release authority.",
         "sovereign_relay_materialization is limited to the existing deployment-local sovereign runtime plus the pinned StegOS relay adapter; it grants no route admission, outbound EGRESS, credential, canonical-state, or second-runtime authority.",
-        "g18_resident_request_consumption_resolution is limited to refreshing already-local source into an existing resident runtime and consuming the canonical one-shot G18 request against the exact existing G18 fence18 claim; it grants no new G18 claim/fence, heartbeat, credential, route, source-fetch, or second-machine authority."
+        "g18_resident_request_consumption_resolution is limited to refreshing already-local source into an existing resident runtime and consuming the canonical one-shot G18 request against the exact existing G18 fence18 claim; it grants no new G18 claim/fence, heartbeat, credential, route, source-fetch, or second-machine authority.",
+        "sovereign_runtime_self_bootstrap is limited to the canonical v13 local-source bootstrap/install/verification path on a non-hosted eligible surface with post-bootstrap financial activation separately controlled; it grants no GitHub/provider credential, route, wallet, trading, or third-party runtime authority."
       ]
     },
     {
