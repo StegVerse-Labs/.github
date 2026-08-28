@@ -445,3 +445,32 @@ Lifecycle:
 - merge: PENDING
 - authentic resident request consumption: NOT OBSERVED
 - ARA Graph provider operation: NOT OBSERVED
+
+
+### ARA Graph resident request bridge merge — 2026-08-27
+
+The ARA Graph resident request bridge is validated and merged.
+
+```text
+PR #353
+validated head: 010b0299fd8deb430beebe6f7bc5a7226fc94965
+Heartbeat Worker Project: 33141631865 SUCCESS
+Validate organization control plane: 33141631864 SUCCESS
+merge: ef85edcea0fa40f91ae80399a587898d42e4f176
+```
+
+Merged resident surfaces:
+- `control/resident-execution-request.d/ara-graph-runtime-086.json`
+- `scripts/consume_ara_graph_resident_execution_request.py`
+- `scripts/refresh_and_execute_resident_task.py` ARA non-secret locator forwarding
+- `scripts/refresh_sovereign_worker_runtime_source.py` consumer refresh binding
+- `scripts/install_sovereign_worker_source_refresh_service.py` request-consumer hook
+- `tests/test_ara_graph_resident_execution_request.py`
+- source-refresh regression coverage
+
+The request remains intent-only and cannot grant execution authority. On an eligible sovereign local-source refresh it may ask the existing WorkerCoordinator to execute `SHWP-ARA-GRAPH-RUNTIME-086`; claim/fence admission remains inside the existing WorkerCoordinator.
+
+Source/control + machine registration + resident request wiring: COMPLETE / VALIDATED / MERGED.
+Authentic resident request consumption: NOT OBSERVED.
+ARA Graph provider operation: NOT OBSERVED.
+Capability activation: NOT OBSERVED.
