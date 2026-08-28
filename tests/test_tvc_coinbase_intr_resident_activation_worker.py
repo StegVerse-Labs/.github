@@ -35,6 +35,34 @@ class TVCIntrActivationWorkerTests(unittest.TestCase):
                 result=worker.execute(env)
         self.assertEqual(result["transition_id"],"RESIDENT_STORAGE_BINDINGS_REQUIRED")
 
+    def test_service_gateway_storage_alias_satisfies_gateway_binding(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td)
+            gateway=root/"gateway"; custody=root/"custody"; gateway.mkdir(); custody.mkdir()
+            for rel in (
+                "scripts/activate_coinbase_intr_resident.py",
+                "scripts/observe_coinbase_intr_resident_readiness.py",
+                "scripts/observe_coinbase_service_gateway_route.py",
+                "scripts/project_coinbase_owner_ingress_site_config.py",
+            ):
+                p=root/rel; p.parent.mkdir(parents=True,exist_ok=True); p.write_text("# test\n",encoding="utf-8")
+            calls=[]
+            def fake_run(args,cwd,**kwargs):
+                calls.append(args)
+                joined=" ".join(str(x) for x in args)
+                if "observe_coinbase_intr_resident_readiness.py" in joined:
+                    return 2,{"state":"BLOCKED_RECIPIENT_KEY_NOT_PROVISIONED","reason":"resident SKAP recipient private key missing"},""
+                if "activate_coinbase_intr_resident.py" in joined:
+                    self.assertIn(str(gateway),joined)
+                    self.assertIn(str(custody),joined)
+                    return 0,{"provider_operation_started":False,"credential_values_provisioned":False},""
+                raise AssertionError(joined)
+            env={"STEGVERSE_TVC_ROOT":str(root),"STEGVERSE_SERVICE_GATEWAY_STORAGE_ROOT":str(gateway),"STEGVERSE_KV_CUSTODY_ROOT":str(custody)}
+            with patch.object(worker.os,"geteuid",return_value=0), patch.object(worker,"_run",side_effect=fake_run):
+                result=worker.execute(env)
+        self.assertNotEqual(result["transition_id"],"RESIDENT_STORAGE_BINDINGS_REQUIRED")
+        self.assertTrue(any("activate_coinbase_intr_resident.py" in " ".join(str(x) for x in call) for call in calls))
+
     def test_route_only_block_reuses_key_stack_and_projects_without_activation(self):
         with tempfile.TemporaryDirectory() as td:
             root=Path(td)
