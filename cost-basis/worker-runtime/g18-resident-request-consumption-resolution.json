@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "g18_resident_request_consumption_resolution",
+  "sample_count": 1,
+  "hb_estimate": {
+    "expected_completion_beats": 4,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 64,
+    "confidence": "MEDIUM"
+  },
+  "cost_estimate": {
+    "compute_units": 2,
+    "token_units": 0,
+    "storage_bytes": 1048576,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 4
+  },
+  "evidence_refs": [
+    "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json",
+    "workers/g18_resident_request_consumption_resolution_worker.py",
+    "scripts/refresh_sovereign_worker_runtime_source.py",
+    "scripts/consume_g18_resident_execution_request.py"
+  ],
+  "notes": [
+    "No network source transport or credential acquisition is admitted.",
+    "The task resolves request consumption only and does not claim G18 runtime activation.",
+    "If no eligible resident exists, blocker policy requires goal-preserving escalation rather than passive recheck."
+  ]
+}\n
