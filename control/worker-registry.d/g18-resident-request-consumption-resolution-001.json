@@ -40,6 +40,33 @@
         "parent_claim_reuse_prohibited": true,
         "target_existing_parent_claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
         "target_existing_parent_fencing_token": 18
+      },
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:g18-resident-request-consumption-resolution:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "control/blocker-resolution-policy.json",
+          "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+          "control/resident-execution-request.d/g18-sovereign-runtime-resume.json"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json",
+          "workers/g18_resident_request_consumption_resolution_worker.py",
+          "control/worker-registry.d/g18-resident-request-consumption-resolution-001.json",
+          "control/process-worker-adapters.d/g18-resident-request-consumption-resolution-001.json"
+        ],
+        "integration_evidence_refs": [],
+        "activation_proof_ref": null,
+        "blockers": [
+          "G18_RESIDENT_REQUEST_CONSUMPTION_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "g18-resident-request-consumption-resolution-worker + SHWP-DURABLE-RUNTIME-ACTIVATION/G18 machine owner",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
       }
     }
   ],
