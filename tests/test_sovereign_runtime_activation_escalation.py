@@ -42,53 +42,70 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
         }
 
     def _materialize_worker_source(self, root: Path) -> None:
-        for rel in (
-            "workers/sovereign_runtime_activation_worker.py",
-            "scripts/advance_heartbeat_transition.py",
-            "scripts/run_heartbeat_runtime.py",
-            "heartbeat_runtime/engine_v12.py",
-            "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
-            "control/heartbeat-state.json",
-        ):
-            source = ROOT / rel
-            target = root / rel
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(source.read_bytes())
-        control_plane = root / "control" / "worker-control-plane-coordination.json"
-        control_plane.write_text(json.dumps({
-            "schema": "stegverse.worker-control-plane-coordination/v1",
-            "worker_coordination": {"active_leases": [{"claim_id": "G18", "fencing_token": 18, "worker_instance_id": "worker-G18"}]},
-        }), encoding="utf-8")
+        source = ROOT / "workers" / "sovereign_runtime_activation_worker.py"
+        target = root / "workers" / "sovereign_runtime_activation_worker.py"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(source.read_bytes())
 
-    def test_missing_transition_context_emits_exact_execution_opportunity_contract(self) -> None:
+    def test_missing_v13_bootstrap_emits_exact_sovereign_surface_contract(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp); self._materialize_worker_source(root)
-            (root / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json").unlink()
             env = {"PATH": os.environ.get("PATH", ""), "HOME": str(root / "home"), "XDG_STATE_HOME": str(root / "state")}
-            completed = subprocess.run([sys.executable, str(root / "workers" / "sovereign_runtime_activation_worker.py")], cwd=root, input=json.dumps(self.invocation()) + "\n", text=True, capture_output=True, env=env, check=False)
+            completed = subprocess.run(
+                [sys.executable, str(root / "workers" / "sovereign_runtime_activation_worker.py")],
+                cwd=root,
+                input=json.dumps(self.invocation()) + "\n",
+                text=True,
+                capture_output=True,
+                env=env,
+                check=False,
+            )
             self.assertEqual(completed.returncode, 0, completed.stderr)
             response = json.loads(completed.stdout)
             self.assertEqual(response["state"], "BLOCKED")
-            self.assertEqual(response["transition_id"], "SOVEREIGN_RUNTIME_RESOLUTION_ESCALATION_REQUIRED")
-            self.assertEqual(response["expected_next_transition"], "EXECUTE_BOUNDED_V12_STATE_TRANSITION")
+            self.assertEqual(response["transition_id"], "SOVEREIGN_RUNTIME_ELIGIBLE_SURFACE_REQUIRED")
+            self.assertEqual(
+                response["expected_next_transition"],
+                "EXECUTE_CANONICAL_V13_SOVEREIGN_RUNTIME_SELF_BOOTSTRAP",
+            )
             blocker = response["blocker"]
-            self.assertEqual(blocker["dependency_class"], "EXECUTION_OPPORTUNITY")
-            self.assertTrue(blocker["resolvable_by_current_worker"])
+            self.assertEqual(blocker["dependency_class"], "PHYSICAL_RESOURCE_SOVEREIGN_NODE_ELIGIBILITY")
             self.assertFalse(blocker["physical_additional_machine_required"])
             self.assertFalse(blocker["always_on_external_host_required"])
+            self.assertFalse(blocker["heartbeat_activation_blocked"])
             self.assertNotIn("GITHUB_TOKEN", completed.stdout)
 
-    def test_hosted_environment_is_not_used_as_sovereign_transition(self) -> None:
+    def test_hosted_environment_is_not_used_as_sovereign_runtime_evidence(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp); self._materialize_worker_source(root)
-            env = {"PATH": os.environ.get("PATH", ""), "HOME": str(root / "home"), "XDG_STATE_HOME": str(root / "state"), "GITHUB_ACTIONS": "true"}
-            completed = subprocess.run([sys.executable, str(root / "workers" / "sovereign_runtime_activation_worker.py")], cwd=root, input=json.dumps(self.invocation()) + "\n", text=True, capture_output=True, env=env, check=False)
+            env = {
+                "PATH": os.environ.get("PATH", ""),
+                "HOME": str(root / "home"),
+                "XDG_STATE_HOME": str(root / "state"),
+                "GITHUB_ACTIONS": "true",
+            }
+            completed = subprocess.run(
+                [sys.executable, str(root / "workers" / "sovereign_runtime_activation_worker.py")],
+                cwd=root,
+                input=json.dumps(self.invocation()) + "\n",
+                text=True,
+                capture_output=True,
+                env=env,
+                check=False,
+            )
             self.assertEqual(completed.returncode, 0, completed.stderr)
             response = json.loads(completed.stdout)
             self.assertEqual(response["state"], "BLOCKED")
-            receipt = json.loads((root / "receipts" / "sovereign-runtime-activation" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text())
-            self.assertFalse(receipt["solution_attempt"]["attempted"])
-            self.assertEqual(receipt["solution_attempt"]["reason"], "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_TRANSITION_EVIDENCE")
+            receipt = json.loads(
+                (root / "receipts" / "sovereign-runtime-activation" / "SHWP-DURABLE-RUNTIME-ACTIVATION.json").read_text()
+            )
+            self.assertFalse(receipt["bootstrap_attempt"]["attempted"])
+            self.assertEqual(
+                receipt["bootstrap_attempt"]["reason"],
+                "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_RUNTIME_EVIDENCE",
+            )
+            self.assertEqual(receipt["canonical_carrier_runtime"], "heartbeat_runtime.engine_v13.HeartbeatRuntime")
+            self.assertFalse(receipt["heartbeat_dependency"])
             self.assertFalse(receipt["third_party_runtime_required"])
             self.assertFalse(receipt["physical_additional_machine_required"])
 

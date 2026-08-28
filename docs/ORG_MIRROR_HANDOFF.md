@@ -20,9 +20,9 @@ The addendum is cumulative with the base inventory and does not replace historic
 ```text
 goal_id: ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION
 active_runtime_owner: StegVerse-Labs/.github#12 + SHWP-DURABLE-RUNTIME-ACTIVATION/G18
-physical_transition_owner: CURRENT_USER_IPHONE -> StegVerse-Labs/.github#209 -> G18
+physical_transition_owner: NONE_CURRENT; historical iPhone HB30 transition is provenance and is not a G18 prerequisite
 active_inference_owner: StegVerse-Labs/.github#60 + heartbeat-managed sovereign inference worker
-canonical_carrier_runtime: heartbeat_runtime.engine_v12.HeartbeatRuntime
+canonical_carrier_runtime: heartbeat_runtime.engine_v13.HeartbeatRuntime
 canonical_worker_runtime: heartbeat_runtime.worker_runtime.WorkerCoordinator
 product_state: ACTIVE_MACHINE_WORK / NOT YET ACTIVATED
 session_role: MERGED_INTO_CANONICAL_WORKSTREAMS
@@ -37,17 +37,19 @@ Archival of a chat does not assert product activation. Product continuation rema
 
 ## Canonical architecture
 
-Heartbeat continuity is state-transition continuity, not a requirement for an always-on third-party process host.
+Heartbeat progression is independent oscillator continuity. G18 is a separate sovereign WorkerCoordinator/runtime-substrate activation lane and is not HeartBeat progression authority.
 
 ```text
 legacy source: control/heartbeat-state.json
 legacy epoch/generation: HB29 / 29
 legacy source mutable after cutover: false
-first separated-v12 successor: HB30
+historical first separated-v12 successor: HB30
+current protocol anchor: HB32 / ACTIVE_PROTOCOL_VERIFIED
+current canonical carrier: heartbeat_runtime.engine_v13.HeartbeatRuntime
 carrier state: control/heartbeat-carrier-runtime-state.json
 worker state: control/worker-runtime-state.json
 worker control plane: control/worker-control-plane-coordination.json
-bounded transition producer: scripts/advance_heartbeat_transition.py
+historical bounded transition producer: scripts/advance_heartbeat_transition.py (compatibility/provenance only; not current G18 execution)
 state-transition contract: management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json
 portable iPhone contract: management/SHWP_IPHONE_TRANSITION_CAPSULE_CONTRACT.json
 publication-independent capsule: capsules/iphone-hb30-inline-capsule.js
@@ -64,13 +66,16 @@ PR #214 merged as `c079216deeaa8fa5d049f6c634d829bde5689596` and installed the p
 Current direct repository observation remains:
 
 ```text
-control/heartbeat-state.json: epoch 29, generation 29
+control/heartbeat-state.json: historical immutable HB29 provenance
+control/heartbeat-protocol-anchor.json: HB32 / ACTIVE_PROTOCOL_VERIFIED
+heartbeat progression dependency: OSCILLATOR_ONLY
 G18 fencing token: 18
-G18 transition: SOVEREIGN_RUNTIME_SOLUTION_REQUIRED
-control/heartbeat-carrier-runtime-state.json: NOT YET PRESENT / HB30 NOT YET OBSERVED
+G18 state: BLOCKED_ON_ELIGIBLE_SOVEREIGN_NODE_DECLARATION
+G18 heartbeat dependency: false
+current G18 execution path: v13 sovereign self-bootstrap + activation verifier
 ```
 
-Do not fabricate HB30 by mutating legacy HB29 or by treating hosted CI/source merge as production activation.
+Do not re-execute or fabricate historical HB30 as a G18 prerequisite. Hosted CI/source merge remains validation-only and cannot establish deployment-local G18 runtime activation.
 
 ## Completed protocol capabilities
 
@@ -85,7 +90,7 @@ legacy resident-daemon prerequisite: SUPERSEDED_BY_PR_206
 GitHub-token runtime authority: PROHIBITED / SUPERSEDED
 ```
 
-Source completeness does not claim physical HB30, WorkerCoordinator observation, sovereign inference activation, wallet signing, broadcast, or settlement.
+Historical heartbeat-transition source completeness does not establish G18 runtime activation. G18 separately requires deployment-local v13 runtime materialization, task-capable WorkerCoordinator evidence, restart/reconstruction proof, and no duplicate claim/fence.
 
 ## Physical-resource execution boundary — durable runtime activation
 
@@ -277,13 +282,13 @@ next_executable_action: do not manually execute G18, WorkerCoordinator, sovereig
 
 ### WORKER-OWNED / DO NOT COMPETE
 
-- `SHWP-DURABLE-RUNTIME-ACTIVATION` — G18 sovereign-runtime-activation-worker; release at HB30+ carrier + independent WorkerCoordinator + reconstruction PASS.
+- `SHWP-DURABLE-RUNTIME-ACTIVATION` — G18 sovereign-runtime-activation-worker; release only at deployment-local canonical v13 activation proof + task-capable WorkerCoordinator + controlled restart/reconstruction PASS. HeartBeat/HB30 does not gate this release.
 - `RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28` — ecosystem-chat-orphan-recovery-worker; release when the parent can receive a fresh fence.
 - `ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION` — heartbeat-managed sovereign inference worker -> TVC -> LLM-adapter -> Master Records; release at immutable same-execution evidence.
 
 ### ESCALATED / AUTHORITY-OWNED
 
-- Physical transition execution is `CURRENT_USER_IPHONE` under `.github#209`; the browser receipt has authority effect `NONE`.
+- The historical `CURRENT_USER_IPHONE` HB30 transition lane under `.github#209` is provenance only and is not a current G18 prerequisite; its browser receipt has authority effect `NONE`.
 - Credential/route authority remains TV/TVC.
 - Wallet signing and broadcast remain USER_ONLY.
 
@@ -337,3 +342,37 @@ heartbeat_activation_dependency: false
 ```
 
 No real TLS certificate/key materialization, local TLS execution receipt, public HTTPS observation, Coinbase owner ingress, provider capability, StegFin live approval, order, fill, settlement, or reconciliation is inferred from the source merges.
+
+
+## 2026-08-27 G18 v13 execution-path supersession
+
+The organization-level continuation now follows the current runtime-separation and G18 executable handoffs:
+
+```text
+HeartBeat protocol: HB32 / ACTIVE_PROTOCOL_VERIFIED / OSCILLATOR_ONLY
+G18 purpose: separate sovereign worker/runtime-substrate activation
+G18 claim/fence: existing machine-owned G18 / fence 18
+canonical G18 carrier: heartbeat_runtime.engine_v13.HeartbeatRuntime
+canonical worker runtime: heartbeat_runtime.worker_runtime.WorkerCoordinator
+current execution:
+  G18 entrypoint
+  -> existing v13 self-bootstrap
+  -> derived v0.4 sovereign-node declaration when local eligibility passes
+  -> existing native separated-runtime installation
+  -> existing activation verifier
+  -> deployment-local activation proof
+completion requires:
+  worker_task_capable_cycle_observed=true
+  controlled restart
+  non-regressing runtime state
+  no duplicate claim/fence
+  reconstruction PASS
+heartbeat dependency: false
+historical iPhone/HB30 prerequisite: false
+additional physical machine required: false
+always-on external host required: false
+credential authority: TV/TVC
+GitHub Actions runtime authority: NONE
+```
+
+The historical HB29/HB30/iPhone material above remains provenance only where retained. It must not be interpreted as the current machine-execution path or as an unmet HeartBeat prerequisite.

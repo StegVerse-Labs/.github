@@ -17,9 +17,17 @@ class SovereignRuntimeHandoffContractTests(unittest.TestCase):
 
     def test_canonical_runtime_is_separated_and_oscillator_contract_is_v13(self):
         execution = self.handoff["execution"]
+        self.assertEqual(execution["canonical_carrier_runtime"], "heartbeat_runtime.engine_v13.HeartbeatRuntime")
         self.assertEqual(execution["worker_runtime"], "heartbeat_runtime.worker_runtime.WorkerCoordinator")
         self.assertEqual(execution["carrier_runtime_entrypoint"], "scripts/run_heartbeat_runtime.py")
         self.assertEqual(execution["worker_runtime_entrypoint"], "scripts/run_worker_runtime.py")
+        self.assertEqual(
+            execution["bounded_progression_sequence"],
+            [
+                "python scripts/bootstrap_sovereign_runtime.py --source-root . --skip-post-bootstrap-stegfin",
+                "python scripts/verify_sovereign_runtime_activation.py",
+            ],
+        )
         self.assertEqual(self.contract["canonical_runtime"], "heartbeat_runtime.engine_v13.HeartbeatRuntime")
         self.assertEqual(self.contract["oscillator_producer"], "heartbeat_runtime/oscillator_producer.py")
         scoped = OSCILLATOR_HANDOFF.read_text(encoding="utf-8")

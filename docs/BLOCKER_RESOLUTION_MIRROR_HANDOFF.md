@@ -129,3 +129,59 @@ G18 runtime activation: BLOCKED ON DEPLOYMENT-LOCAL ELIGIBLE SURFACE
 relay SOVEREIGN_RELAY_LEASE_OPEN: NOT OBSERVED
 relay RELAY_NODE_KV_CONTINUITY_VERIFIED: NOT OBSERVED
 ```
+
+
+## 2026-08-27 G18 execution-path reconciliation
+
+Live inspection after the v13 node-resolver merge found a second stale G18 binding: the canonical `workers/sovereign_runtime_activation_worker.py` still attempted the historical HB29 -> v12 state-transition producer even though HeartBeat is already terminal `ACTIVE_PROTOCOL_VERIFIED` and `SHWP-DURABLE-RUNTIME-ACTIVATION` is now strictly the separate sovereign WorkerCoordinator/runtime-substrate goal.
+
+The current correction reuses existing source only:
+
+```text
+G18 existing claim/fence
+-> workers/sovereign_runtime_activation_entrypoint.py
+-> workers/sovereign_runtime_activation_worker.py
+-> scripts/bootstrap_sovereign_runtime.py
+-> derived stegverse.sovereign-node-declaration/v0.4 when local eligibility passes
+-> existing native separated runtime installer
+-> scripts/verify_sovereign_runtime_activation.py
+-> deployment-local stegverse.sovereign-runtime-activation-proof/v1
+-> worker_task_capable_cycle_observed=true required
+-> G18 terminalization only if every activation predicate passes
+```
+
+Removed from the current G18 execution path:
+
+```text
+historical HB29 -> HB30 transition execution
+engine_v12 as canonical G18 carrier
+HeartBeat transition completion as G18 runtime activation
+refresh_heartbeat_transition_receipt.py as a G18 completion guard
+```
+
+Preserved invariants:
+
+```text
+heartbeat progression dependency: OSCILLATOR_ONLY
+heartbeat dependency for G18: false
+additional physical machine required: false
+always-on external host required: false
+hosted environments: validation-only / rejected as runtime evidence
+credential authority: TV/TVC
+GitHub-token runtime authority: NONE
+post-bootstrap StegFin activation from G18: explicitly skipped
+runtime proof: deployment-local only
+```
+
+Branch state:
+
+```text
+branch: fix/g18-v13-runtime-execution
+source correction: IMPLEMENTED / REPOSITORY VALIDATION PENDING
+live sovereign runtime activation: NOT OBSERVED
+task-capable WorkerCoordinator proof: NOT OBSERVED
+relay SOVEREIGN_RELAY_LEASE_OPEN: NOT OBSERVED
+authority effect: NONE_SOURCE_ONLY
+```
+
+This is a direct correction of the existing G18 executor and does not create a second runtime, worker scheduler, HeartBeat, node mechanism, credential lane, route authority, broker, or transport authority.
