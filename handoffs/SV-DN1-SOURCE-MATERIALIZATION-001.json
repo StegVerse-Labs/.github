@@ -56,7 +56,10 @@
       "docs/SV_DN1_SOURCE_MATERIALIZATION_MIRROR_HANDOFF.md",
       "StegVerse-org/stegverse-demo-suite:config/sv_dn1_runtime_source_manifest.json",
       "StegVerse-Labs/.github:docs/SV_DN1_RESIDENT_OBSERVER_MIRROR_HANDOFF.md"
-    ]
+    ],
+    "dependencies": [],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
+    "upstream_runtime_dependency": null
   },
   "authority": {
     "authority_source": "canonical SV-DN-1 runtime source manifest + sovereign WorkerCoordinator",
@@ -130,7 +133,14 @@
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "docs/SV_DN1_SOURCE_MATERIALIZATION_MIRROR_HANDOFF.md",
     "recheck_trigger": "each admitted assignment opportunity until exact pinned source materialization receipt exists",
-    "checkout_policy": "fenced_atomic_checkout"
+    "checkout_policy": "fenced_atomic_checkout",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
   },
   "continuity": {
     "master_records_required": false,

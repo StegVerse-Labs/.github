@@ -76,7 +76,16 @@
     "parent_task_id": null,
     "derivation_reason": "The canonical demo-suite task merged a machine-readable resident observation requirement after source validation and public parsed-web preflight. This .github handoff binds that existing product-level owner decision to the sovereign WorkerCoordinator execution schema without widening authority.",
     "derivation_depth": 0,
-    "source_handoff_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md"
+    "source_handoff_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
+    "dependencies": [
+      "SV-DN1-SOURCE-MATERIALIZATION-001"
+    ],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
+    "upstream_runtime_dependency": {
+      "task_id": "SV-DN1-SOURCE-MATERIALIZATION-001",
+      "terminal_state_required": "COMPLETED",
+      "terminal_transition_required": "SV_DN1_EXACT_SOURCE_MATERIALIZATION_COMPLETE"
+    }
   },
   "authority": {
     "authority_source": "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json + canonical sovereign WorkerCoordinator",
@@ -159,7 +168,14 @@
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json",
     "recheck_trigger": "each admitted assignment opportunity until exact resident source capture and semantic exchange evidence exist",
-    "checkout_policy": "fenced_atomic_checkout"
+    "checkout_policy": "fenced_atomic_checkout",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
   },
   "continuity": {
     "master_records_required": true,

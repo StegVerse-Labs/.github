@@ -66,7 +66,16 @@
     "parent_task_id": "SV-DN1-RESIDENT-OBSERVER-001",
     "derivation_reason": "The canonical SV-DN-1 SDK bridge requires an authentic route-specific InTr runtime receipt after the resident observer completes. This task owns that single missing transit proof without changing Universal Interlock adoption or SDK authority.",
     "derivation_depth": 1,
-    "source_handoff_ref": "docs/SV_DN1_INTR_RUNTIME_MIRROR_HANDOFF.md"
+    "source_handoff_ref": "docs/SV_DN1_INTR_RUNTIME_MIRROR_HANDOFF.md",
+    "dependencies": [
+      "SV-DN1-RESIDENT-OBSERVER-001"
+    ],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
+    "upstream_runtime_dependency": {
+      "task_id": "SV-DN1-RESIDENT-OBSERVER-001",
+      "terminal_state_required": "COMPLETED",
+      "terminal_transition_required": "SV_DN1_RESIDENT_SOURCE_CAPTURE_COMPLETE"
+    }
   },
   "authority": {
     "authority_source": "StegVerse-org/stegverse-demo-suite route-specific InTr contract + sovereign WorkerCoordinator",
@@ -136,7 +145,14 @@
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "docs/SV_DN1_INTR_RUNTIME_MIRROR_HANDOFF.md",
     "recheck_trigger": "each admitted assignment opportunity after SV-DN1-RESIDENT-OBSERVER-001 completes until one valid route-specific InTr receipt exists",
-    "checkout_policy": "fenced_atomic_checkout"
+    "checkout_policy": "fenced_atomic_checkout",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
   },
   "continuity": {
     "master_records_required": false,
