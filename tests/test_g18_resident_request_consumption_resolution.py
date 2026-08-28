@@ -27,17 +27,74 @@ class G18ResidentRequestResolutionTests(unittest.TestCase):
         self.assertFalse(result["second_machine_required"])
         self.assertFalse(result["new_g18_claim_allowed"])
 
-    def test_missing_resident_registry_becomes_active_resolution_blocker(self):
+    def test_missing_resident_registry_attempts_canonical_v13_bootstrap_first(self):
         with tempfile.TemporaryDirectory() as td:
             base=Path(td)
-            source=base/"source"; source.mkdir()
-            runtime=base/"runtime"; runtime.mkdir()
-            result=mod.run_resolution(source,runtime,env={})
+            source=base/"source"; runtime=base/"runtime"
+            (source/"scripts").mkdir(parents=True)
+            (source/"scripts"/"bootstrap_sovereign_runtime.py").write_text("# bootstrap\n",encoding="utf-8")
+            (source/"scripts"/"refresh_sovereign_worker_runtime_source.py").write_text("# refresh\n",encoding="utf-8")
+            calls=[]
+            def runner(command,**kwargs):
+                calls.append(list(command))
+                if "bootstrap_sovereign_runtime.py" in str(command[1]):
+                    (runtime/"control").mkdir(parents=True,exist_ok=True)
+                    (runtime/"control"/"worker-registry.json").write_text(json.dumps({
+                        "tasks":[{
+                            "task_id":mod.TARGET_TASK,
+                            "state":"BLOCKED",
+                            "claim_id":mod.EXPECTED_CLAIM,
+                            "worker_id":"sovereign-runtime-activation-worker",
+                            "worker_instance_id":"g18-instance",
+                            "heartbeat_timing":{"fencing_token":mod.EXPECTED_FENCE}
+                        }]
+                    })+"\n",encoding="utf-8")
+                    receipt=runtime/mod.BOOTSTRAP_RECEIPT_REL
+                    receipt.parent.mkdir(parents=True,exist_ok=True)
+                    receipt.write_text(json.dumps({"state":"COMPLETE","reason":"SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_VERIFIED"})+"\n",encoding="utf-8")
+                    return subprocess.CompletedProcess(command,0,stdout="",stderr="")
+                if "refresh_sovereign_worker_runtime_source.py" in str(command[1]):
+                    (runtime/"scripts").mkdir(parents=True,exist_ok=True)
+                    (runtime/"scripts"/"consume_g18_resident_execution_request.py").write_text("# consumer\n",encoding="utf-8")
+                    return subprocess.CompletedProcess(command,0,stdout="",stderr="")
+                receipt=runtime/mod.CONSUMPTION_REL
+                receipt.parent.mkdir(parents=True,exist_ok=True)
+                receipt.write_text(json.dumps({
+                    "state":"ATTEMPT_RECORDED",
+                    "request_id":"RESIDENT-EXEC-G18-RESUME-FENCE18-001",
+                    "request_sha256":"abc",
+                    "runtime_execution_attempted":True,
+                    "exact_existing_claim_observed":True,
+                    "bridge_mode_valid":True
+                })+"\n",encoding="utf-8")
+                return subprocess.CompletedProcess(command,0,stdout="",stderr="")
+            result=mod.run_resolution(source,runtime,runner=runner,env={})
+        self.assertEqual(result["state"],"COMPLETED")
+        self.assertEqual(result["transition_id"],"G18_RESIDENT_REQUEST_CONSUMPTION_VERIFIED")
+        self.assertTrue(result["bootstrap_attempted"])
+        self.assertEqual(result["bootstrap_returncode"],0)
+        self.assertEqual(result["bootstrap_state"],"COMPLETE")
+        self.assertEqual(len(calls),3)
+        self.assertIn("--skip-post-bootstrap-stegfin",calls[0])
+        self.assertIn("bootstrap_sovereign_runtime.py",calls[0][1])
+
+    def test_failed_bootstrap_remains_active_fail_closed_resolution(self):
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td)
+            source=base/"source"; runtime=base/"runtime"
+            (source/"scripts").mkdir(parents=True)
+            (source/"scripts"/"bootstrap_sovereign_runtime.py").write_text("# bootstrap\n",encoding="utf-8")
+            def runner(command,**kwargs):
+                receipt=runtime/mod.BOOTSTRAP_RECEIPT_REL
+                receipt.parent.mkdir(parents=True,exist_ok=True)
+                receipt.write_text(json.dumps({"state":"REVIEW_REQUIRED","reason":"SOVEREIGN_ACTIVATION_PROOF_INCOMPLETE"})+"\n",encoding="utf-8")
+                return subprocess.CompletedProcess(command,1,stdout="",stderr="")
+            result=mod.run_resolution(source,runtime,runner=runner,env={})
         self.assertEqual(result["state"],"BLOCKED")
-        self.assertEqual(result["transition_id"],"SOVEREIGN_RESIDENT_RUNTIME_REQUIRED")
-        self.assertEqual(result["blocker"]["dependency_class"],"PHYSICAL_RESOURCE")
+        self.assertEqual(result["transition_id"],"SOVEREIGN_RESIDENT_BOOTSTRAP_REPAIR_REQUIRED")
+        self.assertTrue(result["bootstrap_attempted"])
+        self.assertEqual(result["blocker"]["dependency_class"],"INTERNAL_CAPABILITY")
         self.assertFalse(result["blocker"]["may_remain_blocked"])
-        self.assertIn("ESCALATE_TO_COMPONENT_AUTHORITY",result["blocker"]["next_solution_action"])
 
     def test_exact_existing_g18_claim_is_required(self):
         with tempfile.TemporaryDirectory() as td:
