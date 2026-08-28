@@ -238,9 +238,14 @@
       ],
       "runtime_effect": "SOURCE_ONLY_NO_SOVEREIGN_NODE_OR_RUNTIME_RECEIPT_CLAIM"
     },
-    "g18_v13_runtime_execution_candidate": {
-      "source_branch": "fix/g18-v13-runtime-execution",
-      "runtime_effect": "SOURCE_CANDIDATE_ONLY_NO_SOVEREIGN_RUNTIME_RECEIPT_CLAIM"
+    "g18_v13_runtime_execution": {
+      "pull_request": 344,
+      "merge_commit": "72e9315e557fdcc6e9d5c94c370993da6a2f7f88",
+      "validation_runs": [
+        33138207844,
+        33138207869
+      ],
+      "runtime_effect": "SOURCE_ONLY_NO_SOVEREIGN_RUNTIME_RECEIPT_CLAIM"
     }
   },
   "release_downstream": [

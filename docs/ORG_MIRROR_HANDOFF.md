@@ -304,7 +304,7 @@ next_executable_action: do not manually execute G18, WorkerCoordinator, sovereig
 
 ## Completion / archive posture
 
-For this session's consolidation objective, all ten goals are completed, superseded, or durably transferred and no chat-owned claim remains. Product activation itself is not complete: the physical iPhone receipt, canonical HB30 materialization/WorkerCoordinator observation, and same-execution sovereign inference evidence remain. Those remaining transitions are explicitly owned outside the chat and are not evidence that this session must remain active.
+For this session's consolidation objective, all ten goals are completed, superseded, or durably transferred and no chat-owned claim remains. Product activation itself is not complete: deployment-local G18 v13 sovereign-runtime activation, task-capable WorkerCoordinator evidence, and downstream same-execution sovereign inference evidence remain. Historical iPhone/HB30 transition evidence is provenance only and is not a current activation prerequisite. Those remaining transitions are explicitly machine/authority-owned outside the chat and are not evidence that this session must remain active.
 
 
 ## 2026-08-27 Coinbase sovereign Gateway native-TLS continuation
