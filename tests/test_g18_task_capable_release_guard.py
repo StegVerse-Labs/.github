@@ -14,61 +14,39 @@ spec.loader.exec_module(guard)
 
 
 class G18TaskCapableReleaseGuardTests(unittest.TestCase):
-    def _base_status(self) -> dict:
-        return {
-            "predicates": {
-                "carrier_transition_receipt_complete": True,
-                "worker_runtime_checkpoint_observed_at_or_after_carrier_epoch": True,
-                "state_reconstruction_pass": True,
-            },
-            "complete": True,
-        }
+    def complete_proof(self) -> dict:
+        proof = {name: True for name in guard.base.REQUIRED_PREDICATES}
+        proof["schema"] = "stegverse.sovereign-runtime-activation-proof/v1"
+        proof["all_predicates_pass"] = True
+        return proof
 
-    def _fake_load(self, tick: int, mode: str):
-        def fake_load(path: Path):
-            if path == guard.base.TRANSITION_RECEIPT:
-                return {"carrier_epoch_after": 31}
-            if path == ROOT / "control" / "worker-runtime-state.json":
-                return {"runtime_tick": tick, "observation_mode": mode}
-            return {}
-        return fake_load
+    def test_observation_only_or_missing_task_capable_predicate_cannot_terminalize_g18(self) -> None:
+        proof = self.complete_proof()
+        proof["worker_task_capable_cycle_observed"] = False
+        self.assertFalse(guard.base.all_activation_predicates_pass(proof))
 
-    def test_observation_only_state_cannot_terminalize_g18(self) -> None:
-        with mock.patch.object(guard, "_base_state_transition_status", return_value=self._base_status()), \
-             mock.patch.object(guard.base, "load_json", side_effect=self._fake_load(2, "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION")), \
-             mock.patch.object(guard.release, "refresh", return_value={"all_carrier_transition_predicates_pass": True, "release_state": "RELEASE_COMPLETE", "runtime_goal_release_state": "WORKER_TASK_CAPABLE_CYCLE_PENDING"}), \
-             mock.patch.object(guard.release, "task_capable_worker_cycle_observed", return_value=False):
-            status = guard.guarded_state_transition_status()
+    def test_all_runtime_predicates_and_task_capable_cycle_are_required(self) -> None:
+        proof = self.complete_proof()
+        self.assertTrue(guard.base.all_activation_predicates_pass(proof))
+        for predicate in guard.base.REQUIRED_PREDICATES:
+            broken = dict(proof)
+            broken[predicate] = False
+            self.assertFalse(
+                guard.base.all_activation_predicates_pass(broken),
+                predicate,
+            )
 
-        self.assertFalse(status["complete"])
-        self.assertTrue(status["predicates"]["oscillator_carrier_release_complete"])
-        self.assertFalse(status["predicates"]["worker_task_capable_cycle_observed"])
-        self.assertEqual(status["worker_runtime_tick"], 2)
+    def test_entrypoint_delegates_to_single_canonical_g18_worker(self) -> None:
+        with mock.patch.object(guard.base, "main", return_value=0) as main:
+            self.assertEqual(guard.main(), 0)
+        main.assert_called_once_with()
 
-    def test_pre_correction_carrier_cannot_terminalize_g18_even_with_worker(self) -> None:
-        with mock.patch.object(guard, "_base_state_transition_status", return_value=self._base_status()), \
-             mock.patch.object(guard.base, "load_json", side_effect=self._fake_load(3, "TASK_CAPABLE_WORKER_COORDINATOR")), \
-             mock.patch.object(guard.release, "refresh", return_value={"all_carrier_transition_predicates_pass": False, "release_state": "FAIL_CLOSED_CARRIER_INTEGRITY", "runtime_goal_release_state": "CARRIER_INTEGRITY_PENDING"}), \
-             mock.patch.object(guard.release, "task_capable_worker_cycle_observed", return_value=True):
-            status = guard.guarded_state_transition_status()
-
-        self.assertFalse(status["complete"])
-        self.assertFalse(status["predicates"]["oscillator_carrier_release_complete"])
-        self.assertTrue(status["predicates"]["worker_task_capable_cycle_observed"])
-        self.assertEqual(status["carrier_release_state"], "FAIL_CLOSED_CARRIER_INTEGRITY")
-
-    def test_both_oscillator_release_and_task_capable_cycle_are_required(self) -> None:
-        with mock.patch.object(guard, "_base_state_transition_status", return_value=self._base_status()), \
-             mock.patch.object(guard.base, "load_json", side_effect=self._fake_load(3, "TASK_CAPABLE_WORKER_COORDINATOR")), \
-             mock.patch.object(guard.release, "refresh", return_value={"all_carrier_transition_predicates_pass": True, "release_state": "RELEASE_COMPLETE", "runtime_goal_release_state": "RELEASE_COMPLETE"}), \
-             mock.patch.object(guard.release, "task_capable_worker_cycle_observed", return_value=True):
-            status = guard.guarded_state_transition_status()
-
-        self.assertTrue(status["complete"])
-        self.assertTrue(status["predicates"]["oscillator_carrier_release_complete"])
-        self.assertTrue(status["predicates"]["worker_task_capable_cycle_observed"])
-        self.assertEqual(status["carrier_release_state"], "RELEASE_COMPLETE")
-        self.assertEqual(status["worker_runtime_tick"], 3)
+    def test_entrypoint_contains_no_historical_transition_release_guard(self) -> None:
+        source = SCRIPT.read_text(encoding="utf-8")
+        self.assertNotIn("refresh_heartbeat_transition_receipt", source)
+        self.assertNotIn("guarded_state_transition_status", source)
+        self.assertNotIn("_base_state_transition_status", source)
+        self.assertIn("sovereign_runtime_activation_worker.py", source)
 
 
 if __name__ == "__main__":
