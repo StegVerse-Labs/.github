@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-G18-RESUME-FENCE18-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+  "mode": "RESUME_EXISTING_CLAIM",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "expected_claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+  "expected_fencing_token": 18,
+  "existing_claim_required": true,
+  "new_claim_allowed": false,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "On an eligible sovereign resident source refresh, resume the already-claimed G18 fence18 task exactly once through the existing targeted WorkerCoordinator cycle. The request does not grant or replace claim/fence authority and must fail closed if the resident registry no longer carries the exact claim/fence."
+}
