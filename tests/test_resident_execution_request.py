@@ -42,7 +42,7 @@ class ResidentExecutionRequestTests(unittest.TestCase):
             root = Path(td)
             source = root / "source"
             runtime = root / "runtime"
-            (runtime / "control").mkdir(parents=True)
+            (runtime / mod.REQUEST_REL).parent.mkdir(parents=True)
             (runtime / "scripts").mkdir(parents=True)
             (runtime / mod.REQUEST_REL).write_text(json.dumps(self.request()) + "\n", encoding="utf-8")
             (runtime / mod.TARGET_ENTRYPOINT).write_text("# target\n", encoding="utf-8")
@@ -69,6 +69,33 @@ class ResidentExecutionRequestTests(unittest.TestCase):
             self.assertEqual(second["state"], "ALREADY_CONSUMED")
             self.assertFalse(second["runtime_execution_attempted"])
             self.assertEqual(len(calls), 1)
+
+    def test_unrelated_singleton_request_cannot_overwrite_ecosystem_chat_request(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source = root / "source"
+            runtime = root / "runtime"
+            (runtime / mod.REQUEST_REL).parent.mkdir(parents=True)
+            (runtime / "scripts").mkdir(parents=True)
+            (runtime / mod.REQUEST_REL).write_text(json.dumps(self.request()) + "\n", encoding="utf-8")
+            (runtime / "control/resident-execution-request.json").write_text(
+                json.dumps({
+                    "schema": "stegverse.resident-execution-request/v1",
+                    "request_id": "UNRELATED-REQUEST",
+                    "state": "REQUESTED",
+                    "task_id": "UNRELATED-TASK"
+                }) + "\n",
+                encoding="utf-8",
+            )
+            (runtime / mod.TARGET_ENTRYPOINT).write_text("# target\n", encoding="utf-8")
+
+            def runner(command, **kwargs):
+                payload = {"runtime_execution_attempted": True, "execution_result_observed": True}
+                return SimpleNamespace(returncode=0, stdout=json.dumps(payload) + "\n", stderr="")
+
+            receipt = mod.consume(source, runtime, runner=runner)
+            self.assertEqual(receipt["state"], "ATTEMPT_RECORDED")
+            self.assertEqual(receipt["request_id"], "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-001")
 
     def test_missing_request_is_noop(self):
         with tempfile.TemporaryDirectory() as td:
