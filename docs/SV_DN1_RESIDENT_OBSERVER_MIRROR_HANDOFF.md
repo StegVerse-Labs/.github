@@ -192,6 +192,22 @@ runtime receipt: NOT OBSERVED
 
 It consumes this worker's authentic receipt/capture/exchange and emits the exact stegverse.sv-dn1.intr-runtime-receipt/v1 route receipt only after canonical destination validation. It does not claim Universal Interlock adoption/global activation or SDK admission.
 
+## Independent task-control dependency
+
+PR #343 merged the explicit dependency and independent admission:
+
+```text
+dependency: SV-DN1-SOURCE-MATERIALIZATION-001
+parent terminal state: COMPLETED
+parent terminal transition: SV_DN1_EXACT_SOURCE_MATERIALIZATION_COMPLETE
+authority_domain: INDEPENDENT_TASK_CONTROL
+fresh fence: >22
+heartbeat_grants_execution_authority: false
+merge_commit: 75fbb638a8003d42517620cc95b383070ea3b15e
+```
+
+PR #348 merged a resident request/chain runner that can invoke this task only after the source predecessor is terminal. The request grants no authority. Authentic resident execution remains NOT OBSERVED.
+
 ## Current state
 
 ```text
