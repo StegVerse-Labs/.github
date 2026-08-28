@@ -110,10 +110,14 @@ def previously_consumed(runtime: Path, request: Mapping[str, Any], request_hash:
         receipt = load_json(path)
     except Exception:
         return False
+    result = receipt.get("execution_result")
     return (
         receipt.get("request_id") == request.get("request_id")
         and receipt.get("request_sha256") == request_hash
         and receipt.get("runtime_execution_attempted") is True
+        and isinstance(result, dict)
+        and result.get("state") == "COMPLETE"
+        and result.get("transition_id") == "SV_DN1_SOVEREIGN_FIRST_ROUND_CHAIN_COMPLETE"
     )
 
 
