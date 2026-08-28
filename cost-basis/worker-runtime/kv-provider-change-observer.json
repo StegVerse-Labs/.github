@@ -1,0 +1,9 @@
+{
+  "schema":"stegverse.worker-cost-basis/v0.1",
+  "task_class":"kv_provider_change_observation",
+  "external_cost_usd":0,
+  "network_role":"PUBLIC_PROVIDER_DOCUMENTATION_READ_ONLY",
+  "credential_requirement":"NONE",
+  "provider_operation_authority":"NONE",
+  "authority_effect":"NONE"
+}
