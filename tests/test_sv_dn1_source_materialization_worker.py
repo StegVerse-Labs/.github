@@ -44,6 +44,16 @@ class SvDn1SourceMaterializationTests(unittest.TestCase):
         with self.assertRaises(worker.SourcePinDrift):
             worker.validate_manifest(data)
 
+    def test_atomic_write_tree_never_deletes_current_working_directory(self):
+        root = Path(__file__).resolve().parents[1]
+        sentinel = root / "workers" / "sv_dn1_source_materialization_worker.py"
+        self.assertTrue(sentinel.is_file())
+        with tempfile.TemporaryDirectory() as td:
+            target = Path(td) / "source"
+            worker.write_tree(target, {"scripts/example.py": b"print('ok')\n"})
+            self.assertTrue((target / "scripts/example.py").is_file())
+        self.assertTrue(sentinel.is_file())
+
     def test_complete_materialization_with_verified_blobs(self):
         with tempfile.TemporaryDirectory() as td:
             temp = Path(td)
