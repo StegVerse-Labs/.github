@@ -6,7 +6,7 @@
 goal_id: SV-DN1-ROUTE-SPECIFIC-INTR-RUNTIME-001
 task_id: SV-DN1-INTR-RUNTIME-001
 repository: StegVerse-Labs/.github
-branch: feature/sv-dn1-intr-runtime
+branch: main
 canonical product owner: StegVerse-org/stegverse-demo-suite
 canonical product handoff: docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md
 upstream task: SV-DN1-RESIDENT-OBSERVER-001
@@ -212,11 +212,27 @@ source-materialization predecessor: MERGED / runtime receipt NOT OBSERVED
 resident observer source: MERGED / runtime receipt NOT OBSERVED
 route-specific InTr schema: MERGED
 SDK bridge InTr validator: MERGED
-dedicated InTr executable handoff: IMPLEMENTING
-dedicated InTr worker: IMPLEMENTING
+dedicated InTr executable handoff: MERGED
+dedicated InTr worker: MERGED
 route-specific runtime receipt: NOT OBSERVED
 SDK READY_FOR_SDK_0B: NOT OBSERVED
 ```
+
+## Merge and validation evidence
+
+```text
+PR #339: MERGED
+merge_commit: ab6172bb1938bdb00ec7af80858547c3dcbd45ed
+validated_head: 62ecd89d38728846b9dd0b3a6263f3ff45346039
+organization control plane run 33135865030 / job 98735573027: PASS
+heartbeat worker validation run 33135865038 / job 98735573069: PASS
+complete deterministic repository suite: PASS
+executable handoff validation: PASS
+AE conformance: PASS
+no GitHub token authority: PASS
+```
+
+The route-specific InTr worker is registered and source-valid on main. Authentic runtime completion remains pending on the upstream resident observation and a sovereign WorkerCoordinator claim/fence.
 
 ## Archive readiness
 
