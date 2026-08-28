@@ -12,9 +12,19 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 RESOLVER = ROOT / "workers" / "sovereign_node_repository_resolution_worker.py"
 REQUIRED_RUNTIME_FILES = (
-    Path("heartbeat_runtime/engine_v11.py"),
+    Path("heartbeat_runtime/engine_v13.py"),
+    Path("heartbeat_runtime/independent_oscillator.py"),
+    Path("heartbeat_runtime/oscillator_producer.py"),
+    Path("heartbeat_runtime/worker_runtime.py"),
+    Path("heartbeat_runtime/assignment_timer.py"),
     Path("scripts/install_sovereign_heartbeat_service.py"),
     Path("scripts/verify_sovereign_runtime_activation.py"),
+    Path("scripts/run_heartbeat_runtime.py"),
+    Path("scripts/run_worker_runtime.py"),
+    Path("scripts/advance_heartbeat_transition.py"),
+    Path("control/heartbeat-state.json"),
+    Path("control/worker-registry.json"),
+    Path("management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json"),
 )
 
 
@@ -78,15 +88,58 @@ class DerivedSovereignNodeDeclarationTests(unittest.TestCase):
             marker = home / ".stegverse" / "node.json"
             self.assertTrue(marker.is_file())
             declaration = json.loads(marker.read_text(encoding="utf-8"))
+            self.assertEqual(declaration["schema"], "stegverse.sovereign-node-declaration/v0.4")
             self.assertEqual(declaration["declaration_source"], "DERIVED_LOCAL_RUNTIME_ELIGIBILITY")
             self.assertTrue(declaration["canonical_runtime_complete"])
             self.assertTrue(declaration["durable_state_writable"])
+            self.assertEqual(declaration["continuity_model"], "INDEPENDENT_OSCILLATOR_CONTINUITY")
+            self.assertEqual(declaration["canonical_carrier_runtime"], "heartbeat_runtime.engine_v13.HeartbeatRuntime")
+            self.assertEqual(declaration["heartbeat_progression_dependency"], "OSCILLATOR_ONLY")
+            self.assertFalse(declaration["heartbeat_event_trigger_required"])
+            self.assertFalse(declaration["always_on_external_host_required"])
             self.assertEqual(declaration["credential_authority"], "TV/TVC")
             self.assertFalse(declaration["github_token_required"])
             self.assertEqual(
                 declaration["authority_effect"],
                 "RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY",
             )
+
+
+    def test_stale_v11_only_surface_does_not_derive_current_declaration(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source_root = root / "runtime-source"
+            stale_files = (
+                Path("heartbeat_runtime/engine_v11.py"),
+                Path("scripts/install_sovereign_heartbeat_service.py"),
+                Path("scripts/verify_sovereign_runtime_activation.py"),
+            )
+            for relative in stale_files:
+                source = ROOT / relative
+                destination = source_root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, destination)
+            home = root / "home"
+            env = {
+                "PATH": os.environ.get("PATH", ""),
+                "HOME": str(home),
+                "XDG_STATE_HOME": str(root / "state"),
+                "STEGVERSE_HEARTBEAT_SOURCE_ROOT": str(source_root),
+            }
+            completed = subprocess.run(
+                [sys.executable, str(RESOLVER)],
+                cwd=root,
+                input=json.dumps(invocation()) + "\n",
+                text=True,
+                capture_output=True,
+                env=env,
+                check=False,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            response = json.loads(completed.stdout)
+            self.assertEqual(response["state"], "BLOCKED")
+            self.assertFalse(response["node_declared"] if "node_declared" in response else False)
+            self.assertFalse((home / ".stegverse" / "node.json").exists())
 
     def test_hosted_environment_cannot_derive_declaration(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
