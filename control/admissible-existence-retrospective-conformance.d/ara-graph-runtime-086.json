@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "fragment_id": "ARA-GRAPH-RUNTIME-086",
+  "entries": [
+    {
+      "task_id": "SHWP-ARA-GRAPH-RUNTIME-086",
+      "temporal_class": "current",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:ara-graph-runtime-execution:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "integrates_capability",
+      "result": "PASS",
+      "continuation_owner": "ara-graph-runtime-worker + TV/TVC runtime authority + StegVerse-Labs/TVC#86",
+      "rationale": "Source/control and independent machine registration are admitted; live Microsoft Graph provider execution and activation evidence remain pending, so the capability remains ADMISSIBLE and no activation proof is claimed."
+    }
+  ]
+}
