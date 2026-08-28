@@ -1,0 +1,9 @@
+{
+  "schema":"stegverse.worker-cost-basis/v0.1",
+  "task_class":"kv_connection_revalidation",
+  "external_cost_usd":0,
+  "network_role":"NONE",
+  "credential_requirement":"NONE",
+  "provider_operation_authority":"NONE",
+  "authority_effect":"NONE"
+}
