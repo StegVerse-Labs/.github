@@ -122,7 +122,8 @@ Validation adds an explicit rejection for the stale v11-only source surface. Hos
 Current execution boundary remains:
 
 ```text
-source correction: BRANCH IMPLEMENTED / VALIDATION PENDING
+source correction: MERGED / PR #341 / f57e2c6cb82541347580b0c00b2f14fabf02108c
+repository-owned validation: 33137722412 SUCCESS; 33137722340 SUCCESS
 live sovereign-node declaration: NOT OBSERVED
 G18 runtime activation: BLOCKED ON DEPLOYMENT-LOCAL ELIGIBLE SURFACE
 relay SOVEREIGN_RELAY_LEASE_OPEN: NOT OBSERVED
