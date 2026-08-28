@@ -1,0 +1,16 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "entries": [
+    {
+      "task_id": "SV-DN1-SDK-FIRST-ROUND-001",
+      "temporal_class": "current",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:sv-dn1-sdk-governed-first-round:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "integrates_capability",
+      "result": "PASS",
+      "continuation_owner": "sv-dn1-sdk-first-round-worker",
+      "rationale": "The task integrates the already-published canonical SDK 0B production route with the admitted SV-DN-1 evidence chain and first-round finalizer. It creates no parallel evaluator, external consequence, credential, repository-writeback, publication, certification or protocol-adoption authority."
+    }
+  ]
+}
