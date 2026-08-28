@@ -28,14 +28,17 @@
         "LC_ALL",
         "XDG_STATE_HOME",
         "XDG_CONFIG_HOME",
-        "LOCALAPPDATA"
+        "LOCALAPPDATA",
+        "STEGVERSE_SERVICE_GATEWAY_STORAGE_ROOT",
+        "STEGVERSE_HIL_STORAGE_ROOT"
       ],
       "notes": [
         "Executes only after genuine sovereign WorkerCoordinator activation; hosted CI cannot satisfy completion.",
         "Invokes only canonical StegVerse-Labs/TVC resident activation/readiness/route/projection entrypoints.",
         "Reuses an already-valid recipient key stack when readiness is blocked only on public route evidence.",
         "Gateway/KV path bindings and sovereign public node URL are non-secret resident deployment bindings.",
-        "Provider credentials, provider operation authority, Site repository mutation, GitHub tokens and HeartBeat progression authority are prohibited."
+        "Provider credentials, provider operation authority, Site repository mutation, GitHub tokens and HeartBeat progression authority are prohibited.",
+        "Gateway storage root reuses canonical Service Gateway/HIL storage-root bindings when the TVC-specific alias is absent; no duplicate deployment variable is required."
       ],
       "timeout_seconds": 1200,
       "type": "process_json_v0.1"
