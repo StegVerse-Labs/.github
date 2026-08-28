@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-08-27T22:23:00-05:00",
+  "updated_at": "2026-08-27T22:27:00-05:00",
   "state": "BLOCKED_SOVEREIGN_NODE_REQUIRED_NON_HEARTBEAT",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
@@ -126,7 +126,13 @@
     "resident_claim_resume_expected_claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
     "resident_claim_resume_expected_fencing_token": 18,
     "resident_claim_resume_new_claim_allowed": false,
-    "resident_claim_resume_unrelated_execution_suppressed": true
+    "resident_claim_resume_unrelated_execution_suppressed": true,
+    "resident_execution_request_ref": "control/resident-execution-request.d/g18-sovereign-runtime-resume.json",
+    "resident_execution_request_id": "RESIDENT-EXEC-G18-RESUME-FENCE18-001",
+    "resident_execution_request_mode": "RESUME_EXISTING_CLAIM",
+    "resident_execution_request_consumer": "scripts/consume_g18_resident_execution_request.py",
+    "resident_execution_request_one_shot_per_hash": true,
+    "resident_execution_request_grants_authority": false
   },
   "state_transition_continuity": {
     "contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
@@ -164,7 +170,7 @@
     "blocker_reason": "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT",
     "current_receipt_ref": "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "current_registry_state": "BLOCKED / G18 fence18 remains machine-owned",
-    "next_authorized_action": "On an eligible non-hosted deployment-local StegVerse resident surface, refresh already-local WorkerCoordinator source and resume the existing G18 fence18 claim with scripts/refresh_and_execute_resident_task.py --resume-claimed-task-id SHWP-DURABLE-RUNTIME-ACTIVATION. The bridge must preflight the existing claim/worker/fence, request no new claim, run one targeted WorkerCoordinator cycle, and let the existing G18 v13 self-bootstrap derive node eligibility and execute the activation verifier. Missing eligibility remains BLOCKED; completion still requires a deployment-local activation proof with worker_task_capable_cycle_observed=true and all remaining runtime predicates.",
+    "next_authorized_action": "The existing local source-refresh watcher may consume control/resident-execution-request.d/g18-sovereign-runtime-resume.json exactly once on an eligible sovereign resident runtime. Its dedicated consumer must validate the exact existing G18 claim SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18 and fence18, then invoke the merged RESUME_EXISTING_CLAIM bridge. The request grants no authority and may not mint a new claim/fence. Until a resident consumption receipt and deployment-local v13 activation proof are observed, G18 remains BLOCKED.",
     "terminal_when": [
       "eligible sovereign node is identified/declared",
       "runtime_materialized=true and native_service_active=true",
@@ -182,7 +188,11 @@
     "task_capable_worker_runtime_proven": false,
     "resident_claim_resume_source_merged": true,
     "resident_claim_resume_runtime_observed": false,
-    "current_v13_activation_proof_observed": false
+    "current_v13_activation_proof_observed": false,
+    "resident_execution_request_source_merged": true,
+    "resident_execution_request_state": "REQUESTED",
+    "resident_execution_request_consumption_observed": false,
+    "resident_execution_request_runtime_attempt_observed": false
   },
   "parallel_continuations": [
     {
@@ -269,6 +279,18 @@
       "existing_fencing_token": 18,
       "new_claim_allowed": false,
       "runtime_effect": "SOURCE_ONLY_NO_RESIDENT_G18_EXECUTION_OR_ACTIVATION_PROOF_CLAIM"
+    },
+    "g18_resident_execution_request": {
+      "pull_request": 352,
+      "merge_commit": "22c26feb95f5bcadbffc11002b043dc6a37e2ee4",
+      "validation_runs": [
+        33138867443,
+        33138867425
+      ],
+      "request_id": "RESIDENT-EXEC-G18-RESUME-FENCE18-001",
+      "request_state": "REQUESTED",
+      "consumption_observed": false,
+      "runtime_effect": "SOURCE_REQUEST_ONLY_NO_RESIDENT_EXECUTION_OR_ACTIVATION_PROOF_CLAIM"
     }
   },
   "release_downstream": [
