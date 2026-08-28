@@ -325,3 +325,43 @@ The machine sequence is now source-complete through the TVC persistence boundary
 `resident consumption -> fresh fence >22 -> local model -> TVC route -> exact LLM-adapter -> same-execution Master Records PASS -> persistent runtime READY -> parent PASS -> LLM sovereign projection -> TVC READY_FOR_SITE_IMPORT packet -> existing Site activation-retention owner`.
 
 No iPhone/WebAuthn/credential/provider action is required by this inference lane at the current boundary. No second user-operated machine may be introduced as a workaround.
+
+## Fresh resident parent execution request — 2026-08-28
+
+Live canonical reinspection before mutation confirmed:
+
+```text
+control/worker-registry.json generation: 22
+parent task: SHWP-ECOSYSTEM-CHAT-INFERENCE-001
+parent state: HANDOFF_READY
+executor_binding: AUTHORIZED
+claim_id: null
+worker_id: null
+authority_domain: INDEPENDENT_TASK_CONTROL
+minimum fresh fence exclusive: 22
+old G20 authority reused: false
+G22 recovery authority reused: false
+```
+
+No resident runtime receipts were present in repository custody for:
+- `receipts/sovereign-host/worker-source-refresh.latest.json`;
+- `receipts/sovereign-host/resident-execution-request-consumption.latest.json`;
+- `receipts/sovereign-host/resident-targeted-execution.latest.json`;
+- `receipts/ecosystem-chat-sovereign-inference/independent_parent_activation.latest.json`.
+
+A fresh non-authorizing source-refresh request was therefore emitted on canonical `main`:
+
+```text
+request_id: RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002
+request commit: d8f563f6a35eda0dbeea2db259b2993b0ab5d949
+request grants authority: false
+parent executor retains claim/fence authority: true
+fresh fence floor: >22
+credential authority: TV/TVC
+GitHub token runtime authority: NONE
+second user-operated machine required: false
+network source fetch allowed: false
+```
+
+This request is not activation evidence. It is intended to be consumed exactly once by an already-installed sovereign resident source-refresh path. The next machine-observable state change is either a resident consumption/targeted-execution receipt or a separately evidenced absence/failure of the resident source-refresh service. Do not manufacture a parent PASS from repository mutation alone.
+
