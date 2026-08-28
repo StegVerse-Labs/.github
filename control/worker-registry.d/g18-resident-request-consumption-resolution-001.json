@@ -14,7 +14,10 @@
       "evidence_refs": [
         "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json",
         "workers/g18_resident_request_consumption_resolution_worker.py",
-        "control/resident-execution-request.d/g18-sovereign-runtime-resume.json"
+        "control/resident-execution-request.d/g18-sovereign-runtime-resume.json",
+        "scripts/bootstrap_sovereign_runtime.py",
+        "scripts/install_sovereign_heartbeat_service.py",
+        "scripts/verify_sovereign_runtime_activation.py"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
@@ -78,7 +81,8 @@
         "runtime_observation",
         "bounded_process_execution",
         "durable_state_reconstruction",
-        "g18_resident_request_consumption_resolution"
+        "g18_resident_request_consumption_resolution",
+        "sovereign_runtime_self_bootstrap"
       ],
       "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
       "executor_type": "repository_worker",

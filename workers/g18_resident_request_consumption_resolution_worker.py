@@ -16,6 +16,9 @@ EXPECTED_CLAIM = "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18"
 EXPECTED_FENCE = 18
 RECEIPT_REL = Path("receipts/sovereign-host/g18-resident-request-resolution.latest.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/g18-resident-execution-request-consumption.latest.json")
+BOOTSTRAP_RECEIPT_REL = Path("receipts/sovereign-host/g18-resolution-bootstrap.latest.json")
+BOOTSTRAP_PROOF_REL = Path("receipts/sovereign-host/g18-resolution-activation.latest.json")
+BOOTSTRAP_NODE_REL = Path("control/sovereign-node.json")
 THIRD_PARTY_ENV = ("GITHUB_ACTIONS","RENDER","RENDER_SERVICE_ID","VERCEL","CF_PAGES","CLOUDFLARE_WORKERS")
 NONSECRET_ENV = {
     "PATH","HOME","LANG","LC_ALL","XDG_STATE_HOME","XDG_CONFIG_HOME","LOCALAPPDATA",
@@ -126,12 +129,58 @@ def run_resolution(source: Path, runtime: Path, *, runner=subprocess.run, env: d
             "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_RUNTIME_EVIDENCE",
             "ESCALATE_TO_COMPONENT_AUTHORITY_FOR_EXISTING_SOVEREIGN_RESIDENT"
         )}
-    if not (runtime/"control"/"worker-registry.json").is_file():
-        return {**base,"state":"BLOCKED","transition_id":"SOVEREIGN_RESIDENT_RUNTIME_REQUIRED","blocker":blocker(
-            "No materialized resident WorkerCoordinator registry is present at the selected local runtime root.",
-            "RESIDENT_WORKER_REGISTRY_NOT_PRESENT",
-            "ESCALATE_TO_COMPONENT_AUTHORITY_FOR_EXISTING_SOVEREIGN_RESIDENT"
-        )}
+    bootstrap_attempted=False
+    bootstrap_returncode=None
+    bootstrap_state=None
+    registry_path=runtime/"control"/"worker-registry.json"
+    if not registry_path.is_file():
+        bootstrap_script=source/"scripts"/"bootstrap_sovereign_runtime.py"
+        if not bootstrap_script.is_file():
+            return {**base,"state":"BLOCKED","transition_id":"LOCAL_BOOTSTRAP_SOURCE_REQUIRED","blocker":{
+                **blocker(
+                    "No resident WorkerCoordinator registry is present and the already-local canonical source does not contain the v13 sovereign bootstrap.",
+                    "LOCAL_BOOTSTRAP_SCRIPT_MISSING",
+                    "ESCALATE_TO_REPOSITORY_OWNER_SOURCE_RECONCILIATION"
+                ),
+                "dependency_class":"INTERNAL_CAPABILITY",
+            }}
+        bootstrap_attempted=True
+        bootstrap_receipt=runtime/BOOTSTRAP_RECEIPT_REL
+        bootstrap_proof=runtime/BOOTSTRAP_PROOF_REL
+        bootstrap_node=runtime/BOOTSTRAP_NODE_REL
+        boot=runner(
+            [
+                sys.executable,str(bootstrap_script),
+                "--source-root",str(source),
+                "--runtime-root",str(runtime),
+                "--node-marker",str(bootstrap_node),
+                "--proof-path",str(bootstrap_proof),
+                "--receipt-path",str(bootstrap_receipt),
+                "--skip-post-bootstrap-stegfin",
+            ],
+            cwd=source,capture_output=True,text=True,check=False,env=clean_env(env),timeout=600,
+        )
+        bootstrap_returncode=boot.returncode
+        bootstrap_body=load_json(bootstrap_receipt) or {}
+        bootstrap_state=bootstrap_body.get("state")
+        if boot.returncode != 0 or bootstrap_state != "COMPLETE" or not registry_path.is_file():
+            return {
+                **base,
+                "state":"BLOCKED",
+                "transition_id":"SOVEREIGN_RESIDENT_BOOTSTRAP_REPAIR_REQUIRED",
+                "bootstrap_attempted":True,
+                "bootstrap_returncode":boot.returncode,
+                "bootstrap_state":bootstrap_state,
+                "bootstrap_receipt_ref":BOOTSTRAP_RECEIPT_REL.as_posix(),
+                "blocker":{
+                    **blocker(
+                        "The canonical v13 local bootstrap did not produce a verified resident WorkerCoordinator runtime.",
+                        bootstrap_body.get("reason") or "SOVEREIGN_RESIDENT_BOOTSTRAP_INCOMPLETE",
+                        "ESCALATE_TO_COMPONENT_AUTHORITY_FOR_SOVEREIGN_BOOTSTRAP_REPAIR"
+                    ),
+                    "dependency_class":"INTERNAL_CAPABILITY",
+                },
+            }
     claim=exact_g18_claim(runtime)
     if claim is None:
         return {**base,"state":"BLOCKED","transition_id":"EXACT_G18_CLAIM_NOT_RESIDENT","blocker":{
@@ -187,6 +236,9 @@ def run_resolution(source: Path, runtime: Path, *, runner=subprocess.run, env: d
         "state":"COMPLETED" if success else "BLOCKED",
         "transition_id":"G18_RESIDENT_REQUEST_CONSUMPTION_VERIFIED" if success else "G18_RESIDENT_REQUEST_CONSUMPTION_REPAIR_REQUIRED",
         "existing_claim":claim,
+        "bootstrap_attempted":bootstrap_attempted,
+        "bootstrap_returncode":bootstrap_returncode,
+        "bootstrap_state":bootstrap_state,
         "refresh_returncode":refresh.returncode,
         "consumer_returncode":consume.returncode,
         "runtime_execution_attempted":receipt.get("runtime_execution_attempted") is True,

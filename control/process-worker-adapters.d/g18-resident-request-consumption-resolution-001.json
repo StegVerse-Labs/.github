@@ -9,7 +9,8 @@
         "runtime_observation",
         "bounded_process_execution",
         "durable_state_reconstruction",
-        "g18_resident_request_consumption_resolution"
+        "g18_resident_request_consumption_resolution",
+        "sovereign_runtime_self_bootstrap"
       ],
       "command": [
         "python",
@@ -30,7 +31,8 @@
         "Executes only on an eligible non-hosted local resident surface; hosted validation cannot satisfy completion.",
         "Refreshes already-local canonical source into the existing resident runtime and invokes the already-merged one-shot G18 request consumer.",
         "The resolution task has its own independent fence but may not mint, replace, or widen the existing G18 fence18 claim.",
-        "No GitHub/provider credential, network source fetch, HeartBeat progression authority, route authority, or second machine is admitted."
+        "No GitHub/provider credential, network source fetch, HeartBeat progression authority, route authority, or second machine is admitted.",
+        "When the resident WorkerCoordinator registry is absent, this adapter may invoke only the already-merged canonical v13 bootstrap from already-local source with post-bootstrap StegFin explicitly skipped; hosted surfaces remain ineligible."
       ],
       "timeout_seconds": 1100,
       "type": "process_json_v0.1"
