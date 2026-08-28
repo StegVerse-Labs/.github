@@ -1,0 +1,16 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "entries": [
+    {
+      "task_id": "SV-DN1-INTR-RUNTIME-001",
+      "temporal_class": "current",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:sv-dn1-route-specific-intr-runtime:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "integrates_capability",
+      "result": "PASS",
+      "continuation_owner": "sv-dn1-intr-runtime-worker",
+      "rationale": "The task integrates the route-specific InTr runtime proof already required by the canonical SV-DN-1 SDK bridge. It is bounded to the authentic resident exchange, preserves TV/TVC and zero credential authority, and explicitly does not promote Universal Interlock adoption/global activation or SDK admission."
+    }
+  ]
+}

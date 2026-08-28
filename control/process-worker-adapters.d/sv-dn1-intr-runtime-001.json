@@ -1,0 +1,41 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SV-DN1-INTR-RUNTIME-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:sv-dn1-intr-runtime-v1",
+      "authority_ref": "handoffs/SV-DN1-INTR-RUNTIME-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "runtime_observation",
+        "route_specific_intr_traversal",
+        "evidence_class_preservation"
+      ],
+      "command": [
+        "python",
+        "workers/sv_dn1_intr_runtime_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT",
+        "STEGVERSE_SV_DN1_SOURCE_ROOT",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/state/sv-dn1-intr-runtime",
+      "bound_state_allowed_paths": [
+        "observed/**",
+        "receipts/**"
+      ],
+      "timeout_seconds": 180,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Consumes authentic resident observer bound-state evidence and exact materialized demo-suite source only.",
+        "Performs no public network acquisition and accepts no GitHub/provider credentials.",
+        "Emits only the route-specific SV-DN-1-HF-PUBLIC InTr runtime receipt after destination validation.",
+        "Does not claim Universal Interlock canonical adoption/global runtime activation, SDK admission, governance, custody, publication or certification."
+      ]
+    }
+  ]
+}
