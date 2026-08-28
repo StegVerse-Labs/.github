@@ -40,7 +40,9 @@ class SovereignRuntimePlatformPolicyTests(unittest.TestCase):
             self.assertIn("RENDER", source)
             self.assertIn("GITHUB_ACTIONS", source)
 
-        self.assertIn("THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_TRANSITION_EVIDENCE", activation)
+        self.assertIn("THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_RUNTIME_EVIDENCE", activation)
+        self.assertIn("heartbeat_runtime.engine_v13.HeartbeatRuntime", activation)
+        self.assertIn("scripts/bootstrap_sovereign_runtime.py", activation)
         self.assertIn("THIRD_PARTY_HOST_IS_NOT_PRIMARY_SOVEREIGN_CARRIER_EVIDENCE", transition)
         self.assertIn("hosted_environment", resolution)
         self.assertIn("hosted", bootstrap.lower())
