@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.implementation-claim/v1",
+  "task_id": "ECOSYSTEM-CHAT-RESIDENT-REQUEST-DURABILITY-20260828",
+  "originating_goal": "Make the non-authorizing Ecosystem Chat resident execution request durable in the multi-request registry so unrelated resident tasks cannot overwrite the machine-readable continuation before sovereign source refresh.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/ecosystem-chat-resident-request-durable-20260828",
+  "claimant": "SESSION_EXECUTION_LANE_20260828_ECOSYSTEM_CHAT_RESIDENT_REQUEST_DURABILITY",
+  "role": "SOURCE_IMPLEMENTATION",
+  "claimed_at": "2026-08-28T06:58:00-05:00",
+  "release_condition": "Release after exact-head repository validation passes and the durable request-registry consumer change merges. Runtime consumption and product activation remain separate evidence gates.",
+  "owned_surfaces": [
+    "control/resident-execution-request.d/ecosystem-chat-parent-001.json",
+    "scripts/consume_resident_execution_request.py",
+    "tests/test_resident_execution_request.py",
+    "docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md",
+    "control/session-implementation-claim-2026-08-28-ecosystem-chat-resident-request-durability.json"
+  ],
+  "collision_boundaries": [
+    "Do not execute or mint the parent claim from repository source changes.",
+    "Do not reuse G18, G20, or G22 authority.",
+    "Do not alter heartbeat progression or authority.",
+    "Do not introduce GitHub runtime credentials or NON-TV/TVC secrets.",
+    "Do not delete the singleton compatibility request until older resident consumers are no longer relevant.",
+    "Do not claim resident consumption, fresh fence issuance, model execution, or activation from hosted validation."
+  ],
+  "machine_readable_change": {
+    "canonical_request_ref": "control/resident-execution-request.d/ecosystem-chat-parent-001.json",
+    "compatibility_request_ref": "control/resident-execution-request.json",
+    "request_id": "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002",
+    "consumer_ref": "scripts/consume_resident_execution_request.py",
+    "overwrite_collision_removed": true,
+    "request_grants_authority": false
+  },
+  "credential_authority": "TV/TVC",
+  "credential_requirement": "NONE",
+  "github_token_runtime_authority": "NONE",
+  "authority_effect": "NONE_SOURCE_ONLY",
+  "activation_effect": false,
+  "state": "CLAIMED"
+}
