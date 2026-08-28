@@ -376,3 +376,46 @@ GitHub Actions runtime authority: NONE
 ```
 
 The historical HB29/HB30/iPhone material above remains provenance only where retained. It must not be interpreted as the current machine-execution path or as an unmet HeartBeat prerequisite.
+
+
+## 2026-08-27 G18 resident existing-claim resume closure
+
+The remaining resident source-refresh seam for G18 has been closed without introducing a duplicate claim/fence.
+
+```text
+PR: StegVerse-Labs/.github#351
+merge: e73133c161ada4e599743c03d4dc321eb0d39375
+Heartbeat Worker Project: 33138665170 SUCCESS
+Organization control plane: 33138665172 SUCCESS
+
+mode: RESUME_EXISTING_CLAIM
+task: SHWP-DURABLE-RUNTIME-ACTIVATION
+required existing claim: SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18
+required existing fence: 18
+new claim requested: false
+unrelated worker execution: suppressed
+source refresh mutates resident claim/fence state: false
+GitHub token runtime authority: NONE
+credential authority: TV/TVC
+```
+
+The existing local refresh bridge now distinguishes independently admitted tasks from an already-claimed resident task. In G18 resume mode it first requires the persisted ACTIVE/BLOCKED/RETRY task identity, worker, claim ID and fencing token, then performs one targeted WorkerCoordinator cycle. The coordinator retries the already-bound task before independent admission, so G18 remains fence18 rather than receiving a duplicate claim.
+
+The lawful machine-owned resident command is:
+
+```text
+python scripts/refresh_and_execute_resident_task.py \
+  --resume-claimed-task-id SHWP-DURABLE-RUNTIME-ACTIVATION
+```
+
+This is an execution surface, not evidence that it has run. Current distinctions remain:
+
+```text
+resident resume source: MERGED / VALIDATED
+actual resident G18 resume: NOT OBSERVED
+eligible sovereign node/runtime: NOT OBSERVED
+v13 activation proof: NOT OBSERVED
+G18 terminalized: false
+HeartBeat dependency: false
+user action required: false
+```
