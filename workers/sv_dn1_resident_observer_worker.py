@@ -283,6 +283,8 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "source_basis_commit": source_manifest.get("source_basis_commit"),
         "source_hash_profile": source_manifest.get("hash_profile"),
         "source_file_count_verified": len(source_manifest.get("files") or {}),
+        "runtime_source_pin_verified": True,
+        "runtime_source_manifest_ref": "config/sv_dn1_runtime_source_manifest.json",
         "source_discovery_mode": "explicit" if str(os.getenv(ROOT_ENV) or "").strip() else "canonical_local_path",
         "target_url": TARGET_URL,
         "source_capture_ref": "observed/source-capture.json",
