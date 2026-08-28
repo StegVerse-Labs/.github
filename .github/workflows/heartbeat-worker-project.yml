@@ -60,6 +60,7 @@ on:
       - 'handoffs/SHWP-ARA-GRAPH-RUNTIME-086.json'
       - 'control/worker-registry.d/ara-graph-runtime-086.json'
       - 'control/process-worker-adapters.d/ara-graph-runtime-086.json'
+      - 'control/admissible-existence-retrospective-conformance.d/ara-graph-runtime-086.json'
       - 'tests/test_stegfin_early_adopter_contribution_validation_worker.py'
       - 'control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json'
       - 'docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_VALIDATION_MIRROR_HANDOFF.md'
