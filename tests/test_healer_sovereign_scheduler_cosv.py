@@ -20,7 +20,7 @@ class HealerSovereignSchedulerCOSVTests(unittest.TestCase):
     def test_single_machine_dependency_blocker(self):
         dep=self.handoff["completion"]["dependency_state"]
         self.assertEqual(dep["state"],"BLOCKED")
-        self.assertEqual(dep["blocker"],"SOVEREIGN_NODE_DECLARATION_NOT_PRESENT")
+        self.assertEqual(dep["blocker"],"RESIDENT_G18_REQUEST_QUEUED_CONSUMPTION_AND_V13_ACTIVATION_PROOF_NOT_OBSERVED")
         self.assertEqual(self.record["exact_metrics"]["blocker_count"],1)
         self.assertFalse(dep["current_iphone_hb30_action_required"])
         self.assertFalse(dep["third_party_primary_runtime_required"])
