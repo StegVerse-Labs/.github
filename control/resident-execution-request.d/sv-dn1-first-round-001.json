@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-SV-DN1-FIRST-ROUND-001",
+  "state": "REQUESTED",
+  "task_id": "SV-DN1-SOVEREIGN-EXECUTION-CHAIN-001",
+  "mode": "SV_DN1_FIRST_ROUND_CHAIN",
+  "entrypoint": "scripts/run_sv_dn1_first_round_chain.py",
+  "fresh_fence_minimum_exclusive": 22,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "On a sovereign resident source refresh, attempt the already-admitted SV-DN-1 source -> resident observation -> route-specific InTr -> canonical SDK first-round chain exactly once. The request grants no claim, fence, network, SDK, governance, publication, or credential authority."
+}
