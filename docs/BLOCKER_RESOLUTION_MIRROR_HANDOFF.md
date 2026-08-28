@@ -79,7 +79,7 @@ No implementation task in this handoff is implicitly manual-startable. A distinc
 
 ```yaml
 - task_id: WORKER-CONSTRAINT-AUTHORITY-ESCALATION
-  execution_owner: engine-v11 authority chain
+  execution_owner: canonical v13 oscillator/WorkerCoordinator authority chain
   claim_state: ESCALATED
   worker_registry_ref: docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md + control/worker-registry.json
   manual_execution_allowed: false
@@ -97,3 +97,34 @@ No implementation task in this handoff is implicitly manual-startable. A distinc
 - Constraint-to-solution/escalation invariant: canonical.
 
 No chat history is required to reconstruct this rule. Historical `BLOCKED` wording is evidence of past attempts only and does not release worker-owned work for manual implementation.
+
+
+## 2026-08-27 G18 sovereign-node derivation reconciliation
+
+A live-state inspection found a source-version drift in `workers/sovereign_node_repository_resolution_worker.py`: repository-local eligibility still treated the historical `heartbeat_runtime/engine_v11.py` plus two installer/verifier files as the canonical runtime surface, while the current runtime-separation handoff and `scripts/bootstrap_sovereign_runtime.py` define the canonical carrier as `heartbeat_runtime.engine_v13.HeartbeatRuntime` with the independent oscillator, WorkerCoordinator, transition producer, registries, and continuity contract present.
+
+This reconciliation branch narrows the resolver to that existing canonical v13 surface rather than introducing a new node mechanism. It also aligns the derived marker to `stegverse.sovereign-node-declaration/v0.4` and preserves:
+
+```text
+continuity_model: INDEPENDENT_OSCILLATOR_CONTINUITY
+canonical_carrier_runtime: heartbeat_runtime.engine_v13.HeartbeatRuntime
+heartbeat_progression_dependency: OSCILLATOR_ONLY
+heartbeat_event_trigger_required: false
+always_on_external_host_required: false
+credential_authority: TV/TVC
+github_token_required: false
+third_party_runtime_required: false
+authority_effect: RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY
+```
+
+Validation adds an explicit rejection for the stale v11-only source surface. Hosted environments remain ineligible and cannot produce a sovereign-node declaration. This source correction does **not** claim that a deployment-local node has been observed, that G18 is task-capable, or that either StegOS relay runtime receipt exists.
+
+Current execution boundary remains:
+
+```text
+source correction: BRANCH IMPLEMENTED / VALIDATION PENDING
+live sovereign-node declaration: NOT OBSERVED
+G18 runtime activation: BLOCKED ON DEPLOYMENT-LOCAL ELIGIBLE SURFACE
+relay SOVEREIGN_RELAY_LEASE_OPEN: NOT OBSERVED
+relay RELAY_NODE_KV_CONTINUITY_VERIFIED: NOT OBSERVED
+```

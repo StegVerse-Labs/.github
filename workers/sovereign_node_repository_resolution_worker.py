@@ -19,9 +19,19 @@ THIRD_PARTY_ENV_VARS = (
     "CLOUDFLARE_WORKERS",
 )
 CANONICAL_RUNTIME_FILES = (
-    Path("heartbeat_runtime/engine_v11.py"),
+    Path("heartbeat_runtime/engine_v13.py"),
+    Path("heartbeat_runtime/independent_oscillator.py"),
+    Path("heartbeat_runtime/oscillator_producer.py"),
+    Path("heartbeat_runtime/worker_runtime.py"),
+    Path("heartbeat_runtime/assignment_timer.py"),
     Path("scripts/install_sovereign_heartbeat_service.py"),
     Path("scripts/verify_sovereign_runtime_activation.py"),
+    Path("scripts/run_heartbeat_runtime.py"),
+    Path("scripts/run_worker_runtime.py"),
+    Path("scripts/advance_heartbeat_transition.py"),
+    Path("control/heartbeat-state.json"),
+    Path("control/worker-registry.json"),
+    Path("management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json"),
 )
 
 
@@ -89,6 +99,11 @@ def local_runtime_eligibility() -> dict:
         "durable_state_writable": durable_state_writable,
         "hosted_environment_rejected": third_party,
         "eligible": all(canonical_files.values()) and durable_state_writable and not third_party,
+        "continuity_model": "INDEPENDENT_OSCILLATOR_CONTINUITY",
+        "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+        "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+        "heartbeat_event_trigger_required": False,
+        "always_on_external_host_required": False,
         "credential_authority": "TV/TVC",
         "github_token_required": False,
         "third_party_runtime_required": False,
@@ -109,7 +124,7 @@ def derive_node_declaration() -> tuple[bool, str | None, dict]:
     atomic_write(
         marker,
         {
-            "schema": "stegverse.sovereign-node-declaration/v0.2",
+            "schema": "stegverse.sovereign-node-declaration/v0.4",
             "declared": True,
             "declaration_source": "DERIVED_LOCAL_RUNTIME_ELIGIBILITY",
             "source_root": eligibility["source_root"],
@@ -117,6 +132,11 @@ def derive_node_declaration() -> tuple[bool, str | None, dict]:
             "canonical_runtime_complete": True,
             "durable_state_writable": True,
             "hosted_environment_rejected": False,
+            "continuity_model": "INDEPENDENT_OSCILLATOR_CONTINUITY",
+            "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+            "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+            "heartbeat_event_trigger_required": False,
+            "always_on_external_host_required": False,
             "credential_authority": "TV/TVC",
             "github_token_required": False,
             "third_party_runtime_required": False,
@@ -176,7 +196,7 @@ def main() -> int:
             "escalation_target": "COMPONENT_AUTHORITY",
             "required_capabilities": ["component_resolution", "governance_validation"],
             "completion_evidence": [
-                "A v0.2 derived sovereign-node declaration records canonical runtime source and writable durable state.",
+                "A v0.4 derived sovereign-node declaration records the canonical v13 oscillator/WorkerCoordinator runtime source and writable durable state.",
                 "The canonical native installer and verifier can execute without GitHub-token or hosted-provider production authority."
             ],
         }
