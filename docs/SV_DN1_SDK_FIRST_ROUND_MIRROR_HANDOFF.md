@@ -6,7 +6,7 @@
 goal_id: SV-DN1-SDK-GOVERNED-FIRST-ROUND-001
 task_id: SV-DN1-SDK-FIRST-ROUND-001
 repository: StegVerse-Labs/.github
-branch: feature/sv-dn1-sdk-first-round
+branch: main
 canonical product owner: StegVerse-org/stegverse-demo-suite
 canonical product handoff: docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md
 parent_task: SV-DN1-INTR-RUNTIME-001
@@ -229,10 +229,26 @@ source materialization worker: MERGED / runtime completion NOT OBSERVED
 resident observer worker: MERGED / runtime completion NOT OBSERVED
 route-specific InTr worker: MERGED / runtime completion NOT OBSERVED
 SDK bridge/result binder/finalizer source: MERGED
-SDK governed first-round worker: IMPLEMENTING
+SDK governed first-round worker: MERGED
 first authentic round: NOT ANALYZED
 public live dashboard data: NOT PUBLISHED
 ```
+
+## Merge and execution-chain evidence
+
+```text
+SDK first-round PR #340: MERGED
+merge_commit: 778020f45571d84d9c7ed545bbe85294a91f60a0
+independent admission/dependency PR #343: MERGED
+merge_commit: 75fbb638a8003d42517620cc95b383070ea3b15e
+sovereign one-shot chain PR #348: MERGED
+merge_commit: a45095d2c2099b9318915410e78a4615b4dc68e6
+chain validation runs: 33138330575 PASS / 33138330592 PASS
+```
+
+The first-round worker now has a complete machine-executable predecessor chain and resident request bridge. Its explicit dependency is `SV-DN1-INTR-RUNTIME-001=COMPLETED` with terminal transition `SV_DN1_ROUTE_SPECIFIC_INTR_COMPLETE`, independent fresh fence >22, and HeartBeat reference-only.
+
+Authentic SDK execution, Master Records custody, and first-round analysis remain NOT OBSERVED.
 
 ## Archive readiness
 
