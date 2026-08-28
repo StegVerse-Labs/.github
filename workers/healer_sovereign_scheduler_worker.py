@@ -23,14 +23,6 @@ def atomic_write(path: Path, value: dict) -> None:
     os.replace(name, path)
 
 
-TLS_LOCATOR_ENV = (
-    "STEGVERSE_SERVICE_GATEWAY_TLS_CERT_FILE",
-    "STEGVERSE_SERVICE_GATEWAY_TLS_KEY_FILE",
-    "STEGVERSE_SERVICE_GATEWAY_TLS_BIND_ADDRESS",
-    "STEGVERSE_SERVICE_GATEWAY_TLS_PORT",
-)
-
-
 def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
     env = {
         "PATH": os.environ.get("PATH", ""),
@@ -42,10 +34,6 @@ def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
         "TARGETS_FILE": str(targets),
         "STEGVERSE_REPO_ROOTS_JSON": roots_json,
     }
-    for name in TLS_LOCATOR_ENV:
-        value = os.getenv(name, "").strip()
-        if value:
-            env[name] = value
     return env
 
 
