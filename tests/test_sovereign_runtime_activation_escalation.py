@@ -122,7 +122,9 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
         self.assertIn("SHWP-ECOSYSTEM-CHAT-INFERENCE-001", downstream)
         self.assertEqual(handoff["constraint"]["operational_state"], "BLOCKED")
         self.assertEqual(handoff["constraint"]["class"], "PHYSICAL_RESOURCE_SOVEREIGN_NODE_ELIGIBILITY")
-        self.assertEqual(handoff["constraint"]["condition"], "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT")
+        self.assertEqual(handoff["constraint"]["condition"], "NON_HOSTED_NATIVE_RESIDENT_EXECUTION_NOT_OBSERVED")
+        self.assertEqual(handoff["completion"]["resident_request_resolution_task_id"], "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001")
+        self.assertFalse(handoff["completion"]["resident_request_resolution_runtime_observed"])
         self.assertFalse(handoff["constraint"]["heartbeat_activation_blocked"])
 
     def test_g18_adapter_passes_only_nonsecret_runtime_environment(self) -> None:
