@@ -198,6 +198,22 @@ atomic source swap cwd-preservation regression: PASS
 
 The source-materialization worker is registered and machine-owned on main. Runtime completion still requires an authentic sovereign WorkerCoordinator claim/fence and resulting materialization receipt.
 
+## Independent task-control admission
+
+PR #343 merged the explicit independent-task-control contract for this root task:
+
+```text
+dependencies: []
+authority_domain: INDEPENDENT_TASK_CONTROL
+claim_state: AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM
+fresh_fence_required: true
+minimum_fencing_token_exclusive: 22
+heartbeat_grants_execution_authority: false
+merge_commit: 75fbb638a8003d42517620cc95b383070ea3b15e
+```
+
+The merged sovereign first-round chain in `docs/SV_DN1_SOVEREIGN_EXECUTION_CHAIN_MIRROR_HANDOFF.md` may target this task first. Runtime completion remains NOT OBSERVED.
+
 ## Archive readiness
 
 This handoff is the canonical continuation source for exact SV-DN-1 source materialization. Once merged, the lane can be recovered and executed without the originating chat.
