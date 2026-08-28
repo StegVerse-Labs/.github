@@ -1,0 +1,147 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
+  "created_at": "2026-08-28T00:45:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
+    "objective": "After the sovereign WorkerCoordinator runtime is genuinely active, execute the already-built TVC Coinbase Interlock/InTr resident activation through TVC authority, observe a fresh sovereign public route, and emit the runtime Site owner-ingress projection without accepting provider credentials or mutating Site.",
+    "success_predicates": [
+      "SHWP-DURABLE-RUNTIME-ACTIVATION is terminal with genuine non-hosted resident evidence before this task is admitted.",
+      "Existing valid recipient activation/liveness is reused rather than rotated merely because route evidence is missing.",
+      "When resident activation is required, both real Gateway staging root and KV custody root are present and the canonical TVC activation entrypoint succeeds under resident root authority.",
+      "A fresh TLS-verified sovereign node advertisement/public Coinbase Gateway route observation exists.",
+      "TVC readiness returns READY_FOR_OWNER_INGRESS with provider_operation_authorized=false.",
+      "The TVC owner-ingress Site projection is emitted locally and Site repository mutation remains false.",
+      "No provider credential value, GitHub token, NON-TV/TVC secret, order authority, or HeartBeat progression authority is introduced."
+    ],
+    "failure_predicates": [
+      "Hosted CI is treated as resident activation evidence.",
+      "A valid recipient key is regenerated solely because public route observation is missing or stale.",
+      "Activation proceeds without both real Gateway staging and KV custody roots.",
+      "Site is modified directly by the worker.",
+      "Provider credential material is accepted by the worker or provider operation authority is granted."
+    ],
+    "authority_ceiling": [
+      "TVC resident Interlock/InTr activation only",
+      "root/systemd activation through canonical StegVerse-Labs/TVC entrypoints",
+      "public no-credential route observation",
+      "local Site owner-ingress projection generation",
+      "no provider operation authority",
+      "no Site repository mutation",
+      "no heartbeat progression authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 2
+  },
+  "task": {
+    "task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
+    "canonical_lineage_key": "tvc:coinbase:intr-resident-activation",
+    "derivation_depth": 0,
+    "priority": "release",
+    "operational_state": "AWAITING_SOVEREIGN_RUNTIME_AND_RUNTIME_BINDINGS",
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "source_refs": [
+      "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+      "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
+      "StegVerse-Labs/TVC/docs/TVC_COINBASE_IPHONE_SKAP_ACTIVATION_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/TVC/scripts/activate_coinbase_intr_resident.py",
+      "StegVerse-Labs/TVC/scripts/observe_coinbase_intr_resident_readiness.py",
+      "StegVerse-Labs/TVC/scripts/observe_coinbase_service_gateway_route.py",
+      "StegVerse-Labs/TVC/scripts/project_coinbase_owner_ingress_site_config.py",
+      "workers/tvc_coinbase_intr_resident_activation_worker.py"
+    ],
+    "dependencies": [
+      "SHWP-DURABLE-RUNTIME-ACTIVATION:COMPLETED",
+      "SHWP-HEALER-SOVEREIGN-SCHEDULER-001:AVAILABLE_FOR_GATEWAY_TARGET"
+    ]
+  },
+  "authority": {
+    "authority_source": "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json + handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_grants_execution_authority": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "provider_operation_authority": "NONE",
+    "site_repository_mutation_authority": "NONE",
+    "physical_additional_machine_required": false,
+    "third_party_runtime_required": false,
+    "policy_version": "tvc-coinbase-intr-resident-activation-v0.1"
+  },
+  "execution": {
+    "required_capabilities": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "tvc_resident_intr_activation"
+    ],
+    "allowed_paths": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/TVC",
+      "/var/lib/stegverse/**",
+      "/run/stegverse/tv-tvc-credentials/**",
+      "/etc/systemd/system/stegtvc-*.service",
+      "/etc/systemd/system/stegtvc-*.path"
+    ],
+    "allowed_services": [
+      "stegtvc-*"
+    ],
+    "max_actions": 8,
+    "max_retries": 8,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 32,
+    "rate_class": "tvc_intr_resident_activation",
+    "nonsecret_runtime_bindings": [
+      "STEGVERSE_REPO_ROOTS_JSON or STEGVERSE_TVC_ROOT",
+      "STEGVERSE_COINBASE_GATEWAY_STORAGE_ROOT",
+      "STEGVERSE_KV_CUSTODY_ROOT",
+      "STEGVERSE_COINBASE_PUBLIC_NODE_URL"
+    ]
+  },
+  "completion": {
+    "runtime_activation_claimed": false,
+    "terminal_evidence": "worker response transition TVC_INTR_READY_FOR_OWNER_INGRESS plus canonical TVC runtime receipts at resident paths",
+    "terminal_when": [
+      "resident TVC key/services are valid and live",
+      "real Gateway and KV roots are bound when activation was required",
+      "fresh public route observation is digest-valid and TLS verified",
+      "READY_FOR_OWNER_INGRESS is observed",
+      "local Site owner-ingress projection exists",
+      "provider operation authority remains NONE",
+      "Site repository mutation remains false"
+    ],
+    "next_authorized_action": "Only after terminal readiness may the current owner-authorized iPhone enter/seal the provider credential through the trusted browser ingress. Credential plaintext never enters this worker."
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:tvc-coinbase-intr-resident-activation:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
+      "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json",
+      "workers/tvc_coinbase_intr_resident_activation_worker.py",
+      "control/worker-registry.d/tvc-coinbase-intr-resident-activation-001.json",
+      "control/process-worker-adapters.d/tvc-coinbase-intr-resident-activation-001.json"
+    ],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": [
+      "SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN",
+      "REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED",
+      "PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "tvc-coinbase-intr-resident-activation-worker + StegVerse-Labs/TVC",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  }
+}

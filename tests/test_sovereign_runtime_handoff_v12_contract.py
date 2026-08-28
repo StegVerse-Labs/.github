@@ -72,7 +72,10 @@ class SovereignRuntimeHandoffContractTests(unittest.TestCase):
         self.assertEqual(completion["heartbeat_protocol_activation_state"], "TERMINAL_ACTIVE_PROTOCOL_VERIFIED")
         self.assertFalse(completion["heartbeat_dependency"])
         self.assertEqual(completion["live_runtime_activation_state"], "BLOCKED")
-        self.assertEqual(completion["blocker_reason"], "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT")
+        self.assertEqual(completion["blocker_reason"], "NON_HOSTED_NATIVE_RESIDENT_EXECUTION_NOT_OBSERVED")
+        self.assertTrue(completion["resident_request_resolution_task_registered"])
+        self.assertEqual(completion["resident_request_resolution_task_id"], "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001")
+        self.assertFalse(completion["resident_request_resolution_runtime_observed"])
 
 
 if __name__ == "__main__":
