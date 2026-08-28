@@ -183,7 +183,7 @@ source correction: IMPLEMENTED / VALIDATED / MERGED
 live sovereign runtime activation: NOT OBSERVED
 task-capable WorkerCoordinator proof: NOT OBSERVED
 relay SOVEREIGN_RELAY_LEASE_OPEN: NOT OBSERVED
-authority effect: NONE_SOURCE_ONLY_NO_RUNTIME_OBSERVATION
+authority effect: NONE_SOURCE_AND_REGISTRY_ONLY_NO_RUNTIME_OBSERVATION_NO_RUNTIME_OBSERVATION
 ```
 
 This is a direct correction of the existing G18 executor and does not create a second runtime, worker scheduler, HeartBeat, node mechanism, credential lane, route authority, broker, or transport authority.
@@ -230,8 +230,11 @@ If the resident runtime or exact G18 claim is absent, the resolution worker emit
 Branch state:
 
 ```text
-branch: fix/g18-resident-request-resolution-worker
-resolution source: IMPLEMENTED / VALIDATION PENDING
+PR: #355
+merge: 713dd687173900f164fa006aa93327f7c943f870
+validation: 33141763517 SUCCESS; 33141763569 SUCCESS
+resolution source: IMPLEMENTED / VALIDATED / MERGED
+registry state: HANDOFF_READY
 resident consumption: NOT OBSERVED
 G18 activation: NOT OBSERVED
 authority effect: NONE_SOURCE_ONLY
