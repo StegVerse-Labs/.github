@@ -1,0 +1,117 @@
+{
+  "schema":"stegverse.executable-handoff/v0.1",
+  "handoff_id":"HANDOFF-KV-CONNECTION-REVALIDATION-001",
+  "created_at":"2026-08-28T12:04:00-05:00",
+  "state":"HANDOFF_READY",
+  "goal":{
+    "goal_id":"KV-CONNECTION-REVALIDATION-001",
+    "objective":"Consume already-produced non-secret provider conformance and private-KV readback proofs on a sovereign resident worker, apply canonical continuity-vault-kit proof admission, and persist the exact Personal KV connection assembly as VERIFIED with a bounded health receipt.",
+    "success_predicates":[
+      "hosted surfaces are rejected",
+      "credential-bearing environment is rejected",
+      "exact local continuity-vault-kit source is required",
+      "private KV root is required",
+      "both non-secret proof files are required",
+      "proofs bind the same exact assembly",
+      "stale proofs fail closed",
+      "canonical continuity-vault-kit admit_revalidation succeeds",
+      "verified assembly and health receipt persist inside private KV",
+      "provider operation authority remains NONE"
+    ],
+    "failure_predicates":[
+      "GitHub Actions is treated as live revalidation authority",
+      "provider network access occurs",
+      "provider credentials or SKAP material are accepted",
+      "proof is manufactured by the worker",
+      "stale proof is accepted",
+      "VERIFIED is persisted without canonical proof admission"
+    ],
+    "authority_ceiling":[
+      "private KV connection proof admission and persistence only",
+      "no provider access",
+      "no credential resolution",
+      "no proof generation",
+      "no provider mutation"
+    ],
+    "successor_policy":"INHERIT_OR_NARROW",
+    "max_successor_depth":2
+  },
+  "task":{
+    "task_id":"KV-CONNECTION-REVALIDATION-001",
+    "repository":"StegVerse-Labs/.github",
+    "canonical_owner_ref":"StegVerse-Labs/continuity-vault-kit#119 + StegVerse-Labs/.github#366",
+    "canonical_lineage_key":"kv:connection-assembly:revalidation",
+    "derivation_depth":0,
+    "priority":"continuity",
+    "operational_state":"AWAITING_SOVEREIGN_RUNTIME_AND_REVALIDATION_PROOFS",
+    "claim_state":"AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "source_refs":[
+      "KV_CONNECTION_REVALIDATION_WORKER_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/continuity-vault-kit/KV_CONNECTION_REVALIDATION_PROOF_MIRROR_HANDOFF.md",
+      "workers/kv_connection_revalidation_worker.py"
+    ],
+    "dependencies":["SHWP-DURABLE-RUNTIME-ACTIVATION:COMPLETED"]
+  },
+  "authority":{
+    "authority_source":"StegVerse-Labs/continuity-vault-kit#119 + handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "authority_domain":"INDEPENDENT_TASK_CONTROL",
+    "heartbeat_grants_execution_authority":false,
+    "fresh_fence_required":true,
+    "minimum_fencing_token_exclusive":22,
+    "credential_authority":"TV/TVC",
+    "github_token_runtime_authority":"NONE",
+    "non_tv_tvc_secret_or_token_allowed":false,
+    "provider_operation_authority":"NONE",
+    "policy_version":"kv-connection-revalidation-v0.1"
+  },
+  "execution":{
+    "required_capabilities":["runtime_observation","bounded_process_execution","private_kv_state_reconciliation"],
+    "allowed_paths":["StegVerse-Labs/.github","StegVerse-Labs/continuity-vault-kit","/var/lib/stegverse/kv/**"],
+    "allowed_services":[],
+    "max_actions":32,
+    "max_retries":4,
+    "external_cost_ceiling_usd":0,
+    "runtime_window_beats":32,
+    "rate_class":"kv_connection_revalidation",
+    "nonsecret_runtime_bindings":[
+      "STEGVERSE_CVK_ROOT",
+      "STEGVERSE_KV_ROOT",
+      "STEGVERSE_KV_CONFORMANCE_PROOF",
+      "STEGVERSE_KV_READBACK_PROOF",
+      "STEGVERSE_KV_REVALIDATION_REQUIRED_AFTER"
+    ]
+  },
+  "completion":{
+    "runtime_activation_claimed":false,
+    "terminal_evidence":"worker response KV_CONNECTION_REVALIDATION_COMPLETED plus private KV VERIFIED health receipt",
+    "terminal_when":[
+      "canonical proof admission succeeds",
+      "matching assembly persists as VERIFIED",
+      "verified health receipt persists",
+      "provider operation authority remains NONE"
+    ],
+    "next_authorized_action":"Expose the verified state through the bounded My KV connection-health bridge; provider operations remain separately governed."
+  },
+  "admissible_existence":{
+    "capability_id":"stegverse:capability:kv-connection-revalidation:v1",
+    "capability_version":"1.0.0",
+    "phase":"ADMISSIBLE",
+    "standing_evidence_refs":["StegVerse-Labs/continuity-vault-kit#119"],
+    "admissibility_evidence_refs":[
+      "KV_CONNECTION_REVALIDATION_WORKER_MIRROR_HANDOFF.md",
+      "handoffs/KV-CONNECTION-REVALIDATION-001.json",
+      "workers/kv_connection_revalidation_worker.py",
+      "control/worker-registry.d/kv-connection-revalidation-001.json",
+      "control/process-worker-adapters.d/kv-connection-revalidation-001.json"
+    ],
+    "integration_evidence_refs":[],
+    "activation_proof_ref":null,
+    "blockers":["SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN","LIVE_PROVIDER_CONFORMANCE_PROOF_NOT_YET_OBSERVED","LIVE_PRIVATE_KV_READBACK_PROOF_NOT_YET_OBSERVED"],
+    "continuation_owner":"kv-connection-revalidation-worker + continuity-vault-kit",
+    "credential_authority":"TV/TVC",
+    "github_token_runtime_authority":false,
+    "temporal_class":"current",
+    "task_relationship":"integrates_capability",
+    "target_phase":"ACTIVATED"
+  }
+}
