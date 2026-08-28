@@ -125,11 +125,7 @@ def _bound_path(env_name: str, default: Path, values: Mapping[str, str]) -> Path
 
 
 def _receipt_specs(values: Mapping[str, str]) -> dict[str, tuple[Path, dict[str, Any]]]:
-    source_root = _bound_path(
-        "STEGVERSE_SV_DN1_MATERIALIZED_SOURCE_ROOT",
-        Path.home() / ".stegverse" / "state" / "sv-dn1-source-materialization",
-        values,
-    )
+    source_root = Path.home() / ".stegverse" / "state" / "sv-dn1-source-materialization"
     resident_root = _bound_path(
         "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT",
         Path.home() / ".stegverse" / "state" / "sv-dn1-resident-observer",
@@ -384,6 +380,13 @@ def execute_chain(
         result["durable_receipt"] = validated
         task_results.append(result)
         completed_tasks.append(task_id)
+
+        if task_id == "SV-DN1-SOURCE-MATERIALIZATION-001":
+            source_receipt = _load(Path(validated["receipt_path"]))
+            materialized = str(source_receipt.get("source_root") or "").strip()
+            if not materialized:
+                raise RuntimeError("source materialization receipt did not expose source_root")
+            child_env["STEGVERSE_SV_DN1_SOURCE_ROOT"] = materialized
 
     receipt = {
         "schema": "stegverse.sv-dn1.sovereign-execution-chain/v1",
