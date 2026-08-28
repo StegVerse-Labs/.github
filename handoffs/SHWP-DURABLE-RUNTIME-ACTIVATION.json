@@ -65,7 +65,9 @@
       "control/worker-registry.d/ecosystem-chat-orphan-recovery-hb28.json",
       "control/session-implementation-claim-2026-08-18-worker-task-capable-release-hardening.json",
       "control/heartbeat-protocol-anchor.json",
-      "control/heartbeat-live-status.json"
+      "control/heartbeat-live-status.json",
+      "workers/sovereign_node_repository_resolution_worker.py",
+      "scripts/bootstrap_sovereign_runtime.py"
     ]
   },
   "authority": {
@@ -153,7 +155,7 @@
     "blocker_reason": "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT",
     "current_receipt_ref": "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "current_registry_state": "BLOCKED / G18 fence18 remains machine-owned",
-    "next_authorized_action": "Bind the existing G18 worker to an eligible StegVerse-owned/federated Linux, macOS, or Windows node (or admit an existing StegVerse micro-node that satisfies the native-supervision/durable-state requirements), declare the sovereign-node marker, then run the canonical installer/verifier and consume the resulting runtime receipt.",
+    "next_authorized_action": "Run the existing sovereign-node repository resolver/self-bootstrap path on an eligible non-hosted deployment-local StegVerse surface. The merged resolver now derives the existing v0.4 sovereign-node marker only when the canonical v13 oscillator/WorkerCoordinator runtime source is complete and durable state is writable; then let G18 execute the canonical installer/verifier and consume the authentic runtime receipt.",
     "terminal_when": [
       "eligible sovereign node is identified/declared",
       "runtime_materialized=true and native_service_active=true",
@@ -193,7 +195,7 @@
     "condition": "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT",
     "owner": "StegVerse-Labs/.github#59/#122 machine-owned durable-runtime lane",
     "solution_required": true,
-    "next_solution_action": "Identify or provision an eligible StegVerse-owned/federated node, declare STEGVERSE_SOVEREIGN_NODE=1 or equivalent canonical node marker, then let the existing worker execute installation and verification.",
+    "next_solution_action": "Use the existing deployment-local resolver/self-bootstrap path; do not hand-create a marker when canonical v13 runtime eligibility can be derived automatically. If eligibility cannot be satisfied on the current sovereign surface, component authority may select another StegVerse-owned/federated node without creating a second-machine requirement by default.",
     "machine_observable_completion_condition": "The sovereign-runtime activation receipt proves runtime_materialized/native_service_active/continuous_runtime_live plus restart/reconstruction/no-duplicate-fence predicates.",
     "third_party_dependency": false,
     "human_action_required": false,
@@ -225,6 +227,15 @@
     "bounded_hb29_to_hb30_transition": {
       "pull_request": 206,
       "merge_commit": "b7c5b5e9199c5af46029210fe7909dcf19033b41"
+    },
+    "sovereign_node_v13_resolution": {
+      "pull_request": 341,
+      "merge_commit": "f57e2c6cb82541347580b0c00b2f14fabf02108c",
+      "validation_runs": [
+        33137722412,
+        33137722340
+      ],
+      "runtime_effect": "SOURCE_ONLY_NO_SOVEREIGN_NODE_OR_RUNTIME_RECEIPT_CLAIM"
     }
   },
   "release_downstream": [
