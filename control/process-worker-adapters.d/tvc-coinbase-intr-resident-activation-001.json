@@ -1,0 +1,44 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:tvc-coinbase-intr-resident-activation-v1",
+      "authority_ref": "handoffs/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "tvc_resident_intr_activation"
+      ],
+      "command": [
+        "python",
+        "workers/tvc_coinbase_intr_resident_activation_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_REPO_ROOTS_JSON",
+        "STEGVERSE_TVC_ROOT",
+        "STEGVERSE_COINBASE_GATEWAY_STORAGE_ROOT",
+        "STEGVERSE_KV_CUSTODY_ROOT",
+        "STEGVERSE_COINBASE_PUBLIC_NODE_URL",
+        "PATH",
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "XDG_STATE_HOME",
+        "XDG_CONFIG_HOME",
+        "LOCALAPPDATA"
+      ],
+      "notes": [
+        "Executes only after genuine sovereign WorkerCoordinator activation; hosted CI cannot satisfy completion.",
+        "Invokes only canonical StegVerse-Labs/TVC resident activation/readiness/route/projection entrypoints.",
+        "Reuses an already-valid recipient key stack when readiness is blocked only on public route evidence.",
+        "Gateway/KV path bindings and sovereign public node URL are non-secret resident deployment bindings.",
+        "Provider credentials, provider operation authority, Site repository mutation, GitHub tokens and HeartBeat progression authority are prohibited."
+      ],
+      "timeout_seconds": 1200,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
