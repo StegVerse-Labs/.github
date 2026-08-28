@@ -34,6 +34,8 @@ STATIC_FILES = (
     Path("scripts/refresh_and_execute_resident_task.py"),
     Path("scripts/run_independent_ecosystem_chat_parent.py"),
     Path("scripts/consume_resident_execution_request.py"),
+    Path("scripts/run_sv_dn1_first_round_chain.py"),
+    Path("scripts/consume_sv_dn1_resident_execution_request.py"),
     Path("scripts/materialize_live_cosv_packet.py"),
     Path("scripts/cosv.py"),
     Path("scripts/cosv_state_packet.py"),
