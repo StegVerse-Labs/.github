@@ -192,7 +192,10 @@
     "resident_execution_request_source_merged": true,
     "resident_execution_request_state": "REQUESTED",
     "resident_execution_request_consumption_observed": false,
-    "resident_execution_request_runtime_attempt_observed": false
+    "resident_execution_request_runtime_attempt_observed": false,
+    "resident_request_resolution_task_registered": true,
+    "resident_request_resolution_runtime_observed": false,
+    "resident_request_resolution_task_id": "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001"
   },
   "parallel_continuations": [
     {
@@ -300,6 +303,17 @@
       "request_state": "REQUESTED",
       "consumption_observed": false,
       "runtime_effect": "SOURCE_REQUEST_ONLY_NO_RESIDENT_EXECUTION_OR_ACTIVATION_PROOF_CLAIM"
+    },
+    "g18_resident_request_consumption_resolution": {
+      "pull_request": 355,
+      "merge_commit": "713dd687173900f164fa006aa93327f7c943f870",
+      "validation_runs": [
+        33141763517,
+        33141763569
+      ],
+      "task_id": "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
+      "registry_state": "HANDOFF_READY",
+      "runtime_effect": "SOURCE_AND_REGISTRY_ONLY_NO_RESIDENT_CONSUMPTION_OR_G18_ACTIVATION_CLAIM"
     }
   },
   "release_downstream": [
