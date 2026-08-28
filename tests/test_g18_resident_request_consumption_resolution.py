@@ -157,7 +157,7 @@ class G18ResidentRequestResolutionTests(unittest.TestCase):
     def test_registry_and_adapter_use_unique_resolution_capability(self):
         fragment=json.loads((ROOT/"control/worker-registry.d/g18-resident-request-consumption-resolution-001.json").read_text())
         adapter=json.loads((ROOT/"control/process-worker-adapters.d/g18-resident-request-consumption-resolution-001.json").read_text())
-        caps={"runtime_observation","bounded_process_execution","durable_state_reconstruction","g18_resident_request_consumption_resolution"}
+        caps={"runtime_observation","bounded_process_execution","durable_state_reconstruction","g18_resident_request_consumption_resolution","sovereign_runtime_self_bootstrap"}
         self.assertEqual(set(fragment["workers"][0]["capabilities"]),caps)
         self.assertEqual(set(adapter["adapters"][0]["capabilities"]),caps)
         self.assertEqual(fragment["tasks"][0]["state"],"HANDOFF_READY")
@@ -165,6 +165,7 @@ class G18ResidentRequestResolutionTests(unittest.TestCase):
         profiles=json.loads((ROOT/"control/worker-capability-profiles.json").read_text())
         profile=next(x for x in profiles["profiles"] if x["profile_id"]=="sovereign-runtime-worker-v1")
         self.assertIn("g18_resident_request_consumption_resolution",profile["allowed_capabilities"])
+        self.assertIn("sovereign_runtime_self_bootstrap",profile["allowed_capabilities"])
 
 
 if __name__ == "__main__":
