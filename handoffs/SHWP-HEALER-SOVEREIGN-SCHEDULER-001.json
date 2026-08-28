@@ -121,7 +121,8 @@
       "heartbeat_activation_dependency": false,
       "current_iphone_action_required": false,
       "third_party_primary_runtime_required": false,
-      "credential_authority": "TV/TVC"
+      "credential_authority": "TV/TVC",
+      "current_iphone_hb30_action_required": false
     },
     "coinbase_gateway_tls_source": {
       "llm_adapter_native_tls_merge": "10a6f6247771b2a85b07f5f19810403c3acde513",
