@@ -5,7 +5,7 @@
   "repository": "StegVerse-Labs/.github",
   "branch": "fix/ecosystem-chat-resident-request-durable-20260828",
   "claimant": "SESSION_EXECUTION_LANE_20260828_ECOSYSTEM_CHAT_RESIDENT_REQUEST_DURABILITY",
-  "role": "SOURCE_IMPLEMENTATION",
+  "role": "RELEASED_FROM_CHAT_SESSION",
   "claimed_at": "2026-08-28T06:58:00-05:00",
   "release_condition": "Release after exact-head repository validation passes and the durable request-registry consumer change merges. Runtime consumption and product activation remain separate evidence gates.",
   "owned_surfaces": [
@@ -36,5 +36,19 @@
   "github_token_runtime_authority": "NONE",
   "authority_effect": "NONE_SOURCE_ONLY",
   "activation_effect": false,
-  "state": "CLAIMED"
+  "state": "COMPLETE_RELEASED",
+  "released_at": "2026-08-28T07:04:00-05:00",
+  "release_evidence": {
+    "exact_validated_head": "fb441403fd28f5f1638494c5cca88f25b97a05c0",
+    "heartbeat_worker_run": 33171649292,
+    "heartbeat_worker_conclusion": "SUCCESS",
+    "organization_control_plane_run": 33171649218,
+    "organization_control_plane_conclusion": "SUCCESS",
+    "merge_commit": "6531070319f562bbcd18a3136f21e21b3ded244c",
+    "source_state": "COMPLETE_RELEASED",
+    "runtime_consumption_claimed": false,
+    "live_activation_claimed": false
+  },
+  "chat_session_required_for_current_claim": false,
+  "next_owner": "SOVEREIGN_RESIDENT_SOURCE_REFRESH -> INDEPENDENT_ADMITTED_PARENT EXECUTOR -> TVC -> LLM-adapter -> Master Records"
 }
