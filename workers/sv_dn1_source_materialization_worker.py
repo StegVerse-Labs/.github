@@ -221,10 +221,11 @@ def acquire_objects(manifest_data: bytes, manifest: Mapping[str, Any]) -> dict[s
 def write_tree(root: Path, objects: Mapping[str, bytes]) -> None:
     parent = root.parent
     parent.mkdir(parents=True, exist_ok=True)
-    stage = Path(tempfile.mkdtemp(prefix=".sv-dn1-source-", dir=parent))
+    stage: Path | None = Path(tempfile.mkdtemp(prefix=".sv-dn1-source-", dir=parent))
     backup: Path | None = None
     try:
         for rel, data in objects.items():
+            assert stage is not None
             path = stage / rel
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(data)
@@ -236,8 +237,9 @@ def write_tree(root: Path, objects: Mapping[str, bytes]) -> None:
                 else:
                     backup.unlink()
             os.replace(root, backup)
+        assert stage is not None
         os.replace(stage, root)
-        stage = Path()
+        stage = None
         if backup is not None:
             if backup.is_dir() and not backup.is_symlink():
                 shutil.rmtree(backup)
@@ -248,7 +250,7 @@ def write_tree(root: Path, objects: Mapping[str, bytes]) -> None:
             os.replace(backup, root)
         raise
     finally:
-        if stage and stage.exists():
+        if stage is not None and stage.exists():
             shutil.rmtree(stage, ignore_errors=True)
 
 
