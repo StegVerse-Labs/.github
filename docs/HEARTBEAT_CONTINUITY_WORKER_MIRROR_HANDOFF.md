@@ -319,3 +319,56 @@ session_consolidation: 23/23 source requirements transferred
 product_activation: active machine work / incomplete
 archive_readiness: false for this active support session
 ```
+
+
+## ARA Microsoft Graph runtime execution
+
+Canonical provider capability owner:
+
+```text
+StegVerse-Labs/TVC#86
+StegVerse-Labs/TVC/tasks/TVC-ARA-GRAPH-RUNTIME-EXECUTION-086.json
+```
+
+The ARA Graph source/control lane is complete in TVC through merge `e36dc36f697afc27936403db171f23a6cc45edf3`. Remaining execution is independently admitted to the existing sovereign worker runtime; heartbeat is reference-only and does not grant execution or credential authority.
+
+Registered machine lane:
+
+```text
+task_id: SHWP-ARA-GRAPH-RUNTIME-086
+handoff: handoffs/SHWP-ARA-GRAPH-RUNTIME-086.json
+registry: control/worker-registry.d/ara-graph-runtime-086.json
+adapter: control/process-worker-adapters.d/ara-graph-runtime-086.json
+worker: workers/ara_graph_runtime_worker.py
+receipt: receipts/ara-graph-runtime/SHWP-ARA-GRAPH-RUNTIME-086.json
+credential_authority: TV/TVC
+github_token_runtime_authority: NONE
+heartbeat_grants_execution_authority: false
+```
+
+Execution sequence:
+
+```text
+existing sovereign resident worker runtime
+-> locate already-local clean TVC source containing e36dc36f697afc27936403db171f23a6cc45edf3
+-> python tools/task_dispatcher.py tvc.ara_graph.activation_preflight
+-> require READY_FOR_RESIDENT_INTAKE
+-> registered worker child declares STEGTV_ARA_GRAPH_RUNTIME_AUTHORITY=TV/TVC
+-> python tools/task_dispatcher.py tvc.ara_graph.execute_once
+-> require PROVIDER_OPERATION_RESULT_RECORDED
+-> persist secret-free worker receipt
+```
+
+Collision boundaries:
+- no network source fetch or source mutation;
+- no GitHub Actions/Render/Vercel/Cloudflare runtime authority;
+- no Microsoft credential acquisition, reading, hashing, logging, copying, or transport by the worker;
+- no new provider broker/OAuth broker/service/runtime;
+- no ARA release authority;
+- `TVC-CAPABILITY-RUNTIME-002` remains the separately claimed HTTPS observer and is not duplicated.
+
+Current lifecycle:
+- TVC source/control: COMPLETE / VALIDATED / MERGED
+- sovereign worker source/registry: IMPLEMENTED / VALIDATION PENDING
+- resident task claim/execution: NOT OBSERVED
+- Graph SEND/FETCH/MARK_READ runtime evidence: NOT OBSERVED
