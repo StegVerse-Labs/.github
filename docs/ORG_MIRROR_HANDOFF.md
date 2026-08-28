@@ -419,3 +419,51 @@ G18 terminalized: false
 HeartBeat dependency: false
 user action required: false
 ```
+
+
+## 2026-08-27 G18 resident one-shot request queued
+
+The existing fence18 G18 task now has a machine-consumable resident request without creating a new execution lane.
+
+```text
+PR: StegVerse-Labs/.github#352
+merge: 22c26feb95f5bcadbffc11002b043dc6a37e2ee4
+Heartbeat Worker Project: 33138867443 SUCCESS
+Organization control plane: 33138867425 SUCCESS
+
+request:
+  control/resident-execution-request.d/g18-sovereign-runtime-resume.json
+request_id:
+  RESIDENT-EXEC-G18-RESUME-FENCE18-001
+mode:
+  RESUME_EXISTING_CLAIM
+expected claim:
+  SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18
+expected fence:
+  18
+new claim allowed:
+  false
+request grants authority:
+  false
+one-shot:
+  request id + content hash
+```
+
+The existing local source-refresh watcher copies the request fragment and invokes the dedicated G18 consumer. The consumer validates the request, then calls only the existing resident resume bridge. A mismatched claim/fence or bridge preflight fails closed.
+
+Current state remains:
+
+```text
+request source: MERGED
+request state: REQUESTED
+resident request consumption: NOT OBSERVED
+resident G18 execution attempt: NOT OBSERVED
+eligible sovereign runtime evidence: NOT OBSERVED
+v13 activation proof: NOT OBSERVED
+G18 state: BLOCKED
+G18 fence: 18
+HeartBeat: independent OSCILLATOR_ONLY
+user action required: false
+```
+
+The merge makes the task consumable by the existing machine-owned resident path; it is not evidence that such a resident surface consumed it.
