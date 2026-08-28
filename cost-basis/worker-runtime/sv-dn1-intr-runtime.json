@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "sv_dn1_route_specific_intr",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 2,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 16,
+    "confidence": "LOW_UNTIL_FIRST_SOVEREIGN_RUN"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 8388608,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "docs/SV_DN1_INTR_RUNTIME_MIRROR_HANDOFF.md",
+    "handoffs/SV-DN1-INTR-RUNTIME-001.json",
+    "workers/sv_dn1_intr_runtime_worker.py",
+    "control/process-worker-adapters.d/sv-dn1-intr-runtime-001.json"
+  ],
+  "notes": [
+    "This route-specific traversal is local sovereign bound-state transit and requires no provider network or credential.",
+    "It executes only after the authentic resident observation exists.",
+    "It stops before canonical SDK governed execution.",
+    "External cost is zero."
+  ]
+}
