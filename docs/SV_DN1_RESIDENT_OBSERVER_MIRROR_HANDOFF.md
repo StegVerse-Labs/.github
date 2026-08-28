@@ -93,6 +93,18 @@ The worker may not:
 
 The worker consumes exact local source only.
 
+The local demo-suite executable/config source must additionally match the merged runtime-source manifest:
+
+```text
+config/sv_dn1_runtime_source_manifest.json
+schema: stegverse.sv-dn1.runtime-source-manifest/v1
+hash_profile: git-blob-sha1
+source_basis_commit: ccd8a1886e8b87865cfcc541be5f32bf59f34e17
+drift_policy: FAIL_CLOSED
+```
+
+File presence alone is no longer sufficient. Any pinned byte drift returns HANDOFF_READY / blocked source materialization rather than executing an ambiguous production observation.
+
 Optional locator:
 
 `STEGVERSE_SV_DN1_SOURCE_ROOT`
@@ -108,6 +120,7 @@ scripts/observe_sv_dn1_hf_public.py
 scripts/sv_dn1_hf_interlock.py
 scripts/sv_dn1_stegverse_interlock.py
 config/sv_dn1_hf_mapping.v1.json
+config/sv_dn1_runtime_source_manifest.json
 ```
 
 Missing source means `HANDOFF_READY`, not a fabricated success and not a duplicate source-retrieval lane.
@@ -162,6 +175,7 @@ real public web parsed preflight: OBSERVED / NONADMISSIBLE_AS_LIVE_SOURCE_CAPTUR
 .github worker implementation: MERGED
 .github cost basis: MERGED
 .github tests: MERGED
+exact pinned local source: NOT OBSERVED
 resident source capture: NOT OBSERVED
 raw-byte digest: NOT OBSERVED
 HF semantic exchange runtime: NOT OBSERVED

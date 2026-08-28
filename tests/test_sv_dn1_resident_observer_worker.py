@@ -107,6 +107,30 @@ class SvDn1ResidentObserverWorkerTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             W.validate_invocation(invocation)
 
+    def test_runtime_source_manifest_is_required_and_pinned(self) -> None:
+        source = (ROOT / "workers/sv_dn1_resident_observer_worker.py").read_text()
+        self.assertIn("config/sv_dn1_runtime_source_manifest.json", source)
+        self.assertIn("validate_pinned_source", source)
+
+    def test_pinned_source_drift_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            (root / "config").mkdir(parents=True)
+            (root / "scripts").mkdir(parents=True)
+            target = root / "scripts" / "example.py"
+            target.write_text("print('changed')\n", encoding="utf-8")
+            manifest = {
+                "schema": "stegverse.sv-dn1.runtime-source-manifest/v1",
+                "hash_profile": "git-blob-sha1",
+                "source_basis_commit": "test",
+                "files": {"scripts/example.py": "0" * 40},
+            }
+            (root / "config" / "sv_dn1_runtime_source_manifest.json").write_text(
+                json.dumps(manifest), encoding="utf-8"
+            )
+            with self.assertRaises(W.SourceUnavailable):
+                W.validate_pinned_source(root)
+
 
 if __name__ == "__main__":
     unittest.main()
