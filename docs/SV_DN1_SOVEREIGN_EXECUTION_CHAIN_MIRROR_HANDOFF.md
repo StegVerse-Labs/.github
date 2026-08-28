@@ -5,7 +5,7 @@
 ```text
 goal_id: SV-DN1-SOVEREIGN-EXECUTION-CHAIN-001
 repository: StegVerse-Labs/.github
-branch: feature/sv-dn1-sovereign-execution-chain
+branch: main
 canonical product owner: StegVerse-org/stegverse-demo-suite
 canonical product handoff: docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md
 credential_authority: TV/TVC
@@ -247,11 +247,30 @@ source worker: MERGED
 resident worker: MERGED
 InTr worker: MERGED
 SDK first-round worker: MERGED
-single-opportunity sovereign chain orchestrator: IMPLEMENTING
-resident request bridge: IMPLEMENTING
+single-opportunity sovereign chain orchestrator: MERGED
+resident request bridge: MERGED
 authentic chain execution receipt: NOT OBSERVED
 public live dashboard: NOT PUBLISHED
 ```
+
+## Merge and validation evidence
+
+```text
+PR #348: MERGED
+merge_commit: a45095d2c2099b9318915410e78a4615b4dc68e6
+validated_head: 34234237264e96c7da8226d19ff4a7c43e18de09
+heartbeat worker validation run 33138330575 / job 98743294611: PASS
+organization control plane run 33138330592 / job 98743294652: PASS
+complete deterministic repository suite: PASS
+hosted-environment rejection: PASS
+credential scrubbing: PASS
+existing-claim no-steal behavior: PASS
+sequential dependency progression: PASS
+durable receipt validation: PASS
+resident request non-authority/retry behavior: PASS
+```
+
+The full first-round chain is therefore source-complete and admitted for resident one-shot execution. No authentic chain execution receipt has been observed yet.
 
 ## Archive readiness
 
