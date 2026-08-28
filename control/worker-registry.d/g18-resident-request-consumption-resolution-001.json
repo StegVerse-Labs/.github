@@ -1,0 +1,68 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "G18_RESIDENT_REQUEST_CONSUMPTION_NOT_YET_OBSERVED"
+      ],
+      "authorized_policy_version": "g18-resident-request-consumption-resolution-v0.1",
+      "block_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#constraint",
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/g18-resident-request-consumption-resolution.json",
+      "evidence_refs": [
+        "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json",
+        "workers/g18_resident_request_consumption_resolution_worker.py",
+        "control/resident-execution-request.d/g18-sovereign-runtime-resume.json"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
+      "handoff_ref": "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "control/blocker-resolution-policy.json + handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#constraint",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 22,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+        "parent_task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+        "parent_claim_reuse_prohibited": true,
+        "target_existing_parent_claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+        "target_existing_parent_fencing_token": 18
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:g18-resident-request-consumption-resolution-v1",
+      "authority_source": "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "durable_state_reconstruction",
+        "g18_resident_request_consumption_resolution"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "g18-resident-request-consumption-resolution-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "non_tv_tvc_secret_or_token_required": false,
+  "third_party_runtime_required": false
+}\n
