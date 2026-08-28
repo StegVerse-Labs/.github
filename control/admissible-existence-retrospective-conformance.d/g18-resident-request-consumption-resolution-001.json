@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "fragment_id": "G18-RESIDENT-REQUEST-CONSUMPTION-RESOLUTION-001",
+  "entries": [
+    {
+      "task_id": "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
+      "temporal_class": "current",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:g18-resident-request-consumption-resolution:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "integrates_capability",
+      "result": "PASS",
+      "continuation_owner": "g18-resident-request-consumption-resolution-worker + SHWP-DURABLE-RUNTIME-ACTIVATION/G18 machine owner",
+      "rationale": "The resolution worker, handoff, adapter, cost basis, and registry admission are source-complete candidates for goal-preserving resident-request consumption. No deployment-local resident consumption or G18 activation proof is claimed, so the capability remains ADMISSIBLE."
+    }
+  ]
+}

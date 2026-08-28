@@ -1,23 +1,39 @@
 {
   "schema": "stegverse.worker-capability-profiles/v0.1",
-  "generation": 15,
+  "generation": 16,
   "profiles": [
     {
       "profile_id": "deterministic-workflow-v1",
       "executor_type": "deterministic_workflow",
       "effect_class": "deterministic_workflow",
-      "allowed_capabilities": ["repository_validation", "deterministic_projection", "schema_validation", "receipt_projection"],
+      "allowed_capabilities": [
+        "repository_validation",
+        "deterministic_projection",
+        "schema_validation",
+        "receipt_projection"
+      ],
       "mutation_allowed": false,
       "deployment_allowed": false,
       "availability_grants_authority": false,
       "capability_match_grants_authority": false,
-      "notes": ["Deterministic execution does not imply task authorization."]
+      "notes": [
+        "Deterministic execution does not imply task authorization."
+      ]
     },
     {
       "profile_id": "repository-maintenance-v1",
       "executor_type": "repository_worker",
       "effect_class": "repository_maintenance",
-      "allowed_capabilities": ["native_receipt_canary", "host_runtime_self_attest", "repository_validation", "deterministic_projection", "bounded_repository_mutation", "repo_heartbeat_federation_reconciliation", "healer_sovereign_scheduling", "formal_mathematical_candidate_generation"],
+      "allowed_capabilities": [
+        "native_receipt_canary",
+        "host_runtime_self_attest",
+        "repository_validation",
+        "deterministic_projection",
+        "bounded_repository_mutation",
+        "repo_heartbeat_federation_reconciliation",
+        "healer_sovereign_scheduling",
+        "formal_mathematical_candidate_generation"
+      ],
       "mutation_allowed": true,
       "deployment_allowed": false,
       "availability_grants_authority": false,
@@ -33,40 +49,76 @@
       "profile_id": "code-change-agent-v1",
       "executor_type": "agent_runtime",
       "effect_class": "code_change_agent",
-      "allowed_capabilities": ["github_repository_read", "github_repository_write", "issue_and_pr_coordination", "code_and_schema_implementation", "hosted_validation_observation"],
+      "allowed_capabilities": [
+        "github_repository_read",
+        "github_repository_write",
+        "issue_and_pr_coordination",
+        "code_and_schema_implementation",
+        "hosted_validation_observation"
+      ],
       "mutation_allowed": true,
       "deployment_allowed": false,
       "availability_grants_authority": false,
       "capability_match_grants_authority": false,
-      "notes": ["Agent capability describes what the executor can do, not what it is authorized to do for a task."]
+      "notes": [
+        "Agent capability describes what the executor can do, not what it is authorized to do for a task."
+      ]
     },
     {
       "profile_id": "deployment-worker-v1",
       "executor_type": "deployment_worker",
       "effect_class": "deployment",
-      "allowed_capabilities": ["deployment_inspection", "deployment_update", "deployment_release", "runtime_observation"],
+      "allowed_capabilities": [
+        "deployment_inspection",
+        "deployment_update",
+        "deployment_release",
+        "runtime_observation"
+      ],
       "mutation_allowed": true,
       "deployment_allowed": true,
       "availability_grants_authority": false,
       "capability_match_grants_authority": false,
-      "notes": ["Deployment authority must be separately admitted by the HANDOFF and deployment control plane."]
+      "notes": [
+        "Deployment authority must be separately admitted by the HANDOFF and deployment control plane."
+      ]
     },
     {
       "profile_id": "read-only-observer-v1",
       "executor_type": "observer",
       "effect_class": "read_only_observer",
-      "allowed_capabilities": ["github_repository_read", "hosted_validation_observation", "runtime_observation", "evidence_observation"],
+      "allowed_capabilities": [
+        "github_repository_read",
+        "hosted_validation_observation",
+        "runtime_observation",
+        "evidence_observation"
+      ],
       "mutation_allowed": false,
       "deployment_allowed": false,
       "availability_grants_authority": false,
       "capability_match_grants_authority": false,
-      "notes": ["Observer profiles cannot be selected for mutation or deployment capabilities."]
+      "notes": [
+        "Observer profiles cannot be selected for mutation or deployment capabilities."
+      ]
     },
     {
       "profile_id": "sovereign-runtime-worker-v1",
       "executor_type": "repository_worker",
       "effect_class": "sovereign_runtime_activation",
-      "allowed_capabilities": ["runtime_observation", "continuous_process_execution", "bounded_process_execution", "durable_state_reconstruction", "bounded_repository_mutation", "canonical_artifact_validation", "master_records_replay_reconstruction_validation", "stegfin_live_entry_inventory_observation", "stegfin_sovereign_internal_trading_activation", "orphan_lifecycle_reconstruction", "stegnutrition_machine_continuation", "sovereign_relay_materialization"],
+      "allowed_capabilities": [
+        "runtime_observation",
+        "continuous_process_execution",
+        "bounded_process_execution",
+        "durable_state_reconstruction",
+        "bounded_repository_mutation",
+        "canonical_artifact_validation",
+        "master_records_replay_reconstruction_validation",
+        "stegfin_live_entry_inventory_observation",
+        "stegfin_sovereign_internal_trading_activation",
+        "orphan_lifecycle_reconstruction",
+        "stegnutrition_machine_continuation",
+        "sovereign_relay_materialization",
+        "g18_resident_request_consumption_resolution"
+      ],
       "mutation_allowed": true,
       "deployment_allowed": true,
       "availability_grants_authority": false,
@@ -81,7 +133,8 @@
         "stegfin_sovereign_internal_trading_activation is limited to the zero-external-cost internal activation round and grants no external trade, wallet, custody or scale-up authority.",
         "orphan_lifecycle_reconstruction is continuity-only eligibility for a generated orphan-recovery handoff; it cannot execute the recovered parent task or revive an ended claim/fence.",
         "stegnutrition_machine_continuation is limited to locally materialized StegNutrition observation, fixed no-network validation, continuation projection and receipts; it grants no GitHub fetch/write, general code-generation, credential, deployment or release authority.",
-        "sovereign_relay_materialization is limited to the existing deployment-local sovereign runtime plus the pinned StegOS relay adapter; it grants no route admission, outbound EGRESS, credential, canonical-state, or second-runtime authority."
+        "sovereign_relay_materialization is limited to the existing deployment-local sovereign runtime plus the pinned StegOS relay adapter; it grants no route admission, outbound EGRESS, credential, canonical-state, or second-runtime authority.",
+        "g18_resident_request_consumption_resolution is limited to refreshing already-local source into an existing resident runtime and consuming the canonical one-shot G18 request against the exact existing G18 fence18 claim; it grants no new G18 claim/fence, heartbeat, credential, route, source-fetch, or second-machine authority."
       ]
     },
     {
@@ -109,7 +162,10 @@
       "profile_id": "sovereign-resolution-worker-v1",
       "executor_type": "repository_worker",
       "effect_class": "goal_preserving_constraint_resolution",
-      "allowed_capabilities": ["repository_resolution", "sandbox_validation"],
+      "allowed_capabilities": [
+        "repository_resolution",
+        "sandbox_validation"
+      ],
       "mutation_allowed": true,
       "deployment_allowed": false,
       "availability_grants_authority": false,
@@ -124,7 +180,12 @@
       "profile_id": "public-research-worker-v1",
       "executor_type": "repository_worker",
       "effect_class": "bounded_public_research",
-      "allowed_capabilities": ["runtime_observation", "bounded_process_execution", "public_source_acquisition", "evidence_class_preservation"],
+      "allowed_capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "public_source_acquisition",
+        "evidence_class_preservation"
+      ],
       "mutation_allowed": true,
       "deployment_allowed": false,
       "availability_grants_authority": false,

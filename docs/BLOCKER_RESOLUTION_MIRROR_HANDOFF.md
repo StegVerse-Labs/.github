@@ -187,3 +187,52 @@ authority effect: NONE_SOURCE_ONLY_NO_RUNTIME_OBSERVATION
 ```
 
 This is a direct correction of the existing G18 executor and does not create a second runtime, worker scheduler, HeartBeat, node mechanism, credential lane, route authority, broker, or transport authority.
+
+
+## 2026-08-27 G18 resident request active-resolution registration
+
+The one-shot resident execution request was source-complete but still depended on a later local filesystem event before its consumer could run. Under blocker-resolution policy v2, that passive wait is not sufficient machine progress.
+
+Registered goal-preserving resolution task:
+
+```text
+task: RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001
+state: HANDOFF_READY
+authority domain: INDEPENDENT_TASK_CONTROL
+fresh resolution fence: >22
+parent G18 claim reused by task: NO
+target existing G18 claim validated by consumer:
+  SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18
+target existing G18 fence:
+  18
+worker:
+  g18-resident-request-consumption-resolution-worker
+adapter:
+  process:g18-resident-request-consumption-resolution-v1
+```
+
+Execution:
+
+```text
+eligible non-hosted resident
+-> verify resident WorkerCoordinator registry
+-> verify exact existing G18 fence18 claim
+-> refresh already-local canonical source into resident runtime
+-> invoke existing consume_g18_resident_execution_request.py directly
+-> existing RESUME_EXISTING_CLAIM bridge
+-> existing G18 worker
+```
+
+This removes the filesystem-event wait as a prerequisite. It performs no network source fetch, requires no GitHub/provider credential, creates no second machine/runtime/HeartBeat, and cannot mint or replace the existing G18 claim/fence.
+
+If the resident runtime or exact G18 claim is absent, the resolution worker emits a fail-closed blocker with `may_remain_blocked=false` and an explicit next escalation level so WorkerCoordinator can derive/register the next goal-preserving resolution task.
+
+Branch state:
+
+```text
+branch: fix/g18-resident-request-resolution-worker
+resolution source: IMPLEMENTED / VALIDATION PENDING
+resident consumption: NOT OBSERVED
+G18 activation: NOT OBSERVED
+authority effect: NONE_SOURCE_ONLY
+```
