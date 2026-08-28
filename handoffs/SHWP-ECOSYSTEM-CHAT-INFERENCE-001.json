@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
   "created_at": "2026-08-09T19:59:00Z",
-  "updated_at": "2026-08-27T21:24:00-05:00",
+  "updated_at": "2026-08-27T21:26:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
@@ -188,7 +188,7 @@
         "result": "PASS"
       },
       "post_terminal_projection": {
-        "state": "SOURCE_IMPLEMENTED_VALIDATION_PENDING",
+        "state": "MERGED_VALIDATED_RUNTIME_NOT_OBSERVED",
         "predicate": "terminal parent PASS + same_execution=true + persistent_conversational_runtime_ready=true",
         "llm_adapter_root_locator": "STEGVERSE_LLM_ADAPTER_ROOT",
         "projector": "scripts/project_independent_parent_activation.py",
@@ -196,7 +196,14 @@
         "authority_effect": "NONE",
         "github_token_required": false,
         "credential_authority": "TV/TVC",
-        "runtime_projection_observed": false
+        "runtime_projection_observed": false,
+        "merge_commit": "b746671d1db4d16ab486f94b9b0bd4683c2a3010",
+        "validation": {
+          "exact_head": "d539b7ef074be46ff835962d28c1a80a3fdd68ba",
+          "heartbeat_worker_run": 33135790458,
+          "organization_control_plane_run": 33135790453,
+          "result": "PASS"
+        }
       }
     }
   },
