@@ -154,7 +154,7 @@ InTr live traversal: NOT CLAIMED
 public dashboard live: NOT CLAIMED
 ```
 
-The next successor lane after this worker completes is route-specific InTr traversal plus SDK live admission.
+The next successor lane after this worker completes is the merged machine-owned route-specific InTr runtime task `SV-DN1-INTR-RUNTIME-001`. SDK live admission remains the successor after that InTr receipt exists.
 
 ## Collision boundary
 
@@ -176,6 +176,21 @@ merge_commit: f5ca06543d1dd17b3095d424dc5eed578c15299d
 ```
 
 This predecessor may materialize the exact pinned demo-suite bytes without GitHub credentials, remote checkout, repository writeback, or observation authority. Completion only releases the existing resident observer's local-source prerequisite; it does not perform the Hugging Face observation.
+
+## Machine successor
+
+The route-specific InTr successor is now machine-owned and merged:
+
+\`\`\`text
+task: SV-DN1-INTR-RUNTIME-001
+worker: sv-dn1-intr-runtime-worker
+handoff: docs/SV_DN1_INTR_RUNTIME_MIRROR_HANDOFF.md
+PR #339: MERGED
+merge_commit: ab6172bb1938bdb00ec7af80858547c3dcbd45ed
+runtime receipt: NOT OBSERVED
+\`\`\`
+
+It consumes this worker's authentic receipt/capture/exchange and emits the exact stegverse.sv-dn1.intr-runtime-receipt/v1 route receipt only after canonical destination validation. It does not claim Universal Interlock adoption/global activation or SDK admission.
 
 ## Current state
 
