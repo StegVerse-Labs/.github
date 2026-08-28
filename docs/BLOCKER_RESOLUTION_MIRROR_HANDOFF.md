@@ -176,12 +176,14 @@ runtime proof: deployment-local only
 Branch state:
 
 ```text
-branch: fix/g18-v13-runtime-execution
-source correction: IMPLEMENTED / REPOSITORY VALIDATION PENDING
+PR: #344
+merge: 72e9315e557fdcc6e9d5c94c370993da6a2f7f88
+validation: 33138207844 SUCCESS; 33138207869 SUCCESS
+source correction: IMPLEMENTED / VALIDATED / MERGED
 live sovereign runtime activation: NOT OBSERVED
 task-capable WorkerCoordinator proof: NOT OBSERVED
 relay SOVEREIGN_RELAY_LEASE_OPEN: NOT OBSERVED
-authority effect: NONE_SOURCE_ONLY
+authority effect: NONE_SOURCE_ONLY_NO_RUNTIME_OBSERVATION
 ```
 
 This is a direct correction of the existing G18 executor and does not create a second runtime, worker scheduler, HeartBeat, node mechanism, credential lane, route authority, broker, or transport authority.
