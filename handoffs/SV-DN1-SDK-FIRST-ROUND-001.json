@@ -1,0 +1,221 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SV-DN1-SDK-FIRST-ROUND-001",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "SV-DN1-SDK-GOVERNED-FIRST-ROUND-001",
+    "objective": "Execute the authentic SV-DN-1 evidence through the canonical SDK 0B production-validation route, bind exact SDK/StegCore/Master Records results, replay/reconstruct without consequence re-execution, and generate the first receipt-bound analysis/dashboard artifacts.",
+    "success_predicates": [
+      "authentic resident observer and route-specific InTr receipts are COMPLETE",
+      "SDK ingress candidate is READY_FOR_SDK_0B",
+      "canonical local SDK/StegCore/Core-Lite/Master Records anchors match admitted pins",
+      "canonical sovereign SDK result is emitted",
+      "SDK result binds to exact submitted candidate and route",
+      "Master Records custody status is RECORDED",
+      "replay consequence_reexecuted=false",
+      "reconstruction consequence_reexecuted=false",
+      "reconstruction original_record_mutated=false",
+      "first-round analysis state is ANALYZED",
+      "receipt-derived dashboard is generated",
+      "github_token_used=false",
+      "repository_writeback_performed=false"
+    ],
+    "failure_predicates": [
+      "upstream authentic resident or InTr evidence is absent or mismatched",
+      "candidate is not READY_FOR_SDK_0B",
+      "local canonical production anchor source is absent or drifted",
+      "hosted execution is treated as sovereign runtime",
+      "parallel/mock evaluator or route is used",
+      "SDK result does not bind to exact manifest/route/state",
+      "Master Records custody/replay/reconstruction fails",
+      "replay or reconstruction reexecutes consequence",
+      "GitHub/provider credential is present",
+      "repository writeback or public publication is attempted"
+    ],
+    "authority_ceiling": [
+      "bounded_process_execution",
+      "canonical_sdk_governed_execution",
+      "canonical_stegcore_governance_execution",
+      "master_records_local_custody_replay_reconstruction",
+      "first_round_analysis",
+      "local_receipt_derived_dashboard_generation",
+      "no external consequence authority",
+      "no repository writeback authority",
+      "no publication authority",
+      "no certification authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 2
+  },
+  "task": {
+    "task_id": "SV-DN1-SDK-FIRST-ROUND-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md",
+      "handoffs/SV-DN1-INTR-RUNTIME-001.json",
+      "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_SDK_LIVE_ADMISSION_MIRROR_HANDOFF.md",
+      "StegVerse-org/stegverse-demo-suite:scripts/build_sv_dn1_sdk_ingress_manifest.py",
+      "StegVerse-org/stegverse-demo-suite:scripts/bind_sv_dn1_sdk_live_result.py",
+      "StegVerse-org/stegverse-demo-suite:scripts/finalize_sv_dn1_first_round.py",
+      "StegVerse-org/StegVerse-SDK:stegverse/governance_ingress_runtime.py",
+      "StegVerse-org/StegVerse-SDK:stegverse/sovereign_validation_runtime.py"
+    ],
+    "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "sv-dn1:sdk-governed-first-round",
+    "worker_registry_ref": "control/worker-registry.d/sv-dn1-sdk-first-round-001.json",
+    "worker_id": "sv-dn1-sdk-first-round-worker",
+    "adapter_ref": "process:sv-dn1-sdk-first-round-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "evidence review only",
+    "priority": "release",
+    "parent_task_id": "SV-DN1-INTR-RUNTIME-001",
+    "derivation_reason": "The canonical demo-suite bridge and result/finalization source are merged. After an authentic route-specific InTr receipt, the remaining production execution is the canonical SDK 0B -> StegCore/StegGate -> Master Records -> first-round finalizer path.",
+    "derivation_depth": 2,
+    "source_handoff_ref": "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md"
+  },
+  "authority": {
+    "authority_source": "canonical SV-DN-1 SDK bridge + StegVerse-SDK 0B production route + sovereign WorkerCoordinator",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "sv-dn1-sdk-first-round-v1",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "repository_writeback_authority": false,
+    "provider_credential_authority": false,
+    "canonical_sdk_governed_execution_authority": true,
+    "external_consequence_authority": false,
+    "publication_authority": false,
+    "certification_authority": false,
+    "canonical_protocol_adoption_authority": false,
+    "execution_authority_created": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "canonical_sdk_governed_execution",
+      "master_records_replay_reconstruction_validation",
+      "first_round_analysis",
+      "evidence_class_preservation"
+    ],
+    "required_local_locators": [
+      "STEGVERSE_SDK_SOURCE_ROOT",
+      "STEGVERSE_STEGCORE_SOURCE_ROOT",
+      "STEGVERSE_CORE_LITE_SOURCE_ROOT",
+      "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT"
+    ],
+    "optional_local_locators": [
+      "STEGVERSE_SV_DN1_SOURCE_ROOT",
+      "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT",
+      "STEGVERSE_SV_DN1_INTR_STATE_ROOT"
+    ],
+    "locator_semantics": "NON_SECRET_ALREADY_MATERIALIZED_LOCAL_SOURCE_PATHS_ONLY",
+    "worker": "workers/sv_dn1_sdk_first_round_worker.py",
+    "allowed_paths": [
+      "receipts/sv-dn1-sdk-first-round/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 12,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 48,
+    "rate_class": "sv_dn1_sdk_first_round",
+    "hosted_execution_allowed": false,
+    "bound_state_root": "~/.stegverse/state/sv-dn1-sdk-first-round",
+    "bound_state_allowed_paths": [
+      "candidate/**",
+      "sdk/**",
+      "round/**",
+      "receipts/**"
+    ],
+    "remote_checkout_allowed": false,
+    "public_network_access": {
+      "enabled": false,
+      "methods": [],
+      "allowed_hosts": [],
+      "authenticated": false,
+      "credential_forwarding": false
+    }
+  },
+  "input_contract": {
+    "parent_task_id": "SV-DN1-INTR-RUNTIME-001",
+    "parent_transition_id": "SV_DN1_ROUTE_SPECIFIC_INTR_COMPLETE",
+    "candidate_readiness": "READY_FOR_SDK_0B",
+    "sdk_route_id": "stegverse.route.canonical-governed.v1",
+    "sdk_result_schema": "stegverse.sovereign-production-validation-result.v1",
+    "sdk_admission_state": "SDK_ADMITTED",
+    "allowed_governance_states": [
+      "ALLOW",
+      "DENY",
+      "REVIEW",
+      "FAIL_CLOSED"
+    ],
+    "required_anchor_blobs": {
+      "STEGVERSE_SDK_SOURCE_ROOT:stegverse/governance_ingress_runtime.py": "62c5ae4799ae018f6b100766215c3c68078c5b2e",
+      "STEGVERSE_SDK_SOURCE_ROOT:stegverse/sovereign_validation_runtime.py": "814d4cb607cc2cb4c7a605474fe845e13540898d",
+      "STEGVERSE_STEGCORE_SOURCE_ROOT:src/stegcore/transaction_lifecycle.py": "81935669846fedd2867272810b090226b05780ab",
+      "STEGVERSE_CORE_LITE_SOURCE_ROOT:core_lite/transaction_route.py": "734923a86bfcd4d41d07e0fb8797de50f0fb9408",
+      "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT:services/manifest_receipt_custody.py": "26a4c1e082ee91128648b2b9bd13cc32ce915f82"
+    },
+    "credential_authority": "TV/TVC"
+  },
+  "activation": {
+    "carrier": "independent_task_control",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md",
+    "recheck_trigger": "each admitted assignment opportunity after SV-DN1-INTR-RUNTIME-001 completes until first production round analysis receipt exists",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "master_records_required": true,
+    "result_receipt": "~/.stegverse/state/sv-dn1-sdk-first-round/receipts/latest.json",
+    "first_round_analysis": "~/.stegverse/state/sv-dn1-sdk-first-round/round/first-round-analysis.json",
+    "dashboard": "~/.stegverse/state/sv-dn1-sdk-first-round/round/index.html",
+    "repository_persistence_requires_separate_admission": true
+  },
+  "completion": {
+    "next_authorized_action": "After the first production round is analyzed and local authentic dashboard artifacts exist, submit those exact static artifacts to the separately governed public dashboard publication lane; Pages enablement remains a repository administration prerequisite.",
+    "terminal_when": [
+      "SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED",
+      "candidate_readiness=READY_FOR_SDK_0B",
+      "sdk_admission=SDK_ADMITTED",
+      "master_records_custody_status=RECORDED",
+      "replay_consequence_reexecuted=false",
+      "reconstruction_consequence_reexecuted=false",
+      "first_round_analysis=ANALYZED",
+      "dashboard_generated=true",
+      "dashboard_publicly_hosted=false",
+      "github_token_used=false"
+    ],
+    "release_condition": "One authentic production round is bound end-to-end from resident/InTr evidence through canonical SDK/StegCore governance, Master Records custody/reconstruction, deterministic SV-DN-1 evaluation and local receipt-derived dashboard generation."
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:sv-dn1-sdk-governed-first-round:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SV-DN1-SDK-FIRST-ROUND-001.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/sv_dn1_sdk_first_round_worker.py",
+      "control/process-worker-adapters.d/sv-dn1-sdk-first-round-001.json",
+      "control/worker-registry.d/sv-dn1-sdk-first-round-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "SV_DN1_ROUTE_SPECIFIC_INTR_RECEIPT_NOT_YET_OBSERVED",
+      "EXACT_LOCAL_SDK_STEGCORE_CORE_LITE_MASTER_RECORDS_ROOTS_NOT_YET_OBSERVED",
+      "SV_DN1_FIRST_PRODUCTION_ROUND_ANALYSIS_RECEIPT_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "sv-dn1-sdk-first-round-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  }
+}

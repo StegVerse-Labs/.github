@@ -1,0 +1,49 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SV-DN1-SDK-FIRST-ROUND-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:sv-dn1-sdk-first-round-v1",
+      "authority_ref": "handoffs/SV-DN1-SDK-FIRST-ROUND-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "canonical_sdk_governed_execution",
+        "master_records_replay_reconstruction_validation",
+        "first_round_analysis",
+        "evidence_class_preservation"
+      ],
+      "command": [
+        "python",
+        "workers/sv_dn1_sdk_first_round_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SDK_SOURCE_ROOT",
+        "STEGVERSE_STEGCORE_SOURCE_ROOT",
+        "STEGVERSE_CORE_LITE_SOURCE_ROOT",
+        "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+        "STEGVERSE_SV_DN1_SOURCE_ROOT",
+        "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT",
+        "STEGVERSE_SV_DN1_INTR_STATE_ROOT",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/state/sv-dn1-sdk-first-round",
+      "bound_state_allowed_paths": [
+        "candidate/**",
+        "sdk/**",
+        "round/**",
+        "receipts/**"
+      ],
+      "timeout_seconds": 360,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Executes only after authentic resident and route-specific InTr evidence exists.",
+        "Uses exact locally materialized canonical SDK, StegCore, Core-Lite and Master Records sources; no remote checkout.",
+        "Runs canonical SDK 0B, binds SDK_ADMITTED, performs Master Records replay/reconstruction, then first-round analysis.",
+        "No provider/GitHub credential, external consequence, repository writeback, public hosting or certification authority."
+      ]
+    }
+  ]
+}
