@@ -411,3 +411,37 @@ Machine lifecycle:
 - capability ACTIVATED: NO
 
 The session has no remaining implementation, validation, integration, credential, runtime, claim, or fence authority in this lane. Live continuation belongs to the registered sovereign worker + TV/TVC runtime authority.
+
+
+### ARA Graph resident request bridge — 2026-08-27
+
+The already-merged `SHWP-ARA-GRAPH-RUNTIME-086` task is being connected to the existing sovereign local-source refresh watcher through an intent-only task-specific resident request.
+
+Canonical request:
+`control/resident-execution-request.d/ara-graph-runtime-086.json`
+
+Consumer:
+`scripts/consume_ara_graph_resident_execution_request.py`
+
+Existing execution bridge:
+`scripts/refresh_and_execute_resident_task.py --task-id SHWP-ARA-GRAPH-RUNTIME-086`
+
+Authority invariants:
+- request grants no claim, fence, credential, provider-operation, release, scheduler, network-source, or heartbeat authority;
+- source refresh performs no network fetch and preserves mutable runtime claim/fence/receipt state;
+- the consumer is at-most-once per request id + content hash;
+- GitHub/hosted execution is blocked;
+- only non-secret ARA policy/locator values may cross the generic resident bridge: `STEGVERSE_ARA_MAIL_SENDER`, `STEGVERSE_ARA_MAIL_RECIPIENT`, and `STEGVERSE_VAULT_AGENT_SOCKET`;
+- Microsoft client secrets/access tokens/refresh tokens remain prohibited;
+- provider success or capability activation is never inferred from request consumption;
+- the existing WorkerCoordinator remains the sole claim/fence execution gate;
+- no second machine is required.
+
+Lifecycle:
+- resident request artifact: IMPLEMENTED
+- task-specific consumer: IMPLEMENTED
+- refresh copy / watcher hook / non-secret bridge allowlist: IMPLEMENTED
+- validation: PENDING
+- merge: PENDING
+- authentic resident request consumption: NOT OBSERVED
+- ARA Graph provider operation: NOT OBSERVED
