@@ -72,7 +72,16 @@
     "parent_task_id": "SV-DN1-INTR-RUNTIME-001",
     "derivation_reason": "The canonical demo-suite bridge and result/finalization source are merged. After an authentic route-specific InTr receipt, the remaining production execution is the canonical SDK 0B -> StegCore/StegGate -> Master Records -> first-round finalizer path.",
     "derivation_depth": 2,
-    "source_handoff_ref": "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md"
+    "source_handoff_ref": "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md",
+    "dependencies": [
+      "SV-DN1-INTR-RUNTIME-001"
+    ],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
+    "upstream_runtime_dependency": {
+      "task_id": "SV-DN1-INTR-RUNTIME-001",
+      "terminal_state_required": "COMPLETED",
+      "terminal_transition_required": "SV_DN1_ROUTE_SPECIFIC_INTR_COMPLETE"
+    }
   },
   "authority": {
     "authority_source": "canonical SV-DN-1 SDK bridge + StegVerse-SDK 0B production route + sovereign WorkerCoordinator",
@@ -165,7 +174,14 @@
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md",
     "recheck_trigger": "each admitted assignment opportunity after SV-DN1-INTR-RUNTIME-001 completes until first production round analysis receipt exists",
-    "checkout_policy": "fenced_atomic_checkout"
+    "checkout_policy": "fenced_atomic_checkout",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
   },
   "continuity": {
     "master_records_required": true,
