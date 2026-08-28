@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-08-28T00:36:00-05:00",
+  "updated_at": "2026-08-28T00:47:00-05:00",
   "state": "BLOCKED_SOVEREIGN_NODE_REQUIRED_NON_HEARTBEAT",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
@@ -336,6 +336,7 @@
     "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28 (parallel, independent authority)",
     "SHWP-ECOSYSTEM-CHAT-INFERENCE-001 after recovery",
     "STEGVERSE-TEST-LANES-AUTOLAUNCH-001 after sovereign inference evidence",
-    "COSV-LIVE-PACKET-AUTOMATION-006 under its own authority"
+    "COSV-LIVE-PACKET-AUTOMATION-006 under its own authority",
+    "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001 after genuine SHWP-DURABLE-RUNTIME-ACTIVATION completion"
   ]
 }
