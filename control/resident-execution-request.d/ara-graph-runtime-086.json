@@ -1,0 +1,19 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-ARA-GRAPH-RUNTIME-086-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-ARA-GRAPH-RUNTIME-086",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "fresh_fence_minimum_exclusive": 22,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "provider_credential_material_allowed": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "On a sovereign resident local-source refresh, attempt the already-admitted SHWP-ARA-GRAPH-RUNTIME-086 task exactly through targeted independent task control. The request grants no claim, fence, credential, provider-operation, release, scheduler, network-source, or heartbeat authority."
+}
