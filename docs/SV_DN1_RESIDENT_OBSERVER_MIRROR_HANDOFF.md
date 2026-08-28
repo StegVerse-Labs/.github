@@ -199,6 +199,19 @@ workflow token-authority checks: PASS
 
 The resident observer is now registered and source-valid on main. This does not claim that WorkerCoordinator has yet bound a live claim or that a resident runtime receipt exists.
 
+## Exact source-pin merge evidence
+
+```text
+demo-suite runtime source pin: PR #12 MERGED
+demo-suite merge_commit: 6d520d36b45a2f4ff02f5e97a4190a089a6d1fb6
+resident enforcement: PR #336 MERGED
+resident enforcement merge_commit: 436431dfdbedf6614c291a59b0da2d3f62612df1
+organization control-plane run 33129172918 / job 98714401407: PASS
+heartbeat worker validation run 33129172924 / job 98714401859: PASS
+```
+
+The resident worker now refuses ambiguous local demo-suite executable/config bytes. An authentic capture can only proceed after the locally materialized source satisfies the exact runtime-source manifest.
+
 ## Archive readiness
 
 This handoff captures the current execution ownership, authority ceiling, remaining files, collision boundary, and successor boundary. Once merged, no originating chat is required to recover this task.
