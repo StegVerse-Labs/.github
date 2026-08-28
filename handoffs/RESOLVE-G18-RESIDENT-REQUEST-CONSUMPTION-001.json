@@ -96,4 +96,4 @@
     ],
     "next_authorized_action": "WorkerCoordinator independently admits this HANDOFF_READY resolution task under a fresh fence greater than 22 and executes process:g18-resident-request-consumption-resolution-v1 on an eligible sovereign resident surface."
   }
-}\n
+}
