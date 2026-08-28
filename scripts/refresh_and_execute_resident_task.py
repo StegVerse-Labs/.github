@@ -4,12 +4,14 @@
 This bridge is intentionally transport-free and scheduler-neutral. It consumes only an
 already-local canonical source tree, preserves mutable resident runtime state through
 refresh_sovereign_worker_runtime_source.refresh(), strips GitHub/hosted authority
-environment variables, and invokes exactly one admitted execution entrypoint.
+environment variables, and invokes exactly one bounded execution entrypoint.
 
-It supports:
-- generic independently admitted task control via run_worker_runtime.py --task-id
-- the dedicated Ecosystem Chat parent executor, which retains its stronger G20/G22
-  recovery/fence semantics and is never routed through generic --task-id mode.
+Supported modes:
+- independently admitted task control via run_worker_runtime.py --task-id;
+- resume an already-claimed ACTIVE/BLOCKED task in place through the same targeted
+  WorkerCoordinator cycle, without minting a new claim/fence;
+- the dedicated Ecosystem Chat parent executor, which retains its stronger recovery
+  and fence semantics.
 
 Running this script on a sovereign resident surface may produce real runtime evidence.
 Merely merging or validating this source does not.
@@ -30,6 +32,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 GENERIC_RUNNER = Path("scripts/run_worker_runtime.py")
 ECOSYSTEM_CHAT_PARENT_RUNNER = Path("scripts/run_independent_ecosystem_chat_parent.py")
 CARRIER_REF = Path("control/heartbeat-carrier-runtime-state.json")
+REGISTRY_REF = Path("control/worker-registry.json")
 RECEIPT_REL = Path("receipts/sovereign-host/resident-targeted-execution.latest.json")
 
 GITHUB_AUTH_ENV = {
@@ -55,7 +58,10 @@ NONSECRET_FORWARD = {
     "LC_ALL",
     "XDG_STATE_HOME",
     "XDG_CONFIG_HOME",
+    "LOCALAPPDATA",
+    "STEGVERSE_SOVEREIGN_NODE",
     "STEGVERSE_HEARTBEAT_ROOT",
+    "STEGVERSE_HEARTBEAT_SOURCE_ROOT",
     "STEGVERSE_MICRO_NODE_RUNTIME_ROOT",
     "STEGVERSE_TVC_ROOT",
     "STEGVERSE_TV_ROOT",
@@ -99,20 +105,71 @@ def _parse_last_json(stdout: str) -> dict[str, Any] | None:
     return None
 
 
+def _load_registry(runtime_root: Path) -> dict[str, Any]:
+    path = runtime_root / REGISTRY_REF
+    if not path.is_file():
+        raise RuntimeError("resident worker registry is not materialized")
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        raise RuntimeError("resident worker registry is unreadable") from exc
+    if not isinstance(value, dict) or not isinstance(value.get("tasks"), list):
+        raise RuntimeError("resident worker registry shape is invalid")
+    return value
+
+
+def claimed_task_snapshot(runtime_root: Path, task_id: str) -> dict[str, Any]:
+    registry = _load_registry(runtime_root)
+    task = next(
+        (row for row in registry["tasks"] if isinstance(row, dict) and row.get("task_id") == task_id),
+        None,
+    )
+    if task is None:
+        raise RuntimeError("claimed task is not present in resident worker registry")
+    timing = task.get("heartbeat_timing") or {}
+    state = task.get("state")
+    claim_id = task.get("claim_id")
+    worker_id = task.get("worker_id")
+    worker_instance_id = task.get("worker_instance_id")
+    fencing_token = timing.get("fencing_token")
+    if state not in {"ACTIVE", "BLOCKED", "RETRY"}:
+        raise RuntimeError("claimed-task resume requires ACTIVE/BLOCKED/RETRY state")
+    if not isinstance(claim_id, str) or not claim_id:
+        raise RuntimeError("claimed-task resume requires existing claim_id")
+    if not isinstance(worker_id, str) or not worker_id:
+        raise RuntimeError("claimed-task resume requires existing worker_id")
+    if not isinstance(worker_instance_id, str) or not worker_instance_id:
+        raise RuntimeError("claimed-task resume requires existing worker_instance_id")
+    if not isinstance(fencing_token, int):
+        raise RuntimeError("claimed-task resume requires existing fencing_token")
+    return {
+        "task_id": task_id,
+        "state": state,
+        "claim_id": claim_id,
+        "worker_id": worker_id,
+        "worker_instance_id": worker_instance_id,
+        "fencing_token": fencing_token,
+        "registry_generation": registry.get("generation"),
+    }
+
+
 def execution_command(
     runtime_root: Path,
     *,
     task_id: str | None,
+    resume_claimed_task_id: str | None = None,
     ecosystem_chat_parent: bool,
 ) -> list[str]:
     runtime = runtime_root.expanduser().resolve()
+    selected = [value is not None for value in (task_id, resume_claimed_task_id)]
     if ecosystem_chat_parent:
-        if task_id is not None:
-            raise ValueError("task_id and ecosystem_chat_parent are mutually exclusive")
+        if any(selected):
+            raise ValueError("task modes and ecosystem_chat_parent are mutually exclusive")
         script = runtime / ECOSYSTEM_CHAT_PARENT_RUNNER
         return [sys.executable, str(script), "--root", str(runtime)]
-    if not task_id:
-        raise ValueError("task_id is required for generic targeted execution")
+    if sum(selected) != 1:
+        raise ValueError("exactly one task_id or resume_claimed_task_id is required")
+    selected_task = task_id if task_id is not None else resume_claimed_task_id
     script = runtime / GENERIC_RUNNER
     return [
         sys.executable,
@@ -120,7 +177,7 @@ def execution_command(
         "--root",
         str(runtime),
         "--task-id",
-        task_id,
+        str(selected_task),
     ]
 
 
@@ -129,17 +186,27 @@ def refresh_and_execute(
     runtime_root: Path,
     *,
     task_id: str | None = None,
+    resume_claimed_task_id: str | None = None,
     ecosystem_chat_parent: bool = False,
     runner: Runner = subprocess.run,
     env: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
+    if resume_claimed_task_id is not None and (task_id is not None or ecosystem_chat_parent):
+        raise ValueError("resume_claimed_task_id is mutually exclusive with other execution modes")
+
     refresh_receipt = refresh(source, runtime)
+    claim_before = (
+        claimed_task_snapshot(runtime, resume_claimed_task_id)
+        if resume_claimed_task_id is not None
+        else None
+    )
 
     command = execution_command(
         runtime,
         task_id=task_id,
+        resume_claimed_task_id=resume_claimed_task_id,
         ecosystem_chat_parent=ecosystem_chat_parent,
     )
     executable = Path(command[1])
@@ -147,7 +214,7 @@ def refresh_and_execute(
         raise RuntimeError(f"refreshed execution entrypoint missing: {executable}")
     if not ecosystem_chat_parent and not (runtime / CARRIER_REF).is_file():
         raise RuntimeError(
-            "targeted independent execution requires the preserved separated carrier reference"
+            "targeted resident execution requires the preserved separated carrier reference"
         )
 
     completed = runner(
@@ -159,18 +226,41 @@ def refresh_and_execute(
         env=clean_exec_env(env),
     )
     result = _parse_last_json(completed.stdout)
+    claim_after: dict[str, Any] | None = None
+    if resume_claimed_task_id is not None:
+        try:
+            claim_after = claimed_task_snapshot(runtime, resume_claimed_task_id)
+        except RuntimeError:
+            # Lawful completion/expiry may release the claim. Preserve the preflight
+            # identity and report that the bound claim is no longer active.
+            claim_after = None
+
+    mode = (
+        "DEDICATED_ECOSYSTEM_CHAT_PARENT"
+        if ecosystem_chat_parent
+        else (
+            "RESUME_EXISTING_CLAIM"
+            if resume_claimed_task_id is not None
+            else "TARGETED_INDEPENDENT_TASK_CONTROL"
+        )
+    )
+    selected_task_id = (
+        "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+        if ecosystem_chat_parent
+        else (resume_claimed_task_id or task_id)
+    )
     receipt = {
-        "schema": "stegverse.resident-refresh-targeted-execution/v1",
+        "schema": "stegverse.resident-refresh-targeted-execution/v2",
         "source_root": str(source),
         "runtime_root": str(runtime),
-        "mode": (
-            "DEDICATED_ECOSYSTEM_CHAT_PARENT"
-            if ecosystem_chat_parent
-            else "TARGETED_INDEPENDENT_TASK_CONTROL"
-        ),
-        "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001" if ecosystem_chat_parent else task_id,
+        "mode": mode,
+        "task_id": selected_task_id,
         "command": command,
         "refresh_receipt": refresh_receipt,
+        "existing_claim_preflight": claim_before,
+        "existing_claim_postflight": claim_after,
+        "new_claim_requested": False if resume_claimed_task_id is not None else None,
+        "existing_fence_preserved_by_mode": True if resume_claimed_task_id is not None else None,
         "execution_returncode": completed.returncode,
         "execution_result": result,
         "execution_result_observed": isinstance(result, dict),
@@ -194,12 +284,13 @@ def refresh_and_execute(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Refresh resident WorkerCoordinator source and execute exactly one admitted task."
+        description="Refresh resident WorkerCoordinator source and execute exactly one bounded task."
     )
     parser.add_argument("--source-root", type=Path, default=REPO_ROOT)
     parser.add_argument("--runtime-root", type=Path, default=default_runtime_root())
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--task-id")
+    mode.add_argument("--resume-claimed-task-id")
     mode.add_argument("--ecosystem-chat-parent", action="store_true")
     args = parser.parse_args()
 
@@ -207,6 +298,7 @@ def main() -> int:
         args.source_root,
         args.runtime_root,
         task_id=args.task_id,
+        resume_claimed_task_id=args.resume_claimed_task_id,
         ecosystem_chat_parent=args.ecosystem_chat_parent,
     )
     print(json.dumps(receipt, sort_keys=True))
