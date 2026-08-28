@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SV-DN1-RESIDENT-OBSERVER-001",
   "created_at": "2026-08-27T18:45:00-05:00",
-  "updated_at": "2026-08-27T18:45:00-05:00",
+  "updated_at": "2026-08-27T19:15:00-05:00",
   "state": "HANDOFF_READY_MACHINE_OWNED",
   "goal": {
     "goal_id": "SV-DN1-RESIDENT-PUBLIC-SOURCE-OBSERVATION-001",
@@ -18,7 +18,8 @@
       "all durable writes stay within the bounded observer state namespace",
       "github_token_used=false",
       "credential_authority=TV/TVC",
-      "authority_effect=OBSERVATION_ONLY_NO_NEW_AUTHORITY"
+      "authority_effect=OBSERVATION_ONLY_NO_NEW_AUTHORITY",
+      "exact locally materialized stegverse-demo-suite executable/config source matches config/sv_dn1_runtime_source_manifest.json"
     ],
     "failure_predicates": [
       "hosted execution is treated as sovereign runtime",
@@ -29,7 +30,8 @@
       "raw bytes are not hash-bound before semantic normalization",
       "fixture binding is promoted to SDK_ADMITTED",
       "repository writeback occurs",
-      "Hugging Face endorsement is inferred"
+      "Hugging Face endorsement is inferred",
+      "local demo-suite executable/config source differs from the pinned runtime-source manifest"
     ],
     "authority_ceiling": [
       "public_source_acquisition",
@@ -59,7 +61,8 @@
       "workers/sv_dn1_resident_observer_worker.py",
       "control/worker-registry.d/sv-dn1-resident-observer-001.json",
       "control/process-worker-adapters.d/sv-dn1-resident-observer-001.json",
-      "cost-basis/worker-runtime/sv-dn1-resident-observer.json"
+      "cost-basis/worker-runtime/sv-dn1-resident-observer.json",
+      "StegVerse-org/stegverse-demo-suite:config/sv_dn1_runtime_source_manifest.json"
     ],
     "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
     "canonical_lineage_key": "sv-dn1:resident-public-source-observer",
@@ -137,11 +140,19 @@
       "scripts/observe_sv_dn1_hf_public.py",
       "scripts/sv_dn1_hf_interlock.py",
       "scripts/sv_dn1_stegverse_interlock.py",
-      "config/sv_dn1_hf_mapping.v1.json"
+      "config/sv_dn1_hf_mapping.v1.json",
+      "config/sv_dn1_runtime_source_manifest.json"
     ],
     "target_url": "https://huggingface.co/api/models/Qwen/Qwen3-8B",
     "target_source_system": "huggingface",
-    "credential_authority": "TV/TVC"
+    "credential_authority": "TV/TVC",
+    "source_identity": {
+      "manifest": "config/sv_dn1_runtime_source_manifest.json",
+      "schema": "stegverse.sv-dn1.runtime-source-manifest/v1",
+      "hash_profile": "git-blob-sha1",
+      "source_basis_commit": "ccd8a1886e8b87865cfcc541be5f32bf59f34e17",
+      "drift_policy": "FAIL_CLOSED"
+    }
   },
   "activation": {
     "carrier": "independent_task_control",
@@ -172,7 +183,8 @@
       "credential_authority=TV/TVC",
       "github_token_used=false",
       "repository_writeback_performed=false",
-      "sdk_admitted=false"
+      "sdk_admitted=false",
+      "runtime_source_pin_verified=true"
     ],
     "release_condition": "A fenced resident observer receipt preserves the exact public Hugging Face raw-byte digest and a validated HF-side semantic exchange from the canonical locally materialized demo-suite source."
   },
