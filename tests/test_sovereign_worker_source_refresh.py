@@ -36,7 +36,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             for rel in (
                 "heartbeat_runtime", "workers", "handoffs", "authorizations", "schemas", "cost-basis", "management",
                 "state_language", "scripts", "control/worker-registry.d", "control/process-worker-adapters.d",
-                "control/task-vectors",
+                "control/task-vectors", "control/resident-execution-request.d",
             ):
                 (source / rel).mkdir(parents=True, exist_ok=True)
             (source / "heartbeat_runtime/worker_runtime.py").write_text("VERSION='new'\n", encoding="utf-8")
@@ -50,6 +50,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             (source / "state_language/__init__.py").write_text("# state-language\n", encoding="utf-8")
             (source / "control/task-vector-index.json").write_text('{"schema":"stegverse.cosv-task-vector-index/v0.1"}\n', encoding="utf-8")
             (source / "control/resident-execution-request.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
+            (source / "control/resident-execution-request.d/sv-dn1.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
             for rel in refresh_mod.STATIC_FILES:
                 path = source / rel
                 path.parent.mkdir(parents=True, exist_ok=True)
@@ -87,12 +88,15 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertTrue((runtime / "control/task-vectors/new-task.json").is_file())
             self.assertTrue((runtime / "control/task-vector-index.json").is_file())
             self.assertTrue((runtime / "control/resident-execution-request.json").is_file())
+            self.assertTrue((runtime / "control/resident-execution-request.d/sv-dn1.json").is_file())
             self.assertTrue((runtime / "state_language/__init__.py").is_file())
             for rel in (
                 "scripts/run_worker_runtime.py",
                 "scripts/refresh_and_execute_resident_task.py",
                 "scripts/run_independent_ecosystem_chat_parent.py",
                 "scripts/consume_resident_execution_request.py",
+                "scripts/run_sv_dn1_first_round_chain.py",
+                "scripts/consume_sv_dn1_resident_execution_request.py",
                 "scripts/materialize_live_cosv_packet.py",
                 "scripts/cosv.py",
                 "scripts/cosv_state_packet.py",
@@ -140,7 +144,9 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertIn("control/task-vectors", path_unit)
             self.assertIn("control/task-vector-index.json", path_unit)
             self.assertIn("control/resident-execution-request.json", path_unit)
+            self.assertIn("control/resident-execution-request.d", path_unit)
             self.assertIn("consume_resident_execution_request.py", service)
+            self.assertIn("consume_sv_dn1_resident_execution_request.py", service)
             self.assertNotIn(f"PathChanged={source / 'control/worker-registry.json'}", path_unit)
             self.assertIn("authorizations", path_unit)
             self.assertIn("cost-basis", path_unit)

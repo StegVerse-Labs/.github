@@ -48,6 +48,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         raise ValueError("source and runtime roots must be distinct")
     refresh_script = runtime / "scripts/refresh_sovereign_worker_runtime_source.py"
     request_consumer = runtime / "scripts/consume_resident_execution_request.py"
+    sv_dn1_request_consumer = runtime / "scripts/consume_sv_dn1_resident_execution_request.py"
     service = "\n".join([
         "[Unit]",
         "Description=StegVerse local-only WorkerCoordinator source refresh",
@@ -57,6 +58,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         "Type=oneshot",
         f"ExecStart={_quote(python)} {_quote(refresh_script)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(request_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
+        f"ExecStartPost={_quote(python)} {_quote(sv_dn1_request_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost=/usr/bin/systemctl --user try-restart {WORKER_SERVICE}",
         "NoNewPrivileges=true",
         "PrivateTmp=true",
@@ -80,6 +82,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         source / "control/blocker-resolution-policy.json",
         source / "control/task-vector-index.json",
         source / "control/resident-execution-request.json",
+        source / "control/resident-execution-request.d",
     )
     path_unit = "\n".join([
         "[Unit]",
