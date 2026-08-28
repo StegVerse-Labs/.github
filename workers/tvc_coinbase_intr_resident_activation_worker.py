@@ -77,7 +77,7 @@ def execute(env:dict[str,str]|None=None)->dict[str,Any]:
 
     reason=str((ready or {}).get("reason") or "")
     state=str((ready or {}).get("state") or "")
-    key_stack_present=state=="BLOCKED_RESIDENT_BINDING_INVALID" and ("public route observation" in reason)
+    key_stack_present=state=="BLOCKED_RESIDENT_BINDING_INVALID" and ("route observation" in reason)
     activation_performed=False
     if not key_stack_present:
         gateway=values.get("STEGVERSE_COINBASE_GATEWAY_STORAGE_ROOT","").strip()
