@@ -170,7 +170,7 @@
     "blocker_reason": "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT",
     "current_receipt_ref": "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "current_registry_state": "BLOCKED / G18 fence18 remains machine-owned",
-    "next_authorized_action": "The existing local source-refresh watcher may consume control/resident-execution-request.d/g18-sovereign-runtime-resume.json exactly once on an eligible sovereign resident runtime. Its dedicated consumer must validate the exact existing G18 claim SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18 and fence18, then invoke the merged RESUME_EXISTING_CLAIM bridge. The request grants no authority and may not mint a new claim/fence. Until a resident consumption receipt and deployment-local v13 activation proof are observed, G18 remains BLOCKED.",
+    "next_authorized_action": "WorkerCoordinator should independently admit the registered HANDOFF_READY resolution task RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001 under a fresh fence greater than 22 on an eligible non-hosted sovereign resident. That resolution worker actively refreshes already-local source and invokes the existing one-shot G18 request consumer against the exact existing G18 fence18 claim, eliminating dependence on a future filesystem watcher event. If no resident or exact G18 claim is present, blocker policy requires escalation to the next capable resolution level rather than passive BLOCKED rechecks.",
     "terminal_when": [
       "eligible sovereign node is identified/declared",
       "runtime_materialized=true and native_service_active=true",
@@ -209,6 +209,15 @@
       "g18_terminalization_required": false,
       "minimum_fencing_token_exclusive": 20,
       "terminal_evidence": "Master Records-bound recovery receipt under fresh fence >20"
+    },
+    {
+      "task_id": "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
+      "state": "HANDOFF_READY",
+      "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+      "g18_terminalization_required": false,
+      "minimum_fencing_token_exclusive": 22,
+      "parent_goal": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "terminal_evidence": "receipts/sovereign-host/g18-resident-request-resolution.latest.json / G18_RESIDENT_REQUEST_CONSUMPTION_VERIFIED"
     }
   ],
   "constraint": {
@@ -217,7 +226,7 @@
     "condition": "SOVEREIGN_NODE_DECLARATION_NOT_PRESENT",
     "owner": "StegVerse-Labs/.github#59/#122 machine-owned durable-runtime lane",
     "solution_required": true,
-    "next_solution_action": "Use the merged resident existing-claim resume bridge on the eligible deployment-local sovereign surface to re-enter the existing G18 fence18 worker without independent admission or a new fence; the G18 worker then executes the canonical v13 self-bootstrap/activation-verifier path.",
+    "next_solution_action": "Execute registered resolution task RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001. It must either verify G18 resident request consumption through the exact existing fence18 claim or emit a goal-preserving escalation task for the missing resident/claim condition.",
     "machine_observable_completion_condition": "The sovereign-runtime activation receipt proves runtime_materialized/native_service_active/continuous_runtime_live plus restart/reconstruction/no-duplicate-fence predicates.",
     "third_party_dependency": false,
     "human_action_required": false,
