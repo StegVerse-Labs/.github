@@ -1,0 +1,25 @@
+{
+  "schema":"stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id":"KV-PROVIDER-CHANGE-OBSERVER-001",
+  "adapters":[{
+    "adapter_ref":"process:kv-provider-change-observer-v1",
+    "authority_ref":"handoffs/KV-PROVIDER-CHANGE-OBSERVER-001.json#authority",
+    "capabilities":["runtime_observation","bounded_network_read","bounded_process_execution"],
+    "command":["python","workers/kv_provider_change_observer_worker.py"],
+    "cwd":".",
+    "enabled":true,
+    "env_allowlist":[
+      "STEGVERSE_KV_PROVIDER_MONITOR_TARGETS",
+      "STEGVERSE_KV_PROVIDER_MONITOR_STATE_ROOT",
+      "PATH","HOME","LANG","LC_ALL","XDG_STATE_HOME","XDG_CONFIG_HOME"
+    ],
+    "notes":[
+      "Production execution is sovereign/resident only; GitHub Actions may validate source but cannot satisfy activation.",
+      "Monitoring targets contain only public authoritative provider documentation/changelog/status URLs and classification policy.",
+      "No provider credential resolution or authenticated owner-account request is permitted.",
+      "Observations are non-secret compatibility evidence for downstream KV connection-health evaluation."
+    ],
+    "timeout_seconds":300,
+    "type":"process_json_v0.1"
+  }]
+}
