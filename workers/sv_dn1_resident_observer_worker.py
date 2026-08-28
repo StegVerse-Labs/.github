@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import hashlib
 import os
 from pathlib import Path
 import subprocess
@@ -29,6 +30,7 @@ REQUIRED_SOURCE_FILES = (
     Path("scripts/sv_dn1_hf_interlock.py"),
     Path("scripts/sv_dn1_stegverse_interlock.py"),
     Path("config/sv_dn1_hf_mapping.v1.json"),
+    Path("config/sv_dn1_runtime_source_manifest.json"),
 )
 
 
@@ -125,6 +127,35 @@ def find_source_root() -> Path | None:
     return None
 
 
+
+def git_blob_sha1(data: bytes) -> str:
+    header = f"blob {len(data)}\0".encode("ascii")
+    return hashlib.sha1(header + data).hexdigest()
+
+
+def validate_pinned_source(root: Path) -> dict[str, Any]:
+    manifest_path = root / "config" / "sv_dn1_runtime_source_manifest.json"
+    manifest = read_json(manifest_path)
+    if manifest.get("schema") != "stegverse.sv-dn1.runtime-source-manifest/v1":
+        raise RuntimeError("wrong SV-DN-1 runtime source manifest schema")
+    if manifest.get("hash_profile") != "git-blob-sha1":
+        raise RuntimeError("unsupported SV-DN-1 runtime source hash profile")
+    files = manifest.get("files")
+    if not isinstance(files, dict) or not files:
+        raise RuntimeError("SV-DN-1 runtime source manifest files missing")
+    failures: list[str] = []
+    for rel, expected in sorted(files.items()):
+        path = root / str(rel)
+        if not path.is_file():
+            failures.append(f"missing:{rel}")
+            continue
+        actual = git_blob_sha1(path.read_bytes())
+        if actual != expected:
+            failures.append(f"drift:{rel}:{expected}:{actual}")
+    if failures:
+        raise SourceUnavailable("exact pinned SV-DN-1 source validation failed: " + ";".join(failures))
+    return manifest
+
 def require_source_root() -> Path:
     root = find_source_root()
     if root is None:
@@ -171,6 +202,7 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
     node_path, node = find_node()
     validate_invocation(invocation)
     source_root = require_source_root()
+    source_manifest = validate_pinned_source(source_root)
     bound_state = require_bound_state_root()
     observed = bound_state / "observed"
     observed.mkdir(parents=True, exist_ok=True)
@@ -248,6 +280,9 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "node_declaration_ref": str(node_path),
         "node_declaration_source": node.get("declaration_source"),
         "source_root": str(source_root),
+        "source_basis_commit": source_manifest.get("source_basis_commit"),
+        "source_hash_profile": source_manifest.get("hash_profile"),
+        "source_file_count_verified": len(source_manifest.get("files") or {}),
         "source_discovery_mode": "explicit" if str(os.getenv(ROOT_ENV) or "").strip() else "canonical_local_path",
         "target_url": TARGET_URL,
         "source_capture_ref": "observed/source-capture.json",
