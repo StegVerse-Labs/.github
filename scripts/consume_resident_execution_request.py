@@ -6,9 +6,11 @@ credential, heartbeat authority, or execution permission. It may only invoke the
 already-installed dedicated Ecosystem Chat parent executor path, whose own
 authorization and fresh-fence checks remain authoritative.
 
-A request id + content hash is consumed at most once on a resident runtime. A
-failed or blocked attempt therefore cannot loop merely because another source
-path changes. A new attempt requires a new canonical request id/content.
+The canonical request lives in the multi-request resident registry so unrelated
+resident tasks cannot overwrite it. A request id + content hash is consumed at
+most once on a resident runtime. A failed or blocked attempt therefore cannot
+loop merely because another source path changes. A new attempt requires a new
+canonical request id/content.
 """
 from __future__ import annotations
 
@@ -22,7 +24,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-REQUEST_REL = Path("control/resident-execution-request.json")
+REQUEST_REL = Path("control/resident-execution-request.d/ecosystem-chat-parent-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/resident-execution-request-consumption.latest.json")
 TARGET_TASK = "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
 TARGET_MODE = "DEDICATED_ECOSYSTEM_CHAT_PARENT"
