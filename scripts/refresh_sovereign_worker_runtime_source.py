@@ -49,6 +49,7 @@ CONTROL_DIRS = (
     Path("control/worker-registry.d"),
     Path("control/process-worker-adapters.d"),
     Path("control/task-vectors"),
+    Path("control/resident-execution-request.d"),
 )
 CONTROL_FILES = (
     Path("control/process-worker-adapters.json"),
