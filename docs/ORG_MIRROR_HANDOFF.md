@@ -467,3 +467,26 @@ user action required: false
 ```
 
 The merge makes the task consumable by the existing machine-owned resident path; it is not evidence that such a resident surface consumed it.
+
+
+## 2026-08-28 TVC Interlock/InTr resident activation successor
+
+The remaining Coinbase Interlock/InTr resident-activation seam is now assigned to a dedicated independent WorkerCoordinator successor:
+
+```text
+task: TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001
+handoff: handoffs/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json
+worker: workers/tvc_coinbase_intr_resident_activation_worker.py
+registry: control/worker-registry.d/tvc-coinbase-intr-resident-activation-001.json
+adapter: control/process-worker-adapters.d/tvc-coinbase-intr-resident-activation-001.json
+scoped mirror: docs/TVC_INTR_RESIDENT_ACTIVATION_WORKER_MIRROR_HANDOFF.md
+dependency: SHWP-DURABLE-RUNTIME-ACTIVATION must be genuinely terminal
+credential authority: TV/TVC
+provider operation authority: NONE
+heartbeat progression authority: NONE
+Site repository mutation authority: NONE
+```
+
+The successor observes before mutating, reuses a valid TVC recipient stack when only route evidence is absent, performs resident activation only under root/systemd authority with real Gateway/KV storage bindings, observes the public sovereign route, requires `READY_FOR_OWNER_INGRESS`, and emits only the local Site owner-ingress projection.
+
+Repository/CI validation cannot satisfy its live predicates. The remaining blocker is execution on the eligible non-hosted sovereign WorkerCoordinator/runtime substrate, not missing source ownership.
