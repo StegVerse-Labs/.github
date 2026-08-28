@@ -25,7 +25,16 @@
       "no SDK/governance/certification authority"
     ],
     "successor_policy": "INHERIT_OR_NARROW",
-    "max_successor_depth": 1
+    "max_successor_depth": 1,
+    "failure_predicates": [
+      "canonical runtime manifest blob identity differs from admitted pin",
+      "manifest-listed production source blob is missing or mismatched",
+      "resident support file blob is missing or mismatched",
+      "GitHub token or provider credential is present",
+      "hosted execution is treated as sovereign runtime",
+      "remote checkout or repository writeback is attempted",
+      "materialized tree fails post-write exact validation"
+    ]
   },
   "task": {
     "task_id": "SV-DN1-SOURCE-MATERIALIZATION-001",
@@ -42,7 +51,12 @@
     "parent_task_id": null,
     "derivation_reason": "The resident observer is intentionally forbidden from remote checkout and currently reports exact pinned local demo-suite source as a blocker. This handoff creates a separate credential-free source-materialization prerequisite without duplicating observation ownership.",
     "derivation_depth": 0,
-    "source_handoff_ref": "docs/SV_DN1_SOURCE_MATERIALIZATION_MIRROR_HANDOFF.md"
+    "source_handoff_ref": "docs/SV_DN1_SOURCE_MATERIALIZATION_MIRROR_HANDOFF.md",
+    "source_refs": [
+      "docs/SV_DN1_SOURCE_MATERIALIZATION_MIRROR_HANDOFF.md",
+      "StegVerse-org/stegverse-demo-suite:config/sv_dn1_runtime_source_manifest.json",
+      "StegVerse-Labs/.github:docs/SV_DN1_RESIDENT_OBSERVER_MIRROR_HANDOFF.md"
+    ]
   },
   "authority": {
     "authority_source": "canonical SV-DN-1 runtime source manifest + sovereign WorkerCoordinator",
@@ -95,7 +109,10 @@
       ],
       "authenticated": false,
       "credential_forwarding": false
-    }
+    },
+    "allowed_paths": [
+      "receipts/sv-dn1-source-materialization/**"
+    ]
   },
   "input_contract": {
     "source_repository": "StegVerse-org/stegverse-demo-suite",
