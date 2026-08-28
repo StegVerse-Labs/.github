@@ -365,3 +365,28 @@ network source fetch allowed: false
 
 This request is not activation evidence. It is intended to be consumed exactly once by an already-installed sovereign resident source-refresh path. The next machine-observable state change is either a resident consumption/targeted-execution receipt or a separately evidenced absence/failure of the resident source-refresh service. Do not manufacture a parent PASS from repository mutation alone.
 
+## Durable multi-request registry correction — 2026-08-28
+
+Machine-readable inspection found that Ecosystem Chat still used the singleton `control/resident-execution-request.json`, while newer resident lanes already use `control/resident-execution-request.d/*.json`. Because the singleton is a shared overwrite surface, an unrelated resident request could replace the Ecosystem Chat request before a sovereign source refresh.
+
+Bounded source correction:
+
+```text
+claim: ECOSYSTEM-CHAT-RESIDENT-REQUEST-DURABILITY-20260828
+branch: fix/ecosystem-chat-resident-request-durable-20260828
+canonical request: control/resident-execution-request.d/ecosystem-chat-parent-001.json
+compatibility request: control/resident-execution-request.json
+request id: RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002
+consumer: scripts/consume_resident_execution_request.py
+request authority: NONE_REQUEST_ONLY
+credential authority: TV/TVC
+GitHub-token runtime authority: NONE
+activation effect: false
+```
+
+The canonical consumer now reads the dedicated multi-request registry entry. The singleton remains temporarily as a byte-equivalent compatibility surface for older resident source copies; because the stable request hash is computed from the JSON object, either old or new consumer observes the same request identity and cannot create a second automatic attempt after a matching consumption receipt exists.
+
+The sovereign source-refresh path already copies the entire `control/resident-execution-request.d` directory, and the deterministic refresh tests now assert that the Ecosystem Chat request survives source refresh independently of the singleton.
+
+This is source durability only. It does not prove resident source refresh, request consumption, fresh fence issuance, model execution, Master Records reconstruction, or product activation.
+
