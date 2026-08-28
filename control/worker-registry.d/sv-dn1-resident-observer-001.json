@@ -19,7 +19,8 @@
         "workers/sv_dn1_resident_observer_worker.py",
         "control/process-worker-adapters.d/sv-dn1-resident-observer-001.json",
         "cost-basis/worker-runtime/sv-dn1-resident-observer.json",
-        "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json"
+        "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json",
+        "StegVerse-org/stegverse-demo-suite:config/sv_dn1_runtime_source_manifest.json"
       ],
       "admissible_existence": {
         "capability_id": "stegverse:capability:sv-dn1-resident-public-observer:v1",
@@ -40,7 +41,7 @@
         ],
         "activation_proof_ref": null,
         "blockers": [
-          "EXACT_LOCAL_DEMO_SUITE_SOURCE_NOT_YET_OBSERVED",
+          "EXACT_PINNED_LOCAL_DEMO_SUITE_SOURCE_NOT_YET_OBSERVED",
           "CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND",
           "SOVEREIGN_SV_DN1_RESIDENT_SOURCE_CAPTURE_RECEIPT_NOT_YET_OBSERVED"
         ],
