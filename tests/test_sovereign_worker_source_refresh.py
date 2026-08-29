@@ -106,6 +106,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "scripts/consume_g18_resident_execution_request.py",
                 "scripts/consume_hil_resident_execution_request.py",
                 "scripts/consume_hil_intr_materialization_request.py",
+                "scripts/serve_evaluator_intr_runtime.py",
                 "scripts/consume_ara_graph_resident_execution_request.py",
                 "scripts/run_sv_dn1_first_round_chain.py",
                 "scripts/consume_sv_dn1_resident_execution_request.py",
