@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-28T21:14:00-05:00
+Updated: 2026-08-28T21:23:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -364,3 +364,15 @@ task.v1 [L R U I V G O C M T B E A P] = 50000000101000
 The task is an independently admitted machine-resolution capability under a fresh resolution fence and may not reuse or replace the existing G18 fence18 claim. Exactly one blocker remains: `G18_RESIDENT_REQUEST_CONSUMPTION_NOT_YET_OBSERVED`. No HeartBeat progression authority, credential authority, third-party primary runtime, additional physical machine requirement, G18 terminalization, or runtime activation is claimed.
 
 If validated and merged, local .github coverage becomes 19 indexed vectors with 28 active worker gaps + 14 organization gaps = 42 active unvectorized tasks.
+
+## Post-bootstrap resident request dispatch path — G18 evidence refresh
+
+Current main now installs `scripts/dispatch_resident_execution_requests.py` into the canonical sovereign bootstrap path. After a verified deployment-local bootstrap, the dispatcher visits bounded resident request consumers, including the G18 request consumer. This removes the prior passive filesystem-trigger dependency.
+
+This source improvement does **not** satisfy the G18 resolution task. The exact blocker remains:
+
+```text
+G18_RESIDENT_REQUEST_CONSUMPTION_NOT_YET_OBSERVED
+```
+
+Required missing evidence is still a deployment-local resident dispatch/consumption receipt proving the existing G18 fence18 request was actually consumed. No new G18 claim/fence, HeartBeat execution authority, third-party runtime authority, credential authority, or additional physical machine is introduced.
