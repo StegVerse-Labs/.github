@@ -4,7 +4,7 @@
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "HIL-SOVEREIGN-RECEIVER-ACTIVATION",
-    "objective": "Run the current HIL v1.1 receiver backend contract on an admitted StegVerse sovereign carrier with no participant/developer/iMachine dependency, then continue to public HTTPS, browser receipt, restart byte proof, and TVC lifecycle handoff.",
+    "objective": "Retain the resident HIL worker as an optional event-ephemeral sovereign materializer/runtime-observation capability while canonical HIL submission and lifecycle transport proceed independently through the Universal Interlock/InTr path.",
     "success_predicates": [
       "current merged LLM-adapter HIL receiver is resolved from local StegVerse workload/source storage",
       "post-submit reconstruction source contract is complete and released",
@@ -55,11 +55,14 @@
     ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "The HIL receiver backend, reconstruction contract, Site receipt compatibility, and carrier bridge are merged and validated; the next legitimate transition is resident worker execution against a source tree meeting that full contract floor.",
+    "derivation_reason": "The resident HIL worker remains a valid optional runtime-observation/materialization capability. Merged Universal Interlock/InTr transport now makes participant Submit the transport event, so resident receiver readiness is not a prerequisite for HIL submission or product activation.",
     "canonical_owner_ref": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
     "canonical_lineage_key": "hil:sovereign-receiver:activation",
     "derivation_depth": 0,
-    "priority": "high"
+    "priority": "high",
+    "transport_role": "OPTIONAL_EVENT_EPHEMERAL_MATERIALIZER",
+    "hil_submission_dependency": false,
+    "hil_product_activation_dependency": false
   },
   "authority": {
     "authority_source": "StegVerse-Labs/.github#246 with TV/TVC credential authority unchanged",
@@ -79,7 +82,9 @@
     "review_authority": false,
     "publication_authority": false,
     "master_records_authority": false,
-    "public_transport_authority": false
+    "public_transport_authority": false,
+    "always_on_application_receiver_required": false,
+    "second_user_device_required": false
   },
   "execution": {
     "required_capabilities": [
@@ -95,7 +100,12 @@
     "max_retries": 128,
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 256,
-    "rate_class": "hil_sovereign_receiver_activation"
+    "rate_class": "hil_sovereign_receiver_activation",
+    "event_triggered_materialization_allowed": true,
+    "continuous_application_receiver_required": false,
+    "unavailable_transport_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+    "exact_packet_transport_retry_allowed": true,
+    "blind_consequence_retry_allowed": false
   },
   "activation": {
     "carrier": "heartbeat_reference_only",
@@ -170,7 +180,9 @@
         "organization_control_plane_run": 33228209246,
         "organization_control_plane_job": 99035966209,
         "result": "PASS"
-      }
+      },
+      "required_for_hil_submission": false,
+      "required_for_hil_product_activation": false
     }
   },
   "continuity": {
@@ -180,7 +192,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "On an installed sovereign resident source-refresh surface, consume RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-001 exactly once and invoke only the existing targeted HIL task. Treat repository merge/CI as source validation only; runtime completion still requires real claim/fence allocation, receiver READY evidence, public HTTPS, browser receipt, restart exact-byte proof, and TVC lifecycle handoff.",
+    "next_authorized_action": "Canonical HIL transport proceeds from Submit through the merged Universal Interlock/InTr chain without waiting for this resident worker. This HANDOFF_READY worker may execute opportunistically as an event-ephemeral sovereign materializer/runtime-observation lane under its existing claim/fence authority, but failure to observe it does not block submission or HIL lifecycle progression. TVC/private-review/publication/Master Records consequences remain separately governed.",
     "terminal_when": [
       "real StegVerse carrier READY observation",
       "public HTTPS rendezvous observed",
@@ -188,11 +200,13 @@
       "post-restart exact-byte SHA-256 verification PASS",
       "TVC HIL lifecycle handoff proven"
     ],
-    "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001"
+    "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001",
+    "hil_submission_dependency": false,
+    "hil_product_activation_dependency": false
   },
   "block": {
-    "block_reason": "The HIL resident request bridge is merged and exact-head validated. Activation remains unfinished until that request is actually consumed on a sovereign resident carrier and the receiver READY/public HTTPS/browser/restart/TVC evidence chain is observed.",
-    "dependency": "resident sovereign carrier plus public HTTPS/browser/restart/TVC evidence sequence",
+    "block_reason": "Optional resident HIL materializer/runtime observation has not yet been observed. This is no longer a HIL submission or product-activation blocker because the canonical Universal Interlock/InTr path is event-triggered and durably queues or event-ephemerally materializes unavailable receivers.",
+    "dependency": "optional resident materializer/runtime observation only; HIL transport dependency is Universal Interlock/InTr",
     "solution_task_ref": "StegVerse-Labs/.github#246",
     "solution_source_ref": "workers/hil_sovereign_receiver_worker.py",
     "solution_validation_ref": "tests/test_hil_sovereign_receiver_bridge.py",
@@ -203,12 +217,32 @@
       "no GitHub token runtime authority",
       "TV/TVC credential authority only",
       "no third-party runtime as production authority",
-      "no heartbeat/model/TVC/Master Records authority collision"
+      "no heartbeat/model/TVC/Master Records authority collision",
+      "resident HIL worker must not be represented as a prerequisite for Submit or HIL product activation"
     ],
     "observer": "independent StegVerse task-control",
     "recheck_trigger": "each admitted StegVerse task-control execution opportunity",
     "next_check": null,
     "escalation_condition": "stale backend source, a non-TV/TVC credential, participant machine, third-party production authority, or competing heartbeat/route/custody authority is requested",
     "block_expires_at": null
+  },
+  "transport_architecture": {
+    "policy_ref": "management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json",
+    "policy_merge": "d0de32281c2e29258146e084e93ce4587568d683",
+    "stegos_transport_merge": "9500c974acfd9c9aed663c8e78573df61a57fddd",
+    "hil_receiver_chain_merge": "ad1a7c3f8bb727d1007f254930d9a77df0bfa94f",
+    "site_submit_merge": "1cb2b9b950674400c5e5aa341b8b6efba5cbeb47",
+    "tvc_lifecycle_intake_merge": "31a4ea2fcc42b807ec24ae2612df4e60d38a73eb",
+    "canonical_path": [
+      "DEVICE_SYSTEM",
+      "STEGOS_ECOSYSTEM"
+    ],
+    "submit_is_transport_event": true,
+    "always_on_application_receiver_required": false,
+    "second_user_device_required": false,
+    "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+    "exact_packet_transport_retry_allowed": true,
+    "blind_consequence_retry_allowed": false,
+    "g18_dependency": false
   }
 }
