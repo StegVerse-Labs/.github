@@ -1,0 +1,113 @@
+{
+  "schema": "stegverse.evaluator-intr.bounded-live-observation/v1",
+  "evidence_id": "EVALUATOR-INTR-BOUNDED-LIVE-20260829T223107Z",
+  "state": "OBSERVED_BOUNDED_LIVE_EXECUTION",
+  "observed_at": "2026-08-29T22:31:07Z",
+  "execution_environment": "CHATGPT_CONTAINER_BOUNDED_LIVE_TEST",
+  "browser": {
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/144.0.0.0 Safari/537.36",
+    "proof_harness_origin": "null",
+    "proof_harness_origin_exception_only": true,
+    "production_origin_relaxation_authorized": false,
+    "http_status": 200,
+    "request_sha256": "234c0376374f0d868ba45ff1ae6f265e54ce4c2d95934eb48ff7098939cb9d1c",
+    "manifest_hash": "0a003bf4975cfd956a717b8230c5e9f9367ee357fd147fbeff081435532bd911"
+  },
+  "gateway_readiness": {
+    "schema": "stegverse.service-gateway.evaluator-intr-readiness/v1",
+    "enabled": true,
+    "loopback_upstream_configured": true,
+    "state": "READY",
+    "transport": "InTr",
+    "credential_authority": "TV/TVC",
+    "gateway_receipt_authority": false,
+    "gateway_evaluator_authority": false,
+    "authority_effect": "NONE"
+  },
+  "request_bindings": {
+    "test_id": "cross-framework-current-basis-001",
+    "revision": 2,
+    "manifest_hash": "0a003bf4975cfd956a717b8230c5e9f9367ee357fd147fbeff081435532bd911"
+  },
+  "ingress_receipt": {
+    "schema": "stegverse.intr.hop_receipt/v1",
+    "receipt_id": "EVAL-IN-ec786d5f45f0de7e24bf0d09",
+    "packet_id": "INTR-ec786d5f45f0de7e24bf0d09",
+    "hop_index": 1,
+    "direction": "FORWARD",
+    "from_role": "DEVICE_SYSTEM",
+    "to_role": "STEGOS_ECOSYSTEM",
+    "operation_hash": "sha256:d39075c44c0e5ba601296d00befb1c32b180b7100703d8f67697c3a42bfb2a16",
+    "payload_hash": "sha256:4a03afadb147edc1ee879348f210b1caee1c0652fcc77d204eac24120ea87afc",
+    "prior_receipt_hash": null,
+    "boundary_identity_ref": "proof-node:eval",
+    "boundary_verification": "VERIFIED",
+    "transition_state": "RECEIVED",
+    "secret_plaintext_present": false,
+    "authority_transfer": false,
+    "recorded_at": "2026-08-29T22:31:07Z",
+    "receipt_hash": "sha256:47349944c04dec1ea0c1fabfbf7eb1b2c1a02fae7bca5cebac822607944ad984"
+  },
+  "egress_receipt": {
+    "schema": "stegverse.intr.hop_receipt/v1",
+    "receipt_id": "EVAL-OUT-097598820e03794bd150594c",
+    "packet_id": "INTR-097598820e03794bd150594c",
+    "hop_index": 1,
+    "direction": "FORWARD",
+    "from_role": "STEGOS_ECOSYSTEM",
+    "to_role": "DEVICE_SYSTEM",
+    "operation_hash": "sha256:7c20a08050bf3d31edd7eeb893345ee706649150f3c095734805ba3df3fbceae",
+    "payload_hash": "sha256:2bc4a89892812a294a9f9c87438c0135d5286c293be4d047ce395a583286bce7",
+    "prior_receipt_hash": "sha256:47349944c04dec1ea0c1fabfbf7eb1b2c1a02fae7bca5cebac822607944ad984",
+    "boundary_identity_ref": "proof-node:eval",
+    "boundary_verification": "VERIFIED",
+    "transition_state": "FORWARDED",
+    "secret_plaintext_present": false,
+    "authority_transfer": false,
+    "recorded_at": "2026-08-29T22:31:07Z",
+    "receipt_hash": "sha256:14b15dd4f65e2be0ec0b045daf8a3b57c6d15453a739544057cccb19ecd04615"
+  },
+  "verification": {
+    "browser_gateway_runtime_round_trip_observed": true,
+    "ingress_receipt_hash_valid": true,
+    "egress_receipt_hash_valid": true,
+    "egress_prior_receipt_matches_ingress_receipt_hash": true,
+    "ingress_boundary": "DEVICE_SYSTEM->STEGOS_ECOSYSTEM",
+    "egress_boundary": "STEGOS_ECOSYSTEM->DEVICE_SYSTEM",
+    "ingress_transition_state": "RECEIVED",
+    "egress_transition_state": "FORWARDED"
+  },
+  "source_bindings": {
+    "site_browser_merge": "0d673ca98b7042bd750d53e4c4dd699f7c5f8f30",
+    "stegos_universal_intr_transport_blob_sha": "ca392303c1ab3e6d1b2a06034d7e761018f61b31",
+    "stegos_evaluator_intr_roundtrip_blob_sha": "caf683e7d0bd5c2cf098409dbc3fc296ff6d3a66",
+    "org_control_runtime_merge": "2814750ac97c780ab6669c2bcb9d319cb73cf28e",
+    "org_control_resident_dispatch_merge": "3867ad1f07c089c6abec18eb9a40c761a3512e49",
+    "llm_adapter_gateway_merge": "f90d63bd94ff8270a997d3ebeede929a901ed5dd",
+    "llm_adapter_origin_forward_fix_merge": "a723f10a0597742a58ccf5fd10565221019f2b35"
+  },
+  "authority": {
+    "authority_effect": "NONE",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "review_authority": false,
+    "freeze_authority": false,
+    "test_execution_authority": false,
+    "production_activation_authority": false
+  },
+  "production": {
+    "public_internet_route_observed": false,
+    "public_webpki_hostname_validation_observed": false,
+    "resident_sovereign_production_host_activation_observed": false,
+    "production_activation_claimed": false
+  },
+  "non_claims": [
+    "public Internet reachability",
+    "public WebPKI hostname validation",
+    "resident sovereign production host activation",
+    "Master Records custody",
+    "review approval",
+    "freeze",
+    "test execution authority"
+  ]
+}
