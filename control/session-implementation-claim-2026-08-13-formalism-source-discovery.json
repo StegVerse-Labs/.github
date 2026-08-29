@@ -7,7 +7,7 @@
   "branch": "feat/formalism-source-discovery-001",
   "claimant": "current ChatGPT formalism/manifold continuation session",
   "role": "CLAIMED_FOR_IMPLEMENTATION",
-  "claim_state": "ACTIVE",
+  "claim_state": "RELEASED_TRANSFERRED_TO_MACHINE_CONTINUATION",
   "claim_created_at": "2026-08-13T23:35:00-05:00",
   "claim_expires_at": "2026-08-14T02:35:00-05:00",
   "claim_release_condition": "Source discovery is hosted-validated and admitted to main, existing formalism workers consume a durable discovered-roots manifest without chat selection, and any missing-source materialization step has an active executable owner.",
@@ -44,6 +44,23 @@
   },
   "credential_authority": "TV/TVC",
   "github_token_required": false,
-  "authority_effect": "BOUNDED_SOURCE_DISCOVERY_IMPLEMENTATION_AND_PREDECESSOR_CLAIM_TRANSFER_ONLY",
-  "archive_dependency": true
+  "authority_effect": "NONE_RELEASED_TO_MACHINE_CONTINUATION",
+  "archive_dependency": false,
+  "claim_released_at": "2026-08-14T04:39:54Z",
+  "claim_reconciled_at": "2026-08-29T02:37:00-05:00",
+  "release_evidence": {
+    "pull_request": 103,
+    "merged_head": "00ead9d14a44be827c4110f3866556402a2d899b",
+    "merge_commit": "5a5c77d45817407dc0b2f5010ba56a36ecdd5d5e",
+    "merged_at": "2026-08-14T04:39:54Z",
+    "heartbeat_validation_run": 31770541037,
+    "control_plane_validation_run": 31770541030,
+    "handoff_render_run": 31770541087,
+    "machine_continuation_task": "SHWP-FORMALISM-SOURCE-DISCOVERY-001",
+    "machine_continuation_worker": "formalism-source-discovery-worker",
+    "resident_discovery_receipt_observed": false,
+    "missing_source_absence_set_observed": false,
+    "generalized_owner_mutation_deficiency_transferred_here": false
+  },
+  "release_reason": "Source-discovery implementation and automatic manifest consumption were merged and exact-head validated. No resident missing-source absence set has been observed, so no concrete missing-source materialization successor is presently required; any future observed absence remains fail-closed and must derive a separately authorized machine successor. The generalized owner-source mutation executor deficiency remains a separate unresolved lane."
 }
