@@ -1,0 +1,43 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-ARA-GRAPH-RUNTIME-086",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/ara-graph-runtime-086.json",
+    "handoffs/SHWP-ARA-GRAPH-RUNTIME-086.json",
+    "StegVerse-Labs/TVC:tasks/TVC-ARA-GRAPH-RUNTIME-EXECUTION-086.json",
+    "StegVerse-Labs/TVC:tasks/TVC-ARA-GRAPH-086.json"
+  ],
+  "observed_at": "2026-08-28T21:08:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "TVC runtime task state MACHINE_WORKER_AND_RESIDENT_REQUEST_REGISTERED_RUNTIME_UNOBSERVED; .github handoff is independent task-control HANDOFF_READY with AVAILABLE worker",
+    "archive_ready": "worker fragment archive_eligible=false",
+    "unassigned_work": "worker registration is AVAILABLE and TV/TVC runtime authority + ara-graph-runtime-worker own continuation",
+    "chat_owned_counts": "TVC runtime task thread_dependency=NONE; resident worker path owns execution; no user-operated second machine is required",
+    "canonical_owner_installed": "TVC source/control, resident worker registration, resident request bridge, handoff and process adapter are implemented/validated/merged",
+    "thread_required": "TVC runtime task thread_dependency=NONE and next action is registered sovereign worker consumption",
+    "blocker_count": "admissible_existence.blockers contains exactly LIVE_ARA_GRAPH_PROVIDER_OPERATION_RECEIPT_NOT_YET_OBSERVED",
+    "evidence_complete": "live_worker_claim_observed=false and live_provider_operation_observed=false",
+    "activated": "activation_proof_ref=null; authentic resident consumption and provider operation remain unobserved",
+    "propagated": "ARA release authority effect remains NONE and no provider-operation result has propagated into release state"
+  },
+  "authority_effect": "NONE"
+}
