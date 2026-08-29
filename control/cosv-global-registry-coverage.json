@@ -1,8 +1,8 @@
 {
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
-  "observed_commit": "4d993befa31441f8d173d5836e5c341da08d589c",
-  "observed_at": "2026-08-28T21:28:00-05:00",
+  "observed_commit": "0b31dfc26ba60ca0e0421bcdb6c34fdc14d22976",
+  "observed_at": "2026-08-28T21:33:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -208,6 +208,8 @@
     "dispatcher_ref": "scripts/dispatch_resident_execution_requests.py",
     "dispatch_receipt_observed": false,
     "g18_consumption_receipt_observed": false,
-    "authority_effect": "NONE"
+    "authority_effect": "NONE",
+    "native_materialization_boundary_ref": "docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md",
+    "native_materialization_boundary_state": "SOURCE_IMPROVED_RUNTIME_CONSUMPTION_NOT_OBSERVED"
   }
 }
