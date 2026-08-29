@@ -48,7 +48,10 @@
       "StegVerse-org/LLM-adapter@9928284a2abf229dd7c7c19eae75eb9838024e43 Site durable-ingress compatibility floor",
       "workers/hil_sovereign_receiver_bridge.py",
       "workers/hil_sovereign_receiver_worker.py",
-      "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md"
+      "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+      "control/resident-execution-request.d/hil-sovereign-receiver-001.json",
+      "scripts/consume_hil_resident_execution_request.py",
+      "tests/test_hil_resident_execution_request.py"
     ],
     "dependencies": [],
     "parent_task_id": null,
@@ -139,6 +142,25 @@
       "heartbeat_grants_execution_authority": false,
       "github_token_runtime_authority": "NONE",
       "credential_authority": "TV/TVC"
+    },
+    "resident_execution_request": {
+      "state": "SOURCE_IMPLEMENTED_VALIDATION_PENDING_RUNTIME_NOT_OBSERVED",
+      "request_ref": "control/resident-execution-request.d/hil-sovereign-receiver-001.json",
+      "consumer_ref": "scripts/consume_hil_resident_execution_request.py",
+      "request_id": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-001",
+      "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+      "trigger_surface": "existing local source-refresh service only when installed/active",
+      "exactly_once_per_request_hash": true,
+      "request_grants_authority": false,
+      "existing_targeted_executor_retains_claim_and_fence_authority": true,
+      "heartbeat_grants_execution_authority": false,
+      "network_source_fetch_allowed": false,
+      "second_machine_required": false,
+      "github_token_runtime_authority": "NONE",
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE_FOR_PARTICIPANT_INTAKE",
+      "runtime_execution_observed": false,
+      "authority_effect": "NONE_REQUEST_ONLY"
     }
   },
   "continuity": {
@@ -148,7 +170,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "The registered resident worker resolves only a current-contract local LLM-adapter receiver, launches it credential-free on loopback with durable StegVerse state, and verifies exact HIL READY before deriving public rendezvous continuation.",
+    "next_authorized_action": "After source validation/merge, an installed local source-refresh service may consume the HIL resident request exactly once and invoke only the already-authorized targeted HIL task. Runtime completion still requires real claim/fence allocation, receiver READY evidence, public HTTPS, browser receipt, restart exact-byte proof, and TVC lifecycle handoff.",
     "terminal_when": [
       "real StegVerse carrier READY observation",
       "public HTTPS rendezvous observed",
@@ -159,7 +181,7 @@
     "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001"
   },
   "block": {
-    "block_reason": "Activation remains unfinished until current-contract carrier execution and the downstream public evidence chain are observed.",
+    "block_reason": "Activation remains unfinished until the new bounded resident request is validated/merged and then actually consumed on a sovereign resident carrier, followed by the public HTTPS/browser/restart/TVC evidence sequence.",
     "dependency": "resident sovereign carrier plus public HTTPS/browser/restart/TVC evidence sequence",
     "solution_task_ref": "StegVerse-Labs/.github#246",
     "solution_source_ref": "workers/hil_sovereign_receiver_worker.py",
