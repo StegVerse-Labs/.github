@@ -259,7 +259,7 @@ independent-task-control correction: MERGED / PASS
 source worker: MERGED
 resident worker: MERGED
 InTr worker: MERGED
-production source prep worker: IMPLEMENTING
+production source prep worker: MERGED / VALIDATED
 SDK first-round worker: MERGED
 single-opportunity sovereign chain orchestrator: MERGED
 resident request bridge: MERGED
@@ -284,7 +284,18 @@ durable receipt validation: PASS
 resident request non-authority/retry behavior: PASS
 ```
 
-The original four-stage first-round chain is source-complete and admitted. This branch inserts explicit canonical production-source preparation before SDK execution so missing private roots become a machine-owned TVC spool dependency rather than an implicit local-path prerequisite. No authentic chain execution receipt has been observed yet.
+The first-round chain now includes explicit canonical production-source preparation before SDK execution. Missing private roots are a machine-owned TVC spool dependency rather than an implicit local-path prerequisite. No authentic chain execution receipt has been observed yet.
+
+## Production source preparation integration evidence
+
+```text
+PR #371: MERGED
+merge_commit: f488e70fca67e80fa6b674ee7380b0e04c5000f7
+heartbeat worker validation run 33228272533: PASS
+organization control plane run 33228272505: PASS
+```
+
+The one-shot resident chain now advances through five independently fenced tasks. The SDK step cannot execute until the production-source-preparation task is COMPLETED and has exposed exact non-secret local roots for SDK, StegCore, Core-Lite, and Master Records.
 
 ## Archive readiness
 
