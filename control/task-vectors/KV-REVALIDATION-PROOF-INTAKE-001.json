@@ -1,0 +1,11 @@
+{
+  "identity":"StegVerse-Labs/.github:task:KV-REVALIDATION-PROOF-INTAKE-001",
+  "profile":"task.v1",
+  "level":"task",
+  "vector":"50000000102000",
+  "evidence_refs":["control/worker-registry.d/kv-revalidation-proof-intake-001.json","handoffs/KV-REVALIDATION-PROOF-INTAKE-001.json","KV_REVALIDATION_PROOF_INTAKE_MIRROR_HANDOFF.md","handoffs/KV-CONNECTION-REVALIDATION-WORKER-001.json"],
+  "observed_at":"2026-08-29T15:38:00-05:00",
+  "exact_metrics":{"symbol_order":"LRUIVGOCMTBEAP","lifecycle":"MACHINE_OWNED","archive_ready":false,"unassigned_work":0,"chat_owned_implementation":0,"chat_owned_validation":0,"chat_owned_integration":0,"chat_owned_observation":0,"chat_owned_credentials":0,"canonical_owner_installed":true,"thread_required":false,"blocker_count":2,"evidence_complete":false,"activated":false,"propagated":false},
+  "metric_evidence":{"lifecycle":"HANDOFF_READY with authorized independent task-control claim and dedicated intake worker","archive_ready":"worker fragment archive_eligible=false while resident intake/runtime evidence remains absent","unassigned_work":"kv-revalidation-proof-intake-worker + kv-connection-revalidation-worker own continuation","chat_owned_counts":"intake and downstream proof consumption are machine-owned; no manual execution or credential role is assigned to chat","canonical_owner_installed":"merged revalidation worker and proof contract are canonical inputs for the intake bridge","thread_required":"durable issue, handoff, worker, registry, adapter, and vector define continuation without chat-only state","blocker_count":"SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN | BOUNDED_REVALIDATION_INTAKE_MANIFEST_NOT_YET_OBSERVED","evidence_complete":"no authentic resident intake manifest dispatch plus downstream canonical completion has been observed","activated":"no activation proof is recorded","propagated":"no authentic intake dispatch has propagated to a terminal revalidation result"},
+  "authority_effect":"NONE"
+}
