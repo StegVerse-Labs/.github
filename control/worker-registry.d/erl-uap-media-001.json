@@ -9,7 +9,12 @@
       "block_ref": "handoffs/SHWP-ERL-UAP-MEDIA-001.json#block",
       "claim_id": null,
       "cost_basis_ref": null,
-      "evidence_refs": ["StegVerse-Labs/Executive_Rhetoric_Ledger#62", "StegVerse-Labs/.github#175", "workers/erl_uap_media_source_worker.py", "StegVerse-Labs/Executive_Rhetoric_Ledger:scripts/process_uap_source_queue.py"],
+      "evidence_refs": [
+        "StegVerse-Labs/Executive_Rhetoric_Ledger#62",
+        "StegVerse-Labs/.github#175",
+        "workers/erl_uap_media_source_worker.py",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger:scripts/process_uap_source_queue.py"
+      ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
       "goal_id": "UAP-MEDIA-001",
@@ -25,17 +30,41 @@
         "capability_id": "stegverse:capability:erl-uap-public-source-acquisition:v1",
         "capability_version": "1.0.0",
         "phase": "ADMISSIBLE",
-        "standing_evidence_refs": ["StegVerse-Labs/Executive_Rhetoric_Ledger:docs/UAP_MEDIA_RESEARCH_MIRROR_HANDOFF.md", "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/UAP-MEDIA-001.json"],
-        "admissibility_evidence_refs": ["handoffs/SHWP-ERL-UAP-MEDIA-001.json", "StegVerse-Labs/.github#175"],
-        "integration_evidence_refs": ["workers/erl_uap_media_source_worker.py", "StegVerse-Labs/Executive_Rhetoric_Ledger:scripts/process_uap_source_queue.py"],
+        "standing_evidence_refs": [
+          "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/UAP_MEDIA_RESEARCH_MIRROR_HANDOFF.md",
+          "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/UAP-MEDIA-001.json"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/SHWP-ERL-UAP-MEDIA-001.json",
+          "StegVerse-Labs/.github#175"
+        ],
+        "integration_evidence_refs": [
+          "workers/erl_uap_media_source_worker.py",
+          "StegVerse-Labs/Executive_Rhetoric_Ledger:scripts/process_uap_source_queue.py"
+        ],
         "activation_proof_ref": null,
-        "blockers": ["LOCAL_ERL_SOURCE_AND_PUBLIC_ENDPOINT_OBSERVATION_PENDING"],
+        "blockers": [
+          "LOCAL_ERL_SOURCE_AND_PUBLIC_ENDPOINT_OBSERVATION_PENDING"
+        ],
         "continuation_owner": "resident sovereign heartbeat + erl-uap-media-source-worker",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
         "task_relationship": "integrates_capability",
         "target_phase": "ACTIVATED"
+      },
+      "source_state_vector_ref": "control/task-vectors/SHWP-ERL-UAP-MEDIA-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-28T23:38:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],
@@ -43,7 +72,12 @@
     {
       "adapter_ref": "process:erl-uap-media-source-v1",
       "authority_source": "handoffs/SHWP-ERL-UAP-MEDIA-001.json#authority",
-      "capabilities": ["runtime_observation", "bounded_process_execution", "public_source_acquisition", "evidence_class_preservation"],
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "public_source_acquisition",
+        "evidence_class_preservation"
+      ],
       "capability_profile_ref": "control/worker-capability-profiles.json#public-research-worker-v1",
       "executor_type": "repository_worker",
       "last_seen_at": null,
