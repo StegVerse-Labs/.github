@@ -6,8 +6,10 @@ transport, review, publication, or Master Records authority. The consumer may
 invoke only the already-installed portable targeted execution bridge for
 SHWP-HIL-SOVEREIGN-RECEIVER-001.
 
-A request id + canonical content hash is attempted at most once on a resident
-runtime. A later retry requires a new canonical request.
+Before targeted execution, the consumer materializes the non-secret HIL
+loopback/shared-Service-Gateway route config. Missing runtime/node route
+predicates are retryable and MUST NOT burn the request. Only a terminal HIL
+runtime observation consumes the request permanently.
 """
 from __future__ import annotations
 
@@ -26,6 +28,13 @@ CONSUMPTION_REL = Path("receipts/sovereign-host/hil-resident-execution-request-c
 TARGET_TASK = "SHWP-HIL-SOVEREIGN-RECEIVER-001"
 TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
 TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
+ROUTE_MATERIALIZER = "scripts/materialize_hil_gateway_route_config.py"
+TERMINAL_TRANSITIONS = {
+    "HIL_PUBLIC_HTTPS_RENDEZVOUS",
+    "HIL_RECEIVER_RECEIPT_OBSERVED",
+    "HIL_RECEIVER_EXACT_BYTE_RECONSTRUCTED",
+    "HIL_TVC_LIFECYCLE_RECEIPT_OBSERVED",
+}
 
 NONSECRET_ENV = {
     "PATH",
@@ -41,6 +50,7 @@ NONSECRET_ENV = {
     "STEGVERSE_LLM_ADAPTER_ROOT",
     "STEGVERSE_HIL_STATE_ROOT",
     "STEGVERSE_HIL_RECEIVER_PORT",
+    "STEGVERSE_HIL_INTR_ROUTE_CONFIG",
 }
 
 
@@ -90,6 +100,30 @@ def validate_request(request: dict[str, Any]) -> None:
         raise RuntimeError("HIL resident execution request_id missing")
 
 
+def parse_last_json(stdout: str) -> dict[str, Any] | None:
+    for line in reversed([line.strip() for line in stdout.splitlines() if line.strip()]):
+        try:
+            candidate = json.loads(line)
+        except Exception:
+            continue
+        if isinstance(candidate, dict):
+            return candidate
+    return None
+
+
+def terminal_transition(result: dict[str, Any] | None) -> str | None:
+    if not isinstance(result, dict):
+        return None
+    candidates = [
+        result.get("transition_id"),
+        (result.get("execution_result") or {}).get("transition_id") if isinstance(result.get("execution_result"), dict) else None,
+    ]
+    for candidate in candidates:
+        if candidate in TERMINAL_TRANSITIONS:
+            return str(candidate)
+    return None
+
+
 def previously_consumed(runtime_root: Path, request: dict[str, Any], request_hash: str) -> bool:
     path = runtime_root / CONSUMPTION_REL
     if not path.is_file():
@@ -101,19 +135,15 @@ def previously_consumed(runtime_root: Path, request: dict[str, Any], request_has
     return (
         receipt.get("request_id") == request.get("request_id")
         and receipt.get("request_sha256") == request_hash
-        and receipt.get("runtime_execution_attempted") is True
+        and receipt.get("terminal_hil_transition_observed") is True
     )
 
 
-def parse_last_json(stdout: str) -> dict[str, Any] | None:
-    for line in reversed([line.strip() for line in stdout.splitlines() if line.strip()]):
-        try:
-            candidate = json.loads(line)
-        except Exception:
-            continue
-        if isinstance(candidate, dict):
-            return candidate
-    return None
+def write_receipt(runtime: Path, receipt: dict[str, Any]) -> dict[str, Any]:
+    receipt_path = runtime / CONSUMPTION_REL
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return receipt
 
 
 def consume(
@@ -131,6 +161,7 @@ def consume(
             "schema": "stegverse.hil-resident-execution-request-consumption/v1",
             "state": "NO_REQUEST",
             "runtime_execution_attempted": False,
+            "terminal_hil_transition_observed": False,
             "authority_effect": "NONE",
         }
 
@@ -144,8 +175,59 @@ def consume(
             "request_id": request["request_id"],
             "request_sha256": request_hash,
             "runtime_execution_attempted": False,
+            "terminal_hil_transition_observed": True,
             "authority_effect": "NONE",
         }
+
+    safe_env = clean_exec_env(env)
+    materializer = runtime / ROUTE_MATERIALIZER
+    if not materializer.is_file():
+        materializer = source / ROUTE_MATERIALIZER
+    if not materializer.is_file():
+        raise RuntimeError(f"HIL Gateway route materializer missing: {materializer}")
+
+    route_completed = runner(
+        [sys.executable, str(materializer)],
+        cwd=runtime,
+        capture_output=True,
+        text=True,
+        check=False,
+        env=safe_env,
+        timeout=30,
+    )
+    route_result = parse_last_json(route_completed.stdout)
+    if not isinstance(route_result, dict):
+        raise RuntimeError("HIL Gateway route materializer returned no machine result")
+    if route_result.get("state") == "PREDICATE_PENDING":
+        return write_receipt(runtime, {
+            "schema": "stegverse.hil-resident-execution-request-consumption/v1",
+            "state": "PREDICATE_PENDING",
+            "request_id": request["request_id"],
+            "request_sha256": request_hash,
+            "task_id": TARGET_TASK,
+            "route_materialization": route_result,
+            "runtime_execution_attempted": False,
+            "terminal_hil_transition_observed": False,
+            "retry_allowed": True,
+            "request_granted_authority": False,
+            "heartbeat_grants_execution_authority": False,
+            "github_token_required": False,
+            "github_token_runtime_authority": "NONE",
+            "credential_authority": "TV/TVC",
+            "second_machine_required": False,
+            "authority_effect": "NONE_REQUEST_ONLY",
+        })
+
+    route_config = route_result.get("config") or {}
+    route_path = route_result.get("path")
+    if route_config.get("public_tls_terminated_by") != "STEGVERSE_SHARED_SERVICE_GATEWAY":
+        raise RuntimeError("HIL route must terminate public TLS at shared Service Gateway")
+    if route_config.get("credential_authority") != "TV/TVC":
+        raise RuntimeError("HIL route credential authority drift")
+    if route_config.get("g18_completion_required") is not False:
+        raise RuntimeError("HIL route cannot depend on G18 completion")
+    if isinstance(route_path, str) and route_path:
+        safe_env["STEGVERSE_HIL_INTR_ROUTE_CONFIG"] = route_path
 
     entrypoint = runtime / TARGET_ENTRYPOINT
     if not entrypoint.is_file():
@@ -167,10 +249,12 @@ def consume(
         capture_output=True,
         text=True,
         check=False,
-        env=clean_exec_env(env),
+        env=safe_env,
+        timeout=180,
     )
     result = parse_last_json(completed.stdout)
-    state = "ATTEMPT_RECORDED" if isinstance(result, dict) else "FAIL_CLOSED"
+    terminal = terminal_transition(result)
+    state = "COMPLETED" if terminal else ("ATTEMPT_RECORDED" if isinstance(result, dict) else "FAIL_CLOSED")
 
     receipt = {
         "schema": "stegverse.hil-resident-execution-request-consumption/v1",
@@ -179,11 +263,15 @@ def consume(
         "request_sha256": request_hash,
         "task_id": TARGET_TASK,
         "mode": TARGET_MODE,
+        "route_materialization": route_result,
         "command": command,
         "execution_returncode": completed.returncode,
         "execution_result_observed": isinstance(result, dict),
         "execution_result": result,
         "runtime_execution_attempted": True,
+        "terminal_hil_transition": terminal,
+        "terminal_hil_transition_observed": terminal is not None,
+        "retry_allowed": terminal is None,
         "request_granted_authority": False,
         "heartbeat_grants_execution_authority": False,
         "github_token_required": False,
@@ -191,13 +279,11 @@ def consume(
         "credential_authority": "TV/TVC",
         "credential_requirement": "NONE_FOR_PARTICIPANT_INTAKE",
         "second_machine_required": False,
+        "g18_completion_required": False,
         "network_source_fetch_performed": False,
         "authority_effect": "NONE_REQUEST_ONLY",
     }
-    receipt_path = runtime / CONSUMPTION_REL
-    receipt_path.parent.mkdir(parents=True, exist_ok=True)
-    receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return receipt
+    return write_receipt(runtime, receipt)
 
 
 def main() -> int:
@@ -207,9 +293,9 @@ def main() -> int:
     args = parser.parse_args()
     receipt = consume(args.source_root, args.runtime_root)
     print(json.dumps(receipt, sort_keys=True))
-    if receipt["state"] in {"NO_REQUEST", "ALREADY_CONSUMED"}:
+    if receipt["state"] in {"NO_REQUEST", "ALREADY_CONSUMED", "PREDICATE_PENDING", "ATTEMPT_RECORDED", "COMPLETED"}:
         return 0
-    return 0 if receipt["state"] == "ATTEMPT_RECORDED" else 1
+    return 1
 
 
 if __name__ == "__main__":
