@@ -1,8 +1,8 @@
 {
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
-  "observed_commit": "426097b5bda53be742c68dbf43233597237d782c",
-  "observed_at": "2026-08-29T04:05:00-05:00",
+  "observed_commit": "94a638cdc819bda5c2696ad564aafad9864e3834",
+  "observed_at": "2026-08-29T15:14:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -10,10 +10,10 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
-    "unique_task_ids_global_plus_fragments": 56,
+    "unique_task_ids_global_plus_fragments": 57,
     "canonically_indexed_task_ids": 34,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 15,
+    "active_unvectorized_unique_task_ids": 16,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,7 +21,7 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 29,
+  "total_active_unvectorized_unique_task_ids": 30,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -37,7 +37,8 @@
     "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
     "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
     "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
-    "SV-DN1-PRODUCTION-SOURCE-PREP-001"
+    "SV-DN1-PRODUCTION-SOURCE-PREP-001",
+    "KV-CONNECTION-REVALIDATION-WORKER-001"
   ],
   "active_organization_task_ids_missing_canonical_cosv": [
     "ORG-FED-AACT-E-001",
@@ -229,10 +230,10 @@
     }
   ],
   "live_denominator_reconciliation": {
-    "observed_main": "426097b5bda53be742c68dbf43233597237d782c",
+    "observed_main": "94a638cdc819bda5c2696ad564aafad9864e3834",
     "prior_unique_worker_task_ids": 45,
-    "newly_added_worker_task_ids": 11,
-    "current_unique_worker_task_ids": 56,
+    "newly_added_worker_task_ids": 12,
+    "current_unique_worker_task_ids": 57,
     "new_task_ids": [
       "SHWP-ARA-GRAPH-RUNTIME-086",
       "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
@@ -244,11 +245,12 @@
       "SV-DN1-SOURCE-MATERIALIZATION-001",
       "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
       "SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001",
-      "SV-DN1-PRODUCTION-SOURCE-PREP-001"
+      "SV-DN1-PRODUCTION-SOURCE-PREP-001",
+      "KV-CONNECTION-REVALIDATION-WORKER-001"
     ],
     "aggregate_worker_registry_changed": false,
     "organization_task_count": 14,
-    "note": "Live registry enumeration on PR #412 proves eleven worker task IDs were added after the prior 45-task denominator. SV-DN1-PRODUCTION-SOURCE-PREP-001 remains active and unvectorized; CMC-028 is registered and canonically indexed in the same change. Completed and superseded historical tasks remain excluded from the active gap set."
+    "note": "Live registry reconciliation includes the newly registered KV-CONNECTION-REVALIDATION-WORKER-001 as an active unvectorized worker task. The worker denominator is now 57; completed and superseded historical tasks remain excluded from the active gap set."
   },
   "g18_dispatcher_reconciliation": {
     "vector_unchanged": "50000000101000",
