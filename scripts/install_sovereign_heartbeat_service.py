@@ -46,6 +46,7 @@ COPY_FILES = (
     "scripts/consume_resident_execution_request.py",
     "scripts/consume_g18_resident_execution_request.py",
     "scripts/consume_hil_resident_execution_request.py",
+    "scripts/consume_hil_intr_materialization_request.py",
     "scripts/consume_ara_graph_resident_execution_request.py",
     "scripts/run_sv_dn1_first_round_chain.py",
     "scripts/consume_sv_dn1_resident_execution_request.py",
@@ -124,6 +125,7 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         target_root / "scripts" / "consume_resident_execution_request.py",
         target_root / "scripts" / "consume_g18_resident_execution_request.py",
         target_root / "scripts" / "consume_hil_resident_execution_request.py",
+        target_root / "scripts" / "consume_hil_intr_materialization_request.py",
         target_root / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
     )
     if not all(path.is_file() for path in required):
