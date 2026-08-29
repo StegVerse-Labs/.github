@@ -161,3 +161,25 @@ HANDOFF_READY + VALIDATED INDEPENDENT ADMISSION + SITE DISCOVERY MERGED FAIL-CLO
 ```
 
 No third-party host or participant hardware may be substituted as production authority merely because the live carrier evidence is not yet present.
+
+## 2026-08-28 bounded resident execution request bridge
+
+A missing machine-remediation surface has been implemented on branch `exec/hil-resident-request-20260828` without granting new execution authority:
+
+```text
+request: control/resident-execution-request.d/hil-sovereign-receiver-001.json
+consumer: scripts/consume_hil_resident_execution_request.py
+request id: RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-001
+mode: TARGETED_INDEPENDENT_TASK_CONTROL
+existing executor: scripts/refresh_and_execute_resident_task.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001
+exactly-once key: request id + canonical request hash
+credential authority: TV/TVC
+participant credential requirement: NONE_FOR_PARTICIPANT_INTAKE
+GitHub token runtime authority: NONE
+second user machine required: false
+network source fetch allowed: false
+request grants authority: false
+runtime execution observed: false
+```
+
+The rootless local source-refresh watcher is wired to invoke this consumer after refreshing already-local static worker source. The request may only trigger the existing admitted targeted executor; claim/fence authority remains with the worker-control plane. A branch merge or CI PASS remains source validation only and must not be represented as receiver execution or HIL activation.
