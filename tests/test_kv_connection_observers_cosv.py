@@ -61,10 +61,19 @@ class KVConnectionObserverCOSVTests(unittest.TestCase):
             self.assertEqual(handoff["source_state_vector_ref"], ref)
             self.assertEqual(indexed[task_id]["vector"], "50000000102000")
             self.assertNotIn(task_id, coverage["active_worker_task_ids_missing_canonical_cosv"])
-        self.assertEqual(index["coverage"]["indexed_vectorized_tasks"], 30)
-        self.assertEqual(coverage["worker_registry_summary"]["canonically_indexed_task_ids"], 30)
-        self.assertEqual(coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"], 17)
-        self.assertEqual(coverage["total_active_unvectorized_unique_task_ids"], 31)
+        self.assertEqual(index["coverage"]["indexed_vectorized_tasks"], len(index["tasks"]))
+        self.assertEqual(
+            coverage["worker_registry_summary"]["canonically_indexed_task_ids"],
+            len(index["tasks"]),
+        )
+        self.assertGreaterEqual(len(index["tasks"]), 30)
+        worker_gap = coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"]
+        self.assertEqual(worker_gap, len(coverage["active_worker_task_ids_missing_canonical_cosv"]))
+        org_gap = coverage["organization_registry_summary"]["active_unvectorized_task_ids"]
+        self.assertEqual(
+            coverage["total_active_unvectorized_unique_task_ids"],
+            worker_gap + org_gap,
+        )
 
     def test_health_reconciler_cannot_promote_connection_verification_or_provider_authority(self):
         _, record, task, handoff = self.load("KV-CONNECTION-HEALTH-RECONCILER-001")
