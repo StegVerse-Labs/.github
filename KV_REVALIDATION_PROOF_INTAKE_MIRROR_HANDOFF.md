@@ -70,7 +70,7 @@ The complete repository source surface is installed on `feature/kv-revalidation-
 
 Current canonical task vector: `50000000102000`.
 
-Worker denominator after this separately registered task: 58 total worker task IDs, 36 canonically indexed, 15 active-unvectorized, 6 completed historical, and 1 superseded historical.
+At the #424 merge boundary, the separately registered intake task produced this partition: 58 total worker task IDs, 36 canonically indexed, 15 active-unvectorized, 6 completed historical, and 1 superseded historical. Later canonical projections may advance the indexed/active partition without changing this lane's completed source state.
 
 Exact-head validation passed on `461258e1ad3d97cbee876c3676c0b28e62151406`:
 - organization-control run `33274163163`: SUCCESS;
