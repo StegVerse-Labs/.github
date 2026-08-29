@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "CMC028-ROOT-CUSTODY-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:cmc028-root-custody-v1",
+      "authority_ref": "handoffs/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json#authority",
+      "capabilities": [
+        "tvc_cmc028_root_custody_evidence"
+      ],
+      "command": [
+        "python",
+        "workers/cmc028_root_custody_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_TVC_ROOT",
+        "HOME",
+        "USER",
+        "LOGNAME",
+        "SHELL",
+        "PATH",
+        "PYTHONPATH",
+        "LANG",
+        "LC_ALL",
+        "TMPDIR",
+        "XDG_CONFIG_HOME",
+        "XDG_STATE_HOME"
+      ],
+      "notes": [
+        "Independent CMC-028 resident evidence task under the existing sovereign worker runtime; heartbeat does not grant authority.",
+        "Worker invokes only tvc.certificate_root_custody.observe on already-local clean TVC source.",
+        "No private-key/recovery-share bytes, secret env, network source fetch, source mutation, certificate issuance, or signing authority."
+      ],
+      "timeout_seconds": 360,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
