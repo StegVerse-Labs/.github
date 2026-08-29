@@ -3,12 +3,98 @@
   "handoff_id": "HANDOFF-SHWP-FORMALISM-HANDOFF-NORMALIZATION-001",
   "created_at": "2026-08-13T22:10:00-05:00",
   "state": "HANDOFF_READY",
-  "goal": {"goal_id": "FORMALISM-HANDOFF-NORMALIZATION-001", "objective": "Assess whether required repository handoffs state their mathematical and functional relationships explicitly enough for cross-repository orchestration.", "success_predicates": ["Every required repository has a mirror handoff", "Each handoff exposes the required relationship categories or an explicit bounded equivalent", "Gaps are receipted rather than silently inferred"], "failure_predicates": ["Worker rewrites upstream handoffs", "Missing relationship fields are treated as complete", "Derived observations gain authority"], "authority_ceiling": ["formalism_handoff_normalization_analysis", "receipts/formalism-manifold-orchestration/**", "no_cross_repo_mutation", "no_formalism_authority"], "successor_policy": "NONE", "max_successor_depth": 0},
-  "task": {"task_id": "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001", "repository": "StegVerse-Labs/.github", "source_refs": ["control/formalism-manifold-orchestration.json", "workers/formalism_manifold_orchestration_worker.py", "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md"], "dependencies": ["SHWP-FORMALISM-INVENTORY-001"], "parent_task_id": null, "derivation_reason": "Repository-local handoffs must describe mathematical/function standing before manifold mappings can rely on them.", "canonical_owner_ref": "StegVerse-Labs/.github#97", "canonical_lineage_key": "formalism-manifold:handoff-normalization", "derivation_depth": 0, "priority": "critical"},
-  "authority": {"authority_source": "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md", "heartbeat_grants_execution_authority": false, "credential_authority": "TV/TVC", "github_token_required": false, "policy_version": "formalism-manifold-orchestration-v0.1"},
-  "execution": {"required_capabilities": ["formalism_handoff_normalization_analysis"], "allowed_paths": ["receipts/formalism-manifold-orchestration/**"], "allowed_services": [], "max_actions": 64, "max_retries": 256, "external_cost_ceiling_usd": 0, "runtime_window_beats": 512, "rate_class": "formalism_handoff_normalization"},
-  "activation": {"carrier": "heartbeat", "executor_binding": "AUTHORIZED", "authorization_ref": "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md", "recheck_trigger": "each admitted heartbeat while relationship coverage is incomplete or changes", "checkout_policy": "fenced_atomic_checkout"},
-  "continuity": {"checkpoint_ref": "receipts/formalism-manifold-orchestration/SHWP-FORMALISM-HANDOFF-NORMALIZATION-001.json", "handoff_destination": "control/worker-registry.json", "master_records_required": false, "status_projection": "control/worker-status.json"},
-  "completion": {"next_authorized_action": "Inspect locally materialized mirror handoffs and emit the exact relationship-field gap set.", "terminal_when": ["Required handoff relationship coverage is explicit"]},
-  "block": null
+  "goal": {
+    "goal_id": "FORMALISM-HANDOFF-NORMALIZATION-001",
+    "objective": "Assess whether required repository handoffs state their mathematical and functional relationships explicitly enough for cross-repository orchestration.",
+    "success_predicates": [
+      "Every required repository has a mirror handoff",
+      "Each handoff exposes the required relationship categories or an explicit bounded equivalent",
+      "Gaps are receipted rather than silently inferred"
+    ],
+    "failure_predicates": [
+      "Worker rewrites upstream handoffs",
+      "Missing relationship fields are treated as complete",
+      "Derived observations gain authority"
+    ],
+    "authority_ceiling": [
+      "formalism_handoff_normalization_analysis",
+      "receipts/formalism-manifold-orchestration/**",
+      "no_cross_repo_mutation",
+      "no_formalism_authority"
+    ],
+    "successor_policy": "NONE",
+    "max_successor_depth": 0
+  },
+  "task": {
+    "task_id": "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "control/formalism-manifold-orchestration.json",
+      "workers/formalism_manifold_orchestration_worker.py",
+      "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md"
+    ],
+    "dependencies": [
+      "SHWP-FORMALISM-INVENTORY-001"
+    ],
+    "parent_task_id": null,
+    "derivation_reason": "Repository-local handoffs must describe mathematical/function standing before manifold mappings can rely on them.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#97",
+    "canonical_lineage_key": "formalism-manifold:handoff-normalization",
+    "derivation_depth": 0,
+    "priority": "critical"
+  },
+  "authority": {
+    "authority_source": "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "policy_version": "formalism-manifold-orchestration-v0.1"
+  },
+  "execution": {
+    "required_capabilities": [
+      "formalism_handoff_normalization_analysis"
+    ],
+    "allowed_paths": [
+      "receipts/formalism-manifold-orchestration/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 64,
+    "max_retries": 256,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 512,
+    "rate_class": "formalism_handoff_normalization"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
+    "recheck_trigger": "each admitted heartbeat while relationship coverage is incomplete or changes",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/formalism-manifold-orchestration/SHWP-FORMALISM-HANDOFF-NORMALIZATION-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "Inspect locally materialized mirror handoffs and emit the exact relationship-field gap set.",
+    "terminal_when": [
+      "Required handoff relationship coverage is explicit"
+    ]
+  },
+  "block": null,
+  "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-HANDOFF-NORMALIZATION-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000100000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-08-27T17:35:00-05:00",
+      "authority_effect": "NONE"
+    }
+  }
 }
