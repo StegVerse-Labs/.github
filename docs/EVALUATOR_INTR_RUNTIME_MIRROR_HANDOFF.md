@@ -143,3 +143,30 @@ test execution authority: NOT OBSERVED
 ```
 
 The transport/receipt implementation has therefore crossed from source-only to bounded live observation. Production route activation remains a separate runtime gate.
+
+
+## Surface-independence / provenance clarification — 2026-08-29
+
+The evaluator runtime admits a transported interaction; it does not derive canonical authority from the browser, hostname, Site mirror, operating system, or device that carried the interaction.
+
+The runtime distinction is:
+
+```text
+canonical instruction/provenance
+  = repository/path/revision/hash governing the operation
+
+interaction surface
+  = replaceable projection where the interaction was observed
+
+browser network origin
+  = optional web transport-security fact
+
+receiving authority
+  = canonical receiving subsystem / policy boundary
+```
+
+Accordingly, `https://stegverse.org` MUST NOT become a prerequisite for evaluator authority or runtime semantics. A browser-origin check may protect a particular web ingress adapter, but equivalent admitted ingress through StegOS, a native application, a local/offline UI, a sovereign device/node surface, or another future transport must remain possible without changing the underlying governance contract.
+
+No interaction surface, hostname, operating system, device class, network presentation layer, or third-party platform may become a condition for StegVerse authority, provenance, admissibility, or continuity.
+
+This is a terminology/current-lane reconciliation only; it does not create a new authority source.
