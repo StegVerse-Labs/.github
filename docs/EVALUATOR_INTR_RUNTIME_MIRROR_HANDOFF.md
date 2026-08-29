@@ -202,3 +202,40 @@ STEGVERSE_EVALUATOR_INTR_UPSTREAM=
 The config file path itself is not forwarded to Healer. TLS/private-key locators remain excluded from the worker boundary and continue through same-host TVC receipt discovery.
 
 This projection does not infer evaluator listener liveness, public Gateway activation, or browser receipt observation. It only removes the configuration gap that would otherwise keep the merged native Gateway evaluator route disabled after lawful route materialization.
+
+
+## Durable resident READ_REVIEW receiver — 2026-08-29
+
+The prior evaluator worker used a one-request foreground listener. That was sufficient for bounded proof but not for an operational public Gateway because a browser request could arrive while no listener existed.
+
+Issue #449 changes the machine-owned lifecycle to:
+
+```text
+route predicates satisfied
+-> start persistent same-host loopback READ_REVIEW receiver
+-> GET /intr/evaluator/readiness = READY
+-> persist receiver.latest.json
+-> worker remains ACTIVE / EVALUATOR_INTR_RECEIVER_READY
+-> shared Gateway may forward admitted browser requests
+-> runtime persists authentic ingress/egress bundle
+-> later worker cycle observes bundle
+-> terminal EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED
+```
+
+Readiness and transport proof remain distinct:
+
+```text
+EVALUATOR_INTR_RECEIVER_READY != EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED
+```
+
+The receiver remains:
+
+- loopback-only under the current route materializer;
+- behind the shared Service Gateway for public TLS;
+- READ_REVIEW only;
+- hosted-runtime forbidden;
+- GitHub/non-TV-TVC credential forbidden;
+- authority_effect=NONE;
+- persistent until resident lifecycle control stops/restarts it.
+
+The runtime now exposes a bounded authority-neutral GET readiness surface and accepts `--max-requests 0` for persistent serving. A real READ_REVIEW request is still required before the task can terminalize.
