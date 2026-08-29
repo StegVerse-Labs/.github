@@ -1,0 +1,45 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-FORMALISM-SOURCE-DISCOVERY-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000100000",
+  "evidence_refs": [
+    "FORMALISM_SOURCE_DISCOVERY_MIRROR_HANDOFF.md",
+    "control/session-implementation-claim-2026-08-13-formalism-source-discovery.json",
+    "control/worker-registry.d/formalism-source-discovery-001.json",
+    "handoffs/SHWP-FORMALISM-SOURCE-DISCOVERY-001.json",
+    "control/formalism-source-discovery.json",
+    "StegVerse-Labs/.github#103@5a5c77d45817407dc0b2f5010ba56a36ecdd5d5e"
+  ],
+  "observed_at": "2026-08-29T02:37:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "PR #103 source implementation is merged and exact-head validated; stale chat implementation claim is released to SHWP-FORMALISM-SOURCE-DISCOVERY-001 / formalism-source-discovery-worker, which remains HANDOFF_READY and AVAILABLE",
+    "archive_ready": "worker fragment archive_eligible=false because resident source roots are not yet proven",
+    "unassigned_work": "registered formalism-source-discovery-worker owns resident discovery and roots-manifest emission",
+    "chat_owned_counts": "implementation claim is RELEASED_TRANSFERRED_TO_MACHINE_CONTINUATION; no chat-selected root is required",
+    "canonical_owner_installed": "source discovery worker, adapter, roots-manifest contract, automatic downstream consumption wrapper, registry, handoff and exact-head validation are merged",
+    "thread_required": "source-discovery implementation no longer depends on the originating chat; broader generalized owner-mutation work is a separate lane",
+    "blocker_count": "registry block_ref=null and executable handoff block=null; resident root non-observation is evidence incompleteness until a concrete worker observation creates a fail-closed missing/ambiguous set",
+    "evidence_complete": "resident discovery receipt and actual first-cohort roots are not yet observed",
+    "activated": "no resident source-discovery terminal receipt or completed roots manifest is observed",
+    "propagated": "downstream formalism/manifold lanes have not consumed a resident COMPLETED roots manifest in production"
+  },
+  "authority_effect": "NONE"
+}
