@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-28T23:32:00-05:00
+Updated: 2026-08-28T23:38:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -505,3 +505,22 @@ A valid terminal proof must bind the internal market match and atomic settlement
 No wallet-signing authority, transaction-broadcast authority, external custody, external network execution, scale-up authority, provider-secret export, or GitHub runtime authority is created.
 
 If validated and merged, local .github coverage becomes 27 indexed vectors with 20 active worker gaps + 14 organization gaps = 34 active unvectorized tasks.
+
+## ERL UAP public-source acquisition vector — current-main candidate
+
+```text
+SHWP-ERL-UAP-MEDIA-001
+task.v1 [L R U I V G O C M T B E A P] = 50000000101000
+```
+
+The ERL canonical task state classifies UAP-MEDIA-004 as MACHINE_OWNED and records `remaining_work_requires_thread=false`; the UAP mirror handoff records `thread_archive_ready=true`. Registry and executable handoff agree on one blocker:
+
+```text
+LOCAL_ERL_SOURCE_AND_PUBLIC_ENDPOINT_OBSERVATION_PENDING
+```
+
+The worker may acquire only allowlisted credential-free public HTTPS sources into class-correct evidence namespaces and emit provenance/hash receipts. It has no research-promotion, causal-finding, publication, provider, wallet, trade, HeartBeat-state, claim, or fence mutation authority.
+
+Empirical UAP research remains incomplete; vectorizing the acquisition worker does not promote any UAP or Bob Lazar claim.
+
+If validated and merged, local .github coverage becomes 28 indexed vectors with 19 active worker gaps + 14 organization gaps = 33 active unvectorized tasks.
