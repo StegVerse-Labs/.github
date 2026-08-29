@@ -1,0 +1,44 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-ERL-UAP-MEDIA-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/erl-uap-media-001.json",
+    "handoffs/SHWP-ERL-UAP-MEDIA-001.json",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/UAP_MEDIA_RESEARCH_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/UAP-MEDIA-001.json",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger:config/uap-media-source-queue.json"
+  ],
+  "observed_at": "2026-08-28T23:38:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "ERL canonical task UAP-MEDIA-004 execution_class=MACHINE_OWNED; local task HANDOFF_READY with AVAILABLE public-research worker",
+    "archive_ready": "worker fragment archive_eligible=false",
+    "unassigned_work": "erl-uap-media-source-worker + ERL Issue #62 own bounded source acquisition",
+    "chat_owned_counts": "ERL session consolidation sets chat_execution_owner=NONE_AFTER_DURABLE_TRANSFER; source worker has no research-promotion/publication authority",
+    "canonical_owner_installed": "evidence-class architecture, allowlisted source queue, credential-free queue processor, worker, adapter and handoff are installed/validated",
+    "thread_required": "ERL canonical task state remaining_work_requires_thread=false and mirror handoff thread_archive_ready=true",
+    "blocker_count": "registry/handoff exact blocker parity: LOCAL_ERL_SOURCE_AND_PUBLIC_ENDPOINT_OBSERVATION_PENDING",
+    "evidence_complete": "locally materialized ERL source plus successful allowlisted public HTTPS acquisition/terminal receipt are not observed",
+    "activated": "activation_proof_ref=null; UAP-MEDIA-004 remains MACHINE_OWNED_PENDING_RUNTIME_RECEIPT",
+    "propagated": "no empirical, causal, research-promotion or publication finding is authorized before downstream corpus/review gates"
+  },
+  "authority_effect": "NONE"
+}
