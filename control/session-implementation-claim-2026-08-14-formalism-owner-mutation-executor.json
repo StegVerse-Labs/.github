@@ -51,5 +51,16 @@
     "deployment_authority": false,
     "wallet_authority": false
   },
-  "next_executable_action": "Bind an explicit resident source-generation executor/profile to emit owner-source-generation packets, then prove one chat-free owner-work -> TVC mutation -> owner PR/validation/merge -> reconciliation re-observation cycle."
+  "next_executable_action": "Observe explicit source-generation and sovereign-local-model ACTIVATED evidence; the installed local source-generation executor then emits the exact packet consumed by this worker. When an owner-work manifest, exact source packet, and TVC inspection receipt coexist, the owner-mutation worker emits only the bounded non-secret TVC APPLY_BOUNDED_FILE_SET warrant. Credential-bearing repository execution remains TV/TVC-owned.",
+  "continuation_reconciled_at": "2026-08-29T02:37:00-05:00",
+  "source_generation_continuation": {
+    "binder_task": "SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
+    "binder_cosv_ref": "control/task-vectors/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
+    "executor_task": "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+    "executor_cosv_ref": "control/task-vectors/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
+    "binding_state": "INSTALLED_MACHINE_OWNED_ACTIVATION_PENDING",
+    "source_generation_phase": "ADMISSIBLE",
+    "source_generation_activation_proof_observed": false,
+    "resident_source_packet_observed": false
+  }
 }
