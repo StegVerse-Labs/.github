@@ -474,3 +474,48 @@ Source/control + machine registration + resident request wiring: COMPLETE / VALI
 Authentic resident request consumption: NOT OBSERVED.
 ARA Graph provider operation: NOT OBSERVED.
 Capability activation: NOT OBSERVED.
+
+
+## 2026-08-28 native bootstrap resident-request dispatch repair
+
+Live source inspection found two shared resident-runtime integration gaps after the individual request bridges were already merged:
+
+1. the native sovereign bootstrap materialized carrier/WorkerCoordinator source but not the complete resident-request consumer/dispatcher execution surface;
+2. the Linux source-refresh watcher invoked each consumer as a separate `ExecStartPost`, so one fail-closed consumer could prevent later independent requests from being visited.
+
+Bounded repair branch:
+
+```text
+claim: SOVEREIGN-RUNTIME-BOOTSTRAP-RESIDENT-DISPATCH-20260828
+branch: fix/bootstrap-resident-request-dispatch-20260828
+dispatcher: scripts/dispatch_resident_execution_requests.py
+dispatcher receipt: receipts/sovereign-host/resident-request-dispatch.latest.json
+authority effect: NONE_DISPATCH_ONLY
+credential authority: TV/TVC
+GitHub-token runtime authority: NONE
+heartbeat grants execution authority: false
+second user machine required: false
+runtime execution observed: false
+```
+
+The dispatcher visits the already-existing Ecosystem Chat, G18, HIL, ARA Graph, and SV-DN1 resident consumers independently. Each consumer retains its own request validation, exactly-once semantics, and claim/fence authority boundary. A fail-closed request is recorded in `request_failures` but does not starve later independent requests.
+
+The source-refresh watcher now performs one local source refresh followed by one dispatcher invocation rather than chaining request consumers as separate `ExecStartPost` commands.
+
+The native v13 bootstrap now requires/materializes the dispatcher and its consumer execution dependencies. Only after `verify_sovereign_runtime_activation.py` proves every canonical activation predicate does bootstrap invoke the resident dispatcher. Hosted environments, incomplete activation proof, source merge, or CI validation cannot reach the dispatch step.
+
+Current branch state:
+
+```text
+source repair: IMPLEMENTED / VALIDATION PENDING
+merge: PENDING
+native sovereign bootstrap execution: NOT OBSERVED
+resident request dispatch receipt: NOT OBSERVED
+Ecosystem Chat execution: NOT OBSERVED
+HIL receiver execution: NOT OBSERVED
+G18 resident consumption: NOT OBSERVED
+ARA Graph provider operation: NOT OBSERVED
+SV-DN1 sovereign round: NOT OBSERVED
+```
+
+This repair removes a shared source-side dispatch deadlock only. It does not activate HeartBeat, G18, HIL, Ecosystem Chat, ARA Graph, SV-DN1, Math, or any downstream product.
