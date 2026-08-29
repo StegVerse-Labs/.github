@@ -5,20 +5,21 @@
     {
       "goal_id": "STEGVERSE-002-FIRST-GOAL-001",
       "entity_id": "StegVerse-002",
-      "title": "Achieve governed system-AI activation",
-      "objective": "Advance StegVerse-002 from FEDERATION_REGISTERED to SYSTEM_AI_ACTIVE by producing the missing independent evidence chain without granting itself authority to declare success.",
+      "title": "Achieve system-AI activation with governed interaction boundaries",
+      "objective": "Advance StegVerse-002 from FEDERATION_REGISTERED to SYSTEM_AI_ACTIVE by producing the missing independent evidence chain without treating inference as a governed object or granting itself authority to declare success.",
       "state": "ACTIVE",
       "success_predicates": [
         "Canonical repo-HeartBeat federation receipt exists and shows StegVerse-002/micro-node-runtime present, valid, fresh, nonfailed, and non-dependency-blocked.",
-        "A real local/private StegVerse-002 model execution is admitted by TV/TVC and executed through the canonical LLM-adapter route with measured usage evidence.",
-        "Master Records provider-usage reconstruction PASS refers to the same execution.",
-        "Master Records transition reconstruction PASS refers to the same execution.",
+        "A real local/private StegVerse-002 inference execution is observed and the applicable interaction/route boundary is separately admitted by TV/TVC and carried through the canonical LLM-adapter route with measured usage evidence.",
+        "Master Records provider-usage reconstruction PASS refers to the same execution and interaction boundary.",
+        "Master Records transition reconstruction PASS refers to the same execution and interaction boundary.",
         "The organization system-AI registry is advanced to SYSTEM_AI_ACTIVE only after independent evidence satisfies all activation predicates."
       ],
       "forbidden_shortcuts": [
         "Self-declare SYSTEM_AI_ACTIVE",
         "Treat repository presence as runtime presence",
         "Treat HeartBeat registration as HeartBeat presence proof",
+        "Treat inference itself as governance-admitted or governance-denied",
         "Treat model output as authority",
         "Treat CI/workflow success as authentic runtime evidence",
         "Create a second heartbeat, credential authority, route authority, or custody authority"
@@ -43,7 +44,7 @@
       "successor_goal": {
         "goal_id": "STEGVERSE-002-ECOSYSTEM-COHERENCE-002",
         "activate_only_after": "SYSTEM_AI_ACTIVE",
-        "objective": "Continuously identify evidence-backed StegVerse ecosystem coherence gaps and propose or execute only separately authorized bounded remediation while preserving fail-closed governance."
+        "objective": "Continuously identify evidence-backed StegVerse ecosystem coherence gaps and propose or execute only separately authorized bounded remediation while preserving fail-closed governance at applicable interaction boundaries."
       }
     }
   ]

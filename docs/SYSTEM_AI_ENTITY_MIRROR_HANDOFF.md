@@ -4,11 +4,18 @@
 
 This is the canonical organization-level handoff for StegVerse system AI entity identity and lifecycle semantics.
 
-Live repository state, `control/system-ai-entity-registry.json`, `control/system-ai-goal-registry.json`, the single HeartBeat federation, runtime receipts, TV/TVC authority records, LLM-adapter execution evidence, and Master Records reconstruction supersede historical chat descriptions.
+Live repository state, `control/system-ai-entity-registry.json`, `control/system-ai-goal-registry.json`, the single HeartBeat federation, runtime receipts, TV/TVC authority records, LLM-adapter interaction evidence, and Master Records reconstruction supersede historical chat descriptions.
 
 ## Canonical insight now encoded
 
-A StegVerse system AI entity is not defined by model sophistication alone. It is a governed runtime participant that has an explicit identity, is registered in the single StegVerse HeartBeat federation, can perform governed local/private model execution, and cannot inherit governance authority merely from HeartBeat presence or model output.
+A StegVerse system AI entity is not defined by model sophistication or repository topology alone. It is an identity-bound runtime entity with developed capabilities and reconstructable continuity. Internal inference is intrinsic to the entity and is **not** itself admitted or denied by governance. Governance/existence/admissibility standing applies only when inference participates in an applicable interaction, boundary crossing, proposed consequence, external commit, or other relation for which standing is defined.
+
+```text
+inference != interaction
+interaction != authority
+model output != authority
+HeartBeat presence != execution authority
+```
 
 ## StegVerse-002
 
@@ -19,7 +26,8 @@ entity_class: SOVEREIGN_AI_RUNTIME_ENTITY
 lifecycle_state: FEDERATION_REGISTERED
 federation_membership_established: true
 heartbeat_presence_proven: false
-governed_inference_proven: false
+inference_execution_proven: false
+interaction_boundary_standing_proven: false
 same_execution_reconstruction_proven: false
 active: false
 ```
@@ -46,20 +54,11 @@ Requires the canonical federation coverage receipt at `receipts/repo-heartbeat-f
 
 ### INFERENCE_PROVEN
 
-Requires a real local/private model execution through:
-
-```text
-StegVerse-002/micro-node-runtime
--> TV/TVC route admission
--> StegVerse-org/LLM-adapter
--> measured execution evidence
-```
-
-Static source, hosted CI, fixtures, or ungoverned model execution do not satisfy this state.
+Requires authentic evidence that a real local/private StegVerse-002 model/runtime executed inference. This state does not imply that the inference itself was governed. If the execution crosses an applicable route or consequence boundary, the standing of that interaction is evidenced separately.
 
 ### SYSTEM_AI_ACTIVE
 
-Requires federation membership, HeartBeat presence proof, governed inference proof, same-execution Master Records provider-usage reconstruction PASS, and same-execution transition reconstruction PASS.
+Requires federation membership, HeartBeat presence proof, authentic inference execution proof, separately evidenced standing for the applicable interaction/route boundary, same-execution Master Records provider-usage reconstruction PASS, and same-execution transition reconstruction PASS.
 
 ## First assigned goal
 
@@ -67,22 +66,27 @@ Canonical goal registry: `control/system-ai-goal-registry.json`
 
 ```text
 goal_id: STEGVERSE-002-FIRST-GOAL-001
-title: Achieve governed system-AI activation
+title: Achieve system-AI activation with governed interaction boundaries
 state: ACTIVE
 ```
 
-StegVerse-002 is tasked to advance itself from `FEDERATION_REGISTERED` to `SYSTEM_AI_ACTIVE` by producing the missing evidence chain. It is explicitly prohibited from self-certifying completion. Completion is evidence-only and remains independently adjudicated by the existing HeartBeat, TV/TVC, LLM-adapter, and Master Records surfaces.
+StegVerse-002 is tasked to advance from `FEDERATION_REGISTERED` to `SYSTEM_AI_ACTIVE` by producing the missing evidence chain. It is explicitly prohibited from self-certifying completion. Completion is evidence-only and remains independently adjudicated from the applicable HeartBeat, TV/TVC interaction boundary, LLM-adapter, and Master Records evidence surfaces.
 
-This makes a system-AI goal a durable machine-readable object with:
-- target entity;
-- objective;
-- success predicates;
-- forbidden shortcuts;
-- execution dependencies;
-- authority boundaries;
-- successor goal.
+This makes a system-AI goal a durable machine-readable object with target entity, objective, success predicates, forbidden shortcuts, execution dependencies, authority boundaries, and successor goal.
 
 The successor goal is `STEGVERSE-002-ECOSYSTEM-COHERENCE-002`, which may activate only after `SYSTEM_AI_ACTIVE` is genuinely proven. Its purpose is to identify evidence-backed ecosystem coherence gaps and pursue only separately authorized bounded remediation.
+
+## Self-characterization experiment linkage
+
+`StegVerse-002/micro-node-runtime` now carries `STEGVERSE-002-SELF-CHARACTERIZATION-001`. Its governing experimental principle is:
+
+```text
+Make formal mathematics available; do not prescribe its use.
+```
+
+The experiment must not predefine the AI entity ontology, select Transition Elements for the entity, inject the expected relational answer, or claim access to private chain-of-thought. It must distinguish AVAILABLE, DISCOVERABLE, ACCESSED, REFERENCED, USED, and DERIVED evidence states and preserve negative evidence.
+
+Self-characterization has authority effect `NONE`. The experiment cannot promote `SYSTEM_AI_ACTIVE`, alter protected boundaries, or convert a self-description into authority.
 
 ## Authority invariants
 
@@ -95,6 +99,7 @@ model_output_authority: NONE
 github_token_runtime_authority: NONE
 custody/reconstruction: master-records/orchestration
 entity_may_self_certify_completion: false
+internal_inference_requires_governance_admission: false
 ```
 
 ## Required propagation after activation
@@ -112,8 +117,9 @@ No propagation may infer activation from source release alone.
 ## Remaining activation work
 
 1. Produce the canonical repo-HeartBeat federation coverage receipt with StegVerse-002 healthy.
-2. Execute the real governed local/private inference chain.
-3. Persist measured usage/execution evidence.
-4. Produce same-execution Master Records reconstruction PASS.
+2. Observe authentic real local/private StegVerse-002 inference execution.
+3. Separately evidence standing for any applicable interaction/route boundary and persist measured usage.
+4. Produce same-execution Master Records provider-usage and transition reconstruction PASS.
 5. Advance `StegVerse-002` to `SYSTEM_AI_ACTIVE` only from those receipts.
-6. Verify post-activation projection to Site, Publisher, admissibility-wiki, stegguardian-wiki, and StegTalk Wiki.
+6. Complete and freeze the self-characterization experiment preflight before any principal run.
+7. Verify post-activation projection to Site, Publisher, admissibility-wiki, stegguardian-wiki, and StegTalk Wiki.
