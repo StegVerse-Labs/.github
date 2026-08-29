@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SV002-SELF-CHARACTERIZATION-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:sv002-self-characterization-v1",
+      "authority_ref": "handoffs/SHWP-SV002-SELF-CHARACTERIZATION-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "durable_state_reconstruction"
+      ],
+      "command": [
+        "python",
+        "workers/sv002_self_characterization_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_MICRO_NODE_RUNTIME_ROOT",
+        "STEGVERSE_TT_ROOT",
+        "STEGVERSE_RTG_ROOT",
+        "STEGVERSE_GTG_ROOT",
+        "STEGVERSE_AE_ROOT",
+        "STEGVERSE_SELF_CHAR_MODEL_ENDPOINT",
+        "STEGVERSE_SELF_CHAR_MODEL_ID",
+        "STEGVERSE_OLLAMA_MODEL",
+        "HOME",
+        "PATH"
+      ],
+      "timeout_seconds": 1900,
+      "type": "process_json_v0.1"
+    }
+  ]
+}\n
