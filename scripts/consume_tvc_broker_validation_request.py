@@ -15,12 +15,13 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUEST_REL = Path("control/resident-execution-request.d/tvc-repository-broker-validation-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/tvc-broker-validation-request-consumption.latest.json")
 VALIDATION_RECEIPT_REL = Path("receipts/tvc-repository-broker-validation/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json")
+HANDOFF_REL = Path("handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json")
 REGISTRY_REL = Path("control/worker-registry.json")
 TARGET_TASK = "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001"
 TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
 TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
 MIN_FENCE = 22
-EXPECTED_HEAD = "ce1d4a31f5cfc65ee59af52f821336e0859c0fbd"
+EXPECTED_HEAD = json.loads((ROOT / HANDOFF_REL).read_text(encoding="utf-8"))["execution"]["expected_tvc_head"]
 
 HOSTED = ("GITHUB_ACTIONS","CI","RENDER","RENDER_SERVICE_ID","VERCEL","CF_PAGES","CLOUDFLARE_WORKERS")
 FORBIDDEN = (
