@@ -519,3 +519,43 @@ SV-DN1 sovereign round: NOT OBSERVED
 ```
 
 This repair removes a shared source-side dispatch deadlock only. It does not activate HeartBeat, G18, HIL, Ecosystem Chat, ARA Graph, SV-DN1, Math, or any downstream product.
+
+
+### Native bootstrap resident-request dispatch merge — 2026-08-28
+
+The shared dispatch deadlock repair is now exact-head validated and merged:
+
+```text
+PR: #373
+validated head: c810f49f006e18eb7182e5ae2473af7a3f7b3bb5
+Validate organization control plane: 33228499508 / 99036791405 SUCCESS
+Heartbeat Worker Project: 33228499527 / 99036791752 SUCCESS
+merge: cb6c5a4ee3a809936e34afc67ef98bf204287b1e
+bounded source claim: RELEASED_SOURCE_REPAIR
+```
+
+Validation passed the complete deterministic repository suite, executable-handoff validation, ownership partitions, heartbeat/runtime semantic separation, independent oscillator tests, canonical JSON parsing, and no-GitHub-token authority checks.
+
+Merged behavior:
+- native runtime materialization now includes the dispatcher and all current resident request consumers/dependencies;
+- verified native bootstrap invokes the dispatcher only after all sovereign activation predicates PASS;
+- source-refresh watcher invokes one dispatcher instead of a failure-sensitive `ExecStartPost` consumer chain;
+- each request remains independently admitted and exactly-once;
+- one fail-closed request does not prevent later request consumers from being visited;
+- dispatcher grants no claim, fence, credential, heartbeat, route, publication, custody, or app activation authority.
+
+Current runtime truth remains:
+
+```text
+native bootstrap source dispatch capability: IMPLEMENTED / VALIDATED / MERGED
+resident-request dispatch receipt: NOT OBSERVED
+G18 resident consumption: NOT OBSERVED
+Ecosystem Chat parent execution: NOT OBSERVED
+HIL receiver execution: NOT OBSERVED
+ARA Graph provider operation: NOT OBSERVED
+SV-DN1 sovereign round: NOT OBSERVED
+user action required: false
+second user machine required: false
+```
+
+The next state-changing event must come from an eligible non-hosted native sovereign runtime. Hosted CI cannot satisfy that evidence boundary.
