@@ -199,3 +199,22 @@ runtime execution observed: false
 ```
 
 Current HIL resident-request state is therefore `MERGED_VALIDATED_RUNTIME_NOT_OBSERVED`. Repository search still exposes no `hil-resident-execution-request-consumption.latest.json` and no real `receipts/hil-sovereign-receiver/**` execution receipt. The next legitimate transition is resident consumption and real targeted execution; no source or CI event may be promoted to receiver READY or HIL activation.
+
+
+## Resident dispatch ordering invariant — 2026-08-29
+
+A live G18/HIL trace identified a circular execution-order risk in the shared sovereign bootstrap: bounded resident requests were dispatched only after the full activation proof passed, while G18/HIL execution can produce evidence needed by that proof.
+
+The corrected invariant is:
+
+```text
+native resident installation/materialization succeeds
+-> dispatch all bounded resident execution requests independently
+-> G18/HIL consumers apply their existing fail-closed authority checks
+-> final sovereign activation verifier runs
+-> activation is claimed only if every canonical predicate passes
+```
+
+This does not make HIL depend on the G18 claim, does not let a request grant authority, and does not turn dispatch into activation proof. HIL remains an independently admitted task-control lane. The change only removes the shared ordering deadlock so an eligible resident runtime can actually attempt the HIL worker before the verifier makes its final determination.
+
+Runtime evidence remains required: a real HIL resident-consumption receipt, worker claim/fresh fence, receiver ACTIVE/READY observation, public HTTPS rendezvous, Site browser `HIL-RECEIVER-RECEIPT-v2`, restart exact-byte proof, and TVC lifecycle handoff.
