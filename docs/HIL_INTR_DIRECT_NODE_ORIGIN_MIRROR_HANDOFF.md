@@ -4,14 +4,17 @@ Updated: 2026-08-29
 Repository: `StegVerse-Labs/.github`
 Issue: #421
 Parent: #246
+PR: #425
 
 ```text
 goal_id: SHWP-HIL-INTR-DIRECT-NODE-ORIGIN-421
-state: IMPLEMENTED_ON_BRANCH_VALIDATION_PENDING
+state: IMPLEMENTED_VALIDATED_MERGE_PENDING
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 authority_effect: NONE_INGRESS_ONLY
 runtime_ingress_observed: false
+organization_control_plane_validation_run: 33274106833 SUCCESS
+heartbeat_worker_validation_run: 33274106860 SUCCESS
 ```
 
 ## Purpose
@@ -54,12 +57,15 @@ Neither origin grants WorkerCoordinator execution authority or proves HIL receiv
 
 A first accepted ingress origin is write-once for that materialization receipt. A different origin cannot overwrite the existing ingress receipt. Same exact origin retry is idempotent.
 
-## Required validation
+## Exact-head validation
+
+The fresh rematerialization onto current `.github/main` was validated on source head `d145aee89f06e8b064be8582c62abbd225e7279f`:
 
 ```text
-tests/test_hil_intr_materialization_ingress.py
-organization control-plane validation
-Heartbeat Worker Project validation-only workflow
+Validate organization control plane - No GitHub Token Authority
+  run 33274106833: SUCCESS
+Heartbeat Worker Project - Validation Only / No GitHub Token Authority
+  run 33274106860: SUCCESS
 ```
 
-Source/CI success is not runtime ingress evidence.
+The handoff reconciliation commit itself must also pass those same exact-head gates before merge. Source/CI success remains non-runtime evidence; `runtime_ingress_observed` stays false until a real sovereign ingress receipt exists.
