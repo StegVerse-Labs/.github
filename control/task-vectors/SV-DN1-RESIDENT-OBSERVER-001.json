@@ -1,0 +1,45 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SV-DN1-RESIDENT-OBSERVER-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000103000",
+  "evidence_refs": [
+    "control/worker-registry.d/sv-dn1-resident-observer-001.json",
+    "handoffs/SV-DN1-RESIDENT-OBSERVER-001.json",
+    "docs/SV_DN1_RESIDENT_OBSERVER_MIRROR_HANDOFF.md",
+    "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json",
+    "StegVerse-org/stegverse-demo-suite#21@a71b1263018cd5c7bba73b7182474c43a34c95bc",
+    "StegVerse-org/stegverse-demo-suite:config/sv_dn1_runtime_source_manifest.json"
+  ],
+  "observed_at": "2026-08-28T21:55:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 3,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "local executable handoff HANDOFF_READY_MACHINE_OWNED; canonical product task HANDOFF_READY_MACHINE_EXECUTION_PENDING; dedicated worker AVAILABLE",
+    "archive_ready": "worker fragment archive_eligible=false",
+    "unassigned_work": "sv-dn1-resident-observer-worker owns durable continuation",
+    "chat_owned_counts": "canonical product/local handoff manual_execution_allowed=false; manual role observation/evidence review only",
+    "canonical_owner_installed": "demo-suite product task scope is reconciled by PR #21; source materialization predecessor, resident worker, InTr successor, and exact source pin are installed",
+    "thread_required": "product and local handoffs are independently recoverable; no chat execution ownership",
+    "blocker_count": "exact registry/handoff blocker parity: EXACT_PINNED_LOCAL_DEMO_SUITE_SOURCE_NOT_YET_OBSERVED | CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND | SOVEREIGN_SV_DN1_RESIDENT_SOURCE_CAPTURE_RECEIPT_NOT_YET_OBSERVED",
+    "evidence_complete": "exact pinned local source, live scheduler claim, and resident source-capture receipt remain unobserved",
+    "activated": "activation_proof_ref=null; resident observation runtime has not executed",
+    "propagated": "InTr/SDK/evaluation/dashboard remain separate successor tasks and no resident completion receipt exists"
+  },
+  "authority_effect": "NONE"
+}
