@@ -1,0 +1,19 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "credential_authority": "TV/TVC",
+  "credential_requirement": "NONE_FOR_PARTICIPANT_INTAKE",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "requested_at": "2026-08-28T21:06:00-05:00",
+  "note": "Non-authorizing exactly-once resident execution request for the already-admitted HIL sovereign receiver task. The existing targeted executor remains sole claim/fence authority and must fail closed if the resident carrier, current LLM-adapter contract floor, or local readiness predicates are absent."
+}
