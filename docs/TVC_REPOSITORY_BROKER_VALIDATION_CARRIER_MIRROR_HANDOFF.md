@@ -130,7 +130,7 @@ broker delta: 16/16 files
 validation worker/control developed surfaces: complete
 heartbeat-gating dependency in validation worker: REMOVED
 stable source-bundle digest emission: IMPLEMENTED / UNVALIDATED
-tvc governed validation request bridge: IMPLEMENTED_ON_BRANCH
+tvc governed validation request bridge: MERGED / VALIDATED
 tvc governed validation receipt: 0/1
 tvc broker admission: 0/1
 StegCore downstream materialization: 0/1
@@ -138,6 +138,24 @@ StegCore sovereign exact-head validation: 0/1
 scaffolding/stubs: 0
 missing required source files: 0
 ```
+
+## Current-head validation carrier merge evidence
+
+```text
+PR #384: MERGED
+merge_commit: 4d7972d9ae805e5e59c95ea559faedbd72586495
+validated_head: e355ddc46807cf0a5efe6c5423ac483771913bd7
+organization control plane run 33228876118 / job 99037873056: PASS
+heartbeat worker validation run 33228876150 / job 99037873115: PASS
+complete deterministic repository suite: PASS
+independent task-control admission: PASS
+runtime expiry basis: INSTALLED
+generic resident dispatcher integration: PASS
+native bootstrap consumer materialization: PASS
+exact local source retry posture: HANDOFF_READY
+```
+
+The validation lane is now machine-executable whenever a sovereign runtime exposes an exact clean local TVC PR #92 checkout through STEGVERSE_TVC_ROOT. The resident request grants no source transport or credential authority. No governed validation receipt has yet been observed.
 
 ## Continuity and archive semantics
 
