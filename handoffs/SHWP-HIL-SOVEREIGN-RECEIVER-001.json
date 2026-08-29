@@ -144,7 +144,7 @@
       "credential_authority": "TV/TVC"
     },
     "resident_execution_request": {
-      "state": "SOURCE_IMPLEMENTED_VALIDATION_PENDING_RUNTIME_NOT_OBSERVED",
+      "state": "MERGED_VALIDATED_RUNTIME_NOT_OBSERVED",
       "request_ref": "control/resident-execution-request.d/hil-sovereign-receiver-001.json",
       "consumer_ref": "scripts/consume_hil_resident_execution_request.py",
       "request_id": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-001",
@@ -160,7 +160,17 @@
       "credential_authority": "TV/TVC",
       "credential_requirement": "NONE_FOR_PARTICIPANT_INTAKE",
       "runtime_execution_observed": false,
-      "authority_effect": "NONE_REQUEST_ONLY"
+      "authority_effect": "NONE_REQUEST_ONLY",
+      "pull_request": 370,
+      "merge_commit": "44798bb946fe64ed48ba04ac49eec00181649d12",
+      "validation": {
+        "exact_head": "825456d876f349027e96e4bd334cde20439383ec",
+        "heartbeat_worker_run": 33228209273,
+        "heartbeat_worker_job": 99035966356,
+        "organization_control_plane_run": 33228209246,
+        "organization_control_plane_job": 99035966209,
+        "result": "PASS"
+      }
     }
   },
   "continuity": {
@@ -170,7 +180,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "After source validation/merge, an installed local source-refresh service may consume the HIL resident request exactly once and invoke only the already-authorized targeted HIL task. Runtime completion still requires real claim/fence allocation, receiver READY evidence, public HTTPS, browser receipt, restart exact-byte proof, and TVC lifecycle handoff.",
+    "next_authorized_action": "On an installed sovereign resident source-refresh surface, consume RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-001 exactly once and invoke only the existing targeted HIL task. Treat repository merge/CI as source validation only; runtime completion still requires real claim/fence allocation, receiver READY evidence, public HTTPS, browser receipt, restart exact-byte proof, and TVC lifecycle handoff.",
     "terminal_when": [
       "real StegVerse carrier READY observation",
       "public HTTPS rendezvous observed",
@@ -181,7 +191,7 @@
     "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001"
   },
   "block": {
-    "block_reason": "Activation remains unfinished until the new bounded resident request is validated/merged and then actually consumed on a sovereign resident carrier, followed by the public HTTPS/browser/restart/TVC evidence sequence.",
+    "block_reason": "The HIL resident request bridge is merged and exact-head validated. Activation remains unfinished until that request is actually consumed on a sovereign resident carrier and the receiver READY/public HTTPS/browser/restart/TVC evidence chain is observed.",
     "dependency": "resident sovereign carrier plus public HTTPS/browser/restart/TVC evidence sequence",
     "solution_task_ref": "StegVerse-Labs/.github#246",
     "solution_source_ref": "workers/hil_sovereign_receiver_worker.py",
