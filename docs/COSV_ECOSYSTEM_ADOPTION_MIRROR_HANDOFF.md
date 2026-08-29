@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-28T21:14:00-05:00
+Updated: 2026-08-28T21:42:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -364,3 +364,14 @@ task.v1 [L R U I V G O C M T B E A P] = 50000000101000
 The task is an independently admitted machine-resolution capability under a fresh resolution fence and may not reuse or replace the existing G18 fence18 claim. Exactly one blocker remains: `G18_RESIDENT_REQUEST_CONSUMPTION_NOT_YET_OBSERVED`. No HeartBeat progression authority, credential authority, third-party primary runtime, additional physical machine requirement, G18 terminalization, or runtime activation is claimed.
 
 If validated and merged, local .github coverage becomes 19 indexed vectors with 28 active worker gaps + 14 organization gaps = 42 active unvectorized tasks.
+
+## SV-DN1 source-materialization vector — current-main candidate
+
+```text
+SV-DN1-SOURCE-MATERIALIZATION-001
+task.v1 [L R U I V G O C M T B E A P] = 50000000101000
+```
+
+The dedicated machine worker owns exact, credential-free public source materialization against the canonical demo-suite runtime-source manifest. Exactly one blocker remains: `SOVEREIGN_SOURCE_MATERIALIZATION_RECEIPT_NOT_YET_OBSERVED`. Remote checkout, provider credentials, repository writeback, observation/evaluation, SDK admission, governance, certification, and publication authority remain false.
+
+If validated and merged, local .github coverage becomes 20 indexed vectors with 27 active worker gaps + 14 organization gaps = 41 active unvectorized tasks.
