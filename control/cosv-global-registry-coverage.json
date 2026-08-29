@@ -1,8 +1,8 @@
 {
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
-  "observed_commit": "fcf38e5e64ea01e1574ee90392bc8576cb89ab6c",
-  "observed_at": "2026-08-28T23:20:00-05:00",
+  "observed_commit": "b17cda131ac6e0bcff37a2d96b41a211eed0afad",
+  "observed_at": "2026-08-28T23:26:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,9 +11,9 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 54,
-    "canonically_indexed_task_ids": 25,
+    "canonically_indexed_task_ids": 26,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 22,
+    "active_unvectorized_unique_task_ids": 21,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,7 +21,7 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 36,
+  "total_active_unvectorized_unique_task_ids": 35,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -43,8 +43,7 @@
     "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
     "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
     "KV-CONNECTION-HEALTH-RECONCILER-001",
-    "KV-PROVIDER-CHANGE-OBSERVER-001",
-    "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001"
+    "KV-PROVIDER-CHANGE-OBSERVER-001"
   ],
   "active_organization_task_ids_missing_canonical_cosv": [
     "ORG-FED-AACT-E-001",
@@ -162,6 +161,10 @@
     {
       "task_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
       "vector": "50000000114000"
+    },
+    {
+      "task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
+      "vector": "50000000104000"
     }
   ],
   "evidence_conflicts": [],
