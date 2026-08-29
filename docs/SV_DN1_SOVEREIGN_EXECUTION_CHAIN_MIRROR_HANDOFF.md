@@ -78,7 +78,7 @@ SDK FIRST ROUND
     - SV-DN1-PRODUCTION-SOURCE-PREP-001
 ```
 
-All four registry fragments are admitted under:
+All five SV-DN-1 registry fragments are admitted under:
 
 ```text
 authority_domain: INDEPENDENT_TASK_CONTROL
@@ -238,7 +238,7 @@ Chain completion transition:
 
 `SV_DN1_SOVEREIGN_FIRST_ROUND_CHAIN_COMPLETE`
 
-It requires all four tasks `COMPLETED` with their exact durable receipts and the final first-round receipt proving:
+It requires all five tasks `COMPLETED` with their exact durable receipts and the final first-round receipt proving:
 
 ```text
 sdk_admission: SDK_ADMITTED
@@ -296,6 +296,21 @@ organization control plane run 33228272505: PASS
 ```
 
 The one-shot resident chain now advances through five independently fenced tasks. The SDK step cannot execute until the production-source-preparation task is COMPLETED and has exposed exact non-secret local roots for SDK, StegCore, Core-Lite, and Master Records.
+
+## TVC private-source prerequisite execution path
+
+The source-preparation stage now has a current-head machine validation carrier for its upstream TVC broker:
+
+```text
+TVC broker PR #92 expected head: ce1d4a31f5cfc65ee59af52f821336e0859c0fbd
+.github validation carrier PR #384: MERGED
+independent validation request: ISSUED
+authentic governed PASS: NOT OBSERVED
+broker admission: NOT COMPLETE
+private source materialization: NOT OBSERVED
+```
+
+This means the remaining private-source gate is now an execution/evidence boundary rather than missing control-plane wiring.
 
 ## Archive readiness
 
