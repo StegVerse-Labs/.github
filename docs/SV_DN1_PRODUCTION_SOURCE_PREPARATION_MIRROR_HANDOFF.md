@@ -252,7 +252,7 @@ Source preparation is now machine-owned and admitted on main. Authentic runtime 
 The TVC validation prerequisite is no longer a stale/manual carrier. PR #384 merged the exact current-head independent validation task plus resident request consumer:
 
 ```text
-expected TVC PR #92 head: ce1d4a31f5cfc65ee59af52f821336e0859c0fbd
+expected TVC PR #92 head: b5288f9910ada26c6ab2e9bca3f7701afaae2cef
 validation task: SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001
 request: control/resident-execution-request.d/tvc-repository-broker-validation-001.json
 authority: INDEPENDENT_TASK_CONTROL / fresh fence >22
@@ -260,6 +260,8 @@ source transport by validation consumer: NONE
 credential material allowed: false
 governed validation receipt: NOT OBSERVED
 ```
+
+The validation carrier is repinned to this current PR #92 head by merged .github PR #413 / commit `360567287a15a11672989653c2edff8fbab1bdc8`.
 
 After authentic PASS and TVC broker admission, this source-preparation task can consume the existing private materialization spool path without any new credential lane.
 
