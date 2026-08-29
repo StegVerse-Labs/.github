@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-28T21:55:00-05:00
+Updated: 2026-08-28T23:12:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -429,3 +429,16 @@ task.v1 [L R U I V G O C M T B E A P] = 50000000103000
 This reconciliation does not claim exact source materialization, scheduler claim, resident capture, InTr traversal, SDK admission, evaluation completion, or publication.
 
 If validated and merged, local .github coverage becomes 23 indexed vectors with 24 active worker gaps + 14 organization gaps = 38 active unvectorized tasks.
+
+## Coherent-signal formal-candidate vector — current-main candidate
+
+```text
+SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001
+task.v1 [L R U I V G O C M T B E A P] = 50000000101000
+```
+
+The canonical coherent-signal-space mirror handoff explicitly classifies this lane as WORKER-OWNED / DO NOT COMPETE. The dedicated worker is AVAILABLE, manual execution is false, and HeartBeat remains a non-authorizing carrier only. Exactly one blocker remains: `FORMAL_MATHEMATICAL_CANDIDATE_NOT_YET_EMITTED`.
+
+A future emitted candidate is not mathematical truth, Admissible-Existence authority, governance authority, execution authority, or coordinate-system completeness. Separate evidence/admissibility review remains required before any candidate can be promoted.
+
+If validated and merged, local .github coverage becomes 24 indexed vectors with 23 active worker gaps + 14 organization gaps = 37 active unvectorized tasks.

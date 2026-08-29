@@ -231,11 +231,21 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json"
+    },
+    {
+      "task_id": "SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/coherent-signal-formal-candidate-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "docs/COHERENT_SIGNAL_SPACE_TRANSITION_MANIFOLD_MIRROR_HANDOFF.md"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 23,
-    "local_cosv_record_tasks": 23,
+    "indexed_vectorized_tasks": 24,
+    "local_cosv_record_tasks": 24,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
