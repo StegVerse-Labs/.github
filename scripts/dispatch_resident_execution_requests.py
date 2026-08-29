@@ -68,7 +68,14 @@ NONSECRET_ENV = (
     "STEGVERSE_EVALUATOR_INTR_ROUTE_CONFIG",
     "STEGVERSE_EVALUATOR_INTR_PORT",
     "STEGVERSE_EVALUATOR_INTR_WINDOW_SECONDS",
-    "STEGVERSE_RELAY_RUNTIME_BASE",\n    "STEGVERSE_TT_ROOT",\n    "STEGVERSE_RTG_ROOT",\n    "STEGVERSE_GTG_ROOT",\n    "STEGVERSE_AE_ROOT",\n    "STEGVERSE_SELF_CHAR_MODEL_ENDPOINT",\n    "STEGVERSE_SELF_CHAR_MODEL_ID",\n    "STEGVERSE_OLLAMA_MODEL",
+    "STEGVERSE_RELAY_RUNTIME_BASE",
+    "STEGVERSE_TT_ROOT",
+    "STEGVERSE_RTG_ROOT",
+    "STEGVERSE_GTG_ROOT",
+    "STEGVERSE_AE_ROOT",
+    "STEGVERSE_SELF_CHAR_MODEL_ENDPOINT",
+    "STEGVERSE_SELF_CHAR_MODEL_ID",
+    "STEGVERSE_OLLAMA_MODEL",
 )
 CONSUMERS = (
     ("ecosystem_chat", "scripts/consume_resident_execution_request.py"),
@@ -77,7 +84,8 @@ CONSUMERS = (
     ("evaluator_intr", "scripts/consume_evaluator_intr_resident_execution_request.py"),
     ("ara_graph", "scripts/consume_ara_graph_resident_execution_request.py"),
     ("sv_dn1", "scripts/consume_sv_dn1_resident_execution_request.py"),
-    ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),\n    ("sv002_self_characterization", "scripts/consume_sv002_self_characterization_request.py"),
+    ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),
+    ("sv002_self_characterization", "scripts/consume_sv002_self_characterization_request.py"),
 )
 
 
@@ -207,7 +215,8 @@ def dispatch(
     }
     path = runtime / RECEIPT_REL
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "
+", encoding="utf-8")
     return receipt
 
 
