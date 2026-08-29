@@ -13,6 +13,7 @@ NEW_TASKS=[
 "SV-DN1-SDK-FIRST-ROUND-001",
 "SV-DN1-SOURCE-MATERIALIZATION-001",
 "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
+"SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001",
 ]
 
 class COSVLiveDenominatorReconciliationTests(unittest.TestCase):
@@ -21,12 +22,12 @@ class COSVLiveDenominatorReconciliationTests(unittest.TestCase):
         self.healer=json.loads((ROOT/"control/task-vectors/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json").read_text(encoding="utf-8"))
         self.healer_handoff=json.loads((ROOT/"handoffs/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json").read_text(encoding="utf-8"))
 
-    def test_live_worker_denominator_includes_nine_new_tasks(self):
+    def test_live_worker_denominator_includes_current_new_tasks(self):
         summary=self.coverage["worker_registry_summary"]
-        self.assertEqual(summary["unique_task_ids_global_plus_fragments"],54)
+        self.assertEqual(summary["unique_task_ids_global_plus_fragments"],55)
         self.assertEqual(summary["canonically_indexed_task_ids"],17)
-        self.assertEqual(summary["active_unvectorized_unique_task_ids"],30)
-        self.assertEqual(self.coverage["total_active_unvectorized_unique_task_ids"],44)
+        self.assertEqual(summary["active_unvectorized_unique_task_ids"],31)
+        self.assertEqual(self.coverage["total_active_unvectorized_unique_task_ids"],45)
         missing=set(self.coverage["active_worker_task_ids_missing_canonical_cosv"])
         for task_id in NEW_TASKS:
             self.assertIn(task_id,missing)
