@@ -10,7 +10,7 @@ if str(ROOT) not in sys.path:
 
 import workers.tvc_repository_broker_validation_worker as worker
 
-EXPECTED_TVC_HEAD = "4e87ad9f3a859ab3b18241640624abd5e1757002"
+EXPECTED_TVC_HEAD = "ce1d4a31f5cfc65ee59af52f821336e0859c0fbd"
 
 
 def test_handoff_and_adapter_are_credential_clean():
