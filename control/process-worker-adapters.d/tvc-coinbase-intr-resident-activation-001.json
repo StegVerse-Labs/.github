@@ -30,7 +30,11 @@
         "XDG_CONFIG_HOME",
         "LOCALAPPDATA",
         "STEGVERSE_SERVICE_GATEWAY_STORAGE_ROOT",
-        "STEGVERSE_HIL_STORAGE_ROOT"
+        "STEGVERSE_HIL_STORAGE_ROOT",
+        "STEGVERSE_SERVICE_GATEWAY_HOSTNAME",
+        "STEGVERSE_ACME_DIRECTORY_URL",
+        "STEGVERSE_ACME_CONTACT",
+        "STEGVERSE_TVC_HTTP01_CHALLENGE_ROOT"
       ],
       "notes": [
         "Executes only after genuine sovereign WorkerCoordinator activation; hosted CI cannot satisfy completion.",
@@ -38,7 +42,8 @@
         "Reuses an already-valid recipient key stack when readiness is blocked only on public route evidence.",
         "Gateway/KV path bindings and sovereign public node URL are non-secret resident deployment bindings.",
         "Provider credentials, provider operation authority, Site repository mutation, GitHub tokens and HeartBeat progression authority are prohibited.",
-        "Gateway storage root reuses canonical Service Gateway/HIL storage-root bindings when the TVC-specific alias is absent; no duplicate deployment variable is required."
+        "Gateway storage root reuses canonical Service Gateway/HIL storage-root bindings when the TVC-specific alias is absent; no duplicate deployment variable is required.",
+        "If the TVC TLS adoption receipt is absent, the worker may invoke only the exact CMC-029 resident WebPKI adapter using non-secret hostname/directory bindings, then blocks so the separate sovereign Gateway owner can reconcile native TLS before route observation."
       ],
       "timeout_seconds": 1200,
       "type": "process_json_v0.1"
