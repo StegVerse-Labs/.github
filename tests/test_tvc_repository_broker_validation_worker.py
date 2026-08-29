@@ -10,7 +10,7 @@ if str(ROOT) not in sys.path:
 
 import workers.tvc_repository_broker_validation_worker as worker
 
-EXPECTED_TVC_HEAD = "ce1d4a31f5cfc65ee59af52f821336e0859c0fbd"
+EXPECTED_TVC_HEAD = "b5288f9910ada26c6ab2e9bca3f7701afaae2cef"
 
 
 def test_handoff_and_adapter_are_credential_clean():
@@ -90,11 +90,9 @@ def test_worker_has_no_source_fetch_transport_or_heartbeat_gate():
     assert "TVC_EPHEMERAL_GITHUB_TOKEN" in source
     assert "tools/task_dispatcher.py" in source
     assert 'if not isinstance(epoch, int)' not in source
-    assert 'heartbeat_timing") or {}' not in source
+    assert 'heartbeat_timing\") or {}' not in source
     assert 'source_bundle_file_count' in source
     assert 'source_bundle_sha256' in source
-
-
 
 
 def test_canonical_retrospective_ae_record_remains_non_authorizing():

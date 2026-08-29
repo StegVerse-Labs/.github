@@ -15,7 +15,7 @@
         "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
         "workers/tvc_repository_broker_validation_worker.py",
         "StegVerse-Labs/TVC#92",
-        "StegVerse-Labs/TVC@ce1d4a31f5cfc65ee59af52f821336e0859c0fbd",
+        "StegVerse-Labs/TVC@b5288f9910ada26c6ab2e9bca3f7701afaae2cef",
         "cost-basis/worker-runtime/tvc-repository-broker-validation.json"
       ],
       "executor_binding": "AUTHORIZED",
@@ -31,7 +31,7 @@
       "worker_id": null,
       "worker_instance_id": null,
       "validation_identity": {
-        "expected_tvc_head": "ce1d4a31f5cfc65ee59af52f821336e0859c0fbd",
+        "expected_tvc_head": "b5288f9910ada26c6ab2e9bca3f7701afaae2cef",
         "source_bundle_file_count": 16,
         "source_bundle_sha256_required": true,
         "full_revalidation_if_bundle_digest_changes": true,
