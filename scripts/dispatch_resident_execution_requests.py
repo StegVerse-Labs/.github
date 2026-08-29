@@ -69,6 +69,13 @@ NONSECRET_ENV = (
     "STEGVERSE_EVALUATOR_INTR_PORT",
     "STEGVERSE_EVALUATOR_INTR_WINDOW_SECONDS",
     "STEGVERSE_RELAY_RUNTIME_BASE",
+    "STEGVERSE_TT_ROOT",
+    "STEGVERSE_RTG_ROOT",
+    "STEGVERSE_GTG_ROOT",
+    "STEGVERSE_AE_ROOT",
+    "STEGVERSE_SELF_CHAR_MODEL_ENDPOINT",
+    "STEGVERSE_SELF_CHAR_MODEL_ID",
+    "STEGVERSE_OLLAMA_MODEL",
 )
 CONSUMERS = (
     ("ecosystem_chat", "scripts/consume_resident_execution_request.py"),
@@ -78,6 +85,7 @@ CONSUMERS = (
     ("ara_graph", "scripts/consume_ara_graph_resident_execution_request.py"),
     ("sv_dn1", "scripts/consume_sv_dn1_resident_execution_request.py"),
     ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),
+    ("sv002_self_characterization", "scripts/consume_sv002_self_characterization_request.py"),
 )
 
 

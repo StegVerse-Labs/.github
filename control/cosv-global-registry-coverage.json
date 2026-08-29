@@ -10,10 +10,10 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
-    "unique_task_ids_global_plus_fragments": 59,
+    "unique_task_ids_global_plus_fragments": 60,
     "canonically_indexed_task_ids": 38,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 14,
+    "active_unvectorized_unique_task_ids": 15,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,7 +21,7 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 28,
+  "total_active_unvectorized_unique_task_ids": 29,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -36,7 +36,8 @@
     "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
     "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
     "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
-    "STEGVERSE-TEST-LANES-AUTOLAUNCH-001"
+    "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
+    "SHWP-SV002-SELF-CHARACTERIZATION-001"
   ],
   "active_organization_task_ids_missing_canonical_cosv": [
     "ORG-FED-AACT-E-001",
@@ -244,16 +245,16 @@
     }
   ],
   "live_denominator_reconciliation": {
-    "observed_main": "6db36604bb1c2dfbecd6311807e3385d6193b3ec",
-    "prior_unique_worker_task_ids": 58,
+    "observed_main": "a99e930ffebb8460536b1e5fee632449b4ba33e7",
+    "prior_unique_worker_task_ids": 59,
     "newly_added_worker_task_ids": 1,
-    "current_unique_worker_task_ids": 59,
+    "current_unique_worker_task_ids": 60,
     "new_task_ids": [
-      "SHWP-EVALUATOR-INTR-READ-RUNTIME-001"
+      "SHWP-SV002-SELF-CHARACTERIZATION-001"
     ],
     "aggregate_worker_registry_changed": false,
     "organization_task_count": 14,
-    "note": "Added one canonically vectorized machine-owned evaluator READ_REVIEW Universal InTr runtime task. Worker denominator advances 58->59 and canonical index 37->38; active-unvectorized denominator remains 14. No runtime/authority promotion is inferred."
+    "note": "Added one active unvectorized authority-neutral StegVerse-002 self-characterization experiment task. Worker denominator advances 59->60; canonical index remains 38; active-unvectorized denominator advances 14->15. No runtime, AE, model, ontology, lifecycle, or governance authority promotion is inferred."
   },
   "g18_dispatcher_reconciliation": {
     "vector_unchanged": "50000000101000",
