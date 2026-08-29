@@ -3,7 +3,7 @@
   "goal_id": "HYGIENE-CAUSAL-ROOTS-001",
   "repository": "StegVerse-Labs/.github",
   "wave": 0,
-  "observed_at": "2026-08-28T21:45:00-05:00",
+  "observed_at": "2026-08-28T23:16:00-05:00",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_used": false,
   "workflow_count_before_batch": 20,
@@ -156,6 +156,103 @@
         "merge_commit": "b72e45a467ec160adce620e0ec0269fe08a65ff8",
         "exact_branch_source_refs": 0,
         "protected": false
+      },
+      "deletion_authorized_by_this_record": false
+    }
+  ],
+  "branch_classification_batch_3": [
+    {
+      "branch": "fix/g18-resident-request-resolution-worker",
+      "classification": "EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE",
+      "evidence": {
+        "compare_to_main": "behind",
+        "ahead_by": 0,
+        "behind_by": 79,
+        "head_sha": "b6d33814912eac9db5978ef4450c595e1469d98a",
+        "merged_pr": 355,
+        "merge_commit": "713dd687173900f164fa006aa93327f7c943f870",
+        "exact_branch_source_refs": 0,
+        "protected": false,
+        "steghealth_evidence": "StegVerse-Labs/StegHealth:evidence/operations/2026-08-28-g18-safe-delete-classification-batch2.json",
+        "steghealth_pr": 46,
+        "steghealth_merge": "4f21a7fa4b0408769fb2bc2ee8f0164f82f64233",
+        "steghealth_validation_run": 33233331274
+      },
+      "deletion_authorized_by_this_record": false
+    },
+    {
+      "branch": "fix/g18-self-bootstrap-no-predeclared-node",
+      "classification": "EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE",
+      "evidence": {
+        "compare_to_main": "behind",
+        "ahead_by": 0,
+        "behind_by": 1410,
+        "head_sha": "c379e27bca2835f9f4bf15d641c4d309f8c62c8e",
+        "merged_pr": 181,
+        "merge_commit": "ed40b46b5922dccce698e331c76bfe474b147736",
+        "exact_branch_source_refs": 0,
+        "protected": false,
+        "steghealth_evidence": "StegVerse-Labs/StegHealth:evidence/operations/2026-08-28-g18-safe-delete-classification-batch2.json",
+        "steghealth_pr": 46,
+        "steghealth_merge": "4f21a7fa4b0408769fb2bc2ee8f0164f82f64233",
+        "steghealth_validation_run": 33233331274
+      },
+      "deletion_authorized_by_this_record": false
+    },
+    {
+      "branch": "fix/g18-v13-runtime-execution",
+      "classification": "EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE",
+      "evidence": {
+        "compare_to_main": "behind",
+        "ahead_by": 0,
+        "behind_by": 127,
+        "head_sha": "1171ec348bd5040f8ec1ee4fa89f63f3de9891be",
+        "merged_pr": 344,
+        "merge_commit": "72e9315e557fdcc6e9d5c94c370993da6a2f7f88",
+        "exact_branch_source_refs": 0,
+        "protected": false,
+        "steghealth_evidence": "StegVerse-Labs/StegHealth:evidence/operations/2026-08-28-g18-safe-delete-classification-batch2.json",
+        "steghealth_pr": 46,
+        "steghealth_merge": "4f21a7fa4b0408769fb2bc2ee8f0164f82f64233",
+        "steghealth_validation_run": 33233331274
+      },
+      "deletion_authorized_by_this_record": false
+    },
+    {
+      "branch": "fix/g18-v13-sovereign-node-resolution",
+      "classification": "EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE",
+      "evidence": {
+        "compare_to_main": "behind",
+        "ahead_by": 0,
+        "behind_by": 142,
+        "head_sha": "47ac8378ab75bb6b5c4fd78bca4acf932151996f",
+        "merged_pr": 341,
+        "merge_commit": "f57e2c6cb82541347580b0c00b2f14fabf02108c",
+        "exact_branch_source_refs": 0,
+        "protected": false,
+        "steghealth_evidence": "StegVerse-Labs/StegHealth:evidence/operations/2026-08-28-g18-safe-delete-classification-batch2.json",
+        "steghealth_pr": 46,
+        "steghealth_merge": "4f21a7fa4b0408769fb2bc2ee8f0164f82f64233",
+        "steghealth_validation_run": 33233331274
+      },
+      "deletion_authorized_by_this_record": false
+    },
+    {
+      "branch": "fix/hb29-g18-bootstrap-220",
+      "classification": "EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE",
+      "evidence": {
+        "compare_to_main": "behind",
+        "ahead_by": 0,
+        "behind_by": 951,
+        "head_sha": "b792dc796f8b3d7d755667d814392e0acfb8770c",
+        "merged_pr": 222,
+        "merge_commit": "ccf98693c24e91a138bf90da8ef3b3c5ce488383",
+        "exact_branch_source_refs": 0,
+        "protected": false,
+        "steghealth_evidence": "StegVerse-Labs/StegHealth:evidence/operations/2026-08-28-g18-safe-delete-classification-batch2.json",
+        "steghealth_pr": 46,
+        "steghealth_merge": "4f21a7fa4b0408769fb2bc2ee8f0164f82f64233",
+        "steghealth_validation_run": 33233331274
       },
       "deletion_authorized_by_this_record": false
     }
