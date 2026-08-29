@@ -49,7 +49,12 @@
         "fresh_fence_required": true,
         "minimum_fencing_token_exclusive": 21,
         "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
-      }
+      },
+      "transport_role": "OPTIONAL_EVENT_EPHEMERAL_MATERIALIZER",
+      "hil_submission_dependency": false,
+      "hil_product_activation_dependency": false,
+      "always_on_application_receiver_required": false,
+      "second_user_device_required": false
     }
   ],
   "workers": [
@@ -65,7 +70,9 @@
       "executor_type": "repository_worker",
       "last_seen_at": null,
       "status": "AVAILABLE",
-      "worker_id": "hil-sovereign-receiver-worker"
+      "worker_id": "hil-sovereign-receiver-worker",
+      "transport_role": "OPTIONAL_EVENT_EPHEMERAL_MATERIALIZER",
+      "hil_product_activation_blocker": false
     }
   ],
   "authority_effect": "NONE_REGISTRATION_ONLY",
