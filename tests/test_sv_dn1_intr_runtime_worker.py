@@ -55,7 +55,12 @@ class SvDn1IntrRuntimeWorkerTests(unittest.TestCase):
         self.assertNotIn("HF_TOKEN", row["env_allowlist"])
 
         authority = handoff["authority"]
-        self.assertTrue(authority["route_specific_intr_traversal_authority"])
+        self.assertFalse(authority["route_specific_intr_traversal_authority"])
+        self.assertTrue(authority["universal_intr_adjacent_hop_traversal_authority"])
+        self.assertEqual(handoff["input_contract"]["universal_intr_policy_id"], worker.UNIVERSAL_POLICY_ID)
+        self.assertEqual(handoff["input_contract"]["boundary_from"], "EXTERNAL_SYSTEM")
+        self.assertEqual(handoff["input_contract"]["boundary_to"], "STEGOS_ECOSYSTEM")
+        self.assertTrue(handoff["input_contract"]["canonical_protocol_adopted"])
         self.assertFalse(authority["public_source_acquisition_authority"])
         self.assertFalse(authority["repository_writeback_authority"])
         self.assertFalse(authority["sdk_admission_authority"])
@@ -76,7 +81,7 @@ class SvDn1IntrRuntimeWorkerTests(unittest.TestCase):
         self.assertFalse(result["blocker"]["human_action_required"])
         self.assertFalse(result["blocker"]["github_token_required"])
 
-    def test_execute_emits_exact_route_specific_receipt_without_adoption_or_sdk_claim(self):
+    def test_execute_emits_universal_adjacent_hop_receipt_without_runtime_activation_or_sdk_claim(self):
         with tempfile.TemporaryDirectory() as td:
             temp = Path(td)
             resident = temp / "resident"
@@ -154,7 +159,13 @@ class SvDn1IntrRuntimeWorkerTests(unittest.TestCase):
                         "route_id": worker.ROUTE_ID,
                         "transport_profile": worker.TRANSPORT_PROFILE,
                         "runtime_receipt_schema": worker.RECEIPT_SCHEMA,
-                        "canonical_protocol_adopted": False,
+                        "canonical_protocol_adopted": True,
+                        "universal_intr_policy_id": worker.UNIVERSAL_POLICY_ID,
+                        "boundary_from": worker.BOUNDARY_FROM,
+                        "boundary_to": worker.BOUNDARY_TO,
+                        "interlock_required_per_hop": True,
+                        "receipt_hash_chain_required": True,
+                        "runtime_activation_claimed": False,
                         "production_interlock_runtime_activated": False,
                     },
                 },
@@ -174,7 +185,13 @@ class SvDn1IntrRuntimeWorkerTests(unittest.TestCase):
             self.assertEqual(result["destination_validation"], "PASS")
             self.assertTrue(result["lineage_verified"])
             self.assertFalse(result["sdk_admitted"])
-            self.assertFalse(result["canonical_protocol_adopted"])
+            self.assertTrue(result["canonical_protocol_adopted"])
+            self.assertEqual(result["universal_intr_policy_id"], worker.UNIVERSAL_POLICY_ID)
+            self.assertEqual(result["boundary_from"], "EXTERNAL_SYSTEM")
+            self.assertEqual(result["boundary_to"], "STEGOS_ECOSYSTEM")
+            self.assertTrue(result["interlock_required_per_hop"])
+            self.assertTrue(result["receipt_hash_chain_required"])
+            self.assertFalse(result["runtime_activation_claimed"])
             self.assertFalse(result["production_interlock_runtime_activated"])
 
             receipt = json.loads((bound / "receipts/latest.json").read_text())
@@ -185,7 +202,13 @@ class SvDn1IntrRuntimeWorkerTests(unittest.TestCase):
             self.assertEqual(receipt["source_transform_hash"], exchange["far_side_receipt"]["transformation_hash"])
             self.assertEqual(receipt["previous_receipt_hash"], exchange["intr"]["previous_receipt_hash"])
             self.assertTrue(receipt["lineage_verified"])
-            self.assertFalse(receipt["claims"]["canonical_protocol_adopted"])
+            self.assertTrue(receipt["claims"]["canonical_protocol_adopted"])
+            self.assertEqual(receipt["claims"]["universal_intr_policy_id"], worker.UNIVERSAL_POLICY_ID)
+            self.assertEqual(receipt["claims"]["boundary_from"], "EXTERNAL_SYSTEM")
+            self.assertEqual(receipt["claims"]["boundary_to"], "STEGOS_ECOSYSTEM")
+            self.assertTrue(receipt["claims"]["interlock_required_per_hop"])
+            self.assertTrue(receipt["claims"]["receipt_hash_chain_required"])
+            self.assertFalse(receipt["claims"]["runtime_activation_claimed"])
             self.assertFalse(receipt["claims"]["production_interlock_runtime_activated"])
             self.assertFalse(receipt["claims"]["sdk_admitted"])
             body = {k: v for k, v in receipt.items() if k != "receipt_hash"}

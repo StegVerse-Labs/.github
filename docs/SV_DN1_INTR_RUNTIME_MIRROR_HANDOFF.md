@@ -1,4 +1,4 @@
-# SV-DN-1 Route-Specific InTr Runtime Mirror Handoff
+# SV-DN-1 Universal InTr Adjacent-Hop Runtime Mirror Handoff
 
 ## Canonical scope
 
@@ -253,3 +253,69 @@ The route-specific InTr worker is registered and source-valid on main. Authentic
 ## Archive readiness
 
 This handoff is the canonical continuation source for the first route-specific SV-DN-1 InTr runtime traversal. Once merged, the lane is recoverable without the originating conversation.
+
+
+## Universal InTr reconciliation — 2026-08-29
+
+**This section supersedes every earlier statement in this handoff that says
+`canonical_protocol_adopted=false`, that the SV-DN-1 hop is exempt from the
+organization-wide transport invariant, or that the transport profile is the
+pre-adoption sovereign-bound-state profile.**
+
+PR #407 was merged as `d0de32281c2e29258146e084e93ce4587568d683` and
+established `STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001` as the canonical
+organization transport policy.
+
+The first SV-DN-1 ingress is therefore represented as the canonical adjacent
+boundary hop:
+
+```text
+EXTERNAL_SYSTEM
+  -> external-side Interlock / exact HF semantic exchange
+  -> InTr
+  -> STEGOS_ECOSYSTEM receiving Interlock
+  -> destination validation
+  -> chained hop receipt
+```
+
+Required execution contract:
+
+```text
+transport_profile: stegverse.universal-intr.adjacent-hop/v1
+universal_intr_policy_id: STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001
+canonical_protocol_adopted: true
+boundary_from: EXTERNAL_SYSTEM
+boundary_to: STEGOS_ECOSYSTEM
+interlock_required_per_hop: true
+receipt_hash_chain_required: true
+runtime_activation_claimed: false
+production_interlock_runtime_activated: false
+sdk_admitted: false
+authority_effect: NONE
+```
+
+`canonical_protocol_adopted=true` reports the already-established
+organization policy fact. It does **not** grant this worker protocol-adoption
+authority. The worker retains
+`canonical_protocol_adoption_authority=false` and may not claim global
+runtime activation.
+
+The resident exchange's far-side transformation receipt remains the prior
+receipt identity. The Universal InTr hop MUST preserve that exact
+`previous_receipt_hash`, validate the receiving boundary, and emit a new
+deterministic receipt hash. Direct non-adjacent transport, cross-boundary state
+mutation, plaintext payload in receipts, or blind retry of downstream
+consequences is prohibited.
+
+Current runtime truth remains:
+
+```text
+source materialization receipt: NOT OBSERVED
+resident Hugging Face capture receipt: NOT OBSERVED
+Universal InTr EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM hop receipt: NOT OBSERVED
+SDK live admission: NOT OBSERVED
+first authentic round analyzed: NOT OBSERVED
+```
+
+Source reconciliation branch:
+`fix/sv-dn1-universal-intr-reconcile-20260829`.

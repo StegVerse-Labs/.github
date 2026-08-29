@@ -8,7 +8,7 @@
       "capabilities": [
         "bounded_process_execution",
         "runtime_observation",
-        "route_specific_intr_traversal",
+        "universal_intr_adjacent_hop_traversal",
         "evidence_class_preservation"
       ],
       "command": [
@@ -33,8 +33,8 @@
       "notes": [
         "Consumes authentic resident observer bound-state evidence and exact materialized demo-suite source only.",
         "Performs no public network acquisition and accepts no GitHub/provider credentials.",
-        "Emits only the route-specific SV-DN-1-HF-PUBLIC InTr runtime receipt after destination validation.",
-        "Does not claim Universal Interlock canonical adoption/global runtime activation, SDK admission, governance, custody, publication or certification."
+        "Executes the canonical Universal InTr adjacent hop EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM with Interlock required per hop and chained receipt lineage.",
+        "Reports canonical policy adoption but does not claim global runtime activation, SDK admission, governance, custody, publication or certification."
       ]
     }
   ]

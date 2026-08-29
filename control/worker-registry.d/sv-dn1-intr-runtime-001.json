@@ -4,12 +4,12 @@
   "tasks": [
     {
       "task_id": "SV-DN1-INTR-RUNTIME-001",
-      "goal_id": "SV-DN1-ROUTE-SPECIFIC-INTR-RUNTIME-001",
+      "goal_id": "SV-DN1-UNIVERSAL-INTR-RUNTIME-001",
       "state": "HANDOFF_READY",
       "claim_id": null,
       "archive_eligible": false,
       "executor_binding": "AUTHORIZED",
-      "authorized_policy_version": "sv-dn1-intr-runtime-v1",
+      "authorized_policy_version": "sv-dn1-universal-intr-runtime-v2",
       "handoff_ref": "handoffs/SV-DN1-INTR-RUNTIME-001.json",
       "block_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
       "cost_basis_ref": "cost-basis/worker-runtime/sv-dn1-intr-runtime.json",
@@ -19,10 +19,11 @@
         "workers/sv_dn1_intr_runtime_worker.py",
         "control/process-worker-adapters.d/sv-dn1-intr-runtime-001.json",
         "cost-basis/worker-runtime/sv-dn1-intr-runtime.json",
-        "StegVerse-org/stegverse-demo-suite:schemas/sv-dn1-intr-runtime-receipt.schema.json"
+        "StegVerse-org/stegverse-demo-suite:schemas/sv-dn1-intr-runtime-receipt.schema.json",
+        "management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json"
       ],
       "admissible_existence": {
-        "capability_id": "stegverse:capability:sv-dn1-route-specific-intr-runtime:v1",
+        "capability_id": "stegverse:capability:sv-dn1-universal-intr-adjacent-hop:v1",
         "capability_version": "1.0.0",
         "phase": "ADMISSIBLE",
         "standing_evidence_refs": [
@@ -39,7 +40,7 @@
         "activation_proof_ref": null,
         "blockers": [
           "SV_DN1_RESIDENT_SOURCE_CAPTURE_RECEIPT_NOT_YET_OBSERVED",
-          "SV_DN1_ROUTE_SPECIFIC_INTR_RECEIPT_NOT_YET_OBSERVED"
+          "SV_DN1_UNIVERSAL_INTR_ADJACENT_HOP_RECEIPT_NOT_YET_OBSERVED"
         ],
         "continuation_owner": "sv-dn1-intr-runtime-worker",
         "credential_authority": "TV/TVC",
@@ -86,7 +87,7 @@
       "capabilities": [
         "bounded_process_execution",
         "runtime_observation",
-        "route_specific_intr_traversal",
+        "universal_intr_adjacent_hop_traversal",
         "evidence_class_preservation"
       ],
       "capability_profile_ref": "control/worker-capability-profiles.json#public-research-worker-v1",

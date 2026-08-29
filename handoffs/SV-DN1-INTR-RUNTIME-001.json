@@ -3,8 +3,8 @@
   "handoff_id": "HANDOFF-SV-DN1-INTR-RUNTIME-001",
   "state": "HANDOFF_READY_MACHINE_OWNED",
   "goal": {
-    "goal_id": "SV-DN1-ROUTE-SPECIFIC-INTR-RUNTIME-001",
-    "objective": "Execute one fenced route-specific InTr traversal for the authentic SV-DN-1 resident semantic exchange on the sovereign carrier, validate the destination boundary, and emit the exact runtime receipt required by the canonical SDK bridge without widening protocol or execution authority.",
+    "goal_id": "SV-DN1-UNIVERSAL-INTR-RUNTIME-001",
+    "objective": "Execute one fenced Universal InTr adjacent-boundary traversal for the authentic SV-DN-1 resident semantic exchange on the sovereign carrier, validate the StegOS-ecosystem receiving boundary, and emit the runtime receipt required by the canonical SDK bridge without widening execution authority.",
     "success_predicates": [
       "resident observer receipt is authentic COMPLETE",
       "resident source capture and semantic exchange remain identity-continuous",
@@ -12,12 +12,18 @@
       "canonical StegVerse-side exchange validation passes",
       "route-specific InTr receipt conforms to SV-DN-1-HF-PUBLIC",
       "lineage_verified=true",
-      "canonical_protocol_adopted=false",
+      "canonical_protocol_adopted=true",
       "production_interlock_runtime_activated=false",
       "sdk_admitted=false",
       "credential_used=false",
       "github_token_used=false",
-      "repository_writeback_performed=false"
+      "repository_writeback_performed=false",
+      "universal_intr_policy_id=STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001",
+      "boundary_from=EXTERNAL_SYSTEM",
+      "boundary_to=STEGOS_ECOSYSTEM",
+      "interlock_required_per_hop=true",
+      "receipt_hash_chain_required=true",
+      "runtime_activation_claimed=false"
     ],
     "failure_predicates": [
       "resident receipt is absent, incomplete, stale, or identity-mismatched",
@@ -26,13 +32,14 @@
       "canonical destination validator reports any blocker",
       "GitHub or provider credential is present",
       "hosted execution is treated as sovereign runtime",
-      "SDK admission or Universal Interlock adoption is inferred",
-      "repository writeback is attempted"
+      "repository writeback is attempted",
+      "Universal InTr policy identity or adjacent-boundary contract is absent or mismatched",
+      "receipt hash-chain requirement is disabled or bypassed"
     ],
     "authority_ceiling": [
       "bounded_process_execution",
       "runtime_observation",
-      "route_specific_intr_traversal",
+      "universal_intr_adjacent_hop_traversal",
       "evidence_class_preservation",
       "no external source acquisition",
       "no repository writeback authority",
@@ -55,7 +62,7 @@
       "handoffs/SV-DN1-RESIDENT-OBSERVER-001.json"
     ],
     "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
-    "canonical_lineage_key": "sv-dn1:route-specific-intr-runtime",
+    "canonical_lineage_key": "sv-dn1:universal-intr-adjacent-hop",
     "worker_registry_ref": "control/worker-registry.d/sv-dn1-intr-runtime-001.json",
     "worker_id": "sv-dn1-intr-runtime-worker",
     "adapter_ref": "process:sv-dn1-intr-runtime-v1",
@@ -64,7 +71,7 @@
     "manual_allowed_role": "evidence review only",
     "priority": "release",
     "parent_task_id": "SV-DN1-RESIDENT-OBSERVER-001",
-    "derivation_reason": "The canonical SV-DN-1 SDK bridge requires an authentic route-specific InTr runtime receipt after the resident observer completes. This task owns that single missing transit proof without changing Universal Interlock adoption or SDK authority.",
+    "derivation_reason": "The canonical SV-DN-1 SDK bridge requires an authentic InTr runtime receipt after the resident observer completes. Following organization adoption of STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001, this task owns the EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM adjacent hop with chained Interlock/InTr receipt lineage.",
     "derivation_depth": 1,
     "source_handoff_ref": "docs/SV_DN1_INTR_RUNTIME_MIRROR_HANDOFF.md",
     "dependencies": [
@@ -80,7 +87,7 @@
   "authority": {
     "authority_source": "StegVerse-org/stegverse-demo-suite route-specific InTr contract + sovereign WorkerCoordinator",
     "heartbeat_grants_execution_authority": false,
-    "policy_version": "sv-dn1-intr-runtime-v1",
+    "policy_version": "sv-dn1-universal-intr-runtime-v2",
     "credential_authority": "TV/TVC",
     "github_token_required": false,
     "github_token_runtime_authority": "NONE",
@@ -89,18 +96,19 @@
     "provider_credential_authority": false,
     "observation_authority": true,
     "public_source_acquisition_authority": false,
-    "route_specific_intr_traversal_authority": true,
+    "route_specific_intr_traversal_authority": false,
     "sdk_admission_authority": false,
     "governance_decision_authority": false,
     "canonical_protocol_adoption_authority": false,
     "publication_authority": false,
-    "execution_authority_created": false
+    "execution_authority_created": false,
+    "universal_intr_adjacent_hop_traversal_authority": true
   },
   "execution": {
     "required_capabilities": [
       "bounded_process_execution",
       "runtime_observation",
-      "route_specific_intr_traversal",
+      "universal_intr_adjacent_hop_traversal",
       "evidence_class_preservation"
     ],
     "worker": "workers/sv_dn1_intr_runtime_worker.py",
@@ -112,7 +120,7 @@
     "max_retries": 2,
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 16,
-    "rate_class": "sv_dn1_route_specific_intr",
+    "rate_class": "sv_dn1_universal_intr_adjacent_hop",
     "hosted_execution_allowed": false,
     "bound_state_root": "~/.stegverse/state/sv-dn1-intr-runtime",
     "bound_state_allowed_paths": [
@@ -134,11 +142,17 @@
     "upstream_task_id": "SV-DN1-RESIDENT-OBSERVER-001",
     "upstream_transition_id": "SV_DN1_RESIDENT_SOURCE_CAPTURE_COMPLETE",
     "route_id": "SV-DN-1-HF-PUBLIC",
-    "transport_profile": "stegverse.sv-dn1.intr.sovereign-bound-state/v1",
+    "transport_profile": "stegverse.universal-intr.adjacent-hop/v1",
     "runtime_receipt_schema": "stegverse.sv-dn1.intr-runtime-receipt/v1",
-    "canonical_protocol_adopted": false,
+    "canonical_protocol_adopted": true,
     "production_interlock_runtime_activated": false,
-    "credential_authority": "TV/TVC"
+    "credential_authority": "TV/TVC",
+    "universal_intr_policy_id": "STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001",
+    "boundary_from": "EXTERNAL_SYSTEM",
+    "boundary_to": "STEGOS_ECOSYSTEM",
+    "interlock_required_per_hop": true,
+    "receipt_hash_chain_required": true,
+    "runtime_activation_claimed": false
   },
   "activation": {
     "carrier": "independent_task_control",
@@ -161,22 +175,26 @@
     "repository_persistence_requires_separate_admission": true
   },
   "completion": {
-    "next_authorized_action": "Feed the resident receipt, source capture, semantic exchange, and exact route-specific InTr receipt into the merged demo-suite SDK ingress builder. READY_FOR_SDK_0B is the successor precondition; SDK admission remains separate.",
+    "next_authorized_action": "Feed the resident receipt, source capture, semantic exchange, and Universal InTr adjacent-hop receipt into the merged demo-suite SDK ingress builder. READY_FOR_SDK_0B is the successor precondition; SDK admission remains separate.",
     "terminal_when": [
       "SV_DN1_ROUTE_SPECIFIC_INTR_COMPLETE",
       "route_id=SV-DN-1-HF-PUBLIC",
       "destination_validation=PASS",
       "lineage_verified=true",
-      "canonical_protocol_adopted=false",
+      "canonical_protocol_adopted=true",
       "production_interlock_runtime_activated=false",
       "sdk_admitted=false",
       "credential_used=false",
-      "github_token_used=false"
+      "github_token_used=false",
+      "universal_intr_policy_id=STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001",
+      "boundary_from=EXTERNAL_SYSTEM",
+      "boundary_to=STEGOS_ECOSYSTEM",
+      "runtime_activation_claimed=false"
     ],
-    "release_condition": "A fenced route-specific InTr receipt deterministically binds the authentic resident exchange to a successful canonical StegVerse-side destination validation without authority expansion."
+    "release_condition": "A fenced Universal InTr adjacent-hop receipt deterministically binds the authentic resident exchange to EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM destination validation with chained receipt lineage and no authority expansion."
   },
   "admissible_existence": {
-    "capability_id": "stegverse:capability:sv-dn1-route-specific-intr-runtime:v1",
+    "capability_id": "stegverse:capability:sv-dn1-universal-intr-adjacent-hop:v1",
     "capability_version": "1.0.0",
     "phase": "ADMISSIBLE",
     "standing_evidence_refs": [
@@ -193,7 +211,7 @@
     "activation_proof_ref": null,
     "blockers": [
       "SV_DN1_RESIDENT_SOURCE_CAPTURE_RECEIPT_NOT_YET_OBSERVED",
-      "SV_DN1_ROUTE_SPECIFIC_INTR_RECEIPT_NOT_YET_OBSERVED"
+      "SV_DN1_UNIVERSAL_INTR_ADJACENT_HOP_RECEIPT_NOT_YET_OBSERVED"
     ],
     "continuation_owner": "sv-dn1-intr-runtime-worker",
     "credential_authority": "TV/TVC",

@@ -29,9 +29,9 @@ RAW_HOST = "raw.githubusercontent.com"
 REPOSITORY = "StegVerse-org/stegverse-demo-suite"
 MANIFEST_REF = "main"
 MANIFEST_PATH = "config/sv_dn1_runtime_source_manifest.json"
-EXPECTED_MANIFEST_BLOB = "47760f63898fff0f5ba6dfab97eee5acd7290c9b"
+EXPECTED_MANIFEST_BLOB = "12c8c3f6f633e9f2f9d2b49db4ec28dee47e145f"
 SUPPORT_FILES = {
-    "docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md": "ba9acf76fd6eb488e5f3b9f9be01bb17e3a02d48",
+    "docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md": "329607cb87455d47c2be6849262196fefa6659f3",
     "tasks/SV-DN1-RESIDENT-OBSERVER-001.json": "0dbe655a86bea3d2a0f77aa2ada57a62882f00db",
 }
 
