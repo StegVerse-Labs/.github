@@ -63,3 +63,30 @@ def test_hil_handoff_binds_merged_universal_intr_source_chain() -> None:
     assert "Do not wait for G18 completion" in next_action
     assert "continuously READY receiver" in next_action
     assert handoff["block"]["recheck_trigger"] == "each admitted HIL Universal InTr transport event"
+
+
+def test_hil_event_materialization_uses_existing_targeted_executor_without_new_authority() -> None:
+    handoff = json.loads(HANDOFF.read_text(encoding="utf-8"))
+    event = handoff["activation"]["transport_event_materialization"]
+
+    assert event["materialization_request_schema"] == "stegverse.universal-intr-materialization-request/v1"
+    assert event["materialization_request_source_merge"].endswith("5ac248c223c9233cb741cda7a2856c30b0afb017")
+    assert event["consumer_ref"] == "scripts/consume_hil_intr_materialization_request.py"
+    assert event["watch_path"] == "intr-materialization"
+    assert event["existing_targeted_executor_ref"] == "scripts/refresh_and_execute_resident_task.py"
+    assert event["existing_target_task_id"] == "SHWP-HIL-SOVEREIGN-RECEIVER-001"
+    assert event["consumer_mints_claim_or_fence"] is False
+    assert event["blocked_materialization_blocks_unrelated_work"] is False
+    assert event["runtime_materialization_observed"] is False
+    assert event["authority_effect"] == "NONE_REQUEST_ONLY"
+
+    text = DOC.read_text(encoding="utf-8")
+    for marker in (
+        "Universal InTr event-materialization consumer",
+        "stegverse.universal-intr-materialization-request/v1",
+        "scripts/consume_hil_intr_materialization_request.py",
+        "existing WorkerCoordinator remains sole claim/fence authority",
+        "G18 completion required: false",
+        "blocked HIL materialization blocks unrelated work: false",
+    ):
+        assert marker in text, marker
