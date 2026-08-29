@@ -4,6 +4,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -109,6 +110,63 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             _command, kwargs = calls[0]
             self.assertNotEqual(kwargs["env"].get("GITHUB_TOKEN"), "forbidden")
             self.assertNotEqual(kwargs["env"].get("TVC_TOKEN"), "forbidden")
+
+    def test_bootstrap_dispatches_before_final_activation_verification(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            source = base / "source"
+            runtime = base / "runtime"
+            source.mkdir()
+            runtime.mkdir()
+            proof = base / "proof.json"
+            receipt = base / "bootstrap.json"
+            node_marker = base / "node.json"
+            call_order = []
+
+            def runner(command, **_kwargs):
+                name = Path(command[1]).name
+                call_order.append(name)
+                return SimpleNamespace(returncode=0 if name == "install_sovereign_heartbeat_service.py" else 1, stdout="", stderr="")
+
+            def dispatch(*_args, **_kwargs):
+                call_order.append("dispatch_resident_execution_requests.py")
+                return {
+                    "attempted": True,
+                    "state": "DISPATCH_COMPLETE",
+                    "returncode": 0,
+                    "authority_effect": "NONE",
+                }
+
+            eligibility = {
+                "eligible": True,
+                "canonical_source_complete": True,
+                "durable_state_writable": True,
+                "hosted_environment_rejected": False,
+            }
+            with mock.patch.object(boot, "derive_node_declaration", return_value=(True, "derived:test", eligibility)), \
+                 mock.patch.object(boot, "_dispatch_resident_requests", side_effect=dispatch):
+                result = boot.bootstrap(
+                    source,
+                    runtime,
+                    node_marker=node_marker,
+                    proof_path=proof,
+                    receipt_path=receipt,
+                    env={"PATH": "/bin", "HOME": str(base)},
+                    runner=runner,
+                    activate_downstream=False,
+                )
+
+            self.assertEqual(
+                call_order[:3],
+                [
+                    "install_sovereign_heartbeat_service.py",
+                    "dispatch_resident_execution_requests.py",
+                    "verify_sovereign_runtime_activation.py",
+                ],
+            )
+            self.assertEqual(result["state"], "REVIEW_REQUIRED")
+            self.assertTrue(result["post_bootstrap_resident_request_dispatch"]["attempted"])
+            self.assertEqual(result["post_bootstrap_resident_request_dispatch"]["state"], "DISPATCH_COMPLETE")
 
     def test_missing_runtime_dispatcher_is_not_faked_as_dispatch(self) -> None:
         with tempfile.TemporaryDirectory() as td:
