@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-27T17:30:00-05:00
+Updated: 2026-08-28T21:01:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -39,7 +39,7 @@ The 189 unaudited repositories are not exemptions. They are classified `NO_REPOS
 
 ## Current .github boundary
 
-`.github` remains `VECTOR_REQUIRED`. Thirteen active vectors are indexed today, but the global worker registry and organization task registry contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
+`.github` remains `VECTOR_REQUIRED`. Seventeen active vectors are indexed in the current formalism-cohort integration candidate, but the global worker registry and organization task registry contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
 
 Existing indexed examples remain unchanged:
 
@@ -102,12 +102,13 @@ Authority effect: NONE.
 
 Machine-readable snapshot: `control/cosv-global-registry-coverage.json`.
 
-- 45 unique worker task IDs across the global worker registry plus fragments.
-- 4 canonically indexed task IDs.
+- 54 unique worker task IDs across the global worker registry plus fragments at live main `a4a6c17db1a85c09bf3978dc7dbc6752223c0034`.
+- 17 canonically indexed task IDs in the current formalism-cohort candidate.
 - 6 completed-only historical unvectorized task IDs.
-- 25 active worker task IDs lack canonical COSV coverage.
+- 1 superseded historical unvectorized task ID.
+- 30 active worker task IDs lack canonical COSV coverage after the four-lane cohort projection.
 - 14 organization-registry task IDs lack canonical COSV coverage.
-- Total active .github task IDs lacking canonical COSV coverage: 39.
+- Total active .github task IDs lacking canonical COSV coverage after the cohort candidate: 44.
 - The orphan-recovery aggregate/fragment contradiction is reconciled to terminal COMPLETED from the durable G22 PASS receipt; no vector was emitted for this completed historical task.
 
 No new vector digits were invented during this audit.
@@ -290,7 +291,7 @@ SHWP-HEALER-SOVEREIGN-SCHEDULER-001
 task.v1 [L R U I V G O C M T B E A P] = 50000000101000
 ```
 
-The Healer no-GitHub-token source/authority migration is installed and released from chat ownership. Live execution remains machine-owned by the sovereign scheduler lane and is blocked by exactly one structured dependency condition: `SOVEREIGN_NODE_DECLARATION_NOT_PRESENT`. The Site ERL live scheduler receipt, native TLS runtime receipt, and production public route are not observed; legacy Site carrier retirement therefore remains unauthorized.
+The Healer no-GitHub-token source/authority migration is installed and released from chat ownership. Live execution remains machine-owned by the sovereign scheduler lane and is blocked by exactly one structured dependency condition. That blocker has since advanced to `RESIDENT_G18_REQUEST_QUEUED_CONSUMPTION_AND_V13_ACTIVATION_PROOF_NOT_OBSERVED`; the task vector digits remain unchanged because blocker cardinality is still one. The Site ERL live scheduler receipt, native TLS runtime receipt, and production public route remain unobserved; legacy Site carrier retirement therefore remains unauthorized.
 
 Active .github COSV gap: 26 worker tasks + 14 organization tasks = 40 active unvectorized task IDs.
 
@@ -304,3 +305,40 @@ task.v1 [L R U I V G O C M T B E A P] = 50000000101000
 The canonical AE seed remains `ready`, full derivation remains `ACTIVE_MACHINE_WORK`, and the StegVerse worker receipt is still pending. Exactly one blocker remains: `AE_AUTO_0011_TERMINAL_VALIDATED_STATE_NOT_YET_OBSERVED`. Chat-owned derivation is explicitly superseded by the AE machine worker. Downstream semantic bindings are installed but remain provisional until terminal AE source is validated and rebound.
 
 Active .github COSV gap: 25 worker tasks + 14 organization tasks = 39 active unvectorized task IDs.
+
+## Live denominator reconciliation — 2026-08-28T21:01:00-05:00
+
+A 133-commit advance of `main` after the prior 13-vector state added nine distinct active worker-registry fragments without changing `control/worker-registry.json` or the existing COSV index/coverage files.
+
+New active task IDs:
+
+```text
+SHWP-ARA-GRAPH-RUNTIME-086
+RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001
+KV-CONNECTION-HEALTH-RECONCILER-001
+KV-PROVIDER-CHANGE-OBSERVER-001
+SV-DN1-INTR-RUNTIME-001
+SV-DN1-RESIDENT-OBSERVER-001
+SV-DN1-SDK-FIRST-ROUND-001
+SV-DN1-SOURCE-MATERIALIZATION-001
+TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001
+```
+
+Each is `HANDOFF_READY`, `archive_eligible=false`, and lacks a canonical `source_state_vector_ref`. Therefore the live worker universe increases from 45 to 54 unique task IDs. Before the formalism cohort, the live active unvectorized count is 34 worker tasks + 14 organization tasks = 48. No new task is silently exempted.
+
+The existing Healer vector remains `50000000101000`; only its evidence text is refreshed because the single blocker changed identity while blocker cardinality remained one.
+
+## Formalism/manifold pre-reconciliation cohort — current-main candidate
+
+The following four machine-owned lanes are projected as:
+
+```text
+SHWP-FORMALISM-INVENTORY-001                 50000000100000
+SHWP-FORMALISM-HANDOFF-NORMALIZATION-001     50000000100000
+SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001    50000000100000
+SHWP-MANIFOLD-GOVERNANCE-MAPPING-001         50000000100000
+```
+
+All four have source implementation/validation merged, session claim released, dedicated AVAILABLE workers, `block_ref=null`, executable handoff `block=null`, and no resident terminal receipt yet. Missing resident receipts are evidence incompleteness, not fabricated blockers. The reconciliation task remains excluded because it consumes prerequisite receipts from these lanes.
+
+If this candidate validates and merges, local .github coverage becomes 17 indexed active vectors with 30 active worker gaps + 14 organization gaps = 44 active unvectorized tasks. This is not ecosystem activation.
