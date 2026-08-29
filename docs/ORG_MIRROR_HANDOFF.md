@@ -525,3 +525,36 @@ Implementation owner:
 `StegVerse-Labs/StegOS/stegos/universal_intr_transport.py`
 
 This is a canonical architecture/policy adoption. It does not claim that every legacy transport surface has already migrated or that Universal Interlock runtime activation has been physically observed.
+
+
+## System AI entity lifecycle — 2026-08-29
+
+StegVerse-002 is now formally represented as a governed StegVerse system AI entity through the canonical organization registry and scoped handoff.
+
+```text
+entity_id: StegVerse-002
+entity_class: SOVEREIGN_AI_RUNTIME_ENTITY
+runtime_repository: StegVerse-002/micro-node-runtime
+lifecycle_state: FEDERATION_REGISTERED
+federation_membership_established: true
+heartbeat_presence_proven: false
+governed_inference_proven: false
+same_execution_reconstruction_proven: false
+system_ai_active: false
+```
+
+Canonical organization surfaces:
+- `StegVerse-Labs/.github/control/system-ai-entity-registry.json`
+- `StegVerse-Labs/.github/schemas/system-ai-entity.schema.json`
+- `StegVerse-Labs/.github/docs/SYSTEM_AI_ENTITY_MIRROR_HANDOFF.md`
+- `StegVerse-Labs/.github/tools/validate_system_ai_entities.py`
+
+Canonical runtime surfaces:
+- `StegVerse-002/micro-node-runtime/docs/SYSTEM_AI_ENTITY_MIRROR_HANDOFF.md`
+- `StegVerse-002/micro-node-runtime/profiles/system_ai_runtime_entity.v1.json`
+
+HeartBeat federation membership does not grant execution authority. Model output has authority effect `NONE`. Credential authority remains TV/TVC, policy authority remains TV, route authority remains TVC, and custody/reconstruction remains Master Records.
+
+`SYSTEM_AI_ACTIVE` may be asserted only after the canonical HeartBeat federation proves the runtime present/fresh/nonfailed, a real governed local/private inference is observed through TV/TVC and LLM-adapter with measured usage, and same-execution Master Records reconstruction passes. Missing or stale evidence fails closed.
+
+After `SYSTEM_AI_ACTIVE` is evidenced and released, verify projections to Site, Publisher, admissibility-wiki, and stegguardian-wiki; source completeness alone does not authorize that propagation.
