@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
+MUTABLE_RUNTIME_DIRS = ("checkpoints", "events", "receipts", "heartbeats")
 COPY_DIRS = (
     "heartbeat_runtime",
     "control",
@@ -26,10 +27,6 @@ COPY_DIRS = (
     "authorizations",
     "workers",
     "schemas",
-    "checkpoints",
-    "events",
-    "receipts",
-    "heartbeats",
     "cost-basis",
 )
 COPY_FILES = (
@@ -167,6 +164,8 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         "heartbeat_grants_execution_authority": False,
         "execution_authority_effect": "NONE_FROM_CARRIER",
         "manual_action_required": False,
+        "source_mutable_runtime_state_copied": False,
+        "mutable_runtime_dirs_excluded_from_source": list(MUTABLE_RUNTIME_DIRS),
     }
     path = target_root / "receipts" / "sovereign-host" / "materialization.latest.json"
     path.parent.mkdir(parents=True, exist_ok=True)
