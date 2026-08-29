@@ -1,8 +1,8 @@
 {
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
-  "observed_commit": "981dc445476f5049fc51194c93d29b9fc5e35d44",
-  "observed_at": "2026-08-27T17:30:00-05:00",
+  "observed_commit": "a4a6c17db1a85c09bf3978dc7dbc6752223c0034",
+  "observed_at": "2026-08-28T21:01:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -10,10 +10,10 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
-    "unique_task_ids_global_plus_fragments": 45,
-    "canonically_indexed_task_ids": 13,
+    "unique_task_ids_global_plus_fragments": 54,
+    "canonically_indexed_task_ids": 17,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 25,
+    "active_unvectorized_unique_task_ids": 30,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,7 +21,7 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 39,
+  "total_active_unvectorized_unique_task_ids": 44,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -35,10 +35,6 @@
     "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
     "HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001",
     "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
-    "SHWP-FORMALISM-INVENTORY-001",
-    "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001",
-    "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001",
-    "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001",
     "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001",
     "SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001",
     "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001",
@@ -47,7 +43,16 @@
     "SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
     "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
     "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
-    "STEGVERSE-TEST-LANES-AUTOLAUNCH-001"
+    "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
+    "SHWP-ARA-GRAPH-RUNTIME-086",
+    "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
+    "KV-CONNECTION-HEALTH-RECONCILER-001",
+    "KV-PROVIDER-CHANGE-OBSERVER-001",
+    "SV-DN1-INTR-RUNTIME-001",
+    "SV-DN1-RESIDENT-OBSERVER-001",
+    "SV-DN1-SDK-FIRST-ROUND-001",
+    "SV-DN1-SOURCE-MATERIALIZATION-001",
+    "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001"
   ],
   "active_organization_task_ids_missing_canonical_cosv": [
     "ORG-FED-AACT-E-001",
@@ -117,6 +122,22 @@
     {
       "task_id": "AE-RELATIONAL-MATH-WORKER-001",
       "vector": "50000000101000"
+    },
+    {
+      "task_id": "SHWP-FORMALISM-INVENTORY-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001",
+      "vector": "50000000100000"
     }
   ],
   "evidence_conflicts": [],
@@ -153,5 +174,25 @@
       "fallback_executed": false,
       "authority_effect": "NONE"
     }
-  ]
+  ],
+  "live_denominator_reconciliation": {
+    "observed_main": "a4a6c17db1a85c09bf3978dc7dbc6752223c0034",
+    "prior_unique_worker_task_ids": 45,
+    "newly_added_worker_task_ids": 9,
+    "current_unique_worker_task_ids": 54,
+    "new_task_ids": [
+      "SHWP-ARA-GRAPH-RUNTIME-086",
+      "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
+      "KV-CONNECTION-HEALTH-RECONCILER-001",
+      "KV-PROVIDER-CHANGE-OBSERVER-001",
+      "SV-DN1-INTR-RUNTIME-001",
+      "SV-DN1-RESIDENT-OBSERVER-001",
+      "SV-DN1-SDK-FIRST-ROUND-001",
+      "SV-DN1-SOURCE-MATERIALIZATION-001",
+      "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001"
+    ],
+    "aggregate_worker_registry_changed": false,
+    "organization_task_count": 14,
+    "note": "The nine new worker-registry fragments are distinct active HANDOFF_READY tasks and are counted as active unvectorized until canonical vectors are emitted or terminal/superseded evidence removes them."
+  }
 }
