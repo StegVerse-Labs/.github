@@ -112,7 +112,50 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             self.assertNotEqual(kwargs["env"].get("GITHUB_TOKEN"), "forbidden")
             self.assertNotEqual(kwargs["env"].get("TVC_TOKEN"), "forbidden")
 
-    def test_bootstrap_dispatches_before_final_activation_verification(self) -> None:
+    def test_worker_prime_forces_one_local_task_capable_cycle(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            source = base / "source"
+            runtime = base / "runtime"
+            proof = base / "proof.json"
+            runner_path = runtime / "scripts/run_worker_runtime.py"
+            runner_path.parent.mkdir(parents=True)
+            runner_path.write_text("# worker runner\n", encoding="utf-8")
+            (runtime / "control").mkdir(parents=True)
+            (runtime / "control/heartbeat-carrier-runtime-state.json").write_text(
+                json.dumps({"epoch": 32}) + "\n", encoding="utf-8"
+            )
+            (runtime / "control/worker-runtime-state.json").write_text(
+                json.dumps({"observation_mode": "TASK_CAPABLE_EXECUTION"}) + "\n", encoding="utf-8"
+            )
+            calls = []
+
+            def runner(command, **kwargs):
+                calls.append((command, kwargs))
+                return SimpleNamespace(
+                    returncode=0,
+                    stdout=json.dumps({"worker_task_capable_cycle_observed": True}) + "\n",
+                    stderr="",
+                )
+
+            result = boot._prime_resident_worker_runtime(
+                source,
+                runtime,
+                proof_path=proof,
+                env={"PATH": "/bin", "HOME": str(base), "GITHUB_TOKEN": "forbidden"},
+                runner=runner,
+            )
+            self.assertTrue(result["attempted"])
+            self.assertEqual(result["state"], "TASK_CAPABLE_CYCLE_OBSERVED")
+            self.assertTrue(result["task_capable_cycle_observed"])
+            self.assertEqual(result["carrier_epoch"], 32)
+            self.assertEqual(result["worker_observation_mode"], "TASK_CAPABLE_EXECUTION")
+            self.assertEqual(len(calls), 1)
+            command, kwargs = calls[0]
+            self.assertEqual(command[-2:], ["--cycles", "1"])
+            self.assertNotEqual(kwargs["env"].get("GITHUB_TOKEN"), "forbidden")
+
+    def test_bootstrap_primes_worker_then_dispatches_before_final_activation_verification(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             base = Path(td)
             source = base / "source"
@@ -128,6 +171,16 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
                 name = Path(command[1]).name
                 call_order.append(name)
                 return SimpleNamespace(returncode=0 if name == "install_sovereign_heartbeat_service.py" else 1, stdout="", stderr="")
+
+            def prime(*_args, **_kwargs):
+                call_order.append("run_worker_runtime.py")
+                return {
+                    "attempted": True,
+                    "state": "TASK_CAPABLE_CYCLE_OBSERVED",
+                    "returncode": 0,
+                    "task_capable_cycle_observed": True,
+                    "authority_effect": "NONE",
+                }
 
             def dispatch(*_args, **_kwargs):
                 call_order.append("dispatch_resident_execution_requests.py")
@@ -145,6 +198,7 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
                 "hosted_environment_rejected": False,
             }
             with mock.patch.object(boot, "derive_node_declaration", return_value=(True, "derived:test", eligibility)), \
+                 mock.patch.object(boot, "_prime_resident_worker_runtime", side_effect=prime), \
                  mock.patch.object(boot, "_dispatch_resident_requests", side_effect=dispatch):
                 result = boot.bootstrap(
                     source,
@@ -158,14 +212,17 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
                 )
 
             self.assertEqual(
-                call_order[:3],
+                call_order[:4],
                 [
                     "install_sovereign_heartbeat_service.py",
+                    "run_worker_runtime.py",
                     "dispatch_resident_execution_requests.py",
                     "verify_sovereign_runtime_activation.py",
                 ],
             )
             self.assertEqual(result["state"], "REVIEW_REQUIRED")
+            self.assertTrue(result["post_install_worker_prime"]["attempted"])
+            self.assertTrue(result["post_install_worker_prime"]["task_capable_cycle_observed"])
             self.assertTrue(result["post_bootstrap_resident_request_dispatch"]["attempted"])
             self.assertEqual(result["post_bootstrap_resident_request_dispatch"]["state"], "DISPATCH_COMPLETE")
 
