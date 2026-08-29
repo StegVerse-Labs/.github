@@ -323,7 +323,9 @@ def main() -> int:
     args = parser.parse_args()
     receipt = consume_all(args.source_root, args.runtime_root)
     print(json.dumps(receipt, sort_keys=True))
-    return 1 if receipt.get("state") == "BLOCKED" else 0
+    # A blocked/rejected HIL materialization is evidence for the HIL lane; it
+    # must not fail the shared source-refresh watcher or block unrelated work.
+    return 0
 
 
 if __name__ == "__main__":
