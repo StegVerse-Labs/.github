@@ -2,7 +2,10 @@
   "schema": "stegverse.local-source-generation-executor-task-state/v0.1",
   "task_id": "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
   "goal_id": "LOCAL-SOURCE-GENERATION-EXECUTOR-001",
-  "originating_session_goals": ["G10-GENERALIZED-OWNER-MUTATION-EXECUTOR", "G11-RECURSIVE-SELF-BUILD-PROOF"],
+  "originating_session_goals": [
+    "G10-GENERALIZED-OWNER-MUTATION-EXECUTOR",
+    "G11-RECURSIVE-SELF-BUILD-PROOF"
+  ],
   "state": "SOURCE_COMPLETE_VALIDATED_MACHINE_BLOCKED_ON_EXPLICIT_AE_ACTIVATION",
   "source_completion_state": "COMPLETE_VALIDATED_RELEASED",
   "execution_owner": "local-source-generation-executor-worker after repository-native admission",
@@ -27,8 +30,9 @@
     "stegverse:capability:sovereign-local-model:v1 ACTIVATED + activation/integration proof"
   ],
   "blockers": [
-    "SOURCE_GENERATION_CAPABILITY_NOT_YET_ACTIVATED",
-    "SOVEREIGN_LOCAL_MODEL_NOT_YET_ACTIVATED"
+    "SOVEREIGN_LOCAL_MODEL_LIVE_ACTIVATION_NOT_YET_OBSERVED",
+    "FORMALISM_SOURCE_GENERATION_INTEGRATION_PROOF_NOT_YET_OBSERVED",
+    "RESIDENT_SOURCE_GENERATION_AND_RECURSIVE_REOBSERVATION_NOT_YET_PROVEN"
   ],
   "machine_observable_release_condition": "Both canonical capability owners expose explicit ACTIVATED state with activation proof and integration evidence; an admitted owner manifest lacks a generation result; the worker acquires its normal collision-safe machine execution scope.",
   "success_receipts": [
@@ -42,5 +46,32 @@
   "provider_secret_export_allowed": false,
   "wallet_signing_authority": "NONE",
   "broadcast_authority": "NONE",
-  "next_executable_action": "Repository-native scheduler rechecks canonical capability evidence; once both are explicitly ACTIVATED, execute the bounded local generation worker and pass its result to the existing #137 binder; TV/TVC remains owner-repository mutation authority."
+  "next_executable_action": "Repository-native scheduler rechecks canonical capability evidence; once both are explicitly ACTIVATED, execute the bounded local generation worker and pass its result to the existing #137 binder; TV/TVC remains owner-repository mutation authority.",
+  "canonical_source_generation_phase": "ADMISSIBLE",
+  "canonical_source_generation_target_phase": "ACTIVATED",
+  "standing_evidence_refs": [
+    "StegVerse-Labs/StegCore:data/formalism-source-generation-admissibility-evaluation.json",
+    "StegVerse-Labs/StegCore#123"
+  ],
+  "admissibility_evidence_refs": [
+    "StegVerse-Labs/StegCore:tests/test_formalism_source_generation_admissibility.py",
+    "StegVerse-Labs/StegCore@15d9524530bc45a9404d93c3e2d51953d8f4a156"
+  ],
+  "integration_evidence_refs": [],
+  "activation_proof_ref": null,
+  "canonical_lifecycle_merge": "StegVerse-Labs/StegCore@15d9524530bc45a9404d93c3e2d51953d8f4a156",
+  "binder_cosv_ref": "control/task-vectors/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
+  "source_state_vector_ref": "control/task-vectors/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000103000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-08-29T02:37:00-05:00",
+      "authority_effect": "NONE"
+    }
+  }
 }

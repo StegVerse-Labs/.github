@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
-  "observed_commit": "2d3a3d27eef1c0afaa9b1a2a4b5a2ab14b3384a1",
+  "observed_commit": "e65492f8b3e5a79a70213121a239089d3b0fd508",
   "observed_at": "2026-08-29T02:37:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
@@ -11,9 +11,9 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 54,
-    "canonically_indexed_task_ids": 32,
+    "canonically_indexed_task_ids": 33,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 15,
+    "active_unvectorized_unique_task_ids": 14,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,7 +21,7 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 29,
+  "total_active_unvectorized_unique_task_ids": 28,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -31,7 +31,6 @@
     "HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001",
     "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
     "HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001",
-    "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
     "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001",
     "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001",
     "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
@@ -183,6 +182,10 @@
     {
       "task_id": "SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
       "vector": "50000000103000"
+    },
+    {
+      "task_id": "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+      "vector": "50000000103000"
     }
   ],
   "evidence_conflicts": [],
@@ -312,6 +315,27 @@
     "integration_evidence_observed": false,
     "resident_recursive_reobservation_observed": false,
     "repository_operation_authority": "TV/TVC_ONLY",
+    "authority_effect": "NONE"
+  },
+  "local_source_generation_executor_reconciliation": {
+    "source_claim_state": "COMPLETE_VALIDATED_RELEASED",
+    "source_validation_receipt": "receipts/local-source-generation-executor/source-validation-20260814.json",
+    "canonical_lifecycle_merge": "StegVerse-Labs/StegCore@15d9524530bc45a9404d93c3e2d51953d8f4a156",
+    "prior_structured_phase": "DECLARED",
+    "canonical_phase": "ADMISSIBLE",
+    "target_phase": "ACTIVATED",
+    "prior_structured_blocker_count": 2,
+    "canonical_blocker_count": 3,
+    "structured_surfaces_reconciled": [
+      "control/worker-registry.d/local-source-generation-executor-001.json",
+      "handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
+      "data/local-source-generation-executor/task-state.json",
+      "control/admissible-existence-retrospective-conformance.json"
+    ],
+    "activation_proof_observed": false,
+    "integration_evidence_observed": false,
+    "resident_recursive_reobservation_observed": false,
+    "repository_mutation_authority": "TV/TVC_ONLY",
     "authority_effect": "NONE"
   }
 }
