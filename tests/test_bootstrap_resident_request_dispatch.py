@@ -35,6 +35,8 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             "scripts/consume_resident_execution_request.py",
             "scripts/consume_g18_resident_execution_request.py",
             "scripts/consume_hil_resident_execution_request.py",
+            "scripts/consume_evaluator_intr_resident_execution_request.py",
+            "scripts/materialize_evaluator_intr_route_config.py",
             "scripts/consume_hil_intr_materialization_request.py",
             "scripts/consume_ara_graph_resident_execution_request.py",
             "scripts/consume_sv_dn1_resident_execution_request.py",
@@ -100,8 +102,8 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             )
             self.assertTrue(result["attempted"])
             self.assertEqual(result["state"], "DISPATCH_COMPLETE")
-            self.assertEqual(result["consumer_count"], 6)
-            self.assertEqual(result["consumers_visited"], 6)
+            self.assertEqual(result["consumer_count"], 7)
+            self.assertEqual(result["consumers_visited"], 7)
             self.assertIn("g18", result["request_failures"])
             self.assertFalse(result["request_failure_blocks_later_requests"])
             self.assertFalse(result["github_token_required"])
