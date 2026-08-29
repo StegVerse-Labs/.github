@@ -99,7 +99,7 @@ The local demo-suite executable/config source must additionally match the merged
 config/sv_dn1_runtime_source_manifest.json
 schema: stegverse.sv-dn1.runtime-source-manifest/v1
 hash_profile: git-blob-sha1
-source_basis_commit: ccd8a1886e8b87865cfcc541be5f32bf59f34e17
+source_basis_commit: 4988d453419f43404100c69dd97dd1785d7e0a75
 drift_policy: FAIL_CLOSED
 ```
 
@@ -261,3 +261,25 @@ The resident worker now refuses ambiguous local demo-suite executable/config byt
 ## Archive readiness
 
 This handoff captures the current execution ownership, authority ceiling, remaining files, collision boundary, and successor boundary. Once merged, no originating chat is required to recover this task.
+
+## Product task scope reconciliation — 2026-08-28
+
+The canonical demo-suite product task has been narrowed to the same resident-capture boundary already owned by this worker:
+
+```text
+StegVerse-org/stegverse-demo-suite PR #21
+merge: a71b1263018cd5c7bba73b7182474c43a34c95bc
+resident execution scope: RESIDENT_CAPTURE_AND_HF_SEMANTIC_EXCHANGE_ONLY
+predecessor: SV-DN1-SOURCE-MATERIALIZATION-001
+successor: SV-DN1-INTR-RUNTIME-001
+```
+
+Canonical current resident blockers:
+
+```text
+EXACT_PINNED_LOCAL_DEMO_SUITE_SOURCE_NOT_YET_OBSERVED
+CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND
+SOVEREIGN_SV_DN1_RESIDENT_SOURCE_CAPTURE_RECEIPT_NOT_YET_OBSERVED
+```
+
+The current runtime-source manifest basis is `4988d453419f43404100c69dd97dd1785d7e0a75`. This reconciliation changes no runtime observation state and grants no new authority.
