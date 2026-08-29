@@ -11,9 +11,9 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 58,
-    "canonically_indexed_task_ids": 36,
+    "canonically_indexed_task_ids": 37,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 15,
+    "active_unvectorized_unique_task_ids": 14,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,7 +21,7 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 29,
+  "total_active_unvectorized_unique_task_ids": 28,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -36,8 +36,7 @@
     "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
     "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
     "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
-    "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
-    "SV-DN1-PRODUCTION-SOURCE-PREP-001"
+    "STEGVERSE-TEST-LANES-AUTOLAUNCH-001"
   ],
   "active_organization_task_ids_missing_canonical_cosv": [
     "ORG-FED-AACT-E-001",
@@ -199,6 +198,10 @@
     {
       "task_id": "KV-REVALIDATION-PROOF-INTAKE-001",
       "vector": "50000000102000"
+    },
+    {
+      "task_id": "SV-DN1-PRODUCTION-SOURCE-PREP-001",
+      "vector": "50000000103000"
     }
   ],
   "evidence_conflicts": [],
@@ -237,16 +240,14 @@
     }
   ],
   "live_denominator_reconciliation": {
-    "observed_main": "ec17767ce753d5c30da344adacf5d0750363a530",
-    "prior_unique_worker_task_ids": 57,
-    "newly_added_worker_task_ids": 1,
+    "observed_main": "531d0683697436d2317e658d06cba5eee1b6e295",
+    "prior_unique_worker_task_ids": 58,
+    "newly_added_worker_task_ids": 0,
     "current_unique_worker_task_ids": 58,
-    "new_task_ids": [
-      "KV-REVALIDATION-PROOF-INTAKE-001"
-    ],
+    "new_task_ids": [],
     "aggregate_worker_registry_changed": false,
     "organization_task_count": 14,
-    "note": "KV-REVALIDATION-PROOF-INTAKE-001 is a newly registered and canonically vectorized resident intake task. Worker denominator advances to 58; indexed partition advances to 36 while active-unvectorized remains 15. No runtime activation or authority promotion is inferred."
+    "note": "SV-DN1-PRODUCTION-SOURCE-PREP-001 moved from active-unvectorized to canonical index after blocker/source parity reconciliation. Worker denominator remains 58; indexed advances to 37 and active-unvectorized falls to 14 without runtime or authority promotion."
   },
   "g18_dispatcher_reconciliation": {
     "vector_unchanged": "50000000101000",
@@ -389,6 +390,31 @@
     "evidence_complete": false,
     "provider_operation_authority": "NONE",
     "credential_authority": "TV/TVC",
+    "authority_effect": "NONE"
+  },
+  "sv_dn1_production_source_prep_projection": {
+    "task_id": "SV-DN1-PRODUCTION-SOURCE-PREP-001",
+    "vector": "50000000103000",
+    "registry_ref": "control/worker-registry.d/sv-dn1-production-source-prep-001.json",
+    "source_state_vector_ref": "control/task-vectors/SV-DN1-PRODUCTION-SOURCE-PREP-001.json",
+    "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
+    "tvc_broker_pr": 92,
+    "tvc_broker_head": "b5288f9910ada26c6ab2e9bca3f7701afaae2cef",
+    "blockers": [
+      "TVC_REPOSITORY_BROKER_PR_92_GOVERNED_VALIDATION_AND_ADMISSION_PENDING",
+      "PRIVATE_CANONICAL_SOURCE_MATERIALIZATION_RECEIPTS_NOT_YET_OBSERVED",
+      "SV_DN1_PRODUCTION_SOURCE_PREP_RECEIPT_NOT_YET_OBSERVED"
+    ],
+    "activation_proof_observed": false,
+    "evidence_complete": false,
+    "private_materialization_receipts_observed": false,
+    "production_source_prep_receipt_observed": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "repository_writeback_authority": false,
+    "sdk_admission_authority": false,
+    "governance_decision_authority": false,
+    "publication_authority": false,
     "authority_effect": "NONE"
   }
 }
