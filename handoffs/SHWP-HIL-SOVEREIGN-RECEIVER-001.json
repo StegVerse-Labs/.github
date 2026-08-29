@@ -50,6 +50,9 @@
       "StegVerse-Labs/Site@1cb2b9b950674400c5e5aa341b8b6efba5cbeb47 Universal InTr Submit path",
       "StegVerse-org/LLM-adapter@ad1a7c3f8bb727d1007f254930d9a77df0bfa94f Universal InTr receiver/custody chain",
       "StegVerse-Labs/TVC@31a4ea2fcc42b807ec24ae2612df4e60d38a73eb Universal InTr TVC lifecycle admission",
+      "StegVerse-Labs/StegOS@5ac248c223c9233cb741cda7a2856c30b0afb017 Universal InTr event materialization request",
+      "scripts/consume_hil_intr_materialization_request.py",
+      "tests/test_hil_intr_materialization_consumer.py",
       "workers/hil_sovereign_receiver_bridge.py",
       "workers/hil_sovereign_receiver_worker.py",
       "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
@@ -187,7 +190,16 @@
       "receiver_ready_is_precondition_to_submit": false,
       "receiver_ready_is_downstream_observation": true,
       "request_grants_authority": false,
-      "authority_effect": "NONE_TRANSPORT_ONLY"
+      "authority_effect": "NONE_REQUEST_ONLY",
+      "materialization_request_schema": "stegverse.universal-intr-materialization-request/v1",
+      "materialization_request_source_merge": "StegVerse-Labs/StegOS@5ac248c223c9233cb741cda7a2856c30b0afb017",
+      "consumer_ref": "scripts/consume_hil_intr_materialization_request.py",
+      "watch_path": "intr-materialization",
+      "existing_targeted_executor_ref": "scripts/refresh_and_execute_resident_task.py",
+      "existing_target_task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+      "consumer_mints_claim_or_fence": false,
+      "blocked_materialization_blocks_unrelated_work": false,
+      "runtime_materialization_observed": false
     }
   },
   "continuity": {
@@ -197,7 +209,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "On the next admitted HIL Universal InTr event, materialize or reuse the bounded sovereign HIL receiver only as needed, verify the receiver-side receipt chain, then continue to the already-merged TVC InTr lifecycle intake. Do not wait for G18 completion or a continuously READY receiver before accepting transport intent. Source/CI remains non-runtime evidence.",
+    "next_authorized_action": "On the next authentic HIL Universal InTr event, preserve the exact packet/intent, emit or receive the canonical StegOS materialization request, let the existing rootless watcher invoke scripts/consume_hil_intr_materialization_request.py, and let only the existing targeted executor request SHWP-HIL-SOVEREIGN-RECEIVER-001 under WorkerCoordinator claim/fence authority. Then preserve the receiver and TVC Interlock receipts. Do not wait for G18 completion or a continuously READY receiver. Source/CI remains non-runtime evidence.",
     "terminal_when": [
       "authentic participant Universal InTr intent preserved",
       "receiver-side DEVICE_SYSTEM -> STEGOS_ECOSYSTEM receipt preserved",
@@ -209,8 +221,8 @@
     "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001"
   },
   "block": {
-    "block_reason": "Source transport and receipt-chain support are merged across Site, LLM-adapter and TVC. Remaining activation evidence is an authentic Universal InTr event traversing receiver materialization/custody and TVC admission; G18 completion and continuously READY receiver state are not prerequisites.",
-    "dependency": "authentic HIL Universal InTr event plus event-ephemeral or reusable sovereign receiver materialization and TVC receipt observation",
+    "block_reason": "The event-triggered transport, StegOS materialization-request seam, HIL materialization consumer, receiver receipt chain, and TVC intake are source-complete on their current lanes. Remaining activation evidence is authentic runtime creation/consumption of a HIL materialization request and the resulting receiver/TVC receipt chain; G18 completion and continuously READY receiver state are not prerequisites.",
+    "dependency": "authentic HIL Universal InTr event delivered into the canonical materialization-request seam, existing HIL targeted execution, and resulting receiver/TVC receipt observation",
     "solution_task_ref": "StegVerse-Labs/.github#246",
     "solution_source_ref": "workers/hil_sovereign_receiver_worker.py",
     "solution_validation_ref": "tests/test_hil_sovereign_receiver_bridge.py",
