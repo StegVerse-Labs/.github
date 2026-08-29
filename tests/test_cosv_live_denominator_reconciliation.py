@@ -13,6 +13,7 @@ NEW_TASKS=[
 "SV-DN1-SDK-FIRST-ROUND-001",
 "SV-DN1-SOURCE-MATERIALIZATION-001",
 "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
+"SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001",
 ]
 
 class COSVLiveDenominatorReconciliationTests(unittest.TestCase):
@@ -24,7 +25,7 @@ class COSVLiveDenominatorReconciliationTests(unittest.TestCase):
 
     def test_live_worker_denominator_and_partition_are_consistent(self):
         summary=self.coverage["worker_registry_summary"]
-        self.assertEqual(summary["unique_task_ids_global_plus_fragments"],54)
+        self.assertEqual(summary["unique_task_ids_global_plus_fragments"],55)
         self.assertEqual(summary["canonically_indexed_task_ids"],len(self.index["tasks"]))
         self.assertEqual(summary["canonically_indexed_task_ids"],len(self.coverage["indexed_vectors"]))
         expected_active_unvectorized=54-summary["completed_only_historical_unvectorized_task_ids"]-summary["superseded_historical_unvectorized_task_ids"]-summary["canonically_indexed_task_ids"]
