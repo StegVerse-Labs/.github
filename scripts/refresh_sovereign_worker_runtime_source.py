@@ -36,6 +36,8 @@ STATIC_FILES = (
     Path("scripts/consume_resident_execution_request.py"),
     Path("scripts/consume_g18_resident_execution_request.py"),
     Path("scripts/consume_hil_resident_execution_request.py"),
+    Path("scripts/consume_evaluator_intr_resident_execution_request.py"),
+    Path("scripts/materialize_evaluator_intr_route_config.py"),
     Path("scripts/consume_hil_intr_materialization_request.py"),
     Path("scripts/serve_hil_intr_materialization_ingress.py"),
     Path("scripts/serve_evaluator_intr_runtime.py"),
