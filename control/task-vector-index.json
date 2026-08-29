@@ -281,11 +281,31 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/UAP_MEDIA_RESEARCH_MIRROR_HANDOFF.md"
+    },
+    {
+      "task_id": "KV-CONNECTION-HEALTH-RECONCILER-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/kv-connection-health-reconciler-001.json",
+      "source_state_vector_ref": "control/task-vectors/KV-CONNECTION-HEALTH-RECONCILER-001.json",
+      "vector": "50000000102000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/continuity-vault-kit:KV_CONNECTION_REGISTRY_MATERIALIZATION_MIRROR_HANDOFF.md@d0c966d557dc437d1d2e6da5b68e6c31912af501"
+    },
+    {
+      "task_id": "KV-PROVIDER-CHANGE-OBSERVER-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/kv-provider-change-observer-001.json",
+      "source_state_vector_ref": "control/task-vectors/KV-PROVIDER-CHANGE-OBSERVER-001.json",
+      "vector": "50000000102000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/continuity-vault-kit:KV_MONITOR_TARGETS_CANONICAL_STATE_MIRROR_HANDOFF.md@d0c966d557dc437d1d2e6da5b68e6c31912af501"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 28,
-    "local_cosv_record_tasks": 28,
+    "indexed_vectorized_tasks": 30,
+    "local_cosv_record_tasks": 30,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
