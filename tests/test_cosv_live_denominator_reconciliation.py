@@ -13,7 +13,19 @@ NEW_TASKS=[
 "SV-DN1-SDK-FIRST-ROUND-001",
 "SV-DN1-SOURCE-MATERIALIZATION-001",
 "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
+"SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001",
 ]
+
+def _unique_worker_task_ids():
+    ids=set()
+    roots=[ROOT/"control/worker-registry.json"]+sorted((ROOT/"control/worker-registry.d").glob("*.json"))
+    for path in roots:
+        data=json.loads(path.read_text(encoding="utf-8"))
+        for task in data.get("tasks",[]):
+            task_id=task.get("task_id")
+            if isinstance(task_id,str) and task_id:
+                ids.add(task_id)
+    return ids
 
 class COSVLiveDenominatorReconciliationTests(unittest.TestCase):
     def setUp(self):
@@ -24,10 +36,10 @@ class COSVLiveDenominatorReconciliationTests(unittest.TestCase):
 
     def test_live_worker_denominator_and_partition_are_consistent(self):
         summary=self.coverage["worker_registry_summary"]
-        self.assertEqual(summary["unique_task_ids_global_plus_fragments"],54)
+        self.assertEqual(summary["unique_task_ids_global_plus_fragments"],len(_unique_worker_task_ids()))
         self.assertEqual(summary["canonically_indexed_task_ids"],len(self.index["tasks"]))
         self.assertEqual(summary["canonically_indexed_task_ids"],len(self.coverage["indexed_vectors"]))
-        expected_active_unvectorized=54-summary["completed_only_historical_unvectorized_task_ids"]-summary["superseded_historical_unvectorized_task_ids"]-summary["canonically_indexed_task_ids"]
+        expected_active_unvectorized=summary["unique_task_ids_global_plus_fragments"]-summary["completed_only_historical_unvectorized_task_ids"]-summary["superseded_historical_unvectorized_task_ids"]-summary["canonically_indexed_task_ids"]
         self.assertEqual(summary["active_unvectorized_unique_task_ids"],expected_active_unvectorized)
         self.assertEqual(self.coverage["total_active_unvectorized_unique_task_ids"],expected_active_unvectorized+self.coverage["organization_registry_summary"]["active_unvectorized_task_ids"])
 
