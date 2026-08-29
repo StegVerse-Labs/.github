@@ -1,0 +1,20 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-TVC-BROKER-VALIDATION-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "fresh_fence_minimum_exclusive": 22,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "tvc_root_locator_required": true,
+  "credential_material_allowed": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "After local WorkerCoordinator source refresh, attempt the already-admitted TVC broker validation task only when an exact already-local TVC PR #92 source root is exposed by STEGVERSE_TVC_ROOT. The request grants no source transport, credential, claim, fence, merge, or repository authority."
+}
