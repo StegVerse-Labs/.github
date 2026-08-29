@@ -6,7 +6,7 @@
 goal_id: SV-DN1-PRODUCTION-SOURCE-PREPARATION-001
 task_id: SV-DN1-PRODUCTION-SOURCE-PREP-001
 repository: StegVerse-Labs/.github
-branch: feature/sv-dn1-production-source-prep
+branch: main
 canonical product owner: StegVerse-org/stegverse-demo-suite
 canonical product handoff: docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md
 upstream runtime dependency: SV-DN1-INTR-RUNTIME-001
@@ -220,13 +220,31 @@ The completion receipt exposes the four non-secret local root paths for the SDK 
 ## Current state
 
 ```text
-public source preparation worker: IMPLEMENTING
-private TVC spool request generation: IMPLEMENTING
+public source preparation worker: MERGED / VALIDATED
+private TVC spool request generation: MERGED / VALIDATED
 TVC broker PR #92: OPEN / governed local validation pending
 private broker admission: NOT COMPLETE
 production source prep runtime receipt: NOT OBSERVED
 SDK first round: NOT ANALYZED
 ```
+
+## Merge and validation evidence
+
+```text
+PR #371: MERGED
+merge_commit: f488e70fca67e80fa6b674ee7380b0e04c5000f7
+validated_head: 25c32163562b877a1510ea04dc8994f9f1cfee30
+heartbeat worker validation run 33228272533 / job 99036145798: PASS
+organization control plane run 33228272505 / job 99036145748: PASS
+complete deterministic repository suite: PASS
+executable handoff validation: PASS
+AE conformance: PASS
+private-transport authority remains TVC-only: PASS
+hosted/credential rejection tests: PASS
+safe archive extraction tests: PASS
+```
+
+Source preparation is now machine-owned and admitted on main. Authentic runtime completion remains pending on an actual sovereign WorkerCoordinator claim/fence plus TVC private-source materialization receipts.
 
 ## Archive readiness
 
