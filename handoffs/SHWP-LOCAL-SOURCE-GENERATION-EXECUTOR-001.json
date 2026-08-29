@@ -43,7 +43,9 @@
       "ADMISSIBLE_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md",
       "StegVerse-002/micro-node-runtime:docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md"
     ],
-    "dependencies": ["SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001"],
+    "dependencies": [
+      "SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001"
+    ],
     "parent_task_id": null,
     "derivation_reason": "Issue #144 identifies the missing execution slice between explicit AE activation evidence and the generation result already consumed by the canonical #137 binder.",
     "canonical_owner_ref": "StegVerse-Labs/.github#144",
@@ -60,7 +62,9 @@
     "policy_version": "local-source-generation-executor-v0.1"
   },
   "execution": {
-    "required_capabilities": ["local_source_generation_executor"],
+    "required_capabilities": [
+      "local_source_generation_executor"
+    ],
     "allowed_paths": [
       "receipts/admissible-source-generation-capability/generation-results/**",
       "receipts/local-source-generation-executor/**"
@@ -95,16 +99,23 @@
   "admissible_existence": {
     "capability_id": "stegverse:capability:formalism-source-generation:v1",
     "capability_version": "1.0.0",
-    "phase": "DECLARED",
-    "standing_evidence_refs": [],
-    "admissibility_evidence_refs": [],
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-Labs/StegCore:data/formalism-source-generation-admissibility-evaluation.json",
+      "StegVerse-Labs/StegCore#123"
+    ],
+    "admissibility_evidence_refs": [
+      "StegVerse-Labs/StegCore:tests/test_formalism_source_generation_admissibility.py",
+      "StegVerse-Labs/StegCore@15d9524530bc45a9404d93c3e2d51953d8f4a156"
+    ],
     "integration_evidence_refs": [],
     "activation_proof_ref": null,
     "blockers": [
-      "SOURCE_GENERATION_CAPABILITY_NOT_YET_ACTIVATED",
-      "SOVEREIGN_LOCAL_MODEL_NOT_YET_ACTIVATED"
+      "SOVEREIGN_LOCAL_MODEL_LIVE_ACTIVATION_NOT_YET_OBSERVED",
+      "FORMALISM_SOURCE_GENERATION_INTEGRATION_PROOF_NOT_YET_OBSERVED",
+      "RESIDENT_SOURCE_GENERATION_AND_RECURSIVE_REOBSERVATION_NOT_YET_PROVEN"
     ],
-    "continuation_owner": "StegVerse-Labs/.github#144 + #137 + resident sovereign local-model activation owners",
+    "continuation_owner": "local-source-generation-executor-worker + SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001 + sovereign-local-model activation owner + TV/TVC repository-operation owner",
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": false,
     "temporal_class": "current",
@@ -112,12 +123,17 @@
     "target_phase": "ACTIVATED"
   },
   "block": {
-    "block_reason": "Both capability activation proofs are required before local generation execution.",
-    "dependency": "explicit AE activation evidence",
+    "block_reason": "Canonical source-generation is ADMISSIBLE but not ACTIVATED, sovereign-local-model live activation is unobserved, and resident generation -> binder -> TV/TVC owner mutation -> re-observation has not yet been proven.",
+    "dependency": "explicit canonical activation/integration evidence plus resident recursive proof",
     "observer": "organization control plane + canonical capability owners",
     "recheck_trigger": "each admitted observation",
     "next_check": null,
     "escalation_condition": "any attempt to infer activation or request credentials/non-loopback execution",
-    "block_expires_at": null
+    "block_expires_at": null,
+    "blocker_ids": [
+      "SOVEREIGN_LOCAL_MODEL_LIVE_ACTIVATION_NOT_YET_OBSERVED",
+      "FORMALISM_SOURCE_GENERATION_INTEGRATION_PROOF_NOT_YET_OBSERVED",
+      "RESIDENT_SOURCE_GENERATION_AND_RECURSIVE_REOBSERVATION_NOT_YET_PROVEN"
+    ]
   }
 }
