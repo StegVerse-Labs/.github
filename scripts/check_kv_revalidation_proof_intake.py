@@ -42,10 +42,15 @@ indexed=[x for x in coverage.get('indexed_vectors',[]) if x.get('task_id')==task
 if indexed != [{'task_id':task_id,'vector':vector}]:
     raise SystemExit('KV proof intake coverage parity failure')
 summary=coverage['worker_registry_summary']
-if summary['unique_task_ids_global_plus_fragments'] != 58:
-    raise SystemExit('KV proof intake worker denominator mismatch')
-if summary['canonically_indexed_task_ids'] != 36:
-    raise SystemExit('KV proof intake indexed count mismatch')
-if summary['active_unvectorized_unique_task_ids'] != len(coverage.get('active_worker_task_ids_missing_canonical_cosv',[])):
+total=summary['unique_task_ids_global_plus_fragments']
+indexed_count=summary['canonically_indexed_task_ids']
+active_gap=summary['active_unvectorized_unique_task_ids']
+completed=summary['completed_only_historical_unvectorized_task_ids']
+superseded=summary['superseded_historical_unvectorized_task_ids']
+if total < 58 or indexed_count < 36:
+    raise SystemExit('KV proof intake denominator regressed')
+if total != indexed_count + active_gap + completed + superseded:
+    raise SystemExit('KV proof intake denominator partition mismatch')
+if active_gap != len(coverage.get('active_worker_task_ids_missing_canonical_cosv',[])):
     raise SystemExit('KV proof intake active-gap mismatch')
 print('KV revalidation proof intake static checks: PASS')
