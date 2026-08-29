@@ -46,7 +46,8 @@ class AERetrospectiveConformanceTests(unittest.TestCase):
         self.assertEqual(entry["result"], "PASS")
         executor = self.entries["SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001"]
         self.assertEqual(executor["capability_id"], "stegverse:capability:formalism-source-generation:v1")
-        self.assertEqual(executor["phase"], "DECLARED")
+        self.assertEqual(executor["phase"], "ADMISSIBLE")
+        self.assertNotEqual(executor["phase"], "ACTIVATED")
         self.assertEqual(executor["task_relationship"], "integrates_capability")
         self.assertEqual(executor["result"], "PASS")
 
