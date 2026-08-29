@@ -14,6 +14,7 @@ ROUTE_OBS=Path("/var/lib/stegverse/tvc/service-gateway/coinbase-public-route-obs
 ACTIVATION=Path("/var/lib/stegverse/skap/browser-recipient/receipts/latest.json")
 LIVENESS=Path("/var/lib/stegverse/skap/browser-recipient/receipts/liveness-latest.json")
 SITE_PROJECTION=Path("/var/lib/stegverse/skap/browser-recipient/public/coinbase-owner-ingress-site-config.json")
+TLS_ADOPTION=Path("/var/lib/stegverse/tvc/service-gateway-tls/latest.json")
 HOSTED_ENV=("GITHUB_ACTIONS","RENDER","RENDER_SERVICE_ID","VERCEL","CF_PAGES","CLOUDFLARE_WORKERS")
 FORBIDDEN_CREDENTIAL_ENV=("GITHUB_TOKEN","GH_TOKEN","HEALER_GH_TOKEN","COINBASE_API_KEY","COINBASE_API_SECRET","COINBASE_PRIVATE_KEY")
 
@@ -66,6 +67,7 @@ def execute(env:dict[str,str]|None=None)->dict[str,Any]:
         "scripts/observe_coinbase_intr_resident_readiness.py",
         "scripts/observe_coinbase_service_gateway_route.py",
         "scripts/project_coinbase_owner_ingress_site_config.py",
+        "scripts/execute_service_gateway_webpki_http01_029.py",
     ]
     missing=[x for x in required if not (tvc/x).is_file()]
     if missing: return _blocked("TVC_INTR_ACTIVATION_SOURCE_INCOMPLETE",missing=missing)
@@ -96,6 +98,64 @@ def execute(env:dict[str,str]|None=None)->dict[str,Any]:
         if activated.get("provider_operation_started") is not False or activated.get("credential_values_provisioned") is not False:
             return _blocked("TVC_RESIDENT_ACTIVATION_AUTHORITY_BOUNDARY_INVALID",activation=activated)
         activation_performed=True
+
+    # Public HTTPS observation cannot be attempted truthfully until TVC has
+    # resident-adopted Service Gateway TLS material. If it is absent, execute
+    # the exact CMC-029 one-hostname HTTP-01 lifecycle once and stop this cycle
+    # so the separate sovereign Gateway owner can consume the adoption receipt.
+    tls_issuance_performed=False
+    if not TLS_ADOPTION.is_file():
+        hostname=values.get("STEGVERSE_SERVICE_GATEWAY_HOSTNAME","").strip().lower().rstrip(".")
+        directory_url=values.get("STEGVERSE_ACME_DIRECTORY_URL","").strip()
+        if not hostname or not directory_url:
+            return _blocked(
+                "SERVICE_GATEWAY_WEBPKI_BINDINGS_REQUIRED",
+                activation_performed=activation_performed,
+                tls_adoption_present=False,
+                required_nonsecret_bindings=[
+                    "STEGVERSE_SERVICE_GATEWAY_HOSTNAME",
+                    "STEGVERSE_ACME_DIRECTORY_URL",
+                ],
+            )
+        args=[
+            sys.executable,
+            "scripts/execute_service_gateway_webpki_http01_029.py",
+            "--hostname",hostname,
+            "--directory-url",directory_url,
+        ]
+        contact=values.get("STEGVERSE_ACME_CONTACT","").strip()
+        if contact:
+            args.extend(["--contact",contact])
+        challenge_root=values.get("STEGVERSE_TVC_HTTP01_CHALLENGE_ROOT","").strip()
+        if challenge_root:
+            args.extend(["--challenge-root",challenge_root])
+        rc,issued,stderr=_run(args,tvc,timeout=900,env=common)
+        if rc!=0 or not issued or issued.get("state")!="ISSUED_AND_ADOPTED_FOR_STEGDEPLOY_TLS":
+            return _blocked(
+                "SERVICE_GATEWAY_WEBPKI_ISSUANCE_FAILED",
+                activation_performed=activation_performed,
+                webpki=issued,
+                stderr_tail=stderr,
+            )
+        if (
+            issued.get("private_key_exported") is not False
+            or issued.get("private_key_bytes_recorded") is not False
+            or issued.get("account_key_bytes_recorded") is not False
+            or issued.get("provider_operation_authority")!="NONE"
+        ):
+            return _blocked(
+                "SERVICE_GATEWAY_WEBPKI_AUTHORITY_BOUNDARY_INVALID",
+                activation_performed=activation_performed,
+                webpki=issued,
+            )
+        tls_issuance_performed=True
+        return _blocked(
+            "SERVICE_GATEWAY_TLS_ADOPTED_WAITING_FOR_GATEWAY_RECONCILIATION",
+            activation_performed=activation_performed,
+            tls_issuance_performed=True,
+            tls_adoption_present=TLS_ADOPTION.is_file(),
+            webpki_receipt_sha256=issued.get("tls_adoption_receipt_sha256"),
+        )
 
     node_url=values.get("STEGVERSE_COINBASE_PUBLIC_NODE_URL","").strip()
     route_performed=False
@@ -131,6 +191,7 @@ def _project(tvc:Path,ready:dict[str,Any],common:dict[str,str],*,activation_perf
         "ready_for_owner_ingress":True,
         "activation_performed":activation_performed,
         "route_observation_performed":route_observation_performed,
+        "tls_adoption_present":TLS_ADOPTION.is_file(),
         "recipient_key_id":ready.get("recipient_key_id"),
         "runtime_instance_id":ready.get("runtime_instance_id"),
         "public_route_observation_digest":ready.get("public_intr_route_observation_digest"),
