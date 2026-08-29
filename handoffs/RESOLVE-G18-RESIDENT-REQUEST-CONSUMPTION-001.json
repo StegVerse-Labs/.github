@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
   "created_at": "2026-08-27T23:19:00-05:00",
-  "updated_at": "2026-08-28T21:30:00-05:00",
+  "updated_at": "2026-08-29T03:05:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
@@ -14,7 +14,7 @@
       "Already-local source is refreshed into the resident runtime without network fetch or credential acquisition.",
       "The existing G18 request consumer records ATTEMPT_RECORDED or a matching prior ALREADY_CONSUMED state.",
       "No new G18 claim/fence, HeartBeat authority, third-party runtime, or credential authority is created.",
-      "After a verified canonical v13 bootstrap, the non-authorizing resident dispatcher visits the G18 request consumer without requiring a filesystem watcher event."
+      "After canonical v13 native installation/materialization succeeds, the non-authorizing resident dispatcher visits the G18 request consumer before final activation verification and without requiring a filesystem watcher event."
     ],
     "failure_predicates": [
       "Hosted CI is treated as resident execution evidence.",
@@ -95,8 +95,9 @@
     "runtime_window_beats": 16,
     "rate_class": "g18_resident_request_consumption_resolution",
     "post_bootstrap_dispatcher": "scripts/dispatch_resident_execution_requests.py",
-    "post_bootstrap_dispatch_after_activation_proof_only": true,
-    "request_failure_blocks_later_requests": false
+    "post_bootstrap_dispatch_after_activation_proof_only": false,
+    "request_failure_blocks_later_requests": false,
+    "resident_dispatch_phase": "AFTER_NATIVE_INSTALLATION_BEFORE_FINAL_ACTIVATION_VERIFICATION"
   },
   "completion": {
     "runtime_activation_claimed": false,
@@ -108,7 +109,7 @@
       "the one-shot G18 consumer is invoked or an exact prior consumption is verified",
       "no new G18 claim/fence is minted"
     ],
-    "next_authorized_action": "WorkerCoordinator may independently admit this HANDOFF_READY resolution task under a fresh fence greater than 22. On an eligible non-hosted local surface, if no resident registry exists the worker invokes canonical v13 bootstrap. Current main now dispatches bounded resident requests automatically only after the bootstrap activation proof passes, so no filesystem watcher event is required. The G18 request still must preserve the exact existing fence18 claim and produce deployment-local consumption evidence; source merge or hosted validation does not satisfy this handoff."
+    "next_authorized_action": "WorkerCoordinator may independently admit this HANDOFF_READY resolution task under a fresh fence greater than 22. On an eligible non-hosted local surface, if no resident registry exists the worker invokes canonical v13 bootstrap. The bootstrap now dispatches bounded resident requests immediately after native installation/materialization and before final activation verification, breaking the prior circular wait while preserving each consumer's claim/fence and authority checks. The G18 request still must preserve the exact existing fence18 claim and produce deployment-local consumption evidence; source merge or hosted validation does not satisfy this handoff."
   },
   "admissible_existence": {
     "capability_id": "stegverse:capability:g18-resident-request-consumption-resolution:v1",

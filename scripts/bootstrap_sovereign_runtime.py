@@ -337,6 +337,19 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         body["reason"] = "NATIVE_INSTALLATION_RETRY_REQUIRED"
         atomic_write(receipt_path, body)
         return body
+    # Dispatch bounded resident requests immediately after native installation.
+    # Consumers remain independently fail-closed and non-authorizing. Running
+    # them before the final activation verifier avoids a circular dependency
+    # where G18/HIL execution evidence is required by a proof that previously
+    # had to pass before those requests could be consumed.
+    body["post_bootstrap_resident_request_dispatch"] = _dispatch_resident_requests(
+        source_root,
+        runtime_root,
+        proof_path=proof_path,
+        env=env,
+        runner=runner,
+    )
+
     verify = runner([sys.executable, str(source_root / "scripts" / "verify_sovereign_runtime_activation.py"), "--runtime-root", str(runtime_root)], check=False, capture_output=True, text=True, timeout=180, env=child_env)
     body["verifier_returncode"] = verify.returncode
     proof = load_json(proof_path)
@@ -347,13 +360,6 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         body["state"] = "COMPLETE"
         body["reason"] = "SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_VERIFIED"
         atomic_write(receipt_path, body)
-        body["post_bootstrap_resident_request_dispatch"] = _dispatch_resident_requests(
-            source_root,
-            runtime_root,
-            proof_path=proof_path,
-            env=env,
-            runner=runner,
-        )
         if activate_downstream:
             body["post_bootstrap_stegfin"] = _attempt_post_bootstrap_activation(source_root, proof_path=proof_path, receipt_path=receipt_path, node_marker=node_marker, env=env, runner=runner)
     else:
