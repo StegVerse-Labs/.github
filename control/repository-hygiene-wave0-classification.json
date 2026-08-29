@@ -3,7 +3,7 @@
   "goal_id": "HYGIENE-CAUSAL-ROOTS-001",
   "repository": "StegVerse-Labs/.github",
   "wave": 0,
-  "observed_at": "2026-08-15T19:40:00-05:00",
+  "observed_at": "2026-08-28T21:45:00-05:00",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_used": false,
   "workflow_count_before_batch": 20,
@@ -94,9 +94,70 @@
     "interpretation": "The hosted workflow did not reach the newly consolidated continuation/aggregation checks. The failure is an existing organization task-schema mismatch and is not treated as proof that the consolidation passed."
   },
   "next_actions": [
-    "Classify the remaining 69 .github branches against main, PR history, handoffs, task/worker ownership, and evidence references.",
-    "Classify the remaining 16 workflow surfaces under KEEP_STANDALONE_EXCEPTION, CONSOLIDATE_INTO_STABLE_DISPATCHER, TRANSFER_TO_STEGVERSE_WORKER, or ELIMINATE.",
-    "Keep the unrelated TASK-2026-0004 wallet/trade task outside this hygiene session's implementation scope; record its schema mismatch only as a validation blocker unless its canonical owner repairs it.",
-    "Do not begin Site or StegCore destructive cleanup until Wave 0 and Wave 1 causal producers are classified."
+    "Continue Wave-0 .github branch classification using current live branch inventory; do not infer safety from age/name/ahead-behind counts alone.",
+    "Route only evidence-cleared candidates to HYGIENE-BRANCH-REF-RETIREMENT; this classification record grants no deletion authority.",
+    "Classify remaining root workflow surfaces under the existing workflow hygiene issues/registry without creating additional workflow dispatchers.",
+    "Do not begin Site or StegCore destructive cleanup until upstream causal producers are classified."
+  ],
+  "branch_classification_batch_2": [
+    {
+      "branch": "fix/g18-resolution-bootstrap-missing-resident-20260827",
+      "classification": "EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE",
+      "evidence": {
+        "compare_to_main": "diverged",
+        "ahead_by": 7,
+        "behind_by": 37,
+        "merged_pr": 357,
+        "merge_commit": "29da9372c705bee88de0e1005af8006af75e311e",
+        "changed_files_content_equivalent_to_main": true,
+        "exact_branch_source_refs": 0,
+        "protected": false,
+        "steghealth_evidence": "StegVerse-Labs/StegHealth:evidence/operations/2026-08-28-g18-safe-delete-classification.json"
+      },
+      "deletion_authorized_by_this_record": false,
+      "reason": "Squash-merge ancestry remains ahead, but every compare-reported changed file is byte-identical to current main and ownership/reference/protection checks are clear."
+    },
+    {
+      "branch": "chore/g18-handoff-postmerge-reconcile",
+      "classification": "EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE",
+      "evidence": {
+        "compare_to_main": "behind",
+        "ahead_by": 0,
+        "behind_by": 106,
+        "merged_pr": 342,
+        "merge_commit": "99459bb09233c575868a570896f0bb3a148a8dba",
+        "exact_branch_source_refs": 0,
+        "protected": false
+      },
+      "deletion_authorized_by_this_record": false
+    },
+    {
+      "branch": "chore/g18-v13-postmerge-reconcile",
+      "classification": "EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE",
+      "evidence": {
+        "compare_to_main": "behind",
+        "ahead_by": 0,
+        "behind_by": 89,
+        "merged_pr": 346,
+        "merge_commit": "3e3548cc2131c9082a2a956aea5ae697359ae6be",
+        "exact_branch_source_refs": 0,
+        "protected": false
+      },
+      "deletion_authorized_by_this_record": false
+    },
+    {
+      "branch": "chore/g18-resolution-postmerge-reconcile",
+      "classification": "EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE",
+      "evidence": {
+        "compare_to_main": "behind",
+        "ahead_by": 0,
+        "behind_by": 39,
+        "merged_pr": 356,
+        "merge_commit": "b72e45a467ec160adce620e0ec0269fe08a65ff8",
+        "exact_branch_source_refs": 0,
+        "protected": false
+      },
+      "deletion_authorized_by_this_record": false
+    }
   ]
 }
