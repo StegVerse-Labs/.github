@@ -745,3 +745,27 @@ Fresh native materialization now includes:
 - previously merged resident-request dispatcher and consumers.
 
 It still excludes source-derived mutable runtime evidence and mutable resident control snapshots. Runtime execution remains NOT OBSERVED.
+
+
+## CMC-028 root-custody worker current-main rematerialization — 2026-08-29
+
+Current-main source was re-read after the G18/HIL dispatch-ordering repair at `b7b11ad0deb0534d08b8892c21a89ce390b06b2e`. Stale PR #372 and branches r5/r6 were not merged or force-updated. Their bounded CMC-028-specific artifacts were rematerialized on fresh branch `cmc-028-root-custody-worker-r8`, while shared workflow, COSV index/coverage, denominator test, and this handoff were merged into current content.
+
+```text
+task_id: SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001
+TVC required ancestor: dd3734084eba4887c0c08e2e47eab3a20565c820
+worker command: tvc.certificate_root_custody.observe
+credential authority: TV/TVC
+GitHub-token runtime authority: NONE
+heartbeat grants execution authority: false
+hosted runtime: BLOCKED
+network source fetch: false
+source mutation: false
+protected material read/hash/export: false
+certificate issuance/signing authority: false
+worker source/registry state: IMPLEMENTED / VALIDATION PENDING
+runtime evidence: NOT OBSERVED
+CUSTODY_RECOVERY_EVIDENCE_VERIFIED: NOT OBSERVED
+```
+
+The live-denominator test now derives the worker count from `control/worker-registry.json` plus every `control/worker-registry.d/*.json` fragment. Aggregate COSV counts were recomputed from the current base rather than copied from stale branches. Completion remains impossible unless an eligible sovereign TV/TVC resident supplies authentic secret-free public identity and recovery-continuity receipts while the worker never reads, hashes, or exports protected objects.
