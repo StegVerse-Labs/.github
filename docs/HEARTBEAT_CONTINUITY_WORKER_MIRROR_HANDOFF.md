@@ -599,3 +599,35 @@ Regression coverage requires:
 - the v13 carrier and resident-request dispatcher remain materialized.
 
 Current state: IMPLEMENTED / VALIDATION PENDING / MERGE PENDING. No resident execution or activation claim is made.
+
+
+### Native materialization mutable-state boundary merge — 2026-08-28
+
+The source/runtime evidence-contamination repair is exact-head validated and merged:
+
+```text
+PR: #377
+validated head: aa9e3de62601d1b196facbf12ecdf6514659cf45
+Organization Control Plane: 33228672633 / 99037294850 SUCCESS
+Heartbeat Worker Project: 33228672616 / 99037294917 SUCCESS
+merge: 1ab2a2cc534dc2e1acc8015adcea5d087366cbc7
+bounded source claim: RELEASED_SOURCE_REPAIR
+```
+
+The Heartbeat validation passed the complete deterministic repository suite, native-process/canary retention checks, legacy HB29 replay protection, current oscillator-anchor proof, carrier/worker separation, and workflow non-authority.
+
+Merged invariant:
+
+```text
+source receipts copied into fresh runtime: false
+source checkpoints copied into fresh runtime: false
+source events copied into fresh runtime: false
+source heartbeats copied into fresh runtime: false
+explicit control bootstrap seeds retained: true
+initial runtime receipt: receipts/sovereign-host/materialization.latest.json only
+credential authority: TV/TVC
+GitHub-token runtime authority: NONE
+runtime execution observed: false
+```
+
+This closes source-derived mutable-evidence contamination for fresh native materialization. It does not provide a sovereign-node execution receipt or alter any app activation state.
