@@ -47,11 +47,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
     if source == runtime:
         raise ValueError("source and runtime roots must be distinct")
     refresh_script = runtime / "scripts/refresh_sovereign_worker_runtime_source.py"
-    request_consumer = runtime / "scripts/consume_resident_execution_request.py"
-    g18_request_consumer = runtime / "scripts/consume_g18_resident_execution_request.py"
-    hil_request_consumer = runtime / "scripts/consume_hil_resident_execution_request.py"
-    ara_graph_request_consumer = runtime / "scripts/consume_ara_graph_resident_execution_request.py"
-    sv_dn1_request_consumer = runtime / "scripts/consume_sv_dn1_resident_execution_request.py"
+    request_dispatcher = runtime / "scripts/dispatch_resident_execution_requests.py"
     service = "\n".join([
         "[Unit]",
         "Description=StegVerse local-only WorkerCoordinator source refresh",
@@ -60,11 +56,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         "[Service]",
         "Type=oneshot",
         f"ExecStart={_quote(python)} {_quote(refresh_script)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
-        f"ExecStartPost={_quote(python)} {_quote(request_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
-        f"ExecStartPost={_quote(python)} {_quote(g18_request_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
-        f"ExecStartPost={_quote(python)} {_quote(hil_request_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
-        f"ExecStartPost={_quote(python)} {_quote(ara_graph_request_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
-        f"ExecStartPost={_quote(python)} {_quote(sv_dn1_request_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
+        f"ExecStartPost={_quote(python)} {_quote(request_dispatcher)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost=/usr/bin/systemctl --user try-restart {WORKER_SERVICE}",
         "NoNewPrivileges=true",
         "PrivateTmp=true",

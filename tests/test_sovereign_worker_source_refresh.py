@@ -108,6 +108,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "scripts/consume_ara_graph_resident_execution_request.py",
                 "scripts/run_sv_dn1_first_round_chain.py",
                 "scripts/consume_sv_dn1_resident_execution_request.py",
+                "scripts/dispatch_resident_execution_requests.py",
                 "scripts/materialize_live_cosv_packet.py",
                 "scripts/cosv.py",
                 "scripts/cosv_state_packet.py",
@@ -156,11 +157,10 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertIn("control/task-vector-index.json", path_unit)
             self.assertIn("control/resident-execution-request.json", path_unit)
             self.assertIn("control/resident-execution-request.d", path_unit)
-            self.assertIn("consume_resident_execution_request.py", service)
-            self.assertIn("consume_g18_resident_execution_request.py", service)
-            self.assertIn("consume_hil_resident_execution_request.py", service)
-            self.assertIn("consume_ara_graph_resident_execution_request.py", service)
-            self.assertIn("consume_sv_dn1_resident_execution_request.py", service)
+            self.assertIn("dispatch_resident_execution_requests.py", service)
+            self.assertNotIn("consume_resident_execution_request.py --source-root", service)
+            self.assertNotIn("consume_g18_resident_execution_request.py --source-root", service)
+            self.assertNotIn("consume_hil_resident_execution_request.py --source-root", service)
             self.assertNotIn(f"PathChanged={source / 'control/worker-registry.json'}", path_unit)
             self.assertIn("authorizations", path_unit)
             self.assertIn("cost-basis", path_unit)

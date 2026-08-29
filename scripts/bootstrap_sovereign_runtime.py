@@ -33,6 +33,12 @@ REQUIRED_SOURCE_FILES = (
     Path("scripts/verify_sovereign_runtime_activation.py"),
     Path("scripts/run_heartbeat_runtime.py"),
     Path("scripts/run_worker_runtime.py"),
+    Path("scripts/dispatch_resident_execution_requests.py"),
+    Path("scripts/consume_resident_execution_request.py"),
+    Path("scripts/consume_g18_resident_execution_request.py"),
+    Path("scripts/consume_hil_resident_execution_request.py"),
+    Path("scripts/consume_ara_graph_resident_execution_request.py"),
+    Path("scripts/consume_sv_dn1_resident_execution_request.py"),
     Path("scripts/advance_heartbeat_transition.py"),
     Path("control/heartbeat-state.json"),
     Path("control/worker-registry.json"),
@@ -228,6 +234,55 @@ def _attempt_post_bootstrap_activation(source_root: Path, *, proof_path: Path, r
     }
 
 
+def _dispatch_resident_requests(source_root: Path, runtime_root: Path, *, proof_path: Path, env: dict[str, str] | None, runner: Runner) -> dict[str, Any]:
+    dispatcher = runtime_root / "scripts" / "dispatch_resident_execution_requests.py"
+    if not dispatcher.is_file():
+        return {
+            "attempted": False,
+            "state": "NOT_AVAILABLE",
+            "reason": "RESIDENT_REQUEST_DISPATCHER_NOT_MATERIALIZED",
+            "returncode": None,
+            "authority_effect": "NONE",
+        }
+    child_env = scrubbed_child_env(
+        env,
+        source_root=source_root,
+        runtime_root=runtime_root,
+        proof_path=proof_path,
+    )
+    completed = runner(
+        [
+            sys.executable,
+            str(dispatcher),
+            "--source-root",
+            str(source_root),
+            "--runtime-root",
+            str(runtime_root),
+        ],
+        cwd=runtime_root,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=3600,
+        env=child_env,
+    )
+    receipt = load_json(runtime_root / "receipts" / "sovereign-host" / "resident-request-dispatch.latest.json") or {}
+    return {
+        "attempted": True,
+        "state": receipt.get("state") or ("DISPATCH_COMPLETE" if completed.returncode == 0 else "DISPATCH_INCOMPLETE"),
+        "returncode": completed.returncode,
+        "receipt_ref": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+        "consumer_count": receipt.get("consumer_count"),
+        "consumers_visited": receipt.get("consumers_visited"),
+        "request_failures": receipt.get("request_failures", []),
+        "request_failure_blocks_later_requests": receipt.get("request_failure_blocks_later_requests", False),
+        "credential_authority": receipt.get("credential_authority", "TV/TVC"),
+        "github_token_required": receipt.get("github_token_required", False),
+        "request_dispatch_grants_authority": receipt.get("request_dispatch_grants_authority", False),
+        "authority_effect": "NONE",
+    }
+
+
 def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof_path: Path, receipt_path: Path, env: dict[str, str] | None = None, runner: Runner = subprocess.run, activate_downstream: bool = True) -> dict[str, Any]:
     source_root = source_root.expanduser().resolve()
     runtime_root = runtime_root.expanduser().resolve()
@@ -260,6 +315,7 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         "installer_returncode": None,
         "verifier_returncode": None,
         "proof_path": str(proof_path),
+        "post_bootstrap_resident_request_dispatch": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "authority_effect": "NONE"},
         "post_bootstrap_stegfin": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "executor_service_active": False, "wallet_handoff_ready_claimed": False},
         "state": "FAIL_CLOSED",
         "reason": None,
@@ -290,6 +346,13 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         body["state"] = "COMPLETE"
         body["reason"] = "SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_VERIFIED"
         atomic_write(receipt_path, body)
+        body["post_bootstrap_resident_request_dispatch"] = _dispatch_resident_requests(
+            source_root,
+            runtime_root,
+            proof_path=proof_path,
+            env=env,
+            runner=runner,
+        )
         if activate_downstream:
             body["post_bootstrap_stegfin"] = _attempt_post_bootstrap_activation(source_root, proof_path=proof_path, receipt_path=receipt_path, node_marker=node_marker, env=env, runner=runner)
     else:
