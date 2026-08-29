@@ -4,11 +4,12 @@
   "state": "HANDOFF_READY_MACHINE_OWNED",
   "goal": {
     "goal_id": "EVALUATOR-INTR-READ-REVIEW-RUNTIME-431",
-    "objective": "Launch one bounded sovereign READ_REVIEW Interlock/InTr listener, preserve exact ingress/egress receipt lineage, and return without creating review, freeze, execution, credential, custody, or GitHub runtime authority.",
+    "objective": "Maintain one durable sovereign READ_REVIEW Interlock/InTr loopback receiver behind the shared Service Gateway, preserve exact ingress/egress receipt lineage, and terminalize only after an authentic round trip without creating review, freeze, execution, credential, custody, or GitHub runtime authority.",
     "success_predicates": [
       "declared sovereign StegVerse node observed",
       "local Site and StegOS source roots observed",
       "admitted route config observed",
+      "durable loopback READ_REVIEW receiver readiness observed",
       "one exact READ_REVIEW request received",
       "canonical ingress RECEIVED receipt persisted",
       "canonical egress FORWARDED receipt persisted",
@@ -84,7 +85,7 @@
     ],
     "allowed_services": [],
     "max_actions": 4,
-    "max_retries": 128,
+    "max_retries": 256,
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 64,
     "rate_class": "evaluator_intr_read_review",
@@ -96,7 +97,7 @@
     "carrier": "independent_task_control",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "docs/EVALUATOR_INTR_RUNTIME_MIRROR_HANDOFF.md",
-    "recheck_trigger": "each admitted independent task-control opportunity until one authentic browser READ_REVIEW round trip exists",
+    "recheck_trigger": "each admitted independent task-control opportunity until receiver readiness exists and then until one authentic READ_REVIEW round trip exists",
     "checkout_policy": "fenced_atomic_checkout",
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
     "heartbeat_reference_only": true,
@@ -111,12 +112,14 @@
     "repository_persistence_requires_separate_admission": true
   },
   "completion": {
-    "next_authorized_action": "After the first authentic read round trip, bind the receipt bundle into the Site manifest/receipt UI and separately advance authenticated review/approval/freeze/execution authorities.",
+    "next_authorized_action": "First ensure the durable loopback receiver is READY behind the shared Service Gateway. Do not terminalize on readiness. After the first authentic read round trip, bind the receipt bundle into the Site manifest/receipt UI and separately advance authenticated review/approval/freeze/execution authorities.",
     "terminal_when": [
       "EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED",
       "authentic ingress receipt observed",
       "authentic egress receipt observed"
-    ]
+    ],
+    "nonterminal_ready_state": "EVALUATOR_INTR_RECEIVER_READY",
+    "readiness_receipt": "~/.stegverse/runtime/receipts/sovereign-network/evaluator-intr/receiver.latest.json"
   },
   "source_state_vector_ref": "control/task-vectors/SHWP-EVALUATOR-INTR-READ-RUNTIME-001.json"
 }
