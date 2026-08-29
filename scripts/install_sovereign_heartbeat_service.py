@@ -35,6 +35,16 @@ COPY_DIRS = (
 COPY_FILES = (
     "scripts/run_heartbeat_runtime.py",
     "scripts/run_worker_runtime.py",
+    "scripts/refresh_and_execute_resident_task.py",
+    "scripts/refresh_sovereign_worker_runtime_source.py",
+    "scripts/run_independent_ecosystem_chat_parent.py",
+    "scripts/consume_resident_execution_request.py",
+    "scripts/consume_g18_resident_execution_request.py",
+    "scripts/consume_hil_resident_execution_request.py",
+    "scripts/consume_ara_graph_resident_execution_request.py",
+    "scripts/run_sv_dn1_first_round_chain.py",
+    "scripts/consume_sv_dn1_resident_execution_request.py",
+    "scripts/dispatch_resident_execution_requests.py",
     "scripts/advance_heartbeat_transition.py",
     "scripts/refresh_heartbeat_transition_receipt.py",
     "scripts/verify_sovereign_runtime_activation.py",
@@ -98,6 +108,10 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         target_root / "control" / "worker-registry.json",
         target_root / "scripts" / "run_heartbeat_runtime.py",
         target_root / "scripts" / "run_worker_runtime.py",
+        target_root / "scripts" / "dispatch_resident_execution_requests.py",
+        target_root / "scripts" / "consume_resident_execution_request.py",
+        target_root / "scripts" / "consume_g18_resident_execution_request.py",
+        target_root / "scripts" / "consume_hil_resident_execution_request.py",
         target_root / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
     )
     if not all(path.is_file() for path in required):
