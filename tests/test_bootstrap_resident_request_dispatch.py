@@ -36,6 +36,7 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             "scripts/consume_hil_resident_execution_request.py",
             "scripts/consume_ara_graph_resident_execution_request.py",
             "scripts/consume_sv_dn1_resident_execution_request.py",
+            "scripts/consume_tvc_broker_validation_request.py",
         ):
             self.assertIn(rel, required)
 
@@ -73,8 +74,8 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
                 receipt_path.write_text(json.dumps({
                     "schema": "stegverse.resident-request-dispatch/v1",
                     "state": "DISPATCH_COMPLETE",
-                    "consumer_count": 5,
-                    "consumers_visited": 5,
+                    "consumer_count": 6,
+                    "consumers_visited": 6,
                     "request_failures": ["g18"],
                     "request_failure_blocks_later_requests": False,
                     "credential_authority": "TV/TVC",
@@ -97,8 +98,8 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             )
             self.assertTrue(result["attempted"])
             self.assertEqual(result["state"], "DISPATCH_COMPLETE")
-            self.assertEqual(result["consumer_count"], 5)
-            self.assertEqual(result["consumers_visited"], 5)
+            self.assertEqual(result["consumer_count"], 6)
+            self.assertEqual(result["consumers_visited"], 6)
             self.assertIn("g18", result["request_failures"])
             self.assertFalse(result["request_failure_blocks_later_requests"])
             self.assertFalse(result["github_token_required"])
