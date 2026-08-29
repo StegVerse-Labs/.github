@@ -38,7 +38,8 @@
         "activation_proof_ref": null,
         "blockers": [
           "TVC_REPOSITORY_BROKER_PR_92_GOVERNED_VALIDATION_AND_ADMISSION_PENDING",
-          "PRIVATE_CANONICAL_SOURCE_MATERIALIZATION_RECEIPTS_NOT_YET_OBSERVED"
+          "PRIVATE_CANONICAL_SOURCE_MATERIALIZATION_RECEIPTS_NOT_YET_OBSERVED",
+          "SV_DN1_PRODUCTION_SOURCE_PREP_RECEIPT_NOT_YET_OBSERVED"
         ],
         "continuation_owner": "sv-dn1-production-source-prep-worker",
         "credential_authority": "TV/TVC",
@@ -59,6 +60,19 @@
         "parent_task_id": "SV-DN1-INTR-RUNTIME-001",
         "parent_terminal_state_required": "COMPLETED",
         "parent_terminal_transition_required": "SV_DN1_ROUTE_SPECIFIC_INTR_COMPLETE"
+      },
+      "source_state_vector_ref": "control/task-vectors/SV-DN1-PRODUCTION-SOURCE-PREP-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000103000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-29T15:45:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],

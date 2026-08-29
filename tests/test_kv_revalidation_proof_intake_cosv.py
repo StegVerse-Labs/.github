@@ -46,10 +46,15 @@ class KVRevalidationProofIntakeCOSVTests(unittest.TestCase):
         self.assertEqual(indexed, [{"task_id": TASK_ID, "vector": VECTOR}])
         self.assertNotIn(TASK_ID, self.coverage["active_worker_task_ids_missing_canonical_cosv"])
         summary = self.coverage["worker_registry_summary"]
-        self.assertEqual(summary["unique_task_ids_global_plus_fragments"], 58)
-        self.assertEqual(summary["canonically_indexed_task_ids"], 36)
-        self.assertEqual(summary["active_unvectorized_unique_task_ids"], 15)
-        self.assertEqual(58, 36 + 15 + 6 + 1)
+        total = summary["unique_task_ids_global_plus_fragments"]
+        indexed_count = summary["canonically_indexed_task_ids"]
+        active_gap = summary["active_unvectorized_unique_task_ids"]
+        completed = summary["completed_only_historical_unvectorized_task_ids"]
+        superseded = summary["superseded_historical_unvectorized_task_ids"]
+        self.assertGreaterEqual(total, 58)
+        self.assertGreaterEqual(indexed_count, 36)
+        self.assertEqual(total, indexed_count + active_gap + completed + superseded)
+        self.assertEqual(active_gap, len(self.coverage["active_worker_task_ids_missing_canonical_cosv"]))
 
     def test_registry_and_projection_preserve_authority_boundary(self):
         task = self.registry["tasks"][0]

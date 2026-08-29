@@ -1,0 +1,44 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SV-DN1-PRODUCTION-SOURCE-PREP-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000103000",
+  "evidence_refs": [
+    "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md",
+    "docs/SV_DN1_PRODUCTION_SOURCE_PREP_COSV_MIRROR_HANDOFF.md",
+    "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json",
+    "control/worker-registry.d/sv-dn1-production-source-prep-001.json",
+    "StegVerse-Labs/TVC#92"
+  ],
+  "observed_at": "2026-08-29T15:45:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 3,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "Merged and validated production-source preparation worker is machine-owned and independently claimable; authentic runtime completion remains absent",
+    "archive_ready": "worker registry archive_eligible=false while governed broker admission, private materialization receipts, and production-source-prep terminal receipt remain absent",
+    "unassigned_work": "sv-dn1-production-source-prep-worker owns continuation",
+    "chat_owned_counts": "source preparation continuation is machine-owned; no chat execution or credential authority is required",
+    "canonical_owner_installed": "StegVerse-org/stegverse-demo-suite is the canonical product owner and .github source-prep worker is merged/validated",
+    "thread_required": "durable product/source handoffs, executable handoff, registry, worker source, and TVC prerequisite define continuation without chat-only state",
+    "blocker_count": "TVC_REPOSITORY_BROKER_PR_92_GOVERNED_VALIDATION_AND_ADMISSION_PENDING | PRIVATE_CANONICAL_SOURCE_MATERIALIZATION_RECEIPTS_NOT_YET_OBSERVED | SV_DN1_PRODUCTION_SOURCE_PREP_RECEIPT_NOT_YET_OBSERVED",
+    "evidence_complete": "no authentic complete production-source-prep receipt proving all four exact roots and anchor identities has been observed",
+    "activated": "no production source preparation activation proof is recorded",
+    "propagated": "no completed source-root receipt has propagated to the SDK first-round worker"
+  },
+  "authority_effect": "NONE"
+}

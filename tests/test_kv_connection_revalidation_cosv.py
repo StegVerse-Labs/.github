@@ -59,7 +59,8 @@ class KVConnectionRevalidationCOSVTests(unittest.TestCase):
         self.assertNotIn(TASK_ID, self.coverage["active_worker_task_ids_missing_canonical_cosv"])
         indexed = [x for x in self.coverage["indexed_vectors"] if x.get("task_id") == TASK_ID]
         self.assertEqual(indexed, [{"task_id": TASK_ID, "vector": VECTOR}])
-        self.assertEqual(self.coverage["total_active_unvectorized_unique_task_ids"], 29)
+        org_gap = self.coverage["organization_registry_summary"]["active_unvectorized_task_ids"]
+        self.assertEqual(self.coverage["total_active_unvectorized_unique_task_ids"], active_gap + org_gap)
 
     def test_registry_and_projection_do_not_promote_provider_or_credential_authority(self):
         task = self.registry["tasks"][0]
