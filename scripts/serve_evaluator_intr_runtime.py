@@ -158,6 +158,26 @@ def make_handler(args):
             if origin == args.allowed_origin:
                 self.send_header("Access-Control-Allow-Origin", origin)
                 self.send_header("Vary", "Origin")
+        def do_GET(self) -> None:
+            if self.path != "/intr/evaluator/readiness":
+                self.send_response(404); self.end_headers(); return
+            raw = json.dumps({
+                "schema":"stegverse.evaluator-intr-runtime-readiness/v1",
+                "state":"READY",
+                "transport":"InTr",
+                "host":args.host,
+                "port":args.port,
+                "credential_authority":"TV/TVC",
+                "github_token_runtime_authority":"NONE",
+                "authority_effect":"NONE",
+            }, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type","application/json")
+            self.send_header("Cache-Control","no-store")
+            self.send_header("Content-Length",str(len(raw)))
+            self.end_headers()
+            self.wfile.write(raw)
+
         def do_OPTIONS(self) -> None:
             if self.headers.get("Origin") != args.allowed_origin:
                 self.send_response(403); self.end_headers(); return
@@ -236,8 +256,11 @@ def main() -> int:
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(args.tls_cert, args.tls_key)
         server.socket = context.wrap_socket(server.socket, server_side=True)
-    while server.processed_requests < max(1, args.max_requests):
-        server.handle_request()
+    if args.max_requests <= 0:
+        server.serve_forever(poll_interval=0.5)
+    else:
+        while server.processed_requests < args.max_requests:
+            server.handle_request()
     return 0
 
 if __name__ == "__main__":
