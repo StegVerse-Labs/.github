@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-28T23:20:00-05:00
+Updated: 2026-08-28T23:26:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -464,3 +464,25 @@ The canonical Governance handoff also explicitly says `DO NOT ARCHIVE THIS SESSI
 No source-retrieval authority, repository writeback authority, CGE decision authority, credential authority, release authority, HeartBeat execution authority, or runtime completion is created by this vector.
 
 If validated and merged, local .github coverage becomes 25 indexed vectors with 22 active worker gaps + 14 organization gaps = 36 active unvectorized tasks.
+
+## TVC Coinbase InTr resident-activation vector — current-main candidate
+
+```text
+TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001
+task.v1 [L R U I V G O C M T B E A P] = 50000000104000
+```
+
+The TVC resident activation source, CMC-029 HTTP-01 lifecycle, machine-owner binding, and sovereign worker path are merged/validated. Registry and handoff agree on four current blockers:
+
+```text
+SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN
+REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED
+PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED
+SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED
+```
+
+The current human/owner credential step is **not due**. The canonical TVC CMC-029 owner records `user_action_required_now=false`, `credential_entry_allowed_now=false`, `thread_dependency=NONE`, and `second_user_operated_machine_required=false`. Only after terminal `READY_FOR_OWNER_INGRESS` may the current owner-authorized iPhone seal provider credentials through the trusted browser ingress.
+
+No provider credential value enters this worker. No provider-operation authority, Site repository mutation authority, HeartBeat progression authority, third-party production runtime authority, or second-machine requirement is created.
+
+If validated and merged, local .github coverage becomes 26 indexed vectors with 21 active worker gaps + 14 organization gaps = 35 active unvectorized tasks.

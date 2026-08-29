@@ -171,5 +171,18 @@
     "heartbeat_worker_validation": 33226499063,
     "runtime_execution_observed": false,
     "authority_effect": "NONE"
+  },
+  "source_state_vector_ref": "control/task-vectors/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000104000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-08-28T23:26:00-05:00",
+      "authority_effect": "NONE"
+    }
   }
 }
