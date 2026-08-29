@@ -1,8 +1,8 @@
 {
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
-  "observed_commit": "63462b5b2d3bb28ef158c315abeb525382787146",
-  "observed_at": "2026-08-28T21:08:00-05:00",
+  "observed_commit": "b36558e91d57c64e488ab3b2a9c0d447eeb31213",
+  "observed_at": "2026-08-28T21:18:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,9 +11,9 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 54,
-    "canonically_indexed_task_ids": 18,
+    "canonically_indexed_task_ids": 19,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 29,
+    "active_unvectorized_unique_task_ids": 28,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,7 +21,7 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 43,
+  "total_active_unvectorized_unique_task_ids": 42,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -44,7 +44,6 @@
     "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
     "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
     "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
-    "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
     "KV-CONNECTION-HEALTH-RECONCILER-001",
     "KV-PROVIDER-CHANGE-OBSERVER-001",
     "SV-DN1-INTR-RUNTIME-001",
@@ -140,6 +139,10 @@
     },
     {
       "task_id": "SHWP-ARA-GRAPH-RUNTIME-086",
+      "vector": "50000000101000"
+    },
+    {
+      "task_id": "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
       "vector": "50000000101000"
     }
   ],

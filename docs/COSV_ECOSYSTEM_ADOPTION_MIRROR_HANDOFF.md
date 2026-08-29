@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-28T21:08:00-05:00
+Updated: 2026-08-28T21:14:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -39,7 +39,7 @@ The 189 unaudited repositories are not exemptions. They are classified `NO_REPOS
 
 ## Current .github boundary
 
-`.github` remains `VECTOR_REQUIRED`. Eighteen active vectors are indexed in the current ARA Graph runtime integration candidate, but the global worker registry and organization task registry contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
+`.github` remains `VECTOR_REQUIRED`. Nineteen active vectors are indexed in the current G18 resolution integration candidate, but the global worker registry and organization task registry contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
 
 Existing indexed examples remain unchanged:
 
@@ -103,12 +103,12 @@ Authority effect: NONE.
 Machine-readable snapshot: `control/cosv-global-registry-coverage.json`.
 
 - 54 unique worker task IDs across the global worker registry plus fragments at live main `a4a6c17db1a85c09bf3978dc7dbc6752223c0034`.
-- 18 canonically indexed task IDs in the current ARA Graph runtime candidate.
+- 19 canonically indexed task IDs in the current G18 resolution candidate.
 - 6 completed-only historical unvectorized task IDs.
 - 1 superseded historical unvectorized task ID.
-- 29 active worker task IDs lack canonical COSV coverage after the ARA Graph runtime projection.
+- 28 active worker task IDs lack canonical COSV coverage after the G18 resolution projection.
 - 14 organization-registry task IDs lack canonical COSV coverage.
-- Total active .github task IDs lacking canonical COSV coverage after this candidate: 43.
+- Total active .github task IDs lacking canonical COSV coverage after this candidate: 42.
 - The orphan-recovery aggregate/fragment contradiction is reconciled to terminal COMPLETED from the durable G22 PASS receipt; no vector was emitted for this completed historical task.
 
 No new vector digits were invented during this audit.
@@ -353,3 +353,14 @@ task.v1 [L R U I V G O C M T B E A P] = 50000000101000
 TVC source/control and the independent resident request bridge are implemented, validated, and merged. The task is machine-owned, thread-independent, and has exactly one current blocker: `LIVE_ARA_GRAPH_PROVIDER_OPERATION_RECEIPT_NOT_YET_OBSERVED`. No live worker claim, authentic resident consumption, provider operation, credential export, runtime activation, or ARA release-authority effect is claimed.
 
 If validated and merged, local .github coverage becomes 18 indexed vectors with 29 active worker gaps + 14 organization gaps = 43 active unvectorized tasks.
+
+## G18 resident-request consumption resolution vector — current-main candidate
+
+```text
+RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001
+task.v1 [L R U I V G O C M T B E A P] = 50000000101000
+```
+
+The task is an independently admitted machine-resolution capability under a fresh resolution fence and may not reuse or replace the existing G18 fence18 claim. Exactly one blocker remains: `G18_RESIDENT_REQUEST_CONSUMPTION_NOT_YET_OBSERVED`. No HeartBeat progression authority, credential authority, third-party primary runtime, additional physical machine requirement, G18 terminalization, or runtime activation is claimed.
+
+If validated and merged, local .github coverage becomes 19 indexed vectors with 28 active worker gaps + 14 organization gaps = 42 active unvectorized tasks.
