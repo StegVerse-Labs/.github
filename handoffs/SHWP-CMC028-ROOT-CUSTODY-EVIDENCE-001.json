@@ -1,0 +1,146 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001",
+  "created_at": "2026-08-28T20:59:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028",
+    "objective": "Execute the already-merged CMC-028 secret-free custody/recovery evidence observer on an eligible TV/TVC sovereign resident surface without reading, hashing, exporting, generating, importing, mutating, signing with, or issuing from protected root-key/recovery material.",
+    "success_predicates": [
+      "current already-local clean TVC source contains merge dd3734084eba4887c0c08e2e47eab3a20565c820 as an ancestor",
+      "tvc.certificate_root_custody.observe returns CUSTODY_RECOVERY_EVIDENCE_VERIFIED",
+      "protected_material_read=false, protected_material_hashed=false, protected_material_exported=false",
+      "certificate_issuance_authority=false and signing_authority_granted=false",
+      "credential_authority=TV/TVC",
+      "secret-free worker receipt persisted"
+    ],
+    "failure_predicates": [
+      "hosted runtime marker is active",
+      "current local TVC source is absent/dirty/stale/missing required files",
+      "non-secret locator manifest or authentic resident evidence inputs are absent/invalid",
+      "worker attempts network source fetch or source mutation",
+      "any protected root-key or recovery-share content would be read/hashed/exported",
+      "GitHub/heartbeat/model/chat is treated as credential or runtime authority"
+    ],
+    "authority_ceiling": [
+      "already-local TVC source observation",
+      "one bounded repository-native CMC-028 dispatcher execution",
+      "secret-free receipt persistence",
+      "no protected-material generation/import/read/hash/export/mutation",
+      "no certificate issuance/signing authority",
+      "no source fetch or mutation"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-Labs/TVC@dd3734084eba4887c0c08e2e47eab3a20565c820",
+      "StegVerse-Labs/TVC/tasks/TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028.json",
+      "StegVerse-Labs/TVC/docs/CERTIFICATE_ROOT_KEY_CUSTODY_028_MIRROR_HANDOFF.md",
+      "StegVerse-002/StegGuardian#4",
+      "StegVerse-002/micro-node-runtime#16",
+      "workers/cmc028_root_custody_worker.py"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "CMC-028 source/evaluator and repository-native resident dispatcher are merged/validated. Remaining work is authentic resident evidence only.",
+    "canonical_owner_ref": "StegVerse-Labs/TVC/tasks/TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028.json",
+    "canonical_lineage_key": "tvc:cmc028:certificate-root-custody-evidence",
+    "derivation_depth": 0,
+    "priority": "release"
+  },
+  "authority": {
+    "authority_source": "StegVerse-Labs/TVC/tasks/TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028.json",
+    "heartbeat_grants_execution_authority": false,
+    "heartbeat_dependency": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "policy_version": "shwp-cmc028-root-custody-v0.1"
+  },
+  "execution": {
+    "required_capabilities": [
+      "tvc_cmc028_root_custody_evidence"
+    ],
+    "allowed_paths": [
+      "receipts/cmc028-root-custody/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 1,
+    "max_retries": 4096,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 24000,
+    "rate_class": "tvc_cmc028_root_custody_evidence",
+    "required_tvc_ancestor": "dd3734084eba4887c0c08e2e47eab3a20565c820",
+    "command": [
+      "python",
+      "tools/task_dispatcher.py",
+      "tvc.certificate_root_custody.observe"
+    ],
+    "source_fetch_allowed": false,
+    "source_mutation_allowed": false
+  },
+  "activation": {
+    "carrier": "separate_worker_runtime",
+    "heartbeat_dependency": false,
+    "carrier_trigger_required": false,
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028 resident evidence boundary",
+    "recheck_trigger": "task-control evaluation while no completed secret-free CMC-028 resident receipt exists",
+    "checkout_policy": "separate_fenced_independent_task_control"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/cmc028-root-custody/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "On the existing sovereign resident surface with current already-local TVC source, execute this independently admitted task through `python scripts/run_worker_runtime.py --task-id SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001`. It must stop BLOCKED unless authentic resident locators/protected objects and independent non-secret identity/recovery receipts already exist.",
+    "terminal_when": [
+      "A COMPLETED receipt records CUSTODY_RECOVERY_EVIDENCE_VERIFIED with no protected-material read/hash/export and no issuance/signing authority."
+    ]
+  },
+  "block": null,
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:certificate-root-custody-evidence:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-Labs/TVC@dd3734084eba4887c0c08e2e47eab3a20565c820",
+      "StegVerse-Labs/TVC/tasks/TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028.json"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json",
+      "workers/cmc028_root_custody_worker.py",
+      "control/worker-registry.d/cmc028-root-custody-001.json",
+      "control/process-worker-adapters.d/cmc028-root-custody-001.json"
+    ],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": [
+      "LIVE_CMC028_CUSTODY_RECOVERY_EVIDENCE_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "cmc028-root-custody-worker + TV/TVC runtime authority",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  },
+  "source_state_vector_ref": "control/task-vectors/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-08-28T20:57:00-05:00",
+      "authority_effect": "NONE"
+    }
+  }
+}

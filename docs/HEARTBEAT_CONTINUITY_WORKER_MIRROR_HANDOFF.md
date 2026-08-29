@@ -809,3 +809,32 @@ transition_id: SV_DN1_EXACT_SOURCE_MATERIALIZATION_COMPLETE
 No runtime receipt, Hugging Face observation, Universal InTr traversal, SDK
 admission, or product activation is claimed by this source repair. Those remain
 authentic resident evidence gates.
+
+
+## CMC-028 root-custody worker current-main rematerialization — 2026-08-29
+
+Current-main source was re-read after the WorkerCoordinator bootstrap-prime repair at `426097b5bda53be742c68dbf43233597237d782c`. Stale PR #372 and branches r5-r8 were not merged or force-updated. Their bounded CMC-028-specific artifacts were rematerialized on fresh branch `cmc-028-root-custody-worker-r9`, while the shared workflow, COSV index/coverage, denominator test, and this handoff were merged into current content.
+
+```text
+task_id: SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001
+TVC required ancestor: dd3734084eba4887c0c08e2e47eab3a20565c820
+worker command: tvc.certificate_root_custody.observe
+credential authority: TV/TVC
+GitHub-token runtime authority: NONE
+heartbeat grants execution authority: false
+hosted runtime: BLOCKED
+network source fetch: false
+source mutation: false
+protected material read/hash/export: false
+certificate issuance/signing authority: false
+worker source/registry state: IMPLEMENTED / VALIDATION PENDING
+runtime evidence: NOT OBSERVED
+CUSTODY_RECOVERY_EVIDENCE_VERIFIED: NOT OBSERVED
+```
+
+The live-denominator test derives the worker count from `control/worker-registry.json` plus every `control/worker-registry.d/*.json` fragment. Aggregate COSV counts were recomputed from the current base rather than copied from stale branches. Completion remains impossible unless an eligible sovereign TV/TVC resident supplies authentic secret-free public identity and recovery-continuity receipts while the worker never reads, hashes, or exports protected objects.
+
+
+### CMC-028 live-denominator correction on PR #412
+
+The exact-head full suite enumerated 56 live unique worker task IDs after CMC-028, not 55. The extra pre-existing current-main task is `SV-DN1-PRODUCTION-SOURCE-PREP-001`, which is `HANDOFF_READY` and unvectorized. Coverage is corrected to 56 registered / 34 indexed / 15 active worker gaps / 29 total active gaps. The dedicated CMC-028 test and all preceding authority, JSON, handoff, and runtime-boundary steps passed; the failed run was aggregate-denominator evidence and did not represent CMC-028 runtime execution.

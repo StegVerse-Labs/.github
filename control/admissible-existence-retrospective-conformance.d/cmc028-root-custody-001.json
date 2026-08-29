@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "fragment_id": "CMC028-ROOT-CUSTODY-001",
+  "entries": [
+    {
+      "task_id": "SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001",
+      "temporal_class": "current",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:certificate-root-custody-evidence:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "integrates_capability",
+      "result": "PASS",
+      "continuation_owner": "cmc028-root-custody-worker + TV/TVC runtime authority",
+      "rationale": "Source/evaluator/dispatcher are merged and independently registered, but authentic resident custody/recovery evidence is absent; capability remains ADMISSIBLE and activation proof is not claimed."
+    }
+  ]
+}
