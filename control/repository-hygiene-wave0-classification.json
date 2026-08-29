@@ -3,7 +3,7 @@
   "goal_id": "HYGIENE-CAUSAL-ROOTS-001",
   "repository": "StegVerse-Labs/.github",
   "wave": 0,
-  "observed_at": "2026-08-28T23:16:00-05:00",
+  "observed_at": "2026-08-28T23:25:00-05:00",
   "credential_authority": "TV/TVC",
   "non_tv_tvc_secret_or_token_used": false,
   "workflow_count_before_batch": 20,
@@ -255,6 +255,68 @@
         "steghealth_validation_run": 33233331274
       },
       "deletion_authorized_by_this_record": false
+    }
+  ],
+  "branch_classification_batch_4": [
+    {
+      "branch": "chore/g18-v13-control-plane-reconcile-20260827",
+      "classification": "REVIEW_REQUIRED",
+      "evidence": {
+        "compare_to_main": "diverged",
+        "ahead_by": 3,
+        "behind_by": 129,
+        "head_sha": "c3dfa1c9b149dc39c894f37d721eb7254808f399",
+        "exact_branch_source_refs": 0,
+        "protected": false,
+        "steghealth_classification": "AUTHORITY_RISK",
+        "changed_files_content_equivalent_to_main": false,
+        "steghealth_evidence": "StegVerse-Labs/StegHealth:evidence/operations/2026-08-28-g18-authority-risk-classification-batch3.json",
+        "steghealth_pr": 47,
+        "steghealth_merge": "c545fd5c7a6da2e994d6689beb940210a6f4ea13",
+        "steghealth_validation_run": 33233611462
+      },
+      "deletion_authorized_by_this_record": false,
+      "reason": "StegHealth completed content-equivalence checks and found surviving non-equivalent authority/runtime content; retain for explicit owner review."
+    },
+    {
+      "branch": "chore/g18-v13-control-plane-reconcile-v2-20260827",
+      "classification": "REVIEW_REQUIRED",
+      "evidence": {
+        "compare_to_main": "diverged",
+        "ahead_by": 3,
+        "behind_by": 125,
+        "head_sha": "f8cd5103dd6b15b821c7d56616af71e238fd73d8",
+        "exact_branch_source_refs": 0,
+        "protected": false,
+        "steghealth_classification": "AUTHORITY_RISK",
+        "changed_files_content_equivalent_to_main": false,
+        "steghealth_evidence": "StegVerse-Labs/StegHealth:evidence/operations/2026-08-28-g18-authority-risk-classification-batch3.json",
+        "steghealth_pr": 47,
+        "steghealth_merge": "c545fd5c7a6da2e994d6689beb940210a6f4ea13",
+        "steghealth_validation_run": 33233611462
+      },
+      "deletion_authorized_by_this_record": false,
+      "reason": "StegHealth completed content-equivalence checks and found surviving non-equivalent authority/runtime content; retain for explicit owner review."
+    },
+    {
+      "branch": "feat/g18-resident-execution-request-20260827",
+      "classification": "REVIEW_REQUIRED",
+      "evidence": {
+        "compare_to_main": "diverged",
+        "ahead_by": 6,
+        "behind_by": 102,
+        "head_sha": "3e721b6b47f520cb6a8de2ed24c4b9cf39bd7720",
+        "exact_branch_source_refs": 0,
+        "protected": false,
+        "steghealth_classification": "AUTHORITY_RISK",
+        "changed_files_content_equivalent_to_main": false,
+        "steghealth_evidence": "StegVerse-Labs/StegHealth:evidence/operations/2026-08-28-g18-authority-risk-classification-batch3.json",
+        "steghealth_pr": 47,
+        "steghealth_merge": "c545fd5c7a6da2e994d6689beb940210a6f4ea13",
+        "steghealth_validation_run": 33233611462
+      },
+      "deletion_authorized_by_this_record": false,
+      "reason": "StegHealth completed content-equivalence checks and found surviving non-equivalent authority/runtime content; retain for explicit owner review."
     }
   ]
 }
