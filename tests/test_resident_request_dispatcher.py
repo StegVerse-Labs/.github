@@ -24,6 +24,7 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
             source = base / "source"
             runtime = base / "runtime"
             source.mkdir()
+            (runtime / "scripts").mkdir(parents=True, exist_ok=True)
             (runtime / "scripts/consume_evaluator_intr_resident_execution_request.py").write_text("# evaluator\n", encoding="utf-8")
             for _name, rel in mod.CONSUMERS:
                 path = runtime / rel
