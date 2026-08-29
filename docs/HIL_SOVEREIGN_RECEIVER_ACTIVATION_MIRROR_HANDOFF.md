@@ -293,3 +293,57 @@ The remaining authentic HIL evidence denominator is now:
 6. separately governed TVC #8 private-review decision and later publication/Master Records transitions.
 
 Source merges and CI runs establish the contract only. They do not establish that an authentic participant packet has traversed this chain.
+
+
+## 2026-08-29 Universal InTr event-materialization consumer
+
+The canonical Universal InTr availability policy now has a merged materialization-request source seam and a bounded HIL consumer path.
+
+```text
+StegOS PR #91 / merge 5ac248c223c9233cb741cda7a2856c30b0afb017
+-> stegverse.universal-intr-materialization-request/v1
+-> deterministic, write-once, non-authorizing request
+-> exact transport-intent hash + payload hash + destination binding
+
+local sovereign runtime / intr-materialization/*.json
+-> existing rootless worker source-refresh path watcher
+-> scripts/consume_hil_intr_materialization_request.py
+-> validates destination = STEGOS_ECOSYSTEM / HIL:Ingress
+-> invokes only scripts/refresh_and_execute_resident_task.py
+-> --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001
+-> existing WorkerCoordinator remains sole claim/fence authority
+```
+
+No new resident daemon is introduced. The already-existing rootless watcher observes both local canonical-source changes and durable local `intr-materialization/` events. The HIL materialization consumer is copied through the existing source-refresh and native-runtime materialization paths.
+
+Authority remains unchanged:
+
+```text
+materialization request grants execution authority: false
+consumer mints claim/fence: false
+transport grants execution authority: false
+heartbeat grants execution authority: false
+G18 completion required: false
+G18 claim/fence consumed: false
+GitHub token runtime authority: NONE
+credential authority: TV/TVC
+blocked HIL materialization blocks unrelated work: false
+```
+
+Successful exact materialization attempts are not blindly re-executed. A blocked attempt is recorded as nonterminal HIL evidence and does not fail the shared watcher or block unrelated worker reconciliation.
+
+The resulting causal chain is now:
+
+```text
+participant Submit
+-> Universal InTr transport intent
+-> durable queue or event-ephemeral materialization request
+-> existing HIL targeted executor under existing WorkerCoordinator authority
+-> receiver materialization/readiness observation
+-> receiver InTr receipt + HIL custody receipt
+-> TVC-bound next Interlock intent
+-> TVC receiving receipt
+-> separately governed private-review Interlock
+```
+
+This source integration still does not prove that a real participant event reached a StegOS runtime or that the materialization request was consumed. Authentic runtime receipts remain required.
