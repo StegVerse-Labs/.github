@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "tvc_repository_broker_validation",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 8,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 24000,
+    "confidence": "LOW_UNTIL_FIRST_SOVEREIGN_RUN"
+  },
+  "cost_estimate": {
+    "compute_units": 4,
+    "token_units": 0,
+    "storage_bytes": 8388608,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 2
+  },
+  "evidence_refs": [
+    "docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md",
+    "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
+    "workers/tvc_repository_broker_validation_worker.py",
+    "StegVerse-Labs/TVC#92"
+  ],
+  "notes": [
+    "Validation executes only against an exact already-local TVC PR #92 root.",
+    "No source fetch or credential is available to the validation worker.",
+    "Expiry candidate matches the handoff runtime window and enables independent WorkerCoordinator admission.",
+    "External cost is zero."
+  ]
+}
