@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SV-DN1-RESIDENT-OBSERVER-001",
   "created_at": "2026-08-27T18:45:00-05:00",
-  "updated_at": "2026-08-27T19:15:00-05:00",
+  "updated_at": "2026-08-28T21:55:00-05:00",
   "state": "HANDOFF_READY_MACHINE_OWNED",
   "goal": {
     "goal_id": "SV-DN1-RESIDENT-PUBLIC-SOURCE-OBSERVATION-001",
@@ -85,7 +85,8 @@
       "task_id": "SV-DN1-SOURCE-MATERIALIZATION-001",
       "terminal_state_required": "COMPLETED",
       "terminal_transition_required": "SV_DN1_EXACT_SOURCE_MATERIALIZATION_COMPLETE"
-    }
+    },
+    "canonical_product_task_reconciliation_ref": "StegVerse-org/stegverse-demo-suite#21@a71b1263018cd5c7bba73b7182474c43a34c95bc"
   },
   "authority": {
     "authority_source": "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json + canonical sovereign WorkerCoordinator",
@@ -159,7 +160,7 @@
       "manifest": "config/sv_dn1_runtime_source_manifest.json",
       "schema": "stegverse.sv-dn1.runtime-source-manifest/v1",
       "hash_profile": "git-blob-sha1",
-      "source_basis_commit": "ccd8a1886e8b87865cfcc541be5f32bf59f34e17",
+      "source_basis_commit": "4988d453419f43404100c69dd97dd1785d7e0a75",
       "drift_policy": "FAIL_CLOSED"
     }
   },
@@ -223,7 +224,7 @@
     ],
     "activation_proof_ref": null,
     "blockers": [
-      "EXACT_LOCAL_DEMO_SUITE_SOURCE_NOT_YET_OBSERVED",
+      "EXACT_PINNED_LOCAL_DEMO_SUITE_SOURCE_NOT_YET_OBSERVED",
       "CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND",
       "SOVEREIGN_SV_DN1_RESIDENT_SOURCE_CAPTURE_RECEIPT_NOT_YET_OBSERVED"
     ],
