@@ -210,3 +210,22 @@ Validation:
 
 Nine G18 refs are now durably evidence-cleared across Wave-0 batches 2 and 3. `HYGIENE-BRANCH-REF-RETIREMENT` remains authority-owned/fail-closed; this merge does not perform or authorize repository-ref changes. G18 resident consumption and sovereign runtime activation remain separately unobserved.
 
+## 2026-08-28 bounded Wave-0 G18 authority-risk hold batch
+
+Issue #165 claim comment: 5460310556.
+
+StegHealth PR #47 merged deterministic evidence for the three remaining branches from the original G18 sample. Changed-file content-equivalence checks found surviving non-equivalent authority/runtime content in every branch.
+
+Wave-0 therefore records these branches as `REVIEW_REQUIRED` rather than evidence-cleared candidates:
+
+- `chore/g18-v13-control-plane-reconcile-20260827` — ahead 3 / behind 128.
+- `chore/g18-v13-control-plane-reconcile-v2-20260827` — ahead 3 / behind 124.
+- `feat/g18-resident-execution-request-20260827` — ahead 6 / behind 101.
+
+Evidence source:
+- StegVerse-Labs/StegHealth PR #47 merge `c545fd5c7a6da2e994d6689beb940210a6f4ea13`
+- exact-head signal validation `33233611462 SUCCESS`
+- `evidence/operations/2026-08-28-g18-authority-risk-classification-batch3.json`
+
+This makes the original 12-branch G18 hygiene sample explicit: nine evidence-cleared candidates and three review-required authority-risk branches. G18 resident execution and activation remain separate and unobserved.
+
