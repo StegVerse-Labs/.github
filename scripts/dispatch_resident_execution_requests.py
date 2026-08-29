@@ -63,12 +63,18 @@ NONSECRET_ENV = (
     "STEGVERSE_CORE_LITE_SOURCE_ROOT",
     "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
     "STEGVERSE_STEGOS_ROOT",
+    "STEGVERSE_SITE_ROOT",
+    "STEGVERSE_REPO_ROOTS_JSON",
+    "STEGVERSE_EVALUATOR_INTR_ROUTE_CONFIG",
+    "STEGVERSE_EVALUATOR_INTR_PORT",
+    "STEGVERSE_EVALUATOR_INTR_WINDOW_SECONDS",
     "STEGVERSE_RELAY_RUNTIME_BASE",
 )
 CONSUMERS = (
     ("ecosystem_chat", "scripts/consume_resident_execution_request.py"),
     ("g18", "scripts/consume_g18_resident_execution_request.py"),
     ("hil", "scripts/consume_hil_resident_execution_request.py"),
+    ("evaluator_intr", "scripts/consume_evaluator_intr_resident_execution_request.py"),
     ("ara_graph", "scripts/consume_ara_graph_resident_execution_request.py"),
     ("sv_dn1", "scripts/consume_sv_dn1_resident_execution_request.py"),
     ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),
