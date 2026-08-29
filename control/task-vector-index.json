@@ -261,11 +261,21 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "StegVerse-Labs/TVC:tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json"
+    },
+    {
+      "task_id": "SHWP-STEGFIN-SOVEREIGN-TRADING-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/stegfin-sovereign-trading-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 26,
-    "local_cosv_record_tasks": 26,
+    "indexed_vectorized_tasks": 27,
+    "local_cosv_record_tasks": 27,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
