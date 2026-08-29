@@ -687,3 +687,35 @@ Merged invariant:
 - initial `control/worker-registry.json` remains materialized.
 
 Full deterministic repository validation, oscillator/replay protection, carrier/worker separation, and no-token authority checks passed. Runtime execution remains NOT OBSERVED.
+
+
+## 2026-08-28 native materialization static-dependency parity repair
+
+After mutable runtime/control contamination was removed, comparing fresh native materialization with the canonical resident source-refresh manifest exposed missing static dependencies.
+
+Registered/runtime code already requires:
+- `state_language/` for semantic state preclaim revalidation;
+- `management/` contracts such as `COSV_HEARTBEAT_STATE_PACKET_CONTRACT.json`;
+- `scripts/materialize_live_cosv_packet.py`, `cosv.py`, and `cosv_state_packet.py` for the admitted COSV live packet worker;
+- `scripts/project_worker_control_plane_from_carrier.py` when current carrier state exists but worker control-plane projection is absent;
+- `scripts/verify_iphone_heartbeat_transition_receipt.py` for the already-defined portable fallback verifier path.
+
+Those sources were available to later local source refresh but were not present in a fresh native materialization. A task could therefore be correctly registered/admitted yet fail from missing static source.
+
+Bounded repair:
+
+```text
+claim: NATIVE-RUNTIME-STATIC-DEPENDENCY-PARITY-20260828
+branch: fix/native-materialization-static-parity-20260828
+state_language materialized: true
+management contracts materialized: true
+COSV live packet scripts materialized: true
+worker control-plane projector materialized: true
+portable receipt verifier materialized: true
+mutable runtime evidence copied: false
+mutable resident control snapshots copied: false
+credential authority: TV/TVC
+runtime execution observed: false
+```
+
+Regression coverage now requires a freshly materialized runtime to contain these dependencies and checks parity with the static source-refresh contract. Current state: IMPLEMENTED / VALIDATION PENDING / MERGE PENDING.
