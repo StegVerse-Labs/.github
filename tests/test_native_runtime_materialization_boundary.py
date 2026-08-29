@@ -102,7 +102,7 @@ class NativeRuntimeMaterializationBoundaryTests(unittest.TestCase):
         refresh_text = (ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").read_text(encoding="utf-8")
         for rel in ("management", "state_language"):
             self.assertIn(f'Path("{rel}")', refresh_text)
-            self.assertIn(f'"{rel}"', mod.COPY_DIRS)
+            self.assertIn(rel, mod.COPY_DIRS)
         for rel in (
             "scripts/materialize_live_cosv_packet.py",
             "scripts/cosv.py",
