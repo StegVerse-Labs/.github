@@ -217,7 +217,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         env=cleaned,timeout=600,
     )
     terminal = terminal_validation(runtime)
-    state = "COMPLETE" if terminal else "HANDOFF_READY"
+    state = "COMPLETED" if terminal else "HANDOFF_READY"
     receipt = {
         "schema":"stegverse.tvc-broker-validation-request-consumption/v1",
         "state":state,
@@ -251,7 +251,7 @@ def main() -> int:
     args=parser.parse_args()
     receipt=consume(args.source_root,args.runtime_root)
     print(json.dumps(receipt,sort_keys=True))
-    return 0 if receipt["state"] in {"NO_REQUEST","ALREADY_CONSUMED","HANDOFF_READY","COMPLETE"} else 1
+    return 0 if receipt["state"] in {"NO_REQUEST","ALREADY_CONSUMED","HANDOFF_READY","COMPLETED"} else 1
 
 
 if __name__ == "__main__":
