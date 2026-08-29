@@ -1,0 +1,45 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000103000",
+  "evidence_refs": [
+    "ADMISSIBLE_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md",
+    "control/session-implementation-claim-2026-08-14-admissible-source-generation-capability.json",
+    "data/admissible-source-generation-capability/task-state.json",
+    "control/worker-registry.d/admissible-source-generation-capability-001.json",
+    "handoffs/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
+    "StegVerse-Labs/StegCore@15d9524530bc45a9404d93c3e2d51953d8f4a156"
+  ],
+  "observed_at": "2026-08-29T02:37:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 3,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "source support claim is COMPLETE_VALIDATED_RELEASED_SOURCE_SUPPORT; task is HANDOFF_READY with AVAILABLE dedicated worker and machine continuation owner",
+    "archive_ready": "worker fragment archive_eligible=false and task-state remains SOURCE_COMPLETE_ADMISSIBLE_RUNTIME_BLOCKED",
+    "unassigned_work": "registered admissible-source-generation-capability-worker plus canonical lifecycle/local-model/TVC owners own continuation",
+    "chat_owned_counts": "source implementation claim is released; no chat execution, validation, integration, observation, or credential ownership remains for this task",
+    "canonical_owner_installed": "binder source, worker, adapter, handoff, task-state, released source claim, StegCore ADMISSIBLE lifecycle evidence and local generation executor are installed",
+    "thread_required": "released source claim and durable machine/authority continuation remove chat dependence for this task; wider recursive-build incompleteness is separate",
+    "blocker_count": "registry/handoff/task-state exact parity: sovereign local model activation, source-generation integration proof, resident source-generation + recursive re-observation",
+    "evidence_complete": "integration evidence and activation proof are absent; resident governed generation/re-observation is unobserved",
+    "activated": "canonical capability phase is ADMISSIBLE, activation_proof_ref=null, target phase remains ACTIVATED",
+    "propagated": "no exact owner-source packet has completed downstream TV/TVC repository operation and owner validation/merge/re-observation"
+  },
+  "authority_effect": "NONE"
+}

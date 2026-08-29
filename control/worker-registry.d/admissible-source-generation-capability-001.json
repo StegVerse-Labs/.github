@@ -55,6 +55,19 @@
         "temporal_class": "current",
         "task_relationship": "integrates_capability",
         "target_phase": "ACTIVATED"
+      },
+      "source_state_vector_ref": "control/task-vectors/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000103000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-29T02:37:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],
@@ -62,7 +75,9 @@
     {
       "adapter_ref": "process:admissible-source-generation-capability-v1",
       "authority_source": "handoffs/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json#authority",
-      "capabilities": ["admissible_source_generation_capability"],
+      "capabilities": [
+        "admissible_source_generation_capability"
+      ],
       "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
       "executor_type": "repository_worker",
       "last_seen_at": null,
