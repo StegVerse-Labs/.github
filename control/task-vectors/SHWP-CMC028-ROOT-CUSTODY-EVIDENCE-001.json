@@ -1,0 +1,43 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/cmc028-root-custody-001.json",
+    "handoffs/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json",
+    "StegVerse-Labs/TVC:tasks/TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028.json",
+    "StegVerse-Labs/TVC:docs/CERTIFICATE_ROOT_KEY_CUSTODY_028_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-08-28T20:57:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "CMC-028 evaluator and dispatcher are merged/validated in TVC; this handoff/worker registry installs machine ownership for resident evidence execution.",
+    "archive_ready": "worker fragment archive_eligible=false while live custody/recovery evidence is absent.",
+    "unassigned_work": "continuation owner is the registered CMC-028 worker plus TV/TVC runtime authority.",
+    "chat_owned_counts": "no implementation/validation/integration/observation/credential action remains assigned to chat after worker registration.",
+    "canonical_owner_installed": "TVC task/evaluator/dispatcher and .github handoff/worker/adapter are canonical machine surfaces.",
+    "thread_required": "TVC task thread_dependency=NONE; registered worker owns live continuation.",
+    "blocker_count": "exactly one live-evidence blocker: authentic CUSTODY_RECOVERY_EVIDENCE_VERIFIED receipt not yet observed.",
+    "evidence_complete": "protected root-key/recovery custody evidence and resident execution receipt are not yet observed.",
+    "activated": "AE activation_proof_ref remains null.",
+    "propagated": "no live custody/recovery evidence has propagated into StegGuardian ROOT_KEY_CUSTODY or micro-node CERTIFICATES state."
+  },
+  "authority_effect": "NONE"
+}
