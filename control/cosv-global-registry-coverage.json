@@ -1,8 +1,8 @@
 {
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
-  "observed_commit": "e68899e6ce03be82b2833f3ae24369e986f5f5bb",
-  "observed_at": "2026-08-28T21:48:00-05:00",
+  "observed_commit": "6bd68bbc131365a5c97a75775f0527b702a0b1d7",
+  "observed_at": "2026-08-28T21:55:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,9 +11,9 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 54,
-    "canonically_indexed_task_ids": 22,
+    "canonically_indexed_task_ids": 23,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 25,
+    "active_unvectorized_unique_task_ids": 24,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,7 +21,7 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 39,
+  "total_active_unvectorized_unique_task_ids": 38,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -46,7 +46,6 @@
     "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
     "KV-CONNECTION-HEALTH-RECONCILER-001",
     "KV-PROVIDER-CHANGE-OBSERVER-001",
-    "SV-DN1-RESIDENT-OBSERVER-001",
     "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001"
   ],
   "active_organization_task_ids_missing_canonical_cosv": [
@@ -153,6 +152,10 @@
     {
       "task_id": "SV-DN1-SDK-FIRST-ROUND-001",
       "vector": "50000000103000"
+    },
+    {
+      "task_id": "SV-DN1-RESIDENT-OBSERVER-001",
+      "vector": "50000000103000"
     }
   ],
   "evidence_conflicts": [],
@@ -222,12 +225,14 @@
     "g18_consumption_receipt_observed": false,
     "authority_effect": "NONE"
   },
-  "sv_dn1_resident_observer_conflict": {
-    "task_id": "SV-DN1-RESIDENT-OBSERVER-001",
-    "vector_emission_allowed": false,
-    "reason": "CANONICAL_PRODUCT_TASK_SCOPE_AND_BLOCKER_CONTRACT_NOT_YET_RECONCILED",
-    "product_owner_ref": "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json",
-    "local_handoff_ref": "handoffs/SV-DN1-RESIDENT-OBSERVER-001.json",
-    "local_registry_ref": "control/worker-registry.d/sv-dn1-resident-observer-001.json"
+  "sv_dn1_resident_observer_reconciliation": {
+    "product_owner_pr": 21,
+    "product_owner_merge": "a71b1263018cd5c7bba73b7182474c43a34c95bc",
+    "product_task_scope": "RESIDENT_CAPTURE_AND_HF_SEMANTIC_EXCHANGE_ONLY",
+    "source_basis_commit": "4988d453419f43404100c69dd97dd1785d7e0a75",
+    "local_blocker_parity": true,
+    "vector": "50000000103000",
+    "runtime_receipt_observed": false,
+    "authority_effect": "NONE"
   }
 }

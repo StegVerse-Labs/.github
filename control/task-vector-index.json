@@ -221,11 +221,21 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md"
+    },
+    {
+      "task_id": "SV-DN1-RESIDENT-OBSERVER-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/sv-dn1-resident-observer-001.json",
+      "source_state_vector_ref": "control/task-vectors/SV-DN1-RESIDENT-OBSERVER-001.json",
+      "vector": "50000000103000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 22,
-    "local_cosv_record_tasks": 22,
+    "indexed_vectorized_tasks": 23,
+    "local_cosv_record_tasks": 23,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"

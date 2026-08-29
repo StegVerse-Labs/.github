@@ -41,16 +41,24 @@ class SVDN1RuntimeCohortCOSVTests(unittest.TestCase):
             self.assertFalse(record["exact_metrics"]["activated"])
             self.assertFalse(record["exact_metrics"]["propagated"])
 
-    def test_resident_observer_conflict_remains_fail_closed(self):
-        self.assertFalse((ROOT/f"control/task-vectors/{RESIDENT}.json").exists())
+    def test_resident_observer_conflict_is_reconciled_before_vector_emission(self):
+        vector_path=ROOT/f"control/task-vectors/{RESIDENT}.json"
+        self.assertTrue(vector_path.exists())
         coverage=json.loads((ROOT/"control/cosv-global-registry-coverage.json").read_text(encoding="utf-8"))
-        self.assertIn(RESIDENT,coverage["active_worker_task_ids_missing_canonical_cosv"])
-        conflict=coverage["sv_dn1_resident_observer_conflict"]
-        self.assertEqual(conflict["task_id"],RESIDENT)
-        self.assertFalse(conflict["vector_emission_allowed"])
+        self.assertNotIn(RESIDENT,coverage["active_worker_task_ids_missing_canonical_cosv"])
+        self.assertNotIn("sv_dn1_resident_observer_conflict",coverage)
+        reconciliation=coverage["sv_dn1_resident_observer_reconciliation"]
+        self.assertEqual(reconciliation["product_owner_pr"],21)
+        self.assertEqual(reconciliation["product_owner_merge"],"a71b1263018cd5c7bba73b7182474c43a34c95bc")
+        self.assertTrue(reconciliation["local_blocker_parity"])
+        self.assertFalse(reconciliation["runtime_receipt_observed"])
         frag=json.loads((ROOT/"control/worker-registry.d/sv-dn1-resident-observer-001.json").read_text(encoding="utf-8"))
         hand=json.loads((ROOT/"handoffs/SV-DN1-RESIDENT-OBSERVER-001.json").read_text(encoding="utf-8"))
-        self.assertNotEqual(frag["tasks"][0]["admissible_existence"]["blockers"],hand["admissible_existence"]["blockers"])
+        self.assertEqual(frag["tasks"][0]["admissible_existence"]["blockers"],hand["admissible_existence"]["blockers"])
+        record=json.loads(vector_path.read_text(encoding="utf-8"))
+        self.assertEqual(record["vector"],"50000000103000")
+        self.assertFalse(record["exact_metrics"]["activated"])
+        self.assertFalse(record["exact_metrics"]["propagated"])
 
 if __name__=="__main__":
     unittest.main()
