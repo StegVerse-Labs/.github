@@ -1,8 +1,8 @@
 {
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
-  "observed_commit": "b17cda131ac6e0bcff37a2d96b41a211eed0afad",
-  "observed_at": "2026-08-28T23:26:00-05:00",
+  "observed_commit": "72570caee040f298eff94c076fcbcbbd31225d6e",
+  "observed_at": "2026-08-28T23:32:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,9 +11,9 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 54,
-    "canonically_indexed_task_ids": 26,
+    "canonically_indexed_task_ids": 27,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 21,
+    "active_unvectorized_unique_task_ids": 20,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,14 +21,13 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 35,
+  "total_active_unvectorized_unique_task_ids": 34,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
     "SHWP-ERL-UAP-MEDIA-001",
     "STEGFIN-LIVE-PRETRADE-005",
     "SHWP-HIL-SOVEREIGN-RECEIVER-001",
-    "SHWP-STEGFIN-SOVEREIGN-TRADING-001",
     "SHWP-STEGNUTRITION-CONTINUATION-001",
     "SHWP-FORMALISM-SOURCE-DISCOVERY-001",
     "HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001",
@@ -165,6 +164,10 @@
     {
       "task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
       "vector": "50000000104000"
+    },
+    {
+      "task_id": "SHWP-STEGFIN-SOVEREIGN-TRADING-001",
+      "vector": "50000000101000"
     }
   ],
   "evidence_conflicts": [],
