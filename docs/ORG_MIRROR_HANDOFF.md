@@ -490,3 +490,38 @@ Site repository mutation authority: NONE
 The successor observes before mutating, reuses a valid TVC recipient stack when only route evidence is absent, performs resident activation only under root/systemd authority with real Gateway/KV storage bindings, observes the public sovereign route, requires `READY_FOR_OWNER_INGRESS`, and emits only the local Site owner-ingress projection.
 
 Repository/CI validation cannot satisfy its live predicates. The remaining blocker is execution on the eligible non-hosted sovereign WorkerCoordinator/runtime substrate, not missing source ownership.
+
+## 2026-08-29 universal data transport invariant adoption
+
+Owner direction establishes one canonical StegVerse data-transport boundary stack:
+
+```text
+SKAP_VAULT <-> KV <-> DEVICE_SYSTEM <-> STEGOS_ECOSYSTEM <-> EXTERNAL_SYSTEM
+```
+
+Every completed adjacent data-transport hop MUST use Interlock + InTr and MUST emit a durable receipt chained to the prior completed hop. Direct non-adjacent transport and direct cross-boundary state mutation are prohibited.
+
+The transport contract is event-triggered:
+
+```text
+data event / user Submit
+-> create exact hash-bound transport intent
+-> traverse next adjacent Interlock/InTr boundary
+-> receiver verifies exact payload identity
+-> receiver emits hop receipt
+-> receiver initiates the next Interlock intent when another subsystem/boundary follows
+-> unavailable next receiver => durable queue or EVENT_EPHEMERAL materialization
+```
+
+No always-on application receiver or second user-operated device may be a prerequisite for transport initiation. Exact-packet transport retry is allowed under the same operation/packet identity; blind retry of downstream consequences is prohibited.
+
+Canonical machine policy:
+`management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json`
+
+Validator:
+`scripts/validate_universal_data_transport_invariant.py`
+
+Implementation owner:
+`StegVerse-Labs/StegOS/stegos/universal_intr_transport.py`
+
+This is a canonical architecture/policy adoption. It does not claim that every legacy transport surface has already migrated or that Universal Interlock runtime activation has been physically observed.
