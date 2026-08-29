@@ -5,7 +5,7 @@
 ```text
 organization: StegVerse-Labs
 repository: .github
-branch: feat/formalism-source-discovery-001
+branch: main
 goal_id: FORMALISM-SOURCE-DISCOVERY-001
 parent_goal: FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001
 issue: #102
@@ -13,7 +13,7 @@ pull_request: #103
 credential_authority: TV/TVC
 github_token_required: false
 network_checkout_authority: NONE_IN_THIS_GOAL
-archive_ready: false
+archive_ready: false_for_active_machine_task
 ```
 
 ## Originating requirement
@@ -54,29 +54,37 @@ Observation/discovery only. No clone/pull/fetch/authentication, no AE/StegCore m
 
 The predecessor implementation-admission claim is now `RELEASED_TRANSFERRED` with PR #101 merge evidence and this source-discovery claim as successor for the source-root deficiency. `OWNER_SOURCE_MUTATION_EXECUTOR_NOT_GENERALIZED` is intentionally not claimed complete or transferred by that release.
 
-Active claim:
+Implementation claim:
 
 ```text
 control/session-implementation-claim-2026-08-13-formalism-source-discovery.json
-state: ACTIVE / CLAIMED_FOR_IMPLEMENTATION
-release_condition: PR #103 admitted to main and any genuinely absent first-cohort source has an active executable materialization owner rather than an unassigned manual step
+state: RELEASED_TRANSFERRED_TO_MACHINE_CONTINUATION
+PR #103 merged head: 00ead9d14a44be827c4110f3866556402a2d899b
+merge: 5a5c77d45817407dc0b2f5010ba56a36ecdd5d5e
+machine continuation: SHWP-FORMALISM-SOURCE-DISCOVERY-001 / formalism-source-discovery-worker
+resident discovery receipt: NOT OBSERVED
+missing-source absence set: NOT OBSERVED
 ```
+
+The implementation claim is released because the source-discovery implementation and automatic roots-manifest consumption are merged and exact-head validated. No concrete missing-source materialization successor is required until resident discovery actually observes a missing/ambiguous/handoff-less source. Such an observation remains fail-closed and must derive a separately authorized machine successor rather than returning to chat selection.
+
+The generalized owner-source mutation executor deficiency remains separate and unresolved; it is not transferred into or satisfied by this source-discovery claim release.
 
 ## Hosted validation
 
-PR #103 head `0006e0a9f1cfa290bcbab15160c67dc344b94354` received:
+PR #103 final merged head `00ead9d14a44be827c4110f3866556402a2d899b` received:
 
 ```text
 Heartbeat Worker Project - Validation Only / No GitHub Token Authority
-run: 31770488684
+run: 31770541037
 result: SUCCESS
 
 Validate organization control plane - No GitHub Token Authority
-run: 31770488687
+run: 31770541030
 result: SUCCESS
 
 Render Organization Handoff State - No GitHub Token Authority
-run: 31770488707
+run: 31770541087
 result: SUCCESS
 ```
 
@@ -90,13 +98,15 @@ roots-manifest contract: IMPLEMENTED
 formalism adapter consumption: IMPLEMENTED
 fail-closed missing/ambiguous handling: IMPLEMENTED
 hosted validation: PASS
-canonical admission: PENDING
+canonical admission: MERGED_VALIDATED
 resident discovery receipt: NOT OBSERVED
 actual first-cohort roots present on resident carrier: NOT YET PROVEN
 missing-source materialization successor: NOT YET INSTALLED because resident absence set is not yet observed
-owner-source mutation executor: STILL UNRESOLVED / SESSION-OWNED
+owner-source mutation executor: STILL UNRESOLVED / SEPARATE LANE
 ```
 
 ## Archive condition
 
-Do not archive this session after source-discovery merge alone. Archive readiness still requires proving actual resident source availability or assigning every absent source to an executable materialization owner, and resolving/transferring the generalized owner-source mutation executor deficiency.
+The source-discovery implementation claim no longer requires this chat: execution is durably owned by the registered machine worker. The active source-discovery task itself remains nonterminal until resident roots are observed and a roots manifest is emitted.
+
+The broader formalism/manifold workstream remains nonarchive for separate unresolved lanes, including the generalized owner-source mutation executor. That broader condition must not be encoded as a chat/thread dependency on SHWP-FORMALISM-SOURCE-DISCOVERY-001.
