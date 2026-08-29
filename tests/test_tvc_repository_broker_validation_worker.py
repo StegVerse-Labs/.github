@@ -26,8 +26,24 @@ def test_handoff_and_adapter_are_credential_clean():
     assert adapter["adapters"][0]["env_allowlist"] == ["STEGVERSE_TVC_ROOT"]
     assert registry["credential_authority"] == "TV/TVC"
     assert registry["github_token_required"] is False
-    assert registry["tasks"][0]["heartbeat_dependency"] is False
-    assert "StegVerse-Labs/TVC#92" in registry["tasks"][0]["evidence_refs"]
+    task = registry["tasks"][0]
+    assert task["heartbeat_dependency"] is False
+    assert task["cost_basis_ref"] == "cost-basis/worker-runtime/tvc-repository-broker-validation.json"
+    assert task["admission"]["authority_domain"] == "INDEPENDENT_TASK_CONTROL"
+    assert task["admission"]["claim_state"] == "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+    assert task["admission"]["heartbeat_reference_only"] is True
+    assert task["admission"]["heartbeat_grants_execution_authority"] is False
+    assert task["admission"]["carrier_trigger_required"] is False
+    assert task["admission"]["fresh_fence_required"] is True
+    assert task["admission"]["minimum_fencing_token_exclusive"] == 22
+    assert handoff["task"]["execution_admission_mode"] == "INDEPENDENT_TASK_CONTROL"
+    assert handoff["task"]["worker_id"] == "tvc-repository-broker-validation-worker"
+    assert handoff["activation"]["authority_domain"] == "INDEPENDENT_TASK_CONTROL"
+    assert handoff["activation"]["minimum_fencing_token_exclusive"] == 22
+    cost = json.loads((ROOT / task["cost_basis_ref"]).read_text())
+    assert cost["hb_estimate"]["expiry_candidate_beats"] == 24000
+    assert cost["hb_estimate"]["confidence"] != "NONE"
+    assert "StegVerse-Labs/TVC#92" in task["evidence_refs"]
     assert f"StegVerse-Labs/TVC@{EXPECTED_TVC_HEAD}" in registry["tasks"][0]["evidence_refs"]
 
 
@@ -77,3 +93,17 @@ def test_worker_has_no_source_fetch_transport_or_heartbeat_gate():
     assert 'heartbeat_timing") or {}' not in source
     assert 'source_bundle_file_count' in source
     assert 'source_bundle_sha256' in source
+
+
+def test_ae_conformance_and_capability_boundary():
+    handoff = json.loads((ROOT / "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json").read_text())
+    retrospective = json.loads((ROOT / "control/admissible-existence-retrospective-conformance.d/tvc-repository-broker-validation-001.json").read_text())
+    assert handoff["admissible_existence"]["phase"] == "ADMISSIBLE"
+    assert handoff["authority"]["repository_writeback_authority"] is False
+    assert handoff["authority"]["merge_authority"] is False
+    assert handoff["authority"]["non_tv_tvc_secret_or_token_allowed"] is False
+    entry = retrospective["entries"][0]
+    assert entry["task_id"] == worker.TASK_ID
+    assert entry["phase"] == "ADMISSIBLE"
+    assert entry["result"] == "PASS"
+    assert entry["task_relationship"] == "validates_capability"
