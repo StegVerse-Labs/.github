@@ -1,14 +1,14 @@
 {
-  "schema": "stegverse.system-ai-entity-registry/v0.1",
+  "schema": "stegverse.system-ai-entity-registry/v0.2",
   "canonical_owner": "StegVerse-Labs/.github",
   "entities": [
     {
-      "schema": "stegverse.system-ai-entity/v0.1",
+      "schema": "stegverse.system-ai-entity/v0.2",
       "entity_id": "StegVerse-002",
       "organization": "StegVerse-002",
       "runtime_repository": "StegVerse-002/micro-node-runtime",
       "entity_class": "SOVEREIGN_AI_RUNTIME_ENTITY",
-      "description": "Heartbeat-federated sovereign AI runtime entity whose intelligence capabilities are system participants but do not inherit governance, credential, route, custody, or execution authority from model output or heartbeat presence.",
+      "description": "Heartbeat-federated sovereign AI runtime entity whose intelligence capabilities are system participants. Internal inference is intrinsic; governance/existence/admissibility standing applies only to applicable interactions or consequences and does not grant authority to model output or heartbeat presence.",
       "lifecycle_state": "FEDERATION_REGISTERED",
       "heartbeat": {
         "federation_owner": "StegVerse-Labs/.github",
@@ -28,7 +28,8 @@
       "activation": {
         "federation_membership_established": true,
         "heartbeat_presence_proven": false,
-        "governed_inference_proven": false,
+        "inference_execution_proven": false,
+        "interaction_boundary_standing_proven": false,
         "same_execution_reconstruction_proven": false,
         "active": false
       },
@@ -36,7 +37,8 @@
         "control/repo-heartbeat-federation.json",
         "handoffs/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
         "StegVerse-002/micro-node-runtime/MICRO_NODE_RUNTIME_MIRROR_HANDOFF.md",
-        "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md"
+        "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+        "StegVerse-002/micro-node-runtime/docs/SYSTEM_AI_ENTITY_MIRROR_HANDOFF.md"
       ]
     }
   ]
