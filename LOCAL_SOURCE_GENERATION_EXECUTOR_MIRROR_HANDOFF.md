@@ -1,6 +1,6 @@
 # Local Source-Generation Executor Mirror Handoff
 
-Updated: 2026-08-14T18:56:00-05:00
+Updated: 2026-08-29T02:37:00-05:00
 
 ## Source of truth
 
@@ -191,3 +191,35 @@ recursive owner mutation/re-observation proof: 0/1
 ## Archive condition
 
 This source implementation subtask is archive-safe and its implementation claim is released. The broader recursive-build goal remains incomplete until the registered machine chain produces actual resident source generation -> existing binder -> TV/TVC owner mutation -> validation/merge -> reconciliation re-observation, or another proven active continuation independently owns and executes that sequence.
+
+
+## Structured-state reconciliation — 2026-08-29
+
+The canonical mirror had already advanced the source-generation lifecycle from `DECLARED` to `ADMISSIBLE` after StegCore PR #124, but three structured execution surfaces and the retrospective AE projection still carried the older declaration/two-blocker contract.
+
+They are reconciled to the canonical current state:
+
+```text
+phase: ADMISSIBLE
+target_phase: ACTIVATED
+standing evidence: PRESENT
+admissibility evidence: PRESENT
+integration evidence: NONE
+activation proof: NONE
+
+blockers:
+SOVEREIGN_LOCAL_MODEL_LIVE_ACTIVATION_NOT_YET_OBSERVED
+FORMALISM_SOURCE_GENERATION_INTEGRATION_PROOF_NOT_YET_OBSERVED
+RESIDENT_SOURCE_GENERATION_AND_RECURSIVE_REOBSERVATION_NOT_YET_PROVEN
+```
+
+Reconciled surfaces:
+
+```text
+control/worker-registry.d/local-source-generation-executor-001.json
+handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json
+data/local-source-generation-executor/task-state.json
+control/admissible-existence-retrospective-conformance.json
+```
+
+This is state convergence only. It does not execute the local model, generate owner source, emit the binder packet, mutate any repository, or prove recursive re-observation. TV/TVC remains the only repository-operation/credential authority.
