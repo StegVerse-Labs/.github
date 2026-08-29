@@ -218,3 +218,58 @@ native resident installation/materialization succeeds
 This does not make HIL depend on the G18 claim, does not let a request grant authority, and does not turn dispatch into activation proof. HIL remains an independently admitted task-control lane. The change only removes the shared ordering deadlock so an eligible resident runtime can actually attempt the HIL worker before the verifier makes its final determination.
 
 Runtime evidence remains required: a real HIL resident-consumption receipt, worker claim/fresh fence, receiver ACTIVE/READY observation, public HTTPS rendezvous, Site browser `HIL-RECEIVER-RECEIPT-v2`, restart exact-byte proof, and TVC lifecycle handoff.
+
+
+## 2026-08-29 Universal Interlock/InTr critical-path supersession
+
+The earlier sections that describe resident receiver `READY`, public rendezvous, or resident request consumption as prerequisites to **begin HIL submission** or to advance the HIL product lifecycle are superseded by the merged organization-wide Universal Interlock/InTr architecture.
+
+Merged canonical chain:
+
+```text
+.github policy PR #407 -> d0de32281c2e29258146e084e93ce4587568d683
+StegOS PR #89          -> 9500c974acfd9c9aed663c8e78573df61a57fddd
+LLM-adapter PR #213    -> ad1a7c3f8bb727d1007f254930d9a77df0bfa94f
+Site PR #606           -> 1cb2b9b950674400c5e5aa341b8b6efba5cbeb47
+TVC PR #240            -> 31a4ea2fcc42b807ec24ae2612df4e60d38a73eb
+```
+
+Canonical HIL flow is now:
+
+```text
+participant taps Submit
+-> exact PDF + provenance hash binding
+-> DEVICE_SYSTEM / Site:HIL Interlock
+-> InTr transport intent
+-> STEGOS_ECOSYSTEM / HIL:Ingress receipt
+-> chained HIL:Ingress -> HIL:Custody Interlock receipt
+-> durable HIL:Custody -> TVC:HIL-Lifecycle Interlock intent
+-> TVC independently validates the lineage and exact bytes
+-> TVC HIL lifecycle receipt
+-> separately governed private-review Interlock
+```
+
+Availability invariant:
+
+```text
+event_triggered_transport = true
+always_on_application_receiver_required = false
+second_user_device_required = false
+receiver_unavailable = DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION
+exact_packet_transport_retry_allowed = true
+blind_consequence_retry_allowed = false
+G18 dependency = false
+```
+
+Therefore:
+
+```text
+G18 resident activation != HIL submission prerequisite
+HIL resident worker observation != HIL submission prerequisite
+HIL resident worker observation != HIL product activation prerequisite
+public readiness preflight != prerequisite to create transport intent
+```
+
+`SHWP-HIL-SOVEREIGN-RECEIVER-001` remains `HANDOFF_READY` as a useful optional event-ephemeral sovereign materializer/runtime-observation lane. It may produce additional runtime evidence, but lack of its receipt may not block the canonical HIL transport chain.
+
+Lifecycle claims remain exact: these merges establish source/control-plane behavior. A genuine participant Submit-triggered transport receipt chain is still required before the new runtime path is **OBSERVED**.
