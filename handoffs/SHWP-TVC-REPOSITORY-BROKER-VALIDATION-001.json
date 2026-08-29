@@ -34,14 +34,14 @@
     "source_refs": [
       "StegVerse-Labs/TVC#19",
       "StegVerse-Labs/TVC#92",
-      "StegVerse-Labs/TVC@ce1d4a31f5cfc65ee59af52f821336e0859c0fbd",
+      "StegVerse-Labs/TVC@b5288f9910ada26c6ab2e9bca3f7701afaae2cef",
       "StegVerse-Labs/TVC/docs/GITHUB_REPOSITORY_OPERATION_BROKER_MIRROR_HANDOFF.md",
       "StegVerse-Labs/TVC/tasks/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.json",
       "workers/tvc_repository_broker_validation_worker.py"
     ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "PR #92 now emits a stable SHA-256 over the complete bounded 16-file broker source bundle. Exact validation remains bound to the tested PR head, while unrelated main movement is handled later by digest-preserving rematerialization plus current-base compatibility review rather than repeated source revalidation.",
+    "derivation_reason": "PR #92 now carries the ST-019 PROTECT_DEFAULT_BRANCH broker extension while retaining the same bounded 16-file validation denominator. Exact governed validation must bind the new tested PR head and resulting source_bundle_sha256 before broker admission; unrelated main movement remains a later digest-preserving compatibility concern.",
     "canonical_owner_ref": "StegVerse-Labs/TVC#92",
     "canonical_lineage_key": "tvc:github-repository-operation-broker:validation",
     "derivation_depth": 0,
@@ -95,8 +95,8 @@
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 24000,
     "rate_class": "tvc_repository_broker_validation",
-    "expected_tvc_head": "ce1d4a31f5cfc65ee59af52f821336e0859c0fbd",
-    "expected_head_change_reason": "PR #92 changed its bounded broker source bundle to admit the SV-DN-1 private canonical source consumers StegVerse-Labs/StegCore and master-records/orchestration. Full governed validation is required against this new exact head and resulting 16-file source_bundle_sha256.",
+    "expected_tvc_head": "b5288f9910ada26c6ab2e9bca3f7701afaae2cef",
+    "expected_head_change_reason": "PR #92 changed its bounded broker source bundle to add ST-019 PROTECT_DEFAULT_BRANCH execution and local-spool policy enforcement for the critical repository protection lane. Full governed validation is required against this exact head and the resulting 16-file source_bundle_sha256.",
     "validation_command": [
       "python",
       "tools/task_dispatcher.py",
@@ -131,9 +131,9 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Locate exact locally materialized TVC PR #92 source at ce1d4a31f5cfc65ee59af52f821336e0859c0fbd and execute the repository-native validation task with all credential variables removed.",
+    "next_authorized_action": "Locate exact locally materialized TVC PR #92 source at b5288f9910ada26c6ab2e9bca3f7701afaae2cef and execute the repository-native validation task with all credential variables removed.",
     "terminal_when": [
-      "A PASS validation receipt records exact TVC source head ce1d4a31f5cfc65ee59af52f821336e0859c0fbd, source_bundle_file_count=16, source_bundle_sha256, and sanitized dispatcher result"
+      "A PASS validation receipt records exact TVC source head b5288f9910ada26c6ab2e9bca3f7701afaae2cef, source_bundle_file_count=16, source_bundle_sha256, and sanitized dispatcher result"
     ]
   },
   "block": null,
