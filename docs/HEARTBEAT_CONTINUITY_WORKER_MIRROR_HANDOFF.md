@@ -719,3 +719,29 @@ runtime execution observed: false
 ```
 
 Regression coverage now requires a freshly materialized runtime to contain these dependencies and checks parity with the static source-refresh contract. Current state: IMPLEMENTED / VALIDATION PENDING / MERGE PENDING.
+
+
+### Native static-dependency parity merge — 2026-08-28
+
+The fresh-native static dependency closure repair is exact-head validated and merged:
+
+```text
+PR: #385
+validated head: e667b4d1a5eb5f88edf6a71acaf93beeed1ae8e3
+Organization Control Plane: 33228914056 / 99037976525 SUCCESS
+Heartbeat Worker Project: 33228914053 / 99037976470 SUCCESS
+merge: a3e8dc0dc480b172dc191dea662b7ec5df44c654
+bounded source claim: RELEASED_SOURCE_REPAIR
+```
+
+The first validation attempt failed only because the new test searched for a quoted tuple value; runtime/source behavior itself was not failing. The assertion was corrected without weakening any gate, and the full deterministic suite then passed.
+
+Fresh native materialization now includes:
+- `state_language/`;
+- full static `management/` contracts;
+- COSV live-packet materializer and COSV packet tooling;
+- worker control-plane projector;
+- portable heartbeat receipt verifier;
+- previously merged resident-request dispatcher and consumers.
+
+It still excludes source-derived mutable runtime evidence and mutable resident control snapshots. Runtime execution remains NOT OBSERVED.
