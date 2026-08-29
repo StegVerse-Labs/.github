@@ -47,6 +47,40 @@ class NativeRuntimeMaterializationBoundaryTests(unittest.TestCase):
                 ["receipts/sovereign-host/materialization.latest.json"],
             )
 
+    def test_mutable_control_snapshots_are_not_source_bootstrap_inputs(self) -> None:
+        self.assertEqual(
+            set(mod.MUTABLE_CONTROL_FILES),
+            {
+                "heartbeat-carrier-runtime-state.json",
+                "worker-runtime-state.json",
+                "worker-control-plane-coordination.json",
+                "worker-status.json",
+            },
+        )
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td) / "runtime"
+            receipt = mod.materialize(ROOT, runtime)
+            self.assertFalse(receipt["source_mutable_control_state_copied"])
+            self.assertEqual(
+                set(receipt["mutable_control_files_excluded_from_source"]),
+                set(mod.MUTABLE_CONTROL_FILES),
+            )
+            for name in mod.MUTABLE_CONTROL_FILES:
+                self.assertFalse((runtime / "control" / name).exists())
+
+    def test_rematerialization_preserves_existing_resident_control_state(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td) / "runtime"
+            control = runtime / "control"
+            control.mkdir(parents=True)
+            sentinel = control / "worker-runtime-state.json"
+            sentinel.write_text('{"schema":"resident-sentinel"}\n', encoding="utf-8")
+            mod.materialize(ROOT, runtime)
+            self.assertEqual(
+                sentinel.read_text(encoding="utf-8"),
+                '{"schema":"resident-sentinel"}\n',
+            )
+
     def test_required_bootstrap_seeds_remain_materialized(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             runtime = Path(td) / "runtime"

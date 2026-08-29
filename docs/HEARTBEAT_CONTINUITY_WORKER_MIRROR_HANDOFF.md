@@ -631,3 +631,34 @@ runtime execution observed: false
 ```
 
 This closes source-derived mutable-evidence contamination for fresh native materialization. It does not provide a sovereign-node execution receipt or alter any app activation state.
+
+
+## 2026-08-28 native materialization mutable-control boundary repair
+
+The prior mutable-directory repair removed source `receipts/checkpoints/events/heartbeats` from fresh native materialization. A second bounded inconsistency remained because the complete source `control/` directory was still copied.
+
+The source-refresh contract already preserves these resident-generated files rather than overwriting them:
+
+```text
+control/heartbeat-carrier-runtime-state.json
+control/worker-runtime-state.json
+control/worker-control-plane-coordination.json
+control/worker-status.json
+```
+
+Runtime inspection confirmed:
+- the carrier creates/advances `heartbeat-carrier-runtime-state.json`;
+- WorkerCoordinator initializes `worker-runtime-state.json` when absent and writes it every resident cycle;
+- the worker control-plane projection is reconstructed from the current carrier when absent;
+- these are observations/runtime state, not canonical bootstrap intent.
+
+The explicit bootstrap seeds remain unchanged:
+
+```text
+control/heartbeat-state.json       # immutable legacy HB29 bootstrap seed
+control/worker-registry.json       # initial canonical task/claim registry seed
+```
+
+The materializer now excludes the four resident-generated control snapshots from source copy. Because copy ignores them rather than deleting target files, re-materialization preserves an already-running resident's current mutable state.
+
+Current state: IMPLEMENTED / VALIDATION PENDING / MERGE PENDING. Runtime execution remains NOT OBSERVED.
