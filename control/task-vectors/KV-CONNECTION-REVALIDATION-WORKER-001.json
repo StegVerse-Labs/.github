@@ -1,0 +1,43 @@
+{
+  "identity": "StegVerse-Labs/.github:task:KV-CONNECTION-REVALIDATION-WORKER-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000102000",
+  "evidence_refs": [
+    "control/worker-registry.d/kv-connection-revalidation-worker-001.json",
+    "handoffs/KV-CONNECTION-REVALIDATION-WORKER-001.json",
+    "KV_CONNECTION_REVALIDATION_WORKER_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/continuity-vault-kit:KV_CONNECTION_REVALIDATION_PROOF_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-08-29T15:17:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 2,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "HANDOFF_READY with authorized independent task-control claim and dedicated registered worker; source PR #417 is merged and validated",
+    "archive_ready": "worker fragment archive_eligible=false while authentic resident execution evidence remains absent",
+    "unassigned_work": "kv-connection-revalidation-worker + continuity-vault-kit own continuation",
+    "chat_owned_counts": "runtime proof consumption is independently machine-owned; no chat execution role is required",
+    "canonical_owner_installed": "continuity-vault-kit connection revalidation proof contract is merged and the resident worker source is merged through PR #417",
+    "thread_required": "durable handoff, registry, worker source, and canonical owner state define continuation without chat-only state",
+    "blocker_count": "exact registry/handoff parity: SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN | AUTHENTIC_CONFORMANCE_AND_PRIVATE_KV_READBACK_PROOFS_NOT_YET_OBSERVED",
+    "evidence_complete": "no authentic resident proof pair consumption and private-KV VERIFIED persistence evidence has been observed",
+    "activated": "runtime_activation_claimed=false and no activation proof is recorded",
+    "propagated": "no verified connection result has propagated from an authentic resident execution"
+  },
+  "authority_effect": "NONE"
+}
