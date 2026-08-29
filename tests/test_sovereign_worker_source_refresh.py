@@ -56,6 +56,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             (source / "control/resident-execution-request.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
             (source / "control/resident-execution-request.d/sv-dn1.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
             (source / "control/resident-execution-request.d/ecosystem-chat-parent-001.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
+            (source / "control/resident-execution-request.d/hil-sovereign-receiver-001.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
             for rel in refresh_mod.STATIC_FILES:
                 path = source / rel
                 path.parent.mkdir(parents=True, exist_ok=True)
@@ -95,6 +96,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertTrue((runtime / "control/resident-execution-request.json").is_file())
             self.assertTrue((runtime / "control/resident-execution-request.d/sv-dn1.json").is_file())
             self.assertTrue((runtime / "control/resident-execution-request.d/ecosystem-chat-parent-001.json").is_file())
+            self.assertTrue((runtime / "control/resident-execution-request.d/hil-sovereign-receiver-001.json").is_file())
             self.assertTrue((runtime / "state_language/__init__.py").is_file())
             for rel in (
                 "scripts/run_worker_runtime.py",
@@ -102,6 +104,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "scripts/run_independent_ecosystem_chat_parent.py",
                 "scripts/consume_resident_execution_request.py",
                 "scripts/consume_g18_resident_execution_request.py",
+                "scripts/consume_hil_resident_execution_request.py",
                 "scripts/consume_ara_graph_resident_execution_request.py",
                 "scripts/run_sv_dn1_first_round_chain.py",
                 "scripts/consume_sv_dn1_resident_execution_request.py",
@@ -155,6 +158,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertIn("control/resident-execution-request.d", path_unit)
             self.assertIn("consume_resident_execution_request.py", service)
             self.assertIn("consume_g18_resident_execution_request.py", service)
+            self.assertIn("consume_hil_resident_execution_request.py", service)
             self.assertIn("consume_ara_graph_resident_execution_request.py", service)
             self.assertIn("consume_sv_dn1_resident_execution_request.py", service)
             self.assertNotIn(f"PathChanged={source / 'control/worker-registry.json'}", path_unit)
