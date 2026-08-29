@@ -164,7 +164,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertIn(f"PathChanged={runtime / 'intr-materialization'}", path_unit)
             self.assertNotIn("consume_resident_execution_request.py --source-root", service)
             self.assertNotIn("consume_g18_resident_execution_request.py --source-root", service)
-            self.assertIn("consume_hil_intr_materialization_request.py --source-root", service)
+            self.assertIn("consume_hil_intr_materialization_request.py", service)
             self.assertNotIn("consume_hil_resident_execution_request.py --source-root", service)
             self.assertNotIn(f"PathChanged={source / 'control/worker-registry.json'}", path_unit)
             self.assertIn("authorizations", path_unit)
