@@ -1,6 +1,6 @@
 # KV Revalidation Proof Intake Mirror Handoff
 
-Status: SOURCE_LANE_OPEN / IMPLEMENTATION_IN_PROGRESS
+Status: SOURCE_IMPLEMENTED / EXACT_HEAD_VALIDATION_PENDING
 Repository: `StegVerse-Labs/.github`
 Issue: #424
 Branch: `feature/kv-revalidation-proof-intake-424`
@@ -63,3 +63,13 @@ Repository/source completion requires deterministic proof that the intake bridge
 ## Runtime completion boundary
 
 Source completion is not connection activation. Authentic runtime completion still requires a sovereign/resident runtime, separately produced conformance and readback proofs, canonical proof admission, and inspectable private-KV VERIFIED/health-receipt persistence from the existing revalidation worker.
+
+## Current implementation state
+
+The complete repository source surface is installed on `feature/kv-revalidation-proof-intake-424`, including the intake schema, worker, deterministic worker tests, executable handoff, worker registry, process adapter, bounded cost basis, Admissible-Existence projection, task.v1 COSV record, global index/coverage projection, COSV parity tests, and static boundary checker.
+
+Current canonical task vector: `50000000102000`.
+
+Worker denominator after this separately registered task: 58 total worker task IDs, 36 canonically indexed, 15 active-unvectorized, 6 completed historical, and 1 superseded historical.
+
+The next repository gate is exact-head hosted validation followed by merge. No live intake, provider proof, readback proof, connection verification, or runtime activation is claimed by source completion.
