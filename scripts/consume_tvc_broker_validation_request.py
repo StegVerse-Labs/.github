@@ -1,0 +1,258 @@
+#!/usr/bin/env python3
+"""Consume the bounded resident request for TVC broker governed validation."""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+from typing import Any, Mapping
+
+ROOT = Path(__file__).resolve().parents[1]
+REQUEST_REL = Path("control/resident-execution-request.d/tvc-repository-broker-validation-001.json")
+CONSUMPTION_REL = Path("receipts/sovereign-host/tvc-broker-validation-request-consumption.latest.json")
+VALIDATION_RECEIPT_REL = Path("receipts/tvc-repository-broker-validation/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json")
+REGISTRY_REL = Path("control/worker-registry.json")
+TARGET_TASK = "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001"
+TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
+TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
+MIN_FENCE = 22
+EXPECTED_HEAD = "ce1d4a31f5cfc65ee59af52f821336e0859c0fbd"
+
+HOSTED = ("GITHUB_ACTIONS","CI","RENDER","RENDER_SERVICE_ID","VERCEL","CF_PAGES","CLOUDFLARE_WORKERS")
+FORBIDDEN = (
+    "GITHUB_TOKEN","GH_TOKEN","GITHUB_PAT","GITHUB_PERSONAL_ACCESS_TOKEN",
+    "ACTIONS_RUNTIME_TOKEN","ACTIONS_ID_TOKEN_REQUEST_TOKEN",
+    "TVC_EPHEMERAL_GITHUB_TOKEN","OPENAI_API_KEY","ANTHROPIC_API_KEY",
+    "AWS_ACCESS_KEY_ID","AWS_SECRET_ACCESS_KEY","OAUTH_TOKEN",
+)
+NONSECRET = (
+    "PATH","HOME","LANG","LC_ALL","XDG_STATE_HOME","XDG_CONFIG_HOME",
+    "STEGVERSE_HEARTBEAT_ROOT","STEGVERSE_TVC_ROOT",
+)
+
+
+def truthy(value: str | None) -> bool:
+    return str(value or "").strip().lower() not in {"", "0", "false", "no"}
+
+
+def load_json(path: Path) -> dict[str, Any]:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise RuntimeError(f"expected JSON object: {path}")
+    return value
+
+
+def stable_hash(value: Any) -> str:
+    raw = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def validate_request(request: Mapping[str, Any]) -> None:
+    expected = {
+        "schema":"stegverse.resident-execution-request/v1",
+        "state":"REQUESTED",
+        "task_id":TARGET_TASK,
+        "mode":TARGET_MODE,
+        "entrypoint":TARGET_ENTRYPOINT,
+        "fresh_fence_minimum_exclusive":MIN_FENCE,
+        "credential_authority":"TV/TVC",
+        "github_token_required":False,
+        "github_token_runtime_authority":"NONE",
+        "heartbeat_grants_execution_authority":False,
+        "second_machine_required":False,
+        "network_source_fetch_allowed":False,
+        "request_granted_authority":False,
+        "tvc_root_locator_required":True,
+        "credential_material_allowed":False,
+        "authority_effect":"NONE_REQUEST_ONLY",
+    }
+    for key, wanted in expected.items():
+        if request.get(key) != wanted:
+            raise RuntimeError(f"TVC broker validation resident request {key} mismatch")
+
+
+def clean_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
+    values = dict(os.environ if source is None else source)
+    hosted = [name for name in HOSTED if truthy(values.get(name))]
+    if hosted:
+        raise RuntimeError("hosted environment may not consume TVC broker validation request: " + ",".join(sorted(hosted)))
+    env = {name: values[name] for name in NONSECRET if values.get(name)}
+    for name in FORBIDDEN:
+        env.pop(name, None)
+    env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
+    env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] = "NONE"
+    return env
+
+
+def exact_local_tvc_root(values: Mapping[str, str]) -> tuple[Path | None, str | None]:
+    raw = str(values.get("STEGVERSE_TVC_ROOT") or "").strip()
+    if not raw:
+        return None, None
+    root = Path(raw).expanduser().resolve()
+    if not (root / ".git").is_dir():
+        return None, str(root)
+    completed = subprocess.run(
+        ["git","-C",str(root),"rev-parse","HEAD"],
+        check=False,capture_output=True,text=True,timeout=20,
+        env={k:v for k,v in values.items() if k in {"PATH","HOME","LANG","LC_ALL"}},
+    )
+    head = completed.stdout.strip()
+    if completed.returncode != 0 or head != EXPECTED_HEAD:
+        return None, f"{root}:{head or 'UNRESOLVED'}"
+    dirty = subprocess.run(
+        ["git","-C",str(root),"status","--porcelain"],
+        check=False,capture_output=True,text=True,timeout=20,
+        env={k:v for k,v in values.items() if k in {"PATH","HOME","LANG","LC_ALL"}},
+    )
+    if dirty.returncode != 0 or dirty.stdout.strip():
+        return None, f"{root}:{head}:DIRTY"
+    return root, f"{root}:{head}"
+
+
+def terminal_validation(runtime: Path) -> bool:
+    receipt_path = runtime / VALIDATION_RECEIPT_REL
+    if not receipt_path.is_file():
+        return False
+    try:
+        receipt = load_json(receipt_path)
+    except Exception:
+        return False
+    result = receipt.get("result") or {}
+    return (
+        receipt.get("state") == "COMPLETED"
+        and result.get("reason") == "TVC_BROKER_VALIDATION_PASS"
+        and result.get("expected_tvc_head") == EXPECTED_HEAD
+        and result.get("source_head") == EXPECTED_HEAD
+        and result.get("source_bundle_file_count") == 16
+        and isinstance(result.get("source_bundle_sha256"), str)
+        and len(result["source_bundle_sha256"]) == 64
+        and receipt.get("credential_authority") == "TV/TVC"
+        and receipt.get("authority_effect") == "NONE_VALIDATION_ONLY"
+    )
+
+
+def previously_consumed(runtime: Path, request: Mapping[str, Any], request_hash: str) -> bool:
+    path = runtime / CONSUMPTION_REL
+    if not path.is_file():
+        return False
+    try:
+        receipt = load_json(path)
+    except Exception:
+        return False
+    return (
+        receipt.get("request_id") == request.get("request_id")
+        and receipt.get("request_sha256") == request_hash
+        and receipt.get("terminal_validation_observed") is True
+        and terminal_validation(runtime)
+    )
+
+
+def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name("." + path.name + ".tmp")
+    tmp.write_text(json.dumps(dict(value), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    os.replace(tmp, path)
+
+
+def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+    source = source_root.expanduser().resolve()
+    runtime = runtime_root.expanduser().resolve()
+    request_path = runtime / REQUEST_REL
+    if not request_path.is_file():
+        return {"schema":"stegverse.tvc-broker-validation-request-consumption/v1","state":"NO_REQUEST","runtime_execution_attempted":False,"authority_effect":"NONE"}
+
+    request = load_json(request_path)
+    validate_request(request)
+    request_hash = stable_hash(request)
+    if previously_consumed(runtime, request, request_hash):
+        return {
+            "schema":"stegverse.tvc-broker-validation-request-consumption/v1",
+            "state":"ALREADY_CONSUMED",
+            "request_id":request["request_id"],
+            "request_sha256":request_hash,
+            "runtime_execution_attempted":False,
+            "terminal_validation_observed":True,
+            "authority_effect":"NONE",
+        }
+
+    values = dict(os.environ if env is None else env)
+    cleaned = clean_env(values)
+    tvc_root, observed = exact_local_tvc_root(cleaned)
+    if tvc_root is None:
+        receipt = {
+            "schema":"stegverse.tvc-broker-validation-request-consumption/v1",
+            "state":"HANDOFF_READY",
+            "request_id":request["request_id"],
+            "request_sha256":request_hash,
+            "runtime_execution_attempted":False,
+            "terminal_validation_observed":False,
+            "expected_tvc_head":EXPECTED_HEAD,
+            "observed_tvc_root":observed,
+            "machine_observable_release_condition":"STEGVERSE_TVC_ROOT resolves to an exact clean local PR #92 checkout at the pinned head",
+            "credential_authority":"TV/TVC",
+            "github_token_required":False,
+            "second_machine_required":False,
+            "network_source_fetch_performed":False,
+            "request_granted_authority":False,
+            "authority_effect":"NONE_REQUEST_ONLY",
+        }
+        atomic_json(runtime / CONSUMPTION_REL, receipt)
+        return receipt
+
+    entrypoint = runtime / TARGET_ENTRYPOINT
+    if not entrypoint.is_file():
+        raise RuntimeError(f"TVC broker validation resident entrypoint missing: {entrypoint}")
+    command = [
+        sys.executable,str(entrypoint),
+        "--source-root",str(source),
+        "--runtime-root",str(runtime),
+        "--task-id",TARGET_TASK,
+    ]
+    completed = runner(
+        command,cwd=runtime,capture_output=True,text=True,check=False,
+        env=cleaned,timeout=600,
+    )
+    terminal = terminal_validation(runtime)
+    state = "COMPLETED" if terminal else "HANDOFF_READY"
+    receipt = {
+        "schema":"stegverse.tvc-broker-validation-request-consumption/v1",
+        "state":state,
+        "request_id":request["request_id"],
+        "request_sha256":request_hash,
+        "task_id":TARGET_TASK,
+        "command":command,
+        "execution_returncode":completed.returncode,
+        "runtime_execution_attempted":True,
+        "terminal_validation_observed":terminal,
+        "expected_tvc_head":EXPECTED_HEAD,
+        "observed_tvc_root":str(tvc_root),
+        "credential_authority":"TV/TVC",
+        "github_token_required":False,
+        "github_token_runtime_authority":"NONE",
+        "second_machine_required":False,
+        "network_source_fetch_performed":False,
+        "request_granted_authority":False,
+        "repository_writeback_authority":False,
+        "merge_authority":False,
+        "authority_effect":"NONE_REQUEST_ONLY",
+    }
+    atomic_json(runtime / CONSUMPTION_REL, receipt)
+    return receipt
+
+
+def main() -> int:
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--source-root",type=Path,default=ROOT)
+    parser.add_argument("--runtime-root",type=Path,required=True)
+    args=parser.parse_args()
+    receipt=consume(args.source_root,args.runtime_root)
+    print(json.dumps(receipt,sort_keys=True))
+    return 0 if receipt["state"] in {"NO_REQUEST","ALREADY_CONSUMED","HANDOFF_READY","COMPLETED"} else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

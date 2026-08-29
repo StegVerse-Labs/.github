@@ -47,6 +47,7 @@ COPY_FILES = (
     "scripts/consume_ara_graph_resident_execution_request.py",
     "scripts/run_sv_dn1_first_round_chain.py",
     "scripts/consume_sv_dn1_resident_execution_request.py",
+    "scripts/consume_tvc_broker_validation_request.py",
     "scripts/dispatch_resident_execution_requests.py",
     "scripts/advance_heartbeat_transition.py",
     "scripts/refresh_heartbeat_transition_receipt.py",
