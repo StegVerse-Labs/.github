@@ -25,5 +25,28 @@
   "second_machine_required": false,
   "authority_effect": "NONE_SOURCE_ONLY",
   "activation_effect": false,
-  "state": "ACTIVE_SOURCE_REPAIR"
+  "state": "RELEASED_SOURCE_REPAIR",
+  "released_at": "2026-08-28T21:47:00-05:00",
+  "pull_request": 385,
+  "merge_commit": "a3e8dc0dc480b172dc191dea662b7ec5df44c654",
+  "validation": {
+    "exact_head": "e667b4d1a5eb5f88edf6a71acaf93beeed1ae8e3",
+    "organization_control_plane": {
+      "run": 33228914056,
+      "job": 99037976525,
+      "result": "SUCCESS"
+    },
+    "heartbeat_worker_project": {
+      "run": 33228914053,
+      "job": 99037976470,
+      "result": "SUCCESS"
+    },
+    "first_attempt_failure": {
+      "run": 33228884155,
+      "job": 99037898358,
+      "reason": "TEST_ASSERTION_QUOTING_ONLY",
+      "runtime_change_failure": false
+    }
+  },
+  "runtime_execution_observed": false
 }
