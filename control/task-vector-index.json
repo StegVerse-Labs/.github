@@ -311,11 +311,21 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "FORMALISM_SOURCE_DISCOVERY_MIRROR_HANDOFF.md"
+    },
+    {
+      "task_id": "SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/admissible-source-generation-capability-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
+      "vector": "50000000103000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "ADMISSIBLE_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 31,
-    "local_cosv_record_tasks": 31,
+    "indexed_vectorized_tasks": 32,
+    "local_cosv_record_tasks": 32,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
