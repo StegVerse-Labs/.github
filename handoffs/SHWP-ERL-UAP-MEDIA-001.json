@@ -8,11 +8,23 @@
     "capability_id": "stegverse:capability:erl-uap-public-source-acquisition:v1",
     "capability_version": "1.0.0",
     "phase": "ADMISSIBLE",
-    "standing_evidence_refs": ["StegVerse-Labs/Executive_Rhetoric_Ledger:docs/UAP_MEDIA_RESEARCH_MIRROR_HANDOFF.md", "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/UAP-MEDIA-001.json", "StegVerse-Labs/Executive_Rhetoric_Ledger#62"],
-    "admissibility_evidence_refs": ["handoffs/SHWP-ERL-UAP-MEDIA-001.json", "StegVerse-Labs/.github#175"],
-    "integration_evidence_refs": ["workers/erl_uap_media_source_worker.py", "StegVerse-Labs/Executive_Rhetoric_Ledger:scripts/process_uap_source_queue.py"],
+    "standing_evidence_refs": [
+      "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/UAP_MEDIA_RESEARCH_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/UAP-MEDIA-001.json",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger#62"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SHWP-ERL-UAP-MEDIA-001.json",
+      "StegVerse-Labs/.github#175"
+    ],
+    "integration_evidence_refs": [
+      "workers/erl_uap_media_source_worker.py",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger:scripts/process_uap_source_queue.py"
+    ],
     "activation_proof_ref": null,
-    "blockers": ["LOCAL_ERL_SOURCE_AND_PUBLIC_ENDPOINT_OBSERVATION_PENDING"],
+    "blockers": [
+      "LOCAL_ERL_SOURCE_AND_PUBLIC_ENDPOINT_OBSERVATION_PENDING"
+    ],
     "continuation_owner": "resident sovereign heartbeat + erl-uap-media-source-worker",
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": false,
@@ -23,16 +35,43 @@
   "goal": {
     "goal_id": "UAP-MEDIA-001",
     "objective": "Acquire the bounded public-source seed corpus for the ERL UAP documentary/disclosure research workstream while preserving physical evidence classes, provenance, and a zero-credential runtime boundary.",
-    "success_predicates": ["locally materialized Executive_Rhetoric_Ledger source is resolved without network checkout", "public HTTPS source queue executes", "source objects remain in class-correct namespaces", "SHA-256 source receipts are emitted", "GitHub token is neither required nor passed to the source process", "no source object is promoted into a factual or publication finding"],
-    "failure_predicates": ["network repository checkout is required", "GitHub token or non-TV/TVC credential is requested", "source-class location is changed to increase evidentiary weight", "analysis or publication authority is inherited", "heartbeat, provider, wallet, or trade authority is inherited"],
-    "authority_ceiling": ["public_https_source_acquisition", "bounded_local_receipt_persistence", "no_repository_checkout", "no_github_token", "no_research_promotion", "no_publication", "no_provider_or_wallet_authority"],
+    "success_predicates": [
+      "locally materialized Executive_Rhetoric_Ledger source is resolved without network checkout",
+      "public HTTPS source queue executes",
+      "source objects remain in class-correct namespaces",
+      "SHA-256 source receipts are emitted",
+      "GitHub token is neither required nor passed to the source process",
+      "no source object is promoted into a factual or publication finding"
+    ],
+    "failure_predicates": [
+      "network repository checkout is required",
+      "GitHub token or non-TV/TVC credential is requested",
+      "source-class location is changed to increase evidentiary weight",
+      "analysis or publication authority is inherited",
+      "heartbeat, provider, wallet, or trade authority is inherited"
+    ],
+    "authority_ceiling": [
+      "public_https_source_acquisition",
+      "bounded_local_receipt_persistence",
+      "no_repository_checkout",
+      "no_github_token",
+      "no_research_promotion",
+      "no_publication",
+      "no_provider_or_wallet_authority"
+    ],
     "successor_policy": "NONE",
     "max_successor_depth": 0
   },
   "task": {
     "task_id": "SHWP-ERL-UAP-MEDIA-001",
     "repository": "StegVerse-Labs/.github",
-    "source_refs": ["StegVerse-Labs/Executive_Rhetoric_Ledger#62", "StegVerse-Labs/Executive_Rhetoric_Ledger:config/uap-media-source-queue.json", "StegVerse-Labs/Executive_Rhetoric_Ledger:config/uap-evidence-classes.json", "StegVerse-Labs/Executive_Rhetoric_Ledger:scripts/process_uap_source_queue.py", "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/UAP-MEDIA-001.json"],
+    "source_refs": [
+      "StegVerse-Labs/Executive_Rhetoric_Ledger#62",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger:config/uap-media-source-queue.json",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger:config/uap-evidence-classes.json",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger:scripts/process_uap_source_queue.py",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/UAP-MEDIA-001.json"
+    ],
     "dependencies": [],
     "parent_task_id": null,
     "derivation_reason": "ERL now contains a validated evidence-class contract and a credential-free source executable; this worker binds that executable to the canonical resident worker plane without competing with heartbeat/model/StegFin authority.",
@@ -56,8 +95,15 @@
     "broadcast_authority": false
   },
   "execution": {
-    "required_capabilities": ["runtime_observation", "bounded_process_execution", "public_source_acquisition", "evidence_class_preservation"],
-    "allowed_paths": ["receipts/erl-uap-media/**"],
+    "required_capabilities": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "public_source_acquisition",
+      "evidence_class_preservation"
+    ],
+    "allowed_paths": [
+      "receipts/erl-uap-media/**"
+    ],
     "allowed_services": [],
     "max_actions": 32,
     "max_retries": 128,
@@ -80,7 +126,13 @@
   },
   "completion": {
     "next_authorized_action": "Resolve the locally materialized ERL source tree and execute its class-aware public source queue into the bounded local research workspace with no GitHub token in the child environment.",
-    "terminal_when": ["source acquisition execution_status=PASS", "github_token_used=false", "non_tv_tvc_secret_or_token_used=false", "research_promotion_authority=false", "publication_authority=false"]
+    "terminal_when": [
+      "source acquisition execution_status=PASS",
+      "github_token_used=false",
+      "non_tv_tvc_secret_or_token_used=false",
+      "research_promotion_authority=false",
+      "publication_authority=false"
+    ]
   },
   "block": {
     "block_reason": "The worker requires a locally materialized ERL source tree and reachable allowlisted public HTTPS sources.",
@@ -89,11 +141,32 @@
     "solution_source_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger:scripts/process_uap_source_queue.py",
     "solution_validation_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger:.github/workflows/validate-uap-evidence-classes.yml",
     "solution_command": "python scripts/process_uap_source_queue.py --fetch --output-root <bounded-workspace>",
-    "solution_constraints": ["local repository source only", "no network repository checkout", "public HTTPS source acquisition only", "no GitHub token runtime authority", "no non-TV/TVC secret or token", "no research promotion or publication authority", "no provider, wallet, trade, heartbeat-state, claim, or fence mutation authority"],
+    "solution_constraints": [
+      "local repository source only",
+      "no network repository checkout",
+      "public HTTPS source acquisition only",
+      "no GitHub token runtime authority",
+      "no non-TV/TVC secret or token",
+      "no research promotion or publication authority",
+      "no provider, wallet, trade, heartbeat-state, claim, or fence mutation authority"
+    ],
     "observer": "single sovereign StegVerse heartbeat",
     "recheck_trigger": "each admitted heartbeat",
     "next_check": null,
     "escalation_condition": "a repository checkout credential, authenticated source credential, research promotion, publication, provider, wallet, or trade authority is requested",
     "block_expires_at": null
+  },
+  "source_state_vector_ref": "control/task-vectors/SHWP-ERL-UAP-MEDIA-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-08-28T23:38:00-05:00",
+      "authority_effect": "NONE"
+    }
   }
 }
