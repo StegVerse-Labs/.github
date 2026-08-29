@@ -1,0 +1,55 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-EVALUATOR-INTR-READ-RUNTIME-001",
+  "tasks": [
+    {
+      "task_id": "SHWP-EVALUATOR-INTR-READ-RUNTIME-001",
+      "goal_id": "EVALUATOR-INTR-READ-REVIEW-RUNTIME-431",
+      "state": "HANDOFF_READY",
+      "claim_id": null,
+      "archive_eligible": false,
+      "executor_binding": "AUTHORIZED",
+      "authorized_policy_version": "evaluator-intr-read-runtime-v1",
+      "handoff_ref": "handoffs/SHWP-EVALUATOR-INTR-READ-RUNTIME-001.json",
+      "block_ref": "docs/EVALUATOR_INTR_RUNTIME_MIRROR_HANDOFF.md",
+      "cost_basis_ref": "cost-basis/worker-runtime/evaluator-intr-read-runtime.json",
+      "evidence_refs": [
+        "docs/EVALUATOR_INTR_RUNTIME_MIRROR_HANDOFF.md",
+        "workers/evaluator_intr_read_runtime_worker.py",
+        "scripts/serve_evaluator_intr_runtime.py",
+        "StegVerse-Labs/StegOS#95"
+      ],
+      "admission": {
+        "authority_source": "handoffs/SHWP-EVALUATOR-INTR-READ-RUNTIME-001.json#authority",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      },
+      "source_state_vector_ref": "control/task-vectors/SHWP-EVALUATOR-INTR-READ-RUNTIME-001.json"
+    }
+  ],
+  "workers": [
+    {
+      "worker_id": "evaluator-intr-read-runtime-worker",
+      "status": "AVAILABLE",
+      "executor_type": "repository_worker",
+      "adapter_ref": "process:evaluator-intr-read-runtime-v1",
+      "authority_source": "handoffs/SHWP-EVALUATOR-INTR-READ-RUNTIME-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "runtime_observation",
+        "universal_intr_adjacent_hop_traversal"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#public-research-worker-v1",
+      "last_seen_at": null
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "priority": "release"
+}
