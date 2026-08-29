@@ -56,6 +56,19 @@
         "fresh_fence_required": true,
         "minimum_fencing_token_exclusive": 22,
         "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      },
+      "source_state_vector_ref": "control/task-vectors/SV-DN1-SOURCE-MATERIALIZATION-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-28T21:42:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],
