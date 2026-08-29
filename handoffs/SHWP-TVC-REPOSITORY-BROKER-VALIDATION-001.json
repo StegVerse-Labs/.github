@@ -67,20 +67,10 @@
   "admissible_existence": {
     "capability_id": "stegverse:capability:tvc-repository-broker-validation:v1",
     "capability_version": "1.0.0",
-    "phase": "ADMISSIBLE",
-    "standing_evidence_refs": [
-      "docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md",
-      "StegVerse-Labs/TVC#92"
-    ],
-    "admissibility_evidence_refs": [
-      "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
-      "workers/tvc_repository_broker_validation_worker.py",
-      "control/worker-registry.d/tvc-repository-broker-validation-001.json",
-      "control/process-worker-adapters.d/tvc-repository-broker-validation-001.json"
-    ],
-    "integration_evidence_refs": [
-      "cost-basis/worker-runtime/tvc-repository-broker-validation.json"
-    ],
+    "phase": "DECLARED",
+    "standing_evidence_refs": [],
+    "admissibility_evidence_refs": [],
+    "integration_evidence_refs": [],
     "activation_proof_ref": null,
     "blockers": [
       "EXACT_TVC_PR92_LOCAL_VALIDATION_RECEIPT_NOT_YET_OBSERVED"
