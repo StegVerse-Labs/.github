@@ -20,6 +20,12 @@ from typing import Any, Callable
 
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
 MUTABLE_RUNTIME_DIRS = ("checkpoints", "events", "receipts", "heartbeats")
+MUTABLE_CONTROL_FILES = (
+    "heartbeat-carrier-runtime-state.json",
+    "worker-runtime-state.json",
+    "worker-control-plane-coordination.json",
+    "worker-status.json",
+)
 COPY_DIRS = (
     "heartbeat_runtime",
     "control",
@@ -84,7 +90,8 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
     for rel in COPY_DIRS:
         src = source_root / rel
         if src.exists():
-            shutil.copytree(src, target_root / rel, dirs_exist_ok=True)
+            ignore = shutil.ignore_patterns(*MUTABLE_CONTROL_FILES) if rel == "control" else None
+            shutil.copytree(src, target_root / rel, dirs_exist_ok=True, ignore=ignore)
     for rel in COPY_FILES:
         src = source_root / rel
         if not src.is_file():
@@ -166,6 +173,8 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         "manual_action_required": False,
         "source_mutable_runtime_state_copied": False,
         "mutable_runtime_dirs_excluded_from_source": list(MUTABLE_RUNTIME_DIRS),
+        "source_mutable_control_state_copied": False,
+        "mutable_control_files_excluded_from_source": list(MUTABLE_CONTROL_FILES),
     }
     path = target_root / "receipts" / "sovereign-host" / "materialization.latest.json"
     path.parent.mkdir(parents=True, exist_ok=True)
