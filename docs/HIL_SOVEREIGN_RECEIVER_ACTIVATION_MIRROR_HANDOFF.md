@@ -183,3 +183,19 @@ runtime execution observed: false
 ```
 
 The rootless local source-refresh watcher is wired to invoke this consumer after refreshing already-local static worker source. The request may only trigger the existing admitted targeted executor; claim/fence authority remains with the worker-control plane. A branch merge or CI PASS remains source validation only and must not be represented as receiver execution or HIL activation.
+
+## 2026-08-28 resident request merge and exact-head validation
+
+PR #370 merged the bounded HIL resident-request bridge as `44798bb946fe64ed48ba04ac49eec00181649d12` after exact-head validation at `825456d876f349027e96e4bd334cde20439383ec`:
+
+```text
+Heartbeat Worker Project run 33228209273 / job 99035966356: SUCCESS
+Organization control plane run 33228209246 / job 99035966209: SUCCESS
+complete deterministic repository suite: PASS
+JSON/handoff validation: PASS
+no GitHub credential token in validation: PASS
+request authority: NONE_REQUEST_ONLY
+runtime execution observed: false
+```
+
+Current HIL resident-request state is therefore `MERGED_VALIDATED_RUNTIME_NOT_OBSERVED`. Repository search still exposes no `hil-resident-execution-request-consumption.latest.json` and no real `receipts/hil-sovereign-receiver/**` execution receipt. The next legitimate transition is resident consumption and real targeted execution; no source or CI event may be promoted to receiver READY or HIL activation.
