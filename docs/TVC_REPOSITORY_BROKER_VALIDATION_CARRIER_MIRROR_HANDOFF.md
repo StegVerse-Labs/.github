@@ -25,17 +25,18 @@ PR #20 and PR #79 are closed and superseded. PR #92 carries the bounded broker d
 TVC repository: StegVerse-Labs/TVC
 PR: #92
 branch: repair/github-repository-operation-broker-rebase-002
-expected_head: ce1d4a31f5cfc65ee59af52f821336e0859c0fbd
+expected_head: b5288f9910ada26c6ab2e9bca3f7701afaae2cef
 current_diff_file_count: 16
 source_bundle_digest_required: true
 source_bundle_file_count_required: 16
 current_pr_draft: true
 sv_dn1_private_source_consumers: StegVerse-Labs/StegCore + master-records/orchestration
+st019_protection_operation: PROTECT_DEFAULT_BRANCH
 upstream handoff: docs/GITHUB_REPOSITORY_OPERATION_BROKER_MIRROR_HANDOFF.md
 upstream task: tasks/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.json
 ```
 
-PR #92's bounded broker bundle changed after the prior validation pin to add the two SV-DN-1 private source consumers. The exact governed PASS must therefore bind the current head and a newly computed `source_bundle_sha256`. Subsequent unrelated movement of `main` does not mutate the tested broker source identity. Integration must rematerialize the identical 16-file source bundle and independently verify current-base compatibility. A changed source-bundle digest requires full governed validation again.
+PR #92's bounded 16-file broker bundle changed again when ST-019 repository protection execution was integrated from TVC PR #242. The exact governed PASS must therefore bind `b5288f9910ada26c6ab2e9bca3f7701afaae2cef` and a newly computed `source_bundle_sha256`. Subsequent unrelated movement of `main` does not mutate the tested broker source identity. Integration must rematerialize the identical 16-file source bundle and independently verify current-base compatibility. A changed source-bundle digest requires full governed validation again.
 
 ## Installed execution surfaces
 
@@ -58,7 +59,7 @@ The worker performs no source fetch and receives no GitHub/provider/wallet crede
 python tools/task_dispatcher.py tvc.github_repository_operation_broker.verify
 ```
 
-PASS requires dispatcher `status=ok`, nested `result=PASS`, deterministic suites zero, `source_bundle_file_count=16`, a retained 64-character `source_bundle_sha256`, `credential_authority=TV/TVC`, and all credential/disclosure booleans false.
+PASS requires dispatcher `status=ok`, nested `result=PASS`, deterministic suites zero, `source_bundle_file_count=16`, a retained 64-character `source_bundle_sha256`, `credential_authority=TV/TVC`, and all credential/disclosure booleans false. The current deterministic bundle must include the ST-019 `PROTECT_DEFAULT_BRANCH` broker and spool tests.
 
 ## Heartbeat separation
 
@@ -98,14 +99,14 @@ WORKER-OWNED:
   task: SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001
   worker: tvc-repository-broker-validation-worker
   adapter: process:tvc-repository-broker-validation-v1
-  expected_head: ce1d4a31f5cfc65ee59af52f821336e0859c0fbd
+  expected_head: b5288f9910ada26c6ab2e9bca3f7701afaae2cef
   heartbeat_dependency: false
 
 AUTHORITY-OWNED AFTER PASS:
   TVC repository integration authority may admit the validated broker bundle only after exact governed PASS and current-base compatibility review.
 ```
 
-A resident source-refresh cycle now has a bounded, non-authorizing request consumer for this task. It only attempts targeted independent task control when STEGVERSE_TVC_ROOT already identifies an exact clean local checkout at the pinned PR #92 head. Missing local source remains retryable HANDOFF_READY; the consumer performs no private source acquisition.
+A resident source-refresh cycle has a bounded, non-authorizing request consumer for this task. It only attempts targeted independent task control when `STEGVERSE_TVC_ROOT` already identifies an exact clean local checkout at the pinned PR #92 head. Missing local source remains retryable `HANDOFF_READY`; the consumer performs no private source acquisition. The consumer now derives the expected head from the executable handoff instead of carrying a second hard-coded SHA.
 
 No session may substitute itself for the machine validation worker, mint a PASS receipt, expose a credential, merge from source completeness, or treat assignment/machine ownership/readiness as done.
 
@@ -113,14 +114,15 @@ No session may substitute itself for the machine validation worker, mint a PASS 
 
 ```text
 1. independent WorkerCoordinator task control resolves SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001 with a fresh fence >22 independently of heartbeat progression
-2. exact clean local TVC PR #92 source at ce1d4a31f5cfc65ee59af52f821336e0859c0fbd is resolved
+2. exact clean local TVC PR #92 source at b5288f9910ada26c6ab2e9bca3f7701afaae2cef is resolved
 3. worker executes tvc.github_repository_operation_broker.verify with forbidden credential variables removed
 4. receipt records exact head + source_bundle_file_count=16 + source_bundle_sha256 + actual PASS/fail-closed result
 5. if main moved, identical digest rematerialization + current-base compatibility are required
 6. only PASS + digest identity + compatibility permits TVC broker admission
-7. admitted TVC broker permits StegCore private-source MATERIALIZE_SOURCE_ARCHIVE
-8. StegCore PR #141 sovereign validation executes against its then-current exact head
-9. only actual StegCore PASS permits its downstream merge/release continuation
+7. admitted broker may execute bounded ST-019 repository-protection warrants and the existing private-source materialization operations under TV/TVC authority
+8. repo-standards independently re-observes any protection mutation; executor success alone is not compliance
+9. admitted TVC broker permits StegCore private-source MATERIALIZE_SOURCE_ARCHIVE
+10. StegCore sovereign exact-head validation executes against its then-current exact head
 ```
 
 ## Completion inventory
@@ -130,9 +132,11 @@ broker delta: 16/16 files
 validation worker/control developed surfaces: complete
 heartbeat-gating dependency in validation worker: REMOVED
 stable source-bundle digest emission: IMPLEMENTED / UNVALIDATED
+ST-019 PROTECT_DEFAULT_BRANCH source: IMPLEMENTED / UNVALIDATED
 tvc governed validation request bridge: MERGED / VALIDATED
 tvc governed validation receipt: 0/1
 tvc broker admission: 0/1
+ST-019 authentic protection operation: 0/1
 StegCore downstream materialization: 0/1
 StegCore sovereign exact-head validation: 0/1
 scaffolding/stubs: 0
@@ -142,24 +146,21 @@ missing required source files: 0
 ## Current-head validation carrier merge evidence
 
 ```text
-PR #384: MERGED
-merge_commit: 4d7972d9ae805e5e59c95ea559faedbd72586495
-validated_head: e355ddc46807cf0a5efe6c5423ac483771913bd7
-organization control plane run 33228876118 / job 99037873056: PASS
-heartbeat worker validation run 33228876150 / job 99037873115: PASS
+PR #413: MERGED
+merge_commit: 360567287a15a11672989653c2edff8fbab1bdc8
+validated_head: 35e36c55cb15f8f365bdee52b21183056d88e59b
+organization control plane run 33270534316 / #1430: PASS
+heartbeat worker run 33270534341 / #1654: PASS
 complete deterministic repository suite: PASS
-independent task-control admission: PASS
-runtime expiry basis: INSTALLED
-generic resident dispatcher integration: PASS
-native bootstrap consumer materialization: PASS
+current exact TVC head binding: b5288f9910ada26c6ab2e9bca3f7701afaae2cef
 exact local source retry posture: HANDOFF_READY
 ```
 
-The validation lane is now machine-executable whenever a sovereign runtime exposes an exact clean local TVC PR #92 checkout through STEGVERSE_TVC_ROOT. The resident request grants no source transport or credential authority. No governed validation receipt has yet been observed.
+The validation lane is machine-executable whenever a sovereign runtime exposes an exact clean local TVC PR #92 checkout through `STEGVERSE_TVC_ROOT`. The resident request grants no source transport or credential authority. No governed validation receipt has yet been observed.
 
 ## Continuity and archive semantics
 
-The **validation project lane remains ACTIVE / BLOCKED** until the exact PASS receipt exists, TVC admission occurs, and required StegCore downstream validation is consumed. Transfer, assignment, machine ownership, readiness, source completeness, and hosted workflow results remain nonterminal project states.
+The **validation project lane remains ACTIVE / BLOCKED** until the exact PASS receipt exists, TVC admission occurs, and required downstream consumption is completed. Transfer, assignment, machine ownership, readiness, source completeness, and hosted workflow results remain nonterminal project states.
 
 The ChatGPT session is not part of the execution chain. Continuation is durable in this handoff, the executable handoff, worker/registry surfaces, PR #92, and the receipt target. After global coordination capture, session archival does not alter validation, admission, release, runtime, or activation state.
 
