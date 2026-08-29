@@ -559,3 +559,43 @@ second user machine required: false
 ```
 
 The next state-changing event must come from an eligible non-hosted native sovereign runtime. Hosted CI cannot satisfy that evidence boundary.
+
+
+## 2026-08-28 native materialization mutable-state boundary repair
+
+Inspection after the resident-request dispatcher merge found an inconsistency between fresh native materialization and the later local source-refresh contract.
+
+The refresh contract already treats these paths as mutable resident evidence and refuses to copy them from source:
+
+```text
+receipts/
+checkpoints/
+events/
+heartbeats/
+```
+
+However, `scripts/install_sovereign_heartbeat_service.py` still copied those four checked-in directories into a newly materialized resident runtime. That could not satisfy the nine live activation predicates by itself, but it could contaminate exactly-once consumption history or downstream runtime observations with historical/source artifacts.
+
+Bounded repair:
+
+```text
+claim: NATIVE-RUNTIME-MUTABLE-STATE-MATERIALIZATION-20260828
+branch: fix/native-materialization-mutable-state-20260828
+explicit control bootstrap seeds: unchanged
+source receipts/checkpoints/events/heartbeats copied: false
+credential authority: TV/TVC
+GitHub-token runtime authority: NONE
+heartbeat authority effect: NONE
+runtime execution observed: false
+```
+
+Fresh materialization now copies only static runtime/control/handoff/authorization/worker/schema/cost-basis source plus explicitly enumerated scripts. Runtime evidence directories are created only by the resident runtime as it actually executes.
+
+Regression coverage requires:
+- all four mutable directories absent from source copy inputs;
+- a fresh materialization has no source-derived checkpoints/events/heartbeats;
+- its initial `receipts/` contains only `receipts/sovereign-host/materialization.latest.json`;
+- explicit bootstrap seeds `control/heartbeat-state.json` and `control/worker-registry.json` remain present;
+- the v13 carrier and resident-request dispatcher remain materialized.
+
+Current state: IMPLEMENTED / VALIDATION PENDING / MERGE PENDING. No resident execution or activation claim is made.

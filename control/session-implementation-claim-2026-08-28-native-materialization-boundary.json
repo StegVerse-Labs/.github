@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.implementation-claim/v1",
+  "task_id": "NATIVE-RUNTIME-MUTABLE-STATE-MATERIALIZATION-20260828",
+  "originating_goal": "Prevent checked-in historical runtime receipts, checkpoints, events, or heartbeat observations from contaminating a freshly materialized sovereign resident runtime.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/native-materialization-mutable-state-20260828",
+  "claimant": "SESSION_EXECUTION_LANE_20260828_NATIVE_MATERIALIZATION_BOUNDARY",
+  "role": "BOUNDED_SOURCE_REPAIR",
+  "claimed_at": "2026-08-28T21:25:00-05:00",
+  "release_condition": "Release after exact-head validation and merge. Native runtime execution remains a separate evidence gate.",
+  "owned_surfaces": [
+    "scripts/install_sovereign_heartbeat_service.py",
+    "tests/test_native_runtime_materialization_boundary.py",
+    "docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md",
+    "control/session-implementation-claim-2026-08-28-native-materialization-boundary.json"
+  ],
+  "collision_boundaries": [
+    "Do not change explicit control bootstrap seeds such as legacy heartbeat-state or initial worker registry.",
+    "Do not mutate or infer live resident runtime state.",
+    "Do not treat source validation as native runtime execution.",
+    "Do not alter HeartBeat progression or claim/fence authority."
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "authority_effect": "NONE_SOURCE_ONLY",
+  "activation_effect": false,
+  "state": "ACTIVE_SOURCE_REPAIR"
+}
