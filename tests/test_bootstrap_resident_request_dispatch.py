@@ -35,6 +35,7 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             "scripts/consume_resident_execution_request.py",
             "scripts/consume_g18_resident_execution_request.py",
             "scripts/consume_hil_resident_execution_request.py",
+            "scripts/consume_hil_intr_materialization_request.py",
             "scripts/consume_ara_graph_resident_execution_request.py",
             "scripts/consume_sv_dn1_resident_execution_request.py",
             "scripts/consume_tvc_broker_validation_request.py",
