@@ -32,10 +32,18 @@ TASKS = [
         "SV_DN1_RESIDENT_SOURCE_CAPTURE_COMPLETE",
     ),
     (
+        "SV-DN1-PRODUCTION-SOURCE-PREP-001",
+        "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json",
+        "control/worker-registry.d/sv-dn1-production-source-prep-001.json",
+        ["SV-DN1-INTR-RUNTIME-001"],
+        "SV-DN1-INTR-RUNTIME-001",
+        "SV_DN1_ROUTE_SPECIFIC_INTR_COMPLETE",
+    ),
+    (
         "SV-DN1-SDK-FIRST-ROUND-001",
         "handoffs/SV-DN1-SDK-FIRST-ROUND-001.json",
         "control/worker-registry.d/sv-dn1-sdk-first-round-001.json",
-        ["SV-DN1-INTR-RUNTIME-001"],
+        ["SV-DN1-INTR-RUNTIME-001", "SV-DN1-PRODUCTION-SOURCE-PREP-001"],
         "SV-DN1-INTR-RUNTIME-001",
         "SV_DN1_ROUTE_SPECIFIC_INTR_COMPLETE",
     ),
@@ -115,11 +123,13 @@ class SvDn1IndependentTaskControlTests(unittest.TestCase):
             source = records["SV-DN1-SOURCE-MATERIALIZATION-001"]
             resident = records["SV-DN1-RESIDENT-OBSERVER-001"]
             intr = records["SV-DN1-INTR-RUNTIME-001"]
+            prep = records["SV-DN1-PRODUCTION-SOURCE-PREP-001"]
             sdk = records["SV-DN1-SDK-FIRST-ROUND-001"]
 
             self.assertTrue(runtime._dependencies_complete(source, records))
             self.assertFalse(runtime._dependencies_complete(resident, records))
             self.assertFalse(runtime._dependencies_complete(intr, records))
+            self.assertFalse(runtime._dependencies_complete(prep, records))
             self.assertFalse(runtime._dependencies_complete(sdk, records))
 
             source["state"] = "COMPLETED"
@@ -128,9 +138,14 @@ class SvDn1IndependentTaskControlTests(unittest.TestCase):
 
             resident["state"] = "COMPLETED"
             self.assertTrue(runtime._dependencies_complete(intr, records))
+            self.assertFalse(runtime._dependencies_complete(prep, records))
             self.assertFalse(runtime._dependencies_complete(sdk, records))
 
             intr["state"] = "COMPLETED"
+            self.assertTrue(runtime._dependencies_complete(prep, records))
+            self.assertFalse(runtime._dependencies_complete(sdk, records))
+
+            prep["state"] = "COMPLETED"
             self.assertTrue(runtime._dependencies_complete(sdk, records))
 
     def test_dependency_gate_does_not_accept_active_blocked_or_handoff_ready_parent(self):
