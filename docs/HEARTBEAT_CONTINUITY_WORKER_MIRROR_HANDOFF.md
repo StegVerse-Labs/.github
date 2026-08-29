@@ -476,86 +476,37 @@ ARA Graph provider operation: NOT OBSERVED.
 Capability activation: NOT OBSERVED.
 
 
-## 2026-08-28 native bootstrap resident-request dispatch repair
+## CMC-028 certificate root custody evidence runtime
 
-Live source inspection found two shared resident-runtime integration gaps after the individual request bridges were already merged:
+Canonical capability owner:
+`StegVerse-Labs/TVC/tasks/TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028.json`
 
-1. the native sovereign bootstrap materialized carrier/WorkerCoordinator source but not the complete resident-request consumer/dispatcher execution surface;
-2. the Linux source-refresh watcher invoked each consumer as a separate `ExecStartPost`, so one fail-closed consumer could prevent later independent requests from being visited.
+Merged TVC dispatcher boundary:
+`tvc.certificate_root_custody.observe`
 
-Bounded repair branch:
-
-```text
-claim: SOVEREIGN-RUNTIME-BOOTSTRAP-RESIDENT-DISPATCH-20260828
-branch: fix/bootstrap-resident-request-dispatch-20260828
-dispatcher: scripts/dispatch_resident_execution_requests.py
-dispatcher receipt: receipts/sovereign-host/resident-request-dispatch.latest.json
-authority effect: NONE_DISPATCH_ONLY
-credential authority: TV/TVC
-GitHub-token runtime authority: NONE
-heartbeat grants execution authority: false
-second user machine required: false
-runtime execution observed: false
-```
-
-The dispatcher visits the already-existing Ecosystem Chat, G18, HIL, ARA Graph, and SV-DN1 resident consumers independently. Each consumer retains its own request validation, exactly-once semantics, and claim/fence authority boundary. A fail-closed request is recorded in `request_failures` but does not starve later independent requests.
-
-The source-refresh watcher now performs one local source refresh followed by one dispatcher invocation rather than chaining request consumers as separate `ExecStartPost` commands.
-
-The native v13 bootstrap now requires/materializes the dispatcher and its consumer execution dependencies. Only after `verify_sovereign_runtime_activation.py` proves every canonical activation predicate does bootstrap invoke the resident dispatcher. Hosted environments, incomplete activation proof, source merge, or CI validation cannot reach the dispatch step.
-
-Current branch state:
+Registered machine lane:
 
 ```text
-source repair: IMPLEMENTED / VALIDATION PENDING
-merge: PENDING
-native sovereign bootstrap execution: NOT OBSERVED
-resident request dispatch receipt: NOT OBSERVED
-Ecosystem Chat execution: NOT OBSERVED
-HIL receiver execution: NOT OBSERVED
-G18 resident consumption: NOT OBSERVED
-ARA Graph provider operation: NOT OBSERVED
-SV-DN1 sovereign round: NOT OBSERVED
+task_id: SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001
+handoff: handoffs/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json
+registry: control/worker-registry.d/cmc028-root-custody-001.json
+adapter: control/process-worker-adapters.d/cmc028-root-custody-001.json
+worker: workers/cmc028_root_custody_worker.py
+receipt: receipts/cmc028-root-custody/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json
+credential_authority: TV/TVC
+heartbeat_grants_execution_authority: false
+AE phase: ADMISSIBLE
 ```
 
-This repair removes a shared source-side dispatch deadlock only. It does not activate HeartBeat, G18, HIL, Ecosystem Chat, ARA Graph, SV-DN1, Math, or any downstream product.
+The worker requires already-local clean TVC source containing merge `dd3734084eba4887c0c08e2e47eab3a20565c820`, invokes only `tvc.certificate_root_custody.observe`, and persists only the secret-free worker result.
 
+It performs no protected-material generation/import/read/hash/export/mutation, no certificate issuance/signing, no network source fetch, no source mutation, and creates no scheduler/runtime/vault/PKI/signing manager.
 
-### Native bootstrap resident-request dispatch merge — 2026-08-28
-
-The shared dispatch deadlock repair is now exact-head validated and merged:
-
-```text
-PR: #373
-validated head: c810f49f006e18eb7182e5ae2473af7a3f7b3bb5
-Validate organization control plane: 33228499508 / 99036791405 SUCCESS
-Heartbeat Worker Project: 33228499527 / 99036791752 SUCCESS
-merge: cb6c5a4ee3a809936e34afc67ef98bf204287b1e
-bounded source claim: RELEASED_SOURCE_REPAIR
-```
-
-Validation passed the complete deterministic repository suite, executable-handoff validation, ownership partitions, heartbeat/runtime semantic separation, independent oscillator tests, canonical JSON parsing, and no-GitHub-token authority checks.
-
-Merged behavior:
-- native runtime materialization now includes the dispatcher and all current resident request consumers/dependencies;
-- verified native bootstrap invokes the dispatcher only after all sovereign activation predicates PASS;
-- source-refresh watcher invokes one dispatcher instead of a failure-sensitive `ExecStartPost` consumer chain;
-- each request remains independently admitted and exactly-once;
-- one fail-closed request does not prevent later request consumers from being visited;
-- dispatcher grants no claim, fence, credential, heartbeat, route, publication, custody, or app activation authority.
-
-Current runtime truth remains:
-
-```text
-native bootstrap source dispatch capability: IMPLEMENTED / VALIDATED / MERGED
-resident-request dispatch receipt: NOT OBSERVED
-G18 resident consumption: NOT OBSERVED
-Ecosystem Chat parent execution: NOT OBSERVED
-HIL receiver execution: NOT OBSERVED
-ARA Graph provider operation: NOT OBSERVED
-SV-DN1 sovereign round: NOT OBSERVED
-user action required: false
-second user machine required: false
-```
-
-The next state-changing event must come from an eligible non-hosted native sovereign runtime. Hosted CI cannot satisfy that evidence boundary.
+Lifecycle:
+- TVC evaluator/dispatcher: IMPLEMENTED / VALIDATED / MERGED
+- sovereign worker source/registry: IMPLEMENTED / VALIDATION PENDING
+- authentic resident locator manifest: NOT OBSERVED
+- authentic protected objects: NOT OBSERVED
+- authentic identity/recovery receipts: NOT OBSERVED
+- CUSTODY_RECOVERY_EVIDENCE_VERIFIED: NOT OBSERVED
+- StegGuardian ROOT_KEY_CUSTODY: remains MISSING
