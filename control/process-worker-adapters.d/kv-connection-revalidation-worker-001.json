@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:kv-connection-revalidation-v1",
+      "authority_ref": "handoffs/KV-CONNECTION-REVALIDATION-WORKER-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "private_kv_state_reconciliation"
+      ],
+      "command": ["python", "workers/kv_connection_revalidation_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_CVK_ROOT",
+        "STEGVERSE_KV_ROOT",
+        "STEGVERSE_KV_CONNECTION_ASSEMBLY_ID",
+        "STEGVERSE_KV_CONNECTION_CONFORMANCE_PROOF",
+        "STEGVERSE_KV_CONNECTION_READBACK_PROOF",
+        "STEGVERSE_KV_CONNECTION_REQUIRED_AFTER",
+        "PATH",
+        "HOME",
+        "LANG",
+        "LC_ALL",
+        "XDG_STATE_HOME",
+        "XDG_CONFIG_HOME"
+      ],
+      "notes": [
+        "Executes only on a genuine sovereign/resident worker runtime.",
+        "Consumes already-produced non-secret conformance and private-KV readback proofs.",
+        "Uses exact locally materialized continuity-vault-kit source for canonical revalidation.",
+        "Performs no provider network access, credential resolution, proof manufacture, or provider operation."
+      ],
+      "timeout_seconds": 300,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
