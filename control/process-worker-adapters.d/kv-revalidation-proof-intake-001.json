@@ -1,0 +1,16 @@
+{
+  "schema":"stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id":"KV-REVALIDATION-PROOF-INTAKE-001",
+  "adapters":[{
+    "adapter_ref":"process:kv-revalidation-proof-intake-v1",
+    "authority_ref":"handoffs/KV-REVALIDATION-PROOF-INTAKE-001.json#authority",
+    "capabilities":["runtime_observation","bounded_process_execution","private_kv_state_reconciliation"],
+    "command":["python","workers/kv_revalidation_proof_intake_worker.py"],
+    "cwd":".",
+    "enabled":true,
+    "env_allowlist":["STEGVERSE_KV_REVALIDATION_INTAKE","PATH","HOME","LANG","LC_ALL","XDG_STATE_HOME","XDG_CONFIG_HOME"],
+    "notes":["Executes only on a genuine sovereign/resident worker runtime.","Consumes one bounded non-secret local intake manifest and dispatches only the existing KV connection revalidation worker.","Performs no provider network access, credential resolution, proof manufacture, or provider operation."],
+    "timeout_seconds":300,
+    "type":"process_json_v0.1"
+  }]
+}

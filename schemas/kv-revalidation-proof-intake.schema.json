@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/kv-revalidation-proof-intake.schema.json",
+  "title": "KV Revalidation Proof Intake",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "task_id",
+    "assembly_id",
+    "cvk_root",
+    "kv_root",
+    "conformance_proof_path",
+    "readback_proof_path",
+    "provider_operation_authorized",
+    "credential_material_present",
+    "authority_effect"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.kv.revalidation-proof-intake/v1"},
+    "task_id": {"const": "KV-CONNECTION-REVALIDATION-WORKER-001"},
+    "assembly_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "cvk_root": {"type": "string", "minLength": 1, "maxLength": 4096},
+    "kv_root": {"type": "string", "minLength": 1, "maxLength": 4096},
+    "conformance_proof_path": {"type": "string", "minLength": 1, "maxLength": 4096},
+    "readback_proof_path": {"type": "string", "minLength": 1, "maxLength": 4096},
+    "required_after": {"type": ["string", "null"], "maxLength": 128},
+    "provider_operation_authorized": {"const": false},
+    "credential_material_present": {"const": false},
+    "authority_effect": {"const": "NONE"}
+  }
+}
