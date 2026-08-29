@@ -833,3 +833,8 @@ CUSTODY_RECOVERY_EVIDENCE_VERIFIED: NOT OBSERVED
 ```
 
 The live-denominator test derives the worker count from `control/worker-registry.json` plus every `control/worker-registry.d/*.json` fragment. Aggregate COSV counts were recomputed from the current base rather than copied from stale branches. Completion remains impossible unless an eligible sovereign TV/TVC resident supplies authentic secret-free public identity and recovery-continuity receipts while the worker never reads, hashes, or exports protected objects.
+
+
+### CMC-028 live-denominator correction on PR #412
+
+The exact-head full suite enumerated 56 live unique worker task IDs after CMC-028, not 55. The extra pre-existing current-main task is `SV-DN1-PRODUCTION-SOURCE-PREP-001`, which is `HANDOFF_READY` and unvectorized. Coverage is corrected to 56 registered / 34 indexed / 15 active worker gaps / 29 total active gaps. The dedicated CMC-028 test and all preceding authority, JSON, handoff, and runtime-boundary steps passed; the failed run was aggregate-denominator evidence and did not represent CMC-028 runtime execution.
