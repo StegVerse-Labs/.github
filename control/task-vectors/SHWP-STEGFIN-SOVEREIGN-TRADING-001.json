@@ -1,0 +1,44 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-STEGFIN-SOVEREIGN-TRADING-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/stegfin-sovereign-trading-001.json",
+    "handoffs/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json",
+    "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/stegfin-governance:task-state/STEGFIN-SOVEREIGN-CAPSULE-MATERIALIZATION-008.json",
+    "StegVerse-Labs/stegfin-governance:reports/sovereign-capsule-materialization/exact-blob-validation-20260814.json"
+  ],
+  "observed_at": "2026-08-28T23:32:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "StegFin canonical handoff names SHWP-STEGFIN-SOVEREIGN-TRADING-001 as distinct MACHINE_OWNED_ON_ADMISSION; local task HANDOFF_READY and worker AVAILABLE",
+    "archive_ready": "worker fragment archive_eligible=false",
+    "unassigned_work": "stegfin-sovereign-trading-worker owns the bounded internal activation round",
+    "chat_owned_counts": "capsule support claim is RELEASED_COMPLETE and current StegFin handoff session_role is MERGED_INTO_CANONICAL_MACHINE_AND_USER_AUTHORITY_WORKSTREAMS",
+    "canonical_owner_installed": "sovereign market/settlement/reconstruction source, released local capsule materializer, worker, adapter, handoff and exact-blob validation are installed",
+    "thread_required": "current StegFin mirror handoff records thread_archive_ready=true; internal lane is a distinct canonical machine continuation",
+    "blocker_count": "registry/handoff admissible_existence blocker parity: SAME_EXECUTION_INTERNAL_SETTLEMENT_RECONSTRUCTION_E2_NOT_YET_OBSERVED",
+    "evidence_complete": "live carrier materialization, internal settlement, RECONSTRUCTED_PASS and E2 binding have not been observed in the same execution",
+    "activated": "activation_proof_ref=null; sovereign internal trading activation round has not completed",
+    "propagated": "no external capital, wallet, custody, scale-up, or downstream activation follows without terminal internal proof"
+  },
+  "authority_effect": "NONE"
+}
