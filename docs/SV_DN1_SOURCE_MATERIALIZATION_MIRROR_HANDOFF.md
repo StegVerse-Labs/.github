@@ -69,15 +69,15 @@ Pinned manifest:
 ```text
 repository: StegVerse-org/stegverse-demo-suite
 path: config/sv_dn1_runtime_source_manifest.json
-expected_manifest_git_blob_sha1: 47760f63898fff0f5ba6dfab97eee5acd7290c9b
-manifest source_basis_commit: 4988d453419f43404100c69dd97dd1785d7e0a75
+expected_manifest_git_blob_sha1: 12c8c3f6f633e9f2f9d2b49db4ec28dee47e145f
+manifest source_basis_commit: 9483e539925cbc1b79df991d77aeb51ca46875a4
 ```
 
 Non-executable resident-required support files are separately pinned from current canonical main:
 
 ```text
 docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md
-git_blob_sha1: ba9acf76fd6eb488e5f3b9f9be01bb17e3a02d48
+git_blob_sha1: 329607cb87455d47c2be6849262196fefa6659f3
 
 tasks/SV-DN1-RESIDENT-OBSERVER-001.json
 git_blob_sha1: 0dbe655a86bea3d2a0f77aa2ada57a62882f00db
@@ -217,3 +217,20 @@ The merged sovereign first-round chain in `docs/SV_DN1_SOVEREIGN_EXECUTION_CHAIN
 ## Archive readiness
 
 This handoff is the canonical continuation source for exact SV-DN-1 source materialization. Once merged, the lane can be recovered and executed without the originating chat.
+
+
+## Universal InTr source repin — 2026-08-29
+
+The canonical product source changed after adoption of
+`STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001`. This materializer is repinned to
+the Universal InTr-aware runtime source and canonical product handoff:
+
+```text
+runtime manifest Git blob: 12c8c3f6f633e9f2f9d2b49db4ec28dee47e145f
+manifest source_basis_commit: 9483e539925cbc1b79df991d77aeb51ca46875a4
+SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md Git blob: 329607cb87455d47c2be6849262196fefa6659f3
+```
+
+The materializer still performs no Hugging Face observation, InTr execution,
+SDK admission, governance, publication, or authority transfer. Its only role is
+to place the exact newly-admitted bytes on the sovereign carrier.
