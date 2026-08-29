@@ -218,3 +218,78 @@ native resident installation/materialization succeeds
 This does not make HIL depend on the G18 claim, does not let a request grant authority, and does not turn dispatch into activation proof. HIL remains an independently admitted task-control lane. The change only removes the shared ordering deadlock so an eligible resident runtime can actually attempt the HIL worker before the verifier makes its final determination.
 
 Runtime evidence remains required: a real HIL resident-consumption receipt, worker claim/fresh fence, receiver ACTIVE/READY observation, public HTTPS rendezvous, Site browser `HIL-RECEIVER-RECEIPT-v2`, restart exact-byte proof, and TVC lifecycle handoff.
+
+
+## 2026-08-29 canonical Universal InTr activation-order reconciliation
+
+Merged source now changes the HIL causal ordering:
+
+```text
+Site PR #606 / merge 1cb2b9b950674400c5e5aa341b8b6efba5cbeb47
+  -> Submit creates stegverse.universal-intr-transport/v1 immediately
+
+LLM-adapter PR #213 / merge ad1a7c3f8bb727d1007f254930d9a77df0bfa94f
+  -> receiving Interlock validates exact packet
+  -> DEVICE_SYSTEM -> STEGOS_ECOSYSTEM receipt
+  -> HIL:Ingress -> HIL:Custody receipt
+  -> durable next HIL:Custody -> TVC:HIL-Lifecycle intent
+
+TVC PR #240 / merge 31a4ea2fcc42b807ec24ae2612df4e60d38a73eb
+  -> independently validates the upstream chain + exact PDF/provenance
+  -> emits the TVC receiving InTr receipt
+  -> creates the separately governed private-review Interlock intent
+```
+
+Canonical availability semantics are inherited from StegOS Universal InTr:
+
+```text
+event_triggered=true
+always_on_receiver_required=false
+second_user_device_required=false
+receiver_unavailable_disposition=DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION
+exact_packet_transport_retry_allowed=true
+blind_consequence_retry_allowed=false
+```
+
+Therefore this older activation ordering is **not** a valid prerequisite chain:
+
+```text
+G18 complete
+-> resident HIL receiver already running
+-> receiver READY
+-> participant may Submit
+```
+
+The correct causal chain is:
+
+```text
+participant Submit
+-> Universal InTr transport intent exists
+-> exact packet is transported immediately, durably queued, or causes bounded event-ephemeral materialization
+-> receiving Interlock verifies the boundary
+-> receiver-side receipt/custody lineage is emitted
+-> TVC-bound next Interlock intent is emitted
+-> TVC independently admits and receipts its boundary
+```
+
+The existing `hil-sovereign-receiver-worker` remains a valid bounded materialization/observation executor, but its READY state is a **downstream runtime observation**, not the condition that permits creation of the transport intent. The worker may be reused when already resident or materialized event-ephemerally when an admitted InTr event requires it.
+
+G18 remains a separate sovereign-runtime evidence lane. Shared resident substrate may service both tasks, but:
+
+```text
+G18 completion required for HIL Submit: false
+G18 claim/fence consumed by HIL: false
+G18 runtime receipt satisfies HIL receipt: false
+HIL transport grants G18 authority: false
+```
+
+The remaining authentic HIL evidence denominator is now:
+
+1. a real participant Universal InTr intent;
+2. a real receiver-side InTr boundary receipt;
+3. a real HIL custody Interlock receipt;
+4. a real TVC lifecycle InTr receipt produced from exact packet/provenance validation;
+5. controlled receiver replacement/reconstruction proof where applicable;
+6. separately governed TVC #8 private-review decision and later publication/Master Records transitions.
+
+Source merges and CI runs establish the contract only. They do not establish that an authentic participant packet has traversed this chain.
