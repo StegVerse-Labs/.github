@@ -1,0 +1,16 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "entries": [
+    {
+      "task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+      "temporal_class": "current",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:kv-connection-revalidation-worker:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "integrates_capability",
+      "result": "PASS",
+      "continuation_owner": "kv-connection-revalidation-worker + continuity-vault-kit",
+      "rationale": "The resident revalidation worker consumes already-produced non-secret conformance and private-KV readback proofs and delegates restoration of VERIFIED state to the canonical continuity-vault-kit revalidation contract. Registration remains ADMISSIBLE and does not create provider access, credential authority, proof-generation authority, sovereign runtime truth, or provider mutation authority."
+    }
+  ]
+}
