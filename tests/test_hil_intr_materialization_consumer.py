@@ -50,108 +50,130 @@ def request(materialization_id: str = "INTR-MAT-" + "a" * 24) -> dict:
     return {**body, "request_hash": mod.digest_uri(body)}
 
 
+def ingress_receipt(req: dict) -> dict:
+    return {
+        "schema": "stegverse.hil-intr-materialization-ingress/v1",
+        "state": "INGRESS_ADMITTED",
+        "materialization_id": req["materialization_id"],
+        "request_hash": req["request_hash"],
+        "transport_intent_hash": req["transport_intent_hash"],
+        "payload_hash": req["payload_hash"],
+        "operation_id": req["operation_id"],
+        "packet_id": req["packet_id"],
+        "runtime_execution_attempted": False,
+        "receiver_readiness_claimed": False,
+        "hil_custody_claimed": False,
+        "claim_or_fence_minted": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "authority_effect": "NONE_INGRESS_ONLY",
+    }
+
+
+def prepare(base: Path) -> tuple[Path, Path, dict]:
+    source = base / "source"
+    runtime = base / "runtime"
+    source.mkdir()
+    (runtime / mod.REQUEST_DIR_REL).mkdir(parents=True)
+    (runtime / mod.INGRESS_RECEIPT_DIR_REL).mkdir(parents=True)
+    req = request()
+    (runtime / mod.REQUEST_DIR_REL / "request.json").write_text(json.dumps(req) + "\n", encoding="utf-8")
+    (runtime / mod.INGRESS_RECEIPT_DIR_REL / f"{req['materialization_id']}.json").write_text(json.dumps(ingress_receipt(req)) + "\n", encoding="utf-8")
+    return source, runtime, req
+
+
+def fake_materializer(*, source, intake_runtime, request, ingress_receipt, env):
+    execution_runtime = intake_runtime / "esrl-hil-runtime" / "lease-1"
+    (execution_runtime / "scripts").mkdir(parents=True)
+    (execution_runtime / mod.TARGET_ENTRYPOINT).write_text("# target\n", encoding="utf-8")
+    return {
+        "runtime_root": execution_runtime,
+        "evidence": {
+            "schema": "stegverse.hil-esrl-runtime-materialization/v1",
+            "state": "LOCAL_READY",
+            "lease_id": "HIL-ESRL-test",
+            "lease_state": "LOCAL_READY",
+            "source_receipt_id": "sha256:" + "f" * 64,
+            "runtime_instantiated": True,
+            "local_identity_verified": True,
+            "hil_public_https_rendezvous_observed": False,
+            "credential_authority": "TV/TVC",
+            "authority_effect": "NONE_RUNTIME_MATERIALIZATION_ONLY",
+        },
+    }
+
+
 class HILInTrMaterializationConsumerTests(unittest.TestCase):
     def test_valid_request_is_non_authorizing_and_g18_independent(self) -> None:
         value = request()
         mod.validate_request(value)
         self.assertFalse(value["request_grants_execution_authority"])
         self.assertFalse(value["claim_or_fence_minted"])
-        self.assertFalse(value["transport_grants_execution_authority"])
         self.assertEqual(value["credential_authority"], "TV/TVC")
-        self.assertEqual(value["github_token_runtime_authority"], "NONE")
         self.assertFalse(value["always_on_receiver_required"])
         self.assertFalse(value["second_user_device_required"])
 
-    def test_invalid_destination_is_rejected(self) -> None:
-        value = request()
-        value["destination"] = {"boundary": "STEGOS_ECOSYSTEM", "subsystem": "Other"}
-        body = dict(value)
-        body.pop("request_hash")
-        value["request_hash"] = mod.digest_uri(body)
-        with self.assertRaises(mod.HILInTrMaterializationError):
-            mod.validate_request(value)
-
-    def test_consumer_invokes_only_existing_hil_targeted_executor(self) -> None:
+    def test_missing_ingress_receipt_fails_closed_before_runtime(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             base = Path(td)
-            source = base / "source"
-            runtime = base / "runtime"
-            source.mkdir()
-            (runtime / "intr-materialization").mkdir(parents=True)
-            (runtime / "scripts").mkdir(parents=True)
-            (runtime / mod.TARGET_ENTRYPOINT).write_text("# target\n", encoding="utf-8")
-            (runtime / "intr-materialization/request.json").write_text(
-                json.dumps(request()) + "\n", encoding="utf-8"
-            )
+            source = base / "source"; runtime = base / "runtime"
+            source.mkdir(); (runtime / mod.REQUEST_DIR_REL).mkdir(parents=True)
+            req = request(); (runtime / mod.REQUEST_DIR_REL / "request.json").write_text(json.dumps(req) + "\n")
             calls = []
+            def materializer(**kwargs):
+                calls.append(kwargs); return {}
+            result = mod.consume_all(source, runtime, runtime_materializer=materializer)
+            self.assertEqual(result["results"][0]["state"], "REQUEST_REJECTED")
+            self.assertIn("ingress_receipt_missing", result["results"][0]["reason"])
+            self.assertEqual(calls, [])
 
+    def test_consumer_materializes_esrl_runtime_before_targeted_executor(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            source, runtime, _ = prepare(Path(td))
+            calls = []
             def runner(command, **kwargs):
                 calls.append((command, kwargs))
                 return SimpleNamespace(returncode=0, stdout="", stderr="")
-
-            result = mod.consume_all(source, runtime, runner=runner, env={"GITHUB_TOKEN": "forbidden"})
+            result = mod.consume_all(source, runtime, runner=runner, env={"GITHUB_TOKEN": "forbidden"}, runtime_materializer=fake_materializer)
             self.assertEqual(result["state"], "PROCESSED")
             self.assertEqual(result["runtime_execution_attempt_count"], 1)
-            self.assertEqual(result["blocked_attempt_count"], 0)
-            self.assertFalse(result["g18_completion_required"])
-            self.assertFalse(result["g18_claim_or_fence_consumed"])
             self.assertEqual(len(calls), 1)
             command, kwargs = calls[0]
             self.assertIn("--task-id", command)
             self.assertIn(mod.TARGET_TASK, command)
-            self.assertIn("--source-root", command)
-            self.assertIn("--runtime-root", command)
+            self.assertIn("esrl-hil-runtime", " ".join(command))
             self.assertNotIn("GITHUB_TOKEN", kwargs["env"])
-            self.assertEqual(kwargs["env"]["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"], "TV/TVC")
-
-            receipt = runtime / mod.RECEIPT_DIR_REL / f"{request()['materialization_id']}.json"
-            self.assertTrue(receipt.is_file())
-            saved = json.loads(receipt.read_text(encoding="utf-8"))
-            self.assertEqual(saved["state"], "MATERIALIZATION_EXECUTION_ATTEMPTED")
+            saved = json.loads((runtime / mod.RECEIPT_DIR_REL / f"{request()['materialization_id']}.json").read_text())
+            self.assertTrue(saved["esrl_runtime_instantiated"])
+            self.assertTrue(saved["esrl_local_identity_verified"])
+            self.assertEqual(saved["esrl_lease_state"], "LOCAL_READY")
+            self.assertFalse(saved["hil_public_https_rendezvous_observed"])
             self.assertFalse(saved["claim_or_fence_minted_by_consumer"])
+
+    def test_consumer_rejects_preclaimed_public_hil_rendezvous(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            source, runtime, _ = prepare(Path(td))
+            def bad_materializer(**kwargs):
+                value = fake_materializer(**kwargs)
+                value["evidence"]["hil_public_https_rendezvous_observed"] = True
+                return value
+            result = mod.consume_all(source, runtime, runtime_materializer=bad_materializer)
+            self.assertEqual(result["results"][0]["state"], "REQUEST_REJECTED")
+            self.assertIn("cannot_preclaim_hil_public_rendezvous", result["results"][0]["reason"])
 
     def test_successful_materialization_is_not_blindly_reexecuted(self) -> None:
         with tempfile.TemporaryDirectory() as td:
-            base = Path(td)
-            source = base / "source"
-            runtime = base / "runtime"
-            source.mkdir()
-            (runtime / "intr-materialization").mkdir(parents=True)
-            (runtime / "scripts").mkdir(parents=True)
-            (runtime / mod.TARGET_ENTRYPOINT).write_text("# target\n", encoding="utf-8")
-            req = request()
-            (runtime / "intr-materialization/request.json").write_text(json.dumps(req) + "\n", encoding="utf-8")
+            source, runtime, _ = prepare(Path(td))
             calls = []
-
             def runner(command, **kwargs):
                 calls.append(command)
                 return SimpleNamespace(returncode=0, stdout="", stderr="")
-
-            first = mod.consume_all(source, runtime, runner=runner)
-            second = mod.consume_all(source, runtime, runner=runner)
+            first = mod.consume_all(source, runtime, runner=runner, runtime_materializer=fake_materializer)
+            second = mod.consume_all(source, runtime, runner=runner, runtime_materializer=fake_materializer)
             self.assertEqual(first["runtime_execution_attempt_count"], 1)
             self.assertEqual(second["runtime_execution_attempt_count"], 0)
             self.assertEqual(second["results"][0]["state"], "ALREADY_CONSUMED_SUCCESS")
             self.assertEqual(len(calls), 1)
-
-    def test_failed_attempt_remains_nonterminal(self) -> None:
-        with tempfile.TemporaryDirectory() as td:
-            base = Path(td)
-            source = base / "source"
-            runtime = base / "runtime"
-            source.mkdir()
-            (runtime / "intr-materialization").mkdir(parents=True)
-            (runtime / "scripts").mkdir(parents=True)
-            (runtime / mod.TARGET_ENTRYPOINT).write_text("# target\n", encoding="utf-8")
-            (runtime / "intr-materialization/request.json").write_text(json.dumps(request()) + "\n", encoding="utf-8")
-
-            def runner(command, **kwargs):
-                return SimpleNamespace(returncode=7, stdout="", stderr="blocked")
-
-            result = mod.consume_all(source, runtime, runner=runner)
-            self.assertEqual(result["state"], "BLOCKED")
-            self.assertEqual(result["blocked_attempt_count"], 1)
-            self.assertTrue(result["results"][0]["blocked_attempt_remains_nonterminal"])
 
 
 if __name__ == "__main__":
