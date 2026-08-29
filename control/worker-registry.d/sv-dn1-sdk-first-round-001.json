@@ -63,6 +63,19 @@
         "parent_task_id": "SV-DN1-INTR-RUNTIME-001",
         "parent_terminal_state_required": "COMPLETED",
         "parent_terminal_transition_required": "SV_DN1_ROUTE_SPECIFIC_INTR_COMPLETE"
+      },
+      "source_state_vector_ref": "control/task-vectors/SV-DN1-SDK-FIRST-ROUND-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000103000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-28T21:48:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],
