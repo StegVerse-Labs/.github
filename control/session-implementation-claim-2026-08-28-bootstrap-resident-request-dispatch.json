@@ -1,0 +1,38 @@
+{
+  "schema": "stegverse.implementation-claim/v1",
+  "task_id": "SOVEREIGN-RUNTIME-BOOTSTRAP-RESIDENT-DISPATCH-20260828",
+  "originating_goal": "Ensure a verified native sovereign runtime can consume all already-requested bounded resident tasks without waiting for a later filesystem change and without one fail-closed request starving independent requests.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/bootstrap-resident-request-dispatch-20260828",
+  "claimant": "SESSION_EXECUTION_LANE_20260828_BOOTSTRAP_RESIDENT_DISPATCH",
+  "role": "BOUNDED_SOURCE_REPAIR",
+  "claimed_at": "2026-08-28T21:06:00-05:00",
+  "release_condition": "Release after exact-head validation and merge. Native bootstrap execution and resident request consumption remain separate machine evidence gates.",
+  "owned_surfaces": [
+    "scripts/dispatch_resident_execution_requests.py",
+    "scripts/bootstrap_sovereign_runtime.py",
+    "scripts/install_sovereign_heartbeat_service.py",
+    "scripts/refresh_sovereign_worker_runtime_source.py",
+    "scripts/install_sovereign_worker_source_refresh_service.py",
+    "tests/test_resident_request_dispatcher.py",
+    "tests/test_bootstrap_resident_request_dispatch.py",
+    "tests/test_sovereign_worker_source_refresh.py",
+    "docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md",
+    "control/session-implementation-claim-2026-08-28-bootstrap-resident-request-dispatch.json"
+  ],
+  "collision_boundaries": [
+    "Do not mint, replace, or widen any task claim or fence.",
+    "Do not make HeartBeat progression depend on request dispatch.",
+    "Do not treat hosted validation as resident execution.",
+    "Do not acquire or forward GitHub/provider credentials.",
+    "Do not infer any app activation from dispatcher invocation.",
+    "Each request-specific consumer retains its existing admission and exactly-once semantics."
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "authority_effect": "NONE_SOURCE_ONLY",
+  "activation_effect": false,
+  "state": "ACTIVE_SOURCE_REPAIR"
+}
