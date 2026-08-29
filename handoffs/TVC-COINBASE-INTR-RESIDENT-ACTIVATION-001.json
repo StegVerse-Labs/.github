@@ -11,6 +11,7 @@
       "Existing valid recipient activation/liveness is reused rather than rotated merely because route evidence is missing.",
       "When resident activation is required, both real Gateway staging root and KV custody root are present and the canonical TVC activation entrypoint succeeds under resident root authority.",
       "A fresh TLS-verified sovereign node advertisement/public Coinbase Gateway route observation exists.",
+      "Before public HTTPS route observation, a valid TVC Service Gateway TLS adoption receipt exists; when absent the worker may execute only the exact CMC-029 resident HTTP-01 adapter and must stop for sovereign Gateway reconciliation before retrying route observation.",
       "TVC readiness returns READY_FOR_OWNER_INGRESS with provider_operation_authorized=false.",
       "The TVC owner-ingress Site projection is emitted locally and Site repository mutation remains false.",
       "No provider credential value, GitHub token, NON-TV/TVC secret, order authority, or HeartBeat progression authority is introduced."
@@ -20,7 +21,9 @@
       "A valid recipient key is regenerated solely because public route observation is missing or stale.",
       "Activation proceeds without both real Gateway staging and KV custody roots.",
       "Site is modified directly by the worker.",
-      "Provider credential material is accepted by the worker or provider operation authority is granted."
+      "Provider credential material is accepted by the worker or provider operation authority is granted.",
+      "Public HTTPS route observation is attempted without resident TVC TLS adoption material.",
+      "The worker performs live WebPKI issuance from a hosted surface or accepts private-key/provider credential values."
     ],
     "authority_ceiling": [
       "TVC resident Interlock/InTr activation only",
@@ -51,7 +54,10 @@
       "StegVerse-Labs/TVC/scripts/observe_coinbase_intr_resident_readiness.py",
       "StegVerse-Labs/TVC/scripts/observe_coinbase_service_gateway_route.py",
       "StegVerse-Labs/TVC/scripts/project_coinbase_owner_ingress_site_config.py",
-      "workers/tvc_coinbase_intr_resident_activation_worker.py"
+      "workers/tvc_coinbase_intr_resident_activation_worker.py",
+      "StegVerse-Labs/TVC/tasks/TVC-SERVICE-GATEWAY-LEAF-CERTIFICATE-LIFECYCLE-029.json",
+      "StegVerse-Labs/TVC/scripts/execute_service_gateway_webpki_http01_029.py",
+      "StegVerse-org/LLM-adapter/docs/SERVICE_GATEWAY_HTTP01_CHALLENGE_PROJECTION_MIRROR_HANDOFF.md"
     ],
     "dependencies": [
       "SHWP-DURABLE-RUNTIME-ACTIVATION:COMPLETED",
@@ -99,7 +105,11 @@
       "STEGVERSE_REPO_ROOTS_JSON or STEGVERSE_TVC_ROOT",
       "STEGVERSE_COINBASE_GATEWAY_STORAGE_ROOT",
       "STEGVERSE_KV_CUSTODY_ROOT",
-      "STEGVERSE_COINBASE_PUBLIC_NODE_URL"
+      "STEGVERSE_COINBASE_PUBLIC_NODE_URL",
+      "STEGVERSE_SERVICE_GATEWAY_HOSTNAME",
+      "STEGVERSE_ACME_DIRECTORY_URL",
+      "STEGVERSE_ACME_CONTACT",
+      "STEGVERSE_TVC_HTTP01_CHALLENGE_ROOT"
     ]
   },
   "completion": {
@@ -108,6 +118,7 @@
     "terminal_when": [
       "resident TVC key/services are valid and live",
       "real Gateway and KV roots are bound when activation was required",
+      "TVC Service Gateway TLS adoption is resident-valid and the sovereign Gateway has had an opportunity to consume it before public route observation",
       "fresh public route observation is digest-valid and TLS verified",
       "READY_FOR_OWNER_INGRESS is observed",
       "local Site owner-ingress projection exists",
@@ -130,12 +141,16 @@
       "control/worker-registry.d/tvc-coinbase-intr-resident-activation-001.json",
       "control/process-worker-adapters.d/tvc-coinbase-intr-resident-activation-001.json"
     ],
-    "integration_evidence_refs": [],
+    "integration_evidence_refs": [
+      "StegVerse-Labs/TVC PR #215 merge 73303a36f1d147fdff491843c0bf18d83fb74b92",
+      "StegVerse-org/LLM-adapter PR #211 merge cbfb3b2b33931d6867d2e6b58437b57a191d8a67"
+    ],
     "activation_proof_ref": null,
     "blockers": [
       "SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN",
       "REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED",
-      "PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED"
+      "PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED",
+      "SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED"
     ],
     "continuation_owner": "tvc-coinbase-intr-resident-activation-worker + StegVerse-Labs/TVC",
     "credential_authority": "TV/TVC",
@@ -143,5 +158,11 @@
     "temporal_class": "current",
     "task_relationship": "integrates_capability",
     "target_phase": "ACTIVATED"
+  },
+  "source_revision_note": {
+    "state": "CMC029_MACHINE_OWNER_BINDING_IMPLEMENTED_ON_BRANCH_VALIDATION_PENDING",
+    "tvc_resident_adapter_merge": "73303a36f1d147fdff491843c0bf18d83fb74b92",
+    "gateway_http01_route_merge": "cbfb3b2b33931d6867d2e6b58437b57a191d8a67",
+    "authority_effect": "NONE"
   }
 }
