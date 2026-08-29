@@ -7,9 +7,12 @@
     "control/worker-registry.d/g18-resident-request-consumption-resolution-001.json",
     "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json",
     "docs/BLOCKER_RESOLUTION_MIRROR_HANDOFF.md",
-    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "scripts/dispatch_resident_execution_requests.py",
+    "scripts/bootstrap_sovereign_runtime.py",
+    "docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md"
   ],
-  "observed_at": "2026-08-28T21:14:00-05:00",
+  "observed_at": "2026-08-28T21:23:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "MACHINE_OWNED",
@@ -35,8 +38,8 @@
     "canonical_owner_installed": "resolution worker, process adapter, resident request, v13 bootstrap path and durable handoff are implemented/validated/merged",
     "thread_required": "Blocker Resolution handoff states no chat history is required; independent task-control continuation is durable",
     "blocker_count": "admissible_existence.blockers contains exactly G18_RESIDENT_REQUEST_CONSUMPTION_NOT_YET_OBSERVED",
-    "evidence_complete": "completion terminal evidence g18-resident-request-resolution.latest.json COMPLETED is not observed",
-    "activated": "activation_proof_ref=null; G18 runtime activation and task-capable proof remain unobserved",
+    "evidence_complete": "post-bootstrap resident-request dispatcher is source-complete, but no resident dispatch/consumption terminal receipt is observed",
+    "activated": "activation_proof_ref=null; the dispatcher removes passive trigger dependence but does not prove G18 consumption, runtime activation, or task-capable completion",
     "propagated": "runtime_activation_claimed=false and g18_terminalization_claimed=false; no downstream activation is claimed"
   },
   "authority_effect": "NONE"
