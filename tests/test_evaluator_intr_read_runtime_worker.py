@@ -2,6 +2,7 @@ from __future__ import annotations
 import importlib.util, json, os, tempfile
 from pathlib import Path
 import unittest
+from unittest import mock
 
 ROOT=Path(__file__).resolve().parents[1]
 SPEC=importlib.util.spec_from_file_location("evaluator_intr_read_runtime_worker",ROOT/"workers/evaluator_intr_read_runtime_worker.py")
@@ -45,6 +46,47 @@ class EvaluatorInTrReadRuntimeWorkerTests(unittest.TestCase):
             finally:
                 if prior is None: os.environ.pop(mod.CONFIG_ENV,None)
                 else: os.environ[mod.CONFIG_ENV]=prior
+
+    def test_existing_round_trip_bundle_terminalizes_without_starting_receiver(self):
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td)
+            runtime=base/"runtime"; runtime.mkdir()
+            receipt_root=runtime/"receipts/sovereign-network/evaluator-intr"; receipt_root.mkdir(parents=True)
+            bundle=receipt_root/"observed.json"
+            bundle.write_text(json.dumps({"state":"READ_REVIEW_ROUND_TRIP_FORWARDED"})+"\n",encoding="utf-8")
+            config={"runtime_root":str(runtime)}
+            result=mod.ensure_receiver(config,base/"server.py")
+            self.assertEqual(result["state"],"COMPLETE")
+            self.assertEqual(result["transition_id"],"EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED")
+            self.assertEqual(result["receipt_bundle_ref"],str(bundle))
+
+    def test_receiver_start_returns_ready_without_claiming_round_trip(self):
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td)
+            runtime=base/"runtime"; runtime.mkdir()
+            for name in ("Site","StegOS"): (base/name).mkdir()
+            server=base/"server.py"; server.write_text("# server\n",encoding="utf-8")
+            config={
+                "runtime_root":str(runtime),"site_root":str(base/"Site"),"stegos_root":str(base/"StegOS"),
+                "host":"127.0.0.1","port":8765,"allowed_origin":"https://stegverse.org",
+                "boundary_identity_ref":"node:1","public_tls_terminated_by":"STEGVERSE_SHARED_SERVICE_GATEWAY"
+            }
+            class P:
+                pid=4242
+            with mock.patch.object(mod.subprocess,"Popen",return_value=P()) as popen, \
+                 mock.patch.object(mod,"_pid_alive",return_value=True), \
+                 mock.patch.object(mod,"_readiness",return_value={
+                     "state":"READY","transport":"InTr","credential_authority":"TV/TVC","github_token_runtime_authority":"NONE"
+                 }):
+                result=mod.ensure_receiver(config,server)
+            self.assertEqual(result["state"],"READY")
+            self.assertEqual(result["transition_id"],"EVALUATOR_INTR_RECEIVER_READY")
+            self.assertFalse(result["round_trip_observed"])
+            self.assertTrue(result["persistent_receiver"])
+            args=popen.call_args.args[0]
+            self.assertIn("--max-requests",args)
+            self.assertIn("0",args)
+
     def test_hosted_execution_fails_closed(self):
         inv=self.invocation()
         prior=os.environ.get("GITHUB_ACTIONS"); os.environ["GITHUB_ACTIONS"]="true"
