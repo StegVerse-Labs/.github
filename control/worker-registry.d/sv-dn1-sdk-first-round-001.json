@@ -20,7 +20,8 @@
         "control/process-worker-adapters.d/sv-dn1-sdk-first-round-001.json",
         "cost-basis/worker-runtime/sv-dn1-sdk-first-round.json",
         "StegVerse-org/stegverse-demo-suite:scripts/finalize_sv_dn1_first_round.py",
-        "StegVerse-org/StegVerse-SDK:stegverse/governance_ingress_runtime.py"
+        "StegVerse-org/StegVerse-SDK:stegverse/governance_ingress_runtime.py",
+        "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md"
       ],
       "admissible_existence": {
         "capability_id": "stegverse:capability:sv-dn1-sdk-governed-first-round:v1",
@@ -40,7 +41,7 @@
         "activation_proof_ref": null,
         "blockers": [
           "SV_DN1_ROUTE_SPECIFIC_INTR_RECEIPT_NOT_YET_OBSERVED",
-          "EXACT_LOCAL_SDK_STEGCORE_CORE_LITE_MASTER_RECORDS_ROOTS_NOT_YET_OBSERVED",
+          "SV_DN1_PRODUCTION_SOURCE_PREP_RECEIPT_NOT_YET_OBSERVED",
           "SV_DN1_FIRST_PRODUCTION_ROUND_ANALYSIS_RECEIPT_NOT_YET_OBSERVED"
         ],
         "continuation_owner": "sv-dn1-sdk-first-round-worker",
