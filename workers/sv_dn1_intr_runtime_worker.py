@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fenced route-specific InTr runtime worker for SV-DN-1."""
+"""Fenced Universal InTr adjacent-hop runtime worker for SV-DN-1."""
 from __future__ import annotations
 
 import hashlib
@@ -17,8 +17,11 @@ WORKER_ID = "sv-dn1-intr-runtime-worker"
 UPSTREAM_TASK_ID = "SV-DN1-RESIDENT-OBSERVER-001"
 UPSTREAM_TRANSITION = "SV_DN1_RESIDENT_SOURCE_CAPTURE_COMPLETE"
 ROUTE_ID = "SV-DN-1-HF-PUBLIC"
-TRANSPORT_PROFILE = "stegverse.sv-dn1.intr.sovereign-bound-state/v1"
+TRANSPORT_PROFILE = "stegverse.universal-intr.adjacent-hop/v1"
 RECEIPT_SCHEMA = "stegverse.sv-dn1.intr-runtime-receipt/v1"
+UNIVERSAL_POLICY_ID = "STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001"
+BOUNDARY_FROM = "EXTERNAL_SYSTEM"
+BOUNDARY_TO = "STEGOS_ECOSYSTEM"
 
 BOUND_STATE_ENV = "STEGVERSE_BOUND_STATE_ROOT"
 RESIDENT_STATE_ENV = "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT"
@@ -138,8 +141,16 @@ def validate_invocation(invocation: Mapping[str, Any]) -> dict[str, Any]:
         raise RuntimeError("transport profile drift")
     if contract.get("runtime_receipt_schema") != RECEIPT_SCHEMA:
         raise RuntimeError("receipt schema drift")
-    if contract.get("canonical_protocol_adopted") is not False:
-        raise RuntimeError("Universal Interlock canonical adoption cannot be preclaimed")
+    if contract.get("canonical_protocol_adopted") is not True:
+        raise RuntimeError("canonical Universal InTr policy adoption must be acknowledged")
+    if contract.get("universal_intr_policy_id") != UNIVERSAL_POLICY_ID:
+        raise RuntimeError("Universal InTr policy identity drift")
+    if contract.get("boundary_from") != BOUNDARY_FROM or contract.get("boundary_to") != BOUNDARY_TO:
+        raise RuntimeError("Universal InTr adjacent boundary drift")
+    if contract.get("interlock_required_per_hop") is not True:
+        raise RuntimeError("Universal InTr requires Interlock at each completed hop")
+    if contract.get("receipt_hash_chain_required") is not True:
+        raise RuntimeError("Universal InTr requires chained hop receipts")
     if contract.get("production_interlock_runtime_activated") is not False:
         raise RuntimeError("global Interlock runtime activation cannot be preclaimed")
     return dict(task)
@@ -296,7 +307,13 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "destination_validation": "PASS",
         "lineage_verified": True,
         "claims": {
-            "canonical_protocol_adopted": False,
+            "canonical_protocol_adopted": True,
+            "universal_intr_policy_id": UNIVERSAL_POLICY_ID,
+            "boundary_from": BOUNDARY_FROM,
+            "boundary_to": BOUNDARY_TO,
+            "interlock_required_per_hop": True,
+            "receipt_hash_chain_required": True,
+            "runtime_activation_claimed": False,
             "production_interlock_runtime_activated": False,
             "sdk_admitted": False,
             "hugging_face_endorsement_claimed": False,
@@ -333,7 +350,13 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "github_token_used": False,
         "repository_writeback_performed": False,
         "sdk_admitted": False,
-        "canonical_protocol_adopted": False,
+        "canonical_protocol_adopted": True,
+        "universal_intr_policy_id": UNIVERSAL_POLICY_ID,
+        "boundary_from": BOUNDARY_FROM,
+        "boundary_to": BOUNDARY_TO,
+        "interlock_required_per_hop": True,
+        "receipt_hash_chain_required": True,
+        "runtime_activation_claimed": False,
         "production_interlock_runtime_activated": False,
         "authority_effect": "NONE",
     }
