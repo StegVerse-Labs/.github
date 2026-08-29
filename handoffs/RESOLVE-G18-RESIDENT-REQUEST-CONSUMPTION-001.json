@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
   "created_at": "2026-08-27T23:19:00-05:00",
-  "updated_at": "2026-08-27T23:35:00-05:00",
+  "updated_at": "2026-08-28T21:30:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
@@ -13,7 +13,8 @@
       "The exact existing G18 claim SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18 at fence18 is observed before consumption.",
       "Already-local source is refreshed into the resident runtime without network fetch or credential acquisition.",
       "The existing G18 request consumer records ATTEMPT_RECORDED or a matching prior ALREADY_CONSUMED state.",
-      "No new G18 claim/fence, HeartBeat authority, third-party runtime, or credential authority is created."
+      "No new G18 claim/fence, HeartBeat authority, third-party runtime, or credential authority is created.",
+      "After a verified canonical v13 bootstrap, the non-authorizing resident dispatcher visits the G18 request consumer without requiring a filesystem watcher event."
     ],
     "failure_predicates": [
       "Hosted CI is treated as resident execution evidence.",
@@ -51,7 +52,9 @@
       "workers/g18_resident_request_consumption_resolution_worker.py",
       "scripts/bootstrap_sovereign_runtime.py",
       "scripts/install_sovereign_heartbeat_service.py",
-      "scripts/verify_sovereign_runtime_activation.py"
+      "scripts/verify_sovereign_runtime_activation.py",
+      "scripts/dispatch_resident_execution_requests.py",
+      "scripts/install_sovereign_worker_source_refresh_service.py"
     ],
     "parent_task_id": null,
     "derivation_reason": "Blocker-resolution policy v2 requires the passive G18 resident-request wait to become an explicit registered machine-resolution capability. This root handoff preserves the parent G18 goal without inheriting or reusing its claim/fence."
@@ -90,7 +93,10 @@
     "max_retries": 2,
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 16,
-    "rate_class": "g18_resident_request_consumption_resolution"
+    "rate_class": "g18_resident_request_consumption_resolution",
+    "post_bootstrap_dispatcher": "scripts/dispatch_resident_execution_requests.py",
+    "post_bootstrap_dispatch_after_activation_proof_only": true,
+    "request_failure_blocks_later_requests": false
   },
   "completion": {
     "runtime_activation_claimed": false,
@@ -102,7 +108,7 @@
       "the one-shot G18 consumer is invoked or an exact prior consumption is verified",
       "no new G18 claim/fence is minted"
     ],
-    "next_authorized_action": "WorkerCoordinator independently admits this HANDOFF_READY resolution task under a fresh fence greater than 22. On an eligible non-hosted local surface, if the resident registry is absent the worker first executes the canonical v13 bootstrap with post-bootstrap StegFin explicitly skipped; only a verified COMPLETE bootstrap with the exact existing G18 fence18 claim may proceed into source refresh and one-shot request consumption."
+    "next_authorized_action": "WorkerCoordinator may independently admit this HANDOFF_READY resolution task under a fresh fence greater than 22. On an eligible non-hosted local surface, if no resident registry exists the worker invokes canonical v13 bootstrap. Current main now dispatches bounded resident requests automatically only after the bootstrap activation proof passes, so no filesystem watcher event is required. The G18 request still must preserve the exact existing fence18 claim and produce deployment-local consumption evidence; source merge or hosted validation does not satisfy this handoff."
   },
   "admissible_existence": {
     "capability_id": "stegverse:capability:g18-resident-request-consumption-resolution:v1",
@@ -119,7 +125,10 @@
       "control/worker-registry.d/g18-resident-request-consumption-resolution-001.json",
       "control/process-worker-adapters.d/g18-resident-request-consumption-resolution-001.json"
     ],
-    "integration_evidence_refs": [],
+    "integration_evidence_refs": [
+      "scripts/dispatch_resident_execution_requests.py",
+      "StegVerse-Labs/.github#373"
+    ],
     "activation_proof_ref": null,
     "blockers": [
       "G18_RESIDENT_REQUEST_CONSUMPTION_NOT_YET_OBSERVED"
