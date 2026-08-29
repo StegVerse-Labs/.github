@@ -45,6 +45,10 @@ workers/tvc_repository_broker_validation_worker.py
 control/worker-registry.d/tvc-repository-broker-validation-001.json
 control/process-worker-adapters.d/tvc-repository-broker-validation-001.json
 tests/test_tvc_repository_broker_validation_worker.py
+control/resident-execution-request.d/tvc-repository-broker-validation-001.json
+scripts/consume_tvc_broker_validation_request.py
+tests/test_tvc_broker_validation_resident_request.py
+cost-basis/worker-runtime/tvc-repository-broker-validation.json
 receipts/tvc-repository-broker-validation/**
 ```
 
@@ -101,6 +105,8 @@ AUTHORITY-OWNED AFTER PASS:
   TVC repository integration authority may admit the validated broker bundle only after exact governed PASS and current-base compatibility review.
 ```
 
+A resident source-refresh cycle now has a bounded, non-authorizing request consumer for this task. It only attempts targeted independent task control when STEGVERSE_TVC_ROOT already identifies an exact clean local checkout at the pinned PR #92 head. Missing local source remains retryable HANDOFF_READY; the consumer performs no private source acquisition.
+
 No session may substitute itself for the machine validation worker, mint a PASS receipt, expose a credential, merge from source completeness, or treat assignment/machine ownership/readiness as done.
 
 ## Required downstream chain
@@ -124,6 +130,7 @@ broker delta: 16/16 files
 validation worker/control developed surfaces: complete
 heartbeat-gating dependency in validation worker: REMOVED
 stable source-bundle digest emission: IMPLEMENTED / UNVALIDATED
+tvc governed validation request bridge: IMPLEMENTED_ON_BRANCH
 tvc governed validation receipt: 0/1
 tvc broker admission: 0/1
 StegCore downstream materialization: 0/1
