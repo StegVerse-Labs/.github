@@ -92,7 +92,7 @@ def test_exact_local_root_invokes_only_targeted_existing_bridge(tmp_path, monkey
             "TVC_EPHEMERAL_GITHUB_TOKEN":"forbidden",
         },
     )
-    assert receipt["state"] == "COMPLETE"
+    assert receipt["state"] == "COMPLETED"
     assert receipt["runtime_execution_attempted"] is True
     assert receipt["terminal_validation_observed"] is True
     assert observed["command"][-2:] == ["--task-id", consumer.TARGET_TASK]
