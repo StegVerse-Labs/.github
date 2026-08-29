@@ -58,15 +58,29 @@
     "heartbeat_dependency": false,
     "credential_authority": "TV/TVC",
     "github_token_required": false,
-    "policy_version": "tvc-repository-broker-validation-carrier-v0.3"
+    "policy_version": "tvc-repository-broker-validation-carrier-v0.3",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "repository_writeback_authority": false,
+    "merge_authority": false,
+    "execution_authority_created": false
   },
   "admissible_existence": {
     "capability_id": "stegverse:capability:tvc-repository-broker-validation:v1",
     "capability_version": "1.0.0",
-    "phase": "DECLARED",
-    "standing_evidence_refs": [],
-    "admissibility_evidence_refs": [],
-    "integration_evidence_refs": [],
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/TVC#92"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
+      "workers/tvc_repository_broker_validation_worker.py",
+      "control/worker-registry.d/tvc-repository-broker-validation-001.json",
+      "control/process-worker-adapters.d/tvc-repository-broker-validation-001.json"
+    ],
+    "integration_evidence_refs": [
+      "cost-basis/worker-runtime/tvc-repository-broker-validation.json"
+    ],
     "activation_proof_ref": null,
     "blockers": [
       "EXACT_TVC_PR92_LOCAL_VALIDATION_RECEIPT_NOT_YET_OBSERVED"
