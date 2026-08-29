@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-28T21:42:00-05:00
+Updated: 2026-08-28T21:48:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -375,3 +375,25 @@ task.v1 [L R U I V G O C M T B E A P] = 50000000101000
 The dedicated machine worker owns exact, credential-free public source materialization against the canonical demo-suite runtime-source manifest. Exactly one blocker remains: `SOVEREIGN_SOURCE_MATERIALIZATION_RECEIPT_NOT_YET_OBSERVED`. Remote checkout, provider credentials, repository writeback, observation/evaluation, SDK admission, governance, certification, and publication authority remain false.
 
 If validated and merged, local .github coverage becomes 20 indexed vectors with 27 active worker gaps + 14 organization gaps = 41 active unvectorized tasks.
+
+## SV-DN1 InTr + SDK runtime cohort — current-main candidate
+
+```text
+SV-DN1-INTR-RUNTIME-001       50000000102000
+SV-DN1-SDK-FIRST-ROUND-001    50000000103000
+```
+
+Both tasks are `HANDOFF_READY_MACHINE_OWNED`, manually non-startable, independently admitted under sovereign task control, and have exact registry/handoff blocker parity.
+
+- InTr runtime has two blockers: resident source-capture receipt and route-specific InTr receipt not yet observed.
+- SDK first round has three blockers: route-specific InTr receipt, production-source-preparation receipt, and first-production-round analysis receipt not yet observed.
+
+Neither vector claims runtime activation, SDK completion, Master Records custody, public dashboard publication, governance completion, or external consequence.
+
+### Resident observer fail-closed exclusion
+
+`SV-DN1-RESIDENT-OBSERVER-001` remains intentionally unvectorized. Its local registry/handoff blocker naming is inconsistent, and the canonical demo-suite product task still scopes the same task ID across the broader resident -> InTr -> SDK -> evaluation progression while the .github execution handoff correctly narrows the worker to resident capture only.
+
+Vector emission remains forbidden until the product task scope and local blocker contract are reconciled. This exclusion is evidence of unresolved canonical state, not an exemption from COSV adoption.
+
+If this cohort validates and merges, local .github coverage becomes 22 indexed vectors with 25 active worker gaps + 14 organization gaps = 39 active unvectorized tasks.

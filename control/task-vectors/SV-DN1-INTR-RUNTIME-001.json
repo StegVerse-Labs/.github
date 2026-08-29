@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SV-DN1-INTR-RUNTIME-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000102000",
+  "evidence_refs": [
+    "control/worker-registry.d/sv-dn1-intr-runtime-001.json",
+    "handoffs/SV-DN1-INTR-RUNTIME-001.json",
+    "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-08-28T21:48:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 2,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "handoffs/SV-DN1-INTR-RUNTIME-001.json state=HANDOFF_READY_MACHINE_OWNED; manual_execution_allowed=false; dedicated worker is AVAILABLE",
+    "archive_ready": "control/worker-registry.d/sv-dn1-intr-runtime-001.json archive_eligible=false",
+    "unassigned_work": "sv-dn1-intr-runtime-worker owns durable continuation",
+    "chat_owned_counts": "handoffs/SV-DN1-INTR-RUNTIME-001.json manual_execution_allowed=false and manual role is evidence review only",
+    "canonical_owner_installed": "worker, process adapter, executable handoff, dependency chain, and canonical demo-suite source are merged",
+    "thread_required": "machine-owned independent task-control handoff is durably recoverable without chat execution ownership",
+    "blocker_count": "exact machine blocker list: SV_DN1_RESIDENT_SOURCE_CAPTURE_RECEIPT_NOT_YET_OBSERVED | SV_DN1_ROUTE_SPECIFIC_INTR_RECEIPT_NOT_YET_OBSERVED",
+    "evidence_complete": "required terminal runtime receipt(s) in blocker list are not observed",
+    "activated": "activation_proof_ref=null; terminal runtime state remains unobserved",
+    "propagated": "successor production/admission state remains gated on terminal receipt(s)"
+  },
+  "authority_effect": "NONE"
+}
