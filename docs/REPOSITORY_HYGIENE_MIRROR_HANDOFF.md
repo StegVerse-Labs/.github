@@ -1,6 +1,6 @@
 # Repository Hygiene Mirror Handoff
 
-Updated: 2026-08-15T21:01:00-05:00
+Updated: 2026-08-28T21:45:00-05:00
 
 ## Active goal
 
@@ -152,3 +152,25 @@ session-specific hygiene transfer: 100%
 ```
 
 The hygiene goal itself is not complete, but this session no longer owns its continuation. Deleting the chat does not remove the inventory, prevention guard, owner, release conditions or next executable actions.
+
+
+## 2026-08-28 bounded Wave-0 G18 branch classification
+
+Issue #165 claim comment: 5459755905.
+
+StegHealth issue #38 supplied deterministic per-branch evidence under the merged branch-health classifier. The following root branches are now classified as evidence-cleared ref-retirement candidates while actual deletion remains owned by HYGIENE-BRANCH-REF-RETIREMENT:
+
+- `fix/g18-resolution-bootstrap-missing-resident-20260827`
+- `chore/g18-handoff-postmerge-reconcile`
+- `chore/g18-v13-postmerge-reconcile`
+- `chore/g18-resolution-postmerge-reconcile`
+
+Evidence source:
+- StegVerse-Labs/StegHealth PR #45 merge `be448d5ea9f47b98576de39c4f5b159fad887cb4`
+- exact-head signal validation `33228554588 SUCCESS`
+- `evidence/operations/2026-08-28-g18-safe-delete-observation.json`
+- `evidence/operations/2026-08-28-g18-safe-delete-classification.json`
+
+Each candidate has completed merge/open-work/source-reference/protection checks. The first candidate is squash-merge divergent by ancestry but all compare-reported changed files are byte-identical to current main; the other three are ahead 0. None is protected. No branch ref deletion has been performed.
+
+This advances Wave-0 classification only. It does not alter G18 runtime authority, active fence18 state, HeartBeat, or any product/runtime claim.
