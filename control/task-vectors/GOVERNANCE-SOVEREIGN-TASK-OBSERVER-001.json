@@ -1,0 +1,44 @@
+{
+  "identity": "StegVerse-Labs/.github:task:GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000114000",
+  "evidence_refs": [
+    "control/worker-registry.d/governance-sovereign-task-observer-001.json",
+    "handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json",
+    "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Governance:automation/governance_task_registry.json",
+    "StegVerse-Labs/TVC:tasks/TVC-PRIVATE-SOURCE-READ-001.json"
+  ],
+  "observed_at": "2026-08-28T23:20:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": true,
+    "blocker_count": 4,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "local handoff state HANDOFF_READY_MACHINE_OWNED; Governance owner classifies observer as MACHINE-OWNED / DO NOT COMPETE; dedicated worker AVAILABLE",
+    "archive_ready": "worker fragment archive_eligible=false and Governance owner explicitly says DO NOT ARCHIVE THIS SESSION",
+    "unassigned_work": "governance-sovereign-task-observer-worker owns execution after TVC source materialization and fresh WorkerCoordinator claim",
+    "chat_owned_counts": "manual_execution_allowed=false; session may inspect/improve source-contract evidence but cannot execute production observer or hold credentials",
+    "canonical_owner_installed": "observer worker, bounded adapter, executable handoff, capability profile, cost basis, TVC private-source producer contract, and Governance owner handoff are installed",
+    "thread_required": "Governance owner handoff explicitly states DO NOT ARCHIVE THIS SESSION — REQUIRED MACHINE EXECUTION REMAINS",
+    "blocker_count": "exact registry/handoff blocker parity: TVC_PRIVATE_SOURCE_READ_GOVERNANCE_CONSUMER_AUTHORITY_INJECTION_PENDING | TV_TVC_MATERIALIZED_GOVERNANCE_SOURCE_NOT_YET_OBSERVED | CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND | SOVEREIGN_GOVERNANCE_TASK_OBSERVER_RECEIPT_NOT_YET_OBSERVED",
+    "evidence_complete": "TVC injection/materialization, fresh WorkerCoordinator claim, and sovereign observer receipt are all unobserved",
+    "activated": "activation_proof_ref=null; sovereign observer live execution has not occurred",
+    "propagated": "Governance task registry/CGE watch has not been reconciled from a completed sovereign observer receipt"
+  },
+  "authority_effect": "NONE"
+}
