@@ -15,5 +15,11 @@
   "request_granted_authority": false,
   "authority_effect": "NONE_REQUEST_ONLY",
   "requested_at": "2026-08-28T21:06:00-05:00",
-  "note": "Non-authorizing exactly-once resident execution request for the already-admitted HIL sovereign receiver task. The existing targeted executor remains sole claim/fence authority and must fail closed if the resident carrier, current LLM-adapter contract floor, or local readiness predicates are absent."
+  "note": "Non-authorizing exactly-once request for the optional resident HIL materializer/runtime-observation task. Canonical HIL Submit and lifecycle transport proceed independently through Universal Interlock/InTr; this request is not a submission or product-activation prerequisite.",
+  "required_for_hil_submission": false,
+  "required_for_hil_product_activation": false,
+  "transport_role": "OPTIONAL_EVENT_EPHEMERAL_MATERIALIZER_REQUEST",
+  "event_triggered_transport_is_canonical": true,
+  "always_on_application_receiver_required": false,
+  "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION"
 }
