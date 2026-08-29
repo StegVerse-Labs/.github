@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.implementation-claim/v1",
+  "task_id": "NATIVE-RUNTIME-MUTABLE-CONTROL-MATERIALIZATION-20260828",
+  "originating_goal": "Prevent source-derived carrier/worker control snapshots from contaminating or overwriting resident-generated runtime state while retaining explicit bootstrap seeds.",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/native-materialization-control-state-20260828",
+  "claimant": "SESSION_EXECUTION_LANE_20260828_NATIVE_CONTROL_BOUNDARY",
+  "role": "BOUNDED_SOURCE_REPAIR",
+  "claimed_at": "2026-08-28T21:34:00-05:00",
+  "release_condition": "Release after exact-head validation and merge. Native runtime execution remains a separate evidence gate.",
+  "owned_surfaces": [
+    "scripts/install_sovereign_heartbeat_service.py",
+    "tests/test_native_runtime_materialization_boundary.py",
+    "docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md",
+    "control/session-implementation-claim-2026-08-28-native-control-materialization-boundary.json"
+  ],
+  "collision_boundaries": [
+    "Retain control/heartbeat-state.json as the explicit legacy HB29 bootstrap seed.",
+    "Retain control/worker-registry.json as the initial task registry seed.",
+    "Do not delete or overwrite existing resident-generated mutable control state.",
+    "Do not infer resident execution from source validation."
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "authority_effect": "NONE_SOURCE_ONLY",
+  "activation_effect": false,
+  "state": "ACTIVE_SOURCE_REPAIR"
+}
