@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Install a rootless local-source watcher for the sovereign WorkerCoordinator.
 
-The watcher reacts only to changes in an already-local canonical source tree. It
-never performs source transport or credential acquisition. A refresh preserves
+The watcher reacts to changes in an already-local canonical source tree and to
+durable Universal InTr materialization requests already present in the local
+runtime. It never performs source transport or credential acquisition. A refresh preserves
 mutable runtime state and restarts only the worker control-plane process; the
 independent heartbeat carrier is not restarted or used as execution authority.
 """
@@ -48,6 +49,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         raise ValueError("source and runtime roots must be distinct")
     refresh_script = runtime / "scripts/refresh_sovereign_worker_runtime_source.py"
     request_dispatcher = runtime / "scripts/dispatch_resident_execution_requests.py"
+    hil_materialization_consumer = runtime / "scripts/consume_hil_intr_materialization_request.py"
     service = "\n".join([
         "[Unit]",
         "Description=StegVerse local-only WorkerCoordinator source refresh",
@@ -57,6 +59,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         "Type=oneshot",
         f"ExecStart={_quote(python)} {_quote(refresh_script)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(request_dispatcher)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
+        f"ExecStartPost={_quote(python)} {_quote(hil_materialization_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost=/usr/bin/systemctl --user try-restart {WORKER_SERVICE}",
         "NoNewPrivileges=true",
         "PrivateTmp=true",
@@ -81,6 +84,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         source / "control/task-vector-index.json",
         source / "control/resident-execution-request.json",
         source / "control/resident-execution-request.d",
+        runtime / "intr-materialization",
     )
     path_unit = "\n".join([
         "[Unit]",
@@ -128,6 +132,7 @@ def install(
     runtime = runtime_root.expanduser().resolve()
     # Immediate local refresh is the one-time bridge from a stale materialization.
     refresh_receipt = refresh(source, runtime)
+    (runtime / "intr-materialization").mkdir(parents=True, exist_ok=True)
     config_root = unit_root or (Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "systemd" / "user")
     config_root = config_root.expanduser().resolve()
     config_root.mkdir(parents=True, exist_ok=True)
@@ -164,6 +169,8 @@ def install(
         "activation_results": results,
         "activated": activate,
         "filesystem_event_driven": True,
+        "intr_materialization_event_driven": True,
+        "intr_materialization_watch": str(runtime / "intr-materialization"),
         "second_heartbeat_created": False,
         "third_party_scheduler_required": False,
         "network_fetch_performed": False,
