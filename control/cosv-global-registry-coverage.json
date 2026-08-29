@@ -1,8 +1,8 @@
 {
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
-  "observed_commit": "6bd68bbc131365a5c97a75775f0527b702a0b1d7",
-  "observed_at": "2026-08-28T21:55:00-05:00",
+  "observed_commit": "5cdc17621f8d418339cb9aff4d5708a665d72941",
+  "observed_at": "2026-08-28T23:12:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,9 +11,9 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 54,
-    "canonically_indexed_task_ids": 23,
+    "canonically_indexed_task_ids": 24,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 24,
+    "active_unvectorized_unique_task_ids": 23,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,7 +21,7 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 38,
+  "total_active_unvectorized_unique_task_ids": 37,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -36,7 +36,6 @@
     "HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001",
     "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
     "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001",
-    "SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001",
     "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001",
     "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
     "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
@@ -156,6 +155,10 @@
     {
       "task_id": "SV-DN1-RESIDENT-OBSERVER-001",
       "vector": "50000000103000"
+    },
+    {
+      "task_id": "SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001",
+      "vector": "50000000101000"
     }
   ],
   "evidence_conflicts": [],
