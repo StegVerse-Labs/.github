@@ -105,7 +105,7 @@ first owner reference instance: StegVerse-Labs/StegCore#91/#92 COMPLETE
 credential-free .github source/materialization chain: SOURCE COMPLETE
 generalized owner mutation executor source: CANONICAL + HOSTED VALIDATED
 TVC repository broker: StegVerse-Labs/TVC#19/#20 TV/TVC LOCAL VALIDATION PENDING
-resident source-generation executor: NOT BOUND
+resident source-generation executor: BOUND_SOURCE_INSTALLED_ACTIVATION_PENDING
 resident first-cohort reconciliation: PENDING OBSERVATION
 resident generalized owner mutation proof: PENDING
 full recursive re-observation proof: PENDING
@@ -135,7 +135,7 @@ scaffolding/stubs: 0
 hosted validation surfaces: 3/3 PASS
 canonical source integration: COMPLETE
 TVC governed broker validation/admission: PENDING
-resident source-generation executor binding: PENDING
+resident source-generation executor binding: COMPLETE_SOURCE / ACTIVATION_PENDING
 resident generalized mutation proof: 0/1
 full recursive re-observation proof: 0/1
 ```
@@ -144,7 +144,7 @@ full recursive re-observation proof: 0/1
 
 ```text
 1. TV/TVC-owned local carrier executes TVC #20 validator and, on PASS, repository integration authority admits #20.
-2. Bind an explicit resident source-generation executor/profile capable of emitting the required source packet without credential authority.
+2. Observe explicit source-generation + sovereign-local-model activation evidence; the already-installed resident source-generation executor then emits the required source packet without credential authority.
 3. Execute one resident owner-work -> source packet -> TVC mutation/PR -> owner validation/merge -> reconciliation re-observation cycle.
 4. Re-run first-cohort reconciliation under resident heartbeat and preserve resulting receipts.
 ```
@@ -152,3 +152,28 @@ full recursive re-observation proof: 0/1
 ## Archive condition
 
 This source implementation is complete, but the broader session is not archive-ready. Archive may be reconsidered only after the remaining recursive-build requirements are completed or transferred to proven active executors that can actually advance them without another chat session.
+
+
+## 2026-08-29 source-generation dependency reconciliation
+
+The prior `resident source-generation executor: NOT BOUND` statement is superseded.
+
+Current durable machine chain:
+
+```text
+SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001
+  -> vector 50000000103000
+  -> source installed / phase ADMISSIBLE / activation pending
+
+SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001
+  -> vector 50000000103000
+  -> source installed / machine-owned / activation pending
+
+SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001
+  -> consumes exact source packet only after the above activation predicates
+  -> emits bounded non-secret TVC warrant only
+```
+
+This closes the **binding/source-installation deficiency only**. It does not prove source-generation activation, a resident source packet, TVC live repository transport, owner mutation, owner merge, or recursive re-observation.
+
+The owner-mutation worker remains chat-free and independently registered. TV/TVC remains the only credential-bearing repository-operation authority.
