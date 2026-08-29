@@ -170,3 +170,35 @@ Accordingly, `https://stegverse.org` MUST NOT become a prerequisite for evaluato
 No interaction surface, hostname, operating system, device class, network presentation layer, or third-party platform may become a condition for StegVerse authority, provenance, admissibility, or continuity.
 
 This is a terminology/current-lane reconciliation only; it does not create a new authority source.
+
+
+## Healer shared-Gateway route projection — 2026-08-29
+
+The resident evaluator route materializer already writes a non-secret exact loopback configuration at the deployment-local sovereign surface. This branch wires that state into the existing Healer shared-Gateway worker without creating a second transport or configuration authority.
+
+Projection rule:
+
+```text
+materialized evaluator route config
+  schema = stegverse.evaluator-intr-route-config/v1
+  host = 127.0.0.1
+  valid admitted port
+  credential_authority = TV/TVC
+  github_token_runtime_authority = NONE
+  public_tls_terminated_by = STEGVERSE_SHARED_SERVICE_GATEWAY
+
+-> Healer child env:
+   STEGVERSE_EVALUATOR_INTR_ENABLED=true
+   STEGVERSE_EVALUATOR_INTR_UPSTREAM=http://127.0.0.1:<port>/intr/evaluator
+```
+
+Any missing, malformed, remote-host, authority-drifted, or non-shared-Gateway config projects:
+
+```text
+STEGVERSE_EVALUATOR_INTR_ENABLED=false
+STEGVERSE_EVALUATOR_INTR_UPSTREAM=
+```
+
+The config file path itself is not forwarded to Healer. TLS/private-key locators remain excluded from the worker boundary and continue through same-host TVC receipt discovery.
+
+This projection does not infer evaluator listener liveness, public Gateway activation, or browser receipt observation. It only removes the configuration gap that would otherwise keep the merged native Gateway evaluator route disabled after lawful route materialization.
