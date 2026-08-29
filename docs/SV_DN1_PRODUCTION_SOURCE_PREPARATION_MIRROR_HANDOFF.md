@@ -223,6 +223,7 @@ The completion receipt exposes the four non-secret local root paths for the SDK 
 public source preparation worker: MERGED / VALIDATED
 private TVC spool request generation: MERGED / VALIDATED
 TVC broker PR #92: OPEN / governed local validation pending
+TVC validation carrier current head: MERGED / VALIDATED / resident request issued
 private broker admission: NOT COMPLETE
 production source prep runtime receipt: NOT OBSERVED
 SDK first round: NOT ANALYZED
@@ -245,6 +246,22 @@ safe archive extraction tests: PASS
 ```
 
 Source preparation is now machine-owned and admitted on main. Authentic runtime completion remains pending on an actual sovereign WorkerCoordinator claim/fence plus TVC private-source materialization receipts.
+
+## TVC validation prerequisite execution path
+
+The TVC validation prerequisite is no longer a stale/manual carrier. PR #384 merged the exact current-head independent validation task plus resident request consumer:
+
+```text
+expected TVC PR #92 head: ce1d4a31f5cfc65ee59af52f821336e0859c0fbd
+validation task: SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001
+request: control/resident-execution-request.d/tvc-repository-broker-validation-001.json
+authority: INDEPENDENT_TASK_CONTROL / fresh fence >22
+source transport by validation consumer: NONE
+credential material allowed: false
+governed validation receipt: NOT OBSERVED
+```
+
+After authentic PASS and TVC broker admission, this source-preparation task can consume the existing private materialization spool path without any new credential lane.
 
 ## Archive readiness
 
