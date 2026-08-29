@@ -25,7 +25,7 @@ Canonical blocker set for this projection:
 - `PRIVATE_CANONICAL_SOURCE_MATERIALIZATION_RECEIPTS_NOT_YET_OBSERVED`
 - `SV_DN1_PRODUCTION_SOURCE_PREP_RECEIPT_NOT_YET_OBSERVED`
 
-The existing worker registry currently omits the third blocker and must be reconciled before vector emission.
+The worker registry was reconciled during #427 so its three-blocker set now matches the executable handoff and canonical projection.
 
 ## Expected vector
 
