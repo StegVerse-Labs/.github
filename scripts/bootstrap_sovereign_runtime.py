@@ -236,6 +236,83 @@ def _attempt_post_bootstrap_activation(source_root: Path, *, proof_path: Path, r
     }
 
 
+def _prime_resident_worker_runtime(source_root: Path, runtime_root: Path, *, proof_path: Path, env: dict[str, str] | None, runner: Runner) -> dict[str, Any]:
+    """Force one bounded native WorkerCoordinator cycle before request dispatch.
+
+    Native service activation is asynchronous. A successful launchctl/systemd/
+    schtasks registration therefore does not prove that the separated carrier
+    reference or a task-capable WorkerCoordinator cycle exists yet. This prime
+    closes that race by invoking the already-materialized worker runtime once
+    on the same sovereign host, with credentials scrubbed and without hosted
+    authority. The WorkerCoordinator remains the sole claim/fence gate.
+    """
+    worker_runner = runtime_root / "scripts" / "run_worker_runtime.py"
+    if not worker_runner.is_file():
+        return {
+            "attempted": False,
+            "state": "NOT_AVAILABLE",
+            "reason": "WORKER_RUNTIME_RUNNER_NOT_MATERIALIZED",
+            "returncode": None,
+            "task_capable_cycle_observed": False,
+            "authority_effect": "NONE",
+        }
+
+    child_env = scrubbed_child_env(
+        env,
+        source_root=source_root,
+        runtime_root=runtime_root,
+        proof_path=proof_path,
+    )
+    completed = runner(
+        [
+            sys.executable,
+            str(worker_runner),
+            "--root",
+            str(runtime_root),
+            "--cycles",
+            "1",
+        ],
+        cwd=runtime_root,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=180,
+        env=child_env,
+    )
+
+    result = None
+    for line in reversed([line.strip() for line in (completed.stdout or "").splitlines() if line.strip()]):
+        try:
+            value = json.loads(line)
+        except Exception:
+            continue
+        if isinstance(value, dict):
+            result = value
+            break
+
+    worker_state = load_json(runtime_root / "control" / "worker-runtime-state.json") or {}
+    carrier = load_json(runtime_root / "control" / "heartbeat-carrier-runtime-state.json") or {}
+    task_capable = bool(
+        completed.returncode == 0
+        and isinstance(result, dict)
+        and carrier.get("epoch") is not None
+        and worker_state.get("observation_mode") != "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
+    )
+    return {
+        "attempted": True,
+        "state": "TASK_CAPABLE_CYCLE_OBSERVED" if task_capable else "TASK_CAPABLE_CYCLE_NOT_YET_OBSERVED",
+        "returncode": completed.returncode,
+        "cycle_result": result,
+        "carrier_epoch": carrier.get("epoch"),
+        "worker_observation_mode": worker_state.get("observation_mode"),
+        "task_capable_cycle_observed": task_capable,
+        "github_token_required": False,
+        "credential_authority": "TV/TVC",
+        "heartbeat_grants_execution_authority": False,
+        "authority_effect": "NONE_EXECUTION_PRIME_ONLY",
+    }
+
+
 def _dispatch_resident_requests(source_root: Path, runtime_root: Path, *, proof_path: Path, env: dict[str, str] | None, runner: Runner) -> dict[str, Any]:
     dispatcher = runtime_root / "scripts" / "dispatch_resident_execution_requests.py"
     if not dispatcher.is_file():
@@ -317,6 +394,7 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         "installer_returncode": None,
         "verifier_returncode": None,
         "proof_path": str(proof_path),
+        "post_install_worker_prime": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "NATIVE_INSTALLATION_NOT_COMPLETE", "returncode": None, "task_capable_cycle_observed": False, "authority_effect": "NONE"},
         "post_bootstrap_resident_request_dispatch": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "authority_effect": "NONE"},
         "post_bootstrap_stegfin": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "executor_service_active": False, "wallet_handoff_ready_claimed": False},
         "state": "FAIL_CLOSED",
@@ -338,11 +416,22 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         body["reason"] = "NATIVE_INSTALLATION_RETRY_REQUIRED"
         atomic_write(receipt_path, body)
         return body
-    # Dispatch bounded resident requests immediately after native installation.
-    # Consumers remain independently fail-closed and non-authorizing. Running
-    # them before the final activation verifier avoids a circular dependency
-    # where G18/HIL execution evidence is required by a proof that previously
-    # had to pass before those requests could be consumed.
+    # Native process registration is asynchronous. Prime exactly one local
+    # WorkerCoordinator cycle before dispatch so the carrier reference and
+    # task-capable execution surface exist now rather than waiting for a later
+    # service wakeup or unrelated source-refresh event.
+    body["post_install_worker_prime"] = _prime_resident_worker_runtime(
+        source_root,
+        runtime_root,
+        proof_path=proof_path,
+        env=env,
+        runner=runner,
+    )
+
+    # Dispatch bounded resident requests after the explicit worker prime.
+    # Consumers remain independently fail-closed and non-authorizing. This
+    # removes the former bootstrap race where dispatch could happen before the
+    # carrier reference existed and then never be retried.
     body["post_bootstrap_resident_request_dispatch"] = _dispatch_resident_requests(
         source_root,
         runtime_root,

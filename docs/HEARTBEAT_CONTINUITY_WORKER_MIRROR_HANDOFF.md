@@ -745,3 +745,67 @@ Fresh native materialization now includes:
 - previously merged resident-request dispatcher and consumers.
 
 It still excludes source-derived mutable runtime evidence and mutable resident control snapshots. Runtime execution remains NOT OBSERVED.
+
+
+## 2026-08-29 bootstrap task-execution prime repair
+
+Live reconciliation after the Universal InTr migration confirmed that the native
+service installer could return success while process supervision was still
+asynchronously bringing up the separated carrier/WorkerCoordinator. Bootstrap
+then dispatched resident requests immediately. On a fresh resident, an SV-DN-1
+consumer could therefore reach its sovereign chain before
+`control/heartbeat-carrier-runtime-state.json` existed, return
+`HANDOFF_READY`, and receive no second dispatch unless an unrelated source
+refresh later occurred.
+
+That race explains the persistent repository-observed state:
+
+```text
+heartbeat: ACTIVE_PROTOCOL_VERIFIED
+worker runtime: CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION
+SV-DN1 source-materialization receipt: NOT OBSERVED
+```
+
+Bounded repair branch:
+
+```text
+branch: fix/sovereign-bootstrap-task-execution-prime-20260829
+source: scripts/bootstrap_sovereign_runtime.py
+test: tests/test_bootstrap_resident_request_dispatch.py
+authority effect: NONE_EXECUTION_PRIME_ONLY
+credential authority: TV/TVC
+GitHub-token runtime authority: NONE
+second machine required: false
+```
+
+After native service registration succeeds, bootstrap now explicitly invokes
+one already-materialized local WorkerCoordinator cycle before resident-request
+dispatch:
+
+```text
+install native separated services
+-> run_worker_runtime.py --root <resident-runtime> --cycles 1
+-> require/record carrier + worker runtime observation
+-> dispatch bounded resident requests
+-> run final activation verifier
+```
+
+The prime does not mint authority outside WorkerCoordinator. It merely forces
+the existing claim/fence evaluator to run on the same eligible non-hosted
+resident instead of depending on asynchronous service timing or a future
+filesystem event. Credentials are scrubbed exactly as for the existing
+bootstrap child processes. Hosted environments remain rejected.
+
+For SV-DN-1 this means the first independently admitted task,
+`SV-DN1-SOURCE-MATERIALIZATION-001`, can now be reached during the same native
+bootstrap opportunity. Its authentic completion still requires the sovereign
+worker to emit:
+
+```text
+~/.stegverse/state/sv-dn1-source-materialization/receipts/latest.json
+transition_id: SV_DN1_EXACT_SOURCE_MATERIALIZATION_COMPLETE
+```
+
+No runtime receipt, Hugging Face observation, Universal InTr traversal, SDK
+admission, or product activation is claimed by this source repair. Those remain
+authentic resident evidence gates.
