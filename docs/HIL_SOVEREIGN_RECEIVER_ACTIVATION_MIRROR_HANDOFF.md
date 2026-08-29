@@ -347,3 +347,47 @@ participant Submit
 ```
 
 This source integration still does not prove that a real participant event reached a StegOS runtime or that the materialization request was consumed. Authentic runtime receipts remain required.
+
+
+## 2026-08-29 authentic resident activation acceptance harness
+
+A bounded resident-runtime acceptance harness has been added on branch `test/hil-resident-activation-20260829` to collapse the first five missing runtime observations into one real execution path without fabricating receipts.
+
+```text
+runner: scripts/run_hil_resident_activation_test.py
+test: tests/test_hil_resident_activation_acceptance.py
+hosted GitHub/Render/Vercel/Cloudflare execution: REJECTED
+credential authority: TV/TVC
+GitHub token runtime authority: NONE
+G18 completion required: false
+G18 claim/fence consumed: false
+request grants authority: false
+```
+
+On an eligible StegVerse-owned/federated resident runtime the runner:
+
+1. invokes the existing sovereign bootstrap;
+2. requires the real resident request dispatcher to run;
+3. creates a deterministic controlled PDF fixture and exact hash-bound Universal InTr materialization request;
+4. wraps it in the exact registered-Node trigger/outbox shape;
+5. sends it through the actual loopback HTTP HIL InTr ingress listener;
+6. requires an authentic `INGRESS_ADMITTED` receipt;
+7. invokes the existing HIL materialization consumer;
+8. requires the existing targeted executor/WorkerCoordinator lane to produce resident execution evidence;
+9. requires the HIL worker receipt to contain a real claim ID, fencing token, and `receiver_ready=true`;
+10. writes only a local test-observation summary after inspecting the component-produced receipts.
+
+The runner does not synthesize any of the acceptance receipts it checks. It returns nonzero unless all of these are genuinely present on that runtime:
+
+```text
+receipts/sovereign-host/resident-request-dispatch.latest.json
+receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json
+receipts/sovereign-host/resident-targeted-execution.latest.json
+receipts/sovereign-network/hil-intr-ingress.latest.json
+receipts/sovereign-host/hil-intr-materialization-consumption.latest.json
+receipts/hil-sovereign-receiver/SHWP-HIL-SOVEREIGN-RECEIVER-001.json
+```
+
+A successful run therefore proves the resident dispatch -> independent HIL claim/fence -> Node/InTr ingress -> materialization -> receiver READY segment on a real sovereign runtime. It still does not satisfy exact PDF custody, controlled restart/reconstruction, or TVC HIL lifecycle receipt until those downstream receivers emit their own evidence.
+
+Source/CI validation of this harness remains non-runtime evidence. The authentic transition is only a PASS emitted by the harness on an eligible resident runtime with the component receipts above.
