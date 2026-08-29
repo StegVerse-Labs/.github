@@ -10,11 +10,12 @@
         "canonical_sdk_governed_execution",
         "master_records_replay_reconstruction_validation",
         "first_round_analysis",
-        "evidence_class_preservation"
+        "evidence_class_preservation",
+        "browser_resident_evidence_adaptation"
       ],
       "command": [
         "python",
-        "workers/sv_dn1_sdk_first_round_worker.py"
+        "workers/sv_dn1_sdk_browser_evidence_adapter.py"
       ],
       "cwd": ".",
       "enabled": true,
@@ -26,11 +27,14 @@
         "STEGVERSE_SV_DN1_SOURCE_ROOT",
         "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT",
         "STEGVERSE_SV_DN1_INTR_STATE_ROOT",
+        "STEGVERSE_SV_DN1_BROWSER_OBSERVATION_BUNDLE",
+        "STEGVERSE_BOUND_STATE_ROOT",
         "HOME",
         "PATH"
       ],
       "bound_state_root": "~/.stegverse/state/sv-dn1-sdk-first-round",
       "bound_state_allowed_paths": [
+        "upstream-adapter/**",
         "candidate/**",
         "sdk/**",
         "round/**",
@@ -39,7 +43,9 @@
       "timeout_seconds": 360,
       "type": "process_json_bound_state_v0.1",
       "notes": [
-        "Executes only after authentic resident and route-specific InTr evidence exists.",
+        "Executes only after authentic resident and Universal InTr evidence exists.",
+        "If STEGVERSE_SV_DN1_BROWSER_OBSERVATION_BUNDLE is supplied, the adapter fully replays and validates the authentic v3 browser-resident journal and materializes only the legacy upstream JSON view inside this worker's bounded state before invoking the unchanged canonical SDK worker.",
+        "The evidence adapter grants no execution authority, does not mint a node identity, and does not rerun the source observation or InTr traversal.",
         "Uses exact locally materialized canonical SDK, StegCore, Core-Lite and Master Records sources; no remote checkout.",
         "Runs canonical SDK 0B, binds SDK_ADMITTED, performs Master Records replay/reconstruction, then first-round analysis.",
         "No provider/GitHub credential, external consequence, repository writeback, public hosting or certification authority."
