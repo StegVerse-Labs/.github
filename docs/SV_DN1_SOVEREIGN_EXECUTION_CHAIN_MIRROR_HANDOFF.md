@@ -24,6 +24,7 @@ The chain owns orchestration only:
 SV-DN1-SOURCE-MATERIALIZATION-001
 -> SV-DN1-RESIDENT-OBSERVER-001
 -> SV-DN1-INTR-RUNTIME-001
+-> SV-DN1-PRODUCTION-SOURCE-PREP-001
 -> SV-DN1-SDK-FIRST-ROUND-001
 ```
 
@@ -67,9 +68,14 @@ ROUTE-SPECIFIC InTr
   dependencies:
     - SV-DN1-RESIDENT-OBSERVER-001
 
+PRODUCTION SOURCE PREP
+  dependencies:
+    - SV-DN1-INTR-RUNTIME-001
+
 SDK FIRST ROUND
   dependencies:
     - SV-DN1-INTR-RUNTIME-001
+    - SV-DN1-PRODUCTION-SOURCE-PREP-001
 ```
 
 All four registry fragments are admitted under:
@@ -154,6 +160,13 @@ SV-DN1-INTR-RUNTIME-001
   destination_validation = PASS
   lineage_verified = true
 
+SV-DN1-PRODUCTION-SOURCE-PREP-001
+  ~/.stegverse/state/sv-dn1-production-source-prep/receipts/latest.json
+  transition_id = SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE
+  public_source_roots_verified = true
+  private_source_roots_verified = true
+  runtime_anchor_blobs_verified = true
+
 SV-DN1-SDK-FIRST-ROUND-001
   ~/.stegverse/state/sv-dn1-sdk-first-round/receipts/latest.json
   transition_id = SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED
@@ -183,7 +196,7 @@ StegVerse-Labs/StegCore: private
 master-records/orchestration: private
 ```
 
-Private source materialization remains within TV/TVC repository-broker authority or already-local sovereign source. The chain must stop at the exact missing source predicate rather than bypass TV/TVC.
+Private source materialization remains within TV/TVC repository-broker authority or already-local sovereign source. The merged production-source-preparation lane anonymously materializes the public SDK/Core-Lite roots, emits non-secret TVC spool requests for private StegCore/Master Records, validates sanitized TVC receipts, and stops HANDOFF_READY until private source is actually materialized. The chain never bypasses TV/TVC.
 
 ## Resident request bridge
 
@@ -246,6 +259,7 @@ independent-task-control correction: MERGED / PASS
 source worker: MERGED
 resident worker: MERGED
 InTr worker: MERGED
+production source prep worker: IMPLEMENTING
 SDK first-round worker: MERGED
 single-opportunity sovereign chain orchestrator: MERGED
 resident request bridge: MERGED
@@ -270,7 +284,7 @@ durable receipt validation: PASS
 resident request non-authority/retry behavior: PASS
 ```
 
-The full first-round chain is therefore source-complete and admitted for resident one-shot execution. No authentic chain execution receipt has been observed yet.
+The original four-stage first-round chain is source-complete and admitted. This branch inserts explicit canonical production-source preparation before SDK execution so missing private roots become a machine-owned TVC spool dependency rather than an implicit local-path prerequisite. No authentic chain execution receipt has been observed yet.
 
 ## Archive readiness
 
