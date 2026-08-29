@@ -10,12 +10,13 @@
       "authorized_policy_version": "tvc-repository-broker-validation-carrier-v0.3",
       "block_ref": null,
       "claim_id": null,
-      "cost_basis_ref": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/tvc-repository-broker-validation.json",
       "evidence_refs": [
         "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
         "workers/tvc_repository_broker_validation_worker.py",
         "StegVerse-Labs/TVC#92",
-        "StegVerse-Labs/TVC@4e87ad9f3a859ab3b18241640624abd5e1757002"
+        "StegVerse-Labs/TVC@ce1d4a31f5cfc65ee59af52f821336e0859c0fbd",
+        "cost-basis/worker-runtime/tvc-repository-broker-validation.json"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": "StegVerse-Labs/TVC:TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001",
@@ -30,7 +31,7 @@
       "worker_id": null,
       "worker_instance_id": null,
       "validation_identity": {
-        "expected_tvc_head": "4e87ad9f3a859ab3b18241640624abd5e1757002",
+        "expected_tvc_head": "ce1d4a31f5cfc65ee59af52f821336e0859c0fbd",
         "source_bundle_file_count": 16,
         "source_bundle_sha256_required": true,
         "full_revalidation_if_bundle_digest_changes": true,
@@ -66,6 +67,16 @@
           "vector_observed_at": "2026-08-27T16:39:00-05:00",
           "authority_effect": "NONE"
         }
+      },
+      "admission": {
+        "authority_source": "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json#authority",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 22,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
       }
     }
   ],
