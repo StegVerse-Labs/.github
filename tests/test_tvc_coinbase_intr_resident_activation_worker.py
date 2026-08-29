@@ -28,6 +28,7 @@ class TVCIntrActivationWorkerTests(unittest.TestCase):
                 "scripts/observe_coinbase_intr_resident_readiness.py",
                 "scripts/observe_coinbase_service_gateway_route.py",
                 "scripts/project_coinbase_owner_ingress_site_config.py",
+                "scripts/execute_service_gateway_webpki_http01_029.py",
             ):
                 p=root/rel; p.parent.mkdir(parents=True,exist_ok=True); p.write_text("# test\n",encoding="utf-8")
             env={"STEGVERSE_TVC_ROOT":str(root)}
@@ -44,6 +45,7 @@ class TVCIntrActivationWorkerTests(unittest.TestCase):
                 "scripts/observe_coinbase_intr_resident_readiness.py",
                 "scripts/observe_coinbase_service_gateway_route.py",
                 "scripts/project_coinbase_owner_ingress_site_config.py",
+                "scripts/execute_service_gateway_webpki_http01_029.py",
             ):
                 p=root/rel; p.parent.mkdir(parents=True,exist_ok=True); p.write_text("# test\n",encoding="utf-8")
             calls=[]
@@ -71,6 +73,7 @@ class TVCIntrActivationWorkerTests(unittest.TestCase):
                 "scripts/observe_coinbase_intr_resident_readiness.py",
                 "scripts/observe_coinbase_service_gateway_route.py",
                 "scripts/project_coinbase_owner_ingress_site_config.py",
+                "scripts/execute_service_gateway_webpki_http01_029.py",
             ):
                 p=root/rel; p.parent.mkdir(parents=True,exist_ok=True); p.write_text("# test\n",encoding="utf-8")
             route=root/"route.json"; activation=root/"activation.json"; liveness=root/"liveness.json"; projection=root/"projection.json"
@@ -93,13 +96,58 @@ class TVCIntrActivationWorkerTests(unittest.TestCase):
                     return 0,None,""
                 raise AssertionError(joined)
             env={"STEGVERSE_TVC_ROOT":str(root),"STEGVERSE_COINBASE_PUBLIC_NODE_URL":"https://node.example/api/stegverse-node"}
-            with patch.object(worker.os,"geteuid",return_value=0), patch.object(worker,"ROUTE_OBS",route), patch.object(worker,"ACTIVATION",activation), patch.object(worker,"LIVENESS",liveness), patch.object(worker,"SITE_PROJECTION",projection), patch.object(worker,"_run",side_effect=fake_run):
+            tls=root/"tls-adoption.json"; tls.write_text("{}\\n",encoding="utf-8")
+            with patch.object(worker.os,"geteuid",return_value=0), patch.object(worker,"ROUTE_OBS",route), patch.object(worker,"ACTIVATION",activation), patch.object(worker,"LIVENESS",liveness), patch.object(worker,"SITE_PROJECTION",projection), patch.object(worker,"TLS_ADOPTION",tls), patch.object(worker,"_run",side_effect=fake_run):
                 result=worker.execute(env)
         self.assertEqual(result["state"],"COMPLETED",result)
         self.assertFalse(result["activation_performed"])
         self.assertTrue(result["route_observation_performed"])
         self.assertFalse(any("activate_coinbase_intr_resident.py" in " ".join(call) for call in calls))
         self.assertFalse(result["site_repository_mutated"])
+
+    def test_missing_tls_invokes_cmc029_then_waits_for_gateway_reconciliation(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td)
+            for rel in (
+                "scripts/activate_coinbase_intr_resident.py",
+                "scripts/observe_coinbase_intr_resident_readiness.py",
+                "scripts/observe_coinbase_service_gateway_route.py",
+                "scripts/project_coinbase_owner_ingress_site_config.py",
+                "scripts/execute_service_gateway_webpki_http01_029.py",
+            ):
+                p=root/rel; p.parent.mkdir(parents=True,exist_ok=True); p.write_text("# test\\n",encoding="utf-8")
+            tls=root/"tls-adoption.json"
+            calls=[]
+            def fake_run(args,cwd,**kwargs):
+                calls.append(args)
+                joined=" ".join(str(x) for x in args)
+                if "observe_coinbase_intr_resident_readiness.py" in joined:
+                    return 2,{"state":"BLOCKED_RESIDENT_BINDING_INVALID","reason":"current production public InTr route observation missing"},""
+                if "execute_service_gateway_webpki_http01_029.py" in joined:
+                    tls.write_text("{}\\n",encoding="utf-8")
+                    return 0,{
+                        "state":"ISSUED_AND_ADOPTED_FOR_STEGDEPLOY_TLS",
+                        "private_key_exported":False,
+                        "private_key_bytes_recorded":False,
+                        "account_key_bytes_recorded":False,
+                        "provider_operation_authority":"NONE",
+                        "tls_adoption_receipt_sha256":"sha256:"+"b"*64,
+                    },""
+                raise AssertionError(joined)
+            env={
+                "STEGVERSE_TVC_ROOT":str(root),
+                "STEGVERSE_SERVICE_GATEWAY_HOSTNAME":"gateway.stegverse.org",
+                "STEGVERSE_ACME_DIRECTORY_URL":"https://ca.example/directory",
+                "STEGVERSE_ACME_CONTACT":"mailto:ops@stegverse.org",
+                "STEGVERSE_COINBASE_PUBLIC_NODE_URL":"https://gateway.stegverse.org/api/stegverse-node",
+            }
+            with patch.object(worker.os,"geteuid",return_value=0), patch.object(worker,"TLS_ADOPTION",tls), patch.object(worker,"_run",side_effect=fake_run):
+                result=worker.execute(env)
+        self.assertEqual(result["transition_id"],"SERVICE_GATEWAY_TLS_ADOPTED_WAITING_FOR_GATEWAY_RECONCILIATION")
+        self.assertTrue(result["tls_issuance_performed"])
+        self.assertTrue(any("execute_service_gateway_webpki_http01_029.py" in " ".join(str(x) for x in call) for call in calls))
+        self.assertFalse(any("observe_coinbase_service_gateway_route.py" in " ".join(str(x) for x in call) for call in calls))
+        self.assertFalse(result["provider_operation_authorized"])
 
 
 if __name__=="__main__":
