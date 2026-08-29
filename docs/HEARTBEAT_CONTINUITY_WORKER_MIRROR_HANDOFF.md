@@ -662,3 +662,28 @@ control/worker-registry.json       # initial canonical task/claim registry seed
 The materializer now excludes the four resident-generated control snapshots from source copy. Because copy ignores them rather than deleting target files, re-materialization preserves an already-running resident's current mutable state.
 
 Current state: IMPLEMENTED / VALIDATION PENDING / MERGE PENDING. Runtime execution remains NOT OBSERVED.
+
+
+### Native mutable-control materialization merge — 2026-08-28
+
+The resident-generated control-state preservation repair is exact-head validated and merged:
+
+```text
+PR: #381
+validated head: b16c3bab04965a53c10ddeaecf518c448fdae1ce
+Organization Control Plane: 33228785453 / 99037619703 SUCCESS
+Heartbeat Worker Project: 33228785608 / 99037620245 SUCCESS
+merge: 83a7d714d1b97faae8f37a16633020e4cfa6225b
+bounded source claim: RELEASED_SOURCE_REPAIR
+```
+
+Merged invariant:
+- source `heartbeat-carrier-runtime-state.json`: excluded from fresh resident copy;
+- source `worker-runtime-state.json`: excluded;
+- source `worker-control-plane-coordination.json`: excluded;
+- source `worker-status.json`: excluded;
+- existing resident copies of those files survive re-materialization;
+- legacy `control/heartbeat-state.json` HB29 seed remains materialized;
+- initial `control/worker-registry.json` remains materialized.
+
+Full deterministic repository validation, oscillator/replay protection, carrier/worker separation, and no-token authority checks passed. Runtime execution remains NOT OBSERVED.
