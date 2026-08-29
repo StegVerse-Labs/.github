@@ -78,7 +78,14 @@ NONSECRET_FORWARD = {
     "STEGVERSE_EVALUATOR_INTR_ROUTE_CONFIG",
     "STEGVERSE_EVALUATOR_INTR_PORT",
     "STEGVERSE_EVALUATOR_INTR_WINDOW_SECONDS",
-    "STEGVERSE_RELAY_RUNTIME_BASE",\n    "STEGVERSE_TT_ROOT",\n    "STEGVERSE_RTG_ROOT",\n    "STEGVERSE_GTG_ROOT",\n    "STEGVERSE_AE_ROOT",\n    "STEGVERSE_SELF_CHAR_MODEL_ENDPOINT",\n    "STEGVERSE_SELF_CHAR_MODEL_ID",\n    "STEGVERSE_OLLAMA_MODEL",
+    "STEGVERSE_RELAY_RUNTIME_BASE",
+    "STEGVERSE_TT_ROOT",
+    "STEGVERSE_RTG_ROOT",
+    "STEGVERSE_GTG_ROOT",
+    "STEGVERSE_AE_ROOT",
+    "STEGVERSE_SELF_CHAR_MODEL_ENDPOINT",
+    "STEGVERSE_SELF_CHAR_MODEL_ID",
+    "STEGVERSE_OLLAMA_MODEL",
 }
 Runner = Callable[..., subprocess.CompletedProcess[str]]
 
@@ -286,7 +293,8 @@ def refresh_and_execute(
     }
     receipt_path = runtime / RECEIPT_REL
     receipt_path.parent.mkdir(parents=True, exist_ok=True)
-    receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "
+", encoding="utf-8")
     return receipt
 
 
