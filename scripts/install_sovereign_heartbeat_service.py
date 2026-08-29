@@ -34,6 +34,8 @@ COPY_DIRS = (
     "workers",
     "schemas",
     "cost-basis",
+    "management",
+    "state_language",
 )
 COPY_FILES = (
     "scripts/run_heartbeat_runtime.py",
@@ -48,6 +50,11 @@ COPY_FILES = (
     "scripts/run_sv_dn1_first_round_chain.py",
     "scripts/consume_sv_dn1_resident_execution_request.py",
     "scripts/dispatch_resident_execution_requests.py",
+    "scripts/materialize_live_cosv_packet.py",
+    "scripts/cosv.py",
+    "scripts/cosv_state_packet.py",
+    "scripts/project_worker_control_plane_from_carrier.py",
+    "scripts/verify_iphone_heartbeat_transition_receipt.py",
     "scripts/advance_heartbeat_transition.py",
     "scripts/refresh_heartbeat_transition_receipt.py",
     "scripts/verify_sovereign_runtime_activation.py",
