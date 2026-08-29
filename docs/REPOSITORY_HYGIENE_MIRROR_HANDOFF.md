@@ -197,3 +197,16 @@ Evidence source:
 
 Current `.github/main` recheck shows the five refs behind by 79, 1410, 127, 142, and 951 commits respectively, with `ahead_by=0`. No branch ref mutation has been performed. This advances Wave-0 classification only and does not alter G18 runtime authority, HeartBeat, or sovereign activation state.
 
+### Wave-0 G18 batch 3 merge/validation — 2026-08-28
+
+PR #394 merged the five-ref batch as `05599436d7f24833297229d400ae58533fcb9b90`.
+
+Validated exact PR head:
+`2758cf124ed039fea89c8cd28443de5063239dc2`
+
+Validation:
+- Heartbeat Worker Project run `33233465931 SUCCESS`
+- organization control plane run `33233466004 SUCCESS`
+
+Nine G18 refs are now durably evidence-cleared across Wave-0 batches 2 and 3. `HYGIENE-BRANCH-REF-RETIREMENT` remains authority-owned/fail-closed; this merge does not perform or authorize repository-ref changes. G18 resident consumption and sovereign runtime activation remain separately unobserved.
+
