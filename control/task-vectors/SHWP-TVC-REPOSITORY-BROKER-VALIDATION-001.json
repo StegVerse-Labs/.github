@@ -7,9 +7,9 @@
     "control/worker-registry.d/tvc-repository-broker-validation-001.json",
     "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
     "docs/TVC_REPOSITORY_BROKER_VALIDATION_CARRIER_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/TVC#92@4e87ad9f3a859ab3b18241640624abd5e1757002"
+    "StegVerse-Labs/TVC#92@ce1d4a31f5cfc65ee59af52f821336e0859c0fbd"
   ],
-  "observed_at": "2026-08-27T16:39:00-05:00",
+  "observed_at": "2026-08-29T02:20:00Z",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "MACHINE_OWNED",
