@@ -44,7 +44,7 @@
     "canonical_lineage_key": "tvc:coinbase:intr-resident-activation",
     "derivation_depth": 0,
     "priority": "release",
-    "operational_state": "AWAITING_SOVEREIGN_RUNTIME_AND_RUNTIME_BINDINGS",
+    "operational_state": "AWAITING_SOVEREIGN_RUNTIME_AND_RUNTIME_BINDINGS_SOURCE_MERGED_VALIDATED",
     "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
     "source_refs": [
       "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
@@ -143,7 +143,10 @@
     ],
     "integration_evidence_refs": [
       "StegVerse-Labs/TVC PR #215 merge 73303a36f1d147fdff491843c0bf18d83fb74b92",
-      "StegVerse-org/LLM-adapter PR #211 merge cbfb3b2b33931d6867d2e6b58437b57a191d8a67"
+      "StegVerse-org/LLM-adapter PR #211 merge cbfb3b2b33931d6867d2e6b58437b57a191d8a67",
+      "StegVerse-Labs/.github PR #367 merge 3daf39319a55ce84eae34cf9ba6922929a280106",
+      "organization control-plane validation 33226499060 SUCCESS",
+      "heartbeat worker validation 33226499063 SUCCESS"
     ],
     "activation_proof_ref": null,
     "blockers": [
@@ -160,9 +163,13 @@
     "target_phase": "ACTIVATED"
   },
   "source_revision_note": {
-    "state": "CMC029_MACHINE_OWNER_BINDING_IMPLEMENTED_ON_BRANCH_VALIDATION_PENDING",
+    "state": "CMC029_MACHINE_OWNER_BINDING_MERGED_VALIDATED",
     "tvc_resident_adapter_merge": "73303a36f1d147fdff491843c0bf18d83fb74b92",
     "gateway_http01_route_merge": "cbfb3b2b33931d6867d2e6b58437b57a191d8a67",
+    "machine_owner_merge": "3daf39319a55ce84eae34cf9ba6922929a280106",
+    "organization_control_plane_validation": 33226499060,
+    "heartbeat_worker_validation": 33226499063,
+    "runtime_execution_observed": false,
     "authority_effect": "NONE"
   }
 }
