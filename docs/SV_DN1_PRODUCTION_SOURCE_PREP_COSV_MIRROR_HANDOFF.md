@@ -1,6 +1,6 @@
 # SV-DN1 Production Source Prep COSV Mirror Handoff
 
-Status: SOURCE_IMPLEMENTED / EXACT_HEAD_VALIDATION_PENDING
+Status: SOURCE_PROJECTION_MERGED_VALIDATED / RUNTIME_EVIDENCE_PENDING
 Repository: `StegVerse-Labs/.github`
 Issue: #427
 Branch: `feature/sv-dn1-source-prep-cosv-427`
@@ -53,4 +53,10 @@ The projection source is installed on this branch. The canonical source-preparat
 
 The worker denominator remains 58. This projection moves one existing task from active-unvectorized to indexed: 37 indexed, 14 active-unvectorized, 6 completed historical, 1 superseded historical.
 
-Next repository gate: exact-head hosted validation and merge. Runtime completion remains open.
+Exact-head validation passed on `81fcabb75b9e2b52e0e1446e1a467c7e0b651e4f`:
+- organization-control run `33274348556`: SUCCESS;
+- Heartbeat Worker run `33274348555`: SUCCESS.
+
+PR #429 merged as `d7e4b77ddf7d220f72f90c18d91922fec134b826`.
+
+The #427 source/COSV projection goal is complete. Runtime completion remains open on the same three authentic blockers; no broker admission, private materialization, production-source-prep completion, SDK execution, or publication is inferred.
