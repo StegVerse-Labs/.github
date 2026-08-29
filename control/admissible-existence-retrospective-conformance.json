@@ -220,8 +220,8 @@
       "phase": null,
       "task_relationship": "validates_capability",
       "result": "PASS",
-      "continuation_owner": "tvc-repository-broker-validation-worker + StegVerse-Labs/TVC#20",
-      "rationale": "The validation carrier only executes the existing TVC repository-operation broker verifier against exact locally materialized source with credentials removed; registration and validation create no repository, merge, transport, model, wallet, signing, broadcast, or capability authority."
+      "continuation_owner": "tvc-repository-broker-validation-worker + StegVerse-Labs/TVC#92",
+      "rationale": "The validation carrier only executes the existing TVC repository-operation broker verifier against exact locally materialized PR #92 source with credentials removed; independent task-control admission and validation create no repository, merge, transport, model, wallet, signing, broadcast, or capability authority."
     },
     {
       "task_id": "SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
