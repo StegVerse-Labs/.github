@@ -56,6 +56,13 @@ on:
       - 'tests/test_steggate_integration_binding.py'
       - 'workers/stegfin_early_adopter_contribution_validation_worker.py'
       - 'workers/ara_graph_runtime_worker.py'
+      - 'workers/cmc028_root_custody_worker.py'
+      - 'tests/test_cmc028_root_custody_worker.py'
+      - 'handoffs/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json'
+      - 'control/worker-registry.d/cmc028-root-custody-001.json'
+      - 'control/process-worker-adapters.d/cmc028-root-custody-001.json'
+      - 'control/admissible-existence-retrospective-conformance.d/cmc028-root-custody-001.json'
+      - 'control/task-vectors/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json'
       - 'tests/test_ara_graph_runtime_worker.py'
       - 'tests/test_ara_graph_resident_execution_request.py'
       - 'scripts/consume_ara_graph_resident_execution_request.py'
@@ -174,6 +181,9 @@ jobs:
 
       - name: Validate ARA Graph sovereign runtime worker
         run: python -m unittest -v tests.test_ara_graph_runtime_worker
+
+      - name: Validate CMC-028 sovereign custody evidence worker
+        run: python -m unittest -v tests.test_cmc028_root_custody_worker
 
       - name: Validate ARA Graph resident execution request
         run: python -m unittest -v tests.test_ara_graph_resident_execution_request tests.test_sovereign_worker_source_refresh
