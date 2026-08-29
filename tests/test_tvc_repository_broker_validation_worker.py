@@ -95,15 +95,20 @@ def test_worker_has_no_source_fetch_transport_or_heartbeat_gate():
     assert 'source_bundle_sha256' in source
 
 
-def test_ae_conformance_and_capability_boundary():
+
+
+def test_canonical_retrospective_ae_record_remains_non_authorizing():
     handoff = json.loads((ROOT / "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json").read_text())
-    retrospective = json.loads((ROOT / "control/admissible-existence-retrospective-conformance.d/tvc-repository-broker-validation-001.json").read_text())
-    assert handoff["admissible_existence"]["phase"] == "ADMISSIBLE"
+    retrospective = json.loads((ROOT / "control/admissible-existence-retrospective-conformance.json").read_text())
+    assert handoff["admissible_existence"]["phase"] == "DECLARED"
     assert handoff["authority"]["repository_writeback_authority"] is False
     assert handoff["authority"]["merge_authority"] is False
     assert handoff["authority"]["non_tv_tvc_secret_or_token_allowed"] is False
-    entry = retrospective["entries"][0]
-    assert entry["task_id"] == worker.TASK_ID
-    assert entry["phase"] == "ADMISSIBLE"
+    entries = [e for e in retrospective["entries"] if e.get("task_id") == worker.TASK_ID]
+    assert len(entries) == 1
+    entry = entries[0]
+    assert entry["ae_impact"] == "NONE"
+    assert entry["phase"] is None
     assert entry["result"] == "PASS"
     assert entry["task_relationship"] == "validates_capability"
+    assert "TVC#92" in entry["continuation_owner"]
