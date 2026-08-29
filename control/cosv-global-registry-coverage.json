@@ -1,8 +1,8 @@
 {
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
-  "observed_commit": "5cdc17621f8d418339cb9aff4d5708a665d72941",
-  "observed_at": "2026-08-28T23:12:00-05:00",
+  "observed_commit": "fcf38e5e64ea01e1574ee90392bc8576cb89ab6c",
+  "observed_at": "2026-08-28T23:20:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,9 +11,9 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 54,
-    "canonically_indexed_task_ids": 24,
+    "canonically_indexed_task_ids": 25,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 23,
+    "active_unvectorized_unique_task_ids": 22,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,7 +21,7 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 37,
+  "total_active_unvectorized_unique_task_ids": 36,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -37,7 +37,6 @@
     "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
     "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001",
     "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001",
-    "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
     "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
     "SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
     "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
@@ -159,6 +158,10 @@
     {
       "task_id": "SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001",
       "vector": "50000000101000"
+    },
+    {
+      "task_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
+      "vector": "50000000114000"
     }
   ],
   "evidence_conflicts": [],
@@ -237,5 +240,14 @@
     "vector": "50000000103000",
     "runtime_receipt_observed": false,
     "authority_effect": "NONE"
-  }
+  },
+  "thread_required_vectors": [
+    {
+      "task_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
+      "vector": "50000000114000",
+      "thread_required": true,
+      "canonical_owner_ref": "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md",
+      "release_condition": "Canonical Governance owner no longer declares DO NOT ARCHIVE THIS SESSION and all remaining unique continuation is durably machine/authority-owned."
+    }
+  ]
 }

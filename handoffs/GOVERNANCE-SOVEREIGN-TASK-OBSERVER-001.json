@@ -201,5 +201,18 @@
       "heartbeat_effect=false"
     ],
     "release_condition": "A fenced sovereign observer receipt is produced from exact locally materialized Governance source and reconciled without granting repository, CGE, credential, or heartbeat authority."
+  },
+  "source_state_vector_ref": "control/task-vectors/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000114000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-08-28T23:20:00-05:00",
+      "authority_effect": "NONE"
+    }
   }
 }
