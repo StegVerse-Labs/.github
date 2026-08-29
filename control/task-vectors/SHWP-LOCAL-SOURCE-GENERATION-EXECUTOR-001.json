@@ -1,0 +1,47 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000103000",
+  "evidence_refs": [
+    "LOCAL_SOURCE_GENERATION_EXECUTOR_MIRROR_HANDOFF.md",
+    "control/session-implementation-claim-2026-08-14-local-source-generation-executor.json",
+    "data/local-source-generation-executor/task-state.json",
+    "control/worker-registry.d/local-source-generation-executor-001.json",
+    "handoffs/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
+    "control/admissible-existence-retrospective-conformance.json",
+    "control/task-vectors/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
+    "StegVerse-Labs/StegCore@15d9524530bc45a9404d93c3e2d51953d8f4a156"
+  ],
+  "observed_at": "2026-08-29T02:37:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 3,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "source implementation claim is COMPLETE_VALIDATED_RELEASED; task-state execution owner is local-source-generation-executor-worker after repository-native admission and manual_execution_allowed=false",
+    "archive_ready": "worker fragment archive_eligible=false because live bounded generation and recursive owner re-observation remain unproven",
+    "unassigned_work": "dedicated AVAILABLE local-source-generation-executor-worker owns execution after canonical activation predicates are satisfied",
+    "chat_owned_counts": "implementation claim was released on 2026-08-14; task-state manual execution is false and no chat role owns runtime, validation, integration, observation, or credentials",
+    "canonical_owner_installed": "bounded executor source, worker, adapter, handoff, task-state, validation receipt, canonical binder and StegCore ADMISSIBLE lifecycle evidence are installed",
+    "thread_required": "source implementation subtask is archive-safe and durable machine/authority owners define continuation; wider recursive-build incompleteness is not a chat dependency on this task",
+    "blocker_count": "registry/handoff/task-state exact parity on three canonical blockers after structured-state reconciliation",
+    "evidence_complete": "formalism source-generation integration evidence, source-generation activation proof, sovereign-local-model live activation, and resident recursive proof are unobserved",
+    "activated": "canonical source-generation phase is ADMISSIBLE, not ACTIVATED; activation_proof_ref=null",
+    "propagated": "no resident generation result has passed binder -> TV/TVC owner mutation -> validation/merge -> reconciliation re-observation"
+  },
+  "authority_effect": "NONE"
+}
