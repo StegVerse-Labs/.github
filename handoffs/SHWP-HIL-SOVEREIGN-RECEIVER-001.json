@@ -4,26 +4,28 @@
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "HIL-SOVEREIGN-RECEIVER-ACTIVATION",
-    "objective": "Run the current HIL v1.1 receiver backend contract on an admitted StegVerse sovereign carrier with no participant/developer/iMachine dependency, then continue to public HTTPS, browser receipt, restart byte proof, and TVC lifecycle handoff.",
+    "objective": "Materialize the current HIL v1.1 receiver backend on demand from an admitted Universal Interlock/InTr transport event, preserve exact receipt lineage through HIL custody and TVC lifecycle admission, and never require a continuously READY receiver, G18 completion, participant/developer machine, or third-party production runtime before transport initiation.",
     "success_predicates": [
-      "current merged LLM-adapter HIL receiver is resolved from local StegVerse workload/source storage",
-      "post-submit reconstruction source contract is complete and released",
-      "Site durable-ingress receipt compatibility contract is complete and released",
+      "participant Submit may create a canonical stegverse.universal-intr-transport/v1 intent before any HIL receiver is READY",
+      "event-triggered transport preserves always_on_receiver_required=false and second_user_device_required=false",
+      "current merged LLM-adapter HIL receiver is resolved from local StegVerse workload/source storage when event-ephemeral materialization is required",
       "credential-free sovereign-carrier environment is constructed",
-      "loopback receiver reaches exact HIL v1.1 READY",
+      "receiver materialization verifies exact HIL v1.1 profile/readiness before issuing receiver-side custody evidence",
+      "receiver persists the canonical chained InTr receipts and next TVC lifecycle Interlock intent",
+      "TVC independently validates the HIL receipt chain and exact artifact/provenance before issuing its own InTr receipt",
       "no GitHub token or non-TV/TVC secret/token is used",
-      "public HTTPS rendezvous is later bound without transport authority",
-      "Site browser returns HIL-RECEIVER-RECEIPT-v2 with EXACT_BYTES_PERSISTED and RECORDED",
-      "exact bytes survive controlled restart or replacement",
-      "existing TVC HIL lifecycle accepts continuation"
+      "exact bytes remain reconstructable after controlled receiver replacement/restart",
+      "private review remains separately governed by TVC #8"
     ],
     "failure_predicates": [
-      "stale LLM-adapter source lacking reconstruction or Site durable-ingress receipt compatibility is selected",
-      "CURRENT_USER_IPHONE, iPod, participant machine, developer machine, or HB30 capsule becomes a prerequisite",
+      "G18 completion or a G18 claim/fence is treated as a prerequisite to HIL Submit or InTr transport initiation",
+      "a continuously READY HIL application receiver is treated as a prerequisite to transport initiation",
+      "stale LLM-adapter source lacking Universal InTr receipt-chain support is selected",
+      "CURRENT_USER_IPHONE, iPod, participant machine, developer machine, or HB30 capsule becomes a second-machine prerequisite",
       "GitHub Actions, Render, Vercel, Cloudflare, or another third-party host becomes production authority",
       "GitHub token or non-TV/TVC secret/token is required",
       "transport or receiver readiness grants review, publication, Master Records, route, or execution authority",
-      "source/CI readiness is represented as public activation"
+      "source/CI readiness is represented as runtime activation"
     ],
     "authority_ceiling": [
       "bounded sovereign receiver launch",
@@ -43,9 +45,11 @@
     "repository": "StegVerse-Labs/.github",
     "source_refs": [
       "StegVerse-Labs/.github#246",
-      "StegVerse-org/LLM-adapter@40eaa9af5cb7e3845ddaf4e79e02d299c76b9655 receiver binding ancestor",
-      "StegVerse-org/LLM-adapter@f90be5e4cb277c46426b0aa956ee1652f9b60b4a post-submit reconstruction floor",
-      "StegVerse-org/LLM-adapter@9928284a2abf229dd7c7c19eae75eb9838024e43 Site durable-ingress compatibility floor",
+      "StegVerse-Labs/StegOS/schemas/universal-intr-transport.schema.json",
+      "StegVerse-Labs/StegOS/stegos/universal_intr_transport.py",
+      "StegVerse-Labs/Site@1cb2b9b950674400c5e5aa341b8b6efba5cbeb47 Universal InTr Submit path",
+      "StegVerse-org/LLM-adapter@ad1a7c3f8bb727d1007f254930d9a77df0bfa94f Universal InTr receiver/custody chain",
+      "StegVerse-Labs/TVC@31a4ea2fcc42b807ec24ae2612df4e60d38a73eb Universal InTr TVC lifecycle admission",
       "workers/hil_sovereign_receiver_bridge.py",
       "workers/hil_sovereign_receiver_worker.py",
       "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
@@ -55,7 +59,7 @@
     ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "The HIL receiver backend, reconstruction contract, Site receipt compatibility, and carrier bridge are merged and validated; the next legitimate transition is resident worker execution against a source tree meeting that full contract floor.",
+    "derivation_reason": "Universal InTr transport is now merged across Site, LLM-adapter and TVC. HIL transport initiation is event-triggered and independent of G18 completion; receiver READY is downstream materialization evidence rather than a precondition.",
     "canonical_owner_ref": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
     "canonical_lineage_key": "hil:sovereign-receiver:activation",
     "derivation_depth": 0,
@@ -101,7 +105,7 @@
     "carrier": "heartbeat_reference_only",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "StegVerse-Labs/.github#246",
-    "recheck_trigger": "each admitted StegVerse task-control execution opportunity while unfinished",
+    "recheck_trigger": "each admitted HIL Universal InTr transport event or other admitted StegVerse task-control execution opportunity while unfinished",
     "checkout_policy": "fenced_atomic_checkout",
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
     "carrier_trigger_required": false,
@@ -171,6 +175,19 @@
         "organization_control_plane_job": 99035966209,
         "result": "PASS"
       }
+    },
+    "transport_event_materialization": {
+      "schema": "stegverse.universal-intr-transport/v1",
+      "event_triggered": true,
+      "always_on_receiver_required": false,
+      "second_user_device_required": false,
+      "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+      "g18_completion_required": false,
+      "g18_claim_or_fence_consumed": false,
+      "receiver_ready_is_precondition_to_submit": false,
+      "receiver_ready_is_downstream_observation": true,
+      "request_grants_authority": false,
+      "authority_effect": "NONE_TRANSPORT_ONLY"
     }
   },
   "continuity": {
@@ -180,19 +197,20 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "On an installed sovereign resident source-refresh surface, consume RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-001 exactly once and invoke only the existing targeted HIL task. Treat repository merge/CI as source validation only; runtime completion still requires real claim/fence allocation, receiver READY evidence, public HTTPS, browser receipt, restart exact-byte proof, and TVC lifecycle handoff.",
+    "next_authorized_action": "On the next admitted HIL Universal InTr event, materialize or reuse the bounded sovereign HIL receiver only as needed, verify the receiver-side receipt chain, then continue to the already-merged TVC InTr lifecycle intake. Do not wait for G18 completion or a continuously READY receiver before accepting transport intent. Source/CI remains non-runtime evidence.",
     "terminal_when": [
-      "real StegVerse carrier READY observation",
-      "public HTTPS rendezvous observed",
-      "Site browser HIL-RECEIVER-RECEIPT-v2 preserved",
-      "post-restart exact-byte SHA-256 verification PASS",
-      "TVC HIL lifecycle handoff proven"
+      "authentic participant Universal InTr intent preserved",
+      "receiver-side DEVICE_SYSTEM -> STEGOS_ECOSYSTEM receipt preserved",
+      "HIL custody Interlock receipt preserved",
+      "TVC HIL lifecycle Interlock receipt preserved",
+      "post-replacement exact-byte SHA-256 verification PASS",
+      "private-review transition remains separately governed"
     ],
     "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001"
   },
   "block": {
-    "block_reason": "The HIL resident request bridge is merged and exact-head validated. Activation remains unfinished until that request is actually consumed on a sovereign resident carrier and the receiver READY/public HTTPS/browser/restart/TVC evidence chain is observed.",
-    "dependency": "resident sovereign carrier plus public HTTPS/browser/restart/TVC evidence sequence",
+    "block_reason": "Source transport and receipt-chain support are merged across Site, LLM-adapter and TVC. Remaining activation evidence is an authentic Universal InTr event traversing receiver materialization/custody and TVC admission; G18 completion and continuously READY receiver state are not prerequisites.",
+    "dependency": "authentic HIL Universal InTr event plus event-ephemeral or reusable sovereign receiver materialization and TVC receipt observation",
     "solution_task_ref": "StegVerse-Labs/.github#246",
     "solution_source_ref": "workers/hil_sovereign_receiver_worker.py",
     "solution_validation_ref": "tests/test_hil_sovereign_receiver_bridge.py",
@@ -206,7 +224,7 @@
       "no heartbeat/model/TVC/Master Records authority collision"
     ],
     "observer": "independent StegVerse task-control",
-    "recheck_trigger": "each admitted StegVerse task-control execution opportunity",
+    "recheck_trigger": "each admitted HIL Universal InTr transport event",
     "next_check": null,
     "escalation_condition": "stale backend source, a non-TV/TVC credential, participant machine, third-party production authority, or competing heartbeat/route/custody authority is requested",
     "block_expires_at": null
