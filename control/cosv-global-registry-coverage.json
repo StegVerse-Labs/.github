@@ -1,8 +1,8 @@
 {
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
-  "observed_commit": "b36558e91d57c64e488ab3b2a9c0d447eeb31213",
-  "observed_at": "2026-08-28T21:18:00-05:00",
+  "observed_commit": "0b31dfc26ba60ca0e0421bcdb6c34fdc14d22976",
+  "observed_at": "2026-08-28T21:33:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -200,5 +200,16 @@
     "aggregate_worker_registry_changed": false,
     "organization_task_count": 14,
     "note": "The nine new worker-registry fragments are distinct active HANDOFF_READY tasks and are counted as active unvectorized until canonical vectors are emitted or terminal/superseded evidence removes them."
+  },
+  "g18_dispatcher_reconciliation": {
+    "vector_unchanged": "50000000101000",
+    "blocker_unchanged": "G18_RESIDENT_REQUEST_CONSUMPTION_NOT_YET_OBSERVED",
+    "dispatcher_source_state": "IMPLEMENTED_MERGED_RUNTIME_NOT_OBSERVED",
+    "dispatcher_ref": "scripts/dispatch_resident_execution_requests.py",
+    "dispatch_receipt_observed": false,
+    "g18_consumption_receipt_observed": false,
+    "authority_effect": "NONE",
+    "native_materialization_boundary_ref": "docs/HEARTBEAT_CONTINUITY_WORKER_MIRROR_HANDOFF.md",
+    "native_materialization_boundary_state": "SOURCE_IMPROVED_RUNTIME_CONSUMPTION_NOT_OBSERVED"
   }
 }
