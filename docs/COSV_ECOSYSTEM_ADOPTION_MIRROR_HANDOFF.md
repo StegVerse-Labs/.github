@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-28T23:26:00-05:00
+Updated: 2026-08-28T23:32:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -486,3 +486,22 @@ The current human/owner credential step is **not due**. The canonical TVC CMC-02
 No provider credential value enters this worker. No provider-operation authority, Site repository mutation authority, HeartBeat progression authority, third-party production runtime authority, or second-machine requirement is created.
 
 If validated and merged, local .github coverage becomes 26 indexed vectors with 21 active worker gaps + 14 organization gaps = 35 active unvectorized tasks.
+
+## StegFin sovereign internal-trading vector — current-main candidate
+
+```text
+SHWP-STEGFIN-SOVEREIGN-TRADING-001
+task.v1 [L R U I V G O C M T B E A P] = 50000000101000
+```
+
+The current StegFin owner keeps this as a distinct machine-owned internal activation lane, separate from the already-completed phone-direct pre-sign wallet handoff. The local capsule materialization support task is COMPLETE/VALIDATED/RELEASED, but the actual bounded internal activation has exactly one unresolved condition:
+
+```text
+SAME_EXECUTION_INTERNAL_SETTLEMENT_RECONSTRUCTION_E2_NOT_YET_OBSERVED
+```
+
+A valid terminal proof must bind the internal market match and atomic settlement to exact Master Records `RECONSTRUCTED_PASS` and E2 reconstruction evidence in the same execution. Source/materializer readiness is not that proof.
+
+No wallet-signing authority, transaction-broadcast authority, external custody, external network execution, scale-up authority, provider-secret export, or GitHub runtime authority is created.
+
+If validated and merged, local .github coverage becomes 27 indexed vectors with 20 active worker gaps + 14 organization gaps = 34 active unvectorized tasks.
