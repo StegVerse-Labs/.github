@@ -1,0 +1,43 @@
+{
+  "identity": "StegVerse-Labs/.github:task:RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/g18-resident-request-consumption-resolution-001.json",
+    "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json",
+    "docs/BLOCKER_RESOLUTION_MIRROR_HANDOFF.md",
+    "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+  ],
+  "observed_at": "2026-08-28T21:14:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "handoff operational_state=REQUIRED_RESOLUTION_EXECUTION and claim_state=AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM; worker is AVAILABLE",
+    "archive_ready": "worker fragment archive_eligible=false",
+    "unassigned_work": "g18-resident-request-consumption-resolution-worker + SHWP-DURABLE-RUNTIME-ACTIVATION/G18 machine owner own continuation",
+    "chat_owned_counts": "Blocker Resolution handoff classifies current resolution execution as WORKER-OWNED / DO NOT COMPETE; manual_execution_allowed=false",
+    "canonical_owner_installed": "resolution worker, process adapter, resident request, v13 bootstrap path and durable handoff are implemented/validated/merged",
+    "thread_required": "Blocker Resolution handoff states no chat history is required; independent task-control continuation is durable",
+    "blocker_count": "admissible_existence.blockers contains exactly G18_RESIDENT_REQUEST_CONSUMPTION_NOT_YET_OBSERVED",
+    "evidence_complete": "completion terminal evidence g18-resident-request-resolution.latest.json COMPLETED is not observed",
+    "activated": "activation_proof_ref=null; G18 runtime activation and task-capable proof remain unobserved",
+    "propagated": "runtime_activation_claimed=false and g18_terminalization_claimed=false; no downstream activation is claimed"
+  },
+  "authority_effect": "NONE"
+}
