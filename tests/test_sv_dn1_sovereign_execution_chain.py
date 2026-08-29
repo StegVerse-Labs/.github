@@ -65,6 +65,8 @@ class SvDn1SovereignExecutionChainTests(unittest.TestCase):
             "OPENAI_API_KEY": "secret",
             "STEGVERSE_SDK_SOURCE_ROOT": "/srv/sdk",
             "STEGVERSE_STEGCORE_SOURCE_ROOT": "/srv/stegcore",
+            "STEGVERSE_SOURCE_MATERIALIZATION_ROOT": "/srv/source",
+            "STEGVERSE_FORMALISM_TVC_SPOOL_ROOT": "/srv/tvc-spool",
         }
         clean = chain.clean_exec_env(env)
         self.assertNotIn("GITHUB_TOKEN", clean)
@@ -72,6 +74,8 @@ class SvDn1SovereignExecutionChainTests(unittest.TestCase):
         self.assertNotIn("OPENAI_API_KEY", clean)
         self.assertEqual(clean["STEGVERSE_SDK_SOURCE_ROOT"], "/srv/sdk")
         self.assertEqual(clean["STEGVERSE_STEGCORE_SOURCE_ROOT"], "/srv/stegcore")
+        self.assertEqual(clean["STEGVERSE_SOURCE_MATERIALIZATION_ROOT"], "/srv/source")
+        self.assertEqual(clean["STEGVERSE_FORMALISM_TVC_SPOOL_ROOT"], "/srv/tvc-spool")
         self.assertEqual(clean["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"], "TV/TVC")
 
     def test_receipt_validation_rejects_mismatch(self) -> None:
@@ -147,10 +151,20 @@ class SvDn1SovereignExecutionChainTests(unittest.TestCase):
                 # only that read with a real tiny receipt.
                 source_receipt = base / "SV-DN1-SOURCE-MATERIALIZATION-001.json"
                 write_json(source_receipt, {"source_root": str(base / "materialized-demo")})
-                original_validate = chain.validate_durable_receipt
+                prep_receipt = base / "SV-DN1-PRODUCTION-SOURCE-PREP-001.json"
+                write_json(prep_receipt, {
+                    "source_root_env": {
+                        "STEGVERSE_SDK_SOURCE_ROOT": str(base / "sdk"),
+                        "STEGVERSE_STEGCORE_SOURCE_ROOT": str(base / "stegcore"),
+                        "STEGVERSE_CORE_LITE_SOURCE_ROOT": str(base / "core-lite"),
+                        "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": str(base / "master-records"),
+                    }
+                })
                 def receipt_with_source(task_id, values):
-                    if task_id == chain.TASKS[0]:
+                    if task_id == "SV-DN1-SOURCE-MATERIALIZATION-001":
                         return {"task_id": task_id, "receipt_path": str(source_receipt)}
+                    if task_id == "SV-DN1-PRODUCTION-SOURCE-PREP-001":
+                        return {"task_id": task_id, "receipt_path": str(prep_receipt)}
                     return {"task_id": task_id, "receipt_path": str(base / f"{task_id}.json")}
                 with mock.patch.object(chain, "validate_durable_receipt", side_effect=receipt_with_source):
                     result = chain.execute_chain(source, runtime, runner=runner, env={"HOME": str(base)})
