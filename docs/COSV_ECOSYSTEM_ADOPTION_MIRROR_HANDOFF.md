@@ -39,7 +39,7 @@ The 189 unaudited repositories are not exemptions. They are classified `NO_REPOS
 
 ## Current .github boundary
 
-`.github` remains `VECTOR_REQUIRED`. Thirty-one active vectors are indexed in the current formalism source-discovery candidate, but additional active worker and organization tasks still lack canonical vector projection.
+`.github` remains `VECTOR_REQUIRED`. Thirty-two active vectors are indexed in the current admissible source-generation candidate, but additional active worker and organization tasks still lack canonical vector projection.
 
 Existing indexed examples remain unchanged:
 
@@ -102,13 +102,13 @@ Authority effect: NONE.
 
 Machine-readable snapshot: `control/cosv-global-registry-coverage.json`.
 
-- 54 unique worker task IDs across the global worker registry plus fragments at live main `f258e3e7d6dca999b1a24095495b344e73401742`.
-- 31 canonically indexed task IDs in the current formalism source-discovery candidate.
+- 54 unique worker task IDs across the global worker registry plus fragments at live main `2d3a3d27eef1c0afaa9b1a2a4b5a2ab14b3384a1`.
+- 32 canonically indexed task IDs in the current admissible source-generation candidate.
 - 6 completed-only historical unvectorized task IDs.
 - 1 superseded historical unvectorized task ID.
-- 16 active worker task IDs lack canonical COSV coverage after the formalism source-discovery projection.
+- 15 active worker task IDs lack canonical COSV coverage after the admissible source-generation projection.
 - 14 organization-registry task IDs lack canonical COSV coverage.
-- Total active .github task IDs lacking canonical COSV coverage after this candidate: 30.
+- Total active .github task IDs lacking canonical COSV coverage after this candidate: 29.
 - The orphan-recovery aggregate/fragment contradiction is reconciled to terminal COMPLETED from the durable G22 PASS receipt; no vector was emitted for this completed historical task.
 
 No new vector digits were invented during this audit.
@@ -586,3 +586,27 @@ The generalized owner-source mutation executor remains a separate unresolved lan
 No network checkout, GitHub credential authority, source mutation authority, AE/StegCore mutation authority, provider authority, wallet authority, or HeartBeat execution authority is created.
 
 If validated and merged, local .github coverage becomes 31 indexed vectors with 16 active worker gaps + 14 organization gaps = 30 active unvectorized tasks.
+
+
+## Admissible source-generation capability vector — current-main candidate
+
+```text
+SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001
+task.v1 [L R U I V G O C M T B E A P] = 50000000103000
+```
+
+The source implementation claim is already `COMPLETE_VALIDATED_RELEASED_SOURCE_SUPPORT`. Canonical StegCore has advanced `stegverse:capability:formalism-source-generation:v1` to `ADMISSIBLE`, not `ACTIVATED`.
+
+Registry, executable handoff, and task-state agree on exactly three unresolved activation conditions:
+
+```text
+SOVEREIGN_LOCAL_MODEL_LIVE_ACTIVATION_NOT_YET_OBSERVED
+FORMALISM_SOURCE_GENERATION_INTEGRATION_PROOF_NOT_YET_OBSERVED
+RESIDENT_SOURCE_GENERATION_AND_RECURSIVE_REOBSERVATION_NOT_YET_PROVEN
+```
+
+The vector therefore preserves incomplete evidence/activation/propagation. It does not infer activation from source availability, worker registration, HeartBeat state, model presence, or the StegCore ADMISSIBLE lifecycle phase.
+
+The binder may validate a bounded generated result and emit an exact owner-source packet only after explicit activation evidence exists. Repository transport/owner mutation remains TV/TVC-governed and separate. No admissibility authority, credential authority, repository transport authority, merge/release authority, provider authority, wallet authority, or HeartBeat execution authority is created.
+
+If validated and merged, local .github coverage becomes 32 indexed vectors with 15 active worker gaps + 14 organization gaps = 29 active unvectorized tasks.
