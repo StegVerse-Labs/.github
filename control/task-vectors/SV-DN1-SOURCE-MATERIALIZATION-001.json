@@ -1,0 +1,44 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SV-DN1-SOURCE-MATERIALIZATION-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/sv-dn1-source-materialization-001.json",
+    "handoffs/SV-DN1-SOURCE-MATERIALIZATION-001.json",
+    "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
+    "StegVerse-org/stegverse-demo-suite:config/sv_dn1_runtime_source_manifest.json",
+    "StegVerse-Labs/.github#337"
+  ],
+  "observed_at": "2026-08-28T21:42:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "executable handoff state HANDOFF_READY_MACHINE_OWNED; claim_state MACHINE_CLAIM_ON_EXECUTION; dedicated worker AVAILABLE",
+    "archive_ready": "worker fragment archive_eligible=false",
+    "unassigned_work": "sv-dn1-source-materialization-worker is the durable continuation owner",
+    "chat_owned_counts": "manual_execution_allowed=false; manual role evidence review only",
+    "canonical_owner_installed": "source-materialization worker/adapter/handoff are merged and demo-suite runtime source manifest is canonical",
+    "thread_required": "machine-owned handoff and demo-suite canonical continuation are independently recoverable; no chat execution ownership",
+    "blocker_count": "admissible_existence.blockers contains exactly SOVEREIGN_SOURCE_MATERIALIZATION_RECEIPT_NOT_YET_OBSERVED",
+    "evidence_complete": "result receipt and post-write materialization validation are not observed",
+    "activated": "activation_proof_ref=null; sovereign source materialization receipt remains unobserved",
+    "propagated": "resident observer prerequisite is not released until source materialization receipt exists"
+  },
+  "authority_effect": "NONE"
+}
