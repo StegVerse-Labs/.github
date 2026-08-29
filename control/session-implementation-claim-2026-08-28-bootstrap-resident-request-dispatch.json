@@ -34,5 +34,23 @@
   "second_machine_required": false,
   "authority_effect": "NONE_SOURCE_ONLY",
   "activation_effect": false,
-  "state": "ACTIVE_SOURCE_REPAIR"
+  "state": "RELEASED_SOURCE_REPAIR",
+  "released_at": "2026-08-28T21:17:00-05:00",
+  "pull_request": 373,
+  "merge_commit": "cb6c5a4ee3a809936e34afc67ef98bf204287b1e",
+  "validation": {
+    "exact_head": "c810f49f006e18eb7182e5ae2473af7a3f7b3bb5",
+    "organization_control_plane": {
+      "run": 33228499508,
+      "job": 99036791405,
+      "result": "SUCCESS"
+    },
+    "heartbeat_worker_project": {
+      "run": 33228499527,
+      "job": 99036791752,
+      "result": "SUCCESS"
+    }
+  },
+  "runtime_execution_observed": false,
+  "resident_dispatch_receipt_observed": false
 }
