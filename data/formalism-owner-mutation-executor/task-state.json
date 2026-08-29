@@ -47,12 +47,18 @@
   "integration": {
     "implementation_admission_owner_work": "BOUND_BY_CONTRACT",
     "tvc_repository_transport": "BOUND_BY_CONTRACT_PENDING_TVC_CANONICAL_VALIDATION",
-    "resident_source_generation_executor": "NOT_BOUND",
-    "owner_pr_validation_reobservation": "NOT_PROVEN"
+    "resident_source_generation_executor": "BOUND_SOURCE_INSTALLED_ACTIVATION_PENDING",
+    "owner_pr_validation_reobservation": "NOT_PROVEN",
+    "source_generation_binder": "BOUND_SOURCE_INSTALLED_ACTIVATION_PENDING",
+    "source_generation_phase": "ADMISSIBLE",
+    "source_generation_activation_proof_observed": false,
+    "resident_source_generation_packet_observed": false,
+    "binder_cosv_ref": "control/task-vectors/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
+    "executor_cosv_ref": "control/task-vectors/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json"
   },
   "remaining_deficiencies": [
     "TVC_BROKER_LOCAL_PASS_NOT_OBSERVED",
-    "RESIDENT_SOURCE_GENERATION_EXECUTOR_NOT_BOUND",
+    "RESIDENT_SOURCE_GENERATION_ACTIVATION_AND_PACKET_NOT_OBSERVED",
     "GENERALIZED_CHAT_FREE_OWNER_MUTATION_CYCLE_NOT_OBSERVED",
     "FULL_RECURSIVE_REOBSERVATION_NOT_OBSERVED"
   ],
