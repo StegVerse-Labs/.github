@@ -66,10 +66,19 @@ class FormalismSourceDiscoveryCOSVTests(unittest.TestCase):
         self.assertEqual(self.task["source_state_vector_ref"], VECTOR_REF)
         self.assertEqual(self.handoff["source_state_vector_ref"], VECTOR_REF)
         self.assertNotIn(TASK_ID, self.coverage["active_worker_task_ids_missing_canonical_cosv"])
-        self.assertEqual(index["coverage"]["indexed_vectorized_tasks"], 31)
-        self.assertEqual(self.coverage["worker_registry_summary"]["canonically_indexed_task_ids"], 31)
-        self.assertEqual(self.coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"], 16)
-        self.assertEqual(self.coverage["total_active_unvectorized_unique_task_ids"], 30)
+        self.assertEqual(index["coverage"]["indexed_vectorized_tasks"], len(index["tasks"]))
+        self.assertEqual(
+            self.coverage["worker_registry_summary"]["canonically_indexed_task_ids"],
+            len(index["tasks"]),
+        )
+        self.assertGreaterEqual(len(index["tasks"]), 31)
+        worker_gap = self.coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"]
+        self.assertEqual(worker_gap, len(self.coverage["active_worker_task_ids_missing_canonical_cosv"]))
+        org_gap = self.coverage["organization_registry_summary"]["active_unvectorized_task_ids"]
+        self.assertEqual(
+            self.coverage["total_active_unvectorized_unique_task_ids"],
+            worker_gap + org_gap,
+        )
 
 
 if __name__ == "__main__":
