@@ -78,8 +78,8 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
                 receipt_path.write_text(json.dumps({
                     "schema": "stegverse.resident-request-dispatch/v1",
                     "state": "DISPATCH_COMPLETE",
-                    "consumer_count": 6,
-                    "consumers_visited": 6,
+                    "consumer_count": 7,
+                    "consumers_visited": 7,
                     "request_failures": ["g18"],
                     "request_failure_blocks_later_requests": False,
                     "credential_authority": "TV/TVC",
