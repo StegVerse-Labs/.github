@@ -1,50 +1,46 @@
 {
   "schema": "stegverse.worker-registry-fragment/v0.1",
-  "fragment_id": "SV-DN1-SDK-FIRST-ROUND-001",
+  "fragment_id": "SV-DN1-PRODUCTION-SOURCE-PREP-001",
   "tasks": [
     {
-      "task_id": "SV-DN1-SDK-FIRST-ROUND-001",
-      "goal_id": "SV-DN1-SDK-GOVERNED-FIRST-ROUND-001",
+      "task_id": "SV-DN1-PRODUCTION-SOURCE-PREP-001",
+      "goal_id": "SV-DN1-PRODUCTION-SOURCE-PREPARATION-001",
       "state": "HANDOFF_READY",
       "claim_id": null,
       "archive_eligible": false,
       "executor_binding": "AUTHORIZED",
-      "authorized_policy_version": "sv-dn1-sdk-first-round-v1",
-      "handoff_ref": "handoffs/SV-DN1-SDK-FIRST-ROUND-001.json",
+      "authorized_policy_version": "sv-dn1-production-source-prep-v1",
+      "handoff_ref": "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json",
       "block_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
-      "cost_basis_ref": "cost-basis/worker-runtime/sv-dn1-sdk-first-round.json",
+      "cost_basis_ref": "cost-basis/worker-runtime/sv-dn1-production-source-prep.json",
       "evidence_refs": [
-        "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md",
-        "handoffs/SV-DN1-SDK-FIRST-ROUND-001.json",
-        "workers/sv_dn1_sdk_first_round_worker.py",
-        "control/process-worker-adapters.d/sv-dn1-sdk-first-round-001.json",
-        "cost-basis/worker-runtime/sv-dn1-sdk-first-round.json",
-        "StegVerse-org/stegverse-demo-suite:scripts/finalize_sv_dn1_first_round.py",
-        "StegVerse-org/StegVerse-SDK:stegverse/governance_ingress_runtime.py",
-        "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md"
+        "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md",
+        "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json",
+        "workers/sv_dn1_production_source_prep_worker.py",
+        "control/process-worker-adapters.d/sv-dn1-production-source-prep-001.json",
+        "StegVerse-Labs/TVC#92"
       ],
       "admissible_existence": {
-        "capability_id": "stegverse:capability:sv-dn1-sdk-governed-first-round:v1",
+        "capability_id": "stegverse:capability:sv-dn1-production-source-preparation:v1",
         "capability_version": "1.0.0",
         "phase": "ADMISSIBLE",
         "standing_evidence_refs": [
-          "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md"
+          "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md"
         ],
         "admissibility_evidence_refs": [
-          "handoffs/SV-DN1-SDK-FIRST-ROUND-001.json"
+          "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json"
         ],
         "integration_evidence_refs": [
-          "workers/sv_dn1_sdk_first_round_worker.py",
-          "control/process-worker-adapters.d/sv-dn1-sdk-first-round-001.json",
-          "control/worker-registry.d/sv-dn1-sdk-first-round-001.json"
+          "workers/sv_dn1_production_source_prep_worker.py",
+          "control/process-worker-adapters.d/sv-dn1-production-source-prep-001.json",
+          "control/worker-registry.d/sv-dn1-production-source-prep-001.json"
         ],
         "activation_proof_ref": null,
         "blockers": [
-          "SV_DN1_ROUTE_SPECIFIC_INTR_RECEIPT_NOT_YET_OBSERVED",
-          "SV_DN1_PRODUCTION_SOURCE_PREP_RECEIPT_NOT_YET_OBSERVED",
-          "SV_DN1_FIRST_PRODUCTION_ROUND_ANALYSIS_RECEIPT_NOT_YET_OBSERVED"
+          "TVC_REPOSITORY_BROKER_PR_92_GOVERNED_VALIDATION_AND_ADMISSION_PENDING",
+          "PRIVATE_CANONICAL_SOURCE_MATERIALIZATION_RECEIPTS_NOT_YET_OBSERVED"
         ],
-        "continuation_owner": "sv-dn1-sdk-first-round-worker",
+        "continuation_owner": "sv-dn1-production-source-prep-worker",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
@@ -52,7 +48,7 @@
         "target_phase": "ACTIVATED"
       },
       "admission": {
-        "authority_source": "handoffs/SV-DN1-SDK-FIRST-ROUND-001.json#authority",
+        "authority_source": "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json#authority",
         "authority_domain": "INDEPENDENT_TASK_CONTROL",
         "heartbeat_reference_only": true,
         "heartbeat_grants_execution_authority": false,
@@ -68,16 +64,16 @@
   ],
   "workers": [
     {
-      "worker_id": "sv-dn1-sdk-first-round-worker",
+      "worker_id": "sv-dn1-production-source-prep-worker",
       "status": "AVAILABLE",
       "executor_type": "repository_worker",
-      "adapter_ref": "process:sv-dn1-sdk-first-round-v1",
-      "authority_source": "handoffs/SV-DN1-SDK-FIRST-ROUND-001.json#authority",
+      "adapter_ref": "process:sv-dn1-production-source-prep-v1",
+      "authority_source": "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json#authority",
       "capabilities": [
         "bounded_process_execution",
-        "canonical_sdk_governed_execution",
-        "master_records_replay_reconstruction_validation",
-        "first_round_analysis",
+        "public_source_acquisition",
+        "tvc_repository_spool_request_emission",
+        "exact_source_materialization",
         "evidence_class_preservation"
       ],
       "capability_profile_ref": "control/worker-capability-profiles.json#public-research-worker-v1",

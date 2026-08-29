@@ -22,6 +22,7 @@ TASKS = (
     "SV-DN1-SOURCE-MATERIALIZATION-001",
     "SV-DN1-RESIDENT-OBSERVER-001",
     "SV-DN1-INTR-RUNTIME-001",
+    "SV-DN1-PRODUCTION-SOURCE-PREP-001",
     "SV-DN1-SDK-FIRST-ROUND-001",
 )
 
@@ -67,6 +68,8 @@ NONSECRET_ENV = (
     "STEGVERSE_SV_DN1_MATERIALIZED_SOURCE_ROOT",
     "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT",
     "STEGVERSE_SV_DN1_INTR_STATE_ROOT",
+    "STEGVERSE_SOURCE_MATERIALIZATION_ROOT",
+    "STEGVERSE_FORMALISM_TVC_SPOOL_ROOT",
     "STEGVERSE_SDK_SOURCE_ROOT",
     "STEGVERSE_STEGCORE_SOURCE_ROOT",
     "STEGVERSE_CORE_LITE_SOURCE_ROOT",
@@ -136,6 +139,7 @@ def _receipt_specs(values: Mapping[str, str]) -> dict[str, tuple[Path, dict[str,
         Path.home() / ".stegverse" / "state" / "sv-dn1-intr-runtime",
         values,
     )
+    source_prep_root = Path.home() / ".stegverse" / "state" / "sv-dn1-production-source-prep"
     sdk_root = Path.home() / ".stegverse" / "state" / "sv-dn1-sdk-first-round"
     return {
         "SV-DN1-SOURCE-MATERIALIZATION-001": (
@@ -167,6 +171,18 @@ def _receipt_specs(values: Mapping[str, str]) -> dict[str, tuple[Path, dict[str,
                 "destination_validation": "PASS",
                 "lineage_verified": True,
                 "authority_effect": "NONE",
+            },
+        ),
+        "SV-DN1-PRODUCTION-SOURCE-PREP-001": (
+            source_prep_root / "receipts" / "latest.json",
+            {
+                "state": "COMPLETE",
+                "transition_id": "SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE",
+                "public_source_roots_verified": True,
+                "private_source_roots_verified": True,
+                "runtime_anchor_blobs_verified": True,
+                "github_token_used": False,
+                "repository_writeback_performed": False,
             },
         ),
         "SV-DN1-SDK-FIRST-ROUND-001": (
@@ -387,6 +403,21 @@ def execute_chain(
             if not materialized:
                 raise RuntimeError("source materialization receipt did not expose source_root")
             child_env["STEGVERSE_SV_DN1_SOURCE_ROOT"] = materialized
+
+        if task_id == "SV-DN1-PRODUCTION-SOURCE-PREP-001":
+            source_prep_receipt = _load(Path(validated["receipt_path"]))
+            env_map = source_prep_receipt.get("source_root_env")
+            if not isinstance(env_map, dict):
+                raise RuntimeError("production source preparation receipt did not expose source_root_env")
+            required = {
+                "STEGVERSE_SDK_SOURCE_ROOT",
+                "STEGVERSE_STEGCORE_SOURCE_ROOT",
+                "STEGVERSE_CORE_LITE_SOURCE_ROOT",
+                "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+            }
+            if set(env_map) != required or not all(isinstance(env_map[k], str) and env_map[k] for k in required):
+                raise RuntimeError("production source preparation receipt source_root_env is incomplete")
+            child_env.update({k: env_map[k] for k in required})
 
     receipt = {
         "schema": "stegverse.sv-dn1.sovereign-execution-chain/v1",

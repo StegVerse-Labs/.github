@@ -1,0 +1,45 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SV-DN1-PRODUCTION-SOURCE-PREP-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:sv-dn1-production-source-prep-v1",
+      "authority_ref": "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "public_source_acquisition",
+        "tvc_repository_spool_request_emission",
+        "exact_source_materialization",
+        "evidence_class_preservation"
+      ],
+      "command": [
+        "python",
+        "workers/sv_dn1_production_source_prep_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SOURCE_MATERIALIZATION_ROOT",
+        "STEGVERSE_FORMALISM_TVC_SPOOL_ROOT",
+        "HOME",
+        "PATH",
+        "SSL_CERT_FILE",
+        "SSL_CERT_DIR"
+      ],
+      "bound_state_root": "~/.stegverse/state/sv-dn1-production-source-prep",
+      "bound_state_allowed_paths": [
+        "observed/**",
+        "requests/**",
+        "receipts/**"
+      ],
+      "timeout_seconds": 420,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Anonymous public source acquisition only; consumer credentials forbidden.",
+        "Private repository source is requested only through the existing TV/TVC repository-operation spool.",
+        "Stops HANDOFF_READY until sanitized TVC materialization receipts and exact local roots exist.",
+        "No repository writeback, SDK admission, governance, publication or certification authority."
+      ]
+    }
+  ]
+}

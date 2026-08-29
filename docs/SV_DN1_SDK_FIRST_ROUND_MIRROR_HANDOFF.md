@@ -50,6 +50,9 @@ SV-DN1-RESIDENT-OBSERVER-001
 
 SV-DN1-INTR-RUNTIME-001
   -> COMPLETE / SV_DN1_ROUTE_SPECIFIC_INTR_COMPLETE
+
+SV-DN1-PRODUCTION-SOURCE-PREP-001
+  -> COMPLETE / SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE
 ```
 
 Required local evidence roots:
@@ -77,7 +80,7 @@ STEGVERSE_CORE_LITE_SOURCE_ROOT
 STEGVERSE_MASTER_RECORDS_SOURCE_ROOT
 ```
 
-These are non-secret local locators, not credentials.
+These are non-secret local locators, not credentials. They are now supplied by the dedicated production-source-preparation predecessor after anonymous public materialization plus sanitized TV/TVC private-source receipts.
 
 Current production anchor blobs checked before execution:
 
@@ -228,6 +231,7 @@ After completion, the remaining machine lane is publication of the generated aut
 source materialization worker: MERGED / runtime completion NOT OBSERVED
 resident observer worker: MERGED / runtime completion NOT OBSERVED
 route-specific InTr worker: MERGED / runtime completion NOT OBSERVED
+production source prep worker: IMPLEMENTING / runtime completion NOT OBSERVED
 SDK bridge/result binder/finalizer source: MERGED
 SDK governed first-round worker: MERGED
 first authentic round: NOT ANALYZED
@@ -246,7 +250,7 @@ merge_commit: a45095d2c2099b9318915410e78a4615b4dc68e6
 chain validation runs: 33138330575 PASS / 33138330592 PASS
 ```
 
-The first-round worker now has a complete machine-executable predecessor chain and resident request bridge. Its explicit dependency is `SV-DN1-INTR-RUNTIME-001=COMPLETED` with terminal transition `SV_DN1_ROUTE_SPECIFIC_INTR_COMPLETE`, independent fresh fence >22, and HeartBeat reference-only.
+The first-round worker now has a complete machine-executable predecessor chain and resident request bridge. Its execution dependencies are now both `SV-DN1-INTR-RUNTIME-001=COMPLETED` and `SV-DN1-PRODUCTION-SOURCE-PREP-001=COMPLETED`. The latter guarantees exact SDK/StegCore/Core-Lite/Master Records roots before canonical production execution. Independent fresh fence >22 and HeartBeat reference-only semantics remain unchanged.
 
 Authentic SDK execution, Master Records custody, and first-round analysis remain NOT OBSERVED.
 

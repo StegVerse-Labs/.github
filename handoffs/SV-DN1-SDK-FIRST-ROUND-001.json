@@ -58,7 +58,9 @@
       "StegVerse-org/stegverse-demo-suite:scripts/bind_sv_dn1_sdk_live_result.py",
       "StegVerse-org/stegverse-demo-suite:scripts/finalize_sv_dn1_first_round.py",
       "StegVerse-org/StegVerse-SDK:stegverse/governance_ingress_runtime.py",
-      "StegVerse-org/StegVerse-SDK:stegverse/sovereign_validation_runtime.py"
+      "StegVerse-org/StegVerse-SDK:stegverse/sovereign_validation_runtime.py",
+      "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json",
+      "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md"
     ],
     "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
     "canonical_lineage_key": "sv-dn1:sdk-governed-first-round",
@@ -74,7 +76,8 @@
     "derivation_depth": 2,
     "source_handoff_ref": "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md",
     "dependencies": [
-      "SV-DN1-INTR-RUNTIME-001"
+      "SV-DN1-INTR-RUNTIME-001",
+      "SV-DN1-PRODUCTION-SOURCE-PREP-001"
     ],
     "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
     "upstream_runtime_dependency": {
@@ -191,7 +194,7 @@
     "repository_persistence_requires_separate_admission": true
   },
   "completion": {
-    "next_authorized_action": "After the first production round is analyzed and local authentic dashboard artifacts exist, submit those exact static artifacts to the separately governed public dashboard publication lane; Pages enablement remains a repository administration prerequisite.",
+    "next_authorized_action": "After authentic InTr and production-source preparation are both COMPLETED, execute the canonical SDK first round; after analysis, submit exact static artifacts to the separately governed public dashboard publication lane.",
     "terminal_when": [
       "SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED",
       "candidate_readiness=READY_FOR_SDK_0B",
@@ -224,7 +227,7 @@
     "activation_proof_ref": null,
     "blockers": [
       "SV_DN1_ROUTE_SPECIFIC_INTR_RECEIPT_NOT_YET_OBSERVED",
-      "EXACT_LOCAL_SDK_STEGCORE_CORE_LITE_MASTER_RECORDS_ROOTS_NOT_YET_OBSERVED",
+      "SV_DN1_PRODUCTION_SOURCE_PREP_RECEIPT_NOT_YET_OBSERVED",
       "SV_DN1_FIRST_PRODUCTION_ROUND_ANALYSIS_RECEIPT_NOT_YET_OBSERVED"
     ],
     "continuation_owner": "sv-dn1-sdk-first-round-worker",

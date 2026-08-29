@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "sv_dn1_production_source_prep",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 8,
+    "expected_idle_beats": 2,
+    "expiry_candidate_beats": 64,
+    "confidence": "LOW_UNTIL_FIRST_SOVEREIGN_RUN"
+  },
+  "cost_estimate": {
+    "compute_units": 4,
+    "token_units": 0,
+    "storage_bytes": 134217728,
+    "network_bytes": 134217728,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 3
+  },
+  "evidence_refs": [
+    "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md",
+    "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json",
+    "workers/sv_dn1_production_source_prep_worker.py"
+  ],
+  "notes": [
+    "Public SDK/Core-Lite source is anonymous and bounded.",
+    "Private source requests are non-secret spool intents; TVC retains credential authority.",
+    "Task may remain HANDOFF_READY while TVC broker admission/materialization is pending.",
+    "External cost is zero."
+  ]
+}
