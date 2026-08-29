@@ -271,11 +271,21 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md"
+    },
+    {
+      "task_id": "SHWP-ERL-UAP-MEDIA-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/erl-uap-media-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-ERL-UAP-MEDIA-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/UAP_MEDIA_RESEARCH_MIRROR_HANDOFF.md"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 27,
-    "local_cosv_record_tasks": 27,
+    "indexed_vectorized_tasks": 28,
+    "local_cosv_record_tasks": 28,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
