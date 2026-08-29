@@ -1,0 +1,43 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/coherent-signal-formal-candidate-001.json",
+    "handoffs/SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001.json",
+    "docs/COHERENT_SIGNAL_SPACE_TRANSITION_MANIFOLD_MIRROR_HANDOFF.md",
+    "heartbeat_runtime/signal_space.py"
+  ],
+  "observed_at": "2026-08-28T23:12:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "COHERENT_SIGNAL_SPACE_TRANSITION_MANIFOLD_MIRROR_HANDOFF.md classifies SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001 as WORKER-OWNED / DO NOT COMPETE; local task state HANDOFF_READY; dedicated worker AVAILABLE",
+    "archive_ready": "worker fragment archive_eligible=false",
+    "unassigned_work": "coherent-signal-formal-candidate-worker is AVAILABLE and canonical worker lane owns execution",
+    "chat_owned_counts": "mirror handoff states manual_execution_allowed=false; mathematical candidate content and worker execution are excluded from session/manual ownership",
+    "canonical_owner_installed": "signal-space implementation, worker, process adapter, executable handoff, and collision partition are installed",
+    "thread_required": "remaining candidate execution is worker-owned and canonical handoff is independently recoverable",
+    "blocker_count": "admissible_existence.blockers contains exactly FORMAL_MATHEMATICAL_CANDIDATE_NOT_YET_EMITTED",
+    "evidence_complete": "formal mathematical candidate receipt has not been emitted",
+    "activated": "activation_proof_ref=null; target phase remains ADMISSIBLE and candidate evidence is not yet emitted",
+    "propagated": "formal candidate has not been reviewed/accepted into Admissible-Existence formal authority"
+  },
+  "authority_effect": "NONE"
+}
