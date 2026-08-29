@@ -17,6 +17,7 @@ FORBIDDEN_ENV = (
     "COINBASE_PRIVATE_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "AWS_SECRET_ACCESS_KEY",
 )
 CREDENTIAL_TERMS = ("password", "passwd", "secret", "token", "api_key", "apikey", "private_key", "cookie", "credential", "skap")
+CREDENTIAL_SENTINEL_KEYS = {"credential_material_present"}
 ALLOWED_KEYS = {
     "schema", "task_id", "assembly_id", "cvk_root", "kv_root", "conformance_proof_path",
     "readback_proof_path", "required_after", "provider_operation_authorized",
@@ -56,7 +57,7 @@ def _credential_like_keys(value: Any, prefix: str = "") -> list[str]:
         for key, child in value.items():
             normalized = str(key).lower().replace("-", "_")
             current = f"{prefix}.{key}" if prefix else str(key)
-            if any(term in normalized for term in CREDENTIAL_TERMS):
+            if normalized not in CREDENTIAL_SENTINEL_KEYS and any(term in normalized for term in CREDENTIAL_TERMS):
                 found.append(current)
             found.extend(_credential_like_keys(child, current))
     elif isinstance(value, list):
