@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-28T23:38:00-05:00
+Updated: 2026-08-29T02:37:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -39,7 +39,7 @@ The 189 unaudited repositories are not exemptions. They are classified `NO_REPOS
 
 ## Current .github boundary
 
-`.github` remains `VECTOR_REQUIRED`. Nineteen active vectors are indexed in the current G18 resolution integration candidate, but the global worker registry and organization task registry contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
+`.github` remains `VECTOR_REQUIRED`. Thirty active vectors are indexed in the current KV connection-observer candidate, but the global worker registry and organization task registry still contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
 
 Existing indexed examples remain unchanged:
 
@@ -102,13 +102,13 @@ Authority effect: NONE.
 
 Machine-readable snapshot: `control/cosv-global-registry-coverage.json`.
 
-- 54 unique worker task IDs across the global worker registry plus fragments at live main `a4a6c17db1a85c09bf3978dc7dbc6752223c0034`.
-- 19 canonically indexed task IDs in the current G18 resolution candidate.
+- 54 unique worker task IDs across the global worker registry plus fragments at live main `3c2c8acad94f1c93a5225fe58a9040e39c5801cf`.
+- 30 canonically indexed task IDs in the current KV connection-observer candidate.
 - 6 completed-only historical unvectorized task IDs.
 - 1 superseded historical unvectorized task ID.
-- 28 active worker task IDs lack canonical COSV coverage after the G18 resolution projection.
+- 17 active worker task IDs lack canonical COSV coverage after the KV connection-observer projection.
 - 14 organization-registry task IDs lack canonical COSV coverage.
-- Total active .github task IDs lacking canonical COSV coverage after this candidate: 42.
+- Total active .github task IDs lacking canonical COSV coverage after this candidate: 31.
 - The orphan-recovery aggregate/fragment contradiction is reconciled to terminal COMPLETED from the durable G22 PASS receipt; no vector was emitted for this completed historical task.
 
 No new vector digits were invented during this audit.
@@ -524,3 +524,36 @@ The worker may acquire only allowlisted credential-free public HTTPS sources int
 Empirical UAP research remains incomplete; vectorizing the acquisition worker does not promote any UAP or Bob Lazar claim.
 
 If validated and merged, local .github coverage becomes 28 indexed vectors with 19 active worker gaps + 14 organization gaps = 33 active unvectorized tasks.
+
+
+## KV connection observer vectors — current-main candidate
+
+Canonical owner reconciliation is now merged in `StegVerse-Labs/continuity-vault-kit` as `d0c966d557dc437d1d2e6da5b68e6c31912af501`. That reconciliation corrects stale branch-only headers for the connection assembly, private-KV registry materialization, and monitor-target source lanes after their exact source PRs were already merged and validated.
+
+```text
+KV-CONNECTION-HEALTH-RECONCILER-001
+task.v1 [L R U I V G O C M T B E A P] = 50000000102000
+
+KV-PROVIDER-CHANGE-OBSERVER-001
+task.v1 [L R U I V G O C M T B E A P] = 50000000102000
+```
+
+The connection-health reconciler has exactly two live blockers:
+
+```text
+SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN
+PRIVATE_KV_RUNTIME_BINDINGS_NOT_YET_OBSERVED
+```
+
+The provider-change observer has exactly two live blockers:
+
+```text
+SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN
+LIVE_KV_MONITOR_TARGET_BINDING_NOT_YET_OBSERVED
+```
+
+Both lanes are independently machine-owned, require fresh task-control claims, and are thread-independent. GitHub remains validation-only. TV/TVC remains credential authority. No credential resolution, provider login, owner-account access, provider mutation, connection-verification authority, third-party production runtime, or HeartBeat execution authority is created by either vector.
+
+The continuity-vault-kit source layers are MERGED and VALIDATED, but this does not prove a sovereign resident runtime, private-KV runtime bindings, live monitor-target bindings, provider-change observations, connection-health reconciliation, or downstream repair/reverification.
+
+If validated and merged, local .github coverage becomes 30 indexed vectors with 17 active worker gaps + 14 organization gaps = 31 active unvectorized tasks.
