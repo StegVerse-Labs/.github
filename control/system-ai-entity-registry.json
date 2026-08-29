@@ -1,0 +1,43 @@
+{
+  "schema": "stegverse.system-ai-entity-registry/v0.1",
+  "canonical_owner": "StegVerse-Labs/.github",
+  "entities": [
+    {
+      "schema": "stegverse.system-ai-entity/v0.1",
+      "entity_id": "StegVerse-002",
+      "organization": "StegVerse-002",
+      "runtime_repository": "StegVerse-002/micro-node-runtime",
+      "entity_class": "SOVEREIGN_AI_RUNTIME_ENTITY",
+      "description": "Heartbeat-federated sovereign AI runtime entity whose intelligence capabilities are system participants but do not inherit governance, credential, route, custody, or execution authority from model output or heartbeat presence.",
+      "lifecycle_state": "FEDERATION_REGISTERED",
+      "heartbeat": {
+        "federation_owner": "StegVerse-Labs/.github",
+        "participant_class": "RUNTIME",
+        "required_participant": true,
+        "grants_execution_authority": false,
+        "coverage_receipt_ref": "receipts/repo-heartbeat-federation/SHWP-REPO-HEARTBEAT-FEDERATION-001.json"
+      },
+      "authority": {
+        "credential_authority": "TV/TVC",
+        "policy_authority": "StegVerse-Labs/TV",
+        "route_authority": "StegVerse-Labs/TVC",
+        "model_output_authority": "NONE",
+        "heartbeat_authority_effect": "NONE",
+        "github_token_runtime_authority": "NONE"
+      },
+      "activation": {
+        "federation_membership_established": true,
+        "heartbeat_presence_proven": false,
+        "governed_inference_proven": false,
+        "same_execution_reconstruction_proven": false,
+        "active": false
+      },
+      "evidence_refs": [
+        "control/repo-heartbeat-federation.json",
+        "handoffs/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
+        "StegVerse-002/micro-node-runtime/MICRO_NODE_RUNTIME_MIRROR_HANDOFF.md",
+        "StegVerse-002/micro-node-runtime/docs/SOVEREIGN_LOCAL_MODEL_RUNTIME_MIRROR_HANDOFF.md"
+      ]
+    }
+  ]
+}

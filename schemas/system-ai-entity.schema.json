@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/system-ai-entity.schema.json",
+  "title": "StegVerse System AI Entity",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "entity_id",
+    "organization",
+    "runtime_repository",
+    "entity_class",
+    "lifecycle_state",
+    "heartbeat",
+    "authority",
+    "activation"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.system-ai-entity/v0.1"},
+    "entity_id": {"type": "string", "minLength": 1},
+    "organization": {"type": "string", "minLength": 1},
+    "runtime_repository": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
+    "entity_class": {"const": "SOVEREIGN_AI_RUNTIME_ENTITY"},
+    "description": {"type": "string"},
+    "lifecycle_state": {
+      "enum": [
+        "DECLARED",
+        "FEDERATION_REGISTERED",
+        "HEARTBEAT_PRESENT",
+        "INFERENCE_PROVEN",
+        "SYSTEM_AI_ACTIVE",
+        "DEGRADED",
+        "RETIRED"
+      ]
+    },
+    "heartbeat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "federation_owner",
+        "participant_class",
+        "required_participant",
+        "grants_execution_authority"
+      ],
+      "properties": {
+        "federation_owner": {"const": "StegVerse-Labs/.github"},
+        "participant_class": {"const": "RUNTIME"},
+        "required_participant": {"const": true},
+        "grants_execution_authority": {"const": false},
+        "coverage_receipt_ref": {"type": ["string", "null"]}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "credential_authority",
+        "policy_authority",
+        "route_authority",
+        "model_output_authority",
+        "heartbeat_authority_effect",
+        "github_token_runtime_authority"
+      ],
+      "properties": {
+        "credential_authority": {"const": "TV/TVC"},
+        "policy_authority": {"const": "StegVerse-Labs/TV"},
+        "route_authority": {"const": "StegVerse-Labs/TVC"},
+        "model_output_authority": {"const": "NONE"},
+        "heartbeat_authority_effect": {"const": "NONE"},
+        "github_token_runtime_authority": {"const": "NONE"}
+      }
+    },
+    "activation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "federation_membership_established",
+        "heartbeat_presence_proven",
+        "governed_inference_proven",
+        "same_execution_reconstruction_proven",
+        "active"
+      ],
+      "properties": {
+        "federation_membership_established": {"type": "boolean"},
+        "heartbeat_presence_proven": {"type": "boolean"},
+        "governed_inference_proven": {"type": "boolean"},
+        "same_execution_reconstruction_proven": {"type": "boolean"},
+        "active": {"type": "boolean"}
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"lifecycle_state": {"const": "SYSTEM_AI_ACTIVE"}}},
+      "then": {
+        "properties": {
+          "activation": {
+            "properties": {
+              "federation_membership_established": {"const": true},
+              "heartbeat_presence_proven": {"const": true},
+              "governed_inference_proven": {"const": true},
+              "same_execution_reconstruction_proven": {"const": true},
+              "active": {"const": true}
+            }
+          }
+        }
+      }
+    }
+  ]
+}
