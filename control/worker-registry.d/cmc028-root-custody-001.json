@@ -1,0 +1,85 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "CMC028_LIVE_CUSTODY_RECOVERY_RECEIPT_NOT_YET_OBSERVED"
+      ],
+      "authorized_policy_version": "shwp-cmc028-root-custody-v0.1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "handoffs/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json",
+        "workers/cmc028_root_custody_worker.py",
+        "StegVerse-Labs/TVC/tasks/TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028.json"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": "StegVerse-Labs/TVC:TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028",
+      "goal_id": "TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028",
+      "handoff_ref": "handoffs/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json",
+      "heartbeat_timing": null,
+      "heartbeat_dependency": false,
+      "last_checkpoint_ref": "handoffs/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "StegVerse-Labs/TVC/tasks/TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028.json",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      },
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:certificate-root-custody-evidence:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "StegVerse-Labs/TVC@dd3734084eba4887c0c08e2e47eab3a20565c820",
+          "StegVerse-Labs/TVC/tasks/TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028.json"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json",
+          "workers/cmc028_root_custody_worker.py",
+          "control/worker-registry.d/cmc028-root-custody-001.json",
+          "control/process-worker-adapters.d/cmc028-root-custody-001.json"
+        ],
+        "integration_evidence_refs": [],
+        "activation_proof_ref": null,
+        "blockers": [
+          "LIVE_CMC028_CUSTODY_RECOVERY_EVIDENCE_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "cmc028-root-custody-worker + TV/TVC runtime authority",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:cmc028-root-custody-v1",
+      "authority_source": "handoffs/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json#authority",
+      "capabilities": [
+        "tvc_cmc028_root_custody_evidence"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "cmc028-root-custody-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}
