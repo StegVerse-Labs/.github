@@ -174,3 +174,26 @@ Evidence source:
 Each candidate has completed merge/open-work/source-reference/protection checks. The first candidate is squash-merge divergent by ancestry but all compare-reported changed files are byte-identical to current main; the other three are ahead 0. None is protected. No branch ref deletion has been performed.
 
 This advances Wave-0 classification only. It does not alter G18 runtime authority, active fence18 state, HeartBeat, or any product/runtime claim.
+
+## 2026-08-28 bounded Wave-0 G18 branch classification — batch 3
+
+Issue #165 claim comment: 5460279974.
+
+StegHealth issue #38 and merged PR #46 supplied deterministic evidence for five additional behind-only G18 branches. Current `.github/main` was refreshed after the StegHealth observation; all five remain ahead 0, unprotected, and have zero current exact branch-name source references.
+
+The following refs are now classified as `EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE` while actual ref retirement remains owned by `HYGIENE-BRANCH-REF-RETIREMENT`:
+
+- `fix/g18-resident-request-resolution-worker`
+- `fix/g18-self-bootstrap-no-predeclared-node`
+- `fix/g18-v13-runtime-execution`
+- `fix/g18-v13-sovereign-node-resolution`
+- `fix/hb29-g18-bootstrap-220`
+
+Evidence source:
+- StegVerse-Labs/StegHealth PR #46 merge `4f21a7fa4b0408769fb2bc2ee8f0164f82f64233`
+- exact-head signal validation `33233331274 SUCCESS`
+- `evidence/operations/2026-08-28-g18-safe-delete-observation-batch2.json`
+- `evidence/operations/2026-08-28-g18-safe-delete-classification-batch2.json`
+
+Current `.github/main` recheck shows the five refs behind by 79, 1410, 127, 142, and 951 commits respectively, with `ahead_by=0`. No branch ref mutation has been performed. This advances Wave-0 classification only and does not alter G18 runtime authority, HeartBeat, or sovereign activation state.
+
