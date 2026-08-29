@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SHWP-EVALUATOR-INTR-READ-RUNTIME-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:evaluator-intr-read-runtime-v1",
+      "authority_ref": "handoffs/SHWP-EVALUATOR-INTR-READ-RUNTIME-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "runtime_observation",
+        "universal_intr_adjacent_hop_traversal"
+      ],
+      "command": [
+        "python",
+        "workers/evaluator_intr_read_runtime_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_EVALUATOR_INTR_ROUTE_CONFIG",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/runtime",
+      "bound_state_allowed_paths": [
+        "receipts/sovereign-network/evaluator-intr/**"
+      ],
+      "timeout_seconds": 360,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Launches only the bounded READ_REVIEW listener.",
+        "No hosted/GitHub credential runtime authority.",
+        "Public bind requires explicit local TLS material."
+      ]
+    }
+  ]
+}
