@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-08-28T21:30:00-05:00",
+  "updated_at": "2026-08-29T03:05:00-05:00",
   "state": "BLOCKED_SOVEREIGN_NODE_REQUIRED_NON_HEARTBEAT",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
@@ -143,7 +143,7 @@
     "resident_execution_request_one_shot_per_hash": true,
     "resident_execution_request_grants_authority": false,
     "post_bootstrap_resident_request_dispatcher": "scripts/dispatch_resident_execution_requests.py",
-    "post_bootstrap_dispatch_condition": "ONLY_AFTER_CANONICAL_V13_ACTIVATION_PROOF_ALL_PREDICATES_PASS",
+    "post_bootstrap_dispatch_condition": "AFTER_NATIVE_INSTALLATION_BEFORE_FINAL_ACTIVATION_VERIFICATION",
     "post_bootstrap_dispatch_grants_authority": false,
     "post_bootstrap_dispatch_failure_blocks_later_requests": false
   },
@@ -183,7 +183,7 @@
     "blocker_reason": "NON_HOSTED_NATIVE_RESIDENT_EXECUTION_NOT_OBSERVED",
     "current_receipt_ref": "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "current_registry_state": "BLOCKED / G18 fence18 remains machine-owned",
-    "next_authorized_action": "Continue G18 only through StegVerse-owned/federated sovereign execution. On an eligible non-hosted local surface, the canonical v13 bootstrap now materializes the bounded resident-request dispatcher and invokes it only after the deployment-local activation proof passes every predicate. The dispatcher independently visits Ecosystem Chat, G18, HIL, ARA Graph, and SV-DN1 request consumers so one fail-closed request cannot starve later work. This removes passive filesystem-watcher dependence but does not satisfy G18 until deployment-local runtime/dispatch/consumption evidence exists. Optional third-party fallback methods may not satisfy or replace sovereign activation.",
+    "next_authorized_action": "Continue G18 only through StegVerse-owned/federated sovereign execution. On an eligible non-hosted local surface, the canonical v13 bootstrap materializes and activates the bounded resident runtime, then immediately dispatches resident execution requests before the final activation verifier. Each consumer remains independently fail-closed and non-authorizing. This allows G18/HIL resident execution evidence to contribute to the activation proof instead of being circularly gated behind it. The dispatcher independently visits Ecosystem Chat, G18, HIL, ARA Graph, SV-DN1, and TVC broker validation consumers so one fail-closed request cannot starve later work. This source-order repair does not satisfy G18 until deployment-local runtime/dispatch/consumption evidence exists. Optional third-party fallback methods may not satisfy or replace sovereign activation.",
     "terminal_when": [
       "eligible sovereign node is identified/declared",
       "runtime_materialized=true and native_service_active=true",
