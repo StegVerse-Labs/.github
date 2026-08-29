@@ -5,348 +5,42 @@
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
   "tasks": [
-    {
-      "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
-      "vector": "50000000100000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE"
-    },
-    {
-      "task_id": "COSV-LIVE-PACKET-AUTOMATION-006",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/cosv-live-packet-automation-006.json",
-      "source_state_vector_ref": "control/task-vectors/COSV-LIVE-PACKET-AUTOMATION-006.json",
-      "vector": "50000000100000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE"
-    },
-    {
-      "task_id": "SHWP-TV-TVC-RESIDENT-PROOF-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/tv-tvc-resident-proof-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-TV-TVC-RESIDENT-PROOF-001.json",
-      "vector": "10100000111001",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_source_state_vector_ref": "StegVerse-Labs/TVC/tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json#machine_readable_state.cosv"
-    },
-    {
-      "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
-      "vector": "60000000101000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE"
-    },
-    {
-      "task_id": "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/tvc-repository-broker-validation-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
-      "vector": "50000000101000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/TVC#92"
-    },
-    {
-      "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.json",
-      "source_state_vector_ref": "control/task-vectors/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
-      "vector": "50000000100000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/Site#24"
-    },
-    {
-      "task_id": "SDK-MCP-CANONICAL-VALIDATION-009",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/sdk-mcp-canonical-validation-009.json",
-      "source_state_vector_ref": "control/task-vectors/SDK-MCP-CANONICAL-VALIDATION-009.json",
-      "vector": "50000000101000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json"
-    },
-    {
-      "task_id": "SHWP-REPO-HEARTBEAT-FEDERATION-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/repo-heartbeat-federation-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-REPO-HEARTBEAT-FEDERATION-001.json",
-      "vector": "50000000100000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/.github#81"
-    },
-    {
-      "task_id": "STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json",
-      "source_state_vector_ref": "control/task-vectors/STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001.json",
-      "vector": "50000000101000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/stegfin-governance:docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_MIRROR_HANDOFF.md"
-    },
-    {
-      "task_id": "SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/sovereign-base-rpc-activation-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001.json",
-      "vector": "50000000101000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "tasks/TASK-2026-0005.json"
-    },
-    {
-      "task_id": "HEARTBEAT-OSCILLATOR-RESIDENT-START-012",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/heartbeat-oscillator-resident-start-012.json",
-      "source_state_vector_ref": "control/task-vectors/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json",
-      "vector": "50000000100000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/.github#122/#12"
-    },
-    {
-      "task_id": "SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/healer-sovereign-scheduler-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
-      "vector": "50000000101000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/StegVerse-Healer:data/session_consolidation/tv-tvc-no-github-token-dispatch-migration.json"
-    },
-    {
-      "task_id": "AE-RELATIONAL-MATH-WORKER-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/ae-relational-math-worker-001.json",
-      "source_state_vector_ref": "control/task-vectors/AE-RELATIONAL-MATH-WORKER-001.json",
-      "vector": "50000000101000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "Admissible-Existence/AE:data/autonomous_goal_seeds/AE-AUTO-0011.json"
-    },
-    {
-      "task_id": "SHWP-FORMALISM-INVENTORY-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/formalism-manifold-orchestration-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-INVENTORY-001.json",
-      "vector": "50000000100000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/.github#97"
-    },
-    {
-      "task_id": "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/formalism-manifold-orchestration-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-HANDOFF-NORMALIZATION-001.json",
-      "vector": "50000000100000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/.github#97"
-    },
-    {
-      "task_id": "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/formalism-manifold-orchestration-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001.json",
-      "vector": "50000000100000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/.github#97"
-    },
-    {
-      "task_id": "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/formalism-manifold-orchestration-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-MANIFOLD-GOVERNANCE-MAPPING-001.json",
-      "vector": "50000000100000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/.github#97"
-    },
-    {
-      "task_id": "SHWP-ARA-GRAPH-RUNTIME-086",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/ara-graph-runtime-086.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-ARA-GRAPH-RUNTIME-086.json",
-      "vector": "50000000101000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/TVC:tasks/TVC-ARA-GRAPH-RUNTIME-EXECUTION-086.json"
-    },
-    {
-      "task_id": "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/g18-resident-request-consumption-resolution-001.json",
-      "source_state_vector_ref": "control/task-vectors/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json",
-      "vector": "50000000101000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#constraint"
-    },
-    {
-      "task_id": "SV-DN1-SOURCE-MATERIALIZATION-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/sv-dn1-source-materialization-001.json",
-      "source_state_vector_ref": "control/task-vectors/SV-DN1-SOURCE-MATERIALIZATION-001.json",
-      "vector": "50000000101000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md"
-    },
-    {
-      "task_id": "SV-DN1-INTR-RUNTIME-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/sv-dn1-intr-runtime-001.json",
-      "source_state_vector_ref": "control/task-vectors/SV-DN1-INTR-RUNTIME-001.json",
-      "vector": "50000000102000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md"
-    },
-    {
-      "task_id": "SV-DN1-SDK-FIRST-ROUND-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/sv-dn1-sdk-first-round-001.json",
-      "source_state_vector_ref": "control/task-vectors/SV-DN1-SDK-FIRST-ROUND-001.json",
-      "vector": "50000000103000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md"
-    },
-    {
-      "task_id": "SV-DN1-RESIDENT-OBSERVER-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/sv-dn1-resident-observer-001.json",
-      "source_state_vector_ref": "control/task-vectors/SV-DN1-RESIDENT-OBSERVER-001.json",
-      "vector": "50000000103000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json"
-    },
-    {
-      "task_id": "SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/coherent-signal-formal-candidate-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001.json",
-      "vector": "50000000101000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "docs/COHERENT_SIGNAL_SPACE_TRANSITION_MANIFOLD_MIRROR_HANDOFF.md"
-    },
-    {
-      "task_id": "GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/governance-sovereign-task-observer-001.json",
-      "source_state_vector_ref": "control/task-vectors/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json",
-      "vector": "50000000114000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md"
-    },
-    {
-      "task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/tvc-coinbase-intr-resident-activation-001.json",
-      "source_state_vector_ref": "control/task-vectors/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json",
-      "vector": "50000000104000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/TVC:tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json"
-    },
-    {
-      "task_id": "SHWP-STEGFIN-SOVEREIGN-TRADING-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/stegfin-sovereign-trading-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json",
-      "vector": "50000000101000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md"
-    },
-    {
-      "task_id": "SHWP-ERL-UAP-MEDIA-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/erl-uap-media-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-ERL-UAP-MEDIA-001.json",
-      "vector": "50000000101000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/UAP_MEDIA_RESEARCH_MIRROR_HANDOFF.md"
-    },
-    {
-      "task_id": "KV-CONNECTION-HEALTH-RECONCILER-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/kv-connection-health-reconciler-001.json",
-      "source_state_vector_ref": "control/task-vectors/KV-CONNECTION-HEALTH-RECONCILER-001.json",
-      "vector": "50000000102000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/continuity-vault-kit:KV_CONNECTION_REGISTRY_MATERIALIZATION_MIRROR_HANDOFF.md@d0c966d557dc437d1d2e6da5b68e6c31912af501"
-    },
-    {
-      "task_id": "KV-PROVIDER-CHANGE-OBSERVER-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/kv-provider-change-observer-001.json",
-      "source_state_vector_ref": "control/task-vectors/KV-PROVIDER-CHANGE-OBSERVER-001.json",
-      "vector": "50000000102000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/continuity-vault-kit:KV_MONITOR_TARGETS_CANONICAL_STATE_MIRROR_HANDOFF.md@d0c966d557dc437d1d2e6da5b68e6c31912af501"
-    },
-    {
-      "task_id": "SHWP-FORMALISM-SOURCE-DISCOVERY-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/formalism-source-discovery-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-SOURCE-DISCOVERY-001.json",
-      "vector": "50000000100000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "FORMALISM_SOURCE_DISCOVERY_MIRROR_HANDOFF.md"
-    },
-    {
-      "task_id": "SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/admissible-source-generation-capability-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
-      "vector": "50000000103000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "ADMISSIBLE_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md"
-    },
-    {
-      "task_id": "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/local-source-generation-executor-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
-      "vector": "50000000103000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "LOCAL_SOURCE_GENERATION_EXECUTOR_MIRROR_HANDOFF.md"
-    },
-    {
-      "task_id": "SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001",
-      "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/cmc028-root-custody-001.json",
-      "source_state_vector_ref": "control/task-vectors/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json",
-      "vector": "50000000101000",
-      "vector_state": "EMITTED",
-      "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/TVC:tasks/TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028.json"
-    }
+    {"task_id":"SHWP-ECOSYSTEM-CHAT-INFERENCE-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.json","source_state_vector_ref":"control/task-vectors/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json","vector":"50000000100000","vector_state":"EMITTED","authority_effect":"NONE"},
+    {"task_id":"COSV-LIVE-PACKET-AUTOMATION-006","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/cosv-live-packet-automation-006.json","source_state_vector_ref":"control/task-vectors/COSV-LIVE-PACKET-AUTOMATION-006.json","vector":"50000000100000","vector_state":"EMITTED","authority_effect":"NONE"},
+    {"task_id":"SHWP-TV-TVC-RESIDENT-PROOF-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/tv-tvc-resident-proof-001.json","source_state_vector_ref":"control/task-vectors/SHWP-TV-TVC-RESIDENT-PROOF-001.json","vector":"10100000111001","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_source_state_vector_ref":"StegVerse-Labs/TVC/tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json#machine_readable_state.cosv"},
+    {"task_id":"SHWP-DURABLE-RUNTIME-ACTIVATION","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.json","source_state_vector_ref":"control/task-vectors/SHWP-DURABLE-RUNTIME-ACTIVATION.json","vector":"60000000101000","vector_state":"EMITTED","authority_effect":"NONE"},
+    {"task_id":"SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/tvc-repository-broker-validation-001.json","source_state_vector_ref":"control/task-vectors/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json","vector":"50000000101000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/TVC#92"},
+    {"task_id":"STEGGATE-STABLE-RENDEZVOUS-WORKER-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.json","source_state_vector_ref":"control/task-vectors/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json","vector":"50000000100000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/Site#24"},
+    {"task_id":"SDK-MCP-CANONICAL-VALIDATION-009","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/sdk-mcp-canonical-validation-009.json","source_state_vector_ref":"control/task-vectors/SDK-MCP-CANONICAL-VALIDATION-009.json","vector":"50000000101000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-org/StegVerse-SDK:tasks/SDK-MCP-CANONICAL-VALIDATION-009.json"},
+    {"task_id":"SHWP-REPO-HEARTBEAT-FEDERATION-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/repo-heartbeat-federation-001.json","source_state_vector_ref":"control/task-vectors/SHWP-REPO-HEARTBEAT-FEDERATION-001.json","vector":"50000000100000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/.github#81"},
+    {"task_id":"STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/stegfin-early-adopter-contribution-validation-001.json","source_state_vector_ref":"control/task-vectors/STEGFIN-EARLY-ADOPTER-VALIDATION-WORKER-001.json","vector":"50000000101000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/stegfin-governance:docs/STEGFIN_EARLY_ADOPTER_CONTRIBUTION_MIRROR_HANDOFF.md"},
+    {"task_id":"SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/sovereign-base-rpc-activation-001.json","source_state_vector_ref":"control/task-vectors/SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001.json","vector":"50000000101000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"tasks/TASK-2026-0005.json"},
+    {"task_id":"HEARTBEAT-OSCILLATOR-RESIDENT-START-012","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/heartbeat-oscillator-resident-start-012.json","source_state_vector_ref":"control/task-vectors/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json","vector":"50000000100000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/.github#122/#12"},
+    {"task_id":"SHWP-HEALER-SOVEREIGN-SCHEDULER-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/healer-sovereign-scheduler-001.json","source_state_vector_ref":"control/task-vectors/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json","vector":"50000000101000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/StegVerse-Healer:data/session_consolidation/tv-tvc-no-github-token-dispatch-migration.json"},
+    {"task_id":"AE-RELATIONAL-MATH-WORKER-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/ae-relational-math-worker-001.json","source_state_vector_ref":"control/task-vectors/AE-RELATIONAL-MATH-WORKER-001.json","vector":"50000000101000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"Admissible-Existence/AE:data/autonomous_goal_seeds/AE-AUTO-0011.json"},
+    {"task_id":"SHWP-FORMALISM-INVENTORY-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/formalism-manifold-orchestration-001.json","source_state_vector_ref":"control/task-vectors/SHWP-FORMALISM-INVENTORY-001.json","vector":"50000000100000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/.github#97"},
+    {"task_id":"SHWP-FORMALISM-HANDOFF-NORMALIZATION-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/formalism-manifold-orchestration-001.json","source_state_vector_ref":"control/task-vectors/SHWP-FORMALISM-HANDOFF-NORMALIZATION-001.json","vector":"50000000100000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/.github#97"},
+    {"task_id":"SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/formalism-manifold-orchestration-001.json","source_state_vector_ref":"control/task-vectors/SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001.json","vector":"50000000100000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/.github#97"},
+    {"task_id":"SHWP-MANIFOLD-GOVERNANCE-MAPPING-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/formalism-manifold-orchestration-001.json","source_state_vector_ref":"control/task-vectors/SHWP-MANIFOLD-GOVERNANCE-MAPPING-001.json","vector":"50000000100000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/.github#97"},
+    {"task_id":"SHWP-ARA-GRAPH-RUNTIME-086","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/ara-graph-runtime-086.json","source_state_vector_ref":"control/task-vectors/SHWP-ARA-GRAPH-RUNTIME-086.json","vector":"50000000101000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/TVC:tasks/TVC-ARA-GRAPH-RUNTIME-EXECUTION-086.json"},
+    {"task_id":"RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/g18-resident-request-consumption-resolution-001.json","source_state_vector_ref":"control/task-vectors/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json","vector":"50000000101000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#constraint"},
+    {"task_id":"SV-DN1-SOURCE-MATERIALIZATION-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/sv-dn1-source-materialization-001.json","source_state_vector_ref":"control/task-vectors/SV-DN1-SOURCE-MATERIALIZATION-001.json","vector":"50000000101000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md"},
+    {"task_id":"SV-DN1-INTR-RUNTIME-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/sv-dn1-intr-runtime-001.json","source_state_vector_ref":"control/task-vectors/SV-DN1-INTR-RUNTIME-001.json","vector":"50000000102000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md"},
+    {"task_id":"SV-DN1-SDK-FIRST-ROUND-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/sv-dn1-sdk-first-round-001.json","source_state_vector_ref":"control/task-vectors/SV-DN1-SDK-FIRST-ROUND-001.json","vector":"50000000103000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md"},
+    {"task_id":"SV-DN1-RESIDENT-OBSERVER-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/sv-dn1-resident-observer-001.json","source_state_vector_ref":"control/task-vectors/SV-DN1-RESIDENT-OBSERVER-001.json","vector":"50000000103000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-org/stegverse-demo-suite:tasks/SV-DN1-RESIDENT-OBSERVER-001.json"},
+    {"task_id":"SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/coherent-signal-formal-candidate-001.json","source_state_vector_ref":"control/task-vectors/SHWP-COHERENT-SIGNAL-FORMAL-CANDIDATE-001.json","vector":"50000000101000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"docs/COHERENT_SIGNAL_SPACE_TRANSITION_MANIFOLD_MIRROR_HANDOFF.md"},
+    {"task_id":"GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/governance-sovereign-task-observer-001.json","source_state_vector_ref":"control/task-vectors/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json","vector":"50000000114000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md"},
+    {"task_id":"TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/tvc-coinbase-intr-resident-activation-001.json","source_state_vector_ref":"control/task-vectors/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json","vector":"50000000104000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/TVC:tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json"},
+    {"task_id":"SHWP-STEGFIN-SOVEREIGN-TRADING-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/stegfin-sovereign-trading-001.json","source_state_vector_ref":"control/task-vectors/SHWP-STEGFIN-SOVEREIGN-TRADING-001.json","vector":"50000000101000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md"},
+    {"task_id":"SHWP-ERL-UAP-MEDIA-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/erl-uap-media-001.json","source_state_vector_ref":"control/task-vectors/SHWP-ERL-UAP-MEDIA-001.json","vector":"50000000101000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/Executive_Rhetoric_Ledger:docs/UAP_MEDIA_RESEARCH_MIRROR_HANDOFF.md"},
+    {"task_id":"KV-CONNECTION-HEALTH-RECONCILER-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/kv-connection-health-reconciler-001.json","source_state_vector_ref":"control/task-vectors/KV-CONNECTION-HEALTH-RECONCILER-001.json","vector":"50000000102000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/continuity-vault-kit:KV_CONNECTION_REGISTRY_MATERIALIZATION_MIRROR_HANDOFF.md@d0c966d557dc437d1d2e6da5b68e6c31912af501"},
+    {"task_id":"KV-CONNECTION-REVALIDATION-WORKER-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/kv-connection-revalidation-worker-001.json","source_state_vector_ref":"control/task-vectors/KV-CONNECTION-REVALIDATION-WORKER-001.json","vector":"50000000102000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/continuity-vault-kit"},
+    {"task_id":"KV-PROVIDER-CHANGE-OBSERVER-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/kv-provider-change-observer-001.json","source_state_vector_ref":"control/task-vectors/KV-PROVIDER-CHANGE-OBSERVER-001.json","vector":"50000000102000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/continuity-vault-kit:KV_MONITOR_TARGETS_CANONICAL_STATE_MIRROR_HANDOFF.md@d0c966d557dc437d1d2e6da5b68e6c31912af501"},
+    {"task_id":"SHWP-FORMALISM-SOURCE-DISCOVERY-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/formalism-source-discovery-001.json","source_state_vector_ref":"control/task-vectors/SHWP-FORMALISM-SOURCE-DISCOVERY-001.json","vector":"50000000100000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"FORMALISM_SOURCE_DISCOVERY_MIRROR_HANDOFF.md"},
+    {"task_id":"SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/admissible-source-generation-capability-001.json","source_state_vector_ref":"control/task-vectors/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json","vector":"50000000103000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"ADMISSIBLE_SOURCE_GENERATION_CAPABILITY_MIRROR_HANDOFF.md"},
+    {"task_id":"SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/local-source-generation-executor-001.json","source_state_vector_ref":"control/task-vectors/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json","vector":"50000000103000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"LOCAL_SOURCE_GENERATION_EXECUTOR_MIRROR_HANDOFF.md"},
+    {"task_id":"SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001","repository":"StegVerse-Labs/.github","registry_ref":"control/worker-registry.d/cmc028-root-custody-001.json","source_state_vector_ref":"control/task-vectors/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json","vector":"50000000101000","vector_state":"EMITTED","authority_effect":"NONE","canonical_owner_ref":"StegVerse-Labs/TVC:tasks/TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028.json"}
   ],
-  "coverage": {
-    "indexed_vectorized_tasks": 34,
-    "local_cosv_record_tasks": 34,
-    "external_owner_projection_tasks": 0
-  },
-  "authority_effect": "NONE"
+  "coverage": {"indexed_vectorized_tasks":35,"local_cosv_record_tasks":35,"external_owner_projection_tasks":0},
+  "authority_effect":"NONE"
 }

@@ -63,6 +63,19 @@
         "temporal_class": "current",
         "task_relationship": "integrates_capability",
         "target_phase": "ACTIVATED"
+      },
+      "source_state_vector_ref": "control/task-vectors/KV-CONNECTION-REVALIDATION-WORKER-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000102000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-29T15:17:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],
