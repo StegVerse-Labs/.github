@@ -6,7 +6,8 @@
       "archive_eligible": false,
       "archive_reason_codes": [
         "SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN",
-        "TVC_INTR_READY_FOR_OWNER_INGRESS_NOT_YET_OBSERVED"
+        "TVC_INTR_READY_FOR_OWNER_INGRESS_NOT_YET_OBSERVED",
+        "SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED"
       ],
       "authorized_policy_version": "tvc-coinbase-intr-resident-activation-v0.1",
       "block_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#constraint",
@@ -15,7 +16,9 @@
       "evidence_refs": [
         "handoffs/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json",
         "workers/tvc_coinbase_intr_resident_activation_worker.py",
-        "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json"
+        "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
+        "StegVerse-Labs/TVC/tasks/TVC-SERVICE-GATEWAY-LEAF-CERTIFICATE-LIFECYCLE-029.json",
+        "StegVerse-org/LLM-adapter/docs/SERVICE_GATEWAY_HTTP01_CHALLENGE_PROJECTION_MIRROR_HANDOFF.md"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
@@ -61,7 +64,8 @@
         "blockers": [
           "SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN",
           "REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED",
-          "PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED"
+          "PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED",
+          "SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED"
         ],
         "continuation_owner": "tvc-coinbase-intr-resident-activation-worker + StegVerse-Labs/TVC",
         "credential_authority": "TV/TVC",
