@@ -4,10 +4,11 @@ Updated: 2026-08-29
 Repository: `StegVerse-Labs/.github`
 Issue: #415
 Parent HIL activation owner: #246
+PR: #418
 
 ```text
 goal_id: SHWP-HIL-INTR-MATERIALIZATION-INGRESS-415
-state: IMPLEMENTED_ON_BRANCH_VALIDATION_PENDING
+state: SOURCE_IMPLEMENTED_VALIDATED_MERGE_PENDING
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 authority_effect: NONE_INGRESS_ONLY
@@ -82,16 +83,20 @@ G18 completion
 
 The ingress mints no claim/fence, requires no G18 claim, creates no HeartBeat authority, and accepts no GitHub token or bearer credential path.
 
-## Validation boundary
+## Validation evidence
 
-Required before merge:
+Exact validated head before this handoff-only evidence update:
 
 ```text
-tests/test_hil_intr_materialization_ingress.py: PASS
-existing HIL materialization consumer tests: PASS
-sovereign worker source-refresh tests: PASS
-organization control-plane validation: PASS
-heartbeat validation-only workflow: PASS
+head: 9816b6374e134f421c5e9f4a35ba234abfbddb88
+Validate organization control plane - No GitHub Token Authority:
+  run: 33272815079
+  result: SUCCESS
+Heartbeat Worker Project - Validation Only / No GitHub Token Authority:
+  run: 33272815061
+  result: SUCCESS
 ```
 
-Source/CI success remains non-runtime evidence. `runtime_ingress_observed` stays false until a real sovereign runtime produces the ingress receipt.
+This handoff-only evidence update requires those same gates to pass again on the new exact head before merge.
+
+Source/CI success remains non-runtime evidence. `runtime_ingress_observed` stays false until a real sovereign runtime produces the ingress receipt. HIL activation remains open under #246.
