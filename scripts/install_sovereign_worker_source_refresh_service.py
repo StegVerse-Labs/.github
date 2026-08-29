@@ -52,6 +52,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
     hil_request_consumer = runtime / "scripts/consume_hil_resident_execution_request.py"
     ara_graph_request_consumer = runtime / "scripts/consume_ara_graph_resident_execution_request.py"
     sv_dn1_request_consumer = runtime / "scripts/consume_sv_dn1_resident_execution_request.py"
+    tvc_broker_validation_consumer = runtime / "scripts/consume_tvc_broker_validation_request.py"
     service = "\n".join([
         "[Unit]",
         "Description=StegVerse local-only WorkerCoordinator source refresh",
@@ -65,6 +66,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         f"ExecStartPost={_quote(python)} {_quote(hil_request_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(ara_graph_request_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(sv_dn1_request_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
+        f"ExecStartPost={_quote(python)} {_quote(tvc_broker_validation_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost=/usr/bin/systemctl --user try-restart {WORKER_SERVICE}",
         "NoNewPrivileges=true",
         "PrivateTmp=true",
