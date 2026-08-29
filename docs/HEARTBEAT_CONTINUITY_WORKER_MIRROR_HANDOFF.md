@@ -559,3 +559,40 @@ second user machine required: false
 ```
 
 The next state-changing event must come from an eligible non-hosted native sovereign runtime. Hosted CI cannot satisfy that evidence boundary.
+
+
+## CMC-028 certificate root custody evidence runtime
+
+Canonical capability owner:
+`StegVerse-Labs/TVC/tasks/TVC-CERTIFICATE-ROOT-KEY-CUSTODY-028.json`
+
+Merged TVC dispatcher boundary:
+`tvc.certificate_root_custody.observe`
+
+Registered machine lane:
+
+```text
+task_id: SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001
+handoff: handoffs/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json
+registry: control/worker-registry.d/cmc028-root-custody-001.json
+adapter: control/process-worker-adapters.d/cmc028-root-custody-001.json
+worker: workers/cmc028_root_custody_worker.py
+receipt: receipts/cmc028-root-custody/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json
+COSV: control/task-vectors/SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001.json
+credential_authority: TV/TVC
+heartbeat_grants_execution_authority: false
+AE phase: ADMISSIBLE
+```
+
+The worker requires already-local clean TVC source containing merge `dd3734084eba4887c0c08e2e47eab3a20565c820`, invokes only `tvc.certificate_root_custody.observe`, and persists only the secret-free worker result.
+
+It performs no protected-material generation/import/read/hash/export/mutation, no certificate issuance/signing, no network source fetch, no source mutation, and creates no scheduler/runtime/vault/PKI/signing manager.
+
+Lifecycle:
+- TVC evaluator/dispatcher: IMPLEMENTED / VALIDATED / MERGED
+- sovereign worker source/registry: IMPLEMENTED / VALIDATION PENDING
+- authentic resident locator manifest: NOT OBSERVED
+- authentic protected objects: NOT OBSERVED
+- authentic identity/recovery receipts: NOT OBSERVED
+- CUSTODY_RECOVERY_EVIDENCE_VERIFIED: NOT OBSERVED
+- StegGuardian ROOT_KEY_CUSTODY: remains MISSING
