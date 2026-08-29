@@ -32,6 +32,13 @@ class G18ResolutionCOSVTests(unittest.TestCase):
         self.assertFalse(self.handoff["authority"]["physical_additional_machine_required"])
         self.assertFalse(self.handoff["completion"]["runtime_activation_claimed"])
         self.assertFalse(self.handoff["completion"]["g18_terminalization_claimed"])
+    def test_dispatcher_source_does_not_satisfy_consumption(self):
+        self.assertTrue((ROOT/"scripts/dispatch_resident_execution_requests.py").is_file())
+        self.assertTrue((ROOT/"scripts/bootstrap_sovereign_runtime.py").is_file())
+        self.assertEqual(self.task["admissible_existence"]["blockers"],["G18_RESIDENT_REQUEST_CONSUMPTION_NOT_YET_OBSERVED"])
+        self.assertFalse(self.record["exact_metrics"]["evidence_complete"])
+        self.assertFalse(self.record["exact_metrics"]["activated"])
+
     def test_bindings_authority_neutral(self):
         self.assertEqual(self.task["source_state_vector_ref"],VECTOR_REF)
         self.assertEqual(self.handoff["source_state_vector_ref"],VECTOR_REF)
