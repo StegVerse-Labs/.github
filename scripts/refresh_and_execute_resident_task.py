@@ -293,8 +293,7 @@ def refresh_and_execute(
     }
     receipt_path = runtime / RECEIPT_REL
     receipt_path.parent.mkdir(parents=True, exist_ok=True)
-    receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "
-", encoding="utf-8")
+    receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return receipt
 
 
