@@ -60,5 +60,18 @@
   "integration_evidence_refs": [],
   "activation_proof_ref": null,
   "canonical_lifecycle_merge": "StegVerse-Labs/StegCore@15d9524530bc45a9404d93c3e2d51953d8f4a156",
-  "binder_cosv_ref": "control/task-vectors/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json"
+  "binder_cosv_ref": "control/task-vectors/SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001.json",
+  "source_state_vector_ref": "control/task-vectors/SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000103000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-08-29T02:37:00-05:00",
+      "authority_effect": "NONE"
+    }
+  }
 }
