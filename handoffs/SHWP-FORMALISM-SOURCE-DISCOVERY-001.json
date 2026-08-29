@@ -53,8 +53,12 @@
     "policy_version": "formalism-source-discovery-v0.1"
   },
   "execution": {
-    "required_capabilities": ["formalism_source_discovery"],
-    "allowed_paths": ["receipts/formalism-source-discovery/**"],
+    "required_capabilities": [
+      "formalism_source_discovery"
+    ],
+    "allowed_paths": [
+      "receipts/formalism-source-discovery/**"
+    ],
     "allowed_services": [],
     "max_actions": 64,
     "max_retries": 1024,
@@ -82,5 +86,18 @@
       "formalism-roots.json is persisted"
     ]
   },
-  "block": null
+  "block": null,
+  "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-SOURCE-DISCOVERY-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000100000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-08-29T02:37:00-05:00",
+      "authority_effect": "NONE"
+    }
+  }
 }

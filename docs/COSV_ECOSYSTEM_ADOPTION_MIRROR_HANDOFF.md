@@ -39,7 +39,7 @@ The 189 unaudited repositories are not exemptions. They are classified `NO_REPOS
 
 ## Current .github boundary
 
-`.github` remains `VECTOR_REQUIRED`. Thirty active vectors are indexed in the current KV connection-observer candidate, but the global worker registry and organization task registry still contain additional active machine tasks without complete canonical vector projection. No digits may be invented to close that gap.
+`.github` remains `VECTOR_REQUIRED`. Thirty-one active vectors are indexed in the current formalism source-discovery candidate, but additional active worker and organization tasks still lack canonical vector projection.
 
 Existing indexed examples remain unchanged:
 
@@ -102,13 +102,13 @@ Authority effect: NONE.
 
 Machine-readable snapshot: `control/cosv-global-registry-coverage.json`.
 
-- 54 unique worker task IDs across the global worker registry plus fragments at live main `3c2c8acad94f1c93a5225fe58a9040e39c5801cf`.
-- 30 canonically indexed task IDs in the current KV connection-observer candidate.
+- 54 unique worker task IDs across the global worker registry plus fragments at live main `f258e3e7d6dca999b1a24095495b344e73401742`.
+- 31 canonically indexed task IDs in the current formalism source-discovery candidate.
 - 6 completed-only historical unvectorized task IDs.
 - 1 superseded historical unvectorized task ID.
-- 17 active worker task IDs lack canonical COSV coverage after the KV connection-observer projection.
+- 16 active worker task IDs lack canonical COSV coverage after the formalism source-discovery projection.
 - 14 organization-registry task IDs lack canonical COSV coverage.
-- Total active .github task IDs lacking canonical COSV coverage after this candidate: 31.
+- Total active .github task IDs lacking canonical COSV coverage after this candidate: 30.
 - The orphan-recovery aggregate/fragment contradiction is reconciled to terminal COMPLETED from the durable G22 PASS receipt; no vector was emitted for this completed historical task.
 
 No new vector digits were invented during this audit.
@@ -557,3 +557,32 @@ Both lanes are independently machine-owned, require fresh task-control claims, a
 The continuity-vault-kit source layers are MERGED and VALIDATED, but this does not prove a sovereign resident runtime, private-KV runtime bindings, live monitor-target bindings, provider-change observations, connection-health reconciliation, or downstream repair/reverification.
 
 If validated and merged, local .github coverage becomes 30 indexed vectors with 17 active worker gaps + 14 organization gaps = 31 active unvectorized tasks.
+
+
+## Formalism source-discovery reconciliation and vector — current-main candidate
+
+PR #103 was already merged, but the source-discovery mirror and session implementation claim still described canonical admission as pending and the claim as active. Live evidence now records the final merged head and validation:
+
+```text
+PR: #103
+final merged head: 00ead9d14a44be827c4110f3866556402a2d899b
+merge: 5a5c77d45817407dc0b2f5010ba56a36ecdd5d5e
+Heartbeat validation: 31770541037 SUCCESS
+Organization control-plane validation: 31770541030 SUCCESS
+Handoff render: 31770541087 SUCCESS
+```
+
+The expired source-discovery implementation claim is reconciled to `RELEASED_TRANSFERRED_TO_MACHINE_CONTINUATION`. This does not claim a resident discovery receipt, a completed roots manifest, or proof that every first-cohort root is locally present.
+
+```text
+SHWP-FORMALISM-SOURCE-DISCOVERY-001
+task.v1 [L R U I V G O C M T B E A P] = 50000000100000
+```
+
+The vector intentionally records zero registered blockers because the worker fragment has `block_ref=null` and the executable handoff has `block=null`. Resident source-root non-observation is incomplete evidence. If the worker later observes a missing, ambiguous, or handoff-less source, it must fail closed and derive a separately authorized machine materialization successor.
+
+The generalized owner-source mutation executor remains a separate unresolved lane and is not satisfied, transferred, or hidden by this source-discovery reconciliation.
+
+No network checkout, GitHub credential authority, source mutation authority, AE/StegCore mutation authority, provider authority, wallet authority, or HeartBeat execution authority is created.
+
+If validated and merged, local .github coverage becomes 31 indexed vectors with 16 active worker gaps + 14 organization gaps = 30 active unvectorized tasks.

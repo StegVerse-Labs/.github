@@ -4,7 +4,9 @@
   "tasks": [
     {
       "archive_eligible": false,
-      "archive_reason_codes": ["FORMALISM_SOURCE_ROOTS_NOT_YET_PROVEN"],
+      "archive_reason_codes": [
+        "FORMALISM_SOURCE_ROOTS_NOT_YET_PROVEN"
+      ],
       "authorized_policy_version": "formalism-source-discovery-v0.1",
       "block_ref": null,
       "claim_id": null,
@@ -24,14 +26,29 @@
       "state": "HANDOFF_READY",
       "task_id": "SHWP-FORMALISM-SOURCE-DISCOVERY-001",
       "worker_id": null,
-      "worker_instance_id": null
+      "worker_instance_id": null,
+      "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-SOURCE-DISCOVERY-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-29T02:37:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     }
   ],
   "workers": [
     {
       "adapter_ref": "process:formalism-source-discovery-v1",
       "authority_source": "handoffs/SHWP-FORMALISM-SOURCE-DISCOVERY-001.json#authority",
-      "capabilities": ["formalism_source_discovery"],
+      "capabilities": [
+        "formalism_source_discovery"
+      ],
       "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
       "executor_type": "repository_worker",
       "last_seen_at": null,
