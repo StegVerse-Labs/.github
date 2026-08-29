@@ -1,6 +1,6 @@
 # KV Revalidation Proof Intake Mirror Handoff
 
-Status: SOURCE_IMPLEMENTED / EXACT_HEAD_VALIDATION_PENDING
+Status: SOURCE_MERGED_VALIDATED / RESIDENT_EXECUTION_PENDING
 Repository: `StegVerse-Labs/.github`
 Issue: #424
 Branch: `feature/kv-revalidation-proof-intake-424`
@@ -72,4 +72,10 @@ Current canonical task vector: `50000000102000`.
 
 Worker denominator after this separately registered task: 58 total worker task IDs, 36 canonically indexed, 15 active-unvectorized, 6 completed historical, and 1 superseded historical.
 
-The next repository gate is exact-head hosted validation followed by merge. No live intake, provider proof, readback proof, connection verification, or runtime activation is claimed by source completion.
+Exact-head validation passed on `461258e1ad3d97cbee876c3676c0b28e62151406`:
+- organization-control run `33274163163`: SUCCESS;
+- Heartbeat Worker run `33274163282`: SUCCESS.
+
+PR #426 merged as `673bda3e85a7e6f8f4de1a9f1e2309a92938fa33`.
+
+The repository/source goal is complete. No live intake, provider proof, readback proof, connection verification, or runtime activation is claimed by source completion.
