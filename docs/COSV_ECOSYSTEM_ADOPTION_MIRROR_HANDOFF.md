@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-28T21:48:00-05:00
+Updated: 2026-08-28T21:55:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -397,3 +397,35 @@ Neither vector claims runtime activation, SDK completion, Master Records custody
 Vector emission remains forbidden until the product task scope and local blocker contract are reconciled. This exclusion is evidence of unresolved canonical state, not an exemption from COSV adoption.
 
 If this cohort validates and merges, local .github coverage becomes 22 indexed vectors with 25 active worker gaps + 14 organization gaps = 39 active unvectorized tasks.
+
+## SV-DN1 resident observer product/local reconciliation — current-main candidate
+
+The former fail-closed resident-observer conflict is resolved by canonical product-owner PR #21:
+
+```text
+repository: StegVerse-org/stegverse-demo-suite
+PR: #21
+merge: a71b1263018cd5c7bba73b7182474c43a34c95bc
+product task scope: RESIDENT_CAPTURE_AND_HF_SEMANTIC_EXCHANGE_ONLY
+predecessor: SV-DN1-SOURCE-MATERIALIZATION-001
+successor: SV-DN1-INTR-RUNTIME-001
+```
+
+The .github resident handoff is reconciled to the same scope, the current runtime-source manifest basis `4988d453419f43404100c69dd97dd1785d7e0a75`, and exact blocker parity:
+
+```text
+EXACT_PINNED_LOCAL_DEMO_SUITE_SOURCE_NOT_YET_OBSERVED
+CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND
+SOVEREIGN_SV_DN1_RESIDENT_SOURCE_CAPTURE_RECEIPT_NOT_YET_OBSERVED
+```
+
+Canonical vector:
+
+```text
+SV-DN1-RESIDENT-OBSERVER-001
+task.v1 [L R U I V G O C M T B E A P] = 50000000103000
+```
+
+This reconciliation does not claim exact source materialization, scheduler claim, resident capture, InTr traversal, SDK admission, evaluation completion, or publication.
+
+If validated and merged, local .github coverage becomes 23 indexed vectors with 24 active worker gaps + 14 organization gaps = 38 active unvectorized tasks.
