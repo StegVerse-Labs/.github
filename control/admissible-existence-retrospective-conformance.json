@@ -302,11 +302,11 @@
       "temporal_class": "current",
       "ae_impact": "SUPPORTING_OPERATION_OF",
       "capability_id": "stegverse:capability:formalism-source-generation:v1",
-      "phase": "DECLARED",
+      "phase": "ADMISSIBLE",
       "task_relationship": "integrates_capability",
       "result": "PASS",
-      "continuation_owner": "StegVerse-Labs/.github#144 + #137 + resident sovereign local-model activation owners",
-      "rationale": "The bounded local executor supports the separately governed source-generation capability and remains blocked below explicit activation; worker/runtime availability does not grant source-generation or model authority."
+      "continuation_owner": "local-source-generation-executor-worker + SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001 + sovereign-local-model activation owner + TV/TVC repository-operation owner",
+      "rationale": "Canonical StegCore has advanced formalism source generation to ADMISSIBLE. The bounded local executor remains machine-blocked until explicit source-generation integration/activation evidence, sovereign-local-model live activation, and resident recursive generation/binder/TV-TVC mutation/re-observation proof exist; availability grants no authority."
     },
     {
       "task_id": "SHWP-ERL-UAP-MEDIA-001",
