@@ -1,8 +1,8 @@
 {
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
-  "observed_commit": "179c9814294f506e6021339dcc029472c44559a0",
-  "observed_at": "2026-08-28T23:38:00-05:00",
+  "observed_commit": "3c2c8acad94f1c93a5225fe58a9040e39c5801cf",
+  "observed_at": "2026-08-29T02:37:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,9 +11,9 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 54,
-    "canonically_indexed_task_ids": 28,
+    "canonically_indexed_task_ids": 30,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 19,
+    "active_unvectorized_unique_task_ids": 17,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,7 +21,7 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 33,
+  "total_active_unvectorized_unique_task_ids": 31,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -39,9 +39,7 @@
     "SHWP-ADMISSIBLE-SOURCE-GENERATION-CAPABILITY-001",
     "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
     "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
-    "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
-    "KV-CONNECTION-HEALTH-RECONCILER-001",
-    "KV-PROVIDER-CHANGE-OBSERVER-001"
+    "STEGVERSE-TEST-LANES-AUTOLAUNCH-001"
   ],
   "active_organization_task_ids_missing_canonical_cosv": [
     "ORG-FED-AACT-E-001",
@@ -171,6 +169,14 @@
     {
       "task_id": "SHWP-ERL-UAP-MEDIA-001",
       "vector": "50000000101000"
+    },
+    {
+      "task_id": "KV-CONNECTION-HEALTH-RECONCILER-001",
+      "vector": "50000000102000"
+    },
+    {
+      "task_id": "KV-PROVIDER-CHANGE-OBSERVER-001",
+      "vector": "50000000102000"
     }
   ],
   "evidence_conflicts": [],
@@ -258,5 +264,19 @@
       "canonical_owner_ref": "StegVerse-Labs/Governance:docs/governance/GOVERNANCE_TASK_OBSERVER_SOVEREIGN_MIRROR_HANDOFF.md",
       "release_condition": "Canonical Governance owner no longer declares DO NOT ARCHIVE THIS SESSION and all remaining unique continuation is durably machine/authority-owned."
     }
-  ]
+  ],
+  "kv_connection_owner_reconciliation": {
+    "canonical_owner_repository": "StegVerse-Labs/continuity-vault-kit",
+    "reconciliation_merge": "d0c966d557dc437d1d2e6da5b68e6c31912af501",
+    "source_prs": {
+      "connection_assembly": 114,
+      "connection_registry_materialization": 116,
+      "monitor_targets": 118,
+      "owner_handoff_reconciliation": 123
+    },
+    "source_state": "MERGED_VALIDATED",
+    "runtime_activation_claimed": false,
+    "provider_operation_authority": "NONE",
+    "credential_authority": "TV/TVC"
+  }
 }

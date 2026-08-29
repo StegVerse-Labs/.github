@@ -1,0 +1,43 @@
+{
+  "identity": "StegVerse-Labs/.github:task:KV-PROVIDER-CHANGE-OBSERVER-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000102000",
+  "evidence_refs": [
+    "control/worker-registry.d/kv-provider-change-observer-001.json",
+    "handoffs/KV-PROVIDER-CHANGE-OBSERVER-001.json",
+    "StegVerse-Labs/continuity-vault-kit:KV_CONNECTION_ASSEMBLY_SOURCE_MIRROR_HANDOFF.md@d0c966d557dc437d1d2e6da5b68e6c31912af501",
+    "StegVerse-Labs/continuity-vault-kit:KV_MONITOR_TARGETS_CANONICAL_STATE_MIRROR_HANDOFF.md@d0c966d557dc437d1d2e6da5b68e6c31912af501"
+  ],
+  "observed_at": "2026-08-29T02:37:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 2,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "HANDOFF_READY with AUTHORIZED independent task-control claim and AVAILABLE dedicated worker; monitor-target owner source is MERGED_VALIDATED",
+    "archive_ready": "worker fragment archive_eligible=false",
+    "unassigned_work": "kv-provider-change-observer-worker + continuity-vault-kit own continuation",
+    "chat_owned_counts": "resident monitoring is independently machine-owned; no manual credential or provider-operation role is assigned to chat",
+    "canonical_owner_installed": "connection assembly source PR #114, monitor-target source PR #118, and canonical owner reconciliation PR #123 are merged and validated",
+    "thread_required": "durable worker/handoff/owner state fully defines continuation; no chat-only dependency is recorded",
+    "blocker_count": "exact registry/handoff parity: SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN | LIVE_KV_MONITOR_TARGET_BINDING_NOT_YET_OBSERVED",
+    "evidence_complete": "no sovereign runtime proof or live private-KV monitor-target binding has been observed",
+    "activated": "activation_proof_ref=null and runtime_activation_claimed=false",
+    "propagated": "no resident provider-change observation cycle has emitted downstream KV source-change evidence"
+  },
+  "authority_effect": "NONE"
+}
