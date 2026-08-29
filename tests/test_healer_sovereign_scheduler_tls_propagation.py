@@ -37,6 +37,69 @@ class HealerSovereignSchedulerTlsAutodiscoveryTests(unittest.TestCase):
             self.assertNotIn(name, env)
         self.assertNotIn("must-not-propagate", repr(env))
 
+
+    def test_evaluator_route_projection_is_disabled_without_materialized_config(self) -> None:
+        old = dict(os.environ)
+        try:
+            os.environ.pop(mod.EVALUATOR_CONFIG_ENV, None)
+            with tempfile.TemporaryDirectory() as td:
+                mod.EVALUATOR_CONFIG_DEFAULT = Path(td) / "missing.json"
+                projection = mod.evaluator_gateway_projection()
+        finally:
+            os.environ.clear()
+            os.environ.update(old)
+        self.assertEqual(projection["STEGVERSE_EVALUATOR_INTR_ENABLED"], "false")
+        self.assertEqual(projection["STEGVERSE_EVALUATOR_INTR_UPSTREAM"], "")
+
+    def test_evaluator_route_projection_uses_exact_materialized_loopback_only(self) -> None:
+        old = dict(os.environ)
+        try:
+            with tempfile.TemporaryDirectory() as td:
+                path = Path(td) / "evaluator.json"
+                path.write_text(json.dumps({
+                    "schema": "stegverse.evaluator-intr-route-config/v1",
+                    "host": "127.0.0.1",
+                    "port": 8765,
+                    "credential_authority": "TV/TVC",
+                    "github_token_runtime_authority": "NONE",
+                    "public_tls_terminated_by": "STEGVERSE_SHARED_SERVICE_GATEWAY",
+                }) + "\n", encoding="utf-8")
+                os.environ[mod.EVALUATOR_CONFIG_ENV] = str(path)
+                projection = mod.evaluator_gateway_projection()
+                self.assertEqual(projection["STEGVERSE_EVALUATOR_INTR_ENABLED"], "true")
+                self.assertEqual(projection["STEGVERSE_EVALUATOR_INTR_UPSTREAM"], "http://127.0.0.1:8765/intr/evaluator")
+
+                value = json.loads(path.read_text(encoding="utf-8"))
+                value["host"] = "192.0.2.10"
+                path.write_text(json.dumps(value) + "\n", encoding="utf-8")
+                disabled = mod.evaluator_gateway_projection()
+                self.assertEqual(disabled["STEGVERSE_EVALUATOR_INTR_ENABLED"], "false")
+        finally:
+            os.environ.clear()
+            os.environ.update(old)
+
+    def test_healer_child_env_carries_only_nonsecret_evaluator_projection(self) -> None:
+        old = dict(os.environ)
+        try:
+            with tempfile.TemporaryDirectory() as td:
+                path = Path(td) / "evaluator.json"
+                path.write_text(json.dumps({
+                    "schema": "stegverse.evaluator-intr-route-config/v1",
+                    "host": "127.0.0.1",
+                    "port": 8765,
+                    "credential_authority": "TV/TVC",
+                    "github_token_runtime_authority": "NONE",
+                    "public_tls_terminated_by": "STEGVERSE_SHARED_SERVICE_GATEWAY",
+                }) + "\n", encoding="utf-8")
+                os.environ[mod.EVALUATOR_CONFIG_ENV] = str(path)
+                env = mod.build_healer_child_env(Path("/healer/targets.json"), "{}")
+        finally:
+            os.environ.clear()
+            os.environ.update(old)
+        self.assertEqual(env["STEGVERSE_EVALUATOR_INTR_ENABLED"], "true")
+        self.assertEqual(env["STEGVERSE_EVALUATOR_INTR_UPSTREAM"], "http://127.0.0.1:8765/intr/evaluator")
+        self.assertNotIn(mod.EVALUATOR_CONFIG_ENV, env)
+
     def test_required_scheduler_inputs_still_cross_boundary(self) -> None:
         env = mod.build_healer_child_env(Path("/healer/targets.json"), "{}")
         self.assertEqual(env["RUN_SCOPE"], "all")
