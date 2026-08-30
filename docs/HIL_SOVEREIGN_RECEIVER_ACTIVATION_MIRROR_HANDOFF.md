@@ -597,3 +597,61 @@ itself, rather than assuming they exist under the outer bootstrap runtime root.
 This runner remains an observer only. It does not synthesize LEASE_OPEN, public
 Gateway readiness, WorkerCoordinator claim/fence, or receiver READY evidence.
 Source/CI validation cannot satisfy the authentic runtime gate.
+
+
+## 2026-08-30 controlled receiver restart/reconstruction verifier
+
+Implemented on branch `feat/hil-post-restart-reconstruction-20260830`:
+
+```text
+scripts/verify_hil_post_restart_reconstruction.py
+tests/test_hil_post_restart_reconstruction.py
+```
+
+This verifier consumes the SAME canonical Site browser observation evidence
+(`stegverse.hil.canonical-observation-evidence/v1 state=OBSERVED`) rather than
+creating a second submission.
+
+Required source observation bindings include:
+
+```text
+receiver_schema = HIL-RECEIVER-RECEIPT-v2
+custody_state = EXACT_BYTES_PERSISTED
+registry_state = RECORDED
+exact_byte_reconstruction = PASS
+tvc_lifecycle_intent_observed = true
+tvc_receiving_receipt_observed = false
+receiver_restart_reconstruction_observed = false
+controlled_pdf_sha256 = sha256:<exact bytes>
+```
+
+Runtime sequence:
+
+```text
+same browser-observed submission_id
+-> load HIL WorkerCoordinator receiver receipt from ESRL runtime root
+-> require receiver_ready=true and an exact positive receiver_pid
+-> GET same submission status before restart
+-> terminate ONLY that receiver_pid
+-> preserve durable_state_root unchanged
+-> restart same sovereign receiver using existing receiver bridge
+-> require exact receiver READY again
+-> GET same submission status after restart
+-> TV/TVC-authenticated GET /api/hil/submissions/{id}/exact-bytes
+-> require X-SteGVerse-HIL-Reconstruction-State=EXACT_BYTES_HASH_VERIFIED
+-> independently SHA-256 returned bytes
+-> require equality with browser-observed controlled_pdf_sha256
+-> emit stegverse.hil.post-restart-reconstruction/v1 PASS
+```
+
+The TV/TVC reconstruction token is checked for runtime presence only and is never
+written into the result, logs, repository, or receipt. If it is absent, the
+verifier returns `PREDICATE_PENDING:TVC_RECONSTRUCTION_AUTH_NOT_OBSERVED`.
+If the WorkerCoordinator receipt does not identify a receiver PID, the verifier
+returns `PREDICATE_PENDING:CONTROLLED_RECEIVER_PID_NOT_AVAILABLE` rather than
+terminating an unknown process.
+
+A PASS does not claim TVC receiving admission, private review, publication, or
+Master Records authority. TVC #8 remains independently owned.
+
+Source/CI does not establish a real restart or reconstruction observation.
