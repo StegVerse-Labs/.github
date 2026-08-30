@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fenced launcher for the StegVerse-002 public observation InTr runtime."""
 from __future__ import annotations
-import json, os, subprocess, sys, time, urllib.request
+import hashlib, json, os, subprocess, sys, time, urllib.request
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -54,13 +54,68 @@ def readiness(c):
         value=json.loads(response.read().decode())
     if response.status!=200 or value.get("state")!="READY" or value.get("transport")!="InTr": raise RoutePending("SV002 observation receiver readiness not observed")
     return value
+def _canonical(value:Any)->str:
+    return json.dumps(value,sort_keys=True,separators=(",",":"),ensure_ascii=False,allow_nan=False)
+
+def _sha256_uri(value:Any)->str:
+    return "sha256:"+hashlib.sha256(_canonical(value).encode("utf-8")).hexdigest()
+
+def _plain_sha256(value:Any)->bool:
+    return isinstance(value,str) and len(value)==64 and all(ch in "0123456789abcdef" for ch in value)
+
+def _valid_hop(receipt:Any, *, transition:str, from_role:str, to_role:str, prefix:str)->bool:
+    if not isinstance(receipt,dict): return False
+    required={
+      "schema":"stegverse.intr.hop_receipt/v1",
+      "boundary_verification":"VERIFIED",
+      "transition_state":transition,
+      "from_role":from_role,
+      "to_role":to_role,
+      "secret_plaintext_present":False,
+      "authority_transfer":False,
+    }
+    if any(receipt.get(k)!=v for k,v in required.items()): return False
+    if not str(receipt.get("receipt_id") or "").startswith(prefix): return False
+    claimed=receipt.get("receipt_hash")
+    if not isinstance(claimed,str) or not claimed.startswith("sha256:") or len(claimed)!=71: return False
+    body=dict(receipt); body.pop("receipt_hash",None)
+    return claimed==_sha256_uri(body)
+
+def validate_round_bundle(bundle:Any)->None:
+    if not isinstance(bundle,dict): raise RuntimeError("SV002 observation round-trip bundle must be an object")
+    expected={
+      "schema":"stegverse.sv002-public-observation-runtime-receipt-bundle/v1",
+      "state":"SV002_PUBLIC_OBSERVATION_ROUND_TRIP_FORWARDED",
+      "observer_direct_relation_to_stegverse_002":False,
+      "credential_authority":"TV/TVC",
+      "authority_effect":"NONE",
+    }
+    for k,v in expected.items():
+        if bundle.get(k)!=v: raise RuntimeError(f"SV002 observation round-trip bundle {k} mismatch")
+    if not _plain_sha256(bundle.get("request_sha256")): raise RuntimeError("SV002 observation request digest invalid")
+    observer=bundle.get("observer_binding")
+    if not isinstance(observer,dict): raise RuntimeError("SV002 observation observer binding missing")
+    if not all(isinstance(observer.get(k),str) and observer.get(k) for k in ("node_id","interlock_id")):
+        raise RuntimeError("SV002 observation observer identity incomplete")
+    if not _plain_sha256(observer.get("registration_receipt_sha256")):
+        raise RuntimeError("SV002 observation registration receipt digest invalid")
+    ingress=bundle.get("ingress_receipt"); egress=bundle.get("egress_receipt")
+    if not _valid_hop(ingress,transition="RECEIVED",from_role="DEVICE_SYSTEM",to_role="STEGOS_ECOSYSTEM",prefix="SV002-OBS-IN-"):
+        raise RuntimeError("SV002 observation ingress receipt integrity invalid")
+    if not _valid_hop(egress,transition="FORWARDED",from_role="STEGOS_ECOSYSTEM",to_role="DEVICE_SYSTEM",prefix="SV002-OBS-OUT-"):
+        raise RuntimeError("SV002 observation egress receipt integrity invalid")
+    if egress.get("prior_receipt_hash")!=ingress.get("receipt_hash"):
+        raise RuntimeError("SV002 observation egress lineage does not bind ingress receipt")
+
 def existing_round(c):
     root=Path(str(c["runtime_root"])).expanduser().resolve()/"receipts/sovereign-network/sv002-public-observation"
     if not root.is_dir(): return None
     for p in sorted(root.glob("SV002-OBS-IN-*.json")):
         try: v=json.loads(p.read_text())
         except Exception: continue
-        if v.get("state")=="SV002_PUBLIC_OBSERVATION_ROUND_TRIP_FORWARDED": return str(p)
+        if not isinstance(v,dict) or v.get("state")!="SV002_PUBLIC_OBSERVATION_ROUND_TRIP_FORWARDED": continue
+        validate_round_bundle(v)
+        return str(p)
     return None
 def ensure_receiver(c,server):
     observed=existing_round(c)
