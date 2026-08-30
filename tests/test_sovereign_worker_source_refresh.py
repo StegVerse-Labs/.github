@@ -115,6 +115,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "scripts/run_sv_dn1_first_round_chain.py",
                 "scripts/consume_sv_dn1_resident_execution_request.py",
                 "scripts/consume_tvc_broker_validation_request.py",
+                "scripts/consume_sv002_self_characterization_request.py",
                 "scripts/dispatch_resident_execution_requests.py",
                 "scripts/materialize_live_cosv_packet.py",
                 "scripts/cosv.py",
