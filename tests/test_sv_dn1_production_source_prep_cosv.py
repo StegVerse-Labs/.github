@@ -68,7 +68,10 @@ class SVDN1ProductionSourcePrepCOSVTests(unittest.TestCase):
             + summary["completed_only_historical_unvectorized_task_ids"]
             + summary["superseded_historical_unvectorized_task_ids"],
         )
-        self.assertEqual(self.coverage["total_active_unvectorized_unique_task_ids"], 29)
+        self.assertEqual(
+            self.coverage["total_active_unvectorized_unique_task_ids"],
+            expected_active_unvectorized + self.coverage["organization_registry_summary"]["active_unvectorized_task_ids"],
+        )
 
     def test_projection_cannot_promote_runtime_or_authority(self):
         projection = self.coverage["sv_dn1_production_source_prep_projection"]
