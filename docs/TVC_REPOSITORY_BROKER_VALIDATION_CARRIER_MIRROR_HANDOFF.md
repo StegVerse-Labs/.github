@@ -139,7 +139,9 @@ stable source-bundle digest emission: IMPLEMENTED / UNVALIDATED
 ST-019 PROTECT_DEFAULT_BRANCH source: IMPLEMENTED / UNVALIDATED
 tvc governed validation request bridge: MERGED / VALIDATED
 TVC PR #92 resident progression driver: MERGED / VALIDATED in TVC a35fb5b93ae30da27848e263f86c929f81636a02
-resident request -> TVC progression composition: IMPLEMENTING
+resident request -> TVC progression composition: MERGED / VALIDATED in .github a59e9ffdcc890a79af911c0cd6d81aea5fbc34c2
+current-base admission compatibility evaluator: MERGED / VALIDATED in TVC e350225d9e28dc45d3685afa8b7113d54fcf19b9
+resident validation -> admission compatibility composition: IMPLEMENTING
 tvc governed validation receipt: 0/1
 tvc broker admission: 0/1
 ST-019 authentic protection operation: 0/1
@@ -162,7 +164,11 @@ current exact TVC head binding: b5288f9910ada26c6ab2e9bca3f7701afaae2cef
 exact local source retry posture: HANDOFF_READY
 ```
 
-The validation lane is machine-executable whenever the sovereign runtime can either (a) see an exact clean TVC PR #92 checkout or (b) see an already-local current TVC control root containing the merged PR-#92 progression module. In case (b), the consumer can invoke the existing TVC progression, which uses the pre-existing systemd `LoadCredential` private-source capability and materializes only the exact pinned source into `/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99`. The consumer remains credential-free and does not perform provider network acquisition itself. The resident request grants no source transport or credential authority. No governed validation receipt has yet been observed.
+The validation lane is machine-executable whenever the sovereign runtime can either (a) see an exact clean TVC PR #92 checkout or (b) see an already-local current TVC control root containing the merged PR-#92 progression module. In case (b), the consumer can invoke the existing TVC progression, which uses the pre-existing systemd `LoadCredential` private-source capability and materializes only the exact pinned source into `/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99`. The consumer remains credential-free and does not perform provider network acquisition itself.
+
+For fresh requests that explicitly set `admission_compatibility_requested=true`, terminal validation is not considered the end of the resident continuation. After authentic validation is observed, the consumer locates the already-local TVC control root and invokes the merged credential-free `scripts.evaluate_github_repository_operation_broker_admission` module. The request is only terminal for that extended continuation when the evaluator reports `TVC_PR92_BROKER_ADMISSION_ELIGIBLE` for the same exact head and source-bundle digest. This still does not merge PR #92.
+
+The resident request grants no source transport, credential, current-base mutation, commit, push, merge, or repository authority. No governed validation or admission-eligibility runtime receipt has yet been observed.
 
 ## Continuity and archive semantics
 
@@ -175,4 +181,35 @@ project_lifecycle: ACTIVE / BLOCKED
 chat_session_required: false
 tvc_governed_validation_receipt: 0/1
 tvc_broker_admission: 0/1
+```
+
+## Resident post-validation compatibility continuation — 2026-08-30
+
+TVC main now contains:
+
+`scripts/evaluate_github_repository_operation_broker_admission.py`
+
+Merged source:
+
+`e350225d9e28dc45d3685afa8b7113d54fcf19b9`
+
+The evaluator requires the authentic TVC PR-#92 progression receipt and the exact private-source materialization, clones the already-local current TVC control root with `git clone --local`, overlays only the exact validated 16 files, rechecks the unchanged digest, and reruns the canonical validator with all credential variables removed.
+
+The `.github` resident consumer may invoke this evaluator only after its own canonical validation receipt is terminal PASS and only when the resident request explicitly asks for admission compatibility. The consumer records:
+
+```text
+terminal_validation_observed
+admission_compatibility_requested
+admission_compatibility_observed
+admission_compatibility
+```
+
+A request with `admission_compatibility_requested=true` is not considered previously consumed until both authentic terminal validation and authentic `TVC_PR92_BROKER_ADMISSION_ELIGIBLE` are observed. This prevents an earlier validation-only attempt from suppressing the current-base compatibility continuation.
+
+Neither the evaluator nor the resident consumer performs repository merge. The separate repository integration authority remains downstream of:
+
+```text
+governed validation PASS
++ source_bundle_sha256=0369ed677a014a99a983415a9094e6aaa0c570d163d9818d9a086fee6042dd6a
++ TVC_PR92_BROKER_ADMISSION_ELIGIBLE
 ```
