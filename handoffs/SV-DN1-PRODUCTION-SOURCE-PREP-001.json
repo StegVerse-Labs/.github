@@ -131,16 +131,32 @@
     "source_package_schema": "stegverse.source-package/v1",
     "source_package_version": "1.0.0",
     "required_components": [
-      "StegVerse-org/StegVerse-SDK",
-      "Data-Continuation/core-lite",
-      "StegVerse-Labs/StegCore",
-      "master-records/orchestration"
+      "stegverse.sdk",
+      "stegverse.stegcore",
+      "stegverse.core-lite",
+      "stegverse.master-records"
     ],
     "migration_legacy_coordinates": {
-      "StegVerse-org/StegVerse-SDK": "4461a1edf83549c51189ca4217dd75752caf604e",
-      "Data-Continuation/core-lite": "284ddc21a352ee9c7decdd40dd499b7286710bc8",
-      "StegVerse-Labs/StegCore": "eb2ef110d09328aa90bf1ed91c18b47a3ba32a71",
-      "master-records/orchestration": "baf9272f89ebe515fc4c2413b5d951d28f1e4485"
+      "stegverse.sdk": {
+        "kind": "git",
+        "repository": "StegVerse-org/StegVerse-SDK",
+        "commit": "4461a1edf83549c51189ca4217dd75752caf604e"
+      },
+      "stegverse.core-lite": {
+        "kind": "git",
+        "repository": "Data-Continuation/core-lite",
+        "commit": "284ddc21a352ee9c7decdd40dd499b7286710bc8"
+      },
+      "stegverse.stegcore": {
+        "kind": "git",
+        "repository": "StegVerse-Labs/StegCore",
+        "commit": "eb2ef110d09328aa90bf1ed91c18b47a3ba32a71"
+      },
+      "stegverse.master-records": {
+        "kind": "git",
+        "repository": "master-records/orchestration",
+        "commit": "baf9272f89ebe515fc4c2413b5d951d28f1e4485"
+      }
     },
     "required_migration_anchor_blobs": {
       "StegVerse-org/StegVerse-SDK:stegverse/governance_ingress_runtime.py": "62c5ae4799ae018f6b100766215c3c68078c5b2e",
