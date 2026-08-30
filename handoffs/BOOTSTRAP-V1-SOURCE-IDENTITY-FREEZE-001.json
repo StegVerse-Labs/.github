@@ -52,9 +52,9 @@
     "manual_execution_allowed": false,
     "manual_allowed_role": "evidence review only",
     "priority": "release",
-    "parent_task_id": "SV-DN1-PRODUCTION-SOURCE-PREP-001",
-    "derivation_reason": "A distributable Bootstrap v1 needs stable platform-independent source coordinates. The already-admitted source-prep v2 receipt is the sole producer of those content identities; this task freezes them without acquiring or executing source.",
-    "derivation_depth": 3,
+    "parent_task_id": null,
+    "derivation_reason": "A distributable Bootstrap v1 needs stable platform-independent source coordinates. This independent release-preparation task depends on the source-prep v2 receipt as evidence but does not inherit SV-DN-1 semantic lineage or authority.",
+    "derivation_depth": 0,
     "source_handoff_ref": "docs/BOOTSTRAP_V1_SOURCE_IDENTITY_FREEZE_MIRROR_HANDOFF.md",
     "dependencies": [
       "SV-DN1-PRODUCTION-SOURCE-PREP-001"
