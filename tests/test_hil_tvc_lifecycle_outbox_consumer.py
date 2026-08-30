@@ -1,0 +1,64 @@
+from __future__ import annotations
+import json
+from pathlib import Path
+import subprocess
+import tempfile
+import unittest
+
+from scripts import consume_hil_tvc_lifecycle_outbox as mod
+
+class HILTVCConsumerTests(unittest.TestCase):
+    def test_no_worker_receipt_is_no_event(self):
+        with tempfile.TemporaryDirectory() as td:
+            result=mod.consume(Path(td),env={})
+            self.assertEqual(result["state"],"NO_EVENT")
+
+    def test_consumes_exact_queue_and_receiver_receipt(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td); runtime=root/"runtime"; runtime.mkdir()
+            durable=root/"hil"; durable.mkdir()
+            wp=runtime/mod.WORKER_RECEIPT_REL; wp.parent.mkdir(parents=True)
+            wp.write_text(json.dumps({"receiver_ready":True,"durable_state_root":str(durable)}))
+            receiver_dir=durable/"receiver-receipts"; receiver_dir.mkdir()
+            rr=receiver_dir/"S1.json"; rr.write_text(json.dumps({"schema_version":"HIL-RECEIVER-RECEIPT-v2","submission_id":"S1"}))
+            outbox=durable/"intr-outbox/tvc-hil-lifecycle"; outbox.mkdir(parents=True)
+            q=outbox/"S1.json"; q.write_text(json.dumps({
+                "schema":"stegverse.hil.tvc_interlock_queue/v1","state":"READY_FOR_INTERLOCK_ADMISSION",
+                "submission_id":"S1","queue_hash":"sha256:"+"a"*64,"receiver_receipt_ref":str(rr)
+            }))
+            tvc=root/"TVC"; (tvc/"tools").mkdir(parents=True)
+            (tvc/"tools/hil_intr_lifecycle_intake.py").write_text("# test\n")
+            for rel in mod.TVC_PROTECTED_PATHS:
+                p=tvc/rel; p.parent.mkdir(parents=True,exist_ok=True); p.touch(exist_ok=True)
+            def runner(cmd,**kwargs):
+                if cmd[0]=="git":
+                    if "merge-base" in cmd: return subprocess.CompletedProcess(cmd,0,"","")
+                    return subprocess.CompletedProcess(cmd,0,"","")
+                payload={"state":"ADMITTED_TO_TVC_HIL_LIFECYCLE","credential_authority":"TV/TVC","authority_transfer":False,
+                         "private_review_completed":False,"publication_authorized":False,"admission_hash":"sha256:admit",
+                         "tvc_interlock_receipt":{"receipt_hash":"sha256:hop"},"next_required_transition":"TVC_HIL_PRIVATE_REVIEW_INTERLOCK"}
+                return subprocess.CompletedProcess(cmd,0,json.dumps(payload)+"\n","")
+            result=mod.consume(runtime,runner=runner,env={"STEGVERSE_TVC_ROOT":str(tvc)})
+            self.assertEqual(result["state"],"ADMITTED_TO_TVC_HIL_LIFECYCLE")
+            self.assertEqual(result["results"][0]["tvc_interlock_receipt_hash"],"sha256:hop")
+            self.assertFalse(result["private_review_completed"])
+            self.assertTrue((runtime/mod.CONSUMPTION_REL).is_file())
+
+    def test_receiver_receipt_must_stay_inside_durable_root(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td); runtime=root/"runtime"; runtime.mkdir(); durable=root/"hil"; durable.mkdir()
+            wp=runtime/mod.WORKER_RECEIPT_REL; wp.parent.mkdir(parents=True)
+            wp.write_text(json.dumps({"receiver_ready":True,"durable_state_root":str(durable)}))
+            outside=root/"outside.json"; outside.write_text("{}")
+            outbox=durable/"intr-outbox/tvc-hil-lifecycle"; outbox.mkdir(parents=True)
+            (outbox/"S1.json").write_text(json.dumps({"schema":"stegverse.hil.tvc_interlock_queue/v1","state":"READY_FOR_INTERLOCK_ADMISSION","submission_id":"S1","receiver_receipt_ref":str(outside)}))
+            tvc=root/"TVC"; (tvc/"tools").mkdir(parents=True)
+            (tvc/"tools/hil_intr_lifecycle_intake.py").write_text("# test\n")
+            for rel in mod.TVC_PROTECTED_PATHS:
+                p=tvc/rel; p.parent.mkdir(parents=True,exist_ok=True); p.touch(exist_ok=True)
+            def runner(cmd,**kwargs): return subprocess.CompletedProcess(cmd,0,"","")
+            result=mod.consume(runtime,runner=runner,env={"STEGVERSE_TVC_ROOT":str(tvc)})
+            self.assertEqual(result["state"],"FAIL_CLOSED")
+            self.assertEqual(result["failures"][0]["reason"],"receiver_receipt_ref_invalid")
+
+if __name__=="__main__": unittest.main()
