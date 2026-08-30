@@ -728,3 +728,38 @@ g18_completion_required = false
 
 A source merge does not prove a browser submission, TVC receiving receipt, private
 review, publication, Master Record admission, or HIL runtime activation.
+
+
+## 2026-08-30 targeted local refresh and HIL request dispatch
+
+The fresh resident request `RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002` is merged,
+but repository merge is not source transport. The sovereign runtime intentionally
+performs no network fetch, so the exact remaining pre-execution predicate is:
+
+```text
+already-local StegVerse-Labs/.github source contains merge
+0aa81bc8b18732a74d64989ff83aaeef94f36f40 or a validated descendant
+-> local static source refresh preserves mutable resident state
+-> dispatch exactly consumer hil
+-> consume request RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002
+```
+
+The portable bridge supports that exact bounded transition:
+
+```text
+python scripts/refresh_and_dispatch_resident_requests.py \
+  --source-root <already-local-current-.github-checkout> \
+  --runtime-root <existing-sovereign-runtime-root> \
+  --only-consumer hil
+```
+
+The historical frozen-v0.4 consumer remains the default. `hil` must be selected
+explicitly; unrelated resident requests are not visited. Unsupported selectors
+fail before refresh or dispatch. The bridge still rejects hosted or credential-
+bearing environments, performs no network source fetch, mints no claim/fence,
+and grants no runtime authority.
+
+This closes the missing targeted invocation surface only. Authentic HIL execution
+remains blocked until the already-local checkout is current and this local command
+or the installed source watcher executes on an eligible sovereign runtime. A CI
+PASS cannot satisfy that predicate.
