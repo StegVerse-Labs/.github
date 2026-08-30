@@ -24,6 +24,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 DISPATCHER_REL = Path("scripts/dispatch_resident_execution_requests.py")
 DISPATCH_RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
 RECEIPT_REL = Path("receipts/sovereign-host/resident-refresh-dispatch.latest.json")
+SV_DN1_BROWSER_LOCATOR_REL = Path("control/sv-dn1-browser-observation-locator.json")
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
 ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "hil", "sv_dn1")
 HOSTED_ENV = (
@@ -102,6 +103,26 @@ def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
     os.replace(temp, path)
 
 
+def persist_sv_dn1_browser_locator(runtime: Path, safe_env: Mapping[str, str], target_consumer: str) -> bool:
+    if target_consumer != "sv_dn1":
+        return False
+    raw = str(safe_env.get("STEGVERSE_SV_DN1_BROWSER_OBSERVATION_BUNDLE") or "").strip()
+    if not raw:
+        return False
+    bundle = Path(raw).expanduser().resolve()
+    if not bundle.is_file():
+        raise RuntimeError(f"SV-DN-1 browser observation bundle missing: {bundle}")
+    atomic_json(runtime / SV_DN1_BROWSER_LOCATOR_REL, {
+        "schema": "stegverse.sv-dn1.browser-observation-locator/v1",
+        "state": "AVAILABLE_LOCAL_ONLY",
+        "bundle_path": str(bundle),
+        "credential_material_included": False,
+        "network_fetch_performed": False,
+        "authority_effect": "NONE_LOCAL_EVIDENCE_LOCATOR_ONLY",
+    })
+    return True
+
+
 def refresh_and_dispatch(
     source_root: Path,
     runtime_root: Path,
@@ -123,6 +144,8 @@ def refresh_and_dispatch(
         raise RuntimeError("resident source refresh unexpectedly acquired a credential")
     if refresh_receipt.get("mutable_runtime_state_preserved") is not True:
         raise RuntimeError("resident source refresh did not preserve mutable runtime state")
+
+    browser_locator_persisted = persist_sv_dn1_browser_locator(runtime, safe, target_consumer)
 
     dispatcher = runtime / DISPATCHER_REL
     if not dispatcher.is_file():
@@ -147,6 +170,7 @@ def refresh_and_dispatch(
         "schema": "stegverse.resident-refresh-dispatch/v1", "state": state,
         "source_root": str(source), "runtime_root": str(runtime), "refresh_receipt": refresh_receipt,
         "dispatcher_ref": str(DISPATCHER_REL), "target_consumer": target_consumer,
+        "sv_dn1_browser_locator_persisted": browser_locator_persisted,
         "exact_consumer_selection_observed": bool(exact_selection), "unrelated_consumers_dispatched": False,
         "dispatch_returncode": completed.returncode, "dispatch_receipt_observed": dispatch_observed,
         "dispatch_receipt": dispatch_receipt, "runtime_execution_possible_in_target_consumer": True,
