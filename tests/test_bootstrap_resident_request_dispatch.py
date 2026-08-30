@@ -43,6 +43,7 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             "scripts/consume_sv_dn1_resident_execution_request.py",
             "scripts/consume_tvc_broker_validation_request.py",
             "scripts/consume_cross_framework_current_basis_v04_request.py",
+            "scripts/refresh_and_dispatch_resident_requests.py",
         ):
             self.assertIn(rel, required)
 
@@ -61,6 +62,7 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             "scripts/run_sv_dn1_first_round_chain.py",
             "scripts/consume_sv_dn1_resident_execution_request.py",
             "scripts/consume_cross_framework_current_basis_v04_request.py",
+            "scripts/refresh_and_dispatch_resident_requests.py",
         ):
             self.assertIn(rel, copied)
 
