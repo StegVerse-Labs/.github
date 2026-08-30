@@ -92,6 +92,80 @@ class SvDn1SovereignExecutionChainTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, "durable receipt failed validation"):
                     chain.validate_durable_receipt("SV-DN1-SOURCE-MATERIALIZATION-001", {"HOME": str(base)})
 
+
+    def test_source_prep_v2_receipt_is_accepted_and_legacy_shape_is_not_required(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            receipt_path = base / ".stegverse/state/sv-dn1-production-source-prep/receipts/latest.json"
+            roots = {
+                "stegverse.sdk": "/srv/sdk",
+                "stegverse.stegcore": "/srv/stegcore",
+                "stegverse.core-lite": "/srv/core-lite",
+                "stegverse.master-records": "/srv/master-records",
+            }
+            write_json(receipt_path, {
+                "schema": "stegverse.sv-dn1.production-source-prep-receipt/v2",
+                "state": "COMPLETE",
+                "transition_id": "SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE",
+                "source_identity_scheme": "sha256-content-manifest",
+                "migration_anchors_verified": True,
+                "network_source_fetch_performed": False,
+                "github_platform_required": False,
+                "credential_used": False,
+                "github_token_used": False,
+                "repository_writeback_performed": False,
+                "sdk_admitted": False,
+                "source_roots": roots,
+                "source_identities": {k: "sha256:" + (str(i + 1) * 64)[:64] for i, k in enumerate(roots)},
+                "source_root_env": {
+                    "STEGVERSE_SDK_SOURCE_ROOT": roots["stegverse.sdk"],
+                    "STEGVERSE_STEGCORE_SOURCE_ROOT": roots["stegverse.stegcore"],
+                    "STEGVERSE_CORE_LITE_SOURCE_ROOT": roots["stegverse.core-lite"],
+                    "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": roots["stegverse.master-records"],
+                },
+            })
+            with mock.patch.object(chain.Path, "home", return_value=base):
+                observed = chain.validate_durable_receipt("SV-DN1-PRODUCTION-SOURCE-PREP-001", {"HOME": str(base)})
+            self.assertEqual(observed["receipt_path"], str(receipt_path))
+            receipt = json.loads(receipt_path.read_text())
+            self.assertNotIn("public_source_roots_verified", receipt)
+            self.assertNotIn("private_source_roots_verified", receipt)
+
+    def test_source_prep_v2_receipt_rejects_root_locator_disagreement(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            receipt_path = base / ".stegverse/state/sv-dn1-production-source-prep/receipts/latest.json"
+            roots = {
+                "stegverse.sdk": "/srv/sdk",
+                "stegverse.stegcore": "/srv/stegcore",
+                "stegverse.core-lite": "/srv/core-lite",
+                "stegverse.master-records": "/srv/master-records",
+            }
+            write_json(receipt_path, {
+                "schema": "stegverse.sv-dn1.production-source-prep-receipt/v2",
+                "state": "COMPLETE",
+                "transition_id": "SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE",
+                "source_identity_scheme": "sha256-content-manifest",
+                "migration_anchors_verified": True,
+                "network_source_fetch_performed": False,
+                "github_platform_required": False,
+                "credential_used": False,
+                "github_token_used": False,
+                "repository_writeback_performed": False,
+                "sdk_admitted": False,
+                "source_roots": roots,
+                "source_identities": {k: "sha256:" + "a"*64 for k in roots},
+                "source_root_env": {
+                    "STEGVERSE_SDK_SOURCE_ROOT": "/wrong/sdk",
+                    "STEGVERSE_STEGCORE_SOURCE_ROOT": roots["stegverse.stegcore"],
+                    "STEGVERSE_CORE_LITE_SOURCE_ROOT": roots["stegverse.core-lite"],
+                    "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": roots["stegverse.master-records"],
+                },
+            })
+            with mock.patch.object(chain.Path, "home", return_value=base):
+                with self.assertRaisesRegex(RuntimeError, "disagrees"):
+                    chain.validate_durable_receipt("SV-DN1-PRODUCTION-SOURCE-PREP-001", {"HOME": str(base)})
+
     def test_existing_active_task_stops_chain_without_reacquisition(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             base = Path(td)
