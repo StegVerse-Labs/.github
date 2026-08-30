@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "bootstrap_v1_release_candidate_freeze",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 2,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 16,
+    "confidence": "LOW_UNTIL_FIRST_SOVEREIGN_RUN"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 32768,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "docs/BOOTSTRAP_V1_RELEASE_CANDIDATE_FREEZE_MIRROR_HANDOFF.md",
+    "handoffs/BOOTSTRAP-V1-RELEASE-CANDIDATE-FREEZE-001.json",
+    "workers/bootstrap_v1_release_candidate_freeze_worker.py"
+  ],
+  "notes": [
+    "Reads only local source-freeze evidence.",
+    "No network/platform/credential operation.",
+    "External cost is zero."
+  ]
+}

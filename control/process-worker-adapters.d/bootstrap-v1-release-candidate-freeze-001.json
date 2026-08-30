@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "BOOTSTRAP-V1-RELEASE-CANDIDATE-FREEZE-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:bootstrap-v1-release-candidate-freeze-v1",
+      "authority_ref": "handoffs/BOOTSTRAP-V1-RELEASE-CANDIDATE-FREEZE-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "release_candidate_identity_validation",
+        "local_release_candidate_freeze",
+        "evidence_class_preservation"
+      ],
+      "command": [
+        "python",
+        "workers/bootstrap_v1_release_candidate_freeze_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_BOOTSTRAP_V1_SOURCE_IDENTITY_FREEZE_STATE_ROOT",
+        "STEGVERSE_BOUND_STATE_ROOT",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/state/bootstrap-v1-release-candidate-freeze",
+      "bound_state_allowed_paths": [
+        "candidate/**",
+        "receipts/**"
+      ],
+      "timeout_seconds": 60,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Consumes only a local frozen source catalog + matching freeze receipt.",
+        "No repository/platform/transport locator is canonical or required.",
+        "Freezes identity/compatibility only; release activation, package execution and publication remain false."
+      ]
+    }
+  ]
+}
