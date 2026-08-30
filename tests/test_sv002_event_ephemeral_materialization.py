@@ -93,6 +93,17 @@ class SV002EventEphemeralTests(unittest.TestCase):
             self.assertFalse(receipt["claim_or_fence_minted"])
             dispatch.assert_called_once()
 
+    def test_superseded_script_materialization_path_absent(self):
+        self.assertFalse((ROOT / "scripts/consume_sv002_intr_materialization_request.py").exists())
+        self.assertFalse((ROOT / "scripts/serve_sv002_intr_materialization_ingress.py").exists())
+        bootstrap=(ROOT / "scripts/bootstrap_sovereign_runtime.py").read_text(encoding="utf-8")
+        refresh=(ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").read_text(encoding="utf-8")
+        installer=(ROOT / "scripts/install_sovereign_worker_source_refresh_service.py").read_text(encoding="utf-8")
+        for text in (bootstrap,refresh,installer):
+            self.assertNotIn("consume_sv002_intr_materialization_request.py",text)
+            self.assertNotIn("serve_sv002_intr_materialization_ingress.py",text)
+        self.assertNotIn("sv002-intr-materialization",installer)
+
 
 if __name__ == "__main__":
     unittest.main()
