@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001",
+  "state": "REQUESTED",
+  "task_id": "BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "credential_authority": "TV/TVC",
+  "credential_requirement": "NONE_FOR_PUBLIC_BUNDLE_DELIVERY",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "package_execution_authority": false,
+  "sdk_admission_authority": false,
+  "release_activation_authority": false,
+  "publication_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "After the canonical Bootstrap v1 distributable bundle is built, start or reuse the admitted sovereign Universal InTr bundle-delivery receiver. Remain ACTIVE at readiness and COMPLETE only after one authentic browser request receives the exact local bundle with a valid DEVICE_SYSTEM <-> STEGOS_ECOSYSTEM request/response receipt chain. No source fetch, credential transfer, repository mutation, package execution, SDK admission, release activation, publication, GitHub runtime authority, or second machine is granted."
+}
