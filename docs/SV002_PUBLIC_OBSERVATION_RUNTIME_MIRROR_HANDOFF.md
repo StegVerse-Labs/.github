@@ -244,3 +244,47 @@ Scoped .github files:
 - `docs/SV002_PUBLIC_OBSERVATION_RUNTIME_MIRROR_HANDOFF.md`
 
 Site-side Node outbox initiation is owned by the existing `StegVerse-Labs/Site/docs/SV002_PUBLIC_OBSERVATION_MIRROR_HANDOFF.md` lane and must remain non-authorizing.
+
+
+## Event-ephemeral source closure
+
+Issue #493 is source-complete and closed.
+
+```text
+sovereign PR: #509
+sovereign merge: 33626b0aed68884f996e03b305f592aa3f727d51
+organization control-plane validation: 33294636186 SUCCESS
+Heartbeat Worker Project validation: 33294636189 SUCCESS
+Site PR: StegVerse-Labs/Site#702
+Site merge: 8398426bc740a29d47563236e84f6b829db3b371
+known scoped scaffolding/stubs: 0
+```
+
+Merged source now provides:
+
+- exact Node-bound non-authorizing SV002 materialization ingress;
+- write-once request/ingress receipt binding;
+- resident materialization consumer;
+- event-triggered route materialization and targeted independent task execution;
+- retryable nonterminal route-pending behavior;
+- receiver READY as downstream evidence rather than transport-initiation prerequisite;
+- G18-independent request/consumer semantics;
+- source-refresh/bootstrap propagation for both new scripts;
+- filesystem-event consumption of queued SV002 materialization requests;
+- Site Node outbox generation and sync discovery.
+
+Still not observed:
+
+```text
+public sovereign materialization ingress locator: NOT OBSERVED
+Node outbox -> sovereign ingress delivery: NOT OBSERVED
+resident materialization consumer execution: NOT OBSERVED
+SV002_PUBLIC_OBSERVATION_RECEIVER_READY: NOT OBSERVED
+shared Gateway public round trip: NOT OBSERVED
+authentic observation ingress RECEIVED: NOT OBSERVED
+authentic observation egress FORWARDED: NOT OBSERVED
+authentic principal self-characterization: NOT OBSERVED
+Master Records reconstruction: NOT OBSERVED
+```
+
+The next machine-execution transition is therefore runtime projection/delivery, not additional receiver-source construction.
