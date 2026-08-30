@@ -8,7 +8,7 @@
     "success_predicates": [
       "authentic resident observer and route-specific InTr receipts are COMPLETE",
       "SDK ingress candidate is READY_FOR_SDK_0B",
-      "canonical local SDK/StegCore/Core-Lite/Master Records anchors match admitted pins",
+      "production-source-prep v2 receipt is COMPLETE and supplies four sha256-content-manifest source identities + local roots",
       "canonical sovereign SDK result is emitted",
       "SDK result binds to exact submitted candidate and route",
       "Master Records custody status is RECORDED",
@@ -23,7 +23,7 @@
     "failure_predicates": [
       "upstream authentic resident or InTr evidence is absent or mismatched",
       "candidate is not READY_FOR_SDK_0B",
-      "local canonical production anchor source is absent or drifted",
+      "production-source-prep receipt/root/source-identity is absent or drifted",
       "hosted execution is treated as sovereign runtime",
       "parallel/mock evaluator or route is used",
       "SDK result does not bind to exact manifest/route/state",
@@ -89,7 +89,7 @@
   "authority": {
     "authority_source": "canonical SV-DN-1 SDK bridge + StegVerse-SDK 0B production route + sovereign WorkerCoordinator",
     "heartbeat_grants_execution_authority": false,
-    "policy_version": "sv-dn1-sdk-first-round-v1",
+    "policy_version": "sv-dn1-sdk-first-round-v2",
     "credential_authority": "TV/TVC",
     "github_token_required": false,
     "github_token_runtime_authority": "NONE",
@@ -101,7 +101,8 @@
     "publication_authority": false,
     "certification_authority": false,
     "canonical_protocol_adoption_authority": false,
-    "execution_authority_created": false
+    "execution_authority_created": false,
+    "github_platform_required": false
   },
   "execution": {
     "required_capabilities": [
@@ -112,17 +113,14 @@
       "evidence_class_preservation"
     ],
     "required_local_locators": [
-      "STEGVERSE_SDK_SOURCE_ROOT",
-      "STEGVERSE_STEGCORE_SOURCE_ROOT",
-      "STEGVERSE_CORE_LITE_SOURCE_ROOT",
-      "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT"
+      "STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT"
     ],
     "optional_local_locators": [
       "STEGVERSE_SV_DN1_SOURCE_ROOT",
       "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT",
       "STEGVERSE_SV_DN1_INTR_STATE_ROOT"
     ],
-    "locator_semantics": "NON_SECRET_ALREADY_MATERIALIZED_LOCAL_SOURCE_PATHS_ONLY",
+    "locator_semantics": "SOURCE_PREP_RECEIPT_ROOT_PLUS_OPTIONAL_LOCAL_EVIDENCE_ROOTS_ONLY",
     "worker": "workers/sv_dn1_sdk_first_round_worker.py",
     "allowed_paths": [
       "receipts/sv-dn1-sdk-first-round/**"
@@ -163,14 +161,26 @@
       "REVIEW",
       "FAIL_CLOSED"
     ],
-    "required_anchor_blobs": {
+    "credential_authority": "TV/TVC",
+    "required_source_prep_receipt_schema": "stegverse.sv-dn1.production-source-prep-receipt/v2",
+    "required_source_identity_scheme": "sha256-content-manifest",
+    "required_source_components": [
+      "stegverse.sdk",
+      "stegverse.stegcore",
+      "stegverse.core-lite",
+      "stegverse.master-records"
+    ],
+    "required_source_prep_platform_flags": {
+      "network_source_fetch_performed": false,
+      "github_platform_required": false
+    },
+    "migration_anchor_blobs": {
       "STEGVERSE_SDK_SOURCE_ROOT:stegverse/governance_ingress_runtime.py": "62c5ae4799ae018f6b100766215c3c68078c5b2e",
       "STEGVERSE_SDK_SOURCE_ROOT:stegverse/sovereign_validation_runtime.py": "814d4cb607cc2cb4c7a605474fe845e13540898d",
       "STEGVERSE_STEGCORE_SOURCE_ROOT:src/stegcore/transaction_lifecycle.py": "81935669846fedd2867272810b090226b05780ab",
       "STEGVERSE_CORE_LITE_SOURCE_ROOT:core_lite/transaction_route.py": "734923a86bfcd4d41d07e0fb8797de50f0fb9408",
       "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT:services/manifest_receipt_custody.py": "26a4c1e082ee91128648b2b9bd13cc32ce915f82"
-    },
-    "credential_authority": "TV/TVC"
+    }
   },
   "activation": {
     "carrier": "independent_task_control",
@@ -205,6 +215,8 @@
       "first_round_analysis=ANALYZED",
       "dashboard_generated=true",
       "dashboard_publicly_hosted=false",
+      "source_identity_scheme=sha256-content-manifest",
+      "github_platform_required=false",
       "github_token_used=false"
     ],
     "release_condition": "One authentic production round is bound end-to-end from resident/InTr evidence through canonical SDK/StegCore governance, Master Records custody/reconstruction, deterministic SV-DN-1 evaluation and local receipt-derived dashboard generation."
