@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:sv002-public-observation-runtime-v1",
+      "authority_ref": "handoffs/SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "runtime_observation",
+        "universal_intr_adjacent_hop_traversal"
+      ],
+      "command": [
+        "python",
+        "workers/sv002_public_observation_runtime_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SV002_OBSERVE_ROUTE_CONFIG",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/runtime",
+      "bound_state_allowed_paths": [
+        "receipts/sovereign-network/sv002-public-observation/**"
+      ],
+      "timeout_seconds": 360,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Launches only the bounded read-only StegVerse-002 observation listener.",
+        "Observer traffic terminates at the projection, not StegVerse-002.",
+        "No hosted/GitHub credential runtime authority."
+      ]
+    }
+  ]
+}
