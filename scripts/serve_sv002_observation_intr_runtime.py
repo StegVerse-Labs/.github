@@ -121,6 +121,31 @@ def _interaction_events(chain:Any)->list[Any]:
                 return value
     return []
 
+def _observed_interlock(chain:Any,target:str)->bool:
+    if isinstance(chain,list):
+        return any(_observed_interlock(item,target) for item in chain)
+    if not isinstance(chain,dict):
+        return False
+    target_values={
+        str(chain.get("counterpart") or ""),
+        str(chain.get("counterpart_id") or ""),
+        str(chain.get("destination_organization") or ""),
+        str(chain.get("external_organization") or ""),
+        str(chain.get("organization") or ""),
+    }
+    transition=str(chain.get("transition") or chain.get("transition_id") or "").upper()
+    interlock_state=str(chain.get("interlock_state") or "").upper()
+    state=str(chain.get("state") or "").upper()
+    established=(
+        interlock_state in {"CONNECTED","ESTABLISHED"}
+        or transition in {"INTERLOCK_ESTABLISHED","INTERLOCK_CONNECTED","EXTERNAL_INTERLOCK_ESTABLISHED"}
+        or state in {"INTERLOCK_ESTABLISHED","CONNECTED"} and "INTERLOCK" in transition
+    )
+    if target in target_values and established:
+        return True
+    return any(_observed_interlock(value,target) for value in chain.values() if isinstance(value,(dict,list)))
+
+
 def build_projection(runtime_root:Path,micro_node_root:Path)->dict[str,Any]:
     runtime=runtime_root.expanduser().resolve()
     micro=micro_node_root.expanduser().resolve()
@@ -147,7 +172,7 @@ def build_projection(runtime_root:Path,micro_node_root:Path)->dict[str,Any]:
     for event in _interaction_events(chain):
         events.append({"event":"INTERACTION_EVIDENCE","evidence":event})
     ae_known=bool(provenance and (provenance.get("source_organization") or {}).get("availability_known") is True)
-    ae_connected=bool(provenance and (provenance.get("source_organization") or {}).get("interlock_connected") is True)
+    ae_connected=_observed_interlock(chain,"Admissible-Existence")
     return {
         "schema":"stegverse.sv002.public_observation.projection.v1",
         "experiment_id":EXPERIMENT_ID,
