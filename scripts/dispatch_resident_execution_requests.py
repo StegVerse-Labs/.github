@@ -82,6 +82,7 @@ CONSUMERS = (
     ("g18", "scripts/consume_g18_resident_execution_request.py"),
     ("hil", "scripts/consume_hil_resident_execution_request.py"),
     ("evaluator_intr", "scripts/consume_evaluator_intr_resident_execution_request.py"),
+    ("current_basis_v04", "scripts/consume_cross_framework_current_basis_v04_request.py"),
     ("ara_graph", "scripts/consume_ara_graph_resident_execution_request.py"),
     ("cmc028_root_custody", "scripts/consume_cmc028_resident_execution_request.py"),
     ("sv_dn1", "scripts/consume_sv_dn1_resident_execution_request.py"),
