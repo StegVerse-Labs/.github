@@ -208,6 +208,99 @@ def test_progression_credential_absence_remains_retryable(tmp_path, monkeypatch)
     assert receipt["network_source_fetch_performed_by_consumer"] is False
 
 
+
+def test_terminal_validation_continues_into_current_base_compatibility(tmp_path, monkeypatch):
+    source = tmp_path / "source"
+    runtime = tmp_path / "runtime"
+    exact = tmp_path / "TVC-exact"
+    control = tmp_path / "TVC-control"
+    source.mkdir()
+    runtime.mkdir()
+    exact.mkdir()
+    control.mkdir()
+    admission_script = control / consumer.TVC_ADMISSION_SCRIPT
+    admission_script.parent.mkdir(parents=True, exist_ok=True)
+    admission_script.write_text("# admission\n", encoding="utf-8")
+
+    value = request()
+    value["request_id"] = "RESIDENT-EXEC-TVC-BROKER-VALIDATION-003"
+    value["admission_compatibility_requested"] = True
+    write_json(runtime / consumer.REQUEST_REL, value)
+    entrypoint = runtime / consumer.TARGET_ENTRYPOINT
+    entrypoint.parent.mkdir(parents=True, exist_ok=True)
+    entrypoint.write_text("# bridge\n", encoding="utf-8")
+
+    monkeypatch.setattr(consumer, "exact_local_tvc_root", lambda values: (exact, f"{exact}:{consumer.EXPECTED_HEAD}"))
+    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:PROGRESSION_READY"))
+    monkeypatch.setattr(consumer, "terminal_validation", lambda runtime_root: True)
+    monkeypatch.setattr(
+        consumer,
+        "run_tvc_admission_compatibility",
+        lambda control_root, runner, env: {
+            "command":["python","-m",consumer.TVC_ADMISSION_MODULE],
+            "returncode":0,
+            "result":{
+                "state":"TVC_PR92_BROKER_ADMISSION_ELIGIBLE",
+                "validated_exact_sha":consumer.EXPECTED_HEAD,
+                "source_bundle_file_count":16,
+                "source_bundle_sha256":consumer.EXPECTED_BUNDLE_SHA256,
+                "credential_used":False,
+                "network_access_performed":False,
+                "repository_writeback_performed":False,
+                "merge_performed":False,
+            },
+            "result_observed":True,
+            "admission_eligible":True,
+            "consumer_credential_used":False,
+            "consumer_network_access_performed":False,
+            "repository_writeback_performed":False,
+            "merge_performed":False,
+            "authority_effect":"EXISTING_TVC_ADMISSION_COMPATIBILITY_AUTHORITY_ONLY",
+        },
+    )
+
+    def runner(command, **kwargs):
+        return SimpleNamespace(returncode=0, stdout="{}\n", stderr="")
+
+    receipt = consumer.consume(
+        source,
+        runtime,
+        runner=runner,
+        env={
+            "HOME":str(tmp_path),
+            "PATH":"/usr/bin",
+            "STEGVERSE_TVC_CONTROL_ROOT":str(control),
+        },
+    )
+    assert receipt["state"] == "COMPLETED"
+    assert receipt["terminal_validation_observed"] is True
+    assert receipt["admission_compatibility_requested"] is True
+    assert receipt["admission_compatibility_observed"] is True
+    assert receipt["admission_compatibility"]["admission_eligible"] is True
+    assert receipt["admission_compatibility"]["result"]["merge_performed"] is False
+
+
+def test_compatibility_requested_prevents_early_consumption(tmp_path, monkeypatch):
+    runtime = tmp_path / "runtime"
+    runtime.mkdir()
+    value = request()
+    value["request_id"] = "RESIDENT-EXEC-TVC-BROKER-VALIDATION-003"
+    value["admission_compatibility_requested"] = True
+    digest = consumer.stable_hash(value)
+    write_json(runtime / consumer.CONSUMPTION_REL, {
+        "request_id":value["request_id"],
+        "request_sha256":digest,
+        "terminal_validation_observed":True,
+        "admission_compatibility_observed":False,
+    })
+    monkeypatch.setattr(consumer, "terminal_validation", lambda runtime_root: True)
+    assert consumer.previously_consumed(runtime, value, digest) is False
+    retained = json.loads((runtime / consumer.CONSUMPTION_REL).read_text())
+    retained["admission_compatibility_observed"] = True
+    write_json(runtime / consumer.CONSUMPTION_REL, retained)
+    assert consumer.previously_consumed(runtime, value, digest) is True
+
+
 def test_only_terminal_pass_marks_request_consumed(tmp_path):
     runtime = tmp_path / "runtime"
     runtime.mkdir()
@@ -227,7 +320,7 @@ def test_only_terminal_pass_marks_request_consumed(tmp_path):
             "expected_tvc_head":consumer.EXPECTED_HEAD,
             "source_head":consumer.EXPECTED_HEAD,
             "source_bundle_file_count":16,
-            "source_bundle_sha256":"a"*64,
+            "source_bundle_sha256":consumer.EXPECTED_BUNDLE_SHA256,
         },
         "credential_authority":"TV/TVC",
         "authority_effect":"NONE_VALIDATION_ONLY",
@@ -238,6 +331,7 @@ def test_only_terminal_pass_marks_request_consumed(tmp_path):
 def test_private_source_candidate_is_builtin():
     assert str(consumer.PRIVATE_SOURCE_CANDIDATE) == "/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99"
     assert consumer.TVC_PROGRESSION_MODULE == "scripts.advance_tvc_pr92_broker_validation"
+    assert consumer.TVC_ADMISSION_MODULE == "scripts.evaluate_github_repository_operation_broker_admission"
 
 
 def test_hosted_environment_rejected():

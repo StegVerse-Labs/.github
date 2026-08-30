@@ -39,6 +39,8 @@ NONSECRET = (
 PRIVATE_SOURCE_CANDIDATE = Path("/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99")
 TVC_PROGRESSION_MODULE = "scripts.advance_tvc_pr92_broker_validation"
 TVC_PROGRESSION_SCRIPT = Path("scripts/advance_tvc_pr92_broker_validation.py")
+TVC_ADMISSION_MODULE = "scripts.evaluate_github_repository_operation_broker_admission"
+TVC_ADMISSION_SCRIPT = Path("scripts/evaluate_github_repository_operation_broker_admission.py")
 
 
 def truthy(value: str | None) -> bool:
@@ -204,6 +206,55 @@ def run_tvc_private_source_progression(
     }
 
 
+def run_tvc_admission_compatibility(
+    control_root: Path,
+    *,
+    runner=subprocess.run,
+    env: Mapping[str, str],
+) -> dict[str, Any]:
+    command = [
+        sys.executable,
+        "-m",
+        TVC_ADMISSION_MODULE,
+        "--control-root",
+        str(control_root),
+    ]
+    completed = runner(
+        command,
+        cwd=control_root,
+        capture_output=True,
+        text=True,
+        check=False,
+        env=dict(env),
+        timeout=900,
+    )
+    result = parse_last_json(completed.stdout)
+    eligible = bool(
+        completed.returncode == 0
+        and isinstance(result, dict)
+        and result.get("state") == "TVC_PR92_BROKER_ADMISSION_ELIGIBLE"
+        and result.get("validated_exact_sha") == EXPECTED_HEAD
+        and result.get("source_bundle_file_count") == 16
+        and result.get("source_bundle_sha256") == EXPECTED_BUNDLE_SHA256
+        and result.get("credential_used") is False
+        and result.get("network_access_performed") is False
+        and result.get("repository_writeback_performed") is False
+        and result.get("merge_performed") is False
+    )
+    return {
+        "command": command,
+        "returncode": completed.returncode,
+        "result": result,
+        "result_observed": isinstance(result, dict),
+        "admission_eligible": eligible,
+        "consumer_credential_used": False,
+        "consumer_network_access_performed": False,
+        "repository_writeback_performed": False,
+        "merge_performed": False,
+        "authority_effect": "EXISTING_TVC_ADMISSION_COMPATIBILITY_AUTHORITY_ONLY",
+    }
+
+
 def terminal_validation(runtime: Path) -> bool:
     receipt_path = runtime / VALIDATION_RECEIPT_REL
     if not receipt_path.is_file():
@@ -233,10 +284,16 @@ def previously_consumed(runtime: Path, request: Mapping[str, Any], request_hash:
         receipt = load_json(path)
     except Exception:
         return False
+    compatibility_required = request.get("admission_compatibility_requested") is True
+    compatibility_satisfied = (
+        not compatibility_required
+        or receipt.get("admission_compatibility_observed") is True
+    )
     return (
         receipt.get("request_id") == request.get("request_id")
         and receipt.get("request_sha256") == request_hash
         and receipt.get("terminal_validation_observed") is True
+        and compatibility_satisfied
         and terminal_validation(runtime)
     )
 
@@ -273,6 +330,8 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     cleaned = clean_env(values)
     tvc_root, observed = exact_local_tvc_root(cleaned)
     progression: dict[str, Any] | None = None
+    admission: dict[str, Any] | None = None
+    control_root: Path | None = None
     control_observed: str | None = None
     if tvc_root is None:
         control_root, control_observed = local_tvc_control_root(cleaned)
@@ -331,7 +390,19 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         env=cleaned,timeout=600,
     )
     terminal = terminal_validation(runtime)
-    state = "COMPLETED" if terminal else "HANDOFF_READY"
+    compatibility_required = request.get("admission_compatibility_requested") is True
+    compatibility_observed = False
+    if terminal and compatibility_required:
+        if control_root is None:
+            control_root, control_observed = local_tvc_control_root(cleaned)
+        if control_root is not None and (control_root / TVC_ADMISSION_SCRIPT).is_file():
+            admission = run_tvc_admission_compatibility(
+                control_root,
+                runner=runner,
+                env=cleaned,
+            )
+            compatibility_observed = admission.get("admission_eligible") is True
+    state = "COMPLETED" if terminal and (not compatibility_required or compatibility_observed) else "HANDOFF_READY"
     receipt = {
         "schema":"stegverse.tvc-broker-validation-request-consumption/v1",
         "state":state,
@@ -344,6 +415,10 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "private_source_progression_attempted":progression is not None,
         "private_source_progression":progression,
         "terminal_validation_observed":terminal,
+        "admission_compatibility_requested":compatibility_required,
+        "admission_compatibility_observed":compatibility_observed,
+        "admission_compatibility":admission,
+        "observed_tvc_control_root":control_observed,
         "expected_tvc_head":EXPECTED_HEAD,
         "observed_tvc_root":str(tvc_root),
         "credential_authority":"TV/TVC",
