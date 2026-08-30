@@ -21,17 +21,19 @@ BOUND_STATE_ENV = "STEGVERSE_BOUND_STATE_ROOT"
 DEMO_ROOT_ENV = "STEGVERSE_SV_DN1_SOURCE_ROOT"
 RESIDENT_STATE_ENV = "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT"
 INTR_STATE_ENV = "STEGVERSE_SV_DN1_INTR_STATE_ROOT"
+SOURCE_PREP_STATE_ENV = "STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT"
 
 DEFAULT_BOUND = Path.home() / ".stegverse" / "state" / "sv-dn1-sdk-first-round"
 DEFAULT_DEMO = Path.home() / ".stegverse" / "source" / "stegverse-demo-suite"
 DEFAULT_RESIDENT = Path.home() / ".stegverse" / "state" / "sv-dn1-resident-observer"
 DEFAULT_INTR = Path.home() / ".stegverse" / "state" / "sv-dn1-intr-runtime"
+DEFAULT_SOURCE_PREP = Path.home() / ".stegverse" / "state" / "sv-dn1-production-source-prep"
 
-ROOT_ENV = {
-    "sdk": "STEGVERSE_SDK_SOURCE_ROOT",
-    "stegcore": "STEGVERSE_STEGCORE_SOURCE_ROOT",
-    "core_lite": "STEGVERSE_CORE_LITE_SOURCE_ROOT",
-    "master_records": "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+COMPONENT_TO_RUNTIME_KEY = {
+    "stegverse.sdk": "sdk",
+    "stegverse.stegcore": "stegcore",
+    "stegverse.core-lite": "core_lite",
+    "stegverse.master-records": "master_records",
 }
 
 ANCHORS = {
@@ -188,31 +190,51 @@ def demo_root() -> Path:
     return root
 
 
-def resolve_canonical_roots() -> dict[str, Path]:
+def resolve_canonical_roots() -> tuple[dict[str, Path], dict[str, str], dict[str, Any]]:
+    prep_root = resolve_path(SOURCE_PREP_STATE_ENV, DEFAULT_SOURCE_PREP)
+    prep = load_json(prep_root / "receipts/latest.json", pending=LocalArtifactPending)
+    if prep.get("schema") != "stegverse.sv-dn1.production-source-prep-receipt/v2":
+        raise LocalArtifactPending("production source preparation v2 receipt is required")
+    if prep.get("state") != "COMPLETE" or prep.get("transition_id") != "SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE":
+        raise LocalArtifactPending("production source preparation has not completed")
+    if prep.get("source_identity_scheme") != "sha256-content-manifest":
+        raise SourceDrift("production source identity scheme drift")
+    if prep.get("network_source_fetch_performed") is not False or prep.get("github_platform_required") is not False:
+        raise SourceDrift("production source receipt retains external platform dependency")
+    raw_roots = prep.get("source_roots")
+    raw_ids = prep.get("source_identities")
+    if not isinstance(raw_roots, dict) or not isinstance(raw_ids, dict):
+        raise LocalArtifactPending("production source receipt lacks roots/identities")
+    expected = set(COMPONENT_TO_RUNTIME_KEY)
+    if set(raw_roots) != expected or set(raw_ids) != expected:
+        raise SourceDrift("production source component set drift")
     roots: dict[str, Path] = {}
-    for key, env_name in ROOT_ENV.items():
-        raw = str(os.getenv(env_name) or "").strip()
-        if not raw:
-            raise LocalArtifactPending(f"missing non-secret local source locator {env_name}")
-        root = Path(raw).expanduser().resolve()
+    identities: dict[str, str] = {}
+    for component_id, runtime_key in COMPONENT_TO_RUNTIME_KEY.items():
+        identity = str(raw_ids.get(component_id) or "")
+        if not identity.startswith("sha256:") or len(identity) != 71:
+            raise SourceDrift(f"invalid content-addressed source identity: {component_id}")
+        root = Path(str(raw_roots[component_id])).expanduser().resolve()
         if not root.is_dir():
-            raise LocalArtifactPending(f"local canonical source root unavailable: {env_name}={root}")
-        for rel, expected in ANCHORS[key].items():
+            raise LocalArtifactPending(f"materialized source root unavailable: {component_id}={root}")
+        for rel, expected_sha1 in ANCHORS[runtime_key].items():
             path = root / rel
             if not path.is_file():
-                raise LocalArtifactPending(f"canonical source anchor missing: {path}")
+                raise LocalArtifactPending(f"migration source anchor missing: {path}")
             actual = git_blob_sha1(path.read_bytes())
-            if actual != expected:
-                raise SourceDrift(f"canonical source anchor drift: {key}:{rel}: expected {expected}, observed {actual}")
-        roots[key] = root
-    return roots
+            if actual != expected_sha1:
+                raise SourceDrift(f"migration source anchor drift: {component_id}:{rel}")
+        roots[runtime_key] = root
+        identities[runtime_key] = identity
+    return roots, identities, prep
 
-
-def source_evidence(roots: Mapping[str, Path]) -> dict[str, Any]:
+def source_evidence(roots: Mapping[str, Path], identities: Mapping[str, str]) -> dict[str, Any]:
     return {
         key: {
             "root": str(root),
-            "anchors": {
+            "source_identity": identities[key],
+            "source_identity_scheme": "sha256-content-manifest",
+            "migration_anchors": {
                 rel: {"git_blob_sha1": git_blob_sha1((root / rel).read_bytes()), "expected_git_blob_sha1": expected}
                 for rel, expected in ANCHORS[key].items()
             },
@@ -306,7 +328,7 @@ def execute(invocation: Mapping[str, Any], *, runner=subprocess.run) -> dict[str
     node_path, _ = find_node()
     task = validate_invocation(invocation)
     demo = demo_root()
-    roots = resolve_canonical_roots()
+    roots, source_identities, source_prep_receipt = resolve_canonical_roots()
     resident_receipt, capture, exchange, intr_receipt = upstream_evidence()
     bound = bound_root()
 
@@ -426,7 +448,10 @@ def execute(invocation: Mapping[str, Any], *, runner=subprocess.run) -> dict[str
         "external_unknowns": analysis["external_evaluation"]["unknowns"],
         "dashboard_generated": True,
         "dashboard_publicly_hosted": False,
-        "source_evidence": source_evidence(roots),
+        "source_evidence": source_evidence(roots, source_identities),
+        "source_identities": source_identities,
+        "source_prep_receipt_schema": source_prep_receipt.get("schema"),
+        "github_platform_required": False,
         "credential_authority": "TV/TVC",
         "credential_used": False,
         "github_token_used": False,
