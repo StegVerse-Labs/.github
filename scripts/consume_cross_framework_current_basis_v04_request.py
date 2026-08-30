@@ -26,6 +26,7 @@ EXPECTED_SOURCE_BLOBS = {
         "inspection/examples/cross-framework-current-basis-request.draft.json": "59d818a15fc7be732c97dae7d2174d8cfe9a7bab",
         "stegverse/sovereign_validation_runtime.py": "6bc0944633b6299c19f065f44dd5999434445dd7",
         "stegverse/current_basis.py": "5971a050d94fc237cad65d23ba5ac873ee6900b4",
+        "scripts/package_cross_framework_current_basis_results.py": "5cd6d104d5d08042aa60330ade92370d53fad28a",
     },
     "STEGVERSE_STEGCORE_SOURCE_ROOT": {
         "src/stegcore/current_basis.py": "c56179d1ba92a3f487dd62eddd41b812028c48c3",
@@ -73,6 +74,9 @@ COMPONENT_IDS = {
 PACKAGE_SLUGS = {key: value.replace(".", "-") for key, value in COMPONENT_IDS.items()}
 PACKAGE_SCHEMA = "stegverse.source-package/v1"
 PACKAGE_VERSION = "1.0.0"
+PUBLICATION_PACKET_DIR = "publication-packet"
+PUBLICATION_ARCHIVE_BASENAME = "cross-framework-current-basis-v0.4-results"
+PUBLICATION_READY_FILE = "PUBLICATION_READY.json"
 
 
 def truthy(value: str | None) -> bool:
@@ -334,6 +338,85 @@ def repair_from_local_packages(env: Mapping[str, str], keys: list[str]) -> tuple
     return repaired, needs
 
 
+
+def _sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def prepare_local_publication_packet(
+    *,
+    sdk_root: Path,
+    result_dir: Path,
+    manifest: Path,
+    state_root: Path,
+    runner=subprocess.run,
+    env: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
+    packager = sdk_root / "scripts" / "package_cross_framework_current_basis_results.py"
+    if not packager.is_file():
+        raise RuntimeError("canonical SDK result packager not materialized")
+    packet_dir = state_root / PUBLICATION_PACKET_DIR
+    command = [
+        sys.executable,
+        str(packager),
+        "--result-dir", str(result_dir),
+        "--manifest", str(manifest),
+        "--output-dir", str(packet_dir),
+    ]
+    completed = runner(
+        command,
+        cwd=sdk_root,
+        capture_output=True,
+        text=True,
+        check=False,
+        env=dict(env or {}),
+        timeout=300,
+    )
+    if completed.returncode != 0:
+        raise RuntimeError("canonical SDK result packet preparation failed")
+    index_path = packet_dir / "RESULT_PACKET_INDEX.json"
+    if not index_path.is_file():
+        raise RuntimeError("canonical SDK result packet index not observed")
+    index = load_json(index_path)
+    if index.get("frozen_manifest_sha256") != EXPECTED_SHA256:
+        raise RuntimeError("local result packet is not bound to frozen v0.4 manifest")
+    if index.get("frozen_manifest_git_blob_sha1") != EXPECTED_BLOB:
+        raise RuntimeError("local result packet is not bound to frozen v0.4 Git blob")
+    if index.get("github_actions_runtime_authority") is not False:
+        raise RuntimeError("local result packet incorrectly assigns GitHub Actions runtime authority")
+
+    archive_base = state_root / PUBLICATION_ARCHIVE_BASENAME
+    archive_path = Path(
+        shutil.make_archive(
+            str(archive_base),
+            "gztar",
+            root_dir=packet_dir.parent,
+            base_dir=packet_dir.name,
+        )
+    )
+    ready = {
+        "schema": "stegverse.current-basis-v04.local-publication-ready/v1",
+        "state": "LOCAL_PACKET_READY_FOR_EVIDENCE_TRANSPORT",
+        "test_id": "cross-framework-current-basis-001",
+        "manifest_sha256": EXPECTED_SHA256,
+        "manifest_git_blob_sha1": EXPECTED_BLOB,
+        "packet_dir": str(packet_dir),
+        "packet_index": str(index_path),
+        "packet_index_sha256": _sha256_file(index_path),
+        "archive": str(archive_path),
+        "archive_sha256": _sha256_file(archive_path),
+        "result_dir": str(result_dir),
+        "network_transport_performed": False,
+        "repository_writeback_performed": False,
+        "github_actions_runtime_authority": False,
+        "publication_authority": False,
+        "credential_read_or_acquired": False,
+        "authority_effect": "NONE_LOCAL_EVIDENCE_PACKAGING_ONLY",
+    }
+    atomic_json(state_root / PUBLICATION_READY_FILE, ready)
+    return ready
+
+
 def source_roots(env: Mapping[str, str]) -> tuple[dict[str, Path], list[str]]:
     roots: dict[str, Path] = {}
     missing: list[str] = []
@@ -401,7 +484,8 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     harness = sdk / "scripts" / "run_cross_framework_current_basis_v04.py"
     manifest = sdk / "inspection" / "examples" / "cross-framework-current-basis-request.draft.json"
     current_basis = stegcore / "src" / "stegcore" / "current_basis.py"
-    required = [harness, manifest, current_basis]
+    packager = sdk / "scripts" / "package_cross_framework_current_basis_results.py"
+    required = [harness, manifest, current_basis, packager]
     absent = [str(path) for path in required if not path.is_file()]
     if absent:
         receipt = {
@@ -457,6 +541,14 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     if complete_path.is_file():
         complete = load_json(complete_path)
         if complete.get("status") == "COMPLETE" and complete.get("manifest_sha256") == EXPECTED_SHA256:
+            publication_packet = prepare_local_publication_packet(
+                sdk_root=sdk,
+                result_dir=result_dir,
+                manifest=manifest,
+                state_root=state_root,
+                runner=runner,
+                env=safe,
+            )
             return {
                 "schema": "stegverse.current-basis-v04.resident-consumption/v1",
                 "state": "ALREADY_CONSUMED",
@@ -464,6 +556,10 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
                 "request_sha256": request_hash,
                 "runtime_execution_attempted": False,
                 "run_complete": complete,
+                "publication_packet_ready": True,
+                "publication_packet": publication_packet,
+                "network_transport_performed": False,
+                "repository_writeback_performed": False,
                 "authority_effect": "NONE",
             }
 
@@ -498,6 +594,17 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         and run_complete.get("external_side_effect") is False
     ) else "ATTEMPT_RECORDED"
 
+    publication_packet = None
+    if state == "COMPLETED":
+        publication_packet = prepare_local_publication_packet(
+            sdk_root=sdk,
+            result_dir=result_dir,
+            manifest=manifest,
+            state_root=state_root,
+            runner=runner,
+            env=child_env,
+        )
+
     receipt = {
         "schema": "stegverse.current-basis-v04.resident-consumption/v1",
         "state": state,
@@ -510,6 +617,8 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "run_complete_observed": isinstance(run_complete, dict),
         "run_complete": run_complete,
         "result_dir": str(result_dir),
+        "publication_packet_ready": publication_packet is not None,
+        "publication_packet": publication_packet,
         "source_repairs": source_repairs,
         "source_package_needs": package_needs,
         "network_source_fetch_performed": False,

@@ -306,3 +306,60 @@ RUN_COMPLETE.json: NOT OBSERVED
 user action required: false
 second machine required: false
 ```
+
+
+## Automatic local external-result packet preparation — 2026-08-30
+
+After authentic `RUN_COMPLETE.json` exists, the resident consumer now invokes the exact hardened SDK result packager locally instead of leaving packet construction as a later manual step.
+
+Additional exact SDK source binding:
+
+```text
+scripts/package_cross_framework_current_basis_results.py
+Git blob SHA-1: 5cd6d104d5d08042aa60330ade92370d53fad28a
+```
+
+Post-run flow:
+
+```text
+authentic RUN_COMPLETE observed
+-> invoke canonical SDK hardened result packager
+-> verify frozen v0.4 SHA-256 + Git blob binding
+-> verify GitHub Actions runtime authority=false
+-> retain publication-packet/RESULT_PACKET_INDEX.json
+-> create local cross-framework-current-basis-v0.4-results.tar.gz
+-> hash archive
+-> write PUBLICATION_READY.json
+```
+
+The same packet-preparation function runs when a later resident pass finds an already-complete authentic run, so packaging may be recovered without rerunning the experiment.
+
+Local receipt semantics:
+
+```text
+schema: stegverse.current-basis-v04.local-publication-ready/v1
+state: LOCAL_PACKET_READY_FOR_EVIDENCE_TRANSPORT
+network_transport_performed: false
+repository_writeback_performed: false
+github_actions_runtime_authority: false
+publication_authority: false
+credential_read_or_acquired: false
+authority_effect: NONE_LOCAL_EVIDENCE_PACKAGING_ONLY
+```
+
+This closes local machine-side packet preparation only. It does not publish to GitHub, create a successful Actions run, or send material to the external evaluator. Those remain evidence-transport/distribution steps after authentic execution.
+
+Current boundary:
+
+```text
+local source repair: MERGED / VALIDATED
+package-arrival retry: MERGED / VALIDATED
+local result packet preparation: IMPLEMENTED / VALIDATION PENDING
+authentic resident consumption: NOT OBSERVED
+S1: NOT OBSERVED
+post-observation transition receipt: NOT OBSERVED
+Master Records custody/replay/reconstruction: NOT OBSERVED
+RUN_COMPLETE.json: NOT OBSERVED
+PUBLICATION_READY.json from authentic run: NOT OBSERVED
+successful external-result GitHub Action: NOT OBSERVED
+```
