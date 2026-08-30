@@ -162,10 +162,19 @@ SV-DN1-INTR-RUNTIME-001
 
 SV-DN1-PRODUCTION-SOURCE-PREP-001
   ~/.stegverse/state/sv-dn1-production-source-prep/receipts/latest.json
+  schema = stegverse.sv-dn1.production-source-prep-receipt/v2
   transition_id = SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE
-  public_source_roots_verified = true
-  private_source_roots_verified = true
-  runtime_anchor_blobs_verified = true
+  source_identity_scheme = sha256-content-manifest
+  exactly four canonical source_identities are present
+  exactly four canonical source_roots are present
+  source_root_env agrees with source_roots component-by-component
+  migration_anchors_verified = true
+  network_source_fetch_performed = false
+  github_platform_required = false
+  credential_used = false
+  github_token_used = false
+  repository_writeback_performed = false
+  sdk_admitted = false
 
 SV-DN1-SDK-FIRST-ROUND-001
   ~/.stegverse/state/sv-dn1-sdk-first-round/receipts/latest.json
@@ -196,7 +205,7 @@ StegVerse-Labs/StegCore: private
 master-records/orchestration: private
 ```
 
-Private source materialization remains within TV/TVC repository-broker authority or already-local sovereign source. The merged production-source-preparation lane anonymously materializes the public SDK/Core-Lite roots, emits non-secret TVC spool requests for private StegCore/Master Records, validates sanitized TVC receipts, and stops HANDOFF_READY until private source is actually materialized. The chain never bypasses TV/TVC.
+Source preparation is platform-neutral. Any of the four canonical components may be satisfied by an already-local verified root supplied through its non-secret `STEGVERSE_*_SOURCE_ROOT` locator, by a root already present under the canonical materialization tree, or by a local content-addressed StegVerse source package. The source-preparation worker performs no network acquisition and does not require GitHub or the repository broker merely to recognize already-local source. If a component is genuinely absent from all admitted local surfaces, it stops `HANDOFF_READY` and names the required local package location.
 
 ## Resident request bridge
 
@@ -315,3 +324,10 @@ This means the remaining private-source gate is now an execution/evidence bounda
 ## Archive readiness
 
 Once this chain source is merged, every machine-executable SV-DN-1 first-round step will have a durable non-hosted execution path. Product activation still depends on an authentic sovereign execution opportunity and exact private canonical source availability.
+
+
+## v2 production-source receipt correction — 2026-08-30
+
+The sovereign chain previously retained the obsolete pre-v2 durable-receipt predicates `public_source_roots_verified`, `private_source_roots_verified`, and `runtime_anchor_blobs_verified`. Those predicates diverged from the already-merged platform-neutral production-source worker and would have rejected an otherwise valid v2 receipt.
+
+The chain now validates the canonical v2 source identity/root contract directly and forwards the four verified non-secret locators to the SDK first-round worker only after that validation succeeds. This is a validation-shape correction only; it grants no source acquisition, credential, repository, SDK, governance, or publication authority.
