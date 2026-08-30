@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.resident-execution-request/v1",
-  "request_id": "RESIDENT-EXEC-TVC-BROKER-VALIDATION-001",
+  "request_id": "RESIDENT-EXEC-TVC-BROKER-VALIDATION-002",
   "state": "REQUESTED",
   "task_id": "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001",
   "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
@@ -16,7 +16,7 @@
   "tvc_root_locator_required": true,
   "credential_material_allowed": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Attempt existing exact local source first. If absent, the resident consumer may delegate one immutable-commit materialization to the already-existing TVC private-source-read service. The consumer never receives credential material; systemd LoadCredential remains inside TVC authority.",
+  "note": "Fresh exactly-once retry after TVC PR #256 merged the canonical PR #92 private-source progression and .github PR #520 merged the credential-free resident composition. Attempt exact local source first; if absent, invoke the existing TVC progression on an already-local TVC control root. Any provider read remains solely inside TVC systemd LoadCredential authority. Then re-discover exact PR #92 materialization and execute the unchanged governed validation worker.",
   "private_source_bootstrap_allowed": true,
   "private_source_bootstrap_service": "stegtvc-private-source-read.service",
   "private_source_bootstrap_credential_transport": "SYSTEMD_LOADCREDENTIAL"
