@@ -1,0 +1,28 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "claim_id": "TEST-QUEUE-MANIFOLD-GOVERNANCE-001-20260827",
+  "goal_id": "TEST-QUEUE-MANIFOLD-GOVERNANCE-001",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "feature/test-queue-manifold-governance-v1",
+  "base_sha": "4f9961780ef304a8930c7cae50b3d374597d2d52",
+  "role": "ACTIVE_UNIQUE_WORK",
+  "canonical_handoff": "docs/TEST_QUEUE_MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md",
+  "claimed_paths": [
+    "control/test-queue-manifold-governance-baseline.json",
+    "control/session-implementation-claim-test-queue-manifold-governance-001.json",
+    "schemas/test-queue-manifold-descriptor-v1.schema.json",
+    "state_language/test_queue_manifold.py",
+    "tests/fixtures/test_queue_manifold.v1.json",
+    "tests/test_test_queue_manifold.py"
+  ],
+  "collision_boundaries": [
+    "individual Test Lanes direct execution remains heartbeat-independent",
+    "HeartBeat is optional observation/reference only",
+    "claims and fences remain independently admitted",
+    "TV/TVC remains credential authority",
+    "SDK remains generalized evaluator ingress",
+    "no evaluator-specific routes"
+  ],
+  "state": "CLAIMED_FOR_IMPLEMENTATION",
+  "authority_effect": "NONE"
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "stegverse.test-queue-manifold-implementation-baseline/v1",
+  "goal_id": "TEST-QUEUE-MANIFOLD-GOVERNANCE-001",
+  "repository": "StegVerse-Labs/.github",
+  "canonical_handoff": "docs/TEST_QUEUE_MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md",
+  "feature_branch": "feature/test-queue-manifold-governance-v1",
+  "frozen_main_sha": "4f9961780ef304a8930c7cae50b3d374597d2d52",
+  "implementation_directly_on_main": false,
+  "affected_repository_set": [
+    "StegVerse-Labs/.github"
+  ],
+  "downstream_contracts_referenced_not_modified": [
+    "docs/STEGVERSE_TEST_LANES_DIRECT_RUN_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK/SDK_MIRROR_HANDOFF.md",
+    "GCAT-BCAT-Engine/workflows/experiments/stegverse-test-lanes",
+    "StegVerse-Labs/TVC"
+  ],
+  "direct_test_execution_heartbeat_dependency": false,
+  "heartbeat_role": "OPTIONAL_OBSERVATION_REFERENCE_ONLY",
+  "execution_authority": "INDEPENDENT_ADMITTED_CLAIM_FENCE",
+  "credential_authority": "TV/TVC",
+  "person_specific_routes_allowed": false,
+  "source_release_required_after_merge": true,
+  "runtime_activation_claimed": false,
+  "authority_effect": "NONE"
+}

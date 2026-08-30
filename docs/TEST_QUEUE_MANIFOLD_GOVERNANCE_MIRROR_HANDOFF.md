@@ -2,7 +2,7 @@
 
 Updated: 2026-08-26T14:53:00-05:00
 Repository: `StegVerse-Labs/.github`
-State: `PLANNED / IMPLEMENTATION_NOT_STARTED`
+State: `FEATURE_BRANCH_IMPLEMENTED / VALIDATION_PENDING / NOT_MERGED / NOT_RELEASED / NOT_ACTIVATED`
 
 ## Scope
 
@@ -105,3 +105,84 @@ user action required now: NONE
 ## Next executable boundary
 
 Before implementation, identify the exact affected repository set and current release baselines, then create implementation feature branches. Do not mutate `main` for this feature.
+
+
+## 2026-08-27 feature-branch implementation
+
+Implementation is occurring on the dedicated branch required by this handoff:
+
+```text
+branch: feature/test-queue-manifold-governance-v1
+frozen main baseline: 4f9961780ef304a8930c7cae50b3d374597d2d52
+direct implementation on main: false
+affected repository set for first bounded slice: StegVerse-Labs/.github only
+```
+
+Branch source surfaces:
+
+```text
+control/test-queue-manifold-governance-baseline.json
+control/session-implementation-claim-test-queue-manifold-governance-001.json
+schemas/test-queue-manifold-descriptor-v1.schema.json
+state_language/test_queue_manifold.py
+tests/fixtures/test_queue_manifold.v1.json
+tests/test_test_queue_manifold.py
+```
+
+Current source implements and tests:
+
+- generalized, hash-bound test descriptors with no person-specific route;
+- deterministic manifold snapshots and coherency groups;
+- readiness from explicit dependencies, capabilities, and evidence;
+- optional HeartBeat/governed-manifold observation as reference only;
+- individual test execution with no HeartBeat dependency;
+- candidate minimum-distinguishing bundles that never grant execution authority;
+- explicit deferred-equivalent tests instead of silent deletion;
+- stale bundle invalidation on manifold version or state-hash change;
+- terminal lifecycle dispositions that require evidence;
+- SATISFIED_BY_BUNDLE requiring explicit bundle identity and evidence;
+- independently admitted claim/fence references for claimed tests;
+- capacity scaling that cannot change authority semantics;
+- credential_authority=TV/TVC;
+- authority_effect=NONE.
+
+Source commits on the feature branch:
+
+```text
+baseline: b5475ed0b1f53b1dbe4f14cf4c34a384c20d44a9
+claim: 3e343c3ccc985600e19d145db5533d62251f9052
+descriptor schema: 2221b90b679f5e487ec39594900423c97bc1b763
+controller: be3329187e3104930ead7145e3e93cd1ff40af0c
+fixtures: 7fe6938572e3c9ad8bf5204f60516ddcd2225c04
+tests: 96102ef00d908f7a1a086ac9ce0545c148d1013c
+```
+
+No runtime, merge, release, tag, queue execution, claim/fence issuance, or activation is claimed. The next boundary is exact branch-head CI plus collision review. Merge remains prohibited until that evidence is complete.
+
+
+## Exact-head validation and collision review — 2026-08-30
+
+The feature branch test-discovery defect was repaired by renaming the test helper so `unittest` no longer attempts to execute a parameterized helper as a test case.
+
+Validated branch head:
+
+```text
+head: b8070b33e13f959e0e21dbac1e913b8787722200
+organization control plane: 33295942882 SUCCESS
+Heartbeat Worker Project: 33295942923 SUCCESS
+complete deterministic repository suite: PASS
+known scoped scaffolding/stubs: 0
+```
+
+Collision review against current main found no existing implementation at the claimed new paths:
+
+```text
+state_language/test_queue_manifold.py: absent on main before merge
+schemas/test-queue-manifold-descriptor-v1.schema.json: absent on main before merge
+tests/fixtures/test_queue_manifold.v1.json: absent on main before merge
+tests/test_test_queue_manifold.py: absent on main before merge
+```
+
+The implementation does not modify the direct Test Lanes executor, WorkerCoordinator claim/fence authority, TV/TVC credential authority, SDK evaluator ingress, or any person-specific route.
+
+Source merge is now eligible under this handoff. Merge does not satisfy the separately required exact release/tag set or runtime activation.
