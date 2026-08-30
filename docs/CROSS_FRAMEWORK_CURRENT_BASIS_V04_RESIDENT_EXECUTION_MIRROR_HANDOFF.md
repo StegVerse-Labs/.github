@@ -244,3 +244,65 @@ authority_effect=NONE_SOURCE_RESOLUTION_ONLY
 ```
 
 Package integrity is transport evidence only and never confers execution authority. The frozen experiment remains executable only after the independently merged request, non-hosted resident eligibility, exact source identity checks, and canonical SDK/StegCore/Master Records path all hold.
+
+
+## Local package remediation merged; arrival retry implementation — 2026-08-30
+
+Local source-package self-remediation is now merged and validated:
+
+```text
+PR: #531
+merge: 4da6427767b0c63a3110efd96b0ccedae8935d98
+Cross-Framework Current-Basis Resident Request Validation: 33296221146 SUCCESS
+Heartbeat Worker Project: 33296221148 SUCCESS
+Organization control plane: 33296221166 SUCCESS
+```
+
+The next local-only execution seam is package arrival after a prior blocked attempt. The existing rootless source-refresh watcher is being extended rather than creating a second scheduler or heartbeat.
+
+Intended event path:
+
+```text
+BLOCKED_LOCAL_SOURCE_PACKAGE_NOT_OBSERVED
+-> exact package arrives in local source-package store
+-> existing systemd-user path watcher fires
+-> existing source refresh service runs
+-> existing resident dispatcher runs
+-> current-basis consumer re-enters
+-> package is verified/staged atomically
+-> exact frozen-v0.4 critical blobs reverified
+-> harness may execute only if all gates pass
+```
+
+The watcher uses:
+
+```text
+STEGVERSE_SOURCE_PACKAGE_ROOT
+fallback: ~/.stegverse/packages/source/v1
+```
+
+The package-store path is non-secret and is passed into the existing refresh service environment. Installation creates the directory and records it in the local source-refresh installation receipt. No network acquisition, provider credential, package authority, new scheduler, or new HeartBeat instance is introduced.
+
+Sovereign bootstrap/native materialization source completeness is also tightened so the current-basis resident consumer itself must exist in:
+- `bootstrap_sovereign_runtime.py::REQUIRED_SOURCE_FILES`;
+- `install_sovereign_heartbeat_service.py::COPY_FILES`;
+- the post-materialization required-file check.
+
+This prevents a stale canonical checkout from being accepted as a complete resident runtime while silently lacking the exact consumer needed by the queued frozen-v0.4 request.
+
+Current execution boundary:
+
+```text
+frozen v0.4 request: MERGED / QUEUED IN SOURCE
+resident consumer: MERGED
+exact source guard: MERGED / VALIDATED
+local package repair: MERGED / VALIDATED
+package-arrival event retry: IMPLEMENTED / VALIDATION PENDING
+authentic resident consumption: NOT OBSERVED
+S1: NOT OBSERVED
+post-observation transition receipt: NOT OBSERVED
+Master Records custody/replay/reconstruction: NOT OBSERVED
+RUN_COMPLETE.json: NOT OBSERVED
+user action required: false
+second machine required: false
+```

@@ -154,10 +154,12 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             runtime = base / "runtime"
             source.mkdir()
             runtime.mkdir()
+            packages = base / "source-packages"
             service, path_unit = install_mod.render_units(
                 source_root=source,
                 runtime_root=runtime,
                 python=Path("/usr/bin/python3"),
+                source_package_root=packages,
             )
             self.assertIn("systemctl --user try-restart stegverse-worker-runtime.service", service)
             self.assertIn("PathChanged=", path_unit)
@@ -174,6 +176,10 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertIn("dispatch_resident_execution_requests.py", service)
             self.assertIn("consume_hil_intr_materialization_request.py", service)
             self.assertIn(f"PathChanged={runtime / 'intr-materialization'}", path_unit)
+            self.assertIn(f"PathChanged={packages.resolve()}", path_unit)
+            for slug in install_mod.SOURCE_PACKAGE_COMPONENT_SLUGS:
+                self.assertIn(f"PathChanged={(packages / slug).resolve()}", path_unit)
+            self.assertIn(f'STEGVERSE_SOURCE_PACKAGE_ROOT={packages.resolve()}', service)
             self.assertNotIn("consume_resident_execution_request.py --source-root", service)
             self.assertNotIn("consume_g18_resident_execution_request.py --source-root", service)
             self.assertIn("consume_hil_intr_materialization_request.py", service)
@@ -186,6 +192,15 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             combined = service + path_unit
             for forbidden in ("GITHUB_TOKEN", "GH_TOKEN", "LoadCredential=", "git clone", "git fetch", "git pull"):
                 self.assertNotIn(forbidden, combined)
+
+
+    def test_default_source_package_root_honors_nonsecret_override(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td) / "packages"
+            self.assertEqual(
+                install_mod.default_source_package_root({"STEGVERSE_SOURCE_PACKAGE_ROOT": str(root)}),
+                root.resolve(),
+            )
 
     def test_installer_immediately_refreshes_then_restarts_only_worker(self) -> None:
         with tempfile.TemporaryDirectory() as td:
@@ -203,10 +218,12 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "mutable_runtime_state_preserved": True,
                 "network_fetch_performed": False,
             }), mock.patch.object(install_mod.shutil, "which", return_value="/usr/bin/systemctl"):
+                package_root = base / "source-packages"
                 receipt = install_mod.install(
                     ROOT,
                     runtime,
                     unit_root=unit_root,
+                    source_package_root=package_root,
                     runner=runner,
                     activate=True,
                     system="linux",
@@ -214,7 +231,16 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertTrue(receipt["activated"])
             self.assertTrue(receipt["filesystem_event_driven"])
             self.assertTrue(receipt["intr_materialization_event_driven"])
+            self.assertTrue(receipt["source_package_event_driven"])
             self.assertTrue((runtime / "intr-materialization").is_dir())
+            self.assertTrue(package_root.is_dir())
+            for slug in install_mod.SOURCE_PACKAGE_COMPONENT_SLUGS:
+                self.assertTrue((package_root / slug).is_dir())
+            self.assertEqual(receipt["source_package_watch"], str(package_root.resolve()))
+            self.assertEqual(
+                receipt["source_package_component_watches"],
+                [str((package_root / slug).resolve()) for slug in install_mod.SOURCE_PACKAGE_COMPONENT_SLUGS],
+            )
             self.assertFalse(receipt["second_heartbeat_created"])
             self.assertFalse(receipt["third_party_scheduler_required"])
             self.assertFalse(receipt["carrier_restarted_by_refresh"])

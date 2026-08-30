@@ -26,6 +26,20 @@ REFRESH_SERVICE = "stegverse-worker-source-refresh.service"
 REFRESH_PATH = "stegverse-worker-source-refresh.path"
 WORKER_SERVICE = "stegverse-worker-runtime.service"
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
+SOURCE_PACKAGE_COMPONENT_SLUGS = (
+    "stegverse-sdk",
+    "stegverse-stegcore",
+    "stegverse-core-lite",
+    "stegverse-master-records",
+)
+
+
+def default_source_package_root(env: dict[str, str] | None = None) -> Path:
+    values = dict(os.environ if env is None else env)
+    override = values.get("STEGVERSE_SOURCE_PACKAGE_ROOT")
+    if override:
+        return Path(override).expanduser().resolve()
+    return (Path.home() / ".stegverse" / "packages" / "source" / "v1").resolve()
 
 
 def default_runtime_root(env: dict[str, str] | None = None) -> Path:
@@ -41,10 +55,11 @@ def _quote(value: str | Path) -> str:
     return '"' + str(value).replace('"', '\\"') + '"'
 
 
-def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tuple[str, str]:
+def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_package_root: Path | None = None) -> tuple[str, str]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     python = python.expanduser().resolve()
+    packages = (source_package_root or default_source_package_root()).expanduser().resolve()
     if source == runtime:
         raise ValueError("source and runtime roots must be distinct")
     refresh_script = runtime / "scripts/refresh_sovereign_worker_runtime_source.py"
@@ -57,6 +72,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         "",
         "[Service]",
         "Type=oneshot",
+        f"Environment={_quote('STEGVERSE_SOURCE_PACKAGE_ROOT=' + str(packages))}",
         f"ExecStart={_quote(python)} {_quote(refresh_script)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(request_dispatcher)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(hil_materialization_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
@@ -65,6 +81,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         "PrivateTmp=true",
         "",
     ])
+    package_watch_paths = tuple(packages / slug for slug in SOURCE_PACKAGE_COMPONENT_SLUGS)
     watched_paths = (
         source / "heartbeat_runtime",
         source / "workers",
@@ -85,6 +102,8 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         source / "control/resident-execution-request.json",
         source / "control/resident-execution-request.d",
         runtime / "intr-materialization",
+        packages,
+        *package_watch_paths,
     )
     path_unit = "\n".join([
         "[Unit]",
@@ -122,6 +141,7 @@ def install(
     *,
     unit_root: Path | None = None,
     python: Path = Path(sys.executable),
+    source_package_root: Path | None = None,
     runner: Runner = subprocess.run,
     activate: bool = True,
     system: str | None = None,
@@ -130,13 +150,22 @@ def install(
         raise RuntimeError("rootless source refresh watcher currently requires Linux systemd-user")
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
+    packages = (source_package_root or default_source_package_root()).expanduser().resolve()
     # Immediate local refresh is the one-time bridge from a stale materialization.
     refresh_receipt = refresh(source, runtime)
     (runtime / "intr-materialization").mkdir(parents=True, exist_ok=True)
+    packages.mkdir(parents=True, exist_ok=True)
+    for slug in SOURCE_PACKAGE_COMPONENT_SLUGS:
+        (packages / slug).mkdir(parents=True, exist_ok=True)
     config_root = unit_root or (Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "systemd" / "user")
     config_root = config_root.expanduser().resolve()
     config_root.mkdir(parents=True, exist_ok=True)
-    service_text, path_text = render_units(source_root=source, runtime_root=runtime, python=python)
+    service_text, path_text = render_units(
+        source_root=source,
+        runtime_root=runtime,
+        python=python,
+        source_package_root=packages,
+    )
     service_path = config_root / REFRESH_SERVICE
     path_path = config_root / REFRESH_PATH
     service_path.write_text(service_text, encoding="utf-8")
@@ -171,6 +200,9 @@ def install(
         "filesystem_event_driven": True,
         "intr_materialization_event_driven": True,
         "intr_materialization_watch": str(runtime / "intr-materialization"),
+        "source_package_event_driven": True,
+        "source_package_watch": str(packages),
+        "source_package_component_watches": [str(packages / slug) for slug in SOURCE_PACKAGE_COMPONENT_SLUGS],
         "second_heartbeat_created": False,
         "third_party_scheduler_required": False,
         "network_fetch_performed": False,
@@ -192,12 +224,14 @@ def main() -> int:
     parser.add_argument("--source-root", type=Path, default=REPO_ROOT)
     parser.add_argument("--runtime-root", type=Path, default=default_runtime_root())
     parser.add_argument("--unit-root", type=Path)
+    parser.add_argument("--source-package-root", type=Path, default=default_source_package_root())
     parser.add_argument("--no-activate", action="store_true")
     args = parser.parse_args()
     receipt = install(
         args.source_root,
         args.runtime_root,
         unit_root=args.unit_root,
+        source_package_root=args.source_package_root,
         activate=not args.no_activate,
     )
     print(json.dumps(receipt, sort_keys=True))
