@@ -48,6 +48,8 @@ STATIC_FILES = (
     Path("scripts/consume_cmc028_resident_execution_request.py"),
     Path("scripts/run_sv_dn1_first_round_chain.py"),
     Path("scripts/consume_sv_dn1_resident_execution_request.py"),
+    Path("scripts/run_bootstrap_v1_release_prep_chain.py"),
+    Path("scripts/consume_bootstrap_v1_release_prep_request.py"),
     Path("scripts/consume_tvc_broker_validation_request.py"),
     Path("scripts/bootstrap_tvc_pr92_validation_source.py"),
     Path("scripts/consume_sv002_self_characterization_request.py"),
