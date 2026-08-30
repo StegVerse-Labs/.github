@@ -177,6 +177,8 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertIn("consume_hil_intr_materialization_request.py", service)
             self.assertIn(f"PathChanged={runtime / 'intr-materialization'}", path_unit)
             self.assertIn(f"PathChanged={packages.resolve()}", path_unit)
+            for slug in install_mod.SOURCE_PACKAGE_COMPONENT_SLUGS:
+                self.assertIn(f"PathChanged={(packages / slug).resolve()}", path_unit)
             self.assertIn(f'STEGVERSE_SOURCE_PACKAGE_ROOT={packages.resolve()}', service)
             self.assertNotIn("consume_resident_execution_request.py --source-root", service)
             self.assertNotIn("consume_g18_resident_execution_request.py --source-root", service)
@@ -232,7 +234,13 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertTrue(receipt["source_package_event_driven"])
             self.assertTrue((runtime / "intr-materialization").is_dir())
             self.assertTrue(package_root.is_dir())
+            for slug in install_mod.SOURCE_PACKAGE_COMPONENT_SLUGS:
+                self.assertTrue((package_root / slug).is_dir())
             self.assertEqual(receipt["source_package_watch"], str(package_root.resolve()))
+            self.assertEqual(
+                receipt["source_package_component_watches"],
+                [str((package_root / slug).resolve()) for slug in install_mod.SOURCE_PACKAGE_COMPONENT_SLUGS],
+            )
             self.assertFalse(receipt["second_heartbeat_created"])
             self.assertFalse(receipt["third_party_scheduler_required"])
             self.assertFalse(receipt["carrier_restarted_by_refresh"])
