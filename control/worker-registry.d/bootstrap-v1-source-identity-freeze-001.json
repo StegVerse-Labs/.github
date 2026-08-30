@@ -43,7 +43,7 @@
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
-        "task_relationship": "freezes_capability_identity",
+        "task_relationship": "develops_capability",
         "target_phase": "ACTIVATED"
       },
       "admission": {
