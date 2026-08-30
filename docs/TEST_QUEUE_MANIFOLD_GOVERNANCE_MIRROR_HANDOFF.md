@@ -2,7 +2,7 @@
 
 Updated: 2026-08-26T14:53:00-05:00
 Repository: `StegVerse-Labs/.github`
-State: `FEATURE_BRANCH_IMPLEMENTED / VALIDATION_PENDING / NOT_MERGED / NOT_RELEASED / NOT_ACTIVATED`
+State: `SOURCE_MERGED_VALIDATED / RELEASE_TAG_PENDING / NOT_ACTIVATED`
 
 ## Scope
 
@@ -186,3 +186,35 @@ tests/test_test_queue_manifold.py: absent on main before merge
 The implementation does not modify the direct Test Lanes executor, WorkerCoordinator claim/fence authority, TV/TVC credential authority, SDK evaluator ingress, or any person-specific route.
 
 Source merge is now eligible under this handoff. Merge does not satisfy the separately required exact release/tag set or runtime activation.
+
+
+## Source merge closure — 2026-08-30
+
+The generalized test-queue manifold source is merged on canonical `main`.
+
+```text
+original draft PR: #318 CLOSED / SUPERSEDED_BY_NON_DRAFT_MERGE_PR
+merge PR: #532
+merge commit: 270ea59bec8dd06455a5edbdc59cda9e60d5677d
+validated source head: 735480c2d9aa44ae9dfc90aa1b3d731681eaabee
+organization control plane: 33296293558 SUCCESS
+Heartbeat Worker Project: 33296293517 SUCCESS
+known scoped scaffolding/stubs: 0
+source implementation: COMPLETE_MERGED_VALIDATED
+runtime activation: NOT CLAIMED
+```
+
+The remaining release boundary is intentionally separate from source merge:
+
+```text
+release tracking issue: #534
+required release behavior: NEW EXACT AGGREGATE RELEASE/TAG IDENTITY
+historical tag reuse or retarget: PROHIBITED
+GitHub Actions runtime authority: NONE
+credential authority: TV/TVC
+release publication implies runtime activation: false
+```
+
+The connected repository tool surface does not expose Git tag or GitHub Release creation, so the exact release mutation is not executable from this session. The release issue is therefore the durable next owner rather than a chat-only task.
+
+After the exact release coordinate exists, downstream pertinence must be verified against the current mirror handoffs in `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `StegVerse-Labs/admissibility-wiki`, and `StegVerse-002/stegguardian-wiki`. Current search shows no existing test-queue-manifold projection in those repositories, so no downstream mutation is justified before an actual release coordinate exists.
