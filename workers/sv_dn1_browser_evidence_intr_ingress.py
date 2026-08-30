@@ -34,6 +34,7 @@ LOCATOR_REL = Path("control/sv-dn1-browser-observation-locator.json")
 INGRESS_RECEIPTS_REL = Path("receipts/sovereign-network/sv-dn1-browser-evidence-ingress")
 INGRESS_LATEST_REL = Path("receipts/sovereign-network/sv-dn1-browser-evidence-ingress.latest.json")
 DISPATCHER_REL = Path("scripts/dispatch_resident_execution_requests.py")
+REFRESH_RECEIPT_REL = Path("receipts/sovereign-host/worker-source-refresh.latest.json")
 AUTHORITY_EFFECT = "NONE_INGRESS_ONLY"
 
 FORBIDDEN_CREDENTIAL_ENV = (
@@ -133,10 +134,6 @@ def validate_transport(payload: Mapping[str, Any]) -> dict[str, Any]:
     require(bundle.get("schema") == BUNDLE_SCHEMA, "browser_bundle_schema_invalid")
     require(bundle.get("state") == "OBSERVED", "browser_bundle_not_observed")
     require(bundle.get("observation_class") == "AUTHENTIC_ESTABLISHED_STEGVERSE_WEB_NODE", "browser_bundle_observation_class_invalid")
-
-    # Reuse the canonical SDK-side validator so ingress and SDK admission cannot
-    # diverge about journal replay, source digest, exchange identity, InTr policy,
-    # destination validation, or claim/terminal/reconstruction lineage.
     adapter.validate(dict(bundle))
 
     registration = bundle.get("node_registration") or {}
@@ -197,8 +194,35 @@ def scrubbed_env(values: Mapping[str, str] | None = None) -> dict[str, str]:
     return env
 
 
+def _canonical_source_from_refresh(runtime_root: Path) -> Path | None:
+    receipt_path = runtime_root / REFRESH_RECEIPT_REL
+    if not receipt_path.is_file():
+        return None
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    if not isinstance(receipt, dict):
+        return None
+    if receipt.get("network_fetch_performed") is not False or receipt.get("credential_read_or_acquired") is not False:
+        return None
+    raw = str(receipt.get("source_root") or "").strip()
+    if not raw:
+        return None
+    source = Path(raw).expanduser().resolve()
+    if source == runtime_root.expanduser().resolve():
+        return None
+    required = (
+        source / "heartbeat_runtime/worker_runtime.py",
+        source / "scripts/run_worker_runtime.py",
+        source / "control/worker-registry.json",
+    )
+    return source if all(path.is_file() for path in required) else None
+
+
 def dispatch_consumer(runtime_root: Path) -> dict[str, Any]:
-    dispatcher = runtime_root / DISPATCHER_REL
+    runtime = runtime_root.expanduser().resolve()
+    dispatcher = runtime / DISPATCHER_REL
     if not dispatcher.is_file():
         return {
             "consumer_dispatch_attempted": False,
@@ -207,16 +231,25 @@ def dispatch_consumer(runtime_root: Path) -> dict[str, Any]:
             "claim_or_fence_minted_by_ingress": False,
             "authority_effect": "NONE",
         }
+    source = _canonical_source_from_refresh(runtime)
+    if source is None:
+        return {
+            "consumer_dispatch_attempted": False,
+            "consumer_dispatch_reason": "CANONICAL_SOURCE_REFRESH_RECEIPT_NOT_AVAILABLE",
+            "consumer_execution_authority": False,
+            "claim_or_fence_minted_by_ingress": False,
+            "authority_effect": "NONE",
+        }
     command = [
         sys.executable,
         str(dispatcher),
-        "--source-root", str(runtime_root),
-        "--runtime-root", str(runtime_root),
+        "--source-root", str(source),
+        "--runtime-root", str(runtime),
         "--only-consumer", "sv_dn1",
     ]
     process = subprocess.Popen(
         command,
-        cwd=str(runtime_root),
+        cwd=str(runtime),
         env=scrubbed_env(),
         stdin=subprocess.DEVNULL,
         stdout=subprocess.DEVNULL,
@@ -227,6 +260,7 @@ def dispatch_consumer(runtime_root: Path) -> dict[str, Any]:
     return {
         "consumer_dispatch_attempted": True,
         "consumer_pid": process.pid,
+        "canonical_source_root": str(source),
         "consumer_execution_authority": False,
         "claim_or_fence_minted_by_ingress": False,
         "authority_effect": "NONE_DISPATCH_ONLY",
