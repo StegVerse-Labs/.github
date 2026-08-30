@@ -52,7 +52,9 @@
     "manual_allowed_role": "evidence review only",
     "priority": "release",
     "dependencies": [],
-    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL"
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
+    "parent_task_id": null,
+    "derivation_depth": 0
   },
   "authority": {
     "authority_source": "StegVerse-Labs/.github#462 + canonical Universal InTr transport",
