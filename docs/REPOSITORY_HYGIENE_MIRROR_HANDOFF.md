@@ -227,3 +227,62 @@ Evidence source:
 
 The original 12-branch G18 hygiene sample is now explicit: nine evidence-cleared candidates and three review-required branches. G18 resident execution and activation remain separate and unobserved.
 
+
+
+## 2026-08-30 Wave-0 repo-standards and Continuity reconciliation
+
+### repo-standards lifecycle classification
+
+Current `StegVerse-Labs/repo-standards/REPO_STANDARDS_MIRROR_HANDOFF.md` was read before classification.
+
+```text
+PR #36 / issue #35: ACTIVE_OWNER_RETAIN / DRAFT_INTEGRATION_TRANSFER
+PR #40 / issue #39: ACTIVE_OWNER_RETAIN / PRODUCT_STANDARD_ISSUE_39
+issue #37: CLOSED_COMPLETE / no longer owns active PR scope
+```
+
+Neither open PR is a hygiene close/merge target. PR #36 preserves unresolved ST-020 canonical adoption/numbering work; PR #40 remains an active standards change owned by issue #39. Hygiene must not steal those scopes.
+
+### Continuity branch classification
+
+Current `StegVerse-Labs/Continuity/docs/CONTINUITY_MIRROR_HANDOFF.md` and release-verification issue #3 were read before branch classification.
+
+```text
+feat/handoff-execution-ownership-v1:
+  compare: ahead 0 / behind 30 / no file diff
+  classification: EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE
+
+st019/universal-pr-validation-8:
+  compare: identical to current main
+  classification: ISSUE_8_ACTIVE / NOT RETIREMENT-CLOSED BY IDENTITY ALONE
+
+build/109-percent-recreatable-continuity:
+  ahead 26 / behind 56
+  classification: ACTIVE_RELEASE_EVIDENCE_LINEAGE_REVIEW
+
+release/109-percent-verification:
+  ahead 5 / behind 55
+  classification: ACTIVE_RELEASE_EVIDENCE_LINEAGE_REVIEW
+
+verify/109-percent-successor-block-receipt:
+  ahead 2 / behind 54
+  classification: ACTIVE_RELEASE_EVIDENCE_LINEAGE_REVIEW
+```
+
+Continuity issue #3 remains open and explicitly owns the 109-percent destination/release verification chain, so the three ahead/diverged release branches are retained pending lineage reconciliation.
+
+### ST-019 universal-check blocker discovered
+
+A fresh issue-#8 implementation attempt removed the `pull_request.paths` filter and caused the universal check to run, but exact hosted validation failed before source checkout:
+
+```text
+Continuity PR: #9 CLOSED_UNMERGED
+run: 33296567452 FAILURE
+job: 99217144193 FAILURE
+failure: anonymous fetch of private Continuity repository requires authentication
+GitHub credential workaround introduced: false
+```
+
+Because the repository is private and the canonical workflow intentionally forbids GitHub credentials, simply removing the path filter would make `validate` universally fail. The PR was therefore closed unmerged. Repo-standards issue #50 was notified that Continuity's earlier `validate + repo-smoke` required-check warrant must fail closed or be refreshed after a sovereign/TV-TVC-governed universal status-publication path exists.
+
+No branch ref deletion, product implementation merge, protection mutation, credential mutation, runtime activation, or release decision was performed by this hygiene batch.
