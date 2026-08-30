@@ -21,6 +21,8 @@ ROOT = Path.cwd().resolve()
 TASK_ID = "SHWP-HIL-SOVEREIGN-RECEIVER-001"
 RECEIPT = ROOT / "receipts" / "hil-sovereign-receiver" / f"{TASK_ID}.json"
 DEFAULT_PORT = 8765
+TVC_WATCHER_REL = Path("scripts/watch_hil_tvc_lifecycle_outbox.py")
+TVC_WATCH_PID_REL = Path("receipts/hil-sovereign-receiver/tvc-lifecycle-watch.pid")
 
 
 def atomic_write(path: Path, value: dict[str, Any]) -> None:
@@ -119,6 +121,55 @@ def launch_detached(adapter_root: Path, durable_root: Path, port: int) -> subpro
         start_new_session=True,
         close_fds=True,
     )
+
+
+def _pid_live(pid: int) -> bool:
+    if pid <= 1:
+        return False
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    return True
+
+
+def launch_tvc_lifecycle_watch(runtime_root: Path) -> int | None:
+    watcher = runtime_root / TVC_WATCHER_REL
+    if not watcher.is_file():
+        return None
+    pid_path = runtime_root / TVC_WATCH_PID_REL
+    if pid_path.is_file():
+        try:
+            existing = int(pid_path.read_text(encoding="utf-8").strip())
+        except (OSError, ValueError):
+            existing = 0
+        if _pid_live(existing):
+            return existing
+    env = dict(os.environ)
+    for name in (
+        "GITHUB_TOKEN","GH_TOKEN","GITHUB_PAT","GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ACTIONS_RUNTIME_TOKEN","ACTIONS_ID_TOKEN_REQUEST_TOKEN",
+    ):
+        env.pop(name, None)
+    env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
+    env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] = "NONE"
+    process = subprocess.Popen(
+        [
+            sys.executable,
+            str(watcher),
+            "--runtime-root",
+            str(runtime_root),
+        ],
+        cwd=runtime_root,
+        env=env,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        close_fds=True,
+    )
+    pid_path.parent.mkdir(parents=True, exist_ok=True)
+    pid_path.write_text(str(process.pid) + "\n", encoding="utf-8")
+    return process.pid
 
 
 def observe_ready(base_url: str, attempts: int = 20, delay_seconds: float = 0.5) -> dict[str, Any] | None:
@@ -246,6 +297,7 @@ def main() -> int:
         print()
         return 0
 
+    tvc_watch_pid = launch_tvc_lifecycle_watch(ROOT)
     blocker = solution_required(
         "The StegVerse carrier receiver is locally READY, but public HTTPS rendezvous, browser receipt, restart-byte proof, and TVC lifecycle handoff are not yet established.",
         "Bind an admitted public HTTPS rendezvous to this already-ready loopback receiver without granting transport execution authority, then observe the Site browser submission and downstream evidence chain.",
@@ -265,6 +317,9 @@ def main() -> int:
         "browser_submission_proven": False,
         "post_restart_exact_byte_proven": False,
         "tvc_lifecycle_handoff_proven": False,
+        "tvc_lifecycle_watch_started": isinstance(tvc_watch_pid, int) and tvc_watch_pid > 1,
+        "tvc_lifecycle_watch_pid": tvc_watch_pid,
+        "tvc_lifecycle_watch_authority_effect": "NONE_EVENT_WATCH_ONLY",
         "blocker": blocker,
     })
     atomic_write(RECEIPT, receipt)

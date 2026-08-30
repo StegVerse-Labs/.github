@@ -655,3 +655,76 @@ A PASS does not claim TVC receiving admission, private review, publication, or
 Master Records authority. TVC #8 remains independently owned.
 
 Source/CI does not establish a real restart or reconstruction observation.
+
+
+## 2026-08-30 automatic HIL custody -> TVC lifecycle event consumption
+
+Current source branch:
+`feat/hil-tvc-lifecycle-outbox-current-20260830`.
+
+New bounded runtime surfaces:
+
+```text
+scripts/consume_hil_tvc_lifecycle_outbox.py
+scripts/watch_hil_tvc_lifecycle_outbox.py
+tests/test_hil_tvc_lifecycle_outbox_consumer.py
+tests/test_hil_tvc_lifecycle_outbox_watch.py
+tests/test_hil_tvc_lifecycle_watch_worker.py
+```
+
+The HIL receiver itself still does not invoke TVC and the browser remains
+non-authorizing. After the WorkerCoordinator-owned receiver reaches exact READY,
+the HIL worker starts one bounded watcher process in the same runtime process
+group. The watcher observes only the durable receiver-owned TVC outbox and exits
+when:
+
+```text
+TVC lifecycle admission is observed
+OR a fail-closed result occurs
+OR the finite lease/watch window expires
+OR the containing runtime/lease is torn down
+```
+
+The durable input pair is produced by merged LLM-adapter
+`0f9ddde691f73a6477b25e609d1f2538073839f1`:
+
+```text
+<durable HIL root>/intr-outbox/tvc-hil-lifecycle/<submission_id>.json
+<durable HIL root>/receiver-receipts/<submission_id>.json
+```
+
+The event consumer requires the receiver receipt path to remain inside the
+receiver-owned durable receipt directory and invokes only the already-merged TVC
+one-shot lifecycle adapter.
+
+TVC source floor:
+
+```text
+StegVerse-Labs/TVC
+2787eece099604a4d2aad93c575167dc73e54037
+```
+
+Later TVC main movement is admitted only when that floor remains an ancestor and
+the HIL lifecycle adapter/backend protected files are byte-unchanged relative to
+the floor. Dirty protected paths fail closed.
+
+The TVC controlled-cycle state was separately hardened in TVC PR #259 so all
+runtime lifecycle state resides beneath the caller-owned HIL/TVC runtime output
+root rather than mutating the TVC source checkout.
+
+Authority remains:
+
+```text
+credential_authority = TV/TVC
+github_token_runtime_authority = NONE
+authority_effect = NONE_TRANSPORT_TRIGGER_ONLY / NONE_EVENT_WATCH_ONLY
+private_review_owner = StegVerse-Labs/TVC#8
+private_review_completed = false
+publication_authorized = false
+master_record_authorized = false
+second_user_device_required = false
+g18_completion_required = false
+```
+
+A source merge does not prove a browser submission, TVC receiving receipt, private
+review, publication, Master Record admission, or HIL runtime activation.
