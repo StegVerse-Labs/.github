@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "bootstrap_v1_distributable_bundle",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 8,
+    "expected_idle_beats": 2,
+    "expiry_candidate_beats": 24,
+    "confidence": "LOW_UNTIL_FIRST_SOVEREIGN_RUN"
+  },
+  "cost_estimate": {
+    "compute_units": 4,
+    "token_units": 0,
+    "storage_bytes": 536870912,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 2
+  },
+  "evidence_refs": [
+    "docs/BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_MIRROR_HANDOFF.md",
+    "handoffs/BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001.json",
+    "workers/bootstrap_v1_distributable_bundle_worker.py"
+  ],
+  "notes": [
+    "Reads four already-local source packages and writes one local bundle.",
+    "No network or platform acquisition is part of this worker.",
+    "External cost is zero."
+  ]
+}

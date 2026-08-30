@@ -1,0 +1,42 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:bootstrap-v1-distributable-bundle-v1",
+      "authority_ref": "handoffs/BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "source_package_integrity_validation",
+        "local_bootstrap_bundle_build",
+        "evidence_class_preservation"
+      ],
+      "command": [
+        "python",
+        "workers/bootstrap_v1_distributable_bundle_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_BOOTSTRAP_V1_RELEASE_CANDIDATE_STATE_ROOT",
+        "STEGVERSE_BOOTSTRAP_V1_SOURCE_IDENTITY_FREEZE_STATE_ROOT",
+        "STEGVERSE_SOURCE_PACKAGE_ROOT",
+        "STEGVERSE_BOUND_STATE_ROOT",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/state/bootstrap-v1-distributable-bundle",
+      "bound_state_allowed_paths": [
+        "bundle/**",
+        "receipts/**"
+      ],
+      "timeout_seconds": 180,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Builds only from already-local frozen candidate/catalog/packages.",
+        "Validates all package bytes and source identities before bundling.",
+        "No transport, platform, credential, execution, release or publication authority."
+      ]
+    }
+  ]
+}
