@@ -39,7 +39,8 @@
     "repository": "StegVerse-Labs/.github",
     "source_refs": [
       "docs/SV_DN1_PUBLIC_PROMOTION_TASK_MIRROR_HANDOFF.md",
-      "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md"
+      "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md",
+      "handoffs/SV-DN1-SDK-FIRST-ROUND-001.json"
     ],
     "canonical_owner_ref": "docs/SV_DN1_PUBLIC_PROMOTION_TASK_MIRROR_HANDOFF.md",
     "canonical_lineage_key": "sv-dn1:public-promotion",
@@ -52,7 +53,7 @@
     "priority": "release",
     "parent_task_id": "SV-DN1-SDK-FIRST-ROUND-001",
     "derivation_reason": "Own the explicit successor transition from authentic ANALYZED result to local exact-byte public projection without widening SDK worker authority.",
-    "derivation_depth": 1,
+    "derivation_depth": 3,
     "source_handoff_ref": "docs/SV_DN1_PUBLIC_PROMOTION_TASK_MIRROR_HANDOFF.md",
     "dependencies": ["SV-DN1-SDK-FIRST-ROUND-001"],
     "execution_admission_mode": "INDEPENDENT_TASK_CONTROL"
