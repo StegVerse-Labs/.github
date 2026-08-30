@@ -25,7 +25,6 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
             runtime = base / "runtime"
             source.mkdir()
             (runtime / "scripts").mkdir(parents=True, exist_ok=True)
-            (runtime / "scripts/consume_evaluator_intr_resident_execution_request.py").write_text("# evaluator\n", encoding="utf-8")
             for _name, rel in mod.CONSUMERS:
                 path = runtime / rel
                 path.parent.mkdir(parents=True, exist_ok=True)
@@ -61,6 +60,8 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
                 },
             )
             self.assertEqual(receipt["state"], "DISPATCH_COMPLETE")
+            self.assertEqual(receipt["selection_scope"], "ALL_REGISTERED")
+            self.assertEqual(receipt["consumer_count"], len(mod.CONSUMERS))
             self.assertEqual(len(calls), len(mod.CONSUMERS))
             self.assertIn("g18", receipt["request_failures"])
             self.assertFalse(receipt["request_failure_blocks_later_requests"])
@@ -92,6 +93,52 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
             self.assertEqual(receipt["missing_consumers"], ["ecosystem_chat"])
             self.assertEqual(len(calls), len(mod.CONSUMERS) - 1)
             self.assertTrue((runtime / mod.RECEIPT_REL).is_file())
+
+    def test_exact_selector_visits_only_requested_consumer(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            source = base / "source"
+            runtime = base / "runtime"
+            source.mkdir()
+            target = "cross_framework_current_basis_v04"
+            rel = dict(mod.CONSUMERS)[target]
+            consumer = runtime / rel
+            consumer.parent.mkdir(parents=True, exist_ok=True)
+            consumer.write_text("# current-basis consumer\n", encoding="utf-8")
+            calls = []
+
+            def runner(command, **kwargs):
+                calls.append((command, kwargs))
+                return SimpleNamespace(returncode=0, stdout='{"state":"ATTEMPT_RECORDED"}\n', stderr="")
+
+            receipt = mod.dispatch(
+                source,
+                runtime,
+                runner=runner,
+                env={"PATH": "/bin", "HOME": td},
+                only_consumers=(target,),
+            )
+            self.assertEqual(receipt["state"], "DISPATCH_COMPLETE")
+            self.assertEqual(receipt["selection_scope"], "EXACT_SELECTOR")
+            self.assertEqual(receipt["selected_consumers"], [target])
+            self.assertEqual(receipt["consumer_count"], 1)
+            self.assertEqual(receipt["consumers_visited"], 1)
+            self.assertEqual(len(calls), 1)
+            self.assertEqual(Path(calls[0][0][1]), consumer)
+
+    def test_unknown_selector_fails_before_any_consumer_is_invoked(self) -> None:
+        calls = []
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            with self.assertRaisesRegex(RuntimeError, "unknown resident consumer selector"):
+                mod.dispatch(
+                    base / "source",
+                    base / "runtime",
+                    runner=lambda *args, **kwargs: calls.append((args, kwargs)),
+                    env={"PATH": "/bin"},
+                    only_consumers=("not_registered",),
+                )
+        self.assertEqual(calls, [])
 
     def test_hosted_environment_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as td:
