@@ -558,3 +558,26 @@ HeartBeat federation membership does not grant execution authority. Model output
 `SYSTEM_AI_ACTIVE` may be asserted only after the canonical HeartBeat federation proves the runtime present/fresh/nonfailed, a real governed local/private inference is observed through TV/TVC and LLM-adapter with measured usage, and same-execution Master Records reconstruction passes. Missing or stale evidence fails closed.
 
 After `SYSTEM_AI_ACTIVE` is evidenced and released, verify projections to Site, Publisher, admissibility-wiki, and stegguardian-wiki; source completeness alone does not authorize that propagation.
+
+
+## 2026-08-29 cross-framework current-basis v0.4 sovereign resident execution
+
+A dedicated independent WorkerCoordinator task now carries the exact frozen StegVerse side of the externally reviewed current-basis comparison without creating a second evaluator or runtime.
+
+```text
+issue: #468
+scoped handoff: docs/CROSS_FRAMEWORK_CURRENT_BASIS_V04_RESIDENT_RUN_MIRROR_HANDOFF.md
+task: SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001
+frozen SHA-256: 07a08496c21b31f70f6f45ef731aa5f6b2522a6fc8f67f2d0a4c2b6fceda7a3f
+frozen Git blob: 59d818a15fc7be732c97dae7d2174d8cfe9a7bab
+SDK execution integration: StegVerse-org/StegVerse-SDK#99
+StegCore native derivation: StegVerse-Labs/StegCore#162
+credential authority: TV/TVC
+GitHub token runtime authority: NONE
+network source fetch: false
+second user machine required: false
+```
+
+The registered worker uses already-local clean SDK, StegCore, Core-Lite, and Master Records source only. It invokes the SDK's exact frozen-v0.4 sovereign harness, which retains the neutral common manifest, obtains StegCore-native derivation, executes the canonical governed route, records Master Records custody, observes S1, then binds the S0->S1 transition receipt, replay, and reconstruction. Source/CI/merge cannot satisfy the authentic run gate.
+
+Current state: source/worker/request wiring IMPLEMENTED_ON_BRANCH; validation/merge pending; authentic resident request consumption and `RUN_COMPLETE.json` NOT OBSERVED.
