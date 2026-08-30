@@ -1,0 +1,132 @@
+from __future__ import annotations
+
+import io
+import json
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from unittest import mock
+
+from workers import device_kv_intr_observation_worker as worker
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def invocation():
+    handoff = json.loads((ROOT / "handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json").read_text())
+    return {
+        "schema": "stegverse.worker-invocation/v0.1",
+        "heartbeat_epoch": 44,
+        "task": {
+            "task_id": worker.TASK_ID,
+            "claim_id": "claim-device-kv-44",
+            "heartbeat_timing": {"fencing_token": 44},
+        },
+        "handoff": handoff,
+    }
+
+
+class DeviceKVInTrObservationWorkerTests(unittest.TestCase):
+    def test_registration_is_independent_non_authorizing_successor(self):
+        registry = json.loads((ROOT / "control/worker-registry.d/device-kv-intr-observation-001.json").read_text())
+        adapter = json.loads((ROOT / "control/process-worker-adapters.d/device-kv-intr-observation-001.json").read_text())
+        handoff = json.loads((ROOT / "handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json").read_text())
+        task = registry["tasks"][0]
+        self.assertEqual(task["state"], "HANDOFF_READY")
+        self.assertEqual(task["admission"]["authority_domain"], "INDEPENDENT_TASK_CONTROL")
+        self.assertTrue(task["admission"]["fresh_fence_required"])
+        self.assertFalse(task["admission"]["heartbeat_grants_execution_authority"])
+        self.assertEqual(task["admission"]["parent_terminal_transition_required"], "RELAY_NODE_KV_CONTINUITY_VERIFIED")
+        self.assertEqual(registry["credential_authority"], "TV/TVC")
+        self.assertFalse(registry["github_token_required"])
+        self.assertFalse(registry["non_tv_tvc_secret_or_token_required"])
+        row = adapter["adapters"][0]
+        self.assertEqual(row["adapter_ref"], "process:device-kv-intr-observation-v1")
+        self.assertEqual(row["env_allowlist"], ["STEGVERSE_STEGOS_ROOT", "STEGVERSE_KV_SOURCE_ROOT"])
+        self.assertFalse(handoff["authority"]["physical_additional_machine_required"])
+        self.assertFalse(handoff["authority"]["third_party_runtime_required"])
+        self.assertFalse(handoff["activation"]["targeted_execution"]["g18_bootstrap_allowed"])
+
+    def test_missing_parent_fails_closed_without_human_action(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            parent = root / "receipts/stegos-sovereign-relay/parent.json"
+            receipt = root / "receipts/device-kv-intr/result.json"
+            with mock.patch.object(worker, "ROOT", root), \
+                 mock.patch.object(worker, "PARENT_RECEIPT", parent), \
+                 mock.patch.object(worker, "RECEIPT", receipt), \
+                 mock.patch.object(sys, "stdin", io.StringIO(json.dumps(invocation()))), \
+                 mock.patch.object(sys, "stdout", io.StringIO()):
+                self.assertEqual(worker.main(), 0)
+            result = json.loads(receipt.read_text())
+            self.assertEqual(result["state"], "ACTIVE")
+            self.assertEqual(result["transition_id"], "PARENT_NODE_KV_CONTINUITY_REQUIRED")
+            self.assertFalse(result["blocker"]["human_action_required"])
+            self.assertFalse(result["blocker"]["physical_additional_machine_required"])
+            self.assertFalse(result["blocker"]["third_party_runtime_required"])
+
+    def test_transport_receipt_binds_payload_lineage_and_authority(self):
+        first = worker.build_transport_receipt(
+            receipt_id="r1",
+            packet_id="p1",
+            direction="FORWARD",
+            from_role="DEVICE",
+            to_role="KV",
+            operation_hash="sha256:" + "1" * 64,
+            payload_hash="sha256:" + "2" * 64,
+            prior_receipt_hash=None,
+            boundary_identity_ref="kv://root",
+        )
+        worker.validate_transport_receipt(
+            first,
+            direction="FORWARD",
+            from_role="DEVICE",
+            to_role="KV",
+            payload_hash="sha256:" + "2" * 64,
+            prior=None,
+        )
+        second = worker.build_transport_receipt(
+            receipt_id="r2",
+            packet_id="p2",
+            direction="RETURN",
+            from_role="KV",
+            to_role="DEVICE",
+            operation_hash="sha256:" + "1" * 64,
+            payload_hash="sha256:" + "3" * 64,
+            prior_receipt_hash=first["receipt_hash"],
+            boundary_identity_ref="stegos-node://continuity",
+        )
+        worker.validate_transport_receipt(
+            second,
+            direction="RETURN",
+            from_role="KV",
+            to_role="DEVICE",
+            payload_hash="sha256:" + "3" * 64,
+            prior=first["receipt_hash"],
+        )
+        self.assertFalse(first["secret_plaintext_present"])
+        self.assertFalse(first["authority_transfer"])
+        self.assertEqual(second["prior_receipt_hash"], first["receipt_hash"])
+
+    def test_controlled_request_contains_no_personal_record_scope(self):
+        handoff = json.loads((ROOT / "handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json").read_text())
+        controlled = handoff["execution"]["controlled_operation"]
+        self.assertEqual(controlled["operation"], "DISCOVER")
+        self.assertEqual(controlled["record_class"], "transport-capability-observation")
+        self.assertEqual(controlled["requested_scope"], ["capability_status"])
+        text = json.dumps(controlled).lower()
+        for token in ("password", "private_key", "credential_value", "health", "financial", "biometric"):
+            self.assertNotIn(token, text)
+
+    def test_worker_captures_receipt_store_return_directly(self):
+        source = (ROOT / "workers/device_kv_intr_observation_worker.py").read_text()
+        self.assertIn('endpoint_ref_box["ref"] = ref', source)
+        self.assertIn('endpoint_ref = endpoint_ref_box.get("ref")', source)
+        self.assertIn('"endpoint_receipt_ref": endpoint_ref', source)
+        self.assertNotIn('.get("receipt", {}).get("receipt_ref")', source)
+
+
+if __name__ == "__main__":
+    unittest.main()
