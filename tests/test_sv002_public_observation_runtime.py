@@ -5,8 +5,11 @@ import hashlib
 import importlib.util
 import json
 import tempfile
+import threading
 import unittest
+import urllib.request
 from pathlib import Path
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location(
@@ -208,6 +211,66 @@ class TestSV002PublicObservationRuntime(unittest.TestCase):
             )
             receipts = list((runtime / "receipts/sovereign-network/sv002-public-observation").glob("SV002-OBS-IN-*.json"))
             self.assertEqual(len(receipts), 1)
+
+
+    def test_real_http_socket_roundtrip_observed(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            stegos_pkg = root / "stegos-root" / "stegos"
+            stegos_pkg.mkdir(parents=True)
+            (stegos_pkg / "__init__.py").write_text("", encoding="utf-8")
+            (stegos_pkg / "universal_intr_transport.py").write_text(FAKE_INTR, encoding="utf-8")
+
+            micro = root / "micro"
+            prov = micro / "experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json"
+            prov.parent.mkdir(parents=True)
+            prov.write_text(json.dumps({
+                "source_organization": {"organization": "Admissible-Existence", "availability_known": True}
+            }), encoding="utf-8")
+
+            runtime = root / "runtime"
+            args = SimpleNamespace(
+                allowed_origin="https://stegverse.org",
+                runtime_root=runtime,
+                micro_node_root=micro,
+                stegos_root=root / "stegos-root",
+                boundary_identity_ref="TVC:BOUNDARY:SV002-OBSERVE",
+            )
+            server = mod.BoundedHTTPServer(("127.0.0.1", 0), mod.make_handler(args))
+            thread = threading.Thread(target=server.handle_request, daemon=True)
+            thread.start()
+            try:
+                body = canonical(request()).encode("utf-8")
+                req = urllib.request.Request(
+                    f"http://127.0.0.1:{server.server_address[1]}/intr/sv002-observe",
+                    data=body,
+                    method="POST",
+                    headers={
+                        "Origin": "https://stegverse.org",
+                        "Content-Type": "application/json",
+                        "X-StegVerse-Transport": "InTr",
+                        "X-StegVerse-Authorization-Id": "AUTH-1",
+                        "X-StegVerse-Payload-SHA256": hashlib.sha256(body).hexdigest(),
+                    },
+                )
+                with urllib.request.urlopen(req, timeout=3) as response:
+                    payload = json.loads(response.read().decode("utf-8"))
+                thread.join(timeout=3)
+                self.assertFalse(thread.is_alive(), "SV002 observation HTTP receiver did not process request")
+                self.assertEqual(payload["decision"], "ALLOW_READ_ONLY_OBSERVATION")
+                self.assertEqual(payload["transport_receipts"]["ingress"]["transition_state"], "RECEIVED")
+                self.assertEqual(payload["transport_receipts"]["egress"]["transition_state"], "FORWARDED")
+                self.assertEqual(
+                    payload["transport_receipts"]["egress"]["prior_receipt_hash"],
+                    payload["transport_receipts"]["ingress"]["receipt_hash"],
+                )
+                self.assertFalse(payload["projection"]["topology"]["observer_direct_relation_to_stegverse_002"])
+                receipts = list(
+                    (runtime / "receipts/sovereign-network/sv002-public-observation").glob("SV002-OBS-IN-*.json")
+                )
+                self.assertEqual(len(receipts), 1)
+            finally:
+                server.server_close()
 
 if __name__ == "__main__":
     unittest.main()
