@@ -90,13 +90,15 @@ def fake_materializer(*, source, intake_runtime, request, ingress_receipt, env):
         "runtime_root": execution_runtime,
         "evidence": {
             "schema": "stegverse.hil-esrl-runtime-materialization/v1",
-            "state": "LOCAL_READY",
+            "state": "LEASE_OPEN",
             "lease_id": "HIL-ESRL-test",
-            "lease_state": "LOCAL_READY",
+            "lease_state": "LEASE_OPEN",
             "source_receipt_id": "sha256:" + "f" * 64,
             "runtime_instantiated": True,
             "local_identity_verified": True,
-            "hil_public_https_rendezvous_observed": False,
+            "hil_public_https_rendezvous_observed": True,
+            "public_gateway_readiness_verified": True,
+            "public_gateway_origin": "https://stegverse.org",
             "credential_authority": "TV/TVC",
             "authority_effect": "NONE_RUNTIME_MATERIALIZATION_ONLY",
         },
@@ -146,20 +148,25 @@ class HILInTrMaterializationConsumerTests(unittest.TestCase):
             saved = json.loads((runtime / mod.RECEIPT_DIR_REL / f"{request()['materialization_id']}.json").read_text())
             self.assertTrue(saved["esrl_runtime_instantiated"])
             self.assertTrue(saved["esrl_local_identity_verified"])
-            self.assertEqual(saved["esrl_lease_state"], "LOCAL_READY")
-            self.assertFalse(saved["hil_public_https_rendezvous_observed"])
+            self.assertEqual(saved["esrl_lease_state"], "LEASE_OPEN")
+            self.assertTrue(saved["hil_public_https_rendezvous_observed"])
+            self.assertTrue(saved["public_gateway_readiness_verified"])
+            self.assertEqual(saved["public_gateway_origin"], "https://stegverse.org")
             self.assertFalse(saved["claim_or_fence_minted_by_consumer"])
 
-    def test_consumer_rejects_preclaimed_public_hil_rendezvous(self) -> None:
+    def test_consumer_rejects_local_ready_without_public_gateway(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             source, runtime, _ = prepare(Path(td))
             def bad_materializer(**kwargs):
                 value = fake_materializer(**kwargs)
-                value["evidence"]["hil_public_https_rendezvous_observed"] = True
+                value["evidence"]["state"] = "LOCAL_READY"
+                value["evidence"]["lease_state"] = "LOCAL_READY"
+                value["evidence"]["hil_public_https_rendezvous_observed"] = False
+                value["evidence"]["public_gateway_readiness_verified"] = False
                 return value
             result = mod.consume_all(source, runtime, runtime_materializer=bad_materializer)
             self.assertEqual(result["results"][0]["state"], "REQUEST_REJECTED")
-            self.assertIn("cannot_preclaim_hil_public_rendezvous", result["results"][0]["reason"])
+            self.assertIn("esrl_lease_not_open", result["results"][0]["reason"])
 
     def test_successful_materialization_is_not_blindly_reexecuted(self) -> None:
         with tempfile.TemporaryDirectory() as td:

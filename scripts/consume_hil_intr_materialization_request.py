@@ -179,10 +179,12 @@ def _attempt(*, source: Path, runtime: Path, request: dict[str, Any], runner: Ru
     evidence = materialized.get("evidence")
     if not execution_runtime.is_dir() or not isinstance(evidence, dict):
         raise HILInTrMaterializationError("esrl_runtime_materialization_invalid")
-    if evidence.get("state") != "LOCAL_READY" or evidence.get("runtime_instantiated") is not True or evidence.get("local_identity_verified") is not True:
-        raise HILInTrMaterializationError("esrl_runtime_not_local_ready")
-    if evidence.get("hil_public_https_rendezvous_observed") is not False:
-        raise HILInTrMaterializationError("esrl_bridge_cannot_preclaim_hil_public_rendezvous")
+    if evidence.get("state") != "LEASE_OPEN" or evidence.get("lease_state") != "LEASE_OPEN":
+        raise HILInTrMaterializationError("esrl_lease_not_open")
+    if evidence.get("runtime_instantiated") is not True or evidence.get("local_identity_verified") is not True:
+        raise HILInTrMaterializationError("esrl_runtime_not_verified")
+    if evidence.get("hil_public_https_rendezvous_observed") is not True or evidence.get("public_gateway_readiness_verified") is not True:
+        raise HILInTrMaterializationError("esrl_public_gateway_not_verified")
 
     entrypoint = execution_runtime / TARGET_ENTRYPOINT
     if not entrypoint.is_file():
@@ -197,7 +199,10 @@ def _attempt(*, source: Path, runtime: Path, request: dict[str, Any], runner: Ru
         "operation_id": request["operation_id"], "packet_id": request["packet_id"], "payload_hash": request["payload_hash"], "destination": request["destination"],
         "downstream_owner_ref": request["downstream_owner_ref"], "source_ingress_receipt_id": evidence.get("source_receipt_id"),
         "esrl_lease_id": evidence.get("lease_id"), "esrl_lease_state": evidence.get("lease_state"), "esrl_runtime_root": str(execution_runtime),
-        "esrl_runtime_instantiated": True, "esrl_local_identity_verified": True, "hil_public_https_rendezvous_observed": False,
+        "esrl_runtime_instantiated": True, "esrl_local_identity_verified": True,
+        "hil_public_https_rendezvous_observed": True,
+        "public_gateway_readiness_verified": True,
+        "public_gateway_origin": evidence.get("public_gateway_origin"),
         "target_task_id": TARGET_TASK, "targeted_executor": TARGET_ENTRYPOINT, "targeted_executor_returncode": completed.returncode,
         "runtime_execution_attempted": True, "successful_attempt_is_not_blindly_retried": True, "blocked_attempt_remains_nonterminal": completed.returncode != 0,
         "request_grants_authority": False, "claim_or_fence_minted_by_consumer": False, "heartbeat_grants_execution_authority": False,
