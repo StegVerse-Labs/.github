@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-CMC028-ROOT-CUSTODY-EVIDENCE-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "protected_material_allowed_in_request": false,
+  "certificate_issuance_authority": false,
+  "signing_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "requested_at": "2026-08-30T03:40:00Z",
+  "note": "Non-authorizing resident request for the already-registered CMC-028 custody/recovery evidence observer. It may inspect only admitted metadata and independently produced non-secret identity/recovery receipts through the existing TVC task. It grants no key generation, import, content read, hash, export, issuance, signing, claim, fence, credential, scheduler, or heartbeat authority."
+}

@@ -83,6 +83,7 @@ CONSUMERS = (
     ("hil", "scripts/consume_hil_resident_execution_request.py"),
     ("evaluator_intr", "scripts/consume_evaluator_intr_resident_execution_request.py"),
     ("ara_graph", "scripts/consume_ara_graph_resident_execution_request.py"),
+    ("cmc028_root_custody", "scripts/consume_cmc028_resident_execution_request.py"),
     ("sv_dn1", "scripts/consume_sv_dn1_resident_execution_request.py"),
     ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),
     ("sv002_self_characterization", "scripts/consume_sv002_self_characterization_request.py"),

@@ -40,6 +40,7 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
                 {"state": "NO_REQUEST"},
                 {"state": "NO_REQUEST"},
                 {"state": "NO_REQUEST"},
+                {"state": "NO_REQUEST"},
             ]
             calls = []
 
