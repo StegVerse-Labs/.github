@@ -25,7 +25,7 @@ class SovereignSourcePackageTests(unittest.TestCase):
         self.assertIn("sha256-content-manifest",src)
 
     def test_package_validates_and_materializes_without_network(self):
-        component="Data-Continuation/core-lite"; rel="core_lite/transaction_route.py"; data=b"route\n"
+        component="stegverse.core-lite"; rel="core_lite/transaction_route.py"; data=b"route\n"
         with tempfile.TemporaryDirectory() as td:
             base=Path(td)/"source"; store=Path(td)/"packages"
             package=self.make_package(component,{rel:data})
@@ -40,10 +40,10 @@ class SovereignSourcePackageTests(unittest.TestCase):
     def test_missing_package_requests_transport_neutral_source(self):
         with tempfile.TemporaryDirectory() as td:
             with self.assertRaises(worker.SourcePackagePending):
-                worker.ensure_component(Path(td)/"source",Path(td)/"packages","StegVerse-Labs/StegCore")
+                worker.ensure_component(Path(td)/"source",Path(td)/"packages","stegverse.stegcore")
 
     def test_local_root_can_be_canonicalized_without_git_or_network(self):
-        component="master-records/orchestration"; rel="services/manifest_receipt_custody.py"; data=b"custody\n"
+        component="stegverse.master-records"; rel="services/manifest_receipt_custody.py"; data=b"custody\n"
         with tempfile.TemporaryDirectory() as td:
             base=Path(td); root=worker.repo_root(base,component); (root/Path(rel).parent).mkdir(parents=True); (root/rel).write_bytes(data)
             with mock.patch.dict(worker.COMPONENTS[component],{"anchors":{rel:worker.git_blob_sha1(data)}},clear=False):
