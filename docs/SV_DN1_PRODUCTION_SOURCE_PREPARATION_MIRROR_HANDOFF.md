@@ -13,7 +13,9 @@ GitHub repository names and historical commit SHAs are retained only as migratio
 ## Canonical runtime contract
 
 ```text
-already-local verified source
+already-local verified source under the canonical materialization tree
+        OR
+already-local verified source referenced by the canonical non-secret component locator
         OR
 content-addressed StegVerse source package
         ↓
@@ -30,7 +32,7 @@ emit source-preparation receipt
 SV-DN1-SDK-FIRST-ROUND-001
 ```
 
-Required source roots remain:
+Required source locators remain:
 
 ```text
 STEGVERSE_SDK_SOURCE_ROOT
@@ -38,6 +40,8 @@ STEGVERSE_STEGCORE_SOURCE_ROOT
 STEGVERSE_CORE_LITE_SOURCE_ROOT
 STEGVERSE_MASTER_RECORDS_SOURCE_ROOT
 ```
+
+When any of these locators already names a local directory, the worker now verifies that directory directly: migration anchor(s) must match and a complete `sha256-content-manifest` identity is recomputed from the local bytes. A configured local root is not copied merely to satisfy a preferred directory layout. Only a truly absent component falls through to the local content-addressed package store.
 
 ## Source package
 
@@ -122,7 +126,7 @@ resident/InTr upstream: OBSERVED
 platform-neutral source package schema: IMPLEMENTED
 production source worker network source acquisition: REMOVED
 GitHub runtime/source dependency: NONE BY CONTRACT
-first four canonical SHA-256 source package identities: NOT YET OBSERVED/FROZEN
+first four canonical SHA-256 source identities: NOT YET OBSERVED/FROZEN
 production source prep receipt v2: NOT YET OBSERVED
 SDK first round: NOT YET EXECUTED
 ```
@@ -140,3 +144,34 @@ repository_writeback_performed=false
 ```
 
 Newer authentic runtime evidence overrides older source/PR/session descriptions.
+
+
+## Local-root and v2 chain reconciliation — 2026-08-30
+
+The runtime contract is source-identity based, not directory-layout based. The production-source worker therefore accepts three equivalent local inputs, all subject to the same migration-anchor and complete-content verification:
+
+```text
+1. canonical /var/lib/stegverse/source/components/<component> root
+2. canonical non-secret STEGVERSE_*_SOURCE_ROOT locator to already-local source
+3. local stegverse.source-package/v1 materialized into the canonical component root
+```
+
+No path receives trust merely because it was supplied through an environment variable. A configured locator with a missing or mismatched migration anchor fails closed as source drift.
+
+The sovereign first-round orchestrator must validate the actual `stegverse.sv-dn1.production-source-prep-receipt/v2` contract. Retired receipt fields such as `public_source_roots_verified`, `private_source_roots_verified`, and `runtime_anchor_blobs_verified` are not part of v2 and may not be required for completion.
+
+For v2, durable receipt acceptance requires:
+- exactly four canonical component source identities;
+- every identity is `sha256:<64 lowercase hex>`;
+- exactly four canonical source roots;
+- exactly four canonical non-secret root locators;
+- root/locator equality component by component;
+- `migration_anchors_verified=true`;
+- `network_source_fetch_performed=false`;
+- `github_platform_required=false`;
+- `credential_used=false`;
+- `github_token_used=false`;
+- `repository_writeback_performed=false`;
+- `sdk_admitted=false`.
+
+This correction removes a false runtime blocker without creating any new source-acquisition or credential authority.
