@@ -128,6 +128,10 @@ def test_only_terminal_pass_marks_request_consumed(tmp_path):
     assert consumer.previously_consumed(runtime, value, digest) is True
 
 
+def test_private_source_candidate_is_builtin():
+    assert str(consumer.PRIVATE_SOURCE_CANDIDATE) == "/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99"
+
+
 def test_hosted_environment_rejected():
     try:
         consumer.clean_env({"GITHUB_ACTIONS":"true","HOME":"/tmp","PATH":"/usr/bin"})
