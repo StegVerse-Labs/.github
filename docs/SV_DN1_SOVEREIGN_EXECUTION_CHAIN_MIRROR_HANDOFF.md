@@ -26,6 +26,8 @@ SV-DN1-SOURCE-MATERIALIZATION-001
 -> SV-DN1-INTR-RUNTIME-001
 -> SV-DN1-PRODUCTION-SOURCE-PREP-001
 -> SV-DN1-SDK-FIRST-ROUND-001
+-> SV-DN1-PUBLIC-PROMOTION-001
+-> SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001
 ```
 
 Each task retains its own canonical WorkerCoordinator claim/fence, authority ceiling, network boundary, receipts, and completion semantics. This chain grants none of those authorities.
@@ -78,7 +80,7 @@ SDK FIRST ROUND
     - SV-DN1-PRODUCTION-SOURCE-PREP-001
 ```
 
-All five SV-DN-1 registry fragments are admitted under:
+All seven SV-DN-1 registry fragments are admitted under:
 
 ```text
 authority_domain: INDEPENDENT_TASK_CONTROL
@@ -202,7 +204,7 @@ Source preparation is platform-neutral. Any of the four canonical components may
 
 A canonical resident request is intent only, not authority.
 
-The chain may be requested through an additional resident request file without replacing the existing Ecosystem Chat request. A resident request consumer may invoke this chain only after local source refresh and still relies on the five task handoffs for actual claim/fence/network/execution authority.
+The chain may be requested through an additional resident request file without replacing the existing Ecosystem Chat request. A resident request consumer may invoke this chain only after local source refresh and still relies on the seven task handoffs for actual claim/fence/network/execution authority.
 
 The request must state:
 
@@ -224,7 +226,7 @@ Chain completion transition:
 
 `SV_DN1_SOVEREIGN_FIRST_ROUND_CHAIN_COMPLETE`
 
-It requires all five tasks `COMPLETED` with their exact durable receipts and the final first-round receipt proving:
+It requires all seven tasks `COMPLETED` with their exact durable receipts, including exact-byte public promotion and the repository-persistence package, and the final first-round receipt proving:
 
 ```text
 sdk_admission: SDK_ADMITTED
@@ -248,7 +250,11 @@ InTr worker: MERGED
 production source prep worker: MERGED / VALIDATED
 SDK first-round worker: MERGED
 single-opportunity sovereign chain orchestrator: MERGED
+public promotion worker: MERGED / WAITING ON AUTHENTIC SDK ANALYSIS
+repository persistence package worker: MERGED / WAITING ON PUBLIC PROMOTION
 resident request bridge: MERGED
+current resident request 006: MERGED / REQUESTED
+browser evidence Universal InTr ingress: MERGED / VALIDATED / RUNTIME ADMISSION NOT YET OBSERVED
 authentic Hugging Face browser observation: OBSERVED
 authentic EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM InTr hop: OBSERVED
 authentic chain execution receipt: NOT OBSERVED
@@ -295,7 +301,7 @@ no network source fetch
 no request/execution authority created
 ```
 
-Authentic analysis remains unobserved until the eligible sovereign resident actually consumes `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-004` and emits `SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED`. Public display remains a separate downstream promotion/deployment gate.
+Authentic analysis remains unobserved until the eligible sovereign resident actually consumes `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-006` and emits `SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED`. Public display remains a separate downstream promotion/deployment gate.
 
 
 ## 2026-08-30 repository-persistence package extension
@@ -316,4 +322,4 @@ The seventh task does not mutate a remote repository. It freezes the exact five 
 
 This removes the runtime-to-repository-content handoff ambiguity without granting GitHub, credential, commit, push, merge or deployment authority. A separately admitted TV/TVC-governed repository mutator remains required for actual persistence.
 
-Because this materially extends the exactly-once chain after request `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-005` was queued, a new request identity is required after this source change merges. Request 005 must not be silently reinterpreted as a seven-step request.
+Request `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-005` is superseded for this seven-step chain. The current exact request is `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-006`, which is merged and `REQUESTED`; it grants no execution, credential, network-source-fetch, repository-writeback, deployment, publication-decision, release, or certification authority.
