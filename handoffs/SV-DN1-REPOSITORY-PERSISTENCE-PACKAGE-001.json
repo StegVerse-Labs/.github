@@ -42,7 +42,16 @@
     "dependencies": [
       "SV-DN1-PUBLIC-PROMOTION-001"
     ],
-    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL"
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
+    "source_refs": [
+      "docs/SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_MIRROR_HANDOFF.md",
+      "docs/SV_DN1_PUBLIC_PROMOTION_TASK_MIRROR_HANDOFF.md",
+      "handoffs/SV-DN1-PUBLIC-PROMOTION-001.json"
+    ],
+    "source_handoff_ref": "docs/SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_MIRROR_HANDOFF.md",
+    "parent_task_id": null,
+    "derivation_reason": "Independent persistence-packaging task that consumes terminal public promotion without inheriting remote repository mutation authority.",
+    "derivation_depth": 0
   },
   "authority": {
     "authority_source": "docs/SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_MIRROR_HANDOFF.md",
@@ -57,7 +66,8 @@
     "merge_authority": false,
     "deployment_authority": false,
     "publication_decision_authority": false,
-    "execution_authority_created": false
+    "execution_authority_created": false,
+    "policy_version": "sv-dn1-repository-persistence-package-v1"
   },
   "execution": {
     "required_capabilities": [
@@ -82,7 +92,12 @@
     ],
     "public_network_access": {
       "enabled": false
-    }
+    },
+    "allowed_paths": [
+      "receipts/sv-dn1-repository-persistence-package/**"
+    ],
+    "allowed_services": [],
+    "rate_class": "sv_dn1_repository_persistence_package"
   },
   "activation": {
     "carrier": "independent_task_control",
