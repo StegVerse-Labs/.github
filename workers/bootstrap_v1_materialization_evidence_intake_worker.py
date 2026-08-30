@@ -114,6 +114,16 @@ def validate_evidence(e:Mapping[str,Any],candidate:Mapping[str,Any],bundle:Mappi
     rep=replay(rows);decl=e.get("journal_replay")
     if not isinstance(decl,dict) or decl.get("state")!="PASS" or decl.get("entries")!=rep["entries"] or decl.get("tail_sha256")!=rep["tail_sha256"]:raise RuntimeError("declared journal replay mismatch")
     if entries!=rows[-5:-1] or agg!=rows[-1]:raise RuntimeError("materialization entries are not the terminal journal suffix")
+    pre_materialization=rows[:-5]
+    binding_ok=any(
+        isinstance(row,dict)
+        and isinstance(row.get("receipt"),dict)
+        and row["receipt"].get("schema")=="stegos.web_device_node_binding_receipt.v1"
+        and row["receipt"].get("node_id")==node
+        and row["receipt"].get("device_continuity_id")==device
+        for row in pre_materialization
+    )
+    if not binding_ok:raise RuntimeError("established node/device binding receipt missing")
     return {"node_id":node,"device_continuity_id":device,"journal_tail":rep["tail_sha256"],"journal_entries":rep["entries"]}
 
 def execute(inv:Mapping[str,Any])->dict[str,Any]:
