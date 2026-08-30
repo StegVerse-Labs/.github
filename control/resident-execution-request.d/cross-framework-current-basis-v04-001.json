@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "state": "REQUESTED",
+  "request_id": "RESIDENT-EXEC-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001",
+  "task_id": "CROSS-FRAMEWORK-CURRENT-BASIS-V04-EXECUTION-001",
+  "mode": "CROSS_FRAMEWORK_CURRENT_BASIS_V04",
+  "entrypoint": "scripts/run_cross_framework_current_basis_v04.py",
+  "test_id": "cross-framework-current-basis-001",
+  "manifest_sha256": "07a08496c21b31f70f6f45ef731aa5f6b2522a6fc8f67f2d0a4c2b6fceda7a3f",
+  "manifest_git_blob_sha1": "59d818a15fc7be732c97dae7d2174d8cfe9a7bab",
+  "required_sdk_merge": "2b1ae25662aaade5033e6bacac98d9ba5233fdee",
+  "required_stegcore_merge": "e80e927616750a88ad7fc88f4017fc496474f1e4",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "request_granted_authority": false,
+  "network_source_fetch_allowed": false,
+  "second_machine_required": false,
+  "counterpart_result_allowed_before_completion": false,
+  "external_consequence_allowed": false,
+  "authority_effect": "NONE_REQUEST_ONLY"
+}
