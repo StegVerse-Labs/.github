@@ -265,10 +265,9 @@ class CurrentBasisResidentConsumerTests(unittest.TestCase):
                 roots, missing = MOD.source_roots(env)
                 self.assertEqual(missing, [])
                 self.assertEqual(roots[key], explicit.resolve())
-                observed, mismatches = MOD.verify_exact_source_identity({**{
-                    k: materialization / MOD.DEFAULT_COMPONENT_ROOTS[k] for k in MOD.REQUIRED_ROOT_ENV
-                }, key: explicit.resolve()})
-                self.assertTrue(any(row["root"] == key for row in mismatches))
+                mismatches = MOD._component_mismatches(key, explicit.resolve())
+                self.assertTrue(mismatches)
+                self.assertTrue(all(row["root"] == key for row in mismatches))
         finally:
             MOD.EXPECTED_SOURCE_BLOBS = original
 
