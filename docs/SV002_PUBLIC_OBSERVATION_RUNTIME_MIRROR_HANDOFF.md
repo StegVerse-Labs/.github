@@ -193,3 +193,54 @@ Scoped implementation files:
 - `docs/SV002_PUBLIC_OBSERVATION_RUNTIME_MIRROR_HANDOFF.md`
 
 This source hardening is not resident runtime evidence and does not change the remaining authentic observation gates.
+
+
+## Event-ephemeral receiver activation — issue #493
+
+Issue #493 removes an always-on receiver / G18-completion prerequisite from the public observation transport initiation path.
+
+Canonical transition:
+
+```text
+valid observer StegVerse Node
+-> build exact Universal InTr transport intent
+-> build non-authorizing materialization request
+-> persist request in Node local outbox
+-> deliver exact outbox trigger to sovereign /intr/materialization ingress when available
+-> ingress validates Node/outbox/request hashes and persists exact request
+-> resident event consumer invokes the already-admitted independent task-control lane
+-> route materialization occurs from already-local sovereign roots
+-> receiver process is started only when needed
+-> receiver READY is downstream evidence, not a request prerequisite
+-> original exact observation request may be retried
+-> authentic ingress RECEIVED + egress FORWARDED receipts remain terminal evidence requirements
+```
+
+Required invariants:
+
+```text
+event_triggered = true
+always_on_receiver_required = false
+g18_completion_required = false
+request_grants_execution_authority = false
+claim_or_fence_minted = false
+heartbeat_grants_execution_authority = false
+second_user_device_required = false
+receiver_unavailable_disposition = DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION
+credential_authority = TV/TVC
+github_token_runtime_authority = NONE
+observer_direct_relation_to_stegverse_002 = false
+```
+
+This lane may create queue-admission and runtime-attempt receipts only. It may not preclaim receiver READY, public HTTPS reachability, experiment events, Master Records reconstruction, or observation round-trip completion.
+
+Scoped .github files:
+
+- `scripts/serve_sv002_intr_materialization_ingress.py`
+- `scripts/consume_sv002_intr_materialization_request.py`
+- `tests/test_sv002_intr_materialization_ingress.py`
+- `tests/test_sv002_intr_materialization_consumer.py`
+- sovereign bootstrap/source-refresh copy lists if required
+- `docs/SV002_PUBLIC_OBSERVATION_RUNTIME_MIRROR_HANDOFF.md`
+
+Site-side Node outbox initiation is owned by the existing `StegVerse-Labs/Site/docs/SV002_PUBLIC_OBSERVATION_MIRROR_HANDOFF.md` lane and must remain non-authorizing.
