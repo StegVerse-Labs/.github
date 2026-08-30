@@ -1,0 +1,135 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001",
+  "created_at": "2026-08-29T22:37:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "CROSS-FRAMEWORK-CURRENT-BASIS-V04-EXECUTION-001",
+    "objective": "Execute the exact frozen cross-framework current-basis v0.4 StegVerse side through the existing sovereign WorkerCoordinator using already-local canonical SDK, StegCore, Core-Lite, and Master Records sources, retaining exact-run custody, post-observation S0-to-S1 receipt, replay, and reconstruction evidence.",
+    "success_predicates": [
+      "exact frozen manifest SHA-256 and Git blob match the externally approved v0.4 identity",
+      "S0 is consumed as the declared initial test state with no historical receipt requirement absent explicit prior-state input",
+      "canonical StegCore independently derives the native AdmissibilityRequest from neutral S1 facts",
+      "material change is not converted into pre-asserted invalidation or non-currentness",
+      "canonical SDK sovereign route records Master Records custody and continuous transaction identity",
+      "S1 is observed before the S0-to-S1 transition receipt is bound",
+      "replay and reconstruction operations are separately custodied and replay does not reexecute consequence",
+      "RUN_COMPLETE.json records every required completion flag and external_side_effect=false"
+    ],
+    "failure_predicates": [
+      "hosted runtime marker is active",
+      "required already-local source is absent, dirty, or missing the required implementation ancestor",
+      "network source fetch or source mutation is attempted",
+      "frozen manifest identity differs",
+      "GitHub token or non-TV/TVC credential is treated as runtime authority",
+      "transition receipt is treated as pre-execution evidence",
+      "Master Records custody, replay custody, or reconstruction custody is absent",
+      "RUN_COMPLETE.json is absent or incomplete"
+    ],
+    "authority_ceiling": [
+      "already-local source observation",
+      "one exact bounded sovereign test execution",
+      "write runtime evidence only under receipts/cross-framework-current-basis-v04",
+      "no external consequence",
+      "no publication authority",
+      "no source fetch or mutation"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-org/StegVerse-SDK#94",
+      "StegVerse-org/StegVerse-SDK#99",
+      "StegVerse-Labs/StegCore#161",
+      "StegVerse-Labs/StegCore#162",
+      "docs/CROSS_FRAMEWORK_CURRENT_BASIS_V04_RESIDENT_RUN_MIRROR_HANDOFF.md",
+      "workers/cross_framework_current_basis_v04_worker.py"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "The exact v0.4 specification is frozen and the execution window is open. The SDK and StegCore execution integration are source-owned separately; this task provides only the existing sovereign resident execution carrier.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#468",
+    "canonical_lineage_key": "cross-framework:current-basis:v0.4:stegverse-run",
+    "derivation_depth": 0,
+    "priority": "release"
+  },
+  "authority": {
+    "authority_source": "StegVerse-Labs/.github#468 + exact frozen v0.4 owner attestation",
+    "heartbeat_grants_execution_authority": false,
+    "heartbeat_dependency": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "policy_version": "shwp-cross-framework-current-basis-v04-v0.1"
+  },
+  "execution": {
+    "required_capabilities": [
+      "cross_framework_current_basis_v04_execution"
+    ],
+    "allowed_paths": [
+      "receipts/cross-framework-current-basis-v04/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 6,
+    "max_retries": 4096,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 24000,
+    "rate_class": "cross_framework_current_basis_v04_execution",
+    "source_fetch_allowed": false,
+    "source_mutation_allowed": false,
+    "frozen_manifest_sha256": "07a08496c21b31f70f6f45ef731aa5f6b2522a6fc8f67f2d0a4c2b6fceda7a3f",
+    "frozen_manifest_git_blob_sha1": "59d818a15fc7be732c97dae7d2174d8cfe9a7bab"
+  },
+  "activation": {
+    "carrier": "separate_worker_runtime",
+    "heartbeat_dependency": false,
+    "carrier_trigger_required": false,
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "StegVerse-Labs/.github#468",
+    "recheck_trigger": "task-control evaluation while no valid RUN_COMPLETE.json exists",
+    "checkout_policy": "separate_fenced_independent_task_control"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/cross-framework-current-basis-v04/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": true,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "On the existing eligible sovereign resident surface, execute SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001 through the WorkerCoordinator after already-local SDK/StegCore/Core-Lite/Master Records sources satisfy the worker preflight.",
+    "terminal_when": [
+      "A COMPLETED worker receipt is backed by RUN_COMPLETE.json for the exact frozen identity with independent_execution_complete=true, s1_observed=true, transition_receipt_bound=true, custody_recorded=true, replay_recorded=true, reconstruction_recorded=true, authority_granted=false, and external_side_effect=false"
+    ]
+  },
+  "block": null,
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:cross-framework-current-basis-v04-execution:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-org/StegVerse-SDK#94",
+      "StegVerse-org/StegVerse-SDK#99",
+      "StegVerse-Labs/StegCore#162"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json",
+      "workers/cross_framework_current_basis_v04_worker.py",
+      "control/worker-registry.d/cross-framework-current-basis-v04-001.json",
+      "control/process-worker-adapters.d/cross-framework-current-basis-v04-001.json",
+      "control/resident-execution-request.d/cross-framework-current-basis-v04-001.json"
+    ],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": [
+      "AUTHENTIC_CURRENT_BASIS_V04_RUN_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "cross-framework-current-basis-v04-worker + existing sovereign WorkerCoordinator + TV/TVC runtime authority",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  }
+}
