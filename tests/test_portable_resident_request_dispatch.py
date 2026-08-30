@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -9,7 +10,10 @@ from types import SimpleNamespace
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULE_PATH = ROOT / "scripts/refresh_and_dispatch_resident_requests.py"
+SCRIPTS = ROOT / "scripts"
+if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
+MODULE_PATH = SCRIPTS / "refresh_and_dispatch_resident_requests.py"
 SPEC = importlib.util.spec_from_file_location("portable_resident_dispatch", MODULE_PATH)
 MOD = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader is not None
