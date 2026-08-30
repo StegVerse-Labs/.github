@@ -405,7 +405,7 @@ ESRL v0.3 provider-neutral lease primitive: MERGED / MODEL_CONFORMANCE
 provider-neutral runtime dispatch controller: MERGED
 concrete SovereignEphemeralNodeAdapter: MERGED
 Universal InTr materialization request: MERGED
-HIL-specific Universal InTr -> ESRL INTAKE binding/controller: StegOS PR #98
+HIL-specific Universal InTr -> ESRL INTAKE binding/controller: MERGED via StegOS PR #98 / aa20980ecda3e1849aaa97953e026b11352e9a67 / CI 33294309548 SUCCESS
 ```
 
 The HIL-specific source path is now:
