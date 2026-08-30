@@ -51,9 +51,9 @@
     "manual_execution_allowed": false,
     "manual_allowed_role": "evidence review only",
     "priority": "release",
-    "parent_task_id": "SV-DN1-SDK-FIRST-ROUND-001",
-    "derivation_reason": "Own the explicit successor transition from authentic ANALYZED result to local exact-byte public projection without widening SDK worker authority.",
-    "derivation_depth": 3,
+    "parent_task_id": null,
+    "derivation_reason": "Independent publication-projection task that consumes the terminal SDK analysis as a dependency without inheriting SDK execution authority.",
+    "derivation_depth": 0,
     "source_handoff_ref": "docs/SV_DN1_PUBLIC_PROMOTION_TASK_MIRROR_HANDOFF.md",
     "dependencies": ["SV-DN1-SDK-FIRST-ROUND-001"],
     "execution_admission_mode": "INDEPENDENT_TASK_CONTROL"
@@ -94,8 +94,8 @@
     "public_network_access": {"enabled": false, "methods": [], "allowed_hosts": [], "authenticated": false, "credential_forwarding": false}
   },
   "input_contract": {
-    "parent_task_id": "SV-DN1-SDK-FIRST-ROUND-001",
-    "parent_transition_id": "SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED",
+    "dependency_task_id": "SV-DN1-SDK-FIRST-ROUND-001",
+    "dependency_transition_id": "SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED",
     "sdk_receipt_schema": "stegverse.sv-dn1.sdk-first-round-worker-receipt/v1",
     "promotion_receipt_schema": "stegverse.sv-dn1.public-promotion-receipt/v1",
     "required_observation_class": "LIVE",
