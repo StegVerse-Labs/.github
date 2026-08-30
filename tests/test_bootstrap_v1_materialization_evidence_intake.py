@@ -49,6 +49,36 @@ class TestIntake(unittest.TestCase):
     def test_authority_escalation_rejected(self):
         c,b,ids=make_bundle();e=evidence(c,b,ids);e["execution_authority"]="GRANTED"
         with self.assertRaisesRegex(RuntimeError,"execution_authority mismatch"):m.validate_evidence(e,c,b,ids)
+    def test_missing_established_node_binding_rejected(self):
+        c,b,ids=make_bundle();e=evidence(c,b,ids)
+        kept=e["continued_receipts"][1:]
+        prev=None
+        rebuilt=[]
+        for i,row in enumerate(kept,1):
+            nr=entry(row["receipt"],i,prev);rebuilt.append(nr);prev=nr["entry_sha256"]
+        e["continued_receipts"]=rebuilt
+        e["package_materialization_entries"]=rebuilt[:4]
+        e["bundle_materialization_entry"]=rebuilt[-1]
+        rep=m.replay(rebuilt)
+        e["journal_replay"]={"schema":"stegos.web_journal_replay_report.v1",**rep,"authority_effect":"NONE"}
+        with self.assertRaisesRegex(RuntimeError,"established node/device binding receipt missing"):
+            m.validate_evidence(e,c,b,ids)
+
+    def test_mismatched_established_node_binding_rejected(self):
+        c,b,ids=make_bundle();e=evidence(c,b,ids)
+        bad={"schema":"stegos.web_device_node_binding_receipt.v1","node_id":"other-node","device_continuity_id":e["device_continuity_id"],"authority_effect":"NONE"}
+        rows=e["continued_receipts"]
+        rows[0]=entry(bad,1,None)
+        prev=rows[0]["entry_sha256"]
+        for i in range(1,len(rows)):
+            rows[i]=entry(rows[i]["receipt"],i+1,prev);prev=rows[i]["entry_sha256"]
+        e["package_materialization_entries"]=rows[-5:-1]
+        e["bundle_materialization_entry"]=rows[-1]
+        rep=m.replay(rows)
+        e["journal_replay"]={"schema":"stegos.web_journal_replay_report.v1",**rep,"authority_effect":"NONE"}
+        with self.assertRaisesRegex(RuntimeError,"established node/device binding receipt missing"):
+            m.validate_evidence(e,c,b,ids)
+
     def test_bundle_identity_recomputed(self):
         c,b,ids=make_bundle();b["component_count"]=5
         with self.assertRaisesRegex(RuntimeError,"bundle identity mismatch"):m.validate_bundle(b,c)
