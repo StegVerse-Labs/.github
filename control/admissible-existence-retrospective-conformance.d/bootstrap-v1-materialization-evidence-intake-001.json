@@ -1,0 +1,16 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "entries": [
+    {
+      "task_id": "BOOTSTRAP-V1-MATERIALIZATION-EVIDENCE-INTAKE-001",
+      "temporal_class": "current",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:bootstrap-v1-materialization-evidence-intake:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "validates_capability",
+      "result": "REVIEW_REQUIRED",
+      "continuation_owner": "bootstrap-v1-materialization-evidence-intake-worker",
+      "rationale": "The worker can validate exact Bootstrap v1 established-node materialization evidence and replay its continuity chain. Source implementation and hosted validation do not prove authentic device evidence, runtime execution, release activation, publication, or tagging."
+    }
+  ]
+}
