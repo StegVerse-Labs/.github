@@ -286,3 +286,42 @@ GitHub credential workaround introduced: false
 Because the repository is private and the canonical workflow intentionally forbids GitHub credentials, simply removing the path filter would make `validate` universally fail. The PR was therefore closed unmerged. Repo-standards issue #50 was notified that Continuity's earlier `validate + repo-smoke` required-check warrant must fail closed or be refreshed after a sovereign/TV-TVC-governed universal status-publication path exists.
 
 No branch ref deletion, product implementation merge, protection mutation, credential mutation, runtime activation, or release decision was performed by this hygiene batch.
+
+
+## 2026-08-30 Continuity release-lineage branch closure classification
+
+Continuity release-verification issue #3 is now `CLOSED_COMPLETE`; successor BLOCK receipt v2 merged as `687e7c3b123a6761fb8bec8373a2536e60048a07`. The release itself remains `BLOCK`.
+
+Content-equivalence/replacement checks support the following branch-ref classifications:
+
+```text
+build/109-percent-recreatable-continuity
+  canonical protocol blob: byte-identical to main
+  recreate_state.py blob: byte-identical to main
+  recreation-receipt schema blob: byte-identical to main
+  historical standalone validation workflow: superseded by consolidated current workflow surface
+  classification: EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE
+
+release/109-percent-verification
+  release-verification schema: byte-identical to main
+  semantic validator: byte-identical to main
+  intake receipt: byte-identical to main
+  handoff: older than current main
+  historical standalone validation workflow: superseded by consolidated current workflow surface
+  classification: EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE
+
+verify/109-percent-successor-block-receipt
+  prior BLOCK receipt/handoff: superseded by successor BLOCK v2 on main
+  classification: EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE
+
+feat/handoff-execution-ownership-v1
+  ahead 0 / no file diff
+  classification: EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE
+
+st019/universal-pr-validation-8
+  ref has no unique current content
+  issue #8 remains active because the private-repo/no-token hosted source checkout blocker is unresolved
+  classification: EVIDENCE_CLEARED_REF_RETIREMENT_CANDIDATE_FOR_REF_ONLY
+```
+
+Actual ref deletion remains `HYGIENE-BRANCH-REF-RETIREMENT` authority-owned and was not performed by this batch.
