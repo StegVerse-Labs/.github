@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:bootstrap-v1-source-package-production-v1",
+      "authority_ref": "handoffs/BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "content_addressed_identity_validation",
+        "local_source_package_production",
+        "evidence_class_preservation"
+      ],
+      "command": [
+        "python",
+        "workers/bootstrap_v1_source_package_production_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT",
+        "STEGVERSE_SOURCE_PACKAGE_ROOT",
+        "STEGVERSE_BOUND_STATE_ROOT",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/state/bootstrap-v1-source-package-production",
+      "bound_state_allowed_paths": [
+        "receipts/**"
+      ],
+      "timeout_seconds": 180,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Consumes only an authentic local production-source-prep v2 receipt and its already-local source roots.",
+        "Performs no network acquisition or credential handling.",
+        "Writes four local source-package/v1 objects and one bounded receipt; package integrity grants no execution authority."
+      ]
+    }
+  ]
+}

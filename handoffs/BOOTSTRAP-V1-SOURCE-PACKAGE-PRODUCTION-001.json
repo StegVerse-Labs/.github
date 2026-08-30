@@ -1,0 +1,205 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001",
+    "objective": "Produce the four canonical local stegverse.source-package/v1 objects from one authentic completed platform-independent production-source-prep v2 receipt without source acquisition, execution admission, publication, or platform dependency.",
+    "success_predicates": [
+      "source-prep receipt is COMPLETE with transition SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE",
+      "source identity scheme is sha256-content-manifest",
+      "exactly four sovereign source roots and source identities are present and locator-consistent",
+      "each local root recomputes to the exact upstream source identity",
+      "four source-package/v1 objects validate and are persisted idempotently",
+      "network access, credential use, repository writeback, package execution and SDK admission remain false"
+    ],
+    "failure_predicates": [
+      "source-prep receipt is absent, incomplete, or authority-invariant mismatched",
+      "component set or root locator set is incomplete",
+      "local source root is absent",
+      "recomputed content manifest does not equal upstream source identity",
+      "existing canonical package differs",
+      "network, credential, repository, SDK, release, or publication authority is attempted"
+    ],
+    "authority_ceiling": [
+      "bounded_process_execution",
+      "content_addressed_identity_validation",
+      "local_source_package_production",
+      "evidence_class_preservation",
+      "no source acquisition authority",
+      "no network authority",
+      "no credential authority",
+      "no package execution authority",
+      "no SDK admission authority",
+      "no repository writeback authority",
+      "no release activation authority",
+      "no publication authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "docs/BOOTSTRAP_V1_SOURCE_PACKAGE_PRODUCTION_MIRROR_HANDOFF.md",
+      "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json",
+      "schemas/source-package-v1.schema.json"
+    ],
+    "canonical_owner_ref": "docs/BOOTSTRAP_V1_SOURCE_PACKAGE_PRODUCTION_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "bootstrap-v1:source-package-production",
+    "worker_registry_ref": "control/worker-registry.d/bootstrap-v1-source-package-production-001.json",
+    "worker_id": "bootstrap-v1-source-package-production-worker",
+    "adapter_ref": "process:bootstrap-v1-source-package-production-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "evidence review only",
+    "priority": "release",
+    "parent_task_id": null,
+    "derivation_reason": "Bootstrap v1 distributable-bundle construction requires four exact local source-package objects. This release-preparation task derives those package bytes from the authentic platform-neutral source-prep receipt without inheriting SV-DN-1 semantic or execution authority.",
+    "derivation_depth": 0,
+    "source_handoff_ref": "docs/BOOTSTRAP_V1_SOURCE_PACKAGE_PRODUCTION_MIRROR_HANDOFF.md",
+    "dependencies": [
+      "SV-DN1-PRODUCTION-SOURCE-PREP-001"
+    ],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
+    "upstream_runtime_dependency": {
+      "task_id": "SV-DN1-PRODUCTION-SOURCE-PREP-001",
+      "terminal_state_required": "COMPLETED",
+      "terminal_transition_required": "SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE"
+    }
+  },
+  "authority": {
+    "authority_source": "docs/BOOTSTRAP_V1_SOURCE_PACKAGE_PRODUCTION_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "bootstrap-v1-source-package-production-v1",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "github_platform_required": false,
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "network_access_authority": false,
+    "source_acquisition_authority": false,
+    "repository_writeback_authority": false,
+    "package_execution_authority": false,
+    "sdk_admission_authority": false,
+    "release_activation_authority": false,
+    "publication_authority": false,
+    "certification_authority": false,
+    "execution_authority_created": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "content_addressed_identity_validation",
+      "local_source_package_production",
+      "evidence_class_preservation"
+    ],
+    "worker": "workers/bootstrap_v1_source_package_production_worker.py",
+    "allowed_paths": [
+      "receipts/bootstrap-v1-source-package-production/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 8,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 24,
+    "rate_class": "bootstrap_v1_source_package_production",
+    "hosted_execution_allowed": false,
+    "bound_state_root": "~/.stegverse/state/bootstrap-v1-source-package-production",
+    "bound_state_allowed_paths": [
+      "receipts/**"
+    ],
+    "required_local_locators": [
+      "STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT",
+      "STEGVERSE_SOURCE_PACKAGE_ROOT"
+    ],
+    "public_network_access": {
+      "enabled": false,
+      "methods": [],
+      "allowed_hosts": [],
+      "authenticated": false,
+      "credential_forwarding": false
+    }
+  },
+  "input_contract": {
+    "upstream_receipt_schema": "stegverse.sv-dn1.production-source-prep-receipt/v2",
+    "upstream_transition": "SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE",
+    "source_identity_scheme": "sha256-content-manifest",
+    "required_components": [
+      "stegverse.sdk",
+      "stegverse.stegcore",
+      "stegverse.core-lite",
+      "stegverse.master-records"
+    ],
+    "source_package_schema": "stegverse.source-package/v1",
+    "source_package_version": "1.0.0",
+    "github_platform_required": false
+  },
+  "activation": {
+    "carrier": "independent_task_control",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "docs/BOOTSTRAP_V1_SOURCE_PACKAGE_PRODUCTION_MIRROR_HANDOFF.md",
+    "recheck_trigger": "each admitted assignment opportunity after production source preparation completes until all four canonical local source packages validate",
+    "checkout_policy": "fenced_atomic_checkout",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+  },
+  "continuity": {
+    "master_records_required": false,
+    "result_receipt": "~/.stegverse/state/bootstrap-v1-source-package-production/receipts/latest.json",
+    "source_package_root": "~/.stegverse/packages/source/v1",
+    "repository_persistence_requires_separate_admission": true
+  },
+  "completion": {
+    "next_authorized_action": "Allow the frozen rc.1 distributable-bundle worker to consume the four exact local packages after its independent release-candidate dependency completes; do not infer package execution or release authority.",
+    "terminal_when": [
+      "BOOTSTRAP_V1_SOURCE_PACKAGES_PRODUCED",
+      "component_count=4",
+      "package_schema=stegverse.source-package/v1",
+      "package_version=1.0.0",
+      "github_platform_required=false",
+      "network_access_performed=false",
+      "credential_used=false",
+      "repository_writeback_performed=false",
+      "package_execution_performed=false",
+      "sdk_admitted=false",
+      "release_activated=false",
+      "publication_performed=false",
+      "execution_authority=NONE"
+    ],
+    "release_condition": "All four local source packages exactly match the authentic source-prep identities and validate without network, credential, repository, execution, SDK, release, or publication authority."
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:bootstrap-v1-source-package-production:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "docs/BOOTSTRAP_V1_SOURCE_PACKAGE_PRODUCTION_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/bootstrap_v1_source_package_production_worker.py",
+      "control/process-worker-adapters.d/bootstrap-v1-source-package-production-001.json",
+      "control/worker-registry.d/bootstrap-v1-source-package-production-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "AUTHENTIC_SOURCE_PREP_V2_RECEIPT_NOT_YET_OBSERVED",
+      "FOUR_CANONICAL_SOURCE_PACKAGES_NOT_YET_PRODUCED"
+    ],
+    "continuation_owner": "bootstrap-v1-source-package-production-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "develops_capability",
+    "target_phase": "ACTIVATED"
+  }
+}

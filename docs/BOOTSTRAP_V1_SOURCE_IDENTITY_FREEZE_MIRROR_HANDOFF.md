@@ -91,7 +91,7 @@ authority_effect: NONE_IDENTITY_FREEZE_ONLY
 ## Runtime truth
 
 ```text
-freeze worker source: IMPLEMENTING
+freeze worker source: IMPLEMENTED / MERGED
 authentic four-source source-prep v2 receipt: NOT YET OBSERVED
 first canonical Bootstrap v1 source catalog: NOT YET FROZEN
 Bootstrap v1 release/tag: NOT YET AUTHORIZED
@@ -100,3 +100,8 @@ Bootstrap v1 release/tag: NOT YET AUTHORIZED
 ## Completion
 
 `BOOTSTRAP_V1_SOURCE_IDENTITIES_FROZEN` occurs only after one authentic source-prep v2 receipt freezes the exact four source identities and the generated catalog revalidates deterministically.
+
+
+## Parallel package production
+
+`BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001` is a sibling release-preparation task that consumes the same authentic source-prep v2 receipt. It serializes the already-frozen source bytes into local `stegverse.source-package/v1` objects but does not create or change source identities. Source identity freeze and package production may therefore execute independently after the common source-prep dependency completes.

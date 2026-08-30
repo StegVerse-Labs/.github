@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "bootstrap_v1_source_package_production",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 8,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 24,
+    "confidence": "LOW_UNTIL_FIRST_SOVEREIGN_RUN"
+  },
+  "cost_estimate": {
+    "compute_units": 4,
+    "token_units": 0,
+    "storage_bytes": 67108864,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 2
+  },
+  "evidence_refs": [
+    "docs/BOOTSTRAP_V1_SOURCE_PACKAGE_PRODUCTION_MIRROR_HANDOFF.md",
+    "handoffs/BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001.json",
+    "workers/bootstrap_v1_source_package_production_worker.py"
+  ],
+  "notes": [
+    "Reads four already-local verified source roots and writes four local content-addressed package JSON objects plus one receipt.",
+    "No network, provider, platform or credential activity.",
+    "External cost is zero; storage estimate is provisional until first authentic package build."
+  ]
+}
