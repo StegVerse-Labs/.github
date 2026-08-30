@@ -38,7 +38,35 @@
         "fresh_fence_required": true,
         "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
       },
-      "source_state_vector_ref": "control/task-vectors/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json"
+      "source_state_vector_ref": "control/task-vectors/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json",
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:cross-framework-current-basis-v04-execution:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "StegVerse-org/StegVerse-SDK#94",
+          "StegVerse-org/StegVerse-SDK#99",
+          "StegVerse-Labs/StegCore#162"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json",
+          "workers/cross_framework_current_basis_v04_worker.py",
+          "control/worker-registry.d/cross-framework-current-basis-v04-001.json",
+          "control/process-worker-adapters.d/cross-framework-current-basis-v04-001.json",
+          "control/resident-execution-request.d/cross-framework-current-basis-v04-001.json"
+        ],
+        "integration_evidence_refs": [],
+        "activation_proof_ref": null,
+        "blockers": [
+          "AUTHENTIC_CURRENT_BASIS_V04_RUN_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "cross-framework-current-basis-v04-worker + existing sovereign WorkerCoordinator + TV/TVC runtime authority",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
+      }
     }
   ],
   "workers": [
