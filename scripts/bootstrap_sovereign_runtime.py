@@ -8,6 +8,7 @@ OSCILLATOR_ONLY at 10 ms / 100 Hz and hosted environments are validation-only.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import platform
@@ -102,6 +103,19 @@ def default_post_bootstrap_receipt() -> Path:
     return (Path.home() / ".stegverse" / "continuity" / "sovereign-post-bootstrap.latest.json").resolve()
 
 
+def derived_node_id(source_root: Path, state_root: Path) -> str:
+    basis = {
+        "schema": "stegverse.sovereign-node-declaration/v0.4",
+        "source_root": str(source_root.expanduser().resolve()),
+        "state_root": str(state_root.expanduser().resolve()),
+        "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+        "continuity_model": "INDEPENDENT_OSCILLATOR_CONTINUITY",
+        "credential_authority": "TV/TVC",
+    }
+    canonical = json.dumps(basis, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return "SV-NODE-" + hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:24]
+
+
 def atomic_write(path: Path, value: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as handle:
@@ -176,6 +190,7 @@ def derive_node_declaration(source_root: Path, runtime_root: Path, node_marker: 
     body = {
         "schema": "stegverse.sovereign-node-declaration/v0.4",
         "declared": True,
+        "node_id": derived_node_id(source_root, runtime_root),
         "declaration_source": "SELF_BOOTSTRAP_LOCAL_OSCILLATOR_RUNTIME_ELIGIBILITY",
         "source_root": eligibility["source_root"],
         "state_root": eligibility["runtime_root"],
