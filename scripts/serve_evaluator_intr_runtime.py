@@ -42,17 +42,14 @@ def _reject_hosted_or_secret_env() -> None:
 
 def _load_stegos(stegos_root: Path):
     root = stegos_root.expanduser().resolve()
-    if not (root / "stegos" / "universal_intr_transport.py").is_file():
+    registry = root / "specs" / "universal-intr-connector-profiles.v1.json"
+    if not (root / "stegos" / "intr_backbone.py").is_file() or not registry.is_file():
         raise EvaluatorRuntimeError(f"stegos_source_missing:{root}")
     if str(root) not in sys.path:
         sys.path.insert(0, str(root))
-    from stegos.evaluator_intr_roundtrip import (
-        evaluator_egress_intent,
-        evaluator_ingress_intent,
-        validate_browser_interlock_request,
-    )
-    from stegos.universal_intr_transport import build_hop_receipt
-    return evaluator_ingress_intent, evaluator_egress_intent, validate_browser_interlock_request, build_hop_receipt
+    from stegos.evaluator_intr_roundtrip import validate_browser_interlock_request
+    from stegos.intr_backbone import connector_from_registry
+    return connector_from_registry(registry, "evaluator-read-review"), validate_browser_interlock_request
 
 def _load_projection(site_root: Path, source: str) -> dict[str, Any]:
     if source != DEFAULT_SOURCE.as_posix():
@@ -90,7 +87,7 @@ def _write_once(path: Path, value: dict[str, Any]) -> None:
     path.write_text(serialized, encoding="utf-8")
 
 def process_read_review(request: dict[str, Any], *, site_root: Path, stegos_root: Path, runtime_root: Path, authorization_id: str, boundary_identity_ref: str) -> dict[str, Any]:
-    evaluator_ingress_intent, evaluator_egress_intent, validate_browser_interlock_request, build_hop_receipt = _load_stegos(stegos_root)
+    connector, validate_browser_interlock_request = _load_stegos(stegos_root)
     admitted = validate_browser_interlock_request(request)
     if admitted["operation"] != "READ_REVIEW":
         raise EvaluatorRuntimeError("operation_not_available_in_read_only_runtime")
@@ -101,16 +98,23 @@ def process_read_review(request: dict[str, Any], *, site_root: Path, stegos_root
     review = _load_projection(site_root, source)
     _validate_projection_binding(request, review)
 
-    ingress_intent = evaluator_ingress_intent(request)
-    ingress = build_hop_receipt(
-        ingress_intent,
+    bindings = admitted["bindings"]
+    ingress_packet = connector.prepare(
+        request,
+        payload_schema="stegverse.evaluator_review.interlock_request.v1",
+        operation="READ_REVIEW",
+        operation_id=f"EVALUATOR:READ_REVIEW:{bindings['test_id']}:v{bindings['revision']}:INGRESS",
+    )
+    ingress = connector.accept_hop(
+        ingress_packet,
         hop_index=1,
-        receipt_id="EVAL-IN-" + ingress_intent["packet_id"][5:],
+        receipt_id="EVAL-IN-" + ingress_packet.intent["packet_id"][5:],
         boundary_identity_ref=boundary_identity_ref,
         recorded_at=now_iso(),
         prior_receipt_hash=None,
         transition_state="RECEIVED",
     )
+    ingress_result = connector.validate_complete(ingress_packet, [ingress])
 
     response: dict[str, Any] = {
         "schema_version": "stegverse.evaluator_review.interlock_response.v1",
@@ -121,16 +125,23 @@ def process_read_review(request: dict[str, Any], *, site_root: Path, stegos_root
         "bindings": dict(request["bindings"]),
         "review": review,
     }
-    egress_intent = evaluator_egress_intent(request, response, prior_transport_receipt_hash=ingress["receipt_hash"])
-    egress = build_hop_receipt(
-        egress_intent,
+    egress_packet = connector.prepare_response(
+        ingress_packet,
+        [ingress],
+        response,
+        payload_schema="stegverse.evaluator_review.interlock_response.v1",
+        operation_id=f"EVALUATOR:READ_REVIEW:{bindings['test_id']}:v{bindings['revision']}:EGRESS",
+    )
+    egress = connector.accept_hop(
+        egress_packet,
         hop_index=1,
-        receipt_id="EVAL-OUT-" + egress_intent["packet_id"][5:],
+        receipt_id="EVAL-OUT-" + egress_packet.intent["packet_id"][5:],
         boundary_identity_ref=boundary_identity_ref,
         recorded_at=now_iso(),
         prior_receipt_hash=ingress["receipt_hash"],
         transition_state="FORWARDED",
     )
+    egress_result = connector.validate_complete(egress_packet, [egress])
     response["transport_receipts"] = {"ingress": ingress, "egress": egress}
 
     bundle = {
@@ -138,10 +149,14 @@ def process_read_review(request: dict[str, Any], *, site_root: Path, stegos_root
         "state": "READ_REVIEW_ROUND_TRIP_FORWARDED",
         "request_bindings": dict(request["bindings"]),
         "authorization_ref": authorization_id,
-        "ingress_intent": ingress_intent,
+        "connector_profile_id": connector.profile.profile_id,
+        "canonical_backbone": "stegos.intr_backbone.CanonicalInTrConnector",
+        "ingress_intent": ingress_packet.intent,
         "ingress_receipt": ingress,
-        "egress_intent": egress_intent,
+        "ingress_backbone_result": ingress_result,
+        "egress_intent": egress_packet.intent,
         "egress_receipt": egress,
+        "egress_backbone_result": egress_result,
         "authority_effect": "NONE",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
