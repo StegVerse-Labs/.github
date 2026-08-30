@@ -7,9 +7,9 @@
       "authority_ref": "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json#authority",
       "capabilities": [
         "bounded_process_execution",
-        "public_source_acquisition",
-        "tvc_repository_spool_request_emission",
+        "content_addressed_source_package_materialization",
         "exact_source_materialization",
+        "local_source_identity_validation",
         "evidence_class_preservation"
       ],
       "command": [
@@ -20,11 +20,9 @@
       "enabled": true,
       "env_allowlist": [
         "STEGVERSE_SOURCE_MATERIALIZATION_ROOT",
-        "STEGVERSE_FORMALISM_TVC_SPOOL_ROOT",
+        "STEGVERSE_SOURCE_PACKAGE_ROOT",
         "HOME",
-        "PATH",
-        "SSL_CERT_FILE",
-        "SSL_CERT_DIR"
+        "PATH"
       ],
       "bound_state_root": "~/.stegverse/state/sv-dn1-production-source-prep",
       "bound_state_allowed_paths": [
@@ -35,10 +33,10 @@
       "timeout_seconds": 420,
       "type": "process_json_bound_state_v0.1",
       "notes": [
-        "Anonymous public source acquisition only; consumer credentials forbidden.",
-        "Private repository source is requested only through the existing TV/TVC repository-operation spool.",
-        "Stops HANDOFF_READY until sanitized TVC materialization receipts and exact local roots exist.",
-        "No repository writeback, SDK admission, governance, publication or certification authority."
+        "No network source acquisition is permitted; GitHub and all other external platforms are optional provenance/mirror surfaces only.",
+        "Resolve source only from an already-local verified root or a content-addressed StegVerse source package in the local package store.",
+        "Stops HANDOFF_READY when a required package/root is absent; no automatic platform fallback exists.",
+        "No credential, repository writeback, SDK admission, governance, publication or certification authority."
       ]
     }
   ]
