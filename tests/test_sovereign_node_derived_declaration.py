@@ -89,6 +89,25 @@ class DerivedSovereignNodeDeclarationTests(unittest.TestCase):
             self.assertTrue(marker.is_file())
             declaration = json.loads(marker.read_text(encoding="utf-8"))
             self.assertEqual(declaration["schema"], "stegverse.sovereign-node-declaration/v0.4")
+            self.assertRegex(declaration["node_id"], r"^SV-NODE-[0-9a-f]{24}$")
+            self.assertEqual(
+                declaration["node_id"],
+                "SV-NODE-" + __import__("hashlib").sha256(
+                    json.dumps(
+                        {
+                            "schema": "stegverse.sovereign-node-declaration/v0.4",
+                            "source_root": str(source_root.resolve()),
+                            "state_root": str((root / "state" / "stegverse" / "heartbeat-runtime").resolve()),
+                            "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+                            "continuity_model": "INDEPENDENT_OSCILLATOR_CONTINUITY",
+                            "credential_authority": "TV/TVC",
+                        },
+                        sort_keys=True,
+                        separators=(",", ":"),
+                        ensure_ascii=False,
+                    ).encode("utf-8")
+                ).hexdigest()[:24],
+            )
             self.assertEqual(declaration["declaration_source"], "DERIVED_LOCAL_RUNTIME_ELIGIBILITY")
             self.assertTrue(declaration["canonical_runtime_complete"])
             self.assertTrue(declaration["durable_state_writable"])
