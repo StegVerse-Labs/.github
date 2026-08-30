@@ -1,0 +1,306 @@
+#!/usr/bin/env python3
+"""Sovereign read-only StegVerse-002 public observation Interlock/InTr runtime.
+
+This runtime exposes only evidence-derived observation projections to a caller
+that presents a valid StegVerse Node genesis receipt. It does not route observer
+traffic into StegVerse-002 and grants no review, execution, custody, or authority.
+"""
+from __future__ import annotations
+import argparse, hashlib, json, os, ssl, sys
+from datetime import datetime, timezone
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from pathlib import Path
+from typing import Any, Mapping
+
+HOSTED_ENV=("GITHUB_ACTIONS","CI","RENDER","RENDER_SERVICE_ID","VERCEL","CF_PAGES","CLOUDFLARE_WORKERS")
+CREDENTIAL_ENV=("GITHUB_TOKEN","GH_TOKEN","STEGVERSE_GITHUB_TOKEN","ACTIONS_RUNTIME_TOKEN","ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+MAX_BODY=2*1024*1024
+TASK_ID="SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001"
+EXPERIMENT_ID="STEGVERSE-002-SELF-CHARACTERIZATION-001"
+WORKER_RECEIPT_REL=Path("receipts/sv002-self-characterization/SHWP-SV002-SELF-CHARACTERIZATION-001.json")
+MR_RECEIPT_REL=Path("receipts/sv002-self-characterization/master-records-reconstruction.latest.json")
+PROVENANCE_REL=Path("experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json")
+
+class ObservationRuntimeError(ValueError): pass
+
+def now_iso()->str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00","Z")
+
+def canonical(value:Any)->str:
+    return json.dumps(value,sort_keys=True,separators=(",",":"),ensure_ascii=False,allow_nan=False)
+
+def sha256_hex(value:Any)->str:
+    data=value if isinstance(value,(bytes,bytearray)) else canonical(value).encode("utf-8")
+    return hashlib.sha256(bytes(data)).hexdigest()
+
+def _reject_hosted_or_secret_env()->None:
+    for key in HOSTED_ENV:
+        if str(os.environ.get(key,"")).strip().lower() not in {"","0","false","no"}:
+            raise ObservationRuntimeError(f"hosted_runtime_forbidden:{key}")
+    for key in CREDENTIAL_ENV:
+        if os.environ.get(key):
+            raise ObservationRuntimeError(f"credential_environment_forbidden:{key}")
+
+def _load_json(path:Path)->dict[str,Any]|None:
+    try:
+        value=json.loads(path.read_text(encoding="utf-8"))
+        return value if isinstance(value,dict) else None
+    except Exception:
+        return None
+
+def _validate_genesis(observer:Mapping[str,Any])->dict[str,Any]:
+    genesis=observer.get("genesis_receipt")
+    if not isinstance(genesis,Mapping):
+        raise ObservationRuntimeError("observer_genesis_receipt_required")
+    required={
+        "schema":"stegos.node_handoff_receipt.v1",
+        "receipt_number":1,
+        "transition":"NODE_REGISTERED",
+        "continuity_parent":"GENESIS",
+        "authority_effect":"NONE",
+        "credential_authority":"TV/TVC",
+    }
+    for key,value in required.items():
+        if genesis.get(key)!=value:
+            raise ObservationRuntimeError(f"observer_genesis_{key}_mismatch")
+    body=dict(genesis)
+    claimed=str(body.pop("receipt_sha256",""))
+    actual=sha256_hex(body)
+    if claimed!=actual:
+        raise ObservationRuntimeError("observer_genesis_receipt_digest_mismatch")
+    if observer.get("registration_receipt_sha256")!=claimed:
+        raise ObservationRuntimeError("observer_registration_receipt_binding_mismatch")
+    if observer.get("node_id")!=genesis.get("node_id"):
+        raise ObservationRuntimeError("observer_node_id_binding_mismatch")
+    if observer.get("interlock_id")!=genesis.get("interlock_id"):
+        raise ObservationRuntimeError("observer_interlock_id_binding_mismatch")
+    return dict(genesis)
+
+def _validate_request(request:Mapping[str,Any],authorization_id:str)->dict[str,Any]:
+    expected={
+        "schema_version":"stegverse.sv002.public_observation.interlock_request.v1",
+        "request_class":"SV002_PUBLIC_OBSERVE",
+        "operation":"READ_OBSERVATION",
+        "transport":"InTr",
+        "authority_transfer":False,
+    }
+    for key,value in expected.items():
+        if request.get(key)!=value:
+            raise ObservationRuntimeError(f"request_{key}_mismatch")
+    if request.get("authority_ref")!=authorization_id:
+        raise ObservationRuntimeError("authorization_binding_mismatch")
+    bindings=request.get("bindings")
+    if not isinstance(bindings,Mapping) or bindings.get("experiment_id")!=EXPERIMENT_ID or bindings.get("observation_projection")!="PUBLIC_READ_ONLY":
+        raise ObservationRuntimeError("experiment_projection_binding_mismatch")
+    observer=request.get("observer")
+    if not isinstance(observer,Mapping):
+        raise ObservationRuntimeError("observer_binding_required")
+    genesis=_validate_genesis(observer)
+    body=dict(request)
+    claimed=str(body.pop("request_sha256",""))
+    if claimed!=sha256_hex(body):
+        raise ObservationRuntimeError("request_sha256_mismatch")
+    return genesis
+
+def _load_stegos(stegos_root:Path):
+    root=stegos_root.expanduser().resolve()
+    if not (root/"stegos/universal_intr_transport.py").is_file():
+        raise ObservationRuntimeError(f"stegos_source_missing:{root}")
+    if str(root) not in sys.path:
+        sys.path.insert(0,str(root))
+    from stegos.universal_intr_transport import build_transport_intent, build_hop_receipt, sha256_uri
+    return build_transport_intent,build_hop_receipt,sha256_uri
+
+def _interaction_events(chain:Any)->list[Any]:
+    if isinstance(chain,list):
+        return chain
+    if isinstance(chain,dict):
+        for key in ("events","interactions","receipts","interaction_receipts"):
+            value=chain.get(key)
+            if isinstance(value,list):
+                return value
+    return []
+
+def build_projection(runtime_root:Path,micro_node_root:Path)->dict[str,Any]:
+    runtime=runtime_root.expanduser().resolve()
+    micro=micro_node_root.expanduser().resolve()
+    provenance=_load_json(micro/PROVENANCE_REL)
+    worker=_load_json(runtime/WORKER_RECEIPT_REL)
+    state_root=None
+    if worker and worker.get("state_root"):
+        state_root=Path(str(worker["state_root"])).expanduser().resolve()
+    execution=_load_json(state_root/"EXPERIMENT_EXECUTION_RECEIPT.json") if state_root else None
+    formal=_load_json(state_root/"SELF_CHARACTERIZATION_FORMAL.json") if state_root else None
+    chain=None
+    if state_root and (state_root/"INTERACTION_RECEIPT_CHAIN.json").is_file():
+        try: chain=json.loads((state_root/"INTERACTION_RECEIPT_CHAIN.json").read_text(encoding="utf-8"))
+        except Exception: chain=None
+    human=None
+    if state_root and (state_root/"SELF_CHARACTERIZATION.md").is_file():
+        human=(state_root/"SELF_CHARACTERIZATION.md").read_text(encoding="utf-8")[:262144]
+    master=_load_json(runtime/MR_RECEIPT_REL)
+    events=[]
+    if worker:
+        events.append({"event":"SELF_CHARACTERIZATION_WORKER_RECEIPT_OBSERVED","state":worker.get("state"),"evidence_ref":WORKER_RECEIPT_REL.as_posix()})
+    if execution:
+        events.append({"event":"PRINCIPAL_EXECUTION_RECEIPT_OBSERVED","state":execution.get("state"),"evidence_ref":str(state_root/"EXPERIMENT_EXECUTION_RECEIPT.json")})
+    for event in _interaction_events(chain):
+        events.append({"event":"INTERACTION_EVIDENCE","evidence":event})
+    ae_known=bool(provenance and (provenance.get("source_organization") or {}).get("availability_known") is True)
+    ae_connected=bool(provenance and (provenance.get("source_organization") or {}).get("interlock_connected") is True)
+    return {
+        "schema":"stegverse.sv002.public_observation.projection.v1",
+        "experiment_id":EXPERIMENT_ID,
+        "generated_from_evidence_at":now_iso(),
+        "state":{
+            "worker_receipt":"OBSERVED" if worker else "NOT_OBSERVED",
+            "worker_state":worker.get("state") if worker else None,
+            "principal_execution":"OBSERVED" if execution else "NOT_OBSERVED",
+            "principal_state":execution.get("state") if execution else None,
+            "final_self_characterization":"OBSERVED" if human is not None else "NOT_OBSERVED",
+        },
+        "topology":{
+            "entities":[
+                {"entity_id":"StegVerse-002","evidence_state":"KNOWN_SUBJECT"},
+                {"entity_id":"Admissible-Existence","evidence_state":"KNOWN_AVAILABLE_FROM_CONSTRUCTION_PROVENANCE" if ae_known else "NOT_ESTABLISHED"},
+            ],
+            "relations":[],
+            "admissible_existence_interlock":"CONNECTED" if ae_connected else "NOT_CONNECTED",
+            "observer_direct_relation_to_stegverse_002":False,
+        },
+        "knowledge":{
+            "admissible_existence":{
+                "availability":"KNOWN_AVAILABLE_FROM_CONSTRUCTION_PROVENANCE" if ae_known else "NOT_ESTABLISHED",
+                "interlock":"CONNECTED" if ae_connected else "NOT_CONNECTED",
+                "provenance":provenance,
+            }
+        },
+        "events":events,
+        "artifacts":{
+            "self_characterization":human,
+            "formal_result":formal,
+            "interaction_receipt_chain":chain,
+        },
+        "reconstruction":master if master else {"state":"NOT_OBSERVED","master_records_required":True},
+        "authority_effect":"NONE",
+        "observer_interaction_target":"READ_ONLY_OBSERVATION_PROJECTION",
+    }
+
+def process_observation(request:dict[str,Any],*,runtime_root:Path,micro_node_root:Path,stegos_root:Path,authorization_id:str,boundary_identity_ref:str)->dict[str,Any]:
+    genesis=_validate_request(request,authorization_id)
+    build_transport_intent,build_hop_receipt,sha256_uri=_load_stegos(stegos_root)
+    ingress_intent=build_transport_intent(
+        operation_id="SV002_PUBLIC_OBSERVE:"+request["request_sha256"][:24],
+        payload_hash=sha256_uri(request),
+        source_boundary="DEVICE_SYSTEM",
+        source_subsystem="STEGVERSE_OBSERVER_NODE",
+        destination_boundary="STEGOS_ECOSYSTEM",
+        destination_subsystem="SV002_PUBLIC_OBSERVATION_PROJECTION",
+    )
+    ingress=build_hop_receipt(
+        ingress_intent,hop_index=1,receipt_id="SV002-OBS-IN-"+ingress_intent["packet_id"][5:],
+        boundary_identity_ref=boundary_identity_ref,recorded_at=now_iso(),prior_receipt_hash=None,transition_state="RECEIVED")
+    projection=build_projection(runtime_root,micro_node_root)
+    response={
+        "schema_version":"stegverse.sv002.public_observation.interlock_response.v1",
+        "operation":"READ_OBSERVATION",
+        "decision":"ALLOW_READ_ONLY_OBSERVATION",
+        "authority_effect":"NONE",
+        "authority_transfer":False,
+        "observer_binding":{
+            "node_id":genesis["node_id"],
+            "interlock_id":genesis["interlock_id"],
+            "registration_receipt_sha256":genesis["receipt_sha256"],
+        },
+        "bindings":dict(request["bindings"]),
+        "projection":projection,
+    }
+    egress_intent=build_transport_intent(
+        operation_id="SV002_PUBLIC_OBSERVE_RESPONSE:"+request["request_sha256"][:24],
+        payload_hash=sha256_uri(response),
+        source_boundary="STEGOS_ECOSYSTEM",
+        source_subsystem="SV002_PUBLIC_OBSERVATION_PROJECTION",
+        destination_boundary="DEVICE_SYSTEM",
+        destination_subsystem="STEGVERSE_OBSERVER_NODE",
+        prior_transport_receipt_hash=ingress["receipt_hash"],
+    )
+    egress=build_hop_receipt(
+        egress_intent,hop_index=1,receipt_id="SV002-OBS-OUT-"+egress_intent["packet_id"][5:],
+        boundary_identity_ref=boundary_identity_ref,recorded_at=now_iso(),prior_receipt_hash=ingress["receipt_hash"],transition_state="FORWARDED")
+    response["transport_receipts"]={"ingress":ingress,"egress":egress}
+    receipt_dir=runtime_root.expanduser().resolve()/"receipts/sovereign-network/sv002-public-observation"
+    receipt_dir.mkdir(parents=True,exist_ok=True)
+    bundle={
+        "schema":"stegverse.sv002-public-observation-runtime-receipt-bundle/v1",
+        "state":"SV002_PUBLIC_OBSERVATION_ROUND_TRIP_FORWARDED",
+        "observer_binding":response["observer_binding"],
+        "request_sha256":request["request_sha256"],
+        "ingress_receipt":ingress,
+        "egress_receipt":egress,
+        "observer_direct_relation_to_stegverse_002":False,
+        "authority_effect":"NONE",
+        "credential_authority":"TV/TVC",
+        "recorded_at":now_iso(),
+    }
+    path=receipt_dir/(ingress["receipt_id"]+".json")
+    if not path.exists():
+        path.write_text(json.dumps(bundle,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+    return response
+
+def make_handler(args):
+    class Handler(BaseHTTPRequestHandler):
+        server_version="StegVerseSV002ObservationInTr/1"
+        def _cors(self):
+            origin=self.headers.get("Origin")
+            if origin==args.allowed_origin:
+                self.send_header("Access-Control-Allow-Origin",origin); self.send_header("Vary","Origin")
+        def do_GET(self):
+            if self.path!="/intr/sv002-observe/readiness":
+                self.send_response(404); self.end_headers(); return
+            raw=json.dumps({"schema":"stegverse.sv002-public-observation-runtime-readiness/v1","state":"READY","transport":"InTr","credential_authority":"TV/TVC","authority_effect":"NONE"},sort_keys=True,separators=(",",":")).encode()
+            self.send_response(200); self.send_header("Content-Type","application/json"); self.send_header("Cache-Control","no-store"); self.send_header("Content-Length",str(len(raw))); self.end_headers(); self.wfile.write(raw)
+        def do_OPTIONS(self):
+            if self.headers.get("Origin")!=args.allowed_origin:
+                self.send_response(403); self.end_headers(); return
+            self.send_response(204); self._cors(); self.send_header("Access-Control-Allow-Methods","POST, OPTIONS"); self.send_header("Access-Control-Allow-Headers","content-type,x-stegverse-transport,x-stegverse-authorization-id,x-stegverse-payload-sha256"); self.end_headers()
+        def do_POST(self):
+            if self.path!="/intr/sv002-observe":
+                self.send_response(404); self.end_headers(); return
+            try:
+                if self.headers.get("Origin")!=args.allowed_origin: raise ObservationRuntimeError("origin_not_admitted")
+                if self.headers.get("X-StegVerse-Transport")!="InTr": raise ObservationRuntimeError("transport_header_mismatch")
+                authorization_id=str(self.headers.get("X-StegVerse-Authorization-Id") or "").strip()
+                if not authorization_id: raise ObservationRuntimeError("authorization_id_required")
+                length=int(self.headers.get("Content-Length") or "0")
+                if length<=0 or length>MAX_BODY: raise ObservationRuntimeError("request_size_invalid")
+                body=self.rfile.read(length)
+                if str(self.headers.get("X-StegVerse-Payload-SHA256") or "")!=hashlib.sha256(body).hexdigest(): raise ObservationRuntimeError("request_payload_hash_mismatch")
+                request=json.loads(body.decode("utf-8"))
+                if not isinstance(request,dict): raise ObservationRuntimeError("request_object_required")
+                response=process_observation(request,runtime_root=args.runtime_root,micro_node_root=args.micro_node_root,stegos_root=args.stegos_root,authorization_id=authorization_id,boundary_identity_ref=args.boundary_identity_ref)
+                raw=(json.dumps(response,sort_keys=True,separators=(",",":"))+"\n").encode()
+                self.send_response(200); self._cors(); self.send_header("Content-Type","application/json"); self.send_header("Cache-Control","no-store"); self.send_header("Content-Length",str(len(raw))); self.end_headers(); self.wfile.write(raw); self.server.processed_requests+=1
+            except Exception as exc:
+                raw=json.dumps({"schema":"stegverse.sv002-public-observation-runtime-error/v1","state":"FAIL_CLOSED","reason":str(exc),"authority_effect":"NONE"}).encode()
+                self.send_response(400); self._cors(); self.send_header("Content-Type","application/json"); self.send_header("Cache-Control","no-store"); self.send_header("Content-Length",str(len(raw))); self.end_headers(); self.wfile.write(raw)
+        def log_message(self,fmt,*values): return
+    return Handler
+
+class BoundedHTTPServer(HTTPServer):
+    processed_requests=0
+
+def main()->int:
+    ap=argparse.ArgumentParser()
+    ap.add_argument("--stegos-root",type=Path,required=True); ap.add_argument("--micro-node-root",type=Path,required=True); ap.add_argument("--runtime-root",type=Path,required=True)
+    ap.add_argument("--host",default="127.0.0.1"); ap.add_argument("--port",type=int,default=8766); ap.add_argument("--max-requests",type=int,default=0)
+    ap.add_argument("--allowed-origin",default="https://stegverse.org"); ap.add_argument("--boundary-identity-ref",required=True); ap.add_argument("--tls-cert",type=Path); ap.add_argument("--tls-key",type=Path)
+    args=ap.parse_args(); _reject_hosted_or_secret_env()
+    if args.host not in {"127.0.0.1","::1","localhost"} and (not args.tls_cert or not args.tls_key): raise ObservationRuntimeError("non_loopback_requires_tls")
+    server=BoundedHTTPServer((args.host,args.port),make_handler(args))
+    if args.tls_cert and args.tls_key:
+        ctx=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER); ctx.load_cert_chain(args.tls_cert,args.tls_key); server.socket=ctx.wrap_socket(server.socket,server_side=True)
+    if args.max_requests<=0: server.serve_forever(poll_interval=0.5)
+    else:
+        while server.processed_requests<args.max_requests: server.handle_request()
+    return 0
+if __name__=="__main__": raise SystemExit(main())
