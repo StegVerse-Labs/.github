@@ -1,0 +1,113 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001",
+    "objective": "Freeze exact authentic promoted SV-DN-1 public bytes into a self-contained transport-neutral repository persistence package.",
+    "success_predicates": [
+      "public promotion receipt is COMPLETE at SV_DN1_PUBLIC_PROMOTION_READY",
+      "exact five promoted files match promotion hashes",
+      "persistence package is content-addressed and self-contained",
+      "network, credentials, repository writeback and deployment remain false"
+    ],
+    "failure_predicates": [
+      "promotion absent or WITHHELD",
+      "artifact hash mismatch",
+      "credential or hosted execution detected",
+      "frozen package conflict"
+    ],
+    "authority_ceiling": [
+      "bounded_process_execution",
+      "local_evidence_packaging",
+      "no repository writeback authority",
+      "no network authority",
+      "no credential authority",
+      "no deployment authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "docs/SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "sv-dn1:repository-persistence-package",
+    "worker_registry_ref": "control/worker-registry.d/sv-dn1-repository-persistence-package-001.json",
+    "worker_id": "sv-dn1-repository-persistence-package-worker",
+    "adapter_ref": "process:sv-dn1-repository-persistence-package-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "priority": "release",
+    "dependencies": [
+      "SV-DN1-PUBLIC-PROMOTION-001"
+    ],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL"
+  },
+  "authority": {
+    "authority_source": "docs/SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "network_access_authority": false,
+    "repository_writeback_authority": false,
+    "commit_authority": false,
+    "push_authority": false,
+    "merge_authority": false,
+    "deployment_authority": false,
+    "publication_decision_authority": false,
+    "execution_authority_created": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "local_evidence_packaging",
+      "evidence_class_preservation"
+    ],
+    "worker": "workers/sv_dn1_repository_persistence_package_worker.py",
+    "max_actions": 8,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 24,
+    "hosted_execution_allowed": false,
+    "bound_state_root": "~/.stegverse/state/sv-dn1-repository-persistence-package",
+    "bound_state_allowed_paths": [
+      "packages/**",
+      "receipts/**"
+    ],
+    "required_local_locators": [
+      "STEGVERSE_SV_DN1_PUBLIC_PROMOTION_STATE_ROOT",
+      "STEGVERSE_SV_DN1_SOURCE_ROOT"
+    ],
+    "public_network_access": {
+      "enabled": false
+    }
+  },
+  "activation": {
+    "carrier": "independent_task_control",
+    "executor_binding": "AUTHORIZED",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+  },
+  "continuity": {
+    "result_receipt": "~/.stegverse/state/sv-dn1-repository-persistence-package/receipts/latest.json",
+    "package_ref": "~/.stegverse/state/sv-dn1-repository-persistence-package/packages/latest.json",
+    "repository_persistence_requires_separate_admission": true
+  },
+  "completion": {
+    "next_authorized_action": "A separately admitted TV/TVC-governed repository mutation authority may consume only this exact package.",
+    "terminal_when": [
+      "SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_READY",
+      "exact_bytes_preserved=true",
+      "repository_writeback_performed=false",
+      "deployment_performed=false"
+    ],
+    "release_condition": "Exact authentic public bytes are frozen for separately governed repository persistence."
+  }
+}
