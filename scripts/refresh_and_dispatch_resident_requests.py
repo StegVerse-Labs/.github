@@ -4,9 +4,9 @@
 This is a portable, transport-free execution bridge for an already-existing sovereign
 resident. It composes the existing local source refresh and generic resident-request
 dispatcher, but selects exactly one explicitly admitted consumer. The historical default
-remains the cross-framework current-basis v0.4 consumer; HIL may be selected explicitly
-to consume the current fresh resident request without visiting unrelated work. It creates
-no scheduler, heartbeat, claim, fence, credential path, or runtime authority.
+remains the cross-framework current-basis v0.4 consumer; HIL and SV-DN-1 may be selected
+explicitly without visiting unrelated work. It creates no scheduler, heartbeat, claim,
+fence, credential path, or runtime authority.
 """
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ DISPATCHER_REL = Path("scripts/dispatch_resident_execution_requests.py")
 DISPATCH_RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
 RECEIPT_REL = Path("receipts/sovereign-host/resident-refresh-dispatch.latest.json")
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
-ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "hil")
+ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "hil", "sv_dn1")
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
     "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS",
@@ -47,6 +47,8 @@ NONSECRET_FORWARD = (
     "STEGVERSE_SV_DN1_SOURCE_ROOT", "STEGVERSE_SOURCE_MATERIALIZATION_ROOT",
     "STEGVERSE_SOURCE_PACKAGE_ROOT", "STEGVERSE_SV_DN1_MATERIALIZED_SOURCE_ROOT",
     "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT", "STEGVERSE_SV_DN1_INTR_STATE_ROOT",
+    "STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT",
+    "STEGVERSE_SV_DN1_BROWSER_OBSERVATION_BUNDLE",
     "STEGVERSE_SDK_SOURCE_ROOT", "STEGVERSE_STEGCORE_SOURCE_ROOT",
     "STEGVERSE_CORE_LITE_SOURCE_ROOT", "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
     "STEGVERSE_STEGOS_ROOT", "STEGVERSE_SITE_ROOT", "STEGVERSE_REPO_ROOTS_JSON",
