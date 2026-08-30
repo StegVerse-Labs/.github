@@ -196,22 +196,13 @@ STEGVERSE_MASTER_RECORDS_SOURCE_ROOT
 
 The orchestrator may forward these non-secret locators but may not invent or remotely acquire private repository credentials.
 
-Current public/private source posture:
-
-```text
-StegVerse-org/StegVerse-SDK: public
-Data-Continuation/core-lite: public
-StegVerse-Labs/StegCore: private
-master-records/orchestration: private
-```
-
 Source preparation is platform-neutral. Any of the four canonical components may be satisfied by an already-local verified root supplied through its non-secret `STEGVERSE_*_SOURCE_ROOT` locator, by a root already present under the canonical materialization tree, or by a local content-addressed StegVerse source package. The source-preparation worker performs no network acquisition and does not require GitHub or the repository broker merely to recognize already-local source. If a component is genuinely absent from all admitted local surfaces, it stops `HANDOFF_READY` and names the required local package location.
 
 ## Resident request bridge
 
 A canonical resident request is intent only, not authority.
 
-The chain may be requested through an additional resident request file without replacing the existing Ecosystem Chat request. A resident request consumer may invoke this chain only after local source refresh and still relies on the four task handoffs for actual claim/fence/network/execution authority.
+The chain may be requested through an additional resident request file without replacing the existing Ecosystem Chat request. A resident request consumer may invoke this chain only after local source refresh and still relies on the five task handoffs for actual claim/fence/network/execution authority.
 
 The request must state:
 
@@ -225,21 +216,7 @@ second_machine_required: false
 
 ## Actual sovereign execution boundary
 
-At this time repository evidence does not prove that a task-capable sovereign resident process is currently executing this chain.
-
-The canonical repository retains:
-
-```text
-control/heartbeat-live-status.json:
-  heartbeat protocol = ACTIVE_PROTOCOL_VERIFIED
-
-control/worker-runtime-state.json:
-  last durable mode = CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION
-```
-
-Heartbeat existence therefore must not be confused with worker execution.
-
-Actual completion requires a resident process to emit fresh WorkerCoordinator claim/fence and task receipts. Source merge, hosted CI, or chat execution cannot substitute.
+Repository evidence does not itself prove that a task-capable sovereign resident process is currently executing this chain. Heartbeat existence must not be confused with worker execution. Actual completion requires fresh WorkerCoordinator claim/fence and task receipts. Source merge, hosted CI, or chat execution cannot substitute.
 
 ## Completion
 
@@ -272,62 +249,50 @@ production source prep worker: MERGED / VALIDATED
 SDK first-round worker: MERGED
 single-opportunity sovereign chain orchestrator: MERGED
 resident request bridge: MERGED
+authentic Hugging Face browser observation: OBSERVED
+authentic EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM InTr hop: OBSERVED
 authentic chain execution receipt: NOT OBSERVED
 public live dashboard: NOT PUBLISHED
 ```
 
-## Merge and validation evidence
-
-```text
-PR #348: MERGED
-merge_commit: a45095d2c2099b9318915410e78a4615b4dc68e6
-validated_head: 34234237264e96c7da8226d19ff4a7c43e18de09
-heartbeat worker validation run 33138330575 / job 98743294611: PASS
-organization control plane run 33138330592 / job 98743294652: PASS
-complete deterministic repository suite: PASS
-hosted-environment rejection: PASS
-credential scrubbing: PASS
-existing-claim no-steal behavior: PASS
-sequential dependency progression: PASS
-durable receipt validation: PASS
-resident request non-authority/retry behavior: PASS
-```
-
-The first-round chain now includes explicit canonical production-source preparation before SDK execution. Missing private roots are a machine-owned TVC spool dependency rather than an implicit local-path prerequisite. No authentic chain execution receipt has been observed yet.
-
-## Production source preparation integration evidence
-
-```text
-PR #371: MERGED
-merge_commit: f488e70fca67e80fa6b674ee7380b0e04c5000f7
-heartbeat worker validation run 33228272533: PASS
-organization control plane run 33228272505: PASS
-```
-
-The one-shot resident chain now advances through five independently fenced tasks. The SDK step cannot execute until the production-source-preparation task is COMPLETED and has exposed exact non-secret local roots for SDK, StegCore, Core-Lite, and Master Records.
-
-## TVC private-source prerequisite execution path
-
-The source-preparation stage now has a current-head machine validation carrier for its upstream TVC broker:
-
-```text
-TVC broker PR #92 expected head: ce1d4a31f5cfc65ee59af52f821336e0859c0fbd
-.github validation carrier PR #384: MERGED
-independent validation request: ISSUED
-authentic governed PASS: NOT OBSERVED
-broker admission: NOT COMPLETE
-private source materialization: NOT OBSERVED
-```
-
-This means the remaining private-source gate is now an execution/evidence boundary rather than missing control-plane wiring.
-
-## Archive readiness
-
-Once this chain source is merged, every machine-executable SV-DN-1 first-round step will have a durable non-hosted execution path. Product activation still depends on an authentic sovereign execution opportunity and exact private canonical source availability.
-
-
 ## v2 production-source receipt correction — 2026-08-30
 
-The sovereign chain previously retained the obsolete pre-v2 durable-receipt predicates `public_source_roots_verified`, `private_source_roots_verified`, and `runtime_anchor_blobs_verified`. Those predicates diverged from the already-merged platform-neutral production-source worker and would have rejected an otherwise valid v2 receipt.
+The sovereign chain validates the canonical v2 source identity/root contract directly and forwards the four verified non-secret locators to the SDK first-round worker only after that validation succeeds. This grants no source acquisition, credential, repository, SDK, governance, or publication authority.
 
-The chain now validates the canonical v2 source identity/root contract directly and forwards the four verified non-secret locators to the SDK first-round worker only after that validation succeeds. This is a validation-shape correction only; it grants no source acquisition, credential, repository, SDK, governance, or publication authority.
+## 2026-08-30 end-to-end analysis continuity correction
+
+The authentic browser observation is a valid upstream evidence object, but a locator is not useful if an orchestration process silently removes it from the environment before the SDK evidence adapter starts.
+
+The exact non-secret local locators required for end-to-end analysis continuity are:
+
+```text
+STEGVERSE_SV_DN1_BROWSER_OBSERVATION_BUNDLE
+STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT
+```
+
+The first identifies the already-local authentic `stegverse.sv-dn1.browser-resident-observation-bundle/v3` consumed by `workers/sv_dn1_sdk_browser_evidence_adapter.py`. It is not a credential and grants no authority. The second permits an explicitly relocated source-preparation v2 bound-state root to remain continuous across a portable resident invocation.
+
+These locators MUST survive, when present, across all three process boundaries:
+
+```text
+scripts/refresh_and_dispatch_resident_requests.py
+  -> scripts/consume_sv_dn1_resident_execution_request.py
+  -> scripts/run_sv_dn1_first_round_chain.py
+  -> WorkerCoordinator adapter environment
+```
+
+The portable bridge may select `--only-consumer sv_dn1`. That exact selection only refreshes already-local static source and visits the already-registered `sv_dn1` consumer. It does not create a new dispatcher, scheduler, claim, fence, source transport, browser evidence object, or execution authority. The historical cross-framework consumer remains the default and HIL remains an independent explicit selector.
+
+Success for this correction is source-level only:
+
+```text
+sv_dn1 exact portable selector accepted
+unrelated consumers not dispatched
+browser observation bundle locator preserved if supplied
+production source-prep state locator preserved if supplied
+hosted and credential-bearing environments still rejected
+no network source fetch
+no request/execution authority created
+```
+
+Authentic analysis remains unobserved until the eligible sovereign resident actually consumes `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-004` and emits `SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED`. Public display remains a separate downstream promotion/deployment gate.
