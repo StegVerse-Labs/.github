@@ -1,0 +1,208 @@
+from __future__ import annotations
+
+import hashlib
+import importlib.util
+import json
+import os
+import tempfile
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+SPEC = importlib.util.spec_from_file_location(
+    "sv002_self_characterization_worker",
+    ROOT / "workers/sv002_self_characterization_worker.py",
+)
+mod = importlib.util.module_from_spec(SPEC)
+assert SPEC and SPEC.loader
+SPEC.loader.exec_module(mod)
+
+
+class _Response:
+    def __init__(self, value):
+        self.value = value
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        return False
+
+    def read(self):
+        return json.dumps(self.value).encode("utf-8")
+
+
+class SV002SelfCharacterizationWorkerTests(unittest.TestCase):
+    def fake_urlopen(self, value):
+        def _open(url, timeout=3):
+            self.assertTrue(url.startswith("http://127.0.0.1:11434/"))
+            self.assertEqual(timeout, 3)
+            return _Response(value)
+        return _open
+
+    def test_discovers_exact_requested_ollama_model_and_digest(self):
+        digest = "a" * 64
+        model, row = mod.discover_ollama_model(
+            "http://127.0.0.1:11434",
+            "reasoner:7b",
+            urlopen=self.fake_urlopen(
+                {"models": [{"name": "reasoner:7b", "digest": "sha256:" + digest}]}
+            ),
+        )
+        self.assertEqual(model, "reasoner:7b")
+        self.assertEqual(row["digest"], "sha256:" + digest)
+
+    def test_unrequested_model_discovery_requires_single_non_reference_candidate(self):
+        one, _ = mod.discover_ollama_model(
+            "http://127.0.0.1:11434",
+            None,
+            urlopen=self.fake_urlopen(
+                {"models": [{"name": "reasoner:latest", "digest": "b" * 64}]}
+            ),
+        )
+        self.assertEqual(one, "reasoner:latest")
+
+        ambiguous, row = mod.discover_ollama_model(
+            "http://127.0.0.1:11434",
+            None,
+            urlopen=self.fake_urlopen(
+                {
+                    "models": [
+                        {"name": "reasoner-a:latest", "digest": "b" * 64},
+                        {"name": "reasoner-b:latest", "digest": "c" * 64},
+                    ]
+                }
+            ),
+        )
+        self.assertIsNone(ambiguous)
+        self.assertIsNone(row)
+
+    def test_remote_endpoint_never_enters_local_discovery(self):
+        called = False
+
+        def _open(*args, **kwargs):
+            nonlocal called
+            called = True
+            raise AssertionError("should not perform remote request")
+
+        model, row = mod.discover_ollama_model(
+            "https://models.example",
+            "reasoner",
+            urlopen=_open,
+        )
+        self.assertIsNone(model)
+        self.assertIsNone(row)
+        self.assertFalse(called)
+
+    def test_builds_identity_from_local_tags_and_unique_process_executable(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            executable = root / "ollama"
+            executable.write_bytes(b"local ollama executable")
+            proc = root / "proc"
+            pid_dir = proc / "321"
+            pid_dir.mkdir(parents=True)
+            (pid_dir / "exe").symlink_to(executable)
+            (pid_dir / "cmdline").write_bytes(b"/usr/local/bin/ollama\x00serve\x00")
+
+            model_digest = "d" * 64
+            identity = mod.build_ollama_subject_identity(
+                "http://127.0.0.1:11434",
+                "reasoner:latest",
+                proc_root=proc,
+                urlopen=self.fake_urlopen(
+                    {
+                        "models": [
+                            {
+                                "name": "reasoner:latest",
+                                "digest": "sha256:" + model_digest,
+                            }
+                        ]
+                    }
+                ),
+            )
+
+            self.assertEqual(
+                identity["schema"],
+                "stegverse.self-characterization-runtime-identity/v0.1",
+            )
+            self.assertEqual(identity["model_id"], "reasoner:latest")
+            self.assertEqual(identity["endpoint"], "http://127.0.0.1:11434")
+            self.assertEqual(identity["model_digest"], model_digest)
+            self.assertEqual(identity["process_id"], 321)
+            self.assertEqual(identity["runtime_engine"], "ollama")
+            self.assertEqual(identity["runtime_executable"], str(executable.resolve()))
+            self.assertEqual(
+                identity["runtime_digest"],
+                hashlib.sha256(executable.read_bytes()).hexdigest(),
+            )
+            self.assertFalse(identity["network_fetch_performed"])
+            self.assertFalse(identity["credential_required"])
+            self.assertEqual(identity["authority_effect"], "NONE")
+
+    def test_identity_fails_closed_when_process_is_ambiguous(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            executable = root / "ollama"
+            executable.write_bytes(b"local ollama executable")
+            proc = root / "proc"
+            for pid in ("321", "322"):
+                pid_dir = proc / pid
+                pid_dir.mkdir(parents=True)
+                (pid_dir / "exe").symlink_to(executable)
+                (pid_dir / "cmdline").write_bytes(b"ollama\x00serve\x00")
+            with self.assertRaisesRegex(RuntimeError, "unique local Ollama runtime process"):
+                mod.build_ollama_subject_identity(
+                    "http://127.0.0.1:11434",
+                    "reasoner:latest",
+                    proc_root=proc,
+                    urlopen=self.fake_urlopen(
+                        {
+                            "models": [
+                                {
+                                    "name": "reasoner:latest",
+                                    "digest": "e" * 64,
+                                }
+                            ]
+                        }
+                    ),
+                )
+
+    def test_reference_model_cannot_be_principal(self):
+        with self.assertRaisesRegex(RuntimeError, "reference model"):
+            mod.build_ollama_subject_identity(
+                "http://127.0.0.1:11434",
+                "stegverse-reference-lm-v1",
+                urlopen=self.fake_urlopen({"models": []}),
+            )
+
+    def test_explicit_subject_identity_must_match_endpoint_and_model(self):
+        prior = dict(os.environ)
+        try:
+            os.environ["STEGVERSE_SELF_CHAR_SUBJECT_IDENTITY_JSON"] = json.dumps(
+                {
+                    "schema": "stegverse.self-characterization-runtime-identity/v0.1",
+                    "model_id": "reasoner:latest",
+                    "endpoint": "http://127.0.0.1:11434",
+                }
+            )
+            identity, error = mod.resolve_subject_identity(
+                "http://127.0.0.1:11434",
+                "reasoner:latest",
+            )
+            self.assertIsNotNone(identity)
+            self.assertIsNone(error)
+
+            identity, error = mod.resolve_subject_identity(
+                "http://127.0.0.1:11434",
+                "different-model",
+            )
+            self.assertIsNone(identity)
+            self.assertEqual(error, "EXPLICIT_SUBJECT_IDENTITY_BINDING_MISMATCH")
+        finally:
+            os.environ.clear()
+            os.environ.update(prior)
+
+
+if __name__ == "__main__":
+    unittest.main()
