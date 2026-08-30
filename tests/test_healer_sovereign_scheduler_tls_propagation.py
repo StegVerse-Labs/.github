@@ -102,6 +102,55 @@ class HealerSovereignSchedulerTlsAutodiscoveryTests(unittest.TestCase):
         self.assertEqual(env["STEGVERSE_EVALUATOR_INTR_UPSTREAM"], "http://127.0.0.1:8765/intr/evaluator")
         self.assertNotIn(mod.EVALUATOR_CONFIG_ENV, env)
 
+    def test_sv002_observation_route_projection_is_node_bound_loopback_only(self) -> None:
+        old = dict(os.environ)
+        try:
+            with tempfile.TemporaryDirectory() as td:
+                path = Path(td) / "sv002.json"
+                path.write_text(json.dumps({
+                    "schema": "stegverse.sv002-public-observation-route-config/v1",
+                    "host": "127.0.0.1",
+                    "port": 8766,
+                    "credential_authority": "TV/TVC",
+                    "github_token_runtime_authority": "NONE",
+                    "public_tls_terminated_by": "STEGVERSE_SHARED_SERVICE_GATEWAY",
+                }) + "\n", encoding="utf-8")
+                os.environ[mod.SV002_OBSERVE_CONFIG_ENV] = str(path)
+                projection = mod.sv002_observation_gateway_projection()
+                self.assertEqual(projection["STEGVERSE_SV002_OBSERVE_ENABLED"], "true")
+                self.assertEqual(projection["STEGVERSE_SV002_OBSERVE_UPSTREAM"], "http://127.0.0.1:8766/intr/sv002-observe")
+
+                value = json.loads(path.read_text(encoding="utf-8"))
+                value["host"] = "192.0.2.10"
+                path.write_text(json.dumps(value) + "\n", encoding="utf-8")
+                disabled = mod.sv002_observation_gateway_projection()
+                self.assertEqual(disabled["STEGVERSE_SV002_OBSERVE_ENABLED"], "false")
+        finally:
+            os.environ.clear()
+            os.environ.update(old)
+
+    def test_healer_child_env_carries_only_nonsecret_sv002_observation_projection(self) -> None:
+        old = dict(os.environ)
+        try:
+            with tempfile.TemporaryDirectory() as td:
+                path = Path(td) / "sv002.json"
+                path.write_text(json.dumps({
+                    "schema": "stegverse.sv002-public-observation-route-config/v1",
+                    "host": "127.0.0.1",
+                    "port": 8766,
+                    "credential_authority": "TV/TVC",
+                    "github_token_runtime_authority": "NONE",
+                    "public_tls_terminated_by": "STEGVERSE_SHARED_SERVICE_GATEWAY",
+                }) + "\n", encoding="utf-8")
+                os.environ[mod.SV002_OBSERVE_CONFIG_ENV] = str(path)
+                env = mod.build_healer_child_env(Path("/healer/targets.json"), "{}")
+        finally:
+            os.environ.clear()
+            os.environ.update(old)
+        self.assertEqual(env["STEGVERSE_SV002_OBSERVE_ENABLED"], "true")
+        self.assertEqual(env["STEGVERSE_SV002_OBSERVE_UPSTREAM"], "http://127.0.0.1:8766/intr/sv002-observe")
+        self.assertNotIn(mod.SV002_OBSERVE_CONFIG_ENV, env)
+
     def test_required_scheduler_inputs_still_cross_boundary(self) -> None:
         env = mod.build_healer_child_env(Path("/healer/targets.json"), "{}")
         self.assertEqual(env["RUN_SCOPE"], "all")
