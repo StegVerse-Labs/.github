@@ -42,9 +42,9 @@ def materialize_hil_runtime(
 ) -> dict[str, Any]:
     """Materialize the sovereign runtime substrate required by one admitted HIL event.
 
-    This bridge deliberately stops at ESRL LOCAL_READY. It does not claim the HIL
-    public HTTPS rendezvous, receiver READY, custody, or TVC lifecycle. Those are
-    downstream observations produced by the HIL receiver path itself.
+    This bridge must reach an independently verified ESRL LEASE_OPEN through the
+    shared Service Gateway before the existing HIL targeted executor may run.
+    Receiver READY, custody, reconstruction, and TVC lifecycle remain downstream.
     """
 
     _require(ingress_receipt.get("schema") == "stegverse.hil-intr-materialization-ingress/v1", "hil_ingress_receipt_schema_invalid")
@@ -71,7 +71,7 @@ def materialize_hil_runtime(
         RendezvousRequirement,
         RuntimeClass,
     )
-    from stegos.sovereign_ephemeral_node_adapter import SovereignEphemeralNodeAdapter
+    from stegos.hil_shared_gateway_runtime import SharedGatewayHILRuntimeAdapter
 
     source_receipt_id = _receipt_identity(ingress_receipt)
     consequence_registry = {
@@ -112,10 +112,9 @@ def materialize_hil_runtime(
     )
     lease_request.validate()
 
-    adapter = SovereignEphemeralNodeAdapter(
+    adapter = SharedGatewayHILRuntimeAdapter(
         sovereign_source_root=control_root,
         runtime_base=intake_runtime_root / "esrl-hil-runtime",
-        stegos_source_root=stegos_root,
     )
     machine = LeaseMachine(lease_request)
     machine.transition(LeaseState.REQUESTED)
@@ -126,12 +125,19 @@ def materialize_hil_runtime(
     local = adapter.verify_local(runtime, HIL_IMPLEMENTATION_REF)
     _require(local.get("verified") is True, "hil_esrl_local_runtime_identity_failed")
     machine.transition(LeaseState.LOCAL_READY)
+    machine.open_after_local_verification()
+    _require(machine.state == LeaseState.PUBLIC_VERIFYING, "hil_esrl_public_verification_state_required")
+    rendezvous = adapter.open(runtime)
+    public = adapter.verify_public(rendezvous, HIL_IMPLEMENTATION_REF)
+    _require(public.get("verified") is True, "hil_esrl_public_gateway_identity_failed")
+    _require(public.get("observation_origin") == "INDEPENDENT_PUBLIC_HTTPS", "hil_esrl_public_observation_origin_invalid")
+    machine.transition(LeaseState.LEASE_OPEN)
 
     runtime_root = Path(str(runtime.get("runtime_root", ""))).resolve()
     _require(runtime_root.is_dir(), "hil_esrl_runtime_root_missing")
     evidence = {
         "schema": EVIDENCE_SCHEMA,
-        "state": "LOCAL_READY",
+        "state": "LEASE_OPEN",
         "lease_id": lease_id,
         "lease_state": machine.state.value,
         "source_receipt_id": source_receipt_id,
@@ -153,7 +159,9 @@ def materialize_hil_runtime(
         "runtime_id": runtime.get("runtime_id"),
         "runtime_instantiated": True,
         "local_identity_verified": True,
-        "hil_public_https_rendezvous_observed": False,
+        "hil_public_https_rendezvous_observed": True,
+        "public_gateway_origin": rendezvous.get("origin"),
+        "public_gateway_readiness_verified": True,
         "receiver_ready_observed": False,
         "hil_custody_observed": False,
         "tvc_lifecycle_observed": False,
@@ -162,6 +170,6 @@ def materialize_hil_runtime(
         "heartbeat_grants_execution_authority": False,
         "credential_authority": CREDENTIAL_AUTHORITY,
         "github_token_runtime_authority": "NONE",
-        "authority_effect": "NONE_RUNTIME_MATERIALIZATION_ONLY",
+        "authority_effect": "NONE_RUNTIME_AND_RENDEZVOUS_OBSERVATION_ONLY",
     }
     return {"runtime_root": runtime_root, "evidence": evidence}
