@@ -154,3 +154,42 @@ Checked-in worker runtime state is not activation evidence and currently remains
 ## Next authorized machine action
 
 The next authorized action is to continue the sovereign resident path until the request-consumption and receiver-readiness receipts exist. No second machine or manual credential entry is part of this task contract.
+
+
+## Persisted round-trip integrity hardening — issue #498
+
+The resident worker's terminal evidence scan must not trust a terminal-looking local JSON object by state label alone.
+
+Issue #498 hardens `workers/sv002_public_observation_runtime_worker.py` so a persisted bundle can satisfy `SV002_PUBLIC_OBSERVATION_ROUND_TRIP_OBSERVED` only after independent local validation of:
+
+```text
+bundle schema = stegverse.sv002-public-observation-runtime-receipt-bundle/v1
+state = SV002_PUBLIC_OBSERVATION_ROUND_TRIP_FORWARDED
+observer_direct_relation_to_stegverse_002 = false
+credential_authority = TV/TVC
+authority_effect = NONE
+request_sha256 = canonical lowercase SHA-256
+observer node/interlock identity present
+registration receipt SHA-256 present
+ingress schema = stegverse.intr.hop_receipt/v1
+ingress transition = RECEIVED
+ingress boundary = DEVICE_SYSTEM -> STEGOS_ECOSYSTEM
+egress schema = stegverse.intr.hop_receipt/v1
+egress transition = FORWARDED
+egress boundary = STEGOS_ECOSYSTEM -> DEVICE_SYSTEM
+both boundary_verification = VERIFIED
+both secret_plaintext_present = false
+both authority_transfer = false
+both receipt hashes recompute exactly
+egress.prior_receipt_hash = ingress.receipt_hash
+```
+
+Corrupt, fabricated, authority-smuggling, or lineage-broken persisted evidence fails closed and cannot terminalize the resident worker.
+
+Scoped implementation files:
+
+- `workers/sv002_public_observation_runtime_worker.py`
+- `tests/test_sv002_public_observation_runtime_worker.py`
+- `docs/SV002_PUBLIC_OBSERVATION_RUNTIME_MIRROR_HANDOFF.md`
+
+This source hardening is not resident runtime evidence and does not change the remaining authentic observation gates.
