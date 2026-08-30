@@ -16,5 +16,8 @@
   "tvc_root_locator_required": true,
   "credential_material_allowed": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "After local WorkerCoordinator source refresh, attempt the already-admitted TVC broker validation task only when an exact already-local TVC PR #92 source root is exposed by STEGVERSE_TVC_ROOT. The request grants no source transport, credential, claim, fence, merge, or repository authority."
+  "note": "Attempt existing exact local source first. If absent, the resident consumer may delegate one immutable-commit materialization to the already-existing TVC private-source-read service. The consumer never receives credential material; systemd LoadCredential remains inside TVC authority.",
+  "private_source_bootstrap_allowed": true,
+  "private_source_bootstrap_service": "stegtvc-private-source-read.service",
+  "private_source_bootstrap_credential_transport": "SYSTEMD_LOADCREDENTIAL"
 }

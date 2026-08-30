@@ -108,7 +108,16 @@
     ],
     "integration_revalidation_rule": "FULL_REVALIDATION_REQUIRED_IF_SOURCE_BUNDLE_SHA256_CHANGES",
     "main_drift_rule": "UNCHANGED_SOURCE_BUNDLE_REQUIRES_CURRENT_BASE_COMPATIBILITY_REVIEW_NOT_SOURCE_REVALIDATION",
-    "expected_source_bundle_sha256": "0369ed677a014a99a983415a9094e6aaa0c570d163d9818d9a086fee6042dd6a"
+    "expected_source_bundle_sha256": "0369ed677a014a99a983415a9094e6aaa0c570d163d9818d9a086fee6042dd6a",
+    "private_source_bootstrap": {
+      "source_repository": "StegVerse-Labs/TVC",
+      "reference_mode": "IMMUTABLE_COMMIT",
+      "exact_sha": "b5288f9910ada26c6ab2e9bca3f7701afaae2cef",
+      "materialization_id": "tvc-pr92-validation-b5288f99",
+      "service": "stegtvc-private-source-read.service",
+      "credential_transport": "SYSTEMD_LOADCREDENTIAL",
+      "consumer_credential_visible": false
+    }
   },
   "activation": {
     "carrier": "separate_worker_runtime",
@@ -132,7 +141,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Locate exact locally materialized TVC PR #92 source at b5288f9910ada26c6ab2e9bca3f7701afaae2cef and execute the repository-native validation task with all credential variables removed.",
+    "next_authorized_action": "Resolve exact TVC PR #92 source locally; if absent, delegate immutable-commit materialization to the existing TVC private-source-read resident service, then execute repository-native validation with credential variables removed.",
     "terminal_when": [
       "A PASS validation receipt records exact TVC source head b5288f9910ada26c6ab2e9bca3f7701afaae2cef, source_bundle_file_count=16, source_bundle_sha256=0369ed677a014a99a983415a9094e6aaa0c570d163d9818d9a086fee6042dd6a, and sanitized dispatcher result"
     ]
