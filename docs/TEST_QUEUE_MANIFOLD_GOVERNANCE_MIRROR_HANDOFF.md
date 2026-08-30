@@ -158,3 +158,31 @@ tests: 96102ef00d908f7a1a086ac9ce0545c148d1013c
 ```
 
 No runtime, merge, release, tag, queue execution, claim/fence issuance, or activation is claimed. The next boundary is exact branch-head CI plus collision review. Merge remains prohibited until that evidence is complete.
+
+
+## Exact-head validation and collision review — 2026-08-30
+
+The feature branch test-discovery defect was repaired by renaming the test helper so `unittest` no longer attempts to execute a parameterized helper as a test case.
+
+Validated branch head:
+
+```text
+head: b8070b33e13f959e0e21dbac1e913b8787722200
+organization control plane: 33295942882 SUCCESS
+Heartbeat Worker Project: 33295942923 SUCCESS
+complete deterministic repository suite: PASS
+known scoped scaffolding/stubs: 0
+```
+
+Collision review against current main found no existing implementation at the claimed new paths:
+
+```text
+state_language/test_queue_manifold.py: absent on main before merge
+schemas/test-queue-manifold-descriptor-v1.schema.json: absent on main before merge
+tests/fixtures/test_queue_manifold.v1.json: absent on main before merge
+tests/test_test_queue_manifold.py: absent on main before merge
+```
+
+The implementation does not modify the direct Test Lanes executor, WorkerCoordinator claim/fence authority, TV/TVC credential authority, SDK evaluator ingress, or any person-specific route.
+
+Source merge is now eligible under this handoff. Merge does not satisfy the separately required exact release/tag set or runtime activation.
