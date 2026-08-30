@@ -103,5 +103,33 @@
       "A COMPLETED worker receipt is backed by RUN_COMPLETE.json for the exact frozen identity with independent_execution_complete=true, s1_observed=true, transition_receipt_bound=true, custody_recorded=true, replay_recorded=true, reconstruction_recorded=true, authority_granted=false, and external_side_effect=false"
     ]
   },
-  "block": null
+  "block": null,
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:cross-framework-current-basis-v04-execution:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-org/StegVerse-SDK#94",
+      "StegVerse-org/StegVerse-SDK#99",
+      "StegVerse-Labs/StegCore#162"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json",
+      "workers/cross_framework_current_basis_v04_worker.py",
+      "control/worker-registry.d/cross-framework-current-basis-v04-001.json",
+      "control/process-worker-adapters.d/cross-framework-current-basis-v04-001.json",
+      "control/resident-execution-request.d/cross-framework-current-basis-v04-001.json"
+    ],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": [
+      "AUTHENTIC_CURRENT_BASIS_V04_RUN_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "cross-framework-current-basis-v04-worker + existing sovereign WorkerCoordinator + TV/TVC runtime authority",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  }
 }
