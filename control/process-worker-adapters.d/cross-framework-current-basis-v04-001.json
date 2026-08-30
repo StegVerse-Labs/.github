@@ -1,0 +1,44 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "CROSS-FRAMEWORK-CURRENT-BASIS-V04-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:cross-framework-current-basis-v04-v1",
+      "authority_ref": "handoffs/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json#authority",
+      "capabilities": [
+        "cross_framework_current_basis_v04_execution"
+      ],
+      "command": [
+        "python",
+        "workers/cross_framework_current_basis_v04_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SDK_SOURCE_ROOT",
+        "STEGVERSE_STEGCORE_SOURCE_ROOT",
+        "STEGVERSE_CORE_LITE_SOURCE_ROOT",
+        "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+        "HOME",
+        "USER",
+        "LOGNAME",
+        "SHELL",
+        "PATH",
+        "PYTHONPATH",
+        "LANG",
+        "LC_ALL",
+        "TMPDIR",
+        "XDG_CONFIG_HOME",
+        "XDG_STATE_HOME"
+      ],
+      "notes": [
+        "Independent exact frozen v0.4 evaluation task on the existing sovereign WorkerCoordinator.",
+        "Uses only already-local clean source; no clone/fetch/pull or source mutation.",
+        "The worker does not derive governance semantics itself; the SDK exact harness delegates native derivation to canonical StegCore and execution/custody to the canonical sovereign route.",
+        "GitHub Actions may validate source but are prohibited as runtime authority."
+      ],
+      "timeout_seconds": 960,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
