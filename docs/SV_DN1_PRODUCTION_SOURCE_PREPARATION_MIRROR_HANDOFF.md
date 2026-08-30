@@ -45,6 +45,17 @@ Schema: `stegverse.source-package/v1`
 Version: `1.0.0`
 Identity scheme: `sha256-content-manifest`
 
+Required sovereign component IDs:
+
+```text
+stegverse.sdk
+stegverse.stegcore
+stegverse.core-lite
+stegverse.master-records
+```
+
+Repository names are not component identities.
+
 Each package carries:
 - component_id
 - canonical content-addressed source_identity
