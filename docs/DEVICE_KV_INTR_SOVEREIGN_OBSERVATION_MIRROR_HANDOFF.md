@@ -6,10 +6,12 @@ Updated: 2026-08-30
 goal_id: SHWP-DEVICE-KV-INTR-OBSERVATION-001
 repository: StegVerse-Labs/.github
 issue: #479
-branch: feat/device-kv-intr-observation-479-v2
+source_pr: #499
+source_merge: f5691026575578d70f137b6fc660a051f97097ff
+branch: main
 parent_goal: SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001
 runtime_owner: existing sovereign WorkerCoordinator / resident runtime only
-state: ACTIVE_IMPLEMENTATION
+state: SOURCE_MERGED_VALIDATED_RUNTIME_PENDING
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 heartbeat_grants_execution_authority: false
@@ -34,6 +36,26 @@ KnowledgeVault typed transport fact DEVICE_KV_INTR
 
 The lane must not invent a second endpoint authority, scheduler, runtime owner, transport broker, credential path, or Node identity.
 
+## Current lifecycle standing
+
+The complete source/control implementation was merged through PR #499 at `f5691026575578d70f137b6fc660a051f97097ff` after both exact-head repository validation workflows passed. The superseded stale PR #485 was closed without merge.
+
+This advances only the source lifecycle:
+
+```text
+IMPLEMENTED=true
+VALIDATED=true
+MERGED=true
+DEPLOYED=false
+ACTIVATED=false
+OBSERVED=false
+RECONSTRUCTED=false
+RELEASED=false
+COMPLETE=false
+```
+
+CI and merge evidence do not satisfy the runtime observation predicate.
+
 ## Parent prerequisite
 
 Authentic parent evidence is mandatory:
@@ -44,7 +66,7 @@ state=COMPLETED
 transition_id=RELAY_NODE_KV_CONTINUITY_VERIFIED
 ```
 
-The parent must prove real teardown/recreation and preserved Node-KV state-root continuity. Hosted fixtures, CI, or source claims cannot substitute.
+The parent must prove real teardown/recreation and preserved Node-KV state-root continuity. Hosted fixtures, CI, or source claims cannot substitute. As of this reconciliation, the canonical parent receipt is not present in repository evidence and the parent handoff remains `PENDING_PARENT_AND_MACHINE_EXECUTION`.
 
 ## Runtime design
 
@@ -62,6 +84,7 @@ existing sovereign Node-KV runtime
 -> receiver independently hashes/parses/validates exact bytes
 -> receiver issues canonical DEVICE->KV stegverse.intr.hop_receipt/v1
 -> receiver invokes merged continuity-vault-kit KVInterlockRuntime using that receipt reference
+-> receipt_store return is captured directly as the endpoint receipt reference
 -> receiver constructs canonical KV->DEVICE response transport intent/receipt
 -> send exact response bytes back through TCP
 -> client independently rehashes/revalidates response and receipt chain
@@ -120,6 +143,7 @@ authority_effect=NONE
 ```text
 source implementation != runtime observation
 CI validation != runtime observation
+merge != deployment
 parent Node-KV continuity != DEVICE_KV_INTR observation
 loopback carrier != public HTTPS ingress
 DEVICE_KV_INTR observation != production Interlock global activation
@@ -155,4 +179,15 @@ tests/test_device_kv_intr_observation_worker.py
 
 ## Next executable action
 
-Complete the bounded worker/control surfaces, validate them through repository-owned validation, merge them, then leave runtime standing as `PENDING_PARENT_AND_MACHINE_EXECUTION` until authentic parent Node-KV continuity exists and the existing WorkerCoordinator invokes this task under a fresh fence.
+Do not create another runtime owner or naïve one-shot resident consumer. First satisfy the already-admitted parent chain on the deployment-local sovereign runtime:
+
+```text
+SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001
+-> authentic SOVEREIGN_RELAY_LEASE_OPEN
+-> SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001
+-> authentic RELAY_NODE_KV_CONTINUITY_VERIFIED
+-> SHWP-DEVICE-KV-INTR-OBSERVATION-001
+-> authentic DEVICE_KV_INTR_OBSERVED
+```
+
+When the parent continuity receipt exists, the existing WorkerCoordinator independently admits this HANDOFF_READY task under a fresh fence greater than 21 and invokes `process:device-kv-intr-observation-v1` on the deployment-local sovereign carrier.
