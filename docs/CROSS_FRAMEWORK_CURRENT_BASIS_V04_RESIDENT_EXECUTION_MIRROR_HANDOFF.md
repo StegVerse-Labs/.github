@@ -113,3 +113,89 @@ explicit STEGVERSE_*_SOURCE_ROOT for a component, if present and valid
 This matches the existing production source-preparation architecture. The generic resident dispatcher now forwards the non-secret `STEGVERSE_SOURCE_MATERIALIZATION_ROOT` locator when present. No remote checkout, network fetch, GitHub/provider credential, or new runtime authority is introduced.
 
 This correction removes manual environment wiring as a prerequisite when the canonical local component tree already exists. Authentic resident execution remains separately evidence-bound.
+
+
+## Resident materialization and source-discovery closures — 2026-08-30
+
+Two source/runtime plumbing defects are now closed and merged:
+
+```text
+resident refresh rematerialization:
+  PR #500
+  merge: 0c45dfc7e413c5da8fcc89f33637e1783a6eb558
+  current-basis resident request validation: 33293861330 SUCCESS
+  organization control plane: 33293861332 SUCCESS
+  Heartbeat Worker Project: 33293861363 SUCCESS
+
+canonical local source-root discovery:
+  PR #511
+  merge: 6d03c0d3d41f45ac91b740c091f16b7ddf9097bf
+  current-basis resident request validation: 33294733821 SUCCESS
+  Heartbeat Worker Project: 33294733819 SUCCESS
+  organization control plane: 33294733918 SUCCESS
+```
+
+The consumer is now materialized by the resident source-refresh path and resolves already-local component roots without requiring four manual environment variables.
+
+The public Site projection is also separately complete and anonymously observed at frozen v0.4:
+
+```text
+Site PR #700 merge: 8a13182c7630eab1efa613cde45229b4de27a975
+public verification: run 33294523117 attempt 2 / job 99211964506 PASS
+projection state: FROZEN / execution window OPEN
+authentic execution: NOT_RUN
+results: absent
+```
+
+These closures do not substitute for resident execution.
+
+## Exact canonical source-blob binding — 2026-08-30
+
+Before invoking the SDK harness, the resident consumer now verifies the exact experiment-critical Git blob identities already merged in the canonical component repositories:
+
+```text
+SDK:
+  scripts/run_cross_framework_current_basis_v04.py
+    93a423a76d1662329f0511dd531646c5b21ff55b
+  inspection/examples/cross-framework-current-basis-request.draft.json
+    59d818a15fc7be732c97dae7d2174d8cfe9a7bab
+  stegverse/sovereign_validation_runtime.py
+    6bc0944633b6299c19f065f44dd5999434445dd7
+  stegverse/current_basis.py
+    5971a050d94fc237cad65d23ba5ac873ee6900b4
+
+StegCore:
+  src/stegcore/current_basis.py
+    c56179d1ba92a3f487dd62eddd41b812028c48c3
+  src/stegcore/transaction_lifecycle.py
+    81935669846fedd2867272810b090226b05780ab
+
+Core-Lite:
+  core_lite/transaction_route.py
+    734923a86bfcd4d41d07e0fb8797de50f0fb9408
+
+Master Records:
+  services/manifest_receipt_custody.py
+    26a4c1e082ee91128648b2b9bd13cc32ce915f82
+```
+
+A local source tree that is present but stale now emits `BLOCKED_CANONICAL_SOURCE_IDENTITY_MISMATCH` and records every expected/observed blob identity without attempting the experiment. This prevents a superficially complete but stale local materialization from being mistaken for the frozen v0.4 execution basis.
+
+Current evidence boundary remains:
+
+```text
+resident request source: MERGED
+resident consumer source: MERGED
+resident dispatcher integration: MERGED
+resident source-refresh materialization defect: CLOSED / MERGED / VALIDATED
+canonical local source discovery defect: CLOSED / MERGED / VALIDATED
+exact critical source identity guard: IMPLEMENTED / VALIDATION PENDING
+resident request consumption: NOT OBSERVED
+authentic StegVerse execution: NOT OBSERVED
+S1 observation: NOT OBSERVED
+post-observation transition receipt: NOT OBSERVED
+Master Records custody/replay/reconstruction: NOT OBSERVED
+RUN_COMPLETE.json: NOT OBSERVED
+user action required: false
+second machine required: false
+```

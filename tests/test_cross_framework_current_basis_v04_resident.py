@@ -86,6 +86,55 @@ class CurrentBasisResidentConsumerTests(unittest.TestCase):
             self.assertEqual(missing, [])
             self.assertEqual(roots["STEGVERSE_SDK_SOURCE_ROOT"], explicit.resolve())
 
+
+    def test_exact_source_identity_verifier_accepts_bound_local_blobs(self):
+        original = MOD.EXPECTED_SOURCE_BLOBS
+        try:
+            with tempfile.TemporaryDirectory() as td:
+                base = Path(td)
+                roots = {}
+                expected = {}
+                for idx, key in enumerate(MOD.REQUIRED_ROOT_ENV):
+                    root = base / key.lower()
+                    root.mkdir(parents=True)
+                    rel = f"fixture-{idx}.txt"
+                    raw = f"fixture-{idx}".encode("utf-8")
+                    (root / rel).write_bytes(raw)
+                    roots[key] = root
+                    expected[key] = {rel: MOD.git_blob_sha1(raw)}
+                MOD.EXPECTED_SOURCE_BLOBS = expected
+                observed, mismatches = MOD.verify_exact_source_identity(roots)
+                self.assertEqual(mismatches, [])
+                self.assertEqual(observed, expected)
+        finally:
+            MOD.EXPECTED_SOURCE_BLOBS = original
+
+    def test_exact_source_identity_verifier_reports_drift_without_execution(self):
+        original = MOD.EXPECTED_SOURCE_BLOBS
+        try:
+            with tempfile.TemporaryDirectory() as td:
+                base = Path(td)
+                roots = {}
+                expected = {}
+                for idx, key in enumerate(MOD.REQUIRED_ROOT_ENV):
+                    root = base / key.lower()
+                    root.mkdir(parents=True)
+                    rel = f"fixture-{idx}.txt"
+                    raw = f"fixture-{idx}".encode("utf-8")
+                    (root / rel).write_bytes(raw)
+                    roots[key] = root
+                    expected[key] = {rel: MOD.git_blob_sha1(raw)}
+                first = MOD.REQUIRED_ROOT_ENV[0]
+                rel = next(iter(expected[first]))
+                expected[first][rel] = "0" * 40
+                MOD.EXPECTED_SOURCE_BLOBS = expected
+                observed, mismatches = MOD.verify_exact_source_identity(roots)
+                self.assertEqual(len(mismatches), 1)
+                self.assertEqual(mismatches[0]["root"], first)
+                self.assertNotEqual(observed[first][rel], expected[first][rel])
+        finally:
+            MOD.EXPECTED_SOURCE_BLOBS = original
+
     def test_no_request_is_noop(self):
         with tempfile.TemporaryDirectory() as td:
             result = MOD.consume(ROOT, Path(td), env={"PATH": "/bin", "HOME": td})

@@ -17,6 +17,24 @@ EXPECTED_SHA256 = "07a08496c21b31f70f6f45ef731aa5f6b2522a6fc8f67f2d0a4c2b6fceda7
 EXPECTED_BLOB = "59d818a15fc7be732c97dae7d2174d8cfe9a7bab"
 TASK_ID = "CROSS-FRAMEWORK-CURRENT-BASIS-V04-EXECUTION-001"
 MODE = "CROSS_FRAMEWORK_CURRENT_BASIS_V04"
+EXPECTED_SOURCE_BLOBS = {
+    "STEGVERSE_SDK_SOURCE_ROOT": {
+        "scripts/run_cross_framework_current_basis_v04.py": "93a423a76d1662329f0511dd531646c5b21ff55b",
+        "inspection/examples/cross-framework-current-basis-request.draft.json": "59d818a15fc7be732c97dae7d2174d8cfe9a7bab",
+        "stegverse/sovereign_validation_runtime.py": "6bc0944633b6299c19f065f44dd5999434445dd7",
+        "stegverse/current_basis.py": "5971a050d94fc237cad65d23ba5ac873ee6900b4",
+    },
+    "STEGVERSE_STEGCORE_SOURCE_ROOT": {
+        "src/stegcore/current_basis.py": "c56179d1ba92a3f487dd62eddd41b812028c48c3",
+        "src/stegcore/transaction_lifecycle.py": "81935669846fedd2867272810b090226b05780ab",
+    },
+    "STEGVERSE_CORE_LITE_SOURCE_ROOT": {
+        "core_lite/transaction_route.py": "734923a86bfcd4d41d07e0fb8797de50f0fb9408",
+    },
+    "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": {
+        "services/manifest_receipt_custody.py": "26a4c1e082ee91128648b2b9bd13cc32ce915f82",
+    },
+}
 
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
@@ -58,6 +76,38 @@ def stable_hash(value: Any) -> str:
     return hashlib.sha256(
         json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
     ).hexdigest()
+
+
+def git_blob_sha1(raw: bytes) -> str:
+    return hashlib.sha1(f"blob {len(raw)}\0".encode("utf-8") + raw).hexdigest()
+
+
+def verify_exact_source_identity(roots: Mapping[str, Path]) -> tuple[dict[str, dict[str, str]], list[dict[str, str]]]:
+    observed: dict[str, dict[str, str]] = {}
+    mismatches: list[dict[str, str]] = []
+    for root_key, files in EXPECTED_SOURCE_BLOBS.items():
+        root = roots[root_key]
+        observed[root_key] = {}
+        for rel, expected in files.items():
+            path = root / rel
+            if not path.is_file():
+                mismatches.append({
+                    "root": root_key,
+                    "path": rel,
+                    "expected_git_blob_sha1": expected,
+                    "observed_git_blob_sha1": "MISSING",
+                })
+                continue
+            actual = git_blob_sha1(path.read_bytes())
+            observed[root_key][rel] = actual
+            if actual != expected:
+                mismatches.append({
+                    "root": root_key,
+                    "path": rel,
+                    "expected_git_blob_sha1": expected,
+                    "observed_git_blob_sha1": actual,
+                })
+    return observed, mismatches
 
 
 def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
@@ -190,6 +240,23 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         atomic_json(runtime / CONSUMPTION_REL, receipt)
         return receipt
 
+    observed_source_blobs, source_mismatches = verify_exact_source_identity(roots)
+    if source_mismatches:
+        receipt = {
+            "schema": "stegverse.current-basis-v04.resident-consumption/v1",
+            "state": "BLOCKED_CANONICAL_SOURCE_IDENTITY_MISMATCH",
+            "request_id": request["request_id"],
+            "request_sha256": request_hash,
+            "observed_source_blobs": observed_source_blobs,
+            "source_identity_mismatches": source_mismatches,
+            "runtime_execution_attempted": False,
+            "user_action_required": False,
+            "second_machine_required": False,
+            "authority_effect": "NONE",
+        }
+        atomic_json(runtime / CONSUMPTION_REL, receipt)
+        return receipt
+
     observed_manifest_sha = hashlib.sha256(manifest.read_bytes()).hexdigest()
     if observed_manifest_sha != EXPECTED_SHA256:
         raise RuntimeError("locally materialized frozen manifest identity mismatch")
@@ -277,7 +344,8 @@ def main() -> int:
     print(json.dumps(result, sort_keys=True))
     return 0 if result["state"] in {
         "NO_REQUEST", "ALREADY_CONSUMED", "COMPLETED",
-        "BLOCKED_LOCAL_SOURCE_ROOTS_NOT_OBSERVED", "BLOCKED_CANONICAL_SOURCE_NOT_MATERIALIZED"
+        "BLOCKED_LOCAL_SOURCE_ROOTS_NOT_OBSERVED", "BLOCKED_CANONICAL_SOURCE_NOT_MATERIALIZED",
+        "BLOCKED_CANONICAL_SOURCE_IDENTITY_MISMATCH"
     } else 1
 
 
