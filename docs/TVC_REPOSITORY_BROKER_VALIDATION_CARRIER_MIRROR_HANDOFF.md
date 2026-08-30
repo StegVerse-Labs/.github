@@ -156,7 +156,7 @@ current exact TVC head binding: b5288f9910ada26c6ab2e9bca3f7701afaae2cef
 exact local source retry posture: HANDOFF_READY
 ```
 
-The validation lane is machine-executable whenever a sovereign runtime exposes an exact clean local TVC PR #92 checkout through `STEGVERSE_TVC_ROOT`. The resident request grants no source transport or credential authority. No governed validation receipt has yet been observed.
+The validation lane is machine-executable whenever a sovereign runtime exposes an exact clean local TVC PR #92 checkout through `STEGVERSE_TVC_ROOT` **or** the canonical resident private-source materialization root `/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99`. The latter is produced only by TVC's existing systemd `LoadCredential` private-source-read capability and does not expose the GitHub credential to this worker or consumer. The resident request grants no source transport or credential authority. No governed validation receipt has yet been observed.
 
 ## Continuity and archive semantics
 
