@@ -9,7 +9,10 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SPEC = importlib.util.spec_from_file_location("sv002_public_observe_runtime", ROOT / "scripts/serve_sv002_public_observation_runtime.py")
+SPEC = importlib.util.spec_from_file_location(
+    "sv002_observation_intr_runtime",
+    ROOT / "scripts/serve_sv002_observation_intr_runtime.py",
+)
 mod = importlib.util.module_from_spec(SPEC)
 assert SPEC and SPEC.loader
 SPEC.loader.exec_module(mod)
@@ -40,9 +43,9 @@ def genesis():
 def request(auth="AUTH-1"):
     g = genesis()
     body = {
-        "schema_version": mod.REQUEST_SCHEMA,
-        "request_class": mod.REQUEST_CLASS,
-        "operation": mod.OPERATION,
+        "schema_version": "stegverse.sv002.public_observation.interlock_request.v1",
+        "request_class": "SV002_PUBLIC_OBSERVE",
+        "operation": "READ_OBSERVATION",
         "authority_ref": auth,
         "transport": "InTr",
         "observer": {
@@ -53,7 +56,7 @@ def request(auth="AUTH-1"):
         },
         "bindings": {
             "experiment_id": mod.EXPERIMENT_ID,
-            "observation_projection": mod.PROJECTION_CLASS,
+            "observation_projection": "PUBLIC_READ_ONLY",
         },
         "payload": {},
         "authority_transfer": False,
@@ -104,30 +107,51 @@ def build_hop_receipt(intent, *, hop_index, receipt_id, boundary_identity_ref, r
 
 class TestSV002PublicObservationRuntime(unittest.TestCase):
     def test_valid_node_and_request_binding(self):
-        admitted = mod.validate_request(request(), "AUTH-1")
-        self.assertEqual(admitted["observer_binding"]["node_id"], genesis()["node_id"])
-        self.assertEqual(admitted["bindings"]["experiment_id"], mod.EXPERIMENT_ID)
+        validated = mod._validate_request(request(), "AUTH-1")
+        self.assertEqual(validated["node_id"], genesis()["node_id"])
 
     def test_tampered_genesis_fails_closed(self):
         rq = request()
         rq["observer"]["genesis_receipt"]["node_id"] = "SV-NODE-TAMPERED"
         body = dict(rq); body.pop("request_sha256")
         rq["request_sha256"] = digest(body)
-        with self.assertRaises(mod.SV002ObservationError):
-            mod.validate_request(rq, "AUTH-1")
+        with self.assertRaises(mod.ObservationRuntimeError):
+            mod._validate_request(rq, "AUTH-1")
 
     def test_request_hash_tamper_fails_closed(self):
         rq = request()
         rq["payload"] = {"unexpected": True}
-        with self.assertRaisesRegex(mod.SV002ObservationError, "request_sha256_mismatch"):
-            mod.validate_request(rq, "AUTH-1")
+        with self.assertRaisesRegex(mod.ObservationRuntimeError, "request_sha256_mismatch"):
+            mod._validate_request(rq, "AUTH-1")
 
-    def test_missing_evidence_is_explicit(self):
+    def test_missing_evidence_is_explicit_and_nonfabricated(self):
         with tempfile.TemporaryDirectory() as td:
-            p = mod._projection(Path(td), None)
-            self.assertEqual(p["state"]["execution"]["state"], "NOT_OBSERVED")
+            root = Path(td)
+            micro = root / "micro"
+            runtime = root / "runtime"
+            (micro / "experiments/self-characterization-001").mkdir(parents=True)
+            p = mod.build_projection(runtime, micro)
+            self.assertEqual(p["state"]["worker_receipt"], "NOT_OBSERVED")
+            self.assertEqual(p["state"]["principal_execution"], "NOT_OBSERVED")
             self.assertEqual(p["reconstruction"]["state"], "NOT_OBSERVED")
-            self.assertFalse(any(p["evidence_presence"].values()))
+            self.assertFalse(p["topology"]["observer_direct_relation_to_stegverse_002"])
+
+    def test_admissible_existence_is_available_not_connected_without_interlock_evidence(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            micro = root / "micro"
+            runtime = root / "runtime"
+            prov = micro / "experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json"
+            prov.parent.mkdir(parents=True)
+            prov.write_text(json.dumps({
+                "source_organization": {"organization": "Admissible-Existence", "availability_known": True}
+            }), encoding="utf-8")
+            p = mod.build_projection(runtime, micro)
+            self.assertEqual(
+                p["knowledge"]["admissible_existence"]["availability"],
+                "KNOWN_AVAILABLE_FROM_CONSTRUCTION_PROVENANCE",
+            )
+            self.assertEqual(p["knowledge"]["admissible_existence"]["interlock"], "NOT_CONNECTED")
 
     def test_roundtrip_receipts_and_read_only_projection(self):
         with tempfile.TemporaryDirectory() as td:
@@ -137,26 +161,52 @@ class TestSV002PublicObservationRuntime(unittest.TestCase):
             (stegos / "__init__.py").write_text("", encoding="utf-8")
             (stegos / "universal_intr_transport.py").write_text(FAKE_INTR, encoding="utf-8")
 
-            exp = root / "exp"; exp.mkdir()
-            (exp / "EXPERIMENT_EXECUTION_RECEIPT.json").write_text(json.dumps({"state":"COMPLETED","principal_run_completed":True}), encoding="utf-8")
-            (exp / "SELF_CHARACTERIZATION_FORMAL.json").write_text(json.dumps({"AVAILABLE":True,"USED":False}), encoding="utf-8")
-            (exp / "INTERACTION_RECEIPT_CHAIN.json").write_text(json.dumps({"events":[{"event":"principal_completed"}]}), encoding="utf-8")
+            micro = root / "micro"
+            prov = micro / "experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json"
+            prov.parent.mkdir(parents=True)
+            prov.write_text(json.dumps({
+                "source_organization": {"organization": "Admissible-Existence", "availability_known": True}
+            }), encoding="utf-8")
 
             runtime = root / "runtime"
-            resp = mod.process_request(
+            worker_receipt = runtime / mod.WORKER_RECEIPT_REL
+            worker_receipt.parent.mkdir(parents=True)
+            state_root = root / "state"
+            state_root.mkdir()
+            worker_receipt.write_text(json.dumps({
+                "state": "COMPLETED",
+                "state_root": str(state_root),
+            }), encoding="utf-8")
+            (state_root / "EXPERIMENT_EXECUTION_RECEIPT.json").write_text(
+                json.dumps({"state": "COMPLETED", "principal_run_completed": True}),
+                encoding="utf-8",
+            )
+            (state_root / "SELF_CHARACTERIZATION_FORMAL.json").write_text(
+                json.dumps({"AVAILABLE": True, "USED": False}),
+                encoding="utf-8",
+            )
+            (state_root / "INTERACTION_RECEIPT_CHAIN.json").write_text(
+                json.dumps({"events": [{"event": "principal_completed"}]}),
+                encoding="utf-8",
+            )
+
+            resp = mod.process_observation(
                 request(),
                 authorization_id="AUTH-1",
                 stegos_root=root / "stegos-root",
-                experiment_root=exp,
+                micro_node_root=micro,
                 runtime_root=runtime,
                 boundary_identity_ref="TVC:BOUNDARY:SV002-OBSERVE",
             )
             self.assertEqual(resp["decision"], "ALLOW_READ_ONLY_OBSERVATION")
-            self.assertFalse(resp["projection"]["topology"]["observer_direct_interaction_with_subject"])
+            self.assertFalse(resp["projection"]["topology"]["observer_direct_relation_to_stegverse_002"])
             self.assertEqual(resp["transport_receipts"]["ingress"]["transition_state"], "RECEIVED")
             self.assertEqual(resp["transport_receipts"]["egress"]["transition_state"], "FORWARDED")
-            self.assertEqual(resp["transport_receipts"]["egress"]["prior_receipt_hash"], resp["transport_receipts"]["ingress"]["receipt_hash"])
-            receipts = list((runtime / "receipts/sovereign-network/sv002-public-observation").glob("*.json"))
+            self.assertEqual(
+                resp["transport_receipts"]["egress"]["prior_receipt_hash"],
+                resp["transport_receipts"]["ingress"]["receipt_hash"],
+            )
+            receipts = list((runtime / "receipts/sovereign-network/sv002-public-observation").glob("SV002-OBS-IN-*.json"))
             self.assertEqual(len(receipts), 1)
 
 if __name__ == "__main__":
