@@ -10,7 +10,7 @@
       "Exact TVC PR #92 source head is locally present and clean",
       "tvc.github_repository_operation_broker.verify executes",
       "dispatcher status is ok and nested result.result is PASS",
-      "source_bundle_file_count is exactly 16 and source_bundle_sha256 is retained",
+      "source_bundle_file_count is exactly 16 and source_bundle_sha256 is exactly 0369ed677a014a99a983415a9094e6aaa0c570d163d9818d9a086fee6042dd6a",
       "consumer_credential_used, tvc_github_credential_used, non_tv_tvc_secret_or_token_used, and protected_value_disclosure are all false"
     ],
     "failure_predicates": [
@@ -104,10 +104,11 @@
     ],
     "validated_identity": [
       "exact_tvc_head",
-      "source_bundle_sha256"
+      "exact_source_bundle_sha256"
     ],
     "integration_revalidation_rule": "FULL_REVALIDATION_REQUIRED_IF_SOURCE_BUNDLE_SHA256_CHANGES",
-    "main_drift_rule": "UNCHANGED_SOURCE_BUNDLE_REQUIRES_CURRENT_BASE_COMPATIBILITY_REVIEW_NOT_SOURCE_REVALIDATION"
+    "main_drift_rule": "UNCHANGED_SOURCE_BUNDLE_REQUIRES_CURRENT_BASE_COMPATIBILITY_REVIEW_NOT_SOURCE_REVALIDATION",
+    "expected_source_bundle_sha256": "0369ed677a014a99a983415a9094e6aaa0c570d163d9818d9a086fee6042dd6a"
   },
   "activation": {
     "carrier": "separate_worker_runtime",
@@ -133,7 +134,7 @@
   "completion": {
     "next_authorized_action": "Locate exact locally materialized TVC PR #92 source at b5288f9910ada26c6ab2e9bca3f7701afaae2cef and execute the repository-native validation task with all credential variables removed.",
     "terminal_when": [
-      "A PASS validation receipt records exact TVC source head b5288f9910ada26c6ab2e9bca3f7701afaae2cef, source_bundle_file_count=16, source_bundle_sha256, and sanitized dispatcher result"
+      "A PASS validation receipt records exact TVC source head b5288f9910ada26c6ab2e9bca3f7701afaae2cef, source_bundle_file_count=16, source_bundle_sha256=0369ed677a014a99a983415a9094e6aaa0c570d163d9818d9a086fee6042dd6a, and sanitized dispatcher result"
     ]
   },
   "block": null,
