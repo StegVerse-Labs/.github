@@ -186,8 +186,8 @@
     "master_records_required": false,
     "result_receipt": "~/.stegverse/state/sv-dn1-production-source-prep/receipts/latest.json",
     "source_roots": "~/.stegverse/state/sv-dn1-production-source-prep/observed/source-roots.json",
-    "private_requests": "~/.stegverse/state/sv-dn1-production-source-prep/requests/private-source-requests.json",
-    "repository_persistence_requires_separate_admission": true
+    "repository_persistence_requires_separate_admission": true,
+    "source_package_needs": "~/.stegverse/state/sv-dn1-production-source-prep/requests/source-package-needs.json"
   },
   "completion": {
     "next_authorized_action": "Run SV-DN1-SDK-FIRST-ROUND-001 with the four exact non-secret source roots from this receipt plus the authentic resident/InTr evidence chain.",

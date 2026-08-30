@@ -58,4 +58,12 @@ class SovereignSourcePackageTests(unittest.TestCase):
         self.assertFalse(h["authority"]["github_platform_required"])
         self.assertEqual(h["execution"]["source_identity_scheme"],"sha256-content-manifest")
 
+    def test_cost_and_continuity_have_no_network_transport_metadata(self):
+        root=Path(__file__).resolve().parents[1]
+        cost=json.loads((root/"cost-basis/worker-runtime/sv-dn1-production-source-prep.json").read_text())
+        handoff=json.loads((root/"handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json").read_text())
+        self.assertEqual(cost["cost_estimate"]["network_bytes"],0)
+        self.assertNotIn("private_requests",handoff["continuity"])
+        self.assertTrue(handoff["continuity"]["source_package_needs"].endswith("requests/source-package-needs.json"))
+
 if __name__=="__main__": unittest.main()

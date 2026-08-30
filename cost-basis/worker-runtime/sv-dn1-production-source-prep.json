@@ -12,7 +12,7 @@
     "compute_units": 4,
     "token_units": 0,
     "storage_bytes": 134217728,
-    "network_bytes": 134217728,
+    "network_bytes": 0,
     "operator_seconds": 0,
     "external_cost_usd": 0,
     "latency_ms": null,
@@ -24,9 +24,10 @@
     "workers/sv_dn1_production_source_prep_worker.py"
   ],
   "notes": [
-    "Public SDK/Core-Lite source is anonymous and bounded.",
-    "Private source requests are non-secret spool intents; TVC retains credential authority.",
-    "Task may remain HANDOFF_READY while TVC broker admission/materialization is pending.",
+    "Source preparation itself performs no network acquisition.",
+    "Source is resolved only from an already-local verified root or a local content-addressed StegVerse source package.",
+    "Any package transport occurs outside this worker under a separately admitted transport and is not part of this cost basis.",
+    "GitHub or another external platform is not required by this task.",
     "External cost is zero."
   ]
 }
