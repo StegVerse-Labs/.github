@@ -50,6 +50,7 @@ COPY_FILES = (
     "scripts/materialize_evaluator_intr_route_config.py",
     "scripts/consume_hil_intr_materialization_request.py",
     "scripts/consume_ara_graph_resident_execution_request.py",
+    "scripts/consume_cmc028_resident_execution_request.py",
     "scripts/run_sv_dn1_first_round_chain.py",
     "scripts/consume_sv_dn1_resident_execution_request.py",
     "scripts/consume_tvc_broker_validation_request.py",

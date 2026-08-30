@@ -838,3 +838,29 @@ The live-denominator test derives the worker count from `control/worker-registry
 ### CMC-028 live-denominator correction on PR #412
 
 The exact-head full suite enumerated 56 live unique worker task IDs after CMC-028, not 55. The extra pre-existing current-main task is `SV-DN1-PRODUCTION-SOURCE-PREP-001`, which is `HANDOFF_READY` and unvectorized. Coverage is corrected to 56 registered / 34 indexed / 15 active worker gaps / 29 total active gaps. The dedicated CMC-028 test and all preceding authority, JSON, handoff, and runtime-boundary steps passed; the failed run was aggregate-denominator evidence and did not represent CMC-028 runtime execution.
+
+
+## CMC-028 resident request dispatch wiring — 2026-08-30
+
+PR #412 merged the CMC-028 WorkerCoordinator task but did not place that task in the
+resident-request dispatcher. A sovereign bootstrap could therefore refresh and prime
+the worker registry without ever selecting CMC-028. The bounded successor adds:
+
+```text
+request: control/resident-execution-request.d/cmc028-root-custody-001.json
+consumer: scripts/consume_cmc028_resident_execution_request.py
+target: SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001
+mode: TARGETED_INDEPENDENT_TASK_CONTROL
+request authority effect: NONE_REQUEST_ONLY
+protected material allowed in request: false
+second machine required: false
+```
+
+The request is copied by both native materialization and already-local runtime refresh,
+and is visited independently by `dispatch_resident_execution_requests.py`. Its consumer
+uses exactly-once request-id/content-hash semantics, strips key/recovery/GitHub-token
+environment values, blocks hosted execution, and invokes only the already-admitted task
+through `refresh_and_execute_resident_task.py`. A recorded attempt is not custody proof.
+CMC-028 remains incomplete until the task itself emits authentic resident
+`CUSTODY_RECOVERY_EVIDENCE_VERIFIED` evidence without protected-material read, hash, or
+export and without issuance or signing authority.
