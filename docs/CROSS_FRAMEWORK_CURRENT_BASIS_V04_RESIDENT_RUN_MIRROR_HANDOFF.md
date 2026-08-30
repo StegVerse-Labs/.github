@@ -72,9 +72,10 @@ It must fail closed unless the exact required SDK execution source and StegCore 
 
 ```text
 specialized handoff: CREATED
-worker/handoff/registry/adapter: PENDING
-resident request/consumer/dispatcher wiring: PENDING
-source refresh materialization wiring: PENDING
+worker/handoff/registry/adapter: IMPLEMENTED_ON_BRANCH
+resident request/consumer/dispatcher wiring: IMPLEMENTED_ON_BRANCH
+source refresh materialization wiring: IMPLEMENTED_ON_BRANCH
+focused tests: IMPLEMENTED_ON_BRANCH
 hosted source validation: PENDING
 merge: PENDING
 authentic resident request consumption: NOT OBSERVED
@@ -82,3 +83,25 @@ authentic StegVerse independent run: NOT OBSERVED
 RUN_COMPLETE.json: NOT OBSERVED
 result packet publication: NOT YET ELIGIBLE
 ```
+
+
+## Implemented branch state
+
+```text
+worker: workers/cross_framework_current_basis_v04_worker.py
+executable handoff: handoffs/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json
+registry: control/worker-registry.d/cross-framework-current-basis-v04-001.json
+adapter: control/process-worker-adapters.d/cross-framework-current-basis-v04-001.json
+task vector: control/task-vectors/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json
+resident request: control/resident-execution-request.d/cross-framework-current-basis-v04-001.json
+consumer: scripts/consume_cross_framework_current_basis_v04_request.py
+dispatcher registration: scripts/dispatch_resident_execution_requests.py
+fresh materialization: scripts/install_sovereign_heartbeat_service.py
+native bootstrap required-source registration: scripts/bootstrap_sovereign_runtime.py
+local source refresh carriage: scripts/refresh_sovereign_worker_runtime_source.py
+focused tests:
+  tests/test_cross_framework_current_basis_v04_worker.py
+  tests/test_cross_framework_current_basis_v04_resident_request.py
+```
+
+The worker writes the exact run only beneath resident runtime `receipts/cross-framework-current-basis-v04/`; the canonical source repositories remain read-only. Nonterminal attempts remain retryable. Only a WorkerCoordinator result of `COMPLETED` backed by the exact `RUN_COMPLETE.json` makes the resident request exactly-once terminal.
