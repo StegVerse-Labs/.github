@@ -34,9 +34,11 @@ FORBIDDEN = (
 )
 NONSECRET = (
     "PATH","HOME","LANG","LC_ALL","XDG_STATE_HOME","XDG_CONFIG_HOME",
-    "STEGVERSE_HEARTBEAT_ROOT","STEGVERSE_TVC_ROOT",
+    "STEGVERSE_HEARTBEAT_ROOT","STEGVERSE_TVC_ROOT","STEGVERSE_TVC_CONTROL_ROOT",
 )
 PRIVATE_SOURCE_CANDIDATE = Path("/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99")
+TVC_PROGRESSION_MODULE = "scripts.advance_tvc_pr92_broker_validation"
+TVC_PROGRESSION_SCRIPT = Path("scripts/advance_tvc_pr92_broker_validation.py")
 
 
 def truthy(value: str | None) -> bool:
@@ -125,6 +127,83 @@ def exact_local_tvc_root(values: Mapping[str, str]) -> tuple[Path | None, str | 
     return None, ";".join(observed) if observed else None
 
 
+def local_tvc_control_root(values: Mapping[str, str]) -> tuple[Path | None, str | None]:
+    candidates: list[Path] = []
+    for name in ("STEGVERSE_TVC_CONTROL_ROOT", "STEGVERSE_TVC_ROOT"):
+        raw = str(values.get(name) or "").strip()
+        if raw:
+            candidates.append(Path(raw).expanduser())
+    candidates.extend([
+        Path.home() / ".stegverse" / "repos" / "StegVerse-Labs" / "TVC",
+        Path("/srv/stegverse/repos/StegVerse-Labs/TVC"),
+        Path("/opt/stegverse/repos/StegVerse-Labs/TVC"),
+        Path("/var/lib/stegverse/source/StegVerse-Labs/TVC"),
+    ])
+    seen: set[str] = set()
+    observed: list[str] = []
+    for candidate in candidates:
+        root = candidate.resolve()
+        key = str(root)
+        if key in seen:
+            continue
+        seen.add(key)
+        if not (root / TVC_PROGRESSION_SCRIPT).is_file():
+            observed.append(f"{root}:PROGRESSION_NOT_PRESENT")
+            continue
+        if not (root / "tools" / "task_dispatcher.py").is_file():
+            observed.append(f"{root}:DISPATCHER_NOT_PRESENT")
+            continue
+        return root, f"{root}:PROGRESSION_READY"
+    return None, ";".join(observed) if observed else None
+
+
+def parse_last_json(stdout: str) -> dict[str, Any] | None:
+    for line in reversed([line.strip() for line in stdout.splitlines() if line.strip()]):
+        try:
+            value = json.loads(line)
+        except Exception:
+            continue
+        if isinstance(value, dict):
+            return value
+    return None
+
+
+def run_tvc_private_source_progression(
+    control_root: Path,
+    *,
+    runner=subprocess.run,
+    env: Mapping[str, str],
+) -> dict[str, Any]:
+    command = [
+        sys.executable,
+        "-m",
+        TVC_PROGRESSION_MODULE,
+        "--repo-root",
+        str(control_root),
+    ]
+    completed = runner(
+        command,
+        cwd=control_root,
+        capture_output=True,
+        text=True,
+        check=False,
+        env=dict(env),
+        timeout=900,
+    )
+    result = parse_last_json(completed.stdout)
+    return {
+        "command": command,
+        "returncode": completed.returncode,
+        "result": result,
+        "result_observed": isinstance(result, dict),
+        "credential_value_exposed": False,
+        "consumer_credential_used": False,
+        "consumer_network_source_fetch_performed": False,
+        "tvc_private_source_service_may_perform_provider_read": True,
+        "authority_effect": "EXISTING_TVC_PRIVATE_SOURCE_AUTHORITY_ONLY",
+    }
+
+
 def terminal_validation(runtime: Path) -> bool:
     receipt_path = runtime / VALIDATION_RECEIPT_REL
     if not receipt_path.is_file():
@@ -193,22 +272,46 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     values = dict(os.environ if env is None else env)
     cleaned = clean_env(values)
     tvc_root, observed = exact_local_tvc_root(cleaned)
+    progression: dict[str, Any] | None = None
+    control_observed: str | None = None
     if tvc_root is None:
+        control_root, control_observed = local_tvc_control_root(cleaned)
+        if control_root is not None:
+            progression = run_tvc_private_source_progression(
+                control_root,
+                runner=runner,
+                env=cleaned,
+            )
+            tvc_root, observed = exact_local_tvc_root(cleaned)
+
+    if tvc_root is None:
+        progression_result = progression.get("result") if isinstance(progression, dict) else None
+        progression_state = progression_result.get("state") if isinstance(progression_result, dict) else None
+        hard_failure = bool(
+            isinstance(progression, dict)
+            and progression.get("returncode") not in {0, 2}
+            and progression_state not in {"BLOCKED_CREDENTIAL_NOT_OBSERVED"}
+        )
         receipt = {
             "schema":"stegverse.tvc-broker-validation-request-consumption/v1",
-            "state":"HANDOFF_READY",
+            "state":"BLOCKED" if hard_failure else "HANDOFF_READY",
             "request_id":request["request_id"],
             "request_sha256":request_hash,
             "runtime_execution_attempted":False,
+            "private_source_progression_attempted":progression is not None,
+            "private_source_progression":progression,
             "terminal_validation_observed":False,
             "expected_tvc_head":EXPECTED_HEAD,
             "observed_tvc_root":observed,
-            "machine_observable_release_condition":"STEGVERSE_TVC_ROOT or the canonical TVC private-source materialization root resolves to an exact clean local PR #92 checkout at the pinned head",
+            "observed_tvc_control_root":control_observed,
+            "machine_observable_release_condition":"The canonical TVC private-source progression materializes the exact clean PR #92 checkout at the pinned head, after which the existing validation worker completes",
             "credential_authority":"TV/TVC",
             "github_token_required":False,
             "second_machine_required":False,
-            "network_source_fetch_performed":False,
+            "network_source_fetch_performed_by_consumer":False,
             "request_granted_authority":False,
+            "repository_writeback_authority":False,
+            "merge_authority":False,
             "authority_effect":"NONE_REQUEST_ONLY",
         }
         atomic_json(runtime / CONSUMPTION_REL, receipt)
@@ -238,6 +341,8 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "command":command,
         "execution_returncode":completed.returncode,
         "runtime_execution_attempted":True,
+        "private_source_progression_attempted":progression is not None,
+        "private_source_progression":progression,
         "terminal_validation_observed":terminal,
         "expected_tvc_head":EXPECTED_HEAD,
         "observed_tvc_root":str(tvc_root),
@@ -245,7 +350,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "github_token_required":False,
         "github_token_runtime_authority":"NONE",
         "second_machine_required":False,
-        "network_source_fetch_performed":False,
+        "network_source_fetch_performed_by_consumer":False,
         "request_granted_authority":False,
         "repository_writeback_authority":False,
         "merge_authority":False,
@@ -262,7 +367,7 @@ def main() -> int:
     args=parser.parse_args()
     receipt=consume(args.source_root,args.runtime_root)
     print(json.dumps(receipt,sort_keys=True))
-    return 0 if receipt["state"] in {"NO_REQUEST","ALREADY_CONSUMED","HANDOFF_READY","COMPLETED"} else 1
+    return 0 if receipt["state"] in {"NO_REQUEST","ALREADY_CONSUMED","HANDOFF_READY","BLOCKED","COMPLETED"} else 1
 
 
 if __name__ == "__main__":
