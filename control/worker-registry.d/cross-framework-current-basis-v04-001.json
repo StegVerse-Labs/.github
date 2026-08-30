@@ -1,0 +1,61 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "AUTHENTIC_CURRENT_BASIS_V04_RUN_NOT_YET_OBSERVED"
+      ],
+      "authorized_policy_version": "shwp-cross-framework-current-basis-v04-v0.1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "handoffs/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json",
+        "workers/cross_framework_current_basis_v04_worker.py",
+        "StegVerse-org/StegVerse-SDK#99",
+        "StegVerse-Labs/StegCore#162"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": "StegVerse-org/StegVerse-SDK:cross-framework-current-basis-001",
+      "goal_id": "CROSS-FRAMEWORK-CURRENT-BASIS-V04-EXECUTION-001",
+      "handoff_ref": "handoffs/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json",
+      "heartbeat_timing": null,
+      "heartbeat_dependency": false,
+      "last_checkpoint_ref": "handoffs/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "StegVerse-Labs/.github#468 + frozen v0.4 owner attestation",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      },
+      "source_state_vector_ref": "control/task-vectors/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json"
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:cross-framework-current-basis-v04-v1",
+      "authority_source": "handoffs/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json#authority",
+      "capabilities": [
+        "cross_framework_current_basis_v04_execution"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "cross-framework-current-basis-v04-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}
