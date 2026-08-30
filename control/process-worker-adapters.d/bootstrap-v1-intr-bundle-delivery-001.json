@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:bootstrap-v1-intr-bundle-delivery-v1",
+      "authority_ref": "handoffs/BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "universal_intr_adjacent_hop_transport",
+        "content_addressed_bundle_validation",
+        "resident_receiver_liveness",
+        "evidence_class_preservation"
+      ],
+      "command": ["python", "workers/bootstrap_v1_intr_bundle_delivery_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_BOOTSTRAP_V1_INTR_ROUTE_CONFIG", "HOME", "PATH"],
+      "bound_state_root": "~/.stegverse/state/bootstrap-v1-intr-bundle-delivery",
+      "bound_state_allowed_paths": ["receipts/**"],
+      "timeout_seconds": 120,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Starts or reuses a sovereign Universal InTr receiver using an already-local route configuration and built Bootstrap bundle.",
+        "No source acquisition, GitHub/provider credential, repository mutation, package execution, SDK admission, release activation or publication authority.",
+        "Task remains ACTIVE at receiver readiness and completes only after one authentic browser delivery receipt bundle is observed."
+      ]
+    }
+  ]
+}
