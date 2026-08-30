@@ -90,6 +90,7 @@ CONSUMERS = (
     ("sv_dn1", "scripts/consume_sv_dn1_resident_execution_request.py"),
     ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),
     ("sv002_self_characterization", "scripts/consume_sv002_self_characterization_request.py"),
+    ("cross_framework_current_basis_v04", "scripts/consume_cross_framework_current_basis_v04_request.py"),
 )
 
 
