@@ -12,6 +12,7 @@ on:
       - scripts/bootstrap_sovereign_runtime.py
       - scripts/refresh_and_dispatch_resident_requests.py
       - tests/test_cross_framework_current_basis_v04_resident.py
+      - tests/test_resident_request_dispatcher.py
       - tests/test_sovereign_worker_source_refresh.py
       - tests/test_bootstrap_resident_request_dispatch.py
       - tests/test_portable_resident_request_dispatch.py
@@ -28,6 +29,7 @@ on:
       - scripts/bootstrap_sovereign_runtime.py
       - scripts/refresh_and_dispatch_resident_requests.py
       - tests/test_cross_framework_current_basis_v04_resident.py
+      - tests/test_resident_request_dispatcher.py
       - tests/test_sovereign_worker_source_refresh.py
       - tests/test_bootstrap_resident_request_dispatch.py
       - tests/test_portable_resident_request_dispatch.py
@@ -54,6 +56,7 @@ jobs:
         run: |
           set -eu
           python -m unittest tests.test_cross_framework_current_basis_v04_resident
+          python -m unittest tests.test_resident_request_dispatcher
           python -m unittest tests.test_sovereign_worker_source_refresh
           python -m unittest tests.test_bootstrap_resident_request_dispatch
           python -m unittest tests.test_portable_resident_request_dispatch

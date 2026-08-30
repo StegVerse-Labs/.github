@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Refresh already-local sovereign worker source, then dispatch resident requests once.
+"""Refresh already-local sovereign worker source, then dispatch the frozen-v0.4 request once.
 
 This is a portable, transport-free execution bridge for an already-existing sovereign
-resident. It composes the existing local source refresh and resident-request dispatcher.
-It creates no scheduler, heartbeat, claim, fence, credential path, or runtime authority.
+resident. It composes the existing local source refresh and generic resident-request
+dispatcher, but selects only the cross-framework current-basis v0.4 consumer. It creates
+no scheduler, heartbeat, claim, fence, credential path, or runtime authority.
 """
 from __future__ import annotations
 
@@ -21,6 +22,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 DISPATCHER_REL = Path("scripts/dispatch_resident_execution_requests.py")
 DISPATCH_RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
 RECEIPT_REL = Path("receipts/sovereign-host/resident-refresh-dispatch.latest.json")
+TARGET_CONSUMER = "cross_framework_current_basis_v04"
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
     "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS",
@@ -71,16 +73,10 @@ def clean_exec_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
     values = dict(os.environ if source is None else source)
     hosted = [name for name in HOSTED_ENV if truthy(values.get(name))]
     if hosted:
-        raise RuntimeError(
-            "hosted environment may not refresh+dispatch sovereign resident requests: "
-            + ",".join(sorted(hosted))
-        )
+        raise RuntimeError("hosted environment may not refresh+dispatch sovereign resident requests: " + ",".join(sorted(hosted)))
     credentials = [name for name in FORBIDDEN_CREDENTIAL_ENV if truthy(values.get(name))]
     if credentials:
-        raise RuntimeError(
-            "credential-bearing environment forbidden for portable resident dispatch: "
-            + ",".join(sorted(credentials))
-        )
+        raise RuntimeError("credential-bearing environment forbidden for portable resident dispatch: " + ",".join(sorted(credentials)))
     env = {name: values[name] for name in NONSECRET_FORWARD if values.get(name)}
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
     env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] = "NONE"
@@ -101,13 +97,7 @@ def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
     os.replace(temp, path)
 
 
-def refresh_and_dispatch(
-    source_root: Path,
-    runtime_root: Path,
-    *,
-    runner=subprocess.run,
-    env: Mapping[str, str] | None = None,
-) -> dict[str, Any]:
+def refresh_and_dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     safe = clean_exec_env(env)
@@ -125,62 +115,40 @@ def refresh_and_dispatch(
         raise RuntimeError("resident request dispatcher not materialized after refresh")
 
     completed = runner(
-        [
-            sys.executable,
-            str(dispatcher),
-            "--source-root", str(source),
-            "--runtime-root", str(runtime),
-        ],
-        cwd=runtime,
-        capture_output=True,
-        text=True,
-        check=False,
-        env=safe,
-        timeout=3600,
+        [sys.executable, str(dispatcher), "--source-root", str(source), "--runtime-root", str(runtime), "--only-consumer", TARGET_CONSUMER],
+        cwd=runtime, capture_output=True, text=True, check=False, env=safe, timeout=3600,
     )
     dispatch_path = runtime / DISPATCH_RECEIPT_REL
     dispatch_receipt = load_json(dispatch_path) if dispatch_path.is_file() else None
     dispatch_observed = isinstance(dispatch_receipt, dict)
-    state = (
-        "REFRESH_AND_DISPATCH_COMPLETE"
-        if completed.returncode == 0
-        and dispatch_observed
-        and dispatch_receipt.get("state") == "DISPATCH_COMPLETE"
-        else "REFRESH_COMPLETE_DISPATCH_INCOMPLETE"
+    exact_selection = (
+        dispatch_observed
+        and dispatch_receipt.get("selection_scope") == "EXACT_SELECTOR"
+        and dispatch_receipt.get("selected_consumers") == [TARGET_CONSUMER]
+        and dispatch_receipt.get("consumer_count") == 1
     )
+    state = "REFRESH_AND_DISPATCH_COMPLETE" if completed.returncode == 0 and dispatch_observed and exact_selection and dispatch_receipt.get("state") == "DISPATCH_COMPLETE" else "REFRESH_COMPLETE_DISPATCH_INCOMPLETE"
 
     receipt = {
-        "schema": "stegverse.resident-refresh-dispatch/v1",
-        "state": state,
-        "source_root": str(source),
-        "runtime_root": str(runtime),
-        "refresh_receipt": refresh_receipt,
-        "dispatcher_ref": str(DISPATCHER_REL),
-        "dispatch_returncode": completed.returncode,
-        "dispatch_receipt_observed": dispatch_observed,
-        "dispatch_receipt": dispatch_receipt,
-        "runtime_execution_possible_in_consumers": True,
-        "bridge_grants_execution_authority": False,
-        "bridge_mints_claim_or_fence": False,
-        "source_refresh_is_runtime_execution": False,
-        "network_source_fetch_performed": False,
-        "credential_read_or_acquired": False,
-        "github_token_required": False,
-        "github_token_runtime_authority": "NONE",
-        "credential_authority": "TV/TVC",
-        "third_party_scheduler_required": False,
-        "systemd_required": False,
-        "second_machine_required": False,
-        "authority_effect": "NONE_REFRESH_AND_DISPATCH_BRIDGE_ONLY",
+        "schema": "stegverse.resident-refresh-dispatch/v1", "state": state,
+        "source_root": str(source), "runtime_root": str(runtime), "refresh_receipt": refresh_receipt,
+        "dispatcher_ref": str(DISPATCHER_REL), "target_consumer": TARGET_CONSUMER,
+        "exact_consumer_selection_observed": bool(exact_selection), "unrelated_consumers_dispatched": False,
+        "dispatch_returncode": completed.returncode, "dispatch_receipt_observed": dispatch_observed,
+        "dispatch_receipt": dispatch_receipt, "runtime_execution_possible_in_target_consumer": True,
+        "bridge_grants_execution_authority": False, "bridge_mints_claim_or_fence": False,
+        "source_refresh_is_runtime_execution": False, "network_source_fetch_performed": False,
+        "credential_read_or_acquired": False, "github_token_required": False,
+        "github_token_runtime_authority": "NONE", "credential_authority": "TV/TVC",
+        "third_party_scheduler_required": False, "systemd_required": False,
+        "second_machine_required": False, "authority_effect": "NONE_REFRESH_AND_TARGETED_DISPATCH_BRIDGE_ONLY",
     }
     atomic_json(runtime / RECEIPT_REL, receipt)
     return receipt
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Refresh already-local sovereign worker source and dispatch resident requests once."
-    )
+    parser = argparse.ArgumentParser(description="Refresh already-local sovereign worker source and dispatch only the frozen-v0.4 resident request once.")
     parser.add_argument("--source-root", type=Path, default=REPO_ROOT)
     parser.add_argument("--runtime-root", type=Path, default=default_runtime_root())
     args = parser.parse_args()
