@@ -1,0 +1,16 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "entries": [
+    {
+      "task_id": "SV-DN1-PUBLIC-PROMOTION-001",
+      "temporal_class": "current",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:sv-dn1-public-promotion:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "develops_capability",
+      "result": "REVIEW_REQUIRED",
+      "continuation_owner": "sv-dn1-public-promotion-worker",
+      "rationale": "The worker stages exact authentic ANALYZED SV-DN-1 artifacts into the local public projection only. Source implementation, local projection mutation, and hosted CI do not prove repository persistence, deployment, public HTTPS observation, release, or certification."
+    }
+  ]
+}

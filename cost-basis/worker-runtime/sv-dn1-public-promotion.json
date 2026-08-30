@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "sv_dn1_public_promotion",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 4,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 24,
+    "confidence": "LOW_UNTIL_FIRST_SOVEREIGN_RUN"
+  },
+  "cost_estimate": {
+    "compute_units": 2,
+    "token_units": 0,
+    "storage_bytes": 8388608,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "docs/SV_DN1_PUBLIC_PROMOTION_TASK_MIRROR_HANDOFF.md",
+    "handoffs/SV-DN1-PUBLIC-PROMOTION-001.json",
+    "workers/sv_dn1_public_promotion_worker.py"
+  ],
+  "notes": [
+    "Reads one already-local authentic finalized artifact set and invokes one already-local canonical promoter.",
+    "Mutates only the local demo-suite public projection and bounded promotion receipt.",
+    "No network or credential activity; external cost is zero."
+  ]
+}

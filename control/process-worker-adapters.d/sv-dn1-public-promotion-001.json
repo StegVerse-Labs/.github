@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SV-DN1-PUBLIC-PROMOTION-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:sv-dn1-public-promotion-v1",
+      "authority_ref": "handoffs/SV-DN1-PUBLIC-PROMOTION-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "exact_byte_public_projection",
+        "local_demo_suite_projection_mutation",
+        "evidence_class_preservation"
+      ],
+      "command": ["python", "workers/sv_dn1_public_promotion_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SV_DN1_SDK_FIRST_ROUND_STATE_ROOT",
+        "STEGVERSE_SV_DN1_SOURCE_ROOT",
+        "STEGVERSE_BOUND_STATE_ROOT",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/state/sv-dn1-public-promotion",
+      "bound_state_allowed_paths": ["promoter/**", "receipts/**"],
+      "timeout_seconds": 240,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Consumes only an already-local authentic SDK ANALYZED artifact set and the already-local canonical demo-suite promoter.",
+        "Mutates only the local demo-suite public/sv-dn1 projection; repository persistence and deployment remain separate.",
+        "No network, credentials, SDK execution, semantic rewrite, commit, push, merge, release or certification authority."
+      ]
+    }
+  ]
+}
