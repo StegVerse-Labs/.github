@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "device_kv_intr_observation",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 8,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 512,
+    "confidence": "LOW"
+  },
+  "cost_estimate": {
+    "compute_units": 2,
+    "token_units": 0,
+    "storage_bytes": 2097152,
+    "network_bytes": 65536,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 6
+  },
+  "evidence_refs": [
+    "docs/DEVICE_KV_INTR_SOVEREIGN_OBSERVATION_MIRROR_HANDOFF.md",
+    "workers/device_kv_intr_observation_worker.py",
+    "handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json"
+  ],
+  "notes": [
+    "Estimate is conservative until authentic deployment-local DEVICE_KV_INTR samples exist.",
+    "Network bytes are bounded loopback carrier bytes, not public or provider egress.",
+    "No third-party runtime, GitHub token, NON-TV/TVC credential, provider operation, or external financial cost is admitted."
+  ]
+}
