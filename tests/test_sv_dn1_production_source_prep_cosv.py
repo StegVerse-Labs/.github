@@ -6,10 +6,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TASK_ID = "SV-DN1-PRODUCTION-SOURCE-PREP-001"
-VECTOR = "50000000103000"
+VECTOR = "50000000102000"
 BLOCKERS = {
-    "TVC_REPOSITORY_BROKER_PR_92_GOVERNED_VALIDATION_AND_ADMISSION_PENDING",
-    "PRIVATE_CANONICAL_SOURCE_MATERIALIZATION_RECEIPTS_NOT_YET_OBSERVED",
+    "CONTENT_ADDRESSED_SOURCE_PACKAGES_OR_ALREADY_LOCAL_ROOTS_REQUIRED_FOR_ANY_MISSING_COMPONENT",
     "SV_DN1_PRODUCTION_SOURCE_PREP_RECEIPT_NOT_YET_OBSERVED",
 }
 
@@ -22,12 +21,12 @@ class SVDN1ProductionSourcePrepCOSVTests(unittest.TestCase):
         self.registry = json.loads((ROOT / "control/worker-registry.d/sv-dn1-production-source-prep-001.json").read_text(encoding="utf-8"))
         self.handoff = json.loads((ROOT / "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json").read_text(encoding="utf-8"))
 
-    def test_vector_recomputes_from_three_exact_blockers(self):
+    def test_vector_recomputes_from_two_exact_blockers(self):
         self.assertEqual(self.vector["identity"], f"StegVerse-Labs/.github:task:{TASK_ID}")
         self.assertEqual(self.vector["vector"], VECTOR)
         self.assertEqual(self.vector["authority_effect"], "NONE")
         metrics = self.vector["exact_metrics"]
-        self.assertEqual(metrics["blocker_count"], 3)
+        self.assertEqual(metrics["blocker_count"], 2)
         self.assertFalse(metrics["evidence_complete"])
         self.assertFalse(metrics["activated"])
         self.assertFalse(metrics["propagated"])
@@ -40,8 +39,9 @@ class SVDN1ProductionSourcePrepCOSVTests(unittest.TestCase):
         self.assertEqual(set(self.handoff["admissible_existence"]["blockers"]), BLOCKERS)
         projection = self.coverage["sv_dn1_production_source_prep_projection"]
         self.assertEqual(set(projection["blockers"]), BLOCKERS)
-        self.assertEqual(projection["tvc_broker_pr"], 92)
-        self.assertEqual(projection["tvc_broker_head"], "b5288f9910ada26c6ab2e9bca3f7701afaae2cef")
+        self.assertEqual(projection["source_identity_scheme"], "sha256-content-manifest")
+        self.assertFalse(projection["github_platform_required"])
+        self.assertFalse(projection["network_source_fetch_allowed"])
 
     def test_index_and_coverage_move_exactly_one_existing_task(self):
         rows = [row for row in self.index["tasks"] if row.get("task_id") == TASK_ID]
@@ -68,7 +68,7 @@ class SVDN1ProductionSourcePrepCOSVTests(unittest.TestCase):
         projection = self.coverage["sv_dn1_production_source_prep_projection"]
         self.assertFalse(projection["activation_proof_observed"])
         self.assertFalse(projection["evidence_complete"])
-        self.assertFalse(projection["private_materialization_receipts_observed"])
+        self.assertFalse(projection["content_addressed_source_packages_observed"])
         self.assertFalse(projection["production_source_prep_receipt_observed"])
         self.assertEqual(projection["credential_authority"], "TV/TVC")
         self.assertEqual(projection["github_token_runtime_authority"], "NONE")

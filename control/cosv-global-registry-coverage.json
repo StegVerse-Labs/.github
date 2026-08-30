@@ -202,7 +202,7 @@
     },
     {
       "task_id": "SV-DN1-PRODUCTION-SOURCE-PREP-001",
-      "vector": "50000000103000"
+      "vector": "50000000102000"
     },
     {
       "task_id": "SHWP-EVALUATOR-INTR-READ-RUNTIME-001",
@@ -401,20 +401,16 @@
   },
   "sv_dn1_production_source_prep_projection": {
     "task_id": "SV-DN1-PRODUCTION-SOURCE-PREP-001",
-    "vector": "50000000103000",
+    "vector": "50000000102000",
     "registry_ref": "control/worker-registry.d/sv-dn1-production-source-prep-001.json",
     "source_state_vector_ref": "control/task-vectors/SV-DN1-PRODUCTION-SOURCE-PREP-001.json",
     "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
-    "tvc_broker_pr": 92,
-    "tvc_broker_head": "b5288f9910ada26c6ab2e9bca3f7701afaae2cef",
     "blockers": [
-      "TVC_REPOSITORY_BROKER_PR_92_GOVERNED_VALIDATION_AND_ADMISSION_PENDING",
-      "PRIVATE_CANONICAL_SOURCE_MATERIALIZATION_RECEIPTS_NOT_YET_OBSERVED",
+      "CONTENT_ADDRESSED_SOURCE_PACKAGES_OR_ALREADY_LOCAL_ROOTS_REQUIRED_FOR_ANY_MISSING_COMPONENT",
       "SV_DN1_PRODUCTION_SOURCE_PREP_RECEIPT_NOT_YET_OBSERVED"
     ],
     "activation_proof_observed": false,
     "evidence_complete": false,
-    "private_materialization_receipts_observed": false,
     "production_source_prep_receipt_observed": false,
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": "NONE",
@@ -422,7 +418,11 @@
     "sdk_admission_authority": false,
     "governance_decision_authority": false,
     "publication_authority": false,
-    "authority_effect": "NONE"
+    "authority_effect": "NONE",
+    "source_identity_scheme": "sha256-content-manifest",
+    "github_platform_required": false,
+    "network_source_fetch_allowed": false,
+    "content_addressed_source_packages_observed": false
   },
   "evaluator_intr_read_runtime_projection": {
     "task_id": "SHWP-EVALUATOR-INTR-READ-RUNTIME-001",

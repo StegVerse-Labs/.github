@@ -1,62 +1,39 @@
 # SV-DN1 Production Source Prep COSV Mirror Handoff
 
-Status: SOURCE_PROJECTION_MERGED_VALIDATED / RUNTIME_EVIDENCE_PENDING
+Status: SOURCE_PROJECTION_RECONCILED / RUNTIME_EVIDENCE_PENDING
 Repository: `StegVerse-Labs/.github`
-Issue: #427
-Branch: `feature/sv-dn1-source-prep-cosv-427`
 Updated: 2026-08-29
 Authority effect: NONE
 
 ## Purpose
 
-Project the already-merged `SV-DN1-PRODUCTION-SOURCE-PREP-001` worker into canonical task.v1 COSV control while preserving the distinction between source readiness and authentic production-source runtime completion.
+Project `SV-DN1-PRODUCTION-SOURCE-PREP-001` into canonical task.v1 COSV after removal of all platform-specific source acquisition dependencies.
 
-## Canonical source
+## Canonical blocker set
 
-Primary owner handoff: `docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md`.
-
-Current live TVC broker prerequisite is PR #92, open/draft at head `b5288f9910ada26c6ab2e9bca3f7701afaae2cef`. Hosted/source state does not satisfy governed resident validation or broker admission.
-
-## Required blocker reconciliation
-
-Canonical blocker set for this projection:
-
-- `TVC_REPOSITORY_BROKER_PR_92_GOVERNED_VALIDATION_AND_ADMISSION_PENDING`
-- `PRIVATE_CANONICAL_SOURCE_MATERIALIZATION_RECEIPTS_NOT_YET_OBSERVED`
+- `CONTENT_ADDRESSED_SOURCE_PACKAGES_OR_ALREADY_LOCAL_ROOTS_REQUIRED_FOR_ANY_MISSING_COMPONENT`
 - `SV_DN1_PRODUCTION_SOURCE_PREP_RECEIPT_NOT_YET_OBSERVED`
 
-The worker registry was reconciled during #427 so its three-blocker set now matches the executable handoff and canonical projection.
+The former TVC/GitHub repository-broker validation blocker and private-materialization-receipt blocker are no longer prerequisites to this task.
 
 ## Expected vector
 
-Expected task.v1 vector: `50000000103000`.
+`50000000102000`
 
-The task is machine-owned, canonical-owner-installed, not archive-ready, has three blockers, and is not evidence-complete, activated, or propagated.
+The task remains machine-owned and not evidence-complete or activated. Blocker count falls from three to two because platform-specific source transport was removed.
 
-## Required files
+## Projection invariants
 
-- `control/task-vectors/SV-DN1-PRODUCTION-SOURCE-PREP-001.json`
-- `control/task-vector-index.json`
-- `control/cosv-global-registry-coverage.json`
-- reconciled `control/worker-registry.d/sv-dn1-production-source-prep-001.json`
-- deterministic vector/index/coverage tests and static checks
+```text
+source_identity_scheme: sha256-content-manifest
+github_platform_required: false
+network_source_fetch_allowed: false
+credential_authority: TV/TVC
+repository_writeback_authority: false
+sdk_admission_authority: false
+governance_decision_authority: false
+publication_authority: false
+authority_effect: NONE
+```
 
-## Completion gates
-
-Reconcile blocker/source parity, install exactly one canonical task vector, move the task from active-unvectorized to indexed without changing the worker denominator, preserve TV/TVC-only credential authority and zero repository/SDK/governance/publication authority, pass exact-head validation, merge, and reconcile this handoff.
-
-Source/COSV completion must not claim TVC broker admission, private source receipt observation, production-source-prep runtime completion, SDK execution, or publication.
-
-## Current implementation state
-
-The projection source is installed on this branch. The canonical source-preparation handoff has been reconciled to the live TVC PR #92 head `b5288f9910ada26c6ab2e9bca3f7701afaae2cef`; registry blocker parity now matches the executable handoff; task vector `50000000103000`, index/coverage projection, deterministic COSV tests, and a static checker are installed.
-
-The worker denominator remains 58. This projection moves one existing task from active-unvectorized to indexed: 37 indexed, 14 active-unvectorized, 6 completed historical, 1 superseded historical.
-
-Exact-head validation passed on `81fcabb75b9e2b52e0e1446e1a467c7e0b651e4f`:
-- organization-control run `33274348556`: SUCCESS;
-- Heartbeat Worker run `33274348555`: SUCCESS.
-
-PR #429 merged as `d7e4b77ddf7d220f72f90c18d91922fec134b826`.
-
-The #427 source/COSV projection goal is complete. Runtime completion remains open on the same three authentic blockers; no broker admission, private materialization, production-source-prep completion, SDK execution, or publication is inferred.
+Runtime completion requires the four source identities and the authentic production-source-preparation receipt. No source package, root, SDK execution, activation, or publication is inferred from this COSV reconciliation.

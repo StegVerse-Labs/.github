@@ -4,34 +4,31 @@
   "state": "HANDOFF_READY_MACHINE_OWNED",
   "goal": {
     "goal_id": "SV-DN1-PRODUCTION-SOURCE-PREPARATION-001",
-    "objective": "Prepare exact canonical local SDK, StegCore, Core-Lite, and Master Records source roots for the first SV-DN-1 production round using anonymous public acquisition and the existing TV/TVC repository-operation spool for private source.",
+    "objective": "Prepare the canonical local SDK, StegCore, Core-Lite, and Master Records source roots for the first SV-DN-1 production round exclusively from already-local source or transport-neutral content-addressed StegVerse source packages.",
     "success_predicates": [
-      "public SDK source is materialized at exact pinned commit and anchor blobs verify",
-      "public Core-Lite source is materialized at exact pinned commit and anchor blob verifies",
-      "private StegCore materialization receipt binds exact pinned commit and anchor blob verifies",
-      "private Master Records materialization receipt binds exact pinned commit and anchor blob verifies",
-      "all four local source roots are present",
+      "all four source roots are locally present and migration anchors verify",
+      "all four source roots have canonical sha256-content-manifest source identities",
+      "no network source fetch occurs",
+      "no specific external platform is required",
       "consumer credential is never present",
       "github_token_used=false",
       "repository_writeback_performed=false"
     ],
     "failure_predicates": [
-      "public archive acquisition uses credentials or leaves admitted hosts",
-      "public archive path extraction is unsafe",
-      "public or private runtime anchor hash mismatches",
-      "private materialization receipt claims wrong repository or commit",
-      "private receipt exposes credential value or non-TV/TVC secret/token",
-      "TVC broker is bypassed for private repository source",
+      "runtime attempts HTTP, GitHub, repository-broker, or platform-specific source acquisition",
+      "source-package file or manifest hash mismatches",
+      "source package path traversal or unsafe materialization is attempted",
+      "migration anchor mismatches",
       "hosted execution is treated as sovereign runtime",
       "repository writeback is attempted"
     ],
     "authority_ceiling": [
       "bounded_process_execution",
-      "anonymous_public_source_acquisition",
-      "tvc_spool_request_emission",
       "local_source_identity_validation",
+      "content_addressed_source_package_materialization",
       "evidence_class_preservation",
-      "no private credential authority",
+      "no network source acquisition authority",
+      "no credential authority",
       "no repository writeback authority",
       "no SDK/governance/publication authority"
     ],
@@ -44,8 +41,7 @@
     "source_refs": [
       "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md",
       "handoffs/SV-DN1-INTR-RUNTIME-001.json",
-      "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md",
-      "StegVerse-Labs/TVC#92"
+      "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md"
     ],
     "canonical_owner_ref": "StegVerse-org/stegverse-demo-suite:docs/SV_DN1_DOUBLE_INTERLOCK_MIRROR_HANDOFF.md",
     "canonical_lineage_key": "sv-dn1:production-source-preparation",
@@ -57,7 +53,7 @@
     "manual_allowed_role": "evidence review only",
     "priority": "release",
     "parent_task_id": "SV-DN1-INTR-RUNTIME-001",
-    "derivation_reason": "The canonical SDK first-round worker requires four exact local production source roots. Public roots can be acquired anonymously; private roots must use the existing TV/TVC repository broker. This task closes that prerequisite without creating a second broker or credential path.",
+    "derivation_reason": "The canonical SDK first-round worker requires four local production source roots. This task now resolves every component uniformly from already-local verified source or a transport-neutral content-addressed StegVerse source package; external repository platforms are optional provenance only.",
     "derivation_depth": 2,
     "source_handoff_ref": "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md",
     "dependencies": [
@@ -71,30 +67,32 @@
     }
   },
   "authority": {
-    "authority_source": "canonical SV-DN-1 source-root requirement + existing TVC repository-operation broker policy + sovereign WorkerCoordinator",
+    "authority_source": "canonical SV-DN-1 source-root requirement + StegVerse content-addressed source-package contract + sovereign WorkerCoordinator",
     "heartbeat_grants_execution_authority": false,
-    "policy_version": "sv-dn1-production-source-prep-v1",
+    "policy_version": "sv-dn1-production-source-prep-v2",
     "credential_authority": "TV/TVC",
     "github_token_required": false,
     "github_token_runtime_authority": "NONE",
     "non_tv_tvc_secret_or_token_allowed": false,
     "repository_writeback_authority": false,
     "provider_credential_authority": false,
-    "anonymous_public_source_acquisition_authority": true,
-    "tvc_spool_request_emission_authority": true,
+    "anonymous_public_source_acquisition_authority": false,
+    "tvc_spool_request_emission_authority": false,
     "private_repository_transport_authority": false,
     "sdk_admission_authority": false,
     "governance_decision_authority": false,
     "publication_authority": false,
     "certification_authority": false,
-    "execution_authority_created": false
+    "execution_authority_created": false,
+    "github_platform_required": false,
+    "network_source_acquisition_authority": false
   },
   "execution": {
     "required_capabilities": [
       "bounded_process_execution",
-      "public_source_acquisition",
-      "tvc_repository_spool_request_emission",
+      "content_addressed_source_package_materialization",
       "exact_source_materialization",
+      "local_source_identity_validation",
       "evidence_class_preservation"
     ],
     "worker": "workers/sv_dn1_production_source_prep_worker.py",
@@ -115,47 +113,59 @@
       "receipts/**"
     ],
     "source_materialization_root": "/var/lib/stegverse/source",
-    "tvc_spool_root": "~/.stegverse/transport/formalism-tvc-repository",
+    "tvc_spool_root": null,
     "remote_checkout_allowed": false,
     "git_client_required": false,
     "public_network_access": {
-      "enabled": true,
-      "methods": [
-        "GET"
-      ],
-      "allowed_hosts": [
-        "github.com",
-        "codeload.github.com"
-      ],
+      "enabled": false,
+      "methods": [],
+      "allowed_hosts": [],
       "authenticated": false,
       "credential_forwarding": false
-    }
+    },
+    "source_package_root": "~/.stegverse/packages/source/v1",
+    "source_identity_scheme": "sha256-content-manifest"
   },
   "input_contract": {
-    "pinned_commits": {
-      "StegVerse-org/StegVerse-SDK": "4461a1edf83549c51189ca4217dd75752caf604e",
-      "Data-Continuation/core-lite": "284ddc21a352ee9c7decdd40dd499b7286710bc8",
-      "StegVerse-Labs/StegCore": "eb2ef110d09328aa90bf1ed91c18b47a3ba32a71",
-      "master-records/orchestration": "baf9272f89ebe515fc4c2413b5d951d28f1e4485"
+    "source_identity_scheme": "sha256-content-manifest",
+    "source_package_schema": "stegverse.source-package/v1",
+    "source_package_version": "1.0.0",
+    "required_components": [
+      "stegverse.sdk",
+      "stegverse.stegcore",
+      "stegverse.core-lite",
+      "stegverse.master-records"
+    ],
+    "migration_legacy_coordinates": {
+      "stegverse.sdk": {
+        "kind": "git",
+        "repository": "StegVerse-org/StegVerse-SDK",
+        "commit": "4461a1edf83549c51189ca4217dd75752caf604e"
+      },
+      "stegverse.core-lite": {
+        "kind": "git",
+        "repository": "Data-Continuation/core-lite",
+        "commit": "284ddc21a352ee9c7decdd40dd499b7286710bc8"
+      },
+      "stegverse.stegcore": {
+        "kind": "git",
+        "repository": "StegVerse-Labs/StegCore",
+        "commit": "eb2ef110d09328aa90bf1ed91c18b47a3ba32a71"
+      },
+      "stegverse.master-records": {
+        "kind": "git",
+        "repository": "master-records/orchestration",
+        "commit": "baf9272f89ebe515fc4c2413b5d951d28f1e4485"
+      }
     },
-    "required_anchor_blobs": {
+    "required_migration_anchor_blobs": {
       "StegVerse-org/StegVerse-SDK:stegverse/governance_ingress_runtime.py": "62c5ae4799ae018f6b100766215c3c68078c5b2e",
       "StegVerse-org/StegVerse-SDK:stegverse/sovereign_validation_runtime.py": "814d4cb607cc2cb4c7a605474fe845e13540898d",
       "StegVerse-Labs/StegCore:src/stegcore/transaction_lifecycle.py": "81935669846fedd2867272810b090226b05780ab",
       "Data-Continuation/core-lite:core_lite/transaction_route.py": "734923a86bfcd4d41d07e0fb8797de50f0fb9408",
       "master-records/orchestration:services/manifest_receipt_custody.py": "26a4c1e082ee91128648b2b9bd13cc32ce915f82"
     },
-    "public_repositories": [
-      "StegVerse-org/StegVerse-SDK",
-      "Data-Continuation/core-lite"
-    ],
-    "private_repositories": [
-      "StegVerse-Labs/StegCore",
-      "master-records/orchestration"
-    ],
-    "tvc_broker_task": "TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001",
-    "tvc_broker_pr": 92,
-    "tvc_operation_class": "MATERIALIZE_SOURCE_ARCHIVE",
+    "external_platform_locator_required": false,
     "credential_authority": "TV/TVC"
   },
   "activation": {
@@ -183,14 +193,15 @@
     "next_authorized_action": "Run SV-DN1-SDK-FIRST-ROUND-001 with the four exact non-secret source roots from this receipt plus the authentic resident/InTr evidence chain.",
     "terminal_when": [
       "SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE",
-      "public_source_roots_verified=true",
-      "private_source_roots_verified=true",
-      "runtime_anchor_blobs_verified=true",
+      "all four source_identities use sha256-content-manifest",
+      "migration_anchors_verified=true",
+      "network_source_fetch_performed=false",
+      "github_platform_required=false",
       "credential_used=false",
       "github_token_used=false",
       "repository_writeback_performed=false"
     ],
-    "release_condition": "All exact local canonical production source roots required by the SDK first-round worker are present and anchor-verified, with private source transported only through sanitized TV/TVC broker receipts."
+    "release_condition": "All four canonical source roots are present with content-addressed StegVerse source identities and migration anchors verified; source transport is platform-neutral and no network/platform dependency is required."
   },
   "admissible_existence": {
     "capability_id": "stegverse:capability:sv-dn1-production-source-preparation:v1",
@@ -209,8 +220,7 @@
     ],
     "activation_proof_ref": null,
     "blockers": [
-      "TVC_REPOSITORY_BROKER_PR_92_GOVERNED_VALIDATION_AND_ADMISSION_PENDING",
-      "PRIVATE_CANONICAL_SOURCE_MATERIALIZATION_RECEIPTS_NOT_YET_OBSERVED",
+      "CONTENT_ADDRESSED_SOURCE_PACKAGES_OR_ALREADY_LOCAL_ROOTS_REQUIRED_FOR_ANY_MISSING_COMPONENT",
       "SV_DN1_PRODUCTION_SOURCE_PREP_RECEIPT_NOT_YET_OBSERVED"
     ],
     "continuation_owner": "sv-dn1-production-source-prep-worker",
