@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "BOOTSTRAP-V1-SOURCE-IDENTITY-FREEZE-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:bootstrap-v1-source-identity-freeze-v1",
+      "authority_ref": "handoffs/BOOTSTRAP-V1-SOURCE-IDENTITY-FREEZE-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "content_addressed_identity_validation",
+        "local_catalog_freeze",
+        "evidence_class_preservation"
+      ],
+      "command": [
+        "python",
+        "workers/bootstrap_v1_source_identity_freeze_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT",
+        "STEGVERSE_BOUND_STATE_ROOT",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/state/bootstrap-v1-source-identity-freeze",
+      "bound_state_allowed_paths": [
+        "catalog/**",
+        "receipts/**"
+      ],
+      "timeout_seconds": 60,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Consumes only the completed source-prep v2 receipt; performs no network or source acquisition.",
+        "Freezes exact sha256-content-manifest identities idempotently and fails closed on catalog drift.",
+        "Catalog integrity grants no package execution, SDK admission, repository, publication or certification authority."
+      ]
+    }
+  ]
+}

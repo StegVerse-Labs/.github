@@ -1,0 +1,198 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-BOOTSTRAP-V1-SOURCE-IDENTITY-FREEZE-001",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "BOOTSTRAP-V1-SOURCE-IDENTITY-FREEZE-001",
+    "objective": "Freeze the first canonical Bootstrap v1 source catalog from one authentic completed platform-independent production-source-prep v2 receipt without inventing or resolving source identities elsewhere.",
+    "success_predicates": [
+      "source-prep receipt is COMPLETE with transition SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE",
+      "source_identity_scheme is sha256-content-manifest",
+      "exactly four sovereign component identities are present and valid sha256 URIs",
+      "network_source_fetch_performed=false and github_platform_required=false",
+      "frozen catalog deterministically binds the upstream receipt digest",
+      "existing frozen catalog either matches exactly or execution fails closed"
+    ],
+    "failure_predicates": [
+      "source-prep receipt is absent or incomplete",
+      "component set is incomplete or contains unexpected component IDs",
+      "source identity is malformed",
+      "source-prep receipt indicates network/platform dependency",
+      "existing frozen catalog conflicts with observed identities",
+      "repository writeback or network access is attempted"
+    ],
+    "authority_ceiling": [
+      "bounded_process_execution",
+      "content_addressed_identity_validation",
+      "local_catalog_freeze",
+      "evidence_class_preservation",
+      "no source transport authority",
+      "no package execution authority",
+      "no SDK admission authority",
+      "no repository writeback authority",
+      "no publication authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "BOOTSTRAP-V1-SOURCE-IDENTITY-FREEZE-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "docs/BOOTSTRAP_V1_SOURCE_IDENTITY_FREEZE_MIRROR_HANDOFF.md",
+      "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json",
+      "schemas/source-package-v1.schema.json"
+    ],
+    "canonical_owner_ref": "docs/BOOTSTRAP_V1_SOURCE_IDENTITY_FREEZE_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "bootstrap-v1:source-identity-freeze",
+    "worker_registry_ref": "control/worker-registry.d/bootstrap-v1-source-identity-freeze-001.json",
+    "worker_id": "bootstrap-v1-source-identity-freeze-worker",
+    "adapter_ref": "process:bootstrap-v1-source-identity-freeze-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "evidence review only",
+    "priority": "release",
+    "parent_task_id": null,
+    "derivation_reason": "A distributable Bootstrap v1 needs stable platform-independent source coordinates. This independent release-preparation task depends on the source-prep v2 receipt as evidence but does not inherit SV-DN-1 semantic lineage or authority.",
+    "derivation_depth": 0,
+    "source_handoff_ref": "docs/BOOTSTRAP_V1_SOURCE_IDENTITY_FREEZE_MIRROR_HANDOFF.md",
+    "dependencies": [
+      "SV-DN1-PRODUCTION-SOURCE-PREP-001"
+    ],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
+    "upstream_runtime_dependency": {
+      "task_id": "SV-DN1-PRODUCTION-SOURCE-PREP-001",
+      "terminal_state_required": "COMPLETED",
+      "terminal_transition_required": "SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE"
+    }
+  },
+  "authority": {
+    "authority_source": "docs/BOOTSTRAP_V1_SOURCE_IDENTITY_FREEZE_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "bootstrap-v1-source-identity-freeze-v1",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "github_platform_required": false,
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "network_access_authority": false,
+    "repository_writeback_authority": false,
+    "package_execution_authority": false,
+    "sdk_admission_authority": false,
+    "governance_decision_authority": false,
+    "publication_authority": false,
+    "certification_authority": false,
+    "execution_authority_created": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "content_addressed_identity_validation",
+      "local_catalog_freeze",
+      "evidence_class_preservation"
+    ],
+    "worker": "workers/bootstrap_v1_source_identity_freeze_worker.py",
+    "allowed_paths": [
+      "receipts/bootstrap-v1-source-identity-freeze/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 4,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 16,
+    "rate_class": "bootstrap_v1_source_identity_freeze",
+    "hosted_execution_allowed": false,
+    "bound_state_root": "~/.stegverse/state/bootstrap-v1-source-identity-freeze",
+    "bound_state_allowed_paths": [
+      "catalog/**",
+      "receipts/**"
+    ],
+    "required_local_locators": [
+      "STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT"
+    ],
+    "public_network_access": {
+      "enabled": false,
+      "methods": [],
+      "allowed_hosts": [],
+      "authenticated": false,
+      "credential_forwarding": false
+    }
+  },
+  "input_contract": {
+    "upstream_receipt_schema": "stegverse.sv-dn1.production-source-prep-receipt/v2",
+    "upstream_transition": "SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE",
+    "source_identity_scheme": "sha256-content-manifest",
+    "required_components": [
+      "stegverse.sdk",
+      "stegverse.stegcore",
+      "stegverse.core-lite",
+      "stegverse.master-records"
+    ],
+    "catalog_schema": "stegverse.bootstrap.source-catalog/v1",
+    "catalog_version": "1.0.0",
+    "source_package_schema": "stegverse.source-package/v1",
+    "source_package_version": "1.0.0",
+    "github_platform_required": false
+  },
+  "activation": {
+    "carrier": "independent_task_control",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "docs/BOOTSTRAP_V1_SOURCE_IDENTITY_FREEZE_MIRROR_HANDOFF.md",
+    "recheck_trigger": "each admitted assignment opportunity after production source preparation completes until Bootstrap v1 source catalog is frozen",
+    "checkout_policy": "fenced_atomic_checkout",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+  },
+  "continuity": {
+    "master_records_required": false,
+    "result_receipt": "~/.stegverse/state/bootstrap-v1-source-identity-freeze/receipts/latest.json",
+    "source_catalog": "~/.stegverse/state/bootstrap-v1-source-identity-freeze/catalog/bootstrap-v1-source-catalog.json",
+    "repository_persistence_requires_separate_admission": true
+  },
+  "completion": {
+    "next_authorized_action": "Use the frozen content-addressed source catalog as the Bootstrap v1 source-coordinate input for release/freeze validation; do not infer package execution or publication authority.",
+    "terminal_when": [
+      "BOOTSTRAP_V1_SOURCE_IDENTITIES_FROZEN",
+      "catalog_schema=stegverse.bootstrap.source-catalog/v1",
+      "catalog_version=1.0.0",
+      "component_count=4",
+      "source_identity_scheme=sha256-content-manifest",
+      "github_platform_required=false",
+      "network_access_performed=false",
+      "repository_writeback_performed=false"
+    ],
+    "release_condition": "One authentic completed source-prep v2 receipt is deterministically frozen into the four-component Bootstrap v1 content-addressed source catalog without platform or transport dependency."
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:bootstrap-v1-source-identity-freeze:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "docs/BOOTSTRAP_V1_SOURCE_IDENTITY_FREEZE_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/BOOTSTRAP-V1-SOURCE-IDENTITY-FREEZE-001.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/bootstrap_v1_source_identity_freeze_worker.py",
+      "control/process-worker-adapters.d/bootstrap-v1-source-identity-freeze-001.json",
+      "control/worker-registry.d/bootstrap-v1-source-identity-freeze-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "AUTHENTIC_SOURCE_PREP_V2_RECEIPT_NOT_YET_OBSERVED",
+      "BOOTSTRAP_V1_SOURCE_CATALOG_NOT_YET_FROZEN"
+    ],
+    "continuation_owner": "bootstrap-v1-source-identity-freeze-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "develops_capability",
+    "target_phase": "ACTIVATED"
+  }
+}

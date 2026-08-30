@@ -1,0 +1,16 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "entries": [
+    {
+      "task_id": "BOOTSTRAP-V1-SOURCE-IDENTITY-FREEZE-001",
+      "temporal_class": "current",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:bootstrap-v1-source-identity-freeze:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "develops_capability",
+      "result": "REVIEW_REQUIRED",
+      "continuation_owner": "bootstrap-v1-source-identity-freeze-worker",
+      "rationale": "The worker establishes the bounded capability to freeze an already-observed four-component content-addressed source identity set. Source availability, package integrity, and the worker's existence do not imply activation; authentic source-prep evidence and a frozen catalog remain required."
+    }
+  ]
+}

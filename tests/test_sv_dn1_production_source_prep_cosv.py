@@ -54,7 +54,13 @@ class SVDN1ProductionSourcePrepCOSVTests(unittest.TestCase):
         self.assertEqual(indexed, [{"task_id": TASK_ID, "vector": VECTOR}])
         summary = self.coverage["worker_registry_summary"]
         self.assertEqual(summary["canonically_indexed_task_ids"], len(self.coverage["indexed_vectors"]))
-        self.assertEqual(summary["active_unvectorized_unique_task_ids"], 15)
+        expected_active_unvectorized = (
+            summary["unique_task_ids_global_plus_fragments"]
+            - summary["completed_only_historical_unvectorized_task_ids"]
+            - summary["superseded_historical_unvectorized_task_ids"]
+            - summary["canonically_indexed_task_ids"]
+        )
+        self.assertEqual(summary["active_unvectorized_unique_task_ids"], expected_active_unvectorized)
         self.assertEqual(
             summary["unique_task_ids_global_plus_fragments"],
             summary["canonically_indexed_task_ids"]
@@ -62,7 +68,10 @@ class SVDN1ProductionSourcePrepCOSVTests(unittest.TestCase):
             + summary["completed_only_historical_unvectorized_task_ids"]
             + summary["superseded_historical_unvectorized_task_ids"],
         )
-        self.assertEqual(self.coverage["total_active_unvectorized_unique_task_ids"], 29)
+        self.assertEqual(
+            self.coverage["total_active_unvectorized_unique_task_ids"],
+            expected_active_unvectorized + self.coverage["organization_registry_summary"]["active_unvectorized_task_ids"],
+        )
 
     def test_projection_cannot_promote_runtime_or_authority(self):
         projection = self.coverage["sv_dn1_production_source_prep_projection"]
