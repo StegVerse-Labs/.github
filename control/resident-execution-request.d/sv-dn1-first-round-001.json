@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.resident-execution-request/v1",
-  "request_id": "RESIDENT-EXEC-SV-DN1-FIRST-ROUND-004",
+  "request_id": "RESIDENT-EXEC-SV-DN1-FIRST-ROUND-005",
   "state": "REQUESTED",
   "task_id": "SV-DN1-SOVEREIGN-EXECUTION-CHAIN-001",
   "mode": "SV_DN1_FIRST_ROUND_CHAIN",
@@ -14,5 +14,5 @@
   "network_source_fetch_allowed": false,
   "request_granted_authority": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Fresh exactly-once retry after .github merge 5f06d256bd48097292cd3feff5f4b8f15bec3823 corrected production-source discovery and v2 durable-receipt validation. Re-evaluate the existing five-task sovereign first-round chain. Production source prep may accept already-local verified canonical component roots supplied through non-secret STEGVERSE_*_SOURCE_ROOT locators, canonical materialization-tree roots, or local content-addressed source packages. No request authority, credential, repository writeback, hosted execution, external platform dependency, or second machine is granted."
+  "note": "Fresh exactly-once governed first-round request after .github merge 65fca651fc9f0426a07b51006263280515489f0a completed browser-evidence continuity and the six-step chain through SV-DN1-PUBLIC-PROMOTION-001. Re-evaluate the current sovereign chain using the already-authentic Hugging Face browser observation and the platform-neutral production-source-prep v2 contract. This request grants no execution, credential, network-source-fetch, repository-writeback, deployment, publication-decision, governance, or certification authority and requires no second user-operated machine."
 }
