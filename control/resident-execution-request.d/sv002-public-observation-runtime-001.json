@@ -1,0 +1,19 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "credential_authority": "TV/TVC",
+  "credential_requirement": "NONE_FOR_NODE_BOUND_PUBLIC_READ",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "requested_at": "2026-08-29T22:25:00-05:00",
+  "note": "Machine-owned request to keep the node-gated StegVerse-002 public observation receiver READY before the scheduled public discovery run. Shared Service Gateway owns public HTTPS routing."
+}

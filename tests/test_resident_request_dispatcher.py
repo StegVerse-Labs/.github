@@ -35,13 +35,7 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
                 {"state": "ATTEMPT_RECORDED"},
                 {"state": "FAIL_CLOSED"},
                 {"state": "ATTEMPT_RECORDED"},
-                {"state": "NO_REQUEST"},
-                {"state": "ALREADY_CONSUMED"},
-                {"state": "NO_REQUEST"},
-                {"state": "NO_REQUEST"},
-                {"state": "NO_REQUEST"},
-                {"state": "NO_REQUEST"},
-            ]
+            ] + [{"state": "NO_REQUEST"}] * (len(mod.CONSUMERS) - 3)
             calls = []
 
             def runner(command, **kwargs):

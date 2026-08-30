@@ -14,6 +14,8 @@ EXPECTED_TASK = "SHWP-HEALER-SOVEREIGN-SCHEDULER-001"
 CURRENT_AUTHORITY = "TV/TVC"
 EVALUATOR_CONFIG_ENV = "STEGVERSE_EVALUATOR_INTR_ROUTE_CONFIG"
 EVALUATOR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "evaluator-intr-runtime.json"
+SV002_OBSERVE_CONFIG_ENV = "STEGVERSE_SV002_OBSERVE_ROUTE_CONFIG"
+SV002_OBSERVE_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "sv002-public-observation-runtime.json"
 
 
 def atomic_write(path: Path, value: dict) -> None:
@@ -59,6 +61,24 @@ def evaluator_gateway_projection() -> dict[str, str]:
     }
 
 
+def sv002_observation_gateway_projection() -> dict[str, str]:
+    raw = os.environ.get(SV002_OBSERVE_CONFIG_ENV, "").strip()
+    path = Path(raw).expanduser().resolve() if raw else SV002_OBSERVE_CONFIG_DEFAULT.expanduser().resolve()
+    disabled = {"STEGVERSE_SV002_OBSERVE_ENABLED": "false", "STEGVERSE_SV002_OBSERVE_UPSTREAM": ""}
+    if not path.is_file(): return disabled
+    try: value = json.loads(path.read_text(encoding="utf-8"))
+    except Exception: return disabled
+    if not isinstance(value, dict): return disabled
+    if value.get("schema") != "stegverse.sv002-public-observation-route-config/v1": return disabled
+    if value.get("credential_authority") != "TV/TVC": return disabled
+    if value.get("github_token_runtime_authority") != "NONE": return disabled
+    if value.get("public_tls_terminated_by") != "STEGVERSE_SHARED_SERVICE_GATEWAY": return disabled
+    if value.get("host") != "127.0.0.1": return disabled
+    port = value.get("port")
+    if not isinstance(port, int) or port < 1024 or port > 65535: return disabled
+    return {"STEGVERSE_SV002_OBSERVE_ENABLED": "true", "STEGVERSE_SV002_OBSERVE_UPSTREAM": f"http://127.0.0.1:{port}/intr/sv002-observe"}
+
+
 def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
     env = {
         "PATH": os.environ.get("PATH", ""),
@@ -71,6 +91,7 @@ def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
         "STEGVERSE_REPO_ROOTS_JSON": roots_json,
     }
     env.update(evaluator_gateway_projection())
+    env.update(sv002_observation_gateway_projection())
     return env
 
 

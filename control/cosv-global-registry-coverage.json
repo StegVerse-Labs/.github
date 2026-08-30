@@ -10,8 +10,8 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
-    "unique_task_ids_global_plus_fragments": 62,
-    "canonically_indexed_task_ids": 38,
+    "unique_task_ids_global_plus_fragments": 63,
+    "canonically_indexed_task_ids": 39,
     "completed_only_historical_unvectorized_task_ids": 6,
     "active_unvectorized_unique_task_ids": 17,
     "superseded_historical_unvectorized_task_ids": 1
@@ -208,6 +208,10 @@
     },
     {
       "task_id": "SHWP-EVALUATOR-INTR-READ-RUNTIME-001",
+      "vector": "50000000102000"
+    },
+    {
+      "task_id": "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
       "vector": "50000000102000"
     }
   ],
@@ -438,6 +442,19 @@
     ],
     "activation_proof_observed": false,
     "evidence_complete": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "authority_effect": "NONE"
+  },
+  "sv002_public_observation_runtime_reconciliation": {
+    "task_id": "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
+    "vector": "50000000102000",
+    "registry_ref": "control/worker-registry.d/sv002-public-observation-runtime-001.json",
+    "source_state_vector_ref": "control/task-vectors/SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001.json",
+    "canonical_owner_ref": "StegVerse-Labs/.github#462",
+    "runtime_receipt_observed": false,
+    "public_observation_round_trip_observed": false,
+    "observer_direct_relation_to_stegverse_002": false,
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": "NONE",
     "authority_effect": "NONE"
