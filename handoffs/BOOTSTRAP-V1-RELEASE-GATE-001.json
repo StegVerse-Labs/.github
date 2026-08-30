@@ -1,0 +1,47 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-BOOTSTRAP-V1-RELEASE-GATE-001",
+  "created_at": "2026-08-30T05:16:00Z",
+  "updated_at": "2026-08-30T05:16:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "BOOTSTRAP-V1-RELEASE-GATE-001",
+    "task_id": "BOOTSTRAP-V1-RELEASE-GATE-001",
+    "worker_id": "bootstrap-v1-release-gate-worker",
+    "expected_transition": "BOOTSTRAP_V1_RELEASE_AUTHORIZED"
+  },
+  "execution": {
+    "adapter_ref": "process:bootstrap-v1-release-gate-v1",
+    "required_capabilities": [
+      "bounded_process_execution",
+      "bootstrap_release_gate_validation",
+      "evidence_class_preservation"
+    ],
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22
+  },
+  "dependency": {
+    "task_id": "BOOTSTRAP-V1-MATERIALIZATION-EVIDENCE-INTAKE-001",
+    "terminal_state_required": "COMPLETED",
+    "terminal_transition_required": "BOOTSTRAP_V1_DISTRIBUTION_MATERIALIZATION_PROVEN"
+  },
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": false,
+    "network_access": false,
+    "repository_writeback_authority": false,
+    "tag_mutation_authority": false,
+    "publication_authority": false,
+    "sdk_admission_authority": false,
+    "execution_authority": "NONE",
+    "authority_effect": "NONE_RELEASE_GATE_EVALUATION_ONLY"
+  },
+  "completion": {
+    "terminal_transition": "BOOTSTRAP_V1_RELEASE_AUTHORIZED",
+    "next_transition": "BOOTSTRAP_V1_RC1_RELEASE_PUBLICATION",
+    "runtime_activation_claimed": false,
+    "publication_performed": false,
+    "tag_created": false
+  }
+}
