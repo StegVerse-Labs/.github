@@ -3,7 +3,7 @@
 Updated: 2026-08-29
 Repository: StegVerse-Labs/.github
 Issue: #484
-Branch: fix/sv002-self-char-subject-preflight-484
+Branch: main
 
 ## Source of truth
 
@@ -35,6 +35,34 @@ The resident worker already detects:
 The canonical principal runner additionally requires a `stegverse.self-characterization-runtime-identity/v0.1` descriptor in `STEGVERSE_SELF_CHAR_SUBJECT_IDENTITY_JSON`.
 
 Before issue #484, the worker never constructed or supplied that descriptor. Therefore a qualifying resident model endpoint could be observed but execution would still fail before S0 because subject identity was not bound.
+
+## Source closure
+
+Issue #484 is implemented and merged through PR #488.
+
+```text
+PR: #488
+merge: b72af52be222772a57f2f5cfb94578676b68a6bd
+organization control-plane validation: SUCCESS
+Heartbeat Worker Project full deterministic suite: SUCCESS
+subject identity preflight source: MERGED / VALIDATED
+known scaffolding/stubs in scoped preflight: 0
+```
+
+The resident worker now:
+
+- discovers an exact requested local Ollama model, or only auto-selects when exactly one non-reference local candidate exists;
+- refuses remote endpoints;
+- normalizes and verifies the Ollama model digest;
+- observes exactly one local Ollama runtime process;
+- binds that process to its resolved executable;
+- hashes the runtime executable;
+- constructs the canonical `stegverse.self-characterization-runtime-identity/v0.1` descriptor;
+- passes that descriptor to the principal runner;
+- allows an explicit descriptor only when endpoint/model bindings match;
+- retains the principal runner's independent execution-time identity verification.
+
+Ambiguous processes, missing model digests, remote endpoints, reference models, invalid explicit descriptors, and contradictory bindings fail closed.
 
 ## Bounded repair scope
 
@@ -75,7 +103,7 @@ The repair must not:
 
 ## Remaining machine-execution gates
 
-After source repair:
+After merged source repair:
 
 1. resident source refresh observes the merged worker;
 2. the resident request is consumed;
@@ -95,3 +123,24 @@ After source repair:
 - public observation projection after authentic evidence: StegVerse-Labs/.github -> StegVerse-org/LLM-adapter -> StegVerse-Labs/Site
 
 Source completion is not experiment completion.
+
+
+## Current state
+
+```text
+resident self-characterization request: REQUESTED
+worker source: MERGED / VALIDATED
+subject identity preflight: MERGED / VALIDATED
+local model fetch/install authority: NONE
+hosted runtime authority: NONE
+GitHub token runtime authority: NONE
+exact pinned TT/RTG/GTG/AE requirement: ACTIVE
+qualifying non-reference resident reasoning endpoint: NOT OBSERVED
+verified resident principal identity: NOT OBSERVED
+principal experiment execution: NOT OBSERVED
+self-characterization artifacts: NOT OBSERVED
+Master Records reconstruction: NOT OBSERVED
+user action required: false
+```
+
+The next lawful transition is resident execution only. Source/CI/merge do not satisfy the experiment.
