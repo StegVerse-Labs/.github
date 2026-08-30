@@ -25,6 +25,7 @@ TASKS = (
     "SV-DN1-PRODUCTION-SOURCE-PREP-001",
     "SV-DN1-SDK-FIRST-ROUND-001",
     "SV-DN1-PUBLIC-PROMOTION-001",
+    "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001",
 )
 
 HOSTED_ENV = (
@@ -44,6 +45,7 @@ NONSECRET_ENV = (
     "STEGVERSE_SV_DN1_SOURCE_ROOT", "STEGVERSE_SV_DN1_MATERIALIZED_SOURCE_ROOT",
     "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT", "STEGVERSE_SV_DN1_INTR_STATE_ROOT",
     "STEGVERSE_SV_DN1_SDK_FIRST_ROUND_STATE_ROOT",
+    "STEGVERSE_SV_DN1_PUBLIC_PROMOTION_STATE_ROOT",
     "STEGVERSE_SOURCE_MATERIALIZATION_ROOT", "STEGVERSE_SOURCE_PACKAGE_ROOT",
     "STEGVERSE_FORMALISM_TVC_SPOOL_ROOT", "STEGVERSE_SDK_SOURCE_ROOT",
     "STEGVERSE_STEGCORE_SOURCE_ROOT", "STEGVERSE_CORE_LITE_SOURCE_ROOT",
@@ -95,7 +97,8 @@ def _receipt_specs(values: Mapping[str, str]) -> dict[str, tuple[Path, dict[str,
     intr_root = _bound_path("STEGVERSE_SV_DN1_INTR_STATE_ROOT", Path.home()/".stegverse"/"state"/"sv-dn1-intr-runtime", values)
     source_prep_root = Path.home()/".stegverse"/"state"/"sv-dn1-production-source-prep"
     sdk_root = _bound_path("STEGVERSE_SV_DN1_SDK_FIRST_ROUND_STATE_ROOT", Path.home()/".stegverse"/"state"/"sv-dn1-sdk-first-round", values)
-    promotion_root = Path.home()/".stegverse"/"state"/"sv-dn1-public-promotion"
+    promotion_root = _bound_path("STEGVERSE_SV_DN1_PUBLIC_PROMOTION_STATE_ROOT", Path.home()/".stegverse"/"state"/"sv-dn1-public-promotion", values)
+    persistence_root = Path.home()/".stegverse"/"state"/"sv-dn1-repository-persistence-package"
     return {
         "SV-DN1-SOURCE-MATERIALIZATION-001": (source_root/"receipts"/"latest.json", {"state":"COMPLETE","transition_id":"SV_DN1_EXACT_SOURCE_MATERIALIZATION_COMPLETE","github_token_used":False,"repository_writeback_performed":False}),
         "SV-DN1-RESIDENT-OBSERVER-001": (resident_root/"receipts"/"latest.json", {"state":"COMPLETE","transition_id":"SV_DN1_RESIDENT_SOURCE_CAPTURE_COMPLETE","raw_response_sha256_present":True,"semantic_exchange_valid":True,"github_token_used":False,"repository_writeback_performed":False,"sdk_admitted":False}),
@@ -103,6 +106,7 @@ def _receipt_specs(values: Mapping[str, str]) -> dict[str, tuple[Path, dict[str,
         "SV-DN1-PRODUCTION-SOURCE-PREP-001": (source_prep_root/"receipts"/"latest.json", {"schema":"stegverse.sv-dn1.production-source-prep-receipt/v2","state":"COMPLETE","transition_id":"SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE","source_identity_scheme":"sha256-content-manifest","migration_anchors_verified":True,"network_source_fetch_performed":False,"github_platform_required":False,"credential_used":False,"github_token_used":False,"repository_writeback_performed":False,"sdk_admitted":False}),
         "SV-DN1-SDK-FIRST-ROUND-001": (sdk_root/"receipts"/"latest.json", {"state":"COMPLETE","transition_id":"SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED","sdk_admission":"SDK_ADMITTED","master_records_custody_status":"RECORDED","replay_consequence_reexecuted":False,"reconstruction_consequence_reexecuted":False,"dashboard_generated":True,"dashboard_publicly_hosted":False,"github_token_used":False,"repository_writeback_performed":False}),
         "SV-DN1-PUBLIC-PROMOTION-001": (promotion_root/"receipts"/"latest.json", {"schema":"stegverse.sv-dn1.public-promotion-worker-receipt/v1","state":"COMPLETE","transition_id":"SV_DN1_PUBLIC_PROMOTION_READY","observation_class":"LIVE","exact_bytes_preserved":True,"semantic_rewrite_performed":False,"network_fetch_performed":False,"credential_used":False,"repository_writeback_performed":False,"deployment_performed":False,"release_performed":False,"certification_claimed":False,"authority_effect":"NONE_STATIC_PROJECTION_ONLY"}),
+        "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001": (persistence_root/"receipts"/"latest.json", {"schema":"stegverse.sv-dn1.repository-persistence-package-worker-receipt/v1","state":"COMPLETE","transition_id":"SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_READY","target_repository":"StegVerse-org/stegverse-demo-suite","target_ref":"main","exact_bytes_preserved":True,"network_fetch_performed":False,"credential_used":False,"repository_writeback_performed":False,"deployment_performed":False,"authority_effect":"NONE_PERSISTENCE_PACKAGE_ONLY"}),
     }
 
 def validate_durable_receipt(task_id: str, values: Mapping[str, str]) -> dict[str, Any]:
@@ -127,6 +131,11 @@ def validate_durable_receipt(task_id: str, values: Mapping[str, str]) -> dict[st
         if receipt.get("publication_state") not in {"PUBLIC_OBSERVED","PUBLIC_WITH_LIMITATIONS"}: failures.append("publication_state must be public-observable")
         src=receipt.get("source_artifact_sha256");dst=receipt.get("destination_artifact_sha256")
         if not isinstance(src,dict) or src!=dst or set(src)!={"first-round-analysis.json","production-pipeline-observation.json","result-receipt.json","report.md","index.html"}: failures.append("promotion artifact hash set mismatch")
+    if task_id == "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001":
+        hashes=receipt.get("file_sha256")
+        if not isinstance(hashes,dict) or set(hashes)!={"first-round-analysis.json","production-pipeline-observation.json","result-receipt.json","report.md","index.html"}: failures.append("persistence package artifact hash set mismatch")
+        package_sha=receipt.get("package_sha256")
+        if not isinstance(package_sha,str) or len(package_sha)!=64 or any(ch not in "0123456789abcdef" for ch in package_sha): failures.append("package_sha256 must be 64 lowercase hex")
     if failures:
         raise RuntimeError(f"{task_id}: durable receipt failed validation: "+"; ".join(failures))
     return {"task_id":task_id,"receipt_path":str(path)}
@@ -167,7 +176,7 @@ def execute_chain(source_root:Path,runtime_root:Path,*,runner:Runner=subprocess.
             receipt=_load(Path(validated["receipt_path"]));locators=receipt.get("source_root_env") or {}
             for name in ("STEGVERSE_SDK_SOURCE_ROOT","STEGVERSE_STEGCORE_SOURCE_ROOT","STEGVERSE_CORE_LITE_SOURCE_ROOT","STEGVERSE_MASTER_RECORDS_SOURCE_ROOT"):
                 if locators.get(name): child_env[name]=str(locators[name])
-    receipt={"schema":"stegverse.sv-dn1.sovereign-chain/v1","state":"COMPLETE","transition_id":"SV_DN1_SOVEREIGN_FIRST_ROUND_CHAIN_COMPLETE","completed_tasks":completed_tasks,"next_task":None,"runtime_root":str(runtime),"source_root":str(source),"refresh_receipt":refresh_receipt,"task_results":task_results,"credential_authority":"TV/TVC","github_token_required":False,"second_machine_required":False,"public_promotion_ready":True,"repository_writeback_performed":False,"deployment_performed":False,"authority_effect":"NONE"}
+    receipt={"schema":"stegverse.sv-dn1.sovereign-chain/v1","state":"COMPLETE","transition_id":"SV_DN1_SOVEREIGN_FIRST_ROUND_CHAIN_COMPLETE","completed_tasks":completed_tasks,"next_task":None,"runtime_root":str(runtime),"source_root":str(source),"refresh_receipt":refresh_receipt,"task_results":task_results,"credential_authority":"TV/TVC","github_token_required":False,"second_machine_required":False,"public_promotion_ready":True,"repository_persistence_package_ready":True,"repository_writeback_performed":False,"deployment_performed":False,"authority_effect":"NONE"}
     _atomic_json(runtime/CHAIN_RECEIPT_REL,receipt);return receipt
 
 def main()->int:

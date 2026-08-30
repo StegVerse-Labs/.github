@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:sv-dn1-repository-persistence-package-v1",
+      "authority_ref": "handoffs/SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "local_evidence_packaging",
+        "evidence_class_preservation"
+      ],
+      "command": [
+        "python",
+        "workers/sv_dn1_repository_persistence_package_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SV_DN1_PUBLIC_PROMOTION_STATE_ROOT",
+        "STEGVERSE_SV_DN1_SOURCE_ROOT",
+        "STEGVERSE_BOUND_STATE_ROOT",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/state/sv-dn1-repository-persistence-package",
+      "bound_state_allowed_paths": [
+        "packages/**",
+        "receipts/**"
+      ],
+      "timeout_seconds": 240,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Consumes exact local public-promotion evidence and files only.",
+        "Creates a self-contained content-addressed package; no remote repository mutation or credentials."
+      ]
+    }
+  ]
+}

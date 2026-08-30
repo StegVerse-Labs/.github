@@ -10,9 +10,10 @@ from scripts import run_sv_dn1_first_round_chain as chain
 
 class SvDn1PublicPromotionChainTests(unittest.TestCase):
     def test_public_promotion_is_exact_successor_of_sdk_analysis(self) -> None:
-        self.assertEqual(chain.TASKS[-2:], (
+        self.assertEqual(chain.TASKS[-3:], (
             "SV-DN1-SDK-FIRST-ROUND-001",
             "SV-DN1-PUBLIC-PROMOTION-001",
+            "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001",
         ))
 
     def test_public_promotion_receipt_requires_zero_authority_exact_projection(self) -> None:

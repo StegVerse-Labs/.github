@@ -296,3 +296,24 @@ no request/execution authority created
 ```
 
 Authentic analysis remains unobserved until the eligible sovereign resident actually consumes `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-004` and emits `SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED`. Public display remains a separate downstream promotion/deployment gate.
+
+
+## 2026-08-30 repository-persistence package extension
+
+The canonical resident progression now contains seven independent tasks:
+
+```text
+SV-DN1-SOURCE-MATERIALIZATION-001
+-> SV-DN1-RESIDENT-OBSERVER-001
+-> SV-DN1-INTR-RUNTIME-001
+-> SV-DN1-PRODUCTION-SOURCE-PREP-001
+-> SV-DN1-SDK-FIRST-ROUND-001
+-> SV-DN1-PUBLIC-PROMOTION-001
+-> SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001
+```
+
+The seventh task does not mutate a remote repository. It freezes the exact five promoted bytes, hashes, target repository/ref/path set, exchange identity and manifest receipt identity into `stegverse.sv-dn1.repository-persistence-package/v1`. Terminal transition is `SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_READY`.
+
+This removes the runtime-to-repository-content handoff ambiguity without granting GitHub, credential, commit, push, merge or deployment authority. A separately admitted TV/TVC-governed repository mutator remains required for actual persistence.
+
+Because this materially extends the exactly-once chain after request `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-005` was queued, a new request identity is required after this source change merges. Request 005 must not be silently reinterpreted as a seven-step request.
