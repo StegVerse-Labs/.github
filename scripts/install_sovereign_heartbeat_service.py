@@ -60,6 +60,7 @@ COPY_FILES = (
     "scripts/consume_sv002_self_characterization_request.py",
     "scripts/consume_cross_framework_current_basis_v04_request.py",
     "scripts/dispatch_resident_execution_requests.py",
+    "scripts/refresh_and_dispatch_resident_requests.py",
     "scripts/materialize_live_cosv_packet.py",
     "scripts/cosv.py",
     "scripts/cosv_state_packet.py",
@@ -138,6 +139,7 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         target_root / "scripts" / "consume_hil_intr_materialization_request.py",
         target_root / "scripts" / "consume_sv002_self_characterization_request.py",
         target_root / "scripts" / "consume_cross_framework_current_basis_v04_request.py",
+        target_root / "scripts" / "refresh_and_dispatch_resident_requests.py",
         target_root / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
     )
     if not all(path.is_file() for path in required):
