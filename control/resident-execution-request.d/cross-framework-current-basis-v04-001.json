@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "fresh_fence_minimum_exclusive": 22,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "provider_credential_material_allowed": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "frozen_manifest_sha256": "07a08496c21b31f70f6f45ef731aa5f6b2522a6fc8f67f2d0a4c2b6fceda7a3f",
+  "frozen_manifest_git_blob_sha1": "59d818a15fc7be732c97dae7d2174d8cfe9a7bab",
+  "note": "On sovereign local-source refresh, ask the existing WorkerCoordinator to attempt exactly the already-admitted current-basis v0.4 task. This request grants no claim, fence, credential, source-fetch, publication, heartbeat, or runtime authority."
+}
