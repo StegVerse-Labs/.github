@@ -1,0 +1,43 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/cross-framework-current-basis-v04-001.json",
+    "handoffs/SHWP-CROSS-FRAMEWORK-CURRENT-BASIS-V04-001.json",
+    "StegVerse-org/StegVerse-SDK#99",
+    "StegVerse-Labs/StegCore#162"
+  ],
+  "observed_at": "2026-08-29T22:38:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "independent resident task is registered for exact frozen v0.4 execution",
+    "archive_ready": "authentic run evidence is not yet observed",
+    "unassigned_work": "existing WorkerCoordinator owns admitted execution after merge",
+    "chat_owned_counts": "source work is transferable to machine owner; runtime is not chat authority",
+    "canonical_owner_installed": "worker/handoff/registry/adapter are source-installed on active branch",
+    "thread_required": "resident task can continue without a conversation once merged",
+    "blocker_count": "authentic sovereign resident execution is the one remaining activation evidence class",
+    "evidence_complete": "RUN_COMPLETE.json absent",
+    "activated": "authentic exact run absent",
+    "propagated": "result publication not yet eligible"
+  },
+  "authority_effect": "NONE"
+}
