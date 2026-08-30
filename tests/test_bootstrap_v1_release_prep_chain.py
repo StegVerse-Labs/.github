@@ -16,6 +16,7 @@ if str(SCRIPTS) not in sys.path:
 import run_bootstrap_v1_release_prep_chain as chain
 import consume_bootstrap_v1_release_prep_request as consumer
 import dispatch_resident_execution_requests as dispatcher
+import refresh_sovereign_worker_runtime_source as refresher
 
 
 def write_json(path: Path, value: dict) -> None:
@@ -259,6 +260,13 @@ class BootstrapV1ReleasePrepConsumerTests(unittest.TestCase):
 
 
 class BootstrapV1DispatcherRegistrationTests(unittest.TestCase):
+
+    def test_refresh_materializes_bootstrap_consumer_and_chain(self) -> None:
+        static = {path.as_posix() for path in refresher.STATIC_FILES}
+        self.assertIn("scripts/run_bootstrap_v1_release_prep_chain.py", static)
+        self.assertIn("scripts/consume_bootstrap_v1_release_prep_request.py", static)
+        self.assertIn(Path("control/resident-execution-request.d"), refresher.CONTROL_DIRS)
+
     def test_dispatcher_visits_bootstrap_after_sv_dn1(self) -> None:
         names = [name for name, _ in dispatcher.CONSUMERS]
         self.assertIn("bootstrap_v1_release_prep", names)
