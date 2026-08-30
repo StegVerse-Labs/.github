@@ -199,3 +199,48 @@ RUN_COMPLETE.json: NOT OBSERVED
 user action required: false
 second machine required: false
 ```
+
+
+## Local source-package self-remediation — 2026-08-30
+
+After exact source-blob binding was merged, one remaining local-only resolution path was made active: a resident with a missing or stale experiment component may now consume an already-local `stegverse.source-package/v1` object before deciding that execution is blocked.
+
+Resolution behavior:
+
+```text
+discover exact component root
+-> verify experiment-critical blobs
+-> if missing/stale, inspect local source-package store only
+-> validate package schema/version/component
+-> reject credential-bearing or authority-bearing package
+-> verify every file size/SHA-256
+-> recompute ordered content-manifest digest/source_identity
+-> stage package atomically
+-> verify exact frozen-v0.4 critical Git blobs in staged tree
+-> replace local component root atomically
+-> rerun exact source checks
+-> only then permit the SDK harness
+```
+
+Local package store:
+
+```text
+STEGVERSE_SOURCE_PACKAGE_ROOT
+fallback: ~/.stegverse/packages/source/v1
+```
+
+The generic resident dispatcher forwards this non-secret locator. No HTTP/Git/GitHub/provider fetch occurs in this path.
+
+If a required local package is absent, the consumer records `BLOCKED_LOCAL_SOURCE_PACKAGE_NOT_OBSERVED` plus the exact component/package path needed, with:
+
+```text
+runtime_execution_attempted=false
+source_resolution_attempted=true
+network_source_fetch_performed=false
+credential_read_or_acquired=false
+user_action_required=false
+second_machine_required=false
+authority_effect=NONE_SOURCE_RESOLUTION_ONLY
+```
+
+Package integrity is transport evidence only and never confers execution authority. The frozen experiment remains executable only after the independently merged request, non-hosted resident eligibility, exact source identity checks, and canonical SDK/StegCore/Master Records path all hold.
