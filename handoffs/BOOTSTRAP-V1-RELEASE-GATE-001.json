@@ -1,0 +1,188 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-BOOTSTRAP-V1-RELEASE-GATE-001",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "BOOTSTRAP-V1-RELEASE-GATE-001",
+    "objective": "Evaluate the exact frozen Bootstrap v1 rc.1 candidate, canonical distributable bundle, and authentic device materialization proof and emit a zero-authority release-authorization receipt only when every release predicate matches.",
+    "success_predicates": [
+      "exact frozen rc.1 candidate verifies",
+      "exact canonical Bootstrap v1 bundle verifies and binds the candidate",
+      "authentic materialization proof binds the same candidate, bundle, source identity set, ordered four components, node/device continuity, and replay tail",
+      "proof remains MATERIALIZED_UNADMITTED with execution authority NONE",
+      "proof reports no credentials, network access, repository writeback, release activation, or publication",
+      "release authorization remains repository/tag/publication authority neutral"
+    ],
+    "failure_predicates": [
+      "candidate, bundle, or proof absent",
+      "candidate/bundle/proof identity mismatch",
+      "component order or source identity mismatch",
+      "proof is not terminal BOOTSTRAP_V1_DISTRIBUTION_MATERIALIZATION_PROVEN",
+      "proof claims credential, network, repository, execution, release, or publication authority",
+      "existing frozen authorization differs"
+    ],
+    "authority_ceiling": [
+      "bounded_process_execution",
+      "bootstrap_release_gate_validation",
+      "evidence_class_preservation",
+      "no repository writeback authority",
+      "no tag mutation authority",
+      "no publication authority",
+      "no SDK admission authority",
+      "no package execution authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "BOOTSTRAP-V1-RELEASE-GATE-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "docs/BOOTSTRAP_V1_RELEASE_GATE_MIRROR_HANDOFF.md",
+      "handoffs/BOOTSTRAP-V1-MATERIALIZATION-EVIDENCE-INTAKE-001.json",
+      "handoffs/BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001.json"
+    ],
+    "canonical_owner_ref": "docs/BOOTSTRAP_V1_RELEASE_GATE_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "bootstrap-v1:release-gate",
+    "worker_registry_ref": "control/worker-registry.d/bootstrap-v1-release-gate-001.json",
+    "worker_id": "bootstrap-v1-release-gate-worker",
+    "adapter_ref": "process:bootstrap-v1-release-gate-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "evidence review only",
+    "priority": "release",
+    "parent_task_id": null,
+    "derivation_reason": "Release eligibility is a separate authority-neutral evaluation downstream of authentic materialization proof; tag/publication mutation requires separate admission.",
+    "derivation_depth": 0,
+    "source_handoff_ref": "docs/BOOTSTRAP_V1_RELEASE_GATE_MIRROR_HANDOFF.md",
+    "dependencies": [
+      "BOOTSTRAP-V1-MATERIALIZATION-EVIDENCE-INTAKE-001"
+    ],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL"
+  },
+  "authority": {
+    "authority_source": "docs/BOOTSTRAP_V1_RELEASE_GATE_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "bootstrap-v1-release-gate-v1",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "network_access_authority": false,
+    "repository_writeback_authority": false,
+    "tag_mutation_authority": false,
+    "publication_authority": false,
+    "sdk_admission_authority": false,
+    "package_execution_authority": false,
+    "execution_authority_created": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "bootstrap_release_gate_validation",
+      "evidence_class_preservation"
+    ],
+    "worker": "workers/bootstrap_v1_release_gate_worker.py",
+    "allowed_paths": [
+      "receipts/bootstrap-v1-release-gate/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 4,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 24,
+    "rate_class": "bootstrap_v1_release_gate",
+    "hosted_execution_allowed": false,
+    "bound_state_root": "~/.stegverse/state/bootstrap-v1-release-gate",
+    "bound_state_allowed_paths": [
+      "receipts/**"
+    ],
+    "required_local_locators": [
+      "STEGVERSE_BOOTSTRAP_V1_RELEASE_CANDIDATE_STATE_ROOT",
+      "STEGVERSE_BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_STATE_ROOT",
+      "STEGVERSE_BOOTSTRAP_V1_MATERIALIZATION_PROOF"
+    ],
+    "public_network_access": {
+      "enabled": false,
+      "methods": [],
+      "allowed_hosts": [],
+      "authenticated": false,
+      "credential_forwarding": false
+    }
+  },
+  "input_contract": {
+    "candidate_schema": "stegverse.bootstrap.release-candidate/v1",
+    "candidate_version": "1.0.0-rc.1",
+    "bundle_schema": "stegverse.bootstrap.bundle/v1",
+    "bundle_version": "1.0.0-rc.1",
+    "materialization_proof_schema": "stegverse.bootstrap.materialization-proof/v1",
+    "required_materialization_transition": "BOOTSTRAP_V1_DISTRIBUTION_MATERIALIZATION_PROVEN",
+    "required_materialization_state": "MATERIALIZED_UNADMITTED",
+    "required_components": [
+      "stegverse.sdk",
+      "stegverse.stegcore",
+      "stegverse.core-lite",
+      "stegverse.master-records"
+    ],
+    "output_schema": "stegverse.bootstrap.release-authorization/v1",
+    "github_platform_required": false
+  },
+  "activation": {
+    "carrier": "independent_task_control",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "docs/BOOTSTRAP_V1_RELEASE_GATE_MIRROR_HANDOFF.md",
+    "recheck_trigger": "each admitted assignment opportunity after authentic materialization proof exists until exact release authorization validates",
+    "checkout_policy": "fenced_atomic_checkout",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+  },
+  "continuity": {
+    "master_records_required": false,
+    "result_receipt": "~/.stegverse/state/bootstrap-v1-release-gate/receipts/latest.json",
+    "repository_persistence_requires_separate_admission": true
+  },
+  "completion": {
+    "next_authorized_action": "Evaluate a separate Bootstrap v1 rc.1 tag/publication mutation lane using this exact release authorization receipt. This handoff does not grant that mutation authority.",
+    "terminal_when": [
+      "BOOTSTRAP_V1_RELEASE_AUTHORIZED",
+      "candidate_version=1.0.0-rc.1",
+      "release_candidate_distribution_authorized=true",
+      "execution_authority=NONE",
+      "repository_writeback_authority=false",
+      "tag_mutation_authority=false",
+      "publication_authority=false"
+    ],
+    "release_condition": "The exact content-addressed Bootstrap v1 rc.1 candidate and bundle have authentic established-node materialization proof and satisfy the zero-authority release gate."
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:bootstrap-v1-release-gate:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "docs/BOOTSTRAP_V1_RELEASE_GATE_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/BOOTSTRAP-V1-RELEASE-GATE-001.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/bootstrap_v1_release_gate_worker.py",
+      "control/process-worker-adapters.d/bootstrap-v1-release-gate-001.json",
+      "control/worker-registry.d/bootstrap-v1-release-gate-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "AUTHENTIC_BOOTSTRAP_V1_MATERIALIZATION_PROOF_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "bootstrap-v1-release-gate-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "validates_capability",
+    "target_phase": "ACTIVATED"
+  }
+}
