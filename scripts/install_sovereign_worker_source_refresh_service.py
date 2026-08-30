@@ -136,6 +136,7 @@ def install(
     # Immediate local refresh is the one-time bridge from a stale materialization.
     refresh_receipt = refresh(source, runtime)
     (runtime / "intr-materialization").mkdir(parents=True, exist_ok=True)
+    (runtime / "sv002-intr-materialization").mkdir(parents=True, exist_ok=True)
     config_root = unit_root or (Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "systemd" / "user")
     config_root = config_root.expanduser().resolve()
     config_root.mkdir(parents=True, exist_ok=True)
@@ -174,6 +175,8 @@ def install(
         "filesystem_event_driven": True,
         "intr_materialization_event_driven": True,
         "intr_materialization_watch": str(runtime / "intr-materialization"),
+        "sv002_intr_materialization_event_driven": True,
+        "sv002_intr_materialization_watch": str(runtime / "sv002-intr-materialization"),
         "second_heartbeat_created": False,
         "third_party_scheduler_required": False,
         "network_fetch_performed": False,
