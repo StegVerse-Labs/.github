@@ -140,6 +140,68 @@ class PortableResidentDispatchTests(unittest.TestCase):
             self.assertEqual(result["state"], "REFRESH_COMPLETE_DISPATCH_INCOMPLETE")
             self.assertEqual(result["dispatch_receipt"]["request_failures"], [MOD.TARGET_CONSUMER])
 
+    def test_refresh_then_dispatch_targets_only_hil_when_selected(self):
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            source = base / "source"
+            runtime = base / "runtime"
+            source.mkdir()
+            runtime.mkdir()
+            dispatcher = runtime / MOD.DISPATCHER_REL
+            dispatcher.parent.mkdir(parents=True)
+            dispatcher.write_text("# refreshed dispatcher\n", encoding="utf-8")
+            dispatch_receipt = runtime / MOD.DISPATCH_RECEIPT_REL
+            calls = []
+
+            def runner(command, **kwargs):
+                calls.append((command, kwargs))
+                dispatch_receipt.parent.mkdir(parents=True, exist_ok=True)
+                dispatch_receipt.write_text(json.dumps({
+                    "schema": "stegverse.resident-request-dispatch/v1",
+                    "state": "DISPATCH_COMPLETE",
+                    "consumer_count": 1,
+                    "selected_consumers": ["hil"],
+                    "selection_scope": "EXACT_SELECTOR",
+                    "request_failures": [],
+                }) + "\n", encoding="utf-8")
+                return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+            with mock.patch.object(MOD, "refresh", return_value={
+                "mutable_runtime_state_preserved": True,
+                "network_fetch_performed": False,
+                "credential_read_or_acquired": False,
+            }):
+                result = MOD.refresh_and_dispatch(
+                    source,
+                    runtime,
+                    target_consumer="hil",
+                    runner=runner,
+                    env={"PATH": "/bin", "HOME": td},
+                )
+
+            self.assertEqual(result["state"], "REFRESH_AND_DISPATCH_COMPLETE")
+            self.assertEqual(result["target_consumer"], "hil")
+            self.assertEqual(result["dispatch_receipt"]["selected_consumers"], ["hil"])
+            self.assertEqual(len(calls), 1)
+            command, _ = calls[0]
+            self.assertEqual(command[command.index("--only-consumer") + 1], "hil")
+
+    def test_unapproved_consumer_fails_before_refresh(self):
+        with tempfile.TemporaryDirectory() as td:
+            source = Path(td) / "source"
+            runtime = Path(td) / "runtime"
+            source.mkdir()
+            runtime.mkdir()
+            with mock.patch.object(MOD, "refresh") as refresh:
+                with self.assertRaisesRegex(RuntimeError, "unsupported portable resident consumer"):
+                    MOD.refresh_and_dispatch(
+                        source,
+                        runtime,
+                        target_consumer="g18",
+                        env={"PATH": "/bin", "HOME": td},
+                    )
+                refresh.assert_not_called()
+
     def test_incomplete_refresh_fails_before_dispatch(self):
         with tempfile.TemporaryDirectory() as td:
             base = Path(td)

@@ -14,7 +14,8 @@ Provide the narrowest portable one-shot execution bridge for the already-queued 
 
 The generic resident dispatcher remains the single dispatcher. It now supports an optional exact consumer selector. When no selector is supplied, existing all-consumer behavior is preserved. Unknown selectors fail before any consumer is invoked.
 
-The portable bridge `scripts/refresh_and_dispatch_resident_requests.py` is intentionally experiment-scoped and supplies exactly:
+The portable bridge `scripts/refresh_and_dispatch_resident_requests.py` retains the
+experiment consumer as its historical default and supplies exactly:
 
 ```text
 --only-consumer cross_framework_current_basis_v04
@@ -31,7 +32,7 @@ already-local sovereign source refresh
 -> retain resident-refresh-dispatch receipt
 ```
 
-It MUST NOT visit Ecosystem Chat, G18, HIL, evaluator InTr, SV002, ARA Graph, CMC-028, SV-DN1, bootstrap release prep, TVC broker validation, or any other resident request during this experiment-only one-shot path.
+It MUST NOT visit Ecosystem Chat, G18, HIL, evaluator InTr, SV002, ARA Graph, CMC-028, SV-DN1, bootstrap release prep, TVC broker validation, or any other resident request during this experiment-only one-shot path. A separate explicit `--only-consumer hil` invocation is admitted for the HIL request lane and does not alter this default or visit the experiment consumer.
 
 ## Authority and transport boundary
 
