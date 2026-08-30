@@ -229,3 +229,9 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_tvc_pr92_bootstrap_helper_is_refreshed_to_resident_runtime():
+    source=(ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").read_text()
+    assert 'Path("scripts/bootstrap_tvc_pr92_validation_source.py")' in source
+    assert 'Path("scripts/consume_tvc_broker_validation_request.py")' in source
