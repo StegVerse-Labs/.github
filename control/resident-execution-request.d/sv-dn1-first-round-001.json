@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.resident-execution-request/v1",
-  "request_id": "RESIDENT-EXEC-SV-DN1-FIRST-ROUND-001",
+  "request_id": "RESIDENT-EXEC-SV-DN1-FIRST-ROUND-002",
   "state": "REQUESTED",
   "task_id": "SV-DN1-SOVEREIGN-EXECUTION-CHAIN-001",
   "mode": "SV_DN1_FIRST_ROUND_CHAIN",
@@ -14,5 +14,5 @@
   "network_source_fetch_allowed": false,
   "request_granted_authority": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "On a sovereign resident source refresh, attempt the already-admitted SV-DN-1 demo-source -> resident observation -> route-specific InTr -> canonical production-source preparation -> canonical SDK first-round chain exactly once. The request grants no claim, fence, network, private-source transport, SDK, governance, publication, or credential authority."
+  "note": "Fresh exactly-once retry after Bootstrap v1 four-component bundle receiver merge. On a sovereign resident source refresh, re-evaluate current local source/package state and attempt the already-admitted SV-DN-1 demo-source -> resident observation -> route-specific InTr -> canonical production-source preparation -> canonical SDK first-round chain. The request grants no claim, fence, network, private-source transport, SDK, governance, publication, or credential authority."
 }
