@@ -73,6 +73,24 @@ The repair must not:
 - `tests/test_sv002_self_characterization_worker.py`
 - `docs/SV002_SELF_CHARACTERIZATION_RUNTIME_MIRROR_HANDOFF.md`
 
+
+## Resident retry semantics
+
+Issue #490 closes a machine-execution liveness defect in the resident request consumer.
+
+Before this repair, any prior attempt for the same request hash was treated as permanently consumed, even when the worker remained `BLOCKED` because a required local endpoint, pinned formal root, or subject-identity proof was not yet available.
+
+The corrected contract is:
+
+```text
+BLOCKED / nonterminal attempt -> ATTEMPT_RECORDED -> retry allowed
+COMPLETED principal execution -> terminal_execution_observed=true
+same request hash after terminal success -> ALREADY_CONSUMED
+duplicate successful principal execution -> prohibited
+```
+
+This preserves exactly-once completion while allowing bounded machine retries as dependencies become locally observable.
+
 ## Remaining machine-execution gates
 
 After source repair:
