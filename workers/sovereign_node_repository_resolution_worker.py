@@ -43,6 +43,19 @@ def hosted_environment() -> bool:
     return any(truthy(os.environ.get(name)) for name in THIRD_PARTY_ENV_VARS)
 
 
+def derived_node_id(source_root: Path, state_root: Path) -> str:
+    basis = {
+        "schema": "stegverse.sovereign-node-declaration/v0.4",
+        "source_root": str(source_root.expanduser().resolve()),
+        "state_root": str(state_root.expanduser().resolve()),
+        "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+        "continuity_model": "INDEPENDENT_OSCILLATOR_CONTINUITY",
+        "credential_authority": "TV/TVC",
+    }
+    canonical = json.dumps(basis, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return "SV-NODE-" + hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:24]
+
+
 def atomic_write(path: Path, value: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as handle:
@@ -126,6 +139,10 @@ def derive_node_declaration() -> tuple[bool, str | None, dict]:
         {
             "schema": "stegverse.sovereign-node-declaration/v0.4",
             "declared": True,
+            "node_id": derived_node_id(
+                Path(eligibility["source_root"]),
+                Path(eligibility["state_root"]),
+            ),
             "declaration_source": "DERIVED_LOCAL_RUNTIME_ELIGIBILITY",
             "source_root": eligibility["source_root"],
             "state_root": eligibility["state_root"],
