@@ -5,8 +5,8 @@
     {
       "archive_eligible": false,
       "archive_reason_codes": [
-        "ESRL_SHARED_GATEWAY_RUNTIME_NOT_YET_OBSERVED",
-        "LIVE_SOVEREIGN_RECEIVER_NOT_YET_OBSERVED",
+        "AUTHENTIC_ESRL_HIL_LEASE_OPEN_NOT_YET_OBSERVED",
+        "HIL_WORKER_CLAIM_FENCE_NOT_YET_OBSERVED",
         "SITE_BROWSER_RECEIPT_NOT_YET_PRESERVED",
         "POST_RESTART_EXACT_BYTE_PROOF_NOT_YET_PRESERVED",
         "TVC_HIL_LIFECYCLE_HANDOFF_NOT_YET_PROVEN"
@@ -29,7 +29,8 @@
         "StegVerse-Labs/.github:Heartbeat Worker Project - Validation Only / No GitHub Token Authority run 32604491867:SUCCESS",
         "StegVerse-Labs/.github:Validate organization control plane - No GitHub Token Authority run 32604491868:SUCCESS",
         "StegVerse-Labs/.github@b941edcf4f9e3e7f0fe449bd20252f3c42e6259e shared HIL Service Gateway route",
-        "StegVerse-Labs/StegOS@878f06bf258c2ee47c49bad8d24d1581a61d3546 shared-Gateway HIL ESRL runtime adapter"
+        "StegVerse-Labs/StegOS@878f06bf258c2ee47c49bad8d24d1581a61d3546 shared-Gateway HIL ESRL runtime adapter",
+        "StegVerse-Labs/.github@9591ddc3f59f851f176c9126e1031774207af8c0 HIL ESRL LEASE_OPEN execution gate"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
