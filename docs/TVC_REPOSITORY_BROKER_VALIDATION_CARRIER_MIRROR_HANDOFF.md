@@ -106,7 +106,9 @@ AUTHORITY-OWNED AFTER PASS:
   TVC repository integration authority may admit the validated broker bundle only after exact governed PASS and current-base compatibility review.
 ```
 
-A resident source-refresh cycle has a bounded, non-authorizing request consumer for this task. It only attempts targeted independent task control when `STEGVERSE_TVC_ROOT` already identifies an exact clean local checkout at the pinned PR #92 head. Missing local source remains retryable `HANDOFF_READY`; the consumer performs no private source acquisition. The consumer now derives the expected head from the executable handoff instead of carrying a second hard-coded SHA.
+A resident source-refresh cycle has a bounded, non-authorizing request consumer for this task. The consumer first looks for the exact clean PR #92 checkout. If it is absent but an already-local TVC control root contains the merged `scripts/advance_tvc_pr92_broker_validation.py`, the consumer may invoke that TVC progression module. That module composes TVC's pre-existing systemd `LoadCredential` private-source service; the consumer itself receives no credential and performs no provider/source fetch. After TVC either materializes the exact checkout or truthfully reports `BLOCKED_CREDENTIAL_NOT_OBSERVED`, the consumer re-evaluates the canonical private-source materialization root and continues only when the exact clean head exists.
+
+The resident request grants no private-source, network, credential, merge, or repository authority. Any provider read occurs solely inside the already-admitted TVC private-source service. Missing resident credential remains retryable `HANDOFF_READY`; digest/source/validation defects fail closed. The consumer derives the expected head and digest from the executable handoff rather than carrying a second admission identity.
 
 No session may substitute itself for the machine validation worker, mint a PASS receipt, expose a credential, merge from source completeness, or treat assignment/machine ownership/readiness as done.
 
@@ -114,15 +116,17 @@ No session may substitute itself for the machine validation worker, mint a PASS 
 
 ```text
 1. independent WorkerCoordinator task control resolves SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001 with a fresh fence >22 independently of heartbeat progression
-2. exact clean local TVC PR #92 source at b5288f9910ada26c6ab2e9bca3f7701afaae2cef is resolved
-3. worker executes tvc.github_repository_operation_broker.verify with forbidden credential variables removed
-4. receipt records exact head + source_bundle_file_count=16 + source_bundle_sha256 + actual PASS/fail-closed result
-5. if main moved, identical digest rematerialization + current-base compatibility are required
-6. only PASS + digest identity + compatibility permits TVC broker admission
-7. admitted broker may execute bounded ST-019 repository-protection warrants and the existing private-source materialization operations under TV/TVC authority
-8. repo-standards independently re-observes any protection mutation; executor success alone is not compliance
-9. admitted TVC broker permits StegCore private-source MATERIALIZE_SOURCE_ARCHIVE
-10. StegCore sovereign exact-head validation executes against its then-current exact head
+2. if exact PR #92 source is absent, the resident consumer may invoke merged TVC progression `scripts.advance_tvc_pr92_broker_validation` on an already-local TVC control root
+3. TVC's existing systemd LoadCredential private-source service either materializes exact b5288f9910ada26c6ab2e9bca3f7701afaae2cef or reports the truthful retryable credential/source blocker
+4. consumer re-discovers the exact clean canonical materialization root and then targeted task control admits the existing validation worker
+5. worker executes tvc.github_repository_operation_broker.verify with forbidden credential variables removed
+6. receipt records exact head + source_bundle_file_count=16 + source_bundle_sha256 + actual PASS/fail-closed result
+7. if main moved, identical digest rematerialization + current-base compatibility are required
+8. only PASS + digest identity + compatibility permits TVC broker admission
+9. admitted broker may execute bounded ST-019 repository-protection warrants and the existing private-source materialization operations under TV/TVC authority
+10. repo-standards independently re-observes any protection mutation; executor success alone is not compliance
+11. admitted TVC broker permits StegCore private-source MATERIALIZE_SOURCE_ARCHIVE
+12. StegCore sovereign exact-head validation executes against its then-current exact head
 ```
 
 ## Completion inventory
@@ -134,6 +138,8 @@ heartbeat-gating dependency in validation worker: REMOVED
 stable source-bundle digest emission: IMPLEMENTED / UNVALIDATED
 ST-019 PROTECT_DEFAULT_BRANCH source: IMPLEMENTED / UNVALIDATED
 tvc governed validation request bridge: MERGED / VALIDATED
+TVC PR #92 resident progression driver: MERGED / VALIDATED in TVC a35fb5b93ae30da27848e263f86c929f81636a02
+resident request -> TVC progression composition: IMPLEMENTING
 tvc governed validation receipt: 0/1
 tvc broker admission: 0/1
 ST-019 authentic protection operation: 0/1
@@ -156,7 +162,7 @@ current exact TVC head binding: b5288f9910ada26c6ab2e9bca3f7701afaae2cef
 exact local source retry posture: HANDOFF_READY
 ```
 
-The validation lane is machine-executable whenever a sovereign runtime exposes an exact clean local TVC PR #92 checkout through `STEGVERSE_TVC_ROOT` **or** the canonical resident private-source materialization root `/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99`. The latter is produced only by TVC's existing systemd `LoadCredential` private-source-read capability and does not expose the GitHub credential to this worker or consumer. The resident request grants no source transport or credential authority. No governed validation receipt has yet been observed.
+The validation lane is machine-executable whenever the sovereign runtime can either (a) see an exact clean TVC PR #92 checkout or (b) see an already-local current TVC control root containing the merged PR-#92 progression module. In case (b), the consumer can invoke the existing TVC progression, which uses the pre-existing systemd `LoadCredential` private-source capability and materializes only the exact pinned source into `/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99`. The consumer remains credential-free and does not perform provider network acquisition itself. The resident request grants no source transport or credential authority. No governed validation receipt has yet been observed.
 
 ## Continuity and archive semantics
 
