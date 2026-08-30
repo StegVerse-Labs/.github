@@ -132,17 +132,26 @@ def compute_source_manifest(root:Path)->dict[str,Any]:
 def source_identity(manifest:Mapping[str,Any])->str:
     return "sha256:"+str(manifest["source_bundle_sha256"])
 
-def observe_local_component(base:Path,component_id:str)->dict[str,Any]|None:
-    root=repo_root(base,component_id)
+def observe_component_root(root:Path,component_id:str,state:str)->dict[str,Any]|None:
+    root=root.expanduser().resolve()
     if not root.is_dir(): return None
     anchors=verify_migration_anchors(root,component_id)
     manifest=compute_source_manifest(root)
     return {
-        "component_id":component_id,"root":str(root),"state":"LOCAL_PRESENT_VERIFIED",
+        "component_id":component_id,"root":str(root),"state":state,
         "source_identity":source_identity(manifest),"manifest":manifest,
         "migration_anchors":anchors,"network_fetch_performed":False,
         "legacy_coordinate":COMPONENTS[component_id]["legacy_coordinate"],
     }
+
+def observe_local_component(base:Path,component_id:str)->dict[str,Any]|None:
+    return observe_component_root(repo_root(base,component_id),component_id,"LOCAL_PRESENT_VERIFIED")
+
+def observe_configured_component(component_id:str)->dict[str,Any]|None:
+    env_name=ROOT_ENV_OUTPUT[component_id]
+    raw=str(os.environ.get(env_name) or "").strip()
+    if not raw: return None
+    return observe_component_root(Path(raw),component_id,"CONFIGURED_LOCAL_PRESENT_VERIFIED")
 
 def package_path(store:Path,component_id:str)->Path:
     return store/component_slug(component_id)/"package.json"
@@ -222,6 +231,8 @@ def materialize_package(package:Mapping[str,Any],destination:Path,component_id:s
 def ensure_component(base:Path,store:Path,component_id:str)->dict[str,Any]:
     local=observe_local_component(base,component_id)
     if local is not None: return local
+    configured=observe_configured_component(component_id)
+    if configured is not None: return configured
     package=load_package(store,component_id)
     if package is None:
         raise SourcePackagePending(f"{component_id}: content-addressed StegVerse source package not present in local package store")
@@ -273,7 +284,7 @@ def execute(invocation:Mapping[str,Any])->dict[str,Any]:
         "authority_effect":"NONE_REQUEST_ONLY"})
     if pending:
         raise SourcePackagePending("content-addressed StegVerse source packages pending: "+",".join(pending))
-    roots={c:str(repo_root(base,c)) for c in COMPONENTS}
+    roots={c:str(rows[c]["root"]) for c in COMPONENTS}
     identities={c:rows[c]["source_identity"] for c in COMPONENTS}
     receipt={
         "schema":"stegverse.sv-dn1.production-source-prep-receipt/v2","task_id":TASK_ID,"worker_id":WORKER_ID,
