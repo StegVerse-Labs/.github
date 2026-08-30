@@ -3,6 +3,8 @@
 Updated: 2026-08-29
 Repository: StegVerse-Labs/.github
 Issue: #462
+Implementation PR: #474
+Implementation merge: da1e5d1cd9761122e65c7be3b05fb24415d2abc6
 
 ## Source of truth
 
@@ -20,7 +22,7 @@ github_token_runtime_authority: NONE
 authority_effect: NONE
 ```
 
-The public URL may be reachable, but experiment data is delivered only after a valid StegVerse Node genesis receipt is independently verified and the request is admitted through canonical Interlock/InTr.
+The public URL may be reachable, but experiment data is delivered only after a valid StegVerse Node genesis receipt is independently verified and the request is admitted through the canonical Interlock/InTr path.
 
 ```text
 valid StegVerse Node
@@ -36,23 +38,27 @@ no valid Node => no experiment data
 
 Observer traffic terminates at the read-only observation projection. It does not become a direct experimental interaction with StegVerse-002.
 
-## Canonical implementation
+## Merged machine-owned implementation
 
-The canonical runtime implementation is:
+PR #474 merged the current-main implementation and passed both governing validation suites.
+
+Canonical implementation includes:
 
 - `scripts/serve_sv002_observation_intr_runtime.py`
-- `workers/sv002_public_observation_runtime_worker.py`
 - `scripts/materialize_sv002_observation_route_config.py`
 - `scripts/consume_sv002_public_observation_request.py`
-- `control/resident-execution-request.d/sv002-public-observation-runtime-001.json`
+- `workers/sv002_public_observation_runtime_worker.py`
+- `handoffs/SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001.json`
 - `control/worker-registry.d/sv002-public-observation-runtime-001.json`
 - `control/process-worker-adapters.d/sv002-public-observation-runtime-001.json`
-- `handoffs/SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001.json`
-- `tests/test_sv002_public_observation_runtime.py`
+- `control/resident-execution-request.d/sv002-public-observation-runtime-001.json`
+- `control/task-vectors/SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001.json`
+- sovereign bootstrap/native materialization/source-refresh registration
+- resident request dispatcher registration
+- shared Service Gateway loopback projection
+- deterministic runtime/Gateway/materialization/COSV regression coverage
 
-The runtime is loopback-only under the current route materializer and sits behind the existing shared Service Gateway. No second public TLS surface is created.
-
-The earlier `scripts/serve_sv002_public_observation_runtime.py` implementation was a superseded duplicate and is removed by the canonicalization follow-on. Runtime ownership, bootstrap/source refresh, resident dispatch, worker registration, and Gateway projection all point to `serve_sv002_observation_intr_runtime.py`.
+Source implementation, registration, materialization wiring, and Gateway projection are therefore no longer pending.
 
 ## Required projection sources
 
@@ -63,56 +69,65 @@ Only evidence-derived material may appear:
 - explicit AVAILABLE / DISCOVERABLE / ACCESSED / REFERENCED / USED / DERIVED knowledge evidence states;
 - externally observable experiment events;
 - manifest/receipt references;
-- Master Records custody/reconstruction state when locally available.
-
-Admissible-Existence is known as AVAILABLE from construction provenance when that provenance is present. It remains NOT_CONNECTED unless an authentic Interlock relationship is separately evidenced.
+- Master Records custody/reconstruction state when independently evidenced.
 
 Missing evidence remains explicit. The runtime must not synthesize events or claim private chain-of-thought.
 
-## Current machine state
+## Runtime request and authority
+
+```text
+task: SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001
+resident request: RESIDENT-EXEC-SV002-PUBLIC-OBSERVATION-RUNTIME-001
+mode: TARGETED_INDEPENDENT_TASK_CONTROL
+carrier trigger required: false
+fresh fence required: true
+second machine required: false
+hosted execution allowed: false
+network source fetch allowed: false
+credential authority: TV/TVC
+GitHub token runtime authority: NONE
+```
+
+The resident request is non-authorizing. It asks an already-authorized sovereign task-control runtime to refresh local source, materialize the route, and execute the bounded receiver task.
+
+## Remaining machine-observable gates
+
+The following are the actual unresolved gates after PR #474:
+
+1. Sovereign resident source refresh observes the merged implementation.
+2. `RESIDENT-EXEC-SV002-PUBLIC-OBSERVATION-RUNTIME-001` is consumed.
+3. Route config materializes from a declared sovereign Node plus local StegOS and StegVerse-002 source roots.
+4. `SV002_PUBLIC_OBSERVATION_RECEIVER_READY` is observed from the resident process.
+5. Shared Service Gateway projects `/intr/sv002-observe` to the admitted loopback receiver.
+6. A valid external StegVerse Node submits `SV002_PUBLIC_OBSERVE`.
+7. Authentic InTr ingress receipt is observed with transition `RECEIVED`.
+8. Authentic InTr egress receipt is observed with transition `FORWARDED`.
+9. Observer direct relation to StegVerse-002 remains false.
+10. Master Records custody/reconstruction is observed separately; it must not be inferred from receiver-local artifacts.
+11. Authentic StegVerse-002 principal self-characterization execution remains a separate experiment gate.
+
+## Current observed state
 
 ```text
 Site public shell: MERGED (StegVerse-Labs/Site PR #666)
-receiver source: MERGED
-node genesis verification: IMPLEMENTED
-read-only projection builder: IMPLEMENTED
-ingress/egress receipt generation: IMPLEMENTED
-shared Gateway route projection: IMPLEMENTED
-resident route materializer: IMPLEMENTED
-resident execution request: REGISTERED
-persistent receiver worker: REGISTERED
-resident request dispatcher binding: IMPLEMENTED
-bootstrap/source-refresh carriage: IMPLEMENTED
+Site claim: RELEASED on main
+receiver source: MERGED / VALIDATED (#474)
+node genesis verification: MERGED / VALIDATED
+read-only projection builder: MERGED / VALIDATED
+ingress/egress receipt generation: MERGED / VALIDATED
+shared Gateway route projection source: MERGED / VALIDATED
+resident persistent receiver source/control: MERGED / VALIDATED
+resident request consumption receipt: NOT OBSERVED
+receiver readiness: NOT OBSERVED
 public deployed round trip: NOT OBSERVED
+authentic ingress receipt: NOT OBSERVED
+authentic egress receipt: NOT OBSERVED
 authentic resident self-characterization run: NOT OBSERVED
 Master Records reconstruction: NOT OBSERVED
 ```
 
-Readiness is not inferred from source. `SV002_PUBLIC_OBSERVATION_RECEIVER_READY` requires an authentic resident process and readiness receipt. Terminal completion requires `SV002_PUBLIC_OBSERVATION_ROUND_TRIP_OBSERVED` with authentic ingress/egress evidence and `observer_direct_relation_to_stegverse_002=false`.
+Checked-in worker runtime state is not activation evidence and currently remains historical/stale relative to the new request. Source, CI, merge, deployment, or request registration must never be treated as authentic observation.
 
-## Remaining files/modules or installation destinations
+## Next authorized machine action
 
-- Authentic resident receiver readiness and round trip -> StegVerse-Labs/.github sovereign runtime
-- Public Site connector deployment observation -> StegVerse-Labs/Site
-- Canonical principal experiment artifacts -> StegVerse-002/micro-node-runtime
-- Custody/reconstruction projection -> master-records/orchestration
-- Post-release propagation verification -> GCAT-BCAT-Engine/Publisher, StegVerse-Labs/admissibility-wiki, StegVerse-002/stegguardian-wiki
-
-## Next machine-owned sequence
-
-```text
-resident dispatcher consumes SV002 public observation request
--> materialize non-secret loopback route config
--> acquire fresh independent-task-control fence
--> start/confirm persistent loopback receiver
--> observe /intr/sv002-observe/readiness READY
--> shared Service Gateway projects the route
--> valid Site StegVerse Node submits SV002_PUBLIC_OBSERVE
--> persist ingress RECEIVED + egress FORWARDED receipt bundle
--> mark SV002_PUBLIC_OBSERVATION_ROUND_TRIP_OBSERVED
--> separately ingest authentic principal artifacts / Master Records reconstruction
-```
-
-No second user machine, GitHub credential, hosted runtime, or third-party execution substrate is authorized or required by this lane.
-
-Source, CI, merge, deployment, or receiver readiness must not be treated as authentic experiment execution or as the final public observation round trip.
+The next authorized action is to continue the sovereign resident path until the request-consumption and receiver-readiness receipts exist. No second machine or manual credential entry is part of this task contract.
