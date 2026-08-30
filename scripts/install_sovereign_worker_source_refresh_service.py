@@ -50,6 +50,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
     refresh_script = runtime / "scripts/refresh_sovereign_worker_runtime_source.py"
     request_dispatcher = runtime / "scripts/dispatch_resident_execution_requests.py"
     hil_materialization_consumer = runtime / "scripts/consume_hil_intr_materialization_request.py"
+    sv002_materialization_consumer = runtime / "scripts/consume_sv002_intr_materialization_request.py"
     service = "\n".join([
         "[Unit]",
         "Description=StegVerse local-only WorkerCoordinator source refresh",
@@ -60,6 +61,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         f"ExecStart={_quote(python)} {_quote(refresh_script)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(request_dispatcher)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(hil_materialization_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
+        f"ExecStartPost={_quote(python)} {_quote(sv002_materialization_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost=/usr/bin/systemctl --user try-restart {WORKER_SERVICE}",
         "NoNewPrivileges=true",
         "PrivateTmp=true",
@@ -85,6 +87,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         source / "control/resident-execution-request.json",
         source / "control/resident-execution-request.d",
         runtime / "intr-materialization",
+        runtime / "sv002-intr-materialization",
     )
     path_unit = "\n".join([
         "[Unit]",
@@ -133,6 +136,7 @@ def install(
     # Immediate local refresh is the one-time bridge from a stale materialization.
     refresh_receipt = refresh(source, runtime)
     (runtime / "intr-materialization").mkdir(parents=True, exist_ok=True)
+    (runtime / "sv002-intr-materialization").mkdir(parents=True, exist_ok=True)
     config_root = unit_root or (Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "systemd" / "user")
     config_root = config_root.expanduser().resolve()
     config_root.mkdir(parents=True, exist_ok=True)
@@ -171,6 +175,8 @@ def install(
         "filesystem_event_driven": True,
         "intr_materialization_event_driven": True,
         "intr_materialization_watch": str(runtime / "intr-materialization"),
+        "sv002_intr_materialization_event_driven": True,
+        "sv002_intr_materialization_watch": str(runtime / "sv002-intr-materialization"),
         "second_heartbeat_created": False,
         "third_party_scheduler_required": False,
         "network_fetch_performed": False,

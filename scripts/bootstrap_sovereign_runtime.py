@@ -44,6 +44,8 @@ REQUIRED_SOURCE_FILES = (
     Path("scripts/materialize_sv002_observation_route_config.py"),
     Path("scripts/serve_sv002_observation_intr_runtime.py"),
     Path("scripts/consume_hil_intr_materialization_request.py"),
+    Path("scripts/consume_sv002_intr_materialization_request.py"),
+    Path("scripts/serve_sv002_intr_materialization_ingress.py"),
     Path("scripts/consume_ara_graph_resident_execution_request.py"),
     Path("scripts/consume_cmc028_resident_execution_request.py"),
     Path("scripts/consume_sv_dn1_resident_execution_request.py"),
