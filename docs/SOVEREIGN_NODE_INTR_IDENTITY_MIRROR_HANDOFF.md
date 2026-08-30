@@ -3,11 +3,27 @@
 Updated: 2026-08-29
 Repository: StegVerse-Labs/.github
 Issue: #494
-Branch: fix/sovereign-node-intr-identity-494
+Branch: main
 
 ## Source of truth
 
 This file is the current handoff and task source of truth for binding locally derived sovereign-node declarations to the canonical InTr route-materialization identity requirement.
+
+## Source closure
+
+```text
+issue: #494 CLOSED
+PR: #495
+merge: 099d8c57e4433782c0282810645d1302d1e23a24
+organization control-plane validation: 33293529857 SUCCESS
+Heartbeat Worker Project validation: 33293529864 SUCCESS
+scoped files fully developed: 100%
+known scaffolding/stubs: 0
+```
+
+Both canonical v0.4 node-derivation paths now emit the same deterministic authority-neutral `SV-NODE-<24 hex>` identity. The exact derived marker is regression-tested through both evaluator and SV002 route materializers.
+
+This closes the source compatibility defect. It does not establish a live sovereign node or receiver.
 
 ## Defect
 
@@ -102,3 +118,18 @@ Source completion does not establish:
 - Site observer/node surfaces: StegVerse-Labs/Site
 
 No new credential authority, route authority, heartbeat, scheduler, or runtime is created by this task.
+
+
+## Current observed state
+
+```text
+derived node identity source: MERGED / VALIDATED
+evaluator route identity compatibility: MERGED / VALIDATED
+SV002 route identity compatibility: MERGED / VALIDATED
+live non-hosted node derivation: NOT OBSERVED
+resident evaluator route materialization: NOT OBSERVED
+resident SV002 route materialization: NOT OBSERVED
+receiver readiness: NOT OBSERVED
+public HTTPS round trip: NOT OBSERVED
+user action required: false
+```
