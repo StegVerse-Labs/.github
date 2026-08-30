@@ -69,6 +69,7 @@ NONSECRET_ENV = (
     "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT",
     "STEGVERSE_SV_DN1_INTR_STATE_ROOT",
     "STEGVERSE_SOURCE_MATERIALIZATION_ROOT",
+    "STEGVERSE_SOURCE_PACKAGE_ROOT",
     "STEGVERSE_FORMALISM_TVC_SPOOL_ROOT",
     "STEGVERSE_SDK_SOURCE_ROOT",
     "STEGVERSE_STEGCORE_SOURCE_ROOT",
@@ -176,13 +177,17 @@ def _receipt_specs(values: Mapping[str, str]) -> dict[str, tuple[Path, dict[str,
         "SV-DN1-PRODUCTION-SOURCE-PREP-001": (
             source_prep_root / "receipts" / "latest.json",
             {
+                "schema": "stegverse.sv-dn1.production-source-prep-receipt/v2",
                 "state": "COMPLETE",
                 "transition_id": "SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE",
-                "public_source_roots_verified": True,
-                "private_source_roots_verified": True,
-                "runtime_anchor_blobs_verified": True,
+                "source_identity_scheme": "sha256-content-manifest",
+                "migration_anchors_verified": True,
+                "network_source_fetch_performed": False,
+                "github_platform_required": False,
+                "credential_used": False,
                 "github_token_used": False,
                 "repository_writeback_performed": False,
+                "sdk_admitted": False,
             },
         ),
         "SV-DN1-SDK-FIRST-ROUND-001": (
@@ -213,6 +218,46 @@ def validate_durable_receipt(task_id: str, values: Mapping[str, str]) -> dict[st
         for field, wanted in expected.items()
         if receipt.get(field) != wanted
     ]
+    if task_id == "SV-DN1-PRODUCTION-SOURCE-PREP-001":
+        components = {
+            "stegverse.sdk",
+            "stegverse.stegcore",
+            "stegverse.core-lite",
+            "stegverse.master-records",
+        }
+        identities = receipt.get("source_identities")
+        roots = receipt.get("source_roots")
+        env_map = receipt.get("source_root_env")
+        required_env = {
+            "STEGVERSE_SDK_SOURCE_ROOT",
+            "STEGVERSE_STEGCORE_SOURCE_ROOT",
+            "STEGVERSE_CORE_LITE_SOURCE_ROOT",
+            "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+        }
+        if not isinstance(identities, dict) or set(identities) != components:
+            failures.append("source_identities must contain exactly four canonical components")
+        elif not all(
+            isinstance(value, str)
+            and value.startswith("sha256:")
+            and len(value) == 71
+            and all(ch in "0123456789abcdef" for ch in value[7:])
+            for value in identities.values()
+        ):
+            failures.append("source_identities must all be sha256:<64 lowercase hex>")
+        if not isinstance(roots, dict) or set(roots) != components or not all(isinstance(v,str) and v for v in roots.values()):
+            failures.append("source_roots must contain exactly four non-empty canonical component roots")
+        if not isinstance(env_map, dict) or set(env_map) != required_env or not all(isinstance(v,str) and v for v in env_map.values()):
+            failures.append("source_root_env must contain exactly four non-empty canonical locators")
+        if isinstance(roots, dict) and isinstance(env_map, dict):
+            expected_pairs = {
+                "stegverse.sdk": "STEGVERSE_SDK_SOURCE_ROOT",
+                "stegverse.stegcore": "STEGVERSE_STEGCORE_SOURCE_ROOT",
+                "stegverse.core-lite": "STEGVERSE_CORE_LITE_SOURCE_ROOT",
+                "stegverse.master-records": "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+            }
+            for component, env_name in expected_pairs.items():
+                if roots.get(component) != env_map.get(env_name):
+                    failures.append(f"{component} root disagrees with {env_name}")
     if failures:
         raise RuntimeError(f"{task_id}: durable receipt failed validation: " + "; ".join(failures))
     return {
