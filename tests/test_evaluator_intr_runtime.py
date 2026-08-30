@@ -63,6 +63,15 @@ class EvaluatorReadReviewRuntimeTests(unittest.TestCase):
             with self.assertRaises(mod.EvaluatorRuntimeError):
                 mod._write_once(path, {"a": 2})
 
+    def test_runtime_uses_canonical_connector_profile(self) -> None:
+        source = (ROOT / "scripts/serve_evaluator_intr_runtime.py").read_text(encoding="utf-8")
+        self.assertIn('connector_from_registry(registry, "evaluator-read-review")', source)
+        self.assertIn("connector.prepare(", source)
+        self.assertIn("connector.prepare_response(", source)
+        self.assertIn("connector.validate_complete(ingress_packet, [ingress])", source)
+        self.assertIn("connector.validate_complete(egress_packet, [egress])", source)
+        self.assertNotIn("from stegos.universal_intr_transport import build_hop_receipt", source)
+
 
 if __name__ == "__main__":
     unittest.main()
