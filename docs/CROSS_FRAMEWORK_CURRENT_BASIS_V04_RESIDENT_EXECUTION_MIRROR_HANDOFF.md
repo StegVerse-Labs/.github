@@ -95,3 +95,21 @@ Master Records custody/replay/reconstruction: NOT OBSERVED
 user action required: false
 second machine required: false
 ```
+
+
+## Canonical local source-root discovery — 2026-08-30
+
+A second machine-execution seam was removed after the resident materialization fix. The current-basis consumer no longer requires four manually populated component-root environment variables when the existing canonical production source materialization is already present.
+
+Resolution order:
+
+```text
+explicit STEGVERSE_*_SOURCE_ROOT for a component, if present and valid
+-> STEGVERSE_SOURCE_MATERIALIZATION_ROOT/components/<component>
+-> /var/lib/stegverse/source/components/<component>
+-> fail closed as BLOCKED_LOCAL_SOURCE_ROOTS_NOT_OBSERVED
+```
+
+This matches the existing production source-preparation architecture. The generic resident dispatcher now forwards the non-secret `STEGVERSE_SOURCE_MATERIALIZATION_ROOT` locator when present. No remote checkout, network fetch, GitHub/provider credential, or new runtime authority is introduced.
+
+This correction removes manual environment wiring as a prerequisite when the canonical local component tree already exists. Authentic resident execution remains separately evidence-bound.

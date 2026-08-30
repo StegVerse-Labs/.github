@@ -54,6 +54,38 @@ class CurrentBasisResidentConsumerTests(unittest.TestCase):
             self.assertFalse(result["second_machine_required"])
             self.assertEqual(calls, [])
 
+
+    def test_canonical_materialization_root_is_discovered_without_four_explicit_env_vars(self):
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td) / "source"
+            expected = {
+                "STEGVERSE_SDK_SOURCE_ROOT": base / "components/sdk",
+                "STEGVERSE_STEGCORE_SOURCE_ROOT": base / "components/stegcore",
+                "STEGVERSE_CORE_LITE_SOURCE_ROOT": base / "components/core-lite",
+                "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": base / "components/master-records",
+            }
+            for path in expected.values():
+                path.mkdir(parents=True, exist_ok=True)
+            roots, missing = MOD.source_roots({
+                MOD.SOURCE_MATERIALIZATION_ROOT_ENV: str(base),
+            })
+            self.assertEqual(missing, [])
+            self.assertEqual(roots, {key: path.resolve() for key, path in expected.items()})
+
+    def test_explicit_component_root_overrides_canonical_default(self):
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td) / "source"
+            explicit = Path(td) / "sdk-explicit"
+            explicit.mkdir(parents=True)
+            for rel in ("components/stegcore", "components/core-lite", "components/master-records"):
+                (base / rel).mkdir(parents=True, exist_ok=True)
+            roots, missing = MOD.source_roots({
+                MOD.SOURCE_MATERIALIZATION_ROOT_ENV: str(base),
+                "STEGVERSE_SDK_SOURCE_ROOT": str(explicit),
+            })
+            self.assertEqual(missing, [])
+            self.assertEqual(roots["STEGVERSE_SDK_SOURCE_ROOT"], explicit.resolve())
+
     def test_no_request_is_noop(self):
         with tempfile.TemporaryDirectory() as td:
             result = MOD.consume(ROOT, Path(td), env={"PATH": "/bin", "HOME": td})

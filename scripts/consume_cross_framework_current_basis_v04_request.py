@@ -33,6 +33,14 @@ REQUIRED_ROOT_ENV = (
     "STEGVERSE_CORE_LITE_SOURCE_ROOT",
     "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
 )
+SOURCE_MATERIALIZATION_ROOT_ENV = "STEGVERSE_SOURCE_MATERIALIZATION_ROOT"
+DEFAULT_SOURCE_MATERIALIZATION_ROOT = Path("/var/lib/stegverse/source")
+DEFAULT_COMPONENT_ROOTS = {
+    "STEGVERSE_SDK_SOURCE_ROOT": Path("components/sdk"),
+    "STEGVERSE_STEGCORE_SOURCE_ROOT": Path("components/stegcore"),
+    "STEGVERSE_CORE_LITE_SOURCE_ROOT": Path("components/core-lite"),
+    "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": Path("components/master-records"),
+}
 
 
 def truthy(value: str | None) -> bool:
@@ -103,6 +111,8 @@ def clean_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
     for key in REQUIRED_ROOT_ENV:
         if values.get(key):
             env[key] = values[key]
+    if values.get(SOURCE_MATERIALIZATION_ROOT_ENV):
+        env[SOURCE_MATERIALIZATION_ROOT_ENV] = values[SOURCE_MATERIALIZATION_ROOT_ENV]
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
     env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] = "NONE"
     return env
@@ -111,16 +121,20 @@ def clean_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
 def source_roots(env: Mapping[str, str]) -> tuple[dict[str, Path], list[str]]:
     roots: dict[str, Path] = {}
     missing: list[str] = []
+    base = Path(
+        str(env.get(SOURCE_MATERIALIZATION_ROOT_ENV) or DEFAULT_SOURCE_MATERIALIZATION_ROOT)
+    ).expanduser().resolve()
     for key in REQUIRED_ROOT_ENV:
         raw = str(env.get(key) or "").strip()
-        if not raw:
+        candidates = []
+        if raw:
+            candidates.append(Path(raw).expanduser().resolve())
+        candidates.append((base / DEFAULT_COMPONENT_ROOTS[key]).resolve())
+        selected = next((path for path in candidates if path.is_dir()), None)
+        if selected is None:
             missing.append(key)
             continue
-        path = Path(raw).expanduser().resolve()
-        if not path.is_dir():
-            missing.append(key)
-            continue
-        roots[key] = path
+        roots[key] = selected
     return roots, missing
 
 
