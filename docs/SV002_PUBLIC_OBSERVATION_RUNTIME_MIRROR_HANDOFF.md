@@ -90,6 +90,27 @@ GitHub token runtime authority: NONE
 
 The resident request is non-authorizing. It asks an already-authorized sovereign task-control runtime to refresh local source, materialize the route, and execute the bounded receiver task.
 
+## Bounded live transport validation — 2026-08-29
+
+Two validation-only execution proofs now exist on canonical source paths:
+
+- StegVerse-Labs/.github PR #481 / merge `d67816930b5dcf63e44108fa6805513a9b597f17` launches the actual SV002 `BoundedHTTPServer`, sends a valid node-bound `SV002_PUBLIC_OBSERVE` request over a real loopback HTTP socket, observes a successful read-only response, verifies ingress `RECEIVED` and egress `FORWARDED` receipt lineage, persists the runtime bundle, and confirms `observer_direct_relation_to_stegverse_002=false`.
+- StegVerse-org/LLM-adapter PR #230 / merge `be7e592b3cdb2d8f4781e5a2a23cad1d850b4463` sends an admitted SV002 request through the deployed Service Gateway FastAPI route to a real same-host loopback HTTP receiver and verifies exact request bytes plus admitted transport/authority headers are forwarded while credential headers are excluded.
+
+These proofs establish:
+
+```text
+canonical SV002 receiver HTTP socket path: OBSERVED_BOUNDED_LIVE_VALIDATION
+shared Service Gateway -> loopback forwarding: OBSERVED_BOUNDED_LIVE_VALIDATION
+ingress/egress receipt construction over live receiver socket: OBSERVED_BOUNDED_LIVE_VALIDATION
+production public Internet route: NOT OBSERVED
+resident sovereign production-host receiver: NOT OBSERVED
+authentic principal experiment execution: NOT OBSERVED
+Master Records custody/reconstruction: NOT OBSERVED
+```
+
+CI execution remains validation-only and grants no runtime, experiment, custody, publication, or activation authority.
+
 ## Remaining machine-observable gates
 
 The following are the actual unresolved gates after PR #474:
@@ -116,7 +137,9 @@ node genesis verification: MERGED / VALIDATED
 read-only projection builder: MERGED / VALIDATED
 ingress/egress receipt generation: MERGED / VALIDATED
 shared Gateway route projection source: MERGED / VALIDATED
+shared Gateway -> real loopback transport: OBSERVED_BOUNDED_LIVE_VALIDATION (#230)
 resident persistent receiver source/control: MERGED / VALIDATED
+receiver HTTP socket round trip: OBSERVED_BOUNDED_LIVE_VALIDATION (#481)
 resident request consumption receipt: NOT OBSERVED
 receiver readiness: NOT OBSERVED
 public deployed round trip: NOT OBSERVED
