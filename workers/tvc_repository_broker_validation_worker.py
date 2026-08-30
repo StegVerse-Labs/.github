@@ -15,6 +15,7 @@ HANDOFF_PATH = ROOT / "handoffs" / "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.js
 RECEIPT_PATH = ROOT / "receipts" / "tvc-repository-broker-validation" / "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json"
 TASK_ID = "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001"
 CAPABILITY = "tvc_repository_broker_validation"
+EXPECTED_SOURCE_BUNDLE_SHA256_KEY = "expected_source_bundle_sha256"
 FORBIDDEN_ENV = (
     "GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT",
     "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "GOOGLE_API_KEY",
@@ -113,6 +114,7 @@ def main() -> int:
     task_control = _optional_task_control_identity(invocation, task)
     canonical = load(HANDOFF_PATH)
     expected_head = str((canonical.get("execution") or {}).get("expected_tvc_head") or "")
+    expected_bundle_digest = str((canonical.get("execution") or {}).get(EXPECTED_SOURCE_BUNDLE_SHA256_KEY) or "")
     tvc_root, observed = locate_tvc(expected_head)
     now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
@@ -139,7 +141,7 @@ def main() -> int:
         passed = (
             proc.returncode == 0 and isinstance(report, dict) and report.get("status") == "ok" and
             isinstance(nested, dict) and nested.get("result") == "PASS" and
-            bundle_count == 16 and isinstance(bundle_digest, str) and len(bundle_digest) == 64 and
+            bundle_count == 16 and isinstance(bundle_digest, str) and bundle_digest == expected_bundle_digest and
             nested.get("consumer_credential_used") is False and
             nested.get("tvc_github_credential_used") is False and
             nested.get("non_tv_tvc_secret_or_token_used") is False and
@@ -153,6 +155,7 @@ def main() -> int:
             "source_head": git(tvc_root, "rev-parse", "HEAD"),
             "source_bundle_file_count": bundle_count,
             "source_bundle_sha256": bundle_digest,
+            "expected_source_bundle_sha256": expected_bundle_digest,
             "integration_binding_rule": "REVALIDATE_IF_BUNDLE_DIGEST_CHANGES",
             "dispatcher_exit_code": proc.returncode,
             "dispatcher_report": report,
