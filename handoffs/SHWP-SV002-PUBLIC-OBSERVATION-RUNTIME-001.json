@@ -1,0 +1,121 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "SV002-PUBLIC-OBSERVATION-RUNTIME-462",
+    "objective": "Maintain a sovereign read-only StegVerse-002 observation receiver that releases evidence-derived experiment projections only to independently validated StegVerse Node observers through canonical Interlock/InTr.",
+    "success_predicates": [
+      "declared sovereign host node observed",
+      "local StegOS and StegVerse-002 sources observed",
+      "observation receiver READY",
+      "observer genesis receipt independently validated",
+      "authentic ingress RECEIVED receipt persisted",
+      "authentic egress FORWARDED receipt persisted",
+      "observer direct relation to StegVerse-002 remains false"
+    ],
+    "failure_predicates": [
+      "anonymous experiment payload fallback",
+      "invalid Node accepted",
+      "observer request routed into StegVerse-002",
+      "hosted runtime selected",
+      "GitHub/non-TV-TVC credential present",
+      "fabricated experiment or Master Records evidence"
+    ],
+    "authority_ceiling": [
+      "bounded_process_execution",
+      "runtime_observation",
+      "read_only_interlock_intr_listener",
+      "evidence_projection_only",
+      "no experiment interaction authority",
+      "no custody authority",
+      "no repository writeback"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 2
+  },
+  "task": {
+    "task_id": "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-Labs/Site#665",
+      "StegVerse-002/micro-node-runtime:experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json",
+      "scripts/serve_sv002_observation_intr_runtime.py"
+    ],
+    "canonical_owner_ref": "StegVerse-Labs/.github#462",
+    "canonical_lineage_key": "sv002:public-observation-runtime",
+    "worker_registry_ref": "control/worker-registry.d/sv002-public-observation-runtime-001.json",
+    "worker_id": "sv002-public-observation-runtime-worker",
+    "adapter_ref": "process:sv002-public-observation-runtime-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "evidence review only",
+    "priority": "release",
+    "dependencies": [],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
+    "parent_task_id": null,
+    "derivation_depth": 0
+  },
+  "authority": {
+    "authority_source": "StegVerse-Labs/.github#462 + canonical Universal InTr transport",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "sv002-public-observation-runtime-v1",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "repository_writeback_authority": false,
+    "experiment_interaction_authority": false,
+    "custody_authority": false,
+    "read_only_runtime_launch_authority": true
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "runtime_observation",
+      "universal_intr_adjacent_hop_traversal"
+    ],
+    "worker": "workers/sv002_public_observation_runtime_worker.py",
+    "allowed_paths": [
+      "receipts/sovereign-network/sv002-public-observation/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 4,
+    "max_retries": 256,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 64,
+    "rate_class": "sv002_public_observation",
+    "hosted_execution_allowed": false,
+    "route_config": "~/.stegverse/config/sv002-public-observation-runtime.json",
+    "remote_checkout_allowed": false
+  },
+  "activation": {
+    "carrier": "independent_task_control",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "handoffs/SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001.json",
+    "recheck_trigger": "each admitted independent task-control opportunity until receiver readiness and then until one authentic node-bound observation round trip exists",
+    "checkout_policy": "fenced_atomic_checkout",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+  },
+  "continuity": {
+    "master_records_required": false,
+    "result_receipt": "~/.stegverse/runtime/receipts/sovereign-network/sv002-public-observation/**",
+    "repository_persistence_requires_separate_admission": true
+  },
+  "completion": {
+    "next_authorized_action": "Keep receiver READY. Terminalize this runtime-observation task only after one authentic valid-Node observation round trip. Experiment execution and Master Records reconstruction remain separate evidence gates.",
+    "terminal_when": [
+      "SV002_PUBLIC_OBSERVATION_ROUND_TRIP_OBSERVED",
+      "authentic ingress receipt observed",
+      "authentic egress receipt observed",
+      "observer_direct_relation_to_stegverse_002=false"
+    ],
+    "nonterminal_ready_state": "SV002_PUBLIC_OBSERVATION_RECEIVER_READY"
+  },
+  "source_state_vector_ref": "control/task-vectors/SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001.json"
+}
