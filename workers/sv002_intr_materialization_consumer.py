@@ -28,7 +28,7 @@ TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
 REQUEST_SCHEMA = "stegverse.universal-intr-materialization-request/v1"
 REQUEST_STATE = "QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION"
 DESTINATION = {"boundary": "STEGOS_ECOSYSTEM", "subsystem": "SV002:PublicObservation"}
-DOWNSTREAM_OWNER = "StegVerse-Labs/.github#462"
+DOWNSTREAM_OWNER = "StegVerse-Labs/.github#493"
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
 RuntimeMaterializer = Callable[..., dict[str, Any]]
 
