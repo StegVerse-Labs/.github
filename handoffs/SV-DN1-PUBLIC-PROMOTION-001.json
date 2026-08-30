@@ -1,0 +1,152 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SV-DN1-PUBLIC-PROMOTION-001",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "SV-DN1-PUBLIC-PROMOTION-001",
+    "objective": "Promote one authentic ANALYZED SV-DN-1 first-round artifact set into the already-local demo-suite public projection using the canonical exact-byte promoter, without repository persistence or deployment authority.",
+    "success_predicates": [
+      "SDK first-round receipt is COMPLETE at SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED",
+      "canonical demo-suite promoter is already local",
+      "promotion receipt is PROMOTION_READY_FOR_REPOSITORY_MUTATION",
+      "observation_class is LIVE and publication_state is public-observable",
+      "all five destination artifacts are byte-identical to finalized source artifacts",
+      "network, credential, repository writeback, deployment and certification remain false"
+    ],
+    "failure_predicates": [
+      "SDK result is absent, non-ANALYZED, fixture, WITHHELD, or already claims public hosting",
+      "canonical promoter source is absent",
+      "promoter rewrites finalized semantics or changes bytes",
+      "credential, network, repository writeback or deployment is attempted",
+      "existing frozen promotion receipt differs"
+    ],
+    "authority_ceiling": [
+      "bounded_process_execution",
+      "exact_byte_public_projection",
+      "local_demo_suite_projection_mutation",
+      "evidence_class_preservation",
+      "no repository writeback authority",
+      "no commit push merge authority",
+      "no deployment authority",
+      "no SDK evaluation authority",
+      "no release or certification authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SV-DN1-PUBLIC-PROMOTION-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "docs/SV_DN1_PUBLIC_PROMOTION_TASK_MIRROR_HANDOFF.md",
+      "docs/SV_DN1_SDK_FIRST_ROUND_MIRROR_HANDOFF.md"
+    ],
+    "canonical_owner_ref": "docs/SV_DN1_PUBLIC_PROMOTION_TASK_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "sv-dn1:public-promotion",
+    "worker_registry_ref": "control/worker-registry.d/sv-dn1-public-promotion-001.json",
+    "worker_id": "sv-dn1-public-promotion-worker",
+    "adapter_ref": "process:sv-dn1-public-promotion-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "evidence review only",
+    "priority": "release",
+    "parent_task_id": "SV-DN1-SDK-FIRST-ROUND-001",
+    "derivation_reason": "Own the explicit successor transition from authentic ANALYZED result to local exact-byte public projection without widening SDK worker authority.",
+    "derivation_depth": 1,
+    "source_handoff_ref": "docs/SV_DN1_PUBLIC_PROMOTION_TASK_MIRROR_HANDOFF.md",
+    "dependencies": ["SV-DN1-SDK-FIRST-ROUND-001"],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL"
+  },
+  "authority": {
+    "authority_source": "docs/SV_DN1_PUBLIC_PROMOTION_TASK_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "sv-dn1-public-promotion-v1",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "network_access_authority": false,
+    "repository_writeback_authority": false,
+    "commit_authority": false,
+    "push_authority": false,
+    "merge_authority": false,
+    "deployment_authority": false,
+    "publication_decision_authority": false,
+    "sdk_execution_authority": false,
+    "certification_authority": false,
+    "execution_authority_created": false
+  },
+  "execution": {
+    "required_capabilities": ["bounded_process_execution", "exact_byte_public_projection", "local_demo_suite_projection_mutation", "evidence_class_preservation"],
+    "worker": "workers/sv_dn1_public_promotion_worker.py",
+    "allowed_paths": ["receipts/sv-dn1-public-promotion/**"],
+    "allowed_services": [],
+    "max_actions": 8,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 24,
+    "rate_class": "sv_dn1_public_promotion",
+    "hosted_execution_allowed": false,
+    "bound_state_root": "~/.stegverse/state/sv-dn1-public-promotion",
+    "bound_state_allowed_paths": ["promoter/**", "receipts/**"],
+    "required_local_locators": ["STEGVERSE_SV_DN1_SDK_FIRST_ROUND_STATE_ROOT", "STEGVERSE_SV_DN1_SOURCE_ROOT"],
+    "public_network_access": {"enabled": false, "methods": [], "allowed_hosts": [], "authenticated": false, "credential_forwarding": false}
+  },
+  "input_contract": {
+    "parent_task_id": "SV-DN1-SDK-FIRST-ROUND-001",
+    "parent_transition_id": "SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED",
+    "sdk_receipt_schema": "stegverse.sv-dn1.sdk-first-round-worker-receipt/v1",
+    "promotion_receipt_schema": "stegverse.sv-dn1.public-promotion-receipt/v1",
+    "required_observation_class": "LIVE",
+    "required_promotion_state": "PROMOTION_READY_FOR_REPOSITORY_MUTATION",
+    "github_platform_required": false
+  },
+  "activation": {
+    "carrier": "independent_task_control",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "docs/SV_DN1_PUBLIC_PROMOTION_TASK_MIRROR_HANDOFF.md",
+    "recheck_trigger": "each admitted assignment opportunity after authentic SDK first-round analysis completes until exact-byte promotion readiness exists",
+    "checkout_policy": "fenced_atomic_checkout",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+  },
+  "continuity": {
+    "master_records_required": false,
+    "result_receipt": "~/.stegverse/state/sv-dn1-public-promotion/receipts/latest.json",
+    "repository_persistence_requires_separate_admission": true
+  },
+  "completion": {
+    "next_authorized_action": "A separately admitted repository-mutation lane may persist only the exact five promoted artifact bytes and promotion receipt identity; this task itself may not commit, push, merge or deploy.",
+    "terminal_when": [
+      "SV_DN1_PUBLIC_PROMOTION_READY",
+      "exact_bytes_preserved=true",
+      "semantic_rewrite_performed=false",
+      "network_fetch_performed=false",
+      "credential_used=false",
+      "repository_writeback_performed=false",
+      "deployment_performed=false"
+    ],
+    "release_condition": "The exact authentic ANALYZED artifact set is staged byte-for-byte in the local public projection and is ready for separately governed repository persistence."
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:sv-dn1-public-promotion:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": ["docs/SV_DN1_PUBLIC_PROMOTION_TASK_MIRROR_HANDOFF.md"],
+    "admissibility_evidence_refs": ["handoffs/SV-DN1-PUBLIC-PROMOTION-001.json"],
+    "integration_evidence_refs": ["workers/sv_dn1_public_promotion_worker.py", "control/process-worker-adapters.d/sv-dn1-public-promotion-001.json", "control/worker-registry.d/sv-dn1-public-promotion-001.json"],
+    "activation_proof_ref": null,
+    "blockers": ["SV_DN1_FIRST_AUTHENTIC_ANALYZED_RESULT_NOT_YET_OBSERVED"],
+    "continuation_owner": "sv-dn1-public-promotion-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "develops_capability",
+    "target_phase": "ACTIVATED"
+  }
+}
