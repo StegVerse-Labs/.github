@@ -2,12 +2,15 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
+import shutil
 import subprocess
 import sys
+import tempfile
 from typing import Any, Mapping
 
 REQUEST_REL = Path("control/resident-execution-request.d/cross-framework-current-basis-v04-001.json")
@@ -59,6 +62,17 @@ DEFAULT_COMPONENT_ROOTS = {
     "STEGVERSE_CORE_LITE_SOURCE_ROOT": Path("components/core-lite"),
     "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": Path("components/master-records"),
 }
+SOURCE_PACKAGE_ROOT_ENV = "STEGVERSE_SOURCE_PACKAGE_ROOT"
+DEFAULT_SOURCE_PACKAGE_ROOT = Path.home() / ".stegverse" / "packages" / "source" / "v1"
+COMPONENT_IDS = {
+    "STEGVERSE_SDK_SOURCE_ROOT": "stegverse.sdk",
+    "STEGVERSE_STEGCORE_SOURCE_ROOT": "stegverse.stegcore",
+    "STEGVERSE_CORE_LITE_SOURCE_ROOT": "stegverse.core-lite",
+    "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": "stegverse.master-records",
+}
+PACKAGE_SLUGS = {key: value.replace(".", "-") for key, value in COMPONENT_IDS.items()}
+PACKAGE_SCHEMA = "stegverse.source-package/v1"
+PACKAGE_VERSION = "1.0.0"
 
 
 def truthy(value: str | None) -> bool:
@@ -163,9 +177,161 @@ def clean_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
             env[key] = values[key]
     if values.get(SOURCE_MATERIALIZATION_ROOT_ENV):
         env[SOURCE_MATERIALIZATION_ROOT_ENV] = values[SOURCE_MATERIALIZATION_ROOT_ENV]
+    if values.get(SOURCE_PACKAGE_ROOT_ENV):
+        env[SOURCE_PACKAGE_ROOT_ENV] = values[SOURCE_PACKAGE_ROOT_ENV]
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
     env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] = "NONE"
     return env
+
+
+
+def _canonical_bytes(value: Any) -> bytes:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+
+
+def _sha256_bytes(raw: bytes) -> str:
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _target_root(env: Mapping[str, str], key: str) -> Path:
+    raw = str(env.get(key) or "").strip()
+    if raw:
+        return Path(raw).expanduser().resolve()
+    base = Path(
+        str(env.get(SOURCE_MATERIALIZATION_ROOT_ENV) or DEFAULT_SOURCE_MATERIALIZATION_ROOT)
+    ).expanduser().resolve()
+    return (base / DEFAULT_COMPONENT_ROOTS[key]).resolve()
+
+
+def _package_path(env: Mapping[str, str], key: str) -> Path:
+    store = Path(
+        str(env.get(SOURCE_PACKAGE_ROOT_ENV) or DEFAULT_SOURCE_PACKAGE_ROOT)
+    ).expanduser().resolve()
+    return store / PACKAGE_SLUGS[key] / "package.json"
+
+
+def _validate_source_package(package: Mapping[str, Any], key: str) -> list[tuple[str, bytes]]:
+    component_id = COMPONENT_IDS[key]
+    if package.get("schema") != PACKAGE_SCHEMA or package.get("package_version") != PACKAGE_VERSION:
+        raise RuntimeError(f"{component_id}: source package schema/version mismatch")
+    if package.get("component_id") != component_id:
+        raise RuntimeError(f"{component_id}: source package component mismatch")
+    if package.get("credential_material_included") is not False:
+        raise RuntimeError(f"{component_id}: source package credential material forbidden")
+    if package.get("authority_effect") != "NONE_SOURCE_TRANSPORT_ONLY":
+        raise RuntimeError(f"{component_id}: source package authority effect mismatch")
+    files = package.get("files")
+    manifest = package.get("manifest")
+    if not isinstance(files, list) or not isinstance(manifest, dict):
+        raise RuntimeError(f"{component_id}: source package files/manifest missing")
+    manifest_rows = manifest.get("files")
+    if not isinstance(manifest_rows, list) or manifest.get("file_count") != len(files) or len(manifest_rows) != len(files):
+        raise RuntimeError(f"{component_id}: source package file count mismatch")
+    rows: list[dict[str, Any]] = []
+    decoded: list[tuple[str, bytes]] = []
+    for index, file_row in enumerate(files):
+        manifest_row = manifest_rows[index]
+        if not isinstance(file_row, dict) or not isinstance(manifest_row, dict):
+            raise RuntimeError(f"{component_id}: source package row malformed")
+        rel = str(file_row.get("path") or "")
+        pure = PurePosixPath(rel)
+        if not pure.parts or pure.is_absolute() or ".." in pure.parts:
+            raise RuntimeError(f"{component_id}: unsafe source package path")
+        for field in ("path", "sha256", "size"):
+            if file_row.get(field) != manifest_row.get(field):
+                raise RuntimeError(f"{component_id}: source package manifest/file mismatch")
+        try:
+            raw = base64.b64decode(str(file_row.get("content_base64") or ""), validate=True)
+        except Exception as exc:
+            raise RuntimeError(f"{component_id}: invalid source package base64") from exc
+        if len(raw) != file_row.get("size") or _sha256_bytes(raw) != file_row.get("sha256"):
+            raise RuntimeError(f"{component_id}: source package file integrity mismatch: {rel}")
+        rows.append({"path": rel, "sha256": file_row["sha256"], "size": file_row["size"]})
+        decoded.append((rel, raw))
+    digest = _sha256_bytes(_canonical_bytes(rows))
+    if digest != manifest.get("source_bundle_sha256"):
+        raise RuntimeError(f"{component_id}: source package bundle digest mismatch")
+    if package.get("source_identity") != "sha256:" + digest:
+        raise RuntimeError(f"{component_id}: source package identity mismatch")
+    return decoded
+
+
+def _component_mismatches(key: str, root: Path) -> list[dict[str, str]]:
+    mismatches: list[dict[str, str]] = []
+    for rel, expected in EXPECTED_SOURCE_BLOBS[key].items():
+        path = root / rel
+        observed = git_blob_sha1(path.read_bytes()) if path.is_file() else "MISSING"
+        if observed != expected:
+            mismatches.append({
+                "root": key,
+                "path": rel,
+                "expected_git_blob_sha1": expected,
+                "observed_git_blob_sha1": observed,
+            })
+    return mismatches
+
+
+def _materialize_local_package(env: Mapping[str, str], key: str) -> dict[str, Any]:
+    package_path = _package_path(env, key)
+    if not package_path.is_file():
+        raise FileNotFoundError(str(package_path))
+    package = load_json(package_path)
+    decoded = _validate_source_package(package, key)
+    destination = _target_root(env, key)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    stage = Path(tempfile.mkdtemp(prefix=f".{destination.name}.current-basis-v04-", dir=destination.parent))
+    backup: Path | None = None
+    try:
+        for rel, raw in decoded:
+            pure = PurePosixPath(rel)
+            target = stage / Path(*pure.parts)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(raw)
+        mismatches = _component_mismatches(key, stage)
+        if mismatches:
+            raise RuntimeError(
+                f"{COMPONENT_IDS[key]}: package does not contain exact frozen-v0.4 execution source"
+            )
+        if destination.exists():
+            backup = destination.parent / f".{destination.name}.pre-current-basis-v04"
+            if backup.exists():
+                shutil.rmtree(backup)
+            os.replace(destination, backup)
+        os.replace(stage, destination)
+        stage = None
+        if backup and backup.exists():
+            shutil.rmtree(backup)
+        return {
+            "root": key,
+            "component_id": COMPONENT_IDS[key],
+            "state": "LOCAL_SOURCE_PACKAGE_MATERIALIZED",
+            "package_path": str(package_path),
+            "source_identity": package.get("source_identity"),
+            "target_root": str(destination),
+            "exact_critical_blobs_verified": True,
+            "network_source_fetch_performed": False,
+            "credential_read_or_acquired": False,
+            "execution_authority_effect": "NONE",
+            "authority_effect": "NONE_SOURCE_TRANSPORT_ONLY",
+        }
+    finally:
+        if stage is not None and stage.exists():
+            shutil.rmtree(stage, ignore_errors=True)
+
+
+def repair_from_local_packages(env: Mapping[str, str], keys: list[str]) -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
+    repaired: list[dict[str, Any]] = []
+    needs: list[dict[str, str]] = []
+    for key in sorted(set(keys)):
+        try:
+            repaired.append(_materialize_local_package(env, key))
+        except FileNotFoundError:
+            needs.append({
+                "root": key,
+                "component_id": COMPONENT_IDS[key],
+                "package_path": str(_package_path(env, key)),
+            })
+    return repaired, needs
 
 
 def source_roots(env: Mapping[str, str]) -> tuple[dict[str, Path], list[str]]:
@@ -200,17 +366,29 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
 
     safe = clean_env(env)
     roots, missing = source_roots(safe)
+    source_repairs: list[dict[str, Any]] = []
+    package_needs: list[dict[str, str]] = []
+    if missing:
+        repairs, needs = repair_from_local_packages(safe, missing)
+        source_repairs.extend(repairs)
+        package_needs.extend(needs)
+        roots, missing = source_roots(safe)
     if missing:
         receipt = {
             "schema": "stegverse.current-basis-v04.resident-consumption/v1",
-            "state": "BLOCKED_LOCAL_SOURCE_ROOTS_NOT_OBSERVED",
+            "state": "BLOCKED_LOCAL_SOURCE_PACKAGE_NOT_OBSERVED" if package_needs else "BLOCKED_LOCAL_SOURCE_ROOTS_NOT_OBSERVED",
             "missing_root_env": missing,
+            "source_repairs": source_repairs,
+            "source_package_needs": package_needs,
             "request_id": request["request_id"],
             "request_sha256": request_hash,
             "runtime_execution_attempted": False,
+            "source_resolution_attempted": True,
+            "network_source_fetch_performed": False,
+            "credential_read_or_acquired": False,
             "user_action_required": False,
             "second_machine_required": False,
-            "authority_effect": "NONE",
+            "authority_effect": "NONE_SOURCE_RESOLUTION_ONLY",
         }
         atomic_json(runtime / CONSUMPTION_REL, receipt)
         return receipt
@@ -242,17 +420,29 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
 
     observed_source_blobs, source_mismatches = verify_exact_source_identity(roots)
     if source_mismatches:
+        drifted_keys = sorted({row["root"] for row in source_mismatches})
+        repairs, needs = repair_from_local_packages(safe, drifted_keys)
+        source_repairs.extend(repairs)
+        package_needs.extend(needs)
+        roots, missing_after_repair = source_roots(safe)
+        observed_source_blobs, source_mismatches = verify_exact_source_identity(roots) if not missing_after_repair else ({}, source_mismatches)
+    if source_mismatches:
         receipt = {
             "schema": "stegverse.current-basis-v04.resident-consumption/v1",
-            "state": "BLOCKED_CANONICAL_SOURCE_IDENTITY_MISMATCH",
+            "state": "BLOCKED_LOCAL_SOURCE_PACKAGE_NOT_OBSERVED" if package_needs else "BLOCKED_CANONICAL_SOURCE_IDENTITY_MISMATCH",
             "request_id": request["request_id"],
             "request_sha256": request_hash,
             "observed_source_blobs": observed_source_blobs,
             "source_identity_mismatches": source_mismatches,
+            "source_repairs": source_repairs,
+            "source_package_needs": package_needs,
             "runtime_execution_attempted": False,
+            "source_resolution_attempted": True,
+            "network_source_fetch_performed": False,
+            "credential_read_or_acquired": False,
             "user_action_required": False,
             "second_machine_required": False,
-            "authority_effect": "NONE",
+            "authority_effect": "NONE_SOURCE_RESOLUTION_ONLY",
         }
         atomic_json(runtime / CONSUMPTION_REL, receipt)
         return receipt
@@ -320,6 +510,8 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "run_complete_observed": isinstance(run_complete, dict),
         "run_complete": run_complete,
         "result_dir": str(result_dir),
+        "source_repairs": source_repairs,
+        "source_package_needs": package_needs,
         "network_source_fetch_performed": False,
         "github_token_required": False,
         "credential_authority": "TV/TVC",
@@ -345,7 +537,7 @@ def main() -> int:
     return 0 if result["state"] in {
         "NO_REQUEST", "ALREADY_CONSUMED", "COMPLETED",
         "BLOCKED_LOCAL_SOURCE_ROOTS_NOT_OBSERVED", "BLOCKED_CANONICAL_SOURCE_NOT_MATERIALIZED",
-        "BLOCKED_CANONICAL_SOURCE_IDENTITY_MISMATCH"
+        "BLOCKED_CANONICAL_SOURCE_IDENTITY_MISMATCH", "BLOCKED_LOCAL_SOURCE_PACKAGE_NOT_OBSERVED"
     } else 1
 
 
