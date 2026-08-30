@@ -391,3 +391,62 @@ receipts/hil-sovereign-receiver/SHWP-HIL-SOVEREIGN-RECEIVER-001.json
 A successful run therefore proves the resident dispatch -> independent HIL claim/fence -> Node/InTr ingress -> materialization -> receiver READY segment on a real sovereign runtime. It still does not satisfy exact PDF custody, controlled restart/reconstruction, or TVC HIL lifecycle receipt until those downstream receivers emit their own evidence.
 
 Source/CI validation of this harness remains non-runtime evidence. The authentic transition is only a PASS emitted by the harness on an eligible resident runtime with the component receipts above.
+
+
+## 2026-08-30 ESRL blocker reconciliation
+
+Live StegOS state supersedes any interpretation that HIL requires a permanent
+physical process host or completion of the G18 durable-runtime lane.
+
+Verified existing StegOS source:
+
+```text
+ESRL v0.3 provider-neutral lease primitive: MERGED / MODEL_CONFORMANCE
+provider-neutral runtime dispatch controller: MERGED
+concrete SovereignEphemeralNodeAdapter: MERGED
+Universal InTr materialization request: MERGED
+HIL-specific Universal InTr -> ESRL INTAKE binding/controller: StegOS PR #98
+```
+
+The HIL-specific source path is now:
+
+```text
+verified stegverse.universal-intr-materialization-request/v1
+-> ESRL INTAKE / EVENT_EPHEMERAL lease request
+-> replaceable non-authorizing compute/runtime adapters
+-> local implementation/readiness verification
+-> freshly discovered lease-bound public HTTPS rendezvous
+-> independent public HTTPS identity/readiness observation
+-> LEASE_OPEN
+-> existing .github HIL materialization/WorkerCoordinator path
+-> HIL independent claim/fresh fence
+-> receiver READY
+-> exact PDF custody/reconstruction
+-> TVC lifecycle receipts
+```
+
+Important blocker correction:
+
+```text
+permanent/always-on host required for HIL: false
+G18 completion required for HIL: false
+G18 claim/fence may satisfy HIL: false
+second user machine required: false
+GitHub-hosted production runtime allowed: false
+transport/compute authority_effect: false
+credential_authority: TV/TVC
+```
+
+The currently merged sovereign Node adapter proves reusable deployment-local
+compute/materialization source exists, but its relay rendezvous probe is local
+and MUST NOT be promoted to HIL public HTTPS evidence. HIL remains runtime
+blocked until a concrete replaceable rendezvous path produces a freshly observed
+public HTTPS endpoint and independent public identity/readiness proof.
+
+StegOS PR #98 is source/model work only until its exact-head validation passes
+and it is merged. Even after merge, no HIL activation may be claimed until the
+authentic ESRL lease/rendezvous and downstream HIL receipts are observed.
+
+`handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json` remains authoritative for the
+separate G18 lane only. Its PHYSICAL_RESOURCE language MUST NOT be used as a HIL
+prerequisite or HIL blocker.
