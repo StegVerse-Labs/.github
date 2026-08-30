@@ -1,20 +1,39 @@
 {
   "schema": "stegverse.process-worker-adapter-fragment/v0.1",
-  "adapter_id": "process:bootstrap-v1-release-gate-v1",
-  "enabled": true,
-  "worker_id": "bootstrap-v1-release-gate-worker",
-  "task_id": "BOOTSTRAP-V1-RELEASE-GATE-001",
-  "command": [
-    "python3",
-    "workers/bootstrap_v1_release_gate_worker.py"
-  ],
-  "environment_allowlist": [
-    "STEGVERSE_BOOTSTRAP_V1_RELEASE_CANDIDATE_STATE_ROOT",
-    "STEGVERSE_BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_STATE_ROOT",
-    "STEGVERSE_BOOTSTRAP_V1_MATERIALIZATION_PROOF",
-    "STEGVERSE_BOUND_STATE_ROOT"
-  ],
-  "credential_authority": "TV/TVC",
-  "github_token_required": false,
-  "authority_effect": "NONE"
+  "fragment_id": "BOOTSTRAP-V1-RELEASE-GATE-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:bootstrap-v1-release-gate-v1",
+      "authority_ref": "handoffs/BOOTSTRAP-V1-RELEASE-GATE-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "bootstrap_release_gate_validation",
+        "evidence_class_preservation"
+      ],
+      "command": [
+        "python",
+        "workers/bootstrap_v1_release_gate_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_BOOTSTRAP_V1_RELEASE_CANDIDATE_STATE_ROOT",
+        "STEGVERSE_BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_STATE_ROOT",
+        "STEGVERSE_BOOTSTRAP_V1_MATERIALIZATION_PROOF",
+        "STEGVERSE_BOUND_STATE_ROOT",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/state/bootstrap-v1-release-gate",
+      "bound_state_allowed_paths": [
+        "receipts/**"
+      ],
+      "timeout_seconds": 120,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Validates already-local frozen candidate, bundle, and authentic materialization proof only.",
+        "No network, credential, repository, tag, publication, SDK-admission, package-execution, or runtime authority."
+      ]
+    }
+  ]
 }
