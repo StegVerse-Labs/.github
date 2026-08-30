@@ -48,7 +48,7 @@ class CurrentBasisResidentConsumerTests(unittest.TestCase):
                 runner=runner,
                 env={"PATH": "/bin", "HOME": td},
             )
-            self.assertEqual(result["state"], "BLOCKED_LOCAL_SOURCE_ROOTS_NOT_OBSERVED")
+            self.assertEqual(result["state"], "BLOCKED_LOCAL_SOURCE_PACKAGE_NOT_OBSERVED")
             self.assertFalse(result["runtime_execution_attempted"])
             self.assertFalse(result["user_action_required"])
             self.assertFalse(result["second_machine_required"])
@@ -132,6 +132,121 @@ class CurrentBasisResidentConsumerTests(unittest.TestCase):
                 self.assertEqual(len(mismatches), 1)
                 self.assertEqual(mismatches[0]["root"], first)
                 self.assertNotEqual(observed[first][rel], expected[first][rel])
+        finally:
+            MOD.EXPECTED_SOURCE_BLOBS = original
+
+
+    def _build_package(self, key, files):
+        rows = []
+        payloads = []
+        for rel, raw in sorted(files.items()):
+            digest = MOD._sha256_bytes(raw)
+            row = {"path": rel, "sha256": digest, "size": len(raw)}
+            rows.append(row)
+            payloads.append({**row, "content_base64": __import__("base64").b64encode(raw).decode("ascii")})
+        bundle = MOD._sha256_bytes(MOD._canonical_bytes(rows))
+        return {
+            "schema": MOD.PACKAGE_SCHEMA,
+            "package_version": MOD.PACKAGE_VERSION,
+            "component_id": MOD.COMPONENT_IDS[key],
+            "source_identity": "sha256:" + bundle,
+            "credential_material_included": False,
+            "manifest": {"file_count": len(rows), "source_bundle_sha256": bundle, "files": rows},
+            "files": payloads,
+            "authority_effect": "NONE_SOURCE_TRANSPORT_ONLY",
+        }
+
+    def test_local_source_package_repairs_missing_component_without_network_or_credentials(self):
+        original = MOD.EXPECTED_SOURCE_BLOBS
+        try:
+            with tempfile.TemporaryDirectory() as td:
+                base = Path(td)
+                materialization = base / "source"
+                package_store = base / "packages"
+                key = "STEGVERSE_SDK_SOURCE_ROOT"
+                files = {
+                    "scripts/run_cross_framework_current_basis_v04.py": b"harness",
+                    "inspection/examples/cross-framework-current-basis-request.draft.json": b"manifest",
+                }
+                MOD.EXPECTED_SOURCE_BLOBS = {
+                    **original,
+                    key: {rel: MOD.git_blob_sha1(raw) for rel, raw in files.items()},
+                }
+                package = self._build_package(key, files)
+                package_path = package_store / MOD.PACKAGE_SLUGS[key] / "package.json"
+                package_path.parent.mkdir(parents=True)
+                package_path.write_text(json.dumps(package), encoding="utf-8")
+                env = {
+                    MOD.SOURCE_MATERIALIZATION_ROOT_ENV: str(materialization),
+                    MOD.SOURCE_PACKAGE_ROOT_ENV: str(package_store),
+                }
+                repaired, needs = MOD.repair_from_local_packages(env, [key])
+                self.assertEqual(needs, [])
+                self.assertEqual(repaired[0]["state"], "LOCAL_SOURCE_PACKAGE_MATERIALIZED")
+                self.assertFalse(repaired[0]["network_source_fetch_performed"])
+                self.assertFalse(repaired[0]["credential_read_or_acquired"])
+                target = materialization / MOD.DEFAULT_COMPONENT_ROOTS[key]
+                self.assertEqual((target / "scripts/run_cross_framework_current_basis_v04.py").read_bytes(), b"harness")
+                self.assertEqual(MOD._component_mismatches(key, target), [])
+        finally:
+            MOD.EXPECTED_SOURCE_BLOBS = original
+
+    def test_local_source_package_can_replace_stale_component_atomically(self):
+        original = MOD.EXPECTED_SOURCE_BLOBS
+        try:
+            with tempfile.TemporaryDirectory() as td:
+                base = Path(td)
+                materialization = base / "source"
+                package_store = base / "packages"
+                key = "STEGVERSE_STEGCORE_SOURCE_ROOT"
+                target = materialization / MOD.DEFAULT_COMPONENT_ROOTS[key]
+                stale = target / "src/stegcore/current_basis.py"
+                stale.parent.mkdir(parents=True, exist_ok=True)
+                stale.write_bytes(b"stale")
+                files = {"src/stegcore/current_basis.py": b"current"}
+                MOD.EXPECTED_SOURCE_BLOBS = {
+                    **original,
+                    key: {rel: MOD.git_blob_sha1(raw) for rel, raw in files.items()},
+                }
+                package = self._build_package(key, files)
+                package_path = package_store / MOD.PACKAGE_SLUGS[key] / "package.json"
+                package_path.parent.mkdir(parents=True)
+                package_path.write_text(json.dumps(package), encoding="utf-8")
+                env = {
+                    MOD.SOURCE_MATERIALIZATION_ROOT_ENV: str(materialization),
+                    MOD.SOURCE_PACKAGE_ROOT_ENV: str(package_store),
+                }
+                repaired, needs = MOD.repair_from_local_packages(env, [key])
+                self.assertEqual(needs, [])
+                self.assertEqual(repaired[0]["state"], "LOCAL_SOURCE_PACKAGE_MATERIALIZED")
+                self.assertEqual(stale.read_bytes(), b"current")
+                self.assertEqual(MOD._component_mismatches(key, target), [])
+                self.assertFalse((target.parent / ".stegcore.pre-current-basis-v04").exists())
+        finally:
+            MOD.EXPECTED_SOURCE_BLOBS = original
+
+    def test_source_package_with_wrong_critical_blob_fails_closed(self):
+        original = MOD.EXPECTED_SOURCE_BLOBS
+        try:
+            with tempfile.TemporaryDirectory() as td:
+                base = Path(td)
+                package_store = base / "packages"
+                key = "STEGVERSE_CORE_LITE_SOURCE_ROOT"
+                MOD.EXPECTED_SOURCE_BLOBS = {
+                    **original,
+                    key: {"core_lite/transaction_route.py": MOD.git_blob_sha1(b"expected")},
+                }
+                package = self._build_package(key, {"core_lite/transaction_route.py": b"wrong"})
+                package_path = package_store / MOD.PACKAGE_SLUGS[key] / "package.json"
+                package_path.parent.mkdir(parents=True)
+                package_path.write_text(json.dumps(package), encoding="utf-8")
+                env = {
+                    MOD.SOURCE_MATERIALIZATION_ROOT_ENV: str(base / "source"),
+                    MOD.SOURCE_PACKAGE_ROOT_ENV: str(package_store),
+                }
+                with self.assertRaisesRegex(RuntimeError, "exact frozen-v0.4 execution source"):
+                    MOD._materialize_local_package(env, key)
+                self.assertFalse((base / "source" / MOD.DEFAULT_COMPONENT_ROOTS[key]).exists())
         finally:
             MOD.EXPECTED_SOURCE_BLOBS = original
 
