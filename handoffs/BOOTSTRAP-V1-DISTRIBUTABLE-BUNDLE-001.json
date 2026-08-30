@@ -1,0 +1,200 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001",
+    "objective": "Build one self-contained transport-neutral Bootstrap v1 rc.1 bundle from the authentic frozen release candidate, frozen source catalog, and four exact local source-package v1 objects.",
+    "success_predicates": [
+      "release candidate is FROZEN 1.0.0-rc.1 and not activated",
+      "release candidate binds the exact frozen source catalog",
+      "exactly four local source packages match the four frozen catalog identities",
+      "every package file hash and complete manifest digest verifies",
+      "bundle identity is a deterministic SHA-256 of canonical bundle contents",
+      "bundle requires no platform locator credential or transport implementation"
+    ],
+    "failure_predicates": [
+      "rc.1 candidate or source catalog is absent/mismatched",
+      "required source package is absent",
+      "source package identity, file hash, or manifest digest mismatches catalog",
+      "package contains credential material or authority expansion",
+      "existing frozen bundle differs",
+      "network/platform source acquisition or repository writeback is attempted"
+    ],
+    "authority_ceiling": [
+      "bounded_process_execution",
+      "source_package_integrity_validation",
+      "local_bootstrap_bundle_build",
+      "evidence_class_preservation",
+      "no source acquisition authority",
+      "no package execution authority",
+      "no SDK admission authority",
+      "no release activation authority",
+      "no repository writeback authority",
+      "no publication authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "docs/BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_MIRROR_HANDOFF.md",
+      "handoffs/BOOTSTRAP-V1-RELEASE-CANDIDATE-FREEZE-001.json",
+      "schemas/bootstrap-release-candidate-v1.schema.json",
+      "schemas/bootstrap-source-catalog-v1.schema.json",
+      "schemas/source-package-v1.schema.json"
+    ],
+    "canonical_owner_ref": "docs/BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "bootstrap-v1:distributable-bundle",
+    "worker_registry_ref": "control/worker-registry.d/bootstrap-v1-distributable-bundle-001.json",
+    "worker_id": "bootstrap-v1-distributable-bundle-worker",
+    "adapter_ref": "process:bootstrap-v1-distributable-bundle-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "evidence review only",
+    "priority": "release",
+    "parent_task_id": null,
+    "derivation_reason": "The distributable bundle is a release/distribution artifact independent of SV-DN-1 semantic lineage. It depends on the frozen rc.1 identity and local package objects without inheriting execution authority.",
+    "derivation_depth": 0,
+    "source_handoff_ref": "docs/BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_MIRROR_HANDOFF.md",
+    "dependencies": [
+      "BOOTSTRAP-V1-RELEASE-CANDIDATE-FREEZE-001"
+    ],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL"
+  },
+  "authority": {
+    "authority_source": "docs/BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "bootstrap-v1-distributable-bundle-v1",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "github_platform_required": false,
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "network_access_authority": false,
+    "repository_writeback_authority": false,
+    "package_execution_authority": false,
+    "sdk_admission_authority": false,
+    "release_activation_authority": false,
+    "publication_authority": false,
+    "certification_authority": false,
+    "execution_authority_created": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "source_package_integrity_validation",
+      "local_bootstrap_bundle_build",
+      "evidence_class_preservation"
+    ],
+    "worker": "workers/bootstrap_v1_distributable_bundle_worker.py",
+    "allowed_paths": [
+      "receipts/bootstrap-v1-distributable-bundle/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 8,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 24,
+    "rate_class": "bootstrap_v1_distributable_bundle",
+    "hosted_execution_allowed": false,
+    "bound_state_root": "~/.stegverse/state/bootstrap-v1-distributable-bundle",
+    "bound_state_allowed_paths": [
+      "bundle/**",
+      "receipts/**"
+    ],
+    "required_local_locators": [
+      "STEGVERSE_BOOTSTRAP_V1_RELEASE_CANDIDATE_STATE_ROOT",
+      "STEGVERSE_BOOTSTRAP_V1_SOURCE_IDENTITY_FREEZE_STATE_ROOT",
+      "STEGVERSE_SOURCE_PACKAGE_ROOT"
+    ],
+    "public_network_access": {
+      "enabled": false,
+      "methods": [],
+      "allowed_hosts": [],
+      "authenticated": false,
+      "credential_forwarding": false
+    }
+  },
+  "input_contract": {
+    "release_candidate_schema": "stegverse.bootstrap.release-candidate/v1",
+    "release_candidate_version": "1.0.0-rc.1",
+    "source_catalog_schema": "stegverse.bootstrap.source-catalog/v1",
+    "source_catalog_version": "1.0.0",
+    "source_package_schema": "stegverse.source-package/v1",
+    "source_package_version": "1.0.0",
+    "required_components": [
+      "stegverse.sdk",
+      "stegverse.stegcore",
+      "stegverse.core-lite",
+      "stegverse.master-records"
+    ],
+    "bundle_schema": "stegverse.bootstrap.bundle/v1",
+    "bundle_version": "1.0.0-rc.1",
+    "source_identity_scheme": "sha256-content-manifest",
+    "github_platform_required": false
+  },
+  "activation": {
+    "carrier": "independent_task_control",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "docs/BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_MIRROR_HANDOFF.md",
+    "recheck_trigger": "each admitted assignment opportunity after rc.1 freezes until the exact four packages are locally present and one canonical bundle is built",
+    "checkout_policy": "fenced_atomic_checkout",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+  },
+  "continuity": {
+    "master_records_required": false,
+    "result_receipt": "~/.stegverse/state/bootstrap-v1-distributable-bundle/receipts/latest.json",
+    "bundle": "~/.stegverse/state/bootstrap-v1-distributable-bundle/bundle/bootstrap-v1-1.0.0-rc.1.bundle.json",
+    "repository_persistence_requires_separate_admission": true
+  },
+  "completion": {
+    "next_authorized_action": "Materialize this exact bundle on an established StegVerse node and replay its receipts; do not claim Bootstrap v1 release before authentic device materialization proof.",
+    "terminal_when": [
+      "BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_BUILT",
+      "bundle_version=1.0.0-rc.1",
+      "component_count=4",
+      "github_platform_required=false",
+      "network_access_performed=false",
+      "release_activated=false",
+      "repository_writeback_performed=false"
+    ],
+    "release_condition": "One self-contained content-addressed bundle exists for the authentic frozen rc.1 catalog and all four matching source packages. Device materialization/replay remains separately required."
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:bootstrap-v1-distributable-bundle:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "docs/BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/bootstrap_v1_distributable_bundle_worker.py",
+      "control/process-worker-adapters.d/bootstrap-v1-distributable-bundle-001.json",
+      "control/worker-registry.d/bootstrap-v1-distributable-bundle-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "BOOTSTRAP_V1_RC1_NOT_YET_FROZEN",
+      "FOUR_CANONICAL_SOURCE_PACKAGES_NOT_YET_OBSERVED",
+      "BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_NOT_YET_BUILT"
+    ],
+    "continuation_owner": "bootstrap-v1-distributable-bundle-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "develops_capability",
+    "target_phase": "ACTIVATED"
+  }
+}
