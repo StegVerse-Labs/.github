@@ -21,7 +21,9 @@ TARGET_TASK = "SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001"
 TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
 TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
 MIN_FENCE = 22
-EXPECTED_HEAD = json.loads((ROOT / HANDOFF_REL).read_text(encoding="utf-8"))["execution"]["expected_tvc_head"]
+_HANDOFF_EXECUTION = json.loads((ROOT / HANDOFF_REL).read_text(encoding="utf-8"))["execution"]
+EXPECTED_HEAD = _HANDOFF_EXECUTION["expected_tvc_head"]
+EXPECTED_BUNDLE_SHA256 = _HANDOFF_EXECUTION["expected_source_bundle_sha256"]
 
 HOSTED = ("GITHUB_ACTIONS","CI","RENDER","RENDER_SERVICE_ID","VERCEL","CF_PAGES","CLOUDFLARE_WORKERS")
 FORBIDDEN = (
@@ -129,8 +131,7 @@ def terminal_validation(runtime: Path) -> bool:
         and result.get("expected_tvc_head") == EXPECTED_HEAD
         and result.get("source_head") == EXPECTED_HEAD
         and result.get("source_bundle_file_count") == 16
-        and isinstance(result.get("source_bundle_sha256"), str)
-        and len(result["source_bundle_sha256"]) == 64
+        and result.get("source_bundle_sha256") == EXPECTED_BUNDLE_SHA256
         and receipt.get("credential_authority") == "TV/TVC"
         and receipt.get("authority_effect") == "NONE_VALIDATION_ONLY"
     )
