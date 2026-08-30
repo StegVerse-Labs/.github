@@ -254,6 +254,9 @@ class CurrentBasisResidentConsumerTests(unittest.TestCase):
                     MOD.SOURCE_PACKAGE_ROOT_ENV: str(package_store),
                     key: str(explicit),
                 }
+                for other_key in MOD.REQUIRED_ROOT_ENV:
+                    if other_key != key:
+                        (materialization / MOD.DEFAULT_COMPONENT_ROOTS[other_key]).mkdir(parents=True, exist_ok=True)
                 repaired, needs = MOD.repair_from_local_packages(env, [key])
                 self.assertEqual(needs, [])
                 self.assertEqual(repaired[0]["state"], "LOCAL_SOURCE_PACKAGE_MATERIALIZED")
