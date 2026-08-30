@@ -29,7 +29,7 @@ class PortableResidentDispatchTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "credential-bearing environment"):
             MOD.clean_exec_env({"PATH": "/bin", "HOME": "/tmp", "GITHUB_TOKEN": "forbidden"})
 
-    def test_refresh_then_dispatch_uses_refreshed_runtime_dispatcher(self):
+    def test_refresh_then_dispatch_targets_only_current_basis_consumer(self):
         with tempfile.TemporaryDirectory() as td:
             base = Path(td)
             source = base / "source"
@@ -48,8 +48,11 @@ class PortableResidentDispatchTests(unittest.TestCase):
                 dispatch_receipt.write_text(json.dumps({
                     "schema": "stegverse.resident-request-dispatch/v1",
                     "state": "DISPATCH_COMPLETE",
-                    "consumer_count": 11,
-                    "consumers_visited": 11,
+                    "registered_consumer_count": 12,
+                    "consumer_count": 1,
+                    "selected_consumers": [MOD.TARGET_CONSUMER],
+                    "selection_scope": "EXACT_SELECTOR",
+                    "consumers_visited": 1,
                     "request_failures": [],
                     "request_failure_blocks_later_requests": False,
                     "network_source_fetch_performed": False,
@@ -85,6 +88,9 @@ class PortableResidentDispatchTests(unittest.TestCase):
 
             self.assertEqual(result["state"], "REFRESH_AND_DISPATCH_COMPLETE")
             self.assertTrue(result["dispatch_receipt_observed"])
+            self.assertTrue(result["exact_consumer_selection_observed"])
+            self.assertEqual(result["target_consumer"], MOD.TARGET_CONSUMER)
+            self.assertFalse(result["unrelated_consumers_dispatched"])
             self.assertFalse(result["bridge_grants_execution_authority"])
             self.assertFalse(result["bridge_mints_claim_or_fence"])
             self.assertFalse(result["network_source_fetch_performed"])
@@ -94,11 +100,10 @@ class PortableResidentDispatchTests(unittest.TestCase):
             self.assertEqual(len(calls), 1)
             command, kwargs = calls[0]
             self.assertEqual(Path(command[1]), dispatcher)
+            self.assertIn("--only-consumer", command)
+            self.assertEqual(command[command.index("--only-consumer") + 1], MOD.TARGET_CONSUMER)
             self.assertEqual(kwargs["cwd"], runtime)
-            self.assertEqual(
-                kwargs["env"]["STEGVERSE_SOURCE_PACKAGE_ROOT"],
-                str(base / "packages"),
-            )
+            self.assertEqual(kwargs["env"]["STEGVERSE_SOURCE_PACKAGE_ROOT"], str(base / "packages"))
             self.assertNotIn("GITHUB_TOKEN", kwargs["env"])
             self.assertTrue((runtime / MOD.RECEIPT_REL).is_file())
 
@@ -119,7 +124,10 @@ class PortableResidentDispatchTests(unittest.TestCase):
                 dispatch_receipt.write_text(json.dumps({
                     "schema": "stegverse.resident-request-dispatch/v1",
                     "state": "DISPATCH_INCOMPLETE",
-                    "request_failures": ["cross_framework_current_basis_v04"],
+                    "consumer_count": 1,
+                    "selected_consumers": [MOD.TARGET_CONSUMER],
+                    "selection_scope": "EXACT_SELECTOR",
+                    "request_failures": [MOD.TARGET_CONSUMER],
                 }) + "\n", encoding="utf-8")
                 return SimpleNamespace(returncode=1, stdout="", stderr="")
 
@@ -128,17 +136,9 @@ class PortableResidentDispatchTests(unittest.TestCase):
                 "network_fetch_performed": False,
                 "credential_read_or_acquired": False,
             }):
-                result = MOD.refresh_and_dispatch(
-                    source,
-                    runtime,
-                    runner=runner,
-                    env={"PATH": "/bin", "HOME": td},
-                )
+                result = MOD.refresh_and_dispatch(source, runtime, runner=runner, env={"PATH": "/bin", "HOME": td})
             self.assertEqual(result["state"], "REFRESH_COMPLETE_DISPATCH_INCOMPLETE")
-            self.assertEqual(
-                result["dispatch_receipt"]["request_failures"],
-                ["cross_framework_current_basis_v04"],
-            )
+            self.assertEqual(result["dispatch_receipt"]["request_failures"], [MOD.TARGET_CONSUMER])
 
     def test_incomplete_refresh_fails_before_dispatch(self):
         with tempfile.TemporaryDirectory() as td:
@@ -154,12 +154,7 @@ class PortableResidentDispatchTests(unittest.TestCase):
                 "credential_read_or_acquired": False,
             }):
                 with self.assertRaisesRegex(RuntimeError, "preserve mutable runtime state"):
-                    MOD.refresh_and_dispatch(
-                        source,
-                        runtime,
-                        runner=lambda *args, **kwargs: calls.append((args, kwargs)),
-                        env={"PATH": "/bin", "HOME": td},
-                    )
+                    MOD.refresh_and_dispatch(source, runtime, runner=lambda *args, **kwargs: calls.append((args, kwargs)), env={"PATH": "/bin", "HOME": td})
             self.assertEqual(calls, [])
 
 
