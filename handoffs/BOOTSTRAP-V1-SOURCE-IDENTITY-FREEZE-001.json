@@ -54,7 +54,7 @@
     "priority": "release",
     "parent_task_id": "SV-DN1-PRODUCTION-SOURCE-PREP-001",
     "derivation_reason": "A distributable Bootstrap v1 needs stable platform-independent source coordinates. The already-admitted source-prep v2 receipt is the sole producer of those content identities; this task freezes them without acquiring or executing source.",
-    "derivation_depth": 1,
+    "derivation_depth": 3,
     "source_handoff_ref": "docs/BOOTSTRAP_V1_SOURCE_IDENTITY_FREEZE_MIRROR_HANDOFF.md",
     "dependencies": [
       "SV-DN1-PRODUCTION-SOURCE-PREP-001"
@@ -192,7 +192,7 @@
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": false,
     "temporal_class": "current",
-    "task_relationship": "freezes_capability_identity",
+    "task_relationship": "develops_capability",
     "target_phase": "ACTIVATED"
   }
 }
