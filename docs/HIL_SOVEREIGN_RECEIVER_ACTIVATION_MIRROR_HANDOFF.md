@@ -514,3 +514,51 @@ TVC lifecycle receipt: NOT OBSERVED
 No additional generic HIL ESRL/runtime/rendezvous source adapter is presently
 identified as missing. The next authorized transition is authentic event-driven
 execution through the merged shared-Gateway ESRL path.
+
+
+## 2026-08-30 ESRL shared-Gateway execution-gate merge
+
+The event consumer itself is now bound to the shared-Gateway ESRL lifecycle:
+
+```text
+StegVerse-Labs/.github PR #519
+merge: 9591ddc3f59f851f176c9126e1031774207af8c0
+Validate organization control plane run: 33295465321 SUCCESS
+Heartbeat Worker Project run: 33295465332 SUCCESS
+
+workers/hil_esrl_runtime_bridge.py
+scripts/consume_hil_intr_materialization_request.py
+tests/test_hil_intr_materialization_consumer.py
+```
+
+The previous local-only behavior is removed:
+
+```text
+OLD:
+admitted materialization -> relay-specific adapter -> LOCAL_READY
+-> targeted HIL WorkerCoordinator execution
+
+CURRENT:
+admitted materialization
+-> SharedGatewayHILRuntimeAdapter
+-> sovereign runtime materialized
+-> local HIL profile verified
+-> PUBLIC_VERIFYING
+-> shared Gateway readiness independently verified
+-> LEASE_OPEN
+-> only then targeted HIL WorkerCoordinator execution
+```
+
+The consumer now fails closed when the ESRL bridge returns only LOCAL_READY or
+when public shared-Gateway readiness is absent. WorkerCoordinator remains the sole
+claim/fence authority after LEASE_OPEN.
+
+Current source/control completion:
+
+```text
+Universal InTr -> ESRL HIL binding/controller: COMPLETE_VALIDATED_MERGED
+concrete shared-Gateway HIL ESRL runtime adapter: COMPLETE_VALIDATED_MERGED
+HIL materialization consumer LEASE_OPEN gate: COMPLETE_VALIDATED_MERGED
+known source scaffolding/stubs in this HIL activation path: 0
+authentic runtime execution: NOT OBSERVED
+```
