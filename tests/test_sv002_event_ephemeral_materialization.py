@@ -63,6 +63,7 @@ class SV002EventEphemeralTests(unittest.TestCase):
         self.assertFalse(request["always_on_receiver_required"])
         self.assertFalse(request["request_grants_execution_authority"])
         self.assertEqual(request["credential_authority"], "TV/TVC")
+        self.assertEqual(consumer.DOWNSTREAM_OWNER, "StegVerse-Labs/.github#493")
 
     def test_profile_preserves_hil_and_advertises_sv002(self):
         profile = ingress.profile(False)
@@ -90,6 +91,8 @@ class SV002EventEphemeralTests(unittest.TestCase):
             self.assertEqual(receipt["state"], "INGRESS_ADMITTED")
             self.assertFalse(receipt["g18_required"])
             self.assertFalse(receipt["observer_direct_relation_to_stegverse_002"])
+            self.assertFalse(receipt["round_trip_claimed"])
+            self.assertFalse(receipt["observation_round_trip_claimed"])
             self.assertFalse(receipt["claim_or_fence_minted"])
             dispatch.assert_called_once()
 

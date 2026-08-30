@@ -185,6 +185,7 @@ def admit_sv002(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) 
         "runtime_execution_attempted": False,
         "consumer_dispatch_attempted": False,
         "receiver_readiness_claimed": False,
+        "round_trip_claimed": False,
         "observation_round_trip_claimed": False,
         "observer_direct_relation_to_stegverse_002": False,
         "claim_or_fence_minted": False,

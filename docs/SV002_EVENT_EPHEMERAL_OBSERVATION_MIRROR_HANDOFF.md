@@ -75,3 +75,35 @@ Terminal public observation still requires independently observed:
 8. observer direct relation to StegVerse-002 remains false.
 
 Master Records custody/reconstruction and authentic principal self-characterization remain separate evidence gates.
+
+
+## Site #702 exact-contract alignment — issue #514
+
+Cross-repository comparison against the released Site #702 client found two fail-closed wire mismatches:
+
+```text
+Site materialization request downstream_owner_ref:
+  StegVerse-Labs/.github#493
+
+prior sovereign consumer expectation:
+  StegVerse-Labs/.github#462
+
+Site ingress receipt validator requires:
+  round_trip_claimed = false
+
+prior sovereign receipt exposed:
+  observation_round_trip_claimed = false
+```
+
+The canonical contract is aligned to Site #702 without changing authority:
+
+- SV002 event materialization ownership reference is `StegVerse-Labs/.github#493`;
+- ingress emits `round_trip_claimed=false`;
+- `observation_round_trip_claimed=false` remains as a compatibility/no-preclaim field;
+- G18 remains unnecessary;
+- request and ingress remain non-authorizing;
+- WorkerCoordinator remains sole claim/fence authority;
+- observer direct relation to StegVerse-002 remains false;
+- credential authority remains TV/TVC.
+
+This alignment is source compatibility only and is not authentic Node delivery or receiver activation evidence.
