@@ -36,6 +36,7 @@ NONSECRET = (
     "PATH","HOME","LANG","LC_ALL","XDG_STATE_HOME","XDG_CONFIG_HOME",
     "STEGVERSE_HEARTBEAT_ROOT","STEGVERSE_TVC_ROOT",
 )
+PRIVATE_SOURCE_CANDIDATE = Path("/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99")
 
 
 def truthy(value: str | None) -> bool:
@@ -92,28 +93,36 @@ def clean_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
 
 
 def exact_local_tvc_root(values: Mapping[str, str]) -> tuple[Path | None, str | None]:
+    candidates: list[Path] = []
     raw = str(values.get("STEGVERSE_TVC_ROOT") or "").strip()
-    if not raw:
-        return None, None
-    root = Path(raw).expanduser().resolve()
-    if not (root / ".git").is_dir():
-        return None, str(root)
-    completed = subprocess.run(
-        ["git","-C",str(root),"rev-parse","HEAD"],
-        check=False,capture_output=True,text=True,timeout=20,
-        env={k:v for k,v in values.items() if k in {"PATH","HOME","LANG","LC_ALL"}},
-    )
-    head = completed.stdout.strip()
-    if completed.returncode != 0 or head != EXPECTED_HEAD:
-        return None, f"{root}:{head or 'UNRESOLVED'}"
-    dirty = subprocess.run(
-        ["git","-C",str(root),"status","--porcelain"],
-        check=False,capture_output=True,text=True,timeout=20,
-        env={k:v for k,v in values.items() if k in {"PATH","HOME","LANG","LC_ALL"}},
-    )
-    if dirty.returncode != 0 or dirty.stdout.strip():
-        return None, f"{root}:{head}:DIRTY"
-    return root, f"{root}:{head}"
+    if raw:
+        candidates.append(Path(raw).expanduser())
+    candidates.append(PRIVATE_SOURCE_CANDIDATE)
+    observed: list[str] = []
+    for candidate in candidates:
+        root = candidate.resolve()
+        if not (root / ".git").is_dir():
+            observed.append(f"{root}:MISSING")
+            continue
+        completed = subprocess.run(
+            ["git","-C",str(root),"rev-parse","HEAD"],
+            check=False,capture_output=True,text=True,timeout=20,
+            env={k:v for k,v in values.items() if k in {"PATH","HOME","LANG","LC_ALL"}},
+        )
+        head = completed.stdout.strip()
+        if completed.returncode != 0 or head != EXPECTED_HEAD:
+            observed.append(f"{root}:{head or 'UNRESOLVED'}")
+            continue
+        dirty = subprocess.run(
+            ["git","-C",str(root),"status","--porcelain"],
+            check=False,capture_output=True,text=True,timeout=20,
+            env={k:v for k,v in values.items() if k in {"PATH","HOME","LANG","LC_ALL"}},
+        )
+        if dirty.returncode != 0 or dirty.stdout.strip():
+            observed.append(f"{root}:{head}:DIRTY")
+            continue
+        return root, f"{root}:{head}"
+    return None, ";".join(observed) if observed else None
 
 
 def terminal_validation(runtime: Path) -> bool:
@@ -194,7 +203,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             "terminal_validation_observed":False,
             "expected_tvc_head":EXPECTED_HEAD,
             "observed_tvc_root":observed,
-            "machine_observable_release_condition":"STEGVERSE_TVC_ROOT resolves to an exact clean local PR #92 checkout at the pinned head",
+            "machine_observable_release_condition":"STEGVERSE_TVC_ROOT or the canonical TVC private-source materialization root resolves to an exact clean local PR #92 checkout at the pinned head",
             "credential_authority":"TV/TVC",
             "github_token_required":False,
             "second_machine_required":False,

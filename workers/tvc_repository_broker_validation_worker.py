@@ -54,6 +54,7 @@ def locate_tvc(expected_head: str) -> tuple[Path | None, str]:
         Path("/var/lib/stegverse/source/StegVerse-Labs/TVC"),
         Path("/srv/stegverse/repos/StegVerse-Labs/TVC"),
         Path("/opt/stegverse/repos/StegVerse-Labs/TVC"),
+        Path("/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99"),
     ])
     observed: list[str] = []
     for candidate in candidates:

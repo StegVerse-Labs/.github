@@ -97,6 +97,7 @@ def test_worker_has_no_source_fetch_transport_or_heartbeat_gate():
     assert 'source_bundle_sha256' in source
     assert 'expected_source_bundle_sha256' in source
     assert 'bundle_digest == expected_bundle_digest' in source
+    assert '/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99' in source
 
 
 def test_canonical_retrospective_ae_record_remains_non_authorizing():
