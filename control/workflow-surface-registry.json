@@ -19,6 +19,12 @@
       "classification": "KEEP_STABLE_DISPATCHER",
       "owner": "canonical heartbeat worker project",
       "reason": "canonical heartbeat/runtime/worker validation surface; absorbs organization-heartbeat source triggers/carrier parity, manual watchdog diagnostics, retained terminal host/native canary evidence, and external-timing fixed-cadence zero-authority validation while routine state persistence remains excluded from automatic hosted fanout"
+    },
+    {
+      "path": ".github/workflows/cross-framework-current-basis-v04-resident.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "CROSS-FRAMEWORK-CURRENT-BASIS-V04-EXECUTION-001 / .github#478",
+      "reason": "source-only validation for the bounded frozen v0.4 resident execution request/consumer; authentic execution is prohibited on GitHub Actions"
     }
   ],
   "removed_in_hygiene_batch_1": [

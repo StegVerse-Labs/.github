@@ -1,0 +1,49 @@
+name: Cross-Framework Current-Basis Resident Request Validation (Non-Authorizing)
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - control/resident-execution-request.d/cross-framework-current-basis-v04-001.json
+      - scripts/consume_cross_framework_current_basis_v04_request.py
+      - scripts/dispatch_resident_execution_requests.py
+      - tests/test_cross_framework_current_basis_v04_resident.py
+      - docs/CROSS_FRAMEWORK_CURRENT_BASIS_V04_RESIDENT_EXECUTION_MIRROR_HANDOFF.md
+      - .github/workflows/cross-framework-current-basis-v04-resident.yml
+  push:
+    branches: [main]
+    paths:
+      - control/resident-execution-request.d/cross-framework-current-basis-v04-001.json
+      - scripts/consume_cross_framework_current_basis_v04_request.py
+      - scripts/dispatch_resident_execution_requests.py
+      - tests/test_cross_framework_current_basis_v04_resident.py
+      - docs/CROSS_FRAMEWORK_CURRENT_BASIS_V04_RESIDENT_EXECUTION_MIRROR_HANDOFF.md
+      - .github/workflows/cross-framework-current-basis-v04-resident.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact source without persisted credential
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+        with:
+          persist-credentials: false
+      - name: Assert non-authorizing hosted boundary
+        run: |
+          set -eu
+          test -z "${GH_TOKEN:-}"
+          echo 'GitHub validates source only; resident execution is prohibited here.'
+      - name: Validate request and consumer
+        run: |
+          set -eu
+          python -m unittest tests.test_cross_framework_current_basis_v04_resident
+          python -m py_compile scripts/consume_cross_framework_current_basis_v04_request.py scripts/dispatch_resident_execution_requests.py
+      - name: Record boundary
+        run: |
+          echo 'CROSS_FRAMEWORK_CURRENT_BASIS_V04_RESIDENT_SOURCE_PASS'
+          echo 'authentic_resident_execution_claimed=false'
+          echo 'credential_authority=TV/TVC'
+          echo 'github_token_runtime_authority=NONE'
