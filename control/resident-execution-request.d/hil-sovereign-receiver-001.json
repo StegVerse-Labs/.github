@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.resident-execution-request/v1",
-  "request_id": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-001",
+  "request_id": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
   "state": "REQUESTED",
   "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
   "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
@@ -14,6 +14,6 @@
   "network_source_fetch_allowed": false,
   "request_granted_authority": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "requested_at": "2026-08-28T21:06:00-05:00",
-  "note": "Non-authorizing exactly-once resident execution request for the already-admitted HIL sovereign receiver task. The existing targeted executor remains sole claim/fence authority and must fail closed if the resident carrier, current LLM-adapter contract floor, or local readiness predicates are absent."
+  "requested_at": "2026-08-30T01:48:00-05:00",
+  "note": "Fresh non-authorizing resident execution request after automatic HIL custody→TVC lifecycle watcher merge a9031eafa07ec87ced2efdcaeab372dd199fb793. Re-execute the already-admitted HIL sovereign receiver task so the current worker can launch the bounded TVC lifecycle watcher. The request grants no claim, fence, credential, transport, review, publication, Master Records, or runtime authority."
 }
