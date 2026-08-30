@@ -226,6 +226,52 @@ class CurrentBasisResidentConsumerTests(unittest.TestCase):
         finally:
             MOD.EXPECTED_SOURCE_BLOBS = original
 
+
+    def test_package_remediation_never_mutates_explicit_source_root(self):
+        original = MOD.EXPECTED_SOURCE_BLOBS
+        try:
+            with tempfile.TemporaryDirectory() as td:
+                base = Path(td)
+                materialization = base / "source"
+                package_store = base / "packages"
+                explicit = base / "explicit-sdk"
+                key = "STEGVERSE_SDK_SOURCE_ROOT"
+                rel = "scripts/run_cross_framework_current_basis_v04.py"
+                stale = explicit / rel
+                stale.parent.mkdir(parents=True, exist_ok=True)
+                stale.write_bytes(b"stale-explicit")
+                expected_raw = b"current-canonical"
+                MOD.EXPECTED_SOURCE_BLOBS = {
+                    **original,
+                    key: {rel: MOD.git_blob_sha1(expected_raw)},
+                }
+                package = self._build_package(key, {rel: expected_raw})
+                package_path = package_store / MOD.PACKAGE_SLUGS[key] / "package.json"
+                package_path.parent.mkdir(parents=True)
+                package_path.write_text(json.dumps(package), encoding="utf-8")
+                env = {
+                    MOD.SOURCE_MATERIALIZATION_ROOT_ENV: str(materialization),
+                    MOD.SOURCE_PACKAGE_ROOT_ENV: str(package_store),
+                    key: str(explicit),
+                }
+                repaired, needs = MOD.repair_from_local_packages(env, [key])
+                self.assertEqual(needs, [])
+                self.assertEqual(repaired[0]["state"], "LOCAL_SOURCE_PACKAGE_MATERIALIZED")
+                self.assertFalse(repaired[0]["explicit_source_root_mutated"])
+                self.assertTrue(repaired[0]["canonical_materialization_root_only"])
+                self.assertEqual(stale.read_bytes(), b"stale-explicit")
+                canonical = materialization / MOD.DEFAULT_COMPONENT_ROOTS[key] / rel
+                self.assertEqual(canonical.read_bytes(), expected_raw)
+                roots, missing = MOD.source_roots(env)
+                self.assertEqual(missing, [])
+                self.assertEqual(roots[key], explicit.resolve())
+                observed, mismatches = MOD.verify_exact_source_identity({**{
+                    k: materialization / MOD.DEFAULT_COMPONENT_ROOTS[k] for k in MOD.REQUIRED_ROOT_ENV
+                }, key: explicit.resolve()})
+                self.assertTrue(any(row["root"] == key for row in mismatches))
+        finally:
+            MOD.EXPECTED_SOURCE_BLOBS = original
+
     def test_source_package_with_wrong_critical_blob_fails_closed(self):
         original = MOD.EXPECTED_SOURCE_BLOBS
         try:
