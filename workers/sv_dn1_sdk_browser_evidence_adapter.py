@@ -10,8 +10,10 @@ import subprocess
 import sys
 from typing import Any
 
+ROOT = Path(__file__).resolve().parents[1]
 BUNDLE_ENV = "STEGVERSE_SV_DN1_BROWSER_OBSERVATION_BUNDLE"
 BOUND_ENV = "STEGVERSE_BOUND_STATE_ROOT"
+LOCATOR_REL = Path("control/sv-dn1-browser-observation-locator.json")
 DEFAULT_BOUND = Path.home() / ".stegverse" / "state" / "sv-dn1-sdk-first-round"
 WORKER = Path(__file__).with_name("sv_dn1_sdk_first_round_worker.py")
 POLICY_ID = "STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001"
@@ -48,6 +50,38 @@ def load_bundle(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise RuntimeError("browser observation bundle must be an object")
     return value
+
+
+def resolve_bundle_path() -> Path | None:
+    raw = str(os.getenv(BUNDLE_ENV) or "").strip()
+    if raw:
+        path = Path(raw).expanduser().resolve()
+        if not path.is_file():
+            raise RuntimeError(f"browser observation bundle not found: {path}")
+        return path
+    locator_path = ROOT / LOCATOR_REL
+    if not locator_path.is_file():
+        return None
+    locator = json.loads(locator_path.read_text(encoding="utf-8"))
+    if not isinstance(locator, dict):
+        raise RuntimeError("SV-DN-1 browser observation locator must be an object")
+    required = {
+        "schema": "stegverse.sv-dn1.browser-observation-locator/v1",
+        "state": "AVAILABLE_LOCAL_ONLY",
+        "credential_material_included": False,
+        "network_fetch_performed": False,
+        "authority_effect": "NONE_LOCAL_EVIDENCE_LOCATOR_ONLY",
+    }
+    for key, expected in required.items():
+        if locator.get(key) != expected:
+            raise RuntimeError(f"SV-DN-1 browser observation locator {key} mismatch")
+    raw_path = str(locator.get("bundle_path") or "").strip()
+    if not raw_path:
+        raise RuntimeError("SV-DN-1 browser observation locator bundle_path missing")
+    path = Path(raw_path).expanduser().resolve()
+    if not path.is_file():
+        raise RuntimeError(f"browser observation bundle not found: {path}")
+    return path
 
 
 def replay(rows: list[dict[str, Any]]) -> str | None:
@@ -158,12 +192,12 @@ def materialize(bundle_path: Path, bound: Path) -> tuple[Path, Path]:
 
 
 def main() -> int:
-    raw = str(os.getenv(BUNDLE_ENV) or "").strip()
-    if not raw:
+    bundle_path = resolve_bundle_path()
+    if bundle_path is None:
         os.execv(sys.executable, [sys.executable, str(WORKER)])
         return 0
     bound = Path(os.getenv(BOUND_ENV) or DEFAULT_BOUND).expanduser().resolve()
-    resident_root, intr_root = materialize(Path(raw).expanduser().resolve(), bound)
+    resident_root, intr_root = materialize(bundle_path, bound)
     env = dict(os.environ)
     env["STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT"] = str(resident_root)
     env["STEGVERSE_SV_DN1_INTR_STATE_ROOT"] = str(intr_root)
