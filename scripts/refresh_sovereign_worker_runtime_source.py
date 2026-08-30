@@ -53,6 +53,7 @@ STATIC_FILES = (
     Path("scripts/consume_sv002_self_characterization_request.py"),
     Path("scripts/consume_cross_framework_current_basis_v04_request.py"),
     Path("scripts/dispatch_resident_execution_requests.py"),
+    Path("scripts/refresh_and_dispatch_resident_requests.py"),
     Path("scripts/materialize_live_cosv_packet.py"),
     Path("scripts/cosv.py"),
     Path("scripts/cosv_state_packet.py"),
