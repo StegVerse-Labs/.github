@@ -99,6 +99,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertTrue((runtime / "control/resident-execution-request.d/ecosystem-chat-parent-001.json").is_file())
             self.assertTrue((runtime / "control/resident-execution-request.d/hil-sovereign-receiver-001.json").is_file())
             self.assertTrue((runtime / "control/resident-execution-request.d/evaluator-intr-read-runtime-001.json").is_file())
+            self.assertTrue((runtime / "control/resident-execution-request.d/sv002-public-observation-runtime-001.json").is_file())
             self.assertTrue((runtime / "state_language/__init__.py").is_file())
             for rel in (
                 "scripts/run_worker_runtime.py",
@@ -109,6 +110,9 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "scripts/consume_hil_resident_execution_request.py",
                 "scripts/consume_evaluator_intr_resident_execution_request.py",
                 "scripts/materialize_evaluator_intr_route_config.py",
+                "scripts/consume_sv002_public_observation_request.py",
+                "scripts/materialize_sv002_observation_route_config.py",
+                "scripts/serve_sv002_observation_intr_runtime.py",
                 "scripts/consume_hil_intr_materialization_request.py",
                 "scripts/serve_evaluator_intr_runtime.py",
                 "scripts/consume_ara_graph_resident_execution_request.py",
