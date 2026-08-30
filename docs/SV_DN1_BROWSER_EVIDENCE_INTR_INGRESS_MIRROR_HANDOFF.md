@@ -159,7 +159,7 @@ The ingress does not mint a WorkerCoordinator claim/fence and does not grant exe
 
 The current resident request is:
 
-`RESIDENT-EXEC-SV-DN1-FIRST-ROUND-005`
+`RESIDENT-EXEC-SV-DN1-FIRST-ROUND-006`
 
 A successful ingress may therefore immediately give the existing request a locally resolvable authentic browser bundle without another manual file handoff.
 
@@ -189,11 +189,12 @@ The ingress MUST NOT:
 authentic established-node Hugging Face observation: OBSERVED
 authentic EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM InTr receipt: OBSERVED
 browser bundle available in sovereign-local filesystem: NOT PROVEN
-browser -> sovereign evidence ingress profile: IMPLEMENTING
-resident request 005: MERGED / REQUESTED
+browser -> sovereign evidence ingress profile: MERGED / VALIDATED (PR #565 / 5626800bdd542b77ce169964231b66b9513edc95)
+resident request 006: MERGED / REQUESTED
 production-source-prep v2 receipt: NOT YET OBSERVED
 SDK first production round ANALYZED: NOT YET OBSERVED
 public governed first-round result: WITHHELD
+public shared-Gateway SV-DN-1 ingress admission: NOT YET OBSERVED
 ```
 
 Newer authentic runtime evidence overrides this handoff.
