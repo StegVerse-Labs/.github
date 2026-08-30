@@ -1,0 +1,16 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "entries": [
+    {
+      "task_id": "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001",
+      "temporal_class": "current",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:sv-dn1-repository-persistence-package:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "develops_capability",
+      "result": "REVIEW_REQUIRED",
+      "continuation_owner": "sv-dn1-repository-persistence-package-worker",
+      "rationale": "Freezes exact promoted bytes into a local transport-neutral package only; does not prove repository persistence or deployment."
+    }
+  ]
+}
