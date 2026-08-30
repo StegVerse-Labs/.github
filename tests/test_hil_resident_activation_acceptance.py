@@ -44,6 +44,25 @@ class HILResidentActivationAcceptanceTests(unittest.TestCase):
             self.assertEqual(first["materialization_id"], second["materialization_id"])
             self.assertEqual(first_pdf.read_bytes(), second_pdf.read_bytes())
 
+    def test_select_materialization_result_binds_exact_request(self) -> None:
+        batch = {
+            "results": [
+                {"materialization_id": "INTR-MAT-" + "a" * 24, "esrl_lease_state": "LOCAL_READY"},
+                {
+                    "materialization_id": "INTR-MAT-" + "b" * 24,
+                    "state": "MATERIALIZATION_EXECUTION_ATTEMPTED",
+                    "esrl_lease_state": "LEASE_OPEN",
+                    "public_gateway_readiness_verified": True,
+                    "public_gateway_origin": "https://stegverse.org",
+                },
+            ]
+        }
+        selected = mod.select_materialization_result(batch, "INTR-MAT-" + "b" * 24)
+        self.assertEqual(selected["esrl_lease_state"], "LEASE_OPEN")
+        self.assertTrue(selected["public_gateway_readiness_verified"])
+        self.assertEqual(selected["public_gateway_origin"], "https://stegverse.org")
+        self.assertEqual(mod.select_materialization_result(batch, "INTR-MAT-" + "c" * 24), {})
+
     def test_hosted_markers_are_detectable(self) -> None:
         self.assertTrue(mod.truthy("1"))
         self.assertTrue(mod.truthy("true"))

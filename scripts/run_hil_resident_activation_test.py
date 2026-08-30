@@ -5,8 +5,9 @@ This is an execution harness, not a receipt generator. It refuses hosted
 GitHub/Render/Vercel/Cloudflare environments, runs the existing sovereign
 bootstrap, sends one deterministic controlled Node->InTr materialization event
 through the actual local HTTP ingress listener, invokes the existing HIL
-materialization consumer, and then requires the real runtime receipts emitted
-by those components.
+materialization consumer, requires the component-produced shared-Gateway ESRL
+LEASE_OPEN evidence, and then requires the real HIL receipts from the materialized
+ESRL runtime root.
 
 A PASS is authentic only when this script is executed on an eligible
 StegVerse-owned/federated resident runtime with the current local HIL backend.
@@ -52,6 +53,16 @@ def digest_uri(value: object) -> str:
 
 def load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def select_materialization_result(batch: dict, materialization_id: str) -> dict:
+    results = batch.get("results")
+    if not isinstance(results, list):
+        return {}
+    for row in results:
+        if isinstance(row, dict) and row.get("materialization_id") == materialization_id:
+            return row
+    return {}
 
 
 def controlled_request(runtime_root: Path) -> tuple[dict, Path]:
@@ -203,19 +214,53 @@ def main() -> int:
         cwd=runtime, env=env,
     )
 
+    materialization_latest = runtime / "receipts/sovereign-host/hil-intr-materialization-consumption.latest.json"
+    materialization_batch = load(materialization_latest) if materialization_latest.is_file() else {}
+    materialization_result = select_materialization_result(materialization_batch, request["materialization_id"])
+    esrl_lease_open = (
+        materialization_result.get("state") == "MATERIALIZATION_EXECUTION_ATTEMPTED"
+        and materialization_result.get("esrl_lease_state") == "LEASE_OPEN"
+        and materialization_result.get("esrl_runtime_instantiated") is True
+        and materialization_result.get("esrl_local_identity_verified") is True
+        and materialization_result.get("hil_public_https_rendezvous_observed") is True
+        and materialization_result.get("public_gateway_readiness_verified") is True
+        and materialization_result.get("public_gateway_origin") == "https://stegverse.org"
+    )
+
+    execution_runtime_raw = materialization_result.get("esrl_runtime_root")
+    execution_runtime = Path(str(execution_runtime_raw)).resolve() if isinstance(execution_runtime_raw, str) and execution_runtime_raw else None
+    execution_runtime_valid = execution_runtime is not None and execution_runtime.is_dir()
+
     evidence = {
-        "resident_request_dispatch": runtime / "receipts/sovereign-host/resident-request-dispatch.latest.json",
-        "hil_resident_request_consumption": runtime / "receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json",
-        "resident_targeted_execution": runtime / "receipts/sovereign-host/resident-targeted-execution.latest.json",
         "hil_intr_ingress": runtime / "receipts/sovereign-network/hil-intr-ingress.latest.json",
-        "hil_materialization_consumption": runtime / "receipts/sovereign-host/hil-intr-materialization-consumption.latest.json",
-        "hil_receiver": runtime / "receipts/hil-sovereign-receiver/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+        "hil_materialization_consumption": materialization_latest,
+        "resident_targeted_execution": (
+            execution_runtime / "receipts/sovereign-host/resident-targeted-execution.latest.json"
+            if execution_runtime_valid else runtime / "__missing_esrl_runtime__/resident-targeted-execution.latest.json"
+        ),
+        "hil_receiver": (
+            execution_runtime / "receipts/hil-sovereign-receiver/SHWP-HIL-SOVEREIGN-RECEIVER-001.json"
+            if execution_runtime_valid else runtime / "__missing_esrl_runtime__/SHWP-HIL-SOVEREIGN-RECEIVER-001.json"
+        ),
     }
     observed = {name: path.is_file() for name, path in evidence.items()}
     receiver = load(evidence["hil_receiver"]) if observed["hil_receiver"] else {}
-    claim_ok = isinstance(receiver.get("claim_id"), str) and isinstance(receiver.get("fencing_token"), int)
+    claim_ok = (
+        isinstance(receiver.get("claim_id"), str)
+        and bool(receiver.get("claim_id"))
+        and isinstance(receiver.get("fencing_token"), int)
+        and not isinstance(receiver.get("fencing_token"), bool)
+    )
     ready = receiver.get("receiver_ready") is True
-    passed = all(observed.values()) and claim_ok and ready and ingress_receipt.get("state") == "INGRESS_ADMITTED"
+    passed = (
+        all(observed.values())
+        and esrl_lease_open
+        and execution_runtime_valid
+        and claim_ok
+        and ready
+        and ingress_receipt.get("state") == "INGRESS_ADMITTED"
+        and consumed.returncode == 0
+    )
 
     result = {
         "schema": "stegverse.hil-resident-activation-acceptance/v1",
@@ -228,6 +273,10 @@ def main() -> int:
         "controlled_pdf_sha256": digest_uri(CONTROLLED_PDF),
         "controlled_materialization_id": request["materialization_id"],
         "ingress_state": ingress_receipt.get("state"),
+        "esrl_lease_open_observed": esrl_lease_open,
+        "public_gateway_readiness_verified": materialization_result.get("public_gateway_readiness_verified") is True,
+        "public_gateway_origin": materialization_result.get("public_gateway_origin"),
+        "execution_runtime_root": str(execution_runtime) if execution_runtime_valid else None,
         "evidence_observed": observed,
         "hil_fresh_claim_fence_observed": claim_ok,
         "hil_receiver_ready_observed": ready,

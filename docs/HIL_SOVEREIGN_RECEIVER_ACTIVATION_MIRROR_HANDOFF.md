@@ -562,3 +562,38 @@ HIL materialization consumer LEASE_OPEN gate: COMPLETE_VALIDATED_MERGED
 known source scaffolding/stubs in this HIL activation path: 0
 authentic runtime execution: NOT OBSERVED
 ```
+
+
+## 2026-08-30 resident acceptance harness LEASE_OPEN reconciliation
+
+The original bounded resident activation acceptance runner predated the shared-
+Gateway ESRL execution gate. It could inspect the old outer-runtime receipt paths
+without explicitly proving the now-required ESRL `LEASE_OPEN` result.
+
+This branch corrects that acceptance denominator:
+
+```text
+scripts/run_hil_resident_activation_test.py
+tests/test_hil_resident_activation_acceptance.py
+```
+
+A PASS now requires the component-produced materialization result for the exact
+controlled materialization ID to prove:
+
+```text
+state = MATERIALIZATION_EXECUTION_ATTEMPTED
+esrl_lease_state = LEASE_OPEN
+esrl_runtime_instantiated = true
+esrl_local_identity_verified = true
+hil_public_https_rendezvous_observed = true
+public_gateway_readiness_verified = true
+public_gateway_origin = https://stegverse.org
+```
+
+The runner then resolves `esrl_runtime_root` from that exact receipt and requires
+the targeted-execution and HIL receiver receipts from the materialized ESRL runtime
+itself, rather than assuming they exist under the outer bootstrap runtime root.
+
+This runner remains an observer only. It does not synthesize LEASE_OPEN, public
+Gateway readiness, WorkerCoordinator claim/fence, or receiver READY evidence.
+Source/CI validation cannot satisfy the authentic runtime gate.
