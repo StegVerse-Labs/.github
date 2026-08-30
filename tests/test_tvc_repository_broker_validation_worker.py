@@ -11,6 +11,7 @@ if str(ROOT) not in sys.path:
 import workers.tvc_repository_broker_validation_worker as worker
 
 EXPECTED_TVC_HEAD = "b5288f9910ada26c6ab2e9bca3f7701afaae2cef"
+EXPECTED_SOURCE_BUNDLE_SHA256 = "0369ed677a014a99a983415a9094e6aaa0c570d163d9818d9a086fee6042dd6a"
 
 
 def test_handoff_and_adapter_are_credential_clean():
@@ -21,6 +22,7 @@ def test_handoff_and_adapter_are_credential_clean():
     assert handoff["authority"]["github_token_required"] is False
     assert handoff["authority"]["heartbeat_dependency"] is False
     assert handoff["execution"]["expected_tvc_head"] == EXPECTED_TVC_HEAD
+    assert handoff["execution"]["expected_source_bundle_sha256"] == EXPECTED_SOURCE_BUNDLE_SHA256
     assert handoff["activation"]["heartbeat_dependency"] is False
     assert handoff["activation"]["carrier_trigger_required"] is False
     assert adapter["adapters"][0]["env_allowlist"] == ["STEGVERSE_TVC_ROOT"]
@@ -93,6 +95,8 @@ def test_worker_has_no_source_fetch_transport_or_heartbeat_gate():
     assert 'heartbeat_timing\") or {}' not in source
     assert 'source_bundle_file_count' in source
     assert 'source_bundle_sha256' in source
+    assert 'expected_source_bundle_sha256' in source
+    assert 'bundle_digest == expected_bundle_digest' in source
 
 
 def test_canonical_retrospective_ae_record_remains_non_authorizing():
