@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DEVICE-KV-INTR-OBSERVATION-001",
   "created_at": "2026-08-30T04:12:00Z",
-  "updated_at": "2026-08-30T04:12:00Z",
+  "updated_at": "2026-08-30T05:06:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
@@ -51,7 +51,9 @@
       "workers/device_kv_intr_observation_worker.py",
       "StegVerse-Labs/continuity-vault-kit/runtime/kv_interlock_endpoint.py",
       "StegVerse-Labs/StegOS/stegos/relay_node_kv_continuity.py"
-    ]
+    ],
+    "source_pr": 499,
+    "source_merge": "f5691026575578d70f137b6fc660a051f97097ff"
   },
   "authority": {
     "authority_source": "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001 + continuity-vault-kit KV-INTERLOCK-v1",
@@ -99,8 +101,17 @@
     }
   },
   "completion": {
-    "source_implementation_state": "ACTIVE",
+    "source_implementation_state": "MERGED_VALIDATED",
+    "source_validation": {
+      "pull_request": 499,
+      "merge_commit": "f5691026575578d70f137b6fc660a051f97097ff",
+      "heartbeat_worker_exact_head": "SUCCESS",
+      "organization_control_exact_head": "SUCCESS",
+      "stale_pull_request_closed_unmerged": 485
+    },
     "runtime_activation_state": "PENDING_PARENT_AND_MACHINE_EXECUTION",
+    "parent_terminal_evidence_observed": false,
+    "runtime_observation_claimed": false,
     "terminal_evidence": "receipts/device-kv-intr/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json with state OBSERVED and capability_type DEVICE_KV_INTR",
     "terminal_when": [
       "parent receipt is authentic COMPLETED RELAY_NODE_KV_CONTINUITY_VERIFIED",
