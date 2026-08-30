@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Refresh already-local sovereign worker source, then dispatch the frozen-v0.4 request once.
+"""Refresh already-local sovereign worker source, then dispatch one bounded request once.
 
 This is a portable, transport-free execution bridge for an already-existing sovereign
 resident. It composes the existing local source refresh and generic resident-request
-dispatcher, but selects only the cross-framework current-basis v0.4 consumer. It creates
+dispatcher, but selects exactly one explicitly admitted consumer. The historical default
+remains the cross-framework current-basis v0.4 consumer; HIL may be selected explicitly
+to consume the current fresh resident request without visiting unrelated work. It creates
 no scheduler, heartbeat, claim, fence, credential path, or runtime authority.
 """
 from __future__ import annotations
@@ -23,6 +25,7 @@ DISPATCHER_REL = Path("scripts/dispatch_resident_execution_requests.py")
 DISPATCH_RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
 RECEIPT_REL = Path("receipts/sovereign-host/resident-refresh-dispatch.latest.json")
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
+ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "hil")
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
     "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS",
@@ -97,9 +100,18 @@ def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
     os.replace(temp, path)
 
 
-def refresh_and_dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+def refresh_and_dispatch(
+    source_root: Path,
+    runtime_root: Path,
+    *,
+    target_consumer: str = TARGET_CONSUMER,
+    runner=subprocess.run,
+    env: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
+    if target_consumer not in ALLOWED_TARGET_CONSUMERS:
+        raise RuntimeError("unsupported portable resident consumer: " + target_consumer)
     safe = clean_exec_env(env)
 
     refresh_receipt = refresh(source, runtime)
@@ -115,7 +127,7 @@ def refresh_and_dispatch(source_root: Path, runtime_root: Path, *, runner=subpro
         raise RuntimeError("resident request dispatcher not materialized after refresh")
 
     completed = runner(
-        [sys.executable, str(dispatcher), "--source-root", str(source), "--runtime-root", str(runtime), "--only-consumer", TARGET_CONSUMER],
+        [sys.executable, str(dispatcher), "--source-root", str(source), "--runtime-root", str(runtime), "--only-consumer", target_consumer],
         cwd=runtime, capture_output=True, text=True, check=False, env=safe, timeout=3600,
     )
     dispatch_path = runtime / DISPATCH_RECEIPT_REL
@@ -124,7 +136,7 @@ def refresh_and_dispatch(source_root: Path, runtime_root: Path, *, runner=subpro
     exact_selection = (
         dispatch_observed
         and dispatch_receipt.get("selection_scope") == "EXACT_SELECTOR"
-        and dispatch_receipt.get("selected_consumers") == [TARGET_CONSUMER]
+        and dispatch_receipt.get("selected_consumers") == [target_consumer]
         and dispatch_receipt.get("consumer_count") == 1
     )
     state = "REFRESH_AND_DISPATCH_COMPLETE" if completed.returncode == 0 and dispatch_observed and exact_selection and dispatch_receipt.get("state") == "DISPATCH_COMPLETE" else "REFRESH_COMPLETE_DISPATCH_INCOMPLETE"
@@ -132,7 +144,7 @@ def refresh_and_dispatch(source_root: Path, runtime_root: Path, *, runner=subpro
     receipt = {
         "schema": "stegverse.resident-refresh-dispatch/v1", "state": state,
         "source_root": str(source), "runtime_root": str(runtime), "refresh_receipt": refresh_receipt,
-        "dispatcher_ref": str(DISPATCHER_REL), "target_consumer": TARGET_CONSUMER,
+        "dispatcher_ref": str(DISPATCHER_REL), "target_consumer": target_consumer,
         "exact_consumer_selection_observed": bool(exact_selection), "unrelated_consumers_dispatched": False,
         "dispatch_returncode": completed.returncode, "dispatch_receipt_observed": dispatch_observed,
         "dispatch_receipt": dispatch_receipt, "runtime_execution_possible_in_target_consumer": True,
@@ -148,11 +160,12 @@ def refresh_and_dispatch(source_root: Path, runtime_root: Path, *, runner=subpro
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Refresh already-local sovereign worker source and dispatch only the frozen-v0.4 resident request once.")
+    parser = argparse.ArgumentParser(description="Refresh already-local sovereign worker source and dispatch exactly one bounded resident request once.")
     parser.add_argument("--source-root", type=Path, default=REPO_ROOT)
     parser.add_argument("--runtime-root", type=Path, default=default_runtime_root())
+    parser.add_argument("--only-consumer", choices=ALLOWED_TARGET_CONSUMERS, default=TARGET_CONSUMER)
     args = parser.parse_args()
-    receipt = refresh_and_dispatch(args.source_root, args.runtime_root)
+    receipt = refresh_and_dispatch(args.source_root, args.runtime_root, target_consumer=args.only_consumer)
     print(json.dumps(receipt, sort_keys=True))
     return 0 if receipt["state"] == "REFRESH_AND_DISPATCH_COMPLETE" else 1
 
