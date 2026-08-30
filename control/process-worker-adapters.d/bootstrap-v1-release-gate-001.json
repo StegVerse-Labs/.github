@@ -1,0 +1,20 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "adapter_id": "process:bootstrap-v1-release-gate-v1",
+  "enabled": true,
+  "worker_id": "bootstrap-v1-release-gate-worker",
+  "task_id": "BOOTSTRAP-V1-RELEASE-GATE-001",
+  "command": [
+    "python3",
+    "workers/bootstrap_v1_release_gate_worker.py"
+  ],
+  "environment_allowlist": [
+    "STEGVERSE_BOOTSTRAP_V1_RELEASE_CANDIDATE_STATE_ROOT",
+    "STEGVERSE_BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_STATE_ROOT",
+    "STEGVERSE_BOOTSTRAP_V1_MATERIALIZATION_PROOF",
+    "STEGVERSE_BOUND_STATE_ROOT"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "authority_effect": "NONE"
+}
