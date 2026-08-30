@@ -51,6 +51,42 @@ class SovereignSourcePackageTests(unittest.TestCase):
             self.assertEqual(row["state"],"LOCAL_PRESENT_VERIFIED")
             self.assertTrue(row["source_identity"].startswith("sha256:"))
 
+
+    def test_configured_local_root_is_verified_without_copy_or_package(self):
+        component="stegverse.sdk"
+        rel="stegverse/governance_ingress_runtime.py"
+        data=b"ingress\n"
+        env_name=worker.ROOT_ENV_OUTPUT[component]
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td)/"sdk"
+            (root/Path(rel).parent).mkdir(parents=True)
+            (root/rel).write_bytes(data)
+            with (
+                mock.patch.dict(worker.COMPONENTS[component],{"anchors":{rel:worker.git_blob_sha1(data)}},clear=False),
+                mock.patch.dict("os.environ",{env_name:str(root)},clear=False),
+            ):
+                row=worker.ensure_component(Path(td)/"canonical",Path(td)/"packages",component)
+            self.assertEqual(row["state"],"CONFIGURED_LOCAL_PRESENT_VERIFIED")
+            self.assertEqual(row["root"],str(root.resolve()))
+            self.assertTrue(row["source_identity"].startswith("sha256:"))
+            self.assertFalse(row["network_fetch_performed"])
+            self.assertFalse((Path(td)/"canonical"/worker.COMPONENTS[component]["root_rel"]).exists())
+
+    def test_configured_local_root_anchor_drift_fails_closed(self):
+        component="stegverse.stegcore"
+        rel="src/stegcore/transaction_lifecycle.py"
+        env_name=worker.ROOT_ENV_OUTPUT[component]
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td)/"stegcore"
+            (root/Path(rel).parent).mkdir(parents=True)
+            (root/rel).write_bytes(b"wrong\n")
+            with (
+                mock.patch.dict(worker.COMPONENTS[component],{"anchors":{rel:"0"*40}},clear=False),
+                mock.patch.dict("os.environ",{env_name:str(root)},clear=False),
+            ):
+                with self.assertRaises(worker.SourceIdentityDrift):
+                    worker.ensure_component(Path(td)/"canonical",Path(td)/"packages",component)
+
     def test_handoff_forbids_platform_dependency(self):
         root=Path(__file__).resolve().parents[1]
         h=json.loads((root/"handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json").read_text())
