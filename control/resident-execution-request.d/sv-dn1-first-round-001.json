@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.resident-execution-request/v1",
-  "request_id": "RESIDENT-EXEC-SV-DN1-FIRST-ROUND-003",
+  "request_id": "RESIDENT-EXEC-SV-DN1-FIRST-ROUND-004",
   "state": "REQUESTED",
   "task_id": "SV-DN1-SOVEREIGN-EXECUTION-CHAIN-001",
   "mode": "SV_DN1_FIRST_ROUND_CHAIN",
@@ -14,5 +14,5 @@
   "network_source_fetch_allowed": false,
   "request_granted_authority": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Fresh exactly-once retry after Bootstrap v1 materialization-evidence intake and release-gate source lanes merged. On a sovereign resident source refresh, re-evaluate current already-local source/package state and attempt the existing admitted SV-DN-1 demo-source -> resident observation -> route-specific InTr -> canonical production-source preparation -> canonical SDK first-round chain. The request grants no claim, fence, network, private-source transport, SDK, governance, publication, tag, or credential authority."
+  "note": "Fresh exactly-once retry after .github merge 5f06d256bd48097292cd3feff5f4b8f15bec3823 corrected production-source discovery and v2 durable-receipt validation. Re-evaluate the existing five-task sovereign first-round chain. Production source prep may accept already-local verified canonical component roots supplied through non-secret STEGVERSE_*_SOURCE_ROOT locators, canonical materialization-tree roots, or local content-addressed source packages. No request authority, credential, repository writeback, hosted execution, external platform dependency, or second machine is granted."
 }
