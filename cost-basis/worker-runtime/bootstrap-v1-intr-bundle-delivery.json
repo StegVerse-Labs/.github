@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "bootstrap_v1_intr_bundle_delivery",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 8,
+    "expected_idle_beats": 2,
+    "expiry_candidate_beats": 24,
+    "confidence": "LOW_UNTIL_FIRST_SOVEREIGN_RUN"
+  },
+  "cost_estimate": {
+    "compute_units": 2,
+    "token_units": 0,
+    "storage_bytes": 262144,
+    "network_bytes": null,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 2
+  },
+  "evidence_refs": [
+    "docs/BOOTSTRAP_V1_INTR_BUNDLE_DELIVERY_MIRROR_HANDOFF.md",
+    "handoffs/BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001.json",
+    "workers/bootstrap_v1_intr_bundle_delivery_worker.py",
+    "scripts/serve_bootstrap_v1_intr_bundle_delivery.py"
+  ],
+  "notes": [
+    "Serves only an already-built local Bootstrap bundle and persists bounded transport receipts.",
+    "No source acquisition, provider API, repository mutation, GitHub credential or external paid service is required.",
+    "Network bytes depend on the authentic frozen bundle size and are intentionally not guessed before first runtime bundle construction."
+  ]
+}
