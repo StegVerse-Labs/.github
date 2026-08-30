@@ -11,6 +11,9 @@ PINS={"TT":"ab60b42934222a2cb5335a5a8194f258a491fc57","RTG":"ca69954cb3dc4ad073c
 def git_head(p:Path)->str:
     return subprocess.check_output(["git","-C",str(p),"rev-parse","HEAD"],text=True).strip()
 
+def git_commit_exists(p:Path, commit:str)->bool:
+    return subprocess.run(["git","-C",str(p),"cat-file","-e",f"{commit}^{commit}"],capture_output=True,text=True,check=False).returncode==0
+
 def candidates(org:str,repo:str,override:str|None=None):
     out=[]
     if override: out.append(Path(override).expanduser())
@@ -26,7 +29,9 @@ def find_repo(org,repo,expected=None,override=None,required=()):
             try: h=git_head(p)
             except Exception: h=None
             rec["head"]=h
-            if expected is None or h==expected:
+            commit_ok=True if expected is None else git_commit_exists(p,expected)
+            if expected is not None: rec["pinned_commit_available"]=commit_ok
+            if commit_ok:
                 rec["selected"]=True; seen.append(rec); return p,seen
         seen.append(rec)
     return None,seen
@@ -51,7 +56,7 @@ def main():
         endpoint="http://127.0.0.1:11434"; model=os.environ["STEGVERSE_OLLAMA_MODEL"]
     blockers=[]
     if micro is None: blockers.append("MICRO_NODE_RUNTIME_NOT_MATERIALIZED")
-    if len(formal)!=4: blockers.append("PINNED_FORMAL_ROOTS_NOT_MATERIALIZED")
+    if len(formal)!=4: blockers.append("PINNED_FORMAL_COMMITS_NOT_LOCALLY_AVAILABLE")
     if not endpoint or not model: blockers.append("QUALIFYING_LOCAL_REASONING_ENDPOINT_NOT_OBSERVED")
     if model=="stegverse-reference-lm-v1" or "reference" in model.lower(): blockers.append("REFERENCE_MODEL_NOT_QUALIFYING_PRINCIPAL")
     if blockers:
