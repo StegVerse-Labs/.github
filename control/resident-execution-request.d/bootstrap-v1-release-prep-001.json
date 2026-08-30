@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-BOOTSTRAP-V1-RELEASE-PREP-001",
+  "state": "REQUESTED",
+  "task_id": "BOOTSTRAP-V1-SOVEREIGN-RELEASE-PREP-CHAIN-001",
+  "mode": "BOOTSTRAP_V1_RELEASE_PREP_CHAIN",
+  "entrypoint": "scripts/run_bootstrap_v1_release_prep_chain.py",
+  "fresh_fence_minimum_exclusive": 22,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "repository_writeback_authority": false,
+  "release_activation_authority": false,
+  "publication_authority": false,
+  "package_execution_authority": false,
+  "sdk_admission_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "Attempt the already-admitted Bootstrap v1 release-preparation tasks after authentic production-source prep completes. Sequence source-identity freeze, source-package production, rc.1 freeze, and distributable-bundle build through targeted independent task control. Stop before device materialization, release authorization, tag, publication, package execution, SDK admission, or any repository mutation."
+}
