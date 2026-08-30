@@ -2,8 +2,8 @@
 
 Updated: 2026-08-29
 Repository: StegVerse-Labs/.github
-Issue: #484
-Branch: fix/sv002-self-char-subject-preflight-484
+Issues: #484, #490
+Branch: main
 
 ## Source of truth
 
@@ -35,6 +35,26 @@ The resident worker already detects:
 The canonical principal runner additionally requires a `stegverse.self-characterization-runtime-identity/v0.1` descriptor in `STEGVERSE_SELF_CHAR_SUBJECT_IDENTITY_JSON`.
 
 Before issue #484, the worker never constructed or supplied that descriptor. Therefore a qualifying resident model endpoint could be observed but execution would still fail before S0 because subject identity was not bound.
+
+## Merged source closure
+
+```text
+subject-identity preflight:
+  issue: #484 CLOSED
+  PR: #488
+  merge: b72af52be222772a57f2f5cfb94578676b68a6bd
+  organization validation: SUCCESS
+  Heartbeat Worker Project deterministic suite: SUCCESS
+
+resident retry semantics:
+  issue: #490 CLOSED
+  PR: #491
+  merge: e85c9c94ed1af9020bbd55d79216dec8768355f2
+  organization validation: SUCCESS
+  Heartbeat Worker Project deterministic suite: SUCCESS
+```
+
+Scoped source is now complete: a qualifying local Ollama subject can be independently bound to exact model/process/executable evidence, and nonterminal resident attempts remain retryable without permitting duplicate successful principal execution.
 
 ## Bounded repair scope
 
@@ -93,7 +113,7 @@ This preserves exactly-once completion while allowing bounded machine retries as
 
 ## Remaining machine-execution gates
 
-After source repair:
+After merged source repair:
 
 1. resident source refresh observes the merged worker;
 2. the resident request is consumed;
@@ -113,3 +133,21 @@ After source repair:
 - public observation projection after authentic evidence: StegVerse-Labs/.github -> StegVerse-org/LLM-adapter -> StegVerse-Labs/Site
 
 Source completion is not experiment completion.
+
+
+## Current observed state
+
+```text
+resident request: REQUESTED
+subject-identity preflight source: MERGED / VALIDATED
+blocked-attempt retry semantics: MERGED / VALIDATED
+known scoped scaffolding/stubs: 0
+qualifying non-reference resident reasoning endpoint: NOT OBSERVED
+verified resident subject identity: NOT OBSERVED
+principal self-characterization execution: NOT OBSERVED
+human/formal/interaction artifacts: NOT OBSERVED
+Master Records reconstruction: NOT OBSERVED
+user action required: false
+```
+
+The next lawful transition is machine-owned resident execution. Repository source, validation, or merge cannot satisfy the experiment.
