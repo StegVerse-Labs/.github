@@ -66,7 +66,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
         "",
         "[Service]",
         "Type=oneshot",
-        f'Environment="STEGVERSE_SOURCE_PACKAGE_ROOT={str(packages).replace(chr(34), chr(92)+chr(34))}"',
+        f"Environment={_quote('STEGVERSE_SOURCE_PACKAGE_ROOT=' + str(packages))}",
         f"ExecStart={_quote(python)} {_quote(refresh_script)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(request_dispatcher)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(hil_materialization_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
