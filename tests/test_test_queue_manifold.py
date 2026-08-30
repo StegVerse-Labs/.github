@@ -29,7 +29,7 @@ class TestQueueManifoldGovernanceTests(unittest.TestCase):
             heartbeat_observation=heartbeat,
         )
 
-    def test_by_id(self, test_id):
+    def by_id(self, test_id):
         return next(item for item in self.fixture()["tests"] if item["test_id"] == test_id)
 
     def test_individual_queue_projection_is_heartbeat_independent(self):
@@ -142,7 +142,7 @@ class TestQueueManifoldGovernanceTests(unittest.TestCase):
             validate_bundle_instruction(bundle, current)
 
     def test_terminal_disposition_requires_evidence_and_never_grants_authority(self):
-        descriptor = self.test_by_id("TQ-001")
+        descriptor = self.by_id("TQ-001")
         with self.assertRaisesRegex(ValueError, "requires evidence"):
             apply_test_disposition(descriptor, new_state="EXECUTED", evidence_refs=[])
 
@@ -158,7 +158,7 @@ class TestQueueManifoldGovernanceTests(unittest.TestCase):
         self.assertEqual(receipt["authority_effect"], "NONE")
 
     def test_satisfied_by_bundle_requires_bundle_identity(self):
-        descriptor = self.test_by_id("TQ-002")
+        descriptor = self.by_id("TQ-002")
         with self.assertRaisesRegex(ValueError, "requires bundle_id"):
             apply_test_disposition(
                 descriptor,
@@ -174,7 +174,7 @@ class TestQueueManifoldGovernanceTests(unittest.TestCase):
         self.assertEqual(receipt["bundle_id"], "bundle-abc")
 
     def test_person_specific_route_and_authority_escalation_fail_closed(self):
-        descriptor = self.test_by_id("TQ-001")
+        descriptor = self.by_id("TQ-001")
         bad = dict(descriptor)
         bad["person_specific_route"] = True
         with self.assertRaisesRegex(ValueError, "person-specific"):
@@ -186,7 +186,7 @@ class TestQueueManifoldGovernanceTests(unittest.TestCase):
             validate_descriptor(bad)
 
     def test_claimed_test_requires_independent_claim_ref(self):
-        descriptor = self.test_by_id("TQ-001")
+        descriptor = self.by_id("TQ-001")
         bad = dict(descriptor)
         bad["lifecycle_state"] = "CLAIMED"
         bad["execution_claim_ref"] = None
