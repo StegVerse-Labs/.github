@@ -50,6 +50,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
     refresh_script = runtime / "scripts/refresh_sovereign_worker_runtime_source.py"
     request_dispatcher = runtime / "scripts/dispatch_resident_execution_requests.py"
     hil_materialization_consumer = runtime / "scripts/consume_hil_intr_materialization_request.py"
+    sv002_materialization_consumer = runtime / "scripts/consume_sv002_intr_materialization_request.py"
     service = "\n".join([
         "[Unit]",
         "Description=StegVerse local-only WorkerCoordinator source refresh",
@@ -60,6 +61,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         f"ExecStart={_quote(python)} {_quote(refresh_script)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(request_dispatcher)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(hil_materialization_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
+        f"ExecStartPost={_quote(python)} {_quote(sv002_materialization_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost=/usr/bin/systemctl --user try-restart {WORKER_SERVICE}",
         "NoNewPrivileges=true",
         "PrivateTmp=true",
@@ -85,6 +87,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path) -> tupl
         source / "control/resident-execution-request.json",
         source / "control/resident-execution-request.d",
         runtime / "intr-materialization",
+        runtime / "sv002-intr-materialization",
     )
     path_unit = "\n".join([
         "[Unit]",
