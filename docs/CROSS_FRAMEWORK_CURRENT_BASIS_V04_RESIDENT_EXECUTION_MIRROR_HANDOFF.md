@@ -363,3 +363,41 @@ RUN_COMPLETE.json: NOT OBSERVED
 PUBLICATION_READY.json from authentic run: NOT OBSERVED
 successful external-result GitHub Action: NOT OBSERVED
 ```
+
+
+## Explicit source roots remain observation-only — 2026-08-30
+
+The current-basis package-remediation path is constrained so that content-addressed packages may mutate only the canonical local materialization tree:
+
+```text
+STEGVERSE_SOURCE_MATERIALIZATION_ROOT/components/*
+fallback: /var/lib/stegverse/source/components/*
+```
+
+Explicit component locators remain observation-only:
+
+```text
+STEGVERSE_SDK_SOURCE_ROOT
+STEGVERSE_STEGCORE_SOURCE_ROOT
+STEGVERSE_CORE_LITE_SOURCE_ROOT
+STEGVERSE_MASTER_RECORDS_SOURCE_ROOT
+```
+
+If an explicit existing source root is selected and its experiment-critical blob identity is stale, the consumer may materialize an exact local package into the canonical component tree but MUST NOT replace or rewrite the explicit root. Because explicit roots retain precedence during source selection, the stale explicit root continues to fail closed until the locator itself changes or the explicit source becomes exact.
+
+This avoids silently mutating a checkout, source workspace, or other externally owned local tree while preserving the ability to repair the canonical StegVerse materialization cache.
+
+Remediation receipts now explicitly assert:
+
+```text
+explicit_source_root_mutated=false
+canonical_materialization_root_only=true
+```
+
+Consumption receipts retain:
+
+```text
+explicit_source_roots_mutated=false
+```
+
+No source fetch, repository mutation, credential acquisition, or authority widening is introduced.

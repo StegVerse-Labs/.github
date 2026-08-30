@@ -198,9 +198,9 @@ def _sha256_bytes(raw: bytes) -> str:
 
 
 def _target_root(env: Mapping[str, str], key: str) -> Path:
-    raw = str(env.get(key) or "").strip()
-    if raw:
-        return Path(raw).expanduser().resolve()
+    # Package remediation is permitted to mutate only the canonical local
+    # materialization tree. Explicit STEGVERSE_*_SOURCE_ROOT values are
+    # observation-only source locators and must never be replaced here.
     base = Path(
         str(env.get(SOURCE_MATERIALIZATION_ROOT_ENV) or DEFAULT_SOURCE_MATERIALIZATION_ROOT)
     ).expanduser().resolve()
@@ -313,6 +313,8 @@ def _materialize_local_package(env: Mapping[str, str], key: str) -> dict[str, An
             "source_identity": package.get("source_identity"),
             "target_root": str(destination),
             "exact_critical_blobs_verified": True,
+            "explicit_source_root_mutated": False,
+            "canonical_materialization_root_only": True,
             "network_source_fetch_performed": False,
             "credential_read_or_acquired": False,
             "execution_authority_effect": "NONE",
@@ -469,6 +471,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             "source_resolution_attempted": True,
             "network_source_fetch_performed": False,
             "credential_read_or_acquired": False,
+            "explicit_source_roots_mutated": False,
             "user_action_required": False,
             "second_machine_required": False,
             "authority_effect": "NONE_SOURCE_RESOLUTION_ONLY",
@@ -524,6 +527,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             "source_resolution_attempted": True,
             "network_source_fetch_performed": False,
             "credential_read_or_acquired": False,
+            "explicit_source_roots_mutated": False,
             "user_action_required": False,
             "second_machine_required": False,
             "authority_effect": "NONE_SOURCE_RESOLUTION_ONLY",
@@ -622,6 +626,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "source_repairs": source_repairs,
         "source_package_needs": package_needs,
         "network_source_fetch_performed": False,
+        "explicit_source_roots_mutated": False,
         "github_token_required": False,
         "credential_authority": "TV/TVC",
         "counterpart_result_consumed": False,
