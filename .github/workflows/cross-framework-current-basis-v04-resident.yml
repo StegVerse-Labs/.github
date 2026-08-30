@@ -7,7 +7,12 @@ on:
       - control/resident-execution-request.d/cross-framework-current-basis-v04-001.json
       - scripts/consume_cross_framework_current_basis_v04_request.py
       - scripts/dispatch_resident_execution_requests.py
+      - scripts/install_sovereign_worker_source_refresh_service.py
+      - scripts/install_sovereign_heartbeat_service.py
+      - scripts/bootstrap_sovereign_runtime.py
       - tests/test_cross_framework_current_basis_v04_resident.py
+      - tests/test_sovereign_worker_source_refresh.py
+      - tests/test_bootstrap_resident_request_dispatch.py
       - docs/CROSS_FRAMEWORK_CURRENT_BASIS_V04_RESIDENT_EXECUTION_MIRROR_HANDOFF.md
       - .github/workflows/cross-framework-current-basis-v04-resident.yml
   push:
@@ -16,7 +21,12 @@ on:
       - control/resident-execution-request.d/cross-framework-current-basis-v04-001.json
       - scripts/consume_cross_framework_current_basis_v04_request.py
       - scripts/dispatch_resident_execution_requests.py
+      - scripts/install_sovereign_worker_source_refresh_service.py
+      - scripts/install_sovereign_heartbeat_service.py
+      - scripts/bootstrap_sovereign_runtime.py
       - tests/test_cross_framework_current_basis_v04_resident.py
+      - tests/test_sovereign_worker_source_refresh.py
+      - tests/test_bootstrap_resident_request_dispatch.py
       - docs/CROSS_FRAMEWORK_CURRENT_BASIS_V04_RESIDENT_EXECUTION_MIRROR_HANDOFF.md
       - .github/workflows/cross-framework-current-basis-v04-resident.yml
 
@@ -40,7 +50,14 @@ jobs:
         run: |
           set -eu
           python -m unittest tests.test_cross_framework_current_basis_v04_resident
-          python -m py_compile scripts/consume_cross_framework_current_basis_v04_request.py scripts/dispatch_resident_execution_requests.py
+          python -m unittest tests.test_sovereign_worker_source_refresh
+          python -m unittest tests.test_bootstrap_resident_request_dispatch
+          python -m py_compile \
+            scripts/consume_cross_framework_current_basis_v04_request.py \
+            scripts/dispatch_resident_execution_requests.py \
+            scripts/install_sovereign_worker_source_refresh_service.py \
+            scripts/install_sovereign_heartbeat_service.py \
+            scripts/bootstrap_sovereign_runtime.py
       - name: Record boundary
         run: |
           echo 'CROSS_FRAMEWORK_CURRENT_BASIS_V04_RESIDENT_SOURCE_PASS'
