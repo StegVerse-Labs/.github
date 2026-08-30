@@ -450,3 +450,115 @@ authentic ESRL lease/rendezvous and downstream HIL receipts are observed.
 `handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json` remains authoritative for the
 separate G18 lane only. Its PHYSICAL_RESOURCE language MUST NOT be used as a HIL
 prerequisite or HIL blocker.
+
+
+## 2026-08-30 shared Service Gateway ESRL runtime closure
+
+StegOS now contains the concrete HIL ESRL runtime adapter required to consume the
+already-merged shared Service Gateway architecture:
+
+```text
+StegVerse-Labs/StegOS PR #102
+merge: 878f06bf258c2ee47c49bad8d24d1581a61d3546
+exact-head StegOS CI: 33295276292 SUCCESS
+
+stegos/hil_shared_gateway_runtime.py
+tests/test_hil_shared_gateway_runtime.py
+```
+
+Canonical event path is now:
+
+```text
+participant Submit
+-> Universal InTr materialization request
+-> ESRL INTAKE / EVENT_EPHEMERAL lease
+-> sovereign runtime materialization
+-> existing separated carrier + WorkerCoordinator runtime
+-> scripts/materialize_hil_gateway_route_config.py
+-> loopback workers/hil_intr_profiled_ingress.py
+-> local /intr/profile verification
+-> shared Service Gateway https://stegverse.org
+-> independent /intr/materialization/readiness verification
+-> ESRL LEASE_OPEN
+-> public POST /intr/materialization
+-> HIL materialization consumer
+-> independent WorkerCoordinator HIL claim/fresh fence
+-> receiver READY
+-> exact PDF custody/reconstruction
+-> TVC lifecycle receipt
+```
+
+This supersedes both older assumptions:
+
+```text
+permanent host first -> receiver READY -> Submit
+bespoke HIL public tunnel provider required
+```
+
+The shared Service Gateway is transport-only and must continue to report no
+receipt, execution, or custody authority. The generic StegOS command-backed HTTPS
+rendezvous adapter is optional compatibility/fallback capacity only.
+
+Current authentic evidence remains:
+
+```text
+event -> ESRL lease execution: NOT OBSERVED
+public Gateway HIL readiness READY: NOT OBSERVED
+ESRL LEASE_OPEN: NOT OBSERVED
+public HIL materialization POST: NOT OBSERVED
+HIL WorkerCoordinator claim/fence: NOT OBSERVED
+receiver custody/reconstruction: NOT OBSERVED
+TVC lifecycle receipt: NOT OBSERVED
+```
+
+No additional generic HIL ESRL/runtime/rendezvous source adapter is presently
+identified as missing. The next authorized transition is authentic event-driven
+execution through the merged shared-Gateway ESRL path.
+
+
+## 2026-08-30 ESRL shared-Gateway execution-gate merge
+
+The event consumer itself is now bound to the shared-Gateway ESRL lifecycle:
+
+```text
+StegVerse-Labs/.github PR #519
+merge: 9591ddc3f59f851f176c9126e1031774207af8c0
+Validate organization control plane run: 33295465321 SUCCESS
+Heartbeat Worker Project run: 33295465332 SUCCESS
+
+workers/hil_esrl_runtime_bridge.py
+scripts/consume_hil_intr_materialization_request.py
+tests/test_hil_intr_materialization_consumer.py
+```
+
+The previous local-only behavior is removed:
+
+```text
+OLD:
+admitted materialization -> relay-specific adapter -> LOCAL_READY
+-> targeted HIL WorkerCoordinator execution
+
+CURRENT:
+admitted materialization
+-> SharedGatewayHILRuntimeAdapter
+-> sovereign runtime materialized
+-> local HIL profile verified
+-> PUBLIC_VERIFYING
+-> shared Gateway readiness independently verified
+-> LEASE_OPEN
+-> only then targeted HIL WorkerCoordinator execution
+```
+
+The consumer now fails closed when the ESRL bridge returns only LOCAL_READY or
+when public shared-Gateway readiness is absent. WorkerCoordinator remains the sole
+claim/fence authority after LEASE_OPEN.
+
+Current source/control completion:
+
+```text
+Universal InTr -> ESRL HIL binding/controller: COMPLETE_VALIDATED_MERGED
+concrete shared-Gateway HIL ESRL runtime adapter: COMPLETE_VALIDATED_MERGED
+HIL materialization consumer LEASE_OPEN gate: COMPLETE_VALIDATED_MERGED
+known source scaffolding/stubs in this HIL activation path: 0
+authentic runtime execution: NOT OBSERVED
+```
