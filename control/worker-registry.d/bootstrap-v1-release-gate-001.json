@@ -30,7 +30,8 @@
         ],
         "integration_evidence_refs": [
           "workers/bootstrap_v1_release_gate_worker.py",
-          "control/process-worker-adapters.d/bootstrap-v1-release-gate-001.json"
+          "control/process-worker-adapters.d/bootstrap-v1-release-gate-001.json",
+          "control/worker-registry.d/bootstrap-v1-release-gate-001.json"
         ],
         "activation_proof_ref": null,
         "blockers": [
@@ -40,7 +41,7 @@
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
-        "task_relationship": "develops_capability",
+        "task_relationship": "validates_capability",
         "target_phase": "ACTIVATED"
       },
       "admission": {
