@@ -26,3 +26,9 @@ def test_consumer_uses_bootstrap_only_when_exact_root_absent():
     assert "bootstrap_tvc_pr92_validation_source" in src
     assert 'if tvc_root is None:' in src
     assert 'bootstrap_receipt.get("state") == "READY"' in src
+
+
+def test_consumer_terminal_state_is_bound_to_exact_bundle_digest():
+    src=(ROOT/"scripts/consume_tvc_broker_validation_request.py").read_text()
+    assert 'EXPECTED_BUNDLE_SHA256 = _HANDOFF_EXECUTION["expected_source_bundle_sha256"]' in src
+    assert 'result.get("source_bundle_sha256") == EXPECTED_BUNDLE_SHA256' in src
