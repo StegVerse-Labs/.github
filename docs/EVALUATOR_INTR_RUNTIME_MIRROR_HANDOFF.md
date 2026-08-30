@@ -239,3 +239,36 @@ The receiver remains:
 - persistent until resident lifecycle control stops/restarts it.
 
 The runtime now exposes a bounded authority-neutral GET readiness surface and accepts `--max-requests 0` for persistent serving. A real READ_REVIEW request is still required before the task can terminalize.
+
+
+## Canonical reusable backbone migration — 2026-08-30
+
+Issue #556 migrates the evaluator runtime from connector-local transport
+construction to the merged StegOS reusable backbone:
+
+```text
+profile: evaluator-read-review
+backbone: stegos.intr_backbone.CanonicalInTrConnector
+StegOS backbone merge: c4182a696b33c6bbaaa8ec0c5382f83fc4befc2c
+transition-state extension merge: 948916ff15efeef45a36fcd6d9af46e587c35cc9
+```
+
+Evaluator request/projection validation remains evaluator-specific. Intent
+construction, exact-packet hashing, hop-receipt issuance, complete-chain
+validation, reverse response construction, authority invariants, and receiver
+availability semantics now come from the canonical backbone/profile registry.
+
+Local validation:
+
+```text
+runtime unit tests: 6/6 PASS
+evaluator + current StegOS integration: PASS
+ingress RECEIVED: PASS
+egress FORWARDED: PASS
+egress prior-hash linkage: PASS
+write-once canonical profile/result bundle: PASS
+```
+
+This migration does not supersede or manufacture the retained 2026-08-29
+bounded live observation. Public HTTPS, resident production activation, and
+Master Records custody remain separately unobserved.
