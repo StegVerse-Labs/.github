@@ -58,7 +58,9 @@
       "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
       "control/resident-execution-request.d/hil-sovereign-receiver-001.json",
       "scripts/consume_hil_resident_execution_request.py",
-      "tests/test_hil_resident_execution_request.py"
+      "tests/test_hil_resident_execution_request.py",
+      "StegVerse-Labs/.github@b941edcf4f9e3e7f0fe449bd20252f3c42e6259e shared HIL Service Gateway route",
+      "StegVerse-Labs/StegOS@878f06bf258c2ee47c49bad8d24d1581a61d3546 concrete shared-Gateway HIL ESRL runtime adapter"
     ],
     "dependencies": [],
     "parent_task_id": null,
@@ -200,6 +202,26 @@
       "consumer_mints_claim_or_fence": false,
       "blocked_materialization_blocks_unrelated_work": false,
       "runtime_materialization_observed": false
+    },
+    "esrl_shared_gateway_runtime": {
+      "state": "SOURCE_COMPLETE_VALIDATED_MERGED_RUNTIME_NOT_OBSERVED",
+      "stegos_merge": "878f06bf258c2ee47c49bad8d24d1581a61d3546",
+      "validation_run": 33295276292,
+      "shared_gateway_route_merge": "b941edcf4f9e3e7f0fe449bd20252f3c42e6259e",
+      "adapter_ref": "StegVerse-Labs/StegOS/stegos/hil_shared_gateway_runtime.py",
+      "local_profile": "/intr/profile",
+      "public_origin": "https://stegverse.org",
+      "public_readiness_path": "/intr/materialization/readiness",
+      "public_materialization_path": "/intr/materialization",
+      "g18_completion_required": false,
+      "bespoke_public_tunnel_required": false,
+      "gateway_receipt_authority": false,
+      "gateway_execution_authority": false,
+      "gateway_custody_authority": false,
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": "NONE",
+      "runtime_observed": false,
+      "authority_effect": "NONE_SOURCE_BINDING_ONLY"
     }
   },
   "continuity": {
@@ -209,7 +231,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "On the next authentic HIL Universal InTr event, preserve the exact packet/intent, emit or receive the canonical StegOS materialization request, let the existing rootless watcher invoke scripts/consume_hil_intr_materialization_request.py, and let only the existing targeted executor request SHWP-HIL-SOVEREIGN-RECEIVER-001 under WorkerCoordinator claim/fence authority. Then preserve the receiver and TVC Interlock receipts. Do not wait for G18 completion or a continuously READY receiver. Source/CI remains non-runtime evidence.",
+    "next_authorized_action": "On the next authentic HIL Universal InTr event, feed the exact materialization request into the merged StegOS ESRL INTAKE/shared-Gateway runtime adapter, materialize the sovereign runtime and loopback HIL profiled ingress, materialize the existing non-secret shared-Gateway route, independently require https://stegverse.org/intr/materialization/readiness = READY, then allow the exact public /intr/materialization request to enter the existing HIL materialization consumer and WorkerCoordinator claim/fence path. Preserve all resulting receiver/custody/reconstruction/TVC receipts. Do not wait for G18 completion or require a bespoke HIL tunnel.",
     "terminal_when": [
       "authentic participant Universal InTr intent preserved",
       "receiver-side DEVICE_SYSTEM -> STEGOS_ECOSYSTEM receipt preserved",
@@ -221,10 +243,10 @@
     "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001"
   },
   "block": {
-    "block_reason": "The event-triggered transport, StegOS materialization-request seam, HIL materialization consumer, receiver receipt chain, and TVC intake are source-complete on their current lanes. Remaining activation evidence is authentic runtime creation/consumption of a HIL materialization request and the resulting receiver/TVC receipt chain; G18 completion and continuously READY receiver state are not prerequisites.",
-    "dependency": "authentic HIL Universal InTr event delivered into the canonical materialization-request seam, existing HIL targeted execution, and resulting receiver/TVC receipt observation",
+    "block_reason": "All currently identified HIL event->ESRL->shared Service Gateway source adapters are complete, validated, and merged. Remaining activation evidence is authentic event-driven runtime materialization, public shared-Gateway readiness/LEASE_OPEN, exact public materialization ingress, WorkerCoordinator HIL claim/fence, and downstream custody/reconstruction/TVC receipts.",
+    "dependency": "authentic HIL Universal InTr event executed through merged StegOS shared-Gateway ESRL runtime adapter plus resulting Gateway/WorkerCoordinator/receiver/TVC observations",
     "solution_task_ref": "StegVerse-Labs/.github#246",
-    "solution_source_ref": "workers/hil_sovereign_receiver_worker.py",
+    "solution_source_ref": "StegVerse-Labs/StegOS@878f06bf258c2ee47c49bad8d24d1581a61d3546:stegos/hil_shared_gateway_runtime.py",
     "solution_validation_ref": "tests/test_hil_sovereign_receiver_bridge.py",
     "solution_command": "python scripts/run_worker_runtime.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001",
     "solution_constraints": [
