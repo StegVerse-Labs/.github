@@ -95,3 +95,14 @@ authentic four-package bundle: NOT YET BUILT
 device bundle materialization proof: NOT YET OBSERVED
 Bootstrap v1 release: NOT YET AUTHORIZED
 ```
+
+
+## Canonical package producer — 2026-08-30
+
+The four required local `stegverse.source-package/v1` objects are now owned by the separate authority-neutral machine task:
+
+`BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001`
+
+That producer consumes the same authentic production-source-prep v2 receipt used by the source-identity freeze, recomputes every file/content manifest from the already-local verified roots, requires exact equality with the upstream source identities, and writes the canonical local package paths.
+
+The distributable-bundle worker does not produce, fetch, or repair packages itself. It remains a pure integrity/bundle composition gate. Missing package objects therefore identify the package-production task as the canonical continuation rather than an unspecified transport or external platform.
