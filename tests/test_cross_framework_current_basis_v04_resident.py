@@ -3,6 +3,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -249,6 +250,65 @@ class CurrentBasisResidentConsumerTests(unittest.TestCase):
                 self.assertFalse((base / "source" / MOD.DEFAULT_COMPONENT_ROOTS[key]).exists())
         finally:
             MOD.EXPECTED_SOURCE_BLOBS = original
+
+
+    def test_sdk_source_guard_binds_hardened_result_packager(self):
+        self.assertEqual(
+            MOD.EXPECTED_SOURCE_BLOBS["STEGVERSE_SDK_SOURCE_ROOT"][
+                "scripts/package_cross_framework_current_basis_results.py"
+            ],
+            "5cd6d104d5d08042aa60330ade92370d53fad28a",
+        )
+
+    def test_local_publication_packet_is_prepared_without_transport_or_writeback(self):
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            sdk = base / "sdk"
+            result_dir = base / "result"
+            state_root = base / "state"
+            manifest = sdk / "inspection/examples/cross-framework-current-basis-request.draft.json"
+            packager = sdk / "scripts/package_cross_framework_current_basis_results.py"
+            manifest.parent.mkdir(parents=True, exist_ok=True)
+            packager.parent.mkdir(parents=True, exist_ok=True)
+            manifest.write_text("{}\n", encoding="utf-8")
+            packager.write_text("# canonical packager fixture\n", encoding="utf-8")
+            result_dir.mkdir(parents=True)
+
+            calls = []
+            def runner(command, **kwargs):
+                calls.append((command, kwargs))
+                output_dir = Path(command[command.index("--output-dir") + 1])
+                output_dir.mkdir(parents=True, exist_ok=True)
+                (output_dir / "RESULT_PACKET_INDEX.json").write_text(
+                    json.dumps({
+                        "schema": "stegverse.sdk.cross-framework-result-publication.v1",
+                        "frozen_manifest_sha256": MOD.EXPECTED_SHA256,
+                        "frozen_manifest_git_blob_sha1": MOD.EXPECTED_BLOB,
+                        "github_actions_runtime_authority": False,
+                    }) + "\n",
+                    encoding="utf-8",
+                )
+                (output_dir / "artifact.txt").write_text("evidence\n", encoding="utf-8")
+                return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+            ready = MOD.prepare_local_publication_packet(
+                sdk_root=sdk,
+                result_dir=result_dir,
+                manifest=manifest,
+                state_root=state_root,
+                runner=runner,
+                env={"PATH": "/bin", "HOME": td},
+            )
+            self.assertEqual(ready["state"], "LOCAL_PACKET_READY_FOR_EVIDENCE_TRANSPORT")
+            self.assertFalse(ready["network_transport_performed"])
+            self.assertFalse(ready["repository_writeback_performed"])
+            self.assertFalse(ready["github_actions_runtime_authority"])
+            self.assertFalse(ready["publication_authority"])
+            self.assertFalse(ready["credential_read_or_acquired"])
+            self.assertTrue(Path(ready["archive"]).is_file())
+            self.assertEqual(ready["archive_sha256"], MOD._sha256_file(Path(ready["archive"])))
+            self.assertTrue((state_root / MOD.PUBLICATION_READY_FILE).is_file())
+            self.assertEqual(len(calls), 1)
 
     def test_no_request_is_noop(self):
         with tempfile.TemporaryDirectory() as td:
