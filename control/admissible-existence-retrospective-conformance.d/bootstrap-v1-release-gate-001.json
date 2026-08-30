@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v0.1",
+  "task_id": "BOOTSTRAP-V1-RELEASE-GATE-001",
+  "capability_id": "stegverse:capability:bootstrap-v1-release-gate:v1",
+  "phase": "ADMISSIBLE",
+  "classification": "REVIEW_REQUIRED",
+  "source_implementation_state": "IMPLEMENTED_PENDING_VALIDATION",
+  "activation_proof_observed": false,
+  "runtime_release_authorization_observed": false,
+  "publication_observed": false,
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "authority_effect": "NONE",
+  "evidence_refs": [
+    "docs/BOOTSTRAP_V1_RELEASE_GATE_MIRROR_HANDOFF.md",
+    "handoffs/BOOTSTRAP-V1-RELEASE-GATE-001.json"
+  ]
+}
