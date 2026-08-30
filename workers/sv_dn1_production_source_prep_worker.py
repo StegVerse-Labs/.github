@@ -35,35 +35,35 @@ PACKAGE_SCHEMA="stegverse.source-package/v1"
 PACKAGE_VERSION="1.0.0"
 
 COMPONENTS={
-    "StegVerse-org/StegVerse-SDK":{
-        "root_rel":"StegVerse-org/StegVerse-SDK",
-        "legacy_coordinate":{"kind":"git_commit","value":"4461a1edf83549c51189ca4217dd75752caf604e"},
+    "stegverse.sdk":{
+        "root_rel":"components/sdk",
+        "legacy_coordinate":{"kind":"git","repository":"StegVerse-org/StegVerse-SDK","commit":"4461a1edf83549c51189ca4217dd75752caf604e"},
         "anchors":{
             "stegverse/governance_ingress_runtime.py":"62c5ae4799ae018f6b100766215c3c68078c5b2e",
             "stegverse/sovereign_validation_runtime.py":"814d4cb607cc2cb4c7a605474fe845e13540898d",
         },
     },
-    "Data-Continuation/core-lite":{
-        "root_rel":"Data-Continuation/core-lite",
-        "legacy_coordinate":{"kind":"git_commit","value":"284ddc21a352ee9c7decdd40dd499b7286710bc8"},
+    "stegverse.core-lite":{
+        "root_rel":"components/core-lite",
+        "legacy_coordinate":{"kind":"git","repository":"Data-Continuation/core-lite","commit":"284ddc21a352ee9c7decdd40dd499b7286710bc8"},
         "anchors":{"core_lite/transaction_route.py":"734923a86bfcd4d41d07e0fb8797de50f0fb9408"},
     },
-    "StegVerse-Labs/StegCore":{
-        "root_rel":"StegVerse-Labs/StegCore",
-        "legacy_coordinate":{"kind":"git_commit","value":"eb2ef110d09328aa90bf1ed91c18b47a3ba32a71"},
+    "stegverse.stegcore":{
+        "root_rel":"components/stegcore",
+        "legacy_coordinate":{"kind":"git","repository":"StegVerse-Labs/StegCore","commit":"eb2ef110d09328aa90bf1ed91c18b47a3ba32a71"},
         "anchors":{"src/stegcore/transaction_lifecycle.py":"81935669846fedd2867272810b090226b05780ab"},
     },
-    "master-records/orchestration":{
-        "root_rel":"master-records/orchestration",
-        "legacy_coordinate":{"kind":"git_commit","value":"baf9272f89ebe515fc4c2413b5d951d28f1e4485"},
+    "stegverse.master-records":{
+        "root_rel":"components/master-records",
+        "legacy_coordinate":{"kind":"git","repository":"master-records/orchestration","commit":"baf9272f89ebe515fc4c2413b5d951d28f1e4485"},
         "anchors":{"services/manifest_receipt_custody.py":"26a4c1e082ee91128648b2b9bd13cc32ce915f82"},
     },
 }
 ROOT_ENV_OUTPUT={
-    "StegVerse-org/StegVerse-SDK":"STEGVERSE_SDK_SOURCE_ROOT",
-    "StegVerse-Labs/StegCore":"STEGVERSE_STEGCORE_SOURCE_ROOT",
-    "Data-Continuation/core-lite":"STEGVERSE_CORE_LITE_SOURCE_ROOT",
-    "master-records/orchestration":"STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+    "stegverse.sdk":"STEGVERSE_SDK_SOURCE_ROOT",
+    "stegverse.stegcore":"STEGVERSE_STEGCORE_SOURCE_ROOT",
+    "stegverse.core-lite":"STEGVERSE_CORE_LITE_SOURCE_ROOT",
+    "stegverse.master-records":"STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
 }
 
 class SourcePackagePending(RuntimeError): pass
