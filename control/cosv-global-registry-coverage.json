@@ -10,10 +10,10 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
-    "unique_task_ids_global_plus_fragments": 64,
+    "unique_task_ids_global_plus_fragments": 65,
     "canonically_indexed_task_ids": 39,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 18,
+    "active_unvectorized_unique_task_ids": 19,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,7 +21,7 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 32,
+  "total_active_unvectorized_unique_task_ids": 33,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -40,7 +40,8 @@
     "SHWP-SV002-SELF-CHARACTERIZATION-001",
     "BOOTSTRAP-V1-SOURCE-IDENTITY-FREEZE-001",
     "BOOTSTRAP-V1-RELEASE-CANDIDATE-FREEZE-001",
-    "BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001"
+    "BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001",
+    "BOOTSTRAP-V1-MATERIALIZATION-EVIDENCE-INTAKE-001"
   ],
   "active_organization_task_ids_missing_canonical_cosv": [
     "ORG-FED-AACT-E-001",
