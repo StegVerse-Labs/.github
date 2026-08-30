@@ -234,14 +234,17 @@ observer_direct_relation_to_stegverse_002 = false
 
 This lane may create queue-admission and runtime-attempt receipts only. It may not preclaim receiver READY, public HTTPS reachability, experiment events, Master Records reconstruction, or observation round-trip completion.
 
-Scoped .github files:
+Canonical event-ephemeral source:
 
-- `scripts/serve_sv002_intr_materialization_ingress.py`
-- `scripts/consume_sv002_intr_materialization_request.py`
-- `tests/test_sv002_intr_materialization_ingress.py`
-- `tests/test_sv002_intr_materialization_consumer.py`
-- sovereign bootstrap/source-refresh copy lists if required
+- `workers/universal_intr_profiled_ingress.py`
+- `workers/sv002_intr_materialization_consumer.py`
+- `workers/sv002_observation_esrl_runtime_bridge.py`
+- `workers/hil_intr_profiled_ingress.py` for backward-compatible HIL profile discovery
+- `tests/test_sv002_event_ephemeral_materialization.py`
+- `docs/SV002_EVENT_EPHEMERAL_OBSERVATION_MIRROR_HANDOFF.md`
 - `docs/SV002_PUBLIC_OBSERVATION_RUNTIME_MIRROR_HANDOFF.md`
+
+The earlier script-form SV002 materialization consumer/ingress is superseded and must not be materialized or dispatched.
 
 Site-side Node outbox initiation is owned by the existing `StegVerse-Labs/Site/docs/SV002_PUBLIC_OBSERVATION_MIRROR_HANDOFF.md` lane and must remain non-authorizing.
 
@@ -288,3 +291,21 @@ Master Records reconstruction: NOT OBSERVED
 ```
 
 The next machine-execution transition is therefore runtime projection/delivery, not additional receiver-source construction.
+
+
+## Duplicate-path reconciliation — issue #516
+
+Concurrent source merges briefly left both the canonical worker-module event-ephemeral path and an earlier script-form path on `main`.
+
+The authoritative scoped handoff `docs/SV002_EVENT_EPHEMERAL_OBSERVATION_MIRROR_HANDOFF.md` selects exactly one implementation:
+
+```text
+workers/universal_intr_profiled_ingress.py
+-> workers/sv002_intr_materialization_consumer.py
+-> workers/sv002_observation_esrl_runtime_bridge.py
+-> existing WorkerCoordinator task SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001
+```
+
+Issue #516 removes the superseded duplicate scripts, their dedicated `sv002-intr-materialization` filesystem watcher, bootstrap/static-copy references, and duplicate tests. The shared `intr-materialization` ingress remains the only materialization queue surface.
+
+This reconciliation changes no runtime evidence posture and creates no new authority.
