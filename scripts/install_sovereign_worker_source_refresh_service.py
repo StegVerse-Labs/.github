@@ -26,6 +26,12 @@ REFRESH_SERVICE = "stegverse-worker-source-refresh.service"
 REFRESH_PATH = "stegverse-worker-source-refresh.path"
 WORKER_SERVICE = "stegverse-worker-runtime.service"
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
+SOURCE_PACKAGE_COMPONENT_SLUGS = (
+    "stegverse-sdk",
+    "stegverse-stegcore",
+    "stegverse-core-lite",
+    "stegverse-master-records",
+)
 
 
 def default_source_package_root(env: dict[str, str] | None = None) -> Path:
@@ -75,6 +81,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
         "PrivateTmp=true",
         "",
     ])
+    package_watch_paths = tuple(packages / slug for slug in SOURCE_PACKAGE_COMPONENT_SLUGS)
     watched_paths = (
         source / "heartbeat_runtime",
         source / "workers",
@@ -96,6 +103,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
         source / "control/resident-execution-request.d",
         runtime / "intr-materialization",
         packages,
+        *package_watch_paths,
     )
     path_unit = "\n".join([
         "[Unit]",
@@ -147,6 +155,8 @@ def install(
     refresh_receipt = refresh(source, runtime)
     (runtime / "intr-materialization").mkdir(parents=True, exist_ok=True)
     packages.mkdir(parents=True, exist_ok=True)
+    for slug in SOURCE_PACKAGE_COMPONENT_SLUGS:
+        (packages / slug).mkdir(parents=True, exist_ok=True)
     config_root = unit_root or (Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "systemd" / "user")
     config_root = config_root.expanduser().resolve()
     config_root.mkdir(parents=True, exist_ok=True)
@@ -192,6 +202,7 @@ def install(
         "intr_materialization_watch": str(runtime / "intr-materialization"),
         "source_package_event_driven": True,
         "source_package_watch": str(packages),
+        "source_package_component_watches": [str(packages / slug) for slug in SOURCE_PACKAGE_COMPONENT_SLUGS],
         "second_heartbeat_created": False,
         "third_party_scheduler_required": False,
         "network_fetch_performed": False,
