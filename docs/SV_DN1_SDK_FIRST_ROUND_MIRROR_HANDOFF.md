@@ -71,16 +71,17 @@ Anything else returns HANDOFF_READY or fails closed.
 
 ## Canonical runtime sources
 
-The worker consumes already-materialized local source roots only:
+The worker consumes one completed production-source-preparation receipt:
 
 ```text
-STEGVERSE_SDK_SOURCE_ROOT
-STEGVERSE_STEGCORE_SOURCE_ROOT
-STEGVERSE_CORE_LITE_SOURCE_ROOT
-STEGVERSE_MASTER_RECORDS_SOURCE_ROOT
+~/.stegverse/state/sv-dn1-production-source-prep/receipts/latest.json
+schema: stegverse.sv-dn1.production-source-prep-receipt/v2
+source_identity_scheme: sha256-content-manifest
+network_source_fetch_performed: false
+github_platform_required: false
 ```
 
-These are non-secret local locators, not credentials. They are now supplied by the dedicated production-source-preparation predecessor after anonymous public materialization plus sanitized TV/TVC private-source receipts.
+That receipt supplies the four sovereign component roots and their content-addressed identities. The SDK worker no longer accepts four independent source-root environment variables as source admission. Repository/Git coordinates are not runtime locators.
 
 Current production anchor blobs checked before execution:
 
@@ -105,7 +106,7 @@ master-records/orchestration
   git_blob_sha1: 26a4c1e082ee91128648b2b9bd13cc32ce915f82
 ```
 
-A mismatched local production anchor fails closed as SOURCE_DRIFT. This does not imply every repository byte is frozen; it establishes the exact runtime anchor files this lane is allowed to execute.
+The complete source identity from the predecessor receipt is canonical. The retained anchor hashes are migration compatibility checks only; they are not source locators or canonical source identities. Any receipt/root/identity mismatch fails closed as SOURCE_DRIFT.
 
 ## Production execution
 
