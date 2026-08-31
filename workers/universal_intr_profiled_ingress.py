@@ -47,8 +47,13 @@ from consume_publisher_intr_materialization_request import (  # noqa: E402
 from consume_device_kv_intr_materialization_request import (  # noqa: E402
     DESTINATION as DEVICE_KV_DESTINATION,
     DOWNSTREAM_OWNER as DEVICE_KV_OWNER,
+    QUERY_RESPONSE_DIR_REL as DEVICE_KV_QUERY_RESPONSE_DIR_REL,
     scrubbed_env as device_kv_scrubbed_env,
     validate_request as validate_device_kv_request,
+)
+from heartbeat_runtime.intr_subsignal_runtime import (  # noqa: E402
+    default_heartbeat_runtime_root,
+    recover_local_intr_subsignal,
 )
 from workers.sv002_intr_materialization_consumer import (  # noqa: E402
     DESTINATION as SV002_DESTINATION,
@@ -59,6 +64,7 @@ from workers.sv002_intr_materialization_consumer import (  # noqa: E402
 
 PROFILE_PATH = "/intr/profile"
 INGRESS_PATH = "/intr/materialization"
+DEVICE_KV_RESULT_PATH = "/intr/device-kv/result"
 SV002_RECEIPT_SCHEMA = "stegverse.sv002-intr-materialization-ingress/v1"
 SV002_RECEIPT_DIR = Path("receipts/sovereign-network/sv002-intr-ingress")
 SV002_LATEST = Path("receipts/sovereign-network/sv002-intr-ingress.latest.json")
@@ -327,6 +333,72 @@ def admit_device_kv(*, runtime_root: Path, body: bytes, headers: Mapping[str, st
     return {**receipt,"dispatch":dispatch}
 
 
+def retrieve_device_kv_query_result(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dict[str, Any]:
+    transport=hil.validate_transport_headers(headers,body)
+    require(transport["origin"]==hil.ORIGIN_NODE and transport["authorization_id"] is None,"device_kv_result_requires_node_origin")
+    try:
+        payload=json.loads(body.decode("utf-8"))
+    except Exception as exc:
+        raise ValueError("device_kv_result_request_json_invalid") from exc
+    require(isinstance(payload,dict),"device_kv_result_request_object_required")
+    require(set(payload)=={"schema","materialization_id","request_hash","node_id","authority_effect"},"device_kv_result_request_field_set_invalid")
+    require(payload.get("schema")=="stegverse.device-kv.query-result-request/v1","device_kv_result_request_schema_invalid")
+    require(payload.get("authority_effect")=="NONE_RESULT_LOOKUP_ONLY","device_kv_result_request_authority_invalid")
+    materialization_id=safe_id(str(payload.get("materialization_id") or ""))
+    request_hash=payload.get("request_hash")
+    node_id=payload.get("node_id")
+    require(isinstance(request_hash,str) and len(request_hash)==71 and request_hash.startswith("sha256:"),"device_kv_result_request_hash_invalid")
+    require(isinstance(node_id,str) and node_id.startswith("SV-NODE-"),"device_kv_result_node_id_invalid")
+
+    ingress_path=runtime_root/DEVICE_KV_RECEIPT_DIR/f"{materialization_id}.json"
+    result_path=runtime_root/DEVICE_KV_QUERY_RESPONSE_DIR_REL/f"{materialization_id}.json"
+    require(ingress_path.is_file(),"device_kv_result_ingress_missing")
+    require(result_path.is_file(),"device_kv_result_not_ready")
+    ingress=json.loads(ingress_path.read_text(encoding="utf-8"))
+    result=json.loads(result_path.read_text(encoding="utf-8"))
+    require(ingress.get("state")=="INGRESS_ADMITTED","device_kv_result_ingress_not_admitted")
+    require(ingress.get("request_hash")==request_hash and ingress.get("node_id")==node_id,"device_kv_result_ingress_binding_mismatch")
+    require(result.get("state")=="RESPONSE_PERSISTED","device_kv_result_state_invalid")
+    require(result.get("materialization_id")==materialization_id and result.get("request_hash")==request_hash and result.get("node_id")==node_id,"device_kv_result_response_binding_mismatch")
+    require(result.get("response_transported_on_hb_derived_carrier") is True and result.get("exact_response_packet_recovered") is True,"device_kv_result_carrier_evidence_missing")
+    signal_ref=result.get("response_shared_hb_signal_ref")
+    signal_sha=result.get("response_shared_hb_signal_sha256")
+    require(isinstance(signal_ref,str) and signal_ref and isinstance(signal_sha,str) and len(signal_sha)==64,"device_kv_result_signal_binding_invalid")
+    heartbeat_root=default_heartbeat_runtime_root()
+    recovered=recover_local_intr_subsignal(root=heartbeat_root,signal_ref=signal_ref)
+    require(sha_uri(recovered)==result.get("response_payload_hash"),"device_kv_result_recovered_payload_hash_mismatch")
+    require(recovered==canonical(result.get("response")),"device_kv_result_recovered_response_mismatch")
+    signal_path=(heartbeat_root/signal_ref).resolve()
+    try:
+        signal_path.relative_to(heartbeat_root)
+    except ValueError as exc:
+        raise ValueError("device_kv_result_signal_ref_outside_runtime") from exc
+    require(signal_path.is_file(),"device_kv_result_signal_missing")
+    signal=json.loads(signal_path.read_text(encoding="utf-8"))
+    require(sha_uri(signal)[7:]==signal_sha,"device_kv_result_signal_sha256_mismatch")
+    return {
+        "schema":"stegverse.device-kv.query-result-delivery/v1",
+        "state":"RESULT_AVAILABLE",
+        "materialization_id":materialization_id,
+        "request_hash":request_hash,
+        "node_id":node_id,
+        "response":result["response"],
+        "response_receipt_hash":result["receipt_hash"],
+        "response_payload_hash":result["response_payload_hash"],
+        "response_carrier_signal":signal,
+        "response_shared_hb_signal_ref":signal_ref,
+        "response_shared_hb_signal_sha256":signal_sha,
+        "response_transported_on_hb_derived_carrier":True,
+        "exact_response_packet_recovered":True,
+        "credential_authority":"TV/TVC",
+        "github_token_runtime_authority":"NONE",
+        "credential_material_present":False,
+        "provider_operation_authorized":False,
+        "result_lookup_grants_authority":False,
+        "authority_effect":"NONE_RESULT_DELIVERY_ONLY",
+    }
+
+
 def _is_publisher(payload: Any) -> bool:
     if isinstance(payload, dict) and payload.get("destination") == PUBLISHER_DESTINATION and payload.get("downstream_owner_ref") == PUBLISHER_OWNER:
         return True
@@ -474,6 +546,7 @@ def profile(tls_enabled: bool) -> dict[str, Any]:
         "protocol": "InTr",
         "profile_path": PROFILE_PATH,
         "materialization_path": INGRESS_PATH,
+        "device_kv_result_path": DEVICE_KV_RESULT_PATH,
         "profiles": ["HIL:Ingress", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "Publisher:ArtifactTransfer", "KV:PublisherArtifactImport"],
         "heartbeat_derived_carrier": hb_intr_carrier_profile(),
         "supported_origins": [hil.ORIGIN_NODE, hil.ORIGIN_RELAY],
@@ -511,7 +584,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_json(200, profile(self.server.tls_enabled))
 
     def do_POST(self) -> None:  # noqa: N802
-        if self.path != INGRESS_PATH:
+        if self.path not in {INGRESS_PATH, DEVICE_KV_RESULT_PATH}:
             self.send_json(404, {"state": "NOT_FOUND", "authority_effect": AUTHORITY_EFFECT})
             return
         try:
@@ -524,13 +597,18 @@ class Handler(BaseHTTPRequestHandler):
             return
         body = self.rfile.read(length)
         try:
-            payload = json.loads(body.decode("utf-8"))
-            receipt = admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers))))
+            if self.path == DEVICE_KV_RESULT_PATH:
+                receipt = retrieve_device_kv_query_result(runtime_root=self.server.runtime_root, body=body, headers=self.headers)
+                status = 200
+            else:
+                payload = json.loads(body.decode("utf-8"))
+                receipt = admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers))))
+                status = 202
         except Exception as exc:
             self.send_json(400, {"state": "REJECTED", "reason": str(exc), "authority_effect": AUTHORITY_EFFECT})
             return
         self.server.handled_requests += 1
-        self.send_json(202, receipt)
+        self.send_json(status, receipt)
 
 
 class Server(ThreadingHTTPServer):
@@ -581,6 +659,7 @@ def main() -> int:
         "bound_port": port,
         "profile_path": PROFILE_PATH,
         "materialization_path": INGRESS_PATH,
+        "device_kv_result_path": DEVICE_KV_RESULT_PATH,
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
         "execution_authority": "NONE",
