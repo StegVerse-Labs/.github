@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-002",
+  "state": "REQUESTED",
+  "task_id": "SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "credential_authority": "TV/TVC",
+  "credential_requirement": "NONE",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "requested_at": "2026-08-31T17:40:00-05:00",
+  "required_nonsecret_source_locators": [
+    "STEGVERSE_STEGCORE_SOURCE_ROOT",
+    "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT"
+  ],
+  "note": "Request authentic sovereign reference-boundary observation through the existing targeted WorkerCoordinator path. This request grants no claim, fence, credential, execution, publication, Continuity, or external-system activation authority."
+}
