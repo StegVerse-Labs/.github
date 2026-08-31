@@ -1,0 +1,43 @@
+{
+  "identity": "StegVerse-Labs/.github:task:BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000103000",
+  "evidence_refs": [
+    "control/worker-registry.d/bootstrap-v1-intr-bundle-delivery-001.json",
+    "handoffs/BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001.json",
+    "docs/BOOTSTRAP_V1_INTR_BUNDLE_DELIVERY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#569@ea9cf7380c04dcdd46da4ac78e719e37316b0a92"
+  ],
+  "observed_at": "2026-08-30T19:50:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 3,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "source/runtime lane merged and validated by PR #569; executable handoff is HANDOFF_READY_MACHINE_OWNED and worker is AVAILABLE",
+    "archive_ready": "worker fragment archive_eligible=false",
+    "unassigned_work": "bootstrap-v1-intr-bundle-delivery-worker owns continuation",
+    "chat_owned_counts": "resident delivery is machine-owned; manual execution is false and no chat credential role exists",
+    "canonical_owner_installed": "Universal InTr server, worker, resident request/consumer, dispatcher wiring, runtime refresh wiring, handoff and tests are merged",
+    "thread_required": "durable machine continuation is independently recoverable and requires no chat-only action",
+    "blocker_count": "exact registry/handoff blocker parity: BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_NOT_YET_BUILT | PUBLIC_SOVEREIGN_BOOTSTRAP_INTR_ROUTE_NOT_YET_OBSERVED | AUTHENTIC_BROWSER_BUNDLE_DELIVERY_NOT_YET_OBSERVED",
+    "evidence_complete": "canonical bundle, public sovereign route and authentic browser delivery remain unobserved",
+    "activated": "activation_proof_ref=null; receiver readiness or source merge is not delivery activation",
+    "propagated": "browser materialization, SDK admission, release authorization and publication remain separate downstream gates"
+  },
+  "authority_effect": "NONE"
+}
