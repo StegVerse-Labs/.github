@@ -302,3 +302,12 @@ transition_effect_state=PENDING_TRANSITION_ELEMENT_EVALUATION
 The worker does not replace these fields with a blanket `NONE`. Blocked attempts remain non-transitions for principal-effect purposes. Runtime-identity packets, request-consumption receipts, and Master Records bridge operations may independently retain explicit non-authorizing effects because those packets/operations do not themselves establish the self-characterization transition.
 
 Observed capability realization does not self-promote `SYSTEM_AI_ACTIVE`; it becomes evidence available to the applicable Transition Elements and later reconstruction.
+
+
+## Master Records v0.2 verifier source pin — issue #661
+
+The resident reconstruction bridge is now bound to the exact v0.2-capable Master Records verifier merged as `master-records/orchestration@2e117902d4f261b10cb3b5122b7ef48fb0e36e57` with verifier Git blob `cc96556a23b5bd804f3cdaa96539b379c1904437`.
+
+Before invocation, the resident worker requires the merged commit to be locally available and the active verifier file to hash to that exact Git blob. If the local checkout is missing or stale, reconstruction remains `PENDING` with a source-pin blocker. No network source fetch, credential, authority grant, principal-execution claim, or reconstruction claim is introduced.
+
+This closes the source-version gap created when the principal artifact contract advanced to v0.2 and added `TRANSITION_EFFECTS.json`.
