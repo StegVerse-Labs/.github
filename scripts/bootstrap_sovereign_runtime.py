@@ -45,6 +45,7 @@ REQUIRED_SOURCE_FILES = (
     Path("scripts/serve_sv002_observation_intr_runtime.py"),
     Path("scripts/consume_hil_intr_materialization_request.py"),
     Path("scripts/consume_device_kv_intr_materialization_request.py"),
+    Path("scripts/consume_publisher_intr_materialization_request.py"),
     Path("scripts/consume_hil_tvc_lifecycle_outbox.py"),
     Path("scripts/watch_hil_tvc_lifecycle_outbox.py"),
     Path("scripts/consume_ara_graph_resident_execution_request.py"),
