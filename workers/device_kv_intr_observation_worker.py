@@ -536,8 +536,6 @@ def main() -> int:
                     response_carrier_wire = recv_frame(client)
                     response_signal = json.loads(response_carrier_wire.decode())
                     response_wire = hb_carrier_mod.recover_intr_packet_bytes(response_signal)
-                    if response_signal.get("intr", {}).get("packet_receipt_hash") != response_receipt["receipt_hash"][7:]:
-                        raise ValueError("HB-derived carrier response receipt binding mismatch")
             finally:
                 server.shutdown()
                 thread.join(timeout=5.0)
@@ -563,6 +561,10 @@ def main() -> int:
         request_receipt = response_packet["request_receipt"]
         response_receipt = response_packet["response_receipt"]
         endpoint_ref = response_packet.get("endpoint_receipt_ref")
+        if server_state["request_signal"].get("intr", {}).get("packet_receipt_hash") != request_receipt["receipt_hash"][7:]:
+            raise ValueError("HB-derived carrier request receipt reconstruction mismatch")
+        if response_signal.get("intr", {}).get("packet_receipt_hash") != response_receipt["receipt_hash"][7:]:
+            raise ValueError("HB-derived carrier response receipt reconstruction mismatch")
         validate_transport_receipt(request_receipt, direction="FORWARD", from_role="DEVICE", to_role="KV",
                                    payload_hash=envelope["payload_hash"], prior=None)
         validate_transport_receipt(response_receipt, direction="RETURN", from_role="KV", to_role="DEVICE",
