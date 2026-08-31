@@ -44,6 +44,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             ):
                 (source / rel).mkdir(parents=True, exist_ok=True)
             (source / "heartbeat_runtime/worker_runtime.py").write_text("VERSION='new'\n", encoding="utf-8")
+            (source / "heartbeat_runtime/intr_derived_carrier.py").write_text("# canonical HB/InTr carrier\n", encoding="utf-8")
             (source / "workers/new_worker.py").write_text("x=1\n", encoding="utf-8")
             (source / "handoffs/new.json").write_text("{}\n", encoding="utf-8")
             (source / "control/worker-registry.json").write_text('{"schema":"x"}\n', encoding="utf-8")
