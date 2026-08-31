@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "KV-SKAP-CUSTODY-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:kv-skap-custody-v1",
+      "authority_ref": "handoffs/KV-SKAP-CUSTODY-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "durable_state_reconstruction"
+      ],
+      "command": [
+        "python",
+        "workers/kv_skap_custody_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_RUNTIME_ROOT",
+        "STEGVERSE_TVC_ROOT",
+        "STEGVERSE_KV_ROOT",
+        "STEGVERSE_KV_SKAP_MATERIALIZATION_ID"
+      ],
+      "notes": [
+        "Only already-local source/root locators and one opaque admitted materialization id may be forwarded.",
+        "Transport admission does not mint claim/fence, credential, provider, or HB authority.",
+        "TVC validates the double-Interlock gate before exact ciphertext custody."
+      ],
+      "timeout_seconds": 120,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
