@@ -29,6 +29,49 @@ LOOPBACK_PREFIXES = (
 MASTER_RECORDS_RECONSTRUCTION_OUTPUT = (
     "STEGVERSE_002_SELF_CHARACTERIZATION_RECONSTRUCTION_RECEIPT.json"
 )
+PRINCIPAL_REQUIRED_ARTIFACTS = (
+    "EXPERIMENT_EXECUTION_RECEIPT.json",
+    "S0.json",
+    "SELF_CHARACTERIZATION.md",
+    "SELF_CHARACTERIZATION_FORMAL.json",
+    "INTERACTION_RECEIPT_CHAIN.json",
+    "TRANSITION_EFFECTS.json",
+)
+
+
+def principal_state_root() -> Path:
+    return Path(os.environ.get("HOME", str(Path.home()))) / ".stegverse/self-characterization-001"
+
+
+def load_completed_principal_state(state_root: Path) -> dict[str, Any] | None:
+    if not all((state_root / name).is_file() for name in PRINCIPAL_REQUIRED_ARTIFACTS):
+        return None
+    try:
+        result = json.loads((state_root / "EXPERIMENT_EXECUTION_RECEIPT.json").read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    if not isinstance(result, dict):
+        return None
+    if (
+        result.get("schema") != "stegverse.self-characterization-execution-receipt/v0.2"
+        or result.get("state") != "COMPLETED"
+        or result.get("principal_run_started") is not True
+        or result.get("principal_run_completed") is not True
+        or result.get("authority_transfer_assumed") is not False
+        or result.get("authority_effect_resolution") != "DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS"
+        or result.get("transition_effect_state") != "PENDING_TRANSITION_ELEMENT_EVALUATION"
+    ):
+        return None
+    return result
+
+
+def reconstruction_terminal(reconstruction: dict[str, Any]) -> bool:
+    return bool(
+        reconstruction.get("state") == "PASS"
+        and isinstance(reconstruction.get("receipt"), dict)
+        and reconstruction["receipt"].get("status") == "PASS"
+        and reconstruction["receipt"].get("reconstruction") == "PASS"
+    )
 MASTER_RECORDS_RECONSTRUCTION_COMMIT = "2e117902d4f261b10cb3b5122b7ef48fb0e36e57"
 MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB = "cc96556a23b5bd804f3cdaa96539b379c1904437"
 
@@ -612,6 +655,59 @@ def main():
 
     out = ROOT / CHECKPOINT
     out.parent.mkdir(parents=True, exist_ok=True)
+
+    state_root = principal_state_root()
+    existing_result = load_completed_principal_state(state_root)
+    if existing_result is not None:
+        master_records_reconstruction = attempt_master_records_reconstruction(state_root)
+        terminal = reconstruction_terminal(master_records_reconstruction)
+        prior = {}
+        if out.is_file():
+            try:
+                prior = json.loads(out.read_text(encoding="utf-8"))
+            except Exception:
+                prior = {}
+        receipt = {
+            "schema": "stegverse.sv002-self-characterization-worker-receipt/v0.2",
+            "task_id": TASK_ID,
+            "state": "COMPLETED" if terminal else "PRINCIPAL_COMPLETED_RECONSTRUCTION_PENDING",
+            "principal_execution_reused": True,
+            "principal_execution_repeated": False,
+            "principal_result": existing_result,
+            "model_id": prior.get("model_id") or existing_result.get("model_id"),
+            "endpoint": prior.get("endpoint"),
+            "subject_identity": prior.get("subject_identity"),
+            "principal_discovery": prior.get("principal_discovery"),
+            "subject_identity_verified": prior.get("subject_identity_verified", True),
+            "formal_roots": prior.get("formal_roots"),
+            "state_root": str(state_root),
+            "self_characterization_path": str(state_root / "SELF_CHARACTERIZATION.md"),
+            "formal_result_path": str(state_root / "SELF_CHARACTERIZATION_FORMAL.json"),
+            "interaction_receipt_chain_path": str(state_root / "INTERACTION_RECEIPT_CHAIN.json"),
+            "transition_effects_path": str(state_root / "TRANSITION_EFFECTS.json"),
+            "master_records_reconstruction": master_records_reconstruction,
+            "network_fetch_performed": False,
+            "credential_authority": "TV/TVC",
+            "github_token_required": False,
+            "authority_transfer_assumed": False,
+            "authority_effect_resolution": existing_result.get("authority_effect_resolution"),
+            "transition_effect_state": existing_result.get("transition_effect_state"),
+        }
+        out.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
+        print(
+            json.dumps(
+                response(
+                    "COMPLETED" if terminal else "BLOCKED",
+                    "SV002_SELF_CHARACTERIZATION_COMPLETED"
+                    if terminal
+                    else "SV002_SELF_CHARACTERIZATION_RECONSTRUCTION_PENDING",
+                    epoch,
+                ),
+                sort_keys=True,
+            )
+        )
+        return 0
+
     micro, micro_seen = find_repo(
         "StegVerse-002",
         "micro-node-runtime",
@@ -684,9 +780,7 @@ def main():
         "STEGVERSE_SELF_CHAR_MODEL_ENDPOINT": endpoint,
         "STEGVERSE_SELF_CHAR_MODEL_ID": model,
         "STEGVERSE_SELF_CHAR_SUBJECT_IDENTITY_JSON": json.dumps(subject_identity, sort_keys=True),
-        "STEGVERSE_SELF_CHAR_STATE_ROOT": str(
-            Path(os.environ.get("HOME", str(Path.home()))) / ".stegverse/self-characterization-001"
-        ),
+        "STEGVERSE_SELF_CHAR_STATE_ROOT": str(state_root),
     }
     proc = subprocess.run(
         [sys.executable, str(micro / "tools/run_self_characterization_principal.py")],
@@ -699,7 +793,7 @@ def main():
     state_root = Path(env["STEGVERSE_SELF_CHAR_STATE_ROOT"])
     execution = state_root / "EXPERIMENT_EXECUTION_RECEIPT.json"
     result = json.loads(execution.read_text()) if execution.is_file() else {}
-    completed = proc.returncode == 0 and result.get("state") == "COMPLETED"
+    completed = proc.returncode == 0 and load_completed_principal_state(state_root) is not None
     master_records_reconstruction = (
         attempt_master_records_reconstruction(state_root)
         if completed
@@ -709,10 +803,13 @@ def main():
             "authority_effect": "NONE",
         }
     )
+    terminal = completed and reconstruction_terminal(master_records_reconstruction)
     receipt = {
         "schema": "stegverse.sv002-self-characterization-worker-receipt/v0.2",
         "task_id": TASK_ID,
-        "state": "COMPLETED" if completed else "BLOCKED",
+        "state": "COMPLETED" if terminal else ("PRINCIPAL_COMPLETED_RECONSTRUCTION_PENDING" if completed else "BLOCKED"),
+        "principal_execution_reused": False,
+        "principal_execution_repeated": False,
         "principal_returncode": proc.returncode,
         "principal_result": result,
         "model_id": model,
@@ -738,10 +835,14 @@ def main():
     print(
         json.dumps(
             response(
-                "COMPLETED" if completed else "BLOCKED",
+                "COMPLETED" if terminal else "BLOCKED",
                 "SV002_SELF_CHARACTERIZATION_COMPLETED"
-                if completed
-                else "SV002_SELF_CHARACTERIZATION_EXECUTION_BLOCKED",
+                if terminal
+                else (
+                    "SV002_SELF_CHARACTERIZATION_RECONSTRUCTION_PENDING"
+                    if completed
+                    else "SV002_SELF_CHARACTERIZATION_EXECUTION_BLOCKED"
+                ),
                 epoch,
             ),
             sort_keys=True,
