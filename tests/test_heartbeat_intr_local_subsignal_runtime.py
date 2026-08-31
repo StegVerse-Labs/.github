@@ -5,6 +5,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
+from heartbeat_runtime.engine_v12 import HeartbeatRuntime
 from heartbeat_runtime.independent_oscillator import PROTOCOL_ANCHOR_UNIX_NS
 from heartbeat_runtime.intr_subsignal_runtime import (
     EVENT_LOG_REL,
@@ -90,6 +91,22 @@ class HeartbeatIntrLocalSubsignalRuntimeTests(unittest.TestCase):
                     root=root,
                     signal_ref=result["signal_ref"],
                 )
+
+    def test_current_heartbeat_runtime_observes_derived_signal_presence_only(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            result = self.propagate(root)
+            runtime = HeartbeatRuntime.__new__(HeartbeatRuntime)
+            runtime.root = root
+            observed = runtime._derived_intr_signal_presence()
+            self.assertIsNotNone(observed)
+            self.assertEqual(observed["signal_count"], 1)
+            self.assertEqual(observed["signals"][0]["signal_ref"], result["signal_ref"])
+            self.assertEqual(
+                observed["validation_role"],
+                "PRESENCE_ONLY_PACKET_VALIDATION_EXTERNAL_TO_HEARTBEAT",
+            )
+            self.assertEqual(observed["authority_effect"], "NONE")
 
     def test_propagation_does_not_materialize_or_advance_heartbeat_runtime_state(self):
         with tempfile.TemporaryDirectory() as td:
