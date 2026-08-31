@@ -796,3 +796,27 @@ strict active-repository adoption: 2/33 = 6.06%
 ```
 
 This is denominator correction, not activation or release authority.
+
+## Terminal AE support repository audit — 2026-08-31
+
+Three additional Admissible-Existence support repositories were re-audited and removed from the active COSV denominator:
+
+```text
+Admissible-Existence/ae-validation-factory  NO_ACTIVE_TASK_SURFACE
+Admissible-Existence/telemetry              NO_ACTIVE_TASK_SURFACE
+Admissible-Existence/tracker                NO_ACTIVE_TASK_SURFACE
+```
+
+The validation factory first reconciled stale R4/R5 coordination records to already-proven terminal states and passed repository-local terminal audit validation. Telemetry and tracker already declared COMPLETE/RELEASED, COMPLETE_NOTIFY_ONLY, and ARCHIVE_READY, with no live machine-owned or active claim surface found.
+
+No historical vector was invented for any terminal task. Strict adoption is now:
+
+```text
+VECTOR_PRESENT: 2
+VECTOR_REQUIRED: 28
+NO_ACTIVE_TASK_SURFACE: 4
+not-yet-audited/unavailable: 188
+strict active-repository adoption: 2/30 = 6.67%
+```
+
+Authority effect: NONE.
