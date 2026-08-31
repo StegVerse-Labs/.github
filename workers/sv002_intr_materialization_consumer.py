@@ -155,8 +155,8 @@ def consume_one(source_root: Path, runtime_root: Path, materialization_id: str, 
     evidence = materialized.get("evidence")
     if not execution_runtime.is_dir() or not isinstance(evidence, dict):
         raise SV002InTrMaterializationError("sv002_esrl_runtime_materialization_invalid")
-    if evidence.get("state") != "PUBLIC_VERIFYING" or evidence.get("lease_state") != "PUBLIC_VERIFYING" or evidence.get("runtime_instantiated") is not True or evidence.get("local_identity_verified") is not True:
-        raise SV002InTrMaterializationError("sv002_esrl_runtime_not_public_verifying")
+    if evidence.get("state") != "LEASE_OPEN" or evidence.get("lease_state") != "LEASE_OPEN" or evidence.get("runtime_instantiated") is not True or evidence.get("local_identity_verified") is not True:
+        raise SV002InTrMaterializationError("sv002_esrl_runtime_not_lease_open")
     snapshot_ref = evidence.get("canonical_runtime_lease_snapshot_ref")
     snapshot_digest = evidence.get("canonical_runtime_lease_snapshot_sha256")
     if not isinstance(snapshot_ref, str) or not snapshot_ref or not isinstance(snapshot_digest, str):
@@ -171,13 +171,15 @@ def consume_one(source_root: Path, runtime_root: Path, materialization_id: str, 
     snapshot = _load(snapshot_path)
     if digest_uri(snapshot) != snapshot_digest:
         raise SV002InTrMaterializationError("sv002_canonical_runtime_lease_snapshot_digest_mismatch")
-    if snapshot.get("schema") != "stegverse.esrl.lease-machine-snapshot/v1" or snapshot.get("state") != "PUBLIC_VERIFYING":
+    if snapshot.get("schema") != "stegverse.esrl.lease-machine-snapshot/v1" or snapshot.get("state") != "LEASE_OPEN":
         raise SV002InTrMaterializationError("sv002_canonical_runtime_lease_snapshot_state_invalid")
     history = snapshot.get("history")
-    if not isinstance(history, list) or history != ["ABSENT", "REQUESTED", "ADMITTED", "PROVISIONING", "LOCAL_READY", "PUBLIC_VERIFYING"]:
+    if not isinstance(history, list) or history != ["ABSENT", "REQUESTED", "ADMITTED", "PROVISIONING", "LOCAL_READY", "PUBLIC_VERIFYING", "LEASE_OPEN"]:
         raise SV002InTrMaterializationError("sv002_canonical_runtime_lease_snapshot_history_invalid")
     if snapshot.get("credential_authority") != "TV/TVC" or snapshot.get("authority_effect") != "NONE":
         raise SV002InTrMaterializationError("sv002_canonical_runtime_lease_snapshot_authority_invalid")
+    if evidence.get("public_route_observed") is not True or evidence.get("public_intr_observation_origin") != "INDEPENDENT_PUBLIC_HTTPS" or evidence.get("public_intr_required_profile") != "SV002:PublicObservation":
+        raise SV002InTrMaterializationError("sv002_canonical_runtime_public_profile_evidence_invalid")
     if evidence.get("g18_completion_required") is not False or evidence.get("observer_direct_relation_to_stegverse_002") is not False:
         raise SV002InTrMaterializationError("sv002_esrl_semantic_boundary_invalid")
     entrypoint = execution_runtime / TARGET_ENTRYPOINT
@@ -195,10 +197,13 @@ def consume_one(source_root: Path, runtime_root: Path, materialization_id: str, 
         "target_task_id": TARGET_TASK,
         "targeted_executor_returncode": completed.returncode,
         "runtime_execution_attempted": True,
-        "canonical_runtime_lease_state": "PUBLIC_VERIFYING",
+        "canonical_runtime_lease_state": "LEASE_OPEN",
         "canonical_runtime_lease_snapshot_ref": str(snapshot_path),
         "canonical_runtime_lease_snapshot_sha256": snapshot_digest,
         "canonical_runtime_lease_resume_required": True,
+        "public_intr_profile_url": evidence.get("public_intr_profile_url"),
+        "public_intr_profile_sha256": evidence.get("public_intr_profile_sha256"),
+        "public_intr_observation_origin": evidence.get("public_intr_observation_origin"),
         "receiver_ready_is_precondition": False,
         "g18_completion_required": False,
         "observer_direct_relation_to_stegverse_002": False,
