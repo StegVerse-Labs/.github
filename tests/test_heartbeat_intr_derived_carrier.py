@@ -55,19 +55,22 @@ class HeartbeatIntrDerivedCarrierTests(unittest.TestCase):
             "PAYLOAD_SHA256_FIRST64_MOD_16",
         )
 
-    def test_exact_packet_bytes_must_match_bound_payload_hash(self):
+    def test_payload_hash_and_exact_carrier_bytes_remain_distinct_bound_identities(self):
         packet = b"packet-a"
-        with self.assertRaisesRegex(DerivedCarrierError, "payload_hash_exact_packet_mismatch"):
-            derive_intr_carrier_signal(
-                packet_id="INTR-" + "4" * 24,
-                payload_hash="sha256:" + "0" * 64,
-                sampled_unix_ms=PROTOCOL_ANCHOR_UNIX_NS // 1_000_000 + 1234,
-                packet_bytes=packet,
-                intr_transport_profile="stegverse.universal-intr.adjacent-hop/v1",
-                boundary_from="EXTERNAL_SYSTEM",
-                boundary_to="STEGOS_ECOSYSTEM",
-                packet_receipt_hash="a" * 64,
-            )
+        payload_hash = "sha256:" + "0" * 64
+        signal = derive_intr_carrier_signal(
+            packet_id="INTR-" + "4" * 24,
+            payload_hash=payload_hash,
+            sampled_unix_ms=PROTOCOL_ANCHOR_UNIX_NS // 1_000_000 + 1234,
+            packet_bytes=packet,
+            intr_transport_profile="stegverse.universal-intr.adjacent-hop/v1",
+            boundary_from="EXTERNAL_SYSTEM",
+            boundary_to="STEGOS_ECOSYSTEM",
+            packet_receipt_hash="a" * 64,
+        )
+        self.assertEqual(signal["intr"]["payload_hash"], payload_hash)
+        self.assertEqual(signal["intr"]["packet_sha256"], hashlib.sha256(packet).hexdigest())
+        self.assertEqual(signal["carrier"]["channel_slot"], derive_channel(payload_hash)["phase_slot"])
 
     def test_binding_is_embedded_and_revalidated_on_recovery(self):
         signal = self.sample()
@@ -129,7 +132,7 @@ class HeartbeatIntrDerivedCarrierTests(unittest.TestCase):
         self.assertEqual(carrier["phase_slots"]["const"], 16)
         self.assertEqual(
             carrier["channel_derivation"]["const"],
-            "SHA256_PACKET_ID_FIRST32_MOD_16",
+            "PAYLOAD_SHA256_FIRST64_MOD_16",
         )
         authority = schema["properties"]["authority"]["properties"]
         self.assertFalse(authority["heartbeat_grants_execution_authority"]["const"])
