@@ -151,13 +151,13 @@ def local_tvc_control_root(values: Mapping[str, str]) -> tuple[Path | None, str 
         if key in seen:
             continue
         seen.add(key)
-        if not (root / TVC_PROGRESSION_SCRIPT).is_file():
-            observed.append(f"{root}:PROGRESSION_NOT_PRESENT")
+        if not (root / TVC_ADMISSION_SCRIPT).is_file():
+            observed.append(f"{root}:ADMISSION_COMPATIBILITY_NOT_PRESENT")
             continue
         if not (root / "tools" / "task_dispatcher.py").is_file():
             observed.append(f"{root}:DISPATCHER_NOT_PRESENT")
             continue
-        return root, f"{root}:PROGRESSION_READY"
+        return root, f"{root}:COMPATIBILITY_READY"
     return None, ";".join(observed) if observed else None
 
 
