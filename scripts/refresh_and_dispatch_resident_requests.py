@@ -30,7 +30,7 @@ DISPATCH_RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.l
 RECEIPT_REL = Path("receipts/sovereign-host/resident-refresh-dispatch.latest.json")
 SV_DN1_BROWSER_LOCATOR_REL = Path("control/sv-dn1-browser-observation-locator.json")
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
-ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "hil", "sv_dn1", "stegos_kv_intr_chain", "sv002_self_characterization", "sv002_public_observation")
+ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "hil", "sv_dn1", "sv_dn1_publication", "stegos_kv_intr_chain", "sv002_self_characterization", "sv002_public_observation")
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
     "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS",
@@ -54,6 +54,8 @@ NONSECRET_FORWARD = (
     "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT", "STEGVERSE_SV_DN1_INTR_STATE_ROOT",
     "STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT",
     "STEGVERSE_SV_DN1_BROWSER_OBSERVATION_BUNDLE",
+    "STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_STATE_ROOT",
+    "STEGVERSE_TVC_SV_DN1_REPOSITORY_PERSISTENCE_ADMISSION",
     "STEGVERSE_SDK_SOURCE_ROOT", "STEGVERSE_STEGCORE_SOURCE_ROOT",
     "STEGVERSE_CORE_LITE_SOURCE_ROOT", "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
     "STEGVERSE_STEGOS_ROOT", "STEGVERSE_KV_SOURCE_ROOT", "STEGVERSE_SITE_ROOT", "STEGVERSE_REPO_ROOTS_JSON",
