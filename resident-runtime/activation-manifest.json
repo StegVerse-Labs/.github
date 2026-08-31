@@ -7,15 +7,18 @@
   "heartbeat_reference": "heartbeat_runtime/independent_oscillator.py",
   "ingress_runtime": "workers/universal_intr_profiled_ingress.py",
   "ingress_egress_transport": "org-boundary/runtime/intr_transport.py",
-  "state": "REFERENCE_KERNEL_FEDERATION_SOURCE_INSTALLED_ALL_ORG_OBSERVATION_PENDING",
+  "state": "REFERENCE_KERNEL_ECOSYSTEM_CONTROL_SOURCE_INSTALLED_RUNTIME_OBSERVATION_PENDING",
   "github_actions_is_runtime_authority": false,
   "hb_carrier_grants_authority": false,
   "application_repositories_are_activation_authority": false,
   "kernel": {
-    "version": "1.1.0",
+    "version": "1.3.0",
     "path": "org-kernel/kernel.py",
     "canonical_source": "StegVerse-Labs/.github/org-kernel",
     "vendored": false,
     "reference_implementation": true
-  }
+  },
+  "ecosystem_control": "resident-runtime/ecosystem_control.py",
+  "federation_cycle": "resident-runtime/federation_cycle.py",
+  "federation_directory": "org-boundary/registry/federation.json"
 }
