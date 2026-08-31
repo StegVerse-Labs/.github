@@ -42,6 +42,18 @@ class FakeRunner:
         self.calls.append((list(command), env))
         if "install_sovereign_heartbeat_service.py" in str(command[1]):
             return subprocess.CompletedProcess(command, self.install_returncode, stdout="", stderr="")
+        if "install_sovereign_worker_source_refresh_service.py" in str(command[1]):
+            runtime_root = Path(command[command.index("--runtime-root") + 1])
+            path = runtime_root / "receipts/sovereign-host/worker-source-refresh-installation.latest.json"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps({
+                "activated": True,
+                "filesystem_event_driven": True,
+                "intr_materialization_event_driven": True,
+                "source_package_event_driven": True,
+                "worker_service": "stegverse-worker-runtime.service",
+            }) + "\n", encoding="utf-8")
+            return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
         if "verify_sovereign_runtime_activation.py" in str(command[1]):
             if self.write_proof:
                 proof = {name: True for name in bootstrap_module.REQUIRED_PREDICATES}
@@ -169,8 +181,8 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
             )
             self.assertEqual(result["state"], "COMPLETE")
             self.assertEqual(result["reason"], "SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_VERIFIED")
-            self.assertEqual(len(runner.calls), 3)
-            self.assertIn("activate_stegfin_after_sovereign_bootstrap.py", runner.calls[2][0][1])
+            self.assertEqual(len(runner.calls), 4)
+            self.assertIn("activate_stegfin_after_sovereign_bootstrap.py", runner.calls[3][0][1])
             for _command, child_env in runner.calls:
                 for name in bootstrap_module.CREDENTIAL_ENV_VARS:
                     self.assertEqual(child_env[name], "")
@@ -212,7 +224,7 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
             self.assertEqual(result["state"], "REVIEW_REQUIRED")
             self.assertFalse(result["activation_all_predicates_pass"])
             self.assertEqual(set(result["missing_predicates"]), set(bootstrap_module.REQUIRED_PREDICATES))
-            self.assertEqual(len(runner.calls), 2)
+            self.assertEqual(len(runner.calls), 3)
             self.assertFalse(result["post_bootstrap_stegfin"]["attempted"])
 
     def test_explicit_skip_preserves_heartbeat_only_bootstrap(self) -> None:
@@ -227,7 +239,7 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
                 env={}, runner=runner, activate_downstream=False,
             )
             self.assertEqual(result["state"], "COMPLETE")
-            self.assertEqual(len(runner.calls), 2)
+            self.assertEqual(len(runner.calls), 3)
             self.assertFalse(result["post_bootstrap_stegfin"]["attempted"])
             self.assertEqual(result["post_bootstrap_stegfin"]["state"], "NOT_ELIGIBLE")
 
