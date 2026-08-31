@@ -220,3 +220,42 @@ original exact packet remains eligible for exact-packet retry; blind retry of
 downstream consequences remains prohibited.
 
 Source/merge/CI do not establish DEVICE_KV_INTR_OBSERVED.
+
+
+## HB-derived carrier execution — issue #623
+
+The bounded sovereign DEVICE_KV runtime now uses the canonical HB-derived carrier
+as the actual request and response wire representation instead of attaching carrier
+evidence after raw TCP transport.
+
+Execution order:
+
+```text
+governed DEVICE_KV request + InTr envelope
+  -> canonical exact request bytes
+  -> precommit deterministic DEVICE->KV hop receipt
+  -> canonical HB 100 Hz reference
+  -> stegverse.heartbeat-intr-derived-carrier/v1
+  -> TCP frame carries the carrier object
+  -> KV receiver recovers exact request bytes from carrier
+  -> exact-byte identity + zero-authority carrier checks
+  -> persist exact precommitted InTr receipt
+  -> KV Interlock evaluation
+
+KV response
+  -> precommit deterministic KV->DEVICE return receipt
+  -> canonical HB-derived carrier
+  -> TCP frame carries the carrier object
+  -> Device recovers exact response bytes
+  -> exact-byte / receipt / lineage reconstruction
+```
+
+This is stronger than post-hoc carrier association: the transport frame itself is the
+canonical derived-carrier object and the application/InTr bytes are recovered from it
+before endpoint processing.
+
+The resulting runtime receipt may set
+`hb_derived_carrier_transport_observed=true` only when that authentic execution
+completes under the existing WorkerCoordinator claim/fence. Source, tests, merge, or
+fixture execution do not satisfy that predicate. HB and the derived carrier grant no
+admission, execution, credential, routing, transition, or receiving authority.
