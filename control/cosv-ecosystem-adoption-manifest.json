@@ -4,7 +4,7 @@
   "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
-  "observed_at": "2026-08-31T08:13:00-05:00",
+  "observed_at": "2026-08-31T08:14:00-05:00",
   "source": "live GitHub App installation enumeration plus durable task-surface evidence",
   "authority_effect": "NONE",
   "credential_authority": "TV/TVC",
@@ -15,15 +15,15 @@
   "universe_audit_complete": false,
   "adoption_metrics": {
     "numerator_vectorized_active_task_surfaces": 2,
-    "denominator_proven_active_task_surfaces": 32,
-    "ratio": "2/32",
-    "percentage": 6.25,
-    "interpretation": "Strict adoption excludes repositories proven to have no active task surface; ae-validation-factory is terminal after repository-local reconciliation and validation."
+    "denominator_proven_active_task_surfaces": 31,
+    "ratio": "2/31",
+    "percentage": 6.45,
+    "interpretation": "Strict adoption excludes terminal/no-active repositories; telemetry is COMPLETE_NOTIFY_ONLY and archive-ready with no active task surface."
   },
   "classification_counts": {
-    "VECTOR_REQUIRED": 30,
+    "VECTOR_REQUIRED": 29,
     "VECTOR_PRESENT": 2,
-    "NO_ACTIVE_TASK_SURFACE": 2,
+    "NO_ACTIVE_TASK_SURFACE": 3,
     "NO_REPOSITORY_OR_UNAVAILABLE": 188
   },
   "organization_projection": [
@@ -31,9 +31,9 @@
       "organization": "Admissible-Existence",
       "installation_id": 139890227,
       "repository_count": 32,
-      "vector_required": 10,
+      "vector_required": 9,
       "vector_present": 0,
-      "no_active_task_surface": 2,
+      "no_active_task_surface": 3,
       "unavailable_or_not_yet_audited": 20
     },
     {
@@ -158,16 +158,17 @@
     {
       "organization": "Admissible-Existence",
       "repository": "Admissible-Existence/telemetry",
-      "classification": "VECTOR_REQUIRED",
-      "profile": "task.v1",
-      "notation": "L R U I V G O C M T B E A P",
-      "width": 14,
+      "classification": "NO_ACTIVE_TASK_SURFACE",
       "evidence_refs": [
-        "task-bearing repository discovered in live ecosystem task-surface audit"
+        "Admissible-Existence/telemetry/docs/TELEMETRY_MIRROR_HANDOFF.md",
+        "Admissible-Existence/telemetry/actions/runs/31190517090:Validation Receipts SUCCESS"
       ],
-      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
-      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
-      "authority_effect": "NONE"
+      "authority_effect": "NONE",
+      "no_active_task_evidence": [
+        "TELEMETRY-SUPPORT-COMPLETENESS-001 COMPLETE / RELEASED",
+        "canonical handoff COMPLETE_NOTIFY_ONLY / ARCHIVE_READY",
+        "live repository search found no MACHINE_OWNED task or active claim beyond terminal handoff history"
+      ]
     },
     {
       "organization": "Admissible-Existence",
