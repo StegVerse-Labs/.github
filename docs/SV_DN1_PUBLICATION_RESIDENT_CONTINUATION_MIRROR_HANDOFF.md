@@ -111,7 +111,7 @@ persistence-dispatch worker: MERGED
 TVC issue-264 admission evaluator: MERGED
 publication observer: MERGED
 publication observer dependency refinement: MERGED
-publication resident continuation: MERGED / EXTENSION FOR MERGE DISPATCH IN VALIDATION
+publication resident continuation: MERGED BASE / MERGE-DISPATCH EXTENSION SOURCE COMPLETE / VALIDATION PENDING
 authentic persistence PR: NOT YET OBSERVED
 authentic public exact-byte observation: NOT YET OBSERVED
 ```
@@ -174,3 +174,7 @@ The merge-dispatch worker never receives TVC_EPHEMERAL_GITHUB_TOKEN and does not
 GitHub. It stages one exact non-secret merge request into the bounded TVC merge spool and
 consumes only the sanitized merge receipt. Publication observation no longer releases on
 PR creation.
+
+
+The TVC merge-gate resident dispatcher binding is merged at
+`StegVerse-Labs/TVC@bec6f0de3d52022c8ddc542c4deca353671a463f`.
