@@ -558,3 +558,12 @@ HeartBeat federation membership does not grant execution authority. Model output
 `SYSTEM_AI_ACTIVE` may be asserted only after the canonical HeartBeat federation proves the runtime present/fresh/nonfailed, a real governed local/private inference is observed through TV/TVC and LLM-adapter with measured usage, and same-execution Master Records reconstruction passes. Missing or stale evidence fails closed.
 
 After `SYSTEM_AI_ACTIVE` is evidenced and released, verify projections to Site, Publisher, admissibility-wiki, and stegguardian-wiki; source completeness alone does not authorize that propagation.
+
+
+## SV002 / Universal InTr public-profile publication repair — 2026-08-31
+
+Site issue #860 independently observed `https://stegverse.org/intr/profile` as HTTP 404 across eight attempts. LLM-adapter PR #244 / merge `49676d20cff32ee346f22cfd79726b0127d80b33` already supplies the public profile router on `llm_adapter.deployed_gateway:app`; the observed state is therefore runtime publication/binding drift.
+
+The existing resident Healer scheduler now projects only a conforming `~/.stegverse/config/hil-intr-runtime.json` into its fixed StegDeploy child environment. The config must preserve TV/TVC authority, no GitHub/execution authority, event-triggered operation, G18 independence, shared-Gateway TLS termination, and same-host loopback. The exact projected upstream is derived as `http://127.0.0.1:<port>/intr/materialization`.
+
+This source correction grants no public-route, deployment, execution, credential, or activation evidence. The next authentic state change remains admitted resident Healer/StegDeploy execution followed by independent public HTTPS re-observation.

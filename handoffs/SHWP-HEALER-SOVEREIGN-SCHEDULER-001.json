@@ -59,7 +59,11 @@
       "StegVerse-Labs/StegVerse-Healer/app/coinbase_stegdeploy_gateway.py",
       "StegVerse-org/LLM-adapter/docs/STEGDEPLOY_NATIVE_TLS_INGRESS_MIRROR_HANDOFF.md",
       "StegVerse-Labs/TVC#202@0ca30b7806d2a96d9a256a7cd9fa0702f718a5e2",
-      "StegVerse-Labs/StegVerse-Healer#44@4685956871cb03cf16d9b4416c4d0880534353cf"
+      "StegVerse-Labs/StegVerse-Healer#44@4685956871cb03cf16d9b4416c4d0880534353cf",
+      "StegVerse-org/LLM-adapter#244@49676d20cff32ee346f22cfd79726b0127d80b33",
+      "StegVerse-Labs/Site#860:OBSERVED_BLOCKED_PUBLIC_INTR_PROFILE_404",
+      "StegVerse-Labs/.github/scripts/materialize_hil_gateway_route_config.py",
+      "StegVerse-Labs/StegVerse-Healer#53@7629e2d98d203aedc2ef49ff778a0e8b8802030b"
     ],
     "dependencies": [
       "SHWP-DURABLE-RUNTIME-ACTIVATION"
@@ -106,7 +110,7 @@
   "completion": {
     "source_state": "COMPLETE_VALIDATED_WITH_COINBASE_TVC_TLS_RECEIPT_AUTODISCOVERY",
     "source_validation_evidence": "StegVerse-Labs/StegVerse-Healer Test Readiness run 32670203077 job 97269769966 PASS on aca5b7871e2720b0d56757e33fc2a22c10291136; PR #40 merge ff3d9985b773d91dce0d90351a7a8a04a499c59b",
-    "next_authorized_action": "After SHWP-DURABLE-RUNTIME-ACTIVATION yields genuine eligible sovereign-runtime evidence, the existing WorkerCoordinator may claim this HANDOFF_READY Healer scheduler task and execute due fixed handlers against already-local repositories. The Coinbase Gateway handler now discovers the canonical same-host TVC TLS adoption receipt itself when authentic material exists; the WorkerCoordinator must not transport TLS locator values or credential material. Missing adoption receipt retains non-public local HTTP readiness. Persist secret-free receipts; no HeartBeat execution authority.",
+    "next_authorized_action": "On an admitted eligible resident runtime, consume the canonical HIL/Universal InTr route config and project its exact same-host materialization upstream into the existing Healer StegDeploy Gateway target. Require local LLM-adapter source containing #244 and fail closed on absent/stale route config. Continue normal fixed-handler execution; public /intr/profile remains independently observed and cannot be claimed from local readiness.",
     "terminal_when": [
       "No forbidden GitHub credential is present",
       "All due targets have COMPLETE or explicitly terminal superseded outcomes",
@@ -136,10 +140,23 @@
       "local_tls_runtime_receipt_observed": false,
       "tvc_tls_adoption_runtime_receipt_observed": false,
       "authority_effect": "NONE_UNTIL_ADMITTED_SOVEREIGN_EXECUTION"
+    },
+    "universal_intr_gateway_binding": {
+      "site_public_observation_issue": 860,
+      "observed_state": "OBSERVED_BLOCKED",
+      "observed_http_result": "HTTP_404",
+      "site_observation_run": 33425263120,
+      "site_observation_artifact": 9770511743,
+      "llm_adapter_profile_route_merge": "49676d20cff32ee346f22cfd79726b0127d80b33",
+      "healer_runtime_binding_merge": "7629e2d98d203aedc2ef49ff778a0e8b8802030b",
+      "expected_route_config": "~/.stegverse/config/hil-intr-runtime.json",
+      "expected_materialization_upstream": "http://127.0.0.1:8765/intr/materialization",
+      "public_route_observed_conforming": false,
+      "authority_effect": "NONE"
     }
   },
   "block": null,
-  "updated_at": "2026-08-27T23:25:00-05:00",
+  "updated_at": "2026-08-31T13:40:00-05:00",
   "source_state_vector_ref": "control/task-vectors/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
   "machine_readable_state": {
     "cosv": {
