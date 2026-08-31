@@ -460,8 +460,9 @@ class SV002SelfCharacterizationWorkerTests(unittest.TestCase):
                 return Completed()
 
             with patch.object(mod, "find_repo", return_value=(master, [])):
-                with patch.object(mod.subprocess, "run", side_effect=fake_run):
-                    result = mod.attempt_master_records_reconstruction(state_root)
+                with patch.object(mod, "git_blob_sha", return_value=mod.MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB):
+                    with patch.object(mod.subprocess, "run", side_effect=fake_run):
+                        result = mod.attempt_master_records_reconstruction(state_root)
 
             self.assertEqual(result["state"], "PASS")
             self.assertTrue(Path(result["receipt_path"]).is_file())
@@ -469,6 +470,26 @@ class SV002SelfCharacterizationWorkerTests(unittest.TestCase):
             self.assertFalse(
                 result["receipt"]["authority_boundary"]["receipt_alone_establishes_custody"]
             )
+            self.assertEqual(result["authority_effect"], "NONE")
+
+    def test_master_records_reconstruction_blocks_stale_verifier_source(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            state_root = root / "state"
+            master = root / "master-records"
+            (master / "scripts").mkdir(parents=True)
+            state_root.mkdir()
+            verifier = master / "scripts/verify_sv002_self_characterization_reconstruction.py"
+            verifier.write_text("# stale verifier\n", encoding="utf-8")
+            with patch.object(mod, "find_repo", return_value=(master, [])):
+                with patch.object(mod, "git_blob_sha", return_value="0" * 40):
+                    result = mod.attempt_master_records_reconstruction(state_root)
+            self.assertEqual(result["state"], "PENDING")
+            self.assertEqual(result["blocker"], "MASTER_RECORDS_RECONSTRUCTION_VERIFIER_SOURCE_PIN_MISMATCH")
+            self.assertEqual(result["required_verifier_blob"], mod.MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB)
+            self.assertEqual(result["observed_verifier_blob"], "0" * 40)
+            self.assertFalse(result["network_fetch_performed"])
+            self.assertFalse(result["credential_required"])
             self.assertEqual(result["authority_effect"], "NONE")
 
 
