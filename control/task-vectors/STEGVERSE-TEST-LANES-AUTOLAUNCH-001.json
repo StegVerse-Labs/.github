@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/test-lanes-autolaunch.json",
+    "handoffs/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json",
+    "control/cosv-global-registry-coverage.json"
+  ],
+  "observed_at": "2026-08-30T22:08:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "handoffs/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json / control/worker-registry.d/test-lanes-autolaunch.json establish HANDOFF_READY machine ownership",
+    "archive_ready": "control/worker-registry.d/test-lanes-autolaunch.json archive_eligible=false",
+    "unassigned_work": "registered continuation worker owns the task",
+    "chat_owned_counts": "no chat-owned execution or credential role",
+    "canonical_owner_installed": "canonical handoff/registry/worker surfaces are installed",
+    "thread_required": "durable machine-owned continuation requires no chat thread",
+    "blocker_count": "REQUIRED_RUNTIME_AND_TEST_EXECUTION_PENDING",
+    "evidence_complete": "required terminal evidence remains incomplete",
+    "activated": "activation/runtime terminal evidence is not observed",
+    "propagated": "downstream propagation remains gated on terminal evidence"
+  },
+  "authority_effect": "NONE"
+}
