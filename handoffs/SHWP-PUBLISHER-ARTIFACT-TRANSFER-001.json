@@ -1,13 +1,13 @@
 {
-  "schema":"stegverse.executable-handoff/v0.1",
-  "handoff_id":"HANDOFF-SHWP-PUBLISHER-ARTIFACT-TRANSFER-001",
-  "created_at":"2026-08-31T02:43:07Z",
-  "updated_at":"2026-08-31T02:43:07Z",
-  "state":"HANDOFF_READY",
-  "goal":{
-    "goal_id":"SHWP-PUBLISHER-ARTIFACT-TRANSFER-001",
-    "objective":"On an admitted canonical publisher-artifact-transfer event, verify exact queued transfer bytes, render only through merged Publisher destination semantics, construct canonical forward InTr receipts, and stage the canonical response packet plus first return hop for device-to-KV completion.",
-    "success_predicates":[
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-PUBLISHER-ARTIFACT-TRANSFER-001",
+  "created_at": "2026-08-31T02:43:07Z",
+  "updated_at": "2026-08-31T02:43:07Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "SHWP-PUBLISHER-ARTIFACT-TRANSFER-001",
+    "objective": "On an admitted canonical publisher-artifact-transfer event, verify exact queued transfer bytes, render only through merged Publisher destination semantics, construct canonical forward InTr receipts, and stage the canonical response packet plus first return hop for device-to-KV completion.",
+    "success_predicates": [
       "publisher-artifact-transfer materialization request and exact payload ingress are independently admitted",
       "exact payload bytes match the canonical transport intent hash and Publisher transfer schema",
       "existing Publisher rendering source produces GENERATED_VALIDATED_NOT_PUBLISHED",
@@ -16,45 +16,117 @@
       "first response hop is staged for the originating device and the KV terminal hop remains separately unclaimed",
       "no publication, release, execution, credential, or GitHub runtime authority is created"
     ],
-    "failure_predicates":[
+    "failure_predicates": [
       "materialization request alone is treated as proof exact payload bytes arrived",
       "consumer or ingress mints WorkerCoordinator claim/fence",
       "Publisher rendering bypasses its merged document pipeline",
       "return-to-KV is claimed before the terminal KV hop receipt exists",
       "GitHub token or non-TV/TVC credential is required"
     ],
-    "authority_ceiling":["bounded Publisher transfer/render/return staging only","no publication","no release","no canonical KV import authority","no credential issuance"],
-    "successor_policy":"INHERIT_OR_NARROW","max_successor_depth":1
+    "authority_ceiling": [
+      "bounded Publisher transfer/render/return staging only",
+      "no publication",
+      "no release",
+      "no canonical KV import authority",
+      "no credential issuance"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
   },
-  "task":{
-    "task_id":"SHWP-PUBLISHER-ARTIFACT-TRANSFER-001","repository":"StegVerse-Labs/.github",
-    "canonical_owner_ref":"docs/PUBLISHER_INTR_ARTIFACT_TRANSFER_MIRROR_HANDOFF.md",
-    "canonical_lineage_key":"shwp:publisher:artifact-transfer","derivation_depth":0,"priority":"release",
-    "operational_state":"REQUIRED_ON_ADMITTED_PUBLISHER_INTR_EVENT","claim_state":"AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
-    "fencing_token":null,
-    "source_refs":["StegVerse-Labs/.github#582","workers/publisher_artifact_transfer_worker.py","scripts/consume_publisher_intr_materialization_request.py","workers/universal_intr_profiled_ingress.py","GCAT-BCAT-Engine/Publisher@173cf4db19b4795a82fcca3774b62926d29e78b7","StegVerse-Labs/StegOS/stegos/intr_backbone.py"]
+  "task": {
+    "task_id": "SHWP-PUBLISHER-ARTIFACT-TRANSFER-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "docs/PUBLISHER_INTR_ARTIFACT_TRANSFER_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "shwp:publisher:artifact-transfer",
+    "derivation_depth": 0,
+    "priority": "release",
+    "operational_state": "REQUIRED_ON_ADMITTED_PUBLISHER_INTR_EVENT",
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "fencing_token": null,
+    "source_refs": [
+      "StegVerse-Labs/.github#582",
+      "workers/publisher_artifact_transfer_worker.py",
+      "scripts/consume_publisher_intr_materialization_request.py",
+      "workers/universal_intr_profiled_ingress.py",
+      "GCAT-BCAT-Engine/Publisher@173cf4db19b4795a82fcca3774b62926d29e78b7",
+      "StegVerse-Labs/StegOS/stegos/intr_backbone.py"
+    ]
   },
-  "authority":{
-    "authority_source":"StegVerse-Labs/.github#582; destination operation additionally bounded by owner-authorized Publisher transfer payload",
-    "authority_domain":"INDEPENDENT_TASK_CONTROL","policy_version":"publisher-artifact-transfer-v0.1",
-    "heartbeat_grants_execution_authority":false,"fresh_fence_required":true,"minimum_fencing_token_exclusive":21,
-    "credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","non_tv_tvc_secret_or_token_allowed":false,
-    "third_party_runtime_required":false,"physical_additional_machine_required":false
+  "authority": {
+    "authority_source": "StegVerse-Labs/.github#582; destination operation additionally bounded by owner-authorized Publisher transfer payload",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "policy_version": "publisher-artifact-transfer-v0.1",
+    "heartbeat_grants_execution_authority": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 21,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "third_party_runtime_required": false,
+    "physical_additional_machine_required": false
   },
-  "execution":{
-    "required_capabilities":["runtime_observation","bounded_process_execution","durable_state_reconstruction"],
-    "allowed_paths":["intr-materialization/**","intr-payload/publisher/**","publisher-render/**","intr-return/publisher/**","receipts/publisher-artifact-transfer/**"],
-    "allowed_services":[],"max_actions":10,"max_retries":3,"external_cost_ceiling_usd":0,"runtime_window_beats":32,"rate_class":"publisher_artifact_transfer"
+  "execution": {
+    "required_capabilities": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "durable_state_reconstruction"
+    ],
+    "allowed_paths": [
+      "intr-materialization/**",
+      "intr-payload/publisher/**",
+      "publisher-render/**",
+      "intr-return/publisher/**",
+      "receipts/publisher-artifact-transfer/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 10,
+    "max_retries": 3,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 32,
+    "rate_class": "publisher_artifact_transfer"
   },
-  "completion":{
-    "source_implementation_state":"PENDING_MERGE_VALIDATION","runtime_activation_state":"PENDING_AUTHENTIC_EVENT",
-    "runtime_observation_claimed":false,
-    "terminal_evidence":"receipts/publisher-artifact-transfer/SHWP-PUBLISHER-ARTIFACT-TRANSFER-001.json state RETURN_STAGED_TO_DEVICE",
-    "terminal_when":["exact Publisher transfer bytes are ingress-materialized","forward receipt chain validates","Publisher render is generated/validated/not published","canonical response intent and first return hop are staged","terminal KV return hop remains separately pending"]
+  "completion": {
+    "source_implementation_state": "PENDING_MERGE_VALIDATION",
+    "runtime_activation_state": "PENDING_AUTHENTIC_EVENT",
+    "runtime_observation_claimed": false,
+    "terminal_evidence": "receipts/publisher-artifact-transfer/SHWP-PUBLISHER-ARTIFACT-TRANSFER-001.json state RETURN_STAGED_TO_DEVICE",
+    "terminal_when": [
+      "exact Publisher transfer bytes are ingress-materialized",
+      "forward receipt chain validates",
+      "Publisher render is generated/validated/not published",
+      "canonical response intent and first return hop are staged",
+      "terminal KV return hop remains separately pending"
+    ],
+    "next_authorized_action": "On the next exact publisher-artifact-transfer Universal InTr event, shared profiled ingress must persist and hash-verify the transfer bytes, then invoke the non-authorizing materialization consumer; WorkerCoordinator independently claims the existing Publisher transfer task, which may stage only the canonical response through the first return hop while terminal KV import remains separate."
   },
-  "activation":{
-    "authority_domain":"INDEPENDENT_TASK_CONTROL","carrier":"universal_intr_event","carrier_trigger_required":true,
-    "targeted_execution":{"mode":"TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT","entrypoint":"scripts/run_worker_runtime.py","argv":["python","scripts/run_worker_runtime.py","--task-id","SHWP-PUBLISHER-ARTIFACT-TRANSFER-001"],"heartbeat_grants_execution_authority":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":"EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"},
-    "transport_event_materialization":{"schema":"stegverse.universal-intr-materialization-request/v1","profile_id":"publisher-artifact-transfer","event_triggered":true,"always_on_receiver_required":false,"second_user_device_required":false,"consumer_ref":"scripts/consume_publisher_intr_materialization_request.py","request_grants_authority":false,"consumer_mints_claim_or_fence":false,"authority_effect":"NONE_REQUEST_ONLY"}
+  "activation": {
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "carrier": "universal_intr_event",
+    "carrier_trigger_required": true,
+    "targeted_execution": {
+      "mode": "TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT",
+      "entrypoint": "scripts/run_worker_runtime.py",
+      "argv": [
+        "python",
+        "scripts/run_worker_runtime.py",
+        "--task-id",
+        "SHWP-PUBLISHER-ARTIFACT-TRANSFER-001"
+      ],
+      "heartbeat_grants_execution_authority": false,
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": "NONE",
+      "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+    },
+    "transport_event_materialization": {
+      "schema": "stegverse.universal-intr-materialization-request/v1",
+      "profile_id": "publisher-artifact-transfer",
+      "event_triggered": true,
+      "always_on_receiver_required": false,
+      "second_user_device_required": false,
+      "consumer_ref": "scripts/consume_publisher_intr_materialization_request.py",
+      "request_grants_authority": false,
+      "consumer_mints_claim_or_fence": false,
+      "authority_effect": "NONE_REQUEST_ONLY"
+    }
   }
 }
