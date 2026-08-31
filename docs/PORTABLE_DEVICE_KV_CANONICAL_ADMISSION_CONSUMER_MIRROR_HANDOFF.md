@@ -38,3 +38,7 @@ Only portable payloads carrying the owner-controlled, credential-free CVK profil
 ## Completion boundary
 
 Source implementation + validation + merge after the corresponding CVK canonical-admission source is merged. Authentic resident execution then requires current CVK source and real private `STEGVERSE_KV_ROOT`.
+
+## Upstream CVK closure
+
+CVK #162 merged through PR #163 at `715d49e8bfd3f517ef9653c605beadf5a47f5f41`. The resident consumer may now require both `admit_portable_direct_source` and `promote_portable_direct_source` from current local CVK source.
