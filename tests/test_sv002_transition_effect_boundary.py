@@ -15,7 +15,8 @@ class SV002TransitionEffectBoundaryTests(unittest.TestCase):
         self.assertEqual(h["authority"]["authority_effect_resolution"],"DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS")
         self.assertFalse(v["authority_transfer_assumed"])
         self.assertEqual(v["authority_effect_resolution"],"DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS")
-        self.assertEqual(v["authority_effect"],"NONE")\n        self.assertEqual(v["authority_effect_scope"],"TASK_VECTOR_PROJECTION_ONLY")
+        self.assertEqual(v["authority_effect"],"NONE")
+        self.assertEqual(v["authority_effect_scope"],"TASK_VECTOR_PROJECTION_ONLY")
 
     def test_registration_and_request_packets_remain_non_authorizing(self):
         reg=read("control/worker-registry.d/sv002-self-characterization-001.json")
