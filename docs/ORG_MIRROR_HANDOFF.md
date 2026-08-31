@@ -589,3 +589,22 @@ The TVC root primary runtime may use this locator only as discovery input for th
 separately governed resident service self-heal lane. Locator publication failure does not
 invalidate heartbeat continuity; it leaves TVC service delivery retryable and separately
 observable.
+
+## 2026-08-31 Healer scheduler downstream-gate reconciliation
+
+`SHWP-HEALER-SOVEREIGN-SCHEDULER-001` is no longer gated by `SHWP-DURABLE-RUNTIME-ACTIVATION` / G18 terminalization.
+
+The durable-runtime handoff is release-complete for downstream admission and retains its stale G18/fence18 projection only for housekeeping. The Healer scheduler already uses `TARGETED_INDEPENDENT_TASK_CONTROL` and must acquire its own fresh WorkerCoordinator admission/claim/fence when the resident request is consumed.
+
+Canonical next machine transition:
+
+```text
+native resident source refresh
+-> local resident-request sweep
+-> RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001
+-> independent WorkerCoordinator admission/claim/fence
+-> fixed Healer local targets
+-> scheduler receipt
+```
+
+Do not reintroduce G18 terminalization as an upstream scheduler dependency.
