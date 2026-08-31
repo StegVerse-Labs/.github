@@ -341,3 +341,22 @@ reconstruction PASS
 ```
 
 The principal's `COMPLETED` receipt remains authentic evidence even while the resident task is nonterminal. Reconstruction remains independently evaluated and non-authorizing; the change only prevents the request lifecycle from declaring the complete experiment evidence chain terminal before reconstruction exists.
+
+## 2026-08-31 resident source-manifest propagation closure
+
+The native worker service already retained the verified portable-source manifest, but the portable refresh bridge and generic resident-request dispatcher did not forward that non-secret locator to request-specific consumers. That could silently discard source provenance before the SV002 worker or other portable-source-aware workers executed.
+
+The propagation chain is now explicit:
+
+```text
+STEGVERSE_RESIDENT_SOURCE_MANIFEST
+-> native WorkerCoordinator service
+-> refresh_and_dispatch_resident_requests.py
+-> dispatch_resident_execution_requests.py
+-> process adapter allowlist
+-> sv002_self_characterization_worker.py
+```
+
+The SV002 process adapter now also permits the canonical `STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT` and compatibility `STEGVERSE_MASTER_RECORDS_ROOT` locators. The worker accepts either name for the same local reconstruction source.
+
+These are source/provenance locators only. They do not relax pinned formal commits, the non-reference principal requirement, runtime-identity verification, the Master Records verifier pin, or same-execution reconstruction.
