@@ -52,13 +52,13 @@ class COSVLiveDenominatorReconciliationTests(unittest.TestCase):
             vector_path=ROOT/f"control/task-vectors/{task_id}.json"
             self.assertEqual(vector_path.exists(), task_id in indexed)
 
-    def test_healer_vector_cardinality_stays_one_with_current_blocker(self):
+    def test_healer_vector_reconciles_after_g18_gate_retirement(self):
         dep=self.healer_handoff["completion"]["dependency_state"]
-        self.assertEqual(dep["state"],"BLOCKED")
-        self.assertEqual(dep["blocker"],"RESIDENT_G18_REQUEST_QUEUED_CONSUMPTION_AND_V13_ACTIVATION_PROOF_NOT_OBSERVED")
-        self.assertEqual(self.healer["exact_metrics"]["blocker_count"],1)
-        self.assertEqual(self.healer["vector"],"50000000101000")
-        self.assertIn(dep["blocker"],self.healer["metric_evidence"]["blocker_count"])
+        self.assertEqual(dep["state"],"RELEASE_COMPLETE_NOT_A_DOWNSTREAM_GATE")
+        self.assertIsNone(dep["blocker"])
+        self.assertEqual(self.healer["exact_metrics"]["blocker_count"],0)
+        self.assertEqual(self.healer["vector"],"50000000100000")
+        self.assertIn("retired",self.healer["metric_evidence"]["blocker_count"].lower())
 
 if __name__=="__main__":
     unittest.main()
