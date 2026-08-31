@@ -16,12 +16,12 @@ class HealerSovereignSchedulerCOSVTests(unittest.TestCase):
     def test_vector_recomputes(self):
         self.assertTrue(cosv.validate_record(self.record))
         self.assertEqual(cosv.encode_task(self.record["exact_metrics"]),self.record["vector"])
-        self.assertEqual(self.record["vector"],"50000000101000")
+        self.assertEqual(self.record["vector"],"50000000100000")
     def test_single_machine_dependency_blocker(self):
         dep=self.handoff["completion"]["dependency_state"]
-        self.assertEqual(dep["state"],"BLOCKED")
-        self.assertEqual(dep["blocker"],"RESIDENT_G18_REQUEST_QUEUED_CONSUMPTION_AND_V13_ACTIVATION_PROOF_NOT_OBSERVED")
-        self.assertEqual(self.record["exact_metrics"]["blocker_count"],1)
+        self.assertEqual(dep["state"],"RELEASE_COMPLETE_NOT_A_DOWNSTREAM_GATE")
+        self.assertIsNone(dep["blocker"])
+        self.assertEqual(self.record["exact_metrics"]["blocker_count"],0)
         self.assertFalse(dep["current_iphone_hb30_action_required"])
         self.assertFalse(dep["third_party_primary_runtime_required"])
     def test_no_live_activation_or_propagation_promotion(self):
