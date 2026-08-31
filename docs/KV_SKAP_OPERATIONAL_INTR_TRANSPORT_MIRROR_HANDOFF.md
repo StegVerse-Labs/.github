@@ -71,11 +71,11 @@ No GitHub runner, Render, Vercel, Cloudflare, HB carrier, or request grants exec
 Source completion requires:
 1. exact canonical `kv-skap-custody` request validation;
 2. write-once ingress receipt;
-3. dispatch without claim/fence minting;
+3. direct event dispatch without claim/fence minting or a second WorkerCoordinator task;
 4. TVC current-source double-Interlock validation;
 5. exact sealed ciphertext persisted unchanged under `_Vault/SKAP`;
 6. DEVICE -> KV -> SKAP receipt lineage;
 7. replay denial;
 8. tests and organization validation passing.
 
-Runtime activation remains separate and requires an authentic resident materialization receipt plus exact custody/readback evidence.
+Runtime activation remains separate and requires an authentic resident materialization receipt plus exact custody/readback evidence. The transport path intentionally does not register a separate WorkerCoordinator task: shared ingress performs bounded event dispatch directly, while TVC remains the downstream gate/custody authority.
