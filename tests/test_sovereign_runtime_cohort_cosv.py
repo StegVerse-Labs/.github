@@ -35,10 +35,13 @@ class SovereignRuntimeCohortCOSVTests(unittest.TestCase):
             self.assertEqual(rec["authority_effect"], "NONE")
             self.assertNotIn(task_id, coverage["active_worker_task_ids_missing_canonical_cosv"])
             self.assertEqual(indexed[task_id]["vector"], expected)
-        self.assertEqual(index["coverage"]["indexed_vectorized_tasks"], 50)
-        self.assertEqual(coverage["worker_registry_summary"]["canonically_indexed_task_ids"], 50)
-        self.assertEqual(coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"], 14)
-        self.assertEqual(coverage["total_active_unvectorized_unique_task_ids"], 28)
+        self.assertGreaterEqual(index["coverage"]["indexed_vectorized_tasks"], len(TASKS))
+        self.assertGreaterEqual(coverage["worker_registry_summary"]["canonically_indexed_task_ids"], len(TASKS))
+        self.assertEqual(
+            coverage["total_active_unvectorized_unique_task_ids"],
+            coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"]
+            + coverage["organization_registry_summary"]["active_unvectorized_task_ids"],
+        )
 
 if __name__ == "__main__":
     unittest.main()

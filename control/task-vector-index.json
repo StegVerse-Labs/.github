@@ -490,11 +490,47 @@
       "vector": "50000000101000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
+    },
+    {
+      "task_id": "STEGFIN-LIVE-ENTRY-003",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/stegfin-live-entry-003.json",
+      "source_state_vector_ref": "control/task-vectors/STEGFIN-LIVE-ENTRY-003.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "STEGFIN-LIVE-PRETRADE-005",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/stegfin-live-pretrade-005.json",
+      "source_state_vector_ref": "control/task-vectors/STEGFIN-LIVE-PRETRADE-005.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/healer-failure-mailbox-shadow-001.json",
+      "source_state_vector_ref": "control/task-vectors/HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001.json",
+      "vector": "50000000106000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/healer-failure-mailbox-benchmark-001.json",
+      "source_state_vector_ref": "control/task-vectors/HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 50,
-    "local_cosv_record_tasks": 50,
+    "indexed_vectorized_tasks": 54,
+    "local_cosv_record_tasks": 54,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
