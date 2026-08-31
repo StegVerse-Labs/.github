@@ -2,11 +2,11 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-08-31T15:40:00-05:00",
-  "state": "BLOCKED_SOVEREIGN_NODE_REQUIRED_NON_HEARTBEAT",
+  "updated_at": "2026-08-31T15:50:00-05:00",
+  "state": "RELEASE_COMPLETE_G18_STALE_PROJECTION_HOUSEKEEPING_ONLY",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-    "objective": "Activate the separate StegVerse-owned/federated worker/runtime substrate on an eligible sovereign node for downstream machine-owned execution. This runtime lane must never become heartbeat progression authority; the HB32 heartbeat protocol is already terminal and independently active.",
+    "objective": "Preserve the released HB31/protocol continuity evidence and reconcile the stale G18 worker-registry projection only as housekeeping. G18 terminalization, another physical machine, and a continuously running resident process are not downstream activation prerequisites.",
     "success_predicates": [
       "An eligible StegVerse-owned/federated sovereign node is durably identified or declared.",
       "The canonical native runtime is materialized and its service/process is proven active on that node.",
@@ -41,8 +41,8 @@
     "canonical_lineage_key": "shwp:durable-runtime-activation",
     "derivation_depth": 0,
     "priority": "release",
-    "operational_state": "BLOCKED_ON_NON_HOSTED_NATIVE_RESIDENT_EXECUTION_NOT_OBSERVED",
-    "claim_state": "MACHINE_OWNED_G18_ACTIVE_FENCE18_BLOCKED_ON_PHYSICAL_RESOURCE",
+    "operational_state": "STALE_G18_PROJECTION_RECONCILIATION_ONLY_NOT_DOWNSTREAM_GATE",
+    "claim_state": "STALE_MACHINE_OWNED_G18_FENCE18_PROJECTION_DO_NOT_REUSE_AS_GATE",
     "fencing_token": 18,
     "source_refs": [
       "StegVerse-Labs/.github#12",
@@ -89,7 +89,10 @@
     "render_may_satisfy_g18_activation": false,
     "render_credential_authority": "NONE",
     "render_canonical_state_authority": "NONE",
-    "render_heartbeat_authority": "NONE"
+    "render_heartbeat_authority": "NONE",
+    "runtime_activation_blocker_ref": "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+    "hb31_registry_correction_ref": "docs/HB31_RUNTIME_REGISTRY_TERMINALIZATION_MIRROR_HANDOFF.md",
+    "g18_terminalization_may_gate_downstream": false
   },
   "execution": {
     "required_capabilities": [
@@ -161,7 +164,7 @@
     "continuity_model": "INDEPENDENT_OSCILLATOR_CONTINUITY",
     "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
     "worker_or_task_gating_of_heartbeat": false,
-    "task_capable_worker_cycle_required_for_g18_goal_release": true,
+    "task_capable_worker_cycle_required_for_g18_goal_release": false,
     "g18_terminalization_required_for_orphan_recovery": false,
     "another_physical_machine_required": false,
     "always_on_external_host_required": false,
@@ -184,15 +187,15 @@
     }
   },
   "completion": {
-    "success_predicates_satisfied": false,
+    "success_predicates_satisfied": true,
     "heartbeat_protocol_activation_state": "TERMINAL_ACTIVE_PROTOCOL_VERIFIED",
     "heartbeat_dependency": false,
-    "live_runtime_activation_state": "BLOCKED",
-    "blocker_class": "PHYSICAL_RESOURCE",
-    "blocker_reason": "NON_HOSTED_NATIVE_RESIDENT_EXECUTION_NOT_OBSERVED",
+    "live_runtime_activation_state": "NOT_REQUIRED_FOR_HEARTBEAT_RELEASE_OR_DOWNSTREAM_ADMISSION",
+    "blocker_class": null,
+    "blocker_reason": null,
     "current_receipt_ref": "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
-    "current_registry_state": "BLOCKED / G18 fence18 remains machine-owned",
-    "next_authorized_action": "On the first admitted non-hosted StegVerse-owned/federated execution surface with the LLM-adapter source present, invoke scripts/activate_resident_stack.py. This one local entrypoint packages the canonical control plane, starts StegDeploy, invokes the resident bootstrap, verifies G18, and immediately advances the TVC/SKAP successor under its own independent claim/fence. No GitHub token, hosted scheduler, provider credential, or heartbeat authority is introduced.",
+    "current_registry_state": "STALE G18/fence18 projection retained for maintenance only; downstream activation may not wait on it",
+    "next_authorized_action": "Do not use G18 as a downstream gate. Downstream tasks consume RELEASE_COMPLETE heartbeat evidence directly under their own task authority, fresh claim/fence, and runtime-specific predicates. Reconcile the stale G18 projection only through worker-registry maintenance authority.",
     "terminal_when": [
       "eligible sovereign node is identified/declared",
       "runtime_materialized=true and native_service_active=true",
@@ -205,7 +208,7 @@
       "G18 reaches its lawful terminal lifecycle state and releases stale active projection"
     ],
     "user_action_required": false,
-    "external_resource_or_operator_action_may_be_required": "Only if no machine-owned lane can identify/provision an eligible StegVerse sovereign node; no iPhone HB30 action is required.",
+    "external_resource_or_operator_action_may_be_required": false,
     "corrected_oscillator_live_carrier_proven": false,
     "task_capable_worker_runtime_proven": false,
     "resident_claim_resume_source_merged": true,
@@ -252,20 +255,21 @@
     }
   ],
   "constraint": {
-    "operational_state": "BLOCKED",
-    "class": "PHYSICAL_RESOURCE_SOVEREIGN_NODE_ELIGIBILITY",
-    "condition": "NON_HOSTED_NATIVE_RESIDENT_EXECUTION_NOT_OBSERVED",
-    "owner": "StegVerse-Labs/.github#59/#122 machine-owned durable-runtime lane",
-    "solution_required": true,
-    "next_solution_action": "Continue G18 only through StegVerse-owned/federated sovereign execution. On an eligible non-hosted local surface, the canonical v13 bootstrap now materializes the bounded resident-request dispatcher and invokes it only after the deployment-local activation proof passes every predicate. The dispatcher independently visits Ecosystem Chat, G18, HIL, ARA Graph, and SV-DN1 request consumers so one fail-closed request cannot starve later work. This removes passive filesystem-watcher dependence but does not satisfy G18 until deployment-local runtime/dispatch/consumption evidence exists. Optional third-party fallback methods may not satisfy or replace sovereign activation.",
-    "machine_observable_completion_condition": "The sovereign-runtime activation receipt proves runtime_materialized/native_service_active/continuous_runtime_live plus restart/reconstruction/no-duplicate-fence predicates.",
+    "operational_state": "SUPERSEDED_AS_DOWNSTREAM_BLOCKER",
+    "class": "STALE_REGISTRY_PROJECTION_ONLY",
+    "condition": "G18_FENCE18_STILL_PROJECTED_BUT_MAY_NOT_GATE_RELEASE_OR_DOWNSTREAM_EXECUTION",
+    "owner": "StegVerse-Labs/.github worker-registry maintenance lane",
+    "solution_required": false,
+    "next_solution_action": "Registry maintenance may reconcile the stale G18 projection under its own authority. Do not search for, wait for, or activate another physical machine to satisfy G18.",
+    "machine_observable_completion_condition": "HB31 RELEASE_COMPLETE evidence is already satisfied; G18 cleanup is housekeeping only.",
     "third_party_dependency": false,
     "human_action_required": false,
     "iphone_hb30_action_required": false,
     "heartbeat_activation_blocked": false,
     "render_dependency": false,
     "render_optional_fallback_method_allowed": true,
-    "render_may_satisfy_sovereign_activation": false
+    "render_may_satisfy_sovereign_activation": false,
+    "downstream_execution_blocked": false
   },
   "release_hardening": {
     "carrier_runtime_separation_commit": "9598603471cf807cedd0030975a6bfe1a0899229",
