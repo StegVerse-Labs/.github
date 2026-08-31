@@ -134,7 +134,25 @@ class DeviceKVEventMaterializationTests(unittest.TestCase):
                 + "a"*64
                 + "\",\"staging_path\":\"00_Inbox/DirectSource/pictures/test\","
                 "\"exact_readback_verified\":True,\"trusted_semantic_admission\":False,"
-                "\"credential_authority\":\"TV/TVC\"}\n",
+                "\"credential_authority\":\"TV/TVC\"}\n"
+                "def promote_portable_direct_source(request, staging_receipt, *, kv_data_root):\n"
+                "    return {\"admission_receipt\":{"
+                "\"schema\":\"stegverse.kv.portable-direct-source-canonical-admission/v1\","
+                "\"state\":\"CANONICAL_ADMITTED\",\"receipt_sha256\":\"sha256:"
+                + "b"*64
+                + "\",\"canonical_batch_path\":\"04_Media/Pictures/test\","
+                "\"canonical_kv_persistence_observed\":True,"
+                "\"exact_canonical_readback_verified\":True,"
+                "\"trusted_semantic_admission\":True,"
+                "\"provider_session_required\":False,"
+                "\"provider_operation_authorized\":False,"
+                "\"credential_authority\":\"TV/TVC\","
+                "\"authority_effect\":\"NONE\"},"
+                "\"connection_health\":{"
+                "\"compatibility_state\":\"VERIFIED\","
+                "\"credential_material_present\":False,"
+                "\"provider_operation_authorized\":False,"
+                "\"authority_effect\":\"NONE\"}}\n",
                 encoding="utf-8",
             )
             def runner(*args,**kwargs):
@@ -153,6 +171,62 @@ class DeviceKVEventMaterializationTests(unittest.TestCase):
             self.assertTrue(result["portable_kv_staging_attempted"])
             self.assertEqual(result["portable_kv_staging_state"],"STAGED_UNTRUSTED")
             self.assertTrue(result["portable_kv_exact_readback_verified"])
+            self.assertTrue(result["portable_kv_canonical_admission_attempted"])
+            self.assertEqual(result["portable_kv_canonical_admission_state"],"CANONICAL_ADMITTED")
+            self.assertEqual(result["portable_kv_canonical_batch_path"],"04_Media/Pictures/test")
+            self.assertTrue(result["portable_kv_exact_canonical_readback_verified"])
+            self.assertEqual(result["portable_kv_connection_health_state"],"VERIFIED")
+            self.assertTrue(result["trusted_semantic_admission"])
+
+    def test_portable_canonical_admission_failure_blocks_consumption(self):
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td)
+            runtime=base/"runtime"
+            source=base/"source"
+            kv_source=base/"cvk"
+            kv_data=base/"KnowledgeVault"
+            (runtime/consumer.REQUEST_DIR_REL).mkdir(parents=True)
+            (runtime/consumer.INGRESS_DIR_REL).mkdir(parents=True)
+            (kv_source/"runtime").mkdir(parents=True)
+            kv_data.mkdir(parents=True)
+            req=materialization()
+            req["payload_ref"]="inline://materialization_request.portable_payload"
+            req["portable_payload"]={
+                "schema":"stegverse.kv.portable-direct-source-inline-payload/v1",
+                "directory_id":"pictures","canonical_path":"04_Media/Pictures",
+                "source_class":"OWNER_CONTROLLED_FILE","credential_requirement":"NONE",
+                "total_bytes":1,"files":[],"authority_effect":"NONE",
+            }
+            req["payload_hash"]=consumer.sha(req["portable_payload"])
+            body=dict(req); body.pop("request_hash",None); req["request_hash"]=consumer.sha(body)
+            mid=req["materialization_id"]
+            (runtime/consumer.REQUEST_DIR_REL/f"{mid}.json").write_text(json.dumps(req),encoding="utf-8")
+            ing={"schema":"stegverse.device-kv-intr-materialization-ingress/v1","state":"INGRESS_ADMITTED",
+                 "materialization_id":mid,"request_hash":req["request_hash"],
+                 "transport_intent_hash":req["transport_intent_hash"],"payload_hash":req["payload_hash"],
+                 "operation_id":req["operation_id"],"packet_id":req["packet_id"],
+                 "claim_or_fence_minted":False,"credential_authority":"TV/TVC"}
+            (runtime/consumer.INGRESS_DIR_REL/f"{mid}.json").write_text(json.dumps(ing),encoding="utf-8")
+            (kv_source/"runtime/portable_direct_source_ingress.py").write_text(
+                "def admit_portable_direct_source(request, ingress_receipt, *, kv_data_root):\n"
+                "    return {\"schema\":\"stegverse.kv.portable-direct-source-admission/v1\","
+                "\"state\":\"STAGED_UNTRUSTED\",\"receipt_sha256\":\"sha256:"+"a"*64+"\","
+                "\"staging_path\":\"00_Inbox/DirectSource/pictures/test\","
+                "\"exact_readback_verified\":True,\"trusted_semantic_admission\":False,"
+                "\"credential_authority\":\"TV/TVC\"}\n"
+                "def promote_portable_direct_source(request, staging_receipt, *, kv_data_root):\n"
+                "    raise ValueError(\"canonical readback failed\")\n",
+                encoding="utf-8",
+            )
+            def runner(*args,**kwargs):
+                return subprocess.CompletedProcess(args[0],0,stdout='{"state":"COMPLETED"}\n',stderr="")
+            result=consumer.consume_one(
+                source,runtime,mid,runner=runner,
+                env={"PATH":"/bin","HOME":str(base),"STEGVERSE_KV_SOURCE_ROOT":str(kv_source),"STEGVERSE_KV_ROOT":str(kv_data)},
+            )
+            self.assertEqual(result["state"],"MATERIALIZATION_EXECUTION_BLOCKED")
+            self.assertEqual(result["portable_kv_canonical_admission_state"],"BLOCKED")
+            self.assertIn("portable_kv_canonical_admission_failed",result["portable_kv_canonical_admission_error"])
             self.assertFalse(result["trusted_semantic_admission"])
 
     def test_portable_payload_missing_data_root_blocks(self):
