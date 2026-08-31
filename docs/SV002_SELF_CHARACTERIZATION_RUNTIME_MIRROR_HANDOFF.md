@@ -289,7 +289,7 @@ self-characterization consumption receipt remained absent at the post-merge chec
 
 ## Transition-derived principal effects — issue #657
 
-The resident lane is rebound to canonical principal source `StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01`, which preserves frozen v0.1 history and makes v0.2 canonical before any principal execution.
+The resident lane is rebound to canonical principal source `StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9`, which preserves frozen v0.1 history and makes v0.2 canonical before any principal execution.
 
 The worker now retains `TRANSITION_EFFECTS.json` alongside the self-characterization, formal result, and interaction trace. A completed principal result carries:
 
@@ -365,3 +365,23 @@ These are source/provenance locators only. They do not relax pinned formal commi
 ## Portable formal-snapshot principal source pin — 2026-08-31
 
 The resident principal source pin advances to `StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9`, which preserves the v0.2 experiment contract while adding fail-closed consumption of exact TT/RTG/GTG/AE snapshots from the verified resident source manifest. No principal execution has occurred at an older pin, so this is a pre-execution source advancement rather than a rewrite of execution evidence.
+
+
+## Complete portable source closure — 2026-08-31
+
+The resident bundle now carries the exact source surfaces needed before principal execution:
+
+```text
+StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9
+master-records/orchestration verifier source
+Admissible-Existence/TT@ab60b42934222a2cb5335a5a8194f258a491fc57
+Admissible-Existence/RTG@ca69954cb3dc4ad073c9244e003bc8f0ef3837e2
+Admissible-Existence/GTG@8cdb7bce87bb9f8429c35e9c66cc5dc28a46a225
+Admissible-Existence/AE@53c8eedddc4e54d8fa0660039d65ab9ac63057a1
+```
+
+TT/RTG/GTG/AE are packaged from the exact pinned Git objects rather than from the current worktree and are materialized without `.git`. The principal independently validates the persisted resident source manifest, repository identity, exact commit, bound subpath, and every current snapshot digest before exposing those resources through search/read.
+
+The resident worker likewise accepts portable micro-node and Master Records source only after source-proof and file-digest validation. Ordinary local Git checkouts remain valid and preferred where present.
+
+This closes source portability only. The unresolved execution denominator remains an authentic non-reference local reasoning process, live subject-identity verification, one principal execution, and same-execution Master Records reconstruction.
