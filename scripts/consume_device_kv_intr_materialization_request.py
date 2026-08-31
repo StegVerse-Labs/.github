@@ -70,9 +70,11 @@ def _load_cvk_portable_module(source_root:Path):
     spec.loader.exec_module(module)
     if not hasattr(module,"admit_portable_direct_source"):
         raise DeviceKVMaterializationError("portable_cvk_ingress_entrypoint_missing")
+    if not hasattr(module,"promote_portable_direct_source"):
+        raise DeviceKVMaterializationError("portable_cvk_canonical_admission_entrypoint_missing")
     return module
 
-def stage_portable_payload(req:dict[str,Any],ing:dict[str,Any],env:dict[str,str])->dict[str,Any]:
+def stage_and_promote_portable_payload(req:dict[str,Any],ing:dict[str,Any],env:dict[str,str])->dict[str,Any]:
     source_value=env.get(KV_SOURCE_ROOT_ENV)
     data_value=env.get(KV_DATA_ROOT_ENV)
     if not source_value:
@@ -83,16 +85,38 @@ def stage_portable_payload(req:dict[str,Any],ing:dict[str,Any],env:dict[str,str]
     data_root=Path(data_value).expanduser().resolve()
     module=_load_cvk_portable_module(source_root)
     try:
-        receipt=module.admit_portable_direct_source(req,ing,kv_data_root=data_root)
+        staging=module.admit_portable_direct_source(req,ing,kv_data_root=data_root)
     except Exception as exc:
         raise DeviceKVMaterializationError("portable_kv_staging_failed:"+type(exc).__name__+":"+str(exc)) from exc
-    if not isinstance(receipt,dict) or receipt.get("schema")!="stegverse.kv.portable-direct-source-admission/v1":
+    if not isinstance(staging,dict) or staging.get("schema")!="stegverse.kv.portable-direct-source-admission/v1":
         raise DeviceKVMaterializationError("portable_kv_staging_receipt_invalid")
-    if receipt.get("state")!="STAGED_UNTRUSTED" or receipt.get("exact_readback_verified") is not True:
+    if staging.get("state")!="STAGED_UNTRUSTED" or staging.get("exact_readback_verified") is not True:
         raise DeviceKVMaterializationError("portable_kv_staging_not_verified")
-    if receipt.get("trusted_semantic_admission") is not False or receipt.get("credential_authority")!="TV/TVC":
+    if staging.get("trusted_semantic_admission") is not False or staging.get("credential_authority")!="TV/TVC":
         raise DeviceKVMaterializationError("portable_kv_staging_authority_invalid")
-    return receipt
+    try:
+        promoted=module.promote_portable_direct_source(req,staging,kv_data_root=data_root)
+    except Exception as exc:
+        raise DeviceKVMaterializationError("portable_kv_canonical_admission_failed:"+type(exc).__name__+":"+str(exc)) from exc
+    if not isinstance(promoted,dict):
+        raise DeviceKVMaterializationError("portable_kv_canonical_admission_result_invalid")
+    admission=promoted.get("admission_receipt")
+    health=promoted.get("connection_health")
+    if not isinstance(admission,dict) or admission.get("schema")!="stegverse.kv.portable-direct-source-canonical-admission/v1":
+        raise DeviceKVMaterializationError("portable_kv_canonical_admission_receipt_invalid")
+    if admission.get("state")!="CANONICAL_ADMITTED" or admission.get("canonical_kv_persistence_observed") is not True:
+        raise DeviceKVMaterializationError("portable_kv_canonical_persistence_not_verified")
+    if admission.get("exact_canonical_readback_verified") is not True or admission.get("trusted_semantic_admission") is not True:
+        raise DeviceKVMaterializationError("portable_kv_canonical_readback_not_verified")
+    if admission.get("provider_session_required") is not False or admission.get("credential_authority")!="TV/TVC":
+        raise DeviceKVMaterializationError("portable_kv_canonical_authority_invalid")
+    if admission.get("provider_operation_authorized") is not False or admission.get("authority_effect")!="NONE":
+        raise DeviceKVMaterializationError("portable_kv_canonical_authority_invalid")
+    if not isinstance(health,dict) or health.get("compatibility_state")!="VERIFIED":
+        raise DeviceKVMaterializationError("portable_kv_connection_health_not_verified")
+    if health.get("credential_material_present") is not False or health.get("provider_operation_authorized") is not False:
+        raise DeviceKVMaterializationError("portable_kv_connection_health_authority_invalid")
+    return {"staging_receipt":staging,"admission_receipt":admission,"connection_health":health}
 
 def consume_one(source:Path,runtime:Path,mid:str,runner:Runner=subprocess.run,env=None)->dict[str,Any]:
     req=load(runtime/REQUEST_DIR_REL/(mid+".json")); validate_request(req)
@@ -106,18 +130,36 @@ def consume_one(source:Path,runtime:Path,mid:str,runner:Runner=subprocess.run,en
 
     portable=portable_payload_present(req)
     staging_receipt=None
+    admission_receipt=None
+    connection_health=None
     staging_error=None
+    admission_error=None
     staging_attempted=False
+    admission_attempted=False
     if portable and completed.returncode==0:
         staging_attempted=True
+        admission_attempted=True
         try:
-            staging_receipt=stage_portable_payload(req,ing,child)
+            promoted=stage_and_promote_portable_payload(req,ing,child)
+            staging_receipt=promoted["staging_receipt"]
+            admission_receipt=promoted["admission_receipt"]
+            connection_health=promoted["connection_health"]
         except DeviceKVMaterializationError as exc:
-            staging_error=str(exc)
+            message=str(exc)
+            if "canonical_admission" in message or "canonical_" in message or "connection_health" in message:
+                admission_error=message
+            else:
+                staging_error=message
 
     observation_ok=completed.returncode==0
     staging_ok=(not portable) or (staging_receipt is not None and staging_receipt.get("state")=="STAGED_UNTRUSTED")
-    state="MATERIALIZATION_EXECUTION_ATTEMPTED" if observation_ok and staging_ok else "MATERIALIZATION_EXECUTION_BLOCKED"
+    admission_ok=(not portable) or (
+        admission_receipt is not None
+        and admission_receipt.get("state")=="CANONICAL_ADMITTED"
+        and admission_receipt.get("exact_canonical_readback_verified") is True
+        and admission_receipt.get("trusted_semantic_admission") is True
+    )
+    state="MATERIALIZATION_EXECUTION_ATTEMPTED" if observation_ok and staging_ok and admission_ok else "MATERIALIZATION_EXECUTION_BLOCKED"
     body={
         "schema":"stegverse.device-kv-intr-materialization-consumption/v1",
         "state":state,
@@ -135,7 +177,14 @@ def consume_one(source:Path,runtime:Path,mid:str,runner:Runner=subprocess.run,en
         "portable_kv_staging_path":staging_receipt.get("staging_path") if staging_receipt else None,
         "portable_kv_exact_readback_verified":staging_receipt.get("exact_readback_verified") if staging_receipt else False,
         "portable_kv_staging_error":staging_error,
-        "trusted_semantic_admission":False,
+        "portable_kv_canonical_admission_attempted":admission_attempted,
+        "portable_kv_canonical_admission_state":admission_receipt.get("state") if admission_receipt else ("BLOCKED" if portable else "NOT_APPLICABLE"),
+        "portable_kv_canonical_admission_receipt_sha256":admission_receipt.get("receipt_sha256") if admission_receipt else None,
+        "portable_kv_canonical_batch_path":admission_receipt.get("canonical_batch_path") if admission_receipt else None,
+        "portable_kv_exact_canonical_readback_verified":admission_receipt.get("exact_canonical_readback_verified") if admission_receipt else False,
+        "portable_kv_connection_health_state":connection_health.get("compatibility_state") if connection_health else None,
+        "portable_kv_canonical_admission_error":admission_error,
+        "trusted_semantic_admission":admission_receipt.get("trusted_semantic_admission") if admission_receipt else False,
         "request_grants_authority":False,
         "claim_or_fence_minted_by_consumer":False,
         "heartbeat_grants_execution_authority":False,
