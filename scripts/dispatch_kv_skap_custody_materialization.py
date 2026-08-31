@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import importlib.util
+import importlib
 import json
 import os
 import sys
@@ -57,16 +57,6 @@ def load_json(path: Path) -> dict[str, Any]:
     return value
 
 
-def load_module(path: Path, name: str):
-    spec = importlib.util.spec_from_file_location(name, path)
-    if spec is None or spec.loader is None:
-        raise KVSkapDispatchError("module_loader_unavailable:" + str(path))
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
-    spec.loader.exec_module(module)
-    return module
-
-
 def load_profile(stegos_root: Path) -> dict[str, Any]:
     registry = load_json(stegos_root / PROFILE_REGISTRY_REL)
     profiles = [p for p in registry.get("profiles", []) if isinstance(p, dict) and p.get("profile_id") == PROFILE_ID]
@@ -101,8 +91,15 @@ def build_request(*, stegos_root: Path, capsule: dict[str, Any], device_kv_recei
     if not isinstance(device_kv_receipt, dict) or device_kv_receipt.get("schema") != "stegverse.intr.boundary_transition_receipt/v1":
         raise KVSkapDispatchError("device_kv_receipt_invalid")
 
-    transport = load_module(stegos_root / TRANSPORT_REL, "stegverse_kv_skap_transport")
-    materialization = load_module(stegos_root / MATERIALIZATION_REL, "stegverse_kv_skap_materialization")
+    root_text = str(stegos_root)
+    if root_text not in sys.path:
+        sys.path.insert(0, root_text)
+    transport = importlib.import_module("stegos.universal_intr_transport")
+    materialization = importlib.import_module("stegos.universal_intr_materialization")
+    for module, rel in ((transport, TRANSPORT_REL), (materialization, MATERIALIZATION_REL)):
+        module_file = Path(str(getattr(module, "__file__", ""))).resolve()
+        if module_file != (stegos_root / rel).resolve():
+            raise KVSkapDispatchError("canonical_stegos_module_root_mismatch:" + rel.as_posix())
     payload_hash = sha_uri(capsule)
     intent = transport.build_transport_intent(
         operation_id=ingress_id,
