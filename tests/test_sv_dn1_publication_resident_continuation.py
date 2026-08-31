@@ -22,11 +22,22 @@ class SvDn1PublicationResidentContinuationTests(unittest.TestCase):
             "PATH":"/usr/bin",
             "STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_STATE_ROOT":"/tmp/persist",
             "STEGVERSE_TVC_SV_DN1_REPOSITORY_PERSISTENCE_ADMISSION":"/tmp/admission.json",
+            "STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_DISPATCH_STATE_ROOT":"/tmp/persist-dispatch",
+            "STEGVERSE_TVC_SV_DN1_MERGE_SPOOL_ROOT":"/tmp/merge-spool",
         })
         self.assertEqual(env["STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_STATE_ROOT"],"/tmp/persist")
         self.assertEqual(env["STEGVERSE_TVC_SV_DN1_REPOSITORY_PERSISTENCE_ADMISSION"],"/tmp/admission.json")
+        self.assertEqual(env["STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_DISPATCH_STATE_ROOT"],"/tmp/persist-dispatch")
+        self.assertEqual(env["STEGVERSE_TVC_SV_DN1_MERGE_SPOOL_ROOT"],"/tmp/merge-spool")
         self.assertNotIn("GITHUB_TOKEN",env)
         self.assertNotIn("TVC_EPHEMERAL_GITHUB_TOKEN",env)
+
+    def test_continuation_task_order_includes_merge_before_observation(self):
+        self.assertEqual(continuation.TASKS,(
+            "SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001",
+            "SV-DN1-REPOSITORY-MERGE-DISPATCH-001",
+            "SV-DN1-PUBLICATION-OBSERVER-001",
+        ))
 
     def test_continuation_does_not_forward_generic_bound_state_root(self):
         env=continuation.clean_exec_env({
