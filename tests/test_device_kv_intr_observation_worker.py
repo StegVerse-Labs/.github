@@ -153,6 +153,9 @@ class DeviceKVInTrObservationWorkerTests(unittest.TestCase):
         self.assertIn("recovered = recover_intr_packet_bytes(received_signal)", source)
         self.assertIn("send_frame(self.request, response_carrier_wire)", source)
         self.assertIn("response_wire = recover_intr_packet_bytes(response_carrier_signal)", source)
+        self.assertIn("persist_local_intr_subsignal(", source)
+        self.assertIn('"request_shared_hb_signal_ref"', source)
+        self.assertIn('"response_shared_hb_signal_ref"', source)
         self.assertIn('"hb_derived_carrier_transport_observed": True', source)
 
 

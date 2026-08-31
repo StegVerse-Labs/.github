@@ -293,3 +293,25 @@ binding so the resident does not lose its private KV destination between layers.
 
 The reissued request remains intent-only. It grants no claim, fence, credential,
 routing, receiving, transition, or execution authority.
+## 2026-08-31 shared HB signal publication
+
+After PR #638 merged the canonical local HB/InTr subsignal runtime, issue #645 binds this lane's already-authentic carrier frames into that shared surface.
+
+For a successful execution:
+```text
+DEVICE -> KV carrier frame
+  -> KV receiver exact recover/receipt/authority validation
+  -> persist exact received carrier frame into shared heartbeat runtime
+
+KV -> DEVICE carrier frame
+  -> Device exact recover/receipt/authority validation
+  -> persist exact received carrier frame into shared heartbeat runtime
+```
+
+The terminal DEVICE_KV observation now records:
+- `request_shared_hb_signal_ref`
+- `request_shared_hb_signal_sha256`
+- `response_shared_hb_signal_ref`
+- `response_shared_hb_signal_sha256`
+
+The shared persistence target is `STEGVERSE_HEARTBEAT_ROOT` or the resident execution fallback. Shared publication failure fails the observation closed. Source merge still does not satisfy `DEVICE_KV_INTR_OBSERVED`.

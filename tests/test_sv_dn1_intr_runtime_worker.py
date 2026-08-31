@@ -175,6 +175,7 @@ class SvDn1IntrRuntimeWorkerTests(unittest.TestCase):
                 mock.patch.object(worker, "resident_state_root", return_value=resident),
                 mock.patch.object(worker, "source_root", return_value=source),
                 mock.patch.object(worker, "bound_state_root", return_value=bound),
+                mock.patch.object(worker, "default_heartbeat_runtime_root", return_value=temp / "heartbeat"),
                 mock.patch.object(worker, "find_node", return_value=(temp / "node.json", {"declared": True})),
                 mock.patch.object(worker, "load_destination_validator", return_value=_Validator),
                 mock.patch.dict("os.environ", {}, clear=True),
@@ -225,6 +226,11 @@ class SvDn1IntrRuntimeWorkerTests(unittest.TestCase):
             self.assertEqual(carrier_receipt["authority_effect"], "NONE_CARRIER_ONLY")
             self.assertEqual(carrier_signal["intr"]["packet_sha256"], carrier_receipt["packet_sha256"])
             self.assertEqual(worker.recover_intr_packet_bytes(carrier_signal), worker.canonical(exchange))
+            self.assertEqual(carrier_receipt["shared_hb_signal_ref"], result["hb_shared_signal_ref"])
+            self.assertEqual(carrier_receipt["shared_hb_signal_sha256"], result["hb_shared_signal_sha256"])
+            shared_signal_path = temp / "heartbeat" / carrier_receipt["shared_hb_signal_ref"]
+            self.assertTrue(shared_signal_path.is_file())
+            self.assertEqual(json.loads(shared_signal_path.read_text()), carrier_signal)
 
     def test_hb_carrier_binding_is_deterministic_for_fixed_reference(self):
         exchange = _exchange()
