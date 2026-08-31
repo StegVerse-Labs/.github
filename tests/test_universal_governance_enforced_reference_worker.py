@@ -66,6 +66,33 @@ class UniversalGovernanceEnforcedReferenceWorkerTests(unittest.TestCase):
         self.assertFalse(response["github_token_used"])
         self.assertFalse(response["repository_writeback_performed"])
 
+    def test_repository_root_map_discovers_exact_local_sources(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            stegcore = root / "stegcore"
+            master = root / "core-lite"
+            for rel in worker.STEGCORE_REQUIRED:
+                path = stegcore / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("# fixture\n", encoding="utf-8")
+            for rel in worker.MR_REQUIRED:
+                path = master / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("{}\n", encoding="utf-8")
+            mapping = json.dumps({
+                "StegVerse-Labs/StegCore": str(stegcore),
+                "master-records/core-lite": str(master),
+            })
+            with mock.patch.dict(os.environ, {worker.REPO_ROOTS_ENV: mapping}, clear=True):
+                found_stegcore, found_master = worker.require_sources()
+            self.assertEqual(found_stegcore, stegcore.resolve())
+            self.assertEqual(found_master, master.resolve())
+
+    def test_malformed_repository_root_map_grants_nothing(self):
+        with mock.patch.dict(os.environ, {worker.REPO_ROOTS_ENV: "{not-json"}, clear=True):
+            self.assertEqual(worker.repository_roots(), {})
+
+
     def test_process_adapter_confines_bound_state(self):
         value = json.loads(
             (ROOT / "control" / "process-worker-adapters.d" /
@@ -79,6 +106,7 @@ class UniversalGovernanceEnforcedReferenceWorkerTests(unittest.TestCase):
             {"stegcore-reference/**", "master-records/**", "receipts/**"},
         )
         self.assertFalse("GITHUB_TOKEN" in adapter["env_allowlist"])
+        self.assertIn("STEGVERSE_REPO_ROOTS_JSON", adapter["env_allowlist"])
 
     def test_registry_declares_reference_only_capabilities(self):
         value = json.loads(
