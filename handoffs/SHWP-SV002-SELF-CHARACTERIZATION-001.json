@@ -39,14 +39,14 @@
     "canonical_lineage_key": "sv002:self-characterization:001",
     "derivation_depth": 0,
     "source_refs": [
-      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01",
-      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01:experiments/self-characterization-001/EXPERIMENT_MANIFEST.v0.2.json",
-      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01:experiments/self-characterization-001/EXPERIMENT_CONTRACT.v0.2.json",
-      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01:experiments/self-characterization-001/EVIDENCE_RECONSTRUCTION_PROTOCOL.v0.2.json",
-      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01:experiments/self-characterization-001/SUBJECT_IDENTITY_MANIFEST.v0.1.json",
-      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01:schemas/self_characterization_runtime_identity.schema.json",
-      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01:tools/verify_self_characterization_runtime_identity.py",
-      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01:tools/run_self_characterization_principal.py",
+      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9",
+      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9:experiments/self-characterization-001/EXPERIMENT_MANIFEST.v0.2.json",
+      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9:experiments/self-characterization-001/EXPERIMENT_CONTRACT.v0.2.json",
+      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9:experiments/self-characterization-001/EVIDENCE_RECONSTRUCTION_PROTOCOL.v0.2.json",
+      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9:experiments/self-characterization-001/SUBJECT_IDENTITY_MANIFEST.v0.1.json",
+      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9:schemas/self_characterization_runtime_identity.schema.json",
+      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9:tools/verify_self_characterization_runtime_identity.py",
+      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9:tools/run_self_characterization_principal.py",
       "Admissible-Existence/TT@ab60b42934222a2cb5335a5a8194f258a491fc57",
       "Admissible-Existence/RTG@ca69954cb3dc4ad073c9244e003bc8f0ef3837e2",
       "Admissible-Existence/GTG@8cdb7bce87bb9f8429c35e9c66cc5dc28a46a225",
@@ -91,5 +91,8 @@
       "master_records_reconstruction.receipt.reconstruction=PASS"
     ],
     "next_authorized_action": "Execute the principal exactly once on the resident StegVerse surface. After authentic principal completion, preserve that exact artifact set and retry only pinned Master Records reconstruction until PASS; never rerun the principal. Before a qualifying principal exists, remain BLOCKED."
+  },
+  "validation_evidence": {
+    "portable_formal_snapshot_principal_source": "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9"
   }
 }
