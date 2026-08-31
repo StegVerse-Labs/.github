@@ -254,6 +254,17 @@ class PortableResidentDispatchTests(unittest.TestCase):
     def test_refresh_then_dispatch_targets_only_sv002_public_observation(self):
         self._assert_sv002_exact_target("sv002_public_observation")
 
+    def test_refresh_then_dispatch_targets_only_healer_sovereign_scheduler(self):
+        self._assert_sv002_exact_target("healer_sovereign_scheduler")
+        env = MOD.clean_exec_env({
+            "PATH": "/bin",
+            "HOME": "/tmp",
+            "STEGVERSE_HEALER_ROOT": "/local/healer",
+            "STEGVERSE_HIL_INTR_ROUTE_CONFIG": "/local/config/hil-intr-runtime.json",
+        })
+        self.assertEqual(env["STEGVERSE_HEALER_ROOT"], "/local/healer")
+        self.assertEqual(env["STEGVERSE_HIL_INTR_ROUTE_CONFIG"], "/local/config/hil-intr-runtime.json")
+
     def test_unapproved_consumer_fails_before_refresh(self):
         with tempfile.TemporaryDirectory() as td:
             source = Path(td) / "source"
