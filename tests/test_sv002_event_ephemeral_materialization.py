@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -95,6 +96,97 @@ class SV002EventEphemeralTests(unittest.TestCase):
             self.assertFalse(receipt["observation_round_trip_claimed"])
             self.assertFalse(receipt["claim_or_fence_minted"])
             dispatch.assert_called_once()
+
+    def test_sv002_bridge_advances_canonical_lease_to_public_verifying(self):
+        text = (ROOT / "workers/sv002_observation_esrl_runtime_bridge.py").read_text(encoding="utf-8")
+        self.assertIn("machine.open_after_local_verification()", text)
+        self.assertIn("LeaseState.PUBLIC_VERIFYING", text)
+        self.assertIn("machine.snapshot()", text)
+        self.assertIn("canonical-runtime-lease.snapshot.json", text)
+        self.assertNotIn('"state": "LOCAL_READY", "lease_id": lease_id', text)
+
+    def test_consumer_requires_persisted_canonical_public_verifying_snapshot(self):
+        request = self.request()
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td) / "runtime"
+            source = Path(td) / "source"
+            source.mkdir()
+            request_path = runtime / consumer.REQUEST_DIR_REL / f"{request['materialization_id']}.json"
+            request_path.parent.mkdir(parents=True)
+            request_path.write_text(json.dumps(request), encoding="utf-8")
+            ingress_receipt = {
+                "schema": "stegverse.sv002-intr-materialization-ingress/v1",
+                "state": "INGRESS_ADMITTED",
+                "materialization_id": request["materialization_id"],
+                "request_hash": request["request_hash"],
+                "transport_intent_hash": request["transport_intent_hash"],
+                "payload_hash": request["payload_hash"],
+                "operation_id": request["operation_id"],
+                "packet_id": request["packet_id"],
+                "credential_authority": "TV/TVC",
+                "claim_or_fence_minted": False,
+            }
+            ingress_path = runtime / consumer.INGRESS_RECEIPT_DIR_REL / f"{request['materialization_id']}.json"
+            ingress_path.parent.mkdir(parents=True)
+            ingress_path.write_text(json.dumps(ingress_receipt), encoding="utf-8")
+
+            execution = Path(td) / "execution"
+            entrypoint = execution / consumer.TARGET_ENTRYPOINT
+            entrypoint.parent.mkdir(parents=True)
+            entrypoint.write_text("# fixture\n", encoding="utf-8")
+            snapshot = {
+                "schema": "stegverse.esrl.lease-machine-snapshot/v1",
+                "request": {"lease_id": "SV002-OBS-ESRL-fixture"},
+                "state": "PUBLIC_VERIFYING",
+                "history": ["ABSENT", "REQUESTED", "ADMITTED", "PROVISIONING", "LOCAL_READY", "PUBLIC_VERIFYING"],
+                "credential_authority": "TV/TVC",
+                "authority_effect": "NONE",
+            }
+            snapshot_path = execution / "receipts/sovereign-network/sv002-public-observation/canonical-runtime-lease.snapshot.json"
+            snapshot_path.parent.mkdir(parents=True)
+            snapshot_path.write_text(json.dumps(snapshot), encoding="utf-8")
+            evidence = {
+                "state": "PUBLIC_VERIFYING",
+                "lease_state": "PUBLIC_VERIFYING",
+                "runtime_instantiated": True,
+                "local_identity_verified": True,
+                "canonical_runtime_lease_snapshot_ref": str(snapshot_path),
+                "canonical_runtime_lease_snapshot_sha256": consumer.digest_uri(snapshot),
+                "g18_completion_required": False,
+                "observer_direct_relation_to_stegverse_002": False,
+            }
+            def materializer(**_kwargs):
+                return {"runtime_root": execution, "evidence": evidence}
+            def runner(*_args, **_kwargs):
+                return subprocess.CompletedProcess([], 0, stdout="{}", stderr="")
+
+            receipt = consumer.consume_one(
+                source,
+                runtime,
+                request["materialization_id"],
+                runner=runner,
+                env={},
+                runtime_materializer=materializer,
+            )
+            self.assertEqual(receipt["canonical_runtime_lease_state"], "PUBLIC_VERIFYING")
+            self.assertTrue(receipt["canonical_runtime_lease_resume_required"])
+            self.assertEqual(receipt["canonical_runtime_lease_snapshot_sha256"], consumer.digest_uri(snapshot))
+
+            snapshot["history"] = ["ABSENT", "LEASE_OPEN"]
+            snapshot_path.write_text(json.dumps(snapshot), encoding="utf-8")
+            evidence["canonical_runtime_lease_snapshot_sha256"] = consumer.digest_uri(snapshot)
+            with self.assertRaisesRegex(
+                consumer.SV002InTrMaterializationError,
+                "snapshot_history_invalid",
+            ):
+                consumer.consume_one(
+                    source,
+                    runtime,
+                    request["materialization_id"],
+                    runner=runner,
+                    env={},
+                    runtime_materializer=materializer,
+                )
 
     def test_superseded_script_materialization_path_absent(self):
         self.assertFalse((ROOT / "scripts/consume_sv002_intr_materialization_request.py").exists())

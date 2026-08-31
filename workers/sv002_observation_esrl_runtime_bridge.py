@@ -65,7 +65,20 @@ def materialize_sv002_observation_runtime(*, control_root: Path, intake_runtime_
     local = adapter.verify_local(runtime, IMPLEMENTATION_REF)
     _require(local.get("verified") is True, "sv002_esrl_local_runtime_identity_failed")
     machine.transition(LeaseState.LOCAL_READY)
+    _require(hasattr(machine, "snapshot"), "canonical_runtime_lease_continuation_not_materialized")
+    machine.open_after_local_verification()
+    _require(machine.state == LeaseState.PUBLIC_VERIFYING, "sv002_canonical_lease_public_verification_state_required")
     runtime_root = Path(str(runtime.get("runtime_root", ""))).resolve()
     _require(runtime_root.is_dir(), "sv002_esrl_runtime_root_missing")
-    evidence = {"schema": EVIDENCE_SCHEMA, "state": "LOCAL_READY", "lease_id": lease_id, "lease_state": machine.state.value, "source_receipt_id": source_receipt_id, "materialization_id": request["materialization_id"], "request_hash": request["request_hash"], "transport_intent_hash": request["transport_intent_hash"], "payload_hash": request["payload_hash"], "operation_id": request["operation_id"], "packet_id": request["packet_id"], "implementation_ref": IMPLEMENTATION_REF, "consequence_id": CONSEQUENCE_ID, "consequence_registry_hash": registry_hash, "state_root_binding": state_root_binding, "runtime_class": RuntimeClass.EVENT_EPHEMERAL.value, "lease_profile": LeaseProfile.INTAKE.value, "runtime_root": str(runtime_root), "runtime_id": runtime.get("runtime_id"), "runtime_instantiated": True, "local_identity_verified": True, "receiver_ready_observed": False, "public_route_observed": False, "observation_round_trip_observed": False, "observer_direct_relation_to_stegverse_002": False, "g18_completion_required": False, "request_grants_execution_authority": False, "claim_or_fence_minted_by_bridge": False, "heartbeat_grants_execution_authority": False, "credential_authority": CREDENTIAL_AUTHORITY, "github_token_runtime_authority": "NONE", "authority_effect": "NONE_RUNTIME_MATERIALIZATION_ONLY"}
+    snapshot = machine.snapshot()
+    snapshot_path = runtime_root / "receipts/sovereign-network/sv002-public-observation/canonical-runtime-lease.snapshot.json"
+    snapshot_path.parent.mkdir(parents=True, exist_ok=True)
+    snapshot_raw = json.dumps(snapshot, indent=2, sort_keys=True) + "\n"
+    if snapshot_path.exists():
+        _require(snapshot_path.read_text(encoding="utf-8") == snapshot_raw, "sv002_canonical_lease_snapshot_collision")
+    else:
+        snapshot_path.write_text(snapshot_raw, encoding="utf-8")
+    _require(snapshot_path.read_text(encoding="utf-8") == snapshot_raw, "sv002_canonical_lease_snapshot_persistence_failed")
+    snapshot_hash = _digest_uri(snapshot)
+    evidence = {"schema": EVIDENCE_SCHEMA, "state": "PUBLIC_VERIFYING", "lease_id": lease_id, "lease_state": machine.state.value, "source_receipt_id": source_receipt_id, "materialization_id": request["materialization_id"], "request_hash": request["request_hash"], "transport_intent_hash": request["transport_intent_hash"], "payload_hash": request["payload_hash"], "operation_id": request["operation_id"], "packet_id": request["packet_id"], "implementation_ref": IMPLEMENTATION_REF, "consequence_id": CONSEQUENCE_ID, "consequence_registry_hash": registry_hash, "state_root_binding": state_root_binding, "runtime_class": RuntimeClass.EVENT_EPHEMERAL.value, "lease_profile": LeaseProfile.INTAKE.value, "runtime_root": str(runtime_root), "runtime_id": runtime.get("runtime_id"), "runtime_instantiated": True, "local_identity_verified": True, "canonical_runtime_lease_snapshot_ref": str(snapshot_path), "canonical_runtime_lease_snapshot_sha256": snapshot_hash, "canonical_runtime_lease_resume_required": True, "receiver_ready_observed": False, "public_route_observed": False, "observation_round_trip_observed": False, "observer_direct_relation_to_stegverse_002": False, "g18_completion_required": False, "request_grants_execution_authority": False, "claim_or_fence_minted_by_bridge": False, "heartbeat_grants_execution_authority": False, "credential_authority": CREDENTIAL_AUTHORITY, "github_token_runtime_authority": "NONE", "authority_effect": "NONE_RUNTIME_MATERIALIZATION_ONLY"}
     return {"runtime_root": runtime_root, "evidence": evidence}
