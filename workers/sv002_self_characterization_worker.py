@@ -547,7 +547,7 @@ def attempt_master_records_reconstruction(state_root: Path) -> dict[str, Any]:
         "master-records",
         "orchestration",
         expected=MASTER_RECORDS_RECONSTRUCTION_COMMIT,
-        override=os.environ.get("STEGVERSE_MASTER_RECORDS_ROOT"),
+        override=(os.environ.get("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT") or os.environ.get("STEGVERSE_MASTER_RECORDS_ROOT")),
         required=("scripts/verify_sv002_self_characterization_reconstruction.py",),
     )
     if master_records is None:
