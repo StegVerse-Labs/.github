@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/stegos-relay-node-kv-continuity-001.json",
+    "handoffs/SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001.json",
+    "docs/STEGOS_RELAY_NODE_KV_CONTINUITY_RUNTIME_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-08-30T21:35:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "handoffs/SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001.json HANDOFF_READY with authorized independent task control",
+    "archive_ready": "control/worker-registry.d/stegos-relay-node-kv-continuity-001.json archive_eligible=false",
+    "unassigned_work": "registered worker owns continuation",
+    "chat_owned_counts": "no chat-owned execution or credential role",
+    "canonical_owner_installed": "canonical handoff, worker, adapter, and registry are installed",
+    "thread_required": "durable machine handoff is independently recoverable",
+    "blocker_count": "exact archive_reason_codes/blocker conditions count = 1",
+    "evidence_complete": "required parent/runtime terminal evidence is not observed",
+    "activated": "runtime activation/observation remains pending",
+    "propagated": "downstream consequences remain gated on authentic runtime evidence"
+  },
+  "authority_effect": "NONE"
+}
