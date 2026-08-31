@@ -301,3 +301,54 @@ admitted, routed, executed, received, or acted upon.
 No runtime carrier-bound InTr packet is claimed merely from this source reconciliation.
 Authentic runtime proof requires an observed signal binding an exact InTr receipt hash,
 packet SHA-256, HB reference, channel slot, phase offset, and observer evidence.
+
+## 2026-08-31 HB-derived InTr carrier clarification
+
+Owner direction and current implementation reconcile the historical `heartbeat-subsignals` mechanism, the current coherent signal-space implementation, and Universal InTr under one bounded carrier model.
+
+Canonical clarification:
+
+```text
+HB = ecosystem primary synchronization and carrier substrate
+HB fundamental = 100 Hz / 10 ms / OSCILLATOR_ONLY
+application packet governance = InTr
+physical/materialization mechanism = independent of authority
+HB or derived carrier authority effect = NONE
+```
+
+Application information may be associated with the primary HB reference or carried through deterministic signals/channels derived from HB phase/frequency coordinates. InTr governs the packet carried by that signal. Neither HB nor a derived carrier grants admission, execution, credential, routing, transition, receiving, publication, custody, claim/fence, or consequence authority.
+
+This supersedes the narrower historical phrase that HB is “transport-neutral” or “not application payload transport” when that phrase is read to prohibit carrier use. The retained invariant is instead that **carrier presence or carrier correctness is non-authorizing**.
+
+Current executable lineage:
+
+```text
+heartbeat_runtime/independent_oscillator.py
+  -> canonical 100 Hz HB reference
+heartbeat_runtime/oscillator_producer.py
+  -> phase-driven local propagation/observation
+heartbeat_runtime/engine_v9.py
+  -> historical explicit heartbeat subsignals
+heartbeat_runtime/signal_space.py
+  -> generalized frequency/phase/amplitude coordinates
+heartbeat_runtime/intr_carrier_profile.py
+  -> deterministic HB-derived InTr packet carrier binding
+workers/universal_intr_profiled_ingress.py
+  -> carrier profile publication + fail-closed binding validation
+```
+
+Initial runtime carrier profile:
+
+```text
+schema: stegverse.intr.hb-derived-carrier-profile/v1
+fundamental_mode: HB
+reference_frequency_hz: 100
+channel_family: H1_PHASE_SLOTS
+channel_count: 16
+channel_selection: SHA256_PACKET_ID_FIRST32_MOD_16
+binding_schema: stegverse.intr.hb-derived-carrier-binding/v1
+carrier_binding_required: false during migration
+legacy_unbound_packets_temporarily_accepted: true
+```
+
+A carrier-aware packet binds its packet ID and payload hash to an independently reconstructable HB reference and deterministic phase slot. Validation of that binding proves only carrier consistency; ordinary InTr/Interlock admission and downstream governance remain separate predicates.
