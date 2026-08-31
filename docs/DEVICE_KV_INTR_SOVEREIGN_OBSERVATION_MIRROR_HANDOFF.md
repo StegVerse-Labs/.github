@@ -259,3 +259,37 @@ The resulting runtime receipt may set
 completes under the existing WorkerCoordinator claim/fence. Source, tests, merge, or
 fixture execution do not satisfy that predicate. HB and the derived carrier grant no
 admission, execution, credential, routing, transition, or receiving authority.
+
+
+## Resident chain reissue for HB-carrier terminal proof — issue #636
+
+The existing machine-owned StegOS/KV resident chain remains the canonical execution
+path:
+
+```text
+SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001
+  -> SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001
+  -> SHWP-DEVICE-KV-INTR-OBSERVATION-001
+```
+
+The request was reissued as
+`RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-002` after the canonical HB-carrier wire,
+resident carrier-materialization, and `STEGVERSE_KV_ROOT` fixes.
+
+A DEVICE_KV receipt is terminal for this chain only when it additionally proves:
+
+```text
+hb_derived_carrier_transport_observed=true
+request_transported_on_hb_derived_carrier=true
+response_transported_on_hb_derived_carrier=true
+request_carrier_packet_recovery_verified=true
+response_carrier_packet_recovery_verified=true
+```
+
+This prevents a historical pre-carrier `DEVICE_KV_INTR_OBSERVED` receipt from
+satisfying the stronger current objective. The generic dispatcher and portable
+refresh+dispatch bridge now preserve the existing non-secret `STEGVERSE_KV_ROOT`
+binding so the resident does not lose its private KV destination between layers.
+
+The reissued request remains intent-only. It grants no claim, fence, credential,
+routing, receiving, transition, or execution authority.
