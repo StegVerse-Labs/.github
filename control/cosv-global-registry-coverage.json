@@ -2,7 +2,7 @@
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
   "observed_commit": "0e7b0b03cffdc207d7b8260423776f40e80c6fb7",
-  "observed_at": "2026-08-30T21:48:00-05:00",
+  "observed_at": "2026-08-30T21:58:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,9 +11,9 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 71,
-    "canonically_indexed_task_ids": 50,
+    "canonically_indexed_task_ids": 54,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 14,
+    "active_unvectorized_unique_task_ids": 10,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,14 +21,10 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 28,
+  "total_active_unvectorized_unique_task_ids": 24,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
-    "STEGFIN-LIVE-ENTRY-003",
-    "STEGFIN-LIVE-PRETRADE-005",
     "SHWP-STEGNUTRITION-CONTINUATION-001",
-    "HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001",
-    "HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001",
     "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001",
     "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001",
     "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
@@ -253,6 +249,22 @@
     },
     {
       "task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+      "vector": "50000000101000"
+    },
+    {
+      "task_id": "STEGFIN-LIVE-ENTRY-003",
+      "vector": "50000000101000"
+    },
+    {
+      "task_id": "STEGFIN-LIVE-PRETRADE-005",
+      "vector": "50000000101000"
+    },
+    {
+      "task_id": "HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001",
+      "vector": "50000000106000"
+    },
+    {
+      "task_id": "HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001",
       "vector": "50000000101000"
     }
   ],
@@ -536,6 +548,14 @@
     "indexed_after_projection": 50,
     "active_worker_unvectorized_after_projection": 14,
     "total_active_unvectorized_after_projection": 28,
+    "runtime_activation_claimed": false,
+    "authority_effect": "NONE"
+  },
+  "cohort_projection_20260830": {
+    "task_count": 4,
+    "indexed_after_projection": 54,
+    "active_worker_unvectorized_after_projection": 10,
+    "total_active_unvectorized_after_projection": 24,
     "runtime_activation_claimed": false,
     "authority_effect": "NONE"
   }
