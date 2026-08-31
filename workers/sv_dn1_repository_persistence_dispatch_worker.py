@@ -105,9 +105,8 @@ def apply_warrant(package_sha,files,base,inspected,now):
     op="svdn1-apply-"+canonical_hash(payload)[:20]
     return {"schema":WARRANT_SCHEMA,"operation_id":op,"operation_class":"APPLY_BOUNDED_FILE_SET","repository":TARGET_REPO,"base_ref":TARGET_REF,"expected_base_sha":base,
       "new_branch":branch,"maximum_file_count":5,"maximum_total_bytes":sum(x["size"] for x in files.values()),"commit_message":"Publish authentic governed SV-DN-1 first round","files":rows,
-      "credential_authority":"TV/TVC","consumer_credential_present":False,"secret_values_present":False,"single_use":True,
-      "issued_at":now_iso(now),"expires_at":now_iso(now+timedelta(hours=6)),"nonce":canonical_hash(payload)[:24],"authorization_ref":f"tvc://sv-dn1/{op}",
-      "source_package_sha256":package_sha,"authority_effect":"NONE_REQUEST_ONLY_TVC_AUTHORIZATION_REQUIRED"}
+      "credential_authority":"TV/TVC","secret_values_present":False,"single_use":True,
+      "issued_at":now_iso(now),"expires_at":now_iso(now+timedelta(hours=6)),"nonce":canonical_hash(payload)[:24],"authorization_ref":f"tvc://sv-dn1/{op}/package/{package_sha}"}
 
 def mutation_admitted(path):
     if not path.is_file(): return False
@@ -129,9 +128,8 @@ def pr_warrant(package_sha,apply,head_sha,now):
     return {"schema":WARRANT_SCHEMA,"operation_id":op,"operation_class":"OPEN_PULL_REQUEST","repository":TARGET_REPO,"base_ref":TARGET_REF,"expected_base_sha":apply["expected_base_sha"],
       "head_ref":apply["new_branch"],"expected_head_sha":head_sha,"title":"Publish authentic governed SV-DN-1 first round",
       "body":f"Exact governed SV-DN-1 persistence package: {package_sha}\n\nNo semantic rewrite; five exact public artifacts only.","draft":False,
-      "credential_authority":"TV/TVC","consumer_credential_present":False,"secret_values_present":False,"single_use":True,
-      "issued_at":now_iso(now),"expires_at":now_iso(now+timedelta(hours=6)),"nonce":canonical_hash(payload)[:24],"authorization_ref":f"tvc://sv-dn1/{op}",
-      "source_package_sha256":package_sha,"authority_effect":"NONE_REQUEST_ONLY_TVC_AUTHORIZATION_REQUIRED"}
+      "credential_authority":"TV/TVC","secret_values_present":False,"single_use":True,
+      "issued_at":now_iso(now),"expires_at":now_iso(now+timedelta(hours=6)),"nonce":canonical_hash(payload)[:24],"authorization_ref":f"tvc://sv-dn1/{op}/package/{package_sha}"}
 
 def execute(inv:Mapping[str,Any]):
     if any(truthy(os.getenv(x)) for x in HOSTED): raise RuntimeError("hosted environment cannot dispatch authentic repository persistence")
