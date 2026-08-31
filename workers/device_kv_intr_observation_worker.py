@@ -22,6 +22,10 @@ if str(ROOT) not in sys.path:
 
 from heartbeat_runtime.independent_oscillator import current_reference
 from heartbeat_runtime.intr_derived_carrier import derive_intr_carrier_signal, recover_intr_packet_bytes
+from heartbeat_runtime.intr_subsignal_runtime import (
+    default_heartbeat_runtime_root,
+    persist_local_intr_subsignal,
+)
 TASK_ID = "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
 PARENT_TASK_ID = "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001"
 PARENT_RECEIPT = ROOT / "receipts" / "stegos-sovereign-relay" / f"{PARENT_TASK_ID}.json"
@@ -447,6 +451,7 @@ def main() -> int:
     )
     request_carrier_wire = canonical_json(request_carrier_signal).encode()
     request_carrier_wire_hash = sha256_uri(request_carrier_wire)
+    heartbeat_runtime_root = default_heartbeat_runtime_root()
 
     endpoint_ref_box: dict[str, str] = {}
 
@@ -507,6 +512,10 @@ def main() -> int:
                                        payload_hash=envelope["payload_hash"], prior=None)
             atomic_write(TRANSPORT_RECEIPTS / "device-to-kv.json", request_receipt)
             atomic_write(CARRIER_SIGNALS / "device-to-kv.json", received_signal)
+            server_state["request_shared_carrier"] = persist_local_intr_subsignal(
+                root=heartbeat_runtime_root,
+                signal=received_signal,
+            )
 
             response = runtime.handle(received_request, intr_envelope=received_envelope,
                                       intr_receipt_ref=request_receipt["receipt_hash"])
@@ -581,6 +590,10 @@ def main() -> int:
             raise ValueError("client HB carrier response receipt binding mismatch")
         if response_carrier_signal.get("authority", {}).get("authority_effect") != "NONE_CARRIER_ONLY":
             raise ValueError("client HB carrier response authority drift")
+        response_shared_carrier = persist_local_intr_subsignal(
+            root=heartbeat_runtime_root,
+            signal=response_carrier_signal,
+        )
         response = response_packet.get("response")
         if response != server_state.get("response"):
             raise ValueError("response body identity mismatch")
@@ -634,6 +647,8 @@ def main() -> int:
         "request_carrier_channel_slot": request_carrier_signal["carrier"]["channel_slot"],
         "request_carrier_phase_offset_deg": request_carrier_signal["carrier"]["phase_offset_deg"],
         "request_carrier_packet_recovery_verified": True,
+        "request_shared_hb_signal_ref": server_state["request_shared_carrier"]["signal_ref"],
+        "request_shared_hb_signal_sha256": server_state["request_shared_carrier"]["signal_sha256"],
         "request_receipt_hash": request_receipt["receipt_hash"],
         "kv_interlock_decision": response["decision"],
         "kv_endpoint_receipt_ref": endpoint_ref,
@@ -648,6 +663,8 @@ def main() -> int:
         "response_carrier_channel_slot": response_carrier_signal["carrier"]["channel_slot"],
         "response_carrier_phase_offset_deg": response_carrier_signal["carrier"]["phase_offset_deg"],
         "response_carrier_packet_recovery_verified": True,
+        "response_shared_hb_signal_ref": response_shared_carrier["signal_ref"],
+        "response_shared_hb_signal_sha256": response_shared_carrier["signal_sha256"],
         "response_receipt_hash": response_receipt["receipt_hash"],
         "request_exact_bytes_transported": True,
         "response_exact_bytes_transported": True,
