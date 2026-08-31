@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -44,7 +45,7 @@ def _clean_env(source: Mapping[str,str]|None=None)->dict[str,str]:
     hosted=("GITHUB_ACTIONS","CI","RENDER","RENDER_SERVICE_ID","VERCEL","CF_PAGES","CLOUDFLARE_WORKERS")
     if any(str(values.get(k) or "").strip().lower() not in {"","0","false","no"} for k in hosted):
         raise RuntimeError("hosted_environment_not_admitted_for_hil_tvc_lifecycle")
-    allowed=("PATH","HOME","LANG","LC_ALL","SSL_CERT_FILE","SSL_CERT_DIR","STEGVERSE_TVC_ROOT")
+    allowed=("PATH","HOME","LANG","LC_ALL","SSL_CERT_FILE","SSL_CERT_DIR","STEGVERSE_TVC_ROOT","STEGVERSE_RESIDENT_SOURCE_MANIFEST")
     env={k:values[k] for k in allowed if values.get(k)}
     env["PYTHONDONTWRITEBYTECODE"]="1"
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"]="TV/TVC"
@@ -53,6 +54,57 @@ def _clean_env(source: Mapping[str,str]|None=None)->dict[str,str]:
 
 def _git(root:Path,args:list[str],*,runner:Runner,env:Mapping[str,str])->subprocess.CompletedProcess[str]:
     return runner(["git","-C",str(root),*args],capture_output=True,text=True,check=False,timeout=30,env=dict(env))
+
+def validate_tvc_bundle_root(root: Path, manifest_path: Path) -> None:
+    root = root.expanduser().resolve()
+    manifest_path = manifest_path.expanduser().resolve()
+    if not manifest_path.is_file():
+        raise PredicatePending("TVC_PORTABLE_SOURCE_MANIFEST_NOT_AVAILABLE")
+    manifest = _load(manifest_path)
+    if manifest.get("schema") != "stegverse.sovereign-control-plane-bundle/v1":
+        raise RuntimeError("tvc_portable_source_manifest_schema_invalid")
+    if manifest.get("network_fetch_required") is not False:
+        raise RuntimeError("tvc_portable_source_manifest_network_policy_invalid")
+    if manifest.get("credential_authority") != "TV/TVC":
+        raise RuntimeError("tvc_portable_source_manifest_credential_authority_invalid")
+    if manifest.get("github_token_runtime_authority") != "NONE":
+        raise RuntimeError("tvc_portable_source_manifest_github_authority_invalid")
+    if manifest.get("bundle_grants_authority") is not False:
+        raise RuntimeError("tvc_portable_source_manifest_authority_invalid")
+    proofs = manifest.get("vendor_source_proofs") or {}
+    proof = proofs.get("TVC") if isinstance(proofs, dict) else None
+    if not isinstance(proof, dict) or proof.get("state") != "VERIFIED_LOCAL_GIT_SOURCE":
+        raise PredicatePending("TVC_PORTABLE_SOURCE_PROOF_NOT_VERIFIED")
+    if proof.get("repository") != "StegVerse-Labs/TVC":
+        raise RuntimeError("tvc_portable_source_repository_identity_invalid")
+    if proof.get("source_floor") != TVC_SOURCE_FLOOR or proof.get("source_floor_present") is not True:
+        raise RuntimeError("tvc_portable_source_floor_invalid")
+    if proof.get("protected_paths_unchanged_since_floor") is not True:
+        raise RuntimeError("tvc_portable_source_protected_path_proof_invalid")
+    if tuple(proof.get("protected_paths") or ()) != TVC_PROTECTED_PATHS:
+        raise RuntimeError("tvc_portable_source_protected_path_set_invalid")
+    subpath = str(proof.get("materialized_subpath") or "")
+    if subpath != "vendor/TVC":
+        raise RuntimeError("tvc_portable_source_subpath_invalid")
+    expected_root = (manifest_path.parent / subpath).resolve()
+    if root != expected_root:
+        raise RuntimeError("tvc_portable_source_root_binding_invalid")
+    declared = {
+        str(entry.get("path")): entry
+        for entry in manifest.get("files", [])
+        if isinstance(entry, dict) and isinstance(entry.get("path"), str)
+    }
+    for rel in TVC_PROTECTED_PATHS:
+        path = root / rel
+        if not path.is_file():
+            raise RuntimeError(f"tvc_hil_lifecycle_source_missing:{rel}")
+        entry = declared.get("vendor/TVC/" + rel)
+        if not isinstance(entry, dict):
+            raise RuntimeError(f"tvc_portable_source_manifest_entry_missing:{rel}")
+        data = path.read_bytes()
+        if len(data) != entry.get("size") or hashlib.sha256(data).hexdigest() != entry.get("sha256"):
+            raise RuntimeError(f"tvc_portable_source_digest_mismatch:{rel}")
+
 
 def validate_tvc_root(root:Path,*,runner:Runner=subprocess.run,env:Mapping[str,str]|None=None)->None:
     safe=_clean_env(env)
@@ -72,7 +124,7 @@ def validate_tvc_root(root:Path,*,runner:Runner=subprocess.run,env:Mapping[str,s
     for rel in TVC_PROTECTED_PATHS:
         if not (root/rel).is_file(): raise RuntimeError(f"tvc_hil_lifecycle_source_missing:{rel}")
 
-def discover_tvc_root(values:Mapping[str,str],*,runner:Runner=subprocess.run)->Path:
+def discover_tvc_root(values:Mapping[str,str],*,runner:Runner=subprocess.run)->tuple[Path,str]:
     candidates=[]
     if values.get("STEGVERSE_TVC_ROOT"): candidates.append(Path(values["STEGVERSE_TVC_ROOT"]))
     candidates += [
@@ -81,13 +133,27 @@ def discover_tvc_root(values:Mapping[str,str],*,runner:Runner=subprocess.run)->P
         Path("/opt/stegverse/repos/StegVerse-Labs/TVC"),
         Path("/var/lib/stegverse/source/StegVerse-Labs/TVC"),
     ]
+    manifest_raw=str(values.get("STEGVERSE_RESIDENT_SOURCE_MANIFEST") or "").strip()
+    manifest_path=Path(manifest_raw) if manifest_raw else None
     errors=[]
+    seen=set()
     for candidate in candidates:
+        resolved=candidate.expanduser().resolve()
+        if str(resolved) in seen:
+            continue
+        seen.add(str(resolved))
         try:
-            validate_tvc_root(candidate,runner=runner,env=values)
-            return candidate.expanduser().resolve()
+            validate_tvc_root(resolved,runner=runner,env=values)
+            return resolved,"LOCAL_GIT_PROOF"
         except PredicatePending as exc:
             errors.append(str(exc))
+            if manifest_path is not None:
+                try:
+                    validate_tvc_bundle_root(resolved,manifest_path)
+                    return resolved,"VERIFIED_PORTABLE_BUNDLE_PROOF"
+                except PredicatePending as bundle_exc:
+                    errors.append(str(bundle_exc))
+                    continue
             continue
     raise PredicatePending("TVC_HIL_LIFECYCLE_SOURCE_NOT_AVAILABLE:"+";".join(errors))
 
@@ -116,7 +182,7 @@ def consume(runtime_root:Path,*,runner:Runner=subprocess.run,env:Mapping[str,str
         return {"schema":"stegverse.hil.tvc-lifecycle-outbox-consumption/v1","state":"NO_EVENT","authority_effect":"NONE"}
 
     values=dict(os.environ if env is None else env)
-    tvc_root=discover_tvc_root(values,runner=runner)
+    tvc_root,tvc_source_validation_mode=discover_tvc_root(values,runner=runner)
     safe=_clean_env(values)
     output_root=durable/"tvc-lifecycle-admission"
     results=[]
@@ -166,6 +232,7 @@ def consume(runtime_root:Path,*,runner:Runner=subprocess.run,env:Mapping[str,str
         "runtime_root":str(runtime),
         "durable_state_root":str(durable),
         "tvc_source_floor":TVC_SOURCE_FLOOR,
+        "tvc_source_validation_mode":tvc_source_validation_mode,
         "queue_count":len(queues),
         "results":results,
         "failures":failures,
