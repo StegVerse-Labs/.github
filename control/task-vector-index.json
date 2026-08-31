@@ -391,6 +391,69 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "StegVerse-Labs/.github#462"
+    },
+    {
+      "task_id": "BOOTSTRAP-V1-SOURCE-IDENTITY-FREEZE-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/bootstrap-v1-source-identity-freeze-001.json",
+      "source_state_vector_ref": "control/task-vectors/BOOTSTRAP-V1-SOURCE-IDENTITY-FREEZE-001.json",
+      "vector": "50000000102000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "BOOTSTRAP-V1-RELEASE-CANDIDATE-FREEZE-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/bootstrap-v1-release-candidate-freeze-001.json",
+      "source_state_vector_ref": "control/task-vectors/BOOTSTRAP-V1-RELEASE-CANDIDATE-FREEZE-001.json",
+      "vector": "50000000102000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/bootstrap-v1-distributable-bundle-001.json",
+      "source_state_vector_ref": "control/task-vectors/BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001.json",
+      "vector": "50000000103000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "BOOTSTRAP-V1-MATERIALIZATION-EVIDENCE-INTAKE-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/bootstrap-v1-materialization-evidence-intake-001.json",
+      "source_state_vector_ref": "control/task-vectors/BOOTSTRAP-V1-MATERIALIZATION-EVIDENCE-INTAKE-001.json",
+      "vector": "50000000102000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "BOOTSTRAP-V1-RELEASE-GATE-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/bootstrap-v1-release-gate-001.json",
+      "source_state_vector_ref": "control/task-vectors/BOOTSTRAP-V1-RELEASE-GATE-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/bootstrap-v1-source-package-production-001.json",
+      "source_state_vector_ref": "control/task-vectors/BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001.json",
+      "vector": "50000000102000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/bootstrap-v1-intr-bundle-delivery-001.json",
+      "source_state_vector_ref": "control/task-vectors/BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001.json",
+      "vector": "50000000103000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
     }
   ],
   "coverage": {
