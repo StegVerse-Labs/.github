@@ -2,6 +2,7 @@
 """Execute the already-admitted TV/TVC resident proof without receiving credential bytes."""
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import subprocess
@@ -148,6 +149,56 @@ def _locate_local_source(repo_name: str, env_name: str, required: list[Path], *,
     return None, observed
 
 
+def _portable_manifest() -> tuple[Path | None, dict[str, Any] | None]:
+    raw = os.environ.get("STEGVERSE_RESIDENT_SOURCE_MANIFEST", "").strip()
+    if not raw:
+        return None, None
+    path = Path(raw).expanduser().resolve()
+    if not path.is_file():
+        return path, None
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return path, None
+    return (path, value) if isinstance(value, dict) else (path, None)
+
+
+def _portable_source(repo_name: str, env_name: str, required: list[Path]) -> tuple[Path | None, str | None]:
+    manifest_path, manifest = _portable_manifest()
+    raw_root = os.environ.get(env_name, "").strip()
+    if manifest_path is None or manifest is None or not raw_root:
+        return None, "PORTABLE_SOURCE_MANIFEST_OR_ROOT_ABSENT"
+    if not (
+        manifest.get("schema") == "stegverse.sovereign-control-plane-bundle/v1"
+        and manifest.get("network_fetch_required") is False
+        and manifest.get("credential_authority") == "TV/TVC"
+        and manifest.get("github_token_runtime_authority") == "NONE"
+        and manifest.get("bundle_grants_authority") is False
+    ):
+        return None, "PORTABLE_SOURCE_MANIFEST_INVARIANT_INVALID"
+    proof = (manifest.get("vendor_source_proofs") or {}).get(repo_name)
+    if not isinstance(proof, dict) or proof.get("state") != "VERIFIED_LOCAL_GIT_SOURCE":
+        return None, "PORTABLE_SOURCE_PROOF_NOT_VERIFIED"
+    if proof.get("repository") != f"StegVerse-Labs/{repo_name}" or proof.get("materialized_subpath") != f"vendor/{repo_name}":
+        return None, "PORTABLE_SOURCE_IDENTITY_INVALID"
+    root = Path(raw_root).expanduser().resolve()
+    if root != (manifest_path.parent / "vendor" / repo_name).resolve():
+        return None, "PORTABLE_SOURCE_ROOT_BINDING_INVALID"
+    if repo_name == "TV" and not (proof.get("head") == TV_SHA and proof.get("exact_head_verified") is True and proof.get("clean_worktree_at_packaging") is True):
+        return None, "PORTABLE_TV_EXACT_SOURCE_IDENTITY_INVALID"
+    if repo_name == "TVC" and not (proof.get("resident_proof_min_sha_present") is True and TVC_MIN_SHA in set(proof.get("verified_ancestors") or [])):
+        return None, "PORTABLE_TVC_REQUIRED_ANCESTOR_NOT_PROVEN"
+    declared = {str(e.get("path")): e for e in manifest.get("files", []) if isinstance(e, dict) and isinstance(e.get("path"), str)}
+    for rel in required:
+        path = root / rel
+        entry = declared.get(f"vendor/{repo_name}/{rel.as_posix()}")
+        if not path.is_file() or not isinstance(entry, dict):
+            return None, "PORTABLE_REQUIRED_SOURCE_MISSING"
+        data = path.read_bytes()
+        if len(data) != entry.get("size") or hashlib.sha256(data).hexdigest() != entry.get("sha256"):
+            return None, "PORTABLE_SOURCE_DIGEST_MISMATCH"
+    return root, "VERIFIED_PORTABLE_BUNDLE_PROOF"
+
 def _parse_dispatcher(stdout: str) -> dict[str, Any]:
     value = json.loads(stdout)
     if not isinstance(value, dict):
@@ -244,6 +295,18 @@ def main() -> int:
 
     tv_root, tv_observed = _locate_local_source("TV", "STEGVERSE_TV_ROOT", TV_REQUIRED, exact_head=TV_SHA)
     tvc_root, tvc_observed = _locate_local_source("TVC", "STEGVERSE_TVC_ROOT", TVC_REQUIRED, required_ancestor=TVC_MIN_SHA)
+    tv_source_validation_mode = "LOCAL_GIT_PROOF" if tv_root is not None else None
+    tvc_source_validation_mode = "LOCAL_GIT_PROOF" if tvc_root is not None else None
+    tv_portable_reason = None
+    tvc_portable_reason = None
+    if tv_root is None:
+        tv_root, tv_portable_reason = _portable_source("TV", "STEGVERSE_TV_ROOT", TV_REQUIRED)
+        if tv_root is not None:
+            tv_source_validation_mode = "VERIFIED_PORTABLE_BUNDLE_PROOF"
+    if tvc_root is None:
+        tvc_root, tvc_portable_reason = _portable_source("TVC", "STEGVERSE_TVC_ROOT", TVC_REQUIRED)
+        if tvc_root is not None:
+            tvc_source_validation_mode = "VERIFIED_PORTABLE_BUNDLE_PROOF"
     if tv_root is None or tvc_root is None:
         return block(
             "LOCAL_TV_TVC_SOURCE_NOT_MATERIALIZED",
@@ -252,19 +315,31 @@ def main() -> int:
                 "tvc_selected": str(tvc_root) if tvc_root else None,
                 "tv_candidates": tv_observed,
                 "tvc_candidates": tvc_observed,
+                "tv_portable_reason": tv_portable_reason,
+                "tvc_portable_reason": tvc_portable_reason,
                 "network_lookup_performed": False,
             },
         )
 
     # Recheck identities at execution time after discovery. No fetch/pull/update is performed.
-    try:
-        tv_head = _git_head(tv_root)
-    except Exception as exc:
-        return block("LOCAL_TV_GIT_IDENTITY_UNAVAILABLE", {"error_type": type(exc).__name__})
-    if tv_head != TV_SHA:
-        return block("TV_SOURCE_SHA_MISMATCH", {"expected": TV_SHA, "observed": tv_head})
-    if not _tvc_contains_required_source(tvc_root):
-        return block("TVC_ROOTLESS_ACTIVATION_SOURCE_NOT_PRESENT", {"required_ancestor": TVC_MIN_SHA})
+    if tv_source_validation_mode == "LOCAL_GIT_PROOF":
+        try:
+            tv_head = _git_head(tv_root)
+        except Exception as exc:
+            return block("LOCAL_TV_GIT_IDENTITY_UNAVAILABLE", {"error_type": type(exc).__name__})
+        if tv_head != TV_SHA:
+            return block("TV_SOURCE_SHA_MISMATCH", {"expected": TV_SHA, "observed": tv_head})
+    else:
+        checked, portable_reason = _portable_source("TV", "STEGVERSE_TV_ROOT", TV_REQUIRED)
+        if checked != tv_root:
+            return block("PORTABLE_TV_SOURCE_REVALIDATION_FAILED", {"reason": portable_reason})
+    if tvc_source_validation_mode == "LOCAL_GIT_PROOF":
+        if not _tvc_contains_required_source(tvc_root):
+            return block("TVC_ROOTLESS_ACTIVATION_SOURCE_NOT_PRESENT", {"required_ancestor": TVC_MIN_SHA})
+    else:
+        checked, portable_reason = _portable_source("TVC", "STEGVERSE_TVC_ROOT", TVC_REQUIRED)
+        if checked != tvc_root:
+            return block("PORTABLE_TVC_SOURCE_REVALIDATION_FAILED", {"reason": portable_reason})
 
     child_env = {
         "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
@@ -332,6 +407,8 @@ def main() -> int:
         "tvc_source_root": str(tvc_root),
         "tv_source_sha": TV_SHA,
         "tvc_required_source_ancestor": TVC_MIN_SHA,
+        "tv_source_validation_mode": tv_source_validation_mode,
+        "tvc_source_validation_mode": tvc_source_validation_mode,
         "service_manager": "systemd-user",
         "runtime_receipt_path": result["receipt_path"],
         "proof_sha256": result["proof_sha256"],

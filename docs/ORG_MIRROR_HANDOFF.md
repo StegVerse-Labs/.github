@@ -664,3 +664,21 @@ already-local TVC Git source
 ```
 
 This is provenance/evidence only and grants no source, GitHub, credential, route, execution, heartbeat, or TVC authority.
+
+## 2026-08-31 portable TV/TVC resident-proof source closure
+
+The complete resident bundle now includes `StegVerse-Labs/TV` in addition to TVC and carries non-authorizing source-identity evidence sufficient for the existing `SHWP-TV-TVC-RESIDENT-PROOF-001` worker to preserve its exact-source contract after safe source transport.
+
+```text
+already-local TV exact authorized Git head
++ already-local TVC required resident-proof ancestor
+-> canonical bundle source proofs
+-> StegDeploy verified materialization
+-> STEGVERSE_TV_ROOT / STEGVERSE_TVC_ROOT
+-> STEGVERSE_RESIDENT_SOURCE_MANIFEST
+-> TV/TVC resident proof WorkerCoordinator task
+```
+
+The worker prefers ordinary local Git verification when available. Without `.git`, it may accept only the persisted verified bundle proof when the exact TV head, required TVC ancestor, expected materialized paths, and current required-file SHA-256 values all match. Any mismatch remains BLOCKED.
+
+This removes Git-metadata presence as an accidental portable-runtime prerequisite without weakening the exact TV/TVC source identities or exposing credential bytes. Authentic `TV_TVC_RESIDENT_OPERATIONAL_PROOF_ACTIVATED` remains a deployment-local evidence requirement.
