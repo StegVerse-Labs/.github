@@ -111,7 +111,7 @@ persistence-dispatch worker: MERGED
 TVC issue-264 admission evaluator: MERGED
 publication observer: MERGED
 publication observer dependency refinement: MERGED
-publication resident continuation: MERGED BASE / MERGE-DISPATCH EXTENSION SOURCE COMPLETE / VALIDATION PENDING
+publication resident continuation: MERGED / THREE-STAGE MERGE EXTENSION VALIDATED @ f1df0f5c033a5abd9ba9b11f7f83e6ff313b72eb
 authentic persistence PR: NOT YET OBSERVED
 authentic public exact-byte observation: NOT YET OBSERVED
 ```
