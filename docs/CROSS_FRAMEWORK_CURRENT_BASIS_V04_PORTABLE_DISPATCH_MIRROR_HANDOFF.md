@@ -1,6 +1,6 @@
 # Cross-Framework Current-Basis v0.4 Portable Dispatch Mirror Handoff
 
-Updated: 2026-08-30
+Updated: 2026-08-31
 Repository: `StegVerse-Labs/.github`
 Parent execution issue: #478
 Bounded issue: #550
@@ -93,3 +93,19 @@ PUBLICATION_READY.json from authentic run: NOT OBSERVED
 ```
 
 The next state-changing event after validation/merge must still originate from an eligible non-hosted sovereign resident.
+
+## SV002 extension merge evidence
+
+```text
+PR: #606 MERGED
+merge: 574d7847ecc6295c2072ca778de0de469f9d9cc6
+validated head: 1d48c0849119a6c16802088adab43151bdd83655
+focused portable-dispatch tests: 9 PASS
+Cross-Framework Current-Basis Resident Request Validation: 33388902061 SUCCESS
+Validate organization control plane: 33388902084 SUCCESS
+Heartbeat Worker Project: 33388902072 SUCCESS
+```
+
+Post-merge canonical receipt checks found no self-characterization consumption,
+public-observation consumption, or resident-refresh-dispatch receipt. The source extension
+is merged and validated; resident execution remains NOT OBSERVED.
