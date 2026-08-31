@@ -40,6 +40,12 @@ SV002_MICRO_NODE_REQUIRED_PATHS = (
 MASTER_RECORDS_RECONSTRUCTION_COMMIT = "2e117902d4f261b10cb3b5122b7ef48fb0e36e57"
 MASTER_RECORDS_RECONSTRUCTION_VERIFIER = "scripts/verify_sv002_self_characterization_reconstruction.py"
 MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB = "cc96556a23b5bd804f3cdaa96539b379c1904437"
+FORMAL_SOURCE_PINS = {
+    "TT": "ab60b42934222a2cb5335a5a8194f258a491fc57",
+    "RTG": "ca69954cb3dc4ad073c9244e003bc8f0ef3837e2",
+    "GTG": "8cdb7bce87bb9f8429c35e9c66cc5dc28a46a225",
+    "AE": "53c8eedddc4e54d8fa0660039d65ab9ac63057a1",
+}
 TVC_HIL_PROTECTED_PATHS = (
     "tools/hil_intr_lifecycle_intake.py",
     "tasks/hil_experiment_backend_adapter.py",
@@ -235,6 +241,62 @@ def master_records_source_proof(root: Path) -> dict:
     if status.returncode != 0 or status.stdout.strip() or observed_blob != MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB:
         return {**proof, "state": "UNVERIFIED_VERIFIER_SOURCE_MISMATCH", "head": head.stdout.strip().lower(), "observed_verifier_git_blob": observed_blob}
     return {**proof, "state": "VERIFIED_LOCAL_GIT_SOURCE", "head": head.stdout.strip().lower(), "required_ancestor_present": True, "verifier_git_blob": observed_blob, "verifier_worktree_clean": True}
+
+
+def formal_snapshot_proof(name: str, root: Path) -> dict:
+    root = root.expanduser().resolve()
+    commit = FORMAL_SOURCE_PINS[name]
+    proof = {
+        "schema": "stegverse.portable-source-proof/v1",
+        "repository": f"Admissible-Existence/{name}",
+        "materialized_subpath": f"vendor/formal/{name}",
+        "exact_commit": commit,
+        "snapshot_source": "LOCAL_GIT_OBJECT_DATABASE",
+        "network_fetch_performed": False,
+        "credential_required": False,
+        "authority_effect": "NONE_SOURCE_IDENTITY_ONLY",
+    }
+    if not (root / ".git").is_dir():
+        return {**proof, "state": "UNVERIFIED_NO_LOCAL_GIT_IDENTITY"}
+    exists = _git(root, "cat-file", "-e", f"{commit}^{commit}")
+    if exists.returncode != 0:
+        return {**proof, "state": "UNVERIFIED_PINNED_COMMIT_NOT_PRESENT"}
+    return {**proof, "state": "VERIFIED_LOCAL_GIT_SNAPSHOT", "exact_commit_present": True}
+
+
+def _git_snapshot_items(root: Path, commit: str, prefix: str) -> list[tuple[str, bytes]]:
+    root = root.expanduser().resolve()
+    listed = _git(root, "ls-tree", "-r", "--name-only", commit)
+    if listed.returncode != 0:
+        raise RuntimeError("pinned formal snapshot tree unavailable")
+    items: list[tuple[str, bytes]] = []
+    for rel in sorted(line.strip() for line in listed.stdout.splitlines() if line.strip()):
+        path = Path(rel)
+        if path.is_absolute() or ".." in path.parts or any(part in EXCLUDE_PARTS for part in path.parts):
+            continue
+        lower = rel.lower()
+        if any(fragment in lower for fragment in FORBIDDEN_NAME_FRAGMENTS):
+            if path.suffix.lower() not in {".py", ".json", ".md", ".txt", ".yaml", ".yml"}:
+                continue
+        shown = subprocess.run(
+            ["git", "-C", str(root), "show", f"{commit}:{rel}"],
+            capture_output=True,
+            check=False,
+            timeout=30,
+            env={"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "HOME": os.environ.get("HOME", str(Path.home()))},
+        )
+        if shown.returncode != 0:
+            raise RuntimeError(f"pinned formal snapshot file unavailable:{rel}")
+        items.append((prefix + "/" + rel, shown.stdout))
+    return items
+
+
+def _source_bytes(source: Path | bytes) -> bytes:
+    return source if isinstance(source, bytes) else source.read_bytes()
+
+
+def _source_mode(source: Path | bytes) -> int:
+    return 0o644 if isinstance(source, bytes) else (stat.S_IMODE(source.stat().st_mode) or 0o644)
 
 
 def _safe_tree_files(root: Path) -> list[Path]:
