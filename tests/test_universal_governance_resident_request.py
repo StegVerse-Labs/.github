@@ -89,5 +89,20 @@ class UniversalGovernanceResidentRequestTests(unittest.TestCase):
             self.assertIn(TARGET_TASK, receipt["command"])
             self.assertTrue((runtime / CONSUMPTION_REL).is_file())
 
+    def test_consumer_is_registered_for_refresh_and_dispatch(self):
+        from scripts.dispatch_resident_execution_requests import CONSUMERS
+        from scripts.refresh_and_dispatch_resident_requests import ALLOWED_TARGET_CONSUMERS
+        from scripts.refresh_sovereign_worker_runtime_source import STATIC_FILES
+
+        self.assertIn(
+            ("universal_governance_enforced_reference", "scripts/consume_universal_governance_enforced_reference_request.py"),
+            CONSUMERS,
+        )
+        self.assertIn("universal_governance_enforced_reference", ALLOWED_TARGET_CONSUMERS)
+        self.assertIn(
+            Path("scripts/consume_universal_governance_enforced_reference_request.py"),
+            STATIC_FILES,
+        )
+
 if __name__ == "__main__":
     unittest.main()
