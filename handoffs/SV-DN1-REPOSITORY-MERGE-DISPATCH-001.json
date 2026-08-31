@@ -1,0 +1,134 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SV-DN1-REPOSITORY-MERGE-DISPATCH-001",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "SV-DN1-REPOSITORY-MERGE-DISPATCH-001",
+    "objective": "Convert the exact TVC-created SV-DN-1 product PR receipt into one bounded non-secret TVC merge request and consume the sanitized merge receipt without receiving repository credentials.",
+    "success_predicates": [
+      "exact frozen persistence package validates",
+      "upstream persistence-dispatch receipt proves exact TVC-created PR identity",
+      "merge request binds exact repository/base/head/PR/package identity",
+      "sanitized TVC merge receipt proves exact merge and exact-byte verification",
+      "worker never receives GitHub credential and never merges repository directly"
+    ],
+    "failure_predicates": [
+      "package or upstream receipt identity drift",
+      "credential-bearing or hosted execution",
+      "merge receipt identity or authority mismatch",
+      "frozen request conflict"
+    ],
+    "authority_ceiling": [
+      "bounded_process_execution",
+      "local_request_staging",
+      "sanitized_tvc_receipt_consumption",
+      "no direct repository mutation authority",
+      "no credential authority",
+      "no merge authority",
+      "no deployment authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SV-DN1-REPOSITORY-MERGE-DISPATCH-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "docs/SV_DN1_REPOSITORY_MERGE_DISPATCH_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "sv-dn1:repository-merge-dispatch",
+    "worker_registry_ref": "control/worker-registry.d/sv-dn1-repository-merge-dispatch-001.json",
+    "worker_id": "sv-dn1-repository-merge-dispatch-worker",
+    "adapter_ref": "process:sv-dn1-repository-merge-dispatch-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "priority": "release",
+    "dependencies": [
+      "SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001"
+    ],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
+    "source_refs": [
+      "docs/SV_DN1_REPOSITORY_MERGE_DISPATCH_MIRROR_HANDOFF.md",
+      "docs/SV_DN1_REPOSITORY_PERSISTENCE_DISPATCH_MIRROR_HANDOFF.md",
+      "handoffs/SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001.json",
+      "StegVerse-Labs/TVC:docs/SV_DN1_REPOSITORY_MERGE_GATE_MIRROR_HANDOFF.md"
+    ],
+    "source_handoff_ref": "docs/SV_DN1_REPOSITORY_MERGE_DISPATCH_MIRROR_HANDOFF.md",
+    "parent_task_id": null,
+    "derivation_reason": "Independent credential-free request-staging successor that binds the exact TVC-created product PR to the separately governed TV/TVC merge gate.",
+    "derivation_depth": 0
+  },
+  "authority": {
+    "authority_source": "docs/SV_DN1_REPOSITORY_MERGE_DISPATCH_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "network_access_authority": false,
+    "repository_writeback_authority": false,
+    "commit_authority": false,
+    "push_authority": false,
+    "merge_authority": false,
+    "deployment_authority": false,
+    "publication_decision_authority": false,
+    "tvc_merge_authorization_authority": false,
+    "execution_authority_created": false,
+    "policy_version": "sv-dn1-repository-merge-dispatch-v1"
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "local_request_staging",
+      "sanitized_tvc_receipt_consumption"
+    ],
+    "worker": "workers/sv_dn1_repository_merge_dispatch_worker.py",
+    "max_actions": 8,
+    "max_retries": 64,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 256,
+    "hosted_execution_allowed": false,
+    "bound_state_root": "~/.stegverse/transport/sv-dn1-repository-merge",
+    "bound_state_allowed_paths": [
+      "staged/**",
+      "outbox/**",
+      "inbox/**",
+      "receipts/**"
+    ],
+    "required_local_locators": [
+      "STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_DISPATCH_STATE_ROOT",
+      "STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_STATE_ROOT",
+      "STEGVERSE_TVC_SV_DN1_MERGE_SPOOL_ROOT"
+    ],
+    "public_network_access": {
+      "enabled": false
+    },
+    "allowed_paths": [
+      "receipts/sv-dn1-repository-merge-dispatch/**"
+    ],
+    "allowed_services": [],
+    "rate_class": "sv_dn1_repository_merge_dispatch"
+  },
+  "activation": {
+    "carrier": "independent_task_control",
+    "executor_binding": "AUTHORIZED",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+  },
+  "continuity": {
+    "result_receipt": "~/.stegverse/transport/sv-dn1-repository-merge/receipts/dispatcher.latest.json",
+    "staged_merge_request": "~/.stegverse/transport/sv-dn1-repository-merge/staged/merge-request.json"
+  },
+  "completion": {
+    "next_authorized_action": "Pages deployment remains repository-owned; the independent publication observer may begin only after this merge receipt is terminal.",
+    "terminal_when": [
+      "SV_DN1_REPOSITORY_PERSISTENCE_PR_MERGED",
+      "repository_merge_performed_by_worker=false",
+      "deployment_performed=false",
+      "publication_observed=false"
+    ],
+    "release_condition": "TVC has merged the exact five-file PR after independent exact-byte revalidation."
+  }
+}
