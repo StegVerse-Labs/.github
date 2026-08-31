@@ -256,3 +256,25 @@ may be terminal because the TVC path/timer owns retry.
 
 The downstream TVC request does not prove broker integration, PR #266 integration,
 issue #264 admission, repository persistence, Pages deployment, or public observation.
+
+
+## Repository-authority handoff validation evidence
+
+Validated implementation head:
+
+`961fdd24a78fb19fcbe2e3c7cd17420492f5f3a8`
+
+```text
+Heartbeat Worker Project - Validation Only / No GitHub Token Authority
+  run: 33420361666
+  result: SUCCESS
+
+Validate organization control plane - No GitHub Token Authority
+  run: 33420361750
+  result: SUCCESS
+```
+
+The validation proves source/control-plane consistency and that the hosted lane carries no
+GitHub authority-bearing construct. It does not prove resident TVC activation, credential
+presence, PR #92 governed PASS, compatibility, repository integration, issue #264
+admission, persistence, deployment, or public observation.
