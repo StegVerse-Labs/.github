@@ -1,0 +1,30 @@
+{
+  "schema_version": "stegverse.ecosystem-communication.v1",
+  "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+  "origin": {
+    "organization": "StegVerse-Labs",
+    "repository": "StegVerse-Labs/.github",
+    "service": "stegverse-labs.org-control"
+  },
+  "message_class": "ecosystem.monitor.request",
+  "subject": "Ecosystem resident runtime status",
+  "body": {
+    "monitor": "resident-status",
+    "include": [
+      "kernel_version",
+      "activation_state",
+      "registered_service_count",
+      "registered_services",
+      "org_control_service",
+      "heartbeat_reference"
+    ]
+  },
+  "requested_action": "REPORT_STATUS",
+  "audience": "ECOSYSTEM",
+  "denominator": 14,
+  "authority_effect": "NONE",
+  "carrier": "HB_DERIVED",
+  "intr_profile": "stegverse.intr.org-boundary.v1",
+  "state": "ISSUED_SOURCE_CANONICAL_RUNTIME_OBSERVATION_PENDING",
+  "issued_at": "2026-08-31T18:15:00-05:00"
+}
