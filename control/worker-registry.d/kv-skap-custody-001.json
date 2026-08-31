@@ -1,0 +1,64 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "KV-SKAP-CUSTODY-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "KV_SKAP_RUNTIME_CUSTODY_NOT_YET_OBSERVED"
+      ],
+      "authorized_policy_version": "kv-skap-custody-v0.1",
+      "block_ref": "docs/KV_SKAP_OPERATIONAL_INTR_TRANSPORT_MIRROR_HANDOFF.md",
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "docs/KV_SKAP_OPERATIONAL_INTR_TRANSPORT_MIRROR_HANDOFF.md",
+        "handoffs/KV-SKAP-CUSTODY-001.json",
+        "receipts/sovereign-network/kv-skap-custody-ingress/**",
+        "receipts/sovereign-host/kv-skap-custody/**"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "goal_id": "KV-SKAP-CUSTODY-001",
+      "handoff_ref": "handoffs/KV-SKAP-CUSTODY-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/KV-SKAP-CUSTODY-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "KV-SKAP-CUSTODY-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "StegOS kv-skap-custody profile + TVC double-Interlock gate",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 21,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+        "admitted_predecessor_rule": "VERIFIED_KV_SKAP_EVENT_MATERIALIZATION",
+        "event_materialization_grants_authority": false
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:kv-skap-custody-v1",
+      "authority_source": "handoffs/KV-SKAP-CUSTODY-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "durable_state_reconstruction"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "kv-skap-custody-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "non_tv_tvc_secret_or_token_required": false,
+  "third_party_runtime_required": false
+}
