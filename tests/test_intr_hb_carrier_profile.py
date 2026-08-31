@@ -13,6 +13,7 @@ from heartbeat_runtime.intr_carrier_profile import (
 )
 from heartbeat_runtime.independent_oscillator import PROTOCOL_ANCHOR_UNIX_NS
 from workers import universal_intr_profiled_ingress as ingress
+from scripts import serve_hil_intr_materialization_ingress as hil_ingress
 
 
 class HBDerivedInTrCarrierTests(unittest.TestCase):
@@ -79,6 +80,42 @@ class HBDerivedInTrCarrierTests(unittest.TestCase):
         self.assertFalse(p["carrier_presence_grants_execution_authority"])
         universal = ingress.profile(True)
         self.assertEqual(universal["heartbeat_derived_carrier"], p)
+
+    def test_hil_ingress_uses_same_carrier_validator(self):
+        packet = "INTR-" + "4" * 24
+        payload_hash = "sha256:" + "5" * 64
+        legacy = hil_ingress._carrier_binding_evidence({
+            "packet_id": packet,
+            "payload_hash": payload_hash,
+        })
+        self.assertFalse(legacy["carrier_binding_present"])
+        binding = build_carrier_binding(
+            packet_id=packet,
+            payload_hash=payload_hash,
+            sampled_unix_ms=PROTOCOL_ANCHOR_UNIX_NS // 1_000_000 + 200,
+        )
+        evidence = hil_ingress._carrier_binding_evidence({
+            "packet_id": packet,
+            "payload_hash": payload_hash,
+            "carrier_binding": binding,
+        })
+        self.assertTrue(evidence["carrier_binding_present"])
+        self.assertTrue(evidence["carrier_binding_validated"])
+        self.assertFalse(evidence["carrier_binding_grants_authority"])
+
+    def test_all_profile_admission_paths_record_carrier_evidence(self):
+        root = __import__("pathlib").Path(__file__).resolve().parents[1]
+        profiled = (root / "workers/universal_intr_profiled_ingress.py").read_text()
+        hil = (root / "scripts/serve_hil_intr_materialization_ingress.py").read_text()
+        self.assertGreaterEqual(profiled.count("carrier_binding_evidence(request)"), 4)
+        self.assertIn("_carrier_binding_evidence(request)", hil)
+        for marker in (
+            "carrier_binding_present",
+            "carrier_binding_validated",
+            "carrier_binding_grants_authority",
+        ):
+            self.assertIn(marker, profiled)
+            self.assertIn(marker, hil)
 
     def test_ingress_evidence_distinguishes_bound_and_legacy(self):
         packet = "INTR-" + "2" * 24
