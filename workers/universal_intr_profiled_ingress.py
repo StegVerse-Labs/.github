@@ -22,10 +22,16 @@ from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 if str(ROOT / "scripts") not in sys.path:
     sys.path.insert(0, str(ROOT / "scripts"))
 
 import serve_hil_intr_materialization_ingress as hil  # noqa: E402
+from heartbeat_runtime.intr_carrier_profile import (  # noqa: E402
+    carrier_profile as hb_intr_carrier_profile,
+    validate_carrier_binding,
+)
 from consume_kv_publisher_return_materialization_request import (  # noqa: E402
     DESTINATION as KV_PUBLISHER_RETURN_DESTINATION,
     DOWNSTREAM_OWNER as KV_PUBLISHER_RETURN_OWNER,
@@ -93,6 +99,38 @@ def now() -> str:
 def safe_id(value: str) -> str:
     require(value.startswith("INTR-MAT-") and len(value) == 33 and all(ch in "0123456789abcdef" for ch in value[9:]), "materialization_id_invalid")
     return value
+
+
+def carrier_binding_evidence(request: Mapping[str, Any]) -> dict[str, Any]:
+    binding = request.get("carrier_binding")
+    if binding is None:
+        return {
+            "carrier_binding_present": False,
+            "carrier_binding_validated": False,
+            "carrier_profile": "stegverse.intr.hb-derived-carrier-profile/v1",
+            "heartbeat_reference_epoch": None,
+            "heartbeat_reference_id": None,
+            "carrier_channel_id": None,
+            "carrier_binding_sha256": None,
+            "carrier_binding_grants_authority": False,
+        }
+    validated = validate_carrier_binding(
+        binding,
+        packet_id=str(request.get("packet_id") or ""),
+        payload_hash=str(request.get("payload_hash") or ""),
+    )
+    reference = validated["heartbeat_reference"]
+    channel = validated["channel"]
+    return {
+        "carrier_binding_present": True,
+        "carrier_binding_validated": True,
+        "carrier_profile": validated["carrier_profile"],
+        "heartbeat_reference_epoch": reference["heartbeat_epoch"],
+        "heartbeat_reference_id": reference["heartbeat_id"],
+        "carrier_channel_id": channel["channel_id"],
+        "carrier_binding_sha256": validated["binding_sha256"],
+        "carrier_binding_grants_authority": False,
+    }
 
 
 def _sv002_request_from_payload(payload: Any, transport: Mapping[str, str | None]) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -276,11 +314,12 @@ def admit_device_kv(*, runtime_root: Path, body: bytes, headers: Mapping[str, st
     try: payload=json.loads(body.decode("utf-8"))
     except Exception as exc: raise ValueError("request_json_invalid") from exc
     request,source=_device_kv_request_from_payload(payload,transport); materialization_id=safe_id(str(request["materialization_id"]))
+    carrier=carrier_binding_evidence(request)
     request_path=runtime_root/hil.REQUEST_DIR_REL/f"{materialization_id}.json"; request_raw=json.dumps(request,sort_keys=True,indent=2).encode("utf-8")+b"\n"; hil._write_once(request_path,request_raw)
     receipt_path=runtime_root/DEVICE_KV_RECEIPT_DIR/f"{materialization_id}.json"
     if receipt_path.exists():
         existing=json.loads(receipt_path.read_text(encoding="utf-8")); require(existing.get("request_hash")==request.get("request_hash") and existing.get("state")=="INGRESS_ADMITTED","write_once_collision"); return existing
-    receipt={"schema":DEVICE_KV_RECEIPT_SCHEMA,"state":"INGRESS_ADMITTED","materialization_id":materialization_id,"request_hash":request["request_hash"],"transport_intent_hash":request["transport_intent_hash"],"payload_hash":request["payload_hash"],"operation_id":request["operation_id"],"packet_id":request["packet_id"],"transport_origin":source["transport_origin"],"transport_authorization_id":source["transport_authorization_id"],"node_id":source["node_id"],"interlock_id":source["interlock_id"],"outbox_entry_hash":source["outbox_entry_hash"],"transport_payload_sha256":transport["payload_sha256"],"queue_ref":str(request_path),"exact_request_validated":True,"write_once_persisted":True,"runtime_execution_attempted":False,"consumer_dispatch_attempted":False,"claim_or_fence_minted":False,"g18_required":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":AUTHORITY_EFFECT,"admitted_at":now()}
+    receipt={"schema":DEVICE_KV_RECEIPT_SCHEMA,"state":"INGRESS_ADMITTED","materialization_id":materialization_id,"request_hash":request["request_hash"],"transport_intent_hash":request["transport_intent_hash"],"payload_hash":request["payload_hash"],"operation_id":request["operation_id"],"packet_id":request["packet_id"],"transport_origin":source["transport_origin"],"transport_authorization_id":source["transport_authorization_id"],"node_id":source["node_id"],"interlock_id":source["interlock_id"],"outbox_entry_hash":source["outbox_entry_hash"],"transport_payload_sha256":transport["payload_sha256"],"queue_ref":str(request_path),"exact_request_validated":True,"write_once_persisted":True,"runtime_execution_attempted":False,"consumer_dispatch_attempted":False,"claim_or_fence_minted":False,"g18_required":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE",**carrier,"authority_effect":AUTHORITY_EFFECT,"admitted_at":now()}
     raw=json.dumps(receipt,sort_keys=True,indent=2).encode("utf-8")+b"\n"; hil._write_once(receipt_path,raw); latest=runtime_root/DEVICE_KV_LATEST; latest.parent.mkdir(parents=True,exist_ok=True); latest.write_bytes(raw)
     dispatch=_dispatch_device_kv_consumer(runtime_root=runtime_root,materialization_id=materialization_id)
     return {**receipt,"dispatch":dispatch}
@@ -431,6 +470,7 @@ def profile(tls_enabled: bool) -> dict[str, Any]:
         "profile_path": PROFILE_PATH,
         "materialization_path": INGRESS_PATH,
         "profiles": ["HIL:Ingress", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "Publisher:ArtifactTransfer", "KV:PublisherArtifactImport"],
+        "heartbeat_derived_carrier": hb_intr_carrier_profile(),
         "supported_origins": [hil.ORIGIN_NODE, hil.ORIGIN_RELAY],
         "event_triggered": True,
         "always_on_application_receiver_required": False,
