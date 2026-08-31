@@ -1,8 +1,8 @@
 {
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
-  "observed_commit": "cc5b49c0e48f7511d3eff5419310219237996d7b",
-  "observed_at": "2026-08-30T12:32:00-05:00",
+  "observed_commit": "0e7b0b03cffdc207d7b8260423776f40e80c6fb7",
+  "observed_at": "2026-08-30T19:46:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -10,10 +10,10 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
-    "unique_task_ids_global_plus_fragments": 70,
+    "unique_task_ids_global_plus_fragments": 71,
     "canonically_indexed_task_ids": 39,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 24,
+    "active_unvectorized_unique_task_ids": 25,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,7 +21,7 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 38,
+  "total_active_unvectorized_unique_task_ids": 39,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -46,7 +46,8 @@
     "BOOTSTRAP-V1-RELEASE-GATE-001",
     "BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001",
     "SV-DN1-PUBLIC-PROMOTION-001",
-    "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001"
+    "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001",
+    "BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001"
   ],
   "active_organization_task_ids_missing_canonical_cosv": [
     "ORG-FED-AACT-E-001",
@@ -464,6 +465,15 @@
     "observer_direct_relation_to_stegverse_002": false,
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": "NONE",
+    "authority_effect": "NONE"
+  },
+  "bootstrap_v1_intr_bundle_delivery_source_candidate": {
+    "task_id": "BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001",
+    "source_branch": "feat/bootstrap-v1-intr-bundle-delivery-current-20260830",
+    "source_state": "IMPLEMENTED_VALIDATION_PENDING",
+    "canonical_vector_emitted": false,
+    "runtime_activation_claimed": false,
+    "authentic_delivery_observed": false,
     "authority_effect": "NONE"
   }
 }
