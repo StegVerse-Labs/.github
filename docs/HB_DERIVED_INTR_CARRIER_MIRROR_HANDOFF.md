@@ -17,7 +17,7 @@ Bind Universal InTr materialization requests to a deterministic carrier coordina
 ```text
 HB32 protocol anchor
  -> 10 ms / 100 Hz OSCILLATOR_ONLY reference
- -> deterministic packet channel from packet_id
+ -> deterministic packet channel from canonical payload SHA-256
  -> non-authorizing carrier binding
  -> Universal InTr materialization request
  -> profiled ingress validation
@@ -29,7 +29,7 @@ HB32 protocol anchor
 - fundamental: HB / 100 Hz
 - reference derivation: canonical HB32 protocol anchor + elapsed 10 ms quanta
 - channel family: H1 / 16 deterministic phase slots
-- channel selection: first 32 bits of SHA-256(packet_id) modulo 16
+- channel selection: first 64 bits of canonical payload SHA-256 modulo 16
 - phase coordinate: `2π * slot / 16`
 - packet binding: packet_id + payload_hash + sampled_unix_ms + HB reference + channel coordinate
 - binding digest: canonical SHA-256
@@ -119,3 +119,7 @@ or ~/.local/state/stegverse/heartbeat-runtime
 ```
 
 This source integration makes the next authentic producer execution capable of emitting the canonical shared local signal directly. It does not itself prove that such a production execution has occurred.
+
+## 2026-08-31 canonical channel reconciliation — issue #642
+
+The materialization binding profile and the exact-byte HB carrier now use one phase/channel rule: `slot = int(payload_hash[7:23], 16) mod 16`. This is the 16-slot specialization carried by the canonical HB/InTr producer. `packet_id` remains identity-bound but no longer selects the carrier phase. This eliminates browser/runtime channel divergence without changing any authority semantics.
