@@ -8,7 +8,8 @@
   "steps": [
     "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
     "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
-    "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
+    "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+    "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001"
   ],
   "credential_authority": "TV/TVC",
   "github_token_required": false,
@@ -18,5 +19,5 @@
   "network_source_fetch_allowed": false,
   "second_machine_required": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Advance only the already-admitted StegOS relay materialization -> Node-KV continuity -> DEVICE_KV_INTR observation chain, and only after each authentic parent terminal receipt exists."
+  "note": "Advance only the already-admitted StegOS relay materialization -> Node-KV continuity -> DEVICE_KV_INTR observation -> sovereign endpoint fanout chain, and only after each authentic parent terminal receipt exists."
 }
