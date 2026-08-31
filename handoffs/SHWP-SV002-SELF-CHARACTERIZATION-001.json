@@ -7,7 +7,7 @@
     "objective": "Ask the authentic resident StegVerse-002 reasoning runtime what constitutes StegVerse-002 while formal mathematics is discoverable but not injected or prescribed.",
     "success_predicates": [
       "qualifying non-reference local reasoning endpoint observed",
-      "TT/RTG/GTG/AE exact pinned commits locally materialized",
+      "TT/RTG/GTG/AE exact pinned commits are available either through local Git objects or verified portable resident snapshots bound to those exact commits",
       "principal self-characterization execution receipt state COMPLETED",
       "human-readable and machine-readable self-characterization artifacts retained",
       "interaction/resource-access trace retained",
@@ -90,9 +90,11 @@
       "master_records_reconstruction.state=PASS",
       "master_records_reconstruction.receipt.reconstruction=PASS"
     ],
-    "next_authorized_action": "Execute the principal exactly once on the resident StegVerse surface. After authentic principal completion, preserve that exact artifact set and retry only pinned Master Records reconstruction until PASS; never rerun the principal. Before a qualifying principal exists, remain BLOCKED."
+    "next_authorized_action": "Consume the current resident request on the sovereign WorkerCoordinator. Use the verified portable micro-node, exact formal snapshots, and pinned Master Records verifier when ordinary local Git trees are absent. Execute the principal exactly once only after a qualifying non-reference local reasoning endpoint and live subject identity are independently observed; then preserve the exact artifact set and retry only same-execution reconstruction until PASS."
   },
   "validation_evidence": {
-    "portable_formal_snapshot_principal_source": "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9"
+    "portable_formal_snapshot_principal_source": "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9",
+    "portable_formal_snapshot_principal_merge": "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9",
+    "portable_source_runtime_evidence_observed": false
   }
 }
