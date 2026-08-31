@@ -214,6 +214,41 @@ class SovereignControlPlaneBundleTests(unittest.TestCase):
             self.assertIn("vendor/micro-node-runtime/tools/run_self_characterization_principal.py", names)
             self.assertIn("vendor/master-records-orchestration/scripts/verify_sv002_self_characterization_reconstruction.py", names)
 
+
+    def test_formal_snapshot_packages_exact_pinned_git_object_not_worktree(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            source = base / "source"
+            formal = base / "TT"
+            (source / "scripts").mkdir(parents=True)
+            (source / "scripts" / "bootstrap_sovereign_runtime.py").write_text("# bootstrap\n")
+            formal.mkdir()
+            subprocess.run(["git", "init", str(formal)], check=True, capture_output=True)
+            subprocess.run(["git", "-C", str(formal), "config", "user.email", "test@example.invalid"], check=True)
+            subprocess.run(["git", "-C", str(formal), "config", "user.name", "Test"], check=True)
+            (formal / "FORMAL.txt").write_text("pinned\n")
+            subprocess.run(["git", "-C", str(formal), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(formal), "commit", "-m", "pinned"], check=True, capture_output=True)
+            commit = subprocess.run(
+                ["git", "-C", str(formal), "rev-parse", "HEAD"],
+                check=True, capture_output=True, text=True,
+            ).stdout.strip()
+            (formal / "FORMAL.txt").write_text("worktree drift\n")
+            output = base / "control-plane.zip"
+            old = module.FORMAL_SOURCE_PINS["TT"]
+            module.FORMAL_SOURCE_PINS["TT"] = commit
+            try:
+                receipt = module.build_bundle(source, output, tt_root=formal)
+            finally:
+                module.FORMAL_SOURCE_PINS["TT"] = old
+
+            proof = receipt["vendor_source_proofs"]["formal-TT"]
+            self.assertEqual(proof["state"], "VERIFIED_LOCAL_GIT_SNAPSHOT")
+            self.assertEqual(proof["exact_commit"], commit)
+            with zipfile.ZipFile(output) as archive:
+                self.assertEqual(archive.read("vendor/formal/TT/FORMAL.txt"), b"pinned\n")
+
+
     def test_bundle_can_include_healer_and_tvc_vendor_sources(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "source"
