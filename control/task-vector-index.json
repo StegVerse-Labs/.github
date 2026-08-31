@@ -526,11 +526,74 @@
       "vector": "50000000101000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/formalism-manifold-orchestration-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/formalism-owner-mutation-executor-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/formalism-manifold-implementation-admission-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/formalism-tvc-repository-transport-consumers-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/test-lanes-autolaunch.json",
+      "source_state_vector_ref": "control/task-vectors/STEGVERSE-TEST-LANES-AUTOLAUNCH-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SHWP-SV002-SELF-CHARACTERIZATION-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/sv002-self-characterization-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-SV002-SELF-CHARACTERIZATION-001.json",
+      "vector": "50000000100000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SV-DN1-PUBLIC-PROMOTION-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/sv-dn1-public-promotion-001.json",
+      "source_state_vector_ref": "control/task-vectors/SV-DN1-PUBLIC-PROMOTION-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 54,
-    "local_cosv_record_tasks": 54,
+    "indexed_vectorized_tasks": 61,
+    "local_cosv_record_tasks": 61,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"

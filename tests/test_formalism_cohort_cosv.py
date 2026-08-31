@@ -37,8 +37,15 @@ class FormalismCohortCOSVTests(unittest.TestCase):
             self.assertFalse(m["evidence_complete"])
             self.assertFalse(m["activated"])
             self.assertFalse(m["propagated"])
-    def test_reconciliation_lane_remains_unvectorized(self):
-        self.assertFalse((ROOT/f"control/task-vectors/{EXCLUDED}.json").exists())
+    def test_reconciliation_lane_is_vectorized_but_still_blocked(self):
+        record=json.loads((ROOT/f"control/task-vectors/{EXCLUDED}.json").read_text(encoding="utf-8"))
+        self.assertTrue(cosv.validate_record(record))
+        self.assertEqual(cosv.encode_task(record["exact_metrics"]),record["vector"])
+        self.assertEqual(record["vector"],"50000000101000")
+        self.assertEqual(record["exact_metrics"]["blocker_count"],1)
+        self.assertFalse(record["exact_metrics"]["evidence_complete"])
+        self.assertFalse(record["exact_metrics"]["activated"])
+        self.assertFalse(record["exact_metrics"]["propagated"])
         indexed={x["task_id"] for x in self.index["tasks"]}
-        self.assertNotIn(EXCLUDED,indexed)
+        self.assertIn(EXCLUDED,indexed)
 if __name__=="__main__": unittest.main()

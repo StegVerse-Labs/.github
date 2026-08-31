@@ -23,15 +23,21 @@
         "capability_id": "stegverse:capability:sv-dn1-public-promotion:v1",
         "capability_version": "1.0.0",
         "phase": "ADMISSIBLE",
-        "standing_evidence_refs": ["docs/SV_DN1_PUBLIC_PROMOTION_TASK_MIRROR_HANDOFF.md"],
-        "admissibility_evidence_refs": ["handoffs/SV-DN1-PUBLIC-PROMOTION-001.json"],
+        "standing_evidence_refs": [
+          "docs/SV_DN1_PUBLIC_PROMOTION_TASK_MIRROR_HANDOFF.md"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/SV-DN1-PUBLIC-PROMOTION-001.json"
+        ],
         "integration_evidence_refs": [
           "workers/sv_dn1_public_promotion_worker.py",
           "control/process-worker-adapters.d/sv-dn1-public-promotion-001.json",
           "control/worker-registry.d/sv-dn1-public-promotion-001.json"
         ],
         "activation_proof_ref": null,
-        "blockers": ["SV_DN1_FIRST_AUTHENTIC_ANALYZED_RESULT_NOT_YET_OBSERVED"],
+        "blockers": [
+          "SV_DN1_FIRST_AUTHENTIC_ANALYZED_RESULT_NOT_YET_OBSERVED"
+        ],
         "continuation_owner": "sv-dn1-public-promotion-worker",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
@@ -52,6 +58,19 @@
         "dependency_task_id": "SV-DN1-SDK-FIRST-ROUND-001",
         "dependency_terminal_state_required": "COMPLETED",
         "dependency_terminal_transition_required": "SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED"
+      },
+      "source_state_vector_ref": "control/task-vectors/SV-DN1-PUBLIC-PROMOTION-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:08:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],
