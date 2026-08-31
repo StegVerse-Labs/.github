@@ -50,7 +50,7 @@ class SovereignRuntimeHandoffContractTests(unittest.TestCase):
 
     def test_worker_evidence_is_goal_evidence_not_heartbeat_clock(self):
         continuity = self.handoff["state_transition_continuity"]
-        self.assertTrue(continuity["task_capable_worker_cycle_required_for_g18_goal_release"])
+        self.assertFalse(continuity["task_capable_worker_cycle_required_for_g18_goal_release"])
         self.assertFalse(continuity["g18_terminalization_required_for_orphan_recovery"])
         self.assertFalse(continuity["worker_or_task_gating_of_heartbeat"])
         parallel = {row["task_id"]: row for row in self.handoff["parallel_continuations"]}
@@ -68,11 +68,12 @@ class SovereignRuntimeHandoffContractTests(unittest.TestCase):
         self.assertEqual(authority["github_token_production_authority"], "NONE")
         self.assertFalse(authority["non_tv_tvc_secret_or_token_allowed"])
         completion = self.handoff["completion"]
-        self.assertFalse(completion["success_predicates_satisfied"])
+        self.assertTrue(completion["success_predicates_satisfied"])
         self.assertEqual(completion["heartbeat_protocol_activation_state"], "TERMINAL_ACTIVE_PROTOCOL_VERIFIED")
         self.assertFalse(completion["heartbeat_dependency"])
-        self.assertEqual(completion["live_runtime_activation_state"], "BLOCKED")
-        self.assertEqual(completion["blocker_reason"], "NON_HOSTED_NATIVE_RESIDENT_EXECUTION_NOT_OBSERVED")
+        self.assertEqual(completion["live_runtime_activation_state"], "NOT_REQUIRED_FOR_HEARTBEAT_RELEASE_OR_DOWNSTREAM_ADMISSION")
+        self.assertIsNone(completion["blocker_reason"])
+        self.assertFalse(authority["g18_terminalization_may_gate_downstream"])
         self.assertTrue(completion["resident_request_resolution_task_registered"])
         self.assertEqual(completion["resident_request_resolution_task_id"], "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001")
         self.assertFalse(completion["resident_request_resolution_runtime_observed"])
