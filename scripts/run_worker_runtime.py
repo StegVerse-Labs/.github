@@ -50,6 +50,8 @@ RENDEZVOUS_POLL_INTERVAL_SECONDS = 30.0
 LOCAL_REQUEST_DISPATCHER_REL = Path("scripts/dispatch_resident_execution_requests.py")
 LOCAL_REQUEST_DISPATCH_RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
 LOCAL_REQUEST_DISPATCH_INTERVAL_TICKS = 100
+LOCAL_SOURCE_REFRESH_REL = Path("scripts/refresh_sovereign_worker_runtime_source.py")
+LOCAL_SOURCE_REFRESH_INTERVAL_TICKS = 100
 CONTROL_PLANE_PROJECTOR_REL = Path("scripts/project_worker_control_plane_from_carrier.py")
 G18_TASK_ID = "SHWP-DURABLE-RUNTIME-ACTIVATION"
 G18_WORKER_ID = "sovereign-runtime-activation-worker"
@@ -61,6 +63,7 @@ SAFE_BOOTSTRAP_ENV = {
     "HOME", "USER", "LOGNAME", "SHELL", "PATH", "PYTHONPATH", "LANG", "LC_ALL", "TMPDIR",
     "XDG_CONFIG_HOME", "XDG_STATE_HOME", "LOCALAPPDATA", "UID", "STEGVERSE_HEARTBEAT_ROOT",
     "STEGVERSE_RESIDENT_RENDEZVOUS_URL", "STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF",
+    "STEGVERSE_HEARTBEAT_SOURCE_ROOT",
     *HOSTED_ENV,
 }
 
@@ -437,6 +440,82 @@ def poll_resident_rendezvous(
 
 
 
+
+def refresh_local_worker_source(
+    root: Path,
+    *,
+    runner=subprocess.run,
+    env: dict[str, str] | None = None,
+) -> dict[str, Any] | None:
+    """Refresh static worker source from an already-local canonical checkout.
+
+    No network source transport is performed. This only closes the stale-resident
+    source seam when the canonical checkout already present on the sovereign node
+    has advanced. Mutable runtime state, claims, fences, receipts, and carrier
+    state remain resident-owned and are preserved by the refresh script.
+    """
+    values = dict(os.environ if env is None else env)
+    raw = str(values.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT") or "").strip()
+    if not raw:
+        return None
+    source = Path(raw).expanduser().resolve()
+    if source == root.resolve():
+        return {
+            "state": "SOURCE_EQUALS_RUNTIME_SKIPPED",
+            "attempted": False,
+            "network_fetch_performed": False,
+            "credential_read_or_acquired": False,
+            "authority_effect": "NONE",
+        }
+    script = root / LOCAL_SOURCE_REFRESH_REL
+    if not script.is_file():
+        return {
+            "state": "REFRESH_SCRIPT_NOT_MATERIALIZED",
+            "attempted": False,
+            "source_root": str(source),
+            "network_fetch_performed": False,
+            "credential_read_or_acquired": False,
+            "authority_effect": "NONE",
+        }
+    completed = runner(
+        [
+            sys.executable,
+            str(script),
+            "--source-root", str(source),
+            "--runtime-root", str(root),
+        ],
+        cwd=root,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=300,
+        env=_safe_bootstrap_env(values),
+    )
+    receipt_path = root / "receipts" / "sovereign-host" / "worker-source-refresh.latest.json"
+    receipt = None
+    if receipt_path.is_file():
+        try:
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        except Exception:
+            receipt = None
+    return {
+        "state": (
+            receipt.get("state")
+            if isinstance(receipt, dict) and receipt.get("state")
+            else ("REFRESH_PROCESS_COMPLETE" if completed.returncode == 0 else "REFRESH_PROCESS_FAILED")
+        ),
+        "attempted": True,
+        "returncode": completed.returncode,
+        "source_root": str(source),
+        "receipt": receipt,
+        "network_fetch_performed": False,
+        "credential_read_or_acquired": False,
+        "heartbeat_grants_execution_authority": False,
+        "authority_effect": "NONE_LOCAL_SOURCE_REFRESH",
+    }
+
+
+
 def dispatch_local_resident_requests(
     root: Path,
     *,
@@ -548,14 +627,19 @@ def main() -> int:
     while running and (args.continuous or index < args.cycles):
         rendezvous_result = None
         local_request_dispatch = None
+        local_source_refresh = None
         if not args.task_id and not args.dry_run and time.monotonic() >= next_rendezvous_poll:
             rendezvous_result = poll_resident_rendezvous(root)
             next_rendezvous_poll = time.monotonic() + RENDEZVOUS_POLL_INTERVAL_SECONDS
+        if not args.task_id and not args.dry_run and index % LOCAL_SOURCE_REFRESH_INTERVAL_TICKS == 0:
+            local_source_refresh = refresh_local_worker_source(root)
         if not args.task_id and not args.dry_run and index % LOCAL_REQUEST_DISPATCH_INTERVAL_TICKS == 0:
             local_request_dispatch = dispatch_local_resident_requests(root)
         result = runtime.cycle(write=not args.dry_run, target_task_id=args.task_id)
         if rendezvous_result is not None:
             result["resident_rendezvous"] = rendezvous_result
+        if local_source_refresh is not None:
+            result["local_worker_source_refresh"] = local_source_refresh
         if local_request_dispatch is not None:
             result["local_resident_request_dispatch"] = local_request_dispatch
         if bootstrap_result is not None:

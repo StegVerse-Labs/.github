@@ -65,10 +65,68 @@ class NativeResidentRequestDispatchTests(unittest.TestCase):
         self.assertEqual(command[command.index("--runtime-root") + 1], str(root))
         self.assertEqual(kwargs["cwd"], root)
 
+
+    def test_local_source_refresh_uses_only_already_local_canonical_checkout(self):
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            runtime = base / "runtime"
+            source = base / "source"
+            runtime.mkdir()
+            source.mkdir()
+            script = runtime / MOD.LOCAL_SOURCE_REFRESH_REL
+            script.parent.mkdir(parents=True, exist_ok=True)
+            script.write_text("# refresh\n", encoding="utf-8")
+            receipt_path = runtime / "receipts" / "sovereign-host" / "worker-source-refresh.latest.json"
+            calls = []
+
+            def runner(command, **kwargs):
+                calls.append((command, kwargs))
+                receipt_path.parent.mkdir(parents=True, exist_ok=True)
+                receipt_path.write_text(json.dumps({
+                    "schema": "stegverse.sovereign-worker-runtime-source-refresh/v1",
+                    "state": "REFRESH_COMPLETE",
+                    "network_fetch_performed": False,
+                    "credential_read_or_acquired": False,
+                    "mutable_runtime_state_preserved": True,
+                }) + "\n", encoding="utf-8")
+                return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+            result = MOD.refresh_local_worker_source(
+                runtime,
+                runner=runner,
+                env={
+                    "PATH": "/bin",
+                    "HOME": td,
+                    "STEGVERSE_HEARTBEAT_SOURCE_ROOT": str(source),
+                },
+            )
+
+        self.assertEqual(result["state"], "REFRESH_COMPLETE")
+        self.assertTrue(result["attempted"])
+        self.assertFalse(result["network_fetch_performed"])
+        self.assertFalse(result["credential_read_or_acquired"])
+        self.assertFalse(result["heartbeat_grants_execution_authority"])
+        self.assertEqual(len(calls), 1)
+        command, kwargs = calls[0]
+        self.assertEqual(Path(command[1]), script)
+        self.assertEqual(command[command.index("--source-root") + 1], str(source.resolve()))
+        self.assertEqual(command[command.index("--runtime-root") + 1], str(runtime.resolve()))
+        self.assertEqual(kwargs["cwd"], runtime.resolve())
+
+    def test_local_source_refresh_is_optional_without_source_locator(self):
+        with tempfile.TemporaryDirectory() as td:
+            result = MOD.refresh_local_worker_source(
+                Path(td),
+                env={"PATH": "/bin", "HOME": td},
+            )
+        self.assertIsNone(result)
+
     def test_native_sweep_is_hb_scale_logical_tick_paced_not_wall_clock_authority(self):
         self.assertEqual(MOD.LOCAL_REQUEST_DISPATCH_INTERVAL_TICKS, 100)
+        self.assertEqual(MOD.LOCAL_SOURCE_REFRESH_INTERVAL_TICKS, 100)
         source = MODULE_PATH.read_text(encoding="utf-8")
         self.assertIn("index % LOCAL_REQUEST_DISPATCH_INTERVAL_TICKS == 0", source)
+        self.assertIn("index % LOCAL_SOURCE_REFRESH_INTERVAL_TICKS == 0", source)
         self.assertIn("heartbeat_grants_execution_authority\": False", source)
         self.assertNotIn("LOCAL_REQUEST_DISPATCH_INTERVAL_SECONDS", source)
 
