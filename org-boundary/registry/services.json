@@ -1,0 +1,26 @@
+{
+  "schema_version": "stegverse-labs.service-registry.v1",
+  "organization": "StegVerse-Labs",
+  "services": [
+    {
+      "service_id": "stegverse-labs.org-control",
+      "repository": "StegVerse-Labs/.github",
+      "boundary_role": "BOUNDARY_LOCAL_CONTROL",
+      "profile_status": "ACTIVE",
+      "accepts": [
+        "ecosystem.communication",
+        "ecosystem.monitor.request",
+        "ecosystem.work.request"
+      ],
+      "runtime_required_for_consumption": false
+    },
+    {
+      "service_id": "stegverse-labs.boundary-diagnostic",
+      "repository": "StegVerse-Labs/.github",
+      "boundary_role": "BOUNDARY_LOCAL_DIAGNOSTIC",
+      "profile_status": "ACTIVE",
+      "runtime_required_for_consumption": false
+    }
+  ],
+  "boundary_rule": "All organization-crossing communication is generated and consumed through StegVerse-Labs/.github using Interlock/InTr; endpoint authority remains transition-governed."
+}
