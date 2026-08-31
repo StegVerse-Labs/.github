@@ -1,3 +1,4 @@
+import base64
 import importlib.util
 import json
 from pathlib import Path
@@ -22,6 +23,7 @@ class KVSkapCustodyTransportTests(unittest.TestCase):
         cls.mod=load_module()
         cls.ingress=INGRESS.read_text(encoding="utf-8")
         cls.dispatcher=(ROOT/"scripts/dispatch_kv_skap_custody_materialization.py").read_text(encoding="utf-8")
+        cls.consumer=SCRIPT.read_text(encoding="utf-8")
 
     def request(self):
         capsule={
@@ -33,6 +35,21 @@ class KVSkapCustodyTransportTests(unittest.TestCase):
             "purpose":"owner_authorized_provider_access",
             "sealed_material":{"recipient_key_id":"key-1","ciphertext_b64":"opaque"}
         }
+        raw=json.dumps(capsule,indent=1,sort_keys=False).encode("utf-8")
+        device_body={
+            "schema":"stegverse.intr.boundary_transition_receipt/v1",
+            "connector":"InTr",
+            "from_boundary":"DEVICE",
+            "to_boundary":"KV",
+            "credential_ref":capsule["credential_ref"],
+            "operation_id":capsule["ingress_id"],
+            "prior_boundary_receipt_hash":None,
+            "browser_ingress_digest":self.mod.sha_uri(capsule),
+            "raw_body_digest":self.mod.sha_uri(raw),
+            "secret_plaintext_present":False,
+            "authority_transfer":False,
+        }
+        device={**device_body,"receipt_hash":self.mod.sha_uri(device_body)}
         body={
             "schema":"stegverse.universal-intr-materialization-request/v1",
             "state":"QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION",
@@ -58,14 +75,21 @@ class KVSkapCustodyTransportTests(unittest.TestCase):
             "materialization_id":"INTR-MAT-"+"1"*24,
             "operation_id":"ingress-1",
             "packet_id":"packet-1",
-            "payload_ref":"inline://materialization_request.sealed_capsule",
+            "payload_ref":"inline://materialization_request.sealed_capsule_raw_b64",
             "transport_intent_hash":"sha256:"+"2"*64,
-            "payload_hash":self.mod.sha_uri(capsule),
+            "payload_hash":self.mod.sha_uri(raw),
             "sealed_capsule":capsule,
-            "device_kv_receipt":{"schema":"stegverse.intr.boundary_transition_receipt/v1","receipt_hash":"sha256:"+"3"*64}
+            "sealed_capsule_raw_b64":base64.b64encode(raw).decode("ascii"),
+            "device_kv_receipt":device,
+            "stage_receipt_digest":"sha256:"+"4"*64,
         }
         body["request_hash"]=self.mod.sha_uri(body)
         return body
+
+    def rehash(self,value):
+        body={k:v for k,v in value.items() if k!="request_hash"}
+        value["request_hash"]=self.mod.sha_uri(body)
+        return value
 
     def test_canonical_request_validates(self):
         self.mod.validate_request(self.request())
@@ -73,14 +97,47 @@ class KVSkapCustodyTransportTests(unittest.TestCase):
     def test_wrong_boundary_fails_closed(self):
         value=self.request()
         value["boundary_path"]=["DEVICE_SYSTEM","SKAP_VAULT"]
-        value["request_hash"]=self.mod.sha_uri({k:v for k,v in value.items() if k!="request_hash"})
+        self.rehash(value)
         with self.assertRaises(self.mod.KVSkapMaterializationError):
             self.mod.validate_request(value)
 
-    def test_payload_hash_is_exact_sealed_capsule(self):
+    def test_raw_packet_hash_not_reencoded_capsule_drives_payload_hash(self):
         value=self.request()
-        value["sealed_capsule"]["purpose"]="tampered"
-        with self.assertRaises(self.mod.KVSkapMaterializationError):
+        self.assertNotEqual(value["payload_hash"],self.mod.sha_uri(value["sealed_capsule"]))
+        self.mod.validate_request(value)
+
+    def test_raw_packet_tamper_fails_closed(self):
+        value=self.request()
+        raw=base64.b64decode(value["sealed_capsule_raw_b64"])
+        value["sealed_capsule_raw_b64"]=base64.b64encode(raw+b" ").decode("ascii")
+        self.rehash(value)
+        with self.assertRaisesRegex(self.mod.KVSkapMaterializationError,"raw_json_invalid|raw_payload_hash_mismatch"):
+            self.mod.validate_request(value)
+
+    def test_semantically_different_raw_capsule_fails_closed(self):
+        value=self.request()
+        parsed=json.loads(base64.b64decode(value["sealed_capsule_raw_b64"]))
+        parsed["purpose"]="tampered"
+        raw=json.dumps(parsed,indent=1).encode()
+        value["sealed_capsule_raw_b64"]=base64.b64encode(raw).decode("ascii")
+        value["payload_hash"]=self.mod.sha_uri(raw)
+        value["device_kv_receipt"]["raw_body_digest"]=self.mod.sha_uri(raw)
+        self.rehash(value)
+        with self.assertRaisesRegex(self.mod.KVSkapMaterializationError,"raw_semantic_mismatch"):
+            self.mod.validate_request(value)
+
+    def test_first_hop_raw_digest_mismatch_fails_closed(self):
+        value=self.request()
+        value["device_kv_receipt"]["raw_body_digest"]="sha256:"+"9"*64
+        self.rehash(value)
+        with self.assertRaisesRegex(self.mod.KVSkapMaterializationError,"device_kv_raw_body_digest_mismatch"):
+            self.mod.validate_request(value)
+
+    def test_stage_receipt_digest_is_required(self):
+        value=self.request()
+        value.pop("stage_receipt_digest")
+        self.rehash(value)
+        with self.assertRaisesRegex(self.mod.KVSkapMaterializationError,"stage_receipt_digest_invalid"):
             self.mod.validate_request(value)
 
     def test_shared_ingress_routes_kv_skap_profile(self):
@@ -95,7 +152,6 @@ class KVSkapCustodyTransportTests(unittest.TestCase):
             self.assertIn(marker,self.ingress)
 
     def test_transport_does_not_grant_authority(self):
-        source=SCRIPT.read_text(encoding="utf-8")
         for marker in (
             '"credential_authority": "TV/TVC"',
             '"github_token_runtime_authority": "NONE"',
@@ -105,13 +161,13 @@ class KVSkapCustodyTransportTests(unittest.TestCase):
             '"request_grants_authority": False',
             '"authority_effect": "NONE_CUSTODY_TRANSITION_ONLY"',
         ):
-            self.assertIn(marker,source)
-
-
+            self.assertIn(marker,self.consumer)
 
     def test_second_hop_has_canonical_event_ephemeral_sender(self):
         for marker in (
             'PROFILE_ID = "kv-skap-custody"',
+            '"sealed_capsule_raw_b64"',
+            '"stage_receipt_digest"',
             'stegos.universal_intr_transport',
             'stegos.universal_intr_materialization',
             'build_transport_intent(',
@@ -124,6 +180,18 @@ class KVSkapCustodyTransportTests(unittest.TestCase):
             self.assertIn(marker,self.dispatcher)
         self.assertNotIn("requests.",self.dispatcher)
         self.assertNotIn("github.com",self.dispatcher)
+
+    def test_consumer_persists_original_raw_packet(self):
+        for marker in (
+            "raw_packet, capsule = decode_raw_packet(request)",
+            "raw_packet=raw_packet",
+            '"stage_receipt_digest": request["stage_receipt_digest"]',
+            '"raw_body_digest": sha_uri(raw_packet)',
+            '"exact_ciphertext_readback_verified": True',
+        ):
+            self.assertIn(marker,self.consumer)
+        self.assertNotIn("raw_packet = canonical(capsule)",self.consumer)
+
 
 if __name__=="__main__":
     unittest.main()
