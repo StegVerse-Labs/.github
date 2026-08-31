@@ -745,3 +745,34 @@ ecosystem release/tag: NOT READY
 ```
 
 Authority effect remains NONE.
+
+## Adjacent-repository adoption reconciliation — 2026-08-31
+
+Merged repository-local COSV adoption evidence is now retained for:
+
+```text
+StegVerse-Labs/Site                 partial / VECTOR_REQUIRED
+StegVerse-Labs/TVC                  partial / VECTOR_REQUIRED
+StegVerse-org/LLM-adapter           partial / VECTOR_REQUIRED
+master-records/orchestration        partial / VECTOR_REQUIRED
+GCAT-BCAT-Engine/Publisher          partial / VECTOR_REQUIRED
+StegVerse-Labs/admissibility-wiki   audited HIL slice / VECTOR_REQUIRED
+StegVerse-002/stegguardian-wiki     audited HIL slice / VECTOR_REQUIRED
+AdmittedCode/.github                complete 1/1 active task surface / VECTOR_PRESENT
+```
+
+AdmittedCode/.github is promoted only because its repository-local handoff establishes one current machine task, that task has a canonical task.v1 vector, the local index reports the task surface fully audited, and validation-only run 33392109172 passed.
+
+Admissibility-wiki is reclassified from not-yet-audited to VECTOR_REQUIRED because repository-local machine-owned HIL task evidence and a merged local vector now exist. Its broader active framework/MindForge/Riverbraid denominator is intentionally not collapsed into the HIL slice.
+
+Strict ecosystem adoption now measures:
+
+```text
+VECTOR_PRESENT: 2
+VECTOR_REQUIRED: 32
+not yet audited/unavailable: 188
+strict adoption ratio: 2/34 = 5.88%
+universe audit complete: false
+```
+
+No partial repository was promoted to VECTOR_PRESENT. TV/TVC remains credential authority; central cross-private execution authority remains false.
