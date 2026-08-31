@@ -214,6 +214,31 @@ class SvDn1IntrRuntimeWorkerTests(unittest.TestCase):
             body = {k: v for k, v in receipt.items() if k != "receipt_hash"}
             self.assertEqual(receipt["receipt_hash"], worker.sha256_ref(body))
 
+            carrier_signal = json.loads((bound / "observed/carrier-signal.json").read_text())
+            carrier_receipt = json.loads((bound / "receipts/carrier-binding.latest.json").read_text())
+            self.assertEqual(carrier_receipt["transition_id"], "SV_DN1_HB_INTR_CARRIER_BOUND")
+            self.assertEqual(carrier_receipt["intr_receipt_hash"], receipt["receipt_hash"])
+            self.assertEqual(carrier_receipt["heartbeat_progression_dependency"], "OSCILLATOR_ONLY")
+            self.assertTrue(carrier_receipt["packet_recovery_verified"])
+            self.assertFalse(carrier_receipt["heartbeat_grants_authority"])
+            self.assertFalse(carrier_receipt["derived_carrier_grants_authority"])
+            self.assertEqual(carrier_receipt["authority_effect"], "NONE_CARRIER_ONLY")
+            self.assertEqual(carrier_signal["intr"]["packet_sha256"], carrier_receipt["packet_sha256"])
+            self.assertEqual(worker.recover_intr_packet_bytes(carrier_signal), worker.canonical(exchange))
+
+    def test_hb_carrier_binding_is_deterministic_for_fixed_reference(self):
+        exchange = _exchange()
+        body = {"schema_version": worker.RECEIPT_SCHEMA, "route_id": worker.ROUTE_ID}
+        receipt = {"receipt_hash": worker.sha256_ref(body), **body}
+        now_ns = 1_787_511_600_000_000_000 + (100 * 10_000_000)
+        a = worker.build_hb_carrier_binding(exchange, receipt, now_ns=now_ns)
+        b = worker.build_hb_carrier_binding(exchange, receipt, now_ns=now_ns)
+        self.assertEqual(a, b)
+        self.assertEqual(a["receipt"]["heartbeat_epoch"], 132)
+        self.assertEqual(a["signal"]["carrier"]["reference_rate_hz"], 100.0)
+        self.assertEqual(a["signal"]["carrier"]["phase_slots"], 4)
+        self.assertTrue(a["receipt"]["packet_recovery_verified"])
+
     def test_identity_drift_fails_closed(self):
         exchange = _exchange()
         capture = {
