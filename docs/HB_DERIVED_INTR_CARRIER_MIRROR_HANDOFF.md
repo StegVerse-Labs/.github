@@ -17,7 +17,7 @@ Bind Universal InTr materialization requests to a deterministic carrier coordina
 ```text
 HB32 protocol anchor
  -> 10 ms / 100 Hz OSCILLATOR_ONLY reference
- -> deterministic packet channel from packet_id
+ -> deterministic packet channel from canonical payload SHA-256
  -> non-authorizing carrier binding
  -> Universal InTr materialization request
  -> profiled ingress validation
@@ -29,7 +29,7 @@ HB32 protocol anchor
 - fundamental: HB / 100 Hz
 - reference derivation: canonical HB32 protocol anchor + elapsed 10 ms quanta
 - channel family: H1 / 16 deterministic phase slots
-- channel selection: first 32 bits of SHA-256(packet_id) modulo 16
+- channel selection: first 64 bits of canonical payload SHA-256 modulo 16
 - phase coordinate: `2π * slot / 16`
 - packet binding: packet_id + payload_hash + sampled_unix_ms + HB reference + channel coordinate
 - binding digest: canonical SHA-256
@@ -52,3 +52,17 @@ The profiled ingress advertises this carrier now. Existing non-carrier-aware cli
 ## Completion boundary
 
 Source completion requires deterministic carrier derivation/validation, ingress profile publication, focused tests, organization/heartbeat validation, and merge. Live carrier propagation remains runtime evidence and must not be inferred from source merge.
+
+## 2026-08-31 canonical channel reconciliation — issue #642
+
+The materialization binding profile and the exact-byte HB carrier now use the same channel seed. The earlier binding-only formula based on SHA-256(packet_id) was retired because it could place the pre-carriage binding and the canonical exact-byte carrier on different phase slots.
+
+Canonical rule:
+
+```text
+payload_hash = sha256:<64 hex>
+slot = int(payload_hash[0:16], 16) mod 16
+channel = HB:H1:P<slot>
+```
+
+This is exactly the 16-slot specialization of `heartbeat_runtime/intr_derived_carrier.py`, which derives the channel from the first 64 bits of the exact packet/payload SHA-256. `packet_id` remains part of the immutable binding identity but no longer selects the carrier channel.
