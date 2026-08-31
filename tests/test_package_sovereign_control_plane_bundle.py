@@ -64,6 +64,34 @@ class SovereignControlPlaneBundleTests(unittest.TestCase):
             self.assertIn("vendor/StegOS/stegos/intr_backbone.py", names)
             self.assertIn("vendor/continuity-vault-kit/runtime/kv_interlock_endpoint.py", names)
 
+    def test_bundle_can_include_healer_and_tvc_vendor_sources(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "source"
+            healer = Path(tmp) / "StegVerse-Healer"
+            tvc = Path(tmp) / "TVC"
+            (root / "scripts").mkdir(parents=True)
+            (root / "scripts" / "bootstrap_sovereign_runtime.py").write_text("# bootstrap\n", encoding="utf-8")
+            (healer / "app").mkdir(parents=True)
+            (healer / "data").mkdir(parents=True)
+            (healer / "docs").mkdir(parents=True)
+            (healer / "app" / "dispatch_orchestrators.py").write_text("# dispatch\n", encoding="utf-8")
+            (healer / "data" / "orchestrator_targets.json").write_text("{}\n", encoding="utf-8")
+            (healer / "docs" / "HEALER_MIRROR_HANDOFF.md").write_text("# handoff\n", encoding="utf-8")
+            (tvc / "scripts").mkdir(parents=True)
+            (tvc / "tools").mkdir(parents=True)
+            (tvc / "TVC_MIRROR_HANDOFF.md").write_text("# handoff\n", encoding="utf-8")
+            (tvc / "scripts" / "activate_coinbase_intr_resident.py").write_text("# activate\n", encoding="utf-8")
+            (tvc / "tools" / "hil_intr_lifecycle_intake.py").write_text("# intake\n", encoding="utf-8")
+            output = Path(tmp) / "control-plane.zip"
+
+            receipt = module.build_bundle(root, output, healer_root=healer, tvc_root=tvc)
+
+            self.assertTrue(receipt["vendor_sources"]["StegVerse-Healer"])
+            self.assertTrue(receipt["vendor_sources"]["TVC"])
+            with zipfile.ZipFile(output) as archive:
+                names = set(archive.namelist())
+            self.assertIn("vendor/StegVerse-Healer/app/dispatch_orchestrators.py", names)
+            self.assertIn("vendor/TVC/scripts/activate_coinbase_intr_resident.py", names)
 
 
 if __name__ == "__main__":
