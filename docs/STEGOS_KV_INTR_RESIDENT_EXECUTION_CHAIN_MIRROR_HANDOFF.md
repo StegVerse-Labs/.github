@@ -6,7 +6,7 @@ Updated: 2026-08-30
 repository: StegVerse-Labs/.github
 request: control/resident-execution-request.d/stegos-kv-intr-chain-001.json
 consumer: scripts/consume_stegos_kv_intr_chain_request.py
-state: SOURCE_IMPLEMENTED_PENDING_VALIDATION_MERGE_AND_RESIDENT_CONSUMPTION
+state: RESIDENT_CHAIN_SOURCE_MERGED / NATIVE_MATERIALIZATION_PARITY_PENDING
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 heartbeat_grants_execution_authority: false
@@ -68,3 +68,20 @@ DEVICE_KV_INTR_OBSERVED != production Interlock global activation
 
 Hosted validation may prove the consumer fails closed; it cannot satisfy a runtime
 terminal predicate.
+
+
+## Native materialization parity follow-up
+
+Post-merge inspection found that native bootstrap uses an explicit script allowlist.
+The dispatcher registration alone therefore did not guarantee that a fresh sovereign
+runtime contained this chain consumer. The same omission was present for the recently
+merged Bootstrap v1 InTr bundle-delivery consumer.
+
+The parity repair adds both registered consumers to:
+- native heartbeat runtime COPY_FILES and required-file validation;
+- native sovereign bootstrap REQUIRED_SOURCE_FILES;
+- already-local sovereign source refresh STATIC_FILES;
+- regression tests for fresh materialization and local refresh.
+
+This changes source materialization only. It does not prove resident consumption,
+lease opening, Node-KV continuity, DEVICE_KV_INTR observation, or global activation.
