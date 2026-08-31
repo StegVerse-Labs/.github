@@ -8,6 +8,10 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
 
+from heartbeat_runtime.independent_oscillator import PROTOCOL_ANCHOR_UNIX_NS
+from heartbeat_runtime.intr_derived_carrier import derive_intr_carrier_signal
+from heartbeat_runtime.intr_subsignal_runtime import persist_local_intr_subsignal
+
 ROOT = Path(__file__).resolve().parents[1]
 
 CHAIN_SPEC = importlib.util.spec_from_file_location(
@@ -96,6 +100,65 @@ class SvDn1SovereignExecutionChainTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, "durable receipt failed validation"):
                     chain.validate_durable_receipt("SV-DN1-SOURCE-MATERIALIZATION-001", {"HOME": str(base)})
 
+
+    def test_intr_receipt_requires_shared_hb_signal_and_exact_carrier_lineage(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            intr_root = base / "intr"
+            hb_root = base / "heartbeat"
+            receipt_path = intr_root / "receipts/latest.json"
+            main_receipt = {
+                "receipt_hash": "sha256:" + "a" * 64,
+                "state": "COMPLETE",
+                "route_id": "SV-DN-1-HF-PUBLIC",
+                "destination_validation": "PASS",
+                "lineage_verified": True,
+                "authority_effect": "NONE",
+            }
+            write_json(receipt_path, main_receipt)
+            values = {
+                "STEGVERSE_SV_DN1_INTR_STATE_ROOT": str(intr_root),
+                "STEGVERSE_HEARTBEAT_ROOT": str(hb_root),
+            }
+            with self.assertRaisesRegex(RuntimeError, "carrier-binding.latest.json missing"):
+                chain.validate_durable_receipt("SV-DN1-INTR-RUNTIME-001", values)
+
+            signal = derive_intr_carrier_signal(
+                packet_id="SV-DN1-INTR-TEST",
+                payload_hash="sha256:" + "b" * 64,
+                sampled_unix_ms=PROTOCOL_ANCHOR_UNIX_NS // 1_000_000 + 1234,
+                packet_bytes=b'{"exchange":"exact"}',
+                intr_transport_profile="stegverse.universal-intr.adjacent-hop/v1",
+                boundary_from="EXTERNAL_SYSTEM",
+                boundary_to="STEGOS_ECOSYSTEM",
+                packet_receipt_hash="a" * 64,
+            )
+            shared = persist_local_intr_subsignal(root=hb_root, signal=signal)
+            carrier = {
+                "state": "COMPLETE",
+                "transition_id": "SV_DN1_HB_INTR_CARRIER_BOUND",
+                "intr_receipt_hash": main_receipt["receipt_hash"],
+                "carrier_signal_id": signal["signal_id"],
+                "carrier_binding_sha256": signal["carrier"]["carrier_binding_sha256"],
+                "packet_sha256": signal["intr"]["packet_sha256"],
+                "packet_recovery_verified": True,
+                "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+                "heartbeat_grants_authority": False,
+                "derived_carrier_grants_authority": False,
+                "credential_authority": "TV/TVC",
+                "authority_effect": "NONE_CARRIER_ONLY",
+                "shared_hb_signal_ref": shared["signal_ref"],
+                "shared_hb_signal_sha256": shared["signal_sha256"],
+            }
+            write_json(intr_root / "receipts/carrier-binding.latest.json", carrier)
+            observed = chain.validate_durable_receipt("SV-DN1-INTR-RUNTIME-001", values)
+            self.assertTrue(observed["shared_hb_signal_proof_verified"])
+            self.assertEqual(observed["shared_hb_signal_ref"], shared["signal_ref"])
+
+            carrier["shared_hb_signal_sha256"] = "0" * 64
+            write_json(intr_root / "receipts/carrier-binding.latest.json", carrier)
+            with self.assertRaisesRegex(RuntimeError, "shared HB signal digest mismatch"):
+                chain.validate_durable_receipt("SV-DN1-INTR-RUNTIME-001", values)
 
     def test_source_prep_v2_receipt_is_accepted_and_legacy_shape_is_not_required(self) -> None:
         with tempfile.TemporaryDirectory() as td:
