@@ -45,6 +45,8 @@ NONSECRET_ENV = (
     "STEGVERSE_SV_DN1_SOURCE_ROOT", "STEGVERSE_SV_DN1_MATERIALIZED_SOURCE_ROOT",
     "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT", "STEGVERSE_SV_DN1_INTR_STATE_ROOT",
     "STEGVERSE_SV_DN1_SDK_FIRST_ROUND_STATE_ROOT",
+    "STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT",
+    "STEGVERSE_SV_DN1_BROWSER_OBSERVATION_BUNDLE",
     "STEGVERSE_SV_DN1_PUBLIC_PROMOTION_STATE_ROOT",
     "STEGVERSE_SOURCE_MATERIALIZATION_ROOT", "STEGVERSE_SOURCE_PACKAGE_ROOT",
     "STEGVERSE_FORMALISM_TVC_SPOOL_ROOT", "STEGVERSE_SDK_SOURCE_ROOT",
@@ -95,7 +97,7 @@ def _receipt_specs(values: Mapping[str, str]) -> dict[str, tuple[Path, dict[str,
     source_root = Path.home() / ".stegverse" / "state" / "sv-dn1-source-materialization"
     resident_root = _bound_path("STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT", Path.home()/".stegverse"/"state"/"sv-dn1-resident-observer", values)
     intr_root = _bound_path("STEGVERSE_SV_DN1_INTR_STATE_ROOT", Path.home()/".stegverse"/"state"/"sv-dn1-intr-runtime", values)
-    source_prep_root = Path.home()/".stegverse"/"state"/"sv-dn1-production-source-prep"
+    source_prep_root = _bound_path("STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT", Path.home()/".stegverse"/"state"/"sv-dn1-production-source-prep", values)
     sdk_root = _bound_path("STEGVERSE_SV_DN1_SDK_FIRST_ROUND_STATE_ROOT", Path.home()/".stegverse"/"state"/"sv-dn1-sdk-first-round", values)
     promotion_root = _bound_path("STEGVERSE_SV_DN1_PUBLIC_PROMOTION_STATE_ROOT", Path.home()/".stegverse"/"state"/"sv-dn1-public-promotion", values)
     persistence_root = Path.home()/".stegverse"/"state"/"sv-dn1-repository-persistence-package"
