@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -40,6 +41,101 @@ def _safe_name(signal_id: str) -> str:
     return f"{digest}.json"
 
 
+def default_heartbeat_runtime_root(env: Mapping[str, str] | None = None) -> Path:
+    values = dict(os.environ if env is None else env)
+    override = values.get("STEGVERSE_HEARTBEAT_ROOT")
+    if override:
+        return Path(override).expanduser().resolve()
+    base = Path(values.get("XDG_STATE_HOME", str(Path.home() / ".local" / "state")))
+    return (base / "stegverse" / "heartbeat-runtime").resolve()
+
+
+def persist_local_intr_subsignal(*, root: Path, signal: Mapping[str, Any]) -> dict[str, Any]:
+    """Persist one already-derived exact HB/InTr carrier frame write-once."""
+    runtime_root = root.expanduser().resolve()
+    runtime_root.mkdir(parents=True, exist_ok=True)
+    if signal.get("schema") != SIGNAL_SCHEMA:
+        raise LocalDerivedCarrierError("derived_carrier_schema_invalid")
+    try:
+        packet_bytes = recover_intr_packet_bytes(signal)
+    except DerivedCarrierError as exc:
+        raise LocalDerivedCarrierError(str(exc)) from exc
+
+    material = dict(signal)
+    signal_digest = signal_sha256(material)
+    signal_dir = runtime_root / SIGNAL_DIR_REL
+    signal_dir.mkdir(parents=True, exist_ok=True)
+    signal_path = signal_dir / _safe_name(str(material["signal_id"]))
+    serialized = json.dumps(material, sort_keys=True, indent=2) + "\n"
+
+    newly_materialized = False
+    if signal_path.exists():
+        existing = signal_path.read_text(encoding="utf-8")
+        if existing != serialized:
+            raise LocalDerivedCarrierError("derived_carrier_write_once_collision")
+    else:
+        temporary = signal_path.with_suffix(".tmp")
+        temporary.write_text(serialized, encoding="utf-8")
+        temporary.replace(signal_path)
+        newly_materialized = True
+
+    persisted = json.loads(signal_path.read_text(encoding="utf-8"))
+    try:
+        recovered = recover_intr_packet_bytes(persisted)
+    except DerivedCarrierError as exc:
+        raise LocalDerivedCarrierError(str(exc)) from exc
+    if recovered != packet_bytes:
+        raise LocalDerivedCarrierError("derived_carrier_exact_packet_recovery_failed")
+    if signal_sha256(persisted) != signal_digest:
+        raise LocalDerivedCarrierError("derived_carrier_persisted_signal_digest_mismatch")
+
+    event = {
+        "schema": EVENT_SCHEMA,
+        "event": "HB_DERIVED_INTR_SUBSIGNAL_PROPAGATED_LOCAL",
+        "signal_id": material["signal_id"],
+        "signal_sha256": signal_digest,
+        "signal_ref": str(signal_path.relative_to(runtime_root)),
+        "heartbeat_epoch": material["carrier"]["heartbeat_epoch"],
+        "heartbeat_reference": material["carrier"]["heartbeat_reference"],
+        "carrier_channel_id": material["carrier"]["channel_id"],
+        "carrier_binding_sha256": material["carrier"]["carrier_binding_sha256"],
+        "packet_id": material["intr"]["packet_id"],
+        "packet_sha256": material["intr"]["packet_sha256"],
+        "packet_receipt_hash": material["intr"]["packet_receipt_hash"],
+        "exact_packet_recovered": True,
+        "heartbeat_progression_effect": "NONE",
+        "worker_coordinator_invoked": False,
+        "claim_or_fence_minted": False,
+        "credential_authority": "TV/TVC",
+        "authority_effect": "NONE_CARRIER_OBSERVATION_ONLY",
+    }
+
+    if newly_materialized:
+        event_path = runtime_root / EVENT_LOG_REL
+        event_path.parent.mkdir(parents=True, exist_ok=True)
+        with event_path.open("a", encoding="utf-8") as stream:
+            stream.write(json.dumps(event, sort_keys=True) + "\n")
+
+    return {
+        "schema": "stegverse.heartbeat-intr-local-propagation-result/v1",
+        "state": "PROPAGATED_LOCAL" if newly_materialized else "ALREADY_PROPAGATED_IDENTICAL",
+        "signal_ref": str(signal_path.relative_to(runtime_root)),
+        "event_log_ref": str(EVENT_LOG_REL),
+        "signal_sha256": signal_digest,
+        "heartbeat_epoch": material["carrier"]["heartbeat_epoch"],
+        "heartbeat_reference": material["carrier"]["heartbeat_reference"],
+        "carrier_channel_id": material["carrier"]["channel_id"],
+        "packet_id": material["intr"]["packet_id"],
+        "packet_sha256": material["intr"]["packet_sha256"],
+        "exact_packet_recovered": True,
+        "heartbeat_progression_effect": "NONE",
+        "worker_coordinator_invoked": False,
+        "claim_or_fence_minted": False,
+        "credential_authority": "TV/TVC",
+        "authority_effect": "NONE_CARRIER_ONLY",
+    }
+
+
 def propagate_local_intr_subsignal(
     *,
     root: Path,
@@ -74,79 +170,7 @@ def propagate_local_intr_subsignal(
     except DerivedCarrierError as exc:
         raise LocalDerivedCarrierError(str(exc)) from exc
 
-    signal_digest = signal_sha256(signal)
-    signal_dir = runtime_root / SIGNAL_DIR_REL
-    signal_dir.mkdir(parents=True, exist_ok=True)
-    signal_path = signal_dir / _safe_name(str(signal["signal_id"]))
-    serialized = json.dumps(signal, sort_keys=True, indent=2) + "\n"
-
-    newly_materialized = False
-    if signal_path.exists():
-        existing = signal_path.read_text(encoding="utf-8")
-        if existing != serialized:
-            raise LocalDerivedCarrierError("derived_carrier_write_once_collision")
-    else:
-        temporary = signal_path.with_suffix(".tmp")
-        temporary.write_text(serialized, encoding="utf-8")
-        temporary.replace(signal_path)
-        newly_materialized = True
-
-    # Re-read and reconstruct before any event evidence is emitted.
-    persisted = json.loads(signal_path.read_text(encoding="utf-8"))
-    try:
-        recovered = recover_intr_packet_bytes(persisted)
-    except DerivedCarrierError as exc:
-        raise LocalDerivedCarrierError(str(exc)) from exc
-    if recovered != packet_bytes:
-        raise LocalDerivedCarrierError("derived_carrier_exact_packet_recovery_failed")
-    if signal_sha256(persisted) != signal_digest:
-        raise LocalDerivedCarrierError("derived_carrier_persisted_signal_digest_mismatch")
-
-    event = {
-        "schema": EVENT_SCHEMA,
-        "event": "HB_DERIVED_INTR_SUBSIGNAL_PROPAGATED_LOCAL",
-        "signal_id": signal["signal_id"],
-        "signal_sha256": signal_digest,
-        "signal_ref": str(signal_path.relative_to(runtime_root)),
-        "heartbeat_epoch": signal["carrier"]["heartbeat_epoch"],
-        "heartbeat_reference": signal["carrier"]["heartbeat_reference"],
-        "carrier_channel_id": signal["carrier"]["channel_id"],
-        "carrier_binding_sha256": signal["carrier"]["carrier_binding_sha256"],
-        "packet_id": signal["intr"]["packet_id"],
-        "packet_sha256": signal["intr"]["packet_sha256"],
-        "packet_receipt_hash": signal["intr"]["packet_receipt_hash"],
-        "exact_packet_recovered": True,
-        "heartbeat_progression_effect": "NONE",
-        "worker_coordinator_invoked": False,
-        "claim_or_fence_minted": False,
-        "credential_authority": "TV/TVC",
-        "authority_effect": "NONE_CARRIER_OBSERVATION_ONLY",
-    }
-
-    if newly_materialized:
-        event_path = runtime_root / EVENT_LOG_REL
-        event_path.parent.mkdir(parents=True, exist_ok=True)
-        with event_path.open("a", encoding="utf-8") as stream:
-            stream.write(json.dumps(event, sort_keys=True) + "\n")
-
-    return {
-        "schema": "stegverse.heartbeat-intr-local-propagation-result/v1",
-        "state": "PROPAGATED_LOCAL" if newly_materialized else "ALREADY_PROPAGATED_IDENTICAL",
-        "signal_ref": str(signal_path.relative_to(runtime_root)),
-        "event_log_ref": str(EVENT_LOG_REL),
-        "signal_sha256": signal_digest,
-        "heartbeat_epoch": signal["carrier"]["heartbeat_epoch"],
-        "heartbeat_reference": signal["carrier"]["heartbeat_reference"],
-        "carrier_channel_id": signal["carrier"]["channel_id"],
-        "packet_id": signal["intr"]["packet_id"],
-        "packet_sha256": signal["intr"]["packet_sha256"],
-        "exact_packet_recovered": True,
-        "heartbeat_progression_effect": "NONE",
-        "worker_coordinator_invoked": False,
-        "claim_or_fence_minted": False,
-        "credential_authority": "TV/TVC",
-        "authority_effect": "NONE_CARRIER_ONLY",
-    }
+    return persist_local_intr_subsignal(root=runtime_root, signal=signal)
 
 
 def recover_local_intr_subsignal(*, root: Path, signal_ref: str) -> bytes:
@@ -169,6 +193,8 @@ __all__ = [
     "SIGNAL_DIR_REL",
     "EVENT_LOG_REL",
     "LocalDerivedCarrierError",
+    "default_heartbeat_runtime_root",
+    "persist_local_intr_subsignal",
     "propagate_local_intr_subsignal",
     "recover_local_intr_subsignal",
     "signal_sha256",
