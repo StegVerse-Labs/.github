@@ -5,7 +5,7 @@ Repository: StegVerse-Labs/.github
 Issue: #690
 Branch: feature/universal-governance-enforced-reference
 Task: SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001
-State: SOURCE_IMPLEMENTATION_IN_PROGRESS
+State: SOURCE_MERGED_VALIDATED / RESIDENT_EXECUTION_PENDING
 Credential authority: TV/TVC
 Execution authority: bounded target consequence only after independent target-authority validation
 GitHub token runtime authority: NONE
@@ -107,11 +107,44 @@ publication authority = false
 
 ```text
 IMPLEMENTED: true
-VALIDATED: PENDING_CI
-MERGED: false
+VALIDATED: true
+MERGED: true
 RESIDENT_ADMITTED: false
 REFERENCE_ENFORCED_BOUNDARY_OBSERVED: false
 BYPASS_NEGATIVE_CONTROL_OBSERVED: false
 REAL_EXTERNAL_SYSTEM_ENFORCED_ACTIVATION: false
 COMPLETE: false
+```
+
+
+## Resident targeted execution seam — issue #702
+
+The existing resident refresh/one-shot path is the canonical execution surface. No new scheduler or request format is introduced.
+
+```text
+python scripts/refresh_and_execute_resident_task.py \
+  --task-id SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001
+```
+
+For deployments that require explicit source locators, the refresh bridge forwards only these non-secret paths:
+
+```text
+STEGVERSE_STEGCORE_SOURCE_ROOT
+STEGVERSE_MASTER_RECORDS_SOURCE_ROOT
+```
+
+They survive `clean_exec_env()` while GitHub credential variables and hosted-runtime markers remain stripped.
+
+The targeted execution path still requires the existing separated carrier reference and invokes exactly one independently admitted WorkerCoordinator task. Source refresh is not runtime execution and source materialization remains separately governed.
+
+Current lifecycle remains:
+
+```text
+SOURCE_IMPLEMENTED: true
+SOURCE_VALIDATED: true
+SOURCE_MERGED: true
+RESIDENT_TARGETABLE: true
+RESIDENT_EXECUTION_OBSERVED: false
+REFERENCE_ENFORCED_BOUNDARY_OBSERVED: false
+REAL_EXTERNAL_SYSTEM_ENFORCED_ACTIVATION: false
 ```
