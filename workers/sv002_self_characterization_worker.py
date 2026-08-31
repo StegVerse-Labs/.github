@@ -175,7 +175,7 @@ def _process_argv(entry: Path) -> list[str]:
         return []
     return [
         part.decode("utf-8", "replace")
-        for part in raw.split(b"\\x00")
+        for part in raw.split(b"\x00")
         if part
     ]
 
