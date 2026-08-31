@@ -39,7 +39,7 @@ COMPONENT_TO_RUNTIME_KEY = {
 ANCHORS = {
     "sdk": {
         "stegverse/governance_ingress_runtime.py": "62c5ae4799ae018f6b100766215c3c68078c5b2e",
-        "stegverse/sovereign_validation_runtime.py": "814d4cb607cc2cb4c7a605474fe845e13540898d",
+        "stegverse/sovereign_validation_runtime.py": "6bc0944633b6299c19f065f44dd5999434445dd7",
     },
     "stegcore": {
         "src/stegcore/transaction_lifecycle.py": "81935669846fedd2867272810b090226b05780ab",
