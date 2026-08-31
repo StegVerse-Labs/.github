@@ -763,3 +763,21 @@ This closes the missing targeted invocation surface only. Authentic HIL executio
 remains blocked until the already-local checkout is current and this local command
 or the installed source watcher executes on an eligible sovereign runtime. A CI
 PASS cannot satisfy that predicate.
+
+## 2026-08-31 portable TVC source-proof closure
+
+The portable resident bundle now carries an optional machine-verifiable TVC source proof generated from an already-local Git checkout. For the HIL lifecycle protected surface, the canonical packager records the TVC HEAD, proves the validated source-floor commit is present, proves the protected HIL lifecycle paths are unchanged since that floor, and records the exact materialized subpath.
+
+StegDeploy persists the verified bundle manifest locally and passes it to the native WorkerCoordinator as `STEGVERSE_RESIDENT_SOURCE_MANIFEST`.
+
+`consume_hil_tvc_lifecycle_outbox.py` now accepts either:
+
+```text
+ordinary local TVC Git proof
+or
+verified portable bundle proof + exact current protected-file digest match
+```
+
+The portable proof path does not copy `.git`, Git remotes, credentials, or network authority into the resident. Missing/unverified proof remains predicate-pending; digest or identity mismatch fails closed.
+
+This removes a portability defect where the bundled TVC source could execute ordinary resident activation but the HIL lifecycle consumer could reject the exact same verified materialization solely because `.git` metadata was intentionally excluded.
