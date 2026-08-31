@@ -642,7 +642,8 @@ def main():
             "network_fetch_performed": False,
             "credential_authority": "TV/TVC",
             "github_token_required": False,
-            "authority_effect": "NONE",
+            "authority_effect_resolution": "NOT_APPLICABLE_NO_PRINCIPAL_TRANSITION",
+            "authority_transfer_assumed": False,
         }
         out.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
         print(json.dumps(response("BLOCKED", "SV002_SELF_CHARACTERIZATION_BLOCKED", epoch), sort_keys=True))
@@ -696,11 +697,14 @@ def main():
         "self_characterization_path": str(state_root / "SELF_CHARACTERIZATION.md") if completed else None,
         "formal_result_path": str(state_root / "SELF_CHARACTERIZATION_FORMAL.json") if completed else None,
         "interaction_receipt_chain_path": str(state_root / "INTERACTION_RECEIPT_CHAIN.json") if completed else None,
+        "transition_effects_path": str(state_root / "TRANSITION_EFFECTS.json") if completed else None,
         "master_records_reconstruction": master_records_reconstruction,
         "network_fetch_performed": False,
         "credential_authority": "TV/TVC",
         "github_token_required": False,
-        "authority_effect": "NONE",
+        "authority_transfer_assumed": False,
+        "authority_effect_resolution": result.get("authority_effect_resolution", "DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS") if completed else "NOT_APPLICABLE_NO_PRINCIPAL_TRANSITION",
+        "transition_effect_state": result.get("transition_effect_state", "PENDING_TRANSITION_ELEMENT_EVALUATION") if completed else "NOT_YET_EVALUATED",
     }
     out.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
     print(
