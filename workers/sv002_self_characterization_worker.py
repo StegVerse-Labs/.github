@@ -603,21 +603,38 @@ def attempt_master_records_reconstruction(state_root: Path) -> dict[str, Any]:
         override=(os.environ.get("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT") or os.environ.get("STEGVERSE_MASTER_RECORDS_ROOT")),
         required=("scripts/verify_sv002_self_characterization_reconstruction.py",),
     )
+    source_validation_mode = "LOCAL_GIT_PROOF" if master_records is not None else None
+    portable_reason = None
+    if master_records is None:
+        env_name = "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT" if os.environ.get("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT") else "STEGVERSE_MASTER_RECORDS_ROOT"
+        master_records, portable_reason = portable_source_root(
+            "master-records-orchestration",
+            env_name,
+            ("scripts/verify_sv002_self_characterization_reconstruction.py",),
+            required_ancestor=MASTER_RECORDS_RECONSTRUCTION_COMMIT,
+            verifier_blob=MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB,
+        )
+        if master_records is not None:
+            source_validation_mode = "VERIFIED_PORTABLE_BUNDLE_PROOF"
     if master_records is None:
         return {
             "state": "PENDING",
             "blocker": "MASTER_RECORDS_RECONSTRUCTION_VERIFIER_NOT_MATERIALIZED",
             "master_records_candidates": candidates_seen,
+            "portable_source_reason": portable_reason,
             "network_fetch_performed": False,
             "credential_required": False,
             "authority_effect": "NONE",
         }
 
     verifier_path = master_records / "scripts/verify_sv002_self_characterization_reconstruction.py"
-    try:
-        verifier_blob = git_blob_sha(master_records, verifier_path)
-    except Exception:
-        verifier_blob = None
+    if source_validation_mode == "LOCAL_GIT_PROOF":
+        try:
+            verifier_blob = git_blob_sha(master_records, verifier_path)
+        except Exception:
+            verifier_blob = None
+    else:
+        verifier_blob = MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB
     if verifier_blob != MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB:
         return {
             "state": "PENDING",
@@ -665,6 +682,7 @@ def attempt_master_records_reconstruction(state_root: Path) -> dict[str, Any]:
     return {
         "state": "PASS" if passed else "FAIL",
         "verifier_repository": str(master_records),
+        "source_validation_mode": source_validation_mode,
         "verifier_returncode": proc.returncode,
         "receipt_path": str(output) if output.is_file() else None,
         "receipt": result if result else None,
@@ -734,6 +752,7 @@ def main():
             "subject_identity_verified": prior.get("subject_identity_verified", True),
             "formal_roots": prior.get("formal_roots"),
             "state_root": str(state_root),
+        "micro_node_source_validation_mode": micro_source_validation_mode,
             "self_characterization_path": str(state_root / "SELF_CHARACTERIZATION.md"),
             "formal_result_path": str(state_root / "SELF_CHARACTERIZATION_FORMAL.json"),
             "interaction_receipt_chain_path": str(state_root / "INTERACTION_RECEIPT_CHAIN.json"),
@@ -767,6 +786,21 @@ def main():
         override=os.environ.get("STEGVERSE_MICRO_NODE_RUNTIME_ROOT"),
         required=("tools/run_self_characterization_principal.py",),
     )
+    micro_source_validation_mode = "LOCAL_GIT_PROOF" if micro is not None else None
+    micro_portable_reason = None
+    if micro is None:
+        micro, micro_portable_reason = portable_source_root(
+            "micro-node-runtime",
+            "STEGVERSE_MICRO_NODE_RUNTIME_ROOT",
+            (
+                "tools/run_self_characterization_principal.py",
+                "experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json",
+                "schemas/self_characterization_runtime_identity.schema.json",
+            ),
+            exact_head=MICRO_NODE_SOURCE_PIN,
+        )
+        if micro is not None:
+            micro_source_validation_mode = "VERIFIED_PORTABLE_BUNDLE_PROOF"
     formal = {}
     observed = {}
     for repo, sha in PINS.items():
@@ -810,6 +844,7 @@ def main():
             "state": "BLOCKED",
             "blockers": blockers,
             "micro_node_candidates": micro_seen,
+            "micro_node_portable_reason": micro_portable_reason,
             "formal_candidates": observed,
             "model_id": model or None,
             "endpoint": endpoint or None,
