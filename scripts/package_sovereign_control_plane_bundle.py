@@ -13,11 +13,20 @@ import hashlib
 import json
 import os
 import stat
+import subprocess
 import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_NAME = "stegverse-control-plane-manifest.json"
+TVC_HIL_SOURCE_FLOOR = "2787eece099604a4d2aad93c575167dc73e54037"
+TVC_HIL_PROTECTED_PATHS = (
+    "tools/hil_intr_lifecycle_intake.py",
+    "tasks/hil_experiment_backend_adapter.py",
+    "tasks/experiment_controlled_cycle.py",
+    "config/experiment_backend.json",
+    "config/package_registry.json",
+)
 
 INCLUDE_DIRS = (
     "heartbeat_runtime",
@@ -59,6 +68,65 @@ FORBIDDEN_NAME_FRAGMENTS = (
 
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _git(root: Path, *args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", "-C", str(root), *args],
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=30,
+        env={
+            "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
+            "HOME": os.environ.get("HOME", str(Path.home())),
+        },
+    )
+
+
+def tvc_source_proof(root: Path, *, source_floor: str = TVC_HIL_SOURCE_FLOOR) -> dict:
+    root = root.expanduser().resolve()
+    proof = {
+        "schema": "stegverse.portable-source-proof/v1",
+        "repository": "StegVerse-Labs/TVC",
+        "materialized_subpath": "vendor/TVC",
+        "source_floor": source_floor,
+        "protected_paths": list(TVC_HIL_PROTECTED_PATHS),
+        "network_fetch_performed": False,
+        "credential_required": False,
+        "authority_effect": "NONE_SOURCE_IDENTITY_ONLY",
+    }
+    if not (root / ".git").is_dir():
+        return {**proof, "state": "UNVERIFIED_NO_LOCAL_GIT_IDENTITY"}
+    head = _git(root, "rev-parse", "HEAD")
+    if head.returncode != 0:
+        return {**proof, "state": "UNVERIFIED_GIT_HEAD_UNAVAILABLE"}
+    ancestor = _git(root, "merge-base", "--is-ancestor", source_floor, "HEAD")
+    if ancestor.returncode != 0:
+        return {**proof, "state": "UNVERIFIED_SOURCE_FLOOR_NOT_PRESENT", "head": head.stdout.strip().lower()}
+    changed = _git(root, "diff", "--name-only", source_floor, "HEAD", "--", *TVC_HIL_PROTECTED_PATHS)
+    working = _git(root, "diff", "--name-only", "--", *TVC_HIL_PROTECTED_PATHS)
+    staged = _git(root, "diff", "--cached", "--name-only", "--", *TVC_HIL_PROTECTED_PATHS)
+    if (
+        changed.returncode != 0
+        or working.returncode != 0
+        or staged.returncode != 0
+        or changed.stdout.strip()
+        or working.stdout.strip()
+        or staged.stdout.strip()
+    ):
+        return {**proof, "state": "UNVERIFIED_PROTECTED_PATH_DRIFT", "head": head.stdout.strip().lower()}
+    missing = [rel for rel in TVC_HIL_PROTECTED_PATHS if not (root / rel).is_file()]
+    if missing:
+        return {**proof, "state": "UNVERIFIED_PROTECTED_PATH_MISSING", "missing": missing, "head": head.stdout.strip().lower()}
+    return {
+        **proof,
+        "state": "VERIFIED_LOCAL_GIT_SOURCE",
+        "head": head.stdout.strip().lower(),
+        "source_floor_present": True,
+        "protected_paths_unchanged_since_floor": True,
+        "protected_worktree_clean": True,
+    }
 
 
 def _safe_tree_files(root: Path) -> list[Path]:
@@ -129,6 +197,7 @@ def build_bundle(
         (path.relative_to(root).as_posix(), path) for path in files
     ]
     vendor_sources = {}
+    vendor_source_proofs = {}
     if stegos_root is not None:
         sr = stegos_root.expanduser().resolve()
         if not (sr / "stegos" / "intr_backbone.py").is_file():
@@ -171,6 +240,7 @@ def build_bundle(
         if not all(path.is_file() for path in tvc_required):
             raise RuntimeError("TVC source root invalid")
         vendor_sources["TVC"] = True
+        vendor_source_proofs["TVC"] = tvc_source_proof(tr)
         bundle_files.extend(
             ("vendor/TVC/" + path.relative_to(tr).as_posix(), path)
             for path in _safe_tree_files(tr)
@@ -195,6 +265,7 @@ def build_bundle(
         "bundle_grants_authority": False,
         "authority_effect": "NONE_SOURCE_TRANSPORT_ONLY",
         "vendor_sources": vendor_sources,
+        "vendor_source_proofs": vendor_source_proofs,
     }
     manifest_bytes = (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode("utf-8")
 
