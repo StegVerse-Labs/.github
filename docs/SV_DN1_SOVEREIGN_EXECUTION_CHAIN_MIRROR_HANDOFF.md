@@ -323,3 +323,22 @@ The seventh task does not mutate a remote repository. It freezes the exact five 
 This removes the runtime-to-repository-content handoff ambiguity without granting GitHub, credential, commit, push, merge or deployment authority. A separately admitted TV/TVC-governed repository mutator remains required for actual persistence.
 
 Request `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-005` is superseded for this seven-step chain. The current exact request is `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-006`, which is merged and `REQUESTED`; it grants no execution, credential, network-source-fetch, repository-writeback, deployment, publication-decision, release, or certification authority.
+
+
+## Final-chain locator drift repair — 2026-08-30
+
+Live source inspection after public-source publication found implementation drift from the continuity contract above: `scripts/run_sv_dn1_first_round_chain.py` did not include `STEGVERSE_SV_DN1_BROWSER_OBSERVATION_BUNDLE` or `STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT` in its clean child environment, and durable source-prep receipt validation ignored the relocated state-root locator.
+
+The repaired contract is:
+
+```text
+portable targeted bridge
+  preserves browser observation locator + source-prep state locator
+resident SV-DN-1 consumer
+  preserves the same locators
+sovereign first-round chain
+  preserves the same locators into WorkerCoordinator children
+  resolves production-source-prep receipt from the relocated state root when supplied
+```
+
+This correction creates no new network, credential, source-acquisition, repository, SDK, governance, or publication authority. It only prevents already-authentic local evidence/state coordinates from being silently discarded at the final process boundary.
