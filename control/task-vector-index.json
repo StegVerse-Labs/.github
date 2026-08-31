@@ -454,11 +454,47 @@
       "vector": "50000000103000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/hil-sovereign-receiver-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+      "vector": "50000000105000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/stegos-sovereign-relay-materialization-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/stegos-relay-node-kv-continuity-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/device-kv-intr-observation-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 46,
-    "local_cosv_record_tasks": 46,
+    "indexed_vectorized_tasks": 50,
+    "local_cosv_record_tasks": 50,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
