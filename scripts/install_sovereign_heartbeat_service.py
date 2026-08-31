@@ -327,13 +327,20 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
     carrier_command = _carrier_command(root)
     worker_command = _worker_command(root, interval_ms)
     rendezvous_env = _resident_rendezvous_env(values)
+    worker_env = dict(rendezvous_env)
+    source_root = str(values.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT") or "").strip()
+    if source_root:
+        source_path = Path(source_root).expanduser().resolve()
+        if source_path == root.resolve():
+            raise RuntimeError("canonical source root must remain distinct from resident runtime root")
+        worker_env["STEGVERSE_HEARTBEAT_SOURCE_ROOT"] = str(source_path)
 
     if name == "linux":
         base = Path(values.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "systemd" / "user"
         carrier_path = base / "stegverse-heartbeat.service"
         worker_path = base / "stegverse-worker-runtime.service"
         carrier_content = _systemd_unit("StegVerse oscillator-produced non-authorizing heartbeat carrier", carrier_command, root)
-        worker_content = _systemd_unit("StegVerse worker control-plane runtime", worker_command, root, rendezvous_env)
+        worker_content = _systemd_unit("StegVerse worker control-plane runtime", worker_command, root, worker_env)
         activation_commands = [
             ["systemctl", "--user", "daemon-reload"],
             ["systemctl", "--user", "enable", "--now", carrier_path.name],
@@ -361,7 +368,7 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
             "ProgramArguments": worker_command,
             "RunAtLoad": True,
             "KeepAlive": True,
-            "EnvironmentVariables": {"STEGVERSE_HEARTBEAT_ROOT": str(root), **rendezvous_env},
+            "EnvironmentVariables": {"STEGVERSE_HEARTBEAT_ROOT": str(root), **worker_env},
             "StandardOutPath": str(root / "receipts" / "sovereign-host" / "worker.stdout.log"),
             "StandardErrorPath": str(root / "receipts" / "sovereign-host" / "worker.stderr.log"),
         }).decode()
@@ -378,7 +385,7 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
         carrier_path = base / "heartbeat-start.cmd"
         worker_path = base / "worker-runtime-start.cmd"
         carrier_content = "@echo off\r\n" + subprocess.list2cmdline(carrier_command) + "\r\n"
-        worker_prefix = "".join(f"set {key}={value}\r\n" for key, value in sorted(rendezvous_env.items()))
+        worker_prefix = "".join(f"set {key}={value}\r\n" for key, value in sorted(worker_env.items()))
         worker_content = "@echo off\r\n" + worker_prefix + subprocess.list2cmdline(worker_command) + "\r\n"
         activation_commands = [
             ["schtasks", "/Create", "/F", "/SC", "ONLOGON", "/TN", "StegVerse Heartbeat", "/TR", str(carrier_path)],
@@ -429,6 +436,8 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
         "render_production_runtime_used": False,
         "manual_action_required": False,
         "resident_rendezvous_configured": bool(rendezvous_env),
+        "native_local_source_refresh_configured": bool(worker_env.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT")),
+        "canonical_local_source_root": worker_env.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT"),
         "resident_rendezvous_url": rendezvous_env.get("STEGVERSE_RESIDENT_RENDEZVOUS_URL"),
         "resident_rendezvous_node_ref": rendezvous_env.get("STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF"),
         "resident_rendezvous_grants_execution_authority": False,
