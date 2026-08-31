@@ -273,23 +273,25 @@ def validate_transport_receipt(receipt: Mapping[str, Any], *, direction: str, fr
         raise ValueError("transport receipt hash mismatch")
 
 
-def build_hb_carrier_signal(*, packet_bytes: bytes, receipt_hash: str, boundary_from: str, boundary_to: str,
-                            now_ns: int | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
+def build_hb_carrier_signal(*, packet_id: str, payload_hash: str, packet_bytes: bytes, receipt_hash: str,
+                            boundary_from: str, boundary_to: str, now_ns: int | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
     sample_ns = time.time_ns() if now_ns is None else int(now_ns)
     reference = current_reference(now_ns=sample_ns)
     normalized_receipt = str(receipt_hash or "")
     if normalized_receipt.startswith("sha256:"):
         normalized_receipt = normalized_receipt[7:]
     signal = derive_intr_carrier_signal(
-        heartbeat_epoch=reference["epoch"],
-        heartbeat_reference=reference["heartbeat_id"],
-        phase_slots=4,
+        packet_id=packet_id,
+        payload_hash=payload_hash,
+        sampled_unix_ms=sample_ns // 1_000_000,
         packet_bytes=packet_bytes,
         intr_transport_profile="stegverse.universal-intr.adjacent-hop/v1",
         boundary_from=boundary_from,
         boundary_to=boundary_to,
         packet_receipt_hash=normalized_receipt,
     )
+    if signal["carrier"]["heartbeat_epoch"] != reference["epoch"] or signal["carrier"]["heartbeat_reference"] != reference["heartbeat_id"]:
+        raise ValueError("HB-derived carrier/reference sampling mismatch")
     if recover_intr_packet_bytes(signal) != packet_bytes:
         raise ValueError("HB-derived carrier exact packet recovery failed")
     return signal, reference
@@ -436,6 +438,8 @@ def main() -> int:
         recorded_at=request_receipt_recorded_at,
     )
     request_carrier_signal, request_carrier_reference = build_hb_carrier_signal(
+        packet_id=envelope["packet_id"],
+        payload_hash=envelope["payload_hash"],
         packet_bytes=request_wire,
         receipt_hash=request_receipt["receipt_hash"],
         boundary_from="DEVICE_SYSTEM",
@@ -525,6 +529,8 @@ def main() -> int:
                 "response_receipt": response_receipt,
             }).encode()
             response_carrier_signal, response_carrier_reference = build_hb_carrier_signal(
+                packet_id=response_receipt["packet_id"],
+                payload_hash=response_hash,
                 packet_bytes=response_wire,
                 receipt_hash=response_receipt["receipt_hash"],
                 boundary_from="KV",
