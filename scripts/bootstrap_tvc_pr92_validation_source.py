@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import os
@@ -149,5 +150,14 @@ def bootstrap(runtime_root: Path | None = None) -> dict[str, Any]:
     return stage(runtime_root)
 
 
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Stage the non-secret TVC PR #92 private-source request for the resident systemd path watcher.")
+    parser.add_argument("--runtime-root", type=Path)
+    args = parser.parse_args()
+    result = bootstrap(args.runtime_root)
+    print(json.dumps(result, sort_keys=True))
+    return 0 if result.get("state") in {"READY", "HANDOFF_READY"} else 1
+
+
 if __name__ == "__main__":
-    print(json.dumps(bootstrap(), sort_keys=True))
+    raise SystemExit(main())
