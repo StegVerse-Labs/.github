@@ -168,6 +168,33 @@ class HeartbeatRuntime(LegacyRuntimeBase):
             triggers.append(assignment_trigger_packet(carrier_epoch=epoch, task=task))
         return triggers
 
+    def _derived_intr_signal_presence(self) -> dict[str, Any] | None:
+        directory = self.root / "control" / "heartbeat-derived-signals.d"
+        if not directory.is_dir():
+            return None
+        rows = []
+        for path in sorted(directory.glob("*.json")):
+            try:
+                digest = self._sha256_bytes(path.read_bytes())
+            except OSError:
+                continue
+            rows.append({
+                "signal_ref": str(path.relative_to(self.root)),
+                "signal_file_sha256": digest,
+            })
+        if not rows:
+            return None
+        return {
+            "signal_id": "hb_intr_derived_carrier_signal_presence",
+            "kind": "SUBSYSTEM_SIGNAL_PRESENCE",
+            "present": True,
+            "signal_count": len(rows),
+            "signals": rows,
+            "source_ref": "control/heartbeat-derived-signals.d/",
+            "validation_role": "PRESENCE_ONLY_PACKET_VALIDATION_EXTERNAL_TO_HEARTBEAT",
+            "authority_effect": "NONE",
+        }
+
     def _carrier_observation(self, state: dict[str, Any], control_hash: str, trigger_count: int) -> dict[str, Any]:
         epoch = int(state["epoch"])
         observations = [
@@ -193,6 +220,9 @@ class HeartbeatRuntime(LegacyRuntimeBase):
                 "authority_effect": "NONE",
             },
         ]
+        derived_intr = self._derived_intr_signal_presence()
+        if derived_intr is not None:
+            observations.append(derived_intr)
         if trigger_count:
             observations.append({
                 "signal_id": "unassigned_worker_task_packet_presence",

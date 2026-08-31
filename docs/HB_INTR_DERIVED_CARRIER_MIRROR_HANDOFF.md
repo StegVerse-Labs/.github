@@ -89,13 +89,14 @@ Schema:
 Given:
 - canonical numeric heartbeat epoch;
 - canonical heartbeat identifier/reference;
-- carrier-envelope phase slot count;
+- canonical InTr packet ID and payload hash;
+- canonical HB sample time/reference;
 - exact already-governed InTr packet bytes;
 - InTr transport profile and boundary identities;
 
 the carrier derives:
 - exact packet SHA-256;
-- deterministic channel slot from packet SHA-256 modulo phase-slot count;
+- deterministic channel slot from the canonical packet identity rule (`SHA256(packet_id)` first 32 bits modulo 16);
 - deterministic phase offset from slot/phase count;
 - stable carrier signal identity;
 - exact base64 packet bytes;
@@ -145,3 +146,35 @@ Source completion requires:
 - SV-DN-1 InTr handoff reference to the carrier profile.
 
 Runtime activation/observation remains separate.
+
+
+## Current local propagation runtime
+
+Issue #624 installs the current equivalent of historical local HB subsignal carriage:
+
+```text
+heartbeat_runtime/intr_subsignal_runtime.py
+
+propagate_local_intr_subsignal(...)
+  -> derive canonical HB/InTr binding
+  -> preserve exact packet bytes in derived carrier frame
+  -> write-once local signal
+  -> append observation event only after exact re-read/recovery PASS
+
+recover_local_intr_subsignal(...)
+  -> revalidate carrier binding
+  -> revalidate channel/reference identity
+  -> revalidate packet SHA-256
+  -> return exact original bytes
+```
+
+Dedicated state is used instead of `control/heartbeat-subsignals.json` so the historical carrier concept is retained without making current worker-coordination state a transport/control authority.
+
+Canonical local paths:
+
+```text
+control/heartbeat-derived-signals.d/
+events/heartbeat-derived-carrier.jsonl
+```
+
+An identical repeat is idempotent; a write-once collision or any carrier/packet tamper fails closed.
