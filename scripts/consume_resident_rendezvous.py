@@ -19,6 +19,7 @@ DISPATCHER = Path("scripts/dispatch_resident_execution_requests.py")
 CHAIN_RECEIPT = Path("receipts/sovereign-host/stegos-kv-intr-chain-consumption.latest.json")
 DISPATCH_RECEIPT = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
 RECEIPT_PATH = Path("receipts/sovereign-host/resident-rendezvous-consumption.latest.json")
+SUPERSEDED_REQUEST_DIR = Path("receipts/sovereign-host/resident-rendezvous-superseded-requests")
 
 RENDEZVOUS_REQUEST_SCHEMA = "stegverse.resident-rendezvous.request/v1"
 FETCH_SCHEMA = "stegverse.resident-rendezvous.fetch-result/v1"
@@ -233,6 +234,30 @@ def http_post_json(url: str, payload: Mapping[str, Any], *, node_ref: str, timeo
         return json.loads(response.read().decode("utf-8"))
 
 
+def _allowed_request_supersession(existing: Mapping[str, Any], current: Mapping[str, Any]) -> bool:
+    legacy_steps = [
+        "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+        "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
+        "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+        "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+    ]
+    same_contract_keys = (
+        "schema", "state", "task_id", "mode", "entrypoint", "credential_authority",
+        "github_token_required", "github_token_runtime_authority",
+        "heartbeat_grants_execution_authority", "request_granted_authority",
+        "network_source_fetch_allowed", "second_machine_required", "authority_effect",
+    )
+    if existing.get("request_id") != "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-001":
+        return False
+    if current.get("request_id") != "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-002":
+        return False
+    if any(existing.get(key) != current.get(key) for key in same_contract_keys):
+        return False
+    if current.get("steps") != STEPS:
+        return False
+    return existing.get("steps") in (STEPS, legacy_steps)
+
+
 def materialize_request(runtime_root: Path, resident_request: Mapping[str, Any]) -> Path:
     path = runtime_root / REQUEST_PATH
     validated = validate_resident_request(resident_request)
@@ -240,9 +265,19 @@ def materialize_request(runtime_root: Path, resident_request: Mapping[str, Any])
         existing = load_json(path)
         if canonical_json(existing) == canonical_json(validated):
             return path
-        # This v1 lane owns one exact resident request. A different local request
-        # at the same canonical path is an ambiguity and must not be overwritten.
-        raise ResidentRendezvousConsumerError("local resident request differs from rendezvous request")
+        if not _allowed_request_supersession(existing, validated):
+            # This v1 lane owns one exact resident request. Only the canonical
+            # historical 001 -> current 002 migration is permitted.
+            raise ResidentRendezvousConsumerError("local resident request differs from rendezvous request")
+        archive_hash = sha256_uri(existing)[7:]
+        archive = runtime_root / SUPERSEDED_REQUEST_DIR / f"{archive_hash}.json"
+        atomic_json(archive, existing)
+        if load_json(archive) != existing:
+            raise ResidentRendezvousConsumerError("superseded resident request archive verification failed")
+        atomic_json(path, validated)
+        if load_json(path) != validated:
+            raise ResidentRendezvousConsumerError("resident request supersession verification failed")
+        return path
     atomic_json(path, validated)
     return path
 

@@ -17,7 +17,7 @@ from scripts.consume_resident_rendezvous import (
 def resident_request():
     return {
         "schema": "stegverse.resident-execution-request/v1",
-        "request_id": "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-001",
+        "request_id": "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-002",
         "state": "REQUESTED",
         "task_id": "SHWP-STEGOS-KV-INTR-CHAIN-001",
         "mode": "STEGOS_KV_INTR_CHAIN",
@@ -136,6 +136,42 @@ class ResidentRendezvousConsumerTests(unittest.TestCase):
         )
         self.assertTrue(posted)
         self.assertEqual(posted[-1]["gateway_execution_authority"], "NONE")
+
+
+    def test_materialize_supersedes_only_known_001_to_002_and_archives_old_request(self):
+        runtime = Path(tempfile.mkdtemp())
+        path = runtime / "control/resident-execution-request.d/stegos-kv-intr-chain-001.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        old = resident_request()
+        old["request_id"] = "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-001"
+        old["steps"] = [
+            "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+            "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
+            "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+            "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+        ]
+        path.write_text(json.dumps(old), encoding="utf-8")
+
+        from scripts.consume_resident_rendezvous import materialize_request
+        current = resident_request()
+        result = materialize_request(runtime, current)
+        self.assertEqual(result, path)
+        self.assertEqual(json.loads(path.read_text()), current)
+        archives = list((runtime / "receipts/sovereign-host/resident-rendezvous-superseded-requests").glob("*.json"))
+        self.assertEqual(len(archives), 1)
+        self.assertEqual(json.loads(archives[0].read_text()), old)
+
+    def test_materialize_rejects_arbitrary_existing_request_overwrite(self):
+        runtime = Path(tempfile.mkdtemp())
+        path = runtime / "control/resident-execution-request.d/stegos-kv-intr-chain-001.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        old = resident_request()
+        old["request_id"] = "UNRELATED-REQUEST"
+        path.write_text(json.dumps(old), encoding="utf-8")
+        from scripts.consume_resident_rendezvous import materialize_request
+        with self.assertRaisesRegex(ResidentRendezvousConsumerError, "differs"):
+            materialize_request(runtime, resident_request())
+
 
     def test_no_request_is_non_authorizing(self):
         runtime = Path(tempfile.mkdtemp())
