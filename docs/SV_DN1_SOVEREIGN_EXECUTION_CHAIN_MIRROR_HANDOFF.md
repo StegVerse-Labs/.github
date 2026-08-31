@@ -162,6 +162,14 @@ SV-DN1-INTR-RUNTIME-001
   destination_validation = PASS
   lineage_verified = true
 
+  ~/.stegverse/state/sv-dn1-intr-runtime/receipts/carrier-binding.latest.json
+  transition_id = SV_DN1_HB_INTR_CARRIER_BOUND
+  packet_recovery_verified = true
+  heartbeat_progression_dependency = OSCILLATOR_ONLY
+  heartbeat_grants_authority = false
+  derived_carrier_grants_authority = false
+  authority_effect = NONE_CARRIER_ONLY
+
 SV-DN1-PRODUCTION-SOURCE-PREP-001
   ~/.stegverse/state/sv-dn1-production-source-prep/receipts/latest.json
   schema = stegverse.sv-dn1.production-source-prep-receipt/v2
@@ -342,3 +350,36 @@ sovereign first-round chain
 ```
 
 This correction creates no new network, credential, source-acquisition, repository, SDK, governance, or publication authority. It only prevents already-authentic local evidence/state coordinates from being silently discarded at the final process boundary.
+
+
+## 2026-08-31 post-analysis publication continuation
+
+The seven-step resident first-round chain remains the bounded analysis/package progression.
+It is now followed by two independently governed machine tasks:
+
+```text
+SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001
+  -> SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001
+       -> TVC #264 exact bounded repository transport
+       -> terminal: SV_DN1_REPOSITORY_PERSISTENCE_PR_CREATED
+
+SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001
+  -> separately governed PR merge + Pages deployment
+  -> SV-DN1-PUBLICATION-OBSERVER-001
+       -> terminal: SV_DN1_AUTHENTIC_PUBLICATION_OBSERVED
+```
+
+The persistence-dispatch task is merged at
+`0206c30556ebe9210e7ae4ab664e6dc5d3feabac`.
+
+The TVC issue-264 fail-closed admission evaluator is merged in
+`StegVerse-Labs/TVC@bcdab574520b2f132120376fe1c85a9ad1020c27`.
+
+The publication observer must not release before the persistence-dispatch task is
+`COMPLETED` at `SV_DN1_REPOSITORY_PERSISTENCE_PR_CREATED`. PR creation still does not
+prove merge/deployment, so public observation remains an independent retryable gate.
+
+The InTr step now also emits the stronger HB-derived carrier-binding receipt merged at
+`9344d5a944f4fd6e4f33df4d01826311bfebd894`. Existing Universal InTr lineage remains
+required; the carrier-binding receipt adds exact HB reference/channel/phase/packet
+evidence and grants no authority.
