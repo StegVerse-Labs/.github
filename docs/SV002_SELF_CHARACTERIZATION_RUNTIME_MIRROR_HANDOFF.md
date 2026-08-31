@@ -266,3 +266,16 @@ live runtime identity verification: NOT OBSERVED
 principal execution: NOT OBSERVED
 Master Records reconstruction: NOT OBSERVED
 ```
+
+## Portable exact resident dispatch path — 2026-08-31
+
+The existing portable local refresh-and-dispatch bridge now admits
+`sv002_self_characterization` as an explicit exact selector. The historical
+`cross_framework_current_basis_v04` default is unchanged. The bridge refreshes only
+already-local source, invokes the already-registered generic dispatcher consumer exactly
+once, and requires an `EXACT_SELECTOR` receipt with one selected consumer.
+
+This creates no new dispatcher, scheduler, heartbeat, claim/fence, credential, source
+network fetch, or runtime authority. Canonical resident consumption and principal
+execution receipts remain required and are not claimed by this source path.
+

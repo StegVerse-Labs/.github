@@ -34,6 +34,25 @@ already-local sovereign source refresh
 
 It MUST NOT visit Ecosystem Chat, G18, HIL, evaluator InTr, SV002, ARA Graph, CMC-028, SV-DN1, bootstrap release prep, TVC broker validation, or any other resident request during this experiment-only one-shot path. A separate explicit `--only-consumer hil` invocation is admitted for the HIL request lane and does not alter this default or visit the experiment consumer.
 
+## Bounded SV002 exact-selection extension — 2026-08-31
+
+The bridge retains `cross_framework_current_basis_v04` as its historical default. An
+operator or already-authorized sovereign resident may additionally select exactly one of:
+
+```text
+sv002_self_characterization
+sv002_public_observation
+```
+
+Both names were already registered in the generic resident dispatcher. This change only
+admits them through the portable bridge's existing exact-selector path. It does not add a
+dispatcher, scheduler, heartbeat, claim/fence, credential path, source-network fetch, or
+runtime authority. An invocation may visit only the selected consumer, and the resulting
+dispatcher receipt must report `selection_scope=EXACT_SELECTOR`,
+`selected_consumers=[<selected SV002 consumer>]`, and `consumer_count=1`.
+
+This source extension is not evidence that either request has run on a resident.
+
 ## Authority and transport boundary
 
 ```text

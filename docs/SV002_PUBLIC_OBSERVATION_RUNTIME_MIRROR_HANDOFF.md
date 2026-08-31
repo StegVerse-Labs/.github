@@ -309,3 +309,17 @@ workers/universal_intr_profiled_ingress.py
 Issue #516 removes the superseded duplicate scripts, their dedicated `sv002-intr-materialization` filesystem watcher, bootstrap/static-copy references, and duplicate tests. The shared `intr-materialization` ingress remains the only materialization queue surface.
 
 This reconciliation changes no runtime evidence posture and creates no new authority.
+
+## Portable exact resident dispatch path — 2026-08-31
+
+The existing portable local refresh-and-dispatch bridge now admits
+`sv002_public_observation` as an explicit exact selector. The historical
+`cross_framework_current_basis_v04` default is unchanged. The bridge refreshes only
+already-local source, invokes the already-registered generic dispatcher consumer exactly
+once, and requires an `EXACT_SELECTOR` receipt with one selected consumer.
+
+This creates no new dispatcher, scheduler, heartbeat, claim/fence, credential, source
+network fetch, or runtime authority. Resident request consumption, receiver readiness,
+public round-trip, ingress, and egress evidence remain NOT OBSERVED until canonical
+resident receipts independently establish them.
+
