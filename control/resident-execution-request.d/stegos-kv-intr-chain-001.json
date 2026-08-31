@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.resident-execution-request/v1",
-  "request_id": "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-001",
+  "request_id": "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-002",
   "state": "REQUESTED",
   "task_id": "SHWP-STEGOS-KV-INTR-CHAIN-001",
   "mode": "STEGOS_KV_INTR_CHAIN",
@@ -18,5 +18,5 @@
   "network_source_fetch_allowed": false,
   "second_machine_required": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Advance only the already-admitted StegOS relay materialization -> Node-KV continuity -> DEVICE_KV_INTR observation chain, and only after each authentic parent terminal receipt exists."
+  "note": "Advance only the already-admitted StegOS relay materialization -> Node-KV continuity -> DEVICE_KV_INTR observation chain after authentic parent terminals. DEVICE_KV is terminal only when exact request and response bytes were transported and recovered on the canonical HB-derived carrier with hb_derived_carrier_transport_observed=true. This request is intent-only and grants no claim, fence, credential, routing, receiving, transition, or execution authority."
 }
