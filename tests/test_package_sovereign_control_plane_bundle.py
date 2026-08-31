@@ -43,5 +43,28 @@ class SovereignControlPlaneBundleTests(unittest.TestCase):
             self.assertFalse(manifest["bundle_grants_authority"])
 
 
+    def test_bundle_can_include_stegos_and_cvk_vendor_sources(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "source"
+            stegos = Path(tmp) / "StegOS"
+            kv = Path(tmp) / "continuity-vault-kit"
+            (root / "scripts").mkdir(parents=True)
+            (root / "scripts" / "bootstrap_sovereign_runtime.py").write_text("# bootstrap\n", encoding="utf-8")
+            (stegos / "stegos").mkdir(parents=True)
+            (stegos / "stegos" / "intr_backbone.py").write_text("# intr\n", encoding="utf-8")
+            (kv / "runtime").mkdir(parents=True)
+            (kv / "runtime" / "kv_interlock_endpoint.py").write_text("# kv\n", encoding="utf-8")
+            output = Path(tmp) / "control-plane.zip"
+
+            receipt = module.build_bundle(root, output, stegos_root=stegos, kv_source_root=kv)
+
+            self.assertEqual(receipt["vendor_sources"], {"StegOS": True, "continuity-vault-kit": True})
+            with zipfile.ZipFile(output) as archive:
+                names = set(archive.namelist())
+            self.assertIn("vendor/StegOS/stegos/intr_backbone.py", names)
+            self.assertIn("vendor/continuity-vault-kit/runtime/kv_interlock_endpoint.py", names)
+
+
+
 if __name__ == "__main__":
     unittest.main()

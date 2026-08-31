@@ -72,6 +72,8 @@ def activate(
     source_root: Path,
     llm_adapter_root: Path,
     *,
+    stegos_root: Path,
+    kv_source_root: Path,
     health_url: str,
     receipt_path: Path,
     runner=subprocess.run,
@@ -95,6 +97,8 @@ def activate(
                 sys.executable, str(packager),
                 "--source-root", str(source),
                 "--output", str(bundle),
+                "--stegos-root", str(stegos_root.expanduser().resolve()),
+                "--kv-source-root", str(kv_source_root.expanduser().resolve()),
             ],
             cwd=source,
             check=False,
@@ -144,6 +148,8 @@ def activate(
             "llm_adapter_root": str(llm),
             "health_url": health_url,
             "control_bundle_packaged": True,
+            "stegos_source_bundled": True,
+            "kv_source_bundled": True,
             "control_bundle_sha256": package_result.get("bundle_sha256"),
             "stegdeploy_returncode": deploy.returncode,
             "stegdeploy_receipt_ref": str(deployment_receipt_path),
@@ -170,6 +176,8 @@ def main() -> int:
     parser.add_argument("--source-root", type=Path, default=ROOT)
     parser.add_argument("--llm-adapter-root", type=Path, default=None)
     parser.add_argument("--health-url", default="http://127.0.0.1:8000/health")
+    parser.add_argument("--stegos-root", type=Path)
+    parser.add_argument("--kv-source-root", type=Path)
     parser.add_argument("--receipt-path", type=Path, default=DEFAULT_RECEIPT)
     args = parser.parse_args()
     llm = args.llm_adapter_root
@@ -178,9 +186,15 @@ def main() -> int:
         if not configured:
             raise SystemExit("--llm-adapter-root or STEGVERSE_LLM_ADAPTER_ROOT is required")
         llm = Path(configured)
+    stegos = args.stegos_root or (Path(os.environ["STEGVERSE_STEGOS_ROOT"]) if os.environ.get("STEGVERSE_STEGOS_ROOT") else None)
+    kv_source = args.kv_source_root or (Path(os.environ["STEGVERSE_KV_SOURCE_ROOT"]) if os.environ.get("STEGVERSE_KV_SOURCE_ROOT") else None)
+    if stegos is None or kv_source is None:
+        raise SystemExit("--stegos-root/STEGVERSE_STEGOS_ROOT and --kv-source-root/STEGVERSE_KV_SOURCE_ROOT are required")
     receipt = activate(
         args.source_root,
         llm,
+        stegos_root=stegos,
+        kv_source_root=kv_source,
         health_url=args.health_url,
         receipt_path=args.receipt_path,
     )

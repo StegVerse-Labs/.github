@@ -61,6 +61,25 @@ def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _safe_tree_files(root: Path) -> list[Path]:
+    paths: list[Path] = []
+    for path in root.rglob("*"):
+        if not path.is_file() or path.is_symlink():
+            continue
+        relative = path.relative_to(root)
+        if any(part in EXCLUDE_PARTS for part in relative.parts):
+            continue
+        posix = relative.as_posix()
+        if any(posix.startswith(prefix) for prefix in EXCLUDE_PREFIXES):
+            continue
+        lower = posix.lower()
+        if any(fragment in lower for fragment in FORBIDDEN_NAME_FRAGMENTS):
+            if path.suffix.lower() not in {".py", ".json", ".md", ".txt", ".yaml", ".yml", ".js", ".html", ".css"}:
+                continue
+        paths.append(path)
+    return sorted(paths, key=lambda p: p.relative_to(root).as_posix())
+
+
 def _included_files(root: Path) -> list[Path]:
     paths: set[Path] = set()
     for name in INCLUDE_FILES:
@@ -90,7 +109,13 @@ def _included_files(root: Path) -> list[Path]:
     return sorted(paths, key=lambda p: p.relative_to(root).as_posix())
 
 
-def build_bundle(root: Path, output: Path) -> dict:
+def build_bundle(
+    root: Path,
+    output: Path,
+    *,
+    stegos_root: Path | None = None,
+    kv_source_root: Path | None = None,
+) -> dict:
     root = root.resolve()
     output = output.resolve()
     files = _included_files(root)
@@ -98,9 +123,30 @@ def build_bundle(root: Path, output: Path) -> dict:
     if required not in files:
         raise RuntimeError("canonical bootstrap missing from bundle source")
 
+    bundle_files: list[tuple[str, Path]] = [
+        (path.relative_to(root).as_posix(), path) for path in files
+    ]
+    vendor_sources = {}
+    if stegos_root is not None:
+        sr = stegos_root.expanduser().resolve()
+        if not (sr / "stegos" / "intr_backbone.py").is_file():
+            raise RuntimeError("StegOS source root invalid")
+        vendor_sources["StegOS"] = True
+        bundle_files.extend(
+            ("vendor/StegOS/" + path.relative_to(sr).as_posix(), path)
+            for path in _safe_tree_files(sr)
+        )
+    if kv_source_root is not None:
+        kr = kv_source_root.expanduser().resolve()
+        if not (kr / "runtime" / "kv_interlock_endpoint.py").is_file():
+            raise RuntimeError("continuity-vault-kit source root invalid")
+        vendor_sources["continuity-vault-kit"] = True
+        bundle_files.extend(
+            ("vendor/continuity-vault-kit/" + path.relative_to(kr).as_posix(), path)
+            for path in _safe_tree_files(kr)
+        )
     entries = []
-    for path in files:
-        rel = path.relative_to(root).as_posix()
+    for rel, path in bundle_files:
         data = path.read_bytes()
         entries.append({
             "path": rel,
@@ -118,13 +164,13 @@ def build_bundle(root: Path, output: Path) -> dict:
         "heartbeat_grants_execution_authority": False,
         "bundle_grants_authority": False,
         "authority_effect": "NONE_SOURCE_TRANSPORT_ONLY",
+        "vendor_sources": vendor_sources,
     }
     manifest_bytes = (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode("utf-8")
 
     output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
-        for path in files:
-            rel = path.relative_to(root).as_posix()
+        for rel, path in bundle_files:
             info = zipfile.ZipInfo(rel, date_time=(2026, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             mode = path.stat().st_mode
@@ -149,8 +195,10 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-root", type=Path, default=ROOT)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--stegos-root", type=Path)
+    parser.add_argument("--kv-source-root", type=Path)
     args = parser.parse_args()
-    receipt = build_bundle(args.source_root, args.output)
+    receipt = build_bundle(args.source_root, args.output, stegos_root=args.stegos_root, kv_source_root=args.kv_source_root)
     print(json.dumps(receipt, indent=2, sort_keys=True))
     return 0
 
