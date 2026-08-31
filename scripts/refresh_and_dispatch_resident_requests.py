@@ -5,7 +5,7 @@ This is a portable, transport-free execution bridge for an already-existing sove
 resident. It composes the existing local source refresh and generic resident-request
 dispatcher, but selects exactly one explicitly admitted consumer. The historical default
 remains the cross-framework current-basis v0.4 consumer; HIL and SV-DN-1 may be selected
-explicitly without visiting unrelated work. It creates no scheduler, heartbeat, claim,
+explicitly without visiting unrelated work. Explicit SV002 self-characterization and public-observation selectors are also admitted without changing the historical default. It creates no scheduler, heartbeat, claim,
 fence, credential path, or runtime authority.
 """
 from __future__ import annotations
@@ -30,7 +30,7 @@ DISPATCH_RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.l
 RECEIPT_REL = Path("receipts/sovereign-host/resident-refresh-dispatch.latest.json")
 SV_DN1_BROWSER_LOCATOR_REL = Path("control/sv-dn1-browser-observation-locator.json")
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
-ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "hil", "sv_dn1", "stegos_kv_intr_chain")
+ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "hil", "sv_dn1", "stegos_kv_intr_chain", "sv002_self_characterization", "sv002_public_observation")
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
     "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS",
