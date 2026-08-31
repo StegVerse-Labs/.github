@@ -17,7 +17,8 @@ been persisted and deployed to the public static surface.
 
 ```text
 SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_READY
--> repository mutation/deployment occurs under separate authority
+-> SV_DN1_REPOSITORY_PERSISTENCE_PR_CREATED under TVC-governed transport
+-> PR merge/deployment occurs under separate authority
 -> bounded public observer receives independent claim/fence
 -> load exact local persistence package
 -> invoke canonical product publication observer
@@ -125,3 +126,22 @@ repository mutation of authentic result: NOT YET OBSERVED
 Pages deployment of authentic result: NOT YET OBSERVED
 authentic public exact-byte observation: NOT YET OBSERVED
 ```
+
+
+## 2026-08-31 dependency refinement
+
+The publication observer no longer releases immediately after persistence-package
+creation. Its WorkerCoordinator dependency is now:
+
+```text
+SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001
+state = COMPLETED
+transition = SV_DN1_REPOSITORY_PERSISTENCE_PR_CREATED
+```
+
+This prevents repeated public HTTPS checks before the governed repository PR even exists.
+PR creation still does not prove merge or Pages deployment, so the observer remains
+retryable `HANDOFF_READY` until the public bytes actually equal the frozen package.
+
+This dependency refinement grants no merge, deployment, publication-decision, credential,
+or repository mutation authority.
