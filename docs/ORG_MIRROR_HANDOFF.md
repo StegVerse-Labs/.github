@@ -567,3 +567,25 @@ Site issue #860 independently observed `https://stegverse.org/intr/profile` as H
 The existing resident Healer scheduler now projects only a conforming `~/.stegverse/config/hil-intr-runtime.json` into its fixed StegDeploy child environment. The config must preserve TV/TVC authority, no GitHub/execution authority, event-triggered operation, G18 independence, shared-Gateway TLS termination, and same-host loopback. The exact projected upstream is derived as `http://127.0.0.1:<port>/intr/materialization`.
 
 This source correction grants no public-route, deployment, execution, credential, or activation evidence. The next authentic state change remains admitted resident Healer/StegDeploy execution followed by independent public HTTPS re-observation.
+
+
+## Sovereign runtime locator for TVC resident self-heal — 2026-08-31
+
+```text
+producer: scripts/bootstrap_sovereign_runtime.py
+locator: /run/user/<uid>/stegverse/sovereign-runtime.json
+schema: stegverse.sovereign-runtime-locator/v1
+consumer: StegVerse-Labs/TVC scripts/tvc_resident_service_self_heal.py
+TVC owner: root stegtvc-primary-runtime.service
+authority effect: NONE_LOCATOR_ONLY
+```
+
+On Linux, an eligible sovereign bootstrap publishes one non-secret locator under the
+calling user's XDG runtime directory. The locator carries only UID, source/runtime roots
+and explicit no-authority booleans. It contains no credential, request, lease, claim,
+fence, route, repository or heartbeat authority.
+
+The TVC root primary runtime may use this locator only as discovery input for the
+separately governed resident service self-heal lane. Locator publication failure does not
+invalidate heartbeat continuity; it leaves TVC service delivery retryable and separately
+observable.
