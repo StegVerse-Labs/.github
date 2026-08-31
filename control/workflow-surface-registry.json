@@ -25,6 +25,12 @@
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "CROSS-FRAMEWORK-CURRENT-BASIS-V04-EXECUTION-001 / .github#478",
       "reason": "source-only validation for the bounded frozen v0.4 resident execution request/consumer; authentic execution is prohibited on GitHub Actions"
+    },
+    {
+      "path": ".github/workflows/org-runtime-boundary.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORG_RESIDENT_RUNTIME_INTR_BOUNDARY",
+      "reason": "source-only validation for the organization resident-runtime and Interlock/InTr boundary; authentic resident execution remains prohibited on GitHub Actions"
     }
   ],
   "removed_in_hygiene_batch_1": [
@@ -66,13 +72,13 @@
   "invariant": "Every repository-authored workflow file must be explicitly registered before merge/push. Unregistered workflow proliferation fails closed; registration is classification evidence, not approval to retain the workflow permanently.",
   "completion_condition": "Every registered surface is KEEP_STABLE_DISPATCHER, KEEP_STANDALONE_EXCEPTION with evidence, CONSOLIDATE_INTO_STABLE_DISPATCHER, TRANSFER_TO_STEGVERSE_WORKER, ELIMINATE, or terminally removed; REVIEW_REQUIRED/BLOCKED states are zero unless supported by active ownership.",
   "completion_evidence": {
-    "live_workflow_count": 2,
+    "live_workflow_count": 4,
     "stable_dispatchers": [
       ".github/workflows/org-control-plane-validate.yml",
       ".github/workflows/heartbeat-worker-project.yml"
     ],
-    "non_dispatcher_count": 0,
-    "preferred_target_satisfied": true,
+    "non_dispatcher_count": 2,
+    "preferred_target_satisfied": false,
     "runtime_authority_effect": "NONE",
     "credential_authority": "TV/TVC"
   }

@@ -72,6 +72,7 @@ CONSUMERS = (
     ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),
     ("sv002_self_characterization", "scripts/consume_sv002_self_characterization_request.py"),
     ("healer_sovereign_scheduler", "scripts/consume_healer_sovereign_scheduler_request.py"),
+    ("universal_governance_enforced_reference", "scripts/consume_universal_governance_enforced_reference_request.py"),
     ("cross_framework_current_basis_v04", "scripts/consume_cross_framework_current_basis_v04_request.py"),
 )
 

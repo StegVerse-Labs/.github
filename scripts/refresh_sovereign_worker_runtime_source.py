@@ -63,6 +63,7 @@ STATIC_FILES = (
     Path("scripts/bootstrap_tvc_pr92_validation_source.py"),
     Path("scripts/consume_sv002_self_characterization_request.py"),
     Path("scripts/consume_healer_sovereign_scheduler_request.py"),
+    Path("scripts/consume_universal_governance_enforced_reference_request.py"),
     Path("scripts/consume_cross_framework_current_basis_v04_request.py"),
     Path("scripts/dispatch_resident_execution_requests.py"),
     Path("scripts/refresh_and_dispatch_resident_requests.py"),

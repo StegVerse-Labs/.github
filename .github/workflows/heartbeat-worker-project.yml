@@ -191,6 +191,11 @@ jobs:
       - name: Validate consolidated Test Lanes autolaunch binding
         run: python -m unittest -v tests.test_test_lanes_autolaunch_binding
 
+      - name: Validate Universal Governance resident request dispatch
+        run: |
+          python -m unittest tests.test_universal_governance_resident_request -v
+          python -m py_compile scripts/consume_universal_governance_enforced_reference_request.py
+
       - name: Run complete deterministic repository test suite
         run: python -m unittest discover -v tests
 

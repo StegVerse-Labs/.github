@@ -21,3 +21,8 @@ Machine surfaces:
 - `org-runtime/runtime_boundary.py`
 
 The tool validates the contract and emits resident activation requests plus ingress/egress envelopes. It cannot self-grant authority.
+
+
+## Workflow surface registration
+
+The existing `.github/workflows/org-runtime-boundary.yml` is registered in `control/workflow-surface-registry.json` as `KEEP_STANDALONE_EXCEPTION` for source-only validation. This classification grants no resident execution, ingress/egress, credential, routing, transition, publication, or release authority. Authentic organization runtime execution remains resident-only.
