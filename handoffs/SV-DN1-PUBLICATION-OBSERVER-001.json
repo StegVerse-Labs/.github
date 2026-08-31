@@ -1,0 +1,117 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SV-DN1-PUBLICATION-OBSERVER-001",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "SV-DN1-PUBLICATION-OBSERVER-001",
+    "objective": "Observe the deployed governed SV-DN-1 public artifacts and prove exact byte equality with the frozen persistence package.",
+    "success_predicates": [
+      "persistence package is exact and mutation-ready",
+      "all five public HTTPS artifacts return 200",
+      "all five public artifacts exactly match governed bytes",
+      "no credential or repository/deployment authority is used"
+    ],
+    "failure_predicates": [
+      "package invalid",
+      "public bytes mismatch after deployment stabilizes",
+      "credential-bearing or hosted runtime",
+      "frozen receipt conflict"
+    ],
+    "authority_ceiling": [
+      "bounded_process_execution",
+      "credential_free_public_https_get",
+      "local_evidence_write",
+      "no repository mutation authority",
+      "no deployment authority",
+      "no governance authority"
+    ]
+  },
+  "task": {
+    "task_id": "SV-DN1-PUBLICATION-OBSERVER-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "docs/SV_DN1_PUBLICATION_OBSERVER_TASK_MIRROR_HANDOFF.md",
+    "worker_registry_ref": "control/worker-registry.d/sv-dn1-publication-observer-001.json",
+    "worker_id": "sv-dn1-publication-observer-worker",
+    "adapter_ref": "process:sv-dn1-publication-observer-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "dependencies": [
+      "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001"
+    ],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL"
+  },
+  "authority": {
+    "authority_source": "docs/SV_DN1_PUBLICATION_OBSERVER_TASK_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "network_access_authority": true,
+    "repository_writeback_authority": false,
+    "commit_authority": false,
+    "push_authority": false,
+    "merge_authority": false,
+    "deployment_authority": false,
+    "publication_decision_authority": false,
+    "sdk_execution_authority": false,
+    "certification_authority": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "credential_free_public_https_get",
+      "local_evidence_write"
+    ],
+    "worker": "workers/sv_dn1_publication_observer_worker.py",
+    "max_actions": 8,
+    "max_retries": 12,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 144,
+    "hosted_execution_allowed": false,
+    "bound_state_root": "~/.stegverse/state/sv-dn1-publication-observer",
+    "bound_state_allowed_paths": [
+      "product-observation/**",
+      "receipts/**"
+    ],
+    "required_local_locators": [
+      "STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_STATE_ROOT",
+      "STEGVERSE_SV_DN1_SOURCE_ROOT"
+    ],
+    "public_network_access": {
+      "enabled": true,
+      "methods": [
+        "GET"
+      ],
+      "allowed_hosts": [
+        "stegverse-org.github.io"
+      ],
+      "authenticated": false,
+      "credential_forwarding": false
+    }
+  },
+  "activation": {
+    "carrier": "independent_task_control",
+    "executor_binding": "AUTHORIZED",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+  },
+  "continuity": {
+    "result_receipt": "~/.stegverse/state/sv-dn1-publication-observer/receipts/latest.json"
+  },
+  "completion": {
+    "terminal_when": [
+      "SV_DN1_AUTHENTIC_PUBLICATION_OBSERVED",
+      "all_public_artifacts_observed=true",
+      "exact_bytes_preserved=true",
+      "credential_used=false",
+      "repository_writeback_performed=false",
+      "deployment_performed=false"
+    ]
+  }
+}
