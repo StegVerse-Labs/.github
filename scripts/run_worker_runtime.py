@@ -32,7 +32,10 @@ if str(REPO_ROOT) not in sys.path:
 from heartbeat_runtime.worker_runtime import WorkerCoordinator, ProcessWorkerAdapter
 from heartbeat_runtime.independent_oscillator import current_reference
 from heartbeat_runtime.machine_continuation import DEFAULT_CONTINUATION_QUANTA, build_continuation_trigger
-from dispatch_resident_execution_requests import dispatch as dispatch_resident_requests
+try:
+    from scripts.dispatch_resident_execution_requests import dispatch as dispatch_resident_requests
+except ModuleNotFoundError:
+    from dispatch_resident_execution_requests import dispatch as dispatch_resident_requests
 
 SCHEMA = "stegverse.process-worker-adapters/v0.1"
 FRAGMENT_SCHEMA = "stegverse.process-worker-adapter-fragment/v0.1"
