@@ -149,3 +149,34 @@ with tempfile.TemporaryDirectory() as td:
     roll=k.collect_ecosystem_responses("StegVerse-Labs","ecosystem-work-intake-001",mesh_root=mesh)
     assert roll["response_count"]==14
 print("ECOSYSTEM_CONTROL_RESPONSE_PASS")
+
+
+# durable federation replay/dedup proof
+with tempfile.TemporaryDirectory() as td:
+    mesh=Path(td)/"mesh"
+    root=Path(td)/"node"
+    (root/"org-boundary/registry").mkdir(parents=True)
+    (root/"resident-runtime").mkdir(parents=True)
+    org="Replay-Test"
+    reg={"organization":org,"services":[{"service_id":"replay-test.org-control","repository":"Replay-Test/.github","boundary_role":"BOUNDARY_LOCAL_CONTROL"}]}
+    directory={"denominator":1,"organizations":[{"organization":org}]}
+    (root/"org-boundary/registry/services.json").write_text(json.dumps(reg))
+    (root/"org-boundary/registry/federation.json").write_text(json.dumps(directory))
+    (root/"resident-runtime/activation-manifest.json").write_text(json.dumps({"state":"TEST","kernel":{"version":"1.3.1"}}))
+    pub=k.publish_ecosystem_from_directory(
+        root,
+        message_class="ecosystem.communication",
+        subject="dedup",
+        body={"value":1},
+        communication_id="ecosystem-dedup-001",
+        mesh_root=mesh,
+        now_ns=k.HB_ANCHOR_UNIX_NS+6_000_000_000
+    )
+    first=k.consume_and_respond(root,mesh_root=mesh,now_ns=k.HB_ANCHOR_UNIX_NS+6_100_000_000)
+    second=k.consume_and_respond(root,mesh_root=mesh,now_ns=k.HB_ANCHOR_UNIX_NS+6_200_000_000)
+    assert len(first)==1
+    assert len(second)==1 or len(second)==0
+    # second cycle may see only the response addressed to self; it must not reconsume the original request.
+    originals=[x for x in second if ((x.get("result") or {}).get("packet") or {}).get("packet_id")=="ecosystem-dedup-001:replay-test"]
+    assert originals==[]
+print("ECOSYSTEM_DEDUP_PASS")
