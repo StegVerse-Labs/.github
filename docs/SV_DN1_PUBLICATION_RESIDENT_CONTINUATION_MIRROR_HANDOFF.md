@@ -107,7 +107,7 @@ persistence-dispatch worker: MERGED
 TVC issue-264 admission evaluator: MERGED
 publication observer: MERGED
 publication observer dependency refinement: MERGED
-publication resident continuation: SOURCE COMPLETE / VALIDATION PENDING
+publication resident continuation: SOURCE COMPLETE / VALIDATION PASS / MERGE PENDING
 authentic persistence PR: NOT YET OBSERVED
 authentic public exact-byte observation: NOT YET OBSERVED
 ```
@@ -131,3 +131,28 @@ its own canonical default bound state, preventing cross-task receipt/state colli
 Deterministic tests cover selector isolation, non-secret locator propagation, retry-until-
 terminal request semantics, generic bound-state isolation, and hosted/credential-bearing
 fail-closed behavior.
+
+
+## Validation evidence
+
+Validated branch head before merge-state recording:
+
+`d7b5e1896ffe87eb3f2ee2699c8838613a7ed8b3`
+
+```text
+Heartbeat Worker Project validation
+  run: 33405521577
+  result: SUCCESS
+
+Organization control-plane validation
+  run: 33405521281
+  result: SUCCESS
+
+Cross-Framework Current-Basis Resident Request validation
+  run: 33405521369
+  result: SUCCESS
+```
+
+These workflow results are source/contract validation only and do not prove resident
+execution, TVC admission, repository persistence, PR merge, Pages deployment, or public
+observation.
