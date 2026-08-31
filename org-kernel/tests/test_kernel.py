@@ -38,3 +38,38 @@ with tempfile.TemporaryDirectory() as td:
     assert consumed[0]["result"]["status"]=="CONSUMED"
     assert consumed[0]["result"]["execution_result"]["reconstruction"]["status"]=="RECONSTRUCTED"
 print("FEDERATION_PASS")
+
+
+# 14-node ecosystem-wide communication fanout / aggregation proof
+with tempfile.TemporaryDirectory() as td:
+    mesh=Path(td)/"mesh"
+    orgs=["AaCT-E","Admissible-Existence","AdmittedCode","Data-Continuation","ECAT-ICAT-Formal",
+          "formalism-tests","GCAT-BCAT-Engine","Infrastructure-Continuity-Ventures","master-records",
+          "StegGhost","StegVerse-002","StegVerse-Labs","StegVerse-org","Triad-Test"]
+    roots={}
+    for org in orgs:
+        root=Path(td)/k.organization_slug(org)
+        (root/"org-boundary/registry").mkdir(parents=True)
+        service=k.organization_slug(org)+".org-control"
+        reg={"organization":org,"services":[{"service_id":service,"repository":org+"/.github","boundary_role":"BOUNDARY_LOCAL_CONTROL"}]}
+        (root/"org-boundary/registry/services.json").write_text(json.dumps(reg))
+        roots[org]=root
+    pub=k.publish_ecosystem_message(
+        origin_org="StegVerse-Labs",
+        origin_service="stegverse-labs.org-control",
+        organizations=orgs,
+        message_class="ecosystem.monitor.request",
+        subject="ecosystem-broadcast-001",
+        body={"monitor":"runtime-status"},
+        requested_action="REPORT_STATUS",
+        communication_id="ecosystem-broadcast-001",
+        root=mesh,
+        now_ns=k.HB_ANCHOR_UNIX_NS+3_000_000_000
+    )
+    assert pub["published_count"]==14
+    results={org:k.consume_addressed_frames(root,mesh_root=mesh) for org,root in roots.items()}
+    rollup=k.aggregate_ecosystem_results("ecosystem-broadcast-001",results)
+    assert rollup["complete"] is True
+    assert rollup["consumed_count"]==14
+    assert rollup["pending_count"]==0
+print("ECOSYSTEM_BROADCAST_PASS")
