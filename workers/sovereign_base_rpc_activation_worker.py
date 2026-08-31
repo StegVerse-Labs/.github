@@ -30,9 +30,20 @@ def atomic_write(path: Path, value: dict[str, Any]) -> None:
 
 def candidate_roots() -> list[Path]:
     roots: list[Path] = []
-    explicit = os.environ.get("STEGVERSE_MICRO_NODE_ROOT", "").strip()
-    if explicit:
-        roots.append(Path(explicit))
+    for key in ("STEGVERSE_MICRO_NODE_RUNTIME_ROOT", "STEGVERSE_MICRO_NODE_ROOT"):
+        explicit = os.environ.get(key, "").strip()
+        if explicit:
+            roots.append(Path(explicit))
+    raw_repo_roots = os.environ.get("STEGVERSE_REPO_ROOTS_JSON", "").strip()
+    if raw_repo_roots:
+        try:
+            repo_roots = json.loads(raw_repo_roots)
+        except Exception:
+            repo_roots = {}
+        if isinstance(repo_roots, dict):
+            mapped = repo_roots.get("StegVerse-002/micro-node-runtime")
+            if isinstance(mapped, str) and mapped.strip():
+                roots.append(Path(mapped))
     roots.extend(
         [
             ROOT / "workloads" / "micro-node-runtime",
