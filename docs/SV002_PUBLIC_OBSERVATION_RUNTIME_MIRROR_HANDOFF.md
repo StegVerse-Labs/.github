@@ -323,3 +323,40 @@ network fetch, or runtime authority. Resident request consumption, receiver read
 public round-trip, ingress, and egress evidence remain NOT OBSERVED until canonical
 resident receipts independently establish them.
 
+
+
+## Canonical runtime feature absorption — issue #607
+
+The ecosystem-wide runtime search identified one already-authentically-proven application-neutral runtime fabric:
+
+```text
+StegVerse-Labs/StegOS#115
+stegos/ephemeral_runtime_lease.py
+stegos/canonical_runtime_lane.py
+evidence/canonical-runtime/2026-08-30-first-observed-lane.json
+```
+
+The reusable feature is the canonical lease/evidence lifecycle, not the browser Web Worker used for its first authentic proof. StegOS #127 / PR #128 added a fail-closed JSON snapshot/resume contract so the same lease can cross event/process boundaries.
+
+SV002 already used `LeaseRequest` / `LeaseMachine` for event-ephemeral materialization but stopped at `LOCAL_READY`. Issue #607 absorbs the canonical continuation contract:
+
+```text
+REQUESTED
+-> ADMITTED
+-> PROVISIONING
+-> LOCAL_READY
+-> PUBLIC_VERIFYING
+-> [future authentic public identity evidence]
+-> LEASE_OPEN
+-> [future exact READ_OBSERVATION RECEIVED/FORWARDED]
+-> continuity/return retention
+-> EVIDENCE_EXPORTED
+-> RELEASING
+-> LEASE_CLOSED
+```
+
+The first absorption step advances only to `PUBLIC_VERIFYING`, persists the exact canonical lease snapshot inside the event runtime, hash-binds that snapshot into materialization evidence, and requires the consumer to validate the persisted state/history before dispatching the existing WorkerCoordinator task.
+
+This does **not** preclaim receiver READY, public HTTPS verification, LEASE_OPEN, observation round-trip completion, evidence export, teardown, or LEASE_CLOSED. Those transitions must later resume the same persisted canonical lease after authentic evidence exists.
+
+No G18 dependency, claim/fence minting, credential grant, GitHub-token runtime authority, second user machine, or direct observer relation to StegVerse-002 is introduced.
