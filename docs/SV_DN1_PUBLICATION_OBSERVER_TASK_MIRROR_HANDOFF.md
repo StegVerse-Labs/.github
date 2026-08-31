@@ -18,7 +18,8 @@ been persisted and deployed to the public static surface.
 ```text
 SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_READY
 -> SV_DN1_REPOSITORY_PERSISTENCE_PR_CREATED under TVC-governed transport
--> PR merge/deployment occurs under separate authority
+-> SV_DN1_REPOSITORY_PERSISTENCE_PR_MERGED under separate bounded TV/TVC merge authority
+-> Pages deployment occurs under repository-owned static hosting
 -> bounded public observer receives independent claim/fence
 -> load exact local persistence package
 -> invoke canonical product publication observer
@@ -134,14 +135,15 @@ The publication observer no longer releases immediately after persistence-packag
 creation. Its WorkerCoordinator dependency is now:
 
 ```text
-SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001
+SV-DN1-REPOSITORY-MERGE-DISPATCH-001
 state = COMPLETED
-transition = SV_DN1_REPOSITORY_PERSISTENCE_PR_CREATED
+transition = SV_DN1_REPOSITORY_PERSISTENCE_PR_MERGED
 ```
 
-This prevents repeated public HTTPS checks before the governed repository PR even exists.
-PR creation still does not prove merge or Pages deployment, so the observer remains
-retryable `HANDOFF_READY` until the public bytes actually equal the frozen package.
+This prevents public HTTPS checks before the governed repository PR has actually been
+merged by the separate TV/TVC merge gate. Merge still does not prove Pages deployment,
+so the observer remains retryable `HANDOFF_READY` until the public bytes actually equal
+the frozen package.
 
 This dependency refinement grants no merge, deployment, publication-decision, credential,
 or repository mutation authority.

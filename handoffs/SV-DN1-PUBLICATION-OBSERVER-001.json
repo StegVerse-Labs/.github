@@ -38,19 +38,19 @@
     "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
     "manual_execution_allowed": false,
     "dependencies": [
-      "SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001"
+      "SV-DN1-REPOSITORY-MERGE-DISPATCH-001"
     ],
     "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
     "canonical_lineage_key": "sv-dn1:publication-observer",
     "source_refs": [
       "docs/SV_DN1_PUBLICATION_OBSERVER_TASK_MIRROR_HANDOFF.md",
-      "docs/SV_DN1_REPOSITORY_PERSISTENCE_DISPATCH_MIRROR_HANDOFF.md",
-      "handoffs/SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001.json",
+      "docs/SV_DN1_REPOSITORY_MERGE_DISPATCH_MIRROR_HANDOFF.md",
+      "handoffs/SV-DN1-REPOSITORY-MERGE-DISPATCH-001.json",
       "docs/SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_MIRROR_HANDOFF.md"
     ],
     "source_handoff_ref": "docs/SV_DN1_PUBLICATION_OBSERVER_TASK_MIRROR_HANDOFF.md",
     "parent_task_id": null,
-    "derivation_reason": "Independent final observation task that consumes the frozen persistence package only after the exact TVC repository-persistence PR has been created, without inheriting repository mutation, merge, or deployment authority.",
+    "derivation_reason": "Independent final observation task that consumes the frozen persistence package only after TVC has merged the exact governed product PR, without inheriting merge or deployment authority.",
     "derivation_depth": 0
   },
   "authority": {

@@ -36,7 +36,7 @@
         ],
         "activation_proof_ref": null,
         "blockers": [
-          "SV_DN1_REPOSITORY_PERSISTENCE_PR_CREATED_BUT_MERGE_DEPLOYMENT_AND_PUBLIC_EXACT_BYTES_NOT_YET_OBSERVED"
+          "SV_DN1_REPOSITORY_PERSISTENCE_PR_MERGED_BUT_PAGES_DEPLOYMENT_AND_PUBLIC_EXACT_BYTES_NOT_YET_OBSERVED"
         ],
         "continuation_owner": "sv-dn1-publication-observer-worker",
         "credential_authority": "TV/TVC",
@@ -55,9 +55,9 @@
         "minimum_fencing_token_exclusive": 22,
         "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
         "parent_task_id": null,
-        "dependency_task_id": "SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001",
+        "dependency_task_id": "SV-DN1-REPOSITORY-MERGE-DISPATCH-001",
         "dependency_terminal_state_required": "COMPLETED",
-        "dependency_terminal_transition_required": "SV_DN1_REPOSITORY_PERSISTENCE_PR_CREATED"
+        "dependency_terminal_transition_required": "SV_DN1_REPOSITORY_PERSISTENCE_PR_MERGED"
       },
       "source_state_vector_ref": "control/task-vectors/SV-DN1-PUBLICATION-OBSERVER-001.json",
       "machine_readable_state": {

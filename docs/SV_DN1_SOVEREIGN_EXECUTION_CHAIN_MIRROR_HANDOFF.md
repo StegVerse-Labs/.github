@@ -400,3 +400,31 @@ receipts/carrier-binding.latest.json
 The chain validates main InTr receipt lineage, the HB carrier-binding receipt, exact shared-signal digest, carrier signal identity, carrier-binding digest, packet SHA-256, independent exact packet recovery, OSCILLATOR_ONLY progression, and zero HB/derived-carrier authority.
 
 An older first-round result lacking the shared HB signal cannot satisfy request 007 even if its route-specific InTr receipt remains historically valid.
+
+
+## 2026-08-31 governed merge continuation
+
+The post-analysis publication chain is now explicitly:
+
+```text
+SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001
+  -> SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001
+     -> SV_DN1_REPOSITORY_PERSISTENCE_PR_CREATED
+
+SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001
+  -> SV-DN1-REPOSITORY-MERGE-DISPATCH-001
+     -> TVC bounded merge spool
+     -> TVC-SV-DN1-REPOSITORY-MERGE-GATE-001
+     -> SV_DN1_REPOSITORY_PERSISTENCE_PR_MERGED
+
+SV-DN1-REPOSITORY-MERGE-DISPATCH-001
+  -> repository-owned Pages deployment
+  -> SV-DN1-PUBLICATION-OBSERVER-001
+     -> SV_DN1_AUTHENTIC_PUBLICATION_OBSERVED
+```
+
+The merge-dispatch task is credential-free and cannot merge. The TVC merge gate is a
+separate bounded authority that independently verifies the exact PR/base/head, exact five
+paths, exact frozen bytes, and clean mergeability before using the TV/TVC credential.
+GitHub Actions remains validation-only and repository branch protection remains the
+required-check authority.

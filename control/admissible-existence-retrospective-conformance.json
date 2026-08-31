@@ -515,6 +515,16 @@
       "result": "PASS",
       "continuation_owner": "sv-dn1-repository-persistence-dispatch-worker + StegVerse-Labs/TVC#264",
       "rationale": "The dispatcher only stages exact non-secret TVC repository-operation requests and consumes sanitized TVC receipts. Registration or execution creates no AE capability standing and grants no credential, repository mutation, merge, deployment, publication-decision, SDK, governance, custody, release, or certification authority."
+    },
+    {
+      "task_id": "SV-DN1-REPOSITORY-MERGE-DISPATCH-001",
+      "temporal_class": "current",
+      "ae_impact": "NONE",
+      "phase": null,
+      "task_relationship": "integrates_capability",
+      "result": "PASS",
+      "continuation_owner": "sv-dn1-repository-merge-dispatch-worker + TVC-SV-DN1-REPOSITORY-MERGE-GATE-001",
+      "rationale": "The worker stages an exact non-secret merge request and consumes a sanitized TVC merge receipt only. It grants no credential, merge, deployment, publication-decision, SDK, governance, custody, release, or certification authority."
     }
   ]
 }

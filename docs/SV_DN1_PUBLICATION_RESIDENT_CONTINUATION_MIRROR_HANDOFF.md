@@ -19,7 +19,9 @@ The continuation is:
 SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_READY
 -> SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001
 -> SV_DN1_REPOSITORY_PERSISTENCE_PR_CREATED
--> separately governed merge + Pages deployment
+-> SV-DN1-REPOSITORY-MERGE-DISPATCH-001
+-> SV_DN1_REPOSITORY_PERSISTENCE_PR_MERGED
+-> repository-owned Pages deployment
 -> SV-DN1-PUBLICATION-OBSERVER-001
 -> SV_DN1_AUTHENTIC_PUBLICATION_OBSERVED
 ```
@@ -59,14 +61,16 @@ The continuation uses targeted WorkerCoordinator cycles only:
 
 ```text
 python scripts/run_worker_runtime.py --task-id SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001
+python scripts/run_worker_runtime.py --task-id SV-DN1-REPOSITORY-MERGE-DISPATCH-001
 python scripts/run_worker_runtime.py --task-id SV-DN1-PUBLICATION-OBSERVER-001
 ```
 
-The second task is naturally dependency-gated until the persistence-dispatch task is
+The merge-dispatch task is naturally dependency-gated until persistence dispatch is
 `COMPLETED` at `SV_DN1_REPOSITORY_PERSISTENCE_PR_CREATED`.
 
-The observer may still return `HANDOFF_READY` after PR creation while merge or Pages
-deployment remains pending.
+The observer is dependency-gated until merge dispatch is `COMPLETED` at
+`SV_DN1_REPOSITORY_PERSISTENCE_PR_MERGED`, and may still return `HANDOFF_READY`
+while repository-owned Pages deployment remains pending.
 
 ## Completion
 
@@ -107,7 +111,7 @@ persistence-dispatch worker: MERGED
 TVC issue-264 admission evaluator: MERGED
 publication observer: MERGED
 publication observer dependency refinement: MERGED
-publication resident continuation: SOURCE COMPLETE / VALIDATION PASS / MERGE PENDING
+publication resident continuation: MERGED BASE / MERGE-DISPATCH EXTENSION SOURCE COMPLETE / VALIDATION PENDING
 authentic persistence PR: NOT YET OBSERVED
 authentic public exact-byte observation: NOT YET OBSERVED
 ```
@@ -156,3 +160,21 @@ Cross-Framework Current-Basis Resident Request validation
 These workflow results are source/contract validation only and do not prove resident
 execution, TVC admission, repository persistence, PR merge, Pages deployment, or public
 observation.
+
+
+## 2026-08-31 merge-dispatch extension
+
+The continuation now contains three targeted WorkerCoordinator tasks:
+
+```text
+persistence dispatch -> merge dispatch -> publication observer
+```
+
+The merge-dispatch worker never receives TVC_EPHEMERAL_GITHUB_TOKEN and does not call
+GitHub. It stages one exact non-secret merge request into the bounded TVC merge spool and
+consumes only the sanitized merge receipt. Publication observation no longer releases on
+PR creation.
+
+
+The TVC merge-gate resident dispatcher binding is merged at
+`StegVerse-Labs/TVC@bec6f0de3d52022c8ddc542c4deca353671a463f`.
