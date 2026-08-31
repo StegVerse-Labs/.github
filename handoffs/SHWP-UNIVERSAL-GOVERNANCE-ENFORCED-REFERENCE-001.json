@@ -26,7 +26,17 @@
       "reference proof reported as real external activation"
     ],
     "successor_policy": "INHERIT_OR_NARROW",
-    "max_successor_depth": 4
+    "max_successor_depth": 4,
+    "authority_ceiling": [
+      "bounded local reference consequence only after separate target-authority validation",
+      "bound-state mutation only",
+      "no repository writeback",
+      "no deployment authority",
+      "no publication authority",
+      "no Continuity minting authority",
+      "no real external-system activation authority",
+      "no credential authority"
+    ]
   },
   "task": {
     "task_id": "SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001",
@@ -46,7 +56,9 @@
     "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
     "manual_execution_allowed": false,
     "manual_allowed_role": "evidence review only",
-    "priority": "release"
+    "priority": "release",
+    "canonical_owner_ref": "docs/UNIVERSAL_GOVERNANCE_ENFORCED_REFERENCE_MIRROR_HANDOFF.md",
+    "source_handoff_ref": "docs/UNIVERSAL_GOVERNANCE_ENFORCED_REFERENCE_MIRROR_HANDOFF.md"
   },
   "authority": {
     "authority_source": "Universal Governance merged contracts + canonical sovereign WorkerCoordinator",
@@ -88,7 +100,12 @@
     "max_actions": 8,
     "max_retries": 2,
     "external_cost_ceiling_usd": 0,
-    "runtime_window_beats": 32
+    "runtime_window_beats": 32,
+    "allowed_paths": [
+      "receipts/universal-governance-enforced-reference/**"
+    ],
+    "allowed_services": [],
+    "rate_class": "universal_governance_enforced_reference"
   },
   "continuity": {
     "master_records_required": true,
@@ -106,7 +123,8 @@
       "bypass_negative_control_passed=true",
       "master_records_custody_accepted=true",
       "real_external_system_enforced_activation=false"
-    ]
+    ],
+    "next_authorized_action": "On an eligible non-hosted sovereign runtime with exact locally materialized StegCore and master-records/core-lite source, WorkerCoordinator may bind a fresh collision-safe claim and execute the registered bounded process adapter. Complete only after reference-boundary, bypass-negative-control and Master Records custody predicates all pass."
   },
   "source_state_vector_ref": "control/task-vectors/SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001.json",
   "admissible_existence": {
@@ -138,7 +156,7 @@
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": false,
     "temporal_class": "current",
-    "task_relationship": "executes_reference_capability",
+    "task_relationship": "validates_capability",
     "target_phase": "ACTIVATED"
   }
 }
