@@ -63,7 +63,10 @@
       "StegVerse-org/LLM-adapter#244@49676d20cff32ee346f22cfd79726b0127d80b33",
       "StegVerse-Labs/Site#860:OBSERVED_BLOCKED_PUBLIC_INTR_PROFILE_404",
       "StegVerse-Labs/.github/scripts/materialize_hil_gateway_route_config.py",
-      "StegVerse-Labs/StegVerse-Healer#53@7629e2d98d203aedc2ef49ff778a0e8b8802030b"
+      "StegVerse-Labs/StegVerse-Healer#53@7629e2d98d203aedc2ef49ff778a0e8b8802030b",
+      "control/resident-execution-request.d/healer-sovereign-scheduler-001.json",
+      "scripts/consume_healer_sovereign_scheduler_request.py",
+      "tests/test_healer_resident_request.py"
     ],
     "dependencies": [
       "SHWP-DURABLE-RUNTIME-ACTIVATION"
@@ -110,7 +113,7 @@
   "completion": {
     "source_state": "COMPLETE_VALIDATED_WITH_COINBASE_TVC_TLS_RECEIPT_AUTODISCOVERY",
     "source_validation_evidence": "StegVerse-Labs/StegVerse-Healer Test Readiness run 32670203077 job 97269769966 PASS on aca5b7871e2720b0d56757e33fc2a22c10291136; PR #40 merge ff3d9985b773d91dce0d90351a7a8a04a499c59b",
-    "next_authorized_action": "On an admitted eligible resident runtime, consume the canonical HIL/Universal InTr route config and project its exact same-host materialization upstream into the existing Healer StegDeploy Gateway target. Require local LLM-adapter source containing #244 and fail closed on absent/stale route config. Continue normal fixed-handler execution; public /intr/profile remains independently observed and cannot be claimed from local readiness.",
+    "next_authorized_action": "On the next resident request-dispatch opportunity, consume RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001 through the existing targeted independent task-control entrypoint. The request grants no authority and must preserve existing WorkerCoordinator claim/fence/dependency checks. Retry nonterminal attempts; terminalize the request only after HEALER_SOVEREIGN_SCHEDULER_COMPLETED. Independently reobserve public /intr/profile after authentic Gateway publication.",
     "terminal_when": [
       "No forbidden GitHub credential is present",
       "All due targets have COMPLETE or explicitly terminal superseded outcomes",
@@ -153,10 +156,23 @@
       "expected_materialization_upstream": "http://127.0.0.1:8765/intr/materialization",
       "public_route_observed_conforming": false,
       "authority_effect": "NONE"
+    },
+    "resident_retry_request": {
+      "request_id": "RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001",
+      "request_ref": "control/resident-execution-request.d/healer-sovereign-scheduler-001.json",
+      "consumer_ref": "scripts/consume_healer_sovereign_scheduler_request.py",
+      "dispatcher_selector": "healer_sovereign_scheduler",
+      "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+      "retry_nonterminal": true,
+      "terminal_transition": "HEALER_SOVEREIGN_SCHEDULER_COMPLETED",
+      "request_granted_authority": false,
+      "github_token_runtime_authority": "NONE",
+      "credential_authority": "TV/TVC",
+      "public_route_claimed": false
     }
   },
   "block": null,
-  "updated_at": "2026-08-31T13:40:00-05:00",
+  "updated_at": "2026-08-31T13:49:00-05:00",
   "source_state_vector_ref": "control/task-vectors/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
   "machine_readable_state": {
     "cosv": {

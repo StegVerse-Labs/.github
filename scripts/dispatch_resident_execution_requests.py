@@ -44,7 +44,8 @@ NONSECRET_ENV = (
     "STEGVERSE_BOOTSTRAP_V1_SOURCE_IDENTITY_FREEZE_STATE_ROOT",
     "STEGVERSE_BOOTSTRAP_V1_RELEASE_CANDIDATE_STATE_ROOT",
     "STEGVERSE_BOOTSTRAP_V1_INTR_ROUTE_CONFIG", "STEGVERSE_STEGOS_ROOT", "STEGVERSE_KV_SOURCE_ROOT", "STEGVERSE_KV_ROOT",
-    "STEGVERSE_SITE_ROOT", "STEGVERSE_REPO_ROOTS_JSON",
+    "STEGVERSE_SITE_ROOT", "STEGVERSE_REPO_ROOTS_JSON", "STEGVERSE_HEALER_ROOT",
+    "STEGVERSE_HIL_INTR_ROUTE_CONFIG",
     "STEGVERSE_EVALUATOR_INTR_ROUTE_CONFIG", "STEGVERSE_EVALUATOR_INTR_PORT",
     "STEGVERSE_EVALUATOR_INTR_WINDOW_SECONDS", "STEGVERSE_SV002_OBSERVE_ROUTE_CONFIG",
     "STEGVERSE_SV002_OBSERVE_PORT", "STEGVERSE_RELAY_RUNTIME_BASE", "STEGVERSE_TT_ROOT",
@@ -70,6 +71,7 @@ CONSUMERS = (
     ("bootstrap_v1_intr_bundle_delivery", "scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py"),
     ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),
     ("sv002_self_characterization", "scripts/consume_sv002_self_characterization_request.py"),
+    ("healer_sovereign_scheduler", "scripts/consume_healer_sovereign_scheduler_request.py"),
     ("cross_framework_current_basis_v04", "scripts/consume_cross_framework_current_basis_v04_request.py"),
 )
 
