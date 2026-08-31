@@ -40,5 +40,7 @@
   },
   "authority_transfer_assumed": false,
   "authority_effect_resolution": "DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS",
-  "control_packet_authority_effect": "NONE"
+  "control_packet_authority_effect": "NONE",
+  "authority_effect": "NONE",
+  "authority_effect_scope": "TASK_VECTOR_PROJECTION_ONLY"
 }
