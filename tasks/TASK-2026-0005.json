@@ -4,7 +4,9 @@
   "organization": "StegVerse-Labs",
   "goal": "Develop and activate a StegVerse-owned or federated sovereign Base RPC capability so StegFin does not depend on third-party public RPC availability for production observation",
   "status": "active",
-  "flags": ["blocked"],
+  "flags": [
+    "blocked"
+  ],
   "requested_at": "2026-08-15T23:39:00Z",
   "priority_class": "critical",
   "rank_reason": [
@@ -34,11 +36,19 @@
             "docs/SOVEREIGN_BASE_RPC_MIRROR_HANDOFF.md",
             "work_claims/SOVEREIGN-BASE-RPC-001.json"
           ],
-          "contracts": ["stegverse-sovereign-base-rpc-v1"],
-          "release_surfaces": ["sovereign-private-base-rpc"],
-          "capabilities": ["base-json-rpc-read-observation"],
+          "contracts": [
+            "stegverse-sovereign-base-rpc-v1"
+          ],
+          "release_surfaces": [
+            "sovereign-private-base-rpc"
+          ],
+          "capabilities": [
+            "base-json-rpc-read-observation"
+          ],
           "workflows": [],
-          "dependency_surfaces": ["runtime:sovereign-base-rpc"]
+          "dependency_surfaces": [
+            "runtime:sovereign-base-rpc"
+          ]
         }
       }
     ],
@@ -69,12 +79,12 @@
   "source_claim": "StegVerse-002/micro-node-runtime/work_claims/SOVEREIGN-BASE-RPC-001.json -> COMPLETE_RELEASED",
   "activation_source_claim": "docs/SOVEREIGN_BASE_RPC_ACTIVATION_MIRROR_HANDOFF.md -> COMPLETE_RELEASED",
   "route_task": "StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-BASE-RPC-ROUTE-003.json -> COMPLETE_RELEASED_SOURCE / MACHINE_OWNED_RUNTIME_OBSERVATION",
-  "machine_owner": "resident sovereign heartbeat / StegVerse-Labs/.github#12 -> SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001 -> StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-BASE-RPC-ROUTE-003.json -> StegVerse-Labs/stegfin-governance#60",
+  "machine_owner": "independent StegVerse resident task-control -> SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001 -> StegVerse-Labs/TVC/tasks/TVC-SOVEREIGN-BASE-RPC-ROUTE-003.json -> StegVerse-Labs/stegfin-governance#60",
   "activation_state": "BLOCKED_MACHINE_OWNED_REAL_ENDPOINT_PENDING",
   "machine_observable_blocker": "REAL_SYNCHRONIZED_STEGVERSE_BASE_ENDPOINT_NOT_YET_OBSERVED",
-  "control_plane_note": "The organization allocator only persists claims for queued tasks. This task remains active+blocked because all source/automation claims are released and the resident sovereign runtime owns execution. The task-specific worker does not fetch source, install software from a provider, infer TVC route admission, or take wallet/trade authority.",
+  "control_plane_note": "Source/automation is released. Base RPC activation is an independently admitted WorkerCoordinator task and no longer waits for G18 terminalization. It may resolve current local or verified bundled micro-node source without a network checkout. The task-specific worker does not fetch source, infer TVC route admission, or take wallet/trade authority.",
   "release_condition": "A real synchronized Base RPC process on an eligible StegVerse-owned/federated sovereign surface proves chain id 0x2105 and all required read-only methods, emits an inspectable validation_only=false proof with credential_requirement NONE and no NON-TV/TVC runtime secret/token, is admitted by the released TVC evaluator for StegFin observation, StegFin consumes that exact endpoint as preferred transport, the Site carries the released phone resilience module, and issue #60 retains the resulting current-phone terminal receipt.",
-  "next_executable_action": "The resident heartbeat executes SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001 after the nine-predicate sovereign carrier proof. The worker resolves already-local micro-node source and credential-free private Base endpoint/process descriptors and persists exact BLOCKED or validation_only=false proof evidence. On a live proof, TVC independently evaluates ROUTE_ADMITTED; only then may StegFin #60 consume the exact endpoint.",
+  "next_executable_action": "On an admitted independent resident task-control opportunity, execute SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001 with its own fresh claim/fence. Resolve current local or bundled micro-node source and credential-free private Base endpoint/process descriptors and persist exact BLOCKED or validation_only=false proof evidence. On a live proof, TVC independently evaluates ROUTE_ADMITTED; only then may StegFin #60 consume the exact endpoint.",
   "completion_evidence": [
     "micro-node source merge: StegVerse-002/micro-node-runtime#35 -> c30837cc11c31771a01e09d768d75b60593f7b4f",
     "micro-node release reconciliation: #36 -> 96d1120262e72fc902945c4c67bf4f56a0daba03",
