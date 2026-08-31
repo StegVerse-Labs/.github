@@ -76,7 +76,8 @@ class AdmissibleSourceGenerationCOSVTests(unittest.TestCase):
         self.assertEqual(self.handoff["source_state_vector_ref"], VECTOR_REF)
         self.assertNotIn(TASK_ID, self.coverage["active_worker_task_ids_missing_canonical_cosv"])
         self.assertEqual(index["coverage"]["indexed_vectorized_tasks"], len(index["tasks"]))
-        self.assertEqual(self.coverage["worker_registry_summary"]["canonically_indexed_task_ids"], len(index["tasks"]))
+        worker_indexed = [row for row in index["tasks"] if row.get("registry_ref") != "control/organization-task-registry.json"]
+        self.assertEqual(self.coverage["worker_registry_summary"]["canonically_indexed_task_ids"], len(worker_indexed))
         self.assertGreaterEqual(len(index["tasks"]), 32)
         worker_gap = self.coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"]
         self.assertEqual(worker_gap, len(self.coverage["active_worker_task_ids_missing_canonical_cosv"]))
