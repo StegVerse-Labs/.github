@@ -4,7 +4,7 @@ Updated: 2026-08-31
 Issue: StegVerse-Labs/.github#583
 
 ```text
-state: SOURCE_IMPLEMENTED_PENDING_VALIDATION_MERGE
+state: SOURCE_MERGED_VALIDATED / RUNTIME_EVENT_PENDING
 canonical_profile: publisher-artifact-transfer
 destination: STEGOS_ECOSYSTEM / Publisher:Ingress
 response: Publisher:Export -> KV / KnowledgeVault:DocumentImport
@@ -72,3 +72,30 @@ publication != release
 
 No GitHub token, NON-TV/TVC credential, publication authority, release authority,
 claim/fence, or runtime activation fact is created by this source.
+
+
+## Merge and retry reconciliation
+
+```text
+source PR: #587
+validated head: c351db843994b189d6fd0f3b2d0722918d05567e
+merge: 0c9781d3de7a0b12b07ef136607ea69bb578f7a3
+Cross-Framework Current-Basis Resident Request Validation: 33352019009 SUCCESS
+Validate organization control plane: 33352018988 SUCCESS
+Heartbeat Worker Project: 33352018992 SUCCESS
+```
+
+Exact-packet retry is permitted while the transfer has not reached
+`RENDERED_RETURN_PACKET_PREPARED_NOT_TRANSPORTED`. Once that exact request hash
+has produced the staged return packet, ingress and consumer replay are
+idempotent and do not repeat Publisher rendering.
+
+The materialization `payload_ref` must bind exactly to the runtime-local
+write-once payload sidecar:
+
+```text
+runtime://intr-payloads/publisher-artifact-transfer/<materialization_id>.bin
+```
+
+This hardening changes neither publication/release authority nor the remaining
+reverse-transport requirement.
