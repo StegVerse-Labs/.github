@@ -5,9 +5,9 @@
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
-    "objective": "After the sovereign WorkerCoordinator runtime is genuinely active, execute the already-built TVC Coinbase Interlock/InTr resident activation through TVC authority, observe a fresh sovereign public route, and emit the runtime Site owner-ingress projection without accepting provider credentials or mutating Site.",
+    "objective": "Execute the already-built TVC Coinbase Interlock/InTr activation under its own independent task authority using the released HB31/protocol evidence; observe a fresh sovereign public route and emit the runtime Site owner-ingress projection without accepting provider credentials or mutating Site.",
     "success_predicates": [
-      "SHWP-DURABLE-RUNTIME-ACTIVATION is terminal with genuine non-hosted resident evidence before this task is admitted.",
+      "HB31 heartbeat continuity release evidence is already satisfied and consumed only as reference/evidence; G18 terminalization is not an admission prerequisite.",
       "Existing valid recipient activation/liveness is reused rather than rotated merely because route evidence is missing.",
       "When resident activation is required, both real Gateway staging root and KV custody root are present and the canonical TVC activation entrypoint succeeds under resident root authority.",
       "A fresh TLS-verified sovereign node advertisement/public Coinbase Gateway route observation exists.",
@@ -44,9 +44,12 @@
     "canonical_lineage_key": "tvc:coinbase:intr-resident-activation",
     "derivation_depth": 0,
     "priority": "release",
-    "operational_state": "AWAITING_SOVEREIGN_RUNTIME_AND_RUNTIME_BINDINGS_SOURCE_MERGED_VALIDATED",
+    "operational_state": "AWAITING_RUNTIME_BINDINGS_SOURCE_MERGED_VALIDATED_G18_NOT_A_GATE",
     "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
     "source_refs": [
+      "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+      "docs/HB31_RUNTIME_REGISTRY_TERMINALIZATION_MIRROR_HANDOFF.md",
+      "receipts/heartbeat-transition-continuity/latest.json",
       "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
       "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
       "StegVerse-Labs/TVC/docs/TVC_COINBASE_IPHONE_SKAP_ACTIVATION_MIRROR_HANDOFF.md",
@@ -60,12 +63,12 @@
       "StegVerse-org/LLM-adapter/docs/SERVICE_GATEWAY_HTTP01_CHALLENGE_PROJECTION_MIRROR_HANDOFF.md"
     ],
     "dependencies": [
-      "SHWP-DURABLE-RUNTIME-ACTIVATION:COMPLETED",
+      "HB31-RELEASE-COMPLETE:SATISFIED",
       "SHWP-HEALER-SOVEREIGN-SCHEDULER-001:AVAILABLE_FOR_GATEWAY_TARGET"
     ]
   },
   "authority": {
-    "authority_source": "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json + handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "authority_source": "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json + management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
     "heartbeat_grants_execution_authority": false,
     "fresh_fence_required": true,
@@ -125,7 +128,7 @@
       "provider operation authority remains NONE",
       "Site repository mutation remains false"
     ],
-    "next_authorized_action": "Only after terminal readiness may the current owner-authorized iPhone enter/seal the provider credential through the trusted browser ingress. Credential plaintext never enters this worker."
+    "next_authorized_action": "Acquire a fresh independent TVC/SKAP task claim/fence and execute the resident activation worker whenever a lawful execution opportunity with the required local TVC/Gateway/KV bindings exists. Do not wait for G18 cleanup or another physical machine. Only after terminal readiness may the current owner-authorized iPhone enter/seal the provider credential through the trusted browser ingress."
   },
   "admissible_existence": {
     "capability_id": "stegverse:capability:tvc-coinbase-intr-resident-activation:v1",
@@ -133,7 +136,8 @@
     "phase": "ADMISSIBLE",
     "standing_evidence_refs": [
       "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
-      "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+      "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+      "docs/HB31_RUNTIME_REGISTRY_TERMINALIZATION_MIRROR_HANDOFF.md"
     ],
     "admissibility_evidence_refs": [
       "handoffs/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json",
@@ -150,7 +154,6 @@
     ],
     "activation_proof_ref": null,
     "blockers": [
-      "SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN",
       "REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED",
       "PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED",
       "SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED"
@@ -170,7 +173,9 @@
     "organization_control_plane_validation": 33226499060,
     "heartbeat_worker_validation": 33226499063,
     "runtime_execution_observed": false,
-    "authority_effect": "NONE"
+    "authority_effect": "NONE",
+    "g18_terminalization_required": false,
+    "hb31_release_evidence_consumable_directly": true
   },
   "source_state_vector_ref": "control/task-vectors/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json",
   "machine_readable_state": {
