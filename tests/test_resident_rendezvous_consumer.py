@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import subprocess
 
-import pytest
+import unittest
 
 from scripts.consume_resident_rendezvous import (
     ResidentRendezvousConsumerError,
@@ -62,16 +62,18 @@ def fetch_result():
     }
 
 
-def test_validate_fetch_rejects_task_drift():
-    value = fetch_result()
-    value["request"]["resident_request"]["task_id"] = "OTHER"
-    value["request"]["resident_request_sha256"] = sha256_uri(value["request"]["resident_request"])
-    with pytest.raises(ResidentRendezvousConsumerError, match="task_id mismatch"):
-        validate_fetch(value, node_ref="node:primary")
+class ResidentRendezvousConsumerTests(unittest.TestCase):
+    def test_validate_fetch_rejects_task_drift(self):
+        value = fetch_result()
+        value["request"]["resident_request"]["task_id"] = "OTHER"
+        value["request"]["resident_request_sha256"] = sha256_uri(value["request"]["resident_request"])
+        with self.assertRaisesRegex(ResidentRendezvousConsumerError, "task_id mismatch"):
+            validate_fetch(value, node_ref="node:primary")
 
 
-def test_consume_materializes_and_dispatches_existing_consumer(tmp_path):
-    runtime = tmp_path
+    def test_consume_materializes_and_dispatches_existing_consumer(self):
+        import tempfile
+        runtime = Path(tempfile.mkdtemp())
     (runtime / "scripts").mkdir()
     (runtime / "scripts" / "dispatch_resident_execution_requests.py").write_text("# placeholder\n")
     posted = []
@@ -121,9 +123,11 @@ def test_consume_materializes_and_dispatches_existing_consumer(tmp_path):
     assert posted and posted[-1]["gateway_execution_authority"] == "NONE"
 
 
-def test_no_request_is_non_authorizing(tmp_path):
-    result = consume(
-        tmp_path,
+    def test_no_request_is_non_authorizing(self):
+        import tempfile
+        runtime = Path(tempfile.mkdtemp())
+        result = consume(
+        runtime,
         base_url="https://stegverse.org",
         node_ref="node:primary",
         source_root=tmp_path,
@@ -140,10 +144,12 @@ def test_no_request_is_non_authorizing(tmp_path):
     assert result["runtime_execution_attempted"] is False
 
 
-def test_hosted_environment_rejected(tmp_path):
-    with pytest.raises(ResidentRendezvousConsumerError, match="hosted environment"):
-        consume(
-            tmp_path,
+    def test_hosted_environment_rejected(self):
+        import tempfile
+        runtime = Path(tempfile.mkdtemp())
+        with self.assertRaisesRegex(ResidentRendezvousConsumerError, "hosted environment"):
+            consume(
+            runtime,
             base_url="https://stegverse.org",
             node_ref="node:primary",
             getter=lambda *_args, **_kwargs: {},
