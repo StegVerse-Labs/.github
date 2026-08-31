@@ -1,6 +1,6 @@
 # StegVerse-002 Public Observation Runtime Mirror Handoff
 
-Updated: 2026-08-29
+Updated: 2026-08-31
 Repository: StegVerse-Labs/.github
 Issue: #462
 Implementation PR: #474
@@ -360,3 +360,12 @@ The first absorption step advances only to `PUBLIC_VERIFYING`, persists the exac
 This does **not** preclaim receiver READY, public HTTPS verification, LEASE_OPEN, observation round-trip completion, evidence export, teardown, or LEASE_CLOSED. Those transitions must later resume the same persisted canonical lease after authentic evidence exists.
 
 No G18 dependency, claim/fence minting, credential grant, GitHub-token runtime authority, second user machine, or direct observer relation to StegVerse-002 is introduced.
+
+## Portable exact-dispatch merge evidence
+
+Portable exact-dispatch source merged in PR #606 as
+`574d7847ecc6295c2072ca778de0de469f9d9cc6`. Validation runs
+`33388902061`, `33388902084`, and `33388902072` succeeded. The canonical
+public-observation consumption and resident-refresh-dispatch receipts remained absent at
+the post-merge check. The concurrent canonical-runtime lease continuation merged at
+`112416c1393ac957a6ccde9ec42876da0802f687` is preserved.
