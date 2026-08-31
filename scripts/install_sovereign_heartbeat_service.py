@@ -53,6 +53,7 @@ COPY_FILES = (
     "scripts/serve_sv002_observation_intr_runtime.py",
     "scripts/consume_hil_intr_materialization_request.py",
     "scripts/consume_device_kv_intr_materialization_request.py",
+    "scripts/consume_publisher_intr_materialization_request.py",
     "scripts/consume_hil_tvc_lifecycle_outbox.py",
     "scripts/watch_hil_tvc_lifecycle_outbox.py",
     "scripts/consume_ara_graph_resident_execution_request.py",
