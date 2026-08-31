@@ -51,14 +51,25 @@ class PortableRefreshTargetedExecutionTests(unittest.TestCase):
             "STEGVERSE_SOVEREIGN_NODE": "1",
             "STEGVERSE_HEARTBEAT_ROOT": "/srv/stegverse/runtime",
             "STEGVERSE_HEARTBEAT_SOURCE_ROOT": "/srv/stegverse/source",
+            "STEGVERSE_STEGCORE_SOURCE_ROOT": "/srv/stegverse/StegCore",
+            "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": "/srv/stegverse/master-records/core-lite",
             "GITHUB_TOKEN": "forbidden",
+            "GH_TOKEN": "forbidden",
+            "GITHUB_ACTIONS": "true",
             "ZEROEX_API_KEY": "forbidden",
         })
         self.assertEqual(env["STEGVERSE_SOVEREIGN_NODE"], "1")
         self.assertEqual(env["STEGVERSE_HEARTBEAT_ROOT"], "/srv/stegverse/runtime")
         self.assertEqual(env["STEGVERSE_HEARTBEAT_SOURCE_ROOT"], "/srv/stegverse/source")
+        self.assertEqual(env["STEGVERSE_STEGCORE_SOURCE_ROOT"], "/srv/stegverse/StegCore")
+        self.assertEqual(
+            env["STEGVERSE_MASTER_RECORDS_SOURCE_ROOT"],
+            "/srv/stegverse/master-records/core-lite",
+        )
         self.assertEqual(env["LOCALAPPDATA"], "C:/StegVerse")
         self.assertNotIn("GITHUB_TOKEN", env)
+        self.assertNotIn("GH_TOKEN", env)
+        self.assertNotIn("GITHUB_ACTIONS", env)
         self.assertNotIn("ZEROEX_API_KEY", env)
 
     def _write_claimed_g18_registry(self, runtime: Path, *, state: str = "BLOCKED", claim: bool = True) -> None:
