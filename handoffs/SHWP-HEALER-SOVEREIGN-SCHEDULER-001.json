@@ -62,7 +62,8 @@
       "StegVerse-Labs/StegVerse-Healer#44@4685956871cb03cf16d9b4416c4d0880534353cf",
       "StegVerse-org/LLM-adapter#244@49676d20cff32ee346f22cfd79726b0127d80b33",
       "StegVerse-Labs/Site#860:OBSERVED_BLOCKED_PUBLIC_INTR_PROFILE_404",
-      "StegVerse-Labs/.github/scripts/materialize_hil_gateway_route_config.py"
+      "StegVerse-Labs/.github/scripts/materialize_hil_gateway_route_config.py",
+      "StegVerse-Labs/StegVerse-Healer#53@7629e2d98d203aedc2ef49ff778a0e8b8802030b"
     ],
     "dependencies": [
       "SHWP-DURABLE-RUNTIME-ACTIVATION"
@@ -139,6 +140,19 @@
       "local_tls_runtime_receipt_observed": false,
       "tvc_tls_adoption_runtime_receipt_observed": false,
       "authority_effect": "NONE_UNTIL_ADMITTED_SOVEREIGN_EXECUTION"
+    },
+    "universal_intr_gateway_binding": {
+      "site_public_observation_issue": 860,
+      "observed_state": "OBSERVED_BLOCKED",
+      "observed_http_result": "HTTP_404",
+      "site_observation_run": 33425263120,
+      "site_observation_artifact": 9770511743,
+      "llm_adapter_profile_route_merge": "49676d20cff32ee346f22cfd79726b0127d80b33",
+      "healer_runtime_binding_merge": "7629e2d98d203aedc2ef49ff778a0e8b8802030b",
+      "expected_route_config": "~/.stegverse/config/hil-intr-runtime.json",
+      "expected_materialization_upstream": "http://127.0.0.1:8765/intr/materialization",
+      "public_route_observed_conforming": false,
+      "authority_effect": "NONE"
     }
   },
   "block": null,
