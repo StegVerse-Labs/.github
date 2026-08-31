@@ -171,14 +171,19 @@ def portable_source_root(repo_key: str, env_name: str, required: tuple[str, ...]
     if verifier_blob is not None and proof.get("verifier_git_blob") != verifier_blob:
         return None, "PORTABLE_SOURCE_VERIFIER_BLOB_INVALID"
     declared = {str(e.get("path")): e for e in manifest.get("files", []) if isinstance(e, dict) and isinstance(e.get("path"), str)}
-    for rel in required:
+    prefix = subpath + "/"
+    subtree = {name[len(prefix):]: entry for name, entry in declared.items() if name.startswith(prefix)}
+    actual = {path.relative_to(root).as_posix() for path in root.rglob("*") if path.is_file() and not path.is_symlink()}
+    if not subtree or actual != set(subtree):
+        return None, "PORTABLE_SOURCE_FILE_SET_MISMATCH"
+    for rel, entry in subtree.items():
         path = root / rel
-        entry = declared.get(subpath + "/" + rel)
-        if not path.is_file() or not isinstance(entry, dict):
-            return None, "PORTABLE_SOURCE_REQUIRED_FILE_MISSING"
         data = path.read_bytes()
         if len(data) != entry.get("size") or hashlib.sha256(data).hexdigest() != entry.get("sha256"):
             return None, "PORTABLE_SOURCE_DIGEST_MISMATCH"
+    for rel in required:
+        if rel not in subtree:
+            return None, "PORTABLE_SOURCE_REQUIRED_FILE_MISSING"
     return root, "VERIFIED_PORTABLE_BUNDLE_PROOF"
 
 
