@@ -66,6 +66,7 @@ COPY_FILES = (
     "scripts/consume_resident_rendezvous.py",
     "scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py",
     "scripts/consume_tvc_broker_validation_request.py",
+    "scripts/bootstrap_tvc_pr92_validation_source.py",
     "scripts/consume_sv002_self_characterization_request.py",
     "scripts/consume_cross_framework_current_basis_v04_request.py",
     "scripts/dispatch_resident_execution_requests.py",
@@ -157,6 +158,7 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         target_root / "scripts" / "consume_stegos_kv_intr_chain_request.py",
         target_root / "scripts" / "consume_resident_rendezvous.py",
         target_root / "scripts" / "consume_bootstrap_v1_intr_bundle_delivery_request.py",
+        target_root / "scripts" / "bootstrap_tvc_pr92_validation_source.py",
         target_root / "scripts" / "refresh_and_dispatch_resident_requests.py",
         target_root / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
     )
