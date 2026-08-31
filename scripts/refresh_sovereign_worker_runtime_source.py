@@ -44,6 +44,7 @@ STATIC_FILES = (
     Path("scripts/consume_hil_intr_materialization_request.py"),
     Path("scripts/consume_device_kv_intr_materialization_request.py"),
     Path("scripts/consume_publisher_intr_materialization_request.py"),
+    Path("scripts/consume_kv_publisher_return_materialization_request.py"),
     Path("scripts/consume_hil_tvc_lifecycle_outbox.py"),
     Path("scripts/watch_hil_tvc_lifecycle_outbox.py"),
     Path("scripts/serve_hil_intr_materialization_ingress.py"),

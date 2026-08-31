@@ -113,5 +113,11 @@ class PublisherInTrMaterializationTests(unittest.TestCase):
                 dispatch.assert_not_called()
                 self.assertEqual(result["dispatch"]["consumer_result_state"],"ALREADY_RENDERED_RETURN_PACKET_PREPARED_NOT_TRANSPORTED")
 
+    def test_render_success_queues_reverse_materialization_source(self):
+        source=(Path(__file__).resolve().parents[1]/"scripts/consume_publisher_intr_materialization_request.py").read_text()
+        self.assertIn("build_materialization_request(response.intent",source)
+        self.assertIn("RETURN_MATERIALIZATION_QUEUED_NOT_TRANSPORTED",source)
+        self.assertIn("StegVerse-Labs/continuity-vault-kit",source)
+
 if __name__=="__main__":
     unittest.main()

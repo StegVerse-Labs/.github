@@ -67,7 +67,7 @@ class SV002EventEphemeralTests(unittest.TestCase):
 
     def test_profile_preserves_hil_and_advertises_sv002(self):
         profile = ingress.profile(False)
-        self.assertEqual(profile["profiles"], ["HIL:Ingress", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "Publisher:ArtifactTransfer"])
+        self.assertEqual(profile["profiles"], ["HIL:Ingress", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "Publisher:ArtifactTransfer", "KV:PublisherArtifactImport"])
         self.assertFalse(profile["g18_required"])
         legacy = hil_profile.build_profile(tls_enabled=False)
         self.assertEqual(legacy["schema"], "stegverse.hil-intr-materialization-ingress-profile/v1")
