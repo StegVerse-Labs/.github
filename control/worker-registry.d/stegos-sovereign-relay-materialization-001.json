@@ -4,7 +4,9 @@
   "tasks": [
     {
       "archive_eligible": false,
-      "archive_reason_codes": ["SOVEREIGN_RELAY_RUNTIME_PROOF_NOT_YET_OBSERVED"],
+      "archive_reason_codes": [
+        "SOVEREIGN_RELAY_RUNTIME_PROOF_NOT_YET_OBSERVED"
+      ],
       "authorized_policy_version": "stegos-sovereign-relay-materialization-v0.1",
       "block_ref": "docs/STEGOS_SOVEREIGN_RELAY_MATERIALIZATION_MIRROR_HANDOFF.md",
       "claim_id": null,
@@ -37,6 +39,19 @@
         "fresh_fence_required": true,
         "minimum_fencing_token_exclusive": 21,
         "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      },
+      "source_state_vector_ref": "control/task-vectors/SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T21:35:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],
@@ -44,7 +59,11 @@
     {
       "adapter_ref": "process:stegos-sovereign-relay-materialization-v1",
       "authority_source": "handoffs/SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001.json#authority",
-      "capabilities": ["runtime_observation", "bounded_process_execution", "sovereign_relay_materialization"],
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "sovereign_relay_materialization"
+      ],
       "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
       "executor_type": "repository_worker",
       "last_seen_at": null,
