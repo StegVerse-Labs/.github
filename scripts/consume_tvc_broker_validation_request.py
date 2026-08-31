@@ -41,6 +41,7 @@ TVC_PROGRESSION_MODULE = "scripts.advance_tvc_pr92_broker_validation"
 TVC_PROGRESSION_SCRIPT = Path("scripts/advance_tvc_pr92_broker_validation.py")
 TVC_ADMISSION_MODULE = "scripts.evaluate_github_repository_operation_broker_admission"
 TVC_ADMISSION_SCRIPT = Path("scripts/evaluate_github_repository_operation_broker_admission.py")
+TVC_REPOSITORY_AUTHORITY_ACTIVATOR = Path("scripts/activate_sv_dn1_repository_authority_request.py")
 
 
 def truthy(value: str | None) -> bool:
@@ -255,6 +256,66 @@ def run_tvc_admission_compatibility(
     }
 
 
+
+def run_tvc_repository_authority_handoff(
+    control_root: Path,
+    *,
+    request_id: str,
+    runner=subprocess.run,
+    env: Mapping[str, str],
+) -> dict[str, Any]:
+    activator = control_root / TVC_REPOSITORY_AUTHORITY_ACTIVATOR
+    if not activator.is_file():
+        return {
+            "command": None,
+            "returncode": None,
+            "result": None,
+            "result_observed": False,
+            "request_staged_or_owned": False,
+            "reason": "TVC_REPOSITORY_AUTHORITY_ACTIVATOR_NOT_PRESENT",
+            "credential_value_exposed": False,
+            "consumer_credential_used": False,
+            "repository_write_authority": False,
+            "authority_effect": "NONE_HANDOFF_ONLY",
+        }
+    downstream_request_id = f"{request_id}-repository-authority"
+    command = [
+        sys.executable,
+        str(activator),
+        "--request-id",
+        downstream_request_id,
+        "--repo-root",
+        str(control_root),
+    ]
+    completed = runner(
+        command,
+        cwd=control_root,
+        capture_output=True,
+        text=True,
+        check=False,
+        env=dict(env),
+        timeout=1200,
+    )
+    result = parse_last_json(completed.stdout)
+    staged = bool(
+        isinstance(result, dict)
+        and result.get("request_id") == downstream_request_id
+        and result.get("credential_value_exposed") is False
+    )
+    return {
+        "command": command,
+        "returncode": completed.returncode,
+        "result": result,
+        "result_observed": isinstance(result, dict),
+        "request_staged_or_owned": staged,
+        "downstream_request_id": downstream_request_id,
+        "credential_value_exposed": False,
+        "consumer_credential_used": False,
+        "repository_write_authority": False,
+        "github_token_runtime_authority": "NONE",
+        "authority_effect": "NONE_HANDOFF_ONLY",
+    }
+
 def terminal_validation(runtime: Path) -> bool:
     receipt_path = runtime / VALIDATION_RECEIPT_REL
     if not receipt_path.is_file():
@@ -289,11 +350,17 @@ def previously_consumed(runtime: Path, request: Mapping[str, Any], request_hash:
         not compatibility_required
         or receipt.get("admission_compatibility_observed") is True
     )
+    repository_authority_required = request.get("repository_authority_continuation_requested") is True
+    repository_authority_satisfied = (
+        not repository_authority_required
+        or receipt.get("repository_authority_handoff_observed") is True
+    )
     return (
         receipt.get("request_id") == request.get("request_id")
         and receipt.get("request_sha256") == request_hash
         and receipt.get("terminal_validation_observed") is True
         and compatibility_satisfied
+        and repository_authority_satisfied
         and terminal_validation(runtime)
     )
 
@@ -331,6 +398,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     tvc_root, observed = exact_local_tvc_root(cleaned)
     progression: dict[str, Any] | None = None
     admission: dict[str, Any] | None = None
+    repository_authority_handoff: dict[str, Any] | None = None
     control_root: Path | None = None
     control_observed: str | None = None
     if tvc_root is None:
@@ -402,7 +470,22 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
                 env=cleaned,
             )
             compatibility_observed = admission.get("admission_eligible") is True
-    state = "COMPLETED" if terminal and (not compatibility_required or compatibility_observed) else "HANDOFF_READY"
+    repository_authority_required = request.get("repository_authority_continuation_requested") is True
+    repository_authority_handoff_observed = False
+    if terminal and compatibility_observed and repository_authority_required:
+        if control_root is None:
+            control_root, control_observed = local_tvc_control_root(cleaned)
+        if control_root is not None:
+            repository_authority_handoff = run_tvc_repository_authority_handoff(
+                control_root,
+                request_id=str(request["request_id"]),
+                runner=runner,
+                env=cleaned,
+            )
+            repository_authority_handoff_observed = repository_authority_handoff.get("request_staged_or_owned") is True
+    validation_and_compatibility = terminal and (not compatibility_required or compatibility_observed)
+    downstream_handoff_satisfied = (not repository_authority_required or repository_authority_handoff_observed)
+    state = "COMPLETED" if validation_and_compatibility and downstream_handoff_satisfied else "HANDOFF_READY"
     receipt = {
         "schema":"stegverse.tvc-broker-validation-request-consumption/v1",
         "state":state,
@@ -418,6 +501,9 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "admission_compatibility_requested":compatibility_required,
         "admission_compatibility_observed":compatibility_observed,
         "admission_compatibility":admission,
+        "repository_authority_continuation_requested":repository_authority_required,
+        "repository_authority_handoff_observed":repository_authority_handoff_observed,
+        "repository_authority_handoff":repository_authority_handoff,
         "observed_tvc_control_root":control_observed,
         "expected_tvc_head":EXPECTED_HEAD,
         "observed_tvc_root":str(tvc_root),
