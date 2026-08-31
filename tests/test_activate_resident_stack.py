@@ -32,6 +32,8 @@ class ResidentStackActivationTests(unittest.TestCase):
             healer = root / "StegVerse-Healer"
             tv = root / "TV"
             tvc = root / "TVC"
+            micro = root / "micro-node-runtime"
+            master = root / "master-records-orchestration"
             (stegos / "stegos").mkdir(parents=True)
             (kv / "runtime").mkdir(parents=True)
             (stegos / "stegos" / "intr_backbone.py").write_text("# intr\n")
@@ -51,6 +53,14 @@ class ResidentStackActivationTests(unittest.TestCase):
             (tvc / "TVC_MIRROR_HANDOFF.md").write_text("# handoff\n")
             (tvc / "scripts" / "activate_coinbase_intr_resident.py").write_text("# activate\n")
             (tvc / "tools" / "hil_intr_lifecycle_intake.py").write_text("# intake\n")
+            (micro / "tools").mkdir(parents=True)
+            (micro / "experiments" / "self-characterization-001").mkdir(parents=True)
+            (micro / "schemas").mkdir(parents=True)
+            (micro / "tools" / "run_self_characterization_principal.py").write_text("# principal\n")
+            (micro / "experiments" / "self-characterization-001" / "CONSTRUCTION_PROVENANCE.v0.1.json").write_text("{}\n")
+            (micro / "schemas" / "self_characterization_runtime_identity.schema.json").write_text("{}\n")
+            (master / "scripts").mkdir(parents=True)
+            (master / "scripts" / "verify_sv002_self_characterization_reconstruction.py").write_text("# verify\n")
             (source / "scripts" / "package_sovereign_control_plane_bundle.py").write_text("# packager\n")
             (llm / "scripts" / "stegdeploy_bootstrap.py").write_text("# deploy\n")
             receipt_path = root / "activation.json"
@@ -93,6 +103,8 @@ class ResidentStackActivationTests(unittest.TestCase):
                 healer_root=healer,
                 tv_root=tv,
                 tvc_root=tvc,
+                micro_node_root=micro,
+                master_records_root=master,
                 health_url="http://127.0.0.1:8000/health",
                 receipt_path=receipt_path,
                 runner=runner,
@@ -108,6 +120,8 @@ class ResidentStackActivationTests(unittest.TestCase):
             self.assertTrue(receipt["healer_source_bundled"])
             self.assertTrue(receipt["tv_source_bundled"])
             self.assertTrue(receipt["tvc_source_bundled"])
+            self.assertTrue(receipt["micro_node_source_bundled"])
+            self.assertTrue(receipt["master_records_source_bundled"])
             self.assertTrue(receipt["tvc_skap_successor_attempted"])
             self.assertEqual(receipt["tvc_skap_successor_state"], "ACTIVE")
             self.assertEqual(receipt["github_token_runtime_authority"], "NONE")
