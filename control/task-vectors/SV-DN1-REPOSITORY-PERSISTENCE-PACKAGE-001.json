@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/sv-dn1-repository-persistence-package-001.json",
+    "handoffs/SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001.json",
+    "docs/SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-08-30T22:18:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "control/worker-registry.d/sv-dn1-repository-persistence-package-001.json + handoffs/SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001.json current task state",
+    "archive_ready": "control/worker-registry.d/sv-dn1-repository-persistence-package-001.json archive_eligible=false",
+    "unassigned_work": "durable machine continuation owner exists",
+    "chat_owned_counts": "no chat-owned execution or credential role",
+    "canonical_owner_installed": "canonical handoff/registry surfaces are installed",
+    "thread_required": "continuation is durably recoverable without this chat",
+    "blocker_count": "canonical mirror runtime truth: WAITING ON AUTHENTIC PUBLIC PROMOTION",
+    "evidence_complete": "terminal task evidence is incomplete",
+    "activated": "no current terminal activation claim is promoted by COSV",
+    "propagated": "downstream propagation remains incomplete"
+  },
+  "authority_effect": "NONE"
+}
