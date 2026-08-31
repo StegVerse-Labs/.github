@@ -120,6 +120,8 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "scripts/consume_cmc028_resident_execution_request.py",
                 "scripts/run_sv_dn1_first_round_chain.py",
                 "scripts/consume_sv_dn1_resident_execution_request.py",
+                "scripts/consume_stegos_kv_intr_chain_request.py",
+                "scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py",
                 "scripts/consume_tvc_broker_validation_request.py",
                 "scripts/consume_sv002_self_characterization_request.py",
                 "scripts/dispatch_resident_execution_requests.py",
