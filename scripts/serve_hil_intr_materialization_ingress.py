@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from consume_hil_intr_materialization_request import validate_request
+from heartbeat_runtime.intr_carrier_profile import validate_carrier_binding
 
 MAX_REQUEST_BYTES = 512 * 1024
 INGRESS_PATH = "/intr/materialization"
@@ -68,6 +69,38 @@ def _safe_id(value: str) -> str:
     safe = "".join(ch if ch.isalnum() or ch in "._-" else "-" for ch in value)[:160]
     _require(bool(safe), "materialization_id_invalid")
     return safe
+
+
+def _carrier_binding_evidence(request: Mapping[str, Any]) -> dict[str, Any]:
+    binding = request.get("carrier_binding")
+    if binding is None:
+        return {
+            "carrier_binding_present": False,
+            "carrier_binding_validated": False,
+            "carrier_profile": "stegverse.intr.hb-derived-carrier-profile/v1",
+            "heartbeat_reference_epoch": None,
+            "heartbeat_reference_id": None,
+            "carrier_channel_id": None,
+            "carrier_binding_sha256": None,
+            "carrier_binding_grants_authority": False,
+        }
+    validated = validate_carrier_binding(
+        binding,
+        packet_id=str(request.get("packet_id") or ""),
+        payload_hash=str(request.get("payload_hash") or ""),
+    )
+    reference = validated["heartbeat_reference"]
+    channel = validated["channel"]
+    return {
+        "carrier_binding_present": True,
+        "carrier_binding_validated": True,
+        "carrier_profile": validated["carrier_profile"],
+        "heartbeat_reference_epoch": reference["heartbeat_epoch"],
+        "heartbeat_reference_id": reference["heartbeat_id"],
+        "carrier_channel_id": channel["channel_id"],
+        "carrier_binding_sha256": validated["binding_sha256"],
+        "carrier_binding_grants_authority": False,
+    }
 
 
 def validate_transport_headers(headers: Mapping[str, str], body: bytes) -> dict[str, str | None]:
@@ -169,6 +202,7 @@ def admit_materialization(*, runtime_root: Path, body: bytes, headers: Mapping[s
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise HILInTrIngressError("request_json_invalid") from exc
     request, source = extract_materialization(payload, transport)
+    carrier = _carrier_binding_evidence(request)
     materialization_id = str(request["materialization_id"]); safe_id = _safe_id(materialization_id)
     request_path = runtime_root / REQUEST_DIR_REL / f"{safe_id}.json"
     canonical_request = json.dumps(request, sort_keys=True, indent=2).encode("utf-8") + b"\n"
@@ -188,7 +222,7 @@ def admit_materialization(*, runtime_root: Path, body: bytes, headers: Mapping[s
         "transport_authorization_id": source["transport_authorization_id"], "node_id": source["node_id"], "interlock_id": source["interlock_id"], "outbox_entry_hash": source["outbox_entry_hash"],
         "transport_payload_sha256": transport["payload_sha256"], "queue_ref": str(request_path), "exact_request_validated": True, "write_once_persisted": True,
         "runtime_execution_attempted": False, "receiver_readiness_claimed": False, "hil_custody_claimed": False, "claim_or_fence_minted": False, "g18_required": False,
-        "credential_authority": CREDENTIAL_AUTHORITY, "github_token_runtime_authority": "NONE", "authority_effect": AUTHORITY_EFFECT, "admitted_at": _utc_now(),
+        "credential_authority": CREDENTIAL_AUTHORITY, "github_token_runtime_authority": "NONE", **carrier, "authority_effect": AUTHORITY_EFFECT, "admitted_at": _utc_now(),
     }
     receipt_raw = json.dumps(receipt, sort_keys=True, indent=2).encode("utf-8") + b"\n"
     _write_once(receipt_path, receipt_raw)
