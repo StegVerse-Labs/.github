@@ -2,7 +2,7 @@
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
   "observed_commit": "0e7b0b03cffdc207d7b8260423776f40e80c6fb7",
-  "observed_at": "2026-08-30T21:08:00-05:00",
+  "observed_at": "2026-08-30T21:48:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,9 +11,9 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 71,
-    "canonically_indexed_task_ids": 46,
+    "canonically_indexed_task_ids": 50,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 18,
+    "active_unvectorized_unique_task_ids": 14,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,24 +21,20 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 32,
+  "total_active_unvectorized_unique_task_ids": 28,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
     "STEGFIN-LIVE-PRETRADE-005",
-    "SHWP-HIL-SOVEREIGN-RECEIVER-001",
     "SHWP-STEGNUTRITION-CONTINUATION-001",
     "HEALER-FAILURE-MAILBOX-LIVE-SHADOW-001",
-    "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
     "HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001",
     "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001",
     "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001",
-    "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
     "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
     "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
     "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
     "SHWP-SV002-SELF-CHARACTERIZATION-001",
-    "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
     "SV-DN1-PUBLIC-PROMOTION-001",
     "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001"
   ],
@@ -242,6 +238,22 @@
     {
       "task_id": "BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001",
       "vector": "50000000103000"
+    },
+    {
+      "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+      "vector": "50000000105000"
+    },
+    {
+      "task_id": "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+      "vector": "50000000101000"
+    },
+    {
+      "task_id": "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
+      "vector": "50000000101000"
+    },
+    {
+      "task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+      "vector": "50000000101000"
     }
   ],
   "evidence_conflicts": [],
@@ -517,6 +529,14 @@
     "intr_browser_delivery_observed": false,
     "release_authorized": false,
     "publication_performed": false,
+    "authority_effect": "NONE"
+  },
+  "sovereign_runtime_cosv_cohort": {
+    "task_count": 4,
+    "indexed_after_projection": 50,
+    "active_worker_unvectorized_after_projection": 14,
+    "total_active_unvectorized_after_projection": 28,
+    "runtime_activation_claimed": false,
     "authority_effect": "NONE"
   }
 }
