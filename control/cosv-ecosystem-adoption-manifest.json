@@ -4,7 +4,7 @@
   "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
-  "observed_at": "2026-08-31T10:18:00-05:00",
+  "observed_at": "2026-08-31T11:46:00-05:00",
   "source": "live GitHub App installation enumeration plus durable task-surface evidence",
   "authority_effect": "NONE",
   "credential_authority": "TV/TVC",
@@ -14,16 +14,16 @@
   "organization_count": 14,
   "universe_audit_complete": false,
   "adoption_metrics": {
-    "numerator_vectorized_active_task_surfaces": 5,
-    "denominator_proven_active_task_surfaces": 29,
-    "ratio": "5/29",
-    "percentage": 17.24,
-    "interpretation": "RTG is now strict VECTOR_PRESENT after 4/4 active-task coverage and repository-local validation. ET is excluded from the active denominator after its final mathematical-completeness claim completed and released."
+    "numerator_vectorized_active_task_surfaces": 6,
+    "denominator_proven_active_task_surfaces": 28,
+    "ratio": "6/28",
+    "percentage": 21.43,
+    "interpretation": "GCAT-BCAT is strict VECTOR_PRESENT after 3/3 current active Decision Envelope tasks are projected and repository-local validation passes. core-lite is excluded from the active denominator after a terminal task-surface audit proved zero current active repository tasks."
   },
   "classification_counts": {
-    "VECTOR_REQUIRED": 24,
-    "VECTOR_PRESENT": 5,
-    "NO_ACTIVE_TASK_SURFACE": 5,
+    "VECTOR_REQUIRED": 22,
+    "VECTOR_PRESENT": 6,
+    "NO_ACTIVE_TASK_SURFACE": 6,
     "NO_REPOSITORY_OR_UNAVAILABLE": 188
   },
   "organization_projection": [
@@ -31,9 +31,9 @@
       "organization": "Admissible-Existence",
       "installation_id": 139890227,
       "repository_count": 32,
-      "vector_required": 4,
-      "vector_present": 3,
-      "no_active_task_surface": 5,
+      "vector_required": 2,
+      "vector_present": 4,
+      "no_active_task_surface": 6,
       "unavailable_or_not_yet_audited": 20
     },
     {
@@ -293,16 +293,25 @@
     {
       "organization": "Admissible-Existence",
       "repository": "Admissible-Existence/GCAT-BCAT",
-      "classification": "VECTOR_REQUIRED",
+      "classification": "VECTOR_PRESENT",
       "profile": "task.v1",
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
-        "task-bearing repository discovered in live ecosystem task-surface audit"
+        "Admissible-Existence/GCAT-BCAT@94fdb2defa5a5c6d1a64f770f272dc6a8a7c6aca:data/cosv/task-vector-index.json",
+        "Admissible-Existence/GCAT-BCAT@94fdb2defa5a5c6d1a64f770f272dc6a8a7c6aca:docs/COSV_GCAT_BCAT_ADOPTION_MIRROR_HANDOFF.md",
+        "Admissible-Existence/GCAT-BCAT/actions/runs/33415239043:Validate COSV Projection SUCCESS",
+        "Admissible-Existence/GCAT-BCAT/actions/runs/33415239018:Build SUCCESS",
+        "Admissible-Existence/GCAT-BCAT/actions/runs/33415238995:Decision Envelope Deterministic Tests SUCCESS",
+        "Admissible-Existence/GCAT-BCAT/actions/runs/33415239033:Decision Envelope Federal-Plus Security Gate SUCCESS"
       ],
-      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "vector_coverage_state": "COMPLETE",
       "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
-      "authority_effect": "NONE"
+      "authority_effect": "NONE",
+      "validation_refs": [
+        "3/3 current active Decision Envelope tasks projected",
+        "DE-001/DE-002/DE-004 terminal and excluded from active denominator"
+      ]
     },
     {
       "organization": "Admissible-Existence",
@@ -355,16 +364,19 @@
     {
       "organization": "Admissible-Existence",
       "repository": "Admissible-Existence/core-lite",
-      "classification": "VECTOR_REQUIRED",
-      "profile": "task.v1",
-      "notation": "L R U I V G O C M T B E A P",
-      "width": 14,
+      "classification": "NO_ACTIVE_TASK_SURFACE",
       "evidence_refs": [
-        "task-bearing repository discovered in live ecosystem task-surface audit"
+        "Admissible-Existence/core-lite@0ef42ce9b06528f3ae83020073980527ee8e142a:docs/CORE_LITE_MIRROR_HANDOFF.md",
+        "Admissible-Existence/core-lite@0ef42ce9b06528f3ae83020073980527ee8e142a:data/cosv/task-vector-index.json",
+        "Admissible-Existence/core-lite/actions/runs/33415660197:Core-Lite Intake SUCCESS"
       ],
-      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
-      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
-      "authority_effect": "NONE"
+      "authority_effect": "NONE",
+      "no_active_task_evidence": [
+        "CORE-LITE-SUPPORT-HARDENING-001 COMPLETE / RELEASED / COMPLETE_NOTIFY_ONLY",
+        "manual_tasks_remaining=false",
+        "task registry merge reconciliation=merged_complete",
+        "repository-local COSV terminal audit reports zero current structured active tasks"
+      ]
     },
     {
       "organization": "Admissible-Existence",
