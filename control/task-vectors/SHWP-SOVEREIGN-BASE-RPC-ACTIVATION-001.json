@@ -30,9 +30,9 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "tasks/TASK-2026-0005.json#machine_owner and activation_state=BLOCKED_MACHINE_OWNED_REAL_ENDPOINT_PENDING; activation mirror live_activation_state=MACHINE_OWNED_REAL_ENDPOINT_PENDING",
+    "lifecycle": "tasks/TASK-2026-0005.json#machine_owner and activation_state=BLOCKED_MACHINE_OWNED_REAL_ENDPOINT_PENDING; independent resident task-control owns live execution",
     "archive_ready": "worker fragment archive_eligible=false",
-    "unassigned_work": "worker_id=sovereign-base-rpc-activation-worker and continuation_owner is the resident sovereign heartbeat chain",
+    "unassigned_work": "worker_id=sovereign-base-rpc-activation-worker and continuation_owner is the independent resident task-control -> TVC -> StegFin chain",
     "chat_owned_counts": "activation mirror manual_execution_allowed=false; source implementation claim is COMPLETE_RELEASED and live activation is machine-owned",
     "canonical_owner_installed": "source, route evaluator, activation automation, worker fragment and executable handoff are complete/installed/released",
     "thread_required": "activation mirror archive condition says source lane no longer requires chat/session implementation or validation owner; live activation has durable machine owner",
