@@ -360,3 +360,8 @@ STEGVERSE_RESIDENT_SOURCE_MANIFEST
 The SV002 process adapter now also permits the canonical `STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT` and compatibility `STEGVERSE_MASTER_RECORDS_ROOT` locators. The worker accepts either name for the same local reconstruction source.
 
 These are source/provenance locators only. They do not relax pinned formal commits, the non-reference principal requirement, runtime-identity verification, the Master Records verifier pin, or same-execution reconstruction.
+
+
+## Portable formal-snapshot principal source pin — 2026-08-31
+
+The resident principal source pin advances to `StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9`, which preserves the v0.2 experiment contract while adding fail-closed consumption of exact TT/RTG/GTG/AE snapshots from the verified resident source manifest. No principal execution has occurred at an older pin, so this is a pre-execution source advancement rather than a rewrite of execution evidence.
