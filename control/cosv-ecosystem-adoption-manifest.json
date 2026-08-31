@@ -4,7 +4,7 @@
   "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
-  "observed_at": "2026-08-31T08:15:00-05:00",
+  "observed_at": "2026-08-31T08:33:00-05:00",
   "source": "live GitHub App installation enumeration plus durable task-surface evidence",
   "authority_effect": "NONE",
   "credential_authority": "TV/TVC",
@@ -14,15 +14,15 @@
   "organization_count": 14,
   "universe_audit_complete": false,
   "adoption_metrics": {
-    "numerator_vectorized_active_task_surfaces": 2,
+    "numerator_vectorized_active_task_surfaces": 4,
     "denominator_proven_active_task_surfaces": 30,
-    "ratio": "2/30",
-    "percentage": 6.67,
-    "interpretation": "Strict adoption excludes terminal/no-active repositories; validation-profile-registry, ae-validation-factory, telemetry, and tracker are proven no-active rather than forced to carry historical vectors."
+    "ratio": "4/30",
+    "percentage": 13.33,
+    "interpretation": "Strict repository adoption now includes StegVerse-Labs/.github, AdmittedCode/.github, Admissible-Existence/STCM, and Admissible-Existence/GTG. AE remains VECTOR_REQUIRED because its broader active denominator is not yet fully projected."
   },
   "classification_counts": {
-    "VECTOR_REQUIRED": 28,
-    "VECTOR_PRESENT": 2,
+    "VECTOR_REQUIRED": 26,
+    "VECTOR_PRESENT": 4,
     "NO_ACTIVE_TASK_SURFACE": 4,
     "NO_REPOSITORY_OR_UNAVAILABLE": 188
   },
@@ -31,8 +31,8 @@
       "organization": "Admissible-Existence",
       "installation_id": 139890227,
       "repository_count": 32,
-      "vector_required": 8,
-      "vector_present": 0,
+      "vector_required": 6,
+      "vector_present": 2,
       "no_active_task_surface": 4,
       "unavailable_or_not_yet_audited": 20
     },
@@ -222,7 +222,11 @@
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
-        "task-bearing repository discovered in live ecosystem task-surface audit"
+        "Admissible-Existence/AE@d48dac1ccb241321fbfcec5cdbef46d9a17efe1:data/cosv/task-vector-index.json",
+        "Admissible-Existence/AE@d48dac1ccb241321fbfcec5cdbef46d9a17efe1:AE_MIRROR_HANDOFF.md",
+        "Admissible-Existence/AE/actions/runs/33395210940:Validate COSV Projection SUCCESS",
+        "Admissible-Existence/AE/actions/runs/33395211046:Admissible Resolution Validation SUCCESS",
+        "Admissible-Existence/AE/actions/runs/33395210965:Reflection Build SUCCESS"
       ],
       "vector_coverage_state": "NOT_PROVEN_COMPLETE",
       "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
@@ -376,16 +380,22 @@
     {
       "organization": "Admissible-Existence",
       "repository": "Admissible-Existence/STCM",
-      "classification": "VECTOR_REQUIRED",
+      "classification": "VECTOR_PRESENT",
       "profile": "task.v1",
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
-        "task-bearing repository discovered in live ecosystem task-surface audit"
+        "Admissible-Existence/STCM@a818c6cb66ff98375f4a01cfa6ecbdb23a6fb6e7:data/cosv/task-vector-index.json",
+        "Admissible-Existence/STCM@a818c6cb66ff98375f4a01cfa6ecbdb23a6fb6e7:data/cosv/task-vectors/STCM-RELATIONAL-GOVERNANCE-MATH-ALIGNMENT-001.json",
+        "Admissible-Existence/STCM@a818c6cb66ff98375f4a01cfa6ecbdb23a6fb6e7:STCM_MIRROR_HANDOFF.md"
       ],
-      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "vector_coverage_state": "COMPLETE",
       "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
-      "authority_effect": "NONE"
+      "authority_effect": "NONE",
+      "validation_refs": [
+        "Admissible-Existence/STCM/actions/runs/33395939977:Validate COSV Projection SUCCESS",
+        "Admissible-Existence/STCM/actions/runs/33395939946:STCM Build SUCCESS"
+      ]
     },
     {
       "organization": "Admissible-Existence",
@@ -511,16 +521,25 @@
     {
       "organization": "Admissible-Existence",
       "repository": "Admissible-Existence/GTG",
-      "classification": "VECTOR_REQUIRED",
+      "classification": "VECTOR_PRESENT",
       "profile": "task.v1",
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
-        "task-bearing repository discovered in live ecosystem task-surface audit"
+        "Admissible-Existence/GTG@65775cf65473264dfc83f5dd9018e655743c81b3:data/cosv/task-vector-index.json",
+        "Admissible-Existence/GTG@65775cf65473264dfc83f5dd9018e655743c81b3:data/cosv/task-vectors/GTG-RELATIONAL-GOVERNANCE-MATH-ALIGNMENT-001.json",
+        "Admissible-Existence/GTG@65775cf65473264dfc83f5dd9018e655743c81b3:RELATIONAL_GOVERNANCE_MATH_ALIGNMENT_MIRROR_HANDOFF.md"
       ],
-      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "vector_coverage_state": "COMPLETE",
       "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
-      "authority_effect": "NONE"
+      "authority_effect": "NONE",
+      "validation_refs": [
+        "Admissible-Existence/GTG/actions/runs/33396218356:Validate COSV Projection SUCCESS",
+        "Admissible-Existence/GTG/actions/runs/33396218069:Validate GTG foundation SUCCESS",
+        "Admissible-Existence/GTG/actions/runs/33396218004:GTG Canonical Structure Validation SUCCESS",
+        "Admissible-Existence/GTG/actions/runs/33396218125:Verify GTG SUCCESS",
+        "Admissible-Existence/GTG/actions/runs/33396218084:GTG Foundation Verification SUCCESS"
+      ]
     },
     {
       "organization": "Admissible-Existence",

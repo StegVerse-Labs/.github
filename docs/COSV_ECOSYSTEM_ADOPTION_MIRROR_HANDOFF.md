@@ -820,3 +820,28 @@ strict active-repository adoption: 2/30 = 6.67%
 ```
 
 Authority effect: NONE.
+
+## STCM and GTG strict promotion — 2026-08-31
+
+Two Admissible-Existence repositories now satisfy strict repository-level COSV coverage:
+
+```text
+Admissible-Existence/STCM  VECTOR_PRESENT
+Admissible-Existence/GTG   VECTOR_PRESENT
+```
+
+Each repository exposes one current structured active task, emits a canonical task.v1 vector, reports its active task surface audit complete, and passed repository-local COSV plus existing repository validation. Both remain blocked on terminal AE-AUTO-0011 mathematics and neither projection grants release, publication, execution, or certification authority.
+
+Admissible-Existence/AE itself now has merged local COSV projection evidence and repaired private-source validation transport, but it remains VECTOR_REQUIRED because its wider active machine denominator is not yet fully projected.
+
+Strict active-repository adoption:
+
+```text
+VECTOR_PRESENT: 4
+VECTOR_REQUIRED: 26
+NO_ACTIVE_TASK_SURFACE: 4
+not-yet-audited/unavailable: 188
+ratio: 4/30 = 13.33%
+```
+
+Authority effect: NONE.
