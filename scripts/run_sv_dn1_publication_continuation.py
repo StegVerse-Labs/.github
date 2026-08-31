@@ -80,7 +80,7 @@ def bound(name:str,default:Path,env:Mapping[str,str])->Path:
 
 def validate_receipt(task_id:str, env:Mapping[str,str])->dict[str,Any]:
     if task_id=="SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001":
-        root=Path.home()/".stegverse"/"transport"/"sv-dn1-repository-persistence"
+        root=bound("STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_DISPATCH_STATE_ROOT",Path.home()/".stegverse"/"transport"/"sv-dn1-repository-persistence",env)
         path=root/"receipts/latest.json"
         expected={
             "schema":"stegverse.sv-dn1.repository-persistence-dispatch-receipt/v1",
@@ -93,7 +93,7 @@ def validate_receipt(task_id:str, env:Mapping[str,str])->dict[str,Any]:
             "authority_effect":"NONE_REQUEST_STAGING_ONLY",
         }
     elif task_id=="SV-DN1-REPOSITORY-MERGE-DISPATCH-001":
-        root=Path.home()/".stegverse"/"transport"/"sv-dn1-repository-merge"
+        root=bound("STEGVERSE_TVC_SV_DN1_MERGE_SPOOL_ROOT",Path.home()/".stegverse"/"transport"/"sv-dn1-repository-merge",env)
         path=root/"receipts/dispatcher.latest.json"
         expected={
             "schema":"stegverse.sv-dn1.repository-merge-dispatch-receipt/v1",
