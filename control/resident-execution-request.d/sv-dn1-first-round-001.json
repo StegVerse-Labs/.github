@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.resident-execution-request/v1",
-  "request_id": "RESIDENT-EXEC-SV-DN1-FIRST-ROUND-006",
+  "request_id": "RESIDENT-EXEC-SV-DN1-FIRST-ROUND-007",
   "state": "REQUESTED",
   "task_id": "SV-DN1-SOVEREIGN-EXECUTION-CHAIN-001",
   "mode": "SV_DN1_FIRST_ROUND_CHAIN",
@@ -14,5 +14,5 @@
   "network_source_fetch_allowed": false,
   "request_granted_authority": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Fresh exactly-once governed first-round request after merge bd3bfa7fe7f222507208fc359df8ffd660b46db5 extended the canonical sovereign progression to seven tasks through SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001. Execute the current chain using the already-authentic Hugging Face browser observation and platform-neutral production-source-prep v2 contract. Terminal success now requires exact-byte public promotion plus a self-contained repository persistence package. This request grants no execution, credential, network-source-fetch, remote repository writeback, commit, push, merge, deployment, publication-decision, governance, release, or certification authority and requires no second user-operated machine."
+  "note": "Fresh intent-only sovereign first-round request after shared HB carrier publication merged in 927a57094acdf1916c2bdd419887b23a8e106e08. Execute the existing seven-task chain only. SV-DN1-INTR-RUNTIME-001 is terminal for this request only when its main InTr receipt, carrier-binding receipt, and exact shared HB signal ref/digest all validate and the shared signal independently recovers with matching carrier binding and packet identity. Existing public-promotion and repository-persistence predicates remain required. This request grants no execution, heartbeat progression, credential, network-source-fetch, remote repository writeback, commit, push, merge, deployment, publication-decision, governance, release, or certification authority and requires no second user-operated machine."
 }

@@ -273,7 +273,7 @@ SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001
 ```
 
 The request was reissued as
-`RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-002` after the canonical HB-carrier wire,
+`RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-003` after the canonical HB-carrier wire,
 resident carrier-materialization, and `STEGVERSE_KV_ROOT` fixes.
 
 A DEVICE_KV receipt is terminal for this chain only when it additionally proves:
@@ -315,3 +315,28 @@ The terminal DEVICE_KV observation now records:
 - `response_shared_hb_signal_sha256`
 
 The shared persistence target is `STEGVERSE_HEARTBEAT_ROOT` or the resident execution fallback. Shared publication failure fails the observation closed. Source merge still does not satisfy `DEVICE_KV_INTR_OBSERVED`.
+
+
+## 2026-08-31 shared-signal terminal strengthening — issue #650
+
+The current resident request is `RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-003`.
+
+The chain no longer accepts the five HB-carrier transport booleans by themselves. A terminal DEVICE_KV receipt must additionally retain and independently validate both exact shared carrier frames:
+
+```text
+request_shared_hb_signal_ref
+request_shared_hb_signal_sha256
+response_shared_hb_signal_ref
+response_shared_hb_signal_sha256
+```
+
+For each shared signal the resident consumer requires:
+- the ref resolves inside the canonical heartbeat runtime root;
+- exact packet recovery/binding validation succeeds;
+- canonical signal digest matches the terminal receipt;
+- signal_id matches the lane carrier signal id;
+- packet receipt binding matches the corresponding InTr receipt;
+- progression remains OSCILLATOR_ONLY;
+- authority effect remains NONE_CARRIER_ONLY.
+
+Historical carrier-only terminal receipts therefore remain evidence of their original execution but cannot satisfy this stronger current resident request.

@@ -261,7 +261,7 @@ single-opportunity sovereign chain orchestrator: MERGED
 public promotion worker: MERGED / WAITING ON AUTHENTIC SDK ANALYSIS
 repository persistence package worker: MERGED / WAITING ON PUBLIC PROMOTION
 resident request bridge: MERGED
-current resident request 006: MERGED / REQUESTED
+current resident request 007: MERGED / REQUESTED
 browser evidence Universal InTr ingress: MERGED / VALIDATED / RUNTIME ADMISSION NOT YET OBSERVED
 authentic Hugging Face browser observation: OBSERVED
 authentic EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM InTr hop: OBSERVED
@@ -309,7 +309,7 @@ no network source fetch
 no request/execution authority created
 ```
 
-Authentic analysis remains unobserved until the eligible sovereign resident actually consumes `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-006` and emits `SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED`. Public display remains a separate downstream promotion/deployment gate.
+Authentic analysis remains unobserved until the eligible sovereign resident actually consumes `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-007` and emits `SV_DN1_FIRST_PRODUCTION_ROUND_ANALYZED`. Public display remains a separate downstream promotion/deployment gate.
 
 
 ## 2026-08-30 repository-persistence package extension
@@ -330,7 +330,7 @@ The seventh task does not mutate a remote repository. It freezes the exact five 
 
 This removes the runtime-to-repository-content handoff ambiguity without granting GitHub, credential, commit, push, merge or deployment authority. A separately admitted TV/TVC-governed repository mutator remains required for actual persistence.
 
-Request `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-005` is superseded for this seven-step chain. The current exact request is `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-006`, which is merged and `REQUESTED`; it grants no execution, credential, network-source-fetch, repository-writeback, deployment, publication-decision, release, or certification authority.
+Request `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-005` is superseded for this seven-step chain. The current exact request is `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-007`, which is merged and `REQUESTED`; it grants no execution, credential, network-source-fetch, repository-writeback, deployment, publication-decision, release, or certification authority.
 
 
 ## Final-chain locator drift repair — 2026-08-30
@@ -383,3 +383,20 @@ The InTr step now also emits the stronger HB-derived carrier-binding receipt mer
 `9344d5a944f4fd6e4f33df4d01826311bfebd894`. Existing Universal InTr lineage remains
 required; the carrier-binding receipt adds exact HB reference/channel/phase/packet
 evidence and grants no authority.
+
+
+## 2026-08-31 shared-HB carrier terminal strengthening — issue #650
+
+The current exact resident request is `RESIDENT-EXEC-SV-DN1-FIRST-ROUND-007`.
+
+`SV-DN1-INTR-RUNTIME-001` is now durable-terminal for this chain only when all three evidence surfaces reconcile:
+
+```text
+receipts/latest.json
+receipts/carrier-binding.latest.json
+<heartbeat-runtime>/<shared_hb_signal_ref>
+```
+
+The chain validates main InTr receipt lineage, the HB carrier-binding receipt, exact shared-signal digest, carrier signal identity, carrier-binding digest, packet SHA-256, independent exact packet recovery, OSCILLATOR_ONLY progression, and zero HB/derived-carrier authority.
+
+An older first-round result lacking the shared HB signal cannot satisfy request 007 even if its route-specific InTr receipt remains historically valid.

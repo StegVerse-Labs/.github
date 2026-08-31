@@ -379,3 +379,20 @@ New evidence fields:
 - worker completion: `hb_shared_signal_ref`, `hb_shared_signal_sha256`
 
 The persistence operation does not re-sample HB, does not derive a second signal, and grants no authority. Authentic SV-DN-1 runtime observation remains distinct from source/CI/merge.
+
+
+## 2026-08-31 resident terminal verification — issue #650
+
+Shared publication fields are no longer informational for the current sovereign chain. The chain validates `carrier-binding.latest.json` against the main InTr receipt and then independently validates the exact shared carrier signal named by `shared_hb_signal_ref`.
+
+Required reconciliation includes:
+- `intr_receipt_hash == receipts/latest.json.receipt_hash`;
+- exact shared signal recovery succeeds;
+- canonical shared signal digest equals `shared_hb_signal_sha256`;
+- shared signal id equals `carrier_signal_id`;
+- shared carrier binding digest equals `carrier_binding_sha256`;
+- shared packet SHA-256 equals the carrier receipt packet SHA-256;
+- HB progression remains `OSCILLATOR_ONLY`;
+- carrier authority remains `NONE_CARRIER_ONLY`.
+
+This is a terminal evidence predicate only and does not grant execution or heartbeat authority.

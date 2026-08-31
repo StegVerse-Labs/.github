@@ -16,6 +16,12 @@ import sys
 from pathlib import Path
 from typing import Any, Mapping
 
+from heartbeat_runtime.intr_subsignal_runtime import (
+    default_heartbeat_runtime_root,
+    recover_local_intr_subsignal,
+    signal_sha256,
+)
+
 REQUEST_REL = Path("control/resident-execution-request.d/stegos-kv-intr-chain-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/stegos-kv-intr-chain-consumption.latest.json")
 ENTRYPOINT = Path("scripts/refresh_and_execute_resident_task.py")
@@ -94,7 +100,33 @@ def validate_request(request: Mapping[str, Any]) -> None:
     if request.get("steps") != [row[0] for row in STEPS]:
         raise RuntimeError("StegOS/KV resident request step order mismatch")
 
-def terminal(runtime: Path, step: tuple[str, Path, str, str]) -> bool:
+def _shared_signal_valid(value: Mapping[str, Any], prefix: str, values: Mapping[str, str] | None) -> bool:
+    signal_ref = value.get(f"{prefix}_shared_hb_signal_ref")
+    signal_digest = value.get(f"{prefix}_shared_hb_signal_sha256")
+    signal_id = value.get(f"{prefix}_carrier_signal_id")
+    receipt_hash = value.get(f"{prefix}_receipt_hash")
+    if not all(isinstance(v, str) and v for v in (signal_ref, signal_digest, signal_id, receipt_hash)):
+        return False
+    root = default_heartbeat_runtime_root(values)
+    try:
+        recovered = recover_local_intr_subsignal(root=root, signal_ref=signal_ref)
+        if not recovered:
+            return False
+        signal_path = (root / signal_ref).resolve()
+        signal = load_json(signal_path)
+    except Exception:
+        return False
+    expected_receipt = receipt_hash[7:] if receipt_hash.startswith("sha256:") else receipt_hash
+    return (
+        signal_sha256(signal) == signal_digest
+        and signal.get("signal_id") == signal_id
+        and signal.get("intr", {}).get("packet_receipt_hash") == expected_receipt
+        and signal.get("authority", {}).get("authority_effect") == "NONE_CARRIER_ONLY"
+        and signal.get("carrier", {}).get("progression_dependency") == "OSCILLATOR_ONLY"
+    )
+
+
+def terminal(runtime: Path, step: tuple[str, Path, str, str], values: Mapping[str, str] | None = None) -> bool:
     task_id, rel, state, transition = step
     path = runtime / rel
     if not path.is_file():
@@ -112,6 +144,8 @@ def terminal(runtime: Path, step: tuple[str, Path, str, str]) -> bool:
             and value.get("response_transported_on_hb_derived_carrier") is True
             and value.get("request_carrier_packet_recovery_verified") is True
             and value.get("response_carrier_packet_recovery_verified") is True
+            and _shared_signal_valid(value, "request", values)
+            and _shared_signal_valid(value, "response", values)
         )
     return True
 
@@ -143,7 +177,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     blocked = None
     for step in STEPS:
         task_id, rel, _, transition = step
-        if terminal(runtime, step):
+        if terminal(runtime, step, safe):
             outcomes.append({"task_id":task_id,"state":"ALREADY_TERMINAL","terminal_receipt":str(rel),
                              "transition_id":transition,"execution_attempted":False})
             continue
@@ -151,7 +185,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         completed = runner(command,cwd=runtime,capture_output=True,text=True,check=False,env=safe,timeout=600)
         attempted = True
         result = parse_last_json(completed.stdout)
-        done = terminal(runtime, step)
+        done = terminal(runtime, step, safe)
         outcomes.append({"task_id":task_id,"state":"TERMINAL_OBSERVED" if done else "ATTEMPT_RECORDED",
                          "terminal_receipt":str(rel) if done else None,
                          "transition_id":transition if done else None,"execution_attempted":True,
@@ -160,7 +194,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         if not done:
             blocked = task_id
             break
-    complete = all(terminal(runtime, step) for step in STEPS)
+    complete = all(terminal(runtime, step, safe) for step in STEPS)
     receipt = {
         "schema":"stegverse.stegos-kv-intr-chain.resident-consumption/v1",
         "state":"COMPLETED" if complete else "ATTEMPT_RECORDED",
