@@ -17,7 +17,7 @@ class StegOSKvIntrChainResidentRequestTests(unittest.TestCase):
     def request(self):
         return {
             "schema":"stegverse.resident-execution-request/v1",
-            "request_id":"RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-001",
+            "request_id":"RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-002",
             "state":"REQUESTED","task_id":mod.CHAIN_TASK_ID,"mode":mod.MODE,
             "entrypoint":str(mod.ENTRYPOINT),"steps":[row[0] for row in mod.STEPS],
             "credential_authority":"TV/TVC","github_token_required":False,
@@ -41,11 +41,38 @@ class StegOSKvIntrChainResidentRequestTests(unittest.TestCase):
                 task=command[command.index("--task-id")+1]; calls.append(task)
                 step=next(row for row in mod.STEPS if row[0]==task)
                 path=runtime/step[1]; path.parent.mkdir(parents=True,exist_ok=True)
-                path.write_text(json.dumps({"state":step[2],"transition_id":step[3]})+"\n",encoding="utf-8")
+                receipt={"state":step[2],"transition_id":step[3]}
+                if task == mod.DEVICE_KV_TASK_ID:
+                    receipt.update({
+                        "hb_derived_carrier_transport_observed":True,
+                        "request_transported_on_hb_derived_carrier":True,
+                        "response_transported_on_hb_derived_carrier":True,
+                        "request_carrier_packet_recovery_verified":True,
+                        "response_carrier_packet_recovery_verified":True,
+                    })
+                path.write_text(json.dumps(receipt)+"\n",encoding="utf-8")
                 return SimpleNamespace(returncode=0,stdout=json.dumps({"task_id":task})+"\n",stderr="")
             result=mod.consume(root/"source",runtime,runner=runner,env={"PATH":"/bin","HOME":str(root)})
             self.assertEqual(result["state"],"COMPLETED")
             self.assertEqual(calls,[row[0] for row in mod.STEPS])
+
+    def test_legacy_device_kv_terminal_without_hb_carrier_is_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td); runtime=self._runtime(root)
+            step=next(row for row in mod.STEPS if row[0]==mod.DEVICE_KV_TASK_ID)
+            path=runtime/step[1]; path.parent.mkdir(parents=True,exist_ok=True)
+            path.write_text(json.dumps({"state":step[2],"transition_id":step[3]})+"\n",encoding="utf-8")
+            self.assertFalse(mod.terminal(runtime,step))
+            value={
+                "state":step[2],"transition_id":step[3],
+                "hb_derived_carrier_transport_observed":True,
+                "request_transported_on_hb_derived_carrier":True,
+                "response_transported_on_hb_derived_carrier":True,
+                "request_carrier_packet_recovery_verified":True,
+                "response_carrier_packet_recovery_verified":True,
+            }
+            path.write_text(json.dumps(value)+"\n",encoding="utf-8")
+            self.assertTrue(mod.terminal(runtime,step))
 
     def test_chain_stops_at_first_nonterminal_step(self):
         with tempfile.TemporaryDirectory() as td:
@@ -69,6 +96,9 @@ class StegOSKvIntrChainResidentRequestTests(unittest.TestCase):
         self.assertIn('"STEGVERSE_KV_SOURCE_ROOT"',refresh_execute)
         self.assertIn('"STEGVERSE_KV_SOURCE_ROOT"',refresh_dispatch)
         self.assertIn('"STEGVERSE_KV_SOURCE_ROOT"',dispatcher)
+        self.assertIn('"STEGVERSE_KV_ROOT"',refresh_execute)
+        self.assertIn('"STEGVERSE_KV_ROOT"',refresh_dispatch)
+        self.assertIn('"STEGVERSE_KV_ROOT"',dispatcher)
         self.assertIn('"stegos_kv_intr_chain"',refresh_dispatch)
         self.assertIn('("stegos_kv_intr_chain", "scripts/consume_stegos_kv_intr_chain_request.py")',dispatcher)
 
