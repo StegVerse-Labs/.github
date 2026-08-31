@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 HANDOFF = ROOT / "handoffs" / "SHWP-SV002-SELF-CHARACTERIZATION-001.json"
-PIN = "4acbf42ad321311e14b0a736220874bae34ac998"
+PIN = "410c4267b4145ed1c1f5f2d954f3926429a43c01"
 
 
 class SV002SelfCharacterizationSourcePinTests(unittest.TestCase):
@@ -15,7 +15,7 @@ class SV002SelfCharacterizationSourcePinTests(unittest.TestCase):
         refs = data["task"]["source_refs"]
         self.assertIn(f"StegVerse-002/micro-node-runtime@{PIN}", refs)
         for path in (
-            "experiments/self-characterization-001/EXPERIMENT_CONTRACT.v0.1.json",
+            "experiments/self-characterization-001/EXPERIMENT_MANIFEST.v0.2.json",\n            "experiments/self-characterization-001/EXPERIMENT_CONTRACT.v0.2.json",\n            "experiments/self-characterization-001/EVIDENCE_RECONSTRUCTION_PROTOCOL.v0.2.json",
             "experiments/self-characterization-001/SUBJECT_IDENTITY_MANIFEST.v0.1.json",
             "schemas/self_characterization_runtime_identity.schema.json",
             "tools/verify_self_characterization_runtime_identity.py",
