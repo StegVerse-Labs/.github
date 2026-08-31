@@ -145,7 +145,7 @@ class DeviceKVEventMaterializationTests(unittest.TestCase):
                     "PATH":"/bin",
                     "HOME":str(base),
                     "STEGVERSE_KV_SOURCE_ROOT":str(kv_source),
-                    "STEGVERSE_KV_DATA_ROOT":str(kv_data),
+                    "STEGVERSE_KV_ROOT":str(kv_data),
                 },
             )
             self.assertEqual(result["state"],"MATERIALIZATION_EXECUTION_ATTEMPTED")
@@ -199,7 +199,7 @@ class DeviceKVEventMaterializationTests(unittest.TestCase):
             "scripts/consume_stegos_kv_intr_chain_request.py",
             "scripts/consume_resident_rendezvous.py",
         ):
-            self.assertIn("STEGVERSE_KV_DATA_ROOT",(root/rel).read_text())
+            self.assertIn("STEGVERSE_KV_ROOT",(root/rel).read_text())
 
     def test_consumer_scrubs_hosted_and_github_authority(self):
         env=consumer.scrubbed_env({
