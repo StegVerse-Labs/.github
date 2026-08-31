@@ -115,6 +115,8 @@ def build_bundle(
     *,
     stegos_root: Path | None = None,
     kv_source_root: Path | None = None,
+    healer_root: Path | None = None,
+    tvc_root: Path | None = None,
 ) -> dict:
     root = root.resolve()
     output = output.resolve()
@@ -144,6 +146,34 @@ def build_bundle(
         bundle_files.extend(
             ("vendor/continuity-vault-kit/" + path.relative_to(kr).as_posix(), path)
             for path in _safe_tree_files(kr)
+        )
+    if healer_root is not None:
+        hr = healer_root.expanduser().resolve()
+        healer_required = (
+            hr / "app" / "dispatch_orchestrators.py",
+            hr / "data" / "orchestrator_targets.json",
+            hr / "docs" / "HEALER_MIRROR_HANDOFF.md",
+        )
+        if not all(path.is_file() for path in healer_required):
+            raise RuntimeError("StegVerse-Healer source root invalid")
+        vendor_sources["StegVerse-Healer"] = True
+        bundle_files.extend(
+            ("vendor/StegVerse-Healer/" + path.relative_to(hr).as_posix(), path)
+            for path in _safe_tree_files(hr)
+        )
+    if tvc_root is not None:
+        tr = tvc_root.expanduser().resolve()
+        tvc_required = (
+            tr / "TVC_MIRROR_HANDOFF.md",
+            tr / "scripts" / "activate_coinbase_intr_resident.py",
+            tr / "tools" / "hil_intr_lifecycle_intake.py",
+        )
+        if not all(path.is_file() for path in tvc_required):
+            raise RuntimeError("TVC source root invalid")
+        vendor_sources["TVC"] = True
+        bundle_files.extend(
+            ("vendor/TVC/" + path.relative_to(tr).as_posix(), path)
+            for path in _safe_tree_files(tr)
         )
     entries = []
     for rel, path in bundle_files:
@@ -197,8 +227,17 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--stegos-root", type=Path)
     parser.add_argument("--kv-source-root", type=Path)
+    parser.add_argument("--healer-root", type=Path)
+    parser.add_argument("--tvc-root", type=Path)
     args = parser.parse_args()
-    receipt = build_bundle(args.source_root, args.output, stegos_root=args.stegos_root, kv_source_root=args.kv_source_root)
+    receipt = build_bundle(
+        args.source_root,
+        args.output,
+        stegos_root=args.stegos_root,
+        kv_source_root=args.kv_source_root,
+        healer_root=args.healer_root,
+        tvc_root=args.tvc_root,
+    )
     print(json.dumps(receipt, indent=2, sort_keys=True))
     return 0
 
