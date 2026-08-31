@@ -144,7 +144,7 @@ tvc governed validation request bridge: MERGED / VALIDATED
 TVC PR #92 resident progression driver: MERGED / VALIDATED in TVC a35fb5b93ae30da27848e263f86c929f81636a02
 resident request -> TVC progression composition: MERGED / VALIDATED in .github a59e9ffdcc890a79af911c0cd6d81aea5fbc34c2
 current-base admission compatibility evaluator: MERGED / VALIDATED in TVC e350225d9e28dc45d3685afa8b7113d54fcf19b9
-resident validation -> admission compatibility composition: IMPLEMENTING
+resident validation -> compatibility -> TVC repository-authority handoff: MERGED / VALIDATED
 tvc governed validation receipt: 0/1
 tvc broker admission: 0/1
 ST-019 authentic protection operation: 0/1
@@ -278,3 +278,21 @@ The validation proves source/control-plane consistency and that the hosted lane 
 GitHub authority-bearing construct. It does not prove resident TVC activation, credential
 presence, PR #92 governed PASS, compatibility, repository integration, issue #264
 admission, persistence, deployment, or public observation.
+
+
+## Repository-authority handoff merge evidence
+
+```text
+PR: #674
+merge_commit: cfa5c9a9087259190c08a11429fd22bc001dd97a
+final_validated_head: 787a74b1053304f4e532448d4e51b884bc8a4f76
+Heartbeat Worker validation: 33420440072 SUCCESS
+Organization control-plane validation: 33420440102 SUCCESS
+runtime governed validation receipt: NOT OBSERVED
+runtime compatibility receipt: NOT OBSERVED
+downstream TVC repository-authority request: NOT OBSERVED
+```
+
+Source handoff is terminal. Remaining progress is machine/runtime evidence produced by the
+sovereign resident control plane and the downstream TVC service; this chat is not an
+execution dependency.
