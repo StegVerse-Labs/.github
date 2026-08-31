@@ -295,6 +295,18 @@ def main() -> int:
 
     tv_root, tv_observed = _locate_local_source("TV", "STEGVERSE_TV_ROOT", TV_REQUIRED, exact_head=TV_SHA)
     tvc_root, tvc_observed = _locate_local_source("TVC", "STEGVERSE_TVC_ROOT", TVC_REQUIRED, required_ancestor=TVC_MIN_SHA)
+    tv_source_validation_mode = "LOCAL_GIT_PROOF" if tv_root is not None else None
+    tvc_source_validation_mode = "LOCAL_GIT_PROOF" if tvc_root is not None else None
+    tv_portable_reason = None
+    tvc_portable_reason = None
+    if tv_root is None:
+        tv_root, tv_portable_reason = _portable_source("TV", "STEGVERSE_TV_ROOT", TV_REQUIRED)
+        if tv_root is not None:
+            tv_source_validation_mode = "VERIFIED_PORTABLE_BUNDLE_PROOF"
+    if tvc_root is None:
+        tvc_root, tvc_portable_reason = _portable_source("TVC", "STEGVERSE_TVC_ROOT", TVC_REQUIRED)
+        if tvc_root is not None:
+            tvc_source_validation_mode = "VERIFIED_PORTABLE_BUNDLE_PROOF"
     if tv_root is None or tvc_root is None:
         return block(
             "LOCAL_TV_TVC_SOURCE_NOT_MATERIALIZED",
@@ -303,19 +315,31 @@ def main() -> int:
                 "tvc_selected": str(tvc_root) if tvc_root else None,
                 "tv_candidates": tv_observed,
                 "tvc_candidates": tvc_observed,
+                "tv_portable_reason": tv_portable_reason,
+                "tvc_portable_reason": tvc_portable_reason,
                 "network_lookup_performed": False,
             },
         )
 
     # Recheck identities at execution time after discovery. No fetch/pull/update is performed.
-    try:
-        tv_head = _git_head(tv_root)
-    except Exception as exc:
-        return block("LOCAL_TV_GIT_IDENTITY_UNAVAILABLE", {"error_type": type(exc).__name__})
-    if tv_head != TV_SHA:
-        return block("TV_SOURCE_SHA_MISMATCH", {"expected": TV_SHA, "observed": tv_head})
-    if not _tvc_contains_required_source(tvc_root):
-        return block("TVC_ROOTLESS_ACTIVATION_SOURCE_NOT_PRESENT", {"required_ancestor": TVC_MIN_SHA})
+    if tv_source_validation_mode == "LOCAL_GIT_PROOF":
+        try:
+            tv_head = _git_head(tv_root)
+        except Exception as exc:
+            return block("LOCAL_TV_GIT_IDENTITY_UNAVAILABLE", {"error_type": type(exc).__name__})
+        if tv_head != TV_SHA:
+            return block("TV_SOURCE_SHA_MISMATCH", {"expected": TV_SHA, "observed": tv_head})
+    else:
+        checked, portable_reason = _portable_source("TV", "STEGVERSE_TV_ROOT", TV_REQUIRED)
+        if checked != tv_root:
+            return block("PORTABLE_TV_SOURCE_REVALIDATION_FAILED", {"reason": portable_reason})
+    if tvc_source_validation_mode == "LOCAL_GIT_PROOF":
+        if not _tvc_contains_required_source(tvc_root):
+            return block("TVC_ROOTLESS_ACTIVATION_SOURCE_NOT_PRESENT", {"required_ancestor": TVC_MIN_SHA})
+    else:
+        checked, portable_reason = _portable_source("TVC", "STEGVERSE_TVC_ROOT", TVC_REQUIRED)
+        if checked != tvc_root:
+            return block("PORTABLE_TVC_SOURCE_REVALIDATION_FAILED", {"reason": portable_reason})
 
     child_env = {
         "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
@@ -383,6 +407,8 @@ def main() -> int:
         "tvc_source_root": str(tvc_root),
         "tv_source_sha": TV_SHA,
         "tvc_required_source_ancestor": TVC_MIN_SHA,
+        "tv_source_validation_mode": tv_source_validation_mode,
+        "tvc_source_validation_mode": tvc_source_validation_mode,
         "service_manager": "systemd-user",
         "runtime_receipt_path": result["receipt_path"],
         "proof_sha256": result["proof_sha256"],
