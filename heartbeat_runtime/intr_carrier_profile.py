@@ -68,7 +68,7 @@ def derive_channel(packet_id: str) -> dict[str, Any]:
         "frequency_ratio": 1.0,
         "phase_slot": slot,
         "phase_slot_count": CHANNEL_COUNT,
-        "phase_radians": 2.0 * math.pi * slot / CHANNEL_COUNT,
+        "phase_radians": round(2.0 * math.pi * slot / CHANNEL_COUNT, 12),
         "amplitude_ratio": 1.0,
         "derivation": "SHA256_PACKET_ID_FIRST32_MOD_16",
     }
