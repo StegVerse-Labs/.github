@@ -11,6 +11,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from heartbeat_runtime.intr_carrier_profile import build_carrier_binding
+
 ROOT=Path(__file__).resolve().parents[1]
 REQUEST_DIR=Path("intr-materialization")
 INGRESS_DIR=Path("receipts/sovereign-network/publisher-intr-ingress")
@@ -100,8 +102,17 @@ def consume(runtime:Path,mid:str)->dict[str,Any]:
     response_intent_path=runtime/PAYLOAD_DIR/f"{mid}.return-intent.json"
     response_intent_path.write_text(json.dumps(response.intent,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     return_request=build_materialization_request(response.intent,payload_ref="runtime://"+str(response_path.relative_to(runtime)),downstream_owner_ref="StegVerse-Labs/continuity-vault-kit")
+    carrier_binding=build_carrier_binding(
+        packet_id=str(return_request["packet_id"]),
+        payload_hash=str(return_request["payload_hash"]),
+        sampled_unix_ms=int(datetime.now(timezone.utc).timestamp()*1000),
+    )
+    return_request=dict(return_request)
+    return_request["carrier_binding"]=carrier_binding
+    return_request_body=dict(return_request); return_request_body.pop("request_hash",None)
+    return_request["request_hash"]=sha(return_request_body)
     return_request_path=persist_materialization_request(runtime,return_request)
-    receipt={"schema":"stegverse.publisher-intr-materialization-consumption/v1","state":"RETURN_MATERIALIZATION_QUEUED_NOT_TRANSPORTED","materialization_id":mid,"request_hash":req["request_hash"],"transport_intent_hash":req["transport_intent_hash"],"payload_hash":req["payload_hash"],"forward_transport_state":forward["state"],"forward_terminal_receipt_hash":forward["terminal_receipt_hash"],"publisher_result_schema":result["schema"],"publisher_generation_id":result["generation_id"],"return_payload_hash":response.payload_hash,"return_packet_id":response.intent["packet_id"],"return_intent_hash":sha256_uri(dict(response.intent)),"return_payload_ref":"runtime://"+str(response_path.relative_to(runtime)),"return_intent_ref":"runtime://"+str(response_intent_path.relative_to(runtime)),"return_materialization_id":return_request["materialization_id"],"return_materialization_request_hash":return_request["request_hash"],"return_materialization_request_ref":"runtime://"+str(return_request_path.relative_to(runtime)),"return_transport_observed":False,"publication_authorized":False,"release_authorized":False,"execution_authorized":False,"request_grants_authority":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":"NONE","observed_at":datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00","Z")}
+    receipt={"schema":"stegverse.publisher-intr-materialization-consumption/v1","state":"RETURN_MATERIALIZATION_QUEUED_NOT_TRANSPORTED","materialization_id":mid,"request_hash":req["request_hash"],"transport_intent_hash":req["transport_intent_hash"],"payload_hash":req["payload_hash"],"forward_transport_state":forward["state"],"forward_terminal_receipt_hash":forward["terminal_receipt_hash"],"publisher_result_schema":result["schema"],"publisher_generation_id":result["generation_id"],"return_payload_hash":response.payload_hash,"return_packet_id":response.intent["packet_id"],"return_intent_hash":sha256_uri(dict(response.intent)),"return_payload_ref":"runtime://"+str(response_path.relative_to(runtime)),"return_intent_ref":"runtime://"+str(response_intent_path.relative_to(runtime)),"return_materialization_id":return_request["materialization_id"],"return_materialization_request_hash":return_request["request_hash"],"return_carrier_binding_sha256":carrier_binding["binding_sha256"],"return_carrier_channel_id":carrier_binding["channel"]["channel_id"],"return_carrier_grants_authority":False,"return_materialization_request_ref":"runtime://"+str(return_request_path.relative_to(runtime)),"return_transport_observed":False,"publication_authorized":False,"release_authorized":False,"execution_authorized":False,"request_grants_authority":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":"NONE","observed_at":datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00","Z")}
     p=runtime/RECEIPT_DIR/f"{mid}.json";p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     return receipt
 
