@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SV-DN1-REPOSITORY-MERGE-DISPATCH-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/sv-dn1-repository-merge-dispatch-001.json",
+    "handoffs/SV-DN1-REPOSITORY-MERGE-DISPATCH-001.json",
+    "docs/SV_DN1_REPOSITORY_MERGE_DISPATCH_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-08-31T10:30:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "registry + executable handoff install durable machine ownership",
+    "archive_ready": "terminal TVC merge evidence absent",
+    "unassigned_work": "registered worker owns merge-request staging",
+    "chat_owned_counts": "no chat-owned execution or credential role",
+    "canonical_owner_installed": "handoff/worker/adapter/registry installed",
+    "thread_required": "continuation durable",
+    "blocker_count": "authentic upstream product PR and TVC merge pending",
+    "evidence_complete": "terminal merge receipt absent",
+    "activated": "no runtime activation inferred from source",
+    "propagated": "Pages deployment/public observation pending"
+  },
+  "authority_effect": "NONE"
+}
