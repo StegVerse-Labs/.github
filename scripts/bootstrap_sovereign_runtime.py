@@ -514,7 +514,7 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         env=env,
         runner=runner,
     )
-    if platform.system().lower() == "linux" and body["post_install_source_refresh_watcher"].get("activated") is not True:
+    if platform.system().lower() == "linux" and body["post_install_source_refresh_watcher"].get("attempted") is True and body["post_install_source_refresh_watcher"].get("activated") is not True:
         body["state"] = "RETRY"
         body["reason"] = "SOURCE_REFRESH_WATCHER_ACTIVATION_RETRY_REQUIRED"
         atomic_write(receipt_path, body)
