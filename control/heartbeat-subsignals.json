@@ -1,10 +1,10 @@
 {
-  "generation": 23,
+  "generation": 24,
   "schema": "stegverse.heartbeat-subsignals/v1",
   "subsignals": {
     "organization_federation": {
       "authority_effect": false,
-      "blocked_count": 4,
+      "blocked_count": 0,
       "detail_classes": [
         "MEMORY",
         "ACTION",
@@ -18,13 +18,18 @@
       "kind": "organization_readiness_federation",
       "organization_count": 14,
       "progress_rule": "ONLY_ADMITTED_STATE_TRANSITIONS_ADVANCE_PROGRESS",
-      "ready_count": 10,
+      "ready_count": 14,
       "recheck_policy": "ON_EACH_ADMITTED_HEARTBEAT_WHILE_ANY_ORGANIZATION_IS_BLOCKED_OR_CHANGED",
       "registry_ref": "control/organization-federation.json",
-      "state": "ACTIVE_PARTIAL_COVERAGE",
+      "state": "SOURCE_READY_LIVE_FEDERATION_OBSERVATION_PENDING",
       "task_registry_ref": "control/organization-task-registry.json",
       "transport_grants_authority": false,
-      "unassigned_count": 0
+      "unassigned_count": 0,
+      "kernel_version": "1.1.0",
+      "kernel_sha": "80059df01a4ae9a162d4068ad03bc9c541a7b344",
+      "source_ready_count": 14,
+      "live_federation_observed_count": 0,
+      "next_transition": "OBSERVE_AUTHENTIC_ADDRESSED_INTR_FRAMES"
     },
     "steggate_transport_lease": {
       "authority_effect": false,
