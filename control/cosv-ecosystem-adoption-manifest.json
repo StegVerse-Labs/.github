@@ -4,7 +4,7 @@
   "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
-  "observed_at": "2026-08-27T11:14:00-05:00",
+  "observed_at": "2026-08-30T22:38:00-05:00",
   "source": "live GitHub App installation enumeration plus durable task-surface evidence",
   "authority_effect": "NONE",
   "credential_authority": "TV/TVC",
@@ -14,14 +14,15 @@
   "organization_count": 14,
   "universe_audit_complete": false,
   "adoption_metrics": {
-    "numerator_vectorized_active_task_surfaces": 0,
+    "numerator_vectorized_active_task_surfaces": 1,
     "denominator_proven_active_task_surfaces": 33,
-    "ratio": "0/33",
-    "percentage": 0,
-    "interpretation": "Repository-level VECTOR_PRESENT requires proof that every active machine task in that repository is vectorized. Partial vector presence does not satisfy the numerator."
+    "ratio": "1/33",
+    "percentage": 3.03,
+    "interpretation": "Repository-level VECTOR_PRESENT requires proof that every active machine task in that repository is vectorized. StegVerse-Labs/.github now satisfies this strict criterion; remaining task-bearing repositories remain fail-closed until independently complete."
   },
   "classification_counts": {
-    "VECTOR_REQUIRED": 33,
+    "VECTOR_REQUIRED": 32,
+    "VECTOR_PRESENT": 1,
     "NO_REPOSITORY_OR_UNAVAILABLE": 189
   },
   "organization_projection": [
@@ -92,8 +93,8 @@
       "organization": "StegVerse-Labs",
       "installation_id": 139890998,
       "repository_count": 100,
-      "vector_required": 7,
-      "vector_present": 0,
+      "vector_required": 6,
+      "vector_present": 1,
       "no_active_task_surface": 0,
       "unavailable_or_not_yet_audited": 93
     },
@@ -1580,18 +1581,28 @@
     {
       "organization": "StegVerse-Labs",
       "repository": "StegVerse-Labs/.github",
-      "classification": "VECTOR_REQUIRED",
+      "classification": "VECTOR_PRESENT",
       "profile": "task.v1",
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
         "control/worker-registry.json",
+        "control/worker-registry.d/**",
         "control/organization-task-registry.json",
-        "control/task-vector-index.json"
+        "control/task-vector-index.json",
+        "control/cosv-global-registry-coverage.json",
+        "StegVerse-Labs/.github#590",
+        "StegVerse-Labs/.github#593"
       ],
-      "vector_coverage_state": "PARTIAL_4_INDEXED_TASKS_NOT_GLOBAL_REGISTRY_COMPLETE",
-      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
-      "authority_effect": "NONE"
+      "vector_coverage_state": "COMPLETE",
+      "release_condition": "Maintain complete vector parity for every active machine task; future task creation must fail closed until vector projection is installed.",
+      "authority_effect": "NONE",
+      "validation_refs": [
+        "Heartbeat Worker Project run 33352169605: SUCCESS",
+        "Validate organization control plane run 33352169712: SUCCESS",
+        "Heartbeat Worker Project run 33352419004: SUCCESS",
+        "Validate organization control plane run 33352419006: SUCCESS"
+      ]
     },
     {
       "organization": "StegVerse-Labs",

@@ -643,3 +643,105 @@ The source implementation claim remains `COMPLETE_VALIDATED_RELEASED`; manual ex
 This reconciliation does not run the local model, infer activation from availability, generate owner source, emit the binder packet, mutate an owner repository, merge or release source, or prove recursive re-observation. Repository mutation/credential authority remains TV/TVC-only.
 
 If validated and merged, local .github coverage becomes 33 indexed vectors with 14 active worker gaps + 14 organization gaps = 28 active unvectorized tasks.
+
+
+## Active-task source coverage closure — 2026-08-30 22:38 CDT
+
+The canonical .github task-vector denominator is now closed at source level.
+
+Merged progression:
+
+```text
+PR #580 -> 4d69a98f33f1f7fd45171e775f6b33ff9756d468
+  sovereign runtime cohort
+  indexed active task vectors: 50
+
+PR #585 -> aac4544c94578a78f4da77b44dc7e4d1a00ff3ec
+  StegFin + Healer cohort
+  indexed active task vectors: 54
+
+PR #588 -> 680d292ccf70ec7b17c9cb97b182324c9844f914
+  Formalism + Test Lanes + SV002 + SV-DN1 structured cohort
+  indexed active task vectors: 61
+
+PR #590 -> 6f4d4c2fda8b7dbeada376f1dfbd6eb8b76c6c16
+  final active worker denominator closure
+  active worker task vectors: 64/64
+  active worker gaps: 0
+
+PR #593 -> bf585b51dcef338b4ce18e1aa48ab207f9905922
+  organization federation task closure
+  organization task vectors: 14/14
+  total active .github task vectors: 78/78
+  active task-vector gaps: 0
+```
+
+Exact-head validation for the closing cohorts passed through both stable validation surfaces. The final organization closure passed:
+
+```text
+Heartbeat Worker Project run 33352419004: SUCCESS
+Validate organization control plane run 33352419006: SUCCESS
+```
+
+The worker closure passed:
+
+```text
+Heartbeat Worker Project run 33352169605: SUCCESS
+Validate organization control plane run 33352169712: SUCCESS
+```
+
+The canonical active-task projection remains authority-neutral:
+
+```text
+credential authority: TV/TVC
+GitHub token runtime authority: NONE
+runtime activation implied by vector coverage: false
+repository mutation authority implied by vector coverage: false
+heartbeat execution authority implied by vector coverage: false
+```
+
+### Strict repository adoption transition
+
+`control/cosv-ecosystem-adoption-manifest.json` now promotes `StegVerse-Labs/.github` from `VECTOR_REQUIRED` to `VECTOR_PRESENT` because every active machine task in this repository has an evidence-backed task.v1 vector and repository validation has passed.
+
+The strict ecosystem repository metric therefore advances:
+
+```text
+VECTOR_PRESENT repositories: 1
+VECTOR_REQUIRED repositories: 32
+proven active task-bearing repositories: 33
+strict adoption ratio: 1/33
+not-yet-task-surface-audited repositories: 189
+universe audit complete: false
+```
+
+This is source/adoption completion for the .github repository only. It does not imply ecosystem-wide runtime activation or product-wide COSV completion.
+
+### Remaining machine-executable COSV work
+
+1. Continue repository-local task-surface audits across the remaining 32 known VECTOR_REQUIRED repositories.
+2. Project and validate every active task locally, promoting each repository to VECTOR_PRESENT only when complete.
+3. Audit/reclassify the 189 repository surfaces still marked task-surface-not-yet-audited.
+4. Prioritize Site, TV/TVC, LLM-adapter, master-records/orchestration, GCAT-BCAT-Engine/Publisher, AdmittedCode/.github, Admissible-Existence task owners, and StegVerse-002/stegguardian-wiki using repository-local authority.
+5. Preserve fail-closed classification for incomplete/private/unavailable evidence; do not infer no-task status from absence of central visibility.
+6. Execute `COSV-LIVE-PACKET-AUTOMATION-006` on the authentic sovereign resident surface.
+7. Preserve the first current post-anchor FULL/DELTA packet and, when state changes, non-empty `gradient_inputs`.
+8. Consume the first eligible immutable DELTA in StegBrain and preserve the live gradient evidence.
+9. Only after repository adoption and authentic runtime observation are complete evaluate ecosystem release/tag conditions and propagate pertinent verified status to Site, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki.
+
+### Current completion distinction
+
+```text
+COSV architecture/profile: COMPLETE_RELEASED
+.github active task projection: 100% SOURCE COMPLETE
+.github strict repository VECTOR_PRESENT: YES
+ecosystem strict repository adoption: 1/33
+universe task-surface audit: INCOMPLETE
+post-anchor live packet runtime execution: NOT PROVEN
+first changed DELTA: NOT PROVEN
+first live StegBrain gradient: NOT PROVEN
+ecosystem activation: NOT PROVEN
+ecosystem release/tag: NOT READY
+```
+
+Authority effect remains NONE.
