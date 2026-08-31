@@ -130,6 +130,7 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         target_root / "heartbeat_runtime" / "__init__.py",
         target_root / "heartbeat_runtime" / "engine_v13.py",
         target_root / "heartbeat_runtime" / "independent_oscillator.py",
+        target_root / "heartbeat_runtime" / "intr_derived_carrier.py",
         target_root / "heartbeat_runtime" / "oscillator_producer.py",
         target_root / "heartbeat_runtime" / "worker_runtime.py",
         target_root / "heartbeat_runtime" / "assignment_timer.py",

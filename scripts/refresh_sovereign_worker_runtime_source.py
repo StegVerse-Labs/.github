@@ -127,6 +127,7 @@ def _validate_roots(source_root: Path, runtime_root: Path) -> tuple[Path, Path]:
         raise ValueError("source_root and runtime_root must be distinct")
     required = (
         source / "heartbeat_runtime/worker_runtime.py",
+        source / "heartbeat_runtime/intr_derived_carrier.py",
         source / "scripts/run_worker_runtime.py",
         source / "control/worker-registry.json",
         source / "control/process-worker-adapters.json",
