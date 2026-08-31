@@ -60,6 +60,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             (source / "control/resident-execution-request.d/hil-sovereign-receiver-001.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
             (source / "control/resident-execution-request.d/evaluator-intr-read-runtime-001.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
             (source / "control/resident-execution-request.d/sv002-public-observation-runtime-001.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
+            (source / "control/resident-execution-request.d/healer-sovereign-scheduler-001.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
             for rel in refresh_mod.STATIC_FILES:
                 path = source / rel
                 path.parent.mkdir(parents=True, exist_ok=True)
@@ -102,6 +103,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertTrue((runtime / "control/resident-execution-request.d/hil-sovereign-receiver-001.json").is_file())
             self.assertTrue((runtime / "control/resident-execution-request.d/evaluator-intr-read-runtime-001.json").is_file())
             self.assertTrue((runtime / "control/resident-execution-request.d/sv002-public-observation-runtime-001.json").is_file())
+            self.assertTrue((runtime / "control/resident-execution-request.d/healer-sovereign-scheduler-001.json").is_file())
             self.assertTrue((runtime / "state_language/__init__.py").is_file())
             for rel in (
                 "scripts/run_worker_runtime.py",
@@ -125,6 +127,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py",
                 "scripts/consume_tvc_broker_validation_request.py",
                 "scripts/consume_sv002_self_characterization_request.py",
+                "scripts/consume_healer_sovereign_scheduler_request.py",
                 "scripts/dispatch_resident_execution_requests.py",
                 "scripts/materialize_live_cosv_packet.py",
                 "scripts/cosv.py",
