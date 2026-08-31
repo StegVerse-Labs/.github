@@ -2,7 +2,7 @@
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
   "observed_commit": "0e7b0b03cffdc207d7b8260423776f40e80c6fb7",
-  "observed_at": "2026-08-30T22:18:00-05:00",
+  "observed_at": "2026-08-30T22:28:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -18,27 +18,12 @@
   },
   "organization_registry_summary": {
     "active_task_ids": 14,
-    "canonically_vectorized_task_ids": 0,
-    "active_unvectorized_task_ids": 14
+    "canonically_vectorized_task_ids": 14,
+    "active_unvectorized_task_ids": 0
   },
-  "total_active_unvectorized_unique_task_ids": 14,
+  "total_active_unvectorized_unique_task_ids": 0,
   "active_worker_task_ids_missing_canonical_cosv": [],
-  "active_organization_task_ids_missing_canonical_cosv": [
-    "ORG-FED-AACT-E-001",
-    "ORG-FED-ADMISSIBLE-EXISTENCE-001",
-    "ORG-FED-ADMITTEDCODE-001",
-    "ORG-FED-DATA-CONTINUATION-001",
-    "ORG-FED-ECAT-ICAT-FORMAL-001",
-    "ORG-FED-FORMALISM-TESTS-001",
-    "ORG-FED-GCAT-BCAT-ENGINE-001",
-    "ORG-FED-INFRASTRUCTURE-CONTINUITY-VENTURES-001",
-    "ORG-FED-MASTER-RECORDS-001",
-    "ORG-FED-STEGGHOST-001",
-    "ORG-FED-STEGVERSE-002-001",
-    "ORG-FED-STEGVERSE-LABS-001",
-    "ORG-FED-STEGVERSE-ORG-001",
-    "ORG-FED-TRIAD-TEST-001"
-  ],
+  "active_organization_task_ids_missing_canonical_cosv": [],
   "indexed_vectors": [
     {
       "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
@@ -295,6 +280,62 @@
     {
       "task_id": "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001",
       "vector": "50000000101000"
+    },
+    {
+      "task_id": "ORG-FED-AACT-E-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "ORG-FED-ADMISSIBLE-EXISTENCE-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "ORG-FED-ADMITTEDCODE-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "ORG-FED-DATA-CONTINUATION-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "ORG-FED-ECAT-ICAT-FORMAL-001",
+      "vector": "60000000101000"
+    },
+    {
+      "task_id": "ORG-FED-FORMALISM-TESTS-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "ORG-FED-GCAT-BCAT-ENGINE-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "ORG-FED-INFRASTRUCTURE-CONTINUITY-VENTURES-001",
+      "vector": "60000000101000"
+    },
+    {
+      "task_id": "ORG-FED-MASTER-RECORDS-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "ORG-FED-STEGGHOST-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "ORG-FED-STEGVERSE-002-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "ORG-FED-STEGVERSE-LABS-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "ORG-FED-STEGVERSE-ORG-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "ORG-FED-TRIAD-TEST-001",
+      "vector": "60000000101000"
     }
   ],
   "evidence_conflicts": [],
@@ -604,5 +645,14 @@
     "total_unique_worker_task_ids": 71,
     "authority_effect": "NONE",
     "runtime_activation_claimed": false
+  },
+  "active_task_vector_coverage_closure": {
+    "active_worker_tasks_vectorized": 64,
+    "active_organization_tasks_vectorized": 14,
+    "total_active_tasks_vectorized": 78,
+    "active_tasks_unvectorized": 0,
+    "source_projection_complete": true,
+    "runtime_activation_claimed": false,
+    "authority_effect": "NONE"
   }
 }
