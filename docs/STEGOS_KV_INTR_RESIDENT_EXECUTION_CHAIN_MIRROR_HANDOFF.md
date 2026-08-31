@@ -161,3 +161,17 @@ The Gateway request itself grants no authority. The consumer is copied by the ex
 Canonical scoped handoff: `docs/RESIDENT_RENDEZVOUS_CONSUMER_MIRROR_HANDOFF.md`.
 
 This source work does not itself prove the current resident has refreshed to the new consumer, the public Gateway is deployed with rendezvous enabled, or the three runtime terminal receipts exist.
+
+
+## 2026-08-31 request-003 rendezvous propagation — issue #654
+
+The canonical Device-KV resident intent is now `RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-003`.
+
+Resident rendezvous local materialization permits only the bounded historical migration:
+```text
+001 -> 003
+002 -> 003
+```
+provided the execution contract remains identical for schema, state, task, mode, entrypoint, credential/authority flags, and the canonical three-step chain. The prior local request is archived write-once before replacement and verified after write.
+
+No unrelated request id, task, mode, command, credential, or step vector may be substituted. This is request continuity only; it does not create WorkerCoordinator claim/fence, execution authority, HB progression authority, or runtime evidence.
