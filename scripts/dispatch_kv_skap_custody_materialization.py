@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""Build and dispatch one canonical KV -> SKAP Vault InTr custody event.
+"""Build and dispatch one exact-byte KV -> SKAP Vault InTr custody event.
 
-This is the organization transport egress side of kv-skap-custody. It consumes
-an already-sealed capsule and an already-issued DEVICE->KV Interlock receipt,
-builds the canonical StegOS transport/materialization request, attaches the
-non-authorizing HB-derived carrier binding, and invokes the shared profiled
-ingress event-ephemerally. TVC remains the admission/custody authority.
+Inputs are the original staged browser packet bytes and the Gateway STAGED_FOR_TVC
+receipt. The dispatcher validates their binding, constructs the canonical
+StegOS kv-skap-custody request, attaches the non-authorizing HB carrier binding,
+and invokes the shared profiled ingress event-ephemerally.
+
+Transport grants no credential, execution, routing, transition, receiving, or
+provider authority. TV/TVC remains the credential and SKAP custody authority.
 """
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 import importlib
 import json
@@ -29,12 +32,15 @@ from workers.universal_intr_profiled_ingress import admit_kv_skap
 STEGOS_ROOT_ENV = "STEGVERSE_STEGOS_ROOT"
 TVC_AUTHORIZATION_ID_ENV = "STEGVERSE_TVC_RELAY_AUTHORIZATION_ID"
 CAPSULE_SCHEMA = "stegverse.skap.browser_ingress/p256-ecdh-hkdf-sha256-aes256gcm/v1"
+STAGE_SCHEMA = "stegverse.service_gateway.coinbase_skap_stage_receipt/v1"
+BOUNDARY_RECEIPT_SCHEMA = "stegverse.intr.boundary_transition_receipt/v1"
 PROFILE_ID = "kv-skap-custody"
 PROFILE_REGISTRY_REL = Path("specs/universal-intr-connector-profiles.v1.json")
 TRANSPORT_REL = Path("stegos/universal_intr_transport.py")
 MATERIALIZATION_REL = Path("stegos/universal_intr_materialization.py")
 EGRESS_DIR_REL = Path("receipts/sovereign-network/kv-skap-custody-egress")
 LATEST_REL = Path("receipts/sovereign-network/kv-skap-custody-egress.latest.json")
+MAX_PACKET_BYTES = 64 * 1024
 
 
 class KVSkapDispatchError(ValueError):
@@ -57,6 +63,47 @@ def load_json(path: Path) -> dict[str, Any]:
     return value
 
 
+def load_packet(path: Path) -> tuple[bytes, dict[str, Any]]:
+    raw = path.read_bytes()
+    if not raw or len(raw) > MAX_PACKET_BYTES:
+        raise KVSkapDispatchError("sealed_capsule_raw_size_invalid")
+    try:
+        value = json.loads(raw.decode("utf-8"))
+    except Exception as exc:
+        raise KVSkapDispatchError("sealed_capsule_raw_json_invalid") from exc
+    if not isinstance(value, dict) or value.get("schema") != CAPSULE_SCHEMA:
+        raise KVSkapDispatchError("sealed_capsule_schema_invalid")
+    return raw, value
+
+
+def validate_stage_binding(*, stage_receipt: dict[str, Any], raw_packet: bytes, capsule: dict[str, Any]) -> dict[str, Any]:
+    if stage_receipt.get("schema") != STAGE_SCHEMA or stage_receipt.get("decision") != "STAGED_FOR_TVC":
+        raise KVSkapDispatchError("stage_receipt_state_invalid")
+    if stage_receipt.get("credential_authority") != "TV/TVC":
+        raise KVSkapDispatchError("stage_receipt_credential_authority_invalid")
+    if stage_receipt.get("next_required_transition") != "KV_SKAP_VAULT_INTERLOCK_ADMISSION":
+        raise KVSkapDispatchError("stage_receipt_next_transition_invalid")
+    body = {k: v for k, v in stage_receipt.items() if k != "receipt_digest"}
+    if stage_receipt.get("receipt_digest") != sha_uri(body):
+        raise KVSkapDispatchError("stage_receipt_digest_invalid")
+    if stage_receipt.get("raw_body_digest") != sha_uri(raw_packet):
+        raise KVSkapDispatchError("stage_raw_body_digest_mismatch")
+    if stage_receipt.get("browser_ingress_digest") != sha_uri(capsule):
+        raise KVSkapDispatchError("stage_browser_ingress_digest_mismatch")
+    if stage_receipt.get("ingress_id") != capsule.get("ingress_id"):
+        raise KVSkapDispatchError("stage_ingress_id_mismatch")
+    device_kv = stage_receipt.get("device_kv_interlock_receipt")
+    if not isinstance(device_kv, dict) or device_kv.get("schema") != BOUNDARY_RECEIPT_SCHEMA:
+        raise KVSkapDispatchError("device_kv_receipt_invalid")
+    if device_kv.get("from_boundary") != "DEVICE" or device_kv.get("to_boundary") != "KV" or device_kv.get("connector") != "InTr":
+        raise KVSkapDispatchError("device_kv_boundary_invalid")
+    if device_kv.get("credential_ref") != capsule.get("credential_ref") or device_kv.get("operation_id") != capsule.get("ingress_id"):
+        raise KVSkapDispatchError("device_kv_capsule_binding_mismatch")
+    if device_kv.get("raw_body_digest") != sha_uri(raw_packet) or device_kv.get("browser_ingress_digest") != sha_uri(capsule):
+        raise KVSkapDispatchError("device_kv_exact_packet_binding_mismatch")
+    return device_kv
+
+
 def load_profile(stegos_root: Path) -> dict[str, Any]:
     registry = load_json(stegos_root / PROFILE_REGISTRY_REL)
     profiles = [p for p in registry.get("profiles", []) if isinstance(p, dict) and p.get("profile_id") == PROFILE_ID]
@@ -73,7 +120,12 @@ def load_profile(stegos_root: Path) -> dict[str, Any]:
         "custody_mode": "EXACT_BYTES",
         "authorization_required": True,
         "authority_effect": "NONE",
-        "materialization_extension_fields": ["sealed_capsule", "device_kv_receipt"],
+        "materialization_extension_fields": [
+            "sealed_capsule",
+            "sealed_capsule_raw_b64",
+            "device_kv_receipt",
+            "stage_receipt_digest",
+        ],
     }
     for key, value in expected.items():
         if profile.get(key) != value:
@@ -81,15 +133,18 @@ def load_profile(stegos_root: Path) -> dict[str, Any]:
     return profile
 
 
-def build_request(*, stegos_root: Path, capsule: dict[str, Any], device_kv_receipt: dict[str, Any]) -> dict[str, Any]:
+def build_request(
+    *,
+    stegos_root: Path,
+    raw_packet: bytes,
+    capsule: dict[str, Any],
+    stage_receipt: dict[str, Any],
+) -> dict[str, Any]:
     profile = load_profile(stegos_root)
-    if capsule.get("schema") != CAPSULE_SCHEMA:
-        raise KVSkapDispatchError("sealed_capsule_schema_invalid")
+    device_kv_receipt = validate_stage_binding(stage_receipt=stage_receipt, raw_packet=raw_packet, capsule=capsule)
     ingress_id = str(capsule.get("ingress_id") or "")
     if not ingress_id:
         raise KVSkapDispatchError("sealed_capsule_ingress_id_required")
-    if not isinstance(device_kv_receipt, dict) or device_kv_receipt.get("schema") != "stegverse.intr.boundary_transition_receipt/v1":
-        raise KVSkapDispatchError("device_kv_receipt_invalid")
 
     root_text = str(stegos_root)
     if root_text not in sys.path:
@@ -100,7 +155,8 @@ def build_request(*, stegos_root: Path, capsule: dict[str, Any], device_kv_recei
         module_file = Path(str(getattr(module, "__file__", ""))).resolve()
         if module_file != (stegos_root / rel).resolve():
             raise KVSkapDispatchError("canonical_stegos_module_root_mismatch:" + rel.as_posix())
-    payload_hash = sha_uri(capsule)
+
+    payload_hash = sha_uri(raw_packet)
     intent = transport.build_transport_intent(
         operation_id=ingress_id,
         payload_hash=payload_hash,
@@ -112,13 +168,15 @@ def build_request(*, stegos_root: Path, capsule: dict[str, Any], device_kv_recei
     )
     base = materialization.build_materialization_request(
         intent,
-        payload_ref="inline://materialization_request.sealed_capsule",
+        payload_ref="inline://materialization_request.sealed_capsule_raw_b64",
         downstream_owner_ref=profile["downstream_owner_ref"],
     )
     body = dict(base)
     body.pop("request_hash", None)
     body["sealed_capsule"] = capsule
+    body["sealed_capsule_raw_b64"] = base64.b64encode(raw_packet).decode("ascii")
     body["device_kv_receipt"] = device_kv_receipt
+    body["stage_receipt_digest"] = stage_receipt["receipt_digest"]
     body["carrier_binding"] = build_carrier_binding(
         packet_id=body["packet_id"],
         payload_hash=body["payload_hash"],
@@ -131,22 +189,28 @@ def dispatch(
     *,
     runtime_root: Path,
     stegos_root: Path,
+    raw_packet: bytes,
     capsule: dict[str, Any],
-    device_kv_receipt: dict[str, Any],
+    stage_receipt: dict[str, Any],
     authorization_id: str,
 ) -> dict[str, Any]:
     if not authorization_id:
         raise KVSkapDispatchError("tvc_relay_authorization_id_required")
-    request = build_request(stegos_root=stegos_root, capsule=capsule, device_kv_receipt=device_kv_receipt)
-    raw = canonical(request)
+    request = build_request(
+        stegos_root=stegos_root,
+        raw_packet=raw_packet,
+        capsule=capsule,
+        stage_receipt=stage_receipt,
+    )
+    request_bytes = canonical(request)
     headers = {
         "Content-Type": "application/json",
         "X-StegVerse-Transport": "InTr",
         "X-StegVerse-Transport-Origin": "TVC_RELAY_EGRESS",
         "X-StegVerse-Authorization-Id": authorization_id,
-        "X-StegVerse-Payload-SHA256": hashlib.sha256(raw).hexdigest(),
+        "X-StegVerse-Payload-SHA256": hashlib.sha256(request_bytes).hexdigest(),
     }
-    admitted = admit_kv_skap(runtime_root=runtime_root.expanduser().resolve(), body=raw, headers=headers)
+    admitted = admit_kv_skap(runtime_root=runtime_root.expanduser().resolve(), body=request_bytes, headers=headers)
     if admitted.get("state") != "INGRESS_ADMITTED":
         raise KVSkapDispatchError("kv_skap_ingress_not_admitted")
     receipt_body = {
@@ -156,7 +220,9 @@ def dispatch(
         "request_hash": request["request_hash"],
         "transport_intent_hash": request["transport_intent_hash"],
         "payload_hash": request["payload_hash"],
-        "device_kv_receipt_hash": device_kv_receipt["receipt_hash"],
+        "raw_body_digest": sha_uri(raw_packet),
+        "stage_receipt_digest": stage_receipt["receipt_digest"],
+        "device_kv_receipt_hash": request["device_kv_receipt"]["receipt_hash"],
         "carrier_binding_sha256": request["carrier_binding"]["binding_sha256"],
         "ingress_receipt_state": admitted["state"],
         "ingress_authority_effect": admitted["authority_effect"],
@@ -183,21 +249,23 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--runtime-root", type=Path, required=True)
     parser.add_argument("--stegos-root", type=Path)
-    parser.add_argument("--sealed-capsule", type=Path, required=True)
-    parser.add_argument("--device-kv-receipt", type=Path, required=True)
+    parser.add_argument("--sealed-capsule", type=Path, required=True, help="Original staged browser packet bytes")
+    parser.add_argument("--stage-receipt", type=Path, required=True)
     parser.add_argument("--authorization-id")
     args = parser.parse_args()
-    stegos_root = (args.stegos_root or (Path(os.environ[STEGOS_ROOT_ENV]) if os.environ.get(STEGOS_ROOT_ENV) else None))
+    stegos_root = args.stegos_root or (Path(os.environ[STEGOS_ROOT_ENV]) if os.environ.get(STEGOS_ROOT_ENV) else None)
     if stegos_root is None:
         print(json.dumps({"state": "BLOCKED", "reason": "STEGVERSE_STEGOS_ROOT_required", "authority_effect": "NONE"}, sort_keys=True))
         return 1
     authorization_id = args.authorization_id or os.environ.get(TVC_AUTHORIZATION_ID_ENV, "")
     try:
+        raw_packet, capsule = load_packet(args.sealed_capsule)
         result = dispatch(
             runtime_root=args.runtime_root,
             stegos_root=stegos_root.expanduser().resolve(),
-            capsule=load_json(args.sealed_capsule),
-            device_kv_receipt=load_json(args.device_kv_receipt),
+            raw_packet=raw_packet,
+            capsule=capsule,
+            stage_receipt=load_json(args.stage_receipt),
             authorization_id=authorization_id,
         )
     except Exception as exc:
