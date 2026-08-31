@@ -1,5 +1,5 @@
 from __future__ import annotations
-import json, tempfile, unittest
+import json, subprocess, tempfile, unittest
 from pathlib import Path
 from unittest import mock
 from scripts import consume_device_kv_intr_materialization_request as consumer
@@ -84,6 +84,122 @@ class DeviceKVEventMaterializationTests(unittest.TestCase):
         self.assertNotIn("parent_terminal_transition_required",adm)
         self.assertEqual(adm["admitted_predecessor_rule"],"AUTHENTIC_RELAY_CONTINUITY_OR_VERIFIED_DEVICE_KV_EVENT_MATERIALIZATION")
         self.assertFalse(adm["event_materialization_grants_authority"])
+
+    def test_portable_payload_stages_through_current_cvk_source(self):
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td)
+            runtime=base/"runtime"
+            source=base/"source"
+            kv_source=base/"cvk"
+            kv_data=base/"KnowledgeVault"
+            (runtime/consumer.REQUEST_DIR_REL).mkdir(parents=True)
+            (runtime/consumer.INGRESS_DIR_REL).mkdir(parents=True)
+            (kv_source/"runtime").mkdir(parents=True)
+            kv_data.mkdir(parents=True)
+
+            req=materialization()
+            req["payload_ref"]="inline://materialization_request.portable_payload"
+            req["portable_payload"]={
+                "schema":"stegverse.kv.portable-direct-source-inline-payload/v1",
+                "directory_id":"pictures",
+                "canonical_path":"04_Media/Pictures",
+                "source_class":"OWNER_CONTROLLED_FILE",
+                "credential_requirement":"NONE",
+                "total_bytes":3,
+                "files":[],
+                "authority_effect":"NONE",
+            }
+            req["payload_hash"]=consumer.sha(req["portable_payload"])
+            body=dict(req); body.pop("request_hash",None); req["request_hash"]=consumer.sha(body)
+            mid=req["materialization_id"]
+            (runtime/consumer.REQUEST_DIR_REL/f"{mid}.json").write_text(json.dumps(req),encoding="utf-8")
+            ing={
+                "schema":"stegverse.device-kv-intr-materialization-ingress/v1",
+                "state":"INGRESS_ADMITTED",
+                "materialization_id":mid,
+                "request_hash":req["request_hash"],
+                "transport_intent_hash":req["transport_intent_hash"],
+                "payload_hash":req["payload_hash"],
+                "operation_id":req["operation_id"],
+                "packet_id":req["packet_id"],
+                "claim_or_fence_minted":False,
+                "credential_authority":"TV/TVC",
+                "github_token_runtime_authority":"NONE",
+            }
+            (runtime/consumer.INGRESS_DIR_REL/f"{mid}.json").write_text(json.dumps(ing),encoding="utf-8")
+            (kv_source/"runtime/portable_direct_source_ingress.py").write_text(
+                "def admit_portable_direct_source(request, ingress_receipt, *, kv_data_root):\n"
+                "    return {\"schema\":\"stegverse.kv.portable-direct-source-admission/v1\","
+                "\"state\":\"STAGED_UNTRUSTED\",\"receipt_sha256\":\"sha256:"
+                + "a"*64
+                + "\",\"staging_path\":\"00_Inbox/DirectSource/pictures/test\","
+                "\"exact_readback_verified\":True,\"trusted_semantic_admission\":False,"
+                "\"credential_authority\":\"TV/TVC\"}\n",
+                encoding="utf-8",
+            )
+            def runner(*args,**kwargs):
+                return subprocess.CompletedProcess(args[0],0,stdout='{"state":"COMPLETED"}\n',stderr="")
+            result=consumer.consume_one(
+                source,runtime,mid,runner=runner,
+                env={
+                    "PATH":"/bin",
+                    "HOME":str(base),
+                    "STEGVERSE_KV_SOURCE_ROOT":str(kv_source),
+                    "STEGVERSE_KV_DATA_ROOT":str(kv_data),
+                },
+            )
+            self.assertEqual(result["state"],"MATERIALIZATION_EXECUTION_ATTEMPTED")
+            self.assertTrue(result["portable_payload_present"])
+            self.assertTrue(result["portable_kv_staging_attempted"])
+            self.assertEqual(result["portable_kv_staging_state"],"STAGED_UNTRUSTED")
+            self.assertTrue(result["portable_kv_exact_readback_verified"])
+            self.assertFalse(result["trusted_semantic_admission"])
+
+    def test_portable_payload_missing_data_root_blocks(self):
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td)
+            runtime=base/"runtime"
+            source=base/"source"
+            kv_source=base/"cvk"
+            (runtime/consumer.REQUEST_DIR_REL).mkdir(parents=True)
+            (runtime/consumer.INGRESS_DIR_REL).mkdir(parents=True)
+            (kv_source/"runtime").mkdir(parents=True)
+            req=materialization()
+            req["payload_ref"]="inline://materialization_request.portable_payload"
+            req["portable_payload"]={
+                "schema":"stegverse.kv.portable-direct-source-inline-payload/v1",
+                "directory_id":"pictures","canonical_path":"04_Media/Pictures",
+                "source_class":"OWNER_CONTROLLED_FILE","credential_requirement":"NONE",
+                "total_bytes":1,"files":[],"authority_effect":"NONE",
+            }
+            req["payload_hash"]=consumer.sha(req["portable_payload"])
+            body=dict(req); body.pop("request_hash",None); req["request_hash"]=consumer.sha(body)
+            mid=req["materialization_id"]
+            (runtime/consumer.REQUEST_DIR_REL/f"{mid}.json").write_text(json.dumps(req),encoding="utf-8")
+            ing={"schema":"stegverse.device-kv-intr-materialization-ingress/v1","state":"INGRESS_ADMITTED",
+                 "materialization_id":mid,"request_hash":req["request_hash"],
+                 "transport_intent_hash":req["transport_intent_hash"],"payload_hash":req["payload_hash"],
+                 "operation_id":req["operation_id"],"packet_id":req["packet_id"],
+                 "claim_or_fence_minted":False,"credential_authority":"TV/TVC"}
+            (runtime/consumer.INGRESS_DIR_REL/f"{mid}.json").write_text(json.dumps(ing),encoding="utf-8")
+            def runner(*args,**kwargs):
+                return subprocess.CompletedProcess(args[0],0,stdout='{"state":"COMPLETED"}\n',stderr="")
+            result=consumer.consume_one(
+                source,runtime,mid,runner=runner,
+                env={"PATH":"/bin","HOME":str(base),"STEGVERSE_KV_SOURCE_ROOT":str(kv_source)},
+            )
+            self.assertEqual(result["state"],"MATERIALIZATION_EXECUTION_BLOCKED")
+            self.assertEqual(result["portable_kv_staging_state"],"BLOCKED")
+            self.assertIn("portable_kv_data_root_missing",result["portable_kv_staging_error"])
+
+    def test_kv_data_root_is_forwarded_by_all_resident_boundaries(self):
+        root=Path(__file__).resolve().parents[1]
+        for rel in (
+            "scripts/refresh_and_execute_resident_task.py",
+            "scripts/consume_stegos_kv_intr_chain_request.py",
+            "scripts/consume_resident_rendezvous.py",
+        ):
+            self.assertIn("STEGVERSE_KV_DATA_ROOT",(root/rel).read_text())
 
     def test_consumer_scrubs_hosted_and_github_authority(self):
         env=consumer.scrubbed_env({
