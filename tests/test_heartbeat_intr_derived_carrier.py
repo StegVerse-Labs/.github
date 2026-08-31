@@ -25,7 +25,7 @@ class HeartbeatIntrDerivedCarrierTests(unittest.TestCase):
     ):
         return derive_intr_carrier_signal(
             packet_id=packet_id,
-            payload_hash="sha256:" + "3" * 64,
+            payload_hash="sha256:" + hashlib.sha256(packet).hexdigest(),
             sampled_unix_ms=PROTOCOL_ANCHOR_UNIX_NS // 1_000_000 + 1234,
             packet_bytes=packet,
             intr_transport_profile="stegverse.universal-intr.adjacent-hop/v1",
@@ -43,27 +43,31 @@ class HeartbeatIntrDerivedCarrierTests(unittest.TestCase):
         self.assertFalse(signal["intr"]["packet_semantics_interpreted_by_heartbeat"])
         self.assertTrue(signal["intr"]["packet_governance_external_to_heartbeat"])
 
-    def test_channel_matches_ingress_advertised_packet_id_formula(self):
+    def test_channel_matches_ingress_advertised_payload_hash_formula(self):
         packet_id = "INTR-" + "2" * 24
         signal = self.sample(packet_id=packet_id)
-        expected = derive_channel(packet_id)
+        expected = derive_channel(signal["intr"]["payload_hash"])
         self.assertEqual(signal["carrier"]["channel_id"], expected["channel_id"])
         self.assertEqual(signal["carrier"]["channel_slot"], expected["phase_slot"])
         self.assertEqual(signal["carrier"]["phase_slots"], 16)
         self.assertEqual(
             signal["carrier"]["channel_derivation"],
-            "SHA256_PACKET_ID_FIRST32_MOD_16",
+            "PAYLOAD_SHA256_FIRST64_MOD_16",
         )
 
-    def test_packet_bytes_do_not_change_channel_for_same_packet_identity(self):
-        packet_id = "INTR-" + "4" * 24
-        a = self.sample(b"packet-a", packet_id=packet_id)
-        b = self.sample(b"packet-b", packet_id=packet_id)
-        self.assertEqual(a["carrier"]["channel_id"], b["carrier"]["channel_id"])
-        self.assertNotEqual(a["intr"]["packet_sha256"], b["intr"]["packet_sha256"])
-        self.assertEqual(a["carrier"]["reference_rate_hz"], 100.0)
-        self.assertEqual(b["carrier"]["reference_rate_hz"], 100.0)
-        self.assertFalse(a["carrier"]["phase_plan_changes_reference_interval"])
+    def test_exact_packet_bytes_must_match_bound_payload_hash(self):
+        packet = b"packet-a"
+        with self.assertRaisesRegex(DerivedCarrierError, "payload_hash_exact_packet_mismatch"):
+            derive_intr_carrier_signal(
+                packet_id="INTR-" + "4" * 24,
+                payload_hash="sha256:" + "0" * 64,
+                sampled_unix_ms=PROTOCOL_ANCHOR_UNIX_NS // 1_000_000 + 1234,
+                packet_bytes=packet,
+                intr_transport_profile="stegverse.universal-intr.adjacent-hop/v1",
+                boundary_from="EXTERNAL_SYSTEM",
+                boundary_to="STEGOS_ECOSYSTEM",
+                packet_receipt_hash="a" * 64,
+            )
 
     def test_binding_is_embedded_and_revalidated_on_recovery(self):
         signal = self.sample()
