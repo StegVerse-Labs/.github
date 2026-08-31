@@ -43,19 +43,19 @@ class HeartbeatIntrDerivedCarrierTests(unittest.TestCase):
         self.assertFalse(signal["intr"]["packet_semantics_interpreted_by_heartbeat"])
         self.assertTrue(signal["intr"]["packet_governance_external_to_heartbeat"])
 
-    def test_channel_matches_ingress_advertised_packet_id_formula(self):
+    def test_channel_matches_ingress_advertised_payload_hash_formula(self):
         packet_id = "INTR-" + "2" * 24
         signal = self.sample(packet_id=packet_id)
-        expected = derive_channel(packet_id)
+        expected = derive_channel(signal["intr"]["payload_hash"])
         self.assertEqual(signal["carrier"]["channel_id"], expected["channel_id"])
         self.assertEqual(signal["carrier"]["channel_slot"], expected["phase_slot"])
         self.assertEqual(signal["carrier"]["phase_slots"], 16)
         self.assertEqual(
             signal["carrier"]["channel_derivation"],
-            "SHA256_PACKET_ID_FIRST32_MOD_16",
+            "PAYLOAD_SHA256_FIRST64_MOD_16",
         )
 
-    def test_packet_bytes_do_not_change_channel_for_same_packet_identity(self):
+    def test_exact_carrier_bytes_do_not_change_channel_when_payload_hash_identity_is_same(self):
         packet_id = "INTR-" + "4" * 24
         a = self.sample(b"packet-a", packet_id=packet_id)
         b = self.sample(b"packet-b", packet_id=packet_id)
@@ -125,7 +125,7 @@ class HeartbeatIntrDerivedCarrierTests(unittest.TestCase):
         self.assertEqual(carrier["phase_slots"]["const"], 16)
         self.assertEqual(
             carrier["channel_derivation"]["const"],
-            "SHA256_PACKET_ID_FIRST32_MOD_16",
+            "PAYLOAD_SHA256_FIRST64_MOD_16",
         )
         authority = schema["properties"]["authority"]["properties"]
         self.assertFalse(authority["heartbeat_grants_execution_authority"]["const"])
