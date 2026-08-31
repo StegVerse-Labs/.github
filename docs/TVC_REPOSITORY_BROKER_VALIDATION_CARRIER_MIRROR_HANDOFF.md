@@ -222,7 +222,10 @@ governed validation PASS
 
 Merged TVC resident target:
 
-`StegVerse-Labs/TVC@66a6bb34c5465c8070d179b2c495e7a49ebb0d5b`
+`StegVerse-Labs/TVC@1d2e8ba69868b3270032d88e68c6a42e813a876a`
+
+This supersedes the earlier fixed `/var/lib` request-ingress contract by binding the
+root systemd path watcher to the sovereign runtime's user-writable `tvc-handoff` file.
 
 TVC activator:
 
