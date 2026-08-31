@@ -1,0 +1,210 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001",
+    "objective": "Deliver the exact already-built Bootstrap v1 rc.1 distributable bundle from sovereign local custody to an established browser node through the canonical Universal Interlock/InTr adjacent-hop contract without source acquisition, credential transfer, execution admission, repository mutation, release activation, or publication.",
+    "success_predicates": [
+      "canonical Bootstrap v1 distributable-bundle receipt is COMPLETE",
+      "exact local bundle identity recomputes and matches the build receipt",
+      "declared sovereign StegVerse node and admitted local route config are present",
+      "Universal InTr receiver readiness is observed",
+      "authentic browser request traverses DEVICE_SYSTEM -> STEGOS_ECOSYSTEM",
+      "exact bundle response traverses STEGOS_ECOSYSTEM -> DEVICE_SYSTEM",
+      "response egress receipt chains to request ingress receipt",
+      "delivery receipt remains zero-authority and credential-free"
+    ],
+    "failure_predicates": [
+      "canonical bundle or build receipt absent/incomplete/mismatched",
+      "bundle identity drift",
+      "route configuration or TLS identity absent for non-loopback route",
+      "Universal InTr policy/profile drift",
+      "receipt chain mismatch",
+      "hosted runtime or credential-bearing environment",
+      "source/network fetch, repository writeback, execution admission, release activation or publication attempted"
+    ],
+    "authority_ceiling": [
+      "bounded_process_execution",
+      "universal_intr_adjacent_hop_transport",
+      "content_addressed_bundle_validation",
+      "resident_receiver_liveness",
+      "evidence_class_preservation",
+      "no source acquisition authority",
+      "no package execution authority",
+      "no SDK admission authority",
+      "no repository writeback authority",
+      "no release activation authority",
+      "no publication authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "docs/BOOTSTRAP_V1_INTR_BUNDLE_DELIVERY_MIRROR_HANDOFF.md",
+      "handoffs/BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001.json",
+      "StegVerse-Labs/StegOS:stegos/universal_intr_transport.py",
+      "StegVerse-Labs/Site:docs/BOOTSTRAP_V1_BUNDLE_MATERIALIZATION_MIRROR_HANDOFF.md"
+    ],
+    "canonical_owner_ref": "docs/BOOTSTRAP_V1_INTR_BUNDLE_DELIVERY_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "bootstrap-v1:intr-bundle-delivery",
+    "worker_registry_ref": "control/worker-registry.d/bootstrap-v1-intr-bundle-delivery-001.json",
+    "worker_id": "bootstrap-v1-intr-bundle-delivery-worker",
+    "adapter_ref": "process:bootstrap-v1-intr-bundle-delivery-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "evidence review only",
+    "priority": "release",
+    "parent_task_id": null,
+    "derivation_reason": "The canonical bundle exists independently of how it is delivered. This task supplies the missing machine-owned Universal InTr transport from sovereign bundle custody to the already-implemented established browser receiver while preserving zero execution/release authority.",
+    "derivation_depth": 0,
+    "source_handoff_ref": "docs/BOOTSTRAP_V1_INTR_BUNDLE_DELIVERY_MIRROR_HANDOFF.md",
+    "dependencies": [
+      "BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001"
+    ],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
+    "upstream_runtime_dependency": {
+      "task_id": "BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001",
+      "terminal_state_required": "COMPLETED",
+      "terminal_transition_required": "BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_BUILT"
+    }
+  },
+  "authority": {
+    "authority_source": "docs/BOOTSTRAP_V1_INTR_BUNDLE_DELIVERY_MIRROR_HANDOFF.md",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "bootstrap-v1-intr-bundle-delivery-v1",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "network_source_fetch_authority": false,
+    "repository_writeback_authority": false,
+    "package_execution_authority": false,
+    "sdk_admission_authority": false,
+    "release_activation_authority": false,
+    "publication_authority": false,
+    "certification_authority": false,
+    "execution_authority_created": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "universal_intr_adjacent_hop_transport",
+      "content_addressed_bundle_validation",
+      "resident_receiver_liveness",
+      "evidence_class_preservation"
+    ],
+    "worker": "workers/bootstrap_v1_intr_bundle_delivery_worker.py",
+    "allowed_paths": [
+      "receipts/bootstrap-v1-intr-bundle-delivery/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 8,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 24,
+    "rate_class": "bootstrap_v1_intr_bundle_delivery",
+    "hosted_execution_allowed": false,
+    "bound_state_root": "~/.stegverse/state/bootstrap-v1-intr-bundle-delivery",
+    "bound_state_allowed_paths": [
+      "receipts/**"
+    ],
+    "required_local_locators": [
+      "STEGVERSE_BOOTSTRAP_V1_INTR_ROUTE_CONFIG"
+    ],
+    "public_network_access": {
+      "enabled": true,
+      "methods": ["GET", "POST", "OPTIONS"],
+      "allowed_hosts": [],
+      "authenticated": false,
+      "credential_forwarding": false,
+      "purpose": "Serve only the exact already-built Bootstrap v1 bundle over the canonical Universal InTr route. This does not authorize source fetch or provider access."
+    }
+  },
+  "input_contract": {
+    "bundle_schema": "stegverse.bootstrap.bundle/v1",
+    "bundle_version": "1.0.0-rc.1",
+    "bundle_receipt_schema": "stegverse.bootstrap.distributable-bundle-build-receipt/v1",
+    "request_schema": "stegverse.bootstrap.bundle-delivery-request/v1",
+    "response_schema": "stegverse.bootstrap.bundle-delivery-response/v1",
+    "transport_profile": "stegverse.universal-intr.adjacent-hop/v1",
+    "universal_intr_policy_id": "STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001",
+    "request_source_boundary": "DEVICE_SYSTEM",
+    "request_destination_boundary": "STEGOS_ECOSYSTEM",
+    "response_source_boundary": "STEGOS_ECOSYSTEM",
+    "response_destination_boundary": "DEVICE_SYSTEM",
+    "github_platform_required": false
+  },
+  "activation": {
+    "carrier": "independent_task_control",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "docs/BOOTSTRAP_V1_INTR_BUNDLE_DELIVERY_MIRROR_HANDOFF.md",
+    "recheck_trigger": "each admitted assignment opportunity after canonical Bootstrap bundle construction until one authentic browser InTr delivery is observed",
+    "checkout_policy": "fenced_atomic_checkout",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 22,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+  },
+  "continuity": {
+    "master_records_required": false,
+    "result_receipt": "<runtime_root>/receipts/sovereign-network/bootstrap-v1-intr/<request_id>.json",
+    "readiness_receipt": "<runtime_root>/receipts/sovereign-network/bootstrap-v1-intr/receiver.latest.json",
+    "repository_persistence_requires_separate_admission": true
+  },
+  "completion": {
+    "next_authorized_action": "Let the existing Site browser materializer validate and retain the delivered bundle under established node continuity; delivery itself must not be treated as materialization or release authorization.",
+    "terminal_when": [
+      "BOOTSTRAP_V1_INTR_BUNDLE_DELIVERY_OBSERVED",
+      "transport_profile=stegverse.universal-intr.adjacent-hop/v1",
+      "universal_intr_policy_id=STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001",
+      "request ingress receipt verified",
+      "response egress prior_receipt_hash equals request ingress receipt_hash",
+      "credential_used=false",
+      "github_token_used=false",
+      "network_source_fetch_performed=false",
+      "repository_writeback_performed=false",
+      "package_execution_performed=false",
+      "sdk_admitted=false",
+      "release_activated=false",
+      "publication_performed=false",
+      "execution_authority=NONE"
+    ],
+    "release_condition": "One authentic established-browser request receives the exact canonical Bootstrap bundle through a valid chained Universal InTr request/response exchange. Separate browser materialization evidence and release gate remain required."
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:bootstrap-v1-intr-bundle-delivery:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "docs/BOOTSTRAP_V1_INTR_BUNDLE_DELIVERY_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/bootstrap_v1_intr_bundle_delivery_worker.py",
+      "scripts/serve_bootstrap_v1_intr_bundle_delivery.py",
+      "control/process-worker-adapters.d/bootstrap-v1-intr-bundle-delivery-001.json",
+      "control/worker-registry.d/bootstrap-v1-intr-bundle-delivery-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_NOT_YET_BUILT",
+      "PUBLIC_SOVEREIGN_BOOTSTRAP_INTR_ROUTE_NOT_YET_OBSERVED",
+      "AUTHENTIC_BROWSER_BUNDLE_DELIVERY_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "bootstrap-v1-intr-bundle-delivery-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "develops_capability",
+    "target_phase": "ACTIVATED"
+  }
+}
