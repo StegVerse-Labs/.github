@@ -35,13 +35,28 @@
           "control/process-worker-adapters.d/healer-failure-mailbox-benchmark-001.json"
         ],
         "activation_proof_ref": null,
-        "blockers": ["EXACT_SOVEREIGN_BENCHMARK_RUN_NOT_YET_OBSERVED"],
+        "blockers": [
+          "EXACT_SOVEREIGN_BENCHMARK_RUN_NOT_YET_OBSERVED"
+        ],
         "continuation_owner": "healer-failure-mailbox-benchmark-worker",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
         "task_relationship": "validates_capability",
         "target_phase": "ACTIVATED"
+      },
+      "source_state_vector_ref": "control/task-vectors/HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T21:58:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],
