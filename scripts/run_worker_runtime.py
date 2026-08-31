@@ -30,6 +30,9 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from heartbeat_runtime.worker_runtime import WorkerCoordinator, ProcessWorkerAdapter
+from heartbeat_runtime.independent_oscillator import current_reference
+from heartbeat_runtime.machine_continuation import DEFAULT_CONTINUATION_QUANTA, build_continuation_trigger
+from dispatch_resident_execution_requests import dispatch as dispatch_resident_requests
 
 SCHEMA = "stegverse.process-worker-adapters/v0.1"
 FRAGMENT_SCHEMA = "stegverse.process-worker-adapter-fragment/v0.1"
@@ -48,6 +51,8 @@ RENDEZVOUS_CONSUMER_REL = Path("scripts/consume_resident_rendezvous.py")
 RENDEZVOUS_RECEIPT_REL = Path("receipts/sovereign-host/resident-rendezvous-consumption.latest.json")
 RENDEZVOUS_POLL_INTERVAL_SECONDS = 30.0
 CONTROL_PLANE_PROJECTOR_REL = Path("scripts/project_worker_control_plane_from_carrier.py")
+MACHINE_CONTINUATION_STATE_REL = Path("control/hb-machine-continuation-state.json")
+MACHINE_CONTINUATION_RECEIPT_REL = Path("receipts/sovereign-host/hb-machine-continuation.latest.json")
 G18_TASK_ID = "SHWP-DURABLE-RUNTIME-ACTIVATION"
 G18_WORKER_ID = "sovereign-runtime-activation-worker"
 G18_CLAIM_ID = "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18"
@@ -433,6 +438,70 @@ def poll_resident_rendezvous(
     }
 
 
+def maybe_dispatch_machine_continuation(
+    root: Path,
+    *,
+    env: dict[str, str] | None = None,
+    period_quanta: int = DEFAULT_CONTINUATION_QUANTA,
+) -> dict[str, Any]:
+    """Dispatch already-registered resident requests once per HB-derived window.
+
+    The trigger is synchronization metadata only. Each request consumer and the
+    WorkerCoordinator retain their own admission/claim/fence/credential authority.
+    """
+    state_path = root / MACHINE_CONTINUATION_STATE_REL
+    prior: dict[str, Any] = {}
+    if state_path.is_file():
+        try:
+            value = json.loads(state_path.read_text(encoding="utf-8"))
+            if isinstance(value, dict):
+                prior = value
+        except Exception:
+            prior = {}
+    last_window = prior.get("last_consumed_window_id")
+    if not isinstance(last_window, int):
+        last_window = None
+
+    reference = current_reference(now_ns=time.time_ns())
+    trigger = build_continuation_trigger(
+        int(reference["epoch"]),
+        last_consumed_window_id=last_window,
+        period_quanta=period_quanta,
+    )
+    receipt: dict[str, Any] = {
+        "schema": "stegverse.hb-machine-continuation-receipt/v1",
+        "trigger": trigger,
+        "dispatch_attempted": False,
+        "dispatch_result": None,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "heartbeat_grants_execution_authority": False,
+        "continuation_trigger_grants_execution_authority": False,
+        "authority_effect": "NONE_TRIGGER_ONLY",
+    }
+    if trigger["continuation_due"]:
+        result = dispatch_resident_requests(root, root, env=env)
+        receipt["dispatch_attempted"] = True
+        receipt["dispatch_result"] = result
+        window_id = int(trigger["window"]["window_id"])
+        state = {
+            "schema": "stegverse.hb-machine-continuation-state/v1",
+            "last_consumed_window_id": window_id,
+            "last_reference_epoch": int(reference["epoch"]),
+            "last_reference_heartbeat_id": reference["heartbeat_id"],
+            "last_dispatch_state": result.get("state"),
+            "heartbeat_progression_effect": "NONE",
+            "authority_effect": "NONE_TRIGGER_ONLY",
+        }
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state_path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+    receipt_path = root / MACHINE_CONTINUATION_RECEIPT_REL
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return receipt
+
+
 def refresh_transition_release(root: Path, *, runner=subprocess.run) -> dict[str, Any] | None:
     script = root / TRANSITION_REFRESH_REL
     receipt = root / TRANSITION_RECEIPT_REL
@@ -487,6 +556,8 @@ def main() -> int:
             rendezvous_result = poll_resident_rendezvous(root)
             next_rendezvous_poll = time.monotonic() + RENDEZVOUS_POLL_INTERVAL_SECONDS
         result = runtime.cycle(write=not args.dry_run, target_task_id=args.task_id)
+        if not args.task_id and not args.dry_run:
+            result["hb_machine_continuation"] = maybe_dispatch_machine_continuation(root, env=os.environ)
         if rendezvous_result is not None:
             result["resident_rendezvous"] = rendezvous_result
         if bootstrap_result is not None:
