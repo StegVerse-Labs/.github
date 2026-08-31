@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/sv-dn1-repository-persistence-dispatch-001.json",
+    "handoffs/SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001.json",
+    "docs/SV_DN1_REPOSITORY_PERSISTENCE_DISPATCH_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-08-31T08:05:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "registry + executable handoff install durable machine ownership",
+    "archive_ready": "terminal TVC-created PR evidence absent",
+    "unassigned_work": "registered worker owns the exact request-staging task",
+    "chat_owned_counts": "no chat-owned execution or credential role",
+    "canonical_owner_installed": "handoff/worker/adapter/registry are installed",
+    "thread_required": "continuation is durable without this chat",
+    "blocker_count": "TVC#264 mutation admission and authentic upstream persistence package remain runtime dependencies",
+    "evidence_complete": "terminal PR receipt absent",
+    "activated": "no runtime activation inferred from source",
+    "propagated": "downstream merge/deployment/public observation remain pending"
+  },
+  "authority_effect": "NONE"
+}
