@@ -760,11 +760,20 @@
       "vector": "50000000101000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SV-DN1-REPOSITORY-MERGE-DISPATCH-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/sv-dn1-repository-merge-dispatch-001.json",
+      "source_state_vector_ref": "control/task-vectors/SV-DN1-REPOSITORY-MERGE-DISPATCH-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 80,
-    "local_cosv_record_tasks": 80,
+    "indexed_vectorized_tasks": 81,
+    "local_cosv_record_tasks": 81,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
