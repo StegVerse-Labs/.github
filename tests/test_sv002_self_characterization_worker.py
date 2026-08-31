@@ -7,6 +7,7 @@ import os
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location(
@@ -202,6 +203,66 @@ class SV002SelfCharacterizationWorkerTests(unittest.TestCase):
         finally:
             os.environ.clear()
             os.environ.update(prior)
+
+    def test_master_records_reconstruction_pending_when_verifier_not_materialized(self):
+        with tempfile.TemporaryDirectory() as td:
+            state_root = Path(td) / "state"
+            state_root.mkdir()
+            with patch.object(mod, "find_repo", return_value=(None, [{"present": False}])):
+                result = mod.attempt_master_records_reconstruction(state_root)
+            self.assertEqual(result["state"], "PENDING")
+            self.assertEqual(
+                result["blocker"],
+                "MASTER_RECORDS_RECONSTRUCTION_VERIFIER_NOT_MATERIALIZED",
+            )
+            self.assertFalse(result["network_fetch_performed"])
+            self.assertFalse(result["credential_required"])
+            self.assertEqual(result["authority_effect"], "NONE")
+
+    def test_master_records_reconstruction_pass_is_retained_separately(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            state_root = root / "state"
+            master = root / "master-records"
+            (master / "scripts").mkdir(parents=True)
+            state_root.mkdir()
+            verifier = master / "scripts/verify_sv002_self_characterization_reconstruction.py"
+            verifier.write_text("# synthetic verifier placeholder\n", encoding="utf-8")
+
+            class Completed:
+                returncode = 0
+                stdout = ""
+                stderr = ""
+
+            def fake_run(args, **kwargs):
+                output = Path(args[args.index("--output") + 1])
+                output.write_text(
+                    json.dumps(
+                        {
+                            "schema": "master-records.sv002-self-characterization-reconstruction/v0.1",
+                            "experiment_id": "STEGVERSE-002-SELF-CHARACTERIZATION-001",
+                            "status": "PASS",
+                            "reconstruction": "PASS",
+                            "authority_boundary": {
+                                "receipt_alone_establishes_custody": False,
+                            },
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                return Completed()
+
+            with patch.object(mod, "find_repo", return_value=(master, [])):
+                with patch.object(mod.subprocess, "run", side_effect=fake_run):
+                    result = mod.attempt_master_records_reconstruction(state_root)
+
+            self.assertEqual(result["state"], "PASS")
+            self.assertTrue(Path(result["receipt_path"]).is_file())
+            self.assertEqual(result["receipt"]["reconstruction"], "PASS")
+            self.assertFalse(
+                result["receipt"]["authority_boundary"]["receipt_alone_establishes_custody"]
+            )
+            self.assertEqual(result["authority_effect"], "NONE")
 
 
 if __name__ == "__main__":
