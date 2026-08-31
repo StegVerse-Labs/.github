@@ -108,7 +108,7 @@ The worker MUST NOT:
 
 ```text
 TVC bounded merge gate: MERGED @ 0e8678e28c78b09932f215bd36a1f15da523a90f
-merge dispatch task: SOURCE COMPLETE / VALIDATION PASS / MERGE PENDING
+merge dispatch task: MERGED / VALIDATED @ f1df0f5c033a5abd9ba9b11f7f83e6ff313b72eb
 authentic product PR: NOT YET OBSERVED
 authentic merge: NOT YET OBSERVED
 Pages deployment: NOT YET OBSERVED

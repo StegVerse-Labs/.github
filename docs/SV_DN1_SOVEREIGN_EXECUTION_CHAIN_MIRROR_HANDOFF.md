@@ -428,3 +428,17 @@ separate bounded authority that independently verifies the exact PR/base/head, e
 paths, exact frozen bytes, and clean mergeability before using the TV/TVC credential.
 GitHub Actions remains validation-only and repository branch protection remains the
 required-check authority.
+
+
+## 2026-08-31 merge-dispatch source integration
+
+The three-stage post-analysis publication continuation is merged in
+`StegVerse-Labs/.github@f1df0f5c033a5abd9ba9b11f7f83e6ff313b72eb`.
+
+TVC bounded merge authority is merged at
+`StegVerse-Labs/TVC@0e8678e28c78b09932f215bd36a1f15da523a90f`,
+with canonical TVC task-dispatch binding merged at
+`StegVerse-Labs/TVC@bec6f0de3d52022c8ddc542c4deca353671a463f`.
+
+No source-side post-PR merge orchestration gap remains in the SV-DN-1 publication chain.
+Authentic runtime evidence remains separately required.
