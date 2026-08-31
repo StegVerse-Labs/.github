@@ -395,6 +395,75 @@ def _dispatch_resident_requests(source_root: Path, runtime_root: Path, *, proof_
     }
 
 
+
+def _advance_tvc_skap_successor(source_root: Path, runtime_root: Path, *, proof_path: Path, env: dict[str, str] | None, runner: Runner) -> dict[str, Any]:
+    """Immediately advance the admitted TVC/SKAP successor after G18 proves terminal.
+
+    This removes reliance on a later generic scheduler pass. WorkerCoordinator
+    still owns admission and must create a fresh independent claim/fence for the
+    TVC task; this helper grants no authority and forwards no credentials.
+    """
+    worker_runner = runtime_root / "scripts" / "run_worker_runtime.py"
+    task_id = "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001"
+    if not worker_runner.is_file():
+        return {
+            "attempted": False,
+            "state": "NOT_AVAILABLE",
+            "reason": "WORKER_RUNTIME_RUNNER_NOT_MATERIALIZED",
+            "task_id": task_id,
+            "authority_effect": "NONE",
+        }
+    child_env = scrubbed_child_env(
+        env,
+        source_root=source_root,
+        runtime_root=runtime_root,
+        proof_path=proof_path,
+    )
+    completed = runner(
+        [
+            sys.executable,
+            str(worker_runner),
+            "--root",
+            str(runtime_root),
+            "--task-id",
+            task_id,
+        ],
+        cwd=runtime_root,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=1800,
+        env=child_env,
+    )
+    result = None
+    for line in reversed([line.strip() for line in (completed.stdout or "").splitlines() if line.strip()]):
+        try:
+            value = json.loads(line)
+        except Exception:
+            continue
+        if isinstance(value, dict):
+            result = value
+            break
+    state = (
+        result.get("state")
+        if isinstance(result, dict) and isinstance(result.get("state"), str)
+        else ("SUCCESSOR_CYCLE_COMPLETE" if completed.returncode == 0 else "SUCCESSOR_CYCLE_INCOMPLETE")
+    )
+    return {
+        "attempted": True,
+        "state": state,
+        "task_id": task_id,
+        "returncode": completed.returncode,
+        "worker_result": result,
+        "fresh_independent_claim_required": True,
+        "parent_claim_reuse_prohibited": True,
+        "heartbeat_grants_execution_authority": False,
+        "credential_authority": "TV/TVC",
+        "github_token_required": False,
+        "authority_effect": "NONE_SUCCESSOR_DISPATCH_ONLY",
+    }
+
+
 def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof_path: Path, receipt_path: Path, env: dict[str, str] | None = None, runner: Runner = subprocess.run, activate_downstream: bool = True) -> dict[str, Any]:
     source_root = source_root.expanduser().resolve()
     runtime_root = runtime_root.expanduser().resolve()
@@ -429,6 +498,7 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         "proof_path": str(proof_path),
         "post_install_worker_prime": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "NATIVE_INSTALLATION_NOT_COMPLETE", "returncode": None, "task_capable_cycle_observed": False, "authority_effect": "NONE"},
         "post_bootstrap_resident_request_dispatch": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "authority_effect": "NONE"},
+        "post_bootstrap_tvc_skap_successor": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "G18_NOT_TERMINAL", "returncode": None, "task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001", "authority_effect": "NONE"},
         "post_bootstrap_stegfin": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "executor_service_active": False, "wallet_handoff_ready_claimed": False},
         "state": "FAIL_CLOSED",
         "reason": None,
@@ -483,6 +553,13 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         body["state"] = "COMPLETE"
         body["reason"] = "SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_VERIFIED"
         atomic_write(receipt_path, body)
+        body["post_bootstrap_tvc_skap_successor"] = _advance_tvc_skap_successor(
+            source_root,
+            runtime_root,
+            proof_path=proof_path,
+            env=env,
+            runner=runner,
+        )
         if activate_downstream:
             body["post_bootstrap_stegfin"] = _attempt_post_bootstrap_activation(source_root, proof_path=proof_path, receipt_path=receipt_path, node_marker=node_marker, env=env, runner=runner)
     else:
