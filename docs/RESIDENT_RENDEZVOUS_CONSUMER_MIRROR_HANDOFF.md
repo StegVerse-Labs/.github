@@ -96,3 +96,20 @@ Resident rendezvous local materialization permits only the bounded historical mi
 provided the execution contract remains identical for schema, state, task, mode, entrypoint, credential/authority flags, and the canonical three-step chain. The prior local request is archived write-once before replacement and verified after write.
 
 No unrelated request id, task, mode, command, credential, or step vector may be substituted. This is request continuity only; it does not create WorkerCoordinator claim/fence, execution authority, HB progression authority, or runtime evidence.
+
+
+## 2026-08-31 resident selector advertisement — issue #665
+
+Before each bounded rendezvous fetch, the sovereign resident now advertises the exact configured non-secret `STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF` to the Gateway with a 120-second lease.
+
+```text
+resident configured node_ref
+-> POST /api/resident-rendezvous/v1/advertisements
+-> exact consumer=stegos_kv_intr_chain
+-> current request=RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-003
+-> advertisement_grants_authority=false
+-> Gateway execution authority=NONE
+-> existing request fetch/dispatch/ack flow
+```
+
+A rejected advertisement fails before request fetch so Site cannot discover a resident selector that the resident itself has not freshly asserted. This advertisement carries no credential value, source location, command, claim, fence, HB progression, route authority, execution authority, or receiving authority.
