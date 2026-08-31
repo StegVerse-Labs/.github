@@ -111,6 +111,11 @@ class SovereignNodeInTrIdentityTests(unittest.TestCase):
             for path in (source, runtime, site, stegos, micro):
                 path.mkdir()
 
+            (stegos / "stegos").mkdir()
+            (stegos / "stegos/universal_intr_transport.py").write_text(
+                "# canonical transport fixture\n", encoding="utf-8"
+            )
+
             provenance = micro / "experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json"
             provenance.parent.mkdir(parents=True)
             provenance.write_text(
