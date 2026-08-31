@@ -88,7 +88,12 @@ class ResidentRendezvousConsumerTests(unittest.TestCase):
 
         def poster(url, payload, *, node_ref):
             self.assertEqual(node_ref, "node:primary")
-            posted.append(payload)
+            posted.append((url, payload))
+            if url.endswith("/advertisements"):
+                return {
+                    "state": "ADVERTISED",
+                    "gateway_execution_authority": "NONE",
+                }
             return {"state": "ACKNOWLEDGED"}
 
         def runner(command, **kwargs):
@@ -135,7 +140,14 @@ class ResidentRendezvousConsumerTests(unittest.TestCase):
             ).is_file()
         )
         self.assertTrue(posted)
-        self.assertEqual(posted[-1]["gateway_execution_authority"], "NONE")
+        advertisement_url, advertisement = posted[0]
+        self.assertTrue(advertisement_url.endswith("/advertisements"))
+        self.assertEqual(advertisement["current_resident_request_id"], "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-003")
+        self.assertIs(advertisement["advertisement_grants_authority"], False)
+        self.assertEqual(advertisement["gateway_execution_authority"], "NONE")
+        _, acknowledgement = posted[-1]
+        self.assertEqual(acknowledgement["gateway_execution_authority"], "NONE")
+        self.assertEqual(result["resident_advertisement_state"], "ADVERTISED")
 
 
     def test_materialize_supersedes_only_known_001_or_002_to_003_and_archives_old_request(self):
@@ -202,11 +214,36 @@ class ResidentRendezvousConsumerTests(unittest.TestCase):
                 "gateway_execution_authority": "NONE",
                 "authority_effect": "NONE",
             },
-            poster=lambda *_args, **_kwargs: {},
+            poster=lambda url, *_args, **_kwargs: (
+                {"state": "ADVERTISED", "gateway_execution_authority": "NONE"}
+                if url.endswith("/advertisements")
+                else {}
+            ),
             env={"PATH": "/usr/bin"},
         )
         self.assertEqual(result["state"], "NO_REQUEST")
         self.assertIs(result["runtime_execution_attempted"], False)
+
+    def test_advertisement_rejection_fails_before_fetch(self):
+        runtime = Path(tempfile.mkdtemp())
+        fetched = []
+
+        def getter(*_args, **_kwargs):
+            fetched.append(True)
+            return {}
+
+        with self.assertRaisesRegex(ResidentRendezvousConsumerError, "advertisement not accepted"):
+            consume(
+                runtime,
+                base_url="https://stegverse.org",
+                node_ref="node:primary",
+                source_root=runtime,
+                getter=getter,
+                poster=lambda *_args, **_kwargs: {"state": "REJECTED", "gateway_execution_authority": "NONE"},
+                env={"PATH": "/usr/bin"},
+            )
+        self.assertEqual(fetched, [])
+
 
     def test_hosted_environment_rejected(self):
         runtime = Path(tempfile.mkdtemp())
