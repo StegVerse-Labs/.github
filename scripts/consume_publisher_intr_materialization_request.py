@@ -64,7 +64,7 @@ def consume(runtime:Path,mid:str)->dict[str,Any]:
     prior_path=runtime/RECEIPT_DIR/f"{mid}.json"
     if prior_path.is_file():
         prior=load(prior_path)
-        if prior.get("state")=="RENDERED_RETURN_PACKET_PREPARED_NOT_TRANSPORTED" and prior.get("materialization_id")==mid and prior.get("request_hash")==req.get("request_hash"):
+        if prior.get("state") in {"RENDERED_RETURN_PACKET_PREPARED_NOT_TRANSPORTED","RETURN_MATERIALIZATION_QUEUED_NOT_TRANSPORTED"} and prior.get("materialization_id")==mid and prior.get("request_hash")==req.get("request_hash"):
             return prior
     ingress=load(runtime/INGRESS_DIR/f"{mid}.json")
     if ingress.get("schema")!="stegverse.publisher-intr-materialization-ingress/v1" or ingress.get("state")!="INGRESS_ADMITTED": raise PublisherInTrConsumerError("ingress_not_admitted")
@@ -83,6 +83,7 @@ def consume(runtime:Path,mid:str)->dict[str,Any]:
     if str(publisher) not in sys.path: sys.path.insert(0,str(publisher))
     from stegos.intr_backbone import CanonicalInTrConnector, load_connector_registry
     from stegos.universal_intr_transport import sha256_uri
+    from stegos.universal_intr_materialization import build_materialization_request, persist_materialization_request
     profiles=load_connector_registry(stegos/"specs/universal-intr-connector-profiles.v1.json")
     connector=CanonicalInTrConnector(profiles[PROFILE_ID])
     packet=connector.prepare(raw,payload_schema=TRANSFER_SCHEMA,operation="TRANSFER",operation_id=req["operation_id"])
@@ -96,7 +97,11 @@ def consume(runtime:Path,mid:str)->dict[str,Any]:
     verify_artifact_return(return_bytes)
     response=connector.prepare_response(packet,receipts,result,payload_schema=RETURN_SCHEMA,operation_id=req["operation_id"]+":return")
     response_path=runtime/PAYLOAD_DIR/f"{mid}.return.bin"; response_path.parent.mkdir(parents=True,exist_ok=True); response_path.write_bytes(response.payload_bytes)
-    receipt={"schema":"stegverse.publisher-intr-materialization-consumption/v1","state":"RENDERED_RETURN_PACKET_PREPARED_NOT_TRANSPORTED","materialization_id":mid,"request_hash":req["request_hash"],"transport_intent_hash":req["transport_intent_hash"],"payload_hash":req["payload_hash"],"forward_transport_state":forward["state"],"forward_terminal_receipt_hash":forward["terminal_receipt_hash"],"publisher_result_schema":result["schema"],"publisher_generation_id":result["generation_id"],"return_payload_hash":response.payload_hash,"return_packet_id":response.intent["packet_id"],"return_intent_hash":sha256_uri(dict(response.intent)),"return_payload_ref":"runtime://"+str(response_path.relative_to(runtime)),"return_transport_observed":False,"publication_authorized":False,"release_authorized":False,"execution_authorized":False,"request_grants_authority":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":"NONE","observed_at":datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00","Z")}
+    response_intent_path=runtime/PAYLOAD_DIR/f"{mid}.return-intent.json"
+    response_intent_path.write_text(json.dumps(response.intent,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+    return_request=build_materialization_request(response.intent,payload_ref="runtime://"+str(response_path.relative_to(runtime)),downstream_owner_ref="StegVerse-Labs/continuity-vault-kit")
+    return_request_path=persist_materialization_request(runtime,return_request)
+    receipt={"schema":"stegverse.publisher-intr-materialization-consumption/v1","state":"RETURN_MATERIALIZATION_QUEUED_NOT_TRANSPORTED","materialization_id":mid,"request_hash":req["request_hash"],"transport_intent_hash":req["transport_intent_hash"],"payload_hash":req["payload_hash"],"forward_transport_state":forward["state"],"forward_terminal_receipt_hash":forward["terminal_receipt_hash"],"publisher_result_schema":result["schema"],"publisher_generation_id":result["generation_id"],"return_payload_hash":response.payload_hash,"return_packet_id":response.intent["packet_id"],"return_intent_hash":sha256_uri(dict(response.intent)),"return_payload_ref":"runtime://"+str(response_path.relative_to(runtime)),"return_intent_ref":"runtime://"+str(response_intent_path.relative_to(runtime)),"return_materialization_id":return_request["materialization_id"],"return_materialization_request_hash":return_request["request_hash"],"return_materialization_request_ref":"runtime://"+str(return_request_path.relative_to(runtime)),"return_transport_observed":False,"publication_authorized":False,"release_authorized":False,"execution_authorized":False,"request_grants_authority":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":"NONE","observed_at":datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00","Z")}
     p=runtime/RECEIPT_DIR/f"{mid}.json";p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     return receipt
 

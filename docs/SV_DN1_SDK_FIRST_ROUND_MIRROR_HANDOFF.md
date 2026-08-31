@@ -91,7 +91,7 @@ StegVerse-org/StegVerse-SDK
   git_blob_sha1: 62c5ae4799ae018f6b100766215c3c68078c5b2e
 
   stegverse/sovereign_validation_runtime.py
-  git_blob_sha1: 814d4cb607cc2cb4c7a605474fe845e13540898d
+  git_blob_sha1: 6bc0944633b6299c19f065f44dd5999434445dd7
 
 StegVerse-Labs/StegCore
   src/stegcore/transaction_lifecycle.py
@@ -258,3 +258,35 @@ Authentic SDK execution, Master Records custody, and first-round analysis remain
 ## Archive readiness
 
 This handoff is the canonical continuation source for the first canonical SDK-governed SV-DN-1 production round. Once merged, no originating conversation is required to recover the machine path.
+
+
+## 2026-08-31 SDK sovereign-runtime anchor reconciliation
+
+Live source inspection before the next SV-DN-1 sovereign execution opportunity found one
+stale migration compatibility anchor:
+
+```text
+StegVerse-org/StegVerse-SDK
+stegverse/sovereign_validation_runtime.py
+previous expected blob: 814d4cb607cc2cb4c7a605474fe845e13540898d
+current main blob:      6bc0944633b6299c19f065f44dd5999434445dd7
+```
+
+The other four retained migration anchors still match current owner-repository source.
+
+The SDK change is attributable to the validated current-basis v0.4 reconciliation on SDK
+main. It adds the optional `derived_governance_request` execution input and records its
+source as `DERIVED_NATIVE_REQUEST`; the pre-existing manifest-input branch remains the
+default when that optional input is absent. SV-DN-1 continues to call
+`governance_ingress_runtime.run_external_manifest` without supplying a derived governance
+request, so this source change does not alter the SV-DN-1 request path or grant additional
+authority.
+
+The migration anchor is therefore repinned to the current validated blob rather than
+relaxed or removed. Complete source identity remains supplied by the v2
+`sha256-content-manifest` source-preparation receipt; this blob pin remains a compatibility
+guard only.
+
+This reconciliation does not claim resident execution, SDK admission, custody,
+reconstruction, first-round analysis, public promotion, repository persistence, deployment,
+release, or certification.
