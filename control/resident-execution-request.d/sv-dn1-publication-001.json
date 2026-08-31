@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-SV-DN1-PUBLICATION-001",
+  "state": "REQUESTED",
+  "task_id": "SV-DN1-PUBLICATION-RESIDENT-CONTINUATION-001",
+  "mode": "SV_DN1_PUBLICATION_CONTINUATION",
+  "entrypoint": "scripts/run_sv_dn1_publication_continuation.py",
+  "fresh_fence_minimum_exclusive": 22,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "Distinct post-analysis continuation request. It revisits only the registered persistence-dispatch and public-observer tasks. It does not reopen the first-round request and grants no credential, repository mutation, merge, deployment, publication-decision, release, or certification authority."
+}
