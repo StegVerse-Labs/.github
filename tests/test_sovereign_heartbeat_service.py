@@ -130,6 +130,8 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
             source.mkdir()
             healer.mkdir()
             repo_map = json.dumps({"StegVerse-Labs/StegVerse-Healer": str(healer)})
+            source_manifest = base / ".stegverse-source-manifest.json"
+            source_manifest.write_text("{}\n", encoding="utf-8")
             mod.materialize(ROOT, root)
             receipt = mod.materialize_service(
                 root,
@@ -140,6 +142,7 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
                     "STEGVERSE_HEALER_ROOT": str(healer),
                     "STEGVERSE_REPO_ROOTS_JSON": repo_map,
                     "STEGVERSE_LLM_ADAPTER_ROOT": str(base / "llm-adapter"),
+                    "STEGVERSE_RESIDENT_SOURCE_MANIFEST": str(source_manifest),
                 },
             )
             carrier = Path(receipt["carrier_registration_path"]).read_text(encoding="utf-8")
@@ -147,11 +150,13 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
             self.assertIn("STEGVERSE_HEALER_ROOT=" + str(healer), worker)
             self.assertIn("STEGVERSE_REPO_ROOTS_JSON=" + repo_map, worker)
             self.assertIn("STEGVERSE_LLM_ADAPTER_ROOT=" + str(base / "llm-adapter"), worker)
+            self.assertIn("STEGVERSE_RESIDENT_SOURCE_MANIFEST=" + str(source_manifest), worker)
             self.assertNotIn("STEGVERSE_HEALER_ROOT", carrier)
             self.assertNotIn("STEGVERSE_REPO_ROOTS_JSON", carrier)
+            self.assertNotIn("STEGVERSE_RESIDENT_SOURCE_MANIFEST", carrier)
             self.assertEqual(
                 receipt["safe_local_worker_bindings"],
-                ["STEGVERSE_HEALER_ROOT", "STEGVERSE_LLM_ADAPTER_ROOT", "STEGVERSE_REPO_ROOTS_JSON"],
+                ["STEGVERSE_HEALER_ROOT", "STEGVERSE_LLM_ADAPTER_ROOT", "STEGVERSE_REPO_ROOTS_JSON", "STEGVERSE_RESIDENT_SOURCE_MANIFEST"],
             )
 
     def test_worker_service_rejects_source_root_equal_to_runtime_root(self) -> None:

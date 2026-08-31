@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import subprocess
 import tempfile
 import unittest
 import zipfile
@@ -63,6 +64,36 @@ class SovereignControlPlaneBundleTests(unittest.TestCase):
                 names = set(archive.namelist())
             self.assertIn("vendor/StegOS/stegos/intr_backbone.py", names)
             self.assertIn("vendor/continuity-vault-kit/runtime/kv_interlock_endpoint.py", names)
+
+
+    def test_tvc_source_proof_verifies_clean_local_git_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tvc = Path(tmp) / "TVC"
+            tvc.mkdir()
+            subprocess.run(["git", "init", str(tvc)], check=True, capture_output=True)
+            subprocess.run(["git", "-C", str(tvc), "config", "user.email", "test@example.invalid"], check=True)
+            subprocess.run(["git", "-C", str(tvc), "config", "user.name", "Test"], check=True)
+            for rel in module.TVC_HIL_PROTECTED_PATHS:
+                path = tvc / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(rel + "\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(tvc), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(tvc), "commit", "-m", "floor"], check=True, capture_output=True)
+            floor = subprocess.run(
+                ["git", "-C", str(tvc), "rev-parse", "HEAD"],
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+
+            proof = module.tvc_source_proof(tvc, source_floor=floor)
+
+            self.assertEqual(proof["state"], "VERIFIED_LOCAL_GIT_SOURCE")
+            self.assertEqual(proof["source_floor"], floor)
+            self.assertTrue(proof["source_floor_present"])
+            self.assertTrue(proof["protected_paths_unchanged_since_floor"])
+            self.assertEqual(proof["materialized_subpath"], "vendor/TVC")
+            self.assertFalse(proof["network_fetch_performed"])
 
     def test_bundle_can_include_healer_and_tvc_vendor_sources(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
