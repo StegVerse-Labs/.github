@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SV-DN1-PUBLICATION-OBSERVER-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/sv-dn1-publication-observer-001.json",
+    "handoffs/SV-DN1-PUBLICATION-OBSERVER-001.json",
+    "control/cosv-global-registry-coverage.json"
+  ],
+  "observed_at": "2026-08-31T06:45:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "handoff/registry establish HANDOFF_READY machine ownership",
+    "archive_ready": "terminal public observation not yet present",
+    "unassigned_work": "registered worker owns observation task",
+    "chat_owned_counts": "no chat-owned execution or credential role",
+    "canonical_owner_installed": "handoff/worker/adapter/registry are installed",
+    "thread_required": "durable machine continuation is repository-backed",
+    "blocker_count": "repository persistence/public deployment not yet observed",
+    "evidence_complete": "terminal public exact-byte evidence absent",
+    "activated": "runtime terminal evidence not observed",
+    "propagated": "downstream propagation gated on terminal evidence"
+  },
+  "authority_effect": "NONE"
+}
