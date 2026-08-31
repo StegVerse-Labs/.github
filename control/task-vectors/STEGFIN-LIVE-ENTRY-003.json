@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEGFIN-LIVE-ENTRY-003",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/stegfin-live-entry-003.json",
+    "handoffs/STEGFIN-LIVE-ENTRY-003.json",
+    "control/admissible-existence-retrospective-conformance.json"
+  ],
+  "observed_at": "2026-08-30T21:58:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "handoffs/STEGFIN-LIVE-ENTRY-003.json state=HANDOFF_READY with authorized machine continuation",
+    "archive_ready": "control/worker-registry.d/stegfin-live-entry-003.json archive_eligible=false",
+    "unassigned_work": "registered continuation worker owns the task",
+    "chat_owned_counts": "no chat-owned implementation, validation, integration, observation, or credential role",
+    "canonical_owner_installed": "canonical handoff/registry/worker surfaces are installed",
+    "thread_required": "durable machine-owned continuation requires no chat thread",
+    "blocker_count": "SOVEREIGN_CARRIER_NOT_YET_ACTIVE",
+    "evidence_complete": "terminal runtime evidence remains incomplete",
+    "activated": "activation proof is not observed",
+    "propagated": "downstream completion remains gated on terminal evidence"
+  },
+  "authority_effect": "NONE"
+}
