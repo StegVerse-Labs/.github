@@ -191,6 +191,30 @@ def hil_intr_gateway_projection() -> dict[str, str]:
         "STEGVERSE_HIL_INTR_UPSTREAM": loopback + "/intr/materialization",
     }
 
+NAMED_REPOSITORY_ROOT_BINDINGS = {
+    "STEGVERSE_HEALER_ROOT": "StegVerse-Labs/StegVerse-Healer",
+    "STEGVERSE_LLM_ADAPTER_ROOT": "StegVerse-org/LLM-adapter",
+    "STEGVERSE_TVC_ROOT": "StegVerse-Labs/TVC",
+    "STEGVERSE_TV_ROOT": "StegVerse-Labs/TV",
+    "STEGVERSE_STEGOS_ROOT": "StegVerse-Labs/StegOS",
+    "STEGVERSE_SITE_ROOT": "StegVerse-Labs/Site",
+    "STEGVERSE_MICRO_NODE_RUNTIME_ROOT": "StegVerse-002/micro-node-runtime",
+    "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT": "master-records/orchestration",
+}
+
+
+def merge_named_repository_roots(roots: dict[str, str]) -> dict[str, str]:
+    merged = dict(roots)
+    for env_name, repository in NAMED_REPOSITORY_ROOT_BINDINGS.items():
+        raw = str(os.environ.get(env_name) or "").strip()
+        if not raw:
+            continue
+        path = Path(raw).expanduser().resolve()
+        if path.is_dir():
+            merged.setdefault(repository, str(path))
+    return merged
+
+
 def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
     env = {
         "PATH": os.environ.get("PATH", ""),
@@ -258,6 +282,7 @@ def main() -> int:
     forbidden = [name for name in ("HEALER_GH_TOKEN", "GITHUB_TOKEN", "GH_TOKEN", "HEALER_PAT", "GH_STEGVERSE_AI_TOKEN") if os.getenv(name)]
     healer_root, healer_root_source = discover_healer_root(os.getenv("STEGVERSE_HEALER_ROOT", ""))
     repo_roots, repo_roots_source = discover_repo_roots(os.getenv("STEGVERSE_REPO_ROOTS_JSON", ""))
+    repo_roots = merge_named_repository_roots(repo_roots)
     roots_json = json.dumps(repo_roots, sort_keys=True, separators=(",", ":")) if repo_roots else ""
     blocker = None
     child_receipt: dict = {}
