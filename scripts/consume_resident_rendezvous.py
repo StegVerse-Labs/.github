@@ -42,9 +42,10 @@ FORBIDDEN_CREDENTIAL_ENV = (
     "ACTIONS_RUNTIME_TOKEN", "ACTIONS_ID_TOKEN_REQUEST_TOKEN",
     "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "GOOGLE_API_KEY", "HF_TOKEN",
 )
-FORBIDDEN_FIELD_TOKENS = {
-    "password", "secret", "credential_value", "private_key", "token",
-    "cookie", "mnemonic", "seed", "raw_biometric", "shell", "command", "argv",
+FORBIDDEN_FIELD_NAMES = {
+    "password", "secret", "credential", "credential_value", "private_key",
+    "private_key_material", "token", "access_token", "refresh_token", "cookie",
+    "mnemonic", "seed", "raw_biometric", "shell", "command", "argv",
 }
 
 
@@ -96,7 +97,7 @@ def _reject_forbidden_fields(value: Any, path: str = "$") -> None:
             if not isinstance(key, str):
                 raise ResidentRendezvousConsumerError(f"non-string field at {path}")
             lowered = key.lower()
-            if any(token in lowered for token in FORBIDDEN_FIELD_TOKENS):
+            if lowered in FORBIDDEN_FIELD_NAMES:
                 raise ResidentRendezvousConsumerError(f"forbidden field at {path}.{key}")
             _reject_forbidden_fields(child, f"{path}.{key}")
     elif isinstance(value, list):
