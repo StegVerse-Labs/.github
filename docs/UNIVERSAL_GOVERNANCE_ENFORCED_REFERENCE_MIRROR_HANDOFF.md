@@ -148,3 +148,34 @@ RESIDENT_EXECUTION_OBSERVED: false
 REFERENCE_ENFORCED_BOUNDARY_OBSERVED: false
 REAL_EXTERNAL_SYSTEM_ENFORCED_ACTIVATION: false
 ```
+
+
+## Resident request dispatch integration
+
+A canonical one-shot request now targets the existing machine-owned task without creating a second scheduler or authority path.
+
+```text
+request: control/resident-execution-request.d/universal-governance-enforced-reference-001.json
+consumer: scripts/consume_universal_governance_enforced_reference_request.py
+dispatch selector: universal_governance_enforced_reference
+execution target: SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001
+mode: TARGETED_INDEPENDENT_TASK_CONTROL
+source locators:
+  STEGVERSE_STEGCORE_SOURCE_ROOT
+  STEGVERSE_MASTER_RECORDS_SOURCE_ROOT
+request authority effect: NONE_REQUEST_ONLY
+```
+
+The request consumer invokes only the existing `refresh_and_execute_resident_task.py --task-id` path. Completion requires the worker's terminal transition plus the bound-state receipt proving the reference boundary, bypass negative control, and Master Records custody while `real_external_system_enforced_activation=false`.
+
+Lifecycle after this source change:
+
+```text
+RESIDENT_REQUEST_DEFINED: true
+RESIDENT_CONSUMER_DEFINED: true
+RESIDENT_DISPATCH_REGISTERED: true
+SOURCE_REFRESH_MATERIALIZES_CONSUMER: true
+RESIDENT_EXECUTION_OBSERVED: false
+REFERENCE_ENFORCED_BOUNDARY_OBSERVED: false
+REAL_EXTERNAL_SYSTEM_ENFORCED_ACTIVATION: false
+```
