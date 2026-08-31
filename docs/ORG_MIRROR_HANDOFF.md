@@ -627,3 +627,22 @@ StegDeploy verified control source
 ```
 
 Missing or ambiguous local source remains fail-closed; no network checkout, GitHub token, new scheduler, or heartbeat authority is added.
+
+## 2026-08-31 complete resident source-bundle closure
+
+The one-shot resident stack now treats the execution-critical local source set as one verified transport unit:
+
+```text
+StegVerse-Labs/.github
++ StegOS
++ continuity-vault-kit
++ StegVerse-Healer
++ TVC
+-> sovereign-control-plane bundle
+-> StegDeploy local verification/materialization
+-> resident bootstrap
+```
+
+This closes the source-availability seam where a live WorkerCoordinator could consume Healer/TVC work without the exact local implementation trees needed by those workers. The bundle remains source transport only and grants no claim, fence, credential, route, heartbeat, provider, or repository authority.
+
+The next authentic transition is deployment-local: materialize the current bundle, run the resident bootstrap, observe source refresh/request consumption, and retain the resulting Healer/TVC/HIL/SV002 task receipts.
