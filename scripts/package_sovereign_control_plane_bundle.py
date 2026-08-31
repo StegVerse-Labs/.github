@@ -34,6 +34,7 @@ TVC_RESIDENT_PROOF_REQUIRED_PATHS = (
 SV002_MICRO_NODE_SOURCE_PIN = "410c4267b4145ed1c1f5f2d954f3926429a43c01"
 SV002_MICRO_NODE_REQUIRED_PATHS = (
     "tools/run_self_characterization_principal.py",
+    "tools/verify_self_characterization_runtime_identity.py",
     "experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json",
     "schemas/self_characterization_runtime_identity.schema.json",
 )
