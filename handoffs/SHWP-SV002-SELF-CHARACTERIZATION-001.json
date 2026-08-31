@@ -10,19 +10,21 @@
       "TT/RTG/GTG/AE exact pinned commits locally materialized",
       "principal self-characterization execution receipt state COMPLETED",
       "human-readable and machine-readable self-characterization artifacts retained",
-      "interaction/resource-access trace retained"
+      "interaction/resource-access trace retained",
+      "transition effects artifact retained with observed capability realizations and Transition-Element effect-resolution state"
     ],
     "failure_predicates": [
       "hosted runtime substituted",
       "reference model used as principal reasoning subject",
       "formalism injected into objective",
-      "model output granted authority",
-      "private chain-of-thought claimed"
+      "private chain-of-thought claimed",
+      "model output or capability realization treated as automatic downstream authority"
     ],
     "authority_ceiling": [
       "local read-only formal-resource discovery",
       "bounded local inference",
-      "experiment receipt persistence"
+      "experiment receipt persistence",
+      "local proposed-interaction manifest generation without execution"
     ],
     "successor_policy": "SEPARATE_AUTHORIZATION_REQUIRED_FOR_EXPANSION",
     "max_successor_depth": 0
@@ -30,18 +32,20 @@
   "task": {
     "task_id": "SHWP-SV002-SELF-CHARACTERIZATION-001",
     "repository": "StegVerse-Labs/.github",
-    "canonical_owner_ref": "StegVerse-002/micro-node-runtime:experiments/self-characterization-001/EXPERIMENT_CONTRACT.v0.1.json",
+    "canonical_owner_ref": "StegVerse-002/micro-node-runtime:experiments/self-characterization-001/EXPERIMENT_CONTRACT.v0.2.json",
     "priority": "research",
     "dependencies": [],
     "canonical_lineage_key": "sv002:self-characterization:001",
     "derivation_depth": 0,
     "source_refs": [
-      "StegVerse-002/micro-node-runtime@4acbf42ad321311e14b0a736220874bae34ac998",
-      "StegVerse-002/micro-node-runtime@4acbf42ad321311e14b0a736220874bae34ac998:experiments/self-characterization-001/EXPERIMENT_CONTRACT.v0.1.json",
-      "StegVerse-002/micro-node-runtime@4acbf42ad321311e14b0a736220874bae34ac998:experiments/self-characterization-001/SUBJECT_IDENTITY_MANIFEST.v0.1.json",
-      "StegVerse-002/micro-node-runtime@4acbf42ad321311e14b0a736220874bae34ac998:schemas/self_characterization_runtime_identity.schema.json",
-      "StegVerse-002/micro-node-runtime@4acbf42ad321311e14b0a736220874bae34ac998:tools/verify_self_characterization_runtime_identity.py",
-      "StegVerse-002/micro-node-runtime@4acbf42ad321311e14b0a736220874bae34ac998:tools/run_self_characterization_principal.py",
+      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01",
+      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01:experiments/self-characterization-001/EXPERIMENT_MANIFEST.v0.2.json",
+      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01:experiments/self-characterization-001/EXPERIMENT_CONTRACT.v0.2.json",
+      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01:experiments/self-characterization-001/EVIDENCE_RECONSTRUCTION_PROTOCOL.v0.2.json",
+      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01:experiments/self-characterization-001/SUBJECT_IDENTITY_MANIFEST.v0.1.json",
+      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01:schemas/self_characterization_runtime_identity.schema.json",
+      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01:tools/verify_self_characterization_runtime_identity.py",
+      "StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01:tools/run_self_characterization_principal.py",
       "Admissible-Existence/TT@ab60b42934222a2cb5335a5a8194f258a491fc57",
       "Admissible-Existence/RTG@ca69954cb3dc4ad073c9244e003bc8f0ef3837e2",
       "Admissible-Existence/GTG@8cdb7bce87bb9f8429c35e9c66cc5dc28a46a225",
@@ -55,7 +59,9 @@
     "model_output_authority": "NONE",
     "entity_may_self_certify_lifecycle": false,
     "github_token_runtime_authority": "NONE",
-    "policy_version": "sv002-self-characterization-v0.1"
+    "policy_version": "sv002-self-characterization-v0.2",
+    "authority_transfer_assumed": false,
+    "authority_effect_resolution": "DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS"
   },
   "execution": {
     "required_capabilities": [
@@ -78,7 +84,8 @@
       "principal_run_completed=true",
       "self_characterization_path present",
       "formal_result_path present",
-      "interaction_receipt_chain_path present"
+      "interaction_receipt_chain_path present",
+      "transition_effects_path present"
     ],
     "next_authorized_action": "Execute exactly once on the resident StegVerse surface through the existing targeted independent task-control path. If no qualifying non-reference local reasoning runtime or exact pinned formal roots are present, remain BLOCKED."
   }
