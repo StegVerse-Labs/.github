@@ -29,6 +29,8 @@ LOOPBACK_PREFIXES = (
 MASTER_RECORDS_RECONSTRUCTION_OUTPUT = (
     "STEGVERSE_002_SELF_CHARACTERIZATION_RECONSTRUCTION_RECEIPT.json"
 )
+MASTER_RECORDS_RECONSTRUCTION_COMMIT = "2e117902d4f261b10cb3b5122b7ef48fb0e36e57"
+MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB = "cc96556a23b5bd804f3cdaa96539b379c1904437"
 
 
 def git_head(p: Path) -> str:
@@ -80,6 +82,13 @@ def find_repo(org, repo, expected=None, override=None, required=()):
                 return p, seen
         seen.append(rec)
     return None, seen
+
+
+def git_blob_sha(root: Path, path: Path) -> str:
+    return subprocess.check_output(
+        ["git", "-C", str(root), "hash-object", str(path)],
+        text=True,
+    ).strip()
 
 
 def file_digest(path: Path) -> str:
@@ -494,6 +503,7 @@ def attempt_master_records_reconstruction(state_root: Path) -> dict[str, Any]:
     master_records, candidates_seen = find_repo(
         "master-records",
         "orchestration",
+        expected=MASTER_RECORDS_RECONSTRUCTION_COMMIT,
         override=os.environ.get("STEGVERSE_MASTER_RECORDS_ROOT"),
         required=("scripts/verify_sv002_self_characterization_reconstruction.py",),
     )
@@ -507,6 +517,24 @@ def attempt_master_records_reconstruction(state_root: Path) -> dict[str, Any]:
             "authority_effect": "NONE",
         }
 
+    verifier_path = master_records / "scripts/verify_sv002_self_characterization_reconstruction.py"
+    try:
+        verifier_blob = git_blob_sha(master_records, verifier_path)
+    except Exception:
+        verifier_blob = None
+    if verifier_blob != MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB:
+        return {
+            "state": "PENDING",
+            "blocker": "MASTER_RECORDS_RECONSTRUCTION_VERIFIER_SOURCE_PIN_MISMATCH",
+            "verifier_repository": str(master_records),
+            "required_commit": MASTER_RECORDS_RECONSTRUCTION_COMMIT,
+            "required_verifier_blob": MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB,
+            "observed_verifier_blob": verifier_blob,
+            "network_fetch_performed": False,
+            "credential_required": False,
+            "authority_effect": "NONE",
+        }
+
     output = state_root / MASTER_RECORDS_RECONSTRUCTION_OUTPUT
     clean_env = {
         "PATH": os.environ.get("PATH", ""),
@@ -515,7 +543,7 @@ def attempt_master_records_reconstruction(state_root: Path) -> dict[str, Any]:
     proc = subprocess.run(
         [
             sys.executable,
-            str(master_records / "scripts/verify_sv002_self_characterization_reconstruction.py"),
+            str(verifier_path),
             str(state_root),
             "--output",
             str(output),
