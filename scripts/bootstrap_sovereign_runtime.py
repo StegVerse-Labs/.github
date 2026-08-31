@@ -32,6 +32,7 @@ REQUIRED_SOURCE_FILES = (
     Path("heartbeat_runtime/worker_runtime.py"),
     Path("heartbeat_runtime/assignment_timer.py"),
     Path("scripts/install_sovereign_heartbeat_service.py"),
+    Path("scripts/install_sovereign_worker_source_refresh_service.py"),
     Path("scripts/verify_sovereign_runtime_activation.py"),
     Path("scripts/run_heartbeat_runtime.py"),
     Path("scripts/run_worker_runtime.py"),
@@ -270,6 +271,61 @@ def _attempt_post_bootstrap_activation(source_root: Path, *, proof_path: Path, r
     }
 
 
+
+def _install_source_refresh_watcher(source_root: Path, runtime_root: Path, *, proof_path: Path, env: dict[str, str] | None, runner: Runner) -> dict[str, Any]:
+    if platform.system().lower() != "linux":
+        return {
+            "attempted": False,
+            "state": "NOT_APPLICABLE_NON_LINUX",
+            "activated": False,
+            "authority_effect": "NONE",
+        }
+    script = source_root / "scripts" / "install_sovereign_worker_source_refresh_service.py"
+    if not script.is_file():
+        return {
+            "attempted": False,
+            "state": "NOT_AVAILABLE",
+            "reason": "SOURCE_REFRESH_WATCHER_INSTALLER_NOT_PRESENT",
+            "activated": False,
+            "authority_effect": "NONE",
+        }
+    child_env = scrubbed_child_env(
+        env,
+        source_root=source_root,
+        runtime_root=runtime_root,
+        proof_path=proof_path,
+    )
+    completed = runner(
+        [
+            sys.executable,
+            str(script),
+            "--source-root",
+            str(source_root),
+            "--runtime-root",
+            str(runtime_root),
+        ],
+        cwd=source_root,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=180,
+        env=child_env,
+    )
+    receipt = load_json(runtime_root / "receipts" / "sovereign-host" / "worker-source-refresh-installation.latest.json") or {}
+    return {
+        "attempted": True,
+        "state": "ACTIVE" if completed.returncode == 0 and receipt.get("activated") is True else "INCOMPLETE",
+        "returncode": completed.returncode,
+        "activated": receipt.get("activated") is True,
+        "filesystem_event_driven": receipt.get("filesystem_event_driven") is True,
+        "intr_materialization_event_driven": receipt.get("intr_materialization_event_driven") is True,
+        "source_package_event_driven": receipt.get("source_package_event_driven") is True,
+        "worker_service": receipt.get("worker_service"),
+        "github_token_required": False,
+        "credential_authority": "TV/TVC",
+        "authority_effect": "NONE_LOCAL_SOURCE_REFRESH_INSTALLATION",
+    }
+
 def _prime_resident_worker_runtime(source_root: Path, runtime_root: Path, *, proof_path: Path, env: dict[str, str] | None, runner: Runner) -> dict[str, Any]:
     """Force one bounded native WorkerCoordinator cycle before request dispatch.
 
@@ -428,6 +484,7 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         "installer_returncode": None,
         "verifier_returncode": None,
         "proof_path": str(proof_path),
+        "post_install_source_refresh_watcher": {"attempted": False, "state": "NOT_ELIGIBLE", "activated": False, "authority_effect": "NONE"},
         "post_install_worker_prime": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "NATIVE_INSTALLATION_NOT_COMPLETE", "returncode": None, "task_capable_cycle_observed": False, "authority_effect": "NONE"},
         "post_bootstrap_resident_request_dispatch": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "authority_effect": "NONE"},
         "post_bootstrap_stegfin": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "executor_service_active": False, "wallet_handoff_ready_claimed": False},
@@ -450,6 +507,19 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         body["reason"] = "NATIVE_INSTALLATION_RETRY_REQUIRED"
         atomic_write(receipt_path, body)
         return body
+    body["post_install_source_refresh_watcher"] = _install_source_refresh_watcher(
+        source_root,
+        runtime_root,
+        proof_path=proof_path,
+        env=env,
+        runner=runner,
+    )
+    if platform.system().lower() == "linux" and body["post_install_source_refresh_watcher"].get("activated") is not True:
+        body["state"] = "RETRY"
+        body["reason"] = "SOURCE_REFRESH_WATCHER_ACTIVATION_RETRY_REQUIRED"
+        atomic_write(receipt_path, body)
+        return body
+
     # Native process registration is asynchronous. Prime exactly one local
     # WorkerCoordinator cycle before dispatch so the carrier reference and
     # task-capable execution surface exist now rather than waiting for a later
