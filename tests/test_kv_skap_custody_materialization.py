@@ -21,6 +21,7 @@ class KVSkapCustodyTransportTests(unittest.TestCase):
     def setUpClass(cls):
         cls.mod=load_module()
         cls.ingress=INGRESS.read_text(encoding="utf-8")
+        cls.dispatcher=(ROOT/"scripts/dispatch_kv_skap_custody_materialization.py").read_text(encoding="utf-8")
 
     def request(self):
         capsule={
@@ -106,6 +107,23 @@ class KVSkapCustodyTransportTests(unittest.TestCase):
         ):
             self.assertIn(marker,source)
 
+
+
+    def test_second_hop_has_canonical_event_ephemeral_sender(self):
+        for marker in (
+            'PROFILE_ID = "kv-skap-custody"',
+            'stegos.universal_intr_transport',
+            'stegos.universal_intr_materialization',
+            'build_transport_intent(',
+            'build_materialization_request(',
+            'build_carrier_binding(',
+            '"TVC_RELAY_EGRESS"',
+            'admit_kv_skap(',
+            '"NONE_TRANSPORT_DISPATCH_ONLY"',
+        ):
+            self.assertIn(marker,self.dispatcher)
+        self.assertNotIn("requests.",self.dispatcher)
+        self.assertNotIn("github.com",self.dispatcher)
 
 if __name__=="__main__":
     unittest.main()
