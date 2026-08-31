@@ -22,6 +22,9 @@
         "STEGVERSE_RTG_ROOT",
         "STEGVERSE_GTG_ROOT",
         "STEGVERSE_AE_ROOT",
+        "STEGVERSE_RESIDENT_SOURCE_MANIFEST",
+        "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
+        "STEGVERSE_MASTER_RECORDS_ROOT",
         "STEGVERSE_SELF_CHAR_MODEL_ENDPOINT",
         "STEGVERSE_SELF_CHAR_MODEL_ID",
         "STEGVERSE_OLLAMA_MODEL",
@@ -29,7 +32,10 @@
         "PATH"
       ],
       "timeout_seconds": 1900,
-      "type": "process_json_v0.1"
+      "type": "process_json_v0.1",
+      "notes": [
+        "Resident source-manifest and Master Records root locators are non-secret provenance locators only; the worker independently verifies the pinned reconstruction source before use."
+      ]
     }
   ]
 }
