@@ -31,6 +31,22 @@ TVC_RESIDENT_PROOF_REQUIRED_PATHS = (
     "tv_resident_operational_proof_task.py",
     "scripts/activate_tv_resident_operational_proof.py",
 )
+SV002_MICRO_NODE_SOURCE_PIN = "496f17e0cb07433f3f9312e82a2c045f5d901dc9"
+SV002_MICRO_NODE_REQUIRED_PATHS = (
+    "tools/run_self_characterization_principal.py",
+    "tools/verify_self_characterization_runtime_identity.py",
+    "experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json",
+    "schemas/self_characterization_runtime_identity.schema.json",
+)
+MASTER_RECORDS_RECONSTRUCTION_COMMIT = "2e117902d4f261b10cb3b5122b7ef48fb0e36e57"
+MASTER_RECORDS_RECONSTRUCTION_VERIFIER = "scripts/verify_sv002_self_characterization_reconstruction.py"
+MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB = "cc96556a23b5bd804f3cdaa96539b379c1904437"
+FORMAL_SOURCE_PINS = {
+    "TT": "ab60b42934222a2cb5335a5a8194f258a491fc57",
+    "RTG": "ca69954cb3dc4ad073c9244e003bc8f0ef3837e2",
+    "GTG": "8cdb7bce87bb9f8429c35e9c66cc5dc28a46a225",
+    "AE": "53c8eedddc4e54d8fa0660039d65ab9ac63057a1",
+}
 TVC_HIL_PROTECTED_PATHS = (
     "tools/hil_intr_lifecycle_intake.py",
     "tasks/hil_experiment_backend_adapter.py",
@@ -171,6 +187,119 @@ def tvc_source_proof(root: Path, *, source_floor: str = TVC_HIL_SOURCE_FLOOR) ->
     }
 
 
+def sv002_micro_node_source_proof(root: Path) -> dict:
+    root = root.expanduser().resolve()
+    proof = {
+        "schema": "stegverse.portable-source-proof/v1",
+        "repository": "StegVerse-002/micro-node-runtime",
+        "materialized_subpath": "vendor/micro-node-runtime",
+        "exact_head": SV002_MICRO_NODE_SOURCE_PIN,
+        "required_paths": list(SV002_MICRO_NODE_REQUIRED_PATHS),
+        "network_fetch_performed": False,
+        "credential_required": False,
+        "authority_effect": "NONE_SOURCE_IDENTITY_ONLY",
+    }
+    if not (root / ".git").is_dir():
+        return {**proof, "state": "UNVERIFIED_NO_LOCAL_GIT_IDENTITY"}
+    head = _git(root, "rev-parse", "HEAD")
+    status = _git(root, "status", "--porcelain")
+    observed = head.stdout.strip().lower() if head.returncode == 0 else None
+    if observed != SV002_MICRO_NODE_SOURCE_PIN:
+        return {**proof, "state": "UNVERIFIED_EXACT_HEAD_MISMATCH", "head": observed}
+    if status.returncode != 0 or status.stdout.strip():
+        return {**proof, "state": "UNVERIFIED_WORKTREE_NOT_CLEAN", "head": observed}
+    missing = [rel for rel in SV002_MICRO_NODE_REQUIRED_PATHS if not (root / rel).is_file()]
+    if missing:
+        return {**proof, "state": "UNVERIFIED_REQUIRED_PATH_MISSING", "head": observed, "missing": missing}
+    return {**proof, "state": "VERIFIED_LOCAL_GIT_SOURCE", "head": observed, "exact_head_verified": True, "clean_worktree_at_packaging": True}
+
+
+def master_records_source_proof(root: Path) -> dict:
+    root = root.expanduser().resolve()
+    proof = {
+        "schema": "stegverse.portable-source-proof/v1",
+        "repository": "master-records/orchestration",
+        "materialized_subpath": "vendor/master-records-orchestration",
+        "required_ancestor": MASTER_RECORDS_RECONSTRUCTION_COMMIT,
+        "verifier_path": MASTER_RECORDS_RECONSTRUCTION_VERIFIER,
+        "required_verifier_git_blob": MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB,
+        "network_fetch_performed": False,
+        "credential_required": False,
+        "authority_effect": "NONE_SOURCE_IDENTITY_ONLY",
+    }
+    if not (root / ".git").is_dir():
+        return {**proof, "state": "UNVERIFIED_NO_LOCAL_GIT_IDENTITY"}
+    head = _git(root, "rev-parse", "HEAD")
+    ancestor = _git(root, "merge-base", "--is-ancestor", MASTER_RECORDS_RECONSTRUCTION_COMMIT, "HEAD")
+    verifier = root / MASTER_RECORDS_RECONSTRUCTION_VERIFIER
+    if head.returncode != 0 or ancestor.returncode != 0:
+        return {**proof, "state": "UNVERIFIED_REQUIRED_ANCESTOR_NOT_PRESENT", "head": head.stdout.strip().lower() if head.returncode == 0 else None}
+    if not verifier.is_file():
+        return {**proof, "state": "UNVERIFIED_VERIFIER_MISSING", "head": head.stdout.strip().lower()}
+    status = _git(root, "status", "--porcelain", "--", MASTER_RECORDS_RECONSTRUCTION_VERIFIER)
+    blob = _git(root, "hash-object", str(verifier))
+    observed_blob = blob.stdout.strip().lower() if blob.returncode == 0 else None
+    if status.returncode != 0 or status.stdout.strip() or observed_blob != MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB:
+        return {**proof, "state": "UNVERIFIED_VERIFIER_SOURCE_MISMATCH", "head": head.stdout.strip().lower(), "observed_verifier_git_blob": observed_blob}
+    return {**proof, "state": "VERIFIED_LOCAL_GIT_SOURCE", "head": head.stdout.strip().lower(), "required_ancestor_present": True, "verifier_git_blob": observed_blob, "verifier_worktree_clean": True}
+
+
+def formal_snapshot_proof(name: str, root: Path) -> dict:
+    root = root.expanduser().resolve()
+    commit = FORMAL_SOURCE_PINS[name]
+    proof = {
+        "schema": "stegverse.portable-source-proof/v1",
+        "repository": f"Admissible-Existence/{name}",
+        "materialized_subpath": f"vendor/formal/{name}",
+        "exact_commit": commit,
+        "snapshot_source": "LOCAL_GIT_OBJECT_DATABASE",
+        "network_fetch_performed": False,
+        "credential_required": False,
+        "authority_effect": "NONE_SOURCE_IDENTITY_ONLY",
+    }
+    if not (root / ".git").is_dir():
+        return {**proof, "state": "UNVERIFIED_NO_LOCAL_GIT_IDENTITY"}
+    exists = _git(root, "cat-file", "-e", f"{commit}^{commit}")
+    if exists.returncode != 0:
+        return {**proof, "state": "UNVERIFIED_PINNED_COMMIT_NOT_PRESENT"}
+    return {**proof, "state": "VERIFIED_LOCAL_GIT_SNAPSHOT", "exact_commit_present": True}
+
+
+def _git_snapshot_items(root: Path, commit: str, prefix: str) -> list[tuple[str, bytes]]:
+    root = root.expanduser().resolve()
+    listed = _git(root, "ls-tree", "-r", "--name-only", commit)
+    if listed.returncode != 0:
+        raise RuntimeError("pinned formal snapshot tree unavailable")
+    items: list[tuple[str, bytes]] = []
+    for rel in sorted(line.strip() for line in listed.stdout.splitlines() if line.strip()):
+        path = Path(rel)
+        if path.is_absolute() or ".." in path.parts or any(part in EXCLUDE_PARTS for part in path.parts):
+            continue
+        lower = rel.lower()
+        if any(fragment in lower for fragment in FORBIDDEN_NAME_FRAGMENTS):
+            if path.suffix.lower() not in {".py", ".json", ".md", ".txt", ".yaml", ".yml"}:
+                continue
+        shown = subprocess.run(
+            ["git", "-C", str(root), "show", f"{commit}:{rel}"],
+            capture_output=True,
+            check=False,
+            timeout=30,
+            env={"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "HOME": os.environ.get("HOME", str(Path.home()))},
+        )
+        if shown.returncode != 0:
+            raise RuntimeError(f"pinned formal snapshot file unavailable:{rel}")
+        items.append((prefix + "/" + rel, shown.stdout))
+    return items
+
+
+def _source_bytes(source: Path | bytes) -> bytes:
+    return source if isinstance(source, bytes) else source.read_bytes()
+
+
+def _source_mode(source: Path | bytes) -> int:
+    return 0o644 if isinstance(source, bytes) else (stat.S_IMODE(source.stat().st_mode) or 0o644)
+
+
 def _safe_tree_files(root: Path) -> list[Path]:
     paths: list[Path] = []
     for path in root.rglob("*"):
@@ -228,6 +357,12 @@ def build_bundle(
     healer_root: Path | None = None,
     tv_root: Path | None = None,
     tvc_root: Path | None = None,
+    micro_node_root: Path | None = None,
+    master_records_root: Path | None = None,
+    tt_root: Path | None = None,
+    rtg_root: Path | None = None,
+    gtg_root: Path | None = None,
+    ae_root: Path | None = None,
 ) -> dict:
     root = root.resolve()
     output = output.resolve()
@@ -236,7 +371,7 @@ def build_bundle(
     if required not in files:
         raise RuntimeError("canonical bootstrap missing from bundle source")
 
-    bundle_files: list[tuple[str, Path]] = [
+    bundle_files: list[tuple[str, Path | bytes]] = [
         (path.relative_to(root).as_posix(), path) for path in files
     ]
     vendor_sources = {}
@@ -284,6 +419,38 @@ def build_bundle(
             ("vendor/TV/" + path.relative_to(vr).as_posix(), path)
             for path in _safe_tree_files(vr)
         )
+    if micro_node_root is not None:
+        mr = micro_node_root.expanduser().resolve()
+        missing_micro = [rel for rel in SV002_MICRO_NODE_REQUIRED_PATHS if not (mr / rel).is_file()]
+        if missing_micro:
+            raise RuntimeError("micro-node-runtime source root invalid")
+        vendor_sources["micro-node-runtime"] = True
+        vendor_source_proofs["micro-node-runtime"] = sv002_micro_node_source_proof(mr)
+        bundle_files.extend(
+            ("vendor/micro-node-runtime/" + path.relative_to(mr).as_posix(), path)
+            for path in _safe_tree_files(mr)
+        )
+    if master_records_root is not None:
+        rr = master_records_root.expanduser().resolve()
+        if not (rr / MASTER_RECORDS_RECONSTRUCTION_VERIFIER).is_file():
+            raise RuntimeError("master-records/orchestration source root invalid")
+        vendor_sources["master-records-orchestration"] = True
+        vendor_source_proofs["master-records-orchestration"] = master_records_source_proof(rr)
+        bundle_files.extend(
+            ("vendor/master-records-orchestration/" + path.relative_to(rr).as_posix(), path)
+            for path in _safe_tree_files(rr)
+        )
+    formal_roots = {"TT": tt_root, "RTG": rtg_root, "GTG": gtg_root, "AE": ae_root}
+    for formal_name, formal_root in formal_roots.items():
+        if formal_root is None:
+            continue
+        fr = formal_root.expanduser().resolve()
+        proof = formal_snapshot_proof(formal_name, fr)
+        if proof.get("state") != "VERIFIED_LOCAL_GIT_SNAPSHOT":
+            raise RuntimeError(f"{formal_name} pinned formal source unavailable:{proof.get('state')}")
+        vendor_sources[f"formal-{formal_name}"] = True
+        vendor_source_proofs[f"formal-{formal_name}"] = proof
+        bundle_files.extend(_git_snapshot_items(fr, FORMAL_SOURCE_PINS[formal_name], f"vendor/formal/{formal_name}"))
     if tvc_root is not None:
         tr = tvc_root.expanduser().resolve()
         tvc_required = (
@@ -301,7 +468,7 @@ def build_bundle(
         )
     entries = []
     for rel, path in bundle_files:
-        data = path.read_bytes()
+        data = _source_bytes(path)
         entries.append({
             "path": rel,
             "sha256": _sha256(data),
@@ -328,9 +495,9 @@ def build_bundle(
         for rel, path in bundle_files:
             info = zipfile.ZipInfo(rel, date_time=(2026, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
-            mode = path.stat().st_mode
-            info.external_attr = ((stat.S_IMODE(mode) or 0o644) & 0xFFFF) << 16
-            archive.writestr(info, path.read_bytes())
+            mode = _source_mode(path)
+            info.external_attr = (mode & 0xFFFF) << 16
+            archive.writestr(info, _source_bytes(path))
         info = zipfile.ZipInfo(MANIFEST_NAME, date_time=(2026, 1, 1, 0, 0, 0))
         info.compress_type = zipfile.ZIP_DEFLATED
         info.external_attr = (0o644 & 0xFFFF) << 16
@@ -355,6 +522,12 @@ def main() -> int:
     parser.add_argument("--healer-root", type=Path)
     parser.add_argument("--tv-root", type=Path)
     parser.add_argument("--tvc-root", type=Path)
+    parser.add_argument("--micro-node-root", type=Path)
+    parser.add_argument("--master-records-root", type=Path)
+    parser.add_argument("--tt-root", type=Path)
+    parser.add_argument("--rtg-root", type=Path)
+    parser.add_argument("--gtg-root", type=Path)
+    parser.add_argument("--ae-root", type=Path)
     args = parser.parse_args()
     receipt = build_bundle(
         args.source_root,
@@ -364,6 +537,12 @@ def main() -> int:
         healer_root=args.healer_root,
         tv_root=args.tv_root,
         tvc_root=args.tvc_root,
+        micro_node_root=args.micro_node_root,
+        master_records_root=args.master_records_root,
+        tt_root=args.tt_root,
+        rtg_root=args.rtg_root,
+        gtg_root=args.gtg_root,
+        ae_root=args.ae_root,
     )
     print(json.dumps(receipt, indent=2, sort_keys=True))
     return 0
