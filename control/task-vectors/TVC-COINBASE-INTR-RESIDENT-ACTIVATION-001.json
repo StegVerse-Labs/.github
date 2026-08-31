@@ -2,7 +2,7 @@
   "identity": "StegVerse-Labs/.github:task:TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
   "profile": "task.v1",
   "level": "task",
-  "vector": "50000000104000",
+  "vector": "50000000103000",
   "evidence_refs": [
     "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
     "docs/HB31_RUNTIME_REGISTRY_TERMINALIZATION_MIRROR_HANDOFF.md",
@@ -11,7 +11,7 @@
     "StegVerse-Labs/TVC:tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
     "StegVerse-Labs/TVC:tasks/TVC-SERVICE-GATEWAY-LEAF-CERTIFICATE-LIFECYCLE-029.json"
   ],
-  "observed_at": "2026-08-31T15:48:00-05:00",
+  "observed_at": "2026-08-31T15:52:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "MACHINE_OWNED",
