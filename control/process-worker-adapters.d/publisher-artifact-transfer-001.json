@@ -1,0 +1,13 @@
+{
+  "schema":"stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id":"SHWP-PUBLISHER-ARTIFACT-TRANSFER-001",
+  "adapters":[{
+    "adapter_ref":"process:publisher-artifact-transfer-v1",
+    "authority_ref":"handoffs/SHWP-PUBLISHER-ARTIFACT-TRANSFER-001.json#authority",
+    "capabilities":["runtime_observation","bounded_process_execution","durable_state_reconstruction"],
+    "command":["python","workers/publisher_artifact_transfer_worker.py"],"cwd":".","enabled":true,
+    "env_allowlist":["STEGVERSE_STEGOS_ROOT","STEGVERSE_PUBLISHER_ROOT","STEGVERSE_PUBLISHER_INTR_MATERIALIZATION_ID"],
+    "notes":["Only non-secret already-local source roots plus one opaque materialization id may be forwarded.","The materialization event grants no claim/fence or rendering authority.","Publisher transfer payload must carry its existing owner authorization and all authority flags remain false.","Return-to-KV is not claimed until a separate terminal KV receipt exists."],
+    "timeout_seconds":180,"type":"process_json_v0.1"
+  }]
+}
