@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+import json
+import os
+import tempfile
 import unittest
+from pathlib import Path
+from unittest import mock
 
 from workers.sovereign_base_rpc_activation_worker import (
     credential_free_command,
     credential_free_endpoint,
     proof_is_live,
+    candidate_roots,
+    find_micro_node_root,
 )
 
 
@@ -66,6 +73,38 @@ class SovereignBaseRpcActivationWorkerTests(unittest.TestCase):
         self.assertFalse(credential_free_command("reth node --auth-token abc"))
         self.assertFalse(credential_free_command("geth --api-key abc"))
         self.assertFalse(credential_free_command("client --rpc https://user:pass@node.local"))
+
+
+    def test_portable_micro_node_locator_and_repo_map_are_discoverable(self):
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            micro = base / "resident-control-plane" / "vendor" / "micro-node-runtime"
+            (micro / "micro_node").mkdir(parents=True)
+            (micro / "tools").mkdir(parents=True)
+            (micro / "docs").mkdir(parents=True)
+            (micro / "micro_node" / "base_rpc_runtime.py").write_text("# runtime\n")
+            (micro / "tools" / "run_sovereign_base_rpc.py").write_text("# runner\n")
+            (micro / "docs" / "SOVEREIGN_BASE_RPC_MIRROR_HANDOFF.md").write_text("# handoff\n")
+            with mock.patch.dict(os.environ, {
+                "STEGVERSE_MICRO_NODE_RUNTIME_ROOT": str(micro),
+                "STEGVERSE_REPO_ROOTS_JSON": json.dumps({"StegVerse-002/micro-node-runtime": str(micro)}),
+            }, clear=True):
+                roots = candidate_roots()
+                selected = find_micro_node_root()
+            self.assertEqual(roots[0], micro.resolve())
+            self.assertEqual(selected, micro.resolve())
+
+    def test_legacy_micro_node_locator_remains_compatible(self):
+        with tempfile.TemporaryDirectory() as td:
+            micro = Path(td) / "micro-node-runtime"
+            (micro / "micro_node").mkdir(parents=True)
+            (micro / "tools").mkdir(parents=True)
+            (micro / "docs").mkdir(parents=True)
+            (micro / "micro_node" / "base_rpc_runtime.py").write_text("# runtime\n")
+            (micro / "tools" / "run_sovereign_base_rpc.py").write_text("# runner\n")
+            (micro / "docs" / "SOVEREIGN_BASE_RPC_MIRROR_HANDOFF.md").write_text("# handoff\n")
+            with mock.patch.dict(os.environ, {"STEGVERSE_MICRO_NODE_ROOT": str(micro)}, clear=True):
+                self.assertEqual(find_micro_node_root(), micro.resolve())
 
 
 if __name__ == "__main__":
