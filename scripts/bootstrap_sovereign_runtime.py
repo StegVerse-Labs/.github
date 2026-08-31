@@ -27,6 +27,7 @@ CREDENTIAL_ENV_VARS = ("GITHUB_TOKEN", "GH_TOKEN", "STEGVERSE_GITHUB_TOKEN", "TV
 REQUIRED_SOURCE_FILES = (
     Path("heartbeat_runtime/engine_v13.py"),
     Path("heartbeat_runtime/independent_oscillator.py"),
+    Path("heartbeat_runtime/intr_derived_carrier.py"),
     Path("heartbeat_runtime/oscillator_producer.py"),
     Path("heartbeat_runtime/worker_runtime.py"),
     Path("heartbeat_runtime/assignment_timer.py"),
