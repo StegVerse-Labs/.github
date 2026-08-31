@@ -752,7 +752,7 @@ def main():
             "subject_identity_verified": prior.get("subject_identity_verified", True),
             "formal_roots": prior.get("formal_roots"),
             "state_root": str(state_root),
-        "micro_node_source_validation_mode": micro_source_validation_mode,
+            "micro_node_source_validation_mode": prior.get("micro_node_source_validation_mode"),
             "self_characterization_path": str(state_root / "SELF_CHARACTERIZATION.md"),
             "formal_result_path": str(state_root / "SELF_CHARACTERIZATION_FORMAL.json"),
             "interaction_receipt_chain_path": str(state_root / "INTERACTION_RECEIPT_CHAIN.json"),
