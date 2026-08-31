@@ -70,10 +70,28 @@ kv_status_return_canonical_state_changed=false
 ## Lifecycle
 
 ```text
-IMPLEMENTED: IN_PROGRESS
+IMPLEMENTED: true
 VALIDATED: false
 MERGED: false
 RESIDENT_CONSUMED: false
 OBSERVED: false
 COMPLETE: false
 ```
+
+
+## Implemented source surfaces
+
+```text
+workers/endpoint_fanout_sovereign_runtime_worker.py
+tests/test_endpoint_fanout_sovereign_runtime_worker.py
+handoffs/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json
+control/worker-registry.d/endpoint-fanout-sovereign-runtime-001.json
+control/process-worker-adapters.d/endpoint-fanout-sovereign-runtime-001.json
+control/task-vectors/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json
+cost-basis/worker-runtime/endpoint-fanout-sovereign-runtime.json
+control/resident-execution-request.d/stegos-kv-intr-chain-001.json
+scripts/consume_stegos_kv_intr_chain_request.py
+scripts/consume_resident_rendezvous.py
+```
+
+The resident rendezvous remains an exact fixed-chain carrier. Its allowlist is extended by this one known task; no arbitrary task/command transport is introduced.
