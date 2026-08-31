@@ -53,7 +53,8 @@ class SVDN1ProductionSourcePrepCOSVTests(unittest.TestCase):
         indexed = [row for row in self.coverage["indexed_vectors"] if row.get("task_id") == TASK_ID]
         self.assertEqual(indexed, [{"task_id": TASK_ID, "vector": VECTOR}])
         summary = self.coverage["worker_registry_summary"]
-        self.assertEqual(summary["canonically_indexed_task_ids"], len(self.coverage["indexed_vectors"]))
+        worker_indexed = [row for row in self.index["tasks"] if row.get("registry_ref") != "control/organization-task-registry.json"]
+        self.assertEqual(summary["canonically_indexed_task_ids"], len(worker_indexed))
         expected_active_unvectorized = (
             summary["unique_task_ids_global_plus_fragments"]
             - summary["completed_only_historical_unvectorized_task_ids"]
