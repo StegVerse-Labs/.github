@@ -114,6 +114,8 @@ class DeviceKVInTrObservationWorkerTests(unittest.TestCase):
 
 
     def test_hb_carrier_binds_exact_precommitted_receipt_and_recovers_bytes(self):
+        payload = b'{"request":"exact"}'
+        payload_hash = worker.sha256_uri(payload)
         receipt = worker.build_transport_receipt(
             receipt_id="r-carrier",
             packet_id="p-carrier",
@@ -121,16 +123,15 @@ class DeviceKVInTrObservationWorkerTests(unittest.TestCase):
             from_role="DEVICE",
             to_role="KV",
             operation_hash="sha256:" + "1" * 64,
-            payload_hash="sha256:" + "2" * 64,
+            payload_hash=payload_hash,
             prior_receipt_hash=None,
             boundary_identity_ref="kv://root",
             recorded_at="2026-08-31T13:00:00Z",
         )
-        payload = b'{"request":"exact"}'
         now_ns = 1_787_511_600_000_000_000 + (250 * 10_000_000)
         signal, reference = worker.build_hb_carrier_signal(
             packet_id=receipt["packet_id"],
-            payload_hash=receipt["payload_hash"],
+            payload_hash=payload_hash,
             packet_bytes=payload,
             receipt_hash=receipt["receipt_hash"],
             boundary_from="DEVICE_SYSTEM",
@@ -142,7 +143,7 @@ class DeviceKVInTrObservationWorkerTests(unittest.TestCase):
         self.assertEqual(worker.recover_intr_packet_bytes(signal), payload)
         self.assertEqual(signal["carrier"]["reference_rate_hz"], 100.0)
         self.assertEqual(signal["carrier"]["phase_slots"], 16)
-        self.assertEqual(signal["carrier"]["channel_derivation"], "SHA256_PACKET_ID_FIRST32_MOD_16")
+        self.assertEqual(signal["carrier"]["channel_derivation"], "PAYLOAD_SHA256_FIRST64_MOD_16")
         self.assertEqual(signal["carrier"]["progression_dependency"], "OSCILLATOR_ONLY")
         self.assertFalse(signal["authority"]["derived_carrier_grants_receiving_authority"])
         self.assertEqual(signal["authority"]["authority_effect"], "NONE_CARRIER_ONLY")
