@@ -136,3 +136,28 @@ resident with current local source and writable durable state. The existing G18
 resolver may derive the node declaration there automatically. No additional user
 authorization, second user-operated machine, GitHub runtime credential, or
 third-party runtime substitution is required or permitted by this chain.
+
+
+## Outbound resident rendezvous continuation — issue #578
+
+The missing interactive server-control connector is now being removed as an architectural dependency rather than accepted as an operational blocker.
+
+The sovereign WorkerCoordinator runtime gains an outbound-only Service Gateway rendezvous consumer:
+
+```text
+StegVerse Service Gateway bounded intent
+-> resident outbound poll
+-> exact digest/schema/task/mode validation
+-> local resident request materialization
+-> existing dispatch_resident_execution_requests.py
+-> existing stegos_kv_intr_chain consumer
+-> WorkerCoordinator independent admission/claim/fence
+-> local execution attempt
+-> bounded acknowledgement
+```
+
+The Gateway request itself grants no authority. The consumer is copied by the existing local source refresh and native materializer, and the continuous WorkerCoordinator polls it only when explicit non-secret rendezvous URL/node-ref configuration is installed. Targeted task execution does not poll recursively.
+
+Canonical scoped handoff: `docs/RESIDENT_RENDEZVOUS_CONSUMER_MIRROR_HANDOFF.md`.
+
+This source work does not itself prove the current resident has refreshed to the new consumer, the public Gateway is deployed with rendezvous enabled, or the three runtime terminal receipts exist.
