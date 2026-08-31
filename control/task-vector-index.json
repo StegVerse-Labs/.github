@@ -117,7 +117,7 @@
       "repository": "StegVerse-Labs/.github",
       "registry_ref": "control/worker-registry.d/healer-sovereign-scheduler-001.json",
       "source_state_vector_ref": "control/task-vectors/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
-      "vector": "50000000101000",
+      "vector": "50000000100000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "StegVerse-Labs/StegVerse-Healer:data/session_consolidation/tv-tvc-no-github-token-dispatch-migration.json"
@@ -659,7 +659,7 @@
       "repository": "StegVerse-Labs/.github",
       "registry_ref": "control/organization-task-registry.json",
       "source_state_vector_ref": "control/task-vectors/ORG-FED-ECAT-ICAT-FORMAL-001.json",
-      "vector": "60000000101000",
+      "vector": "50000000100000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
     },
@@ -686,7 +686,7 @@
       "repository": "StegVerse-Labs/.github",
       "registry_ref": "control/organization-task-registry.json",
       "source_state_vector_ref": "control/task-vectors/ORG-FED-INFRASTRUCTURE-CONTINUITY-VENTURES-001.json",
-      "vector": "60000000101000",
+      "vector": "50000000100000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
     },
@@ -740,7 +740,7 @@
       "repository": "StegVerse-Labs/.github",
       "registry_ref": "control/organization-task-registry.json",
       "source_state_vector_ref": "control/task-vectors/ORG-FED-TRIAD-TEST-001.json",
-      "vector": "60000000101000",
+      "vector": "50000000100000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
     },
