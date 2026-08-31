@@ -845,3 +845,27 @@ ratio: 4/30 = 13.33%
 ```
 
 Authority effect: NONE.
+
+
+## RTG promotion and ET terminalization — 2026-08-31
+
+```text
+Admissible-Existence/RTG  VECTOR_PRESENT
+Admissible-Existence/ET   NO_ACTIVE_TASK_SURFACE
+```
+
+RTG now has 4/4 current structured active tasks projected and repository-local COSV, build, and crosswalk validation PASS. Its lane-5 stale-state and inventory-lineage regressions were repaired before promotion.
+
+ET's final mathematical-completeness task completed under hosted run `33406850912`; its local COSV terminal audit reports zero current active tasks. ET therefore leaves the active denominator rather than receiving a stale VECTOR_PRESENT classification.
+
+Strict active-repository adoption:
+
+```text
+VECTOR_PRESENT: 5
+VECTOR_REQUIRED: 24
+NO_ACTIVE_TASK_SURFACE: 5
+not-yet-audited/unavailable: 188
+ratio: 5/29 = 17.24%
+```
+
+Authority effect: NONE.
