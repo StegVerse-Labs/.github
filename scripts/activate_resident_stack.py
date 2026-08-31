@@ -76,6 +76,7 @@ def activate(
     stegos_root: Path,
     kv_source_root: Path,
     healer_root: Path,
+    tv_root: Path,
     tvc_root: Path,
     health_url: str,
     receipt_path: Path,
@@ -103,6 +104,7 @@ def activate(
                 "--stegos-root", str(stegos_root.expanduser().resolve()),
                 "--kv-source-root", str(kv_source_root.expanduser().resolve()),
                 "--healer-root", str(healer_root.expanduser().resolve()),
+                "--tv-root", str(tv_root.expanduser().resolve()),
                 "--tvc-root", str(tvc_root.expanduser().resolve()),
             ],
             cwd=source,
@@ -164,6 +166,7 @@ def activate(
             "stegos_source_bundled": True,
             "kv_source_bundled": True,
             "healer_source_bundled": True,
+            "tv_source_bundled": True,
             "tvc_source_bundled": True,
             "control_bundle_sha256": package_result.get("bundle_sha256"),
             "stegdeploy_returncode": deploy.returncode,
@@ -197,6 +200,7 @@ def main() -> int:
     parser.add_argument("--stegos-root", type=Path)
     parser.add_argument("--kv-source-root", type=Path)
     parser.add_argument("--healer-root", type=Path)
+    parser.add_argument("--tv-root", type=Path)
     parser.add_argument("--tvc-root", type=Path)
     parser.add_argument("--receipt-path", type=Path, default=DEFAULT_RECEIPT)
     args = parser.parse_args()
@@ -209,15 +213,17 @@ def main() -> int:
     stegos = args.stegos_root or (Path(os.environ["STEGVERSE_STEGOS_ROOT"]) if os.environ.get("STEGVERSE_STEGOS_ROOT") else None)
     kv_source = args.kv_source_root or (Path(os.environ["STEGVERSE_KV_SOURCE_ROOT"]) if os.environ.get("STEGVERSE_KV_SOURCE_ROOT") else None)
     healer = args.healer_root or (Path(os.environ["STEGVERSE_HEALER_ROOT"]) if os.environ.get("STEGVERSE_HEALER_ROOT") else None)
+    tv = args.tv_root or (Path(os.environ["STEGVERSE_TV_ROOT"]) if os.environ.get("STEGVERSE_TV_ROOT") else None)
     tvc = args.tvc_root or (Path(os.environ["STEGVERSE_TVC_ROOT"]) if os.environ.get("STEGVERSE_TVC_ROOT") else None)
-    if stegos is None or kv_source is None or healer is None or tvc is None:
-        raise SystemExit("StegOS, KV source, Healer, and TVC local roots are required for the complete resident stack")
+    if stegos is None or kv_source is None or healer is None or tv is None or tvc is None:
+        raise SystemExit("StegOS, KV source, Healer, TV, and TVC local roots are required for the complete resident stack")
     receipt = activate(
         args.source_root,
         llm,
         stegos_root=stegos,
         kv_source_root=kv_source,
         healer_root=healer,
+        tv_root=tv,
         tvc_root=tvc,
         health_url=args.health_url,
         receipt_path=args.receipt_path,
