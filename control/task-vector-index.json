@@ -257,10 +257,11 @@
       "repository": "StegVerse-Labs/.github",
       "registry_ref": "control/worker-registry.d/tvc-coinbase-intr-resident-activation-001.json",
       "source_state_vector_ref": "control/task-vectors/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json",
-      "vector": "50000000104000",
+      "vector": "50000000103000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
-      "canonical_owner_ref": "StegVerse-Labs/TVC:tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json"
+      "canonical_owner_ref": "StegVerse-Labs/TVC:tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
+      "observed_at": "2026-08-31T15:52:00-05:00"
     },
     {
       "task_id": "SHWP-STEGFIN-SOVEREIGN-TRADING-001",
