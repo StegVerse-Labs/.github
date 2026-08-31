@@ -151,3 +151,31 @@ user action required: false
 ```
 
 The next lawful transition is machine-owned resident execution. Repository source, validation, or merge cannot satisfy the experiment.
+
+
+## Master Records automatic reconstruction bridge — issue #573
+
+After a genuine principal run reaches `COMPLETED`, the resident worker now attempts the separate Master Records reconstruction gate using only a locally materialized `master-records/orchestration` checkout and its canonical `scripts/verify_sv002_self_characterization_reconstruction.py`.
+
+The bridge:
+
+```text
+principal COMPLETED artifact set
+-> locate local master-records/orchestration
+-> invoke canonical reconstruction verifier against exact state root
+-> retain STEGVERSE_002_SELF_CHARACTERIZATION_RECONSTRUCTION_RECEIPT.json
+-> record PASS / FAIL / PENDING separately in the worker receipt
+```
+
+If the Master Records verifier is not locally materialized, reconstruction remains `PENDING` and the authentic principal `COMPLETED` result is not rewritten. A reconstruction failure likewise remains a separate downstream state.
+
+The bridge performs no source fetch, requires no credential, and grants no custody, governance, execution, activation, or release authority.
+
+Current source state:
+
+```text
+Master Records verifier: MERGED (master-records/orchestration#49)
+resident reconstruction bridge: IMPLEMENTED_ON_BRANCH
+authentic principal execution: NOT OBSERVED
+authentic reconstruction PASS: NOT OBSERVED
+```
