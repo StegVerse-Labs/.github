@@ -175,7 +175,7 @@ Current source state:
 
 ```text
 Master Records verifier: MERGED (master-records/orchestration#49)
-resident reconstruction bridge: IMPLEMENTED_ON_BRANCH
+resident reconstruction bridge: MERGED / VALIDATED (.github#574, b005fa962e8da97af3a15023523768d4a9a9c582)
 authentic principal execution: NOT OBSERVED
 authentic reconstruction PASS: NOT OBSERVED
 ```
