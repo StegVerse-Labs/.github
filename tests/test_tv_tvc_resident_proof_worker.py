@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import io
 import json
 import os
@@ -163,6 +164,103 @@ class TvTvcResidentProofWorkerTests(unittest.TestCase):
             receipt = json.loads((receipt_root / f"{worker.TASK_ID}.json").read_text())
             self.assertEqual(receipt["reason"], "TVC_PREFLIGHT_BLOCKED")
 
+    def test_verified_portable_bundle_can_supply_exact_tv_and_tvc_sources_without_git(self):
+        with tempfile.TemporaryDirectory() as td:
+            control = Path(td) / "resident-control-plane"
+            tv = control / "vendor" / "TV"
+            tvc = control / "vendor" / "TVC"
+            entries = []
+            for repo_name, root, required in (("TV", tv, worker.TV_REQUIRED), ("TVC", tvc, worker.TVC_REQUIRED)):
+                for rel in required:
+                    path = root / rel
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    data = (repo_name + ":" + rel.as_posix() + "\n").encode()
+                    path.write_bytes(data)
+                    entries.append({
+                        "path": f"vendor/{repo_name}/{rel.as_posix()}",
+                        "sha256": hashlib.sha256(data).hexdigest(),
+                        "size": len(data),
+                    })
+            manifest = {
+                "schema": "stegverse.sovereign-control-plane-bundle/v1",
+                "network_fetch_required": False,
+                "credential_authority": "TV/TVC",
+                "github_token_runtime_authority": "NONE",
+                "bundle_grants_authority": False,
+                "files": entries,
+                "vendor_source_proofs": {
+                    "TV": {
+                        "schema": "stegverse.portable-source-proof/v1",
+                        "state": "VERIFIED_LOCAL_GIT_SOURCE",
+                        "repository": "StegVerse-Labs/TV",
+                        "materialized_subpath": "vendor/TV",
+                        "head": worker.TV_SHA,
+                        "exact_head_verified": True,
+                        "clean_worktree_at_packaging": True,
+                    },
+                    "TVC": {
+                        "schema": "stegverse.portable-source-proof/v1",
+                        "state": "VERIFIED_LOCAL_GIT_SOURCE",
+                        "repository": "StegVerse-Labs/TVC",
+                        "materialized_subpath": "vendor/TVC",
+                        "resident_proof_min_sha_present": True,
+                        "verified_ancestors": [worker.TVC_MIN_SHA],
+                    },
+                },
+            }
+            manifest_path = control / ".stegverse-source-manifest.json"
+            manifest_path.write_text(json.dumps(manifest) + "\n", encoding="utf-8")
+            env = {
+                "STEGVERSE_RESIDENT_SOURCE_MANIFEST": str(manifest_path),
+                "STEGVERSE_TV_ROOT": str(tv),
+                "STEGVERSE_TVC_ROOT": str(tvc),
+            }
+            with mock.patch.dict(os.environ, env, clear=True):
+                selected_tv, tv_mode = worker._portable_source("TV", "STEGVERSE_TV_ROOT", worker.TV_REQUIRED)
+                selected_tvc, tvc_mode = worker._portable_source("TVC", "STEGVERSE_TVC_ROOT", worker.TVC_REQUIRED)
+
+            self.assertEqual(selected_tv, tv.resolve())
+            self.assertEqual(selected_tvc, tvc.resolve())
+            self.assertEqual(tv_mode, "VERIFIED_PORTABLE_BUNDLE_PROOF")
+            self.assertEqual(tvc_mode, "VERIFIED_PORTABLE_BUNDLE_PROOF")
+
+    def test_portable_tv_source_fails_closed_on_digest_drift(self):
+        with tempfile.TemporaryDirectory() as td:
+            control = Path(td) / "resident-control-plane"
+            tv = control / "vendor" / "TV"
+            entries = []
+            for rel in worker.TV_REQUIRED:
+                path = tv / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                data = rel.as_posix().encode()
+                path.write_bytes(data)
+                entries.append({"path": f"vendor/TV/{rel.as_posix()}", "sha256": hashlib.sha256(data).hexdigest(), "size": len(data)})
+            manifest = {
+                "schema": "stegverse.sovereign-control-plane-bundle/v1",
+                "network_fetch_required": False,
+                "credential_authority": "TV/TVC",
+                "github_token_runtime_authority": "NONE",
+                "bundle_grants_authority": False,
+                "files": entries,
+                "vendor_source_proofs": {"TV": {
+                    "state": "VERIFIED_LOCAL_GIT_SOURCE",
+                    "repository": "StegVerse-Labs/TV",
+                    "materialized_subpath": "vendor/TV",
+                    "head": worker.TV_SHA,
+                    "exact_head_verified": True,
+                    "clean_worktree_at_packaging": True,
+                }},
+            }
+            manifest_path = control / ".stegverse-source-manifest.json"
+            manifest_path.write_text(json.dumps(manifest) + "\n")
+            (tv / worker.TV_REQUIRED[0]).write_text("drift\n")
+            with mock.patch.dict(os.environ, {
+                "STEGVERSE_RESIDENT_SOURCE_MANIFEST": str(manifest_path),
+                "STEGVERSE_TV_ROOT": str(tv),
+            }, clear=True):
+                selected, reason = worker._portable_source("TV", "STEGVERSE_TV_ROOT", worker.TV_REQUIRED)
+            self.assertIsNone(selected)
+            self.assertEqual(reason, "PORTABLE_SOURCE_DIGEST_MISMATCH")
     def test_source_discovery_has_no_network_or_source_mutation_path(self):
         source = Path(worker.__file__).read_text(encoding="utf-8")
         for forbidden in ("git clone", "git fetch", "git pull", "urllib", "urlopen(", "requests.get", "GITHUB_TOKEN", "GH_TOKEN"):
