@@ -10,6 +10,8 @@ from heartbeat_runtime.independent_oscillator import PROTOCOL_ANCHOR_UNIX_NS
 from heartbeat_runtime.intr_subsignal_runtime import (
     EVENT_LOG_REL,
     LocalDerivedCarrierError,
+    default_heartbeat_runtime_root,
+    persist_local_intr_subsignal,
     propagate_local_intr_subsignal,
     recover_local_intr_subsignal,
 )
@@ -51,6 +53,29 @@ class HeartbeatIntrLocalSubsignalRuntimeTests(unittest.TestCase):
             self.assertFalse(event["worker_coordinator_invoked"])
             self.assertFalse(event["claim_or_fence_minted"])
             self.assertEqual(event["authority_effect"], "NONE_CARRIER_OBSERVATION_ONLY")
+
+    def test_persist_existing_signal_preserves_exact_frame_identity(self):
+        with tempfile.TemporaryDirectory() as td:
+            source_root = Path(td) / "source"
+            target_root = Path(td) / "target"
+            first = self.propagate(source_root)
+            signal = json.loads((source_root / first["signal_ref"]).read_text(encoding="utf-8"))
+            persisted = persist_local_intr_subsignal(root=target_root, signal=signal)
+            self.assertEqual(persisted["signal_sha256"], first["signal_sha256"])
+            self.assertEqual(
+                json.loads((target_root / persisted["signal_ref"]).read_text(encoding="utf-8")),
+                signal,
+            )
+            self.assertEqual(
+                recover_local_intr_subsignal(root=target_root, signal_ref=persisted["signal_ref"]),
+                recover_local_intr_subsignal(root=source_root, signal_ref=first["signal_ref"]),
+            )
+
+    def test_default_runtime_root_matches_resident_execution_contract(self):
+        explicit = default_heartbeat_runtime_root({"STEGVERSE_HEARTBEAT_ROOT": "/tmp/hb-root"})
+        self.assertEqual(explicit, Path("/tmp/hb-root").resolve())
+        derived = default_heartbeat_runtime_root({"XDG_STATE_HOME": "/tmp/state"})
+        self.assertEqual(derived, Path("/tmp/state/stegverse/heartbeat-runtime").resolve())
 
     def test_identical_repropagation_is_idempotent_and_does_not_duplicate_event(self):
         with tempfile.TemporaryDirectory() as td:
