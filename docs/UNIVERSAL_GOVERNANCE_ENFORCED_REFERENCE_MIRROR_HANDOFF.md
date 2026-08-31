@@ -106,8 +106,8 @@ publication authority = false
 ## Lifecycle
 
 ```text
-IMPLEMENTED: IN_PROGRESS
-VALIDATED: false
+IMPLEMENTED: true
+VALIDATED: PENDING_CI
 MERGED: false
 RESIDENT_ADMITTED: false
 REFERENCE_ENFORCED_BOUNDARY_OBSERVED: false
