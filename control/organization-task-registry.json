@@ -19,7 +19,20 @@
         "Use an already-authorized AaCT-E repository if one becomes discoverable without waiting for connector permission changes",
         "Represent AaCT-E through a signed outbound handoff that AaCT-E can ingest without granting the connector write authority"
       ],
-      "next_action": "SELECT_AACTE_OWNED_ALTERNATE_PATH"
+      "next_action": "SELECT_AACTE_OWNED_ALTERNATE_PATH",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-AACT-E-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:28:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "task_id": "ORG-FED-ADMISSIBLE-EXISTENCE-001",
@@ -27,7 +40,20 @@
       "state": "READY",
       "carrier": "heartbeat",
       "owner": "StegVerse-Labs/.github federation worker",
-      "next_action": "OBSERVE_TRANSITION"
+      "next_action": "OBSERVE_TRANSITION",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-ADMISSIBLE-EXISTENCE-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:28:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "task_id": "ORG-FED-ADMITTEDCODE-001",
@@ -35,7 +61,20 @@
       "state": "READY",
       "carrier": "heartbeat",
       "owner": "StegVerse-Labs/.github federation worker",
-      "next_action": "OBSERVE_TRANSITION"
+      "next_action": "OBSERVE_TRANSITION",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-ADMITTEDCODE-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:28:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "task_id": "ORG-FED-DATA-CONTINUATION-001",
@@ -43,7 +82,20 @@
       "state": "READY",
       "carrier": "heartbeat",
       "owner": "StegVerse-Labs/.github federation worker",
-      "next_action": "OBSERVE_TRANSITION"
+      "next_action": "OBSERVE_TRANSITION",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-DATA-CONTINUATION-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:28:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "task_id": "ORG-FED-ECAT-ICAT-FORMAL-001",
@@ -60,7 +112,20 @@
         "Designate an existing organization-owned repository as canonical handoff/adapter owner",
         "Create an organization-owned relay repository with only the required handoff and adapter surfaces"
       ],
-      "next_action": "CREATE_OR_DESIGNATE_CANONICAL_REPOSITORY"
+      "next_action": "CREATE_OR_DESIGNATE_CANONICAL_REPOSITORY",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-ECAT-ICAT-FORMAL-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "60000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:28:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "task_id": "ORG-FED-FORMALISM-TESTS-001",
@@ -68,7 +133,20 @@
       "state": "READY",
       "carrier": "heartbeat",
       "owner": "StegVerse-Labs/.github federation worker",
-      "next_action": "OBSERVE_TRANSITION"
+      "next_action": "OBSERVE_TRANSITION",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-FORMALISM-TESTS-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:28:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "task_id": "ORG-FED-GCAT-BCAT-ENGINE-001",
@@ -76,7 +154,20 @@
       "state": "READY",
       "carrier": "heartbeat",
       "owner": "StegVerse-Labs/.github federation worker",
-      "next_action": "OBSERVE_TRANSITION"
+      "next_action": "OBSERVE_TRANSITION",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-GCAT-BCAT-ENGINE-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:28:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "task_id": "ORG-FED-INFRASTRUCTURE-CONTINUITY-VENTURES-001",
@@ -93,7 +184,20 @@
         "Designate an existing organization-owned repository as canonical handoff/adapter owner",
         "Create an organization-owned relay repository with only the required handoff and adapter surfaces"
       ],
-      "next_action": "CREATE_OR_DESIGNATE_CANONICAL_REPOSITORY"
+      "next_action": "CREATE_OR_DESIGNATE_CANONICAL_REPOSITORY",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-INFRASTRUCTURE-CONTINUITY-VENTURES-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "60000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:28:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "task_id": "ORG-FED-MASTER-RECORDS-001",
@@ -101,7 +205,20 @@
       "state": "READY",
       "carrier": "heartbeat",
       "owner": "StegVerse-Labs/.github federation worker",
-      "next_action": "OBSERVE_TRANSITION"
+      "next_action": "OBSERVE_TRANSITION",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-MASTER-RECORDS-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:28:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "task_id": "ORG-FED-STEGGHOST-001",
@@ -109,7 +226,20 @@
       "state": "READY",
       "carrier": "heartbeat",
       "owner": "StegVerse-Labs/.github federation worker",
-      "next_action": "OBSERVE_TRANSITION"
+      "next_action": "OBSERVE_TRANSITION",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-STEGGHOST-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:28:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "task_id": "ORG-FED-STEGVERSE-002-001",
@@ -117,7 +247,20 @@
       "state": "READY",
       "carrier": "heartbeat",
       "owner": "StegVerse-Labs/.github federation worker",
-      "next_action": "OBSERVE_TRANSITION"
+      "next_action": "OBSERVE_TRANSITION",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-STEGVERSE-002-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:28:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "task_id": "ORG-FED-STEGVERSE-LABS-001",
@@ -125,7 +268,20 @@
       "state": "READY",
       "carrier": "heartbeat",
       "owner": "StegVerse-Labs/.github#12",
-      "next_action": "EXECUTE_FEDERATION_CYCLE"
+      "next_action": "EXECUTE_FEDERATION_CYCLE",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-STEGVERSE-LABS-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:28:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "task_id": "ORG-FED-STEGVERSE-ORG-001",
@@ -133,7 +289,20 @@
       "state": "READY",
       "carrier": "heartbeat",
       "owner": "StegVerse-Labs/.github federation worker",
-      "next_action": "OBSERVE_TRANSITION"
+      "next_action": "OBSERVE_TRANSITION",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-STEGVERSE-ORG-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000100000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:28:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "task_id": "ORG-FED-TRIAD-TEST-001",
@@ -150,7 +319,20 @@
         "Designate an existing organization-owned repository as canonical handoff/adapter owner",
         "Create an organization-owned relay repository with only the required handoff and adapter surfaces"
       ],
-      "next_action": "CREATE_OR_DESIGNATE_CANONICAL_REPOSITORY"
+      "next_action": "CREATE_OR_DESIGNATE_CANONICAL_REPOSITORY",
+      "source_state_vector_ref": "control/task-vectors/ORG-FED-TRIAD-TEST-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "60000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:28:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     }
   ],
   "coverage": {
@@ -166,15 +348,17 @@
     "notation": "L R U I V G O C M T B E A P",
     "width": 14,
     "manifest_ref": "control/cosv-ecosystem-adoption-manifest.json",
-    "observed_at": "2026-08-27T11:26:00-05:00",
+    "observed_at": "2026-08-30T22:28:00-05:00",
     "organization_installations": 14,
     "repository_installation_inventory": 222,
     "proven_active_task_surfaces": 33,
     "fully_vectorized_active_task_surfaces": 0,
     "ratio": "0/33",
     "universe_audit_complete": false,
-    "state": "INCOMPLETE_FAIL_CLOSED",
+    "state": "ORGANIZATION_TASK_VECTOR_COVERAGE_COMPLETE_SOURCE_ONLY",
     "release_condition": "All VECTOR_REQUIRED repositories are VECTOR_PRESENT and all unavailable/not-yet-audited repositories are durably reclassified from repository-local evidence.",
-    "authority_effect": "NONE"
+    "authority_effect": "NONE",
+    "organization_task_vectors_emitted": 14,
+    "organization_task_vectors_missing": 0
   }
 }
