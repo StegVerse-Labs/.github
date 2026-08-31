@@ -24,7 +24,9 @@
       "no repository mutation authority",
       "no deployment authority",
       "no governance authority"
-    ]
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 0
   },
   "task": {
     "task_id": "SV-DN1-PUBLICATION-OBSERVER-001",
@@ -38,7 +40,17 @@
     "dependencies": [
       "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001"
     ],
-    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL"
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
+    "canonical_lineage_key": "sv-dn1:publication-observer",
+    "source_refs": [
+      "docs/SV_DN1_PUBLICATION_OBSERVER_TASK_MIRROR_HANDOFF.md",
+      "docs/SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_MIRROR_HANDOFF.md",
+      "handoffs/SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001.json"
+    ],
+    "source_handoff_ref": "docs/SV_DN1_PUBLICATION_OBSERVER_TASK_MIRROR_HANDOFF.md",
+    "parent_task_id": null,
+    "derivation_reason": "Independent final observation task that consumes the persistence package without inheriting repository mutation or deployment authority.",
+    "derivation_depth": 0
   },
   "authority": {
     "authority_source": "docs/SV_DN1_PUBLICATION_OBSERVER_TASK_MIRROR_HANDOFF.md",
@@ -55,7 +67,8 @@
     "deployment_authority": false,
     "publication_decision_authority": false,
     "sdk_execution_authority": false,
-    "certification_authority": false
+    "certification_authority": false,
+    "policy_version": "sv-dn1-publication-observer-v1"
   },
   "execution": {
     "required_capabilities": [
@@ -88,7 +101,14 @@
       ],
       "authenticated": false,
       "credential_forwarding": false
-    }
+    },
+    "allowed_paths": [
+      "receipts/sv-dn1-publication-observer/**"
+    ],
+    "allowed_services": [
+      "https://stegverse-org.github.io/stegverse-demo-suite/sv-dn1/**"
+    ],
+    "rate_class": "sv_dn1_publication_observer"
   },
   "activation": {
     "carrier": "independent_task_control",
@@ -112,6 +132,8 @@
       "credential_used=false",
       "repository_writeback_performed=false",
       "deployment_performed=false"
-    ]
+    ],
+    "next_authorized_action": "After exact public bytes are observed, retain the terminal publication observation as evidence; no further authority is created.",
+    "release_condition": "All five governed SV-DN-1 artifacts are independently observed over the admitted public HTTPS surface with exact byte equality."
   }
 }
