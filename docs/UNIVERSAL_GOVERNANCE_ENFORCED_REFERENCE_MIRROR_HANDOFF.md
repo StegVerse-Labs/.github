@@ -179,3 +179,26 @@ RESIDENT_EXECUTION_OBSERVED: false
 REFERENCE_ENFORCED_BOUNDARY_OBSERVED: false
 REAL_EXTERNAL_SYSTEM_ENFORCED_ACTIVATION: false
 ```
+
+
+## Resident source autodiscovery
+
+The reference worker now consumes the same non-secret local repository-map model used by the broader resident stack.
+
+```text
+repository map: STEGVERSE_REPO_ROOTS_JSON
+exact accepted repositories:
+  StegVerse-Labs/StegCore
+  master-records/core-lite
+canonical local bases:
+  ~/.stegverse/repos
+  /var/lib/stegverse/source
+  /srv/stegverse/repos
+  /opt/stegverse/repos
+network fetch authority: NONE
+credential authority: TV/TVC
+```
+
+Explicit source locators remain supported, but are no longer the only way an already-materialized resident source bundle can satisfy the worker. A mapped/canonical path is accepted only when all required source files are actually present. Malformed or incomplete mappings grant nothing and the worker remains HANDOFF_READY/source-pending.
+
+This closes a source-discovery seam only. Authentic resident execution, reference-boundary observation, and real external-system activation remain separately unobserved.
