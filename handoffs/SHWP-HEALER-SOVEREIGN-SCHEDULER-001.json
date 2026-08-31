@@ -112,7 +112,7 @@
   "completion": {
     "source_state": "COMPLETE_VALIDATED_WITH_LOCAL_ROOT_AUTODISCOVERY_AND_G18_GATE_RETIRED",
     "source_validation_evidence": "StegVerse-Labs/StegVerse-Healer Test Readiness run 32670203077 job 97269769966 PASS on aca5b7871e2720b0d56757e33fc2a22c10291136; PR #40 merge ff3d9985b773d91dce0d90351a7a8a04a499c59b",
-    "next_authorized_action": "On the next native resident request-dispatch opportunity, consume RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001 under independent task control. The worker now discovers a unique complete local Healer root and local repository map from canonical resident locations when explicit non-secret locators are absent, and merges safe named local roots when present. Do not wait on G18 terminalization. Retry nonterminal attempts; terminalize only after HEALER_SOVEREIGN_SCHEDULER_COMPLETED.",
+    "next_authorized_action": "On the next native resident request-dispatch opportunity, consume RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001 under independent task control. WorkerCoordinator must perform the fresh admission/claim/fence checks; the request grants no authority. The worker discovers a unique complete local Healer root and local repository map from canonical resident locations when explicit non-secret locators are absent, and merges safe named local roots when present. Do not wait on G18 terminalization. Retry nonterminal attempts; terminalize only after HEALER_SOVEREIGN_SCHEDULER_COMPLETED.",
     "terminal_when": [
       "No forbidden GitHub credential is present",
       "All due targets have COMPLETE or explicitly terminal superseded outcomes",
