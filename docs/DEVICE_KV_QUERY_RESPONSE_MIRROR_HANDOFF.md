@@ -77,3 +77,7 @@ CVK #166 / PR #167 adds the bounded `selector.directory_id` + `selector.canonica
 ## Upstream selector closure
 
 CVK #166 merged through PR #167 at `70b19663305e63ac6016af9b56848e91aa89b77c`. The resident query consumer may now require canonical `kv.interlock.request.v1.selector` semantics from current local CVK source.
+
+## Receiver-execution boundary
+
+A bounded `kv_request` is handled directly by the already-running admitted DEVICE_KV receiver after exact ingress validation; it does **not** invoke WorkerCoordinator or mint a task claim/fence. This is endpoint handling, not delegated task execution. Portable-write and generic observation paths continue using their existing targeted executor. The query request grants no execution authority; the receiver's installed capability and exact request/Node predicates determine whether the read handler runs.
