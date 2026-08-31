@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:ORG-FED-ADMITTEDCODE-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000100000",
+  "evidence_refs": [
+    "control/organization-task-registry.json",
+    "control/organization-federation.json",
+    "control/cosv-ecosystem-adoption-manifest.json"
+  ],
+  "observed_at": "2026-08-30T22:28:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "control/organization-task-registry.json state=READY; owner=StegVerse-Labs/.github federation worker",
+    "archive_ready": "organization federation task remains active until durable federation completion evidence exists",
+    "unassigned_work": "organization task has a durable federation worker owner",
+    "chat_owned_counts": "no chat-owned execution or credential role",
+    "canonical_owner_installed": "organization task is installed in the canonical organization task registry",
+    "thread_required": "durable registry continuation does not require this chat thread",
+    "blocker_count": "registry policy does not classify state READY as an internal blocker",
+    "evidence_complete": "organization readiness/registry state is not terminal evidence",
+    "activated": "no organization-task activation proof is inferred from readiness",
+    "propagated": "no repository-wide propagation is inferred from federation registry state"
+  },
+  "authority_effect": "NONE"
+}
