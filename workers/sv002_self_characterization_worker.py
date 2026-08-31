@@ -73,6 +73,7 @@ def reconstruction_terminal(reconstruction: dict[str, Any]) -> bool:
         and reconstruction["receipt"].get("reconstruction") == "PASS"
     )
 MASTER_RECORDS_RECONSTRUCTION_COMMIT = "2e117902d4f261b10cb3b5122b7ef48fb0e36e57"
+MICRO_NODE_SOURCE_PIN = "410c4267b4145ed1c1f5f2d954f3926429a43c01"
 MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB = "cc96556a23b5bd804f3cdaa96539b379c1904437"
 
 
@@ -125,6 +126,58 @@ def find_repo(org, repo, expected=None, override=None, required=()):
                 return p, seen
         seen.append(rec)
     return None, seen
+
+
+def _resident_source_manifest() -> tuple[Path | None, dict[str, Any] | None]:
+    raw = str(os.environ.get("STEGVERSE_RESIDENT_SOURCE_MANIFEST") or "").strip()
+    if not raw:
+        return None, None
+    path = Path(raw).expanduser().resolve()
+    if not path.is_file():
+        return path, None
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return path, None
+    return (path, value) if isinstance(value, dict) else (path, None)
+
+
+def portable_source_root(repo_key: str, env_name: str, required: tuple[str, ...], *, exact_head: str | None = None, required_ancestor: str | None = None, verifier_blob: str | None = None) -> tuple[Path | None, str | None]:
+    manifest_path, manifest = _resident_source_manifest()
+    raw_root = str(os.environ.get(env_name) or "").strip()
+    if manifest_path is None or manifest is None or not raw_root:
+        return None, "PORTABLE_SOURCE_MANIFEST_OR_ROOT_ABSENT"
+    if not (
+        manifest.get("schema") == "stegverse.sovereign-control-plane-bundle/v1"
+        and manifest.get("network_fetch_required") is False
+        and manifest.get("credential_authority") == "TV/TVC"
+        and manifest.get("github_token_runtime_authority") == "NONE"
+        and manifest.get("bundle_grants_authority") is False
+    ):
+        return None, "PORTABLE_SOURCE_MANIFEST_INVARIANT_INVALID"
+    proof = (manifest.get("vendor_source_proofs") or {}).get(repo_key)
+    if not isinstance(proof, dict) or proof.get("state") != "VERIFIED_LOCAL_GIT_SOURCE":
+        return None, "PORTABLE_SOURCE_PROOF_NOT_VERIFIED"
+    subpath = str(proof.get("materialized_subpath") or "")
+    root = Path(raw_root).expanduser().resolve()
+    if not subpath or root != (manifest_path.parent / subpath).resolve():
+        return None, "PORTABLE_SOURCE_ROOT_BINDING_INVALID"
+    if exact_head is not None and not (proof.get("head") == exact_head and proof.get("exact_head_verified") is True):
+        return None, "PORTABLE_SOURCE_EXACT_HEAD_INVALID"
+    if required_ancestor is not None and not (proof.get("required_ancestor") == required_ancestor and proof.get("required_ancestor_present") is True):
+        return None, "PORTABLE_SOURCE_REQUIRED_ANCESTOR_INVALID"
+    if verifier_blob is not None and proof.get("verifier_git_blob") != verifier_blob:
+        return None, "PORTABLE_SOURCE_VERIFIER_BLOB_INVALID"
+    declared = {str(e.get("path")): e for e in manifest.get("files", []) if isinstance(e, dict) and isinstance(e.get("path"), str)}
+    for rel in required:
+        path = root / rel
+        entry = declared.get(subpath + "/" + rel)
+        if not path.is_file() or not isinstance(entry, dict):
+            return None, "PORTABLE_SOURCE_REQUIRED_FILE_MISSING"
+        data = path.read_bytes()
+        if len(data) != entry.get("size") or hashlib.sha256(data).hexdigest() != entry.get("sha256"):
+            return None, "PORTABLE_SOURCE_DIGEST_MISMATCH"
+    return root, "VERIFIED_PORTABLE_BUNDLE_PROOF"
 
 
 def git_blob_sha(root: Path, path: Path) -> str:
