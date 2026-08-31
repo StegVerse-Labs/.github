@@ -97,6 +97,44 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
                 self.assertNotIn("cloudflare", text.lower())
                 self.assertNotIn("network-online.target", text.lower())
 
+
+    def test_worker_service_receives_distinct_canonical_local_source_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            root = base / "heartbeat"
+            source = base / "canonical-source"
+            source.mkdir()
+            mod.materialize(ROOT, root)
+            receipt = mod.materialize_service(
+                root,
+                system="linux",
+                env={
+                    "XDG_CONFIG_HOME": str(base / "config"),
+                    "STEGVERSE_HEARTBEAT_SOURCE_ROOT": str(source),
+                },
+            )
+            carrier = Path(receipt["carrier_registration_path"]).read_text(encoding="utf-8")
+            worker = Path(receipt["worker_registration_path"]).read_text(encoding="utf-8")
+            self.assertTrue(receipt["native_local_source_refresh_configured"])
+            self.assertEqual(receipt["canonical_local_source_root"], str(source.resolve()))
+            self.assertNotIn("STEGVERSE_HEARTBEAT_SOURCE_ROOT", carrier)
+            self.assertIn("STEGVERSE_HEARTBEAT_SOURCE_ROOT=" + str(source.resolve()), worker)
+
+    def test_worker_service_rejects_source_root_equal_to_runtime_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            root = base / "heartbeat"
+            mod.materialize(ROOT, root)
+            with self.assertRaisesRegex(RuntimeError, "distinct"):
+                mod.materialize_service(
+                    root,
+                    system="linux",
+                    env={
+                        "XDG_CONFIG_HOME": str(base / "config"),
+                        "STEGVERSE_HEARTBEAT_SOURCE_ROOT": str(root),
+                    },
+                )
+
     def test_carrier_command_has_no_configurable_cadence_argument(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "heartbeat"
