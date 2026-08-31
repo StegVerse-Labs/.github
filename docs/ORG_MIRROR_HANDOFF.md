@@ -646,3 +646,21 @@ StegVerse-Labs/.github
 This closes the source-availability seam where a live WorkerCoordinator could consume Healer/TVC work without the exact local implementation trees needed by those workers. The bundle remains source transport only and grants no claim, fence, credential, route, heartbeat, provider, or repository authority.
 
 The next authentic transition is deployment-local: materialize the current bundle, run the resident bootstrap, observe source refresh/request consumption, and retain the resulting Healer/TVC/HIL/SV002 task receipts.
+
+## 2026-08-31 portable source-identity evidence closure
+
+The sovereign resident bundle now supports source-identity evidence that survives safe source transport without copying `.git` metadata. The first consumer is the HIL -> TVC lifecycle boundary.
+
+Canonical sequence:
+
+```text
+already-local TVC Git source
+-> packager verifies HIL source floor/protected paths
+-> bundle manifest records source proof + exact file digests
+-> StegDeploy verifies bundle and persists source manifest
+-> native WorkerCoordinator preserves manifest locator
+-> HIL TVC lifecycle consumer validates manifest + materialized path + current digests
+-> TVC lifecycle intake
+```
+
+This is provenance/evidence only and grants no source, GitHub, credential, route, execution, heartbeat, or TVC authority.
