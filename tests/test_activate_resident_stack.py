@@ -141,5 +141,64 @@ class ResidentStackActivationTests(unittest.TestCase):
             self.assertTrue(receipt_path.is_file())
 
 
+    def test_optional_sv002_sources_do_not_gate_unrelated_resident_stack(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "control"
+            llm = root / "llm"
+            (source / "scripts").mkdir(parents=True)
+            (llm / "scripts").mkdir(parents=True)
+            (source / "scripts" / "package_sovereign_control_plane_bundle.py").write_text("# packager\n")
+            (llm / "scripts" / "stegdeploy_bootstrap.py").write_text("# deploy\n")
+            seen_package = {}
+
+            def runner(command, **kwargs):
+                if "package_sovereign_control_plane_bundle.py" in str(command[1]):
+                    seen_package["command"] = command
+                    output = Path(command[command.index("--output") + 1])
+                    output.write_bytes(b"bundle")
+                    return subprocess.CompletedProcess(command, 0, stdout=json.dumps({"bundle_sha256": "base"}) + "\n", stderr="")
+                path = llm / ".stegdeploy" / "deployment-receipt.json"
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps({
+                    "resident_control_plane_bootstrap": {
+                        "attempted": True,
+                        "state": "REVIEW_REQUIRED",
+                        "result": {
+                            "post_install_worker_prime": {"task_capable_cycle_observed": True},
+                            "post_bootstrap_resident_request_dispatch": {"attempted": True},
+                        },
+                    }
+                }) + "\n")
+                return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
+
+            receipt = module.activate(
+                source, llm,
+                stegos_root=root / "StegOS",
+                kv_source_root=root / "continuity-vault-kit",
+                healer_root=root / "StegVerse-Healer",
+                tv_root=root / "TV",
+                tvc_root=root / "TVC",
+                micro_node_root=None,
+                master_records_root=None,
+                tt_root=None,
+                rtg_root=None,
+                gtg_root=None,
+                ae_root=None,
+                health_url="http://127.0.0.1:8000/health",
+                receipt_path=root / "activation.json",
+                runner=runner,
+                env={"PATH": "/usr/bin"},
+            )
+
+            command = seen_package["command"]
+            for flag in ("--micro-node-root", "--master-records-root", "--tt-root", "--rtg-root", "--gtg-root", "--ae-root"):
+                self.assertNotIn(flag, command)
+            self.assertFalse(receipt["micro_node_source_bundled"])
+            self.assertFalse(receipt["master_records_source_bundled"])
+            self.assertEqual(receipt["formal_sources_bundled"], {"TT": False, "RTG": False, "GTG": False, "AE": False})
+            self.assertFalse(receipt["optional_workload_sources_gate_unrelated_execution"])
+
+
 if __name__ == "__main__":
     unittest.main()
