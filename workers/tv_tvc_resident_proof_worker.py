@@ -2,6 +2,7 @@
 """Execute the already-admitted TV/TVC resident proof without receiving credential bytes."""
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import subprocess
@@ -147,6 +148,56 @@ def _locate_local_source(repo_name: str, env_name: str, required: list[Path], *,
         return root, observed
     return None, observed
 
+
+def _portable_manifest() -> tuple[Path | None, dict[str, Any] | None]:
+    raw = os.environ.get("STEGVERSE_RESIDENT_SOURCE_MANIFEST", "").strip()
+    if not raw:
+        return None, None
+    path = Path(raw).expanduser().resolve()
+    if not path.is_file():
+        return path, None
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return path, None
+    return (path, value) if isinstance(value, dict) else (path, None)
+
+
+def _portable_source(repo_name: str, env_name: str, required: list[Path]) -> tuple[Path | None, str | None]:
+    manifest_path, manifest = _portable_manifest()
+    raw_root = os.environ.get(env_name, "").strip()
+    if manifest_path is None or manifest is None or not raw_root:
+        return None, "PORTABLE_SOURCE_MANIFEST_OR_ROOT_ABSENT"
+    if not (
+        manifest.get("schema") == "stegverse.sovereign-control-plane-bundle/v1"
+        and manifest.get("network_fetch_required") is False
+        and manifest.get("credential_authority") == "TV/TVC"
+        and manifest.get("github_token_runtime_authority") == "NONE"
+        and manifest.get("bundle_grants_authority") is False
+    ):
+        return None, "PORTABLE_SOURCE_MANIFEST_INVARIANT_INVALID"
+    proof = (manifest.get("vendor_source_proofs") or {}).get(repo_name)
+    if not isinstance(proof, dict) or proof.get("state") != "VERIFIED_LOCAL_GIT_SOURCE":
+        return None, "PORTABLE_SOURCE_PROOF_NOT_VERIFIED"
+    if proof.get("repository") != f"StegVerse-Labs/{repo_name}" or proof.get("materialized_subpath") != f"vendor/{repo_name}":
+        return None, "PORTABLE_SOURCE_IDENTITY_INVALID"
+    root = Path(raw_root).expanduser().resolve()
+    if root != (manifest_path.parent / "vendor" / repo_name).resolve():
+        return None, "PORTABLE_SOURCE_ROOT_BINDING_INVALID"
+    if repo_name == "TV" and not (proof.get("head") == TV_SHA and proof.get("exact_head_verified") is True and proof.get("clean_worktree_at_packaging") is True):
+        return None, "PORTABLE_TV_EXACT_SOURCE_IDENTITY_INVALID"
+    if repo_name == "TVC" and not (proof.get("resident_proof_min_sha_present") is True and TVC_MIN_SHA in set(proof.get("verified_ancestors") or [])):
+        return None, "PORTABLE_TVC_REQUIRED_ANCESTOR_NOT_PROVEN"
+    declared = {str(e.get("path")): e for e in manifest.get("files", []) if isinstance(e, dict) and isinstance(e.get("path"), str)}
+    for rel in required:
+        path = root / rel
+        entry = declared.get(f"vendor/{repo_name}/{rel.as_posix()}")
+        if not path.is_file() or not isinstance(entry, dict):
+            return None, "PORTABLE_REQUIRED_SOURCE_MISSING"
+        data = path.read_bytes()
+        if len(data) != entry.get("size") or hashlib.sha256(data).hexdigest() != entry.get("sha256"):
+            return None, "PORTABLE_SOURCE_DIGEST_MISMATCH"
+    return root, "VERIFIED_PORTABLE_BUNDLE_PROOF"
 
 def _parse_dispatcher(stdout: str) -> dict[str, Any]:
     value = json.loads(stdout)
