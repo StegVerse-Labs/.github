@@ -869,3 +869,32 @@ ratio: 5/29 = 17.24%
 ```
 
 Authority effect: NONE.
+
+
+## GCAT-BCAT promotion and core-lite terminal audit — 2026-08-31
+
+```text
+Admissible-Existence/GCAT-BCAT  VECTOR_PRESENT
+Admissible-Existence/core-lite  NO_ACTIVE_TASK_SURFACE
+```
+
+GCAT-BCAT now exposes 3/3 current active Decision Envelope tasks with canonical task.v1 vectors.
+DE-001, DE-002, and DE-004 are terminal and excluded. Repository-local exact-head validation passed
+COSV projection, root Build, deterministic Decision Envelope tests, and the Federal-Plus Security Gate.
+
+core-lite's canonical support-hardening claim is COMPLETE/RELEASED and its latest full Core-Lite
+Intake validation passed. A repository-local terminal COSV audit reports zero current structured
+active tasks; historical stale registry-merge and hardening records were reconciled rather than
+inventing vectors for completed work.
+
+Strict active-repository adoption:
+
+```text
+VECTOR_PRESENT: 6
+VECTOR_REQUIRED: 22
+NO_ACTIVE_TASK_SURFACE: 6
+not-yet-audited/unavailable: 188
+ratio: 6/28 = 21.43%
+```
+
+Authority effect: NONE.
