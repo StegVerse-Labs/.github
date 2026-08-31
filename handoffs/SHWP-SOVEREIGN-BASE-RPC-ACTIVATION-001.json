@@ -102,7 +102,43 @@
     "checkout_policy": "fenced_atomic_checkout",
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
     "fresh_fence_required": true,
-    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "targeted_execution": {
+      "mode": "TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT",
+      "entrypoint": "scripts/run_worker_runtime.py",
+      "argv": [
+        "python",
+        "scripts/run_worker_runtime.py",
+        "--task-id",
+        "SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001"
+      ],
+      "g18_bootstrap_allowed": false,
+      "compatibility_carrier_packet_consumption": false,
+      "unrelated_worker_execution": false,
+      "broad_orphan_reconciliation": false,
+      "heartbeat_grants_execution_authority": false,
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": "NONE",
+      "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+    },
+    "portable_refresh_then_execute": {
+      "mode": "PORTABLE_REFRESH_THEN_TARGETED_ONE_SHOT",
+      "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+      "argv": [
+        "python",
+        "scripts/refresh_and_execute_resident_task.py",
+        "--task-id",
+        "SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001"
+      ],
+      "systemd_required": false,
+      "second_machine_required": false,
+      "network_source_fetch_allowed": false,
+      "runtime_state_preserved": true,
+      "source_refresh_is_runtime_execution": false,
+      "heartbeat_grants_execution_authority": false,
+      "github_token_runtime_authority": "NONE",
+      "credential_authority": "TV/TVC"
+    }
   },
   "continuity": {
     "checkpoint_ref": "receipts/sovereign-base-rpc-activation/SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001.json",
