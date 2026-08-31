@@ -49,6 +49,9 @@ def validate_request(r:dict[str,Any])->None:
     for k,v in expected.items():
         if r.get(k)!=v: raise PublisherInTrConsumerError("materialization_"+k+"_mismatch")
     if r.get("boundary_path")!=["KV","DEVICE_SYSTEM","STEGOS_ECOSYSTEM"]: raise PublisherInTrConsumerError("boundary_path_invalid")
+    mid=str(r.get("materialization_id") or "")
+    expected_payload_ref="runtime://"+str(PAYLOAD_DIR/f"{mid}.bin")
+    if r.get("payload_ref")!=expected_payload_ref: raise PublisherInTrConsumerError("payload_ref_mismatch")
     body=dict(r); claimed=body.pop("request_hash",None)
     if claimed!=sha(body): raise PublisherInTrConsumerError("request_hash_mismatch")
 def import_file(path:Path,name:str):
@@ -58,6 +61,11 @@ def import_file(path:Path,name:str):
 
 def consume(runtime:Path,mid:str)->dict[str,Any]:
     req=load(runtime/REQUEST_DIR/f"{mid}.json"); validate_request(req)
+    prior_path=runtime/RECEIPT_DIR/f"{mid}.json"
+    if prior_path.is_file():
+        prior=load(prior_path)
+        if prior.get("state")=="RENDERED_RETURN_PACKET_PREPARED_NOT_TRANSPORTED" and prior.get("materialization_id")==mid and prior.get("request_hash")==req.get("request_hash"):
+            return prior
     ingress=load(runtime/INGRESS_DIR/f"{mid}.json")
     if ingress.get("schema")!="stegverse.publisher-intr-materialization-ingress/v1" or ingress.get("state")!="INGRESS_ADMITTED": raise PublisherInTrConsumerError("ingress_not_admitted")
     for k in ("materialization_id","request_hash","transport_intent_hash","payload_hash","operation_id","packet_id"):
