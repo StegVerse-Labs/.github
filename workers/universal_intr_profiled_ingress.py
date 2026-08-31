@@ -226,6 +226,7 @@ def admit_sv002(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) 
         raise ValueError("request_json_invalid") from exc
     request, source = _sv002_request_from_payload(payload, transport)
     materialization_id = safe_id(str(request["materialization_id"]))
+    carrier = carrier_binding_evidence(request)
     request_path = runtime_root / hil.REQUEST_DIR_REL / f"{materialization_id}.json"
     request_raw = json.dumps(request, sort_keys=True, indent=2).encode("utf-8") + b"\n"
     hil._write_once(request_path, request_raw)
@@ -262,6 +263,7 @@ def admit_sv002(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) 
         "g18_required": False,
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
+        **carrier,
         "authority_effect": AUTHORITY_EFFECT,
         "admitted_at": now(),
     }
@@ -381,6 +383,8 @@ def admit_publisher(*, runtime_root: Path, body: bytes, headers: Mapping[str, st
     except Exception as exc:
         raise ValueError("publisher_request_json_invalid") from exc
     request, source = _publisher_request_from_payload(runtime_root=runtime_root, payload=payload, transport=transport)
+    carrier = carrier_binding_evidence(request)
+    carrier=carrier_binding_evidence(request)
     mid=safe_id(str(request["materialization_id"]))
     request_path=runtime_root/hil.REQUEST_DIR_REL/f"{mid}.json"
     hil._write_once(request_path,json.dumps(request,sort_keys=True,indent=2).encode("utf-8")+b"\n")
@@ -403,7 +407,7 @@ def admit_publisher(*, runtime_root: Path, body: bytes, headers: Mapping[str, st
         "exact_payload_sidecar_persisted":source["publisher_payload_sidecar_persisted"],
         "forward_receipt_chain_sidecar_persisted":source["publisher_forward_receipts_sidecar_persisted"],
         "runtime_execution_attempted":False,"claim_or_fence_minted":False,"credential_authority":"TV/TVC",
-        "github_token_runtime_authority":"NONE","authority_effect":AUTHORITY_EFFECT,"admitted_at":now()
+        "github_token_runtime_authority":"NONE",**carrier,"authority_effect":AUTHORITY_EFFECT,"admitted_at":now()
     }
     raw=json.dumps(receipt,sort_keys=True,indent=2).encode("utf-8")+b"\n"
     hil._write_once(receipt_path,raw)
@@ -455,7 +459,7 @@ def admit_kv_publisher_return(*,runtime_root:Path,body:bytes,headers:Mapping[str
     receipt_path=runtime_root/KV_PUBLISHER_RETURN_RECEIPT_DIR/f"{mid}.json"
     if receipt_path.exists():
         existing=json.loads(receipt_path.read_text(encoding="utf-8")); require(existing.get("request_hash")==request.get("request_hash") and existing.get("state")=="INGRESS_ADMITTED","write_once_collision"); return existing
-    receipt={"schema":KV_PUBLISHER_RETURN_RECEIPT_SCHEMA,"state":"INGRESS_ADMITTED","materialization_id":mid,"request_hash":request["request_hash"],"transport_intent_hash":request["transport_intent_hash"],"payload_hash":request["payload_hash"],"operation_id":request["operation_id"],"packet_id":request["packet_id"],"transport_origin":transport["origin"],"transport_authorization_id":transport["authorization_id"],"exact_return_sidecars_persisted":exact,"runtime_execution_attempted":False,"claim_or_fence_minted":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":AUTHORITY_EFFECT,"admitted_at":now()}
+    receipt={"schema":KV_PUBLISHER_RETURN_RECEIPT_SCHEMA,"state":"INGRESS_ADMITTED","materialization_id":mid,"request_hash":request["request_hash"],"transport_intent_hash":request["transport_intent_hash"],"payload_hash":request["payload_hash"],"operation_id":request["operation_id"],"packet_id":request["packet_id"],"transport_origin":transport["origin"],"transport_authorization_id":transport["authorization_id"],"exact_return_sidecars_persisted":exact,"runtime_execution_attempted":False,"claim_or_fence_minted":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE",**carrier,"authority_effect":AUTHORITY_EFFECT,"admitted_at":now()}
     raw_receipt=json.dumps(receipt,sort_keys=True,indent=2).encode("utf-8")+b"\n"; hil._write_once(receipt_path,raw_receipt)
     latest=runtime_root/KV_PUBLISHER_RETURN_LATEST; latest.parent.mkdir(parents=True,exist_ok=True); latest.write_bytes(raw_receipt)
     dispatch=_dispatch_kv_publisher_return(runtime_root=runtime_root,materialization_id=mid)
