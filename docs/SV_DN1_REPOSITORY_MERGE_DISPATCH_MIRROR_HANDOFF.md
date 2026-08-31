@@ -108,9 +108,30 @@ The worker MUST NOT:
 
 ```text
 TVC bounded merge gate: MERGED @ 0e8678e28c78b09932f215bd36a1f15da523a90f
-merge dispatch task: IMPLEMENTING
+merge dispatch task: SOURCE COMPLETE / VALIDATION PENDING
 authentic product PR: NOT YET OBSERVED
 authentic merge: NOT YET OBSERVED
 Pages deployment: NOT YET OBSERVED
 public exact-byte observation: NOT YET OBSERVED
 ```
+
+
+## TVC resident consumer binding
+
+The bounded TVC merge gate is merged at:
+
+`StegVerse-Labs/TVC@0e8678e28c78b09932f215bd36a1f15da523a90f`
+
+Its resident task-dispatch binding is merged at:
+
+`StegVerse-Labs/TVC@bec6f0de3d52022c8ddc542c4deca353671a463f`
+
+Canonical TVC dispatcher tasks:
+
+```text
+tvc.sv_dn1.repository_merge.verify
+tvc.sv_dn1.repository_merge.process
+```
+
+The merge-dispatch worker therefore has a durable resident consumer for its bounded local
+spool. Source integration still does not prove that the consumer has executed.
