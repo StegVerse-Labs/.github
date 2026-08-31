@@ -50,7 +50,8 @@ NONSECRET_ENV = (
     "STEGVERSE_SV002_OBSERVE_PORT", "STEGVERSE_RELAY_RUNTIME_BASE", "STEGVERSE_TT_ROOT",
     "STEGVERSE_RTG_ROOT", "STEGVERSE_GTG_ROOT", "STEGVERSE_AE_ROOT",
     "STEGVERSE_SELF_CHAR_MODEL_ENDPOINT", "STEGVERSE_SELF_CHAR_MODEL_ID",
-    "STEGVERSE_OLLAMA_MODEL",
+    "STEGVERSE_OLLAMA_MODEL", "STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_STATE_ROOT",
+    "STEGVERSE_TVC_SV_DN1_REPOSITORY_PERSISTENCE_ADMISSION",
 )
 CONSUMERS = (
     ("ecosystem_chat", "scripts/consume_resident_execution_request.py"),
@@ -61,6 +62,7 @@ CONSUMERS = (
     ("ara_graph", "scripts/consume_ara_graph_resident_execution_request.py"),
     ("cmc028_root_custody", "scripts/consume_cmc028_resident_execution_request.py"),
     ("sv_dn1", "scripts/consume_sv_dn1_resident_execution_request.py"),
+    ("sv_dn1_publication", "scripts/consume_sv_dn1_publication_resident_request.py"),
     ("stegos_kv_intr_chain", "scripts/consume_stegos_kv_intr_chain_request.py"),
     ("bootstrap_v1_release_prep", "scripts/consume_bootstrap_v1_release_prep_request.py"),
     ("bootstrap_v1_intr_bundle_delivery", "scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py"),
