@@ -2,7 +2,7 @@
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
   "observed_commit": "0e7b0b03cffdc207d7b8260423776f40e80c6fb7",
-  "observed_at": "2026-08-30T21:58:00-05:00",
+  "observed_at": "2026-08-30T22:08:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,9 +11,9 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 71,
-    "canonically_indexed_task_ids": 54,
+    "canonically_indexed_task_ids": 61,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 10,
+    "active_unvectorized_unique_task_ids": 3,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,17 +21,10 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 24,
+  "total_active_unvectorized_unique_task_ids": 17,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "SHWP-STEGNUTRITION-CONTINUATION-001",
-    "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001",
-    "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001",
-    "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
-    "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
-    "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
-    "SHWP-SV002-SELF-CHARACTERIZATION-001",
-    "SV-DN1-PUBLIC-PROMOTION-001",
     "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001"
   ],
   "active_organization_task_ids_missing_canonical_cosv": [
@@ -265,6 +258,34 @@
     },
     {
       "task_id": "HEALER-FAILURE-MAILBOX-SOVEREIGN-BENCHMARK-001",
+      "vector": "50000000101000"
+    },
+    {
+      "task_id": "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001",
+      "vector": "50000000101000"
+    },
+    {
+      "task_id": "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001",
+      "vector": "50000000101000"
+    },
+    {
+      "task_id": "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
+      "vector": "50000000101000"
+    },
+    {
+      "task_id": "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
+      "vector": "50000000101000"
+    },
+    {
+      "task_id": "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
+      "vector": "50000000101000"
+    },
+    {
+      "task_id": "SHWP-SV002-SELF-CHARACTERIZATION-001",
+      "vector": "50000000100000"
+    },
+    {
+      "task_id": "SV-DN1-PUBLIC-PROMOTION-001",
       "vector": "50000000101000"
     }
   ],
@@ -556,6 +577,14 @@
     "indexed_after_projection": 54,
     "active_worker_unvectorized_after_projection": 10,
     "total_active_unvectorized_after_projection": 24,
+    "runtime_activation_claimed": false,
+    "authority_effect": "NONE"
+  },
+  "final_structured_worker_cosv_cohort": {
+    "task_count": 7,
+    "indexed_after_projection": 61,
+    "active_worker_unvectorized_after_projection": 3,
+    "total_active_unvectorized_after_projection": 17,
     "runtime_activation_claimed": false,
     "authority_effect": "NONE"
   }
