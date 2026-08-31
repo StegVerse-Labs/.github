@@ -46,7 +46,7 @@ class DeviceKVInTrObservationWorkerTests(unittest.TestCase):
         self.assertFalse(registry["non_tv_tvc_secret_or_token_required"])
         row = adapter["adapters"][0]
         self.assertEqual(row["adapter_ref"], "process:device-kv-intr-observation-v1")
-        self.assertEqual(row["env_allowlist"], ["STEGVERSE_STEGOS_ROOT", "STEGVERSE_KV_SOURCE_ROOT"])
+        self.assertEqual(row["env_allowlist"], ["STEGVERSE_STEGOS_ROOT", "STEGVERSE_KV_SOURCE_ROOT", "STEGVERSE_DEVICE_KV_INTR_MATERIALIZATION_ID"])
         self.assertFalse(handoff["authority"]["physical_additional_machine_required"])
         self.assertFalse(handoff["authority"]["third_party_runtime_required"])
         self.assertFalse(handoff["activation"]["targeted_execution"]["g18_bootstrap_allowed"])
