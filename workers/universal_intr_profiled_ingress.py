@@ -51,6 +51,12 @@ from consume_device_kv_intr_materialization_request import (  # noqa: E402
     scrubbed_env as device_kv_scrubbed_env,
     validate_request as validate_device_kv_request,
 )
+from consume_kv_skap_custody_materialization_request import (  # noqa: E402
+    DESTINATION as KV_SKAP_DESTINATION,
+    DOWNSTREAM_OWNER as KV_SKAP_OWNER,
+    scrubbed_env as kv_skap_scrubbed_env,
+    validate_request as validate_kv_skap_request,
+)
 from heartbeat_runtime.intr_subsignal_runtime import (  # noqa: E402
     default_heartbeat_runtime_root,
     recover_local_intr_subsignal,
@@ -71,6 +77,9 @@ SV002_LATEST = Path("receipts/sovereign-network/sv002-intr-ingress.latest.json")
 DEVICE_KV_RECEIPT_SCHEMA = "stegverse.device-kv-intr-materialization-ingress/v1"
 DEVICE_KV_RECEIPT_DIR = Path("receipts/sovereign-network/device-kv-intr-ingress")
 DEVICE_KV_LATEST = Path("receipts/sovereign-network/device-kv-intr-ingress.latest.json")
+KV_SKAP_RECEIPT_SCHEMA = "stegverse.kv-skap-custody-materialization-ingress/v1"
+KV_SKAP_RECEIPT_DIR = Path("receipts/sovereign-network/kv-skap-custody-ingress")
+KV_SKAP_LATEST = Path("receipts/sovereign-network/kv-skap-custody-ingress.latest.json")
 PUBLISHER_RECEIPT_SCHEMA = "stegverse.publisher-intr-materialization-ingress/v1"
 PUBLISHER_RECEIPT_DIR = Path("receipts/sovereign-network/publisher-intr-ingress")
 PUBLISHER_LATEST = Path("receipts/sovereign-network/publisher-intr-ingress.latest.json")
@@ -333,6 +342,106 @@ def admit_device_kv(*, runtime_root: Path, body: bytes, headers: Mapping[str, st
     return {**receipt,"dispatch":dispatch}
 
 
+def _is_kv_skap(payload: Any) -> bool:
+    return (
+        isinstance(payload, dict)
+        and payload.get("destination") == KV_SKAP_DESTINATION
+        and payload.get("downstream_owner_ref") == KV_SKAP_OWNER
+    )
+
+
+def _dispatch_kv_skap_consumer(*, runtime_root: Path, materialization_id: str) -> dict[str, Any]:
+    command = [
+        sys.executable,
+        str(ROOT / "scripts/consume_kv_skap_custody_materialization_request.py"),
+        "--source-root", str(ROOT),
+        "--runtime-root", str(runtime_root),
+        "--materialization-id", materialization_id,
+    ]
+    process = subprocess.Popen(
+        command,
+        cwd=str(ROOT),
+        env=kv_skap_scrubbed_env(),
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True,
+        close_fds=True,
+    )
+    return {
+        "consumer_dispatch_attempted": True,
+        "consumer_pid": process.pid,
+        "consumer_execution_authority": False,
+        "consumer_claim_or_fence_minted_by_ingress": False,
+        "authority_effect": "NONE_DISPATCH_ONLY",
+    }
+
+
+def admit_kv_skap(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dict[str, Any]:
+    transport = hil.validate_transport_headers(headers, body)
+    require(transport["origin"] == hil.ORIGIN_RELAY, "kv_skap_requires_tvc_relay_egress")
+    require(isinstance(transport["authorization_id"], str) and transport["authorization_id"], "kv_skap_relay_authorization_required")
+    try:
+        payload = json.loads(body.decode("utf-8"))
+    except Exception as exc:
+        raise ValueError("kv_skap_request_json_invalid") from exc
+    require(isinstance(payload, dict), "kv_skap_request_object_required")
+    validate_kv_skap_request(payload)
+    materialization_id = safe_id(str(payload["materialization_id"]))
+    carrier = carrier_binding_evidence(payload)
+    request_path = runtime_root / hil.REQUEST_DIR_REL / f"{materialization_id}.json"
+    hil._write_once(request_path, json.dumps(payload, sort_keys=True, indent=2).encode("utf-8") + b"\n")
+    receipt_path = runtime_root / KV_SKAP_RECEIPT_DIR / f"{materialization_id}.json"
+    if receipt_path.exists():
+        existing = json.loads(receipt_path.read_text(encoding="utf-8"))
+        require(existing.get("request_hash") == payload.get("request_hash") and existing.get("state") == "INGRESS_ADMITTED", "write_once_collision")
+        result_path = runtime_root / Path("receipts/sovereign-host/kv-skap-custody") / f"{materialization_id}.json"
+        if result_path.is_file():
+            result = json.loads(result_path.read_text(encoding="utf-8"))
+            if result.get("state") == "ADMITTED_TO_SKAP_VAULT" and result.get("request_hash") == payload.get("request_hash"):
+                return {
+                    **existing,
+                    "dispatch": {
+                        "consumer_dispatch_attempted": False,
+                        "consumer_result_state": "ALREADY_ADMITTED_TO_SKAP_VAULT",
+                        "consumer_execution_authority": False,
+                        "consumer_claim_or_fence_minted_by_ingress": False,
+                        "authority_effect": "NONE_DISPATCH_ONLY",
+                    },
+                }
+        dispatch = _dispatch_kv_skap_consumer(runtime_root=runtime_root, materialization_id=materialization_id)
+        return {**existing, "dispatch": dispatch}
+    receipt = {
+        "schema": KV_SKAP_RECEIPT_SCHEMA,
+        "state": "INGRESS_ADMITTED",
+        "materialization_id": materialization_id,
+        "request_hash": payload["request_hash"],
+        "transport_intent_hash": payload["transport_intent_hash"],
+        "payload_hash": payload["payload_hash"],
+        "operation_id": payload["operation_id"],
+        "packet_id": payload["packet_id"],
+        "transport_origin": transport["origin"],
+        "transport_authorization_id": transport["authorization_id"],
+        "exact_request_validated": True,
+        "write_once_persisted": True,
+        "runtime_execution_attempted": False,
+        "consumer_dispatch_attempted": False,
+        "claim_or_fence_minted": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        **carrier,
+        "authority_effect": AUTHORITY_EFFECT,
+        "admitted_at": now(),
+    }
+    raw = json.dumps(receipt, sort_keys=True, indent=2).encode("utf-8") + b"\n"
+    hil._write_once(receipt_path, raw)
+    latest = runtime_root / KV_SKAP_LATEST
+    latest.parent.mkdir(parents=True, exist_ok=True)
+    latest.write_bytes(raw)
+    dispatch = _dispatch_kv_skap_consumer(runtime_root=runtime_root, materialization_id=materialization_id)
+    return {**receipt, "dispatch": dispatch}
+
+
 def retrieve_device_kv_query_result(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dict[str, Any]:
     transport=hil.validate_transport_headers(headers,body)
     require(transport["origin"]==hil.ORIGIN_NODE and transport["authorization_id"] is None,"device_kv_result_requires_node_origin")
@@ -547,7 +656,7 @@ def profile(tls_enabled: bool) -> dict[str, Any]:
         "profile_path": PROFILE_PATH,
         "materialization_path": INGRESS_PATH,
         "device_kv_result_path": DEVICE_KV_RESULT_PATH,
-        "profiles": ["HIL:Ingress", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "Publisher:ArtifactTransfer", "KV:PublisherArtifactImport"],
+        "profiles": ["HIL:Ingress", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "KV:SKAPCiphertextCustody", "Publisher:ArtifactTransfer", "KV:PublisherArtifactImport"],
         "heartbeat_derived_carrier": hb_intr_carrier_profile(),
         "supported_origins": [hil.ORIGIN_NODE, hil.ORIGIN_RELAY],
         "event_triggered": True,
@@ -602,7 +711,7 @@ class Handler(BaseHTTPRequestHandler):
                 status = 200
             else:
                 payload = json.loads(body.decode("utf-8"))
-                receipt = admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers))))
+                receipt = admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_kv_skap(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_skap(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)))))
                 status = 202
         except Exception as exc:
             self.send_json(400, {"state": "REJECTED", "reason": str(exc), "authority_effect": AUTHORITY_EFFECT})
