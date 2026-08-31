@@ -108,7 +108,7 @@ The worker MUST NOT:
 
 ```text
 TVC bounded merge gate: MERGED @ 0e8678e28c78b09932f215bd36a1f15da523a90f
-merge dispatch task: SOURCE COMPLETE / VALIDATION PENDING
+merge dispatch task: SOURCE COMPLETE / VALIDATION PASS / MERGE PENDING
 authentic product PR: NOT YET OBSERVED
 authentic merge: NOT YET OBSERVED
 Pages deployment: NOT YET OBSERVED
@@ -135,3 +135,27 @@ tvc.sv_dn1.repository_merge.process
 
 The merge-dispatch worker therefore has a durable resident consumer for its bounded local
 spool. Source integration still does not prove that the consumer has executed.
+
+
+## Validation evidence
+
+Validated integrated PR head:
+
+`3b34d396beb4bdda17f192ff2d4155ce24a7a696`
+
+```text
+Validate organization control plane
+  run: 33410429388
+  result: SUCCESS
+
+Heartbeat Worker Project
+  run: 33410429278
+  result: SUCCESS
+
+Cross-Framework Current-Basis Resident Request Validation
+  run: 33410429343
+  result: SUCCESS
+```
+
+These runs validate source/control-plane integration only. They do not prove an authentic
+product PR, TVC merge execution, Pages deployment, or public exact-byte observation.
