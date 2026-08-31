@@ -10,9 +10,15 @@ import subprocess
 import sys
 from typing import Any, Callable, Mapping
 
-from refresh_sovereign_worker_runtime_source import refresh
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from heartbeat_runtime.intr_subsignal_runtime import (
+    recover_local_intr_subsignal,
+    signal_sha256,
+)
+from refresh_sovereign_worker_runtime_source import refresh
 RUNNER_REL = Path("scripts/run_worker_runtime.py")
 REGISTRY_REL = Path("control/worker-registry.json")
 CARRIER_REL = Path("control/heartbeat-carrier-runtime-state.json")
@@ -117,6 +123,59 @@ def validate_durable_receipt(task_id: str, values: Mapping[str, str]) -> dict[st
         raise RuntimeError(f"{task_id}: durable receipt missing: {path}")
     receipt = _load(path)
     failures = [f"{field}={receipt.get(field)!r}, expected {wanted!r}" for field,wanted in expected.items() if receipt.get(field)!=wanted]
+    if task_id == "SV-DN1-INTR-RUNTIME-001":
+        carrier_path = path.parent / "carrier-binding.latest.json"
+        if not carrier_path.is_file():
+            failures.append("carrier-binding.latest.json missing")
+        else:
+            try:
+                carrier = _load(carrier_path)
+            except Exception as exc:
+                carrier = {}
+                failures.append(f"carrier-binding receipt unreadable: {exc}")
+            carrier_expected = {
+                "state": "COMPLETE",
+                "transition_id": "SV_DN1_HB_INTR_CARRIER_BOUND",
+                "packet_recovery_verified": True,
+                "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+                "heartbeat_grants_authority": False,
+                "derived_carrier_grants_authority": False,
+                "credential_authority": "TV/TVC",
+                "authority_effect": "NONE_CARRIER_ONLY",
+            }
+            for field, wanted in carrier_expected.items():
+                if carrier.get(field) != wanted:
+                    failures.append(f"carrier {field}={carrier.get(field)!r}, expected {wanted!r}")
+            if carrier.get("intr_receipt_hash") != receipt.get("receipt_hash"):
+                failures.append("carrier/main InTr receipt lineage mismatch")
+            shared_ref = carrier.get("shared_hb_signal_ref")
+            shared_digest = carrier.get("shared_hb_signal_sha256")
+            if not isinstance(shared_ref, str) or not shared_ref:
+                failures.append("shared_hb_signal_ref missing")
+            if not isinstance(shared_digest, str) or len(shared_digest) != 64:
+                failures.append("shared_hb_signal_sha256 invalid")
+            if isinstance(shared_ref, str) and shared_ref:
+                hb_root = default_runtime_root(values)
+                try:
+                    recovered = recover_local_intr_subsignal(root=hb_root, signal_ref=shared_ref)
+                    if not recovered:
+                        failures.append("shared HB signal exact packet recovery empty")
+                    signal_path = (hb_root / shared_ref).resolve()
+                    signal = _load(signal_path)
+                    if signal_sha256(signal) != shared_digest:
+                        failures.append("shared HB signal digest mismatch")
+                    if signal.get("signal_id") != carrier.get("carrier_signal_id"):
+                        failures.append("shared HB signal identity mismatch")
+                    if signal.get("carrier", {}).get("carrier_binding_sha256") != carrier.get("carrier_binding_sha256"):
+                        failures.append("shared HB carrier binding mismatch")
+                    if signal.get("intr", {}).get("packet_sha256") != carrier.get("packet_sha256"):
+                        failures.append("shared HB packet digest mismatch")
+                    if signal.get("carrier", {}).get("progression_dependency") != "OSCILLATOR_ONLY":
+                        failures.append("shared HB progression dependency drift")
+                    if signal.get("authority", {}).get("authority_effect") != "NONE_CARRIER_ONLY":
+                        failures.append("shared HB authority drift")
+                except Exception as exc:
+                    failures.append(f"shared HB signal validation failed: {exc}")
     if task_id == "SV-DN1-PRODUCTION-SOURCE-PREP-001":
         components={"stegverse.sdk","stegverse.stegcore","stegverse.core-lite","stegverse.master-records"}
         identities=receipt.get("source_identities");roots=receipt.get("source_roots");env_map=receipt.get("source_root_env")
@@ -140,7 +199,14 @@ def validate_durable_receipt(task_id: str, values: Mapping[str, str]) -> dict[st
         if not isinstance(package_sha,str) or len(package_sha)!=64 or any(ch not in "0123456789abcdef" for ch in package_sha): failures.append("package_sha256 must be 64 lowercase hex")
     if failures:
         raise RuntimeError(f"{task_id}: durable receipt failed validation: "+"; ".join(failures))
-    return {"task_id":task_id,"receipt_path":str(path)}
+    result={"task_id":task_id,"receipt_path":str(path)}
+    if task_id == "SV-DN1-INTR-RUNTIME-001":
+        carrier = _load(path.parent / "carrier-binding.latest.json")
+        result["carrier_binding_receipt_path"] = str(path.parent / "carrier-binding.latest.json")
+        result["shared_hb_signal_ref"] = carrier["shared_hb_signal_ref"]
+        result["shared_hb_signal_sha256"] = carrier["shared_hb_signal_sha256"]
+        result["shared_hb_signal_proof_verified"] = True
+    return result
 
 def _atomic_json(path:Path,value:Mapping[str,Any])->None:
     path.parent.mkdir(parents=True,exist_ok=True);temp=path.with_name("."+path.name+".tmp");temp.write_text(json.dumps(dict(value),indent=2,sort_keys=True)+"\n",encoding="utf-8");os.replace(temp,path)
