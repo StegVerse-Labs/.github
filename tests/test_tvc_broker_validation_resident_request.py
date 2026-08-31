@@ -280,39 +280,47 @@ def test_terminal_validation_continues_into_current_base_compatibility(tmp_path,
     assert receipt["admission_compatibility"]["result"]["merge_performed"] is False
 
 
-def test_repository_authority_handoff_is_nonsecret_and_tvc_owned(tmp_path):
-    control = tmp_path / "TVC-control"
-    control.mkdir()
-    activator = control / consumer.TVC_REPOSITORY_AUTHORITY_ACTIVATOR
-    activator.parent.mkdir(parents=True, exist_ok=True)
-    activator.write_text("# activator\n", encoding="utf-8")
-    observed = {}
-    def runner(command, **kwargs):
-        observed["command"] = list(command)
-        observed["env"] = dict(kwargs["env"])
-        request_id = command[command.index("--request-id") + 1]
-        return SimpleNamespace(
-            returncode=2,
-            stdout=json.dumps({
-                "state":"BLOCKED_CREDENTIAL_NOT_OBSERVED",
-                "request_id":request_id,
-                "credential_value_exposed":False,
-                "authority_effect":"NONE",
-            }) + "\n",
-            stderr="",
-        )
+def test_repository_authority_handoff_stages_nonsecret_runtime_request(tmp_path):
+    runtime = tmp_path / "runtime"
+    runtime.mkdir()
     result = consumer.run_tvc_repository_authority_handoff(
-        control,
+        runtime,
         request_id="RESIDENT-EXEC-TVC-BROKER-VALIDATION-003",
-        runner=runner,
-        env={"PATH":"/usr/bin","HOME":str(tmp_path)},
     )
+    request_path = runtime / consumer.TVC_REPOSITORY_AUTHORITY_REQUEST_REL
     assert result["request_staged_or_owned"] is True
     assert result["downstream_request_id"].endswith("-repository-authority")
-    assert "TVC_EPHEMERAL_GITHUB_TOKEN" not in observed["env"]
-    assert "GITHUB_TOKEN" not in observed["env"]
+    assert result["systemd_service_start_requested_by_consumer"] is False
+    assert result["systemd_path_activation_expected"] is True
     assert result["repository_write_authority"] is False
     assert result["credential_value_exposed"] is False
+    assert request_path.is_file()
+    staged = json.loads(request_path.read_text())
+    assert staged["schema"] == consumer.TVC_REPOSITORY_AUTHORITY_REQUEST_SCHEMA
+    assert staged["task"] == consumer.TVC_REPOSITORY_AUTHORITY_TARGET_TASK
+    assert staged["credential_material_present"] is False
+    assert staged["request_grants_authority"] is False
+    raw = request_path.read_text().lower()
+    assert "github_token" not in raw
+    assert "systemctl" not in raw
+
+
+def test_repository_authority_handoff_is_write_once(tmp_path):
+    runtime = tmp_path / "runtime"
+    runtime.mkdir()
+    first = consumer.run_tvc_repository_authority_handoff(runtime, request_id="REQ-1")
+    second = consumer.run_tvc_repository_authority_handoff(runtime, request_id="REQ-1")
+    assert first["request_sha256"] == second["request_sha256"]
+    path = runtime / consumer.TVC_REPOSITORY_AUTHORITY_REQUEST_REL
+    staged = json.loads(path.read_text())
+    staged["request_id"] = "conflict"
+    write_json(path, staged)
+    try:
+        consumer.run_tvc_repository_authority_handoff(runtime, request_id="REQ-1")
+    except RuntimeError as exc:
+        assert "conflicts" in str(exc)
+    else:
+        raise AssertionError("conflicting downstream request must fail closed")
 
 
 def test_terminal_validation_compatibility_hands_off_to_repository_authority(tmp_path, monkeypatch):
@@ -343,11 +351,13 @@ def test_terminal_validation_compatibility_hands_off_to_repository_authority(tmp
         "consumer_network_access_performed":False,"repository_writeback_performed":False,
         "merge_performed":False,"authority_effect":"EXISTING_TVC_ADMISSION_COMPATIBILITY_AUTHORITY_ONLY",
     })
-    monkeypatch.setattr(consumer, "run_tvc_repository_authority_handoff", lambda control_root, request_id, runner, env: {
-        "returncode":2,"result_observed":True,"request_staged_or_owned":True,
+    monkeypatch.setattr(consumer, "run_tvc_repository_authority_handoff", lambda runtime_root, request_id: {
+        "returncode":0,"result_observed":True,"request_staged_or_owned":True,
         "downstream_request_id":request_id+"-repository-authority",
-        "result":{"state":"BLOCKED_CREDENTIAL_NOT_OBSERVED","request_id":request_id+"-repository-authority","credential_value_exposed":False},
+        "request_path":str(runtime_root / consumer.TVC_REPOSITORY_AUTHORITY_REQUEST_REL),
+        "result":{"state":"REQUEST_STAGED_FOR_TVC_SYSTEMD_PATH","request_id":request_id+"-repository-authority","credential_value_exposed":False},
         "credential_value_exposed":False,"consumer_credential_used":False,"repository_write_authority":False,
+        "systemd_service_start_requested_by_consumer":False,"systemd_path_activation_expected":True,
         "authority_effect":"NONE_HANDOFF_ONLY",
     })
     receipt = consumer.consume(source, runtime, runner=lambda command, **kwargs: SimpleNamespace(returncode=0,stdout="{}\n",stderr=""), env={"HOME":str(tmp_path),"PATH":"/usr/bin","STEGVERSE_TVC_CONTROL_ROOT":str(control)})
@@ -432,7 +442,8 @@ def test_private_source_candidate_is_builtin():
     assert str(consumer.PRIVATE_SOURCE_CANDIDATE) == "/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99"
     assert consumer.TVC_PROGRESSION_MODULE == "scripts.advance_tvc_pr92_broker_validation"
     assert consumer.TVC_ADMISSION_MODULE == "scripts.evaluate_github_repository_operation_broker_admission"
-    assert str(consumer.TVC_REPOSITORY_AUTHORITY_ACTIVATOR) == "scripts/activate_sv_dn1_repository_authority_request.py"
+    assert str(consumer.TVC_REPOSITORY_AUTHORITY_REQUEST_REL) == "tvc-handoff/sv-dn1-repository-authority-request.json"
+    assert consumer.TVC_REPOSITORY_AUTHORITY_TARGET_TASK == "tvc.sv_dn1.repository_authority.continue"
 
 
 def test_hosted_environment_rejected():
