@@ -124,20 +124,22 @@ def test_missing_exact_root_invokes_existing_tvc_progression_then_validation(tmp
         return exact, f"{exact}:{consumer.EXPECTED_HEAD}"
 
     monkeypatch.setattr(consumer, "exact_local_tvc_root", exact_root)
-    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:PROGRESSION_READY"))
+    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:COMPATIBILITY_READY"))
     monkeypatch.setattr(
         consumer,
         "run_tvc_private_source_progression",
-        lambda control_root, runner, env: {
-            "command":["python","-m",consumer.TVC_PROGRESSION_MODULE],
+        lambda runtime_root, runner, env: {
+            "command":["python",str(runtime_root / consumer.TVC_PRIVATE_SOURCE_BOOTSTRAP),"--runtime-root",str(runtime_root)],
             "returncode":0,
-            "result":{"state":"TVC_PR92_BROKER_VALIDATED","result":"PASS"},
+            "result":{"state":"HANDOFF_READY","reason":"PRIVATE_SOURCE_REQUEST_STAGED_FOR_TVC_SYSTEMD_PATH","systemd_service_start_requested":False},
             "result_observed":True,
+            "request_staged_or_owned":True,
             "credential_value_exposed":False,
             "consumer_credential_used":False,
             "consumer_network_source_fetch_performed":False,
             "tvc_private_source_service_may_perform_provider_read":True,
-            "authority_effect":"EXISTING_TVC_PRIVATE_SOURCE_AUTHORITY_ONLY",
+            "systemd_service_start_requested_by_consumer":False,
+            "authority_effect":"NONE_REQUEST_ONLY",
         },
     )
     monkeypatch.setattr(consumer, "terminal_validation", lambda runtime_root: True)
@@ -161,7 +163,8 @@ def test_missing_exact_root_invokes_existing_tvc_progression_then_validation(tmp
     )
     assert receipt["state"] == "COMPLETED"
     assert receipt["private_source_progression_attempted"] is True
-    assert receipt["private_source_progression"]["result"]["state"] == "TVC_PR92_BROKER_VALIDATED"
+    assert receipt["private_source_progression"]["result"]["state"] == "HANDOFF_READY"
+    assert receipt["private_source_progression"]["systemd_service_start_requested_by_consumer"] is False
     assert receipt["observed_tvc_root"] == str(exact)
     assert receipt["network_source_fetch_performed_by_consumer"] is False
     assert receipt["terminal_validation_observed"] is True
@@ -179,20 +182,22 @@ def test_progression_credential_absence_remains_retryable(tmp_path, monkeypatch)
     control.mkdir()
     write_json(runtime / consumer.REQUEST_REL, request())
     monkeypatch.setattr(consumer, "exact_local_tvc_root", lambda values: (None, "missing"))
-    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:PROGRESSION_READY"))
+    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:COMPATIBILITY_READY"))
     monkeypatch.setattr(
         consumer,
         "run_tvc_private_source_progression",
-        lambda control_root, runner, env: {
-            "command":["python","-m",consumer.TVC_PROGRESSION_MODULE],
-            "returncode":2,
-            "result":{"state":"BLOCKED_CREDENTIAL_NOT_OBSERVED"},
+        lambda runtime_root, runner, env: {
+            "command":["python",str(runtime_root / consumer.TVC_PRIVATE_SOURCE_BOOTSTRAP),"--runtime-root",str(runtime_root)],
+            "returncode":0,
+            "result":{"state":"HANDOFF_READY","reason":"PRIVATE_SOURCE_REQUEST_STAGED_FOR_TVC_SYSTEMD_PATH","systemd_service_start_requested":False},
             "result_observed":True,
+            "request_staged_or_owned":True,
             "credential_value_exposed":False,
             "consumer_credential_used":False,
             "consumer_network_source_fetch_performed":False,
             "tvc_private_source_service_may_perform_provider_read":True,
-            "authority_effect":"EXISTING_TVC_PRIVATE_SOURCE_AUTHORITY_ONLY",
+            "systemd_service_start_requested_by_consumer":False,
+            "authority_effect":"NONE_REQUEST_ONLY",
         },
     )
     receipt = consumer.consume(
@@ -202,7 +207,8 @@ def test_progression_credential_absence_remains_retryable(tmp_path, monkeypatch)
     )
     assert receipt["state"] == "HANDOFF_READY"
     assert receipt["private_source_progression_attempted"] is True
-    assert receipt["private_source_progression"]["result"]["state"] == "BLOCKED_CREDENTIAL_NOT_OBSERVED"
+    assert receipt["private_source_progression"]["result"]["state"] == "HANDOFF_READY"
+    assert receipt["private_source_progression"]["result"]["reason"] == "PRIVATE_SOURCE_REQUEST_STAGED_FOR_TVC_SYSTEMD_PATH"
     assert receipt["runtime_execution_attempted"] is False
     assert receipt["second_machine_required"] is False
     assert receipt["network_source_fetch_performed_by_consumer"] is False
@@ -231,7 +237,7 @@ def test_terminal_validation_continues_into_current_base_compatibility(tmp_path,
     entrypoint.write_text("# bridge\n", encoding="utf-8")
 
     monkeypatch.setattr(consumer, "exact_local_tvc_root", lambda values: (exact, f"{exact}:{consumer.EXPECTED_HEAD}"))
-    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:PROGRESSION_READY"))
+    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:COMPATIBILITY_READY"))
     monkeypatch.setattr(consumer, "terminal_validation", lambda runtime_root: True)
     monkeypatch.setattr(
         consumer,
@@ -342,7 +348,7 @@ def test_terminal_validation_compatibility_hands_off_to_repository_authority(tmp
     admission_script.write_text("# admission\n", encoding="utf-8")
 
     monkeypatch.setattr(consumer, "exact_local_tvc_root", lambda values: (exact, f"{exact}:{consumer.EXPECTED_HEAD}"))
-    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:PROGRESSION_READY"))
+    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:COMPATIBILITY_READY"))
     monkeypatch.setattr(consumer, "terminal_validation", lambda runtime_root: True)
     monkeypatch.setattr(consumer, "run_tvc_admission_compatibility", lambda control_root, runner, env: {
         "returncode":0,"result_observed":True,"admission_eligible":True,
@@ -440,7 +446,7 @@ def test_only_terminal_pass_marks_request_consumed(tmp_path):
 
 def test_private_source_candidate_is_builtin():
     assert str(consumer.PRIVATE_SOURCE_CANDIDATE) == "/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99"
-    assert consumer.TVC_PROGRESSION_MODULE == "scripts.advance_tvc_pr92_broker_validation"
+    assert str(consumer.TVC_PRIVATE_SOURCE_BOOTSTRAP) == "scripts/bootstrap_tvc_pr92_validation_source.py"
     assert consumer.TVC_ADMISSION_MODULE == "scripts.evaluate_github_repository_operation_broker_admission"
     assert str(consumer.TVC_REPOSITORY_AUTHORITY_REQUEST_REL) == "tvc-handoff/sv-dn1-repository-authority-request.json"
     assert consumer.TVC_REPOSITORY_AUTHORITY_TARGET_TASK == "tvc.sv_dn1.repository_authority.continue"

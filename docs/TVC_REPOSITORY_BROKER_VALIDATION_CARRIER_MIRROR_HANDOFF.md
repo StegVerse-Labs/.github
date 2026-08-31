@@ -339,3 +339,52 @@ root systemd
 This is the first composition in this lane that satisfies both the rootless
 WorkerCoordinator constraint and the TVC system-service credential boundary without an
 implicit privilege escalation.
+
+
+## Rootless private-source staging correction — 2026-08-31
+
+The earlier source-acquisition composition is superseded:
+
+```text
+SUPERSEDED:
+  rootless .github consumer
+  -> invoke TVC PR #92 root progression
+  -> systemctl/private-source activation
+```
+
+Current source-acquisition composition:
+
+```text
+.github resident consumer
+  -> scripts/bootstrap_tvc_pr92_validation_source.py
+  -> atomic write:
+     <STEGVERSE_HEARTBEAT_ROOT>/tvc-handoff/private-source-request.json
+  -> no systemctl
+  -> no credential
+  -> no provider read
+  -> HANDOFF_READY
+
+root TVC private-source .path/.timer
+  -> observes request
+  -> starts stegtvc-private-source-read.service
+  -> LoadCredential TVC_PRIVATE_SOURCE_READ_TOKEN
+  -> exact private PR #92 materialization
+  -> terminal success consumes request
+
+next resident cycle
+  -> exact materialization discovered
+  -> existing governed validation worker
+  -> compatibility
+  -> repository-authority runtime-file handoff
+```
+
+The private-source request is write-once for the exact pinned PR #92 identity and fails
+closed on conflicting content. Missing watcher installation or credential remains a
+machine-observable `HANDOFF_READY` state; the rootless consumer may not substitute a
+direct system-service call.
+
+TVC implementation target:
+`StegVerse-Labs/TVC@8453bfda067156f0d3ee3da5bb1dbd9d7b895d1d` (PR #274 merged)
+
+The request path, HeartBeat, source identity, path watcher, and retry timer grant no
+source-read, execution, credential, repository, release, or publication authority.
