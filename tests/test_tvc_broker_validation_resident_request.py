@@ -124,7 +124,7 @@ def test_missing_exact_root_invokes_existing_tvc_progression_then_validation(tmp
         return exact, f"{exact}:{consumer.EXPECTED_HEAD}"
 
     monkeypatch.setattr(consumer, "exact_local_tvc_root", exact_root)
-    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:PROGRESSION_READY"))
+    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:COMPATIBILITY_READY"))
     monkeypatch.setattr(
         consumer,
         "run_tvc_private_source_progression",
@@ -182,7 +182,7 @@ def test_progression_credential_absence_remains_retryable(tmp_path, monkeypatch)
     control.mkdir()
     write_json(runtime / consumer.REQUEST_REL, request())
     monkeypatch.setattr(consumer, "exact_local_tvc_root", lambda values: (None, "missing"))
-    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:PROGRESSION_READY"))
+    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:COMPATIBILITY_READY"))
     monkeypatch.setattr(
         consumer,
         "run_tvc_private_source_progression",
@@ -237,7 +237,7 @@ def test_terminal_validation_continues_into_current_base_compatibility(tmp_path,
     entrypoint.write_text("# bridge\n", encoding="utf-8")
 
     monkeypatch.setattr(consumer, "exact_local_tvc_root", lambda values: (exact, f"{exact}:{consumer.EXPECTED_HEAD}"))
-    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:PROGRESSION_READY"))
+    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:COMPATIBILITY_READY"))
     monkeypatch.setattr(consumer, "terminal_validation", lambda runtime_root: True)
     monkeypatch.setattr(
         consumer,
@@ -348,7 +348,7 @@ def test_terminal_validation_compatibility_hands_off_to_repository_authority(tmp
     admission_script.write_text("# admission\n", encoding="utf-8")
 
     monkeypatch.setattr(consumer, "exact_local_tvc_root", lambda values: (exact, f"{exact}:{consumer.EXPECTED_HEAD}"))
-    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:PROGRESSION_READY"))
+    monkeypatch.setattr(consumer, "local_tvc_control_root", lambda values: (control, f"{control}:COMPATIBILITY_READY"))
     monkeypatch.setattr(consumer, "terminal_validation", lambda runtime_root: True)
     monkeypatch.setattr(consumer, "run_tvc_admission_compatibility", lambda control_root, runner, env: {
         "returncode":0,"result_observed":True,"admission_eligible":True,
