@@ -236,7 +236,19 @@ class SvDn1IntrRuntimeWorkerTests(unittest.TestCase):
         self.assertEqual(a, b)
         self.assertEqual(a["receipt"]["heartbeat_epoch"], 132)
         self.assertEqual(a["signal"]["carrier"]["reference_rate_hz"], 100.0)
-        self.assertEqual(a["signal"]["carrier"]["phase_slots"], 4)
+        self.assertEqual(a["signal"]["carrier"]["phase_slots"], 16)
+        self.assertEqual(
+            a["signal"]["carrier"]["channel_derivation"],
+            "SHA256_PACKET_ID_FIRST32_MOD_16",
+        )
+        self.assertEqual(
+            a["receipt"]["carrier_packet_id"],
+            a["signal"]["intr"]["packet_id"],
+        )
+        self.assertEqual(
+            a["receipt"]["carrier_binding_sha256"],
+            a["signal"]["carrier"]["carrier_binding_sha256"],
+        )
         self.assertTrue(a["receipt"]["packet_recovery_verified"])
 
     def test_identity_drift_fails_closed(self):
