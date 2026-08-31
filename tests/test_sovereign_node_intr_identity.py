@@ -51,6 +51,55 @@ class SovereignNodeInTrIdentityTests(unittest.TestCase):
                 bootstrap.derived_node_id(source, state_b),
             )
 
+
+    def test_sv002_route_autodiscovers_canonical_local_repository_roots(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            home = root / "home"
+            stegos = home / ".stegverse/repos/StegVerse-Labs/StegOS"
+            micro = home / ".stegverse/repos/StegVerse-002/micro-node-runtime"
+            (stegos / "stegos").mkdir(parents=True)
+            (stegos / ".git").mkdir()
+            (stegos / "stegos/universal_intr_transport.py").write_text(
+                "# local canonical transport\n", encoding="utf-8"
+            )
+            provenance = micro / "experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json"
+            provenance.parent.mkdir(parents=True)
+            (micro / ".git").mkdir()
+            provenance.write_text("{}\n", encoding="utf-8")
+
+            roots = sv002_route._roots({"HOME": str(home)})
+            self.assertEqual(roots["StegVerse-Labs/StegOS"], stegos.resolve())
+            self.assertEqual(
+                roots["StegVerse-002/micro-node-runtime"], micro.resolve()
+            )
+
+    def test_sv002_route_runtime_root_falls_back_only_to_non_git_materialization(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            runtime = root / "runtime"
+            (runtime / "workers").mkdir(parents=True)
+            (runtime / "control").mkdir(parents=True)
+            self.assertEqual(
+                sv002_route._runtime_root({}, script_root=runtime),
+                runtime.resolve(),
+            )
+            (runtime / ".git").mkdir()
+            with self.assertRaisesRegex(
+                sv002_route.PredicatePending, "resident runtime root unavailable"
+            ):
+                sv002_route._runtime_root({}, script_root=runtime)
+
+    def test_sv002_route_autodiscovery_rejects_incomplete_repo(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            home = root / "home"
+            stegos = home / ".stegverse/repos/StegVerse-Labs/StegOS"
+            stegos.mkdir(parents=True)
+            (stegos / ".git").mkdir()
+            roots = sv002_route._roots({"HOME": str(home)})
+            self.assertNotIn("StegVerse-Labs/StegOS", roots)
+
     def test_derived_v04_marker_unblocks_both_route_materializers(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
@@ -61,6 +110,11 @@ class SovereignNodeInTrIdentityTests(unittest.TestCase):
             micro = root / "micro"
             for path in (source, runtime, site, stegos, micro):
                 path.mkdir()
+
+            (stegos / "stegos").mkdir()
+            (stegos / "stegos/universal_intr_transport.py").write_text(
+                "# canonical transport fixture\n", encoding="utf-8"
+            )
 
             provenance = micro / "experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json"
             provenance.parent.mkdir(parents=True)
