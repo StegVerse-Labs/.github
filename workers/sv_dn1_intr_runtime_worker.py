@@ -17,7 +17,6 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from heartbeat_runtime.carrier_envelope import SignalConstraint, derive_carrier_envelope
 from heartbeat_runtime.independent_oscillator import current_reference
 from heartbeat_runtime.intr_derived_carrier import derive_intr_carrier_signal, recover_intr_packet_bytes
 
@@ -283,34 +282,24 @@ def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
 def build_hb_carrier_binding(exchange: Mapping[str, Any], intr_receipt: Mapping[str, Any], *, now_ns: int | None = None) -> dict[str, Any]:
     sample_ns = time.time_ns() if now_ns is None else int(now_ns)
     reference = current_reference(now_ns=sample_ns)
-    envelope = derive_carrier_envelope(
-        [SignalConstraint(
-            signal_id="sv-dn1-universal-intr",
-            min_frequency_hz=100.0,
-            max_frequency_hz=100.0,
-            required_event_rate_hz=1.0,
-            deadline_ms=10.0,
-            simultaneous_units=1.0,
-            requested_phase_slots=4,
-        )],
-        sustainable_max_hz=100.0,
-        events_per_reference_capacity=1.0,
-        growth_reserve_ratio=0.25,
-    )
     packet_bytes = canonical(dict(exchange))
+    packet_id = "SV-DN1-INTR-" + hashlib.sha256(str(exchange.get("exchange_id") or "").encode("utf-8")).hexdigest()[:24]
+    payload_hash = "sha256:" + hashlib.sha256(packet_bytes).hexdigest()
     receipt_hash = str(intr_receipt.get("receipt_hash") or "")
     if receipt_hash.startswith("sha256:"):
         receipt_hash = receipt_hash.split(":", 1)[1]
     signal = derive_intr_carrier_signal(
-        heartbeat_epoch=reference["epoch"],
-        heartbeat_reference=reference["heartbeat_id"],
-        phase_slots=int(envelope["phase_plan"]["phase_slots"]),
+        packet_id=packet_id,
+        payload_hash=payload_hash,
+        sampled_unix_ms=sample_ns // 1_000_000,
         packet_bytes=packet_bytes,
         intr_transport_profile=TRANSPORT_PROFILE,
         boundary_from=BOUNDARY_FROM,
         boundary_to=BOUNDARY_TO,
         packet_receipt_hash=receipt_hash,
     )
+    if signal["carrier"]["heartbeat_epoch"] != reference["epoch"] or signal["carrier"]["heartbeat_reference"] != reference["heartbeat_id"]:
+        raise RuntimeError("HB-derived carrier/reference sampling mismatch")
     if recover_intr_packet_bytes(signal) != packet_bytes:
         raise RuntimeError("HB-derived carrier failed exact InTr packet recovery")
     body = {
@@ -324,6 +313,8 @@ def build_hb_carrier_binding(exchange: Mapping[str, Any], intr_receipt: Mapping[
         "heartbeat_reference": reference["heartbeat_id"],
         "heartbeat_phase_offset_ns": reference["phase_offset_ns"],
         "carrier_signal_id": signal["signal_id"],
+        "carrier_packet_id": signal["intr"]["packet_id"],
+        "carrier_binding_sha256": signal["carrier"]["carrier_binding_sha256"],
         "channel_slot": signal["carrier"]["channel_slot"],
         "phase_slots": signal["carrier"]["phase_slots"],
         "phase_offset_deg": signal["carrier"]["phase_offset_deg"],
