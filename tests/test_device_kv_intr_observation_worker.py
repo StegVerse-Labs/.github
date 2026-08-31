@@ -112,6 +112,46 @@ class DeviceKVInTrObservationWorkerTests(unittest.TestCase):
         self.assertFalse(first["authority_transfer"])
         self.assertEqual(second["prior_receipt_hash"], first["receipt_hash"])
 
+
+    def test_hb_carrier_binds_exact_precommitted_receipt_and_recovers_bytes(self):
+        receipt = worker.build_transport_receipt(
+            receipt_id="r-carrier",
+            packet_id="p-carrier",
+            direction="FORWARD",
+            from_role="DEVICE",
+            to_role="KV",
+            operation_hash="sha256:" + "1" * 64,
+            payload_hash="sha256:" + "2" * 64,
+            prior_receipt_hash=None,
+            boundary_identity_ref="kv://root",
+            recorded_at="2026-08-31T13:00:00Z",
+        )
+        payload = b'{"request":"exact"}'
+        now_ns = 1_787_511_600_000_000_000 + (250 * 10_000_000)
+        signal, reference = worker.build_hb_carrier_signal(
+            packet_bytes=payload,
+            receipt_hash=receipt["receipt_hash"],
+            boundary_from="DEVICE_SYSTEM",
+            boundary_to="KV",
+            now_ns=now_ns,
+        )
+        self.assertEqual(reference["epoch"], 282)
+        self.assertEqual(signal["intr"]["packet_receipt_hash"], receipt["receipt_hash"][7:])
+        self.assertEqual(worker.recover_intr_packet_bytes(signal), payload)
+        self.assertEqual(signal["carrier"]["reference_rate_hz"], 100.0)
+        self.assertEqual(signal["carrier"]["progression_dependency"], "OSCILLATOR_ONLY")
+        self.assertFalse(signal["authority"]["derived_carrier_grants_receiving_authority"])
+        self.assertEqual(signal["authority"]["authority_effect"], "NONE_CARRIER_ONLY")
+
+    def test_worker_transports_request_and_response_as_hb_carrier_frames(self):
+        source = (ROOT / "workers/device_kv_intr_observation_worker.py").read_text()
+        self.assertIn("send_frame(client, request_carrier_wire)", source)
+        self.assertIn("recovered = recover_intr_packet_bytes(received_signal)", source)
+        self.assertIn("send_frame(self.request, response_carrier_wire)", source)
+        self.assertIn("response_wire = recover_intr_packet_bytes(response_carrier_signal)", source)
+        self.assertIn('"hb_derived_carrier_transport_observed": True', source)
+
+
     def test_controlled_request_contains_no_personal_record_scope(self):
         handoff = json.loads((ROOT / "handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json").read_text())
         controlled = handoff["execution"]["controlled_operation"]

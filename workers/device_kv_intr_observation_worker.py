@@ -11,11 +11,17 @@ import struct
 import sys
 import tempfile
 import threading
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path.cwd().resolve()
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from heartbeat_runtime.independent_oscillator import current_reference
+from heartbeat_runtime.intr_derived_carrier import derive_intr_carrier_signal, recover_intr_packet_bytes
 TASK_ID = "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
 PARENT_TASK_ID = "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001"
 PARENT_RECEIPT = ROOT / "receipts" / "stegos-sovereign-relay" / f"{PARENT_TASK_ID}.json"
@@ -23,6 +29,7 @@ RECEIPT_ROOT = ROOT / "receipts" / "device-kv-intr"
 RECEIPT = RECEIPT_ROOT / f"{TASK_ID}.json"
 ENDPOINT_RECEIPTS = RECEIPT_ROOT / "endpoint-receipts"
 TRANSPORT_RECEIPTS = RECEIPT_ROOT / "transport-receipts"
+CARRIER_SIGNALS = RECEIPT_ROOT / "carrier-signals"
 EVENT_REQUEST_DIR = ROOT / "intr-materialization"
 EVENT_INGRESS_DIR = ROOT / "receipts" / "sovereign-network" / "device-kv-intr-ingress"
 EVENT_MATERIALIZATION_ENV = "STEGVERSE_DEVICE_KV_INTR_MATERIALIZATION_ID"
@@ -216,7 +223,7 @@ def recv_frame(sock: socket.socket, max_bytes: int = 1024 * 1024) -> bytes:
 
 def build_transport_receipt(*, receipt_id: str, packet_id: str, direction: str, from_role: str, to_role: str,
                             operation_hash: str, payload_hash: str, prior_receipt_hash: str | None,
-                            boundary_identity_ref: str) -> dict[str, Any]:
+                            boundary_identity_ref: str, recorded_at: str | None = None) -> dict[str, Any]:
     body = {
         "schema": "stegverse.intr.hop_receipt/v1",
         "receipt_id": receipt_id,
@@ -233,7 +240,7 @@ def build_transport_receipt(*, receipt_id: str, packet_id: str, direction: str, 
         "transition_state": "RECEIVED",
         "secret_plaintext_present": False,
         "authority_transfer": False,
-        "recorded_at": now_iso(),
+        "recorded_at": recorded_at or now_iso(),
     }
     return {**body, "receipt_hash": sha256_uri(body)}
 
@@ -264,6 +271,28 @@ def validate_transport_receipt(receipt: Mapping[str, Any], *, direction: str, fr
     claimed = body.pop("receipt_hash")
     if claimed != sha256_uri(body):
         raise ValueError("transport receipt hash mismatch")
+
+
+def build_hb_carrier_signal(*, packet_bytes: bytes, receipt_hash: str, boundary_from: str, boundary_to: str,
+                            now_ns: int | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
+    sample_ns = time.time_ns() if now_ns is None else int(now_ns)
+    reference = current_reference(now_ns=sample_ns)
+    normalized_receipt = str(receipt_hash or "")
+    if normalized_receipt.startswith("sha256:"):
+        normalized_receipt = normalized_receipt[7:]
+    signal = derive_intr_carrier_signal(
+        heartbeat_epoch=reference["epoch"],
+        heartbeat_reference=reference["heartbeat_id"],
+        phase_slots=4,
+        packet_bytes=packet_bytes,
+        intr_transport_profile="stegverse.universal-intr.adjacent-hop/v1",
+        boundary_from=boundary_from,
+        boundary_to=boundary_to,
+        packet_receipt_hash=normalized_receipt,
+    )
+    if recover_intr_packet_bytes(signal) != packet_bytes:
+        raise ValueError("HB-derived carrier exact packet recovery failed")
+    return signal, reference
 
 
 def controlled_request(template: Mapping[str, Any], continuity_id: str, fence: int) -> dict[str, Any]:
@@ -399,6 +428,21 @@ def main() -> int:
     request_wire = canonical_json({"request": request, "envelope": envelope}).encode()
     request_wire_hash = sha256_uri(request_wire)
     operation_hash = sha256_uri({"request_id": request["request_id"], "operation": request["operation"], "packet_id": envelope["packet_id"]})
+    request_receipt_recorded_at = now_iso()
+    request_receipt = build_transport_receipt(
+        receipt_id="DEVICE-KV-" + envelope["packet_id"], packet_id=envelope["packet_id"],
+        direction="FORWARD", from_role="DEVICE", to_role="KV", operation_hash=operation_hash,
+        payload_hash=envelope["payload_hash"], prior_receipt_hash=None, boundary_identity_ref=state_root,
+        recorded_at=request_receipt_recorded_at,
+    )
+    request_carrier_signal, request_carrier_reference = build_hb_carrier_signal(
+        packet_bytes=request_wire,
+        receipt_hash=request_receipt["receipt_hash"],
+        boundary_from="DEVICE_SYSTEM",
+        boundary_to="KV",
+    )
+    request_carrier_wire = canonical_json(request_carrier_signal).encode()
+    request_carrier_wire_hash = sha256_uri(request_carrier_wire)
 
     endpoint_ref_box: dict[str, str] = {}
 
@@ -438,21 +482,27 @@ def main() -> int:
 
     class Handler(socketserver.BaseRequestHandler):
         def handle(self) -> None:
-            raw = recv_frame(self.request)
-            server_state["request_wire_hash"] = sha256_uri(raw)
-            packet = json.loads(raw.decode())
+            raw_carrier = recv_frame(self.request)
+            server_state["request_carrier_wire_hash"] = sha256_uri(raw_carrier)
+            received_signal = json.loads(raw_carrier.decode())
+            recovered = recover_intr_packet_bytes(received_signal)
+            server_state["request_wire_hash"] = sha256_uri(recovered)
+            if recovered != request_wire:
+                raise ValueError("receiver HB carrier exact request wire mismatch")
+            if received_signal.get("intr", {}).get("packet_receipt_hash") != request_receipt["receipt_hash"][7:]:
+                raise ValueError("receiver HB carrier request receipt binding mismatch")
+            if received_signal.get("authority", {}).get("authority_effect") != "NONE_CARRIER_ONLY":
+                raise ValueError("receiver HB carrier authority drift")
+            packet = json.loads(recovered.decode())
             received_request = packet.get("request")
             received_envelope = packet.get("envelope")
             if received_request != request or received_envelope != envelope:
                 raise ValueError("receiver exact request/envelope identity mismatch")
 
-            request_receipt = build_transport_receipt(
-                receipt_id="DEVICE-KV-" + envelope["packet_id"], packet_id=envelope["packet_id"],
-                direction="FORWARD", from_role="DEVICE", to_role="KV", operation_hash=operation_hash,
-                payload_hash=envelope["payload_hash"], prior_receipt_hash=None, boundary_identity_ref=state_root)
             validate_transport_receipt(request_receipt, direction="FORWARD", from_role="DEVICE", to_role="KV",
                                        payload_hash=envelope["payload_hash"], prior=None)
             atomic_write(TRANSPORT_RECEIPTS / "device-to-kv.json", request_receipt)
+            atomic_write(CARRIER_SIGNALS / "device-to-kv.json", received_signal)
 
             response = runtime.handle(received_request, intr_envelope=received_envelope,
                                       intr_receipt_ref=request_receipt["receipt_hash"])
@@ -464,7 +514,7 @@ def main() -> int:
                 receipt_id="KV-DEVICE-" + envelope["packet_id"], packet_id=envelope["packet_id"] + "-RETURN",
                 direction="RETURN", from_role="KV", to_role="DEVICE", operation_hash=operation_hash,
                 payload_hash=response_hash, prior_receipt_hash=request_receipt["receipt_hash"],
-                boundary_identity_ref=f"stegos-node://{continuity_id}")
+                boundary_identity_ref=f"stegos-node://{continuity_id}", recorded_at=now_iso())
             validate_transport_receipt(response_receipt, direction="RETURN", from_role="KV", to_role="DEVICE",
                                        payload_hash=response_hash, prior=request_receipt["receipt_hash"])
             atomic_write(TRANSPORT_RECEIPTS / "kv-to-device.json", response_receipt)
@@ -474,8 +524,21 @@ def main() -> int:
                 "request_receipt": request_receipt,
                 "response_receipt": response_receipt,
             }).encode()
-            server_state.update({"response": response, "response_wire_hash": sha256_uri(response_wire)})
-            send_frame(self.request, response_wire)
+            response_carrier_signal, response_carrier_reference = build_hb_carrier_signal(
+                packet_bytes=response_wire,
+                receipt_hash=response_receipt["receipt_hash"],
+                boundary_from="KV",
+                boundary_to="DEVICE_SYSTEM",
+            )
+            atomic_write(CARRIER_SIGNALS / "kv-to-device.json", response_carrier_signal)
+            response_carrier_wire = canonical_json(response_carrier_signal).encode()
+            server_state.update({
+                "response": response,
+                "response_wire_hash": sha256_uri(response_wire),
+                "response_carrier_wire_hash": sha256_uri(response_carrier_wire),
+                "response_carrier_reference": response_carrier_reference,
+            })
+            send_frame(self.request, response_carrier_wire)
 
     try:
         with socketserver.TCPServer(("127.0.0.1", 0), Handler) as server:
@@ -485,8 +548,10 @@ def main() -> int:
             try:
                 with socket.create_connection((host, port), timeout=5.0) as client:
                     client.settimeout(5.0)
-                    send_frame(client, request_wire)
-                    response_wire = recv_frame(client)
+                    send_frame(client, request_carrier_wire)
+                    response_carrier_wire = recv_frame(client)
+                    response_carrier_signal = json.loads(response_carrier_wire.decode())
+                    response_wire = recover_intr_packet_bytes(response_carrier_signal)
             finally:
                 server.shutdown()
                 thread.join(timeout=5.0)
@@ -498,10 +563,18 @@ def main() -> int:
 
     try:
         response_packet = json.loads(response_wire.decode())
+        if server_state.get("request_carrier_wire_hash") != request_carrier_wire_hash:
+            raise ValueError("receiver request carrier wire digest mismatch")
         if server_state.get("request_wire_hash") != request_wire_hash:
             raise ValueError("receiver request wire digest mismatch")
+        if sha256_uri(response_carrier_wire) != server_state.get("response_carrier_wire_hash"):
+            raise ValueError("client response carrier wire digest mismatch")
         if sha256_uri(response_wire) != server_state.get("response_wire_hash"):
             raise ValueError("client response wire digest mismatch")
+        if response_carrier_signal.get("intr", {}).get("packet_receipt_hash") != response_packet["response_receipt"]["receipt_hash"][7:]:
+            raise ValueError("client HB carrier response receipt binding mismatch")
+        if response_carrier_signal.get("authority", {}).get("authority_effect") != "NONE_CARRIER_ONLY":
+            raise ValueError("client HB carrier response authority drift")
         response = response_packet.get("response")
         if response != server_state.get("response"):
             raise ValueError("response body identity mismatch")
@@ -547,15 +620,34 @@ def main() -> int:
         "request_payload_hash": envelope["payload_hash"],
         "request_wire_sha256": request_wire_hash,
         "request_receiver_wire_sha256": server_state["request_wire_hash"],
+        "request_carrier_wire_sha256": request_carrier_wire_hash,
+        "request_receiver_carrier_wire_sha256": server_state["request_carrier_wire_hash"],
+        "request_carrier_signal_id": request_carrier_signal["signal_id"],
+        "request_carrier_heartbeat_epoch": request_carrier_reference["epoch"],
+        "request_carrier_heartbeat_reference": request_carrier_reference["heartbeat_id"],
+        "request_carrier_channel_slot": request_carrier_signal["carrier"]["channel_slot"],
+        "request_carrier_phase_offset_deg": request_carrier_signal["carrier"]["phase_offset_deg"],
+        "request_carrier_packet_recovery_verified": True,
         "request_receipt_hash": request_receipt["receipt_hash"],
         "kv_interlock_decision": response["decision"],
         "kv_endpoint_receipt_ref": endpoint_ref,
         "response_payload_hash": sha256_uri(response),
         "response_wire_sha256": sha256_uri(response_wire),
         "response_receiver_wire_sha256": server_state["response_wire_hash"],
+        "response_carrier_wire_sha256": sha256_uri(response_carrier_wire),
+        "response_receiver_carrier_wire_sha256": server_state["response_carrier_wire_hash"],
+        "response_carrier_signal_id": response_carrier_signal["signal_id"],
+        "response_carrier_heartbeat_epoch": server_state["response_carrier_reference"]["epoch"],
+        "response_carrier_heartbeat_reference": server_state["response_carrier_reference"]["heartbeat_id"],
+        "response_carrier_channel_slot": response_carrier_signal["carrier"]["channel_slot"],
+        "response_carrier_phase_offset_deg": response_carrier_signal["carrier"]["phase_offset_deg"],
+        "response_carrier_packet_recovery_verified": True,
         "response_receipt_hash": response_receipt["receipt_hash"],
         "request_exact_bytes_transported": True,
         "response_exact_bytes_transported": True,
+        "request_transported_on_hb_derived_carrier": True,
+        "response_transported_on_hb_derived_carrier": True,
+        "hb_derived_carrier_transport_observed": True,
         "device_to_kv_receipt_verified": True,
         "kv_to_device_receipt_verified": True,
         "receipt_lineage_verified": response_receipt["prior_receipt_hash"] == request_receipt["receipt_hash"],
