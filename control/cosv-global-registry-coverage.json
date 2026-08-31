@@ -2,7 +2,7 @@
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
   "observed_commit": "0e7b0b03cffdc207d7b8260423776f40e80c6fb7",
-  "observed_at": "2026-08-30T22:08:00-05:00",
+  "observed_at": "2026-08-30T22:18:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,9 +11,9 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 71,
-    "canonically_indexed_task_ids": 61,
+    "canonically_indexed_task_ids": 64,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 3,
+    "active_unvectorized_unique_task_ids": 0,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,12 +21,8 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 17,
-  "active_worker_task_ids_missing_canonical_cosv": [
-    "SHWP-ALL-ORG-FEDERATION-001",
-    "SHWP-STEGNUTRITION-CONTINUATION-001",
-    "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001"
-  ],
+  "total_active_unvectorized_unique_task_ids": 14,
+  "active_worker_task_ids_missing_canonical_cosv": [],
   "active_organization_task_ids_missing_canonical_cosv": [
     "ORG-FED-AACT-E-001",
     "ORG-FED-ADMISSIBLE-EXISTENCE-001",
@@ -286,6 +282,18 @@
     },
     {
       "task_id": "SV-DN1-PUBLIC-PROMOTION-001",
+      "vector": "50000000101000"
+    },
+    {
+      "task_id": "SHWP-ALL-ORG-FEDERATION-001",
+      "vector": "60000000104000"
+    },
+    {
+      "task_id": "SHWP-STEGNUTRITION-CONTINUATION-001",
+      "vector": "50000000107000"
+    },
+    {
+      "task_id": "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001",
       "vector": "50000000101000"
     }
   ],
@@ -587,5 +595,14 @@
     "total_active_unvectorized_after_projection": 17,
     "runtime_activation_claimed": false,
     "authority_effect": "NONE"
+  },
+  "worker_denominator_closure": {
+    "active_worker_tasks_vectorized": 64,
+    "active_worker_tasks_unvectorized": 0,
+    "completed_historical_unvectorized": 6,
+    "superseded_historical_unvectorized": 1,
+    "total_unique_worker_task_ids": 71,
+    "authority_effect": "NONE",
+    "runtime_activation_claimed": false
   }
 }

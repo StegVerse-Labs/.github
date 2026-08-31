@@ -798,7 +798,20 @@
         }
       ],
       "worker_id": "organization-federation-readiness-worker",
-      "worker_instance_id": "organization-federation-readiness-worker-HB11-G17"
+      "worker_instance_id": "organization-federation-readiness-worker-HB11-G17",
+      "source_state_vector_ref": "control/task-vectors/SHWP-ALL-ORG-FEDERATION-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "60000000104000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T22:18:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
     },
     {
       "archive_eligible": false,
