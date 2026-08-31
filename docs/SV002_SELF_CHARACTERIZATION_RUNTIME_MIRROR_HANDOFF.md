@@ -238,3 +238,31 @@ Validation evidence:
 - organization control plane `33352733022`: SUCCESS.
 
 The resident request can now observe an already-running canonical local principal without session-prepopulated endpoint/model variables.
+
+
+## Principal source pin refresh — 2026-08-30
+
+The resident executable handoff is now rebound to the exact principal source that carries the standalone runtime-identity contract and focused validation:
+
+```text
+StegVerse-002/micro-node-runtime merge: 4acbf42ad321311e14b0a736220874bae34ac998
+principal source PR: StegVerse-002/micro-node-runtime#56
+focused runtime-identity push validation: 33353191509 SUCCESS
+runtime identity schema: schemas/self_characterization_runtime_identity.schema.json
+runtime identity verifier: tools/verify_self_characterization_runtime_identity.py
+principal launcher: tools/run_self_characterization_principal.py
+resident handoff pin: handoffs/SHWP-SV002-SELF-CHARACTERIZATION-001.json
+```
+
+This removes stale-source ambiguity between the resident worker and the canonical principal launcher. It does not create a resident runtime, satisfy live process/model identity, execute the experiment, or advance system-AI lifecycle state.
+
+Current lawful execution boundary remains:
+
+```text
+resident request: REQUESTED
+resident consumption receipt: NOT OBSERVED
+qualifying principal runtime: NOT OBSERVED
+live runtime identity verification: NOT OBSERVED
+principal execution: NOT OBSERVED
+Master Records reconstruction: NOT OBSERVED
+```
