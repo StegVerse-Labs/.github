@@ -40,7 +40,8 @@
     "source_refs": [
       "StegVerse-Labs/Site#665",
       "StegVerse-002/micro-node-runtime:experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json",
-      "scripts/serve_sv002_observation_intr_runtime.py"
+      "scripts/serve_sv002_observation_intr_runtime.py",
+      "scripts/materialize_sv002_observation_route_config.py#canonical-local-root-autodiscovery"
     ],
     "canonical_owner_ref": "StegVerse-Labs/.github#462",
     "canonical_lineage_key": "sv002:public-observation-runtime",
@@ -87,7 +88,23 @@
     "rate_class": "sv002_public_observation",
     "hosted_execution_allowed": false,
     "route_config": "~/.stegverse/config/sv002-public-observation-runtime.json",
-    "remote_checkout_allowed": false
+    "remote_checkout_allowed": false,
+    "local_root_discovery": {
+      "explicit_environment_precedence": true,
+      "canonical_repository_candidates": [
+        "~/.stegverse/repos/<org>/<repo>",
+        "/var/lib/stegverse/source/<org>/<repo>",
+        "/srv/stegverse/repos/<org>/<repo>",
+        "/opt/stegverse/repos/<org>/<repo>"
+      ],
+      "required_repositories": [
+        "StegVerse-Labs/StegOS",
+        "StegVerse-002/micro-node-runtime"
+      ],
+      "remote_checkout_allowed": false,
+      "ambiguous_root_selection_allowed": false,
+      "runtime_root_fallback": "NON_GIT_MATERIALIZED_SCRIPT_ROOT_ONLY"
+    }
   },
   "activation": {
     "carrier": "independent_task_control",
