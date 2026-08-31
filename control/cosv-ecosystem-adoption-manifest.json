@@ -4,7 +4,7 @@
   "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
-  "observed_at": "2026-08-31T11:46:00-05:00",
+  "observed_at": "2026-08-31T12:32:00-05:00",
   "source": "live GitHub App installation enumeration plus durable task-surface evidence",
   "authority_effect": "NONE",
   "credential_authority": "TV/TVC",
@@ -14,15 +14,15 @@
   "organization_count": 14,
   "universe_audit_complete": false,
   "adoption_metrics": {
-    "numerator_vectorized_active_task_surfaces": 6,
+    "numerator_vectorized_active_task_surfaces": 7,
     "denominator_proven_active_task_surfaces": 28,
-    "ratio": "6/28",
-    "percentage": 21.43,
-    "interpretation": "GCAT-BCAT is strict VECTOR_PRESENT after 3/3 current active Decision Envelope tasks are projected and repository-local validation passes. core-lite is excluded from the active denominator after a terminal task-surface audit proved zero current active repository tasks."
+    "ratio": "7/28",
+    "percentage": 25,
+    "interpretation": "Admissible-Existence/.github is strict VECTOR_PRESENT after a repository-local 5/5 active control-plane task audit and three independent exact-head validation gates. The active denominator remains 28."
   },
   "classification_counts": {
-    "VECTOR_REQUIRED": 22,
-    "VECTOR_PRESENT": 6,
+    "VECTOR_REQUIRED": 21,
+    "VECTOR_PRESENT": 7,
     "NO_ACTIVE_TASK_SURFACE": 6,
     "NO_REPOSITORY_OR_UNAVAILABLE": 188
   },
@@ -31,8 +31,8 @@
       "organization": "Admissible-Existence",
       "installation_id": 139890227,
       "repository_count": 32,
-      "vector_required": 2,
-      "vector_present": 4,
+      "vector_required": 1,
+      "vector_present": 5,
       "no_active_task_surface": 6,
       "unavailable_or_not_yet_audited": 20
     },
@@ -235,16 +235,25 @@
     {
       "organization": "Admissible-Existence",
       "repository": "Admissible-Existence/.github",
-      "classification": "VECTOR_REQUIRED",
+      "classification": "VECTOR_PRESENT",
       "profile": "task.v1",
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
-        "data/formalism-task-claims.json"
+        "Admissible-Existence/.github@ce63084e1f66a1c2de34d6c551e3be15d2558bd9:data/cosv/task-vector-index.json",
+        "Admissible-Existence/.github@ce63084e1f66a1c2de34d6c551e3be15d2558bd9:FORMALISM_MIRROR_HANDOFF.md",
+        "Admissible-Existence/.github/actions/runs/33419785361:Validate COSV Projection SUCCESS",
+        "Admissible-Existence/.github/actions/runs/33419785266:Canonical Formalism Orientation Validation SUCCESS",
+        "Admissible-Existence/.github/actions/runs/33419785234:Formalism Archive Gate SUCCESS"
       ],
-      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "vector_coverage_state": "COMPLETE",
       "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
-      "authority_effect": "NONE"
+      "authority_effect": "NONE",
+      "validation_refs": [
+        "5/5 current active structured control-plane tasks projected",
+        "expired historical claims excluded under repository claim semantics",
+        "VerFi and read-only activation observer terminalized from direct hosted evidence"
+      ]
     },
     {
       "organization": "Admissible-Existence",

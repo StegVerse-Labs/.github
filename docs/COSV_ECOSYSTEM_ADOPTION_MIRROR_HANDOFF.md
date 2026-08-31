@@ -898,3 +898,34 @@ ratio: 6/28 = 21.43%
 ```
 
 Authority effect: NONE.
+
+
+## Admissible-Existence control-plane promotion — 2026-08-31
+
+```text
+repository: Admissible-Existence/.github
+classification: VECTOR_PRESENT
+active tasks audited: 5
+active tasks projected: 5
+validation:
+  COSV Projection: 33419785361 SUCCESS
+  Canonical Formalism Orientation: 33419785266 SUCCESS
+  Formalism Archive Gate: 33419785234 SUCCESS
+merge: ce63084e1f66a1c2de34d6c551e3be15d2558bd9
+```
+
+The repository-local audit excludes expired historical claims according to its own explicit
+claim-expiry semantics, terminalizes completed VerFi/observer work, and preserves genuinely active
+organization-audit, worker-apply, mathematical-completeness, cross-repository-remediation, and
+heartbeat-node tasks.
+
+Strict ecosystem adoption is now:
+
+```text
+VECTOR_PRESENT: 7
+VECTOR_REQUIRED: 21
+active denominator: 28
+ratio: 7/28 = 25.00%
+```
+
+Authority effect remains NONE.
