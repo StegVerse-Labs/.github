@@ -10,8 +10,8 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
-    "unique_task_ids_global_plus_fragments": 72,
-    "canonically_indexed_task_ids": 65,
+    "unique_task_ids_global_plus_fragments": 73,
+    "canonically_indexed_task_ids": 66,
     "completed_only_historical_unvectorized_task_ids": 6,
     "active_unvectorized_unique_task_ids": 0,
     "superseded_historical_unvectorized_task_ids": 1
@@ -340,6 +340,10 @@
     {
       "task_id": "SV-DN1-PUBLICATION-OBSERVER-001",
       "vector": "50000000101000"
+    },
+    {
+      "task_id": "SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001",
+      "vector": "50000000101000"
     }
   ],
   "evidence_conflicts": [],
@@ -642,18 +646,18 @@
     "authority_effect": "NONE"
   },
   "worker_denominator_closure": {
-    "active_worker_tasks_vectorized": 65,
+    "active_worker_tasks_vectorized": 66,
     "active_worker_tasks_unvectorized": 0,
     "completed_historical_unvectorized": 6,
     "superseded_historical_unvectorized": 1,
-    "total_unique_worker_task_ids": 72,
+    "total_unique_worker_task_ids": 73,
     "authority_effect": "NONE",
     "runtime_activation_claimed": false
   },
   "active_task_vector_coverage_closure": {
-    "active_worker_tasks_vectorized": 65,
+    "active_worker_tasks_vectorized": 66,
     "active_organization_tasks_vectorized": 14,
-    "total_active_tasks_vectorized": 79,
+    "total_active_tasks_vectorized": 80,
     "active_tasks_unvectorized": 0,
     "source_projection_complete": true,
     "runtime_activation_claimed": false,
@@ -671,6 +675,21 @@
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": "NONE",
     "repository_writeback_authority": false,
+    "deployment_authority": false,
+    "authority_effect": "NONE"
+  },
+  "sv_dn1_repository_persistence_dispatch_projection_20260831": {
+    "task_id": "SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001",
+    "vector": "50000000101000",
+    "registry_ref": "control/worker-registry.d/sv-dn1-repository-persistence-dispatch-001.json",
+    "source_state_vector_ref": "control/task-vectors/SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001.json",
+    "blocker": "TVC_SV_DN1_REPOSITORY_MUTATION_ADMISSION_NOT_YET_OBSERVED_TVC_264",
+    "activation_proof_observed": false,
+    "evidence_complete": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "repository_writeback_authority": false,
+    "merge_authority": false,
     "deployment_authority": false,
     "authority_effect": "NONE"
   }
