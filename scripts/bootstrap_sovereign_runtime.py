@@ -454,9 +454,10 @@ def _dispatch_resident_requests(source_root: Path, runtime_root: Path, *, proof_
 
 
 def _advance_tvc_skap_successor(source_root: Path, runtime_root: Path, *, proof_path: Path, env: dict[str, str] | None, runner: Runner) -> dict[str, Any]:
-    """Immediately advance the admitted TVC/SKAP successor after G18 proves terminal.
+    """Immediately advance the independently admitted TVC/SKAP successor.
 
-    This removes reliance on a later generic scheduler pass. WorkerCoordinator
+    G18 is retired as a downstream gate. This removes reliance on either G18
+    terminalization or a later generic scheduler pass. WorkerCoordinator
     still owns admission and must create a fresh independent claim/fence for the
     TVC task; this helper grants no authority and forwards no credentials.
     """
@@ -556,7 +557,7 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         "post_install_source_refresh_watcher": {"attempted": False, "state": "NOT_ELIGIBLE", "activated": False, "authority_effect": "NONE"},
         "post_install_worker_prime": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "NATIVE_INSTALLATION_NOT_COMPLETE", "returncode": None, "task_capable_cycle_observed": False, "authority_effect": "NONE"},
         "post_bootstrap_resident_request_dispatch": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "authority_effect": "NONE"},
-        "post_bootstrap_tvc_skap_successor": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "G18_NOT_TERMINAL", "returncode": None, "task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001", "authority_effect": "NONE"},
+        "post_bootstrap_tvc_skap_successor": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "RESIDENT_RUNTIME_NOT_MATERIALIZED", "returncode": None, "task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001", "authority_effect": "NONE"},
         "post_bootstrap_stegfin": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "executor_service_active": False, "wallet_handoff_ready_claimed": False},
         "state": "FAIL_CLOSED",
         "reason": None,
@@ -614,6 +615,18 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         runner=runner,
     )
 
+    # G18 terminalization is retired as a downstream admission gate. Advance
+    # TVC/SKAP immediately after the native resident execution surface has been
+    # installed/primed/dispatched. The TVC task still performs its own
+    # WorkerCoordinator admission under a fresh independent claim/fence.
+    body["post_bootstrap_tvc_skap_successor"] = _advance_tvc_skap_successor(
+        source_root,
+        runtime_root,
+        proof_path=proof_path,
+        env=env,
+        runner=runner,
+    )
+
     verify = runner([sys.executable, str(source_root / "scripts" / "verify_sovereign_runtime_activation.py"), "--runtime-root", str(runtime_root)], check=False, capture_output=True, text=True, timeout=180, env=child_env)
     body["verifier_returncode"] = verify.returncode
     proof = load_json(proof_path)
@@ -624,13 +637,6 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         body["state"] = "COMPLETE"
         body["reason"] = "SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_VERIFIED"
         atomic_write(receipt_path, body)
-        body["post_bootstrap_tvc_skap_successor"] = _advance_tvc_skap_successor(
-            source_root,
-            runtime_root,
-            proof_path=proof_path,
-            env=env,
-            runner=runner,
-        )
         if activate_downstream:
             body["post_bootstrap_stegfin"] = _attempt_post_bootstrap_activation(source_root, proof_path=proof_path, receipt_path=receipt_path, node_marker=node_marker, env=env, runner=runner)
     else:

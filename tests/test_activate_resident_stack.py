@@ -50,8 +50,10 @@ class ResidentStackActivationTests(unittest.TestCase):
                     deployment = {
                         "resident_control_plane_bootstrap": {
                             "attempted": True,
-                            "state": "COMPLETE",
+                            "state": "REVIEW_REQUIRED",
                             "result": {
+                                "post_install_worker_prime": {"attempted": True, "task_capable_cycle_observed": True},
+                                "post_bootstrap_resident_request_dispatch": {"attempted": True, "state": "DISPATCH_COMPLETE"},
                                 "post_bootstrap_tvc_skap_successor": {
                                     "attempted": True,
                                     "state": "ACTIVE",
@@ -76,7 +78,10 @@ class ResidentStackActivationTests(unittest.TestCase):
                 env={"PATH": "/usr/bin"},
             )
             self.assertEqual(receipt["state"], "COMPLETE")
-            self.assertTrue(receipt["g18_activation_complete"])
+            self.assertTrue(receipt["resident_task_capable_cycle_observed"])
+            self.assertTrue(receipt["resident_request_dispatch_attempted"])
+            self.assertEqual(receipt["g18_housekeeping_state"], "REVIEW_REQUIRED")
+            self.assertFalse(receipt["g18_required_for_stack_completion"])
             self.assertTrue(receipt["stegos_source_bundled"])
             self.assertTrue(receipt["kv_source_bundled"])
             self.assertTrue(receipt["tvc_skap_successor_attempted"])

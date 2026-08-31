@@ -244,7 +244,7 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
             self.assertEqual(result["post_bootstrap_stegfin"]["state"], "NOT_ELIGIBLE")
 
 
-    def test_tvc_skap_successor_runs_immediately_after_g18_completion(self) -> None:
+    def test_tvc_skap_successor_is_independent_of_g18_terminalization(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             source = root / "source"
@@ -281,6 +281,15 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
             self.assertIn("--task-id", command)
             self.assertIn("TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001", command)
             self.assertEqual(child_env["GITHUB_TOKEN"], "")
+
+
+    def test_source_dispatches_tvc_skap_before_g18_verification_gate(self) -> None:
+        source = SCRIPT.read_text(encoding="utf-8")
+        dispatch_pos = source.index('body["post_bootstrap_tvc_skap_successor"] = _advance_tvc_skap_successor(')
+        verify_pos = source.index('verify = runner([sys.executable, str(source_root / "scripts" / "verify_sovereign_runtime_activation.py")')
+        self.assertLess(dispatch_pos, verify_pos)
+        self.assertNotIn('"reason": "G18_NOT_TERMINAL"', source)
+
 
 
 
