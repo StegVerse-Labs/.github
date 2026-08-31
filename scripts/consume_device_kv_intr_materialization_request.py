@@ -140,6 +140,20 @@ def validate_kv_query(req:dict[str,Any],ing:dict[str,Any])->dict[str,Any]:
 
 def execute_kv_query(req:dict[str,Any],ing:dict[str,Any],env:dict[str,str],runtime:Path)->dict[str,Any]:
     query=validate_kv_query(req,ing)
+    target=runtime/QUERY_RESPONSE_DIR_REL/(req["materialization_id"]+".json")
+    if target.exists():
+        existing=load(target)
+        if (
+            existing.get("state")!="RESPONSE_PERSISTED"
+            or existing.get("materialization_id")!=req["materialization_id"]
+            or existing.get("request_hash")!=req["request_hash"]
+            or existing.get("node_id")!=ing.get("node_id")
+            or existing.get("query_request_hash")!=sha(query)
+            or existing.get("response_transported_on_hb_derived_carrier") is not True
+            or existing.get("exact_response_packet_recovered") is not True
+        ):
+            raise DeviceKVMaterializationError("kv_query_response_existing_binding_invalid")
+        return existing
     source_value=env.get(KV_SOURCE_ROOT_ENV)
     data_value=env.get(KV_DATA_ROOT_ENV)
     if not source_value:
@@ -240,7 +254,6 @@ def execute_kv_query(req:dict[str,Any],ing:dict[str,Any],env:dict[str,str],runti
         "response_carrier_heartbeat_epoch":carrier["heartbeat_epoch"],
         "exact_response_packet_recovered":carrier["exact_packet_recovered"],
     }
-    target=runtime/QUERY_RESPONSE_DIR_REL/(req["materialization_id"]+".json")
     target.parent.mkdir(parents=True,exist_ok=True)
     serialized=json.dumps(result,indent=2,sort_keys=True)+"\n"
     if target.exists():
