@@ -11,12 +11,16 @@
         "durable_state_reconstruction",
         "tv_tvc_resident_operational_proof_activation"
       ],
-      "command": ["python", "workers/tv_tvc_resident_proof_worker.py"],
+      "command": [
+        "python",
+        "workers/tv_tvc_resident_proof_worker.py"
+      ],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [
         "STEGVERSE_TV_ROOT",
         "STEGVERSE_TVC_ROOT",
+        "STEGVERSE_RESIDENT_SOURCE_MANIFEST",
         "HOME",
         "XDG_STATE_HOME",
         "XDG_CONFIG_HOME",
@@ -27,7 +31,8 @@
         "The worker receives no signing credential environment variable and never reads /run/stegverse credential bytes.",
         "It executes only already-local TV/TVC source and TVC's admitted dispatcher in systemd-user mode.",
         "Missing source, missing/unreadable TV/TVC credential, or unavailable user service manager remain BLOCKED and heartbeat-visible.",
-        "No GitHub token, remote source fetch, hosted runtime, provider secret or non-TV/TVC credential authority is granted."
+        "No GitHub token, remote source fetch, hosted runtime, provider secret or non-TV/TVC credential authority is granted.",
+        "Verified portable bundle source identity may replace Git metadata only when the persisted source manifest proves the exact TV head, required TVC ancestor, bound materialized subpaths, and current required-file digests."
       ],
       "timeout_seconds": 240,
       "type": "process_json_v0.1"
