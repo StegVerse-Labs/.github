@@ -232,5 +232,45 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
             self.assertEqual(result["post_bootstrap_stegfin"]["state"], "NOT_ELIGIBLE")
 
 
+    def test_tvc_skap_successor_runs_immediately_after_g18_completion(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "source"
+            runtime = root / "runtime"
+            worker = runtime / "scripts" / "run_worker_runtime.py"
+            worker.parent.mkdir(parents=True, exist_ok=True)
+            worker.write_text("# worker runner\n", encoding="utf-8")
+            proof = root / "proof.json"
+            calls = []
+
+            def runner(command, **kwargs):
+                calls.append((list(command), dict(kwargs.get("env") or {})))
+                result = {
+                    "state": "ACTIVE",
+                    "task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
+                    "claim_state": "CLAIMED",
+                }
+                return subprocess.CompletedProcess(
+                    command, 0, stdout=json.dumps(result) + "\n", stderr=""
+                )
+
+            result = bootstrap_module._advance_tvc_skap_successor(
+                source, runtime, proof_path=proof, env={"GITHUB_TOKEN": "must-be-scrubbed"}, runner=runner
+            )
+            self.assertTrue(result["attempted"])
+            self.assertEqual(result["task_id"], "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001")
+            self.assertEqual(result["returncode"], 0)
+            self.assertTrue(result["fresh_independent_claim_required"])
+            self.assertTrue(result["parent_claim_reuse_prohibited"])
+            self.assertFalse(result["heartbeat_grants_execution_authority"])
+            self.assertEqual(result["credential_authority"], "TV/TVC")
+            self.assertEqual(len(calls), 1)
+            command, child_env = calls[0]
+            self.assertIn("--task-id", command)
+            self.assertIn("TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001", command)
+            self.assertEqual(child_env["GITHUB_TOKEN"], "")
+
+
+
 if __name__ == "__main__":
     unittest.main()
