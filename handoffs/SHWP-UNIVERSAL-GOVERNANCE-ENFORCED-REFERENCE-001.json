@@ -108,5 +108,37 @@
       "real_external_system_enforced_activation=false"
     ]
   },
-  "source_state_vector_ref": "control/task-vectors/SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001.json"
+  "source_state_vector_ref": "control/task-vectors/SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001.json",
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:universal-governance-enforced-reference:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-Labs/StegCore@d093f1c18ce6f78cfa33fcf87568851be6221e2a",
+      "master-records/core-lite@78abdcad9ee4a82f6ae71cc68bcfdfb867f86880"
+    ],
+    "admissibility_evidence_refs": [
+      "docs/UNIVERSAL_GOVERNANCE_ENFORCED_REFERENCE_MIRROR_HANDOFF.md",
+      "tests/test_universal_governance_enforced_reference_worker.py"
+    ],
+    "integration_evidence_refs": [
+      "workers/universal_governance_enforced_reference_worker.py",
+      "control/process-worker-adapters.d/universal-governance-enforced-reference-001.json",
+      "control/worker-registry.d/universal-governance-enforced-reference-001.json",
+      "control/worker-capability-profiles.json#universal-governance-reference-v1"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "LOCAL_STEGCORE_SOURCE_NOT_YET_OBSERVED",
+      "LOCAL_MASTER_RECORDS_SOURCE_NOT_YET_OBSERVED",
+      "CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND",
+      "REFERENCE_ENFORCED_BOUNDARY_RECEIPT_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "universal-governance-enforced-reference-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "executes_reference_capability",
+    "target_phase": "ACTIVATED"
+  }
 }
