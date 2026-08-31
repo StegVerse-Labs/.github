@@ -51,15 +51,14 @@
       "StegVerse-Labs/TVC:tasks/TVC-SOVEREIGN-BASE-RPC-ROUTE-003.json",
       "StegVerse-Labs/stegfin-governance#60"
     ],
-    "dependencies": [
-      "SHWP-DURABLE-RUNTIME-ACTIVATION"
-    ],
+    "dependencies": [],
     "parent_task_id": "TASK-2026-0005",
     "derivation_reason": "TASK-2026-0005 names the resident heartbeat as machine owner, while the live process-adapter registry previously had no sovereign Base task-specific executor. This handoff installs that missing bridge without duplicating micro-node proof authority or TVC route authority.",
     "canonical_owner_ref": "tasks/TASK-2026-0005.json",
     "canonical_lineage_key": "shwp:sovereign-base-rpc-activation",
     "derivation_depth": 1,
-    "priority": "critical"
+    "priority": "critical",
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL"
   },
   "authority": {
     "authority_source": "tasks/TASK-2026-0005.json + StegVerse-Labs/.github#12 + StegVerse-002/micro-node-runtime released Base proof contract",
@@ -93,11 +92,17 @@
     "rate_class": "sovereign_base_rpc_activation"
   },
   "activation": {
-    "carrier": "heartbeat",
+    "carrier": "independent_task_control",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
     "executor_binding": "AUTHORIZED",
-    "authorization_ref": "tasks/TASK-2026-0005.json",
-    "recheck_trigger": "each admitted heartbeat after SHWP-DURABLE-RUNTIME-ACTIVATION while unfinished",
-    "checkout_policy": "fenced_atomic_checkout"
+    "authorization_ref": "handoffs/SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001.json#authority",
+    "recheck_trigger": "each admitted independent task-control opportunity while unfinished",
+    "checkout_policy": "fenced_atomic_checkout",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "fresh_fence_required": true,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
   },
   "continuity": {
     "checkpoint_ref": "receipts/sovereign-base-rpc-activation/SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001.json",
@@ -106,7 +111,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "On exact live proof completion, submit the endpoint/proof binding to StegVerse-Labs/TVC task TVC-SOVEREIGN-BASE-RPC-ROUTE-003. This worker may not infer route admission.",
+    "next_authorized_action": "On the next admitted independent resident task-control opportunity, discover current local or bundled micro-node source and attempt the credential-free Base proof. On exact live proof completion, submit the endpoint/proof binding to StegVerse-Labs/TVC task TVC-SOVEREIGN-BASE-RPC-ROUTE-003. This worker may not infer route admission.",
     "terminal_when": [
       "state=COMPLETE",
       "validation_only=false",
@@ -120,11 +125,11 @@
   "constraint": {
     "operational_state": "ACTIVE_SOLUTION_EXECUTION",
     "condition": "REAL_SYNCHRONIZED_STEGVERSE_BASE_ENDPOINT_NOT_YET_OBSERVED",
-    "dependency": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-    "owner": "resident sovereign heartbeat",
+    "dependency": "existing sovereign resident WorkerCoordinator plus already-local or verified bundled micro-node-runtime source",
+    "owner": "independent StegVerse resident task-control",
     "solution_required": true,
     "machine_observable_release_condition": "worker receipt records COMPLETE with a released micro-node validation_only=false proof for a private Base 0x2105 endpoint",
-    "next_solution_action": "Resolve already-local micro-node source and credential-free private Base endpoint/process descriptor, execute released proof path, persist result, then hand exact proof to TVC evaluator",
+    "next_solution_action": "Resolve bundled/current local micro-node source and a credential-free private Base endpoint/process descriptor, acquire this task's own fresh claim/fence, execute the released proof path, persist result, then hand exact proof to the TVC evaluator.",
     "third_party_dependency": false,
     "human_action_required": false
   },
