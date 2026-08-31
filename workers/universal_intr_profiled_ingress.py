@@ -446,6 +446,7 @@ def admit_kv_publisher_return(*,runtime_root:Path,body:bytes,headers:Mapping[str
         require(sha_uri(intent)==request.get("transport_intent_hash"),"kv_publisher_return_intent_hash_mismatch")
     else:
         request=payload; validate_kv_publisher_return_request(request); intent=None; receipts=None; raw=None
+    carrier=carrier_binding_evidence(request)
     mid=safe_id(str(request["materialization_id"]))
     request_path=runtime_root/hil.REQUEST_DIR_REL/f"{mid}.json"
     hil._write_once(request_path,json.dumps(request,sort_keys=True,indent=2).encode("utf-8")+b"\n")
