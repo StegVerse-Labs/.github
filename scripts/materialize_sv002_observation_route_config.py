@@ -9,6 +9,31 @@ DEFAULT_OUTPUT=Path.home()/".stegverse/config/sv002-public-observation-runtime.j
 NODE_MARKERS=(Path("/etc/stegverse/node.json"),Path.home()/".stegverse/node.json")
 class PredicatePending(RuntimeError): pass
 
+REPO_REQUIREMENTS={
+    "StegVerse-Labs/StegOS":("stegos/universal_intr_transport.py",),
+    "StegVerse-002/micro-node-runtime":(
+        "experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json",
+    ),
+}
+
+def _valid_repo(repo:str,path:Path,*,require_git:bool)->bool:
+    required=REPO_REQUIREMENTS.get(repo,())
+    return (
+        path.is_dir()
+        and all((path/rel).is_file() for rel in required)
+        and (not require_git or (path/".git").exists())
+    )
+
+def _canonical_repo_candidates(repo:str,env:dict[str,str])->list[Path]:
+    org,name=repo.split("/",1)
+    home=Path(env.get("HOME") or str(Path.home())).expanduser()
+    return [
+        (home/".stegverse/repos"/org/name).resolve(),
+        (Path("/var/lib/stegverse/source")/org/name).resolve(),
+        (Path("/srv/stegverse/repos")/org/name).resolve(),
+        (Path("/opt/stegverse/repos")/org/name).resolve(),
+    ]
+
 def _roots(env:dict[str,str])->dict[str,Path]:
     out={}
     raw=env.get("STEGVERSE_REPO_ROOTS_JSON","").strip()
@@ -18,14 +43,35 @@ def _roots(env:dict[str,str])->dict[str,Path]:
         for repo,path in value.items():
             if isinstance(repo,str) and isinstance(path,str):
                 p=Path(path).expanduser().resolve()
-                if p.is_dir(): out[repo]=p
+                if _valid_repo(repo,p,require_git=False): out[repo]=p
     direct={"StegVerse-Labs/StegOS":"STEGVERSE_STEGOS_ROOT","StegVerse-002/micro-node-runtime":"STEGVERSE_MICRO_NODE_RUNTIME_ROOT"}
     for repo,key in direct.items():
         raw=env.get(key,"").strip()
         if raw:
             p=Path(raw).expanduser().resolve()
-            if p.is_dir(): out[repo]=p
+            if _valid_repo(repo,p,require_git=False): out[repo]=p
+    for repo in REPO_REQUIREMENTS:
+        if repo in out:
+            continue
+        found=[]
+        for candidate in _canonical_repo_candidates(repo,env):
+            if candidate not in found and _valid_repo(repo,candidate,require_git=True):
+                found.append(candidate)
+        if len(found)==1:
+            out[repo]=found[0]
     return out
+
+def _runtime_root(env:dict[str,str], *, script_root:Path|None=None)->Path:
+    raw=env.get("STEGVERSE_HEARTBEAT_ROOT","").strip()
+    if raw:
+        runtime=Path(raw).expanduser().resolve()
+        if runtime.is_dir():
+            return runtime
+        raise PredicatePending("resident runtime root not materialized")
+    root=(script_root or Path(__file__).resolve().parents[1]).expanduser().resolve()
+    if root.is_dir() and not (root/".git").exists() and (root/"workers").is_dir() and (root/"control").is_dir():
+        return root
+    raise PredicatePending("resident runtime root unavailable")
 
 def _node()->dict[str,Any]:
     for p in NODE_MARKERS:
@@ -42,10 +88,7 @@ def materialize(env:dict[str,str]|None=None,output:Path|None=None)->dict[str,Any
     if not stegos: raise PredicatePending("local StegOS source root unavailable")
     if not micro: raise PredicatePending("local StegVerse-002/micro-node-runtime source root unavailable")
     if not (micro/"experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json").is_file(): raise PredicatePending("StegVerse-002 construction provenance not materialized")
-    runtime_raw=values.get("STEGVERSE_HEARTBEAT_ROOT","").strip()
-    if not runtime_raw: raise PredicatePending("resident runtime root unavailable")
-    runtime=Path(runtime_raw).expanduser().resolve()
-    if not runtime.is_dir(): raise PredicatePending("resident runtime root not materialized")
+    runtime=_runtime_root(values)
     node=_node(); identity=str(node.get("node_id") or node.get("node_ref") or node.get("boundary_identity_ref") or "").strip()
     if not identity: raise PredicatePending("node boundary identity unavailable")
     try: port=int(values.get("STEGVERSE_SV002_OBSERVE_PORT","8766"))
