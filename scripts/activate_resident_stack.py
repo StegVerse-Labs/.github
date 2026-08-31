@@ -4,8 +4,9 @@
 This is a local sovereign orchestration entrypoint. It packages the canonical
 .github control plane, passes that bundle to local StegDeploy, and relies on
 StegDeploy's post-health hook to materialize and invoke the resident bootstrap.
-The bootstrap then verifies G18 and immediately advances the independently
-admitted TVC/SKAP successor.
+The bootstrap primes the resident WorkerCoordinator, dispatches resident requests,
+and immediately advances independently admitted successors. G18 verification is
+retained only as diagnostic/housekeeping evidence and does not gate downstream work.
 
 The entrypoint grants no claim, fence, heartbeat, credential, route, provider,
 or execution authority. It refuses hosted execution surfaces.
@@ -135,10 +136,18 @@ def activate(
         skap = resident_result.get("post_bootstrap_tvc_skap_successor") if isinstance(resident_result, dict) else None
         skap = skap if isinstance(skap, dict) else {}
 
+        prime = resident_result.get("post_install_worker_prime") if isinstance(resident_result, dict) else None
+        prime = prime if isinstance(prime, dict) else {}
+        dispatch = resident_result.get("post_bootstrap_resident_request_dispatch") if isinstance(resident_result, dict) else None
+        dispatch = dispatch if isinstance(dispatch, dict) else {}
+        resident_task_capable = prime.get("task_capable_cycle_observed") is True
+        resident_dispatch_attempted = dispatch.get("attempted") is True
+
         state = "COMPLETE" if (
             deploy.returncode == 0
             and resident.get("attempted") is True
-            and resident.get("state") == "COMPLETE"
+            and resident_task_capable
+            and resident_dispatch_attempted
         ) else "INCOMPLETE"
 
         receipt = {
@@ -155,7 +164,10 @@ def activate(
             "stegdeploy_receipt_ref": str(deployment_receipt_path),
             "stegdeploy_receipt_observed": bool(deployment),
             "resident_bootstrap": resident,
-            "g18_activation_complete": resident.get("state") == "COMPLETE",
+            "resident_task_capable_cycle_observed": resident_task_capable,
+            "resident_request_dispatch_attempted": resident_dispatch_attempted,
+            "g18_housekeeping_state": resident.get("state"),
+            "g18_required_for_stack_completion": False,
             "tvc_skap_successor_attempted": skap.get("attempted") is True,
             "tvc_skap_successor_state": skap.get("state"),
             "network_source_fetch_performed_by_orchestrator": False,
