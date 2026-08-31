@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-STEGOS-KV-INTR-CHAIN-001",
+  "mode": "STEGOS_KV_INTR_CHAIN",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "steps": [
+    "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+    "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
+    "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "request_granted_authority": false,
+  "network_source_fetch_allowed": false,
+  "second_machine_required": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "Advance only the already-admitted StegOS relay materialization -> Node-KV continuity -> DEVICE_KV_INTR observation chain, and only after each authentic parent terminal receipt exists."
+}
