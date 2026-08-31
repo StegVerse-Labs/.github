@@ -21,6 +21,7 @@ CONSUMPTION_REL = Path("receipts/sovereign-host/stegos-kv-intr-chain-consumption
 ENTRYPOINT = Path("scripts/refresh_and_execute_resident_task.py")
 CHAIN_TASK_ID = "SHWP-STEGOS-KV-INTR-CHAIN-001"
 MODE = "STEGOS_KV_INTR_CHAIN"
+DEVICE_KV_TASK_ID = "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
 STEPS = (
     ("SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
      Path("receipts/stegos-sovereign-relay/SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001.json"),
@@ -28,7 +29,7 @@ STEPS = (
     ("SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
      Path("receipts/stegos-sovereign-relay/SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001.json"),
      "COMPLETED", "RELAY_NODE_KV_CONTINUITY_VERIFIED"),
-    ("SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+    (DEVICE_KV_TASK_ID,
      Path("receipts/device-kv-intr/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json"),
      "OBSERVED", "DEVICE_KV_INTR_OBSERVED"),
 )
@@ -94,7 +95,7 @@ def validate_request(request: Mapping[str, Any]) -> None:
         raise RuntimeError("StegOS/KV resident request step order mismatch")
 
 def terminal(runtime: Path, step: tuple[str, Path, str, str]) -> bool:
-    _, rel, state, transition = step
+    task_id, rel, state, transition = step
     path = runtime / rel
     if not path.is_file():
         return False
@@ -102,7 +103,17 @@ def terminal(runtime: Path, step: tuple[str, Path, str, str]) -> bool:
         value = load_json(path)
     except Exception:
         return False
-    return value.get("state") == state and value.get("transition_id") == transition
+    if value.get("state") != state or value.get("transition_id") != transition:
+        return False
+    if task_id == DEVICE_KV_TASK_ID:
+        return (
+            value.get("hb_derived_carrier_transport_observed") is True
+            and value.get("request_transported_on_hb_derived_carrier") is True
+            and value.get("response_transported_on_hb_derived_carrier") is True
+            and value.get("request_carrier_packet_recovery_verified") is True
+            and value.get("response_carrier_packet_recovery_verified") is True
+        )
+    return True
 
 def parse_last_json(stdout: str) -> dict[str, Any] | None:
     for line in reversed([x.strip() for x in stdout.splitlines() if x.strip()]):
