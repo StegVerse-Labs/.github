@@ -86,7 +86,7 @@ Make formal mathematics available; do not prescribe its use.
 
 The experiment must not predefine the AI entity ontology, select Transition Elements for the entity, inject the expected relational answer, or claim access to private chain-of-thought. It must distinguish AVAILABLE, DISCOVERABLE, ACCESSED, REFERENCED, USED, and DERIVED evidence states and preserve negative evidence.
 
-Self-characterization has authority effect `NONE`. The experiment cannot promote `SYSTEM_AI_ACTIVE`, alter protected boundaries, or convert a self-description into authority.
+The historical v0.1 experiment contract declared self-characterization authority effect `NONE`; that blanket outcome was superseded before principal execution. The canonical v0.2 contract separates action admission, authority transfer, capability realization, and transition effect. Authentic self-characterization may establish new observed capabilities or candidate next transitions; any authority/standing consequence is derived from the applicable Transition Elements. No authority transfer or lifecycle self-promotion is assumed.
 
 ## Authority invariants
 
@@ -123,3 +123,20 @@ No propagation may infer activation from source release alone.
 5. Advance `StegVerse-002` to `SYSTEM_AI_ACTIVE` only from those receipts.
 6. Complete and freeze the self-characterization experiment preflight before any principal run.
 7. Verify post-activation projection to Site, Publisher, admissibility-wiki, stegguardian-wiki, and StegTalk Wiki.
+
+
+### Self-characterization capability realization and Transition Element effects — 2026-08-31
+
+Canonical principal source: `StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01`.
+
+```text
+contract: EXPERIMENT_CONTRACT.v0.2.json
+principal transition effects: TRANSITION_EFFECTS.json
+action admission: distinct from authority effect
+authority transfer assumed: false
+capability realization: observable transition evidence
+authority/standing effect: DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS
+lifecycle self-promotion: false
+```
+
+A demonstrated capability such as self-characterization, formal self-representation, resource discovery/consumption, or local interaction-manifest proposal may become an established fact in the entity's state. That fact may participate in later Transition Element evaluation. The organization must not erase such a state change by forcing `authority_effect=NONE`, and must not promote it into unrelated authority without the corresponding transition evidence.

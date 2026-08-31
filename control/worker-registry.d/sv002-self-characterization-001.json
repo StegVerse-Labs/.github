@@ -5,7 +5,7 @@
     {
       "archive_eligible": false,
       "archive_reason_codes": [],
-      "authorized_policy_version": "sv002-self-characterization-v0.1",
+      "authorized_policy_version": "sv002-self-characterization-v0.2",
       "block_ref": null,
       "claim_id": null,
       "cost_basis_ref": null,
