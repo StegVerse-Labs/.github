@@ -14,9 +14,16 @@ WORKER_ID = "universal-governance-enforced-reference-worker"
 STEGCORE_ENV = "STEGVERSE_STEGCORE_SOURCE_ROOT"
 MASTER_RECORDS_ENV = "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT"
 BOUND_STATE_ENV = "STEGVERSE_BOUND_STATE_ROOT"
+REPO_ROOTS_ENV = "STEGVERSE_REPO_ROOTS_JSON"
 NODE_MARKERS = (Path("/etc/stegverse/node.json"), Path.home() / ".stegverse" / "node.json")
 HOSTED_ENV = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 FORBIDDEN_CREDENTIAL_ENV = ("GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT", "GIT_ASKPASS", "OAUTH_TOKEN")
+CANONICAL_REPO_BASES = (
+    Path.home() / ".stegverse" / "repos",
+    Path("/var/lib/stegverse/source"),
+    Path("/srv/stegverse/repos"),
+    Path("/opt/stegverse/repos"),
+)
 
 STEGCORE_REQUIRED = (
     Path("scripts/run_universal_governance_reference_boundary.py"),
@@ -77,11 +84,53 @@ def validate_invocation(invocation: Mapping[str, Any]) -> None:
         raise RuntimeError("GitHub token may not be required")
 
 
-def candidate_roots(env_name: str, names: tuple[str, ...]) -> list[Path]:
+def repository_roots() -> dict[str, Path]:
+    raw = str(os.getenv(REPO_ROOTS_ENV) or "").strip()
+    roots: dict[str, Path] = {}
+    if raw:
+        try:
+            value = json.loads(raw)
+        except Exception:
+            return {}
+        if not isinstance(value, dict):
+            return {}
+        for repository, path_value in value.items():
+            if not isinstance(repository, str) or "/" not in repository or not isinstance(path_value, str):
+                continue
+            try:
+                path = Path(path_value).expanduser().resolve()
+            except Exception:
+                continue
+            if path.is_dir():
+                roots[repository] = path
+        return roots
+
+    ambiguous: set[str] = set()
+    for base in CANONICAL_REPO_BASES:
+        if not base.is_dir():
+            continue
+        for owner in sorted(x for x in base.iterdir() if x.is_dir()):
+            for candidate in sorted(x for x in owner.iterdir() if x.is_dir()):
+                repository = f"{owner.name}/{candidate.name}"
+                resolved = candidate.resolve()
+                prior = roots.get(repository)
+                if prior is not None and prior != resolved:
+                    ambiguous.add(repository)
+                else:
+                    roots[repository] = resolved
+    for repository in ambiguous:
+        roots.pop(repository, None)
+    return roots
+
+
+def candidate_roots(env_name: str, names: tuple[str, ...], repository: str) -> list[Path]:
     roots: list[Path] = []
     explicit = str(os.getenv(env_name) or "").strip()
     if explicit:
         roots.append(Path(explicit))
+    mapped = repository_roots().get(repository)
+    if mapped is not None:
+        roots.append(mapped)
     for name in names:
         roots.extend([
             Path.cwd() / "workloads" / name,
@@ -93,9 +142,9 @@ def candidate_roots(env_name: str, names: tuple[str, ...]) -> list[Path]:
     return roots
 
 
-def find_source(env_name: str, names: tuple[str, ...], required: tuple[Path, ...]) -> Path | None:
+def find_source(env_name: str, names: tuple[str, ...], repository: str, required: tuple[Path, ...]) -> Path | None:
     seen: set[str] = set()
-    for candidate in candidate_roots(env_name, names):
+    for candidate in candidate_roots(env_name, names, repository):
         try:
             root = candidate.expanduser().resolve()
         except Exception:
@@ -110,8 +159,8 @@ def find_source(env_name: str, names: tuple[str, ...], required: tuple[Path, ...
 
 
 def require_sources() -> tuple[Path, Path]:
-    stegcore = find_source(STEGCORE_ENV, ("StegCore", "stegcore"), STEGCORE_REQUIRED)
-    master = find_source(MASTER_RECORDS_ENV, ("core-lite", "master-records-core-lite"), MR_REQUIRED)
+    stegcore = find_source(STEGCORE_ENV, ("StegCore", "stegcore"), "StegVerse-Labs/StegCore", STEGCORE_REQUIRED)
+    master = find_source(MASTER_RECORDS_ENV, ("core-lite", "master-records-core-lite"), "master-records/core-lite", MR_REQUIRED)
     if stegcore is None or master is None:
         missing = []
         if stegcore is None:
