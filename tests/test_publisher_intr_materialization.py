@@ -116,6 +116,11 @@ class PublisherInTrMaterializationTests(unittest.TestCase):
     def test_render_success_queues_reverse_materialization_source(self):
         source=(Path(__file__).resolve().parents[1]/"scripts/consume_publisher_intr_materialization_request.py").read_text()
         self.assertIn("build_materialization_request(response.intent",source)
+        self.assertIn("build_carrier_binding(",source)
+        self.assertIn('return_request["carrier_binding"]=carrier_binding',source)
+        self.assertIn('return_request["request_hash"]=sha(return_request_body)',source)
+        self.assertIn('"return_carrier_binding_sha256":carrier_binding["binding_sha256"]',source)
+        self.assertIn('"return_carrier_grants_authority":False',source)
         self.assertIn("RETURN_MATERIALIZATION_QUEUED_NOT_TRANSPORTED",source)
         self.assertIn("StegVerse-Labs/continuity-vault-kit",source)
 
