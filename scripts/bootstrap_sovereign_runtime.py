@@ -116,6 +116,75 @@ def default_post_bootstrap_receipt() -> Path:
     return (Path.home() / ".stegverse" / "continuity" / "sovereign-post-bootstrap.latest.json").resolve()
 
 
+def default_runtime_locator_path(env: dict[str, str] | None = None) -> Path | None:
+    if platform.system().lower() != "linux":
+        return None
+    values = dict(os.environ if env is None else env)
+    raw = str(values.get("XDG_RUNTIME_DIR") or "").strip()
+    base = Path(raw) if raw else Path("/run/user") / str(os.getuid())
+    if not base.is_absolute():
+        return None
+    return base / "stegverse" / "sovereign-runtime.json"
+
+
+def publish_runtime_locator(
+    source_root: Path,
+    runtime_root: Path,
+    *,
+    env: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    path = default_runtime_locator_path(env)
+    if path is None:
+        return {
+            "state": "NOT_APPLICABLE",
+            "published": False,
+            "reason": "RUNTIME_LOCATOR_LINUX_ONLY",
+            "authority_effect": "NONE",
+        }
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        owner = path.parent.stat().st_uid
+        if owner != os.getuid():
+            return {
+                "state": "HANDOFF_READY",
+                "published": False,
+                "reason": "RUNTIME_LOCATOR_PARENT_OWNER_MISMATCH",
+                "path": str(path),
+                "authority_effect": "NONE_LOCATOR_ONLY",
+            }
+        body = {
+            "schema": "stegverse.sovereign-runtime-locator/v1",
+            "uid": os.getuid(),
+            "runtime_root": str(runtime_root.expanduser().resolve()),
+            "source_root": str(source_root.expanduser().resolve()),
+            "credential_material_present": False,
+            "request_grants_authority": False,
+            "heartbeat_grants_authority": False,
+            "github_token_runtime_authority": "NONE",
+            "credential_authority": "TV/TVC",
+            "authority_effect": "NONE_LOCATOR_ONLY",
+        }
+        atomic_write(path, body)
+        os.chmod(path, 0o600)
+        return {
+            "state": "PUBLISHED",
+            "published": True,
+            "path": str(path),
+            "uid": os.getuid(),
+            "runtime_root": body["runtime_root"],
+            "credential_material_present": False,
+            "authority_effect": "NONE_LOCATOR_ONLY",
+        }
+    except Exception as exc:
+        return {
+            "state": "HANDOFF_READY",
+            "published": False,
+            "reason": f"RUNTIME_LOCATOR_PUBLICATION_FAILED:{type(exc).__name__}",
+            "path": str(path),
+            "authority_effect": "NONE_LOCATOR_ONLY",
+        }
+
+
 def derived_node_id(source_root: Path, state_root: Path) -> str:
     basis = {
         "schema": "stegverse.sovereign-node-declaration/v0.4",
@@ -553,6 +622,7 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         "installer_returncode": None,
         "verifier_returncode": None,
         "proof_path": str(proof_path),
+        "runtime_locator": {"state": "NOT_ELIGIBLE", "published": False, "authority_effect": "NONE"},
         "post_install_source_refresh_watcher": {"attempted": False, "state": "NOT_ELIGIBLE", "activated": False, "authority_effect": "NONE"},
         "post_install_worker_prime": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "NATIVE_INSTALLATION_NOT_COMPLETE", "returncode": None, "task_capable_cycle_observed": False, "authority_effect": "NONE"},
         "post_bootstrap_resident_request_dispatch": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "authority_effect": "NONE"},
@@ -569,6 +639,7 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         body["reason"] = "LOCAL_RUNTIME_ELIGIBILITY_NOT_PROVEN"
         atomic_write(receipt_path, body)
         return body
+    body["runtime_locator"] = publish_runtime_locator(source_root, runtime_root, env=env)
     child_env = scrubbed_child_env(env, source_root=source_root, runtime_root=runtime_root, proof_path=proof_path)
     install = runner([sys.executable, str(source_root / "scripts" / "install_sovereign_heartbeat_service.py"), "--source-root", str(source_root), "--runtime-root", str(runtime_root)], check=False, capture_output=True, text=True, timeout=180, env=child_env)
     body["installer_returncode"] = install.returncode
