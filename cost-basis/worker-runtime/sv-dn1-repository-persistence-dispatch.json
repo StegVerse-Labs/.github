@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "sv_dn1_repository_persistence_dispatch",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 12,
+    "expected_idle_beats": 32,
+    "expiry_candidate_beats": 256,
+    "confidence": "LOW_UNTIL_FIRST_TVC_END_TO_END_RUN"
+  },
+  "cost_estimate": {
+    "compute_units": 4,
+    "token_units": 0,
+    "storage_bytes": 8388608,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 2
+  },
+  "evidence_refs": [
+    "docs/SV_DN1_REPOSITORY_PERSISTENCE_DISPATCH_MIRROR_HANDOFF.md",
+    "handoffs/SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001.json",
+    "workers/sv_dn1_repository_persistence_dispatch_worker.py"
+  ],
+  "notes": [
+    "Stages exact non-secret request files and consumes sanitized TVC receipts.",
+    "No direct network or credential activity by the worker."
+  ]
+}

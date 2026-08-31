@@ -1,0 +1,41 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:sv-dn1-repository-persistence-dispatch-v1",
+      "authority_ref": "handoffs/SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "local_request_staging",
+        "sanitized_tvc_receipt_consumption"
+      ],
+      "command": [
+        "python",
+        "workers/sv_dn1_repository_persistence_dispatch_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_STATE_ROOT",
+        "STEGVERSE_TVC_SV_DN1_REPOSITORY_PERSISTENCE_ADMISSION",
+        "STEGVERSE_BOUND_STATE_ROOT",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/transport/sv-dn1-repository-persistence",
+      "bound_state_allowed_paths": [
+        "staged/**",
+        "outbox/**",
+        "inbox/**",
+        "receipts/**"
+      ],
+      "timeout_seconds": 240,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Stages exact non-secret TVC inspection/apply/PR requests only.",
+        "No direct GitHub call or repository mutation; TVC credential authority remains entirely external."
+      ]
+    }
+  ]
+}

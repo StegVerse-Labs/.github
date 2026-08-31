@@ -1,0 +1,71 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001",
+  "tasks": [
+    {
+      "task_id": "SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001",
+      "goal_id": "SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001",
+      "state": "HANDOFF_READY",
+      "claim_id": null,
+      "archive_eligible": false,
+      "executor_binding": "AUTHORIZED",
+      "authorized_policy_version": "sv-dn1-repository-persistence-dispatch-v1",
+      "handoff_ref": "handoffs/SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001.json",
+      "block_ref": "docs/SV_DN1_REPOSITORY_PERSISTENCE_DISPATCH_MIRROR_HANDOFF.md",
+      "cost_basis_ref": "cost-basis/worker-runtime/sv-dn1-repository-persistence-dispatch.json",
+      "evidence_refs": [
+        "docs/SV_DN1_REPOSITORY_PERSISTENCE_DISPATCH_MIRROR_HANDOFF.md",
+        "handoffs/SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001.json",
+        "workers/sv_dn1_repository_persistence_dispatch_worker.py",
+        "control/process-worker-adapters.d/sv-dn1-repository-persistence-dispatch-001.json"
+      ],
+      "admission": {
+        "authority_source": "handoffs/SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001.json#authority",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 22,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+        "dependency_task_id": "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001",
+        "dependency_terminal_state_required": "COMPLETED",
+        "dependency_terminal_transition_required": "SV_DN1_REPOSITORY_PERSISTENCE_PACKAGE_READY"
+      },
+      "source_state_vector_ref": "control/task-vectors/SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-31T08:05:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
+    }
+  ],
+  "workers": [
+    {
+      "worker_id": "sv-dn1-repository-persistence-dispatch-worker",
+      "status": "AVAILABLE",
+      "executor_type": "repository_worker",
+      "adapter_ref": "process:sv-dn1-repository-persistence-dispatch-v1",
+      "authority_source": "handoffs/SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "local_request_staging",
+        "sanitized_tvc_receipt_consumption"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#public-research-worker-v1",
+      "last_seen_at": null
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "priority": "release"
+}
