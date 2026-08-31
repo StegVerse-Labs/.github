@@ -247,9 +247,14 @@ def _allowed_request_supersession(existing: Mapping[str, Any], current: Mapping[
         "heartbeat_grants_execution_authority", "request_granted_authority",
         "network_source_fetch_allowed", "second_machine_required", "authority_effect",
     )
-    if existing.get("request_id") != "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-001":
+    existing_id = existing.get("request_id")
+    current_id = current.get("request_id")
+    if existing_id not in {
+        "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-001",
+        "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-002",
+    }:
         return False
-    if current.get("request_id") != "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-002":
+    if current_id != "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-003":
         return False
     if any(existing.get(key) != current.get(key) for key in same_contract_keys):
         return False
@@ -267,7 +272,7 @@ def materialize_request(runtime_root: Path, resident_request: Mapping[str, Any])
             return path
         if not _allowed_request_supersession(existing, validated):
             # This v1 lane owns one exact resident request. Only the canonical
-            # historical 001 -> current 002 migration is permitted.
+            # historical 001/002 -> current 003 migration is permitted.
             raise ResidentRendezvousConsumerError("local resident request differs from rendezvous request")
         archive_hash = sha256_uri(existing)[7:]
         archive = runtime_root / SUPERSEDED_REQUEST_DIR / f"{archive_hash}.json"

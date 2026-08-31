@@ -82,3 +82,17 @@ Cross-Framework Current-Basis Resident Request Validation: 33351750493 SUCCESS
 ```
 
 The continuous sovereign WorkerCoordinator source now polls the non-authorizing rendezvous when its non-secret Gateway URL/node selector are installed. The missing interactive SSH/server-control surface is no longer part of the steady-state execution contract. The current resident still has to refresh/deploy this merged source once before the rendezvous can be observed live.
+
+
+## 2026-08-31 request-003 rendezvous propagation — issue #654
+
+The canonical Device-KV resident intent is now `RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-003`.
+
+Resident rendezvous local materialization permits only the bounded historical migration:
+```text
+001 -> 003
+002 -> 003
+```
+provided the execution contract remains identical for schema, state, task, mode, entrypoint, credential/authority flags, and the canonical three-step chain. The prior local request is archived write-once before replacement and verified after write.
+
+No unrelated request id, task, mode, command, credential, or step vector may be substituted. This is request continuity only; it does not create WorkerCoordinator claim/fence, execution authority, HB progression authority, or runtime evidence.
