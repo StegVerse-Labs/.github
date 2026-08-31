@@ -16,14 +16,17 @@ from scripts.consume_universal_governance_enforced_reference_request import (
 
 class UniversalGovernanceResidentRequestTests(unittest.TestCase):
     def test_clean_env_forwards_only_declared_nonsecret_locators(self):
+        repo_map = '{"StegVerse-Labs/StegCore":"/local/stegcore","master-records/core-lite":"/local/master-records"}'
         env = clean_env({
             "PATH": "/usr/bin",
             "STEGVERSE_STEGCORE_SOURCE_ROOT": "/local/stegcore",
             "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": "/local/master-records",
+            "STEGVERSE_REPO_ROOTS_JSON": repo_map,
             "UNRELATED_SECRET": "excluded",
         })
         self.assertEqual(env["STEGVERSE_STEGCORE_SOURCE_ROOT"], "/local/stegcore")
         self.assertEqual(env["STEGVERSE_MASTER_RECORDS_SOURCE_ROOT"], "/local/master-records")
+        self.assertEqual(env["STEGVERSE_REPO_ROOTS_JSON"], repo_map)
         self.assertEqual(env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"], "TV/TVC")
         self.assertNotIn("UNRELATED_SECRET", env)
 
