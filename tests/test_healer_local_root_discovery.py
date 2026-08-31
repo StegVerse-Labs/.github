@@ -4,6 +4,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -62,6 +63,27 @@ class HealerLocalRootDiscoveryTests(unittest.TestCase):
             roots, source = MOD.discover_repo_roots(json.dumps({"Example/Repo": str(path)}))
         self.assertEqual(source, "EXPLICIT_NONSECRET_OVERRIDE")
         self.assertEqual(roots, {"Example/Repo": str(path.resolve())})
+
+
+    def test_named_safe_local_roots_are_merged_without_overriding_explicit_map(self):
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            llm = base / "llm"
+            tvc = base / "tvc"
+            llm.mkdir()
+            tvc.mkdir()
+            with mock.patch.dict(
+                MOD.os.environ,
+                {
+                    "STEGVERSE_LLM_ADAPTER_ROOT": str(llm),
+                    "STEGVERSE_TVC_ROOT": str(tvc),
+                },
+                clear=False,
+            ):
+                roots = MOD.merge_named_repository_roots({"Existing/Repo": "/existing"})
+        self.assertEqual(roots["Existing/Repo"], "/existing")
+        self.assertEqual(roots["StegVerse-org/LLM-adapter"], str(llm.resolve()))
+        self.assertEqual(roots["StegVerse-Labs/TVC"], str(tvc.resolve()))
 
     def test_ambiguous_healer_discovery_fails_closed(self):
         with tempfile.TemporaryDirectory() as td:
