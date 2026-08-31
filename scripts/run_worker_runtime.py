@@ -44,6 +44,9 @@ TRANSITION_RECEIPT_REL = Path("receipts/heartbeat-transition-continuity/latest.j
 PORTABLE_RECEIPT_DIR_REL = Path("receipts/heartbeat-transition-continuity")
 IPHONE_VERIFIER_REL = Path("scripts/verify_iphone_heartbeat_transition_receipt.py")
 TRANSITION_REFRESH_REL = Path("scripts/refresh_heartbeat_transition_receipt.py")
+RENDEZVOUS_CONSUMER_REL = Path("scripts/consume_resident_rendezvous.py")
+RENDEZVOUS_RECEIPT_REL = Path("receipts/sovereign-host/resident-rendezvous-consumption.latest.json")
+RENDEZVOUS_POLL_INTERVAL_SECONDS = 30.0
 CONTROL_PLANE_PROJECTOR_REL = Path("scripts/project_worker_control_plane_from_carrier.py")
 G18_TASK_ID = "SHWP-DURABLE-RUNTIME-ACTIVATION"
 G18_WORKER_ID = "sovereign-runtime-activation-worker"
@@ -54,6 +57,7 @@ HOSTED_ENV = ("GITHUB_ACTIONS", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAG
 SAFE_BOOTSTRAP_ENV = {
     "HOME", "USER", "LOGNAME", "SHELL", "PATH", "PYTHONPATH", "LANG", "LC_ALL", "TMPDIR",
     "XDG_CONFIG_HOME", "XDG_STATE_HOME", "LOCALAPPDATA", "UID", "STEGVERSE_HEARTBEAT_ROOT",
+    "STEGVERSE_RESIDENT_RENDEZVOUS_URL", "STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF",
     *HOSTED_ENV,
 }
 
@@ -366,6 +370,69 @@ def project_control_plane_if_missing(root: Path, *, runner=subprocess.run) -> di
     return {"state": "CONTROL_PLANE_PROJECTED", "carrier_generation": observed.get("carrier_generation"), "reference_frame": observed.get("reference_frame")}
 
 
+def poll_resident_rendezvous(
+    root: Path,
+    *,
+    runner=subprocess.run,
+    env: dict[str, str] | None = None,
+) -> dict[str, Any] | None:
+    """Poll the non-authorizing Service Gateway request carrier once.
+
+    The rendezvous consumer may materialize one already-admitted local resident
+    request and invoke the existing exact consumer. The Gateway request itself
+    grants no claim, fence, credential, or execution authority.
+    """
+    values = dict(os.environ if env is None else env)
+    base_url = str(values.get("STEGVERSE_RESIDENT_RENDEZVOUS_URL") or "").strip()
+    node_ref = str(values.get("STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF") or "").strip()
+    if not base_url or not node_ref:
+        return None
+    script = root / RENDEZVOUS_CONSUMER_REL
+    if not script.is_file():
+        return {
+            "state": "CONSUMER_NOT_MATERIALIZED",
+            "runtime_execution_attempted": False,
+            "gateway_execution_authority": "NONE",
+            "authority_effect": "NONE",
+        }
+    completed = runner(
+        [
+            sys.executable,
+            str(script),
+            "--runtime-root", str(root),
+            "--source-root", str(root),
+            "--base-url", base_url,
+            "--node-ref", node_ref,
+        ],
+        cwd=root,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=1800,
+        env=_safe_bootstrap_env(values),
+    )
+    receipt_path = root / RENDEZVOUS_RECEIPT_REL
+    receipt = None
+    if receipt_path.is_file():
+        try:
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        except Exception:
+            receipt = None
+    return {
+        "state": (
+            receipt.get("state")
+            if isinstance(receipt, dict)
+            else ("POLL_COMPLETE" if completed.returncode == 0 else "POLL_FAILED")
+        ),
+        "returncode": completed.returncode,
+        "receipt": receipt,
+        "gateway_execution_authority": "NONE",
+        "worker_coordinator_remains_execution_admission_authority": True,
+        "credential_authority": "TV/TVC",
+        "authority_effect": "NONE_REQUEST_CARRIER_ONLY",
+    }
+
+
 def refresh_transition_release(root: Path, *, runner=subprocess.run) -> dict[str, Any] | None:
     script = root / TRANSITION_REFRESH_REL
     receipt = root / TRANSITION_RECEIPT_REL
@@ -413,8 +480,15 @@ def main() -> int:
     signal.signal(signal.SIGTERM, stop)
     signal.signal(signal.SIGINT, stop)
     index = 0
+    next_rendezvous_poll = 0.0
     while running and (args.continuous or index < args.cycles):
+        rendezvous_result = None
+        if not args.task_id and not args.dry_run and time.monotonic() >= next_rendezvous_poll:
+            rendezvous_result = poll_resident_rendezvous(root)
+            next_rendezvous_poll = time.monotonic() + RENDEZVOUS_POLL_INTERVAL_SECONDS
         result = runtime.cycle(write=not args.dry_run, target_task_id=args.task_id)
+        if rendezvous_result is not None:
+            result["resident_rendezvous"] = rendezvous_result
         if bootstrap_result is not None:
             result["initial_carrier_bootstrap"] = bootstrap_result
             bootstrap_result = None

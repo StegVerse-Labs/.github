@@ -56,6 +56,7 @@ STATIC_FILES = (
     Path("scripts/serve_bootstrap_v1_intr_bundle_delivery.py"),
     Path("scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py"),
     Path("scripts/consume_stegos_kv_intr_chain_request.py"),
+    Path("scripts/consume_resident_rendezvous.py"),
     Path("scripts/consume_tvc_broker_validation_request.py"),
     Path("scripts/bootstrap_tvc_pr92_validation_source.py"),
     Path("scripts/consume_sv002_self_characterization_request.py"),
