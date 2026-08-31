@@ -47,6 +47,9 @@ TRANSITION_REFRESH_REL = Path("scripts/refresh_heartbeat_transition_receipt.py")
 RENDEZVOUS_CONSUMER_REL = Path("scripts/consume_resident_rendezvous.py")
 RENDEZVOUS_RECEIPT_REL = Path("receipts/sovereign-host/resident-rendezvous-consumption.latest.json")
 RENDEZVOUS_POLL_INTERVAL_SECONDS = 30.0
+LOCAL_REQUEST_DISPATCHER_REL = Path("scripts/dispatch_resident_execution_requests.py")
+LOCAL_REQUEST_DISPATCH_RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
+LOCAL_REQUEST_DISPATCH_INTERVAL_TICKS = 100
 CONTROL_PLANE_PROJECTOR_REL = Path("scripts/project_worker_control_plane_from_carrier.py")
 G18_TASK_ID = "SHWP-DURABLE-RUNTIME-ACTIVATION"
 G18_WORKER_ID = "sovereign-runtime-activation-worker"
@@ -433,6 +436,67 @@ def poll_resident_rendezvous(
     }
 
 
+
+def dispatch_local_resident_requests(
+    root: Path,
+    *,
+    runner=subprocess.run,
+) -> dict[str, Any]:
+    """Consume already-materialized resident requests from the native worker process.
+
+    This is not a scheduler and does not derive authority from HeartBeat. The native
+    WorkerCoordinator process periodically visits the existing request dispatcher in
+    worker-runtime logical ticks. Each request-specific consumer still owns its own
+    claim/fence/admission checks and exactly-once consequence semantics.
+    """
+    dispatcher = root / LOCAL_REQUEST_DISPATCHER_REL
+    if not dispatcher.is_file():
+        return {
+            "state": "DISPATCHER_NOT_MATERIALIZED",
+            "runtime_execution_attempted": False,
+            "request_dispatch_grants_authority": False,
+            "heartbeat_grants_execution_authority": False,
+            "authority_effect": "NONE",
+        }
+    completed = runner(
+        [
+            sys.executable,
+            str(dispatcher),
+            "--source-root", str(root),
+            "--runtime-root", str(root),
+        ],
+        cwd=root,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=7200,
+    )
+    receipt_path = root / LOCAL_REQUEST_DISPATCH_RECEIPT_REL
+    receipt = None
+    if receipt_path.is_file():
+        try:
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        except Exception:
+            receipt = None
+    return {
+        "state": (
+            receipt.get("state")
+            if isinstance(receipt, dict)
+            else ("DISPATCH_PROCESS_COMPLETE" if completed.returncode == 0 else "DISPATCH_PROCESS_FAILED")
+        ),
+        "returncode": completed.returncode,
+        "receipt": receipt,
+        "runtime_execution_attempted": True,
+        "request_dispatch_grants_authority": False,
+        "heartbeat_grants_execution_authority": False,
+        "worker_coordinator_remains_execution_admission_authority": True,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "authority_effect": "NONE_NATIVE_REQUEST_VISIT_ONLY",
+    }
+
+
+
 def refresh_transition_release(root: Path, *, runner=subprocess.run) -> dict[str, Any] | None:
     script = root / TRANSITION_REFRESH_REL
     receipt = root / TRANSITION_RECEIPT_REL
@@ -483,12 +547,17 @@ def main() -> int:
     next_rendezvous_poll = 0.0
     while running and (args.continuous or index < args.cycles):
         rendezvous_result = None
+        local_request_dispatch = None
         if not args.task_id and not args.dry_run and time.monotonic() >= next_rendezvous_poll:
             rendezvous_result = poll_resident_rendezvous(root)
             next_rendezvous_poll = time.monotonic() + RENDEZVOUS_POLL_INTERVAL_SECONDS
+        if not args.task_id and not args.dry_run and index % LOCAL_REQUEST_DISPATCH_INTERVAL_TICKS == 0:
+            local_request_dispatch = dispatch_local_resident_requests(root)
         result = runtime.cycle(write=not args.dry_run, target_task_id=args.task_id)
         if rendezvous_result is not None:
             result["resident_rendezvous"] = rendezvous_result
+        if local_request_dispatch is not None:
+            result["local_resident_request_dispatch"] = local_request_dispatch
         if bootstrap_result is not None:
             result["initial_carrier_bootstrap"] = bootstrap_result
             bootstrap_result = None
