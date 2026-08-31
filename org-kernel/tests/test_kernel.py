@@ -73,3 +73,79 @@ with tempfile.TemporaryDirectory() as td:
     assert rollup["consumed_count"]==14
     assert rollup["pending_count"]==0
 print("ECOSYSTEM_BROADCAST_PASS")
+
+
+# 14-node monitor request -> response roll-up proof
+with tempfile.TemporaryDirectory() as td:
+    mesh=Path(td)/"mesh"
+    orgs=["AaCT-E","Admissible-Existence","AdmittedCode","Data-Continuation","ECAT-ICAT-Formal",
+          "formalism-tests","GCAT-BCAT-Engine","Infrastructure-Continuity-Ventures","master-records",
+          "StegGhost","StegVerse-002","StegVerse-Labs","StegVerse-org","Triad-Test"]
+    roots={}
+    directory={"denominator":14,"organizations":[{"organization":org} for org in orgs]}
+    for org in orgs:
+        root=Path(td)/k.organization_slug(org)
+        (root/"org-boundary/registry").mkdir(parents=True)
+        (root/"resident-runtime").mkdir(parents=True)
+        service=k.organization_slug(org)+".org-control"
+        reg={"organization":org,"services":[{"service_id":service,"repository":org+"/.github","boundary_role":"BOUNDARY_LOCAL_CONTROL"}]}
+        (root/"org-boundary/registry/services.json").write_text(json.dumps(reg))
+        (root/"org-boundary/registry/federation.json").write_text(json.dumps(directory))
+        (root/"resident-runtime/activation-manifest.json").write_text(json.dumps({"state":"TEST_ACTIVE","kernel":{"version":"1.3.0"}}))
+        roots[org]=root
+    origin=roots["StegVerse-Labs"]
+    pub=k.publish_ecosystem_from_directory(
+        origin,
+        message_class="ecosystem.monitor.request",
+        subject="ecosystem-monitor-response-001",
+        body={"monitor":"resident-status"},
+        requested_action="REPORT_STATUS",
+        communication_id="ecosystem-monitor-response-001",
+        mesh_root=mesh,
+        now_ns=k.HB_ANCHOR_UNIX_NS+4_000_000_000
+    )
+    assert pub["published_count"]==14
+    for org,root in roots.items():
+        k.consume_and_respond(root,mesh_root=mesh,now_ns=k.HB_ANCHOR_UNIX_NS+4_100_000_000)
+    roll=k.collect_ecosystem_responses("StegVerse-Labs","ecosystem-monitor-response-001",mesh_root=mesh)
+    assert roll["response_count"]==14
+    assert {x["organization"] for x in roll["organizations"]}==set(orgs)
+
+# 14-node work request -> local admission queue proof
+with tempfile.TemporaryDirectory() as td:
+    mesh=Path(td)/"mesh"
+    orgs=["AaCT-E","Admissible-Existence","AdmittedCode","Data-Continuation","ECAT-ICAT-Formal",
+          "formalism-tests","GCAT-BCAT-Engine","Infrastructure-Continuity-Ventures","master-records",
+          "StegGhost","StegVerse-002","StegVerse-Labs","StegVerse-org","Triad-Test"]
+    roots={}
+    directory={"denominator":14,"organizations":[{"organization":org} for org in orgs]}
+    for org in orgs:
+        root=Path(td)/k.organization_slug(org)
+        (root/"org-boundary/registry").mkdir(parents=True)
+        service=k.organization_slug(org)+".org-control"
+        reg={"organization":org,"services":[{"service_id":service,"repository":org+"/.github","boundary_role":"BOUNDARY_LOCAL_CONTROL"}]}
+        (root/"org-boundary/registry/services.json").write_text(json.dumps(reg))
+        (root/"org-boundary/registry/federation.json").write_text(json.dumps(directory))
+        roots[org]=root
+    origin=roots["StegVerse-Labs"]
+    pub=k.publish_ecosystem_from_directory(
+        origin,
+        message_class="ecosystem.work.request",
+        subject="ecosystem-work-intake-001",
+        body={"goal":"perform local status reconciliation"},
+        requested_action="RECONCILE_LOCAL_STATUS",
+        communication_id="ecosystem-work-intake-001",
+        mesh_root=mesh,
+        now_ns=k.HB_ANCHOR_UNIX_NS+5_000_000_000
+    )
+    assert pub["published_count"]==14
+    for org,root in roots.items():
+        k.consume_and_respond(root,mesh_root=mesh,now_ns=k.HB_ANCHOR_UNIX_NS+5_100_000_000)
+        inbox=list((root/"resident-runtime/control/inbox").glob("*.json"))
+        assert len(inbox)==1
+        record=json.loads(inbox[0].read_text())
+        assert record["state"]=="QUEUED_FOR_LOCAL_ADMISSION_EVALUATION"
+        assert record["execution_authority_inferred"] is False
+    roll=k.collect_ecosystem_responses("StegVerse-Labs","ecosystem-work-intake-001",mesh_root=mesh)
+    assert roll["response_count"]==14
+print("ECOSYSTEM_CONTROL_RESPONSE_PASS")
