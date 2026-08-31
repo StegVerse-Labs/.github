@@ -62,6 +62,19 @@
         "dependency_task_id": "BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001",
         "dependency_terminal_state_required": "COMPLETED",
         "dependency_terminal_transition_required": "BOOTSTRAP_V1_DISTRIBUTABLE_BUNDLE_BUILT"
+      },
+      "source_state_vector_ref": "control/task-vectors/BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000103000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T19:50:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],
