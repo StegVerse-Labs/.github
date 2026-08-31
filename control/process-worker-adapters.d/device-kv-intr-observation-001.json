@@ -10,15 +10,22 @@
         "bounded_process_execution",
         "durable_state_reconstruction"
       ],
-      "command": ["python", "workers/device_kv_intr_observation_worker.py"],
+      "command": [
+        "python",
+        "workers/device_kv_intr_observation_worker.py"
+      ],
       "cwd": ".",
       "enabled": true,
-      "env_allowlist": ["STEGVERSE_STEGOS_ROOT", "STEGVERSE_KV_SOURCE_ROOT"],
+      "env_allowlist": [
+        "STEGVERSE_STEGOS_ROOT",
+        "STEGVERSE_KV_SOURCE_ROOT",
+        "STEGVERSE_DEVICE_KV_INTR_MATERIALIZATION_ID"
+      ],
       "notes": [
-        "Only non-secret already-local source root locators may be forwarded.",
-        "The worker requires authentic parent RELAY_NODE_KV_CONTINUITY_VERIFIED evidence before emitting any VERIFIED boundary receipt.",
-        "Loopback TCP is used as the deployment-local carrier; it proves DEVICE_KV_INTR only and does not imply public ingress, external route, or second-device transport.",
-        "HeartBeat is reference-only. TV/TVC remains credential authority. GitHub token runtime authority is NONE."
+        "Only non-secret already-local source root locators and one opaque materialization id may be forwarded.",
+        "A verified canonical device-kv materialization ingress may trigger the task without making relay Node-KV continuity a universal transport prerequisite.",
+        "Authentic relay Node-KV continuity remains an optional stronger predecessor proof.",
+        "Loopback TCP remains the bounded observation carrier. Event ingress, HeartBeat, and transport do not mint claim/fence or credential authority."
       ],
       "timeout_seconds": 120,
       "type": "process_json_v0.1"

@@ -2,13 +2,13 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DEVICE-KV-INTR-OBSERVATION-001",
   "created_at": "2026-08-30T04:12:00Z",
-  "updated_at": "2026-08-30T05:06:00Z",
+  "updated_at": "2026-08-31T02:25:35Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
-    "objective": "After authentic relay Node-KV continuity, observe one exact non-sensitive DEVICE<->KV InTr request/response over the existing deployment-local sovereign runtime and preserve reconstructable canonical evidence.",
+    "objective": "Observe one exact non-sensitive DEVICE<->KV InTr request/response when either authentic relay Node-KV continuity or a verified canonical device-kv event-materialization ingress is available, preserving reconstructable evidence without requiring an always-running receiver.",
     "success_predicates": [
-      "Parent SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001 receipt is authentic COMPLETED RELAY_NODE_KV_CONTINUITY_VERIFIED.",
+      "Either authentic relay Node-KV continuity or a verified stegverse.device-kv-intr-materialization-ingress/v1 event is available.",
       "Exact request bytes traverse a bounded deployment-local TCP carrier from DEVICE to the KV boundary receiver.",
       "The receiver binds the request to the authentic parent Node-KV continuity identity and issues a canonical DEVICE->KV InTr receipt only after receiving the bytes.",
       "The merged continuity-vault-kit KVInterlockRuntime consumes the verified envelope and receipt reference.",
@@ -18,7 +18,7 @@
     ],
     "failure_predicates": [
       "Hosted CI or fixture evidence substitutes for deployment-local byte transport.",
-      "The worker fabricates a VERIFIED boundary without authentic parent Node-KV continuity evidence.",
+      "The worker fabricates VERIFIED boundary state without either authentic relay continuity or independently validated canonical event-ingress evidence.",
       "A second runtime owner, endpoint authority, scheduler, HeartBeat, credential path, or transport broker is created.",
       "GitHub token or NON-TV/TVC secret becomes runtime authority.",
       "HIL or G18 completion is treated as a prerequisite or their claim/fence is consumed.",
@@ -43,20 +43,23 @@
     "canonical_lineage_key": "shwp:device-kv-intr-observation",
     "derivation_depth": 0,
     "priority": "release",
-    "operational_state": "REQUIRED_RUNTIME_EXECUTION_AFTER_PARENT",
+    "operational_state": "REQUIRED_RUNTIME_EXECUTION_ON_ADMITTED_DEVICE_KV_EVENT_OR_OPTIONAL_STRONGER_RELAY_PROOF",
     "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
     "fencing_token": null,
     "source_refs": [
       "docs/DEVICE_KV_INTR_SOVEREIGN_OBSERVATION_MIRROR_HANDOFF.md",
       "workers/device_kv_intr_observation_worker.py",
       "StegVerse-Labs/continuity-vault-kit/runtime/kv_interlock_endpoint.py",
-      "StegVerse-Labs/StegOS/stegos/relay_node_kv_continuity.py"
+      "StegVerse-Labs/StegOS/stegos/relay_node_kv_continuity.py",
+      "scripts/consume_device_kv_intr_materialization_request.py",
+      "workers/universal_intr_profiled_ingress.py",
+      "StegVerse-Labs/StegOS/stegos/universal_intr_materialization.py"
     ],
     "source_pr": 499,
     "source_merge": "f5691026575578d70f137b6fc660a051f97097ff"
   },
   "authority": {
-    "authority_source": "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001 + continuity-vault-kit KV-INTERLOCK-v1",
+    "authority_source": "StegVerse-Labs/.github#575 + existing SHWP-DEVICE-KV-INTR-OBSERVATION-001 independent task authority; TV/TVC unchanged",
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
     "policy_version": "device-kv-intr-observation-v0.1",
     "heartbeat_grants_execution_authority": false,
@@ -87,14 +90,16 @@
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 24,
     "rate_class": "device_kv_intr_observation",
-    "parent_task_id": "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
-    "parent_terminal_evidence": "receipts/stegos-sovereign-relay/SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001.json",
+    "parent_task_id": null,
+    "parent_terminal_evidence": "OPTIONAL_STRONGER_EVIDENCE",
     "controlled_operation": {
       "schema_version": "kv.interlock.request.v1",
       "operation": "DISCOVER",
       "purpose": "DEVICE_KV_INTR sovereign transport observation",
       "record_class": "transport-capability-observation",
-      "requested_scope": ["capability_status"],
+      "requested_scope": [
+        "capability_status"
+      ],
       "minimum_necessary_justification": "Observe transport integrity without personal-record access.",
       "authority_ref": "CONTROLLED_NON_SENSITIVE_OBSERVATION_ONLY",
       "disclosure_mode": "SOURCE_REFERENCE_ONLY"
@@ -109,12 +114,12 @@
       "organization_control_exact_head": "SUCCESS",
       "stale_pull_request_closed_unmerged": 485
     },
-    "runtime_activation_state": "PENDING_PARENT_AND_MACHINE_EXECUTION",
+    "runtime_activation_state": "PENDING_AUTHENTIC_EVENT_OR_OPTIONAL_STRONGER_RELAY_PROOF",
     "parent_terminal_evidence_observed": false,
     "runtime_observation_claimed": false,
     "terminal_evidence": "receipts/device-kv-intr/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json with state OBSERVED and capability_type DEVICE_KV_INTR",
     "terminal_when": [
-      "parent receipt is authentic COMPLETED RELAY_NODE_KV_CONTINUITY_VERIFIED",
+      "a verified device-kv materialization ingress exists OR authentic parent relay continuity is verified",
       "request and response exact bytes are independently transported and rehashed",
       "canonical DEVICE->KV and KV->DEVICE receipt hashes and lineage validate",
       "KVInterlockRuntime response is bound to the request receipt reference",
@@ -122,7 +127,7 @@
       "credential authority remains TV/TVC with no credential material",
       "canonical KV mutation and provider operation remain false"
     ],
-    "next_authorized_action": "After the parent continuity receipt exists, the existing WorkerCoordinator independently admits this HANDOFF_READY task under a fresh fence greater than 21 and invokes process:device-kv-intr-observation-v1 on the deployment-local sovereign carrier.",
+    "next_authorized_action": "On the next admitted device-kv Universal InTr materialization event, shared profiled ingress persists the request/ingress receipt and dispatches the non-authorizing materialization consumer, which invokes the existing targeted WorkerCoordinator executor. Relay continuity remains an optional stronger proof.",
     "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-DEVICE-KV-INTR-OBSERVATION-001"
   },
   "activation": {
@@ -132,7 +137,12 @@
     "targeted_execution": {
       "mode": "TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT",
       "entrypoint": "scripts/run_worker_runtime.py",
-      "argv": ["python", "scripts/run_worker_runtime.py", "--task-id", "SHWP-DEVICE-KV-INTR-OBSERVATION-001"],
+      "argv": [
+        "python",
+        "scripts/run_worker_runtime.py",
+        "--task-id",
+        "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
+      ],
       "requires_existing_separated_carrier_reference": true,
       "g18_bootstrap_allowed": false,
       "compatibility_carrier_packet_consumption": false,
@@ -144,13 +154,18 @@
       "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
     },
     "executor_binding": "AUTHORIZED",
-    "authorization_ref": "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001 + continuity-vault-kit KV-INTERLOCK-v1",
+    "authorization_ref": "StegVerse-Labs/.github#575 + existing task authority",
     "checkout_policy": "fenced_atomic_checkout",
     "claim_generation_rule": "fresh WorkerCoordinator fencing generation; no historical claim/fence reuse",
     "portable_refresh_then_execute": {
       "mode": "PORTABLE_REFRESH_THEN_TARGETED_ONE_SHOT",
       "entrypoint": "scripts/refresh_and_execute_resident_task.py",
-      "argv": ["python", "scripts/refresh_and_execute_resident_task.py", "--task-id", "SHWP-DEVICE-KV-INTR-OBSERVATION-001"],
+      "argv": [
+        "python",
+        "scripts/refresh_and_execute_resident_task.py",
+        "--task-id",
+        "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
+      ],
       "systemd_required": false,
       "second_machine_required": false,
       "network_source_fetch_allowed": false,
@@ -160,6 +175,26 @@
       "heartbeat_grants_execution_authority": false,
       "github_token_runtime_authority": "NONE",
       "credential_authority": "TV/TVC"
+    },
+    "transport_event_materialization": {
+      "schema": "stegverse.universal-intr-materialization-request/v1",
+      "event_triggered": true,
+      "always_on_receiver_required": false,
+      "second_user_device_required": false,
+      "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+      "downstream_owner_ref": "StegVerse-Labs/continuity-vault-kit#79",
+      "destination": {
+        "boundary": "KV",
+        "subsystem": "KnowledgeVault:Interlock"
+      },
+      "ingress_ref": "workers/universal_intr_profiled_ingress.py",
+      "consumer_ref": "scripts/consume_device_kv_intr_materialization_request.py",
+      "existing_target_task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+      "request_grants_authority": false,
+      "consumer_mints_claim_or_fence": false,
+      "relay_continuity_required_for_transport_initiation": false,
+      "runtime_observation_observed": false,
+      "authority_effect": "NONE_REQUEST_ONLY"
     }
   }
 }
