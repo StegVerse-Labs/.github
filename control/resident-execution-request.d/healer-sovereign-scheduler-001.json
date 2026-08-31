@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "credential_authority": "TV/TVC",
+  "credential_requirement": "NONE",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "requested_at": "2026-08-31T13:46:00-05:00",
+  "trigger_reason": "Public SV002 Universal InTr profile observed HTTP 404 after source route existed; repaired Healer/Gateway bindings are merged and require an admitted resident retry.",
+  "source_repairs": [
+    "StegVerse-org/LLM-adapter#244@49676d20cff32ee346f22cfd79726b0127d80b33",
+    "StegVerse-Labs/StegVerse-Healer#53@7629e2d98d203aedc2ef49ff778a0e8b8802030b",
+    "StegVerse-Labs/.github#679@e946ba322476ca893029bf728423bdb80c07b4fc"
+  ],
+  "public_observation": {
+    "site_issue": 860,
+    "run": 33425263120,
+    "artifact": 9770511743,
+    "classification": "OBSERVED_BLOCKED",
+    "result": "HTTP_404_NOT_FOUND"
+  },
+  "note": "Request only. Existing WorkerCoordinator admission, dependency, claim, fence, and fixed-handler checks remain authoritative. Public route success requires separate observation."
+}
