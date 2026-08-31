@@ -39,14 +39,14 @@
     "canonical_lineage_key": "sv002:self-characterization:001",
     "derivation_depth": 0,
     "source_refs": [
-      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9",
-      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9:experiments/self-characterization-001/EXPERIMENT_MANIFEST.v0.2.json",
-      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9:experiments/self-characterization-001/EXPERIMENT_CONTRACT.v0.2.json",
-      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9:experiments/self-characterization-001/EVIDENCE_RECONSTRUCTION_PROTOCOL.v0.2.json",
-      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9:experiments/self-characterization-001/SUBJECT_IDENTITY_MANIFEST.v0.1.json",
-      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9:schemas/self_characterization_runtime_identity.schema.json",
-      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9:tools/verify_self_characterization_runtime_identity.py",
-      "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9:tools/run_self_characterization_principal.py",
+      "StegVerse-002/micro-node-runtime@0b988183a2a05607afb0816036a9cf7ce14e3640",
+      "StegVerse-002/micro-node-runtime@0b988183a2a05607afb0816036a9cf7ce14e3640:experiments/self-characterization-001/EXPERIMENT_MANIFEST.v0.2.json",
+      "StegVerse-002/micro-node-runtime@0b988183a2a05607afb0816036a9cf7ce14e3640:experiments/self-characterization-001/EXPERIMENT_CONTRACT.v0.2.json",
+      "StegVerse-002/micro-node-runtime@0b988183a2a05607afb0816036a9cf7ce14e3640:experiments/self-characterization-001/EVIDENCE_RECONSTRUCTION_PROTOCOL.v0.2.json",
+      "StegVerse-002/micro-node-runtime@0b988183a2a05607afb0816036a9cf7ce14e3640:experiments/self-characterization-001/SUBJECT_IDENTITY_MANIFEST.v0.1.json",
+      "StegVerse-002/micro-node-runtime@0b988183a2a05607afb0816036a9cf7ce14e3640:schemas/self_characterization_runtime_identity.schema.json",
+      "StegVerse-002/micro-node-runtime@0b988183a2a05607afb0816036a9cf7ce14e3640:tools/verify_self_characterization_runtime_identity.py",
+      "StegVerse-002/micro-node-runtime@0b988183a2a05607afb0816036a9cf7ce14e3640:tools/run_self_characterization_principal.py",
       "Admissible-Existence/TT@ab60b42934222a2cb5335a5a8194f258a491fc57",
       "Admissible-Existence/RTG@ca69954cb3dc4ad073c9244e003bc8f0ef3837e2",
       "Admissible-Existence/GTG@8cdb7bce87bb9f8429c35e9c66cc5dc28a46a225",
@@ -93,8 +93,8 @@
     "next_authorized_action": "Consume the current resident request on the sovereign WorkerCoordinator. Use the verified portable micro-node, exact formal snapshots, and pinned Master Records verifier when ordinary local Git trees are absent. Execute the principal exactly once only after a qualifying non-reference local reasoning endpoint and live subject identity are independently observed; then preserve the exact artifact set and retry only same-execution reconstruction until PASS."
   },
   "validation_evidence": {
-    "portable_formal_snapshot_principal_source": "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9",
-    "portable_formal_snapshot_principal_merge": "StegVerse-002/micro-node-runtime@496f17e0cb07433f3f9312e82a2c045f5d901dc9",
+    "portable_formal_snapshot_principal_source": "StegVerse-002/micro-node-runtime@0b988183a2a05607afb0816036a9cf7ce14e3640",
+    "portable_formal_snapshot_principal_merge": "StegVerse-002/micro-node-runtime@0b988183a2a05607afb0816036a9cf7ce14e3640",
     "portable_source_runtime_evidence_observed": false
   }
 }
