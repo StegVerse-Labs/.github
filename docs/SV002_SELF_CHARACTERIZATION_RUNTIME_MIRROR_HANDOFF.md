@@ -179,3 +179,33 @@ resident reconstruction bridge: MERGED / VALIDATED (.github#574, b005fa962e8da97
 authentic principal execution: NOT OBSERVED
 authentic reconstruction PASS: NOT OBSERVED
 ```
+
+
+## llama.cpp/GGUF principal identity closure — issue #594
+
+The canonical sovereign-model runtime handoff permits local Ollama **or llama.cpp/GGUF** candidates. The self-characterization worker previously authenticated only Ollama, creating a false blocker if the qualifying resident principal was already running under llama.cpp.
+
+Issue `#594` adds a second fail-closed identity path:
+
+```text
+loopback endpoint
+-> unique local llama-server process for the exact endpoint port
+-> exact process executable
+-> runtime executable SHA-256
+-> exact --model/-m local GGUF path
+-> GGUF SHA-256
+-> optional --alias/--model-alias + local /v1/models identity corroboration
+-> stegverse.self-characterization-runtime-identity/v0.1
+```
+
+The path rejects:
+- non-loopback endpoints;
+- reference-model identities;
+- missing or ambiguous llama-server processes;
+- endpoint/process port mismatch;
+- missing/nonlocal model artifacts;
+- model-identity mismatch.
+
+It performs no download, install, model launch, source fetch, or credential operation. Ollama identity binding remains unchanged and is attempted first. llama.cpp is a second canonical local-runtime identity option, not a new provider or authority plane.
+
+Runtime evidence remains pending until a qualifying already-running principal is actually observed.

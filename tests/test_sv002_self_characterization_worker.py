@@ -169,6 +169,113 @@ class SV002SelfCharacterizationWorkerTests(unittest.TestCase):
                     ),
                 )
 
+
+    def test_builds_identity_from_local_llamacpp_process_and_exact_gguf(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            executable = root / "llama-server"
+            executable.write_bytes(b"local llama.cpp server executable")
+            model_path = root / "reasoner.gguf"
+            model_path.write_bytes(b"exact local gguf bytes")
+            proc = root / "proc"
+            pid_dir = proc / "777"
+            pid_dir.mkdir(parents=True)
+            (pid_dir / "exe").symlink_to(executable)
+            (pid_dir / "cwd").symlink_to(root)
+            (pid_dir / "cmdline").write_bytes(
+                (
+                    str(executable)
+                    + "\x00--model\x00"
+                    + str(model_path)
+                    + "\x00--port\x008080\x00--alias\x00reasoner\x00"
+                ).encode("utf-8")
+            )
+
+            def _open(url, timeout=3):
+                self.assertEqual(url, "http://127.0.0.1:8080/v1/models")
+                self.assertEqual(timeout, 3)
+                return _Response({"object": "list", "data": [{"id": "reasoner"}]})
+
+            identity = mod.build_llamacpp_subject_identity(
+                "http://127.0.0.1:8080",
+                "reasoner",
+                proc_root=proc,
+                urlopen=_open,
+            )
+            self.assertEqual(identity["runtime_engine"], "llama.cpp")
+            self.assertEqual(identity["model_id"], "reasoner")
+            self.assertEqual(identity["process_id"], 777)
+            self.assertEqual(identity["runtime_executable"], str(executable.resolve()))
+            self.assertEqual(identity["model_artifact_path"], str(model_path.resolve()))
+            self.assertEqual(
+                identity["runtime_digest"],
+                hashlib.sha256(executable.read_bytes()).hexdigest(),
+            )
+            self.assertEqual(
+                identity["model_digest"],
+                hashlib.sha256(model_path.read_bytes()).hexdigest(),
+            )
+            self.assertFalse(identity["network_fetch_performed"])
+            self.assertFalse(identity["credential_required"])
+            self.assertEqual(identity["authority_effect"], "NONE")
+
+    def test_llamacpp_identity_rejects_endpoint_port_process_mismatch(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            executable = root / "llama-server"
+            executable.write_bytes(b"server")
+            model_path = root / "reasoner.gguf"
+            model_path.write_bytes(b"model")
+            proc = root / "proc"
+            pid_dir = proc / "778"
+            pid_dir.mkdir(parents=True)
+            (pid_dir / "exe").symlink_to(executable)
+            (pid_dir / "cwd").symlink_to(root)
+            (pid_dir / "cmdline").write_bytes(
+                (
+                    str(executable)
+                    + "\x00--model\x00"
+                    + str(model_path)
+                    + "\x00--port\x008081\x00"
+                ).encode("utf-8")
+            )
+            with self.assertRaisesRegex(RuntimeError, "llama.cpp model/process identity"):
+                mod.build_llamacpp_subject_identity(
+                    "http://127.0.0.1:8080",
+                    "reasoner",
+                    proc_root=proc,
+                    urlopen=lambda *args, **kwargs: _Response({"data": []}),
+                )
+
+    def test_llamacpp_identity_rejects_ambiguous_local_servers(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            executable = root / "llama-server"
+            executable.write_bytes(b"server")
+            model_path = root / "reasoner.gguf"
+            model_path.write_bytes(b"model")
+            proc = root / "proc"
+            for pid in ("779", "780"):
+                pid_dir = proc / pid
+                pid_dir.mkdir(parents=True)
+                (pid_dir / "exe").symlink_to(executable)
+                (pid_dir / "cwd").symlink_to(root)
+                (pid_dir / "cmdline").write_bytes(
+                    (
+                        str(executable)
+                        + "\x00--model\x00"
+                        + str(model_path)
+                        + "\x00--port\x008080\x00--alias\x00reasoner\x00"
+                    ).encode("utf-8")
+                )
+            with self.assertRaisesRegex(RuntimeError, "llama.cpp model/process identity"):
+                mod.build_llamacpp_subject_identity(
+                    "http://127.0.0.1:8080",
+                    "reasoner",
+                    proc_root=proc,
+                    urlopen=lambda *args, **kwargs: _Response({"data": [{"id": "reasoner"}]}),
+                )
+
     def test_reference_model_cannot_be_principal(self):
         with self.assertRaisesRegex(RuntimeError, "reference model"):
             mod.build_ollama_subject_identity(
