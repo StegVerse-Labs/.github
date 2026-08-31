@@ -20,6 +20,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_NAME = "stegverse-control-plane-manifest.json"
 TVC_HIL_SOURCE_FLOOR = "2787eece099604a4d2aad93c575167dc73e54037"
+TV_RESIDENT_PROOF_SHA = "e0d102a8c187c059754eced9ac017fdb056a0222"
+TVC_RESIDENT_PROOF_MIN_SHA = "e4bef703b4d6ccad858459ec502637c598948c42"
+TV_RESIDENT_PROOF_REQUIRED_PATHS = (
+    "scripts/tv_run_resident_operational_proof.py",
+    "docs/TV_OPERATIONAL_PROOF_SCHEMA.json",
+)
+TVC_RESIDENT_PROOF_REQUIRED_PATHS = (
+    "tools/task_dispatcher.py",
+    "tv_resident_operational_proof_task.py",
+    "scripts/activate_tv_resident_operational_proof.py",
+)
 TVC_HIL_PROTECTED_PATHS = (
     "tools/hil_intr_lifecycle_intake.py",
     "tasks/hil_experiment_backend_adapter.py",
@@ -84,6 +95,34 @@ def _git(root: Path, *args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
+def tv_source_proof(root: Path) -> dict:
+    root = root.expanduser().resolve()
+    proof = {
+        "schema": "stegverse.portable-source-proof/v1",
+        "repository": "StegVerse-Labs/TV",
+        "materialized_subpath": "vendor/TV",
+        "exact_head": TV_RESIDENT_PROOF_SHA,
+        "required_paths": list(TV_RESIDENT_PROOF_REQUIRED_PATHS),
+        "network_fetch_performed": False,
+        "credential_required": False,
+        "authority_effect": "NONE_SOURCE_IDENTITY_ONLY",
+    }
+    if not (root / ".git").is_dir():
+        return {**proof, "state": "UNVERIFIED_NO_LOCAL_GIT_IDENTITY"}
+    head = _git(root, "rev-parse", "HEAD")
+    if head.returncode != 0:
+        return {**proof, "state": "UNVERIFIED_GIT_HEAD_UNAVAILABLE"}
+    observed = head.stdout.strip().lower()
+    if observed != TV_RESIDENT_PROOF_SHA:
+        return {**proof, "state": "UNVERIFIED_EXACT_HEAD_MISMATCH", "head": observed}
+    status = _git(root, "status", "--porcelain")
+    if status.returncode != 0 or status.stdout.strip():
+        return {**proof, "state": "UNVERIFIED_WORKTREE_NOT_CLEAN", "head": observed}
+    missing = [rel for rel in TV_RESIDENT_PROOF_REQUIRED_PATHS if not (root / rel).is_file()]
+    if missing:
+        return {**proof, "state": "UNVERIFIED_REQUIRED_PATH_MISSING", "head": observed, "missing": missing}
+    return {**proof, "state": "VERIFIED_LOCAL_GIT_SOURCE", "head": observed, "exact_head_verified": True, "clean_worktree_at_packaging": True}
+
 def tvc_source_proof(root: Path, *, source_floor: str = TVC_HIL_SOURCE_FLOOR) -> dict:
     root = root.expanduser().resolve()
     proof = {
@@ -104,6 +143,7 @@ def tvc_source_proof(root: Path, *, source_floor: str = TVC_HIL_SOURCE_FLOOR) ->
     ancestor = _git(root, "merge-base", "--is-ancestor", source_floor, "HEAD")
     if ancestor.returncode != 0:
         return {**proof, "state": "UNVERIFIED_SOURCE_FLOOR_NOT_PRESENT", "head": head.stdout.strip().lower()}
+    resident_ancestor = _git(root, "merge-base", "--is-ancestor", TVC_RESIDENT_PROOF_MIN_SHA, "HEAD")
     changed = _git(root, "diff", "--name-only", source_floor, "HEAD", "--", *TVC_HIL_PROTECTED_PATHS)
     working = _git(root, "diff", "--name-only", "--", *TVC_HIL_PROTECTED_PATHS)
     staged = _git(root, "diff", "--cached", "--name-only", "--", *TVC_HIL_PROTECTED_PATHS)
@@ -126,6 +166,8 @@ def tvc_source_proof(root: Path, *, source_floor: str = TVC_HIL_SOURCE_FLOOR) ->
         "source_floor_present": True,
         "protected_paths_unchanged_since_floor": True,
         "protected_worktree_clean": True,
+        "verified_ancestors": [source_floor] + ([TVC_RESIDENT_PROOF_MIN_SHA] if resident_ancestor.returncode == 0 else []),
+        "resident_proof_min_sha_present": resident_ancestor.returncode == 0,
     }
 
 
@@ -184,6 +226,7 @@ def build_bundle(
     stegos_root: Path | None = None,
     kv_source_root: Path | None = None,
     healer_root: Path | None = None,
+    tv_root: Path | None = None,
     tvc_root: Path | None = None,
 ) -> dict:
     root = root.resolve()
@@ -229,6 +272,17 @@ def build_bundle(
         bundle_files.extend(
             ("vendor/StegVerse-Healer/" + path.relative_to(hr).as_posix(), path)
             for path in _safe_tree_files(hr)
+        )
+    if tv_root is not None:
+        vr = tv_root.expanduser().resolve()
+        missing_tv = [rel for rel in TV_RESIDENT_PROOF_REQUIRED_PATHS if not (vr / rel).is_file()]
+        if missing_tv:
+            raise RuntimeError("TV source root invalid")
+        vendor_sources["TV"] = True
+        vendor_source_proofs["TV"] = tv_source_proof(vr)
+        bundle_files.extend(
+            ("vendor/TV/" + path.relative_to(vr).as_posix(), path)
+            for path in _safe_tree_files(vr)
         )
     if tvc_root is not None:
         tr = tvc_root.expanduser().resolve()
@@ -299,6 +353,7 @@ def main() -> int:
     parser.add_argument("--stegos-root", type=Path)
     parser.add_argument("--kv-source-root", type=Path)
     parser.add_argument("--healer-root", type=Path)
+    parser.add_argument("--tv-root", type=Path)
     parser.add_argument("--tvc-root", type=Path)
     args = parser.parse_args()
     receipt = build_bundle(
@@ -307,6 +362,7 @@ def main() -> int:
         stegos_root=args.stegos_root,
         kv_source_root=args.kv_source_root,
         healer_root=args.healer_root,
+        tv_root=args.tv_root,
         tvc_root=args.tvc_root,
     )
     print(json.dumps(receipt, indent=2, sort_keys=True))
