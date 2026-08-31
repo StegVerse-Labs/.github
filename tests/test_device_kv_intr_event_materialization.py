@@ -1,5 +1,5 @@
 from __future__ import annotations
-import json, subprocess, tempfile, unittest
+import hashlib, json, subprocess, tempfile, unittest
 from pathlib import Path
 from unittest import mock
 from scripts import consume_device_kv_intr_materialization_request as consumer
@@ -265,6 +265,131 @@ class DeviceKVEventMaterializationTests(unittest.TestCase):
             self.assertEqual(result["state"],"MATERIALIZATION_EXECUTION_BLOCKED")
             self.assertEqual(result["portable_kv_staging_state"],"BLOCKED")
             self.assertIn("portable_kv_data_root_missing",result["portable_kv_staging_error"])
+
+    def test_bounded_kv_query_projects_directory_and_materializes_hb_response(self):
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td)
+            runtime=base/"runtime"
+            source=base/"source"
+            kv_source=base/"cvk"
+            kv_data=base/"KnowledgeVault"
+            heartbeat=base/"heartbeat"
+            (runtime/consumer.REQUEST_DIR_REL).mkdir(parents=True)
+            (runtime/consumer.INGRESS_DIR_REL).mkdir(parents=True)
+            (kv_source/"runtime").mkdir(parents=True)
+            (kv_data/"00_Inbox").mkdir(parents=True)
+            query={
+                "schema_version":"kv.interlock.request.v1",
+                "operation":"REQUEST",
+                "request_id":"site-kv-query-1",
+                "requester":{"module":"Site","component":"MyKVDirectory"},
+                "purpose":"List the selected owner KnowledgeVault directory.",
+                "record_class":"MY_KV_DIRECTORY_PROJECTION",
+                "requested_scope":["entries","connection_health"],
+                "minimum_necessary_justification":"Render only admitted file metadata and connection health.",
+                "authority_ref":"stegos-node://SV-NODE-"+"4"*24,
+                "disclosure_mode":"BOUNDED_CONTEXT",
+                "selector":{"directory_id":"pictures","canonical_path":"04_Media/Pictures"},
+            }
+            req=materialization()
+            req["payload_ref"]="inline://materialization_request.kv_request"
+            req["kv_request"]=query
+            req["payload_hash"]=consumer.sha(query)
+            body=dict(req); body.pop("request_hash",None); req["request_hash"]=consumer.sha(body)
+            mid=req["materialization_id"]
+            (runtime/consumer.REQUEST_DIR_REL/f"{mid}.json").write_text(json.dumps(req),encoding="utf-8")
+            ing={
+                "schema":"stegverse.device-kv-intr-materialization-ingress/v1",
+                "state":"INGRESS_ADMITTED",
+                "materialization_id":mid,
+                "request_hash":req["request_hash"],
+                "transport_intent_hash":req["transport_intent_hash"],
+                "payload_hash":req["payload_hash"],
+                "operation_id":req["operation_id"],
+                "packet_id":req["packet_id"],
+                "transport_origin":"STEGOS_NODE_OUTBOX",
+                "node_id":"SV-NODE-"+"4"*24,
+                "interlock_id":"SV-IL-"+"5"*24,
+                "claim_or_fence_minted":False,
+                "credential_authority":"TV/TVC",
+                "github_token_runtime_authority":"NONE",
+            }
+            (runtime/consumer.INGRESS_DIR_REL/f"{mid}.json").write_text(json.dumps(ing),encoding="utf-8")
+            (kv_source/"runtime/portable_directory_projection.py").write_text(
+                "def list_admitted_directory(*, kv_data_root, directory_id, canonical_path):\n"
+                "    return {\"schema\":\"stegverse.kv.portable-directory-projection/v1\","
+                "\"state\":\"KV_LISTED\",\"directory_id\":directory_id,"
+                "\"canonical_path\":canonical_path,\"entries\":[{\"name\":\"one.bin\",\"kind\":\"file\"}],"
+                "\"connection_health\":{\"compatibility_state\":\"VERIFIED\"},"
+                "\"credential_material_present\":False,\"provider_operation_authorized\":False,"
+                "\"authority_effect\":\"NONE\"}\n"
+                "def get_directory_health(*, kv_data_root, directory_id, canonical_path):\n"
+                "    return {\"canonical_path\":canonical_path,\"compatibility_state\":\"VERIFIED\","
+                "\"credential_material_present\":False,\"provider_operation_authorized\":False,"
+                "\"authority_effect\":\"NONE\"}\n",
+                encoding="utf-8",
+            )
+            def runner(*args,**kwargs):
+                return subprocess.CompletedProcess(args[0],0,stdout='{"state":"COMPLETED"}\n',stderr="")
+            env={
+                "PATH":"/bin","HOME":str(base),
+                "STEGVERSE_KV_SOURCE_ROOT":str(kv_source),
+                "STEGVERSE_KV_ROOT":str(kv_data),
+                "STEGVERSE_HEARTBEAT_ROOT":str(heartbeat),
+            }
+            result=consumer.consume_one(source,runtime,mid,runner=runner,env=env)
+            self.assertEqual(result["state"],"MATERIALIZATION_EXECUTION_ATTEMPTED")
+            self.assertTrue(result["kv_query_present"])
+            self.assertTrue(result["kv_query_attempted"])
+            self.assertEqual(result["kv_query_state"],"QUERY_COMPLETE")
+            self.assertTrue(result["kv_query_response_transported_on_hb_derived_carrier"])
+            self.assertTrue(result["kv_query_exact_response_packet_recovered"])
+            persisted=json.loads((runtime/consumer.QUERY_RESPONSE_DIR_REL/f"{mid}.json").read_text())
+            self.assertEqual(persisted["response"]["projection"]["entries"][0]["name"],"one.bin")
+            self.assertTrue((heartbeat/persisted["response_shared_hb_signal_ref"]).is_file())
+
+            lookup={
+                "schema":"stegverse.device-kv.query-result-request/v1",
+                "materialization_id":mid,
+                "request_hash":req["request_hash"],
+                "node_id":ing["node_id"],
+                "authority_effect":"NONE_RESULT_LOOKUP_ONLY",
+            }
+            raw=json.dumps(lookup,sort_keys=True,separators=(",",":")).encode()
+            headers={
+                "Content-Type":"application/json",
+                "X-StegVerse-Transport":"InTr",
+                "X-StegVerse-Transport-Origin":"STEGOS_NODE_OUTBOX",
+                "X-StegVerse-Payload-SHA256":hashlib.sha256(raw).hexdigest(),
+            }
+            with mock.patch.dict(consumer.os.environ,{"STEGVERSE_HEARTBEAT_ROOT":str(heartbeat)},clear=False):
+                delivered=ingress.retrieve_device_kv_query_result(runtime_root=runtime,body=raw,headers=headers)
+            self.assertEqual(delivered["state"],"RESULT_AVAILABLE")
+            self.assertEqual(delivered["response"]["projection"]["entries"][0]["name"],"one.bin")
+            self.assertTrue(delivered["response_transported_on_hb_derived_carrier"])
+            self.assertEqual(delivered["response_carrier_signal"]["authority"]["authority_effect"],"NONE_CARRIER_ONLY")
+
+    def test_kv_query_node_binding_mismatch_blocks_projection(self):
+        query={
+            "schema_version":"kv.interlock.request.v1","operation":"REQUEST","request_id":"q",
+            "requester":{"module":"Site","component":"MyKVDirectory"},"purpose":"read",
+            "record_class":"MY_KV_CONNECTION_HEALTH","requested_scope":["connection_health"],
+            "minimum_necessary_justification":"minimum","authority_ref":"stegos-node://SV-NODE-"+"9"*24,
+            "disclosure_mode":"BOUNDED_CONTEXT",
+            "selector":{"directory_id":"pictures","canonical_path":"04_Media/Pictures"},
+        }
+        req=materialization()
+        req["payload_ref"]="inline://materialization_request.kv_request"; req["kv_request"]=query
+        req["payload_hash"]=consumer.sha(query)
+        body=dict(req); body.pop("request_hash",None); req["request_hash"]=consumer.sha(body)
+        ing={"transport_origin":"STEGOS_NODE_OUTBOX","node_id":"SV-NODE-"+"4"*24}
+        with self.assertRaisesRegex(consumer.DeviceKVMaterializationError,"node_authority_binding"):
+            consumer.validate_kv_query(req,ing)
+
+    def test_profile_advertises_device_kv_result_path(self):
+        p=ingress.profile(False)
+        self.assertEqual(p["device_kv_result_path"],"/intr/device-kv/result")
+        self.assertIn("KV:KnowledgeVaultInterlock",p["profiles"])
 
     def test_kv_data_root_is_forwarded_by_all_resident_boundaries(self):
         root=Path(__file__).resolve().parents[1]
