@@ -608,3 +608,22 @@ native resident source refresh
 ```
 
 Do not reintroduce G18 terminalization as an upstream scheduler dependency.
+
+## 2026-08-31 resident local-binding preservation and Healer discovery
+
+The native worker service now preserves an explicit whitelist of non-secret local source/root locators across service registration, while the heartbeat carrier receives none of them. The Healer worker additionally discovers a unique complete local `StegVerse-Labs/StegVerse-Healer` tree and local repository roots from canonical resident locations when explicit locators are absent.
+
+Relevant machine sequence:
+
+```text
+StegDeploy verified control source
+-> native WorkerCoordinator service retains safe local root locators
+-> local source refresh
+-> resident request sweep
+-> Healer request
+-> local root discovery / exact named-root merge
+-> independent claim/fence
+-> fixed Healer Gateway/HIL/Site targets
+```
+
+Missing or ambiguous local source remains fail-closed; no network checkout, GitHub token, new scheduler, or heartbeat authority is added.
