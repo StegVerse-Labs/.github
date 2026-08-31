@@ -929,3 +929,32 @@ ratio: 7/28 = 25.00%
 ```
 
 Authority effect remains NONE.
+
+
+## Current-state reconciliation — 2026-08-31
+
+Repository-wide deterministic validation exposed stale COSV projections after concurrent resident-runtime and organization-kernel convergence. This reconciliation preserves current machine authority rather than restoring superseded blockers.
+
+```text
+SHWP-HEALER-SOVEREIGN-SCHEDULER-001
+  G18 downstream gate: RETIRED
+  lifecycle: MACHINE_OWNED
+  blocker_count: 0
+  vector: 50000000100000
+  resident continuation: independent WorkerCoordinator request consumption
+
+Organization federation task rows
+  current registry: READY 14/14
+  BLOCKED: 0
+  WORKAROUND_REQUIRED: 0
+  live federation observed: 0/14
+  source/kernel readiness != authentic federation observation
+
+SHWP-ALL-ORG-FEDERATION-001
+  worker-registry lifecycle: BLOCKED
+  active claim/fence: G17
+  canonical vector: 60000000104000
+  source/kernel propagation does not terminate the active worker task
+```
+
+No activation or federation observation is inferred by these source-state corrections. Authority effect remains NONE.

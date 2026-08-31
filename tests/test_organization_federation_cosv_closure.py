@@ -38,7 +38,7 @@ class OrganizationFederationCOSVClosureTests(unittest.TestCase):
         registry = json.loads((ROOT / "control/organization-task-registry.json").read_text())
         task = next(x for x in registry["tasks"] if x["task_id"] == "ORG-FED-AACT-E-001")
         record = json.loads((ROOT / "control/task-vectors/ORG-FED-AACT-E-001.json").read_text())
-        self.assertEqual(task["state"], "WORKAROUND_REQUIRED")
+        self.assertEqual(task["state"], "READY")
         self.assertEqual(record["exact_metrics"]["lifecycle"], "MACHINE_OWNED")
         self.assertEqual(record["exact_metrics"]["blocker_count"], 0)
 
