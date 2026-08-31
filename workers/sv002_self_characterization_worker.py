@@ -796,6 +796,7 @@ def main():
             "STEGVERSE_MICRO_NODE_RUNTIME_ROOT",
             (
                 "tools/run_self_characterization_principal.py",
+                "tools/verify_self_characterization_runtime_identity.py",
                 "experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json",
                 "schemas/self_characterization_runtime_identity.schema.json",
             ),
