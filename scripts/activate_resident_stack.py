@@ -78,12 +78,12 @@ def activate(
     healer_root: Path,
     tv_root: Path,
     tvc_root: Path,
-    micro_node_root: Path,
-    master_records_root: Path,
-    tt_root: Path,
-    rtg_root: Path,
-    gtg_root: Path,
-    ae_root: Path,
+    micro_node_root: Path | None = None,
+    master_records_root: Path | None = None,
+    tt_root: Path | None = None,
+    rtg_root: Path | None = None,
+    gtg_root: Path | None = None,
+    ae_root: Path | None = None,
     health_url: str,
     receipt_path: Path,
     runner=subprocess.run,
@@ -102,23 +102,29 @@ def activate(
     safe_env = clean_env(env)
     with tempfile.TemporaryDirectory(prefix="stegverse-resident-stack-") as tmp:
         bundle = Path(tmp) / "sovereign-control-plane.zip"
+        package_command = [
+            sys.executable, str(packager),
+            "--source-root", str(source),
+            "--output", str(bundle),
+            "--stegos-root", str(stegos_root.expanduser().resolve()),
+            "--kv-source-root", str(kv_source_root.expanduser().resolve()),
+            "--healer-root", str(healer_root.expanduser().resolve()),
+            "--tv-root", str(tv_root.expanduser().resolve()),
+            "--tvc-root", str(tvc_root.expanduser().resolve()),
+        ]
+        optional_roots = (
+            ("--micro-node-root", micro_node_root),
+            ("--master-records-root", master_records_root),
+            ("--tt-root", tt_root),
+            ("--rtg-root", rtg_root),
+            ("--gtg-root", gtg_root),
+            ("--ae-root", ae_root),
+        )
+        for flag, root in optional_roots:
+            if root is not None:
+                package_command.extend([flag, str(root.expanduser().resolve())])
         package = runner(
-            [
-                sys.executable, str(packager),
-                "--source-root", str(source),
-                "--output", str(bundle),
-                "--stegos-root", str(stegos_root.expanduser().resolve()),
-                "--kv-source-root", str(kv_source_root.expanduser().resolve()),
-                "--healer-root", str(healer_root.expanduser().resolve()),
-                "--tv-root", str(tv_root.expanduser().resolve()),
-                "--tvc-root", str(tvc_root.expanduser().resolve()),
-                "--micro-node-root", str(micro_node_root.expanduser().resolve()),
-                "--master-records-root", str(master_records_root.expanduser().resolve()),
-                "--tt-root", str(tt_root.expanduser().resolve()),
-                "--rtg-root", str(rtg_root.expanduser().resolve()),
-                "--gtg-root", str(gtg_root.expanduser().resolve()),
-                "--ae-root", str(ae_root.expanduser().resolve()),
-            ],
+            package_command,
             cwd=source,
             check=False,
             capture_output=True,
@@ -180,9 +186,15 @@ def activate(
             "healer_source_bundled": True,
             "tv_source_bundled": True,
             "tvc_source_bundled": True,
-            "micro_node_source_bundled": True,
-            "master_records_source_bundled": True,
-            "formal_sources_bundled": {"TT": True, "RTG": True, "GTG": True, "AE": True},
+            "micro_node_source_bundled": micro_node_root is not None,
+            "master_records_source_bundled": master_records_root is not None,
+            "formal_sources_bundled": {
+                "TT": tt_root is not None,
+                "RTG": rtg_root is not None,
+                "GTG": gtg_root is not None,
+                "AE": ae_root is not None,
+            },
+            "optional_workload_sources_gate_unrelated_execution": False,
             "control_bundle_sha256": package_result.get("bundle_sha256"),
             "stegdeploy_returncode": deploy.returncode,
             "stegdeploy_receipt_ref": str(deployment_receipt_path),
@@ -242,8 +254,8 @@ def main() -> int:
     rtg = args.rtg_root or (Path(os.environ["STEGVERSE_RTG_ROOT"]) if os.environ.get("STEGVERSE_RTG_ROOT") else None)
     gtg = args.gtg_root or (Path(os.environ["STEGVERSE_GTG_ROOT"]) if os.environ.get("STEGVERSE_GTG_ROOT") else None)
     ae = args.ae_root or (Path(os.environ["STEGVERSE_AE_ROOT"]) if os.environ.get("STEGVERSE_AE_ROOT") else None)
-    if stegos is None or kv_source is None or healer is None or tv is None or tvc is None or micro_node is None or master_records is None or tt is None or rtg is None or gtg is None or ae is None:
-        raise SystemExit("StegOS, KV source, Healer, TV, TVC, micro-node-runtime, Master Records, and TT/RTG/GTG/AE local roots are required for the complete resident stack")
+    if stegos is None or kv_source is None or healer is None or tv is None or tvc is None:
+        raise SystemExit("StegOS, KV source, Healer, TV, and TVC local roots are required for the base resident stack")
     receipt = activate(
         args.source_root,
         llm,
