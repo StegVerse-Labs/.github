@@ -1,0 +1,14 @@
+{
+  "schema_version": "stegverse.org-resident-runtime.activation.v1",
+  "organization": "StegVerse-Labs",
+  "canonical_repository": "StegVerse-Labs/.github",
+  "activation_owner": "StegVerse-Labs/.github",
+  "resident_worker": "heartbeat_runtime/worker_runtime.py",
+  "heartbeat_reference": "heartbeat_runtime/independent_oscillator.py",
+  "ingress_runtime": "workers/universal_intr_profiled_ingress.py",
+  "ingress_egress_transport": "org-boundary/runtime/intr_transport.py",
+  "state": "CANONICAL_SOURCE_HOME_EXISTING_RUNTIME_MACHINERY",
+  "github_actions_is_runtime_authority": false,
+  "hb_carrier_grants_authority": false,
+  "application_repositories_are_activation_authority": false
+}
