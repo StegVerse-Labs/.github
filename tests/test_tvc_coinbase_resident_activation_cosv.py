@@ -17,11 +17,11 @@ class TVCCoinbaseResidentActivationCOSVTests(unittest.TestCase):
         self.task=fragment["tasks"][0]
         self.handoff=json.loads((ROOT/"handoffs/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json").read_text(encoding="utf-8"))
 
-    def test_vector_recomputes_from_four_exact_blockers(self):
+    def test_vector_recomputes_without_stale_g18_blocker(self):
         self.assertTrue(cosv.validate_record(self.record))
         self.assertEqual(cosv.encode_task(self.record["exact_metrics"]),self.record["vector"])
-        self.assertEqual(self.record["vector"],"50000000104000")
-        self.assertEqual(self.record["exact_metrics"]["blocker_count"],4)
+        self.assertEqual(self.record["vector"],"50000000103000")
+        self.assertEqual(self.record["exact_metrics"]["blocker_count"],3)
         self.assertEqual(self.task["admissible_existence"]["blockers"],self.handoff["admissible_existence"]["blockers"])
 
     def test_machine_owned_runtime_has_no_provider_or_site_authority(self):
@@ -40,7 +40,7 @@ class TVCCoinbaseResidentActivationCOSVTests(unittest.TestCase):
         self.assertFalse(m["activated"])
         self.assertFalse(m["propagated"])
         self.assertFalse(self.handoff["completion"]["runtime_activation_claimed"])
-        self.assertIn("Only after terminal readiness",self.handoff["completion"]["next_authorized_action"])
+        self.assertIn("Do not wait for G18 cleanup",self.handoff["completion"]["next_authorized_action"])
         self.assertEqual(self.record["authority_effect"],"NONE")
 
     def test_bindings_are_canonical_and_thread_not_required(self):
@@ -48,5 +48,12 @@ class TVCCoinbaseResidentActivationCOSVTests(unittest.TestCase):
         self.assertEqual(self.handoff["source_state_vector_ref"],VECTOR_REF)
         self.assertFalse(self.record["exact_metrics"]["thread_required"])
         self.assertTrue(self.task["admission"]["parent_claim_reuse_prohibited"])
+
+    def test_g18_terminalization_is_not_an_admission_dependency(self):
+        self.assertEqual(self.task["admission"]["required_terminal_dependencies"],[])
+        self.assertIn("management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",self.task["admission"]["authority_source"])
+        self.assertNotIn("SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN",self.task["admissible_existence"]["blockers"])
+        self.assertNotIn("SHWP-DURABLE-RUNTIME-ACTIVATION:COMPLETED",self.handoff["task"]["dependencies"])
+        self.assertIn("HB31-RELEASE-COMPLETE:SATISFIED",self.handoff["task"]["dependencies"])
 
 if __name__=="__main__": unittest.main()
