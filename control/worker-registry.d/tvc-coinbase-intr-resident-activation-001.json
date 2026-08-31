@@ -5,15 +5,17 @@
     {
       "archive_eligible": false,
       "archive_reason_codes": [
-        "SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN",
         "TVC_INTR_READY_FOR_OWNER_INGRESS_NOT_YET_OBSERVED",
         "SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED"
       ],
       "authorized_policy_version": "tvc-coinbase-intr-resident-activation-v0.1",
-      "block_ref": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#constraint",
+      "block_ref": "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json#current_blocker",
       "claim_id": null,
       "cost_basis_ref": "cost-basis/worker-runtime/tvc-coinbase-intr-resident-activation.json",
       "evidence_refs": [
+        "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+        "docs/HB31_RUNTIME_REGISTRY_TERMINALIZATION_MIRROR_HANDOFF.md",
+        "receipts/heartbeat-transition-continuity/latest.json",
         "handoffs/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json",
         "workers/tvc_coinbase_intr_resident_activation_worker.py",
         "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
@@ -32,7 +34,7 @@
       "worker_id": null,
       "worker_instance_id": null,
       "admission": {
-        "authority_source": "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json + handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+        "authority_source": "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json + management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
         "authority_domain": "INDEPENDENT_TASK_CONTROL",
         "heartbeat_reference_only": true,
         "heartbeat_grants_execution_authority": false,
@@ -40,10 +42,12 @@
         "fresh_fence_required": true,
         "minimum_fencing_token_exclusive": 22,
         "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
-        "required_terminal_dependencies": [
-          "SHWP-DURABLE-RUNTIME-ACTIVATION"
-        ],
-        "parent_claim_reuse_prohibited": true
+        "required_terminal_dependencies": [],
+        "parent_claim_reuse_prohibited": true,
+        "required_release_evidence": [
+          "receipts/heartbeat-transition-continuity/latest.json:RELEASE_COMPLETE",
+          "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json:heartbeat_release_blocked=false"
+        ]
       },
       "admissible_existence": {
         "capability_id": "stegverse:capability:tvc-coinbase-intr-resident-activation:v1",
@@ -51,7 +55,8 @@
         "phase": "ADMISSIBLE",
         "standing_evidence_refs": [
           "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
-          "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+          "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+          "docs/HB31_RUNTIME_REGISTRY_TERMINALIZATION_MIRROR_HANDOFF.md"
         ],
         "admissibility_evidence_refs": [
           "handoffs/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json",
@@ -62,7 +67,6 @@
         "integration_evidence_refs": [],
         "activation_proof_ref": null,
         "blockers": [
-          "SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN",
           "REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED",
           "PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED",
           "SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED"
