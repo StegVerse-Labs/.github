@@ -384,7 +384,7 @@ machine-observable `HANDOFF_READY` state; the rootless consumer may not substitu
 direct system-service call.
 
 TVC implementation target:
-`StegVerse-Labs/TVC PR #274`
+`StegVerse-Labs/TVC@8453bfda067156f0d3ee3da5bb1dbd9d7b895d1d` (PR #274 merged)
 
 The request path, HeartBeat, source identity, path watcher, and retry timer grant no
 source-read, execution, credential, repository, release, or publication authority.
