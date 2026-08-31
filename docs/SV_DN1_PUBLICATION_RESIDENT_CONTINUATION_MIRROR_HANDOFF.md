@@ -107,7 +107,27 @@ persistence-dispatch worker: MERGED
 TVC issue-264 admission evaluator: MERGED
 publication observer: MERGED
 publication observer dependency refinement: MERGED
-publication resident continuation: IMPLEMENTING
+publication resident continuation: SOURCE COMPLETE / VALIDATION PENDING
 authentic persistence PR: NOT YET OBSERVED
 authentic public exact-byte observation: NOT YET OBSERVED
 ```
+
+
+## 2026-08-31 integration completion
+
+The resident dispatcher now has an exact `sv_dn1_publication` selector bound only to:
+
+`scripts/consume_sv_dn1_publication_resident_request.py`
+
+The portable refresh+dispatch bridge accepts the same exact selector and forwards only
+the non-secret persistence-package and TVC admission locators required by this
+continuation.
+
+The continuation intentionally does not forward the generic
+`STEGVERSE_BOUND_STATE_ROOT`, because both downstream tasks use that generic variable
+for different canonical task-specific bound-state roots. Each worker therefore retains
+its own canonical default bound state, preventing cross-task receipt/state collision.
+
+Deterministic tests cover selector isolation, non-secret locator propagation, retry-until-
+terminal request semantics, generic bound-state isolation, and hosted/credential-bearing
+fail-closed behavior.
