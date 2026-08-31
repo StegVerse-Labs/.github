@@ -161,3 +161,19 @@ The Gateway request itself grants no authority. The consumer is copied by the ex
 Canonical scoped handoff: `docs/RESIDENT_RENDEZVOUS_CONSUMER_MIRROR_HANDOFF.md`.
 
 This source work does not itself prove the current resident has refreshed to the new consumer, the public Gateway is deployed with rendezvous enabled, or the three runtime terminal receipts exist.
+
+
+## HB-derived endpoint fanout successor — issue #612
+
+The fixed resident chain now extends beyond authentic `DEVICE_KV_INTR_OBSERVED` to the bounded sovereign endpoint-fanout task:
+
+```text
+SHWP-DEVICE-KV-INTR-OBSERVATION-001
+  -> DEVICE_KV_INTR_OBSERVED
+SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001
+  -> ENDPOINT_FANOUT_SOVEREIGN_RUNTIME_OBSERVED
+```
+
+The DEVICE_KV predecessor on current main carries exact governed InTr packet bytes on the canonical HB-derived carrier and reconstructs them at the receiver before receipt issuance. The successor consumes that authentic receipt, executes the canonical two-report fanout from already-local continuity-vault-kit source, requires the KV endpoint-status report to return through `COMMIT_CANDIDATE` as candidate-only/non-mutating, and retains the Master Records travel projection.
+
+The resident rendezvous remains a fixed exact-chain carrier. No arbitrary task or command transport is introduced. HB/derived carrier presence grants no admission, execution, credential, routing, transition, or receiving authority.
