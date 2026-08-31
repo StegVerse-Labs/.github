@@ -338,7 +338,13 @@ def admit_publisher(*, runtime_root: Path, body: bytes, headers: Mapping[str, st
     if receipt_path.exists():
         existing=json.loads(receipt_path.read_text(encoding="utf-8"))
         require(existing.get("request_hash")==request.get("request_hash") and existing.get("state")=="INGRESS_ADMITTED","write_once_collision")
-        return existing
+        result_path=runtime_root/Path("receipts/sovereign-host/publisher-artifact-transfer")/f"{mid}.json"
+        if result_path.is_file():
+            result=json.loads(result_path.read_text(encoding="utf-8"))
+            if result.get("state")=="RENDERED_RETURN_PACKET_PREPARED_NOT_TRANSPORTED" and result.get("materialization_id")==mid and result.get("request_hash")==request.get("request_hash"):
+                return {**existing,"dispatch":{"consumer_dispatch_attempted":False,"consumer_result_state":"ALREADY_RENDERED_RETURN_PACKET_PREPARED_NOT_TRANSPORTED","consumer_execution_authority":False,"consumer_claim_or_fence_minted_by_ingress":False,"authority_effect":"NONE_DISPATCH_ONLY"}}
+        dispatch=_dispatch_publisher_consumer(runtime_root=runtime_root,materialization_id=mid)
+        return {**existing,"dispatch":dispatch}
     receipt={
         "schema":PUBLISHER_RECEIPT_SCHEMA,"state":"INGRESS_ADMITTED","materialization_id":mid,
         "request_hash":request["request_hash"],"transport_intent_hash":request["transport_intent_hash"],

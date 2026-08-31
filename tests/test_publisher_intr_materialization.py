@@ -82,5 +82,36 @@ class PublisherInTrMaterializationTests(unittest.TestCase):
         self.assertFalse(req["transport_grants_execution_authority"])
         self.assertEqual(req["credential_authority"],"TV/TVC")
 
+    def test_payload_ref_must_bind_runtime_exact_sidecar(self):
+        req=request(b"{}")
+        req["payload_ref"]="runtime://wrong/path.bin"
+        body=dict(req); body.pop("request_hash",None); req["request_hash"]=sha(body)
+        with self.assertRaisesRegex(consumer.PublisherInTrConsumerError,"payload_ref_mismatch"):
+            consumer.validate_request(req)
+
+    def test_exact_retry_redispatches_only_until_return_packet_exists(self):
+        payload=b'{"authority_effect":"NONE","schema":"stegverse.publisher.artifact-transfer/v1"}'
+        req=request(payload)
+        trigger={"schema":ingress.PUBLISHER_TRIGGER_SCHEMA,"materialization_request":req,
+                 "payload_base64":base64.b64encode(payload).decode(),
+                 "forward_receipts":[{"receipt_hash":"sha256:"+"3"*64}],
+                 "request_grants_execution_authority":False,"claim_or_fence_minted":False,
+                 "authority_effect":"NONE_TRIGGER_ONLY"}
+        body=json.dumps(trigger,sort_keys=True).encode()
+        headers={"X-StegVerse-Transport":"InTr","X-StegVerse-Transport-Origin":ingress.hil.ORIGIN_NODE,
+                 "X-StegVerse-Payload-SHA256":hashlib.sha256(body).hexdigest(),"Content-Type":"application/json"}
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td); mid=req["materialization_id"]
+            with mock.patch.object(ingress,"_dispatch_publisher_consumer",return_value={"consumer_dispatch_attempted":True}) as dispatch:
+                ingress.admit_publisher(runtime_root=root,body=body,headers=headers)
+                ingress.admit_publisher(runtime_root=root,body=body,headers=headers)
+                self.assertEqual(dispatch.call_count,2)
+            result_dir=root/"receipts/sovereign-host/publisher-artifact-transfer"; result_dir.mkdir(parents=True)
+            (result_dir/f"{mid}.json").write_text(json.dumps({"state":"RENDERED_RETURN_PACKET_PREPARED_NOT_TRANSPORTED","materialization_id":mid,"request_hash":req["request_hash"]}))
+            with mock.patch.object(ingress,"_dispatch_publisher_consumer") as dispatch:
+                result=ingress.admit_publisher(runtime_root=root,body=body,headers=headers)
+                dispatch.assert_not_called()
+                self.assertEqual(result["dispatch"]["consumer_result_state"],"ALREADY_RENDERED_RETURN_PACKET_PREPARED_NOT_TRANSPORTED")
+
 if __name__=="__main__":
     unittest.main()
