@@ -141,6 +141,79 @@ class SovereignControlPlaneBundleTests(unittest.TestCase):
             with zipfile.ZipFile(output) as archive:
                 names = set(archive.namelist())
             self.assertIn("vendor/TV/scripts/tv_run_resident_operational_proof.py", names)
+    def test_sv002_and_master_records_portable_source_proofs(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            micro = base / "micro-node-runtime"
+            master = base / "master-records-orchestration"
+            for root in (micro, master):
+                root.mkdir()
+                subprocess.run(["git", "init", str(root)], check=True, capture_output=True)
+                subprocess.run(["git", "-C", str(root), "config", "user.email", "test@example.invalid"], check=True)
+                subprocess.run(["git", "-C", str(root), "config", "user.name", "Test"], check=True)
+            for rel in module.SV002_MICRO_NODE_REQUIRED_PATHS:
+                path = micro / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(rel + "\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(micro), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(micro), "commit", "-m", "micro"], check=True, capture_output=True)
+            micro_head = subprocess.run(["git", "-C", str(micro), "rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
+
+            verifier = master / module.MASTER_RECORDS_RECONSTRUCTION_VERIFIER
+            verifier.parent.mkdir(parents=True, exist_ok=True)
+            verifier.write_text("# verifier\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(master), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(master), "commit", "-m", "master"], check=True, capture_output=True)
+            master_head = subprocess.run(["git", "-C", str(master), "rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
+            verifier_blob = subprocess.run(["git", "-C", str(master), "hash-object", str(verifier)], check=True, capture_output=True, text=True).stdout.strip()
+
+            old_micro = module.SV002_MICRO_NODE_SOURCE_PIN
+            old_master = module.MASTER_RECORDS_RECONSTRUCTION_COMMIT
+            old_blob = module.MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB
+            module.SV002_MICRO_NODE_SOURCE_PIN = micro_head
+            module.MASTER_RECORDS_RECONSTRUCTION_COMMIT = master_head
+            module.MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB = verifier_blob
+            try:
+                micro_proof = module.sv002_micro_node_source_proof(micro)
+                master_proof = module.master_records_source_proof(master)
+            finally:
+                module.SV002_MICRO_NODE_SOURCE_PIN = old_micro
+                module.MASTER_RECORDS_RECONSTRUCTION_COMMIT = old_master
+                module.MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB = old_blob
+
+            self.assertEqual(micro_proof["state"], "VERIFIED_LOCAL_GIT_SOURCE")
+            self.assertTrue(micro_proof["exact_head_verified"])
+            self.assertEqual(master_proof["state"], "VERIFIED_LOCAL_GIT_SOURCE")
+            self.assertTrue(master_proof["required_ancestor_present"])
+            self.assertEqual(master_proof["verifier_git_blob"], verifier_blob)
+
+    def test_bundle_can_include_sv002_and_master_records_vendor_sources(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "source"
+            micro = Path(tmp) / "micro-node-runtime"
+            master = Path(tmp) / "master-records-orchestration"
+            (root / "scripts").mkdir(parents=True)
+            (root / "scripts" / "bootstrap_sovereign_runtime.py").write_text("# bootstrap\n", encoding="utf-8")
+            for rel in module.SV002_MICRO_NODE_REQUIRED_PATHS:
+                path = micro / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(rel + "\n", encoding="utf-8")
+            verifier = master / module.MASTER_RECORDS_RECONSTRUCTION_VERIFIER
+            verifier.parent.mkdir(parents=True, exist_ok=True)
+            verifier.write_text("# verifier\n", encoding="utf-8")
+            output = Path(tmp) / "control-plane.zip"
+
+            receipt = module.build_bundle(root, output, micro_node_root=micro, master_records_root=master)
+
+            self.assertTrue(receipt["vendor_sources"]["micro-node-runtime"])
+            self.assertTrue(receipt["vendor_sources"]["master-records-orchestration"])
+            self.assertEqual(receipt["vendor_source_proofs"]["micro-node-runtime"]["state"], "UNVERIFIED_NO_LOCAL_GIT_IDENTITY")
+            self.assertEqual(receipt["vendor_source_proofs"]["master-records-orchestration"]["state"], "UNVERIFIED_NO_LOCAL_GIT_IDENTITY")
+            with zipfile.ZipFile(output) as archive:
+                names = set(archive.namelist())
+            self.assertIn("vendor/micro-node-runtime/tools/run_self_characterization_principal.py", names)
+            self.assertIn("vendor/master-records-orchestration/scripts/verify_sv002_self_characterization_reconstruction.py", names)
+
     def test_bundle_can_include_healer_and_tvc_vendor_sources(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "source"
