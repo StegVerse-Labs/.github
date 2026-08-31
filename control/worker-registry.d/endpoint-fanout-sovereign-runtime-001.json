@@ -52,6 +52,34 @@
           "vector_observed_at": "2026-08-31T07:05:00-05:00",
           "authority_effect": "NONE"
         }
+      },
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:endpoint-fanout-sovereign-runtime:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "docs/ENDPOINT_FANOUT_LIVE_RUNTIME_MIRROR_HANDOFF.md"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json"
+        ],
+        "integration_evidence_refs": [
+          "workers/endpoint_fanout_sovereign_runtime_worker.py",
+          "control/process-worker-adapters.d/endpoint-fanout-sovereign-runtime-001.json",
+          "control/worker-registry.d/endpoint-fanout-sovereign-runtime-001.json",
+          "control/task-vectors/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json"
+        ],
+        "activation_proof_ref": null,
+        "blockers": [
+          "AUTHENTIC_DEVICE_KV_INTR_PARENT_NOT_YET_OBSERVED",
+          "ENDPOINT_FANOUT_SOVEREIGN_RUNTIME_RECEIPT_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "endpoint-fanout-sovereign-runtime-worker",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
       }
     }
   ],
