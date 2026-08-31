@@ -58,7 +58,7 @@ No GitHub runner, Render, Vercel, Cloudflare, HB carrier, or request grants exec
 
 ## Required implementation surfaces
 
-- `scripts/consume_kv_skap_custody_materialization_request.py`
+- `scripts/dispatch_kv_skap_custody_materialization.py`\n- `scripts/consume_kv_skap_custody_materialization_request.py`
 - `workers/universal_intr_profiled_ingress.py`
 - `tests/test_kv_skap_custody_materialization.py`
 - `control/worker-registry.d/kv-skap-custody-001.json`
@@ -69,13 +69,13 @@ No GitHub runner, Render, Vercel, Cloudflare, HB carrier, or request grants exec
 ## Completion evidence
 
 Source completion requires:
-1. exact canonical `kv-skap-custody` request validation;
-2. write-once ingress receipt;
-3. direct event dispatch without claim/fence minting or a second WorkerCoordinator task;
-4. TVC current-source double-Interlock validation;
-5. exact sealed ciphertext persisted unchanged under `_Vault/SKAP`;
-6. DEVICE -> KV -> SKAP receipt lineage;
-7. replay denial;
-8. tests and organization validation passing.
+1. canonical StegOS `kv-skap-custody` intent/materialization construction from exact sealed capsule + DEVICE->KV receipt;\n2. HB-derived non-authorizing carrier binding and TVC relay egress admission;
+3. write-once ingress receipt;
+4. direct event dispatch without claim/fence minting or a second WorkerCoordinator task;
+5. TVC current-source double-Interlock validation;
+6. exact sealed ciphertext persisted unchanged under `_Vault/SKAP`;
+7. DEVICE -> KV -> SKAP receipt lineage;
+8. replay denial;
+9. tests and organization validation passing.
 
 Runtime activation remains separate and requires an authentic resident materialization receipt plus exact custody/readback evidence. The transport path intentionally does not register a separate WorkerCoordinator task: shared ingress performs bounded event dispatch directly, while TVC remains the downstream gate/custody authority.
