@@ -259,7 +259,7 @@ def formal_snapshot_proof(name: str, root: Path) -> dict:
     }
     if not (root / ".git").is_dir():
         return {**proof, "state": "UNVERIFIED_NO_LOCAL_GIT_IDENTITY"}
-    exists = _git(root, "cat-file", "-e", f"{commit}^{commit}")
+    exists = _git(root, "cat-file", "-e", f"{commit}^{{commit}}")
     if exists.returncode != 0:
         return {**proof, "state": "UNVERIFIED_PINNED_COMMIT_NOT_PRESENT"}
     return {**proof, "state": "VERIFIED_LOCAL_GIT_SNAPSHOT", "exact_commit_present": True}
