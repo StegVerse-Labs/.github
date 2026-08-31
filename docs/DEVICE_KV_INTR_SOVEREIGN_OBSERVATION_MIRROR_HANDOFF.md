@@ -191,3 +191,32 @@ SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001
 ```
 
 When the parent continuity receipt exists, the existing WorkerCoordinator independently admits this HANDOFF_READY task under a fresh fence greater than 21 and invokes `process:device-kv-intr-observation-v1` on the deployment-local sovereign carrier.
+
+## 2026-08-31 Universal InTr event-first reconciliation
+
+Issue #575 reconciles this bounded observation lane with the newer canonical
+Universal InTr availability rule:
+
+```text
+event_triggered=true
+always_on_receiver_required=false
+receiver_unavailable_disposition=DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION
+```
+
+The historical relay -> Node-KV continuity chain remains a valid stronger
+reconstruction/continuity proof, but it is no longer a universal prerequisite
+for creation or admission of a DEVICE_KV transport event.
+
+The existing task remains the sole DEVICE_KV observation owner. It may now be
+independently admitted when either authentic RELAY_NODE_KV_CONTINUITY_VERIFIED
+evidence exists or shared profiled Universal InTr ingress has independently
+validated and persisted a canonical device-kv materialization request and
+ingress receipt.
+
+Event ingress is non-authorizing. It cannot mint a WorkerCoordinator claim/fence,
+credential, route authority, KV write authority, or activation fact. The
+materialization consumer merely invokes the existing targeted executor. The
+original exact packet remains eligible for exact-packet retry; blind retry of
+downstream consequences remains prohibited.
+
+Source/merge/CI do not establish DEVICE_KV_INTR_OBSERVED.

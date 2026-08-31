@@ -23,6 +23,9 @@ RECEIPT_ROOT = ROOT / "receipts" / "device-kv-intr"
 RECEIPT = RECEIPT_ROOT / f"{TASK_ID}.json"
 ENDPOINT_RECEIPTS = RECEIPT_ROOT / "endpoint-receipts"
 TRANSPORT_RECEIPTS = RECEIPT_ROOT / "transport-receipts"
+EVENT_REQUEST_DIR = ROOT / "intr-materialization"
+EVENT_INGRESS_DIR = ROOT / "receipts" / "sovereign-network" / "device-kv-intr-ingress"
+EVENT_MATERIALIZATION_ENV = "STEGVERSE_DEVICE_KV_INTR_MATERIALIZATION_ID"
 
 
 def canonical_json(value: Any) -> str:
@@ -90,6 +93,51 @@ def find_source_root(env_name: str, repo_name: str, required: str) -> Path | Non
             return resolved
     return None
 
+
+
+def event_materialization_basis() -> dict[str, Any] | None:
+    mid = os.environ.get(EVENT_MATERIALIZATION_ENV)
+    if not mid:
+        return None
+    request = load_json(EVENT_REQUEST_DIR / f"{mid}.json")
+    ingress = load_json(EVENT_INGRESS_DIR / f"{mid}.json")
+    if not request or not ingress:
+        return None
+    expected = {
+        "schema":"stegverse.universal-intr-materialization-request/v1",
+        "state":"QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION",
+        "destination":{"boundary":"KV","subsystem":"KnowledgeVault:Interlock"},
+        "downstream_owner_ref":"StegVerse-Labs/continuity-vault-kit#79",
+        "event_triggered":True,"always_on_receiver_required":False,
+        "second_user_device_required":False,
+        "receiver_unavailable_disposition":"DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+        "request_grants_execution_authority":False,"claim_or_fence_minted":False,
+        "transport_grants_execution_authority":False,"credential_authority":"TV/TVC",
+        "github_token_runtime_authority":"NONE","authority_transfer":False,
+    }
+    if any(request.get(k) != v for k,v in expected.items()) or request.get("boundary_path") != ["DEVICE_SYSTEM","KV"]:
+        return None
+    if ingress.get("schema") != "stegverse.device-kv-intr-materialization-ingress/v1" or ingress.get("state") != "INGRESS_ADMITTED":
+        return None
+    for key in ("materialization_id","request_hash","transport_intent_hash","payload_hash","operation_id","packet_id"):
+        if ingress.get(key) != request.get(key):
+            return None
+    if ingress.get("claim_or_fence_minted") is not False or ingress.get("credential_authority") != "TV/TVC":
+        return None
+    source_ref = ingress.get("node_id") or ingress.get("interlock_id") or request.get("transport_intent_hash")
+    if not isinstance(source_ref,str) or not source_ref:
+        return None
+    return {
+        "mode":"EVENT_MATERIALIZATION_INGRESS",
+        "continuity_id":"event-"+mid,
+        "state_root":"kv-event://"+mid,
+        "source_identity_ref":"intr-event://"+source_ref,
+        "next_boundary_identity_ref":"kv-event://"+mid,
+        "prior_receipt_hash":sha256_uri(ingress),
+        "materialization_id":mid,
+        "transport_intent_hash":request.get("transport_intent_hash"),
+        "queued_payload_hash":request.get("payload_hash"),
+    }
 
 def blocker(problem: str, action: str, release: str) -> dict[str, Any]:
     return {
@@ -225,7 +273,7 @@ def controlled_request(template: Mapping[str, Any], continuity_id: str, fence: i
     return request
 
 
-def request_envelope(request: Mapping[str, Any], continuity_id: str, state_root: str) -> dict[str, Any]:
+def request_envelope(request: Mapping[str, Any], continuity_id: str, state_root: str, *, source_identity_ref: str | None = None, next_boundary_identity_ref: str | None = None, prior_receipt_hash: str | None = None) -> dict[str, Any]:
     payload_hash = sha256_uri(request)
     packet_seed = sha256_uri({"request_id": request["request_id"], "payload_hash": payload_hash})
     return {
@@ -240,7 +288,7 @@ def request_envelope(request: Mapping[str, Any], continuity_id: str, state_root:
         "payload_schema_version": "kv.interlock.request.v1",
         "payload_hash": payload_hash,
         "sealed_material_ref": "sealed://device-kv-intr/" + packet_seed[7:39],
-        "prior_receipt_hash": None,
+        "prior_receipt_hash": prior_receipt_hash,
         "authority": {
             "authority_transfer": False,
             "transport_grants_execution_authority": False,
@@ -249,8 +297,8 @@ def request_envelope(request: Mapping[str, Any], continuity_id: str, state_root:
         },
         "boundary_proof": {
             "required": True,
-            "source_identity_ref": f"stegos-node://{continuity_id}",
-            "next_boundary_identity_ref": state_root,
+            "source_identity_ref": source_identity_ref or f"stegos-node://{continuity_id}",
+            "next_boundary_identity_ref": next_boundary_identity_ref or state_root,
             "verification_state": "VERIFIED",
         },
         "receipt_policy": {
@@ -300,14 +348,16 @@ def main() -> int:
     }
 
     parent = load_json(PARENT_RECEIPT)
-    if not parent or parent.get("state") != "COMPLETED" or parent.get("transition_id") != "RELAY_NODE_KV_CONTINUITY_VERIFIED":
-        return write_blocked(base, "PARENT_NODE_KV_CONTINUITY_REQUIRED",
-            "Authentic relay Node-KV teardown/recreation continuity has not yet been observed.",
-            "Allow the already-admitted parent continuity task to complete on the deployment-local sovereign WorkerCoordinator.",
-            "parent receipt is COMPLETED with transition_id RELAY_NODE_KV_CONTINUITY_VERIFIED", epoch)
+    event_basis = event_materialization_basis()
+    parent_valid = bool(parent and parent.get("state") == "COMPLETED" and parent.get("transition_id") == "RELAY_NODE_KV_CONTINUITY_VERIFIED")
+    if not parent_valid and event_basis is None:
+        return write_blocked(base, "DEVICE_KV_ADMITTED_PREDECESSOR_REQUIRED",
+            "Neither authentic relay Node-KV continuity nor an admitted canonical device-kv event-materialization ingress is currently available.",
+            "Consume the next admitted DEVICE_KV Universal InTr event or allow the stronger relay continuity proof lane to complete.",
+            "event materialization ingress validates or parent receipt is COMPLETED RELAY_NODE_KV_CONTINUITY_VERIFIED", epoch)
 
-    continuity = parent.get("continuity_evidence")
-    if not isinstance(continuity, dict):
+    continuity = parent.get("continuity_evidence") if parent_valid else None
+    if parent_valid and not isinstance(continuity, dict):
         return write_blocked(base, "PARENT_NODE_KV_EVIDENCE_REPAIR_REQUIRED",
             "Parent receipt lacks canonical continuity_evidence.",
             "Repair the parent evidence projection without manufacturing runtime evidence.",
@@ -324,20 +374,28 @@ def main() -> int:
     try:
         continuity_mod = load_module(stegos_root / "stegos/relay_node_kv_continuity.py", "device_kv_continuity")
         kv_mod = load_module(kv_root / "runtime/kv_interlock_endpoint.py", "device_kv_endpoint")
-        continuity_mod.validate_node_kv_continuity_evidence(continuity)
+        if parent_valid:
+            continuity_mod.validate_node_kv_continuity_evidence(continuity)
     except Exception as exc:
         return write_blocked(base, "NODE_KV_CONTINUITY_VALIDATION_REQUIRED",
             f"Parent Node-KV continuity failed current-source validation: {type(exc).__name__}: {exc}",
             "Repair the exact parent evidence or source materialization and retry under a fresh fence.",
             "current StegOS validator accepts the authentic parent continuity evidence", epoch)
 
-    continuity_id = str(continuity["continuity_id"])
-    state_root = str(continuity["node_kv_state_root"])
+    if parent_valid:
+        continuity_id = str(continuity["continuity_id"]); state_root = str(continuity["node_kv_state_root"])
+        source_identity_ref = f"stegos-node://{continuity_id}"; next_boundary_identity_ref = state_root; prior_event_receipt = None
+        predecessor_mode = "AUTHENTIC_PARENT_NODE_KV_CONTINUITY"
+    else:
+        assert event_basis is not None
+        continuity_id = str(event_basis["continuity_id"]); state_root = str(event_basis["state_root"])
+        source_identity_ref = str(event_basis["source_identity_ref"]); next_boundary_identity_ref = str(event_basis["next_boundary_identity_ref"])
+        prior_event_receipt = str(event_basis["prior_receipt_hash"]); predecessor_mode = "EVENT_MATERIALIZATION_INGRESS"
     controlled = (handoff.get("execution") or {}).get("controlled_operation")
     if not isinstance(controlled, dict):
         return 4
     request = controlled_request(controlled, continuity_id, fence)
-    envelope = request_envelope(request, continuity_id, state_root)
+    envelope = request_envelope(request, continuity_id, state_root, source_identity_ref=source_identity_ref, next_boundary_identity_ref=next_boundary_identity_ref, prior_receipt_hash=prior_event_receipt)
     request_wire = canonical_json({"request": request, "envelope": envelope}).encode()
     request_wire_hash = sha256_uri(request_wire)
     operation_hash = sha256_uri({"request_id": request["request_id"], "operation": request["operation"], "packet_id": envelope["packet_id"]})
@@ -356,8 +414,8 @@ def main() -> int:
             authority_ref == "CONTROLLED_NON_SENSITIVE_OBSERVATION_ONLY"
             and received_request.get("record_class") == "transport-capability-observation"
             and received_request.get("requested_scope") == ["capability_status"]
-            and proof.get("source_identity_ref") == f"stegos-node://{continuity_id}"
-            and proof.get("next_boundary_identity_ref") == state_root
+            and proof.get("source_identity_ref") == source_identity_ref
+            and proof.get("next_boundary_identity_ref") == next_boundary_identity_ref
             and proof.get("verification_state") == "VERIFIED"
         )
 
@@ -480,7 +538,11 @@ def main() -> int:
         "observed_at": now_iso(),
         "parent_continuity_id": continuity_id,
         "node_kv_state_root": state_root,
-        "parent_state_root_continuity_verified": True,
+        "parent_state_root_continuity_verified": parent_valid,
+        "event_materialization_ingress_verified": event_basis is not None,
+        "event_materialization_id": event_basis.get("materialization_id") if event_basis else None,
+        "event_transport_intent_hash": event_basis.get("transport_intent_hash") if event_basis else None,
+        "event_queued_payload_hash": event_basis.get("queued_payload_hash") if event_basis else None,
         "request_id": request["request_id"],
         "request_payload_hash": envelope["payload_hash"],
         "request_wire_sha256": request_wire_hash,
@@ -499,7 +561,7 @@ def main() -> int:
         "receipt_lineage_verified": response_receipt["prior_receipt_hash"] == request_receipt["receipt_hash"],
         "durable_receipt_readback_verified": True,
         "same_execution_reconstructed": True,
-        "boundary_identity_source": "AUTHENTIC_PARENT_NODE_KV_CONTINUITY",
+        "boundary_identity_source": predecessor_mode,
         "transport_grants_execution_authority": False,
         "secret_plaintext_present": False,
     }
