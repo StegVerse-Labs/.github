@@ -63,8 +63,6 @@ def derive_intr_carrier_signal(
     if not isinstance(packet_bytes, bytes) or not packet_bytes:
         raise DerivedCarrierError("packet_bytes_required")
     packet_sha256 = hashlib.sha256(packet_bytes).hexdigest()
-    if payload_hash != "sha256:" + packet_sha256:
-        raise DerivedCarrierError("payload_hash_exact_packet_mismatch")
 
     try:
         binding = build_carrier_binding(
