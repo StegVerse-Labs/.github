@@ -59,6 +59,19 @@
         "dependency_task_id": "SV-DN1-PRODUCTION-SOURCE-PREP-001",
         "dependency_terminal_state_required": "COMPLETED",
         "dependency_terminal_transition_required": "SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE"
+      },
+      "source_state_vector_ref": "control/task-vectors/BOOTSTRAP-V1-SOURCE-IDENTITY-FREEZE-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000102000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-30T19:50:00-05:00",
+          "authority_effect": "NONE"
+        }
       }
     }
   ],
