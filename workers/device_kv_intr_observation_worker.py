@@ -15,6 +15,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+from heartbeat_runtime.independent_oscillator import current_reference
+from heartbeat_runtime.intr_derived_carrier import derive_intr_carrier_signal, recover_intr_packet_bytes
+
 ROOT = Path.cwd().resolve()
 TASK_ID = "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
 PARENT_TASK_ID = "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001"
@@ -138,6 +141,21 @@ def event_materialization_basis() -> dict[str, Any] | None:
         "transport_intent_hash":request.get("transport_intent_hash"),
         "queued_payload_hash":request.get("payload_hash"),
     }
+
+
+def build_hb_carrier_signal(*, packet_bytes: bytes, receipt_hash: str, boundary_from: str, boundary_to: str, now_ns: int) -> tuple[dict[str, Any], dict[str, Any]]:
+    reference = current_reference(now_ns=now_ns)
+    signal = derive_intr_carrier_signal(
+        heartbeat_epoch=reference["epoch"],
+        heartbeat_reference=reference["heartbeat_id"],
+        phase_slots=16,
+        packet_bytes=packet_bytes,
+        intr_transport_profile="device-kv",
+        boundary_from=boundary_from,
+        boundary_to=boundary_to,
+        packet_receipt_hash=receipt_hash[7:] if receipt_hash.startswith("sha256:") else receipt_hash,
+    )
+    return signal, reference
 
 def blocker(problem: str, action: str, release: str) -> dict[str, Any]:
     return {
@@ -377,7 +395,6 @@ def main() -> int:
     try:
         continuity_mod = load_module(stegos_root / "stegos/relay_node_kv_continuity.py", "device_kv_continuity")
         kv_mod = load_module(kv_root / "runtime/kv_interlock_endpoint.py", "device_kv_endpoint")
-        hb_carrier_mod = load_module(ROOT / "heartbeat_runtime/intr_derived_carrier.py", "device_kv_hb_intr_carrier")
         if parent_valid:
             continuity_mod.validate_node_kv_continuity_evidence(continuity)
     except Exception as exc:
@@ -415,15 +432,12 @@ def main() -> int:
         boundary_identity_ref=state_root,
         recorded_at=now_iso(),
     )
-    request_carrier_signal = hb_carrier_mod.derive_intr_carrier_signal(
-        heartbeat_epoch=epoch,
-        heartbeat_reference=f"heartbeat_epoch:{epoch}",
-        phase_slots=16,
+    request_carrier_signal, request_hb_reference = build_hb_carrier_signal(
         packet_bytes=request_wire,
-        intr_transport_profile="device-kv",
-        boundary_from="DEVICE",
+        receipt_hash=request_receipt_candidate["receipt_hash"],
+        boundary_from="DEVICE_SYSTEM",
         boundary_to="KV",
-        packet_receipt_hash=request_receipt_candidate["receipt_hash"][7:],
+        now_ns=int((invocation.get("heartbeat_sample_unix_ns") or 0) or 1_787_511_600_000_000_000 + max(0, epoch - 32) * 10_000_000),
     )
     request_carrier_wire = canonical_json(request_carrier_signal).encode()
     request_carrier_wire_hash = sha256_uri(request_carrier_wire)
@@ -468,8 +482,10 @@ def main() -> int:
         def handle(self) -> None:
             raw_carrier = recv_frame(self.request)
             server_state["request_carrier_wire_hash"] = sha256_uri(raw_carrier)
-            request_signal = json.loads(raw_carrier.decode())
-            recovered_request_wire = hb_carrier_mod.recover_intr_packet_bytes(request_signal)
+            received_signal = json.loads(raw_carrier.decode())
+            recovered = recover_intr_packet_bytes(received_signal)
+            request_signal = received_signal
+            recovered_request_wire = recovered
             if request_signal.get("intr", {}).get("packet_receipt_hash") != request_receipt_candidate["receipt_hash"][7:]:
                 raise ValueError("HB-derived carrier request receipt binding mismatch")
             server_state["request_wire_hash"] = sha256_uri(recovered_request_wire)
@@ -504,15 +520,12 @@ def main() -> int:
                 "request_receipt": request_receipt,
                 "response_receipt": response_receipt,
             }).encode()
-            response_carrier_signal = hb_carrier_mod.derive_intr_carrier_signal(
-                heartbeat_epoch=epoch,
-                heartbeat_reference=f"heartbeat_epoch:{epoch}",
-                phase_slots=16,
+            response_carrier_signal, response_hb_reference = build_hb_carrier_signal(
                 packet_bytes=response_wire,
-                intr_transport_profile="device-kv",
+                receipt_hash=response_receipt["receipt_hash"],
                 boundary_from="KV",
-                boundary_to="DEVICE",
-                packet_receipt_hash=response_receipt["receipt_hash"][7:],
+                boundary_to="DEVICE_SYSTEM",
+                now_ns=int((invocation.get("heartbeat_sample_unix_ns") or 0) or 1_787_511_600_000_000_000 + max(0, epoch - 32) * 10_000_000),
             )
             response_carrier_wire = canonical_json(response_carrier_signal).encode()
             server_state.update({
@@ -534,8 +547,9 @@ def main() -> int:
                     client.settimeout(5.0)
                     send_frame(client, request_carrier_wire)
                     response_carrier_wire = recv_frame(client)
-                    response_signal = json.loads(response_carrier_wire.decode())
-                    response_wire = hb_carrier_mod.recover_intr_packet_bytes(response_signal)
+                    response_carrier_signal = json.loads(response_carrier_wire.decode())
+                    response_wire = recover_intr_packet_bytes(response_carrier_signal)
+                    response_signal = response_carrier_signal
             finally:
                 server.shutdown()
                 thread.join(timeout=5.0)
@@ -626,6 +640,7 @@ def main() -> int:
         "request_exact_bytes_recovered_from_hb_carrier": True,
         "response_exact_bytes_recovered_from_hb_carrier": True,
         "hb_derived_carrier_observed": True,
+        "hb_derived_carrier_transport_observed": True,
         "hb_progression_dependency": "OSCILLATOR_ONLY",
         "hb_grants_admission_authority": False,
         "hb_grants_execution_authority": False,
