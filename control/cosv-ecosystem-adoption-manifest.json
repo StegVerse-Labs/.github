@@ -4,7 +4,7 @@
   "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
-  "observed_at": "2026-08-31T08:33:00-05:00",
+  "observed_at": "2026-08-31T10:18:00-05:00",
   "source": "live GitHub App installation enumeration plus durable task-surface evidence",
   "authority_effect": "NONE",
   "credential_authority": "TV/TVC",
@@ -14,16 +14,16 @@
   "organization_count": 14,
   "universe_audit_complete": false,
   "adoption_metrics": {
-    "numerator_vectorized_active_task_surfaces": 4,
-    "denominator_proven_active_task_surfaces": 30,
-    "ratio": "4/30",
-    "percentage": 13.33,
-    "interpretation": "Strict repository adoption now includes StegVerse-Labs/.github, AdmittedCode/.github, Admissible-Existence/STCM, and Admissible-Existence/GTG. AE remains VECTOR_REQUIRED because its broader active denominator is not yet fully projected."
+    "numerator_vectorized_active_task_surfaces": 5,
+    "denominator_proven_active_task_surfaces": 29,
+    "ratio": "5/29",
+    "percentage": 17.24,
+    "interpretation": "RTG is now strict VECTOR_PRESENT after 4/4 active-task coverage and repository-local validation. ET is excluded from the active denominator after its final mathematical-completeness claim completed and released."
   },
   "classification_counts": {
-    "VECTOR_REQUIRED": 26,
-    "VECTOR_PRESENT": 4,
-    "NO_ACTIVE_TASK_SURFACE": 4,
+    "VECTOR_REQUIRED": 24,
+    "VECTOR_PRESENT": 5,
+    "NO_ACTIVE_TASK_SURFACE": 5,
     "NO_REPOSITORY_OR_UNAVAILABLE": 188
   },
   "organization_projection": [
@@ -31,9 +31,9 @@
       "organization": "Admissible-Existence",
       "installation_id": 139890227,
       "repository_count": 32,
-      "vector_required": 6,
-      "vector_present": 2,
-      "no_active_task_surface": 4,
+      "vector_required": 4,
+      "vector_present": 3,
+      "no_active_task_surface": 5,
       "unavailable_or_not_yet_audited": 20
     },
     {
@@ -416,16 +416,23 @@
     {
       "organization": "Admissible-Existence",
       "repository": "Admissible-Existence/RTG",
-      "classification": "VECTOR_REQUIRED",
+      "classification": "VECTOR_PRESENT",
       "profile": "task.v1",
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
-        "task-bearing repository discovered in live ecosystem task-surface audit"
+        "Admissible-Existence/RTG@b06dcc56660d9fd08cf511d5620587cb6df7ef5f:data/cosv/task-vector-index.json",
+        "Admissible-Existence/RTG@b06dcc56660d9fd08cf511d5620587cb6df7ef5f:docs/COSV_RTG_ADOPTION_MIRROR_HANDOFF.md",
+        "Admissible-Existence/RTG@b06dcc56660d9fd08cf511d5620587cb6df7ef5f:review/volume-I-integrated-v0.9.0/machine-execution/readiness-observation.json"
       ],
-      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "vector_coverage_state": "COMPLETE",
       "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
-      "authority_effect": "NONE"
+      "authority_effect": "NONE",
+      "validation_refs": [
+        "Admissible-Existence/RTG/actions/runs/33407255789:Validate COSV Projection SUCCESS",
+        "Admissible-Existence/RTG/actions/runs/33407255764:RTG Build SUCCESS",
+        "Admissible-Existence/RTG/actions/runs/33407255792:Validate RTG manifest-manuscript crosswalk SUCCESS"
+      ]
     },
     {
       "organization": "Admissible-Existence",
@@ -555,16 +562,18 @@
     {
       "organization": "Admissible-Existence",
       "repository": "Admissible-Existence/ET",
-      "classification": "VECTOR_REQUIRED",
-      "profile": "task.v1",
-      "notation": "L R U I V G O C M T B E A P",
-      "width": 14,
+      "classification": "NO_ACTIVE_TASK_SURFACE",
       "evidence_refs": [
-        "task-bearing repository discovered in live ecosystem task-surface audit"
+        "Admissible-Existence/ET@4aac76f0962fef5e208296109abd967c7016766a:ET_MIRROR_HANDOFF.md",
+        "Admissible-Existence/ET@4aac76f0962fef5e208296109abd967c7016766a:data/cosv/task-vector-index.json",
+        "Admissible-Existence/ET/actions/runs/33406850912:Mathematical completeness self-audit SUCCESS"
       ],
-      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
-      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
-      "authority_effect": "NONE"
+      "authority_effect": "NONE",
+      "no_active_task_evidence": [
+        "ET-0001 through ET-0007 terminal in data/et-task-state.json",
+        "ET-MATHEMATICAL-COMPLETENESS-002 COMPLETE/RELEASED with hosted run 33406850912",
+        "repository COSV index reports current_structured_active_tasks_audited=0 and no-active-task-surface candidate=true"
+      ]
     },
     {
       "organization": "AdmittedCode",
