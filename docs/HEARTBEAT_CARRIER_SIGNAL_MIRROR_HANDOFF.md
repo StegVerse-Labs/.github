@@ -396,3 +396,21 @@ Canonical surfaces:
 - `events/heartbeat-derived-carrier.jsonl` — append-only propagation observation.
 
 Source merge/CI still cannot prove authentic production packet propagation. That requires a real InTr producer to emit a carrier-aware packet and a local/remote observer to retain the resulting signal/receipt lineage.
+## 2026-08-31 local propagation merge and producer consumption
+
+Canonical local HB/InTr subsignal materialization is merged in PR #638 at `7bba6e0461ba131b3a04f32c84c3b393d22e14d0`.
+
+The current implementation now distinguishes:
+```text
+derive carrier frame
+!=
+persist exact transported carrier frame
+!=
+HB sampler observation of signal presence
+!=
+InTr admission/execution authority
+```
+
+Issue #645 wires current Device KV and SV-DN-1 carrier producers to persist the exact frame that their lane already transported/recovered, using the canonical resident heartbeat runtime root. The HB sampler remains presence-only and does not parse packet semantics or decide admission.
+
+This does not reopen the terminal heartbeat activation goal. It is downstream carrier-consumer integration only.
