@@ -53,6 +53,7 @@ INGRESS_ADMITTED DEVICE_KV request
 - `scripts/consume_device_kv_intr_materialization_request.py`
 - `scripts/refresh_and_execute_resident_task.py`
 - `scripts/consume_stegos_kv_intr_chain_request.py`
+- `scripts/consume_resident_rendezvous.py`
 - `tests/test_device_kv_intr_event_materialization.py`
 - `docs/PORTABLE_DEVICE_KV_STAGING_CONSUMER_MIRROR_HANDOFF.md`
 
