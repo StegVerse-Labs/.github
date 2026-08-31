@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "bootstrap_sovereign_runtime.py"
@@ -162,6 +163,58 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
             self.assertEqual(body["credential_authority"], "TV/TVC")
             self.assertFalse(body["github_token_required"])
             self.assertEqual(body["authority_effect"], "RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY")
+
+
+    def test_publish_runtime_locator_is_nonsecret_and_uid_bound(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "source"
+            runtime = root / "state" / "stegverse" / "heartbeat-runtime"
+            source.mkdir()
+            runtime.mkdir(parents=True)
+            xdg = root / "run-user"
+            env = {"XDG_RUNTIME_DIR": str(xdg)}
+            with mock.patch.object(bootstrap_module.platform, "system", return_value="Linux"):
+                result = bootstrap_module.publish_runtime_locator(source, runtime, env=env)
+            self.assertEqual(result["state"], "PUBLISHED")
+            self.assertTrue(result["published"])
+            marker = xdg / "stegverse" / "sovereign-runtime.json"
+            self.assertTrue(marker.is_file())
+            body = json.loads(marker.read_text(encoding="utf-8"))
+            self.assertEqual(body["schema"], "stegverse.sovereign-runtime-locator/v1")
+            self.assertEqual(body["uid"], bootstrap_module.os.getuid())
+            self.assertEqual(body["runtime_root"], str(runtime.resolve()))
+            self.assertEqual(body["source_root"], str(source.resolve()))
+            self.assertFalse(body["credential_material_present"])
+            self.assertFalse(body["request_grants_authority"])
+            self.assertFalse(body["heartbeat_grants_authority"])
+            self.assertEqual(body["github_token_runtime_authority"], "NONE")
+            self.assertEqual(body["authority_effect"], "NONE_LOCATOR_ONLY")
+
+    def test_successful_bootstrap_retains_locator_result_without_making_it_authority(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = self.make_source(root, with_post_bootstrap=True)
+            runtime, marker, proof, receipt, post_receipt = self.paths(root)
+            self.patch_post_receipt(post_receipt)
+            runner = FakeRunner(proof, post_receipt)
+            xdg = root / "run-user"
+            with mock.patch.object(bootstrap_module.platform, "system", return_value="Linux"):
+                result = bootstrap_module.bootstrap(
+                    source,
+                    runtime,
+                    node_marker=marker,
+                    proof_path=proof,
+                    receipt_path=receipt,
+                    env={"XDG_RUNTIME_DIR": str(xdg)},
+                    runner=runner,
+                )
+            self.assertEqual(result["state"], "COMPLETE")
+            self.assertTrue(result["runtime_locator"]["published"])
+            self.assertEqual(result["runtime_locator"]["authority_effect"], "NONE_LOCATOR_ONLY")
+            locator = json.loads((xdg / "stegverse" / "sovereign-runtime.json").read_text(encoding="utf-8"))
+            self.assertFalse(locator["credential_material_present"])
+            self.assertFalse(locator["heartbeat_grants_authority"])
 
     def test_successful_bootstrap_automatically_attempts_released_stegfin_service_activation(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

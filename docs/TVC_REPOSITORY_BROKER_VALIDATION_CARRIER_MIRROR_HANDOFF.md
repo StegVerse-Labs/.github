@@ -388,3 +388,24 @@ TVC implementation target:
 
 The request path, HeartBeat, source identity, path watcher, and retry timer grant no
 source-read, execution, credential, repository, release, or publication authority.
+
+
+## Sovereign runtime locator bridge — 2026-08-31
+
+The private-source and repository-authority root watcher families now have a non-secret
+runtime discovery bridge.
+
+`.github` publishes:
+
+`/run/user/<uid>/stegverse/sovereign-runtime.json`
+
+from `scripts/bootstrap_sovereign_runtime.py`.
+
+The locator grants no authority and carries no credential material. TVC's existing root
+primary runtime is the intended consumer through
+`scripts/tvc_resident_service_self_heal.py`. The root TVC supervisor independently
+validates marker ownership, UID/home binding, and the canonical
+`stegverse/heartbeat-runtime` suffix before attempting any service installation.
+
+This removes the need for the rootless validation consumer to know or repair
+`/etc/systemd/system`.
