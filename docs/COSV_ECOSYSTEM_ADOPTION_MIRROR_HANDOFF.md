@@ -1,6 +1,6 @@
 # COSV Ecosystem Adoption Mirror Handoff
 
-Updated: 2026-08-29T02:37:00-05:00
+Updated: 2026-08-30T19:50:00-05:00
 Repository: StegVerse-Labs/.github
 Branch: main (adoption integration and global-registry gap audit merged; adoption remains incomplete)
 State: ACTIVE_ADOPTION_INCOMPLETE
@@ -39,7 +39,7 @@ The 189 unaudited repositories are not exemptions. They are classified `NO_REPOS
 
 ## Current .github boundary
 
-`.github` remains `VECTOR_REQUIRED`. Thirty-three active vectors are indexed in the current local source-generation reconciliation candidate, but additional active worker and organization tasks still lack canonical vector projection.
+`.github` remains `VECTOR_REQUIRED`. Forty-six active vectors are indexed in the current Bootstrap v1 cohort candidate, while 18 worker tasks and 14 organization tasks still lack canonical vector projection.
 
 Existing indexed examples remain unchanged:
 
@@ -102,13 +102,13 @@ Authority effect: NONE.
 
 Machine-readable snapshot: `control/cosv-global-registry-coverage.json`.
 
-- 54 unique worker task IDs across the global worker registry plus fragments at live main `e65492f8b3e5a79a70213121a239089d3b0fd508`.
-- 33 canonically indexed task IDs in the current local source-generation reconciliation candidate.
+- 71 unique worker task IDs across the global worker registry plus fragments at live main `ea9cf7380c04dcdd46da4ac78e719e37316b0a92`.
+- 46 canonically indexed task IDs in the current Bootstrap v1 cohort candidate.
 - 6 completed-only historical unvectorized task IDs.
 - 1 superseded historical unvectorized task ID.
-- 14 active worker task IDs lack canonical COSV coverage after the local source-generation projection.
+- 18 active worker task IDs lack canonical COSV coverage after the Bootstrap v1 cohort projection.
 - 14 organization-registry task IDs lack canonical COSV coverage.
-- Total active .github task IDs lacking canonical COSV coverage after this candidate: 28.
+- Total active .github task IDs lacking canonical COSV coverage after this candidate: 32.
 - The orphan-recovery aggregate/fragment contradiction is reconciled to terminal COMPLETED from the durable G22 PASS receipt; no vector was emitted for this completed historical task.
 
 No new vector digits were invented during this audit.
@@ -643,3 +643,41 @@ The source implementation claim remains `COMPLETE_VALIDATED_RELEASED`; manual ex
 This reconciliation does not run the local model, infer activation from availability, generate owner source, emit the binder packet, mutate an owner repository, merge or release source, or prove recursive re-observation. Repository mutation/credential authority remains TV/TVC-only.
 
 If validated and merged, local .github coverage becomes 33 indexed vectors with 14 active worker gaps + 14 organization gaps = 28 active unvectorized tasks.
+
+
+## Bootstrap v1 machine cohort — current-main candidate
+
+The Bootstrap v1 delivery source lane is merged as `ea9cf7380c04dcdd46da4ac78e719e37316b0a92` after organization-control, Heartbeat deterministic repository, and cross-framework resident-request validation all passed.
+
+The following seven machine-owned tasks now have exact evidence-backed vectors:
+
+```text
+BOOTSTRAP-V1-SOURCE-IDENTITY-FREEZE-001
+  task.v1 [L R U I V G O C M T B E A P] = 50000000102000
+
+BOOTSTRAP-V1-RELEASE-CANDIDATE-FREEZE-001
+  task.v1 [L R U I V G O C M T B E A P] = 50000000102000
+
+BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001
+  task.v1 [L R U I V G O C M T B E A P] = 50000000103000
+
+BOOTSTRAP-V1-MATERIALIZATION-EVIDENCE-INTAKE-001
+  task.v1 [L R U I V G O C M T B E A P] = 50000000102000
+
+BOOTSTRAP-V1-RELEASE-GATE-001
+  task.v1 [L R U I V G O C M T B E A P] = 50000000101000
+
+BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001
+  task.v1 [L R U I V G O C M T B E A P] = 50000000102000
+
+BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001
+  task.v1 [L R U I V G O C M T B E A P] = 50000000103000
+```
+
+All seven executable handoffs are `HANDOFF_READY_MACHINE_OWNED`, prohibit manual execution, have null activation proof, and preserve exact registry/handoff blocker parity.
+
+No source identity is claimed frozen. No rc.1 candidate is claimed frozen. No four-package bundle is claimed built. No source packages are claimed produced. No authentic device materialization proof or browser delivery is claimed observed. No release authorization, tag, publication, SDK admission, package execution, provider credential, GitHub runtime authority, or second-machine authority is created.
+
+The new Universal InTr delivery lane remains blocked on the authentic distributable bundle, a public sovereign Bootstrap InTr route, and one authentic browser delivery receipt chain. Receiver source readiness or validation is not runtime delivery.
+
+If validated and merged, local .github coverage becomes 46 indexed vectors with 18 active worker gaps + 14 organization gaps = 32 active unvectorized tasks.
