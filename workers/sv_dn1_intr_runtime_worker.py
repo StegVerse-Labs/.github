@@ -13,6 +13,10 @@ import tempfile
 import time
 from typing import Any, Mapping
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 from heartbeat_runtime.carrier_envelope import SignalConstraint, derive_carrier_envelope
 from heartbeat_runtime.independent_oscillator import current_reference
 from heartbeat_runtime.intr_derived_carrier import derive_intr_carrier_signal, recover_intr_packet_bytes
