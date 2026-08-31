@@ -352,3 +352,47 @@ legacy_unbound_packets_temporarily_accepted: true
 ```
 
 A carrier-aware packet binds its packet ID and payload hash to an independently reconstructable HB reference and deterministic phase slot. Validation of that binding proves only carrier consistency; ordinary InTr/Interlock admission and downstream governance remain separate predicates.
+
+
+## 2026-08-31 current local HB/InTr subsignal propagation
+
+Issue `#624` restores the useful runtime behavior demonstrated historically by `engine_v9._carry_subsignals()` without restoring worker/task-control coupling into HeartBeat.
+
+Current canonical local sequence:
+
+```text
+already-governed InTr packet bytes
+-> canonical HB32 reference + packet_id-derived H1 phase slot
+-> exact-byte HB-derived carrier frame
+-> write-once local signal under control/heartbeat-derived-signals.d/
+-> append-only observation under events/heartbeat-derived-carrier.jsonl
+-> optional current HB sampler observes SIGNAL PRESENCE only
+-> independent consumer reconstructs exact bytes and revalidates binding/hash
+```
+
+The current HB runtime observation is intentionally presence-only. It records signal file references and exact file SHA-256 values but does not interpret packet semantics and does not validate or authorize the InTr packet. Packet validation remains in the derived-carrier/InTr layer.
+
+This preserves the authority boundary:
+
+```text
+HB progression effect from signal: NONE
+HB admission authority: NONE
+HB execution authority: NONE
+HB route authority: NONE
+HB receiving authority: NONE
+WorkerCoordinator invocation by propagation: false
+claim/fence minted by propagation: false
+credential authority: TV/TVC
+```
+
+The local signal survives independently of sampler liveness. The sampler may observe it later, just as an HB observer may skip oscillator references and later observe the current reference. Signal materialization therefore does not become heartbeat progression authority.
+
+Canonical surfaces:
+- `heartbeat_runtime/intr_carrier_profile.py` — canonical HB/channel binding;
+- `heartbeat_runtime/intr_derived_carrier.py` — exact-byte carrier frame/recovery;
+- `heartbeat_runtime/intr_subsignal_runtime.py` — local write-once propagation/reconstruction;
+- `heartbeat_runtime/engine_v12.py` / v13 inheritance — presence-only observation;
+- `control/heartbeat-derived-signals.d/` — local carried signal state;
+- `events/heartbeat-derived-carrier.jsonl` — append-only propagation observation.
+
+Source merge/CI still cannot prove authentic production packet propagation. That requires a real InTr producer to emit a carrier-aware packet and a local/remote observer to retain the resulting signal/receipt lineage.
