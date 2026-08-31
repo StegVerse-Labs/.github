@@ -38,6 +38,35 @@
         "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
         "admitted_predecessor_rule": "VERIFIED_KV_SKAP_EVENT_MATERIALIZATION",
         "event_materialization_grants_authority": false
+      },
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:kv-skap-custody:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "StegVerse-Labs/StegOS/specs/universal-intr-connector-profiles.v1.json",
+          "StegVerse-Labs/TVC/tools/skap_vault_interlock_gate.py"
+        ],
+        "admissibility_evidence_refs": [
+          "docs/KV_SKAP_OPERATIONAL_INTR_TRANSPORT_MIRROR_HANDOFF.md",
+          "handoffs/KV-SKAP-CUSTODY-001.json",
+          "scripts/consume_kv_skap_custody_materialization_request.py",
+          "workers/universal_intr_profiled_ingress.py",
+          "control/worker-registry.d/kv-skap-custody-001.json",
+          "control/process-worker-adapters.d/kv-skap-custody-001.json"
+        ],
+        "integration_evidence_refs": [],
+        "activation_proof_ref": null,
+        "blockers": [
+          "AUTHENTIC_KV_SKAP_EVENT_NOT_YET_OBSERVED",
+          "EXACT_SKAP_CUSTODY_READBACK_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "kv-skap-custody-worker + StegVerse-Labs/TVC",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
       }
     }
   ],
