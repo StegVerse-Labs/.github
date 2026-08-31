@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.worker-capability-profiles/v0.1",
-  "generation": 16,
+  "generation": 17,
   "profiles": [
     {
       "profile_id": "deterministic-workflow-v1",
@@ -196,6 +196,29 @@
         "Public research execution is limited to an admitted source queue and bounded local receipt/workspace namespace.",
         "The profile grants no GitHub repository checkout/write, credential, publication, research-promotion, provider, wallet, trade, heartbeat-state, claim, or fence authority.",
         "Authenticated sources require a separate TV/TVC authority path and are not admitted by this profile."
+      ]
+    },
+    {
+      "profile_id": "universal-governance-reference-v1",
+      "executor_type": "repository_worker",
+      "effect_class": "universal_governance_reference_enforcement",
+      "allowed_capabilities": [
+        "bounded_process_execution",
+        "universal_governance_reference_execution",
+        "bounded_target_mutation",
+        "consequence_evidence_validation",
+        "master_records_custody_validation",
+        "bypass_negative_control"
+      ],
+      "mutation_allowed": true,
+      "deployment_allowed": false,
+      "availability_grants_authority": false,
+      "capability_match_grants_authority": false,
+      "notes": [
+        "Mutation is confined to the current ProcessWorkerAdapter bound-state namespace and may not modify repositories or deployments.",
+        "The profile proves only a reference ENFORCED boundary and must retain real_external_system_enforced_activation=false.",
+        "Governance, Interlock, InTr, HB and Master Records custody grant no execution or credential authority.",
+        "Target consequence authority remains separately validated and TV/TVC remains credential authority."
       ]
     }
   ]
