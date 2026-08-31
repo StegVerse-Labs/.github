@@ -3,8 +3,8 @@
 Updated: 2026-08-30
 Repository: StegVerse-Labs/.github
 Issue: #578
-Branch: feature/resident-rendezvous-consumer-578
-State: SOURCE_IMPLEMENTATION_IN_PROGRESS
+Merged PR: #584\nMerge: 91bf9a7314313f989bd8e5e8008887a647e30cd9
+State: SOURCE_MERGED_VALIDATED / RESIDENT_REFRESH_ACTIVATION_OPEN
 Authority effect: NONE
 Runtime activation claimed: false
 
@@ -67,3 +67,18 @@ ACTIVATED: false
 OBSERVED: false
 COMPLETE: false
 ```
+
+
+## Merge evidence
+
+```text
+issue: #578 CLOSED_BY_MERGE
+PR: #584 MERGED
+merge: 91bf9a7314313f989bd8e5e8008887a647e30cd9
+validated head: 8eea81ce2831cd8d2061d872eca66ebaa3c2d1c4
+Heartbeat Worker Project: 33351750512 SUCCESS
+Validate organization control plane: 33351750524 SUCCESS
+Cross-Framework Current-Basis Resident Request Validation: 33351750493 SUCCESS
+```
+
+The continuous sovereign WorkerCoordinator source now polls the non-authorizing rendezvous when its non-secret Gateway URL/node selector are installed. The missing interactive SSH/server-control surface is no longer part of the steady-state execution contract. The current resident still has to refresh/deploy this merged source once before the rendezvous can be observed live.
