@@ -11,11 +11,16 @@
         "bounded_repository_mutation",
         "sovereign_base_rpc_activation"
       ],
-      "command": ["python", "workers/sovereign_base_rpc_activation_worker.py"],
+      "command": [
+        "python",
+        "workers/sovereign_base_rpc_activation_worker.py"
+      ],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [
         "STEGVERSE_MICRO_NODE_ROOT",
+        "STEGVERSE_REPO_ROOTS_JSON",
+        "STEGVERSE_MICRO_NODE_RUNTIME_ROOT",
         "STEGVERSE_BASE_RPC_URL",
         "STEGVERSE_BASE_RPC_COMMAND",
         "HOME",
@@ -28,7 +33,8 @@
         "Child execution receives a minimal reconstructed environment; parent GitHub/provider/wallet credential variables are not inherited.",
         "A validation-only reference endpoint, credential-bearing descriptor, missing local source, unsynchronized endpoint or failed proof returns BLOCKED rather than success.",
         "Writes only receipts/sovereign-base-rpc-activation/** and grants no TVC route admission, trade, wallet, signing, broadcast or settlement authority.",
-        "No Render, Vercel, Cloudflare hosted runtime, GitHub token/runtime or third-party scheduler is a production dependency."
+        "No Render, Vercel, Cloudflare hosted runtime, GitHub token/runtime or third-party scheduler is a production dependency.",
+        "Portable resident bundles may supply micro-node-runtime through STEGVERSE_MICRO_NODE_RUNTIME_ROOT or the canonical repository-root map; no Git metadata or network checkout is required."
       ],
       "timeout_seconds": 210,
       "type": "process_json_v0.1"
