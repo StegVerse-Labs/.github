@@ -360,3 +360,22 @@ packet-governance layer. HB supplies only the synchronization/carrier coordinate
 Existing authentic Universal InTr traversal evidence remains valid. A new
 carrier-binding receipt is a stronger transport-observation predicate and must not be
 inferred retroactively from the existing InTr receipt.
+## 2026-08-31 shared HB signal publication
+
+Issue #645 binds the already-derived SV-DN-1 route carrier frame into the canonical shared local HB signal surface after exact carrier recovery/validation.
+
+Execution now includes:
+```text
+route-specific exchange
+-> canonical HB/InTr carrier frame
+-> exact recovery verification
+-> persist exact same carrier frame into shared heartbeat runtime
+-> re-seal carrier-binding receipt with shared signal ref + digest
+-> preserve route-specific completion
+```
+
+New evidence fields:
+- carrier-binding receipt: `shared_hb_signal_ref`, `shared_hb_signal_sha256`
+- worker completion: `hb_shared_signal_ref`, `hb_shared_signal_sha256`
+
+The persistence operation does not re-sample HB, does not derive a second signal, and grants no authority. Authentic SV-DN-1 runtime observation remains distinct from source/CI/merge.
