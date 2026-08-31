@@ -73,7 +73,7 @@ def reconstruction_terminal(reconstruction: dict[str, Any]) -> bool:
         and reconstruction["receipt"].get("reconstruction") == "PASS"
     )
 MASTER_RECORDS_RECONSTRUCTION_COMMIT = "2e117902d4f261b10cb3b5122b7ef48fb0e36e57"
-MICRO_NODE_SOURCE_PIN = "496f17e0cb07433f3f9312e82a2c045f5d901dc9"
+MICRO_NODE_SOURCE_PIN = "0b988183a2a05607afb0816036a9cf7ce14e3640"
 MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB = "cc96556a23b5bd804f3cdaa96539b379c1904437"
 
 
