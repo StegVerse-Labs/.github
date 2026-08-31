@@ -16,9 +16,12 @@
   "tvc_root_locator_required": true,
   "credential_material_allowed": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Fresh exactly-once retry after TVC current-base admission evaluator merge e350225d9e28dc45d3685afa8b7113d54fcf19b9 and .github resident continuation merge 868e8e61113a6dcfffabf98e7bbfc1f2f26bd6aa. The resident continuation must not stop at governed validation PASS; it must also observe TVC_PR92_BROKER_ADMISSION_ELIGIBLE for the same exact head and 16-file digest. Request grants no credential, source/network, repository-write, commit, push, merge, release, publication, or runtime authority.",
+  "note": "Fresh exactly-once retry through governed PR #92 validation, current-base compatibility, and non-secret handoff into the merged TVC resident repository-authority continuation. The .github consumer receives no repository credential and grants no repository authority. TVC alone stages/owns the downstream request and systemd alone exposes TVC_EPHEMERAL_GITHUB_TOKEN.",
   "private_source_bootstrap_allowed": true,
   "private_source_bootstrap_service": "stegtvc-private-source-read.service",
   "private_source_bootstrap_credential_transport": "SYSTEMD_LOADCREDENTIAL",
-  "admission_compatibility_requested": true
+  "admission_compatibility_requested": true,
+  "repository_authority_continuation_requested": true,
+  "repository_authority_target_task": "tvc.sv_dn1.repository_authority.continue",
+  "repository_authority_credential_transport": "TVC_SYSTEMD_LOADCREDENTIAL_ONLY"
 }
