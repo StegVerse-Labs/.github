@@ -37,8 +37,7 @@ NONSECRET = (
     "STEGVERSE_HEARTBEAT_ROOT","STEGVERSE_TVC_ROOT","STEGVERSE_TVC_CONTROL_ROOT",
 )
 PRIVATE_SOURCE_CANDIDATE = Path("/var/lib/stegverse/private-source-read/materialized/tvc-pr92-broker-validation-b5288f99")
-TVC_PROGRESSION_MODULE = "scripts.advance_tvc_pr92_broker_validation"
-TVC_PROGRESSION_SCRIPT = Path("scripts/advance_tvc_pr92_broker_validation.py")
+TVC_PRIVATE_SOURCE_BOOTSTRAP = Path("scripts/bootstrap_tvc_pr92_validation_source.py")
 TVC_ADMISSION_MODULE = "scripts.evaluate_github_repository_operation_broker_admission"
 TVC_ADMISSION_SCRIPT = Path("scripts/evaluate_github_repository_operation_broker_admission.py")
 TVC_REPOSITORY_AUTHORITY_REQUEST_REL = Path("tvc-handoff/sv-dn1-repository-authority-request.json")
@@ -174,38 +173,60 @@ def parse_last_json(stdout: str) -> dict[str, Any] | None:
 
 
 def run_tvc_private_source_progression(
-    control_root: Path,
+    runtime_root: Path,
     *,
     runner=subprocess.run,
     env: Mapping[str, str],
 ) -> dict[str, Any]:
+    runtime = runtime_root.expanduser().resolve()
+    helper = runtime / TVC_PRIVATE_SOURCE_BOOTSTRAP
+    if not helper.is_file():
+        return {
+            "command": None,
+            "returncode": None,
+            "result": None,
+            "result_observed": False,
+            "request_staged_or_owned": False,
+            "reason": "PRIVATE_SOURCE_BOOTSTRAP_HELPER_NOT_MATERIALIZED",
+            "credential_value_exposed": False,
+            "consumer_credential_used": False,
+            "consumer_network_source_fetch_performed": False,
+            "systemd_service_start_requested_by_consumer": False,
+            "authority_effect": "NONE_REQUEST_ONLY",
+        }
     command = [
         sys.executable,
-        "-m",
-        TVC_PROGRESSION_MODULE,
-        "--repo-root",
-        str(control_root),
+        str(helper),
+        "--runtime-root",
+        str(runtime),
     ]
     completed = runner(
         command,
-        cwd=control_root,
+        cwd=runtime,
         capture_output=True,
         text=True,
         check=False,
         env=dict(env),
-        timeout=900,
+        timeout=60,
     )
     result = parse_last_json(completed.stdout)
+    staged = bool(
+        isinstance(result, dict)
+        and result.get("state") in {"READY", "HANDOFF_READY"}
+        and result.get("systemd_service_start_requested") is False
+    )
     return {
         "command": command,
         "returncode": completed.returncode,
         "result": result,
         "result_observed": isinstance(result, dict),
+        "request_staged_or_owned": staged,
         "credential_value_exposed": False,
         "consumer_credential_used": False,
         "consumer_network_source_fetch_performed": False,
         "tvc_private_source_service_may_perform_provider_read": True,
-        "authority_effect": "EXISTING_TVC_PRIVATE_SOURCE_AUTHORITY_ONLY",
+        "systemd_service_start_requested_by_consumer": False,
+        "authority_effect": "NONE_REQUEST_ONLY",
     }
 
 
@@ -396,22 +417,21 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     control_root: Path | None = None
     control_observed: str | None = None
     if tvc_root is None:
+        progression = run_tvc_private_source_progression(
+            runtime,
+            runner=runner,
+            env=cleaned,
+        )
+        tvc_root, observed = exact_local_tvc_root(cleaned)
         control_root, control_observed = local_tvc_control_root(cleaned)
-        if control_root is not None:
-            progression = run_tvc_private_source_progression(
-                control_root,
-                runner=runner,
-                env=cleaned,
-            )
-            tvc_root, observed = exact_local_tvc_root(cleaned)
 
     if tvc_root is None:
         progression_result = progression.get("result") if isinstance(progression, dict) else None
         progression_state = progression_result.get("state") if isinstance(progression_result, dict) else None
         hard_failure = bool(
             isinstance(progression, dict)
-            and progression.get("returncode") not in {0, 2}
-            and progression_state not in {"BLOCKED_CREDENTIAL_NOT_OBSERVED"}
+            and progression.get("returncode") not in {0, 2, None}
+            and progression_state not in {"READY", "HANDOFF_READY"}
         )
         receipt = {
             "schema":"stegverse.tvc-broker-validation-request-consumption/v1",
@@ -425,7 +445,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             "expected_tvc_head":EXPECTED_HEAD,
             "observed_tvc_root":observed,
             "observed_tvc_control_root":control_observed,
-            "machine_observable_release_condition":"The canonical TVC private-source progression materializes the exact clean PR #92 checkout at the pinned head, after which the existing validation worker completes",
+            "machine_observable_release_condition":"The non-secret runtime private-source request is consumed by the installed TVC systemd path/timer, producing the exact clean PR #92 checkout and authentic execution receipt; the next resident cycle then runs the existing validation worker",
             "credential_authority":"TV/TVC",
             "github_token_required":False,
             "second_machine_required":False,
