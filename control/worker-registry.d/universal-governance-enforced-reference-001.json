@@ -50,7 +50,7 @@
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
-        "task_relationship": "executes_reference_capability",
+        "task_relationship": "validates_capability",
         "target_phase": "ACTIVATED"
       }
     }
