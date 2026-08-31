@@ -4,7 +4,7 @@
   "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
-  "observed_at": "2026-08-30T22:38:00-05:00",
+  "observed_at": "2026-08-31T07:58:00-05:00",
   "source": "live GitHub App installation enumeration plus durable task-surface evidence",
   "authority_effect": "NONE",
   "credential_authority": "TV/TVC",
@@ -14,16 +14,16 @@
   "organization_count": 14,
   "universe_audit_complete": false,
   "adoption_metrics": {
-    "numerator_vectorized_active_task_surfaces": 1,
-    "denominator_proven_active_task_surfaces": 33,
-    "ratio": "1/33",
-    "percentage": 3.03,
-    "interpretation": "Repository-level VECTOR_PRESENT requires proof that every active machine task in that repository is vectorized. StegVerse-Labs/.github now satisfies this strict criterion; remaining task-bearing repositories remain fail-closed until independently complete."
+    "numerator_vectorized_active_task_surfaces": 2,
+    "denominator_proven_active_task_surfaces": 34,
+    "ratio": "2/34",
+    "percentage": 5.88,
+    "interpretation": "Repository-level VECTOR_PRESENT requires proof that every active machine task in that repository is vectorized. StegVerse-Labs/.github and AdmittedCode/.github now satisfy this strict criterion; partial downstream projections remain VECTOR_REQUIRED until independently complete."
   },
   "classification_counts": {
     "VECTOR_REQUIRED": 32,
-    "VECTOR_PRESENT": 1,
-    "NO_REPOSITORY_OR_UNAVAILABLE": 189
+    "VECTOR_PRESENT": 2,
+    "NO_REPOSITORY_OR_UNAVAILABLE": 188
   },
   "organization_projection": [
     {
@@ -39,8 +39,8 @@
       "organization": "AdmittedCode",
       "installation_id": 139890420,
       "repository_count": 6,
-      "vector_required": 1,
-      "vector_present": 0,
+      "vector_required": 0,
+      "vector_present": 1,
       "no_active_task_surface": 0,
       "unavailable_or_not_yet_audited": 5
     },
@@ -93,10 +93,10 @@
       "organization": "StegVerse-Labs",
       "installation_id": 139890998,
       "repository_count": 100,
-      "vector_required": 6,
+      "vector_required": 7,
       "vector_present": 1,
       "no_active_task_surface": 0,
-      "unavailable_or_not_yet_audited": 93
+      "unavailable_or_not_yet_audited": 92
     },
     {
       "organization": "StegVerse-org",
@@ -600,16 +600,22 @@
     {
       "organization": "AdmittedCode",
       "repository": "AdmittedCode/.github",
-      "classification": "VECTOR_REQUIRED",
+      "classification": "VECTOR_PRESENT",
       "profile": "task.v1",
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
-        "data/tasks/ADMITTEDCODE-SITE-REVIEW-INTEGRATION.json"
+        "AdmittedCode/.github@3b4ccb77b35534691987f8fd02662f058258b5c8:ADMITTEDCODE_GITHUB_MIRROR_HANDOFF.md",
+        "AdmittedCode/.github@3b4ccb77b35534691987f8fd02662f058258b5c8:data/site-admission-watch.json",
+        "AdmittedCode/.github@3b4ccb77b35534691987f8fd02662f058258b5c8:data/cosv/task-vector-index.json",
+        "AdmittedCode/.github@3b4ccb77b35534691987f8fd02662f058258b5c8:data/cosv/task-vectors/ADMITTEDCODE-SITE-REVIEW-INTEGRATION.json"
       ],
-      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
-      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
-      "authority_effect": "NONE"
+      "vector_coverage_state": "COMPLETE",
+      "release_condition": "Repository-local active task surface remains fully audited and every active machine task continues to carry an evidence-backed task.v1 vector with repository-local validation PASS.",
+      "authority_effect": "NONE",
+      "validation_refs": [
+        "AdmittedCode/.github/actions/runs/33392109172:Validate COSV Projection SUCCESS"
+      ]
     },
     {
       "organization": "Data-Continuation",
@@ -708,7 +714,9 @@
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
-        "data/publisher-orchestration-state.json"
+        "data/publisher-orchestration-state.json",
+        "GCAT-BCAT-Engine/Publisher@4a5b68a661a3dc161233198b4cd1366c8826a5fd:data/cosv/task-vector-index.json",
+        "GCAT-BCAT-Engine/Publisher@4a5b68a661a3dc161233198b4cd1366c8826a5fd:docs/COSV_PUBLISHER_ADOPTION_MIRROR_HANDOFF.md"
       ],
       "vector_coverage_state": "NOT_PROVEN_COMPLETE",
       "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
@@ -888,7 +896,9 @@
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
-        "machine-owned custody/reconstruction task state and MIRROR handoff"
+        "machine-owned custody/reconstruction task state and MIRROR handoff",
+        "master-records/orchestration@64dc4291fd33fe5adfbca4541742322a2e4898c2:data/cosv/task-vector-index.json",
+        "master-records/orchestration@64dc4291fd33fe5adfbca4541742322a2e4898c2:docs/COSV_MASTER_RECORDS_ADOPTION_MIRROR_HANDOFF.md"
       ],
       "vector_coverage_state": "NOT_PROVEN_COMPLETE",
       "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
@@ -1048,7 +1058,9 @@
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
-        "task-bearing machine state found in prior live audit"
+        "task-bearing machine state found in prior live audit",
+        "StegVerse-002/stegguardian-wiki@82d927da41ce4265c3b2d1d11f175626c7a351ad:data/cosv/task-vector-index.json",
+        "StegVerse-002/stegguardian-wiki@82d927da41ce4265c3b2d1d11f175626c7a351ad:docs/COSV_STEGGUARDIAN_ADOPTION_MIRROR_HANDOFF.md"
       ],
       "vector_coverage_state": "NOT_PROVEN_COMPLETE",
       "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
@@ -1073,7 +1085,9 @@
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
-        "data/tasks/SITE-TASK-RUNNER-SEMANTIC-LIVE-501.json#machine_readable_state.cosv"
+        "data/tasks/SITE-TASK-RUNNER-SEMANTIC-LIVE-501.json#machine_readable_state.cosv",
+        "StegVerse-Labs/Site@6bf730fe4d2ceaa0573778a01454ed012635c830:data/cosv/task-vector-index.json",
+        "StegVerse-Labs/Site@6bf730fe4d2ceaa0573778a01454ed012635c830:docs/COSV_SITE_ADOPTION_MIRROR_HANDOFF.md"
       ],
       "vector_coverage_state": "NOT_PROVEN_COMPLETE",
       "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
@@ -1247,7 +1261,9 @@
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
-        "tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json#machine_readable_state.cosv"
+        "tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json#machine_readable_state.cosv",
+        "StegVerse-Labs/TVC@f2216922673f7ea7163df6d43797f5f086d28ccf:data/cosv/task-vector-index.json",
+        "StegVerse-Labs/TVC@f2216922673f7ea7163df6d43797f5f086d28ccf:docs/COSV_TVC_ADOPTION_MIRROR_HANDOFF.md"
       ],
       "vector_coverage_state": "NOT_PROVEN_COMPLETE",
       "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
@@ -1816,13 +1832,18 @@
     {
       "organization": "StegVerse-Labs",
       "repository": "StegVerse-Labs/admissibility-wiki",
-      "classification": "NO_REPOSITORY_OR_UNAVAILABLE",
-      "unavailable_scope": "TASK_SURFACE_AUDIT_NOT_YET_COMPLETED",
+      "classification": "VECTOR_REQUIRED",
       "evidence_refs": [
-        "GitHub App installation inventory proves repository presence; active-task/vector classification not yet machine-proven in this audit pass."
+        "StegVerse-Labs/admissibility-wiki@21c2e0354b7f88203971b753efdaea88a6e35dec:data/cosv/task-vector-index.json",
+        "StegVerse-Labs/admissibility-wiki@21c2e0354b7f88203971b753efdaea88a6e35dec:docs/COSV_ADMISSIBILITY_WIKI_ADOPTION_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/admissibility-wiki@21c2e0354b7f88203971b753efdaea88a6e35dec:data/admissibility-wiki-orchestration-state.json"
       ],
-      "release_condition": "Complete repository-local task-surface audit; reclassify to VECTOR_REQUIRED, VECTOR_PRESENT, or NO_ACTIVE_TASK_SURFACE with durable evidence.",
-      "authority_effect": "NONE"
+      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
+      "authority_effect": "NONE",
+      "profile": "task.v1",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector_coverage_state": "NOT_PROVEN_COMPLETE"
     },
     {
       "organization": "StegVerse-Labs",
@@ -2294,7 +2315,9 @@
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
-        "tasks/LLMA-HIL-SOVEREIGN-RECEIVER-021.json"
+        "tasks/LLMA-HIL-SOVEREIGN-RECEIVER-021.json",
+        "StegVerse-org/LLM-adapter@ae9f35eb656d2d75015e3b0b8bc9e89712443fe8:data/cosv/task-vector-index.json",
+        "StegVerse-org/LLM-adapter@ae9f35eb656d2d75015e3b0b8bc9e89712443fe8:docs/COSV_LLM_ADAPTER_ADOPTION_MIRROR_HANDOFF.md"
       ],
       "vector_coverage_state": "NOT_PROVEN_COMPLETE",
       "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
