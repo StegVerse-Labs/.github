@@ -688,3 +688,29 @@ This removes Git-metadata presence as an accidental portable-runtime prerequisit
 Verified portable-source evidence is now preserved across every non-authorizing environment boundary between native service registration and request-specific worker execution. The portable refresh bridge and generic resident dispatcher forward `STEGVERSE_RESIDENT_SOURCE_MANIFEST`; request adapters must still opt in explicitly.
 
 This closes the execution seam where a correctly verified local bundle could lose its provenance locator before a worker evaluated it. No credential or authority-bearing environment variable is added.
+
+
+## 2026-08-31 complete SV002 resident source transport closure
+
+The sovereign control bundle now covers the complete pre-execution source denominator for the StegVerse-002 self-characterization lane:
+
+```text
+.github resident control plane
++ StegOS
++ continuity-vault-kit
++ StegVerse-Healer
++ TV
++ TVC
++ StegVerse-002/micro-node-runtime
++ master-records/orchestration reconstruction verifier
++ exact pinned TT / RTG / GTG / AE snapshots
+-> verified bundle manifest
+-> StegDeploy local materialization
+-> native WorkerCoordinator
+-> exact resident request
+-> SV002 principal / reconstruction worker
+```
+
+The formal resources are emitted from exact pinned Git objects and therefore do not require transported Git metadata. Micro-node, Master Records, and formal snapshot consumers validate the persisted source manifest plus current materialized digests before execution.
+
+This removes missing source/checkouts and `.git` presence as portable resident prerequisites for this lane. It does not establish a qualifying model process, principal execution, reconstruction, public observation, custody, lifecycle activation, or authority.
