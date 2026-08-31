@@ -4,12 +4,14 @@
   "level": "task",
   "vector": "50000000104000",
   "evidence_refs": [
+    "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
+    "docs/HB31_RUNTIME_REGISTRY_TERMINALIZATION_MIRROR_HANDOFF.md",
     "control/worker-registry.d/tvc-coinbase-intr-resident-activation-001.json",
     "handoffs/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json",
     "StegVerse-Labs/TVC:tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
     "StegVerse-Labs/TVC:tasks/TVC-SERVICE-GATEWAY-LEAF-CERTIFICATE-LIFECYCLE-029.json"
   ],
-  "observed_at": "2026-08-28T23:26:00-05:00",
+  "observed_at": "2026-08-31T15:48:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "MACHINE_OWNED",
@@ -22,20 +24,20 @@
     "chat_owned_credentials": 0,
     "canonical_owner_installed": true,
     "thread_required": false,
-    "blocker_count": 4,
+    "blocker_count": 3,
     "evidence_complete": false,
     "activated": false,
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "independent task-control handoff is HANDOFF_READY with AUTHORIZED executor; TVC canonical owner is resident sole-host execution and machine owner binding is merged/validated",
+    "lifecycle": "independent task-control handoff is HANDOFF_READY with AUTHORIZED executor; HB31 RELEASE_COMPLETE evidence is already satisfied and G18 terminalization is not an admission dependency",
     "archive_ready": "worker fragment archive_eligible=false",
     "unassigned_work": "tvc-coinbase-intr-resident-activation-worker + StegVerse-Labs/TVC own continuation",
     "chat_owned_counts": "current source/runtime stage is machine-owned; provider credential plaintext is never accepted by this worker and owner iPhone ingress is downstream only after terminal readiness",
     "canonical_owner_installed": "TVC resident activation source, CMC-029 HTTP-01 lifecycle, machine-owner binding, worker, adapter, and handoff are merged/validated",
     "thread_required": "TVC CMC-029 owner records thread_dependency=NONE, user_action_required_now=false, credential_entry_allowed_now=false, second_user_operated_machine_required=false",
-    "blocker_count": "exact registry/handoff blocker parity: SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN | REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED | PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED | SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED",
-    "evidence_complete": "genuine resident runtime, storage bindings, production sovereign Gateway route, and Service Gateway TLS adoption remain unobserved",
+    "blocker_count": "G18/sovereign-runtime terminalization removed as a prohibited downstream gate. Remaining exact blockers: REAL_RESIDENT_STORAGE_BINDINGS_NOT_YET_OBSERVED | PUBLIC_SOVEREIGN_GATEWAY_ROUTE_NOT_YET_OBSERVED | SERVICE_GATEWAY_TLS_ADOPTION_NOT_YET_OBSERVED",
+    "evidence_complete": "real resident storage bindings, production sovereign Gateway route, and Service Gateway TLS adoption remain unobserved; G18 cleanup is not part of this denominator",
     "activated": "activation_proof_ref=null; runtime execution and READY_FOR_OWNER_INGRESS are not observed",
     "propagated": "Site owner-ingress projection is not yet runtime-ready and owner credential ingress is not due"
   },
