@@ -209,3 +209,42 @@ separate runtime/control-plane cleanup: ACTIVE under issue #122 and downstream h
 ```
 
 Heartbeat activation is terminal. Keep issue #122 open only for its distinct separation/integration obligations; do not use its open state to reclassify heartbeat activation as incomplete.
+
+
+## 2026-08-31 native resident request-consumption repair
+
+A runtime liveness gap remained after heartbeat/runtime separation: the native WorkerCoordinator service could run continuously while already-materialized resident execution requests were only visited by bootstrap-time dispatch or by an explicitly configured external rendezvous poll. That allowed the resident worker process to remain alive without consuming locally available request files.
+
+The repair is intentionally inside the existing native worker runtime. No second scheduler, heartbeat, hosted monitor, claim source, or execution authority is introduced.
+
+Canonical behavior:
+
+```text
+native WorkerCoordinator process
+-> every 100 worker-runtime logical ticks
+-> visit scripts/dispatch_resident_execution_requests.py against the same resident root
+-> each request-specific consumer validates its own request
+-> each task-specific WorkerCoordinator path owns claim/fence/admission
+-> durable consumer/task receipts remain completion evidence
+```
+
+The 100-tick visit cadence is only a local liveness trigger aligned with the existing 100 Hz HB-scale runtime rhythm. It does not derive execution authority from HeartBeat, does not advance HeartBeat, and does not turn wall-clock time into task authority.
+
+Files:
+
+```text
+scripts/run_worker_runtime.py
+tests/test_worker_runtime_local_request_dispatch.py
+```
+
+Required evidence after deployment-local execution remains:
+
+```text
+receipts/sovereign-host/resident-request-dispatch.latest.json
+request-specific consumption receipt
+fresh task claim/fence where required
+task-specific durable completion receipt
+same-execution reconstruction where required
+```
+
+This repair closes the source-level defect in which a live native worker could fail to visit already-local resident requests. It does not fabricate deployment-local execution evidence and does not convert repository validation into runtime proof.
