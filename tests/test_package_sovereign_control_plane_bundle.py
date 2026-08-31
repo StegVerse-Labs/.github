@@ -95,6 +95,52 @@ class SovereignControlPlaneBundleTests(unittest.TestCase):
             self.assertEqual(proof["materialized_subpath"], "vendor/TVC")
             self.assertFalse(proof["network_fetch_performed"])
 
+    def test_tv_source_proof_requires_exact_clean_authorized_head(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tv = Path(tmp) / "TV"
+            tv.mkdir()
+            subprocess.run(["git", "init", str(tv)], check=True, capture_output=True)
+            subprocess.run(["git", "-C", str(tv), "config", "user.email", "test@example.invalid"], check=True)
+            subprocess.run(["git", "-C", str(tv), "config", "user.name", "Test"], check=True)
+            for rel in module.TV_RESIDENT_PROOF_REQUIRED_PATHS:
+                path = tv / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(rel + "\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(tv), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(tv), "commit", "-m", "authorized"], check=True, capture_output=True)
+            head = subprocess.run(["git", "-C", str(tv), "rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
+            old = module.TV_RESIDENT_PROOF_SHA
+            module.TV_RESIDENT_PROOF_SHA = head
+            try:
+                proof = module.tv_source_proof(tv)
+            finally:
+                module.TV_RESIDENT_PROOF_SHA = old
+
+            self.assertEqual(proof["state"], "VERIFIED_LOCAL_GIT_SOURCE")
+            self.assertEqual(proof["head"], head)
+            self.assertTrue(proof["exact_head_verified"])
+            self.assertTrue(proof["clean_worktree_at_packaging"])
+            self.assertEqual(proof["materialized_subpath"], "vendor/TV")
+
+    def test_bundle_can_include_tv_vendor_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "source"
+            tv = Path(tmp) / "TV"
+            (root / "scripts").mkdir(parents=True)
+            (root / "scripts" / "bootstrap_sovereign_runtime.py").write_text("# bootstrap\n", encoding="utf-8")
+            for rel in module.TV_RESIDENT_PROOF_REQUIRED_PATHS:
+                path = tv / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(rel + "\n", encoding="utf-8")
+            output = Path(tmp) / "control-plane.zip"
+
+            receipt = module.build_bundle(root, output, tv_root=tv)
+
+            self.assertTrue(receipt["vendor_sources"]["TV"])
+            self.assertEqual(receipt["vendor_source_proofs"]["TV"]["state"], "UNVERIFIED_NO_LOCAL_GIT_IDENTITY")
+            with zipfile.ZipFile(output) as archive:
+                names = set(archive.namelist())
+            self.assertIn("vendor/TV/scripts/tv_run_resident_operational_proof.py", names)
     def test_bundle_can_include_healer_and_tvc_vendor_sources(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "source"
