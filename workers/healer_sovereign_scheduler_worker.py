@@ -16,6 +16,8 @@ EVALUATOR_CONFIG_ENV = "STEGVERSE_EVALUATOR_INTR_ROUTE_CONFIG"
 EVALUATOR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "evaluator-intr-runtime.json"
 SV002_OBSERVE_CONFIG_ENV = "STEGVERSE_SV002_OBSERVE_ROUTE_CONFIG"
 SV002_OBSERVE_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "sv002-public-observation-runtime.json"
+HIL_INTR_CONFIG_ENV = "STEGVERSE_HIL_INTR_ROUTE_CONFIG"
+HIL_INTR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "hil-intr-runtime.json"
 
 
 def atomic_write(path: Path, value: dict) -> None:
@@ -79,6 +81,48 @@ def sv002_observation_gateway_projection() -> dict[str, str]:
     return {"STEGVERSE_SV002_OBSERVE_ENABLED": "true", "STEGVERSE_SV002_OBSERVE_UPSTREAM": f"http://127.0.0.1:{port}/intr/sv002-observe"}
 
 
+
+def hil_intr_gateway_projection() -> dict[str, str]:
+    raw = os.environ.get(HIL_INTR_CONFIG_ENV, "").strip()
+    path = Path(raw).expanduser().resolve() if raw else HIL_INTR_CONFIG_DEFAULT.expanduser().resolve()
+    disabled = {"STEGVERSE_HIL_INTR_ENABLED": "false", "STEGVERSE_HIL_INTR_UPSTREAM": ""}
+    if not path.is_file():
+        return disabled
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return disabled
+    if not isinstance(value, dict):
+        return disabled
+    expected = {
+        "schema": "stegverse.hil-intr-route-config/v1",
+        "public_origin": "https://stegverse.org",
+        "public_tls_terminated_by": "STEGVERSE_SHARED_SERVICE_GATEWAY",
+        "event_triggered": True,
+        "always_on_receiver_required": False,
+        "second_user_device_required": False,
+        "g18_completion_required": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "execution_authority": "NONE",
+        "authority_effect": "NONE_CONFIG_ONLY",
+    }
+    if any(value.get(k) != v for k, v in expected.items()):
+        return disabled
+    loopback = str(value.get("loopback_url") or "").rstrip("/")
+    if not loopback.startswith("http://127.0.0.1:"):
+        return disabled
+    try:
+        port = int(loopback.rsplit(":", 1)[1])
+    except Exception:
+        return disabled
+    if port < 1024 or port > 65535:
+        return disabled
+    return {
+        "STEGVERSE_HIL_INTR_ENABLED": "true",
+        "STEGVERSE_HIL_INTR_UPSTREAM": loopback + "/intr/materialization",
+    }
+
 def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
     env = {
         "PATH": os.environ.get("PATH", ""),
@@ -92,6 +136,7 @@ def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
     }
     env.update(evaluator_gateway_projection())
     env.update(sv002_observation_gateway_projection())
+    env.update(hil_intr_gateway_projection())
     return env
 
 
