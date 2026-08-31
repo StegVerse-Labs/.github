@@ -10,7 +10,12 @@ from pathlib import Path
 import shutil
 import sys
 import tempfile
+import time
 from typing import Any, Mapping
+
+from heartbeat_runtime.carrier_envelope import SignalConstraint, derive_carrier_envelope
+from heartbeat_runtime.independent_oscillator import current_reference
+from heartbeat_runtime.intr_derived_carrier import derive_intr_carrier_signal, recover_intr_packet_bytes
 
 TASK_ID = "SV-DN1-INTR-RUNTIME-001"
 WORKER_ID = "sv-dn1-intr-runtime-worker"
@@ -271,6 +276,68 @@ def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
             os.unlink(temp_name)
 
 
+def build_hb_carrier_binding(exchange: Mapping[str, Any], intr_receipt: Mapping[str, Any], *, now_ns: int | None = None) -> dict[str, Any]:
+    sample_ns = time.time_ns() if now_ns is None else int(now_ns)
+    reference = current_reference(now_ns=sample_ns)
+    envelope = derive_carrier_envelope(
+        [SignalConstraint(
+            signal_id="sv-dn1-universal-intr",
+            min_frequency_hz=100.0,
+            max_frequency_hz=100.0,
+            required_event_rate_hz=1.0,
+            deadline_ms=10.0,
+            simultaneous_units=1.0,
+            requested_phase_slots=4,
+        )],
+        sustainable_max_hz=100.0,
+        events_per_reference_capacity=1.0,
+        growth_reserve_ratio=0.25,
+    )
+    packet_bytes = canonical(dict(exchange))
+    receipt_hash = str(intr_receipt.get("receipt_hash") or "")
+    if receipt_hash.startswith("sha256:"):
+        receipt_hash = receipt_hash.split(":", 1)[1]
+    signal = derive_intr_carrier_signal(
+        heartbeat_epoch=reference["epoch"],
+        heartbeat_reference=reference["heartbeat_id"],
+        phase_slots=int(envelope["phase_plan"]["phase_slots"]),
+        packet_bytes=packet_bytes,
+        intr_transport_profile=TRANSPORT_PROFILE,
+        boundary_from=BOUNDARY_FROM,
+        boundary_to=BOUNDARY_TO,
+        packet_receipt_hash=receipt_hash,
+    )
+    if recover_intr_packet_bytes(signal) != packet_bytes:
+        raise RuntimeError("HB-derived carrier failed exact InTr packet recovery")
+    body = {
+        "schema": "stegverse.sv-dn1.hb-intr-carrier-binding-receipt/v1",
+        "state": "COMPLETE",
+        "transition_id": "SV_DN1_HB_INTR_CARRIER_BOUND",
+        "route_id": ROUTE_ID,
+        "exchange_id": exchange.get("exchange_id"),
+        "intr_receipt_hash": intr_receipt.get("receipt_hash"),
+        "heartbeat_epoch": reference["epoch"],
+        "heartbeat_reference": reference["heartbeat_id"],
+        "heartbeat_phase_offset_ns": reference["phase_offset_ns"],
+        "carrier_signal_id": signal["signal_id"],
+        "channel_slot": signal["carrier"]["channel_slot"],
+        "phase_slots": signal["carrier"]["phase_slots"],
+        "phase_offset_deg": signal["carrier"]["phase_offset_deg"],
+        "packet_sha256": signal["intr"]["packet_sha256"],
+        "packet_recovery_verified": True,
+        "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+        "heartbeat_grants_authority": False,
+        "derived_carrier_grants_authority": False,
+        "intr_packet_governance_external_to_heartbeat": True,
+        "credential_authority": "TV/TVC",
+        "credential_used": False,
+        "repository_writeback_performed": False,
+        "sdk_admitted": False,
+        "authority_effect": "NONE_CARRIER_ONLY",
+    }
+    return {"receipt": {**body, "receipt_hash": sha256_ref(body)}, "signal": signal}
+
+
 def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
     if any(truthy(os.getenv(name)) for name in HOSTED_ENV):
         raise RuntimeError("hosted environments cannot execute sovereign SV-DN-1 InTr traversal")
@@ -323,9 +390,13 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
     }
     receipt = {"receipt_hash": sha256_ref(body), **body}
 
+    carrier = build_hb_carrier_binding(exchange, receipt)
+
     bound = bound_state_root()
     atomic_json(bound / "observed" / "exchange.json", exchange)
+    atomic_json(bound / "observed" / "carrier-signal.json", carrier["signal"])
     atomic_json(bound / "receipts" / "latest.json", receipt)
+    atomic_json(bound / "receipts" / "carrier-binding.latest.json", carrier["receipt"])
 
     return {
         "schema": "stegverse.sv-dn1.intr-worker-completion/v1",
@@ -341,6 +412,14 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "resident_raw_response_sha256": resident_receipt.get("raw_response_sha256"),
         "exchange_id": exchange["exchange_id"],
         "intr_receipt_hash": receipt["receipt_hash"],
+        "hb_carrier_binding_receipt_hash": carrier["receipt"]["receipt_hash"],
+        "hb_carrier_signal_id": carrier["signal"]["signal_id"],
+        "hb_carrier_packet_sha256": carrier["signal"]["intr"]["packet_sha256"],
+        "hb_carrier_packet_recovery_verified": True,
+        "heartbeat_epoch": carrier["receipt"]["heartbeat_epoch"],
+        "heartbeat_reference": carrier["receipt"]["heartbeat_reference"],
+        "hb_carrier_channel_slot": carrier["receipt"]["channel_slot"],
+        "hb_carrier_phase_offset_deg": carrier["receipt"]["phase_offset_deg"],
         "route_id": ROUTE_ID,
         "transport_profile": TRANSPORT_PROFILE,
         "destination_validation": "PASS",
@@ -370,8 +449,9 @@ def completed_response(result: Mapping[str, Any]) -> dict[str, Any]:
         "transition_sequence": 1,
         "expected_next_transition": "SV_DN1_SDK_0B_GOVERNED_EXECUTION",
         "checkpoint_ref": "receipts/latest.json",
-        "evidence_refs": ["observed/exchange.json", "receipts/latest.json"],
+        "evidence_refs": ["observed/exchange.json", "observed/carrier-signal.json", "receipts/latest.json", "receipts/carrier-binding.latest.json"],
         "intr_receipt_hash": result.get("intr_receipt_hash"),
+        "hb_carrier_binding_receipt_hash": result.get("hb_carrier_binding_receipt_hash"),
         "credential_authority": "TV/TVC",
         "github_token_used": False,
         "repository_writeback_performed": False,
