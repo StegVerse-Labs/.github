@@ -58,10 +58,16 @@ def derive_reference_from_unix_ms(sampled_unix_ms: int) -> dict[str, Any]:
     }
 
 
-def derive_channel(packet_id: str) -> dict[str, Any]:
-    _require(isinstance(packet_id, str) and packet_id, "packet_id_required")
-    digest = hashlib.sha256(packet_id.encode("utf-8")).hexdigest()
-    slot = int(digest[:8], 16) % CHANNEL_COUNT
+def derive_channel(payload_hash: str) -> dict[str, Any]:
+    _require(
+        isinstance(payload_hash, str)
+        and len(payload_hash) == 71
+        and payload_hash.startswith("sha256:")
+        and all(ch in "0123456789abcdef" for ch in payload_hash[7:]),
+        "payload_hash_invalid",
+    )
+    digest = payload_hash[7:]
+    slot = int(digest[:16], 16) % CHANNEL_COUNT
     return {
         "channel_id": f"HB:H1:P{slot}",
         "channel_family": CHANNEL_FAMILY,
@@ -70,14 +76,14 @@ def derive_channel(packet_id: str) -> dict[str, Any]:
         "phase_slot_count": CHANNEL_COUNT,
         "phase_radians": round(2.0 * math.pi * slot / CHANNEL_COUNT, 12),
         "amplitude_ratio": 1.0,
-        "derivation": "SHA256_PACKET_ID_FIRST32_MOD_16",
+        "derivation": "PAYLOAD_SHA256_FIRST64_MOD_16",
     }
 
 
 def build_carrier_binding(*, packet_id: str, payload_hash: str, sampled_unix_ms: int) -> dict[str, Any]:
     _require(isinstance(payload_hash, str) and len(payload_hash) == 71 and payload_hash.startswith("sha256:"), "payload_hash_invalid")
     reference = derive_reference_from_unix_ms(sampled_unix_ms)
-    channel = derive_channel(packet_id)
+    channel = derive_channel(payload_hash)
     body = {
         "schema": BINDING_SCHEMA,
         "carrier_profile": PROFILE_SCHEMA,
@@ -123,7 +129,7 @@ def validate_carrier_binding(binding: Mapping[str, Any], *, packet_id: str, payl
     _require(dict(reference) == expected_reference, "heartbeat_reference_derivation_mismatch")
     channel = binding.get("channel")
     _require(isinstance(channel, Mapping), "carrier_channel_required")
-    expected_channel = derive_channel(packet_id)
+    expected_channel = derive_channel(payload_hash)
     _require(dict(channel) == expected_channel, "carrier_channel_derivation_mismatch")
 
     body = dict(binding)
@@ -144,7 +150,7 @@ def carrier_profile() -> dict[str, Any]:
         "binding_schema": BINDING_SCHEMA,
         "channel_family": CHANNEL_FAMILY,
         "channel_count": CHANNEL_COUNT,
-        "channel_selection": "SHA256_PACKET_ID_FIRST32_MOD_16",
+        "channel_selection": "PAYLOAD_SHA256_FIRST64_MOD_16",
         "carrier_binding_required": False,
         "legacy_unbound_packets_temporarily_accepted": True,
         "carrier_presence_grants_admission_authority": False,
