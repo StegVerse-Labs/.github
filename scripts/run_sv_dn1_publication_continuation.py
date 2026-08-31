@@ -17,6 +17,7 @@ RECEIPT_REL = Path("receipts/sovereign-host/sv-dn1-publication-continuation.late
 
 TASKS = (
     "SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001",
+    "SV-DN1-REPOSITORY-MERGE-DISPATCH-001",
     "SV-DN1-PUBLICATION-OBSERVER-001",
 )
 
@@ -32,6 +33,8 @@ NONSECRET_ENV = (
     "STEGVERSE_HEARTBEAT_ROOT","STEGVERSE_SV_DN1_SOURCE_ROOT",
     "STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_STATE_ROOT",
     "STEGVERSE_TVC_SV_DN1_REPOSITORY_PERSISTENCE_ADMISSION",
+    "STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_DISPATCH_STATE_ROOT",
+    "STEGVERSE_TVC_SV_DN1_MERGE_SPOOL_ROOT",
 )
 Runner = Callable[..., subprocess.CompletedProcess[str]]
 
@@ -88,6 +91,19 @@ def validate_receipt(task_id:str, env:Mapping[str,str])->dict[str,Any]:
             "merge_performed":False,
             "deployment_performed":False,
             "authority_effect":"NONE_REQUEST_STAGING_ONLY",
+        }
+    elif task_id=="SV-DN1-REPOSITORY-MERGE-DISPATCH-001":
+        root=Path.home()/".stegverse"/"transport"/"sv-dn1-repository-merge"
+        path=root/"receipts/dispatcher.latest.json"
+        expected={
+            "schema":"stegverse.sv-dn1.repository-merge-dispatch-receipt/v1",
+            "state":"COMPLETE",
+            "transition_id":"SV_DN1_REPOSITORY_PERSISTENCE_PR_MERGED",
+            "credential_used":False,
+            "repository_merge_performed_by_worker":False,
+            "deployment_performed":False,
+            "publication_observed":False,
+            "authority_effect":"NONE_MERGE_REQUEST_STAGING_ONLY",
         }
     else:
         root=Path.home()/".stegverse"/"state"/"sv-dn1-publication-observer"
