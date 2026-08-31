@@ -213,3 +213,22 @@ Validation evidence:
 - organization control plane `33352561997`: SUCCESS.
 
 Runtime evidence remains pending until a qualifying already-running principal is actually observed.
+
+
+## Autonomous local-principal observation — issue #598
+
+The machine-owned resident request must not require a chat/session to pre-populate endpoint/model variables before it can observe an already-running qualifying principal.
+
+Issue `#598` adds bounded local-only discovery:
+
+```text
+explicit endpoint + model -> preserve exact operator/runtime binding
+explicit endpoint only -> require one qualifying local model on that endpoint
+no endpoint -> inspect canonical Ollama loopback 127.0.0.1:11434
+no qualifying Ollama -> inspect local process table for llama-server
+exactly one llama-server -> derive loopback port + exact GGUF/alias
+multiple candidate principals -> BLOCKED / no selection
+none observed -> BLOCKED / retry remains lawful
+```
+
+Discovery performs no process launch, package/model installation, model download, remote endpoint search, credential operation, or selection among multiple candidates. Exact subject identity must still pass the independent Ollama or llama.cpp process/artifact verifier before S0.

@@ -200,14 +200,12 @@ def _endpoint_port(endpoint: str) -> int:
     return 443 if parsed.scheme == "https" else 80
 
 
-def find_llamacpp_process(
-    endpoint: str,
+def find_llamacpp_process_candidates(
     *,
     proc_root: Path = Path("/proc"),
-) -> dict[str, Any] | None:
-    if not proc_root.is_dir() or not loopback_endpoint(endpoint):
-        return None
-    target_port = _endpoint_port(endpoint)
+) -> list[dict[str, Any]]:
+    if not proc_root.is_dir():
+        return []
     found: list[dict[str, Any]] = []
     for entry in proc_root.iterdir():
         if not entry.name.isdigit():
@@ -228,7 +226,7 @@ def find_llamacpp_process(
             port = int(port_raw) if port_raw else 8080
         except Exception:
             continue
-        if port != target_port:
+        if port < 1 or port > 65535:
             continue
         model_raw = _arg_value(argv, "--model", "-m")
         if not model_raw:
@@ -255,6 +253,22 @@ def find_llamacpp_process(
                 "argv": argv,
             }
         )
+    return found
+
+
+def find_llamacpp_process(
+    endpoint: str,
+    *,
+    proc_root: Path = Path("/proc"),
+) -> dict[str, Any] | None:
+    if not loopback_endpoint(endpoint):
+        return None
+    target_port = _endpoint_port(endpoint)
+    found = [
+        row
+        for row in find_llamacpp_process_candidates(proc_root=proc_root)
+        if row.get("port") == target_port
+    ]
     if len(found) != 1:
         return None
     return found[0]
@@ -391,6 +405,67 @@ def build_ollama_subject_identity(
     }
 
 
+def discover_local_principal(
+    endpoint: str | None,
+    model: str | None,
+    *,
+    ollama_requested: str | None = None,
+    proc_root: Path = Path("/proc"),
+    urlopen: Callable[..., Any] = urllib.request.urlopen,
+) -> tuple[str | None, str | None, str | None]:
+    explicit_endpoint = str(endpoint or "").strip().rstrip("/")
+    explicit_model = str(model or "").strip()
+    requested_ollama = str(ollama_requested or "").strip()
+
+    if explicit_endpoint:
+        if explicit_model:
+            return explicit_endpoint, explicit_model, "EXPLICIT_ENDPOINT_AND_MODEL"
+        ollama_model, _ = discover_ollama_model(
+            explicit_endpoint,
+            requested_ollama or None,
+            urlopen=urlopen,
+        )
+        if ollama_model:
+            return explicit_endpoint, ollama_model, "EXPLICIT_ENDPOINT_LOCAL_OLLAMA_DISCOVERY"
+        llama_model, _ = discover_llamacpp_model(
+            explicit_endpoint,
+            None,
+            proc_root=proc_root,
+            urlopen=urlopen,
+        )
+        if llama_model:
+            return explicit_endpoint, llama_model, "EXPLICIT_ENDPOINT_LOCAL_LLAMACPP_DISCOVERY"
+        return explicit_endpoint, None, "EXPLICIT_ENDPOINT_NO_UNIQUE_MODEL"
+
+    ollama_endpoint = "http://127.0.0.1:11434"
+    ollama_model, _ = discover_ollama_model(
+        ollama_endpoint,
+        requested_ollama or None,
+        urlopen=urlopen,
+    )
+    if ollama_model:
+        return ollama_endpoint, ollama_model, "CANONICAL_OLLAMA_LOOPBACK_DISCOVERY"
+
+    llama_candidates = find_llamacpp_process_candidates(proc_root=proc_root)
+    if len(llama_candidates) != 1:
+        return None, None, (
+            "NO_LOCAL_PRINCIPAL_OBSERVED"
+            if not llama_candidates
+            else "AMBIGUOUS_LOCAL_LLAMACPP_PRINCIPALS"
+        )
+    candidate = llama_candidates[0]
+    llama_endpoint = f"http://127.0.0.1:{int(candidate['port'])}"
+    llama_model, _ = discover_llamacpp_model(
+        llama_endpoint,
+        None,
+        proc_root=proc_root,
+        urlopen=urlopen,
+    )
+    if not llama_model:
+        return None, None, "LLAMACPP_PROCESS_OBSERVED_MODEL_IDENTITY_UNRESOLVED"
+    return llama_endpoint, llama_model, "UNIQUE_LOCAL_LLAMACPP_PROCESS_DISCOVERY"
+
+
 def resolve_subject_identity(endpoint: str, model: str) -> tuple[dict[str, Any] | None, str | None]:
     explicit = os.environ.get("STEGVERSE_SELF_CHAR_SUBJECT_IDENTITY_JSON", "").strip()
     if explicit:
@@ -523,15 +598,16 @@ def main():
         if p:
             formal[f"Admissible-Existence/{repo}"] = str(p)
 
-    endpoint = os.environ.get("STEGVERSE_SELF_CHAR_MODEL_ENDPOINT", "").strip().rstrip("/")
-    model = os.environ.get("STEGVERSE_SELF_CHAR_MODEL_ID", "").strip()
+    configured_endpoint = os.environ.get("STEGVERSE_SELF_CHAR_MODEL_ENDPOINT", "").strip().rstrip("/")
+    configured_model = os.environ.get("STEGVERSE_SELF_CHAR_MODEL_ID", "").strip()
     ollama_requested = os.environ.get("STEGVERSE_OLLAMA_MODEL", "").strip()
-
-    if not endpoint and ollama_requested:
-        endpoint = "http://127.0.0.1:11434"
-    if endpoint and not model:
-        model, _row = discover_ollama_model(endpoint, ollama_requested or None)
-        model = model or ""
+    endpoint, model, principal_discovery = discover_local_principal(
+        configured_endpoint or None,
+        configured_model or None,
+        ollama_requested=ollama_requested or None,
+    )
+    endpoint = endpoint or ""
+    model = model or ""
 
     blockers = []
     if micro is None:
@@ -561,6 +637,7 @@ def main():
             "model_id": model or None,
             "endpoint": endpoint or None,
             "subject_identity_error": subject_identity_error,
+            "principal_discovery": principal_discovery,
             "subject_identity_verified": False,
             "network_fetch_performed": False,
             "credential_authority": "TV/TVC",
@@ -612,6 +689,7 @@ def main():
         "model_id": model,
         "endpoint": endpoint,
         "subject_identity": subject_identity,
+        "principal_discovery": principal_discovery,
         "subject_identity_verified": True,
         "formal_roots": formal,
         "state_root": str(state_root),

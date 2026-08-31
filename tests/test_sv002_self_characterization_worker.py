@@ -276,6 +276,106 @@ class SV002SelfCharacterizationWorkerTests(unittest.TestCase):
                     urlopen=lambda *args, **kwargs: _Response({"data": [{"id": "reasoner"}]}),
                 )
 
+
+    def test_autodiscovers_unique_ollama_principal_without_environment_endpoint(self):
+        def _open(url, timeout=3):
+            self.assertEqual(url, "http://127.0.0.1:11434/api/tags")
+            return _Response(
+                {"models": [{"name": "reasoner:latest", "digest": "f" * 64}]}
+            )
+
+        endpoint, model, source = mod.discover_local_principal(
+            None,
+            None,
+            urlopen=_open,
+            proc_root=Path("/definitely-not-present"),
+        )
+        self.assertEqual(endpoint, "http://127.0.0.1:11434")
+        self.assertEqual(model, "reasoner:latest")
+        self.assertEqual(source, "CANONICAL_OLLAMA_LOOPBACK_DISCOVERY")
+
+    def test_autodiscovers_unique_llamacpp_principal_from_local_process(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            executable = root / "llama-server"
+            executable.write_bytes(b"server")
+            model_path = root / "reasoner.gguf"
+            model_path.write_bytes(b"gguf")
+            proc = root / "proc"
+            pid_dir = proc / "881"
+            pid_dir.mkdir(parents=True)
+            (pid_dir / "exe").symlink_to(executable)
+            (pid_dir / "cwd").symlink_to(root)
+            (pid_dir / "cmdline").write_bytes(
+                (
+                    str(executable)
+                    + "\x00--model\x00"
+                    + str(model_path)
+                    + "\x00--port\x008321\x00--alias\x00reasoner\x00"
+                ).encode("utf-8")
+            )
+
+            def _open(url, timeout=3):
+                if url == "http://127.0.0.1:11434/api/tags":
+                    raise OSError("no ollama")
+                self.assertEqual(url, "http://127.0.0.1:8321/v1/models")
+                return _Response({"data": [{"id": "reasoner"}]})
+
+            endpoint, model, source = mod.discover_local_principal(
+                None,
+                None,
+                proc_root=proc,
+                urlopen=_open,
+            )
+            self.assertEqual(endpoint, "http://127.0.0.1:8321")
+            self.assertEqual(model, "reasoner")
+            self.assertEqual(source, "UNIQUE_LOCAL_LLAMACPP_PROCESS_DISCOVERY")
+
+    def test_autodiscovery_fails_closed_on_multiple_llamacpp_principals(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            executable = root / "llama-server"
+            executable.write_bytes(b"server")
+            model_path = root / "reasoner.gguf"
+            model_path.write_bytes(b"gguf")
+            proc = root / "proc"
+            for pid, port in (("882", 8322), ("883", 8323)):
+                pid_dir = proc / pid
+                pid_dir.mkdir(parents=True)
+                (pid_dir / "exe").symlink_to(executable)
+                (pid_dir / "cwd").symlink_to(root)
+                (pid_dir / "cmdline").write_bytes(
+                    (
+                        str(executable)
+                        + "\x00--model\x00"
+                        + str(model_path)
+                        + f"\x00--port\x00{port}\x00"
+                    ).encode("utf-8")
+                )
+
+            endpoint, model, source = mod.discover_local_principal(
+                None,
+                None,
+                proc_root=proc,
+                urlopen=lambda *args, **kwargs: (_ for _ in ()).throw(OSError("no ollama")),
+            )
+            self.assertIsNone(endpoint)
+            self.assertIsNone(model)
+            self.assertEqual(source, "AMBIGUOUS_LOCAL_LLAMACPP_PRINCIPALS")
+
+    def test_explicit_endpoint_and_model_take_priority_over_discovery(self):
+        endpoint, model, source = mod.discover_local_principal(
+            "http://127.0.0.1:9999",
+            "explicit-reasoner",
+            proc_root=Path("/definitely-not-present"),
+            urlopen=lambda *args, **kwargs: (_ for _ in ()).throw(
+                AssertionError("explicit binding should not probe")
+            ),
+        )
+        self.assertEqual(endpoint, "http://127.0.0.1:9999")
+        self.assertEqual(model, "explicit-reasoner")
+        self.assertEqual(source, "EXPLICIT_ENDPOINT_AND_MODEL")
+
     def test_reference_model_cannot_be_principal(self):
         with self.assertRaisesRegex(RuntimeError, "reference model"):
             mod.build_ollama_subject_identity(
