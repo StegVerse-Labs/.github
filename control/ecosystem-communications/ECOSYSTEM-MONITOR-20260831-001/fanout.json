@@ -1,0 +1,710 @@
+{
+  "schema_version": "stegverse.ecosystem-fanout.v1",
+  "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+  "origin_org": "StegVerse-Labs",
+  "denominator": 14,
+  "packet_count": 14,
+  "authority_effect": "NONE",
+  "packets": [
+    {
+      "schema_version": "stegverse.intr.org-boundary.v1",
+      "packet_id": "ECOSYSTEM-MONITOR-20260831-001:aact-e",
+      "direction": "INGRESS",
+      "origin": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "destination": {
+        "org": "AaCT-E",
+        "service": "aact-e.org-control"
+      },
+      "carrier": {
+        "kind": "HB_DERIVED",
+        "reference": "org-federation"
+      },
+      "intr_profile": "stegverse.intr.org-boundary.v1",
+      "transition": {
+        "reference": "ecosystem.communication.v1",
+        "authority_effect": "NONE",
+        "conditions": []
+      },
+      "payload": {
+        "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+        "message_class": "ecosystem.monitor.request",
+        "subject": "Ecosystem resident runtime status",
+        "body": {
+          "monitor": "resident-status",
+          "include": [
+            "kernel_version",
+            "activation_state",
+            "registered_service_count",
+            "registered_services",
+            "org_control_service",
+            "heartbeat_reference"
+          ]
+        },
+        "requested_action": "REPORT_STATUS",
+        "audience": "ECOSYSTEM",
+        "target_organization": "AaCT-E",
+        "target_count": 14
+      },
+      "evidence": {
+        "ingress_receipt": null,
+        "dispatch_receipt": null,
+        "consumption_receipt": null,
+        "egress_receipt": null,
+        "reconstruction_reference": null
+      }
+    },
+    {
+      "schema_version": "stegverse.intr.org-boundary.v1",
+      "packet_id": "ECOSYSTEM-MONITOR-20260831-001:admissible-existence",
+      "direction": "INGRESS",
+      "origin": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "destination": {
+        "org": "Admissible-Existence",
+        "service": "admissible-existence.org-control"
+      },
+      "carrier": {
+        "kind": "HB_DERIVED",
+        "reference": "org-federation"
+      },
+      "intr_profile": "stegverse.intr.org-boundary.v1",
+      "transition": {
+        "reference": "ecosystem.communication.v1",
+        "authority_effect": "NONE",
+        "conditions": []
+      },
+      "payload": {
+        "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+        "message_class": "ecosystem.monitor.request",
+        "subject": "Ecosystem resident runtime status",
+        "body": {
+          "monitor": "resident-status",
+          "include": [
+            "kernel_version",
+            "activation_state",
+            "registered_service_count",
+            "registered_services",
+            "org_control_service",
+            "heartbeat_reference"
+          ]
+        },
+        "requested_action": "REPORT_STATUS",
+        "audience": "ECOSYSTEM",
+        "target_organization": "Admissible-Existence",
+        "target_count": 14
+      },
+      "evidence": {
+        "ingress_receipt": null,
+        "dispatch_receipt": null,
+        "consumption_receipt": null,
+        "egress_receipt": null,
+        "reconstruction_reference": null
+      }
+    },
+    {
+      "schema_version": "stegverse.intr.org-boundary.v1",
+      "packet_id": "ECOSYSTEM-MONITOR-20260831-001:admittedcode",
+      "direction": "INGRESS",
+      "origin": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "destination": {
+        "org": "AdmittedCode",
+        "service": "admittedcode.org-control"
+      },
+      "carrier": {
+        "kind": "HB_DERIVED",
+        "reference": "org-federation"
+      },
+      "intr_profile": "stegverse.intr.org-boundary.v1",
+      "transition": {
+        "reference": "ecosystem.communication.v1",
+        "authority_effect": "NONE",
+        "conditions": []
+      },
+      "payload": {
+        "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+        "message_class": "ecosystem.monitor.request",
+        "subject": "Ecosystem resident runtime status",
+        "body": {
+          "monitor": "resident-status",
+          "include": [
+            "kernel_version",
+            "activation_state",
+            "registered_service_count",
+            "registered_services",
+            "org_control_service",
+            "heartbeat_reference"
+          ]
+        },
+        "requested_action": "REPORT_STATUS",
+        "audience": "ECOSYSTEM",
+        "target_organization": "AdmittedCode",
+        "target_count": 14
+      },
+      "evidence": {
+        "ingress_receipt": null,
+        "dispatch_receipt": null,
+        "consumption_receipt": null,
+        "egress_receipt": null,
+        "reconstruction_reference": null
+      }
+    },
+    {
+      "schema_version": "stegverse.intr.org-boundary.v1",
+      "packet_id": "ECOSYSTEM-MONITOR-20260831-001:data-continuation",
+      "direction": "INGRESS",
+      "origin": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "destination": {
+        "org": "Data-Continuation",
+        "service": "data-continuation.org-control"
+      },
+      "carrier": {
+        "kind": "HB_DERIVED",
+        "reference": "org-federation"
+      },
+      "intr_profile": "stegverse.intr.org-boundary.v1",
+      "transition": {
+        "reference": "ecosystem.communication.v1",
+        "authority_effect": "NONE",
+        "conditions": []
+      },
+      "payload": {
+        "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+        "message_class": "ecosystem.monitor.request",
+        "subject": "Ecosystem resident runtime status",
+        "body": {
+          "monitor": "resident-status",
+          "include": [
+            "kernel_version",
+            "activation_state",
+            "registered_service_count",
+            "registered_services",
+            "org_control_service",
+            "heartbeat_reference"
+          ]
+        },
+        "requested_action": "REPORT_STATUS",
+        "audience": "ECOSYSTEM",
+        "target_organization": "Data-Continuation",
+        "target_count": 14
+      },
+      "evidence": {
+        "ingress_receipt": null,
+        "dispatch_receipt": null,
+        "consumption_receipt": null,
+        "egress_receipt": null,
+        "reconstruction_reference": null
+      }
+    },
+    {
+      "schema_version": "stegverse.intr.org-boundary.v1",
+      "packet_id": "ECOSYSTEM-MONITOR-20260831-001:ecat-icat-formal",
+      "direction": "INGRESS",
+      "origin": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "destination": {
+        "org": "ECAT-ICAT-Formal",
+        "service": "ecat-icat-formal.org-control"
+      },
+      "carrier": {
+        "kind": "HB_DERIVED",
+        "reference": "org-federation"
+      },
+      "intr_profile": "stegverse.intr.org-boundary.v1",
+      "transition": {
+        "reference": "ecosystem.communication.v1",
+        "authority_effect": "NONE",
+        "conditions": []
+      },
+      "payload": {
+        "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+        "message_class": "ecosystem.monitor.request",
+        "subject": "Ecosystem resident runtime status",
+        "body": {
+          "monitor": "resident-status",
+          "include": [
+            "kernel_version",
+            "activation_state",
+            "registered_service_count",
+            "registered_services",
+            "org_control_service",
+            "heartbeat_reference"
+          ]
+        },
+        "requested_action": "REPORT_STATUS",
+        "audience": "ECOSYSTEM",
+        "target_organization": "ECAT-ICAT-Formal",
+        "target_count": 14
+      },
+      "evidence": {
+        "ingress_receipt": null,
+        "dispatch_receipt": null,
+        "consumption_receipt": null,
+        "egress_receipt": null,
+        "reconstruction_reference": null
+      }
+    },
+    {
+      "schema_version": "stegverse.intr.org-boundary.v1",
+      "packet_id": "ECOSYSTEM-MONITOR-20260831-001:formalism-tests",
+      "direction": "INGRESS",
+      "origin": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "destination": {
+        "org": "formalism-tests",
+        "service": "formalism-tests.org-control"
+      },
+      "carrier": {
+        "kind": "HB_DERIVED",
+        "reference": "org-federation"
+      },
+      "intr_profile": "stegverse.intr.org-boundary.v1",
+      "transition": {
+        "reference": "ecosystem.communication.v1",
+        "authority_effect": "NONE",
+        "conditions": []
+      },
+      "payload": {
+        "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+        "message_class": "ecosystem.monitor.request",
+        "subject": "Ecosystem resident runtime status",
+        "body": {
+          "monitor": "resident-status",
+          "include": [
+            "kernel_version",
+            "activation_state",
+            "registered_service_count",
+            "registered_services",
+            "org_control_service",
+            "heartbeat_reference"
+          ]
+        },
+        "requested_action": "REPORT_STATUS",
+        "audience": "ECOSYSTEM",
+        "target_organization": "formalism-tests",
+        "target_count": 14
+      },
+      "evidence": {
+        "ingress_receipt": null,
+        "dispatch_receipt": null,
+        "consumption_receipt": null,
+        "egress_receipt": null,
+        "reconstruction_reference": null
+      }
+    },
+    {
+      "schema_version": "stegverse.intr.org-boundary.v1",
+      "packet_id": "ECOSYSTEM-MONITOR-20260831-001:gcat-bcat-engine",
+      "direction": "INGRESS",
+      "origin": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "destination": {
+        "org": "GCAT-BCAT-Engine",
+        "service": "gcat-bcat-engine.org-control"
+      },
+      "carrier": {
+        "kind": "HB_DERIVED",
+        "reference": "org-federation"
+      },
+      "intr_profile": "stegverse.intr.org-boundary.v1",
+      "transition": {
+        "reference": "ecosystem.communication.v1",
+        "authority_effect": "NONE",
+        "conditions": []
+      },
+      "payload": {
+        "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+        "message_class": "ecosystem.monitor.request",
+        "subject": "Ecosystem resident runtime status",
+        "body": {
+          "monitor": "resident-status",
+          "include": [
+            "kernel_version",
+            "activation_state",
+            "registered_service_count",
+            "registered_services",
+            "org_control_service",
+            "heartbeat_reference"
+          ]
+        },
+        "requested_action": "REPORT_STATUS",
+        "audience": "ECOSYSTEM",
+        "target_organization": "GCAT-BCAT-Engine",
+        "target_count": 14
+      },
+      "evidence": {
+        "ingress_receipt": null,
+        "dispatch_receipt": null,
+        "consumption_receipt": null,
+        "egress_receipt": null,
+        "reconstruction_reference": null
+      }
+    },
+    {
+      "schema_version": "stegverse.intr.org-boundary.v1",
+      "packet_id": "ECOSYSTEM-MONITOR-20260831-001:infrastructure-continuity-ventures",
+      "direction": "INGRESS",
+      "origin": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "destination": {
+        "org": "Infrastructure-Continuity-Ventures",
+        "service": "infrastructure-continuity-ventures.org-control"
+      },
+      "carrier": {
+        "kind": "HB_DERIVED",
+        "reference": "org-federation"
+      },
+      "intr_profile": "stegverse.intr.org-boundary.v1",
+      "transition": {
+        "reference": "ecosystem.communication.v1",
+        "authority_effect": "NONE",
+        "conditions": []
+      },
+      "payload": {
+        "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+        "message_class": "ecosystem.monitor.request",
+        "subject": "Ecosystem resident runtime status",
+        "body": {
+          "monitor": "resident-status",
+          "include": [
+            "kernel_version",
+            "activation_state",
+            "registered_service_count",
+            "registered_services",
+            "org_control_service",
+            "heartbeat_reference"
+          ]
+        },
+        "requested_action": "REPORT_STATUS",
+        "audience": "ECOSYSTEM",
+        "target_organization": "Infrastructure-Continuity-Ventures",
+        "target_count": 14
+      },
+      "evidence": {
+        "ingress_receipt": null,
+        "dispatch_receipt": null,
+        "consumption_receipt": null,
+        "egress_receipt": null,
+        "reconstruction_reference": null
+      }
+    },
+    {
+      "schema_version": "stegverse.intr.org-boundary.v1",
+      "packet_id": "ECOSYSTEM-MONITOR-20260831-001:master-records",
+      "direction": "INGRESS",
+      "origin": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "destination": {
+        "org": "master-records",
+        "service": "master-records.org-control"
+      },
+      "carrier": {
+        "kind": "HB_DERIVED",
+        "reference": "org-federation"
+      },
+      "intr_profile": "stegverse.intr.org-boundary.v1",
+      "transition": {
+        "reference": "ecosystem.communication.v1",
+        "authority_effect": "NONE",
+        "conditions": []
+      },
+      "payload": {
+        "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+        "message_class": "ecosystem.monitor.request",
+        "subject": "Ecosystem resident runtime status",
+        "body": {
+          "monitor": "resident-status",
+          "include": [
+            "kernel_version",
+            "activation_state",
+            "registered_service_count",
+            "registered_services",
+            "org_control_service",
+            "heartbeat_reference"
+          ]
+        },
+        "requested_action": "REPORT_STATUS",
+        "audience": "ECOSYSTEM",
+        "target_organization": "master-records",
+        "target_count": 14
+      },
+      "evidence": {
+        "ingress_receipt": null,
+        "dispatch_receipt": null,
+        "consumption_receipt": null,
+        "egress_receipt": null,
+        "reconstruction_reference": null
+      }
+    },
+    {
+      "schema_version": "stegverse.intr.org-boundary.v1",
+      "packet_id": "ECOSYSTEM-MONITOR-20260831-001:stegghost",
+      "direction": "INGRESS",
+      "origin": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "destination": {
+        "org": "StegGhost",
+        "service": "stegghost.org-control"
+      },
+      "carrier": {
+        "kind": "HB_DERIVED",
+        "reference": "org-federation"
+      },
+      "intr_profile": "stegverse.intr.org-boundary.v1",
+      "transition": {
+        "reference": "ecosystem.communication.v1",
+        "authority_effect": "NONE",
+        "conditions": []
+      },
+      "payload": {
+        "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+        "message_class": "ecosystem.monitor.request",
+        "subject": "Ecosystem resident runtime status",
+        "body": {
+          "monitor": "resident-status",
+          "include": [
+            "kernel_version",
+            "activation_state",
+            "registered_service_count",
+            "registered_services",
+            "org_control_service",
+            "heartbeat_reference"
+          ]
+        },
+        "requested_action": "REPORT_STATUS",
+        "audience": "ECOSYSTEM",
+        "target_organization": "StegGhost",
+        "target_count": 14
+      },
+      "evidence": {
+        "ingress_receipt": null,
+        "dispatch_receipt": null,
+        "consumption_receipt": null,
+        "egress_receipt": null,
+        "reconstruction_reference": null
+      }
+    },
+    {
+      "schema_version": "stegverse.intr.org-boundary.v1",
+      "packet_id": "ECOSYSTEM-MONITOR-20260831-001:stegverse-002",
+      "direction": "INGRESS",
+      "origin": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "destination": {
+        "org": "StegVerse-002",
+        "service": "stegverse-002.org-control"
+      },
+      "carrier": {
+        "kind": "HB_DERIVED",
+        "reference": "org-federation"
+      },
+      "intr_profile": "stegverse.intr.org-boundary.v1",
+      "transition": {
+        "reference": "ecosystem.communication.v1",
+        "authority_effect": "NONE",
+        "conditions": []
+      },
+      "payload": {
+        "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+        "message_class": "ecosystem.monitor.request",
+        "subject": "Ecosystem resident runtime status",
+        "body": {
+          "monitor": "resident-status",
+          "include": [
+            "kernel_version",
+            "activation_state",
+            "registered_service_count",
+            "registered_services",
+            "org_control_service",
+            "heartbeat_reference"
+          ]
+        },
+        "requested_action": "REPORT_STATUS",
+        "audience": "ECOSYSTEM",
+        "target_organization": "StegVerse-002",
+        "target_count": 14
+      },
+      "evidence": {
+        "ingress_receipt": null,
+        "dispatch_receipt": null,
+        "consumption_receipt": null,
+        "egress_receipt": null,
+        "reconstruction_reference": null
+      }
+    },
+    {
+      "schema_version": "stegverse.intr.org-boundary.v1",
+      "packet_id": "ECOSYSTEM-MONITOR-20260831-001:stegverse-labs",
+      "direction": "INGRESS",
+      "origin": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "destination": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "carrier": {
+        "kind": "HB_DERIVED",
+        "reference": "org-federation"
+      },
+      "intr_profile": "stegverse.intr.org-boundary.v1",
+      "transition": {
+        "reference": "ecosystem.communication.v1",
+        "authority_effect": "NONE",
+        "conditions": []
+      },
+      "payload": {
+        "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+        "message_class": "ecosystem.monitor.request",
+        "subject": "Ecosystem resident runtime status",
+        "body": {
+          "monitor": "resident-status",
+          "include": [
+            "kernel_version",
+            "activation_state",
+            "registered_service_count",
+            "registered_services",
+            "org_control_service",
+            "heartbeat_reference"
+          ]
+        },
+        "requested_action": "REPORT_STATUS",
+        "audience": "ECOSYSTEM",
+        "target_organization": "StegVerse-Labs",
+        "target_count": 14
+      },
+      "evidence": {
+        "ingress_receipt": null,
+        "dispatch_receipt": null,
+        "consumption_receipt": null,
+        "egress_receipt": null,
+        "reconstruction_reference": null
+      }
+    },
+    {
+      "schema_version": "stegverse.intr.org-boundary.v1",
+      "packet_id": "ECOSYSTEM-MONITOR-20260831-001:stegverse-org",
+      "direction": "INGRESS",
+      "origin": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "destination": {
+        "org": "StegVerse-org",
+        "service": "stegverse-org.org-control"
+      },
+      "carrier": {
+        "kind": "HB_DERIVED",
+        "reference": "org-federation"
+      },
+      "intr_profile": "stegverse.intr.org-boundary.v1",
+      "transition": {
+        "reference": "ecosystem.communication.v1",
+        "authority_effect": "NONE",
+        "conditions": []
+      },
+      "payload": {
+        "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+        "message_class": "ecosystem.monitor.request",
+        "subject": "Ecosystem resident runtime status",
+        "body": {
+          "monitor": "resident-status",
+          "include": [
+            "kernel_version",
+            "activation_state",
+            "registered_service_count",
+            "registered_services",
+            "org_control_service",
+            "heartbeat_reference"
+          ]
+        },
+        "requested_action": "REPORT_STATUS",
+        "audience": "ECOSYSTEM",
+        "target_organization": "StegVerse-org",
+        "target_count": 14
+      },
+      "evidence": {
+        "ingress_receipt": null,
+        "dispatch_receipt": null,
+        "consumption_receipt": null,
+        "egress_receipt": null,
+        "reconstruction_reference": null
+      }
+    },
+    {
+      "schema_version": "stegverse.intr.org-boundary.v1",
+      "packet_id": "ECOSYSTEM-MONITOR-20260831-001:triad-test",
+      "direction": "INGRESS",
+      "origin": {
+        "org": "StegVerse-Labs",
+        "service": "stegverse-labs.org-control"
+      },
+      "destination": {
+        "org": "Triad-Test",
+        "service": "triad-test.org-control"
+      },
+      "carrier": {
+        "kind": "HB_DERIVED",
+        "reference": "org-federation"
+      },
+      "intr_profile": "stegverse.intr.org-boundary.v1",
+      "transition": {
+        "reference": "ecosystem.communication.v1",
+        "authority_effect": "NONE",
+        "conditions": []
+      },
+      "payload": {
+        "communication_id": "ECOSYSTEM-MONITOR-20260831-001",
+        "message_class": "ecosystem.monitor.request",
+        "subject": "Ecosystem resident runtime status",
+        "body": {
+          "monitor": "resident-status",
+          "include": [
+            "kernel_version",
+            "activation_state",
+            "registered_service_count",
+            "registered_services",
+            "org_control_service",
+            "heartbeat_reference"
+          ]
+        },
+        "requested_action": "REPORT_STATUS",
+        "audience": "ECOSYSTEM",
+        "target_organization": "Triad-Test",
+        "target_count": 14
+      },
+      "evidence": {
+        "ingress_receipt": null,
+        "dispatch_receipt": null,
+        "consumption_receipt": null,
+        "egress_receipt": null,
+        "reconstruction_reference": null
+      }
+    }
+  ]
+}
