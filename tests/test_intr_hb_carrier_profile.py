@@ -43,9 +43,9 @@ class HBDerivedInTrCarrierTests(unittest.TestCase):
         payload_hash = "sha256:" + hashlib.sha256(raw).hexdigest()
         channel = derive_channel(payload_hash)
         signal = derive_intr_carrier_signal(
-            heartbeat_epoch=32,
-            heartbeat_reference="HB-0000000W",
-            phase_slots=16,
+            packet_id="INTR-" + "9" * 24,
+            payload_hash=payload_hash,
+            sampled_unix_ms=PROTOCOL_ANCHOR_UNIX_NS // 1_000_000,
             packet_bytes=raw,
             intr_transport_profile="stegverse.universal-intr.adjacent-hop/v1",
             boundary_from="DEVICE_SYSTEM",
