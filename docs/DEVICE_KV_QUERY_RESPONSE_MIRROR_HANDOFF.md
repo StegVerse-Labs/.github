@@ -64,9 +64,12 @@ The shared profiled ingress exposes a bounded result lookup surface. Result look
 - `scripts/consume_device_kv_intr_materialization_request.py`
 - `workers/universal_intr_profiled_ingress.py`
 - `tests/test_device_kv_intr_event_materialization.py`
-- `tests/test_universal_intr_profiled_ingress.py`
 - `docs/DEVICE_KV_QUERY_RESPONSE_MIRROR_HANDOFF.md`
 
 ## Completion boundary
 
 Source validation + merge. Runtime activation still requires a conforming HTTPS ingress, current resident source, a real private `STEGVERSE_KV_ROOT`, and an authentic node-origin query.
+
+## KV Interlock selector dependency
+
+CVK #166 / PR #167 adds the bounded `selector.directory_id` + `selector.canonical_path` fields to canonical `kv.interlock.request.v1`. This consumer treats that selector as query coordinates only; node-origin admission plus exact `stegos-node://<node_id>` binding remains separately required.
