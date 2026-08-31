@@ -1,6 +1,6 @@
 # SV002 Self-Characterization Runtime Mirror Handoff
 
-Updated: 2026-08-30
+Updated: 2026-08-31
 Repository: StegVerse-Labs/.github
 Issues: #484, #490, #573, #594, #598
 Branch: main
@@ -279,3 +279,9 @@ This creates no new dispatcher, scheduler, heartbeat, claim/fence, credential, s
 network fetch, or runtime authority. Canonical resident consumption and principal
 execution receipts remain required and are not claimed by this source path.
 
+## Portable exact-dispatch merge evidence
+
+Portable exact-dispatch source merged in PR #606 as
+`574d7847ecc6295c2072ca778de0de469f9d9cc6`. Validation runs
+`33388902061`, `33388902084`, and `33388902072` succeeded. The canonical
+self-characterization consumption receipt remained absent at the post-merge check.
