@@ -123,10 +123,13 @@ No session may substitute itself for the machine validation worker, mint a PASS 
 6. receipt records exact head + source_bundle_file_count=16 + source_bundle_sha256 + actual PASS/fail-closed result
 7. if main moved, identical digest rematerialization + current-base compatibility are required
 8. only PASS + digest identity + compatibility permits TVC broker admission
-9. admitted broker may execute bounded ST-019 repository-protection warrants and the existing private-source materialization operations under TV/TVC authority
-10. repo-standards independently re-observes any protection mutation; executor success alone is not compliance
-11. admitted TVC broker permits StegCore private-source MATERIALIZE_SOURCE_ARCHIVE
-12. StegCore sovereign exact-head validation executes against its then-current exact head
+9. if the active request asks for repository-authority continuation, the .github consumer invokes only TVC's non-secret resident activator and requires a downstream request id to be staged/owned
+10. TVC systemd alone exposes TVC_EPHEMERAL_GITHUB_TOKEN to the resident repository-authority service
+11. TVC temporal continuation advances broker integration -> PR #266 validation -> successor integration -> resident spool evidence -> issue #264 admission
+12. admitted broker may execute bounded ST-019 repository-protection warrants and existing private-source materialization operations under TV/TVC authority
+13. repo-standards independently re-observes any protection mutation; executor success alone is not compliance
+14. admitted TVC broker permits StegCore private-source MATERIALIZE_SOURCE_ARCHIVE
+15. StegCore sovereign exact-head validation executes against its then-current exact head
 ```
 
 ## Completion inventory
@@ -213,3 +216,43 @@ governed validation PASS
 + source_bundle_sha256=0369ed677a014a99a983415a9094e6aaa0c570d163d9818d9a086fee6042dd6a
 + TVC_PR92_BROKER_ADMISSION_ELIGIBLE
 ```
+
+
+## Resident repository-authority handoff — 2026-08-31
+
+Merged TVC resident target:
+
+`StegVerse-Labs/TVC@66a6bb34c5465c8070d179b2c495e7a49ebb0d5b`
+
+TVC activator:
+
+`scripts/activate_sv_dn1_repository_authority_request.py`
+
+TVC target task:
+
+`tvc.sv_dn1.repository_authority.continue`
+
+The active resident validation request now sets:
+
+```text
+admission_compatibility_requested: true
+repository_authority_continuation_requested: true
+repository_authority_target_task: tvc.sv_dn1.repository_authority.continue
+repository_authority_credential_transport: TVC_SYSTEMD_LOADCREDENTIAL_ONLY
+```
+
+After authentic governed validation and authentic current-base compatibility, the
+credential-free `.github` consumer may invoke the TVC activator using only:
+
+```text
+--request-id <validation-request-id>-repository-authority
+--repo-root <already-local TVC control root>
+```
+
+No GitHub token or credential field is forwarded. The activator may report
+`BLOCKED_CREDENTIAL_NOT_OBSERVED` while still proving that the downstream TVC request
+has been staged and is now resident-owned. At that point this validation-carrier request
+may be terminal because the TVC path/timer owns retry.
+
+The downstream TVC request does not prove broker integration, PR #266 integration,
+issue #264 admission, repository persistence, Pages deployment, or public observation.
