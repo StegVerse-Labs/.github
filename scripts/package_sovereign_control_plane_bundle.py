@@ -358,6 +358,10 @@ def build_bundle(
     tvc_root: Path | None = None,
     micro_node_root: Path | None = None,
     master_records_root: Path | None = None,
+    tt_root: Path | None = None,
+    rtg_root: Path | None = None,
+    gtg_root: Path | None = None,
+    ae_root: Path | None = None,
 ) -> dict:
     root = root.resolve()
     output = output.resolve()
@@ -366,7 +370,7 @@ def build_bundle(
     if required not in files:
         raise RuntimeError("canonical bootstrap missing from bundle source")
 
-    bundle_files: list[tuple[str, Path]] = [
+    bundle_files: list[tuple[str, Path | bytes]] = [
         (path.relative_to(root).as_posix(), path) for path in files
     ]
     vendor_sources = {}
@@ -435,6 +439,17 @@ def build_bundle(
             ("vendor/master-records-orchestration/" + path.relative_to(rr).as_posix(), path)
             for path in _safe_tree_files(rr)
         )
+    formal_roots = {"TT": tt_root, "RTG": rtg_root, "GTG": gtg_root, "AE": ae_root}
+    for formal_name, formal_root in formal_roots.items():
+        if formal_root is None:
+            continue
+        fr = formal_root.expanduser().resolve()
+        proof = formal_snapshot_proof(formal_name, fr)
+        if proof.get("state") != "VERIFIED_LOCAL_GIT_SNAPSHOT":
+            raise RuntimeError(f"{formal_name} pinned formal source unavailable:{proof.get('state')}")
+        vendor_sources[f"formal-{formal_name}"] = True
+        vendor_source_proofs[f"formal-{formal_name}"] = proof
+        bundle_files.extend(_git_snapshot_items(fr, FORMAL_SOURCE_PINS[formal_name], f"vendor/formal/{formal_name}"))
     if tvc_root is not None:
         tr = tvc_root.expanduser().resolve()
         tvc_required = (
@@ -452,7 +467,7 @@ def build_bundle(
         )
     entries = []
     for rel, path in bundle_files:
-        data = path.read_bytes()
+        data = _source_bytes(path)
         entries.append({
             "path": rel,
             "sha256": _sha256(data),
@@ -479,9 +494,9 @@ def build_bundle(
         for rel, path in bundle_files:
             info = zipfile.ZipInfo(rel, date_time=(2026, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
-            mode = path.stat().st_mode
-            info.external_attr = ((stat.S_IMODE(mode) or 0o644) & 0xFFFF) << 16
-            archive.writestr(info, path.read_bytes())
+            mode = _source_mode(path)
+            info.external_attr = (mode & 0xFFFF) << 16
+            archive.writestr(info, _source_bytes(path))
         info = zipfile.ZipInfo(MANIFEST_NAME, date_time=(2026, 1, 1, 0, 0, 0))
         info.compress_type = zipfile.ZIP_DEFLATED
         info.external_attr = (0o644 & 0xFFFF) << 16
@@ -508,6 +523,10 @@ def main() -> int:
     parser.add_argument("--tvc-root", type=Path)
     parser.add_argument("--micro-node-root", type=Path)
     parser.add_argument("--master-records-root", type=Path)
+    parser.add_argument("--tt-root", type=Path)
+    parser.add_argument("--rtg-root", type=Path)
+    parser.add_argument("--gtg-root", type=Path)
+    parser.add_argument("--ae-root", type=Path)
     args = parser.parse_args()
     receipt = build_bundle(
         args.source_root,
@@ -519,6 +538,10 @@ def main() -> int:
         tvc_root=args.tvc_root,
         micro_node_root=args.micro_node_root,
         master_records_root=args.master_records_root,
+        tt_root=args.tt_root,
+        rtg_root=args.rtg_root,
+        gtg_root=args.gtg_root,
+        ae_root=args.ae_root,
     )
     print(json.dumps(receipt, indent=2, sort_keys=True))
     return 0
