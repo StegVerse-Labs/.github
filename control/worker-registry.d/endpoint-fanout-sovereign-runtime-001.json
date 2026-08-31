@@ -1,0 +1,79 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "ENDPOINT_FANOUT_SOVEREIGN_RUNTIME_NOT_YET_OBSERVED"
+      ],
+      "authorized_policy_version": "endpoint-fanout-sovereign-runtime-v0.1",
+      "block_ref": "docs/ENDPOINT_FANOUT_LIVE_RUNTIME_MIRROR_HANDOFF.md",
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/endpoint-fanout-sovereign-runtime.json",
+      "evidence_refs": [
+        "docs/ENDPOINT_FANOUT_LIVE_RUNTIME_MIRROR_HANDOFF.md",
+        "handoffs/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json",
+        "workers/endpoint_fanout_sovereign_runtime_worker.py",
+        "receipts/device-kv-intr/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+      "handoff_ref": "handoffs/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "SHWP-DEVICE-KV-INTR-OBSERVATION-001 + continuity-vault-kit endpoint fanout source",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 21,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+        "admitted_predecessor_rule": "AUTHENTIC_DEVICE_KV_INTR_OBSERVED",
+        "event_materialization_grants_authority": false
+      },
+      "source_state_vector_ref": "control/task-vectors/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-08-31T07:05:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:endpoint-fanout-sovereign-runtime-v1",
+      "authority_source": "handoffs/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "durable_state_reconstruction"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "endpoint-fanout-sovereign-runtime-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "non_tv_tvc_secret_or_token_required": false,
+  "third_party_runtime_required": false
+}
