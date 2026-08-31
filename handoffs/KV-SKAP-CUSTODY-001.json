@@ -1,0 +1,90 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-KV-SKAP-CUSTODY-001",
+  "created_at": "2026-08-31T22:45:00Z",
+  "updated_at": "2026-08-31T22:45:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "KV-SKAP-CUSTODY-001",
+    "objective": "Consume one canonical KV -> SKAP Vault kv-skap-custody InTr materialization and persist exact ciphertext with chained DEVICE->KV->SKAP evidence under TVC authority.",
+    "success_predicates": [
+      "canonical kv-skap-custody request is admitted write-once",
+      "TVC validates DEVICE->KV and KV->SKAP receipt lineage",
+      "exact ciphertext persists unchanged under _Vault/SKAP",
+      "replay is denied",
+      "credential authority remains TV/TVC and execution authority remains NONE"
+    ],
+    "failure_predicates": [
+      "browser/Node origin bypasses governed KV relay",
+      "credential plaintext is present",
+      "authority transfers to transport, HB, GitHub, or host",
+      "SKAP custody is claimed without exact readback"
+    ],
+    "authority_ceiling": [
+      "transport admission/dispatch",
+      "opaque ciphertext custody only",
+      "no plaintext",
+      "no provider operation"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "KV-SKAP-CUSTODY-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "docs/KV_SKAP_OPERATIONAL_INTR_TRANSPORT_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "intr:kv-skap-custody",
+    "derivation_depth": 0,
+    "priority": "release",
+    "operational_state": "READY_FOR_ADMITTED_EVENT",
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "fencing_token": null,
+    "source_refs": [
+      "workers/universal_intr_profiled_ingress.py",
+      "scripts/consume_kv_skap_custody_materialization_request.py",
+      "workers/kv_skap_custody_worker.py",
+      "StegVerse-Labs/StegOS/specs/universal-intr-connector-profiles.v1.json",
+      "StegVerse-Labs/TVC/tools/skap_vault_interlock_gate.py",
+      "StegVerse-Labs/TVC/tools/skap_vault_store.py"
+    ]
+  },
+  "authority": {
+    "authority_source": "StegOS canonical profile + TVC double-Interlock gate",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "policy_version": "kv-skap-custody-v0.1",
+    "heartbeat_grants_execution_authority": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 21,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "third_party_runtime_required": false,
+    "physical_additional_machine_required": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "durable_state_reconstruction"
+    ],
+    "allowed_paths": [
+      "receipts/sovereign-network/kv-skap-custody-ingress/**",
+      "receipts/sovereign-host/kv-skap-custody/**",
+      "_Vault/SKAP/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 8,
+    "max_retries": 3,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 24,
+    "rate_class": "kv_skap_custody",
+    "parent_task_id": null,
+    "parent_terminal_evidence": "VERIFIED_DEVICE_KV_RECEIPT_IN_MATERIALIZATION"
+  },
+  "completion": {
+    "source_implementation_state": "ACTIVE_IMPLEMENTATION",
+    "runtime_activation_state": "PENDING_AUTHENTIC_KV_SKAP_EVENT",
+    "runtime_observation_claimed": false,
+    "terminal_evidence": "receipts/sovereign-host/kv-skap-custody/<materialization_id>.json state ADMITTED_TO_SKAP_VAULT",
+    "next_authorized_action": "On the next admitted kv-skap-custody Universal InTr materialization, persist ingress and dispatch TVC-gated custody."
+  }
+}
