@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 import os
@@ -24,7 +24,10 @@ SUPERSEDED_REQUEST_DIR = Path("receipts/sovereign-host/resident-rendezvous-super
 RENDEZVOUS_REQUEST_SCHEMA = "stegverse.resident-rendezvous.request/v1"
 FETCH_SCHEMA = "stegverse.resident-rendezvous.fetch-result/v1"
 ACK_SCHEMA = "stegverse.resident-rendezvous.acknowledgement/v1"
+ADVERTISEMENT_SCHEMA = "stegverse.resident-rendezvous.advertisement/v1"
 RESIDENT_SCHEMA = "stegverse.resident-execution-request/v1"
+CURRENT_REQUEST_ID = "RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-003"
+ADVERTISEMENT_LEASE_SECONDS = 120
 CONSUMER = "stegos_kv_intr_chain"
 TASK_ID = "SHWP-STEGOS-KV-INTR-CHAIN-001"
 MODE = "STEGOS_KV_INTR_CHAIN"
@@ -287,6 +290,23 @@ def materialize_request(runtime_root: Path, resident_request: Mapping[str, Any])
     return path
 
 
+def _advertisement(*, node_ref: str, now: datetime | None = None) -> dict[str, Any]:
+    advertised = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
+    expires = advertised + timedelta(seconds=ADVERTISEMENT_LEASE_SECONDS)
+    return {
+        "schema": ADVERTISEMENT_SCHEMA,
+        "target_node_ref": node_ref,
+        "consumer": CONSUMER,
+        "current_resident_request_id": CURRENT_REQUEST_ID,
+        "advertised_at": advertised.isoformat(),
+        "expires_at": expires.isoformat(),
+        "credential_authority": "TV/TVC",
+        "gateway_execution_authority": "NONE",
+        "advertisement_grants_authority": False,
+        "authority_effect": "NONE_DISCOVERY_ONLY",
+    }
+
+
 def _ack(
     *,
     request: Mapping[str, Any],
@@ -325,6 +345,16 @@ def consume(
     source = (source_root or runtime).expanduser().resolve()
     endpoint = validate_endpoint(base_url)
     safe = safe_env(env)
+    advertisement = _advertisement(node_ref=node_ref)
+    advertisement_result = poster(
+        endpoint + "/api/resident-rendezvous/v1/advertisements",
+        advertisement,
+        node_ref=node_ref,
+    )
+    if not isinstance(advertisement_result, Mapping) or advertisement_result.get("state") != "ADVERTISED":
+        raise ResidentRendezvousConsumerError("resident advertisement not accepted")
+    if advertisement_result.get("gateway_execution_authority") != "NONE":
+        raise ResidentRendezvousConsumerError("resident advertisement gateway authority mismatch")
     fetch_url = (
         endpoint
         + "/api/resident-rendezvous/v1/requests?target_node_ref="
@@ -340,6 +370,8 @@ def consume(
             "runtime_execution_attempted": False,
             "network_request_carrier_used": True,
             "network_source_fetch_performed": False,
+            "resident_advertisement_state": advertisement_result.get("state"),
+            "resident_advertisement_grants_authority": False,
             "gateway_execution_authority": "NONE",
             "credential_authority": "TV/TVC",
             "authority_effect": "NONE",
@@ -392,6 +424,8 @@ def consume(
         "chain_state": chain.get("state"),
         "terminal_chain_observed": terminal,
         "acknowledgement_state": ack_result.get("state") if isinstance(ack_result, dict) else None,
+        "resident_advertisement_state": advertisement_result.get("state"),
+        "resident_advertisement_grants_authority": False,
         "runtime_execution_attempted": True,
         "network_request_carrier_used": True,
         "network_source_fetch_performed": False,
