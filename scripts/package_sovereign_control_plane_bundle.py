@@ -294,6 +294,8 @@ def build_bundle(
     healer_root: Path | None = None,
     tv_root: Path | None = None,
     tvc_root: Path | None = None,
+    micro_node_root: Path | None = None,
+    master_records_root: Path | None = None,
 ) -> dict:
     root = root.resolve()
     output = output.resolve()
@@ -349,6 +351,27 @@ def build_bundle(
         bundle_files.extend(
             ("vendor/TV/" + path.relative_to(vr).as_posix(), path)
             for path in _safe_tree_files(vr)
+        )
+    if micro_node_root is not None:
+        mr = micro_node_root.expanduser().resolve()
+        missing_micro = [rel for rel in SV002_MICRO_NODE_REQUIRED_PATHS if not (mr / rel).is_file()]
+        if missing_micro:
+            raise RuntimeError("micro-node-runtime source root invalid")
+        vendor_sources["micro-node-runtime"] = True
+        vendor_source_proofs["micro-node-runtime"] = sv002_micro_node_source_proof(mr)
+        bundle_files.extend(
+            ("vendor/micro-node-runtime/" + path.relative_to(mr).as_posix(), path)
+            for path in _safe_tree_files(mr)
+        )
+    if master_records_root is not None:
+        rr = master_records_root.expanduser().resolve()
+        if not (rr / MASTER_RECORDS_RECONSTRUCTION_VERIFIER).is_file():
+            raise RuntimeError("master-records/orchestration source root invalid")
+        vendor_sources["master-records-orchestration"] = True
+        vendor_source_proofs["master-records-orchestration"] = master_records_source_proof(rr)
+        bundle_files.extend(
+            ("vendor/master-records-orchestration/" + path.relative_to(rr).as_posix(), path)
+            for path in _safe_tree_files(rr)
         )
     if tvc_root is not None:
         tr = tvc_root.expanduser().resolve()
@@ -421,6 +444,8 @@ def main() -> int:
     parser.add_argument("--healer-root", type=Path)
     parser.add_argument("--tv-root", type=Path)
     parser.add_argument("--tvc-root", type=Path)
+    parser.add_argument("--micro-node-root", type=Path)
+    parser.add_argument("--master-records-root", type=Path)
     args = parser.parse_args()
     receipt = build_bundle(
         args.source_root,
@@ -430,6 +455,8 @@ def main() -> int:
         healer_root=args.healer_root,
         tv_root=args.tv_root,
         tvc_root=args.tvc_root,
+        micro_node_root=args.micro_node_root,
+        master_records_root=args.master_records_root,
     )
     print(json.dumps(receipt, indent=2, sort_keys=True))
     return 0
