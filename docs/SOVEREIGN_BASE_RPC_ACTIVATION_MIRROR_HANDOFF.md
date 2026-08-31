@@ -150,3 +150,28 @@ session-consolidation: all original/adjacent requirements retained by v11/v12 in
 ## Archive condition
 
 This source lane no longer requires a chat/session implementation or validation owner. Live activation is now machine-owned by the resident sovereign heartbeat with an exact receipt path and release condition. Full trade activation is not claimed until the real Base proof, TVC route admission and current-phone terminal evidence exist.
+
+
+## 2026-08-31 independent resident admission + portable source reconciliation
+
+The historical handoff still described this task as waiting on `SHWP-DURABLE-RUNTIME-ACTIVATION` / G18 and only recognized the legacy `STEGVERSE_MICRO_NODE_ROOT` locator. Both are stale relative to the current separated WorkerCoordinator architecture.
+
+The live contract is now:
+
+```text
+admitted independent resident task-control opportunity
+-> this task acquires its own fresh claim/fence
+-> resolve StegVerse-002/micro-node-runtime from:
+     STEGVERSE_MICRO_NODE_RUNTIME_ROOT
+     STEGVERSE_MICRO_NODE_ROOT (compatibility)
+     STEGVERSE_REPO_ROOTS_JSON
+     canonical local workload/source candidates
+-> observe credential-free private Base endpoint/process descriptor
+-> run released Base proof
+-> persist precise BLOCKED or validation_only=false proof
+-> TVC evaluates route admission separately
+```
+
+G18 terminalization is not an execution prerequisite and no heartbeat event grants authority. The worker remains compatible with the portable resident bundle without requiring Git metadata or a network checkout.
+
+The only authentic live blocker after source availability is a real synchronized private Base endpoint/process that satisfies the released proof contract. Missing endpoint evidence remains a task-local blocker and must not block unrelated resident workers.
