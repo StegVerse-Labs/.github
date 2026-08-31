@@ -177,6 +177,9 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             runtime = base / "runtime"
             source.mkdir()
             runtime.mkdir()
+            watcher = source / "scripts/install_sovereign_worker_source_refresh_service.py"
+            watcher.parent.mkdir(parents=True, exist_ok=True)
+            watcher.write_text("# watcher\n", encoding="utf-8")
             proof = base / "proof.json"
             receipt = base / "bootstrap.json"
             node_marker = base / "node.json"
