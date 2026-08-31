@@ -61,3 +61,7 @@ INGRESS_ADMITTED DEVICE_KV request
 
 Source completion requires exact-head organization/worker validation and merge.
 Runtime completion requires an authentic resident request plus real `STEGVERSE_KV_DATA_ROOT`, CVK source, ingress receipt, staged exact bytes, exact readback, and durable CVK staging receipt.
+
+## Upstream CVK source closure
+
+CVK #156 merged through PR #158 at `8b02312c352463059c966ee7ee8f4b1fa9f942e9`. The resident consumer may therefore require `runtime/portable_direct_source_ingress.py` from current local CVK source; repository merge still does not prove a resident has refreshed or that a real KV data root is bound.
