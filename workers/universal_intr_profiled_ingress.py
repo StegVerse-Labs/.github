@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import ssl
 import subprocess
 import sys
@@ -382,7 +383,11 @@ def admit_publisher(*,runtime_root:Path,body:bytes,headers:Mapping[str,str]) -> 
         existing=json.loads(receipt_path.read_text(encoding="utf-8"))
         for key in ("materialization_id","request_hash","transport_intent_hash","payload_hash","node_id","interlock_id","trigger_sha256"):
             require(existing.get(key)==base_receipt.get(key),"publisher_ingress_write_once_collision:"+key)
-        return existing
+        return_meta=runtime_root/"intr-return/publisher"/f"{mid}.json"
+        if return_meta.is_file():
+            return {**existing,"dispatch":{"consumer_dispatch_attempted":False,"consumer_result":{"state":"ALREADY_STAGED"},"consumer_execution_authority":False,"consumer_claim_or_fence_minted_by_ingress":False,"authority_effect":"NONE_DISPATCH_ONLY"}}
+        dispatch=_dispatch_publisher_consumer(runtime_root=runtime_root,materialization_id=mid)
+        return {**existing,"dispatch":dispatch}
     receipt={**base_receipt,"admitted_at":now()}
     raw=json.dumps(receipt,sort_keys=True,indent=2).encode()+b"\n"; hil._write_once(receipt_path,raw)
     latest=runtime_root/PUBLISHER_LATEST; latest.parent.mkdir(parents=True,exist_ok=True); latest.write_bytes(raw)
