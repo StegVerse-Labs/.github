@@ -334,10 +334,12 @@ def consume_one(source:Path,runtime:Path,mid:str,runner:Runner=subprocess.run,en
         if ing.get(k)!=req.get(k): raise DeviceKVMaterializationError("ingress_binding_mismatch:"+k)
     if ing.get("claim_or_fence_minted") is not False or ing.get("credential_authority")!="TV/TVC": raise DeviceKVMaterializationError("ingress_authority_invalid")
     child=scrubbed_env(env); child["STEGVERSE_DEVICE_KV_INTR_MATERIALIZATION_ID"]=mid
-    completed=runner([sys.executable,str(runtime/TARGET_ENTRYPOINT),"--source-root",str(source),"--runtime-root",str(runtime),"--task-id",TARGET_TASK],cwd=runtime,env=child,check=False,capture_output=True,text=True,timeout=240)
 
     portable=portable_payload_present(req)
     query_present=kv_query_present(req)
+    completed=None
+    if not query_present:
+        completed=runner([sys.executable,str(runtime/TARGET_ENTRYPOINT),"--source-root",str(source),"--runtime-root",str(runtime),"--task-id",TARGET_TASK],cwd=runtime,env=child,check=False,capture_output=True,text=True,timeout=240)
     if portable and query_present:
         raise DeviceKVMaterializationError("device_kv_extension_ambiguity_forbidden")
     staging_receipt=None
@@ -347,7 +349,7 @@ def consume_one(source:Path,runtime:Path,mid:str,runner:Runner=subprocess.run,en
     admission_error=None
     staging_attempted=False
     admission_attempted=False
-    if portable and completed.returncode==0:
+    if portable and completed is not None and completed.returncode==0:
         staging_attempted=True
         admission_attempted=True
         try:
@@ -365,14 +367,14 @@ def consume_one(source:Path,runtime:Path,mid:str,runner:Runner=subprocess.run,en
     query_result=None
     query_error=None
     query_attempted=False
-    if query_present and completed.returncode==0:
+    if query_present:
         query_attempted=True
         try:
             query_result=execute_kv_query(req,ing,child,runtime)
         except DeviceKVMaterializationError as exc:
             query_error=str(exc)
 
-    observation_ok=completed.returncode==0
+    observation_ok=True if query_present else (completed is not None and completed.returncode==0)
     staging_ok=(not portable) or (staging_receipt is not None and staging_receipt.get("state")=="STAGED_UNTRUSTED")
     admission_ok=(not portable) or (
         admission_receipt is not None
@@ -395,8 +397,10 @@ def consume_one(source:Path,runtime:Path,mid:str,runner:Runner=subprocess.run,en
         "transport_intent_hash":req["transport_intent_hash"],
         "payload_hash":req["payload_hash"],
         "target_task_id":TARGET_TASK,
-        "targeted_executor_returncode":completed.returncode,
+        "targeted_executor_returncode":completed.returncode if completed is not None else None,
         "runtime_execution_attempted":True,
+        "targeted_observation_executor_invoked":completed is not None,
+        "bounded_query_receiver_execution":query_present,
         "portable_payload_present":portable,
         "kv_query_present":query_present,
         "kv_query_attempted":query_attempted,
