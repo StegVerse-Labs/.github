@@ -80,6 +80,10 @@ def activate(
     tvc_root: Path,
     micro_node_root: Path,
     master_records_root: Path,
+    tt_root: Path,
+    rtg_root: Path,
+    gtg_root: Path,
+    ae_root: Path,
     health_url: str,
     receipt_path: Path,
     runner=subprocess.run,
@@ -110,6 +114,10 @@ def activate(
                 "--tvc-root", str(tvc_root.expanduser().resolve()),
                 "--micro-node-root", str(micro_node_root.expanduser().resolve()),
                 "--master-records-root", str(master_records_root.expanduser().resolve()),
+                "--tt-root", str(tt_root.expanduser().resolve()),
+                "--rtg-root", str(rtg_root.expanduser().resolve()),
+                "--gtg-root", str(gtg_root.expanduser().resolve()),
+                "--ae-root", str(ae_root.expanduser().resolve()),
             ],
             cwd=source,
             check=False,
@@ -174,6 +182,7 @@ def activate(
             "tvc_source_bundled": True,
             "micro_node_source_bundled": True,
             "master_records_source_bundled": True,
+            "formal_sources_bundled": {"TT": True, "RTG": True, "GTG": True, "AE": True},
             "control_bundle_sha256": package_result.get("bundle_sha256"),
             "stegdeploy_returncode": deploy.returncode,
             "stegdeploy_receipt_ref": str(deployment_receipt_path),
@@ -210,6 +219,10 @@ def main() -> int:
     parser.add_argument("--tvc-root", type=Path)
     parser.add_argument("--micro-node-root", type=Path)
     parser.add_argument("--master-records-root", type=Path)
+    parser.add_argument("--tt-root", type=Path)
+    parser.add_argument("--rtg-root", type=Path)
+    parser.add_argument("--gtg-root", type=Path)
+    parser.add_argument("--ae-root", type=Path)
     parser.add_argument("--receipt-path", type=Path, default=DEFAULT_RECEIPT)
     args = parser.parse_args()
     llm = args.llm_adapter_root
@@ -225,8 +238,12 @@ def main() -> int:
     tvc = args.tvc_root or (Path(os.environ["STEGVERSE_TVC_ROOT"]) if os.environ.get("STEGVERSE_TVC_ROOT") else None)
     micro_node = args.micro_node_root or (Path(os.environ["STEGVERSE_MICRO_NODE_RUNTIME_ROOT"]) if os.environ.get("STEGVERSE_MICRO_NODE_RUNTIME_ROOT") else None)
     master_records = args.master_records_root or (Path(os.environ["STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT"]) if os.environ.get("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT") else (Path(os.environ["STEGVERSE_MASTER_RECORDS_ROOT"]) if os.environ.get("STEGVERSE_MASTER_RECORDS_ROOT") else None))
-    if stegos is None or kv_source is None or healer is None or tv is None or tvc is None or micro_node is None or master_records is None:
-        raise SystemExit("StegOS, KV source, Healer, TV, TVC, micro-node-runtime, and Master Records local roots are required for the complete resident stack")
+    tt = args.tt_root or (Path(os.environ["STEGVERSE_TT_ROOT"]) if os.environ.get("STEGVERSE_TT_ROOT") else None)
+    rtg = args.rtg_root or (Path(os.environ["STEGVERSE_RTG_ROOT"]) if os.environ.get("STEGVERSE_RTG_ROOT") else None)
+    gtg = args.gtg_root or (Path(os.environ["STEGVERSE_GTG_ROOT"]) if os.environ.get("STEGVERSE_GTG_ROOT") else None)
+    ae = args.ae_root or (Path(os.environ["STEGVERSE_AE_ROOT"]) if os.environ.get("STEGVERSE_AE_ROOT") else None)
+    if stegos is None or kv_source is None or healer is None or tv is None or tvc is None or micro_node is None or master_records is None or tt is None or rtg is None or gtg is None or ae is None:
+        raise SystemExit("StegOS, KV source, Healer, TV, TVC, micro-node-runtime, Master Records, and TT/RTG/GTG/AE local roots are required for the complete resident stack")
     receipt = activate(
         args.source_root,
         llm,
@@ -237,6 +254,10 @@ def main() -> int:
         tvc_root=tvc,
         micro_node_root=micro_node,
         master_records_root=master_records,
+        tt_root=tt,
+        rtg_root=rtg,
+        gtg_root=gtg,
+        ae_root=ae,
         health_url=args.health_url,
         receipt_path=args.receipt_path,
     )
