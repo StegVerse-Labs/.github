@@ -30,6 +30,7 @@ class ResidentStackActivationTests(unittest.TestCase):
             stegos = root / "StegOS"
             kv = root / "continuity-vault-kit"
             healer = root / "StegVerse-Healer"
+            tv = root / "TV"
             tvc = root / "TVC"
             (stegos / "stegos").mkdir(parents=True)
             (kv / "runtime").mkdir(parents=True)
@@ -41,6 +42,10 @@ class ResidentStackActivationTests(unittest.TestCase):
             (healer / "app" / "dispatch_orchestrators.py").write_text("# dispatch\n")
             (healer / "data" / "orchestrator_targets.json").write_text("{}\n")
             (healer / "docs" / "HEALER_MIRROR_HANDOFF.md").write_text("# handoff\n")
+            (tv / "scripts").mkdir(parents=True)
+            (tv / "docs").mkdir(parents=True)
+            (tv / "scripts" / "tv_run_resident_operational_proof.py").write_text("# proof\n")
+            (tv / "docs" / "TV_OPERATIONAL_PROOF_SCHEMA.json").write_text("{}\n")
             (tvc / "scripts").mkdir(parents=True)
             (tvc / "tools").mkdir(parents=True)
             (tvc / "TVC_MIRROR_HANDOFF.md").write_text("# handoff\n")
@@ -86,6 +91,7 @@ class ResidentStackActivationTests(unittest.TestCase):
                 stegos_root=stegos,
                 kv_source_root=kv,
                 healer_root=healer,
+                tv_root=tv,
                 tvc_root=tvc,
                 health_url="http://127.0.0.1:8000/health",
                 receipt_path=receipt_path,
@@ -100,6 +106,7 @@ class ResidentStackActivationTests(unittest.TestCase):
             self.assertTrue(receipt["stegos_source_bundled"])
             self.assertTrue(receipt["kv_source_bundled"])
             self.assertTrue(receipt["healer_source_bundled"])
+            self.assertTrue(receipt["tv_source_bundled"])
             self.assertTrue(receipt["tvc_source_bundled"])
             self.assertTrue(receipt["tvc_skap_successor_attempted"])
             self.assertEqual(receipt["tvc_skap_successor_state"], "ACTIVE")
