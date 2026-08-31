@@ -119,7 +119,8 @@
       "heartbeat_grants_execution_authority": false,
       "credential_authority": "TV/TVC",
       "github_token_runtime_authority": "NONE",
-      "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+      "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY",
+      "requires_existing_separated_carrier_reference": true
     },
     "portable_refresh_then_execute": {
       "mode": "PORTABLE_REFRESH_THEN_TARGETED_ONE_SHOT",
