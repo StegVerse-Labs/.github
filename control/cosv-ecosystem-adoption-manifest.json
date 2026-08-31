@@ -4,7 +4,7 @@
   "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
-  "observed_at": "2026-08-31T07:58:00-05:00",
+  "observed_at": "2026-08-31T08:05:00-05:00",
   "source": "live GitHub App installation enumeration plus durable task-surface evidence",
   "authority_effect": "NONE",
   "credential_authority": "TV/TVC",
@@ -15,14 +15,15 @@
   "universe_audit_complete": false,
   "adoption_metrics": {
     "numerator_vectorized_active_task_surfaces": 2,
-    "denominator_proven_active_task_surfaces": 34,
-    "ratio": "2/34",
-    "percentage": 5.88,
-    "interpretation": "Repository-level VECTOR_PRESENT requires proof that every active machine task in that repository is vectorized. StegVerse-Labs/.github and AdmittedCode/.github now satisfy this strict criterion; partial downstream projections remain VECTOR_REQUIRED until independently complete."
+    "denominator_proven_active_task_surfaces": 33,
+    "ratio": "2/33",
+    "percentage": 6.06,
+    "interpretation": "Strict repository adoption excludes repositories proven to have no active task surface. StegVerse-Labs/.github and AdmittedCode/.github are VECTOR_PRESENT; validation-profile-registry is now proven NO_ACTIVE_TASK_SURFACE rather than incorrectly requiring a vector for terminal historical work."
   },
   "classification_counts": {
-    "VECTOR_REQUIRED": 32,
+    "VECTOR_REQUIRED": 31,
     "VECTOR_PRESENT": 2,
+    "NO_ACTIVE_TASK_SURFACE": 1,
     "NO_REPOSITORY_OR_UNAVAILABLE": 188
   },
   "organization_projection": [
@@ -30,9 +31,9 @@
       "organization": "Admissible-Existence",
       "installation_id": 139890227,
       "repository_count": 32,
-      "vector_required": 12,
+      "vector_required": 11,
       "vector_present": 0,
-      "no_active_task_surface": 0,
+      "no_active_task_surface": 1,
       "unavailable_or_not_yet_audited": 20
     },
     {
@@ -470,16 +471,16 @@
     {
       "organization": "Admissible-Existence",
       "repository": "Admissible-Existence/validation-profile-registry",
-      "classification": "VECTOR_REQUIRED",
-      "profile": "task.v1",
-      "notation": "L R U I V G O C M T B E A P",
-      "width": 14,
+      "classification": "NO_ACTIVE_TASK_SURFACE",
       "evidence_refs": [
-        "task-bearing repository discovered in live ecosystem task-surface audit"
+        "Admissible-Existence/validation-profile-registry/docs/VALIDATION_PROFILE_REGISTRY_MIRROR_HANDOFF.md",
+        "Admissible-Existence/validation-profile-registry@82cfc70bdc06522d56864d7b8f5883958a589b6d:hosted validation run 31193568994 SUCCESS"
       ],
-      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
-      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
-      "authority_effect": "NONE"
+      "authority_effect": "NONE",
+      "no_active_task_evidence": [
+        "Admissible-Existence/validation-profile-registry/docs/VALIDATION_PROFILE_REGISTRY_MIRROR_HANDOFF.md: PROFILE-REGISTRY-SUPPORT-COMPLETENESS-001 COMPLETE/RELEASED, archive-ready, reopen only on regression or separately admitted task",
+        "live repository code search on 2026-08-31 found no current task_id, claim_state, ACTIVE, CLAIMED_FOR, or MACHINE_OWNED task surfaces"
+      ]
     },
     {
       "organization": "Admissible-Existence",

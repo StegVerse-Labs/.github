@@ -776,3 +776,23 @@ universe audit complete: false
 ```
 
 No partial repository was promoted to VECTOR_PRESENT. TV/TVC remains credential authority; central cross-private execution authority remains false.
+
+## Validation-profile-registry denominator correction — 2026-08-31
+
+`Admissible-Existence/validation-profile-registry` was re-audited from its canonical mirror handoff and live repository task/claim search.
+
+The only recorded support goal, `PROFILE-REGISTRY-SUPPORT-COMPLETENESS-001`, is COMPLETE/RELEASED, centrally activated, archive-ready, and may reopen only on direct regression evidence or a separately admitted task. No current `task_id`, `claim_state`, ACTIVE, CLAIMED_FOR, or MACHINE_OWNED task surface was found.
+
+Therefore the repository is reclassified from `VECTOR_REQUIRED` to `NO_ACTIVE_TASK_SURFACE`. No vector is emitted for terminal historical work.
+
+Strict adoption denominator becomes:
+
+```text
+VECTOR_PRESENT: 2
+VECTOR_REQUIRED: 31
+NO_ACTIVE_TASK_SURFACE: 1
+not-yet-audited/unavailable: 188
+strict active-repository adoption: 2/33 = 6.06%
+```
+
+This is denominator correction, not activation or release authority.
