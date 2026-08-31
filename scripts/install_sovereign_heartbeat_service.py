@@ -59,6 +59,7 @@ COPY_FILES = (
     "scripts/run_sv_dn1_first_round_chain.py",
     "scripts/consume_sv_dn1_resident_execution_request.py",
     "scripts/consume_stegos_kv_intr_chain_request.py",
+    "scripts/consume_resident_rendezvous.py",
     "scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py",
     "scripts/consume_tvc_broker_validation_request.py",
     "scripts/consume_sv002_self_characterization_request.py",
@@ -146,6 +147,7 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         target_root / "scripts" / "consume_sv002_self_characterization_request.py",
         target_root / "scripts" / "consume_cross_framework_current_basis_v04_request.py",
         target_root / "scripts" / "consume_stegos_kv_intr_chain_request.py",
+        target_root / "scripts" / "consume_resident_rendezvous.py",
         target_root / "scripts" / "consume_bootstrap_v1_intr_bundle_delivery_request.py",
         target_root / "scripts" / "refresh_and_dispatch_resident_requests.py",
         target_root / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
@@ -237,7 +239,27 @@ def _worker_command(root: Path, interval_ms: float) -> list[str]:
     ]
 
 
-def _systemd_unit(description: str, command: list[str], root: Path) -> str:
+def _resident_rendezvous_env(values: dict[str, str]) -> dict[str, str]:
+    url = str(values.get("STEGVERSE_RESIDENT_RENDEZVOUS_URL") or "").strip()
+    node_ref = str(values.get("STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF") or "").strip()
+    if not url and not node_ref:
+        return {}
+    if not url.startswith("https://"):
+        raise RuntimeError("resident rendezvous URL must use https")
+    if any(ch in url for ch in "\r\n\"") or any(ch in node_ref for ch in "\r\n\""):
+        raise RuntimeError("resident rendezvous configuration contains unsafe characters")
+    if not node_ref or len(node_ref) > 256:
+        raise RuntimeError("resident rendezvous node ref required")
+    return {
+        "STEGVERSE_RESIDENT_RENDEZVOUS_URL": url.rstrip("/"),
+        "STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF": node_ref,
+    }
+
+
+def _systemd_unit(description: str, command: list[str], root: Path, extra_env: dict[str, str] | None = None) -> str:
+    env_lines = [f"Environment=STEGVERSE_HEARTBEAT_ROOT={root}"]
+    for key, value in sorted((extra_env or {}).items()):
+        env_lines.append(f"Environment={key}={value}")
     return "\n".join([
         "[Unit]",
         f"Description={description}",
@@ -248,7 +270,7 @@ def _systemd_unit(description: str, command: list[str], root: Path) -> str:
         "ExecStart=" + " ".join(f'\"{part}\"' for part in command),
         "Restart=always",
         "RestartSec=2",
-        f"Environment=STEGVERSE_HEARTBEAT_ROOT={root}",
+        *env_lines,
         "",
         "[Install]",
         "WantedBy=default.target",
@@ -261,13 +283,14 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
     values = dict(os.environ if env is None else env)
     carrier_command = _carrier_command(root)
     worker_command = _worker_command(root, interval_ms)
+    rendezvous_env = _resident_rendezvous_env(values)
 
     if name == "linux":
         base = Path(values.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "systemd" / "user"
         carrier_path = base / "stegverse-heartbeat.service"
         worker_path = base / "stegverse-worker-runtime.service"
         carrier_content = _systemd_unit("StegVerse oscillator-produced non-authorizing heartbeat carrier", carrier_command, root)
-        worker_content = _systemd_unit("StegVerse worker control-plane runtime", worker_command, root)
+        worker_content = _systemd_unit("StegVerse worker control-plane runtime", worker_command, root, rendezvous_env)
         activation_commands = [
             ["systemctl", "--user", "daemon-reload"],
             ["systemctl", "--user", "enable", "--now", carrier_path.name],
@@ -295,7 +318,7 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
             "ProgramArguments": worker_command,
             "RunAtLoad": True,
             "KeepAlive": True,
-            "EnvironmentVariables": {"STEGVERSE_HEARTBEAT_ROOT": str(root)},
+            "EnvironmentVariables": {"STEGVERSE_HEARTBEAT_ROOT": str(root), **rendezvous_env},
             "StandardOutPath": str(root / "receipts" / "sovereign-host" / "worker.stdout.log"),
             "StandardErrorPath": str(root / "receipts" / "sovereign-host" / "worker.stderr.log"),
         }).decode()
@@ -312,7 +335,8 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
         carrier_path = base / "heartbeat-start.cmd"
         worker_path = base / "worker-runtime-start.cmd"
         carrier_content = "@echo off\r\n" + subprocess.list2cmdline(carrier_command) + "\r\n"
-        worker_content = "@echo off\r\n" + subprocess.list2cmdline(worker_command) + "\r\n"
+        worker_prefix = "".join(f"set {key}={value}\r\n" for key, value in sorted(rendezvous_env.items()))
+        worker_content = "@echo off\r\n" + worker_prefix + subprocess.list2cmdline(worker_command) + "\r\n"
         activation_commands = [
             ["schtasks", "/Create", "/F", "/SC", "ONLOGON", "/TN", "StegVerse Heartbeat", "/TR", str(carrier_path)],
             ["schtasks", "/Create", "/F", "/SC", "ONLOGON", "/TN", "StegVerse Worker Runtime", "/TR", str(worker_path)],
@@ -361,6 +385,10 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
         "third_party_scheduler_required": False,
         "render_production_runtime_used": False,
         "manual_action_required": False,
+        "resident_rendezvous_configured": bool(rendezvous_env),
+        "resident_rendezvous_url": rendezvous_env.get("STEGVERSE_RESIDENT_RENDEZVOUS_URL"),
+        "resident_rendezvous_node_ref": rendezvous_env.get("STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF"),
+        "resident_rendezvous_grants_execution_authority": False,
     }
 
 
