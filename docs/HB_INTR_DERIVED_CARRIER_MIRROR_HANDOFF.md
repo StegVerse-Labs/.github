@@ -178,3 +178,21 @@ events/heartbeat-derived-carrier.jsonl
 ```
 
 An identical repeat is idempotent; a write-once collision or any carrier/packet tamper fails closed.
+## 2026-08-31 exact transported-frame publication
+
+The shared local runtime is now consumed by real carrier-producing lanes rather than remaining only a reusable library surface.
+
+Issue #645 adds `persist_local_intr_subsignal(root, signal)`, which accepts an already-derived carrier frame, revalidates exact packet recovery/binding, persists that exact frame write-once, and emits the append-only propagation observation only after readback passes.
+
+Integrated producers:
+```text
+workers/device_kv_intr_observation_worker.py
+  request carrier: publish after KV receiver exact recovery/validation
+  response carrier: publish after Device exact recovery/validation
+
+workers/sv_dn1_intr_runtime_worker.py
+  publish canonical route carrier after exact recovery/validation
+  bind shared signal ref + digest into carrier-binding receipt
+```
+
+No producer obtains heartbeat progression, admission, execution, credential, routing, transition, receiving, claim, or fence authority from publication.
