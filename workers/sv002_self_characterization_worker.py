@@ -25,6 +25,9 @@ LOOPBACK_PREFIXES = (
     "https://127.0.0.1:",
     "https://localhost:",
 )
+MASTER_RECORDS_RECONSTRUCTION_OUTPUT = (
+    "STEGVERSE_002_SELF_CHARACTERIZATION_RECONSTRUCTION_RECEIPT.json"
+)
 
 
 def git_head(p: Path) -> str:
@@ -224,6 +227,66 @@ def resolve_subject_identity(endpoint: str, model: str) -> tuple[dict[str, Any] 
         return None, "SUBJECT_IDENTITY_NOT_INDEPENDENTLY_VERIFIED:" + str(exc)
 
 
+def attempt_master_records_reconstruction(state_root: Path) -> dict[str, Any]:
+    master_records, candidates_seen = find_repo(
+        "master-records",
+        "orchestration",
+        override=os.environ.get("STEGVERSE_MASTER_RECORDS_ROOT"),
+        required=("scripts/verify_sv002_self_characterization_reconstruction.py",),
+    )
+    if master_records is None:
+        return {
+            "state": "PENDING",
+            "blocker": "MASTER_RECORDS_RECONSTRUCTION_VERIFIER_NOT_MATERIALIZED",
+            "master_records_candidates": candidates_seen,
+            "network_fetch_performed": False,
+            "credential_required": False,
+            "authority_effect": "NONE",
+        }
+
+    output = state_root / MASTER_RECORDS_RECONSTRUCTION_OUTPUT
+    clean_env = {
+        "PATH": os.environ.get("PATH", ""),
+        "HOME": os.environ.get("HOME", str(Path.home())),
+    }
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(master_records / "scripts/verify_sv002_self_characterization_reconstruction.py"),
+            str(state_root),
+            "--output",
+            str(output),
+        ],
+        cwd=master_records,
+        env=clean_env,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    result = {}
+    if output.is_file():
+        try:
+            result = json.loads(output.read_text())
+        except Exception:
+            result = {}
+    passed = (
+        proc.returncode == 0
+        and result.get("status") == "PASS"
+        and result.get("reconstruction") == "PASS"
+        and result.get("experiment_id") == "STEGVERSE-002-SELF-CHARACTERIZATION-001"
+    )
+    return {
+        "state": "PASS" if passed else "FAIL",
+        "verifier_repository": str(master_records),
+        "verifier_returncode": proc.returncode,
+        "receipt_path": str(output) if output.is_file() else None,
+        "receipt": result if result else None,
+        "network_fetch_performed": False,
+        "credential_required": False,
+        "authority_effect": "NONE",
+    }
+
+
 def response(state, transition, epoch):
     return {
         "schema": "stegverse.worker-response/v0.1",
@@ -343,6 +406,15 @@ def main():
     execution = state_root / "EXPERIMENT_EXECUTION_RECEIPT.json"
     result = json.loads(execution.read_text()) if execution.is_file() else {}
     completed = proc.returncode == 0 and result.get("state") == "COMPLETED"
+    master_records_reconstruction = (
+        attempt_master_records_reconstruction(state_root)
+        if completed
+        else {
+            "state": "NOT_ATTEMPTED",
+            "reason": "PRINCIPAL_EXECUTION_NOT_COMPLETED",
+            "authority_effect": "NONE",
+        }
+    )
     receipt = {
         "schema": "stegverse.sv002-self-characterization-worker-receipt/v0.2",
         "task_id": TASK_ID,
@@ -358,6 +430,7 @@ def main():
         "self_characterization_path": str(state_root / "SELF_CHARACTERIZATION.md") if completed else None,
         "formal_result_path": str(state_root / "SELF_CHARACTERIZATION_FORMAL.json") if completed else None,
         "interaction_receipt_chain_path": str(state_root / "INTERACTION_RECEIPT_CHAIN.json") if completed else None,
+        "master_records_reconstruction": master_records_reconstruction,
         "network_fetch_performed": False,
         "credential_authority": "TV/TVC",
         "github_token_required": False,
