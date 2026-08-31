@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-08-29T03:05:00-05:00",
+  "updated_at": "2026-08-31T15:40:00-05:00",
   "state": "BLOCKED_SOVEREIGN_NODE_REQUIRED_NON_HEARTBEAT",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
@@ -145,7 +145,16 @@
     "post_bootstrap_resident_request_dispatcher": "scripts/dispatch_resident_execution_requests.py",
     "post_bootstrap_dispatch_condition": "AFTER_NATIVE_INSTALLATION_BEFORE_FINAL_ACTIVATION_VERIFICATION",
     "post_bootstrap_dispatch_grants_authority": false,
-    "post_bootstrap_dispatch_failure_blocks_later_requests": false
+    "post_bootstrap_dispatch_failure_blocks_later_requests": false,
+    "one_shot_resident_stack_entrypoint": "scripts/activate_resident_stack.py",
+    "one_shot_resident_stack_sequence": [
+      "package canonical .github control plane locally",
+      "invoke local StegDeploy with STEGVERSE_ORG_CONTROL_BUNDLE",
+      "observe healthy local Gateway",
+      "materialize and invoke canonical resident bootstrap",
+      "verify G18 activation",
+      "immediately advance TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001"
+    ]
   },
   "state_transition_continuity": {
     "contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
@@ -183,7 +192,7 @@
     "blocker_reason": "NON_HOSTED_NATIVE_RESIDENT_EXECUTION_NOT_OBSERVED",
     "current_receipt_ref": "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "current_registry_state": "BLOCKED / G18 fence18 remains machine-owned",
-    "next_authorized_action": "Continue G18 only through StegVerse-owned/federated sovereign execution. On an eligible non-hosted local surface, the canonical v13 bootstrap materializes and activates the bounded resident runtime, then immediately dispatches resident execution requests before the final activation verifier. Each consumer remains independently fail-closed and non-authorizing. This allows G18/HIL resident execution evidence to contribute to the activation proof instead of being circularly gated behind it. The dispatcher independently visits Ecosystem Chat, G18, HIL, ARA Graph, SV-DN1, and TVC broker validation consumers so one fail-closed request cannot starve later work. This source-order repair does not satisfy G18 until deployment-local runtime/dispatch/consumption evidence exists. Optional third-party fallback methods may not satisfy or replace sovereign activation.",
+    "next_authorized_action": "On the first admitted non-hosted StegVerse-owned/federated execution surface with the LLM-adapter source present, invoke scripts/activate_resident_stack.py. This one local entrypoint packages the canonical control plane, starts StegDeploy, invokes the resident bootstrap, verifies G18, and immediately advances the TVC/SKAP successor under its own independent claim/fence. No GitHub token, hosted scheduler, provider credential, or heartbeat authority is introduced.",
     "terminal_when": [
       "eligible sovereign node is identified/declared",
       "runtime_materialized=true and native_service_active=true",
@@ -212,7 +221,9 @@
     "resident_resolution_bootstrap_source_merged": true,
     "resident_resolution_bootstrap_runtime_observed": false,
     "post_bootstrap_resident_dispatch_source_merged": true,
-    "post_bootstrap_resident_dispatch_runtime_observed": false
+    "post_bootstrap_resident_dispatch_runtime_observed": false,
+    "one_shot_resident_stack_source_merged": false,
+    "one_shot_resident_stack_runtime_observed": false
   },
   "parallel_continuations": [
     {
@@ -361,6 +372,11 @@
       "github_token_runtime_authority": "NONE",
       "credential_authority": "TV/TVC",
       "runtime_effect": "SOURCE_ONLY_NO_RESIDENT_DISPATCH_OR_ACTIVATION_PROOF_CLAIM"
+    },
+    "one_shot_resident_stack_activation": {
+      "branch": "feat/one-shot-resident-stack-activation-20260831",
+      "entrypoint": "scripts/activate_resident_stack.py",
+      "runtime_effect": "SOURCE_ONLY_UNTIL_NON_HOSTED_LOCAL_INVOCATION"
     }
   },
   "release_downstream": [
