@@ -515,6 +515,17 @@
       "result": "PASS",
       "continuation_owner": "sv-dn1-repository-persistence-dispatch-worker + StegVerse-Labs/TVC#264",
       "rationale": "The dispatcher only stages exact non-secret TVC repository-operation requests and consumes sanitized TVC receipts. Registration or execution creates no AE capability standing and grants no credential, repository mutation, merge, deployment, publication-decision, SDK, governance, custody, release, or certification authority."
+    },
+    {
+      "task_id": "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+      "temporal_class": "current",
+      "ae_impact": "SUPPORTING_OPERATION_OF",
+      "capability_id": "stegverse:capability:endpoint-fanout-sovereign-runtime:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "integrates_capability",
+      "result": "PASS",
+      "continuation_owner": "endpoint-fanout-sovereign-runtime-worker",
+      "rationale": "The worker executes only the already-admitted two-report endpoint fanout after authentic DEVICE_KV_INTR evidence on an eligible sovereign resident. Registration and source readiness do not create canonical KV mutation, provider operation, external Master Records custody, credential, publication, release, or capability activation authority."
     }
   ]
 }
