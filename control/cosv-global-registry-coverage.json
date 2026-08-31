@@ -2,7 +2,7 @@
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
   "observed_commit": "0e7b0b03cffdc207d7b8260423776f40e80c6fb7",
-  "observed_at": "2026-08-30T19:46:00-05:00",
+  "observed_at": "2026-08-30T21:08:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -11,9 +11,9 @@
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
     "unique_task_ids_global_plus_fragments": 71,
-    "canonically_indexed_task_ids": 39,
+    "canonically_indexed_task_ids": 46,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 25,
+    "active_unvectorized_unique_task_ids": 18,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,7 +21,7 @@
     "canonically_vectorized_task_ids": 0,
     "active_unvectorized_task_ids": 14
   },
-  "total_active_unvectorized_unique_task_ids": 39,
+  "total_active_unvectorized_unique_task_ids": 32,
   "active_worker_task_ids_missing_canonical_cosv": [
     "SHWP-ALL-ORG-FEDERATION-001",
     "STEGFIN-LIVE-ENTRY-003",
@@ -38,16 +38,9 @@
     "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
     "STEGVERSE-TEST-LANES-AUTOLAUNCH-001",
     "SHWP-SV002-SELF-CHARACTERIZATION-001",
-    "BOOTSTRAP-V1-SOURCE-IDENTITY-FREEZE-001",
-    "BOOTSTRAP-V1-RELEASE-CANDIDATE-FREEZE-001",
-    "BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001",
     "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
-    "BOOTSTRAP-V1-MATERIALIZATION-EVIDENCE-INTAKE-001",
-    "BOOTSTRAP-V1-RELEASE-GATE-001",
-    "BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001",
     "SV-DN1-PUBLIC-PROMOTION-001",
-    "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001",
-    "BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001"
+    "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001"
   ],
   "active_organization_task_ids_missing_canonical_cosv": [
     "ORG-FED-AACT-E-001",
@@ -221,6 +214,34 @@
     {
       "task_id": "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
       "vector": "50000000102000"
+    },
+    {
+      "task_id": "BOOTSTRAP-V1-SOURCE-IDENTITY-FREEZE-001",
+      "vector": "50000000102000"
+    },
+    {
+      "task_id": "BOOTSTRAP-V1-RELEASE-CANDIDATE-FREEZE-001",
+      "vector": "50000000102000"
+    },
+    {
+      "task_id": "BOOTSTRAP-V1-DISTRIBUTABLE-BUNDLE-001",
+      "vector": "50000000103000"
+    },
+    {
+      "task_id": "BOOTSTRAP-V1-MATERIALIZATION-EVIDENCE-INTAKE-001",
+      "vector": "50000000102000"
+    },
+    {
+      "task_id": "BOOTSTRAP-V1-RELEASE-GATE-001",
+      "vector": "50000000101000"
+    },
+    {
+      "task_id": "BOOTSTRAP-V1-SOURCE-PACKAGE-PRODUCTION-001",
+      "vector": "50000000102000"
+    },
+    {
+      "task_id": "BOOTSTRAP-V1-INTR-BUNDLE-DELIVERY-001",
+      "vector": "50000000103000"
     }
   ],
   "evidence_conflicts": [],
@@ -474,6 +495,15 @@
     "canonical_vector_emitted": false,
     "runtime_activation_claimed": false,
     "authentic_delivery_observed": false,
+    "authority_effect": "NONE"
+  },
+  "bootstrap_v1_cohort_projection": {
+    "source_basis": "current main branch at cohort start",
+    "projected_task_count": 7,
+    "indexed_after_projection": 46,
+    "active_worker_unvectorized_after_projection": 18,
+    "total_active_unvectorized_after_projection": 32,
+    "activation_promoted": false,
     "authority_effect": "NONE"
   }
 }
