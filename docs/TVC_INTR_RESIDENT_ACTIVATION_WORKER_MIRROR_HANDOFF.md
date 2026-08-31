@@ -159,3 +159,11 @@ canonical .github control plane
 ```
 
 This removes the incidental-adjacent-checkout assumption from the deployment architecture. TV/TVC remains sole credential authority and GitHub remains source provenance only.
+
+## 2026-08-31 portable TVC/Healer resident source closure
+
+The portable sovereign resident stack now includes both `StegVerse-Healer` and `StegVerse-Labs/TVC` as verified local source trees. StegDeploy binds the materialized TVC tree as `STEGVERSE_TVC_ROOT`, the Healer tree as `STEGVERSE_HEALER_ROOT`, and includes both in `STEGVERSE_REPO_ROOTS_JSON`.
+
+This removes the prior possibility that the resident TVC/SKAP successor or HIL lifecycle consumer would be reached by WorkerCoordinator while the required TVC source was absent from the portable deployment.
+
+No TVC credential values are bundled. No GitHub token or network source acquisition is introduced. `TVC_INTR_READY_FOR_OWNER_INGRESS` still requires authentic resident execution, TLS/public-route evidence, and readiness receipts.
