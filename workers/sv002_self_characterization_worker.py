@@ -73,6 +73,7 @@ def reconstruction_terminal(reconstruction: dict[str, Any]) -> bool:
         and reconstruction["receipt"].get("reconstruction") == "PASS"
     )
 MASTER_RECORDS_RECONSTRUCTION_COMMIT = "2e117902d4f261b10cb3b5122b7ef48fb0e36e57"
+MICRO_NODE_SOURCE_PIN = "496f17e0cb07433f3f9312e82a2c045f5d901dc9"
 MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB = "cc96556a23b5bd804f3cdaa96539b379c1904437"
 
 
@@ -125,6 +126,60 @@ def find_repo(org, repo, expected=None, override=None, required=()):
                 return p, seen
         seen.append(rec)
     return None, seen
+
+
+def _resident_source_manifest() -> tuple[Path | None, dict[str, Any] | None]:
+    raw = str(os.environ.get("STEGVERSE_RESIDENT_SOURCE_MANIFEST") or "").strip()
+    if not raw:
+        return None, None
+    path = Path(raw).expanduser().resolve()
+    if not path.is_file():
+        return path, None
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return path, None
+    return (path, value) if isinstance(value, dict) else (path, None)
+
+
+def portable_source_root(repo_key: str, env_name: str, required: tuple[str, ...], *, exact_head: str | None = None, exact_commit: str | None = None, required_ancestor: str | None = None, verifier_blob: str | None = None, proof_states: tuple[str, ...] = ("VERIFIED_LOCAL_GIT_SOURCE",)) -> tuple[Path | None, str | None]:
+    manifest_path, manifest = _resident_source_manifest()
+    raw_root = str(os.environ.get(env_name) or "").strip()
+    if manifest_path is None or manifest is None or not raw_root:
+        return None, "PORTABLE_SOURCE_MANIFEST_OR_ROOT_ABSENT"
+    if not (
+        manifest.get("schema") == "stegverse.sovereign-control-plane-bundle/v1"
+        and manifest.get("network_fetch_required") is False
+        and manifest.get("credential_authority") == "TV/TVC"
+        and manifest.get("github_token_runtime_authority") == "NONE"
+        and manifest.get("bundle_grants_authority") is False
+    ):
+        return None, "PORTABLE_SOURCE_MANIFEST_INVARIANT_INVALID"
+    proof = (manifest.get("vendor_source_proofs") or {}).get(repo_key)
+    if not isinstance(proof, dict) or proof.get("state") not in proof_states:
+        return None, "PORTABLE_SOURCE_PROOF_NOT_VERIFIED"
+    subpath = str(proof.get("materialized_subpath") or "")
+    root = Path(raw_root).expanduser().resolve()
+    if not subpath or root != (manifest_path.parent / subpath).resolve():
+        return None, "PORTABLE_SOURCE_ROOT_BINDING_INVALID"
+    if exact_head is not None and not (proof.get("head") == exact_head and proof.get("exact_head_verified") is True):
+        return None, "PORTABLE_SOURCE_EXACT_HEAD_INVALID"
+    if exact_commit is not None and not (proof.get("exact_commit") == exact_commit and proof.get("exact_commit_present") is True):
+        return None, "PORTABLE_SOURCE_EXACT_COMMIT_INVALID"
+    if required_ancestor is not None and not (proof.get("required_ancestor") == required_ancestor and proof.get("required_ancestor_present") is True):
+        return None, "PORTABLE_SOURCE_REQUIRED_ANCESTOR_INVALID"
+    if verifier_blob is not None and proof.get("verifier_git_blob") != verifier_blob:
+        return None, "PORTABLE_SOURCE_VERIFIER_BLOB_INVALID"
+    declared = {str(e.get("path")): e for e in manifest.get("files", []) if isinstance(e, dict) and isinstance(e.get("path"), str)}
+    for rel in required:
+        path = root / rel
+        entry = declared.get(subpath + "/" + rel)
+        if not path.is_file() or not isinstance(entry, dict):
+            return None, "PORTABLE_SOURCE_REQUIRED_FILE_MISSING"
+        data = path.read_bytes()
+        if len(data) != entry.get("size") or hashlib.sha256(data).hexdigest() != entry.get("sha256"):
+            return None, "PORTABLE_SOURCE_DIGEST_MISMATCH"
+    return root, "VERIFIED_PORTABLE_BUNDLE_PROOF"
 
 
 def git_blob_sha(root: Path, path: Path) -> str:
@@ -550,21 +605,38 @@ def attempt_master_records_reconstruction(state_root: Path) -> dict[str, Any]:
         override=(os.environ.get("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT") or os.environ.get("STEGVERSE_MASTER_RECORDS_ROOT")),
         required=("scripts/verify_sv002_self_characterization_reconstruction.py",),
     )
+    source_validation_mode = "LOCAL_GIT_PROOF" if master_records is not None else None
+    portable_reason = None
+    if master_records is None:
+        env_name = "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT" if os.environ.get("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT") else "STEGVERSE_MASTER_RECORDS_ROOT"
+        master_records, portable_reason = portable_source_root(
+            "master-records-orchestration",
+            env_name,
+            ("scripts/verify_sv002_self_characterization_reconstruction.py",),
+            required_ancestor=MASTER_RECORDS_RECONSTRUCTION_COMMIT,
+            verifier_blob=MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB,
+        )
+        if master_records is not None:
+            source_validation_mode = "VERIFIED_PORTABLE_BUNDLE_PROOF"
     if master_records is None:
         return {
             "state": "PENDING",
             "blocker": "MASTER_RECORDS_RECONSTRUCTION_VERIFIER_NOT_MATERIALIZED",
             "master_records_candidates": candidates_seen,
+            "portable_source_reason": portable_reason,
             "network_fetch_performed": False,
             "credential_required": False,
             "authority_effect": "NONE",
         }
 
     verifier_path = master_records / "scripts/verify_sv002_self_characterization_reconstruction.py"
-    try:
-        verifier_blob = git_blob_sha(master_records, verifier_path)
-    except Exception:
-        verifier_blob = None
+    if source_validation_mode == "LOCAL_GIT_PROOF":
+        try:
+            verifier_blob = git_blob_sha(master_records, verifier_path)
+        except Exception:
+            verifier_blob = None
+    else:
+        verifier_blob = MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB
     if verifier_blob != MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB:
         return {
             "state": "PENDING",
@@ -612,6 +684,7 @@ def attempt_master_records_reconstruction(state_root: Path) -> dict[str, Any]:
     return {
         "state": "PASS" if passed else "FAIL",
         "verifier_repository": str(master_records),
+        "source_validation_mode": source_validation_mode,
         "verifier_returncode": proc.returncode,
         "receipt_path": str(output) if output.is_file() else None,
         "receipt": result if result else None,
@@ -681,6 +754,7 @@ def main():
             "subject_identity_verified": prior.get("subject_identity_verified", True),
             "formal_roots": prior.get("formal_roots"),
             "state_root": str(state_root),
+            "micro_node_source_validation_mode": prior.get("micro_node_source_validation_mode"),
             "self_characterization_path": str(state_root / "SELF_CHARACTERIZATION.md"),
             "formal_result_path": str(state_root / "SELF_CHARACTERIZATION_FORMAL.json"),
             "interaction_receipt_chain_path": str(state_root / "INTERACTION_RECEIPT_CHAIN.json"),
@@ -714,13 +788,44 @@ def main():
         override=os.environ.get("STEGVERSE_MICRO_NODE_RUNTIME_ROOT"),
         required=("tools/run_self_characterization_principal.py",),
     )
+    micro_source_validation_mode = "LOCAL_GIT_PROOF" if micro is not None else None
+    micro_portable_reason = None
+    if micro is None:
+        micro, micro_portable_reason = portable_source_root(
+            "micro-node-runtime",
+            "STEGVERSE_MICRO_NODE_RUNTIME_ROOT",
+            (
+                "tools/run_self_characterization_principal.py",
+                "tools/verify_self_characterization_runtime_identity.py",
+                "experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json",
+                "schemas/self_characterization_runtime_identity.schema.json",
+            ),
+            exact_head=MICRO_NODE_SOURCE_PIN,
+        )
+        if micro is not None:
+            micro_source_validation_mode = "VERIFIED_PORTABLE_BUNDLE_PROOF"
     formal = {}
     observed = {}
+    formal_source_validation = {}
     for repo, sha in PINS.items():
-        p, seen = find_repo("Admissible-Existence", repo, sha, os.environ.get(f"STEGVERSE_{repo}_ROOT"))
-        observed[repo] = seen
+        env_name = f"STEGVERSE_{repo}_ROOT"
+        p, seen = find_repo("Admissible-Existence", repo, sha, os.environ.get(env_name))
+        observed[repo] = {"git_candidates": seen, "portable_reason": None}
+        mode = "LOCAL_GIT_PROOF" if p is not None else None
+        if p is None:
+            p, portable_reason = portable_source_root(
+                f"formal-{repo}",
+                env_name,
+                (),
+                exact_commit=sha,
+                proof_states=("VERIFIED_LOCAL_GIT_SNAPSHOT",),
+            )
+            observed[repo]["portable_reason"] = portable_reason
+            if p is not None:
+                mode = "VERIFIED_PORTABLE_GIT_SNAPSHOT"
         if p:
             formal[f"Admissible-Existence/{repo}"] = str(p)
+            formal_source_validation[repo] = mode
 
     configured_endpoint = os.environ.get("STEGVERSE_SELF_CHAR_MODEL_ENDPOINT", "").strip().rstrip("/")
     configured_model = os.environ.get("STEGVERSE_SELF_CHAR_MODEL_ID", "").strip()
@@ -757,7 +862,9 @@ def main():
             "state": "BLOCKED",
             "blockers": blockers,
             "micro_node_candidates": micro_seen,
+            "micro_node_portable_reason": micro_portable_reason,
             "formal_candidates": observed,
+            "formal_source_validation": formal_source_validation,
             "model_id": model or None,
             "endpoint": endpoint or None,
             "subject_identity_error": subject_identity_error,
@@ -777,6 +884,7 @@ def main():
         "PATH": os.environ.get("PATH", ""),
         "HOME": os.environ.get("HOME", str(Path.home())),
         "STEGVERSE_FORMAL_ROOTS_JSON": json.dumps(formal),
+        "STEGVERSE_RESIDENT_SOURCE_MANIFEST": os.environ.get("STEGVERSE_RESIDENT_SOURCE_MANIFEST", ""),
         "STEGVERSE_SELF_CHAR_MODEL_ENDPOINT": endpoint,
         "STEGVERSE_SELF_CHAR_MODEL_ID": model,
         "STEGVERSE_SELF_CHAR_SUBJECT_IDENTITY_JSON": json.dumps(subject_identity, sort_keys=True),
@@ -818,6 +926,7 @@ def main():
         "principal_discovery": principal_discovery,
         "subject_identity_verified": True,
         "formal_roots": formal,
+        "formal_source_validation": formal_source_validation,
         "state_root": str(state_root),
         "self_characterization_path": str(state_root / "SELF_CHARACTERIZATION.md") if completed else None,
         "formal_result_path": str(state_root / "SELF_CHARACTERIZATION_FORMAL.json") if completed else None,
