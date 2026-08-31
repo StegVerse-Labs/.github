@@ -12,6 +12,7 @@ from heartbeat_runtime.intr_carrier_profile import (
     validate_carrier_binding,
 )
 from heartbeat_runtime.independent_oscillator import PROTOCOL_ANCHOR_UNIX_NS
+from heartbeat_runtime.intr_derived_carrier import derive_intr_carrier_signal
 from workers import universal_intr_profiled_ingress as ingress
 from scripts import serve_hil_intr_materialization_ingress as hil_ingress
 
@@ -27,13 +28,32 @@ class HBDerivedInTrCarrierTests(unittest.TestCase):
         self.assertEqual(later["heartbeat_epoch"], 34)
         self.assertEqual(later["phase_offset_ms"], 7)
 
-    def test_channel_is_packet_deterministic(self):
-        a = derive_channel("INTR-" + "2" * 24)
-        b = derive_channel("INTR-" + "2" * 24)
+    def test_channel_is_payload_deterministic(self):
+        payload_hash = "sha256:" + "2" * 64
+        a = derive_channel(payload_hash)
+        b = derive_channel(payload_hash)
         self.assertEqual(a, b)
         self.assertEqual(a["channel_family"], "H1_PHASE_SLOTS")
         self.assertGreaterEqual(a["phase_slot"], 0)
         self.assertLess(a["phase_slot"], 16)
+
+    def test_binding_channel_matches_canonical_exact_byte_carrier(self):
+        raw = b"canonical exact packet bytes"
+        import hashlib
+        payload_hash = "sha256:" + hashlib.sha256(raw).hexdigest()
+        channel = derive_channel(payload_hash)
+        signal = derive_intr_carrier_signal(
+            heartbeat_epoch=32,
+            heartbeat_reference="HB-0000000W",
+            phase_slots=16,
+            packet_bytes=raw,
+            intr_transport_profile="stegverse.universal-intr.adjacent-hop/v1",
+            boundary_from="DEVICE_SYSTEM",
+            boundary_to="STEGOS_ECOSYSTEM",
+            packet_receipt_hash="a" * 64,
+        )
+        self.assertEqual(channel["phase_slot"], signal["carrier"]["channel_slot"])
+        self.assertEqual(channel["channel_id"], f'HB:H1:P{signal["carrier"]["channel_slot"]}')
 
     def test_binding_round_trip_and_authority_separation(self):
         sample_ms = PROTOCOL_ANCHOR_UNIX_NS // 1_000_000 + 1234
@@ -78,6 +98,7 @@ class HBDerivedInTrCarrierTests(unittest.TestCase):
         self.assertTrue(p["legacy_unbound_packets_temporarily_accepted"])
         self.assertFalse(p["carrier_presence_grants_admission_authority"])
         self.assertFalse(p["carrier_presence_grants_execution_authority"])
+        self.assertEqual(p["channel_selection"], "PAYLOAD_SHA256_FIRST64_MOD_16")
         universal = ingress.profile(True)
         self.assertEqual(universal["heartbeat_derived_carrier"], p)
 
