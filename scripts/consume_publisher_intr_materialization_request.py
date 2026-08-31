@@ -24,6 +24,11 @@ def consume(source:Path,runtime:Path,mid:str,runner=subprocess.run,env=None)->di
     req=load(runtime/"intr-materialization"/f"{mid}.json"); ing=load(runtime/"receipts/sovereign-network/publisher-intr-ingress"/f"{mid}.json")
     if req.get("destination")!={"boundary":"STEGOS_ECOSYSTEM","subsystem":"Publisher:Ingress"} or req.get("downstream_owner_ref")!="GCAT-BCAT-Engine/Publisher": raise ValueError("not publisher materialization")
     if ing.get("state")!="INGRESS_ADMITTED" or ing.get("exact_payload_materialized") is not True: raise ValueError("publisher ingress not ready")
+    prior_path=runtime/"receipts/publisher-artifact-transfer"/f"{TASK_ID}.json"
+    if prior_path.is_file():
+        prior=load(prior_path)
+        if prior.get("state")=="RETURN_STAGED_TO_DEVICE" and prior.get("materialization_id")==mid:
+            return {"schema":"stegverse.publisher-intr-materialization-consumption/v1","state":"ALREADY_STAGED","materialization_id":mid,"request_hash":req.get("request_hash"),"target_task_id":TASK_ID,"targeted_executor_returncode":0,"runtime_execution_attempted":False,"return_meta_ref":prior.get("return_meta_ref"),"request_grants_authority":False,"claim_or_fence_minted_by_consumer":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":"NONE_REQUEST_ONLY"}
     child=scrub(env); child[EVENT_ENV]=mid
     cmd=[sys.executable,str(runtime/"scripts/refresh_and_execute_resident_task.py"),"--source-root",str(source),"--runtime-root",str(runtime),"--task-id",TASK_ID]
     cp=runner(cmd,cwd=runtime,env=child,check=False,capture_output=True,text=True,timeout=300)
