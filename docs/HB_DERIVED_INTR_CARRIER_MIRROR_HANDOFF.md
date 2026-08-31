@@ -3,8 +3,8 @@
 Repository: `StegVerse-Labs/.github`
 Issue: `#619`
 Branch: `feat/hb-derived-intr-carrier-612`
-State: ACTIVE_IMPLEMENTATION
-Updated: 2026-08-31T07:56:00-05:00
+State: MERGED_PROFILE / LOCAL_PROPAGATION_INTEGRATION_ACTIVE
+Updated: 2026-08-31T08:10:00-05:00
 Credential authority: TV/TVC
 Authority effect: NONE
 
@@ -52,3 +52,51 @@ The profiled ingress advertises this carrier now. Existing non-carrier-aware cli
 ## Completion boundary
 
 Source completion requires deterministic carrier derivation/validation, ingress profile publication, focused tests, organization/heartbeat validation, and merge. Live carrier propagation remains runtime evidence and must not be inferred from source merge.
+
+
+## Profile merge
+
+Issue #619 / PR #620 merged as `ea09c87106b63fab8bba29872213a91c4e2cf82e`.
+
+Validation:
+- organization control plane `33394873703`: SUCCESS;
+- Heartbeat Worker Project `33394873627`: SUCCESS.
+
+The Universal InTr profile/binding layer is therefore merged. Authentic propagation is not inferred from those validations.
+
+## Local propagation continuation — issue #624
+
+Historical `engine_v9._carry_subsignals()` proved that an HB-associated derived signal can be persisted locally without becoming authority. The modern implementation now restores that useful behavior for opaque InTr packet carriage through a dedicated application-neutral surface rather than reviving worker-coordination state as carrier authority.
+
+Canonical sequence:
+
+```text
+already-governed exact InTr packet bytes
+-> canonical #620 packet_id-derived H1 phase/channel binding
+-> exact-byte HB-derived carrier signal
+-> control/heartbeat-derived-signals.d/<signal>.json (write once)
+-> events/heartbeat-derived-carrier.jsonl (append-only observation)
+-> independent exact packet recovery + hash/binding verification
+```
+
+The local propagation operation:
+- does not run the heartbeat sampler;
+- does not advance or gate HB;
+- does not invoke WorkerCoordinator;
+- does not create a task, claim, fence, route, admission, execution, transition, receipt, credential, or receiving grant;
+- preserves exact packet bytes and independently reconstructable channel/HB identity.
+
+The previously separate exact-byte carrier formula is reconciled to the ingress-advertised canonical rule:
+
+```text
+channel = first32(SHA256(packet_id)) mod 16
+family = H1_PHASE_SLOTS
+```
+
+Packet bytes determine their own exact SHA-256 but no longer select a second conflicting channel.
+
+New surfaces:
+- `heartbeat_runtime/intr_subsignal_runtime.py`
+- `tests/test_heartbeat_intr_local_subsignal_runtime.py`
+
+Source implementation still does not claim that a production endpoint has emitted an authentic carrier-bound packet. Runtime proof requires a real producer/observer pair and retained carrier evidence.
