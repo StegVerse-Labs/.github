@@ -68,9 +68,7 @@
       "scripts/consume_healer_sovereign_scheduler_request.py",
       "tests/test_healer_resident_request.py"
     ],
-    "dependencies": [
-      "SHWP-DURABLE-RUNTIME-ACTIVATION"
-    ],
+    "dependencies": [],
     "parent_task_id": null,
     "derivation_reason": "The prior Healer scheduler used HEALER_GH_TOKEN and GitHub workflow-dispatch as production transport, contrary to the TV/TVC authority boundary. The released Site ERL target now additionally requires the same sovereign carrier before its daily GitHub-token sync may be retired.",
     "canonical_owner_ref": "StegVerse-Labs/StegVerse-Healer/data/session_consolidation/tv-tvc-no-github-token-dispatch-migration.json",
@@ -113,7 +111,7 @@
   "completion": {
     "source_state": "COMPLETE_VALIDATED_WITH_COINBASE_TVC_TLS_RECEIPT_AUTODISCOVERY",
     "source_validation_evidence": "StegVerse-Labs/StegVerse-Healer Test Readiness run 32670203077 job 97269769966 PASS on aca5b7871e2720b0d56757e33fc2a22c10291136; PR #40 merge ff3d9985b773d91dce0d90351a7a8a04a499c59b",
-    "next_authorized_action": "On the next resident request-dispatch opportunity, consume RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001 through the existing targeted independent task-control entrypoint. The request grants no authority and must preserve existing WorkerCoordinator claim/fence/dependency checks. Retry nonterminal attempts; terminalize the request only after HEALER_SOVEREIGN_SCHEDULER_COMPLETED. Independently reobserve public /intr/profile after authentic Gateway publication.",
+    "next_authorized_action": "Consume RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001 on the next native resident request-dispatch opportunity under independent task control. Do not wait on G18 terminalization. The request grants no authority; WorkerCoordinator must perform fresh admission/claim/fence checks. Retry nonterminal attempts and terminalize only after HEALER_SOVEREIGN_SCHEDULER_COMPLETED. Independently reobserve public /intr/profile after authentic Gateway publication.",
     "terminal_when": [
       "No forbidden GitHub credential is present",
       "All due targets have COMPLETE or explicitly terminal superseded outcomes",
@@ -123,9 +121,10 @@
     ],
     "dependency_state": {
       "dependency": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-      "state": "BLOCKED",
-      "blocker": "RESIDENT_G18_REQUEST_QUEUED_CONSUMPTION_AND_V13_ACTIVATION_PROOF_NOT_OBSERVED",
+      "state": "RELEASE_COMPLETE_NOT_A_DOWNSTREAM_GATE",
+      "blocker": null,
       "heartbeat_activation_dependency": false,
+      "g18_terminalization_required": false,
       "current_iphone_action_required": false,
       "third_party_primary_runtime_required": false,
       "credential_authority": "TV/TVC",
@@ -172,7 +171,7 @@
     }
   },
   "block": null,
-  "updated_at": "2026-08-31T13:49:00-05:00",
+  "updated_at": "2026-08-31T16:40:00-05:00",
   "source_state_vector_ref": "control/task-vectors/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
   "machine_readable_state": {
     "cosv": {
@@ -180,7 +179,7 @@
       "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
-      "vector": "50000000101000",
+      "vector": "50000000100000",
       "vector_state": "EMITTED",
       "vector_observed_at": "2026-08-27T17:25:00-05:00",
       "authority_effect": "NONE"

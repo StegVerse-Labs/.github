@@ -2,14 +2,14 @@
   "identity": "StegVerse-Labs/.github:task:SHWP-HEALER-SOVEREIGN-SCHEDULER-001",
   "profile": "task.v1",
   "level": "task",
-  "vector": "50000000101000",
+  "vector": "50000000100000",
   "evidence_refs": [
     "control/worker-registry.d/healer-sovereign-scheduler-001.json",
     "handoffs/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
     "StegVerse-Labs/StegVerse-Healer:data/session_consolidation/tv-tvc-no-github-token-dispatch-migration.json",
     "StegVerse-Labs/StegVerse-Healer:docs/SITE_ERL_SOVEREIGN_SYNC_MIRROR_HANDOFF.md"
   ],
-  "observed_at": "2026-08-28T21:01:00-05:00",
+  "observed_at": "2026-08-31T16:40:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "MACHINE_OWNED",
@@ -22,7 +22,7 @@
     "chat_owned_credentials": 0,
     "canonical_owner_installed": true,
     "thread_required": false,
-    "blocker_count": 1,
+    "blocker_count": 0,
     "evidence_complete": false,
     "activated": false,
     "propagated": false
@@ -34,8 +34,8 @@
     "chat_owned_counts": "Healer migration claim is RELEASED_FOR_CHAT_SESSION and manual_session_execution_allowed=false",
     "canonical_owner_installed": "source implementation, authority migration, worker, handoff, authorization, Site ERL fixed target and native TLS locator path are installed",
     "thread_required": "Healer migration archive_dependency=false and remaining execution is machine-owned",
-    "blocker_count": "handoff completion.dependency_state has exactly one blocker: RESIDENT_G18_REQUEST_QUEUED_CONSUMPTION_AND_V13_ACTIVATION_PROOF_NOT_OBSERVED",
-    "evidence_complete": "completion.dependency_state is BLOCKED; live resident scheduler COMPLETE/PASS receipt remains unobserved",
+    "blocker_count": "The former G18 dependency is retired as a downstream gate; the scheduler task is independently admitted and has no current upstream blocker.",
+    "evidence_complete": "Runtime evidence remains incomplete because the authentic resident scheduler COMPLETE/PASS receipt is still unobserved; this is an execution-evidence gap, not a dependency blocker.",
     "activated": "local_tls_runtime_receipt_observed=false, tvc_tls_adoption_runtime_receipt_observed=false, and no live scheduler COMPLETE/PASS receipt exists",
     "propagated": "production_public_route_observed=false and legacy Site ERL carrier retirement remains unauthorized until live scheduler evidence"
   },

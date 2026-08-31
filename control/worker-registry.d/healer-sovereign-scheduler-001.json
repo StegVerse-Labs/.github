@@ -23,7 +23,8 @@
         "StegVerse-Labs/StegVerse-Healer:Test Readiness:32670203077:SUCCESS",
         "StegVerse-Labs/TVC#202@0ca30b7806d2a96d9a256a7cd9fa0702f718a5e2",
         "StegVerse-Labs/StegVerse-Healer#44@4685956871cb03cf16d9b4416c4d0880534353cf",
-        "StegVerse-Labs/StegVerse-Healer:Test Readiness:33139437849:SUCCESS"
+        "StegVerse-Labs/StegVerse-Healer:Test Readiness:33139437849:SUCCESS",
+        "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json#completion.release-complete-not-downstream-gate"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
@@ -48,7 +49,8 @@
           "vector_observed_at": "2026-08-27T17:25:00-05:00",
           "authority_effect": "NONE"
         }
-      }
+      },
+      "dependencies": []
     }
   ],
   "workers": [
