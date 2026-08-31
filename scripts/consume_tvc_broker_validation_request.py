@@ -41,7 +41,9 @@ TVC_PROGRESSION_MODULE = "scripts.advance_tvc_pr92_broker_validation"
 TVC_PROGRESSION_SCRIPT = Path("scripts/advance_tvc_pr92_broker_validation.py")
 TVC_ADMISSION_MODULE = "scripts.evaluate_github_repository_operation_broker_admission"
 TVC_ADMISSION_SCRIPT = Path("scripts/evaluate_github_repository_operation_broker_admission.py")
-TVC_REPOSITORY_AUTHORITY_ACTIVATOR = Path("scripts/activate_sv_dn1_repository_authority_request.py")
+TVC_REPOSITORY_AUTHORITY_REQUEST_REL = Path("tvc-handoff/sv-dn1-repository-authority-request.json")
+TVC_REPOSITORY_AUTHORITY_REQUEST_SCHEMA = "stegverse.tvc.sv-dn1-repository-authority-request/v1"
+TVC_REPOSITORY_AUTHORITY_TARGET_TASK = "tvc.sv_dn1.repository_authority.continue"
 
 
 def truthy(value: str | None) -> bool:
@@ -258,61 +260,53 @@ def run_tvc_admission_compatibility(
 
 
 def run_tvc_repository_authority_handoff(
-    control_root: Path,
+    runtime_root: Path,
     *,
     request_id: str,
-    runner=subprocess.run,
-    env: Mapping[str, str],
 ) -> dict[str, Any]:
-    activator = control_root / TVC_REPOSITORY_AUTHORITY_ACTIVATOR
-    if not activator.is_file():
-        return {
-            "command": None,
-            "returncode": None,
-            "result": None,
-            "result_observed": False,
-            "request_staged_or_owned": False,
-            "reason": "TVC_REPOSITORY_AUTHORITY_ACTIVATOR_NOT_PRESENT",
-            "credential_value_exposed": False,
-            "consumer_credential_used": False,
-            "repository_write_authority": False,
-            "authority_effect": "NONE_HANDOFF_ONLY",
-        }
+    runtime = runtime_root.expanduser().resolve()
     downstream_request_id = f"{request_id}-repository-authority"
-    command = [
-        sys.executable,
-        str(activator),
-        "--request-id",
-        downstream_request_id,
-        "--repo-root",
-        str(control_root),
-    ]
-    completed = runner(
-        command,
-        cwd=control_root,
-        capture_output=True,
-        text=True,
-        check=False,
-        env=dict(env),
-        timeout=1200,
-    )
-    result = parse_last_json(completed.stdout)
-    staged = bool(
-        isinstance(result, dict)
-        and result.get("request_id") == downstream_request_id
-        and result.get("credential_value_exposed") is False
-    )
+    request_path = runtime / TVC_REPOSITORY_AUTHORITY_REQUEST_REL
+    request = {
+        "schema": TVC_REPOSITORY_AUTHORITY_REQUEST_SCHEMA,
+        "request_id": downstream_request_id,
+        "state": "REQUESTED",
+        "task": TVC_REPOSITORY_AUTHORITY_TARGET_TASK,
+        "credential_authority": "TV/TVC",
+        "credential_material_present": False,
+        "request_grants_authority": False,
+        "heartbeat_grants_authority": False,
+        "repository_write_authority": False,
+        "authority_effect": "NONE_REQUEST_ONLY",
+    }
+    if request_path.is_file():
+        existing = load_json(request_path)
+        if existing != request:
+            raise RuntimeError("TVC repository-authority runtime request conflicts with existing staged request")
+    else:
+        atomic_json(request_path, request)
     return {
-        "command": command,
-        "returncode": completed.returncode,
-        "result": result,
-        "result_observed": isinstance(result, dict),
-        "request_staged_or_owned": staged,
+        "command": None,
+        "returncode": 0,
+        "result": {
+            "state": "REQUEST_STAGED_FOR_TVC_SYSTEMD_PATH",
+            "request_id": downstream_request_id,
+            "request_path": str(request_path),
+            "request_sha256": stable_hash(request),
+            "credential_value_exposed": False,
+            "authority_effect": "NONE_REQUEST_ONLY",
+        },
+        "result_observed": True,
+        "request_staged_or_owned": True,
         "downstream_request_id": downstream_request_id,
+        "request_path": str(request_path),
+        "request_sha256": stable_hash(request),
         "credential_value_exposed": False,
         "consumer_credential_used": False,
         "repository_write_authority": False,
         "github_token_runtime_authority": "NONE",
+        "systemd_service_start_requested_by_consumer": False,
+        "systemd_path_activation_expected": True,
         "authority_effect": "NONE_HANDOFF_ONLY",
     }
 
@@ -473,16 +467,11 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     repository_authority_required = request.get("repository_authority_continuation_requested") is True
     repository_authority_handoff_observed = False
     if terminal and compatibility_observed and repository_authority_required:
-        if control_root is None:
-            control_root, control_observed = local_tvc_control_root(cleaned)
-        if control_root is not None:
-            repository_authority_handoff = run_tvc_repository_authority_handoff(
-                control_root,
-                request_id=str(request["request_id"]),
-                runner=runner,
-                env=cleaned,
-            )
-            repository_authority_handoff_observed = repository_authority_handoff.get("request_staged_or_owned") is True
+        repository_authority_handoff = run_tvc_repository_authority_handoff(
+            runtime,
+            request_id=str(request["request_id"]),
+        )
+        repository_authority_handoff_observed = repository_authority_handoff.get("request_staged_or_owned") is True
     validation_and_compatibility = terminal and (not compatibility_required or compatibility_observed)
     downstream_handoff_satisfied = (not repository_authority_required or repository_authority_handoff_observed)
     state = "COMPLETED" if validation_and_compatibility and downstream_handoff_satisfied else "HANDOFF_READY"

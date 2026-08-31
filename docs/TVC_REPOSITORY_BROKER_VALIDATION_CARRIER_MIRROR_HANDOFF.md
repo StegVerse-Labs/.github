@@ -222,7 +222,10 @@ governed validation PASS
 
 Merged TVC resident target:
 
-`StegVerse-Labs/TVC@66a6bb34c5465c8070d179b2c495e7a49ebb0d5b`
+`StegVerse-Labs/TVC@1d2e8ba69868b3270032d88e68c6a42e813a876a`
+
+This supersedes the earlier fixed `/var/lib` request-ingress contract by binding the
+root systemd path watcher to the sovereign runtime's user-writable `tvc-handoff` file.
 
 TVC activator:
 
@@ -242,17 +245,20 @@ repository_authority_credential_transport: TVC_SYSTEMD_LOADCREDENTIAL_ONLY
 ```
 
 After authentic governed validation and authentic current-base compatibility, the
-credential-free `.github` consumer may invoke the TVC activator using only:
+credential-free `.github` consumer writes exactly one non-secret request to:
 
-```text
---request-id <validation-request-id>-repository-authority
---repo-root <already-local TVC control root>
-```
+`<STEGVERSE_HEARTBEAT_ROOT>/tvc-handoff/sv-dn1-repository-authority-request.json`
 
-No GitHub token or credential field is forwarded. The activator may report
-`BLOCKED_CREDENTIAL_NOT_OBSERVED` while still proving that the downstream TVC request
-has been staged and is now resident-owned. At that point this validation-carrier request
-may be terminal because the TVC path/timer owns retry.
+No `systemctl` call, TVC activator process, GitHub token, credential field, or repository
+authority is used by the consumer.
+
+During the root-required PR #92 progression, TVC installs and enables the root systemd
+service/path/timer with its path unit bound to that exact sovereign-runtime request file.
+The root systemd path observes the rootless write and starts the TVC service, which alone
+receives `TVC_EPHEMERAL_GITHUB_TOKEN` through `LoadCredential`.
+
+Once the exact request file is staged, this validation-carrier request may be terminal
+because the TVC root path/timer owns retry and downstream execution.
 
 The downstream TVC request does not prove broker integration, PR #266 integration,
 issue #264 admission, repository persistence, Pages deployment, or public observation.
@@ -296,3 +302,40 @@ downstream TVC repository-authority request: NOT OBSERVED
 Source handoff is terminal. Remaining progress is machine/runtime evidence produced by the
 sovereign resident control plane and the downstream TVC service; this chat is not an
 execution dependency.
+
+
+## Rootless runtime-path activation correction — 2026-08-31
+
+The earlier direct activator composition is superseded:
+
+```text
+SUPERSEDED:
+  rootless .github consumer
+  -> python TVC activator
+  -> systemctl start system service
+```
+
+Current composition:
+
+```text
+TVC PR #92 progression under TVC system-service authority
+  -> install stegtvc-sv-dn1-repository-authority.service
+  -> install/enable .path + .timer
+  -> bind PathChanged to sovereign runtime/tvc-handoff request
+
+.github consumer after validation+compatibility
+  -> atomic write exact non-secret request
+  -> request hash retained
+  -> systemd_service_start_requested_by_consumer=false
+  -> repository_write_authority=false
+
+root systemd
+  -> observes PathChanged
+  -> starts TVC service
+  -> LoadCredential TVC_EPHEMERAL_GITHUB_TOKEN
+  -> temporal repository authority continuation
+```
+
+This is the first composition in this lane that satisfies both the rootless
+WorkerCoordinator constraint and the TVC system-service credential boundary without an
+implicit privilege escalation.
