@@ -505,5 +505,18 @@
     "total_active_unvectorized_after_projection": 32,
     "activation_promoted": false,
     "authority_effect": "NONE"
+  },
+  "bootstrap_v1_cosv_cohort": {
+    "task_count": 7,
+    "runtime_activation_claimed": false,
+    "source_identity_frozen": false,
+    "release_candidate_frozen": false,
+    "distributable_bundle_built": false,
+    "source_packages_produced": false,
+    "device_materialization_proof_observed": false,
+    "intr_browser_delivery_observed": false,
+    "release_authorized": false,
+    "publication_performed": false,
+    "authority_effect": "NONE"
   }
 }
