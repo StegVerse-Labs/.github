@@ -62,6 +62,9 @@ def derive_intr_carrier_signal(
     receipt_hash = _receipt_hash(packet_receipt_hash)
     if not isinstance(packet_bytes, bytes) or not packet_bytes:
         raise DerivedCarrierError("packet_bytes_required")
+    packet_sha256 = hashlib.sha256(packet_bytes).hexdigest()
+    if payload_hash != "sha256:" + packet_sha256:
+        raise DerivedCarrierError("payload_hash_exact_packet_mismatch")
 
     try:
         binding = build_carrier_binding(
@@ -74,7 +77,6 @@ def derive_intr_carrier_signal(
 
     reference = binding["heartbeat_reference"]
     channel = binding["channel"]
-    packet_sha256 = hashlib.sha256(packet_bytes).hexdigest()
     phase_offset_deg = round(math.degrees(float(channel["phase_radians"])) % 360.0, 9)
     signal_id = (
         f"hb-intr:{reference['heartbeat_epoch']}:{channel['phase_slot']}:"
