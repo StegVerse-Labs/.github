@@ -133,3 +133,29 @@ sovereign bootstrap
 -> TVC resident recipient/key/liveness + Gateway route work
 -> READY_FOR_OWNER_INGRESS when its predicates are genuinely satisfied
 ```
+
+
+## 2026-08-31 portable sovereign control-plane bundle
+
+The resident control plane can now be transported to a StegDeploy sovereign substrate as one local bundle without requiring an adjacent Git checkout or any network source fetch.
+
+Source:
+- `scripts/package_sovereign_control_plane_bundle.py`
+- schema: `stegverse.sovereign-control-plane-bundle/v1`
+- validation: `tests/test_package_sovereign_control_plane_bundle.py`
+
+The bundle contains the canonical runtime/control-plane source needed by the local bootstrap and carries per-file SHA-256 commitments plus a bundle SHA-256 receipt. It excludes mutable runtime receipt/event/checkpoint surfaces and grants no claim, fence, heartbeat, credential, route, provider, or execution authority.
+
+Intended deployment chain:
+
+```text
+canonical .github control plane
+-> portable local bundle
+-> StegDeploy local materialization
+-> bootstrap_sovereign_runtime.py
+-> native WorkerCoordinator
+-> G18 verification
+-> immediate TVC/SKAP successor cycle
+```
+
+This removes the incidental-adjacent-checkout assumption from the deployment architecture. TV/TVC remains sole credential authority and GitHub remains source provenance only.
