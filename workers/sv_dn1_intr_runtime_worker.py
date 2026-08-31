@@ -19,6 +19,10 @@ if str(REPO_ROOT) not in sys.path:
 
 from heartbeat_runtime.independent_oscillator import current_reference
 from heartbeat_runtime.intr_derived_carrier import derive_intr_carrier_signal, recover_intr_packet_bytes
+from heartbeat_runtime.intr_subsignal_runtime import (
+    default_heartbeat_runtime_root,
+    persist_local_intr_subsignal,
+)
 
 TASK_ID = "SV-DN1-INTR-RUNTIME-001"
 WORKER_ID = "sv-dn1-intr-runtime-worker"
@@ -386,6 +390,19 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
     receipt = {"receipt_hash": sha256_ref(body), **body}
 
     carrier = build_hb_carrier_binding(exchange, receipt)
+    shared_carrier = persist_local_intr_subsignal(
+        root=default_heartbeat_runtime_root(),
+        signal=carrier["signal"],
+    )
+    carrier_receipt_body = {
+        key: value for key, value in carrier["receipt"].items() if key != "receipt_hash"
+    }
+    carrier_receipt_body["shared_hb_signal_ref"] = shared_carrier["signal_ref"]
+    carrier_receipt_body["shared_hb_signal_sha256"] = shared_carrier["signal_sha256"]
+    carrier["receipt"] = {
+        **carrier_receipt_body,
+        "receipt_hash": sha256_ref(carrier_receipt_body),
+    }
 
     bound = bound_state_root()
     atomic_json(bound / "observed" / "exchange.json", exchange)
@@ -411,6 +428,8 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "hb_carrier_signal_id": carrier["signal"]["signal_id"],
         "hb_carrier_packet_sha256": carrier["signal"]["intr"]["packet_sha256"],
         "hb_carrier_packet_recovery_verified": True,
+        "hb_shared_signal_ref": shared_carrier["signal_ref"],
+        "hb_shared_signal_sha256": shared_carrier["signal_sha256"],
         "heartbeat_epoch": carrier["receipt"]["heartbeat_epoch"],
         "heartbeat_reference": carrier["receipt"]["heartbeat_reference"],
         "hb_carrier_channel_slot": carrier["receipt"]["channel_slot"],
@@ -447,6 +466,8 @@ def completed_response(result: Mapping[str, Any]) -> dict[str, Any]:
         "evidence_refs": ["observed/exchange.json", "observed/carrier-signal.json", "receipts/latest.json", "receipts/carrier-binding.latest.json"],
         "intr_receipt_hash": result.get("intr_receipt_hash"),
         "hb_carrier_binding_receipt_hash": result.get("hb_carrier_binding_receipt_hash"),
+        "hb_shared_signal_ref": result.get("hb_shared_signal_ref"),
+        "hb_shared_signal_sha256": result.get("hb_shared_signal_sha256"),
         "credential_authority": "TV/TVC",
         "github_token_used": False,
         "repository_writeback_performed": False,
