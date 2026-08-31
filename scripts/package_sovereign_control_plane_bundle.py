@@ -31,7 +31,7 @@ TVC_RESIDENT_PROOF_REQUIRED_PATHS = (
     "tv_resident_operational_proof_task.py",
     "scripts/activate_tv_resident_operational_proof.py",
 )
-SV002_MICRO_NODE_SOURCE_PIN = "496f17e0cb07433f3f9312e82a2c045f5d901dc9"
+SV002_MICRO_NODE_SOURCE_PIN = "0b988183a2a05607afb0816036a9cf7ce14e3640"
 SV002_MICRO_NODE_REQUIRED_PATHS = (
     "tools/run_self_characterization_principal.py",
     "tools/verify_self_characterization_runtime_identity.py",
