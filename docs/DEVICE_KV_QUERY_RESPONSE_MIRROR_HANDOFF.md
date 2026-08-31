@@ -73,3 +73,7 @@ Source validation + merge. Runtime activation still requires a conforming HTTPS 
 ## KV Interlock selector dependency
 
 CVK #166 / PR #167 adds the bounded `selector.directory_id` + `selector.canonical_path` fields to canonical `kv.interlock.request.v1`. This consumer treats that selector as query coordinates only; node-origin admission plus exact `stegos-node://<node_id>` binding remains separately required.
+
+## Upstream selector closure
+
+CVK #166 merged through PR #167 at `70b19663305e63ac6016af9b56848e91aa89b77c`. The resident query consumer may now require canonical `kv.interlock.request.v1.selector` semantics from current local CVK source.
