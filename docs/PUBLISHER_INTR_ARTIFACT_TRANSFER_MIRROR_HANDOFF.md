@@ -4,7 +4,7 @@ Updated: 2026-08-31
 Issue: StegVerse-Labs/.github#583
 
 ```text
-state: SOURCE_MERGED_VALIDATED / RUNTIME_EVENT_PENDING
+state: FORWARD_SOURCE_MERGED_VALIDATED / RETURN_SOURCE_IMPLEMENTED_PENDING_VALIDATION
 canonical_profile: publisher-artifact-transfer
 destination: STEGOS_ECOSYSTEM / Publisher:Ingress
 response: Publisher:Export -> KV / KnowledgeVault:DocumentImport
@@ -99,3 +99,21 @@ runtime://intr-payloads/publisher-artifact-transfer/<materialization_id>.bin
 
 This hardening changes neither publication/release authority nor the remaining
 reverse-transport requirement.
+
+
+## Reverse Publisher -> KV event-materialization — issue #592
+
+Publisher now queues a non-authorizing Universal InTr materialization request for
+`Publisher:Export -> DEVICE_SYSTEM -> KV/KnowledgeVault:DocumentImport`.
+The return payload and intent are retained locally; `return_transport_observed`
+remains false until a complete reverse hop-receipt chain exists.
+
+The far-side shared ingress accepts a bounded return trigger containing the exact
+return bytes, exact return intent, and reverse receipts. The KV consumer validates
+that complete chain and then requires the original owner-authorized export bundle
+from private KV-local state (`private-kv-document-exports/<export_id>.json` or
+`STEGVERSE_KV_DOCUMENT_EXPORT_BUNDLE_ROOT`) before invoking CVK's merged
+`runtime/document_intr_transfer.py`.
+
+Success is only `VALIDATED_IMPORT_CANDIDATE_NOT_COMMITTED`; canonical KV mutation,
+publication, release, and execution authority remain false.

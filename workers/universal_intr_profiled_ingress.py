@@ -26,6 +26,12 @@ if str(ROOT / "scripts") not in sys.path:
     sys.path.insert(0, str(ROOT / "scripts"))
 
 import serve_hil_intr_materialization_ingress as hil  # noqa: E402
+from consume_kv_publisher_return_materialization_request import (  # noqa: E402
+    DESTINATION as KV_PUBLISHER_RETURN_DESTINATION,
+    DOWNSTREAM_OWNER as KV_PUBLISHER_RETURN_OWNER,
+    scrubbed_env as kv_publisher_return_scrubbed_env,
+    validate_request as validate_kv_publisher_return_request,
+)
 from consume_publisher_intr_materialization_request import (  # noqa: E402
     DESTINATION as PUBLISHER_DESTINATION,
     DOWNSTREAM_OWNER as PUBLISHER_OWNER,
@@ -58,6 +64,11 @@ PUBLISHER_RECEIPT_DIR = Path("receipts/sovereign-network/publisher-intr-ingress"
 PUBLISHER_LATEST = Path("receipts/sovereign-network/publisher-intr-ingress.latest.json")
 PUBLISHER_PAYLOAD_DIR = Path("intr-payloads/publisher-artifact-transfer")
 PUBLISHER_TRIGGER_SCHEMA = "stegverse.publisher-intr-materialization-trigger/v1"
+KV_PUBLISHER_RETURN_RECEIPT_SCHEMA = "stegverse.kv-publisher-return-materialization-ingress/v1"
+KV_PUBLISHER_RETURN_RECEIPT_DIR = Path("receipts/sovereign-network/kv-publisher-return-ingress")
+KV_PUBLISHER_RETURN_LATEST = Path("receipts/sovereign-network/kv-publisher-return-ingress.latest.json")
+KV_PUBLISHER_RETURN_PAYLOAD_DIR = Path("intr-payloads/kv-publisher-return")
+KV_PUBLISHER_RETURN_TRIGGER_SCHEMA = "stegverse.kv-publisher-return-materialization-trigger/v1"
 AUTHORITY_EFFECT = "NONE_INGRESS_ONLY"
 
 
@@ -362,6 +373,56 @@ def admit_publisher(*, runtime_root: Path, body: bytes, headers: Mapping[str, st
     return {**receipt,"dispatch":dispatch}
 
 
+def _is_kv_publisher_return(payload: Any) -> bool:
+    if isinstance(payload, dict) and payload.get("destination") == KV_PUBLISHER_RETURN_DESTINATION and payload.get("downstream_owner_ref") == KV_PUBLISHER_RETURN_OWNER:
+        return True
+    if isinstance(payload, dict) and payload.get("schema") == KV_PUBLISHER_RETURN_TRIGGER_SCHEMA:
+        request=payload.get("materialization_request")
+        return isinstance(request,dict) and request.get("destination")==KV_PUBLISHER_RETURN_DESTINATION and request.get("downstream_owner_ref")==KV_PUBLISHER_RETURN_OWNER
+    return False
+
+def _dispatch_kv_publisher_return(*,runtime_root:Path,materialization_id:str)->dict[str,Any]:
+    command=[sys.executable,str(ROOT/"scripts/consume_kv_publisher_return_materialization_request.py"),"--runtime-root",str(runtime_root),"--materialization-id",materialization_id]
+    process=subprocess.Popen(command,cwd=str(ROOT),env=kv_publisher_return_scrubbed_env(),stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True,close_fds=True)
+    return {"consumer_dispatch_attempted":True,"consumer_pid":process.pid,"consumer_execution_authority":False,"consumer_claim_or_fence_minted_by_ingress":False,"authority_effect":"NONE_DISPATCH_ONLY"}
+
+def admit_kv_publisher_return(*,runtime_root:Path,body:bytes,headers:Mapping[str,str])->dict[str,Any]:
+    transport=hil.validate_transport_headers(headers,body)
+    try: payload=json.loads(body.decode("utf-8"))
+    except Exception as exc: raise ValueError("kv_publisher_return_json_invalid") from exc
+    require(isinstance(payload,dict),"kv_publisher_return_object_required")
+    if payload.get("schema")==KV_PUBLISHER_RETURN_TRIGGER_SCHEMA:
+        require(payload.get("authority_effect")=="NONE_TRIGGER_ONLY","kv_publisher_return_trigger_authority_invalid")
+        require(payload.get("request_grants_execution_authority") is False and payload.get("claim_or_fence_minted") is False,"kv_publisher_return_trigger_grant_forbidden")
+        request=payload.get("materialization_request"); intent=payload.get("transport_intent"); receipts=payload.get("reverse_receipts"); raw_b64=payload.get("payload_base64")
+        require(isinstance(request,dict) and isinstance(intent,dict) and isinstance(receipts,list) and receipts and isinstance(raw_b64,str) and raw_b64,"kv_publisher_return_trigger_content_missing")
+        validate_kv_publisher_return_request(request)
+        try: raw=base64.b64decode(raw_b64,validate=True)
+        except Exception as exc: raise ValueError("kv_publisher_return_payload_base64_invalid") from exc
+        require(sha_uri(raw)==request.get("payload_hash"),"kv_publisher_return_payload_hash_mismatch")
+        require(sha_uri(intent)==request.get("transport_intent_hash"),"kv_publisher_return_intent_hash_mismatch")
+    else:
+        request=payload; validate_kv_publisher_return_request(request); intent=None; receipts=None; raw=None
+    mid=safe_id(str(request["materialization_id"]))
+    request_path=runtime_root/hil.REQUEST_DIR_REL/f"{mid}.json"
+    hil._write_once(request_path,json.dumps(request,sort_keys=True,indent=2).encode("utf-8")+b"\n")
+    exact=False
+    if raw is not None:
+        payload_dir=runtime_root/KV_PUBLISHER_RETURN_PAYLOAD_DIR
+        hil._write_once(payload_dir/f"{mid}.bin",raw)
+        hil._write_once(payload_dir/f"{mid}.intent.json",json.dumps(intent,sort_keys=True,indent=2).encode("utf-8")+b"\n")
+        hil._write_once(payload_dir/f"{mid}.receipts.json",json.dumps(receipts,sort_keys=True,indent=2).encode("utf-8")+b"\n")
+        exact=True
+    receipt_path=runtime_root/KV_PUBLISHER_RETURN_RECEIPT_DIR/f"{mid}.json"
+    if receipt_path.exists():
+        existing=json.loads(receipt_path.read_text(encoding="utf-8")); require(existing.get("request_hash")==request.get("request_hash") and existing.get("state")=="INGRESS_ADMITTED","write_once_collision"); return existing
+    receipt={"schema":KV_PUBLISHER_RETURN_RECEIPT_SCHEMA,"state":"INGRESS_ADMITTED","materialization_id":mid,"request_hash":request["request_hash"],"transport_intent_hash":request["transport_intent_hash"],"payload_hash":request["payload_hash"],"operation_id":request["operation_id"],"packet_id":request["packet_id"],"transport_origin":transport["origin"],"transport_authorization_id":transport["authorization_id"],"exact_return_sidecars_persisted":exact,"runtime_execution_attempted":False,"claim_or_fence_minted":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":AUTHORITY_EFFECT,"admitted_at":now()}
+    raw_receipt=json.dumps(receipt,sort_keys=True,indent=2).encode("utf-8")+b"\n"; hil._write_once(receipt_path,raw_receipt)
+    latest=runtime_root/KV_PUBLISHER_RETURN_LATEST; latest.parent.mkdir(parents=True,exist_ok=True); latest.write_bytes(raw_receipt)
+    dispatch=_dispatch_kv_publisher_return(runtime_root=runtime_root,materialization_id=mid)
+    return {**receipt,"dispatch":dispatch}
+
+
 def profile(tls_enabled: bool) -> dict[str, Any]:
     return {
         "schema": "stegverse.universal-intr-profiled-ingress/v1",
@@ -369,7 +430,7 @@ def profile(tls_enabled: bool) -> dict[str, Any]:
         "protocol": "InTr",
         "profile_path": PROFILE_PATH,
         "materialization_path": INGRESS_PATH,
-        "profiles": ["HIL:Ingress", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "Publisher:ArtifactTransfer"],
+        "profiles": ["HIL:Ingress", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "Publisher:ArtifactTransfer", "KV:PublisherArtifactImport"],
         "supported_origins": [hil.ORIGIN_NODE, hil.ORIGIN_RELAY],
         "event_triggered": True,
         "always_on_application_receiver_required": False,
@@ -419,7 +480,7 @@ class Handler(BaseHTTPRequestHandler):
         body = self.rfile.read(length)
         try:
             payload = json.loads(body.decode("utf-8"))
-            receipt = admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)))
+            receipt = admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers))))
         except Exception as exc:
             self.send_json(400, {"state": "REJECTED", "reason": str(exc), "authority_effect": AUTHORITY_EFFECT})
             return
