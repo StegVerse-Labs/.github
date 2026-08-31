@@ -1,8 +1,8 @@
 # SV002 Self-Characterization Runtime Mirror Handoff
 
-Updated: 2026-08-29
+Updated: 2026-08-30
 Repository: StegVerse-Labs/.github
-Issues: #484, #490
+Issues: #484, #490, #573, #594
 Branch: main
 
 ## Source of truth
@@ -54,7 +54,7 @@ resident retry semantics:
   Heartbeat Worker Project deterministic suite: SUCCESS
 ```
 
-Scoped source is now complete: a qualifying local Ollama subject can be independently bound to exact model/process/executable evidence, and nonterminal resident attempts remain retryable without permitting duplicate successful principal execution.
+Scoped source is now complete for both canonical local principal classes: qualifying local Ollama and llama.cpp/GGUF subjects can be independently bound to exact model/process/executable/model-artifact evidence, and nonterminal resident attempts remain retryable without permitting duplicate successful principal execution.
 
 ## Bounded repair scope
 
@@ -185,7 +185,7 @@ authentic reconstruction PASS: NOT OBSERVED
 
 The canonical sovereign-model runtime handoff permits local Ollama **or llama.cpp/GGUF** candidates. The self-characterization worker previously authenticated only Ollama, creating a false blocker if the qualifying resident principal was already running under llama.cpp.
 
-Issue `#594` adds a second fail-closed identity path:
+Issue `#594` / PR `#595` is CLOSED / MERGED / VALIDATED as `f8a61e666536986079c322d584479ddc118a71fb`. It adds a second fail-closed identity path:
 
 ```text
 loopback endpoint
@@ -207,5 +207,9 @@ The path rejects:
 - model-identity mismatch.
 
 It performs no download, install, model launch, source fetch, or credential operation. Ollama identity binding remains unchanged and is attempted first. llama.cpp is a second canonical local-runtime identity option, not a new provider or authority plane.
+
+Validation evidence:
+- Heartbeat Worker Project `33352561971`: SUCCESS, including complete deterministic repository suite;
+- organization control plane `33352561997`: SUCCESS.
 
 Runtime evidence remains pending until a qualifying already-running principal is actually observed.
