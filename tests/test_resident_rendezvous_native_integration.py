@@ -29,6 +29,61 @@ def test_native_worker_service_receives_non_secret_rendezvous_config(tmp_path, m
     assert result["resident_rendezvous_grants_execution_authority"] is False
 
 
+def test_native_worker_service_derives_node_ref_from_canonical_declaration(tmp_path):
+    marker = tmp_path / "node.json"
+    marker.write_text(
+        json.dumps({
+            "schema": "stegverse.sovereign-node-declaration/v0.4",
+            "declared": True,
+            "node_id": "SV-NODE-" + "a" * 24,
+            "credential_authority": "TV/TVC",
+            "authority_effect": "RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY",
+        }),
+        encoding="utf-8",
+    )
+    result = materialize_service(
+        tmp_path / "runtime",
+        system="linux",
+        env={
+            "XDG_CONFIG_HOME": str(tmp_path / "config"),
+            "STEGVERSE_RESIDENT_RENDEZVOUS_URL": "https://stegverse.org",
+            "STEGVERSE_SOVEREIGN_NODE_MARKER": str(marker),
+        },
+    )
+    worker = Path(result["worker_registration_path"]).read_text(encoding="utf-8")
+    assert "STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF=SV-NODE-" + "a" * 24 in worker
+    assert result["resident_rendezvous_node_ref"] == "SV-NODE-" + "a" * 24
+    assert result["resident_rendezvous_configured"] is True
+
+
+def test_native_worker_service_rejects_noncanonical_derived_node_ref(tmp_path):
+    marker = tmp_path / "node.json"
+    marker.write_text(
+        json.dumps({
+            "schema": "stegverse.sovereign-node-declaration/v0.4",
+            "declared": True,
+            "node_id": "node:primary",
+            "credential_authority": "TV/TVC",
+            "authority_effect": "RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY",
+        }),
+        encoding="utf-8",
+    )
+    try:
+        materialize_service(
+            tmp_path / "runtime",
+            system="linux",
+            env={
+                "XDG_CONFIG_HOME": str(tmp_path / "config"),
+                "STEGVERSE_RESIDENT_RENDEZVOUS_URL": "https://stegverse.org",
+                "STEGVERSE_SOVEREIGN_NODE_MARKER": str(marker),
+            },
+        )
+    except RuntimeError as exc:
+        assert "node ref required" in str(exc)
+    else:
+        raise AssertionError("noncanonical derived node ref should fail closed")
+
+
 def test_rendezvous_config_requires_https(tmp_path):
     try:
         materialize_service(

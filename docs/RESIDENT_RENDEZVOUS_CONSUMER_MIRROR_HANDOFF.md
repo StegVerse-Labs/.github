@@ -113,3 +113,27 @@ resident configured node_ref
 ```
 
 A rejected advertisement fails before request fetch so Site cannot discover a resident selector that the resident itself has not freshly asserted. This advertisement carries no credential value, source location, command, claim, fence, HB progression, route authority, execution authority, or receiving authority.
+
+
+## 2026-08-31 sovereign resident selector derivation — issue #667
+
+The resident rendezvous worker no longer requires a manually pre-seeded `STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF` when the canonical local sovereign node declaration already exists.
+
+Resolution order:
+```text
+explicit STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF
+  -> highest priority
+
+otherwise, when rendezvous URL is configured:
+  STEGVERSE_SOVEREIGN_NODE_MARKER
+  ~/.stegverse/node.json
+  /etc/stegverse/node.json
+  -> require stegverse.sovereign-node-declaration/v0.4
+  -> declared=true
+  -> node_id=SV-NODE-<24 lowercase hex>
+  -> credential_authority=TV/TVC
+  -> authority_effect ends in NO_CREDENTIAL_OR_ROUTE_AUTHORITY
+  -> use exact node_id as outbound rendezvous selector
+```
+
+No node declaration is created by this lookup. A missing/malformed/noncanonical declaration leaves rendezvous configuration fail closed. The selector remains non-secret and non-authorizing; it is only the target identity used by the resident poll and acknowledgement binding.
