@@ -692,5 +692,23 @@
     "merge_authority": false,
     "deployment_authority": false,
     "authority_effect": "NONE"
+  },
+  "endpoint_fanout_sovereign_runtime_projection": {
+    "task_id": "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+    "vector": "50000000101000",
+    "registry_ref": "control/worker-registry.d/endpoint-fanout-sovereign-runtime-001.json",
+    "source_state_vector_ref": "control/task-vectors/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json",
+    "canonical_owner_ref": "docs/ENDPOINT_FANOUT_LIVE_RUNTIME_MIRROR_HANDOFF.md",
+    "blockers": [
+      "AUTHENTIC_DEVICE_KV_INTR_PARENT_NOT_YET_OBSERVED",
+      "ENDPOINT_FANOUT_SOVEREIGN_RUNTIME_RECEIPT_NOT_YET_OBSERVED"
+    ],
+    "activation_proof_observed": false,
+    "evidence_complete": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "canonical_kv_mutation_authority": false,
+    "external_master_records_custody_claimed": false,
+    "authority_effect": "NONE"
   }
 }
