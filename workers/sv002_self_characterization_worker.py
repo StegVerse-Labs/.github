@@ -142,7 +142,7 @@ def _resident_source_manifest() -> tuple[Path | None, dict[str, Any] | None]:
     return (path, value) if isinstance(value, dict) else (path, None)
 
 
-def portable_source_root(repo_key: str, env_name: str, required: tuple[str, ...], *, exact_head: str | None = None, required_ancestor: str | None = None, verifier_blob: str | None = None) -> tuple[Path | None, str | None]:
+def portable_source_root(repo_key: str, env_name: str, required: tuple[str, ...], *, exact_head: str | None = None, exact_commit: str | None = None, required_ancestor: str | None = None, verifier_blob: str | None = None, proof_states: tuple[str, ...] = ("VERIFIED_LOCAL_GIT_SOURCE",)) -> tuple[Path | None, str | None]:
     manifest_path, manifest = _resident_source_manifest()
     raw_root = str(os.environ.get(env_name) or "").strip()
     if manifest_path is None or manifest is None or not raw_root:
@@ -156,7 +156,7 @@ def portable_source_root(repo_key: str, env_name: str, required: tuple[str, ...]
     ):
         return None, "PORTABLE_SOURCE_MANIFEST_INVARIANT_INVALID"
     proof = (manifest.get("vendor_source_proofs") or {}).get(repo_key)
-    if not isinstance(proof, dict) or proof.get("state") != "VERIFIED_LOCAL_GIT_SOURCE":
+    if not isinstance(proof, dict) or proof.get("state") not in proof_states:
         return None, "PORTABLE_SOURCE_PROOF_NOT_VERIFIED"
     subpath = str(proof.get("materialized_subpath") or "")
     root = Path(raw_root).expanduser().resolve()
@@ -164,6 +164,8 @@ def portable_source_root(repo_key: str, env_name: str, required: tuple[str, ...]
         return None, "PORTABLE_SOURCE_ROOT_BINDING_INVALID"
     if exact_head is not None and not (proof.get("head") == exact_head and proof.get("exact_head_verified") is True):
         return None, "PORTABLE_SOURCE_EXACT_HEAD_INVALID"
+    if exact_commit is not None and not (proof.get("exact_commit") == exact_commit and proof.get("exact_commit_present") is True):
+        return None, "PORTABLE_SOURCE_EXACT_COMMIT_INVALID"
     if required_ancestor is not None and not (proof.get("required_ancestor") == required_ancestor and proof.get("required_ancestor_present") is True):
         return None, "PORTABLE_SOURCE_REQUIRED_ANCESTOR_INVALID"
     if verifier_blob is not None and proof.get("verifier_git_blob") != verifier_blob:
@@ -803,11 +805,26 @@ def main():
             micro_source_validation_mode = "VERIFIED_PORTABLE_BUNDLE_PROOF"
     formal = {}
     observed = {}
+    formal_source_validation = {}
     for repo, sha in PINS.items():
-        p, seen = find_repo("Admissible-Existence", repo, sha, os.environ.get(f"STEGVERSE_{repo}_ROOT"))
-        observed[repo] = seen
+        env_name = f"STEGVERSE_{repo}_ROOT"
+        p, seen = find_repo("Admissible-Existence", repo, sha, os.environ.get(env_name))
+        observed[repo] = {"git_candidates": seen, "portable_reason": None}
+        mode = "LOCAL_GIT_PROOF" if p is not None else None
+        if p is None:
+            p, portable_reason = portable_source_root(
+                f"formal-{repo}",
+                env_name,
+                (),
+                exact_commit=sha,
+                proof_states=("VERIFIED_LOCAL_GIT_SNAPSHOT",),
+            )
+            observed[repo]["portable_reason"] = portable_reason
+            if p is not None:
+                mode = "VERIFIED_PORTABLE_GIT_SNAPSHOT"
         if p:
             formal[f"Admissible-Existence/{repo}"] = str(p)
+            formal_source_validation[repo] = mode
 
     configured_endpoint = os.environ.get("STEGVERSE_SELF_CHAR_MODEL_ENDPOINT", "").strip().rstrip("/")
     configured_model = os.environ.get("STEGVERSE_SELF_CHAR_MODEL_ID", "").strip()
@@ -846,6 +863,7 @@ def main():
             "micro_node_candidates": micro_seen,
             "micro_node_portable_reason": micro_portable_reason,
             "formal_candidates": observed,
+            "formal_source_validation": formal_source_validation,
             "model_id": model or None,
             "endpoint": endpoint or None,
             "subject_identity_error": subject_identity_error,
@@ -865,6 +883,7 @@ def main():
         "PATH": os.environ.get("PATH", ""),
         "HOME": os.environ.get("HOME", str(Path.home())),
         "STEGVERSE_FORMAL_ROOTS_JSON": json.dumps(formal),
+        "STEGVERSE_RESIDENT_SOURCE_MANIFEST": os.environ.get("STEGVERSE_RESIDENT_SOURCE_MANIFEST", ""),
         "STEGVERSE_SELF_CHAR_MODEL_ENDPOINT": endpoint,
         "STEGVERSE_SELF_CHAR_MODEL_ID": model,
         "STEGVERSE_SELF_CHAR_SUBJECT_IDENTITY_JSON": json.dumps(subject_identity, sort_keys=True),
@@ -906,6 +925,7 @@ def main():
         "principal_discovery": principal_discovery,
         "subject_identity_verified": True,
         "formal_roots": formal,
+        "formal_source_validation": formal_source_validation,
         "state_root": str(state_root),
         "self_characterization_path": str(state_root / "SELF_CHARACTERIZATION.md") if completed else None,
         "formal_result_path": str(state_root / "SELF_CHARACTERIZATION_FORMAL.json") if completed else None,
