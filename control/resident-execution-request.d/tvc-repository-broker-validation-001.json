@@ -16,7 +16,7 @@
   "tvc_root_locator_required": true,
   "credential_material_allowed": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Fresh exactly-once retry through governed PR #92 validation, current-base compatibility, and non-secret sovereign-runtime handoff into the merged TVC resident repository-authority continuation. The .github consumer writes only the non-authorizing runtime request file, receives no repository credential, calls no system service, and grants no repository authority. Root systemd observes the file and TVC alone owns credential-bearing execution.",
+  "note": "Fresh exactly-once retry through TVC private-source request staging, governed PR #92 validation, current-base compatibility, and non-secret repository-authority handoff. The .github consumer writes only non-authorizing runtime request files, receives no repository credential, calls no system service, performs no provider source read, and grants no repository authority. Root TVC systemd services own credential-bearing private-source and repository-authority execution.",
   "private_source_bootstrap_allowed": true,
   "private_source_bootstrap_service": "stegtvc-private-source-read.service",
   "private_source_bootstrap_credential_transport": "SYSTEMD_LOADCREDENTIAL",
@@ -27,5 +27,10 @@
   "repository_authority_request_transport": "SOVEREIGN_RUNTIME_LOCAL_FILE",
   "repository_authority_request_relative_path": "tvc-handoff/sv-dn1-repository-authority-request.json",
   "repository_authority_consumer_systemctl_allowed": false,
-  "repository_authority_systemd_path_activation": true
+  "repository_authority_systemd_path_activation": true,
+  "private_source_request_transport": "SOVEREIGN_RUNTIME_LOCAL_FILE",
+  "private_source_request_relative_path": "tvc-handoff/private-source-request.json",
+  "private_source_consumer_systemctl_allowed": false,
+  "private_source_systemd_path_activation": true,
+  "private_source_provider_read_owner": "TVC_PRIVATE_SOURCE_READ_SERVICE_ONLY"
 }
