@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "sv_dn1_repository_merge_dispatch",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 8,
+    "expected_idle_beats": 32,
+    "expiry_candidate_beats": 256,
+    "confidence": "LOW_UNTIL_FIRST_TVC_END_TO_END_RUN"
+  },
+  "cost_estimate": {
+    "compute_units": 2,
+    "token_units": 0,
+    "storage_bytes": 4194304,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "docs/SV_DN1_REPOSITORY_MERGE_DISPATCH_MIRROR_HANDOFF.md",
+    "handoffs/SV-DN1-REPOSITORY-MERGE-DISPATCH-001.json",
+    "workers/sv_dn1_repository_merge_dispatch_worker.py"
+  ],
+  "notes": [
+    "Stages exact non-secret merge request and consumes sanitized TVC receipt.",
+    "No direct network or credential activity by worker."
+  ]
+}
