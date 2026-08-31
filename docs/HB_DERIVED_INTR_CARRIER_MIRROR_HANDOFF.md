@@ -119,3 +119,8 @@ or ~/.local/state/stegverse/heartbeat-runtime
 ```
 
 This source integration makes the next authentic producer execution capable of emitting the canonical shared local signal directly. It does not itself prove that such a production execution has occurred.
+
+
+## 2026-08-31 resident terminal consumers — issue #650
+
+After exact producer publication merged in #647, the two resident chains that consume current carrier evidence now fail closed unless the shared HB signal itself is retained and independently reconstructable. Device KV validates both request and response shared signals; SV-DN-1 validates its route carrier shared signal and carrier-binding receipt. Reissued requests are intent-only and do not create additional runtime ownership or authority.
