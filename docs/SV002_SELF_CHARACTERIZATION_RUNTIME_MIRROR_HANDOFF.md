@@ -122,7 +122,7 @@ After merged source repair:
 5. subject identity preflight passes;
 6. principal execution emits `EXPERIMENT_EXECUTION_RECEIPT.json` with `state=COMPLETED`;
 7. human-readable, formal, and interaction-receipt artifacts are retained;
-8. Master Records reconstruction remains a separate downstream evidence gate.
+8. Master Records reconstruction remains an independently evaluated evidence gate and the resident task remains nonterminal until same-execution reconstruction PASS is retained.
 
 ## Integration destinations
 
@@ -311,3 +311,33 @@ The resident reconstruction bridge is now bound to the exact v0.2-capable Master
 Before invocation, the resident worker requires the merged commit to be locally available and the active verifier file to hash to that exact Git blob. If the local checkout is missing or stale, reconstruction remains `PENDING` with a source-pin blocker. No network source fetch, credential, authority grant, principal-execution claim, or reconstruction claim is introduced.
 
 This closes the source-version gap created when the principal artifact contract advanced to v0.2 and added `TRANSITION_EFFECTS.json`.
+
+
+## Same-execution reconstruction terminal gate — issue #671
+
+A liveness/integrity defect was identified after the v0.2 reconstruction bridge was pinned. The worker previously emitted terminal `SV002_SELF_CHARACTERIZATION_COMPLETED` immediately after principal completion even when Master Records reconstruction was `PENDING` or `FAIL`. Because the resident request consumer treats terminal success as exactly-once consumed, that could strand the independent reconstruction predicate.
+
+The corrected runtime contract is:
+
+```text
+no completed principal artifacts
+  -> observe local principal prerequisites
+  -> execute principal at most once
+  -> preserve exact v0.2 artifact set
+
+completed principal artifact set exists
+  -> do NOT rediscover/re-require the model process
+  -> do NOT rerun the principal
+  -> reuse exact artifact bytes
+  -> retry only pinned Master Records reconstruction
+
+reconstruction PENDING/FAIL
+  -> task remains nonterminal / retryable
+  -> transition: SV002_SELF_CHARACTERIZATION_RECONSTRUCTION_PENDING
+
+reconstruction PASS
+  -> task terminalizes
+  -> transition: SV002_SELF_CHARACTERIZATION_COMPLETED
+```
+
+The principal's `COMPLETED` receipt remains authentic evidence even while the resident task is nonterminal. Reconstruction remains independently evaluated and non-authorizing; the change only prevents the request lifecycle from declaring the complete experiment evidence chain terminal before reconstruction exists.

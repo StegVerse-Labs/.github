@@ -11,7 +11,8 @@
       "principal self-characterization execution receipt state COMPLETED",
       "human-readable and machine-readable self-characterization artifacts retained",
       "interaction/resource-access trace retained",
-      "transition effects artifact retained with observed capability realizations and Transition-Element effect-resolution state"
+      "transition effects artifact retained with observed capability realizations and Transition-Element effect-resolution state",
+      "same-execution Master Records reconstruction PASS retained"
     ],
     "failure_predicates": [
       "hosted runtime substituted",
@@ -85,8 +86,10 @@
       "self_characterization_path present",
       "formal_result_path present",
       "interaction_receipt_chain_path present",
-      "transition_effects_path present"
+      "transition_effects_path present",
+      "master_records_reconstruction.state=PASS",
+      "master_records_reconstruction.receipt.reconstruction=PASS"
     ],
-    "next_authorized_action": "Execute exactly once on the resident StegVerse surface through the existing targeted independent task-control path. If no qualifying non-reference local reasoning runtime or exact pinned formal roots are present, remain BLOCKED."
+    "next_authorized_action": "Execute the principal exactly once on the resident StegVerse surface. After authentic principal completion, preserve that exact artifact set and retry only pinned Master Records reconstruction until PASS; never rerun the principal. Before a qualifying principal exists, remain BLOCKED."
   }
 }
