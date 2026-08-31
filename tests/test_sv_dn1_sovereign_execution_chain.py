@@ -67,6 +67,8 @@ class SvDn1SovereignExecutionChainTests(unittest.TestCase):
             "STEGVERSE_STEGCORE_SOURCE_ROOT": "/srv/stegcore",
             "STEGVERSE_SOURCE_MATERIALIZATION_ROOT": "/srv/source",
             "STEGVERSE_FORMALISM_TVC_SPOOL_ROOT": "/srv/tvc-spool",
+            "STEGVERSE_SV_DN1_BROWSER_OBSERVATION_BUNDLE": "/srv/evidence/browser.json",
+            "STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT": "/srv/state/source-prep",
         }
         clean = chain.clean_exec_env(env)
         self.assertNotIn("GITHUB_TOKEN", clean)
@@ -76,6 +78,8 @@ class SvDn1SovereignExecutionChainTests(unittest.TestCase):
         self.assertEqual(clean["STEGVERSE_STEGCORE_SOURCE_ROOT"], "/srv/stegcore")
         self.assertEqual(clean["STEGVERSE_SOURCE_MATERIALIZATION_ROOT"], "/srv/source")
         self.assertEqual(clean["STEGVERSE_FORMALISM_TVC_SPOOL_ROOT"], "/srv/tvc-spool")
+        self.assertEqual(clean["STEGVERSE_SV_DN1_BROWSER_OBSERVATION_BUNDLE"], "/srv/evidence/browser.json")
+        self.assertEqual(clean["STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT"], "/srv/state/source-prep")
         self.assertEqual(clean["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"], "TV/TVC")
 
     def test_receipt_validation_rejects_mismatch(self) -> None:
@@ -130,6 +134,47 @@ class SvDn1SovereignExecutionChainTests(unittest.TestCase):
             receipt = json.loads(receipt_path.read_text())
             self.assertNotIn("public_source_roots_verified", receipt)
             self.assertNotIn("private_source_roots_verified", receipt)
+
+    def test_source_prep_v2_receipt_honors_relocated_state_root(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            relocated = base / "relocated-source-prep"
+            receipt_path = relocated / "receipts/latest.json"
+            roots = {
+                "stegverse.sdk": "/srv/sdk",
+                "stegverse.stegcore": "/srv/stegcore",
+                "stegverse.core-lite": "/srv/core-lite",
+                "stegverse.master-records": "/srv/master-records",
+            }
+            write_json(receipt_path, {
+                "schema": "stegverse.sv-dn1.production-source-prep-receipt/v2",
+                "state": "COMPLETE",
+                "transition_id": "SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE",
+                "source_identity_scheme": "sha256-content-manifest",
+                "migration_anchors_verified": True,
+                "network_source_fetch_performed": False,
+                "github_platform_required": False,
+                "credential_used": False,
+                "github_token_used": False,
+                "repository_writeback_performed": False,
+                "sdk_admitted": False,
+                "source_roots": roots,
+                "source_identities": {k: "sha256:" + "b"*64 for k in roots},
+                "source_root_env": {
+                    "STEGVERSE_SDK_SOURCE_ROOT": roots["stegverse.sdk"],
+                    "STEGVERSE_STEGCORE_SOURCE_ROOT": roots["stegverse.stegcore"],
+                    "STEGVERSE_CORE_LITE_SOURCE_ROOT": roots["stegverse.core-lite"],
+                    "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": roots["stegverse.master-records"],
+                },
+            })
+            observed = chain.validate_durable_receipt(
+                "SV-DN1-PRODUCTION-SOURCE-PREP-001",
+                {
+                    "HOME": str(base),
+                    "STEGVERSE_SV_DN1_PRODUCTION_SOURCE_PREP_STATE_ROOT": str(relocated),
+                },
+            )
+            self.assertEqual(observed["receipt_path"], str(receipt_path))
 
     def test_source_prep_v2_receipt_rejects_root_locator_disagreement(self) -> None:
         with tempfile.TemporaryDirectory() as td:
