@@ -385,3 +385,10 @@ TT/RTG/GTG/AE are packaged from the exact pinned Git objects rather than from th
 The resident worker likewise accepts portable micro-node and Master Records source only after source-proof and file-digest validation. Ordinary local Git checkouts remain valid and preferred where present.
 
 This closes source portability only. The unresolved execution denominator remains an authentic non-reference local reasoning process, live subject-identity verification, one principal execution, and same-execution Master Records reconstruction.
+
+
+### Independent-task source optionality
+
+Portable micro-node, Master Records, and TT/RTG/GTG/AE sources are carried when locally available to the resident packager. Their absence does not block the base resident stack or unrelated admitted workers; it blocks only the SV002 self-characterization lane through its existing source predicates.
+
+When present, those sources remain subject to the exact source-proof/file-set/digest rules above.
