@@ -6,7 +6,7 @@ Updated: 2026-08-30
 repository: StegVerse-Labs/.github
 request: control/resident-execution-request.d/stegos-kv-intr-chain-001.json
 consumer: scripts/consume_stegos_kv_intr_chain_request.py
-state: RESIDENT_CHAIN_SOURCE_MERGED / NATIVE_MATERIALIZATION_PARITY_PENDING
+state: SOURCE_MERGED_VALIDATED / RESIDENT_CONSUMPTION_PENDING
 credential_authority: TV/TVC
 github_token_runtime_authority: NONE
 heartbeat_grants_execution_authority: false
@@ -85,3 +85,54 @@ The parity repair adds both registered consumers to:
 
 This changes source materialization only. It does not prove resident consumption,
 lease opening, Node-KV continuity, DEVICE_KV_INTR observation, or global activation.
+
+
+## Resident execution wiring merge evidence
+
+The machine-execution request/consumer path is now source-complete and merged.
+
+```text
+PR #570
+validated_head: a91ef2cfa6b74ba8c305f7b320f3adb450799b0c
+merge: 0fc4d4e9bd5b1a691c43f4ad2001061c5cd654f3
+Validate organization control plane: 33345860778 SUCCESS
+Heartbeat Worker Project: 33345860872 SUCCESS
+Cross-Framework Current-Basis Resident Request Validation: 33345860816 SUCCESS
+
+PR #571
+validated_head: d7d1f45b758e8b06112a769db4ea44edad7d6104
+merge: bb0cfe28a2b0444018748a681ab76259ee6fe16a
+Validate organization control plane: 33345999217 SUCCESS
+Heartbeat Worker Project: 33345999175 SUCCESS
+Cross-Framework Current-Basis Resident Request Validation: 33345999180 SUCCESS
+```
+
+Merged source predicates now satisfied:
+
+- resident request exists under `control/resident-execution-request.d/`;
+- exact `stegos_kv_intr_chain` consumer is registered and selectable;
+- `STEGVERSE_STEGOS_ROOT`, `STEGVERSE_KV_SOURCE_ROOT`, and relay runtime root
+  survive the portable execution boundary as non-secret locators;
+- fresh native materialization includes the chain consumer;
+- already-local source refresh includes the chain consumer;
+- Bootstrap v1 InTr's registered consumer is also included in fresh native
+  materialization, closing the adjacent parity defect found during this work;
+- mutable resident `worker-registry.json` remains preserved while current
+  `worker-registry.d` fragments are applied by WorkerCoordinator before targeted
+  independent admission.
+
+Current runtime evidence remains deliberately unsatisfied:
+
+```text
+receipts/sovereign-host/stegos-kv-intr-chain-consumption.latest.json: NOT OBSERVED
+SOVEREIGN_RELAY_LEASE_OPEN: NOT OBSERVED
+RELAY_NODE_KV_CONTINUITY_VERIFIED: NOT OBSERVED
+DEVICE_KV_INTR_OBSERVED: NOT OBSERVED
+production Interlock activation: NOT PROVEN
+```
+
+The remaining state-changing event must occur on an eligible non-hosted sovereign
+resident with current local source and writable durable state. The existing G18
+resolver may derive the node declaration there automatically. No additional user
+authorization, second user-operated machine, GitHub runtime credential, or
+third-party runtime substitution is required or permitted by this chain.
