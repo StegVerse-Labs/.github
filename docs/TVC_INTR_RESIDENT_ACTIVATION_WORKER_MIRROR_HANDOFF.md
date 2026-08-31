@@ -101,3 +101,35 @@ The worker now reuses the Gateway's already-canonical non-secret storage-root bi
 The shared KV custody root is intentionally still explicit as `STEGVERSE_KV_CUSTODY_ROOT`: current canonical source does not establish one universal production shared-KV filesystem path, and the worker must not guess or silently bind a different vault.
 
 This reconciliation reduces deployment configuration duplication without expanding credential, filesystem, provider, Site, or HeartBeat authority.
+
+
+## 2026-08-31 sovereign bootstrap -> TVC/SKAP successor binding
+
+The sovereign runtime bootstrap now immediately advances the admitted TVC/SKAP resident activation task after G18 activation verification succeeds.
+
+Source:
+- `scripts/bootstrap_sovereign_runtime.py::_advance_tvc_skap_successor`
+- target task: `TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001`
+- execution path: materialized `scripts/run_worker_runtime.py --task-id TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001`
+
+This closes the scheduler-latency seam where a successfully activated sovereign runtime could otherwise wait for a later generic WorkerCoordinator pass before SKAP activation was attempted.
+
+Authority remains unchanged:
+- WorkerCoordinator must admit the task under its own fresh independent claim/fence.
+- G18 claim/fence reuse is prohibited.
+- HeartBeat grants no execution authority.
+- TV/TVC remains sole credential authority.
+- No GitHub token or provider credential is required or forwarded.
+- A successful G18 bootstrap does not by itself claim `READY_FOR_OWNER_INGRESS`; the TVC worker must still produce authentic recipient-key/liveness, storage-binding, TLS/public-route and readiness evidence.
+
+Validation coverage is added in `tests/test_bootstrap_sovereign_runtime.py`.
+
+The next live transition is now one continuous machine sequence:
+
+```text
+sovereign bootstrap
+-> G18 activation proof PASS
+-> immediate independent TVC/SKAP WorkerCoordinator cycle
+-> TVC resident recipient/key/liveness + Gateway route work
+-> READY_FOR_OWNER_INGRESS when its predicates are genuinely satisfied
+```
