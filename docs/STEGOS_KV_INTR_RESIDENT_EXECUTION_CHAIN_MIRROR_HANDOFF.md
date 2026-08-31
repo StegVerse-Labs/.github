@@ -161,3 +161,21 @@ The Gateway request itself grants no authority. The consumer is copied by the ex
 Canonical scoped handoff: `docs/RESIDENT_RENDEZVOUS_CONSUMER_MIRROR_HANDOFF.md`.
 
 This source work does not itself prove the current resident has refreshed to the new consumer, the public Gateway is deployed with rendezvous enabled, or the three runtime terminal receipts exist.
+
+
+## Endpoint fanout sovereign successor — issue #612
+
+The resident chain is extended by one exact downstream task:
+
+```text
+SHWP-DEVICE-KV-INTR-OBSERVATION-001
+  -> DEVICE_KV_INTR_OBSERVED
+SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001
+  -> ENDPOINT_FANOUT_SOVEREIGN_RUNTIME_OBSERVED
+```
+
+The successor executes only after the authentic DEVICE_KV_INTR terminal receipt exists. It consumes already-local current continuity-vault-kit source, executes the canonical two-report fanout, requires the KV status report's second Interlock `COMMIT_CANDIDATE` to remain candidate-only/non-mutating, and retains the Master Records travel projection.
+
+Scoped handoff: `docs/ENDPOINT_FANOUT_LIVE_RUNTIME_MIRROR_HANDOFF.md`.
+
+The existing resident rendezvous exact step allowlist is extended to carry this same fixed chain. No arbitrary task transport is introduced.
