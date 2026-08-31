@@ -8,10 +8,10 @@
     "handoffs/SHWP-ALL-ORG-FEDERATION-001.json",
     "control/organization-federation.json"
   ],
-  "observed_at": "2026-08-30T22:18:00-05:00",
+  "observed_at": "2026-08-31T16:56:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
-    "lifecycle": "BLOCKED",
+    "lifecycle": "ACTIVE",
     "archive_ready": false,
     "unassigned_work": 0,
     "chat_owned_implementation": 0,
@@ -21,10 +21,13 @@
     "chat_owned_credentials": 0,
     "canonical_owner_installed": true,
     "thread_required": false,
-    "blocker_count": 4,
+    "blocker_count": 0,
     "evidence_complete": false,
     "activated": false,
-    "propagated": false
+    "propagated": true,
+    "kernel_nodes_installed": 14,
+    "kernel_version": "1.1.0",
+    "live_federation_observed": 0
   },
   "metric_evidence": {
     "lifecycle": "control/worker-registry.json + handoffs/SHWP-ALL-ORG-FEDERATION-001.json current task state",
@@ -33,10 +36,10 @@
     "chat_owned_counts": "no chat-owned execution or credential role",
     "canonical_owner_installed": "canonical handoff/registry surfaces are installed",
     "thread_required": "continuation is durably recoverable without this chat",
-    "blocker_count": "control/organization-federation.json coverage.machine_blocked=4",
-    "evidence_complete": "terminal task evidence is incomplete",
-    "activated": "no current terminal activation claim is promoted by COSV",
-    "propagated": "downstream propagation remains incomplete"
+    "blocker_count": "control/organization-federation.json coverage source blockers=0 after all 14 .github kernels installed",
+    "evidence_complete": "authentic addressed resident federation receipts remain pending",
+    "activated": "source convergence is not live federation activation",
+    "propagated": "universal org kernel v1.1.0 is byte-identical across all 14 organization .github repositories"
   },
   "authority_effect": "NONE"
 }
