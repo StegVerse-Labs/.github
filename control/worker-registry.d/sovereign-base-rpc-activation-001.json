@@ -17,7 +17,7 @@
         "StegVerse-002/micro-node-runtime:docs/SOVEREIGN_BASE_RPC_MIRROR_HANDOFF.md",
         "StegVerse-Labs/TVC:docs/SOVEREIGN_BASE_RPC_ROUTE_MIRROR_HANDOFF.md"
       ],
-      "executor_binding": "AUTHORIZED_LOCAL_SOURCE_ONLY",
+      "executor_binding": "AUTHORIZED_INDEPENDENT_TASK_CONTROL",
       "goal_id": "G09-SOVEREIGN-BASE-RPC-ACTIVATION",
       "handoff_ref": "handoffs/SHWP-SOVEREIGN-BASE-RPC-ACTIVATION-001.json",
       "heartbeat_timing": null,
@@ -44,7 +44,7 @@
         "blockers": [
           "REAL_SYNCHRONIZED_STEGVERSE_BASE_ENDPOINT_NOT_YET_OBSERVED"
         ],
-        "continuation_owner": "resident sovereign heartbeat -> sovereign-base-rpc-activation-worker -> StegVerse-Labs/TVC -> StegVerse-Labs/stegfin-governance#60",
+        "continuation_owner": "independent StegVerse resident task-control -> sovereign-base-rpc-activation-worker -> StegVerse-Labs/TVC -> StegVerse-Labs/stegfin-governance#60",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
@@ -88,9 +88,8 @@
   "credential_authority": "TV/TVC",
   "provider_capability_authority": "NONE",
   "dependencies": [
-    "SHWP-DURABLE-RUNTIME-ACTIVATION",
     "released_local_micro_node_runtime"
   ],
-  "preferred_carrier_required": true,
+  "preferred_carrier_required": false,
   "priority": "critical"
 }
