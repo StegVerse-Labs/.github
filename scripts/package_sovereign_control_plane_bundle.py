@@ -31,6 +31,15 @@ TVC_RESIDENT_PROOF_REQUIRED_PATHS = (
     "tv_resident_operational_proof_task.py",
     "scripts/activate_tv_resident_operational_proof.py",
 )
+SV002_MICRO_NODE_SOURCE_PIN = "410c4267b4145ed1c1f5f2d954f3926429a43c01"
+SV002_MICRO_NODE_REQUIRED_PATHS = (
+    "tools/run_self_characterization_principal.py",
+    "experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json",
+    "schemas/self_characterization_runtime_identity.schema.json",
+)
+MASTER_RECORDS_RECONSTRUCTION_COMMIT = "2e117902d4f261b10cb3b5122b7ef48fb0e36e57"
+MASTER_RECORDS_RECONSTRUCTION_VERIFIER = "scripts/verify_sv002_self_characterization_reconstruction.py"
+MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB = "cc96556a23b5bd804f3cdaa96539b379c1904437"
 TVC_HIL_PROTECTED_PATHS = (
     "tools/hil_intr_lifecycle_intake.py",
     "tasks/hil_experiment_backend_adapter.py",
@@ -169,6 +178,63 @@ def tvc_source_proof(root: Path, *, source_floor: str = TVC_HIL_SOURCE_FLOOR) ->
         "verified_ancestors": [source_floor] + ([TVC_RESIDENT_PROOF_MIN_SHA] if resident_ancestor.returncode == 0 else []),
         "resident_proof_min_sha_present": resident_ancestor.returncode == 0,
     }
+
+
+def sv002_micro_node_source_proof(root: Path) -> dict:
+    root = root.expanduser().resolve()
+    proof = {
+        "schema": "stegverse.portable-source-proof/v1",
+        "repository": "StegVerse-002/micro-node-runtime",
+        "materialized_subpath": "vendor/micro-node-runtime",
+        "exact_head": SV002_MICRO_NODE_SOURCE_PIN,
+        "required_paths": list(SV002_MICRO_NODE_REQUIRED_PATHS),
+        "network_fetch_performed": False,
+        "credential_required": False,
+        "authority_effect": "NONE_SOURCE_IDENTITY_ONLY",
+    }
+    if not (root / ".git").is_dir():
+        return {**proof, "state": "UNVERIFIED_NO_LOCAL_GIT_IDENTITY"}
+    head = _git(root, "rev-parse", "HEAD")
+    status = _git(root, "status", "--porcelain")
+    observed = head.stdout.strip().lower() if head.returncode == 0 else None
+    if observed != SV002_MICRO_NODE_SOURCE_PIN:
+        return {**proof, "state": "UNVERIFIED_EXACT_HEAD_MISMATCH", "head": observed}
+    if status.returncode != 0 or status.stdout.strip():
+        return {**proof, "state": "UNVERIFIED_WORKTREE_NOT_CLEAN", "head": observed}
+    missing = [rel for rel in SV002_MICRO_NODE_REQUIRED_PATHS if not (root / rel).is_file()]
+    if missing:
+        return {**proof, "state": "UNVERIFIED_REQUIRED_PATH_MISSING", "head": observed, "missing": missing}
+    return {**proof, "state": "VERIFIED_LOCAL_GIT_SOURCE", "head": observed, "exact_head_verified": True, "clean_worktree_at_packaging": True}
+
+
+def master_records_source_proof(root: Path) -> dict:
+    root = root.expanduser().resolve()
+    proof = {
+        "schema": "stegverse.portable-source-proof/v1",
+        "repository": "master-records/orchestration",
+        "materialized_subpath": "vendor/master-records-orchestration",
+        "required_ancestor": MASTER_RECORDS_RECONSTRUCTION_COMMIT,
+        "verifier_path": MASTER_RECORDS_RECONSTRUCTION_VERIFIER,
+        "required_verifier_git_blob": MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB,
+        "network_fetch_performed": False,
+        "credential_required": False,
+        "authority_effect": "NONE_SOURCE_IDENTITY_ONLY",
+    }
+    if not (root / ".git").is_dir():
+        return {**proof, "state": "UNVERIFIED_NO_LOCAL_GIT_IDENTITY"}
+    head = _git(root, "rev-parse", "HEAD")
+    ancestor = _git(root, "merge-base", "--is-ancestor", MASTER_RECORDS_RECONSTRUCTION_COMMIT, "HEAD")
+    verifier = root / MASTER_RECORDS_RECONSTRUCTION_VERIFIER
+    if head.returncode != 0 or ancestor.returncode != 0:
+        return {**proof, "state": "UNVERIFIED_REQUIRED_ANCESTOR_NOT_PRESENT", "head": head.stdout.strip().lower() if head.returncode == 0 else None}
+    if not verifier.is_file():
+        return {**proof, "state": "UNVERIFIED_VERIFIER_MISSING", "head": head.stdout.strip().lower()}
+    status = _git(root, "status", "--porcelain", "--", MASTER_RECORDS_RECONSTRUCTION_VERIFIER)
+    blob = _git(root, "hash-object", str(verifier))
+    observed_blob = blob.stdout.strip().lower() if blob.returncode == 0 else None
+    if status.returncode != 0 or status.stdout.strip() or observed_blob != MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB:
+        return {**proof, "state": "UNVERIFIED_VERIFIER_SOURCE_MISMATCH", "head": head.stdout.strip().lower(), "observed_verifier_git_blob": observed_blob}
+    return {**proof, "state": "VERIFIED_LOCAL_GIT_SOURCE", "head": head.stdout.strip().lower(), "required_ancestor_present": True, "verifier_git_blob": observed_blob, "verifier_worktree_clean": True}
 
 
 def _safe_tree_files(root: Path) -> list[Path]:
