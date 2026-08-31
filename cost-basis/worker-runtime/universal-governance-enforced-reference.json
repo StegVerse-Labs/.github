@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "universal_governance_enforced_reference_observation",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 4,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 32,
+    "confidence": "LOW"
+  },
+  "cost_estimate": {
+    "compute_units": 4,
+    "token_units": 0,
+    "storage_bytes": 1048576,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 2
+  },
+  "evidence_refs": [
+    "docs/UNIVERSAL_GOVERNANCE_ENFORCED_REFERENCE_MIRROR_HANDOFF.md",
+    "workers/universal_governance_enforced_reference_worker.py",
+    "StegVerse-Labs/StegCore@d093f1c18ce6f78cfa33fcf87568851be6221e2a",
+    "master-records/core-lite@78abdcad9ee4a82f6ae71cc68bcfdfb867f86880"
+  ],
+  "notes": [
+    "No external provider, GitHub, wallet, cloud, or non-TV/TVC credential authority is created. External cost is zero."
+  ]
+}

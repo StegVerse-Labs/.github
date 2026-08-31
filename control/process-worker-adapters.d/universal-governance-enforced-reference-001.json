@@ -1,0 +1,43 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:universal-governance-enforced-reference-v1",
+      "authority_ref": "handoffs/SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "universal_governance_reference_execution",
+        "bounded_target_mutation",
+        "consequence_evidence_validation",
+        "master_records_custody_validation",
+        "bypass_negative_control"
+      ],
+      "command": [
+        "python",
+        "workers/universal_governance_enforced_reference_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_STEGCORE_SOURCE_ROOT",
+        "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+        "HOME"
+      ],
+      "bound_state_root": "~/.stegverse/state/universal-governance-enforced-reference",
+      "bound_state_allowed_paths": [
+        "stegcore-reference/**",
+        "master-records/**",
+        "receipts/**"
+      ],
+      "timeout_seconds": 420,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Consumes already-materialized local source only; no remote checkout.",
+        "Target mutation is confined to bound state and is not repository mutation.",
+        "Reference proof must retain real_external_system_enforced_activation=false.",
+        "Missing source returns HANDOFF_READY."
+      ]
+    }
+  ]
+}

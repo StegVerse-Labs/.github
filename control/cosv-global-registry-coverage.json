@@ -10,8 +10,8 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
-    "unique_task_ids_global_plus_fragments": 74,
-    "canonically_indexed_task_ids": 67,
+    "unique_task_ids_global_plus_fragments": 75,
+    "canonically_indexed_task_ids": 68,
     "completed_only_historical_unvectorized_task_ids": 6,
     "active_unvectorized_unique_task_ids": 0,
     "superseded_historical_unvectorized_task_ids": 1
@@ -348,6 +348,10 @@
     {
       "task_id": "SV-DN1-REPOSITORY-MERGE-DISPATCH-001",
       "vector": "50000000101000"
+    },
+    {
+      "task_id": "SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001",
+      "vector": "50000000114000"
     }
   ],
   "evidence_conflicts": [],
@@ -650,18 +654,18 @@
     "authority_effect": "NONE"
   },
   "worker_denominator_closure": {
-    "active_worker_tasks_vectorized": 67,
+    "active_worker_tasks_vectorized": 68,
     "active_worker_tasks_unvectorized": 0,
     "completed_historical_unvectorized": 6,
     "superseded_historical_unvectorized": 1,
-    "total_unique_worker_task_ids": 74,
+    "total_unique_worker_task_ids": 75,
     "authority_effect": "NONE",
     "runtime_activation_claimed": false
   },
   "active_task_vector_coverage_closure": {
-    "active_worker_tasks_vectorized": 67,
+    "active_worker_tasks_vectorized": 68,
     "active_organization_tasks_vectorized": 14,
-    "total_active_tasks_vectorized": 81,
+    "total_active_tasks_vectorized": 82,
     "active_tasks_unvectorized": 0,
     "source_projection_complete": true,
     "runtime_activation_claimed": false,
@@ -710,6 +714,32 @@
     "repository_writeback_authority": false,
     "merge_authority": false,
     "deployment_authority": false,
+    "authority_effect": "NONE"
+  },
+  "universal_governance_enforced_reference_projection_20260831": {
+    "task_id": "SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001",
+    "vector": "50000000114000",
+    "registry_ref": "control/worker-registry.d/universal-governance-enforced-reference-001.json",
+    "source_state_vector_ref": "control/task-vectors/SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001.json",
+    "stegcore_reference_runner_merge": "StegVerse-Labs/StegCore@d093f1c18ce6f78cfa33fcf87568851be6221e2a",
+    "master_records_custody_merge": "master-records/core-lite@78abdcad9ee4a82f6ae71cc68bcfdfb867f86880",
+    "blockers": [
+      "LOCAL_STEGCORE_SOURCE_NOT_YET_OBSERVED",
+      "LOCAL_MASTER_RECORDS_SOURCE_NOT_YET_OBSERVED",
+      "CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND",
+      "REFERENCE_ENFORCED_BOUNDARY_RECEIPT_NOT_YET_OBSERVED"
+    ],
+    "reference_enforced_boundary_observed": false,
+    "bypass_negative_control_observed": false,
+    "master_records_custody_observed": false,
+    "real_external_system_enforced_activation": false,
+    "evidence_complete": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "repository_writeback_authority": false,
+    "deployment_authority": false,
+    "publication_authority": false,
+    "continuity_mint_authority": false,
     "authority_effect": "NONE"
   }
 }

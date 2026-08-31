@@ -1,0 +1,162 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001",
+  "created_at": "2026-08-31T15:45:00-05:00",
+  "updated_at": "2026-08-31T15:45:00-05:00",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-OBSERVATION",
+    "objective": "Observe an authentic sovereign-runtime reference ENFORCED boundary using the merged Universal Governance, Universal InTr, StegGate deterministic execution and Master Records custody paths without overclaiming a real external-system activation.",
+    "success_predicates": [
+      "reference_enforced_boundary_observed=true",
+      "bypass_negative_control_passed=true",
+      "governed_target_mutation_count=1",
+      "master_records_custody_accepted=true",
+      "real_external_system_enforced_activation=false",
+      "credential_authority=TV/TVC",
+      "github_token_used=false",
+      "repository_writeback_performed=false"
+    ],
+    "failure_predicates": [
+      "hosted execution treated as sovereign runtime",
+      "non-TV/TVC credential/token required or forwarded",
+      "target mutation escapes bound-state root",
+      "bypass negative control changes target state",
+      "Master Records custody authority escalation",
+      "reference proof reported as real external activation"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 4,
+    "authority_ceiling": [
+      "bounded local reference consequence only after separate target-authority validation",
+      "bound-state mutation only",
+      "no repository writeback",
+      "no deployment authority",
+      "no publication authority",
+      "no Continuity minting authority",
+      "no real external-system activation authority",
+      "no credential authority"
+    ]
+  },
+  "task": {
+    "task_id": "SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-Labs/StegCore@d093f1c18ce6f78cfa33fcf87568851be6221e2a",
+      "master-records/core-lite@78abdcad9ee4a82f6ae71cc68bcfdfb867f86880",
+      "docs/UNIVERSAL_GOVERNANCE_ENFORCED_REFERENCE_MIRROR_HANDOFF.md",
+      "workers/universal_governance_enforced_reference_worker.py"
+    ],
+    "parent_task_id": null,
+    "canonical_lineage_key": "universal-governance:enforced-reference-observation",
+    "derivation_depth": 0,
+    "worker_registry_ref": "control/worker-registry.d/universal-governance-enforced-reference-001.json",
+    "worker_id": "universal-governance-enforced-reference-worker",
+    "adapter_ref": "process:universal-governance-enforced-reference-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "evidence review only",
+    "priority": "release",
+    "canonical_owner_ref": "docs/UNIVERSAL_GOVERNANCE_ENFORCED_REFERENCE_MIRROR_HANDOFF.md",
+    "source_handoff_ref": "docs/UNIVERSAL_GOVERNANCE_ENFORCED_REFERENCE_MIRROR_HANDOFF.md"
+  },
+  "authority": {
+    "authority_source": "Universal Governance merged contracts + canonical sovereign WorkerCoordinator",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "universal-governance-enforced-reference-v1",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "repository_writeback_authority": false,
+    "publication_authority": false,
+    "continuity_mint_authority": false,
+    "real_external_system_activation_authority": false,
+    "execution_authority_created": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "universal_governance_reference_execution",
+      "bounded_target_mutation",
+      "consequence_evidence_validation",
+      "master_records_custody_validation",
+      "bypass_negative_control"
+    ],
+    "worker": "workers/universal_governance_enforced_reference_worker.py",
+    "optional_local_locators": [
+      "STEGVERSE_STEGCORE_SOURCE_ROOT",
+      "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT"
+    ],
+    "canonical_local_source_paths_supported": true,
+    "hosted_execution_allowed": false,
+    "remote_checkout_allowed": false,
+    "bound_state_root": "~/.stegverse/state/universal-governance-enforced-reference",
+    "bound_state_allowed_paths": [
+      "stegcore-reference/**",
+      "master-records/**",
+      "receipts/**"
+    ],
+    "max_actions": 8,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 32,
+    "allowed_paths": [
+      "receipts/universal-governance-enforced-reference/**"
+    ],
+    "allowed_services": [],
+    "rate_class": "universal_governance_enforced_reference"
+  },
+  "continuity": {
+    "master_records_required": true,
+    "result_receipt": "~/.stegverse/state/universal-governance-enforced-reference/receipts/latest.json",
+    "repository_persistence_requires_separate_admission": true
+  },
+  "failure_policy": {
+    "missing_materialized_source": "return HANDOFF_READY and relinquish claim; source materialization remains separately governed",
+    "hosted_github_actions_substitute_allowed": false
+  },
+  "completion": {
+    "terminal_when": [
+      "UNIVERSAL_GOVERNANCE_REFERENCE_ENFORCED_BOUNDARY_OBSERVED",
+      "reference_enforced_boundary_observed=true",
+      "bypass_negative_control_passed=true",
+      "master_records_custody_accepted=true",
+      "real_external_system_enforced_activation=false"
+    ],
+    "next_authorized_action": "On an eligible non-hosted sovereign runtime with exact locally materialized StegCore and master-records/core-lite source, WorkerCoordinator may bind a fresh collision-safe claim and execute the registered bounded process adapter. Complete only after reference-boundary, bypass-negative-control and Master Records custody predicates all pass."
+  },
+  "source_state_vector_ref": "control/task-vectors/SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001.json",
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:universal-governance-enforced-reference:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-Labs/StegCore@d093f1c18ce6f78cfa33fcf87568851be6221e2a",
+      "master-records/core-lite@78abdcad9ee4a82f6ae71cc68bcfdfb867f86880"
+    ],
+    "admissibility_evidence_refs": [
+      "docs/UNIVERSAL_GOVERNANCE_ENFORCED_REFERENCE_MIRROR_HANDOFF.md",
+      "tests/test_universal_governance_enforced_reference_worker.py"
+    ],
+    "integration_evidence_refs": [
+      "workers/universal_governance_enforced_reference_worker.py",
+      "control/process-worker-adapters.d/universal-governance-enforced-reference-001.json",
+      "control/worker-registry.d/universal-governance-enforced-reference-001.json",
+      "control/worker-capability-profiles.json#universal-governance-reference-v1"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "LOCAL_STEGCORE_SOURCE_NOT_YET_OBSERVED",
+      "LOCAL_MASTER_RECORDS_SOURCE_NOT_YET_OBSERVED",
+      "CANONICAL_SCHEDULER_CLAIM_NOT_YET_BOUND",
+      "REFERENCE_ENFORCED_BOUNDARY_RECEIPT_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "universal-governance-enforced-reference-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "validates_capability",
+    "target_phase": "ACTIVATED"
+  }
+}
