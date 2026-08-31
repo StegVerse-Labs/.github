@@ -248,3 +248,54 @@ same-execution reconstruction where required
 ```
 
 This repair closes the source-level defect in which a live native worker could fail to visit already-local resident requests. It does not fabricate deployment-local execution evidence and does not convert repository validation into runtime proof.
+
+
+## 2026-08-31 native canonical-source refresh closure
+
+The native resident WorkerCoordinator now carries the canonical already-local source
+root as an explicit non-secret service environment binding:
+
+```text
+STEGVERSE_HEARTBEAT_SOURCE_ROOT=<distinct already-local canonical checkout>
+```
+
+Every 100 worker-runtime logical ticks, before the local resident-request sweep,
+the worker invokes the already-materialized local-only source refresher against
+that source root and the resident runtime root. The refresher performs no clone,
+fetch, pull, credential acquisition, hosted source lookup, or repository mutation.
+It preserves mutable resident state, including carrier/worker state, claims,
+fences, receipts, checkpoints, and runtime-owned evidence.
+
+The resulting native sequence is:
+
+```text
+already-local canonical source advances
+-> native WorkerCoordinator observes configured source root
+-> local static source refresh
+-> resident request dispatcher visits already-materialized requests
+-> request-specific consumer validates intent
+-> task-specific WorkerCoordinator admission/claim/fence
+-> execution receipt
+```
+
+This path is native to the existing worker service and therefore does not depend
+on the Linux-only systemd path watcher. The Linux path watcher remains a faster
+filesystem-event accelerator where available; it is no longer the only automatic
+local source-refresh mechanism.
+
+The carrier service does not receive the canonical source-root binding and remains
+independent. Source-refresh cadence is liveness only and grants no HeartBeat,
+execution, claim, fence, credential, route, or repository authority.
+
+Files:
+
+```text
+scripts/run_worker_runtime.py
+scripts/install_sovereign_heartbeat_service.py
+tests/test_worker_runtime_local_request_dispatch.py
+tests/test_sovereign_heartbeat_service.py
+```
+
+This closes the machine-executable stale-resident source seam after the
+request-consumption repair. Authentic deployment-local receipts remain the next
+runtime evidence goal.
