@@ -188,6 +188,17 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             def runner(command, **_kwargs):
                 name = Path(command[1]).name
                 call_order.append(name)
+                if name == "install_sovereign_worker_source_refresh_service.py":
+                    path = runtime / "receipts/sovereign-host/worker-source-refresh-installation.latest.json"
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text(json.dumps({
+                        "activated": True,
+                        "filesystem_event_driven": True,
+                        "intr_materialization_event_driven": True,
+                        "source_package_event_driven": True,
+                        "worker_service": "stegverse-worker-runtime.service",
+                    }) + "\n", encoding="utf-8")
+                    return SimpleNamespace(returncode=0, stdout="", stderr="")
                 return SimpleNamespace(returncode=0 if name == "install_sovereign_heartbeat_service.py" else 1, stdout="", stderr="")
 
             def prime(*_args, **_kwargs):
@@ -230,9 +241,10 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
                 )
 
             self.assertEqual(
-                call_order[:4],
+                call_order[:5],
                 [
                     "install_sovereign_heartbeat_service.py",
+                    "install_sovereign_worker_source_refresh_service.py",
                     "run_worker_runtime.py",
                     "dispatch_resident_execution_requests.py",
                     "verify_sovereign_runtime_activation.py",
@@ -249,10 +261,13 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             base = Path(td)
             source = base / "source"
             runtime = base / "runtime"
+            source.mkdir(parents=True)
+            watcher = source / "scripts/install_sovereign_worker_source_refresh_service.py"
+            watcher.parent.mkdir(parents=True, exist_ok=True)
+            watcher.write_text("# watcher\n", encoding="utf-8")
             proof = base / "proof.json"
             receipt = base / "bootstrap.json"
             node_marker = base / "node.json"
-            source.mkdir()
             runtime.mkdir()
             order = []
 
