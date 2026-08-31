@@ -12,6 +12,7 @@ import json
 import os
 import platform
 import plistlib
+import re
 import shutil
 import subprocess
 import sys
@@ -246,11 +247,42 @@ def _worker_command(root: Path, interval_ms: float) -> list[str]:
     ]
 
 
+_CANONICAL_NODE_REF = re.compile(r"^SV-NODE-[0-9a-f]{24}$")
+
+
+def _load_declared_node_ref(values: dict[str, str]) -> str | None:
+    candidates = []
+    explicit_marker = str(values.get("STEGVERSE_SOVEREIGN_NODE_MARKER") or "").strip()
+    if explicit_marker:
+        candidates.append(Path(explicit_marker).expanduser())
+    candidates.extend([
+        Path.home() / ".stegverse" / "node.json",
+        Path("/etc/stegverse/node.json"),
+    ])
+    for path in candidates:
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        node_id = str(value.get("node_id") or "")
+        if (
+            value.get("schema") == "stegverse.sovereign-node-declaration/v0.4"
+            and value.get("declared") is True
+            and _CANONICAL_NODE_REF.fullmatch(node_id)
+            and value.get("credential_authority") == "TV/TVC"
+            and str(value.get("authority_effect") or "").endswith("NO_CREDENTIAL_OR_ROUTE_AUTHORITY")
+        ):
+            return node_id
+    return None
+
+
 def _resident_rendezvous_env(values: dict[str, str]) -> dict[str, str]:
     url = str(values.get("STEGVERSE_RESIDENT_RENDEZVOUS_URL") or "").strip()
     node_ref = str(values.get("STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF") or "").strip()
     if not url and not node_ref:
         return {}
+    if url and not node_ref:
+        node_ref = _load_declared_node_ref(values) or ""
     if not url.startswith("https://"):
         raise RuntimeError("resident rendezvous URL must use https")
     if any(ch in url for ch in "\r\n\"") or any(ch in node_ref for ch in "\r\n\""):
