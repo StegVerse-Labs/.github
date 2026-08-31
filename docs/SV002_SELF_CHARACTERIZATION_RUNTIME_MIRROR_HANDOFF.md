@@ -13,7 +13,7 @@ This file is the current handoff and task source of truth for the resident StegV
 
 ```text
 experiment: STEGVERSE-002-SELF-CHARACTERIZATION-001
-principal contract: StegVerse-002/micro-node-runtime/experiments/self-characterization-001/EXPERIMENT_CONTRACT.v0.1.json
+principal contract: StegVerse-002/micro-node-runtime/experiments/self-characterization-001/EXPERIMENT_CONTRACT.v0.2.json
 resident task: SHWP-SV002-SELF-CHARACTERIZATION-001
 credential authority: TV/TVC
 github token runtime authority: NONE
@@ -285,3 +285,20 @@ Portable exact-dispatch source merged in PR #606 as
 `574d7847ecc6295c2072ca778de0de469f9d9cc6`. Validation runs
 `33388902061`, `33388902084`, and `33388902072` succeeded. The canonical
 self-characterization consumption receipt remained absent at the post-merge check.
+
+
+## Transition-derived principal effects — issue #657
+
+The resident lane is rebound to canonical principal source `StegVerse-002/micro-node-runtime@410c4267b4145ed1c1f5f2d954f3926429a43c01`, which preserves frozen v0.1 history and makes v0.2 canonical before any principal execution.
+
+The worker now retains `TRANSITION_EFFECTS.json` alongside the self-characterization, formal result, and interaction trace. A completed principal result carries:
+
+```text
+authority_transfer_assumed=false
+authority_effect_resolution=DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS
+transition_effect_state=PENDING_TRANSITION_ELEMENT_EVALUATION
+```
+
+The worker does not replace these fields with a blanket `NONE`. Blocked attempts remain non-transitions for principal-effect purposes. Runtime-identity packets, request-consumption receipts, and Master Records bridge operations may independently retain explicit non-authorizing effects because those packets/operations do not themselves establish the self-characterization transition.
+
+Observed capability realization does not self-promote `SYSTEM_AI_ACTIVE`; it becomes evidence available to the applicable Transition Elements and later reconstruction.
