@@ -100,3 +100,22 @@ New surfaces:
 - `tests/test_heartbeat_intr_local_subsignal_runtime.py`
 
 Source implementation still does not claim that a production endpoint has emitted an authentic carrier-bound packet. Runtime proof requires a real producer/observer pair and retained carrier evidence.
+## 2026-08-31 merged local propagation and producer integration
+
+PR #638 merged the canonical local HB/InTr subsignal runtime to main as `7bba6e0461ba131b3a04f32c84c3b393d22e14d0` after exact-head validations:
+- organization control plane run `33396883584`: SUCCESS;
+- Heartbeat Worker Project run `33396883590`: SUCCESS.
+
+Issue #624 is CLOSED. Superseded PR #630 is CLOSED without merge. Issue #619 is CLOSED after the previously merged carrier-profile PR #620.
+
+Issue #645 continues the machine-owned source integration from capability to actual producer use. Current Device KV and SV-DN-1 carrier producers now publish the exact already-transported/already-validated carrier frame into the shared local signal surface through `persist_local_intr_subsignal(...)`. They do not re-sample HB and do not derive a second carrier frame for persistence.
+
+Canonical persistence root:
+```text
+STEGVERSE_HEARTBEAT_ROOT
+or resident fallback:
+$XDG_STATE_HOME/stegverse/heartbeat-runtime
+or ~/.local/state/stegverse/heartbeat-runtime
+```
+
+This source integration makes the next authentic producer execution capable of emitting the canonical shared local signal directly. It does not itself prove that such a production execution has occurred.
