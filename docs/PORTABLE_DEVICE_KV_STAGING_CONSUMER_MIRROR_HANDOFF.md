@@ -30,7 +30,7 @@ INGRESS_ADMITTED DEVICE_KV request
  -> existing targeted DEVICE_KV observation attempt
  -> if portable_payload schema present:
       resolve current local continuity-vault-kit source
-      require explicit STEGVERSE_KV_DATA_ROOT
+      require explicit STEGVERSE_KV_ROOT
       invoke runtime/portable_direct_source_ingress.py
       exact staging/readback receipt
  -> emit materialization consumption receipt with distinct:
@@ -45,7 +45,7 @@ INGRESS_ADMITTED DEVICE_KV request
 - CVK staging does not grant trusted semantic admission;
 - provider/SKAP activation remains false;
 - GitHub runtime authority remains NONE;
-- `STEGVERSE_KV_DATA_ROOT` is a non-secret local locator only;
+- `STEGVERSE_KV_ROOT` is a non-secret local locator only;
 - no network source fetch.
 
 ## Claimed surfaces
@@ -60,7 +60,7 @@ INGRESS_ADMITTED DEVICE_KV request
 ## Completion boundary
 
 Source completion requires exact-head organization/worker validation and merge.
-Runtime completion requires an authentic resident request plus real `STEGVERSE_KV_DATA_ROOT`, CVK source, ingress receipt, staged exact bytes, exact readback, and durable CVK staging receipt.
+Runtime completion requires an authentic resident request plus real `STEGVERSE_KV_ROOT`, CVK source, ingress receipt, staged exact bytes, exact readback, and durable CVK staging receipt.
 
 ## Upstream CVK source closure
 

@@ -186,7 +186,7 @@ def safe_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
         "XDG_STATE_HOME", "XDG_CONFIG_HOME", "LOCALAPPDATA",
         "STEGVERSE_HEARTBEAT_ROOT", "STEGVERSE_HEARTBEAT_SOURCE_ROOT",
         "STEGVERSE_SOVEREIGN_NODE", "STEGVERSE_STEGOS_ROOT",
-        "STEGVERSE_KV_SOURCE_ROOT", "STEGVERSE_KV_DATA_ROOT", "STEGVERSE_RELAY_RUNTIME_BASE",
+        "STEGVERSE_KV_SOURCE_ROOT", "STEGVERSE_KV_ROOT", "STEGVERSE_RELAY_RUNTIME_BASE",
     )
     env = {name: values[name] for name in allowed if values.get(name)}
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
