@@ -27,13 +27,13 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "control/organization-task-registry.json state=WORKAROUND_REQUIRED; owner=StegVerse-Labs/.github federation worker",
+    "lifecycle": "control/organization-task-registry.json current state=READY; owner=StegVerse-Labs/.github federation worker",
     "archive_ready": "organization federation task remains active until durable federation completion evidence exists",
     "unassigned_work": "organization task has a durable federation worker owner",
     "chat_owned_counts": "no chat-owned execution or credential role",
     "canonical_owner_installed": "organization task is installed in the canonical organization task registry",
     "thread_required": "durable registry continuation does not require this chat thread",
-    "blocker_count": "registry policy does not classify state WORKAROUND_REQUIRED as an internal blocker",
+    "blocker_count": "current organization registry reports READY with no internal blocker; authentic federation observation remains pending evidence, not a source blocker",
     "evidence_complete": "organization readiness/registry state is not terminal evidence",
     "activated": "no organization-task activation proof is inferred from readiness",
     "propagated": "no repository-wide propagation is inferred from federation registry state"
