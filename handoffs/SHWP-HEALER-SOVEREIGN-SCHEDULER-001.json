@@ -66,7 +66,8 @@
       "StegVerse-Labs/StegVerse-Healer#53@7629e2d98d203aedc2ef49ff778a0e8b8802030b",
       "control/resident-execution-request.d/healer-sovereign-scheduler-001.json",
       "scripts/consume_healer_sovereign_scheduler_request.py",
-      "tests/test_healer_resident_request.py"
+      "tests/test_healer_resident_request.py",
+      "tests/test_healer_local_root_discovery.py"
     ],
     "dependencies": [],
     "parent_task_id": null,
@@ -109,9 +110,9 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "source_state": "COMPLETE_VALIDATED_WITH_COINBASE_TVC_TLS_RECEIPT_AUTODISCOVERY",
+    "source_state": "COMPLETE_VALIDATED_WITH_LOCAL_ROOT_AUTODISCOVERY_AND_G18_GATE_RETIRED",
     "source_validation_evidence": "StegVerse-Labs/StegVerse-Healer Test Readiness run 32670203077 job 97269769966 PASS on aca5b7871e2720b0d56757e33fc2a22c10291136; PR #40 merge ff3d9985b773d91dce0d90351a7a8a04a499c59b",
-    "next_authorized_action": "Consume RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001 on the next native resident request-dispatch opportunity under independent task control. Do not wait on G18 terminalization. The request grants no authority; WorkerCoordinator must perform fresh admission/claim/fence checks. Retry nonterminal attempts and terminalize only after HEALER_SOVEREIGN_SCHEDULER_COMPLETED. Independently reobserve public /intr/profile after authentic Gateway publication.",
+    "next_authorized_action": "On the next native resident request-dispatch opportunity, consume RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001 under independent task control. The worker now discovers a unique complete local Healer root and local repository map from canonical resident locations when explicit non-secret locators are absent, and merges safe named local roots when present. Do not wait on G18 terminalization. Retry nonterminal attempts; terminalize only after HEALER_SOVEREIGN_SCHEDULER_COMPLETED.",
     "terminal_when": [
       "No forbidden GitHub credential is present",
       "All due targets have COMPLETE or explicitly terminal superseded outcomes",
@@ -171,7 +172,7 @@
     }
   },
   "block": null,
-  "updated_at": "2026-08-31T16:40:00-05:00",
+  "updated_at": "2026-08-31T16:55:00-05:00",
   "source_state_vector_ref": "control/task-vectors/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
   "machine_readable_state": {
     "cosv": {

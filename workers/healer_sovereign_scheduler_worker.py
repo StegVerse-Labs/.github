@@ -19,6 +19,74 @@ SV002_OBSERVE_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "sv002-pu
 HIL_INTR_CONFIG_ENV = "STEGVERSE_HIL_INTR_ROUTE_CONFIG"
 HIL_INTR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "hil-intr-runtime.json"
 
+CANONICAL_REPO_BASES = (
+    Path.home() / ".stegverse" / "repos",
+    Path("/var/lib/stegverse/source"),
+    Path("/srv/stegverse/repos"),
+    Path("/opt/stegverse/repos"),
+)
+
+
+def _complete_healer_root(path: Path) -> bool:
+    root = path.expanduser().resolve()
+    return (
+        root.is_dir()
+        and (root / "app" / "dispatch_orchestrators.py").is_file()
+        and (root / "data" / "orchestrator_targets.json").is_file()
+        and (root / "docs" / "HEALER_MIRROR_HANDOFF.md").is_file()
+    )
+
+
+def discover_healer_root(explicit: str = "") -> tuple[Path | None, str]:
+    if explicit.strip():
+        root = Path(explicit).expanduser().resolve()
+        return (root, "EXPLICIT_NONSECRET_OVERRIDE") if _complete_healer_root(root) else (None, "EXPLICIT_INVALID")
+    candidates = [
+        base / "StegVerse-Labs" / "StegVerse-Healer"
+        for base in CANONICAL_REPO_BASES
+    ]
+    valid = [path.resolve() for path in candidates if _complete_healer_root(path)]
+    unique = list(dict.fromkeys(str(path) for path in valid))
+    if len(unique) == 1:
+        return Path(unique[0]), "CANONICAL_LOCAL_DISCOVERY"
+    return None, "AMBIGUOUS" if len(unique) > 1 else "NOT_FOUND"
+
+
+def discover_repo_roots(explicit_json: str = "") -> tuple[dict[str, str], str]:
+    if explicit_json.strip():
+        try:
+            parsed = json.loads(explicit_json)
+        except Exception:
+            return {}, "EXPLICIT_INVALID"
+        if not isinstance(parsed, dict):
+            return {}, "EXPLICIT_INVALID"
+        roots = {}
+        for repository, value in parsed.items():
+            if not isinstance(repository, str) or "/" not in repository or not isinstance(value, str):
+                continue
+            path = Path(value).expanduser().resolve()
+            if path.is_dir():
+                roots[repository] = str(path)
+        return roots, "EXPLICIT_NONSECRET_OVERRIDE" if roots else "EXPLICIT_INVALID"
+
+    roots: dict[str, str] = {}
+    ambiguous: set[str] = set()
+    for base in CANONICAL_REPO_BASES:
+        if not base.is_dir():
+            continue
+        for owner in sorted(path for path in base.iterdir() if path.is_dir()):
+            for repository_path in sorted(path for path in owner.iterdir() if path.is_dir()):
+                repository = f"{owner.name}/{repository_path.name}"
+                resolved = str(repository_path.resolve())
+                existing = roots.get(repository)
+                if existing and existing != resolved:
+                    ambiguous.add(repository)
+                else:
+                    roots[repository] = resolved
+    for repository in ambiguous:
+        roots.pop(repository, None)
+    return roots, "CANONICAL_LOCAL_DISCOVERY" if roots else "NOT_FOUND"
+
 
 def atomic_write(path: Path, value: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -123,6 +191,30 @@ def hil_intr_gateway_projection() -> dict[str, str]:
         "STEGVERSE_HIL_INTR_UPSTREAM": loopback + "/intr/materialization",
     }
 
+NAMED_REPOSITORY_ROOT_BINDINGS = {
+    "STEGVERSE_HEALER_ROOT": "StegVerse-Labs/StegVerse-Healer",
+    "STEGVERSE_LLM_ADAPTER_ROOT": "StegVerse-org/LLM-adapter",
+    "STEGVERSE_TVC_ROOT": "StegVerse-Labs/TVC",
+    "STEGVERSE_TV_ROOT": "StegVerse-Labs/TV",
+    "STEGVERSE_STEGOS_ROOT": "StegVerse-Labs/StegOS",
+    "STEGVERSE_SITE_ROOT": "StegVerse-Labs/Site",
+    "STEGVERSE_MICRO_NODE_RUNTIME_ROOT": "StegVerse-002/micro-node-runtime",
+    "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT": "master-records/orchestration",
+}
+
+
+def merge_named_repository_roots(roots: dict[str, str]) -> dict[str, str]:
+    merged = dict(roots)
+    for env_name, repository in NAMED_REPOSITORY_ROOT_BINDINGS.items():
+        raw = str(os.environ.get(env_name) or "").strip()
+        if not raw:
+            continue
+        path = Path(raw).expanduser().resolve()
+        if path.is_dir():
+            merged.setdefault(repository, str(path))
+    return merged
+
+
 def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
     env = {
         "PATH": os.environ.get("PATH", ""),
@@ -188,8 +280,10 @@ def main() -> int:
         return 7
 
     forbidden = [name for name in ("HEALER_GH_TOKEN", "GITHUB_TOKEN", "GH_TOKEN", "HEALER_PAT", "GH_STEGVERSE_AI_TOKEN") if os.getenv(name)]
-    healer_raw = os.getenv("STEGVERSE_HEALER_ROOT", "").strip()
-    roots_json = os.getenv("STEGVERSE_REPO_ROOTS_JSON", "").strip()
+    healer_root, healer_root_source = discover_healer_root(os.getenv("STEGVERSE_HEALER_ROOT", ""))
+    repo_roots, repo_roots_source = discover_repo_roots(os.getenv("STEGVERSE_REPO_ROOTS_JSON", ""))
+    repo_roots = merge_named_repository_roots(repo_roots)
+    roots_json = json.dumps(repo_roots, sort_keys=True, separators=(",", ":")) if repo_roots else ""
     blocker = None
     child_receipt: dict = {}
     state = "BLOCKED"
@@ -204,24 +298,25 @@ def main() -> int:
             "next_solution_action": "REMOVE_GITHUB_CREDENTIAL_ENVIRONMENT",
             "forbidden_variables": sorted(forbidden),
         }
-    elif not healer_raw:
+    elif healer_root is None:
         blocker = {
             "dependency_class": "LOCAL_RESOURCE",
-            "problem_statement": "Locally materialized StegVerse-Healer root is not declared.",
+            "problem_statement": "A unique complete local StegVerse-Healer root was not discovered.",
             "solution_required": True,
             "may_remain_blocked": True,
-            "next_solution_action": "MATERIALIZE_AND_DECLARE_STEGVERSE_HEALER_ROOT",
+            "next_solution_action": "MATERIALIZE_UNIQUE_LOCAL_STEGVERSE_HEALER_ROOT",
+            "discovery_state": healer_root_source,
         }
     elif not roots_json:
         blocker = {
             "dependency_class": "LOCAL_RESOURCE",
-            "problem_statement": "Locally materialized repository-root map is not declared.",
+            "problem_statement": "No usable local repository-root map was discovered.",
             "solution_required": True,
             "may_remain_blocked": True,
-            "next_solution_action": "DECLARE_STEGVERSE_REPO_ROOTS_JSON",
+            "next_solution_action": "MATERIALIZE_LOCAL_REPOSITORY_ROOTS_OR_SUPPLY_NONSECRET_MAP",
+            "discovery_state": repo_roots_source,
         }
     else:
-        healer_root = Path(healer_raw).expanduser().resolve()
         entry = healer_root / "app" / "dispatch_orchestrators.py"
         targets = healer_root / "data" / "orchestrator_targets.json"
         if not healer_root.is_dir() or not entry.is_file() or not targets.is_file():
@@ -289,6 +384,10 @@ def main() -> int:
         "github_token_required": False,
         "github_actions_production_role": False,
         "child_receipt": child_receipt,
+        "healer_root": str(healer_root) if healer_root is not None else None,
+        "healer_root_source": healer_root_source,
+        "repository_root_count": len(repo_roots),
+        "repository_roots_source": repo_roots_source,
         "blocker": blocker,
         "authority_effect": "BOUNDED_LOCAL_SCHEDULER_EXECUTION_ONLY",
     }

@@ -120,6 +120,40 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
             self.assertNotIn("STEGVERSE_HEARTBEAT_SOURCE_ROOT", carrier)
             self.assertIn("STEGVERSE_HEARTBEAT_SOURCE_ROOT=" + str(source.resolve()), worker)
 
+
+    def test_worker_service_preserves_safe_local_runtime_bindings(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            root = base / "heartbeat"
+            source = base / "canonical-source"
+            healer = base / "healer"
+            source.mkdir()
+            healer.mkdir()
+            repo_map = json.dumps({"StegVerse-Labs/StegVerse-Healer": str(healer)})
+            mod.materialize(ROOT, root)
+            receipt = mod.materialize_service(
+                root,
+                system="linux",
+                env={
+                    "XDG_CONFIG_HOME": str(base / "config"),
+                    "STEGVERSE_HEARTBEAT_SOURCE_ROOT": str(source),
+                    "STEGVERSE_HEALER_ROOT": str(healer),
+                    "STEGVERSE_REPO_ROOTS_JSON": repo_map,
+                    "STEGVERSE_LLM_ADAPTER_ROOT": str(base / "llm-adapter"),
+                },
+            )
+            carrier = Path(receipt["carrier_registration_path"]).read_text(encoding="utf-8")
+            worker = Path(receipt["worker_registration_path"]).read_text(encoding="utf-8")
+            self.assertIn("STEGVERSE_HEALER_ROOT=" + str(healer), worker)
+            self.assertIn("STEGVERSE_REPO_ROOTS_JSON=" + repo_map, worker)
+            self.assertIn("STEGVERSE_LLM_ADAPTER_ROOT=" + str(base / "llm-adapter"), worker)
+            self.assertNotIn("STEGVERSE_HEALER_ROOT", carrier)
+            self.assertNotIn("STEGVERSE_REPO_ROOTS_JSON", carrier)
+            self.assertEqual(
+                receipt["safe_local_worker_bindings"],
+                ["STEGVERSE_HEALER_ROOT", "STEGVERSE_LLM_ADAPTER_ROOT", "STEGVERSE_REPO_ROOTS_JSON"],
+            )
+
     def test_worker_service_rejects_source_root_equal_to_runtime_root(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)

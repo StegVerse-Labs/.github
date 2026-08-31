@@ -91,6 +91,24 @@ DEFAULT_WORKER_INTERVAL_MS = 10.0
 # Compatibility export. This is NOT heartbeat timing authority.
 DEFAULT_INTERVAL_MS = DEFAULT_WORKER_INTERVAL_MS
 
+WORKER_SAFE_LOCAL_BINDINGS = (
+    "STEGVERSE_HEALER_ROOT",
+    "STEGVERSE_REPO_ROOTS_JSON",
+    "STEGVERSE_LLM_ADAPTER_ROOT",
+    "STEGVERSE_TVC_ROOT",
+    "STEGVERSE_TV_ROOT",
+    "STEGVERSE_MICRO_NODE_RUNTIME_ROOT",
+    "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
+    "STEGVERSE_STEGOS_ROOT",
+    "STEGVERSE_KV_SOURCE_ROOT",
+    "STEGVERSE_KV_ROOT",
+    "STEGVERSE_SITE_ROOT",
+    "STEGVERSE_TT_ROOT",
+    "STEGVERSE_RTG_ROOT",
+    "STEGVERSE_GTG_ROOT",
+    "STEGVERSE_AE_ROOT",
+)
+
 
 def default_runtime_root(env=None):
     values = dict(os.environ if env is None else env)
@@ -334,6 +352,10 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
         if source_path == root.resolve():
             raise RuntimeError("canonical source root must remain distinct from resident runtime root")
         worker_env["STEGVERSE_HEARTBEAT_SOURCE_ROOT"] = str(source_path)
+    for key in WORKER_SAFE_LOCAL_BINDINGS:
+        value = str(values.get(key) or "").strip()
+        if value:
+            worker_env[key] = value
 
     if name == "linux":
         base = Path(values.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "systemd" / "user"
@@ -438,6 +460,7 @@ def materialize_service(root: Path, *, interval_ms=DEFAULT_WORKER_INTERVAL_MS, s
         "resident_rendezvous_configured": bool(rendezvous_env),
         "native_local_source_refresh_configured": bool(worker_env.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT")),
         "canonical_local_source_root": worker_env.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT"),
+        "safe_local_worker_bindings": sorted(key for key in WORKER_SAFE_LOCAL_BINDINGS if worker_env.get(key)),
         "resident_rendezvous_url": rendezvous_env.get("STEGVERSE_RESIDENT_RENDEZVOUS_URL"),
         "resident_rendezvous_node_ref": rendezvous_env.get("STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF"),
         "resident_rendezvous_grants_execution_authority": False,
