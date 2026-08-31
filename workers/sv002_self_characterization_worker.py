@@ -8,6 +8,7 @@ import subprocess
 import sys
 import urllib.request
 from pathlib import Path
+from urllib.parse import urlparse
 from typing import Any, Callable
 
 ROOT = Path.cwd().resolve()
@@ -167,6 +168,187 @@ def find_ollama_process(proc_root: Path = Path("/proc")) -> tuple[int, Path] | N
     return found[0]
 
 
+def _process_argv(entry: Path) -> list[str]:
+    try:
+        raw = (entry / "cmdline").read_bytes()
+    except Exception:
+        return []
+    return [
+        part.decode("utf-8", "replace")
+        for part in raw.split(b"\\x00")
+        if part
+    ]
+
+
+def _arg_value(argv: list[str], *names: str) -> str | None:
+    for index, value in enumerate(argv):
+        for name in names:
+            if value == name and index + 1 < len(argv):
+                return argv[index + 1]
+            prefix = name + "="
+            if value.startswith(prefix):
+                return value[len(prefix):]
+    return None
+
+
+def _endpoint_port(endpoint: str) -> int:
+    parsed = urlparse(endpoint)
+    if parsed.scheme not in {"http", "https"} or parsed.hostname not in {"127.0.0.1", "localhost"}:
+        raise RuntimeError("principal model endpoint must be loopback/private")
+    if parsed.port is not None:
+        return parsed.port
+    return 443 if parsed.scheme == "https" else 80
+
+
+def find_llamacpp_process(
+    endpoint: str,
+    *,
+    proc_root: Path = Path("/proc"),
+) -> dict[str, Any] | None:
+    if not proc_root.is_dir() or not loopback_endpoint(endpoint):
+        return None
+    target_port = _endpoint_port(endpoint)
+    found: list[dict[str, Any]] = []
+    for entry in proc_root.iterdir():
+        if not entry.name.isdigit():
+            continue
+        try:
+            pid = int(entry.name)
+            exe = (entry / "exe").resolve(strict=True)
+        except Exception:
+            continue
+        argv = _process_argv(entry)
+        if not argv:
+            continue
+        identity_text = " ".join([str(exe), *argv]).lower()
+        if "llama-server" not in identity_text and "llama_server" not in identity_text:
+            continue
+        port_raw = _arg_value(argv, "--port", "-p")
+        try:
+            port = int(port_raw) if port_raw else 8080
+        except Exception:
+            continue
+        if port != target_port:
+            continue
+        model_raw = _arg_value(argv, "--model", "-m")
+        if not model_raw:
+            continue
+        model_path = Path(model_raw).expanduser()
+        if not model_path.is_absolute():
+            try:
+                cwd = (entry / "cwd").resolve(strict=True)
+                model_path = (cwd / model_path).resolve()
+            except Exception:
+                continue
+        else:
+            model_path = model_path.resolve()
+        if not model_path.is_file():
+            continue
+        alias = _arg_value(argv, "--alias", "--model-alias")
+        found.append(
+            {
+                "pid": pid,
+                "executable": exe,
+                "model_path": model_path,
+                "alias": alias,
+                "port": port,
+                "argv": argv,
+            }
+        )
+    if len(found) != 1:
+        return None
+    return found[0]
+
+
+def discover_llamacpp_model(
+    endpoint: str,
+    requested_model: str | None,
+    *,
+    proc_root: Path = Path("/proc"),
+    urlopen: Callable[..., Any] = urllib.request.urlopen,
+) -> tuple[str | None, dict[str, Any] | None]:
+    process = find_llamacpp_process(endpoint, proc_root=proc_root)
+    if process is None:
+        return None, None
+    model_path = Path(process["model_path"])
+    candidates = {
+        value
+        for value in (
+            process.get("alias"),
+            model_path.name,
+            model_path.stem,
+        )
+        if isinstance(value, str) and value.strip()
+    }
+    model_id = requested_model.strip() if requested_model else None
+    observed_ids: set[str] = set()
+    try:
+        models = _json_url(endpoint.rstrip("/") + "/v1/models", urlopen=urlopen)
+        for row in models.get("data", []):
+            if isinstance(row, dict):
+                value = str(row.get("id") or "").strip()
+                if value:
+                    observed_ids.add(value)
+        candidates.update(observed_ids)
+    except Exception:
+        pass
+    if model_id:
+        if model_id not in candidates:
+            return None, None
+    else:
+        preferred = str(process.get("alias") or "").strip()
+        if preferred:
+            model_id = preferred
+        elif len(observed_ids) == 1:
+            model_id = next(iter(observed_ids))
+        else:
+            model_id = model_path.stem
+    if not model_id or "reference" in model_id.lower() or model_id == "stegverse-reference-lm-v1":
+        return None, None
+    return model_id, process
+
+
+def build_llamacpp_subject_identity(
+    endpoint: str,
+    model: str,
+    *,
+    proc_root: Path = Path("/proc"),
+    urlopen: Callable[..., Any] = urllib.request.urlopen,
+) -> dict[str, Any]:
+    endpoint = endpoint.rstrip("/")
+    if not loopback_endpoint(endpoint):
+        raise RuntimeError("principal model endpoint must be loopback/private")
+    if model == "stegverse-reference-lm-v1" or "reference" in model.lower():
+        raise RuntimeError("reference model is not a qualifying principal subject model")
+
+    discovered, process = discover_llamacpp_model(
+        endpoint,
+        model,
+        proc_root=proc_root,
+        urlopen=urlopen,
+    )
+    if discovered != model or not isinstance(process, dict):
+        raise RuntimeError("llama.cpp model/process identity not independently observed")
+    executable = Path(process["executable"]).resolve()
+    model_path = Path(process["model_path"]).resolve()
+    return {
+        "schema": "stegverse.self-characterization-runtime-identity/v0.1",
+        "model_id": model,
+        "endpoint": endpoint,
+        "model_digest": file_digest(model_path),
+        "runtime_digest": file_digest(executable),
+        "runtime_executable": str(executable),
+        "process_id": int(process["pid"]),
+        "runtime_engine": "llama.cpp",
+        "model_artifact_path": str(model_path),
+        "identity_source": "LOCAL_LLAMACPP_PROCESS_PLUS_EXACT_GGUF",
+        "network_fetch_performed": False,
+        "credential_required": False,
+        "credential_authority": "TV/TVC",
+        "authority_effect": "NONE",
+    }
+
+
 def build_ollama_subject_identity(
     endpoint: str,
     model: str,
@@ -221,10 +403,16 @@ def resolve_subject_identity(endpoint: str, model: str) -> tuple[dict[str, Any] 
         if value.get("model_id") != model or str(value.get("endpoint") or "").rstrip("/") != endpoint.rstrip("/"):
             return None, "EXPLICIT_SUBJECT_IDENTITY_BINDING_MISMATCH"
         return value, None
+    errors = []
     try:
         return build_ollama_subject_identity(endpoint, model), None
     except Exception as exc:
-        return None, "SUBJECT_IDENTITY_NOT_INDEPENDENTLY_VERIFIED:" + str(exc)
+        errors.append("ollama=" + str(exc))
+    try:
+        return build_llamacpp_subject_identity(endpoint, model), None
+    except Exception as exc:
+        errors.append("llama.cpp=" + str(exc))
+    return None, "SUBJECT_IDENTITY_NOT_INDEPENDENTLY_VERIFIED:" + ";".join(errors)
 
 
 def attempt_master_records_reconstruction(state_root: Path) -> dict[str, Any]:
