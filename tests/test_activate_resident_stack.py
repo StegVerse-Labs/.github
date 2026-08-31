@@ -29,10 +29,23 @@ class ResidentStackActivationTests(unittest.TestCase):
             (llm / "scripts").mkdir(parents=True)
             stegos = root / "StegOS"
             kv = root / "continuity-vault-kit"
+            healer = root / "StegVerse-Healer"
+            tvc = root / "TVC"
             (stegos / "stegos").mkdir(parents=True)
             (kv / "runtime").mkdir(parents=True)
             (stegos / "stegos" / "intr_backbone.py").write_text("# intr\n")
             (kv / "runtime" / "kv_interlock_endpoint.py").write_text("# kv\n")
+            (healer / "app").mkdir(parents=True)
+            (healer / "data").mkdir(parents=True)
+            (healer / "docs").mkdir(parents=True)
+            (healer / "app" / "dispatch_orchestrators.py").write_text("# dispatch\n")
+            (healer / "data" / "orchestrator_targets.json").write_text("{}\n")
+            (healer / "docs" / "HEALER_MIRROR_HANDOFF.md").write_text("# handoff\n")
+            (tvc / "scripts").mkdir(parents=True)
+            (tvc / "tools").mkdir(parents=True)
+            (tvc / "TVC_MIRROR_HANDOFF.md").write_text("# handoff\n")
+            (tvc / "scripts" / "activate_coinbase_intr_resident.py").write_text("# activate\n")
+            (tvc / "tools" / "hil_intr_lifecycle_intake.py").write_text("# intake\n")
             (source / "scripts" / "package_sovereign_control_plane_bundle.py").write_text("# packager\n")
             (llm / "scripts" / "stegdeploy_bootstrap.py").write_text("# deploy\n")
             receipt_path = root / "activation.json"
@@ -72,6 +85,8 @@ class ResidentStackActivationTests(unittest.TestCase):
                 llm,
                 stegos_root=stegos,
                 kv_source_root=kv,
+                healer_root=healer,
+                tvc_root=tvc,
                 health_url="http://127.0.0.1:8000/health",
                 receipt_path=receipt_path,
                 runner=runner,
@@ -84,6 +99,8 @@ class ResidentStackActivationTests(unittest.TestCase):
             self.assertFalse(receipt["g18_required_for_stack_completion"])
             self.assertTrue(receipt["stegos_source_bundled"])
             self.assertTrue(receipt["kv_source_bundled"])
+            self.assertTrue(receipt["healer_source_bundled"])
+            self.assertTrue(receipt["tvc_source_bundled"])
             self.assertTrue(receipt["tvc_skap_successor_attempted"])
             self.assertEqual(receipt["tvc_skap_successor_state"], "ACTIVE")
             self.assertEqual(receipt["github_token_runtime_authority"], "NONE")
