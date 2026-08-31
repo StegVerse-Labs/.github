@@ -27,13 +27,38 @@ class HBDerivedInTrCarrierTests(unittest.TestCase):
         self.assertEqual(later["heartbeat_epoch"], 34)
         self.assertEqual(later["phase_offset_ms"], 7)
 
-    def test_channel_is_packet_deterministic(self):
-        a = derive_channel("INTR-" + "2" * 24)
-        b = derive_channel("INTR-" + "2" * 24)
+    def test_channel_is_payload_deterministic(self):
+        payload_hash = "sha256:" + "2" * 64
+        a = derive_channel(payload_hash)
+        b = derive_channel(payload_hash)
         self.assertEqual(a, b)
         self.assertEqual(a["channel_family"], "H1_PHASE_SLOTS")
         self.assertGreaterEqual(a["phase_slot"], 0)
         self.assertLess(a["phase_slot"], 16)
+
+    def test_binding_channel_matches_exact_carrier_profile(self):
+        raw = b"canonical exact carrier bytes"
+        import hashlib
+        payload_hash = "sha256:" + hashlib.sha256(raw).hexdigest()
+        packet = "INTR-" + "9" * 24
+        binding = build_carrier_binding(
+            packet_id=packet,
+            payload_hash=payload_hash,
+            sampled_unix_ms=PROTOCOL_ANCHOR_UNIX_NS // 1_000_000,
+        )
+        from heartbeat_runtime.intr_derived_carrier import derive_intr_carrier_signal
+        signal = derive_intr_carrier_signal(
+            packet_id=packet,
+            payload_hash=payload_hash,
+            sampled_unix_ms=PROTOCOL_ANCHOR_UNIX_NS // 1_000_000,
+            packet_bytes=raw,
+            intr_transport_profile="stegverse.universal-intr.adjacent-hop/v1",
+            boundary_from="DEVICE_SYSTEM",
+            boundary_to="STEGOS_ECOSYSTEM",
+            packet_receipt_hash="a" * 64,
+        )
+        self.assertEqual(binding["channel"]["phase_slot"], signal["carrier"]["channel_slot"])
+        self.assertEqual(binding["channel"]["channel_id"], signal["carrier"]["channel_id"])
 
     def test_binding_round_trip_and_authority_separation(self):
         sample_ms = PROTOCOL_ANCHOR_UNIX_NS // 1_000_000 + 1234
@@ -78,6 +103,7 @@ class HBDerivedInTrCarrierTests(unittest.TestCase):
         self.assertTrue(p["legacy_unbound_packets_temporarily_accepted"])
         self.assertFalse(p["carrier_presence_grants_admission_authority"])
         self.assertFalse(p["carrier_presence_grants_execution_authority"])
+        self.assertEqual(p["channel_selection"], "PAYLOAD_SHA256_FIRST64_MOD_16")
         universal = ingress.profile(True)
         self.assertEqual(universal["heartbeat_derived_carrier"], p)
 

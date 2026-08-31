@@ -100,7 +100,7 @@
           "exclusiveMaximum": 360
         },
         "channel_derivation": {
-          "const": "SHA256_PACKET_ID_FIRST32_MOD_16"
+          "const": "PAYLOAD_SHA256_FIRST64_MOD_16"
         },
         "phase_plan_changes_reference_interval": {
           "const": false

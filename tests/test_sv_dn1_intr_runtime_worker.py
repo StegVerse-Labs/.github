@@ -245,7 +245,7 @@ class SvDn1IntrRuntimeWorkerTests(unittest.TestCase):
         self.assertEqual(a["signal"]["carrier"]["phase_slots"], 16)
         self.assertEqual(
             a["signal"]["carrier"]["channel_derivation"],
-            "SHA256_PACKET_ID_FIRST32_MOD_16",
+            "PAYLOAD_SHA256_FIRST64_MOD_16",
         )
         self.assertEqual(
             a["receipt"]["carrier_packet_id"],

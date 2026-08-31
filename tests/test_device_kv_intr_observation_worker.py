@@ -142,7 +142,7 @@ class DeviceKVInTrObservationWorkerTests(unittest.TestCase):
         self.assertEqual(worker.recover_intr_packet_bytes(signal), payload)
         self.assertEqual(signal["carrier"]["reference_rate_hz"], 100.0)
         self.assertEqual(signal["carrier"]["phase_slots"], 16)
-        self.assertEqual(signal["carrier"]["channel_derivation"], "SHA256_PACKET_ID_FIRST32_MOD_16")
+        self.assertEqual(signal["carrier"]["channel_derivation"], "PAYLOAD_SHA256_FIRST64_MOD_16")
         self.assertEqual(signal["carrier"]["progression_dependency"], "OSCILLATOR_ONLY")
         self.assertFalse(signal["authority"]["derived_carrier_grants_receiving_authority"])
         self.assertEqual(signal["authority"]["authority_effect"], "NONE_CARRIER_ONLY")
