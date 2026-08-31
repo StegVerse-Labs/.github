@@ -2,7 +2,7 @@
 
 Updated: 2026-08-30
 Repository: StegVerse-Labs/.github
-Issues: #484, #490, #573, #594
+Issues: #484, #490, #573, #594, #598
 Branch: main
 
 ## Source of truth
@@ -219,7 +219,7 @@ Runtime evidence remains pending until a qualifying already-running principal is
 
 The machine-owned resident request must not require a chat/session to pre-populate endpoint/model variables before it can observe an already-running qualifying principal.
 
-Issue `#598` adds bounded local-only discovery:
+Issue `#598` / PR `#599` is CLOSED / MERGED / VALIDATED as `c22be66031f79047f5f30c05461401590971f8d0`. It adds bounded local-only discovery:
 
 ```text
 explicit endpoint + model -> preserve exact operator/runtime binding
@@ -232,3 +232,9 @@ none observed -> BLOCKED / retry remains lawful
 ```
 
 Discovery performs no process launch, package/model installation, model download, remote endpoint search, credential operation, or selection among multiple candidates. Exact subject identity must still pass the independent Ollama or llama.cpp process/artifact verifier before S0.
+
+Validation evidence:
+- Heartbeat Worker Project `33352732982`: SUCCESS, including complete deterministic repository suite;
+- organization control plane `33352733022`: SUCCESS.
+
+The resident request can now observe an already-running canonical local principal without session-prepopulated endpoint/model variables.
