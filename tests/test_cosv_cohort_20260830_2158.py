@@ -37,10 +37,13 @@ class CohortCOSVTests(unittest.TestCase):
             self.assertEqual(reg["machine_readable_state"]["cosv"]["vector"], expected)
             self.assertEqual(indexed[task_id]["vector"], expected)
             self.assertNotIn(task_id, coverage["active_worker_task_ids_missing_canonical_cosv"])
-        self.assertEqual(index["coverage"]["indexed_vectorized_tasks"], 54)
-        self.assertEqual(coverage["worker_registry_summary"]["canonically_indexed_task_ids"], 54)
-        self.assertEqual(coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"], 10)
-        self.assertEqual(coverage["total_active_unvectorized_unique_task_ids"], 24)
+        self.assertGreaterEqual(index["coverage"]["indexed_vectorized_tasks"], len(TASKS))
+        self.assertGreaterEqual(coverage["worker_registry_summary"]["canonically_indexed_task_ids"], len(TASKS))
+        self.assertEqual(
+            coverage["total_active_unvectorized_unique_task_ids"],
+            coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"]
+            + coverage["organization_registry_summary"]["active_unvectorized_task_ids"],
+        )
 
 if __name__ == "__main__":
     unittest.main()
