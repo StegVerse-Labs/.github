@@ -27,6 +27,12 @@ class ResidentStackActivationTests(unittest.TestCase):
             llm = root / "llm"
             (source / "scripts").mkdir(parents=True)
             (llm / "scripts").mkdir(parents=True)
+            stegos = root / "StegOS"
+            kv = root / "continuity-vault-kit"
+            (stegos / "stegos").mkdir(parents=True)
+            (kv / "runtime").mkdir(parents=True)
+            (stegos / "stegos" / "intr_backbone.py").write_text("# intr\n")
+            (kv / "runtime" / "kv_interlock_endpoint.py").write_text("# kv\n")
             (source / "scripts" / "package_sovereign_control_plane_bundle.py").write_text("# packager\n")
             (llm / "scripts" / "stegdeploy_bootstrap.py").write_text("# deploy\n")
             receipt_path = root / "activation.json"
@@ -62,6 +68,8 @@ class ResidentStackActivationTests(unittest.TestCase):
             receipt = module.activate(
                 source,
                 llm,
+                stegos_root=stegos,
+                kv_source_root=kv,
                 health_url="http://127.0.0.1:8000/health",
                 receipt_path=receipt_path,
                 runner=runner,
@@ -69,6 +77,8 @@ class ResidentStackActivationTests(unittest.TestCase):
             )
             self.assertEqual(receipt["state"], "COMPLETE")
             self.assertTrue(receipt["g18_activation_complete"])
+            self.assertTrue(receipt["stegos_source_bundled"])
+            self.assertTrue(receipt["kv_source_bundled"])
             self.assertTrue(receipt["tvc_skap_successor_attempted"])
             self.assertEqual(receipt["tvc_skap_successor_state"], "ACTIVE")
             self.assertEqual(receipt["github_token_runtime_authority"], "NONE")
