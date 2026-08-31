@@ -467,14 +467,11 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     repository_authority_required = request.get("repository_authority_continuation_requested") is True
     repository_authority_handoff_observed = False
     if terminal and compatibility_observed and repository_authority_required:
-        if control_root is None:
-            control_root, control_observed = local_tvc_control_root(cleaned)
-        if control_root is not None:
-            repository_authority_handoff = run_tvc_repository_authority_handoff(
-                runtime,
-                request_id=str(request["request_id"]),
-            )
-            repository_authority_handoff_observed = repository_authority_handoff.get("request_staged_or_owned") is True
+        repository_authority_handoff = run_tvc_repository_authority_handoff(
+            runtime,
+            request_id=str(request["request_id"]),
+        )
+        repository_authority_handoff_observed = repository_authority_handoff.get("request_staged_or_owned") is True
     validation_and_compatibility = terminal and (not compatibility_required or compatibility_observed)
     downstream_handoff_satisfied = (not repository_authority_required or repository_authority_handoff_observed)
     state = "COMPLETED" if validation_and_compatibility and downstream_handoff_satisfied else "HANDOFF_READY"
