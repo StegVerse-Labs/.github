@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "sv_dn1_publication_observer",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 6,
+    "expected_idle_beats": 12,
+    "expiry_candidate_beats": 144,
+    "confidence": "LOW_UNTIL_FIRST_PUBLIC_OBSERVATION"
+  },
+  "cost_estimate": {
+    "compute_units": 2,
+    "token_units": 0,
+    "storage_bytes": 4194304,
+    "network_bytes": 1048576,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "docs/SV_DN1_PUBLICATION_OBSERVER_TASK_MIRROR_HANDOFF.md",
+    "handoffs/SV-DN1-PUBLICATION-OBSERVER-001.json",
+    "workers/sv_dn1_publication_observer_worker.py"
+  ],
+  "notes": [
+    "Reads one local persistence package and performs five credential-free HTTPS GETs.",
+    "Retries until public bytes exactly match governed package.",
+    "No repository mutation, deployment, SDK, governance, release or credential activity."
+  ]
+}

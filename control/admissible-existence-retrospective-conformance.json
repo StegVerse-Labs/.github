@@ -495,6 +495,16 @@
       "result": "PASS",
       "continuation_owner": "sv002-public-observation-runtime-worker + StegVerse-Labs/.github#462",
       "rationale": "The worker exposes only a node-gated read-only evidence projection through canonical Interlock/InTr. Registration, Node validation, transport receipts, observation projection, and public visibility create no Admissible-Existence capability standing, experiment authority, ontology authority, custody authority, credential authority, or direct observer relation to StegVerse-002."
+    },
+    {
+      "task_id": "SV-DN1-PUBLICATION-OBSERVER-001",
+      "temporal_class": "current",
+      "ae_impact": "NONE",
+      "phase": null,
+      "task_relationship": "validates_capability",
+      "result": "PASS",
+      "continuation_owner": "sv-dn1-publication-observer-worker",
+      "rationale": "The task only observes whether already-governed SV-DN-1 bytes are publicly reachable over a bounded credential-free HTTPS surface. Registration or execution grants no AE capability standing, publication decision, repository mutation, deployment, SDK, governance, custody, credential, release, or certification authority."
     }
   ]
 }

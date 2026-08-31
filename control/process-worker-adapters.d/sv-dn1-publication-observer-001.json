@@ -1,0 +1,42 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SV-DN1-PUBLICATION-OBSERVER-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:sv-dn1-publication-observer-v1",
+      "authority_ref": "handoffs/SV-DN1-PUBLICATION-OBSERVER-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "credential_free_public_https_get",
+        "local_evidence_write"
+      ],
+      "command": [
+        "python",
+        "workers/sv_dn1_publication_observer_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_STATE_ROOT",
+        "STEGVERSE_SV_DN1_SOURCE_ROOT",
+        "STEGVERSE_BOUND_STATE_ROOT",
+        "HOME",
+        "PATH",
+        "SSL_CERT_FILE",
+        "SSL_CERT_DIR"
+      ],
+      "bound_state_root": "~/.stegverse/state/sv-dn1-publication-observer",
+      "bound_state_allowed_paths": [
+        "product-observation/**",
+        "receipts/**"
+      ],
+      "timeout_seconds": 240,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Credential-free HTTPS GET only to canonical SV-DN-1 public Pages origin.",
+        "Returns HANDOFF_READY until exact governed bytes are public.",
+        "No repository mutation, deployment, governance, SDK, release or certification authority."
+      ]
+    }
+  ]
+}
