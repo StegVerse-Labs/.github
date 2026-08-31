@@ -241,3 +241,63 @@ archive_ready_for_heartbeat_activation_workstream: true
 
 DO NOT REINTRODUCE A RESIDENT-DAEMON REQUIREMENT AS HEARTBEAT PROGRESSION AUTHORITY.
 Downstream propagation is complete. Consumer-local projects remain separately governed and must not reopen the terminal heartbeat activation goal.
+
+
+## 2026-08-31 InTr derived-carrier semantic reconciliation
+
+The prior shorthand stating that heartbeat is "not application payload transport" is
+narrowed to preserve the intended authority boundary without incorrectly prohibiting
+carrier use.
+
+Canonical semantics are now:
+
+```text
+HB primary reference:
+  100 Hz / 10 ms
+  oscillator-only progression
+  synchronization/reference substrate
+
+HB-derived carrier signal:
+  deterministic phase/channel derived from the HB reference
+  may carry exact opaque application bytes
+  may carry an already-governed InTr packet
+  does not interpret packet semantics
+  does not change HB progression
+
+InTr:
+  governs the packet carried on the signal
+
+HB and derived carrier:
+  grant no admission
+  grant no execution
+  grant no credential
+  grant no routing
+  grant no transition
+  grant no receiving authority
+```
+
+This reconciliation is consistent with existing runtime evidence rather than inventing a
+new carrier concept. `heartbeat_runtime/engine_v9.py` already carries and persists
+HB-derived subsignals, while `control/heartbeat-subsignals.json` contains current
+`worker_coordination`, `organization_federation`, and `steggate_transport_lease`
+subsignals. `heartbeat_runtime/carrier_envelope.py` already derives deterministic phase
+slots and phase offsets and explicitly states that alternate phases are not authority
+channels.
+
+The new generic opaque InTr binding is defined by:
+
+```text
+docs/HB_INTR_DERIVED_CARRIER_MIRROR_HANDOFF.md
+heartbeat_runtime/intr_derived_carrier.py
+schemas/heartbeat-intr-derived-carrier.schema.json
+tests/test_heartbeat_intr_derived_carrier.py
+```
+
+The primary heartbeat remains transport-neutral with respect to packet semantics and
+authority. "Transport-neutral" no longer means "incapable of carrying bytes"; it means
+the heartbeat substrate does not decide what those bytes mean or whether they are
+admitted, routed, executed, received, or acted upon.
+
+No runtime carrier-bound InTr packet is claimed merely from this source reconciliation.
+Authentic runtime proof requires an observed signal binding an exact InTr receipt hash,
+packet SHA-256, HB reference, channel slot, phase offset, and observer evidence.

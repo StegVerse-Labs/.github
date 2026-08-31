@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/heartbeat-intr-derived-carrier.schema.json",
+  "title": "StegVerse HB-derived InTr packet carrier",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "signal_id", "kind", "carrier", "intr", "authority"],
+  "properties": {
+    "schema": {"const": "stegverse.heartbeat-intr-derived-carrier/v1"},
+    "signal_id": {"type": "string", "minLength": 1},
+    "kind": {"const": "INTR_PACKET_DERIVED_CARRIER"},
+    "carrier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary", "heartbeat_epoch", "heartbeat_reference", "reference_rate_hz", "reference_period_ms", "progression_dependency", "phase_slots", "channel_slot", "phase_offset_deg", "phase_plan_changes_reference_interval"],
+      "properties": {
+        "primary": {"const": "STEGVERSE_HEARTBEAT"},
+        "heartbeat_epoch": {"type": "integer", "minimum": 0},
+        "heartbeat_reference": {"type": "string", "minLength": 1},
+        "reference_rate_hz": {"const": 100.0},
+        "reference_period_ms": {"const": 10.0},
+        "progression_dependency": {"const": "OSCILLATOR_ONLY"},
+        "phase_slots": {"type": "integer", "minimum": 1},
+        "channel_slot": {"type": "integer", "minimum": 0},
+        "phase_offset_deg": {"type": "number", "minimum": 0, "exclusiveMaximum": 360},
+        "phase_plan_changes_reference_interval": {"const": false}
+      }
+    },
+    "intr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transport_profile", "boundary_from", "boundary_to", "packet_receipt_hash", "packet_sha256", "packet_encoding", "packet_base64", "packet_semantics_interpreted_by_heartbeat", "packet_governance_external_to_heartbeat"],
+      "properties": {
+        "transport_profile": {"type": "string", "minLength": 1},
+        "boundary_from": {"type": "string", "minLength": 1},
+        "boundary_to": {"type": "string", "minLength": 1},
+        "packet_receipt_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "packet_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "packet_encoding": {"const": "base64"},
+        "packet_base64": {"type": "string", "minLength": 1},
+        "packet_semantics_interpreted_by_heartbeat": {"const": false},
+        "packet_governance_external_to_heartbeat": {"const": true}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["heartbeat_grants_admission_authority", "heartbeat_grants_execution_authority", "heartbeat_grants_credential_authority", "heartbeat_grants_routing_authority", "heartbeat_grants_transition_authority", "heartbeat_grants_receiving_authority", "derived_carrier_grants_admission_authority", "derived_carrier_grants_execution_authority", "derived_carrier_grants_credential_authority", "derived_carrier_grants_routing_authority", "derived_carrier_grants_transition_authority", "derived_carrier_grants_receiving_authority", "credential_authority", "authority_effect"],
+      "properties": {
+        "heartbeat_grants_admission_authority": {"const": false},
+        "heartbeat_grants_execution_authority": {"const": false},
+        "heartbeat_grants_credential_authority": {"const": false},
+        "heartbeat_grants_routing_authority": {"const": false},
+        "heartbeat_grants_transition_authority": {"const": false},
+        "heartbeat_grants_receiving_authority": {"const": false},
+        "derived_carrier_grants_admission_authority": {"const": false},
+        "derived_carrier_grants_execution_authority": {"const": false},
+        "derived_carrier_grants_credential_authority": {"const": false},
+        "derived_carrier_grants_routing_authority": {"const": false},
+        "derived_carrier_grants_transition_authority": {"const": false},
+        "derived_carrier_grants_receiving_authority": {"const": false},
+        "credential_authority": {"const": "TV/TVC"},
+        "authority_effect": {"const": "NONE_CARRIER_ONLY"}
+      }
+    }
+  }
+}

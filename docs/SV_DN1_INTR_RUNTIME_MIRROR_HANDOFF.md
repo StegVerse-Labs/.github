@@ -319,3 +319,44 @@ first authentic round analyzed: NOT OBSERVED
 
 Source reconciliation branch:
 `fix/sv-dn1-universal-intr-reconcile-20260829`.
+
+
+## 2026-08-31 HB-derived carrier binding
+
+HB/InTr carrier analysis found that the local heartbeat runtime already propagates
+derived subsignals and already has deterministic phase-slot planning. The missing generic
+InTr binding is now implemented by the HB-derived carrier profile:
+
+```text
+docs/HB_INTR_DERIVED_CARRIER_MIRROR_HANDOFF.md
+heartbeat_runtime/intr_derived_carrier.py
+schema: stegverse.heartbeat-intr-derived-carrier/v1
+```
+
+For SV-DN-1, the canonical Universal InTr packet may therefore be carried as exact opaque
+bytes on a deterministic signal derived from the canonical HB reference.
+
+Required binding evidence for a future authentic runtime observation:
+
+```text
+route_id: SV-DN-1-HF-PUBLIC
+transport_profile: stegverse.universal-intr.adjacent-hop/v1
+boundary_from: EXTERNAL_SYSTEM
+boundary_to: STEGOS_ECOSYSTEM
+exact InTr receipt_hash
+exact packet_sha256
+exact heartbeat_epoch/reference
+deterministic channel_slot
+deterministic phase_offset_deg
+packet bytes recover exactly
+heartbeat progression_dependency: OSCILLATOR_ONLY
+authority_effect: NONE_CARRIER_ONLY
+```
+
+This carrier binding does not replace the existing InTr receipt and does not itself
+admit, route, execute, receive, transition, or authorize the packet. InTr remains the
+packet-governance layer. HB supplies only the synchronization/carrier coordinates.
+
+Existing authentic Universal InTr traversal evidence remains valid. A new
+carrier-binding receipt is a stronger transport-observation predicate and must not be
+inferred retroactively from the existing InTr receipt.
