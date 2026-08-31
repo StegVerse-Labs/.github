@@ -714,3 +714,10 @@ The sovereign control bundle now covers the complete pre-execution source denomi
 The formal resources are emitted from exact pinned Git objects and therefore do not require transported Git metadata. Micro-node, Master Records, and formal snapshot consumers validate the persisted source manifest plus current materialized digests before execution.
 
 This removes missing source/checkouts and `.git` presence as portable resident prerequisites for this lane. It does not establish a qualifying model process, principal execution, reconstruction, public observation, custody, lifecycle activation, or authority.
+
+
+### Independent-task source optionality
+
+The SV002/Master-Records/formal snapshot source set is an optional workload extension of the base resident bundle, not a prerequisite for unrelated resident work. Base resident activation continues with StegOS, continuity-vault-kit, Healer, TV, and TVC when the SV002 source set is absent. In that state the SV002 worker remains fail-closed on its own source predicates while unrelated admitted tasks continue.
+
+This preserves the independent-task rule: a research workload's unavailable source may block that workload, but cannot become a global WorkerCoordinator activation gate.
