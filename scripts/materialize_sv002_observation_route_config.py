@@ -94,7 +94,10 @@ def materialize(env:dict[str,str]|None=None,output:Path|None=None)->dict[str,Any
     try: port=int(values.get("STEGVERSE_SV002_OBSERVE_PORT","8766"))
     except ValueError as exc: raise PredicatePending("SV002 observation port invalid") from exc
     if port<1024 or port>65535: raise PredicatePending("SV002 observation port outside admitted range")
+    master_receipt=str(values.get("STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT","")).strip()
     config={"schema":"stegverse.sv002-public-observation-route-config/v1","stegos_root":str(stegos),"micro_node_root":str(micro),"runtime_root":str(runtime),"host":"127.0.0.1","port":port,"allowed_origin":"https://stegverse.org","boundary_identity_ref":identity,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","public_tls_terminated_by":"STEGVERSE_SHARED_SERVICE_GATEWAY","second_machine_required":False,"authority_effect":"NONE_CONFIG_ONLY"}
+    if master_receipt:
+        config["master_records_reconstruction_receipt"]=str(Path(master_receipt).expanduser().resolve())
     target=(output or Path(values.get("STEGVERSE_SV002_OBSERVE_ROUTE_CONFIG","") or DEFAULT_OUTPUT)).expanduser().resolve(); target.parent.mkdir(parents=True,exist_ok=True)
     serialized=json.dumps(config,indent=2,sort_keys=True)+"\n"
     if target.exists() and target.read_text(encoding="utf-8")==serialized: return {"state":"UNCHANGED","path":str(target),"config":config}
