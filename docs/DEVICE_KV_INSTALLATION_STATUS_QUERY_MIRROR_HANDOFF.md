@@ -3,7 +3,7 @@
 Repository: `StegVerse-Labs/.github`
 Branch: `feat/device-kv-installation-status-query-20260831`
 Updated: 2026-08-31T21:14:00-05:00
-State: ACTIVE_IMPLEMENTATION
+State: MERGED_VALIDATED / AUTHENTIC_NODE_QUERY_OBSERVATION_PENDING
 Credential authority: TV/TVC
 Authority effect: NONE
 
@@ -59,3 +59,29 @@ A verified projection proves current observation of the resident KV root and its
 ## Completion boundary
 
 Source implementation, repository validation, merge. Runtime observation remains separate and requires an authentic node-origin query against current resident `STEGVERSE_KV_ROOT`.
+
+
+## Merge evidence
+
+```text
+PR #725
+merge 0ffe6a5ea61b2a0c24a28b702545ffbd8f6c0ec7
+Validate organization control plane - No GitHub Token Authority: SUCCESS
+Heartbeat Worker Project - Validation Only / No GitHub Token Authority: SUCCESS
+```
+
+Upstream CVK projection is merged at `b62387bb5ddb13dcca6ff5c7c24e5a14a2a10d23`.
+Downstream Site live-first Step 2 integration is merged at `8e5540917531dd34219ada22a568024817c3e956`.
+
+Lifecycle:
+
+```text
+source implementation=true
+source validation=true
+merge=true
+authentic node-origin MY_KV_INSTALLATION_STATUS query observed=false
+authentic resident KV installation projection returned=false
+public iPhone Step 2 observation=false
+```
+
+No source/CI/merge evidence is promoted into runtime observation.
