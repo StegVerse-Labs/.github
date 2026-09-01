@@ -272,5 +272,48 @@ class TestSV002PublicObservationRuntime(unittest.TestCase):
             finally:
                 server.server_close()
 
+
+    def test_master_records_receipt_materializes_write_once_and_exposes_ordered_evidence(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td)
+            runtime=root/"runtime"
+            source=root/"master.json"
+            source.write_text(json.dumps({
+                "experiment_id":mod.EXPERIMENT_ID,
+                "status":"PASS",
+                "reconstruction":"PASS",
+                "checks":{"execution_completed":True},
+                "evidence":{
+                    "artifact_sha256":{"SELF_CHARACTERIZATION.md":"a"*64},
+                    "ordered_transition_receipts":[
+                        {"sequence":0,"transition_receipt_id":"TR-1","transition_receipt_sha256":"b"*64,"transition_class":"CAUSAL_INGRESS_BOUND"}
+                    ],
+                    "repository_ledger_root":{"root_hash":"c"*64},
+                    "organization_ledger_root":{"root_hash":"d"*64},
+                    "repository_ledger_root_hash":"c"*64,
+                    "organization_ledger_root_hash":"d"*64,
+                    "transition_receipt_terminal_sha256":"b"*64
+                }
+            }),encoding="utf-8")
+            prior=os.environ.get(mod.MR_RECEIPT_SOURCE_ENV)
+            os.environ[mod.MR_RECEIPT_SOURCE_ENV]=str(source)
+            try:
+                projection=mod.build_projection(runtime,root/"micro")
+                self.assertEqual(projection["state"]["master_records_reconstruction"],"PASS")
+                self.assertEqual(projection["artifacts"]["ordered_transition_receipts"][0]["transition_receipt_id"],"TR-1")
+                self.assertEqual(projection["artifacts"]["repository_ledger_root_hash"],"c"*64)
+                target=runtime/mod.MR_RECEIPT_REL
+                self.assertTrue(target.is_file())
+                self.assertEqual(target.read_bytes(),source.read_bytes())
+                source.write_text(json.dumps({"experiment_id":mod.EXPERIMENT_ID,"status":"FAIL"}),encoding="utf-8")
+                with self.assertRaisesRegex(mod.ObservationRuntimeError,"write_once_collision"):
+                    mod.build_projection(runtime,root/"micro")
+            finally:
+                if prior is None:
+                    os.environ.pop(mod.MR_RECEIPT_SOURCE_ENV,None)
+                else:
+                    os.environ[mod.MR_RECEIPT_SOURCE_ENV]=prior
+
+
 if __name__ == "__main__":
     unittest.main()
