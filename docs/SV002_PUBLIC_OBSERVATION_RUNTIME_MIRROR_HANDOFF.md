@@ -369,3 +369,20 @@ Portable exact-dispatch source merged in PR #606 as
 public-observation consumption and resident-refresh-dispatch receipts remained absent at
 the post-merge check. The concurrent canonical-runtime lease continuation merged at
 `112416c1393ac957a6ccde9ec42876da0802f687` is preserved.
+
+
+## Master Records-only observation source — 2026-09-01
+
+The public observation projection no longer reads StegVerse-002 worker receipts, principal state roots, human-readable principal output, formal output, or interaction-receipt-chain bytes directly.
+
+Canonical observation flow is now:
+
+```text
+StegVerse-002 state changes / receipts
+-> Master Records custody + reconstruction
+-> StegVerse-Labs read-only projection
+```
+
+The projection may expose Master Records reconstruction status, reconstructed artifact hashes, subject identity hash, and reconstructed capability realizations. It must not maintain a competing privileged state history of StegVerse-002.
+
+Origin-side receipt bytes may still be compared against their Master Records-custodied/reconstructed hashes by a dedicated verifier, but that comparison is an integrity check, not an independent observation history.

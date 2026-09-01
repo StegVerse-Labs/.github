@@ -148,67 +148,66 @@ def _observed_interlock(chain:Any,target:str)->bool:
 
 def build_projection(runtime_root:Path,micro_node_root:Path)->dict[str,Any]:
     runtime=runtime_root.expanduser().resolve()
-    micro=micro_node_root.expanduser().resolve()
-    provenance=_load_json(micro/PROVENANCE_REL)
-    worker=_load_json(runtime/WORKER_RECEIPT_REL)
-    state_root=None
-    if worker and worker.get("state_root"):
-        state_root=Path(str(worker["state_root"])).expanduser().resolve()
-    execution=_load_json(state_root/"EXPERIMENT_EXECUTION_RECEIPT.json") if state_root else None
-    formal=_load_json(state_root/"SELF_CHARACTERIZATION_FORMAL.json") if state_root else None
-    chain=None
-    if state_root and (state_root/"INTERACTION_RECEIPT_CHAIN.json").is_file():
-        try: chain=json.loads((state_root/"INTERACTION_RECEIPT_CHAIN.json").read_text(encoding="utf-8"))
-        except Exception: chain=None
-    human=None
-    if state_root and (state_root/"SELF_CHARACTERIZATION.md").is_file():
-        human=(state_root/"SELF_CHARACTERIZATION.md").read_text(encoding="utf-8")[:262144]
+    _=micro_node_root
     master=_load_json(runtime/MR_RECEIPT_REL)
-    events=[]
-    if worker:
-        events.append({"event":"SELF_CHARACTERIZATION_WORKER_RECEIPT_OBSERVED","state":worker.get("state"),"evidence_ref":WORKER_RECEIPT_REL.as_posix()})
-    if execution:
-        events.append({"event":"PRINCIPAL_EXECUTION_RECEIPT_OBSERVED","state":execution.get("state"),"evidence_ref":str(state_root/"EXPERIMENT_EXECUTION_RECEIPT.json")})
-    for event in _interaction_events(chain):
-        events.append({"event":"INTERACTION_EVIDENCE","evidence":event})
-    ae_known=bool(provenance and (provenance.get("source_organization") or {}).get("availability_known") is True)
-    ae_connected=_observed_interlock(chain,"Admissible-Existence")
+    if not master:
+        return {
+            "schema":"stegverse.sv002.public_observation.projection.v1",
+            "experiment_id":EXPERIMENT_ID,
+            "generated_from_evidence_at":now_iso(),
+            "observation_source":"MASTER_RECORDS_ONLY",
+            "state":{
+                "master_records_reconstruction":"NOT_OBSERVED",
+                "principal_execution":"NOT_OBSERVED",
+                "final_self_characterization":"NOT_OBSERVED",
+            },
+            "topology":{
+                "entities":[{"entity_id":"StegVerse-002","evidence_state":"KNOWN_SUBJECT"}],
+                "relations":[],
+                "observer_direct_relation_to_stegverse_002":False,
+            },
+            "events":[],
+            "artifacts":{"reconstructed_artifact_sha256":{}},
+            "reconstruction":{"state":"NOT_OBSERVED","master_records_required":True},
+            "authority_effect":"NONE",
+            "observer_interaction_target":"READ_ONLY_MASTER_RECORDS_PROJECTION",
+        }
+    checks=master.get("checks") if isinstance(master.get("checks"),dict) else {}
+    evidence=master.get("evidence") if isinstance(master.get("evidence"),dict) else {}
+    artifact_hashes=evidence.get("artifact_sha256") if isinstance(evidence.get("artifact_sha256"),dict) else {}
+    reconstruction_pass=master.get("status")=="PASS" and master.get("reconstruction")=="PASS"
+    execution_reconstructed=bool(checks.get("execution_completed")) and reconstruction_pass
+    self_char_reconstructed=("SELF_CHARACTERIZATION.md" in artifact_hashes) and reconstruction_pass
     return {
         "schema":"stegverse.sv002.public_observation.projection.v1",
         "experiment_id":EXPERIMENT_ID,
         "generated_from_evidence_at":now_iso(),
+        "observation_source":"MASTER_RECORDS_ONLY",
         "state":{
-            "worker_receipt":"OBSERVED" if worker else "NOT_OBSERVED",
-            "worker_state":worker.get("state") if worker else None,
-            "principal_execution":"OBSERVED" if execution else "NOT_OBSERVED",
-            "principal_state":execution.get("state") if execution else None,
-            "final_self_characterization":"OBSERVED" if human is not None else "NOT_OBSERVED",
+            "master_records_reconstruction":"PASS" if reconstruction_pass else str(master.get("status") or "OBSERVED_NONPASS"),
+            "principal_execution":"RECONSTRUCTED" if execution_reconstructed else "NOT_ESTABLISHED",
+            "final_self_characterization":"HASH_RECONSTRUCTED" if self_char_reconstructed else "NOT_ESTABLISHED",
         },
         "topology":{
-            "entities":[
-                {"entity_id":"StegVerse-002","evidence_state":"KNOWN_SUBJECT"},
-                {"entity_id":"Admissible-Existence","evidence_state":"KNOWN_AVAILABLE_FROM_CONSTRUCTION_PROVENANCE" if ae_known else "NOT_ESTABLISHED"},
-            ],
+            "entities":[{"entity_id":"StegVerse-002","evidence_state":"KNOWN_SUBJECT"}],
             "relations":[],
-            "admissible_existence_interlock":"CONNECTED" if ae_connected else "NOT_CONNECTED",
             "observer_direct_relation_to_stegverse_002":False,
+            "relationship_state_source":"MASTER_RECORDS_ONLY",
         },
-        "knowledge":{
-            "admissible_existence":{
-                "availability":"KNOWN_AVAILABLE_FROM_CONSTRUCTION_PROVENANCE" if ae_known else "NOT_ESTABLISHED",
-                "interlock":"CONNECTED" if ae_connected else "NOT_CONNECTED",
-                "provenance":provenance,
-            }
-        },
-        "events":events,
+        "events":[{
+            "event":"MASTER_RECORDS_RECONSTRUCTION_RECEIPT_OBSERVED",
+            "status":master.get("status"),
+            "receipt_sha256":master.get("receipt_sha256"),
+            "evidence_ref":MR_RECEIPT_REL.as_posix(),
+        }],
         "artifacts":{
-            "self_characterization":human,
-            "formal_result":formal,
-            "interaction_receipt_chain":chain,
+            "reconstructed_artifact_sha256":artifact_hashes,
+            "subject_identity_sha256":evidence.get("subject_identity_sha256"),
+            "capability_realizations":evidence.get("capability_realizations"),
         },
-        "reconstruction":master if master else {"state":"NOT_OBSERVED","master_records_required":True},
+        "reconstruction":master,
         "authority_effect":"NONE",
-        "observer_interaction_target":"READ_ONLY_OBSERVATION_PROJECTION",
+        "observer_interaction_target":"READ_ONLY_MASTER_RECORDS_PROJECTION",
     }
 
 def process_observation(request:dict[str,Any],*,runtime_root:Path,micro_node_root:Path,stegos_root:Path,authorization_id:str,boundary_identity_ref:str)->dict[str,Any]:
