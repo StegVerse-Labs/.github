@@ -19,6 +19,7 @@ TASK_ID="SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001"
 EXPERIMENT_ID="STEGVERSE-002-SELF-CHARACTERIZATION-001"
 WORKER_RECEIPT_REL=Path("receipts/sv002-self-characterization/SHWP-SV002-SELF-CHARACTERIZATION-001.json")
 MR_RECEIPT_REL=Path("receipts/sv002-self-characterization/master-records-reconstruction.latest.json")
+MR_RECEIPT_SOURCE_ENV="STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT"
 PROVENANCE_REL=Path("experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json")
 
 class ObservationRuntimeError(ValueError): pass
@@ -47,6 +48,31 @@ def _load_json(path:Path)->dict[str,Any]|None:
         return value if isinstance(value,dict) else None
     except Exception:
         return None
+
+def _materialize_master_records_receipt(runtime:Path)->Path|None:
+    source_raw=str(os.environ.get(MR_RECEIPT_SOURCE_ENV,"")).strip()
+    if not source_raw:
+        return None
+    source=Path(source_raw).expanduser().resolve()
+    if not source.is_file():
+        return None
+    raw=source.read_bytes()
+    try:
+        value=json.loads(raw.decode("utf-8"))
+    except Exception as exc:
+        raise ObservationRuntimeError("master_records_reconstruction_source_invalid_json") from exc
+    if not isinstance(value,dict) or value.get("experiment_id")!=EXPERIMENT_ID:
+        raise ObservationRuntimeError("master_records_reconstruction_source_binding_mismatch")
+    target=runtime/MR_RECEIPT_REL
+    target.parent.mkdir(parents=True,exist_ok=True)
+    if target.exists():
+        if target.read_bytes()!=raw:
+            raise ObservationRuntimeError("master_records_reconstruction_projection_write_once_collision")
+        return target
+    tmp=target.with_suffix(target.suffix+".tmp")
+    tmp.write_bytes(raw)
+    os.replace(tmp,target)
+    return target
 
 def _validate_genesis(observer:Mapping[str,Any])->dict[str,Any]:
     genesis=observer.get("genesis_receipt")
@@ -149,6 +175,7 @@ def _observed_interlock(chain:Any,target:str)->bool:
 def build_projection(runtime_root:Path,micro_node_root:Path)->dict[str,Any]:
     runtime=runtime_root.expanduser().resolve()
     _=micro_node_root
+    _materialize_master_records_receipt(runtime)
     master=_load_json(runtime/MR_RECEIPT_REL)
     if not master:
         return {
@@ -204,6 +231,12 @@ def build_projection(runtime_root:Path,micro_node_root:Path)->dict[str,Any]:
             "reconstructed_artifact_sha256":artifact_hashes,
             "subject_identity_sha256":evidence.get("subject_identity_sha256"),
             "capability_realizations":evidence.get("capability_realizations"),
+            "ordered_transition_receipts":evidence.get("ordered_transition_receipts"),
+            "repository_ledger_root":evidence.get("repository_ledger_root"),
+            "organization_ledger_root":evidence.get("organization_ledger_root"),
+            "repository_ledger_root_hash":evidence.get("repository_ledger_root_hash"),
+            "organization_ledger_root_hash":evidence.get("organization_ledger_root_hash"),
+            "transition_receipt_terminal_sha256":evidence.get("transition_receipt_terminal_sha256"),
         },
         "reconstruction":master,
         "authority_effect":"NONE",
