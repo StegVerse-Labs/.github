@@ -386,3 +386,17 @@ The retained reusable worker has nevertheless been repaired so the reference imp
 - verifier execution is now from the exact bytes resolved from the pinned Git commit object and verified against the pinned Git blob, rather than comparing a historical pin to the current working-tree file.
 
 These repairs close the stale reusable-pattern defects identified by external pre-run review. They do not restore cross-organization principal execution authority to StegVerse-Labs and are not the canonical T0 execution path.
+
+
+## v0.7 pre-T0 compatibility/pin repair — 2026-09-01
+
+This StegVerse-Labs principal worker remains **reference-only** under the organizational ownership correction above. Canonical StegVerse-002 execution remains owned by `StegVerse-002/.github`.
+
+The retained reusable worker has nevertheless been repaired so the reference implementation cannot misclassify the frozen v0.3 artifact set:
+
+- `load_completed_principal_state()` accepts the canonical v0.2 or v0.3 execution-receipt schema;
+- v0.3 completion requires the additional live transition logs and repository/organization ledger roots;
+- the Master Records verifier pin is advanced to the reviewed canonical orchestration source;
+- verifier execution is now from the exact bytes resolved from the pinned Git commit object and verified against the pinned Git blob, rather than comparing a historical pin to the current working-tree file.
+
+These repairs close the stale reusable-pattern defects identified by external pre-run review. They do not restore cross-organization principal execution authority to StegVerse-Labs and are not the canonical T0 execution path.
