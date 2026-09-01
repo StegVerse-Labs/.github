@@ -54,6 +54,7 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
             self.assertTrue((target / "heartbeat_runtime" / "worker_runtime.py").is_file())
             self.assertTrue((target / "scripts" / "run_heartbeat_runtime.py").is_file())
             self.assertTrue((target / "scripts" / "run_worker_runtime.py").is_file())
+            self.assertTrue((target / "scripts" / "consume_universal_governance_enforced_reference_request.py").is_file())
             self.assertTrue((target / "management" / "SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json").is_file())
             written = json.loads((target / "receipts" / "sovereign-host" / "materialization.latest.json").read_text())
             self.assertEqual(written["canonical_runtime"], receipt["canonical_runtime"])
@@ -158,6 +159,33 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
                 receipt["safe_local_worker_bindings"],
                 ["STEGVERSE_HEALER_ROOT", "STEGVERSE_LLM_ADAPTER_ROOT", "STEGVERSE_REPO_ROOTS_JSON", "STEGVERSE_RESIDENT_SOURCE_MANIFEST"],
             )
+
+    def test_worker_service_preserves_universal_governance_local_source_bindings(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            root = base / "heartbeat"
+            stegcore = base / "StegCore"
+            master = base / "core-lite"
+            stegcore.mkdir()
+            master.mkdir()
+            mod.materialize(ROOT, root)
+            receipt = mod.materialize_service(
+                root,
+                system="linux",
+                env={
+                    "XDG_CONFIG_HOME": str(base / "config"),
+                    "STEGVERSE_STEGCORE_SOURCE_ROOT": str(stegcore),
+                    "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT": str(master),
+                },
+            )
+            worker_text = Path(receipt["worker_registration_path"]).read_text(encoding="utf-8")
+            carrier_text = Path(receipt["carrier_registration_path"]).read_text(encoding="utf-8")
+            self.assertIn("STEGVERSE_STEGCORE_SOURCE_ROOT=" + str(stegcore), worker_text)
+            self.assertIn("STEGVERSE_MASTER_RECORDS_SOURCE_ROOT=" + str(master), worker_text)
+            self.assertNotIn("STEGVERSE_STEGCORE_SOURCE_ROOT", carrier_text)
+            self.assertNotIn("STEGVERSE_MASTER_RECORDS_SOURCE_ROOT", carrier_text)
+            self.assertIn("STEGVERSE_STEGCORE_SOURCE_ROOT", receipt["safe_local_worker_bindings"])
+            self.assertIn("STEGVERSE_MASTER_RECORDS_SOURCE_ROOT", receipt["safe_local_worker_bindings"])
 
     def test_worker_service_rejects_source_root_equal_to_runtime_root(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
