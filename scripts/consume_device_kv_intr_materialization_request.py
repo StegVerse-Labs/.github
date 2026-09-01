@@ -33,6 +33,7 @@ QUERY_RESPONSE_LATEST_REL = Path("receipts/sovereign-host/device-kv-query-respon
 KV_QUERY_SCHEMA = "kv.interlock.request.v1"
 KV_DIRECTORY_RECORD_CLASS = "MY_KV_DIRECTORY_PROJECTION"
 KV_HEALTH_RECORD_CLASS = "MY_KV_CONNECTION_HEALTH"
+KV_INSTALLATION_RECORD_CLASS = "MY_KV_INSTALLATION_STATUS"
 DESTINATION = {"boundary":"KV","subsystem":"KnowledgeVault:Interlock"}
 DOWNSTREAM_OWNER = "StegVerse-Labs/continuity-vault-kit#79"
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
@@ -82,7 +83,7 @@ def _load_cvk_projection_module(source_root:Path):
         raise DeviceKVMaterializationError("portable_cvk_directory_projection_loader_unavailable")
     module=importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    if not hasattr(module,"list_admitted_directory") or not hasattr(module,"get_directory_health"):
+    if not hasattr(module,"list_admitted_directory") or not hasattr(module,"get_directory_health") or not hasattr(module,"get_installation_status"):
         raise DeviceKVMaterializationError("portable_cvk_directory_projection_entrypoint_missing")
     return module
 
@@ -101,9 +102,16 @@ def validate_kv_query(req:dict[str,Any],ing:dict[str,Any])->dict[str,Any]:
         raise DeviceKVMaterializationError("kv_query_field_set_invalid")
     if query.get("schema_version")!=KV_QUERY_SCHEMA or query.get("operation")!="REQUEST":
         raise DeviceKVMaterializationError("kv_query_schema_or_operation_invalid")
+    record_class=query.get("record_class")
     requester=query.get("requester")
-    if requester!={"module":"Site","component":"MyKVDirectory"}:
-        raise DeviceKVMaterializationError("kv_query_requester_invalid")
+    if record_class in {KV_DIRECTORY_RECORD_CLASS,KV_HEALTH_RECORD_CLASS}:
+        if requester!={"module":"Site","component":"MyKVDirectory"}:
+            raise DeviceKVMaterializationError("kv_query_requester_invalid")
+    elif record_class==KV_INSTALLATION_RECORD_CLASS:
+        if requester!={"module":"Site","component":"MyKVOnboarding"}:
+            raise DeviceKVMaterializationError("kv_query_requester_invalid")
+    else:
+        raise DeviceKVMaterializationError("kv_query_record_class_invalid")
     if not isinstance(query.get("request_id"),str) or not query["request_id"]:
         raise DeviceKVMaterializationError("kv_query_request_id_required")
     if not isinstance(query.get("purpose"),str) or not query["purpose"]:
@@ -113,16 +121,19 @@ def validate_kv_query(req:dict[str,Any],ing:dict[str,Any])->dict[str,Any]:
     if query.get("disclosure_mode")!="BOUNDED_CONTEXT":
         raise DeviceKVMaterializationError("kv_query_disclosure_mode_invalid")
     selector=query.get("selector")
-    if not isinstance(selector,dict) or set(selector)!={"directory_id","canonical_path"}:
-        raise DeviceKVMaterializationError("kv_query_selector_invalid")
-    if not all(isinstance(selector.get(key),str) and selector.get(key) for key in ("directory_id","canonical_path")):
-        raise DeviceKVMaterializationError("kv_query_selector_invalid")
+    if record_class in {KV_DIRECTORY_RECORD_CLASS,KV_HEALTH_RECORD_CLASS}:
+        if not isinstance(selector,dict) or set(selector)!={"directory_id","canonical_path"}:
+            raise DeviceKVMaterializationError("kv_query_selector_invalid")
+        if not all(isinstance(selector.get(key),str) and selector.get(key) for key in ("directory_id","canonical_path")):
+            raise DeviceKVMaterializationError("kv_query_selector_invalid")
+    else:
+        if selector!={"receipt_path":"_System/installation.receipt.json"}:
+            raise DeviceKVMaterializationError("kv_installation_query_selector_invalid")
     node_id=ing.get("node_id")
     if ing.get("transport_origin")!="STEGOS_NODE_OUTBOX" or not isinstance(node_id,str) or not node_id:
         raise DeviceKVMaterializationError("kv_query_requires_node_origin")
     if query.get("authority_ref")!="stegos-node://"+node_id:
         raise DeviceKVMaterializationError("kv_query_node_authority_binding_mismatch")
-    record_class=query.get("record_class")
     scopes=query.get("requested_scope")
     if record_class==KV_DIRECTORY_RECORD_CLASS:
         if scopes!=["entries","connection_health"]:
@@ -130,8 +141,9 @@ def validate_kv_query(req:dict[str,Any],ing:dict[str,Any])->dict[str,Any]:
     elif record_class==KV_HEALTH_RECORD_CLASS:
         if scopes!=["connection_health"]:
             raise DeviceKVMaterializationError("kv_health_query_scope_invalid")
-    else:
-        raise DeviceKVMaterializationError("kv_query_record_class_invalid")
+    elif record_class==KV_INSTALLATION_RECORD_CLASS:
+        if scopes!=["installation_status"]:
+            raise DeviceKVMaterializationError("kv_installation_query_scope_invalid")
     if req.get("payload_ref")!="inline://materialization_request.kv_request":
         raise DeviceKVMaterializationError("kv_query_payload_ref_invalid")
     if req.get("payload_hash")!=sha(query):
@@ -171,12 +183,14 @@ def execute_kv_query(req:dict[str,Any],ing:dict[str,Any],env:dict[str,str],runti
                 directory_id=selector["directory_id"],
                 canonical_path=selector["canonical_path"],
             )
-        else:
+        elif query["record_class"]==KV_HEALTH_RECORD_CLASS:
             projection=module.get_directory_health(
                 kv_data_root=data_root,
                 directory_id=selector["directory_id"],
                 canonical_path=selector["canonical_path"],
             )
+        else:
+            projection=module.get_installation_status(kv_data_root=data_root)
     except Exception as exc:
         raise DeviceKVMaterializationError("kv_query_projection_failed:"+type(exc).__name__+":"+str(exc)) from exc
     if not isinstance(projection,dict):
@@ -196,8 +210,10 @@ def execute_kv_query(req:dict[str,Any],ing:dict[str,Any],env:dict[str,str],runti
         "query_request_hash":sha(query),
         "query_request_id":query["request_id"],
         "record_class":query["record_class"],
-        "directory_id":selector["directory_id"],
-        "canonical_path":selector["canonical_path"],
+        "selector":selector,
+        "directory_id":selector.get("directory_id"),
+        "canonical_path":selector.get("canonical_path"),
+        "receipt_path":selector.get("receipt_path"),
         "node_id":ing["node_id"],
         "projection":projection,
         "credential_material_present":False,
