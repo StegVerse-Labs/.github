@@ -134,8 +134,10 @@ class TestSV002PublicObservationRuntime(unittest.TestCase):
             runtime = root / "runtime"
             (micro / "experiments/self-characterization-001").mkdir(parents=True)
             p = mod.build_projection(runtime, micro)
-            self.assertEqual(p["state"]["worker_receipt"], "NOT_OBSERVED")
+            self.assertEqual(p["observation_source"], "MASTER_RECORDS_ONLY")
+            self.assertEqual(p["state"]["master_records_reconstruction"], "NOT_OBSERVED")
             self.assertEqual(p["state"]["principal_execution"], "NOT_OBSERVED")
+            self.assertEqual(p["state"]["final_self_characterization"], "NOT_OBSERVED")
             self.assertEqual(p["reconstruction"]["state"], "NOT_OBSERVED")
             self.assertFalse(p["topology"]["observer_direct_relation_to_stegverse_002"])
 
@@ -150,11 +152,10 @@ class TestSV002PublicObservationRuntime(unittest.TestCase):
                 "source_organization": {"organization": "Admissible-Existence", "availability_known": True}
             }), encoding="utf-8")
             p = mod.build_projection(runtime, micro)
-            self.assertEqual(
-                p["knowledge"]["admissible_existence"]["availability"],
-                "KNOWN_AVAILABLE_FROM_CONSTRUCTION_PROVENANCE",
-            )
-            self.assertEqual(p["knowledge"]["admissible_existence"]["interlock"], "NOT_CONNECTED")
+            self.assertEqual(p["observation_source"], "MASTER_RECORDS_ONLY")
+            self.assertNotIn("knowledge", p)
+            self.assertEqual(p["state"]["master_records_reconstruction"], "NOT_OBSERVED")
+            self.assertFalse(p["topology"]["observer_direct_relation_to_stegverse_002"])
 
     def test_roundtrip_receipts_and_read_only_projection(self):
         with tempfile.TemporaryDirectory() as td:
