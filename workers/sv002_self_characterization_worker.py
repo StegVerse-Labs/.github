@@ -6,6 +6,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 import urllib.request
 from pathlib import Path
 from urllib.parse import urlparse
@@ -29,13 +30,21 @@ LOOPBACK_PREFIXES = (
 MASTER_RECORDS_RECONSTRUCTION_OUTPUT = (
     "STEGVERSE_002_SELF_CHARACTERIZATION_RECONSTRUCTION_RECEIPT.json"
 )
-PRINCIPAL_REQUIRED_ARTIFACTS = (
+PRINCIPAL_REQUIRED_ARTIFACTS_V02 = (
     "EXPERIMENT_EXECUTION_RECEIPT.json",
     "S0.json",
     "SELF_CHARACTERIZATION.md",
     "SELF_CHARACTERIZATION_FORMAL.json",
     "INTERACTION_RECEIPT_CHAIN.json",
     "TRANSITION_EFFECTS.json",
+)
+PRINCIPAL_REQUIRED_ARTIFACTS_V03 = PRINCIPAL_REQUIRED_ARTIFACTS_V02 + (
+    "TRANSITION_RECEIPTS.json",
+    "TRANSITION_RECEIPTS.live.jsonl",
+    "ORG_BOUNDARY_RECEIPTS.json",
+    "ORG_BOUNDARY_RECEIPTS.live.jsonl",
+    "REPOSITORY_LEDGER_ROOT.json",
+    "ORGANIZATION_LEDGER_ROOT.json",
 )
 
 
@@ -44,17 +53,26 @@ def principal_state_root() -> Path:
 
 
 def load_completed_principal_state(state_root: Path) -> dict[str, Any] | None:
-    if not all((state_root / name).is_file() for name in PRINCIPAL_REQUIRED_ARTIFACTS):
+    execution_path = state_root / "EXPERIMENT_EXECUTION_RECEIPT.json"
+    if not execution_path.is_file():
         return None
     try:
-        result = json.loads((state_root / "EXPERIMENT_EXECUTION_RECEIPT.json").read_text(encoding="utf-8"))
+        result = json.loads(execution_path.read_text(encoding="utf-8"))
     except Exception:
         return None
     if not isinstance(result, dict):
         return None
+    schema = result.get("schema")
+    if schema == "stegverse.self-characterization-execution-receipt/v0.2":
+        required = PRINCIPAL_REQUIRED_ARTIFACTS_V02
+    elif schema == "stegverse.self-characterization-execution-receipt/v0.3":
+        required = PRINCIPAL_REQUIRED_ARTIFACTS_V03
+    else:
+        return None
+    if not all((state_root / name).is_file() for name in required):
+        return None
     if (
-        result.get("schema") != "stegverse.self-characterization-execution-receipt/v0.2"
-        or result.get("state") != "COMPLETED"
+        result.get("state") != "COMPLETED"
         or result.get("principal_run_started") is not True
         or result.get("principal_run_completed") is not True
         or result.get("authority_transfer_assumed") is not False
@@ -72,8 +90,9 @@ def reconstruction_terminal(reconstruction: dict[str, Any]) -> bool:
         and reconstruction["receipt"].get("status") == "PASS"
         and reconstruction["receipt"].get("reconstruction") == "PASS"
     )
-MASTER_RECORDS_RECONSTRUCTION_COMMIT = "2e117902d4f261b10cb3b5122b7ef48fb0e36e57"
-MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB = "cc96556a23b5bd804f3cdaa96539b379c1904437"
+MASTER_RECORDS_RECONSTRUCTION_COMMIT = "8191d40bc36be8e766f989a25b2f238fdd800e2d"
+MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB = "7d344d1bed85c9909264f2ca244aa746a44c2ea6"
+MASTER_RECORDS_RECONSTRUCTION_VERIFIER_REL = "scripts/verify_sv002_self_characterization_reconstruction.py"
 
 
 def git_head(p: Path) -> str:
@@ -560,10 +579,22 @@ def attempt_master_records_reconstruction(state_root: Path) -> dict[str, Any]:
             "authority_effect": "NONE",
         }
 
-    verifier_path = master_records / "scripts/verify_sv002_self_characterization_reconstruction.py"
     try:
-        verifier_blob = git_blob_sha(master_records, verifier_path)
+        verifier_bytes = subprocess.check_output(
+            [
+                "git",
+                "-C",
+                str(master_records),
+                "show",
+                f"{MASTER_RECORDS_RECONSTRUCTION_COMMIT}:{MASTER_RECORDS_RECONSTRUCTION_VERIFIER_REL}",
+            ]
+        )
+        verifier_blob = subprocess.check_output(
+            ["git", "-C", str(master_records), "hash-object", "--stdin"],
+            input=verifier_bytes,
+        ).decode("utf-8").strip()
     except Exception:
+        verifier_bytes = b""
         verifier_blob = None
     if verifier_blob != MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB:
         return {
@@ -573,6 +604,7 @@ def attempt_master_records_reconstruction(state_root: Path) -> dict[str, Any]:
             "required_commit": MASTER_RECORDS_RECONSTRUCTION_COMMIT,
             "required_verifier_blob": MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB,
             "observed_verifier_blob": verifier_blob,
+            "pin_semantics": "EXACT_GIT_OBJECT_BYTES",
             "network_fetch_performed": False,
             "credential_required": False,
             "authority_effect": "NONE",
@@ -583,20 +615,23 @@ def attempt_master_records_reconstruction(state_root: Path) -> dict[str, Any]:
         "PATH": os.environ.get("PATH", ""),
         "HOME": os.environ.get("HOME", str(Path.home())),
     }
-    proc = subprocess.run(
-        [
-            sys.executable,
-            str(verifier_path),
-            str(state_root),
-            "--output",
-            str(output),
-        ],
-        cwd=master_records,
-        env=clean_env,
-        capture_output=True,
-        text=True,
-        timeout=120,
-    )
+    with tempfile.TemporaryDirectory(prefix="sv002-mr-verifier-") as td:
+        verifier_path = Path(td) / "verify_sv002_self_characterization_reconstruction.py"
+        verifier_path.write_bytes(verifier_bytes)
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(verifier_path),
+                str(state_root),
+                "--output",
+                str(output),
+            ],
+            cwd=master_records,
+            env=clean_env,
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
     result = {}
     if output.is_file():
         try:
