@@ -18,6 +18,8 @@ SV002_OBSERVE_CONFIG_ENV = "STEGVERSE_SV002_OBSERVE_ROUTE_CONFIG"
 SV002_OBSERVE_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "sv002-public-observation-runtime.json"
 HIL_INTR_CONFIG_ENV = "STEGVERSE_HIL_INTR_ROUTE_CONFIG"
 HIL_INTR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "hil-intr-runtime.json"
+UNIVERSAL_INTR_CONFIG_ENV = "STEGVERSE_UNIVERSAL_INTR_ROUTE_CONFIG"
+UNIVERSAL_INTR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "universal-intr-runtime.json"
 
 CANONICAL_REPO_BASES = (
     Path.home() / ".stegverse" / "repos",
@@ -191,6 +193,42 @@ def hil_intr_gateway_projection() -> dict[str, str]:
         "STEGVERSE_HIL_INTR_UPSTREAM": loopback + "/intr/materialization",
     }
 
+
+def universal_intr_gateway_projection() -> dict[str, str]:
+    raw = os.environ.get(UNIVERSAL_INTR_CONFIG_ENV, "").strip()
+    path = Path(raw).expanduser().resolve() if raw else UNIVERSAL_INTR_CONFIG_DEFAULT.expanduser().resolve()
+    disabled = {"STEGVERSE_UNIVERSAL_INTR_ENABLED":"false","STEGVERSE_UNIVERSAL_INTR_UPSTREAM":""}
+    if not path.is_file(): return disabled
+    try: value=json.loads(path.read_text(encoding="utf-8"))
+    except Exception: return disabled
+    expected={
+      "schema":"stegverse.universal-intr-route-config/v1",
+      "host":"127.0.0.1",
+      "profile_path":"/intr/profile",
+      "materialization_path":"/intr/materialization",
+      "device_kv_result_path":"/intr/device-kv/result",
+      "public_origin":"https://stegverse.org",
+      "public_tls_terminated_by":"STEGVERSE_SHARED_SERVICE_GATEWAY",
+      "event_triggered":True,
+      "always_on_application_receiver_required":False,
+      "second_user_device_required":False,
+      "g18_required":False,
+      "credential_authority":"TV/TVC",
+      "github_token_runtime_authority":"NONE",
+      "execution_authority":"NONE",
+      "authority_effect":"NONE_CONFIG_ONLY",
+    }
+    if any(value.get(k)!=v for k,v in expected.items()): return disabled
+    profiles=value.get("required_profiles")
+    if not isinstance(profiles,list) or "KV:KnowledgeVaultInterlock" not in profiles:return disabled
+    port=value.get("port")
+    if not isinstance(port,int) or port<1024 or port>65535:return disabled
+    return {
+      "STEGVERSE_UNIVERSAL_INTR_ENABLED":"true",
+      "STEGVERSE_UNIVERSAL_INTR_UPSTREAM":f"http://127.0.0.1:{port}/intr/materialization",
+    }
+
+
 NAMED_REPOSITORY_ROOT_BINDINGS = {
     "STEGVERSE_HEALER_ROOT": "StegVerse-Labs/StegVerse-Healer",
     "STEGVERSE_LLM_ADAPTER_ROOT": "StegVerse-org/LLM-adapter",
@@ -229,6 +267,7 @@ def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
     env.update(evaluator_gateway_projection())
     env.update(sv002_observation_gateway_projection())
     env.update(hil_intr_gateway_projection())
+    env.update(universal_intr_gateway_projection())
     return env
 
 
