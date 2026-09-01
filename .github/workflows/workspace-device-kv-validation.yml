@@ -5,6 +5,7 @@ on:
       - 'scripts/consume_device_kv_intr_materialization_request.py'
       - 'scripts/consume_device_kv_intr_materialization_request_base.py'
       - 'scripts/workspace_device_kv_query_extension.py'
+      - 'scripts/personal_profile_device_kv_extension.py'
       - 'scripts/refresh_sovereign_worker_runtime_source.py'
       - 'scripts/bootstrap_sovereign_runtime.py'
       - 'scripts/install_sovereign_heartbeat_service.py'
@@ -19,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Compile Workspace DEVICE_KV source
-        run: python -m py_compile scripts/consume_device_kv_intr_materialization_request.py scripts/consume_device_kv_intr_materialization_request_base.py scripts/workspace_device_kv_query_extension.py scripts/refresh_sovereign_worker_runtime_source.py scripts/bootstrap_sovereign_runtime.py scripts/install_sovereign_heartbeat_service.py
+        run: python -m py_compile scripts/consume_device_kv_intr_materialization_request.py scripts/consume_device_kv_intr_materialization_request_base.py scripts/workspace_device_kv_query_extension.py scripts/personal_profile_device_kv_extension.py scripts/refresh_sovereign_worker_runtime_source.py scripts/bootstrap_sovereign_runtime.py scripts/install_sovereign_heartbeat_service.py
       - name: Validate extension predicates
         run: |
           python - <<'PY'
@@ -33,6 +34,24 @@ jobs:
           except m.WorkspaceDeviceKVQueryError:pass
           else:raise AssertionError('wrong node admitted')
           print('WORKSPACE_DEVICE_KV_VALIDATION_PASS')
+          PY
+      - name: Validate Personal Profile DEVICE_KV predicates
+        run: |
+          python - <<'PY'
+          import base64,importlib.util,json
+          from pathlib import Path
+          p=Path('scripts/personal_profile_device_kv_extension.py')
+          s=importlib.util.spec_from_file_location('p',p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+          q={'schema_version':'kv.interlock.request.v1','operation':'REQUEST','request_id':'q1','requester':{'module':'Site','component':'MyKVPersonalInfo'},'purpose':'Read profile','record_class':'PERSONAL_CONTACT_PROFILE','requested_scope':['personal_profile'],'minimum_necessary_justification':'bounded','authority_ref':'stegos-node://node:1','disclosure_mode':'BOUNDED_CONTEXT'}
+          assert m.validate_request(q,node_id='node:1')['operation']=='REQUEST'
+          try:m.validate_request(q,node_id='node:2')
+          except m.PersonalProfileDeviceKVError:pass
+          else:raise AssertionError('wrong node admitted')
+          profile={'schema':'stegverse.kv.personal-contact-profile/v1','display_name':'Owner','legal_name':None,'date_of_birth':None,'phone_numbers':[],'postal_addresses':[],'email_addresses':[],'authority_effect':'NONE'}
+          encoded=base64.b64encode((json.dumps(profile)).encode()).decode()
+          w={**q,'operation':'COMMIT_CANDIDATE','requested_scope':['personal_profile_update'],'candidate_writeback':{'candidate_type':'PERSONAL_CONTACT_PROFILE_REPLACE','payload_ref':m.DATA_PREFIX+encoded,'requested_destination':m.CANONICAL_PATH.as_posix()}}
+          assert m.validate_request(w,node_id='node:1')['operation']=='COMMIT_CANDIDATE'
+          print('PERSONAL_PROFILE_DEVICE_KV_VALIDATION_PASS')
           PY
       - name: Boundary declaration
         run: echo 'VALIDATION_ONLY authority_effect=NONE runtime_activation=false'
