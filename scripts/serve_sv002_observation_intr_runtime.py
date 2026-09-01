@@ -19,6 +19,7 @@ TASK_ID="SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001"
 EXPERIMENT_ID="STEGVERSE-002-SELF-CHARACTERIZATION-001"
 WORKER_RECEIPT_REL=Path("receipts/sv002-self-characterization/SHWP-SV002-SELF-CHARACTERIZATION-001.json")
 MR_RECEIPT_REL=Path("receipts/sv002-self-characterization/master-records-reconstruction.latest.json")
+MR_CANONICAL_RECEIPT_NAME="STEGVERSE_002_SELF_CHARACTERIZATION_RECONSTRUCTION_RECEIPT.json"
 PROVENANCE_REL=Path("experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json")
 
 class ObservationRuntimeError(ValueError): pass
@@ -47,6 +48,46 @@ def _load_json(path:Path)->dict[str,Any]|None:
         return value if isinstance(value,dict) else None
     except Exception:
         return None
+
+def _canonical_master_records_source()->Path:
+    explicit=str(os.environ.get("STEGVERSE_SELF_CHAR_STATE_ROOT") or "").strip()
+    root=Path(explicit).expanduser().resolve() if explicit else (Path.home()/".stegverse/self-characterization-001").resolve()
+    return root/MR_CANONICAL_RECEIPT_NAME
+
+def _validate_master_records_receipt(value:Mapping[str,Any])->bool:
+    if value.get("schema")!="master-records.sv002-self-characterization-reconstruction/v0.2":
+        return False
+    if value.get("experiment_id")!=EXPERIMENT_ID:
+        return False
+    if value.get("status")!="PASS" or value.get("reconstruction")!="PASS":
+        return False
+    body=dict(value)
+    claimed=str(body.pop("receipt_sha256",""))
+    return bool(claimed) and claimed==sha256_hex(body)
+
+def materialize_master_records_projection_receipt(runtime_root:Path)->dict[str,Any]:
+    runtime=runtime_root.expanduser().resolve()
+    target=runtime/MR_RECEIPT_REL
+    source=_canonical_master_records_source()
+    if not source.is_file():
+        return {"state":"NOT_AVAILABLE","target":str(target),"source":str(source)}
+    try:
+        raw=source.read_bytes()
+        value=json.loads(raw)
+    except Exception as exc:
+        raise ObservationRuntimeError("master_records_source_receipt_unreadable") from exc
+    if not isinstance(value,dict) or not _validate_master_records_receipt(value):
+        raise ObservationRuntimeError("master_records_source_receipt_invalid")
+    target.parent.mkdir(parents=True,exist_ok=True)
+    if target.exists():
+        existing=target.read_bytes()
+        if existing!=raw:
+            raise ObservationRuntimeError("master_records_projection_receipt_collision")
+        return {"state":"ALREADY_MATERIALIZED","target":str(target),"source":str(source),"receipt_sha256":value["receipt_sha256"]}
+    tmp=target.with_suffix(target.suffix+".tmp")
+    tmp.write_bytes(raw)
+    tmp.replace(target)
+    return {"state":"MATERIALIZED","target":str(target),"source":str(source),"receipt_sha256":value["receipt_sha256"]}
 
 def _validate_genesis(observer:Mapping[str,Any])->dict[str,Any]:
     genesis=observer.get("genesis_receipt")
@@ -149,6 +190,7 @@ def _observed_interlock(chain:Any,target:str)->bool:
 def build_projection(runtime_root:Path,micro_node_root:Path)->dict[str,Any]:
     runtime=runtime_root.expanduser().resolve()
     _=micro_node_root
+    materialization=materialize_master_records_projection_receipt(runtime)
     master=_load_json(runtime/MR_RECEIPT_REL)
     if not master:
         return {
@@ -169,6 +211,7 @@ def build_projection(runtime_root:Path,micro_node_root:Path)->dict[str,Any]:
             "events":[],
             "artifacts":{"reconstructed_artifact_sha256":{}},
             "reconstruction":{"state":"NOT_OBSERVED","master_records_required":True},
+            "materialization":materialization,
             "authority_effect":"NONE",
             "observer_interaction_target":"READ_ONLY_MASTER_RECORDS_PROJECTION",
         }
@@ -204,7 +247,11 @@ def build_projection(runtime_root:Path,micro_node_root:Path)->dict[str,Any]:
             "reconstructed_artifact_sha256":artifact_hashes,
             "subject_identity_sha256":evidence.get("subject_identity_sha256"),
             "capability_realizations":evidence.get("capability_realizations"),
+            "ordered_transition_receipts":evidence.get("ordered_transition_receipts"),
+            "repository_ledger_root":evidence.get("repository_ledger_root"),
+            "organization_ledger_root":evidence.get("organization_ledger_root"),
         },
+        "materialization":materialization,
         "reconstruction":master,
         "authority_effect":"NONE",
         "observer_interaction_target":"READ_ONLY_MASTER_RECORDS_PROJECTION",
