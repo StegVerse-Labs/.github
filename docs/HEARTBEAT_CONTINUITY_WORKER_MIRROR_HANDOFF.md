@@ -864,3 +864,10 @@ through `refresh_and_execute_resident_task.py`. A recorded attempt is not custod
 CMC-028 remains incomplete until the task itself emits authentic resident
 `CUSTODY_RECOVERY_EVIDENCE_VERIFIED` evidence without protected-material read, hash, or
 export and without issuance or signing authority.
+
+
+## Universal Governance bootstrap eligibility closure — 2026-08-31
+
+The native bootstrap source-completeness gate now requires `scripts/consume_universal_governance_enforced_reference_request.py`. A resident can no longer self-declare eligible, install services, or proceed through bootstrap source validation while omitting this required resident consumer.
+
+This aligns bootstrap eligibility with the native installer materialization contract and the continuous WorkerCoordinator resident-request sweep. No hosted execution authority or runtime observation is inferred.
