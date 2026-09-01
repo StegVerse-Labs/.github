@@ -3,8 +3,10 @@
   "fragment_id": "SHWP-SV002-SELF-CHARACTERIZATION-001",
   "tasks": [
     {
-      "archive_eligible": false,
-      "archive_reason_codes": [],
+      "archive_eligible": true,
+      "archive_reason_codes": [
+        "EXECUTION_OWNERSHIP_MOVED_TO_ENTITY_ORG_BOUNDARY"
+      ],
       "authorized_policy_version": "sv002-self-characterization-v0.2",
       "block_ref": null,
       "claim_id": null,
@@ -12,14 +14,14 @@
       "evidence_refs": [
         "handoffs/SHWP-SV002-SELF-CHARACTERIZATION-001.json"
       ],
-      "executor_binding": "AUTHORIZED",
+      "executor_binding": "REFERENCE_ONLY",
       "external_entity_job_ref": null,
       "goal_id": "STEGVERSE-002-SELF-CHARACTERIZATION-001",
       "handoff_ref": "handoffs/SHWP-SV002-SELF-CHARACTERIZATION-001.json",
       "heartbeat_timing": null,
       "last_checkpoint_ref": null,
       "lease": null,
-      "state": "HANDOFF_READY",
+      "state": "SUPERSEDED_CROSS_ORG_EXECUTION",
       "task_id": "SHWP-SV002-SELF-CHARACTERIZATION-001",
       "worker_id": null,
       "worker_instance_id": null,
@@ -54,14 +56,12 @@
       "adapter_ref": "process:sv002-self-characterization-v1",
       "authority_source": "handoffs/SHWP-SV002-SELF-CHARACTERIZATION-001.json#authority",
       "capabilities": [
-        "runtime_observation",
-        "bounded_process_execution",
-        "durable_state_reconstruction"
+        "reference_self_characterization_pattern"
       ],
       "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
       "executor_type": "repository_worker",
       "last_seen_at": null,
-      "status": "AVAILABLE",
+      "status": "REFERENCE_ONLY",
       "worker_id": "sv002-self-characterization-worker"
     }
   ],

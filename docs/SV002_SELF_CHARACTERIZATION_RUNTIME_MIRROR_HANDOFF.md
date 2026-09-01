@@ -360,3 +360,15 @@ STEGVERSE_RESIDENT_SOURCE_MANIFEST
 The SV002 process adapter now also permits the canonical `STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT` and compatibility `STEGVERSE_MASTER_RECORDS_ROOT` locators. The worker accepts either name for the same local reconstruction source.
 
 These are source/provenance locators only. They do not relax pinned formal commits, the non-reference principal requirement, runtime-identity verification, the Master Records verifier pin, or same-execution reconstruction.
+
+
+## Organizational ownership correction — 2026-09-01
+
+This StegVerse-Labs resident execution lane is no longer authorized to execute the StegVerse-002 principal.
+
+Canonical StegVerse-002 execution ownership is now:
+`StegVerse-002/.github -> stegverse-002.self-characterization -> StegVerse-002/micro-node-runtime`.
+
+The StegVerse-Labs worker/consumer/task implementation is retained as a reusable reference for a future StegVerse-Labs-owned AI entity. It must not be used as a cross-organization principal execution surface.
+
+StegVerse-Labs observation of the StegVerse-002 experiment is limited to Master Records-derived evidence and public/read-only projections. It must not maintain a competing privileged state history of StegVerse-002.

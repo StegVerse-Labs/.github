@@ -15,7 +15,7 @@
         "workers/sv002_self_characterization_worker.py"
       ],
       "cwd": ".",
-      "enabled": true,
+      "enabled": false,
       "env_allowlist": [
         "STEGVERSE_MICRO_NODE_RUNTIME_ROOT",
         "STEGVERSE_TT_ROOT",
@@ -34,7 +34,9 @@
       "timeout_seconds": 1900,
       "type": "process_json_v0.1",
       "notes": [
-        "Resident source-manifest and Master Records root locators are non-secret provenance locators only; the worker independently verifies the pinned reconstruction source before use."
+        "Resident source-manifest and Master Records root locators are non-secret provenance locators only; the worker independently verifies the pinned reconstruction source before use.",
+        "Disabled for StegVerse-002 execution: organization-local AI execution must occur from the target entity organization .github.",
+        "Retained as a reusable reference implementation for a future StegVerse-Labs-owned AI entity."
       ]
     }
   ]
