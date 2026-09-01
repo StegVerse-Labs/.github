@@ -4,7 +4,7 @@
   "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
-  "observed_at": "2026-08-31T12:32:00-05:00",
+  "observed_at": "2026-08-31T21:25:00-05:00",
   "source": "live GitHub App installation enumeration plus durable task-surface evidence",
   "authority_effect": "NONE",
   "credential_authority": "TV/TVC",
@@ -14,15 +14,15 @@
   "organization_count": 14,
   "universe_audit_complete": false,
   "adoption_metrics": {
-    "numerator_vectorized_active_task_surfaces": 7,
+    "numerator_vectorized_active_task_surfaces": 8,
     "denominator_proven_active_task_surfaces": 28,
-    "ratio": "7/28",
-    "percentage": 25,
-    "interpretation": "Admissible-Existence/.github is strict VECTOR_PRESENT after a repository-local 5/5 active control-plane task audit and three independent exact-head validation gates. The active denominator remains 28."
+    "ratio": "8/28",
+    "percentage": 28.57,
+    "interpretation": "Admissible-Existence/AE is strict VECTOR_PRESENT after repository-local 1/1 active-task coverage, current issue/PR census, and prior repository-local COSV validation. Admissible-Existence now has no remaining VECTOR_REQUIRED repository."
   },
   "classification_counts": {
-    "VECTOR_REQUIRED": 21,
-    "VECTOR_PRESENT": 7,
+    "VECTOR_REQUIRED": 20,
+    "VECTOR_PRESENT": 8,
     "NO_ACTIVE_TASK_SURFACE": 6,
     "NO_REPOSITORY_OR_UNAVAILABLE": 188
   },
@@ -31,8 +31,8 @@
       "organization": "Admissible-Existence",
       "installation_id": 139890227,
       "repository_count": 32,
-      "vector_required": 1,
-      "vector_present": 5,
+      "vector_required": 0,
+      "vector_present": 6,
       "no_active_task_surface": 6,
       "unavailable_or_not_yet_audited": 20
     },
@@ -217,7 +217,7 @@
     {
       "organization": "Admissible-Existence",
       "repository": "Admissible-Existence/AE",
-      "classification": "VECTOR_REQUIRED",
+      "classification": "VECTOR_PRESENT",
       "profile": "task.v1",
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
@@ -226,11 +226,20 @@
         "Admissible-Existence/AE@d48dac1ccb241321fbfcec5cdbef46d9a17efe1:AE_MIRROR_HANDOFF.md",
         "Admissible-Existence/AE/actions/runs/33395210940:Validate COSV Projection SUCCESS",
         "Admissible-Existence/AE/actions/runs/33395211046:Admissible Resolution Validation SUCCESS",
-        "Admissible-Existence/AE/actions/runs/33395210965:Reflection Build SUCCESS"
+        "Admissible-Existence/AE/actions/runs/33395210965:Reflection Build SUCCESS",
+        "Admissible-Existence/AE#20:sole current open governed task claim",
+        "Admissible-Existence/AE#5:closed superseded 2026-09-01T02:23:23Z"
       ],
-      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
+      "vector_coverage_state": "COMPLETE",
       "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
-      "authority_effect": "NONE"
+      "authority_effect": "NONE",
+      "validation_refs": [
+        "1/1 current active structured tasks projected",
+        "AE-CL-PUB-001 remains REVIEW_REQUIRED and non-authorizing",
+        "relational-admissibility mapping terminalized and factory-validated",
+        "AE-AUTO-0011 seed is not admitted into the canonical queue",
+        "stale RTG-TT public-index PR #5 closed as superseded"
+      ]
     },
     {
       "organization": "Admissible-Existence",
