@@ -46,6 +46,8 @@ PRINCIPAL_V03_REQUIRED_ARTIFACTS = (
     "REPOSITORY_LEDGER_ROOT.json",
     "ORGANIZATION_LEDGER_ROOT.json",
 )
+# Backward-compatible name for historical v0.2-focused tests/consumers.
+PRINCIPAL_REQUIRED_ARTIFACTS = PRINCIPAL_BASE_REQUIRED_ARTIFACTS
 
 
 def principal_state_root() -> Path:
