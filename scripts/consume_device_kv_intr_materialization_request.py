@@ -21,9 +21,19 @@ def _load(path:Path,name:str):
 BASE=_load(ROOT/"scripts/consume_device_kv_intr_materialization_request_base.py","stegverse_device_kv_consumer_base")
 WORKSPACE=_load(ROOT/"scripts/workspace_device_kv_query_extension.py","stegverse_workspace_device_kv_extension")
 PERSONAL_PROFILE=_load(ROOT/"scripts/personal_profile_device_kv_extension.py","stegverse_personal_profile_device_kv_extension")
+PROVIDER_ROOT=_load(ROOT/"scripts/materialize_personal_kv_provider_root.py","stegverse_personal_kv_provider_root")
 ORIGINAL_EXECUTE=BASE.execute_kv_query
 for _name in dir(BASE):
     if _name not in globals() and not _name.startswith("__"): globals()[_name]=getattr(BASE,_name)
+
+def _resolved_env(req:dict[str,Any],env:dict[str,str],runtime:Path)->dict[str,str]:
+    if not isinstance(req.get("kv_request"),dict):
+        return env
+    try:
+        updated,_receipt=PROVIDER_ROOT.env_with_resolved_kv_root(env,runtime)
+        return updated
+    except Exception as exc:
+        raise BASE.DeviceKVMaterializationError("kv_runtime_root_resolution_failed:"+type(exc).__name__+":"+str(exc)) from exc
 
 def _workspace_query_present(req:dict[str,Any])->bool:
     q=req.get("kv_request")
@@ -75,6 +85,7 @@ def _execute_personal_profile(req:dict[str,Any],ing:dict[str,Any],env:dict[str,s
     return result
 
 def execute_kv_query(req:dict[str,Any],ing:dict[str,Any],env:dict[str,str],runtime:Path)->dict[str,Any]:
+    env=_resolved_env(req,env,runtime)
     if PERSONAL_PROFILE.is_personal_profile_request(req): return _execute_personal_profile(req,ing,env,runtime)
     if not _workspace_query_present(req): return ORIGINAL_EXECUTE(req,ing,env,runtime)
     query=_validate_outer_workspace_binding(req,ing)
