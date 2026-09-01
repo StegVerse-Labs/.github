@@ -386,3 +386,15 @@ StegVerse-002 state changes / receipts
 The projection may expose Master Records reconstruction status, reconstructed artifact hashes, subject identity hash, and reconstructed capability realizations. It must not maintain a competing privileged state history of StegVerse-002.
 
 Origin-side receipt bytes may still be compared against their Master Records-custodied/reconstructed hashes by a dedicated verifier, but that comparison is an integrity check, not an independent observation history.
+
+
+## v0.7 Master Records projection materialization — 2026-09-01
+
+Implementation revision only. Frozen experiment condition remains v0.3.
+
+The public observation runtime now resolves the canonical Master Records reconstruction receipt from the self-characterization state root, validates experiment ID, PASS/reconstruction state, and the receipt SHA-256, then atomically materializes the exact receipt bytes into:
+`receipts/sv002-self-characterization/master-records-reconstruction.latest.json`.
+
+If the target already exists with different bytes, projection fails closed. Missing canonical custody remains NOT_OBSERVED.
+
+The projection now exposes the ordered principal transition receipt identity/hash sequence plus validated repository and organization ledger roots supplied by the canonical reconstruction receipt. This supports post-reconstruction viewer fidelity checks without treating viewer-bound InTr receipts as cross-viewer invariants.
