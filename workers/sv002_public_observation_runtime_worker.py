@@ -35,6 +35,8 @@ def load_config()->dict[str,Any]:
     c=json.loads(p.read_text())
     for k in ("stegos_root","micro_node_root","runtime_root","host","port","allowed_origin","boundary_identity_ref"):
         if c.get(k) in (None,""): raise RoutePending(f"route config missing {k}")
+    if c.get("master_records_reconstruction_receipt") not in (None,""):
+        c["master_records_reconstruction_receipt"]=str(Path(str(c["master_records_reconstruction_receipt"])).expanduser().resolve())
     if c.get("credential_authority")!="TV/TVC" or c.get("github_token_runtime_authority")!="NONE": raise RuntimeError("route authority drift")
     for k in ("stegos_root","micro_node_root","runtime_root"):
         if not Path(str(c[k])).expanduser().is_dir(): raise RoutePending(f"local root unavailable: {k}")
@@ -124,7 +126,10 @@ def ensure_receiver(c,server):
     if pid is None:
         cmd=[sys.executable,str(server),"--stegos-root",str(c["stegos_root"]),"--micro-node-root",str(c["micro_node_root"]),"--runtime-root",str(c["runtime_root"]),"--host",str(c["host"]),"--port",str(c["port"]),"--max-requests","0","--allowed-origin",str(c["allowed_origin"]),"--boundary-identity-ref",str(c["boundary_identity_ref"])]
         log=log_file.open("ab",buffering=0)
-        proc=subprocess.Popen(cmd,cwd=server.parent.parent,env={"PATH":os.getenv("PATH",""),"HOME":os.getenv("HOME",""),"STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY":"TV/TVC","STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY":"NONE"},stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True,close_fds=True)
+        child_env={"PATH":os.getenv("PATH",""),"HOME":os.getenv("HOME",""),"STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY":"TV/TVC","STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY":"NONE"}
+        if c.get("master_records_reconstruction_receipt"):
+            child_env["STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT"]=str(c["master_records_reconstruction_receipt"])
+        proc=subprocess.Popen(cmd,cwd=server.parent.parent,env=child_env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True,close_fds=True)
         pid=proc.pid; pid_file.write_text(str(pid)+"\n")
     ready=None; last=None
     for _ in range(40):

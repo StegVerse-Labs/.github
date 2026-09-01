@@ -49,10 +49,9 @@ def _load_json(path:Path)->dict[str,Any]|None:
     except Exception:
         return None
 
-def _canonical_master_records_source()->Path:
-    explicit=str(os.environ.get("STEGVERSE_SELF_CHAR_STATE_ROOT") or "").strip()
-    root=Path(explicit).expanduser().resolve() if explicit else (Path.home()/".stegverse/self-characterization-001").resolve()
-    return root/MR_CANONICAL_RECEIPT_NAME
+def _canonical_master_records_source()->Path|None:
+    explicit=str(os.environ.get("STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT") or "").strip()
+    return Path(explicit).expanduser().resolve() if explicit else None
 
 def _validate_master_records_receipt(value:Mapping[str,Any])->bool:
     if value.get("schema")!="master-records.sv002-self-characterization-reconstruction/v0.2":
@@ -69,8 +68,8 @@ def materialize_master_records_projection_receipt(runtime_root:Path)->dict[str,A
     runtime=runtime_root.expanduser().resolve()
     target=runtime/MR_RECEIPT_REL
     source=_canonical_master_records_source()
-    if not source.is_file():
-        return {"state":"NOT_AVAILABLE","target":str(target),"source":str(source)}
+    if source is None or not source.is_file():
+        return {"state":"NOT_AVAILABLE","target":str(target),"source":str(source) if source is not None else None,"custody_source_required":True}
     try:
         raw=source.read_bytes()
         value=json.loads(raw)
@@ -197,7 +196,7 @@ def build_projection(runtime_root:Path,micro_node_root:Path)->dict[str,Any]:
             "schema":"stegverse.sv002.public_observation.projection.v1",
             "experiment_id":EXPERIMENT_ID,
             "generated_from_evidence_at":now_iso(),
-            "observation_source":"MASTER_RECORDS_ONLY",
+            "observation_source":"MASTER_RECORDS_CUSTODY_ONLY",
             "state":{
                 "master_records_reconstruction":"NOT_OBSERVED",
                 "principal_execution":"NOT_OBSERVED",
