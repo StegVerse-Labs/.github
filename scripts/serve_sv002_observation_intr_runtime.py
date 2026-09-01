@@ -224,7 +224,7 @@ def build_projection(runtime_root:Path,micro_node_root:Path)->dict[str,Any]:
         "schema":"stegverse.sv002.public_observation.projection.v1",
         "experiment_id":EXPERIMENT_ID,
         "generated_from_evidence_at":now_iso(),
-        "observation_source":"MASTER_RECORDS_ONLY",
+        "observation_source":"MASTER_RECORDS_CUSTODY_ONLY",
         "state":{
             "master_records_reconstruction":"PASS" if reconstruction_pass else str(master.get("status") or "OBSERVED_NONPASS"),
             "principal_execution":"RECONSTRUCTED" if execution_reconstructed else "NOT_ESTABLISHED",
@@ -234,7 +234,7 @@ def build_projection(runtime_root:Path,micro_node_root:Path)->dict[str,Any]:
             "entities":[{"entity_id":"StegVerse-002","evidence_state":"KNOWN_SUBJECT"}],
             "relations":[],
             "observer_direct_relation_to_stegverse_002":False,
-            "relationship_state_source":"MASTER_RECORDS_ONLY",
+            "relationship_state_source":"MASTER_RECORDS_CUSTODY_ONLY",
         },
         "events":[{
             "event":"MASTER_RECORDS_RECONSTRUCTION_RECEIPT_OBSERVED",
