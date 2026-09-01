@@ -326,6 +326,20 @@ class DeviceKVEventMaterializationTests(unittest.TestCase):
                 "def get_directory_health(*, kv_data_root, directory_id, canonical_path):\n"
                 "    return {\"canonical_path\":canonical_path,\"compatibility_state\":\"VERIFIED\","
                 "\"credential_material_present\":False,\"provider_operation_authorized\":False,"
+                "\"authority_effect\":\"NONE\"}\n"
+                "def get_installation_status(*, kv_data_root):\n"
+                "    return {\"schema\":\"stegverse.kv.installation-status-projection/v1\","
+                "\"state\":\"KV_INSTALLATION_VERIFIED\",\"resident_kv_root_observed\":True,"
+                "\"installation_receipt_present\":True,\"source_tree_sha\":\""
+                + "a"*40
+                + "\",\"receipt_sha256\":\"sha256:"
+                + "b"*64
+                + "\",\"receipt_verified_utc\":\"2026-08-31T20:00:00Z\","
+                "\"full_template_parity\":\"VALIDATED\","
+                "\"source_census\":{\"files\":133,\"directories\":53},"
+                "\"destination_kind\":\"owner-storage\","
+                "\"current_cloud_provider_observation\":False,"
+                "\"credential_material_present\":False,\"provider_operation_authorized\":False,"
                 "\"authority_effect\":\"NONE\"}\n",
                 encoding="utf-8",
             )
@@ -368,6 +382,122 @@ class DeviceKVEventMaterializationTests(unittest.TestCase):
             self.assertEqual(delivered["response"]["projection"]["entries"][0]["name"],"one.bin")
             self.assertTrue(delivered["response_transported_on_hb_derived_carrier"])
             self.assertEqual(delivered["response_carrier_signal"]["authority"]["authority_effect"],"NONE_CARRIER_ONLY")
+
+
+    def test_bounded_kv_installation_status_query_uses_same_hb_return_path(self):
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td)
+            runtime=base/"runtime"
+            source=base/"source"
+            kv_source=base/"cvk"
+            kv_data=base/"KnowledgeVault"
+            heartbeat=base/"heartbeat"
+            (runtime/consumer.REQUEST_DIR_REL).mkdir(parents=True)
+            (runtime/consumer.INGRESS_DIR_REL).mkdir(parents=True)
+            (kv_source/"runtime").mkdir(parents=True)
+            (kv_data/"_System").mkdir(parents=True)
+
+            query={
+                "schema_version":"kv.interlock.request.v1",
+                "operation":"REQUEST",
+                "request_id":"site-kv-installation-query-1",
+                "requester":{"module":"Site","component":"MyKVOnboarding"},
+                "purpose":"Determine whether the current resident KnowledgeVault is a validated canonical installation.",
+                "record_class":"MY_KV_INSTALLATION_STATUS",
+                "requested_scope":["installation_status"],
+                "minimum_necessary_justification":"Return only bounded installation status needed for My KV Step 2.",
+                "authority_ref":"stegos-node://SV-NODE-"+"4"*24,
+                "disclosure_mode":"BOUNDED_CONTEXT",
+                "selector":{"receipt_path":"_System/installation.receipt.json"},
+            }
+            req=materialization()
+            req["payload_ref"]="inline://materialization_request.kv_request"
+            req["kv_request"]=query
+            req["payload_hash"]=consumer.sha(query)
+            body=dict(req); body.pop("request_hash",None); req["request_hash"]=consumer.sha(body)
+            mid=req["materialization_id"]
+            (runtime/consumer.REQUEST_DIR_REL/f"{mid}.json").write_text(json.dumps(req),encoding="utf-8")
+            ing={
+                "schema":"stegverse.device-kv-intr-materialization-ingress/v1",
+                "state":"INGRESS_ADMITTED",
+                "materialization_id":mid,
+                "request_hash":req["request_hash"],
+                "transport_intent_hash":req["transport_intent_hash"],
+                "payload_hash":req["payload_hash"],
+                "operation_id":req["operation_id"],
+                "packet_id":req["packet_id"],
+                "transport_origin":"STEGOS_NODE_OUTBOX",
+                "node_id":"SV-NODE-"+"4"*24,
+                "interlock_id":"SV-IL-"+"5"*24,
+                "claim_or_fence_minted":False,
+                "credential_authority":"TV/TVC",
+                "github_token_runtime_authority":"NONE",
+            }
+            (runtime/consumer.INGRESS_DIR_REL/f"{mid}.json").write_text(json.dumps(ing),encoding="utf-8")
+            (kv_source/"runtime/portable_directory_projection.py").write_text(
+                "def list_admitted_directory(*, kv_data_root, directory_id, canonical_path):\n"
+                "    raise AssertionError('directory projection should not run')\n"
+                "def get_directory_health(*, kv_data_root, directory_id, canonical_path):\n"
+                "    raise AssertionError('health projection should not run')\n"
+                "def get_installation_status(*, kv_data_root):\n"
+                "    return {\"schema\":\"stegverse.kv.installation-status-projection/v1\","
+                "\"state\":\"KV_INSTALLATION_VERIFIED\","
+                "\"resident_kv_root_observed\":True,"
+                "\"installation_receipt_present\":True,"
+                "\"source_tree_sha\":\""+"a"*40+"\","
+                "\"receipt_sha256\":\"sha256:"+"b"*64+"\","
+                "\"receipt_verified_utc\":\"2026-08-31T20:00:00Z\","
+                "\"full_template_parity\":\"VALIDATED\","
+                "\"source_census\":{\"files\":133,\"directories\":53},"
+                "\"destination_kind\":\"owner-storage\","
+                "\"current_cloud_provider_observation\":False,"
+                "\"credential_material_present\":False,"
+                "\"provider_operation_authorized\":False,"
+                "\"authority_effect\":\"NONE\"}\n",
+                encoding="utf-8",
+            )
+            env={
+                "PATH":"/bin","HOME":str(base),
+                "STEGVERSE_KV_SOURCE_ROOT":str(kv_source),
+                "STEGVERSE_KV_ROOT":str(kv_data),
+                "STEGVERSE_HEARTBEAT_ROOT":str(heartbeat),
+            }
+            result=consumer.consume_one(source,runtime,mid,env=env)
+            self.assertEqual(result["state"],"MATERIALIZATION_EXECUTION_ATTEMPTED")
+            persisted=json.loads((runtime/consumer.QUERY_RESPONSE_DIR_REL/f"{mid}.json").read_text())
+            response=persisted["response"]
+            self.assertEqual(response["record_class"],"MY_KV_INSTALLATION_STATUS")
+            self.assertEqual(response["selector"],{"receipt_path":"_System/installation.receipt.json"})
+            self.assertIsNone(response["directory_id"])
+            self.assertEqual(response["receipt_path"],"_System/installation.receipt.json")
+            self.assertEqual(response["projection"]["state"],"KV_INSTALLATION_VERIFIED")
+            self.assertTrue(response["projection"]["resident_kv_root_observed"])
+            self.assertFalse(response["projection"]["current_cloud_provider_observation"])
+            self.assertTrue(persisted["response_transported_on_hb_derived_carrier"])
+            self.assertTrue(persisted["exact_response_packet_recovered"])
+
+    def test_installation_status_query_rejects_directory_requester_and_wrong_selector(self):
+        query={
+            "schema_version":"kv.interlock.request.v1","operation":"REQUEST","request_id":"q-install",
+            "requester":{"module":"Site","component":"MyKVDirectory"},"purpose":"read",
+            "record_class":"MY_KV_INSTALLATION_STATUS","requested_scope":["installation_status"],
+            "minimum_necessary_justification":"minimum","authority_ref":"stegos-node://SV-NODE-"+"4"*24,
+            "disclosure_mode":"BOUNDED_CONTEXT",
+            "selector":{"receipt_path":"_System/installation.receipt.json"},
+        }
+        req=materialization()
+        req["payload_ref"]="inline://materialization_request.kv_request"; req["kv_request"]=query
+        req["payload_hash"]=consumer.sha(query)
+        body=dict(req); body.pop("request_hash",None); req["request_hash"]=consumer.sha(body)
+        ing={"transport_origin":"STEGOS_NODE_OUTBOX","node_id":"SV-NODE-"+"4"*24}
+        with self.assertRaisesRegex(consumer.DeviceKVMaterializationError,"requester_invalid"):
+            consumer.validate_kv_query(req,ing)
+        query["requester"]={"module":"Site","component":"MyKVOnboarding"}
+        query["selector"]={"receipt_path":"../installation.receipt.json"}
+        req["kv_request"]=query; req["payload_hash"]=consumer.sha(query)
+        body=dict(req); body.pop("request_hash",None); req["request_hash"]=consumer.sha(body)
+        with self.assertRaisesRegex(consumer.DeviceKVMaterializationError,"installation_query_selector_invalid"):
+            consumer.validate_kv_query(req,ing)
 
     def test_kv_query_node_binding_mismatch_blocks_projection(self):
         query={

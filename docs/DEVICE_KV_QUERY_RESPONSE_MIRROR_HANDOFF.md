@@ -27,7 +27,7 @@ Only node-origin requests are eligible.
 kv_request.schema_version = kv.interlock.request.v1
 operation = REQUEST
 record_class =
-  MY_KV_DIRECTORY_PROJECTION | MY_KV_CONNECTION_HEALTH
+  MY_KV_DIRECTORY_PROJECTION | MY_KV_CONNECTION_HEALTH | MY_KV_INSTALLATION_STATUS
 requester = Site / MyKVDirectory
 authority_ref = stegos-node://<exact ingress node_id>
 disclosure_mode = BOUNDED_CONTEXT
@@ -35,7 +35,7 @@ disclosure_mode = BOUNDED_CONTEXT
 
 Allowed scopes:
 - directory: `entries`, `connection_health`
-- health: `connection_health`
+- health: `connection_health`\n- installation: `installation_status` with exact selector `_System/installation.receipt.json` and requester `Site / MyKVOnboarding`
 
 The outer materialization `payload_hash` must equal the canonical SHA-256 of `kv_request`. A request may not carry both `portable_payload` and `kv_request`.
 
@@ -81,3 +81,23 @@ CVK #166 merged through PR #167 at `70b19663305e63ac6016af9b56848e91aa89b77c`. T
 ## Receiver-execution boundary
 
 A bounded `kv_request` is handled directly by the already-running admitted DEVICE_KV receiver after exact ingress validation; it does **not** invoke WorkerCoordinator or mint a task claim/fence. This is endpoint handling, not delegated task execution. Portable-write and generic observation paths continue using their existing targeted executor. The query request grants no execution authority; the receiver's installed capability and exact request/Node predicates determine whether the read handler runs.
+
+
+## 2026-08-31 installation-status extension
+
+The existing endpoint handler now admits `MY_KV_INSTALLATION_STATUS` without adding a task or runtime owner.
+
+```text
+Site / MyKVOnboarding
+-> exact Node-bound DEVICE_KV request
+-> selector _System/installation.receipt.json
+-> current local CVK get_installation_status()
+-> bounded projection only
+-> canonical DEVICE_KV query response
+-> same HB-derived KV -> DEVICE carrier
+-> same persisted result lookup
+```
+
+Directory/health requests retain `Site / MyKVDirectory`. Installation status uses the separate `Site / MyKVOnboarding` requester and cannot provide directory selectors.
+
+The projection may establish current resident KV-root observation and canonical installation-receipt validity. It explicitly does not establish fresh cloud-provider observation or Step 5 verification.
