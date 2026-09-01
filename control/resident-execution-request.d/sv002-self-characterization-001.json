@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.resident-execution-request/v1",
   "request_id": "RESIDENT-EXEC-SV002-SELF-CHARACTERIZATION-001",
-  "state": "REQUESTED",
+  "state": "SUPERSEDED_CROSS_ORG_EXECUTION",
   "task_id": "SHWP-SV002-SELF-CHARACTERIZATION-001",
   "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
   "entrypoint": "scripts/refresh_and_execute_resident_task.py",
@@ -13,5 +13,6 @@
   "network_source_fetch_allowed": false,
   "request_granted_authority": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Attempt the bounded StegVerse-002 self-characterization experiment on the existing sovereign resident surface. The task must remain blocked unless a qualifying non-reference local reasoning runtime and all pinned formal roots are observed."
+  "note": "Cross-organization execution of StegVerse-002 from StegVerse-Labs is prohibited. This request is retained as historical/reference evidence only; the reusable pattern is preserved for a future StegVerse-Labs-owned AI entity.",
+  "superseded_by": "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md"
 }
