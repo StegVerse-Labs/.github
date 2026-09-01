@@ -372,3 +372,20 @@ Canonical StegVerse-002 execution ownership is now:
 The StegVerse-Labs worker/consumer/task implementation is retained as a reusable reference for a future StegVerse-Labs-owned AI entity. It must not be used as a cross-organization principal execution surface.
 
 StegVerse-Labs observation of the StegVerse-002 experiment is limited to Master Records-derived evidence and public/read-only projections. It must not maintain a competing privileged state history of StegVerse-002.
+
+
+## v0.7 pre-T0 reconstruction compatibility and pin closure — 2026-09-01
+
+Implementation revision only. Frozen experiment condition remains v0.3.
+
+The retained worker/reference reconstruction bridge now recognizes both v0.2 and canonical v0.3 completed principal artifact sets. For v0.3 it requires the live/frozen transition logs and repository/organization ledger roots before treating the principal artifact set as complete.
+
+The reconstruction verifier pin is advanced to:
+```text
+master-records/orchestration commit: 631cbc44c3c95ba0cb86687c737930fe83248018
+verifier git blob: 7d344d1bed85c9909264f2ca244aa746a44c2ea6
+```
+
+The worker no longer combines “historical commit exists” with “current checkout file must equal historical bytes.” It reads the verifier bytes directly from the exact pinned Git commit object, independently computes the Git blob identity, materializes those exact bytes ephemerally, executes them, and removes the temporary verifier afterward.
+
+This closes the stale-working-tree pin failure mode without changing principal-visible v0.3 inputs. The worker remains non-authorizing and, per the ownership correction above, must not be used as a competing StegVerse-Labs principal execution surface.

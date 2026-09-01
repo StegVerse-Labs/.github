@@ -411,6 +411,56 @@ class SV002SelfCharacterizationWorkerTests(unittest.TestCase):
             os.environ.clear()
             os.environ.update(prior)
 
+    def test_completed_principal_state_accepts_canonical_v03_artifact_set(self):
+        with tempfile.TemporaryDirectory() as td:
+            state_root = Path(td)
+            result = {
+                "schema": "stegverse.self-characterization-execution-receipt/v0.3",
+                "state": "COMPLETED",
+                "principal_run_started": True,
+                "principal_run_completed": True,
+                "authority_transfer_assumed": False,
+                "authority_effect_resolution": "DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS",
+                "transition_effect_state": "PENDING_TRANSITION_ELEMENT_EVALUATION",
+                "run_id": "SV002-RUN-TEST",
+                "repository_ledger_root_hash": "a" * 64,
+            }
+            for name in mod.PRINCIPAL_BASE_REQUIRED_ARTIFACTS + mod.PRINCIPAL_V03_REQUIRED_ARTIFACTS:
+                path = state_root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                if name == "EXPERIMENT_EXECUTION_RECEIPT.json":
+                    path.write_text(json.dumps(result), encoding="utf-8")
+                else:
+                    path.write_text("{}\n", encoding="utf-8")
+            observed = mod.load_completed_principal_state(state_root)
+            self.assertIsNotNone(observed)
+            self.assertEqual(observed["schema"], result["schema"])
+
+    def test_completed_v03_state_fails_closed_when_hierarchical_artifact_missing(self):
+        with tempfile.TemporaryDirectory() as td:
+            state_root = Path(td)
+            result = {
+                "schema": "stegverse.self-characterization-execution-receipt/v0.3",
+                "state": "COMPLETED",
+                "principal_run_started": True,
+                "principal_run_completed": True,
+                "authority_transfer_assumed": False,
+                "authority_effect_resolution": "DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS",
+                "transition_effect_state": "PENDING_TRANSITION_ELEMENT_EVALUATION",
+                "run_id": "SV002-RUN-TEST",
+                "repository_ledger_root_hash": "a" * 64,
+            }
+            required = list(mod.PRINCIPAL_BASE_REQUIRED_ARTIFACTS + mod.PRINCIPAL_V03_REQUIRED_ARTIFACTS)
+            for name in required:
+                if name == "ORGANIZATION_LEDGER_ROOT.json":
+                    continue
+                path = state_root / name
+                if name == "EXPERIMENT_EXECUTION_RECEIPT.json":
+                    path.write_text(json.dumps(result), encoding="utf-8")
+                else:
+                    path.write_text("{}\n", encoding="utf-8")
+            self.assertIsNone(mod.load_completed_principal_state(state_root))
+
     def test_master_records_reconstruction_pending_when_verifier_not_materialized(self):
         with tempfile.TemporaryDirectory() as td:
             state_root = Path(td) / "state"
@@ -460,9 +510,18 @@ class SV002SelfCharacterizationWorkerTests(unittest.TestCase):
                 return Completed()
 
             with patch.object(mod, "find_repo", return_value=(master, [])):
-                with patch.object(mod, "git_blob_sha", return_value=mod.MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB):
-                    with patch.object(mod.subprocess, "run", side_effect=fake_run):
-                        result = mod.attempt_master_records_reconstruction(state_root)
+                with patch.object(
+                    mod,
+                    "read_pinned_git_file",
+                    return_value=b"# exact pinned verifier\n",
+                ):
+                    with patch.object(
+                        mod,
+                        "git_blob_sha_bytes",
+                        return_value=mod.MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB,
+                    ):
+                        with patch.object(mod.subprocess, "run", side_effect=fake_run):
+                            result = mod.attempt_master_records_reconstruction(state_root)
 
             self.assertEqual(result["state"], "PASS")
             self.assertTrue(Path(result["receipt_path"]).is_file())
@@ -482,8 +541,9 @@ class SV002SelfCharacterizationWorkerTests(unittest.TestCase):
             verifier = master / "scripts/verify_sv002_self_characterization_reconstruction.py"
             verifier.write_text("# stale verifier\n", encoding="utf-8")
             with patch.object(mod, "find_repo", return_value=(master, [])):
-                with patch.object(mod, "git_blob_sha", return_value="0" * 40):
-                    result = mod.attempt_master_records_reconstruction(state_root)
+                with patch.object(mod, "read_pinned_git_file", return_value=b"# stale verifier\n"):
+                    with patch.object(mod, "git_blob_sha_bytes", return_value="0" * 40):
+                        result = mod.attempt_master_records_reconstruction(state_root)
             self.assertEqual(result["state"], "PENDING")
             self.assertEqual(result["blocker"], "MASTER_RECORDS_RECONSTRUCTION_VERIFIER_SOURCE_PIN_MISMATCH")
             self.assertEqual(result["required_verifier_blob"], mod.MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB)
