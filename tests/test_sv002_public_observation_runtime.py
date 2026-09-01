@@ -134,9 +134,10 @@ class TestSV002PublicObservationRuntime(unittest.TestCase):
             runtime = root / "runtime"
             (micro / "experiments/self-characterization-001").mkdir(parents=True)
             p = mod.build_projection(runtime, micro)
-            self.assertEqual(p["state"]["worker_receipt"], "NOT_OBSERVED")
+            self.assertEqual(p["state"]["master_records_reconstruction"], "NOT_OBSERVED")
             self.assertEqual(p["state"]["principal_execution"], "NOT_OBSERVED")
             self.assertEqual(p["reconstruction"]["state"], "NOT_OBSERVED")
+            self.assertEqual(p["materialization"]["state"], "NOT_AVAILABLE")
             self.assertFalse(p["topology"]["observer_direct_relation_to_stegverse_002"])
 
     def test_admissible_existence_is_available_not_connected_without_interlock_evidence(self):
@@ -155,6 +156,77 @@ class TestSV002PublicObservationRuntime(unittest.TestCase):
                 "KNOWN_AVAILABLE_FROM_CONSTRUCTION_PROVENANCE",
             )
             self.assertEqual(p["knowledge"]["admissible_existence"]["interlock"], "NOT_CONNECTED")
+
+    def test_master_records_receipt_is_materialized_exactly_into_observer_runtime(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td)
+            state=root/"state"; runtime=root/"runtime"; micro=root/"micro"
+            state.mkdir(); micro.mkdir()
+            evidence={
+                "artifact_sha256":{"SELF_CHARACTERIZATION.md":"a"*64},
+                "subject_identity_sha256":"b"*64,
+                "capability_realizations":[],
+                "ordered_transition_receipts":[
+                    {"sequence":0,"transition_receipt_id":"TR-1","transition_receipt_sha256":"c"*64,"transition_class":"CAUSAL_INGRESS_BOUND"}
+                ],
+                "repository_ledger_root":{"root_hash":"d"*64},
+                "organization_ledger_root":{"root_hash":"e"*64},
+            }
+            body={
+                "schema":"master-records.sv002-self-characterization-reconstruction/v0.2",
+                "experiment_id":mod.EXPERIMENT_ID,
+                "status":"PASS",
+                "reconstruction":"PASS",
+                "verified_at":"2026-09-01T00:00:00+00:00",
+                "checks":{"execution_completed":True},
+                "evidence":evidence,
+                "error":None,
+                "authority_boundary":{},
+            }
+            receipt={**body,"receipt_sha256":mod.sha256_hex(body)}
+            source=state/mod.MR_CANONICAL_RECEIPT_NAME
+            source.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+            prior=os.environ.get("STEGVERSE_SELF_CHAR_STATE_ROOT")
+            os.environ["STEGVERSE_SELF_CHAR_STATE_ROOT"]=str(state)
+            try:
+                projection=mod.build_projection(runtime,micro)
+            finally:
+                if prior is None:
+                    os.environ.pop("STEGVERSE_SELF_CHAR_STATE_ROOT",None)
+                else:
+                    os.environ["STEGVERSE_SELF_CHAR_STATE_ROOT"]=prior
+            target=runtime/mod.MR_RECEIPT_REL
+            self.assertEqual(target.read_bytes(),source.read_bytes())
+            self.assertEqual(projection["materialization"]["state"],"MATERIALIZED")
+            self.assertEqual(projection["state"]["master_records_reconstruction"],"PASS")
+            self.assertEqual(projection["artifacts"]["ordered_transition_receipts"][0]["transition_receipt_id"],"TR-1")
+            self.assertEqual(projection["artifacts"]["repository_ledger_root"]["root_hash"],"d"*64)
+            self.assertEqual(projection["artifacts"]["organization_ledger_root"]["root_hash"],"e"*64)
+
+    def test_master_records_projection_collision_fails_closed(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td)
+            state=root/"state"; runtime=root/"runtime"
+            state.mkdir(); (runtime/mod.MR_RECEIPT_REL).parent.mkdir(parents=True)
+            body={
+                "schema":"master-records.sv002-self-characterization-reconstruction/v0.2",
+                "experiment_id":mod.EXPERIMENT_ID,
+                "status":"PASS","reconstruction":"PASS","verified_at":"2026-09-01T00:00:00+00:00",
+                "checks":{},"evidence":{},"error":None,"authority_boundary":{},
+            }
+            receipt={**body,"receipt_sha256":mod.sha256_hex(body)}
+            (state/mod.MR_CANONICAL_RECEIPT_NAME).write_text(json.dumps(receipt),encoding="utf-8")
+            (runtime/mod.MR_RECEIPT_REL).write_text(json.dumps({"different":True}),encoding="utf-8")
+            prior=os.environ.get("STEGVERSE_SELF_CHAR_STATE_ROOT")
+            os.environ["STEGVERSE_SELF_CHAR_STATE_ROOT"]=str(state)
+            try:
+                with self.assertRaisesRegex(mod.ObservationRuntimeError,"projection_receipt_collision"):
+                    mod.materialize_master_records_projection_receipt(runtime)
+            finally:
+                if prior is None:
+                    os.environ.pop("STEGVERSE_SELF_CHAR_STATE_ROOT",None)
+                else:
+                    os.environ["STEGVERSE_SELF_CHAR_STATE_ROOT"]=prior
 
     def test_roundtrip_receipts_and_read_only_projection(self):
         with tempfile.TemporaryDirectory() as td:
