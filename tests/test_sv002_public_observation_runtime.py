@@ -152,7 +152,7 @@ class TestSV002PublicObservationRuntime(unittest.TestCase):
                 "source_organization": {"organization": "Admissible-Existence", "availability_known": True}
             }), encoding="utf-8")
             p = mod.build_projection(runtime, micro)
-            self.assertEqual(p["observation_source"], "MASTER_RECORDS_ONLY")
+            self.assertEqual(p["observation_source"], "MASTER_RECORDS_CUSTODY_ONLY")
             self.assertNotIn("knowledge", p)
             self.assertEqual(p["state"]["master_records_reconstruction"], "NOT_OBSERVED")
 
@@ -185,15 +185,15 @@ class TestSV002PublicObservationRuntime(unittest.TestCase):
             receipt={**body,"receipt_sha256":mod.sha256_hex(body)}
             source=state/mod.MR_CANONICAL_RECEIPT_NAME
             source.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8")
-            prior=os.environ.get("STEGVERSE_SELF_CHAR_STATE_ROOT")
-            os.environ["STEGVERSE_SELF_CHAR_STATE_ROOT"]=str(state)
+            prior=os.environ.get("STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT")
+            os.environ["STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT"]=str(source)
             try:
                 projection=mod.build_projection(runtime,micro)
             finally:
                 if prior is None:
-                    os.environ.pop("STEGVERSE_SELF_CHAR_STATE_ROOT",None)
+                    os.environ.pop("STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT",None)
                 else:
-                    os.environ["STEGVERSE_SELF_CHAR_STATE_ROOT"]=prior
+                    os.environ["STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT"]=prior
             target=runtime/mod.MR_RECEIPT_REL
             self.assertEqual(target.read_bytes(),source.read_bytes())
             self.assertEqual(projection["materialization"]["state"],"MATERIALIZED")
@@ -216,16 +216,16 @@ class TestSV002PublicObservationRuntime(unittest.TestCase):
             receipt={**body,"receipt_sha256":mod.sha256_hex(body)}
             (state/mod.MR_CANONICAL_RECEIPT_NAME).write_text(json.dumps(receipt),encoding="utf-8")
             (runtime/mod.MR_RECEIPT_REL).write_text(json.dumps({"different":True}),encoding="utf-8")
-            prior=os.environ.get("STEGVERSE_SELF_CHAR_STATE_ROOT")
-            os.environ["STEGVERSE_SELF_CHAR_STATE_ROOT"]=str(state)
+            prior=os.environ.get("STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT")
+            os.environ["STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT"]=str(state/mod.MR_CANONICAL_RECEIPT_NAME)
             try:
                 with self.assertRaisesRegex(mod.ObservationRuntimeError,"projection_receipt_collision"):
                     mod.materialize_master_records_projection_receipt(runtime)
             finally:
                 if prior is None:
-                    os.environ.pop("STEGVERSE_SELF_CHAR_STATE_ROOT",None)
+                    os.environ.pop("STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT",None)
                 else:
-                    os.environ["STEGVERSE_SELF_CHAR_STATE_ROOT"]=prior
+                    os.environ["STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT"]=prior
 
     def test_roundtrip_receipts_and_read_only_projection(self):
         with tempfile.TemporaryDirectory() as td:
