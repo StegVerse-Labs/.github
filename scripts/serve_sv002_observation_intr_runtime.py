@@ -21,6 +21,7 @@ WORKER_RECEIPT_REL=Path("receipts/sv002-self-characterization/SHWP-SV002-SELF-CH
 MR_RECEIPT_REL=Path("receipts/sv002-self-characterization/master-records-reconstruction.latest.json")
 MR_RECEIPT_SOURCE_ENV="STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT"
 PROVENANCE_REL=Path("experiments/self-characterization-001/CONSTRUCTION_PROVENANCE.v0.1.json")
+VIEWER_INVARIANT_PROFILE_REF="docs/SV002_VIEWER_EVIDENCE_INVARIANTS.v1.json"
 
 class ObservationRuntimeError(ValueError): pass
 
@@ -198,6 +199,7 @@ def build_projection(runtime_root:Path,micro_node_root:Path)->dict[str,Any]:
             "reconstruction":{"state":"NOT_OBSERVED","master_records_required":True},
             "authority_effect":"NONE",
             "observer_interaction_target":"READ_ONLY_MASTER_RECORDS_PROJECTION",
+            "viewer_evidence_invariant_profile":VIEWER_INVARIANT_PROFILE_REF,
         }
     checks=master.get("checks") if isinstance(master.get("checks"),dict) else {}
     evidence=master.get("evidence") if isinstance(master.get("evidence"),dict) else {}
@@ -241,6 +243,7 @@ def build_projection(runtime_root:Path,micro_node_root:Path)->dict[str,Any]:
         "reconstruction":master,
         "authority_effect":"NONE",
         "observer_interaction_target":"READ_ONLY_MASTER_RECORDS_PROJECTION",
+        "viewer_evidence_invariant_profile":VIEWER_INVARIANT_PROFILE_REF,
     }
 
 def process_observation(request:dict[str,Any],*,runtime_root:Path,micro_node_root:Path,stegos_root:Path,authorization_id:str,boundary_identity_ref:str)->dict[str,Any]:
