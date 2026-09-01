@@ -2,7 +2,7 @@
 
 Updated: 2026-08-31
 Repository: StegVerse-Labs/.github
-State: ACTIVE_IMPLEMENTATION
+State: SOURCE_INTEGRATED_RUNTIME_OBSERVATION_PENDING
 Authority effect: NONE
 Credential authority: TV/TVC
 
@@ -21,20 +21,28 @@ The request remains exact Node-bound `kv.interlock.request.v1`, `BOUNDED_CONTEXT
 ## Organizational boundary
 No Org-KV or Org-Emp-KV request is accepted by this extension. Those require their own organizational runtime and employee+machine conjunctive admission.
 
-## Implemented source
+## Integrated source
 - `scripts/workspace_device_kv_query_extension.py` validates and executes the bounded Personal Workspace record class.
+- `scripts/consume_device_kv_intr_materialization_request_base.py` is the exact pre-extension DEVICE_KV consumer blob preserved for regression-safe delegation.
+- `scripts/consume_device_kv_intr_materialization_request.py` is now the entrypoint wrapper: all pre-existing requests delegate unchanged; `WORKSPACE_PERSONAL_PROJECTION` executes the bounded extension and returns through the same persisted HB-derived DEVICE_KV query-response carrier.
+- the wrapper re-exports the base module API so existing imports/tests retain their prior surface.
 - `tests/test_workspace_device_kv_query_extension.py` covers exact request, node binding, and rejection of organizational selector substitution.
-- CVK source `runtime/workspace_projection.py` owns the Personal KV projection.
-- Site source `assets/workspace-kv-bridge.js` generates the exact request and requires the existing HB-derived DEVICE_KV response path.
+- CVK `runtime/workspace_projection.py` owns Personal KV projection semantics.
+- Site `assets/workspace-kv-bridge.js` generates the exact request and validates exact HB return recovery.
 
-## Remaining integration seam
-The current `scripts/consume_device_kv_intr_materialization_request.py` still recognizes only the pre-existing My-KV directory/health/installation record classes. It must dispatch `WORKSPACE_PERSONAL_PROJECTION` to `workspace_device_kv_query_extension.execute_workspace_query` before the first authentic Workspace request can complete. Until that exact seam is installed, Site fails closed rather than substituting browser state or fabricated data.
+Source commits:
+- extension: `9edcaa950bd4a52ae32650cf8bcd602623681c44`
+- extension tests: `cd3de8467e39c77993c64fdc0a27ad0bc3023ac4`
+- preserved base consumer: `44703b54f4e1d0819b778a5807b50901e8132311`
+- integrated wrapper: `259d47fc3f0386a027e948a53ca814ef4bfe55fa`
+- API compatibility fix: `757841dcbbbfd5938e2b013659f25bf8a2ebe3e1`
 
-## Claimed delta
-- `scripts/workspace_device_kv_query_extension.py`
-- `tests/test_workspace_device_kv_query_extension.py`
-- pending narrow integration in `scripts/consume_device_kv_intr_materialization_request.py`
-- this handoff
+## Remaining evidence gates
+- deterministic repository validation on the integrated exact head;
+- resident source refresh containing the wrapper + extension + current CVK source;
+- authentic current-node `WORKSPACE_PERSONAL_PROJECTION` ingress;
+- persisted response receipt + HB-derived exact response recovery;
+- Site consumption of that authentic projection.
 
 ## Non-claims
-Source implementation does not prove a resident Personal KV, Workspace registry, current node request, HB return, or Site consumption.
+Source integration does not prove a resident Personal KV, Workspace registry, current node request, HB return, or Site consumption.
