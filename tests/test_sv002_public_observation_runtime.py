@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import os
 import tempfile
 import threading
 import unittest
@@ -140,7 +141,7 @@ class TestSV002PublicObservationRuntime(unittest.TestCase):
             self.assertEqual(p["materialization"]["state"], "NOT_AVAILABLE")
             self.assertFalse(p["topology"]["observer_direct_relation_to_stegverse_002"])
 
-    def test_admissible_existence_is_available_not_connected_without_interlock_evidence(self):
+    def test_micro_node_provenance_does_not_bypass_master_records_projection_boundary(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             micro = root / "micro"
@@ -151,11 +152,9 @@ class TestSV002PublicObservationRuntime(unittest.TestCase):
                 "source_organization": {"organization": "Admissible-Existence", "availability_known": True}
             }), encoding="utf-8")
             p = mod.build_projection(runtime, micro)
-            self.assertEqual(
-                p["knowledge"]["admissible_existence"]["availability"],
-                "KNOWN_AVAILABLE_FROM_CONSTRUCTION_PROVENANCE",
-            )
-            self.assertEqual(p["knowledge"]["admissible_existence"]["interlock"], "NOT_CONNECTED")
+            self.assertEqual(p["observation_source"], "MASTER_RECORDS_ONLY")
+            self.assertNotIn("knowledge", p)
+            self.assertEqual(p["state"]["master_records_reconstruction"], "NOT_OBSERVED")
 
     def test_master_records_receipt_is_materialized_exactly_into_observer_runtime(self):
         with tempfile.TemporaryDirectory() as td:
