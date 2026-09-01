@@ -2,7 +2,7 @@
 
 Updated: 2026-08-31
 Repository: StegVerse-Labs/.github
-State: SOURCE_INTEGRATED_RUNTIME_OBSERVATION_PENDING
+State: SOURCE_INTEGRATED_REFRESH_INSTALL_BOUND_RUNTIME_OBSERVATION_PENDING
 Authority effect: NONE
 Credential authority: TV/TVC
 
@@ -11,38 +11,34 @@ Extend the existing admitted DEVICE_KV endpoint handler with one bounded Persona
 
 ## Record class
 `WORKSPACE_PERSONAL_PROJECTION`
-
 Requester: `Site / Workspace`
 Scope: `workspace_identity`, `principals`, `relationships`, `organizations`, `memberships`, `feed`, `assistant`
 Selector: `{ "workspace_type": "PERSONAL" }`
 
-The request remains exact Node-bound `kv.interlock.request.v1`, `BOUNDED_CONTEXT`, and `authority_effect=NONE`. The extension loads `runtime/workspace_projection.py` from the current CVK source root and reads the current `STEGVERSE_KV_ROOT`.
+The request remains exact Node-bound `kv.interlock.request.v1`, `BOUNDED_CONTEXT`, and `authority_effect=NONE`. The extension loads CVK `runtime/workspace_projection.py` from the current `STEGVERSE_KV_SOURCE_ROOT` and reads the current `STEGVERSE_KV_ROOT`.
 
 ## Organizational boundary
-No Org-KV or Org-Emp-KV request is accepted by this extension. Those require their own organizational runtime and employee+machine conjunctive admission.
+No Org-KV or Org-Emp-KV request is accepted by this extension. Those require their own organization-resident runtime and employee+machine conjunctive admission.
 
 ## Integrated source
-- `scripts/workspace_device_kv_query_extension.py` validates and executes the bounded Personal Workspace record class.
-- `scripts/consume_device_kv_intr_materialization_request_base.py` is the exact pre-extension DEVICE_KV consumer blob preserved for regression-safe delegation.
-- `scripts/consume_device_kv_intr_materialization_request.py` is now the entrypoint wrapper: all pre-existing requests delegate unchanged; `WORKSPACE_PERSONAL_PROJECTION` executes the bounded extension and returns through the same persisted HB-derived DEVICE_KV query-response carrier.
-- the wrapper re-exports the base module API so existing imports/tests retain their prior surface.
-- `tests/test_workspace_device_kv_query_extension.py` covers exact request, node binding, and rejection of organizational selector substitution.
-- CVK `runtime/workspace_projection.py` owns Personal KV projection semantics.
-- Site `assets/workspace-kv-bridge.js` generates the exact request and validates exact HB return recovery.
+- `scripts/workspace_device_kv_query_extension.py` validates/executes the bounded record class.
+- `scripts/consume_device_kv_intr_materialization_request_base.py` preserves the exact pre-extension consumer.
+- `scripts/consume_device_kv_intr_materialization_request.py` delegates all pre-existing requests unchanged and handles only Workspace through the extension, returning through the existing persisted HB-derived DEVICE_KV query-response carrier.
+- wrapper re-exports the base module API for compatibility.
+- `scripts/refresh_sovereign_worker_runtime_source_base.py` preserves the prior source refresh implementation; `refresh_sovereign_worker_runtime_source.py` now adds the Workspace extension/base files to `STATIC_FILES`.
+- `scripts/bootstrap_sovereign_runtime_base.py` preserves prior bootstrap; `bootstrap_sovereign_runtime.py` now requires the Workspace extension/base files.
+- `scripts/install_sovereign_heartbeat_service_base.py` preserves prior installer; `install_sovereign_heartbeat_service.py` now copies the Workspace extension/base files into the resident source tree.
+- `tests/test_workspace_device_kv_query_extension.py` covers exact request, node binding, and organizational-selector rejection.
+- `.github/workflows/workspace-device-kv-validation.yml` is validation-only and passed on exact source head containing the integrated consumer + refresh/bootstrap/install wrappers.
 
-Source commits:
-- extension: `9edcaa950bd4a52ae32650cf8bcd602623681c44`
-- extension tests: `cd3de8467e39c77993c64fdc0a27ad0bc3023ac4`
-- preserved base consumer: `44703b54f4e1d0819b778a5807b50901e8132311`
-- integrated wrapper: `259d47fc3f0386a027e948a53ca814ef4bfe55fa`
-- API compatibility fix: `757841dcbbbfd5938e2b013659f25bf8a2ebe3e1`
+## Current evidence
+Source integration: COMPLETE.
+Validation-only compile/predicate run: PASS.
+Resident source refresh execution: NOT YET OBSERVED.
+Current-node Workspace request/response: NOT YET OBSERVED.
 
 ## Remaining evidence gates
-- deterministic repository validation on the integrated exact head;
-- resident source refresh containing the wrapper + extension + current CVK source;
-- authentic current-node `WORKSPACE_PERSONAL_PROJECTION` ingress;
-- persisted response receipt + HB-derived exact response recovery;
-- Site consumption of that authentic projection.
+Run sovereign resident source refresh on the eligible node, confirm current CVK source root includes `runtime/workspace_projection.py`, then issue the first current-node `WORKSPACE_PERSONAL_PROJECTION` and retain persisted response + HB exact-byte recovery + Site consumption evidence.
 
 ## Non-claims
-Source integration does not prove a resident Personal KV, Workspace registry, current node request, HB return, or Site consumption.
+GitHub validation grants no runtime authority and does not prove resident Personal KV access or request consumption.
