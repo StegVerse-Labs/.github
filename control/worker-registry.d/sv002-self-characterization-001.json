@@ -65,7 +65,7 @@
       "worker_id": "sv002-self-characterization-worker"
     }
   ],
-  "authority_effect": "NONE_REFERENCE_ONLY",
+  "authority_effect": "NONE_REGISTRATION_ONLY",
   "credential_authority": "TV/TVC",
   "github_token_required": false,
   "non_tv_tvc_secret_or_token_required": false,
