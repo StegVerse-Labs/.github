@@ -398,3 +398,15 @@ The public observation runtime now resolves the canonical Master Records reconst
 If the target already exists with different bytes, projection fails closed. Missing canonical custody remains NOT_OBSERVED.
 
 The projection now exposes the ordered principal transition receipt identity/hash sequence plus validated repository and organization ledger roots supplied by the canonical reconstruction receipt. This supports post-reconstruction viewer fidelity checks without treating viewer-bound InTr receipts as cross-viewer invariants.
+
+
+## v0.8 custody-locus correction — 2026-09-01
+
+The public observation runtime no longer treats the local principal state root as the canonical source of a Master Records reconstruction receipt.
+
+It now requires an explicit:
+`STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT`
+
+That path must identify the reconstruction receipt produced from the Master Records custody surface. Missing custody input remains `NOT_AVAILABLE`; the runtime does not fall back to the execution-host state root.
+
+The projection source label is now `MASTER_RECORDS_CUSTODY_ONLY`. This closes the prior ambiguity where the receipt schema was Master Records-derived but its source path was still the principal execution root.
