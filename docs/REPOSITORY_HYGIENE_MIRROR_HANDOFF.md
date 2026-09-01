@@ -325,3 +325,16 @@ st019/universal-pr-validation-8
 ```
 
 Actual ref deletion remains `HYGIENE-BRANCH-REF-RETIREMENT` authority-owned and was not performed by this batch.
+
+
+## 2026-09-01 Workspace DEVICE_KV workflow registry repair
+
+The validation-only `.github/workflows/workspace-device-kv-validation.yml` surface is now explicitly registered in `control/workflow-surface-registry.json` as a `KEEP_STANDALONE_EXCEPTION`.
+
+Reason:
+- it validates only the bounded Workspace/Personal-KV DEVICE_KV source extension;
+- authentic resident DEVICE_KV execution remains prohibited on GitHub Actions;
+- registration grants no runtime, credential, KV, or heartbeat authority;
+- credential authority remains TV/TVC and non-TV/TVC secret/token allowance remains false.
+
+This repairs the fail-closed workflow-surface hygiene error observed during the SV002 pre-T0 review without weakening the proliferation guard.

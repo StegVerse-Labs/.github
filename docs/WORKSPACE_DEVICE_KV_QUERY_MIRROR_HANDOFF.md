@@ -42,3 +42,7 @@ Run sovereign resident source refresh on the eligible node, confirm current CVK 
 
 ## Non-claims
 GitHub validation grants no runtime authority and does not prove resident Personal KV access or request consumption.
+
+## 2026-09-01 workflow-surface registry reconciliation
+
+The standalone validation workflow is now registered in the organization workflow-surface registry. This closes the unrelated organization-control-plane hygiene failure that had been visible during SV002 review. It does not advance resident Workspace DEVICE_KV runtime evidence.
