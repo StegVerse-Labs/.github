@@ -1,0 +1,38 @@
+name: Workspace DEVICE_KV Validation Only
+on:
+  push:
+    paths:
+      - 'scripts/consume_device_kv_intr_materialization_request.py'
+      - 'scripts/consume_device_kv_intr_materialization_request_base.py'
+      - 'scripts/workspace_device_kv_query_extension.py'
+      - 'scripts/refresh_sovereign_worker_runtime_source.py'
+      - 'scripts/bootstrap_sovereign_runtime.py'
+      - 'scripts/install_sovereign_heartbeat_service.py'
+      - 'tests/test_workspace_device_kv_query_extension.py'
+      - '.github/workflows/workspace-device-kv-validation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile Workspace DEVICE_KV source
+        run: python -m py_compile scripts/consume_device_kv_intr_materialization_request.py scripts/consume_device_kv_intr_materialization_request_base.py scripts/workspace_device_kv_query_extension.py scripts/refresh_sovereign_worker_runtime_source.py scripts/bootstrap_sovereign_runtime.py scripts/install_sovereign_heartbeat_service.py
+      - name: Validate extension predicates
+        run: |
+          python - <<'PY'
+          import importlib.util
+          from pathlib import Path
+          p=Path('scripts/workspace_device_kv_query_extension.py')
+          s=importlib.util.spec_from_file_location('w',p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+          q={'schema_version':'kv.interlock.request.v1','operation':'REQUEST','request_id':'q1','requester':{'module':'Site','component':'Workspace'},'purpose':'Workspace','record_class':'WORKSPACE_PERSONAL_PROJECTION','requested_scope':m.SCOPES,'minimum_necessary_justification':'bounded','authority_ref':'stegos-node://node:1','disclosure_mode':'BOUNDED_CONTEXT','selector':{'workspace_type':'PERSONAL'}}
+          assert m.validate_workspace_query(q,node_id='node:1') is q
+          try:m.validate_workspace_query(q,node_id='node:2')
+          except m.WorkspaceDeviceKVQueryError:pass
+          else:raise AssertionError('wrong node admitted')
+          print('WORKSPACE_DEVICE_KV_VALIDATION_PASS')
+          PY
+      - name: Boundary declaration
+        run: echo 'VALIDATION_ONLY authority_effect=NONE runtime_activation=false'
