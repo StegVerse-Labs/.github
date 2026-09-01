@@ -958,3 +958,35 @@ SHWP-ALL-ORG-FEDERATION-001
 ```
 
 No activation or federation observation is inferred by these source-state corrections. Authority effect remains NONE.
+
+
+## AE strict promotion — 2026-08-31
+
+```text
+Admissible-Existence/AE  VECTOR_PRESENT
+```
+
+Current repository-local evidence proves one active governed task:
+
+```text
+AE-CL-PUB-001  40000000103000
+```
+
+The relational-admissibility mapping is terminal and factory-validated, AE-AUTO-0001 through
+AE-AUTO-0010 are completed, AE-AUTO-0011 is not admitted into the canonical queue, and stale
+RTG-TT public-index PR #5 is closed as superseded by the current protocol-family architecture.
+
+Repository-local COSV validation previously passed on the exact projection head together with
+Admissible Resolution Validation and Reflection Build. Current open issue census contains only AE#20.
+
+Strict active-repository adoption:
+
+```text
+VECTOR_PRESENT: 8
+VECTOR_REQUIRED: 20
+NO_ACTIVE_TASK_SURFACE: 6
+ratio: 8/28 = 28.57%
+Admissible-Existence VECTOR_REQUIRED repositories: 0
+```
+
+Authority effect: NONE.
