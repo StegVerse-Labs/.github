@@ -460,7 +460,14 @@ class SV002SelfCharacterizationWorkerTests(unittest.TestCase):
                 return Completed()
 
             with patch.object(mod, "find_repo", return_value=(master, [])):
-                with patch.object(mod, "git_blob_sha", return_value=mod.MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB):
+                with patch.object(
+                    mod.subprocess,
+                    "check_output",
+                    side_effect=[
+                        b"# pinned verifier bytes\n",
+                        (mod.MASTER_RECORDS_RECONSTRUCTION_VERIFIER_BLOB + "\n").encode("utf-8"),
+                    ],
+                ):
                     with patch.object(mod.subprocess, "run", side_effect=fake_run):
                         result = mod.attempt_master_records_reconstruction(state_root)
 
@@ -482,7 +489,11 @@ class SV002SelfCharacterizationWorkerTests(unittest.TestCase):
             verifier = master / "scripts/verify_sv002_self_characterization_reconstruction.py"
             verifier.write_text("# stale verifier\n", encoding="utf-8")
             with patch.object(mod, "find_repo", return_value=(master, [])):
-                with patch.object(mod, "git_blob_sha", return_value="0" * 40):
+                with patch.object(
+                    mod.subprocess,
+                    "check_output",
+                    side_effect=[b"# stale verifier bytes\n", ("0" * 40 + "\n").encode("utf-8")],
+                ):
                     result = mod.attempt_master_records_reconstruction(state_root)
             self.assertEqual(result["state"], "PENDING")
             self.assertEqual(result["blocker"], "MASTER_RECORDS_RECONSTRUCTION_VERIFIER_SOURCE_PIN_MISMATCH")
@@ -491,6 +502,52 @@ class SV002SelfCharacterizationWorkerTests(unittest.TestCase):
             self.assertFalse(result["network_fetch_performed"])
             self.assertFalse(result["credential_required"])
             self.assertEqual(result["authority_effect"], "NONE")
+
+
+
+    def test_v03_completed_principal_state_is_recognized(self):
+        with tempfile.TemporaryDirectory() as td:
+            state_root=Path(td)
+            for name in mod.PRINCIPAL_REQUIRED_ARTIFACTS_V03:
+                path=state_root/name
+                if name.endswith(".jsonl"):
+                    path.write_text("{}\n",encoding="utf-8")
+                elif name=="EXPERIMENT_EXECUTION_RECEIPT.json":
+                    path.write_text(json.dumps({
+                        "schema":"stegverse.self-characterization-execution-receipt/v0.3",
+                        "state":"COMPLETED",
+                        "principal_run_started":True,
+                        "principal_run_completed":True,
+                        "authority_transfer_assumed":False,
+                        "authority_effect_resolution":"DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS",
+                        "transition_effect_state":"PENDING_TRANSITION_ELEMENT_EVALUATION",
+                    }),encoding="utf-8")
+                else:
+                    path.write_text("{}\n",encoding="utf-8")
+            result=mod.load_completed_principal_state(state_root)
+            self.assertIsNotNone(result)
+            self.assertEqual(result["schema"],"stegverse.self-characterization-execution-receipt/v0.3")
+
+    def test_v03_missing_hierarchical_artifact_is_not_complete(self):
+        with tempfile.TemporaryDirectory() as td:
+            state_root=Path(td)
+            for name in mod.PRINCIPAL_REQUIRED_ARTIFACTS_V03:
+                if name=="ORGANIZATION_LEDGER_ROOT.json":
+                    continue
+                path=state_root/name
+                if name=="EXPERIMENT_EXECUTION_RECEIPT.json":
+                    path.write_text(json.dumps({
+                        "schema":"stegverse.self-characterization-execution-receipt/v0.3",
+                        "state":"COMPLETED",
+                        "principal_run_started":True,
+                        "principal_run_completed":True,
+                        "authority_transfer_assumed":False,
+                        "authority_effect_resolution":"DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS",
+                        "transition_effect_state":"PENDING_TRANSITION_ELEMENT_EVALUATION",
+                    }),encoding="utf-8")
+                else:
+                    path.write_text("{}\n",encoding="utf-8")
+            self.assertIsNone(mod.load_completed_principal_state(state_root))
 
 
 if __name__ == "__main__":
