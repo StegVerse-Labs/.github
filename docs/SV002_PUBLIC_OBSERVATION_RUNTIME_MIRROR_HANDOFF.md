@@ -388,13 +388,46 @@ The projection may expose Master Records reconstruction status, reconstructed ar
 Origin-side receipt bytes may still be compared against their Master Records-custodied/reconstructed hashes by a dedicated verifier, but that comparison is an integrity check, not an independent observation history.
 
 
-## v0.7 Master Records projection materialization — 2026-09-01
+## v0.7 Master Records projection/readback repair — 2026-09-01
 
-Implementation revision only. Frozen experiment condition remains v0.3.
+The public observation runtime now has an explicit machine path from a canonical Master Records reconstruction receipt into the observer's read location.
 
-The public observation runtime now resolves the canonical Master Records reconstruction receipt from the self-characterization state root, validates experiment ID, PASS/reconstruction state, and the receipt SHA-256, then atomically materializes the exact receipt bytes into:
-`receipts/sv002-self-characterization/master-records-reconstruction.latest.json`.
+```text
+STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT
+-> route config master_records_reconstruction_receipt
+-> observation runtime child environment
+-> write-once exact-byte materialization
+-> receipts/sv002-self-characterization/master-records-reconstruction.latest.json
+-> read-only public projection
+```
 
-If the target already exists with different bytes, projection fails closed. Missing canonical custody remains NOT_OBSERVED.
+Materialization validates the experiment binding and preserves exact receipt bytes. A conflicting second payload fails closed.
 
-The projection now exposes the ordered principal transition receipt identity/hash sequence plus validated repository and organization ledger roots supplied by the canonical reconstruction receipt. This supports post-reconstruction viewer fidelity checks without treating viewer-bound InTr receipts as cross-viewer invariants.
+The projection now carries the ordered transition receipt identities/hashes, repository ledger root, organization ledger root, their root hashes, and the terminal transition receipt hash when present in the canonical reconstruction receipt.
+
+Canonical viewer evidence classification is versioned at:
+`docs/SV002_VIEWER_EVIDENCE_INVARIANTS.v1.json`.
+
+Run-time evidence is viewer-invariant after reconstruction; endpoint Interlock/InTr and observer-binding evidence is viewer-bound by design. Cross-viewer equality is required only for the reconstructed run-time evidence population, not for transport receipts.
+
+
+## v0.7 Master Records projection/readback repair — 2026-09-01
+
+The public observation runtime now has an explicit machine path from a canonical Master Records reconstruction receipt into the observer's read location.
+
+```text
+STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT
+-> route config master_records_reconstruction_receipt
+-> observation runtime child environment
+-> write-once exact-byte materialization
+-> receipts/sv002-self-characterization/master-records-reconstruction.latest.json
+-> read-only public projection
+```
+
+Materialization validates the experiment binding and preserves exact receipt bytes. A conflicting second payload fails closed.
+
+The projection now carries the ordered transition receipt identities/hashes, repository ledger root, organization ledger root, their root hashes, and the terminal transition receipt hash when present in the canonical reconstruction receipt.
+
+Canonical viewer evidence classification is versioned at `docs/SV002_VIEWER_EVIDENCE_INVARIANTS.v1.json`.
+
+Run-time evidence is viewer-invariant after reconstruction; endpoint Interlock/InTr and observer-binding evidence is viewer-bound by design. Cross-viewer equality is required only for the reconstructed run-time evidence population, not for transport receipts.
