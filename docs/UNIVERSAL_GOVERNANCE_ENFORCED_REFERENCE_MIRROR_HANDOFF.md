@@ -202,3 +202,27 @@ credential authority: TV/TVC
 Explicit source locators remain supported, but are no longer the only way an already-materialized resident source bundle can satisfy the worker. A mapped/canonical path is accepted only when all required source files are actually present. Malformed or incomplete mappings grant nothing and the worker remains HANDOFF_READY/source-pending.
 
 This closes a source-discovery seam only. Authentic resident execution, reference-boundary observation, and real external-system activation remain separately unobserved.
+
+
+## Native autonomous request consumption
+
+The continuously supervised resident WorkerCoordinator already visits the canonical local resident-request dispatcher every 100 worker-runtime logical ticks. The prior Universal Governance gap was packaging: the native sovereign-runtime installer did not require or copy the Universal Governance consumer into a newly materialized resident runtime.
+
+That defect is now corrected.
+
+```text
+native service: scripts/run_worker_runtime.py --continuous
+resident sweep cadence: every 100 WorkerCoordinator logical ticks
+request dispatcher: scripts/dispatch_resident_execution_requests.py
+consumer: scripts/consume_universal_governance_enforced_reference_request.py
+consumer required in native materialization: true
+STEGVERSE_STEGCORE_SOURCE_ROOT forwarded to worker service: true
+STEGVERSE_MASTER_RECORDS_SOURCE_ROOT forwarded to worker service: true
+STEGVERSE_REPO_ROOTS_JSON forwarded to worker service: true
+manual one-shot invocation required after service activation: false
+heartbeat grants execution authority: false
+request dispatcher grants execution authority: false
+WorkerCoordinator admission remains execution authority: true
+```
+
+A correctly installed native resident service therefore no longer needs a human or separate GitHub/CI action to notice this request. Once the local canonical source/runtime service is active, its normal WorkerCoordinator loop refreshes local source when configured, visits pending resident requests, and invokes the request-specific consumer under the existing independent admission/claim/fence path.
