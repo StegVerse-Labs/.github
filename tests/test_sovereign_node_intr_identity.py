@@ -170,11 +170,13 @@ class SovereignNodeInTrIdentityTests(unittest.TestCase):
                     },
                     output=root / "evaluator.json",
                 )
+                master_receipt=root/"master-records-reconstruction.json"
                 sv002 = sv002_route.materialize(
                     {
                         **common,
                         "STEGVERSE_MICRO_NODE_RUNTIME_ROOT": str(micro),
                         "STEGVERSE_SV002_OBSERVE_PORT": "8766",
+                        "STEGVERSE_SV002_MASTER_RECORDS_RECONSTRUCTION_RECEIPT": str(master_receipt),
                     },
                     output=root / "sv002.json",
                 )
@@ -190,6 +192,10 @@ class SovereignNodeInTrIdentityTests(unittest.TestCase):
             self.assertEqual(sv002["config"]["credential_authority"], "TV/TVC")
             self.assertEqual(evaluator["config"]["github_token_runtime_authority"], "NONE")
             self.assertEqual(sv002["config"]["github_token_runtime_authority"], "NONE")
+            self.assertEqual(
+                sv002["config"]["master_records_reconstruction_receipt"],
+                str(master_receipt.resolve()),
+            )
 
 
 if __name__ == "__main__":
