@@ -288,3 +288,46 @@ terminal SV001 -> downstream MR/SV002 continuation executes independently
 ```
 
 Watching, waiting, or polling is not an authorized completion action.
+
+
+## Canonical HB runtime observability consumer binding — 2026-09-02
+
+SV001 is a consumer of the shared organization contract, not an independent runtime-signal project.
+
+Canonical owner surfaces:
+
+```text
+management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json
+org-kernel/runtime_observability.py
+scripts/project_runtime_observability.py
+active resident-local extension owner: StegVerse-Labs/.github#814 / PR #817
+```
+
+SV001 predicate mapping remains distinct:
+
+```text
+resident_process_alive_supervised
+  <- shared resident-presence / direct runtime activation evidence only
+
+node_runtime_fresh
+  <- HB reference + resident/worker observation correlation only
+
+governed_request_consumed
+  <- receipts/sovereign-host/stegverse001-bounded-autonomy-request-consumption.latest.json
+
+runtime_execution_completed
+  <- SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED task-specific receipt
+
+receipt_retained
+  <- task-specific retained evidence path
+
+replay_reconstruction_proven
+  <- Master Records reconstruction PASS
+
+SV002 adversarial disposition
+  <- independent SV002 evidence
+```
+
+Neither HB progression, source installation, request-file presence, merge, CI, nor projection-file presence satisfies any of those machine predicates.
+
+This session's exact currently unresolved first predicate is `resident_process_alive_supervised`. It must be supplied by the shared canonical runtime-presence contract when authentic deployment-local activation/liveness evidence exists.
