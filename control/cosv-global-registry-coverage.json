@@ -356,6 +356,10 @@
     {
       "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
       "vector": "50000000102000"
+    },
+    {
+      "task_id": "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+      "vector": "50000000101000"
     }
   ],
   "evidence_conflicts": [],
