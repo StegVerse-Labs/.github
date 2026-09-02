@@ -3,7 +3,7 @@
 Updated: 2026-09-02
 Repository: `StegVerse-Labs/.github`
 Issue: `#616`
-State: HANDOFF_ESTABLISHED / SOURCE_IMPLEMENTATION_PENDING
+State: SOURCE_IMPLEMENTED / VALIDATION_PENDING
 Credential authority: TV/TVC
 GitHub token runtime authority: NONE
 Authority effect: NONE
@@ -89,3 +89,18 @@ Issue #462 remains the separate close condition for receiver READY and authentic
 ## Next authorized machine action
 
 Implement the bounded lease resumer and integrate it before WorkerCoordinator dispatch in the existing materialization consumer. Validate against current organization-control and Heartbeat suites before merge.
+
+
+## 2026-09-02 implementation checkpoint
+
+Implemented source now:
+- resumes the exact persisted `PUBLIC_VERIFYING` lease through `LeaseMachine.from_snapshot`;
+- invokes the already-local StegOS `verify_public_intr_profile` against exactly `https://stegverse.org/intr/profile`;
+- requires `SV002:PublicObservation`, verified independent HTTPS origin, exact profile schema/hash, no credential use, and zero execution authority;
+- advances only the same lease request/history to `LEASE_OPEN`;
+- persists an observation sidecar binding pre/post lease hashes to URL/schema/profile hash;
+- requires the materialization consumer to validate exact `LEASE_OPEN` history before WorkerCoordinator dispatch;
+- preserves false claims for receiver READY, round trip, Master Records custody, and SV002 principal execution;
+- handles an already-open lease only when the persisted public-observation evidence binds to the exact open snapshot.
+
+Source validation and merge remain pending. Authentic external public observation/runtime execution remains unobserved.
