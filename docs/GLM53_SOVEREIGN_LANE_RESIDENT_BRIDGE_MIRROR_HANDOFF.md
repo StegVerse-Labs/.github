@@ -2,7 +2,7 @@
 
 Repository: `StegVerse-Labs/.github`  
 Issue: `#819`  
-State: SOURCE_IMPLEMENTATION_ACTIVE / AUTHENTIC_RESIDENT_EXECUTION_PENDING  
+State: SOURCE_CONTROL_MERGED_VALIDATED / AUTHENTIC_RESIDENT_EXECUTION_PENDING  
 Authority effect: NONE_REQUEST_BRIDGE_ONLY  
 Activation effect: false
 
@@ -70,3 +70,34 @@ Completion requires one authentic resident execution that produces:
 Source merge or GitHub Actions validation is not sovereign execution.
 A resident request grants no claim, fence, credential, model, provider, heartbeat, publication, or runtime authority.
 Lane-11 evidence is not complete until a resident WorkerCoordinator execution emits the actual evidence.
+
+
+## Source/control completion — 2026-09-02
+
+Issue: `#819`  
+Superseded stale PR: `#825` — CLOSED / NO RUNTIME EVIDENCE  
+Final rebased implementation PR: `#828`  
+Merge: `be021c2b842ea347f2223a0949ed7562cdd854b1`  
+Exact validated head: `54f84868386d12b9ea5069b90e4943a73a0b8f50`
+
+Validation:
+- Cross-Framework Current-Basis Resident Request Validation `33689647482`: SUCCESS
+- Validate organization control plane `33689647480`: SUCCESS
+- Heartbeat Worker Project `33689647484`: SUCCESS
+
+Validation exposed and required correction of:
+- missing Admissible-Existence binding and retrospective conformance;
+- missing COSV task-index/worker-denominator closure.
+
+Those contracts were satisfied directly; no validator was weakened.
+
+Current runtime state remains:
+```text
+resident request installed: true
+resident dispatcher/source-refresh wiring: merged
+authentic WorkerCoordinator execution observed: false
+lane-11 sovereign evidence observed: false
+activation claimed: false
+```
+
+The next transition remains machine-owned by the resident WorkerCoordinator. Source merge and hosted validation do not satisfy lane 11.

@@ -1085,7 +1085,7 @@ Execution remains machine-owned. The request grants no authority. The worker may
 
 Current state:
 ```text
-source integration: IMPLEMENTED_PENDING_VALIDATION
+source integration: MERGED_VALIDATED
 runtime execution: NOT YET OBSERVED
 lane-11 success: NOT CLAIMED
 credential authority: TV/TVC
@@ -1093,3 +1093,20 @@ github token runtime authority: NONE
 ```
 
 If the private model/endpoint is absent, the canonical behavior is a durable fail-closed blocker, not hosted fallback and not synthetic sovereign evidence.
+
+
+### GLM-5.3-Flash sovereign lane bridge merge evidence — 2026-09-02
+
+```text
+issue: #819 CLOSED
+final PR: #828
+merge: be021c2b842ea347f2223a0949ed7562cdd854b1
+validated head: 54f84868386d12b9ea5069b90e4943a73a0b8f50
+cross-framework request validation: 33689647482 SUCCESS
+organization control plane: 33689647480 SUCCESS
+heartbeat worker project: 33689647484 SUCCESS
+runtime execution: NOT YET OBSERVED
+lane-11 activation/evidence: NOT CLAIMED
+```
+
+The merged bridge is source/control readiness only. The authentic private GLM execution remains resident-machine owned.
