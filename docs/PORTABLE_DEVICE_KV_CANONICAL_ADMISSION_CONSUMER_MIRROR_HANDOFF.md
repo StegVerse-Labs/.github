@@ -3,8 +3,8 @@
 Repository: `StegVerse-Labs/.github`
 Issue: `#668`
 Branch: `feat/device-kv-canonical-admission-657`
-State: ACTIVE_IMPLEMENTATION
-Updated: 2026-08-31T11:39:00-05:00
+State: SOURCE_MERGED_VALIDATED / AUTHENTIC_RESIDENT_EXECUTION_PENDING
+Updated: 2026-09-02T10:18:00-05:00
 Credential authority: TV/TVC
 Authority effect: NONE
 
@@ -42,3 +42,22 @@ Source implementation + validation + merge after the corresponding CVK canonical
 ## Upstream CVK closure
 
 CVK #162 merged through PR #163 at `715d49e8bfd3f517ef9653c605beadf5a47f5f41`. The resident consumer may now require both `admit_portable_direct_source` and `promote_portable_direct_source` from current local CVK source.
+
+
+## 2026-09-02 source release reconciliation
+
+The source completion boundary for issue #668 has been satisfied.
+
+```text
+upstream CVK canonical-admission merge: 715d49e8bfd3f517ef9653c605beadf5a47f5f41
+implementation PR: #669
+implementation merge: 4b64594468a81f2f58edbfd5bd7fe04073c4cf8f
+source implementation: COMPLETE
+source validation: COMPLETE
+merge: COMPLETE
+authentic resident execution: PENDING
+```
+
+The runtime gate remains distinct: a current sovereign resident must execute the already-installed DEVICE_KV consumer against current local CVK source and a real private `STEGVERSE_KV_ROOT`, producing authentic staging, canonical admission/readback, and connection-health evidence. No source merge or hosted validation is promoted into that runtime result.
+
+Issue #668 may close as source-complete while the machine-owned runtime predicate remains open in the resident execution chain.
