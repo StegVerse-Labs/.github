@@ -57,8 +57,19 @@ binding the real SV001 receipt hash, Master Records reconstruction hash, baselin
 SV001 source/control: COMPLETE
 Master Records automatic intake source: MERGED
 SV002 deterministic evaluator source: MERGED
-downstream resident continuation: IMPLEMENTING
+downstream resident continuation: SOURCE_IMPLEMENTED_VALIDATION_PENDING
 authentic SV001 receipt: NOT OBSERVED
 Master Records reconstruction PASS: NOT OBSERVED
 SV002 authentic disposition: NOT OBSERVED
 ```
+
+
+## Implemented machine surfaces
+
+- `scripts/continue_stegverse001_evidence_chain.py`
+- `tests/test_stegverse001_evidence_chain.py`
+- `tests/test_stegverse001_evidence_chain_retry.py`
+- existing `scripts/consume_stegverse001_bounded_autonomy_request.py` now retries downstream evidence after terminal execution without re-running autonomy;
+- sovereign bootstrap/source-refresh/native-service manifests include the continuation script.
+
+Source implementation is not runtime evidence.
