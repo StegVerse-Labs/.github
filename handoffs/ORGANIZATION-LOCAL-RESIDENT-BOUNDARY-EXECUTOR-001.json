@@ -82,7 +82,7 @@
     "ingress_profile": "stegverse.organization-local-intr/v1"
   },
   "completion": {
-    "source_implementation_state": "IMPLEMENTED_VALIDATION_PENDING",
+    "source_implementation_state": "MERGED_VALIDATED_CURRENT_MAIN",
     "runtime_activation_state": "PENDING_AUTHENTIC_RESIDENT_INGRESS",
     "runtime_observation_claimed": false,
     "terminal_evidence": "receipts/organization-local-boundary/<packet_id>.json with disposition ACCEPTED_LOCAL_BOUNDARY",
@@ -92,8 +92,14 @@
       "receipt and egress reconstruct exact ingress identity",
       "no canonical state change or external side effect is claimed"
     ],
-    "next_authorized_action": "Validate source on current main, merge only after organization-control and Heartbeat suites pass, then allow sovereign resident execution only when an authentic local ingress packet exists.",
-    "targeted_command": "python scripts/run_worker_runtime.py --task-id ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001"
+    "next_authorized_action": "On the next sovereign resident opportunity with one valid local ingress packet, execute only through fresh WorkerCoordinator admission/claim/fence. Merge/CI/request/carrier presence grants no runtime authority.",
+    "targeted_command": "python scripts/run_worker_runtime.py --task-id ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+    "source_merge": {
+      "pr": 777,
+      "merge_commit": "432789eb7674bcefc332434f7e862b43226c609e",
+      "organization_control_validation": "SUCCESS",
+      "heartbeat_worker_validation": "SUCCESS"
+    }
   },
   "activation": {
     "authority_domain": "INDEPENDENT_TASK_CONTROL",

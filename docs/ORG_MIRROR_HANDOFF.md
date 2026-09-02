@@ -951,3 +951,27 @@ activation COMPLETE: NOT OBSERVED
 The existing native resident dispatcher can now visit `one_shot_resident_stack_activation`; native materialization includes both the request consumer and `activate_resident_stack.py`. Missing local source roots remain machine-retryable as `SOURCE_ROOTS_PENDING`.
 
 This closes the known source invocation seam without asserting a deployment-local execution.
+
+
+## 2026-09-02 organization-local resident boundary executor source closure
+
+Issue #713 source implementation is merged and validated.
+
+```text
+task: ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001
+implementation PR: #777
+merge: 432789eb7674bcefc332434f7e862b43226c609e
+organization control validation: SUCCESS
+Heartbeat Worker Project validation: SUCCESS
+COSV active worker denominator: 71
+COSV total active task denominator: 85
+source state: MERGED_VALIDATED_CURRENT_MAIN
+authentic ingress consumption: NOT OBSERVED
+authentic egress persistence: NOT OBSERVED
+resident activation: NOT OBSERVED
+credential authority: TV/TVC
+GitHub token runtime authority: NONE
+authority effect: NONE
+```
+
+The worker is bounded to one local ingress packet under fresh WorkerCoordinator admission/claim/fence, validates exact profile/payload/carrier evidence, rejects credential/command material, and may persist only local receipt plus non-mutating egress acknowledgement. Source completion does not establish runtime activation.
