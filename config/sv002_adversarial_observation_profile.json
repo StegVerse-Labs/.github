@@ -51,5 +51,19 @@
     "missing_evidence_never_promoted": true,
     "contradictory_evidence_preserved": true
   },
-  "authority_effect": "NONE"
+  "authority_effect": "NONE",
+  "source_implementation": {
+    "fixture_schema": "schemas/sv002-adversarial-observation-fixture.schema.json",
+    "fixture_set": "fixtures/sv002-adversarial-observation/cases.v1.json",
+    "evaluator": "scripts/evaluate_sv002_adversarial_observation.py",
+    "tests": "tests/test_sv002_adversarial_observation.py",
+    "implemented_cases": 12,
+    "source_complete": true,
+    "source_complete_is_target_property": false
+  },
+  "runtime_evidence": {
+    "authentic_master_records_reconstruction_observed": false,
+    "authentic_sv001_disposition_observed": false,
+    "target_property_established": false
+  }
 }
