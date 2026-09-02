@@ -866,19 +866,20 @@ clean local master-records/orchestration
 
 This is source transport/provenance only. It grants no custody, reconstruction, execution, credential, repository, heartbeat, or sovereign authority. Authentic resident materialization and evidence remain separately observable.
 
-## 2026-09-02 pinned SV002 portable-source producer closure
 
-Issue #768 repairs the producer side of StegDeploy's existing portable SV002 source bindings.
+## 2026-09-02 Master Records portable-source producer closure
+
+Issue #766 repairs the source-bundle producer/consumer mismatch for the SV001 evidence chain.
+
+The existing complete resident activator already supplies `--master-records-root`, and StegDeploy already maps `vendor/master-records-orchestration` to `STEGVERSE_MASTER_RECORDS_ROOT`. The canonical packager now implements the missing producer side with a clean-local-Git proof pinned to Master Records resident-intake floor:
+
+`d593c920c1630aa5da20cc2622196f8676a74afd`
+
+Protected source:
 
 ```text
-already-local exact Git commit objects
--> canonical sovereign-control-plane bundle
--> vendor/micro-node-runtime
--> vendor/formal/TT|RTG|GTG|AE
--> StegDeploy verified materialization
--> STEGVERSE_MICRO_NODE_RUNTIME_ROOT / TT / RTG / GTG / AE roots
+scripts/watch_stegverse001_autonomy_receipt.py
+scripts/import_stegverse001_autonomy_receipt.py
 ```
 
-The bundle uses exact pinned commit trees rather than mutable HEAD/worktree content and carries per-file SHA-256 commitments plus portable source proofs. It performs no network source acquisition and grants no principal, formalism, execution, governance, credential, heartbeat, or repository authority.
-
-The September 1 ownership correction remains binding: canonical StegVerse-002 principal execution belongs to StegVerse-002/.github, not this StegVerse-Labs reference lane.
+Any missing floor, dirty worktree, protected-path drift, or missing protected file fails source packaging. The bundle remains source transport only and grants no custody, reconstruction, execution, credential, repository, network, heartbeat, or sovereign authority.
