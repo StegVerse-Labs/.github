@@ -59,11 +59,27 @@
     "tests": "tests/test_sv002_adversarial_observation.py",
     "implemented_cases": 12,
     "source_complete": true,
-    "source_complete_is_target_property": false
+    "source_complete_is_target_property": false,
+    "merge": "786323f16e36346c69b2215894086515d7b1d58e",
+    "validation_runs": [
+      "33650432730",
+      "33650432743"
+    ],
+    "validated": true
   },
   "runtime_evidence": {
     "authentic_master_records_reconstruction_observed": false,
     "authentic_sv001_disposition_observed": false,
     "target_property_established": false
+  },
+  "resident_evidence_chain": {
+    "merge": "64e8dc3bfb537b02efdf760fa3515e544d10bdff",
+    "validation_runs": [
+      "33651138551",
+      "33651138559",
+      "33651138579"
+    ],
+    "source_complete": true,
+    "source_complete_is_runtime_observation": false
   }
 }
