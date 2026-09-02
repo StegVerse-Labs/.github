@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import hashlib, json, os, sys
+import hashlib, json, os, subprocess, sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
@@ -9,9 +9,19 @@ TASK_ID="SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001"
 WORKER_ID="stegverse001-bounded-autonomy-runtime-worker"
 HOSTED=("GITHUB_ACTIONS","CI","RENDER","VERCEL","CF_PAGES","CLOUDFLARE_WORKERS")
 FORBIDDEN=("GITHUB_TOKEN","GH_TOKEN","STEGVERSE_GITHUB_TOKEN","ACTIONS_RUNTIME_TOKEN","ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+BOUND_STATE_ENV="STEGVERSE_BOUND_STATE_ROOT"
 DEFAULT_LEASE=Path.home()/".stegverse/autonomy/stegverse001/lease.active.json"
-STATE_ROOT=Path.home()/".stegverse/state/stegverse001-bounded-autonomy"
+STATE_ROOT=Path(os.getenv(BOUND_STATE_ENV) or (Path.home()/".stegverse/state/stegverse001-bounded-autonomy")).expanduser().resolve()
+BOUND_STATE_LEASE=(STATE_ROOT/"autonomy/lease.active.json").resolve()
 TVC_DEFAULT_LEASE=Path("/var/lib/stegverse/tvc/stegverse001-bounded-autonomy/lease.active.json")
+REQUIRED_TVC_ANCESTOR="d495b67d1c322c3fdd8c9bb6db75657783e19c0c"
+TVC_REQUIRED_FILES=(
+    "tools/task_dispatcher.py",
+    "tasks/stegverse001_bounded_autonomy_lease.py",
+    "config/stegverse001_bounded_autonomy_lease_policy.json",
+    "config/task_catalog.d/stegverse001_bounded_autonomy.json",
+    "schemas/stegverse001-bounded-autonomy-lease.schema.json",
+)
 
 class LeasePending(RuntimeError): pass
 
@@ -45,19 +55,95 @@ def parse_time(value:str)->datetime:
     if t.tzinfo is None: raise RuntimeError("lease expiry must be timezone-aware")
     return t
 
+def _git(root:Path,*args:str)->subprocess.CompletedProcess[str]:
+    return subprocess.run(["git","-C",str(root),*args],capture_output=True,text=True,check=False,timeout=20)
+
+def _tvc_candidates()->list[Path]:
+    out=[]
+    raw=os.getenv("STEGVERSE_TVC_ROOT","").strip()
+    if raw: out.append(Path(raw).expanduser())
+    out.extend([
+      Path.home()/".stegverse/repos/StegVerse-Labs/TVC",
+      Path("/var/lib/stegverse/source/StegVerse-Labs/TVC"),
+      Path("/srv/stegverse/repos/StegVerse-Labs/TVC"),
+      Path("/opt/stegverse/repos/StegVerse-Labs/TVC"),
+    ])
+    return out
+
+def locate_tvc()->tuple[Path|None,list[dict[str,Any]]]:
+    observed=[]
+    for candidate in _tvc_candidates():
+        if not (candidate/".git").is_dir(): continue
+        head=_git(candidate,"rev-parse","HEAD")
+        clean=_git(candidate,"status","--porcelain")
+        ancestor=_git(candidate,"merge-base","--is-ancestor",REQUIRED_TVC_ANCESTOR,"HEAD")
+        row={
+          "path":str(candidate),
+          "head":head.stdout.strip() if head.returncode==0 else "",
+          "clean_worktree":clean.returncode==0 and clean.stdout.strip()=="",
+          "required_ancestor_present":ancestor.returncode==0,
+          "required_files_present":all((candidate/p).is_file() for p in TVC_REQUIRED_FILES),
+        }
+        observed.append(row)
+        if row["head"] and row["clean_worktree"] and row["required_ancestor_present"] and row["required_files_present"]:
+            row["selected"]=True
+            return candidate.resolve(),observed
+    return None,observed
+
+def _clean_tvc_env(lease_target:Path)->dict[str,str]:
+    allow=("HOME","USER","LOGNAME","SHELL","PATH","PYTHONPATH","LANG","LC_ALL","TMPDIR","XDG_CONFIG_HOME","XDG_STATE_HOME","STEGVERSE_TV_ROOT",BOUND_STATE_ENV)
+    env={k:os.environ[k] for k in allow if os.environ.get(k)}
+    for k in FORBIDDEN: env.pop(k,None)
+    for k in HOSTED: env.pop(k,None)
+    env["STEGVERSE_SV001_AUTONOMY_LEASE_AUTHORITY"]="TV/TVC"
+    env["STEGVERSE_SV001_AUTONOMY_LEASE_TARGET"]=str(lease_target)
+    return env
+
+def request_lease_from_tvc(lease_target:Path)->dict[str,Any]:
+    tvc_root,observed=locate_tvc()
+    if tvc_root is None:
+        raise LeasePending("current local TVC authority source not materialized")
+    proc=subprocess.run(
+      [sys.executable,"tools/task_dispatcher.py","tvc.stegverse001.bounded_autonomy.issue"],
+      cwd=tvc_root,env=_clean_tvc_env(lease_target),capture_output=True,text=True,check=False,timeout=180
+    )
+    try: report=json.loads(proc.stdout)
+    except Exception:
+        raise LeasePending("TVC lease issuance returned no parseable dispatcher report")
+    if not isinstance(report,dict):
+        raise LeasePending("TVC lease issuance report malformed")
+    result=report.get("result") if isinstance(report.get("result"),dict) else {}
+    if proc.returncode!=0 or report.get("status")!="ok" or result.get("status")!="ok":
+        reason=result.get("reason") or (report.get("error") or {}).get("message") or "TVC lease issuance blocked"
+        raise LeasePending(str(reason))
+    if result.get("transition_id")!="TVC_SV001_BOUNDED_AUTONOMY_LEASE_ISSUED":
+        raise RuntimeError("unexpected TVC lease issuance transition")
+    if result.get("lease_path")!=str(lease_target):
+        raise RuntimeError("TVC lease target mismatch")
+    return {"tvc_source_root":str(tvc_root),"tvc_source_head":next((x["head"] for x in observed if x.get("selected")),""),"dispatcher":report}
+
 def resolve_lease_path()->Path:
     explicit=os.getenv("STEGVERSE_SV001_AUTONOMY_LEASE")
     if explicit:
         return Path(explicit).expanduser().resolve()
+    if BOUND_STATE_LEASE.is_file():
+        return BOUND_STATE_LEASE
     if TVC_DEFAULT_LEASE.is_file():
         return TVC_DEFAULT_LEASE
     return DEFAULT_LEASE
+
+def issuance_lease_target()->Path:
+    if os.getenv(BOUND_STATE_ENV):
+        return BOUND_STATE_LEASE
+    return DEFAULT_LEASE.resolve()
 
 def validate_lease(p:Path)->dict[str,Any]:
     if not p.is_file(): raise LeasePending(f"external autonomy lease not present: {p}")
     v=load(p)
     required={
       "schema":"stegverse.stegverse001.bounded-autonomy-lease/v1",
+      "request_id":"TV-REQUEST-STEGVERSE001-BOUNDED-AUTONOMY-001",
+      "request_hash":"sha256:c4b3e35d5ecf2246e0e082a591e3144bd61b32cb02133d12a89226cf362f4def",
       "entity_id":"StegVerse-001",
       "entity_alias":"Beta_Orionis",
       "lease_state":"ACTIVE",
@@ -77,7 +163,7 @@ def validate_lease(p:Path)->dict[str,Any]:
     needed={"AUTONOMOUS_TASK_DISCOVERY","LOCAL_STATE_OBSERVATION","RECEIPT_EMISSION"}
     if not needed.issubset(allowed): raise RuntimeError("lease lacks required transition classes")
     forbidden=set(v.get("forbidden_transition_classes") or [])
-    if not {"SELF_ACCREDITATION","SOVEREIGN_AUTHORITY_CHANGE","FINANCIAL_BINDING"}.issubset(forbidden):
+    if not {"SELF_ACCREDITATION","SOVEREIGN_AUTHORITY_CHANGE","FINANCIAL_BINDING","REPOSITORY_WRITEBACK","EXTERNAL_NETWORK_ACCESS","CREDENTIAL_CREATION"}.issubset(forbidden):
         raise RuntimeError("lease forbidden-transition floor incomplete")
     if v.get("lease_consumption")!="SINGLE_AUTONOMY_CYCLE": raise RuntimeError("lease must be single-cycle")
     claimed_hash=v.get("lease_hash")
@@ -179,10 +265,15 @@ def main():
         if any(truthy(os.getenv(k)) for k in FORBIDDEN): raise RuntimeError("credential-bearing environment forbidden")
         task=validate_invocation(inv)
         lease_path=resolve_lease_path()
+        issuance=None
+        if not lease_path.is_file():
+            lease_path=issuance_lease_target()
+            issuance=request_lease_from_tvc(lease_path)
         lease=validate_lease(lease_path)
         receipt=run_cycle(task,lease,lease_path)
         print(json.dumps(response("COMPLETED","SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
-          evidence_refs=[str(STATE_ROOT/"receipts/latest.json")],result=receipt),sort_keys=True)); return 0
+          evidence_refs=[str(STATE_ROOT/"receipts/latest.json"),str(lease_path.parent/"issuance.latest.json")],
+          tvc_lease_issuance=issuance,result=receipt),sort_keys=True)); return 0
     except LeasePending as exc:
         print(json.dumps(response("HANDOFF_READY","SV001_BOUNDED_AUTONOMY_PREREQUISITE_PENDING",
           blocker={"dependency_class":"EXTERNAL_BOUNDED_AUTONOMY_LEASE_OR_RESIDENT_CONTINUITY",
