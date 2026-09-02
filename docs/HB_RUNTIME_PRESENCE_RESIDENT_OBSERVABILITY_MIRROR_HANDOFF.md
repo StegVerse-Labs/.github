@@ -213,3 +213,19 @@ predicates.
 
 No source, validation, merge, or HB progression satisfies those predicates. DE-006
 remains 0/4 until authentic deployment-local and destination-owned receipts exist.
+
+## 2026-09-02 consolidation cleanup
+
+The later issue #814 implementation is the canonical shared projector:
+- `heartbeat_runtime/runtime_presence_projection.py`
+- `scripts/project_hb_runtime_presence.py`
+- `tests/test_runtime_presence_projection.py`
+- merge `6358375c81fedb579cb6fcac59946268ea485ebb`
+
+An earlier same-session provisional implementation under `org-kernel/runtime_observability.py` was detected as duplicate once the concurrently completed issue #814 implementation reached current main. It has been removed together with its provisional projector/test/schema. `management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json` and all consumer bindings now point to the canonical merged projector.
+
+This cleanup preserves the directive's one-shared-runtime rule and introduces no second HB/runtime signal mechanism.
+
+My KV consumer integration subsequently extended the existing canonical Personal Profile DEVICE_KV extension to admit `PERSONAL_FORM_PROFILE`; it did not create a second DEVICE_KV runtime. The connected KnowledgeVault now contains the exact Personal Form Profile template, and Site source retains non-personal write/readback evidence in the registered Node receipt chain.
+
+Runtime remains unobserved for the My KV consumer until the current iPhone produces the direct profile write/read receipts. SKAP signing-profile custody remains a separate TV/TVC-gated predicate.
