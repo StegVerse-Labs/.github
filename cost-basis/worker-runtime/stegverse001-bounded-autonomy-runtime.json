@@ -1,10 +1,31 @@
 {
-  "schema": "stegverse.worker-cost-basis/v0.1",
-  "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
-  "external_cost_ceiling_usd": 0,
-  "hosted_inference_required": false,
-  "network_source_fetch_required": false,
-  "second_machine_required": false,
-  "credential_authority": "TV/TVC",
-  "authority_effect": "NONE_COST_BASIS_ONLY"
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "stegverse001_bounded_autonomy_runtime",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 2,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 64,
+    "confidence": "LOW_UNTIL_FIRST_SOVEREIGN_RUN"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 1048576,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json",
+    "workers/stegverse001_bounded_autonomy_runtime_worker.py",
+    "docs/STEGVERSE_001_BOUNDED_AUTONOMY_RUNTIME_MIRROR_HANDOFF.md"
+  ],
+  "notes": [
+    "First live cycle is a local resident continuity audit.",
+    "Execution requires an externally issued local TV/TVC-governed bounded autonomy lease.",
+    "No network, provider credential, or external paid service is required."
+  ]
 }
