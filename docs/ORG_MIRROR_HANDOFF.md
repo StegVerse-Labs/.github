@@ -1017,3 +1017,29 @@ credential authority: TV/TVC
 ```
 
 No source/CI/rendering/materialization-request evidence is promoted to publication, release, canonical KV mutation, or authentic runtime transport.
+
+
+## 2026-09-02 SV002 canonical public LEASE_OPEN source closure
+
+Issue #616 is source/control-plane complete.
+
+```text
+implementation PR: #782
+merge: 921b55eb1b93b621fb0ae0e648ab789dfb056731
+public profile URL: https://stegverse.org/intr/profile
+required profile: SV002:PublicObservation
+required observation origin: INDEPENDENT_PUBLIC_HTTPS
+same canonical lease resume: REQUIRED
+precondition state: PUBLIC_VERIFYING
+source target state: LEASE_OPEN
+organization control validation: SUCCESS
+Heartbeat validation: SUCCESS
+authentic public profile observation: NOT OBSERVED
+authentic deployment-local LEASE_OPEN: NOT OBSERVED
+receiver READY: NOT OBSERVED
+round trip: NOT OBSERVED
+credential authority: TV/TVC
+authority effect: NONE
+```
+
+The public profile observation is an identity/evidence predicate only; it grants no execution or transition authority. The canonical LeaseMachine transition remains governed by its own state machine. StegVerse-002 principal execution ownership remains outside this StegVerse-Labs observation lane.
