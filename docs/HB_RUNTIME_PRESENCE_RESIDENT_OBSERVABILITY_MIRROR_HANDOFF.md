@@ -2,7 +2,7 @@
 
 Repository: `StegVerse-Labs/.github`
 Updated: 2026-09-02
-State: SHARED_CONTRACT_SOURCE_INITIALIZATION
+State: SOURCE_MERGED_RUNTIME_UNOBSERVED
 Authority effect: NONE
 
 ## Purpose
