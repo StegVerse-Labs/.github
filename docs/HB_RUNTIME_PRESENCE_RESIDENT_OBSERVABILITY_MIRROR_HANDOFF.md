@@ -213,3 +213,19 @@ predicates.
 
 No source, validation, merge, or HB progression satisfies those predicates. DE-006
 remains 0/4 until authentic deployment-local and destination-owned receipts exist.
+
+## StegClaw P4 consumer registration — 2026-09-02
+
+Canonical consumer descriptor:
+
+```text
+control/runtime-observability-consumers/data-continuation-stegclaw-p4.json
+consumer: Data-Continuation/StegClaw
+consumer issue: Data-Continuation/StegClaw#26
+registration issue: StegVerse-Labs/.github#829
+```
+
+First unresolved shared predicate: `resident_process_alive_supervised`.
+Terminal P4 predicate: `AUTHENTIC_RESIDENT_REQUEST_CONSUMPTION_AND_EXECUTION_RECEIPT_ATTRIBUTABLE_TO_STEGCLAW_PATH`.
+
+This registration adds no runtime behavior or authority. All runtime predicates remain independently NOT OBSERVED until authentic sovereign-runtime evidence exists.
