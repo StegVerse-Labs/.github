@@ -36,5 +36,12 @@
     "reason": "credential-model semantic-expansion freeze remains active; no generalized signing-key/signature manager may be introduced from session inference",
     "current_action": "preserve SKAP signing reference boundary and await exact admitted credential-class contract"
   },
-  "authority_effect": "NONE_OBSERVATION_ONLY"
+  "authority_effect": "NONE_OBSERVATION_ONLY",
+  "required_runtime_evidence": {
+    "write": "exported Node capability receipt for my-kv-personal-form-profile/write PROFILE_PERSISTED + profile hash",
+    "read": "exported Node capability receipt for my-kv-personal-form-profile/read PROFILE_READ + same profile hash",
+    "reconstruction": "Site Export Node Evidence bundle preserving receipt-chain replay",
+    "skap": "separate canonical TVC/SKAP custody receipt after credential-class admission"
+  },
+  "reconstruction_rule": "Current-device write/read may satisfy the Site lane only after the same-hash receipts are retained in the Node chain and exported/replayed. HB progression cannot substitute."
 }
