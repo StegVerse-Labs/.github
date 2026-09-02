@@ -26,6 +26,19 @@ def terminal(v:Any)->bool:
     if v.get("state")=="COMPLETED" and v.get("transition_id")=="SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED": return True
     return any(terminal(x) for x in v.values() if isinstance(x,(dict,list)))
 
+def continue_downstream(source:Path,runtime:Path,runner:Runner=subprocess.run)->dict[str,Any]:
+    script=runtime/"scripts/continue_stegverse001_evidence_chain.py"
+    if not script.is_file():
+        return {"schema":"stegverse.sv001-evidence-chain-continuation/v1","state":"CONTINUATION_NOT_MATERIALIZED","retry_allowed":True,"authority_effect":"NONE"}
+    cmd=[sys.executable,str(script),"--source-root",str(source)]
+    completed=runner(cmd,cwd=runtime,capture_output=True,text=True,check=False,timeout=600)
+    result=parse_last_json(completed.stdout)
+    if not isinstance(result,dict):
+        return {"schema":"stegverse.sv001-evidence-chain-continuation/v1","state":"NO_MACHINE_RESULT","retry_allowed":True,"returncode":completed.returncode,"authority_effect":"NONE"}
+    result=dict(result)
+    result["continuation_returncode"]=completed.returncode
+    return result
+
 def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run)->dict[str,Any]:
     source=source_root.resolve(); runtime=runtime_root.resolve(); rp=runtime/REQUEST_REL
     if not rp.is_file(): return {"schema":"stegverse.resident-execution-request-consumption/v1","state":"NO_REQUEST","runtime_execution_attempted":False,"authority_effect":"NONE"}
@@ -36,17 +49,22 @@ def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run)->di
     if receipt_path.is_file():
         old=load(receipt_path)
         if old.get("request_sha256")==rh and old.get("terminal_execution_observed") is True:
+            downstream=continue_downstream(source,runtime,runner)
             return {"schema":"stegverse.resident-execution-request-consumption/v1","state":"ALREADY_CONSUMED",
                     "request_id":req.get("request_id"),"request_sha256":rh,"task_id":TASK_ID,
                     "runtime_execution_attempted":False,"terminal_execution_observed":True,
+                    "autonomy_execution_retried":False,"downstream_evidence":downstream,
+                    "downstream_retry_allowed":bool(downstream.get("retry_allowed")),
                     "request_granted_authority":False,"authority_effect":"NONE_REQUEST_ONLY"}
     cmd=[sys.executable,str(runtime/"scripts/refresh_and_execute_resident_task.py"),"--source-root",str(source),"--runtime-root",str(runtime),"--task-id",TASK_ID]
     c=runner(cmd,cwd=runtime,capture_output=True,text=True,check=False,timeout=600)
     result=parse_last_json(c.stdout); done=terminal(result)
+    downstream=continue_downstream(source,runtime,runner) if done else None
     out={"schema":"stegverse.resident-execution-request-consumption/v1","state":"COMPLETED" if done else "ATTEMPT_RECORDED",
          "request_id":req.get("request_id"),"request_sha256":rh,"task_id":TASK_ID,
          "runtime_execution_attempted":True,"execution_returncode":c.returncode,"execution_result":result,
          "terminal_execution_observed":done,"retry_allowed":not done,"exactly_once_after_terminal":True,
+         "downstream_evidence":downstream,"downstream_retry_allowed":bool((downstream or {}).get("retry_allowed")),
          "request_granted_authority":False,"network_source_fetch_performed":False,"second_machine_required":False,
          "authority_effect":"NONE_REQUEST_ONLY"}
     receipt_path.parent.mkdir(parents=True,exist_ok=True); receipt_path.write_text(json.dumps(out,indent=2,sort_keys=True)+"\n")
