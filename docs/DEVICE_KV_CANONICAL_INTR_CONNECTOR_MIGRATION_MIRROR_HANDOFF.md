@@ -3,7 +3,7 @@
 Updated: 2026-09-02
 Repository: `StegVerse-Labs/.github`
 Issue: `#567`
-State: HANDOFF_ESTABLISHED / SOURCE_IMPLEMENTATION_PENDING
+State: SOURCE_IMPLEMENTED / VALIDATION_PENDING
 Credential authority: TV/TVC
 GitHub token runtime authority: NONE
 Authority effect: NONE
@@ -113,3 +113,21 @@ Current authentic runtime evidence: NOT OBSERVED.
 ## Next authorized machine action
 
 Implement the connector migration against current main without changing the existing WorkerCoordinator, HB carrier, KV endpoint authority boundary, or terminal runtime-evidence requirements.
+
+
+## 2026-09-02 implementation checkpoint
+
+The current branch now loads the already-local StegOS `device-kv` connector registry/profile and uses it as the canonical request/response transport constructor.
+
+Implemented changes:
+- request packet via `connector.prepare(...)`;
+- request hop receipt via `connector.accept_hop(...)`;
+- request completion via `connector.validate_complete(...)`;
+- response packet via `connector.prepare_response(...)`;
+- response hop receipt via `connector.accept_hop(...)`;
+- response completion via `connector.validate_complete(...)`;
+- worker-local transport receipt builders removed;
+- the KV InTr envelope is explicitly compatibility-only and its packet/payload identity is rebound to the canonical request intent;
+- terminal observation records canonical connector profile, request/response intent hashes, and both transport-complete results while preserving existing HB exact-byte/shared-signal evidence.
+
+Source validation and merge remain pending. Authentic DEVICE_KV runtime observation remains NOT OBSERVED.
