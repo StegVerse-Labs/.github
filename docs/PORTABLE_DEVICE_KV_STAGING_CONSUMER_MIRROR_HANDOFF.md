@@ -3,8 +3,8 @@
 Repository: `StegVerse-Labs/.github`
 Issue: `#608`
 Branch: `feat/portable-device-kv-staging-608`
-State: ACTIVE_IMPLEMENTATION
-Updated: 2026-08-31
+State: SOURCE_MERGED_VALIDATED / AUTHENTIC_RESIDENT_STAGING_PENDING
+Updated: 2026-09-02T10:18:00-05:00
 Credential authority: TV/TVC
 Authority effect: NONE
 
@@ -65,3 +65,22 @@ Runtime completion requires an authentic resident request plus real `STEGVERSE_K
 ## Upstream CVK source closure
 
 CVK #156 merged through PR #158 at `8b02312c352463059c966ee7ee8f4b1fa9f942e9`. The resident consumer may therefore require `runtime/portable_direct_source_ingress.py` from current local CVK source; repository merge still does not prove a resident has refreshed or that a real KV data root is bound.
+
+
+## 2026-09-02 source release reconciliation
+
+The source completion boundary for issue #608 has been satisfied.
+
+```text
+upstream CVK portable staging merge: 8b02312c352463059c966ee7ee8f4b1fa9f942e9
+implementation PR: #611
+implementation merge: eb178edc9621b9542c94ec1f0e9a3d19cf695d4c
+source implementation: COMPLETE
+source validation: COMPLETE
+merge: COMPLETE
+authentic resident staging execution: PENDING
+```
+
+The downstream canonical-admission continuation has also been source-completed under issue #668 / PR #669, but neither source path proves that a current sovereign resident has observed the request, bound a real private `STEGVERSE_KV_ROOT`, staged the exact bytes, or produced an authentic staging receipt.
+
+Issue #608 may therefore close as source-complete while the resident runtime evidence gate remains open.
