@@ -43,3 +43,28 @@ The resident receiver performs the actual schema validation, atomic persistence,
 ## Remaining evidence gate
 
 Authentic resident source refresh, current-device profile read, owner edit, canonical persistence, exact readback, HB-derived return, and Site consumption must still be observed before runtime activation is claimed.
+
+
+## 2026-09-02 reusable Personal Form Profile integration
+
+The existing canonical Personal Profile DEVICE_KV extension now also admits the bounded reusable form record rather than introducing a second DEVICE_KV runtime.
+
+Added record contract:
+
+- record class: `PERSONAL_FORM_PROFILE`
+- destination: `_Entities/Self/Personal_Form_Profile.json`
+- source validator: `StegVerse-Labs/continuity-vault-kit/runtime/personal_form_profile.py`
+- requester: `Site / MyKVPersonalFormProfile`
+- read scope: `personal_form_profile`
+- write scope: `personal_form_profile_update`
+- write candidate: `PERSONAL_FORM_PROFILE_REPLACE`
+- read response: `stegverse.device-kv.personal-form-profile-response/v1`
+- write response: `stegverse.device-kv.personal-form-profile-update-response/v1`
+
+The implementation remains in the existing `scripts/personal_profile_device_kv_extension.py` and existing DEVICE_KV consumer wrapper. No new runtime owner, scheduler, HB signal, transport, claim/fence authority, or credential authority was added.
+
+Reusable e-signature material remains prohibited from ordinary KV. A form profile may carry only a non-secret `skap://signing/<profile-id>` reference with `auto_apply=false`; the extension rejects automatic signature application.
+
+The shared runtime-observability contract for this consumer is `docs/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_MIRROR_HANDOFF.md`. Authentic current-device/resident write consumption, exact canonical readback, HB-derived return recovery, and subsequent read remain required runtime evidence.
+
+The connected Google Drive KnowledgeVault now contains an exact template `_Entities/Self/Personal_Form_Profile.json`; that file-presence fact is not DEVICE_KV consumption proof.
