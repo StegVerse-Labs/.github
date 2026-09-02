@@ -56,8 +56,8 @@
       "workers/stegverse001_bounded_autonomy_runtime_worker.py",
       "docs/STEGVERSE_001_BOUNDED_AUTONOMY_RUNTIME_MIRROR_HANDOFF.md",
       "StegVerse-Labs/TV@a8ed178fd5fc5b131491e41452256323c302ba3f",
-      "StegVerse-Labs/TVC@92c2d6085cec2b7561d6c1f08ab157894a232340",
-      "master-records/orchestration@65f97e867a09c3e5da80ef74b2b43ee810821667"
+      "master-records/orchestration@65f97e867a09c3e5da80ef74b2b43ee810821667",
+      "StegVerse-Labs/TVC@d495b67d1c322c3fdd8c9bb6db75657783e19c0c"
     ]
   },
   "authority": {
@@ -73,7 +73,7 @@
     "self_accreditation_authority": false,
     "sovereign_authority": false,
     "bounded_local_observation_authority": true,
-    "tvc_required_ancestor": "92c2d6085cec2b7561d6c1f08ab157894a232340",
+    "tvc_required_ancestor": "d495b67d1c322c3fdd8c9bb6db75657783e19c0c",
     "tv_request_hash": "sha256:c4b3e35d5ecf2246e0e082a591e3144bd61b32cb02133d12a89226cf362f4def"
   },
   "execution": {
@@ -103,7 +103,10 @@
       "STEGVERSE_SV001_AUTONOMY_LEASE_AUTHORITY": "TV/TVC"
     },
     "worker_may_request_tvc_lease": true,
-    "worker_may_construct_or_widen_lease": false
+    "worker_may_construct_or_widen_lease": false,
+    "fenced_bound_state_lease_path": "$STEGVERSE_BOUND_STATE_ROOT/autonomy/lease.active.json",
+    "authoritative_bound_state_path_exposed_to_worker": false,
+    "worker_may_write_arbitrary_host_paths": false
   },
   "activation": {
     "carrier": "independent_task_control",
@@ -121,10 +124,11 @@
   "continuity": {
     "master_records_required_for_activation_claim": true,
     "local_result_receipt": "~/.stegverse/state/stegverse001-bounded-autonomy/receipts/latest.json",
-    "repository_persistence_requires_separate_admission": true
+    "repository_persistence_requires_separate_admission": true,
+    "bound_state_lease_projection": "autonomy/lease.active.json"
   },
   "completion": {
-    "next_authorized_action": "Run one bounded self-directed continuity audit under a valid external lease, then transfer the exact receipt to Master Records for independent custody/reconstruction.",
+    "next_authorized_action": "Allow the machine-owned resident request to obtain the exact TVC-issued lease through the fenced bound-state carrier, execute one bounded self-directed continuity audit, then transfer the exact receipt to Master Records for independent custody/reconstruction.",
     "terminal_when": [
       "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED"
     ]
