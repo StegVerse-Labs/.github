@@ -819,3 +819,28 @@ SV002 evaluator: 786323f16e36346c69b2215894086515d7b1d58e
 ```
 
 The autonomy execution remains exactly-once. Downstream evidence is independently retryable. Source implementation grants no credential, repository, network, execution, custody, accreditation, or sovereign authority beyond the already-separated component roles. Authentic resident execution/custody/observation evidence remains required.
+
+
+## 2026-09-02 endpoint-fanout sovereign runtime source closure
+
+The stale endpoint-fanout branch was rebuilt against current main and merged after current validation.
+
+```text
+task: SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001
+issue: #612
+superseded PR: #637
+current-main PR: #764
+merge: c3651854a8b172cff0770c7c2a57a977e1bff03e
+organization control validation: SUCCESS
+Heartbeat Worker Project validation: SUCCESS
+COSV active worker denominator: 70
+COSV total active task denominator: 84
+source state: MERGED_VALIDATED_CURRENT_MAIN
+authentic DEVICE_KV parent: NOT OBSERVED
+resident endpoint-fanout execution: NOT OBSERVED
+terminal endpoint-fanout receipt: NOT OBSERVED
+credential authority: TV/TVC
+authority effect: NONE
+```
+
+The current predecessor evidence floor requires exact request/response HB-derived transport, packet recovery, and canonical shared-HB signal references/digests in addition to the DEVICE_KV terminal state/transition. The successor remains machine-owned and may execute only through fresh WorkerCoordinator admission/claim/fence after that authentic parent exists. No merge, CI, carrier, request, or source registration grants runtime authority.
