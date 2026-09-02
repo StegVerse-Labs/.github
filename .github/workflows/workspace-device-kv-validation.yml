@@ -74,6 +74,6 @@ jobs:
           print('PERSONAL_KV_ROOT_RESOLUTION_PASS')
           PY
       - name: Validate Personal KV provider-root regression suite
-        run: python -m pytest -q tests/test_personal_kv_provider_root_resolution.py
+        run: python tests/test_personal_kv_provider_root_resolution.py
       - name: Boundary declaration
         run: echo 'VALIDATION_ONLY authority_effect=NONE runtime_activation=false'
