@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/repository_operational_state.schema.json",
+  "title": "StegVerse Repository Operational State",
+  "type": "object",
+  "required": [
+    "schema",
+    "repository",
+    "authority",
+    "cosv",
+    "implementation",
+    "operational_state",
+    "evidence",
+    "dependencies",
+    "work",
+    "next_transition",
+    "projections"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.repository-operational-state/v1"},
+    "repository": {
+      "type": "object",
+      "required": ["org", "name", "commit", "default_branch"],
+      "properties": {
+        "org": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "commit": {"type": "string", "minLength": 7},
+        "default_branch": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    },
+    "authority": {
+      "type": "object",
+      "required": ["repository_handoff", "cosv_profile", "credential_authority", "github_token_runtime_authority"],
+      "properties": {
+        "repository_handoff": {"type": "string", "pattern": "MIRROR_HANDOFF\\.md$"},
+        "cosv_profile": {"type": "string", "minLength": 1},
+        "credential_authority": {"const": "TV/TVC"},
+        "github_token_runtime_authority": {"const": "NONE"}
+      },
+      "additionalProperties": true
+    },
+    "cosv": {
+      "type": "object",
+      "required": ["repository", "tasks", "transition"],
+      "properties": {
+        "repository": {"$ref": "cosv_record.schema.json"},
+        "tasks": {
+          "type": "array",
+          "items": {"$ref": "cosv_record.schema.json"}
+        },
+        "transition": {
+          "anyOf": [
+            {"type": "null"},
+            {"$ref": "cosv_record.schema.json"}
+          ]
+        }
+      }
+    },
+    "implementation": {
+      "type": "object",
+      "required": ["developed_files", "scaffolding_files", "stub_files", "unknown_files", "completion_percent"],
+      "properties": {
+        "developed_files": {"type": "integer", "minimum": 0},
+        "scaffolding_files": {"type": "integer", "minimum": 0},
+        "stub_files": {"type": "integer", "minimum": 0},
+        "unknown_files": {"type": "integer", "minimum": 0},
+        "completion_percent": {
+          "anyOf": [
+            {"type": "number", "minimum": 0, "maximum": 100},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "operational_state": {
+      "type": "object",
+      "required": [
+        "source_complete",
+        "validated",
+        "integrated",
+        "released",
+        "propagated",
+        "activated",
+        "runtime_proven"
+      ],
+      "properties": {
+        "source_complete": {"type": ["boolean", "null"]},
+        "validated": {"type": ["boolean", "null"]},
+        "integrated": {"type": ["boolean", "null"]},
+        "released": {"type": ["boolean", "null"]},
+        "propagated": {"type": ["boolean", "null"]},
+        "activated": {"type": ["boolean", "null"]},
+        "runtime_proven": {"type": ["boolean", "null"]}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["receipts", "manifests", "validation_runs", "issues", "pull_requests", "release_refs", "runtime_refs"],
+      "properties": {
+        "receipts": {"type": "array", "items": {"type": "string"}},
+        "manifests": {"type": "array", "items": {"type": "string"}},
+        "validation_runs": {"type": "array", "items": {"type": "string"}},
+        "issues": {"type": "array", "items": {"type": "string"}},
+        "pull_requests": {"type": "array", "items": {"type": "string"}},
+        "release_refs": {"type": "array", "items": {"type": "string"}},
+        "runtime_refs": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "required": ["upstream", "downstream", "cross_repo_requirements"],
+      "properties": {
+        "upstream": {"type": "array", "items": {"type": "string"}},
+        "downstream": {"type": "array", "items": {"type": "string"}},
+        "cross_repo_requirements": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "work": {
+      "type": "object",
+      "required": ["active", "blocked", "machine_owned", "human_owned", "unassigned"],
+      "properties": {
+        "active": {"type": "array", "items": {"type": "string"}},
+        "blocked": {"type": "array", "items": {"type": "string"}},
+        "machine_owned": {"type": "array", "items": {"type": "string"}},
+        "human_owned": {"type": "array", "items": {"type": "string"}},
+        "unassigned": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "next_transition": {
+      "type": "object",
+      "required": ["state", "admissible", "requirements", "authority_required", "target_files"],
+      "properties": {
+        "state": {"type": "string"},
+        "admissible": {"type": ["boolean", "null"]},
+        "requirements": {"type": "array", "items": {"type": "string"}},
+        "authority_required": {"type": "string"},
+        "target_files": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "projections": {
+      "type": "object",
+      "required": ["mirror_handoff", "human_summary", "ai_execution_brief"],
+      "properties": {
+        "mirror_handoff": {"type": "string"},
+        "human_summary": {"type": "string"},
+        "ai_execution_brief": {"type": "string"}
+      }
+    }
+  },
+  "additionalProperties": true
+}
