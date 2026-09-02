@@ -154,3 +154,26 @@ The request mechanism does not change the established source-completion evidence
 TVC merge `d495b67d1c322c3fdd8c9bb6db75657783e19c0c` closes the sandbox boundary. The SV001 worker now treats `STEGVERSE_BOUND_STATE_ROOT` as its state root when invoked by ProcessWorkerAdapter. TVC emits the exact lease into `autonomy/lease.active.json` within that temporary root; the adapter validates the resulting state delta and projects only admitted paths. Direct resident execution outside the adapter retains the canonical same-user lease path.
 
 This prevents the worker or TVC child from bypassing ProcessWorkerAdapter confinement through `$HOME` while preserving TVC as the lease issuer.
+
+
+## 2026-09-02 final source/control closure
+
+The autonomous TVC lease-acquisition and fenced bound-state control continuation is now merged:
+
+- PR #749 — executable TVC lease acquisition continuation — merged as `256e91b7980741acc6de91599b59e441edc36f37`; validation runs `33634043037` and `33634043026` PASS.
+- TVC PR #282 — fenced bound-state lease target — merged as `d495b67d1c322c3fdd8c9bb6db75657783e19c0c`; TVC credential-model validation `33633857236` PASS.
+- PR #751 — final adapter/handoff/request/test closure — merged as `b5fb62485722eaee57465e88af97921898b95566`; organization-control `33634283779` PASS and heartbeat `33634283783` PASS.
+
+Repository/source construction for the first SV001 bounded-autonomy cycle is therefore closed. Remaining completion is runtime evidence only and must not be inferred from these merges.
+
+Current machine-owned evidence gates:
+
+```text
+TVC lease issuance receipt: NOT OBSERVED
+resident request consumption receipt: NOT OBSERVED
+SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED receipt: NOT OBSERVED
+Master Records reconstruction PASS: NOT OBSERVED
+SV002 adversarial observation/disposition: NOT OBSERVED
+```
+
+The queued resident request remains the canonical next machine action. No human/manual execution is authorized or required by this handoff.
