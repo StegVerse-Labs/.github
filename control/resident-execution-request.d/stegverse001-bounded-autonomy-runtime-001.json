@@ -1,0 +1,19 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-STEGVERSE001-BOUNDED-AUTONOMY-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "credential_authority": "TV/TVC",
+  "credential_requirement": "EXTERNAL_LOCAL_BOUNDED_AUTONOMY_LEASE",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "requested_at": "2026-09-02T02:47:24-05:00",
+  "note": "Queue the first bounded Beta_Orionis autonomy cycle. Execution remains blocked until an externally issued valid local lease exists."
+}
