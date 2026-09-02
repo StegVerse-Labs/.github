@@ -91,5 +91,74 @@ class SV011Phase5SourceMaterializationTests(unittest.TestCase):
         self.assertIn('"sv011_source_basis_commit":REQUIRED_ANCESTOR',source)
         self.assertIn('"sv011_source_mode":source_ok(source)["source_mode"]',source)
 
+    def test_first_success_capsule_is_first_write_wins_and_non_authorizing(self):
+        receipt={
+            "schema":"stegverse.sv011-phase5-boundary-worker-receipt/v0.1",
+            "task_id":boundary.TASK_ID,
+            "generated_at":"2026-09-02T00:00:00Z",
+            "state":"COMPLETED",
+            "result":{
+                "reason":"SV011_PHASE5_ALLOW_DENY_OBSERVED",
+                "allow_decision":"ALLOW",
+                "allow_receipt_count":5,
+                "deny_decision":"DENY",
+                "deny_consumed":False,
+                "deny_consequence_reachable":False,
+                "network_source_fetch_performed":False,
+                "source_mutation_performed":False,
+                "credential_material_exported":False,
+                "github_token_runtime_authority":"NONE",
+                "execution_authorized_by_request":False,
+                "publication_authorized":False,
+                "proofs_accepted":False,
+                "sv011_source_basis_commit":boundary.REQUIRED_ANCESTOR,
+                "sv011_source_mode":"VERIFIED_MATERIALIZED_TREE",
+                "sv011_source_head":"",
+                "sv011_exact_git_blobs_verified":True,
+            }
+        }
+        allow={"request_id":"SV011-PHASE5-ALLOW-001","result":{"decision":"ALLOW"}}
+        deny={"request_id":"SV011-PHASE5-DENY-001","result":{"decision":"DENY"}}
+        with tempfile.TemporaryDirectory() as td:
+            path=Path(td)/"first-success.json"
+            first=boundary.freeze_first_success(receipt,allow,deny,path=path)
+            self.assertEqual(first["state"],"FIRST_SUCCESS_FROZEN")
+            frozen=json.loads(path.read_text())
+            self.assertEqual(frozen["authority_effect"],"NONE_EVIDENCE_PRESERVATION_ONLY")
+            self.assertFalse(frozen["non_claims"]["productized"])
+            original=path.read_bytes()
+
+            same=boundary.freeze_first_success(receipt,allow,deny,path=path)
+            self.assertEqual(same["state"],"ALREADY_FROZEN_SAME")
+            self.assertEqual(path.read_bytes(),original)
+
+            changed=json.loads(json.dumps(receipt))
+            changed["generated_at"]="2026-09-02T00:00:01Z"
+            conflict=boundary.freeze_first_success(changed,allow,deny,path=path)
+            self.assertEqual(conflict["state"],"FIRST_SUCCESS_ALREADY_FROZEN")
+            self.assertFalse(conflict["overwritten"])
+            self.assertEqual(path.read_bytes(),original)
+
+    def test_first_success_capsule_rejects_incomplete_success(self):
+        receipt={
+            "schema":"stegverse.sv011-phase5-boundary-worker-receipt/v0.1",
+            "task_id":boundary.TASK_ID,
+            "state":"COMPLETED",
+            "result":{
+                "reason":"SV011_PHASE5_ALLOW_DENY_OBSERVED",
+                "allow_decision":"ALLOW","allow_receipt_count":4,
+                "deny_decision":"DENY","deny_consumed":False,"deny_consequence_reachable":False,
+                "network_source_fetch_performed":False,"source_mutation_performed":False,
+                "credential_material_exported":False,"github_token_runtime_authority":"NONE",
+                "execution_authorized_by_request":False,"publication_authorized":False,"proofs_accepted":False,
+                "sv011_source_basis_commit":boundary.REQUIRED_ANCESTOR,
+                "sv011_source_mode":"VERIFIED_MATERIALIZED_TREE",
+                "sv011_exact_git_blobs_verified":True,
+            }
+        }
+        with tempfile.TemporaryDirectory() as td:
+            with self.assertRaises(RuntimeError):
+                boundary.freeze_first_success(receipt,{}, {},path=Path(td)/"first-success.json")
+
 if __name__=="__main__":
     unittest.main()
