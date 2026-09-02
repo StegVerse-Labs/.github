@@ -11,6 +11,7 @@ HOSTED=("GITHUB_ACTIONS","CI","RENDER","VERCEL","CF_PAGES","CLOUDFLARE_WORKERS")
 FORBIDDEN=("GITHUB_TOKEN","GH_TOKEN","STEGVERSE_GITHUB_TOKEN","ACTIONS_RUNTIME_TOKEN","ACTIONS_ID_TOKEN_REQUEST_TOKEN")
 DEFAULT_LEASE=Path.home()/".stegverse/autonomy/stegverse001/lease.active.json"
 STATE_ROOT=Path.home()/".stegverse/state/stegverse001-bounded-autonomy"
+TVC_DEFAULT_LEASE=Path("/var/lib/stegverse/tvc/stegverse001-bounded-autonomy/lease.active.json")
 
 class LeasePending(RuntimeError): pass
 
@@ -44,6 +45,14 @@ def parse_time(value:str)->datetime:
     if t.tzinfo is None: raise RuntimeError("lease expiry must be timezone-aware")
     return t
 
+def resolve_lease_path()->Path:
+    explicit=os.getenv("STEGVERSE_SV001_AUTONOMY_LEASE")
+    if explicit:
+        return Path(explicit).expanduser().resolve()
+    if TVC_DEFAULT_LEASE.is_file():
+        return TVC_DEFAULT_LEASE
+    return DEFAULT_LEASE
+
 def validate_lease(p:Path)->dict[str,Any]:
     if not p.is_file(): raise LeasePending(f"external autonomy lease not present: {p}")
     v=load(p)
@@ -70,6 +79,9 @@ def validate_lease(p:Path)->dict[str,Any]:
     forbidden=set(v.get("forbidden_transition_classes") or [])
     if not {"SELF_ACCREDITATION","SOVEREIGN_AUTHORITY_CHANGE","FINANCIAL_BINDING"}.issubset(forbidden):
         raise RuntimeError("lease forbidden-transition floor incomplete")
+    if v.get("lease_consumption")!="SINGLE_AUTONOMY_CYCLE": raise RuntimeError("lease must be single-cycle")
+    used=STATE_ROOT/"lease-consumption"/(str(v.get("lease_id"))+".json")
+    if used.is_file(): raise RuntimeError("lease already consumed")
     return v
 
 def runtime_root()->Path:
@@ -143,6 +155,17 @@ def run_cycle(task:dict[str,Any], lease:dict[str,Any], lease_path:Path)->dict[st
     out.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     (STATE_ROOT/"plans").mkdir(parents=True,exist_ok=True)
     (STATE_ROOT/"plans/latest.json").write_text(json.dumps(plan,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+    used_dir=STATE_ROOT/"lease-consumption"; used_dir.mkdir(parents=True,exist_ok=True)
+    used_record={
+      "schema":"stegverse.stegverse001.autonomy-lease-consumption/v1",
+      "lease_id":lease.get("lease_id"),
+      "lease_hash":lease.get("lease_hash") or sha(lease),
+      "autonomy_cycle_receipt_hash":receipt["receipt_hash"],
+      "state":"CONSUMED",
+      "reuse_allowed":False,
+      "authority_effect":"NONE_CONSUMPTION_RECORD_ONLY"
+    }
+    (used_dir/(str(lease.get("lease_id"))+".json")).write_text(json.dumps(used_record,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     return receipt
 
 def main():
@@ -151,7 +174,7 @@ def main():
         if any(truthy(os.getenv(k)) for k in HOSTED): raise RuntimeError("hosted runtime forbidden")
         if any(truthy(os.getenv(k)) for k in FORBIDDEN): raise RuntimeError("credential-bearing environment forbidden")
         task=validate_invocation(inv)
-        lease_path=Path(os.getenv("STEGVERSE_SV001_AUTONOMY_LEASE") or DEFAULT_LEASE).expanduser().resolve()
+        lease_path=resolve_lease_path()
         lease=validate_lease(lease_path)
         receipt=run_cycle(task,lease,lease_path)
         print(json.dumps(response("COMPLETED","SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
