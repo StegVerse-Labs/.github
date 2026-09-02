@@ -30,6 +30,8 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from heartbeat_runtime.worker_runtime import WorkerCoordinator, ProcessWorkerAdapter
+from heartbeat_runtime.independent_oscillator import current_reference
+from heartbeat_runtime.machine_continuation import DEFAULT_CONTINUATION_QUANTA, build_continuation_trigger
 
 SCHEMA = "stegverse.process-worker-adapters/v0.1"
 FRAGMENT_SCHEMA = "stegverse.process-worker-adapter-fragment/v0.1"
@@ -53,6 +55,8 @@ LOCAL_REQUEST_DISPATCH_INTERVAL_TICKS = 100
 LOCAL_SOURCE_REFRESH_REL = Path("scripts/refresh_sovereign_worker_runtime_source.py")
 LOCAL_SOURCE_REFRESH_INTERVAL_TICKS = 100
 CONTROL_PLANE_PROJECTOR_REL = Path("scripts/project_worker_control_plane_from_carrier.py")
+MACHINE_CONTINUATION_STATE_REL = Path("control/hb-machine-continuation-state.json")
+MACHINE_CONTINUATION_RECEIPT_REL = Path("receipts/sovereign-host/hb-machine-continuation.latest.json")
 G18_TASK_ID = "SHWP-DURABLE-RUNTIME-ACTIVATION"
 G18_WORKER_ID = "sovereign-runtime-activation-worker"
 G18_CLAIM_ID = "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18"
@@ -576,6 +580,71 @@ def dispatch_local_resident_requests(
 
 
 
+def maybe_dispatch_machine_continuation(
+    root: Path,
+    *,
+    env: dict[str, str] | None = None,
+    period_quanta: int = DEFAULT_CONTINUATION_QUANTA,
+) -> dict[str, Any]:
+    """Revisit resident requests once per deterministic HB-derived window.
+
+    This trigger is synchronization metadata only. Resident request consumers
+    and WorkerCoordinator keep their existing admission/claim/fence/credential
+    authority; this function creates none.
+    """
+    state_path = root / MACHINE_CONTINUATION_STATE_REL
+    prior: dict[str, Any] = {}
+    if state_path.is_file():
+        try:
+            value = json.loads(state_path.read_text(encoding="utf-8"))
+            if isinstance(value, dict):
+                prior = value
+        except Exception:
+            prior = {}
+    last_window = prior.get("last_consumed_window_id")
+    if not isinstance(last_window, int):
+        last_window = None
+
+    reference = current_reference(now_ns=time.time_ns())
+    trigger = build_continuation_trigger(
+        int(reference["epoch"]),
+        last_consumed_window_id=last_window,
+        period_quanta=period_quanta,
+    )
+    receipt: dict[str, Any] = {
+        "schema": "stegverse.hb-machine-continuation-receipt/v1",
+        "trigger": trigger,
+        "dispatch_attempted": False,
+        "dispatch_result": None,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "heartbeat_grants_execution_authority": False,
+        "continuation_trigger_grants_execution_authority": False,
+        "authority_effect": "NONE_TRIGGER_ONLY",
+    }
+    if trigger["continuation_due"]:
+        result = dispatch_local_resident_requests(root, env=env)
+        receipt["dispatch_attempted"] = True
+        receipt["dispatch_result"] = result
+        window_id = int(trigger["window"]["window_id"])
+        state = {
+            "schema": "stegverse.hb-machine-continuation-state/v1",
+            "last_consumed_window_id": window_id,
+            "last_reference_epoch": int(reference["epoch"]),
+            "last_reference_heartbeat_id": reference["heartbeat_id"],
+            "last_dispatch_state": result.get("state"),
+            "heartbeat_progression_effect": "NONE",
+            "authority_effect": "NONE_TRIGGER_ONLY",
+        }
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state_path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+    receipt_path = root / MACHINE_CONTINUATION_RECEIPT_REL
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return receipt
+
+
 def refresh_transition_release(root: Path, *, runner=subprocess.run) -> dict[str, Any] | None:
     script = root / TRANSITION_REFRESH_REL
     receipt = root / TRANSITION_RECEIPT_REL
@@ -636,6 +705,8 @@ def main() -> int:
         if not args.task_id and not args.dry_run and index % LOCAL_REQUEST_DISPATCH_INTERVAL_TICKS == 0:
             local_request_dispatch = dispatch_local_resident_requests(root)
         result = runtime.cycle(write=not args.dry_run, target_task_id=args.task_id)
+        if not args.task_id and not args.dry_run:
+            result["hb_machine_continuation"] = maybe_dispatch_machine_continuation(root, env=os.environ)
         if rendezvous_result is not None:
             result["resident_rendezvous"] = rendezvous_result
         if local_source_refresh is not None:
