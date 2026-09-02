@@ -340,3 +340,14 @@ For each shared signal the resident consumer requires:
 - authority effect remains NONE_CARRIER_ONLY.
 
 Historical carrier-only terminal receipts therefore remain evidence of their original execution but cannot satisfy this stronger current resident request.
+
+
+## Canonical reusable InTr connector migration — issue #567
+
+The sovereign DEVICE_KV observation worker is being migrated from worker-local transport-intent/receipt construction to the already-merged StegOS `CanonicalInTrConnector(profile=device-kv)`.
+
+Scoped authority: `docs/DEVICE_KV_CANONICAL_INTR_CONNECTOR_MIGRATION_MIRROR_HANDOFF.md`.
+
+The compatibility `stegverse.kv-interlock.intr-envelope/v1` remains only because the current continuity-vault-kit endpoint accepts that envelope. Its packet and payload identities are derived from the canonical connector request packet. Both DEVICE->KV and KV->DEVICE hop receipts are issued/validated by the canonical connector before terminal DEVICE_KV evidence may be emitted.
+
+This source migration does not alter the authentic predecessor, HB-derived carrier, WorkerCoordinator admission, canonical KV mutation prohibition, credential authority, or runtime terminal predicates.
