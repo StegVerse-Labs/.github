@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-09-01T20:50:00-05:00",
+  "updated_at": "2026-09-02T12:31:00-05:00",
   "state": "RELEASE_COMPLETE_G18_STALE_PROJECTION_HOUSEKEEPING_ONLY",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
@@ -232,8 +232,8 @@
     "post_bootstrap_resident_dispatch_runtime_observed": false,
     "one_shot_resident_stack_source_merged": true,
     "one_shot_resident_stack_runtime_observed": false,
-    "one_shot_resident_stack_request_source_merged": false,
-    "one_shot_resident_stack_request_state": "REQUESTED_SOURCE_IMPLEMENTATION",
+    "one_shot_resident_stack_request_source_merged": true,
+    "one_shot_resident_stack_request_state": "REQUESTED",
     "one_shot_resident_stack_request_consumption_observed": false,
     "one_shot_resident_stack_activation_complete_observed": false
   },
@@ -407,10 +407,20 @@
     },
     "one_shot_resident_stack_machine_request": {
       "issue": 774,
+      "pull_request": 775,
+      "merge_commit": "cf4ed69ebe079dd684c501e67ff4a6e70c828d0f",
+      "validation_runs": [
+        "33661420619",
+        "33661420625",
+        "33661420611"
+      ],
       "request_id": "RESIDENT-EXEC-ONE-SHOT-STACK-ACTIVATION-001",
       "consumer": "scripts/consume_one_shot_resident_stack_activation_request.py",
-      "source_state": "IMPLEMENTED_VALIDATION_PENDING",
-      "runtime_effect": "NO_LIVE_ACTIVATION_RECEIPT_CLAIM",
+      "source_state": "MERGED_VALIDATED",
+      "request_state": "REQUESTED",
+      "request_consumption_observed": false,
+      "activation_complete_observed": false,
+      "runtime_effect": "SOURCE_AND_REQUEST_ONLY_NO_LIVE_ACTIVATION_RECEIPT_CLAIM",
       "request_grants_authority": false
     }
   },
