@@ -171,5 +171,109 @@ class SovereignControlPlaneBundleTests(unittest.TestCase):
             self.assertIn("vendor/TVC/scripts/activate_coinbase_intr_resident.py", names)
 
 
+    def test_master_records_source_proof_verifies_clean_floor_and_protected_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            mr = Path(tmp) / "orchestration"
+            mr.mkdir()
+            subprocess.run(["git", "init", str(mr)], check=True, capture_output=True)
+            subprocess.run(["git", "-C", str(mr), "config", "user.email", "test@example.invalid"], check=True)
+            subprocess.run(["git", "-C", str(mr), "config", "user.name", "Test"], check=True)
+            for rel in module.MASTER_RECORDS_SV001_PROTECTED_PATHS:
+                path = mr / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(rel + "\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(mr), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(mr), "commit", "-m", "sv001 resident intake floor"], check=True, capture_output=True)
+            floor = subprocess.run(
+                ["git", "-C", str(mr), "rev-parse", "HEAD"],
+                check=True, capture_output=True, text=True,
+            ).stdout.strip()
+
+            proof = module.master_records_source_proof(mr, source_floor=floor)
+
+            self.assertEqual(proof["state"], "VERIFIED_LOCAL_GIT_SOURCE")
+            self.assertEqual(proof["repository"], "master-records/orchestration")
+            self.assertEqual(proof["materialized_subpath"], "vendor/master-records-orchestration")
+            self.assertTrue(proof["source_floor_present"])
+            self.assertTrue(proof["protected_paths_unchanged_since_floor"])
+            self.assertTrue(proof["clean_worktree_at_packaging"])
+            self.assertFalse(proof["network_fetch_performed"])
+            self.assertFalse(proof["credential_required"])
+
+    def test_master_records_source_proof_rejects_protected_path_drift(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            mr = Path(tmp) / "orchestration"
+            mr.mkdir()
+            subprocess.run(["git", "init", str(mr)], check=True, capture_output=True)
+            subprocess.run(["git", "-C", str(mr), "config", "user.email", "test@example.invalid"], check=True)
+            subprocess.run(["git", "-C", str(mr), "config", "user.name", "Test"], check=True)
+            for rel in module.MASTER_RECORDS_SV001_PROTECTED_PATHS:
+                path = mr / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(rel + "\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(mr), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(mr), "commit", "-m", "floor"], check=True, capture_output=True)
+            floor = subprocess.run(
+                ["git", "-C", str(mr), "rev-parse", "HEAD"],
+                check=True, capture_output=True, text=True,
+            ).stdout.strip()
+            target = mr / module.MASTER_RECORDS_SV001_PROTECTED_PATHS[0]
+            target.write_text("changed\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(mr), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(mr), "commit", "-m", "drift"], check=True, capture_output=True)
+
+            proof = module.master_records_source_proof(mr, source_floor=floor)
+
+            self.assertEqual(proof["state"], "UNVERIFIED_PROTECTED_PATH_DRIFT")
+
+    def test_bundle_can_include_verified_master_records_vendor_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "source"
+            mr = Path(tmp) / "orchestration"
+            (root / "scripts").mkdir(parents=True)
+            (root / "scripts" / "bootstrap_sovereign_runtime.py").write_text("# bootstrap\n", encoding="utf-8")
+            for rel in module.MASTER_RECORDS_SV001_PROTECTED_PATHS:
+                path = mr / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("# custody\n", encoding="utf-8")
+            output = Path(tmp) / "control-plane.zip"
+            original = module.master_records_source_proof
+            module.master_records_source_proof = lambda _root: {
+                "schema": "stegverse.portable-source-proof/v1",
+                "repository": "master-records/orchestration",
+                "materialized_subpath": "vendor/master-records-orchestration",
+                "source_floor": module.MASTER_RECORDS_SV001_SOURCE_FLOOR,
+                "protected_paths": list(module.MASTER_RECORDS_SV001_PROTECTED_PATHS),
+                "state": "VERIFIED_LOCAL_GIT_SOURCE",
+                "source_floor_present": True,
+                "protected_paths_unchanged_since_floor": True,
+                "clean_worktree_at_packaging": True,
+                "network_fetch_performed": False,
+                "credential_required": False,
+                "authority_effect": "NONE_SOURCE_IDENTITY_ONLY",
+            }
+            try:
+                receipt = module.build_bundle(root, output, master_records_root=mr)
+            finally:
+                module.master_records_source_proof = original
+
+            self.assertTrue(receipt["vendor_sources"]["master-records/orchestration"])
+            proof = receipt["vendor_source_proofs"]["master-records/orchestration"]
+            self.assertEqual(proof["state"], "VERIFIED_LOCAL_GIT_SOURCE")
+            with zipfile.ZipFile(output) as archive:
+                names = set(archive.namelist())
+                manifest = json.loads(archive.read(module.MANIFEST_NAME))
+            self.assertIn(
+                "vendor/master-records-orchestration/scripts/watch_stegverse001_autonomy_receipt.py",
+                names,
+            )
+            self.assertIn(
+                "vendor/master-records-orchestration/scripts/import_stegverse001_autonomy_receipt.py",
+                names,
+            )
+            self.assertTrue(manifest["vendor_sources"]["master-records/orchestration"])
+            self.assertFalse(manifest["bundle_grants_authority"])
+
+
 if __name__ == "__main__":
     unittest.main()
