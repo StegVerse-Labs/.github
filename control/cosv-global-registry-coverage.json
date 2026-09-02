@@ -10,8 +10,8 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
-    "unique_task_ids_global_plus_fragments": 76,
-    "canonically_indexed_task_ids": 69,
+    "unique_task_ids_global_plus_fragments": 77,
+    "canonically_indexed_task_ids": 70,
     "completed_only_historical_unvectorized_task_ids": 6,
     "active_unvectorized_unique_task_ids": 0,
     "superseded_historical_unvectorized_task_ids": 1
@@ -658,18 +658,18 @@
     "authority_effect": "NONE"
   },
   "worker_denominator_closure": {
-    "active_worker_tasks_vectorized": 69,
+    "active_worker_tasks_vectorized": 70,
     "active_worker_tasks_unvectorized": 0,
     "completed_historical_unvectorized": 6,
     "superseded_historical_unvectorized": 1,
-    "total_unique_worker_task_ids": 76,
+    "total_unique_worker_task_ids": 77,
     "authority_effect": "NONE",
     "runtime_activation_claimed": false
   },
   "active_task_vector_coverage_closure": {
-    "active_worker_tasks_vectorized": 69,
+    "active_worker_tasks_vectorized": 70,
     "active_organization_tasks_vectorized": 14,
-    "total_active_tasks_vectorized": 83,
+    "total_active_tasks_vectorized": 84,
     "active_tasks_unvectorized": 0,
     "source_projection_complete": true,
     "runtime_activation_claimed": false,
@@ -765,6 +765,24 @@
     "network_authority": false,
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": "NONE",
+    "authority_effect": "NONE"
+  },
+  "endpoint_fanout_sovereign_runtime_projection": {
+    "task_id": "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+    "vector": "50000000101000",
+    "registry_ref": "control/worker-registry.d/endpoint-fanout-sovereign-runtime-001.json",
+    "source_state_vector_ref": "control/task-vectors/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json",
+    "canonical_owner_ref": "docs/ENDPOINT_FANOUT_LIVE_RUNTIME_MIRROR_HANDOFF.md",
+    "blockers": [
+      "AUTHENTIC_DEVICE_KV_INTR_PARENT_NOT_YET_OBSERVED",
+      "ENDPOINT_FANOUT_SOVEREIGN_RUNTIME_RECEIPT_NOT_YET_OBSERVED"
+    ],
+    "activation_proof_observed": false,
+    "evidence_complete": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "canonical_kv_mutation_authority": false,
+    "external_master_records_custody_claimed": false,
     "authority_effect": "NONE"
   }
 }
