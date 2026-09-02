@@ -389,3 +389,38 @@ verifier git blob: 7d344d1bed85c9909264f2ca244aa746a44c2ea6
 The worker no longer combines “historical commit exists” with “current checkout file must equal historical bytes.” It reads the verifier bytes directly from the exact pinned Git commit object, independently computes the Git blob identity, materializes those exact bytes ephemerally, executes them, and removes the temporary verifier afterward.
 
 This closes the stale-working-tree pin failure mode without changing principal-visible v0.3 inputs. The worker remains non-authorizing and, per the ownership correction above, must not be used as a competing StegVerse-Labs principal execution surface.
+
+## Pinned portable principal/formal source producer — 2026-09-02
+
+Issue #768 closes the portable-bundle producer gap for the source set StegDeploy already knows how to bind.
+
+Exact source snapshots:
+
+```text
+StegVerse-002/micro-node-runtime:
+  410c4267b4145ed1c1f5f2d954f3926429a43c01
+Admissible-Existence/TT:
+  ab60b42934222a2cb5335a5a8194f258a491fc57
+Admissible-Existence/RTG:
+  ca69954cb3dc4ad073c9244e003bc8f0ef3837e2
+Admissible-Existence/GTG:
+  8cdb7bce87bb9f8429c35e9c66cc5dc28a46a225
+Admissible-Existence/AE:
+  53c8eedddc4e54d8fa0660039d65ab9ac63057a1
+```
+
+The canonical bundle producer reads the exact trees from already-local Git object databases and packages those pinned commit bytes under:
+
+```text
+vendor/micro-node-runtime
+vendor/formal/TT
+vendor/formal/RTG
+vendor/formal/GTG
+vendor/formal/AE
+```
+
+Mutable current HEAD/worktree bytes are not substituted for pinned commit bytes. No clone, fetch, network credential, GitHub runtime authority, formalism-selection authority, principal-execution authority, or governance authority is introduced.
+
+The complete resident-stack orchestrator now requires and passes all five local Git roots so StegDeploy can materialize the existing supported bindings.
+
+Organizational ownership remains unchanged: this StegVerse-Labs lane is not authorized to execute the StegVerse-002 principal. Canonical principal execution remains `StegVerse-002/.github -> stegverse-002.self-characterization -> StegVerse-002/micro-node-runtime`. This repair is source transport/provenance only.

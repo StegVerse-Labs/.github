@@ -865,3 +865,20 @@ clean local master-records/orchestration
 ```
 
 This is source transport/provenance only. It grants no custody, reconstruction, execution, credential, repository, heartbeat, or sovereign authority. Authentic resident materialization and evidence remain separately observable.
+
+## 2026-09-02 pinned SV002 portable-source producer closure
+
+Issue #768 repairs the producer side of StegDeploy's existing portable SV002 source bindings.
+
+```text
+already-local exact Git commit objects
+-> canonical sovereign-control-plane bundle
+-> vendor/micro-node-runtime
+-> vendor/formal/TT|RTG|GTG|AE
+-> StegDeploy verified materialization
+-> STEGVERSE_MICRO_NODE_RUNTIME_ROOT / TT / RTG / GTG / AE roots
+```
+
+The bundle uses exact pinned commit trees rather than mutable HEAD/worktree content and carries per-file SHA-256 commitments plus portable source proofs. It performs no network source acquisition and grants no principal, formalism, execution, governance, credential, heartbeat, or repository authority.
+
+The September 1 ownership correction remains binding: canonical StegVerse-002 principal execution belongs to StegVerse-002/.github, not this StegVerse-Labs reference lane.

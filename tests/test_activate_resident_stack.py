@@ -33,6 +33,11 @@ class ResidentStackActivationTests(unittest.TestCase):
             tv = root / "TV"
             tvc = root / "TVC"
             master_records = root / "master-records-orchestration"
+            micro_node = root / "micro-node-runtime"
+            tt = root / "TT"
+            rtg = root / "RTG"
+            gtg = root / "GTG"
+            ae = root / "AE"
             (stegos / "stegos").mkdir(parents=True)
             (kv / "runtime").mkdir(parents=True)
             (stegos / "stegos" / "intr_backbone.py").write_text("# intr\n")
@@ -55,6 +60,8 @@ class ResidentStackActivationTests(unittest.TestCase):
             (master_records / "scripts").mkdir(parents=True)
             (master_records / "scripts" / "watch_stegverse001_autonomy_receipt.py").write_text("# watch\n")
             (master_records / "scripts" / "import_stegverse001_autonomy_receipt.py").write_text("# import\n")
+            for source_root in (micro_node, tt, rtg, gtg, ae):
+                source_root.mkdir(parents=True, exist_ok=True)
             (source / "scripts" / "package_sovereign_control_plane_bundle.py").write_text("# packager\n")
             (llm / "scripts" / "stegdeploy_bootstrap.py").write_text("# deploy\n")
             receipt_path = root / "activation.json"
@@ -63,6 +70,16 @@ class ResidentStackActivationTests(unittest.TestCase):
                 if "package_sovereign_control_plane_bundle.py" in str(command[1]):
                     self.assertIn("--master-records-root", command)
                     self.assertEqual(Path(command[command.index("--master-records-root") + 1]), master_records.resolve())
+                    expected_roots = {
+                        "--micro-node-root": micro_node,
+                        "--tt-root": tt,
+                        "--rtg-root": rtg,
+                        "--gtg-root": gtg,
+                        "--ae-root": ae,
+                    }
+                    for flag, expected in expected_roots.items():
+                        self.assertIn(flag, command)
+                        self.assertEqual(Path(command[command.index(flag) + 1]), expected.resolve())
                     output = Path(command[command.index("--output") + 1])
                     output.write_bytes(b"bundle")
                     return subprocess.CompletedProcess(
@@ -100,6 +117,11 @@ class ResidentStackActivationTests(unittest.TestCase):
                 tv_root=tv,
                 tvc_root=tvc,
                 master_records_root=master_records,
+                micro_node_root=micro_node,
+                tt_root=tt,
+                rtg_root=rtg,
+                gtg_root=gtg,
+                ae_root=ae,
                 health_url="http://127.0.0.1:8000/health",
                 receipt_path=receipt_path,
                 runner=runner,
@@ -116,6 +138,10 @@ class ResidentStackActivationTests(unittest.TestCase):
             self.assertTrue(receipt["tv_source_bundled"])
             self.assertTrue(receipt["tvc_source_bundled"])
             self.assertTrue(receipt["master_records_source_bundled"])
+            self.assertTrue(receipt["micro_node_source_bundled"])
+            self.assertEqual(receipt["formal_sources_bundled"], {"TT": True, "RTG": True, "GTG": True, "AE": True})
+            self.assertFalse(receipt["sv002_principal_execution_claimed"])
+            self.assertFalse(receipt["formal_evaluation_claimed"])
             self.assertTrue(receipt["tvc_skap_successor_attempted"])
             self.assertEqual(receipt["tvc_skap_successor_state"], "ACTIVE")
             self.assertEqual(receipt["github_token_runtime_authority"], "NONE")
