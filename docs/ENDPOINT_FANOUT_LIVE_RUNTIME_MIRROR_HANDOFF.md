@@ -4,7 +4,7 @@ Updated: 2026-09-02
 Repository: StegVerse-Labs/.github
 Issue: #612
 Branch: fix/endpoint-fanout-current-main-20260902
-State: CURRENT_MAIN_REBUILT / VALIDATION_PENDING
+State: MERGED_VALIDATED_CURRENT_MAIN / AUTHENTIC_RESIDENT_EXECUTION_PENDING
 Authority effect: NONE
 
 ## Goal
@@ -71,8 +71,8 @@ kv_status_return_canonical_state_changed=false
 
 ```text
 IMPLEMENTED: true
-VALIDATED: pending_current_head
-MERGED: false_current_rebuild
+VALIDATED: true
+MERGED: true
 RESIDENT_CONSUMED: false
 OBSERVED: false
 COMPLETE: false
@@ -104,3 +104,19 @@ Stale PR #637 carried the correct successor concept but its branch predated subs
 The successor now requires the current DEVICE_KV parent evidence floor in addition to the terminal state/transition: exact request and response transport on the canonical HB-derived carrier, exact packet recovery verification, and non-empty canonical shared-HB signal references/digests. The fixed resident request and rendezvous chains are extended by exactly this known task; no arbitrary task or command transport is introduced.
 
 The source task is indexed into the current COSV denominator as one additional active worker task. Runtime activation remains false until an authentic resident execution emits the terminal endpoint-fanout receipt.
+
+
+## 2026-09-02 merge evidence
+
+```text
+implementation PR: #764
+merge: c3651854a8b172cff0770c7c2a57a977e1bff03e
+organization control validation: SUCCESS
+Heartbeat Worker Project validation: SUCCESS
+source implementation: MERGED_VALIDATED_CURRENT_MAIN
+authentic DEVICE_KV parent: NOT OBSERVED
+endpoint-fanout resident execution: NOT OBSERVED
+terminal receipt: NOT OBSERVED
+```
+
+The source/runtime integration gate is closed. The remaining denominator is authentic deployment-local execution after the hardened DEVICE_KV predecessor becomes terminal. Merge and hosted validation remain non-authorizing evidence only.
