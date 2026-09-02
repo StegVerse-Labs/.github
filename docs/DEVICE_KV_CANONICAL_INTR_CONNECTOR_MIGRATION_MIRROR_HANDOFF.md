@@ -3,7 +3,7 @@
 Updated: 2026-09-02
 Repository: `StegVerse-Labs/.github`
 Issue: `#567`
-State: SOURCE_IMPLEMENTED / VALIDATION_PENDING
+State: SOURCE_MERGED_VALIDATED / AUTHENTIC_RUNTIME_EVIDENCE_PENDING
 Credential authority: TV/TVC
 GitHub token runtime authority: NONE
 Authority effect: NONE
@@ -131,3 +131,19 @@ Implemented changes:
 - terminal observation records canonical connector profile, request/response intent hashes, and both transport-complete results while preserving existing HB exact-byte/shared-signal evidence.
 
 Source validation and merge remain pending. Authentic DEVICE_KV runtime observation remains NOT OBSERVED.
+
+
+## 2026-09-02 validated merge closure
+
+```text
+implementation PR: #779
+merge: 10b94c79c3909668e01c45678cbbc3261b3a6af2
+organization control validation: SUCCESS
+Heartbeat Worker Project validation: SUCCESS
+source migration: COMPLETE
+authentic DEVICE_KV runtime observation: NOT OBSERVED
+```
+
+The worker no longer uses worker-local transport receipt builders. Canonical request/response transport intent, hop receipt, and completion semantics are owned by the already-local StegOS `CanonicalInTrConnector(profile=device-kv)`. The KV InTr envelope is compatibility-only and is rebound to the canonical request packet identity.
+
+This closes issue #567 at the source/control-plane boundary only. Authentic DEVICE_KV observation still requires deployment-local execution and the existing hardened HB exact-byte/shared-signal terminal evidence.
