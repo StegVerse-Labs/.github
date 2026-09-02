@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+  "adapters": [{
+    "adapter_ref": "process:stegverse001-bounded-autonomy-runtime-v1",
+    "authority_ref": "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json#authority",
+    "capabilities": ["bounded_process_execution","runtime_observation","durable_state_reconstruction"],
+    "command": ["python","workers/stegverse001_bounded_autonomy_runtime_worker.py"],
+    "cwd": ".",
+    "enabled": true,
+    "env_allowlist": ["STEGVERSE_SV001_AUTONOMY_LEASE","STEGVERSE_HEARTBEAT_ROOT","HOME","PATH"],
+    "bound_state_root": "~/.stegverse/state/stegverse001-bounded-autonomy",
+    "bound_state_allowed_paths": ["receipts/**","plans/**","observations/**"],
+    "timeout_seconds": 120,
+    "type": "process_json_bound_state_v0.1",
+    "notes": [
+      "Requires an externally issued local lease; source/request registration grants no lease authority.",
+      "First autonomous workload is a read-only resident continuity audit.",
+      "No network, repository writeback, financial binding, credential creation, or sovereignty."
+    ]
+  }]
+}
