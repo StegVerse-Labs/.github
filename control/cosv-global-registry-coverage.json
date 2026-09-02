@@ -678,11 +678,11 @@
     "authority_effect": "NONE"
   },
   "worker_denominator_closure": {
-    "active_worker_tasks_vectorized": 73,
+    "active_worker_tasks_vectorized": 74,
     "active_worker_tasks_unvectorized": 0,
     "completed_historical_unvectorized": 6,
     "superseded_historical_unvectorized": 1,
-    "total_unique_worker_task_ids": 80,
+    "total_unique_worker_task_ids": 81,
     "authority_effect": "NONE",
     "runtime_activation_claimed": false
   },
