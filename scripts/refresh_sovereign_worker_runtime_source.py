@@ -33,6 +33,8 @@ STATIC_DIRS = (
 STATIC_FILES = (
     Path("scripts/run_worker_runtime.py"),
     Path("scripts/project_hb_runtime_presence.py"),
+    Path("scripts/project_de006_runtime_observability.py"),
+    Path("control/runtime-observability-consumers/decision-envelope-de006.json"),
     Path("scripts/refresh_and_execute_resident_task.py"),
     Path("scripts/run_independent_ecosystem_chat_parent.py"),
     Path("scripts/consume_resident_execution_request.py"),
