@@ -109,10 +109,27 @@ and Master Records later independently reconstructs the exact receipt/plan/obser
 ```text
 Stage 35 formal proof: MERGED / PR VALIDATED
 SV002 adversarial-observation source: MERGED
-runtime task source: IMPLEMENTING
+runtime task source: SOURCE_MERGED_VALIDATED
+runtime source PR: #740
+runtime source merge: 493e4558a39eb516e63fee496f06d6ca8f973ed8
+validation:
+  33607420338 Cross-Framework Current-Basis Resident Request Validation SUCCESS
+  33607420274 Validate organization control plane SUCCESS
+  33607420254 Heartbeat Worker Project SUCCESS
 external live lease: NOT OBSERVED
 resident request consumption: NOT OBSERVED
 autonomy-cycle receipt: NOT OBSERVED
 Master Records custody: NOT OBSERVED
 SV002 disposition: NOT OBSERVED
 ```
+
+
+## 2026-09-02 source merge evidence
+
+PR #740 merged as `493e4558a39eb516e63fee496f06d6ca8f973ed8` after all three observed PR validation lanes passed:
+
+- `33607420338` — Cross-Framework Current-Basis Resident Request Validation — SUCCESS
+- `33607420274` — Validate organization control plane - No GitHub Token Authority — SUCCESS
+- `33607420254` — Heartbeat Worker Project - Validation Only / No GitHub Token Authority — SUCCESS
+
+This closes the repository-source implementation gate only. It does not establish an external live autonomy lease, resident request consumption, an autonomy-cycle receipt, Master Records custody/reconstruction, or SV002 disposition.
