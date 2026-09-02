@@ -49,7 +49,13 @@
     "dependencies": [],
     "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
     "parent_task_id": null,
-    "derivation_depth": 0
+    "derivation_depth": 0,
+    "source_refs": [
+      "Data-Continuation/formalism-tests:docs/formalisms/STEGVERSE_001_BOUNDED_AUTONOMY_MIRROR_HANDOFF.md",
+      "schemas/stegverse001-bounded-autonomy-lease.schema.json",
+      "workers/stegverse001_bounded_autonomy_runtime_worker.py",
+      "docs/STEGVERSE_001_BOUNDED_AUTONOMY_RUNTIME_MIRROR_HANDOFF.md"
+    ]
   },
   "authority": {
     "authority_source": "external local TV/TVC-governed bounded autonomy lease + issue #739",
