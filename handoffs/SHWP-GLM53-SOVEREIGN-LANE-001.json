@@ -92,5 +92,33 @@
     ]
   },
   "block": null,
-  "source_state_vector_ref": "control/task-vectors/SHWP-GLM53-SOVEREIGN-LANE-001.json"
+  "source_state_vector_ref": "control/task-vectors/SHWP-GLM53-SOVEREIGN-LANE-001.json",
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:glm53-sovereign-lane-evidence:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-002/micro-node-runtime@07e4388eda92d99a8feb220f28265b147551242d",
+      "StegVerse-002/micro-node-runtime#69",
+      "docs/GLM53_SOVEREIGN_LANE_RESIDENT_BRIDGE_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SHWP-GLM53-SOVEREIGN-LANE-001.json",
+      "workers/glm53_sovereign_lane_worker.py",
+      "control/worker-registry.d/glm53-sovereign-lane-001.json",
+      "control/process-worker-adapters.d/glm53-sovereign-lane-001.json",
+      "control/resident-execution-request.d/glm53-sovereign-lane-001.json"
+    ],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": [
+      "GLM53_SOVEREIGN_RUNTIME_EVIDENCE_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "glm53-sovereign-lane-worker + existing sovereign WorkerCoordinator + StegVerse-002/micro-node-runtime#69",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  }
 }
