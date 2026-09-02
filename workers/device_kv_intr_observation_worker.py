@@ -558,8 +558,8 @@ def main() -> int:
             if received_request != request or received_envelope != envelope:
                 raise ValueError("receiver exact request/envelope identity mismatch")
 
-            validate_transport_receipt(request_receipt, direction="FORWARD", from_role="DEVICE", to_role="KV",
-                                       payload_hash=envelope["payload_hash"], prior=None)
+            if connector.validate_complete(request_packet, [request_receipt]) != request_transport_result:
+                raise ValueError("canonical DEVICE->KV transport reconstruction mismatch")
             atomic_write(TRANSPORT_RECEIPTS / "device-to-kv.json", request_receipt)
             atomic_write(CARRIER_SIGNALS / "device-to-kv.json", received_signal)
             server_state["request_shared_carrier"] = persist_local_intr_subsignal(
@@ -573,13 +573,25 @@ def main() -> int:
             if not endpoint_ref:
                 raise ValueError("KV endpoint receipt store returned no durable reference")
             response_hash = sha256_uri(response)
-            response_receipt = build_transport_receipt(
-                receipt_id="KV-DEVICE-" + envelope["packet_id"], packet_id=envelope["packet_id"] + "-RETURN",
-                direction="RETURN", from_role="KV", to_role="DEVICE", operation_hash=operation_hash,
-                payload_hash=response_hash, prior_receipt_hash=request_receipt["receipt_hash"],
-                boundary_identity_ref=f"stegos-node://{continuity_id}", recorded_at=now_iso())
-            validate_transport_receipt(response_receipt, direction="RETURN", from_role="KV", to_role="DEVICE",
-                                       payload_hash=response_hash, prior=request_receipt["receipt_hash"])
+            response_packet = connector.prepare_response(
+                request_packet,
+                [request_receipt],
+                response,
+                payload_schema="kv.interlock.response.v1",
+                operation_id=request["request_id"] + ":response",
+            )
+            if response_packet.payload_hash != response_hash:
+                raise ValueError("canonical KV->DEVICE response payload hash mismatch")
+            response_receipt = connector.accept_hop(
+                response_packet,
+                hop_index=1,
+                receipt_id="KV-DEVICE-" + response_packet.intent["packet_id"],
+                boundary_identity_ref=f"stegos-node://{continuity_id}",
+                recorded_at=now_iso(),
+                prior_receipt_hash=request_receipt["receipt_hash"],
+                transition_state="RECEIVED",
+            )
+            response_transport_result = connector.validate_complete(response_packet, [response_receipt])
             atomic_write(TRANSPORT_RECEIPTS / "kv-to-device.json", response_receipt)
             response_wire = canonical_json({
                 "response": response,
@@ -602,6 +614,8 @@ def main() -> int:
                 "response_wire_hash": sha256_uri(response_wire),
                 "response_carrier_wire_hash": sha256_uri(response_carrier_wire),
                 "response_carrier_reference": response_carrier_reference,
+                "response_packet": response_packet,
+                "response_transport_result": response_transport_result,
             })
             send_frame(self.request, response_carrier_wire)
 
