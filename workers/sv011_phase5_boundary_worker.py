@@ -12,6 +12,7 @@ CAPABILITY = "sv011_phase5_boundary_probe"
 REQUIRED_ANCESTOR = "cf2777d9d21a97289f4ec7b0d9b0b21597047666"
 RECEIPT_PATH = ROOT / "receipts/sv011-phase5-boundary/SHWP-SV011-PHASE5-BOUNDARY-001.json"
 EVIDENCE_DIR = ROOT / "receipts/sv011-phase5-boundary/evidence"
+FIRST_SUCCESS_PATH = ROOT / "receipts/sv011-phase5-boundary/success/first-success.json"
 EXPECTED_BLOBS = {
     "resident-runtime/run_phase5_probe.py": "bb66bb78e458bae91c71eaabc8d15724c8bf8cba",
     "resident-runtime/requests/phase5-allow.json": "b17f563acc051d45ca988b139ccc3d9321123251",
@@ -41,6 +42,122 @@ def atomic_write(path: Path, value: dict[str, Any]) -> None:
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as h:
         json.dump(value,h,indent=2,sort_keys=True); h.write("\n"); tmp=h.name
     os.replace(tmp,path)
+
+
+def canonical_bytes(value: Any) -> bytes:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+
+def sha256_value(value: Any) -> str:
+    return hashlib.sha256(canonical_bytes(value)).hexdigest()
+
+def freeze_first_success(
+    worker_receipt: dict[str, Any],
+    allow_evidence: dict[str, Any],
+    deny_evidence: dict[str, Any],
+    *,
+    path: Path = FIRST_SUCCESS_PATH,
+) -> dict[str, Any]:
+    if worker_receipt.get("state") != "COMPLETED":
+        raise RuntimeError("first-success capsule requires COMPLETED worker receipt")
+    result = worker_receipt.get("result") or {}
+    required = {
+        "reason": "SV011_PHASE5_ALLOW_DENY_OBSERVED",
+        "allow_decision": "ALLOW",
+        "allow_receipt_count": 5,
+        "deny_decision": "DENY",
+        "deny_consumed": False,
+        "deny_consequence_reachable": False,
+        "network_source_fetch_performed": False,
+        "source_mutation_performed": False,
+        "credential_material_exported": False,
+        "github_token_runtime_authority": "NONE",
+        "execution_authorized_by_request": False,
+        "publication_authorized": False,
+        "proofs_accepted": False,
+        "sv011_source_basis_commit": REQUIRED_ANCESTOR,
+        "sv011_exact_git_blobs_verified": True,
+    }
+    for key, expected in required.items():
+        if result.get(key) != expected:
+            raise RuntimeError(f"first-success predicate mismatch: {key}")
+    if result.get("sv011_source_mode") not in {"CLEAN_GIT_CHECKOUT", "VERIFIED_MATERIALIZED_TREE"}:
+        raise RuntimeError("first-success source mode invalid")
+    if not isinstance(allow_evidence, dict) or not isinstance(deny_evidence, dict):
+        raise RuntimeError("first-success evidence objects required")
+
+    payload = {
+        "schema": "stegverse.sv011-phase5-first-success-capsule/v0.1",
+        "entity_id": "SV-011",
+        "task_id": TASK_ID,
+        "capture_state": "FIRST_AUTHENTIC_SUCCESS_FROZEN_NOT_PRODUCTIZED",
+        "source_identity": {
+            "repository": "SV-011/.github",
+            "source_basis_commit": result["sv011_source_basis_commit"],
+            "source_mode": result["sv011_source_mode"],
+            "git_head": result.get("sv011_source_head") or None,
+            "exact_git_blobs_verified": True,
+        },
+        "worker_receipt": worker_receipt,
+        "runtime_evidence": {
+            "allow": allow_evidence,
+            "allow_sha256": sha256_value(allow_evidence),
+            "deny": deny_evidence,
+            "deny_sha256": sha256_value(deny_evidence),
+        },
+        "non_claims": {
+            "productized": False,
+            "publication_authorized": False,
+            "proofs_accepted": False,
+            "autonomous_status_claimed": False,
+            "runtime_activation_generalized": False,
+        },
+        "authority_effect": "NONE_EVIDENCE_PRESERVATION_ONLY",
+    }
+    identity = sha256_value(payload)
+    capsule = dict(payload)
+    capsule["success_identity_sha256"] = identity
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        existing = json.loads(path.read_text(encoding="utf-8"))
+        existing_identity = existing.get("success_identity_sha256")
+        return {
+            "state": "ALREADY_FROZEN_SAME" if existing_identity == identity else "FIRST_SUCCESS_ALREADY_FROZEN",
+            "path": str(path),
+            "success_identity_sha256": existing_identity,
+            "candidate_identity_sha256": identity,
+            "overwritten": False,
+            "authority_effect": "NONE_EVIDENCE_PRESERVATION_ONLY",
+        }
+
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as handle:
+        json.dump(capsule, handle, indent=2, sort_keys=True)
+        handle.write("\n")
+        temp_path = Path(handle.name)
+    try:
+        try:
+            os.link(temp_path, path)
+        except FileExistsError:
+            existing = json.loads(path.read_text(encoding="utf-8"))
+            existing_identity = existing.get("success_identity_sha256")
+            return {
+                "state": "ALREADY_FROZEN_SAME" if existing_identity == identity else "FIRST_SUCCESS_ALREADY_FROZEN",
+                "path": str(path),
+                "success_identity_sha256": existing_identity,
+                "candidate_identity_sha256": identity,
+                "overwritten": False,
+                "authority_effect": "NONE_EVIDENCE_PRESERVATION_ONLY",
+            }
+    finally:
+        temp_path.unlink(missing_ok=True)
+    return {
+        "state": "FIRST_SUCCESS_FROZEN",
+        "path": str(path),
+        "success_identity_sha256": identity,
+        "candidate_identity_sha256": identity,
+        "overwritten": False,
+        "authority_effect": "NONE_EVIDENCE_PRESERVATION_ONLY",
+    }
 
 def git(root: Path,*args):
     return subprocess.run(["git","-C",str(root),*args],capture_output=True,text=True,check=False,timeout=20)
@@ -157,7 +274,7 @@ def main():
     hosted=[k for k in HOSTED_ENV if truthy(os.environ.get(k))]
     now=datetime.now(timezone.utc).isoformat().replace("+00:00","Z")
     observer=str(invocation.get("worker_instance_id") or invocation.get("worker_id") or "sv011-phase5-boundary-worker")
-    source=None; observed=[]
+    source=None; observed=[]; allow_ev=None; deny_ev=None
     if hosted:
         state="BLOCKED"; result={"reason":"HOSTED_RUNTIME_PROHIBITED","hosted_markers":hosted}
     else:
@@ -198,6 +315,18 @@ def main():
       "execution_authorized_by_request":False,"publication_authorized":False,"proofs_accepted":False,
     })
     receipt={"schema":"stegverse.sv011-phase5-boundary-worker-receipt/v0.1","task_id":TASK_ID,"generated_at":now,"state":state,"result":result,"authority_effect":"EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"}
+    success_capsule=None
+    if state=="COMPLETED":
+        try:
+            success_capsule=freeze_first_success(receipt,allow_ev,deny_ev)
+            result["first_success_capsule"]=success_capsule
+        except Exception as exc:
+            state="BLOCKED"
+            result["reason"]="SV011_PHASE5_SUCCESS_EVIDENCE_FREEZE_FAILED"
+            result["first_success_capsule_error_type"]=type(exc).__name__
+            result["first_success_capsule_error"]=str(exc)
+            receipt["state"]=state
+            receipt["result"]=result
     atomic_write(RECEIPT_PATH,receipt)
     blocker=None if state=="COMPLETED" else {
       "dependency_class":"INTERNAL_CAPABILITY","problem_statement":result["reason"],"solution_required":True,"may_remain_blocked":True,
@@ -210,7 +339,7 @@ def main():
       "expected_next_earliest_epoch":None,"expected_next_latest_epoch":None,
       "recheck_policy":None if state=="COMPLETED" else "SEPARATE_TASK_CONTROL_EVALUATION",
       "checkpoint_ref":"receipts/sv011-phase5-boundary/SHWP-SV011-PHASE5-BOUNDARY-001.json",
-      "evidence_refs":["handoffs/SHWP-SV011-PHASE5-BOUNDARY-001.json","receipts/sv011-phase5-boundary/SHWP-SV011-PHASE5-BOUNDARY-001.json"],
+      "evidence_refs":["handoffs/SHWP-SV011-PHASE5-BOUNDARY-001.json","receipts/sv011-phase5-boundary/SHWP-SV011-PHASE5-BOUNDARY-001.json"] + (["receipts/sv011-phase5-boundary/success/first-success.json"] if success_capsule else []),
       "blocker":blocker,
       "cost_observation":{"task_control_evaluations":1,"compute_units":2,"external_cost_usd":0,"task_class":"sv011_phase5_boundary_probe"}
     }
