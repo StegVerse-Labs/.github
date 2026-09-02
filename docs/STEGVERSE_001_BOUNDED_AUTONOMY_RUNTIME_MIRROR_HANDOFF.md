@@ -38,7 +38,7 @@ or default:
 
 `~/.stegverse/autonomy/stegverse001/lease.active.json`
 
-If neither canonical lease exists, the admitted worker may request issuance from an already-local clean TVC source containing merge `92c2d6085cec2b7561d6c1f08ab157894a232340`. The worker declares `STEGVERSE_SV001_AUTONOMY_LEASE_AUTHORITY=TV/TVC` only to the TVC child process. That declaration requests TVC evaluation; it does not let `.github` construct or widen the lease.
+If no valid lease is already present, the admitted worker may request issuance from an already-local clean TVC source containing merge `d495b67d1c322c3fdd8c9bb6db75657783e19c0c`. Under ProcessWorkerAdapter execution, the requested target is exactly `$STEGVERSE_BOUND_STATE_ROOT/autonomy/lease.active.json`; the adapter later projects only admitted bound-state paths after claim/fence validation. The worker declares `STEGVERSE_SV001_AUTONOMY_LEASE_AUTHORITY=TV/TVC` only to the TVC child process. That declaration requests TVC evaluation; it does not let `.github` construct or widen the lease.
 
 Source merge, resident request existence, WorkerCoordinator admission, heartbeat presence, or task success does not create this lease.
 
@@ -74,7 +74,7 @@ resident source refresh
 -> existing refresh_and_execute_resident_task.py
 -> WorkerCoordinator independent claim/fence
 -> autonomy worker
--> current local TVC authority source >= 92c2d6085cec2b7561d6c1f08ab157894a232340
+-> current local TVC authority source >= d495b67d1c322c3fdd8c9bb6db75657783e19c0c
 -> TVC dispatcher request for exact hash-bound single-cycle lease when absent
 -> independent local lease validation
 -> self-directed continuity audit
@@ -124,7 +124,7 @@ external live lease: NOT OBSERVED
 resident request consumption: NOT OBSERVED
 autonomy-cycle receipt: NOT OBSERVED
 TV policy request source: MERGED `a8ed178fd5fc5b131491e41452256323c302ba3f`
-TVC lease authority source: MERGED `92c2d6085cec2b7561d6c1f08ab157894a232340`
+TVC lease authority source: MERGED `d495b67d1c322c3fdd8c9bb6db75657783e19c0c`
 Master Records custody source: MERGED `65f97e867a09c3e5da80ef74b2b43ee810821667`
 Master Records custody: NOT OBSERVED
 SV002 disposition: NOT OBSERVED
@@ -144,6 +144,13 @@ This closes the repository-source implementation gate only. It does not establis
 
 ## 2026-09-02 TVC lease-request continuation
 
-The resident worker may now request, but never self-issue, the exact TV/TVC-governed single-cycle autonomy lease when no valid canonical lease is present. The request path is constrained to an already-local clean TVC source containing merge `92c2d6085cec2b7561d6c1f08ab157894a232340`, the exact TV request hash, and the TVC dispatcher transition `TVC_SV001_BOUNDED_AUTONOMY_LEASE_ISSUED`.
+The resident worker may now request, but never self-issue, the exact TV/TVC-governed single-cycle autonomy lease when no valid canonical lease is present. The request path is constrained to an already-local clean TVC source containing merge `d495b67d1c322c3fdd8c9bb6db75657783e19c0c`, the exact TV request hash, and the TVC dispatcher transition `TVC_SV001_BOUNDED_AUTONOMY_LEASE_ISSUED`.
 
 The request mechanism does not change the established source-completion evidence from PR #740/#743 and does not establish a live lease or runtime activation. Authentic completion still requires deployment-local issuance/observation, resident request consumption, an autonomy-cycle receipt, Master Records reconstruction, and SV002 disposition.
+
+
+## Fenced bound-state lease carrier — 2026-09-02
+
+TVC merge `d495b67d1c322c3fdd8c9bb6db75657783e19c0c` closes the sandbox boundary. The SV001 worker now treats `STEGVERSE_BOUND_STATE_ROOT` as its state root when invoked by ProcessWorkerAdapter. TVC emits the exact lease into `autonomy/lease.active.json` within that temporary root; the adapter validates the resulting state delta and projects only admitted paths. Direct resident execution outside the adapter retains the canonical same-user lease path.
+
+This prevents the worker or TVC child from bypassing ProcessWorkerAdapter confinement through `$HOME` while preserving TVC as the lease issuer.
