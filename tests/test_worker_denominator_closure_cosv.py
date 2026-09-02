@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TASKS = {
-    "SHWP-ALL-ORG-FEDERATION-001": ("60000000104000", "BLOCKED", 4, "control/worker-registry.json"),
+    "SHWP-ALL-ORG-FEDERATION-001": ("60000000100000", "BLOCKED", 0, "control/worker-registry.json"),
     "SHWP-STEGNUTRITION-CONTINUATION-001": ("50000000107000", "MACHINE_OWNED", 7, "control/worker-registry.d/stegnutrition-continuation-001.json"),
     "SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001": ("50000000101000", "MACHINE_OWNED", 1, "control/worker-registry.d/sv-dn1-repository-persistence-package-001.json"),
 }
