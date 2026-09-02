@@ -218,3 +218,22 @@ release publication implies runtime activation: false
 The connected repository tool surface does not expose Git tag or GitHub Release creation, so the exact release mutation is not executable from this session. The release issue is therefore the durable next owner rather than a chat-only task.
 
 After the exact release coordinate exists, downstream pertinence must be verified against the current mirror handoffs in `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `StegVerse-Labs/admissibility-wiki`, and `StegVerse-002/stegguardian-wiki`. Current search shows no existing test-queue-manifold projection in those repositories, so no downstream mutation is justified before an actual release coordinate exists.
+
+
+## 2026-09-02 frozen release coordinate
+
+Release issue #534 now has a dedicated scoped handoff:
+
+`docs/TEST_QUEUE_MANIFOLD_RELEASE_MIRROR_HANDOFF.md`
+
+The immutable release coordinate is:
+
+```text
+tag: test-queue-manifold-governance-v1.0.0
+target: 270ea59bec8dd06455a5edbdc59cda9e60d5677d
+release name: Test Queue Manifold Governance v1.0.0
+```
+
+Current `main` is later than the source merge, so the tag must point to that exact merge and must not resolve symbolically to current `main`.
+
+The connected GitHub mutation surface can inspect tags/releases but cannot create them. Once the exact tag + release are externally created and observable, issue #537 may proceed with downstream pertinence verification.
