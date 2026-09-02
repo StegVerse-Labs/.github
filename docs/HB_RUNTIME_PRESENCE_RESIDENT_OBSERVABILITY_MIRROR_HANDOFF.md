@@ -112,3 +112,52 @@ The consumer may store a non-secret `skap://signing/<profile-id>` reference in K
 4. `SKAP_SIGNING_PROFILE_CUSTODY_OBSERVED`
 
 The first three can be satisfied only by the current registered iPhone/device-local DEVICE_KV execution. The fourth must consume the existing canonical KV->SKAP InTr path under TV/TVC authority.
+
+
+## Shared projection implementation — issue #814
+
+Implemented on current-main successor branch `feature/hb-runtime-presence-observability-814-v2`:
+
+- `heartbeat_runtime/runtime_presence_projection.py`
+- `scripts/project_hb_runtime_presence.py`
+- `tests/test_runtime_presence_projection.py`
+
+Resident materialization integration:
+- `scripts/bootstrap_sovereign_runtime.py`
+- `scripts/install_sovereign_heartbeat_service.py`
+- `scripts/refresh_sovereign_worker_runtime_source.py`
+
+The projector reads runtime-local evidence only. It never marks resident liveness from HB progression alone. `runtime_alive_observed=true` requires a direct deployment-local activation receipt whose predicates include both `native_service_active=true` and `continuous_runtime_live=true`.
+
+Request, consumption, execution, and reconstruction remain independent evidence slots. A present HB signal cannot satisfy execution or reconstruction.
+
+### KnowledgeVault consumer binding
+
+KnowledgeVault cross-platform recovery and Personal-KV provider binding consume this shared contract.
+
+Exact unresolved chain:
+
+```text
+TVC-owned provider session active
+-> exact provider-root materialization observed
+-> authentic node-origin MY_KV_INSTALLATION_STATUS request
+-> DEVICE_KV receiver consumption observed
+-> HB-derived KV->DEVICE return recovered exactly
+-> retained device-kv-query-response receipt
+-> Site readback/sync observation
+-> recovery/provider reconstruction
+```
+
+No KnowledgeVault-specific heartbeat, scheduler, resident executor, signal protocol, provider credential path, or credential broker is authorized.
+
+Source lifecycle at this entry:
+- shared projection implementation: IMPLEMENTED_ON_BRANCH
+- resident install/refresh integration: IMPLEMENTED_ON_BRANCH
+- hosted validation: PENDING
+- merged: NO
+- authentic runtime projection: NOT OBSERVED
+- KnowledgeVault provider session: NOT OBSERVED
+- KnowledgeVault DEVICE_KV installation-status consumption: NOT OBSERVED
+- KnowledgeVault HB-derived return: NOT OBSERVED
+- Site readback: NOT OBSERVED
+- authority effect: NONE_OBSERVATION_ONLY
