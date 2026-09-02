@@ -16,10 +16,18 @@ def make_roots(base:Path):
       "tv":("TV","scripts/tv_run_resident_operational_proof.py"),
       "tvc":("TVC","tools/hil_intr_lifecycle_intake.py"),
       "master_records":("orchestration","scripts/watch_stegverse001_autonomy_receipt.py"),
+      "micro_node":("micro-node-runtime","tools/run_self_characterization_principal.py"),
+      "tt":("TT",null),
+      "rtg":("RTG",null),
+      "gtg":("GTG",null),
+      "ae":("AE",null),
     }
     roots={}
     for name,(folder,rel) in specs.items():
-        root=base/folder; path=root/rel; path.parent.mkdir(parents=True,exist_ok=True); path.write_text("# source\n"); roots[name]=root
+        root=base/folder; root.mkdir(parents=True,exist_ok=True)
+        if rel:
+            path=root/rel; path.parent.mkdir(parents=True,exist_ok=True); path.write_text("# source\n")
+        roots[name]=root
     return roots
 
 def env_for(roots):
@@ -31,6 +39,11 @@ def env_for(roots):
       "STEGVERSE_TV_ROOT":str(roots["tv"]),
       "STEGVERSE_TVC_ROOT":str(roots["tvc"]),
       "STEGVERSE_MASTER_RECORDS_ROOT":str(roots["master_records"]),
+      "STEGVERSE_MICRO_NODE_RUNTIME_ROOT":str(roots["micro_node"]),
+      "STEGVERSE_TT_ROOT":str(roots["tt"]),
+      "STEGVERSE_RTG_ROOT":str(roots["rtg"]),
+      "STEGVERSE_GTG_ROOT":str(roots["gtg"]),
+      "STEGVERSE_AE_ROOT":str(roots["ae"]),
       "PATH":"/usr/bin",
     }
 
@@ -73,6 +86,11 @@ def test_complete_activation_is_exactly_once():
         assert second["runtime_execution_attempted"] is False
         assert len(calls)==1
         assert "--master-records-root" in calls[0]
+        assert "--micro-node-root" in calls[0]
+        assert "--tt-root" in calls[0]
+        assert "--rtg-root" in calls[0]
+        assert "--gtg-root" in calls[0]
+        assert "--ae-root" in calls[0]
 
 def test_incomplete_activation_remains_retryable():
     with tempfile.TemporaryDirectory() as td:
@@ -85,3 +103,13 @@ def test_incomplete_activation_remains_retryable():
         assert out["state"]=="ATTEMPT_RECORDED"
         assert out["retry_allowed"] is True
         assert out["activation_complete"] is False
+
+
+def test_missing_formal_root_is_retryable_without_execution():
+    with tempfile.TemporaryDirectory() as td:
+        base=Path(td); source=base/"source"; runtime=base/"runtime"; source.mkdir(); runtime.mkdir(); write_request(runtime)
+        roots=make_roots(base); env=env_for(roots); env.pop("STEGVERSE_GTG_ROOT")
+        out=M.consume(source,runtime,env=env)
+        assert out["state"]=="SOURCE_ROOTS_PENDING"
+        assert out["runtime_execution_attempted"] is False
+        assert out["missing_source_roots"]==["gtg"]
