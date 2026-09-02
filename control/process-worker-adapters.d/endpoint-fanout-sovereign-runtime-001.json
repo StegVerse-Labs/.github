@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:endpoint-fanout-sovereign-runtime-v1",
+      "authority_ref": "handoffs/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "durable_state_reconstruction"
+      ],
+      "command": [
+        "python",
+        "workers/endpoint_fanout_sovereign_runtime_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_KV_SOURCE_ROOT"
+      ],
+      "notes": [
+        "Only the non-secret already-local continuity-vault-kit source locator may be forwarded.",
+        "Authentic DEVICE_KV_INTR_OBSERVED is mandatory predecessor evidence.",
+        "No external custody credential or network source fetch is admitted."
+      ],
+      "timeout_seconds": 180,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
