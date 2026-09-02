@@ -447,3 +447,22 @@ PUBLIC_VERIFYING snapshot
 ```
 
 The public profile observation grants no execution or transition authority itself. It satisfies only the canonical public-identity predicate that permits the already-governed lease machine to move to `LEASE_OPEN`. Receiver readiness, READ_OBSERVATION round trip, custody, and principal execution remain separate unobserved predicates.
+
+
+### LEASE_OPEN source closure — 2026-09-02
+
+Issue #616 source implementation merged through PR #782 as `921b55eb1b93b621fb0ae0e648ab789dfb056731` after organization-control and Heartbeat validation passed.
+
+Current source sequence:
+
+```text
+persisted PUBLIC_VERIFYING snapshot
+-> independent StegOS verification of https://stegverse.org/intr/profile
+-> required SV002:PublicObservation profile
+-> INDEPENDENT_PUBLIC_HTTPS evidence
+-> same LeaseMachine -> LEASE_OPEN
+-> exact evolved snapshot/history validation
+-> existing WorkerCoordinator task dispatch
+```
+
+Authentic public profile observation, deployment-local `LEASE_OPEN`, receiver READY, and public round-trip evidence remain NOT OBSERVED. Issue #462 remains the separate authentic public-observation close condition.
