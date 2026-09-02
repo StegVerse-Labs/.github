@@ -1,15 +1,29 @@
 {
-  "schema": "stegverse.task-state-vector/v0.1",
-  "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
-  "goal_id": "STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
-  "state": "HANDOFF_READY",
-  "authority_domain": "INDEPENDENT_TASK_CONTROL",
-  "risk_class": "BOUNDED_LOCAL_OBSERVATION",
-  "external_cost_ceiling_usd": 0,
-  "network_effect": false,
-  "repository_mutation": false,
-  "financial_effect": false,
-  "credential_effect": false,
-  "sovereign_authority_effect": false,
-  "master_records_required_for_activation_claim": true
+  "identity": "StegVerse-Labs/.github:task:SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000102000",
+  "evidence_refs": [
+    "control/worker-registry.d/stegverse001-bounded-autonomy-runtime-001.json",
+    "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json"
+  ],
+  "observed_at": "2026-09-02T02:47:24-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 2,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "authority_effect": "NONE"
 }
