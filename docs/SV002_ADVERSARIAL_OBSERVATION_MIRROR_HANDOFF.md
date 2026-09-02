@@ -3,7 +3,7 @@
 Updated: 2026-09-02
 Repository: StegVerse-Labs/.github
 Goal ID: SV002-ADVERSARIAL-OBSERVATION-001
-Status: IMPLEMENTATION_STARTED
+Status: SOURCE_IMPLEMENTED_VALIDATION_PENDING
 Operative experiment condition: v0.3 FROZEN
 
 ## Governing rule
@@ -128,14 +128,13 @@ Until then the state is TARGET_PROPERTY_NOT_YET_ESTABLISHED.
 - `docs/SV002_ADVERSARIAL_OBSERVATION_MIRROR_HANDOFF.md`
 - `config/sv002_adversarial_observation_profile.json`
 
-Next source work:
-- adversarial fixture schema;
-- deterministic disposition evaluator;
-- tamper/replay/substitution fixtures;
-- history-fork fixture;
-- correct-output/unauthorized-path fixture;
-- tests binding the adversarial profile to Master Records-only projection;
-- explicit disposition-overclaim regression.
+Implemented source:
+- `schemas/sv002-adversarial-observation-fixture.schema.json`;
+- `fixtures/sv002-adversarial-observation/cases.v1.json` with AO-01 through AO-12;
+- `scripts/evaluate_sv002_adversarial_observation.py`;
+- `tests/test_sv002_adversarial_observation.py`.
+
+The evaluator is deterministic and preserves the frozen v0.3 boundary. Forgery, replay, custody substitution, and reconstruction mismatch fail closed. Missing custody cannot become OBSERVED. Correct output on an unauthorized path resolves to CONTRADICTED rather than successful authorized execution.
 
 ## Cross-repository propagation after validated source implementation
 
@@ -146,3 +145,19 @@ Inspect and update only where pertinent:
 - StegVerse-002/stegguardian-wiki
 
 No new public claim should be propagated until validation evidence exists.
+
+
+## Source implementation checkpoint — 2026-09-02
+
+Issue #759 owns the deterministic evaluator implementation.
+
+Source implementation does **not** establish ADVERSARIALLY_CREDIBLE_OBSERVATION. The target property remains unestablished until the validated evaluator is exercised against authentic Master Records reconstruction of the real SV001 bounded-autonomy cycle and the preserved adversarial fixture suite remains repeatable.
+
+Current live-evidence prerequisites:
+
+```text
+SV001 autonomy-cycle receipt: NOT OBSERVED
+Master Records reconstruction PASS: NOT OBSERVED
+SV002 authentic disposition: NOT OBSERVED
+target property: NOT ESTABLISHED
+```
