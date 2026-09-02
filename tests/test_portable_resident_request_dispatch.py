@@ -312,3 +312,21 @@ class PortableResidentDispatchTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+    def test_refresh_then_dispatch_targets_only_one_shot_resident_stack_activation(self):
+        self._assert_sv002_exact_target("one_shot_resident_stack_activation")
+
+    def test_refresh_then_dispatch_targets_only_stegverse001_bounded_autonomy(self):
+        self._assert_sv002_exact_target("stegverse001_bounded_autonomy")
+
+    def test_sv001_optional_lease_locator_survives_portable_bridge(self):
+        env = MOD.clean_exec_env({
+            "PATH": "/bin",
+            "HOME": "/tmp",
+            "STEGVERSE_SV001_AUTONOMY_LEASE": "/local/tvc/stegverse001/lease.active.json",
+        })
+        self.assertEqual(
+            env["STEGVERSE_SV001_AUTONOMY_LEASE"],
+            "/local/tvc/stegverse001/lease.active.json",
+        )

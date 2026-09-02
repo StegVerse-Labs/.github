@@ -191,3 +191,24 @@ Exact source floors:
 After `SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED`, the resident consumer invokes the downstream continuation. A later `ALREADY_CONSUMED` request does not re-execute autonomy; it retries only Master Records custody/reconstruction and SV002 observation/disposition.
 
 The continuation script is included in sovereign bootstrap, source-refresh, and native-service materialization manifests. No manual receipt transfer is required by source design. Authentic completion remains NOT OBSERVED until deployment-local receipts exist.
+
+
+## Active machine progression path — 2026-09-02
+
+The SV001 goal must not be represented as “wait for runtime evidence.”
+
+After issue #794, an already-authorized sovereign resident may actively execute the two required bounded progression stages through the existing portable one-shot bridge:
+
+```text
+1. refresh + dispatch one_shot_resident_stack_activation
+   -> complete source materialization / StegDeploy / resident bootstrap
+
+2. refresh + dispatch stegverse001_bounded_autonomy
+   -> TVC lease request if needed
+   -> WorkerCoordinator claim/fence
+   -> Beta_Orionis bounded continuity-audit cycle
+```
+
+The resulting receipts are completion evidence for performed work; they are not the work itself.
+
+If stage 1 or stage 2 returns a nonterminal machine state, the next task is to repair/execute that specific failed transition and re-run the bounded selector. Do not replace that with observation-only polling.
