@@ -2,7 +2,7 @@
 
 Repository: `StegVerse-Labs/.github`
 Branch: `feat/device-kv-installation-status-query-20260831`
-Updated: 2026-08-31T21:14:00-05:00
+Updated: 2026-09-02T10:18:00-05:00
 State: MERGED_VALIDATED / AUTHENTIC_NODE_QUERY_OBSERVATION_PENDING
 Credential authority: TV/TVC
 Authority effect: NONE
@@ -85,3 +85,17 @@ public iPhone Step 2 observation=false
 ```
 
 No source/CI/merge evidence is promoted into runtime observation.
+
+
+## 2026-09-02 downstream current-iPhone path reconciliation
+
+The downstream Site implementation now contains the complete bounded device-local path needed to originate and consume this exact record class without a second machine:
+
+```text
+Site PR #900 -> device-local service worker admits MY_KV_INSTALLATION_STATUS
+Site PR #901 -> sync client routes MY_KV_INSTALLATION_STATUS to device-local discovery
+Site PR #902 -> query bridge accepts authentic local_ingress_observed evidence
+Site PR #903 -> sync client performs bounded service-worker update/controller handoff before /intr/profile
+```
+
+These merges close known source mismatches between the My KV Step 2 producer and the iPhone-local DEVICE_KV receiver. They do not establish that the current device has executed the query, that a resident private `STEGVERSE_KV_ROOT` has been observed, or that a verified installation projection has returned. The runtime booleans below remain false until authentic evidence exists.
