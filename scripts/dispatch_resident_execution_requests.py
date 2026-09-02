@@ -60,6 +60,7 @@ NONSECRET_ENV = (
     "STEGVERSE_SV001_AUTONOMY_LEASE",
     "STEGVERSE_SV011_ORG_ROOT",
     "STEGVERSE_SV011_MATERIALIZED_ROOT",
+    "STEGVERSE_GLM53_ENDPOINT", "STEGVERSE_GLM53_MODEL_PATH", "STEGVERSE_GLM53_RUNTIME_IDENTITY",
 )
 CONSUMERS = (
     ("ecosystem_chat", "scripts/consume_resident_execution_request.py"),
@@ -84,6 +85,7 @@ CONSUMERS = (
     ("one_shot_resident_stack_activation", "scripts/consume_one_shot_resident_stack_activation_request.py"),
     ("sv011_phase5_source_materialization", "scripts/consume_sv011_phase5_source_materialization_request.py"),
     ("sv011_phase5", "scripts/consume_sv011_phase5_resident_execution_request.py"),
+    ("glm53_sovereign_lane", "scripts/consume_glm53_sovereign_lane_request.py"),
 )
 
 
