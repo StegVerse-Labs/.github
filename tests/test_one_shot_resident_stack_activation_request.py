@@ -2,6 +2,7 @@ from __future__ import annotations
 import importlib.util, json, tempfile
 from pathlib import Path
 from types import SimpleNamespace
+from unittest import mock
 
 ROOT=Path(__file__).resolve().parents[1]
 S=importlib.util.spec_from_file_location("consumer",ROOT/"scripts/consume_one_shot_resident_stack_activation_request.py")
@@ -164,7 +165,7 @@ def test_dead_owner_fence_is_reclaimed_and_activation_runs():
         def runner(command,**kwargs):
             calls.append(command)
             return SimpleNamespace(returncode=0,stdout=json.dumps({"state":"COMPLETE"})+"\n",stderr="")
-        with __import__("unittest").mock.patch.object(M,"process_alive",return_value=False):
+        with mock.patch.object(M,"process_alive",return_value=False):
             out=M.consume(source,runtime,runner,env)
         assert out["state"]=="COMPLETED"
         assert len(calls)==1
