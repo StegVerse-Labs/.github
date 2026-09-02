@@ -882,3 +882,22 @@ already-local exact Git commit objects
 The bundle uses exact pinned commit trees rather than mutable HEAD/worktree content and carries per-file SHA-256 commitments plus portable source proofs. It performs no network source acquisition and grants no principal, formalism, execution, governance, credential, heartbeat, or repository authority.
 
 The September 1 ownership correction remains binding: canonical StegVerse-002 principal execution belongs to StegVerse-002/.github, not this StegVerse-Labs reference lane.
+
+
+## 2026-09-02 session source-issue hygiene closure
+
+Repository hygiene was reconciled after the current-main source closures in this session.
+
+Closed as source-complete:
+- #759 deterministic SV002 adversarial evaluator — merged through #760 / `786323f16e36346c69b2215894086515d7b1d58e`;
+- #761 automatic SV001 -> Master Records -> SV002 evidence continuation — merged through #762 / `64e8dc3bfb537b02efdf760fa3515e544d10bdff`;
+- #766 Master Records sovereign-bundle producer repair — merged through #767 / `d223849917384f48265d6bd01458b7190635447b`;
+- #768 pinned SV002 principal/formal source producer — merged through #769 / `2120f14372f51c3baa85b7f547d4d764ef1e72df`;
+- #642 HB carrier channel unification — current main uses `PAYLOAD_SHA256_FIRST64_MOD_16`;
+- #695 retired-G18 sovereign runtime test alignment — current contract tests match the retired downstream gate;
+- #632 all-profile Universal InTr HB carrier validation — source merged through #635 / `451221c428cf24296344f74107965a83fb5ab31b`;
+- #640 Publisher return HB-derived carrier binding — source merged through #641 / `c93e21ff1ca72848f2294f24f07ab655a451c385`.
+
+These issue closures are source/control-plane hygiene only. They do not close or satisfy the authentic runtime issues that remain intentionally open, including #739 SV001 bounded-autonomy activation, #612 endpoint-fanout resident execution, #462 SV002 public observation round trip, and other deployment-local evidence lanes.
+
+No source/merge/CI state is promoted to runtime activation, custody, accreditation, or public observation.
