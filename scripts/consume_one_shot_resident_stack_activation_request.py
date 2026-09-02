@@ -45,10 +45,10 @@ REQUIRED_FILES={
   "tvc":"tools/hil_intr_lifecycle_intake.py",
   "master_records":"scripts/watch_stegverse001_autonomy_receipt.py",
   "micro_node":"tools/run_self_characterization_principal.py",
-  "tt":null,
-  "rtg":null,
-  "gtg":null,
-  "ae":null,
+  "tt":None,
+  "rtg":None,
+  "gtg":None,
+  "ae":None,
 }
 
 def stable(v:Any)->str:
