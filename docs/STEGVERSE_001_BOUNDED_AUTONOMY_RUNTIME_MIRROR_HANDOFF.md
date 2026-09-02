@@ -38,6 +38,8 @@ or default:
 
 `~/.stegverse/autonomy/stegverse001/lease.active.json`
 
+If neither canonical lease exists, the admitted worker may request issuance from an already-local clean TVC source containing merge `92c2d6085cec2b7561d6c1f08ab157894a232340`. The worker declares `STEGVERSE_SV001_AUTONOMY_LEASE_AUTHORITY=TV/TVC` only to the TVC child process. That declaration requests TVC evaluation; it does not let `.github` construct or widen the lease.
+
 Source merge, resident request existence, WorkerCoordinator admission, heartbeat presence, or task success does not create this lease.
 
 The lease must identify StegVerse-001 / Beta_Orionis, be ACTIVE and unexpired, preserve TV/TVC authority, keep DENY reachable, require receipts, and explicitly allow the transition classes used by the cycle.
@@ -72,7 +74,9 @@ resident source refresh
 -> existing refresh_and_execute_resident_task.py
 -> WorkerCoordinator independent claim/fence
 -> autonomy worker
--> local lease validation
+-> current local TVC authority source >= 92c2d6085cec2b7561d6c1f08ab157894a232340
+-> TVC dispatcher request for exact hash-bound single-cycle lease when absent
+-> independent local lease validation
 -> self-directed continuity audit
 -> receipt
 -> Master Records custody/reconstruction
@@ -109,7 +113,10 @@ and Master Records later independently reconstructs the exact receipt/plan/obser
 ```text
 Stage 35 formal proof: MERGED / PR VALIDATED
 SV002 adversarial-observation source: MERGED
-runtime task source: IMPLEMENTING
+runtime task source: IMPLEMENTED / VALIDATION IN PROGRESS
+TV policy request source: MERGED `a8ed178fd5fc5b131491e41452256323c302ba3f`
+TVC lease authority source: MERGED `92c2d6085cec2b7561d6c1f08ab157894a232340`
+Master Records custody source: MERGED `65f97e867a09c3e5da80ef74b2b43ee810821667`
 external live lease: NOT OBSERVED
 resident request consumption: NOT OBSERVED
 autonomy-cycle receipt: NOT OBSERVED
