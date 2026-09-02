@@ -806,7 +806,7 @@
           "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
           "notation": "L R U I V G O C M T B E A P",
           "width": 14,
-          "vector": "60000000100001",
+          "vector": "60000000100000",
           "vector_state": "EMITTED",
           "vector_observed_at": "2026-08-30T22:18:00-05:00",
           "authority_effect": "NONE"
