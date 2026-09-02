@@ -115,7 +115,13 @@
       "stegverse001_bounded_autonomy"
     ],
     "progression_loops_or_polls": false,
-    "stage2_requires_stage1_activation_complete": true
+    "stage2_requires_stage1_activation_complete": true,
+    "current_progression_source_merge": "3e9aec9680d159a1419aeebb52022316a3b392ed",
+    "current_progression_entrypoint": "scripts/run_stegverse001_activation_progression.py",
+    "external_sovereign_process_required": true,
+    "current_chat_github_session_can_execute_sovereign_process": false,
+    "operator_action_condition": "ONLY_IF_NO_CURRENT_RESIDENT_PROCESS_IS_ALREADY_RUNNING_FROM_CURRENT_LOCAL_SOURCE",
+    "operator_action_is_part_of_autonomy_cycle": false
   },
   "activation": {
     "carrier": "independent_task_control",
@@ -178,7 +184,7 @@
     "human_action_required": false,
     "second_machine_required": false,
     "github_token_required": false,
-    "next_solution_action": "EXECUTE_CURRENT_STACK_ACTIVATION_THEN_SV001_BOUNDED_CYCLE",
+    "next_solution_action": "EXECUTE_CURRENT_STACK_ACTIVATION_THEN_SV001_BOUNDED_CYCLE_ON_SOVEREIGN_RESIDENT",
     "executable_entrypoint": "scripts/run_stegverse001_activation_progression.py",
     "machine_transition_sequence": [
       "one_shot_resident_stack_activation",
@@ -186,6 +192,20 @@
       "master_records_resident_intake_and_reconstruction",
       "sv002_adversarial_observation_and_disposition"
     ],
-    "machine_observable_release_condition": "The progression executes terminal SV001 autonomy and its existing downstream continuation produces Master Records and SV002 results. Each receipt is evidence of the corresponding performed transition, not a waiting task."
+    "machine_observable_release_condition": "The progression executes terminal SV001 autonomy and its existing downstream continuation produces Master Records and SV002 results. Each receipt is evidence of the corresponding performed transition, not a waiting task.",
+    "human_action_note": "No human action is required inside the admitted resident progression. If no sovereign resident process is currently running from the current local source, an operator must first make that execution surface available; GitHub/source mutation cannot substitute for process execution.",
+    "current_session_execution_boundary": "NO_CONNECTED_SOVEREIGN_NODE_PROCESS_EXECUTION_SURFACE",
+    "executable_command": "python scripts/run_stegverse001_activation_progression.py --source-root <current-local-.github> --runtime-root <sovereign-runtime>",
+    "not_work": [
+      "watch for receipt",
+      "wait for evidence",
+      "poll GitHub",
+      "treat CI/merge as runtime"
+    ],
+    "expected_execution_results": [
+      "Stage 1 executes or returns a concrete stack-activation repair transition",
+      "Stage 2 executes or returns a concrete TVC/SV001 repair transition",
+      "terminal SV001 execution automatically continues into Master Records and SV002"
+    ]
   }
 }
