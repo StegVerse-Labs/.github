@@ -159,6 +159,7 @@ def execute(*,query:Mapping[str,Any],node_id:str,kv_source_root:Path,kv_data_roo
         return {
             "schema":contract["read_schema"],"state":"PROFILE_READ","request_id":q["request_id"],
             "record_class":q["record_class"],"canonical_path":contract["path"].as_posix(),"profile":profile,
+            "profile_sha256":("sha256:"+hashlib.sha256(target.read_bytes()).hexdigest() if target.is_file() else None),
             "credential_material_present":False,"provider_operation_authorized":False,"authority_effect":"NONE"
         }
     profile=_decode_candidate(q)
