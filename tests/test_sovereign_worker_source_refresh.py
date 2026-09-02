@@ -127,6 +127,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py",
                 "scripts/consume_tvc_broker_validation_request.py",
                 "scripts/consume_sv002_self_characterization_request.py",
+                "scripts/consume_sv002_org_runtime_activation_request.py",
                 "scripts/consume_healer_sovereign_scheduler_request.py",
                 "scripts/dispatch_resident_execution_requests.py",
                 "scripts/materialize_live_cosv_packet.py",
@@ -235,6 +236,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                     system="linux",
                 )
             self.assertTrue(receipt["activated"])
+            self.assertFalse(receipt["immediate_resident_request_dispatch"]["attempted"])
             self.assertTrue(receipt["filesystem_event_driven"])
             self.assertTrue(receipt["intr_materialization_event_driven"])
             self.assertTrue(receipt["source_package_event_driven"])
