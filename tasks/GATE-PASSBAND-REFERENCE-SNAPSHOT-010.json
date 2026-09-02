@@ -53,7 +53,9 @@
     "tests_installed": true,
     "exact_head_hosted_status_observed": true,
     "hosted_pass_claimed": true,
-    "state": "PASS_CURRENT_MAIN_VALIDATION"
+    "state": "PASS_CURRENT_MAIN_VALIDATION",
+    "organization_control_run": 33672188983,
+    "heartbeat_worker_run": 33672188971
   },
   "completion": {
     "source_complete": true,
@@ -63,7 +65,8 @@
     "terminal": true,
     "next_authorized_action": "NONE_SOURCE_GOAL_TERMINAL",
     "monitor_superseded": true,
-    "supersession_reason": "Historical SHWP-DURABLE-RUNTIME-ACTIVATION monitor depended on pre-retirement G18/task-capable release predicates. Heartbeat protocol activation is terminal ACTIVE_PROTOCOL_VERIFIED and G18 no longer gates downstream admission. Preserve the open 0/3 snapshot chain as immutable provenance; do not reacquire it as a current completion gate."
+    "supersession_reason": "Historical SHWP-DURABLE-RUNTIME-ACTIVATION monitor depended on pre-retirement G18/task-capable release predicates. Heartbeat protocol activation is terminal ACTIVE_PROTOCOL_VERIFIED and G18 no longer gates downstream admission. Preserve the open 0/3 snapshot chain as immutable provenance; do not reacquire it as a current completion gate.",
+    "closure_merge": "418059b72e84b38183425c7048d094afcb29e5a6"
   },
   "archive_eligible": true
 }
