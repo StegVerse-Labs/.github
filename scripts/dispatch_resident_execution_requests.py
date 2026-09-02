@@ -79,6 +79,7 @@ CONSUMERS = (
     ("universal_governance_enforced_reference", "scripts/consume_universal_governance_enforced_reference_request.py"),
     ("cross_framework_current_basis_v04", "scripts/consume_cross_framework_current_basis_v04_request.py"),
     ("stegverse001_bounded_autonomy", "scripts/consume_stegverse001_bounded_autonomy_request.py"),
+    ("one_shot_resident_stack_activation", "scripts/consume_one_shot_resident_stack_activation_request.py"),
 )
 
 
