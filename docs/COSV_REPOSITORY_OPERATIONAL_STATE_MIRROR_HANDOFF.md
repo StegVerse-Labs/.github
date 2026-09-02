@@ -3,8 +3,9 @@
 Updated: 2026-09-02
 Repository: `StegVerse-Labs/.github`
 Issue: #741
+PR: #742
 Branch: `feat/cosv-repo-state-741`
-State: ACTIVE_IMPLEMENTATION
+State: SOURCE_IMPLEMENTED_VALIDATED / MERGE_PENDING
 
 ## Authority
 
@@ -35,6 +36,16 @@ Install a canonical machine-readable repository operational-state object that bi
 
 The machine-readable object is designed to be portable context for human and AI workers without requiring chat-history reconstruction.
 
+## Installed source surfaces
+
+```text
+schemas/repository_operational_state.schema.json
+scripts/repository_operational_state.py
+tests/test_repository_operational_state.py
+examples/repository_operational_state.example.json
+docs/COSV_REPOSITORY_OPERATIONAL_STATE_MIRROR_HANDOFF.md
+```
+
 ## Invariants
 
 1. A COSV vector never substitutes for its evidence graph.
@@ -47,16 +58,6 @@ The machine-readable object is designed to be portable context for human and AI 
 8. `*_MIRROR_HANDOFF.md` remains a supported human-readable projection during migration.
 9. State generation must not invent task vectors or transition evidence.
 10. No central cross-repository executor is introduced.
-
-## Planned source surfaces
-
-```text
-schemas/repository_operational_state.schema.json
-scripts/repository_operational_state.py
-tests/test_repository_operational_state.py
-examples/repository_operational_state.example.json
-docs/COSV_REPOSITORY_OPERATIONAL_STATE_MIRROR_HANDOFF.md
-```
 
 ## Execution model
 
@@ -77,26 +78,63 @@ repository_operational_state/v1
         +--> API/dashboard projection
 ```
 
-## Validation requirements
+## Validation
 
-- schema-level structural validation;
-- deterministic semantic validation;
-- fail-closed validation when COSV evidence references are absent;
-- explicit rejection of activation/runtime proof inferred from source completeness;
-- deterministic projection output;
-- unit tests for developed/scaffolding/stub accounting and transition boundaries.
+Validated source head before this handoff update:
+
+`5cbb1e5b86524b9f8f9cfce1261a44b33a63bc4b`
+
+Repository-native validation:
+
+```text
+Heartbeat Worker Project - Validation Only / No GitHub Token Authority
+run 33631603005
+SUCCESS
+
+Validate organization control plane - No GitHub Token Authority
+run 33631603157
+SUCCESS
+```
+
+The validator enforces:
+
+- canonical repository COSV aggregate binding;
+- task.v1 task record validation;
+- transition-vector semantic parity;
+- exact implementation completion ratio;
+- TV/TVC-only credential authority;
+- GitHub runtime token authority NONE;
+- validation evidence required when `validated=true`;
+- release evidence required when `released=true`;
+- activation evidence required when `activated=true`;
+- runtime references required when `runtime_proven=true`;
+- deterministic human and AI execution projections.
+
+Hosted validation is source verification only. It does not establish runtime activation.
 
 ## Remaining work
 
-1. Install schema.
-2. Install deterministic validator/projection helper.
-3. Install tests and example.
-4. Execute strongest available repository-native validation.
-5. Open PR and preserve exact-head validation evidence.
-6. Merge only after validation succeeds.
-7. Update this handoff with merge/release state.
-8. When release criteria are genuinely reached, verify pertinent propagation requirements for Site, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki.
+1. Revalidate this final handoff-update head.
+2. Merge PR #742 only after exact-head validation succeeds.
+3. Reconcile issue #741 and this handoff to merged/released source state.
+4. Add repository-local producers/consumers incrementally rather than inventing cross-repository authority.
+5. First integration candidate: Master Records repository-state/replay indexing.
+6. Then expose bounded projections to Site/API and AI worker context.
+7. When release criteria are genuinely reached, verify pertinent propagation requirements for Site, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki.
+
+## Completion accounting
+
+```text
+required source files: 5
+developed source files: 5/5
+scaffolding/stub source files: 0
+source implementation: 100%
+repository-native validation: PASS on prior exact head
+merge: pending final exact-head validation
+runtime activation: not applicable / not claimed
+ecosystem adoption: not claimed
+```
 
 ## Archive posture
 
-This lane is not archive-ready while implementation and validation remain open.
+Implementation state is durably preserved in issue #741, PR #742, this handoff, the schema, validator, tests, and example. This lane becomes archive-ready after final exact-head validation, merge, and handoff reconciliation.
