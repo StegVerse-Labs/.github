@@ -365,7 +365,10 @@
       "task_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
       "vector": "50000000101000"
     },
-    "control/task-vectors/SHWP-SV011-PHASE5-BOUNDARY-001.json"
+    {
+      "task_id": "SHWP-SV011-PHASE5-BOUNDARY-001",
+      "vector": "50000000101000"
+    }
   ],
   "evidence_conflicts": [],
   "release_conditions": [
