@@ -819,11 +819,21 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "SV-011/.github"
+    },
+    {
+      "task_id": "SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/sv011-phase5-source-materialization-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001.json",
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/.github#806"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 86,
-    "local_cosv_record_tasks": 86,
+    "indexed_vectorized_tasks": 87,
+    "local_cosv_record_tasks": 87,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
