@@ -1,10 +1,10 @@
 # Endpoint Fanout Sovereign Runtime Mirror Handoff
 
-Updated: 2026-08-31
+Updated: 2026-09-02
 Repository: StegVerse-Labs/.github
 Issue: #612
-Branch: feature/endpoint-fanout-runtime
-State: SOURCE_IMPLEMENTATION_IN_PROGRESS
+Branch: fix/endpoint-fanout-current-main-20260902
+State: CURRENT_MAIN_REBUILT / VALIDATION_PENDING
 Authority effect: NONE
 
 ## Goal
@@ -71,8 +71,8 @@ kv_status_return_canonical_state_changed=false
 
 ```text
 IMPLEMENTED: true
-VALIDATED: false
-MERGED: false
+VALIDATED: pending_current_head
+MERGED: false_current_rebuild
 RESIDENT_CONSUMED: false
 OBSERVED: false
 COMPLETE: false
@@ -95,3 +95,12 @@ scripts/consume_resident_rendezvous.py
 ```
 
 The resident rendezvous remains an exact fixed-chain carrier. Its allowlist is extended by this one known task; no arbitrary task/command transport is introduced.
+
+
+## 2026-09-02 current-main reconstruction
+
+Stale PR #637 carried the correct successor concept but its branch predated subsequent DEVICE_KV carrier hardening and current COSV denominator state. This reconstruction preserves the bounded endpoint-fanout worker while rebinding it to current main.
+
+The successor now requires the current DEVICE_KV parent evidence floor in addition to the terminal state/transition: exact request and response transport on the canonical HB-derived carrier, exact packet recovery verification, and non-empty canonical shared-HB signal references/digests. The fixed resident request and rendezvous chains are extended by exactly this known task; no arbitrary task or command transport is introduced.
+
+The source task is indexed into the current COSV denominator as one additional active worker task. Runtime activation remains false until an authentic resident execution emits the terminal endpoint-fanout receipt.
