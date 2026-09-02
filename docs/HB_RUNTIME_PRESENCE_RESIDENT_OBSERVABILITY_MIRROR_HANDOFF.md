@@ -161,3 +161,32 @@ Source lifecycle at this entry:
 - KnowledgeVault HB-derived return: NOT OBSERVED
 - Site readback: NOT OBSERVED
 - authority effect: NONE_OBSERVATION_ONLY
+
+
+## Source validation and merge — 2026-09-02
+
+Current-main rematerialization PR #822 validated exact head `62d43b39312124a468c29ce1149be680a3d78738`:
+
+- Heartbeat Worker Project - Validation Only / No GitHub Token Authority: `33688645541` SUCCESS
+- Validate organization control plane - No GitHub Token Authority: `33688645512` SUCCESS
+- Cross-Framework Current-Basis Resident Request Validation (Non-Authorizing): `33688645518` SUCCESS
+
+Merged as `6358375c81fedb579cb6fcac59946268ea485ebb`.
+
+Lifecycle distinction:
+
+```text
+shared projection implementation: IMPLEMENTED
+resident install/refresh integration: IMPLEMENTED
+hosted validation: PASS
+merged: YES
+runtime projection observed from deployment-local resident: NO
+resident alive/current for any consumer inferred from merge: NO
+KnowledgeVault provider session observed: NO
+KnowledgeVault DEVICE_KV installation-status consumption observed: NO
+KnowledgeVault HB-derived return observed: NO
+Site readback observed: NO
+authority_effect: NONE_OBSERVATION_ONLY
+```
+
+PR #817 remains historical validated-but-unmerged predecessor evidence and was closed after current-main conflict reconciliation.
