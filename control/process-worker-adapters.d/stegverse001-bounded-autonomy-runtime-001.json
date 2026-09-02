@@ -17,7 +17,6 @@
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [
-        "STEGVERSE_SV001_AUTONOMY_LEASE",
         "STEGVERSE_HEARTBEAT_ROOT",
         "HOME",
         "PATH",
@@ -37,7 +36,8 @@
       "bound_state_allowed_paths": [
         "receipts/**",
         "plans/**",
-        "observations/**"
+        "observations/**",
+        "autonomy/**"
       ],
       "timeout_seconds": 120,
       "type": "process_json_bound_state_v0.1",
@@ -46,7 +46,8 @@
         "First autonomous workload is a read-only resident continuity audit.",
         "No network, repository writeback, financial binding, credential creation, or sovereignty.",
         "May pass only non-secret already-local TV/TVC source locators; no network source fetch is performed.",
-        "When no valid lease exists, the worker may request TVC issuance through the exact merged dispatcher path; TVC independently validates and emits the lease."
+        "When no valid lease exists, the worker may request TVC issuance through the exact merged dispatcher path; TVC independently validates and emits the lease.",
+        "Inside ProcessWorkerAdapter execution, TVC emits the lease only to STEGVERSE_BOUND_STATE_ROOT/autonomy/lease.active.json; the authoritative state path is not exposed to the worker."
       ]
     }
   ]
