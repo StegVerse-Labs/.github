@@ -80,6 +80,10 @@ def validate_lease(p:Path)->dict[str,Any]:
     if not {"SELF_ACCREDITATION","SOVEREIGN_AUTHORITY_CHANGE","FINANCIAL_BINDING"}.issubset(forbidden):
         raise RuntimeError("lease forbidden-transition floor incomplete")
     if v.get("lease_consumption")!="SINGLE_AUTONOMY_CYCLE": raise RuntimeError("lease must be single-cycle")
+    claimed_hash=v.get("lease_hash")
+    if not isinstance(claimed_hash,str) or not claimed_hash.startswith("sha256:"): raise RuntimeError("lease self-hash missing")
+    body=dict(v); body.pop("lease_hash",None)
+    if claimed_hash!=sha(body): raise RuntimeError("lease self-hash mismatch")
     used=STATE_ROOT/"lease-consumption"/(str(v.get("lease_id"))+".json")
     if used.is_file(): raise RuntimeError("lease already consumed")
     return v
