@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib
 import importlib.util
 import json
 import os
@@ -81,6 +82,35 @@ def load_module(path: Path, name: str):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def load_canonical_device_kv_connector(stegos_root: Path):
+    registry = stegos_root / "specs/universal-intr-connector-profiles.v1.json"
+    backbone = stegos_root / "stegos/intr_backbone.py"
+    if not registry.is_file() or not backbone.is_file():
+        raise RuntimeError("canonical StegOS InTr connector source missing")
+    root_text = str(stegos_root)
+    inserted = False
+    if root_text not in sys.path:
+        sys.path.insert(0, root_text)
+        inserted = True
+    try:
+        module = importlib.import_module("stegos.intr_backbone")
+        origin = Path(module.__file__).resolve()
+        if stegos_root.resolve() not in origin.parents:
+            raise RuntimeError("loaded stegos.intr_backbone does not originate from admitted local StegOS root")
+        connector = module.connector_from_registry(registry, "device-kv")
+        if connector.profile.profile_id != "device-kv":
+            raise RuntimeError("canonical device-kv connector profile mismatch")
+        if connector.profile.payload_schema != "kv.interlock.request.v1":
+            raise RuntimeError("canonical device-kv payload schema mismatch")
+        return connector
+    finally:
+        if inserted:
+            try:
+                sys.path.remove(root_text)
+            except ValueError:
+                pass
 
 
 def find_source_root(env_name: str, repo_name: str, required: str) -> Path | None:
@@ -225,58 +255,6 @@ def recv_frame(sock: socket.socket, max_bytes: int = 1024 * 1024) -> bytes:
     return recv_exact(sock, size)
 
 
-def build_transport_receipt(*, receipt_id: str, packet_id: str, direction: str, from_role: str, to_role: str,
-                            operation_hash: str, payload_hash: str, prior_receipt_hash: str | None,
-                            boundary_identity_ref: str, recorded_at: str | None = None) -> dict[str, Any]:
-    body = {
-        "schema": "stegverse.intr.hop_receipt/v1",
-        "receipt_id": receipt_id,
-        "packet_id": packet_id,
-        "hop_index": 1,
-        "direction": direction,
-        "from_role": from_role,
-        "to_role": to_role,
-        "operation_hash": operation_hash,
-        "payload_hash": payload_hash,
-        "prior_receipt_hash": prior_receipt_hash,
-        "boundary_identity_ref": boundary_identity_ref,
-        "boundary_verification": "VERIFIED",
-        "transition_state": "RECEIVED",
-        "secret_plaintext_present": False,
-        "authority_transfer": False,
-        "recorded_at": recorded_at or now_iso(),
-    }
-    return {**body, "receipt_hash": sha256_uri(body)}
-
-
-def validate_transport_receipt(receipt: Mapping[str, Any], *, direction: str, from_role: str, to_role: str,
-                               payload_hash: str, prior: str | None) -> None:
-    fields = {
-        "schema", "receipt_id", "packet_id", "hop_index", "direction", "from_role", "to_role",
-        "operation_hash", "payload_hash", "prior_receipt_hash", "boundary_identity_ref",
-        "boundary_verification", "transition_state", "secret_plaintext_present", "authority_transfer",
-        "recorded_at", "receipt_hash",
-    }
-    if set(receipt) != fields:
-        raise ValueError("noncanonical transport receipt fields")
-    if receipt.get("schema") != "stegverse.intr.hop_receipt/v1":
-        raise ValueError("transport receipt schema mismatch")
-    if receipt.get("hop_index") != 1 or receipt.get("direction") != direction:
-        raise ValueError("transport receipt direction mismatch")
-    if receipt.get("from_role") != from_role or receipt.get("to_role") != to_role:
-        raise ValueError("transport receipt boundary mismatch")
-    if receipt.get("payload_hash") != payload_hash or receipt.get("prior_receipt_hash") != prior:
-        raise ValueError("transport receipt identity mismatch")
-    if receipt.get("boundary_verification") != "VERIFIED" or receipt.get("transition_state") != "RECEIVED":
-        raise ValueError("transport boundary was not verified/received")
-    if receipt.get("secret_plaintext_present") is not False or receipt.get("authority_transfer") is not False:
-        raise ValueError("transport receipt authority/plaintext violation")
-    body = dict(receipt)
-    claimed = body.pop("receipt_hash")
-    if claimed != sha256_uri(body):
-        raise ValueError("transport receipt hash mismatch")
-
-
 def build_hb_carrier_signal(*, packet_id: str, payload_hash: str, packet_bytes: bytes, receipt_hash: str,
                             boundary_from: str, boundary_to: str, now_ns: int | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
     sample_ns = time.time_ns() if now_ns is None else int(now_ns)
@@ -308,7 +286,7 @@ def controlled_request(template: Mapping[str, Any], continuity_id: str, fence: i
     return request
 
 
-def request_envelope(request: Mapping[str, Any], continuity_id: str, state_root: str, *, source_identity_ref: str | None = None, next_boundary_identity_ref: str | None = None, prior_receipt_hash: str | None = None) -> dict[str, Any]:
+def compatibility_request_envelope(request: Mapping[str, Any], continuity_id: str, state_root: str, *, source_identity_ref: str | None = None, next_boundary_identity_ref: str | None = None, prior_receipt_hash: str | None = None) -> dict[str, Any]:
     payload_hash = sha256_uri(request)
     packet_seed = sha256_uri({"request_id": request["request_id"], "payload_hash": payload_hash})
     return {
@@ -409,6 +387,7 @@ def main() -> int:
     try:
         continuity_mod = load_module(stegos_root / "stegos/relay_node_kv_continuity.py", "device_kv_continuity")
         kv_mod = load_module(kv_root / "runtime/kv_interlock_endpoint.py", "device_kv_endpoint")
+        connector = load_canonical_device_kv_connector(stegos_root)
         if parent_valid:
             continuity_mod.validate_node_kv_continuity_evidence(continuity)
     except Exception as exc:
@@ -430,17 +409,36 @@ def main() -> int:
     if not isinstance(controlled, dict):
         return 4
     request = controlled_request(controlled, continuity_id, fence)
-    envelope = request_envelope(request, continuity_id, state_root, source_identity_ref=source_identity_ref, next_boundary_identity_ref=next_boundary_identity_ref, prior_receipt_hash=prior_event_receipt)
+    request_packet = connector.prepare(
+        request,
+        payload_schema="kv.interlock.request.v1",
+        operation=request["operation"],
+        operation_id=request["request_id"],
+        prior_receipt_hash=prior_event_receipt,
+    )
+    request_intent = dict(request_packet.intent)
+    envelope = compatibility_request_envelope(
+        request, continuity_id, state_root,
+        source_identity_ref=source_identity_ref,
+        next_boundary_identity_ref=next_boundary_identity_ref,
+        prior_receipt_hash=request_intent.get("prior_transport_receipt_hash"),
+    )
+    envelope["packet_id"] = request_intent["packet_id"]
+    envelope["payload_hash"] = request_intent["payload_hash"]
+    envelope["sealed_material_ref"] = "sealed://device-kv-intr/" + request_intent["packet_id"]
     request_wire = canonical_json({"request": request, "envelope": envelope}).encode()
     request_wire_hash = sha256_uri(request_wire)
-    operation_hash = sha256_uri({"request_id": request["request_id"], "operation": request["operation"], "packet_id": envelope["packet_id"]})
     request_receipt_recorded_at = now_iso()
-    request_receipt = build_transport_receipt(
-        receipt_id="DEVICE-KV-" + envelope["packet_id"], packet_id=envelope["packet_id"],
-        direction="FORWARD", from_role="DEVICE", to_role="KV", operation_hash=operation_hash,
-        payload_hash=envelope["payload_hash"], prior_receipt_hash=None, boundary_identity_ref=state_root,
+    request_receipt = connector.accept_hop(
+        request_packet,
+        hop_index=1,
+        receipt_id="DEVICE-KV-" + request_intent["packet_id"],
+        boundary_identity_ref=state_root,
         recorded_at=request_receipt_recorded_at,
+        prior_receipt_hash=request_intent.get("prior_transport_receipt_hash"),
+        transition_state="RECEIVED",
     )
+    request_transport_result = connector.validate_complete(request_packet, [request_receipt])
     request_carrier_signal, request_carrier_reference = build_hb_carrier_signal(
         packet_id=envelope["packet_id"],
         payload_hash=envelope["payload_hash"],
@@ -508,8 +506,8 @@ def main() -> int:
             if received_request != request or received_envelope != envelope:
                 raise ValueError("receiver exact request/envelope identity mismatch")
 
-            validate_transport_receipt(request_receipt, direction="FORWARD", from_role="DEVICE", to_role="KV",
-                                       payload_hash=envelope["payload_hash"], prior=None)
+            if connector.validate_complete(request_packet, [request_receipt]) != request_transport_result:
+                raise ValueError("canonical DEVICE->KV transport reconstruction mismatch")
             atomic_write(TRANSPORT_RECEIPTS / "device-to-kv.json", request_receipt)
             atomic_write(CARRIER_SIGNALS / "device-to-kv.json", received_signal)
             server_state["request_shared_carrier"] = persist_local_intr_subsignal(
@@ -523,13 +521,25 @@ def main() -> int:
             if not endpoint_ref:
                 raise ValueError("KV endpoint receipt store returned no durable reference")
             response_hash = sha256_uri(response)
-            response_receipt = build_transport_receipt(
-                receipt_id="KV-DEVICE-" + envelope["packet_id"], packet_id=envelope["packet_id"] + "-RETURN",
-                direction="RETURN", from_role="KV", to_role="DEVICE", operation_hash=operation_hash,
-                payload_hash=response_hash, prior_receipt_hash=request_receipt["receipt_hash"],
-                boundary_identity_ref=f"stegos-node://{continuity_id}", recorded_at=now_iso())
-            validate_transport_receipt(response_receipt, direction="RETURN", from_role="KV", to_role="DEVICE",
-                                       payload_hash=response_hash, prior=request_receipt["receipt_hash"])
+            response_packet = connector.prepare_response(
+                request_packet,
+                [request_receipt],
+                response,
+                payload_schema="kv.interlock.response.v1",
+                operation_id=request["request_id"] + ":response",
+            )
+            if response_packet.payload_hash != response_hash:
+                raise ValueError("canonical KV->DEVICE response payload hash mismatch")
+            response_receipt = connector.accept_hop(
+                response_packet,
+                hop_index=1,
+                receipt_id="KV-DEVICE-" + response_packet.intent["packet_id"],
+                boundary_identity_ref=f"stegos-node://{continuity_id}",
+                recorded_at=now_iso(),
+                prior_receipt_hash=request_receipt["receipt_hash"],
+                transition_state="RECEIVED",
+            )
+            response_transport_result = connector.validate_complete(response_packet, [response_receipt])
             atomic_write(TRANSPORT_RECEIPTS / "kv-to-device.json", response_receipt)
             response_wire = canonical_json({
                 "response": response,
@@ -552,6 +562,8 @@ def main() -> int:
                 "response_wire_hash": sha256_uri(response_wire),
                 "response_carrier_wire_hash": sha256_uri(response_carrier_wire),
                 "response_carrier_reference": response_carrier_reference,
+                "response_packet": response_packet,
+                "response_transport_result": response_transport_result,
             })
             send_frame(self.request, response_carrier_wire)
 
@@ -600,10 +612,14 @@ def main() -> int:
         request_receipt = response_packet["request_receipt"]
         response_receipt = response_packet["response_receipt"]
         endpoint_ref = response_packet.get("endpoint_receipt_ref")
-        validate_transport_receipt(request_receipt, direction="FORWARD", from_role="DEVICE", to_role="KV",
-                                   payload_hash=envelope["payload_hash"], prior=None)
-        validate_transport_receipt(response_receipt, direction="RETURN", from_role="KV", to_role="DEVICE",
-                                   payload_hash=sha256_uri(response), prior=request_receipt["receipt_hash"])
+        if connector.validate_complete(request_packet, [request_receipt]) != request_transport_result:
+            raise ValueError("canonical DEVICE->KV transport result drift")
+        response_packet_obj = server_state.get("response_packet")
+        if response_packet_obj is None:
+            raise ValueError("canonical KV->DEVICE response packet missing")
+        response_transport_result = connector.validate_complete(response_packet_obj, [response_receipt])
+        if response_transport_result != server_state.get("response_transport_result"):
+            raise ValueError("canonical KV->DEVICE transport result drift")
         if load_json(TRANSPORT_RECEIPTS / "device-to-kv.json") != request_receipt:
             raise ValueError("DEVICE->KV durable receipt readback mismatch")
         if load_json(TRANSPORT_RECEIPTS / "kv-to-device.json") != response_receipt:
@@ -636,6 +652,15 @@ def main() -> int:
         "event_transport_intent_hash": event_basis.get("transport_intent_hash") if event_basis else None,
         "event_queued_payload_hash": event_basis.get("queued_payload_hash") if event_basis else None,
         "request_id": request["request_id"],
+        "canonical_connector_profile": connector.profile.profile_id,
+        "canonical_connector_payload_schema": connector.profile.payload_schema,
+        "request_canonical_transport_intent_sha256": sha256_uri(request_intent),
+        "request_canonical_transport_state": request_transport_result["state"],
+        "request_canonical_transport_complete": request_transport_result["state"] == "TRANSPORT_COMPLETE",
+        "response_canonical_transport_intent_sha256": sha256_uri(response_packet_obj.intent),
+        "response_canonical_transport_state": response_transport_result["state"],
+        "response_canonical_transport_complete": response_transport_result["state"] == "TRANSPORT_COMPLETE",
+        "compatibility_envelope_only": True,
         "request_payload_hash": envelope["payload_hash"],
         "request_wire_sha256": request_wire_hash,
         "request_receiver_wire_sha256": server_state["request_wire_hash"],
