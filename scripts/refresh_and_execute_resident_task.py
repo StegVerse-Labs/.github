@@ -93,6 +93,7 @@ NONSECRET_FORWARD = {
     "STEGVERSE_SELF_CHAR_MODEL_ID",
     "STEGVERSE_OLLAMA_MODEL",
     "STEGVERSE_SV011_ORG_ROOT",
+    "STEGVERSE_SV011_MATERIALIZED_ROOT",
 }
 Runner = Callable[..., subprocess.CompletedProcess[str]]
 
