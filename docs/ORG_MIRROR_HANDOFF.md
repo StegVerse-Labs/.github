@@ -932,3 +932,22 @@ control/resident-execution-request.d/one-shot-resident-stack-activation-001.json
 The consumer resolves only already-local source roots using preserved non-secret environment locators or `STEGVERSE_REPO_ROOTS_JSON`. Missing roots produce `SOURCE_ROOTS_PENDING`; no network fetch is attempted. The request retries until the one-shot activation result is `COMPLETE`, then becomes exactly-once for that request hash.
 
 The request grants no claim, fence, heartbeat, credential, deployment, provider, repository, network, or sovereign authority. Authentic resident activation remains NOT OBSERVED until the deployment-local consumption/activation receipt exists.
+
+
+## 2026-09-02 one-shot resident stack machine-request source closure
+
+Issue #774 implementation merged through PR #775:
+
+```text
+merge: cf4ed69ebe079dd684c501e67ff4a6e70c828d0f
+Heartbeat validation: 33661420619 SUCCESS
+Cross-Framework request validation: 33661420625 SUCCESS
+organization control validation: 33661420611 SUCCESS
+request state: REQUESTED
+request consumption: NOT OBSERVED
+activation COMPLETE: NOT OBSERVED
+```
+
+The existing native resident dispatcher can now visit `one_shot_resident_stack_activation`; native materialization includes both the request consumer and `activate_resident_stack.py`. Missing local source roots remain machine-retryable as `SOURCE_ROOTS_PENDING`.
+
+This closes the known source invocation seam without asserting a deployment-local execution.
