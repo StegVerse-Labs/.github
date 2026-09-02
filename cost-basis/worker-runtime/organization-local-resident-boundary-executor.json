@@ -1,0 +1,9 @@
+{
+  "schema": "stegverse.worker-cost-basis/v0.1",
+  "task_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+  "task_class": "organization_local_resident_boundary",
+  "external_cost_ceiling_usd": 0,
+  "expected_compute_units": 1,
+  "credential_authority": "TV/TVC",
+  "authority_effect": "NONE"
+}

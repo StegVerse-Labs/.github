@@ -1,0 +1,105 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "ORGANIZATION_LOCAL_BOUNDARY_RUNTIME_NOT_YET_OBSERVED"
+      ],
+      "authorized_policy_version": "organization-local-resident-boundary-v1",
+      "block_ref": "docs/ORGANIZATION_LOCAL_RESIDENT_BOUNDARY_EXECUTOR_MIRROR_HANDOFF.md",
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/organization-local-resident-boundary-executor.json",
+      "evidence_refs": [
+        "docs/ORGANIZATION_LOCAL_RESIDENT_BOUNDARY_EXECUTOR_MIRROR_HANDOFF.md",
+        "handoffs/ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001.json",
+        "workers/organization_local_resident_boundary_executor.py"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+      "handoff_ref": "handoffs/ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "organization-local resident boundary handoff + existing WorkerCoordinator independent task control",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 21,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+        "admitted_predecessor_rule": "VALID_LOCAL_BOUNDARY_INGRESS_REQUIRED",
+        "event_materialization_grants_authority": false
+      },
+      "source_state_vector_ref": "control/task-vectors/ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-09-02T13:09:00-05:00",
+          "authority_effect": "NONE"
+        }
+      },
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:organization-local-resident-boundary:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "docs/ORGANIZATION_LOCAL_RESIDENT_BOUNDARY_EXECUTOR_MIRROR_HANDOFF.md"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001.json"
+        ],
+        "integration_evidence_refs": [
+          "workers/organization_local_resident_boundary_executor.py",
+          "control/process-worker-adapters.d/organization-local-resident-boundary-executor-001.json",
+          "control/worker-registry.d/organization-local-resident-boundary-executor-001.json",
+          "control/task-vectors/ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001.json"
+        ],
+        "activation_proof_ref": null,
+        "blockers": [
+          "AUTHENTIC_ORGANIZATION_LOCAL_BOUNDARY_RUNTIME_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "organization-local-resident-boundary-executor",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:organization-local-resident-boundary-executor-v1",
+      "authority_source": "handoffs/ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "durable_state_reconstruction"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "organization-local-resident-boundary-executor"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "non_tv_tvc_secret_or_token_required": false,
+  "third_party_runtime_required": false
+}

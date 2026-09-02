@@ -1,0 +1,147 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+  "created_at": "2026-09-02T13:09:00-05:00",
+  "updated_at": "2026-09-02T13:09:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+    "objective": "Consume exactly one valid organization-local Interlock/InTr ingress packet under independent WorkerCoordinator admission, preserve non-authorizing carrier/Transition-Element evidence, and persist bounded local receipt plus exact egress acknowledgement.",
+    "success_predicates": [
+      "Valid local ingress packet uses exact organization-local boundary schema/profile.",
+      "Payload hash reconstructs exactly and forbidden credential/command fields are absent.",
+      "Any HB-derived carrier binding validates canonically and grants no authority.",
+      "Worker executes only under fresh WorkerCoordinator claim/fence.",
+      "Durable receipt and egress packet reconstruct exact ingress identity with canonical_state_changed=false and no external side effect."
+    ],
+    "failure_predicates": [
+      "Request or carrier presence is treated as execution authority.",
+      "Stale/mismatched claim-fence executes.",
+      "Profile/payload/carrier drift is accepted.",
+      "Credential/secret/command material is accepted.",
+      "Canonical state mutation, publication, network, custody, or external side effect is claimed."
+    ],
+    "authority_ceiling": [
+      "organization-local boundary observation/acknowledgement only",
+      "no canonical state mutation",
+      "no provider/network/publication operation",
+      "no external custody authority",
+      "no credential issuance"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "docs/ORGANIZATION_LOCAL_RESIDENT_BOUNDARY_EXECUTOR_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "stegverse-labs:organization-local-resident-boundary",
+    "derivation_depth": 0,
+    "priority": "runtime",
+    "operational_state": "READY_FOR_LOCAL_INGRESS",
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "fencing_token": null,
+    "source_refs": [
+      "docs/ORGANIZATION_LOCAL_RESIDENT_BOUNDARY_EXECUTOR_MIRROR_HANDOFF.md",
+      "workers/organization_local_resident_boundary_executor.py",
+      "heartbeat_runtime/intr_carrier_profile.py"
+    ],
+    "source_issue": 713
+  },
+  "authority": {
+    "authority_source": "scoped organization-local boundary handoff + existing WorkerCoordinator task control; TV/TVC unchanged",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "policy_version": "organization-local-resident-boundary-v1",
+    "heartbeat_grants_execution_authority": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 21,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "third_party_runtime_required": false,
+    "physical_additional_machine_required": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "durable_state_reconstruction"
+    ],
+    "allowed_paths": [
+      "receipts/organization-local-boundary/**",
+      "spool/organization-local-boundary/ingress/**",
+      "spool/organization-local-boundary/egress/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 3,
+    "max_retries": 3,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 100,
+    "rate_class": "organization_local_resident_boundary",
+    "ingress_schema": "stegverse.organization-local-boundary.packet/v1",
+    "ingress_profile": "stegverse.organization-local-intr/v1"
+  },
+  "completion": {
+    "source_implementation_state": "IMPLEMENTED_VALIDATION_PENDING",
+    "runtime_activation_state": "PENDING_AUTHENTIC_RESIDENT_INGRESS",
+    "runtime_observation_claimed": false,
+    "terminal_evidence": "receipts/organization-local-boundary/<packet_id>.json with disposition ACCEPTED_LOCAL_BOUNDARY",
+    "terminal_when": [
+      "valid local ingress packet exists",
+      "fresh WorkerCoordinator claim/fence executes bounded handler",
+      "receipt and egress reconstruct exact ingress identity",
+      "no canonical state change or external side effect is claimed"
+    ],
+    "next_authorized_action": "Validate source on current main, merge only after organization-control and Heartbeat suites pass, then allow sovereign resident execution only when an authentic local ingress packet exists.",
+    "targeted_command": "python scripts/run_worker_runtime.py --task-id ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001"
+  },
+  "activation": {
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "carrier": "organization_local_spool",
+    "carrier_trigger_required": false,
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "handoffs/ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001.json#authority",
+    "checkout_policy": "fenced_atomic_checkout",
+    "claim_generation_rule": "fresh WorkerCoordinator fencing generation; no historical claim/fence reuse"
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:organization-local-resident-boundary:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "docs/ORGANIZATION_LOCAL_RESIDENT_BOUNDARY_EXECUTOR_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/organization_local_resident_boundary_executor.py",
+      "control/process-worker-adapters.d/organization-local-resident-boundary-executor-001.json",
+      "control/worker-registry.d/organization-local-resident-boundary-executor-001.json",
+      "control/task-vectors/ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "AUTHENTIC_ORGANIZATION_LOCAL_BOUNDARY_RUNTIME_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "organization-local-resident-boundary-executor",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  },
+  "source_state_vector_ref": "control/task-vectors/ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-09-02T13:09:00-05:00",
+      "authority_effect": "NONE"
+    }
+  }
+}

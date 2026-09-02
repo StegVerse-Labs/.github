@@ -1,0 +1,29 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:organization-local-resident-boundary-executor-v1",
+      "authority_ref": "handoffs/ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "durable_state_reconstruction"
+      ],
+      "command": [
+        "python",
+        "workers/organization_local_resident_boundary_executor.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [],
+      "notes": [
+        "Runs only after independent WorkerCoordinator admission/claim/fence.",
+        "Ingress/egress spools are bounded local state; request or carrier presence grants no authority.",
+        "No credentials, network source fetch, GitHub runtime authority, publication authority, or canonical-state authority."
+      ],
+      "timeout_seconds": 60,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
