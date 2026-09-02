@@ -990,3 +990,37 @@ Admissible-Existence VECTOR_REQUIRED repositories: 0
 ```
 
 Authority effect: NONE.
+
+
+## StegClaw strict promotion — 2026-09-02
+
+`Data-Continuation/StegClaw` is promoted from `VECTOR_REQUIRED` to `VECTOR_PRESENT` from repository-local evidence only.
+
+```text
+active structured tasks audited: 3
+active structured tasks projected: 3
+active task gap: 0
+repository aggregate.v1: 69930039320000
+StegClaw Selftest: 33633483715 SUCCESS
+selftest artifact: 9847766594
+artifact digest: sha256:93a39a91d7f1e3ca3de818ad2febf467e07c01f7a1b5ddc5cf763ef34765922b
+merge: 9734d51e7d208b8a81e7a35ff525d772481d0ee0
+```
+
+Strict active-repository adoption becomes:
+
+```text
+VECTOR_PRESENT: 9
+VECTOR_REQUIRED: 19
+NO_ACTIVE_TASK_SURFACE: 6
+not-yet-audited/unavailable: 188
+active denominator: 28
+ratio: 9/28 = 32.14%
+```
+
+The promotion records COSV coverage only. StegClaw's own release lane remains blocked by
+`TARGET_ARTIFACTS_UNVERIFIED` and
+`RELEASE_BLOCKED_PENDING_ECOSYSTEM_HANDOFF_VERIFICATION`.
+No release, propagation, activation, runtime proof, credential authority, or cross-repository execution authority is inferred.
+
+Authority effect: NONE.
