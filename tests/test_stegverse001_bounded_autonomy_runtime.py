@@ -16,7 +16,7 @@ def lease():
       "lease_state":"ACTIVE","issuer":"TV/TVC","credential_authority":"TV/TVC",
       "expires_at":(datetime.now(timezone.utc)+timedelta(hours=1)).isoformat(),
       "allowed_transition_classes":["AUTONOMOUS_TASK_DISCOVERY","LOCAL_STATE_OBSERVATION","RECEIPT_EMISSION"],
-      "forbidden_transition_classes":["SELF_ACCREDITATION","SOVEREIGN_AUTHORITY_CHANGE","FINANCIAL_BINDING"],
+      "forbidden_transition_classes":["SELF_ACCREDITATION","SOVEREIGN_AUTHORITY_CHANGE","FINANCIAL_BINDING","REPOSITORY_WRITEBACK","EXTERNAL_NETWORK_ACCESS","CREDENTIAL_CREATION"],
       "receipt_required":True,"denial_reachable_required":True,"denial_reachable":True,
       "self_accreditation_allowed":False,"sovereign_authority_granted":False,
       "lease_consumption":"SINGLE_AUTONOMY_CYCLE",
@@ -74,3 +74,49 @@ def test_tvc_default_lease_discovery():
         p=Path(td)/"lease.active.json"; p.write_text("{}")
         with mock.patch.dict(os.environ,{},clear=True), mock.patch.object(MOD,"TVC_DEFAULT_LEASE",p):
             assert MOD.resolve_lease_path()==p
+
+
+def test_request_lease_from_tvc_requires_current_local_authority_source():
+    with mock.patch.object(MOD,"locate_tvc",return_value=(None,[])):
+        try: MOD.request_lease_from_tvc(Path("/tmp/lease.json"))
+        except MOD.LeasePending as e: assert "TVC authority source" in str(e)
+        else: raise AssertionError("missing TVC source did not block")
+
+def test_request_lease_from_tvc_accepts_exact_dispatcher_receipt():
+    with tempfile.TemporaryDirectory() as td:
+        root=Path(td)
+        target=root/"lease.active.json"
+        report={
+          "status":"ok",
+          "result":{
+            "status":"ok",
+            "transition_id":"TVC_SV001_BOUNDED_AUTONOMY_LEASE_ISSUED",
+            "lease_path":str(target)
+          }
+        }
+        proc=mock.Mock(returncode=0,stdout=json.dumps(report),stderr="")
+        observed=[{"selected":True,"head":MOD.REQUIRED_TVC_ANCESTOR}]
+        with mock.patch.object(MOD,"locate_tvc",return_value=(root,observed)), mock.patch.object(MOD.subprocess,"run",return_value=proc):
+            out=MOD.request_lease_from_tvc(target)
+        assert out["tvc_source_head"]==MOD.REQUIRED_TVC_ANCESTOR
+        assert out["dispatcher"]["result"]["transition_id"]=="TVC_SV001_BOUNDED_AUTONOMY_LEASE_ISSUED"
+
+def test_request_lease_from_tvc_rejects_target_drift():
+    with tempfile.TemporaryDirectory() as td:
+        root=Path(td)
+        target=root/"lease.active.json"
+        report={"status":"ok","result":{"status":"ok","transition_id":"TVC_SV001_BOUNDED_AUTONOMY_LEASE_ISSUED","lease_path":str(root/"other.json")}}
+        proc=mock.Mock(returncode=0,stdout=json.dumps(report),stderr="")
+        with mock.patch.object(MOD,"locate_tvc",return_value=(root,[{"selected":True,"head":MOD.REQUIRED_TVC_ANCESTOR}])), mock.patch.object(MOD.subprocess,"run",return_value=proc):
+            try: MOD.request_lease_from_tvc(target)
+            except RuntimeError as e: assert "target mismatch" in str(e)
+            else: raise AssertionError("TVC target drift accepted")
+
+def test_validate_lease_rejects_request_hash_drift():
+    with tempfile.TemporaryDirectory() as td:
+        p=Path(td)/"lease.json"; v=lease(); v["request_hash"]="sha256:"+"0"*64
+        body=dict(v); body.pop("lease_hash",None); v["lease_hash"]=MOD.sha(body)
+        p.write_text(json.dumps(v))
+        try: MOD.validate_lease(p)
+        except RuntimeError as e: assert "request_hash mismatch" in str(e)
+        else: raise AssertionError("request hash drift accepted")
