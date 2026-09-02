@@ -120,3 +120,29 @@ def test_validate_lease_rejects_request_hash_drift():
         try: MOD.validate_lease(p)
         except RuntimeError as e: assert "request_hash mismatch" in str(e)
         else: raise AssertionError("request hash drift accepted")
+
+
+def test_bound_state_lease_is_preferred_when_present():
+    with tempfile.TemporaryDirectory() as td:
+        p=Path(td)/"autonomy/lease.active.json"; p.parent.mkdir(parents=True); p.write_text("{}")
+        with mock.patch.dict(os.environ,{},clear=True), mock.patch.object(MOD,"BOUND_STATE_LEASE",p), mock.patch.object(MOD,"TVC_DEFAULT_LEASE",Path(td)/"missing-root.json"), mock.patch.object(MOD,"DEFAULT_LEASE",Path(td)/"missing-user.json"):
+            assert MOD.resolve_lease_path()==p
+
+def test_issuance_target_uses_fenced_bound_state_when_adapter_sets_it():
+    with tempfile.TemporaryDirectory() as td:
+        p=Path(td)/"autonomy/lease.active.json"
+        with mock.patch.dict(os.environ,{MOD.BOUND_STATE_ENV:str(Path(td))},clear=True), mock.patch.object(MOD,"BOUND_STATE_LEASE",p):
+            assert MOD.issuance_lease_target()==p
+
+def test_tvc_child_env_preserves_only_bound_state_locator_for_fenced_issuance():
+    with tempfile.TemporaryDirectory() as td:
+        target=Path(td)/"autonomy/lease.active.json"
+        with mock.patch.dict(os.environ,{MOD.BOUND_STATE_ENV:str(Path(td)),"GITHUB_TOKEN":"forbidden","PATH":"/bin"},clear=True):
+            env=MOD._clean_tvc_env(target)
+        assert env[MOD.BOUND_STATE_ENV]==str(Path(td))
+        assert env["STEGVERSE_SV001_AUTONOMY_LEASE_TARGET"]==str(target)
+        assert env["STEGVERSE_SV001_AUTONOMY_LEASE_AUTHORITY"]=="TV/TVC"
+        assert "GITHUB_TOKEN" not in env
+
+def test_required_tvc_ancestor_is_fenced_target_merge():
+    assert MOD.REQUIRED_TVC_ANCESTOR=="d495b67d1c322c3fdd8c9bb6db75657783e19c0c"
