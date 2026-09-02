@@ -42,14 +42,14 @@ class WorkerDenominatorClosureCOSVTests(unittest.TestCase):
 
     def test_active_worker_denominator_is_closed(self):
         coverage = json.loads((ROOT / "control/cosv-global-registry-coverage.json").read_text())
-        self.assertEqual(coverage["worker_registry_summary"]["canonically_indexed_task_ids"], 71)
+        self.assertEqual(coverage["worker_registry_summary"]["canonically_indexed_task_ids"], 72)
         self.assertEqual(coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"], 0)
         self.assertEqual(coverage["active_worker_task_ids_missing_canonical_cosv"], [])
         self.assertEqual(
             coverage["total_active_unvectorized_unique_task_ids"],
             coverage["organization_registry_summary"]["active_unvectorized_task_ids"],
         )
-        self.assertEqual(coverage["worker_denominator_closure"]["active_worker_tasks_vectorized"], 71)
+        self.assertEqual(coverage["worker_denominator_closure"]["active_worker_tasks_vectorized"], 72)
         self.assertEqual(coverage["worker_denominator_closure"]["active_worker_tasks_unvectorized"], 0)
 
 if __name__ == "__main__":
