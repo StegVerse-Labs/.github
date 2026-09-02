@@ -134,3 +134,40 @@ authority effect:
 ```
 
 The complete resident-stack activation path now requires a local Master Records root and passes it to the bundle packager. Source packaging/materialization does not establish custody or reconstruction. Authentic completion remains bound to the deployment-local SV001 receipt, Master Records PASS reconstruction, and SV002 disposition.
+
+
+## Portable Master Records source closure — 2026-09-02
+
+Issue #766 closes a producer/consumer drift defect in the sovereign resident bundle.
+
+Before this change:
+
+```text
+activate_resident_stack.py
+  -> already supplied --master-records-root
+
+StegDeploy
+  -> already knew vendor/master-records-orchestration
+  -> already bound STEGVERSE_MASTER_RECORDS_ROOT
+
+package_sovereign_control_plane_bundle.py
+  -> did NOT accept/materialize Master Records
+```
+
+The canonical packager now accepts `--master-records-root` and emits:
+
+```text
+vendor/master-records-orchestration
+  -> scripts/watch_stegverse001_autonomy_receipt.py
+  -> scripts/import_stegverse001_autonomy_receipt.py
+```
+
+Source acceptance is fail-closed. The local checkout must:
+
+- be a clean Git worktree;
+- contain source floor `d593c920c1630aa5da20cc2622196f8676a74afd`;
+- preserve the two SV001 custody scripts unchanged since that floor.
+
+The bundle manifest records a non-authorizing portable source proof under canonical repository identity `master-records/orchestration`.
+
+This closes the fresh-bundle path to `MASTER_RECORDS_SOURCE_NOT_MATERIALIZED` when the canonical complete resident stack is packaged. It does not establish that a resident bundle has been built, materialized, executed, or that authentic custody has occurred.
