@@ -46,6 +46,10 @@ Allowed runtime inputs are non-secret locators only:
 - `STEGVERSE_GLM53_ENDPOINT`
 - `STEGVERSE_GLM53_MODEL_PATH`
 - `STEGVERSE_GLM53_RUNTIME_IDENTITY`
+- `STEGVERSE_GLM53_ENERGY_KWH`
+- `STEGVERSE_GLM53_HARDWARE_AMORTIZATION_USD`
+- `STEGVERSE_GLM53_ENERGY_COST_USD`
+- `STEGVERSE_GLM53_STORAGE_NETWORK_RUNTIME_OVERHEAD_USD`
 
 The endpoint must already be private/loopback/StegVerse-local as enforced by the upstream producer. No network model download or hosted inference substitution is permitted.
 
@@ -101,3 +105,19 @@ activation claimed: false
 ```
 
 The next transition remains machine-owned by the resident WorkerCoordinator. Source merge and hosted validation do not satisfy lane 11.
+
+
+## Sovereign infrastructure measurement forwarding — 2026-09-02
+
+Issue: `#834`
+
+The upstream producer already accepts measured/bounded infrastructure cost inputs. The resident bridge now preserves those optional non-secret observations through the WorkerCoordinator path rather than dropping them.
+
+Rules:
+- values are optional;
+- a supplied value must parse as a finite nonnegative number;
+- no missing value is defaulted, estimated, inferred, or converted into zero;
+- measurements are passed only to the existing upstream producer CLI;
+- absence of these measurements remains a cost-evidence blocker even if behavioral lane-11 execution succeeds.
+
+This forwarding grants no measurement authority. The resident surface still has to obtain authentic measurements or bounded values from its actual runtime/resource accounting.

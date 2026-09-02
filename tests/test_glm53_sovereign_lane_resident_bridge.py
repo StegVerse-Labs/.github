@@ -4,6 +4,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -14,6 +15,13 @@ SPEC=importlib.util.spec_from_file_location(
 )
 mod=importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(mod)
+
+WORKER_SPEC=importlib.util.spec_from_file_location(
+    "glm53_worker",
+    ROOT/"workers/glm53_sovereign_lane_worker.py",
+)
+worker_mod=importlib.util.module_from_spec(WORKER_SPEC)
+WORKER_SPEC.loader.exec_module(worker_mod)
 
 
 class Glm53SovereignResidentBridgeTests(unittest.TestCase):
@@ -65,6 +73,10 @@ class Glm53SovereignResidentBridgeTests(unittest.TestCase):
                 "STEGVERSE_GLM53_ENDPOINT":"http://127.0.0.1:8000/v1/chat/completions",
                 "STEGVERSE_GLM53_MODEL_PATH":"/models/glm53",
                 "STEGVERSE_GLM53_RUNTIME_IDENTITY":"local-glm53",
+                "STEGVERSE_GLM53_ENERGY_KWH":"0.12",
+                "STEGVERSE_GLM53_HARDWARE_AMORTIZATION_USD":"0.004",
+                "STEGVERSE_GLM53_ENERGY_COST_USD":"0.02",
+                "STEGVERSE_GLM53_STORAGE_NETWORK_RUNTIME_OVERHEAD_USD":"0.001",
                 "GITHUB_TOKEN":"forbidden",
                 "ZAI_API_KEY":"forbidden",
                 "PRIVATE_KEY":"forbidden",
@@ -75,6 +87,10 @@ class Glm53SovereignResidentBridgeTests(unittest.TestCase):
             forwarded=calls[0][1]["env"]
             self.assertEqual(forwarded["STEGVERSE_MICRO_NODE_RUNTIME_ROOT"],"/srv/micro-node-runtime")
             self.assertEqual(forwarded["STEGVERSE_GLM53_ENDPOINT"],"http://127.0.0.1:8000/v1/chat/completions")
+            self.assertEqual(forwarded["STEGVERSE_GLM53_ENERGY_KWH"],"0.12")
+            self.assertEqual(forwarded["STEGVERSE_GLM53_HARDWARE_AMORTIZATION_USD"],"0.004")
+            self.assertEqual(forwarded["STEGVERSE_GLM53_ENERGY_COST_USD"],"0.02")
+            self.assertEqual(forwarded["STEGVERSE_GLM53_STORAGE_NETWORK_RUNTIME_OVERHEAD_USD"],"0.001")
             self.assertNotIn("GITHUB_TOKEN",forwarded)
             self.assertNotIn("ZAI_API_KEY",forwarded)
             self.assertNotIn("PRIVATE_KEY",forwarded)
@@ -111,8 +127,26 @@ class Glm53SovereignResidentBridgeTests(unittest.TestCase):
         self.assertIn('Path("scripts/consume_glm53_sovereign_lane_request.py")',refresh_base)
         self.assertIn('"STEGVERSE_GLM53_ENDPOINT"',dispatcher)
         self.assertIn('"STEGVERSE_GLM53_ENDPOINT"',bridge)
+        self.assertIn('"STEGVERSE_GLM53_ENERGY_KWH"',dispatcher)
+        self.assertIn('"STEGVERSE_GLM53_HARDWARE_AMORTIZATION_USD"',bridge)
+        self.assertIn('"--energy-kwh":measurement("STEGVERSE_GLM53_ENERGY_KWH")',worker)
+        self.assertIn('"--hardware-amortization-usd":measurement("STEGVERSE_GLM53_HARDWARE_AMORTIZATION_USD")',worker)
+        self.assertIn('"--energy-cost-usd":measurement("STEGVERSE_GLM53_ENERGY_COST_USD")',worker)
+        self.assertIn('"--storage-network-runtime-overhead-usd":measurement("STEGVERSE_GLM53_STORAGE_NETWORK_RUNTIME_OVERHEAD_USD")',worker)
         self.assertIn('"network_model_download_performed":False',worker)
         self.assertIn('"hosted_inference_substitution_performed":False',worker)
+
+
+    def test_cost_measurements_require_finite_nonnegative_values(self):
+        with mock.patch.dict("os.environ",{"STEGVERSE_GLM53_ENERGY_KWH":"0.125"},clear=True):
+            self.assertEqual(worker_mod.measurement("STEGVERSE_GLM53_ENERGY_KWH"),0.125)
+        for bad in ("-0.1","nan","inf","not-a-number"):
+            with self.subTest(value=bad):
+                with mock.patch.dict("os.environ",{"STEGVERSE_GLM53_ENERGY_KWH":bad},clear=True):
+                    with self.assertRaises(RuntimeError):
+                        worker_mod.measurement("STEGVERSE_GLM53_ENERGY_KWH")
+        with mock.patch.dict("os.environ",{},clear=True):
+            self.assertIsNone(worker_mod.measurement("STEGVERSE_GLM53_ENERGY_KWH"))
 
     def test_control_surfaces_bind_same_task(self):
         handoff=json.loads((ROOT/"handoffs/SHWP-GLM53-SOVEREIGN-LANE-001.json").read_text())
