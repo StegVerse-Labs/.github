@@ -55,3 +55,19 @@ Required evidence:
 with `activation_complete=true` and state `COMPLETED` or `ALREADY_CONSUMED`.
 
 Current authentic evidence: NOT OBSERVED.
+
+
+## Source integration checkpoint
+
+The consumer is registered as resident dispatcher selector:
+
+`one_shot_resident_stack_activation`
+
+Native bootstrap/source-refresh/service materialization includes both:
+
+- `scripts/consume_one_shot_resident_stack_activation_request.py`
+- `scripts/activate_resident_stack.py`
+
+Current source state: IMPLEMENTED / VALIDATION PENDING.
+Current authentic request consumption: NOT OBSERVED.
+Current authentic one-shot activation COMPLETE: NOT OBSERVED.
