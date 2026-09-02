@@ -10,8 +10,8 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
-    "unique_task_ids_global_plus_fragments": 77,
-    "canonically_indexed_task_ids": 70,
+    "unique_task_ids_global_plus_fragments": 78,
+    "canonically_indexed_task_ids": 71,
     "completed_only_historical_unvectorized_task_ids": 6,
     "active_unvectorized_unique_task_ids": 0,
     "superseded_historical_unvectorized_task_ids": 1
@@ -360,6 +360,10 @@
     {
       "task_id": "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
       "vector": "50000000101000"
+    },
+    {
+      "task_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+      "vector": "50000000101000"
     }
   ],
   "evidence_conflicts": [],
@@ -662,18 +666,18 @@
     "authority_effect": "NONE"
   },
   "worker_denominator_closure": {
-    "active_worker_tasks_vectorized": 70,
+    "active_worker_tasks_vectorized": 71,
     "active_worker_tasks_unvectorized": 0,
     "completed_historical_unvectorized": 6,
     "superseded_historical_unvectorized": 1,
-    "total_unique_worker_task_ids": 77,
+    "total_unique_worker_task_ids": 78,
     "authority_effect": "NONE",
     "runtime_activation_claimed": false
   },
   "active_task_vector_coverage_closure": {
-    "active_worker_tasks_vectorized": 70,
+    "active_worker_tasks_vectorized": 71,
     "active_organization_tasks_vectorized": 14,
-    "total_active_tasks_vectorized": 84,
+    "total_active_tasks_vectorized": 85,
     "active_tasks_unvectorized": 0,
     "source_projection_complete": true,
     "runtime_activation_claimed": false,
@@ -787,6 +791,25 @@
     "github_token_runtime_authority": "NONE",
     "canonical_kv_mutation_authority": false,
     "external_master_records_custody_claimed": false,
+    "authority_effect": "NONE"
+  },
+  "organization_local_resident_boundary_projection": {
+    "task_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+    "vector": "50000000101000",
+    "registry_ref": "control/worker-registry.d/organization-local-resident-boundary-executor-001.json",
+    "source_state_vector_ref": "control/task-vectors/ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001.json",
+    "canonical_owner_ref": "docs/ORGANIZATION_LOCAL_RESIDENT_BOUNDARY_EXECUTOR_MIRROR_HANDOFF.md",
+    "blockers": [
+      "AUTHENTIC_ORGANIZATION_LOCAL_BOUNDARY_RUNTIME_NOT_YET_OBSERVED"
+    ],
+    "activation_proof_observed": false,
+    "evidence_complete": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "canonical_state_mutation_authority": false,
+    "publication_authority": false,
+    "network_authority": false,
+    "external_custody_authority": false,
     "authority_effect": "NONE"
   }
 }
