@@ -182,3 +182,23 @@ def test_activation_failure_releases_reentry_fence_for_retry():
         assert out["state"]=="ATTEMPT_RECORDED"
         assert out["retry_allowed"] is True
         assert not (runtime/M.FENCE_REL).exists()
+
+
+def test_completed_activation_immediately_invokes_sv001_progression_when_materialized():
+    with tempfile.TemporaryDirectory() as td:
+        base=Path(td); source=base/"source"; runtime=base/"runtime"; source.mkdir(); runtime.mkdir(); write_request(runtime)
+        roots=make_roots(base); env=env_for(roots)
+        activate=runtime/"scripts/activate_resident_stack.py"; activate.parent.mkdir(parents=True,exist_ok=True); activate.write_text("# activate\n")
+        progression=runtime/M.PROGRESSION_REL; progression.write_text("# progression\n")
+        calls=[]
+        def runner(command,**kwargs):
+            name=Path(command[1]).name; calls.append(name)
+            if name=="activate_resident_stack.py":
+                return SimpleNamespace(returncode=0,stdout=json.dumps({"state":"COMPLETE"})+"\n",stderr="")
+            return SimpleNamespace(returncode=0,stdout=json.dumps({"state":"SV001_AUTONOMY_EXECUTION_COMPLETED"})+"\n",stderr="")
+        out=M.consume(source,runtime,runner,env)
+        assert calls==["activate_resident_stack.py","run_stegverse001_activation_progression.py"]
+        assert out["state"]=="COMPLETED"
+        assert out["activation_complete"] is True
+        assert out["immediate_sv001_progression"]["attempted"] is True
+        assert out["immediate_sv001_progression"]["result"]["state"]=="SV001_AUTONOMY_EXECUTION_COMPLETED"

@@ -7,6 +7,7 @@ from typing import Any, Callable, Mapping
 REQUEST_REL=Path("control/resident-execution-request.d/one-shot-resident-stack-activation-001.json")
 RECEIPT_REL=Path("receipts/sovereign-host/one-shot-resident-stack-activation-request-consumption.latest.json")
 FENCE_REL=Path("control/one-shot-resident-stack-activation.in-progress.json")
+PROGRESSION_REL=Path("scripts/run_stegverse001_activation_progression.py")
 TASK_ID="SHWP-ONE-SHOT-RESIDENT-STACK-ACTIVATION-001"
 Runner=Callable[...,subprocess.CompletedProcess[str]]
 
@@ -235,6 +236,30 @@ def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run,env:
     }
     receipt_path.parent.mkdir(parents=True,exist_ok=True)
     receipt_path.write_text(json.dumps(out,indent=2,sort_keys=True)+"\n")
+    if done:
+        progression=runtime/PROGRESSION_REL
+        if progression.is_file():
+            p=runner(
+              [sys.executable,str(progression),"--source-root",str(source),"--runtime-root",str(runtime)],
+              cwd=runtime,capture_output=True,text=True,check=False,timeout=7200,
+              env=dict(os.environ if env is None else env)
+            )
+            progression_result=parse_last_json(p.stdout)
+            out["immediate_sv001_progression"]={
+              "attempted":True,
+              "returncode":p.returncode,
+              "result":progression_result,
+              "authority_effect":"NONE_SUCCESSOR_INVOCATION_ONLY"
+            }
+            receipt_path.write_text(json.dumps(out,indent=2,sort_keys=True)+"\n")
+        else:
+            out["immediate_sv001_progression"]={
+              "attempted":False,
+              "state":"PROGRESSION_NOT_MATERIALIZED",
+              "retry_allowed":True,
+              "authority_effect":"NONE"
+            }
+            receipt_path.write_text(json.dumps(out,indent=2,sort_keys=True)+"\n")
     return out
 
 def main()->int:
