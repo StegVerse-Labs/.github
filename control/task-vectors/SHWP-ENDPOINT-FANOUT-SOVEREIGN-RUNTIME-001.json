@@ -8,7 +8,7 @@
     "handoffs/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json",
     "docs/ENDPOINT_FANOUT_LIVE_RUNTIME_MIRROR_HANDOFF.md"
   ],
-  "observed_at": "2026-08-31T07:05:00-05:00",
+  "observed_at": "2026-09-02T11:45:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "MACHINE_OWNED",
@@ -27,13 +27,13 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "handoff HANDOFF_READY with authorized independent task control",
+    "lifecycle": "current-main handoff/worker/adapter/registry source installed on validation branch; runtime remains machine-owned and nonterminal",
     "archive_ready": "runtime observation not yet completed",
     "unassigned_work": "registered worker owns continuation",
     "chat_owned_counts": "no chat-owned runtime or credential role",
     "canonical_owner_installed": "canonical handoff, worker, adapter and registry installed",
     "thread_required": "durable machine handoff independently recoverable",
-    "blocker_count": "authentic DEVICE_KV_INTR parent/runtime observation gate",
+    "blocker_count": "authentic DEVICE_KV_INTR parent/runtime observation gate remains unsatisfied; source readiness does not satisfy it",
     "evidence_complete": "sovereign endpoint fanout receipt not observed",
     "activated": "runtime observation pending",
     "propagated": "downstream external custody remains gated"
