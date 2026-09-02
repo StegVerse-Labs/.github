@@ -439,6 +439,7 @@ def main() -> int:
     try:
         continuity_mod = load_module(stegos_root / "stegos/relay_node_kv_continuity.py", "device_kv_continuity")
         kv_mod = load_module(kv_root / "runtime/kv_interlock_endpoint.py", "device_kv_endpoint")
+        connector = load_canonical_device_kv_connector(stegos_root)
         if parent_valid:
             continuity_mod.validate_node_kv_continuity_evidence(continuity)
     except Exception as exc:
