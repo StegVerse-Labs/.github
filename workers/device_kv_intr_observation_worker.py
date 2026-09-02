@@ -461,17 +461,36 @@ def main() -> int:
     if not isinstance(controlled, dict):
         return 4
     request = controlled_request(controlled, continuity_id, fence)
-    envelope = request_envelope(request, continuity_id, state_root, source_identity_ref=source_identity_ref, next_boundary_identity_ref=next_boundary_identity_ref, prior_receipt_hash=prior_event_receipt)
+    request_packet = connector.prepare(
+        request,
+        payload_schema="kv.interlock.request.v1",
+        operation=request["operation"],
+        operation_id=request["request_id"],
+        prior_receipt_hash=prior_event_receipt,
+    )
+    request_intent = dict(request_packet.intent)
+    envelope = request_envelope(
+        request, continuity_id, state_root,
+        source_identity_ref=source_identity_ref,
+        next_boundary_identity_ref=next_boundary_identity_ref,
+        prior_receipt_hash=request_intent.get("prior_transport_receipt_hash"),
+    )
+    envelope["packet_id"] = request_intent["packet_id"]
+    envelope["payload_hash"] = request_intent["payload_hash"]
+    envelope["sealed_material_ref"] = "sealed://device-kv-intr/" + request_intent["packet_id"]
     request_wire = canonical_json({"request": request, "envelope": envelope}).encode()
     request_wire_hash = sha256_uri(request_wire)
-    operation_hash = sha256_uri({"request_id": request["request_id"], "operation": request["operation"], "packet_id": envelope["packet_id"]})
     request_receipt_recorded_at = now_iso()
-    request_receipt = build_transport_receipt(
-        receipt_id="DEVICE-KV-" + envelope["packet_id"], packet_id=envelope["packet_id"],
-        direction="FORWARD", from_role="DEVICE", to_role="KV", operation_hash=operation_hash,
-        payload_hash=envelope["payload_hash"], prior_receipt_hash=None, boundary_identity_ref=state_root,
+    request_receipt = connector.accept_hop(
+        request_packet,
+        hop_index=1,
+        receipt_id="DEVICE-KV-" + request_intent["packet_id"],
+        boundary_identity_ref=state_root,
         recorded_at=request_receipt_recorded_at,
+        prior_receipt_hash=request_intent.get("prior_transport_receipt_hash"),
+        transition_state="RECEIVED",
     )
+    request_transport_result = connector.validate_complete(request_packet, [request_receipt])
     request_carrier_signal, request_carrier_reference = build_hb_carrier_signal(
         packet_id=envelope["packet_id"],
         payload_hash=envelope["payload_hash"],
