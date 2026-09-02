@@ -12,7 +12,7 @@ carrier_owner: HEARTBEAT-CARRIER-RUNTIME-SEPARATION-122
 credential_authority: TV/TVC
 primary_runtime: StegVerse
 third_party_role: FALLBACK_ONLY
-state: SOURCE_IMPLEMENTED_VALIDATION_PENDING
+state: COMPLETE_VALIDATED_SUPERSEDED_MONITOR
 ```
 
 Redefine `snapshot` within the historical `GATE_PASSBAND_DERIVED` boundary so the term no longer means a static persisted heartbeat ordinal or a mechanism that advances heartbeat. It means a chained, non-authorizing **reference snapshot** used to monitor progress of required states toward completion.
@@ -165,4 +165,36 @@ exact-head deterministic execution evidence: PENDING
 live corrected oscillator evidence: PENDING MACHINE EXECUTION
 snapshot-chain next reacquisition: PENDING STATE/REFERENCE CHANGE
 archive eligible: false while validation and monitored runtime states remain nonterminal
+```
+
+
+## 2026-09-02 supersession closure
+
+The reference-snapshot **mechanism** remains valid and tested, but its first configured monitor is no longer a lawful current completion gate.
+
+The preserved initial chain targeted historical `SHWP-DURABLE-RUNTIME-ACTIVATION` predicates, including a task-capable G18 cycle and terminal G18 state. Subsequent canonical corrections established:
+
+```text
+heartbeat protocol: ACTIVE_PROTOCOL_VERIFIED
+heartbeat progression: OSCILLATOR_ONLY
+G18 terminalization required for downstream admission: false
+worker/task state causal to heartbeat progression: false
+downstream HB32 consumer propagation: COMPLETE (#263)
+```
+
+Therefore the historical OPEN 0/3 chain is retained unchanged as provenance and is **superseded**, not rewritten into a false CLOSED snapshot. Periodic reacquisition of that obsolete monitor is no longer a current requirement.
+
+`GATE_PASSBAND_DERIVED` remains available solely as a non-authorizing snapshot-reacquisition mechanism for a future explicitly revised monitor. Such a future goal must create a new policy revision/chain rather than reopening this historical one.
+
+Current source goal status:
+
+```text
+semantic redefinition: COMPLETE
+implementation/schema/policy/runner/tests: COMPLETE
+current validation: PASS
+historical first monitor: SUPERSEDED_PRESERVED_OPEN
+heartbeat activation dependency: NONE
+G18 downstream dependency: NONE
+archive eligible: true
+authority effect: NONE
 ```
