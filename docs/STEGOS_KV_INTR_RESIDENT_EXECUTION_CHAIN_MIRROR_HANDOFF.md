@@ -175,3 +175,19 @@ Resident rendezvous local materialization permits only the bounded historical mi
 provided the execution contract remains identical for schema, state, task, mode, entrypoint, credential/authority flags, and the canonical three-step chain. The prior local request is archived write-once before replacement and verified after write.
 
 No unrelated request id, task, mode, command, credential, or step vector may be substituted. This is request continuity only; it does not create WorkerCoordinator claim/fence, execution authority, HB progression authority, or runtime evidence.
+
+
+## Endpoint fanout successor — current-main reconciliation
+
+The fixed resident chain extends beyond authentic `DEVICE_KV_INTR_OBSERVED` to the bounded endpoint-fanout sovereign runtime task:
+
+```text
+SHWP-DEVICE-KV-INTR-OBSERVATION-001
+  -> DEVICE_KV_INTR_OBSERVED
+SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001
+  -> ENDPOINT_FANOUT_SOVEREIGN_RUNTIME_OBSERVED
+```
+
+The predecessor remains terminal only after exact governed InTr request/response bytes are transported and recovered through the canonical HB-derived carrier and both shared signal references validate. The successor then executes only the canonical two-report endpoint fanout from already-local continuity-vault-kit source. KV endpoint status must return through `COMMIT_CANDIDATE` as candidate-only/non-mutating; the Master Records travel projection remains evidence only.
+
+The rendezvous remains a fixed exact-chain carrier. It grants no claim, fence, credential, task authority, canonical KV mutation, external custody, or arbitrary command transport.

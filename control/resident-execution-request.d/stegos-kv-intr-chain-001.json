@@ -8,7 +8,8 @@
   "steps": [
     "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
     "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
-    "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
+    "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+    "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001"
   ],
   "credential_authority": "TV/TVC",
   "github_token_required": false,
@@ -18,5 +19,5 @@
   "network_source_fetch_allowed": false,
   "second_machine_required": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Reissued after shared HB signal producer integration. Advance only the existing StegOS relay materialization -> Node-KV continuity -> DEVICE_KV_INTR observation chain. DEVICE_KV is terminal only when exact request and response bytes were transported/recovered on the canonical HB-derived carrier AND both exact transported carrier frames are durably present in the canonical shared heartbeat signal surface with validated refs/digests. This request is intent-only and grants no claim, fence, credential, routing, receiving, transition, execution, heartbeat progression, or repository authority."
+  "note": "Advance only the admitted StegOS relay materialization -> Node-KV continuity -> DEVICE_KV_INTR observation -> endpoint-fanout sovereign runtime chain, and only after each authentic predecessor terminal receipt exists. DEVICE_KV remains terminal only when exact request/response bytes and canonical shared HB-derived carrier signal evidence validate. The endpoint-fanout request is intent-only and grants no claim, fence, credential, routing, receiving, transition, execution, heartbeat progression, repository, canonical KV mutation, or external custody authority."
 }

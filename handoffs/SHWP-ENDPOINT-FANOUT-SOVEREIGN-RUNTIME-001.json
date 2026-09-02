@@ -1,0 +1,153 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+  "created_at": "2026-08-31T12:05:00Z",
+  "updated_at": "2026-09-02T11:45:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+    "objective": "Execute the merged two-report endpoint fanout on an admitted sovereign resident only after authentic DEVICE_KV_INTR_OBSERVED, preserving the KV status Interlock return and Master Records travel projection without authority expansion.",
+    "success_predicates": [
+      "Authentic SHWP-DEVICE-KV-INTR-OBSERVATION-001 receipt is state OBSERVED and transition DEVICE_KV_INTR_OBSERVED.",
+      "Current continuity-vault-kit source is already local and no network source fetch occurs.",
+      "Canonical endpoint fanout probe returns PASS with exactly two reports.",
+      "KV status report returns through COMMIT_CANDIDATE as ENDPOINT_STATUS_REPORT with candidate_only=true and canonical_state_changed=false.",
+      "Master Records travel report remains hash-bound and secret-free.",
+      "Durable sovereign runtime receipt reconstructs the same result identity."
+    ],
+    "failure_predicates": [
+      "Hosted validation substitutes for sovereign runtime execution.",
+      "Parent DEVICE_KV_INTR evidence is missing or authority-invalid.",
+      "Network source fetch or GitHub token becomes runtime authority.",
+      "KV candidate is represented as canonical mutation.",
+      "Workflow-local Master Records custody is represented as LIVE_AUTHENTICATED_EXTERNAL."
+    ],
+    "authority_ceiling": [
+      "sovereign endpoint fanout observation only",
+      "no canonical KV mutation",
+      "no provider operation",
+      "no external Master Records custody authority",
+      "no credential issuance"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "docs/ENDPOINT_FANOUT_LIVE_RUNTIME_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "shwp:endpoint-fanout-sovereign-runtime",
+    "derivation_depth": 0,
+    "priority": "release",
+    "operational_state": "REQUIRED_AFTER_DEVICE_KV_INTR_OBSERVED",
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "fencing_token": null,
+    "source_refs": [
+      "docs/ENDPOINT_FANOUT_LIVE_RUNTIME_MIRROR_HANDOFF.md",
+      "workers/endpoint_fanout_sovereign_runtime_worker.py",
+      "StegVerse-Labs/continuity-vault-kit/tools/run_endpoint_fanout_probe.py",
+      "StegVerse-Labs/continuity-vault-kit/KV_INTERLOCK_RUNTIME_ENDPOINT_MIRROR_HANDOFF.md",
+      "master-records/orchestration/ENDPOINT_FANOUT_CUSTODY_MIRROR_HANDOFF.md"
+    ],
+    "source_issue": 612
+  },
+  "authority": {
+    "authority_source": "SHWP-DEVICE-KV-INTR-OBSERVATION-001 terminal evidence + existing independent WorkerCoordinator task control; TV/TVC unchanged",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "policy_version": "endpoint-fanout-sovereign-runtime-v0.1",
+    "heartbeat_grants_execution_authority": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 21,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "third_party_runtime_required": false,
+    "physical_additional_machine_required": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "durable_state_reconstruction"
+    ],
+    "allowed_paths": [
+      "receipts/endpoint-fanout/**",
+      "receipts/device-kv-intr/**",
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/continuity-vault-kit"
+    ],
+    "allowed_services": [],
+    "max_actions": 5,
+    "max_retries": 3,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 24,
+    "rate_class": "endpoint_fanout_sovereign_runtime",
+    "parent_task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+    "parent_terminal_evidence": "receipts/device-kv-intr/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json state=OBSERVED transition_id=DEVICE_KV_INTR_OBSERVED with exact request/response HB-derived transport/recovery and canonical shared-signal refs/digests"
+  },
+  "completion": {
+    "source_implementation_state": "CURRENT_MAIN_REBUILT_VALIDATION_PENDING",
+    "runtime_activation_state": "PENDING_PARENT_AND_RESIDENT_EXECUTION",
+    "parent_terminal_evidence_observed": false,
+    "runtime_observation_claimed": false,
+    "terminal_evidence": "receipts/endpoint-fanout/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json with state OBSERVED and transition_id ENDPOINT_FANOUT_SOVEREIGN_RUNTIME_OBSERVED",
+    "terminal_when": [
+      "authentic DEVICE_KV_INTR parent is observed",
+      "canonical two-report fanout executes on sovereign resident",
+      "KV status return remains candidate-only/non-mutating",
+      "durable result reconstruction preserves hashes"
+    ],
+    "next_authorized_action": "After source validation/merge and authentic DEVICE_KV_INTR_OBSERVED, execute this task only through the existing StegOS/KV resident chain under a fresh WorkerCoordinator admission/claim/fence. Parent request/carrier evidence grants no execution authority.",
+    "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001"
+  },
+  "activation": {
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "carrier": "resident_request_chain",
+    "carrier_trigger_required": false,
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "existing task authority",
+    "checkout_policy": "fenced_atomic_checkout",
+    "claim_generation_rule": "fresh WorkerCoordinator fencing generation; no historical claim/fence reuse"
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:endpoint-fanout-sovereign-runtime:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "docs/ENDPOINT_FANOUT_LIVE_RUNTIME_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/endpoint_fanout_sovereign_runtime_worker.py",
+      "control/process-worker-adapters.d/endpoint-fanout-sovereign-runtime-001.json",
+      "control/worker-registry.d/endpoint-fanout-sovereign-runtime-001.json",
+      "control/task-vectors/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "AUTHENTIC_DEVICE_KV_INTR_PARENT_NOT_YET_OBSERVED",
+      "ENDPOINT_FANOUT_SOVEREIGN_RUNTIME_RECEIPT_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "endpoint-fanout-sovereign-runtime-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  },
+  "source_state_vector_ref": "control/task-vectors/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000101000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-09-02T11:45:00-05:00",
+      "authority_effect": "NONE"
+    }
+  }
+}
