@@ -142,3 +142,11 @@ before invoking the activator.
 If a nested dispatcher reaches the same request while the owning PID is live, it returns `ACTIVATION_IN_PROGRESS` and does not invoke activation again. The outer attempt releases its fence in `finally`. A later machine attempt may reclaim a dead-owner fence, so a crashed activation does not become a permanent wait state.
 
 The fence grants no authority and is not activation evidence. Its role is to make the materialize -> nested bootstrap -> later SV001 revisit sequence executable without recursive stack activation.
+
+## Immediate SV001 successor after activation — 2026-09-02
+
+Issue #803 removes reliance on generic-dispatch timing after a successful current-stack activation.
+
+After the one-shot consumer persists `activation_complete=true`, it invokes `scripts/run_stegverse001_activation_progression.py` once when that helper is materialized. The helper observes Stage 1 as `ALREADY_CONSUMED` and executes the exact SV001 selector as Stage 2.
+
+If immediate Stage 2 is nonterminal, later native 100-tick resident sweeps may retry the SV001 request under its existing request/claim/fence semantics. No loop, wait, polling process, or new scheduler is introduced.
