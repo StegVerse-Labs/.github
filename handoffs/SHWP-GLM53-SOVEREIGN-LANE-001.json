@@ -37,7 +37,8 @@
     "source_refs": [
       "StegVerse-002/micro-node-runtime@07e4388eda92d99a8feb220f28265b147551242d",
       "StegVerse-002/micro-node-runtime#69",
-      "workers/glm53_sovereign_lane_worker.py"
+      "workers/glm53_sovereign_lane_worker.py",
+      "docs/GLM53_SOVEREIGN_LANE_RESIDENT_BRIDGE_MIRROR_HANDOFF.md"
     ],
     "dependencies": [],
     "parent_task_id": null,
