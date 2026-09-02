@@ -323,3 +323,20 @@ third-party runtime authority: NONE
 ```
 
 Independent consumer/runtime issues remain governed by their own handoffs and must not be reclassified as heartbeat blockers.
+
+
+### #122 validator-owner correction
+
+The first closure attempt correctly exposed an invariant in `validate_heartbeat_carrier_contract.py`: the semantics audit must continue to identify `StegVerse-Labs/.github#122` as `runtime_refactor_owner` even after the source obligations become complete. Completion therefore changes `runtime_refactor_required` and the completion record, not the canonical owner identity.
+
+Corrected branch state:
+
+```text
+runtime_refactor_owner: StegVerse-Labs/.github#122
+runtime_refactor_required: false
+audit_state: INDEPENDENT_OSCILLATOR_CORRECTION_COMPLETE
+organization-control validation: SUCCESS (33671770776)
+heartbeat validation: RE-RUN_REQUIRED_ON_CORRECTED_HEAD
+```
+
+This preserves issue identity/history while preventing the owner field from being misused as an incompletion flag.
