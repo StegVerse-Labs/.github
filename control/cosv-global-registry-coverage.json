@@ -10,8 +10,8 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
-    "unique_task_ids_global_plus_fragments": 75,
-    "canonically_indexed_task_ids": 68,
+    "unique_task_ids_global_plus_fragments": 76,
+    "canonically_indexed_task_ids": 69,
     "completed_only_historical_unvectorized_task_ids": 6,
     "active_unvectorized_unique_task_ids": 0,
     "superseded_historical_unvectorized_task_ids": 1
@@ -352,6 +352,10 @@
     {
       "task_id": "SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001",
       "vector": "50000000114000"
+    },
+    {
+      "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+      "vector": "50000000102000"
     }
   ],
   "evidence_conflicts": [],
@@ -654,18 +658,18 @@
     "authority_effect": "NONE"
   },
   "worker_denominator_closure": {
-    "active_worker_tasks_vectorized": 68,
+    "active_worker_tasks_vectorized": 69,
     "active_worker_tasks_unvectorized": 0,
     "completed_historical_unvectorized": 6,
     "superseded_historical_unvectorized": 1,
-    "total_unique_worker_task_ids": 75,
+    "total_unique_worker_task_ids": 76,
     "authority_effect": "NONE",
     "runtime_activation_claimed": false
   },
   "active_task_vector_coverage_closure": {
-    "active_worker_tasks_vectorized": 68,
+    "active_worker_tasks_vectorized": 69,
     "active_organization_tasks_vectorized": 14,
-    "total_active_tasks_vectorized": 82,
+    "total_active_tasks_vectorized": 83,
     "active_tasks_unvectorized": 0,
     "source_projection_complete": true,
     "runtime_activation_claimed": false,
@@ -740,6 +744,27 @@
     "deployment_authority": false,
     "publication_authority": false,
     "continuity_mint_authority": false,
+    "authority_effect": "NONE"
+  },
+  "stegverse001_bounded_autonomy_runtime_projection": {
+    "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+    "vector": "50000000102000",
+    "registry_ref": "control/worker-registry.d/stegverse001-bounded-autonomy-runtime-001.json",
+    "source_state_vector_ref": "control/task-vectors/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json",
+    "canonical_owner_ref": "StegVerse-Labs/.github#739",
+    "blockers": [
+      "TVC_BOUNDED_AUTONOMY_LEASE_NOT_YET_OBSERVED",
+      "RESIDENT_AUTONOMY_CYCLE_NOT_YET_OBSERVED"
+    ],
+    "activation_proof_observed": false,
+    "evidence_complete": false,
+    "self_accreditation_authority": false,
+    "sovereign_authority": false,
+    "financial_authority": false,
+    "repository_writeback_authority": false,
+    "network_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
     "authority_effect": "NONE"
   }
 }

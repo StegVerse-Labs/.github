@@ -779,11 +779,21 @@
       "vector": "50000000114000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "control/worker-registry.d/stegverse001-bounded-autonomy-runtime-001.json",
+      "source_state_vector_ref": "control/task-vectors/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json",
+      "vector": "50000000102000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/.github#739"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 82,
-    "local_cosv_record_tasks": 82,
+    "indexed_vectorized_tasks": 83,
+    "local_cosv_record_tasks": 83,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"

@@ -1,0 +1,118 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "goal": {
+    "goal_id": "STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+    "objective": "Execute the first self-directed Beta_Orionis continuity-audit cycle under an externally issued bounded autonomy lease on the sovereign WorkerCoordinator runtime.",
+    "success_predicates": [
+      "externally issued ACTIVE TV/TVC-governed lease observed",
+      "candidate task autonomously discovered from resident state",
+      "plan remains within allowed transition classes",
+      "DENY remains reachable",
+      "local continuity observation completed",
+      "receipt emitted",
+      "no self-accreditation or sovereignty claimed"
+    ],
+    "failure_predicates": [
+      "missing/expired/revoked lease treated as authority",
+      "forbidden transition executed",
+      "repair widens authority",
+      "GitHub or non-TV/TVC credential becomes runtime authority",
+      "correct output substitutes for authorized path evidence"
+    ],
+    "authority_ceiling": [
+      "autonomous_task_discovery",
+      "bounded_process_execution",
+      "runtime_observation",
+      "receipt_projection_only",
+      "no repository writeback",
+      "no financial binding",
+      "no credential creation",
+      "no sovereignty"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "StegVerse-Labs/.github#739",
+    "canonical_lineage_key": "stegverse001:bounded-autonomy-runtime",
+    "worker_registry_ref": "control/worker-registry.d/stegverse001-bounded-autonomy-runtime-001.json",
+    "worker_id": "stegverse001-bounded-autonomy-runtime-worker",
+    "adapter_ref": "process:stegverse001-bounded-autonomy-runtime-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "evidence review only",
+    "priority": "release",
+    "dependencies": [],
+    "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
+    "parent_task_id": null,
+    "derivation_depth": 0,
+    "source_refs": [
+      "Data-Continuation/formalism-tests:docs/formalisms/STEGVERSE_001_BOUNDED_AUTONOMY_MIRROR_HANDOFF.md",
+      "schemas/stegverse001-bounded-autonomy-lease.schema.json",
+      "workers/stegverse001_bounded_autonomy_runtime_worker.py",
+      "docs/STEGVERSE_001_BOUNDED_AUTONOMY_RUNTIME_MIRROR_HANDOFF.md"
+    ]
+  },
+  "authority": {
+    "authority_source": "external local TV/TVC-governed bounded autonomy lease + issue #739",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "stegverse001-bounded-autonomy-runtime-v1",
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "repository_writeback_authority": false,
+    "financial_binding_authority": false,
+    "self_accreditation_authority": false,
+    "sovereign_authority": false,
+    "bounded_local_observation_authority": true
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "runtime_observation",
+      "durable_state_reconstruction"
+    ],
+    "worker": "workers/stegverse001_bounded_autonomy_runtime_worker.py",
+    "allowed_paths": [
+      "~/.stegverse/state/stegverse001-bounded-autonomy/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 4,
+    "max_retries": 256,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 64,
+    "rate_class": "stegverse001_bounded_autonomy",
+    "hosted_execution_allowed": false,
+    "remote_checkout_allowed": false
+  },
+  "activation": {
+    "carrier": "independent_task_control",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json",
+    "recheck_trigger": "each resident request opportunity until a valid lease and continuity state exist",
+    "checkout_policy": "fenced_atomic_checkout",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "carrier_trigger_required": false,
+    "fresh_fence_required": true,
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+  },
+  "continuity": {
+    "master_records_required_for_activation_claim": true,
+    "local_result_receipt": "~/.stegverse/state/stegverse001-bounded-autonomy/receipts/latest.json",
+    "repository_persistence_requires_separate_admission": true
+  },
+  "completion": {
+    "next_authorized_action": "Run one bounded self-directed continuity audit under a valid external lease, then transfer the exact receipt to Master Records for independent custody/reconstruction.",
+    "terminal_when": [
+      "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED"
+    ]
+  },
+  "source_state_vector_ref": "control/task-vectors/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json"
+}

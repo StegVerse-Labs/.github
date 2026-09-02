@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stegverse001_bounded_autonomy_lease.schema.json",
+  "title": "StegVerse-001 Bounded Autonomy Lease",
+  "type": "object",
+  "required": [
+    "schema",
+    "lease_id",
+    "entity_id",
+    "goal_id",
+    "lease_state",
+    "allowed_transition_classes",
+    "forbidden_transition_classes",
+    "max_consequential_steps",
+    "receipt_required",
+    "denial_reachable_required",
+    "authority_effect"
+  ],
+  "properties": {
+    "schema": {
+      "const": "stegverse.stegverse001.bounded-autonomy-lease/v1"
+    },
+    "lease_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "entity_id": {
+      "const": "StegVerse-001"
+    },
+    "entity_alias": {
+      "const": "Beta_Orionis"
+    },
+    "goal_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lease_state": {
+      "enum": [
+        "ACTIVE",
+        "EXPIRED",
+        "REVOKED"
+      ]
+    },
+    "allowed_transition_classes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "forbidden_transition_classes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "review_trigger_transition_classes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "max_consequential_steps": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "resource_ceiling": {
+      "type": "object"
+    },
+    "network_boundary": {
+      "type": "object"
+    },
+    "credential_boundary": {
+      "type": "object"
+    },
+    "financial_boundary": {
+      "type": "object"
+    },
+    "receipt_required": {
+      "const": true
+    },
+    "denial_reachable_required": {
+      "const": true
+    },
+    "repair_replanning_allowed": {
+      "type": "boolean"
+    },
+    "authority_effect": {
+      "const": "BOUNDED_PREAUTHORIZED_TRANSITION_CLASSES_ONLY"
+    }
+  },
+  "additionalProperties": true
+}

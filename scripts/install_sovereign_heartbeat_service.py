@@ -75,6 +75,7 @@ COPY_FILES = (
     "scripts/consume_healer_sovereign_scheduler_request.py",
     "scripts/consume_universal_governance_enforced_reference_request.py",
     "scripts/consume_cross_framework_current_basis_v04_request.py",
+    "scripts/consume_stegverse001_bounded_autonomy_request.py",
     "scripts/dispatch_resident_execution_requests.py",
     "scripts/refresh_and_dispatch_resident_requests.py",
     "scripts/materialize_live_cosv_packet.py",
@@ -119,6 +120,7 @@ WORKER_SAFE_LOCAL_BINDINGS = (
     "STEGVERSE_GTG_ROOT",
     "STEGVERSE_AE_ROOT",
     "STEGVERSE_RESIDENT_SOURCE_MANIFEST",
+    "STEGVERSE_SV001_AUTONOMY_LEASE",
 )
 
 

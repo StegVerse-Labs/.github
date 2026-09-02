@@ -1,0 +1,46 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+  "tasks": [{
+    "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+    "goal_id": "STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+    "state": "HANDOFF_READY",
+    "claim_id": null,
+    "archive_eligible": false,
+    "executor_binding": "AUTHORIZED",
+    "authorized_policy_version": "stegverse001-bounded-autonomy-runtime-v1",
+    "handoff_ref": "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json",
+    "block_ref": "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json",
+    "cost_basis_ref": "cost-basis/worker-runtime/stegverse001-bounded-autonomy-runtime.json",
+    "evidence_refs": [
+      "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json",
+      "workers/stegverse001_bounded_autonomy_runtime_worker.py",
+      "docs/STEGVERSE_001_BOUNDED_AUTONOMY_RUNTIME_MIRROR_HANDOFF.md"
+    ],
+    "admission": {
+      "authority_source": "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json#authority",
+      "authority_domain": "INDEPENDENT_TASK_CONTROL",
+      "heartbeat_reference_only": true,
+      "heartbeat_grants_execution_authority": false,
+      "carrier_trigger_required": false,
+      "fresh_fence_required": true,
+      "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+    },
+    "source_state_vector_ref": "control/task-vectors/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json"
+  }],
+  "workers": [{
+    "worker_id": "stegverse001-bounded-autonomy-runtime-worker",
+    "status": "AVAILABLE",
+    "executor_type": "repository_worker",
+    "adapter_ref": "process:stegverse001-bounded-autonomy-runtime-v1",
+    "authority_source": "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json#authority",
+    "capabilities": ["bounded_process_execution","runtime_observation","durable_state_reconstruction"],
+    "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+    "last_seen_at": null
+  }],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "priority": "release"
+}
