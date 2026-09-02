@@ -1066,3 +1066,30 @@ authority effect: NONE
 ```
 
 Do not use closure of #122 to imply completion of SV001, SV002, HIL, DEVICE_KV, endpoint-fanout, federation, or any other downstream runtime evidence lane.
+
+
+## 2026-09-02 GLM-5.3-Flash sovereign eleven-lane resident bridge
+
+A bounded resident execution lane now connects the already-merged consumer-ready GLM-5.3-Flash evidence producer in `StegVerse-002/micro-node-runtime` to the existing sovereign WorkerCoordinator.
+
+Canonical scoped handoff:
+`docs/GLM53_SOVEREIGN_LANE_RESIDENT_BRIDGE_MIRROR_HANDOFF.md`
+
+Task:
+`SHWP-GLM53-SOVEREIGN-LANE-001`
+
+Resident request:
+`RESIDENT-EXEC-GLM53-SOVEREIGN-LANE-001`
+
+Execution remains machine-owned. The request grants no authority. The worker may consume only already-local verified micro-node source and an already-private GLM endpoint, with no model download, hosted substitution, GitHub-token runtime authority, or provider credential.
+
+Current state:
+```text
+source integration: IMPLEMENTED_PENDING_VALIDATION
+runtime execution: NOT YET OBSERVED
+lane-11 success: NOT CLAIMED
+credential authority: TV/TVC
+github token runtime authority: NONE
+```
+
+If the private model/endpoint is absent, the canonical behavior is a durable fail-closed blocker, not hosted fallback and not synthetic sovereign evidence.
