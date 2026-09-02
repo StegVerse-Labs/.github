@@ -975,3 +975,25 @@ authority effect: NONE
 ```
 
 The worker is bounded to one local ingress packet under fresh WorkerCoordinator admission/claim/fence, validates exact profile/payload/carrier evidence, rejects credential/command material, and may persist only local receipt plus non-mutating egress acknowledgement. Source completion does not establish runtime activation.
+
+
+## 2026-09-02 DEVICE_KV canonical connector source closure
+
+Issue #567 is source-complete.
+
+```text
+implementation PR: #779
+merge: 10b94c79c3909668e01c45678cbbc3261b3a6af2
+canonical connector: StegOS CanonicalInTrConnector(profile=device-kv)
+request canonical transport: SOURCE IMPLEMENTED
+response canonical transport: SOURCE IMPLEMENTED
+worker-local receipt builders: REMOVED
+compatibility KV envelope: DERIVED / NON-AUTHORIZING
+organization control validation: SUCCESS
+Heartbeat validation: SUCCESS
+authentic DEVICE_KV observation: NOT OBSERVED
+credential authority: TV/TVC
+authority effect: NONE
+```
+
+This migration changes transport implementation ownership, not runtime authority. The existing Node-KV predecessor, WorkerCoordinator admission, HB carrier evidence, no canonical KV mutation rule, and authentic deployment-local completion predicates remain binding.
