@@ -12,14 +12,18 @@ def lease():
     return {
       "schema":"stegverse.stegverse001.bounded-autonomy-lease/v1",
       "lease_id":"TEST-LEASE-1","entity_id":"StegVerse-001","entity_alias":"Beta_Orionis",
+      "request_id":"TV-REQUEST-STEGVERSE001-BOUNDED-AUTONOMY-001","request_hash":"sha256:c4b3e35d5ecf2246e0e082a591e3144bd61b32cb02133d12a89226cf362f4def",
       "lease_state":"ACTIVE","issuer":"TV/TVC","credential_authority":"TV/TVC",
       "expires_at":(datetime.now(timezone.utc)+timedelta(hours=1)).isoformat(),
       "allowed_transition_classes":["AUTONOMOUS_TASK_DISCOVERY","LOCAL_STATE_OBSERVATION","RECEIPT_EMISSION"],
       "forbidden_transition_classes":["SELF_ACCREDITATION","SOVEREIGN_AUTHORITY_CHANGE","FINANCIAL_BINDING"],
       "receipt_required":True,"denial_reachable_required":True,"denial_reachable":True,
       "self_accreditation_allowed":False,"sovereign_authority_granted":False,
+      "lease_consumption":"SINGLE_AUTONOMY_CYCLE",
       "authority_effect":"BOUNDED_PREAUTHORIZED_TRANSITION_CLASSES_ONLY"
     }
+    v["lease_hash"]=MOD.sha(v)
+    return v
 
 def test_missing_lease_is_pending():
     with tempfile.TemporaryDirectory() as td:
