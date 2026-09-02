@@ -255,58 +255,6 @@ def recv_frame(sock: socket.socket, max_bytes: int = 1024 * 1024) -> bytes:
     return recv_exact(sock, size)
 
 
-def build_transport_receipt(*, receipt_id: str, packet_id: str, direction: str, from_role: str, to_role: str,
-                            operation_hash: str, payload_hash: str, prior_receipt_hash: str | None,
-                            boundary_identity_ref: str, recorded_at: str | None = None) -> dict[str, Any]:
-    body = {
-        "schema": "stegverse.intr.hop_receipt/v1",
-        "receipt_id": receipt_id,
-        "packet_id": packet_id,
-        "hop_index": 1,
-        "direction": direction,
-        "from_role": from_role,
-        "to_role": to_role,
-        "operation_hash": operation_hash,
-        "payload_hash": payload_hash,
-        "prior_receipt_hash": prior_receipt_hash,
-        "boundary_identity_ref": boundary_identity_ref,
-        "boundary_verification": "VERIFIED",
-        "transition_state": "RECEIVED",
-        "secret_plaintext_present": False,
-        "authority_transfer": False,
-        "recorded_at": recorded_at or now_iso(),
-    }
-    return {**body, "receipt_hash": sha256_uri(body)}
-
-
-def validate_transport_receipt(receipt: Mapping[str, Any], *, direction: str, from_role: str, to_role: str,
-                               payload_hash: str, prior: str | None) -> None:
-    fields = {
-        "schema", "receipt_id", "packet_id", "hop_index", "direction", "from_role", "to_role",
-        "operation_hash", "payload_hash", "prior_receipt_hash", "boundary_identity_ref",
-        "boundary_verification", "transition_state", "secret_plaintext_present", "authority_transfer",
-        "recorded_at", "receipt_hash",
-    }
-    if set(receipt) != fields:
-        raise ValueError("noncanonical transport receipt fields")
-    if receipt.get("schema") != "stegverse.intr.hop_receipt/v1":
-        raise ValueError("transport receipt schema mismatch")
-    if receipt.get("hop_index") != 1 or receipt.get("direction") != direction:
-        raise ValueError("transport receipt direction mismatch")
-    if receipt.get("from_role") != from_role or receipt.get("to_role") != to_role:
-        raise ValueError("transport receipt boundary mismatch")
-    if receipt.get("payload_hash") != payload_hash or receipt.get("prior_receipt_hash") != prior:
-        raise ValueError("transport receipt identity mismatch")
-    if receipt.get("boundary_verification") != "VERIFIED" or receipt.get("transition_state") != "RECEIVED":
-        raise ValueError("transport boundary was not verified/received")
-    if receipt.get("secret_plaintext_present") is not False or receipt.get("authority_transfer") is not False:
-        raise ValueError("transport receipt authority/plaintext violation")
-    body = dict(receipt)
-    claimed = body.pop("receipt_hash")
-    if claimed != sha256_uri(body):
-        raise ValueError("transport receipt hash mismatch")
-
-
 def build_hb_carrier_signal(*, packet_id: str, payload_hash: str, packet_bytes: bytes, receipt_hash: str,
                             boundary_from: str, boundary_to: str, now_ns: int | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
     sample_ns = time.time_ns() if now_ns is None else int(now_ns)
@@ -338,7 +286,7 @@ def controlled_request(template: Mapping[str, Any], continuity_id: str, fence: i
     return request
 
 
-def request_envelope(request: Mapping[str, Any], continuity_id: str, state_root: str, *, source_identity_ref: str | None = None, next_boundary_identity_ref: str | None = None, prior_receipt_hash: str | None = None) -> dict[str, Any]:
+def compatibility_request_envelope(request: Mapping[str, Any], continuity_id: str, state_root: str, *, source_identity_ref: str | None = None, next_boundary_identity_ref: str | None = None, prior_receipt_hash: str | None = None) -> dict[str, Any]:
     payload_hash = sha256_uri(request)
     packet_seed = sha256_uri({"request_id": request["request_id"], "payload_hash": payload_hash})
     return {
@@ -469,7 +417,7 @@ def main() -> int:
         prior_receipt_hash=prior_event_receipt,
     )
     request_intent = dict(request_packet.intent)
-    envelope = request_envelope(
+    envelope = compatibility_request_envelope(
         request, continuity_id, state_root,
         source_identity_ref=source_identity_ref,
         next_boundary_identity_ref=next_boundary_identity_ref,
@@ -704,6 +652,15 @@ def main() -> int:
         "event_transport_intent_hash": event_basis.get("transport_intent_hash") if event_basis else None,
         "event_queued_payload_hash": event_basis.get("queued_payload_hash") if event_basis else None,
         "request_id": request["request_id"],
+        "canonical_connector_profile": connector.profile.profile_id,
+        "canonical_connector_payload_schema": connector.profile.payload_schema,
+        "request_canonical_transport_intent_sha256": sha256_uri(request_intent),
+        "request_canonical_transport_state": request_transport_result["state"],
+        "request_canonical_transport_complete": request_transport_result["state"] == "TRANSPORT_COMPLETE",
+        "response_canonical_transport_intent_sha256": sha256_uri(response_packet_obj.intent),
+        "response_canonical_transport_state": response_transport_result["state"],
+        "response_canonical_transport_complete": response_transport_result["state"] == "TRANSPORT_COMPLETE",
+        "compatibility_envelope_only": True,
         "request_payload_hash": envelope["payload_hash"],
         "request_wire_sha256": request_wire_hash,
         "request_receiver_wire_sha256": server_state["request_wire_hash"],
