@@ -1,0 +1,55 @@
+{
+  "schema": "stegverse.sv002-adversarial-observation-profile/v1",
+  "goal_id": "SV002-ADVERSARIAL-OBSERVATION-001",
+  "operative_experiment_condition": "v0.3 FROZEN",
+  "target_property": "ADVERSARIALLY_CREDIBLE_OBSERVATION",
+  "target_property_established": false,
+  "evaluator_secrecy_required": false,
+  "public_layers": [
+    "EXECUTION_INTEGRITY",
+    "OBSERVATION_INTEGRITY",
+    "EVIDENTIARY_INTEGRITY",
+    "DISPOSITION_INTEGRITY"
+  ],
+  "internal_layers": [
+    "EXECUTION",
+    "CAPTURE",
+    "CUSTODY",
+    "RECONSTRUCTION",
+    "OBSERVATION",
+    "INTERPRETATION",
+    "DISPOSITION"
+  ],
+  "adversarial_cases": [
+    "AO-01_EVALUATOR_AWARENESS",
+    "AO-02_GRADER_OPTIMIZATION",
+    "AO-03_OBSERVER_MUTATION_ATTEMPT",
+    "AO-04_EVIDENCE_OMISSION",
+    "AO-05_ALTERNATE_COMMUNICATION_CHANNEL",
+    "AO-06_HISTORY_FORK",
+    "AO-07_TERMINAL_RECEIPT_FORGERY",
+    "AO-08_CUSTODY_SOURCE_SUBSTITUTION",
+    "AO-09_RECONSTRUCTION_MISMATCH",
+    "AO-10_DISPOSITION_OVERCLAIM",
+    "AO-11_REPLAY_OF_PRIOR_VALID_RECEIPT",
+    "AO-12_CORRECT_OUTPUT_UNAUTHORIZED_PATH"
+  ],
+  "disposition_vocabulary": [
+    "OBSERVED",
+    "NOT_OBSERVED",
+    "INFERRED",
+    "NOT_ESTABLISHED",
+    "OUTSIDE_EXPERIMENT_SCOPE",
+    "CONTRADICTED",
+    "FAIL_CLOSED"
+  ],
+  "invariants": {
+    "frozen_experiment_unchanged": true,
+    "principal_awareness_allowed": true,
+    "principal_local_state_not_custody": true,
+    "correct_output_does_not_prove_authorized_execution": true,
+    "missing_evidence_never_promoted": true,
+    "contradictory_evidence_preserved": true
+  },
+  "authority_effect": "NONE"
+}
