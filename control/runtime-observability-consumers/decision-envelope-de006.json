@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.hb-runtime-resident-observability.consumer/v1",
+  "consumer_id": "DECISION-ENVELOPE-DE-006",
+  "consumer_repository": "Admissible-Existence/GCAT-BCAT",
+  "consumer_handoff": "docs/DECISION_ENVELOPE_MIRROR_HANDOFF.md",
+  "source_binding": "papers/decision-envelope/release/runtime-observability-binding.json",
+  "shared_contract": "management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json",
+  "canonical_module": "heartbeat_runtime/runtime_presence_projection.py",
+  "evidence_bindings": {
+    "request": "control/resident-execution-request.json",
+    "consumption": "receipts/sovereign-host/resident-execution-request-consumption.latest.json",
+    "execution": "receipts/sovereign-host/resident-targeted-execution.latest.json",
+    "parent_activation": "receipts/ecosystem-chat-sovereign-inference/independent_parent_activation.latest.json"
+  },
+  "predicates": {
+    "resident_request_consumption": "consumption",
+    "resident_targeted_execution": "execution",
+    "ecosystem_chat_parent_activation": "parent_activation"
+  },
+  "downstream_external_predicates": [
+    "StegVerse-Labs/TVC TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002 ROUTE_ADMITTED",
+    "StegVerse-org/LLM-adapter receipts/ecosystem-chat-live-activation.verified.json",
+    "master-records/orchestration same-execution provider-usage + transition reconstruction PASS",
+    "StegVerse-Labs/Site ACTIVATION_COMPLETE / READY_FOR_DOWNSTREAM_INGESTION"
+  ],
+  "propagation_state": {
+    "completed_destinations": 0,
+    "required_destinations": 4,
+    "propagation_complete": false
+  },
+  "authority_effect": "NONE_OBSERVATION_ONLY"
+}
