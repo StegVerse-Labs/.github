@@ -53,3 +53,20 @@ def test_autonomous_cycle_is_bounded_and_receipted():
         assert rec["sovereign_authority_claimed"] is False
         assert rec["master_records_custody"]=="PENDING"
         assert (base/"state/receipts/latest.json").is_file()
+
+
+def test_consumed_lease_is_rejected():
+    with tempfile.TemporaryDirectory() as td:
+        base=Path(td); lp=base/"lease.json"; v=lease(); v["lease_consumption"]="SINGLE_AUTONOMY_CYCLE"; lp.write_text(json.dumps(v))
+        used=base/"state/lease-consumption"; used.mkdir(parents=True)
+        (used/(v["lease_id"]+".json")).write_text(json.dumps({"state":"CONSUMED"}))
+        with mock.patch.object(MOD,"STATE_ROOT",base/"state"):
+            try: MOD.validate_lease(lp)
+            except RuntimeError as e: assert "already consumed" in str(e)
+            else: raise AssertionError("consumed lease accepted")
+
+def test_tvc_default_lease_discovery():
+    with tempfile.TemporaryDirectory() as td:
+        p=Path(td)/"lease.active.json"; p.write_text("{}")
+        with mock.patch.dict(os.environ,{},clear=True), mock.patch.object(MOD,"TVC_DEFAULT_LEASE",p):
+            assert MOD.resolve_lease_path()==p
