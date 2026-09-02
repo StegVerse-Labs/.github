@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib
 import importlib.util
 import json
 import os
@@ -81,6 +82,35 @@ def load_module(path: Path, name: str):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def load_canonical_device_kv_connector(stegos_root: Path):
+    registry = stegos_root / "specs/universal-intr-connector-profiles.v1.json"
+    backbone = stegos_root / "stegos/intr_backbone.py"
+    if not registry.is_file() or not backbone.is_file():
+        raise RuntimeError("canonical StegOS InTr connector source missing")
+    root_text = str(stegos_root)
+    inserted = False
+    if root_text not in sys.path:
+        sys.path.insert(0, root_text)
+        inserted = True
+    try:
+        module = importlib.import_module("stegos.intr_backbone")
+        origin = Path(module.__file__).resolve()
+        if stegos_root.resolve() not in origin.parents:
+            raise RuntimeError("loaded stegos.intr_backbone does not originate from admitted local StegOS root")
+        connector = module.connector_from_registry(registry, "device-kv")
+        if connector.profile.profile_id != "device-kv":
+            raise RuntimeError("canonical device-kv connector profile mismatch")
+        if connector.profile.payload_schema != "kv.interlock.request.v1":
+            raise RuntimeError("canonical device-kv payload schema mismatch")
+        return connector
+    finally:
+        if inserted:
+            try:
+                sys.path.remove(root_text)
+            except ValueError:
+                pass
 
 
 def find_source_root(env_name: str, repo_name: str, required: str) -> Path | None:
