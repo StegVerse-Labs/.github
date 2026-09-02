@@ -73,6 +73,7 @@ REQUIRED_SOURCE_FILES = (
     Path("scripts/continue_stegverse001_evidence_chain.py"),
     Path("scripts/refresh_and_dispatch_resident_requests.py"),
     Path("scripts/run_stegverse001_activation_progression.py"),
+    Path("scripts/project_hb_runtime_presence.py"),
     Path("scripts/advance_heartbeat_transition.py"),
     Path("control/heartbeat-state.json"),
     Path("control/worker-registry.json"),
