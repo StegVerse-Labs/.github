@@ -80,6 +80,7 @@ STATIC_FILES = (
     Path("scripts/dispatch_resident_execution_requests.py"),
     Path("scripts/refresh_and_dispatch_resident_requests.py"),
     Path("scripts/run_stegverse001_activation_progression.py"),
+    Path("scripts/project_hb_runtime_presence.py"),
     Path("scripts/materialize_live_cosv_packet.py"),
     Path("scripts/cosv.py"),
     Path("scripts/cosv_state_packet.py"),
