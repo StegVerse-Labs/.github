@@ -2,7 +2,7 @@
   "identity": "StegVerse-Labs/.github:task:SHWP-ALL-ORG-FEDERATION-001",
   "profile": "task.v1",
   "level": "task",
-  "vector": "60000000100001",
+  "vector": "60000000100000",
   "evidence_refs": [
     "control/worker-registry.json",
     "handoffs/SHWP-ALL-ORG-FEDERATION-001.json",
