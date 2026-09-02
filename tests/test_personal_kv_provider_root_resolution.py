@@ -49,3 +49,11 @@ def test_provider_resolution_does_not_accept_token_value_environment():
 
 def test_session_reference_class_is_tvc_owned():
     assert resolver.SESSION_FILE_ENV=="STEGVERSE_TVC_PROVIDER_SESSION_FILE"
+
+
+if __name__=="__main__":
+    test_existing_local_root_wins_without_provider_session()
+    test_provider_resolution_fails_closed_without_tvc_session_file()
+    test_provider_resolution_does_not_accept_token_value_environment()
+    test_session_reference_class_is_tvc_owned()
+    print("PERSONAL_KV_PROVIDER_ROOT_RESOLUTION_PASS")
