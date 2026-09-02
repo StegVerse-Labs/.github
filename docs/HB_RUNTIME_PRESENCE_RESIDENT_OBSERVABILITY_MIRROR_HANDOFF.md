@@ -81,7 +81,8 @@ No process is added. A resident or operator may invoke the projector when observ
 ## Completion state
 
 ```text
-shared contract source: IMPLEMENTED_ON_ISSUE_812_BRANCH
+shared contract source: IMPLEMENTED / DETERMINISTIC TESTS PASS
+installation manifests: BOOTSTRAP + NATIVE SERVICE MATERIALIZATION + SOURCE REFRESH BOUND
 runtime projection from authentic sovereign resident: NOT OBSERVED
 StegVerse-001 resident supervision predicate: NOT OBSERVED
 GitHub Actions runtime authority: NONE
