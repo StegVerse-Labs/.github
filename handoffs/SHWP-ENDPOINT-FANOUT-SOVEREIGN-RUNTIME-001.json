@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
   "created_at": "2026-08-31T12:05:00Z",
-  "updated_at": "2026-08-31T12:24:00Z",
+  "updated_at": "2026-09-02T11:45:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
@@ -83,10 +83,10 @@
     "runtime_window_beats": 24,
     "rate_class": "endpoint_fanout_sovereign_runtime",
     "parent_task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
-    "parent_terminal_evidence": "receipts/device-kv-intr/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json state=OBSERVED transition_id=DEVICE_KV_INTR_OBSERVED"
+    "parent_terminal_evidence": "receipts/device-kv-intr/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json state=OBSERVED transition_id=DEVICE_KV_INTR_OBSERVED with exact request/response HB-derived transport/recovery and canonical shared-signal refs/digests"
   },
   "completion": {
-    "source_implementation_state": "IMPLEMENTING",
+    "source_implementation_state": "CURRENT_MAIN_REBUILT_VALIDATION_PENDING",
     "runtime_activation_state": "PENDING_PARENT_AND_RESIDENT_EXECUTION",
     "parent_terminal_evidence_observed": false,
     "runtime_observation_claimed": false,
@@ -97,7 +97,7 @@
       "KV status return remains candidate-only/non-mutating",
       "durable result reconstruction preserves hashes"
     ],
-    "next_authorized_action": "After DEVICE_KV_INTR_OBSERVED, execute this task through the existing StegOS/KV resident chain under a fresh WorkerCoordinator fence.",
+    "next_authorized_action": "After source validation/merge and authentic DEVICE_KV_INTR_OBSERVED, execute this task only through the existing StegOS/KV resident chain under a fresh WorkerCoordinator admission/claim/fence. Parent request/carrier evidence grants no execution authority.",
     "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001"
   },
   "activation": {
@@ -146,7 +146,7 @@
       "width": 14,
       "vector": "50000000101000",
       "vector_state": "EMITTED",
-      "vector_observed_at": "2026-08-31T07:05:00-05:00",
+      "vector_observed_at": "2026-09-02T11:45:00-05:00",
       "authority_effect": "NONE"
     }
   }
