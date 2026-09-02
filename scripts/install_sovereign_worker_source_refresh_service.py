@@ -153,6 +153,48 @@ def install(
     packages = (source_package_root or default_source_package_root()).expanduser().resolve()
     # Immediate local refresh is the one-time bridge from a stale materialization.
     refresh_receipt = refresh(source, runtime)
+
+    # Do not leave newly materialized resident requests waiting for a later
+    # filesystem event. Immediately visit the generic dispatcher after the
+    # refresh. Request-specific consumers remain independently fail-closed and
+    # non-authorizing.
+    immediate_dispatch = {
+        "attempted": False,
+        "state": "DISPATCHER_NOT_MATERIALIZED",
+        "returncode": None,
+        "authority_effect": "NONE",
+    }
+    dispatcher = runtime / "scripts/dispatch_resident_execution_requests.py"
+    if dispatcher.is_file():
+        completed = runner(
+            [sys.executable, str(dispatcher), "--source-root", str(source), "--runtime-root", str(runtime)],
+            cwd=runtime,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=7200,
+        )
+        dispatch_receipt_path = runtime / "receipts/sovereign-host/resident-request-dispatch.latest.json"
+        dispatch_receipt = None
+        if dispatch_receipt_path.is_file():
+            try:
+                dispatch_receipt = json.loads(dispatch_receipt_path.read_text(encoding="utf-8"))
+            except Exception:
+                dispatch_receipt = None
+        immediate_dispatch = {
+            "attempted": True,
+            "state": (
+                dispatch_receipt.get("state")
+                if isinstance(dispatch_receipt, dict)
+                else ("DISPATCH_PROCESS_COMPLETE" if completed.returncode == 0 else "DISPATCH_PROCESS_FAILED")
+            ),
+            "returncode": completed.returncode,
+            "receipt": dispatch_receipt,
+            "request_dispatch_grants_authority": False,
+            "heartbeat_grants_execution_authority": False,
+            "github_token_runtime_authority": "NONE",
+            "authority_effect": "NONE_LOCAL_REQUEST_VISIT_ONLY",
+        }
     (runtime / "intr-materialization").mkdir(parents=True, exist_ok=True)
     packages.mkdir(parents=True, exist_ok=True)
     for slug in SOURCE_PACKAGE_COMPONENT_SLUGS:
@@ -195,6 +237,7 @@ def install(
         "refresh_path_unit": str(path_path),
         "worker_service": WORKER_SERVICE,
         "immediate_refresh": refresh_receipt,
+        "immediate_resident_request_dispatch": immediate_dispatch,
         "activation_results": results,
         "activated": activate,
         "filesystem_event_driven": True,
