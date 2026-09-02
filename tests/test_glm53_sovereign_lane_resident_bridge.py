@@ -4,6 +4,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -14,6 +15,13 @@ SPEC=importlib.util.spec_from_file_location(
 )
 mod=importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(mod)
+
+WORKER_SPEC=importlib.util.spec_from_file_location(
+    "glm53_worker",
+    ROOT/"workers/glm53_sovereign_lane_worker.py",
+)
+worker_mod=importlib.util.module_from_spec(WORKER_SPEC)
+WORKER_SPEC.loader.exec_module(worker_mod)
 
 
 class Glm53SovereignResidentBridgeTests(unittest.TestCase):
@@ -127,6 +135,18 @@ class Glm53SovereignResidentBridgeTests(unittest.TestCase):
         self.assertIn('"--storage-network-runtime-overhead-usd":measurement("STEGVERSE_GLM53_STORAGE_NETWORK_RUNTIME_OVERHEAD_USD")',worker)
         self.assertIn('"network_model_download_performed":False',worker)
         self.assertIn('"hosted_inference_substitution_performed":False',worker)
+
+
+    def test_cost_measurements_require_finite_nonnegative_values(self):
+        with mock.patch.dict("os.environ",{"STEGVERSE_GLM53_ENERGY_KWH":"0.125"},clear=True):
+            self.assertEqual(worker_mod.measurement("STEGVERSE_GLM53_ENERGY_KWH"),0.125)
+        for bad in ("-0.1","nan","inf","not-a-number"):
+            with self.subTest(value=bad):
+                with mock.patch.dict("os.environ",{"STEGVERSE_GLM53_ENERGY_KWH":bad},clear=True):
+                    with self.assertRaises(RuntimeError):
+                        worker_mod.measurement("STEGVERSE_GLM53_ENERGY_KWH")
+        with mock.patch.dict("os.environ",{},clear=True):
+            self.assertIsNone(worker_mod.measurement("STEGVERSE_GLM53_ENERGY_KWH"))
 
     def test_control_surfaces_bind_same_task(self):
         handoff=json.loads((ROOT/"handoffs/SHWP-GLM53-SOVEREIGN-LANE-001.json").read_text())
