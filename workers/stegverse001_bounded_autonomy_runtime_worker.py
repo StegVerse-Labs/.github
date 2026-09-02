@@ -9,10 +9,12 @@ TASK_ID="SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001"
 WORKER_ID="stegverse001-bounded-autonomy-runtime-worker"
 HOSTED=("GITHUB_ACTIONS","CI","RENDER","VERCEL","CF_PAGES","CLOUDFLARE_WORKERS")
 FORBIDDEN=("GITHUB_TOKEN","GH_TOKEN","STEGVERSE_GITHUB_TOKEN","ACTIONS_RUNTIME_TOKEN","ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+BOUND_STATE_ENV="STEGVERSE_BOUND_STATE_ROOT"
 DEFAULT_LEASE=Path.home()/".stegverse/autonomy/stegverse001/lease.active.json"
-STATE_ROOT=Path.home()/".stegverse/state/stegverse001-bounded-autonomy"
+STATE_ROOT=Path(os.getenv(BOUND_STATE_ENV) or (Path.home()/".stegverse/state/stegverse001-bounded-autonomy")).expanduser().resolve()
+BOUND_STATE_LEASE=(STATE_ROOT/"autonomy/lease.active.json").resolve()
 TVC_DEFAULT_LEASE=Path("/var/lib/stegverse/tvc/stegverse001-bounded-autonomy/lease.active.json")
-REQUIRED_TVC_ANCESTOR="92c2d6085cec2b7561d6c1f08ab157894a232340"
+REQUIRED_TVC_ANCESTOR="d495b67d1c322c3fdd8c9bb6db75657783e19c0c"
 TVC_REQUIRED_FILES=(
     "tools/task_dispatcher.py",
     "tasks/stegverse001_bounded_autonomy_lease.py",
@@ -89,7 +91,7 @@ def locate_tvc()->tuple[Path|None,list[dict[str,Any]]]:
     return None,observed
 
 def _clean_tvc_env(lease_target:Path)->dict[str,str]:
-    allow=("HOME","USER","LOGNAME","SHELL","PATH","PYTHONPATH","LANG","LC_ALL","TMPDIR","XDG_CONFIG_HOME","XDG_STATE_HOME","STEGVERSE_TV_ROOT")
+    allow=("HOME","USER","LOGNAME","SHELL","PATH","PYTHONPATH","LANG","LC_ALL","TMPDIR","XDG_CONFIG_HOME","XDG_STATE_HOME","STEGVERSE_TV_ROOT",BOUND_STATE_ENV)
     env={k:os.environ[k] for k in allow if os.environ.get(k)}
     for k in FORBIDDEN: env.pop(k,None)
     for k in HOSTED: env.pop(k,None)
@@ -124,9 +126,16 @@ def resolve_lease_path()->Path:
     explicit=os.getenv("STEGVERSE_SV001_AUTONOMY_LEASE")
     if explicit:
         return Path(explicit).expanduser().resolve()
+    if BOUND_STATE_LEASE.is_file():
+        return BOUND_STATE_LEASE
     if TVC_DEFAULT_LEASE.is_file():
         return TVC_DEFAULT_LEASE
     return DEFAULT_LEASE
+
+def issuance_lease_target()->Path:
+    if os.getenv(BOUND_STATE_ENV):
+        return BOUND_STATE_LEASE
+    return DEFAULT_LEASE.resolve()
 
 def validate_lease(p:Path)->dict[str,Any]:
     if not p.is_file(): raise LeasePending(f"external autonomy lease not present: {p}")
@@ -258,7 +267,7 @@ def main():
         lease_path=resolve_lease_path()
         issuance=None
         if not lease_path.is_file():
-            lease_path=DEFAULT_LEASE.resolve()
+            lease_path=issuance_lease_target()
             issuance=request_lease_from_tvc(lease_path)
         lease=validate_lease(lease_path)
         receipt=run_cycle(task,lease,lease_path)
