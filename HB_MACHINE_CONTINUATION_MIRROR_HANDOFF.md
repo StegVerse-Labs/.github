@@ -73,10 +73,10 @@ missed windows collapse to the current derived window rather than replaying ever
 ## Completion gates
 
 ```text
-source implementation: IMPLEMENTED_CURRENT_MAIN
-focused tests: ADDED / VALIDATION PENDING
-hosted validation: PENDING_CURRENT_HEAD
-merge: PENDING
+source implementation: MERGED_CURRENT_MAIN
+focused tests: PASS
+hosted validation: PASS
+merge: COMPLETE
 authentic resident continuation receipt: PENDING / runtime evidence only
 ```
 
@@ -86,3 +86,16 @@ authentic resident continuation receipt: PENDING / runtime evidence only
 The original implementation branch/PR #688 was not merged and predates substantial resident-runtime changes. This current-main continuation preserves its non-authorizing HB-derived window semantics while integrating with the current local request dispatcher rather than replacing current immediate request sweeps.
 
 The HB-derived continuation is therefore an additional deterministic re-evaluation opportunity for already-registered resident work, not a second scheduler and not an admission surface. Authentic resident continuation remains separately observable only from deployment-local receipts.
+
+
+## 2026-09-02 merge evidence
+
+```text
+PR: #757
+merge commit: ca6b07c2cb8920f7523c8b498b8ba3778675aa8c
+organization control validation: SUCCESS
+Heartbeat Worker Project validation: SUCCESS
+authentic resident continuation receipt: NOT OBSERVED
+```
+
+The source/runtime integration is merged and validated. Activation remains a deployment-local evidence question; no hosted validation or source merge is treated as proof that an HB-derived continuation window has been consumed by a sovereign resident runtime.

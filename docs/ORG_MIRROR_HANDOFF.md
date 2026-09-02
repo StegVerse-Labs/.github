@@ -775,3 +775,24 @@ authority effect: NONE
 ```
 
 No runtime custody or credential operation is inferred from source/validation evidence.
+
+
+## 2026-09-02 HB-derived machine continuation source closure
+
+The canonical resident worker runtime now includes a deterministic HB-derived continuation window in addition to the existing immediate resident-request sweeps.
+
+```text
+implementation PR: #757
+merge: ca6b07c2cb8920f7523c8b498b8ba3778675aa8c
+reference: canonical 100 Hz HB / HB32 protocol anchor
+default continuation window: 360000 HB quanta
+nominal cadence: 3600 seconds
+authority effect: NONE_TRIGGER_ONLY
+worker/task admission authority: unchanged / WorkerCoordinator + applicable handoff
+credential authority: TV/TVC
+GitHub token runtime authority: NONE
+third-party scheduler authority: NONE
+authentic resident continuation receipt: NOT OBSERVED
+```
+
+This closes the source/runtime-integration gap represented by stale PR #688. The continuation trigger does not grant admission, claim/fence, credentials, repository mutation, publication, or consequence authority. Deployment-local receipt evidence remains required before claiming authentic continuation.
