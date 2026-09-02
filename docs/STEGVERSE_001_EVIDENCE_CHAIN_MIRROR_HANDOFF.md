@@ -1,0 +1,64 @@
+# StegVerse-001 Evidence Chain Continuation Mirror Handoff
+
+Updated: 2026-09-02
+Repository: StegVerse-Labs/.github
+Issue: #761
+Goal: STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001
+Parent runtime: SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001
+
+## Objective
+
+Automatically continue authentic terminal StegVerse-001 / Beta_Orionis bounded-autonomy evidence through Master Records custody/reconstruction and SV002 adversarial observation.
+
+```text
+SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED
+-> Master Records resident intake
+-> reconstruction PASS
+-> SV002 deterministic baseline disposition
+-> AO-01 through AO-12 preserved fixture replay
+-> local SV002 evidence-chain disposition receipt
+```
+
+## Authority separation
+
+- SV001 execution authority is not reopened.
+- Master Records alone performs custody/reconstruction.
+- SV002 performs observation/disposition only.
+- Frozen SV002 v0.3 findings are not modified.
+- No repository writeback, network source fetch, credential creation, financial binding, accreditation, or sovereignty is permitted.
+
+## Exact source floors
+
+Master Records:
+`d593c920c1630aa5da20cc2622196f8676a74afd`
+
+SV002 evaluator:
+`786323f16e36346c69b2215894086515d7b1d58e`
+
+## Retry rule
+
+The autonomy cycle remains exactly-once after terminal completion.
+
+Downstream evidence continuation is independently retryable until Master Records reconstruction and SV002 disposition are complete. An already-consumed SV001 request MUST NOT suppress downstream retry.
+
+## Authentic completion
+
+Source/CI merge does not establish completion.
+
+Authentic completion requires a local receipt at:
+
+`~/.stegverse/state/sv002-adversarial-observation/receipts/stegverse001.latest.json`
+
+binding the real SV001 receipt hash, Master Records reconstruction hash, baseline disposition, and all 12 adversarial fixture results.
+
+## Current state
+
+```text
+SV001 source/control: COMPLETE
+Master Records automatic intake source: MERGED
+SV002 deterministic evaluator source: MERGED
+downstream resident continuation: IMPLEMENTING
+authentic SV001 receipt: NOT OBSERVED
+Master Records reconstruction PASS: NOT OBSERVED
+SV002 authentic disposition: NOT OBSERVED
+```
