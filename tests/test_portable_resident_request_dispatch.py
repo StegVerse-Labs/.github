@@ -254,6 +254,17 @@ class PortableResidentDispatchTests(unittest.TestCase):
     def test_refresh_then_dispatch_targets_only_sv002_public_observation(self):
         self._assert_sv002_exact_target("sv002_public_observation")
 
+    def test_refresh_then_dispatch_targets_only_sv002_org_runtime_activation(self):
+        self._assert_sv002_exact_target("sv002_org_runtime_activation")
+        env = MOD.clean_exec_env({
+            "PATH": "/bin",
+            "HOME": "/tmp",
+            "STEGVERSE_ORG_CONTROL_ROOT": "/local/StegVerse-org/.github",
+            "STEGVERSE_SV002_ORG_ROOT": "/local/StegVerse-002/.github",
+        })
+        self.assertEqual(env["STEGVERSE_ORG_CONTROL_ROOT"], "/local/StegVerse-org/.github")
+        self.assertEqual(env["STEGVERSE_SV002_ORG_ROOT"], "/local/StegVerse-002/.github")
+
     def test_refresh_then_dispatch_targets_only_healer_sovereign_scheduler(self):
         self._assert_sv002_exact_target("healer_sovereign_scheduler")
         env = MOD.clean_exec_env({
