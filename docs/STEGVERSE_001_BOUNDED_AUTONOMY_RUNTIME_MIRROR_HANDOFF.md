@@ -288,3 +288,35 @@ terminal SV001 -> downstream MR/SV002 continuation executes independently
 ```
 
 Watching, waiting, or polling is not an authorized completion action.
+
+
+## Shared HB runtime-presence / resident-observability binding — 2026-09-02
+
+This lane now consumes the shared canonical observability contract defined by:
+
+`docs/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_MIRROR_HANDOFF.md`
+
+and projected by:
+
+`scripts/project_hb_runtime_presence_observability.py`
+
+The shared projection answers only cross-lane presence/identity/freshness questions from already-existing runtime artifacts:
+
+```text
+Which sovereign node/resident is present?
+Is WorkerCoordinator/runtime state observed?
+Which HB/reference state is observable?
+Was resident-request dispatch observed?
+```
+
+It does **not** collapse or satisfy the SV001 task-specific predicates. These remain independently required:
+
+```text
+TVC lease issuance receipt
+resident request consumption receipt
+SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED
+Master Records reconstruction PASS
+SV002 adversarial disposition
+```
+
+HB/HB-derived state grants no execution, admission, claim/fence, credential, routing, transition, custody, or consequence authority. WorkerCoordinator and Interlock/InTr boundaries remain unchanged. Missing task-specific runtime artifacts remain `NOT_OBSERVED` rather than inferred from source, merge, CI, release, deployment, or HB progression.
