@@ -351,3 +351,23 @@ Scoped authority: `docs/DEVICE_KV_CANONICAL_INTR_CONNECTOR_MIGRATION_MIRROR_HAND
 The compatibility `stegverse.kv-interlock.intr-envelope/v1` remains only because the current continuity-vault-kit endpoint accepts that envelope. Its packet and payload identities are derived from the canonical connector request packet. Both DEVICE->KV and KV->DEVICE hop receipts are issued/validated by the canonical connector before terminal DEVICE_KV evidence may be emitted.
 
 This source migration does not alter the authentic predecessor, HB-derived carrier, WorkerCoordinator admission, canonical KV mutation prohibition, credential authority, or runtime terminal predicates.
+
+
+### Canonical connector migration closure — 2026-09-02
+
+Issue #567 source migration merged through PR #779 as `10b94c79c3909668e01c45678cbbc3261b3a6af2` after organization-control and Heartbeat validation passed.
+
+Current transport ownership:
+
+```text
+StegOS CanonicalInTrConnector(profile=device-kv)
+-> request intent + hop receipt + completion
+-> compatibility KV InTr envelope
+-> existing HB-derived exact-byte carrier
+-> continuity-vault-kit endpoint
+-> response prepare + hop receipt + completion
+-> existing HB-derived exact-byte carrier
+-> DEVICE receiver
+```
+
+The compatibility envelope is no longer a separate transport-authority construction. Runtime activation remains NOT OBSERVED.
