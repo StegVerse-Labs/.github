@@ -1,0 +1,100 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-SV011-PHASE5-BOUNDARY-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "SV011_PHASE5_RESIDENT_RECEIPT_NOT_YET_OBSERVED"
+      ],
+      "authorized_policy_version": "shwp-sv011-phase5-boundary-v0.1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "handoffs/SHWP-SV011-PHASE5-BOUNDARY-001.json",
+        "docs/SV011_PHASE5_RESIDENT_BRIDGE_MIRROR_HANDOFF.md",
+        "SV-011/.github@cf2777d9d21a97289f4ec7b0d9b0b21597047666"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": "SV-011/.github:SV011-PHASE5-AUTHENTIC-BOUNDARY",
+      "goal_id": "SV011-PHASE5-AUTHENTIC-BOUNDARY",
+      "handoff_ref": "handoffs/SHWP-SV011-PHASE5-BOUNDARY-001.json",
+      "heartbeat_timing": null,
+      "heartbeat_dependency": false,
+      "last_checkpoint_ref": "handoffs/SHWP-SV011-PHASE5-BOUNDARY-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-SV011-PHASE5-BOUNDARY-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "SV-011/.github Phase-5 handoff + StegVerse-Labs/.github#787",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      },
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:sv011-phase5-boundary-observation:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "SV-011/entity@68b37dba0cb5383b4497dd13a237a95e95089b25",
+          "SV-011/.github@cf2777d9d21a97289f4ec7b0d9b0b21597047666",
+          "docs/SV011_PHASE5_RESIDENT_BRIDGE_MIRROR_HANDOFF.md"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/SHWP-SV011-PHASE5-BOUNDARY-001.json",
+          "workers/sv011_phase5_boundary_worker.py",
+          "control/worker-registry.d/sv011-phase5-boundary-001.json",
+          "control/process-worker-adapters.d/sv011-phase5-boundary-001.json",
+          "control/resident-execution-request.d/sv011-phase5-boundary-001.json"
+        ],
+        "integration_evidence_refs": [],
+        "activation_proof_ref": null,
+        "blockers": [
+          "LIVE_SV011_PHASE5_RESIDENT_ALLOW_DENY_RECEIPT_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "sv011-phase5-boundary-worker + existing sovereign WorkerCoordinator + SV-011/.github",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
+      },
+      "source_state_vector_ref": "control/task-vectors/SHWP-SV011-PHASE5-BOUNDARY-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-09-02T14:58:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:sv011-phase5-boundary-v1",
+      "authority_source": "handoffs/SHWP-SV011-PHASE5-BOUNDARY-001.json#authority",
+      "capabilities": [
+        "sv011_phase5_boundary_probe"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "sv011-phase5-boundary-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}

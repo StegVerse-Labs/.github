@@ -1,0 +1,127 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-SV011-PHASE5-BOUNDARY-001",
+  "created_at": "2026-09-02T19:54:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "SV011-PHASE5-AUTHENTIC-BOUNDARY",
+    "objective": "Execute the already-built SV-011 organization-boundary ALLOW and DENY probes on the existing sovereign resident WorkerCoordinator using only already-local clean SV-011/.github source, and persist secret-free same-execution evidence without widening authority.",
+    "success_predicates": [
+      "already-local clean SV-011/.github source contains cf2777d9d21a97289f4ec7b0d9b0b21597047666 as an ancestor",
+      "SV011-PHASE5-ALLOW-001 returns ALLOW with exactly five ordered execution receipts",
+      "SV011-PHASE5-DENY-001 returns DENY with consumed=false and consequence_reachable=false",
+      "both observations are emitted under one WorkerCoordinator task execution",
+      "network_source_fetch_performed=false",
+      "credential_material_exported=false",
+      "GitHub Actions and heartbeat are not runtime authority"
+    ],
+    "failure_predicates": [
+      "hosted runtime marker is active",
+      "SV-011/.github local source is absent, dirty, incomplete, or missing the required ancestor",
+      "network source fetch or source mutation is attempted",
+      "ALLOW probe fails to produce the five-stage receipt chain",
+      "DENY probe is consumed or reaches consequence",
+      "request, carrier, GitHub, or heartbeat is treated as execution authority"
+    ],
+    "authority_ceiling": [
+      "already-local SV-011/.github source observation",
+      "bounded execution of the two SV-011-owned Phase-5 probe requests",
+      "secret-free receipt persistence under receipts/sv011-phase5-boundary/**",
+      "no credential acquisition or transport",
+      "no source fetch or mutation",
+      "no publication or autonomous activation authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SHWP-SV011-PHASE5-BOUNDARY-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "SV-011/.github@cf2777d9d21a97289f4ec7b0d9b0b21597047666",
+      "SV-011/entity@68b37dba0cb5383b4497dd13a237a95e95089b25",
+      "docs/SV011_PHASE5_RESIDENT_BRIDGE_MIRROR_HANDOFF.md",
+      "workers/sv011_phase5_boundary_worker.py"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "SV-011 Phase-5 source and organization runtime surfaces are merged and validated, but the existing sovereign WorkerCoordinator lacks the bounded resident request bridge required to consume them.",
+    "canonical_owner_ref": "SV-011/.github",
+    "canonical_lineage_key": "sv011:phase5:authentic-boundary",
+    "derivation_depth": 0,
+    "priority": "release"
+  },
+  "authority": {
+    "authority_source": "SV-011/.github Phase-5 resident-boundary handoff + StegVerse-Labs/.github#787 bounded integration",
+    "heartbeat_grants_execution_authority": false,
+    "heartbeat_dependency": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "policy_version": "shwp-sv011-phase5-boundary-v0.1"
+  },
+  "execution": {
+    "required_capabilities": [
+      "sv011_phase5_boundary_probe"
+    ],
+    "allowed_paths": [
+      "receipts/sv011-phase5-boundary/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 4,
+    "max_retries": 64,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 4096,
+    "rate_class": "sv011_phase5_boundary_probe"
+  },
+  "activation": {
+    "carrier": "separate_worker_runtime",
+    "heartbeat_dependency": false,
+    "carrier_trigger_required": false,
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "SV-011/.github resident-boundary source + bounded WorkerCoordinator integration #787",
+    "recheck_trigger": "task-control evaluation while no completed SV-011 Phase-5 resident receipt exists",
+    "checkout_policy": "separate_fenced_independent_task_control"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/sv011-phase5-boundary/SHWP-SV011-PHASE5-BOUNDARY-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "On the existing sovereign resident surface with clean already-local SV-011/.github source, execute this independently admitted task through the canonical WorkerCoordinator. The worker must stop BLOCKED if source or either probe predicate is not satisfied.",
+    "terminal_when": [
+      "one COMPLETED worker receipt binds the ALLOW and DENY observations from the same WorkerCoordinator execution while preserving authority false"
+    ]
+  },
+  "block": null,
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:sv011-phase5-boundary-observation:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "SV-011/entity@68b37dba0cb5383b4497dd13a237a95e95089b25",
+      "SV-011/.github@cf2777d9d21a97289f4ec7b0d9b0b21597047666",
+      "docs/SV011_PHASE5_RESIDENT_BRIDGE_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SHWP-SV011-PHASE5-BOUNDARY-001.json",
+      "workers/sv011_phase5_boundary_worker.py",
+      "control/worker-registry.d/sv011-phase5-boundary-001.json",
+      "control/process-worker-adapters.d/sv011-phase5-boundary-001.json",
+      "control/resident-execution-request.d/sv011-phase5-boundary-001.json"
+    ],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": [
+      "LIVE_SV011_PHASE5_RESIDENT_ALLOW_DENY_RECEIPT_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "sv011-phase5-boundary-worker + existing sovereign WorkerCoordinator + SV-011/.github",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  },
+  "source_state_vector_ref": "control/task-vectors/SHWP-SV011-PHASE5-BOUNDARY-001.json"
+}

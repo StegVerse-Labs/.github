@@ -1,0 +1,26 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SV011-PHASE5-BOUNDARY-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:sv011-phase5-boundary-v1",
+      "authority_ref": "handoffs/SHWP-SV011-PHASE5-BOUNDARY-001.json#authority",
+      "capabilities": ["sv011_phase5_boundary_probe"],
+      "command": ["python", "workers/sv011_phase5_boundary_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SV011_ORG_ROOT",
+        "HOME","USER","LOGNAME","SHELL","PATH","PYTHONPATH","LANG","LC_ALL","TMPDIR",
+        "XDG_CONFIG_HOME","XDG_STATE_HOME"
+      ],
+      "notes": [
+        "Uses only already-local clean SV-011/.github source containing the pinned Phase-5 source installation ancestor.",
+        "Runs the SV-011-owned resident ALLOW and DENY probes without network source fetch or source mutation.",
+        "Receipts are secret-free and do not grant publication, provider, credential, heartbeat, or autonomous authority."
+      ],
+      "timeout_seconds": 300,
+      "type": "process_json_v0.1"
+    }
+  ]
+}

@@ -58,6 +58,7 @@ NONSECRET_ENV = (
     "STEGVERSE_RESIDENT_SOURCE_MANIFEST", "STEGVERSE_MASTER_RECORDS_ROOT",
     "STEGVERSE_ORG_CONTROL_ROOT", "STEGVERSE_SV002_ORG_ROOT",
     "STEGVERSE_SV001_AUTONOMY_LEASE",
+    "STEGVERSE_SV011_ORG_ROOT",
 )
 CONSUMERS = (
     ("ecosystem_chat", "scripts/consume_resident_execution_request.py"),
@@ -80,6 +81,7 @@ CONSUMERS = (
     ("cross_framework_current_basis_v04", "scripts/consume_cross_framework_current_basis_v04_request.py"),
     ("stegverse001_bounded_autonomy", "scripts/consume_stegverse001_bounded_autonomy_request.py"),
     ("one_shot_resident_stack_activation", "scripts/consume_one_shot_resident_stack_activation_request.py"),
+    ("sv011_phase5", "scripts/consume_sv011_phase5_resident_execution_request.py"),
 )
 
 
