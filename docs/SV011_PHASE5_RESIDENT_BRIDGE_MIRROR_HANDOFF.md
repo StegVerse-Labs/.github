@@ -138,3 +138,23 @@ Reason:
 - both modes are still bound to the exact pinned source basis `cf2777d9d21a97289f4ec7b0d9b0b21597047666` and the exact seven Git blob identities.
 
 This field exists to preserve downstream success-package capture without converting the materialized tree into a synthetic Git repository or weakening exact-source verification. Authority effect remains unchanged.
+
+
+## First authentic success preservation — 2026-09-02
+
+Issue `#810` owns a bounded evidence-preservation correction: the normal Phase-5 worker receipt and ALLOW/DENY evidence locations are mutable runtime surfaces, while downstream productization capture is intentionally outside the sovereign WorkerCoordinator execution.
+
+The resident Phase-5 worker therefore freezes the first authentic successful execution before returning COMPLETED:
+- path: `receipts/sv011-phase5-boundary/success/first-success.json`
+- first-write-wins; conflicting later success cannot overwrite it;
+- embeds the exact worker receipt and both ALLOW/DENY evidence objects;
+- hashes each evidence object and the complete capsule payload;
+- binds pinned source-basis commit, source mode, Git head when present, and exact-blob verification;
+- emits only after every Phase-5 success predicate is true;
+- failure to create the initial capsule fails the task closed;
+- later differing successes preserve the original capsule.
+
+The capsule is evidence preservation only:
+`authority_effect = NONE_EVIDENCE_PRESERVATION_ONLY`.
+
+It does not productize SV-011, accept proofs, authorize publication, generalize runtime activation, or claim autonomous status.
