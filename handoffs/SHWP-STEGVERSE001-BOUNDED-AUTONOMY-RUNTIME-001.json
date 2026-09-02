@@ -207,5 +207,45 @@
       "Stage 2 executes or returns a concrete TVC/SV001 repair transition",
       "terminal SV001 execution automatically continues into Master Records and SV002"
     ]
+  },
+  "observability_binding": {
+    "contract_ref": "management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json",
+    "canonical_module": "org-kernel/runtime_observability.py",
+    "canonical_projector": "scripts/project_runtime_observability.py",
+    "active_resident_local_extension_owner": "StegVerse-Labs/.github#814 / PR #817",
+    "consumer_lane": "STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+    "current_missing_runtime_predicate": "resident_process_alive_supervised",
+    "predicates": {
+      "resident_process_alive_supervised": {
+        "source": "shared resident-presence / direct runtime activation evidence",
+        "observed": false
+      },
+      "node_runtime_fresh": {
+        "source": "shared HB/reference + resident/worker observation correlation",
+        "observed": false
+      },
+      "governed_request_consumed": {
+        "source": "receipts/sovereign-host/stegverse001-bounded-autonomy-request-consumption.latest.json",
+        "observed": false
+      },
+      "runtime_execution_completed": {
+        "source": "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
+        "observed": false
+      },
+      "receipt_retained": {
+        "source": "~/.stegverse/state/stegverse001-bounded-autonomy/receipts/latest.json",
+        "observed": false
+      },
+      "replay_reconstruction_proven": {
+        "source": "Master Records reconstruction PASS",
+        "observed": false
+      },
+      "sv002_adversarial_disposition": {
+        "source": "independent SV002 disposition evidence",
+        "observed": false
+      }
+    },
+    "heartbeat_or_projection_grants_authority": false,
+    "authority_effect": "NONE_OBSERVATION_ONLY"
   }
 }
