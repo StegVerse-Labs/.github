@@ -57,8 +57,12 @@
     "policy_version": "shwp-sv011-phase5-source-materialization-v0.1"
   },
   "execution": {
-    "required_capabilities": ["sv011_phase5_source_materialization"],
-    "allowed_paths": ["receipts/sv011-phase5-source-materialization/**"],
+    "required_capabilities": [
+      "sv011_phase5_source_materialization"
+    ],
+    "allowed_paths": [
+      "receipts/sv011-phase5-source-materialization/**"
+    ],
     "allowed_services": [],
     "max_actions": 4,
     "max_retries": 64,
@@ -87,5 +91,34 @@
       "one COMPLETED receipt records seven exact verified source blobs at the resident materialization root with network_source_fetch_performed=false and credential_used=false"
     ]
   },
-  "block": null
+  "block": null,
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:sv011-phase5-source-materialization:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-Labs/.github#806",
+      "SV-011/.github@cf2777d9d21a97289f4ec7b0d9b0b21597047666",
+      "source-bundles/sv011-phase5/manifest.json"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001.json",
+      "workers/sv011_phase5_source_materialization_worker.py",
+      "control/worker-registry.d/sv011-phase5-source-materialization-001.json",
+      "control/process-worker-adapters.d/sv011-phase5-source-materialization-001.json",
+      "control/resident-execution-request.d/sv011-phase5-source-materialization-001.json"
+    ],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": [
+      "LIVE_SV011_PHASE5_SOURCE_MATERIALIZATION_RECEIPT_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "sv011-phase5-source-materialization-worker + existing sovereign WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  },
+  "source_state_vector_ref": "control/task-vectors/SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001.json"
 }
