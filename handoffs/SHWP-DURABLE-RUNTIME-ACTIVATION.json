@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DURABLE-RUNTIME-ACTIVATION-2026-08-09",
   "created_at": "2026-08-09T19:27:00Z",
-  "updated_at": "2026-09-01T20:15:00-05:00",
+  "updated_at": "2026-09-01T20:50:00-05:00",
   "state": "RELEASE_COMPLETE_G18_STALE_PROJECTION_HOUSEKEEPING_ONLY",
   "goal": {
     "goal_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
@@ -195,7 +195,7 @@
     "blocker_reason": null,
     "current_receipt_ref": "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "current_registry_state": "STALE G18/fence18 projection retained for maintenance only; downstream activation may not wait on it",
-    "next_authorized_action": "Consume the queued SHWP-SV002-ORG-RUNTIME-ACTIVATION-001 request on the existing sovereign resident dispatch path. The consumer invokes StegVerse-org/.github resident_executor.py --once, which sends the frozen SDK query through the StegVerse-org boundary and causes StegVerse-002/.github to own principal execution. Do not substitute GitHub Actions, hosted runtime, or cross-org principal execution.",
+    "next_authorized_action": "Observe the existing HeartBeat-separated native WorkerCoordinator runtime consume SHWP-SV002-ORG-RUNTIME-ACTIVATION-001. Do not create another scheduler/resident executor. Required evidence is resident-request-dispatch.latest.json followed by sv002-org-runtime-activation.latest.json terminal_round_trip_observed=true.",
     "terminal_when": [
       "eligible sovereign node is identified/declared",
       "runtime_materialized=true and native_service_active=true",
@@ -389,7 +389,12 @@
       "dispatcher_commit": "449513fca30b39e0b4567e939a5b124e4be0260f",
       "bootstrap_commit": "191ea08c3e84fc2a685488544a7671e713c9ccff",
       "refresh_commit": "8d33f40afa60a7da82a8bcbb0f8d50dbb6379b56",
-      "runtime_effect": "QUEUED_MACHINE_EXECUTION_NO_LIVE_RECEIPT_YET"
+      "runtime_effect": "QUEUED_MACHINE_EXECUTION_NO_LIVE_RECEIPT_YET",
+      "runtime_substrate": "HEARTBEAT_SEPARATED_NATIVE_WORKER_COORDINATOR",
+      "second_resident_executor_required": false,
+      "consumer_commit": "9f1432d02190cb967abccb32df4cedfa1cd522fe",
+      "validation_commit": "a267f99bb2b6d75322928f7d54f721e017bfb647",
+      "note": "SV002 now runs as an exact resident request on the existing HeartBeat-separated native WorkerCoordinator substrate. The worker runtime refreshes local source then dispatches resident requests every 100 logical ticks; no second persistent resident executor is required."
     }
   },
   "release_downstream": [
