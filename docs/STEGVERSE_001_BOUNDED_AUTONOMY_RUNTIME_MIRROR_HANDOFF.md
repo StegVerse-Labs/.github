@@ -300,7 +300,7 @@ Canonical owner surfaces:
 management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json
 org-kernel/runtime_observability.py
 scripts/project_runtime_observability.py
-active resident-local extension owner: StegVerse-Labs/.github#814 / PR #817
+resident-local extension: merged via StegVerse-Labs/.github#814 / PR #822 @ 6358375c81fedb579cb6fcac59946268ea485ebb
 ```
 
 SV001 predicate mapping remains distinct:
