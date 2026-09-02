@@ -6,6 +6,7 @@ from typing import Any, Callable, Mapping
 
 REQUEST_REL=Path("control/resident-execution-request.d/one-shot-resident-stack-activation-001.json")
 RECEIPT_REL=Path("receipts/sovereign-host/one-shot-resident-stack-activation-request-consumption.latest.json")
+FENCE_REL=Path("control/one-shot-resident-stack-activation.in-progress.json")
 TASK_ID="SHWP-ONE-SHOT-RESIDENT-STACK-ACTIVATION-001"
 Runner=Callable[...,subprocess.CompletedProcess[str]]
 
@@ -74,6 +75,61 @@ def repo_roots(values:Mapping[str,str])->dict[str,Path]:
             out[key]=Path(val).expanduser().resolve()
     return out
 
+def process_alive(pid:int)->bool:
+    if pid<=0: return False
+    try:
+        os.kill(pid,0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    except OSError:
+        return False
+    return True
+
+def acquire_fence(path:Path,request_sha256:str)->dict[str,Any]:
+    path.parent.mkdir(parents=True,exist_ok=True)
+    for _ in range(2):
+        body={
+          "schema":"stegverse.one-shot-resident-stack-activation-fence/v1",
+          "request_sha256":request_sha256,
+          "owner_pid":os.getpid(),
+          "state":"IN_PROGRESS",
+          "authority_effect":"NONE_REENTRY_FENCE_ONLY"
+        }
+        try:
+            fd=os.open(str(path),os.O_CREAT|os.O_EXCL|os.O_WRONLY,0o600)
+        except FileExistsError:
+            try: existing=load(path)
+            except Exception: existing={}
+            owner=int(existing.get("owner_pid") or 0)
+            if owner and process_alive(owner):
+                return {
+                  "acquired":False,
+                  "state":"ACTIVATION_IN_PROGRESS" if existing.get("request_sha256")==request_sha256 else "ACTIVATION_IN_PROGRESS_OTHER_REQUEST",
+                  "owner_pid":owner,
+                  "request_sha256":existing.get("request_sha256"),
+                  "authority_effect":"NONE_REENTRY_FENCE_ONLY"
+                }
+            try: path.unlink()
+            except FileNotFoundError: pass
+            continue
+        else:
+            try:
+                os.write(fd,(json.dumps(body,sort_keys=True)+"\n").encode())
+            finally:
+                os.close(fd)
+            return {"acquired":True,**body}
+    raise RuntimeError("unable to acquire one-shot activation re-entry fence")
+
+def release_fence(path:Path,request_sha256:str)->None:
+    if not path.is_file(): return
+    try: current=load(path)
+    except Exception: return
+    if current.get("request_sha256")==request_sha256 and int(current.get("owner_pid") or 0)==os.getpid():
+        try: path.unlink()
+        except FileNotFoundError: pass
+
 def resolve_roots(values:Mapping[str,str]|None=None)->tuple[dict[str,Path],list[str]]:
     env=dict(os.environ if values is None else values)
     mapped=repo_roots(env)
@@ -134,6 +190,16 @@ def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run,env:
     script=runtime/"scripts/activate_resident_stack.py"
     if not script.is_file():
         raise RuntimeError("one-shot resident stack activator not materialized")
+    fence_path=runtime/FENCE_REL
+    fence=acquire_fence(fence_path,rh)
+    if not fence.get("acquired"):
+        return {
+          "schema":"stegverse.resident-execution-request-consumption/v1",
+          "state":fence["state"],"request_id":req.get("request_id"),"request_sha256":rh,"task_id":TASK_ID,
+          "runtime_execution_attempted":False,"activation_complete":False,"retry_allowed":True,
+          "reentry_fence_owner_pid":fence.get("owner_pid"),"request_granted_authority":False,
+          "authority_effect":"NONE_REENTRY_FENCE_ONLY"
+        }
     command=[
       sys.executable,str(script),
       "--source-root",str(source),
@@ -151,7 +217,10 @@ def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run,env:
       "--ae-root",str(roots["ae"]),
       "--receipt-path",str(runtime/"receipts/sovereign-host/resident-stack-activation.latest.json"),
     ]
-    completed=runner(command,cwd=runtime,capture_output=True,text=True,check=False,timeout=7200,env=dict(os.environ if env is None else env))
+    try:
+        completed=runner(command,cwd=runtime,capture_output=True,text=True,check=False,timeout=7200,env=dict(os.environ if env is None else env))
+    finally:
+        release_fence(fence_path,rh)
     result=parse_last_json(completed.stdout)
     done=isinstance(result,dict) and result.get("state")=="COMPLETE"
     out={
@@ -177,6 +246,6 @@ def main()->int:
     except Exception as exc:
         print(json.dumps({"schema":"stegverse.resident-execution-request-consumption/v1","state":"BLOCKED","reason":str(exc),"runtime_execution_attempted":False,"authority_effect":"NONE"},sort_keys=True)); return 2
     print(json.dumps(out,sort_keys=True))
-    return 0 if out["state"] in {"NO_REQUEST","SOURCE_ROOTS_PENDING","ATTEMPT_RECORDED","COMPLETED","ALREADY_CONSUMED"} else 1
+    return 0 if out["state"] in {"NO_REQUEST","SOURCE_ROOTS_PENDING","ACTIVATION_IN_PROGRESS","ATTEMPT_RECORDED","COMPLETED","ALREADY_CONSUMED"} else 1
 
 if __name__=="__main__": raise SystemExit(main())
