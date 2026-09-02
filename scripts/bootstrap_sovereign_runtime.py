@@ -63,6 +63,7 @@ REQUIRED_SOURCE_FILES = (
     Path("scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py"),
     Path("scripts/consume_tvc_broker_validation_request.py"),
     Path("scripts/consume_sv002_self_characterization_request.py"),
+    Path("scripts/consume_sv002_org_runtime_activation_request.py"),
     Path("scripts/consume_healer_sovereign_scheduler_request.py"),
     Path("scripts/consume_universal_governance_enforced_reference_request.py"),
     Path("scripts/consume_cross_framework_current_basis_v04_request.py"),
