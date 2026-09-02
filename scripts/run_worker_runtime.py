@@ -623,7 +623,7 @@ def maybe_dispatch_machine_continuation(
         "authority_effect": "NONE_TRIGGER_ONLY",
     }
     if trigger["continuation_due"]:
-        result = dispatch_local_resident_requests(root, env=env)
+        result = dispatch_local_resident_requests(root)
         receipt["dispatch_attempted"] = True
         receipt["dispatch_result"] = result
         window_id = int(trigger["window"]["window_id"])
