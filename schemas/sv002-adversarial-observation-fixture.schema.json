@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/sv002-adversarial-observation-fixture.schema.json",
+  "title": "SV002 adversarial observation fixture",
+  "type": "object",
+  "required": [
+    "case_id",
+    "inputs",
+    "expected_disposition"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^AO-(0[1-9]|1[0-2])_"
+    },
+    "inputs": {
+      "type": "object",
+      "required": [
+        "master_records_custody",
+        "reconstruction_state",
+        "observation_valid",
+        "output_correct"
+      ],
+      "properties": {
+        "master_records_custody": {
+          "enum": [
+            "PASS",
+            "MISSING",
+            "SUBSTITUTED"
+          ]
+        },
+        "reconstruction_state": {
+          "enum": [
+            "PASS",
+            "MISSING",
+            "MISMATCH"
+          ]
+        },
+        "observation_valid": {
+          "type": "boolean"
+        },
+        "output_correct": {
+          "type": "boolean"
+        },
+        "authorized_execution": {
+          "enum": [
+            true,
+            false,
+            "NOT_ESTABLISHED"
+          ]
+        },
+        "principal_local_only": {
+          "type": "boolean"
+        },
+        "receipt_forged": {
+          "type": "boolean"
+        },
+        "receipt_replayed": {
+          "type": "boolean"
+        },
+        "history_fork": {
+          "type": "boolean"
+        },
+        "evidence_omitted": {
+          "type": "boolean"
+        },
+        "alternate_channel_observed": {
+          "type": "boolean"
+        },
+        "observer_mutation_attempt": {
+          "type": "boolean"
+        },
+        "grader_optimization": {
+          "type": "boolean"
+        },
+        "evaluator_aware": {
+          "type": "boolean"
+        },
+        "disposition_overclaim_attempt": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "expected_disposition": {
+      "enum": [
+        "OBSERVED",
+        "NOT_OBSERVED",
+        "INFERRED",
+        "NOT_ESTABLISHED",
+        "OUTSIDE_EXPERIMENT_SCOPE",
+        "CONTRADICTED",
+        "FAIL_CLOSED"
+      ]
+    }
+  },
+  "additionalProperties": false
+}
