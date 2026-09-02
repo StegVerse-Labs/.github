@@ -183,6 +183,7 @@ def main():
             result={
               "reason":"SV011_PHASE5_ALLOW_DENY_OBSERVED" if success else "SV011_PHASE5_PROBE_BLOCKED",
               "sv011_source_root":str(source),"sv011_source_head":source_ok(source)["head"],
+              "sv011_source_basis_commit":REQUIRED_ANCESTOR,
               "sv011_source_mode":source_ok(source)["source_mode"],"sv011_exact_git_blobs_verified":source_ok(source)["exact_git_blobs_verified"],
               "allow_returncode":allow_proc.returncode,"deny_returncode":deny_proc.returncode,
               "allow_evidence_ref":allow_path,"deny_evidence_ref":deny_path,

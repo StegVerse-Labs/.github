@@ -45,6 +45,7 @@ class SV011Phase5SourceMaterializationTests(unittest.TestCase):
             self.assertTrue(status["verified"])
             self.assertEqual(status["source_mode"],"VERIFIED_MATERIALIZED_TREE")
             self.assertTrue(status["exact_git_blobs_verified"])
+            self.assertEqual(boundary.REQUIRED_ANCESTOR,"cf2777d9d21a97289f4ec7b0d9b0b21597047666")
             second=materializer.materialize(dest)
             self.assertEqual(second["state"],"ALREADY_MATERIALIZED_VERIFIED")
             self.assertFalse(second["filesystem_mutated"])
@@ -84,6 +85,11 @@ class SV011Phase5SourceMaterializationTests(unittest.TestCase):
         self.assertFalse(request["github_token_required"])
         self.assertFalse(request["network_source_fetch_allowed"])
         self.assertFalse(request["provider_credential_material_allowed"])
+
+    def test_phase5_worker_receipt_contract_carries_source_basis_commit(self):
+        source=(ROOT/"workers/sv011_phase5_boundary_worker.py").read_text()
+        self.assertIn('"sv011_source_basis_commit":REQUIRED_ANCESTOR',source)
+        self.assertIn('"sv011_source_mode":source_ok(source)["source_mode"]',source)
 
 if __name__=="__main__":
     unittest.main()
