@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.sv011-phase5-source-bundle/v0.1",
+  "repository": "SV-011/.github",
+  "source_basis_commit": "cf2777d9d21a97289f4ec7b0d9b0b21597047666",
+  "authority_effect": "NONE_SOURCE_TRANSPORT_ONLY",
+  "credential_material_included": false,
+  "network_source_fetch_required": false,
+  "files": [
+    {"path":"resident-runtime/run_phase5_probe.py","git_blob_sha1":"bb66bb78e458bae91c71eaabc8d15724c8bf8cba"},
+    {"path":"resident-runtime/requests/phase5-allow.json","git_blob_sha1":"b17f563acc051d45ca988b139ccc3d9321123251"},
+    {"path":"resident-runtime/requests/phase5-deny.json","git_blob_sha1":"185f174d01a52e6db72dab60072ba429386311bb"},
+    {"path":"org-boundary/runtime/intr_transport.py","git_blob_sha1":"c52bde0587f3203a7d77789d8735007a25bb6267"},
+    {"path":"org-boundary/runtime/process_boundary.py","git_blob_sha1":"4a167a3af36f894e45362ee67f0a9050dca287fb"},
+    {"path":"org-boundary/runtime/denial_adapter.py","git_blob_sha1":"207e9e9fab484ed3c3a2bdf622ba1580e354c6b8"},
+    {"path":"org-boundary/registry/services.json","git_blob_sha1":"08bd4ba431a071a17abba76ac45536f92ebb7f6e"}
+  ]
+}
