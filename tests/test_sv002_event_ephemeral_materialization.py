@@ -157,6 +157,30 @@ class SV002EventEphemeralTests(unittest.TestCase):
             }
             def materializer(**_kwargs):
                 return {"runtime_root": execution, "evidence": evidence}
+            def lease_resumer(**kwargs):
+                before = json.loads(kwargs["snapshot_path"].read_text())
+                opened = dict(before)
+                opened["state"] = "LEASE_OPEN"
+                opened["history"] = list(before["history"]) + ["LEASE_OPEN"]
+                kwargs["snapshot_path"].write_text(json.dumps(opened), encoding="utf-8")
+                return {
+                    "state": "LEASE_OPEN",
+                    "lease_snapshot": opened,
+                    "lease_snapshot_sha256": consumer.digest_uri(opened),
+                    "public_profile_observation": {
+                        "public_profile_url": "https://stegverse.org/intr/profile",
+                        "public_profile_schema": "stegverse.universal-intr-profiled-ingress/v1",
+                        "public_profile_sha256": "a" * 64,
+                        "required_profile": "SV002:PublicObservation",
+                        "observation_origin": "INDEPENDENT_PUBLIC_HTTPS",
+                        "receiver_ready_claimed": False,
+                        "round_trip_claimed": False,
+                        "master_records_custody_claimed": False,
+                        "sv002_principal_execution_claimed": False,
+                        "public_profile_grants_execution_authority": False,
+                        "public_profile_grants_transition_authority": False,
+                    },
+                }
             def runner(*_args, **_kwargs):
                 return subprocess.CompletedProcess([], 0, stdout="{}", stderr="")
 
@@ -167,10 +191,13 @@ class SV002EventEphemeralTests(unittest.TestCase):
                 runner=runner,
                 env={},
                 runtime_materializer=materializer,
+                lease_resumer=lease_resumer,
             )
-            self.assertEqual(receipt["canonical_runtime_lease_state"], "PUBLIC_VERIFYING")
-            self.assertTrue(receipt["canonical_runtime_lease_resume_required"])
-            self.assertEqual(receipt["canonical_runtime_lease_snapshot_sha256"], consumer.digest_uri(snapshot))
+            self.assertEqual(receipt["canonical_runtime_lease_state"], "LEASE_OPEN")
+            self.assertFalse(receipt["canonical_runtime_lease_resume_required"])
+            self.assertTrue(receipt["canonical_runtime_lease_public_verification_observed"])
+            self.assertEqual(receipt["public_profile_observation_origin"], "INDEPENDENT_PUBLIC_HTTPS")
+            self.assertEqual(receipt["public_profile_required_profile"], "SV002:PublicObservation")
 
             snapshot["history"] = ["ABSENT", "LEASE_OPEN"]
             snapshot_path.write_text(json.dumps(snapshot), encoding="utf-8")
@@ -186,6 +213,7 @@ class SV002EventEphemeralTests(unittest.TestCase):
                     runner=runner,
                     env={},
                     runtime_materializer=materializer,
+                    lease_resumer=lease_resumer,
                 )
 
     def test_superseded_script_materialization_path_absent(self):

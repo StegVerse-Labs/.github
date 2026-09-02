@@ -424,3 +424,26 @@ This does not alter the frozen v0.3 experiment condition or original finding. It
 
 Current state:
 `TARGET_PROPERTY_NOT_YET_ESTABLISHED`
+
+
+## Public-profile LEASE_OPEN continuation — issue #616
+
+The current source continuation resumes the same canonical lease after its persisted `PUBLIC_VERIFYING` snapshot. Scoped handoff: `docs/SV002_PUBLIC_PROFILE_LEASE_OPEN_MIRROR_HANDOFF.md`.
+
+Before the existing WorkerCoordinator task may be dispatched, the consumer now requires:
+
+```text
+PUBLIC_VERIFYING snapshot
+-> exact digest/history/request validation
+-> already-local StegOS universal public-profile verifier
+-> https://stegverse.org/intr/profile
+-> required profile SV002:PublicObservation
+-> observation_origin INDEPENDENT_PUBLIC_HTTPS
+-> exact profile schema/hash evidence
+-> same LeaseMachine transition to LEASE_OPEN
+-> evolved snapshot + bound public-observation evidence
+-> exact LEASE_OPEN history validation
+-> existing WorkerCoordinator targeted task
+```
+
+The public profile observation grants no execution or transition authority itself. It satisfies only the canonical public-identity predicate that permits the already-governed lease machine to move to `LEASE_OPEN`. Receiver readiness, READ_OBSERVATION round trip, custody, and principal execution remain separate unobserved predicates.
