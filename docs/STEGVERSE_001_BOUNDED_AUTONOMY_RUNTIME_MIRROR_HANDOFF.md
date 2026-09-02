@@ -259,3 +259,32 @@ one-shot activation COMPLETE
 ```
 
 An already-terminal SV001 receipt still wins and is never re-executed; downstream Master Records/SV002 continuation remains independently retryable.
+
+## Current external execution boundary — 2026-09-02
+
+The source/runtime path is now explicit through merge `3e9aec9680d159a1419aeebb52022316a3b392ed`.
+
+The next work is **not** to watch for the five receipts. The next work is to execute:
+
+```text
+python scripts/run_stegverse001_activation_progression.py \
+  --source-root <current-local-.github> \
+  --runtime-root <sovereign-runtime>
+```
+
+on the actual non-hosted sovereign resident execution surface.
+
+The current ChatGPT/GitHub connector surface can mutate and validate repository state but cannot launch a local StegVerse process on that sovereign node. GitHub Actions may not be substituted because they have no production/runtime authority.
+
+If the native resident is already active with the current local source, its recurring machine dispatch can perform the same work without operator intervention. If it is not active/current, the external prerequisite is to make that resident execution surface available from the current source. Once the resident is active, Stage 1 -> Stage 2 -> Master Records -> SV002 is machine-owned.
+
+Receipt absence is only diagnostic:
+
+```text
+no progression receipt -> progression process did not execute
+STACK_ACTIVATION_INCOMPLETE -> execute/repair the named Stage-1 transition
+SV001_AUTONOMY_EXECUTION_INCOMPLETE -> execute/repair the named Stage-2 transition
+terminal SV001 -> downstream MR/SV002 continuation executes independently
+```
+
+Watching, waiting, or polling is not an authorized completion action.
