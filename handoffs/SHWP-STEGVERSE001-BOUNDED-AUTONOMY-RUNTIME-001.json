@@ -56,8 +56,9 @@
       "workers/stegverse001_bounded_autonomy_runtime_worker.py",
       "docs/STEGVERSE_001_BOUNDED_AUTONOMY_RUNTIME_MIRROR_HANDOFF.md",
       "StegVerse-Labs/TV@a8ed178fd5fc5b131491e41452256323c302ba3f",
-      "master-records/orchestration@65f97e867a09c3e5da80ef74b2b43ee810821667",
-      "StegVerse-Labs/TVC@d495b67d1c322c3fdd8c9bb6db75657783e19c0c"
+      "StegVerse-Labs/TVC@d495b67d1c322c3fdd8c9bb6db75657783e19c0c",
+      "master-records/orchestration@d593c920c1630aa5da20cc2622196f8676a74afd",
+      "StegVerse-Labs/.github@786323f16e36346c69b2215894086515d7b1d58e#SV002_ADVERSARIAL_OBSERVATION"
     ]
   },
   "authority": {
@@ -125,10 +126,15 @@
     "master_records_required_for_activation_claim": true,
     "local_result_receipt": "~/.stegverse/state/stegverse001-bounded-autonomy/receipts/latest.json",
     "repository_persistence_requires_separate_admission": true,
-    "bound_state_lease_projection": "autonomy/lease.active.json"
+    "bound_state_lease_projection": "autonomy/lease.active.json",
+    "evidence_chain_handoff": "docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md",
+    "master_records_resident_intake_ancestor": "d593c920c1630aa5da20cc2622196f8676a74afd",
+    "sv002_evaluator_ancestor": "786323f16e36346c69b2215894086515d7b1d58e",
+    "downstream_retry_after_terminal": true,
+    "terminal_autonomy_reexecution_allowed": false
   },
   "completion": {
-    "next_authorized_action": "The existing machine-owned resident request retries under independent task control. If no valid lease exists, request the exact TVC-issued lease through the fenced bound-state carrier; execute one bounded continuity audit; then transfer the exact receipt to Master Records and SV002.",
+    "next_authorized_action": "The existing machine-owned resident request retries under independent task control. After terminal SV001 execution, independently retry the merged Master Records resident intake and SV002 adversarial disposition continuation until authentic downstream evidence is complete; never re-run terminal autonomy.",
     "terminal_when": [
       "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED"
     ]
@@ -164,7 +170,7 @@
     "human_action_required": false,
     "second_machine_required": false,
     "github_token_required": false,
-    "next_solution_action": "EXISTING_RESIDENT_REQUEST_RETRY_AND_EVIDENCE_OBSERVATION",
+    "next_solution_action": "EXISTING_RESIDENT_REQUEST_RETRY_PLUS_DOWNSTREAM_EVIDENCE_CONTINUATION",
     "machine_observable_release_condition": "A non-hosted resident emits the exact TVC issuance + SV001 autonomy-cycle evidence chain and downstream Master Records/SV002 evidence."
   }
 }

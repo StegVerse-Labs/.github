@@ -177,3 +177,17 @@ SV002 adversarial observation/disposition: NOT OBSERVED
 ```
 
 The queued resident request remains the canonical next machine action. No human/manual execution is authorized or required by this handoff.
+
+
+## Automatic downstream evidence continuation — 2026-09-02
+
+The post-execution chain is source-implemented under issue #761 and `docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md`.
+
+Exact source floors:
+
+- Master Records resident custody intake: `d593c920c1630aa5da20cc2622196f8676a74afd`
+- SV002 deterministic adversarial evaluator: `786323f16e36346c69b2215894086515d7b1d58e`
+
+After `SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED`, the resident consumer invokes the downstream continuation. A later `ALREADY_CONSUMED` request does not re-execute autonomy; it retries only Master Records custody/reconstruction and SV002 observation/disposition.
+
+The continuation script is included in sovereign bootstrap, source-refresh, and native-service materialization manifests. No manual receipt transfer is required by source design. Authentic completion remains NOT OBSERVED until deployment-local receipts exist.
