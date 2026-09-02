@@ -32,6 +32,7 @@ class ResidentStackActivationTests(unittest.TestCase):
             healer = root / "StegVerse-Healer"
             tv = root / "TV"
             tvc = root / "TVC"
+            master_records = root / "master-records-orchestration"
             (stegos / "stegos").mkdir(parents=True)
             (kv / "runtime").mkdir(parents=True)
             (stegos / "stegos" / "intr_backbone.py").write_text("# intr\n")
@@ -51,12 +52,17 @@ class ResidentStackActivationTests(unittest.TestCase):
             (tvc / "TVC_MIRROR_HANDOFF.md").write_text("# handoff\n")
             (tvc / "scripts" / "activate_coinbase_intr_resident.py").write_text("# activate\n")
             (tvc / "tools" / "hil_intr_lifecycle_intake.py").write_text("# intake\n")
+            (master_records / "scripts").mkdir(parents=True)
+            (master_records / "scripts" / "watch_stegverse001_autonomy_receipt.py").write_text("# watch\n")
+            (master_records / "scripts" / "import_stegverse001_autonomy_receipt.py").write_text("# import\n")
             (source / "scripts" / "package_sovereign_control_plane_bundle.py").write_text("# packager\n")
             (llm / "scripts" / "stegdeploy_bootstrap.py").write_text("# deploy\n")
             receipt_path = root / "activation.json"
 
             def runner(command, **kwargs):
                 if "package_sovereign_control_plane_bundle.py" in str(command[1]):
+                    self.assertIn("--master-records-root", command)
+                    self.assertEqual(Path(command[command.index("--master-records-root") + 1]), master_records.resolve())
                     output = Path(command[command.index("--output") + 1])
                     output.write_bytes(b"bundle")
                     return subprocess.CompletedProcess(
@@ -93,6 +99,7 @@ class ResidentStackActivationTests(unittest.TestCase):
                 healer_root=healer,
                 tv_root=tv,
                 tvc_root=tvc,
+                master_records_root=master_records,
                 health_url="http://127.0.0.1:8000/health",
                 receipt_path=receipt_path,
                 runner=runner,
@@ -108,6 +115,7 @@ class ResidentStackActivationTests(unittest.TestCase):
             self.assertTrue(receipt["healer_source_bundled"])
             self.assertTrue(receipt["tv_source_bundled"])
             self.assertTrue(receipt["tvc_source_bundled"])
+            self.assertTrue(receipt["master_records_source_bundled"])
             self.assertTrue(receipt["tvc_skap_successor_attempted"])
             self.assertEqual(receipt["tvc_skap_successor_state"], "ACTIVE")
             self.assertEqual(receipt["github_token_runtime_authority"], "NONE")

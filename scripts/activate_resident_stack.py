@@ -78,6 +78,7 @@ def activate(
     healer_root: Path,
     tv_root: Path,
     tvc_root: Path,
+    master_records_root: Path,
     health_url: str,
     receipt_path: Path,
     runner=subprocess.run,
@@ -106,6 +107,7 @@ def activate(
                 "--healer-root", str(healer_root.expanduser().resolve()),
                 "--tv-root", str(tv_root.expanduser().resolve()),
                 "--tvc-root", str(tvc_root.expanduser().resolve()),
+                "--master-records-root", str(master_records_root.expanduser().resolve()),
             ],
             cwd=source,
             check=False,
@@ -168,6 +170,7 @@ def activate(
             "healer_source_bundled": True,
             "tv_source_bundled": True,
             "tvc_source_bundled": True,
+            "master_records_source_bundled": True,
             "control_bundle_sha256": package_result.get("bundle_sha256"),
             "stegdeploy_returncode": deploy.returncode,
             "stegdeploy_receipt_ref": str(deployment_receipt_path),
@@ -202,6 +205,7 @@ def main() -> int:
     parser.add_argument("--healer-root", type=Path)
     parser.add_argument("--tv-root", type=Path)
     parser.add_argument("--tvc-root", type=Path)
+    parser.add_argument("--master-records-root", type=Path)
     parser.add_argument("--receipt-path", type=Path, default=DEFAULT_RECEIPT)
     args = parser.parse_args()
     llm = args.llm_adapter_root
@@ -215,8 +219,11 @@ def main() -> int:
     healer = args.healer_root or (Path(os.environ["STEGVERSE_HEALER_ROOT"]) if os.environ.get("STEGVERSE_HEALER_ROOT") else None)
     tv = args.tv_root or (Path(os.environ["STEGVERSE_TV_ROOT"]) if os.environ.get("STEGVERSE_TV_ROOT") else None)
     tvc = args.tvc_root or (Path(os.environ["STEGVERSE_TVC_ROOT"]) if os.environ.get("STEGVERSE_TVC_ROOT") else None)
-    if stegos is None or kv_source is None or healer is None or tv is None or tvc is None:
-        raise SystemExit("StegOS, KV source, Healer, TV, and TVC local roots are required for the complete resident stack")
+    master_records = args.master_records_root or (Path(os.environ["STEGVERSE_MASTER_RECORDS_ROOT"]) if os.environ.get("STEGVERSE_MASTER_RECORDS_ROOT") else None)
+    if master_records is None and os.environ.get("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT"):
+        master_records = Path(os.environ["STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT"])
+    if stegos is None or kv_source is None or healer is None or tv is None or tvc is None or master_records is None:
+        raise SystemExit("StegOS, KV source, Healer, TV, TVC, and Master Records local roots are required for the complete resident stack")
     receipt = activate(
         args.source_root,
         llm,
@@ -225,6 +232,7 @@ def main() -> int:
         healer_root=healer,
         tv_root=tv,
         tvc_root=tvc,
+        master_records_root=master_records,
         health_url=args.health_url,
         receipt_path=args.receipt_path,
     )

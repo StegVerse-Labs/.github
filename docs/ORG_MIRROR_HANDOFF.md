@@ -844,3 +844,24 @@ authority effect: NONE
 ```
 
 The current predecessor evidence floor requires exact request/response HB-derived transport, packet recovery, and canonical shared-HB signal references/digests in addition to the DEVICE_KV terminal state/transition. The successor remains machine-owned and may execute only through fresh WorkerCoordinator admission/claim/fence after that authentic parent exists. No merge, CI, carrier, request, or source registration grants runtime authority.
+
+## 2026-09-02 SV001 Master Records resident-bundle source repair
+
+Issue #766 closes a source-materialization seam discovered after the automatic SV001 evidence-chain merge.
+
+The consumer side in StegDeploy already bound `vendor/master-records-orchestration` to `STEGVERSE_MASTER_RECORDS_ROOT`, but the canonical sovereign bundle producer and complete resident-stack orchestrator did not emit/pass that source.
+
+The repaired source path is:
+
+```text
+clean local master-records/orchestration
++ required ancestor d593c920c1630aa5da20cc2622196f8676a74afd
++ unchanged SV001 custody watcher/import scripts
+-> canonical sovereign-control-plane bundle
+-> vendor/master-records-orchestration
+-> StegDeploy verified materialization
+-> STEGVERSE_MASTER_RECORDS_ROOT
+-> SV001 downstream evidence continuation
+```
+
+This is source transport/provenance only. It grants no custody, reconstruction, execution, credential, repository, heartbeat, or sovereign authority. Authentic resident materialization and evidence remain separately observable.
