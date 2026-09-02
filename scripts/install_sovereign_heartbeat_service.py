@@ -41,6 +41,7 @@ COPY_DIRS = (
 COPY_FILES = (
     "scripts/run_heartbeat_runtime.py",
     "scripts/run_worker_runtime.py",
+    "scripts/project_hb_runtime_presence.py",
     "scripts/refresh_and_execute_resident_task.py",
     "scripts/refresh_sovereign_worker_runtime_source.py",
     "scripts/run_independent_ecosystem_chat_parent.py",
