@@ -2,7 +2,7 @@
 
 Updated: 2026-09-02
 Repository: StegVerse-Labs/.github
-State: SOURCE_INTEGRATED_VALIDATION_PENDING_RUNTIME_SESSION_BLOCKED
+State: SOURCE_INTEGRATED_VALIDATED_RUNTIME_SESSION_BLOCKED
 Authority effect: NONE
 Credential authority: TV/TVC
 
@@ -52,3 +52,15 @@ The current TVC credential-consistency handoff freezes new credential semantics.
 5. authentic `MY_KV_INSTALLATION_STATUS` consumption;
 6. HB-derived exact response recovery on the registered device;
 7. Site marks Personal KV sync observed only from that authentic chain.
+
+
+## Validation evidence
+
+```text
+workflow: Workspace DEVICE_KV Validation Only
+run: 33633878485
+head: 0c36d92c525531a31ffd96ae8d58df23553d9f60
+conclusion: SUCCESS
+provider-root regression: PASS
+runtime activation inferred: false
+```
