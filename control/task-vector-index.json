@@ -822,8 +822,8 @@
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 85,
-    "local_cosv_record_tasks": 85,
+    "indexed_vectorized_tasks": 86,
+    "local_cosv_record_tasks": 86,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
