@@ -1,0 +1,130 @@
+{
+  "schema": "stegverse.repository-operational-state/v1",
+  "repository": {
+    "org": "example-org",
+    "name": "example-repo",
+    "commit": "0123456789abcdef",
+    "default_branch": "main"
+  },
+  "authority": {
+    "repository_handoff": "docs/EXAMPLE_MIRROR_HANDOFF.md",
+    "cosv_profile": "StegVerse-Labs/.github/management/COSV_PROFILE_V1.json",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "cosv": {
+    "repository": {
+      "identity": "example-org/example-repo",
+      "profile": "aggregate.v1",
+      "level": "system",
+      "vector": "57775357810002",
+      "evidence_refs": [
+        "docs/EXAMPLE_MIRROR_HANDOFF.md"
+      ],
+      "observed_at": "2026-09-02T12:00:00Z",
+      "exact_metrics": {
+        "developed": 82,
+        "validation": 80,
+        "integration": 75,
+        "propagation": 55,
+        "activation": 35,
+        "readiness": 70,
+        "ownership": 92,
+        "evidence": 80,
+        "critical_blockers": 1,
+        "conflicting_claims": 0,
+        "unassigned_work": 0,
+        "stale_claims": 0,
+        "thread_required": 2
+      }
+    },
+    "tasks": [
+      {
+        "identity": "EXAMPLE-TASK-001",
+        "profile": "task.v1",
+        "level": "task",
+        "vector": "60000000101000",
+        "evidence_refs": [
+          "handoffs/EXAMPLE-TASK-001.json"
+        ],
+        "observed_at": "2026-09-02T12:00:00Z",
+        "exact_metrics": {
+          "blocker_count": 1
+        }
+      }
+    ],
+    "transition": null
+  },
+  "implementation": {
+    "developed_files": 8,
+    "scaffolding_files": 1,
+    "stub_files": 1,
+    "unknown_files": 0,
+    "completion_percent": 80.0
+  },
+  "operational_state": {
+    "source_complete": false,
+    "validated": true,
+    "integrated": true,
+    "released": false,
+    "propagated": false,
+    "activated": false,
+    "runtime_proven": false
+  },
+  "evidence": {
+    "receipts": [],
+    "manifests": [
+      "control/example-manifest.json"
+    ],
+    "validation_runs": [
+      "repository-native-validation:PASS"
+    ],
+    "issues": [
+      "#1"
+    ],
+    "pull_requests": [
+      "#2"
+    ],
+    "release_refs": [],
+    "runtime_refs": []
+  },
+  "dependencies": {
+    "upstream": [
+      "StegVerse-Labs/.github/management/COSV_PROFILE_V1.json"
+    ],
+    "downstream": [
+      "master-records/orchestration"
+    ],
+    "cross_repo_requirements": [
+      "preserve repository-local authority"
+    ]
+  },
+  "work": {
+    "active": [
+      "EXAMPLE-TASK-001"
+    ],
+    "blocked": [
+      "EXAMPLE-TASK-001"
+    ],
+    "machine_owned": [
+      "EXAMPLE-TASK-001"
+    ],
+    "human_owned": [],
+    "unassigned": []
+  },
+  "next_transition": {
+    "state": "OBSERVE_REQUIRED_RUNTIME_EVIDENCE",
+    "admissible": false,
+    "requirements": [
+      "resolve canonical blocker",
+      "obtain authentic runtime observation"
+    ],
+    "authority_required": "repository-local machine owner",
+    "target_files": []
+  },
+  "projections": {
+    "mirror_handoff": "docs/EXAMPLE_MIRROR_HANDOFF.md",
+    "human_summary": "",
+    "ai_execution_brief": ""
+  }
+}
