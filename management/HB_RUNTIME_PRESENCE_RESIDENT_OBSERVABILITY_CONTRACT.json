@@ -1,7 +1,7 @@
 {
-  "schema": "stegverse.hb-runtime-resident-observability-contract/v1",
+  "schema": "stegverse.hb-runtime-presence-resident-observability-contract/v1",
   "owner_repository": "StegVerse-Labs/.github",
-  "canonical_module": "org-kernel/runtime_observability.py",
+  "canonical_module": "heartbeat_runtime/runtime_presence_projection.py",
   "heartbeat_source": "org-kernel/kernel.py#hb_reference",
   "credential_authority": "TV/TVC",
   "authority_effect": "NONE_OBSERVATION_ONLY",
@@ -20,5 +20,14 @@
     "resident_request_consumption": "receipts/sovereign-host/resident-execution-request-consumption.latest.json",
     "resident_targeted_execution": "receipts/sovereign-host/resident-targeted-execution.latest.json"
   },
-  "consumer_rule": "Lane-specific direct machine receipt verifiers decide request consumption, receiver readiness, state transition, and reconstruction. The shared projection reports canonical HB/presence/evidence context but never infers them from source or file presence."
+  "consumer_rule": "Lane-specific direct machine evidence remains distinct. Canonical heartbeat_runtime/runtime_presence_projection.py reports resident/HB/evidence slots without inferring execution from HB or source. Consumer-specific verifiers decide semantic validity of request consumption, receiver readiness, transition execution, and reconstruction.",
+  "canonical_projector": "scripts/project_hb_runtime_presence.py",
+  "canonical_validation": "tests/test_runtime_presence_projection.py",
+  "canonical_merge": "6358375c81fedb579cb6fcac59946268ea485ebb",
+  "superseded_local_experiment": [
+    "org-kernel/runtime_observability.py",
+    "scripts/project_runtime_observability.py",
+    "org-kernel/tests/test_runtime_observability.py",
+    "schemas/hb-runtime-resident-observability.schema.json"
+  ]
 }
