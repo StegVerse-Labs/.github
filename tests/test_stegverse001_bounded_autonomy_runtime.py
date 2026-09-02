@@ -9,7 +9,7 @@ SPEC=importlib.util.spec_from_file_location("sv001",ROOT/"workers/stegverse001_b
 MOD=importlib.util.module_from_spec(SPEC); assert SPEC.loader; SPEC.loader.exec_module(MOD)
 
 def lease():
-    return {
+    v = {
       "schema":"stegverse.stegverse001.bounded-autonomy-lease/v1",
       "lease_id":"TEST-LEASE-1","entity_id":"StegVerse-001","entity_alias":"Beta_Orionis",
       "request_id":"TV-REQUEST-STEGVERSE001-BOUNDED-AUTONOMY-001","request_hash":"sha256:c4b3e35d5ecf2246e0e082a591e3144bd61b32cb02133d12a89226cf362f4def",
