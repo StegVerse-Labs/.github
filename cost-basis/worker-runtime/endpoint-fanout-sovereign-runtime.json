@@ -1,0 +1,9 @@
+{
+  "schema": "stegverse.worker-cost-basis/v0.1",
+  "task_id": "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+  "task_class": "endpoint_fanout_sovereign_runtime",
+  "external_cost_ceiling_usd": 0,
+  "expected_compute_units": 1,
+  "credential_authority": "TV/TVC",
+  "authority_effect": "NONE"
+}
