@@ -410,3 +410,17 @@ It now requires an explicit:
 That path must identify the reconstruction receipt produced from the Master Records custody surface. Missing custody input remains `NOT_AVAILABLE`; the runtime does not fall back to the execution-host state root.
 
 The projection source label is now `MASTER_RECORDS_CUSTODY_ONLY`. This closes the prior ambiguity where the receipt schema was Master Records-derived but its source path was still the principal execution root.
+
+
+## Adversarial observation refinement — 2026-09-02
+
+A new additive validation lane is defined at:
+`docs/SV002_ADVERSARIAL_OBSERVATION_MIRROR_HANDOFF.md`
+
+Machine-readable profile:
+`config/sv002_adversarial_observation_profile.json`
+
+This does not alter the frozen v0.3 experiment condition or original finding. It formalizes the target property `ADVERSARIALLY_CREDIBLE_OBSERVATION` and separates execution, capture, custody, reconstruction, observation, interpretation, and disposition integrity. Evaluator awareness is explicitly allowed; evaluator secrecy is not a validity requirement.
+
+Current state:
+`TARGET_PROPERTY_NOT_YET_ESTABLISHED`
