@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Consume the SV002 organization-runtime activation request on a sovereign resident.
 
-This consumer does not execute the StegVerse-002 principal directly. It invokes
-the StegVerse-org resident executor once; that executor sends the frozen SDK
-request through the source org boundary and the target StegVerse-002 org owns
-principal execution.
+This consumer is executed by the existing native HeartBeat-separated
+WorkerCoordinator resident runtime. It does not create or require a second
+resident executor. It invokes the bounded StegVerse-org SV002 round-trip
+entrypoint directly from that resident substrate; the source org boundary remains
+StegVerse-org and the target StegVerse-002 org still owns principal execution.
 """
 from __future__ import annotations
 import argparse, hashlib, json, os, subprocess, sys
@@ -72,8 +73,8 @@ def consume(source_root:Path,runtime_root:Path,*,runner=subprocess.run)->dict[st
         if prior.get("request_sha256")==request_hash and prior.get("terminal_round_trip_observed") is True:
             return {"schema":prior["schema"],"state":"ALREADY_CONSUMED","request_sha256":request_hash,"runtime_execution_attempted":False,"authority_effect":"NONE"}
 
-    source_org=resolve("STEGVERSE_ORG_CONTROL_ROOT","StegVerse-org",".github",("resident-runtime/resident_executor.py","resident-runtime/run_sv002_self_characterization_roundtrip.py"))
-    target_org=resolve("STEGVERSE_SV002_ORG_ROOT","StegVerse-002",".github",("resident-runtime/resident_executor.py","resident-runtime/self_characterization_surface.py"))
+    source_org=resolve("STEGVERSE_ORG_CONTROL_ROOT","StegVerse-org",".github",("resident-runtime/run_sv002_self_characterization_roundtrip.py",))
+    target_org=resolve("STEGVERSE_SV002_ORG_ROOT","StegVerse-002",".github",("resident-runtime/self_characterization_surface.py",))
     sdk=resolve("STEGVERSE_SDK_SOURCE_ROOT","StegVerse-org","StegVerse-SDK",("stegverse/external_interlock_bootstrap.py",))
     principal=resolve("STEGVERSE_MICRO_NODE_RUNTIME_ROOT","StegVerse-002","micro-node-runtime",("tools/run_self_characterization_principal.py","experiments/self-characterization-001/EXPERIMENT_CONTRACT.v0.3.json"))
 
@@ -87,12 +88,15 @@ def consume(source_root:Path,runtime_root:Path,*,runner=subprocess.run)->dict[st
     env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"]="NONE"
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"]="TV/TVC"
 
-    cmd=[sys.executable,str(source_org/"resident-runtime/resident_executor.py"),"--once"]
+    cmd=[sys.executable,str(source_org/"resident-runtime/run_sv002_self_characterization_roundtrip.py"),"--authority-ref","SDK_EXTERNAL_EVALUATOR"]
     completed=runner(cmd,cwd=source_org,capture_output=True,text=True,check=False,env=env,timeout=2300)
     result=parse_last(completed.stdout)
-    one_shot=(result or {}).get("sv002_one_shot") if isinstance(result,dict) else None
     terminal=bool(
-      completed.returncode==0 and isinstance(one_shot,dict) and one_shot.get("terminal") is True
+      completed.returncode==0
+      and isinstance(result,dict)
+      and result.get("experiment_id")=="STEGVERSE-002-SELF-CHARACTERIZATION-001"
+      and result.get("principal_execution_owner")=="StegVerse-002/.github"
+      and result.get("cross_organization_principal_execution") is False
     )
     receipt={
       "schema":"stegverse.sv002-org-runtime-activation-consumption/v1",
@@ -107,6 +111,8 @@ def consume(source_root:Path,runtime_root:Path,*,runner=subprocess.run)->dict[st
       "execution_returncode":completed.returncode,
       "execution_result":result,
       "terminal_round_trip_observed":terminal,
+      "runtime_substrate":"HEARTBEAT_SEPARATED_NATIVE_WORKER_COORDINATOR",
+      "second_resident_executor_required":False,
       "cross_org_principal_execution":False,
       "github_token_runtime_authority":"NONE",
       "credential_authority":"TV/TVC",
