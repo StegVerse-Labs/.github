@@ -69,63 +69,26 @@ class DeviceKVInTrObservationWorkerTests(unittest.TestCase):
             self.assertFalse(result["blocker"]["physical_additional_machine_required"])
             self.assertFalse(result["blocker"]["third_party_runtime_required"])
 
-    def test_transport_receipt_binds_payload_lineage_and_authority(self):
-        first = worker.build_transport_receipt(
-            receipt_id="r1",
-            packet_id="p1",
-            direction="FORWARD",
-            from_role="DEVICE",
-            to_role="KV",
-            operation_hash="sha256:" + "1" * 64,
-            payload_hash="sha256:" + "2" * 64,
-            prior_receipt_hash=None,
-            boundary_identity_ref="kv://root",
-        )
-        worker.validate_transport_receipt(
-            first,
-            direction="FORWARD",
-            from_role="DEVICE",
-            to_role="KV",
-            payload_hash="sha256:" + "2" * 64,
-            prior=None,
-        )
-        second = worker.build_transport_receipt(
-            receipt_id="r2",
-            packet_id="p2",
-            direction="RETURN",
-            from_role="KV",
-            to_role="DEVICE",
-            operation_hash="sha256:" + "1" * 64,
-            payload_hash="sha256:" + "3" * 64,
-            prior_receipt_hash=first["receipt_hash"],
-            boundary_identity_ref="stegos-node://continuity",
-        )
-        worker.validate_transport_receipt(
-            second,
-            direction="RETURN",
-            from_role="KV",
-            to_role="DEVICE",
-            payload_hash="sha256:" + "3" * 64,
-            prior=first["receipt_hash"],
-        )
-        self.assertFalse(first["secret_plaintext_present"])
-        self.assertFalse(first["authority_transfer"])
-        self.assertEqual(second["prior_receipt_hash"], first["receipt_hash"])
+    def test_canonical_connector_owns_transport_intents_and_receipts(self):
+        source = (ROOT / "workers/device_kv_intr_observation_worker.py").read_text()
+        self.assertIn('connector = load_canonical_device_kv_connector(stegos_root)', source)
+        self.assertIn('connector.prepare(', source)
+        self.assertIn('connector.accept_hop(', source)
+        self.assertIn('connector.validate_complete(', source)
+        self.assertIn('connector.prepare_response(', source)
+        self.assertIn('connector.profile.profile_id', source)
+        self.assertIn('"canonical_connector_profile"', source)
+        self.assertIn('"compatibility_envelope_only": True', source)
+        self.assertNotIn("def build_transport_receipt(", source)
+        self.assertNotIn("def validate_transport_receipt(", source)
 
 
     def test_hb_carrier_binds_exact_precommitted_receipt_and_recovers_bytes(self):
-        receipt = worker.build_transport_receipt(
-            receipt_id="r-carrier",
-            packet_id="p-carrier",
-            direction="FORWARD",
-            from_role="DEVICE",
-            to_role="KV",
-            operation_hash="sha256:" + "1" * 64,
-            payload_hash="sha256:" + "2" * 64,
-            prior_receipt_hash=None,
-            boundary_identity_ref="kv://root",
-            recorded_at="2026-08-31T13:00:00Z",
-        )
+        receipt = {
+            "packet_id": "p-carrier",
+            "payload_hash": "sha256:" + "2" * 64,
+            "receipt_hash": "sha256:" + "3" * 64,
+        }
         payload = b'{"request":"exact"}'
         now_ns = 1_787_511_600_000_000_000 + (250 * 10_000_000)
         signal, reference = worker.build_hb_carrier_signal(
