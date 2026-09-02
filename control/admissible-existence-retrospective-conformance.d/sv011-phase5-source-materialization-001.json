@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "fragment_id": "SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+  "entries": [
+    {
+      "task_id": "SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+      "temporal_class": "current",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:sv011-phase5-source-materialization:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "integrates_capability",
+      "result": "PASS",
+      "continuation_owner": "sv011-phase5-source-materialization-worker + existing sovereign WorkerCoordinator",
+      "rationale": "Exact-byte materialization is source/control admitted; authentic resident materialization remains unobserved, so the capability is ADMISSIBLE rather than ACTIVATED."
+    }
+  ]
+}
