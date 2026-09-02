@@ -288,3 +288,22 @@ terminal SV001 -> downstream MR/SV002 continuation executes independently
 ```
 
 Watching, waiting, or polling is not an authorized completion action.
+
+
+## HB Runtime Presence / Resident Observability binding — 2026-09-02
+
+The session-specific question "is the previously activated resident still installed/supervised?" is now a consumer of the shared canonical contract:
+
+`docs/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_MIRROR_HANDOFF.md`
+
+Canonical projection command on the sovereign runtime:
+
+```text
+python scripts/project_hb_runtime_presence.py \
+  --runtime-root <sovereign-runtime> \
+  --task-id SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001
+```
+
+The exact currently missing predicate is `resident_process_alive_supervised`. It remains distinct from `node_runtime_fresh`, `governed_request_consumed`, `runtime_execution_completed`, `receipt_retained`, and `replay_reconstruction_proven`.
+
+No source/merge/CI result can set those deployment-local predicates to true. The projection consumes existing HB/WorkerCoordinator/request/receipt state and grants no authority.
