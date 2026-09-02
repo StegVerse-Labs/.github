@@ -68,6 +68,17 @@
     "owner_issue": "StegVerse-Labs/.github#122",
     "owner_issue_role": "historical_and_current_separation_authority_record",
     "source_obligations_complete": true,
-    "runtime_activation_reopened": false
+    "runtime_activation_reopened": false,
+    "closure_pr": 784,
+    "closure_merge": "418059b72e84b38183425c7048d094afcb29e5a6",
+    "organization_control_validation": {
+      "run_id": 33672188983,
+      "conclusion": "SUCCESS"
+    },
+    "heartbeat_worker_validation": {
+      "run_id": 33672188971,
+      "conclusion": "SUCCESS"
+    },
+    "issue_close_eligible": true
   }
 }
