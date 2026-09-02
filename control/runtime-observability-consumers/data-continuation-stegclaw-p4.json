@@ -1,0 +1,67 @@
+{
+  "schema": "stegverse.hb-runtime-resident-observability.consumer/v1",
+  "consumer_id": "DATA-CONTINUATION-STEGCLAW-P4",
+  "consumer_repository": "Data-Continuation/StegClaw",
+  "consumer_handoff": "docs/HB_RUNTIME_OBSERVABILITY_CONSUMER_MIRROR_HANDOFF.md",
+  "consumer_state_ref": "management/HB_RUNTIME_OBSERVABILITY_CONSUMER.json",
+  "consumer_issue": "Data-Continuation/StegClaw#26",
+  "shared_owner_issue": "StegVerse-Labs/.github#814",
+  "shared_contract": "management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json",
+  "canonical_module": "org-kernel/runtime_observability.py",
+  "resident_projection_module": "heartbeat_runtime/runtime_presence_projection.py",
+  "observed_repository_state_at": "2026-09-02T22:13:45Z",
+  "first_unresolved_shared_runtime_predicate": "resident_process_alive_supervised",
+  "terminal_runtime_predicate": "AUTHENTIC_RESIDENT_REQUEST_CONSUMPTION_AND_EXECUTION_RECEIPT_ATTRIBUTABLE_TO_STEGCLAW_PATH",
+  "predicate_map": {
+    "resident_process_alive_supervised": {
+      "source_class": "direct sovereign runtime activation/presence receipt",
+      "observed": false
+    },
+    "node_runtime_fresh": {
+      "source_class": "HB reference correlated with direct current resident/worker observation",
+      "observed": false
+    },
+    "governed_stegclaw_request_admitted": {
+      "source_class": "lane-specific Interlock admission evidence for StegClaw path",
+      "observed": false
+    },
+    "governed_stegclaw_request_consumed": {
+      "source_class": "lane-specific resident/receiver consumption receipt",
+      "observed": false
+    },
+    "stegclaw_execution_state_transition": {
+      "source_class": "lane-specific execution/state-transition receipt",
+      "observed": false
+    },
+    "authentic_execution_receipt_retained": {
+      "source_class": "retained lane-specific authentic execution receipt",
+      "observed": false
+    },
+    "replay_reconstruction_proven": {
+      "source_class": "lane-specific Master Records/replay reconstruction PASS",
+      "observed": false
+    }
+  },
+  "repository_tracked_generic_runtime_receipts_at_inspection": {
+    "receipts/sovereign-host/activation.latest.json": false,
+    "receipts/sovereign-host/resident-request-dispatch.latest.json": false,
+    "receipts/sovereign-host/resident-execution-request-consumption.latest.json": false,
+    "receipts/sovereign-host/resident-targeted-execution.latest.json": false,
+    "repository_absence_is_runtime_nonexecution_proof": false
+  },
+  "no_new_runtime_implementation_required_for": [
+    "HB reference derivation",
+    "runtime presence projection",
+    "WorkerCoordinator observation",
+    "resident request dispatch substrate",
+    "authority-neutral projection"
+  ],
+  "source_or_ci_may_satisfy_runtime_predicate": false,
+  "heartbeat_grants_authority": false,
+  "hb_derived_signal_grants_authority": false,
+  "intr_governs_admissible_movement": true,
+  "workercoordinator_retains_claim_fence_authority": true,
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "authority_effect": "NONE_OBSERVATION_ONLY"
+}
