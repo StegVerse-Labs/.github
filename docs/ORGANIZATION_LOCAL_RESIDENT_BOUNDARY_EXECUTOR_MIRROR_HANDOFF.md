@@ -3,7 +3,7 @@
 Updated: 2026-09-02
 Repository: `StegVerse-Labs/.github`
 Issue: `#713`
-State: SOURCE_IMPLEMENTED / VALIDATION_PENDING
+State: SOURCE_MERGED_VALIDATED / AUTHENTIC_RESIDENT_EXECUTION_PENDING
 Credential authority: TV/TVC
 GitHub token runtime authority: NONE
 Authority effect: NONE
@@ -92,9 +92,9 @@ Authentic activation remains separate and requires deployment-local evidence pro
 
 ```text
 scoped handoff: ESTABLISHED
-source implementation: IMPLEMENTED_CURRENT_BRANCH
-source validation: PENDING
-merge: PENDING
+source implementation: MERGED_VALIDATED_CURRENT_MAIN
+source validation: PASS
+merge: COMPLETE
 resident activation: NOT OBSERVED
 authentic ingress consumption: NOT OBSERVED
 authentic egress persistence: NOT OBSERVED
@@ -125,3 +125,21 @@ control/admissible-existence-retrospective-conformance.d/organization-local-resi
 The worker consumes only the lexicographically first local ingress JSON item, validates the exact local boundary schema/profile and payload hash, rejects credential/command fields, validates any canonical HB-derived carrier binding, and requires an invocation claim/fence whose generation matches. Its only successful output is a local receipt plus local egress acknowledgement with `canonical_state_changed=false` and `external_side_effect_performed=false`.
 
 COSV source denominator on this branch advances one active worker task: 70 -> 71 active vectorized workers, and 84 -> 85 total active task vectors. Runtime activation remains false.
+
+
+## 2026-09-02 merge evidence
+
+```text
+implementation PR: #777
+merge: 432789eb7674bcefc332434f7e862b43226c609e
+organization control validation: SUCCESS
+Heartbeat Worker Project validation: SUCCESS
+source implementation: MERGED_VALIDATED_CURRENT_MAIN
+authentic ingress consumption: NOT OBSERVED
+authentic egress persistence: NOT OBSERVED
+resident activation: NOT OBSERVED
+credential authority: TV/TVC
+authority effect: NONE
+```
+
+This closes the source/control-plane implementation boundary for issue #713. Authentic resident activation remains deployment-local evidence only and must not be inferred from merge or hosted validation.
