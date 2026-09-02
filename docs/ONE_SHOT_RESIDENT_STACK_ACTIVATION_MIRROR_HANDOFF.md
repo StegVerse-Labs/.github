@@ -68,6 +68,23 @@ Native bootstrap/source-refresh/service materialization includes both:
 - `scripts/consume_one_shot_resident_stack_activation_request.py`
 - `scripts/activate_resident_stack.py`
 
-Current source state: IMPLEMENTED / VALIDATION PENDING.
+Current source state: MERGED / VALIDATED.
 Current authentic request consumption: NOT OBSERVED.
 Current authentic one-shot activation COMPLETE: NOT OBSERVED.
+
+
+## Validated source closure — 2026-09-02
+
+Implementation PR #775 merged as `cf4ed69ebe079dd684c501e67ff4a6e70c828d0f`.
+
+Validation:
+- Heartbeat Worker Project `33661420619` — SUCCESS
+- Cross-Framework Current-Basis Resident Request Validation `33661420625` — SUCCESS
+- organization control plane `33661420611` — SUCCESS
+
+The request is durably `REQUESTED` and registered under selector `one_shot_resident_stack_activation`.
+
+Authentic request consumption: NOT OBSERVED.
+Authentic one-shot activation `COMPLETE`: NOT OBSERVED.
+
+Source/CI success is not activation evidence.
