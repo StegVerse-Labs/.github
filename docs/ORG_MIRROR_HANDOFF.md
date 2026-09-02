@@ -688,3 +688,27 @@ This removes Git-metadata presence as an accidental portable-runtime prerequisit
 Verified portable-source evidence is now preserved across every non-authorizing environment boundary between native service registration and request-specific worker execution. The portable refresh bridge and generic resident dispatcher forward `STEGVERSE_RESIDENT_SOURCE_MANIFEST`; request adapters must still opt in explicitly.
 
 This closes the execution seam where a correctly verified local bundle could lose its provenance locator before a worker evaluated it. No credential or authority-bearing environment variable is added.
+
+
+## StegVerse-001 bounded-autonomy resident runtime — 2026-09-02
+
+Issue #739 owns the first authentic bounded-autonomy runtime lane for `StegVerse-001 / Beta_Orionis`.
+
+Canonical scoped handoff:
+`docs/STEGVERSE_001_BOUNDED_AUTONOMY_RUNTIME_MIRROR_HANDOFF.md`
+
+The lane reuses the existing resident-request dispatcher and WorkerCoordinator independent-task-control path. It creates no scheduler, heartbeat, credential, repository, financial, or sovereign authority.
+
+The first autonomous workload is intentionally bounded to a self-directed resident continuity audit:
+
+```text
+external local TV/TVC-governed autonomy lease
+-> autonomous candidate discovery
+-> bounded plan selection
+-> local carrier/worker state observation
+-> local receipt emission
+-> Master Records custody/reconstruction
+-> SV002 adversarial observation
+```
+
+Source/request existence is not a lease. Missing live lease or resident continuity remains nonterminal. Authentic autonomy is not established until a deployment-local receipt exists and is independently reconstructed.
