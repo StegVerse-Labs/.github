@@ -1,0 +1,15 @@
+{
+  "schema": "stegverse.task-state-vector/v0.1",
+  "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+  "goal_id": "STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+  "state": "HANDOFF_READY",
+  "authority_domain": "INDEPENDENT_TASK_CONTROL",
+  "risk_class": "BOUNDED_LOCAL_OBSERVATION",
+  "external_cost_ceiling_usd": 0,
+  "network_effect": false,
+  "repository_mutation": false,
+  "financial_effect": false,
+  "credential_effect": false,
+  "sovereign_authority_effect": false,
+  "master_records_required_for_activation_claim": true
+}
