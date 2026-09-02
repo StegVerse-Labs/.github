@@ -86,8 +86,8 @@
     "parent_terminal_evidence": "receipts/device-kv-intr/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json state=OBSERVED transition_id=DEVICE_KV_INTR_OBSERVED with exact request/response HB-derived transport/recovery and canonical shared-signal refs/digests"
   },
   "completion": {
-    "source_implementation_state": "CURRENT_MAIN_REBUILT_VALIDATION_PENDING",
-    "runtime_activation_state": "PENDING_PARENT_AND_RESIDENT_EXECUTION",
+    "source_implementation_state": "MERGED_VALIDATED_CURRENT_MAIN",
+    "runtime_activation_state": "PENDING_AUTHENTIC_DEVICE_KV_PARENT_AND_RESIDENT_EXECUTION",
     "parent_terminal_evidence_observed": false,
     "runtime_observation_claimed": false,
     "terminal_evidence": "receipts/endpoint-fanout/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json with state OBSERVED and transition_id ENDPOINT_FANOUT_SOVEREIGN_RUNTIME_OBSERVED",
@@ -97,8 +97,14 @@
       "KV status return remains candidate-only/non-mutating",
       "durable result reconstruction preserves hashes"
     ],
-    "next_authorized_action": "After source validation/merge and authentic DEVICE_KV_INTR_OBSERVED, execute this task only through the existing StegOS/KV resident chain under a fresh WorkerCoordinator admission/claim/fence. Parent request/carrier evidence grants no execution authority.",
-    "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001"
+    "next_authorized_action": "Wait for authentic current DEVICE_KV_INTR_OBSERVED parent evidence, then execute through the existing StegOS/KV resident chain under a fresh WorkerCoordinator admission/claim/fence. Do not infer execution from merge/CI.",
+    "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+    "source_merge": {
+      "pr": 764,
+      "merge_commit": "c3651854a8b172cff0770c7c2a57a977e1bff03e",
+      "organization_control_validation": "SUCCESS",
+      "heartbeat_worker_validation": "SUCCESS"
+    }
   },
   "activation": {
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
