@@ -17,10 +17,10 @@ def make_roots(base:Path):
       "tvc":("TVC","tools/hil_intr_lifecycle_intake.py"),
       "master_records":("orchestration","scripts/watch_stegverse001_autonomy_receipt.py"),
       "micro_node":("micro-node-runtime","tools/run_self_characterization_principal.py"),
-      "tt":("TT",null),
-      "rtg":("RTG",null),
-      "gtg":("GTG",null),
-      "ae":("AE",null),
+      "tt":("TT",None),
+      "rtg":("RTG",None),
+      "gtg":("GTG",None),
+      "ae":("AE",None),
     }
     roots={}
     for name,(folder,rel) in specs.items():
