@@ -2,8 +2,8 @@
 
 Repository: `StegVerse-Labs/.github`  
 Issue: `#806`  
-Branch: `feat/sv011-phase5-source-materialization-806`  
-State: SOURCE_IMPLEMENTATION_ACTIVE  
+Final implementation PR: `#807`  
+State: SOURCE_CONTROL_MERGED_VALIDATED / AUTHENTIC_RESIDENT_MATERIALIZATION_PENDING  
 Authority effect: NONE_SOURCE_MATERIALIZATION_ONLY  
 Activation effect: false
 
@@ -79,3 +79,51 @@ The second consumer may proceed only after the first has materialized a verified
 Materialization is COMPLETE only when all seven bundle files match their pinned Git blob identities before and after atomic installation and a secret-free receipt records the selected local root.
 
 That completion is a source prerequisite only. It does not close Phase 5.
+
+
+## Source/control completion — 2026-09-02
+
+Final implementation:
+- issue `#806`
+- PR `#807`
+- merge `dccf1015eff9bcc398b43a7e9dd4a4ff1c53111e`
+
+Installed:
+- exact seven-file source bundle under `source-bundles/sv011-phase5/`;
+- manifest pinned to `SV-011/.github@cf2777d9d21a97289f4ec7b0d9b0b21597047666`;
+- worker `SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001`;
+- intent request `RESIDENT-EXEC-SV011-PHASE5-SOURCE-MATERIALIZATION-001`;
+- process adapter and at-most-once resident consumer;
+- dispatcher order `sv011_phase5_source_materialization -> sv011_phase5`;
+- source-refresh carriage of `source-bundles`;
+- source-refresh watcher coverage for bundle changes;
+- Admissible-Existence binding at `ADMISSIBLE`;
+- COSV vector `50000000101000`;
+- Phase-5 worker support for either a clean pinned Git checkout or a verified materialized tree.
+
+Exact-head validation before merge:
+- Cross-Framework Current-Basis Resident Request Validation run `33683287492`: SUCCESS
+- Validate organization control plane run `33683287217`: SUCCESS
+- Heartbeat Worker Project run `33683287285`: SUCCESS
+
+Post-merge:
+- resident-request validation run `33683404724`: SUCCESS
+- Heartbeat Worker Project run `33683404628`: SUCCESS
+- Workspace DEVICE_KV validation run `33683404742`: SUCCESS
+
+These are source/control results only. No authentic resident filesystem materialization is inferred.
+
+## Remaining machine-owned transition
+
+The existing resident refresh/dispatcher can now:
+1. carry the exact source bundle into resident WorkerCoordinator source;
+2. visit `sv011_phase5_source_materialization`;
+3. materialize and post-write verify the seven files locally;
+4. then visit `sv011_phase5` in the same dispatcher pass.
+
+Authentic evidence still required:
+- materialization request-consumption receipt;
+- `SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001` COMPLETED receipt;
+- then the existing Phase-5 boundary ALLOW/DENY receipts.
+
+No human source-copy step is required.
