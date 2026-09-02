@@ -1,0 +1,91 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+  "created_at": "2026-09-02T20:59:15Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "SV011-PHASE5-SOURCE-MATERIALIZATION",
+    "objective": "Atomically materialize and verify the exact seven-file SV-011 Phase-5 source bundle on the sovereign resident node before boundary execution, without network source acquisition or authority widening.",
+    "success_predicates": [
+      "source bundle manifest is pinned to SV-011/.github@cf2777d9d21a97289f4ec7b0d9b0b21597047666",
+      "all seven bundle files match their Git blob SHA-1 identities before materialization",
+      "all seven destination files match the same identities after atomic materialization",
+      "materialized identity record is present and authority effect remains NONE",
+      "network_source_fetch_performed=false and credential_used=false"
+    ],
+    "failure_predicates": [
+      "hosted runtime marker is active",
+      "credential-bearing environment is present",
+      "bundle manifest or any Git blob identity mismatches",
+      "atomic destination replacement or post-write verification fails",
+      "source materialization is treated as boundary execution or activation"
+    ],
+    "authority_ceiling": [
+      "read canonical local WorkerCoordinator source bundle",
+      "write only the bounded SV-011 resident source materialization root",
+      "secret-free receipt persistence under receipts/sv011-phase5-source-materialization/**",
+      "no network source acquisition",
+      "no credential use",
+      "no boundary execution, publication, proof acceptance, or autonomous activation authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-Labs/.github#806",
+      "SV-011/.github@cf2777d9d21a97289f4ec7b0d9b0b21597047666",
+      "source-bundles/sv011-phase5/manifest.json",
+      "workers/sv011_phase5_source_materialization_worker.py"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "The existing Phase-5 worker is correctly source-acquisition-free; this bounded prerequisite provides exact local source materialization without changing the execution worker's authority.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#806",
+    "canonical_lineage_key": "sv011:phase5:source-materialization",
+    "derivation_depth": 0,
+    "priority": "release"
+  },
+  "authority": {
+    "authority_source": "StegVerse-Labs/.github#806 + pinned SV-011/.github source identity",
+    "heartbeat_grants_execution_authority": false,
+    "heartbeat_dependency": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "policy_version": "shwp-sv011-phase5-source-materialization-v0.1"
+  },
+  "execution": {
+    "required_capabilities": ["sv011_phase5_source_materialization"],
+    "allowed_paths": ["receipts/sv011-phase5-source-materialization/**"],
+    "allowed_services": [],
+    "max_actions": 4,
+    "max_retries": 64,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 4096,
+    "rate_class": "sv011_phase5_source_materialization"
+  },
+  "activation": {
+    "carrier": "separate_worker_runtime",
+    "heartbeat_dependency": false,
+    "carrier_trigger_required": false,
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "StegVerse-Labs/.github#806 bounded exact-source materialization",
+    "recheck_trigger": "task-control evaluation while no completed exact SV-011 materialization receipt exists",
+    "checkout_policy": "separate_fenced_independent_task_control"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/sv011-phase5-source-materialization/SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "On the existing sovereign resident surface, execute this independently admitted task before the SV-011 Phase-5 boundary task. It may only materialize and verify the exact local source bundle.",
+    "terminal_when": [
+      "one COMPLETED receipt records seven exact verified source blobs at the resident materialization root with network_source_fetch_performed=false and credential_used=false"
+    ]
+  },
+  "block": null
+}
