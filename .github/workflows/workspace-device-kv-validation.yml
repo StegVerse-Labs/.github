@@ -53,6 +53,18 @@ jobs:
           encoded=base64.b64encode((json.dumps(profile)).encode()).decode()
           w={**q,'operation':'COMMIT_CANDIDATE','requested_scope':['personal_profile_update'],'candidate_writeback':{'candidate_type':'PERSONAL_CONTACT_PROFILE_REPLACE','payload_ref':m.DATA_PREFIX+encoded,'requested_destination':m.CANONICAL_PATH.as_posix()}}
           assert m.validate_request(w,node_id='node:1')['operation']=='COMMIT_CANDIDATE'
+          fq={'schema_version':'kv.interlock.request.v1','operation':'REQUEST','request_id':'fq1','requester':{'module':'Site','component':'MyKVPersonalFormProfile'},'purpose':'Read reusable form profile','record_class':'PERSONAL_FORM_PROFILE','requested_scope':['personal_form_profile'],'minimum_necessary_justification':'bounded','authority_ref':'stegos-node://node:1','disclosure_mode':'BOUNDED_CONTEXT'}
+          assert m.validate_request(fq,node_id='node:1')['operation']=='REQUEST'
+          form={'schema':'stegverse.kv.personal_form_profile/v1','identity':{'display_name':None,'legal_name':None,'date_of_birth':None},'contact':{'phones':[],'emails':[]},'addresses':[],'identifiers':[],'filing_defaults':{'organizer_name':None,'manager_managed':None,'registered_agent_name':None,'registered_office_address_label':None,'effective_on_filing':None,'accounting_year_close_month':None},'signature':{'skap_ref':'skap://signing/personal-primary','display_name':None,'auto_apply':False}}
+          fenc=base64.b64encode(json.dumps(form).encode()).decode()
+          fw={**fq,'operation':'COMMIT_CANDIDATE','requested_scope':['personal_form_profile_update'],'candidate_writeback':{'candidate_type':'PERSONAL_FORM_PROFILE_REPLACE','payload_ref':m.FORM_PREFIX+fenc,'requested_destination':m.FORM_PATH.as_posix()}}
+          assert m.validate_request(fw,node_id='node:1')['operation']=='COMMIT_CANDIDATE'
+          bad=json.loads(json.dumps(form));bad['signature']['auto_apply']=True
+          benc=base64.b64encode(json.dumps(bad).encode()).decode()
+          bw={**fw,'candidate_writeback':{**fw['candidate_writeback'],'payload_ref':m.FORM_PREFIX+benc}}
+          try:m._decode_candidate(bw)
+          except m.PersonalProfileDeviceKVError:pass
+          else:raise AssertionError('automatic signature application admitted')
           print('PERSONAL_PROFILE_DEVICE_KV_VALIDATION_PASS')
           PY
       - name: Validate Personal KV root resolution
