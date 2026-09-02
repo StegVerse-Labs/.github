@@ -664,10 +664,14 @@ def main() -> int:
         request_receipt = response_packet["request_receipt"]
         response_receipt = response_packet["response_receipt"]
         endpoint_ref = response_packet.get("endpoint_receipt_ref")
-        validate_transport_receipt(request_receipt, direction="FORWARD", from_role="DEVICE", to_role="KV",
-                                   payload_hash=envelope["payload_hash"], prior=None)
-        validate_transport_receipt(response_receipt, direction="RETURN", from_role="KV", to_role="DEVICE",
-                                   payload_hash=sha256_uri(response), prior=request_receipt["receipt_hash"])
+        if connector.validate_complete(request_packet, [request_receipt]) != request_transport_result:
+            raise ValueError("canonical DEVICE->KV transport result drift")
+        response_packet_obj = server_state.get("response_packet")
+        if response_packet_obj is None:
+            raise ValueError("canonical KV->DEVICE response packet missing")
+        response_transport_result = connector.validate_complete(response_packet_obj, [response_receipt])
+        if response_transport_result != server_state.get("response_transport_result"):
+            raise ValueError("canonical KV->DEVICE transport result drift")
         if load_json(TRANSPORT_RECEIPTS / "device-to-kv.json") != request_receipt:
             raise ValueError("DEVICE->KV durable receipt readback mismatch")
         if load_json(TRANSPORT_RECEIPTS / "kv-to-device.json") != response_receipt:
