@@ -76,6 +76,7 @@ STATIC_FILES = (
     Path("scripts/consume_one_shot_resident_stack_activation_request.py"),
     Path("scripts/consume_sv011_phase5_source_materialization_request.py"),
     Path("scripts/consume_sv011_phase5_resident_execution_request.py"),
+    Path("scripts/consume_glm53_sovereign_lane_request.py"),
     Path("scripts/activate_resident_stack.py"),
     Path("scripts/continue_stegverse001_evidence_chain.py"),
     Path("scripts/dispatch_resident_execution_requests.py"),
