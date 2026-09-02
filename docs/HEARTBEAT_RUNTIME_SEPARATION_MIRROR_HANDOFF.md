@@ -299,3 +299,44 @@ tests/test_sovereign_heartbeat_service.py
 This closes the machine-executable stale-resident source seam after the
 request-consumption repair. Authentic deployment-local receipts remain the next
 runtime evidence goal.
+
+
+## 2026-09-02 final issue #122 separation reconciliation
+
+The remaining stale source obligation under issue #122 was the first `GATE-PASSBAND-REFERENCE-SNAPSHOT-010` monitor, whose required-state set still encoded the retired G18 downstream gate.
+
+That monitor is now terminalized as **superseded historical monitoring provenance**, without rewriting its OPEN 0/3 snapshot. The reference-snapshot mechanism remains available for new explicit policy revisions, but the obsolete G18 monitor is no longer a current runtime or archive gate.
+
+Issue #263 already completed declared HB32 downstream consumer propagation. Current heartbeat/control-plane source separation is therefore complete:
+
+```text
+heartbeat activation: TERMINAL ACTIVE_PROTOCOL_VERIFIED
+carrier progression: OSCILLATOR_ONLY
+WorkerCoordinator: separate authority
+HB-derived transport/carrier authority: NONE
+G18 downstream gate: RETIRED
+historical snapshot chain: PRESERVED / NON-AUTHORITATIVE
+downstream HB32 propagation: COMPLETE
+TV/TVC credential authority: PRESERVED
+GitHub runtime authority: NONE
+third-party runtime authority: NONE
+```
+
+Independent consumer/runtime issues remain governed by their own handoffs and must not be reclassified as heartbeat blockers.
+
+
+### #122 validator-owner correction
+
+The first closure attempt correctly exposed an invariant in `validate_heartbeat_carrier_contract.py`: the semantics audit must continue to identify `StegVerse-Labs/.github#122` as `runtime_refactor_owner` even after the source obligations become complete. Completion therefore changes `runtime_refactor_required` and the completion record, not the canonical owner identity.
+
+Corrected branch state:
+
+```text
+runtime_refactor_owner: StegVerse-Labs/.github#122
+runtime_refactor_required: false
+audit_state: INDEPENDENT_OSCILLATOR_CORRECTION_COMPLETE
+organization-control validation: SUCCESS (33671770776)
+heartbeat validation: RE-RUN_REQUIRED_ON_CORRECTED_HEAD
+```
+
+This preserves issue identity/history while preventing the owner field from being misused as an incompletion flag.
