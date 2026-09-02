@@ -82,6 +82,7 @@ COPY_FILES = (
     "scripts/dispatch_resident_execution_requests.py",
     "scripts/refresh_and_dispatch_resident_requests.py",
     "scripts/run_stegverse001_activation_progression.py",
+    "scripts/project_hb_runtime_presence.py",
     "scripts/materialize_live_cosv_packet.py",
     "scripts/cosv.py",
     "scripts/cosv_state_packet.py",
