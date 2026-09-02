@@ -3,7 +3,7 @@
 Updated: 2026-09-02
 Repository: `StegVerse-Labs/.github`
 Issue: `#616`
-State: SOURCE_IMPLEMENTED / VALIDATION_PENDING
+State: SOURCE_MERGED_VALIDATED / AUTHENTIC_PUBLIC_LEASE_OPEN_EVIDENCE_PENDING
 Credential authority: TV/TVC
 GitHub token runtime authority: NONE
 Authority effect: NONE
@@ -104,3 +104,22 @@ Implemented source now:
 - handles an already-open lease only when the persisted public-observation evidence binds to the exact open snapshot.
 
 Source validation and merge remain pending. Authentic external public observation/runtime execution remains unobserved.
+
+
+## 2026-09-02 validated source closure
+
+```text
+implementation PR: #782
+merge: 921b55eb1b93b621fb0ae0e648ab789dfb056731
+organization control validation: SUCCESS
+Heartbeat Worker Project validation: SUCCESS
+source implementation: MERGED_VALIDATED_CURRENT_MAIN
+authentic independent public HTTPS observation: NOT OBSERVED
+authentic deployment-local LEASE_OPEN transition: NOT OBSERVED
+receiver READY: NOT OBSERVED
+public READ_OBSERVATION round trip: NOT OBSERVED
+```
+
+The source gate is closed. The materialization consumer now dispatches the existing WorkerCoordinator task only after the same persisted canonical lease has been independently verified against the public Universal InTr profile and evolved from `PUBLIC_VERIFYING` to `LEASE_OPEN`.
+
+Merge and hosted validation are not evidence that the public profile was actually observed or that the deployment-local lease has opened.
