@@ -126,3 +126,15 @@ sv011_phase5_source_materialization
 ```
 
 The source materializer has no boundary-execution authority; the Phase-5 worker has no source-acquisition authority. The split is preserved.
+
+
+## Materialized-source capture identity correction — 2026-09-02
+
+The Phase-5 worker receipt now records `sv011_source_basis_commit` independently of Git `HEAD`.
+
+Reason:
+- clean Git checkout mode has both `sv011_source_head` and the pinned source-basis commit;
+- verified materialized-tree mode intentionally has no `.git` directory, so `sv011_source_head` is empty by design;
+- both modes are still bound to the exact pinned source basis `cf2777d9d21a97289f4ec7b0d9b0b21597047666` and the exact seven Git blob identities.
+
+This field exists to preserve downstream success-package capture without converting the materialized tree into a synthetic Git repository or weakening exact-source verification. Authority effect remains unchanged.
