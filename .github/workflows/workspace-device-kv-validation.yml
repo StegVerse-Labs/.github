@@ -11,6 +11,7 @@ on:
       - 'scripts/bootstrap_sovereign_runtime.py'
       - 'scripts/install_sovereign_heartbeat_service.py'
       - 'tests/test_workspace_device_kv_query_extension.py'
+      - 'tests/test_personal_kv_provider_root_resolution.py'
       - '.github/workflows/workspace-device-kv-validation.yml'
   workflow_dispatch:
 permissions:
@@ -72,5 +73,7 @@ jobs:
             else:raise AssertionError('missing provider configuration admitted')
           print('PERSONAL_KV_ROOT_RESOLUTION_PASS')
           PY
+      - name: Validate Personal KV provider-root regression suite
+        run: python -m pytest -q tests/test_personal_kv_provider_root_resolution.py
       - name: Boundary declaration
         run: echo 'VALIDATION_ONLY authority_effect=NONE runtime_activation=false'
