@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stegverse:hb-runtime-resident-observability:v1",
+  "title": "HB Runtime Presence / Resident Observability Projection",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema",
+    "hb_reference",
+    "authority",
+    "resident",
+    "persisted_observers",
+    "evidence",
+    "runtime_truth",
+    "projection_sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "stegverse.hb-runtime-resident-observability/v1"
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "hb_grants_authority",
+        "runtime_signal_grants_authority",
+        "credential_authority"
+      ],
+      "properties": {
+        "hb_grants_authority": {
+          "const": false
+        },
+        "runtime_signal_grants_authority": {
+          "const": false
+        },
+        "credential_authority": {
+          "const": "TV/TVC"
+        }
+      }
+    },
+    "resident": {
+      "type": "object",
+      "required": [
+        "process_observed",
+        "current"
+      ],
+      "properties": {
+        "process_observed": {
+          "type": "boolean"
+        },
+        "current": {
+          "type": "boolean"
+        }
+      }
+    },
+    "projection_sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    }
+  }
+}
