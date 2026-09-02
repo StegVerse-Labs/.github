@@ -33,6 +33,11 @@ resident request
 - StegVerse-Labs/TV
 - StegVerse-Labs/TVC
 - master-records/orchestration
+- StegVerse-002/micro-node-runtime
+- Admissible-Existence/TT
+- Admissible-Existence/RTG
+- Admissible-Existence/GTG
+- Admissible-Existence/AE
 
 The consumer may use preserved non-secret environment locators or `STEGVERSE_REPO_ROOTS_JSON`. Missing roots produce `SOURCE_ROOTS_PENDING`; no network source fetch is attempted.
 
@@ -88,3 +93,26 @@ Authentic request consumption: NOT OBSERVED.
 Authentic one-shot activation `COMPLETE`: NOT OBSERVED.
 
 Source/CI success is not activation evidence.
+
+
+## Execution-path contract repair — 2026-09-02
+
+Issue #789 repairs a post-merge contract drift between this request consumer and `scripts/activate_resident_stack.py`.
+
+The complete resident activator now requires the pinned SV002 principal/formal source roots. The consumer therefore resolves and passes:
+
+```text
+STEGVERSE_MICRO_NODE_RUNTIME_ROOT
+STEGVERSE_TT_ROOT
+STEGVERSE_RTG_ROOT
+STEGVERSE_GTG_ROOT
+STEGVERSE_AE_ROOT
+```
+
+or the corresponding `STEGVERSE_REPO_ROOTS_JSON` entries.
+
+The consumer does not validate or select formalism commits. Exact pinned-commit validation remains the responsibility of the sovereign bundle packager. Missing roots remain retryable `SOURCE_ROOTS_PENDING`.
+
+This repair matters to SV001 progression because the generic resident dispatcher visits SV001 before the one-shot stack activator. On a fresh resident, the first SV001 attempt may precede complete source materialization. The one-shot activation must therefore be capable of completing its materialize -> StegDeploy -> resident bootstrap path so that the nested/new resident bootstrap dispatch can revisit SV001 with the required TV/TVC/Master Records/formal sources present.
+
+Watching for a receipt is not the remaining work; executing this progression is.

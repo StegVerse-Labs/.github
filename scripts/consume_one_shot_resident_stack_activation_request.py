@@ -17,6 +17,11 @@ ENV_KEYS={
   "tv":"STEGVERSE_TV_ROOT",
   "tvc":"STEGVERSE_TVC_ROOT",
   "master_records":"STEGVERSE_MASTER_RECORDS_ROOT",
+  "micro_node":"STEGVERSE_MICRO_NODE_RUNTIME_ROOT",
+  "tt":"STEGVERSE_TT_ROOT",
+  "rtg":"STEGVERSE_RTG_ROOT",
+  "gtg":"STEGVERSE_GTG_ROOT",
+  "ae":"STEGVERSE_AE_ROOT",
 }
 REPO_KEYS={
   "llm":"StegVerse-org/LLM-adapter",
@@ -25,6 +30,11 @@ REPO_KEYS={
   "tv":"StegVerse-Labs/TV",
   "tvc":"StegVerse-Labs/TVC",
   "master_records":"master-records/orchestration",
+  "micro_node":"StegVerse-002/micro-node-runtime",
+  "tt":"Admissible-Existence/TT",
+  "rtg":"Admissible-Existence/RTG",
+  "gtg":"Admissible-Existence/GTG",
+  "ae":"Admissible-Existence/AE",
 }
 REQUIRED_FILES={
   "llm":"scripts/stegdeploy_bootstrap.py",
@@ -34,6 +44,7 @@ REQUIRED_FILES={
   "tv":"scripts/tv_run_resident_operational_proof.py",
   "tvc":"tools/hil_intr_lifecycle_intake.py",
   "master_records":"scripts/watch_stegverse001_autonomy_receipt.py",
+  "micro_node":"tools/run_self_characterization_principal.py",
 }
 
 def stable(v:Any)->str:
@@ -78,9 +89,14 @@ def resolve_roots(values:Mapping[str,str]|None=None)->tuple[dict[str,Path],list[
             candidate=mapped[REPO_KEYS[name]]
         else:
             missing.append(name); continue
-        required=candidate/REQUIRED_FILES[name]
-        if not required.is_file():
-            missing.append(name); continue
+        required_rel=REQUIRED_FILES.get(name)
+        if required_rel:
+            required=candidate/required_rel
+            if not required.is_file():
+                missing.append(name); continue
+        else:
+            if not (candidate/".git").is_dir():
+                missing.append(name); continue
         roots[name]=candidate
     return roots,missing
 
@@ -128,6 +144,11 @@ def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run,env:
       "--tv-root",str(roots["tv"]),
       "--tvc-root",str(roots["tvc"]),
       "--master-records-root",str(roots["master_records"]),
+      "--micro-node-root",str(roots["micro_node"]),
+      "--tt-root",str(roots["tt"]),
+      "--rtg-root",str(roots["rtg"]),
+      "--gtg-root",str(roots["gtg"]),
+      "--ae-root",str(roots["ae"]),
       "--receipt-path",str(runtime/"receipts/sovereign-host/resident-stack-activation.latest.json"),
     ]
     completed=runner(command,cwd=runtime,capture_output=True,text=True,check=False,timeout=7200,env=dict(os.environ if env is None else env))
