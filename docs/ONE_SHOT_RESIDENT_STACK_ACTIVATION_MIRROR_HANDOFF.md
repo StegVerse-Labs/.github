@@ -33,6 +33,11 @@ resident request
 - StegVerse-Labs/TV
 - StegVerse-Labs/TVC
 - master-records/orchestration
+- StegVerse-002/micro-node-runtime
+- Admissible-Existence/TT
+- Admissible-Existence/RTG
+- Admissible-Existence/GTG
+- Admissible-Existence/AE
 
 The consumer may use preserved non-secret environment locators or `STEGVERSE_REPO_ROOTS_JSON`. Missing roots produce `SOURCE_ROOTS_PENDING`; no network source fetch is attempted.
 
@@ -88,3 +93,10 @@ Authentic request consumption: NOT OBSERVED.
 Authentic one-shot activation `COMPLETE`: NOT OBSERVED.
 
 Source/CI success is not activation evidence.
+
+
+## 2026-09-02 complete-root resolution repair
+
+A source/control defect was identified after source closure: the request consumer preflighted only seven roots while `activate_resident_stack.py` requires the seven integration roots plus `micro-node-runtime` and pinned `TT/RTG/GTG/AE` roots. Missing formal/model roots could therefore bypass `SOURCE_ROOTS_PENDING` and become an opaque activation attempt.
+
+The repaired consumer now resolves and validates the complete twelve-root set and passes every root explicitly to the activator. Missing roots remain retryable, non-authorizing `SOURCE_ROOTS_PENDING` conditions. This repair does not claim resident consumption or activation.
