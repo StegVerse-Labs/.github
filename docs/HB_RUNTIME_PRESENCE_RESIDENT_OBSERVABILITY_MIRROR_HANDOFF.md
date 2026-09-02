@@ -2,7 +2,8 @@
 
 Repository: `StegVerse-Labs/.github`
 Updated: 2026-09-02
-State: SHARED_CONTRACT_SOURCE_INITIALIZATION
+Issue: #814
+State: SOURCE_IMPLEMENTED_VALIDATION_PENDING
 Authority effect: NONE
 
 ## Purpose
@@ -70,3 +71,64 @@ Runtime completion:
 - authentic machine-produced receipts populate the applicable existing paths and the shared projection reports them without inference.
 
 Source/CI/merge do not satisfy runtime completion.
+
+
+## Shared projection implementation — issue #814
+
+Implemented on `feature/hb-runtime-presence-observability-814`:
+
+- `heartbeat_runtime/runtime_presence_projection.py`
+- `scripts/project_hb_runtime_presence.py`
+- `tests/test_runtime_presence_projection.py`
+
+Resident materialization integration:
+- `scripts/bootstrap_sovereign_runtime.py`
+- `scripts/install_sovereign_heartbeat_service.py`
+- `scripts/refresh_sovereign_worker_runtime_source.py`
+
+The projector reads runtime-local evidence only. It never marks resident liveness from HB progression alone. `runtime_alive_observed=true` requires a direct deployment-local activation receipt whose predicates include both `native_service_active=true` and `continuous_runtime_live=true`.
+
+Request, consumption, execution, and reconstruction remain four independent evidence slots. A present HB signal cannot satisfy the execution or reconstruction slots.
+
+## KnowledgeVault recovery/provider consumer binding
+
+Consumer repositories:
+- `StegVerse-Labs/continuity-vault-kit`
+- `StegVerse-Labs/Site`
+
+Current missing predicate chain:
+
+```text
+TVC-owned provider session active
+-> exact provider-root materialization observed
+-> authentic node-origin MY_KV_INSTALLATION_STATUS request
+-> DEVICE_KV consumption observed
+-> HB-derived KV->DEVICE return recovered exactly
+-> retained device-kv-query-response receipt
+-> Site readback/sync observation
+-> recovery/provider reconstruction
+```
+
+Existing canonical owners are reused:
+- provider root: `docs/PERSONAL_KV_PROVIDER_ROOT_MIRROR_HANDOFF.md`
+- DEVICE_KV request/return: `docs/DEVICE_KV_QUERY_RESPONSE_MIRROR_HANDOFF.md`
+- HB/InTr transport: `docs/HB_INTR_DERIVED_CARRIER_MIRROR_HANDOFF.md`
+- resident runtime: HeartBeat-separated native `WorkerCoordinator`
+- credential authority: TV/TVC
+
+No KnowledgeVault-specific heartbeat, scheduler, resident executor, signal protocol, or credential broker is authorized.
+
+## Source lifecycle
+
+```text
+shared projection implementation: IMPLEMENTED_ON_BRANCH
+resident install/refresh integration: IMPLEMENTED_ON_BRANCH
+hosted validation: PENDING
+merged: NO
+runtime projection observed: NO
+KnowledgeVault provider session observed: NO
+KnowledgeVault DEVICE_KV installation-status consumption observed: NO
+KnowledgeVault HB-derived return observed: NO
+Site readback observed: NO
+authority_effect: NONE_OBSERVATION_ONLY
+```
