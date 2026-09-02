@@ -54,7 +54,7 @@
   },
   "historical_evidence_rewrite_allowed": false,
   "runtime_refactor_required": false,
-  "runtime_refactor_owner": "NONE_TERMINAL_ISSUE_122",
+  "runtime_refactor_owner": "StegVerse-Labs/.github#122",
   "audit_state": "INDEPENDENT_OSCILLATOR_CORRECTION_COMPLETE",
   "runtime_refactor_completion": {
     "heartbeat_protocol_activation": "ACTIVE_PROTOCOL_VERIFIED",
@@ -64,6 +64,10 @@
     "worker_control_plane_separated": true,
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": "NONE",
-    "authority_effect": "NONE"
+    "authority_effect": "NONE",
+    "owner_issue": "StegVerse-Labs/.github#122",
+    "owner_issue_role": "historical_and_current_separation_authority_record",
+    "source_obligations_complete": true,
+    "runtime_activation_reopened": false
   }
 }
