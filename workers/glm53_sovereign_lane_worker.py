@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import subprocess
 import sys
@@ -25,6 +26,14 @@ FORBIDDEN=("GITHUB_TOKEN","GH_TOKEN","GITHUB_PAT","ACTIONS_RUNTIME_TOKEN","OPENA
 
 
 def truthy(v): return str(v or "").strip().lower() not in {"","0","false","no"}
+
+def measurement(name: str):
+    raw=os.environ.get(name)
+    if raw is None or not str(raw).strip(): return None
+    try: value=float(raw)
+    except ValueError as exc: raise RuntimeError(f"{name} must be a finite nonnegative number") from exc
+    if not math.isfinite(value) or value < 0: raise RuntimeError(f"{name} must be a finite nonnegative number")
+    return value
 
 def git_blob(raw: bytes) -> str:
     return hashlib.sha1(f"blob {len(raw)}\0".encode()+raw).hexdigest()
@@ -87,11 +96,20 @@ def main() -> int:
             endpoint=os.environ.get("STEGVERSE_GLM53_ENDPOINT")
             model_path=os.environ.get("STEGVERSE_GLM53_MODEL_PATH")
             runtime_id=os.environ.get("STEGVERSE_GLM53_RUNTIME_IDENTITY") or "stegverse-sovereign-glm53"
+            measurements={
+                "--energy-kwh":measurement("STEGVERSE_GLM53_ENERGY_KWH"),
+                "--hardware-amortization-usd":measurement("STEGVERSE_GLM53_HARDWARE_AMORTIZATION_USD"),
+                "--energy-cost-usd":measurement("STEGVERSE_GLM53_ENERGY_COST_USD"),
+                "--storage-network-runtime-overhead-usd":measurement("STEGVERSE_GLM53_STORAGE_NETWORK_RUNTIME_OVERHEAD_USD"),
+            }
             command=[sys.executable,str(tool),"--receipt",str(PRODUCER_RECEIPT)]
             if endpoint:
                 command += ["--endpoint",endpoint,"--runtime-identity",runtime_id,"--write",str(CONSUMER_EVIDENCE)]
             if model_path:
                 command += ["--model-path",model_path]
+            for flag,value in measurements.items():
+                if value is not None:
+                    command += [flag,str(value)]
             done=subprocess.run(command,cwd=micro,capture_output=True,text=True,check=False,env=child_env(),timeout=900)
             producer=json.loads(PRODUCER_RECEIPT.read_text(encoding="utf-8")) if PRODUCER_RECEIPT.is_file() else None
             evidence=json.loads(CONSUMER_EVIDENCE.read_text(encoding="utf-8")) if CONSUMER_EVIDENCE.is_file() else None
@@ -112,6 +130,7 @@ def main() -> int:
                 "consumer_evidence_ref":"receipts/glm53-sovereign-lane/runtime-evidence.glm-sovereign.json" if success else None,
                 "private_endpoint_declared":bool(endpoint),
                 "model_path_declared":bool(model_path),
+                "cost_measurements_declared":{key.removeprefix("--"): value is not None for key,value in measurements.items()},
                 "vendor_api_credential_used":False,
                 "network_model_download_performed":False,
                 "hosted_inference_substitution_performed":False,
