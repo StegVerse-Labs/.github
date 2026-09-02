@@ -46,7 +46,7 @@ def git(root: Path,*args):
     return subprocess.run(["git","-C",str(root),*args],capture_output=True,text=True,check=False,timeout=20)
 
 def git_blob_sha1(raw: bytes) -> str:
-    return hashlib.sha1(f"blob {len(raw)}\\0".encode() + raw).hexdigest()
+    return hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
 
 def exact_blob_status(root: Path) -> tuple[bool, dict[str, str]]:
     observed: dict[str, str] = {}
