@@ -70,3 +70,45 @@ Runtime completion:
 - authentic machine-produced receipts populate the applicable existing paths and the shared projection reports them without inference.
 
 Source/CI/merge do not satisfy runtime completion.
+
+
+## 2026-09-02 shared source implementation and first consumer binding
+
+Installed shared source:
+- `org-kernel/runtime_observability.py`
+- `schemas/hb-runtime-resident-observability.schema.json`
+- `management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json`
+- `scripts/project_runtime_observability.py`
+- `org-kernel/tests/test_runtime_observability.py`
+
+First consumer binding:
+- `control/runtime-observability-consumers/site-my-kv-personal-form-profile.json`
+- consumer: `StegVerse-Labs/Site/docs/MY_KV_PERSONAL_FORM_PROFILE_MIRROR_HANDOFF.md`
+
+Direct repository-state inspection at 2026-09-02T16:59:00-05:00 found:
+- canonical HB reference derivation available from HB32 anchor;
+- inspection-time deterministic reference: HB 87474032;
+- persisted carrier observation remains HB31 with `last_cycle_at=2026-08-18T19:47:00Z`;
+- persisted worker observation remains `runtime_tick=2`, `CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION`, same last-cycle timestamp;
+- no current resident-process liveness is inferred from those stale persisted snapshots;
+- canonical resident request dispatcher/consumer and KV->SKAP InTr source already exist;
+- authentic current-iPhone Personal Form Profile write/readback and SKAP signing-profile custody are not observed.
+
+The shared projection is deliberately fail-closed: HB progression, activation source presence, worker leases, or evidence-file presence do not promote request consumption, receiver readiness, execution/state transition, or reconstruction.
+
+No hosted validation run was exposed for the new source commits at inspection time. No CI/runtime PASS is claimed.
+
+## TVC semantic boundary
+
+The current TVC credential-model consistency lane still prohibits session-inferred generalized credential/vault/signing-manager expansion. Therefore this consolidation does not add a new TVC e-signature credential class.
+
+The consumer may store a non-secret `skap://signing/<profile-id>` reference in KV source, but authentic SKAP signing-profile custody remains blocked until an exact TV/TVC credential-class contract is admitted under the existing consistency process.
+
+## Current runtime predicates for My KV consumer
+
+1. `PERSONAL_FORM_PROFILE_WRITE_CONSUMED`
+2. `PERSONAL_FORM_PROFILE_EXACT_READBACK_VERIFIED`
+3. `PERSONAL_FORM_PROFILE_READ_OBSERVED`
+4. `SKAP_SIGNING_PROFILE_CUSTODY_OBSERVED`
+
+The first three can be satisfied only by the current registered iPhone/device-local DEVICE_KV execution. The fourth must consume the existing canonical KV->SKAP InTr path under TV/TVC authority.
