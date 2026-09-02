@@ -288,3 +288,10 @@ terminal SV001 -> downstream MR/SV002 continuation executes independently
 ```
 
 Watching, waiting, or polling is not an authorized completion action.
+
+
+## Shared canonical HB/InTr runtime-observability binding — 2026-09-02
+
+SV001 now consumes the organization-level shared observability substrate at `org-kernel/runtime_observability.py` through `scripts/project_stegverse001_runtime_observability.py` and `control/runtime-observability-bindings.d/stegverse001-bounded-autonomy.json`.
+
+This binding reports resident/HB context and the distinct SV001 evidence slots without changing authority or completion semantics. Missing evidence remains missing. HB/reference state does not satisfy request consumption, execution, reconstruction, or SV002 disposition.
