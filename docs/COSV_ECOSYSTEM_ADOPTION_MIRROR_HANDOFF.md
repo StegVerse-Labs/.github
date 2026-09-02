@@ -1024,3 +1024,19 @@ The promotion records COSV coverage only. StegClaw's own release lane remains bl
 No release, propagation, activation, runtime proof, credential authority, or cross-repository execution authority is inferred.
 
 Authority effect: NONE.
+
+
+### StegClaw promotion merge evidence
+
+```text
+issue: #746 CLOSED_COMPLETED
+superseded PR: #747 CLOSED after base advance
+validated replacement PR: #748
+exact head: e10fed4b20c62d70ddd44df026f00cc6300df3d8
+organization control-plane validation: 33633899838 SUCCESS
+heartbeat validation: 33633900122 SUCCESS
+merge: 465f4a61fe6c9c1b231ab8e983c5b0ef011fc5c6
+strict repository adoption: 9/28 = 32.14%
+```
+
+The failed merge attempt on PR #747 was not forced; the change was rebuilt from current main and revalidated before PR #748 merged.
