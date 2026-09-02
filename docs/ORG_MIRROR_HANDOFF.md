@@ -865,3 +865,21 @@ clean local master-records/orchestration
 ```
 
 This is source transport/provenance only. It grants no custody, reconstruction, execution, credential, repository, heartbeat, or sovereign authority. Authentic resident materialization and evidence remain separately observable.
+
+
+## 2026-09-02 Master Records portable-source producer closure
+
+Issue #766 repairs the source-bundle producer/consumer mismatch for the SV001 evidence chain.
+
+The existing complete resident activator already supplies `--master-records-root`, and StegDeploy already maps `vendor/master-records-orchestration` to `STEGVERSE_MASTER_RECORDS_ROOT`. The canonical packager now implements the missing producer side with a clean-local-Git proof pinned to Master Records resident-intake floor:
+
+`d593c920c1630aa5da20cc2622196f8676a74afd`
+
+Protected source:
+
+```text
+scripts/watch_stegverse001_autonomy_receipt.py
+scripts/import_stegverse001_autonomy_receipt.py
+```
+
+Any missing floor, dirty worktree, protected-path drift, or missing protected file fails source packaging. The bundle remains source transport only and grants no custody, reconstruction, execution, credential, repository, network, heartbeat, or sovereign authority.
