@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/hb-runtime-presence-resident-observability.schema.json",
+  "title": "HB Runtime Presence / Resident Observability Projection",
+  "type": "object",
+  "required": ["schema","projection_role","resident","hb_reference","worker_runtime","governed_request","retained_evidence","distinct_runtime_predicates","authority"],
+  "properties": {
+    "schema": {"const": "stegverse.hb-runtime-presence-resident-observability/v1"},
+    "projection_role": {"const": "OBSERVATION_ONLY"},
+    "runtime_root": {"type": "string"},
+    "resident": {"type": "object"},
+    "hb_reference": {"type": "object"},
+    "worker_runtime": {"type": "object"},
+    "governed_request": {"type": "object"},
+    "retained_evidence": {"type": "object"},
+    "distinct_runtime_predicates": {
+      "type": "object",
+      "required": ["resident_process_alive_supervised","node_runtime_fresh","governed_request_consumed","runtime_execution_completed","receipt_retained","replay_reconstruction_proven"],
+      "properties": {
+        "resident_process_alive_supervised": {"type": "boolean"},
+        "node_runtime_fresh": {"type": "boolean"},
+        "governed_request_consumed": {"type": "boolean"},
+        "runtime_execution_completed": {"type": "boolean"},
+        "receipt_retained": {"type": "boolean"},
+        "replay_reconstruction_proven": {"type": "boolean"}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": ["heartbeat_grants_execution_authority","heartbeat_grants_admission_authority","heartbeat_grants_claim_fence_authority","heartbeat_grants_transition_authority","projection_grants_authority","credential_authority","github_token_runtime_authority"],
+      "properties": {
+        "heartbeat_grants_execution_authority": {"const": false},
+        "heartbeat_grants_admission_authority": {"const": false},
+        "heartbeat_grants_claim_fence_authority": {"const": false},
+        "heartbeat_grants_transition_authority": {"const": false},
+        "projection_grants_authority": {"const": false},
+        "credential_authority": {"const": "TV/TVC"},
+        "github_token_runtime_authority": {"const": "NONE"}
+      }
+    }
+  }
+}
