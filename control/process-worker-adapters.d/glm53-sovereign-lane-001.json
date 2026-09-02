@@ -1,0 +1,43 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "GLM53-SOVEREIGN-LANE-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:glm53-sovereign-lane-v1",
+      "authority_ref": "handoffs/SHWP-GLM53-SOVEREIGN-LANE-001.json#authority",
+      "capabilities": [
+        "glm53_sovereign_lane_evidence"
+      ],
+      "command": [
+        "python",
+        "workers/glm53_sovereign_lane_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_MICRO_NODE_RUNTIME_ROOT",
+        "STEGVERSE_GLM53_ENDPOINT",
+        "STEGVERSE_GLM53_MODEL_PATH",
+        "STEGVERSE_GLM53_RUNTIME_IDENTITY",
+        "HOME",
+        "USER",
+        "LOGNAME",
+        "SHELL",
+        "PATH",
+        "PYTHONPATH",
+        "LANG",
+        "LC_ALL",
+        "TMPDIR",
+        "XDG_CONFIG_HOME",
+        "XDG_STATE_HOME"
+      ],
+      "notes": [
+        "Consumes only already-local micro-node runtime source.",
+        "Uses only private/loopback GLM endpoint supplied by resident environment.",
+        "No model download, hosted substitution, provider credential, or publication authority."
+      ],
+      "timeout_seconds": 600,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
