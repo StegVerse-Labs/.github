@@ -56,6 +56,7 @@ NONSECRET_ENV = (
     "STEGVERSE_SV_DN1_REPOSITORY_PERSISTENCE_DISPATCH_STATE_ROOT",
     "STEGVERSE_TVC_SV_DN1_MERGE_SPOOL_ROOT",
     "STEGVERSE_RESIDENT_SOURCE_MANIFEST", "STEGVERSE_MASTER_RECORDS_ROOT",
+    "STEGVERSE_ORG_CONTROL_ROOT", "STEGVERSE_SV002_ORG_ROOT",
 )
 CONSUMERS = (
     ("ecosystem_chat", "scripts/consume_resident_execution_request.py"),
@@ -72,6 +73,7 @@ CONSUMERS = (
     ("bootstrap_v1_intr_bundle_delivery", "scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py"),
     ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),
     ("sv002_self_characterization", "scripts/consume_sv002_self_characterization_request.py"),
+    ("sv002_org_runtime_activation", "scripts/consume_sv002_org_runtime_activation_request.py"),
     ("healer_sovereign_scheduler", "scripts/consume_healer_sovereign_scheduler_request.py"),
     ("universal_governance_enforced_reference", "scripts/consume_universal_governance_enforced_reference_request.py"),
     ("cross_framework_current_basis_v04", "scripts/consume_cross_framework_current_basis_v04_request.py"),
