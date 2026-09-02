@@ -238,3 +238,24 @@ Stage 2: stegverse001_bounded_autonomy
 The procedure does not loop, watch, poll, or sleep waiting for evidence. If a stage is nonterminal, its `next_required_machine_transition` names the work to execute/repair before a later bounded invocation.
 
 After terminal SV001 execution, the already-merged consumer continues Master Records custody/reconstruction and SV002 adversarial disposition independently without re-running terminal autonomy.
+
+## Stack-activation execution-order gate — 2026-09-02
+
+Issue #803 makes the staged execution order enforceable rather than advisory.
+
+When the current one-shot resident-stack request is present, the SV001 consumer now requires its matching consumption receipt to prove `activation_complete=true` before invoking WorkerCoordinator/autonomy execution.
+
+```text
+one-shot request present + activation incomplete
+-> SV001 state STACK_ACTIVATION_PENDING
+-> runtime_execution_attempted=false
+-> next_required_machine_transition=EXECUTE_ONE_SHOT_RESIDENT_STACK_ACTIVATION
+
+one-shot activation COMPLETE
+-> completion receipt persisted
+-> immediate bounded progression helper invoked once
+-> Stage 1 re-enters as ALREADY_CONSUMED
+-> Stage 2 executes stegverse001_bounded_autonomy
+```
+
+An already-terminal SV001 receipt still wins and is never re-executed; downstream Master Records/SV002 continuation remains independently retryable.
