@@ -50,7 +50,7 @@ class OrganizationFederationCOSVClosureTests(unittest.TestCase):
         self.assertEqual(coverage["active_worker_task_ids_missing_canonical_cosv"], [])
         self.assertEqual(coverage["active_organization_task_ids_missing_canonical_cosv"], [])
         closure = coverage["active_task_vector_coverage_closure"]
-        self.assertEqual(closure["total_active_tasks_vectorized"], 85)
+        self.assertEqual(closure["total_active_tasks_vectorized"], 86)
         self.assertTrue(closure["source_projection_complete"])
         self.assertFalse(closure["runtime_activation_claimed"])
         self.assertEqual(closure["authority_effect"], "NONE")
