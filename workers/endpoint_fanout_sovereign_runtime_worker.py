@@ -216,13 +216,30 @@ def main() -> int:
             "parent receipt state=OBSERVED and transition_id=DEVICE_KV_INTR_OBSERVED",
             epoch,
         )
-    if parent.get("credential_authority") != "TV/TVC" or parent.get("canonical_kv_mutation") is not False:
+    parent_transport_ok = (
+        parent.get("credential_authority") == "TV/TVC"
+        and parent.get("canonical_kv_mutation") is False
+        and parent.get("hb_derived_carrier_transport_observed") is True
+        and parent.get("request_transported_on_hb_derived_carrier") is True
+        and parent.get("response_transported_on_hb_derived_carrier") is True
+        and parent.get("request_carrier_packet_recovery_verified") is True
+        and parent.get("response_carrier_packet_recovery_verified") is True
+        and isinstance(parent.get("request_shared_hb_signal_ref"), str)
+        and bool(parent.get("request_shared_hb_signal_ref"))
+        and isinstance(parent.get("response_shared_hb_signal_ref"), str)
+        and bool(parent.get("response_shared_hb_signal_ref"))
+        and isinstance(parent.get("request_shared_hb_signal_sha256"), str)
+        and bool(parent.get("request_shared_hb_signal_sha256"))
+        and isinstance(parent.get("response_shared_hb_signal_sha256"), str)
+        and bool(parent.get("response_shared_hb_signal_sha256"))
+    )
+    if not parent_transport_ok:
         return write_blocked(
             base,
             "DEVICE_KV_INTR_PARENT_AUTHORITY_REPAIR_REQUIRED",
-            "Parent DEVICE_KV_INTR receipt violates the expected authority boundary.",
-            "Repair or re-observe the authentic parent under current source.",
-            "parent credential_authority=TV/TVC and canonical_kv_mutation=false",
+            "Parent DEVICE_KV_INTR receipt does not satisfy the current exact HB-derived transport/recovery evidence boundary.",
+            "Allow the current StegOS/KV chain consumer to re-observe or repair DEVICE_KV under current source before endpoint fanout.",
+            "parent preserves TV/TVC, canonical_kv_mutation=false, exact request/response HB-derived transport/recovery=true, and non-empty shared-HB signal refs/digests",
             epoch,
         )
 
