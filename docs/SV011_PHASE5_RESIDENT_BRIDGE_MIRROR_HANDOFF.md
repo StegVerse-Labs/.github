@@ -19,7 +19,7 @@ This bridge may only:
 1. register one independently admitted SV-011 Phase-5 task;
 2. materialize one intent-only resident execution request;
 3. dispatch that request through the existing targeted resident bridge;
-4. locate already-local clean `SV-011/.github` source;
+4. locate either an already-local clean pinned `SV-011/.github` checkout or the exact verified materialized tree produced by `SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001`;
 5. invoke the SV-011-owned Phase-5 probe runner for its ALLOW and DENY requests;
 6. persist secret-free evidence.
 
@@ -74,7 +74,7 @@ Implemented:
 - resident dispatcher selector `sv011_phase5`;
 - source-refresh materialization in both canonical refresh surfaces;
 - non-secret local locator `STEGVERSE_SV011_ORG_ROOT`;
-- resident worker that requires clean already-local `SV-011/.github` source containing `cf2777d9d21a97289f4ec7b0d9b0b21597047666`;
+- resident worker that accepts only (a) a clean already-local `SV-011/.github` checkout containing `cf2777d9d21a97289f4ec7b0d9b0b21597047666` with exact pinned blobs, or (b) the exact verified materialized tree produced by the dedicated source-materialization task;
 - same-task execution of the SV-011-owned ALLOW and DENY probes.
 
 Governance validation initially rejected the new task until its AE and COSV surfaces were installed. Those validators were not weakened; the missing bindings and exact denominator projections were added.
@@ -105,3 +105,24 @@ Required authentic evidence remains:
 - both outcomes bound to one resident WorkerCoordinator execution.
 
 Until those artifacts exist, Phase 5 remains OPEN and no runtime/autonomous activation claim is permitted.
+
+
+## Exact resident source prerequisite — 2026-09-02
+
+The source prerequisite is now machine-executable rather than assumed.
+
+Canonical predecessor:
+- task `SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001`
+- request `RESIDENT-EXEC-SV011-PHASE5-SOURCE-MATERIALIZATION-001`
+- issue `#806`
+- implementation PR `#807`
+- merge `dccf1015eff9bcc398b43a7e9dd4a4ff1c53111e`
+
+Dispatcher order is explicit:
+
+```text
+sv011_phase5_source_materialization
+-> sv011_phase5
+```
+
+The source materializer has no boundary-execution authority; the Phase-5 worker has no source-acquisition authority. The split is preserved.
