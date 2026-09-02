@@ -128,10 +128,43 @@
     "bound_state_lease_projection": "autonomy/lease.active.json"
   },
   "completion": {
-    "next_authorized_action": "Allow the machine-owned resident request to obtain the exact TVC-issued lease through the fenced bound-state carrier, execute one bounded self-directed continuity audit, then transfer the exact receipt to Master Records for independent custody/reconstruction.",
+    "next_authorized_action": "The existing machine-owned resident request retries under independent task control. If no valid lease exists, request the exact TVC-issued lease through the fenced bound-state carrier; execute one bounded continuity audit; then transfer the exact receipt to Master Records and SV002.",
     "terminal_when": [
       "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED"
     ]
   },
-  "source_state_vector_ref": "control/task-vectors/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json"
+  "source_state_vector_ref": "control/task-vectors/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json",
+  "source_completion": {
+    "source_complete": true,
+    "source_complete_is_activation": false,
+    "runtime_worker_merge": "256e91b7980741acc6de91599b59e441edc36f37",
+    "tvc_fenced_lease_authority_merge": "d495b67d1c322c3fdd8c9bb6db75657783e19c0c",
+    "final_control_merge": "b5fb62485722eaee57465e88af97921898b95566",
+    "validation_runs": [
+      "33634043037",
+      "33634043026",
+      "33633857236",
+      "33634283779",
+      "33634283783"
+    ]
+  },
+  "runtime_evidence": {
+    "tvc_lease_issuance_receipt_observed": false,
+    "resident_request_consumption_receipt_observed": false,
+    "autonomy_cycle_receipt_observed": false,
+    "master_records_reconstruction_pass_observed": false,
+    "sv002_adversarial_observation_observed": false,
+    "activation_claim_allowed": false
+  },
+  "block": {
+    "dependency_class": "SOVEREIGN_RESIDENT_EVIDENCE",
+    "problem_statement": "Source/control path is merged and validated; authentic resident TVC issuance, WorkerCoordinator consumption, autonomy-cycle receipt, Master Records reconstruction, and SV002 disposition are not yet observed.",
+    "solution_required": true,
+    "may_remain_blocked": false,
+    "human_action_required": false,
+    "second_machine_required": false,
+    "github_token_required": false,
+    "next_solution_action": "EXISTING_RESIDENT_REQUEST_RETRY_AND_EVIDENCE_OBSERVATION",
+    "machine_observable_release_condition": "A non-hosted resident emits the exact TVC issuance + SV001 autonomy-cycle evidence chain and downstream Master Records/SV002 evidence."
+  }
 }
