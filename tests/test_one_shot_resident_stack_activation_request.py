@@ -2,6 +2,7 @@ from __future__ import annotations
 import importlib.util, json, tempfile
 from pathlib import Path
 from types import SimpleNamespace
+from unittest import mock
 
 ROOT=Path(__file__).resolve().parents[1]
 S=importlib.util.spec_from_file_location("consumer",ROOT/"scripts/consume_one_shot_resident_stack_activation_request.py")
@@ -131,3 +132,53 @@ def test_repo_root_map_can_resolve_all_pinned_sv002_roots():
         assert resolved["rtg"]==roots["rtg"].resolve()
         assert resolved["gtg"]==roots["gtg"].resolve()
         assert resolved["ae"]==roots["ae"].resolve()
+
+
+def test_nested_reentry_is_fenced_while_outer_activation_runs():
+    with tempfile.TemporaryDirectory() as td:
+        base=Path(td); source=base/"source"; runtime=base/"runtime"; source.mkdir(); runtime.mkdir(); write_request(runtime)
+        roots=make_roots(base); env=env_for(roots)
+        script=runtime/"scripts/activate_resident_stack.py"; script.parent.mkdir(parents=True,exist_ok=True); script.write_text("# activate\n")
+        nested=[]
+        def no_nested_activation(command,**kwargs):
+            raise AssertionError("nested activation must not execute")
+        def outer_runner(command,**kwargs):
+            nested.append(M.consume(source,runtime,no_nested_activation,env))
+            return SimpleNamespace(returncode=0,stdout=json.dumps({"state":"COMPLETE"})+"\n",stderr="")
+        out=M.consume(source,runtime,outer_runner,env)
+        assert out["state"]=="COMPLETED"
+        assert nested[0]["state"]=="ACTIVATION_IN_PROGRESS"
+        assert nested[0]["runtime_execution_attempted"] is False
+        assert not (runtime/M.FENCE_REL).exists()
+
+def test_dead_owner_fence_is_reclaimed_and_activation_runs():
+    with tempfile.TemporaryDirectory() as td:
+        base=Path(td); source=base/"source"; runtime=base/"runtime"; source.mkdir(); runtime.mkdir(); req=write_request(runtime)
+        roots=make_roots(base); env=env_for(roots)
+        script=runtime/"scripts/activate_resident_stack.py"; script.parent.mkdir(parents=True,exist_ok=True); script.write_text("# activate\n")
+        fence=runtime/M.FENCE_REL; fence.parent.mkdir(parents=True,exist_ok=True)
+        fence.write_text(json.dumps({
+          "schema":"stegverse.one-shot-resident-stack-activation-fence/v1",
+          "request_sha256":M.stable(req),"owner_pid":99999999,"state":"IN_PROGRESS"
+        }))
+        calls=[]
+        def runner(command,**kwargs):
+            calls.append(command)
+            return SimpleNamespace(returncode=0,stdout=json.dumps({"state":"COMPLETE"})+"\n",stderr="")
+        with mock.patch.object(M,"process_alive",return_value=False):
+            out=M.consume(source,runtime,runner,env)
+        assert out["state"]=="COMPLETED"
+        assert len(calls)==1
+        assert not fence.exists()
+
+def test_activation_failure_releases_reentry_fence_for_retry():
+    with tempfile.TemporaryDirectory() as td:
+        base=Path(td); source=base/"source"; runtime=base/"runtime"; source.mkdir(); runtime.mkdir(); write_request(runtime)
+        roots=make_roots(base); env=env_for(roots)
+        script=runtime/"scripts/activate_resident_stack.py"; script.parent.mkdir(parents=True,exist_ok=True); script.write_text("# activate\n")
+        def runner(command,**kwargs):
+            return SimpleNamespace(returncode=1,stdout=json.dumps({"state":"INCOMPLETE"})+"\n",stderr="")
+        out=M.consume(source,runtime,runner,env)
+        assert out["state"]=="ATTEMPT_RECORDED"
+        assert out["retry_allowed"] is True
+        assert not (runtime/M.FENCE_REL).exists()

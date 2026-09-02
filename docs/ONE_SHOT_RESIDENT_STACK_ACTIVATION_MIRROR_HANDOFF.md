@@ -116,3 +116,29 @@ The consumer does not validate or select formalism commits. Exact pinned-commit 
 This repair matters to SV001 progression because the generic resident dispatcher visits SV001 before the one-shot stack activator. On a fresh resident, the first SV001 attempt may precede complete source materialization. The one-shot activation must therefore be capable of completing its materialize -> StegDeploy -> resident bootstrap path so that the nested/new resident bootstrap dispatch can revisit SV001 with the required TV/TVC/Master Records/formal sources present.
 
 Watching for a receipt is not the remaining work; executing this progression is.
+
+
+## Nested-bootstrap re-entry fence — 2026-09-02
+
+Issue #792 closes a recursion hazard in the executable machine path.
+
+During one-shot activation:
+
+```text
+outer one-shot consumer
+-> activate_resident_stack.py
+-> StegDeploy
+-> resident bootstrap
+-> generic resident dispatcher
+-> one-shot consumer may be visited again
+```
+
+The consumer now acquires an atomic local fence at:
+
+`control/one-shot-resident-stack-activation.in-progress.json`
+
+before invoking the activator.
+
+If a nested dispatcher reaches the same request while the owning PID is live, it returns `ACTIVATION_IN_PROGRESS` and does not invoke activation again. The outer attempt releases its fence in `finally`. A later machine attempt may reclaim a dead-owner fence, so a crashed activation does not become a permanent wait state.
+
+The fence grants no authority and is not activation evidence. Its role is to make the materialize -> nested bootstrap -> later SV001 revisit sequence executable without recursive stack activation.
