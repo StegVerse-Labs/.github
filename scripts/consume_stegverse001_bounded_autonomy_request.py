@@ -6,6 +6,9 @@ from typing import Any, Callable
 
 REQUEST_REL=Path("control/resident-execution-request.d/stegverse001-bounded-autonomy-runtime-001.json")
 RECEIPT_REL=Path("receipts/sovereign-host/stegverse001-bounded-autonomy-request-consumption.latest.json")
+ONE_SHOT_REQUEST_REL=Path("control/resident-execution-request.d/one-shot-resident-stack-activation-001.json")
+ONE_SHOT_RECEIPT_REL=Path("receipts/sovereign-host/one-shot-resident-stack-activation-request-consumption.latest.json")
+ONE_SHOT_TASK_ID="SHWP-ONE-SHOT-RESIDENT-STACK-ACTIVATION-001"
 TASK_ID="SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001"
 Runner=Callable[...,subprocess.CompletedProcess[str]]
 
@@ -25,6 +28,37 @@ def terminal(v:Any)->bool:
     if not isinstance(v,dict): return False
     if v.get("state")=="COMPLETED" and v.get("transition_id")=="SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED": return True
     return any(terminal(x) for x in v.values() if isinstance(x,(dict,list)))
+
+def stack_activation_status(runtime:Path)->dict[str,Any]:
+    request_path=runtime/ONE_SHOT_REQUEST_REL
+    if not request_path.is_file():
+        return {"required":False,"ready":True,"state":"NOT_REQUIRED_NO_ONE_SHOT_REQUEST"}
+    request=load(request_path)
+    if (
+        request.get("schema")!="stegverse.resident-execution-request/v1"
+        or request.get("task_id")!=ONE_SHOT_TASK_ID
+        or request.get("state")!="REQUESTED"
+    ):
+        return {"required":True,"ready":False,"state":"ONE_SHOT_REQUEST_INVALID"}
+    expected=stable(request)
+    receipt_path=runtime/ONE_SHOT_RECEIPT_REL
+    if not receipt_path.is_file():
+        return {"required":True,"ready":False,"state":"ONE_SHOT_ACTIVATION_NOT_EXECUTED","request_sha256":expected}
+    try: receipt=load(receipt_path)
+    except Exception:
+        return {"required":True,"ready":False,"state":"ONE_SHOT_RECEIPT_INVALID","request_sha256":expected}
+    ready=(
+        receipt.get("request_sha256")==expected
+        and receipt.get("activation_complete") is True
+        and receipt.get("state") in {"COMPLETED","ALREADY_CONSUMED"}
+    )
+    return {
+      "required":True,"ready":ready,
+      "state":"ONE_SHOT_ACTIVATION_COMPLETE" if ready else "ONE_SHOT_ACTIVATION_INCOMPLETE",
+      "request_sha256":expected,
+      "receipt_state":receipt.get("state"),
+      "activation_complete":receipt.get("activation_complete") is True,
+    }
 
 def continue_downstream(source:Path,runtime:Path,runner:Runner=subprocess.run)->dict[str,Any]:
     script=runtime/"scripts/continue_stegverse001_evidence_chain.py"
@@ -56,6 +90,21 @@ def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run)->di
                     "autonomy_execution_retried":False,"downstream_evidence":downstream,
                     "downstream_retry_allowed":bool(downstream.get("retry_allowed")),
                     "request_granted_authority":False,"authority_effect":"NONE_REQUEST_ONLY"}
+    stack=stack_activation_status(runtime)
+    if not stack.get("ready"):
+        out={
+          "schema":"stegverse.resident-execution-request-consumption/v1",
+          "state":"STACK_ACTIVATION_PENDING",
+          "request_id":req.get("request_id"),"request_sha256":rh,"task_id":TASK_ID,
+          "runtime_execution_attempted":False,"terminal_execution_observed":False,
+          "retry_allowed":True,"stack_activation":stack,
+          "next_required_machine_transition":"EXECUTE_ONE_SHOT_RESIDENT_STACK_ACTIVATION",
+          "request_granted_authority":False,"network_source_fetch_performed":False,
+          "authority_effect":"NONE_REQUEST_ONLY"
+        }
+        receipt_path.parent.mkdir(parents=True,exist_ok=True)
+        receipt_path.write_text(json.dumps(out,indent=2,sort_keys=True)+"\n")
+        return out
     cmd=[sys.executable,str(runtime/"scripts/refresh_and_execute_resident_task.py"),"--source-root",str(source),"--runtime-root",str(runtime),"--task-id",TASK_ID]
     c=runner(cmd,cwd=runtime,capture_output=True,text=True,check=False,timeout=600)
     result=parse_last_json(c.stdout); done=terminal(result)
