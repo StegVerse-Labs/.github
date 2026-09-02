@@ -6,7 +6,7 @@
   "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
   "entrypoint": "scripts/refresh_and_execute_resident_task.py",
   "credential_authority": "TV/TVC",
-  "credential_requirement": "EXTERNAL_LOCAL_BOUNDED_AUTONOMY_LEASE",
+  "credential_requirement": "TVC_ISSUED_LOCAL_BOUNDED_AUTONOMY_LEASE",
   "github_token_required": false,
   "github_token_runtime_authority": "NONE",
   "heartbeat_grants_execution_authority": false,
@@ -15,5 +15,8 @@
   "request_granted_authority": false,
   "authority_effect": "NONE_REQUEST_ONLY",
   "requested_at": "2026-09-02T02:47:24-05:00",
-  "note": "Queue the first bounded Beta_Orionis autonomy cycle. Execution remains blocked until an externally issued valid local lease exists."
+  "note": "Queue the first bounded Beta_Orionis autonomy cycle. The admitted worker may request the exact TVC-issued single-cycle lease when absent, but TVC remains the issuer and the resident request itself grants no authority.",
+  "lease_request_mode": "MACHINE_REQUEST_TVC_IF_ABSENT",
+  "tvc_required_ancestor": "d495b67d1c322c3fdd8c9bb6db75657783e19c0c",
+  "fenced_bound_state_lease_path": "$STEGVERSE_BOUND_STATE_ROOT/autonomy/lease.active.json"
 }
