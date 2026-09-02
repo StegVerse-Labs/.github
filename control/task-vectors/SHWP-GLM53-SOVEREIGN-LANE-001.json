@@ -1,0 +1,12 @@
+{
+  "schema": "stegverse.cosv-task-vector/v1",
+  "task_id": "SHWP-GLM53-SOVEREIGN-LANE-001",
+  "profile": "task.v1",
+  "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+  "notation": "L R U I V G O C M T B E A P",
+  "width": 14,
+  "vector": "50000000101000",
+  "vector_state": "EMITTED",
+  "observed_at": "2026-09-02T17:05:00-05:00",
+  "authority_effect": "NONE"
+}
