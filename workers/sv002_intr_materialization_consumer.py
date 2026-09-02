@@ -31,6 +31,7 @@ DESTINATION = {"boundary": "STEGOS_ECOSYSTEM", "subsystem": "SV002:PublicObserva
 DOWNSTREAM_OWNER = "StegVerse-Labs/.github#493"
 Runner = Callable[..., subprocess.CompletedProcess[Any]]
 RuntimeMaterializer = Callable[..., dict[str, Any]]
+LeaseResumer = Callable[..., dict[str, Any]]
 
 HOSTED_ENV = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 CREDENTIAL_ENV = (
@@ -142,7 +143,18 @@ def _default_materializer(*, source: Path, intake_runtime: Path, request: Mappin
     return materialize_sv002_observation_runtime(control_root=source, intake_runtime_root=intake_runtime, request=request, ingress_receipt=ingress_receipt, env=env)
 
 
-def consume_one(source_root: Path, runtime_root: Path, materialization_id: str, *, runner: Runner = subprocess.run, env: Mapping[str, str] | None = None, runtime_materializer: RuntimeMaterializer | None = None) -> dict[str, Any]:
+def _default_lease_resumer(*, source: Path, execution_runtime: Path, snapshot_path: Path, expected_snapshot_digest: str, env: Mapping[str, str] | None) -> dict[str, Any]:
+    from workers.sv002_public_profile_lease_resumer import resume_public_lease
+    return resume_public_lease(
+        control_root=source,
+        execution_runtime=execution_runtime,
+        snapshot_path=snapshot_path,
+        expected_snapshot_digest=expected_snapshot_digest,
+        env=env,
+    )
+
+
+def consume_one(source_root: Path, runtime_root: Path, materialization_id: str, *, runner: Runner = subprocess.run, env: Mapping[str, str] | None = None, runtime_materializer: RuntimeMaterializer | None = None, lease_resumer: LeaseResumer | None = None) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     request = _load(runtime / REQUEST_DIR_REL / f"{materialization_id}.json")
@@ -180,6 +192,41 @@ def consume_one(source_root: Path, runtime_root: Path, materialization_id: str, 
         raise SV002InTrMaterializationError("sv002_canonical_runtime_lease_snapshot_authority_invalid")
     if evidence.get("g18_completion_required") is not False or evidence.get("observer_direct_relation_to_stegverse_002") is not False:
         raise SV002InTrMaterializationError("sv002_esrl_semantic_boundary_invalid")
+
+    selected_resumer = _default_lease_resumer if lease_resumer is None else lease_resumer
+    resumed = selected_resumer(
+        source=source,
+        execution_runtime=execution_runtime,
+        snapshot_path=snapshot_path,
+        expected_snapshot_digest=snapshot_digest,
+        env=safe,
+    )
+    if resumed.get("state") != "LEASE_OPEN":
+        raise SV002InTrMaterializationError("sv002_canonical_runtime_lease_open_required")
+    open_snapshot = resumed.get("lease_snapshot")
+    open_digest = resumed.get("lease_snapshot_sha256")
+    public_observation = resumed.get("public_profile_observation")
+    if not isinstance(open_snapshot, dict) or not isinstance(open_digest, str) or not isinstance(public_observation, dict):
+        raise SV002InTrMaterializationError("sv002_canonical_runtime_lease_open_evidence_invalid")
+    if open_snapshot.get("schema") != "stegverse.esrl.lease-machine-snapshot/v1" or open_snapshot.get("state") != "LEASE_OPEN":
+        raise SV002InTrMaterializationError("sv002_canonical_runtime_lease_open_snapshot_invalid")
+    if open_snapshot.get("history") != ["ABSENT", "REQUESTED", "ADMITTED", "PROVISIONING", "LOCAL_READY", "PUBLIC_VERIFYING", "LEASE_OPEN"]:
+        raise SV002InTrMaterializationError("sv002_canonical_runtime_lease_open_history_invalid")
+    if digest_uri(open_snapshot) != open_digest:
+        raise SV002InTrMaterializationError("sv002_canonical_runtime_lease_open_digest_invalid")
+    if public_observation.get("observation_origin") != "INDEPENDENT_PUBLIC_HTTPS":
+        raise SV002InTrMaterializationError("sv002_public_profile_observation_origin_invalid")
+    if public_observation.get("public_profile_url") != "https://stegverse.org/intr/profile":
+        raise SV002InTrMaterializationError("sv002_public_profile_url_invalid")
+    if public_observation.get("required_profile") != "SV002:PublicObservation":
+        raise SV002InTrMaterializationError("sv002_public_profile_capability_invalid")
+    if any(public_observation.get(field) is not False for field in (
+        "receiver_ready_claimed", "round_trip_claimed", "master_records_custody_claimed",
+        "sv002_principal_execution_claimed", "public_profile_grants_execution_authority",
+        "public_profile_grants_transition_authority",
+    )):
+        raise SV002InTrMaterializationError("sv002_public_profile_evidence_overclaim")
+
     entrypoint = execution_runtime / TARGET_ENTRYPOINT
     if not entrypoint.is_file():
         raise SV002InTrMaterializationError(f"sv002_targeted_executor_missing:{entrypoint}")
@@ -195,10 +242,18 @@ def consume_one(source_root: Path, runtime_root: Path, materialization_id: str, 
         "target_task_id": TARGET_TASK,
         "targeted_executor_returncode": completed.returncode,
         "runtime_execution_attempted": True,
-        "canonical_runtime_lease_state": "PUBLIC_VERIFYING",
+        "canonical_runtime_lease_state": "LEASE_OPEN",
         "canonical_runtime_lease_snapshot_ref": str(snapshot_path),
-        "canonical_runtime_lease_snapshot_sha256": snapshot_digest,
-        "canonical_runtime_lease_resume_required": True,
+        "canonical_runtime_lease_snapshot_sha256": open_digest,
+        "canonical_runtime_lease_resume_required": False,
+        "canonical_runtime_lease_public_verification_observed": True,
+        "public_profile_url": public_observation["public_profile_url"],
+        "public_profile_schema": public_observation["public_profile_schema"],
+        "public_profile_sha256": public_observation["public_profile_sha256"],
+        "public_profile_observation_origin": public_observation["observation_origin"],
+        "public_profile_required_profile": public_observation["required_profile"],
+        "public_profile_grants_execution_authority": False,
+        "public_profile_grants_transition_authority": False,
         "receiver_ready_is_precondition": False,
         "g18_completion_required": False,
         "observer_direct_relation_to_stegverse_002": False,
