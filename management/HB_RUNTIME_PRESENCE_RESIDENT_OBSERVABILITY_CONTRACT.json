@@ -1,0 +1,24 @@
+{
+  "schema": "stegverse.hb-runtime-resident-observability-contract/v1",
+  "owner_repository": "StegVerse-Labs/.github",
+  "canonical_module": "org-kernel/runtime_observability.py",
+  "heartbeat_source": "org-kernel/kernel.py#hb_reference",
+  "credential_authority": "TV/TVC",
+  "authority_effect": "NONE_OBSERVATION_ONLY",
+  "never_equate": {
+    "hb_progression": "resident_process_alive",
+    "carrier_snapshot_present": "current",
+    "worker_snapshot_present": "task_execution",
+    "request_file_present": "request_consumed",
+    "receipt_file_present": "receipt_verified",
+    "source_installed": "runtime_observed",
+    "merge": "execution",
+    "workflow_pass": "runtime"
+  },
+  "canonical_evidence_slots": {
+    "resident_request_dispatch": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+    "resident_request_consumption": "receipts/sovereign-host/resident-execution-request-consumption.latest.json",
+    "resident_targeted_execution": "receipts/sovereign-host/resident-targeted-execution.latest.json"
+  },
+  "consumer_rule": "Lane-specific direct machine receipt verifiers decide request consumption, receiver readiness, state transition, and reconstruction. The shared projection reports canonical HB/presence/evidence context but never infers them from source or file presence."
+}
