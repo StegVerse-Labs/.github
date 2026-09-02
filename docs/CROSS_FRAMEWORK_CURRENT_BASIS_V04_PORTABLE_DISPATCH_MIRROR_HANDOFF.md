@@ -109,3 +109,33 @@ Heartbeat Worker Project: 33388902072 SUCCESS
 Post-merge canonical receipt checks found no self-characterization consumption,
 public-observation consumption, or resident-refresh-dispatch receipt. The source extension
 is merged and validated; resident execution remains NOT OBSERVED.
+
+
+## SV001 active progression selectors — 2026-09-02
+
+Issue #794 extends the existing exact-selector bridge with:
+
+```text
+one_shot_resident_stack_activation
+stegverse001_bounded_autonomy
+```
+
+The historical default remains `cross_framework_current_basis_v04`.
+
+This gives the resident an active bounded progression path:
+
+```text
+python scripts/refresh_and_dispatch_resident_requests.py \
+  --source-root <already-local-current-.github> \
+  --runtime-root <existing-sovereign-runtime> \
+  --only-consumer one_shot_resident_stack_activation
+
+python scripts/refresh_and_dispatch_resident_requests.py \
+  --source-root <already-local-current-.github> \
+  --runtime-root <existing-sovereign-runtime> \
+  --only-consumer stegverse001_bounded_autonomy
+```
+
+Each invocation refreshes already-local source, preserves mutable resident state, and visits exactly one named consumer. It does not create a scheduler or wait for an event. The optional non-secret `STEGVERSE_SV001_AUTONOMY_LEASE` locator is preserved if already present; otherwise the SV001 consumer may request the TVC lease under its own existing authority contract.
+
+The bridge grants no execution authority, claim, fence, credential, heartbeat, repository, network, or sovereignty authority.
