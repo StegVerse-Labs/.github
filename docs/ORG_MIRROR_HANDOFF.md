@@ -735,3 +735,43 @@ SV002 disposition: NOT OBSERVED
 ```
 
 This is source completion only. It creates no autonomy lease, runtime authority, execution proof, Master Records custody, SV002 disposition, sovereignty, credential authority, or GitHub-token runtime authority.
+
+
+## 2026-09-02 SV001 TVC lease acquisition source closure
+
+The bounded-autonomy resident worker now has a merged source path to request, but never self-issue, the exact TV/TVC-governed single-cycle autonomy lease when no valid canonical lease exists.
+
+```text
+implementation PR: #749
+merge: 256e91b7980741acc6de91599b59e441edc36f37
+TVC required ancestor: 92c2d6085cec2b7561d6c1f08ab157894a232340
+TV request source: a8ed178fd5fc5b131491e41452256323c302ba3f
+Master Records custody source: 65f97e867a09c3e5da80ef74b2b43ee810821667
+lease authority: TV/TVC only
+worker self-issuance authority: false
+worker lease widening authority: false
+live lease issuance: NOT OBSERVED
+resident consumption: NOT OBSERVED
+autonomy-cycle receipt: NOT OBSERVED
+Master Records reconstruction: NOT OBSERVED
+SV002 disposition: NOT OBSERVED
+```
+
+Source completion does not establish a live lease or bounded-autonomy activation.
+
+## 2026-09-02 KV -> SKAP operational transport reconciliation
+
+The KV -> SKAP source handoff is reconciled to the already-merged transport implementation and now treats authentic resident custody/readback as the next denominator.
+
+```text
+implementation merge: 3ec15ed7937fa621a215f78b4992a6e3af63566f
+post-merge handoff PR: #750
+post-merge handoff merge: f4d43b20f40a7221a0eaa9efc1d98cc5905ce2e6
+source state: MERGED_ORGANIZATION_VALIDATED
+authentic resident KV->SKAP event: NOT OBSERVED
+exact ciphertext custody/readback: NOT OBSERVED
+credential authority: TV/TVC
+authority effect: NONE
+```
+
+No runtime custody or credential operation is inferred from source/validation evidence.
