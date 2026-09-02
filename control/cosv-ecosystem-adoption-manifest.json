@@ -4,7 +4,7 @@
   "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
-  "observed_at": "2026-08-31T21:25:00-05:00",
+  "observed_at": "2026-09-02T13:05:13Z",
   "source": "live GitHub App installation enumeration plus durable task-surface evidence",
   "authority_effect": "NONE",
   "credential_authority": "TV/TVC",
@@ -14,15 +14,15 @@
   "organization_count": 14,
   "universe_audit_complete": false,
   "adoption_metrics": {
-    "numerator_vectorized_active_task_surfaces": 8,
+    "numerator_vectorized_active_task_surfaces": 9,
     "denominator_proven_active_task_surfaces": 28,
-    "ratio": "8/28",
-    "percentage": 28.57,
-    "interpretation": "Admissible-Existence/AE is strict VECTOR_PRESENT after repository-local 1/1 active-task coverage, current issue/PR census, and prior repository-local COSV validation. Admissible-Existence now has no remaining VECTOR_REQUIRED repository."
+    "ratio": "9/28",
+    "percentage": 32.14,
+    "interpretation": "Strict repository COSV adoption advances to 9/28 after Data-Continuation/StegClaw repository-local 3/3 active-task coverage, evidence-backed aggregate.v1 projection, and successful repository-local validation. Promotion does not imply release, propagation, activation, or runtime proof."
   },
   "classification_counts": {
-    "VECTOR_REQUIRED": 20,
-    "VECTOR_PRESENT": 8,
+    "VECTOR_REQUIRED": 19,
+    "VECTOR_PRESENT": 9,
     "NO_ACTIVE_TASK_SURFACE": 6,
     "NO_REPOSITORY_OR_UNAVAILABLE": 188
   },
@@ -49,8 +49,8 @@
       "organization": "Data-Continuation",
       "installation_id": 139890529,
       "repository_count": 6,
-      "vector_required": 3,
-      "vector_present": 0,
+      "vector_required": 2,
+      "vector_present": 1,
       "no_active_task_surface": 0,
       "unavailable_or_not_yet_audited": 3
     },
@@ -744,16 +744,27 @@
     {
       "organization": "Data-Continuation",
       "repository": "Data-Continuation/StegClaw",
-      "classification": "VECTOR_REQUIRED",
+      "classification": "VECTOR_PRESENT",
       "profile": "task.v1",
       "notation": "L R U I V G O C M T B E A P",
       "width": 14,
       "evidence_refs": [
-        "task-bearing repository discovered in live ecosystem task-surface audit"
+        "Data-Continuation/StegClaw@9734d51e7d208b8a81e7a35ff525d772481d0ee0:data/cosv/task-vector-index.json",
+        "Data-Continuation/StegClaw@9734d51e7d208b8a81e7a35ff525d772481d0ee0:data/cosv/repository-vector.json",
+        "Data-Continuation/StegClaw@9734d51e7d208b8a81e7a35ff525d772481d0ee0:docs/COSV_REPOSITORY_STATE_MIRROR_HANDOFF.md",
+        "Data-Continuation/StegClaw/actions/runs/33633483715:StegClaw Selftest SUCCESS",
+        "Data-Continuation/StegClaw/actions/artifacts/9847766594:sha256:93a39a91d7f1e3ca3de818ad2febf467e07c01f7a1b5ddc5cf763ef34765922b"
       ],
-      "vector_coverage_state": "NOT_PROVEN_COMPLETE",
-      "release_condition": "Every active machine task in this repository has an evidence-backed task.v1 vector emitted by its canonical/local projection and repository-local validation passes.",
-      "authority_effect": "NONE"
+      "vector_coverage_state": "COMPLETE",
+      "release_condition": "Every current structured active task remains evidence-backed by repository-local task.v1 projection and repository validation passes. StegClaw release remains separately gated by target artifact verification.",
+      "authority_effect": "NONE",
+      "validation_refs": [
+        "3/3 current structured active tasks projected; gap 0",
+        "repository aggregate.v1 vector 69930039320000 is evidence-derived",
+        "StegClaw Selftest run 33633483715 SUCCESS",
+        "repository operational-state emission/selftest/artifact-shape/COSV projection steps SUCCESS",
+        "TARGET_ARTIFACTS_UNVERIFIED remains active; no release/propagation/activation/runtime claim"
+      ]
     },
     {
       "organization": "GCAT-BCAT-Engine",
