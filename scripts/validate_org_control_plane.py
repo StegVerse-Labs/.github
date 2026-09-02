@@ -107,6 +107,23 @@ def main() -> None:
         check=True,
     )
 
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "repository_operational_state.py"),
+            "validate",
+            str(ROOT / "examples" / "repository_operational_state.example.json"),
+        ],
+        cwd=ROOT,
+        check=True,
+    )
+
+    subprocess.run(
+        [sys.executable, "-m", "unittest", "tests.test_repository_operational_state"],
+        cwd=ROOT,
+        check=True,
+    )
+
     print(
         json.dumps(
             {
@@ -116,6 +133,7 @@ def main() -> None:
                 "task_count": len(tasks),
                 "control_repository_claimable": False,
                 "dependency_cycles": False,
+                "repository_operational_state": True,
             },
             sort_keys=True,
         )
