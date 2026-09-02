@@ -1043,3 +1043,26 @@ authority effect: NONE
 ```
 
 The public profile observation is an identity/evidence predicate only; it grants no execution or transition authority. The canonical LeaseMachine transition remains governed by its own state machine. StegVerse-002 principal execution ownership remains outside this StegVerse-Labs observation lane.
+
+
+## 2026-09-02 heartbeat separation issue #122 closure
+
+The heartbeat/runtime-control separation goal is source/control-plane complete.
+
+```text
+issue: #122
+closure PR: #784
+merge: 418059b72e84b38183425c7048d094afcb29e5a6
+organization-control validation: SUCCESS
+Heartbeat validation: SUCCESS
+heartbeat activation: TERMINAL ACTIVE_PROTOCOL_VERIFIED
+WorkerCoordinator authority: SEPARATE
+historical G18 monitor: PRESERVED / SUPERSEDED
+downstream HB32 propagation: COMPLETE
+credential authority: TV/TVC
+GitHub runtime authority: NONE
+third-party runtime authority: NONE
+authority effect: NONE
+```
+
+Do not use closure of #122 to imply completion of SV001, SV002, HIL, DEVICE_KV, endpoint-fanout, federation, or any other downstream runtime evidence lane.
