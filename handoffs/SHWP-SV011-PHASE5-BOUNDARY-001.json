@@ -60,8 +60,12 @@
     "policy_version": "shwp-sv011-phase5-boundary-v0.1"
   },
   "execution": {
-    "required_capabilities": ["sv011_phase5_boundary_probe"],
-    "allowed_paths": ["receipts/sv011-phase5-boundary/**"],
+    "required_capabilities": [
+      "sv011_phase5_boundary_probe"
+    ],
+    "allowed_paths": [
+      "receipts/sv011-phase5-boundary/**"
+    ],
     "allowed_services": [],
     "max_actions": 4,
     "max_retries": 64,
@@ -90,5 +94,34 @@
       "one COMPLETED worker receipt binds the ALLOW and DENY observations from the same WorkerCoordinator execution while preserving authority false"
     ]
   },
-  "block": null
+  "block": null,
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:sv011-phase5-boundary-observation:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "SV-011/entity@68b37dba0cb5383b4497dd13a237a95e95089b25",
+      "SV-011/.github@cf2777d9d21a97289f4ec7b0d9b0b21597047666",
+      "docs/SV011_PHASE5_RESIDENT_BRIDGE_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SHWP-SV011-PHASE5-BOUNDARY-001.json",
+      "workers/sv011_phase5_boundary_worker.py",
+      "control/worker-registry.d/sv011-phase5-boundary-001.json",
+      "control/process-worker-adapters.d/sv011-phase5-boundary-001.json",
+      "control/resident-execution-request.d/sv011-phase5-boundary-001.json"
+    ],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": [
+      "LIVE_SV011_PHASE5_RESIDENT_ALLOW_DENY_RECEIPT_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "sv011-phase5-boundary-worker + existing sovereign WorkerCoordinator + SV-011/.github",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  },
+  "source_state_vector_ref": "control/task-vectors/SHWP-SV011-PHASE5-BOUNDARY-001.json"
 }
