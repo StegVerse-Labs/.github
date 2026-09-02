@@ -4,7 +4,7 @@ Updated: 2026-08-31
 Issue: StegVerse-Labs/.github#583
 
 ```text
-state: FORWARD_SOURCE_MERGED_VALIDATED / RETURN_SOURCE_IMPLEMENTED_PENDING_VALIDATION
+state: FORWARD_SOURCE_MERGED_VALIDATED / RETURN_SOURCE_MERGED_VALIDATED / AUTHENTIC_RUNTIME_EVIDENCE_PENDING
 canonical_profile: publisher-artifact-transfer
 destination: STEGOS_ECOSYSTEM / Publisher:Ingress
 response: Publisher:Export -> KV / KnowledgeVault:DocumentImport
@@ -117,3 +117,27 @@ from private KV-local state (`private-kv-document-exports/<export_id>.json` or
 
 Success is only `VALIDATED_IMPORT_CANDIDATE_NOT_COMMITTED`; canonical KV mutation,
 publication, release, and execution authority remain false.
+
+
+## 2026-09-02 complete Publisher InTr source closure
+
+Issue #586 is source/control-plane complete across the forward and reverse halves.
+
+```text
+forward event-materialization PR: #587
+forward merge: 0c9781d3de7a0b12b07ef136607ea69bb578f7a3
+reverse KV return PR: #597
+reverse merge: 00a29b6afa5eff80647e23091f57072ad7dfdbed
+all-profile HB carrier validation: #635 / 451221c428cf24296344f74107965a83fb5ab31b
+Publisher return HB carrier binding: #641 / c93e21ff1ca72848f2294f24f07ab655a451c385
+source refresh/native materialization: PRESENT
+authentic forward runtime transport: NOT OBSERVED
+authentic reverse runtime transport: NOT OBSERVED
+KV validated import candidate runtime evidence: NOT OBSERVED
+publication/release authority: NONE
+credential authority: TV/TVC
+```
+
+The forward source validates exact queued Publisher transfer bytes and canonical forward receipt lineage before rendering. The reverse source materializes the prepared Publisher return into the KV document-import boundary and may produce only `VALIDATED_IMPORT_CANDIDATE_NOT_COMMITTED`; canonical KV mutation, publication, and release remain outside this lane.
+
+Closing the source issue does not claim that either transport direction has executed authentically on a sovereign resident.

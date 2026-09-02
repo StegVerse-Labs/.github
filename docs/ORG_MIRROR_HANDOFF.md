@@ -997,3 +997,23 @@ authority effect: NONE
 ```
 
 This migration changes transport implementation ownership, not runtime authority. The existing Node-KV predecessor, WorkerCoordinator admission, HB carrier evidence, no canonical KV mutation rule, and authentic deployment-local completion predicates remain binding.
+
+
+## 2026-09-02 Publisher artifact-transfer source closure
+
+Issue #586 is source-complete.
+
+```text
+forward Publisher materialization: #587 / 0c9781d3de7a0b12b07ef136607ea69bb578f7a3
+reverse Publisher -> KV materialization: #597 / 00a29b6afa5eff80647e23091f57072ad7dfdbed
+HB carrier all-profile validation: #635 / 451221c428cf24296344f74107965a83fb5ab31b
+Publisher return HB carrier: #641 / c93e21ff1ca72848f2294f24f07ab655a451c385
+source state: MERGED_VALIDATED
+authentic forward transport: NOT OBSERVED
+authentic reverse transport: NOT OBSERVED
+publication authority: NONE
+release authority: NONE
+credential authority: TV/TVC
+```
+
+No source/CI/rendering/materialization-request evidence is promoted to publication, release, canonical KV mutation, or authentic runtime transport.
