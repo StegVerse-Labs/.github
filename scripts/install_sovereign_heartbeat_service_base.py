@@ -77,6 +77,7 @@ COPY_FILES = (
     "scripts/continue_stegverse001_evidence_chain.py",
     "scripts/dispatch_resident_execution_requests.py",
     "scripts/refresh_and_dispatch_resident_requests.py",
+    "scripts/run_stegverse001_activation_progression.py",
     "scripts/materialize_live_cosv_packet.py",
     "scripts/cosv.py",
     "scripts/cosv_state_packet.py",

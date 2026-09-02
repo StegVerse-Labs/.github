@@ -53,6 +53,7 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             "scripts/consume_universal_governance_enforced_reference_request.py",
             "scripts/install_sovereign_worker_source_refresh_service.py",
             "scripts/refresh_and_dispatch_resident_requests.py",
+            "scripts/run_stegverse001_activation_progression.py",
         ):
             self.assertIn(rel, required)
 

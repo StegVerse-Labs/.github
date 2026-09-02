@@ -212,3 +212,29 @@ After issue #794, an already-authorized sovereign resident may actively execute 
 The resulting receipts are completion evidence for performed work; they are not the work itself.
 
 If stage 1 or stage 2 returns a nonterminal machine state, the next task is to repair/execute that specific failed transition and re-run the bounded selector. Do not replace that with observation-only polling.
+
+## Single-command bounded activation progression — 2026-09-02
+
+Issue #801 adds the executable progression:
+
+```text
+python scripts/run_stegverse001_activation_progression.py \
+  --source-root <already-local-current-.github> \
+  --runtime-root <sovereign-runtime>
+```
+
+One invocation performs at most two active targeted dispatches:
+
+```text
+Stage 1: one_shot_resident_stack_activation
+  require: state COMPLETED|ALREADY_CONSUMED + activation_complete=true
+  otherwise: stop and name the actual next machine transition
+
+Stage 2: stegverse001_bounded_autonomy
+  execute only after Stage 1 is complete
+  terminal when the consumer reports terminal_execution_observed=true
+```
+
+The procedure does not loop, watch, poll, or sleep waiting for evidence. If a stage is nonterminal, its `next_required_machine_transition` names the work to execute/repair before a later bounded invocation.
+
+After terminal SV001 execution, the already-merged consumer continues Master Records custody/reconstruction and SV002 adversarial disposition independently without re-running terminal autonomy.
