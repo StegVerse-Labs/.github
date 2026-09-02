@@ -1,0 +1,20 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-ONE-SHOT-STACK-ACTIVATION-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-ONE-SHOT-RESIDENT-STACK-ACTIVATION-001",
+  "mode": "NON_AUTHORIZING_LOCAL_ORCHESTRATION",
+  "entrypoint": "scripts/activate_resident_stack.py",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "requested_at": "2026-09-02T12:25:34-05:00",
+  "retry_until": "resident-stack-activation receipt state COMPLETE",
+  "exactly_once_after_complete": true,
+  "note": "Queue the merged one-shot sovereign resident stack activator through the existing resident dispatcher. The request grants no task admission, claim, fence, credential, deployment, or runtime authority."
+}
