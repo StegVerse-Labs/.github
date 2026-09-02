@@ -190,3 +190,26 @@ authority_effect: NONE_OBSERVATION_ONLY
 ```
 
 PR #817 remains historical validated-but-unmerged predecessor evidence and was closed after current-main conflict reconciliation.
+
+
+## Decision Envelope DE-006 consumer — 2026-09-02
+
+Consumer repository: `Admissible-Existence/GCAT-BCAT`.
+
+Installed runtime-side binding:
+- `control/runtime-observability-consumers/decision-envelope-de006.json`
+- `scripts/project_de006_runtime_observability.py`
+
+The wrapper invokes only the canonical shared
+`heartbeat_runtime/runtime_presence_projection.py` projector. Bootstrap, native
+installation, and source refresh carry the profile and wrapper into the resident
+runtime without copying mutable receipts.
+
+Local evidence slots remain distinct: Ecosystem Chat resident request consumption,
+resident targeted execution, and independent parent activation. TVC route admission,
+LLM-adapter measured execution, Master Records same-execution reconstruction, Site
+readiness, and the four Decision Envelope destination projections remain external owner
+predicates.
+
+No source, validation, merge, or HB progression satisfies those predicates. DE-006
+remains 0/4 until authentic deployment-local and destination-owned receipts exist.
