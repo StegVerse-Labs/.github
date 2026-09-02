@@ -107,7 +107,15 @@
     "worker_may_construct_or_widen_lease": false,
     "fenced_bound_state_lease_path": "$STEGVERSE_BOUND_STATE_ROOT/autonomy/lease.active.json",
     "authoritative_bound_state_path_exposed_to_worker": false,
-    "worker_may_write_arbitrary_host_paths": false
+    "worker_may_write_arbitrary_host_paths": false,
+    "progression_entrypoint": "scripts/run_stegverse001_activation_progression.py",
+    "progression_command": "python scripts/run_stegverse001_activation_progression.py --source-root <already-local-current-.github> --runtime-root <sovereign-runtime>",
+    "progression_stages": [
+      "one_shot_resident_stack_activation",
+      "stegverse001_bounded_autonomy"
+    ],
+    "progression_loops_or_polls": false,
+    "stage2_requires_stage1_activation_complete": true
   },
   "activation": {
     "carrier": "independent_task_control",
@@ -134,7 +142,7 @@
     "terminal_autonomy_reexecution_allowed": false
   },
   "completion": {
-    "next_authorized_action": "The existing machine-owned resident request retries under independent task control. After terminal SV001 execution, independently retry the merged Master Records resident intake and SV002 adversarial disposition continuation until authentic downstream evidence is complete; never re-run terminal autonomy.",
+    "next_authorized_action": "Execute scripts/run_stegverse001_activation_progression.py once against the already-local current .github source and sovereign runtime. The procedure actively executes one-shot stack activation first and advances to SV001 bounded autonomy only when activation_complete=true. If either stage is nonterminal, repair/execute the named next_required_machine_transition and rerun the bounded progression; do not replace execution with evidence polling.",
     "terminal_when": [
       "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED"
     ]
@@ -163,14 +171,21 @@
     "activation_claim_allowed": false
   },
   "block": {
-    "dependency_class": "SOVEREIGN_RESIDENT_EVIDENCE",
-    "problem_statement": "Source/control path is merged and validated; authentic resident TVC issuance, WorkerCoordinator consumption, autonomy-cycle receipt, Master Records reconstruction, and SV002 disposition are not yet observed.",
+    "dependency_class": "SOVEREIGN_RESIDENT_EXECUTION",
+    "problem_statement": "The first current-stack activation and SV001 bounded-autonomy cycle must execute on the sovereign resident. Source/receipt absence is not the task; the task is the staged resident progression that produces those receipts.",
     "solution_required": true,
     "may_remain_blocked": false,
     "human_action_required": false,
     "second_machine_required": false,
     "github_token_required": false,
-    "next_solution_action": "EXISTING_RESIDENT_REQUEST_RETRY_PLUS_DOWNSTREAM_EVIDENCE_CONTINUATION",
-    "machine_observable_release_condition": "A non-hosted resident emits the exact TVC issuance + SV001 autonomy-cycle evidence chain and downstream Master Records/SV002 evidence."
+    "next_solution_action": "EXECUTE_CURRENT_STACK_ACTIVATION_THEN_SV001_BOUNDED_CYCLE",
+    "executable_entrypoint": "scripts/run_stegverse001_activation_progression.py",
+    "machine_transition_sequence": [
+      "one_shot_resident_stack_activation",
+      "stegverse001_bounded_autonomy",
+      "master_records_resident_intake_and_reconstruction",
+      "sv002_adversarial_observation_and_disposition"
+    ],
+    "machine_observable_release_condition": "The progression executes terminal SV001 autonomy and its existing downstream continuation produces Master Records and SV002 results. Each receipt is evidence of the corresponding performed transition, not a waiting task."
   }
 }
