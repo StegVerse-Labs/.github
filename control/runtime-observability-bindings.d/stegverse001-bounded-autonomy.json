@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.hb-runtime-resident-observability.lane-profile/v1",
+  "lane_id": "STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+  "canonical_module": "org-kernel/runtime_observability.py",
+  "evidence_bindings": {
+    "sv001_request_consumption": "receipts/sovereign-host/stegverse001-bounded-autonomy-request-consumption.latest.json",
+    "sv001_autonomy_cycle": "~/.stegverse/state/stegverse001-bounded-autonomy/receipts/latest.json",
+    "master_records_reconstruction": "~/.stegverse/master-records/stegverse001-bounded-autonomy/receipts/stegverse001-bounded-autonomy/reconstruction.latest.json",
+    "sv002_disposition": "~/.stegverse/state/sv002-adversarial-observation/receipts/stegverse001.latest.json"
+  },
+  "predicates": {
+    "resident_request_consumption": "sv001_request_consumption",
+    "runtime_execution_completed": "sv001_autonomy_cycle",
+    "reconstruction_proven": "master_records_reconstruction",
+    "sv002_adversarial_disposition": "sv002_disposition"
+  },
+  "authority_effect": "NONE_OBSERVATION_ONLY"
+}
