@@ -23,6 +23,12 @@ FORM_SCHEMA="stegverse.kv.personal_form_profile/v1"
 FORM_PATH=Path("_Entities/Self/Personal_Form_Profile.json")
 FORM_PREFIX="data:application/vnd.stegverse.personal-form-profile+json;base64,"
 
+# Backward-compatible aliases for the existing Personal Contact Profile validation surface.
+RECORD_CLASS=CONTACT_CLASS
+PROFILE_SCHEMA=CONTACT_SCHEMA
+CANONICAL_PATH=CONTACT_PATH
+DATA_PREFIX=CONTACT_PREFIX
+
 SUPPORTED_CLASSES={CONTACT_CLASS,FORM_CLASS}
 FORBIDDEN_TOKENS=("password","secret","token","credential","private_key","seed","mnemonic","access_key","refresh_key")
 
