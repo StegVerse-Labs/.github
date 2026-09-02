@@ -57,7 +57,7 @@ binding the real SV001 receipt hash, Master Records reconstruction hash, baselin
 SV001 source/control: COMPLETE
 Master Records automatic intake source: MERGED
 SV002 deterministic evaluator source: MERGED
-downstream resident continuation: SOURCE_IMPLEMENTED_VALIDATION_PENDING
+downstream resident continuation: SOURCE_MERGED_VALIDATED
 authentic SV001 receipt: NOT OBSERVED
 Master Records reconstruction PASS: NOT OBSERVED
 SV002 authentic disposition: NOT OBSERVED
@@ -73,3 +73,26 @@ SV002 authentic disposition: NOT OBSERVED
 - sovereign bootstrap/source-refresh/native-service manifests include the continuation script.
 
 Source implementation is not runtime evidence.
+
+
+## Source closure — 2026-09-02
+
+PR #762 merged as `64e8dc3bfb537b02efdf760fa3515e544d10bdff`.
+
+Validation:
+- `33651138551` Cross-Framework Current-Basis Resident Request Validation — SUCCESS
+- `33651138559` organization control plane — SUCCESS
+- `33651138579` Heartbeat Worker Project — SUCCESS
+
+The full source path is now installed:
+
+```text
+terminal SV001 execution
+-> independently retryable Master Records resident intake
+-> reconstruction PASS requirement
+-> deterministic SV002 baseline
+-> AO-01..AO-12 preserved fixture evaluation
+-> local SV002 disposition receipt
+```
+
+No authentic runtime receipt in that chain is inferred from this source closure.
