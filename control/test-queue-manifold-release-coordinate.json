@@ -1,0 +1,29 @@
+{
+  "schema": "stegverse.release-coordinate/v1",
+  "release_id": "TEST-QUEUE-MANIFOLD-GOVERNANCE-V1.0.0",
+  "issue": "StegVerse-Labs/.github#534",
+  "repository": "StegVerse-Labs/.github",
+  "tag": "test-queue-manifold-governance-v1.0.0",
+  "target_commit": "270ea59bec8dd06455a5edbdc59cda9e60d5677d",
+  "release_name": "Test Queue Manifold Governance v1.0.0",
+  "prerelease": false,
+  "immutable": true,
+  "historical_tag_retarget_allowed": false,
+  "source_validation": {
+    "organization_control_run": 33296293558,
+    "organization_control_conclusion": "SUCCESS",
+    "heartbeat_worker_run": 33296293517,
+    "heartbeat_worker_conclusion": "SUCCESS",
+    "known_scoped_scaffolding_stubs": 0
+  },
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "release_grants_runtime_authority": false,
+    "release_grants_execution_authority": false,
+    "release_grants_claim_or_fence_authority": false,
+    "authority_effect": "NONE_RELEASE_METADATA_ONLY"
+  },
+  "downstream_successor": "StegVerse-Labs/.github#537",
+  "state": "TAG_RELEASE_MUTATION_PENDING"
+}
