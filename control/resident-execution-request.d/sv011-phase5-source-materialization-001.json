@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "fresh_fence_minimum_exclusive": 0,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "provider_credential_material_allowed": false,
+  "authority_effect": "NONE_REQUEST_ONLY"
+}

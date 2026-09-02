@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+  "adapters": [{
+    "adapter_ref": "process:sv011-phase5-source-materialization-v1",
+    "authority_ref": "handoffs/SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001.json#authority",
+    "capabilities": ["sv011_phase5_source_materialization"],
+    "command": ["python", "workers/sv011_phase5_source_materialization_worker.py"],
+    "cwd": ".",
+    "enabled": true,
+    "env_allowlist": [
+      "STEGVERSE_SV011_MATERIALIZED_ROOT",
+      "HOME","USER","LOGNAME","SHELL","PATH","PYTHONPATH","LANG","LC_ALL","TMPDIR",
+      "XDG_CONFIG_HOME","XDG_STATE_HOME"
+    ],
+    "notes": [
+      "Materializes only the exact seven-file SV-011 Phase-5 source bundle carried in already-local canonical WorkerCoordinator source.",
+      "No network source fetch, credential use, repository writeback, boundary execution, heartbeat authority, publication, proof, or autonomous activation authority."
+    ],
+    "timeout_seconds": 180,
+    "type": "process_json_v0.1"
+  }]
+}

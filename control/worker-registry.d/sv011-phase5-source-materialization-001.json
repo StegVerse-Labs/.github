@@ -1,0 +1,100 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "SV011_PHASE5_SOURCE_MATERIALIZATION_RECEIPT_NOT_YET_OBSERVED"
+      ],
+      "authorized_policy_version": "shwp-sv011-phase5-source-materialization-v0.1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "handoffs/SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001.json",
+        "docs/SV011_PHASE5_SOURCE_MATERIALIZATION_MIRROR_HANDOFF.md",
+        "source-bundles/sv011-phase5/manifest.json"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": "StegVerse-Labs/.github#806",
+      "goal_id": "SV011-PHASE5-SOURCE-MATERIALIZATION",
+      "handoff_ref": "handoffs/SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001.json",
+      "heartbeat_timing": null,
+      "heartbeat_dependency": false,
+      "last_checkpoint_ref": "handoffs/SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "StegVerse-Labs/.github#806 + pinned SV-011/.github source identity",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      },
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:sv011-phase5-source-materialization:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "StegVerse-Labs/.github#806",
+          "SV-011/.github@cf2777d9d21a97289f4ec7b0d9b0b21597047666",
+          "source-bundles/sv011-phase5/manifest.json"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001.json",
+          "workers/sv011_phase5_source_materialization_worker.py",
+          "control/worker-registry.d/sv011-phase5-source-materialization-001.json",
+          "control/process-worker-adapters.d/sv011-phase5-source-materialization-001.json",
+          "control/resident-execution-request.d/sv011-phase5-source-materialization-001.json"
+        ],
+        "integration_evidence_refs": [],
+        "activation_proof_ref": null,
+        "blockers": [
+          "LIVE_SV011_PHASE5_SOURCE_MATERIALIZATION_RECEIPT_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "sv011-phase5-source-materialization-worker + existing sovereign WorkerCoordinator",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
+      },
+      "source_state_vector_ref": "control/task-vectors/SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-09-02T15:59:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:sv011-phase5-source-materialization-v1",
+      "authority_source": "handoffs/SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001.json#authority",
+      "capabilities": [
+        "sv011_phase5_source_materialization"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "sv011-phase5-source-materialization-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}

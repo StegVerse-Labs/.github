@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/sv011-phase5-source-materialization-001.json",
+    "handoffs/SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001.json",
+    "source-bundles/sv011-phase5/manifest.json"
+  ],
+  "observed_at": "2026-09-02T15:59:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "independently admitted source-materialization task and resident request are machine-owned",
+    "archive_ready": "archive_eligible=false until authentic resident materialization receipt exists",
+    "unassigned_work": "registered source-materialization worker + existing sovereign WorkerCoordinator own continuation",
+    "chat_owned_counts": "chat owns no resident claim, fence, credential, runtime observation, or activation",
+    "canonical_owner_installed": "exact seven-file bundle, worker, request, consumer, adapter, and source-refresh carriage are implemented on the working branch",
+    "thread_required": "post-merge continuation is machine-owned",
+    "blocker_count": "exactly LIVE_SV011_PHASE5_SOURCE_MATERIALIZATION_RECEIPT_NOT_YET_OBSERVED",
+    "evidence_complete": "source/CI cannot prove resident filesystem materialization",
+    "activated": "activation_proof_ref remains null until authentic resident materialization",
+    "propagated": "source materialization does not itself propagate Phase-5 completion"
+  },
+  "authority_effect": "NONE"
+}

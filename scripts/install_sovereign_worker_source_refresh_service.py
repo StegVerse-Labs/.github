@@ -92,6 +92,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
         source / "management",
         source / "state_language",
         source / "scripts",
+        source / "source-bundles",
         source / "control/worker-registry.d",
         source / "control/process-worker-adapters.d",
         source / "control/task-vectors",
