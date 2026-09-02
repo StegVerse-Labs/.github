@@ -1,0 +1,72 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-GLM53-SOVEREIGN-LANE-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "GLM53_SOVEREIGN_RUNTIME_EVIDENCE_NOT_YET_OBSERVED"
+      ],
+      "authorized_policy_version": "shwp-glm53-sovereign-lane-v0.1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "handoffs/SHWP-GLM53-SOVEREIGN-LANE-001.json",
+        "StegVerse-002/micro-node-runtime@07e4388eda92d99a8feb220f28265b147551242d",
+        "docs/GLM53_SOVEREIGN_LANE_RESIDENT_BRIDGE_MIRROR_HANDOFF.md"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": "StegVerse-002/micro-node-runtime#69",
+      "goal_id": "GLM53-SOVEREIGN-ELEVEN-LANE-EVIDENCE",
+      "handoff_ref": "handoffs/SHWP-GLM53-SOVEREIGN-LANE-001.json",
+      "heartbeat_timing": null,
+      "heartbeat_dependency": false,
+      "last_checkpoint_ref": "handoffs/SHWP-GLM53-SOVEREIGN-LANE-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-GLM53-SOVEREIGN-LANE-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "StegVerse-002/micro-node-runtime#69 + StegVerse-Labs/.github#819",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      },
+      "source_state_vector_ref": "control/task-vectors/SHWP-GLM53-SOVEREIGN-LANE-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000101000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-09-02T17:05:00-05:00",
+          "authority_effect": "NONE"
+        }
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:glm53-sovereign-lane-v1",
+      "authority_source": "handoffs/SHWP-GLM53-SOVEREIGN-LANE-001.json#authority",
+      "capabilities": [
+        "glm53_sovereign_lane_evidence"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "glm53-sovereign-lane-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}
