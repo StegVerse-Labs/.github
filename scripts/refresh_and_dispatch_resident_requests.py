@@ -30,7 +30,7 @@ DISPATCH_RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.l
 RECEIPT_REL = Path("receipts/sovereign-host/resident-refresh-dispatch.latest.json")
 SV_DN1_BROWSER_LOCATOR_REL = Path("control/sv-dn1-browser-observation-locator.json")
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
-ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "hil", "sv_dn1", "sv_dn1_publication", "stegos_kv_intr_chain", "sv002_self_characterization", "sv002_public_observation", "healer_sovereign_scheduler", "universal_governance_enforced_reference")
+ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "hil", "sv_dn1", "sv_dn1_publication", "stegos_kv_intr_chain", "sv002_self_characterization", "sv002_public_observation", "sv002_org_runtime_activation", "healer_sovereign_scheduler", "universal_governance_enforced_reference")
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
     "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS",
@@ -69,6 +69,7 @@ NONSECRET_FORWARD = (
     "STEGVERSE_SELF_CHAR_MODEL_ID", "STEGVERSE_OLLAMA_MODEL",
     "STEGVERSE_HEALER_ROOT", "STEGVERSE_HIL_INTR_ROUTE_CONFIG",
     "STEGVERSE_RESIDENT_SOURCE_MANIFEST", "STEGVERSE_MASTER_RECORDS_ROOT",
+    "STEGVERSE_ORG_CONTROL_ROOT", "STEGVERSE_SV002_ORG_ROOT",
 )
 
 
