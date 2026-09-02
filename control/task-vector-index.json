@@ -596,7 +596,7 @@
       "repository": "StegVerse-Labs/.github",
       "registry_ref": "control/worker-registry.json",
       "source_state_vector_ref": "control/task-vectors/SHWP-ALL-ORG-FEDERATION-001.json",
-      "vector": "60000000100001",
+      "vector": "60000000100000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
     },
