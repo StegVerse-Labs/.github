@@ -3,8 +3,8 @@
 Repository: `StegVerse-Labs/.github`
 Issue: `#676`
 Branch: `feat/device-kv-query-response-670`
-State: ACTIVE_IMPLEMENTATION
-Updated: 2026-08-31T13:18:00-05:00
+State: SOURCE_MERGED_VALIDATED / AUTHENTIC_RUNTIME_QUERY_OBSERVATION_PENDING
+Updated: 2026-09-02T10:18:00-05:00
 Credential authority: TV/TVC
 Authority effect: NONE
 
@@ -101,3 +101,31 @@ Site / MyKVOnboarding
 Directory/health requests retain `Site / MyKVDirectory`. Installation status uses the separate `Site / MyKVOnboarding` requester and cannot provide directory selectors.
 
 The projection may establish current resident KV-root observation and canonical installation-receipt validity. It explicitly does not establish fresh cloud-provider observation or Step 5 verification.
+
+
+## 2026-09-02 source release reconciliation
+
+The source completion boundary for issue #676 has been satisfied.
+
+```text
+implementation PR: #677
+implementation merge: 677ee5b65f6c8a7d4ced85e66e34850400675282
+installation-status extension PR: #725
+installation-status extension merge: 0ffe6a5ea61b2a0c24a28b702545ffbd8f6c0ec7
+source implementation: COMPLETE
+source validation: COMPLETE
+merge: COMPLETE
+runtime query observation: PENDING
+```
+
+The downstream current-iPhone Site path has also been repaired through the same exact three read classes:
+
+```text
+MY_KV_DIRECTORY_PROJECTION
+MY_KV_CONNECTION_HEALTH
+MY_KV_INSTALLATION_STATUS
+```
+
+Site PR #901 routes installation status through the device-local target; PR #902 accepts authentic device-local ingress evidence; PR #903 performs a bounded service-worker refresh/controller handoff before profile evaluation. Those Site repairs do not create a second DEVICE_KV authority and do not satisfy this repository's separate resident runtime-observation predicate.
+
+Issue #676 may therefore close as source-complete while authentic resident/private-KV query execution remains an explicit downstream runtime evidence gate.
