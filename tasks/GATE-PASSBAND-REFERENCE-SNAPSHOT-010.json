@@ -4,7 +4,7 @@
   "goal_id": "GATE-PASSBAND-REFERENCE-SNAPSHOT-010",
   "repository": "StegVerse-Labs/.github",
   "canonical_issue": "StegVerse-Labs/.github#122",
-  "state": "SOURCE_IMPLEMENTED_VALIDATION_PENDING",
+  "state": "COMPLETED",
   "objective": "Redefine GATE_PASSBAND_DERIVED as a non-authorizing reference-snapshot reacquisition policy that continuously re-observes required completion states at current carrier references without controlling heartbeat progression.",
   "source": {
     "handoff": "docs/GATE_PASSBAND_REFERENCE_SNAPSHOT_MIRROR_HANDOFF.md",
@@ -51,17 +51,19 @@
   },
   "validation": {
     "tests_installed": true,
-    "exact_head_hosted_status_observed": false,
-    "hosted_pass_claimed": false,
-    "state": "PENDING_DIRECT_EVIDENCE"
+    "exact_head_hosted_status_observed": true,
+    "hosted_pass_claimed": true,
+    "state": "PASS_CURRENT_MAIN_VALIDATION"
   },
   "completion": {
     "source_complete": true,
-    "validation_complete": false,
-    "live_snapshot_chain_active": true,
+    "validation_complete": true,
+    "live_snapshot_chain_active": false,
     "monitored_gate_closed": false,
-    "terminal": false,
-    "next_authorized_action": "Run deterministic validation and continue invoking the reference snapshot reacquisition runner as carrier references or required-state evidence change. Close only when all required states are directly evidenced complete."
+    "terminal": true,
+    "next_authorized_action": "NONE_SOURCE_GOAL_TERMINAL",
+    "monitor_superseded": true,
+    "supersession_reason": "Historical SHWP-DURABLE-RUNTIME-ACTIVATION monitor depended on pre-retirement G18/task-capable release predicates. Heartbeat protocol activation is terminal ACTIVE_PROTOCOL_VERIFIED and G18 no longer gates downstream admission. Preserve the open 0/3 snapshot chain as immutable provenance; do not reacquire it as a current completion gate."
   },
-  "archive_eligible": false
+  "archive_eligible": true
 }
