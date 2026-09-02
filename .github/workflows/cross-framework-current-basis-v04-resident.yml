@@ -64,7 +64,7 @@ jobs:
           python -m unittest tests.test_sovereign_worker_source_refresh
           python -m unittest tests.test_bootstrap_resident_request_dispatch
           python -m unittest tests.test_portable_resident_request_dispatch
-          python -m pytest -q tests/test_sv002_org_runtime_activation_hb_binding.py
+          python -m unittest tests.test_sv002_org_runtime_activation_hb_binding
           python -m py_compile \
             scripts/consume_cross_framework_current_basis_v04_request.py \
             scripts/dispatch_resident_execution_requests.py \
