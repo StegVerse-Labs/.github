@@ -96,3 +96,41 @@ terminal SV001 execution
 ```
 
 No authentic runtime receipt in that chain is inferred from this source closure.
+
+## Master Records bundle-source repair — 2026-09-02
+
+Issue #766 closes producer/consumer drift in the portable sovereign resident path.
+
+StegDeploy already supports:
+
+```text
+vendor/master-records-orchestration
+-> STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT
+-> STEGVERSE_MASTER_RECORDS_ROOT
+```
+
+The canonical `.github` bundle producer and `activate_resident_stack.py` now carry that source explicitly.
+
+Packaging requirements:
+
+```text
+required ancestor:
+  d593c920c1630aa5da20cc2622196f8676a74afd
+protected paths:
+  scripts/watch_stegverse001_autonomy_receipt.py
+  scripts/import_stegverse001_autonomy_receipt.py
+local Git source:
+  required
+clean worktree:
+  required
+protected-path drift since source floor:
+  forbidden
+network fetch:
+  false
+credential required:
+  false
+authority effect:
+  NONE_SOURCE_IDENTITY_ONLY
+```
+
+The complete resident-stack activation path now requires a local Master Records root and passes it to the bundle packager. Source packaging/materialization does not establish custody or reconstruction. Authentic completion remains bound to the deployment-local SV001 receipt, Master Records PASS reconstruction, and SV002 disposition.
