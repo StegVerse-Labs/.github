@@ -72,6 +72,8 @@ COPY_FILES = (
     "scripts/consume_universal_governance_enforced_reference_request.py",
     "scripts/consume_cross_framework_current_basis_v04_request.py",
     "scripts/consume_stegverse001_bounded_autonomy_request.py",
+    "scripts/consume_one_shot_resident_stack_activation_request.py",
+    "scripts/activate_resident_stack.py",
     "scripts/continue_stegverse001_evidence_chain.py",
     "scripts/dispatch_resident_execution_requests.py",
     "scripts/refresh_and_dispatch_resident_requests.py",

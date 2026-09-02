@@ -901,3 +901,34 @@ Closed as source-complete:
 These issue closures are source/control-plane hygiene only. They do not close or satisfy the authentic runtime issues that remain intentionally open, including #739 SV001 bounded-autonomy activation, #612 endpoint-fanout resident execution, #462 SV002 public observation round trip, and other deployment-local evidence lanes.
 
 No source/merge/CI state is promoted to runtime activation, custody, accreditation, or public observation.
+
+
+## 2026-09-02 one-shot resident stack machine-request implementation
+
+Issue #774 closes the invocation seam left after the original one-shot resident stack entrypoint merge.
+
+Before this lane:
+
+```text
+activate_resident_stack.py: MERGED
+resident request: ABSENT
+resident consumer: ABSENT
+dispatcher registration: ABSENT
+native materialization: ABSENT
+```
+
+Implemented source:
+
+```text
+control/resident-execution-request.d/one-shot-resident-stack-activation-001.json
+-> scripts/consume_one_shot_resident_stack_activation_request.py
+-> scripts/activate_resident_stack.py
+-> package verified sovereign control bundle
+-> local StegDeploy
+-> resident bootstrap
+-> existing WorkerCoordinator admissions
+```
+
+The consumer resolves only already-local source roots using preserved non-secret environment locators or `STEGVERSE_REPO_ROOTS_JSON`. Missing roots produce `SOURCE_ROOTS_PENDING`; no network fetch is attempted. The request retries until the one-shot activation result is `COMPLETE`, then becomes exactly-once for that request hash.
+
+The request grants no claim, fence, heartbeat, credential, deployment, provider, repository, network, or sovereign authority. Authentic resident activation remains NOT OBSERVED until the deployment-local consumption/activation receipt exists.

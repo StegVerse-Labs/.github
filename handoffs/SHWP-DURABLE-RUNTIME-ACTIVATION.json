@@ -157,7 +157,12 @@
       "materialize and invoke canonical resident bootstrap",
       "verify G18 activation",
       "immediately advance TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001"
-    ]
+    ],
+    "one_shot_resident_stack_request_ref": "control/resident-execution-request.d/one-shot-resident-stack-activation-001.json",
+    "one_shot_resident_stack_request_consumer": "scripts/consume_one_shot_resident_stack_activation_request.py",
+    "one_shot_resident_stack_request_selector": "one_shot_resident_stack_activation",
+    "one_shot_resident_stack_request_mode": "NON_AUTHORIZING_LOCAL_ORCHESTRATION",
+    "one_shot_resident_stack_request_grants_authority": false
   },
   "state_transition_continuity": {
     "contract_ref": "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
@@ -226,7 +231,11 @@
     "post_bootstrap_resident_dispatch_source_merged": true,
     "post_bootstrap_resident_dispatch_runtime_observed": false,
     "one_shot_resident_stack_source_merged": true,
-    "one_shot_resident_stack_runtime_observed": false
+    "one_shot_resident_stack_runtime_observed": false,
+    "one_shot_resident_stack_request_source_merged": false,
+    "one_shot_resident_stack_request_state": "REQUESTED_SOURCE_IMPLEMENTATION",
+    "one_shot_resident_stack_request_consumption_observed": false,
+    "one_shot_resident_stack_activation_complete_observed": false
   },
   "parallel_continuations": [
     {
@@ -395,6 +404,14 @@
       "consumer_commit": "9f1432d02190cb967abccb32df4cedfa1cd522fe",
       "validation_commit": "a267f99bb2b6d75322928f7d54f721e017bfb647",
       "note": "SV002 now runs as an exact resident request on the existing HeartBeat-separated native WorkerCoordinator substrate. The worker runtime refreshes local source then dispatches resident requests every 100 logical ticks; no second persistent resident executor is required."
+    },
+    "one_shot_resident_stack_machine_request": {
+      "issue": 774,
+      "request_id": "RESIDENT-EXEC-ONE-SHOT-STACK-ACTIVATION-001",
+      "consumer": "scripts/consume_one_shot_resident_stack_activation_request.py",
+      "source_state": "IMPLEMENTED_VALIDATION_PENDING",
+      "runtime_effect": "NO_LIVE_ACTIVATION_RECEIPT_CLAIM",
+      "request_grants_authority": false
     }
   },
   "release_downstream": [

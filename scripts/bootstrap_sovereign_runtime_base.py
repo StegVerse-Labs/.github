@@ -63,6 +63,8 @@ REQUIRED_SOURCE_FILES = (
     Path("scripts/consume_universal_governance_enforced_reference_request.py"),
     Path("scripts/consume_cross_framework_current_basis_v04_request.py"),
     Path("scripts/consume_stegverse001_bounded_autonomy_request.py"),
+    Path("scripts/consume_one_shot_resident_stack_activation_request.py"),
+    Path("scripts/activate_resident_stack.py"),
     Path("scripts/continue_stegverse001_evidence_chain.py"),
     Path("scripts/refresh_and_dispatch_resident_requests.py"),
     Path("scripts/advance_heartbeat_transition.py"),
