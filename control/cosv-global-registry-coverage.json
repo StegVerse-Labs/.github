@@ -364,7 +364,8 @@
     {
       "task_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
       "vector": "50000000101000"
-    }
+    },
+    "control/task-vectors/SHWP-SV011-PHASE5-BOUNDARY-001.json"
   ],
   "evidence_conflicts": [],
   "release_conditions": [
@@ -666,18 +667,18 @@
     "authority_effect": "NONE"
   },
   "worker_denominator_closure": {
-    "active_worker_tasks_vectorized": 71,
+    "active_worker_tasks_vectorized": 72,
     "active_worker_tasks_unvectorized": 0,
     "completed_historical_unvectorized": 6,
     "superseded_historical_unvectorized": 1,
-    "total_unique_worker_task_ids": 78,
+    "total_unique_worker_task_ids": 79,
     "authority_effect": "NONE",
     "runtime_activation_claimed": false
   },
   "active_task_vector_coverage_closure": {
-    "active_worker_tasks_vectorized": 71,
+    "active_worker_tasks_vectorized": 72,
     "active_organization_tasks_vectorized": 14,
-    "total_active_tasks_vectorized": 85,
+    "total_active_tasks_vectorized": 86,
     "active_tasks_unvectorized": 0,
     "source_projection_complete": true,
     "runtime_activation_claimed": false,
