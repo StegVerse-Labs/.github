@@ -363,3 +363,24 @@ authority effect: NONE
 ```
 
 Issue #122 may close as a source/control-plane separation goal. Independent downstream consumer/runtime issues remain separate and must not be reopened as heartbeat blockers.
+
+
+## HB machine-continuation dispatch-call repair — 2026-09-02
+
+Issue #797 fixes a native runtime call-signature defect discovered while tracing active SV001 progression.
+
+The HB-derived continuation helper previously called:
+
+```text
+dispatch_local_resident_requests(root, env=env)
+```
+
+even though the native dispatcher helper accepts no `env` keyword. A continuation-due window could therefore raise `TypeError` inside the continuously supervised WorkerCoordinator process.
+
+The continuation now invokes the same valid native dispatcher path used by the 100-logical-tick request sweep:
+
+```text
+dispatch_local_resident_requests(root)
+```
+
+The dispatcher subprocess inherits the already-sanitized native worker-service environment established during resident service materialization. No HeartBeat, trigger, credential, claim, fence, or execution authority changes. The repair keeps the active resident continuation executable; generated receipts remain evidence of performed transitions rather than work to be watched.
