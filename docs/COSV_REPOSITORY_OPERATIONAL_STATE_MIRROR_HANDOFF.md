@@ -2,10 +2,10 @@
 
 Updated: 2026-09-02
 Repository: `StegVerse-Labs/.github`
-Issue: #741
-PR: #742
-Branch: `feat/cosv-repo-state-741`
-State: SOURCE_IMPLEMENTED_VALIDATED / MERGE_PENDING
+Issue: #741 CLOSED_COMPLETED
+PR: #742 MERGED
+Merge commit: `1b6ed4ba761abfc907c062aece36bc985a52de55`
+State: SOURCE_COMPLETE_VALIDATED_MERGED_RELEASED
 
 ## Authority
 
@@ -34,7 +34,7 @@ Install a canonical machine-readable repository operational-state object that bi
 - admissible next transition and its requirements;
 - generated human, MIRROR_HANDOFF, and AI-execution projections.
 
-The machine-readable object is designed to be portable context for human and AI workers without requiring chat-history reconstruction.
+The machine-readable object is portable context for human and AI workers without requiring chat-history reconstruction.
 
 ## Installed source surfaces
 
@@ -44,6 +44,7 @@ scripts/repository_operational_state.py
 tests/test_repository_operational_state.py
 examples/repository_operational_state.example.json
 docs/COSV_REPOSITORY_OPERATIONAL_STATE_MIRROR_HANDOFF.md
+scripts/validate_org_control_plane.py integration
 ```
 
 ## Invariants
@@ -80,21 +81,30 @@ repository_operational_state/v1
 
 ## Validation
 
-Validated source head before this handoff update:
+Final exact PR head:
 
-`5cbb1e5b86524b9f8f9cfce1261a44b33a63bc4b`
+`9684ebde05520c0d21a82f9a26270a333e53e76d`
 
-Repository-native validation:
+Exact-head repository-native validation:
 
 ```text
-Heartbeat Worker Project - Validation Only / No GitHub Token Authority
-run 33631603005
+Validate organization control plane - No GitHub Token Authority
+run 33631766770
 SUCCESS
 
-Validate organization control plane - No GitHub Token Authority
-run 33631603157
+Heartbeat Worker Project - Validation Only / No GitHub Token Authority
+run 33631766756
 SUCCESS
 ```
+
+The organization validator now directly executes:
+
+```text
+python scripts/repository_operational_state.py validate examples/repository_operational_state.example.json
+python -m unittest tests.test_repository_operational_state
+```
+
+Therefore the new validator and its unit tests are part of the stable organization validation path rather than merely existing as unexecuted source.
 
 The validator enforces:
 
@@ -112,29 +122,34 @@ The validator enforces:
 
 Hosted validation is source verification only. It does not establish runtime activation.
 
-## Remaining work
-
-1. Revalidate this final handoff-update head.
-2. Merge PR #742 only after exact-head validation succeeds.
-3. Reconcile issue #741 and this handoff to merged/released source state.
-4. Add repository-local producers/consumers incrementally rather than inventing cross-repository authority.
-5. First integration candidate: Master Records repository-state/replay indexing.
-6. Then expose bounded projections to Site/API and AI worker context.
-7. When release criteria are genuinely reached, verify pertinent propagation requirements for Site, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki.
-
 ## Completion accounting
 
 ```text
-required source files: 5
-developed source files: 5/5
-scaffolding/stub source files: 0
-source implementation: 100%
-repository-native validation: PASS on prior exact head
-merge: pending final exact-head validation
+required package source files: 5
+developed package source files: 5/5
+organization-validator integration: installed
+scaffolding/stub package files: 0
+package source implementation: 100%
+exact-head validation: PASS
+merge: COMPLETE
+source release: COMPLETE
 runtime activation: not applicable / not claimed
 ecosystem adoption: not claimed
 ```
 
+## Next integration goal
+
+The next non-duplicate integration candidate is Master Records repository-state/replay indexing.
+
+Required continuation:
+
+1. Read the canonical `master-records/orchestration` mirror handoff before mutation.
+2. Detect any existing repository-state/replay/COSV ingestion lane and do not duplicate it.
+3. Add repository-local consumption of `stegverse.repository-operational-state/v1` only if no canonical consumer already exists.
+4. Preserve Master Records custody/reconstruction authority and TV/TVC credential boundaries.
+5. After Master Records integration, evaluate bounded Site/API and AI-worker-context projections.
+6. When a broader release boundary is genuinely reached, verify pertinent propagation to Site, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki.
+
 ## Archive posture
 
-Implementation state is durably preserved in issue #741, PR #742, this handoff, the schema, validator, tests, and example. This lane becomes archive-ready after final exact-head validation, merge, and handoff reconciliation.
+This source lane is complete and no chat history is required to reconstruct it. Continuation begins from this handoff plus the installed schema, validator, tests, example, issue #741, PR #742, and merge commit `1b6ed4ba761abfc907c062aece36bc985a52de55`.
