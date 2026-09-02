@@ -13,7 +13,8 @@
       "cost_basis_ref": null,
       "evidence_refs": [
         "handoffs/SHWP-GLM53-SOVEREIGN-LANE-001.json",
-        "StegVerse-002/micro-node-runtime@07e4388eda92d99a8feb220f28265b147551242d"
+        "StegVerse-002/micro-node-runtime@07e4388eda92d99a8feb220f28265b147551242d",
+        "docs/GLM53_SOVEREIGN_LANE_RESIDENT_BRIDGE_MIRROR_HANDOFF.md"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": "StegVerse-002/micro-node-runtime#69",
