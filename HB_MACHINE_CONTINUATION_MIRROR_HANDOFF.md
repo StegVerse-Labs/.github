@@ -8,7 +8,7 @@ Updated: 2026-08-31
 goal_id: HB-MACHINE-CONTINUATION-001
 repository: StegVerse-Labs/.github
 canonical_branch: main
-implementation_branch: fix/hb-machine-continuation-20260831
+implementation_branch: fix/hb-machine-continuation-current-main-20260902
 parent_handoffs:
   - docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md
   - docs/ORG_MIRROR_HANDOFF.md
@@ -73,9 +73,16 @@ missed windows collapse to the current derived window rather than replaying ever
 ## Completion gates
 
 ```text
-source implementation: IN_PROGRESS
-focused tests: PENDING
-hosted validation: PENDING
+source implementation: IMPLEMENTED_CURRENT_MAIN
+focused tests: ADDED / VALIDATION PENDING
+hosted validation: PENDING_CURRENT_HEAD
 merge: PENDING
 authentic resident continuation receipt: PENDING / runtime evidence only
 ```
+
+
+## 2026-09-02 current-main continuation
+
+The original implementation branch/PR #688 was not merged and predates substantial resident-runtime changes. This current-main continuation preserves its non-authorizing HB-derived window semantics while integrating with the current local request dispatcher rather than replacing current immediate request sweeps.
+
+The HB-derived continuation is therefore an additional deterministic re-evaluation opportunity for already-registered resident work, not a second scheduler and not an admission surface. Authentic resident continuation remains separately observable only from deployment-local receipts.
