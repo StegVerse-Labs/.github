@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/consume_sv002_org_runtime_activation_request.py",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "Activate the frozen SV002 SDK query through the StegVerse-org resident executor and StegVerse-002-owned principal boundary. Do not execute the target principal from StegVerse-Labs."
+}
