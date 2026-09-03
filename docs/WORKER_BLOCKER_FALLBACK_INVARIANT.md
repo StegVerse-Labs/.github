@@ -183,3 +183,16 @@ TV/TVC preserves credential authority as TV/TVC-only, rejects generic GitHub/pro
 The current iPhone-bound credential evidence also records `another_physical_machine_required=false`; no second-machine fallback is introduced by this conformance finding.
 
 This adoption changes no credential, release, publication, execution, routing, transition, custody, or wallet authority.
+
+## Healer mailbox/failure-remediation conformance — 2026-09-03
+
+The `mailbox_failure_remediation` family is already conformant.
+
+Canonical evidence:
+- `StegVerse-Labs/StegVerse-Healer/failure_mailbox/FAILURE_MAILBOX_MIRROR_HANDOFF.md`
+- `failure_mailbox/backfill.py`
+- `failure_mailbox/incident_engine.py`
+
+The historical backfill isolates malformed/unsupported messages per row, records them in quarantine with durable row identity/reason, and continues processing later rows. Valid observations enter independent incident state machines, so one unresolved incident does not terminate ingestion or erase later admissible work.
+
+This conformance is credential-neutral and grants no mailbox mutation, repair, repository mutation, deployment, release, heartbeat, publication, or general runtime authority.
