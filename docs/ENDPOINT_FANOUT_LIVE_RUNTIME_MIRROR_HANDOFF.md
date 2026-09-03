@@ -120,3 +120,20 @@ terminal receipt: NOT OBSERVED
 ```
 
 The source/runtime integration gate is closed. The remaining denominator is authentic deployment-local execution after the hardened DEVICE_KV predecessor becomes terminal. Merge and hosted validation remain non-authorizing evidence only.
+
+
+## Shared HB runtime-observability registry binding — 2026-09-03
+
+Canonical consumer descriptor:
+
+```text
+control/runtime-observability-consumers/endpoint-fanout-sovereign-runtime-001.json
+registration issue: #863
+shared owner: #814
+```
+
+This registration adds no runtime, signal, scheduler, executor, receipt writer, claim/fence authority, or credential authority. It binds the existing #612 lane to the shared resident-presence projection while preserving its task-specific evidence gates.
+
+Distinct deployment-local predicates remain independently NOT OBSERVED: resident supervision, node/runtime freshness, authentic DEVICE_KV predecessor observation, governed endpoint-fanout request consumption, terminal endpoint-fanout execution, exact two-report receipt retention, KV return candidate invariants, Master Records travel-report retention, and replay/reconstruction where independently available.
+
+HB/HB-derived state remains reference/observability only; WorkerCoordinator retains independent claim/fence authority; TV/TVC remains sole credential authority; source/merge/CI cannot satisfy runtime predicates.
