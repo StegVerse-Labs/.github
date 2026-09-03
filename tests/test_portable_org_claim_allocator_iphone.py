@@ -29,7 +29,7 @@ def test_portable_allocator_package_is_exact_current_floor():
     assert pkg["always_on_external_host_required"] is False
     assert pkg["source_binding"]=={
         "allocator_git_blob_sha":"7c0105c8529b682c24a94b39ba31a8ca574c3717",
-        "task_0007_git_blob_sha":"a5fd4662b2a370e8a86099c943b8d1ec18b93e19",
+        "task_0007_git_blob_sha":"8d3cada7cd3b545620f8dd3cdc6e31e799f82339",
         "task_0008_git_blob_sha":"f534167633c867bbee6b397ae345b10ed502aa2b",
         "claims_git_blob_sha":"9e7eaf9cb1319dd570714a0c1806d7173a7ba7ff",
         "queue_git_blob_sha":"6cab961c8750495dab36d1a523980516b1ac3a5e",
@@ -37,15 +37,21 @@ def test_portable_allocator_package_is_exact_current_floor():
     assert pkg["claims_state"]["generation"]==2
     assert pkg["claims_state"]["claims"]==[]
 
-def test_canonical_priority_selects_0007_before_0008_then_0008_remains_nonconflicting():
+def test_completed_0007_is_retained_as_history_but_not_fresh_device_candidate():
     pkg=json.loads(PACKAGE.read_text(encoding="utf-8"))
-    tasks=sorted(pkg["tasks"],key=lambda t:(PRIORITY[t["priority_class"]],t["requested_at"],t["task_id"]))
-    assert [t["task_id"] for t in tasks]==["TASK-2026-0007","TASK-2026-0008"]
-    assert _surface(tasks[0])=={"site:unified-conversational-capability-contract"}
-    assert _surface(tasks[1])=={"site:stegos-de006-bound-inference-publication"}
-    assert _surface(tasks[0]).isdisjoint(_surface(tasks[1]))
-    # Therefore after TASK-0007 is active, TASK-0008 is still dependency-surface admissible.
-    assert tasks[1]["dependencies"]==[]
+    by_id={t["task_id"]:t for t in pkg["tasks"]}
+    assert by_id["TASK-2026-0007"]["status"]=="completed"
+    assert by_id["TASK-2026-0007"]["completed_at"]=="2026-08-22T12:23:32Z"
+    assert by_id["TASK-2026-0007"]["completion_evidence"]["merge_commit"]=="cdf68fe70294d43b59607c2991478c2cc4b53546"
+    assert by_id["TASK-2026-0007"]["completion_evidence"]["portable_allocator_runtime_history"]["current_iphone_claim_generation"]==3
+    assert by_id["TASK-2026-0008"]["status"]=="queued"
+    queued=[t for t in pkg["tasks"] if t["status"]=="queued"]
+    assert [t["task_id"] for t in queued]==["TASK-2026-0008"]
+    assert _surface(by_id["TASK-2026-0007"])=={"site:unified-conversational-capability-contract"}
+    assert _surface(by_id["TASK-2026-0008"])=={"site:stegos-de006-bound-inference-publication"}
+    assert _surface(by_id["TASK-2026-0007"]).isdisjoint(_surface(by_id["TASK-2026-0008"]))
+    assert pkg["catalog_reconciliation"]["task_0007"]["fresh_device_eligible"] is False
+    assert pkg["catalog_reconciliation"]["task_0008"]["fresh_device_eligible"] is True
 
 def test_portable_module_preserves_native_allocator_semantics_and_authority():
     text=MODULE.read_text(encoding="utf-8")
@@ -57,6 +63,8 @@ def test_portable_module_preserves_native_allocator_semantics_and_authority():
         'generation+=1',
         'fencing_token:generation',
         'selected.task_id',
+        'task7.completed_at',
+        'portable allocator TASK-0007 completion evidence mismatch',
         'atomicCompareAndSwap',
         'CLAIM_AUTHORITY_ONLY_WHEN_SELECTED_BY_CANONICAL_ALLOCATOR',
         'NONE_OBSERVATION_ONLY',
