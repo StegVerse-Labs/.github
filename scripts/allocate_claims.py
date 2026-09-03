@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import copy
 import json
+import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -22,6 +23,7 @@ TASKS = ROOT / "tasks"
 CLAIMS_PATH = ROOT / "control" / "claims-active.json"
 QUEUE_PATH = ROOT / "control" / "queue.json"
 EVENTS_PATH = ROOT / "events" / "org-events.jsonl"
+LOCK_PATH = ROOT / "control" / "claims-allocator.lock"
 PRIORITY = {"security": 0, "release": 1, "critical": 2, "elevated": 3, "normal": 4}
 MUTABLE_MODES = {"shared_write", "scoped_exclusive", "repository_exclusive"}
 
@@ -94,7 +96,97 @@ def task_claims_admissible(task: dict) -> bool:
     return bool(mandatory) and all(dependency_declaration_present(request) for request in mandatory)
 
 
+
+def _process_alive(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    except OSError:
+        return False
+    return True
+
+
+def acquire_allocator_lock(path: Path = LOCK_PATH) -> dict:
+    """Acquire the deployment-local allocator serialization fence.
+
+    The fence grants no task authority. It only prevents two resident dispatchers
+    from mutating claim generation/state concurrently. A dead local owner may be
+    recovered; a live owner causes this invocation to return ALLOCATOR_BUSY.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    for _ in range(2):
+        body = {
+            "schema": "stegverse.org-allocator-lock/v1",
+            "owner_pid": os.getpid(),
+            "state": "LOCKED",
+            "authority_effect": "NONE_SERIALIZATION_ONLY",
+        }
+        try:
+            fd = os.open(str(path), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+        except FileExistsError:
+            try:
+                existing = load(path)
+            except Exception:
+                existing = {}
+            owner_pid = int(existing.get("owner_pid") or 0)
+            if owner_pid and _process_alive(owner_pid):
+                return {
+                    "acquired": False,
+                    "state": "ALLOCATOR_BUSY",
+                    "owner_pid": owner_pid,
+                    "authority_effect": "NONE_SERIALIZATION_ONLY",
+                }
+            try:
+                path.unlink()
+            except FileNotFoundError:
+                pass
+            continue
+        else:
+            try:
+                os.write(fd, (json.dumps(body, sort_keys=True) + "\n").encode("utf-8"))
+            finally:
+                os.close(fd)
+            return {"acquired": True, **body}
+    raise RuntimeError("unable to acquire organization allocator lock")
+
+
+def release_allocator_lock(path: Path = LOCK_PATH) -> None:
+    if not path.is_file():
+        return
+    try:
+        existing = load(path)
+    except Exception:
+        return
+    if int(existing.get("owner_pid") or 0) == os.getpid():
+        try:
+            path.unlink()
+        except FileNotFoundError:
+            pass
+
 def main() -> int:
+    lock = acquire_allocator_lock()
+    if not lock.get("acquired"):
+        print(json.dumps({
+            "selected": None,
+            "queued": [],
+            "blocked_missing_dependency_declaration": [],
+            "state": "ALLOCATOR_BUSY",
+            "allocator_lock_owner_pid": lock.get("owner_pid"),
+            "authority_effect": "NONE_SERIALIZATION_ONLY",
+        }))
+        return 0
+    try:
+        return _main_locked()
+    finally:
+        release_allocator_lock()
+
+
+def _main_locked() -> int:
     tasks = {p.stem: load(p) for p in sorted(TASKS.glob("TASK-*.json"))}
     claims_state = load(CLAIMS_PATH)
     queue_state = load(QUEUE_PATH)
@@ -157,6 +249,8 @@ def main() -> int:
         "selected": selected and selected["task_id"],
         "queued": queue_state["ordered_task_ids"],
         "blocked_missing_dependency_declaration": blocked_missing_dependency_declaration,
+        "state": "ALLOCATION_COMPLETE",
+        "authority_effect": "CLAIM_AUTHORITY_ONLY_WHEN_SELECTED_BY_CANONICAL_ALLOCATOR",
     }))
     return 0
 
