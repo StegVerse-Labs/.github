@@ -816,3 +816,16 @@ The next legitimate implementation is to remove the required remote-gateway depe
 Until that implementation exists, authentic HIL runtime execution is not the next blocker. The source/control path itself is incomplete.
 
 No second machine may be assigned to the user.
+
+
+### Same-device fail-closed source merge
+
+StegOS PR #178 / merge `2efe6678e859e19d96d2a6afd6edf924bab186d2`, CI `33713897558 SUCCESS`, now enforces the route predicates in executable HIL ESRL source:
+
+```text
+requires_other_machine=false
+activation_execution_scope=SAME_DEVICE
+same_device_gateway_execution=true
+```
+
+A required remote shared Gateway now fails closed in source. This merge removes acceptance of the invalid topology; it does not yet provide or prove an on-device public rendezvous.
