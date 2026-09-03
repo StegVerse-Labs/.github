@@ -31,7 +31,7 @@ class StegIndexPreflightTests(unittest.TestCase):
             "'first_actionable_predicate':{'predicate_id':'runtime_receipt_present','machine_executable_now':False},"
             "'machine_continuation_required':False,"
             "'generic_blocker_permitted':True,"
-            "'source_refresh':{'state':'COMPLETE' if os.environ.get('STEGVERSE_REPO_ROOTS_JSON') else 'ABSENT'},,"
+            "'source_refresh':{'state':'COMPLETE' if os.environ.get('STEGVERSE_REPO_ROOTS_JSON') else 'ABSENT'},"
             "'authority_effect':'NONE_INDEX_RESOLUTION_ONLY'"
             "}))\n",
             encoding="utf-8",
