@@ -63,3 +63,15 @@ next_action: validate adapter behavior and integrate the adapter into concrete s
 manual_execution_allowed: true
 user_action_required: false
 thread_archive_ready: false
+
+## Merge receipt — 2026-09-02
+
+Organization consumer:
+- PR #877
+- merge: `63a3aa8e81c3d16fe8c7dfbc6e77d80d1bff8d27`
+
+StegIndex resolver:
+- PR #2
+- merge: `4d47439956341ea535e3e937d97c492b193daa51`
+
+Source-bound preflight consumption is now present on `main`. This is not evidence that every existing worker invokes the adapter, and it is not runtime activation evidence.
