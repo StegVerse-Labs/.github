@@ -19,17 +19,18 @@ class StegIndexPreflightTests(unittest.TestCase):
         root = Path(self.temp.name)
         (root / "scripts").mkdir()
         (root / "STEGINDEX_MIRROR_HANDOFF.md").write_text("# handoff\n", encoding="utf-8")
-        (root / "scripts" / "resolve_preflight.py").write_text(
+        (root / "scripts" / "preflight.py").write_text(
             "import json\n"
             "print(json.dumps({"
-            "'schema':'stegindex.preflight-result/v1',"
             "'query':'runtime evidence',"
             "'capabilities':[{'capability_id':'stegverse:capability:runtime-proof:v1'}],"
-            "'predicates':[{'predicate_id':'runtime_receipt_present','current_truth_state':'FALSE'}],"
-            "'first_actionable_predicate':{'predicate_id':'runtime_receipt_present','current_truth_state':'FALSE'},"
+            "'purpose_contributions':[],"
+            "'existing_capability_found':True,"
+            "'duplicate_implementation_guard':'REUSE_OR_EXTEND_EXISTING',"
+            "'first_actionable_predicate':{'predicate_id':'runtime_receipt_present','machine_executable_now':False},"
             "'machine_continuation_required':False,"
             "'generic_blocker_permitted':True,"
-            "'reuse_required':True"
+            "'authority_effect':'NONE_INDEX_RESOLUTION_ONLY'"
             "}))\n",
             encoding="utf-8",
         )
@@ -47,11 +48,12 @@ class StegIndexPreflightTests(unittest.TestCase):
             index_root=root,
             query="runtime evidence",
             predicate="runtime_receipt_present",
+            capability_id="stegverse:capability:runtime-proof:v1",
             intent="RUNTIME_EVIDENCE",
         )
         self.assertTrue(result["canonical_resolver_invoked"])
         self.assertEqual(result["first_actionable_predicate"]["predicate_id"], "runtime_receipt_present")
-        self.assertTrue(result["reuse_required"])
+        self.assertEqual(result["duplicate_implementation_guard"], "REUSE_OR_EXTEND_EXISTING")
         self.assertFalse(result["network_fetch_performed"])
         self.assertFalse(result["github_token_required"])
 
