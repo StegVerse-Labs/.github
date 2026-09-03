@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
   "created_at": "2026-09-03T16:36:37Z",
-  "updated_at": "2026-09-03T16:36:37Z",
+  "updated_at": "2026-09-03T16:41:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "ERL-AI-ECON-TRANSPARENCY-001",
@@ -124,5 +124,33 @@
     "next_check": null,
     "escalation_condition": "review requires credential, provider operation, repository checkout, or research-promotion authority",
     "block_expires_at": null
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:erl-ai-economic-transparency-independent-review:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/AI_ECONOMIC_TRANSPARENCY_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/ERL-AI-ECON-TRANSPARENCY-001.json",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger#104"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json",
+      "StegVerse-Labs/.github#927"
+    ],
+    "integration_evidence_refs": [
+      "workers/erl_ai_economic_transparency_review_worker.py",
+      "control/process-worker-adapters.d/erl-ai-economic-transparency-review-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "LOCAL_ERL_REVIEW_PACKAGE_AND_RESIDENT_EXECUTION_RECEIPT_PENDING"
+    ],
+    "continuation_owner": "resident sovereign heartbeat + erl-ai-economic-transparency-review-worker + StegVerse-Labs/Executive_Rhetoric_Ledger#104",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
   }
 }
