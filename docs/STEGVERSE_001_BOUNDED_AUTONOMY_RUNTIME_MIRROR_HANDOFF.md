@@ -298,8 +298,9 @@ Canonical owner surfaces:
 
 ```text
 management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json
-org-kernel/runtime_observability.py
-scripts/project_runtime_observability.py
+heartbeat_runtime/runtime_presence_projection.py
+scripts/project_hb_runtime_presence.py
+canonical validation: tests/test_runtime_presence_projection.py
 resident-local extension: merged via StegVerse-Labs/.github#814 / PR #822 @ 6358375c81fedb579cb6fcac59946268ea485ebb
 ```
 
@@ -331,3 +332,22 @@ SV002 adversarial disposition
 Neither HB progression, source installation, request-file presence, merge, CI, nor projection-file presence satisfies any of those machine predicates.
 
 This session's exact currently unresolved first predicate is `resident_process_alive_supervised`. It must be supplied by the shared canonical runtime-presence contract when authentic deployment-local activation/liveness evidence exists.
+
+
+## Canonical observability reference reconciliation — 2026-09-02
+
+The earlier SV001 prose still named the superseded experimental projection surfaces
+`org-kernel/runtime_observability.py` and `scripts/project_runtime_observability.py`.
+The organization contract now explicitly marks those surfaces superseded.
+
+SV001 therefore binds only to the current canonical resident-local projection:
+
+```text
+management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json
+-> heartbeat_runtime/runtime_presence_projection.py
+-> scripts/project_hb_runtime_presence.py
+-> tests/test_runtime_presence_projection.py
+```
+
+This is a source-reference correction only. It does not change any runtime predicate,
+claim/fence authority, TV/TVC credential authority, or activation state.

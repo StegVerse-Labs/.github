@@ -210,8 +210,8 @@
   },
   "observability_binding": {
     "contract_ref": "management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json",
-    "canonical_module": "org-kernel/runtime_observability.py",
-    "canonical_projector": "scripts/project_runtime_observability.py",
+    "canonical_module": "heartbeat_runtime/runtime_presence_projection.py",
+    "canonical_projector": "scripts/project_hb_runtime_presence.py",
     "active_resident_local_extension_owner": "StegVerse-Labs/.github#814",
     "consumer_lane": "STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
     "current_missing_runtime_predicate": "resident_process_alive_supervised",
@@ -250,6 +250,13 @@
     "resident_local_extension_pr": 822,
     "resident_local_extension_merge": "6358375c81fedb579cb6fcac59946268ea485ebb",
     "resident_local_extension_source_merged": true,
-    "resident_local_extension_runtime_observed": false
+    "resident_local_extension_runtime_observed": false,
+    "canonical_validation": "tests/test_runtime_presence_projection.py",
+    "superseded_projection_surfaces": [
+      "org-kernel/runtime_observability.py",
+      "scripts/project_runtime_observability.py",
+      "org-kernel/tests/test_runtime_observability.py",
+      "schemas/hb-runtime-resident-observability.schema.json"
+    ]
   }
 }
