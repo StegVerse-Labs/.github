@@ -173,19 +173,34 @@ def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run,env:
     if receipt_path.is_file():
         old=load(receipt_path)
         if old.get("request_sha256")==rh and old.get("activation_complete") is True:
-            return {
+            observed_roots,observed_missing=resolve_roots(env)
+            out={
               "schema":"stegverse.resident-execution-request-consumption/v1",
               "state":"ALREADY_CONSUMED","request_id":req.get("request_id"),"request_sha256":rh,
               "task_id":TASK_ID,"runtime_execution_attempted":False,"activation_complete":True,
-              "exactly_once_after_complete":True,"request_granted_authority":False,"authority_effect":"NONE_REQUEST_ONLY"
+              "exactly_once_after_complete":True,
+              "resolved_source_roots":sorted(observed_roots),
+              "missing_source_roots":sorted(observed_missing),
+              "stegindex_source_root_resolved":"stegindex" in observed_roots and "stegindex" not in observed_missing,
+              "source_root_resolution_observed":True,
+              "network_source_fetch_performed":False,
+              "request_granted_authority":False,
+              "github_token_runtime_authority":"NONE",
+              "credential_authority":"TV/TVC",
+              "authority_effect":"NONE_REQUEST_ONLY"
             }
+            receipt_path.write_text(json.dumps(out,indent=2,sort_keys=True)+"\n")
+            return out
     roots,missing=resolve_roots(env)
     if missing:
         out={
           "schema":"stegverse.resident-execution-request-consumption/v1","state":"SOURCE_ROOTS_PENDING",
           "request_id":req.get("request_id"),"request_sha256":rh,"task_id":TASK_ID,
           "runtime_execution_attempted":False,"activation_complete":False,"retry_allowed":True,
-          "missing_source_roots":sorted(missing),"network_source_fetch_performed":False,
+          "resolved_source_roots":sorted(roots),"missing_source_roots":sorted(missing),
+          "stegindex_source_root_resolved":"stegindex" in roots and "stegindex" not in missing,
+          "source_root_resolution_observed":True,
+          "network_source_fetch_performed":False,
           "request_granted_authority":False,"authority_effect":"NONE_REQUEST_ONLY"
         }
         receipt_path.parent.mkdir(parents=True,exist_ok=True)
@@ -201,6 +216,9 @@ def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run,env:
           "schema":"stegverse.resident-execution-request-consumption/v1",
           "state":fence["state"],"request_id":req.get("request_id"),"request_sha256":rh,"task_id":TASK_ID,
           "runtime_execution_attempted":False,"activation_complete":False,"retry_allowed":True,
+          "resolved_source_roots":sorted(roots),"missing_source_roots":[],
+          "stegindex_source_root_resolved":"stegindex" in roots,
+          "source_root_resolution_observed":True,
           "reentry_fence_owner_pid":fence.get("owner_pid"),"request_granted_authority":False,
           "authority_effect":"NONE_REENTRY_FENCE_ONLY"
         }
@@ -234,7 +252,11 @@ def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run,env:
       "request_id":req.get("request_id"),"request_sha256":rh,"task_id":TASK_ID,
       "runtime_execution_attempted":True,"execution_returncode":completed.returncode,
       "execution_result":result,"activation_complete":done,"retry_allowed":not done,
-      "exactly_once_after_complete":True,"network_source_fetch_performed":False,
+      "exactly_once_after_complete":True,
+      "resolved_source_roots":sorted(roots),"missing_source_roots":[],
+      "stegindex_source_root_resolved":"stegindex" in roots,
+      "source_root_resolution_observed":True,
+      "network_source_fetch_performed":False,
       "request_granted_authority":False,"github_token_runtime_authority":"NONE",
       "credential_authority":"TV/TVC","authority_effect":"NONE_REQUEST_ONLY"
     }
