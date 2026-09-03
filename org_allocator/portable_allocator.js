@@ -68,7 +68,7 @@
     var source=pkg.source_binding||{};
     var exact={
       allocator_git_blob_sha:"7c0105c8529b682c24a94b39ba31a8ca574c3717",
-      task_0007_git_blob_sha:"a5fd4662b2a370e8a86099c943b8d1ec18b93e19",
+      task_0007_git_blob_sha:"8d3cada7cd3b545620f8dd3cdc6e31e799f82339",
       task_0008_git_blob_sha:"f534167633c867bbee6b397ae345b10ed502aa2b",
       claims_git_blob_sha:"9e7eaf9cb1319dd570714a0c1806d7173a7ba7ff",
       queue_git_blob_sha:"6cab961c8750495dab36d1a523980516b1ac3a5e"
@@ -79,15 +79,16 @@
     if(ids!=="TASK-2026-0007|TASK-2026-0008"){fail("portable allocator task identities mismatch");}
     var task7=pkg.tasks.find(function(t){return t.task_id==="TASK-2026-0007";});
     var task8=pkg.tasks.find(function(t){return t.task_id==="TASK-2026-0008";});
-    function validateTaskFloor(task,requestedAt,surface){
-      if(!task||task.organization!=="StegVerse-Labs"||task.status!=="queued"||task.requested_at!==requestedAt||task.priority_class!=="release"){fail("portable allocator task floor mismatch");}
+    function validateTaskFloor(task,requestedAt,surface,expectedStatus){
+      if(!task||task.organization!=="StegVerse-Labs"||task.status!==expectedStatus||task.requested_at!==requestedAt||task.priority_class!=="release"){fail("portable allocator task floor mismatch");}
       if((task.dependencies||[]).length!==0){fail("portable allocator task dependency floor mismatch");}
       var mandatory=((task.requirements||{}).mandatory)||[];
       if(mandatory.length!==1||!mandatory[0].repository||mandatory[0].repository.full_name!=="StegVerse-Labs/Site"){fail("portable allocator task repository floor mismatch");}
       if(dependencySurfaces(mandatory[0]).indexOf(surface)===-1){fail("portable allocator task dependency surface floor mismatch");}
     }
-    validateTaskFloor(task7,"2026-08-22T04:39:00Z","site:unified-conversational-capability-contract");
-    validateTaskFloor(task8,"2026-09-03T00:28:00Z","site:stegos-de006-bound-inference-publication");
+    validateTaskFloor(task7,"2026-08-22T04:39:00Z","site:unified-conversational-capability-contract","completed");
+    if(!task7.completed_at||!task7.completion_evidence||task7.completion_evidence.merge_commit!=="cdf68fe70294d43b59607c2991478c2cc4b53546"){fail("portable allocator TASK-0007 completion evidence mismatch");}
+    validateTaskFloor(task8,"2026-09-03T00:28:00Z","site:stegos-de006-bound-inference-publication","queued");
     if(pkg.claims_state.schema!=="stegverse.org-claims/v1"||pkg.queue_state.schema!=="stegverse.org-queue/v1"){fail("portable allocator predecessor state schema mismatch");}
     if(pkg.claims_state.generation!==2||!Array.isArray(pkg.claims_state.claims)||pkg.claims_state.claims.length!==0){fail("portable allocator predecessor claim state mismatch");}
     return pkg;
