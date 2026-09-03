@@ -208,3 +208,16 @@ Canonical evidence:
 Publisher release-awareness lanes are explicitly `PARALLEL_SAFE_NON_AUTHORIZING_RELEASE_AWARENESS`. Dedicated awareness success is retained independently while unrelated RTG-001 / stegdb-sync failures remain separate and are not converted into success or used to terminate other bounded observer work.
 
 Publication, release, custody, execution, Guardian, admissibility, runtime, and cross-repository mutation authority remain false.
+
+## Adoption inventory durable ownership closure — 2026-09-03
+
+No worker family may remain at generic `FOLLOWUP_TASK_REQUIRED`.
+
+Remaining proof-owned families:
+- `heartbeat_runtime` -> StegVerse-Labs/.github#901 + #65
+- `deployment_runtime_activation` -> StegVerse-Labs/.github#901 + #65
+- `organization_repository_completion` -> Admissible-Existence/.github#4
+
+Issue #901 is validation/adoption proof only and may not compete with #65 machine-owned runtime mutation scope. Organization-completion proof remains with its existing canonical owner rather than being duplicated in StegVerse-Labs.
+
+The adoption validator now rejects vague follow-up states and requires every `FOLLOWUP_TASK_CREATED` record to name a durable owner and explicit evidence requirements.
