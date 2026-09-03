@@ -69,3 +69,43 @@ HB authority effect = NONE
 interaction queue authority effect = NONE_HUMAN_DEVICE_INSTRUCTION_SERIALIZATION_ONLY
 second user-operated machine required = false
 ```
+
+
+## Reconciliation update — 2026-09-03
+
+The apparent DE-006 competing phone action has been resolved from canonical evidence.
+PR #921 / merge `bc871ebca8a04646f043e467a170c068f9eef140` verified a later
+CURRENT_USER_IPHONE DE-006 evidence bundle:
+
+```text
+reconstruction = PASS
+same_execution = true
+replay relation = VALID_APPEND_ONLY_DESCENDANT
+journal tail = 897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69
+parent execution proven = false
+parent fence promoted = false
+```
+
+Its next transition is resident request consumption plus a fresh parent fence >22.
+That is machine-owned and requires no additional human/device mutation, so the
+placeholder DE-006 mutation has been removed from the interaction queue.
+
+The `897b...` tail is a later verified descendant than the original `0725...`
+tail, but it is still not treated as the present device head because other concurrent
+sessions may have acted after that export.
+
+Current canonical explicit mutation inventory contains one candidate:
+
+`IPHONE-MR-SV001-CUSTODY-001`
+
+It remains `WAITING_FOR_FRESH_JOURNAL_HEAD`; it is not admitted.
+
+New deterministic tooling:
+- `scripts/check_current_user_ios_interaction_queue.py` validates queue invariants;
+- `scripts/evaluate_current_user_ios_interaction_admission.py` evaluates a fresh
+  read-only journal replay/export against a registered candidate without granting
+  or mutating any authority.
+
+The SV001 executable handoff is explicitly subordinated to this queue. Its
+task-specific page action text is descriptive only until the exact action ID is
+the sole `ADMITTED_FOR_USER_EXECUTION` queue entry.

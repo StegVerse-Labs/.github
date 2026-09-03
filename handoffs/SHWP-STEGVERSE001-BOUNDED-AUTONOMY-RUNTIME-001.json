@@ -200,10 +200,10 @@
     "problem_statement": "The canonical same-device Master Records portable custody source and Site projection are now merged. The exact remaining predicate is authentic CURRENT_USER_IPHONE Master Records custody/reconstruction of cycle receipt sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35, followed by SV002 disposition.",
     "solution_required": false,
     "may_remain_blocked": false,
-    "human_action_required": true,
+    "human_action_required": false,
     "second_machine_required": false,
     "github_token_required": false,
-    "next_solution_action": "CURRENT_USER_IPHONE_MASTER_RECORDS_CUSTODY_COMMIT",
+    "next_solution_action": "FRESH_CURRENT_DEVICE_JOURNAL_REPLAY_AND_QUEUE_ADMISSION",
     "executable_entrypoint": "https://stegverse.org/stegos-bootstrap/ -> Master Records — completed SV001 custody",
     "machine_transition_sequence": [
       "portable_workercoordinator_checkout_current_iphone_COMPLETED",
@@ -213,7 +213,7 @@
       "sv002_adversarial_observation_and_disposition"
     ],
     "machine_observable_release_condition": "Authentic current-iPhone checkout receipt -> valid TVC lease issuance -> SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED -> same-execution reconstruction PASS -> SV002 disposition.",
-    "human_action_note": "Use only the current iPhone. The released UI accepts the full authentic SV001 execution proof, so manual nested receipt extraction is not required. It extracts subordinate_execution_proof.cycle_receipt unchanged and submits it to canonical Master Records validation. Do not rerun SV001. No second device, external machine, GitHub token, or non-TV/TVC credential is required.",
+    "human_action_note": "Do not issue the Master Records custody page mutation yet. Organization queue #922 is fail-closed until a fresh current-device journal replay/export is reconciled and IPHONE-MR-SV001-CUSTODY-001 becomes the sole ADMITTED_FOR_USER_EXECUTION action.",
     "current_session_execution_boundary": "GITHUB_SESSION_CANNOT_EMIT_DEVICE_LOCAL_INDEXEDDB_MASTER_RECORDS_CUSTODY",
     "executable_command": "CURRENT_USER_IPHONE secure-browser import of exact immutable completed SV001 cycle_receipt into released Master Records custody surface",
     "not_work": [
@@ -227,7 +227,8 @@
       "Stage 2 executes or returns a concrete TVC/SV001 repair transition",
       "terminal SV001 execution automatically continues into Master Records and SV002"
     ],
-    "other_machine_required": false
+    "other_machine_required": false,
+    "human_action_deferred_by_interaction_queue": true
   },
   "observability_binding": {
     "contract_ref": "management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json",
@@ -296,5 +297,15 @@
     "same_device_stegos_path_installed": true,
     "site_resident_task_projection_release": "13baddb05104729fb85c41e029c675add07a4107",
     "site_task0008_projection_release": "6a08d993af9814cc6d20723f8a1e16957d3fe8d4"
+  },
+  "interaction_serialization": {
+    "queue_ref": "control/current-user-ios-interaction-queue.json",
+    "action_id": "IPHONE-MR-SV001-CUSTODY-001",
+    "direct_human_instruction_allowed": false,
+    "required_queue_state": "ADMITTED_FOR_USER_EXECUTION",
+    "current_queue_state": "WAITING_FOR_FRESH_JOURNAL_HEAD",
+    "fresh_journal_head_required": true,
+    "terminal_source_reexecution_allowed": false,
+    "rule": "The completion.next_authorized_action text describes the task-specific action only; it MUST NOT be issued to the user while the organization interaction queue is HOLD or this action is not the sole admitted action."
   }
 }
