@@ -1,0 +1,19 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-ORG-CLAIM-ALLOCATOR-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+  "mode": "CANONICAL_ORGANIZATION_CLAIM_ALLOCATION",
+  "entrypoint": "scripts/consume_org_claim_allocator_request.py",
+  "repeat_on_resident_dispatch": true,
+  "canonical_allocator": "scripts/allocate_claims.py",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "network_source_fetch_allowed": false,
+  "second_machine_required": false,
+  "heartbeat_grants_execution_authority": false,
+  "request_grants_claim_authority": false,
+  "allocator_remains_claim_authority": true,
+  "authority_effect": "NONE_REQUEST_ONLY"
+}
