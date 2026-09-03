@@ -74,7 +74,7 @@ class HILSovereignReceiverWorkerRegistrationTests(unittest.TestCase):
         self.assertFalse(authority["github_token_required"])
         self.assertFalse(authority["participant_machine_required"])
         self.assertFalse(authority["developer_machine_required"])
-        self.assertFalse(authority["current_user_iphone_required"])
+        self.assertTrue(authority["current_user_iphone_required"])
         self.assertFalse(authority["hb30_browser_capsule_required"])
         self.assertFalse(authority["third_party_runtime_required"])
         self.assertFalse(authority["execution_authority"])
