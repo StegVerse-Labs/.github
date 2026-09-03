@@ -161,3 +161,25 @@ DE-006 binds the stable TASK-2026-0008 receipt as the distinct
 `site_projection_claim_grant` predicate. An allocator visit, an unrelated task grant,
 HB progression, or a selected task id without a matching post-allocation claim cannot
 satisfy that predicate.
+
+
+## TASK-0008 claim-scope freshness fingerprint — 2026-09-02
+
+TASK-2026-0008 was widened while still queued from the older five-file DE-006 Site
+projection to the canonical current-iPhone projection package.
+
+Task identity, requested timestamp, repository, and dependency surface did not change,
+so those fields alone cannot distinguish an old local checkout from the current task.
+
+The resident source-catalog floor now pins the canonical SHA-256 of the mandatory
+claim scope:
+
+`98096b5825e85dd558f9cb5a4e882002543d4c703cfa7981cd2d826c80c1a05b`
+
+The digest covers the claim scope object (paths, contracts, release surfaces,
+capabilities, workflows, dependency surfaces) and deliberately excludes mutable
+runtime task status.
+
+Before any materialization or allocator invocation, the consumer recomputes that digest
+from the already-local source task. A mismatch fails `STALE_SOURCE_CATALOG` and no
+allocator call occurs.
