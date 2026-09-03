@@ -89,3 +89,19 @@ It MUST NOT return `REUSE_OR_EXTEND_EXISTING` or `CONTINUE_MACHINE_EXECUTION` fr
 This preserves two independent fail-closed rules:
 1. usable existing truth prevents duplicate implementation;
 2. unusable indexed truth requires reconciliation before either reuse or new work.
+
+## Concrete session/build pre-work entrypoint — 2026-09-02
+
+Canonical entrypoint:
+- `scripts/session_build_preflight.py`
+- contract: `management/session-build-preflight-contract.json`
+
+This is the organization pre-work boundary for deciding whether new implementation/task creation may even be considered.
+
+Decision mapping:
+- StegIndex `CONTINUE_MACHINE_EXECUTION` -> continue through canonical owner; new task creation prohibited.
+- StegIndex `REUSE_OR_EXTEND_EXISTING` -> reuse existing capability; new task creation prohibited.
+- StegIndex `EXACT_BLOCKER_ONLY` -> stop only at the exact dependency; new task creation prohibited.
+- StegIndex `NO_EXISTING_CAPABILITY_MATCH` -> new work may be considered, subject to all normal governance/authority rules.
+
+This entrypoint performs no execution and grants no authority. It exists to prevent duplicate work and generic blocker creation before work is admitted.
