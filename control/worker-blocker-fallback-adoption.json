@@ -4,20 +4,25 @@
   "owner": "StegVerse-Labs/.github#242",
   "canonical_contract": "docs/WORKER_BLOCKER_FALLBACK_INVARIANT.md",
   "source_runtime_policy": "docs/BLOCKER_RESOLUTION_MIRROR_HANDOFF.md",
-  "state": "ADOPTION_IN_PROGRESS_ALL_FAMILIES_CLASSIFIED",
+  "state": "ADOPTION_IN_PROGRESS_ORGANIZATION_COMPLETION_PROOF_REMAINS",
   "credential_authority": "TV/TVC_ONLY",
   "github_token_runtime_authority": "NONE",
   "worker_families": [
     {
       "family": "heartbeat_runtime",
-      "state": "FOLLOWUP_TASK_CREATED",
-      "owner": "StegVerse-Labs/.github#901 + #65",
-      "next_action": "produce validation-only A-blocked/B-continues proof without competing with #65 runtime ownership",
-      "evidence_required": [
-        "deterministic multi-item continuation test",
-        "hosted validation-only SUCCESS run/job",
-        "no authority widening"
-      ]
+      "state": "ADOPTED",
+      "owner": "StegVerse-Labs/.github#65",
+      "next_action": "preserve existing blocker-resolution runtime semantics and regression proof; no duplicate adoption task remains",
+      "evidence": [
+        "StegVerse-Labs/.github#903 -> faf9ec76625d6b6286d96d1753fb5eca7b7ce967",
+        "Heartbeat validation run 33718097701 SUCCESS",
+        "Heartbeat validation job 100531416166 SUCCESS",
+        "Organization control-plane validation run 33718097665 SUCCESS",
+        "complete deterministic repository test suite step SUCCESS",
+        "tests/test_runtime_blocker_continuation_proof.py",
+        "blocked SHWP-DURABLE-RUNTIME-ACTIVATION remains persisted while later ACTIVE task is processed in untargeted WorkerCoordinator cycle"
+      ],
+      "authority_effect": "NONE"
     },
     {
       "family": "organization_repository_completion",
@@ -61,15 +66,19 @@
     },
     {
       "family": "deployment_runtime_activation",
-      "state": "FOLLOWUP_TASK_CREATED",
-      "owner": "StegVerse-Labs/.github#901 + #65",
-      "next_action": "prove deployment/runtime activation controller preserves blocked surface and continues later admissible non-colliding work",
-      "evidence_required": [
-        "representative runtime activation controller path",
-        "A-blocked/B-continues proof",
-        "hosted validation-only SUCCESS run/job",
-        "no runtime activation inferred from validation"
-      ]
+      "state": "ADOPTED",
+      "owner": "StegVerse-Labs/.github#65",
+      "next_action": "preserve existing blocker-resolution runtime semantics and regression proof; no duplicate adoption task remains",
+      "evidence": [
+        "StegVerse-Labs/.github#903 -> faf9ec76625d6b6286d96d1753fb5eca7b7ce967",
+        "Heartbeat validation run 33718097701 SUCCESS",
+        "Heartbeat validation job 100531416166 SUCCESS",
+        "Organization control-plane validation run 33718097665 SUCCESS",
+        "complete deterministic repository test suite step SUCCESS",
+        "tests/test_runtime_blocker_continuation_proof.py",
+        "blocked SHWP-DURABLE-RUNTIME-ACTIVATION remains persisted while later ACTIVE task is processed in untargeted WorkerCoordinator cycle"
+      ],
+      "authority_effect": "NONE"
     },
     {
       "family": "mailbox_failure_remediation",
