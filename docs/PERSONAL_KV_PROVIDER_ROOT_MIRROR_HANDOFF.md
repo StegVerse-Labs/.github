@@ -64,3 +64,44 @@ conclusion: SUCCESS
 provider-root regression: PASS
 runtime activation inferred: false
 ```
+
+
+## Secret-free TVC resident-result integration — 2026-09-03
+
+The provider-root resolver no longer accepts `STEGVERSE_TVC_PROVIDER_SESSION_FILE`.
+That environment variable is explicitly rejected as a retired credential-bearing consumer input.
+
+Canonical source chain:
+
+```text
+TVC owner-session lifecycle core:
+  4c42636b346a9ea0fafbdf8f6696239ba339b819
+
+TVC exact lease/broker contract:
+  2c0a758852b5c28190e507bdc8a8b5e2ac0141c5
+
+existing non-exportable Google Drive broker:
+  StegVerse-Labs/stegfin-governance
+  17930b3b22584248992f5f53d35199bef043b1d4
+
+TVC resident secret-free result producer:
+  1a1ee9626d7d2a1afe22454dc9d693c830a17a76
+
+CVK secret-free broker materialization verifier:
+  0abda122db5c963b9cbb07a41878eb3bf9304c95
+```
+
+The shared resolver now consumes only:
+
+`STEGVERSE_TVC_PROVIDER_MATERIALIZATION_RESULT_FILE`
+
+Expected artifact:
+`stegverse.tvc.personal-kv-google-drive-materialization-result/v1`.
+
+The resolver validates outer provider/binding/credential-authority/non-export posture, then
+passes only the embedded secret-free `broker_response` to CVK for exact path/hash/size
+verification and temporary KV-root materialization.
+
+Existing local `STEGVERSE_KV_ROOT` continues to win without provider materialization.
+
+No .github provider credential, OAuth, lease, broker, or runtime authority is created.
