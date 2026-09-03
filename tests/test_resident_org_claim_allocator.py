@@ -66,6 +66,29 @@ def test_resident_consumer_invokes_existing_allocator_and_retains_authority_boun
         request_path = runtime / consumer.REQUEST_REL
         request_path.parent.mkdir(parents=True, exist_ok=True)
         request_path.write_text(json.dumps(request()), encoding="utf-8")
+        (source / "tasks").mkdir(parents=True, exist_ok=True)
+        (source / "tasks/TASK-2026-0008.json").write_text(
+            json.dumps({
+                "schema": "stegverse.org-task/v0.2",
+                "task_id": "TASK-2026-0008",
+                "organization": "StegVerse-Labs",
+                "goal": "test",
+                "status": "queued",
+                "requirements": {"mandatory": [], "optional": []},
+                "dependencies": [],
+                "requested_at": "2026-09-03T00:28:00Z",
+            }),
+            encoding="utf-8",
+        )
+        (source / "control").mkdir(parents=True, exist_ok=True)
+        (source / "control/claims-active.json").write_text(
+            json.dumps({"schema": "stegverse.claims-active/v1", "generation": 0, "claims": []}),
+            encoding="utf-8",
+        )
+        (source / "control/queue.json").write_text(
+            json.dumps({"schema": "stegverse.org-queue/v1", "generation": 0, "ordered_task_ids": []}),
+            encoding="utf-8",
+        )
         allocator_path = runtime / consumer.ALLOCATOR_REL
         allocator_path.parent.mkdir(parents=True, exist_ok=True)
         allocator_path.write_text("# canonical allocator\n", encoding="utf-8")
@@ -88,6 +111,9 @@ def test_resident_consumer_invokes_existing_allocator_and_retains_authority_boun
 
         result = consumer.consume(source, runtime, runner=runner, env={"PATH": "/bin", "HOME": td})
         assert result["state"] == "ATTEMPT_RECORDED"
+        assert result["control_inputs"]["state"] == "CONTROL_INPUTS_READY"
+        assert result["control_inputs"]["runtime_task_state_overwritten"] is False
+        assert "TASK-2026-0008.json" in result["control_inputs"]["imported_task_files"]
         assert result["selected_task_id"] == "TASK-2026-0008"
         assert result["claim_grant_occurred"] is True
         assert result["request_granted_claim_authority"] is False
@@ -106,6 +132,16 @@ def test_resident_consumer_rejects_hosted_environment_before_allocator_invocatio
         request_path = runtime / consumer.REQUEST_REL
         request_path.parent.mkdir(parents=True, exist_ok=True)
         request_path.write_text(json.dumps(request()), encoding="utf-8")
+        (base / "source/tasks").mkdir(parents=True, exist_ok=True)
+        (base / "source/control").mkdir(parents=True, exist_ok=True)
+        (base / "source/control/claims-active.json").write_text(
+            json.dumps({"schema": "stegverse.claims-active/v1", "generation": 0, "claims": []}),
+            encoding="utf-8",
+        )
+        (base / "source/control/queue.json").write_text(
+            json.dumps({"schema": "stegverse.org-queue/v1", "generation": 0, "ordered_task_ids": []}),
+            encoding="utf-8",
+        )
         allocator_path = runtime / consumer.ALLOCATOR_REL
         allocator_path.parent.mkdir(parents=True, exist_ok=True)
         allocator_path.write_text("# canonical allocator\n", encoding="utf-8")
@@ -124,6 +160,44 @@ def test_resident_consumer_rejects_hosted_environment_before_allocator_invocatio
         assert calls == []
 
 
+
+
+def test_task_catalog_import_is_append_only_and_preserves_runtime_status():
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        source = base / "source"
+        runtime = base / "runtime"
+        (source / "tasks").mkdir(parents=True)
+        (source / "control").mkdir(parents=True)
+        (runtime / "tasks").mkdir(parents=True)
+        source_task = {
+            "schema": "stegverse.org-task/v0.2",
+            "task_id": "TASK-2026-0008",
+            "organization": "StegVerse-Labs",
+            "goal": "source queued",
+            "status": "queued",
+            "requirements": {"mandatory": [], "optional": []},
+            "dependencies": [],
+            "requested_at": "2026-09-03T00:28:00Z",
+        }
+        runtime_task = dict(source_task)
+        runtime_task["status"] = "active"
+        (source / "tasks/TASK-2026-0008.json").write_text(json.dumps(source_task), encoding="utf-8")
+        (runtime / "tasks/TASK-2026-0008.json").write_text(json.dumps(runtime_task), encoding="utf-8")
+        (source / "control/claims-active.json").write_text(
+            json.dumps({"schema": "stegverse.claims-active/v1", "generation": 0, "claims": []}),
+            encoding="utf-8",
+        )
+        (source / "control/queue.json").write_text(
+            json.dumps({"schema": "stegverse.org-queue/v1", "generation": 0, "ordered_task_ids": []}),
+            encoding="utf-8",
+        )
+        result = consumer.materialize_org_control_inputs(source, runtime)
+        persisted = json.loads((runtime / "tasks/TASK-2026-0008.json").read_text(encoding="utf-8"))
+        assert persisted["status"] == "active"
+        assert "TASK-2026-0008.json" in result["preserved_runtime_task_files"]
+        assert result["runtime_task_state_overwritten"] is False
+
 def test_resident_dispatch_and_materialization_wiring_present():
     dispatcher = (ROOT / "scripts/dispatch_resident_execution_requests.py").read_text(encoding="utf-8")
     bootstrap = (ROOT / "scripts/bootstrap_sovereign_runtime.py").read_text(encoding="utf-8")
@@ -132,4 +206,5 @@ def test_resident_dispatch_and_materialization_wiring_present():
     assert '("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py")' in dispatcher
     for source in (bootstrap, installer, refresh):
         assert "consume_org_claim_allocator_request.py" in source
+        assert "allocate_claims.py" in source
         assert "org-claim-allocator-001.json" in source
