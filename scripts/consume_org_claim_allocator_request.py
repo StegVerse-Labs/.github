@@ -104,16 +104,37 @@ def materialize_org_control_inputs(source: Path, runtime: Path) -> dict[str, Any
     runtime_tasks.mkdir(parents=True, exist_ok=True)
     imported: list[str] = []
     preserved: list[str] = []
+    superseded_queued: list[str] = []
+    supersession_deferred_active: list[str] = []
+    source_values: list[dict[str, Any]] = []
     for task_path in sorted(source_tasks.glob("TASK-*.json")):
+        value = load_json(task_path)
+        if value.get("task_id") != task_path.stem:
+            raise RuntimeError(f"organization task identity mismatch: {task_path.name}")
+        source_values.append(value)
         destination = runtime_tasks / task_path.name
         if destination.exists():
             preserved.append(task_path.name)
             continue
-        value = load_json(task_path)
-        if value.get("task_id") != task_path.stem:
-            raise RuntimeError(f"organization task identity mismatch: {task_path.name}")
         destination.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         imported.append(task_path.name)
+
+    for value in source_values:
+        supersedes = value.get("supersedes")
+        if not isinstance(supersedes, str) or not supersedes:
+            continue
+        prior_path = runtime_tasks / f"{supersedes}.json"
+        if not prior_path.is_file():
+            continue
+        prior = load_json(prior_path)
+        prior_status = prior.get("status")
+        if prior_status in {"queued", "proposed"}:
+            prior["status"] = "proposed"
+            prior["flags"] = sorted(set((prior.get("flags") or []) + ["superseded"]))
+            prior_path.write_text(json.dumps(prior, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            superseded_queued.append(supersedes)
+        elif prior_status in {"active", "checkin_pending"}:
+            supersession_deferred_active.append(supersedes)
 
     initialized: list[str] = []
     for rel in (Path("control/claims-active.json"), Path("control/queue.json")):
@@ -131,6 +152,8 @@ def materialize_org_control_inputs(source: Path, runtime: Path) -> dict[str, Any
         "state": "CONTROL_INPUTS_READY",
         "imported_task_files": imported,
         "preserved_runtime_task_files": preserved,
+        "superseded_queued_task_ids": superseded_queued,
+        "supersession_deferred_active_task_ids": supersession_deferred_active,
         "initialized_control_files": initialized,
         "runtime_task_state_overwritten": False,
         "network_source_fetch_performed": False,
@@ -159,6 +182,7 @@ def consume(
     request = load_json(request_path)
     validate_request(request)
     request_hash = stable_hash(request)
+    safe_env = clean_env(env)
     control_inputs = materialize_org_control_inputs(source, runtime)
     allocator = runtime / ALLOCATOR_REL
     if not allocator.is_file():
@@ -171,7 +195,7 @@ def consume(
         text=True,
         check=False,
         timeout=120,
-        env=clean_env(env),
+        env=safe_env,
     )
     result = parse_last_json(completed.stdout)
     selected = result.get("selected") if isinstance(result, dict) else None
