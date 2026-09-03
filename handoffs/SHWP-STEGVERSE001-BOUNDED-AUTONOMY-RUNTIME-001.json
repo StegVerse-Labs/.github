@@ -120,13 +120,18 @@
     "current_progression_entrypoint": "scripts/run_stegverse001_activation_progression.py",
     "external_sovereign_process_required": false,
     "current_chat_github_session_can_execute_sovereign_process": false,
-    "operator_action_condition": "NONE_OTHER_MACHINE_PROHIBITED",
+    "operator_action_condition": "CURRENT_USER_IPHONE_RUNTIME_CONSUMPTION_ONLY_AFTER_MACHINE_PRECONDITIONS",
     "operator_action_is_part_of_autonomy_cycle": false,
     "requires_other_machine": false,
     "activation_execution_scope": "SAME_DEVICE",
     "remote_machine_required": false,
     "other_stegverse_machine_required": false,
-    "reference_progression_may_execute_only_on_same_device": true
+    "reference_progression_may_execute_only_on_same_device": true,
+    "same_device_stegos_path_installed": true,
+    "same_device_stegos_site_release": "StegVerse-Labs/Site#940@13baddb05104729fb85c41e029c675add07a4107",
+    "same_device_stegos_task_projection_release": "StegVerse-Labs/Site#952@6a08d993af9814cc6d20723f8a1e16957d3fe8d4",
+    "portable_workercoordinator_source": "StegVerse-Labs/.github#862@bb079758aaf3e36887c1db085aa82b96c9914a53",
+    "portable_tvc_lease_source": "StegVerse-Labs/TVC#289"
   },
   "activation": {
     "carrier": "independent_task_control",
@@ -153,7 +158,7 @@
     "terminal_autonomy_reexecution_allowed": false
   },
   "completion": {
-    "next_authorized_action": "Execute scripts/run_stegverse001_activation_progression.py once against the already-local current .github source and sovereign runtime. The procedure actively executes one-shot stack activation first and advances to SV001 bounded autonomy only when activation_complete=true. If either stage is nonterminal, repair/execute the named next_required_machine_transition and rerun the bounded progression; do not replace execution with evidence polling.",
+    "next_authorized_action": "On CURRENT_USER_IPHONE, use the already-released canonical StegOS portable WorkerCoordinator adapter to produce an authentic checkout for SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001, then let the already-released TVC portable issuer validate that checkout and issue the single-cycle SV001 lease. Only after those two authentic device-local predicates exist may the StegOS resident-task adapter execute SV001 and continue to Master Records reconstruction and SV002. Do not substitute Service-Gateway request-003, another machine, HB progression, source/CI, or a generic runtime-presence blocker.",
     "terminal_when": [
       "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED"
     ]
@@ -182,25 +187,26 @@
     "activation_claim_allowed": false
   },
   "block": {
-    "dependency_class": "SAME_DEVICE_RUNTIME_IMPLEMENTATION_AND_EXECUTION",
-    "problem_statement": "Routine SV001 activation/execution must occur on the same established device. A separate sovereign/StegVerse machine is not an admissible prerequisite. If the active device cannot execute the existing progression locally, implementation must continue until an equivalent same-device StegOS path exists.",
-    "solution_required": true,
+    "dependency_class": "CURRENT_IPHONE_RUNTIME_EXECUTION",
+    "problem_statement": "The same-device StegOS implementation is installed and released. The first unsatisfied predicate is now an authentic CURRENT_USER_IPHONE portable WorkerCoordinator checkout for SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001; next is TVC single-cycle lease issuance, then same-execution SV001 terminal receipt, reconstruction, and SV002 disposition.",
+    "solution_required": false,
     "may_remain_blocked": false,
-    "human_action_required": false,
+    "human_action_required": true,
     "second_machine_required": false,
     "github_token_required": false,
-    "next_solution_action": "IMPLEMENT_OR_EXECUTE_SAME_DEVICE_STEGOS_SV001_PROGRESSION",
-    "executable_entrypoint": "scripts/run_stegverse001_activation_progression.py",
+    "next_solution_action": "CURRENT_USER_IPHONE_PORTABLE_WORKERCOORDINATOR_CHECKOUT",
+    "executable_entrypoint": "stegos-bootstrap/workercoordinator-portable-adapter.js",
     "machine_transition_sequence": [
-      "one_shot_resident_stack_activation",
-      "stegverse001_bounded_autonomy",
+      "portable_workercoordinator_checkout_current_iphone",
+      "tvc_portable_sv001_single_cycle_lease_issue",
+      "sv001_external_resident_task_execution_current_iphone",
       "master_records_resident_intake_and_reconstruction",
       "sv002_adversarial_observation_and_disposition"
     ],
-    "machine_observable_release_condition": "The progression executes terminal SV001 autonomy and its existing downstream continuation produces Master Records and SV002 results. Each receipt is evidence of the corresponding performed transition, not a waiting task.",
-    "human_action_note": "Do not assign another machine to the user. Missing same-device execution capability is implementation work, not an operator prerequisite.",
-    "current_session_execution_boundary": "NO_OTHER_MACHINE_SUBSTITUTION_ALLOWED",
-    "executable_command": "python scripts/run_stegverse001_activation_progression.py --source-root <current-local-.github> --runtime-root <sovereign-runtime>",
+    "machine_observable_release_condition": "Authentic current-iPhone checkout receipt -> valid TVC lease issuance -> SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED -> same-execution reconstruction PASS -> SV002 disposition.",
+    "human_action_note": "No second device or external machine is required. The only remaining operator action is current-iPhone execution when the browser must perform the device-local IndexedDB/service-worker transition; repository/source work is not a substitute.",
+    "current_session_execution_boundary": "GITHUB_SESSION_CANNOT_EMIT_DEVICE_LOCAL_INDEXEDDB_RUNTIME_RECEIPT",
+    "executable_command": "CURRENT_USER_IPHONE secure-browser invocation of the released StegOS portable WorkerCoordinator adapter",
     "not_work": [
       "watch for receipt",
       "wait for evidence",
@@ -220,7 +226,7 @@
     "canonical_projector": "scripts/project_hb_runtime_presence.py",
     "active_resident_local_extension_owner": "StegVerse-Labs/.github#814",
     "consumer_lane": "STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
-    "current_missing_runtime_predicate": "resident_process_alive_supervised",
+    "current_missing_runtime_predicate": "portable_workercoordinator_checkout_current_iphone",
     "predicates": {
       "resident_process_alive_supervised": {
         "source": "shared resident-presence / direct runtime activation evidence",
@@ -249,6 +255,14 @@
       "sv002_adversarial_disposition": {
         "source": "independent SV002 disposition evidence",
         "observed": false
+      },
+      "portable_workercoordinator_checkout_current_iphone": {
+        "source": "CURRENT_USER_IPHONE canonical portable WorkerCoordinator checkout receipt (StegVerse-Labs/.github#862 projected through StegOS/Site)",
+        "observed": false
+      },
+      "tvc_portable_sv001_lease_issued": {
+        "source": "CURRENT_USER_IPHONE TVC portable SV001 issuance receipt (StegVerse-Labs/TVC#289)",
+        "observed": false
       }
     },
     "heartbeat_or_projection_grants_authority": false,
@@ -265,6 +279,9 @@
       "schemas/hb-runtime-resident-observability.schema.json"
     ],
     "same_device_execution_required": true,
-    "other_machine_may_satisfy_runtime_predicate": false
+    "other_machine_may_satisfy_runtime_predicate": false,
+    "same_device_stegos_path_installed": true,
+    "site_resident_task_projection_release": "13baddb05104729fb85c41e029c675add07a4107",
+    "site_task0008_projection_release": "6a08d993af9814cc6d20723f8a1e16957d3fe8d4"
   }
 }
