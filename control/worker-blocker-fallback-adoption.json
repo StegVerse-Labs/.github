@@ -48,9 +48,17 @@
     },
     {
       "family": "mailbox_failure_remediation",
-      "state": "FOLLOWUP_TASK_REQUIRED",
-      "owner": "StegVerse-Labs/.github#242",
-      "next_action": "ensure repository-native remediation workers persist blockers and continue other admissible mailbox work"
+      "state": "ALREADY_CONFORMANT",
+      "owner": "StegVerse-Labs/StegVerse-Healer",
+      "next_action": "preserve per-message quarantine/incident isolation and continue later admissible mailbox observations; no duplicate remediation worker required",
+      "evidence": [
+        "StegVerse-Labs/StegVerse-Healer:failure_mailbox/FAILURE_MAILBOX_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegVerse-Healer:failure_mailbox/backfill.py",
+        "StegVerse-Labs/StegVerse-Healer:failure_mailbox/incident_engine.py",
+        "backfill quarantines parse/ingest failures per row and continues processing subsequent rows",
+        "incident_engine preserves independent OPEN/TRIAGED/REPAIRING/RETESTING/SANDBOX_REQUIRED/RESOLVED/UNRESOLVED state"
+      ],
+      "authority_effect": "NONE"
     },
     {
       "family": "site_publisher_propagation",
