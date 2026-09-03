@@ -134,7 +134,9 @@
     "portable_tvc_lease_source": "StegVerse-Labs/TVC#289",
     "current_iphone_master_records_custody_source": "master-records/orchestration#73@9b617459ec0b9dfceb894ac19495ee72106d1e94",
     "current_iphone_master_records_site_projection": "StegVerse-Labs/Site#956@0b4cd7dc13cb43ffa9feec3c4badc21524efccd2",
-    "current_iphone_master_records_site_claim_release": "StegVerse-Labs/Site#957@9e3582b2e59f953d653f582f39b22d55235845bd"
+    "current_iphone_master_records_site_claim_release": "StegVerse-Labs/Site#957@9e3582b2e59f953d653f582f39b22d55235845bd",
+    "current_iphone_master_records_full_proof_import_release": "StegVerse-Labs/Site#959@11ffa8fc712569a07edb45397baf2e3427947294",
+    "current_iphone_master_records_full_proof_import_claim_release": "StegVerse-Labs/Site#960@3f39c48aabae51c46c0afa069aa5364dbef429d1"
   },
   "activation": {
     "carrier": "independent_task_control",
@@ -161,7 +163,7 @@
     "terminal_autonomy_reexecution_allowed": false
   },
   "completion": {
-    "next_authorized_action": "On CURRENT_USER_IPHONE, use the released Master Records custody section on the StegOS bootstrap to import the exact immutable completed SV001 cycle_receipt and obtain Master Records reconstruction PASS. Do not execute SV001 again. After authentic custody exists, continue the existing SV002 adversarial observation/disposition.",
+    "next_authorized_action": "On CURRENT_USER_IPHONE, open the released StegOS bootstrap Master Records section and paste the complete already-authentic `stegos.workercoordinator_tvc_portable_sv001_execution_proof/v1` JSON (the UI extracts only subordinate_execution_proof.cycle_receipt unchanged), then commit Master Records custody. Do not execute SV001 again. After reconstruction PASS, continue SV002.",
     "terminal_when": [
       "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED"
     ]
@@ -211,7 +213,7 @@
       "sv002_adversarial_observation_and_disposition"
     ],
     "machine_observable_release_condition": "Authentic current-iPhone checkout receipt -> valid TVC lease issuance -> SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED -> same-execution reconstruction PASS -> SV002 disposition.",
-    "human_action_note": "Use only the current iPhone. Do not rerun SV001. The custody action imports the already-completed immutable cycle receipt into the canonical Master Records portable module. No second device, external machine, GitHub token, or non-TV/TVC credential is required.",
+    "human_action_note": "Use only the current iPhone. The released UI accepts the full authentic SV001 execution proof, so manual nested receipt extraction is not required. It extracts subordinate_execution_proof.cycle_receipt unchanged and submits it to canonical Master Records validation. Do not rerun SV001. No second device, external machine, GitHub token, or non-TV/TVC credential is required.",
     "current_session_execution_boundary": "GITHUB_SESSION_CANNOT_EMIT_DEVICE_LOCAL_INDEXEDDB_MASTER_RECORDS_CUSTODY",
     "executable_command": "CURRENT_USER_IPHONE secure-browser import of exact immutable completed SV001 cycle_receipt into released Master Records custody surface",
     "not_work": [
