@@ -196,3 +196,15 @@ Canonical evidence:
 The historical backfill isolates malformed/unsupported messages per row, records them in quarantine with durable row identity/reason, and continues processing later rows. Valid observations enter independent incident state machines, so one unresolved incident does not terminate ingestion or erase later admissible work.
 
 This conformance is credential-neutral and grants no mailbox mutation, repair, repository mutation, deployment, release, heartbeat, publication, or general runtime authority.
+
+## Publication / release observer conformance — 2026-09-03
+
+The `publication_release_observers` family is already conformant.
+
+Canonical evidence:
+- `GCAT-BCAT-Engine/Publisher/docs/STEGCLAW_RELEASE_AWARENESS_MIRROR_HANDOFF.md`
+- `GCAT-BCAT-Engine/Publisher/PUBLISHER_MIRROR_HANDOFF.md`
+
+Publisher release-awareness lanes are explicitly `PARALLEL_SAFE_NON_AUTHORIZING_RELEASE_AWARENESS`. Dedicated awareness success is retained independently while unrelated RTG-001 / stegdb-sync failures remain separate and are not converted into success or used to terminate other bounded observer work.
+
+Publication, release, custody, execution, Guardian, admissibility, runtime, and cross-repository mutation authority remain false.
