@@ -157,3 +157,15 @@ Behavior:
 - only `NO_EXISTING_CAPABILITY_MATCH` allows new work to be considered at the session/build pre-work boundary.
 
 This adoption grants no execution, admission, credential, routing, transition, claim/fence, publication, custody, or consequence authority and does not modify the machine-owned #65 runtime blocker scope.
+
+## Site / Publisher propagation conformance — 2026-09-03
+
+The `site_publisher_propagation` worker family is already conformant and requires no duplicate worker implementation.
+
+Canonical evidence:
+- `StegVerse-Labs/Site/docs/SITE_MIRROR_HANDOFF.md`
+- `GCAT-BCAT-Engine/Publisher/docs/PUBLISHER_MIRROR_HANDOFF.md`
+
+Publisher persists `PENDING_SITE_ACTIVATION` with the exact blocker, release condition, next executable task, durable workflow owner, and trigger while retaining separate active/scheduled work. Site independently preserves explicit blocker ownership, parallel-safe workload continuation, and lifecycle distinctions such as deployment != activation.
+
+This conformance does not grant publication, release, execution, custody, admissibility, Guardian, credential, routing, or transition authority.

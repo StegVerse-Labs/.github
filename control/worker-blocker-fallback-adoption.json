@@ -54,9 +54,16 @@
     },
     {
       "family": "site_publisher_propagation",
-      "state": "FOLLOWUP_TASK_REQUIRED",
-      "owner": "StegVerse-Labs/.github#242",
-      "next_action": "audit Site and Publisher observer handoffs before any mutation"
+      "state": "ALREADY_CONFORMANT",
+      "owner": "StegVerse-Labs/Site + GCAT-BCAT-Engine/Publisher",
+      "next_action": "preserve existing Site/Publisher observer continuation semantics; no duplicate worker implementation required",
+      "evidence": [
+        "StegVerse-Labs/Site:docs/SITE_MIRROR_HANDOFF.md",
+        "GCAT-BCAT-Engine/Publisher:docs/PUBLISHER_MIRROR_HANDOFF.md",
+        "Publisher persists PENDING_SITE_ACTIVATION with release_condition, next_executable_task, owner, trigger",
+        "Site preserves parallel-safe active work and explicit blocker ownership without promoting deployment/observation into activation"
+      ],
+      "authority_effect": "NONE"
     },
     {
       "family": "tv_tvc_authority_bound_invocation",

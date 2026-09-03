@@ -61,6 +61,23 @@ def main():
     if target.get("authority_effect") != "NONE":
         fail("validation_reconciliation adoption must grant no authority")
 
+    propagation = next((r for r in families if r.get("family") == "site_publisher_propagation"), None)
+    if propagation is None:
+        fail("site_publisher_propagation family missing")
+    if propagation.get("state") != "ALREADY_CONFORMANT":
+        fail("site_publisher_propagation must remain ALREADY_CONFORMANT unless evidence is superseded")
+    p_evidence = "\n".join(propagation.get("evidence") or [])
+    for fragment in [
+        "StegVerse-Labs/Site:docs/SITE_MIRROR_HANDOFF.md",
+        "GCAT-BCAT-Engine/Publisher:docs/PUBLISHER_MIRROR_HANDOFF.md",
+        "PENDING_SITE_ACTIVATION",
+        "release_condition",
+    ]:
+        if fragment not in p_evidence:
+            fail(f"site_publisher_propagation missing evidence fragment: {fragment}")
+    if propagation.get("authority_effect") != "NONE":
+        fail("site_publisher_propagation conformance must grant no authority")
+
     print(f"WORKER_BLOCKER_FALLBACK_ADOPTION_PASS families={len(families)}")
 
 if __name__ == "__main__":
