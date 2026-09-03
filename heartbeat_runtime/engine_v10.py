@@ -37,6 +37,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV9):
     }
     POLICY_REF = "control/blocker-resolution-policy.json"
     STEGINDEX_PREFLIGHT_SCRIPT = "scripts/run_stegindex_preflight.py"
+    STEGINDEX_OPERATIONAL_PROOF_SCRIPT = "scripts/verify_stegindex_resident_operational_proof.py"
 
     def _decode_resolution_ref(self, ref: str) -> dict[str, Any] | None:
         if not isinstance(ref, str) or not ref.startswith(RESOLUTION_EVIDENCE_PREFIX):
@@ -145,6 +146,20 @@ class HeartbeatRuntime(HeartbeatRuntimeV9):
         self._atomic_write(self.root / ref, record)
         return ref
 
+    def _refresh_stegindex_operational_proof(self) -> None:
+        script = self.root / self.STEGINDEX_OPERATIONAL_PROOF_SCRIPT
+        if not script.is_file():
+            return
+        subprocess.run(
+            [sys.executable, str(script), "--runtime-root", str(self.root)],
+            cwd=self.root,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=30,
+            env={"PATH": os.environ.get("PATH", "")},
+        )
+
     def _run_stegindex_preflight(
         self,
         parent: dict[str, Any],
@@ -248,6 +263,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV9):
             "authority_effect": "NONE_READ_RESOLVE_ONLY",
         }
         self._atomic_write(self.root / ref, receipt)
+        self._refresh_stegindex_operational_proof()
         return ref, result
 
     def _admit_resolution_task(
