@@ -1,0 +1,128 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
+  "created_at": "2026-09-03T16:36:37Z",
+  "updated_at": "2026-09-03T16:36:37Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "ERL-AI-ECON-TRANSPARENCY-001",
+    "objective": "Execute a bounded independent reconstruction/review of the finalized OpenAI, Anthropic, and DeepSeek consumer-surface economic-transparency findings using only locally materialized canonical ERL evidence, then emit a review recommendation without research-promotion, activation, publication, or repository-writeback authority.",
+    "success_predicates": [
+      "canonical ERL review package resolves from local source without network checkout",
+      "surface-specific scope is independently checked",
+      "protocol-completion and rating-5 conditions are independently checked",
+      "UNBOUNDED_UNKNOWN 1K/100K/1M propagation is independently checked",
+      "contradiction-review cross-surface logic is independently checked",
+      "provider-wide generalization remains forbidden",
+      "review recommendation receipt is emitted",
+      "authority_effect=NONE_REVIEW_RECOMMENDATION_ONLY"
+    ],
+    "failure_predicates": [
+      "network repository checkout required",
+      "GitHub or provider credential requested",
+      "provider-wide transparency rating promoted",
+      "research promotion or publication authority inherited",
+      "repository writeback attempted"
+    ],
+    "authority_ceiling": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "evidence_class_preservation",
+      "review_recommendation_only",
+      "no_repository_writeback",
+      "no_research_promotion",
+      "no_activation",
+      "no_publication"
+    ],
+    "successor_policy": "NONE",
+    "max_successor_depth": 0
+  },
+  "task": {
+    "task_id": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-Labs/Executive_Rhetoric_Ledger#104",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/AI_ECONOMIC_TRANSPARENCY_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger:assessments/reviews/ai-economic-transparency-consumer-surface-independent-review-package.2026-09-03.json"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "ERL independent-review gate is source-complete but lacks a separate resident reviewer executor. This worker binds the fixed review package to the canonical resident worker plane without granting promotion or publication authority.",
+    "canonical_owner_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#104",
+    "canonical_lineage_key": "erl:ai-economic-transparency:independent-review",
+    "derivation_depth": 0,
+    "priority": "normal"
+  },
+  "authority": {
+    "authority_source": "StegVerse-Labs/Executive_Rhetoric_Ledger#104 + fixed independent-review package",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "shwp-erl-ai-economic-transparency-review-v0.1",
+    "credential_authority": "TV/TVC",
+    "credential_requirement": "NONE",
+    "github_token_production_authority": "NONE",
+    "github_token_required": false,
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "repository_writeback_authority": false,
+    "research_promotion_authority": false,
+    "activation_authority": false,
+    "publication_authority": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "evidence_class_preservation"
+    ],
+    "allowed_paths": [
+      "receipts/erl-ai-economic-transparency-review/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 8,
+    "max_retries": 128,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 128,
+    "rate_class": "erl_ai_economic_transparency_independent_review"
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "StegVerse-Labs/.github#927",
+    "recheck_trigger": "each admitted heartbeat while unfinished and canonical local ERL source is present",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/erl-ai-economic-transparency-review/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "Resolve the locally materialized ERL source tree, independently reconstruct the fixed consumer-surface review package, and emit a bounded APPROVE/REVISE recommendation receipt with no promotion authority.",
+    "terminal_when": [
+      "review state=COMPLETE",
+      "recommendation in {APPROVE,REVISE}",
+      "github_token_used=false",
+      "repository_writeback_authority=false",
+      "research_promotion_authority=false",
+      "publication_authority=false"
+    ]
+  },
+  "block": {
+    "block_reason": "The worker requires the canonical ERL independent-review package to be locally materialized.",
+    "dependency": "local Executive_Rhetoric_Ledger source tree",
+    "solution_task_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#104",
+    "solution_constraints": [
+      "local source only",
+      "no network repository checkout",
+      "no GitHub token runtime authority",
+      "no non-TV/TVC secret or token",
+      "no repository writeback",
+      "no research promotion, activation, or publication authority"
+    ],
+    "observer": "single sovereign StegVerse heartbeat",
+    "recheck_trigger": "each admitted heartbeat",
+    "next_check": null,
+    "escalation_condition": "review requires credential, provider operation, repository checkout, or research-promotion authority",
+    "block_expires_at": null
+  }
+}
