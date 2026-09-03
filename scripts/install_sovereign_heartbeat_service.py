@@ -85,6 +85,7 @@ COPY_FILES = (
     "scripts/continue_stegverse001_evidence_chain.py",
     "scripts/dispatch_resident_execution_requests.py",
     "scripts/consume_org_claim_allocator_request.py",
+    "scripts/allocate_claims.py",
     "control/resident-execution-request.d/org-claim-allocator-001.json",
     "scripts/refresh_and_dispatch_resident_requests.py",
     "scripts/run_stegverse001_activation_progression.py",
