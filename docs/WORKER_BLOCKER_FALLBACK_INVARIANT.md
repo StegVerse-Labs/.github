@@ -138,3 +138,22 @@ Ecosystem adoption is complete only when:
 - representative controller/runtime tests prove blocker isolation and continuation;
 - hosted validation evidence is inspected where applicable;
 - no unresolved adoption surface is left only in chat or transient logs.
+
+## StegIndex validation/reconciliation adoption — 2026-09-03
+
+The `validation_reconciliation` worker family is now adopted through the canonical StegIndex pre-work path rather than a new worker implementation.
+
+Evidence:
+- StegVerse-Labs/StegIndex PR #3 -> `637b33c99adf08505b485c504512b4b1ba708141`
+- StegVerse-Labs/.github PR #881 -> `376d48b2ac9aa672920ab169ad6b6d2e62349d43`
+- StegVerse-Labs/.github PR #885 -> `9ac197a019f695f3a5344b6b7498d4e2c1683836`
+- organization control-plane validation `33713433913` SUCCESS
+- Heartbeat Worker Project validation `33713434257` SUCCESS
+
+Behavior:
+- stale/contradictory indexed truth is persisted as the exact reconciliation dependency rather than a generic blocker;
+- usable existing capability truth prevents duplicate implementation;
+- machine-executable predicates are surfaced for continuation through their canonical owner;
+- only `NO_EXISTING_CAPABILITY_MATCH` allows new work to be considered at the session/build pre-work boundary.
+
+This adoption grants no execution, admission, credential, routing, transition, claim/fence, publication, custody, or consequence authority and does not modify the machine-owned #65 runtime blocker scope.
