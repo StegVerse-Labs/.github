@@ -119,3 +119,12 @@ attempted and no claim is granted.
 The floor does **not** require TASK-2026-0008 to remain queued. Once the minimum source
 catalog is known to include that task, later task status is still determined by the
 canonical allocator. This preserves the allocator's generic future use.
+
+
+## Portable exact allocator selector — 2026-09-02
+
+The native source-refresh service already visits all registered resident consumers, but the portable refresh+dispatch bridge maintains an explicit allowlist for one-consumer execution. `org_claim_allocator` is now admitted to that exact-selector list.
+
+This permits an already-existing non-hosted resident surface to refresh current already-local `.github` source and dispatch only `org_claim_allocator` without visiting unrelated resident requests and without requiring systemd.
+
+The portable bridge still grants no claim, fence, execution, heartbeat, credential, or publication authority. The canonical allocator remains the only claim-grant authority, and the source-catalog freshness floor still applies before allocation.
