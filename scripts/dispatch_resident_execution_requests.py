@@ -88,6 +88,7 @@ CONSUMERS = (
     ("sv011_phase5_source_materialization", "scripts/consume_sv011_phase5_source_materialization_request.py"),
     ("sv011_phase5", "scripts/consume_sv011_phase5_resident_execution_request.py"),
     ("glm53_sovereign_lane", "scripts/consume_glm53_sovereign_lane_request.py"),
+    ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),
 )
 
 
