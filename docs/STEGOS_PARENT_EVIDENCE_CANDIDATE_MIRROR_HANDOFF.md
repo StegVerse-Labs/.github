@@ -20,3 +20,29 @@ Credential authority remains TV/TVC. GitHub token required: false. Network fetch
 false. Second user-operated machine required: false.
 
 Downstream admission or re-execution remains owned by #60.
+
+
+## Exact DE-006 binding requirement
+
+After StegOS merge `04974cab2963c6d28c1cbb7bc9d54e2226d1feb9`, a parent
+evidence candidate is accepted only when the exported bundle contains a
+`stegos.web_admitted_inference_receipt.v1` whose `request_sha256` exactly matches
+the verified device-task claim and whose `execution_binding` exactly equals:
+
+```json
+{
+  "schema": "stegos.web_execution_binding.v1",
+  "goal_id": "DE-006",
+  "task_id": "DE-006",
+  "source_repository": "Admissible-Existence/GCAT-BCAT",
+  "review_tag": "decision-envelope-review-v0.1.0",
+  "review_commit": "7e053d007e416ff51e76cb4e9c0ffd73943b3acc",
+  "authority_effect": "NONE_BINDING_ONLY"
+}
+```
+
+A generic valid StegOS device task is therefore no longer sufficient for the DE-006
+candidate state. Wrong tag/commit/task/repository/binding fails closed.
+
+This still does not prove #60 parent execution. The candidate remains observation-only
+until independently admitted/re-executed under the parent authority.
