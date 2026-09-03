@@ -246,7 +246,11 @@
       "public_gateway_required_for_lease_open": true,
       "public_gateway_same_device_observed": false,
       "other_machine_dependency": true,
-      "same_device_execution_required": true
+      "same_device_execution_required": true,
+      "stegos_same_device_enforcement_merge": "2efe6678e859e19d96d2a6afd6edf924bab186d2",
+      "stegos_same_device_enforcement_validation_run": 33713897558,
+      "same_device_fail_closed_source_installed": true,
+      "same_device_public_rendezvous_implemented": false
     },
     "tvc_lifecycle_event_consumption": {
       "state": "SOURCE_COMPLETE_VALIDATED_MERGED_RUNTIME_NOT_OBSERVED",
@@ -285,7 +289,7 @@
     "block_reason": "Current HIL source requires readiness from https://stegverse.org / STEGVERSE_SHARED_SERVICE_GATEWAY before ESRL LEASE_OPEN. Under the canonical same-device invariant this is OTHER_MACHINE_REQUIRED unless that gateway executes on the same established device. The lane is implementation-incomplete until the required remote-gateway dependency is removed.",
     "dependency": "same-device HIL rendezvous/transport implementation with no required other-machine runtime",
     "solution_task_ref": "StegVerse-Labs/.github#889",
-    "solution_source_ref": "StegVerse-Labs/.github@a9031eafa07ec87ced2efdcaeab372dd199fb793 + StegVerse-Labs/StegOS@878f06bf258c2ee47c49bad8d24d1581a61d3546 + StegVerse-org/LLM-adapter@0f9ddde691f73a6477b25e609d1f2538073839f1 + StegVerse-Labs/TVC@2787eece099604a4d2aad93c575167dc73e54037",
+    "solution_source_ref": "StegVerse-Labs/.github@a9031eafa07ec87ced2efdcaeab372dd199fb793 + StegVerse-Labs/StegOS@878f06bf258c2ee47c49bad8d24d1581a61d3546 + StegVerse-org/LLM-adapter@0f9ddde691f73a6477b25e609d1f2538073839f1 + StegVerse-Labs/TVC@2787eece099604a4d2aad93c575167dc73e54037 + StegVerse-Labs/StegOS@2efe6678e859e19d96d2a6afd6edf924bab186d2 same-device fail-closed enforcement",
     "solution_validation_ref": "tests/test_hil_sovereign_receiver_bridge.py",
     "solution_command": null,
     "solution_constraints": [
