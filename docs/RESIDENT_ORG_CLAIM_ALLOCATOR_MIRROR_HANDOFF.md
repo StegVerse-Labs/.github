@@ -59,8 +59,13 @@ or product authority.
 
 ## Immediate queued consumer
 
-`TASK-2026-0008` / `StegVerse-Labs/Site#932` is the first intended queued consumer.
+`TASK-2026-0008` / `StegVerse-Labs/Site#932` is the target consumer for this session.
 It requests only `site:stegos-de006-bound-inference-publication`.
+
+The catalog also contains older queued release-priority `TASK-2026-0007`. The allocator
+may grant that task first. Its Site scope is non-overlapping with TASK-2026-0008, so
+a later resident dispatch can grant TASK-2026-0008 without collision. The repeatable
+resident request is specifically required so queue progress does not stop after one grant.
 
 Runtime proof remains deployment-local. Source merge or CI does not prove that the
 resident allocator has consumed the request or granted TASK-2026-0008.
