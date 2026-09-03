@@ -147,3 +147,28 @@ Next action after merge:
 
 Runtime activation claim: NONE.
 Authority effect: NONE.
+
+
+## Continuous-discovery organization gate — 2026-09-03
+
+Canonical organization pre-work behavior now recognizes StegIndex continuous-discovery guards.
+
+New fail-closed mappings:
+- `REVIEW_DISCOVERED_CANDIDATE_BEFORE_NEW_WORK` -> `EXACT_BLOCKER_ONLY` / `candidate_reconciled`;
+- `COMPLETE_SOURCE_DISCOVERY_BEFORE_NEW_WORK` -> `EXACT_BLOCKER_ONLY` / `source_discovery_complete`.
+
+These states MUST NOT fall through to `NO_EXISTING_CAPABILITY_MATCH` and MUST NOT permit new task creation.
+
+The organization gate also resolves an already-local StegIndex checkout from:
+1. explicit `--stegindex-root`;
+2. `STEGINDEX_ROOT`;
+3. `STEGVERSE_REPO_ROOTS_JSON["StegVerse-Labs/StegIndex"]`.
+
+No network source fetch is introduced. The repository-root map is a non-secret local locator only and grants no authority.
+
+Session/build pre-work remains non-authorizing:
+- task creation is permitted only after canonical StegIndex returns a true no-match state with complete source discovery;
+- discovered candidates require reconciliation/promotion or rejection first;
+- incomplete source discovery requires source materialization/observation first;
+- capability-risk metadata remains advisory/index-only;
+- authority effect remains NONE.
