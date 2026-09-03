@@ -98,6 +98,6 @@ def test_authentic_evidence_producers_refresh_operational_proof():
     consumer=(ROOT/"scripts/consume_one_shot_resident_stack_activation_request.py").read_text()
     assert "self._refresh_stegindex_operational_proof()" in engine
     assert "verify_stegindex_resident_operational_proof.py" in engine
-    assert "refresh_stegindex_operational_proof(runtime,runner)" in consumer
+    assert "refresh_stegindex_operational_proof(runtime)" in consumer
     assert "verify_stegindex_resident_operational_proof.py" in consumer
 
