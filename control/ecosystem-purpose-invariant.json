@@ -1,0 +1,67 @@
+{
+  "schema": "stegverse.ecosystem-purpose-invariant/v1",
+  "status": "CANONICAL_ACTIVE",
+  "effective_date": "2026-09-02",
+  "authority_home": "StegVerse-Labs/.github",
+  "purpose": "Provide governance infrastructure for consequential digital and physical participation while preserving agency, explicit authority, bounded consequence, state continuity, reconstructable evidence, and interoperability.",
+  "industrial_objective": "Increase the probability that the AI/automation industrial transition produces beneficial, governable, reconstructable, and human-compatible outcomes without collapsing agency into centralized control.",
+  "core_principle": "Learning, autonomy, and innovation must not require unbounded or irreconstructable consequence.",
+  "intelligence_provider_independence": true,
+  "contribution_classes": [
+    "agency",
+    "continuity",
+    "admissibility",
+    "execution",
+    "observability",
+    "evidence",
+    "recovery",
+    "interoperability",
+    "consequence_containment"
+  ],
+  "entity_declaration_required_fields": [
+    "entity_id",
+    "contribution_classes",
+    "authority_held",
+    "authority_not_held",
+    "lifecycle_states_established",
+    "evidence_outputs",
+    "upstream_interfaces",
+    "downstream_interfaces",
+    "consequence_boundary",
+    "maturity_gate"
+  ],
+  "authority_invariants": [
+    "capability_is_not_authority",
+    "carrier_presence_is_not_authority",
+    "model_output_is_not_authority",
+    "compute_ownership_is_not_authority",
+    "agent_autonomy_is_not_self_authorization",
+    "observation_is_not_execution",
+    "source_completion_is_not_activation",
+    "ci_success_is_not_runtime_proof",
+    "deployment_is_not_consequence"
+  ],
+  "noncentralization": {
+    "universal_correctness_authority_allowed": false,
+    "purpose": "Preserve plural agency while making consequential transitions governable and reconstructable."
+  },
+  "maturity_gates": {
+    "I": "real governed action exists end-to-end",
+    "II": "governed action generalizes across materially different systems or domains",
+    "III": "governed action is interoperable through stable contracts",
+    "IV": "governed action is independently verifiable",
+    "V": "governed execution evidence is expected industrial or institutional infrastructure"
+  },
+  "development_preflight": [
+    "identify_ecosystem_sum_contribution",
+    "prove_nonduplicate_capability_need",
+    "declare_authority_boundary",
+    "declare_consequence_boundary",
+    "declare_evidence_contract",
+    "identify_maturity_gate_advanced",
+    "assess_intelligence_provider_lock_in"
+  ],
+  "lifecycle_truth_rule": "No earlier lifecycle state may be used as proof of a later lifecycle state.",
+  "repository_local_handoff_precedence": "Repository-local *_MIRROR_HANDOFF.md remains authoritative for repository-local live implementation state.",
+  "canonical_document": "docs/ECOSYSTEM_PURPOSE_INVARIANT.md"
+}
