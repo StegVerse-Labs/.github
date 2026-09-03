@@ -261,3 +261,7 @@ This remains source propagation only. It does not satisfy either authentic StegI
 
 PR #926 was replayed onto current main `365c983d3c276f204a5d9ef3c3df4dac9c00d0da` after unrelated concurrent organization work advanced main beyond its original base. The replay preserved all intervening main changes and retained only the bounded StegIndex locator propagation/test delta. This reconciliation grants no runtime or authority claim.
 
+### #926 validation-base reconciliation
+
+Repository validation initially exposed two pre-existing COSV denominator test expectations that lagged the already-merged ERL reviewer index. They were corrected separately in PR #935 / merge `a1880f302966b7bd8c07dd4ce9991999878a66f8`, with organization validation `33781354487` SUCCESS and Heartbeat Worker Project validation `33781354518` SUCCESS. #926 remains scoped only to StegIndex locator propagation.
+
