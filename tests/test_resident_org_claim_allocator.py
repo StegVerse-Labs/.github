@@ -198,6 +198,64 @@ def test_task_catalog_import_is_append_only_and_preserves_runtime_status():
         assert "TASK-2026-0008.json" in result["preserved_runtime_task_files"]
         assert result["runtime_task_state_overwritten"] is False
 
+
+
+def test_new_task_supersedes_only_queued_prior_task_not_active_prior_task():
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        source = base / "source"
+        runtime = base / "runtime"
+        (source / "tasks").mkdir(parents=True)
+        (source / "control").mkdir(parents=True)
+        (runtime / "tasks").mkdir(parents=True)
+
+        prior = {
+            "schema": "stegverse.org-task/v0.2",
+            "task_id": "TASK-2026-0006",
+            "organization": "StegVerse-Labs",
+            "goal": "prior",
+            "status": "queued",
+            "requirements": {"mandatory": [], "optional": []},
+            "dependencies": [],
+            "requested_at": "2026-08-21T04:00:00Z",
+        }
+        successor = {
+            "schema": "stegverse.org-task/v0.2",
+            "task_id": "TASK-2026-0008",
+            "organization": "StegVerse-Labs",
+            "goal": "successor",
+            "status": "queued",
+            "requirements": {"mandatory": [], "optional": []},
+            "dependencies": [],
+            "requested_at": "2026-09-03T00:28:00Z",
+            "supersedes": "TASK-2026-0006",
+        }
+        (source / "tasks/TASK-2026-0006.json").write_text(json.dumps(prior), encoding="utf-8")
+        (source / "tasks/TASK-2026-0008.json").write_text(json.dumps(successor), encoding="utf-8")
+        (runtime / "tasks/TASK-2026-0006.json").write_text(json.dumps(prior), encoding="utf-8")
+        (source / "control/claims-active.json").write_text(
+            json.dumps({"schema": "stegverse.claims-active/v1", "generation": 0, "claims": []}),
+            encoding="utf-8",
+        )
+        (source / "control/queue.json").write_text(
+            json.dumps({"schema": "stegverse.org-queue/v1", "generation": 0, "ordered_task_ids": []}),
+            encoding="utf-8",
+        )
+
+        result = consumer.materialize_org_control_inputs(source, runtime)
+        retired = json.loads((runtime / "tasks/TASK-2026-0006.json").read_text(encoding="utf-8"))
+        assert retired["status"] == "proposed"
+        assert "superseded" in retired["flags"]
+        assert "TASK-2026-0006" in result["superseded_queued_task_ids"]
+
+        active = dict(prior)
+        active["status"] = "active"
+        (runtime / "tasks/TASK-2026-0006.json").write_text(json.dumps(active), encoding="utf-8")
+        result2 = consumer.materialize_org_control_inputs(source, runtime)
+        preserved = json.loads((runtime / "tasks/TASK-2026-0006.json").read_text(encoding="utf-8"))
+        assert preserved["status"] == "active"
+        assert "TASK-2026-0006" in result2["supersession_deferred_active_task_ids"]
+
 def test_resident_dispatch_and_materialization_wiring_present():
     dispatcher = (ROOT / "scripts/dispatch_resident_execution_requests.py").read_text(encoding="utf-8")
     bootstrap = (ROOT / "scripts/bootstrap_sovereign_runtime.py").read_text(encoding="utf-8")
