@@ -29,6 +29,10 @@ def issue_claim_assertions(root: Path, epoch: int, issued_at: str, write: bool) 
     issued: list[str] = []
 
     for claim in claims:
+        lease = claim.get("lease") or {}
+        fencing_token = lease.get("fencing_token")
+        if not isinstance(fencing_token, int) or isinstance(fencing_token, bool) or fencing_token < 1:
+            continue
         assertion = {
             "schema": "stegverse.org-heartbeat/v1",
             "epoch": epoch,
@@ -37,7 +41,7 @@ def issue_claim_assertions(root: Path, epoch: int, issued_at: str, write: bool) 
             "claimant_id": claim["task_id"],
             "repository": claim["repository"]["full_name"],
             "claims": [claim],
-            "fencing_token": claim["fencing_token"],
+            "fencing_token": fencing_token,
             "scope": claim.get("scope", {}),
             "policy_version": org["schema"],
             "evidence_pointer": claim.get("last_evidence_pointer"),
