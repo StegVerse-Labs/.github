@@ -97,6 +97,7 @@ COPY_FILES = (
     "scripts/advance_heartbeat_transition.py",
     "scripts/refresh_heartbeat_transition_receipt.py",
     "scripts/verify_sovereign_runtime_activation.py",
+    "scripts/verify_stegindex_resident_operational_proof.py",
     "management/SHWP_STATE_TRANSITION_CONTINUITY_CONTRACT.json",
 )
 CANONICAL_RUNTIME = "heartbeat_runtime.engine_v13.HeartbeatRuntime"

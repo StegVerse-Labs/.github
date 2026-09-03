@@ -97,6 +97,7 @@ STATIC_FILES = (
     Path("scripts/verify_iphone_heartbeat_transition_receipt.py"),
     Path("scripts/refresh_sovereign_worker_runtime_source.py"),
     Path("scripts/run_stegindex_preflight.py"),
+    Path("scripts/verify_stegindex_resident_operational_proof.py"),
 )
 CONTROL_DIRS = (
     Path("control/worker-registry.d"),

@@ -265,3 +265,15 @@ PR #926 was replayed onto current main `365c983d3c276f204a5d9ef3c3df4dac9c00d0da
 
 Repository validation initially exposed two pre-existing COSV denominator test expectations that lagged the already-merged ERL reviewer index. They were corrected separately in PR #935 / merge `a1880f302966b7bd8c07dd4ce9991999878a66f8`, with organization validation `33781354487` SUCCESS and Heartbeat Worker Project validation `33781354518` SUCCESS. #926 remains scoped only to StegIndex locator propagation.
 
+## Automatic operational-proof closure — 2026-09-03
+
+Tracking: StegVerse-Labs/.github#939.
+
+The resident StegIndex operational verifier is now materialized by all canonical worker refresh, native service install, and sovereign bootstrap source paths. It is invoked opportunistically by both authentic evidence producers:
+- one-shot resident source-root observation;
+- blocker-derived StegIndex resolution-admission preflight retention in the inherited v10->v13 engine lineage.
+
+The verifier may write `INCOMPLETE` at either producer until both independent predicates exist. It may write `COMPLETE` only under the pre-existing exact receipt checks in `scripts/verify_stegindex_resident_operational_proof.py`.
+
+This adds no worker, scheduler, claim/fence, credential, route, transition, publication, custody, or runtime authority. Source/CI/merge do not satisfy StegIndex #4.
+
