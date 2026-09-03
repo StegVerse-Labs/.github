@@ -1,0 +1,68 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "TASK-2026-0008",
+  "organization": "StegVerse-Labs",
+  "goal": "Admit and publish the exact merged StegOS DE-006-bound device-local inference and bounded command-ingress surfaces through StegVerse-Labs/Site for current iOS execution without granting parent, WorkerCoordinator, model-output, hosted-runtime, or non-TV/TVC credential authority.",
+  "status": "queued",
+  "requested_at": "2026-09-03T00:28:00Z",
+  "priority_class": "release",
+  "rank_reason": [
+    "StegVerse-Labs/StegOS#158 is CLOSED_COMPLETED and merged as 04974cab2963c6d28c1cbb7bc9d54e2226d1feb9",
+    "StegVerse-Labs/.github#837 exact DE-006 parent-candidate verifier is merged as b2bf987cad9aed84d923d79c662f657586de3c31",
+    "StegVerse-Labs/Site#932 is the canonical collision-safe Site publication task",
+    "The exact iOS public projection is required before a fresh current-iPhone DE-006-bound execution can produce admissible evidence",
+    "This task subsumes stale TASK-2026-0006 / Site#399 command-ingress publication rather than creating a competing Site owner"
+  ],
+  "requirements": {
+    "mandatory": [
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-Labs",
+          "name": "Site",
+          "full_name": "StegVerse-Labs/Site",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": true,
+        "scope": {
+          "paths": [
+            "stegos-bootstrap/index.html",
+            "stegos-bootstrap/admitted-inference.js",
+            "stegos-bootstrap/command-ingress.js",
+            "stegos-bootstrap/command.html",
+            "stegos-bootstrap/service-worker.js",
+            "docs/STEGOS_DE006_BOUND_INFERENCE_PROJECTION_MIRROR_HANDOFF.md",
+            "scripts/check_stegos_de006_bound_inference_projection.py",
+            "data/tasks/SITE-STEGOS-DE006-BOUND-INFERENCE-932.json"
+          ],
+          "contracts": [
+            "stegos.web_command.v1",
+            "stegos.web_execution_binding.v1",
+            "stegos.web_admitted_inference_receipt.v1"
+          ],
+          "release_surfaces": [
+            "site:stegos-de006-bound-inference-publication"
+          ],
+          "capabilities": [
+            "de006-bound-ios-device-local-inference-publication",
+            "bounded-browser-command-ingress-publication"
+          ],
+          "workflows": [],
+          "dependency_surfaces": [
+            "site:stegos-de006-bound-inference-publication"
+          ]
+        }
+      }
+    ],
+    "optional": []
+  },
+  "dependencies": [],
+  "workspace": {
+    "branch": "claim/site-stegos-de006-bound-inference-932-r1",
+    "merge_target": "main",
+    "direct_push_allowed": false,
+    "pull_request_required": true
+  },
+  "supersedes": "TASK-2026-0006"
+}
