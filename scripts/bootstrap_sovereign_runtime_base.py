@@ -34,6 +34,7 @@ REQUIRED_SOURCE_FILES = (
     Path("scripts/install_sovereign_heartbeat_service.py"),
     Path("scripts/install_sovereign_worker_source_refresh_service.py"),
     Path("scripts/verify_sovereign_runtime_activation.py"),
+    Path("scripts/verify_stegindex_resident_operational_proof.py"),
     Path("scripts/run_heartbeat_runtime.py"),
     Path("scripts/run_worker_runtime.py"),
     Path("scripts/dispatch_resident_execution_requests.py"),
