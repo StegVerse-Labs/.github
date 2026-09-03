@@ -1,0 +1,13 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"stegverse:org-allocator-portable-state:v1",
+  "type":"object",
+  "required":["schema","portable_authority_epoch","canonical_authority_owner","execution_surface","claims_state","queue_state","task_statuses","credential_authority","requires_other_machine"],
+  "properties":{
+    "schema":{"const":"stegverse.org-allocator-portable-state/v1"},
+    "canonical_authority_owner":{"const":"StegVerse-Labs/.github organization allocator"},
+    "execution_surface":{"const":"CURRENT_USER_IPHONE"},
+    "credential_authority":{"const":"TV/TVC"},
+    "requires_other_machine":{"const":false}
+  }
+}
