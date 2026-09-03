@@ -10,12 +10,14 @@
     "request": "control/resident-execution-request.json",
     "consumption": "receipts/sovereign-host/resident-execution-request-consumption.latest.json",
     "execution": "receipts/sovereign-host/resident-targeted-execution.latest.json",
-    "parent_activation": "receipts/ecosystem-chat-sovereign-inference/independent_parent_activation.latest.json"
+    "parent_activation": "receipts/ecosystem-chat-sovereign-inference/independent_parent_activation.latest.json",
+    "site_claim_grant": "receipts/sovereign-host/org-claim-allocator-grants/TASK-2026-0008.latest.json"
   },
   "predicates": {
     "resident_request_consumption": "consumption",
     "resident_targeted_execution": "execution",
-    "ecosystem_chat_parent_activation": "parent_activation"
+    "ecosystem_chat_parent_activation": "parent_activation",
+    "site_projection_claim_grant": "site_claim_grant"
   },
   "downstream_external_predicates": [
     "StegVerse-Labs/TVC TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002 ROUTE_ADMITTED",

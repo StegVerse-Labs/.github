@@ -23,7 +23,11 @@ def test_de006_observability_consumer_uses_canonical_shared_projector() -> None:
         "resident_request_consumption": "consumption",
         "resident_targeted_execution": "execution",
         "ecosystem_chat_parent_activation": "parent_activation",
+        "site_projection_claim_grant": "site_claim_grant",
     }
+    assert profile["evidence_bindings"]["site_claim_grant"] == (
+        "receipts/sovereign-host/org-claim-allocator-grants/TASK-2026-0008.latest.json"
+    )
 
 
 def test_de006_wrapper_does_not_define_a_new_runtime_or_authority() -> None:
