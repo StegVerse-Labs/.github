@@ -105,3 +105,24 @@ Runtime completion:
 - no second user-operated device participates.
 
 Source/merge/CI never substitute for runtime completion.
+
+
+## Duplicate-terminal prevention — 2026-09-03
+
+Fresh current-iPhone evidence exposed a missing serial-terminal guard: after the valid
+G23 SV001 cycle completed, the persisted portable generation could be checked out
+again as G24. The checkout itself was atomic and non-parallel, but the task-specific
+terminality contract prohibited re-execution.
+
+Issue #944 repairs the canonical source by requiring the SV001 portable package to be
+single-checkout for its authority epoch/task package. Portable state now retains
+`checkout_count`; legacy state without that field infers prior checkout count from
+`generation - predecessor_generation_floor` and therefore fails closed when a prior
+checkout already occurred.
+
+This does not erase or rewrite G24 evidence. G24 remains retained as duplicate,
+non-custodial evidence. G23 remains the canonical terminal SV001 execution because it
+was the first terminal execution and the handoff already required
+`terminal_autonomy_reexecution_allowed=false`.
+
+Downstream retry remains permitted; terminal task re-execution does not.
