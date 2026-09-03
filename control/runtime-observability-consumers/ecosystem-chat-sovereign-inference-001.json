@@ -1,0 +1,75 @@
+{
+  "schema": "stegverse.hb-runtime-resident-observability.consumer/v1",
+  "consumer_id": "ECOSYSTEM-CHAT-SOVEREIGN-INFERENCE-001",
+  "consumer_repository": "StegVerse-Labs/.github",
+  "consumer_handoff": "docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md",
+  "consumer_state_ref": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+  "consumer_issue": "StegVerse-Labs/.github#60",
+  "registration_issue": "StegVerse-Labs/.github#853",
+  "shared_owner_issue": "StegVerse-Labs/.github#814",
+  "shared_contract": "management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json",
+  "canonical_projector": "scripts/project_hb_runtime_presence.py",
+  "observed_repository_state_at": "2026-09-03T01:48:20Z",
+  "first_unresolved_shared_runtime_predicate": "resident_process_alive_supervised",
+  "predicate_map": {
+    "resident_process_alive_supervised": {
+      "source_class": "direct sovereign runtime activation/presence receipt",
+      "observed": false
+    },
+    "node_runtime_fresh": {
+      "source_class": "HB reference plus direct current resident/worker observation correlation",
+      "observed": false
+    },
+    "resident_request_consumed": {
+      "source_class": "resident-execution-request-consumption receipt for RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002",
+      "observed": false
+    },
+    "fresh_parent_fence": {
+      "source_class": "independent task-control claim/fence token >22",
+      "observed": false
+    },
+    "private_model_execution": {
+      "source_class": "real StegVerse-local/private model process execution evidence",
+      "observed": false
+    },
+    "tvc_route_admitted": {
+      "source_class": "TVC ROUTE_ADMITTED with credential_requirement NONE",
+      "observed": false
+    },
+    "exact_llm_adapter_execution": {
+      "source_class": "exact canonical LLM-adapter route execution receipt",
+      "observed": false
+    },
+    "measured_usage_persisted": {
+      "source_class": "same-execution measured provider/model usage evidence",
+      "observed": false
+    },
+    "master_records_reconstruction": {
+      "source_class": "provider-usage + transition reconstruction PASS with same_execution=true",
+      "observed": false
+    },
+    "conversational_runtime_ready": {
+      "source_class": "persistent_conversational_runtime_ready=true after reconstruction",
+      "observed": false
+    }
+  },
+  "no_new_runtime_implementation_required_for": [
+    "HB reference derivation",
+    "runtime presence projection",
+    "resident request bridge",
+    "fresh-fence parent executor",
+    "StegVerse local-model runtime",
+    "TVC route integration",
+    "LLM-adapter execution",
+    "Master Records reconstruction"
+  ],
+  "source_or_ci_may_satisfy_runtime_predicate": false,
+  "heartbeat_grants_authority": false,
+  "hb_derived_signal_grants_authority": false,
+  "intr_governs_admissible_movement": true,
+  "workercoordinator_retains_claim_fence_authority": true,
+  "credential_authority": "TV/TVC",
+  "credential_requirement": "NONE",
+  "github_token_runtime_authority": "NONE",
+  "authority_effect": "NONE_OBSERVATION_ONLY"
+}
