@@ -391,3 +391,43 @@ The existing Python resident progression remains valid as a reference implementa
 For the current device class, completion therefore requires an equivalent same-device StegOS execution path that preserves the same TV/TVC lease, WorkerCoordinator admission/claim/fence, receipt, Master Records, and SV002 evidence semantics. Until that same-device path is independently installed and observed, this lane is implementation-incomplete rather than "waiting for another sovereign machine."
 
 No runtime evidence is claimed by this correction.
+
+
+## Current-iPhone runtime predicate reconciliation — 2026-09-03
+
+The earlier same-device correction is now implementation-satisfied at the source/publication layer.
+
+Released canonical surfaces:
+
+```text
+portable WorkerCoordinator authority source:
+  StegVerse-Labs/.github#862
+  merge bb079758aaf3e36887c1db085aa82b96c9914a53
+
+TVC portable SV001 lease issuer:
+  StegVerse-Labs/TVC#289
+
+current-iPhone external resident-task adapter:
+  StegVerse-Labs/Site#940
+  release 13baddb05104729fb85c41e029c675add07a4107
+
+TASK-2026-0008 current-iPhone projection:
+  StegVerse-Labs/Site#952
+  release 6a08d993af9814cc6d20723f8a1e16957d3fe8d4
+```
+
+Therefore the same-device implementation is no longer missing, and the Service-Gateway request-003 resident-rendezvous chain is not a prerequisite for this bounded current-iPhone execution path.
+
+The exact remaining runtime sequence is:
+
+```text
+portable_workercoordinator_checkout_current_iphone
+-> tvc_portable_sv001_lease_issued
+-> SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED
+-> Master Records reconstruction PASS / same_execution=true
+-> SV002 disposition
+```
+
+The first unsatisfied predicate is the authentic current-iPhone portable WorkerCoordinator checkout. It must be produced by the released secure-browser/service-worker runtime and retained in device-local state; repository source, CI, deployment, HB progression, or a generic runtime-presence projection cannot satisfy it.
+
+No second user-operated device, remote sovereign host, GitHub runtime credential, additional WorkerCoordinator, additional InTr runtime, or parallel credential path is required.
