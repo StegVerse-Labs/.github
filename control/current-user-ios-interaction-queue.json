@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.current-user-ios-interaction-queue/v1",
   "issue": "StegVerse-Labs/.github#922",
-  "state": "HOLD_PENDING_FRESH_JOURNAL_RECONCILIATION",
+  "state": "HOLD_DUPLICATE_TERMINAL_LINEAGE_RECONCILIATION",
   "device_scope": "CURRENT_USER_STEGVERSE_IOS_NODE",
   "physical_device_count_required": 1,
   "second_user_operated_machine_required": false,
@@ -52,7 +52,7 @@
         "current page contains released Site custody surface",
         "immutable SV001 execution proof available"
       ],
-      "queue_state": "WAITING_FOR_FRESH_JOURNAL_HEAD",
+      "queue_state": "BLOCKED_ON_DUPLICATE_TERMINAL_LINEAGE",
       "ordering_constraints": {
         "must_follow": [
           "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
@@ -72,17 +72,22 @@
         "released_full_proof_import": "StegVerse-Labs/Site#959@11ffa8fc712569a07edb45397baf2e3427947294",
         "immutable_sv001_execution_proof_available": true,
         "terminal_cycle_receipt_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35",
-        "fresh_current_device_journal_head_observed": false,
+        "fresh_current_device_journal_head_observed": true,
         "remaining_before_admission": [
-          "fresh current-device journal replay PASS",
-          "fresh current-device evidence export with current tail",
-          "admission evaluation against that fresh head"
-        ]
+          "canonical disposition of G23 vs G24 duplicate terminal executions",
+          "custody source hash reconciled to that disposition",
+          "no additional current-device mutation before admission"
+        ],
+        "fresh_current_device_journal_head": {
+          "entries": 69,
+          "tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69",
+          "replay_state": "PASS"
+        }
       }
     }
   ],
   "active_action_id": null,
-  "next_required_observation": "FRESH_CURRENT_DEVICE_JOURNAL_REPLAY_AND_EXPORT_ONLY",
+  "next_required_observation": "CANONICAL_SV001_G23_VS_G24_LINEAGE_DISPOSITION",
   "mutation_freeze_reason": "Concurrent sessions issued different page-manipulation sequences without a shared device-interaction fence.",
   "observed_descendant_anchors": [
     {
@@ -122,5 +127,42 @@
       "SHWP-HIL-SOVEREIGN-RECEIVER-001"
     ],
     "completeness_note": "This inventory covers canonical .github handoffs and currently known Site/current-iPhone continuations; fresh device head remains required before admission."
+  },
+  "fresh_head": {
+    "observed": true,
+    "source": "user-exported CURRENT_USER_IPHONE StegOS evidence bundle",
+    "replay_state": "PASS",
+    "entries": 69,
+    "tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69",
+    "observed_node_id": "stegnode-web-f24e3bfb7f5343cb37323187a88e51f3",
+    "eligible_as_current_head_for_admission": false,
+    "reason": "Fresh head exposes two distinct completed SV001 terminal lineages (G23 and G24); custody must not select one implicitly."
+  },
+  "terminal_lineage_conflict": {
+    "state": "CONFLICT_REQUIRES_CANONICAL_DISPOSITION",
+    "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+    "transition_id": "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
+    "first_execution": {
+      "claim_id": "SHWP-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001-G23",
+      "fencing_token": 23,
+      "cycle_receipt_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35",
+      "tvc_consumption_observed": true
+    },
+    "later_execution": {
+      "claim_id": "SHWP-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001-G24",
+      "fencing_token": 24,
+      "cycle_receipt_sha256": "sha256:6bcc1976793657ea849a3678fa324c69134d2b59481e0bc9994c6baa6c4aff79",
+      "tvc_consumption_observed": true,
+      "journal_terminal_sequence": 67,
+      "journal_reconstruction_sequence": 68,
+      "journal_consumption_sequence": 69
+    },
+    "journal_integrity": "PASS",
+    "silent_latest_wins_prohibited": true,
+    "silent_first_wins_prohibited": true,
+    "further_sv001_reexecution_prohibited": true,
+    "master_records_custody_admission_prohibited": true,
+    "required_resolution": "Canonical SV001 owner must disposition G23 vs G24 explicitly (retain one as canonical execution and classify the other as duplicate/superseded/non-custodial, or define a governed multi-execution lineage) before any Master Records custody action is admitted.",
+    "authority_effect": "NONE_CONFLICT_CLASSIFICATION_ONLY"
   }
 }
