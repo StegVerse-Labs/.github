@@ -1,0 +1,29 @@
+{
+  "schema": "stegverse.stegindex-preflight-policy/v1",
+  "policy_id": "STEGINDEX-MANDATORY-PREFLIGHT-001",
+  "effective": true,
+  "canonical_index_repository": "StegVerse-Labs/StegIndex",
+  "canonical_handoff": "STEGINDEX_MIRROR_HANDOFF.md",
+  "source_root_environment": "STEGVERSE_STEGINDEX_SOURCE_ROOT",
+  "required_before": [
+    "CREATE_CAPABILITY_IMPLEMENTATION",
+    "CREATE_RUNTIME_EVIDENCE_LANE",
+    "DECLARE_GENERIC_BLOCKER",
+    "ASSIGN_DUPLICATE_WORK",
+    "INTRODUCE_AUTHORITY_BEARING_MECHANISM"
+  ],
+  "required_resolution_fields": [
+    "query",
+    "capabilities",
+    "predicates",
+    "first_actionable_predicate",
+    "machine_continuation_required",
+    "generic_blocker_permitted"
+  ],
+  "generic_runtime_evidence_blocker_permitted_without_resolution": false,
+  "machine_executable_false_predicate_requires_continuation": true,
+  "source_unavailable_semantics": "PREFLIGHT_UNAVAILABLE_NOT_IMPLEMENTATION_MISSING",
+  "authority_effect": "NONE_READ_RESOLVE_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE"
+}
