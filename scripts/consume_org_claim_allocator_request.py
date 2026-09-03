@@ -206,6 +206,72 @@ def materialize_org_control_inputs(source: Path, runtime: Path) -> dict[str, Any
         "authority_effect": "NONE_LOCAL_MATERIALIZATION_ONLY",
     }
 
+
+def retain_claim_grant_evidence(runtime: Path, selected_task_id: str) -> dict[str, Any]:
+    claims_path = runtime / "control/claims-active.json"
+    if not claims_path.is_file():
+        raise RuntimeError("post-allocation claim registry missing")
+    claims_state = load_json(claims_path)
+    generation = claims_state.get("generation")
+    if not isinstance(generation, int) or isinstance(generation, bool) or generation < 1:
+        raise RuntimeError("post-allocation claim registry generation invalid")
+    granted = [
+        claim for claim in (claims_state.get("claims") or [])
+        if isinstance(claim, dict) and claim.get("task_id") == selected_task_id
+    ]
+    if not granted:
+        raise RuntimeError("selected task has no retained canonical claim")
+    dependency_surfaces: set[str] = set()
+    fences: list[int] = []
+    for claim in granted:
+        lease = claim.get("lease") or {}
+        fence = lease.get("fencing_token")
+        if not isinstance(fence, int) or isinstance(fence, bool) or fence < 1:
+            raise RuntimeError("selected task claim fence invalid")
+        fences.append(fence)
+        for value in ((claim.get("scope") or {}).get("dependency_surfaces") or []):
+            if str(value).strip():
+                dependency_surfaces.add(str(value).strip())
+    snapshot = {
+        "task_id": selected_task_id,
+        "claim_registry_generation": generation,
+        "claims": granted,
+    }
+    receipt = {
+        "schema": "stegverse.org-claim-grant-observation/v1",
+        "state": "CLAIM_GRANT_OBSERVED",
+        "task_id": selected_task_id,
+        "claim_registry_generation": generation,
+        "fencing_tokens": sorted(fences),
+        "dependency_surfaces": sorted(dependency_surfaces),
+        "claims": granted,
+        "claim_snapshot_sha256": stable_hash(snapshot),
+        "allocator_remains_claim_authority": True,
+        "observation_grants_claim_authority": False,
+        "heartbeat_grants_claim_authority": False,
+        "github_token_required": False,
+        "network_source_fetch_performed": False,
+        "credential_authority": "TV/TVC",
+        "second_machine_required": False,
+        "authority_effect": "NONE_OBSERVATION_ONLY",
+    }
+    root = runtime / "receipts/sovereign-host/org-claim-allocator-grants"
+    root.mkdir(parents=True, exist_ok=True)
+    generation_path = root / f"{selected_task_id}-G{generation}.json"
+    latest_path = root / f"{selected_task_id}.latest.json"
+    rendered = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
+    generation_path.write_text(rendered, encoding="utf-8")
+    latest_path.write_text(rendered, encoding="utf-8")
+    return {
+        "state": "CLAIM_GRANT_EVIDENCE_RETAINED",
+        "task_id": selected_task_id,
+        "claim_registry_generation": generation,
+        "generation_receipt": str(generation_path.relative_to(runtime)),
+        "latest_receipt": str(latest_path.relative_to(runtime)),
+        "claim_snapshot_sha256": receipt["claim_snapshot_sha256"],
+        "authority_effect": "NONE_OBSERVATION_ONLY",
+    }
+
 def consume(
     source_root: Path,
     runtime_root: Path,
@@ -247,6 +313,9 @@ def consume(
     result = parse_last_json(completed.stdout)
     selected = result.get("selected") if isinstance(result, dict) else None
     allocator_state = result.get("state") if isinstance(result, dict) else "NO_MACHINE_RESULT"
+    claim_grant_evidence = None
+    if isinstance(selected, str) and selected:
+        claim_grant_evidence = retain_claim_grant_evidence(runtime, selected)
     accepted_state = allocator_state in {"ALLOCATION_COMPLETE", "ALLOCATOR_BUSY"}
     receipt = {
         "schema": "stegverse.resident-execution-request-consumption/v1",
@@ -263,6 +332,7 @@ def consume(
         "allocator_state": allocator_state,
         "selected_task_id": selected,
         "claim_grant_occurred": isinstance(selected, str) and bool(selected),
+        "claim_grant_evidence": claim_grant_evidence,
         "request_granted_claim_authority": False,
         "allocator_remains_claim_authority": True,
         "heartbeat_grants_execution_authority": False,
