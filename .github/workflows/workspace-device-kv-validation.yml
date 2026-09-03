@@ -13,6 +13,19 @@ on:
       - 'tests/test_workspace_device_kv_query_extension.py'
       - 'tests/test_personal_kv_provider_root_resolution.py'
       - '.github/workflows/workspace-device-kv-validation.yml'
+  pull_request:
+    paths:
+      - 'scripts/consume_device_kv_intr_materialization_request.py'
+      - 'scripts/consume_device_kv_intr_materialization_request_base.py'
+      - 'scripts/workspace_device_kv_query_extension.py'
+      - 'scripts/personal_profile_device_kv_extension.py'
+      - 'scripts/materialize_personal_kv_provider_root.py'
+      - 'scripts/refresh_sovereign_worker_runtime_source.py'
+      - 'scripts/bootstrap_sovereign_runtime.py'
+      - 'scripts/install_sovereign_heartbeat_service.py'
+      - 'tests/test_workspace_device_kv_query_extension.py'
+      - 'tests/test_personal_kv_provider_root_resolution.py'
+      - '.github/workflows/workspace-device-kv-validation.yml'
   workflow_dispatch:
 permissions:
   contents: read
