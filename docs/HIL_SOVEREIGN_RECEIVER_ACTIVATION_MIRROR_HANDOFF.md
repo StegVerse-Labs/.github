@@ -829,3 +829,52 @@ same_device_gateway_execution=true
 ```
 
 A required remote shared Gateway now fails closed in source. This merge removes acceptance of the invalid topology; it does not yet provide or prove an on-device public rendezvous.
+
+## Positive same-device HIL runtime consumer integration — 2026-09-03
+
+The source-level `OTHER_MACHINE_REQUIRED` blocker identified by #889 has now been removed from the routine HIL activation path.
+
+StegOS positive implementation:
+
+```text
+issue: StegVerse-Labs/StegOS#179
+PR: #180
+validated head: 43adab334c654cdc0f8038997f840b7b928b6ba8
+StegOS CI: 33714371568 SUCCESS
+merge: 95cb63a823ca86d6a04c44ef5140961ba9161d6a
+```
+
+Canonical routine path is now:
+
+```text
+admitted HIL Universal InTr materialization
+-> SAME_DEVICE event-ephemeral runtime materialization
+-> local HIL profiled ingress
+-> local identity/readiness verification
+-> ESRL LEASE_OPEN
+-> existing local WorkerCoordinator / HIL targeted execution
+-> receiver READY
+-> custody / TVC lifecycle / reconstruction
+
+rendezvous=NOT_REQUIRED
+requires_other_machine=false
+activation_execution_scope=SAME_DEVICE
+```
+
+Public HTTPS observation is no longer an activation prerequisite. It remains a distinct downstream optional interoperability/observation predicate and cannot grant execution, admission, custody, publication, or credential authority.
+
+The `.github` runtime bridge, materialization consumer, and bounded resident acceptance harness now consume this same-device lease contract rather than requiring `https://stegverse.org` Gateway readiness.
+
+Source completion does not prove runtime execution. Current authentic predicates remain independently unobserved until the established device produces them:
+
+```text
+same-device runtime materialization: NOT OBSERVED
+resident request consumption: NOT OBSERVED
+receiver READY: NOT OBSERVED
+receiver custody: NOT OBSERVED
+TVC lifecycle receipt: NOT OBSERVED
+post-restart reconstruction: NOT OBSERVED
+optional public observation: NOT OBSERVED
+```
+
+No second machine or remote StegVerse runtime is an admissible substitute.
