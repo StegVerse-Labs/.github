@@ -105,3 +105,19 @@ Decision mapping:
 - StegIndex `NO_EXISTING_CAPABILITY_MATCH` -> new work may be considered, subject to all normal governance/authority rules.
 
 This entrypoint performs no execution and grants no authority. It exists to prevent duplicate work and generic blocker creation before work is admitted.
+
+## Session/build pre-work boundary receipt — 2026-09-02
+
+Reconciliation-consumer merge:
+- PR #881 -> `376d48b2ac9aa672920ab169ad6b6d2e62349d43`
+- validation-only organization control plane: `33713433913` SUCCESS
+- validation-only Heartbeat Worker Project: `33713434257` SUCCESS
+
+Concrete pre-work entrypoint:
+- PR #885 -> `9ac197a019f695f3a5344b6b7498d4e2c1683836`
+- `scripts/session_build_preflight.py`
+- `management/session-build-preflight-contract.json`
+
+New work is now permitted by this boundary only when StegIndex reports `NO_EXISTING_CAPABILITY_MATCH`. Existing capability reuse, machine-continuation availability, exact external dependency, and stale/contradictory indexed truth all prohibit duplicate task creation.
+
+Remaining integration is worker-entry-specific; the sovereign resident executor itself is not made dependent on StegIndex materialization.
