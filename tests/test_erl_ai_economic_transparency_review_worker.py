@@ -67,6 +67,31 @@ class TestERLAIEconomicTransparencyReviewWorker(unittest.TestCase):
         standard.parent.mkdir(parents=True, exist_ok=True)
         standard.write_text("fixture", encoding="utf-8")
 
+    def test_bundle_manifest_verification_rejects_hash_mismatch(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = pathlib.Path(d)
+            self.build_source(root)
+            manifest = {
+                "schema":"stegverse.erl.ai-economic-transparency-review-input-bundle/v1",
+                "files":[
+                    {"relative_path": rel, "sha256":"sha256:deadbeef"}
+                    for rel in review_worker.REQUIRED_RELATIVE_PATHS
+                ],
+            }
+            manifest_path = root / "manifest.json"
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            old_root = review_worker.BUNDLED_REVIEW_ROOT
+            old_manifest = review_worker.BUNDLE_MANIFEST
+            try:
+                review_worker.BUNDLED_REVIEW_ROOT = root.resolve()
+                review_worker.BUNDLE_MANIFEST = manifest_path
+                ok, errors = review_worker.verify_bundle_manifest(root.resolve())
+                self.assertFalse(ok)
+                self.assertTrue(any("hash mismatch" in e for e in errors))
+            finally:
+                review_worker.BUNDLED_REVIEW_ROOT = old_root
+                review_worker.BUNDLE_MANIFEST = old_manifest
+
     def test_approve_when_all_fixed_review_checks_pass(self):
         with tempfile.TemporaryDirectory() as d:
             root = pathlib.Path(d)
