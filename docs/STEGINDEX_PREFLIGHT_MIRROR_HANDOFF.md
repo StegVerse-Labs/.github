@@ -239,3 +239,19 @@ This closes the source-level forwarding seam only. It does not establish:
 - StegIndex resident operational proof COMPLETE.
 
 Current authentic operational predicates therefore remain evidence-only and unresolved until deployment-local resident receipts exist.
+
+## Upstream direct-root propagation closure — 2026-09-03
+
+Tracking: StegVerse-Labs/.github#924.
+
+After dispatcher repair #915, direct-root propagation was audited one boundary farther upstream. The canonical non-secret `STEGVERSE_STEGINDEX_SOURCE_ROOT` locator could still be dropped by service installation or portable refresh bridges even though `STEGVERSE_REPO_ROOTS_JSON` was retained.
+
+This lane preserves the direct locator through:
+- `scripts/install_sovereign_heartbeat_service.py`;
+- `scripts/install_sovereign_heartbeat_service_base.py`;
+- `scripts/refresh_and_dispatch_resident_requests.py`;
+- `scripts/refresh_and_execute_resident_task.py`.
+
+The carrier does not receive repository locators. Only the worker/runtime path receives the direct StegIndex source root. Existing credential stripping, hosted-environment rejection, TV/TVC credential authority, no-network-source-fetch rules, and no-second-machine semantics are unchanged.
+
+This remains source propagation only. It does not satisfy either authentic StegIndex #4 resident evidence predicate.
