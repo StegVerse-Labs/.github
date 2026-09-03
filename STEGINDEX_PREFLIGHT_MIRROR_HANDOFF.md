@@ -121,3 +121,29 @@ Concrete pre-work entrypoint:
 New work is now permitted by this boundary only when StegIndex reports `NO_EXISTING_CAPABILITY_MATCH`. Existing capability reuse, machine-continuation availability, exact external dependency, and stale/contradictory indexed truth all prohibit duplicate task creation.
 
 Remaining integration is worker-entry-specific; the sovereign resident executor itself is not made dependent on StegIndex materialization.
+
+
+## Capability-risk organization consumer binding — 2026-09-03
+
+StegIndex unified preflight source:
+- StegVerse-Labs/StegIndex PR #8
+- merge: `e32982f5983bf123f145e691e4ca236074584532`
+
+The organization adapter now passes through StegIndex's bounded `capability_risk` object alongside the existing capability/predicate decision.
+
+Preserved invariants:
+- organization decision mapping is unchanged;
+- capability-risk metadata grants no execution or transition authority;
+- no runtime dependency or network fetch is introduced;
+- no external payload content is copied;
+- trusted publisher/signature/local availability does not imply authority;
+- stale/contradictory canonical capability truth remains fail-closed exactly as before.
+
+The session/build pre-work entrypoint already nests the organization gate result, so this bounded metadata becomes visible there without adding another execution plane.
+
+Next action after merge:
+- consume `capability_risk.transition_surfaces` and `required_governance` where concrete governed task-admission surfaces already evaluate StegIndex output;
+- preserve local handoff/source truth and existing authority ownership.
+
+Runtime activation claim: NONE.
+Authority effect: NONE.

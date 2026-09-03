@@ -52,6 +52,15 @@ class StegIndexPreflightGateTests(unittest.TestCase):
             "machine_continuation_required": False,
             "generic_blocker_permitted": False,
             "purpose_contributions": [],
+            "capability_risk": {
+                "matches": [{"source_id": "external:lolbas:v1"}],
+                "transition_surfaces": ["execution", "egress"],
+                "required_governance": ["execution authority predicate"],
+                "trusted_or_available_implies_authority": False,
+                "runtime_dependency": False,
+                "copy_payloads": False,
+                "authority_effect": "NONE_INDEX_ONLY",
+            },
             "truth_reconciliation": {
                 "preflight_truth_usable": False,
                 "records": [{"capability_id": "x", "truth_state": "STALE"}],
@@ -81,6 +90,15 @@ class StegIndexPreflightGateTests(unittest.TestCase):
             "machine_continuation_required": True,
             "generic_blocker_permitted": False,
             "purpose_contributions": [],
+            "capability_risk": {
+                "matches": [{"source_id": "external:lolbas:v1"}],
+                "transition_surfaces": ["execution", "egress"],
+                "required_governance": ["execution authority predicate"],
+                "trusted_or_available_implies_authority": False,
+                "runtime_dependency": False,
+                "copy_payloads": False,
+                "authority_effect": "NONE_INDEX_ONLY",
+            },
             "truth_reconciliation": {
                 "preflight_truth_usable": True,
                 "records": [{"capability_id": "x", "truth_state": "TRUE"}],
@@ -99,6 +117,13 @@ class StegIndexPreflightGateTests(unittest.TestCase):
         self.assertEqual(result["decision"], "CONTINUE_MACHINE_EXECUTION")
         self.assertTrue(result["indexed_truth_usable"])
         self.assertTrue(result["machine_continuation_required"])
+        self.assertEqual(
+            result["capability_risk"]["authority_effect"],
+            "NONE_INDEX_ONLY",
+        )
+        self.assertFalse(
+            result["capability_risk"]["trusted_or_available_implies_authority"]
+        )
 
 if __name__ == "__main__":
     unittest.main()

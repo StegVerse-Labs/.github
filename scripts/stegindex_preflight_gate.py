@@ -68,6 +68,7 @@ def load_preflight(stegindex_root: Path, query: str, contribution_class: str | N
         "truth_reconciliation": result.get("truth_reconciliation"),
         "duplicate_implementation_guard": result.get("duplicate_implementation_guard"),
         "purpose_contributions": result.get("purpose_contributions", []),
+        "capability_risk": result.get("capability_risk", {}),
         "first_actionable_predicate": result.get("first_actionable_predicate"),
         "machine_continuation_required": bool(
             indexed_truth_usable and result.get("machine_continuation_required")
