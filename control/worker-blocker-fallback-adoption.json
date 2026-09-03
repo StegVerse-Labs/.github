@@ -8,14 +8,62 @@
   "credential_authority": "TV/TVC_ONLY",
   "github_token_runtime_authority": "NONE",
   "worker_families": [
-    {"family":"heartbeat_runtime","state":"ALREADY_PARTIALLY_CONFORMANT","owner":"StegVerse-Labs/.github#65","next_action":"verify continue-after-persist semantics in shared runtime tests without competing with machine-owned scope"},
-    {"family":"organization_repository_completion","state":"ADOPTED_REFERENCE_IMPLEMENTATION","owner":"Admissible-Existence/.github#4","next_action":"obtain hosted proof of PERSIST_BLOCKER_AND_CONTINUE controller hardening"},
-    {"family":"validation_reconciliation","state":"FOLLOWUP_TASK_REQUIRED","owner":"StegVerse-Labs/.github#242","next_action":"audit canonical validation/reconciliation handoffs and bind invariant where multi-surface execution exists"},
-    {"family":"publication_release_observers","state":"FOLLOWUP_TASK_REQUIRED","owner":"StegVerse-Labs/.github#242","next_action":"audit observer controllers for blocker persistence plus continuation semantics"},
-    {"family":"deployment_runtime_activation","state":"FOLLOWUP_TASK_REQUIRED","owner":"StegVerse-Labs/.github#242","next_action":"audit runtime activation workers under existing machine-owned collision boundaries"},
-    {"family":"mailbox_failure_remediation","state":"FOLLOWUP_TASK_REQUIRED","owner":"StegVerse-Labs/.github#242","next_action":"ensure repository-native remediation workers persist blockers and continue other admissible mailbox work"},
-    {"family":"site_publisher_propagation","state":"FOLLOWUP_TASK_REQUIRED","owner":"StegVerse-Labs/.github#242","next_action":"audit Site and Publisher observer handoffs before any mutation"},
-    {"family":"tv_tvc_authority_bound_invocation","state":"FOLLOWUP_TASK_REQUIRED","owner":"StegVerse-Labs/.github#242","next_action":"verify authority-blocked surface persistence does not halt unrelated admitted work and preserves TV/TVC_ONLY authority"}
+    {
+      "family": "heartbeat_runtime",
+      "state": "ALREADY_PARTIALLY_CONFORMANT",
+      "owner": "StegVerse-Labs/.github#65",
+      "next_action": "verify continue-after-persist semantics in shared runtime tests without competing with machine-owned scope"
+    },
+    {
+      "family": "organization_repository_completion",
+      "state": "ADOPTED_REFERENCE_IMPLEMENTATION",
+      "owner": "Admissible-Existence/.github#4",
+      "next_action": "obtain hosted proof of PERSIST_BLOCKER_AND_CONTINUE controller hardening"
+    },
+    {
+      "family": "validation_reconciliation",
+      "state": "ADOPTED",
+      "owner": "StegVerse-Labs/.github#242 + StegVerse-Labs/StegIndex",
+      "next_action": "maintain StegIndex truth reconciliation and session/build preflight; consume already-local resolution before blocker/new-work creation",
+      "evidence": [
+        "StegVerse-Labs/StegIndex#3 -> 637b33c99adf08505b485c504512b4b1ba708141",
+        "StegVerse-Labs/.github#881 -> 376d48b2ac9aa672920ab169ad6b6d2e62349d43",
+        "StegVerse-Labs/.github#885 -> 9ac197a019f695f3a5344b6b7498d4e2c1683836",
+        "validation 33713433913 SUCCESS",
+        "validation 33713434257 SUCCESS"
+      ],
+      "authority_effect": "NONE"
+    },
+    {
+      "family": "publication_release_observers",
+      "state": "FOLLOWUP_TASK_REQUIRED",
+      "owner": "StegVerse-Labs/.github#242",
+      "next_action": "audit observer controllers for blocker persistence plus continuation semantics"
+    },
+    {
+      "family": "deployment_runtime_activation",
+      "state": "FOLLOWUP_TASK_REQUIRED",
+      "owner": "StegVerse-Labs/.github#242",
+      "next_action": "audit runtime activation workers under existing machine-owned collision boundaries"
+    },
+    {
+      "family": "mailbox_failure_remediation",
+      "state": "FOLLOWUP_TASK_REQUIRED",
+      "owner": "StegVerse-Labs/.github#242",
+      "next_action": "ensure repository-native remediation workers persist blockers and continue other admissible mailbox work"
+    },
+    {
+      "family": "site_publisher_propagation",
+      "state": "FOLLOWUP_TASK_REQUIRED",
+      "owner": "StegVerse-Labs/.github#242",
+      "next_action": "audit Site and Publisher observer handoffs before any mutation"
+    },
+    {
+      "family": "tv_tvc_authority_bound_invocation",
+      "state": "FOLLOWUP_TASK_REQUIRED",
+      "owner": "StegVerse-Labs/.github#242",
+      "next_action": "verify authority-blocked surface persistence does not halt unrelated admitted work and preserves TV/TVC_ONLY authority"
+    }
   ],
   "completion_rule": "Every applicable worker family is ADOPTED, ALREADY_CONFORMANT, NOT_APPLICABLE, or has a durable follow-up owner with hosted proof requirements."
 }
