@@ -23,6 +23,6 @@
     "required_dependency_surface": "site:stegos-de006-bound-inference-publication",
     "purpose": "MINIMUM_SOURCE_CATALOG_FRESHNESS_ONLY",
     "task_eligibility_effect": "NONE",
-    "scope_sha256": "6b6ede916835f1d2f1ec6eae4350bd91c5f94bd9addd71c4f0c001f7a2e1dfc1"
+    "scope_sha256": "98096b5825e85dd558f9cb5a4e882002543d4c703cfa7981cd2d826c80c1a05b"
   }
 }
