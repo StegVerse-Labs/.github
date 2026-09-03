@@ -7,12 +7,12 @@
   "requested_at": "2026-09-03T00:28:00Z",
   "priority_class": "release",
   "rank_reason": [
-    "StegVerse-Labs/StegOS#181 is CLOSED_COMPLETED; PR #182 merged as 37da9aa9e6a91da9cde222c90a01840c320eb1a3",
-    "The current-iPhone projection now includes a same-device canonical organization allocator for TASK-2026-0008 under .github#201",
-    "The current-iPhone Site projection package contains 19 runtime files including the allocator module/package",
+    "StegVerse-Labs/StegOS#172 is CLOSED_COMPLETED; PR #173 merged as 62fcc9db38548d82ae656447913595f0027ed395 from pinned source 353555b927e6c42c7444ecfd48d636c3d92ce63d",
+    "The current-iPhone projection package supersedes the older five-file DE-006-only projection while retaining exact DE-006 admitted-inference binding",
     "StegVerse-Labs/.github#837 exact DE-006 parent-candidate verifier is merged as b2bf987cad9aed84d923d79c662f657586de3c31",
-    "StegVerse-Labs/Site#932 remains the canonical collision-safe Site publication task",
-    "This task subsumes stale TASK-2026-0006 / Site#399 rather than creating a competing Site owner"
+    "StegVerse-Labs/Site#932 is the canonical collision-safe Site publication task",
+    "The full current iOS projection is required before fresh current-iPhone execution can produce admissible evidence",
+    "This task subsumes stale TASK-2026-0006 / Site#399 command-ingress publication rather than creating a competing Site owner"
   ],
   "requirements": {
     "mandatory": [
@@ -40,8 +40,6 @@
             "stegos-bootstrap/workercoordinator-portable-adapter.js",
             "stegos-bootstrap/workercoordinator-portable-sv001.json",
             "stegos-bootstrap/workercoordinator-portable-authority-contract.json",
-            "stegos-bootstrap/org-claim-portable-allocator.js",
-            "stegos-bootstrap/org-claim-portable-task0008.json",
             "stegos-bootstrap/tvc-sv001-portable-lease.js",
             "stegos-bootstrap/tvc-sv001-portable-lease-package.json",
             "stegos-bootstrap/tvc-sv001-portable-tv-request.json",
@@ -60,9 +58,7 @@
             "stegverse.tvc.sv001-portable-lease-package/v1",
             "stegverse.tv.stegverse001-bounded-autonomy-request/v1",
             "stegverse.tvc.stegverse001-bounded-autonomy-lease-policy/v1",
-            "stegverse.tvc.sv001-portable-lease-state/v1",
-            "stegverse.org-portable-claim-package/v1",
-            "stegverse.org-claim-grant-observation/v1"
+            "stegverse.tvc.sv001-portable-lease-state/v1"
           ],
           "release_surfaces": [
             "site:stegos-de006-bound-inference-publication"
@@ -73,8 +69,7 @@
             "current-iphone-kv-persistence-publication",
             "portable-workercoordinator-checkout-publication",
             "portable-tvc-sv001-lease-input-publication",
-            "same-device-sv001-invocation-publication",
-            "same-device-organization-claim-allocation-publication"
+            "same-device-sv001-invocation-publication"
           ],
           "workflows": [],
           "dependency_surfaces": [
