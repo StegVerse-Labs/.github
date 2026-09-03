@@ -183,3 +183,35 @@ runtime task status.
 Before any materialization or allocator invocation, the consumer recomputes that digest
 from the already-local source task. A mismatch fails `STALE_SOURCE_CATALOG` and no
 allocator call occurs.
+
+
+## Same-device allocator publication reconciliation — 2026-09-03
+
+StegOS #181 / PR #182 merged as
+`37da9aa9e6a91da9cde222c90a01840c320eb1a3`.
+
+The current-iPhone runtime now contains a bounded canonical organization allocator for
+TASK-2026-0008. The browser executes the canonical allocator semantics locally; claim
+authority remains owned by `StegVerse-Labs/.github organization allocator`.
+
+TASK-2026-0008 remains queued/unclaimed and is widened before grant to include:
+- `stegos-bootstrap/org-claim-portable-allocator.js`;
+- `stegos-bootstrap/org-claim-portable-task0008.json`;
+- contract `stegverse.org-portable-claim-package/v1`;
+- contract `stegverse.org-claim-grant-observation/v1`;
+- capability `same-device-organization-claim-allocation-publication`.
+
+The canonical claim-scope SHA-256 is now:
+
+`6b6ede916835f1d2f1ec6eae4350bd91c5f94bd9addd71c4f0c001f7a2e1dfc1`
+
+The resident source-catalog floor uses that same value. An older 17-file TASK-0008
+checkout therefore fails `STALE_SOURCE_CATALOG` before allocation.
+
+The same-device StegOS path and the existing resident Python path are two execution
+surfaces for the same canonical claim semantics. They may not issue parallel claims.
+The current task remains unclaimed until an authentic fenced
+`CLAIM_GRANT_OBSERVED` receipt is produced.
+
+No GitHub token, network fetch, second user-operated machine, other machine, HB
+authority, or Site mutation authority is introduced.
