@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [],
+      "authorized_policy_version": "shwp-erl-ai-economic-transparency-review-v0.1",
+      "block_ref": "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json#block",
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "StegVerse-Labs/Executive_Rhetoric_Ledger#104",
+        "StegVerse-Labs/.github#927",
+        "workers/erl_ai_economic_transparency_review_worker.py"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "goal_id": "ERL-AI-ECON-TRANSPARENCY-001",
+      "handoff_ref": "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "source_state_vector_ref": "control/task-vectors/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json"
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:erl-ai-economic-transparency-review-v1",
+      "authority_source": "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "evidence_class_preservation"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#public-research-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "erl-ai-economic-transparency-review-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_required": false,
+  "research_promotion_authority": false,
+  "activation_authority": false,
+  "publication_authority": false,
+  "repository_writeback_authority": false
+}

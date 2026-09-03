@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:erl-ai-economic-transparency-review-v1",
+      "authority_ref": "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "evidence_class_preservation"
+      ],
+      "command": [
+        "python",
+        "workers/erl_ai_economic_transparency_review_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_ERL_SOURCE_ROOT"
+      ],
+      "notes": [
+        "Only a non-secret local ERL source locator may be forwarded.",
+        "No network repository checkout, GitHub/provider credential, research-promotion, activation, publication, or repository-writeback authority.",
+        "The output is a bounded independent review recommendation receipt only."
+      ],
+      "timeout_seconds": 120,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
