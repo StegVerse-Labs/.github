@@ -107,7 +107,7 @@ def continue_chain(source_root:Path, source_receipt:Path=DEFAULT_SOURCE_RECEIPT,
       "reconstruction_state":"PASS" if reconstruction.get("state")=="PASS" else "MISMATCH",
       "observation_valid":observation_valid,
       "output_correct":source.get("state")=="COMPLETED",
-      "authorized_execution":source.get("authorized_execution","NOT_ESTABLISHED")
+      "authorized_execution":authorized_execution
     }
     baseline=evaluator.evaluate(baseline_inputs)
     fixture_set=load(source_root/"fixtures/sv002-adversarial-observation/cases.v1.json")
