@@ -24,6 +24,7 @@ ENV_KEYS={
   "rtg":"STEGVERSE_RTG_ROOT",
   "gtg":"STEGVERSE_GTG_ROOT",
   "ae":"STEGVERSE_AE_ROOT",
+  "stegindex":"STEGVERSE_STEGINDEX_SOURCE_ROOT",
 }
 REPO_KEYS={
   "llm":"StegVerse-org/LLM-adapter",
@@ -37,6 +38,7 @@ REPO_KEYS={
   "rtg":"Admissible-Existence/RTG",
   "gtg":"Admissible-Existence/GTG",
   "ae":"Admissible-Existence/AE",
+  "stegindex":"StegVerse-Labs/StegIndex",
 }
 REQUIRED_FILES={
   "llm":"scripts/stegdeploy_bootstrap.py",
@@ -47,6 +49,7 @@ REQUIRED_FILES={
   "tvc":"tools/hil_intr_lifecycle_intake.py",
   "master_records":"scripts/watch_stegverse001_autonomy_receipt.py",
   "micro_node":"tools/run_self_characterization_principal.py",
+  "stegindex":"scripts/preflight.py",
 }
 
 def stable(v:Any)->str:
@@ -216,6 +219,7 @@ def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run,env:
       "--rtg-root",str(roots["rtg"]),
       "--gtg-root",str(roots["gtg"]),
       "--ae-root",str(roots["ae"]),
+      "--stegindex-root",str(roots["stegindex"]),
       "--receipt-path",str(runtime/"receipts/sovereign-host/resident-stack-activation.latest.json"),
     ]
     try:
