@@ -236,3 +236,19 @@ The test uses the real `WorkerCoordinator.cycle()` multi-item loop with:
 It proves the controller iterates both tasks in an untargeted cycle and preserves the blocked task as blocked while the later task remains executable. A separate targeted-cycle assertion proves this claim is not incorrectly generalized to intentionally targeted one-task execution.
 
 No production runtime code is modified by this proof lane.
+
+## Executed machine-owned runtime continuation proof — 2026-09-03
+
+The `heartbeat_runtime` and `deployment_runtime_activation` families are now adopted from executed proof.
+
+Evidence:
+- PR #903 -> `faf9ec76625d6b6286d96d1753fb5eca7b7ce967`
+- Heartbeat Worker Project run `33718097701` SUCCESS
+- Heartbeat validation job `100531416166` SUCCESS
+- organization control-plane validation run `33718097665` SUCCESS
+- complete deterministic repository test suite: SUCCESS
+- proof test: `tests/test_runtime_blocker_continuation_proof.py`
+
+The proof exercises the existing `WorkerCoordinator.cycle()` multi-item path and shows a persisted BLOCKED deployment-runtime task does not prevent a later ACTIVE non-colliding task from being processed. A targeted-cycle assertion preserves the intentional one-task suppression semantics.
+
+No production runtime code was modified to establish this proof and no authority was widened.
