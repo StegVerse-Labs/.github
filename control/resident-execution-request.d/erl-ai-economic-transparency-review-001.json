@@ -1,0 +1,19 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "fresh_fence_minimum_exclusive": 0,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "provider_credential_material_allowed": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "On sovereign resident source refresh, ask the existing WorkerCoordinator to attempt the already-admitted ERL AI economic-transparency independent-review task from its hash-bound local review package. This request grants no claim, fence, credential, heartbeat, research-promotion, publication, or runtime authority."
+}
