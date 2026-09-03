@@ -109,3 +109,17 @@ New deterministic tooling:
 The SV001 executable handoff is explicitly subordinated to this queue. Its
 task-specific page action text is descriptive only until the exact action ID is
 the sole `ADMITTED_FOR_USER_EXECUTION` queue entry.
+
+
+## Master Records custody prerequisite reconciliation — 2026-09-03
+
+Machine/source prerequisites for `IPHONE-MR-SV001-CUSTODY-001` are now satisfied:
+
+```text
+Site custody projection: #956 / 0b4cd7dc13cb43ffa9feec3c4badc21524efccd2
+full-proof import repair: #959 / 11ffa8fc712569a07edb45397baf2e3427947294
+immutable terminal cycle receipt: sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35
+SV001 rerun required: false
+```
+
+This does **not** admit the mutation. The queue remains fail-closed because the present device journal head has not been freshly replayed/exported after concurrent-session activity. The only permitted next device interactions remain read-only replay/export/inspection. A state-mutating custody instruction is prohibited until the fresh evidence is evaluated and the exact action becomes the sole `ADMITTED_FOR_USER_EXECUTION` entry.
