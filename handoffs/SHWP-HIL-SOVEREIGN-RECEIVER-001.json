@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-HIL-SOVEREIGN-RECEIVER-001",
-  "state": "HANDOFF_READY",
+  "state": "INCOMPLETE_REQUIRES_CONTINUED_BUILD",
   "goal": {
     "goal_id": "HIL-SOVEREIGN-RECEIVER-ACTIVATION",
     "objective": "Materialize the current HIL v1.1 receiver backend on demand from an admitted Universal Interlock/InTr transport event, preserve exact receipt lineage through HIL custody and TVC lifecycle admission, and never require a continuously READY receiver, G18 completion, participant/developer machine, or third-party production runtime before transport initiation.",
@@ -85,14 +85,18 @@
     "non_tv_tvc_secret_or_token_allowed": false,
     "participant_machine_required": false,
     "developer_machine_required": false,
-    "current_user_iphone_required": false,
+    "current_user_iphone_required": true,
     "hb30_browser_capsule_required": false,
     "third_party_runtime_required": false,
     "execution_authority": false,
     "review_authority": false,
     "publication_authority": false,
     "master_records_authority": false,
-    "public_transport_authority": false
+    "public_transport_authority": false,
+    "same_device_execution_required": true,
+    "requires_other_machine": false,
+    "other_machine_may_be_required": false,
+    "active_established_device_required": true
   },
   "execution": {
     "required_capabilities": [
@@ -135,7 +139,9 @@
       "heartbeat_grants_execution_authority": false,
       "credential_authority": "TV/TVC",
       "github_token_runtime_authority": "NONE",
-      "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+      "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY",
+      "same_device_execution_required": true,
+      "other_machine_allowed": false
     },
     "portable_refresh_then_execute": {
       "mode": "PORTABLE_REFRESH_THEN_TARGETED_ONE_SHOT",
@@ -154,7 +160,8 @@
       "source_refresh_is_runtime_execution": false,
       "heartbeat_grants_execution_authority": false,
       "github_token_runtime_authority": "NONE",
-      "credential_authority": "TV/TVC"
+      "credential_authority": "TV/TVC",
+      "same_device_execution_required": true
     },
     "resident_execution_request": {
       "state": "MERGED_VALIDATED_FRESH_RETRY_PENDING_RUNTIME_OBSERVATION",
@@ -185,7 +192,8 @@
         "result": "PASS"
       },
       "prior_request_id": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-001",
-      "retry_reason": "Current worker source now includes merged automatic HIL custody→TVC lifecycle watcher/consumer; fresh request identity prevents a previously terminalized request hash from suppressing current-path execution."
+      "retry_reason": "Current worker source now includes merged automatic HIL custody→TVC lifecycle watcher/consumer; fresh request identity prevents a previously terminalized request hash from suppressing current-path execution.",
+      "same_device_execution_required": true
     },
     "transport_event_materialization": {
       "schema": "stegverse.universal-intr-transport/v1",
@@ -207,10 +215,12 @@
       "existing_target_task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
       "consumer_mints_claim_or_fence": false,
       "blocked_materialization_blocks_unrelated_work": false,
-      "runtime_materialization_observed": false
+      "runtime_materialization_observed": false,
+      "same_device_execution_required": true,
+      "remote_receiver_required": false
     },
     "esrl_shared_gateway_runtime": {
-      "state": "SOURCE_COMPLETE_VALIDATED_MERGED_RUNTIME_NOT_OBSERVED",
+      "state": "INCOMPLETE_OTHER_MACHINE_REQUIRED",
       "stegos_merge": "878f06bf258c2ee47c49bad8d24d1581a61d3546",
       "validation_run": 33295276292,
       "shared_gateway_route_merge": "b941edcf4f9e3e7f0fe449bd20252f3c42e6259e",
@@ -232,7 +242,15 @@
       "organization_control_plane_validation_run": 33295465321,
       "heartbeat_worker_validation_run": 33295465332,
       "consumer_requires_lease_open": true,
-      "local_ready_sufficient_for_targeted_execution": false
+      "local_ready_sufficient_for_targeted_execution": false,
+      "public_gateway_required_for_lease_open": true,
+      "public_gateway_same_device_observed": false,
+      "other_machine_dependency": true,
+      "same_device_execution_required": true,
+      "stegos_same_device_enforcement_merge": "2efe6678e859e19d96d2a6afd6edf924bab186d2",
+      "stegos_same_device_enforcement_validation_run": 33713897558,
+      "same_device_fail_closed_source_installed": true,
+      "same_device_public_rendezvous_implemented": false
     },
     "tvc_lifecycle_event_consumption": {
       "state": "SOURCE_COMPLETE_VALIDATED_MERGED_RUNTIME_NOT_OBSERVED",
@@ -256,7 +274,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Execute fresh resident request RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002 or the next authentic HIL Universal InTr event through the merged ESRL/shared-Gateway path. Require LEASE_OPEN, public Gateway readiness, independent HIL claim/fence, receiver READY, browser custody, same-submission restart reconstruction, and automatic TVC lifecycle admission/receiving receipt. Source/control implementation for this path is complete.",
+    "next_authorized_action": "Implement a same-device HIL rendezvous/public-transport path, or remove the required shared Service Gateway readiness dependency from routine HIL activation/execution. Do not execute the runtime path through another machine as a completion substitute.",
     "terminal_when": [
       "authentic participant Universal InTr intent preserved",
       "receiver-side DEVICE_SYSTEM -> STEGOS_ECOSYSTEM receipt preserved",
@@ -268,24 +286,28 @@
     "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001"
   },
   "block": {
-    "block_reason": "The complete HIL event→ESRL→shared Service Gateway→LEASE_OPEN→WorkerCoordinator→receiver→durable custody→automatic TVC lifecycle source/control path is implemented, validated, and merged. A fresh resident request 002 is issued so current worker source cannot be suppressed by prior exactly-once request consumption. Remaining work is authentic runtime execution and resulting evidence.",
-    "dependency": "authentic HIL Universal InTr event executed through merged StegOS shared-Gateway ESRL runtime adapter plus resulting Gateway/WorkerCoordinator/receiver/TVC observations",
-    "solution_task_ref": "StegVerse-Labs/.github#246",
-    "solution_source_ref": "StegVerse-Labs/.github@a9031eafa07ec87ced2efdcaeab372dd199fb793 + StegVerse-Labs/StegOS@878f06bf258c2ee47c49bad8d24d1581a61d3546 + StegVerse-org/LLM-adapter@0f9ddde691f73a6477b25e609d1f2538073839f1 + StegVerse-Labs/TVC@2787eece099604a4d2aad93c575167dc73e54037",
+    "block_reason": "Current HIL source requires readiness from https://stegverse.org / STEGVERSE_SHARED_SERVICE_GATEWAY before ESRL LEASE_OPEN. Under the canonical same-device invariant this is OTHER_MACHINE_REQUIRED unless that gateway executes on the same established device. The lane is implementation-incomplete until the required remote-gateway dependency is removed.",
+    "dependency": "same-device HIL rendezvous/transport implementation with no required other-machine runtime",
+    "solution_task_ref": "StegVerse-Labs/.github#889",
+    "solution_source_ref": "StegVerse-Labs/.github@a9031eafa07ec87ced2efdcaeab372dd199fb793 + StegVerse-Labs/StegOS@878f06bf258c2ee47c49bad8d24d1581a61d3546 + StegVerse-org/LLM-adapter@0f9ddde691f73a6477b25e609d1f2538073839f1 + StegVerse-Labs/TVC@2787eece099604a4d2aad93c575167dc73e54037 + StegVerse-Labs/StegOS@2efe6678e859e19d96d2a6afd6edf924bab186d2 same-device fail-closed enforcement",
     "solution_validation_ref": "tests/test_hil_sovereign_receiver_bridge.py",
-    "solution_command": "python scripts/run_worker_runtime.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001",
+    "solution_command": null,
     "solution_constraints": [
       "current LLM-adapter backend contract floor required",
       "no participant/developer/iMachine dependency",
       "no GitHub token runtime authority",
       "TV/TVC credential authority only",
       "no third-party runtime as production authority",
-      "no heartbeat/model/TVC/Master Records authority collision"
+      "no heartbeat/model/TVC/Master Records authority collision",
+      "requires_other_machine=false",
+      "activation_execution_scope=SAME_DEVICE",
+      "required remote StegVerse gateway forbidden",
+      "remote peers optional only"
     ],
-    "observer": "independent StegVerse task-control",
-    "recheck_trigger": "each admitted HIL Universal InTr transport event",
+    "observer": "source/control invariant validation until same-device implementation exists",
+    "recheck_trigger": "after same-device HIL rendezvous/transport implementation merges",
     "next_check": null,
-    "escalation_condition": "stale backend source, a non-TV/TVC credential, participant machine, third-party production authority, or competing heartbeat/route/custody authority is requested",
+    "escalation_condition": "Any HIL activation or routine execution path still requires another machine, including another StegVerse node or shared gateway runtime",
     "block_expires_at": null
   }
 }

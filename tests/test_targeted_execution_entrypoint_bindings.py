@@ -42,13 +42,24 @@ class TargetedExecutionEntrypointBindingTests(unittest.TestCase):
                 self.assertEqual(target["credential_authority"], "TV/TVC")
                 self.assertEqual(target["github_token_runtime_authority"], "NONE")
 
-    def test_hil_no_longer_requires_heartbeat_trigger(self):
+    def test_hil_current_solution_is_same_device_implementation_not_runtime_command(self):
         handoff = self.load("handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json")
+        self.assertEqual(handoff["state"], "INCOMPLETE_REQUIRES_CONTINUED_BUILD")
+        self.assertIsNone(handoff["block"]["solution_command"])
         self.assertEqual(
-            handoff["block"]["solution_command"],
-            "python scripts/run_worker_runtime.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001",
+            handoff["block"]["dependency"],
+            "same-device HIL rendezvous/transport implementation with no required other-machine runtime",
         )
-        self.assertEqual(handoff["block"]["observer"], "independent StegVerse task-control")
+        self.assertEqual(
+            handoff["block"]["observer"],
+            "source/control invariant validation until same-device implementation exists",
+        )
+        self.assertEqual(
+            handoff["activation"]["targeted_execution"]["argv"],
+            ["python", "scripts/run_worker_runtime.py", "--task-id", "SHWP-HIL-SOVEREIGN-RECEIVER-001"],
+        )
+        self.assertTrue(handoff["activation"]["targeted_execution"]["same_device_execution_required"])
+        self.assertFalse(handoff["activation"]["targeted_execution"]["other_machine_allowed"])
         self.assertNotIn("each admitted heartbeat", handoff["activation"]["recheck_trigger"])
 
     def test_ecosystem_chat_keeps_dedicated_historical_parent_executor(self):

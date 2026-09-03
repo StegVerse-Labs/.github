@@ -781,3 +781,51 @@ verified portable bundle proof + exact current protected-file digest match
 The portable proof path does not copy `.git`, Git remotes, credentials, or network authority into the resident. Missing/unverified proof remains predicate-pending; digest or identity mismatch fails closed.
 
 This removes a portability defect where the bundled TVC source could execute ordinary resident activation but the HIL lifecycle consumer could reject the exact same verified materialization solely because `.git` metadata was intentionally excluded.
+
+
+## Same-device rendezvous correction — 2026-09-03
+
+Architecture owner: `StegVerse-Labs/.github#201`  
+Remediation owner: `StegVerse-Labs/.github#889`.
+
+The earlier HIL path treated the shared Service Gateway at `https://stegverse.org` as replaceable transport capacity while still requiring its public readiness before ESRL `LEASE_OPEN`. Under the corrected same-device invariant, that requirement is not admissible unless the gateway itself executes on the same established device.
+
+Current source therefore contains a real other-machine dependency:
+
+```text
+public_origin=https://stegverse.org
+public_tls_terminated_by=STEGVERSE_SHARED_SERVICE_GATEWAY
+public_gateway_readiness_required_before_LEASE_OPEN=true
+same_device_gateway_execution_observed=false
+```
+
+The HIL lane is reclassified:
+
+```text
+state=INCOMPLETE_REQUIRES_CONTINUED_BUILD
+blocker_code=OTHER_MACHINE_REQUIRED
+same_device_execution_required=true
+other_machine_may_be_required=false
+runtime_activation_claimed=false
+```
+
+This correction does not revoke valid local HIL source, WorkerCoordinator admission, Interlock/InTr semantics, TV/TVC authority, custody logic, or historical validation. It removes only the invalid assumption that a required remote StegVerse gateway is acceptable because it is StegVerse-controlled.
+
+The next legitimate implementation is to remove the required remote-gateway dependency from routine HIL activation/execution or implement an equivalent same-device rendezvous path. Remote peers may remain optional only.
+
+Until that implementation exists, authentic HIL runtime execution is not the next blocker. The source/control path itself is incomplete.
+
+No second machine may be assigned to the user.
+
+
+### Same-device fail-closed source merge
+
+StegOS PR #178 / merge `2efe6678e859e19d96d2a6afd6edf924bab186d2`, CI `33713897558 SUCCESS`, now enforces the route predicates in executable HIL ESRL source:
+
+```text
+requires_other_machine=false
+activation_execution_scope=SAME_DEVICE
+same_device_gateway_execution=true
+```
+
+A required remote shared Gateway now fails closed in source. This merge removes acceptance of the invalid topology; it does not yet provide or prove an on-device public rendezvous.
