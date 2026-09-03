@@ -239,3 +239,29 @@ This closes the source-level forwarding seam only. It does not establish:
 - StegIndex resident operational proof COMPLETE.
 
 Current authentic operational predicates therefore remain evidence-only and unresolved until deployment-local resident receipts exist.
+
+## Upstream direct-root propagation closure — 2026-09-03
+
+Tracking: StegVerse-Labs/.github#924.
+
+After dispatcher repair #915, direct-root propagation was audited one boundary farther upstream. The canonical non-secret `STEGVERSE_STEGINDEX_SOURCE_ROOT` locator could still be dropped by service installation or portable refresh bridges even though `STEGVERSE_REPO_ROOTS_JSON` was retained.
+
+This lane preserves the direct locator through:
+- `scripts/install_sovereign_heartbeat_service.py`;
+- `scripts/install_sovereign_heartbeat_service_base.py`;
+- `scripts/refresh_and_dispatch_resident_requests.py`;
+- `scripts/refresh_and_execute_resident_task.py`;
+- `scripts/install_sovereign_worker_source_refresh_service.py` for filesystem-triggered refresh/dispatch continuity.
+
+The carrier does not receive repository locators. Only the worker/runtime path receives the direct StegIndex source root. Existing credential stripping, hosted-environment rejection, TV/TVC credential authority, no-network-source-fetch rules, and no-second-machine semantics are unchanged.
+
+This remains source propagation only. It does not satisfy either authentic StegIndex #4 resident evidence predicate.
+
+### #926 current-main reconciliation
+
+PR #926 was replayed onto current main `365c983d3c276f204a5d9ef3c3df4dac9c00d0da` after unrelated concurrent organization work advanced main beyond its original base. The replay preserved all intervening main changes and retained only the bounded StegIndex locator propagation/test delta. This reconciliation grants no runtime or authority claim.
+
+### #926 validation-base reconciliation
+
+Repository validation initially exposed two pre-existing COSV denominator test expectations that lagged the already-merged ERL reviewer index. They were corrected separately in PR #935 / merge `a1880f302966b7bd8c07dd4ce9991999878a66f8`, with organization validation `33781354487` SUCCESS and Heartbeat Worker Project validation `33781354518` SUCCESS. #926 remains scoped only to StegIndex locator propagation.
+

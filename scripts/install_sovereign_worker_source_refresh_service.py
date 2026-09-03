@@ -17,7 +17,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Mapping
 
 from refresh_sovereign_worker_runtime_source import refresh
 
@@ -55,7 +55,7 @@ def _quote(value: str | Path) -> str:
     return '"' + str(value).replace('"', '\\"') + '"'
 
 
-def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_package_root: Path | None = None) -> tuple[str, str]:
+def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_package_root: Path | None = None, local_bindings: Mapping[str, str] | None = None) -> tuple[str, str]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     python = python.expanduser().resolve()
@@ -65,6 +65,17 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
     refresh_script = runtime / "scripts/refresh_sovereign_worker_runtime_source.py"
     request_dispatcher = runtime / "scripts/dispatch_resident_execution_requests.py"
     hil_materialization_consumer = runtime / "scripts/consume_hil_intr_materialization_request.py"
+    safe_local_bindings = {}
+    for key in ("STEGVERSE_STEGINDEX_SOURCE_ROOT", "STEGVERSE_REPO_ROOTS_JSON"):
+        value = str((local_bindings or {}).get(key) or "").strip()
+        if value:
+            if any(ch in value for ch in "\r\n"):
+                raise ValueError("local source binding contains unsafe characters")
+            safe_local_bindings[key] = value
+    environment_lines = [
+        f"Environment={_quote('STEGVERSE_SOURCE_PACKAGE_ROOT=' + str(packages))}",
+        *(f"Environment={_quote(key + '=' + value)}" for key, value in sorted(safe_local_bindings.items())),
+    ]
     service = "\n".join([
         "[Unit]",
         "Description=StegVerse local-only WorkerCoordinator source refresh",
@@ -72,7 +83,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
         "",
         "[Service]",
         "Type=oneshot",
-        f"Environment={_quote('STEGVERSE_SOURCE_PACKAGE_ROOT=' + str(packages))}",
+        *environment_lines,
         f"ExecStart={_quote(python)} {_quote(refresh_script)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(request_dispatcher)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(hil_materialization_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
@@ -209,6 +220,11 @@ def install(
         runtime_root=runtime,
         python=python,
         source_package_root=packages,
+        local_bindings={
+            key: os.environ[key]
+            for key in ("STEGVERSE_STEGINDEX_SOURCE_ROOT", "STEGVERSE_REPO_ROOTS_JSON")
+            if os.environ.get(key)
+        },
     )
     service_path = config_root / REFRESH_SERVICE
     path_path = config_root / REFRESH_PATH

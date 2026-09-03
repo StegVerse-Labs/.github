@@ -29,6 +29,18 @@ class PortableResidentDispatchTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "credential-bearing environment"):
             MOD.clean_exec_env({"PATH": "/bin", "HOME": "/tmp", "GITHUB_TOKEN": "forbidden"})
 
+    def test_clean_exec_env_preserves_direct_stegindex_root(self):
+        env = MOD.clean_exec_env({
+            "PATH": "/bin",
+            "HOME": "/tmp",
+            "STEGVERSE_STEGINDEX_SOURCE_ROOT": "/srv/stegverse/StegIndex",
+        })
+        self.assertEqual(
+            env["STEGVERSE_STEGINDEX_SOURCE_ROOT"],
+            "/srv/stegverse/StegIndex",
+        )
+        self.assertEqual(env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"], "NONE")
+
     def test_refresh_then_dispatch_targets_only_current_basis_consumer(self):
         with tempfile.TemporaryDirectory() as td:
             base = Path(td)
