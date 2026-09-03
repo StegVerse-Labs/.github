@@ -5,9 +5,10 @@ This is an execution harness, not a receipt generator. It refuses hosted
 GitHub/Render/Vercel/Cloudflare environments, runs the existing sovereign
 bootstrap, sends one deterministic controlled Node->InTr materialization event
 through the actual local HTTP ingress listener, invokes the existing HIL
-materialization consumer, requires the component-produced shared-Gateway ESRL
-LEASE_OPEN evidence, and then requires the real HIL receipts from the materialized
-ESRL runtime root.
+materialization consumer, requires component-produced same-device ESRL LEASE_OPEN
+evidence, and then requires the real HIL receipts from the materialized ESRL
+runtime root. Public Gateway observation is optional downstream evidence and is
+not an activation prerequisite.
 
 A PASS is authentic only when this script is executed on an eligible
 StegVerse-owned/federated resident runtime with the current local HIL backend.
@@ -222,9 +223,10 @@ def main() -> int:
         and materialization_result.get("esrl_lease_state") == "LEASE_OPEN"
         and materialization_result.get("esrl_runtime_instantiated") is True
         and materialization_result.get("esrl_local_identity_verified") is True
-        and materialization_result.get("hil_public_https_rendezvous_observed") is True
-        and materialization_result.get("public_gateway_readiness_verified") is True
-        and materialization_result.get("public_gateway_origin") == "https://stegverse.org"
+        and materialization_result.get("same_device_execution_required") is True
+        and materialization_result.get("requires_other_machine") is False
+        and materialization_result.get("hil_public_https_rendezvous_observed") is False
+        and materialization_result.get("public_gateway_readiness_verified") is False
     )
 
     execution_runtime_raw = materialization_result.get("esrl_runtime_root")
@@ -274,6 +276,9 @@ def main() -> int:
         "controlled_materialization_id": request["materialization_id"],
         "ingress_state": ingress_receipt.get("state"),
         "esrl_lease_open_observed": esrl_lease_open,
+        "same_device_execution_required": materialization_result.get("same_device_execution_required") is True,
+        "requires_other_machine": materialization_result.get("requires_other_machine") is True,
+        "public_observation_is_downstream_optional": materialization_result.get("public_observation_is_downstream_optional") is True,
         "public_gateway_readiness_verified": materialization_result.get("public_gateway_readiness_verified") is True,
         "public_gateway_origin": materialization_result.get("public_gateway_origin"),
         "execution_runtime_root": str(execution_runtime) if execution_runtime_valid else None,
