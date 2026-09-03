@@ -187,6 +187,30 @@ class SovereignHeartbeatServiceTests(unittest.TestCase):
             self.assertIn("STEGVERSE_STEGCORE_SOURCE_ROOT", receipt["safe_local_worker_bindings"])
             self.assertIn("STEGVERSE_MASTER_RECORDS_SOURCE_ROOT", receipt["safe_local_worker_bindings"])
 
+    def test_worker_service_preserves_direct_stegindex_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            root = base / "heartbeat"
+            stegindex = base / "StegIndex"
+            stegindex.mkdir()
+            mod.materialize(ROOT, root)
+            receipt = mod.materialize_service(
+                root,
+                system="linux",
+                env={
+                    "XDG_CONFIG_HOME": str(base / "config"),
+                    "STEGVERSE_STEGINDEX_SOURCE_ROOT": str(stegindex),
+                },
+            )
+            worker_text = Path(receipt["worker_registration_path"]).read_text(encoding="utf-8")
+            carrier_text = Path(receipt["carrier_registration_path"]).read_text(encoding="utf-8")
+            self.assertIn("STEGVERSE_STEGINDEX_SOURCE_ROOT=" + str(stegindex), worker_text)
+            self.assertNotIn("STEGVERSE_STEGINDEX_SOURCE_ROOT", carrier_text)
+            self.assertIn(
+                "STEGVERSE_STEGINDEX_SOURCE_ROOT",
+                receipt["safe_local_worker_bindings"],
+            )
+
     def test_worker_service_rejects_source_root_equal_to_runtime_root(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)
