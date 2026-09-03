@@ -81,3 +81,37 @@ Organization-level canonical installation: IMPLEMENTED.
 Downstream repository propagation: REQUIRED / NOT BLANKET-CLAIMED.
 Runtime activation claim: NONE.
 New authority granted: NONE.
+
+
+## Installation receipts — 2026-09-02
+
+Canonical organization installation:
+- StegVerse-Labs/.github PR #847 -> `493f8b9e801a35444325082ad33a0ca4c1089d52`
+
+First-wave consumer merges:
+- StegVerse-Labs/TV PR #16 -> `1cefc4ebd64ad18b535d0b0d4f882c6096d74251`
+- StegVerse-Labs/TVC PR #288 -> `187bf9ea0db2aaab569374c887d900f8d521738b`
+- StegVerse-Labs/Continuity PR #13 -> `e478155198f32b6c72fffd5cda8a7daa1d2d6d06`
+- StegVerse-Labs/Site PR #937 -> `fcc51f0b80e9862c12324f4316ef3ee16524971f`
+- StegVerse-Labs/StegVerse-Healer PR #56 -> `081d16e3ca60bb5571b218c459f6e37eb7117fef`
+- StegVerse-Labs/Governance PR #37 -> `af14d742e84baad0eae3ab4ce55d68a8df1c27f9`
+
+Second-wave / required propagation merges:
+- StegVerse-Labs/StegCore PR #182 -> `fef7fb4f061ff7f059d7475d1abb3402fb6726db`
+- StegVerse-Labs/StegOS PR #163 -> `d864e870c33fd24bae9853b9844dce4095545690`
+- StegVerse-Labs/admissibility-wiki PR #126 -> `3671d70a969d39d1d53186a9882a5a88bae75038`
+- StegVerse-002/stegguardian-wiki PR #35 -> `b60674c994022396fa3507defb6d59caa7d81a66`
+- GCAT-BCAT-Engine/Publisher PR #51 -> `bd44d7d192fbf2b21e8e0cf151bd21758ec9af81`
+
+Propagation milestone issue: StegVerse-Labs/.github#848.
+
+### Milestone state
+
+Organization-level canonical installation: MERGED.
+Priority consumer adoption: MERGED.
+Required Site/Publisher/admissibility-wiki/stegguardian-wiki verification: APPLIED.
+Runtime activation claim: NONE.
+Maturity Gate IV/V claim: NONE.
+New authority granted: NONE.
+
+Remaining ecosystem work is no longer installation of the invariant itself. It is continuous application: future/new governed entities must declare their contribution, and existing entities not in the priority wave should adopt the declaration when their live handoff is next materially changed.
