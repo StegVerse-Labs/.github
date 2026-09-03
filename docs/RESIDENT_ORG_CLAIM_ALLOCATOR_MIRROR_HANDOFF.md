@@ -69,3 +69,24 @@ resident request is specifically required so queue progress does not stop after 
 
 Runtime proof remains deployment-local. Source merge or CI does not prove that the
 resident allocator has consumed the request or granted TASK-2026-0008.
+
+
+## Post-merge source reconciliation
+
+```text
+source merge: b19b94a5512b160e086ffa8460e8a9ba7f7efcb1
+organization control-plane validation: SUCCESS
+cross-framework resident-dispatch validation: SUCCESS
+original Heartbeat Worker Project PR run: CHECKOUT_INFRA_FAILURE_BEFORE_TESTS
+retry of original merged-PR run: CHECKOUT_INFRA_FAILURE_BEFORE_TESTS
+runtime allocator consumption observed: false
+runtime claim grant observed: false
+```
+
+The two Heartbeat failures above occurred at the anonymous PR-ref checkout step after
+the source PR had already merged; all validation/test steps were skipped. They are
+not source-test failures and are not runtime evidence.
+
+This reconciliation PR exists to validate the exact current-main source through a live
+PR ref. Even if validation passes, deployment-local allocator consumption and task
+claim evidence remain independently required.
