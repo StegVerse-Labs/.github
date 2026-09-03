@@ -12,7 +12,8 @@
       "evidence_refs": [
         "StegVerse-Labs/Executive_Rhetoric_Ledger#104",
         "StegVerse-Labs/.github#927",
-        "workers/erl_ai_economic_transparency_review_worker.py"
+        "workers/erl_ai_economic_transparency_review_worker.py",
+        "review-packages/erl-ai-economic-transparency-001/manifest.json"
       ],
       "executor_binding": "AUTHORIZED",
       "goal_id": "ERL-AI-ECON-TRANSPARENCY-001",
@@ -40,11 +41,12 @@
         ],
         "integration_evidence_refs": [
           "workers/erl_ai_economic_transparency_review_worker.py",
-          "control/process-worker-adapters.d/erl-ai-economic-transparency-review-001.json"
+          "control/process-worker-adapters.d/erl-ai-economic-transparency-review-001.json",
+          "review-packages/erl-ai-economic-transparency-001/manifest.json"
         ],
         "activation_proof_ref": null,
         "blockers": [
-          "LOCAL_ERL_REVIEW_PACKAGE_AND_RESIDENT_EXECUTION_RECEIPT_PENDING"
+          "RESIDENT_EXECUTION_RECEIPT_PENDING"
         ],
         "continuation_owner": "resident sovereign heartbeat + erl-ai-economic-transparency-review-worker + StegVerse-Labs/Executive_Rhetoric_Ledger#104",
         "credential_authority": "TV/TVC",
