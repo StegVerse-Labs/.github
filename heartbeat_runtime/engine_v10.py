@@ -421,6 +421,16 @@ class HeartbeatRuntime(HeartbeatRuntimeV9):
             stegindex_preflight_state=preflight.get("state") or "RESOLVED",
             stegindex_duplicate_guard=preflight.get("duplicate_implementation_guard"),
             stegindex_machine_continuation_required=bool(preflight.get("machine_continuation_required")),
+            stegindex_risk_transition_surfaces=list(
+                (preflight.get("capability_risk") or {}).get("transition_surfaces") or []
+            ),
+            stegindex_risk_required_governance=list(
+                (preflight.get("capability_risk") or {}).get("required_governance") or []
+            ),
+            stegindex_risk_authority_effect=(
+                (preflight.get("capability_risk") or {}).get("authority_effect")
+                or "NONE_INDEX_ONLY"
+            ),
             authority_effect=False,
         )
         return task_id

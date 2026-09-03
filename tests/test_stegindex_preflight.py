@@ -25,6 +25,7 @@ class StegIndexPreflightTests(unittest.TestCase):
             "'query':'runtime evidence',"
             "'capabilities':[{'capability_id':'stegverse:capability:runtime-proof:v1'}],"
             "'purpose_contributions':[],"
+            "'capability_risk':{'matches':[{'source_id':'external:lolbas:v1'}],'transition_surfaces':['execution','egress'],'required_governance':['execution authority predicate'],'trusted_or_available_implies_authority':False,'runtime_dependency':False,'copy_payloads':False,'authority_effect':'NONE_INDEX_ONLY'},"
             "'existing_capability_found':True,"
             "'duplicate_implementation_guard':'REUSE_OR_EXTEND_EXISTING',"
             "'first_actionable_predicate':{'predicate_id':'runtime_receipt_present','machine_executable_now':False},"
@@ -56,6 +57,9 @@ class StegIndexPreflightTests(unittest.TestCase):
         self.assertEqual(result["duplicate_implementation_guard"], "REUSE_OR_EXTEND_EXISTING")
         self.assertFalse(result["network_fetch_performed"])
         self.assertFalse(result["github_token_required"])
+        self.assertIn("execution", result["capability_risk"]["transition_surfaces"])
+        self.assertEqual(result["capability_risk"]["authority_effect"], "NONE_INDEX_ONLY")
+        self.assertFalse(result["capability_risk"]["trusted_or_available_implies_authority"])
 
     def test_repo_roots_map_resolves_canonical_stegindex(self):
         root = self.make_index()

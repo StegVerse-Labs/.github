@@ -215,6 +215,9 @@ class RuntimeResolutionTaskTests(unittest.TestCase):
             admitted = [event for event in events if event["event_type"] == "resolution_task_admitted"]
             self.assertEqual(len(admitted), 1)
             self.assertEqual(admitted[0]["stegindex_preflight_ref"], preflight_refs[0])
+            self.assertEqual(admitted[0]["stegindex_risk_transition_surfaces"], [])
+            self.assertEqual(admitted[0]["stegindex_risk_required_governance"], [])
+            self.assertEqual(admitted[0]["stegindex_risk_authority_effect"], "NONE_INDEX_ONLY")
 
 
 if __name__ == "__main__":

@@ -125,3 +125,28 @@ Authentic resident state:
 `STEGINDEX_RESOLUTION_ADMISSION_PREFLIGHT_RECEIPT_NOT_YET_OBSERVED`
 
 The unobserved resident predicates remain evidence requirements only. They do not reopen the merged source implementation and do not imply a missing StegIndex capability.
+
+
+## Capability-risk admission observability — 2026-09-03
+
+The canonical blocker-derived resolution admission path now carries StegIndex capability-risk metadata into the existing admission event without changing task authority or scheduler behavior.
+
+Implemented:
+- `scripts/run_stegindex_preflight.py` preserves a stable empty `capability_risk` shape when canonical StegIndex is unavailable;
+- `heartbeat_runtime/engine_v10.py` exposes:
+  - `stegindex_risk_transition_surfaces`;
+  - `stegindex_risk_required_governance`;
+  - `stegindex_risk_authority_effect`;
+- deterministic tests cover canonical passthrough and unavailable-source event shape.
+
+This is observability only. The risk metadata does not:
+- add required capabilities to a generated task;
+- alter claim/fence ownership;
+- grant execution or transition authority;
+- create network/runtime dependencies;
+- make third-party reference content executable.
+
+The admission event can now reveal both the exact predicate/continuation posture and the transition surfaces/governance considerations associated with the requested capability.
+
+Runtime activation claim: NONE.
+Authority effect: NONE_READ_RESOLVE_ONLY.
