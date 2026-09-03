@@ -1,0 +1,60 @@
+{
+  "schema": "stegverse.same-device-activation-execution-invariant/v1",
+  "owner_issue": "StegVerse-Labs/.github#201",
+  "observed_at": "2026-09-03T04:03:00Z",
+  "state": "ACTIVE_ECOSYSTEM_AUDIT_AND_REMEDIATION",
+  "invariant": {
+    "requires_other_machine": false,
+    "activation_authority_plane": "STEGVERSE",
+    "activation_execution_scope": "SAME_DEVICE",
+    "required_prerequisite_provider_kind": "LOCAL_NODE",
+    "required_remote_stegverse_node_allowed": false,
+    "remote_machine_roles_allowed": [
+      "NONE",
+      "OPTIONAL_PEER",
+      "OPTIONAL_RECOVERY"
+    ],
+    "user_second_machine_required": false
+  },
+  "violation": {
+    "blocker_code": "OTHER_MACHINE_REQUIRED",
+    "lifecycle_state": "INCOMPLETE_REQUIRES_CONTINUED_BUILD",
+    "continuation_required": true
+  },
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "hosted_ci_activation_authority": "NONE",
+    "hb_execution_authority": "NONE",
+    "hb_derived_execution_authority": "NONE"
+  },
+  "completed_enforcement": [
+    {
+      "repository": "StegVerse-Labs/StegOS",
+      "issue": 165,
+      "pull_request": 174,
+      "merge": "8ecf8836b5cab8546a2b10ecd1b6089be76705b4",
+      "validation_run": 33713239881,
+      "result": "SUCCESS"
+    },
+    {
+      "repository": "StegVerse-Labs/.github",
+      "issue": 871,
+      "pull_request": 872,
+      "merge": "6e81537b35f19c67fc2a5bce060c9650190521c3",
+      "validation_runs": [
+        33706409165,
+        33706408995
+      ],
+      "result": "SUCCESS"
+    }
+  ],
+  "corrected_runtime_lanes": [
+    "STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+    "SV002-PUBLIC-OBSERVATION-RUNTIME-001",
+    "ECOSYSTEM-CHAT-SOVEREIGN-INFERENCE-001"
+  ],
+  "ecosystem_audit_complete": false,
+  "runtime_activation_claimed": false,
+  "user_action_required": false
+}
