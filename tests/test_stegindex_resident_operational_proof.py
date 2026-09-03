@@ -81,3 +81,23 @@ def test_non_tvtvc_or_network_receipt_does_not_satisfy():
         write_json(root/M.PREFLIGHT_DIR/"p.json",row)
         out=M.verify(root)
         assert out["state"]=="INCOMPLETE"
+
+def test_operational_verifier_is_materialized_by_all_resident_paths():
+    refresh=(ROOT/"scripts/refresh_sovereign_worker_runtime_source.py").read_text()
+    refresh_base=(ROOT/"scripts/refresh_sovereign_worker_runtime_source_base.py").read_text()
+    install=(ROOT/"scripts/install_sovereign_heartbeat_service.py").read_text()
+    install_base=(ROOT/"scripts/install_sovereign_heartbeat_service_base.py").read_text()
+    bootstrap=(ROOT/"scripts/bootstrap_sovereign_runtime.py").read_text()
+    bootstrap_base=(ROOT/"scripts/bootstrap_sovereign_runtime_base.py").read_text()
+    needle="verify_stegindex_resident_operational_proof.py"
+    for source in (refresh,refresh_base,install,install_base,bootstrap,bootstrap_base):
+        assert needle in source
+
+def test_authentic_evidence_producers_refresh_operational_proof():
+    engine=(ROOT/"heartbeat_runtime/engine_v10.py").read_text()
+    consumer=(ROOT/"scripts/consume_one_shot_resident_stack_activation_request.py").read_text()
+    assert "self._refresh_stegindex_operational_proof()" in engine
+    assert "verify_stegindex_resident_operational_proof.py" in engine
+    assert "refresh_stegindex_operational_proof(runtime,runner)" in consumer
+    assert "verify_stegindex_resident_operational_proof.py" in consumer
+
