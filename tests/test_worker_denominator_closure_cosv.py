@@ -49,7 +49,7 @@ class WorkerDenominatorClosureCOSVTests(unittest.TestCase):
             coverage["total_active_unvectorized_unique_task_ids"],
             coverage["organization_registry_summary"]["active_unvectorized_task_ids"],
         )
-        self.assertEqual(coverage["worker_denominator_closure"]["active_worker_tasks_vectorized"], 74)
+        self.assertEqual(coverage["worker_denominator_closure"]["active_worker_tasks_vectorized"], 75)
         self.assertEqual(coverage["worker_denominator_closure"]["active_worker_tasks_unvectorized"], 0)
 
 if __name__ == "__main__":
