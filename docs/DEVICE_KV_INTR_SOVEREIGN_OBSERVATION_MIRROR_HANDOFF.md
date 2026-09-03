@@ -371,3 +371,20 @@ StegOS CanonicalInTrConnector(profile=device-kv)
 ```
 
 The compatibility envelope is no longer a separate transport-authority construction. Runtime activation remains NOT OBSERVED.
+
+
+## Shared HB runtime-observability registry binding — 2026-09-03
+
+Canonical consumer descriptor:
+
+```text
+control/runtime-observability-consumers/device-kv-intr-observation-001.json
+registration issue: #866
+shared owner: #814
+```
+
+This registration adds no new runtime, signal, scheduler, projector, executor, receiver, receipt writer, claim/fence authority, or credential authority. It binds the existing DEVICE_KV observation lane to the shared resident-presence projection while preserving its task-specific exact-byte/InTr/HB-carrier evidence gates.
+
+Distinct deployment-local predicates remain independently NOT OBSERVED: resident supervision, node/runtime freshness, admitted predecessor evidence, governed request consumption, exact request/response HB-carrier transport and recovery, canonical DEVICE->KV and KV->DEVICE InTr receipts, shared HB signal refs/digests, terminal DEVICE_KV_INTR_OBSERVED retention, and replay/reconstruction.
+
+HB/HB-derived state remains reference/observability only; Interlock/InTr governs admissible movement; WorkerCoordinator retains independent claim/fence authority; TV/TVC remains sole credential authority; source/merge/CI cannot satisfy runtime predicates.
