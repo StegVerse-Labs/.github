@@ -1,0 +1,40 @@
+{
+  "artifact_type": "stegverse.session_build_preflight_contract",
+  "schema_version": "1.0.0",
+  "status": "ACTIVE_SOURCE_CONTRACT",
+  "entrypoint": "scripts/session_build_preflight.py",
+  "stegindex_gate": "scripts/stegindex_preflight_gate.py",
+  "decisions": {
+    "CONTINUE_MACHINE_EXECUTION": {
+      "disposition": "CONTINUE_THROUGH_CANONICAL_OWNER",
+      "task_creation_permitted": false,
+      "exit_code": 3
+    },
+    "REUSE_OR_EXTEND_EXISTING": {
+      "disposition": "REUSE_EXISTING_CAPABILITY",
+      "task_creation_permitted": false,
+      "exit_code": 0
+    },
+    "NO_EXISTING_CAPABILITY_MATCH": {
+      "disposition": "NEW_WORK_MAY_BE_CONSIDERED",
+      "task_creation_permitted": true,
+      "exit_code": 0
+    },
+    "EXACT_BLOCKER_ONLY": {
+      "disposition": "STOP_AT_EXACT_DEPENDENCY",
+      "task_creation_permitted": false,
+      "exit_code": 2
+    }
+  },
+  "invariants": [
+    "new task creation is prohibited when an existing capability should be reused",
+    "new task creation is prohibited when machine continuation is already available",
+    "new task creation is prohibited while indexed truth requires reconciliation",
+    "generic runtime-evidence blockers are not terminal preflight outcomes",
+    "StegIndex and this entrypoint grant no execution authority"
+  ],
+  "authority_effect": "NONE_PREWORK_DECISION_ONLY",
+  "network_fetch_performed": false,
+  "github_token_runtime_authority": "NONE",
+  "credential_authority": "TV/TVC"
+}
