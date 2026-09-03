@@ -52,21 +52,62 @@
         "current page contains released Site custody surface",
         "immutable SV001 execution proof available"
       ],
-      "queue_state": "WAITING_FOR_GLOBAL_RECONCILIATION"
-    },
-    {
-      "action_id": "IPHONE-DE006-NEXT-DEVICE-MUTATION",
-      "canonical_task": "DE006 / parent evidence continuation",
-      "target_surface": "CURRENT_USER_IPHONE StegOS surface",
-      "mutation_class": "UNRESOLVED_FROM_CONCURRENT_SESSION",
-      "prerequisites": [
-        "exact concurrent-session intended mutation reconciled",
-        "fresh journal replay PASS"
-      ],
-      "queue_state": "WAITING_FOR_GLOBAL_RECONCILIATION"
+      "queue_state": "WAITING_FOR_FRESH_JOURNAL_HEAD",
+      "ordering_constraints": {
+        "must_follow": [
+          "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
+          "TVC lease consumption CONSUMED"
+        ],
+        "must_not_follow_by_reexecution": [
+          "Run Governed SV001 Cycle"
+        ],
+        "may_precede": [
+          "SV002 adversarial observation/disposition"
+        ],
+        "predecessor_tail_must_be_fresh": true
+      }
     }
   ],
   "active_action_id": null,
-  "next_required_observation": "FRESH_CURRENT_DEVICE_JOURNAL_REPLAY_AND_EXPORT",
-  "mutation_freeze_reason": "Concurrent sessions issued different page-manipulation sequences without a shared device-interaction fence."
+  "next_required_observation": "FRESH_CURRENT_DEVICE_JOURNAL_REPLAY_AND_EXPORT_ONLY",
+  "mutation_freeze_reason": "Concurrent sessions issued different page-manipulation sequences without a shared device-interaction fence.",
+  "observed_descendant_anchors": [
+    {
+      "observed_at": "2026-09-03T15:49:00Z",
+      "source": "StegVerse-Labs/.github#921 exact exported CURRENT_USER_IPHONE evidence bundle",
+      "journal_tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69",
+      "replay_relation": "VALID_APPEND_ONLY_DESCENDANT",
+      "reconstruction_state": "PASS",
+      "same_execution": true,
+      "fresh_for_new_mutation_admission": false,
+      "reason": "Verified later than the original 59-entry anchor, but not guaranteed to be the present device head after concurrent-session activity."
+    }
+  ],
+  "resolved_non_mutation_intents": [
+    {
+      "intent_id": "DE006-PARENT-CONTINUATION",
+      "source": "StegVerse-Labs/.github#921@bc871ebca8a04646f043e467a170c068f9eef140",
+      "device_local_candidate_verified": true,
+      "device_journal_tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69",
+      "current_next_step": "resident request RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002 consumption + fresh parent fence >22",
+      "human_device_mutation_required": false,
+      "removed_from_interaction_queue": true
+    }
+  ],
+  "global_inventory": {
+    "canonical_handoffs_scanned_at": "2026-09-03T16:34:00Z",
+    "explicit_human_device_mutation_candidates": 1,
+    "explicit_candidate_ids": [
+      "IPHONE-MR-SV001-CUSTODY-001"
+    ],
+    "historical_terminal_no_rerun": [
+      "SHWP-IPHONE-HB30-INLINE-CAPSULE-002",
+      "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED"
+    ],
+    "machine_or_implementation_lanes_not_device_mutations": [
+      "DE006-PARENT-CONTINUATION",
+      "SHWP-HIL-SOVEREIGN-RECEIVER-001"
+    ],
+    "completeness_note": "This inventory covers canonical .github handoffs and currently known Site/current-iPhone continuations; fresh device head remains required before admission."
+  }
 }
