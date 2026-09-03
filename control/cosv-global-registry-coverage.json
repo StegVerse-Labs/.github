@@ -10,8 +10,8 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
-    "unique_task_ids_global_plus_fragments": 81,
-    "canonically_indexed_task_ids": 74,
+    "unique_task_ids_global_plus_fragments": 82,
+    "canonically_indexed_task_ids": 75,
     "completed_only_historical_unvectorized_task_ids": 6,
     "active_unvectorized_unique_task_ids": 0,
     "superseded_historical_unvectorized_task_ids": 1
@@ -376,6 +376,10 @@
     {
       "task_id": "SHWP-GLM53-SOVEREIGN-LANE-001",
       "vector": "50000000101000"
+    },
+    {
+      "task_id": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
+      "vector": "50000000101000"
     }
   ],
   "evidence_conflicts": [],
@@ -678,18 +682,18 @@
     "authority_effect": "NONE"
   },
   "worker_denominator_closure": {
-    "active_worker_tasks_vectorized": 74,
+    "active_worker_tasks_vectorized": 75,
     "active_worker_tasks_unvectorized": 0,
     "completed_historical_unvectorized": 6,
     "superseded_historical_unvectorized": 1,
-    "total_unique_worker_task_ids": 81,
+    "total_unique_worker_task_ids": 82,
     "authority_effect": "NONE",
     "runtime_activation_claimed": false
   },
   "active_task_vector_coverage_closure": {
-    "active_worker_tasks_vectorized": 73,
+    "active_worker_tasks_vectorized": 74,
     "active_organization_tasks_vectorized": 14,
-    "total_active_tasks_vectorized": 87,
+    "total_active_tasks_vectorized": 88,
     "active_tasks_unvectorized": 0,
     "source_projection_complete": true,
     "runtime_activation_claimed": false,
@@ -848,6 +852,23 @@
     "blocker": "GLM53_SOVEREIGN_RUNTIME_EVIDENCE_NOT_YET_OBSERVED",
     "runtime_receipt_observed": false,
     "credential_authority": "TV/TVC",
+    "authority_effect": "NONE"
+  },
+  "erl_ai_economic_transparency_review_projection": {
+    "task_id": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
+    "vector": "50000000101000",
+    "registry_ref": "control/worker-registry.d/erl-ai-economic-transparency-review-001.json",
+    "source_state_vector_ref": "control/task-vectors/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json",
+    "canonical_owner_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#104",
+    "blocker": "LOCAL_ERL_REVIEW_PACKAGE_AND_RESIDENT_EXECUTION_RECEIPT_PENDING",
+    "runtime_receipt_observed": false,
+    "independent_review_complete": false,
+    "research_promotion_authority": false,
+    "activation_authority": false,
+    "publication_authority": false,
+    "repository_writeback_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
     "authority_effect": "NONE"
   }
 }
