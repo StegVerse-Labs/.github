@@ -1,0 +1,59 @@
+{
+  "schema": "stegverse.erl.ai-economic-transparency-review-input-bundle/v1",
+  "task_id": "ERL-AI-ECON-TRANSPARENCY-001",
+  "review_worker_task_id": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
+  "source_repository": "StegVerse-Labs/Executive_Rhetoric_Ledger",
+  "source_ref": "main",
+  "copied_at": "2026-09-03T17:13:00Z",
+  "claim_boundary": "BYTE_PRESERVING_REVIEW_INPUT_PACKAGE_NO_CLAIM_MUTATION",
+  "files": [
+    {
+      "relative_path": "assessments/reviews/ai-economic-transparency-consumer-surface-independent-review-package.2026-09-03.json",
+      "bundle_path": "review-packages/erl-ai-economic-transparency-001/assessments/reviews/ai-economic-transparency-consumer-surface-independent-review-package.2026-09-03.json",
+      "source_git_blob_sha": "defe6a8f5411f72298aedc197196727162e78e95",
+      "sha256": "sha256:7d7195de1cdf7cd9c577baefd93cb186bc54ae4e476e5f44c9528ca91068fc3f"
+    },
+    {
+      "relative_path": "research-data/ai-economic-transparency/candidate-results.consumer-surfaces.2026-09-03.json",
+      "bundle_path": "review-packages/erl-ai-economic-transparency-001/research-data/ai-economic-transparency/candidate-results.consumer-surfaces.2026-09-03.json",
+      "source_git_blob_sha": "e85aeab618e5f85198e5f7e036442b9e721e1fb0",
+      "sha256": "sha256:dfe64356e585210a7e76b44898bbf63fcf5a77582f4233a76e23e4912fff8502"
+    },
+    {
+      "relative_path": "research-data/ai-economic-transparency/openai-consumer-surface-observation.2026-09-03.json",
+      "bundle_path": "review-packages/erl-ai-economic-transparency-001/research-data/ai-economic-transparency/openai-consumer-surface-observation.2026-09-03.json",
+      "source_git_blob_sha": "d61e3aca097fb74489e4e565772357331b877cdc",
+      "sha256": "sha256:1d8de372faac06609be986a0772d0d13c55e99254faca1f2eeca5913edea009b"
+    },
+    {
+      "relative_path": "research-data/ai-economic-transparency/anthropic-consumer-surface-observation.2026-09-03.json",
+      "bundle_path": "review-packages/erl-ai-economic-transparency-001/research-data/ai-economic-transparency/anthropic-consumer-surface-observation.2026-09-03.json",
+      "source_git_blob_sha": "0291f2b895df0b9ea1fddeaa7d84940f5d870d84",
+      "sha256": "sha256:3086aa60e44571a075f2bb5ad1f0810513df43f0ac5a45bb54c12da7548d41b2"
+    },
+    {
+      "relative_path": "research-data/ai-economic-transparency/deepseek-consumer-surface-observation.2026-09-03.json",
+      "bundle_path": "review-packages/erl-ai-economic-transparency-001/research-data/ai-economic-transparency/deepseek-consumer-surface-observation.2026-09-03.json",
+      "source_git_blob_sha": "949621dcf0e6fda09eaca9a635ab89b6cf05a421",
+      "sha256": "sha256:cf258f656918a78b9afb98575ee1525cb34e7bcde4ffaef1030c6890b50398b7"
+    },
+    {
+      "relative_path": "assessments/reviews/ai-economic-transparency-consumer-surface-contradiction-review.2026-09-03.json",
+      "bundle_path": "review-packages/erl-ai-economic-transparency-001/assessments/reviews/ai-economic-transparency-consumer-surface-contradiction-review.2026-09-03.json",
+      "source_git_blob_sha": "827096f37a14d775cbe2ea2aa7981b93b8f8c4fc",
+      "sha256": "sha256:332a36d73849b92255ad9d8f1fab2d3b4ee1d95032a772eb0a90c0db025f22ef"
+    },
+    {
+      "relative_path": "schemas/ai-economic-transparency-observation.schema.json",
+      "bundle_path": "review-packages/erl-ai-economic-transparency-001/schemas/ai-economic-transparency-observation.schema.json",
+      "source_git_blob_sha": "808de5a8492f4472936a438dc38a31a09c31913f",
+      "sha256": "sha256:de96b89944c346e5f0b3f425f0a647960941dd21d646a57c7cc39b9caa659e97"
+    },
+    {
+      "relative_path": "standards/ai-economic-transparency.v1.md",
+      "bundle_path": "review-packages/erl-ai-economic-transparency-001/standards/ai-economic-transparency.v1.md",
+      "source_git_blob_sha": "7effb41e3d29bf7ae6841a2f9208f187534c2095",
+      "sha256": "sha256:a4a9d6c9ab4013d26dafb48506f8b4f0b94f71ef8ba19070b0e2b9f08386a19e"
+    }
+  ]
+}
