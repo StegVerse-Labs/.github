@@ -30,3 +30,13 @@ GitHub Actions may validate or convey evidence but are not sovereign runtime aut
 
 ## Migration rule
 Legacy organization-runtime activation surfaces outside `StegVerse-Labs/.github` are endpoint/provider implementations or migration sources, not competing organizational activation points.
+
+## Ecosystem purpose invariant
+
+Organization-level runtime and boundary work is evaluated against `docs/ECOSYSTEM_PURPOSE_INVARIANT.md` and `control/ecosystem-purpose-invariant.json`.
+
+The purpose invariant requires governed entities to contribute explicitly to the ecosystem sum while preserving their independent authority and lifecycle boundaries.
+
+It grants no runtime authority. It does not alter the HB/InTr separation above. It constrains development direction: consequential capability should advance agency, continuity, admissibility, execution, observability, evidence, recovery, interoperability, or consequence containment, and should preserve reconstructability rather than convert capability into silent authority.
+
+Repository-local `*_MIRROR_HANDOFF.md` remains authoritative for live implementation state.
