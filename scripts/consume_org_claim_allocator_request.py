@@ -94,6 +94,49 @@ def clean_env(values: Mapping[str, str] | None = None) -> dict[str, str]:
     return env
 
 
+
+def materialize_org_control_inputs(source: Path, runtime: Path) -> dict[str, Any]:
+    """Append missing organization task definitions without overwriting runtime task state."""
+    source_tasks = source / "tasks"
+    runtime_tasks = runtime / "tasks"
+    if not source_tasks.is_dir():
+        raise RuntimeError("canonical organization task catalog missing")
+    runtime_tasks.mkdir(parents=True, exist_ok=True)
+    imported: list[str] = []
+    preserved: list[str] = []
+    for task_path in sorted(source_tasks.glob("TASK-*.json")):
+        destination = runtime_tasks / task_path.name
+        if destination.exists():
+            preserved.append(task_path.name)
+            continue
+        value = load_json(task_path)
+        if value.get("task_id") != task_path.stem:
+            raise RuntimeError(f"organization task identity mismatch: {task_path.name}")
+        destination.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        imported.append(task_path.name)
+
+    initialized: list[str] = []
+    for rel in (Path("control/claims-active.json"), Path("control/queue.json")):
+        destination = runtime / rel
+        if destination.exists():
+            continue
+        source_path = source / rel
+        if not source_path.is_file():
+            raise RuntimeError(f"canonical organization control input missing: {rel}")
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(source_path.read_bytes())
+        initialized.append(rel.as_posix())
+
+    return {
+        "state": "CONTROL_INPUTS_READY",
+        "imported_task_files": imported,
+        "preserved_runtime_task_files": preserved,
+        "initialized_control_files": initialized,
+        "runtime_task_state_overwritten": False,
+        "network_source_fetch_performed": False,
+        "authority_effect": "NONE_LOCAL_MATERIALIZATION_ONLY",
+    }
+
 def consume(
     source_root: Path,
     runtime_root: Path,
@@ -116,6 +159,7 @@ def consume(
     request = load_json(request_path)
     validate_request(request)
     request_hash = stable_hash(request)
+    control_inputs = materialize_org_control_inputs(source, runtime)
     allocator = runtime / ALLOCATOR_REL
     if not allocator.is_file():
         raise RuntimeError("canonical organization allocator not materialized")
@@ -142,6 +186,7 @@ def consume(
         "mode": MODE,
         "runtime_execution_attempted": True,
         "execution_returncode": completed.returncode,
+        "control_inputs": control_inputs,
         "allocator_result": result,
         "allocator_state": allocator_state,
         "selected_task_id": selected,
