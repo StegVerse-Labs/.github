@@ -109,12 +109,11 @@
     ]
   },
   "block": {
-    "block_reason": "The worker requires a complete hash-valid local ERL independent-review package.",
-    "dependency": "bundled hash-bound review package or local Executive_Rhetoric_Ledger source tree",
-    "solution_task_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#104",
+    "block_reason": "Authentic fenced resident independent-review execution receipt has not yet been observed.",
+    "dependency": "resident sovereign worker execution",
+    "solution_task_ref": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
     "solution_constraints": [
-      "bundled package manifest hashes must verify before review",
-      "local source only",
+      "use bundled hash-bound review package or independently materialized canonical ERL source",
       "no network repository checkout",
       "no GitHub token runtime authority",
       "no non-TV/TVC secret or token",
@@ -124,8 +123,9 @@
     "observer": "single sovereign StegVerse heartbeat",
     "recheck_trigger": "each admitted heartbeat",
     "next_check": null,
-    "escalation_condition": "review requires credential, provider operation, repository checkout, or research-promotion authority",
-    "block_expires_at": null
+    "escalation_condition": "resident execution cannot produce a hash-valid bounded review recommendation receipt",
+    "block_expires_at": null,
+    "machine_observable_release_condition": "receipts/erl-ai-economic-transparency-review/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json exists and passes receipt validation"
   },
   "admissible_existence": {
     "capability_id": "stegverse:capability:erl-ai-economic-transparency-independent-review:v1",
