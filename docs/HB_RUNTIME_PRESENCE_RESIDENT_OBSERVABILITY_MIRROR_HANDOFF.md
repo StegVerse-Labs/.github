@@ -229,3 +229,30 @@ This cleanup preserves the directive's one-shared-runtime rule and introduces no
 My KV consumer integration subsequently extended the existing canonical Personal Profile DEVICE_KV extension to admit `PERSONAL_FORM_PROFILE`; it did not create a second DEVICE_KV runtime. The connected KnowledgeVault now contains the exact Personal Form Profile template, and Site source retains non-personal write/readback evidence in the registered Node receipt chain.
 
 Runtime remains unobserved for the My KV consumer until the current iPhone produces the direct profile write/read receipts. SKAP signing-profile custody remains a separate TV/TVC-gated predicate.
+
+
+## DE-006 authentic iOS device-local execution evidence — 2026-09-02
+
+The DE-006 consumer now records a previously completed authentic StegOS physical runtime
+fact from `StegVerse-Labs/StegOS#15`:
+
+- executor: `StegOS/service-worker`;
+- authority scope: `DEVICE_LOCAL_INFERENCE_ONLY`;
+- terminal: `COMPLETED`;
+- reconstruction: `PASS`;
+- `same_execution=true`;
+- measured usage: 72 total tokens / 2 ms;
+- TVC route task: `TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002`;
+- credential requirement: `NONE`;
+- no external non-StegVerse machine used;
+- admitted-inference receipt SHA-256:
+  `f9ddf6ba40ceb83c6217cc6098b639abc056ab48665d34083deec0ec17228364`.
+
+This proves authentic StegVerse iOS device-local runtime execution exists. It does not
+prove the Ecosystem Chat parent execution because the receipt explicitly has
+`global_workercoordinator_authority=false`.
+
+Accordingly, the remaining blocker is not generic runtime absence and not a second
+user-operated machine. It is exact parent-chain admission or re-execution of a
+DE-006-bound request using the already-existing device-local runtime evidence path,
+followed by the canonical Master Records / Site / downstream projection chain.
