@@ -46,22 +46,34 @@ def load_preflight(stegindex_root: Path, query: str, contribution_class: str | N
     if result.get("authority_effect") != EXPECTED_AUTHORITY_EFFECT:
         raise SystemExit("StegIndex authority invariant violation")
 
-    if result.get("machine_continuation_required"):
+    indexed_truth_usable = result.get("indexed_truth_usable", True)
+    if not indexed_truth_usable:
+        decision = "EXACT_BLOCKER_ONLY"
+        exact_dependency = "indexed_truth_reconciled"
+    elif result.get("machine_continuation_required"):
         decision = "CONTINUE_MACHINE_EXECUTION"
+        exact_dependency = None
     elif result.get("existing_capability_found"):
         decision = "REUSE_OR_EXTEND_EXISTING"
+        exact_dependency = None
     else:
         decision = "NO_EXISTING_CAPABILITY_MATCH"
+        exact_dependency = None
 
     return {
         "adapter_state": "RESOLVED",
         "decision": decision,
         "query": query,
+        "indexed_truth_usable": bool(indexed_truth_usable),
+        "truth_reconciliation": result.get("truth_reconciliation"),
         "duplicate_implementation_guard": result.get("duplicate_implementation_guard"),
         "purpose_contributions": result.get("purpose_contributions", []),
         "first_actionable_predicate": result.get("first_actionable_predicate"),
-        "machine_continuation_required": bool(result.get("machine_continuation_required")),
-        "generic_blocker_permitted": bool(result.get("generic_blocker_permitted")),
+        "machine_continuation_required": bool(
+            indexed_truth_usable and result.get("machine_continuation_required")
+        ),
+        "generic_blocker_permitted": False if not indexed_truth_usable else bool(result.get("generic_blocker_permitted")),
+        "exact_dependency": exact_dependency,
         "authority_effect": "NONE",
         "stegindex_authority_effect": result.get("authority_effect"),
     }

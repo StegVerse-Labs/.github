@@ -75,3 +75,17 @@ StegIndex resolver:
 - merge: `4d47439956341ea535e3e937d97c492b193daa51`
 
 Source-bound preflight consumption is now present on `main`. This is not evidence that every existing worker invokes the adapter, and it is not runtime activation evidence.
+
+## Truth reconciliation consumer binding — 2026-09-02
+
+StegIndex truth reconciliation source:
+- StegVerse-Labs/StegIndex PR #3
+- merge: `637b33c99adf08505b485c504512b4b1ba708141`
+
+The organization adapter now treats `indexed_truth_usable=false` as `EXACT_BLOCKER_ONLY` with exact dependency `indexed_truth_reconciled`.
+
+It MUST NOT return `REUSE_OR_EXTEND_EXISTING` or `CONTINUE_MACHINE_EXECUTION` from stale/contradictory indexed truth.
+
+This preserves two independent fail-closed rules:
+1. usable existing truth prevents duplicate implementation;
+2. unusable indexed truth requires reconciliation before either reuse or new work.
