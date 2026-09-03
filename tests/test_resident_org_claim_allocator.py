@@ -266,3 +266,12 @@ def test_resident_dispatch_and_materialization_wiring_present():
         assert "consume_org_claim_allocator_request.py" in source
         assert "allocate_claims.py" in source
         assert "org-claim-allocator-001.json" in source
+
+
+def test_task7_and_task8_site_claims_are_nonoverlapping():
+    task7 = json.loads((ROOT / "tasks/TASK-2026-0007.json").read_text(encoding="utf-8"))
+    task8 = json.loads((ROOT / "tasks/TASK-2026-0008.json").read_text(encoding="utf-8"))
+    request7 = task7["requirements"]["mandatory"][0]
+    request8 = task8["requirements"]["mandatory"][0]
+    assert allocator.conflicts(request8, request7) is False
+    assert allocator.dependency_surfaces(request7).isdisjoint(allocator.dependency_surfaces(request8))
