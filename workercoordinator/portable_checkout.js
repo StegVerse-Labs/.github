@@ -136,6 +136,7 @@
             predecessor_registry_git_blob_sha: pkg.predecessor_registry_git_blob_sha,
             generation: nextGeneration,
             checkout_tail_sha256: receiptBody.receipt_sha256,
+            last_checkout_receipt: receiptBody,
             last_claim_id: claimId,
             last_task_id: pkg.task.task_id,
             parallel_workercoordinator_claim_issuance_allowed: false,

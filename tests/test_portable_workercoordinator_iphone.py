@@ -62,3 +62,9 @@ def test_handoff_prohibits_parallel_authority_lineage():
     assert "governed transfer" in text.lower()
     assert "second user-operated device required: false" in text
     assert "always-on external host required: false" in text
+
+
+def test_portable_state_retains_full_checkout_receipt_atomically():
+    text=MODULE.read_text(encoding="utf-8")
+    assert "last_checkout_receipt: receiptBody" in text
+    assert "checkout_tail_sha256: receiptBody.receipt_sha256" in text
