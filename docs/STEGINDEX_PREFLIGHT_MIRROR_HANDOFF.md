@@ -255,3 +255,8 @@ This lane preserves the direct locator through:
 The carrier does not receive repository locators. Only the worker/runtime path receives the direct StegIndex source root. Existing credential stripping, hosted-environment rejection, TV/TVC credential authority, no-network-source-fetch rules, and no-second-machine semantics are unchanged.
 
 This remains source propagation only. It does not satisfy either authentic StegIndex #4 resident evidence predicate.
+
+### #926 current-main reconciliation
+
+PR #926 was replayed onto current main `365c983d3c276f204a5d9ef3c3df4dac9c00d0da` after unrelated concurrent organization work advanced main beyond its original base. The replay preserved all intervening main changes and retained only the bounded StegIndex locator propagation/test delta. This reconciliation grants no runtime or authority claim.
+
