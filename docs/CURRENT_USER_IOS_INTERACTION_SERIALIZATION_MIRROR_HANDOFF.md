@@ -123,3 +123,36 @@ SV001 rerun required: false
 ```
 
 This does **not** admit the mutation. The queue remains fail-closed because the present device journal head has not been freshly replayed/exported after concurrent-session activity. The only permitted next device interactions remain read-only replay/export/inspection. A state-mutating custody instruction is prohibited until the fresh evidence is evaluated and the exact action becomes the sole `ADMITTED_FOR_USER_EXECUTION` entry.
+
+
+## Fresh-device reconciliation exposed duplicate SV001 terminal lineage — 2026-09-03
+
+A fresh CURRENT_USER_IPHONE evidence export reports:
+
+```text
+journal replay = PASS
+entries = 69
+tail = 897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69
+```
+
+The fresh head is not admissible for custody because it contains two distinct completed
+SV001 terminal lineages:
+
+```text
+G23 / fence 23 -> SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED
+cycle receipt = sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35
+TVC consumption = observed
+
+G24 / fence 24 -> SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED
+cycle receipt = sha256:6bcc1976793657ea849a3678fa324c69134d2b59481e0bc9994c6baa6c4aff79
+TVC consumption = observed
+journal terminal/reconstruction/consumption = sequences 67/68/69
+```
+
+Journal integrity is not the failure: replay is PASS. The failure is downstream identity
+selection. Master Records must not silently treat either earliest or latest terminal
+execution as canonical. The queue therefore moves to
+`HOLD_DUPLICATE_TERMINAL_LINEAGE_RECONCILIATION`.
+
+No further SV001 execution is allowed. No Master Records custody action is admitted.
+Canonical SV001 lineage disposition must occur first.
