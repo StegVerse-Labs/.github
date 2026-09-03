@@ -9,7 +9,7 @@
   "shared_owner_issue": "StegVerse-Labs/.github#814",
   "shared_contract": "management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json",
   "canonical_projector": "scripts/project_hb_runtime_presence.py",
-  "observed_repository_state_at": "2026-09-03T01:48:20Z",
+  "observed_repository_state_at": "2026-09-03T15:49:00Z",
   "first_unresolved_shared_runtime_predicate": "resident_process_alive_supervised",
   "predicate_map": {
     "resident_process_alive_supervised": {
@@ -71,5 +71,21 @@
   "credential_authority": "TV/TVC",
   "credential_requirement": "NONE",
   "github_token_runtime_authority": "NONE",
-  "authority_effect": "NONE_OBSERVATION_ONLY"
+  "authority_effect": "NONE_OBSERVATION_ONLY",
+  "pre_admission_evidence": {
+    "state": "PARENT_EVIDENCE_CANDIDATE_VERIFIED",
+    "source": "exact exported CURRENT_USER_IPHONE StegOS evidence bundle",
+    "de006_execution_binding_verified": true,
+    "task_id": "STEGOS-LOCAL-INFERENCE-bde14fe691cc86924cee9a44",
+    "claim_id": "STEGOS-STEGOS-LOCAL-INFERENCE-bde14fe691cc86924cee9a44-G11",
+    "fencing_token": 11,
+    "reconstruction_state": "PASS",
+    "same_execution": true,
+    "replay_relation": "VALID_APPEND_ONLY_DESCENDANT",
+    "journal_tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69",
+    "bound_admitted_inference_receipt_sha256": "26728181de31c9b3d402c2cb30414a83aedfbfa175cc8fe7a1e2af68f5874fe4",
+    "parent_execution_proven": false,
+    "parent_fence_promoted": false,
+    "authority_effect": "NONE_OBSERVATION_ADMISSION_CANDIDATE_ONLY"
+  }
 }
