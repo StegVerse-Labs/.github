@@ -79,5 +79,32 @@ class SessionBuildPreflightTests(unittest.TestCase):
         self.assertEqual(result["disposition"], "NEW_WORK_MAY_BE_CONSIDERED")
         self.assertTrue(result["task_creation_permitted"])
 
+    def test_discovered_candidate_prevents_new_task_creation(self):
+        with self.fake_root(
+            "NO_EXISTING_CAPABILITY_MATCH",
+            duplicate_implementation_guard="REVIEW_DISCOVERED_CANDIDATE_BEFORE_NEW_WORK",
+            discovered_candidate_found=True,
+            first_actionable_predicate={"predicate_id": "candidate_reconciled", "machine_executable_now": False},
+        ) as tmp:
+            proc = self.run_entry(tmp)
+        self.assertEqual(proc.returncode, 2, proc.stderr)
+        result = json.loads(proc.stdout)
+        self.assertEqual(result["disposition"], "STOP_AT_EXACT_DEPENDENCY")
+        self.assertFalse(result["task_creation_permitted"])
+        self.assertEqual(result["preflight"]["exact_dependency"], "candidate_reconciled")
+
+    def test_incomplete_source_discovery_prevents_new_task_creation(self):
+        with self.fake_root(
+            "NO_EXISTING_CAPABILITY_MATCH",
+            duplicate_implementation_guard="COMPLETE_SOURCE_DISCOVERY_BEFORE_NEW_WORK",
+            first_actionable_predicate={"predicate_id": "source_discovery_complete", "machine_executable_now": False},
+        ) as tmp:
+            proc = self.run_entry(tmp)
+        self.assertEqual(proc.returncode, 2, proc.stderr)
+        result = json.loads(proc.stdout)
+        self.assertEqual(result["disposition"], "STOP_AT_EXACT_DEPENDENCY")
+        self.assertFalse(result["task_creation_permitted"])
+        self.assertEqual(result["preflight"]["exact_dependency"], "source_discovery_complete")
+
 if __name__ == "__main__":
     unittest.main()
