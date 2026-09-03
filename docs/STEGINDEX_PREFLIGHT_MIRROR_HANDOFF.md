@@ -250,7 +250,8 @@ This lane preserves the direct locator through:
 - `scripts/install_sovereign_heartbeat_service.py`;
 - `scripts/install_sovereign_heartbeat_service_base.py`;
 - `scripts/refresh_and_dispatch_resident_requests.py`;
-- `scripts/refresh_and_execute_resident_task.py`.
+- `scripts/refresh_and_execute_resident_task.py`;
+- `scripts/install_sovereign_worker_source_refresh_service.py` for filesystem-triggered refresh/dispatch continuity.
 
 The carrier does not receive repository locators. Only the worker/runtime path receives the direct StegIndex source root. Existing credential stripping, hosted-environment rejection, TV/TVC credential authority, no-network-source-fetch rules, and no-second-machine semantics are unchanged.
 
