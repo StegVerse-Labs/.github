@@ -35,6 +35,8 @@ def main():
         seen.add(family)
         if state not in ALLOWED:
             fail(f"{family}: invalid state {state}")
+        if state == "FOLLOWUP_TASK_REQUIRED":
+            fail(f"{family}: vague FOLLOWUP_TASK_REQUIRED is prohibited; create a durable owner")
         if not row.get("owner"):
             fail(f"{family}: owner missing")
         if state in {"ADOPTED","ADOPTED_REFERENCE_IMPLEMENTATION","ALREADY_CONFORMANT"}:
@@ -128,6 +130,11 @@ def main():
             fail(f"publication_release_observers missing evidence fragment: {fragment}")
     if observers.get("authority_effect") != "NONE":
         fail("publication_release_observers conformance must grant no authority")
+
+    for row in families:
+        if row.get("state") == "FOLLOWUP_TASK_CREATED":
+            if not row.get("owner") or not row.get("evidence_required"):
+                fail(f"{row.get('family')}: follow-up task lacks durable owner/evidence requirements")
 
     print(f"WORKER_BLOCKER_FALLBACK_ADOPTION_PASS families={len(families)}")
 
