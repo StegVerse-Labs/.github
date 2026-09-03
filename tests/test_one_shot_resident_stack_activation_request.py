@@ -221,3 +221,46 @@ def test_repo_root_map_can_resolve_stegindex():
         resolved,missing=M.resolve_roots(env)
         assert missing==[]
         assert resolved["stegindex"]==roots["stegindex"].resolve()
+
+
+def test_completed_receipt_reobserves_stegindex_root_without_reexecution():
+    with tempfile.TemporaryDirectory() as td:
+        base=Path(td); source=base/"source"; runtime=base/"runtime"; source.mkdir(); runtime.mkdir()
+        req=write_request(runtime); roots=make_roots(base); env=env_for(roots)
+        receipt=runtime/M.RECEIPT_REL; receipt.parent.mkdir(parents=True,exist_ok=True)
+        receipt.write_text(json.dumps({
+          "schema":"stegverse.resident-execution-request-consumption/v1",
+          "state":"COMPLETED",
+          "request_id":"R1",
+          "request_sha256":M.stable(req),
+          "task_id":M.TASK_ID,
+          "activation_complete":True
+        }))
+        calls=[]
+        def runner(command,**kwargs):
+            calls.append(command)
+            raise AssertionError("completed activation must not re-execute")
+        out=M.consume(source,runtime,runner,env)
+        assert out["state"]=="ALREADY_CONSUMED"
+        assert out["runtime_execution_attempted"] is False
+        assert out["source_root_resolution_observed"] is True
+        assert out["stegindex_source_root_resolved"] is True
+        assert "stegindex" in out["resolved_source_roots"]
+        assert out["missing_source_roots"]==[]
+        assert calls==[]
+        persisted=json.loads(receipt.read_text())
+        assert persisted["stegindex_source_root_resolved"] is True
+
+def test_attempt_receipt_records_secret_free_source_root_resolution():
+    with tempfile.TemporaryDirectory() as td:
+        base=Path(td); source=base/"source"; runtime=base/"runtime"; source.mkdir(); runtime.mkdir(); write_request(runtime)
+        roots=make_roots(base); env=env_for(roots)
+        script=runtime/"scripts/activate_resident_stack.py"; script.parent.mkdir(parents=True,exist_ok=True); script.write_text("# activate\n")
+        def runner(command,**kwargs):
+            return SimpleNamespace(returncode=1,stdout=json.dumps({"state":"INCOMPLETE"})+"\n",stderr="")
+        out=M.consume(source,runtime,runner,env)
+        assert out["state"]=="ATTEMPT_RECORDED"
+        assert out["source_root_resolution_observed"] is True
+        assert out["stegindex_source_root_resolved"] is True
+        assert "stegindex" in out["resolved_source_roots"]
+        assert all("/" not in key for key in out["resolved_source_roots"])
