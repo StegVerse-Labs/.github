@@ -78,6 +78,23 @@ def main():
     if propagation.get("authority_effect") != "NONE":
         fail("site_publisher_propagation conformance must grant no authority")
 
+    authority = next((r for r in families if r.get("family") == "tv_tvc_authority_bound_invocation"), None)
+    if authority is None:
+        fail("tv_tvc_authority_bound_invocation family missing")
+    if authority.get("state") != "ALREADY_CONFORMANT":
+        fail("tv_tvc_authority_bound_invocation must remain ALREADY_CONFORMANT unless evidence is superseded")
+    a_evidence = "\n".join(authority.get("evidence") or [])
+    for fragment in [
+        "StegVerse-Labs/TV:docs/TV_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/TVC:TVC_MIRROR_HANDOFF.md",
+        "BLOCKED_CREDENTIAL_NOT_OBSERVED",
+        "another_physical_machine_required=false",
+    ]:
+        if fragment not in a_evidence:
+            fail(f"tv_tvc_authority_bound_invocation missing evidence fragment: {fragment}")
+    if authority.get("authority_effect") != "NONE":
+        fail("tv_tvc_authority_bound_invocation conformance must grant no authority")
+
     print(f"WORKER_BLOCKER_FALLBACK_ADOPTION_PASS families={len(families)}")
 
 if __name__ == "__main__":

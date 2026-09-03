@@ -67,9 +67,17 @@
     },
     {
       "family": "tv_tvc_authority_bound_invocation",
-      "state": "FOLLOWUP_TASK_REQUIRED",
-      "owner": "StegVerse-Labs/.github#242",
-      "next_action": "verify authority-blocked surface persistence does not halt unrelated admitted work and preserves TV/TVC_ONLY authority"
+      "state": "ALREADY_CONFORMANT",
+      "owner": "StegVerse-Labs/TV + StegVerse-Labs/TVC",
+      "next_action": "preserve TV/TVC-only authority and continue unrelated admitted work when one credential/authorization surface is blocked",
+      "evidence": [
+        "StegVerse-Labs/TV:docs/TV_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/TVC:TVC_MIRROR_HANDOFF.md",
+        "TVC credential-model freeze explicitly prevents semantic expansion but does not halt unrelated validated execution",
+        "R3 resident progression preserves BLOCKED_CREDENTIAL_NOT_OBSERVED / BLOCKED_AUTHORIZATION_INPUT_REQUIRED without FAILED promotion",
+        "another_physical_machine_required=false for current iPhone credential surface evidence"
+      ],
+      "authority_effect": "NONE"
     }
   ],
   "completion_rule": "Every applicable worker family is ADOPTED, ALREADY_CONFORMANT, NOT_APPLICABLE, or has a durable follow-up owner with hosted proof requirements."
