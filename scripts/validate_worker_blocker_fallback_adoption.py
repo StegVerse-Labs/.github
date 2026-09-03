@@ -136,6 +136,14 @@ def main():
             if not row.get("owner") or not row.get("evidence_required"):
                 fail(f"{row.get('family')}: follow-up task lacks durable owner/evidence requirements")
 
+    if doc.get("state") == "ADOPTION_COMPLETE_EVIDENCE_BACKED":
+        nonterminal = [
+            row.get("family") for row in families
+            if row.get("state") not in {"ADOPTED","ALREADY_CONFORMANT","ADOPTED_REFERENCE_IMPLEMENTATION","NOT_APPLICABLE"}
+        ]
+        if nonterminal:
+            fail(f"complete adoption contains nonterminal families: {nonterminal}")
+
     for family in ("heartbeat_runtime", "deployment_runtime_activation"):
         runtime = next((r for r in families if r.get("family") == family), None)
         if runtime is None:
@@ -154,6 +162,25 @@ def main():
                 fail(f"{family}: missing proof fragment {fragment}")
         if runtime.get("authority_effect") != "NONE":
             fail(f"{family}: adoption must grant no authority")
+
+    org_completion = next((r for r in families if r.get("family") == "organization_repository_completion"), None)
+    if org_completion is None:
+        fail("organization_repository_completion family missing")
+    if org_completion.get("state") != "ADOPTED":
+        fail("organization_repository_completion must remain ADOPTED unless proof is superseded")
+    oc_evidence = "\n".join(org_completion.get("evidence") or [])
+    for fragment in [
+        "Admissible-Existence/.github#25",
+        "0d6f1ff24f511005815abc14af3dd12fe3030af9",
+        "33718570347 SUCCESS",
+        "100532820290 SUCCESS",
+        "test_principle_worker_blocker_fallback.py",
+        "archive_permitted=false",
+    ]:
+        if fragment not in oc_evidence:
+            fail(f"organization_repository_completion missing proof fragment: {fragment}")
+    if org_completion.get("authority_effect") != "NONE":
+        fail("organization_repository_completion adoption must grant no authority")
 
     print(f"WORKER_BLOCKER_FALLBACK_ADOPTION_PASS families={len(families)}")
 

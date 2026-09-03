@@ -252,3 +252,22 @@ Evidence:
 The proof exercises the existing `WorkerCoordinator.cycle()` multi-item path and shows a persisted BLOCKED deployment-runtime task does not prevent a later ACTIVE non-colliding task from being processed. A targeted-cycle assertion preserves the intentional one-task suppression semantics.
 
 No production runtime code was modified to establish this proof and no authority was widened.
+
+## Ecosystem adoption completion — 2026-09-03
+
+All eight worker-family classes in `control/worker-blocker-fallback-adoption.json` are now either `ADOPTED` or `ALREADY_CONFORMANT` from explicit source/executed evidence.
+
+Final family proof:
+- Admissible-Existence/.github PR #25 -> `0d6f1ff24f511005815abc14af3dd12fe3030af9`
+- validation run `33718570347` SUCCESS
+- validation job `100532820290` SUCCESS
+- `Prove persist blocker and continue` step SUCCESS
+- `Prove workflow is validation only` step SUCCESS
+- test: `tests/test_principle_worker_blocker_fallback.py`
+
+The proof used the current organization controller and established:
+- repository A becomes a durable `REPOSITORY_ACCESS_FAILED` blocker with owner/release condition/next action;
+- repository B is still processed in the same sweep;
+- aggregate state remains fail-closed with `archive_permitted=false` while A remains unresolved.
+
+This completes the blocker-fallback **adoption objective** only. It does not complete the broader Admissible-Existence principle-completeness program, resolve its repository-level blockers, perform TV/TVC governed apply, or establish any runtime/product activation.
