@@ -84,6 +84,7 @@ def activate(
     rtg_root: Path,
     gtg_root: Path,
     ae_root: Path,
+    stegindex_root: Path,
     health_url: str,
     receipt_path: Path,
     runner=subprocess.run,
@@ -118,6 +119,7 @@ def activate(
                 "--rtg-root", str(rtg_root.expanduser().resolve()),
                 "--gtg-root", str(gtg_root.expanduser().resolve()),
                 "--ae-root", str(ae_root.expanduser().resolve()),
+                "--stegindex-root", str(stegindex_root.expanduser().resolve()),
             ],
             cwd=source,
             check=False,
@@ -182,6 +184,7 @@ def activate(
             "tvc_source_bundled": True,
             "master_records_source_bundled": True,
             "micro_node_source_bundled": True,
+            "stegindex_source_bundled": True,
             "formal_sources_bundled": {
                 "TT": True,
                 "RTG": True,
@@ -230,6 +233,7 @@ def main() -> int:
     parser.add_argument("--rtg-root", type=Path)
     parser.add_argument("--gtg-root", type=Path)
     parser.add_argument("--ae-root", type=Path)
+    parser.add_argument("--stegindex-root", type=Path)
     parser.add_argument("--receipt-path", type=Path, default=DEFAULT_RECEIPT)
     args = parser.parse_args()
     llm = args.llm_adapter_root
@@ -251,14 +255,26 @@ def main() -> int:
     rtg = args.rtg_root or (Path(os.environ["STEGVERSE_RTG_ROOT"]) if os.environ.get("STEGVERSE_RTG_ROOT") else None)
     gtg = args.gtg_root or (Path(os.environ["STEGVERSE_GTG_ROOT"]) if os.environ.get("STEGVERSE_GTG_ROOT") else None)
     ae = args.ae_root or (Path(os.environ["STEGVERSE_AE_ROOT"]) if os.environ.get("STEGVERSE_AE_ROOT") else None)
+    stegindex = args.stegindex_root or (Path(os.environ["STEGVERSE_STEGINDEX_SOURCE_ROOT"]) if os.environ.get("STEGVERSE_STEGINDEX_SOURCE_ROOT") else None)
+    if stegindex is None:
+        roots_raw = str(os.environ.get("STEGVERSE_REPO_ROOTS_JSON") or "").strip()
+        if roots_raw:
+            try:
+                roots = json.loads(roots_raw)
+            except Exception:
+                roots = {}
+            if isinstance(roots, dict):
+                candidate = roots.get("StegVerse-Labs/StegIndex") or roots.get("StegIndex")
+                if isinstance(candidate, str) and candidate.strip():
+                    stegindex = Path(candidate)
     if (
         stegos is None or kv_source is None or healer is None or tv is None or tvc is None
         or master_records is None or micro_node is None
-        or tt is None or rtg is None or gtg is None or ae is None
+        or tt is None or rtg is None or gtg is None or ae is None or stegindex is None
     ):
         raise SystemExit(
             "StegOS, KV source, Healer, TV, TVC, Master Records, micro-node-runtime, "
-            "and pinned TT/RTG/GTG/AE local roots are required for the complete resident stack"
+            "pinned TT/RTG/GTG/AE, and StegIndex local roots are required for the complete resident stack"
         )
     receipt = activate(
         args.source_root,
@@ -274,6 +290,7 @@ def main() -> int:
         rtg_root=rtg,
         gtg_root=gtg,
         ae_root=ae,
+        stegindex_root=stegindex,
         health_url=args.health_url,
         receipt_path=args.receipt_path,
     )

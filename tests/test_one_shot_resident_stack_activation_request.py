@@ -22,6 +22,7 @@ def make_roots(base:Path):
       "rtg":("RTG",None),
       "gtg":("GTG",None),
       "ae":("AE",None),
+      "stegindex":("StegIndex","scripts/preflight.py"),
     }
     roots={}
     for name,(folder,rel) in specs.items():
@@ -47,6 +48,7 @@ def env_for(roots):
       "STEGVERSE_RTG_ROOT":str(roots["rtg"]),
       "STEGVERSE_GTG_ROOT":str(roots["gtg"]),
       "STEGVERSE_AE_ROOT":str(roots["ae"]),
+      "STEGVERSE_STEGINDEX_SOURCE_ROOT":str(roots["stegindex"]),
       "PATH":"/usr/bin",
     }
 
@@ -88,7 +90,7 @@ def test_complete_activation_is_exactly_once():
         assert second["state"]=="ALREADY_CONSUMED"
         assert second["runtime_execution_attempted"] is False
         assert len(calls)==1
-        for flag in ("--master-records-root","--micro-node-root","--tt-root","--rtg-root","--gtg-root","--ae-root"):
+        for flag in ("--master-records-root","--micro-node-root","--tt-root","--rtg-root","--gtg-root","--ae-root","--stegindex-root"):
             assert flag in calls[0]
 
 def test_incomplete_activation_remains_retryable():
@@ -202,3 +204,20 @@ def test_completed_activation_immediately_invokes_sv001_progression_when_materia
         assert out["activation_complete"] is True
         assert out["immediate_sv001_progression"]["attempted"] is True
         assert out["immediate_sv001_progression"]["result"]["state"]=="SV001_AUTONOMY_EXECUTION_COMPLETED"
+
+def test_missing_stegindex_source_root_is_retryable_without_execution():
+    with tempfile.TemporaryDirectory() as td:
+        base=Path(td); source=base/"source"; runtime=base/"runtime"; source.mkdir(); runtime.mkdir(); write_request(runtime)
+        roots=make_roots(base); env=env_for(roots); env.pop("STEGVERSE_STEGINDEX_SOURCE_ROOT")
+        out=M.consume(source,runtime,env=env)
+        assert out["state"]=="SOURCE_ROOTS_PENDING"
+        assert out["runtime_execution_attempted"] is False
+        assert out["missing_source_roots"]==["stegindex"]
+
+def test_repo_root_map_can_resolve_stegindex():
+    with tempfile.TemporaryDirectory() as td:
+        base=Path(td); roots=make_roots(base); env=env_for(roots); env.pop("STEGVERSE_STEGINDEX_SOURCE_ROOT")
+        env["STEGVERSE_REPO_ROOTS_JSON"]=json.dumps({"StegVerse-Labs/StegIndex":str(roots["stegindex"])})
+        resolved,missing=M.resolve_roots(env)
+        assert missing==[]
+        assert resolved["stegindex"]==roots["stegindex"].resolve()

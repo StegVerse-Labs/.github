@@ -57,14 +57,32 @@ class StegIndexPreflightTests(unittest.TestCase):
         self.assertFalse(result["network_fetch_performed"])
         self.assertFalse(result["github_token_required"])
 
+    def test_repo_roots_map_resolves_canonical_stegindex(self):
+        root = self.make_index()
+        old_direct = os.environ.pop("STEGVERSE_STEGINDEX_SOURCE_ROOT", None)
+        old_map = os.environ.get("STEGVERSE_REPO_ROOTS_JSON")
+        try:
+            os.environ["STEGVERSE_REPO_ROOTS_JSON"] = json.dumps({"StegVerse-Labs/StegIndex": str(root)})
+            self.assertEqual(module._index_root(), root.resolve())
+        finally:
+            if old_direct is not None:
+                os.environ["STEGVERSE_STEGINDEX_SOURCE_ROOT"] = old_direct
+            if old_map is None:
+                os.environ.pop("STEGVERSE_REPO_ROOTS_JSON", None)
+            else:
+                os.environ["STEGVERSE_REPO_ROOTS_JSON"] = old_map
+
     def test_missing_index_is_not_reclassified_as_missing_implementation(self):
-        old = os.environ.pop("STEGVERSE_STEGINDEX_SOURCE_ROOT", None)
+        old_direct = os.environ.pop("STEGVERSE_STEGINDEX_SOURCE_ROOT", None)
+        old_map = os.environ.pop("STEGVERSE_REPO_ROOTS_JSON", None)
         try:
             with self.assertRaises(module.PreflightError):
                 module._index_root()
         finally:
-            if old is not None:
-                os.environ["STEGVERSE_STEGINDEX_SOURCE_ROOT"] = old
+            if old_direct is not None:
+                os.environ["STEGVERSE_STEGINDEX_SOURCE_ROOT"] = old_direct
+            if old_map is not None:
+                os.environ["STEGVERSE_REPO_ROOTS_JSON"] = old_map
 
 
 if __name__ == "__main__":

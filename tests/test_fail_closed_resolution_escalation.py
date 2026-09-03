@@ -204,7 +204,17 @@ class RuntimeResolutionTaskTests(unittest.TestCase):
             self.assertEqual(len(children), 1)
             self.assertEqual(children[0]["state"], "HANDOFF_READY")
             self.assertTrue(children[0]["task_id"].startswith("RESOLVE-PARENT-1-"))
-            self.assertTrue(any(event["event_type"] == "resolution_task_admitted" for event in events))
+            preflight_refs = [
+                ref for ref in children[0]["evidence_refs"]
+                if isinstance(ref, str) and ref.startswith("receipts/stegindex-preflight/")
+            ]
+            self.assertEqual(len(preflight_refs), 1)
+            preflight_receipt = json.loads((root / preflight_refs[0]).read_text(encoding="utf-8"))
+            self.assertEqual(preflight_receipt["preflight"]["state"], "PREFLIGHT_UNAVAILABLE")
+            self.assertFalse(preflight_receipt["preflight"]["source_unavailable_is_implementation_missing"])
+            admitted = [event for event in events if event["event_type"] == "resolution_task_admitted"]
+            self.assertEqual(len(admitted), 1)
+            self.assertEqual(admitted[0]["stegindex_preflight_ref"], preflight_refs[0])
 
 
 if __name__ == "__main__":

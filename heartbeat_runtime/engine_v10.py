@@ -5,6 +5,9 @@ from typing import Any
 import base64
 import hashlib
 import json
+import os
+import subprocess
+import sys
 
 from .engine_v9 import HeartbeatRuntime as HeartbeatRuntimeV9, WorkerResponse
 from .blocker_policy import RESOLUTION_EVIDENCE_PREFIX
@@ -33,6 +36,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV9):
         "ECOSYSTEM_GOVERNANCE": ["ecosystem_resolution", "governance_validation"],
     }
     POLICY_REF = "control/blocker-resolution-policy.json"
+    STEGINDEX_PREFLIGHT_SCRIPT = "scripts/run_stegindex_preflight.py"
 
     def _decode_resolution_ref(self, ref: str) -> dict[str, Any] | None:
         if not isinstance(ref, str) or not ref.startswith(RESOLUTION_EVIDENCE_PREFIX):
@@ -141,6 +145,111 @@ class HeartbeatRuntime(HeartbeatRuntimeV9):
         self._atomic_write(self.root / ref, record)
         return ref
 
+    def _run_stegindex_preflight(
+        self,
+        parent: dict[str, Any],
+        contract: dict[str, Any],
+        epoch: int,
+    ) -> tuple[str, dict[str, Any]]:
+        script = self.root / self.STEGINDEX_PREFLIGHT_SCRIPT
+        query = str(
+            contract.get("problem_statement")
+            or contract.get("next_solution_action")
+            or parent.get("goal_id")
+            or parent.get("task_id")
+            or "constraint resolution"
+        ).strip()
+        env = {"PATH": os.environ.get("PATH", "")}
+        for name in ("STEGVERSE_STEGINDEX_SOURCE_ROOT", "STEGVERSE_REPO_ROOTS_JSON"):
+            value = os.environ.get(name)
+            if value:
+                env[name] = value
+
+        if not script.is_file():
+            result: dict[str, Any] = {
+                "schema": "stegverse.stegindex-preflight-result/v1",
+                "query": query,
+                "state": "PREFLIGHT_UNAVAILABLE",
+                "problem_statement": "StegIndex preflight consumer is not materialized in the resident runtime source",
+                "capabilities": [],
+                "first_actionable_predicate": None,
+                "machine_continuation_required": False,
+                "generic_blocker_permitted": False,
+                "source_unavailable_is_implementation_missing": False,
+                "network_fetch_performed": False,
+                "github_token_required": False,
+                "authority_effect": "NONE_READ_RESOLVE_ONLY",
+            }
+        else:
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(script),
+                    "--query",
+                    query,
+                    "--intent",
+                    "DECLARE_BLOCKER",
+                ],
+                cwd=self.root,
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=30,
+                env=env,
+            )
+            try:
+                parsed = json.loads(completed.stdout)
+                result = parsed if isinstance(parsed, dict) else {}
+            except Exception:
+                result = {}
+            if not result:
+                result = {
+                    "schema": "stegverse.stegindex-preflight-result/v1",
+                    "query": query,
+                    "state": "PREFLIGHT_UNAVAILABLE",
+                    "problem_statement": f"StegIndex preflight consumer exited {completed.returncode} without valid JSON",
+                    "capabilities": [],
+                    "first_actionable_predicate": None,
+                    "machine_continuation_required": False,
+                    "generic_blocker_permitted": False,
+                    "source_unavailable_is_implementation_missing": False,
+                    "network_fetch_performed": False,
+                    "github_token_required": False,
+                    "authority_effect": "NONE_READ_RESOLVE_ONLY",
+                }
+
+        stable = {
+            "parent_task_id": parent.get("task_id"),
+            "heartbeat_epoch": epoch,
+            "query": query,
+            "state": result.get("state"),
+            "duplicate_implementation_guard": result.get("duplicate_implementation_guard"),
+            "first_actionable_predicate": result.get("first_actionable_predicate"),
+        }
+        digest = hashlib.sha256(
+            json.dumps(stable, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        ).hexdigest()[:16]
+        safe_parent = str(parent.get("task_id") or "unknown").replace("/", "_")
+        ref = f"receipts/stegindex-preflight/{safe_parent}-HB{epoch}-{digest}.json"
+        receipt = {
+            "schema": "stegverse.stegindex-resolution-admission-preflight/v1",
+            "parent_task_id": parent.get("task_id"),
+            "heartbeat_epoch": epoch,
+            "resolution_contract": {
+                "dependency_class": contract.get("dependency_class"),
+                "problem_statement": contract.get("problem_statement"),
+                "required_capabilities": contract.get("required_capabilities") or [],
+            },
+            "preflight": result,
+            "network_fetch_performed": False,
+            "credential_read_or_acquired": False,
+            "github_token_required": False,
+            "credential_authority": "TV/TVC",
+            "authority_effect": "NONE_READ_RESOLVE_ONLY",
+        }
+        self._atomic_write(self.root / ref, receipt)
+        return ref, result
+
     def _admit_resolution_task(
         self,
         registry: dict[str, Any],
@@ -151,6 +260,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV9):
         contract: dict[str, Any],
     ) -> str:
         parent_handoff = self._handoff(parent)
+        preflight_ref, preflight = self._run_stegindex_preflight(parent, contract, epoch)
         target_level = self._target_level(parent_handoff, contract)
         stable = {
             "parent_task_id": parent.get("task_id"),
@@ -179,7 +289,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV9):
         parent_authority = parent_handoff.get("authority", {})
         depth = int(parent_task.get("derivation_depth", 0)) + 1
         max_depth = max(depth + 1, int(parent_goal.get("max_successor_depth", 8)))
-        source_refs = [parent["handoff_ref"], resolution_ref, f"resolution-level:{target_level}"]
+        source_refs = [parent["handoff_ref"], resolution_ref, preflight_ref, f"resolution-level:{target_level}"]
         completion_evidence = contract.get("completion_evidence")
         if not isinstance(completion_evidence, list) or not completion_evidence:
             completion_evidence = [
@@ -287,7 +397,7 @@ class HeartbeatRuntime(HeartbeatRuntimeV9):
                 "GOAL_PRESERVING_RESOLUTION_REQUIRED",
                 f"RESOLUTION_LEVEL_{target_level}",
             ],
-            "evidence_refs": [parent["task_id"], resolution_ref, f"heartbeat-epoch:{epoch}"],
+            "evidence_refs": [parent["task_id"], resolution_ref, preflight_ref, f"heartbeat-epoch:{epoch}"],
         })
         self._release_worker(registry, parent)
         parent["state"] = "ACTIVATION_PENDING"
@@ -307,6 +417,10 @@ class HeartbeatRuntime(HeartbeatRuntimeV9):
             resolution_level=target_level,
             dependency_class=contract.get("dependency_class"),
             trigger_type=contract.get("trigger_type"),
+            stegindex_preflight_ref=preflight_ref,
+            stegindex_preflight_state=preflight.get("state") or "RESOLVED",
+            stegindex_duplicate_guard=preflight.get("duplicate_implementation_guard"),
+            stegindex_machine_continuation_required=bool(preflight.get("machine_continuation_required")),
             authority_effect=False,
         )
         return task_id

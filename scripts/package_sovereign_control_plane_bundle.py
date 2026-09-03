@@ -369,6 +369,7 @@ def build_bundle(
     rtg_root: Path | None = None,
     gtg_root: Path | None = None,
     ae_root: Path | None = None,
+    stegindex_root: Path | None = None,
 ) -> dict:
     root = root.resolve()
     output = output.resolve()
@@ -457,6 +458,22 @@ def build_bundle(
             ("vendor/master-records-orchestration/" + path.relative_to(mr).as_posix(), path)
             for path in _safe_tree_files(mr)
         )
+    if stegindex_root is not None:
+        si = stegindex_root.expanduser().resolve()
+        stegindex_required = (
+            si / "STEGINDEX_MIRROR_HANDOFF.md",
+            si / "scripts" / "preflight.py",
+            si / "registry" / "capabilities.json",
+            si / "registry" / "predicates.json",
+        )
+        if not all(path.is_file() for path in stegindex_required):
+            raise RuntimeError("StegIndex source root invalid")
+        vendor_sources["StegVerse-Labs/StegIndex"] = True
+        bundle_files.extend(
+            ("vendor/StegIndex/" + path.relative_to(si).as_posix(), path)
+            for path in _safe_tree_files(si)
+        )
+
     if micro_node_root is not None:
         micro = micro_node_root.expanduser().resolve()
         proof = git_snapshot_source_proof(
@@ -575,6 +592,7 @@ def main() -> int:
     parser.add_argument("--rtg-root", type=Path)
     parser.add_argument("--gtg-root", type=Path)
     parser.add_argument("--ae-root", type=Path)
+    parser.add_argument("--stegindex-root", type=Path)
     args = parser.parse_args()
     receipt = build_bundle(
         args.source_root,
@@ -590,6 +608,7 @@ def main() -> int:
         rtg_root=args.rtg_root,
         gtg_root=args.gtg_root,
         ae_root=args.ae_root,
+        stegindex_root=args.stegindex_root,
     )
     print(json.dumps(receipt, indent=2, sort_keys=True))
     return 0
