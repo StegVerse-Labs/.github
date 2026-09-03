@@ -123,3 +123,26 @@ SV001 rerun required: false
 ```
 
 This does **not** admit the mutation. The queue remains fail-closed because the present device journal head has not been freshly replayed/exported after concurrent-session activity. The only permitted next device interactions remain read-only replay/export/inspection. A state-mutating custody instruction is prohibited until the fresh evidence is evaluated and the exact action becomes the sole `ADMITTED_FOR_USER_EXECUTION` entry.
+
+
+## Fresh current-device head + duplicate terminal discovery — 2026-09-03
+
+Fresh read-only replay/export evidence is now available:
+
+```text
+journal replay: PASS
+entries: 69
+tail: 897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69
+evidence sha256: 402f80b8317b0b746d7b84a4dd93d68d6889e6ca7422e5593e10a72a1001f849
+```
+
+The fresh head also proves that SV001 was executed to the same terminal transition twice under distinct canonical WorkerCoordinator fences:
+
+```text
+G23 / fence 23 -> cycle sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35 -> reconstruction PASS -> TVC CONSUMED
+G24 / fence 24 -> cycle sha256:6bcc1976793657ea849a3678fa324c69134d2b59481e0bc9994c6baa6c4aff79 -> reconstruction PASS -> TVC CONSUMED
+```
+
+This violates the intended exactly-once/terminal-no-rerun invariant at the interaction level and creates a downstream source-lineage ambiguity. Issue #942 owns reconciliation. Both executions remain immutable evidence; neither may be deleted or rewritten.
+
+Queue state is therefore `HOLD_PENDING_TERMINAL_SV001_LINEAGE_RECONCILIATION`. The fresh-head prerequisite is satisfied, but `IPHONE-MR-SV001-CUSTODY-001` is **not admitted** until #942 binds the canonical immutable terminal receipt for custody. No additional SV001 execution is permitted.
