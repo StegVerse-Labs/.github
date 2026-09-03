@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -8,13 +9,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 class StegIndexPreflightGateTests(unittest.TestCase):
-    def run_gate(self, *args):
+    def run_gate(self, *args, env=None):
+        values = dict(os.environ)
+        if env:
+            values.update(env)
         proc = subprocess.run(
             [sys.executable, str(ROOT / "scripts" / "stegindex_preflight_gate.py"), *args],
             cwd=ROOT,
             text=True,
             capture_output=True,
             check=True,
+            env=values,
         )
         return json.loads(proc.stdout)
 
@@ -124,6 +129,67 @@ class StegIndexPreflightGateTests(unittest.TestCase):
         self.assertFalse(
             result["capability_risk"]["trusted_or_available_implies_authority"]
         )
+
+    def test_repo_roots_map_can_supply_stegindex_root(self):
+        payload = {
+            "authority_effect": "NONE_INDEX_RESOLUTION_ONLY",
+            "indexed_truth_usable": True,
+            "existing_capability_found": False,
+            "duplicate_implementation_guard": "NO_EXISTING_CAPABILITY_MATCH",
+            "machine_continuation_required": False,
+            "generic_blocker_permitted": True,
+            "purpose_contributions": [],
+            "capability_risk": {},
+            "first_actionable_predicate": None,
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            self.write_fake_preflight(tmp, payload)
+            result = self.run_gate(
+                "--query", "new thing",
+                env={"STEGINDEX_ROOT": "", "STEGVERSE_REPO_ROOTS_JSON": json.dumps({"StegVerse-Labs/StegIndex": tmp})},
+            )
+        self.assertEqual(result["adapter_state"], "RESOLVED")
+        self.assertEqual(result["decision"], "NO_EXISTING_CAPABILITY_MATCH")
+
+    def test_discovered_candidate_is_exact_blocker_not_new_work(self):
+        payload = {
+            "authority_effect": "NONE_INDEX_RESOLUTION_ONLY",
+            "indexed_truth_usable": True,
+            "existing_capability_found": False,
+            "discovered_candidate_found": True,
+            "duplicate_implementation_guard": "REVIEW_DISCOVERED_CANDIDATE_BEFORE_NEW_WORK",
+            "machine_continuation_required": False,
+            "generic_blocker_permitted": False,
+            "purpose_contributions": [],
+            "capability_risk": {},
+            "first_actionable_predicate": {"predicate_id": "candidate_reconciled", "machine_executable_now": False},
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            self.write_fake_preflight(tmp, payload)
+            result = self.run_gate("--query", "candidate only", "--stegindex-root", tmp)
+        self.assertEqual(result["decision"], "EXACT_BLOCKER_ONLY")
+        self.assertEqual(result["exact_dependency"], "candidate_reconciled")
+        self.assertFalse(result["generic_blocker_permitted"])
+
+    def test_incomplete_source_discovery_is_exact_blocker_not_new_work(self):
+        payload = {
+            "authority_effect": "NONE_INDEX_RESOLUTION_ONLY",
+            "indexed_truth_usable": True,
+            "existing_capability_found": False,
+            "discovered_candidate_found": False,
+            "duplicate_implementation_guard": "COMPLETE_SOURCE_DISCOVERY_BEFORE_NEW_WORK",
+            "machine_continuation_required": False,
+            "generic_blocker_permitted": False,
+            "purpose_contributions": [],
+            "capability_risk": {},
+            "first_actionable_predicate": {"predicate_id": "source_discovery_complete", "machine_executable_now": False},
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            self.write_fake_preflight(tmp, payload)
+            result = self.run_gate("--query", "unknown capability", "--stegindex-root", tmp)
+        self.assertEqual(result["decision"], "EXACT_BLOCKER_ONLY")
+        self.assertEqual(result["exact_dependency"], "source_discovery_complete")
+        self.assertFalse(result["generic_blocker_permitted"])
 
 if __name__ == "__main__":
     unittest.main()

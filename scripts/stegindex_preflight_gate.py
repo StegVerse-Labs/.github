@@ -10,6 +10,23 @@ from pathlib import Path
 
 EXPECTED_AUTHORITY_EFFECT = "NONE_INDEX_RESOLUTION_ONLY"
 
+def resolve_stegindex_root(explicit: str | None) -> Path | None:
+    raw = str(explicit or os.environ.get("STEGINDEX_ROOT") or "").strip()
+    if not raw:
+        roots_raw = str(os.environ.get("STEGVERSE_REPO_ROOTS_JSON") or "").strip()
+        if roots_raw:
+            try:
+                roots = json.loads(roots_raw)
+            except json.JSONDecodeError:
+                roots = {}
+            if isinstance(roots, dict):
+                raw = str(
+                    roots.get("StegVerse-Labs/StegIndex")
+                    or roots.get("StegIndex")
+                    or ""
+                ).strip()
+    return Path(raw).expanduser().resolve() if raw else None
+
 def load_preflight(stegindex_root: Path, query: str, contribution_class: str | None):
     entry = stegindex_root / "scripts" / "preflight.py"
     if not entry.is_file():
@@ -47,18 +64,28 @@ def load_preflight(stegindex_root: Path, query: str, contribution_class: str | N
         raise SystemExit("StegIndex authority invariant violation")
 
     indexed_truth_usable = result.get("indexed_truth_usable", True)
+    duplicate_guard = result.get("duplicate_implementation_guard")
     if not indexed_truth_usable:
         decision = "EXACT_BLOCKER_ONLY"
         exact_dependency = "indexed_truth_reconciled"
+    elif duplicate_guard == "REVIEW_DISCOVERED_CANDIDATE_BEFORE_NEW_WORK":
+        decision = "EXACT_BLOCKER_ONLY"
+        exact_dependency = "candidate_reconciled"
+    elif duplicate_guard == "COMPLETE_SOURCE_DISCOVERY_BEFORE_NEW_WORK":
+        decision = "EXACT_BLOCKER_ONLY"
+        exact_dependency = "source_discovery_complete"
     elif result.get("machine_continuation_required"):
         decision = "CONTINUE_MACHINE_EXECUTION"
         exact_dependency = None
     elif result.get("existing_capability_found"):
         decision = "REUSE_OR_EXTEND_EXISTING"
         exact_dependency = None
-    else:
+    elif duplicate_guard in (None, "NO_EXISTING_CAPABILITY_MATCH"):
         decision = "NO_EXISTING_CAPABILITY_MATCH"
         exact_dependency = None
+    else:
+        decision = "EXACT_BLOCKER_ONLY"
+        exact_dependency = f"unsupported_duplicate_implementation_guard:{duplicate_guard}"
 
     return {
         "adapter_state": "RESOLVED",
@@ -85,23 +112,23 @@ def main():
     parser.add_argument("--contribution-class")
     parser.add_argument(
         "--stegindex-root",
-        default=os.environ.get("STEGINDEX_ROOT"),
-        help="Path to an already-materialized StegIndex checkout. No network fetch is performed.",
+        help="Path to an already-materialized StegIndex checkout. Falls back to STEGINDEX_ROOT or STEGVERSE_REPO_ROOTS_JSON. No network fetch is performed.",
     )
     args = parser.parse_args()
 
-    if not args.stegindex_root:
+    stegindex_root = resolve_stegindex_root(args.stegindex_root)
+    if stegindex_root is None:
         result = {
             "adapter_state": "STEGINDEX_ROOT_NOT_DECLARED",
             "decision": "EXACT_BLOCKER_ONLY",
             "generic_blocker_permitted": False,
             "machine_continuation_required": False,
-            "exact_dependency": "STEGINDEX_ROOT or --stegindex-root",
+            "exact_dependency": "STEGINDEX_ROOT, STEGVERSE_REPO_ROOTS_JSON, or --stegindex-root",
             "authority_effect": "NONE",
         }
     else:
         result = load_preflight(
-            Path(args.stegindex_root).expanduser().resolve(),
+            stegindex_root,
             args.query,
             args.contribution_class,
         )
