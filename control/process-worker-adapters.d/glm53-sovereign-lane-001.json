@@ -29,7 +29,11 @@
         "LC_ALL",
         "TMPDIR",
         "XDG_CONFIG_HOME",
-        "XDG_STATE_HOME"
+        "XDG_STATE_HOME",
+        "STEGVERSE_GLM53_ENERGY_KWH",
+        "STEGVERSE_GLM53_HARDWARE_AMORTIZATION_USD",
+        "STEGVERSE_GLM53_ENERGY_COST_USD",
+        "STEGVERSE_GLM53_STORAGE_NETWORK_RUNTIME_OVERHEAD_USD"
       ],
       "notes": [
         "Consumes only already-local micro-node runtime source.",
