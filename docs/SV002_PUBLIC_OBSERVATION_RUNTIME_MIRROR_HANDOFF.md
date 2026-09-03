@@ -466,3 +466,17 @@ persisted PUBLIC_VERIFYING snapshot
 ```
 
 Authentic public profile observation, deployment-local `LEASE_OPEN`, receiver READY, and public round-trip evidence remain NOT OBSERVED. Issue #462 remains the separate authentic public-observation close condition.
+
+## Shared HB runtime-observability registry binding — 2026-09-03
+
+Canonical consumer descriptor:
+
+```text
+control/runtime-observability-consumers/sv002-public-observation-runtime-001.json
+registration issue: #852
+registration PR: #854
+registration merge: c25a76729c02111d914c486f845979790088e245
+shared owner: #814
+```
+
+This is source-of-truth registration only. Distinct deployment-local predicates remain independently NOT OBSERVED: resident presence/currentness, materialization consumption, receiver READY, ingress RECEIVED, egress FORWARDED, retained round-trip evidence, replay/reconstruction, and separate principal self-characterization.

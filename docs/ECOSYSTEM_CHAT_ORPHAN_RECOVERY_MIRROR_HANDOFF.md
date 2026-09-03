@@ -408,3 +408,19 @@ The canonical executable handoff `handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.jso
 
 This is source durability and machine-readable reconciliation only. It does not prove resident source refresh, request consumption, fresh fence issuance, model execution, Master Records reconstruction, or product activation.
 
+
+## Shared HB runtime-observability registry binding — 2026-09-03
+
+Canonical consumer descriptor:
+
+```text
+control/runtime-observability-consumers/ecosystem-chat-sovereign-inference-001.json
+registration issue: #853
+registration PR: #854
+registration merge: c25a76729c02111d914c486f845979790088e245
+shared owner: #814
+```
+
+This is source-of-truth registration only. Distinct deployment-local predicates remain independently NOT OBSERVED: resident presence/currentness, request consumption, fresh parent fence >22, private model execution, TVC ROUTE_ADMITTED, exact LLM-adapter execution, measured usage persistence, same-execution Master Records reconstruction, and persistent conversational runtime readiness.
+
+HB remains reference/observability only; fresh claim/fence authority remains independent task control; TV/TVC remains sole credential authority; GitHub-token runtime authority remains NONE.
