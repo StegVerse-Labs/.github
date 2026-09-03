@@ -96,6 +96,7 @@ STATIC_FILES = (
     Path("scripts/project_worker_control_plane_from_carrier.py"),
     Path("scripts/verify_iphone_heartbeat_transition_receipt.py"),
     Path("scripts/refresh_sovereign_worker_runtime_source.py"),
+    Path("scripts/run_stegindex_preflight.py"),
 )
 CONTROL_DIRS = (
     Path("control/worker-registry.d"),
@@ -107,6 +108,7 @@ CONTROL_FILES = (
     Path("control/process-worker-adapters.json"),
     Path("control/worker-capability-profiles.json"),
     Path("control/blocker-resolution-policy.json"),
+    Path("control/stegindex-preflight-policy.json"),
     Path("control/task-vector-index.json"),
     Path("control/resident-execution-request.json"),
 )
