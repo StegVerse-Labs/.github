@@ -193,17 +193,36 @@
     "master_records_reconstruction_pass_observed": false,
     "sv002_adversarial_observation_observed": false,
     "activation_claim_allowed": false,
-    "evidence_ref": "receipts/current-iphone/sv001-bounded-autonomy-20260903.json"
+    "evidence_ref": "receipts/current-iphone/sv001-bounded-autonomy-20260903.json",
+    "duplicate_terminal_sv001_execution_observed": true,
+    "duplicate_terminal_reconciliation_issue": "StegVerse-Labs/.github#942",
+    "terminal_cycle_receipts_observed": [
+      {
+        "claim_id": "SHWP-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001-G23",
+        "fencing_token": 23,
+        "receipt_hash": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35",
+        "reconstruction": "PASS",
+        "tvc_consumption": "CONSUMED"
+      },
+      {
+        "claim_id": "SHWP-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001-G24",
+        "fencing_token": 24,
+        "receipt_hash": "sha256:6bcc1976793657ea849a3678fa324c69134d2b59481e0bc9994c6baa6c4aff79",
+        "reconstruction": "PASS",
+        "tvc_consumption": "CONSUMED"
+      }
+    ],
+    "canonical_terminal_receipt_for_master_records": "UNRESOLVED_PENDING_942"
   },
   "block": {
-    "dependency_class": "CURRENT_IPHONE_MASTER_RECORDS_CUSTODY_EXECUTION",
-    "problem_statement": "The canonical same-device Master Records portable custody source and Site projection are now merged. The exact remaining predicate is authentic CURRENT_USER_IPHONE Master Records custody/reconstruction of cycle receipt sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35, followed by SV002 disposition.",
+    "dependency_class": "TERMINAL_SV001_LINEAGE_RECONCILIATION",
+    "problem_statement": "Fresh CURRENT_USER_IPHONE evidence proves two distinct terminal SV001 executions (G23 and G24). Master Records custody must remain held until #942 canonically binds the immutable downstream source receipt; do not rerun SV001.",
     "solution_required": false,
     "may_remain_blocked": false,
     "human_action_required": false,
     "second_machine_required": false,
     "github_token_required": false,
-    "next_solution_action": "FRESH_CURRENT_DEVICE_JOURNAL_REPLAY_AND_QUEUE_ADMISSION",
+    "next_solution_action": "MACHINE_RECONCILE_DUPLICATE_TERMINAL_SV001_LINEAGE_942",
     "executable_entrypoint": "https://stegverse.org/stegos-bootstrap/ -> Master Records — completed SV001 custody",
     "machine_transition_sequence": [
       "portable_workercoordinator_checkout_current_iphone_COMPLETED",
@@ -303,7 +322,7 @@
     "action_id": "IPHONE-MR-SV001-CUSTODY-001",
     "direct_human_instruction_allowed": false,
     "required_queue_state": "ADMITTED_FOR_USER_EXECUTION",
-    "current_queue_state": "WAITING_FOR_FRESH_JOURNAL_HEAD",
+    "current_queue_state": "WAITING_FOR_TERMINAL_SOURCE_LINEAGE_RECONCILIATION",
     "fresh_journal_head_required": true,
     "terminal_source_reexecution_allowed": false,
     "rule": "The completion.next_authorized_action text describes the task-specific action only; it MUST NOT be issued to the user while the organization interaction queue is HOLD or this action is not the sole admitted action."
