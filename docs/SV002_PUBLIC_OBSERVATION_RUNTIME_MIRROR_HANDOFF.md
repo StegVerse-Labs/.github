@@ -480,3 +480,14 @@ shared owner: #814
 ```
 
 This is source-of-truth registration only. Distinct deployment-local predicates remain independently NOT OBSERVED: resident presence/currentness, materialization consumption, receiver READY, ingress RECEIVED, egress FORWARDED, retained round-trip evidence, replay/reconstruction, and separate principal self-characterization.
+
+
+## Same-device execution correction — 2026-09-03
+
+Architecture invariant `#201` applies to this lane: receiver/materialization/runtime execution required for routine public observation must be available on the same established device when that device is the active StegVerse instance.
+
+Another StegVerse node, server, cloud host, or separately administered sovereign node may not be a required receiver/runtime dependency. Remote peers may be optional only.
+
+If the current device lacks the receiver/materialization capability, the lane is `INCOMPLETE_REQUIRES_CONTINUED_BUILD` with blocker `OTHER_MACHINE_REQUIRED`; it is not valid to assign another machine as the completion prerequisite.
+
+This changes no observation evidence. Receiver READY, ingress RECEIVED, egress FORWARDED, retained round-trip evidence, reconstruction, and principal execution remain independently NOT OBSERVED.
