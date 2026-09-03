@@ -128,3 +128,36 @@ The native source-refresh service already visits all registered resident consume
 This permits an already-existing non-hosted resident surface to refresh current already-local `.github` source and dispatch only `org_claim_allocator` without visiting unrelated resident requests and without requiring systemd.
 
 The portable bridge still grants no claim, fence, execution, heartbeat, credential, or publication authority. The canonical allocator remains the only claim-grant authority, and the source-catalog freshness floor still applies before allocation.
+
+
+## Retained per-task claim-grant evidence — 2026-09-02
+
+A successful allocator process result is not sufficient by itself to prove a claim.
+After the canonical allocator reports a selected task, the resident consumer now
+re-reads the post-allocation `control/claims-active.json` state and requires one or
+more canonical claims for that exact task with valid lease fencing tokens.
+
+Only after that post-state agrees does it retain:
+
+```text
+receipts/sovereign-host/org-claim-allocator-grants/<TASK>-G<generation>.json
+receipts/sovereign-host/org-claim-allocator-grants/<TASK>.latest.json
+```
+
+The receipt contains:
+- exact granted claims;
+- claim-registry generation;
+- canonical lease fencing tokens;
+- dependency surfaces;
+- stable claim snapshot SHA-256;
+- TV/TVC credential authority;
+- no GitHub-token/network/second-machine requirement;
+- `authority_effect=NONE_OBSERVATION_ONLY`.
+
+The observation receipt grants no claim authority. The canonical allocator mutation
+remains the sole grant transition.
+
+DE-006 binds the stable TASK-2026-0008 receipt as the distinct
+`site_projection_claim_grant` predicate. An allocator visit, an unrelated task grant,
+HB progression, or a selected task id without a matching post-allocation claim cannot
+satisfy that predicate.
