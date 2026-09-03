@@ -108,3 +108,49 @@ later allocation -> TASK-2026-0008 / claim generation 4
 The second transition is permitted because the two dependency surfaces are disjoint. This is a semantic expectation from the packaged current state, not a runtime claim.
 
 Physical iPhone allocation remains NOT OBSERVED.
+
+
+## Authentic current-iPhone execution — 2026-09-03
+
+The physical established current iPhone executed the canonical portable organization allocator.
+
+Verified exported evidence:
+
+```text
+schema: stegverse.device-org-allocator-execution-evidence/v1
+state: CANONICAL_ALLOCATION_EXECUTED
+node_id: stegnode-web-f24e3bfb7f5343cb37323187a88e51f3
+selected task: TASK-2026-0008
+claim registry generation: 4
+fencing token: 4
+dependency surface: site:stegos-de006-bound-inference-publication
+execution surface: CURRENT_USER_IPHONE
+credential authority: TV/TVC
+GitHub token runtime authority: NONE
+requires other machine: false
+journal replay: PASS
+journal entries: 53
+journal tail: 867ef9a2955e67a7676987327d98e30708ff4b9d2a923935ba8e3aa4b15987d4
+evidence file sha256: 84f5def9ab0b810299fcb1d726f85fa000857252c33bc75ab7f846ed3f19be90
+allocator receipt sha256: sha256:b7ae12318e6f9619ca87351fea27dc72fd4e4687c4788273d80006f8fcae360b
+claim snapshot sha256: 09f4a79bc073d07f322db6a15b8958baa6fb1618c96e36132b2cf937be74f054
+```
+
+Independent deterministic verification of the complete export confirmed:
+- all 53 journal entries form one valid hash chain;
+- projected journal tail equals the recomputed tail;
+- allocator receipt self-hash matches;
+- claim snapshot hash matches;
+- TASK-2026-0008 is the selected task;
+- generation and fencing token are both 4;
+- the exact required dependency surface is present;
+- `task_0008_granted=true`.
+
+Authority remains unchanged: the canonical organization allocator is the claim authority; the observation itself grants no authority; Site, StegOS, HB, browser shell, transport, GitHub, and source publication do not mint this claim.
+
+The native repository file `control/claims-active.json` remains the native filesystem allocator registry and is not rewritten to masquerade this portable-device CAS transition as a native allocator execution.
+
+Downstream result:
+- Site #932 was authentically admitted under this claim;
+- Site PR #952 merged and deployed the exact current-iPhone StegOS projection;
+- physical SV001 execution remains a separate subsequent predicate.
