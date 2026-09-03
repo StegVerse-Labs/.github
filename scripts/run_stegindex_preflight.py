@@ -20,7 +20,21 @@ class PreflightError(RuntimeError):
 def _index_root(explicit: Path | None = None) -> Path:
     raw = str(explicit) if explicit is not None else str(os.environ.get("STEGVERSE_STEGINDEX_SOURCE_ROOT") or "").strip()
     if not raw:
-        raise PreflightError("STEGVERSE_STEGINDEX_SOURCE_ROOT is not configured")
+        roots_raw = str(os.environ.get("STEGVERSE_REPO_ROOTS_JSON") or "").strip()
+        if roots_raw:
+            try:
+                roots = json.loads(roots_raw)
+            except json.JSONDecodeError as exc:
+                raise PreflightError("STEGVERSE_REPO_ROOTS_JSON is invalid JSON") from exc
+            if not isinstance(roots, dict):
+                raise PreflightError("STEGVERSE_REPO_ROOTS_JSON must be an object")
+            raw = str(
+                roots.get("StegVerse-Labs/StegIndex")
+                or roots.get("StegIndex")
+                or ""
+            ).strip()
+    if not raw:
+        raise PreflightError("canonical StegIndex source is not present in local source bindings")
     root = Path(raw).expanduser().resolve()
     required = (root / INDEX_HANDOFF, root / CANONICAL_RESOLVER)
     missing = [str(path) for path in required if not path.is_file()]
