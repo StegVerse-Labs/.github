@@ -43,6 +43,7 @@ REQUIRED_SOURCE_FILES = (
     Path("control/runtime-observability-consumers/decision-envelope-de006.json"),
     Path("scripts/dispatch_resident_execution_requests.py"),
     Path("scripts/consume_org_claim_allocator_request.py"),
+    Path("scripts/allocate_claims.py"),
     Path("control/resident-execution-request.d/org-claim-allocator-001.json"),
     Path("scripts/consume_resident_execution_request.py"),
     Path("scripts/consume_g18_resident_execution_request.py"),
