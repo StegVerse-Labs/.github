@@ -185,33 +185,37 @@ from the already-local source task. A mismatch fails `STALE_SOURCE_CATALOG` and 
 allocator call occurs.
 
 
-## Same-device allocator publication reconciliation — 2026-09-03
+## Collision reconciliation — canonical same-device bootstrap — 2026-09-03
 
-StegOS #181 / PR #182 merged as
-`37da9aa9e6a91da9cde222c90a01840c320eb1a3`.
+A later implementation duplicated the already-merged canonical same-device allocator.
 
-The current-iPhone runtime now contains a bounded canonical organization allocator for
-TASK-2026-0008. The browser executes the canonical allocator semantics locally; claim
-authority remains owned by `StegVerse-Labs/.github organization allocator`.
+Canonical lane:
+- `.github#884` / merge `d3da58e0f6822bde7316ada3f532f15f75a2fdcf`;
+- portable allocator: `org_allocator/portable_allocator.js`;
+- exact current-iPhone package:
+  `control/portable-org-allocator/current-iphone-package.json`;
+- Site bootstrap: `StegVerse-Labs/Site#945` / merge
+  `9868b62ba2bfaaba0a0164318ac4d1d4f6d235d5`;
+- public bootstrap paths live under `stegos-node/`, outside TASK-0008 product paths.
 
-TASK-2026-0008 remains queued/unclaimed and is widened before grant to include:
-- `stegos-bootstrap/org-claim-portable-allocator.js`;
-- `stegos-bootstrap/org-claim-portable-task0008.json`;
-- contract `stegverse.org-portable-claim-package/v1`;
-- contract `stegverse.org-claim-grant-observation/v1`;
-- capability `same-device-organization-claim-allocation-publication`.
+The later StegOS#181/#182 allocator under `mobile/web-bootstrap/` and .github#905
+TASK widening are superseded duplicate work and must not become the product claim
+boundary.
 
-The canonical claim-scope SHA-256 is now:
+TASK-2026-0008 is therefore restored to its canonical 17-file Site product scope and
+source-catalog scope SHA-256:
 
-`6b6ede916835f1d2f1ec6eae4350bd91c5f94bd9addd71c4f0c001f7a2e1dfc1`
+`98096b5825e85dd558f9cb5a4e882002543d4c703cfa7981cd2d826c80c1a05b`
 
-The resident source-catalog floor uses that same value. An older 17-file TASK-0008
-checkout therefore fails `STALE_SOURCE_CATALOG` before allocation.
+This preserves the bootstrap separation:
 
-The same-device StegOS path and the existing resident Python path are two execution
-surfaces for the same canonical claim semantics. They may not issue parallel claims.
-The current task remains unclaimed until an authentic fenced
-`CLAIM_GRANT_OBSERVED` receipt is produced.
+```text
+Site stegOS-node allocator bootstrap
+-> physical current-iPhone canonical allocation
+-> TASK-0007 may grant first
+-> repeat allocation
+-> authentic TASK-0008 claim
+-> only then Site#932 stegOS-bootstrap product projection
+```
 
-No GitHub token, network fetch, second user-operated machine, other machine, HB
-authority, or Site mutation authority is introduced.
+No claim/runtime predicate is promoted by this cleanup.
