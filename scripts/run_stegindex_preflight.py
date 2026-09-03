@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 INDEX_HANDOFF = Path("STEGINDEX_MIRROR_HANDOFF.md")
-CANONICAL_RESOLVER = Path("scripts/resolve_preflight.py")
+CANONICAL_RESOLVER = Path("scripts/preflight.py")
 
 
 class PreflightError(RuntimeError):
@@ -41,12 +41,7 @@ def run_canonical(
         sys.executable,
         str(index_root / CANONICAL_RESOLVER),
         "--query", query,
-        "--intent", intent,
     ]
-    if predicate:
-        command.extend(["--predicate", predicate])
-    if capability_id:
-        command.extend(["--capability-id", capability_id])
     completed = subprocess.run(
         command,
         cwd=index_root,
@@ -62,9 +57,20 @@ def run_canonical(
         result = json.loads(completed.stdout)
     except json.JSONDecodeError as exc:
         raise PreflightError("canonical StegIndex resolver emitted invalid JSON") from exc
-    if result.get("schema") != "stegindex.preflight-result/v1":
-        raise PreflightError("unsupported canonical StegIndex preflight result schema")
+
+    first = result.get("first_actionable_predicate")
+    if predicate and isinstance(first, dict) and first.get("predicate_id") != predicate:
+        raise PreflightError(
+            f"canonical StegIndex resolved {first.get('predicate_id')} instead of requested {predicate}"
+        )
+    if capability_id and not any(
+        isinstance(cap, dict) and cap.get("capability_id") == capability_id
+        for cap in result.get("capabilities", [])
+    ):
+        raise PreflightError(f"canonical StegIndex did not resolve requested capability {capability_id}")
+
     result["consumer"] = "StegVerse-Labs/.github"
+    result["consumer_intent"] = intent
     result["index_root"] = str(index_root)
     result["canonical_resolver_invoked"] = True
     result["network_fetch_performed"] = False
