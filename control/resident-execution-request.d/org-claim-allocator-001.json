@@ -15,5 +15,13 @@
   "heartbeat_grants_execution_authority": false,
   "request_grants_claim_authority": false,
   "allocator_remains_claim_authority": true,
-  "authority_effect": "NONE_REQUEST_ONLY"
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "source_catalog_floor": {
+    "task_id": "TASK-2026-0008",
+    "requested_at": "2026-09-03T00:28:00Z",
+    "repository_full_name": "StegVerse-Labs/Site",
+    "required_dependency_surface": "site:stegos-de006-bound-inference-publication",
+    "purpose": "MINIMUM_SOURCE_CATALOG_FRESHNESS_ONLY",
+    "task_eligibility_effect": "NONE"
+  }
 }
