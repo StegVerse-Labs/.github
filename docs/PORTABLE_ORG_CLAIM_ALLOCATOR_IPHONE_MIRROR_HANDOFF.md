@@ -77,3 +77,34 @@ Authentic completion requires the physical current iPhone to atomically advance 
 Current public Site does not yet contain this allocator, while publication of the full current iPhone surface is itself gated on TASK-0008.
 
 This lane must not solve that by bypassing the claim gate. A separate bootstrap resolution must provide the canonical allocator to the already-established iPhone without granting product publication or task claim authority.
+
+
+## Implemented source — 2026-09-02
+
+Installed:
+- `org_allocator/portable_allocator.js`;
+- `control/portable-org-allocator/current-iphone-package.json`;
+- `schemas/org-allocator-portable-state.schema.json`;
+- `tests/test_portable_org_claim_allocator_iphone.py`.
+
+The current package is bound to:
+```text
+scripts/allocate_claims.py blob 7c0105c8529b682c24a94b39ba31a8ca574c3717
+TASK-2026-0007 blob       a5fd4662b2a370e8a86099c943b8d1ec18b93e19
+TASK-2026-0008 blob       f534167633c867bbee6b397ae345b10ed502aa2b
+claims predecessor blob   9e7eaf9cb1319dd570714a0c1806d7173a7ba7ff
+queue predecessor blob    6cab961c8750495dab36d1a523980516b1ac3a5e
+claim generation floor    2
+```
+
+The module validates exact task identity/request-time/repository/dependency-surface floors before allocating.
+
+Expected repeatable sequence on an uncontended current package:
+```text
+first allocation -> TASK-2026-0007 / claim generation 3
+later allocation -> TASK-2026-0008 / claim generation 4
+```
+
+The second transition is permitted because the two dependency surfaces are disjoint. This is a semantic expectation from the packaged current state, not a runtime claim.
+
+Physical iPhone allocation remains NOT OBSERVED.
