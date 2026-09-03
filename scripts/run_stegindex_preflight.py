@@ -56,6 +56,10 @@ def run_canonical(
         str(index_root / CANONICAL_RESOLVER),
         "--query", query,
     ]
+    child_env = {"PATH": os.environ.get("PATH", "")}
+    roots_json = str(os.environ.get("STEGVERSE_REPO_ROOTS_JSON") or "").strip()
+    if roots_json:
+        child_env["STEGVERSE_REPO_ROOTS_JSON"] = roots_json
     completed = subprocess.run(
         command,
         cwd=index_root,
@@ -63,7 +67,7 @@ def run_canonical(
         text=True,
         check=False,
         timeout=30,
-        env={"PATH": os.environ.get("PATH", "")},
+        env=child_env,
     )
     if completed.returncode != 0:
         raise PreflightError(f"canonical StegIndex resolver exited {completed.returncode}: {completed.stderr.strip()[-1000:]}")

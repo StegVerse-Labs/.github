@@ -20,7 +20,7 @@ class StegIndexPreflightTests(unittest.TestCase):
         (root / "scripts").mkdir()
         (root / "STEGINDEX_MIRROR_HANDOFF.md").write_text("# handoff\n", encoding="utf-8")
         (root / "scripts" / "preflight.py").write_text(
-            "import json\n"
+            "import json, os\n"
             "print(json.dumps({"
             "'query':'runtime evidence',"
             "'capabilities':[{'capability_id':'stegverse:capability:runtime-proof:v1'}],"
@@ -31,6 +31,7 @@ class StegIndexPreflightTests(unittest.TestCase):
             "'first_actionable_predicate':{'predicate_id':'runtime_receipt_present','machine_executable_now':False},"
             "'machine_continuation_required':False,"
             "'generic_blocker_permitted':True,"
+            "'source_refresh':{'state':'COMPLETE' if os.environ.get('STEGVERSE_REPO_ROOTS_JSON') else 'ABSENT'},"
             "'authority_effect':'NONE_INDEX_RESOLUTION_ONLY'"
             "}))\n",
             encoding="utf-8",
@@ -60,6 +61,26 @@ class StegIndexPreflightTests(unittest.TestCase):
         self.assertIn("execution", result["capability_risk"]["transition_surfaces"])
         self.assertEqual(result["capability_risk"]["authority_effect"], "NONE_INDEX_ONLY")
         self.assertFalse(result["capability_risk"]["trusted_or_available_implies_authority"])
+
+    def test_repo_roots_map_is_propagated_to_canonical_child(self):
+        root = self.make_index()
+        old_map = os.environ.get("STEGVERSE_REPO_ROOTS_JSON")
+        try:
+            os.environ["STEGVERSE_REPO_ROOTS_JSON"] = json.dumps({
+                "StegVerse-Labs/StegIndex": str(root),
+                "StegVerse-Labs/Site": "/tmp/site",
+            })
+            result = module.run_canonical(
+                index_root=root,
+                query="runtime evidence",
+                intent="DISCOVER",
+            )
+        finally:
+            if old_map is None:
+                os.environ.pop("STEGVERSE_REPO_ROOTS_JSON", None)
+            else:
+                os.environ["STEGVERSE_REPO_ROOTS_JSON"] = old_map
+        self.assertEqual(result["source_refresh"]["state"], "COMPLETE")
 
     def test_repo_roots_map_resolves_canonical_stegindex(self):
         root = self.make_index()
