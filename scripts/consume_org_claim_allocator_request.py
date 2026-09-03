@@ -95,6 +95,52 @@ def clean_env(values: Mapping[str, str] | None = None) -> dict[str, str]:
 
 
 
+
+def validate_source_catalog_floor(source: Path, request: dict[str, Any]) -> dict[str, Any]:
+    floor = request.get("source_catalog_floor")
+    if not isinstance(floor, dict):
+        raise RuntimeError("organization allocator request source catalog floor missing")
+    task_id = floor.get("task_id")
+    if not isinstance(task_id, str) or not task_id:
+        raise RuntimeError("organization allocator source catalog floor task missing")
+    task_path = source / "tasks" / f"{task_id}.json"
+    if not task_path.is_file():
+        raise RuntimeError(f"STALE_SOURCE_CATALOG: required task missing: {task_id}")
+    task = load_json(task_path)
+    if task.get("task_id") != task_id:
+        raise RuntimeError("STALE_SOURCE_CATALOG: task identity mismatch")
+    if task.get("requested_at") != floor.get("requested_at"):
+        raise RuntimeError("STALE_SOURCE_CATALOG: requested_at floor mismatch")
+    mandatory = (task.get("requirements") or {}).get("mandatory") or []
+    repository = floor.get("repository_full_name")
+    surface = floor.get("required_dependency_surface")
+    matched = False
+    for requirement in mandatory:
+        if not isinstance(requirement, dict):
+            continue
+        repo = (requirement.get("repository") or {}).get("full_name")
+        surfaces = ((requirement.get("scope") or {}).get("dependency_surfaces") or [])
+        if repo == repository and surface in surfaces:
+            matched = True
+            break
+    if not matched:
+        raise RuntimeError("STALE_SOURCE_CATALOG: required repository/dependency surface missing")
+    if floor.get("purpose") != "MINIMUM_SOURCE_CATALOG_FRESHNESS_ONLY":
+        raise RuntimeError("source catalog floor purpose mismatch")
+    if floor.get("task_eligibility_effect") != "NONE":
+        raise RuntimeError("source catalog floor may not determine task eligibility")
+    return {
+        "state": "SOURCE_CATALOG_FLOOR_SATISFIED",
+        "task_id": task_id,
+        "requested_at": task.get("requested_at"),
+        "repository_full_name": repository,
+        "required_dependency_surface": surface,
+        "task_status_observed": task.get("status"),
+        "task_eligibility_effect": "NONE",
+        "network_fetch_performed": False,
+        "authority_effect": "NONE_FRESHNESS_ONLY",
+    }
+
 def materialize_org_control_inputs(source: Path, runtime: Path) -> dict[str, Any]:
     """Append missing organization task definitions without overwriting runtime task state."""
     source_tasks = source / "tasks"
@@ -183,6 +229,7 @@ def consume(
     validate_request(request)
     request_hash = stable_hash(request)
     safe_env = clean_env(env)
+    source_catalog_floor = validate_source_catalog_floor(source, request)
     control_inputs = materialize_org_control_inputs(source, runtime)
     allocator = runtime / ALLOCATOR_REL
     if not allocator.is_file():
@@ -210,6 +257,7 @@ def consume(
         "mode": MODE,
         "runtime_execution_attempted": True,
         "execution_returncode": completed.returncode,
+        "source_catalog_floor": source_catalog_floor,
         "control_inputs": control_inputs,
         "allocator_result": result,
         "allocator_state": allocator_state,
