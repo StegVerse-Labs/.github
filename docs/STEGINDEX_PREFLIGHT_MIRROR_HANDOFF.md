@@ -150,3 +150,23 @@ The admission event can now reveal both the exact predicate/continuation posture
 
 Runtime activation claim: NONE.
 Authority effect: NONE_READ_RESOLVE_ONLY.
+
+
+## Continuous discovery root-map propagation — 2026-09-03
+
+The organization preflight wrapper now preserves the existing non-secret `STEGVERSE_REPO_ROOTS_JSON` map when it invokes canonical `StegIndex/scripts/preflight.py`.
+
+This closes a source propagation gap:
+- the wrapper already used the repository-root map to locate StegIndex;
+- previously the child resolver received only `PATH`;
+- continuous local-source discovery inside StegIndex therefore could not observe the same already-materialized repository set through this wrapper.
+
+After this change:
+- no additional source fetch is introduced;
+- no new environment authority is created;
+- only the existing non-secret local repository locator map is forwarded;
+- capability-risk metadata remains unchanged;
+- TV/TVC credential authority remains unchanged;
+- GitHub token runtime authority remains NONE.
+
+No authentic resident discovery refresh is claimed by this source propagation change.
