@@ -330,3 +330,68 @@ if __name__ == "__main__":
             env["STEGVERSE_SV001_AUTONOMY_LEASE"],
             "/local/tvc/stegverse001/lease.active.json",
         )
+
+
+def test_refresh_then_dispatch_targets_only_org_claim_allocator():
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        source = base / "source"
+        runtime = base / "runtime"
+        source.mkdir()
+        runtime.mkdir()
+        dispatcher = runtime / MOD.DISPATCHER_REL
+        dispatcher.parent.mkdir(parents=True)
+        dispatcher.write_text("# refreshed dispatcher\n", encoding="utf-8")
+        dispatch_receipt = runtime / MOD.DISPATCH_RECEIPT_REL
+        calls = []
+
+        def runner(command, **kwargs):
+            calls.append((command, kwargs))
+            dispatch_receipt.parent.mkdir(parents=True, exist_ok=True)
+            dispatch_receipt.write_text(json.dumps({
+                "schema": "stegverse.resident-request-dispatch/v1",
+                "state": "DISPATCH_COMPLETE",
+                "consumer_count": 1,
+                "selected_consumers": ["org_claim_allocator"],
+                "selection_scope": "EXACT_SELECTOR",
+                "request_failures": [],
+                "network_source_fetch_performed": False,
+                "credential_authority": "TV/TVC",
+                "github_token_required": False,
+                "github_token_runtime_authority": "NONE",
+                "request_dispatch_grants_authority": False,
+                "heartbeat_grants_execution_authority": False,
+                "second_machine_required": False,
+                "authority_effect": "NONE_DISPATCH_ONLY",
+            }) + "\n", encoding="utf-8")
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        with mock.patch.object(MOD, "refresh", return_value={
+            "mutable_runtime_state_preserved": True,
+            "network_fetch_performed": False,
+            "credential_read_or_acquired": False,
+            "authority_effect": "NONE_LOCAL_SOURCE_REFRESH",
+        }):
+            result = MOD.refresh_and_dispatch(
+                source,
+                runtime,
+                target_consumer="org_claim_allocator",
+                runner=runner,
+                env={"PATH": "/bin", "HOME": td},
+            )
+
+        self.assertEqual(result["state"], "REFRESH_AND_DISPATCH_COMPLETE")
+        self.assertEqual(result["target_consumer"], "org_claim_allocator")
+        self.assertEqual(result["dispatch_receipt"]["selected_consumers"], ["org_claim_allocator"])
+        self.assertEqual(result["dispatch_receipt"]["consumer_count"], 1)
+        self.assertFalse(result["unrelated_consumers_dispatched"])
+        self.assertFalse(result["bridge_grants_execution_authority"])
+        self.assertFalse(result["bridge_mints_claim_or_fence"])
+        self.assertFalse(result["network_source_fetch_performed"])
+        self.assertFalse(result["credential_read_or_acquired"])
+        self.assertFalse(result["systemd_required"])
+        self.assertFalse(result["second_machine_required"])
+        self.assertEqual(len(calls), 1)
+        command, kwargs = calls[0]
+        self.assertEqual(command[command.index("--only-consumer") + 1], "org_claim_allocator")
+        self.assertNotIn("GITHUB_TOKEN", kwargs["env"])
