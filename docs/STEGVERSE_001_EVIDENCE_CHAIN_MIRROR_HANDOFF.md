@@ -181,3 +181,19 @@ Source/merge does not establish authentic custody. The next exact runtime predic
 `sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35`.
 
 SV001 is terminal and MUST NOT be rerun. After Master Records reconstruction PASS is observed, the existing SV002 continuation becomes the next machine-owned step.
+
+
+## Final current-iPhone custody import usability release — 2026-09-03
+
+Site #958 / PR #959 merged as `11ffa8fc712569a07edb45397baf2e3427947294`,
+with its claim released by PR #960 / `3f39c48aabae51c46c0afa069aa5364dbef429d1`.
+
+The current-iPhone Master Records UI now accepts the complete authentic
+`stegos.workercoordinator_tvc_portable_sv001_execution_proof/v1` object and extracts
+only `subordinate_execution_proof.cycle_receipt` unchanged. Direct cycle-receipt
+input remains supported. No receipt synthesis, SV001 re-execution, or authority
+widening is introduced.
+
+Therefore the operator does not need to manually isolate the nested cycle receipt.
+Public propagation remains separate from source merge; authentic custody still
+requires a current-iPhone PASS proof.
