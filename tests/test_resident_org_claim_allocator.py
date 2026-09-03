@@ -375,3 +375,39 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+    def test_task8_scope_matches_current_iphone_projection_and_stays_nonoverlapping_with_task7(self):
+        task7 = json.loads((ROOT / "tasks/TASK-2026-0007.json").read_text(encoding="utf-8"))
+        task8 = json.loads((ROOT / "tasks/TASK-2026-0008.json").read_text(encoding="utf-8"))
+        request7 = task7["requirements"]["mandatory"][0]
+        request8 = task8["requirements"]["mandatory"][0]
+        expected_paths = {
+            "stegos-bootstrap/index.html",
+            "stegos-bootstrap/stegos-bootstrap.js",
+            "stegos-bootstrap/admitted-inference.js",
+            "stegos-bootstrap/service-worker.js",
+            "stegos-bootstrap/command-ingress.js",
+            "stegos-bootstrap/command.html",
+            "stegos-bootstrap/kv-readiness-persistence.js",
+            "stegos-bootstrap/kv-session-persistence.js",
+            "stegos-bootstrap/workercoordinator-portable-checkout.js",
+            "stegos-bootstrap/workercoordinator-portable-adapter.js",
+            "stegos-bootstrap/workercoordinator-portable-sv001.json",
+            "stegos-bootstrap/workercoordinator-portable-authority-contract.json",
+            "stegos-bootstrap/tvc-sv001-portable-lease.js",
+            "stegos-bootstrap/tvc-sv001-portable-lease-package.json",
+            "stegos-bootstrap/tvc-sv001-portable-tv-request.json",
+            "stegos-bootstrap/tvc-sv001-portable-lease-policy.json",
+            "stegos-bootstrap/tvc-sv001-portable-lease-state.schema.json",
+            "docs/STEGOS_DE006_BOUND_INFERENCE_PROJECTION_MIRROR_HANDOFF.md",
+            "scripts/check_stegos_de006_bound_inference_projection.py",
+            "data/tasks/SITE-STEGOS-DE006-BOUND-INFERENCE-932.json",
+        }
+        self.assertEqual(set(request8["scope"]["paths"]), expected_paths)
+        self.assertIn("stegverse.workercoordinator-portable-authority-contract/v1", request8["scope"]["contracts"])
+        self.assertIn("stegverse.tvc.sv001-portable-lease-package/v1", request8["scope"]["contracts"])
+        self.assertIn("portable-workercoordinator-checkout-publication", request8["scope"]["capabilities"])
+        self.assertIn("portable-tvc-sv001-lease-input-publication", request8["scope"]["capabilities"])
+        self.assertEqual(request8["scope"]["dependency_surfaces"], ["site:stegos-de006-bound-inference-publication"])
+        self.assertFalse(allocator.conflicts(request8, request7))
