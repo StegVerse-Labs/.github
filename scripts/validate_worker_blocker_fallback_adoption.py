@@ -136,6 +136,25 @@ def main():
             if not row.get("owner") or not row.get("evidence_required"):
                 fail(f"{row.get('family')}: follow-up task lacks durable owner/evidence requirements")
 
+    for family in ("heartbeat_runtime", "deployment_runtime_activation"):
+        runtime = next((r for r in families if r.get("family") == family), None)
+        if runtime is None:
+            fail(f"{family}: missing")
+        if runtime.get("state") != "ADOPTED":
+            fail(f"{family}: must remain ADOPTED unless proof is explicitly superseded")
+        evidence = "\n".join(runtime.get("evidence") or [])
+        for fragment in [
+            "StegVerse-Labs/.github#903",
+            "33718097701 SUCCESS",
+            "100531416166 SUCCESS",
+            "33718097665 SUCCESS",
+            "test_runtime_blocker_continuation_proof.py",
+        ]:
+            if fragment not in evidence:
+                fail(f"{family}: missing proof fragment {fragment}")
+        if runtime.get("authority_effect") != "NONE":
+            fail(f"{family}: adoption must grant no authority")
+
     print(f"WORKER_BLOCKER_FALLBACK_ADOPTION_PASS families={len(families)}")
 
 if __name__ == "__main__":
