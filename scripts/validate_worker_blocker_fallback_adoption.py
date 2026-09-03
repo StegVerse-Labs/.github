@@ -112,6 +112,23 @@ def main():
     if mailbox.get("authority_effect") != "NONE":
         fail("mailbox_failure_remediation conformance must grant no authority")
 
+    observers = next((r for r in families if r.get("family") == "publication_release_observers"), None)
+    if observers is None:
+        fail("publication_release_observers family missing")
+    if observers.get("state") != "ALREADY_CONFORMANT":
+        fail("publication_release_observers must remain ALREADY_CONFORMANT unless evidence is superseded")
+    o_evidence = "\n".join(observers.get("evidence") or [])
+    for fragment in [
+        "GCAT-BCAT-Engine/Publisher:docs/STEGCLAW_RELEASE_AWARENESS_MIRROR_HANDOFF.md",
+        "PARALLEL_SAFE_NON_AUTHORIZING_RELEASE_AWARENESS",
+        "unrelated RTG-001/stegdb-sync failures remain separate",
+        "authority remain false",
+    ]:
+        if fragment not in o_evidence:
+            fail(f"publication_release_observers missing evidence fragment: {fragment}")
+    if observers.get("authority_effect") != "NONE":
+        fail("publication_release_observers conformance must grant no authority")
+
     print(f"WORKER_BLOCKER_FALLBACK_ADOPTION_PASS families={len(families)}")
 
 if __name__ == "__main__":
