@@ -95,6 +95,23 @@ def main():
     if authority.get("authority_effect") != "NONE":
         fail("tv_tvc_authority_bound_invocation conformance must grant no authority")
 
+    mailbox = next((r for r in families if r.get("family") == "mailbox_failure_remediation"), None)
+    if mailbox is None:
+        fail("mailbox_failure_remediation family missing")
+    if mailbox.get("state") != "ALREADY_CONFORMANT":
+        fail("mailbox_failure_remediation must remain ALREADY_CONFORMANT unless evidence is superseded")
+    m_evidence = "\n".join(mailbox.get("evidence") or [])
+    for fragment in [
+        "StegVerse-Labs/StegVerse-Healer:failure_mailbox/FAILURE_MAILBOX_MIRROR_HANDOFF.md",
+        "failure_mailbox/backfill.py",
+        "quarantines parse/ingest failures",
+        "incident_engine preserves independent",
+    ]:
+        if fragment not in m_evidence:
+            fail(f"mailbox_failure_remediation missing evidence fragment: {fragment}")
+    if mailbox.get("authority_effect") != "NONE":
+        fail("mailbox_failure_remediation conformance must grant no authority")
+
     print(f"WORKER_BLOCKER_FALLBACK_ADOPTION_PASS families={len(families)}")
 
 if __name__ == "__main__":
