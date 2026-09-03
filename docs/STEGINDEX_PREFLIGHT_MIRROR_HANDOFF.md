@@ -1,6 +1,6 @@
 # StegIndex Mandatory Preflight Mirror Handoff
 
-Status: SOURCE_MERGED_CONSUMER + RESOLUTION_ADMISSION_INTEGRATION_BRANCH
+Status: SOURCE_MERGED_VALIDATED_MANDATORY_PREFLIGHT
 Updated: 2026-09-02
 Repository: StegVerse-Labs/.github
 Origin: StegVerse-Labs/.github#841
@@ -100,3 +100,28 @@ The bundle remains local source transport only:
 `credential_authority=TV/TVC`
 
 Authentic resident materialization/execution is not claimed by this source change.
+
+
+## Current-main merge receipt — 2026-09-02
+
+Canonical current-main integration:
+- PR #888
+- merge: `db333d153709a862dad712424f06c2c7249257a0`
+- organization control-plane validation: `33713693057` SUCCESS
+- Heartbeat Worker Project validation: `33713692880` SUCCESS
+- complete deterministic repository test suite: SUCCESS
+
+This merge preserves the separately merged session/build pre-work boundary on current main and adds:
+- blocker-derived resolution admission preflight receipts;
+- canonical repository-root-map StegIndex discovery;
+- portable `vendor/StegIndex/**` source packaging;
+- StegIndex as a required complete one-shot resident-stack source root.
+
+Source state:
+`MANDATORY_PREFLIGHT_SOURCE_MERGED_VALIDATED`
+
+Authentic resident state:
+`STEGINDEX_RESIDENT_MATERIALIZATION_NOT_YET_OBSERVED`
+`STEGINDEX_RESOLUTION_ADMISSION_PREFLIGHT_RECEIPT_NOT_YET_OBSERVED`
+
+The unobserved resident predicates remain evidence requirements only. They do not reopen the merged source implementation and do not imply a missing StegIndex capability.
