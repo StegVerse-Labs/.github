@@ -158,3 +158,26 @@ The current-iPhone receipt encodes authorized execution with
 `authorized_execution_source=EXTERNAL_WORKERCOORDINATOR_TVC_BOUND_ENVELOPE`;
 the continuation maps that canonical evidence to the evaluator's boolean authorization
 input without mutating the receipt.
+
+
+## Same-device Master Records custody path released — 2026-09-03
+
+The previously missing browser-journal -> canonical Master Records custody bridge is now implemented without rerunning SV001 and without introducing another machine.
+
+Canonical source:
+- `master-records/orchestration#73`
+- merge `9b617459ec0b9dfceb894ac19495ee72106d1e94`
+- portable module blob `ea390cee958c67ff5d144abb43963e07f891a1ef`
+- portable package blob `568644fc302d75bacf10cc577f27f101cd8d4ac4`
+
+Current-iPhone Site projection:
+- `StegVerse-Labs/Site#956`
+- merge `0b4cd7dc13cb43ffa9feec3c4badc21524efccd2`
+- claim release `StegVerse-Labs/Site#957@9e3582b2e59f953d653f582f39b22d55235845bd`
+
+The Site service worker now exposes a same-origin local custody intake that invokes the exact Master Records portable module, validates the immutable completed cycle receipt, appends the resulting custody and reconstruction objects to the existing StegOS journal, replays that journal, and emits a PASS proof. The endpoint is idempotent for an already-complete custody pair and fails closed on partial custody state.
+
+Source/merge does not establish authentic custody. The next exact runtime predicate is a current-iPhone custody commit for:
+`sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35`.
+
+SV001 is terminal and MUST NOT be rerun. After Master Records reconstruction PASS is observed, the existing SV002 continuation becomes the next machine-owned step.
