@@ -351,3 +351,20 @@ management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json
 
 This is a source-reference correction only. It does not change any runtime predicate,
 claim/fence authority, TV/TVC credential authority, or activation state.
+
+## Shared observability registry installation — 2026-09-03
+
+The SV001 bounded-autonomy lane is now installed in the canonical shared runtime-observability consumer registry:
+
+```text
+consumer descriptor:
+  control/runtime-observability-consumers/stegverse001-bounded-autonomy-runtime-001.json
+registration issue: #849
+registration PR: #856
+registration merge: 3c798be98e931306867d24a870bffb218e96ff96
+shared owner: #814
+```
+
+This registration changes no runtime truth. The first unresolved shared predicate remains `resident_process_alive_supervised`, followed by independently observed node freshness, request consumption, `SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED`, retained receipt, Master Records reconstruction, and SV002 disposition.
+
+Source, merge, CI, HB progression, request presence, or registry membership cannot satisfy those predicates.
