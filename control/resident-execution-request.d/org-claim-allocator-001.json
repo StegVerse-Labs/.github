@@ -22,6 +22,7 @@
     "repository_full_name": "StegVerse-Labs/Site",
     "required_dependency_surface": "site:stegos-de006-bound-inference-publication",
     "purpose": "MINIMUM_SOURCE_CATALOG_FRESHNESS_ONLY",
-    "task_eligibility_effect": "NONE"
+    "task_eligibility_effect": "NONE",
+    "scope_sha256": "98096b5825e85dd558f9cb5a4e882002543d4c703cfa7981cd2d826c80c1a05b"
   }
 }
