@@ -1,0 +1,25 @@
+{
+  "artifact_type": "stegverse.stegindex_preflight_consumer_contract",
+  "schema_version": "1.0.0",
+  "status": "ACTIVE_SOURCE_CONTRACT",
+  "owner_repo": "StegVerse-Labs/.github",
+  "resolver_repo": "StegVerse-Labs/StegIndex",
+  "invocation": "python scripts/stegindex_preflight_gate.py --stegindex-root <local-materialized-SteIndex> --query <goal-or-capability>",
+  "network_fetch_performed": false,
+  "third_party_runtime_dependency": false,
+  "authority_effect": "NONE",
+  "lawful_decisions": [
+    "CONTINUE_MACHINE_EXECUTION",
+    "REUSE_OR_EXTEND_EXISTING",
+    "NO_EXISTING_CAPABILITY_MATCH",
+    "EXACT_BLOCKER_ONLY"
+  ],
+  "invariants": [
+    "StegIndex grants no execution or transition authority",
+    "generic runtime-evidence blocker is not lawful when machine_continuation_required=true",
+    "existing capability match must be evaluated before new implementation is created",
+    "missing local StegIndex materialization must be reported as an exact dependency rather than fabricated resolution",
+    "repository-local handoff and machine-readable state remain canonical truth"
+  ],
+  "canonical_handoff": "STEGINDEX_PREFLIGHT_MIRROR_HANDOFF.md"
+}
