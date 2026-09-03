@@ -154,3 +154,21 @@ Downstream result:
 - Site #932 was authentically admitted under this claim;
 - Site PR #952 merged and deployed the exact current-iPhone StegOS projection;
 - physical SV001 execution remains a separate subsequent predicate.
+
+
+## TASK-2026-0007 catalog reconciliation — 2026-09-03
+
+Authentic CURRENT_USER_IPHONE allocator history is retained:
+
+```text
+TASK-2026-0007 portable claim generation/fence: 3 / 3
+significance: authentic allocator runtime history only
+source-completion cause: Site PR #401 / merge cdf68fe70294d43b59607c2991478c2cc4b53546
+source-completion time: 2026-08-22T12:23:32Z
+```
+
+The organization task catalog had incorrectly left TASK-0007 as `queued` after that source merge. Issue #912 reconciles it to `completed` without asserting Site#239 product activation.
+
+The portable package continues to retain TASK-0007 as provenance, but its status is now `completed`, so fresh-device allocator initialization cannot offer it again. TASK-0008 remains independently `queued` in this package. Existing physical iPhone G3/G4 allocator state is not rewritten, reset, or manufactured by this source repair.
+
+Authority boundaries remain unchanged: organization allocator = claim authority; TV/TVC = credential authority; HB/GitHub/StegOS do not grant claim authority; no second machine is introduced.
