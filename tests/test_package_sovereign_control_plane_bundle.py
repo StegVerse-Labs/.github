@@ -66,6 +66,35 @@ class SovereignControlPlaneBundleTests(unittest.TestCase):
             self.assertIn("vendor/continuity-vault-kit/runtime/kv_interlock_endpoint.py", names)
 
 
+
+    def test_bundle_can_include_stegindex_vendor_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "source"
+            stegindex = Path(tmp) / "StegIndex"
+            (root / "scripts").mkdir(parents=True)
+            (root / "scripts" / "bootstrap_sovereign_runtime.py").write_text("# bootstrap\n", encoding="utf-8")
+            (stegindex / "scripts").mkdir(parents=True)
+            (stegindex / "registry").mkdir(parents=True)
+            (stegindex / "STEGINDEX_MIRROR_HANDOFF.md").write_text("# handoff\n", encoding="utf-8")
+            (stegindex / "scripts" / "preflight.py").write_text("# preflight\n", encoding="utf-8")
+            (stegindex / "registry" / "capabilities.json").write_text('{"entries":[]}\n', encoding="utf-8")
+            (stegindex / "registry" / "predicates.json").write_text('{"predicates":[]}\n', encoding="utf-8")
+            output = Path(tmp) / "control-plane.zip"
+
+            receipt = module.build_bundle(root, output, stegindex_root=stegindex)
+
+            self.assertTrue(receipt["vendor_sources"]["StegVerse-Labs/StegIndex"])
+            self.assertFalse(receipt["bundle_grants_authority"])
+            self.assertFalse(receipt["network_fetch_required"])
+            with zipfile.ZipFile(output) as archive:
+                names = set(archive.namelist())
+                manifest = json.loads(archive.read(module.MANIFEST_NAME))
+            self.assertIn("vendor/StegIndex/STEGINDEX_MIRROR_HANDOFF.md", names)
+            self.assertIn("vendor/StegIndex/scripts/preflight.py", names)
+            self.assertIn("vendor/StegIndex/registry/capabilities.json", names)
+            self.assertIn("vendor/StegIndex/registry/predicates.json", names)
+            self.assertTrue(manifest["vendor_sources"]["StegVerse-Labs/StegIndex"])
+
     def test_tvc_source_proof_verifies_clean_local_git_source(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             tvc = Path(tmp) / "TVC"
