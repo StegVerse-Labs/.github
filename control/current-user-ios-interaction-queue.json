@@ -1,0 +1,72 @@
+{
+  "schema": "stegverse.current-user-ios-interaction-queue/v1",
+  "issue": "StegVerse-Labs/.github#922",
+  "state": "HOLD_PENDING_FRESH_JOURNAL_RECONCILIATION",
+  "device_scope": "CURRENT_USER_STEGVERSE_IOS_NODE",
+  "physical_device_count_required": 1,
+  "second_user_operated_machine_required": false,
+  "authority_effect": "NONE_HUMAN_DEVICE_INSTRUCTION_SERIALIZATION_ONLY",
+  "grants_workercoordinator_authority": false,
+  "grants_intr_authority": false,
+  "grants_tvc_authority": false,
+  "grants_custody_authority": false,
+  "grants_execution_authority": false,
+  "grants_credential_authority": false,
+  "github_token_runtime_authority": "NONE",
+  "stale_anchor": {
+    "last_known_entries": 59,
+    "last_known_tail_sha256": "0725a8208f709b19027b9434cd089cdff0efc01b2ed5f2571036ae6ad8695d0c",
+    "fresh_for_new_mutation_admission": false,
+    "reason": "Multiple concurrent sessions may have advanced the device journal after this observation."
+  },
+  "read_only_actions_permitted": [
+    "inspect_current_page_state",
+    "replay_local_journal",
+    "show_or_export_evidence_bundle",
+    "copy_existing_receipt_or_proof_without_mutation"
+  ],
+  "state_mutating_actions_permitted": false,
+  "admission_rule": {
+    "max_admitted_user_mutations": 1,
+    "required_before_admission": [
+      "fresh_current_device_journal_replay_pass",
+      "fresh_current_device_tail_sha256_observed",
+      "candidate_action_registered",
+      "candidate_prerequisites_reconciled_against_fresh_tail",
+      "no_terminal_transition_reexecution",
+      "no_competing_admitted_user_mutation"
+    ],
+    "session_instruction_rule": "A session MUST NOT instruct a state-mutating page action unless that exact action_id is ADMITTED_FOR_USER_EXECUTION in this queue."
+  },
+  "candidate_actions": [
+    {
+      "action_id": "IPHONE-MR-SV001-CUSTODY-001",
+      "canonical_task": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+      "target_surface": "https://stegverse.org/stegos-bootstrap/ -> Master Records — completed SV001 custody",
+      "mutation_class": "APPEND_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION",
+      "terminal_source_transition": "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
+      "rerun_terminal_source": false,
+      "idempotence": "IDEMPOTENT_ONLY_IF_COMPLETE_CUSTODY_PAIR_ALREADY_EXISTS",
+      "prerequisites": [
+        "fresh journal replay PASS",
+        "current page contains released Site custody surface",
+        "immutable SV001 execution proof available"
+      ],
+      "queue_state": "WAITING_FOR_GLOBAL_RECONCILIATION"
+    },
+    {
+      "action_id": "IPHONE-DE006-NEXT-DEVICE-MUTATION",
+      "canonical_task": "DE006 / parent evidence continuation",
+      "target_surface": "CURRENT_USER_IPHONE StegOS surface",
+      "mutation_class": "UNRESOLVED_FROM_CONCURRENT_SESSION",
+      "prerequisites": [
+        "exact concurrent-session intended mutation reconciled",
+        "fresh journal replay PASS"
+      ],
+      "queue_state": "WAITING_FOR_GLOBAL_RECONCILIATION"
+    }
+  ],
+  "active_action_id": null,
+  "next_required_observation": "FRESH_CURRENT_DEVICE_JOURNAL_REPLAY_AND_EXPORT",
+  "mutation_freeze_reason": "Concurrent sessions issued different page-manipulation sequences without a shared device-interaction fence."
+}
