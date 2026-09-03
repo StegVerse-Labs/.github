@@ -68,7 +68,7 @@ class HILSovereignReceiverWorkerRegistrationTests(unittest.TestCase):
             (ROOT / "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json").read_text(encoding="utf-8")
         )
         self.assertEqual(handoff["schema"], "stegverse.executable-handoff/v0.1")
-        self.assertEqual(handoff["state"], "INCOMPLETE_REQUIRES_CONTINUED_BUILD")
+        self.assertEqual(handoff["state"], "SAME_DEVICE_SOURCE_INTEGRATION_VALIDATION_PENDING")
         authority = handoff["authority"]
         self.assertEqual(authority["credential_authority"], "TV/TVC")
         self.assertFalse(authority["github_token_required"])
@@ -84,8 +84,8 @@ class HILSovereignReceiverWorkerRegistrationTests(unittest.TestCase):
         self.assertFalse(authority["requires_other_machine"])
         self.assertFalse(authority["other_machine_may_be_required"])
         self.assertTrue(authority["active_established_device_required"])
-        self.assertEqual(handoff["activation"]["esrl_shared_gateway_runtime"]["state"], "INCOMPLETE_OTHER_MACHINE_REQUIRED")
-        self.assertTrue(handoff["activation"]["esrl_shared_gateway_runtime"]["other_machine_dependency"])
+        self.assertEqual(handoff["activation"]["esrl_shared_gateway_runtime"]["state"], "SAME_DEVICE_LOCAL_LEASE_SOURCE_MERGED_RUNTIME_NOT_OBSERVED")
+        self.assertFalse(handoff["activation"]["esrl_shared_gateway_runtime"]["other_machine_dependency"])
         self.assertFalse(handoff["activation"]["esrl_shared_gateway_runtime"]["public_gateway_same_device_observed"])
         execution = handoff["execution"]
         self.assertIn("sovereign_hil_receiver_activation", execution["required_capabilities"])
@@ -102,13 +102,13 @@ class HILSovereignReceiverWorkerRegistrationTests(unittest.TestCase):
             self.assertEqual(receiver_port(), DEFAULT_PORT)
             self.assertIn(".stegverse/hil/sovereign-receiver", state_root().as_posix())
 
-    def test_worker_response_keeps_activation_open_after_local_ready(self) -> None:
+    def test_worker_response_keeps_runtime_evidence_open_after_same_device_lease(self) -> None:
         response = worker_response(
             state="ACTIVE",
-            transition="HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED",
+            transition="HIL_SAME_DEVICE_LEASE_OPEN",
             sequence=4,
             epoch=42,
-            next_transition="HIL_PUBLIC_HTTPS_RENDEZVOUS",
+            next_transition="HIL_RECEIVER_READY",
         )
         self.assertEqual(response["schema"], "stegverse.worker-response/v0.1")
         self.assertEqual(response["state"], "ACTIVE")
