@@ -41,6 +41,13 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
         self.assertFalse(value["network_source_fetch_allowed"])
         self.assertFalse(value["second_machine_required"])
         self.assertEqual(value["authority_effect"], "NONE_REQUEST_ONLY")
+        floor = value["source_catalog_floor"]
+        self.assertEqual(floor["task_id"], "TASK-2026-0008")
+        self.assertEqual(floor["requested_at"], "2026-09-03T00:28:00Z")
+        self.assertEqual(floor["repository_full_name"], "StegVerse-Labs/Site")
+        self.assertEqual(floor["required_dependency_surface"], "site:stegos-de006-bound-inference-publication")
+        self.assertEqual(floor["purpose"], "MINIMUM_SOURCE_CATALOG_FRESHNESS_ONLY")
+        self.assertEqual(floor["task_eligibility_effect"], "NONE")
 
     def test_allocator_lock_blocks_live_concurrent_owner_without_granting_authority(self):
         with tempfile.TemporaryDirectory() as td:
@@ -66,7 +73,13 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
                 "organization": "StegVerse-Labs",
                 "goal": "test",
                 "status": "queued",
-                "requirements": {"mandatory": [], "optional": []},
+                "requirements": {
+                    "mandatory": [{
+                        "repository": {"full_name": "StegVerse-Labs/Site"},
+                        "scope": {"dependency_surfaces": ["site:stegos-de006-bound-inference-publication"]},
+                    }],
+                    "optional": [],
+                },
                 "dependencies": [],
                 "requested_at": "2026-09-03T00:28:00Z",
             }),
@@ -113,6 +126,9 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
 
             result = consumer.consume(source, runtime, runner=runner, env={"PATH": "/bin", "HOME": td})
             self.assertEqual(result["state"], "ATTEMPT_RECORDED")
+            self.assertEqual(result["source_catalog_floor"]["state"], "SOURCE_CATALOG_FLOOR_SATISFIED")
+            self.assertEqual(result["source_catalog_floor"]["task_id"], "TASK-2026-0008")
+            self.assertEqual(result["source_catalog_floor"]["task_eligibility_effect"], "NONE")
             self.assertEqual(result["control_inputs"]["state"], "CONTROL_INPUTS_READY")
             self.assertFalse(result["control_inputs"]["runtime_task_state_overwritten"])
             self.assertIn("TASK-2026-0008.json", result["control_inputs"]["imported_task_files"])
@@ -147,6 +163,56 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
                     env={"PATH": "/bin", "GITHUB_ACTIONS": "true"},
                 )
             self.assertEqual(calls, [])
+
+
+    def test_stale_source_catalog_missing_task8_fails_before_allocator_or_runtime_materialization(self):
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            runtime = base / "runtime"
+            source = base / "source"
+            request_path = runtime / consumer.REQUEST_REL
+            request_path.parent.mkdir(parents=True, exist_ok=True)
+            request_path.write_text(json.dumps(self.request()), encoding="utf-8")
+            (source / "tasks").mkdir(parents=True, exist_ok=True)
+            (source / "control").mkdir(parents=True, exist_ok=True)
+            (source / "control/claims-active.json").write_text(
+                json.dumps({"schema": "stegverse.org-claims/v1", "generation": 0, "claims": []}),
+                encoding="utf-8",
+            )
+            (source / "control/queue.json").write_text(
+                json.dumps({"schema": "stegverse.org-queue/v1", "generation": 0, "ordered_task_ids": []}),
+                encoding="utf-8",
+            )
+            allocator_path = runtime / consumer.ALLOCATOR_REL
+            allocator_path.parent.mkdir(parents=True, exist_ok=True)
+            allocator_path.write_text("# canonical allocator\n", encoding="utf-8")
+            calls = []
+
+            with self.assertRaisesRegex(RuntimeError, "STALE_SOURCE_CATALOG"):
+                consumer.consume(
+                    source,
+                    runtime,
+                    runner=lambda *a, **k: calls.append((a, k)),
+                    env={"PATH": "/bin", "HOME": td},
+                )
+
+            self.assertEqual(calls, [])
+            self.assertFalse((runtime / "tasks").exists())
+            self.assertFalse((runtime / "control/claims-active.json").exists())
+
+
+    def test_catalog_floor_does_not_require_task8_to_remain_queued(self):
+        with tempfile.TemporaryDirectory() as td:
+            source = Path(td) / "source"
+            self._write_minimal_source(source)
+            task_path = source / "tasks/TASK-2026-0008.json"
+            value = json.loads(task_path.read_text(encoding="utf-8"))
+            value["status"] = "completed"
+            task_path.write_text(json.dumps(value), encoding="utf-8")
+            result = consumer.validate_source_catalog_floor(source, self.request())
+            self.assertEqual(result["state"], "SOURCE_CATALOG_FLOOR_SATISFIED")
+            self.assertEqual(result["task_status_observed"], "completed")
+            self.assertEqual(result["task_eligibility_effect"], "NONE")
 
     def test_task_catalog_import_is_append_only_and_preserves_runtime_status(self):
         with tempfile.TemporaryDirectory() as td:
