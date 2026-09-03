@@ -169,3 +169,17 @@ Canonical evidence:
 Publisher persists `PENDING_SITE_ACTIVATION` with the exact blocker, release condition, next executable task, durable workflow owner, and trigger while retaining separate active/scheduled work. Site independently preserves explicit blocker ownership, parallel-safe workload continuation, and lifecycle distinctions such as deployment != activation.
 
 This conformance does not grant publication, release, execution, custody, admissibility, Guardian, credential, routing, or transition authority.
+
+## TV / TVC authority-bound invocation conformance — 2026-09-03
+
+The `tv_tvc_authority_bound_invocation` family is already conformant.
+
+Canonical evidence:
+- `StegVerse-Labs/TV/docs/TV_MIRROR_HANDOFF.md`
+- `StegVerse-Labs/TVC/TVC_MIRROR_HANDOFF.md`
+
+TV/TVC preserves credential authority as TV/TVC-only, rejects generic GitHub/provider credential substitution, classifies missing resident credential or explicit authorization as bounded blocked-dependency states rather than FAILED, and explicitly allows unrelated validated execution to continue while credential-model semantic expansion is frozen.
+
+The current iPhone-bound credential evidence also records `another_physical_machine_required=false`; no second-machine fallback is introduced by this conformance finding.
+
+This adoption changes no credential, release, publication, execution, routing, transition, custody, or wallet authority.
