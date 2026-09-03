@@ -12,6 +12,8 @@ from typing import Any
 ROOT = Path.cwd().resolve()
 TASK = "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001"
 RECEIPT = ROOT / "receipts" / "erl-ai-economic-transparency-review" / f"{TASK}.json"
+BUNDLED_REVIEW_ROOT = ROOT / "review-packages" / "erl-ai-economic-transparency-001"
+BUNDLE_MANIFEST = BUNDLED_REVIEW_ROOT / "manifest.json"
 
 REQUIRED_RELATIVE_PATHS = [
     "assessments/reviews/ai-economic-transparency-consumer-surface-independent-review-package.2026-09-03.json",
@@ -33,7 +35,7 @@ def atomic_write(path: Path, value: dict[str, Any]) -> None:
     os.replace(name, path)
 
 def source_roots() -> list[Path]:
-    roots: list[Path] = []
+    roots: list[Path] = [BUNDLED_REVIEW_ROOT]
     explicit = os.environ.get("STEGVERSE_ERL_SOURCE_ROOT")
     if explicit:
         roots.append(Path(explicit))
@@ -46,6 +48,34 @@ def source_roots() -> list[Path]:
     ])
     return roots
 
+def verify_bundle_manifest(root: Path) -> tuple[bool, list[str]]:
+    if root != BUNDLED_REVIEW_ROOT.resolve():
+        return True, []
+    if not BUNDLE_MANIFEST.is_file():
+        return False, ["bundle manifest missing"]
+    try:
+        manifest = json.loads(BUNDLE_MANIFEST.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return False, [f"bundle manifest unreadable: {exc}"]
+    if manifest.get("schema") != "stegverse.erl.ai-economic-transparency-review-input-bundle/v1":
+        return False, ["bundle manifest schema mismatch"]
+    indexed = {row.get("relative_path"): row for row in manifest.get("files") or [] if isinstance(row, dict)}
+    errors: list[str] = []
+    for rel in REQUIRED_RELATIVE_PATHS:
+        row = indexed.get(rel)
+        if row is None:
+            errors.append(f"manifest missing {rel}")
+            continue
+        path = root / rel
+        if not path.is_file():
+            errors.append(f"bundle missing {rel}")
+            continue
+        expected = row.get("sha256")
+        actual = f"sha256:{sha256_file(path)}"
+        if expected != actual:
+            errors.append(f"hash mismatch {rel}: expected {expected} actual {actual}")
+    return not errors, errors
+
 def find_source_root() -> Path | None:
     for candidate in source_roots():
         try:
@@ -53,7 +83,9 @@ def find_source_root() -> Path | None:
         except Exception:
             continue
         if all((root / p).is_file() for p in REQUIRED_RELATIVE_PATHS):
-            return root
+            ok, _ = verify_bundle_manifest(root)
+            if ok:
+                return root
     return None
 
 def load_json(root: Path, rel: str) -> dict[str, Any]:
@@ -171,12 +203,12 @@ def main() -> int:
     if root is None:
         blocker = {
             "dependency_class": "INTERNAL_CAPABILITY",
-            "problem_statement": "The canonical ERL independent-review package is not locally materialized.",
+            "problem_statement": "No hash-valid local ERL independent-review package is available.",
             "solution_required": True,
             "may_remain_blocked": False,
-            "workaround_candidates": ["Resolve the released Executive_Rhetoric_Ledger source from canonical local StegVerse source/workload locations without network checkout."],
-            "next_solution_action": "Materialize canonical ERL source locally, then retry the same fenced task.",
-            "machine_observable_release_condition": "all required ERL independent-review package paths resolve locally",
+            "workaround_candidates": ["Use the bundled hash-bound review package shipped with the worker, or resolve the released Executive_Rhetoric_Ledger source from canonical local StegVerse source/workload locations without network checkout."],
+            "next_solution_action": "Repair the local hash-bound review package or materialize canonical ERL source locally, then retry the same fenced task.",
+            "machine_observable_release_condition": "a complete hash-valid local review package resolves",
             "github_token_required": False,
             "non_tv_tvc_secret_or_token_required": False,
             "third_party_blocker": False,
@@ -213,6 +245,7 @@ def main() -> int:
         "transition_id": "ERL_AI_ECON_INDEPENDENT_REVIEW_COMPLETE",
         "review": review,
         "source_root": str(root),
+        "source_package_class": "BUNDLED_HASH_BOUND" if root == BUNDLED_REVIEW_ROOT.resolve() else "LOCAL_CANONICAL_ERL_SOURCE",
         "github_token_used": False,
         "non_tv_tvc_secret_or_token_used": False,
         "research_promotion_authority": False,
