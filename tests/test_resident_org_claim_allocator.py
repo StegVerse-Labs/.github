@@ -50,7 +50,7 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
         self.assertEqual(floor["task_eligibility_effect"], "NONE")
         self.assertEqual(
             floor["scope_sha256"],
-            "98096b5825e85dd558f9cb5a4e882002543d4c703cfa7981cd2d826c80c1a05b",
+            "6b6ede916835f1d2f1ec6eae4350bd91c5f94bd9addd71c4f0c001f7a2e1dfc1",
         )
 
     def test_allocator_lock_blocks_live_concurrent_owner_without_granting_authority(self):
@@ -145,7 +145,7 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             self.assertEqual(result["source_catalog_floor"]["task_eligibility_effect"], "NONE")
             self.assertEqual(
                 result["source_catalog_floor"]["scope_sha256"],
-                "98096b5825e85dd558f9cb5a4e882002543d4c703cfa7981cd2d826c80c1a05b",
+                "6b6ede916835f1d2f1ec6eae4350bd91c5f94bd9addd71c4f0c001f7a2e1dfc1",
             )
             self.assertEqual(result["control_inputs"]["state"], "CONTROL_INPUTS_READY")
             self.assertFalse(result["control_inputs"]["runtime_task_state_overwritten"])
@@ -423,6 +423,8 @@ if __name__ == "__main__":
             "stegos-bootstrap/workercoordinator-portable-adapter.js",
             "stegos-bootstrap/workercoordinator-portable-sv001.json",
             "stegos-bootstrap/workercoordinator-portable-authority-contract.json",
+            "stegos-bootstrap/org-claim-portable-allocator.js",
+            "stegos-bootstrap/org-claim-portable-task0008.json",
             "stegos-bootstrap/tvc-sv001-portable-lease.js",
             "stegos-bootstrap/tvc-sv001-portable-lease-package.json",
             "stegos-bootstrap/tvc-sv001-portable-tv-request.json",
@@ -437,5 +439,8 @@ if __name__ == "__main__":
         self.assertIn("stegverse.tvc.sv001-portable-lease-package/v1", request8["scope"]["contracts"])
         self.assertIn("portable-workercoordinator-checkout-publication", request8["scope"]["capabilities"])
         self.assertIn("portable-tvc-sv001-lease-input-publication", request8["scope"]["capabilities"])
+        self.assertIn("same-device-organization-claim-allocation-publication", request8["scope"]["capabilities"])
+        self.assertIn("stegverse.org-portable-claim-package/v1", request8["scope"]["contracts"])
+        self.assertIn("stegverse.org-claim-grant-observation/v1", request8["scope"]["contracts"])
         self.assertEqual(request8["scope"]["dependency_surfaces"], ["site:stegos-de006-bound-inference-publication"])
         self.assertFalse(allocator.conflicts(request8, request7))
