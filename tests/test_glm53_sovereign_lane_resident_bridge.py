@@ -133,6 +133,12 @@ class Glm53SovereignResidentBridgeTests(unittest.TestCase):
         self.assertIn('"--hardware-amortization-usd":measurement("STEGVERSE_GLM53_HARDWARE_AMORTIZATION_USD")',worker)
         self.assertIn('"--energy-cost-usd":measurement("STEGVERSE_GLM53_ENERGY_COST_USD")',worker)
         self.assertIn('"--storage-network-runtime-overhead-usd":measurement("STEGVERSE_GLM53_STORAGE_NETWORK_RUNTIME_OVERHEAD_USD")',worker)
+        adapter=json.loads((ROOT/"control/process-worker-adapters.d/glm53-sovereign-lane-001.json").read_text())
+        env_allowlist=set(adapter["adapters"][0]["env_allowlist"])
+        self.assertIn("STEGVERSE_GLM53_ENERGY_KWH",env_allowlist)
+        self.assertIn("STEGVERSE_GLM53_HARDWARE_AMORTIZATION_USD",env_allowlist)
+        self.assertIn("STEGVERSE_GLM53_ENERGY_COST_USD",env_allowlist)
+        self.assertIn("STEGVERSE_GLM53_STORAGE_NETWORK_RUNTIME_OVERHEAD_USD",env_allowlist)
         self.assertIn('"network_model_download_performed":False',worker)
         self.assertIn('"hosted_inference_substitution_performed":False',worker)
 
