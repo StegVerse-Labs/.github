@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
   "created_at": "2026-09-03T16:36:37Z",
-  "updated_at": "2026-09-03T17:14:00Z",
+  "updated_at": "2026-09-03T17:21:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "ERL-AI-ECON-TRANSPARENCY-001",
@@ -44,7 +44,9 @@
       "StegVerse-Labs/Executive_Rhetoric_Ledger#104",
       "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/AI_ECONOMIC_TRANSPARENCY_MIRROR_HANDOFF.md",
       "StegVerse-Labs/Executive_Rhetoric_Ledger:assessments/reviews/ai-economic-transparency-consumer-surface-independent-review-package.2026-09-03.json",
-      "review-packages/erl-ai-economic-transparency-001/manifest.json"
+      "review-packages/erl-ai-economic-transparency-001/manifest.json",
+      "control/resident-execution-request.d/erl-ai-economic-transparency-review-001.json",
+      "scripts/consume_erl_ai_economic_transparency_review_request.py"
     ],
     "dependencies": [],
     "parent_task_id": null,
@@ -98,7 +100,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Use the bundled hash-bound review package when present; independently reconstruct the fixed consumer-surface review and emit a bounded APPROVE/REVISE recommendation receipt with no promotion authority.",
+    "next_authorized_action": "On resident source refresh, the generic dispatcher visits the dedicated ERL review request consumer, which invokes the existing targeted WorkerCoordinator task path for SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001. Emit the bounded review receipt if an authentic fresh claim/fence is admitted.",
     "terminal_when": [
       "review state=COMPLETE",
       "recommendation in {APPROVE,REVISE}",
@@ -143,7 +145,9 @@
     "integration_evidence_refs": [
       "workers/erl_ai_economic_transparency_review_worker.py",
       "control/process-worker-adapters.d/erl-ai-economic-transparency-review-001.json",
-      "review-packages/erl-ai-economic-transparency-001/manifest.json"
+      "review-packages/erl-ai-economic-transparency-001/manifest.json",
+      "scripts/consume_erl_ai_economic_transparency_review_request.py",
+      "control/resident-execution-request.d/erl-ai-economic-transparency-review-001.json"
     ],
     "activation_proof_ref": null,
     "blockers": [
