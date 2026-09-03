@@ -65,7 +65,6 @@ NONSECRET_ENV = (
     "STEGVERSE_GLM53_ENERGY_COST_USD", "STEGVERSE_GLM53_STORAGE_NETWORK_RUNTIME_OVERHEAD_USD",
 )
 CONSUMERS = (
-    ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),
     ("ecosystem_chat", "scripts/consume_resident_execution_request.py"),
     ("g18", "scripts/consume_g18_resident_execution_request.py"),
     ("hil", "scripts/consume_hil_resident_execution_request.py"),
@@ -89,6 +88,7 @@ CONSUMERS = (
     ("sv011_phase5_source_materialization", "scripts/consume_sv011_phase5_source_materialization_request.py"),
     ("sv011_phase5", "scripts/consume_sv011_phase5_resident_execution_request.py"),
     ("glm53_sovereign_lane", "scripts/consume_glm53_sovereign_lane_request.py"),
+    ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),
 )
 
 
