@@ -43,3 +43,21 @@ Current source/control posture:
 - user/device action: none.
 
 This validation branch exists only to obtain post-repair repository validation evidence against the reconciled main state. Hosted validation remains non-authorizing and cannot satisfy the resident review gate.
+
+
+## 2026-09-03 self-contained review package
+
+Issue: #940
+
+The prior cross-repository local-source dependency has been removed from the normal resident execution path.
+
+A byte-preserving review-input package is now stored under:
+`review-packages/erl-ai-economic-transparency-001/`
+
+Its manifest binds every copied ERL input by both source Git blob identity and SHA-256. The reviewer verifies SHA-256 before using the bundled package. A hash failure causes the bundled package to be rejected rather than reviewed.
+
+The worker still accepts an independently materialized canonical ERL source tree as a fallback. No network checkout is permitted.
+
+As a result, the remaining blocker is no longer “ERL source/package not locally materialized.” The bounded task is source-ready inside the resident worker repository; the remaining unsatisfied condition is authentic fenced resident execution and its receipt.
+
+This package does not alter the research findings, independently approve them, activate the research, or authorize publication.
