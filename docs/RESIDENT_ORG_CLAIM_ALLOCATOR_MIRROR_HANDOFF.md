@@ -90,3 +90,32 @@ not source-test failures and are not runtime evidence.
 This reconciliation PR exists to validate the exact current-main source through a live
 PR ref. Even if validation passes, deployment-local allocator consumption and task
 claim evidence remain independently required.
+
+
+## Minimum source-catalog freshness floor — 2026-09-02
+
+A resident runtime can have current allocator consumer source but still be pointed at an
+older already-local canonical checkout. That checkout may predate newly queued
+organization work. The allocator must not silently operate on such a stale catalog.
+
+The repeatable resident request now carries a non-authorizing source-catalog floor:
+
+```text
+task_id: TASK-2026-0008
+requested_at: 2026-09-03T00:28:00Z
+repository: StegVerse-Labs/Site
+dependency_surface: site:stegos-de006-bound-inference-publication
+purpose: MINIMUM_SOURCE_CATALOG_FRESHNESS_ONLY
+task_eligibility_effect: NONE
+```
+
+Before any runtime task/control input is materialized and before the canonical
+allocator is invoked, the consumer verifies that the local source checkout contains a
+matching task identity, requested timestamp, repository, and dependency surface.
+
+A missing or older catalog fails with `STALE_SOURCE_CATALOG`. No network fetch is
+attempted and no claim is granted.
+
+The floor does **not** require TASK-2026-0008 to remain queued. Once the minimum source
+catalog is known to include that task, later task status is still determined by the
+canonical allocator. This preserves the allocator's generic future use.
