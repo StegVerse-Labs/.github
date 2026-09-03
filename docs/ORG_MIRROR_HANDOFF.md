@@ -1,3 +1,22 @@
+## Current-iOS cross-session interaction serialization — 2026-09-03
+
+All sessions that may instruct the current StegVerse iOS node to mutate page/runtime state MUST consult:
+
+- `docs/CURRENT_USER_IOS_INTERACTION_SERIALIZATION_MIRROR_HANDOFF.md`
+- `control/current-user-ios-interaction-queue.json`
+
+Current posture is fail-closed:
+
+```text
+state = HOLD_PENDING_FRESH_JOURNAL_RECONCILIATION
+new state-mutating page instructions = PROHIBITED
+read-only journal replay / evidence export = PERMITTED
+```
+
+The previously observed 59-entry journal tail is provenance only and is not fresh enough to admit a new mutation. No session may independently sequence taps/submits/commits/runs until one exact action is `ADMITTED_FOR_USER_EXECUTION` in the canonical queue.
+
+This serialization layer grants no execution, claim/fence, InTr, TV/TVC, custody, publication, or credential authority. It exists only to prevent cross-session human/device ordering collisions on the single current iOS node.
+
 # StegVerse-Labs Organization Mirror Handoff
 
 Updated: 2026-08-17 14:06 -05:00
