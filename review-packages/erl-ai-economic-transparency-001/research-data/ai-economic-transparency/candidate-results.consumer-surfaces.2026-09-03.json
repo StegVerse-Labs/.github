@@ -1,0 +1,66 @@
+{
+  "schema": "stegverse.erl.ai-economic-transparency-candidate-results/v1",
+  "task_id": "ERL-AI-ECON-TRANSPARENCY-001",
+  "state": "CANDIDATE_RESULTS_PENDING_INDEPENDENT_REVIEW",
+  "scope": "CONSUMER_NON_ACCOUNT_ATTRIBUTED_SURFACES_ONLY",
+  "provider_wide_ranking_authorized": false,
+  "activation_authorized": false,
+  "publication_authorized": false,
+  "findings": [
+    {
+      "provider": "openai",
+      "surface_class": "CONSUMER_NON_ACCOUNT_ATTRIBUTED",
+      "rating_scope": "SURFACE_SPECIFIC",
+      "disclosure_burden_rating": 5,
+      "rating_name": "NON_RECONSTRUCTABLE",
+      "protocol_complete": true,
+      "literal_request_cost_state": "UNRESOLVED",
+      "scale_sensitivity_state": "UNBOUNDED_UNKNOWN",
+      "scale_points": [
+        1000,
+        100000,
+        1000000
+      ],
+      "observation_ref": "research-data/ai-economic-transparency/openai-consumer-surface-observation.2026-09-03.json",
+      "independent_review_state": "PENDING"
+    },
+    {
+      "provider": "anthropic",
+      "surface_class": "CONSUMER_NON_ACCOUNT_ATTRIBUTED",
+      "rating_scope": "SURFACE_SPECIFIC",
+      "disclosure_burden_rating": 5,
+      "rating_name": "NON_RECONSTRUCTABLE",
+      "protocol_complete": true,
+      "literal_request_cost_state": "UNRESOLVED",
+      "scale_sensitivity_state": "UNBOUNDED_UNKNOWN",
+      "scale_points": [
+        1000,
+        100000,
+        1000000
+      ],
+      "observation_ref": "research-data/ai-economic-transparency/anthropic-consumer-surface-observation.2026-09-03.json",
+      "independent_review_state": "PENDING"
+    },
+    {
+      "provider": "deepseek",
+      "surface_class": "CONSUMER_NON_ACCOUNT_ATTRIBUTED",
+      "rating_scope": "SURFACE_SPECIFIC",
+      "disclosure_burden_rating": 5,
+      "rating_name": "NON_RECONSTRUCTABLE",
+      "protocol_complete": true,
+      "literal_request_cost_state": "UNRESOLVED",
+      "scale_sensitivity_state": "UNBOUNDED_UNKNOWN",
+      "scale_points": [
+        1000,
+        100000,
+        1000000
+      ],
+      "observation_ref": "research-data/ai-economic-transparency/deepseek-consumer-surface-observation.2026-09-03.json",
+      "independent_review_state": "PENDING"
+    }
+  ],
+  "contradiction_review_ref": "assessments/reviews/ai-economic-transparency-consumer-surface-contradiction-review.2026-09-03.json",
+  "independent_review_issue": 104,
+  "independent_review_package_ref": "assessments/reviews/ai-economic-transparency-consumer-surface-independent-review-package.2026-09-03.json",
+  "claim_boundary": "CANDIDATE_SURFACE_SPECIFIC_FINDINGS_ONLY_NO_PROVIDER_WIDE_GENERALIZATION"
+}
