@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stegverse.erl.ai-economic-transparency-observation.v1",
+  "title": "ERL AI Economic Transparency Observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "task_id",
+    "provider",
+    "surface_class",
+    "rating_scope",
+    "protocol_complete",
+    "actual_request_cost_directly_exposed",
+    "request_usage_directly_exposed",
+    "research_steps_required",
+    "provider_surfaces_consulted",
+    "account_or_privilege_required",
+    "support_required",
+    "external_research_required",
+    "reconstructable_actual_cost",
+    "unresolved_cost_components",
+    "disclosure_burden_rating",
+    "scale_sensitivity_state",
+    "activation_authorized"
+  ],
+  "properties": {
+    "schema": {
+      "const": "stegverse.erl.ai-economic-transparency-observation/v1"
+    },
+    "task_id": {
+      "const": "ERL-AI-ECON-TRANSPARENCY-001"
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "protocol_complete": {
+      "type": "boolean"
+    },
+    "advertised_rate_present": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "advertised_rate_surface": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "actual_request_cost_directly_exposed": {
+      "type": "boolean"
+    },
+    "request_usage_directly_exposed": {
+      "type": "boolean"
+    },
+    "all_material_cost_components_disclosed": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "research_steps_required": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "research_minutes": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "provider_surfaces_consulted": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "account_or_privilege_required": {
+      "type": "boolean"
+    },
+    "support_required": {
+      "type": "boolean"
+    },
+    "external_research_required": {
+      "type": "boolean"
+    },
+    "reconstructable_actual_cost": {
+      "type": "boolean"
+    },
+    "literal_request_cost_usd": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "unresolved_cost_components": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "disclosure_burden_rating": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 5
+    },
+    "workload_basis": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "scale_scenarios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "equivalent_requests",
+          "state"
+        ],
+        "properties": {
+          "equivalent_requests": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "state": {
+            "enum": [
+              "EXACT",
+              "BOUNDED",
+              "UNBOUNDED_UNKNOWN",
+              "NOT_APPLICABLE"
+            ]
+          },
+          "known_total_cost_usd": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "lower_bound_usd": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "upper_bound_usd": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "scale_sensitivity_state": {
+      "enum": [
+        "NOT_CALCULATED",
+        "EXACT",
+        "BOUNDED",
+        "UNBOUNDED_UNKNOWN",
+        "MIXED"
+      ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "contradiction_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "independent_review_state": {
+      "enum": [
+        "PENDING",
+        "PASS",
+        "REVISE",
+        "REJECT"
+      ]
+    },
+    "activation_authorized": {
+      "const": false
+    },
+    "surface_class": {
+      "enum": [
+        "CONSUMER_NON_ACCOUNT_ATTRIBUTED",
+        "API_ENTERPRISE",
+        "OTHER"
+      ]
+    },
+    "rating_scope": {
+      "enum": [
+        "SURFACE_SPECIFIC",
+        "PROVIDER_WIDE"
+      ]
+    }
+  }
+}
