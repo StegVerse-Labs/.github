@@ -1,6 +1,6 @@
 {
   "artifact_type": "stegverse.stegindex_preflight_consumer_contract",
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "status": "ACTIVE_SOURCE_CONTRACT",
   "owner_repo": "StegVerse-Labs/.github",
   "resolver_repo": "StegVerse-Labs/StegIndex",
@@ -19,7 +19,15 @@
     "generic runtime-evidence blocker is not lawful when machine_continuation_required=true",
     "existing capability match must be evaluated before new implementation is created",
     "missing local StegIndex materialization must be reported as an exact dependency rather than fabricated resolution",
-    "repository-local handoff and machine-readable state remain canonical truth"
+    "repository-local handoff and machine-readable state remain canonical truth",
+    "capability-risk metadata may inform governance predicates but must not itself grant transition or execution authority"
   ],
-  "canonical_handoff": "STEGINDEX_PREFLIGHT_MIRROR_HANDOFF.md"
+  "canonical_handoff": "STEGINDEX_PREFLIGHT_MIRROR_HANDOFF.md",
+  "capability_risk_passthrough": {
+    "source": "StegIndex scripts/preflight.py capability_risk",
+    "decision_authority_effect": "NONE",
+    "runtime_dependency": false,
+    "copy_payloads": false,
+    "trusted_or_available_implies_authority": false
+  }
 }
