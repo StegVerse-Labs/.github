@@ -115,16 +115,28 @@ def validate_source_catalog_floor(source: Path, request: dict[str, Any]) -> dict
     repository = floor.get("repository_full_name")
     surface = floor.get("required_dependency_surface")
     matched = False
+    matched_scope = None
     for requirement in mandatory:
         if not isinstance(requirement, dict):
             continue
         repo = (requirement.get("repository") or {}).get("full_name")
-        surfaces = ((requirement.get("scope") or {}).get("dependency_surfaces") or [])
+        scope = requirement.get("scope") or {}
+        surfaces = (scope.get("dependency_surfaces") or [])
         if repo == repository and surface in surfaces:
             matched = True
+            matched_scope = scope
             break
-    if not matched:
+    if not matched or not isinstance(matched_scope, dict):
         raise RuntimeError("STALE_SOURCE_CATALOG: required repository/dependency surface missing")
+    observed_scope_sha256 = stable_hash(matched_scope)
+    expected_scope_sha256 = floor.get("scope_sha256")
+    if not isinstance(expected_scope_sha256, str) or len(expected_scope_sha256) != 64:
+        raise RuntimeError("source catalog floor scope digest missing")
+    if observed_scope_sha256 != expected_scope_sha256:
+        raise RuntimeError(
+            "STALE_SOURCE_CATALOG: claim scope digest mismatch "
+            + observed_scope_sha256 + " != " + expected_scope_sha256
+        )
     if floor.get("purpose") != "MINIMUM_SOURCE_CATALOG_FRESHNESS_ONLY":
         raise RuntimeError("source catalog floor purpose mismatch")
     if floor.get("task_eligibility_effect") != "NONE":
@@ -135,6 +147,7 @@ def validate_source_catalog_floor(source: Path, request: dict[str, Any]) -> dict
         "requested_at": task.get("requested_at"),
         "repository_full_name": repository,
         "required_dependency_surface": surface,
+        "scope_sha256": observed_scope_sha256,
         "task_status_observed": task.get("status"),
         "task_eligibility_effect": "NONE",
         "network_fetch_performed": False,

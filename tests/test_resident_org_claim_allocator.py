@@ -48,6 +48,10 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
         self.assertEqual(floor["required_dependency_surface"], "site:stegos-de006-bound-inference-publication")
         self.assertEqual(floor["purpose"], "MINIMUM_SOURCE_CATALOG_FRESHNESS_ONLY")
         self.assertEqual(floor["task_eligibility_effect"], "NONE")
+        self.assertEqual(
+            floor["scope_sha256"],
+            "98096b5825e85dd558f9cb5a4e882002543d4c703cfa7981cd2d826c80c1a05b",
+        )
 
     def test_allocator_lock_blocks_live_concurrent_owner_without_granting_authority(self):
         with tempfile.TemporaryDirectory() as td:
@@ -66,23 +70,9 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
 
     def _write_minimal_source(self, source: Path) -> None:
         (source / "tasks").mkdir(parents=True, exist_ok=True)
+        canonical = json.loads((ROOT / "tasks/TASK-2026-0008.json").read_text(encoding="utf-8"))
         (source / "tasks/TASK-2026-0008.json").write_text(
-            json.dumps({
-                "schema": "stegverse.org-task/v0.2",
-                "task_id": "TASK-2026-0008",
-                "organization": "StegVerse-Labs",
-                "goal": "test",
-                "status": "queued",
-                "requirements": {
-                    "mandatory": [{
-                        "repository": {"full_name": "StegVerse-Labs/Site"},
-                        "scope": {"dependency_surfaces": ["site:stegos-de006-bound-inference-publication"]},
-                    }],
-                    "optional": [],
-                },
-                "dependencies": [],
-                "requested_at": "2026-09-03T00:28:00Z",
-            }),
+            json.dumps(canonical),
             encoding="utf-8",
         )
         (source / "control").mkdir(parents=True, exist_ok=True)
@@ -153,6 +143,10 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             self.assertEqual(result["source_catalog_floor"]["state"], "SOURCE_CATALOG_FLOOR_SATISFIED")
             self.assertEqual(result["source_catalog_floor"]["task_id"], "TASK-2026-0008")
             self.assertEqual(result["source_catalog_floor"]["task_eligibility_effect"], "NONE")
+            self.assertEqual(
+                result["source_catalog_floor"]["scope_sha256"],
+                "98096b5825e85dd558f9cb5a4e882002543d4c703cfa7981cd2d826c80c1a05b",
+            )
             self.assertEqual(result["control_inputs"]["state"], "CONTROL_INPUTS_READY")
             self.assertFalse(result["control_inputs"]["runtime_task_state_overwritten"])
             self.assertIn("TASK-2026-0008.json", result["control_inputs"]["imported_task_files"])
@@ -281,6 +275,40 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             self.assertEqual(result["state"], "SOURCE_CATALOG_FLOOR_SATISFIED")
             self.assertEqual(result["task_status_observed"], "completed")
             self.assertEqual(result["task_eligibility_effect"], "NONE")
+
+
+    def test_old_task8_scope_digest_fails_before_allocator(self):
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            source = base / "source"
+            runtime = base / "runtime"
+            self._write_minimal_source(source)
+            task_path = source / "tasks/TASK-2026-0008.json"
+            value = json.loads(task_path.read_text(encoding="utf-8"))
+            scope = value["requirements"]["mandatory"][0]["scope"]
+            scope["paths"] = [
+                "stegos-bootstrap/index.html",
+                "stegos-bootstrap/admitted-inference.js",
+                "stegos-bootstrap/command-ingress.js",
+                "stegos-bootstrap/command.html",
+                "stegos-bootstrap/service-worker.js",
+            ]
+            task_path.write_text(json.dumps(value), encoding="utf-8")
+            request_path = runtime / consumer.REQUEST_REL
+            request_path.parent.mkdir(parents=True, exist_ok=True)
+            request_path.write_text(json.dumps(self.request()), encoding="utf-8")
+            allocator_path = runtime / consumer.ALLOCATOR_REL
+            allocator_path.parent.mkdir(parents=True, exist_ok=True)
+            allocator_path.write_text("# canonical allocator\n", encoding="utf-8")
+            calls = []
+            with self.assertRaisesRegex(RuntimeError, "claim scope digest mismatch"):
+                consumer.consume(
+                    source,
+                    runtime,
+                    runner=lambda *a, **k: calls.append((a, k)),
+                    env={"PATH": "/bin", "HOME": td},
+                )
+            self.assertEqual(calls, [])
 
     def test_task_catalog_import_is_append_only_and_preserves_runtime_status(self):
         with tempfile.TemporaryDirectory() as td:
