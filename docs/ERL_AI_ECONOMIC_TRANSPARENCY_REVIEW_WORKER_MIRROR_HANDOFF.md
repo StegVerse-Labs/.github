@@ -79,3 +79,21 @@ The source refresh path now copies `review-packages/` and the new consumer into 
 The request/consumer grants no claim, fence, credential, heartbeat, research-promotion, activation, publication, or repository-writeback authority. It only asks the already-authorized WorkerCoordinator to attempt the existing admitted task.
 
 Runtime completion still requires authentic fresh claim/fence execution and the bounded review receipt.
+
+
+## 2026-09-03 portable targeted-dispatch addressability repair
+
+Live main-state inspection found one remaining source/control addressability defect after the resident dispatch integration: the generic dispatcher registered `erl_ai_economic_transparency_review`, but `scripts/refresh_and_dispatch_resident_requests.py` did not admit that selector in its exact-consumer allowlist.
+
+The defect was repaired in PR #951 / merge `f0ad65023b5ec8d9b1b5787492efb3f27af5fc2f` by adding only the already-existing ERL selector to the portable bridge allowlist.
+
+Effect of the repair:
+- the existing portable local refresh + exact-consumer dispatch bridge can now target `erl_ai_economic_transparency_review` directly;
+- no second scheduler, heartbeat, worker registry, credential path, claim/fence authority, or runtime owner was created;
+- no review-completion, activation, publication, or repository-writeback authority was added;
+- no runtime execution is inferred from the merge.
+
+The exact required review receipt remains unobserved:
+`receipts/erl-ai-economic-transparency-review/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json`
+
+Current blocker remains `RESIDENT_EXECUTION_RECEIPT_PENDING`. No user action is presently required.
