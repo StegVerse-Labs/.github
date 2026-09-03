@@ -55,6 +55,7 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
                     "HOME": "/home/stegverse",
                     "STEGVERSE_SOVEREIGN_NODE": "1",
                     "STEGVERSE_LLM_ADAPTER_ROOT": "/srv/stegverse/llm-adapter",
+                    "STEGVERSE_STEGINDEX_SOURCE_ROOT": "/srv/stegverse/StegIndex",
                     "GITHUB_TOKEN": "forbidden",
                     "CLOUDFLARE_API_TOKEN": "forbidden",
                 },
@@ -69,6 +70,7 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
             self.assertFalse(receipt["github_token_required"])
             self.assertFalse(receipt["second_machine_required"])
             for _command, kwargs in calls:
+                self.assertEqual(kwargs["env"].get("STEGVERSE_STEGINDEX_SOURCE_ROOT"), "/srv/stegverse/StegIndex")
                 self.assertNotIn("GITHUB_TOKEN", kwargs["env"])
                 self.assertNotIn("CLOUDFLARE_API_TOKEN", kwargs["env"])
 

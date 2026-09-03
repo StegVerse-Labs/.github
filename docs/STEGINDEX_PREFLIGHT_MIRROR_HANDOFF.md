@@ -194,3 +194,25 @@ Output:
 - state `COMPLETE` only when both predicates are observed.
 
 This verifier does not create either event, does not rerun a completed resident activation, and does not infer resident proof from source/CI/deployment. `runtime_activation_claimed=false`; authority effect is `NONE_EVIDENCE_VERIFICATION_ONLY`.
+
+
+## Resident direct-root forwarding repair — 2026-09-03
+
+Live resident-proof reconciliation identified a bounded execution seam in the existing dispatcher environment sanitizer.
+
+The one-shot StegIndex consumer already supports both:
+- `STEGVERSE_STEGINDEX_SOURCE_ROOT`;
+- `STEGVERSE_REPO_ROOTS_JSON["StegVerse-Labs/StegIndex"]`.
+
+However, `scripts/dispatch_resident_execution_requests.py` forwarded the repository-root map but omitted the direct non-secret `STEGVERSE_STEGINDEX_SOURCE_ROOT` binding. A resident configured with the canonical direct binding and no equivalent root-map entry could therefore lose that locator at the dispatcher boundary and incorrectly produce `SOURCE_ROOTS_PENDING`.
+
+Repair:
+- forward `STEGVERSE_STEGINDEX_SOURCE_ROOT` through the existing non-secret resident environment allowlist;
+- retain hosted-environment rejection;
+- retain GitHub/provider-token stripping;
+- retain TV/TVC credential authority and GitHub-token runtime authority NONE;
+- add regression coverage proving the direct StegIndex root survives dispatcher sanitization while forbidden tokens do not.
+
+This repair does not create resident evidence, rerun activation, grant authority, introduce network source fetch, or add another scheduler/runtime/device dependency.
+
+Authentic resident materialization and blocker-derived preflight receipt remain separate required observations.
