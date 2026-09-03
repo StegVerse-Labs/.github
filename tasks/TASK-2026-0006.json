@@ -3,14 +3,15 @@
   "task_id": "TASK-2026-0006",
   "organization": "StegVerse-Labs",
   "goal": "Admit and publish the exact StegOS bounded web-command ingress through StegVerse-Labs/Site for physical iPod validation without granting model, transport, hosted CI, Render, or non-TV/TVC credential authority.",
-  "status": "queued",
+  "status": "proposed",
   "requested_at": "2026-08-21T04:00:00Z",
   "priority_class": "release",
   "rank_reason": [
     "StegVerse-Labs/StegOS#17 source implementation is COMPLETE_RELEASED at 19c14d12658173372e8df45102e58ca4b745976e",
     "StegVerse-Labs/Site#385 is CLOSED_COMPLETED and the prior overlapping #298 Site claim is terminal RELEASED_INTEGRATION",
     "StegVerse-Labs/Site#399 is the canonical collision-safe Site projection task",
-    "physical iPod positive/negative command-ingress validation cannot begin until the exact public command consumer is published"
+    "physical iPod positive/negative command-ingress validation cannot begin until the exact public command consumer is published",
+    "Superseded for allocation by TASK-2026-0008 / StegVerse-Labs/Site#932 because the current DE-006-bound StegOS projection includes the previously queued command-ingress publication surface and must be projected from the newer merged StegOS source."
   ],
   "requirements": {
     "mandatory": [
@@ -57,5 +58,8 @@
     "merge_target": "main",
     "direct_push_allowed": false,
     "pull_request_required": true
-  }
+  },
+  "flags": [
+    "superseded"
+  ]
 }
