@@ -83,6 +83,8 @@ STATIC_FILES = (
     Path("scripts/activate_resident_stack.py"),
     Path("scripts/continue_stegverse001_evidence_chain.py"),
     Path("scripts/dispatch_resident_execution_requests.py"),
+    Path("scripts/consume_org_claim_allocator_request.py"),
+    Path("control/resident-execution-request.d/org-claim-allocator-001.json"),
     Path("scripts/refresh_and_dispatch_resident_requests.py"),
     Path("scripts/run_stegverse001_activation_progression.py"),
     Path("scripts/materialize_live_cosv_packet.py"),
