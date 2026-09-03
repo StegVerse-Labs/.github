@@ -38,6 +38,7 @@ class ResidentStackActivationTests(unittest.TestCase):
             rtg = root / "RTG"
             gtg = root / "GTG"
             ae = root / "AE"
+            stegindex = root / "StegIndex"
             (stegos / "stegos").mkdir(parents=True)
             (kv / "runtime").mkdir(parents=True)
             (stegos / "stegos" / "intr_backbone.py").write_text("# intr\n")
@@ -62,6 +63,12 @@ class ResidentStackActivationTests(unittest.TestCase):
             (master_records / "scripts" / "import_stegverse001_autonomy_receipt.py").write_text("# import\n")
             for source_root in (micro_node, tt, rtg, gtg, ae):
                 source_root.mkdir(parents=True, exist_ok=True)
+            (stegindex / "scripts").mkdir(parents=True)
+            (stegindex / "registry").mkdir(parents=True)
+            (stegindex / "STEGINDEX_MIRROR_HANDOFF.md").write_text("# handoff\n")
+            (stegindex / "scripts" / "preflight.py").write_text("# preflight\n")
+            (stegindex / "registry" / "capabilities.json").write_text('{"entries":[]}\n')
+            (stegindex / "registry" / "predicates.json").write_text('{"predicates":[]}\n')
             (source / "scripts" / "package_sovereign_control_plane_bundle.py").write_text("# packager\n")
             (llm / "scripts" / "stegdeploy_bootstrap.py").write_text("# deploy\n")
             receipt_path = root / "activation.json"
@@ -76,6 +83,7 @@ class ResidentStackActivationTests(unittest.TestCase):
                         "--rtg-root": rtg,
                         "--gtg-root": gtg,
                         "--ae-root": ae,
+                        "--stegindex-root": stegindex,
                     }
                     for flag, expected in expected_roots.items():
                         self.assertIn(flag, command)
@@ -122,6 +130,7 @@ class ResidentStackActivationTests(unittest.TestCase):
                 rtg_root=rtg,
                 gtg_root=gtg,
                 ae_root=ae,
+                stegindex_root=stegindex,
                 health_url="http://127.0.0.1:8000/health",
                 receipt_path=receipt_path,
                 runner=runner,
@@ -139,6 +148,7 @@ class ResidentStackActivationTests(unittest.TestCase):
             self.assertTrue(receipt["tvc_source_bundled"])
             self.assertTrue(receipt["master_records_source_bundled"])
             self.assertTrue(receipt["micro_node_source_bundled"])
+            self.assertTrue(receipt["stegindex_source_bundled"])
             self.assertEqual(receipt["formal_sources_bundled"], {"TT": True, "RTG": True, "GTG": True, "AE": True})
             self.assertFalse(receipt["sv002_principal_execution_claimed"])
             self.assertFalse(receipt["formal_evaluation_claimed"])
