@@ -104,6 +104,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
         source / "state_language",
         source / "scripts",
         source / "source-bundles",
+        source / "review-packages",
         source / "tasks",
         source / "control/worker-registry.d",
         source / "control/process-worker-adapters.d",
