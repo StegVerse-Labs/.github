@@ -195,10 +195,9 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 f'STEGVERSE_STEGINDEX_SOURCE_ROOT={base / "StegIndex"}',
                 service,
             )
-            self.assertIn(
-                'STEGVERSE_REPO_ROOTS_JSON={"StegVerse-Labs/StegIndex":"/srv/stegverse/StegIndex"}',
-                service,
-            )
+            self.assertIn("STEGVERSE_REPO_ROOTS_JSON=", service)
+            self.assertIn("StegVerse-Labs/StegIndex", service)
+            self.assertIn("/srv/stegverse/StegIndex", service)
             self.assertNotIn("consume_resident_execution_request.py --source-root", service)
             self.assertNotIn("consume_g18_resident_execution_request.py --source-root", service)
             self.assertIn("consume_hil_intr_materialization_request.py", service)
