@@ -4,21 +4,32 @@
   "owner": "StegVerse-Labs/.github#242",
   "canonical_contract": "docs/WORKER_BLOCKER_FALLBACK_INVARIANT.md",
   "source_runtime_policy": "docs/BLOCKER_RESOLUTION_MIRROR_HANDOFF.md",
-  "state": "ADOPTION_IN_PROGRESS",
+  "state": "ADOPTION_IN_PROGRESS_ALL_FAMILIES_CLASSIFIED",
   "credential_authority": "TV/TVC_ONLY",
   "github_token_runtime_authority": "NONE",
   "worker_families": [
     {
       "family": "heartbeat_runtime",
-      "state": "ALREADY_PARTIALLY_CONFORMANT",
-      "owner": "StegVerse-Labs/.github#65",
-      "next_action": "verify continue-after-persist semantics in shared runtime tests without competing with machine-owned scope"
+      "state": "FOLLOWUP_TASK_CREATED",
+      "owner": "StegVerse-Labs/.github#901 + #65",
+      "next_action": "produce validation-only A-blocked/B-continues proof without competing with #65 runtime ownership",
+      "evidence_required": [
+        "deterministic multi-item continuation test",
+        "hosted validation-only SUCCESS run/job",
+        "no authority widening"
+      ]
     },
     {
       "family": "organization_repository_completion",
-      "state": "ADOPTED_REFERENCE_IMPLEMENTATION",
+      "state": "FOLLOWUP_TASK_CREATED",
       "owner": "Admissible-Existence/.github#4",
-      "next_action": "obtain hosted proof of PERSIST_BLOCKER_AND_CONTINUE controller hardening"
+      "next_action": "complete existing post-repair hosted worker/observer/TVC proof and prove PERSIST_BLOCKER_AND_CONTINUE durability",
+      "evidence_required": [
+        "post-repair hosted worker run with durable reports on main",
+        "activation observer evidence",
+        "TVC hosted proof",
+        "continued progress without chat dependence"
+      ]
     },
     {
       "family": "validation_reconciliation",
@@ -50,9 +61,15 @@
     },
     {
       "family": "deployment_runtime_activation",
-      "state": "FOLLOWUP_TASK_REQUIRED",
-      "owner": "StegVerse-Labs/.github#242",
-      "next_action": "audit runtime activation workers under existing machine-owned collision boundaries"
+      "state": "FOLLOWUP_TASK_CREATED",
+      "owner": "StegVerse-Labs/.github#901 + #65",
+      "next_action": "prove deployment/runtime activation controller preserves blocked surface and continues later admissible non-colliding work",
+      "evidence_required": [
+        "representative runtime activation controller path",
+        "A-blocked/B-continues proof",
+        "hosted validation-only SUCCESS run/job",
+        "no runtime activation inferred from validation"
+      ]
     },
     {
       "family": "mailbox_failure_remediation",
