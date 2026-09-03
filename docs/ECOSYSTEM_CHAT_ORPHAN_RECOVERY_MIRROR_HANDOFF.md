@@ -424,3 +424,14 @@ shared owner: #814
 This is source-of-truth registration only. Distinct deployment-local predicates remain independently NOT OBSERVED: resident presence/currentness, request consumption, fresh parent fence >22, private model execution, TVC ROUTE_ADMITTED, exact LLM-adapter execution, measured usage persistence, same-execution Master Records reconstruction, and persistent conversational runtime readiness.
 
 HB remains reference/observability only; fresh claim/fence authority remains independent task control; TV/TVC remains sole credential authority; GitHub-token runtime authority remains NONE.
+
+
+## Same-device execution correction — 2026-09-03
+
+Architecture invariant `#201` now prohibits any other machine as a required routine inference dependency, including another StegVerse node.
+
+The canonical Ecosystem Chat parent must therefore execute its model/runtime, TVC route consumption, exact LLM-adapter path, measured usage capture, and reconstruction from the same established device execution boundary. A remote private endpoint or remote StegVerse model host may be an optional peer only; it cannot be required for product activation.
+
+If the current device lacks the required same-device runtime path, the state is `INCOMPLETE_REQUIRES_CONTINUED_BUILD` / `OTHER_MACHINE_REQUIRED`, not "execution pending on another sovereign machine."
+
+The existing authentic StegOS iOS device-local inference proof remains relevant evidence that same-device inference is technically present on this device class, but it does not by itself satisfy this parent execution chain.

@@ -368,3 +368,26 @@ shared owner: #814
 This registration changes no runtime truth. The first unresolved shared predicate remains `resident_process_alive_supervised`, followed by independently observed node freshness, request consumption, `SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED`, retained receipt, Master Records reconstruction, and SV002 disposition.
 
 Source, merge, CI, HB progression, request presence, or registry membership cannot satisfy those predicates.
+
+
+## Same-device execution correction — 2026-09-03
+
+Architecture invariant: `StegVerse-Labs/.github#201`.
+
+The earlier wording that treated a separate "sovereign resident execution surface" as a possible external prerequisite is superseded.
+
+```text
+required execution scope: SAME_DEVICE
+requires_other_machine: false
+other StegVerse machine allowed as required executor: false
+remote machine role: OPTIONAL only
+blocker when another machine is required:
+  OTHER_MACHINE_REQUIRED
+  INCOMPLETE_REQUIRES_CONTINUED_BUILD
+```
+
+The existing Python resident progression remains valid as a reference implementation and for same-device hosts that can execute it locally. It MUST NOT become a requirement that the active device delegate routine activation/execution to another machine.
+
+For the current device class, completion therefore requires an equivalent same-device StegOS execution path that preserves the same TV/TVC lease, WorkerCoordinator admission/claim/fence, receipt, Master Records, and SV002 evidence semantics. Until that same-device path is independently installed and observed, this lane is implementation-incomplete rather than "waiting for another sovereign machine."
+
+No runtime evidence is claimed by this correction.
