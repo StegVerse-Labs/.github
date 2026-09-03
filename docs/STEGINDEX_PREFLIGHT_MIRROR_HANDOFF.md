@@ -216,3 +216,26 @@ Repair:
 This repair does not create resident evidence, rerun activation, grant authority, introduce network source fetch, or add another scheduler/runtime/device dependency.
 
 Authentic resident materialization and blocker-derived preflight receipt remain separate required observations.
+
+
+## Resident direct-root forwarding validated closure — 2026-09-03
+
+Canonical repair:
+- PR #915
+- merge: `8be33ef21e77e8417e0ef71f43dbca3a570a5c89`
+- validated head: `cb5387c36b781fd29bd33207342f2719b44a093f`
+
+Observed validation:
+- organization control-plane validation `33766137513` — SUCCESS
+- Heartbeat Worker Project validation `33766137590` — SUCCESS
+- Cross-Framework Current-Basis Resident Request validation `33766137593` — SUCCESS
+
+The direct non-secret `STEGVERSE_STEGINDEX_SOURCE_ROOT` binding is now preserved through resident dispatcher sanitization on canonical main.
+
+This closes the source-level forwarding seam only. It does not establish:
+- resident StegIndex materialization;
+- one-shot request consumption;
+- blocker-derived resolution admission;
+- StegIndex resident operational proof COMPLETE.
+
+Current authentic operational predicates therefore remain evidence-only and unresolved until deployment-local resident receipts exist.
