@@ -170,3 +170,27 @@ After this change:
 - GitHub token runtime authority remains NONE.
 
 No authentic resident discovery refresh is claimed by this source propagation change.
+
+
+## Exact resident operational proof verifier — 2026-09-03
+
+The remaining resident evidence predicates now have an explicit non-authorizing verifier.
+
+Implemented:
+- `scripts/consume_one_shot_resident_stack_activation_request.py` records secret-free source-root observation:
+  - `resolved_source_roots` as logical root names only;
+  - `stegindex_source_root_resolved`;
+  - `source_root_resolution_observed`;
+- an already-completed one-shot request can re-observe current local source-root availability without re-executing activation;
+- `scripts/verify_stegindex_resident_operational_proof.py`;
+- `tests/test_stegindex_resident_operational_proof.py`.
+
+The verifier requires BOTH:
+1. a resident one-shot consumption receipt proving the local StegIndex source root was actually resolved with no network source fetch and TV/TVC / no-GitHub-token runtime authority preserved;
+2. a resident `stegverse.stegindex-resolution-admission-preflight/v1` receipt whose nested preflight has `canonical_resolver_invoked=true` and is not `PREFLIGHT_UNAVAILABLE`.
+
+Output:
+- `receipts/sovereign-host/stegindex-resident-operational-proof.latest.json`
+- state `COMPLETE` only when both predicates are observed.
+
+This verifier does not create either event, does not rerun a completed resident activation, and does not infer resident proof from source/CI/deployment. `runtime_activation_claimed=false`; authority effect is `NONE_EVIDENCE_VERIFICATION_ONLY`.
