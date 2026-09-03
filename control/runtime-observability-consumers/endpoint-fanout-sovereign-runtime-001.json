@@ -1,0 +1,70 @@
+{
+  "schema": "stegverse.hb-runtime-resident-observability.consumer/v1",
+  "consumer_id": "ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+  "consumer_repository": "StegVerse-Labs/.github",
+  "consumer_handoff": "docs/ENDPOINT_FANOUT_LIVE_RUNTIME_MIRROR_HANDOFF.md",
+  "consumer_state_ref": "handoffs/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json",
+  "consumer_issue": "StegVerse-Labs/.github#612",
+  "registration_issue": "StegVerse-Labs/.github#863",
+  "shared_owner_issue": "StegVerse-Labs/.github#814",
+  "shared_contract": "management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json",
+  "canonical_projector": "scripts/project_hb_runtime_presence.py",
+  "resident_projection_module": "heartbeat_runtime/runtime_presence_projection.py",
+  "observed_repository_state_at": "2026-09-03T01:56:30Z",
+  "first_unresolved_shared_runtime_predicate": "resident_process_alive_supervised",
+  "predicate_map": {
+    "resident_process_alive_supervised": {
+      "source_class": "direct deployment-local sovereign runtime activation/presence receipt",
+      "observed": false
+    },
+    "node_runtime_fresh": {
+      "source_class": "HB reference plus direct current resident/worker observation correlation",
+      "observed": false
+    },
+    "authentic_device_kv_parent_observed": {
+      "source_class": "receipts/device-kv-intr/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json with state OBSERVED and transition DEVICE_KV_INTR_OBSERVED plus exact carrier/recovery refs",
+      "observed": false
+    },
+    "governed_request_consumed": {
+      "source_class": "resident stegos-kv-intr-chain consumption evidence for SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+      "observed": false
+    },
+    "runtime_execution_completed": {
+      "source_class": "receipts/endpoint-fanout/SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001.json with transition ENDPOINT_FANOUT_SOVEREIGN_RUNTIME_OBSERVED",
+      "observed": false
+    },
+    "exact_two_report_receipt_retained": {
+      "source_class": "endpoint-fanout terminal receipt with report_count=2",
+      "observed": false
+    },
+    "kv_return_candidate_preserved": {
+      "source_class": "terminal receipt proving candidate_only=true and canonical_state_changed=false",
+      "observed": false
+    },
+    "master_records_travel_report_retained": {
+      "source_class": "exact retained Master Records travel report/hash referenced by endpoint-fanout receipt",
+      "observed": false
+    },
+    "replay_reconstruction_proven": {
+      "source_class": "independent retained evidence replay/reconstruction PASS where available",
+      "observed": false
+    }
+  },
+  "no_new_runtime_implementation_required_for": [
+    "HB reference derivation",
+    "runtime presence projection",
+    "DEVICE_KV predecessor worker",
+    "endpoint fanout worker",
+    "WorkerCoordinator claim/fence",
+    "resident request/rendezvous transport",
+    "endpoint fanout receipt writer"
+  ],
+  "source_or_ci_may_satisfy_runtime_predicate": false,
+  "heartbeat_grants_authority": false,
+  "hb_derived_signal_grants_authority": false,
+  "intr_governs_admissible_movement": true,
+  "workercoordinator_retains_claim_fence_authority": true,
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "authority_effect": "NONE_OBSERVATION_ONLY"
+}
