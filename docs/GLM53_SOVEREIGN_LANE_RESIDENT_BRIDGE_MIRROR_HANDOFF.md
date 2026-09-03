@@ -121,3 +121,19 @@ Rules:
 - absence of these measurements remains a cost-evidence blocker even if behavioral lane-11 execution succeeds.
 
 This forwarding grants no measurement authority. The resident surface still has to obtain authentic measurements or bounded values from its actual runtime/resource accounting.
+
+
+## Process-adapter measurement admission closure — 2026-09-02
+
+Issue: #845
+
+The resident dispatcher, targeted bridge, request consumer, and worker already preserved the four optional sovereign infrastructure measurements, but the process adapter env allowlist did not. The adapter now explicitly admits:
+
+```text
+STEGVERSE_GLM53_ENERGY_KWH
+STEGVERSE_GLM53_HARDWARE_AMORTIZATION_USD
+STEGVERSE_GLM53_ENERGY_COST_USD
+STEGVERSE_GLM53_STORAGE_NETWORK_RUNTIME_OVERHEAD_USD
+```
+
+This closes the final known source-level measurement-forwarding seam. Missing values remain missing; no estimate/default is introduced. Authentic resident execution and measurements remain pending.
