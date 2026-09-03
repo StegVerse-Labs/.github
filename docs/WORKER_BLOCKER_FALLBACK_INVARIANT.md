@@ -221,3 +221,18 @@ Remaining proof-owned families:
 Issue #901 is validation/adoption proof only and may not compete with #65 machine-owned runtime mutation scope. Organization-completion proof remains with its existing canonical owner rather than being duplicated in StegVerse-Labs.
 
 The adoption validator now rejects vague follow-up states and requires every `FOLLOWUP_TASK_CREATED` record to name a durable owner and explicit evidence requirements.
+
+## Machine-owned runtime continuation proof lane — 2026-09-03
+
+Issue: `StegVerse-Labs/.github#901`
+
+Validation-only test:
+- `tests/test_runtime_blocker_continuation_proof.py`
+
+The test uses the real `WorkerCoordinator.cycle()` multi-item loop with:
+1. a persisted BLOCKED `SHWP-DURABLE-RUNTIME-ACTIVATION` task carrying durable owner/release-condition metadata;
+2. a later ACTIVE non-colliding task.
+
+It proves the controller iterates both tasks in an untargeted cycle and preserves the blocked task as blocked while the later task remains executable. A separate targeted-cycle assertion proves this claim is not incorrectly generalized to intentionally targeted one-task execution.
+
+No production runtime code is modified by this proof lane.
