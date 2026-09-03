@@ -39,6 +39,7 @@ REQUIRED_SOURCE_FILES = (
     Path("scripts/run_worker_runtime.py"),
     Path("scripts/project_hb_runtime_presence.py"),
     Path("scripts/project_de006_runtime_observability.py"),
+    Path("scripts/verify_stegos_parent_evidence_candidate.py"),
     Path("control/runtime-observability-consumers/decision-envelope-de006.json"),
     Path("scripts/dispatch_resident_execution_requests.py"),
     Path("scripts/consume_resident_execution_request.py"),
