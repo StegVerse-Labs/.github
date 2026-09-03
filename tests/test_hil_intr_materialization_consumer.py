@@ -96,9 +96,12 @@ def fake_materializer(*, source, intake_runtime, request, ingress_receipt, env):
             "source_receipt_id": "sha256:" + "f" * 64,
             "runtime_instantiated": True,
             "local_identity_verified": True,
-            "hil_public_https_rendezvous_observed": True,
-            "public_gateway_readiness_verified": True,
-            "public_gateway_origin": "https://stegverse.org",
+            "hil_public_https_rendezvous_observed": False,
+            "public_gateway_readiness_verified": False,
+            "public_gateway_origin": None,
+            "public_observation_is_downstream_optional": True,
+            "same_device_execution_required": True,
+            "requires_other_machine": False,
             "credential_authority": "TV/TVC",
             "authority_effect": "NONE_RUNTIME_MATERIALIZATION_ONLY",
         },
@@ -149,12 +152,15 @@ class HILInTrMaterializationConsumerTests(unittest.TestCase):
             self.assertTrue(saved["esrl_runtime_instantiated"])
             self.assertTrue(saved["esrl_local_identity_verified"])
             self.assertEqual(saved["esrl_lease_state"], "LEASE_OPEN")
-            self.assertTrue(saved["hil_public_https_rendezvous_observed"])
-            self.assertTrue(saved["public_gateway_readiness_verified"])
-            self.assertEqual(saved["public_gateway_origin"], "https://stegverse.org")
+            self.assertFalse(saved["hil_public_https_rendezvous_observed"])
+            self.assertFalse(saved["public_gateway_readiness_verified"])
+            self.assertIsNone(saved["public_gateway_origin"])
+            self.assertTrue(saved["public_observation_is_downstream_optional"])
+            self.assertTrue(saved["same_device_execution_required"])
+            self.assertFalse(saved["requires_other_machine"])
             self.assertFalse(saved["claim_or_fence_minted_by_consumer"])
 
-    def test_consumer_rejects_local_ready_without_public_gateway(self) -> None:
+    def test_consumer_rejects_non_open_local_lease(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             source, runtime, _ = prepare(Path(td))
             def bad_materializer(**kwargs):
@@ -185,3 +191,16 @@ class HILInTrMaterializationConsumerTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+    def test_consumer_rejects_other_machine_runtime_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            source, runtime, _ = prepare(Path(td))
+            def bad_materializer(**kwargs):
+                value = fake_materializer(**kwargs)
+                value["evidence"]["requires_other_machine"] = True
+                value["evidence"]["same_device_execution_required"] = True
+                return value
+            result = mod.consume_all(source, runtime, runtime_materializer=bad_materializer)
+            self.assertEqual(result["results"][0]["state"], "REQUEST_REJECTED")
+            self.assertIn("esrl_same_device_invariant_not_proven", result["results"][0]["reason"])
