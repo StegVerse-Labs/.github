@@ -213,14 +213,14 @@ def retain_claim_grant_evidence(runtime: Path, selected_task_id: str) -> dict[st
         raise RuntimeError("post-allocation claim registry missing")
     claims_state = load_json(claims_path)
     generation = claims_state.get("generation")
-    if not isinstance(generation, int) or isinstance(generation, bool) or generation < 1:
-        raise RuntimeError("post-allocation claim registry generation invalid")
     granted = [
         claim for claim in (claims_state.get("claims") or [])
         if isinstance(claim, dict) and claim.get("task_id") == selected_task_id
     ]
     if not granted:
         raise RuntimeError("selected task has no retained canonical claim")
+    if not isinstance(generation, int) or isinstance(generation, bool) or generation < 1:
+        raise RuntimeError("post-allocation claim registry generation invalid")
     dependency_surfaces: set[str] = set()
     fences: list[int] = []
     for claim in granted:
