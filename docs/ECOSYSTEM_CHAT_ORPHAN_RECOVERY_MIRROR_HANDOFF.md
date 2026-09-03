@@ -408,3 +408,33 @@ The canonical executable handoff `handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.jso
 
 This is source durability and machine-readable reconciliation only. It does not prove resident source refresh, request consumption, fresh fence issuance, model execution, Master Records reconstruction, or product activation.
 
+
+## Shared HB runtime-observability registry binding — 2026-09-03
+
+The existing Ecosystem Chat sovereign-inference parent is now explicitly registered as a consumer of the canonical shared HB Runtime Presence / Resident Observability contract:
+
+```text
+consumer descriptor:
+  control/runtime-observability-consumers/ecosystem-chat-sovereign-inference-001.json
+registration issue: #853
+registration PR: #854
+registration merge: c25a76729c02111d914c486f845979790088e245
+shared owner: #814
+```
+
+This registration changes no runtime truth or authority. The distinct deployment-local predicates remain:
+
+```text
+resident_process_alive_supervised: NOT OBSERVED
+node_runtime_fresh: NOT OBSERVED
+resident_request_consumed: NOT OBSERVED
+fresh_parent_fence_gt_22: NOT OBSERVED
+private_model_execution: NOT OBSERVED
+TVC_ROUTE_ADMITTED: NOT OBSERVED
+exact_llm_adapter_execution: NOT OBSERVED
+measured_usage_persisted: NOT OBSERVED
+same_execution_master_records_reconstruction: NOT OBSERVED
+persistent_conversational_runtime_ready: NOT OBSERVED
+```
+
+HB remains reference/observability only. Fresh claim/fence authority remains independent task control; TV/TVC remains sole credential authority; GitHub-token runtime authority remains NONE.
