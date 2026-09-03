@@ -72,6 +72,19 @@ class PortableRefreshTargetedExecutionTests(unittest.TestCase):
         self.assertNotIn("GITHUB_ACTIONS", env)
         self.assertNotIn("ZEROEX_API_KEY", env)
 
+    def test_clean_exec_env_preserves_direct_stegindex_root(self) -> None:
+        env = mod.clean_exec_env({
+            "PATH": "/bin",
+            "HOME": "/home/stegverse",
+            "STEGVERSE_STEGINDEX_SOURCE_ROOT": "/srv/stegverse/StegIndex",
+            "GITHUB_TOKEN": "forbidden",
+        })
+        self.assertEqual(
+            env["STEGVERSE_STEGINDEX_SOURCE_ROOT"],
+            "/srv/stegverse/StegIndex",
+        )
+        self.assertNotIn("GITHUB_TOKEN", env)
+
     def _write_claimed_g18_registry(self, runtime: Path, *, state: str = "BLOCKED", claim: bool = True) -> None:
         (runtime / "control").mkdir(parents=True, exist_ok=True)
         task = {
