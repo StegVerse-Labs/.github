@@ -160,6 +160,16 @@ def resolve_roots(values:Mapping[str,str]|None=None)->tuple[dict[str,Path],list[
         roots[name]=candidate
     return roots,missing
 
+def refresh_stegindex_operational_proof(runtime_root:Path,runner:Runner=subprocess.run)->dict[str,Any]|None:
+    script=runtime_root/"scripts/verify_stegindex_resident_operational_proof.py"
+    if not script.is_file(): return None
+    completed=runner(
+      [sys.executable,str(script),"--runtime-root",str(runtime_root)],
+      cwd=runtime_root,capture_output=True,text=True,check=False,timeout=30,
+      env={"PATH":os.environ.get("PATH","")}
+    )
+    return parse_last_json(completed.stdout)
+
 def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run,env:Mapping[str,str]|None=None)->dict[str,Any]:
     source=source_root.resolve(); runtime=runtime_root.resolve()
     request_path=runtime/REQUEST_REL
@@ -190,6 +200,8 @@ def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run,env:
               "authority_effect":"NONE_REQUEST_ONLY"
             }
             receipt_path.write_text(json.dumps(out,indent=2,sort_keys=True)+"\n")
+            out["stegindex_operational_proof"]=refresh_stegindex_operational_proof(runtime,runner)
+            receipt_path.write_text(json.dumps(out,indent=2,sort_keys=True)+"\n")
             return out
     roots,missing=resolve_roots(env)
     if missing:
@@ -204,6 +216,8 @@ def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run,env:
           "request_granted_authority":False,"authority_effect":"NONE_REQUEST_ONLY"
         }
         receipt_path.parent.mkdir(parents=True,exist_ok=True)
+        receipt_path.write_text(json.dumps(out,indent=2,sort_keys=True)+"\n")
+        out["stegindex_operational_proof"]=refresh_stegindex_operational_proof(runtime,runner)
         receipt_path.write_text(json.dumps(out,indent=2,sort_keys=True)+"\n")
         return out
     script=runtime/"scripts/activate_resident_stack.py"
@@ -261,6 +275,8 @@ def consume(source_root:Path,runtime_root:Path,runner:Runner=subprocess.run,env:
       "credential_authority":"TV/TVC","authority_effect":"NONE_REQUEST_ONLY"
     }
     receipt_path.parent.mkdir(parents=True,exist_ok=True)
+    receipt_path.write_text(json.dumps(out,indent=2,sort_keys=True)+"\n")
+    out["stegindex_operational_proof"]=refresh_stegindex_operational_proof(runtime,runner)
     receipt_path.write_text(json.dumps(out,indent=2,sort_keys=True)+"\n")
     if done:
         progression=runtime/PROGRESSION_REL
