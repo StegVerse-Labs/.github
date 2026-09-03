@@ -17,31 +17,22 @@ spec.loader.exec_module(module)
 class StegIndexPreflightTests(unittest.TestCase):
     def make_index(self) -> Path:
         root = Path(self.temp.name)
-        (root / "registry").mkdir()
+        (root / "scripts").mkdir()
         (root / "STEGINDEX_MIRROR_HANDOFF.md").write_text("# handoff\n", encoding="utf-8")
-        (root / "registry" / "capabilities.json").write_text(json.dumps({
-            "entries": [{
-                "capability_id": "stegverse:capability:runtime-proof:v1",
-                "aliases": ["runtime evidence"],
-                "purpose": "Produce authentic runtime proof",
-                "owner_repo": "StegVerse-Labs/example",
-                "lifecycle_state": "RELEASED",
-                "authority_effect": "NONE",
-                "dependencies": [],
-                "missing_predicates": ["runtime_receipt_present"],
-                "current_evidence_state": "SOURCE_READY_RUNTIME_UNOBSERVED",
-                "blocking_owner": "StegVerse-Labs/example#1",
-                "invocation_surface": "scripts/run_runtime.py",
-                "user_action_required": False,
-                "provenance": ["EXAMPLE_MIRROR_HANDOFF.md"]
-            }]
-        }), encoding="utf-8")
-        (root / "registry" / "predicates.json").write_text(json.dumps({
-            "predicates": [{
-                "predicate_id": "runtime_receipt_present",
-                "default_satisfier": "runtime owner"
-            }]
-        }), encoding="utf-8")
+        (root / "scripts" / "resolve_preflight.py").write_text(
+            "import json\n"
+            "print(json.dumps({"
+            "'schema':'stegindex.preflight-result/v1',"
+            "'query':'runtime evidence',"
+            "'capabilities':[{'capability_id':'stegverse:capability:runtime-proof:v1'}],"
+            "'predicates':[{'predicate_id':'runtime_receipt_present','current_truth_state':'FALSE'}],"
+            "'first_actionable_predicate':{'predicate_id':'runtime_receipt_present','current_truth_state':'FALSE'},"
+            "'machine_continuation_required':False,"
+            "'generic_blocker_permitted':True,"
+            "'reuse_required':True"
+            "}))\n",
+            encoding="utf-8",
+        )
         return root
 
     def setUp(self):
@@ -50,16 +41,19 @@ class StegIndexPreflightTests(unittest.TestCase):
     def tearDown(self):
         self.temp.cleanup()
 
-    def test_runtime_evidence_resolves_to_exact_predicate_and_owner(self):
-        result = module.resolve(
-            index_root=self.make_index(),
+    def test_runtime_evidence_delegates_to_canonical_index(self):
+        root = self.make_index()
+        result = module.run_canonical(
+            index_root=root,
             query="runtime evidence",
-            requested_predicate="runtime_receipt_present",
+            predicate="runtime_receipt_present",
+            intent="RUNTIME_EVIDENCE",
         )
+        self.assertTrue(result["canonical_resolver_invoked"])
         self.assertEqual(result["first_actionable_predicate"]["predicate_id"], "runtime_receipt_present")
-        self.assertEqual(result["first_actionable_predicate"]["satisfier_owner"], "StegVerse-Labs/example#1")
-        self.assertFalse(result["machine_continuation_required"])
-        self.assertTrue(result["generic_blocker_permitted"])
+        self.assertTrue(result["reuse_required"])
+        self.assertFalse(result["network_fetch_performed"])
+        self.assertFalse(result["github_token_required"])
 
     def test_missing_index_is_not_reclassified_as_missing_implementation(self):
         old = os.environ.pop("STEGVERSE_STEGINDEX_SOURCE_ROOT", None)
