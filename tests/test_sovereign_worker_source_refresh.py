@@ -167,6 +167,10 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 runtime_root=runtime,
                 python=Path("/usr/bin/python3"),
                 source_package_root=packages,
+                local_bindings={
+                    "STEGVERSE_STEGINDEX_SOURCE_ROOT": str(base / "StegIndex"),
+                    "STEGVERSE_REPO_ROOTS_JSON": '{"StegVerse-Labs/StegIndex":"/srv/stegverse/StegIndex"}',
+                },
             )
             self.assertIn("systemctl --user try-restart stegverse-worker-runtime.service", service)
             self.assertIn("PathChanged=", path_unit)
@@ -187,6 +191,14 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             for slug in install_mod.SOURCE_PACKAGE_COMPONENT_SLUGS:
                 self.assertIn(f"PathChanged={(packages / slug).resolve()}", path_unit)
             self.assertIn(f'STEGVERSE_SOURCE_PACKAGE_ROOT={packages.resolve()}', service)
+            self.assertIn(
+                f'STEGVERSE_STEGINDEX_SOURCE_ROOT={base / "StegIndex"}',
+                service,
+            )
+            self.assertIn(
+                'STEGVERSE_REPO_ROOTS_JSON={"StegVerse-Labs/StegIndex":"/srv/stegverse/StegIndex"}',
+                service,
+            )
             self.assertNotIn("consume_resident_execution_request.py --source-root", service)
             self.assertNotIn("consume_g18_resident_execution_request.py --source-root", service)
             self.assertIn("consume_hil_intr_materialization_request.py", service)
