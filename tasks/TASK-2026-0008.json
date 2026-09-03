@@ -2,15 +2,16 @@
   "schema": "stegverse.org-task/v0.2",
   "task_id": "TASK-2026-0008",
   "organization": "StegVerse-Labs",
-  "goal": "Admit and publish the exact merged StegOS DE-006-bound device-local inference and bounded command-ingress surfaces through StegVerse-Labs/Site for current iOS execution without granting parent, WorkerCoordinator, model-output, hosted-runtime, or non-TV/TVC credential authority.",
+  "goal": "Admit and publish the exact current-iPhone StegOS execution surface through StegVerse-Labs/Site, including DE-006-bound admitted inference, bounded command ingress, KV persistence, portable WorkerCoordinator checkout, TVC SV001 lease inputs, and same-device SV001 invocation, without widening parent, credential, hosted-runtime, or model-output authority.",
   "status": "queued",
   "requested_at": "2026-09-03T00:28:00Z",
   "priority_class": "release",
   "rank_reason": [
-    "StegVerse-Labs/StegOS#158 is CLOSED_COMPLETED and merged as 04974cab2963c6d28c1cbb7bc9d54e2226d1feb9",
+    "StegVerse-Labs/StegOS#172 is CLOSED_COMPLETED; PR #173 merged as 62fcc9db38548d82ae656447913595f0027ed395 from pinned source 353555b927e6c42c7444ecfd48d636c3d92ce63d",
+    "The current-iPhone projection package supersedes the older five-file DE-006-only projection while retaining exact DE-006 admitted-inference binding",
     "StegVerse-Labs/.github#837 exact DE-006 parent-candidate verifier is merged as b2bf987cad9aed84d923d79c662f657586de3c31",
     "StegVerse-Labs/Site#932 is the canonical collision-safe Site publication task",
-    "The exact iOS public projection is required before a fresh current-iPhone DE-006-bound execution can produce admissible evidence",
+    "The full current iOS projection is required before fresh current-iPhone execution can produce admissible evidence",
     "This task subsumes stale TASK-2026-0006 / Site#399 command-ingress publication rather than creating a competing Site owner"
   ],
   "requirements": {
@@ -28,10 +29,22 @@
         "scope": {
           "paths": [
             "stegos-bootstrap/index.html",
+            "stegos-bootstrap/stegos-bootstrap.js",
             "stegos-bootstrap/admitted-inference.js",
+            "stegos-bootstrap/service-worker.js",
             "stegos-bootstrap/command-ingress.js",
             "stegos-bootstrap/command.html",
-            "stegos-bootstrap/service-worker.js",
+            "stegos-bootstrap/kv-readiness-persistence.js",
+            "stegos-bootstrap/kv-session-persistence.js",
+            "stegos-bootstrap/workercoordinator-portable-checkout.js",
+            "stegos-bootstrap/workercoordinator-portable-adapter.js",
+            "stegos-bootstrap/workercoordinator-portable-sv001.json",
+            "stegos-bootstrap/workercoordinator-portable-authority-contract.json",
+            "stegos-bootstrap/tvc-sv001-portable-lease.js",
+            "stegos-bootstrap/tvc-sv001-portable-lease-package.json",
+            "stegos-bootstrap/tvc-sv001-portable-tv-request.json",
+            "stegos-bootstrap/tvc-sv001-portable-lease-policy.json",
+            "stegos-bootstrap/tvc-sv001-portable-lease-state.schema.json",
             "docs/STEGOS_DE006_BOUND_INFERENCE_PROJECTION_MIRROR_HANDOFF.md",
             "scripts/check_stegos_de006_bound_inference_projection.py",
             "data/tasks/SITE-STEGOS-DE006-BOUND-INFERENCE-932.json"
@@ -39,14 +52,24 @@
           "contracts": [
             "stegos.web_command.v1",
             "stegos.web_execution_binding.v1",
-            "stegos.web_admitted_inference_receipt.v1"
+            "stegos.web_admitted_inference_receipt.v1",
+            "stegverse.workercoordinator-portable-checkout-package/v1",
+            "stegverse.workercoordinator-portable-authority-contract/v1",
+            "stegverse.tvc.sv001-portable-lease-package/v1",
+            "stegverse.tv.stegverse001-bounded-autonomy-request/v1",
+            "stegverse.tvc.stegverse001-bounded-autonomy-lease-policy/v1",
+            "stegverse.tvc.sv001-portable-lease-state/v1"
           ],
           "release_surfaces": [
             "site:stegos-de006-bound-inference-publication"
           ],
           "capabilities": [
             "de006-bound-ios-device-local-inference-publication",
-            "bounded-browser-command-ingress-publication"
+            "bounded-browser-command-ingress-publication",
+            "current-iphone-kv-persistence-publication",
+            "portable-workercoordinator-checkout-publication",
+            "portable-tvc-sv001-lease-input-publication",
+            "same-device-sv001-invocation-publication"
           ],
           "workflows": [],
           "dependency_surfaces": [
