@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
-  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "state": "RUNTIME_EXECUTION_COMPLETE_DOWNSTREAM_CUSTODY_PENDING",
   "goal": {
     "goal_id": "STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
     "objective": "Execute the first self-directed Beta_Orionis continuity-audit cycle under an externally issued bounded autonomy lease on the sovereign WorkerCoordinator runtime.",
@@ -158,7 +158,7 @@
     "terminal_autonomy_reexecution_allowed": false
   },
   "completion": {
-    "next_authorized_action": "On CURRENT_USER_IPHONE, use the already-released canonical StegOS portable WorkerCoordinator adapter to produce an authentic checkout for SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001, then let the already-released TVC portable issuer validate that checkout and issue the single-cycle SV001 lease. Only after those two authentic device-local predicates exist may the StegOS resident-task adapter execute SV001 and continue to Master Records reconstruction and SV002. Do not substitute Service-Gateway request-003, another machine, HB progression, source/CI, or a generic runtime-presence blocker.",
+    "next_authorized_action": "Consume the authentic current-iPhone cycle receipt through canonical Master Records custody/reconstruction, then run the existing deterministic SV002 continuation. Do not re-execute SV001; the autonomy cycle is terminal and exactly-once.",
     "terminal_when": [
       "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED"
     ]
@@ -179,22 +179,26 @@
     ]
   },
   "runtime_evidence": {
-    "tvc_lease_issuance_receipt_observed": false,
+    "tvc_lease_issuance_receipt_observed": true,
     "resident_request_consumption_receipt_observed": false,
-    "autonomy_cycle_receipt_observed": false,
+    "portable_workercoordinator_checkout_observed": true,
+    "autonomy_cycle_receipt_observed": true,
+    "device_local_reconstruction_pass_observed": true,
+    "tvc_lease_consumption_observed": true,
     "master_records_reconstruction_pass_observed": false,
     "sv002_adversarial_observation_observed": false,
-    "activation_claim_allowed": false
+    "activation_claim_allowed": false,
+    "evidence_ref": "receipts/current-iphone/sv001-bounded-autonomy-20260903.json"
   },
   "block": {
-    "dependency_class": "CURRENT_IPHONE_RUNTIME_EXECUTION",
-    "problem_statement": "The same-device StegOS implementation is installed and released. The first unsatisfied predicate is now an authentic CURRENT_USER_IPHONE portable WorkerCoordinator checkout for SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001; next is TVC single-cycle lease issuance, then same-execution SV001 terminal receipt, reconstruction, and SV002 disposition.",
+    "dependency_class": "MASTER_RECORDS_CUSTODY_AND_SV002_CONTINUATION",
+    "problem_statement": "Authentic CURRENT_USER_IPHONE WorkerCoordinator checkout, TVC lease issuance/consumption, SV001 terminal execution, and device-local same-execution reconstruction are observed. Remaining predicates are independent Master Records custody/reconstruction and SV002 disposition.",
     "solution_required": false,
     "may_remain_blocked": false,
-    "human_action_required": true,
+    "human_action_required": false,
     "second_machine_required": false,
     "github_token_required": false,
-    "next_solution_action": "CURRENT_USER_IPHONE_PORTABLE_WORKERCOORDINATOR_CHECKOUT",
+    "next_solution_action": "MASTER_RECORDS_RESIDENT_INTAKE_AND_RECONSTRUCTION",
     "executable_entrypoint": "stegos-bootstrap/workercoordinator-portable-adapter.js",
     "machine_transition_sequence": [
       "portable_workercoordinator_checkout_current_iphone",
@@ -205,7 +209,7 @@
     ],
     "machine_observable_release_condition": "Authentic current-iPhone checkout receipt -> valid TVC lease issuance -> SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED -> same-execution reconstruction PASS -> SV002 disposition.",
     "human_action_note": "No second device or external machine is required. The only remaining operator action is current-iPhone execution when the browser must perform the device-local IndexedDB/service-worker transition; repository/source work is not a substitute.",
-    "current_session_execution_boundary": "GITHUB_SESSION_CANNOT_EMIT_DEVICE_LOCAL_INDEXEDDB_RUNTIME_RECEIPT",
+    "current_session_execution_boundary": "DOWNSTREAM_MACHINE_OWNED",
     "executable_command": "CURRENT_USER_IPHONE secure-browser invocation of the released StegOS portable WorkerCoordinator adapter",
     "not_work": [
       "watch for receipt",
@@ -226,7 +230,7 @@
     "canonical_projector": "scripts/project_hb_runtime_presence.py",
     "active_resident_local_extension_owner": "StegVerse-Labs/.github#814",
     "consumer_lane": "STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
-    "current_missing_runtime_predicate": "portable_workercoordinator_checkout_current_iphone",
+    "current_missing_runtime_predicate": "replay_reconstruction_proven",
     "predicates": {
       "resident_process_alive_supervised": {
         "source": "shared resident-presence / direct runtime activation evidence",
@@ -242,11 +246,11 @@
       },
       "runtime_execution_completed": {
         "source": "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
-        "observed": false
+        "observed": true
       },
       "receipt_retained": {
         "source": "~/.stegverse/state/stegverse001-bounded-autonomy/receipts/latest.json",
-        "observed": false
+        "observed": true
       },
       "replay_reconstruction_proven": {
         "source": "Master Records reconstruction PASS",
@@ -258,11 +262,11 @@
       },
       "portable_workercoordinator_checkout_current_iphone": {
         "source": "CURRENT_USER_IPHONE canonical portable WorkerCoordinator checkout receipt (StegVerse-Labs/.github#862 projected through StegOS/Site)",
-        "observed": false
+        "observed": true
       },
       "tvc_portable_sv001_lease_issued": {
         "source": "CURRENT_USER_IPHONE TVC portable SV001 issuance receipt (StegVerse-Labs/TVC#289)",
-        "observed": false
+        "observed": true
       }
     },
     "heartbeat_or_projection_grants_authority": false,

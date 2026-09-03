@@ -134,3 +134,27 @@ authority effect:
 ```
 
 The complete resident-stack activation path now requires a local Master Records root and passes it to the bundle packager. Source packaging/materialization does not establish custody or reconstruction. Authentic completion remains bound to the deployment-local SV001 receipt, Master Records PASS reconstruction, and SV002 disposition.
+
+
+## Authentic current-iPhone SV001 execution observed — 2026-09-03
+
+Authentic source runtime evidence now establishes:
+
+```text
+portable WorkerCoordinator checkout: OBSERVED
+claim/fence: G23 / 23
+TVC portable lease issuance: OBSERVED
+SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED: OBSERVED
+cycle receipt: sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35
+device-local reconstruction: PASS / same_execution=true
+TVC lease consumption: CONSUMED
+journal replay: PASS / 59 entries
+journal tail: 0725a8208f709b19027b9434cd089cdff0efc01b2ed5f2571036ae6ad8695d0c
+```
+
+The autonomy cycle is terminal and MUST NOT be re-executed merely to satisfy downstream custody. The next exact predicate is Master Records custody/reconstruction of this immutable source receipt, followed by SV002 disposition.
+
+The current-iPhone receipt encodes authorized execution with
+`authorized_execution_source=EXTERNAL_WORKERCOORDINATOR_TVC_BOUND_ENVELOPE`;
+the continuation maps that canonical evidence to the evaluator's boolean authorization
+input without mutating the receipt.
