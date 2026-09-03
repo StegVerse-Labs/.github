@@ -68,3 +68,16 @@ def test_portable_state_retains_full_checkout_receipt_atomically():
     text=MODULE.read_text(encoding="utf-8")
     assert "last_checkout_receipt: receiptBody" in text
     assert "checkout_tail_sha256: receiptBody.receipt_sha256" in text
+
+def test_sv001_portable_package_is_single_checkout_terminal_safe():
+    pkg=json.loads(PACKAGE.read_text(encoding="utf-8"))
+    assert pkg["single_checkout_per_task_package"] is True
+    assert pkg["terminal_reexecution_allowed"] is False
+    assert pkg["downstream_retry_after_terminal"] is True
+
+def test_portable_checkout_fails_closed_after_first_checkout():
+    text=MODULE.read_text(encoding="utf-8")
+    assert "checkout_count: 0" in text
+    assert "inferredCheckoutCount >= 1" in text
+    assert "task package already checked out; terminal/downstream continuation must not mint another claim" in text
+    assert "checkout_count: inferredCheckoutCount + 1" in text
