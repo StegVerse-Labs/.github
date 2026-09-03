@@ -61,3 +61,21 @@ The worker still accepts an independently materialized canonical ERL source tree
 As a result, the remaining blocker is no longer “ERL source/package not locally materialized.” The bounded task is source-ready inside the resident worker repository; the remaining unsatisfied condition is authentic fenced resident execution and its receipt.
 
 This package does not alter the research findings, independently approve them, activate the research, or authorize publication.
+
+
+## 2026-09-03 resident dispatch integration
+
+Issue: #949
+
+The reviewer is now wired into the existing resident request-dispatch path without creating a second scheduler or authority plane.
+
+Installed:
+- `control/resident-execution-request.d/erl-ai-economic-transparency-review-001.json`
+- `scripts/consume_erl_ai_economic_transparency_review_request.py`
+- dispatcher registration under selector `erl_ai_economic_transparency_review`
+
+The source refresh path now copies `review-packages/` and the new consumer into resident runtime, and the rootless filesystem watcher observes `review-packages/` changes.
+
+The request/consumer grants no claim, fence, credential, heartbeat, research-promotion, activation, publication, or repository-writeback authority. It only asks the already-authorized WorkerCoordinator to attempt the existing admitted task.
+
+Runtime completion still requires authentic fresh claim/fence execution and the bounded review receipt.
