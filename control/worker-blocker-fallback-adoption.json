@@ -36,9 +36,17 @@
     },
     {
       "family": "publication_release_observers",
-      "state": "FOLLOWUP_TASK_REQUIRED",
-      "owner": "StegVerse-Labs/.github#242",
-      "next_action": "audit observer controllers for blocker persistence plus continuation semantics"
+      "state": "ALREADY_CONFORMANT",
+      "owner": "GCAT-BCAT-Engine/Publisher",
+      "next_action": "preserve bounded awareness observers and keep unrelated failures separate; no duplicate observer controller required",
+      "evidence": [
+        "GCAT-BCAT-Engine/Publisher:docs/STEGCLAW_RELEASE_AWARENESS_MIRROR_HANDOFF.md",
+        "GCAT-BCAT-Engine/Publisher:PUBLISHER_MIRROR_HANDOFF.md",
+        "StegClaw release-awareness lane is PARALLEL_SAFE_NON_AUTHORIZING_RELEASE_AWARENESS",
+        "Publisher handoff records dedicated awareness success while unrelated RTG-001/stegdb-sync failures remain separate and are not converted to success",
+        "publication/release/custody/execution/admissibility authority remain false"
+      ],
+      "authority_effect": "NONE"
     },
     {
       "family": "deployment_runtime_activation",
