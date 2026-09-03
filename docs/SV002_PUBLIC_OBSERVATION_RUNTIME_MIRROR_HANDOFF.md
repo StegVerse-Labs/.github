@@ -466,3 +466,30 @@ persisted PUBLIC_VERIFYING snapshot
 ```
 
 Authentic public profile observation, deployment-local `LEASE_OPEN`, receiver READY, and public round-trip evidence remain NOT OBSERVED. Issue #462 remains the separate authentic public-observation close condition.
+
+## Shared HB runtime-observability registry binding — 2026-09-03
+
+The existing SV002 public-observation runtime is now explicitly registered as a consumer of the canonical shared HB Runtime Presence / Resident Observability contract:
+
+```text
+consumer descriptor:
+  control/runtime-observability-consumers/sv002-public-observation-runtime-001.json
+registration issue: #852
+registration PR: #854
+registration merge: c25a76729c02111d914c486f845979790088e245
+shared owner: #814
+```
+
+This registration changes no runtime truth or authority. The distinct deployment-local predicates remain:
+
+```text
+resident_process_alive_supervised: NOT OBSERVED
+node_runtime_fresh: NOT OBSERVED
+materialization_request_consumed: NOT OBSERVED
+receiver_ready: NOT OBSERVED
+authentic_ingress_received: NOT OBSERVED
+authentic_egress_forwarded: NOT OBSERVED
+round_trip_evidence_retained: NOT OBSERVED
+replay_reconstruction_proven: NOT OBSERVED
+principal_self_characterization_observed: separate / NOT OBSERVED
+```
