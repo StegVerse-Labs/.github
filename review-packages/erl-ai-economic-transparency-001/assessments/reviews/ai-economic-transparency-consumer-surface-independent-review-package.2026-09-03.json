@@ -1,0 +1,48 @@
+{
+  "schema": "stegverse.erl.ai-economic-transparency-independent-review-package/v1",
+  "task_id": "ERL-AI-ECON-TRANSPARENCY-001",
+  "review_issue": 104,
+  "review_scope": "FINALIZED_CONSUMER_NON_ACCOUNT_ATTRIBUTED_SURFACES_ONLY",
+  "providers": [
+    "openai",
+    "anthropic",
+    "deepseek"
+  ],
+  "required_inputs": [
+    "docs/AI_ECONOMIC_TRANSPARENCY_MIRROR_HANDOFF.md",
+    "standards/ai-economic-transparency.v1.md",
+    "schemas/ai-economic-transparency-observation.schema.json",
+    "scripts/validate_ai_economic_transparency.py",
+    "research-data/ai-economic-transparency/openai-consumer-surface-observation.2026-09-03.json",
+    "research-data/ai-economic-transparency/anthropic-consumer-surface-observation.2026-09-03.json",
+    "research-data/ai-economic-transparency/deepseek-consumer-surface-observation.2026-09-03.json",
+    "assessments/reviews/ai-economic-transparency-consumer-surface-contradiction-review.2026-09-03.json",
+    "GCAT-BCAT-Engine/workflows:experiments/sv-cost-program/nine-lane-results/cost-evidence-request.json"
+  ],
+  "review_questions": [
+    "Is each finding strictly surface-specific rather than provider-wide?",
+    "Does the prior governed evidence support treating each consumer surface as exhausted absent material UI change?",
+    "Is NON_RECONSTRUCTABLE / rating 5 warranted for the exhausted consumer surface under the current standard?",
+    "Does UNBOUNDED_UNKNOWN correctly preserve elevated-usage uncertainty without inventing a numeric cost?",
+    "Does distinct API/enterprise transparency leave the consumer-surface finding intact rather than contradict it?",
+    "Are any claims broader than the preserved evidence supports?"
+  ],
+  "forbidden_promotions": [
+    "provider-wide transparency ranking",
+    "provider intent finding",
+    "deceptive-pricing intent finding",
+    "Z.ai or Perplexity final rating",
+    "activation",
+    "publication"
+  ],
+  "required_output": {
+    "schema": "stegverse.erl.ai-economic-transparency-independent-review/v1",
+    "path": "assessments/reviews/ai-economic-transparency-consumer-surface-independent-review.2026-09-03.json",
+    "terminal_recommendation": [
+      "APPROVE",
+      "REVISE",
+      "REJECT"
+    ]
+  },
+  "state": "READY_FOR_INDEPENDENT_REVIEW"
+}
