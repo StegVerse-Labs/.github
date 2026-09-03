@@ -73,3 +73,30 @@ Behavior:
 This integration does not infer that a missing StegIndex source means the requested capability is absent, and it performs no network fetch.
 
 Operationally mandatory resolution still depends on canonical StegIndex being present in the local repository-root map; source-level receipt enforcement is now implemented.
+
+
+## Portable resident materialization integration — 2026-09-02
+
+The complete resident stack now treats canonical StegIndex source as a required non-secret local source root.
+
+Implemented:
+- `scripts/package_sovereign_control_plane_bundle.py --stegindex-root`
+- bundle path `vendor/StegIndex/**`
+- minimum required StegIndex source:
+  - `STEGINDEX_MIRROR_HANDOFF.md`
+  - `scripts/preflight.py`
+  - `registry/capabilities.json`
+  - `registry/predicates.json`
+- `scripts/activate_resident_stack.py --stegindex-root`
+- `scripts/consume_one_shot_resident_stack_activation_request.py` root key `stegindex`
+- canonical repository-map key `StegVerse-Labs/StegIndex`
+
+Missing StegIndex source produces `SOURCE_ROOTS_PENDING`; it is not reclassified as evidence that some requested capability is absent.
+
+The bundle remains local source transport only:
+`network_fetch_required=false`
+`bundle_grants_authority=false`
+`github_token_runtime_authority=NONE`
+`credential_authority=TV/TVC`
+
+Authentic resident materialization/execution is not claimed by this source change.
