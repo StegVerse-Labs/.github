@@ -6,9 +6,10 @@
   "evidence_refs": [
     "control/worker-registry.d/erl-ai-economic-transparency-review-001.json",
     "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json",
-    "StegVerse-Labs/Executive_Rhetoric_Ledger#104"
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#104",
+    "review-packages/erl-ai-economic-transparency-001/manifest.json"
   ],
-  "observed_at": "2026-09-03T11:36:37-05:00",
+  "observed_at": "2026-09-03T12:14:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "MACHINE_OWNED",

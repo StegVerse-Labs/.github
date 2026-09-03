@@ -1,0 +1,44 @@
+{
+  "schema": "stegverse.erl.ai-economic-transparency-contradiction-review/v1",
+  "task_id": "ERL-AI-ECON-TRANSPARENCY-001",
+  "state": "COMPLETE",
+  "provider_reviews": [
+    {
+      "provider": "openai",
+      "observation_ref": "research-data/ai-economic-transparency/openai-consumer-surface-observation.2026-09-03.json",
+      "contradictions": [
+        {
+          "claim": "OpenAI consumer/non-account-attributed surface is non-reconstructable for this request after the governed process was exhausted.",
+          "counterevidence_ref": "OpenAI API documentation exposes request usage on a distinct API/enterprise surface.",
+          "effect": "NONE"
+        }
+      ],
+      "result": "NO_MATERIAL_CONTRADICTION"
+    },
+    {
+      "provider": "anthropic",
+      "observation_ref": "research-data/ai-economic-transparency/anthropic-consumer-surface-observation.2026-09-03.json",
+      "contradictions": [
+        {
+          "claim": "Anthropic consumer/non-account-attributed surface is non-reconstructable for this request after the governed process was exhausted.",
+          "counterevidence_ref": "Anthropic API documentation exposes request usage on a distinct API/enterprise surface.",
+          "effect": "NONE"
+        }
+      ],
+      "result": "NO_MATERIAL_CONTRADICTION"
+    },
+    {
+      "provider": "deepseek",
+      "observation_ref": "research-data/ai-economic-transparency/deepseek-consumer-surface-observation.2026-09-03.json",
+      "contradictions": [
+        {
+          "claim": "DeepSeek consumer/non-account-attributed surface is non-reconstructable for this request after the governed process was exhausted.",
+          "counterevidence_ref": "DeepSeek API documentation exposes token usage and published API rates on a distinct API/enterprise surface.",
+          "effect": "NONE"
+        }
+      ],
+      "result": "NO_MATERIAL_CONTRADICTION"
+    }
+  ],
+  "promotion_authorized": false
+}

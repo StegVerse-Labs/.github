@@ -11,7 +11,7 @@
       "task_relationship": "integrates_capability",
       "result": "PASS",
       "continuation_owner": "resident sovereign heartbeat + erl-ai-economic-transparency-review-worker + StegVerse-Labs/Executive_Rhetoric_Ledger#104",
-      "rationale": "The independent-review capability is source-integrated and registered with a bounded zero-credential worker, but no authentic resident review receipt exists yet; therefore the capability remains ADMISSIBLE and no activation proof is claimed."
+      "rationale": "The independent-review capability is source-integrated, registered, COSV-indexed, and carries a self-contained hash-bound review package; no authentic resident review receipt exists yet, so the capability remains ADMISSIBLE and no activation proof is claimed."
     }
   ]
 }

@@ -1,0 +1,66 @@
+{
+  "schema": "stegverse.erl.ai-economic-transparency-observation/v1",
+  "task_id": "ERL-AI-ECON-TRANSPARENCY-001",
+  "provider": "anthropic",
+  "model": "claude-opus-5",
+  "surface_class": "CONSUMER_NON_ACCOUNT_ATTRIBUTED",
+  "rating_scope": "SURFACE_SPECIFIC",
+  "protocol_complete": true,
+  "advertised_rate_present": true,
+  "advertised_rate_surface": "Claude Pro monthly plan, session usage percentage, and aggregate usage-credit spend were observed historically, but no request-attributable delta was exposed.",
+  "actual_request_cost_directly_exposed": false,
+  "request_usage_directly_exposed": false,
+  "all_material_cost_components_disclosed": false,
+  "research_steps_required": 1,
+  "research_minutes": null,
+  "provider_surfaces_consulted": [
+    "Claude Pro plan / session usage / usage-credit observation"
+  ],
+  "account_or_privilege_required": false,
+  "support_required": false,
+  "external_research_required": false,
+  "reconstructable_actual_cost": false,
+  "literal_request_cost_usd": null,
+  "unresolved_cost_components": [
+    "request-attributable consumer inference cost",
+    "exact request usage",
+    "provider-observed before/after per-message allocation"
+  ],
+  "disclosure_burden_rating": 5,
+  "workload_basis": "equivalent_consumer_request",
+  "scale_scenarios": [
+    {
+      "equivalent_requests": 1000,
+      "state": "UNBOUNDED_UNKNOWN",
+      "known_total_cost_usd": null,
+      "lower_bound_usd": null,
+      "upper_bound_usd": null
+    },
+    {
+      "equivalent_requests": 100000,
+      "state": "UNBOUNDED_UNKNOWN",
+      "known_total_cost_usd": null,
+      "lower_bound_usd": null,
+      "upper_bound_usd": null
+    },
+    {
+      "equivalent_requests": 1000000,
+      "state": "UNBOUNDED_UNKNOWN",
+      "known_total_cost_usd": null,
+      "lower_bound_usd": null,
+      "upper_bound_usd": null
+    }
+  ],
+  "scale_sensitivity_state": "UNBOUNDED_UNKNOWN",
+  "evidence_refs": [
+    "GCAT-BCAT-Engine/workflows:experiments/sv-cost-program/nine-lane-results/cost-evidence-request.json",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger:issue:100",
+    "GCAT-BCAT-Engine/workflows:experiments/sv-cost-program/nine-lane-results/cost-evidence/anthropic-claude-pro-ui-observation-2026-08-17.json",
+    "GCAT-BCAT-Engine/workflows:experiments/sv-cost-program/eleven-lane-results/evidence/anthropic-ui-candidate-observation-2026-09-03.json"
+  ],
+  "contradiction_refs": [
+    "assessments/reviews/ai-economic-transparency-consumer-surface-contradiction-review.2026-09-03.json"
+  ],
+  "independent_review_state": "PENDING",
+  "activation_authorized": false
+}

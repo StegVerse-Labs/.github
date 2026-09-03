@@ -860,7 +860,7 @@
     "registry_ref": "control/worker-registry.d/erl-ai-economic-transparency-review-001.json",
     "source_state_vector_ref": "control/task-vectors/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json",
     "canonical_owner_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#104",
-    "blocker": "LOCAL_ERL_REVIEW_PACKAGE_AND_RESIDENT_EXECUTION_RECEIPT_PENDING",
+    "blocker": "RESIDENT_EXECUTION_RECEIPT_PENDING",
     "runtime_receipt_observed": false,
     "independent_review_complete": false,
     "research_promotion_authority": false,
@@ -869,6 +869,9 @@
     "repository_writeback_authority": false,
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": "NONE",
-    "authority_effect": "NONE"
+    "authority_effect": "NONE",
+    "review_input_bundle": "review-packages/erl-ai-economic-transparency-001/manifest.json",
+    "review_input_bundle_hash_bound": true,
+    "local_cross_repository_materialization_required": false
   }
 }
