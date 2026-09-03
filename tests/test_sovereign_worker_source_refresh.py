@@ -39,7 +39,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             runtime = base / "runtime"
             for rel in (
                 "heartbeat_runtime", "workers", "handoffs", "authorizations", "schemas", "cost-basis", "management",
-                "state_language", "scripts", "control/worker-registry.d", "control/process-worker-adapters.d",
+                "state_language", "review-packages", "scripts", "control/worker-registry.d", "control/process-worker-adapters.d",
                 "control/task-vectors", "control/resident-execution-request.d",
             ):
                 (source / rel).mkdir(parents=True, exist_ok=True)
@@ -53,6 +53,8 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             (source / "control/process-worker-adapters.d/new.json").write_text("{}\n", encoding="utf-8")
             (source / "control/task-vectors/new-task.json").write_text('{"profile":"task.v1","level":"task","vector":"50000000100000"}\n', encoding="utf-8")
             (source / "state_language/__init__.py").write_text("# state-language\n", encoding="utf-8")
+            (source / "review-packages/erl-ai-economic-transparency-001/manifest.json").parent.mkdir(parents=True, exist_ok=True)
+            (source / "review-packages/erl-ai-economic-transparency-001/manifest.json").write_text('{"schema":"fixture"}\n', encoding="utf-8")
             (source / "control/task-vector-index.json").write_text('{"schema":"stegverse.cosv-task-vector-index/v0.1"}\n', encoding="utf-8")
             (source / "control/resident-execution-request.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
             (source / "control/resident-execution-request.d/sv-dn1.json").write_text('{"schema":"stegverse.resident-execution-request/v1"}\n', encoding="utf-8")
@@ -105,6 +107,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertTrue((runtime / "control/resident-execution-request.d/sv002-public-observation-runtime-001.json").is_file())
             self.assertTrue((runtime / "control/resident-execution-request.d/healer-sovereign-scheduler-001.json").is_file())
             self.assertTrue((runtime / "state_language/__init__.py").is_file())
+            self.assertTrue((runtime / "review-packages/erl-ai-economic-transparency-001/manifest.json").is_file())
             for rel in (
                 "scripts/run_worker_runtime.py",
                 "scripts/refresh_and_execute_resident_task.py",
@@ -130,6 +133,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
                 "scripts/consume_sv002_org_runtime_activation_request.py",
                 "scripts/consume_healer_sovereign_scheduler_request.py",
                 "scripts/dispatch_resident_execution_requests.py",
+                "scripts/consume_erl_ai_economic_transparency_review_request.py",
                 "scripts/materialize_live_cosv_packet.py",
                 "scripts/cosv.py",
                 "scripts/cosv_state_packet.py",
@@ -178,6 +182,7 @@ class SovereignWorkerSourceRefreshTests(unittest.TestCase):
             self.assertIn("heartbeat_runtime", path_unit)
             self.assertIn("scripts", path_unit)
             self.assertIn("state_language", path_unit)
+            self.assertIn("review-packages", path_unit)
             self.assertIn("worker-registry.d", path_unit)
             self.assertIn("process-worker-adapters.d", path_unit)
             self.assertIn("control/task-vectors", path_unit)
