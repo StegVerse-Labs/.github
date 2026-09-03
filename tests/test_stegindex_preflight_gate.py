@@ -90,6 +90,15 @@ class StegIndexPreflightGateTests(unittest.TestCase):
             "machine_continuation_required": True,
             "generic_blocker_permitted": False,
             "purpose_contributions": [],
+            "capability_risk": {
+                "matches": [{"source_id": "external:lolbas:v1"}],
+                "transition_surfaces": ["execution", "egress"],
+                "required_governance": ["execution authority predicate"],
+                "trusted_or_available_implies_authority": False,
+                "runtime_dependency": False,
+                "copy_payloads": False,
+                "authority_effect": "NONE_INDEX_ONLY",
+            },
             "truth_reconciliation": {
                 "preflight_truth_usable": True,
                 "records": [{"capability_id": "x", "truth_state": "TRUE"}],
