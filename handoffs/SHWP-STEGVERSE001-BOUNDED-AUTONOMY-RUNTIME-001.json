@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
-  "state": "RUNTIME_EXECUTION_COMPLETE_CURRENT_IPHONE_MASTER_RECORDS_CUSTODY_READY",
+  "state": "RUNTIME_DUPLICATE_TERMINAL_LINEAGE_RECONCILIATION_REQUIRED",
   "goal": {
     "goal_id": "STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
     "objective": "Execute the first self-directed Beta_Orionis continuity-audit cycle under an externally issued bounded autonomy lease on the sovereign WorkerCoordinator runtime.",
@@ -193,17 +193,22 @@
     "master_records_reconstruction_pass_observed": false,
     "sv002_adversarial_observation_observed": false,
     "activation_claim_allowed": false,
-    "evidence_ref": "receipts/current-iphone/sv001-bounded-autonomy-20260903.json"
+    "evidence_ref": "receipts/current-iphone/sv001-bounded-autonomy-20260903.json",
+    "duplicate_terminal_execution_observed": true,
+    "g23_cycle_receipt_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35",
+    "g24_cycle_receipt_sha256": "sha256:6bcc1976793657ea849a3678fa324c69134d2b59481e0bc9994c6baa6c4aff79",
+    "fresh_device_journal_entries": 69,
+    "fresh_device_journal_tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69"
   },
   "block": {
-    "dependency_class": "CURRENT_IPHONE_MASTER_RECORDS_CUSTODY_EXECUTION",
-    "problem_statement": "The canonical same-device Master Records portable custody source and Site projection are now merged. The exact remaining predicate is authentic CURRENT_USER_IPHONE Master Records custody/reconstruction of cycle receipt sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35, followed by SV002 disposition.",
+    "dependency_class": "SV001_DUPLICATE_TERMINAL_LINEAGE_DISPOSITION",
+    "problem_statement": "Fresh current-iPhone evidence proves two distinct completed SV001 terminal executions: G23 -> cycle 81a078... and later G24 -> cycle 6bcc1976..., both with TVC lease consumption. Journal replay remains PASS. Master Records custody is blocked until the canonical SV001 owner explicitly dispositions the duplicate lineage; neither first-wins nor latest-wins may be inferred.",
     "solution_required": false,
     "may_remain_blocked": false,
     "human_action_required": false,
     "second_machine_required": false,
     "github_token_required": false,
-    "next_solution_action": "FRESH_CURRENT_DEVICE_JOURNAL_REPLAY_AND_QUEUE_ADMISSION",
+    "next_solution_action": "CANONICAL_SV001_G23_VS_G24_LINEAGE_DISPOSITION",
     "executable_entrypoint": "https://stegverse.org/stegos-bootstrap/ -> Master Records — completed SV001 custody",
     "machine_transition_sequence": [
       "portable_workercoordinator_checkout_current_iphone_COMPLETED",
@@ -213,7 +218,7 @@
       "sv002_adversarial_observation_and_disposition"
     ],
     "machine_observable_release_condition": "Authentic current-iPhone checkout receipt -> valid TVC lease issuance -> SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED -> same-execution reconstruction PASS -> SV002 disposition.",
-    "human_action_note": "Do not issue the Master Records custody page mutation yet. Organization queue #922 is fail-closed until a fresh current-device journal replay/export is reconciled and IPHONE-MR-SV001-CUSTODY-001 becomes the sole ADMITTED_FOR_USER_EXECUTION action.",
+    "human_action_note": "Do not perform any state-mutating StegOS action. Fresh journal head has been observed, but it exposed a duplicate terminal SV001 lineage conflict that must be resolved in canonical machine state before custody can be admitted.",
     "current_session_execution_boundary": "GITHUB_SESSION_CANNOT_EMIT_DEVICE_LOCAL_INDEXEDDB_MASTER_RECORDS_CUSTODY",
     "executable_command": "CURRENT_USER_IPHONE secure-browser import of exact immutable completed SV001 cycle_receipt into released Master Records custody surface",
     "not_work": [
@@ -303,7 +308,7 @@
     "action_id": "IPHONE-MR-SV001-CUSTODY-001",
     "direct_human_instruction_allowed": false,
     "required_queue_state": "ADMITTED_FOR_USER_EXECUTION",
-    "current_queue_state": "WAITING_FOR_FRESH_JOURNAL_HEAD",
+    "current_queue_state": "BLOCKED_ON_DUPLICATE_TERMINAL_LINEAGE",
     "fresh_journal_head_required": true,
     "terminal_source_reexecution_allowed": false,
     "rule": "The completion.next_authorized_action text describes the task-specific action only; it MUST NOT be issued to the user while the organization interaction queue is HOLD or this action is not the sole admitted action."
