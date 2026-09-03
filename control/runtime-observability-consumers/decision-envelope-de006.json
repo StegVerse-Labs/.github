@@ -28,5 +28,34 @@
     "required_destinations": 4,
     "propagation_complete": false
   },
-  "authority_effect": "NONE_OBSERVATION_ONLY"
+  "authority_effect": "NONE_OBSERVATION_ONLY",
+  "external_observed_runtime_evidence": {
+    "stegos_ios_device_local_inference": {
+      "state": "OBSERVED_AUTHENTIC_DEVICE_LOCAL",
+      "repository": "StegVerse-Labs/StegOS",
+      "issue": 15,
+      "handoff": "docs/IPOD_ADMITTED_INFERENCE_MIRROR_HANDOFF.md",
+      "claim": "claims/STEGOS-IPOD-ADMITTED-INFERENCE-001.claim.json",
+      "task_id": "STEGOS-LOCAL-INFERENCE-4a80db709d040fe645fbcc94",
+      "claim_id": "STEGOS-STEGOS-LOCAL-INFERENCE-4a80db709d040fe645fbcc94-G1",
+      "fencing_token": 1,
+      "terminal_state": "COMPLETED",
+      "reconstruction_state": "PASS",
+      "same_execution": true,
+      "admitted_inference_receipt_sha256": "f9ddf6ba40ceb83c6217cc6098b639abc056ab48665d34083deec0ec17228364",
+      "measured_usage": {
+        "total_tokens": 72,
+        "latency_ms": 2
+      },
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "external_non_stegverse_machine_used": false,
+      "global_workercoordinator_authority": false,
+      "authority_effect": "DEVICE_LOCAL_TASK_EXECUTION_ONLY",
+      "parent_predicate_effect": "NONE_UNTIL_EXACT_PARENT_ADMISSION_OR_REEXECUTION"
+    }
+  },
+  "missing_parent_chain_predicate": "EXACT_DE006_BOUND_PARENT_ADMISSION_OR_REEXECUTION_OF_AUTHENTIC_DEVICE_LOCAL_EVIDENCE",
+  "generic_runtime_evidence_absent": false,
+  "second_user_operated_machine_required": false
 }
