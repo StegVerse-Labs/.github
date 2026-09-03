@@ -232,7 +232,7 @@ def _main_locked() -> int:
             "event_type": "claims_granted",
             "generation": generation,
             "occurred_at": claims_state["updated_at"],
-            "actor": "allocator_workflow",
+            "actor": "canonical_org_allocator",
             "task_id": selected["task_id"],
             "resources": [c["repository"]["full_name"] for c in granted],
             "dependency_surfaces": sorted({surface for c in granted for surface in dependency_surfaces(c)})
