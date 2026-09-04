@@ -1,0 +1,48 @@
+{
+  "schema": "stegverse.universal-work-interlock-policy/v1",
+  "owner": "StegVerse-Labs/.github",
+  "effective_at": "2026-09-04T22:20:00Z",
+  "status": "SOURCE_POLICY_ACTIVE_RUNTIME_ENFORCEMENT_PENDING",
+  "scope": "ALL_GOVERNED_SYSTEM_WORK",
+  "ingress": {
+    "interlock_required": true,
+    "intr_materialization_required": true,
+    "stable_work_id_required": true,
+    "correlation_id_required": true,
+    "dependency_capture_required": true,
+    "duplicate_convergence_check_required": true
+  },
+  "egress": {
+    "interlock_required": true,
+    "intr_materialization_required": true,
+    "terminal_or_transfer_state_required": true,
+    "result_evidence_refs_required": true,
+    "next_owner_or_closure_reason_required": true
+  },
+  "covered_source_types": [
+    "SESSION",
+    "REPOSITORY_TASK",
+    "GITHUB_FAILURE_EMAIL",
+    "RUNTIME_EVENT",
+    "HANDOFF",
+    "USER_ACTION",
+    "CUSTODY",
+    "PUBLICATION",
+    "RELEASE"
+  ],
+  "convergence": {
+    "promote_repeated_shared_blockers": true,
+    "suppress_duplicate_remediation": true,
+    "reevaluate_dependents_after_repair": true,
+    "human_action_request_deduplication_required": true
+  },
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "heartbeat_granted_authority": false,
+    "interlock_self_grants_authority": false,
+    "intr_self_grants_authority": false
+  },
+  "canonical_handoff": "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md",
+  "canonical_schema": "schemas/universal-work-interlock.schema.json"
+}
