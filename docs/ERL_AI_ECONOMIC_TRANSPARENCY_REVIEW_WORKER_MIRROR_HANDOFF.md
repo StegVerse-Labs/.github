@@ -125,3 +125,27 @@ This is deterministic source/control verification only. It is not authentic resi
 
 Current blocker remains `RESIDENT_EXECUTION_RECEIPT_PENDING`; the required authentic receipt is:
 `receipts/erl-ai-economic-transparency-review/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json`
+
+
+## 2026-09-04 runtime-evidence boundary refinement
+
+Live evidence inspection moved the earliest unproven boundary earlier than resident request dispatch.
+
+The canonical native worker entry point already visits `scripts/dispatch_resident_execution_requests.py` every 100 WorkerCoordinator logical ticks when running normally, and the dispatcher/ERL consumer wiring is source-complete. However, the only checked-in worker runtime state is historical:
+
+- `control/worker-runtime-state.json`
+- `last_cycle_at`: `2026-08-18T19:47:00Z`
+- `runtime_tick`: `2`
+- `observation_mode`: `CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION`
+
+That historical state is not evidence of a presently running resident WorkerCoordinator. No current resident-dispatch, ERL request-consumption, targeted-execution, or independent-review receipt is observed.
+
+The bounded ERL evidence record was therefore refined in Executive_Rhetoric_Ledger PR #123 / merge `2d166928843f149020e7e9bd03fb9009b81944e4` to identify:
+
+`RESIDENT_WORKER_RUNTIME_PRESENCE`
+
+as the earliest unproven runtime boundary.
+
+This does not claim that the worker is absent; it records only that present runtime presence is unproven. Source, merge, CI, heartbeat/carrier reference progression, and historical worker state remain insufficient substitutes.
+
+No new scheduler, heartbeat, worker registry, claim/fence path, credential path, second machine, activation authority, publication authority, or repository-writeback authority is introduced. No user action is currently required.
