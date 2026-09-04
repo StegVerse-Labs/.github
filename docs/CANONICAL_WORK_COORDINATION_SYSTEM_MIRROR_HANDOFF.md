@@ -4,7 +4,7 @@ Updated: 2026-09-04
 Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
-Status: `SOURCE_IMPLEMENTATION_IN_PROGRESS`
+Status: `SOURCE_IMPLEMENTED_RUNTIME_ENFORCEMENT_PENDING`
 
 ## Source of truth
 
@@ -55,23 +55,7 @@ Derived subtasks may have their own task IDs but MUST retain explicit parent/roo
 
 ## Task Registry responsibility
 
-The Task Registry records factual work coordination state, including:
-
-- stable task/correlation identity
-- normalized goal
-- source/proposal references
-- current coordination state
-- target organization/repository/component
-- dependencies
-- blockers
-- parent systemic incident, when any
-- adjacent tasks and evidence
-- WorkerCoordinator claim/fence reference
-- expected evidence predicates
-- completion claim state
-- human-action dependency reference, when any
-- allowed/admissible next transitions
-- handoff/projection references
+The Task Registry records factual work coordination state, including stable identity, normalized goal, source/proposal references, current coordination state, targets, dependencies, blockers, parent systemic incident, adjacent tasks/evidence, WorkerCoordinator claim/fence references, expected evidence predicates, completion claim state, human-action references, admissible next transitions, and projection references.
 
 The registry MUST NOT infer that work occurred from source, merge, CI, deployment, heartbeat progression, handoff prose, or issue state.
 
@@ -79,28 +63,13 @@ The registry MUST NOT infer that work occurred from source, merge, CI, deploymen
 
 WorkerCoordinator owns executable work assignment and claim/fence authority. The Task Registry MUST NOT create a competing ownership truth.
 
-Before new execution is admitted, coordination must determine whether:
-
-1. equivalent work is already complete by admissible evidence;
-2. equivalent work is actively claimed;
-3. adjacent work is producing the required evidence;
-4. the task is blocked by a shared dependency or systemic incident;
-5. a narrower non-colliding task remains admissible.
+Before new execution is admitted, coordination must determine whether equivalent work is already complete, equivalent work is actively claimed, adjacent work is producing the required evidence, a shared dependency/systemic incident blocks the transition, or a narrower non-colliding task remains admissible.
 
 ## Handoff model
 
 Handoffs become projections of canonical coordination state, not independent truth stores.
 
-A handoff projection must expose enough state for a new session/entity to determine:
-
-- what work exists;
-- what is complete and evidenced;
-- what is unresolved;
-- what is blocked and by what;
-- what is actively claimed and where;
-- what adjacent checks/evidence already exist or are in progress;
-- what exact evidence gap remains;
-- what non-colliding next work is admissible.
+A handoff projection exposes what work exists, what is complete and evidenced, what is unresolved, blockers/dependencies, active claim references, adjacent work/evidence, the exact evidence gap, and non-colliding next transition candidates.
 
 A session may be safely terminated once all unique task state has been materialized into canonical work records/projections and the session is no longer the sole continuity carrier.
 
@@ -111,7 +80,7 @@ Task Registry and Master Records are intentionally comparable but not interchang
 Task Registry answers: what should or may happen?
 Master Records answers: what actually happened?
 
-Every reconciliation produces an explicit state:
+Every reconciliation produces one explicit state:
 
 - `CONSISTENT`
 - `TASK_AHEAD_OF_EVIDENCE`
@@ -120,9 +89,9 @@ Every reconciliation produces an explicit state:
 - `UNKNOWN`
 - `ORPHANED_EVENT`
 
-`COMPLETED` is not accepted merely because the Task Registry claims completion. A task first enters `COMPLETION_CLAIMED`; closure is admissible only when the required Master Records/evidence predicates validate the claim.
+`COMPLETED` is not accepted merely because the Task Registry claims completion. A task first enters `COMPLETION_CLAIMED`; closure is admissible only when required evidence predicates validate the claim.
 
-Absence of evidence MUST NOT be interpreted as proof that work did not occur. Missing or unavailable evidence is represented explicitly as `UNKNOWN` or `TASK_AHEAD_OF_EVIDENCE` depending on known state.
+Absence of evidence MUST NOT be interpreted as proof that work did not occur. Missing/unavailable evidence remains explicit as `UNKNOWN` or `TASK_AHEAD_OF_EVIDENCE` depending on known state.
 
 If Master Records contains a work-relevant event with no corresponding task identity, reconciliation may propose a new task/incident ingress, but the historical event itself does not gain task-execution authority.
 
@@ -136,29 +105,19 @@ When one shared dependency is resolved, every dependent task MUST be reevaluated
 
 ## Human-action canonicalization
 
-A human action is represented once as a canonical dependency object and may have many dependent tasks.
-
-Multiple tasks MUST NOT independently request the same human action when one unresolved canonical human-action dependency already exists.
+A human action is represented once as a canonical dependency object and may have many dependent tasks. Multiple tasks MUST NOT independently request the same human action when one unresolved canonical human-action dependency already exists.
 
 ## Closure and historical integrity
 
-Task history is append-only in meaning. A closed task is not silently rewritten to appear never completed. If new evidence invalidates a prior closure, a new governed transition such as `COMPLETION_REVOKED` or `REOPENED_DUE_TO_NEW_EVIDENCE` must be recorded.
+Task history is append-only in meaning. A closed task is not silently rewritten to appear never completed. If later evidence invalidates prior closure, a new governed transition such as `COMPLETION_REVOKED` or `REOPENED_DUE_TO_NEW_EVIDENCE` must be recorded.
 
 ## Projections
 
-The following may be generated from canonical coordination state and MUST NOT become competing sources of truth:
+Session handoffs, GitHub issues, status dashboards, weekly accomplishment logs, developer views, repository-local task projections, and public progress surfaces may be generated from canonical coordination state and MUST NOT become competing sources of truth.
 
-- session handoffs
-- GitHub issues
-- status dashboards
-- weekly accomplishment logs
-- developer views
-- repository-local task projections
-- public progress surfaces
+## Installed machine surfaces
 
-## Machine surfaces
-
-Initial source implementation in `StegVerse-Labs/.github`:
+Source implementation now exists in `StegVerse-Labs/.github`:
 
 - `schemas/canonical-task-record.schema.json`
 - `schemas/task-master-records-reconciliation.schema.json`
@@ -166,6 +125,8 @@ Initial source implementation in `StegVerse-Labs/.github`:
 - `data/task-coordination-policy.json`
 - `scripts/validate_canonical_work_coordination.py`
 - `scripts/reconcile_task_registry_master_records.py`
+- `scripts/query_canonical_tasks.py`
+- `scripts/render_task_handoff_projection.py`
 
 Existing surfaces consumed by reference:
 
@@ -173,24 +134,51 @@ Existing surfaces consumed by reference:
 - Master Records custody/reconstruction records
 - Universal Work Interlock/InTr records
 
+The bootstrap registry contains `STEGVERSE-CANONICAL-WORK-COORDINATION-001` in `PROPOSED` source state only. It deliberately does not fabricate Interlock/InTr admission or WorkerCoordinator claim/fence authority.
+
+## Source behavior now implemented
+
+- fail-closed task schema with stable correlation identity;
+- explicit separation of Task Registry, WorkerCoordinator, Master Records, and Interlock/InTr authority;
+- completion-claim versus validated-closure distinction;
+- explicit dependency/blocker/adjacency/evidence fields;
+- explicit shared human-action and systemic-incident surfaces;
+- deterministic Task Registry vs supplied Master Records projection reconciliation;
+- query utility for topic-based task discovery in new sessions;
+- handoff projection renderer so session continuity can be materialized outside the chat context;
+- validator that checks authority separation, closure requirements, blocker/dependency integrity, reconciliation states, and existing WorkerCoordinator-registry presence.
+
 ## Completion predicates
 
-1. A canonical task record schema exists with stable identity, dependency, blocker, adjacency, evidence, and claim-reference semantics.
-2. The registry does not duplicate WorkerCoordinator claim/fence authority.
-3. A reconciliation schema exists for Task Registry vs Master Records comparison.
-4. Completion claims require evidence validation before closure.
-5. Missing evidence is represented explicitly rather than inferred as non-occurrence.
-6. Handoffs are projections of canonical task state.
-7. Duplicate/adjacent work resolution occurs before execution admission.
-8. Shared human actions can be represented once with multiple dependents.
-9. Systemic incidents can bind many symptoms/tasks without duplicating repair ownership.
-10. Source validators can fail closed on malformed or authority-conflicting records.
-11. An authentic task ingress, claim/fence, evidence, reconciliation, and egress/closure cycle is demonstrated through runtime Interlock/InTr and Master Records.
+1. A canonical task record schema exists with stable identity, dependency, blocker, adjacency, evidence, and claim-reference semantics. **SOURCE COMPLETE**
+2. The registry does not duplicate WorkerCoordinator claim/fence authority. **SOURCE COMPLETE**
+3. A reconciliation schema exists for Task Registry vs Master Records comparison. **SOURCE COMPLETE**
+4. Completion claims require evidence validation before closure. **SOURCE COMPLETE**
+5. Missing evidence is represented explicitly rather than inferred as non-occurrence. **SOURCE COMPLETE**
+6. Handoffs are projections of canonical task state. **SOURCE COMPLETE**
+7. Duplicate/adjacent work resolution occurs before execution admission. **POLICY/SOURCE COMPLETE; RUNTIME ENFORCEMENT PENDING**
+8. Shared human actions can be represented once with multiple dependents. **SOURCE COMPLETE; RUNTIME POPULATION PENDING**
+9. Systemic incidents can bind many symptoms/tasks without duplicating repair ownership. **SOURCE COMPLETE; RUNTIME POPULATION PENDING**
+10. Source validators can fail closed on malformed or authority-conflicting records. **SOURCE IMPLEMENTED; EXECUTION PROOF PENDING**
+11. An authentic task ingress, claim/fence, evidence, reconciliation, and egress/closure cycle is demonstrated through runtime Interlock/InTr and Master Records. **PENDING**
+
+## Remaining machine work
+
+- execute `scripts/validate_canonical_work_coordination.py` in an admitted validation environment;
+- connect task ingress/egress to the Universal Work Interlock/InTr runtime;
+- populate canonical task records from existing session/handoff/project state without duplicating WorkerCoordinator ownership;
+- bind live WorkerCoordinator claim/fence projection into canonical task records;
+- define/consume the Master Records projection/feed used for runtime reconciliation;
+- canonicalize repeated GitHub failure emails and shared human-action dependencies into incidents/tasks;
+- trigger dependent-task reevaluation when blockers resolve;
+- prove one authentic end-to-end task lifecycle from ingress through closure.
 
 ## Runtime status
 
-The source model can be implemented before the full runtime path is active. Source installation does not prove canonical runtime coordination, Interlock/InTr materialization, WorkerCoordinator execution, or Master Records reconciliation occurred.
+`SOURCE_IMPLEMENTED_RUNTIME_ENFORCEMENT_PENDING`
+
+Source installation does not prove canonical runtime coordination, Interlock/InTr materialization, WorkerCoordinator execution, Master Records reconciliation, or task closure occurred.
 
 ## Archive readiness
 
-This workstream is not runtime-complete until predicate 11 is proven. Conversation/session continuity may be archived once all unique design and implementation state is preserved in this handoff and the canonical source files.
+The workstream is not runtime-complete until predicate 11 is proven. This conversation may be archived once no unique coordination state remains only in chat context; all current design/source state is preserved here.
