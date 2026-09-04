@@ -1,0 +1,14 @@
+{
+  "schema": "stegverse.current-user-ios-ui-hold/v1",
+  "state": "HOLD_UI_ORCHESTRATION_CONFLICT",
+  "reason": "User-visible page interference observed: multiple mutation controls remained exposed; Master Records input contained non-JSON checkout-module text; Master Records state displayed FAIL_CLOSED / Invalid JSON while SV001 repeat-checkout denial remained visible.",
+  "device_scope": "CURRENT_USER_STEGVERSE_IOS_NODE",
+  "state_mutating_actions_permitted": false,
+  "active_action_id": null,
+  "required_fix": "Project one shared interaction manifest into Site and disable every state-mutating control except the sole currently admitted action; on any parse/input mismatch, revoke that action and return page to read-only HOLD rather than leaving other mutation controls exposed.",
+  "read_only_actions_permitted": ["inspect_current_page_state","replay_local_journal","show_or_export_evidence_bundle","copy_existing_receipt_or_proof_without_mutation"],
+  "authority_effect": "NONE_HUMAN_DEVICE_INSTRUCTION_SERIALIZATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "second_user_operated_machine_required": false
+}
