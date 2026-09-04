@@ -15,6 +15,18 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(value), encoding="utf-8")
 
+    def canonical_service_receipt(self) -> dict:
+        return {
+            "schema": "stegverse.sovereign-heartbeat-service/v4",
+            "active": True,
+            "carrier_active": True,
+            "worker_active": True,
+            "native_process_supervision_only": True,
+            "separate_carrier_and_worker_processes": True,
+            "third_party_process_host_required": False,
+            "registration_kind": "systemd-user-separated",
+        }
+
     def test_missing_runtime_evidence_remains_unobserved(self):
         with tempfile.TemporaryDirectory() as tmp:
             result = project(Path(tmp), {"request": "receipts/request.json"})
@@ -24,7 +36,7 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
             self.assertFalse(result["heartbeat_reference"]["freshness_correlated"])
             self.assertFalse(result["governed_progress"]["runtime_signal_is_execution_receipt"])
 
-    def test_runtime_presence_requires_direct_activation_predicates(self):
+    def test_runtime_presence_accepts_canonical_service_activation_receipt(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self.write(root, "control/heartbeat-carrier-runtime-state.json", {
@@ -37,6 +49,27 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
                 "last_observed_carrier_epoch": 42,
                 "observation_mode": "TASK_CAPABLE_WORKER_COORDINATOR",
             })
+            self.write(root, "receipts/sovereign-host/activation.latest.json", self.canonical_service_receipt())
+            result = project(
+                root,
+                observed_at=datetime(2026, 9, 4, 12, 0, 10, tzinfo=timezone.utc),
+            )
+            self.assertTrue(result["resident"]["runtime_alive_observed"])
+            self.assertTrue(result["resident"]["task_capable_worker_observed"])
+            self.assertTrue(result["resident"]["present_worker_runtime_observed"])
+            self.assertTrue(result["resident"]["worker_cycle_fresh"])
+            self.assertTrue(result["heartbeat_reference"]["freshness_correlated"])
+            self.assertEqual(result["resident"]["activation_evidence_kind"], "CANONICAL_SERVICE_RECEIPT")
+
+    def test_predicate_activation_proof_remains_compatible(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write(root, "control/worker-runtime-state.json", {
+                "schema": "stegverse.worker-runtime-state/v1",
+                "runtime_tick": 9,
+                "last_cycle_at": "2026-09-04T12:00:00Z",
+                "observation_mode": "TASK_CAPABLE_WORKER_COORDINATOR",
+            })
             self.write(root, "receipts/sovereign-host/activation.latest.json", {
                 "schema": "stegverse.sovereign-runtime-activation/v1",
                 "predicates": {"native_service_active": True, "continuous_runtime_live": True},
@@ -47,10 +80,7 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
                 observed_at=datetime(2026, 9, 4, 12, 0, 10, tzinfo=timezone.utc),
             )
             self.assertTrue(result["resident"]["runtime_alive_observed"])
-            self.assertTrue(result["resident"]["task_capable_worker_observed"])
-            self.assertTrue(result["resident"]["present_worker_runtime_observed"])
-            self.assertTrue(result["resident"]["worker_cycle_fresh"])
-            self.assertTrue(result["heartbeat_reference"]["freshness_correlated"])
+            self.assertEqual(result["resident"]["activation_evidence_kind"], "PREDICATE_PROOF_COMPATIBILITY")
             self.assertEqual(result["resident"]["node_id"], "node-7")
 
     def test_stale_worker_state_cannot_prove_present_runtime(self):
@@ -63,11 +93,7 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
                 "last_observed_carrier_epoch": 42,
                 "observation_mode": "TASK_CAPABLE_WORKER_COORDINATOR",
             })
-            self.write(root, "receipts/sovereign-host/activation.latest.json", {
-                "schema": "stegverse.sovereign-runtime-activation/v1",
-                "predicates": {"native_service_active": True, "continuous_runtime_live": True},
-                "node_id": "node-7",
-            })
+            self.write(root, "receipts/sovereign-host/activation.latest.json", self.canonical_service_receipt())
             result = project(
                 root,
                 observed_at=datetime(2026, 9, 4, 12, 0, 0, tzinfo=timezone.utc),
@@ -78,6 +104,16 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
             self.assertFalse(result["resident"]["present_worker_runtime_observed"])
             self.assertFalse(result["resident"]["worker_cycle_fresh"])
             self.assertEqual(result["resident"]["worker_cycle_age_seconds"], 120.0)
+
+    def test_partial_or_third_party_service_receipt_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            receipt = self.canonical_service_receipt()
+            receipt["third_party_process_host_required"] = True
+            self.write(root, "receipts/sovereign-host/activation.latest.json", receipt)
+            result = project(root)
+            self.assertFalse(result["resident"]["runtime_alive_observed"])
+            self.assertEqual(result["resident"]["activation_evidence_kind"], "CANONICAL_SERVICE_RECEIPT")
 
     def test_receipt_presence_is_not_collapsed(self):
         with tempfile.TemporaryDirectory() as tmp:
