@@ -1,0 +1,52 @@
+{
+  "schema": "stegverse.external-ai-transition-policy/v1",
+  "status": "SOURCE_POLICY_ACTIVE_RUNTIME_ENFORCEMENT_PENDING",
+  "invariant": "EXTERNAL_CONNECTIVITY_GOVERNED_BY_ADMISSIBLE_STATE_TRANSITION_CAPABILITY_NOT_API_ACCESS",
+  "production_external_ai_execution_principal": false,
+  "transport_surface_authority": "NONE",
+  "api_route_possession_grants_authority": false,
+  "endpoint_possession_grants_authority": false,
+  "ingress": {
+    "interlock_required": true,
+    "intr_required": true,
+    "successful_ingress_effect": "ADMITTED_INGRESS_TRANSITION_ONLY",
+    "post_ingress_capability_source": "SKAP_VAULT_RELATIONSHIP_PACKAGE",
+    "allowed_recipients": [
+      "STEGVERSE_ASSISTANT",
+      "STEGVERSE_AI_ENTITY"
+    ]
+  },
+  "interaction_classes": [
+    "OBSERVATION",
+    "REQUEST",
+    "RECOMMENDATION",
+    "EVIDENCE",
+    "ARTIFACT",
+    "DEVELOPER_CHANGE_PROPOSAL"
+  ],
+  "interaction_class_admission": "MUST_MATCH_SKAP_RELATIONSHIP_ALLOWANCE",
+  "production": {
+    "direct_mutation_by_external_ai": false,
+    "internal_direct_targets": [],
+    "consequential_work_origin": "GOVERNED_STEGVERSE_PRINCIPAL_ONLY",
+    "egress_interlock_required": true,
+    "egress_intr_required": true
+  },
+  "development": {
+    "baseline_package": "DEVELOPER_PACKAGE_STANDARD",
+    "upgraded_capability_requires_application": true,
+    "implicit_promotion_to_production": false
+  },
+  "inherits": {
+    "user_defined_disclosure_invariant": true,
+    "master_records_reconstruction_invariant": true,
+    "tvc_credential_authority": true,
+    "universal_work_interlock": true
+  },
+  "nonclaims": [
+    "SOURCE_POLICY_DOES_NOT_PROVE_LIVE_EXTERNAL_AI_RUNTIME_INGRESS",
+    "SOURCE_POLICY_DOES_NOT_GRANT_PROVIDER_OR_MODEL_EXECUTION_AUTHORITY",
+    "SKAP_RELATIONSHIP_EXISTENCE_DOES_NOT_BYPASS_INTERLOCK_INTR",
+    "INGRESS_ADMISSION_DOES_NOT_IMPLY_INTERNAL_EXECUTION_AUTHORITY"
+  ]
+}
