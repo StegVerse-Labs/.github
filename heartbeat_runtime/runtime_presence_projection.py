@@ -48,6 +48,37 @@ def _parse_timestamp(value: Any) -> datetime | None:
     return parsed.astimezone(timezone.utc)
 
 
+def _activation_runtime_alive(activation: dict[str, Any]) -> tuple[bool, str]:
+    """Recognize canonical runtime-local activation evidence without inventing liveness."""
+    if not activation:
+        return False, "UNOBSERVED"
+
+    predicates = activation.get("predicates") if isinstance(activation.get("predicates"), dict) else {}
+    if (
+        predicates.get("native_service_active") is True
+        and predicates.get("continuous_runtime_live") is True
+    ):
+        return True, "PREDICATE_PROOF_COMPATIBILITY"
+
+    if activation.get("registration_kind") == "stegverse-ephemeral-console":
+        alive = (
+            activation.get("active") is True
+            and activation.get("stegverse_process_supervision") is True
+            and activation.get("third_party_process_host_required") is False
+        )
+        return alive, "EPHEMERAL_CONSOLE_SERVICE_RECEIPT"
+
+    alive = (
+        activation.get("active") is True
+        and activation.get("carrier_active") is True
+        and activation.get("worker_active") is True
+        and activation.get("native_process_supervision_only") is True
+        and activation.get("separate_carrier_and_worker_processes") is True
+        and activation.get("third_party_process_host_required") is False
+    )
+    return alive, "CANONICAL_SERVICE_RECEIPT"
+
+
 def project(
     runtime_root: Path,
     evidence_refs: dict[str, str] | None = None,
@@ -64,14 +95,9 @@ def project(
     carrier = _load(carrier_path) or {}
     worker = _load(worker_path) or {}
     activation = _load(activation_path) or {}
-    predicates = activation.get("predicates") if isinstance(activation.get("predicates"), dict) else {}
 
     activation_observed = bool(activation)
-    runtime_alive = (
-        activation_observed
-        and predicates.get("native_service_active") is True
-        and predicates.get("continuous_runtime_live") is True
-    )
+    runtime_alive, activation_evidence_kind = _activation_runtime_alive(activation)
     task_capable = (
         worker.get("schema") == "stegverse.worker-runtime-state/v1"
         and worker.get("observation_mode") != OBSERVATION_ONLY_MODE
@@ -117,6 +143,8 @@ def project(
         "resident": {
             "node_id": activation.get("node_id") or activation.get("sovereign_node") or None,
             "runtime_alive_observed": runtime_alive,
+            "activation_evidence_observed": activation_observed,
+            "activation_evidence_kind": activation_evidence_kind,
             "task_capable_worker_observed": task_capable,
             "present_worker_runtime_observed": present_worker_runtime,
             "worker_runtime_tick": worker.get("runtime_tick"),
