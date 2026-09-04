@@ -164,3 +164,19 @@ PR #992 / merge `da51e1f7bcdaa993e627b1af2739195c24bf95ae` hardens the canonical
 - tests cover both fresh and stale WorkerCoordinator state.
 
 This improves runtime observability only. It does not create runtime presence, execute the ERL reviewer, mint authority, or satisfy the independent-review receipt gate. Present resident WorkerCoordinator runtime presence remains unobserved until fresh runtime-local state and direct activation predicates are authentically present.
+
+
+## 2026-09-04 canonical activation-receipt schema alignment
+
+A second runtime-presence observability defect was found after the freshness hardening. `scripts/install_sovereign_heartbeat_service.py` authentically writes `receipts/sovereign-host/activation.latest.json` as `stegverse.sovereign-heartbeat-service/v4` with direct service fields such as `active`, `carrier_active`, `worker_active`, `native_process_supervision_only`, `separate_carrier_and_worker_processes`, and `third_party_process_host_required`. The projector, however, read only a synthetic `activation.predicates` object used by tests, so the real canonical service receipt could never satisfy `runtime_alive_observed`.
+
+PR #999 / merge `4dea86ded26d86c776e294c1c921930b46584318` aligns the projector with the actual canonical receipt:
+
+- canonical native service receipts are recognized only when carrier and worker are both active, native separated supervision is asserted, and no third-party process host is required;
+- the existing predicate-proof form remains accepted for compatibility;
+- ephemeral-console service receipts retain their separately bounded StegVerse-supervision semantics;
+- `activation_evidence_kind` makes the exact evidence form inspectable;
+- `present_worker_runtime_observed` still additionally requires a fresh task-capable WorkerCoordinator cycle, so service activation alone is not treated as present execution proof;
+- tests cover canonical service receipts, compatibility proof, stale worker state, and fail-closed third-party-host receipts.
+
+This repair removes a dead observability dependency but does not create a live WorkerCoordinator or advance the ERL review. The earliest unproven runtime boundary remains `RESIDENT_WORKER_RUNTIME_PRESENCE` until authentic runtime-local activation evidence and a fresh worker cycle are observed together.
