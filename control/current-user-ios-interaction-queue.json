@@ -72,5 +72,21 @@
     "read_only_controls_always_separate": true,
     "parse_or_binding_failure_revokes_action_locally": true,
     "stale_session_instructions_must_not_override_manifest": true
+  },
+  "ui_guard_source": {
+    "site_issue": "StegVerse-Labs/Site#991",
+    "site_implementation_pr": 996,
+    "site_implementation_merge": "f1a43fef4c7fa629ee25bb04347e26f0950026d9",
+    "site_claim_release_pr": 997,
+    "site_claim_release_merge": "26b94f19f07610c2f737ab22faf8d369685ddd98",
+    "source_wiring_complete": true,
+    "bootstrap_loads_guard": true,
+    "mutation_controls_default_disabled": true,
+    "mutation_inputs_default_readonly": true,
+    "manifest_cache_bypass_present": true,
+    "guarded_service_worker_shell_refresh_present": true,
+    "public_propagation_observed": false,
+    "current_device_enforcement_observed": false,
+    "source_merge_is_runtime_proof": false
   }
 }
