@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.current-user-ios-interaction-queue/v1",
   "issue": "StegVerse-Labs/.github#922",
-  "state": "HOLD_PENDING_FIXED_SITE_PROPAGATION",
+  "state": "HOLD_PENDING_FIXED_SITE_MODULE_PROPAGATION",
   "device_scope": "CURRENT_USER_STEGVERSE_IOS_NODE",
   "physical_device_count_required": 1,
   "second_user_operated_machine_required": false,
@@ -23,7 +23,8 @@
     "inspect_current_page_state",
     "replay_local_journal",
     "show_or_export_evidence_bundle",
-    "copy_existing_receipt_or_proof_without_mutation"
+    "copy_existing_receipt_or_proof_without_mutation",
+    "inspect_public_static_guard_assets"
   ],
   "state_mutating_actions_permitted": false,
   "admission_rule": {
@@ -52,7 +53,7 @@
         "current page contains released Site custody surface",
         "immutable SV001 execution proof available"
       ],
-      "queue_state": "WAITING_FOR_FIXED_SITE_PROPAGATION",
+      "queue_state": "WAITING_FOR_FIXED_SITE_MODULE_PROPAGATION",
       "ordering_constraints": {
         "must_follow": [
           "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
@@ -73,22 +74,35 @@
         "immutable_sv001_execution_proof_available": true,
         "terminal_cycle_receipt_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35",
         "fresh_current_device_journal_head_observed": true,
-        "remaining_before_admission": [
-          "public stegverse.org propagation of Site#963 exact guarded checkout/module package",
-          "no additional current-device mutation before admission",
-          "queue transition of IPHONE-MR-SV001-CUSTODY-001 to sole ADMITTED_FOR_USER_EXECUTION"
-        ],
         "fresh_current_device_journal_head": {
           "entries": 69,
           "tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69",
           "replay_state": "PASS"
         },
-        "duplicate_terminal_execution_disposition": "G24 retained non-custodial; G23 canonical custody source"
+        "duplicate_terminal_execution_disposition": "G24 retained non-custodial; G23 canonical custody source",
+        "public_guard_package_observed": true,
+        "public_guard_package_observation": {
+          "surface": "https://stegverse.org/stegos-bootstrap/workercoordinator-portable-sv001.json",
+          "observed_from_current_user_iphone": true,
+          "schema": "stegverse.workercoordinator-portable-checkout-package/v1",
+          "portable_authority_epoch": "WC-PORTABLE-IPHONE-20260902",
+          "single_checkout_per_task_package": true,
+          "terminal_reexecution_allowed": false,
+          "downstream_retry_after_terminal": true,
+          "credential_authority": "TV/TVC",
+          "github_token_runtime_authority": "NONE",
+          "external_non_stegverse_machine_required": false
+        },
+        "remaining_before_admission": [
+          "public stegverse.org propagation/runtime presence of the guarded workercoordinator-portable-checkout.js enforcement module",
+          "no additional current-device mutation before admission",
+          "queue transition of IPHONE-MR-SV001-CUSTODY-001 to sole ADMITTED_FOR_USER_EXECUTION"
+        ]
       }
     }
   ],
   "active_action_id": null,
-  "next_required_observation": "PUBLIC_SITE_SINGLE_CHECKOUT_GUARD_PROPAGATED",
+  "next_required_observation": "PUBLIC_SITE_SINGLE_CHECKOUT_GUARD_MODULE_PROPAGATED",
   "mutation_freeze_reason": "Concurrent sessions issued different page-manipulation sequences without a shared device-interaction fence.",
   "observed_descendant_anchors": [
     {
@@ -127,7 +141,7 @@
       "DE006-PARENT-CONTINUATION",
       "SHWP-HIL-SOVEREIGN-RECEIVER-001"
     ],
-    "completeness_note": "This inventory covers canonical .github handoffs and currently known Site/current-iPhone continuations; fresh device head remains required before admission."
+    "completeness_note": "This inventory covers canonical .github handoffs and currently known Site/current-iPhone continuations."
   },
   "fresh_head": {
     "observed": true,
@@ -137,32 +151,16 @@
     "tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69",
     "observed_node_id": "stegnode-web-f24e3bfb7f5343cb37323187a88e51f3",
     "eligible_as_current_head_for_admission": false,
-    "reason": "Fresh head exposes two distinct completed SV001 terminal lineages (G23 and G24); custody must not select one implicitly."
+    "reason": "Lineage is resolved, but guarded checkout enforcement module public propagation/runtime presence remains unobserved."
   },
   "terminal_lineage_conflict": {
     "state": "RESOLVED_CANONICAL_G23_DUPLICATE_G24",
     "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
     "transition_id": "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
-    "first_execution": {
-      "claim_id": "SHWP-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001-G23",
-      "fencing_token": 23,
-      "cycle_receipt_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35",
-      "tvc_consumption_observed": true
-    },
-    "later_execution": {
-      "claim_id": "SHWP-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001-G24",
-      "fencing_token": 24,
-      "cycle_receipt_sha256": "sha256:6bcc1976793657ea849a3678fa324c69134d2b59481e0bc9994c6baa6c4aff79",
-      "tvc_consumption_observed": true,
-      "journal_terminal_sequence": 67,
-      "journal_reconstruction_sequence": 68,
-      "journal_consumption_sequence": 69
-    },
     "journal_integrity": "PASS",
     "silent_latest_wins_prohibited": true,
     "silent_first_wins_prohibited": true,
     "further_sv001_reexecution_prohibited": true,
-    "master_records_custody_admission_prohibited": true,
     "required_resolution": "RESOLVED",
     "authority_effect": "NONE_CONFLICT_CLASSIFICATION_ONLY",
     "canonical_execution": {
@@ -170,6 +168,7 @@
       "fencing_token": 23,
       "cycle_receipt_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35",
       "custody_eligible": true,
+      "tvc_consumption_observed": true,
       "disposition_basis": "First terminal execution; canonical task contract already set terminal_autonomy_reexecution_allowed=false and downstream_retry_after_terminal=true."
     },
     "duplicate_execution": {
@@ -178,10 +177,15 @@
       "cycle_receipt_sha256": "sha256:6bcc1976793657ea849a3678fa324c69134d2b59481e0bc9994c6baa6c4aff79",
       "custody_eligible": false,
       "retained": true,
+      "tvc_consumption_observed": true,
+      "journal_terminal_sequence": 67,
+      "journal_reconstruction_sequence": 68,
+      "journal_consumption_sequence": 69,
       "disposition": "DUPLICATE_TERMINAL_EXECUTION_NON_CUSTODIAL",
       "reason": "Occurred after canonical terminal G23 despite terminal_autonomy_reexecution_allowed=false."
     },
-    "master_records_custody_admission_prohibited_reason": "Fixed checkout source is merged in .github and projected to Site, but public propagation of the guarded bytes is not independently observed yet."
+    "master_records_custody_admission_prohibited": true,
+    "master_records_custody_admission_prohibited_reason": "Guarded package is publicly observed, but public runtime presence of the fixed checkout enforcement module is not yet observed."
   },
   "single_checkout_guard": {
     "canonical_source_merge": "StegVerse-Labs/.github#946@3448807c50a4f9d3bd07ce83c0d4c2c315617b6f",
@@ -190,6 +194,9 @@
     "package_blob": "0e3eaaec3fb20b759b79f2ab9070f002b73be741",
     "source_fixed": true,
     "site_source_projected": true,
+    "public_package_observed": true,
+    "public_package_contract_matches": true,
+    "public_module_observed": false,
     "public_propagation_observed": false,
     "device_runtime_guard_observed": false
   }
