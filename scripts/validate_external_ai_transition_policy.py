@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "data" / "external-ai-transition-policy.json"
 DEV = ROOT / "data" / "developer-capability-packages.json"
 SCHEMA = ROOT / "schemas" / "external-ai-transition-relationship.schema.json"
+DEV_APPLICATION_SCHEMA = ROOT / "schemas" / "developer-capability-extension-application.schema.json"
 HANDOFF = ROOT / "docs" / "EXTERNAL_AI_STATE_TRANSITION_ADMISSION_MIRROR_HANDOFF.md"
 
 
@@ -31,6 +32,7 @@ def main() -> int:
     policy = load_json(POLICY)
     dev = load_json(DEV)
     relationship_schema = load_json(SCHEMA)
+    dev_application_schema = load_json(DEV_APPLICATION_SCHEMA)
     handoff = HANDOFF.read_text(encoding="utf-8")
 
     require(
@@ -67,6 +69,11 @@ def main() -> int:
     upgrade = dev.get("capability_extension_application", {})
     require(upgrade.get("admission_effect") == "AMEND_OR_REPLACE_SKAP_RELATIONSHIP_PACKAGE_ONLY_AFTER_APPROVAL", "developer upgrade must materialize through approved SKAP relationship change")
     require(upgrade.get("rejection_effect") == "PRIOR_RELATIONSHIP_PACKAGE_UNCHANGED", "rejected developer upgrade must not alter prior package")
+
+    dev_app_props = dev_application_schema.get("properties", {})
+    require(dev_app_props.get("schema", {}).get("const") == "stegverse.developer-capability-extension-application/v1", "developer application schema id mismatch")
+    require(dev_app_props.get("current_package", {}).get("const") == "DEVELOPER_PACKAGE_STANDARD", "developer application must originate from standard package")
+    require(dev_app_props.get("target_environment", {}).get("const") == "DEVELOPMENT", "developer extension application must remain development-scoped")
 
     authority_props = relationship_schema.get("properties", {}).get("authority_model", {}).get("properties", {})
     require(authority_props.get("api_access_is_authority", {}).get("const") is False, "relationship schema must deny API-as-authority")
