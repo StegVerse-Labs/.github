@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/developer-capability-extension-application.schema.json",
+  "title": "StegVerse Developer Capability Extension Application",
+  "type": "object",
+  "required": [
+    "schema",
+    "application_id",
+    "relationship_id",
+    "requested_extensions",
+    "target_environment",
+    "target_scope",
+    "purpose",
+    "requested_lifecycle",
+    "authority_or_approval_refs",
+    "constraint_declarations",
+    "current_package"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.developer-capability-extension-application/v1"},
+    "application_id": {"type": "string", "minLength": 1},
+    "relationship_id": {"type": "string", "minLength": 1},
+    "current_package": {"const": "DEVELOPER_PACKAGE_STANDARD"},
+    "requested_extensions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "target_environment": {"const": "DEVELOPMENT"},
+    "target_scope": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "purpose": {"type": "string", "minLength": 1},
+    "requested_lifecycle": {
+      "type": "object",
+      "required": ["mode"],
+      "properties": {
+        "mode": {"enum": ["ONE_TIME", "SESSION", "TIME_BOUNDED", "PERSISTENT_UNTIL_REVOKED"]},
+        "expires_at": {"type": ["string", "null"], "format": "date-time"}
+      },
+      "additionalProperties": false
+    },
+    "authority_or_approval_refs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "constraint_declarations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "decision": {
+      "type": "object",
+      "properties": {
+        "state": {"enum": ["PENDING", "APPROVED", "DENIED", "REVOKED", "EXPIRED"]},
+        "decision_refs": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "skap_relationship_effect": {
+          "enum": ["NONE", "AMEND_RELATIONSHIP_PACKAGE", "REPLACE_RELATIONSHIP_PACKAGE", "REVOKE_EXTENSION"]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
