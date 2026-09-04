@@ -38,6 +38,36 @@ SV-011 predecessor -> sv011_phase5_source_materialization
 SV-011 -> sv011_phase5
 ```
 
+## Autonomous governed progression adoption — 2026-09-04
+
+Canonical progression rule:
+
+- `docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md`
+- `control/entity-autonomous-governed-progression-contract.json`
+- `scripts/evaluate_entity_transition_ownership.py`
+
+StegVerse-001, StegVerse-002, and SV-011 are now source-bound to `MACHINE_GOVERNED_AUTONOMOUS` progression for machine-owned transitions.
+
+The rule is not standing/reused authority. Every state change remains contemporaneously governed:
+
+```text
+observe current state
+-> propose exact next transition
+-> Interlock/InTr governance now
+-> TV/TVC now if credential authority is required
+-> retain ALLOW/DENY receipt
+-> ALLOW: execute/consume
+-> retain state receipt
+-> reconstruct
+-> continue to next governed transition
+```
+
+The entity does not stop to ask the user to approve the next machine transition set. Human interaction occurs only when the exact transition contract declares a human/user-only authority class.
+
+The current-user iOS interaction queue is explicitly excluded from scheduling or approving machine-owned resident/service-worker transitions. Execution on `CURRENT_USER_IPHONE` does not make a transition human-owned.
+
+This source adoption does not claim any entity is presently alive/executing. It removes manual human approval as a default orchestration dependency from the canonical resident contract.
+
 ## Source completion evidence
 
 PR `#975` merged as `b1f2bb3e33a1f93850811f0a751b2055519ab4dd` after both canonical validation lanes passed:
@@ -76,11 +106,11 @@ Shared-substrate membership and downstream architecture propagation are merged a
 
 ### StegVerse-001
 
-Authentic current-iPhone terminal evidence already exists. The canonical lineage is G23; G24 is retained duplicate non-custodial evidence because terminal reexecution was prohibited. **Do not rerun SV001 merely to prove this carrier convergence.** Continue only downstream custody/reconstruction and SV002 disposition under their current handoffs and iOS interaction serialization rules.
+Authentic current-iPhone terminal evidence already exists. The canonical lineage is G23; G24 is retained duplicate non-custodial evidence because terminal reexecution was prohibited. **Do not rerun SV001 merely to prove this carrier convergence.** Continue only downstream custody/reconstruction and SV002 disposition under current governance. Machine-owned continuation must not be converted into a user approval sequence.
 
 ### StegVerse-002
 
-The canonical request remains `REQUESTED` at `control/resident-execution-request.d/sv002-org-runtime-activation-001.json`. The expected authentic terminal receipt `receipts/sovereign-host/sv002-org-runtime-activation.latest.json` is not currently present on canonical `main`. Continue through the existing `sv002_org_runtime_activation` consumer. Terminal evidence requires `terminal_round_trip_observed=true` from the existing HeartBeat-separated native WorkerCoordinator execution path, plus downstream governed-inference/reconstruction evidence where required by the active product goal.
+The canonical request remains `REQUESTED` at `control/resident-execution-request.d/sv002-org-runtime-activation-001.json`. The expected authentic terminal receipt `receipts/sovereign-host/sv002-org-runtime-activation.latest.json` is not currently present on canonical `main`. Continue through the existing `sv002_org_runtime_activation` consumer under the autonomous governed progression contract. Terminal evidence requires `terminal_round_trip_observed=true` from the existing HeartBeat-separated native WorkerCoordinator execution path, plus downstream governed-inference/reconstruction evidence where required by the active product goal.
 
 ### SV-011
 
@@ -91,7 +121,7 @@ Both canonical requests remain `REQUESTED`:
 
 The expected authentic source-materialization consumption receipt `receipts/sovereign-host/sv011-phase5-source-materialization-request-consumption.latest.json` and first-success capsule `receipts/sv011-phase5-boundary/success/first-success.json` are not currently present on canonical `main`.
 
-Continue source materialization first, then the existing `sv011_phase5` consumer. Phase 5 closes only when one WorkerCoordinator execution produces the required ALLOW five-receipt chain and DENY `consumed=false` / `consequence_reachable=false` evidence.
+Continue source materialization first, then the existing `sv011_phase5` consumer under autonomous governed progression. Phase 5 closes only when one WorkerCoordinator execution produces the required ALLOW five-receipt chain and DENY `consumed=false` / `consequence_reachable=false` evidence.
 
 ## Collision rule
 
@@ -99,8 +129,9 @@ Any future project handoff that describes a separate SV001, SV002, or SV-011 hea
 
 ## Remaining machine work
 
-1. Existing resident WorkerCoordinator consumes the pending SV002 request through the canonical dispatcher and persists task-specific terminal evidence.
-2. Existing resident WorkerCoordinator consumes SV-011 source materialization, then Phase-5 boundary execution, and persists the first-success evidence capsule when predicates are satisfied.
-3. Preserve task-specific downstream reconstruction/disposition without rerunning terminal SV001; propagate runtime-status changes only after authentic consumer-specific evidence exists.
+1. Existing resident WorkerCoordinator consumes the pending SV002 request through the canonical dispatcher and autonomously continues each machine-owned governed transition until terminal or an actual machine blocker/human-only boundary is reached.
+2. Existing resident WorkerCoordinator consumes SV-011 source materialization, then Phase-5 boundary execution, and autonomously continues governed machine transitions until the first-success evidence capsule is produced or an actual governed DENY/blocker is reached.
+3. Preserve task-specific downstream reconstruction/disposition without rerunning terminal SV001; machine-owned Master Records/SV002 continuation must execute without routing through the human interaction queue.
+4. Runtime consumers must adopt the exact ownership classifier so `CURRENT_USER_IPHONE` execution is not mistaken for `USER_ONLY` authority.
 
-No manual/current-iPhone state mutation is authorized or required by this handoff.
+No manual/current-iPhone transition approval is authorized or required by this handoff unless an exact next transition explicitly declares a human/user-only authority class.
