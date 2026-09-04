@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "fragment_id": "LEGACY-CONTINUITY-VALIDATION-WORKER-001",
+  "entries": [
+    {
+      "task_id": "LEGACY-CONTINUITY-VALIDATION-WORKER-001",
+      "temporal_class": "current",
+      "ae_impact": "SUPPORTING_OPERATION_OF",
+      "capability_id": "stegverse:capability:private-source-focused-validation:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "validates_capability",
+      "result": "PASS",
+      "continuation_owner": "legacy-continuity-validation-worker on eligible StegVerse sovereign/local source surface",
+      "rationale": "The worker validates an already-defined private-source capability against an exact authorized local Continuity source. Registration, source presence, and focused validation do not create capability activation, credential authority, repository authority, or runtime authority."
+    }
+  ]
+}
