@@ -1,0 +1,29 @@
+{
+  "schema": "stegverse.current-user-ios-interaction-owner/v1",
+  "device_scope": "CURRENT_USER_STEGVERSE_IOS_NODE",
+  "owner": "StegVerse-Labs/.github#922 interaction coordinator",
+  "state": "EXCLUSIVE_HUMAN_INTERACTION_OWNER_ACTIVE",
+  "single_physical_device": true,
+  "second_user_operated_machine_required": false,
+  "rule": "Only the #922 interaction coordinator may issue human-facing instructions that mutate or supply task-specific input to the current iPhone StegOS page. All other sessions must remain machine-only/read-only and register desired device interactions as queue candidates rather than asking the user to perform them.",
+  "other_sessions_may": [
+    "perform repository/source work within their own claims",
+    "inspect read-only evidence",
+    "register a requested device interaction candidate",
+    "report blockers to the interaction coordinator"
+  ],
+  "other_sessions_must_not": [
+    "ask the user to tap any StegOS mutation control",
+    "ask the user to paste task-specific JSON into StegOS",
+    "ask the user to rerun a terminal task",
+    "issue an alternate page-operation sequence",
+    "treat stale chat instructions as current admission"
+  ],
+  "current_interaction_state": "HOLD_UI_ORCHESTRATION_CONFLICT",
+  "active_action_id": null,
+  "resume_condition": "Site exposes a single shared interaction state and at most one mutation control; coordinator reconciles current journal after the visible parse failure before admitting a new action.",
+  "authority_effect": "NONE_HUMAN_INTERACTION_SERIALIZATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_authority": false
+}
