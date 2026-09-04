@@ -97,3 +97,16 @@ The exact required review receipt remains unobserved:
 `receipts/erl-ai-economic-transparency-review/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json`
 
 Current blocker remains `RESIDENT_EXECUTION_RECEIPT_PENDING`. No user action is presently required.
+
+
+## 2026-09-03 portable-selector regression guard
+
+The targeted-dispatch repair is now protected by a deterministic regression assertion in:
+`tests/test_erl_ai_economic_transparency_review_resident_bridge.py`
+
+PR #970 / merge `8ccb5cff24d9b6b69e2da37dd950095eee616a23` verifies that `erl_ai_economic_transparency_review` remains present in `ALLOWED_TARGET_CONSUMERS` while preserving the existing consumer, source-refresh, review-package, and credential-boundary checks.
+
+This regression guard proves only source/control wiring. It does not prove resident execution, independent-review completion, activation, publication, or repository writeback.
+
+The exact authentic review receipt remains the sole substantive completion gate for this reviewer lane:
+`receipts/erl-ai-economic-transparency-review/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json`
