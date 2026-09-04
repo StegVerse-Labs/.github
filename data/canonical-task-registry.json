@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 2,
+  "generation": 3,
   "status": "SOURCE_RUNTIME_ADAPTERS_INSTALLED_AUTHENTIC_INGRESS_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -19,13 +19,19 @@
       "coordination_state": "PROPOSED",
       "source_refs": [
         "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
         "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md",
         "control/worker-registry.json",
         "control/canonical-resident-carrier-contract.json",
         "control/canonical-work-runtime-profile.json",
         "scripts/build_canonical_work_intr_request.py",
         "scripts/project_canonical_work_runtime.py",
-        "scripts/validate_canonical_work_runtime_profile.py"
+        "scripts/validate_canonical_work_runtime_profile.py",
+        "scripts/consume_canonical_work_intr_materialization_request.py",
+        "workers/canonical_work_intr_ingress.py",
+        "scripts/project_master_records_work_events.py",
+        "scripts/reevaluate_canonical_task_dependencies.py",
+        "scripts/normalize_github_failure_email_events.py"
       ],
       "targets": {
         "organizations": ["StegVerse-Labs"],
@@ -37,7 +43,10 @@
           "dependency-incident-graph",
           "session-continuity",
           "universal-intr-task-admission",
-          "hb32-runtime-reference-projection"
+          "hb32-runtime-reference-projection",
+          "master-records-work-event-projection",
+          "dependency-resolution-fanout",
+          "github-failure-incident-normalization"
         ]
       },
       "dependencies": [
@@ -67,7 +76,12 @@
         "control/canonical-work-runtime-profile.json",
         "scripts/build_canonical_work_intr_request.py",
         "scripts/project_canonical_work_runtime.py",
-        "scripts/validate_canonical_work_runtime_profile.py"
+        "scripts/validate_canonical_work_runtime_profile.py",
+        "scripts/consume_canonical_work_intr_materialization_request.py",
+        "workers/canonical_work_intr_ingress.py",
+        "scripts/project_master_records_work_events.py",
+        "scripts/reevaluate_canonical_task_dependencies.py",
+        "scripts/normalize_github_failure_email_events.py"
       ],
       "expected_evidence_predicates": [
         "SOURCE_SCHEMA_VALID",
@@ -95,7 +109,8 @@
         "INGRESS_ADMITTED"
       ],
       "handoff_projection_refs": [
-        "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md"
+        "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"
       ],
       "authority_model": {
         "task_registry_mints_execution_authority": false,
@@ -115,6 +130,9 @@
   "nonclaims": [
     "REGISTRY_BOOTSTRAP_AND_RUNTIME_ADAPTERS_ARE_SOURCE_STATE_ONLY",
     "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_TASK_AUTHORITY",
+    "MASTER_RECORDS_PROJECTION_ADAPTER_DOES_NOT_PROVE_RUNTIME_RECONCILIATION",
+    "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS",
+    "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE",
     "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED",
     "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY",
     "NO_MASTER_RECORDS_RUNTIME_RECONCILIATION_IS_CLAIMED"
