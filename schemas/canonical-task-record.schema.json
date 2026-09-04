@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/canonical-task-record.schema.json",
+  "title": "StegVerse Canonical Task Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "task_id",
+    "correlation_id",
+    "goal",
+    "coordination_state",
+    "source_refs",
+    "targets",
+    "dependencies",
+    "blockers",
+    "adjacent_task_refs",
+    "expected_evidence_predicates",
+    "worker_claim",
+    "completion",
+    "allowed_next_transitions",
+    "authority_model"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.canonical-task-record/v1"},
+    "task_id": {"type": "string", "minLength": 1},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "root_correlation_id": {"type": ["string", "null"]},
+    "parent_task_id": {"type": ["string", "null"]},
+    "goal": {"type": "string", "minLength": 1},
+    "coordination_state": {
+      "enum": [
+        "PROPOSED",
+        "INGRESS_ADMITTED",
+        "CLAIMABLE",
+        "CLAIMED",
+        "IN_PROGRESS",
+        "BLOCKED",
+        "COMPLETION_CLAIMED",
+        "CLOSED",
+        "TRANSFERRED",
+        "SUPERSEDED",
+        "DEFERRED",
+        "REOPENED_DUE_TO_NEW_EVIDENCE",
+        "COMPLETION_REVOKED"
+      ]
+    },
+    "source_refs": {"type": "array", "items": {"type": "string"}},
+    "targets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["organizations", "repositories", "components"],
+      "properties": {
+        "organizations": {"type": "array", "items": {"type": "string"}},
+        "repositories": {"type": "array", "items": {"type": "string"}},
+        "components": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["dependency_id", "kind", "state", "ref"],
+        "properties": {
+          "dependency_id": {"type": "string"},
+          "kind": {"enum": ["TASK", "CAPABILITY", "RUNTIME_PREDICATE", "HUMAN_ACTION", "SYSTEMIC_INCIDENT", "EVIDENCE"]},
+          "state": {"enum": ["UNKNOWN", "UNRESOLVED", "RESOLVED", "NOT_APPLICABLE"]},
+          "ref": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["blocker_id", "dependency_id", "reason"],
+        "properties": {
+          "blocker_id": {"type": "string"},
+          "dependency_id": {"type": "string"},
+          "reason": {"type": "string"}
+        }
+      }
+    },
+    "systemic_incident_ref": {"type": ["string", "null"]},
+    "adjacent_task_refs": {"type": "array", "items": {"type": "string"}},
+    "existing_evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "expected_evidence_predicates": {"type": "array", "items": {"type": "string"}},
+    "worker_claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority", "claim_ref", "fence_ref", "projection_only"],
+      "properties": {
+        "authority": {"const": "WORKERCOORDINATOR"},
+        "claim_ref": {"type": ["string", "null"]},
+        "fence_ref": {"type": ["string", "null"]},
+        "projection_only": {"const": true}
+      }
+    },
+    "human_action_ref": {"type": ["string", "null"]},
+    "completion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claimed", "validated", "reconciliation_ref"],
+      "properties": {
+        "claimed": {"type": "boolean"},
+        "validated": {"type": "boolean"},
+        "reconciliation_ref": {"type": ["string", "null"]}
+      }
+    },
+    "allowed_next_transitions": {"type": "array", "items": {"type": "string"}},
+    "handoff_projection_refs": {"type": "array", "items": {"type": "string"}},
+    "authority_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_registry_mints_execution_authority", "source_state_proves_execution", "worker_claim_authority", "master_records_reality_authority", "interlock_intr_required_for_governed_ingress_egress"],
+      "properties": {
+        "task_registry_mints_execution_authority": {"const": false},
+        "source_state_proves_execution": {"const": false},
+        "worker_claim_authority": {"const": "WORKERCOORDINATOR"},
+        "master_records_reality_authority": {"const": true},
+        "interlock_intr_required_for_governed_ingress_egress": {"const": true}
+      }
+    }
+  }
+}
