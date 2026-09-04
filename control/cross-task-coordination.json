@@ -1,0 +1,57 @@
+{
+  "schema": "stegverse.cross-task-coordination-ledger/v1",
+  "updated_at": "2026-09-04T16:50:00-05:00",
+  "authority": {
+    "coordination_authority": "StegVerse-Labs/.github",
+    "runtime_truth_authority_effect": "NONE",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "goals": [
+    {
+      "goal_id": "CROSS-TASK-COORDINATION-001",
+      "description": "Canonical cross-session and autonomous-entity predicate/evidence/claim coordination"
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "CROSS-TASK-COORDINATION-IMPLEMENTATION-001",
+      "goal_id": "CROSS-TASK-COORDINATION-001",
+      "state": "IMPLEMENTATION_ACTIVE",
+      "autonomous_augmentation": false,
+      "required_predicates": [],
+      "mutation_scope": {
+        "repositories": ["StegVerse-Labs/.github"],
+        "paths": ["schemas/cross-task-coordination.schema.json", "control/cross-task-coordination.json", "heartbeat_runtime/coordination_graph.py", "heartbeat_runtime/worker_task_admission.py", "heartbeat_runtime/admitted_worker_runtime.py", "tests/test_coordination_graph.py", "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md"],
+        "modules": ["cross-task-coordination", "worker-task-admission"],
+        "runtime_surfaces": [],
+        "evidence_responsibilities": ["coordination-preflight"]
+      },
+      "expected_blast_radius": {
+        "repositories": ["StegVerse-Labs/.github"],
+        "paths": ["heartbeat_runtime", "control", "schemas", "tests", "docs"],
+        "modules": ["cross-task-coordination", "worker-task-admission"],
+        "runtime_surfaces": [],
+        "evidence_responsibilities": ["coordination-preflight"]
+      }
+    }
+  ],
+  "predicates": [],
+  "evidence": [],
+  "claims": [
+    {
+      "claim_id": "CLAIM-CROSS-TASK-COORDINATION-IMPLEMENTATION-001",
+      "task_id": "CROSS-TASK-COORDINATION-IMPLEMENTATION-001",
+      "state": "ACTIVE",
+      "scope": {
+        "repositories": ["StegVerse-Labs/.github"],
+        "paths": ["schemas/cross-task-coordination.schema.json", "control/cross-task-coordination.json", "heartbeat_runtime/coordination_graph.py", "heartbeat_runtime/worker_task_admission.py", "heartbeat_runtime/admitted_worker_runtime.py", "tests/test_coordination_graph.py", "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md"],
+        "modules": ["cross-task-coordination", "worker-task-admission"],
+        "runtime_surfaces": [],
+        "evidence_responsibilities": ["coordination-preflight"]
+      },
+      "authority_effect": "COORDINATION_ONLY"
+    }
+  ],
+  "gaps": []
+}
