@@ -5,11 +5,17 @@ The production loop is phase-driven, not event-driven: after one bounded state
 sample/bootstrap, the next wake time is derived from the oscillator anchor and
 10 ms period. Repository events, workflows, tasks, workers, claims, fences, and
 consumer completion never determine when a heartbeat reference exists.
+
+A live carrier may also be observed by the local process-supervision layer as
+node-presence evidence. That supervision may restore a missing WorkerCoordinator
+process, but the carrier grants no task authority and task execution remains
+subject to independent WorkerCoordinator/InTr/TV-TVC admission.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import signal
 import sys
 import time
@@ -21,12 +27,15 @@ if str(REPO_ROOT) not in sys.path:
 
 from heartbeat_runtime import CarrierHeartbeatRuntime
 from heartbeat_runtime.oscillator_producer import OscillatorProducer
+from scripts.repair_resident_worker_presence import ensure_worker_presence
 
 # Deprecated compatibility exports for callers/tests that historically imported
-# worker-adapter helpers from this module. The carrier main path never calls them.
+# worker-adapter helpers from this module. The carrier main path never uses them
+# for task admission or execution.
 from scripts.run_worker_runtime import _read_registry, adapter_entries as _worker_adapter_entries, load_adapters
 
 CARRIER_STATE = Path("control/heartbeat-carrier-runtime-state.json")
+WORKER_SUPERVISION_INTERVAL_REFERENCES = 100
 
 
 def _adapter_entries(root: Path):
@@ -121,8 +130,22 @@ def main() -> int:
             # oscillator deadline; no synthetic heartbeat is emitted.
             continue
         payload = observed_results.pop(0)
-        print(json.dumps(payload, sort_keys=True), flush=True)
         produced += 1
+
+        # Process supervision is intentionally downstream of carrier production.
+        # The pulse already exists before this check. Every 100 observed references
+        # (~1 second at 100 Hz), a live carrier can repair a missing resident worker
+        # process. The repair only restores WorkerCoordinator presence; it cannot
+        # admit or authorize any task. The restored WorkerCoordinator immediately
+        # visits the resident request dispatcher on its own first logical tick.
+        if args.continuous and produced % WORKER_SUPERVISION_INTERVAL_REFERENCES == 0:
+            payload["resident_worker_presence"] = ensure_worker_presence(
+                root,
+                carrier_pid=os.getpid(),
+                interval_ms=args.interval_ms,
+            )
+
+        print(json.dumps(payload, sort_keys=True), flush=True)
 
     return 0
 
