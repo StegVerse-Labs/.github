@@ -1,0 +1,68 @@
+{
+  "schema": "stegverse.canonical-resident-carrier-contract/v1",
+  "goal_id": "CANONICAL-RESIDENT-CARRIER-974",
+  "canonical_issue": "StegVerse-Labs/.github#974",
+  "heartbeat": {
+    "protocol_anchor": "HB32",
+    "mechanism": "INDEPENDENT_PHASE_OSCILLATOR",
+    "reference_frequency_hz": 100,
+    "reference_increment_interval_ms": 10,
+    "progression_dependency": "OSCILLATOR_ONLY",
+    "grants_execution_authority": false,
+    "grants_admission_authority": false,
+    "grants_claim_or_fence_authority": false
+  },
+  "intr_carrier": {
+    "handoff_ref": "docs/HB_DERIVED_INTR_CARRIER_MIRROR_HANDOFF.md",
+    "profile_ref": "heartbeat_runtime/intr_carrier_profile.py",
+    "exact_byte_runtime_ref": "heartbeat_runtime/intr_subsignal_runtime.py",
+    "authority_effect": "NONE_CARRIER_ONLY"
+  },
+  "worker_runtime": {
+    "implementation_ref": "heartbeat_runtime/worker_runtime.py",
+    "class": "WorkerCoordinator",
+    "dispatcher_ref": "scripts/dispatch_resident_execution_requests.py",
+    "single_scheduler_required": true,
+    "second_scheduler_allowed": false,
+    "second_worker_runtime_allowed": false,
+    "request_dispatch_grants_authority": false
+  },
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "second_user_operated_machine_required": false,
+  "consumers": [
+    {
+      "entity_id": "StegVerse-001",
+      "selector": "stegverse001_bounded_autonomy",
+      "consumer_ref": "scripts/consume_stegverse001_bounded_autonomy_request.py",
+      "terminal_transition": "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
+      "post_terminal": ["Master Records reconstruction PASS", "SV002 adversarial disposition"],
+      "terminal_reexecution_allowed": false
+    },
+    {
+      "entity_id": "StegVerse-002",
+      "selector": "sv002_org_runtime_activation",
+      "consumer_ref": "scripts/consume_sv002_org_runtime_activation_request.py",
+      "terminal_predicate": "terminal_round_trip_observed=true",
+      "post_terminal": ["governed inference proof where required", "same-execution reconstruction where required"]
+    },
+    {
+      "entity_id": "SV-011",
+      "selector": "sv011_phase5",
+      "predecessor_selector": "sv011_phase5_source_materialization",
+      "consumer_ref": "scripts/consume_sv011_phase5_resident_execution_request.py",
+      "terminal_predicates": [
+        "SV011-PHASE5-ALLOW-001 ALLOW with five ordered receipts",
+        "SV011-PHASE5-DENY-001 DENY with consumed=false and consequence_reachable=false",
+        "both outcomes bound to one WorkerCoordinator execution"
+      ]
+    }
+  ],
+  "invariants": [
+    "No consumer may create or own a second heartbeat, oscillator, scheduler, WorkerCoordinator, credential path, claim/fence path, or resident runtime.",
+    "HB and HB-derived InTr carriage provide reference/transport observability only and never authorize execution or admission.",
+    "InTr governs admissible transition boundaries; task-specific consumers retain their own fail-closed validation.",
+    "Repository merge or CI success never substitutes for authentic resident execution evidence.",
+    "A terminal task is never rerun merely to prove shared-substrate membership."
+  ]
+}

@@ -23,6 +23,7 @@
       "last_checkpoint_ref": null,
       "lease": null,
       "state": "HANDOFF_READY",
+      "source_state_vector_ref": "control/task-vectors/LEGACY-CONTINUITY-VALIDATION-WORKER-001.json",
       "task_id": "LEGACY-CONTINUITY-VALIDATION-WORKER-001",
       "worker_id": "legacy-continuity-validation-worker",
       "admissible_existence": {
