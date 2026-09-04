@@ -1,0 +1,105 @@
+{
+  "schema": "stegverse.canonical-task-registry/v1",
+  "generation": 1,
+  "status": "SOURCE_BOOTSTRAP_ACTIVE_RUNTIME_ADMISSION_PENDING",
+  "authoritative_roles": {
+    "work_intent_and_coordination": "THIS_REGISTRY",
+    "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
+    "observed_reality_and_reconstruction": "MASTER_RECORDS",
+    "governed_task_ingress_egress": "INTERLOCK_INTR"
+  },
+  "tasks": [
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "correlation_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "root_correlation_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "parent_task_id": null,
+      "goal": "Implement the canonical coordination substrate for multi-entity StegVerse development using Task Registry, WorkerCoordinator claim/fence references, Master Records reconciliation, Interlock/InTr task transitions, dependency/incident convergence, and handoff projections.",
+      "coordination_state": "PROPOSED",
+      "source_refs": [
+        "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+        "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md",
+        "control/worker-registry.json"
+      ],
+      "targets": {
+        "organizations": ["StegVerse-Labs"],
+        "repositories": ["StegVerse-Labs/.github"],
+        "components": [
+          "canonical-task-registry",
+          "task-master-records-reconciliation",
+          "handoff-projection",
+          "dependency-incident-graph",
+          "session-continuity"
+        ]
+      },
+      "dependencies": [
+        {
+          "dependency_id": "DEP-UNIVERSAL-WORK-INTERLOCK-RUNTIME",
+          "kind": "RUNTIME_PREDICATE",
+          "state": "UNRESOLVED",
+          "ref": "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md"
+        },
+        {
+          "dependency_id": "DEP-MASTER-RECORDS-RECONCILIATION-RUNTIME",
+          "kind": "RUNTIME_PREDICATE",
+          "state": "UNRESOLVED",
+          "ref": "master-records/orchestration"
+        }
+      ],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": [],
+      "existing_evidence_refs": [
+        "control/worker-registry.json",
+        "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md"
+      ],
+      "expected_evidence_predicates": [
+        "SOURCE_SCHEMA_VALID",
+        "TASK_REGISTRY_WORKERCOORDINATOR_AUTHORITY_SEPARATION_VALID",
+        "TASK_MASTER_RECORDS_RECONCILIATION_SOURCE_VALID",
+        "AUTHENTIC_TASK_INGRESS_OBSERVED",
+        "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+        "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED",
+        "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"
+      ],
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "human_action_ref": null,
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": null
+      },
+      "allowed_next_transitions": [
+        "INGRESS_ADMITTED"
+      ],
+      "handoff_projection_refs": [
+        "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "master_records_reality_authority": true,
+        "interlock_intr_required_for_governed_ingress_egress": true
+      }
+    }
+  ],
+  "human_actions": [],
+  "systemic_incidents": [],
+  "projections": {
+    "handoffs": [],
+    "status_surfaces": []
+  },
+  "nonclaims": [
+    "REGISTRY_BOOTSTRAP_IS_SOURCE_STATE_ONLY",
+    "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED",
+    "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY",
+    "NO_MASTER_RECORDS_RUNTIME_RECONCILIATION_IS_CLAIMED"
+  ]
+}
