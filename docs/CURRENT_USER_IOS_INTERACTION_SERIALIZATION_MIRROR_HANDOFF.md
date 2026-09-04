@@ -156,3 +156,67 @@ execution as canonical. The queue therefore moves to
 
 No further SV001 execution is allowed. No Master Records custody action is admitted.
 Canonical SV001 lineage disposition must occur first.
+
+## Current canonical queue state — 2026-09-04
+
+Issue #987 reconciles this handoff to the newer machine-readable queue state on current main.
+
+Canonical lineage reconciliation is complete:
+
+```text
+.github#942 = CLOSED_COMPLETED
+G23 / fence 23 / cycle sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35
+  disposition = CANONICAL_CUSTODY_ELIGIBLE
+
+G24 / fence 24 / cycle sha256:6bcc1976793657ea849a3678fa324c69134d2b59481e0bc9994c6baa6c4aff79
+  disposition = DUPLICATE_TERMINAL_EXECUTION_NON_CUSTODIAL
+  retained = true
+```
+
+Canonical terminal re-execution prevention is source-installed:
+
+```text
+.github#946 / merge 3448807c50a4f9d3bd07ce83c0d4c2c315617b6f
+Site#963 / merge cfd0f02cfca5034e57be23083ece6fcb70bf1e70
+Site validator successor repair #965 / #973 / merge 6a4b0e3c5432d1a091768deebfc83493cb49d647
+completed validator-claim release #983 / merge bf42acd5fa1c813dc0eb82c18454040d1b958e8f
+```
+
+These merges do not prove public propagation or device-runtime enforcement.
+
+The current authoritative queue now reads:
+
+```text
+state = HOLD_UI_ORCHESTRATION_CONFLICT
+state-mutating page instructions = PROHIBITED
+read-only inspection/replay/export = PERMITTED
+candidate = IPHONE-MR-SV001-CUSTODY-001
+candidate queue_state = REVOKED_PENDING_UI_SINGLE_ACTION_GUARD
+active_action_id = null
+next_required_observation = SITE_UI_SINGLE_ACTION_GUARD_RELEASED_AND_PUBLICLY_OBSERVED
+```
+
+The freeze reason is a user-visible orchestration conflict: multiple mutation controls remained exposed and non-JSON checkout-module text was present in the Master Records input while the page displayed `FAIL_CLOSED / Invalid JSON`.
+
+Therefore the next legitimate implementation target is not another SV001 execution and not direct custody admission. It is the governed Site UI single-action guard that consumes the shared interaction manifest and enforces:
+
+```text
+all mutation controls default disabled
+at most one mutation control enabled
+read-only controls remain separate
+parse/binding failure revokes the action locally
+stale session instructions cannot override the manifest
+```
+
+That Site work must first pass Site repository orchestration/admission. Until it is source-installed, publicly propagated, and independently observed on the current device, `IPHONE-MR-SV001-CUSTODY-001` remains revoked and no session may instruct a state-mutating phone action.
+
+Authority remains unchanged:
+
+```text
+credential authority = TV/TVC
+GitHub token runtime authority = NONE
+HB authority effect = NONE
+interaction queue authority effect = NONE_HUMAN_DEVICE_INSTRUCTION_SERIALIZATION_ONLY
+second user-operated machine required = false
+further SV001 execution permitted = false
+```
